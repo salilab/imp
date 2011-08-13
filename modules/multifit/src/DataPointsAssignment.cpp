@@ -70,7 +70,7 @@ algebra::Vector3Ds
   Pointer<em::DensityMap> full_map = em::particles2density(full_set,3,1.5);
   //map the particles to their voxels
   std::map<long,algebra::Vector3D> voxel_particle_map;
-  for(int i=0;i<full_set.size();i++) {
+  for(unsigned int i=0;i<full_set.size();i++) {
     algebra::Vector3D v=core::XYZ(full_set[i]).get_coordinates();
     voxel_particle_map[
                        full_map->get_voxel_by_location(v)]=v;

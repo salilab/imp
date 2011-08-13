@@ -335,7 +335,7 @@ void VQClustering::set_assignments(){
     //debug
     int min_ind=0;
     double min_dist=999999;
-    for(int kk=0;kk<all_cen.size();kk++) {
+    for(unsigned int kk=0;kk<all_cen.size();kk++) {
       if (min_dist>algebra::get_distance(point,all_cen[kk])) {
         min_dist=algebra::get_distance(point,all_cen[kk]);
         min_ind=kk;
