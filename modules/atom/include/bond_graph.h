@@ -60,7 +60,7 @@ class IMPATOMEXPORT BondGraph{
   mutable IntKey index_key_;
 
 public:
-  IMP_NO_DOXYGEN(Pointer<container::ListSingletonContainer> sc_);
+  IMP_NO_DOXYGEN(mutable Particles sc_);
 
   //! The graph is on the leaves of the atom::Hierarchy
   /** All the leaves will be made Bonded particles if they are not already.
@@ -144,7 +144,7 @@ public:
     vertex_descriptor::BondIterator> out_edge_iterator;
   typedef vertex_descriptor::BondedIterator adjacency_iterator;
   typedef boost::transform_iterator<internal::MakeBonded,
-                   IMP::container::ListSingletonContainer::ParticleIterator>
+                                    IMP::Particles::iterator>
   vertex_iterator;
   typedef boost::disallow_parallel_edge_tag edge_parallel_category;
   typedef boost::undirected_tag directed_category;
