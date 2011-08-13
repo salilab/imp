@@ -12,7 +12,7 @@
 #include <iostream>
 #include <string>
 #include "../statistics_config.h"
-
+#include <IMP/base_types.h>
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 #ifndef IMP_DOXYGEN
