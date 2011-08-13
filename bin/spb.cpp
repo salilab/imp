@@ -120,38 +120,53 @@ if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
 //
 if(mydata.add_fret){
 // intra-CP
- add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                      all_mol, "Cmd1p",     "C", 1.69, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc29p",    "N",
-                      all_mol, "Cmd1p",     "C", 1.75, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                      all_mol, "Spc110p",   "C", 1.37, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                      all_mol, "Spc42p",    "N", 2.05, mydata.kappa);
- add_fret_restraint(m,all_mol, "Cmd1p",     "C",
-                      all_mol, "Spc42p",    "N", 2.07, mydata.kappa);
- add_fret_restraint(m,all_mol, "Cmd1p",     "C",
-                      all_mol, "Spc110p",   "C", 2.15, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc42p",    "N",
-                      all_mol, "Spc110p",   "C", 2.02, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc29p",   "C",
+                      all_mol, "Cmd1p",    "C", 1.69,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc29p",   "N",
+                      all_mol, "Cmd1p",    "C", 1.75,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc29p",   "C",
+                      all_mol, "Spc110p",  "C", 1.37,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc29p",   "C",
+                      all_mol, "Spc42p",   "N", 2.05,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Cmd1p",    "C",
+                      all_mol, "Spc42p",   "N", 2.07,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Cmd1p",    "C",
+                      all_mol, "Spc110p",  "C", 2.15,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc42p",   "N",
+                      all_mol, "Spc110p",  "C", 2.02,
+                      mydata.kappa, mydata.add_GFP);
 // inter CP-IL2
- add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Spc110p",   "C", 1.07, mydata.kappa);
- add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                      all_mol, "Cmd1p",     "C", 1.09, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Cmd1p",     "C", 1.1,  mydata.kappa);
- add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                      all_mol, "Spc29p",    "C", 1.1,  mydata.kappa);
- add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                      all_mol, "Spc42p",    "N", 1.13, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Spc29p",    "C", 1.17, mydata.kappa);
- add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Spc42p",    "N", 1.27, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",   "C",
+                      all_mol, "Spc110p",  "C", 1.07,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                      all_mol, "Cmd1p",    "C", 1.09,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc42p",   "C",
+                      all_mol, "Cmd1p",    "C", 1.1,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                      all_mol, "Spc29p",   "C", 1.1,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                      all_mol, "Spc42p",   "N", 1.13,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc42p",   "C",
+                      all_mol, "Spc29p",   "C", 1.17,
+                      mydata.kappa, mydata.add_GFP);
+ add_fret_restraint(m,all_mol, "Spc42p",   "C",
+                      all_mol, "Spc42p",   "N", 1.27,
+                      mydata.kappa, mydata.add_GFP);
 // intra-IL2
- add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Cnm67p_c",  "C", 2.29, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",   "C",
+                      all_mol, "Cnm67p_c", "C", 2.29,
+                      mydata.kappa, mydata.add_GFP);
 }
 if(mydata.add_y2h){
 //
@@ -161,26 +176,36 @@ if(mydata.add_y2h){
  // substitued by a all-pairs link
  //add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
  //                    all_mol, "Spc110p",    IntRange(900,927), mydata.kappa);
- add_y2h_restraint(m,all_mol, "Spc42p",     "N",
-                     all_mol, "Spc110p",    "C", mydata.kappa);
- add_y2h_restraint(m,all_mol, "Spc29p",     "ALL",
-                     all_mol, "Spc110p",    IntRange(811,944), mydata.kappa);
- add_y2h_restraint(m,all_mol, "Spc110p",    "C",
-                     all_mol, "Spc110p",    "C", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc42p",                 "N",
+                     all_mol, "Spc110p",                "C", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc29p",               "ALL",
+                     all_mol, "Spc110p",  IntRange(811,944), mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc110p",                "C",
+                     all_mol, "Spc110p",                "C", mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
-                     all_mol, "Spc29p",     "ALL", mydata.kappa);
+                     all_mol, "Spc29p",               "ALL", mydata.kappa);
 // Having a rigid coiled-coil, this is always satisfied
 // add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
 //                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
 // IL2
- add_y2h_restraint(m,all_mol, "Cnm67p_c",   "C",
-                     all_mol, "Spc42p",     "C", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Cnm67p_c",               "C",
+                     all_mol, "Spc42p",                 "C", mydata.kappa);
 }
 //
 // Add link between Spc110p_C and Cmd1p
-if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
- add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
+  add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
+// Add link with GFPs
+if(mydata.add_GFP){
+  add_link(m,all_mol, "Spc110p", "C",  "Spc110p-C-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,   "Cmd1p", "N",    "Cmd1p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,   "Cmd1p", "C",    "Cmd1p-C-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc42p", "N",   "Spc42p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc42p", "C",   "Spc42p-C-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc29p", "N",   "Spc29p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc29p", "C",   "Spc29p-C-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,"Cnm67p_c", "C", "Cnm67p_c-C-GFP", "N", mydata.kappa);
 }
+
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=

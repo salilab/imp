@@ -46,7 +46,7 @@ container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 IMPMEMBRANEEXPORT void add_fret_restraint
 (Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
- double r_value,double kappa);
+ double r_value,double kappa,bool use_GFP);
 
 IMPMEMBRANEEXPORT void add_y2h_restraint
 (Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
@@ -74,6 +74,10 @@ IMPMEMBRANEEXPORT void add_symmetry_restraint
 IMPMEMBRANEEXPORT void add_link
  (Model *m, atom::Hierarchies& h, std::string protein_a, std::string residues_a,
   std::string protein_b, IntRange residues_b, double kappa);
+
+IMPMEMBRANEEXPORT void add_link
+ (Model *m, atom::Hierarchies& h, std::string protein_a, std::string residues_a,
+  std::string protein_b, std::string residues_b, double kappa);
 
 IMPMEMBRANEEXPORT void add_tilt
 (Model *m, atom::Hierarchies& hs, std::string name, double tilt, double kappa);

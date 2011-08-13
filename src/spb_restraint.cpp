@@ -131,13 +131,15 @@ void do_allpairs_mindist(Model *m,Particles ps,
 void add_fret_restraint
 (Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
- double r_value, double kappa)
+ double r_value, double kappa, bool use_GFP)
 {
  atom::Selection sa=atom::Selection(ha);
+ if(use_GFP) {protein_a=protein_a+"-"+residues_a+"-GFP";}
  sa.set_molecule(protein_a);
  if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
  if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
  atom::Selection sb=atom::Selection(hb);
+ if(use_GFP) {protein_b=protein_b+"-"+residues_b+"-GFP";}
  sb.set_molecule(protein_b);
  if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
@@ -241,8 +243,34 @@ void add_link
   if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
   if(hs[i]->get_name()==protein_b) {index_b.push_back(i);}
  }
- if(index_a.size()!=index_b.size()){
-  std::cout << "Cannot create link restraint!" << std::endl;
+ if(index_a.size()!=index_b.size() || index_a.size()==0){
+  std::cout << protein_a << " - " << protein_b <<
+   " :: cannot create link restraint!" << std::endl;
+  return;
+ }
+ for(unsigned int i=0;i<index_a.size();++i){
+  atom::Hierarchies hha, hhb;
+  for(unsigned int j=0;j<h.size();++j){
+   hha.push_back(h[j].get_children()[index_a[i]]);
+   hhb.push_back(h[j].get_children()[index_b[i]]);
+  }
+  add_y2h_restraint(m,hha,protein_a,residues_a,hhb,protein_b,residues_b,kappa);
+ }
+}
+
+void add_link
+ (Model *m,atom::Hierarchies& h,std::string protein_a,std::string residues_a,
+  std::string protein_b, std::string residues_b, double kappa)
+{
+ atom::Hierarchies hs=h[0].get_children();
+ std::vector<unsigned int> index_a,index_b;
+ for(unsigned int i=0;i<hs.size();++i){
+  if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
+  if(hs[i]->get_name()==protein_b) {index_b.push_back(i);}
+ }
+ if(index_a.size()!=index_b.size() || index_a.size()==0){
+  std::cout << protein_a << " - " << protein_b <<
+   " :: cannot create link restraint!" << std::endl;
   return;
  }
  for(unsigned int i=0;i<index_a.size();++i){

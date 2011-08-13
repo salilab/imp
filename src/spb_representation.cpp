@@ -49,7 +49,9 @@ for(int i=0;i<mydata.num_cells;++i){
   algebra::Vector3D(CP_x0[0],CP_x0[1],-mydata.CP_thickness);
 
  for(int j=0;j<mydata.num_copies;++j){
-
+//
+// SPC42P
+//
   if(mydata.protein_list["Spc42p"]){
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecules Spc42p_n, Spc42p_c;
@@ -112,21 +114,26 @@ for(int i=0;i<mydata.num_cells;++i){
      create_merged_protein(m,"Spc42p",Spc42p_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc42p);
    }
-
-//   if(mydata.add_GFP){
-//     add_GFP(m,all_mol,"Spc42p-N-GFP",i,CP_x0,mydata,mvs);
-//     add_GFP(m,all_mol,"Spc42p-N-GFP",i,CP_x0,mydata,mvs);
-//     add_GFP(m,all_mol,"Spc42p-C-GFP",i,IL2_x0,mydata,mvs);
-//     add_GFP(m,all_mol,"Spc42p-C-GFP",i,IL2_x0,mydata,mvs);
-//   }
+   if(mydata.add_GFP){
+    for(unsigned k=0;k<2;++k){
+     atom::Molecule gfp_n=
+      create_GFP(m,"Spc42p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     all_mol.add_child(gfp_n);
+     atom::Molecule gfp_c=
+      create_GFP(m,"Spc42p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+     all_mol.add_child(gfp_c);
+    }
+   }
   }
-
+//
+// SPC29P
+//
   if(mydata.protein_list["Spc29p"]){
   //Spc29p, 2 beads for N, 2 beads for C
    atom::Molecules Spc29p_all;
    atom::Molecule Spc29p_n=
     create_protein(m,"Spc29p_n",14.5,2,
-                     display::Color(255./255.,165./255.,0.),
+                     display::Color(255./255.,215./255.,0.),
                      i,mydata.kappa,CP_x0);
    Spc29p_all.push_back(Spc29p_n);
    atom::Molecule Spc29p_c=
@@ -150,13 +157,18 @@ for(int i=0;i<mydata.num_cells;++i){
      mvs.push_back(bmv);
     }
    }
-
-//   if(mydata.add_GFP){
-//     add_GFP(m,all_mol,"Spc29-N-GFP",i,CP_x0,mydata,mvs);
-//     add_GFP(m,all_mol,"Spc29-C-GFP",i,CP_x0,mydata,mvs);
-//   }
+   if(mydata.add_GFP){
+    atom::Molecule gfp_n=
+     create_GFP(m,"Spc29-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+    all_mol.add_child(gfp_n);
+    atom::Molecule gfp_c=
+     create_GFP(m,"Spc29-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+    all_mol.add_child(gfp_c);
+   }
   }
-
+//
+// CMD1P
+//
   if(mydata.protein_list["Cmd1p"]){
  //Cmd1p, 1 bead for N, 1 bead for C
    if(!mydata.use_structure){
@@ -212,7 +224,18 @@ for(int i=0;i<mydata.num_cells;++i){
      mvs.push_back(rbmv);
     }
    }
+   if(mydata.add_GFP){
+    atom::Molecule gfp_n=
+     create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+    all_mol.add_child(gfp_n);
+    atom::Molecule gfp_c=
+     create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+    all_mol.add_child(gfp_c);
+   }
   }
+//
+// CNM67p-C
+//
   if(mydata.protein_list["Cnm67p_c"]){
  //Cnm67p_c, 2 beads
    if(!mydata.use_structure){
@@ -250,11 +273,17 @@ for(int i=0;i<mydata.num_cells;++i){
      mvs.push_back(rbmv);
     }
    }
+   if(mydata.add_GFP){
+    atom::Molecule gfp_c=
+     create_GFP(m,"Cnm67p_c-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+    all_mol.add_child(gfp_c);
+   }
   }
  } // cycle on copies
-
+//
+// SPC110p
+//
  if(mydata.protein_list["Spc110p"]){
- // For Spc110 we need something different
   for(int j=0;j<mydata.num_copies/2;++j){
  //Spc110p_c, 4 beads for C terminus
    atom::Molecules Spc110p_c;
@@ -301,6 +330,13 @@ for(int i=0;i<mydata.num_cells;++i){
     atom::Molecule Spc110p=
       create_merged_protein(m,"Spc110p",Spc110p_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc110p);
+   }
+   if(mydata.add_GFP){
+    for(unsigned k=0;k<2;++k){
+     atom::Molecule gfp_c=
+      create_GFP(m,"Spc110p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     all_mol.add_child(gfp_c);
+    }
    }
   }
  }
@@ -427,7 +463,6 @@ atom::Molecule create_protein(Model *m,std::string name,
  return protein;
 }
 
-
 atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecules proteins,
  int copy,double kappa,double dist)
@@ -501,6 +536,35 @@ algebra::Vector3D x0,int start_residue)
  ret.push_back(coil_A);
  ret.push_back(coil_B);
  return ret;
+}
+
+atom::Molecule create_GFP(Model *m, std::string name, int copy,
+ container::ListSingletonContainer *lsc, algebra::Vector3D x0,
+ core::Movers& mvs, SPBParameters mydata)
+{
+//if(!mydata.use_GFP_structure){
+    atom::Molecule gfp=
+     create_protein(m,name,4,1,
+                      display::Color(124./255.,252./255.,0./255.),
+                      copy,mydata.kappa,x0);
+    if(copy==0){
+     Particles ps_gfp=atom::get_leaves(gfp);
+     lsc->add_particles(ps_gfp);
+     IMP_NEW(membrane::PbcBoxedMover,mv,
+      (ps_gfp[0],ps_gfp,mydata.MC.dx,mydata.CP_centers,mydata.trs));
+     mvs.push_back(mv);
+     for(unsigned int k=1;k<ps_gfp.size();++k){
+      Particles pps;
+      pps.push_back(ps_gfp[k]);
+      IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+      mvs.push_back(bmv);
+     }
+    }
+    return gfp;
+//   } else {
+//    // TO DO
+
+//   }
 }
 
 void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)

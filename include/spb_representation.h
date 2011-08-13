@@ -43,6 +43,11 @@ algebra::Vector3D x0,int start_residue);
 IMPMEMBRANEEXPORT void load_restart
  (atom::Hierarchies& all_mol,SPBParameters mydata);
 
+IMPMEMBRANEEXPORT atom::Molecule create_GFP
+ (Model *m, std::string name, int copy,
+ container::ListSingletonContainer *lsc, algebra::Vector3D x0,
+ core::Movers& mvs, SPBParameters mydata);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_REPRESENTATION_H */
