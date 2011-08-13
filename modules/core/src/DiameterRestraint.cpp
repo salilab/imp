@@ -41,8 +41,7 @@ void DiameterRestraint::set_model(Model *m) {
     d.set_coordinates_are_optimized(false);
     Pointer<core::CoverRefined> cr
       = new core::CoverRefined(
-            new FixedRefiner(Particles(sc_->particles_begin(),
-                                       sc_->particles_end())),
+                               new FixedRefiner(sc_->get_particles()),
             0);
     ss_= new core::SingletonConstraint(cr, NULL, p_);
 
@@ -68,13 +67,12 @@ DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   double v=0;
   XYZ dp(p_);
   double radius= diameter_/2.0;
-  for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
-       pit != sc_->particles_end(); ++pit) {
+  IMP_FOREACH_SINGLETON(sc_, {
     v+= internal::evaluate_distance_pair_score(dp,
-                                               XYZ(*pit),
+                                               XYZ(_1),
                                                da, f_.get(),
                                                boost::lambda::_1-radius);
-  }
+    });
   return v;
 }
 
