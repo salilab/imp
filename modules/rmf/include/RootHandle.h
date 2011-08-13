@@ -100,6 +100,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(index, Index);
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(node_id, NodeID);
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(data_set, DataSet);
+  IMP_HDF5_ROOT_KEY_TYPE_METHODS(node_ids, NodeIDs);
   /** @} */
 #ifdef IMP_DOXYGEN
   /** \name Python only
