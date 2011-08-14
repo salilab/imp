@@ -243,60 +243,61 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    }
   }
  }
-
 // now it's time to try an exchange
- int    frank=get_friend(index,myrank,imc,nproc);
- int    findex=index[frank];
- double fscore;
-// send and receive score
- MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
- MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+ if(nproc>1){
+  int    frank=get_friend(index,myrank,imc,nproc);
+  int    findex=index[frank];
+  double fscore;
+ // send and receive score
+  MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+  MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
 
-// if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
- double delta_wte=0.0;
-/*
- if(mydata.MC.do_wte){
-  membrane::MonteCarloWithWte* ptr=
-   dynamic_cast<membrane::MonteCarloWithWte*>(mc);
-  double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
-  double U_fbias[2];
-  MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
-  MPI_Recv(U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
-  delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
-            (U_fbias[0] -U_fbias[1])/ temp[findex];
- }
- */
-// calculate acceptance
- bool do_accept=
-  get_acceptance(myscore,fscore,delta_wte,temp[myindex],temp[findex]);
-
-// if accepted exchange what is needed
- if(do_accept){
-  myindex=findex;
-  mc->set_kt(temp[myindex]);
-/*
-// if WTE, rescale W0 and exchange bias
+ // if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
+  double delta_wte=0.0;
+ /*
   if(mydata.MC.do_wte){
    membrane::MonteCarloWithWte* ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc);
-   ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
-   int     nbins=ptr->get_nbin();
-   double* mybias=ptr->get_bias_buffer();
-   double* fbias=new double[2*nbins];
-   MPI_Isend(mybias, 2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
-   MPI_Recv(fbias,   2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
-   Floats val(fbias, fbias+2*nbins);
-   ptr->set_bias(val);
+   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
+   double U_fbias[2];
+   MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+   MPI_Recv(U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
+             (U_fbias[0] -U_fbias[1])/ temp[findex];
   }
-*/
- }
+  */
+ // calculate acceptance
+  bool do_accept=
+   get_acceptance(myscore,fscore,delta_wte,temp[myindex],temp[findex]);
 
-// in any case, update index vector
- int buf[nproc];
- for(int i=0; i<nproc; ++i) {buf[i]=0;}
- buf[myrank]=myindex;
- MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
-}
+ // if accepted exchange what is needed
+  if(do_accept){
+   myindex=findex;
+   mc->set_kt(temp[myindex]);
+ /*
+ // if WTE, rescale W0 and exchange bias
+   if(mydata.MC.do_wte){
+    membrane::MonteCarloWithWte* ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc);
+    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
+    int     nbins=ptr->get_nbin();
+    double* mybias=ptr->get_bias_buffer();
+    double* fbias=new double[2*nbins];
+    MPI_Isend(mybias,2*nbins,MPI_DOUBLE,frank,123,MPI_COMM_WORLD,&request);
+    MPI_Recv(fbias,  2*nbins,MPI_DOUBLE,frank,123,MPI_COMM_WORLD,&status);
+    Floats val(fbias, fbias+2*nbins);
+    ptr->set_bias(val);
+   }
+ */
+  }
+
+ // in any case, update index vector
+  int buf[nproc];
+  for(int i=0; i<nproc; ++i) {buf[i]=0;}
+  buf[myrank]=myindex;
+  MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ } // end if nproc > 1
+} // end mc
 
 logfile.close();
 MPI_Finalize();

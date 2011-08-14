@@ -107,7 +107,21 @@ void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
 }
-
+/*
+void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
+ core::SphereDistancePairScore* dps,bool filter)
+{
+ IMP_NEW(container::ListSingletonContainer,lpc1,(p1));
+ IMP_NEW(container::ListSingletonContainer,lpc2,(p2));
+ IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lpc1,lpc2,200.0));
+ if(filter){
+  IMP_NEW(atom::SameResiduePairFilter,f,());
+  cbpc->add_pair_filter(f);
+ }
+ IMP_NEW(container::MinimumPairRestraint,mpr,(dps,cbpc,1));
+ m->add_restraint(mpr);
+}
+*/
 void do_allpairs_mindist(Model *m,Particles ps,
  core::SphereDistancePairScore* dps,bool filter)
 {
@@ -127,7 +141,20 @@ void do_allpairs_mindist(Model *m,Particles ps,
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
 }
-
+/*
+void do_allpairs_mindist(Model *m,Particles ps,
+ core::SphereDistancePairScore* dps,bool filter)
+{
+ IMP_NEW(container::ListSingletonContainer,lpc,(ps));
+ IMP_NEW(container::ClosePairContainer,cpc,(lpc,200.0));
+ if(filter){
+  IMP_NEW(atom::SameResiduePairFilter,f,());
+  cpc->add_pair_filter(f);
+ }
+ IMP_NEW(container::MinimumPairRestraint,mpr,(dps,cpc,1));
+ m->add_restraint(mpr);
+}
+*/
 void add_fret_restraint (Model *m,
  atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
@@ -156,7 +183,7 @@ void add_fret_restraint (Model *m,
  if(p1.size()==0 || p2.size()==0) {return;}
  FloatRange range=get_range_from_fret_value(r_value);
  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
- do_bipartite_mindist(m,p1,p2,sps);
+ do_bipartite_mindist(m,p1,p2,sps,false);
 }
 
 void add_y2h_restraint (Model *m,
