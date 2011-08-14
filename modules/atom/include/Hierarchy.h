@@ -270,11 +270,12 @@ public:
     H::add_child(o);
   }
 
-  /** Get the ith child */
+  /** Get the ith child based on the order they were added. */
   Hierarchy get_child(unsigned int i) const {
     H hd=  H::get_child(i);
     return Hierarchy(hd);
   }
+  //! Return the children in the order they were added
   Hierarchies get_children() const {
     Hierarchies ret(get_number_of_children());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
