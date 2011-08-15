@@ -1562,5 +1562,83 @@ DensityMap* create_density_map(const algebra::grids::GridD<3,
   return ret.release();
 }
 
-
+DensityMap* get_binarized_interior(DensityMap *dmap) {
+  em::emreal* data = dmap->get_data();
+  unsigned int nx,ny,nz;
+  nx=dmap->get_header()->get_nx();
+  ny=dmap->get_header()->get_ny();
+  nz=dmap->get_header()->get_nz();
+  Pointer<em::DensityMap> mask_inside = em::create_density_map(dmap);
+  mask_inside->set_was_used(true);
+  mask_inside->reset_data(0.);
+  em::emreal* mdata = mask_inside->get_data();
+  long q;
+  int check;
+  // mark inside voxels
+  for (unsigned int iz=0;iz<nz;iz++)
+    for (unsigned int iy=0;iy<ny;iy++)
+      for (unsigned int ix=0;ix<nx;ix++) {
+        q=ix+(nx)*(iy+ny*iz);
+        if (data[q]>0.0) { //inside or on the surface
+          mdata[q]=1;
+        } else { //check all directions
+          check=0;
+          for(unsigned int i=0;i<ix;i++)
+            if (data[i+(nx)*(iy+ny*iz)]>0.0) {
+              check++; i=ix;
+            }
+          for(unsigned int i=ix+1;i<nx;i++)
+            if (data[i+(nx)*(iy+ny*iz)]>0.0) {
+              check++; i=nx;
+            }
+          for(unsigned int i=0;i<iy;i++)
+            if (data[ix+(nx)*(i+ny*iz)]>0.0) {
+              check++; i=iy;
+            }
+          for(unsigned int i=iy;i<ny;i++)
+            if (data[ix+(nx)*(i+ny*iz)]>0.0) {
+              check++; i=ny;
+            }
+          for(unsigned int i=0;i<iz;i++)
+            if (data[ix+(nx)*(iy+ny*i)]>0.0) {
+              check++; i=iz;
+            }
+          for(unsigned int i=iz;i<nz;i++)
+            if (data[ix+(nx)*(iy+ny*i)]>0.0) {
+              check++; i=nz;
+            }
+          if (check>=4) { //inside
+            mdata[q]=1;
+          }
+        }
+      }
+  //remove surface
+  Pointer<em::DensityMap> mask_inside2 = em::create_density_map(mask_inside);
+  mask_inside2->set_was_used(true);
+  em::emreal* mdata2 = mask_inside2->get_data();
+  long ind,ind2;
+  int shell_w=1;
+  for (int iz=0;iz<(int)nz;iz++)
+    for (int iy=0;iy<(int)ny;iy++)
+      for (int ix=0;ix<(int)nx;ix++) {
+        ind=ix+(nx)*(iy+ny*iz);
+        if (mdata[q]==1) {
+          check=0;
+          for (int iz2=-shell_w;check==0&&iz2<=shell_w;iz2++)
+            for (int iy2=-shell_w;check==0&&iy2<=shell_w;iy2++)
+              for (int ix2=-shell_w;check==0&&ix2<=shell_w;ix2++) {
+                if (ix+ix2 < (int)nx &&
+                    iy+iy2 < (int)ny &&
+                    iz+iz2 < (int)nz &&
+                    ix+ix2 >= 0 && iy+iy2 >= 0 && iz+iz2 >= 0) {
+                  ind2=(ix+ix2)+(nx)*((iy+iy2)+ny*(iz+iz2));
+                  if (mdata[ind2]==0) check=1; //surface point
+                } else check=2; /* out of bounds */
+              }
+          if ((check > 0)&&(mdata2[q] == 1)) {mdata2[q]=0;}
+        }
+      }
+  mask_inside=NULL;
+  return mask_inside2.release();
+}
 IMPEM_END_NAMESPACE
