@@ -32,6 +32,7 @@ BallMover::BallMover(const ParticlesTemp &sc,
 
 void BallMover::do_move(Float scale)
 {
+  IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Generating ball moves for " <<
           get_number_of_particles() << std::endl);
   for (unsigned int i = 0;
