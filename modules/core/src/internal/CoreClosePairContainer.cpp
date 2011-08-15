@@ -114,6 +114,12 @@ void CoreClosePairContainer::check_duplicates_input() const {
 void CoreClosePairContainer::check_list(bool check_slack) const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     ParticleIndexPairs cur= get_access();
+    IMP_INTERNAL_CHECK(c_->get_indexes().size()*(c_->get_indexes().size()-1)/2
+                       >= cur.size(),
+                       "There are too many particles in the nbl. Currently "
+                       << cur.size() << " but there can only be "
+                       << c_->get_indexes().size()
+                       *(c_->get_indexes().size()-1)/2);
     IMP::compatibility::set<ParticleIndexPair> existings(cur.begin(),
                                                          cur.end());
     unsigned int num=cur.size();
