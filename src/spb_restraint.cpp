@@ -103,7 +103,6 @@ void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
    }
   }
  }
- std::cout << "NPAIRS:: " << lpc->get_number_of_particle_pairs() << std::endl;
  if(lpc->get_number_of_particle_pairs()==0) {return;}
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
