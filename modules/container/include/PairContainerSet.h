@@ -112,7 +112,7 @@ class IMPCONTAINEREXPORT PairContainerSet
                   },{},
                   );
   /**@}*/
-
+  Restraints create_decomposition(PairScore *ss) const;
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;
@@ -122,6 +122,7 @@ class IMPCONTAINEREXPORT PairContainerSet
     return true;
   }
   ParticleIndexPairs get_indexes() const;
+  ParticleIndexPairs get_all_possible_indexes() const;
 #endif
 };
 

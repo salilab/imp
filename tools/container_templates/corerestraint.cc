@@ -67,18 +67,11 @@ ContainersTemp CoreCLASSNAMEsRestraint::get_input_containers() const
 }
 
 
-Restraints CoreCLASSNAMEsRestraint::get_decomposition() const {
-  Restraints ret(pc_->get_number());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= new CLASSNAMERestraint(ss_, pc_->get(i));
-    std::ostringstream oss;
-    oss << get_name() << " " << i;
-    ret[i]->set_name(oss.str());
-    }
-  return ret;
+Restraints CoreCLASSNAMEsRestraint::create_decomposition() const {
+  return pc_->create_decomposition(ss_);
 }
 
-Restraints CoreCLASSNAMEsRestraint::get_instant_decomposition() const {
+Restraints CoreCLASSNAMEsRestraint::create_instant_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< pc_->get_number(); ++i) {
     Restraints cur=ss_->get_instant_decomposition(pc_->get(i));

@@ -67,6 +67,16 @@ ParticleIndexPairs PairContainerSet::get_indexes() const {
   return sum;
 }
 
+ParticleIndexPairs PairContainerSet::get_all_possible_indexes() const {
+  ParticleIndexPairs sum;
+  for (PairContainerConstIterator it= pair_containers_begin();
+       it != pair_containers_end(); ++it) {
+    ParticleIndexPairs cur=(*it)->get_all_possible_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
+  }
+  return sum;
+}
+
 IMP_LIST_IMPL(PairContainerSet,
               PairContainer,
               pair_container,
@@ -108,6 +118,15 @@ ParticlesTemp PairContainerSet::get_contained_particles() const {
   return ret;
 }
 
+Restraints
+PairContainerSet::create_decomposition(PairScore *ss) const {
+  Restraints ret;
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    Restraints cur=get_pair_container(i)->create_decomposition(ss);
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
 
 
 IMPCONTAINER_END_NAMESPACE

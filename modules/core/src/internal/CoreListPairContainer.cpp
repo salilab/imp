@@ -55,6 +55,10 @@ void CoreListPairContainer
   }
 }
 
+ParticleIndexPairs
+CoreListPairContainer::get_all_possible_indexes() const {
+    return get_indexes();
+  }
 
 void CoreListPairContainer::do_before_evaluate() {
   internal::ListLikePairContainer::do_before_evaluate();

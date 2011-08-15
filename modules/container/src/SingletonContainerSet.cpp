@@ -67,6 +67,16 @@ ParticleIndexes SingletonContainerSet::get_indexes() const {
   return sum;
 }
 
+ParticleIndexes SingletonContainerSet::get_all_possible_indexes() const {
+  ParticleIndexes sum;
+  for (SingletonContainerConstIterator it= singleton_containers_begin();
+       it != singleton_containers_end(); ++it) {
+    ParticleIndexes cur=(*it)->get_all_possible_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
+  }
+  return sum;
+}
+
 IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,
               singleton_container,
@@ -108,6 +118,15 @@ ParticlesTemp SingletonContainerSet::get_contained_particles() const {
   return ret;
 }
 
+Restraints
+SingletonContainerSet::create_decomposition(SingletonScore *ss) const {
+  Restraints ret;
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    Restraints cur=get_singleton_container(i)->create_decomposition(ss);
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
 
 
 IMPCONTAINER_END_NAMESPACE

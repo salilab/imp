@@ -145,10 +145,10 @@ XYZRMovedSingletonContainer
 }
 
 
-
-
-
-
+ParticleIndexes
+XYZRMovedSingletonContainer::get_all_possible_indexes() const {
+  return get_singleton_container()->get_all_possible_indexes();
+}
 
 
 
@@ -198,7 +198,7 @@ void RigidMovedSingletonContainer::do_reset_moved() {
 
 ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
     IMP_OBJECT_LOG;
-    ParticleIndexes ret= normal_->get_indexes();
+    ParticleIndexes ret= normal_moved_->get_indexes();
     for (unsigned int i=0; i< rbs_.size(); ++i) {
       RigidBody rb(get_model(), rbs_[i]);
       if (get_distance_estimate(rbs_[i]) > get_threshold()) {
@@ -251,6 +251,13 @@ ContainersTemp RigidMovedSingletonContainer
   ret.push_back(get_singleton_container());
   ret.push_back(normal_);
   ret.push_back(normal_moved_);
+  return ret;
+}
+
+ParticleIndexes
+RigidMovedSingletonContainer::get_all_possible_indexes() const {
+  ParticleIndexes ret= normal_moved_->get_all_possible_indexes();
+  ret.insert(ret.end(), rbs_.begin(), rbs_.end());
   return ret;
 }
 

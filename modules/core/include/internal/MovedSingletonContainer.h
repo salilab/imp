@@ -71,9 +71,12 @@ public:
       return true;
     }
   }
+  Restraints create_decomposition(SingletonScore *) const {
+    IMP_NOT_IMPLEMENTED;
+  }
 #endif
 
-  IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer);
+  IMP_OBJECT(MovedSingletonContainer);
 };
 
 class IMPCOREEXPORT XYZRMovedSingletonContainer:
@@ -89,6 +92,8 @@ public:
   //! Track the changes with the specified keys.
   XYZRMovedSingletonContainer(SingletonContainer *pc,
                               double threshold);
+  ParticleIndexes
+    get_all_possible_indexes() const;
 };
 
 
@@ -134,6 +139,8 @@ public:
   //! Track the changes with the specified keys.
   RigidMovedSingletonContainer(SingletonContainer *pc,
                                double threshold);
+  ParticleIndexes
+    get_all_possible_indexes() const;
 };
 
 

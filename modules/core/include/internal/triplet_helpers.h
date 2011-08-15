@@ -16,6 +16,7 @@
 #include <IMP/TripletModifier.h>
 #include <IMP/TripletScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/TripletRestraint.h>
 #include <IMP/compatibility/set.h>
 #include <algorithm>
 
@@ -176,7 +177,18 @@ protected:
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_TRIPLET_CONTAINER(Name)               \
+#define IMP_LISTLIKE_TRIPLET_CONTAINER(Name)                         \
+  ParticleIndexTriplets get_all_possible_indexes() const;                     \
+  Restraints create_decomposition(TripletScore *s) const {            \
+    ParticleIndexTriplets all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= new IMP::core::TripletRestraint(s,                      \
+                            IMP::internal::get_particle(get_model(), \
+                                          all[i]));                     \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 

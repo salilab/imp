@@ -17,6 +17,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/scoped.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/PairRestraint.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

@@ -55,6 +55,10 @@ void CoreListQuadContainer
   }
 }
 
+ParticleIndexQuads
+CoreListQuadContainer::get_all_possible_indexes() const {
+    return get_indexes();
+  }
 
 void CoreListQuadContainer::do_before_evaluate() {
   internal::ListLikeQuadContainer::do_before_evaluate();

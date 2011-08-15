@@ -67,6 +67,16 @@ ParticleIndexTriplets TripletContainerSet::get_indexes() const {
   return sum;
 }
 
+ParticleIndexTriplets TripletContainerSet::get_all_possible_indexes() const {
+  ParticleIndexTriplets sum;
+  for (TripletContainerConstIterator it= triplet_containers_begin();
+       it != triplet_containers_end(); ++it) {
+    ParticleIndexTriplets cur=(*it)->get_all_possible_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
+  }
+  return sum;
+}
+
 IMP_LIST_IMPL(TripletContainerSet,
               TripletContainer,
               triplet_container,
@@ -108,6 +118,15 @@ ParticlesTemp TripletContainerSet::get_contained_particles() const {
   return ret;
 }
 
+Restraints
+TripletContainerSet::create_decomposition(TripletScore *ss) const {
+  Restraints ret;
+  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+    Restraints cur=get_triplet_container(i)->create_decomposition(ss);
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
 
 
 IMPCONTAINER_END_NAMESPACE

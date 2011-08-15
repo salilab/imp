@@ -282,10 +282,20 @@
     - IMP::CLASSNAMEContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_HEADERNAME_CONTAINER(Name)                                  \
+#define IMP_HEADERNAME_CONTAINER(Name)                      \
   bool get_contents_changed() const;                                    \
-  bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const;      \
+  bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const;    \
   PLURALINDEXTYPE get_indexes() const;                     \
+  PLURALINDEXTYPE get_all_possible_indexes() const;           \
+  Restraints create_decomposition(CLASSNAMEScore *s) const {            \
+    PLURALINDEXTYPE all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= new IMP::core::CLASSNAMERestraint(s,                      \
+            IMP::internal::get_particle(get_model(), all[i]));          \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_IMPLEMENT_HEADERNAME_CONTAINER(Name)
 
 

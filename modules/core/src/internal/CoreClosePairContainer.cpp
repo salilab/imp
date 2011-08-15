@@ -304,6 +304,17 @@ void CoreClosePairContainer::do_show(std::ostream &out) const {
 }
 
 
+ParticleIndexPairs CoreClosePairContainer::get_all_possible_indexes() const {
+  ParticleIndexes pis= c_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.resize(pis.size()*(pis.size()-1)/2);
+  for (unsigned int i=0; i< pis.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(ParticleIndexPair(pis[i], pis[j]));
+    }
+  }
+  return ret;
+}
+
 ParticlesTemp CoreClosePairContainer::get_contained_particles() const {
   ParticlesTemp ret= c_->get_contained_particles();
   ParticlesTemp nret =cpf_->get_input_particles(c_->get_particles());

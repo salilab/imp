@@ -76,6 +76,16 @@ public:
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   void set_slack(double d);
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
+  ParticleIndexPairs get_all_possible_indexes() const;
+  Restraints create_decomposition(PairScore *ps) const {
+    ParticleIndexPairs all= get_all_possible_indexes();
+    Restraints ret(all.size());
+    for (unsigned int i=0; i< all.size(); ++i) {
+      ret[i]= new PairRestraint(ps, IMP::internal::get_particle(get_model(),
+                                                                all[i]));
+    }
+    return ret;
+  }
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
 };
 

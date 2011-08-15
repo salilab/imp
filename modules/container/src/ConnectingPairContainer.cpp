@@ -110,6 +110,18 @@ ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
 }
 
 
+ParticleIndexPairs
+ConnectingPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ia= sc_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size()*(ia.size()-1)/2);
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(ParticleIndexPair(ia[i], ia[j]));
+    }
+  }
+  return ret;
+}
+
 void ConnectingPairContainer::do_before_evaluate() {
   if (mv_->get_number_of_particles() != 0) {
     ParticleIndexPairs new_list;
