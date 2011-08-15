@@ -323,7 +323,6 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
   model_dens_map->set_particles(ps,wei_key);
   model_dens_map->resample();
   model_dens_map->calcRMS();
-  std::cout<<"RMS: "<< model_dens_map->get_header()->rms<<std::endl;
   IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(em_map),
                        "sampled density map is of wrong dimensions"<<std::endl);
   float score;
@@ -426,7 +425,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
 
 Float compute_fitting_score(const Particles &ps,
                             DensityMap *em_map,
-                            FloatKey wei_key) {
+                            FloatKey wei_key,bool local) {
   //create a grid that covers both the particles and the map
   algebra::BoundingBox3D em_bb=
     get_bounding_box(em_map,0.);
@@ -477,12 +476,13 @@ Float compute_fitting_score(const Particles &ps,
   }
   union_map->calcRMS();
   model_dens_map->calcRMS();
-   double score = em::CoarseCC::calc_score(union_map, model_dens_map,
-                               1.0,true,false);
+  double score = em::CoarseCC::calc_score(union_map, model_dens_map,
+                              1.0,true,false,FloatPair(0.,0.),local);
   union_map=NULL;
   model_dens_map=NULL;
   return score;
 }
+
 
 
 IMPEM_END_NAMESPACE
