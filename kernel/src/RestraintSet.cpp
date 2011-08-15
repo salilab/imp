@@ -110,10 +110,22 @@ namespace {
   }
 }
 
-IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
+void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
   IMP_PRINT_TREE(out, Restraint*, rs, num_children(n),
                  dynamic_cast<RestraintSet*>(n)->get_restraint,
                  out << n->get_name());
+}
+
+
+
+Restraints create_decomposition(const RestraintsTemp &rs) {
+  Restraints ret;
+  RestraintsTemp all= get_restraints(rs);
+  for (unsigned int i=0; i< all.size(); ++i) {
+    Restraints cur= all[i]->create_decomposition();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
 }
 
 IMP_END_NAMESPACE
