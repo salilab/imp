@@ -19,7 +19,7 @@ ParticlesTemp SerialMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"SerialMover:: propose move f is  : " << f <<std::endl);
   ++imov_;
   if(imov_==static_cast<int>(mvs_.size())) imov_=0;
-
+  mvs_[imov_]->set_was_used(true);
   return mvs_[imov_]->propose_move(f);
 }
 
