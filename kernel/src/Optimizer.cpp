@@ -21,6 +21,7 @@ Optimizer::Optimizer(Model *m, std::string name): Object(name)
   min_score_= -std::numeric_limits<double>::max();
   stop_on_good_score_=false;
   last_score_= std::numeric_limits<double>::max();
+  eval_incremental_=false;
 }
 
 Optimizer::~Optimizer()
@@ -46,11 +47,18 @@ double Optimizer::optimize(unsigned int max_steps) {
     IMP_THROW("Must give the optimizer a model to optimize",
               ValueException);
   }
+  if (eval_incremental_) {
+    setup_incremental();
+  }
   set_was_used(true);
   flattened_restraints_
     =IMP::get_restraints(RestraintsTemp(restraints_.begin(),
                                         restraints_.end()));
-  return do_optimize(max_steps);
+  double ret= do_optimize(max_steps);
+  if (eval_incremental_) {
+    teardown_incremental();
+  }
+  return ret;
 }
 
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
@@ -101,5 +109,25 @@ RestraintsTemp Optimizer::get_restraints() const {
     return restraints_;
   }
 }
+
+void Optimizer::setup_incremental() {
+  IMP_NOT_IMPLEMENTED;
+  // get them
+  // get initial scores
+  // create dg
+  // figure out restraints for each particle
+}
+void Optimizer::teardown_incremental() {
+  IMP_NOT_IMPLEMENTED;
+}
+
+double Optimizer::evaluate_incremental(const ParticleIndexes &moved) const {
+  IMP_NOT_IMPLEMENTED;
+}
+double Optimizer::evaluate_incremental_if_below(const ParticleIndexes &moved,
+                                                double max) const {
+  IMP_NOT_IMPLEMENTED;
+}
+
 
 IMP_END_NAMESPACE
