@@ -1,5 +1,5 @@
 """Simple check that compilation works"""
-
+import scons_tools.environment
 from SCons.Script import Exit
 
 def _check(context):
@@ -17,7 +17,8 @@ def _check(context):
 
 def configure_check(env):
     custom_tests = {'CheckCompiler':_check}
-    conf = env.Configure(custom_tests=custom_tests)
+    tenv= scons_tools.environment.get_test_environment(env)
+    conf = tenv.Configure(custom_tests=custom_tests)
     if conf.CheckCompiler():
         env["COMPILER_OK"]=True
     else:

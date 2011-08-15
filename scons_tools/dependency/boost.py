@@ -31,32 +31,33 @@ def _check(context):
     context.Result(ret[1].replace("_", ".").split('\n')[0])
     if ret[0]:
         try:
-            context.env['BOOST_LIB_VERSION']= ret[1].split('\n')[0]
+            context.env['IMP_OUTER_ENVIRONMENT']['BOOST_LIB_VERSION']= ret[1].split('\n')[0]
         except:
             print "Bad boost version", repr(ret)
             env.Exit(1)
     else:
-        context.env['BOOST_LIB_VERSION']=None
+        context.env['IMP_OUTER_ENVIRONMENT']['BOOST_LIB_VERSION']=None
     return ret[0]
 
 def _checks(context):
-    version=context.env['BOOST_LIB_VERSION']
+    version=context.env['IMP_OUTER_ENVIRONMENT']['BOOST_LIB_VERSION']
     if version is not None and context.env['boost_autolink'] == 'disable':
         for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
             ret= context.sconf.CheckLib('boost_filesystem'+suffix, language="c++", autoadd=False)
             if ret:
                 context.Message('Checking for Boost lib suffix... ')
-                context.env['BOOST_LIBSUFFIX']=suffix
+                context.env['IMP_OUTER_ENVIRONMENT']['BOOST_LIBSUFFIX']=suffix
                 context.Result(suffix)
                 return True
-    context.env['BOOST_LIBSUFFIX']=""
+    context.env['IMP_OUTER_ENVIRONMENT']['BOOST_LIBSUFFIX']=""
     context.Message('Checking for Boost lib suffix... ')
     context.Result('not found')
     return False
 
 def find_lib_version(env):
     custom_tests = {'CheckBoost':_check}
-    conf = env.Configure(custom_tests=custom_tests)
+    tenv= scons_tools.environment.get_test_environment(env)
+    conf = tenv.Configure(custom_tests=custom_tests)
     conf.CheckBoost()
     conf.Finish()
     if env.get('boostlibsuffix', "auto")!="auto":
@@ -65,7 +66,7 @@ def find_lib_version(env):
         if env.get('boostversion', None):
             scons_tools.utility.report_error(env, "You must specify the boostlibsuffix if you specify the boostversion")
         custom_tests = {'CheckBoostS':_checks}
-        conf = env.Configure(custom_tests=custom_tests)
+        conf = tenv.Configure(custom_tests=custom_tests)
         conf.CheckBoostS()
         conf.Finish()
     env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env.get('BOOST_LIBSUFFIX', '')+"'"])

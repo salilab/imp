@@ -31,18 +31,19 @@ int main(int, char *[]) {
     if ret[0]:
         lst= ret[1].split('\n')[:-1] # remove trailing empyt line
         context.Result(" ".join(lst))
-        context.env['CGAL_LIB_LIST']=lst
+        context.env['IMP_OUTER_ENVIRONMENT']['CGAL_LIB_LIST']=lst
     else:
         context.Result("not found")
-        context.env['CGAL_LIB_LIST']=[]
+        context.env['IMP_OUTER_ENVIRONMENT']['CGAL_LIB_LIST']=[]
     return ret[0]
 
 def get_libs(env, boost_threads):
     if env.get('cgallibs', None):
         return env.get('cgallibs')
     else:
+        tenv= scons_tools.environment.get_test_environment(env)
         custom_tests = {'CheckCGALLibs':_check}
-        conf = env.Configure(custom_tests=custom_tests)
+        conf = tenv.Configure(custom_tests=custom_tests)
         conf.CheckCGALLibs()
         conf.Finish()
         lst= env['CGAL_LIB_LIST']

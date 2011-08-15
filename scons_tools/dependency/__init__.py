@@ -10,6 +10,7 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
         #print "Trying "+ str(i) +" with " +str(lc)
         olibs= context.env.get('LIBS', [])
         context.env.Append(LIBS=lc)
+        #print context.env['LINKFLAGS']
         ret=context.sconf.CheckLibWithHeader(libname, header=headers, call=body, language='CXX',
                                              autoadd=False)
         context.env.Replace(LIBS=olibs)
@@ -29,9 +30,10 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
     if versioncpp:
         context.Message('Checking for version of '+name+"...")
         vs="<< ' ' << ".join(versioncpp)
-        if includepath:
-            oldcpp= context.env.get('CPPPATH', None)
-            context.env.Replace(CPPPATH=context.env.get('CPPPATH', [])[:]+[includepath])
+        #if includepath:
+        #    oldcpp= context.env.get('CPPPATH', None)
+        #    context.env.Replace(CPPPATH=context.env.get('CPPPATH', [])[:]+[includepath])
+        #print context.env['LINKFLAGS'], context.env['RPATH']
         r = context.TryRun("#include <"+versionheader+">\n"+\
                              """#include <iostream>
 
@@ -42,7 +44,8 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
         }
 """, '.cpp')
         if includepath:
-            context.env.Replace(CPPPATH=oldcpp)
+            pass
+            #context.env.Replace(CPPPATH=oldcpp)
         if not r[0]:
             context.Result("None")
             return None
@@ -63,19 +66,21 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
 def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=None,
               versionheader=None):
     if lib is not None and type(lib) != type([]):
-        scons_tools.utility.report_error(context.env, "The lib argument must be given as a list. It was not for "+name)
+        scons_tools.utility.report_error(context.env,
+                                         "The lib argument must be given as a list. It was not for "+name)
     if versioncpp != None and type(versioncpp) != type([]):
-        scons_tools.utility.report_error(context.env, "The versioncpp argument must be given as a list. It was not for "+name)
-    oldflags= context.env.get('LINKFLAGS')
-    context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
+        scons_tools.utility.report_error(context.env,
+                                         "The versioncpp argument must be given as a list. It was not for "+name)
+    #oldflags= context.env.get('LINKFLAGS')
+    #context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
     if lib is not None:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
         ret=(context.sconf.CheckHeader(header, language="C++"), [])
     if not ret[0]:
-        context.env.Replace(LINKFLAGS=oldflags)
+        #context.env.Replace(LINKFLAGS=oldflags)
         return (ret[0], ret[1], None)
-    if context.env['IMP_BUILD_STATIC'] and lib != None:
+    if context.env['IMP_OUTER_ENVIRONMENT']['IMP_BUILD_STATIC'] and lib != None:
         scons_tools.utility.make_static_build(context.env)
         if type(lib) == list:
             bret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
@@ -84,16 +89,16 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
         scons_tools.utility.unmake_static_build(context.env)
         # should be the sum of the two
         if bret[0]:
-            context.env.Replace(LINKFLAGS=oldflags)
+            #context.env.Replace(LINKFLAGS=oldflags)
             return (bret[0], ret[1]+bret[1], _get_version(context, name, None,
                                                           versioncpp,
                                                           versionheader))
         else:
-            context.env.Replace(LINKFLAGS=oldflags)
+            #context.env.Replace(LINKFLAGS=oldflags)
             return (False, [], None)
     vers= _get_version(context, name, None, versioncpp, versionheader)
     #print "version", vers
-    context.env.Replace(LINKFLAGS=oldflags)
+    #context.env.Replace(LINKFLAGS=oldflags)
     return  (True, ret[1], vers)
 
 def get_dependency_string(name):
@@ -107,32 +112,34 @@ def _get_bad():
 def _get_info_variables(context, env, name, has_version):
     lcname= get_dependency_string(name)
     context.Message('Checking for '+name+' with variables...')
-    if not env.get(lcname, None) or env.get(lcname) != "yes":
+    if not env['IMP_OUTER_ENVIRONMENT'].get(lcname, None)\
+            or env['IMP_OUTER_ENVIRONMENT'].get(lcname) != "yes":
         context.Result("no")
         return _get_bad()
-    if env.get(lcname+"libs", None) is None:
-        scons_tools.utility.report_error(env, "If configure specifies 'yes' for "+
+    if env['IMP_OUTER_ENVIRONMENT'].get(lcname+"libs", None) is None:
+        scons_tools.utility.report_error(env['IMP_OUTER_ENVIRONMENT'],
+                                         "If configure specifies 'yes' for "+
                                          name+" it must also specify "+lcname+"libs"+
-                                         env.get(lcname+"libs", "no found"))
+                                         env['IMP_OUTER_ENVIRONMENT'].get(lcname+"libs", "no found"))
         context.Result("no")
         return _get_bad()
-    if has_version and not env.get(lcname+"version", None):
-        scons_tools.utility.report_error(env, "If configure specifies 'yes' for "+
+    if has_version and not env['IMP_OUTER_ENVIRONMENT'].get(lcname+"version", None):
+        scons_tools.utility.report_error(env['IMP_OUTER_ENVIRONMENT'], "If configure specifies 'yes' for "+
                                          name+" it must also specify "+lcname+"version")
         context.Result("no")
         return _get_bad()
     vers=None
     if has_version:
-        vers= env.get(lcname+'version')
+        vers= env['IMP_OUTER_ENVIRONMENT'].get(lcname+'version')
         if vers.find(" ") != -1:
             vers=vers.split()
         else:
             vers=[vers]
     context.Result("yes")
-    return (True, env.get(lcname+"libs").split(":"),
+    return (True, env['IMP_OUTER_ENVIRONMENT'].get(lcname+"libs").split(":"),
             vers, None, None)
 def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
-    if not context.env['IMP_HAS_PKG_CONFIG']:
+    if not context.env['IMP_OUTER_ENVIRONMENT']['IMP_HAS_PKG_CONFIG']:
         return _get_bad()
     lcname= get_dependency_string(name)
     context.Message('Checking for '+name+' with pkg-config...')
@@ -163,6 +170,7 @@ def _get_info_test(context, env, name, lib, header, body,
 
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
                          versioncpp=None, versionheader=None):
+    tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
     if scons_tools.data.get(env).dependencies.has_key(name):
@@ -170,7 +178,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
         return
     variables=[lcname, lcname+"libs", lcname+"version"]
     def _check(context):
-        if context.env[lcname] == "no":
+        if context.env['IMP_OUTER_ENVIRONMENT'][lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
             scons_tools.data.get(context.env).add_dependency(name, variables=variables,
@@ -213,7 +221,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
     vars.Update(env)
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
-        conf = env.Configure(custom_tests=custom_tests)
+        conf = tenv.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
         if conf.CheckThisLib():
             env.Append(IMP_ENABLED=[name])
