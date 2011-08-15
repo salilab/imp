@@ -103,6 +103,7 @@ void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
    }
   }
  }
+ std::cout << "NPAIRS:: " << lpc->get_number_of_particle_pairs() << std::endl;
  if(lpc->get_number_of_particle_pairs()==0) {return;}
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
@@ -156,7 +157,7 @@ void do_allpairs_mindist(Model *m,Particles ps,
 }
 */
 void add_fret_restraint (Model *m,
- atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value, double kappa, bool use_GFP)
 {
@@ -187,7 +188,7 @@ void add_fret_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- atom::Hierarchies& ha, std::string protein_a, IntRange residues_a,
+ const atom::Hierarchy& ha, std::string protein_a, IntRange residues_a,
  atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
  double kappa)
 {
@@ -205,15 +206,11 @@ void add_y2h_restraint (Model *m,
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return;}
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
- if(protein_a==protein_b && residues_a==residues_b){
-  do_allpairs_mindist(m,p1,sps);
- }else{
-  do_bipartite_mindist(m,p1,p2,sps);
- }
+ do_bipartite_mindist(m,p1,p2,sps);
 }
 
 void add_y2h_restraint (Model *m,
- atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
 {
@@ -229,15 +226,11 @@ void add_y2h_restraint (Model *m,
  Particles p2=sb.get_selected_particles();
  if(p1.size()==0 || p2.size()==0) {return;}
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
- if(protein_a==protein_b && residues_a==residues_b){
-  do_allpairs_mindist(m,p1,sps);
- }else{
-  do_bipartite_mindist(m,p1,p2,sps);
- }
+ do_bipartite_mindist(m,p1,p2,sps);
 }
 
 void add_y2h_restraint (Model *m,
- atom::Hierarchies& ha, std::string protein_a,    IntRange residues_a,
+ const atom::Hierarchy& ha, std::string protein_a,    IntRange residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
 {
@@ -258,18 +251,32 @@ void add_y2h_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
  double kappa)
 {
- add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
+ atom::Selection sa=atom::Selection(ha);
+ sa.set_molecule(protein_a);
+ if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+ if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+ atom::Selection sb=atom::Selection(hb);
+ sb.set_molecule(protein_b);
+ Ints r_b;
+ for(int i=residues_b.first;i<=residues_b.second;++i) r_b.push_back(i);
+ sb.set_residue_indexes(r_b);
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return;}
+ core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
+ do_bipartite_mindist(m,p1,p2,sps);
 }
 
-void add_link (Model *m, atom::Hierarchies& h,
- std::string protein_a, std::string residues_a,
- std::string protein_b,    IntRange residues_b, double kappa)
+void add_link (Model *m,
+ const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
+ double kappa)
 {
- atom::Hierarchies hs=h[0].get_children();
+ atom::Hierarchies hs=ha.get_children();
  std::vector<unsigned int> index_a,index_b;
  for(unsigned int i=0;i<hs.size();++i){
   if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
@@ -277,20 +284,21 @@ void add_link (Model *m, atom::Hierarchies& h,
  }
  if(index_a.size()!=index_b.size() || index_a.size()==0){return;}
  for(unsigned int i=0;i<index_a.size();++i){
-  atom::Hierarchies hha, hhb;
-  for(unsigned int j=0;j<h.size();++j){
-   hha.push_back(h[j].get_children()[index_a[i]]);
-   hhb.push_back(h[j].get_children()[index_b[i]]);
+  atom::Hierarchies hhb;
+  for(unsigned int j=0;j<hb.size();++j){
+   hhb.push_back(hb[j].get_children()[index_b[i]]);
   }
-  add_y2h_restraint(m,hha,protein_a,residues_a,hhb,protein_b,residues_b,kappa);
+  add_y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
+   hhb,protein_b,residues_b,kappa);
  }
 }
 
-void add_link (Model *m,atom::Hierarchies& h,
- std::string protein_a, std::string residues_a,
- std::string protein_b, std::string residues_b, double kappa)
+void add_link (Model *m,
+ const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ double kappa)
 {
- atom::Hierarchies hs=h[0].get_children();
+ atom::Hierarchies hs=ha.get_children();
  std::vector<unsigned int> index_a,index_b;
  for(unsigned int i=0;i<hs.size();++i){
   if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
@@ -298,12 +306,12 @@ void add_link (Model *m,atom::Hierarchies& h,
  }
  if(index_a.size()!=index_b.size() || index_a.size()==0){return;}
  for(unsigned int i=0;i<index_a.size();++i){
-  atom::Hierarchies hha, hhb;
-  for(unsigned int j=0;j<h.size();++j){
-   hha.push_back(h[j].get_children()[index_a[i]]);
-   hhb.push_back(h[j].get_children()[index_b[i]]);
+  atom::Hierarchies hhb;
+  for(unsigned int j=0;j<hb.size();++j){
+   hhb.push_back(hb[j].get_children()[index_b[i]]);
   }
-  add_y2h_restraint(m,hha,protein_a,residues_a,hhb,protein_b,residues_b,kappa);
+  add_y2h_restraint(m,hs[index_a[i]],protein_a,residues_a,
+   hhb,protein_b,residues_b,kappa);
  }
 }
 
@@ -332,13 +340,13 @@ void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
  m->add_restraint(sr);
 }
 
-void add_tilt (Model *m, atom::Hierarchies& hs,
+void add_tilt (Model *m, const atom::Hierarchy& h,
  std::string name, double tilt, double kappa)
 {
  std::list<core::RigidBody> rbs;
  std::list<core::RigidBody>::iterator iit;
 
- atom::Selection s=atom::Selection(hs[0]);
+ atom::Selection s=atom::Selection(h);
  s.set_molecule(name);
  Particles ps=s.get_selected_particles();
  for(unsigned int i=0;i<ps.size();++i){
