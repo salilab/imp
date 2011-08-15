@@ -269,11 +269,11 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                          cplusplus=True,
                                                          extra_modules=[_get_module_name(env)])
     #penv.Decider('timestamp-match')
-    scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
+    """scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
               #Scanner(function= _fake_scanner_i, skeys=['.i']),
               Scanner(function=_swig._null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
-    penv.Replace(SCANNERS=scanners)
+    penv.Replace(SCANNERS=scanners)"""
     from scons_tools.install import get_build_path as gbp
     versions=[]
     for m in _get_module_python_modules(env):
@@ -318,7 +318,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule(gbp(penv, 'libdir/_IMP%(module_suffix)s' %
                                        _get_module_variables(lpenv)),
-                                    patched, SCANNERS=scanners)
+                                    patched) #SCANNERS=scanners
     data.build.append(buildlib[0])
     inst=scons_tools.install.install(penv, 'pyextdir', buildlib[0])
     scons_tools.utility.postprocess_lib(penv, buildlib)
