@@ -252,7 +252,8 @@ def get_base_environment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
-    env.Prepend(CPPPATH=[Dir('#/build/include').abspath])
+    env.Prepend(CPPPATH=[Dir('#/build/include').abspath,
+                         Dir('#/build/src').abspath])
     env.Prepend(LIBPATH=['#/build/lib'])
     env.Append(BUILDERS={'IMPRun': run.Run})
     # these should be in application, but...
@@ -323,6 +324,11 @@ def _add_dependency_flags(env, dependencies):
 
 
 def _add_flags(env, extra_modules=[], extra_dependencies=[]):
+    if env['IMP_USE_RPATH']:
+        dylinkflags=[]
+        for p in env['LIBPATH']:
+            if p[0] != '#':
+                env.Prepend(RPATH=[p])
     modules=extra_modules+env['IMP_CURRENT_MODULES']
     dependencies=env['IMP_CURRENT_DEPENDENCIES']+extra_dependencies
     all_dependencies=dependencies
@@ -354,12 +360,6 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
 
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
-    if env['IMP_USE_RPATH']:
-        dylinkflags=[]
-        for p in env['LIBPATH']:
-            if p[0] != '#':
-                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
 
 
 def get_sharedlib_environment(env, cppdefine, cplusplus=False,
@@ -401,7 +401,16 @@ def get_bin_environment(envi, extra_modules=[]):
     _add_flags(env, extra_modules=extra_modules)
     return env
 
-
+def get_test_environment(envi):
+    env= bug_fixes.clone_env(envi)
+    env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
+    if env['IMP_USE_RPATH']:
+        dylinkflags=[]
+        for p in env['LIBPATH']:
+            if p[0] != '#':
+                env.Prepend(RPATH=[p])
+    env['IMP_OUTER_ENVIRONMENT']= envi
+    return env
 
 def get_pyext_environment(env, mod_prefix, cplusplus=True,
                           extra_modules=[]):
