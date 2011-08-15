@@ -313,8 +313,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     hf=gbp(penv, 'srcdir/currentfile_wrap.h')
     patched=penv.IMPModulePatchSWIG(target=[cppf],
                                source=[cppin])
-    penv.IMPModulePatchSWIG(target=[hf],
+    hpatched=penv.IMPModulePatchSWIG(target=[hf],
                        source=[hin])
+    penv.Requires(patched, hpatched)
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule(gbp(penv, 'libdir/_IMP%(module_suffix)s' %
                                        _get_module_variables(lpenv)),
