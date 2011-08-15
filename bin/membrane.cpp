@@ -74,7 +74,8 @@ create_restraints(m,all,tbr,&mydata);
 
 // create sampler
 if(myrank==0) {std::cout << "Creating sampler" << std::endl;}
-core::MonteCarlo* mc=setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
+Pointer<core::MonteCarlo> mc=
+ setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
 
 // sampling
 if(myrank==0) {std::cout << "Sampling" << std::endl;}
@@ -116,8 +117,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  double delta_wte=0.0;
 
  if(mydata.MC.do_wte){
-  membrane::MonteCarloWithWte* ptr=
-   dynamic_cast<membrane::MonteCarloWithWte*>(mc);
+  Pointer<membrane::MonteCarloWithWte> ptr=
+   dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
   MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
@@ -125,6 +126,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
             (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
+
 // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
@@ -135,8 +137,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
-   membrane::MonteCarloWithWte* ptr=
-    dynamic_cast<membrane::MonteCarloWithWte*>(mc);
+   Pointer<membrane::MonteCarloWithWte> ptr=
+    dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();
    double* mybias=ptr->get_bias_buffer();
@@ -146,6 +148,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    Floats val(fbias, fbias+2*nbins);
    ptr->set_bias(val);
   }
+
  }
 
 // in any case, update index vector
