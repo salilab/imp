@@ -282,10 +282,20 @@
     - IMP::PairContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_PAIR_CONTAINER(Name)                                  \
+#define IMP_PAIR_CONTAINER(Name)                      \
   bool get_contents_changed() const;                                    \
-  bool get_contains_particle_pair(const ParticlePair& p) const;      \
+  bool get_contains_particle_pair(const ParticlePair& p) const;    \
   ParticleIndexPairs get_indexes() const;                     \
+  ParticleIndexPairs get_all_possible_indexes() const;           \
+  Restraints create_decomposition(PairScore *s) const {            \
+    ParticleIndexPairs all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= new IMP::core::PairRestraint(s,                      \
+            IMP::internal::get_particle(get_model(), all[i]));          \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_IMPLEMENT_PAIR_CONTAINER(Name)
 
 

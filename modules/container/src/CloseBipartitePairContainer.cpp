@@ -188,5 +188,17 @@ ParticlesTemp CloseBipartitePairContainer::get_contained_particles() const {
   return ret;
 }
 
+ParticleIndexPairs
+CloseBipartitePairContainer::get_all_possible_indexes() const {
+  ParticleIndexes pis= a_->get_all_possible_indexes();
+  ParticleIndexes pjs= b_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.resize(pis.size()*pjs.size());
+  for (unsigned int i=0; i< pis.size(); ++i) {
+    for (unsigned int j=0; j< pjs.size(); ++j) {
+      ret.push_back(ParticleIndexPair(pis[i], pjs[j]));
+    }
+  }
+  return ret;
+}
 
 IMPCONTAINER_END_NAMESPACE

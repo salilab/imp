@@ -16,6 +16,7 @@
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/core/CLASSNAMERestraint.h>
 #include <IMP/compatibility/set.h>
 #include <algorithm>
 
@@ -176,7 +177,18 @@ protected:
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
-#define IMP_LISTLIKE_HEADERNAME_CONTAINER(Name)               \
+#define IMP_LISTLIKE_HEADERNAME_CONTAINER(Name)                         \
+  PLURALINDEXTYPE get_all_possible_indexes() const;                     \
+  Restraints create_decomposition(CLASSNAMEScore *s) const {            \
+    PLURALINDEXTYPE all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= new IMP::core::CLASSNAMERestraint(s,                      \
+                            IMP::internal::get_particle(get_model(), \
+                                          all[i]));                     \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 

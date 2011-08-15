@@ -282,10 +282,20 @@
     - IMP::TripletContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_TRIPLET_CONTAINER(Name)                                  \
+#define IMP_TRIPLET_CONTAINER(Name)                      \
   bool get_contents_changed() const;                                    \
-  bool get_contains_particle_triplet(const ParticleTriplet& p) const;      \
+  bool get_contains_particle_triplet(const ParticleTriplet& p) const;    \
   ParticleIndexTriplets get_indexes() const;                     \
+  ParticleIndexTriplets get_all_possible_indexes() const;           \
+  Restraints create_decomposition(TripletScore *s) const {            \
+    ParticleIndexTriplets all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= new IMP::core::TripletRestraint(s,                      \
+            IMP::internal::get_particle(get_model(), all[i]));          \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_IMPLEMENT_TRIPLET_CONTAINER(Name)
 
 

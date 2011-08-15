@@ -67,6 +67,16 @@ ParticleIndexQuads QuadContainerSet::get_indexes() const {
   return sum;
 }
 
+ParticleIndexQuads QuadContainerSet::get_all_possible_indexes() const {
+  ParticleIndexQuads sum;
+  for (QuadContainerConstIterator it= quad_containers_begin();
+       it != quad_containers_end(); ++it) {
+    ParticleIndexQuads cur=(*it)->get_all_possible_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
+  }
+  return sum;
+}
+
 IMP_LIST_IMPL(QuadContainerSet,
               QuadContainer,
               quad_container,
@@ -108,6 +118,15 @@ ParticlesTemp QuadContainerSet::get_contained_particles() const {
   return ret;
 }
 
+Restraints
+QuadContainerSet::create_decomposition(QuadScore *ss) const {
+  Restraints ret;
+  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+    Restraints cur=get_quad_container(i)->create_decomposition(ss);
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
 
 
 IMPCONTAINER_END_NAMESPACE

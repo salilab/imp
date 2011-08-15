@@ -55,6 +55,10 @@ void CoreListTripletContainer
   }
 }
 
+ParticleIndexTriplets
+CoreListTripletContainer::get_all_possible_indexes() const {
+    return get_indexes();
+  }
 
 void CoreListTripletContainer::do_before_evaluate() {
   internal::ListLikeTripletContainer::do_before_evaluate();

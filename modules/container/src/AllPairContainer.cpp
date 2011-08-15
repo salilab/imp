@@ -48,6 +48,18 @@ AllPairContainer::get_indexes() const {
   return ret;
 }
 
+ParticleIndexPairs
+AllPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ia= c_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size()*(ia.size()-1)/2);
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(ParticleIndexPair(ia[i], ia[j]));
+    }
+  }
+  return ret;
+}
+
 
 bool
 AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {

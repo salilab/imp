@@ -112,7 +112,7 @@ class IMPCONTAINEREXPORT QuadContainerSet
                   },{},
                   );
   /**@}*/
-
+  Restraints create_decomposition(QuadScore *ss) const;
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;
@@ -122,6 +122,7 @@ class IMPCONTAINEREXPORT QuadContainerSet
     return true;
   }
   ParticleIndexQuads get_indexes() const;
+  ParticleIndexQuads get_all_possible_indexes() const;
 #endif
 };
 

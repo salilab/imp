@@ -49,6 +49,10 @@ ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
   return ret;
 }
 
+ParticleIndexPairs ConsecutivePairContainer::get_all_possible_indexes() const {
+  return get_indexes();
+}
+
 
 void ConsecutivePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);

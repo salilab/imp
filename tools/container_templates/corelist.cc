@@ -55,6 +55,10 @@ void CoreListCLASSNAMEContainer
   }
 }
 
+PLURALINDEXTYPE
+CoreListCLASSNAMEContainer::get_all_possible_indexes() const {
+    return get_indexes();
+  }
 
 void CoreListCLASSNAMEContainer::do_before_evaluate() {
   internal::ListLikeCLASSNAMEContainer::do_before_evaluate();

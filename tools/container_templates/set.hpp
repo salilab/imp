@@ -112,7 +112,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                   },{},
                   );
   /**@}*/
-
+  Restraints create_decomposition(CLASSNAMEScore *ss) const;
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;
@@ -122,6 +122,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
     return true;
   }
   PLURALINDEXTYPE get_indexes() const;
+  PLURALINDEXTYPE get_all_possible_indexes() const;
 #endif
 };
 

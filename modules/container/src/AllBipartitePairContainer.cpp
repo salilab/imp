@@ -54,6 +54,19 @@ AllBipartitePairContainer::get_indexes() const {
   return ret;
 }
 
+ParticleIndexPairs
+AllBipartitePairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ia= a_->get_all_possible_indexes();
+  ParticleIndexes ib= b_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size()*ib.size());
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    for (unsigned int j=0; j< ib.size(); ++j) {
+      ret.push_back(ParticleIndexPair(ia[i], ib[j]));
+    }
+  }
+  return ret;
+}
+
 bool
 AllBipartitePairContainer
 ::get_contains_particle_pair(const ParticlePair &p) const {

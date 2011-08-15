@@ -70,5 +70,16 @@ ParticlesTemp BondPairContainer::get_contained_particles() const {
   return ret;
 }
 
+ParticleIndexPairs BondPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes ia= sc_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size());
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    Bond b(get_model(), ia[i]);
+    ret.push_back(ParticleIndexPair(b.get_bonded(0).get_particle_index(),
+                                    b.get_bonded(1).get_particle_index()));
+  }
+  return ret;
+}
+
 
 IMPATOM_END_NAMESPACE

@@ -55,6 +55,10 @@ void CoreListSingletonContainer
   }
 }
 
+ParticleIndexes
+CoreListSingletonContainer::get_all_possible_indexes() const {
+    return get_indexes();
+  }
 
 void CoreListSingletonContainer::do_before_evaluate() {
   internal::ListLikeSingletonContainer::do_before_evaluate();

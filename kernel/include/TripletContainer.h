@@ -147,6 +147,8 @@ public:
   }
   unsigned int get_number() const {return get_indexes().size();}
   virtual ParticleIndexTriplets get_indexes() const=0;
+  virtual ParticleIndexTriplets get_all_possible_indexes() const=0;
+  virtual Restraints create_decomposition(TripletScore *s) const=0;
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
   virtual const ParticleIndexTriplets& get_access() const {
