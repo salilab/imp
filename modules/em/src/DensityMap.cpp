@@ -452,11 +452,9 @@ void DensityMap::std_normalize()
 
 emreal DensityMap::calcRMS()
 {
-  std::cout<<"in calc rms"<<std::endl;
   if (rms_calculated_) {
     return header_.rms;
   }
-  std::cout<<"number of voxels:"<<get_number_of_voxels()<<std::endl;
   long  nvox = get_number_of_voxels();
   emreal meanval = .0;
   emreal stdval = .0;
@@ -465,11 +463,12 @@ emreal DensityMap::calcRMS()
     meanval += data_[ii];
     stdval += data_[ii] * data_[ii];
   }
-  std::cout<<"meanval:"<<meanval<<" stdval:"<<stdval<<std::endl;
+  IMP_LOG(VERBOSE,
+          "in calc RMS meanval:"<<meanval<<" stdval:"<<stdval<<std::endl);
   header_.dmin=get_min_value();
   header_.dmax=get_max_value();
-  std::cout<<"min:"<< header_.dmin<<" max:"<< header_.dmax<<std::endl;
-
+  IMP_LOG(VERBOSE,"in calc RMS min:"<< header_.dmin
+          <<" max:"<< header_.dmax<<std::endl);
   meanval /=  nvox;
   header_.dmean = meanval;
 
