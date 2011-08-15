@@ -429,7 +429,6 @@ void RigidBody::setup_constraints(Particle *p) {
     = create_constraint(new UpdateRigidBodyMembers(),
                         new AccumulateRigidBodyDerivatives(), p,
                          p->get_name()+" positions");
-  std::cout << "name is " << c0->get_name() << std::endl;
   p->get_model()->add_score_state(c0);
   p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
                              c0);
