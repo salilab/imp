@@ -78,12 +78,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 //   used, but don't create interactions).
 ParticlesTemp Em2DRestraint::get_input_particles() const
 {
-  ParticlesTemp ret;
-  for (SingletonContainer::ParticleIterator it
-       = particles_container_->particles_begin();
-       it != particles_container_->particles_end(); ++it) {
-    ret.push_back(*it);
-  }
+  ParticlesTemp ret= particles_container_->get_particles();
   return ret;
 }
 
