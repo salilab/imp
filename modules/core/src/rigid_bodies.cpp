@@ -701,6 +701,17 @@ void RigidBody::add_member(RigidBody d) {
   on_change();
 }
 
+void RigidBody::set_log_level(LogLevel l) {
+  Particle *p= get_particle();
+  p->set_log_level(l);
+  Object *oc0= p->get_model()->get_attribute(get_constraint_key_0(),
+                                             p->get_index());
+  oc0->set_log_level(l);
+  Object *oc1= p->get_model()->get_attribute(get_constraint_key_1(),
+                                             p->get_index());
+  oc1->set_log_level(l);
+}
+
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
   algebra::VectorD<4>
     v(get_particle()
