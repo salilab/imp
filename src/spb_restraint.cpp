@@ -183,7 +183,7 @@ void add_fret_restraint (Model *m,
  if(p1.size()==0 || p2.size()==0) {return;}
  FloatRange range=get_range_from_fret_value(r_value);
  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
- do_bipartite_mindist(m,p1,p2,sps,false);
+ do_bipartite_mindist(m,p1,p2,sps);
 }
 
 void add_y2h_restraint (Model *m,

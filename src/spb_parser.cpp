@@ -128,17 +128,17 @@ SPBParameters get_SPBParameters(TextInput in) {
 // protein_list
  ret.protein_list["Spc42p"]=add_Spc42p;
  ret.protein_list["Spc29p"]=add_Spc29p;
- ret.protein_list["Spc110p"]=add_Spc110p;
  ret.protein_list["Cmd1p"]=add_Cmd1p;
  ret.protein_list["Cnm67p_c"]=add_Cnm67p_c;
+ ret.protein_list["Spc110p"]=add_Spc110p;
  ret.add_GFP=add_GFP;
  ret.use_GFP_structure=use_GFP_structure;
 // file map
  if(load_Spc42p.length()>0.0)   ret.file_list["Spc42p"]=load_Spc42p;
  if(load_Spc29p.length()>0.0)   ret.file_list["Spc29p"]=load_Spc29p;
- if(load_Spc110p.length()>0.0)  ret.file_list["Spc110p"]=load_Spc110p;
  if(load_Cmd1p.length()>0.0)    ret.file_list["Cmd1p"]=load_Cmd1p;
  if(load_Cnm67p_c.length()>0.0) ret.file_list["Cnm67p_c"]=load_Cnm67p_c;
+ if(load_Spc110p.length()>0.0)  ret.file_list["Spc110p"]=load_Spc110p;
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
