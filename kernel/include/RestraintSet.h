@@ -168,6 +168,11 @@ inline RestraintSetsTemp get_restraint_sets(It b, It e) {
 
 /** @} */
 
+/** Return a list of restraints that is created by decomposing each restraint
+    in the passed set.
+*/
+IMPEXPORT Restraints create_decomposition(const RestraintsTemp &rs);
+
 //! Print the hierarchy of restraints
 IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs,
                                      std::ostream &out=std::cout);
