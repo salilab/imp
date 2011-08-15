@@ -48,8 +48,9 @@ int main(int , char **) {
 
 
 def configure_check(env):
+    tenv= scons_tools.environment.get_test_environment(env)
     custom_tests = {'CheckEndian':_check}
-    conf = env.Configure(custom_tests=custom_tests)
+    conf = tenv.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
     env['IMP_ENDIAN']=conf.CheckEndian()
     env.Append(IMP_CONFIGURATION=["endian='"+env['IMP_ENDIAN']+"'"])

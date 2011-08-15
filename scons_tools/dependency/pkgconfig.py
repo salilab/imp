@@ -34,9 +34,9 @@ def configure_check(env):
 
 
 def get_config(context, lcname):
-    if not scons_tools.dependency.gcc.get_is_gcc(context.env):
+    if not scons_tools.dependency.gcc.get_is_gcc_like(context.env):
         scons_tools.utility.report_error(context.env,
-                                         "pkg-config only supported with g++")
+                                         "pkg-config only supported with g++ like compilers")
     #print context.env.Execute('pkg-config --cflags-only-I \'%s\'' % lcname)
     retI = os.popen('pkg-config --cflags-only-I \'%s\'' % lcname).read()
     retL = os.popen('pkg-config --libs-only-L \'%s\'' % lcname).read()
