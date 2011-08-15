@@ -6,64 +6,82 @@ import IMP.container
 
 class ExcludedVolumeRestraintTests(IMP.test.TestCase):
     """Tests for excluded volume restraints"""
+    def _create_rigid_body(self, m, n, r):
+        ls= IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), r)
+        ap=[]
+        for i in range(0,n):
+            cs= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_on(ls), r)
+            d= IMP.core.XYZR.setup_particle(IMP.Particle(m), cs)
+            ap.append(d);
+        rbp= IMP.core.RigidBody.setup_particle(IMP.Particle(m), ap)
+        rbp.set_log_level(IMP.SILENT)
+        rbp.set_coordinates_are_optimized(True)
+        return rbp
+    def _create_xyzrs(self, m, n, r):
+        ap=[]
+        for i in range(0,n):
+            d= IMP.core.XYZR.setup_particle(IMP.Particle(m),
+                                           IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), r))
+            d.set_coordinates_are_optimized(True)
+            ap.append(d);
+        return ap
     def _setup_ev_restraint(self):
         #IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
-        print "read"
-        p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
-        print 'create'
-        r0s= IMP.core.RigidBody.setup_particle(p0.get_particle(),
-                                        IMP.core.XYZs(IMP.core.get_leaves(p0)))
-        print "radius"
-        rb0= IMP.core.RigidBody(p0.get_particle())
-        rb0.set_coordinates_are_optimized(True)
-        fps=[]
-        sc=[]
-        for i in range(0,10):
-            p= IMP.Particle(m)
-            d= IMP.core.XYZR.setup_particle(p)
-            d.set_radius(10)
-            sc.append(p)
-            fps.append(d)
-            d.set_coordinates_are_optimized(True)
-        for p in sc:
-            d= IMP.core.XYZ(p)
-            d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                                                               IMP.algebra.Vector3D(5,5,5))))
-        sc.extend(IMP.core.get_leaves(p0))
-        r= IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(sc))
+        m.set_log_level(IMP.SILENT)
+        all=[]
+        rbs=[]
+        xyzrs=[]
+        for i in range(0,5):
+            rb= self._create_rigid_body(m, 10, 1)
+            rbs.append(rb)
+            all.extend(rb.get_members())
+        xyzrs=self._create_xyzrs(m, 10, 1)
+        all.extend(xyzrs)
+        allc=IMP.container.ListSingletonContainer(all)
+        r= IMP.core.ExcludedVolumeRestraint(allc, 1)
         r.set_log_level(IMP.SILENT)
         m.add_restraint(r)
-        return (m, r, sc)
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                      IMP.algebra.Vector3D(100,100,100));
+        bbr= IMP.container.SingletonsRestraint(IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,1),
+                                                                                    bb),
+                                               allc)
+        m.add_restraint(bbr)
+        return (m, r, xyzrs, rbs)
+    def _setup_movers(self, xyzrs, rbs):
+        mvs=[]
+        for p in xyzrs:
+            mc= IMP.core.BallMover([p], 1)
+            mvs.append(mc)
+        for p in rbs:
+            mc= IMP.core.RigidBodyMover(IMP.core.RigidBody(p), 1, .1)
+            mvs.append(mc)
+        return mvs
     def test_ev(self):
         """Testing excluded volume restraint"""
-        (m,r, sc)= self._setup_ev_restraint()
+        (m,r, xyzrs, rbs)= self._setup_ev_restraint()
         print "mc"
         o= IMP.core.MonteCarlo()
-        # very dumb op
-        bm= IMP.core.BallMover(sc, IMP.core.XYZ.get_xyz_keys(), 100)
-        o.add_mover(bm)
+        mvs= self._setup_movers(xyzrs, rbs)
+        o.set_movers(mvs)
         o.set_model(m)
         print "opt"
-        print o.optimize(10)
-        print "inspect"
-        for p in sc:
-            for q in sc:
-                if p==q:
-                    continue
-                if IMP.core.RigidMember.particle_is_instance(p) \
-                   and IMP.core.RigidMember.particle_is_instance(q) \
-                   and IMP.core.RigidMember(p).get_rigid_body()\
-                   == IMP.core.RigidMember(q).get_rigid_body():
-                    continue
-                print p.get_name(), q.get_name()
-                d= IMP.core.get_distance(IMP.core.XYZR(p), IMP.core.XYZR(q))
-                self.assertGreater(d, -.1)
-    def test_isolated_ev(self):
-        """Testing isolated evaluation of ev restraint"""
-        (m,r, sc)= self._setup_ev_restraint()
-        IMP.set_log_level(IMP.VERBOSE)
-        v= r.evaluate(False)
-        self.assertNotEqual(v, 0)
+        # rely on internal checks
+        print o.optimize(1000)
+        print "inspect", m.evaluate(False)
+    def test_evs(self):
+        """Testing excluded volume serial restraint"""
+        (m,r, xyzrs, rbs)= self._setup_ev_restraint()
+        print "mc"
+        o= IMP.core.MonteCarlo()
+        mvs= self._setup_movers(xyzrs, rbs)
+        sm= IMP.core.SerialMover(mvs)
+        o.set_movers([sm])
+        o.set_model(m)
+        print "opt"
+        # rely on internal checks
+        print o.optimize(1000)
+        print "inspect", m.evaluate(False)
 if __name__ == '__main__':
     IMP.test.main()
