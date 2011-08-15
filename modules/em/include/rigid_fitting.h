@@ -306,7 +306,9 @@ inline FittingSolutions compute_fitting_scores(
  */
 IMPEMEXPORT Float compute_fitting_score(const Particles &ps,
    DensityMap *em_map,
-   FloatKey wei_key=atom::Mass::get_mass_key());
+   FloatKey wei_key=atom::Mass::get_mass_key(),
+   bool local=false);
+
 
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_RIGID_FITTING_H */
