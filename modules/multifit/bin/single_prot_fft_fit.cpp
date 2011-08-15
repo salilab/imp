@@ -29,7 +29,6 @@ using namespace IMP;
 namespace po = boost::program_options;
 
 
-
 bool parse_input(int argc, char *argv[],
                 std::string &density_filename,
                 float &spacing,
@@ -77,8 +76,12 @@ int main(int argc, char **argv) {
   core::RigidBody rb=atom::create_rigid_body(mol2fit);
   IMP_NEW(core::LeavesRefiner,rb_refiner,(atom::Hierarchy::get_traits()));
   //create rotations
-  algebra::Rotation3Ds rots=
-    algebra::get_uniformly_sampled_rotations(delta_angle);
+  //  algebra::Rotation3Ds rots=
+  //    algebra::get_uniformly_sampled_rotations(1.*delta_angle/180*PI);
+  multifit::EulerAnglesList rots=
+    multifit::get_uniformly_sampled_rotations(1.*delta_angle/180*PI);
+
+
   IMP_USAGE_CHECK(rots.size()>0,
                   "There should be at least one rotation to sample\n");
   multifit::FFTFittingOutput fits =
@@ -115,6 +118,8 @@ int main(int argc, char **argv) {
     }
   }
   multifit::write_fitting_solutions(sol_filename.c_str(),final_fits);
+  multifit::write_fitting_solutions("best_trans_for_rot.log",
+                                    fits.best_trans_per_rot_);
   std::cout<<"all done!"<<std::endl;
 }
 
