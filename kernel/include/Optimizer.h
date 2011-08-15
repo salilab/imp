@@ -17,6 +17,7 @@
 #include "Particle.h"
 #include "Pointer.h"
 #include "OptimizerState.h"
+#include <IMP/compatibility/checked_vector.h>
 #include <limits>
 #include <cmath>
 
@@ -125,6 +126,13 @@ class IMPEXPORT Optimizer: public Object
   */
   void set_restraints(const RestraintsTemp &rs);
 
+  /** Set whether to use incremental evaluate or evaluate all restraints
+      each time. This cannot be changed during optimization.
+  */
+  void set_use_incremental_evaluate(bool tf) {
+    eval_incremental_=tf;
+  }
+
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
@@ -138,6 +146,14 @@ class IMPEXPORT Optimizer: public Object
   double evaluate_if_below(bool compute_derivatives,
                           double max) const;
 
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate_incremental(const ParticleIndexes &moved) const;
+
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate_incremental_if_below(const ParticleIndexes &moved,
+                           double max) const;
 
   //! override this function to do actual optimization
   virtual double do_optimize(unsigned int ns) =0;
@@ -227,11 +243,16 @@ class IMPEXPORT Optimizer: public Object
 
  private:
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
-
+  void setup_incremental();
+  void teardown_incremental();
   mutable Floats widths_;
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
+  bool eval_incremental_;
+  Restraints incremental_restraints_;
+  Floats incremental_scores_;
+  compatibility::checked_vector<Ints> incremental_used_;
   Restraints restraints_;
   RestraintsTemp flattened_restraints_;
   mutable double last_score_;
