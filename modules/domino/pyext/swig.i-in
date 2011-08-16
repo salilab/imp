@@ -66,6 +66,7 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/Assignment.h"
 %include "IMP/domino/particle_states.h"
 %include "IMP/domino/subset_filters.h"
+%include "IMP/domino/assignment_containers.h"
 %include "IMP/domino/assignment_tables.h"
 %include "IMP/domino/subset_graphs.h"
 %include "IMP/domino/optimize_restraints.h"
@@ -75,5 +76,4 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/utility.h"
 %include "IMP/domino/analysis.h"
 %include "IMP/domino/DependencyScoreState.h"
-%include "IMP/domino/HeapAssignmentContainer.h"
 

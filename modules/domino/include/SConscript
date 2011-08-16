@@ -8,12 +8,12 @@ files = [
          'DominoSampler.h',
          'Subset.h',
          'analysis.h',
+         'assignment_containers.h',
          'assignment_tables.h',
          'domino_macros.h',
          'optimize_restraints.h',
          'particle_states.h',
          'subset_filters.h',
-         'HeapAssignmentContainer.h',
          'subset_graphs.h',
          'utility.h',
         ] \

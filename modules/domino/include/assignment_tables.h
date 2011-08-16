@@ -15,6 +15,7 @@
 #include "Assignment.h"
 #include "Subset.h"
 #include "domino_config.h"
+#include "assignment_containers.h"
 #include "domino_macros.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
