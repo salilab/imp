@@ -91,6 +91,8 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
 
 
 #if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
+class AssignmentContainer;
+
 /** \name HDF5 I/O
     \anchor hdf5io
     Lists of assignments can be written to HDF5 data sets and read back. The
