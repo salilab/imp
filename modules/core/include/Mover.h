@@ -30,12 +30,17 @@ class MonteCarlo;
 class IMPCOREEXPORT Mover: public Object
 {
   friend class MonteCarlo;
+  WeakPointer<Optimizer> opt_;
+
+/* Older versions of g++ do not extend friendship to
+   MonteCarlo::MoverDataWrapper, and thus fail to compile MonteCarlo.h. */
+#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR < 1))
+public:
+#endif
   void set_optimizer(Optimizer *c) {
     if (c) set_was_used(true);
     opt_=c;
   }
-
-  WeakPointer<Optimizer> opt_;
 public:
   Mover(std::string name=std::string("Mover %1%"));
 
