@@ -13,6 +13,7 @@
 #include "core_macros.h"
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/Configuration.h>
 
 #include <boost/random/uniform_real.hpp>
@@ -145,11 +146,21 @@ public:
    */
   virtual double do_evaluate(const ParticlesTemp &moved) const {
     IMP_UNUSED(moved);
-    if (get_maximum_difference()
-        < std::numeric_limits<double>::max()) {
-      return evaluate_if_below(false, last_energy_+max_difference_);
+    if (get_use_incremental_evaluate() ) {
+      if (get_maximum_difference()
+          < std::numeric_limits<double>::max()) {
+        return evaluate_incremental_if_below(IMP::internal::get_index(moved),
+                                             last_energy_+max_difference_);
+      } else {
+        return evaluate_incremental(IMP::internal::get_index(moved));
+      }
     } else {
-      return evaluate(false);
+      if (get_maximum_difference()
+          < std::numeric_limits<double>::max()) {
+        return evaluate_if_below(false, last_energy_+max_difference_);
+      } else {
+        return evaluate(false);
+      }
     }
   }
 private:
