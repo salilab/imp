@@ -314,8 +314,8 @@ void add_link (Model *m,
  }
 }
 
-void add_symmetry_restraint (Model *m,
- atom::Hierarchies& hs,algebra::Transformation3Ds transformations)
+void add_symmetry_restraint
+(Model *m,atom::Hierarchies& hs,algebra::Transformation3Ds transformations)
 {
  Particles ps0=atom::get_leaves(hs[0]);
  core::RigidBodies rbs0=get_rigid_bodies(ps0);
