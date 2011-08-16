@@ -21,7 +21,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 class MonteCarlo;
 
-//! A base class for classes which pertub particles.
+//! A base class for classes which perturb particles.
 /** Mover objects are designed primarily to be used with
     the Monte Carlo optimizer. You probably want to use MoverBase
     if you are implementing a Mover.
