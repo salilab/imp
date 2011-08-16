@@ -298,6 +298,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
                               v[1]);
     get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
                               v[2]);
+    get_rigid_body().get_particle()->clear_caches();
   }
   //! Member must be a rigid body
   void set_internal_transformation(const  algebra::Transformation3D& v) {
@@ -320,6 +321,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
                               v.get_rotation().get_quaternion()[2]);
     get_particle()->set_value(internal::rigid_body_data().lquaternion_[3],
                               v.get_rotation().get_quaternion()[3]);
+    get_rigid_body().get_particle()->clear_caches();
   }
 
   algebra::Transformation3D get_internal_transformation() const {
