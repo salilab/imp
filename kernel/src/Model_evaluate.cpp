@@ -44,21 +44,30 @@ namespace {
 }
 
 #if IMP_BUILD < IMP_FAST
-#define SET_ONLY(mask, particles)                       \
-  {                                                     \
-    ParticlesTemp cur=particles;                        \
-    mask.reset();                                       \
-    for (unsigned int i=0; i< cur.size(); ++i) {        \
-      mask.set(cur[i]->get_index());                    \
-    }                                                   \
+#define SET_ONLY(mask, particles, containers)                   \
+  {                                                             \
+    ParticlesTemp cur=particles;                                \
+    ContainersTemp ccur=containers;                             \
+    for (unsigned int i=0; i<ccur.size(); ++i) {                \
+      Particle *p= dynamic_cast<Particle*>(ccur[i]);            \
+      if (p) cur.push_back(p);                                  \
+    }                                                           \
+    mask.reset();                                               \
+    for (unsigned int i=0; i< cur.size(); ++i) {                \
+      mask.set(cur[i]->get_index());                            \
+    }                                                           \
   }
 
-#define SET_ONLY_2(mask, particles, particlestwo)                       \
+#define SET_ONLY_2(mask, particles, containers,                         \
+                   particlestwo, containerstwo)                         \
   {                                                                     \
     ParticlesTemp curout=particles;                                     \
+    ContainersTemp ccurout=containers;                                  \
     ParticlesTemp tcurout=particlestwo;                                 \
+    ContainersTemp tccurout=containerstwo;                              \
     curout.insert(curout.end(), tcurout.begin(), tcurout.end());        \
-    SET_ONLY(mask, curout);                                             \
+    ccurout.insert(ccurout.end(), tccurout.begin(), tccurout.end());    \
+    SET_ONLY(mask, curout, ccurout);                                    \
   }
 
 
@@ -73,7 +82,9 @@ namespace {
     Masks::write_mask_.reset();                                         \
     Masks::add_remove_mask_.reset();                                    \
     Masks::read_derivatives_mask_.reset();                              \
-    SET_ONLY(Masks::read_mask_, restraint->get_input_particles());      \
+    SET_ONLY(Masks::read_mask_, restraint->get_input_particles(),       \
+             restraint->get_input_containers()                          \
+             );                                                         \
     expr;                                                               \
   }
 
@@ -108,11 +119,13 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
         ResetBitset rbwd(Masks::write_derivatives_mask_, true);
         ParticlesTemp input=ss->get_input_particles();
         ParticlesTemp output=ss->get_output_particles();
+        ContainersTemp cinput=ss->get_input_containers();
+        ContainersTemp coutput=ss->get_output_containers();
         Masks::read_derivatives_mask_.reset();
         Masks::write_derivatives_mask_.reset();
-        SET_ONLY_2(Masks::read_mask_, input, output);
-        SET_ONLY(Masks::write_mask_, output);
-        SET_ONLY(Masks::add_remove_mask_, output);
+        SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
+        SET_ONLY(Masks::write_mask_, output, coutput);
+        SET_ONLY(Masks::add_remove_mask_, output, coutput);
 #endif
         ss->before_evaluate();
       }
@@ -145,10 +158,14 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
         ResetBitset rbwd(Masks::write_derivatives_mask_, true);
         ParticlesTemp input=ss->get_input_particles();
         ParticlesTemp output=ss->get_output_particles();
+        ContainersTemp cinput=ss->get_input_containers();
+        ContainersTemp coutput=ss->get_output_containers();
         Masks::write_mask_.reset();
-        SET_ONLY_2(Masks::read_mask_, input, output);
-        SET_ONLY_2(Masks::read_derivatives_mask_,input, output);
-        SET_ONLY_2(Masks::write_derivatives_mask_,input, output);
+        SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
+        SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
+                   coutput);
+        SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput, output,
+                   coutput);
 #endif
         ss->after_evaluate(calc_derivs?&accum:NULL);
       }
