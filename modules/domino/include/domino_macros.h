@@ -169,7 +169,7 @@ IMP_OBJECT(Name)
   virtual Assignments get_assignments() const {                         \
     return get_assignments(IntRange(0, get_number_of_assignments()));   \
   }                                                                     \
-  virtual void add_assignment(Assignment a);                            \
+  virtual void add_assignment(const Assignment& a);                     \
   virtual void add_assignments(const Assignments &as) {                 \
   for (unsigned int i=0; i< as.size(); ++i) {                           \
     Name::add_assignment(as[i]);                                        \

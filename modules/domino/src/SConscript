@@ -8,13 +8,13 @@ files = [
          'DominoSampler.cpp',
          'Subset.cpp',
          'analysis.cpp',
+         'assignment_containers.cpp',
          'assignment_tables.cpp',
          'optimize_restraints.cpp',
          'particle_states.cpp',
          'subset_filters.cpp',
          'subset_graphs.cpp',
          'utility.cpp',
-         'HeapAssignmentContainer.cpp',
         ] \
         + SConscript('internal/SConscript')
 
