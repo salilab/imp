@@ -1,6 +1,7 @@
 import IMP
 import IMP.test
 import IMP.core
+import IMP.container
 import os
 
 max_score=.02
