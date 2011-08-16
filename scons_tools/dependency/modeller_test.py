@@ -44,7 +44,7 @@ def _check(context):
         context.Result("could not find MODELLER directory %s: %s" % (moddir, e))
         return False
     files.sort()
-    r = re.compile('mod(SVN|\d+v\d+)$')
+    r = re.compile('mod(SVN|\d+[v.]\d+)$')
     files = [f for f in files if r.match(f)]
     if len(files) == 0:
         context.Result("could not find MODELLER script in %s" % moddir)
