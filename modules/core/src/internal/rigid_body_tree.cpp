@@ -98,7 +98,8 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   Object("RigidBodyHierarchy%1%"), rb_(d),
   constituents_(constituents){
   Model *m= d.get_model();
-  d.update_members();
+  // they had better be up to date
+  //d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< constituents_.size(); ++i) {
