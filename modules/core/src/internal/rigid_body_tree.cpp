@@ -98,6 +98,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   Object("RigidBodyHierarchy%1%"), rb_(d),
   constituents_(constituents){
   Model *m= d.get_model();
+  d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< constituents_.size(); ++i) {
@@ -205,20 +206,26 @@ unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
 
 
 
-
-
-void RigidBodyHierarchy::validate_internal(Model *m, int cur,
+ParticleIndexes RigidBodyHierarchy::validate_internal(Model *m, int cur,
                                            algebra::Sphere3Ds bounds) const {
   bounds.push_back(algebra::Sphere3D(get_sphere(cur).get_center(),
                                      get_sphere(cur).get_radius()*1.1));
   if (get_is_leaf(cur)) {
+    ParticleIndexes seen;
     for (unsigned int j=0; j< bounds.size(); ++j) {
       for (unsigned int i=0; i< get_number_of_particles(cur); ++i) {
         XYZR p(m, get_particle(cur, i));
+        if (j==0) seen.push_back(get_particle(cur, i));
         RigidMember rm(m, get_particle(cur, i));
         algebra::Sphere3D sc(rb_.get_reference_frame()
                 .get_global_coordinates(rm.get_internal_coordinates()),
                             p.get_radius());
+        algebra::Sphere3D scg= p.get_sphere();
+        IMP_INTERNAL_CHECK(algebra::get_distance(scg.get_center(),
+                                                 sc.get_center()) < .1,
+                           "Spheres do not match: " << sc << " vs " << scg
+                           << " for particle "
+                           << rm.get_particle()->get_name());
         IMP_INTERNAL_CHECK(bounds[j].get_contains(sc),
                            "Particle is not in bound " << p
                            << " has index " <<  get_particle(cur, i)
@@ -233,17 +240,33 @@ void RigidBodyHierarchy::validate_internal(Model *m, int cur,
                            << tree_[cur].s_);
       }
     }
+    return seen;
   } else {
+    ParticleIndexes seen;
     for (unsigned int i=0; i< get_number_of_children(cur); ++i) {
       int ci= get_child(cur, i);
-      validate_internal(m, ci, bounds);
+      ParticleIndexes sc=validate_internal(m, ci, bounds);
+      seen.insert(seen.end(), sc.begin(), sc.end());
     }
+    return seen;
   }
 }
 
 
 void RigidBodyHierarchy::validate(Model *m) const {
-  validate_internal(m, 0, algebra::Sphere3Ds());
+  IMP_CHECK_OBJECT(this);
+  ParticleIndexes all=validate_internal(m, 0, algebra::Sphere3Ds());
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    ParticleIndexes uall=all;
+    std::sort(uall.begin(), uall.end());
+    uall.erase(std::unique(uall.begin(), uall.end()), uall.end());
+    IMP_INTERNAL_CHECK(all.size()==uall.size(),
+                       "Duplicate entries were found: " << all.size()
+                       << " != " << uall.size());
+    IMP_INTERNAL_CHECK(all.size()==get_constituents().size(),
+                       "Particle lists don't match in validate: "
+                       << all.size() << "!=" << get_constituents().size());
+  }
 }
 
 
