@@ -281,6 +281,9 @@ ParticlesTemp pt= c_->get_particles();
     std::sort(optimized.begin(), optimized.end());
     for (unsigned int i=0; i< ic.size(); ++i) {
       if (!std::binary_search(optimized.begin(), optimized.end(), ic[i])) {
+        IMP_USAGE_CHECK(index.find(ic[i]) != index.end(),
+                        "I don't know anything about object "
+                        << ic[i]->get_name());
         int start=index.find(ic[i])->second;
         if (IMP::internal::get_has_ancestor(dg, start, optimized)) {
           IMP_LOG(TERSE, "Container " << ic[i]->get_name()
