@@ -1,6 +1,7 @@
 files = [
          'FFTWPlan.cpp',
          'SurfaceMatching.cpp',
+         'GeometricComplementarity.cpp'
         ]
 
 files = [File(x) for x in files]
