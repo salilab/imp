@@ -49,13 +49,14 @@ void MovedSingletonContainer::do_before_evaluate()
   IMP_CHECK_OBJECT(pc_);
   if (first_call_ || pc_->get_contents_changed()) {
     IMP_LOG(TERSE, "First call" << std::endl);
-    reset();
-    ParticleIndexes pt=pc_->get_indexes();
-    update_list(pt);
+    initialize();
     first_call_=false;
   } else {
     ParticleIndexes mved= do_get_moved();
     add_to_list(mved);
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    validate();
   }
 }
 
@@ -73,6 +74,12 @@ void MovedSingletonContainer::reset()
   do_reset_all();
   ParticleIndexes t;
   update_list(t);
+}
+
+void MovedSingletonContainer::initialize()
+{
+  ParticleIndexes pt=do_initialize();
+  update_list(pt);
 }
 
 
@@ -93,7 +100,14 @@ IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer,);
 
 
 
-
+void XYZRMovedSingletonContainer::validate() const {
+  IMP_OBJECT_LOG;
+  ParticleIndexes pis= get_singleton_container()->get_indexes();
+  IMP_USAGE_CHECK(pis.size()==backup_.size(),
+                  "Backup is not the right size");
+  IMP_USAGE_CHECK(moved_.size()== get_access().size(),
+                  "Moved lists don't match.");
+}
 
 void XYZRMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
@@ -104,6 +118,18 @@ void XYZRMovedSingletonContainer::do_reset_all() {
       backup_.push_back(XYZR(_1).get_sphere());
     });
 }
+ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
+  IMP_OBJECT_LOG;
+  backup_.clear();
+  moved_.clear();
+  //backup_.resize(get_singleton_container()->get_number_of_particles());
+  IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),{
+      backup_.push_back(XYZR(get_model(), _1).get_sphere());
+      moved_.push_back(_2);
+    });
+  return moved_;
+}
+
 void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
   for (unsigned int i=0; i< moved_.size(); ++i) {
@@ -156,6 +182,45 @@ XYZRMovedSingletonContainer::get_all_possible_indexes() const {
 
 
 
+void RigidMovedSingletonContainer::validate() const {
+  IMP_OBJECT_LOG;
+  normal_moved_->validate();
+  IMP_USAGE_CHECK(rbs_.size()==rbs_backup_.size(),
+                  "Backup is not the right size");
+}
+
+ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
+  IMP_OBJECT_LOG;
+  ParticleIndexes normal;
+  rbs_.clear();
+  rbs_backup_.clear();
+  rbs_members_.clear();
+  int count=0;
+  IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),
+                        {
+                          ++count;
+                          if (core::RigidMember
+                              ::particle_is_instance(get_model(),
+                                                     _1)) {
+                            core::RigidBody rb
+                              = core::RigidMember(get_model(),
+                                                  _1).get_rigid_body();
+              if (rbs_members_.find(_1) == rbs_members_.end()) {
+                rbs_.push_back(rb.get_particle_index());
+                rbs_backup_.push_back(get_data(rb.get_particle_index()));
+                rbs_moved_.push_back(_2);
+              }
+              rbs_members_[rb.get_particle_index()].push_back(_1);
+         } else {
+           normal.push_back(_1);
+         }
+                        });
+  normal_->set_particles(normal);
+  normal_moved_->initialize();
+  //backup_.clear();
+  rbs_backup_.resize(count);
+  return get_singleton_container()->get_indexes();
+}
 
 void RigidMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
