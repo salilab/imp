@@ -252,10 +252,10 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
 
 
 void DominoSampler::load_vertex_assignments(unsigned int node_index,
-                                                  AssignmentContainer* first,
-                                                  AssignmentContainer* second,
-                                                  AssignmentContainer* ret,
-                                              unsigned int max_states) const {
+                                            AssignmentContainer* first,
+                                            AssignmentContainer* second,
+                                            AssignmentContainer* ret,
+                                            unsigned int max_states) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(has_mt_,
@@ -288,6 +288,18 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   }
   Subset firsts=boost::get(subset_map, firsti);
   Subset seconds=boost::get(subset_map, secondi);
+  IMP_IF_CHECK(USAGE) {
+    if (first->get_number_of_assignments() > 0) {
+      IMP_USAGE_CHECK(first->get_assignment(0).size() == firsts.size(),
+                      "The size of an assignment from the first set is not "
+                      << "as expected, are you sure the order is right?");
+    }
+    if (second->get_number_of_assignments() > 0) {
+      IMP_USAGE_CHECK(second->get_assignment(0).size() == seconds.size(),
+                      "The size of an assignment from the first set is not "
+                      << "as expected, are you sure the order is right?");
+    }
+  }
   internal::load_merged_assignments(firsts, first,
                                     seconds, second,
                                     sfts, lsft, stats_,
