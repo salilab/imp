@@ -16,10 +16,12 @@ SerialMover::SerialMover(const MoversTemp& mvs):
 }
 
 ParticlesTemp SerialMover::propose_move(Float f) {
-  IMP_LOG(VERBOSE,"SerialMover:: propose move f is  : " << f <<std::endl);
+  IMP_OBJECT_LOG;
   ++imov_;
   if(imov_==static_cast<int>(mvs_.size())) imov_=0;
   mvs_[imov_]->set_was_used(true);
+  IMP_LOG(VERBOSE,"Propose move using "
+          << mvs_[imov_]->get_name() <<std::endl);
   return mvs_[imov_]->propose_move(f);
 }
 
