@@ -9,6 +9,7 @@
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/RestraintSet.h"
+#include "IMP/dependency_graph.h"
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
