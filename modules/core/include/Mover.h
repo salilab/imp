@@ -34,9 +34,7 @@ class IMPCOREEXPORT Mover: public Object
 
 /* Older versions of g++ do not extend friendship to
    MonteCarlo::MoverDataWrapper, and thus fail to compile MonteCarlo.h. */
-#if defined(__GNUC__) && (__GNUC__ < 4                                  \
-                          || defined(__GNUC_MINOR)                      \
-                          && (__GNUC__ == 4 && __GNUC_MINOR < 1))
+#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
 public:
 #endif
   void set_optimizer(Optimizer *c) {
