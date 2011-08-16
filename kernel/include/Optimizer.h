@@ -132,6 +132,9 @@ class IMPEXPORT Optimizer: public Object
   void set_use_incremental_evaluate(bool tf) {
     eval_incremental_=tf;
   }
+  bool get_use_incremental_evaluate() const {
+    return eval_incremental_;
+  }
 
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
@@ -250,8 +253,7 @@ class IMPEXPORT Optimizer: public Object
   double min_score_;
   bool stop_on_good_score_;
   bool eval_incremental_;
-  Restraints incremental_restraints_;
-  Floats incremental_scores_;
+  mutable Floats incremental_scores_;
   compatibility::checked_vector<Ints> incremental_used_;
   Restraints restraints_;
   RestraintsTemp flattened_restraints_;
