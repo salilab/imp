@@ -33,7 +33,8 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
   void set_leaf(unsigned int ni, const ParticleIndexes &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
-  void validate_internal(Model *m, int cur, algebra::Sphere3Ds bounds) const;
+  ParticleIndexes validate_internal(Model *m, int cur,
+                                    algebra::Sphere3Ds bounds) const;
  public:
   algebra::Sphere3D get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
@@ -157,16 +158,18 @@ inline void fill_close_pairs(Model *m,
                              const RigidBodyHierarchy *db,
                              double dist,
                              Sink sink) {
+  da->validate(m);
+  db->validate(m);
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, db, 0);
-  queue.push(QP(d, IP(0,0)));
-  ParticlePairsTemp ret;
-  do {
+  if (d < dist) {
+    queue.push(QP(d, IP(0,0)));
+  }
+  while (!queue.empty()) {
     QP v= queue.top();
     queue.pop();
-    if (v.first > dist) break;
     /*IMP_LOG(TERSE, "Trying pair " << v.second.first << " " << v.second.second
       << std::endl);*/
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
@@ -182,8 +185,6 @@ inline void fill_close_pairs(Model *m,
             if (!sink(deca, decb)) {
               return;
             }
-            /*std::cout << "Updating threshold to " << best_d
-              << " due to pair " << bp << std::endl;*/
           }
         }
       }
@@ -203,10 +204,10 @@ inline void fill_close_pairs(Model *m,
         unsigned int child = da->get_child(v.second.first, i);
         double d= distance_bound(m, da, child,
                                    db, v.second.second);
-          if (d < dist) {
-            queue.push(QP(d, IP(child, v.second.second)));
-          }
+        if (d < dist) {
+          queue.push(QP(d, IP(child, v.second.second)));
         }
+      }
     } else {
       for (unsigned int i=0;
            i< da->get_number_of_children(v.second.first); ++i) {
@@ -222,7 +223,7 @@ inline void fill_close_pairs(Model *m,
         }
       }
     }
-  } while (!queue.empty());
+  }
 
 
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
