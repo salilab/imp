@@ -53,6 +53,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         mvs=[]
         for p in xyzrs:
             mc= IMP.core.BallMover([p], 1)
+            mc.set_log_level(IMP.SILENT)
             mvs.append(mc)
         for p in rbs:
             mc= IMP.core.RigidBodyMover(IMP.core.RigidBody(p), 1, .1)
