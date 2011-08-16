@@ -73,7 +73,7 @@ double RestraintScoreSubsetFilter::get_score(const Assignment& state) const {
 
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
   IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Resraint filtration statistics (attempts, passes):\n");
+    IMP_LOG(TERSE, "Restraint filtration statistics (attempts, passes):\n");
     for (unsigned int i=0; i< get()->rdata_.size(); ++i) {
       std::pair<int,int> stat= get()->rdata_[i].get_statistics();
       if (stat.first >0) {
