@@ -1397,7 +1397,7 @@ void DensityMap::convolute_kernel(DensityMap *other,
   reset_data(0.);
   emreal *other_data=other->get_data();
   //todo - add a test that lenght is even
-  IMP_USAGE_CHECK((dim_len*dim_len*dim_len)>1,"The input lenght is wrong\n");
+  IMP_USAGE_CHECK((dim_len*dim_len*dim_len)>=1,"The input lenght is wrong\n");
   unsigned int margin=(dim_len-1)/2;
   //smooth the density using the kernel
   float val;
