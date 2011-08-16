@@ -71,7 +71,7 @@ get_required_score_states(const RestraintsTemp &rs);
     of interest, they will block dependency propagation.
 
     \note This function is here to aid in debugging of optimization
-    protocols that use Domino2. As a result, its signature and
+    protocols that use Domino. As a result, its signature and
     functionality may change without notice.
  */
 IMPEXPORT ParticlesTemp get_dependent_particles(Particle *p,
