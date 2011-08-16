@@ -156,8 +156,8 @@ void do_allpairs_mindist(Model *m,Particles ps,
 }
 */
 void add_fret_restraint (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
+       atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value, double kappa, bool use_GFP)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -187,8 +187,8 @@ void add_fret_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, IntRange residues_a,
- atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, IntRange residues_a,
+       atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
  double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -209,8 +209,8 @@ void add_y2h_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
+       atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -229,8 +229,8 @@ void add_y2h_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- const atom::Hierarchy& ha, std::string protein_a,    IntRange residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a,    IntRange residues_a,
+       atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -250,8 +250,8 @@ void add_y2h_restraint (Model *m,
 }
 
 void add_y2h_restraint (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
+       atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
  double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -271,8 +271,8 @@ void add_y2h_restraint (Model *m,
 }
 
 void add_link (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
+       atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
  double kappa)
 {
  atom::Hierarchies hs=ha.get_children();
@@ -293,8 +293,8 @@ void add_link (Model *m,
 }
 
 void add_link (Model *m,
- const atom::Hierarchy& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
+       atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa)
 {
  atom::Hierarchies hs=ha.get_children();
@@ -318,15 +318,29 @@ void add_symmetry_restraint (Model *m,
  atom::Hierarchies& hs,algebra::Transformation3Ds transformations)
 {
  Particles ps0=atom::get_leaves(hs[0]);
+ core::RigidBodies rbs0=get_rigid_bodies(ps0);
  for(unsigned int i=1;i<transformations.size();++i){
   IMP_NEW(core::TransformationSymmetry,sm,(transformations[i]));
   Particles ps1=atom::get_leaves(hs[i]);
+  IMP_NEW(container::ListSingletonContainer,lc,(m));
   for(unsigned int j=0;j<ps1.size();++j){
-   core::Reference::setup_particle(ps1[j],ps0[j]);
+   if(!core::RigidMember::particle_is_instance(ps1[j])){
+    core::Reference::setup_particle(ps1[j],ps0[j]);
+    lc->add_particle(ps1[j]);
+   }
   }
-  IMP_NEW(container::ListSingletonContainer,lc,(ps1));
   IMP_NEW(container::SingletonsConstraint,c,(sm,NULL,lc));
   m->add_score_state(c);
+  // rigid bodies
+  core::RigidBodies rbs1=get_rigid_bodies(ps1);
+  IMP_NEW(container::ListSingletonContainer,rblc,(m));
+  for(unsigned int j=0;j<rbs1.size();++j){
+   core::Reference::setup_particle(rbs1[j].get_particle(),
+                                   rbs0[j].get_particle());
+   rblc->add_particle(rbs1[j].get_particle());
+  }
+  IMP_NEW(container::SingletonsConstraint,c1,(sm,NULL,rblc));
+  m->add_score_state(c1);
  }
 }
 
@@ -339,23 +353,32 @@ void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
  m->add_restraint(sr);
 }
 
+core::RigidBodies get_rigid_bodies(Particles ps)
+{
+ std::list<core::RigidBody> rbs_list;
+ std::list<core::RigidBody>::iterator iit;
+ core::RigidBodies rbs;
+ for(unsigned int i=0;i<ps.size();++i){
+  if(core::RigidMember::particle_is_instance(ps[i])){
+   rbs_list.push_back(core::RigidMember(ps[i]).get_rigid_body());
+  }
+ }
+ rbs_list.unique();
+ for (iit = rbs_list.begin(); iit != rbs_list.end(); iit++){
+  rbs.push_back(*iit);
+ }
+ return rbs;
+}
+
 void add_tilt (Model *m, const atom::Hierarchy& h,
  std::string name, double tilt, double kappa)
 {
- std::list<core::RigidBody> rbs;
- std::list<core::RigidBody>::iterator iit;
-
  atom::Selection s=atom::Selection(h);
  s.set_molecule(name);
  Particles ps=s.get_selected_particles();
- for(unsigned int i=0;i<ps.size();++i){
-  if(core::RigidMember::particle_is_instance(ps[i])){
-   rbs.push_back(core::RigidMember(ps[i]).get_rigid_body());
-  }
- }
- rbs.unique();
- for (iit = rbs.begin(); iit != rbs.end(); iit++){
-  add_tilt_restraint(m,*iit,FloatRange(0.0,tilt),kappa);
+ core::RigidBodies rbs=get_rigid_bodies(ps);
+ for(unsigned int i=0;i<rbs.size();++i){
+  add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
  }
 }
 

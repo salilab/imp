@@ -81,6 +81,8 @@ IMPMEMBRANEEXPORT void add_link(Model *m,
  atom::Hierarchies& hs, std::string protein_b, std::string residues_b,
  double kappa);
 
+IMPMEMBRANEEXPORT core::RigidBodies get_rigid_bodies(Particles ps);
+
 IMPMEMBRANEEXPORT void add_tilt(Model *m,
  const atom::Hierarchy& h, std::string name, double tilt, double kappa);
 
