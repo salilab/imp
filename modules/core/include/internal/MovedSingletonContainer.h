@@ -28,15 +28,18 @@ class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
 {
  private:
   double threshold_;
-  Pointer<SingletonContainer> pc_, ac_, rc_;
+  Pointer<SingletonContainer> pc_;
   bool first_call_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
   virtual ParticleIndexes do_get_moved()=0;
   virtual void do_reset_all()=0;
   virtual void do_reset_moved()=0;
+  virtual ParticleIndexes do_initialize()=0;
   virtual double do_get_distance_moved(unsigned int i) const=0;
   using ListLikeSingletonContainer::update_list;
 public:
+  void initialize();
+  virtual void validate() const=0;
   //! Track the changes with the specified keys.
   MovedSingletonContainer(SingletonContainer *pc,
                           double threshold);
@@ -87,8 +90,10 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer:
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
+  virtual ParticleIndexes do_initialize();
   virtual double do_get_distance_moved(unsigned int i) const;
 public:
+  virtual void validate() const;
   //! Track the changes with the specified keys.
   XYZRMovedSingletonContainer(SingletonContainer *pc,
                               double threshold);
@@ -109,7 +114,9 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
+  virtual ParticleIndexes do_initialize();
   virtual double do_get_distance_moved(unsigned int i) const;
+  virtual void validate() const;
   double get_distance_estimate(ParticleIndex p) const {
     unsigned int i;
     for (i=0; i< rbs_.size(); ++i) {
