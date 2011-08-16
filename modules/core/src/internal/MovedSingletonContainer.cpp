@@ -98,6 +98,7 @@ IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer,);
 void XYZRMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
   backup_.clear();
+  moved_.clear();
   //backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_FOREACH_SINGLETON(get_singleton_container(),{
       backup_.push_back(XYZR(_1).get_sphere());
