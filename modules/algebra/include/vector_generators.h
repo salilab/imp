@@ -159,7 +159,7 @@ get_uniform_surface_cover(const Cone3D &cone,
 template <int D>
 std::vector<VectorD<D> >
 get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
-  const int dim= bb.get_dimension();
+  const unsigned int dim= bb.get_dimension();
   Ints ns(dim);
   algebra::VectorD<D> start(bb.get_corner(0));
   algebra::VectorD<D> spacing(bb.get_corner(0));
