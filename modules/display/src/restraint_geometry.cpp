@@ -169,6 +169,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   } else {
     for (unsigned int i=0; i< rs.size(); ++i) {
       Restraint *rc=rs[i];
+      m_->add_temporary_restraint(rs[i]);
       rc->set_was_used(true);
       core::PairRestraint *pr= dynamic_cast<core::PairRestraint*>(rc);
       if (pr) {
