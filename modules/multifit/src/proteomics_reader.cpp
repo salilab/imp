@@ -61,6 +61,24 @@ bool is_xlink_line(const std::string &line) {
   return true;
 }
 
+
+
+bool is_ev_line(const std::string &line) {
+  std::cout<<"EV LINE:"<<line;
+  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
+  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
+  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  std::vector<std::string> line_split;
+  boost::split(line_split, line, boost::is_any_of("|"));
+  //split returns zero lenght entires as well
+  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
+    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  if (line_split.size() != 1) return false;
+  if (boost::lexical_cast<std::string>(line_split[0]) != "ev-pairs")
+    return false;
+  return true;
+}
+
 void parse_xlink_line(
      const std::string &line,
      ProteomicsData *dp){
@@ -92,6 +110,34 @@ void parse_xlink_line(
   dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind);
 }
 
+void parse_ev_line(
+     const std::string &line,
+     ProteomicsData *dp){
+  std::cout<<"parse_ev_line:"<<line<<std::endl;
+  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
+  IMP_USAGE_CHECK(line.size() > 2,
+     "no data to parse. the last two tabs should contain header data\n");
+  IMP_LOG(VERBOSE,"going to parse:"<<line);
+  std::vector<std::string> line_split;
+  boost::split(line_split, line, boost::is_any_of("|"));
+  //split returns zero lenght entires as well
+  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
+    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
+  std::cout<<"PARSE:"<<line_split.size()<<std::endl;
+  std::string name1 =  boost::lexical_cast<std::string>(line_split[0]);
+  std::string name2 =  boost::lexical_cast<std::string>(line_split[1]);
+  int prot1_ind = dp->find(name1);
+  int prot2_ind = dp->find(name2);
+  std::cout<<"EV restraint between "<<name1<<" "<<name2<<std::endl;
+  IMP_USAGE_CHECK(prot1_ind != -1,
+                  "The protein "<<name1<<
+                  " was not specified in the proteins list"<<std::endl);
+  IMP_USAGE_CHECK(prot2_ind != -1,
+                  "The protein "<<name2<<
+                  " was not specified in the proteins list"<<std::endl);
+  //todo - for now the residue index is not used
+  dp->add_ev_pair(prot1_ind,prot2_ind);
+}
 
 void parse_protein_line(
                         const std::string &line,
@@ -178,7 +224,6 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
   std::cout<<"|-----"<<std::endl;
   std::cout<<line<<std::endl;
   while ((!in.eof()) && (!is_interaction_line(line))){
-    std::cout<<"======="<<std::endl;
     std::cout<<line<<std::endl;
     parse_protein_line(line,&data);
     if (!getline(in, line)) break;
@@ -191,9 +236,13 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
     if (!getline(in, line)) break;
   }
   getline(in, line);
-  while (!in.eof()) {
+  while (!in.eof() && (!is_ev_line(line))) {
     parse_xlink_line(line,&data);
-    std::cout<<"==finish"<<std::endl;
+    if (!getline(in, line)) break;
+  }
+  getline(in, line);
+  while (!in.eof()) { //ev lines
+    parse_ev_line(line,&data);
     if (!getline(in, line)) break;
   }
   std::cout<<"====END"<<std::endl;
