@@ -89,7 +89,7 @@ for(int i=0;i<mydata.num_cells;++i){
     create_coiled_coil(m,"Spc42_CC","2Q6Q_A.pdb", "2Q6Q_B.pdb",
                        mydata.resolution,
                        display::Color(175./255.,208./255.,238./255.),
-                       i, CC_x0,67);
+                       i, CC_x0);
    if(i==0){
     Particles ps_Spc42p;
     for(unsigned int k=0;k<2;++k){
@@ -200,19 +200,16 @@ for(int i=0;i<mydata.num_cells;++i){
      }
     }
    }else{
-    int ires;
     std::string filename;
     if(mydata.use_compact_Cmd1p){
-     ires=1;
      filename="1PRW.pdb";
     } else {
-     ires=5;
      filename="3CLN.pdb";
     }
     atom::Molecule Cmd1p=
      create_protein(m,"Cmd1p",filename,mydata.resolution,
                      display::Color(255./255.,255./255.,0.),
-                     i,CP_x0,ires);
+                     i,CP_x0);
     all_mol.add_child(Cmd1p);
     if(i==0){
      Particles ps_Cmd1p=atom::get_leaves(Cmd1p);
@@ -242,7 +239,7 @@ for(int i=0;i<mydata.num_cells;++i){
     atom::Molecule Cnm67p_c=
      create_protein(m,"Cnm67p_c",15,2,
                       display::Color(50./255.,205./255.,50./255.),
-                      i,mydata.kappa,IL2_x0,272+179);
+                      i,mydata.kappa,IL2_x0,429);
     all_mol.add_child(Cnm67p_c);
     if(i==0){
      Particles ps_Cnm67p_c=atom::get_leaves(Cnm67p_c);
@@ -261,7 +258,7 @@ for(int i=0;i<mydata.num_cells;++i){
     atom::Molecule Cnm67p_c=
      create_protein(m,"Cnm67p_c","3OA7.pdb",mydata.resolution,
                       display::Color(50./255.,205./255.,50./255.),
-                      i,IL2_x0,429);
+                      i,IL2_x0);
     all_mol.add_child(Cnm67p_c);
     if(i==0){
      Particles ps_Cnm67p_c=atom::get_leaves(Cnm67p_c);
@@ -398,7 +395,7 @@ int nbeads, display::Color colore,int copy,double kappa,
 
 atom::Molecule create_protein(Model *m,std::string name,
  std::string filename,int nres_per_bead,display::Color colore,
- int copy,algebra::Vector3D x0,int start_residue,bool recenter)
+ int copy,algebra::Vector3D x0,int offset,bool recenter)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
@@ -422,8 +419,8 @@ atom::Molecule create_protein(Model *m,std::string name,
   for(unsigned int j=ires;j<ires+nres_bead[i];++j){
    atom::Residue res=atom::Residue(atom::Atom(ps[j]).get_parent());
    atom::ResidueType restype=res.get_residue_type();
-   if(j==ires) {first=res.get_index();}
-   if(j==ires+nres_bead[i]-1) {last=res.get_index()+1;}
+   if(j==ires) {first=res.get_index()+offset;}
+   if(j==ires+nres_bead[i]-1) {last=res.get_index()+1+offset;}
    double vol=atom::get_volume_from_residue_type(restype);
    double rg=algebra::get_ball_radius_from_volume_3d(vol);
    core::XYZR(ps[j]).set_radius(rg);
@@ -500,14 +497,14 @@ atom::Molecule create_merged_protein
 atom::Molecules create_coiled_coil
  (Model *m,std::string name,std::string filename_A, std::string filename_B,
  int nbeads,display::Color colore,int copy,
- algebra::Vector3D x0,int start_residue)
+ algebra::Vector3D x0,int offset)
 {
 
  atom::Molecule coil_A=create_protein(m,name,filename_A,
-  nbeads,colore,copy,x0,start_residue,false);
+  nbeads,colore,copy,x0,offset,false);
 
  atom::Molecule coil_B=create_protein(m,name,filename_B,
-  nbeads,colore,copy,x0,start_residue,false);
+  nbeads,colore,copy,x0,offset,false);
 
 // now I need to destroy the two rigid bodies
  Particles psA=atom::get_leaves(coil_A);

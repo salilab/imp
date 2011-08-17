@@ -29,7 +29,7 @@ int start_residue=1,int length=-1);
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,std::string filename,int nbeads,
  display::Color colore,int copy,algebra::Vector3D x0,
- int start_residue=1,bool recenter=true);
+ int offset=0,bool recenter=true);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecules proteins,
@@ -38,7 +38,7 @@ IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 IMPMEMBRANEEXPORT atom::Molecules create_coiled_coil
 (Model *m,std::string name,std::string filename_A, std::string filename_B,
 int nbeads,display::Color colore,int copy,
-algebra::Vector3D x0,int start_residue);
+algebra::Vector3D x0,int offset=0);
 
 IMPMEMBRANEEXPORT void load_restart
  (atom::Hierarchies& all_mol,SPBParameters mydata);
