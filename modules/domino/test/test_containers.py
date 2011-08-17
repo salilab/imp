@@ -56,6 +56,34 @@ class DOMINOTests(IMP.test.TestCase):
         self.assertEqual(sac.get_number_of_assignments(), 10)
         print sac.get_assignments()
 
+    def test_cluster(self):
+        """Testing the cluster container"""
+        m= IMP.Model()
+        ps= [IMP.Particle(m) for i in range(0,10)]
+        s= IMP.domino.Subset(ps)
+        pst= IMP.domino.ParticleStatesTable()
+        ik= IMP.IntKey("hi")
+        iss= IMP.domino.IndexStates(10000, ik)
+        for p in ps:
+            p.add_attribute(ik, 1)
+            pst.set_particle_states(p, iss)
+        cac= IMP.domino.ClusteredAssignmentContainer(10, s, pst)
+        cac.set_log_level(IMP.VERBOSE)
+        for i in range(0,6):
+            ass=[100*i for j in range(0,10)]
+            for j in range(0,6):
+                ass[9]=j
+                print "adding", ass
+                cac.add_assignment(IMP.domino.Assignment(ass))
+        got=[]
+        all= cac.get_assignments()
+        print all
+        for a in all:
+            print a
+            got.append(a[0])
+        for i in range(0,6):
+            self.assert_(i*100 in got)
+
     def test_heap_container(self):
         """Testing heap sample container"""
 
