@@ -64,6 +64,35 @@ void RigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << states_.size() << std::endl;
 }
 
+ RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
+    ParticleStates("RigidBodyStates %1%"), states_(states){
+   double min_= std::numeric_limits<double>::max();
+   double max_=-min_;
+   for (unsigned int i=0; i< states_.size(); ++i) {
+     for (unsigned int j=0; j< 3; ++j) {
+       min_= std::min(states_[i].get_translation()[j], min_);
+       max_= std::max(states_[i].get_translation()[j], max_);
+     }
+   }
+   if (max_-min_ < .000001) {
+     irange_=1;
+   } else {
+     irange_=1.0/(max_-min_);
+   }
+ }
+
+algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i,
+                                                 Particle *) {
+  Floats e(6);
+  for (unsigned int j=0; j < 3; ++j) {
+    e[j]= states_[i].get_translation()[j];
+  }
+  for (unsigned int j=0; j < 3; ++j) {
+    e[3+j]= states_[i].get_rotationm().get_quaternion()[j]*irange_;
+  }
+  return algebra::VectorKD(e.begin(), e.end());
+}
+
 unsigned int NestedRigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }

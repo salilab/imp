@@ -36,6 +36,16 @@ public:
   ParticleStates(std::string name="ParticleStates %1%"): Object(name){}
   virtual unsigned int get_number_of_particle_states() const=0;
   virtual void load_particle_state(unsigned int, Particle*) const=0;
+  //! Return an embedding of the state
+  /** By default this just returns a 1D vector containing the index.
+      The vector needs to have the same dimension for each value of
+      i.
+   */
+  virtual algebra::VectorKD get_embedding(unsigned int i,
+                                          Particle *p) const {
+    Float f(1,i);
+    return algebra::VectorKD(f.begin(), f.end());
+  }
   virtual ~ParticleStates();
 };
 
@@ -115,6 +125,12 @@ public:
                     "Out of range");
     return states_[i];
   }
+  algebra::VectorKD get_embedding(unsigned int i,
+                                  Particle *) const {
+    IMP_USAGE_CHECK(i < states_.size(),
+                    "Out of range");
+    return states_[i];
+  }
   IMP_PARTICLE_STATES(XYZStates);
 };
 
@@ -123,14 +139,16 @@ public:
 */
 class IMPDOMINOEXPORT RigidBodyStates: public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
+  double irange_;
 public:
-  RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
-    ParticleStates("RigidBodyStates %1%"), states_(states){}
+  RigidBodyStates(const algebra::ReferenceFrame3Ds &states);
   algebra::ReferenceFrame3D get_reference_frame(unsigned int i) const {
     IMP_USAGE_CHECK(i < states_.size(),
                     "Out of range");
     return states_[i];
   }
+  algebra::VectorKD get_embedding(unsigned int i,
+                                  Particle *);
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 
