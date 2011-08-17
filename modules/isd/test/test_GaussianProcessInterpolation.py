@@ -57,7 +57,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                *(exp((q1+q2)/l**2)*(1.+t**2) - t**2*(exp(q1/l**2)+exp(q2/l**2))
                                 + exp(1./l**2)*(2.+t**2))
 
-    @IMP.test.skip("")
     def testValuePosteriorMeanAlpha(self):
         """
         test the value of the posterior mean function between 0 and 1 by
@@ -75,7 +74,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
 
-    @IMP.test.skip("")
     def testValuePosteriorMeanBeta(self):
         """
         test the value of the posterior mean function between 0 and 1 by
@@ -93,7 +91,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
 
-    @IMP.test.skip("")
     def testValuePosteriorMeanTau(self):
         """
         test the value of the posterior mean function between 0 and 1 by
@@ -111,7 +108,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
 
-    @IMP.test.skip("")
     def testValuePosteriorMeanLambda(self):
         """
         test the value of the posterior mean function between 0 and 1 by
