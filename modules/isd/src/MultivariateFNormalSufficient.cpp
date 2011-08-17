@@ -25,14 +25,13 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double>
     Object("Multivariate Normal distribution %1%")
 {
         N_=FX.dim1();
-        M_=FX.dim2();
-        if (N_ <= 0){
-            IMP_THROW("please provide at least one observation per dimension",
-                    ModelException);
-        }
-        if (M_ <= 0){
-            IMP_THROW("please provide at least one variable", ModelException);
-        }
+        M_=FX.dim2(); 
+        IMP_LOG(TERSE, "MVN: direct init with N=" << N_ 
+                << " and M=" << M_ << std::endl);
+        IMP_USAGE_CHECK( N_ > 0, 
+            "please provide at least one observation per dimension");
+        IMP_USAGE_CHECK( M_ > 0,
+            "please provide at least one variable");
         FM_=FM.copy();
         set_FX(FX); //also computes W, Fbar and epsilon.
         set_JF(JF);
@@ -45,13 +44,12 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
 {
         N_=Nobs;
         M_=Fbar.dim1();
-        if (N_ <= 0){
-            IMP_THROW("please provide at least one observation per dimension",
-                    ModelException); 
-        }
-        if (M_ <= 0){
-            IMP_THROW("please provide at least one variable", ModelException);
-        }
+        IMP_LOG(TERSE, "MVN: sufficient statistics init with N=" << N_ 
+                << " and M=" << M_ << std::endl);
+        IMP_USAGE_CHECK( N_ > 0, 
+            "please provide at least one observation per dimension");
+        IMP_USAGE_CHECK( M_ > 0,
+            "please provide at least one variable");
         FM_=FM.copy();
         set_Fbar(Fbar); //also computes epsilon
         set_W(W);
@@ -63,7 +61,9 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
   /* probability density function */
 double MultivariateFNormalSufficient::density() const
   { 
-      return norm_*JF_*exp(-0.5*(trace_WP() + N_ * mean_dist()));
+      double d = norm_*JF_*exp(-0.5*(trace_WP() + N_ * mean_dist()));
+      IMP_LOG(TERSE, "MVN: density() = " << d << std::endl);
+      return d;
   }
  
   /* energy (score) functions, aka -log(p) */
@@ -71,12 +71,15 @@ double MultivariateFNormalSufficient::evaluate() const
   { 
       //std::cout << " mean " << double(N_)*mean_dist();
       //std::cout << " WP " << trace_WP();
-      return lnorm_ + lJF_ + 0.5*( trace_WP() + double(N_)*mean_dist()) ;
+      double e = lnorm_ + lJF_ + 0.5*( trace_WP() + double(N_)*mean_dist()) ;
+      IMP_LOG(TERSE, "MVN: evaluate() = " << e << std::endl);
+      return e;
   }
 
 Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
 { 
       // d(-log(p))/d(FM) = - N * P * epsilon
+      IMP_LOG(TERSE, "MVN: evaluate_derivative_FM() = " << std::endl);
       Array1D<double> retval(M_);
       for (int i=0; i<M_; i++) {
           retval[i]=0.0;
@@ -90,6 +93,7 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
   Array2D<double> MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
   { 
       //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - P W P)
+      IMP_LOG(TERSE, "MVN: evaluate_derivative_Sigma() = " << std::endl);
       Array2D<double> ptp(compute_PTP());  //O(M^2)
       Array2D<double> pwp(compute_PWP()); //O(M^4), can be easily optimized
       Array2D<double> R(M_,M_);
@@ -129,12 +133,15 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
   {
     if (!are_equal(FX,FX_)){
         if (FX.dim1() != N_) {
-            IMP_THROW("size mismatch for FX in the number of repetitions", ModelException);
+            IMP_THROW("size mismatch for FX in the number of repetitions: got " 
+                    << FX.dim1() << " instead of "<<N_, ModelException);
             }
         if (FX.dim2() != M_) {
-            IMP_THROW("size mismatch for FX in the number of variables", ModelException);
+            IMP_THROW("size mismatch for FX in the number of variables: got " 
+                    <<FX.dim2() << " instead of "<<M_, ModelException);
             }
         FX_=FX.copy();
+        IMP_LOG(TERSE, "MVN:   set FX to new matrix"<< std::endl);
         compute_sufficient_statistics();
     }
   }
@@ -143,15 +150,18 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
   {
     JF_=f;
     lJF_=-log(JF_);
+    IMP_LOG(TERSE, "MVN:   set JF = " << JF_ << " lJF_ = " << lJF_ <<std::endl);
   }
 
   void MultivariateFNormalSufficient::set_FM(Array1D<double> FM) 
   {
     if (!are_equal(FM,FM_)){
-        if (FM_.dim1() != M_) {
-            IMP_THROW("size mismatch for FM", ModelException);
+        if (FM.dim1() != M_) {
+            IMP_THROW("size mismatch for FM: got "
+                    <<FM.dim1() << " instead of " << M_, ModelException);
             }
         FM_=FM.copy();
+        IMP_LOG(TERSE, "MVN:   set FM to new vector" << std::endl);
         compute_epsilon();
     }
   }
@@ -159,10 +169,12 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
   void MultivariateFNormalSufficient::set_Fbar(Array1D<double> Fbar) 
   {
     if (!are_equal(Fbar,Fbar_)){
-        if (Fbar_.dim1() != M_) {
-            IMP_THROW("size mismatch for Fbar", ModelException);
+        if (Fbar.dim1() != M_) {
+            IMP_THROW("size mismatch for Fbar: got "
+                    << Fbar.dim1() << " instead of " << M_, ModelException);
             }
         Fbar_=Fbar.copy();
+        IMP_LOG(TERSE, "MVN:   set Fbar to new vector" << std::endl);
         compute_epsilon();
     }
   }
@@ -174,16 +186,23 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
             IMP_THROW("need a square matrix!", ModelException);
             }
         Sigma_=Sigma;
+        IMP_LOG(TERSE, "MVN:   set Sigma to new matrix" << std::endl);
+        IMP_LOG(TERSE, "MVN:   computing LU decomposition" << std::endl);
         // compute LU decomposition for determinant and inverse
         LUSigma_.reset(new algebra::internal::JAMA::LU<double> (Sigma_));
         // determinant and derived constants
         double detSigma=LUSigma_->det();
+        IMP_LOG(TERSE, "MVN:   det(Sigma) = " << detSigma << std::endl);
         norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) * pow(detSigma, -double(N_)/2.0);
         lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * log(detSigma);
+        IMP_LOG(TERSE, "MVN:   norm = " << norm_ << "lnorm = " 
+                << lnorm_ << std::endl);
         //inverse (taken from TNT website)
+        IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
         Array2D<double> id(M_, M_, 0.0);
         for (int i=0; i<M_; i++) id[i][i] = 1.0;
         P_=LUSigma_->solve(id);
+        IMP_LOG(TERSE, "MVN:   done" << std::endl);
     }
   }
 
@@ -195,6 +214,7 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
               trace += W_[i][j]*P_[i][j];
           }
       }
+      IMP_LOG(TERSE, "MVN:   trace(WP) = " << trace << std::endl);
       return trace;
   }
  
@@ -206,12 +226,14 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
             dist += epsilon_[i]*P_[i][j]*epsilon_[j];
         }
     }
+    IMP_LOG(TERSE, "MVN:   mean_dist = " << dist << std::endl);
     return dist;
 }
 
   Array2D<double> MultivariateFNormalSufficient::compute_PTP() const 
 {
   //compute P*epsilon
+  IMP_LOG(TERSE, "MVN:   computing PTP" << std::endl);
   Array1D<double> peps(M_);
   for (int i=0; i<M_; i++){
       peps[i] = 0.0;
@@ -226,12 +248,14 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
           R[i][j] = peps[i]*peps[j];
       }
   }
+  IMP_LOG(TERSE, "MVN:   done" << std::endl);
   return R;
 }
 
 Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
 {
       //compute PWP
+      IMP_LOG(TERSE, "MVN:   computing PWP" << std::endl);
       Array2D<double> R(M_,M_);
       for (int i=0; i<M_; i++){
         for (int j=0; j<M_; j++){
@@ -243,11 +267,13 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
             }
         }
       }
+      IMP_LOG(TERSE, "MVN:   done" << std::endl);
       return R;
 }
 
   void MultivariateFNormalSufficient::compute_sufficient_statistics()
 {
+    IMP_LOG(TERSE, "MVN:   computing sufficient statistics" << std::endl);
     Fbar_ = Array1D<double> (M_,0.0);
     for (int j=0; j<M_; j++){
         for (int i=0; i<N_; i++){
@@ -272,14 +298,17 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
             W_[i][j] = W_[j][i];
         }
     }
+    IMP_LOG(TERSE, "MVN:   done sufficient statistics" << std::endl);
 }
 
 void MultivariateFNormalSufficient::compute_epsilon()
 {
+    IMP_LOG(TERSE, "MVN:      computing epsilon" << std::endl);
     epsilon_ = Array1D<double> (M_);
     for (int i=0; i<M_; i++){
         epsilon_[i] = Fbar_[i] - FM_[i];
     }
+    IMP_LOG(TERSE, "MVN:      done epsilon" << std::endl);
 }
 
 IMPISD_END_NAMESPACE
