@@ -18,6 +18,7 @@ files = [
          'ConstantRestraint.h',
          'Cosine.h',
          'CoverRefined.h',
+         'DataObject.h',
          'DerivativesFromRefined.h',
          'DerivativesToRefined.h',
          'DiameterRestraint.h',
