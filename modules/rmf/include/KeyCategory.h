@@ -15,17 +15,26 @@
 #include <vector>
 
 IMPRMF_BEGIN_NAMESPACE
+class KeyCategory;
+
+/** Add a new key category.
+ */
+IMPRMFEXPORT KeyCategory add_key_category(std::string name);
+
+
 /** The category for a key. */
 class IMPRMFEXPORT KeyCategory {
   int i_;
   KeyCategory(unsigned int i): i_(i){}
+#ifndef SWIG
+  friend KeyCategory add_key_category(std::string name);
+#endif
 public:
   KeyCategory(): i_(-1){}
   unsigned int get_index() const {
     IMP_USAGE_CHECK(i_ >=0, "Invalid KeyCategory used");
     return i_;
   }
-  static KeyCategory add_key_category(std::string name);
   std::string get_name() const;
   unsigned int get_offset() {
     // int, string, float
@@ -83,6 +92,7 @@ IMPRMFEXPORT extern const KeyCategory Shape;
     - representation{i} for the representation nodes involved
 */
 IMPRMFEXPORT extern const KeyCategory Feature;
+
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_KEY_CATEGORY_H */
