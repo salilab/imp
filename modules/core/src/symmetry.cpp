@@ -32,7 +32,10 @@ void TransformationSymmetry::apply(Particle *p) const
   if (RigidBody::particle_is_instance(p)) {
     RigidBody rrb(Reference(p).get_reference_particle());
     RigidBody rb(p);
-    rb.set_reference_frame_lazy(
+    // We do the non-lazy version in order as it is hard
+    // for the dependency checker to get the dependencies right
+    // Is it really? We should check this.
+    rb.set_reference_frame(
     algebra::ReferenceFrame3D(t_*rrb.get_reference_frame()
                               .get_transformation_to()));
   } else {
@@ -45,12 +48,19 @@ void TransformationSymmetry::apply(Particle *p) const
 ParticlesTemp TransformationSymmetry::get_input_particles(Particle *p) const {
   ParticlesTemp ret;
   ret.push_back(p);
+  for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
+    ret.push_back(RigidBody(p).get_member(i));
+  }
   ret.push_back(Reference(p).get_reference_particle());
   return ret;
 }
 
 ParticlesTemp TransformationSymmetry::get_output_particles(Particle *p) const {
-  return ParticlesTemp(1,p);
+  ParticlesTemp ret(1,p);
+  for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
+    ret.push_back(RigidBody(p).get_member(i));
+  }
+  return ret;
 }
 
 ContainersTemp TransformationSymmetry::get_input_containers(Particle *) const {
