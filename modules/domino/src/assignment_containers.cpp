@@ -172,17 +172,18 @@ void HeapAssignmentContainer::add_assignment(const Assignment& a) {
   while (d_.size() > k_){
     std::pop_heap(d_.begin(), d_.end(),
                   GreaterSecond());
+    d_.pop_back();
   }
   if (d_.size()%1000000 == 0) {
     std::cout<<"Current subset size:"<<d_.size()<<" : "<<a<<std::endl;
   }
 }
-#if 0
 
 //////////// CLUSTERED
-ClusteredAssignmentContainer(unsigned int k,
+ClusteredAssignmentContainer
+::ClusteredAssignmentContainer(unsigned int k,
                                Subset s,
-                             ParticleStatesTable *pst):
+                               ParticleStatesTable *pst):
   k_(k), s_(s), pst_(pst), r_(0) {}
 
 
@@ -204,12 +205,13 @@ void ClusteredAssignmentContainer::do_show(std::ostream &out) const {
 }
 
 algebra::VectorKD
-ClusteredAssignmentContainer::get_embedding(const Assignment &a) {
+ClusteredAssignmentContainer::get_embedding(const Assignment &a) const {
   Floats embed;
   for (unsigned int i=0; i< s_.size(); ++i) {
     algebra::VectorKD cur
       = pst_->get_particle_states(s_[i])->get_embedding(a[i], s_[i]);
-    embed.insert(embed.end(), cur.coordintes_begin(), cur.coordinates_end());
+    embed.insert(embed.end(), cur.coordinates_begin(),
+                 cur.coordinates_end());
   }
   return embed;
 }
@@ -253,13 +255,21 @@ void ClusteredAssignmentContainer::recluster() {
 
 bool ClusteredAssignmentContainer::
 get_distance_if_smaller_than(const algebra::VectorKD &a,
-                             const algebra::VectoKD &b) const {
-
+                             const algebra::VectorKD &b,
+                             double max) const {
+  IMP_USAGE_CHECK(a.get_dimension()==b.get_dimension(),
+                  "Dimensions of embeddings don't match.");
+  double d=0;
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
+    d+= square(a[i]-b[i]);
+    if (d > square(max)) return d;
+  }
+  return std::sqrt(d);
 }
 
 void ClusteredAssignmentContainer::add_assignment(const Assignment& a) {
   AP ap(get_embedding(a), a);
-  if (r_=0) {
+  if (r_==0) {
     d_.push_back(ap);
   } else {
     IMP_INTERNAL_CHECK(r_ > 0,
@@ -274,12 +284,11 @@ void ClusteredAssignmentContainer::add_assignment(const Assignment& a) {
     if (r_==0) {
       r_= get_minimum_distance();
     } else {
-      r*=2;
+      r_*=2;
     }
     recluster();
   }
 }
-#endif
 
 
 
