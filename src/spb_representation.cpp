@@ -137,10 +137,10 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
-     create_GFP(m,"Spc29-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
     all_mol.add_child(gfp_n);
     atom::Molecule gfp_c=
-     create_GFP(m,"Spc29-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
     all_mol.add_child(gfp_c);
    }
   }
