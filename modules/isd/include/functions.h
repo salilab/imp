@@ -9,7 +9,7 @@
 
 #include "isd_config.h"
 #include <IMP/Particle.h>
-#include <IMP/isd/Scale.h>
+#include <IMP/isd/Nuisance.h>
 #include <IMP/Object.h>
 
 #define MINIMUM 1e-7
@@ -21,19 +21,30 @@ class IMPISDEXPORT UnivariateFunction : public Object
 {
  public:
 
-     UnivariateFunction() : Object("") {}
+     UnivariateFunction(std::string str) : Object(str) {}
 
      //! evaluate the function at a certain point
      virtual std::vector<double> operator() (std::vector<double> x) const = 0; 
 
-     //! update internal parameters and return true if they have changed.
-     virtual bool update_if_changed() = 0;
+     //! return true if internal parameters have changed.
+     virtual bool has_changed() const = 0; 
+
+     //! update internal parameters
+     virtual void update() = 0;
+
+     //! update derivatives of particles
+     virtual void add_to_derivatives(std::vector<double> x,
+             DerivativeAccumulator &accum) const = 0;
 
      //! returns the number of input dimensions
      virtual unsigned get_ndims_x() const = 0;
 
      //! returns the number of output dimensions
      virtual unsigned get_ndims_y() const = 0;
+
+     //! particle manipulation
+     virtual ParticlesTemp get_input_particles() const = 0;
+     virtual ContainersTemp get_input_containers() const = 0;
 
      IMP_REF_COUNTED_DESTRUCTOR(UnivariateFunction);
 };
@@ -43,14 +54,21 @@ class IMPISDEXPORT BivariateFunction : public Object
 {
  public:
 
-     BivariateFunction() : Object("") {}
+     BivariateFunction(std::string str) : Object(str) {}
 
      //! evaluate the function at a certain point
      virtual std::vector<double> operator()
                 (std::vector<double> x1, std::vector<double> x2) const = 0;
 
-     //! update internal parameters and return true if they have changed.
-     virtual bool update_if_changed() = 0;
+     //! return true if internal parameters have changed.
+     virtual bool has_changed() const = 0;
+
+     //! update internal parameters
+     virtual void update() = 0;
+
+     //! update derivatives of particles
+     virtual void add_to_derivatives(std::vector<double> x1,
+             std::vector<double> x2, DerivativeAccumulator &accum) const = 0;
 
      //! returns the number of input dimensions
      virtual unsigned get_ndims_x1() const = 0;
@@ -59,34 +77,48 @@ class IMPISDEXPORT BivariateFunction : public Object
      //! returns the number of output dimensions
      virtual unsigned get_ndims_y() const = 0;
 
+     //! particle manipulation
+     virtual ParticlesTemp get_input_particles() const = 0;
+     virtual ContainersTemp get_input_containers() const = 0;
+
      IMP_REF_COUNTED_DESTRUCTOR(BivariateFunction);
 };
 
 //! Linear one-dimensional function
-/* f(x) = a*x + b, where a,b are ISD scales, and f(x) and x are doubles.
+/* f(x) = a*x + b, where a,b are ISD nuisances, and f(x) and x are doubles.
  */
 class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 {
     public:
         Linear1DFunction(Particle * a, Particle * b) 
-            : a_(a), b_(b) 
+            : UnivariateFunction("Linear1DFunction %1%"), a_(a), b_(b) 
         {
-            a_val_ = Scale(a).get_scale();
-            b_val_ = Scale(b).get_scale();
+            IMP_LOG(TERSE, "Linear1DFunction: constructor" << std::endl);
+            IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(a); }
+            IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(b); }
+            a_val_ = Nuisance(a).get_nuisance();
+            b_val_ = Nuisance(b).get_nuisance();
         }
 
-        bool update_if_changed() {
-            double tmpa = Scale(a_).get_scale();
-            double tmpb = Scale(b_).get_scale();
-            if (std::abs(tmpa != a_val_) < MINIMUM
-                    || std::abs(tmpb != b_val_) < MINIMUM)
+        bool has_changed() const {
+            double tmpa = Nuisance(a_).get_nuisance();
+            double tmpb = Nuisance(b_).get_nuisance();
+            if ((std::abs(tmpa - a_val_) > MINIMUM)
+                    || (std::abs(tmpb - b_val_) > MINIMUM))
             {
-                a_val_ = tmpa;
-                b_val_ = tmpb;
+                IMP_LOG(TERSE, "Linear1DFunction: has_changed():");
+                IMP_LOG(TERSE, "true" << std::endl);
                 return true;
             } else {
                 return false;
             }
+        }
+
+        void update() {
+            a_val_ = Nuisance(a_).get_nuisance();
+            b_val_ = Nuisance(b_).get_nuisance();
+            IMP_LOG(TERSE, "Linear1DFunction: update()  a:= "
+                    << a_val_ << " b:=" << b_val_ << std::endl);
         }
 
         std::vector<double> operator()(std::vector<double> x) const {
@@ -95,11 +127,35 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             return ret;
         }
 
+        void add_to_derivatives(std::vector<double> x,
+                DerivativeAccumulator &accum) const
+        {
+            //d[f(x)]/da = x
+            Nuisance(a_).add_to_nuisance_derivative(x[0], accum);
+            //d[f(x)]/db = 1
+            Nuisance(b_).add_to_nuisance_derivative(1, accum);
+        }
+
+
         unsigned get_ndims_x() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
 
-    IMP_OBJECT_INLINE(Linear1DFunction, out << "y = " << a_val_ 
-            << " * x + " << b_val_ << std::endl, {});
+        ParticlesTemp get_input_particles() const
+        {
+            ParticlesTemp ret;
+            ret.push_back(a_);
+            ret.push_back(b_);
+            return ret;
+        }
+
+        ContainersTemp get_input_containers() const
+        {
+            ContainersTemp ret;
+            return ret;
+        }
+
+        IMP_OBJECT_INLINE(Linear1DFunction, out << "y = " << a_val_ 
+                << " * x + " << b_val_ << std::endl, {});
 
     private:
         Pointer<Particle> a_,b_;
@@ -108,33 +164,61 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 };
 
 //! Covariance function
-/* \f[w(x,x') = \tau^2 \exp\left(-\frac{(x-x')^\alpha}{2\lambda^\alpha}\f]
- * \f$\tau\f$ and \f$\lambda\f$ are ISD scale,s \f$\alpha\f$ is set up front and
+/* \f[w(x,x') = \tau^2 \exp\left(-\frac{|x-x'|^\alpha}{2\lambda^\alpha}\f]
+ * \f$\tau\f$ and \f$\lambda\f$ are ISD nuisance,s \f$\alpha\f$ is set up front and
  * should be positive, usually greater than 1. Default is 2.
  */
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 {
     public:
         Covariance1DFunction(double alpha, Particle* tau, Particle* lambda) :
-            alpha_(alpha), tau_(tau), lambda_(lambda) 
+            BivariateFunction("Covariance1DFunction %1%"), alpha_(alpha),
+            tau_(tau), lambda_(lambda) 
     {
-        lambda_val_= Scale(lambda).get_scale();
-        tau_val_= Scale(tau).get_scale();
+        IMP_LOG(TERSE, "Covariance1DFunction: constructor" << std::endl);
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(tau); }
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(lambda);}
+        lambda_val_= Nuisance(lambda).get_nuisance();
+        tau_val_= Nuisance(tau).get_nuisance();
     }
 
-        bool update_if_changed() {
-            double tmpt = Scale(tau_).get_scale();
-            double tmpl = Scale(lambda_).get_scale();
-            if (std::abs(tmpt != tau_val_) < MINIMUM
-                    || std::abs(tmpl != lambda_val_) < MINIMUM)
+        bool has_changed() const {
+            double tmpt = Nuisance(tau_).get_nuisance();
+            double tmpl = Nuisance(lambda_).get_nuisance();
+            if ((std::abs(tmpt - tau_val_) > MINIMUM)
+                    || (std::abs(tmpl - lambda_val_) > MINIMUM))
             {
-                lambda_val_ = tmpl;
-                tau_val_ = tmpt;
+                IMP_LOG(TERSE, "Covariance1DFunction: has_changed():");
+                IMP_LOG(TERSE, "true" << std::endl);
                 return true;
             } else {
                 return false;
             }
         }
+
+        void update() {
+            lambda_val_= Nuisance(lambda_).get_nuisance();
+            tau_val_= Nuisance(tau_).get_nuisance();
+            IMP_LOG(TERSE, "Covariance1DFunction: update()  tau:= "
+                    << tau_val_ << " lambda:=" << lambda_val_ << std::endl);
+        }
+
+        void add_to_derivatives(std::vector<double> x1, std::vector<double> x2,
+                DerivativeAccumulator &accum) const
+        {
+            //d[w(x1,x2)]/dtau = 2/tau*w(x1,x2)
+            std::vector<double> val = (*this)(x1,x2);
+            Nuisance(tau_).add_to_nuisance_derivative(
+                    2./tau_val_ * val[0], accum);
+            //d[w(x,x')]/dlambda 
+            //= w(x,x') ( alpha |x'-x|^alpha/(2 lambda^{alpha+1}))
+            
+            Nuisance(lambda_).add_to_nuisance_derivative(
+                    val[0] * (alpha_ * 
+                        std::pow((std::abs(x1[0]-x2[0])/lambda_val_),alpha_)
+                        /(2.*lambda_val_)), accum);
+        }
+
 
         std::vector<double> operator()(std::vector<double> x1,
                 std::vector<double> x2) const {
@@ -155,7 +239,22 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         unsigned get_ndims_x2() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
 
-    IMP_OBJECT_INLINE(Covariance1DFunction, out << "covariance function with alpha = " << alpha_ << std::endl, {});
+        ParticlesTemp get_input_particles() const
+        {
+            ParticlesTemp ret;
+            ret.push_back(tau_);
+            ret.push_back(lambda_);
+            return ret;
+        }
+
+        ContainersTemp get_input_containers() const
+        {
+            ContainersTemp ret;
+            return ret;
+        }
+
+
+        IMP_OBJECT_INLINE(Covariance1DFunction, out << "covariance function with alpha = " << alpha_ << std::endl, {});
 
 
     private:
