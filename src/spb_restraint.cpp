@@ -146,6 +146,7 @@ void add_fret_restraint (Model *m,
 {
  atom::Selection sa=atom::Selection(ha);
  atom::Selection sb=atom::Selection(hb);
+ FloatRange range=get_range_from_fret_value(r_value);
  if(use_GFP){
   protein_a=protein_a+"-"+residues_a+"-GFP";
   sa.set_molecule(protein_a);
@@ -156,7 +157,6 @@ void add_fret_restraint (Model *m,
   Particles p1=sa.get_selected_particles();
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return;}
-  FloatRange range=get_range_from_fret_value(r_value);
   core::DistancePairScore* sps=get_pair_score(range,kappa);
   do_bipartite_mindist(m,p1,p2,sps,false);
  } else {
@@ -169,7 +169,6 @@ void add_fret_restraint (Model *m,
   Particles p1=sa.get_selected_particles();
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return;}
-  FloatRange range=get_range_from_fret_value(r_value);
   core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
   do_bipartite_mindist(m,p1,p2,sps,false);
  }

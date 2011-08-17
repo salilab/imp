@@ -137,12 +137,37 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.add_GFP=add_GFP;
  ret.use_GFP_structure=use_GFP_structure;
  ret.keep_GFP_layer=keep_GFP_layer;
+
 // file map
- if(load_Spc42p.length()>0.0)   ret.file_list["Spc42p"]=load_Spc42p;
- if(load_Spc29p.length()>0.0)   ret.file_list["Spc29p"]=load_Spc29p;
- if(load_Cmd1p.length()>0.0)    ret.file_list["Cmd1p"]=load_Cmd1p;
- if(load_Cnm67p_c.length()>0.0) ret.file_list["Cnm67p_c"]=load_Cnm67p_c;
- if(load_Spc110p.length()>0.0)  ret.file_list["Spc110p"]=load_Spc110p;
+ if(load_Spc42p.length()>0.0){
+  ret.file_list["Spc42p"]=load_Spc42p;
+  if(add_GFP){
+   ret.file_list["Spc42p-N-GFP"]=load_Spc42p;
+   ret.file_list["Spc42p-C-GFP"]=load_Spc42p;
+  }
+ }
+ if(load_Spc29p.length()>0.0){
+  ret.file_list["Spc29p"]=load_Spc29p;
+  if(add_GFP){
+   ret.file_list["Spc29p-N-GFP"]=load_Spc29p;
+   ret.file_list["Spc29p-C-GFP"]=load_Spc29p;
+  }
+ }
+ if(load_Cmd1p.length()>0.0){
+  ret.file_list["Cmd1p"]=load_Cmd1p;
+  if(add_GFP){
+   ret.file_list["Cmd1p-N-GFP"]=load_Cmd1p;
+   ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p;
+  }
+ }
+ if(load_Cnm67p_c.length()>0.0){
+  ret.file_list["Cnm67p_c"]=load_Cnm67p_c;
+  if(add_GFP){ret.file_list["Cnm67p_c-C-GFP"]=load_Cnm67p_c;}
+ }
+ if(load_Spc110p.length()>0.0){
+  ret.file_list["Spc110p"]=load_Spc110p;
+  if(add_GFP){ret.file_list["Spc110p-C-GFP"]=load_Spc110p;}
+ }
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
