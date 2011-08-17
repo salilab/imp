@@ -145,7 +145,7 @@ bool parse_input(int argc, char *argv[],
   ref_filename="";
   sol_filename="multifit.solutions.txt";
   log_filename="multifit.log";
-  pdb_fit_filename="fit.mol";
+  pdb_fit_filename="";
   delta_angle=30.;
   po::options_description
     optional_params("Allowed options"),po,ao,required_params("Hideen options");
