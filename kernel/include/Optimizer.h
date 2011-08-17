@@ -256,7 +256,7 @@ class IMPEXPORT Optimizer: public Object
   mutable Floats incremental_scores_;
   compatibility::checked_vector<Ints> incremental_used_;
   Restraints restraints_;
-  RestraintsTemp flattened_restraints_;
+  Restraints flattened_restraints_;
   mutable double last_score_;
 };
 
