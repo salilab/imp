@@ -96,6 +96,9 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   void add_xlink_interaction(Int prot1,Int res1,Int prot2,Int res2){
     xlinks_.push_back(std::make_pair(IntPair(prot1,res1),IntPair(prot2,res2)));
   }
+  void add_ev_pair(Int prot1,Int prot2){
+    ev_.push_back(std::make_pair(prot1,prot2));
+  }
   int get_number_of_proteins() const {return prot_data_.size();}
   int get_number_of_interactions() const {return interactions_.size();}
   Ints get_interaction(int interaction_ind) const {
@@ -109,6 +112,15 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
                     "index out of range\n");
     return xlinks_[xlink_ind];
   }
+
+
+  int get_number_of_ev_pairs() const {return ev_.size();}
+  IntPair get_ev_pair(int ev_ind) const {
+    IMP_USAGE_CHECK(ev_ind<(int)ev_.size(),
+                    "index out of range\n");
+    return ev_[ev_ind];
+  }
+
 
   std::string get_protein_name(int protein_ind) const {
         IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),
@@ -182,6 +194,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   std::map<std::string,int> prot_map_;
   std::vector<Ints>interactions_;
   std::vector<std::pair<IntPair,IntPair> > xlinks_;
+  std::vector<IntPair> ev_; //pairs of proteins to calcualte EV between
 };
 
 //! Proteomics reader
