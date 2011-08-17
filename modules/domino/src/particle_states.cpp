@@ -71,8 +71,10 @@ RigidBodyStates
    double max_=-min_;
    for (unsigned int i=0; i< states_.size(); ++i) {
      for (unsigned int j=0; j< 3; ++j) {
-       min_= std::min(states_[i].get_translation()[j], min_);
-       max_= std::max(states_[i].get_translation()[j], max_);
+       min_= std::min(states_[i].get_transformation_to().
+                      get_translation()[j], min_);
+       max_= std::max(states_[i].get_transformation_to()
+                      .get_translation()[j], max_);
      }
    }
    if (max_-min_ < .000001) {
@@ -86,10 +88,11 @@ algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i,
                                                  Particle *) {
   Floats e(6);
   for (unsigned int j=0; j < 3; ++j) {
-    e[j]= states_[i].get_translation()[j];
+    e[j]= states_[i].get_transformation_to().get_translation()[j];
   }
   for (unsigned int j=0; j < 3; ++j) {
-    e[3+j]= states_[i].get_rotationm().get_quaternion()[j]*irange_;
+    e[3+j]= states_[i].get_transformation_to()
+      .get_rotation().get_quaternion()[j]*irange_;
   }
   return algebra::VectorKD(e.begin(), e.end());
 }

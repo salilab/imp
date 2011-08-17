@@ -42,7 +42,7 @@ public:
       i.
    */
   virtual algebra::VectorKD get_embedding(unsigned int i,
-                                          Particle *p) const {
+                                          Particle *) const {
     Floats f(1,i);
     return algebra::VectorKD(f.begin(), f.end());
   }
@@ -148,7 +148,7 @@ public:
     return states_[i];
   }
   algebra::VectorKD get_embedding(unsigned int i,
-                                  Particle *);
+                                  Particle *) const;
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 
