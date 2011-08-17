@@ -85,7 +85,7 @@ RigidBodyStates
  }
 
 algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i,
-                                                 Particle *) {
+                                                 Particle *) const {
   Floats e(6);
   for (unsigned int j=0; j < 3; ++j) {
     e[j]= states_[i].get_transformation_to().get_translation()[j];
