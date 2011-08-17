@@ -32,7 +32,7 @@ void TransformationSymmetry::apply(Particle *p) const
   if (RigidBody::particle_is_instance(p)) {
     RigidBody rrb(Reference(p).get_reference_particle());
     RigidBody rb(p);
-    rb.set_reference_frame(
+    rb.set_reference_frame_lazy(
     algebra::ReferenceFrame3D(t_*rrb.get_reference_frame()
                               .get_transformation_to()));
   } else {
