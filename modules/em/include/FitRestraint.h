@@ -65,7 +65,9 @@ public:
 
   IMP_RESTRAINT(FitRestraint);
 
+#ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);
+#endif
 private:
   //! Store particles
   void store_particles(Particles ps);

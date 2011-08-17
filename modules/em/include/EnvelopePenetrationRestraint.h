@@ -44,7 +44,9 @@ public:
 
   IMP_RESTRAINT(EnvelopePenetrationRestraint);
 
+#ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);
+#endif
 private:
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
