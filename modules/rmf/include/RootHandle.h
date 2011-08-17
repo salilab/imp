@@ -74,6 +74,10 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
                                  std::string nm) const {                \
     return get_key<UCName##Traits>(category_id, nm);                    \
   }                                                                     \
+  bool get_has_##lcname##_key(KeyCategory category_id,                  \
+                                     std::string nm) const {            \
+    return get_has_key<UCName##Traits>(category_id, nm);                \
+  }                                                                     \
   UCName##Key add_##lcname##_key(KeyCategory category_id,               \
                                  std::string nm,                        \
                                  bool per_frame) const {                \

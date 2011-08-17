@@ -127,6 +127,6 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
   return ret;
 }
 
-const KeyCategory IMP=KeyCategory::add_key_category("IMP");
+const KeyCategory IMP=add_key_category("IMP");
 
 IMPRMF_END_NAMESPACE

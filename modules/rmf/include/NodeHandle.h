@@ -117,8 +117,7 @@ class IMPRMFEXPORT NodeHandle {
   }                                                                     \
   /** \brief  set the value of the attribute k for this node
 
-      The node must have the attribute and if it is a per-frame
-      attribute, frame must be spedo_cified.
+      If it is a per-frame attribute, frame must be specified.
   */                                                                    \
   void set_value(UCName##Key k, UCName##Traits::Type v,                 \
                  unsigned int frame =0) {                               \
