@@ -215,7 +215,7 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   bool get_in_cluster(const algebra::VectorKD &v) const;
   double get_minimum_distance() const;
   void recluster();
-  bool get_distance_if_smaller_than(const algebra::VectorKD &a,
+  double get_distance_if_smaller_than(const algebra::VectorKD &a,
                                     const algebra::VectorKD &b,
                                     double max) const;
  public:
