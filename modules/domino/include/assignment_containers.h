@@ -199,10 +199,9 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
                           std::string name="HeapAssignmentsContainer %1%");
   IMP_ASSIGNMENT_CONTAINER(HeapAssignmentContainer);
 };
-#if 0
 
 /** Store the centers of clusters of the assignments. For now, the embedding
- used cannot be varried. It is a concatenation of embeddings provided by
+ used cannot be varied. It is a concatenation of embeddings provided by
  the particle states.*/
 class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   public AssignmentContainer {
@@ -217,7 +216,8 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   double get_minimum_distance() const;
   void recluster();
   bool get_distance_if_smaller_than(const algebra::VectorKD &a,
-                                    const algebra::VectoKD &b) const;
+                                    const algebra::VectorKD &b,
+                                    double max) const;
  public:
   ClusteredAssignmentContainer(unsigned int k,
                                Subset s,
@@ -227,7 +227,7 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   double get_r() const {return r_;}
   IMP_ASSIGNMENT_CONTAINER(ClusteredAssignmentContainer);
 };
-#endif
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_ASSIGNMENT_CONTAINERS_H */
