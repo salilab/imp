@@ -350,27 +350,32 @@ return hs;
 
 atom::Molecule create_protein(Model *m,std::string name,double mass,
 int nbeads, display::Color colore,int copy,double kappa,
- algebra::Vector3D x0, int start_residue, int length)
+ algebra::Vector3D x0, int start_residue, int nres)
 {
- if(length==-1) {length=(int) (mass*1000.0/110.0);}
+ if(nres==-1) {nres=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
  protein->set_name(name);
- int nres_bead=(int) (length/nbeads);
- if(length%nbeads!=0) ++nres_bead;
- double ms=1000.0*mass/(double)nbeads;
- double vol=atom::get_volume_from_mass(ms);
- double rg=algebra::get_ball_radius_from_volume_3d(vol);
- for(int i=0;i<nbeads;++i){
+ Ints nres_bead;
+ for(unsigned int i=0;i<nbeads;++i){
+  nres_bead.push_back(nres/nbeads);
+  if(i<nres%nbeads){++nres_bead[i];}
+ }
+ int ires=0;
+ for(unsigned int i=0;i<nbeads;++i){
   IMP_NEW(Particle,pp,(m));
-  int first=start_residue+i*nres_bead;
-  int last=std::min(start_residue+(i+1)*nres_bead,start_residue+length);
+  int first=start_residue+ires;
+  int last=first+nres_bead[i];
+  ires+=nres_bead[i];
   std::stringstream out1,out2;
   out1 << i;
   out2 << copy;
   atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
   dom->set_name(name+out1.str()+"-"+out2.str());
   core::XYZR  d=core::XYZR::setup_particle(pp);
+  double ms=110.0*(double) nres_bead[i];
+  double vol=atom::get_volume_from_mass(ms);
+  double rg=algebra::get_ball_radius_from_volume_3d(vol);
   d.set_radius(rg);
   d.set_coordinates(x0);
   d.set_coordinates_are_optimized(true);
@@ -392,7 +397,7 @@ int nbeads, display::Color colore,int copy,double kappa,
 }
 
 atom::Molecule create_protein(Model *m,std::string name,
- std::string filename,int nres_bead,display::Color colore,
+ std::string filename,int nres_per_bead,display::Color colore,
  int copy,algebra::Vector3D x0,int start_residue,bool recenter)
 {
  IMP_NEW(Particle,p,(m));
@@ -402,31 +407,37 @@ atom::Molecule create_protein(Model *m,std::string name,
  atom::Hierarchy hpdb=atom::read_pdb(filename,m,sel);
  Particles ps=atom::get_leaves(hpdb);
  int nres=ps.size();
- int nbeads=(int) (nres/nres_bead);
- if(nres%nres_bead!=0) ++nbeads;
+ int nbeads=(int) round((double)nres/(double)nres_per_bead);
+ Ints nres_bead;
+ for(unsigned int i=0;i<nbeads;++i){
+  nres_bead.push_back(nres/nbeads);
+  if(i<nres%nbeads){++nres_bead[i];}
+ }
+ int ires=0;
  core::XYZRs rbps;
- for(int i=0;i<nbeads;++i){
-  IMP_NEW(Particle,pp,(m));
-  int first=start_residue+i*nres_bead;
-  int last=std::min(start_residue+(i+1)*nres_bead,start_residue+nres);
-  std::stringstream out1,out2;
-  out1 << i;
-  out2 << copy;
-  atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
-  dom->set_name(name+out1.str()+"-"+out2.str());
-  core::XYZR  d=core::XYZR::setup_particle(pp);
-// calculate enclosing sphere and mass
+ for(unsigned int i=0;i<nbeads;++i){
   double ms=0.0;
   core::XYZRs xyz;
-  for(int j=i*nres_bead;j<std::min((i+1)*nres_bead,nres);++j){
-   atom::ResidueType restype=
-    atom::Residue(atom::Atom(ps[j]).get_parent()).get_residue_type();
+  int first,last;
+  for(unsigned int j=ires;j<ires+nres_bead[i];++j){
+   atom::Residue res=atom::Residue(atom::Atom(ps[j]).get_parent());
+   atom::ResidueType restype=res.get_residue_type();
+   if(j==ires) {first=res.get_index();}
+   if(j==ires+nres_bead[i]-1) {last=res.get_index()+1;}
    double vol=atom::get_volume_from_residue_type(restype);
    double rg=algebra::get_ball_radius_from_volume_3d(vol);
    core::XYZR(ps[j]).set_radius(rg);
    xyz.push_back(core::XYZR(ps[j]));
    ms+=atom::Mass(ps[j]).get_mass();
   }
+  ires+=nres_bead[i];
+  IMP_NEW(Particle,pp,(m));
+  std::stringstream out1,out2;
+  out1 << i;
+  out2 << copy;
+  atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
+  dom->set_name(name+out1.str()+"-"+out2.str());
+  core::XYZR  d=core::XYZR::setup_particle(pp);
   algebra::Sphere3D sph=core::get_enclosing_sphere(xyz);
   d.set_radius(sph.get_radius());
   d.set_coordinates(sph.get_center());
@@ -487,9 +498,9 @@ atom::Molecule create_merged_protein
 }
 
 atom::Molecules create_coiled_coil
-(Model *m,std::string name,std::string filename_A, std::string filename_B,
-int nbeads,display::Color colore,int copy,
-algebra::Vector3D x0,int start_residue)
+ (Model *m,std::string name,std::string filename_A, std::string filename_B,
+ int nbeads,display::Color colore,int copy,
+ algebra::Vector3D x0,int start_residue)
 {
 
  atom::Molecule coil_A=create_protein(m,name,filename_A,
