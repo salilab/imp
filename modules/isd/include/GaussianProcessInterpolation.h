@@ -22,6 +22,8 @@ using IMP::algebra::internal::TNT::Array1D;
 using IMP::algebra::internal::TNT::Array2D;
 #endif
 
+class GaussianProcessInterpolationRestraint;
+
 //! GaussianProcessInterpolation
 /** This class provides methods to perform bayesian interpolation/smoothing of
  * data using a gaussian process prior on the function to be interpolated.
@@ -48,7 +50,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   GaussianProcessInterpolation(std::vector<std::vector<double> > x,
                                std::vector<double> sample_mean,
                                std::vector<double> sample_std,
-                               std::vector<unsigned> n_obs,
+                               std::vector<int> n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function);
 
@@ -78,7 +80,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   double get_posterior_covariance(std::vector<double> x1, 
                                   std::vector<double> x2);
 
+  friend class GaussianProcessInterpolationRestraint;
+
   IMP_OBJECT(GaussianProcessInterpolation);
+
+ protected:
+  // update mean vector if the mean function has changed. Return true on change.
+  bool update_mean();
+  // update covariance matrix if the covariance function has changed. 
+  // Return true on change.
+  bool update_covariance();
 
  private:
   //  computes necessary matrices.
@@ -86,7 +97,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   // compute mean observations
   void compute_I(std::vector<double> mean);
   // compute diagonal covariance matrix of observations
-  void compute_S(std::vector<double> std, std::vector<unsigned> n);
+  void compute_S(std::vector<double> std, std::vector<int> n);
   // compute prior mean vector
   void compute_m();
   // compute prior covariance matrix
@@ -98,17 +109,11 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   // compute (W+S)^{-1} (I-m)
   void compute_WSIm();
 
-  // update mean vector if the mean function has changed. Return true on change.
-  bool update_mean();
-  // update covariance matrix if the covariance function has changed. 
-  // Return true on change.
-  bool update_covariance();
-
  private:
     unsigned M_; // number of dimensions of the abscissa
     unsigned N_; // number of observations to learn from
     std::vector<std::vector<double> > x_; // abscissa
-    std::vector<unsigned> n_obs_; // number of observations
+    std::vector<int> n_obs_; // number of observations
     // pointer to the prior mean function
     IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
     // pointer to the prior covariance function

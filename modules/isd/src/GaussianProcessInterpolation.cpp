@@ -23,10 +23,10 @@ using IMP::algebra::internal::TNT::Array2D;
                                std::vector<std::vector<double> > x,
                                std::vector<double> sample_mean,
                                std::vector<double> sample_std,
-                               std::vector<unsigned> n_obs,
+                               std::vector<int> n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function) :
-        Object("GaussianProcessInterpolation%1%"), x_(x),
+        Object("GaussianProcessInterpolation%1%"), x_(x), n_obs_(n_obs),
         mean_function_(mean_function), 
         covariance_function_(covariance_function) 
 {
@@ -55,9 +55,9 @@ using IMP::algebra::internal::TNT::Array2D;
     //compute needed matrices
     compute_I(sample_mean);
     compute_S(sample_std,n_obs);
-    mean_function_->update_if_changed();
+    mean_function_->update();
     compute_m();
-    covariance_function_->update_if_changed();
+    covariance_function_->update();
     compute_W_matrix();
     compute_inverse();
     compute_WSIm();
@@ -65,17 +65,27 @@ using IMP::algebra::internal::TNT::Array2D;
 
   double GaussianProcessInterpolation::get_posterior_mean(std::vector<double> x)
 {
-    if (update_covariance()) compute_inverse();
-    if (update_mean()) compute_WSIm();
+   // std::cerr << "posterior mean at q=" << x[0] << std::endl;
+    bool cov = update_covariance();
+    bool mean = update_mean();
+    if (cov) compute_inverse();
+    if (cov || mean) compute_WSIm();
     compute_wx_vector(x);
     double ret=0;
     for (unsigned i=0; i<M_; i++) ret += wx_[i]*WSIm_[i];
+    //std::cerr << "wx : ";
+    //for (unsigned i=0; i<M_; i++) std::cerr << wx_[i] << " ";
+    //std::cerr << std::endl << "WSIm : ";
+    //for (unsigned i=0; i<M_; i++) std::cerr << WSIm_[i] << " ";
+    //std::cerr << std::endl << "mean func: " << (*mean_function_)(x)[0] 
+    //    << std::endl;
     return ret + (*mean_function_)(x)[0];
 }
 
   double GaussianProcessInterpolation::get_posterior_covariance(
           std::vector<double> x1, std::vector<double> x2)
 {
+    //std::cerr << "posterior covariance at q=" << x1[0] << std::endl;
     if (update_covariance()) compute_inverse();
     compute_wx_vector(x2);
     Array1D<double> right(M_);
@@ -99,33 +109,44 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::compute_I(std::vector<double> mean)
 {
     I_ = Array1D<double> (M_);
+    IMP_LOG(TERSE, "I: ");
     for (unsigned i=0; i<M_; i++)
     {
         I_[i] = mean[i];
+        IMP_LOG(TERSE, I_[i] << " ");
     }
+    IMP_LOG(TERSE, std::endl);
 }
 
   void GaussianProcessInterpolation::compute_S(std::vector<double> std,
-          std::vector<unsigned> n) 
+          std::vector<int> n) 
     { 
         S_ = Array2D<double> (M_,M_,0.0); 
+        IMP_LOG(TERSE, "S: ");
         for (unsigned i=0; i<M_; i++) 
         { 
             S_[i][i] = IMP::square(std[i])/double(n[i]); 
+            IMP_LOG(TERSE, S_[i][i] << " ");
         } 
+    IMP_LOG(TERSE, std::endl);
     }
 
   void GaussianProcessInterpolation::compute_m()
 {
+    //std::cerr << "  compute_m" << std::endl;
     m_ = Array1D<double> (M_);
+    IMP_LOG(TERSE, "m: ");
     for (unsigned i=0; i<M_; i++)
     {
         m_[i] = (*mean_function_)(x_[i])[0];
+        IMP_LOG(TERSE, m_[i] << " ");
     }
+    IMP_LOG(TERSE, std::endl);
 }
 
   void GaussianProcessInterpolation::compute_W_matrix()
 {
+    //std::cerr << "  compute_W_matrix" << std::endl;
     W_ = Array2D<double> (M_,M_);
     for (unsigned i=0; i<M_; i++)
     {
@@ -134,6 +155,8 @@ using IMP::algebra::internal::TNT::Array2D;
         {
             W_[i][j] = (*covariance_function_)(x_[i],x_[j])[0];
             W_[j][i] = W_[i][j];
+            IMP_LOG(TERSE, "W[" << i << "][" << j << "]: " 
+                                << W_[i][j] << std::endl);
         }
     }
 }
@@ -141,16 +164,20 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::compute_wx_vector(
                                     std::vector<double> xval)
 {
+    IMP_LOG(TERSE,"  compute_wx_vector at q= " << xval[0] << " ");
     wx_ = Array1D<double> (M_);
     for (unsigned i=0; i<M_; i++)
     {
         wx_[i] = (*covariance_function_)(x_[i],xval)[0];
+        IMP_LOG(TERSE, wx_[i] << " ");
     }
+    IMP_LOG(TERSE, std::endl);
 }
 
 
   void GaussianProcessInterpolation::compute_inverse()
 {
+    IMP_LOG(TERSE,"  compute_inverse" << std::endl);
     //compute W+S
     Array2D<double> WpS;
     WpS = W_.copy();
@@ -161,11 +188,18 @@ using IMP::algebra::internal::TNT::Array2D;
     Array2D<double> id(M_,M_,0.0);
     for (unsigned i=0; i<M_; i++) id[i][i] = 1.0;
     WS_= LU_->solve(id);
+    for (unsigned i=0; i<M_; i++) {
+        for (unsigned j=0; j<M_; j++) {
+            IMP_LOG(TERSE, "WS[" << i << "][" << j << "]: " 
+                                << WS_[i][j] << std::endl);
+        }
+    }
 }
 
  void GaussianProcessInterpolation::compute_WSIm()
 {
     WSIm_ = Array1D<double> (M_);
+    IMP_LOG(TERSE, "WSIm ");
     for (unsigned i=0; i<M_; i++)
     {
         WSIm_[i] = 0.0;
@@ -173,20 +207,37 @@ using IMP::algebra::internal::TNT::Array2D;
         {
             WSIm_[i] += WS_[i][j] * (I_[j] - m_[j]);
         }
+        IMP_LOG(TERSE, WSIm_[i] << " ");
     }
+    IMP_LOG(TERSE, std::endl);
+    //for (unsigned j=0; j<M_; j++)
+    //{
+    //    std::cerr << "I-m " << j << " " << I_[j] - m_[j] << std::endl;
+    //}
 }
 
   bool GaussianProcessInterpolation::update_mean()
 {
-    bool ret = mean_function_->update_if_changed();
-    if (ret) compute_m();
+    bool ret = mean_function_->has_changed();
+    if (ret)
+    { 
+        IMP_LOG(TERSE, " mean function has changed, updating" << std::endl);
+        mean_function_->update();
+        compute_m();
+    }
     return ret;
 }
 
   bool GaussianProcessInterpolation::update_covariance()
 {
-    bool ret = covariance_function_->update_if_changed();
-    if (ret) compute_W_matrix();
+    bool ret = covariance_function_->has_changed();
+    if (ret)
+    {
+        IMP_LOG(TERSE, " covariance function has changed, updating" 
+                << std::endl);
+        covariance_function_->update();
+        compute_W_matrix();
+    }
     return ret;
 }
 
