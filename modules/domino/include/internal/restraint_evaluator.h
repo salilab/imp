@@ -100,7 +100,8 @@ public:
                            "Scores don't match their side of max: "
                            << score << " vs " << cscore);
         if (score < max_) {
-          IMP_INTERNAL_CHECK((score-cscore) < .1*(score-cscore) +.1,
+          IMP_INTERNAL_CHECK(std::abs(score-cscore)
+                             < .1*std::abs(score+cscore) +.1,
                              "Scores don't match: " << score
                              << " vs " << cscore<<" test: " <<
                              score-cscore<<" "<<
