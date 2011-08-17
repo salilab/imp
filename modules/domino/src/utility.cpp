@@ -10,6 +10,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
+#include <IMP/domino/assignment_containers.h>
 #include <IMP/compatibility/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
