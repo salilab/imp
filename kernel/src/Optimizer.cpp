@@ -120,8 +120,9 @@ void Optimizer::setup_incremental() {
   IMP_LOG(TERSE, "Setting up incremental evaluation." << std::endl);
   flattened_restraints_=create_decomposition(get_restraints());
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
-    incremental_scores_= get_model()->evaluate(flattened_restraints_, false);
+    get_model()->add_temporary_restraint(flattened_restraints_[i]);
   }
+  incremental_scores_= get_model()->evaluate(flattened_restraints_, false);
   DependencyGraph dg= get_dependency_graph(flattened_restraints_);
   compatibility::map<Restraint*, int> index;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
