@@ -37,6 +37,9 @@ IMPMEMBRANEEXPORT FloatRange get_range_from_fret_value(double r_value);
 IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
  core::SphereDistancePairScore* sps,bool filter=true);
 
+IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
+ core::DistancePairScore* sps,bool filter=true);
+
 IMPMEMBRANEEXPORT void do_allpairs_mindist(Model *m,Particles ps,
  core::SphereDistancePairScore* sps,bool filter=true);
 

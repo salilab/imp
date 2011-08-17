@@ -96,32 +96,32 @@ void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
   for(unsigned int j=0;j<p2.size();++j){
    bool samep=(atom::Hierarchy(p1[i]).get_parent() ==
                atom::Hierarchy(p2[j]).get_parent());
-   if(filter && samep){
-    continue;
-   } else {
-    lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));
-   }
+   if(filter && samep){continue;}
+   else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
   }
  }
  if(lpc->get_number_of_particle_pairs()==0) {return;}
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
 }
-/*
+
 void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
- core::SphereDistancePairScore* dps,bool filter)
+ core::DistancePairScore* dps,bool filter)
 {
- IMP_NEW(container::ListSingletonContainer,lpc1,(p1));
- IMP_NEW(container::ListSingletonContainer,lpc2,(p2));
- IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lpc1,lpc2,200.0));
- if(filter){
-  IMP_NEW(atom::SameResiduePairFilter,f,());
-  cbpc->add_pair_filter(f);
+ IMP_NEW(container::ListPairContainer,lpc,(m));
+ for(unsigned int i=0;i<p1.size();++i){
+  for(unsigned int j=0;j<p2.size();++j){
+   bool samep=(atom::Hierarchy(p1[i]).get_parent() ==
+               atom::Hierarchy(p2[j]).get_parent());
+   if(filter && samep){continue;}
+   else{lpc->add_particle_pair(ParticlePair(p1[i],p2[j]));}
+  }
  }
- IMP_NEW(container::MinimumPairRestraint,mpr,(dps,cbpc,1));
+ if(lpc->get_number_of_particle_pairs()==0) {return;}
+ IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
 }
-*/
+
 void do_allpairs_mindist(Model *m,Particles ps,
  core::SphereDistancePairScore* dps,bool filter)
 {
@@ -130,60 +130,45 @@ void do_allpairs_mindist(Model *m,Particles ps,
   for(unsigned int j=i+1;j<ps.size();++j){
    bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
                atom::Hierarchy(ps[j]).get_parent());
-   if(filter && samep){
-    continue;
-   } else {
-    lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));
-   }
+   if(filter && samep){continue;}
+   else{lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
   }
  }
  if(lpc->get_number_of_particle_pairs()==0) {return;}
  IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
  m->add_restraint(mpr);
 }
-/*
-void do_allpairs_mindist(Model *m,Particles ps,
- core::SphereDistancePairScore* dps,bool filter)
-{
- IMP_NEW(container::ListSingletonContainer,lpc,(ps));
- IMP_NEW(container::ClosePairContainer,cpc,(lpc,200.0));
- if(filter){
-  IMP_NEW(atom::SameResiduePairFilter,f,());
-  cpc->add_pair_filter(f);
- }
- IMP_NEW(container::MinimumPairRestraint,mpr,(dps,cpc,1));
- m->add_restraint(mpr);
-}
-*/
+
 void add_fret_restraint (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
        atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value, double kappa, bool use_GFP)
 {
  atom::Selection sa=atom::Selection(ha);
+ atom::Selection sb=atom::Selection(hb);
  if(use_GFP){
   protein_a=protein_a+"-"+residues_a+"-GFP";
   sa.set_residue_index(65);
+  protein_b=protein_b+"-"+residues_b+"-GFP";
+  sb.set_residue_index(65);
+  Particles p1=sa.get_selected_particles();
+  Particles p2=sb.get_selected_particles();
+  if(p1.size()==0 || p2.size()==0) {return;}
+  FloatRange range=get_range_from_fret_value(r_value);
+  core::DistancePairScore* sps=get_pair_score(range,kappa);
+  do_bipartite_mindist(m,p1,p2,sps);
  } else {
   if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
   if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
- }
- sa.set_molecule(protein_a);
- atom::Selection sb=atom::Selection(hb);
- if(use_GFP){
-  protein_b=protein_b+"-"+residues_b+"-GFP";
-  sb.set_residue_index(65);
- } else {
   if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
   if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+  Particles p1=sa.get_selected_particles();
+  Particles p2=sb.get_selected_particles();
+  if(p1.size()==0 || p2.size()==0) {return;}
+  FloatRange range=get_range_from_fret_value(r_value);
+  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
+  do_bipartite_mindist(m,p1,p2,sps);
  }
- sb.set_molecule(protein_b);
- Particles p1=sa.get_selected_particles();
- Particles p2=sb.get_selected_particles();
- if(p1.size()==0 || p2.size()==0) {return;}
- FloatRange range=get_range_from_fret_value(r_value);
- core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
- do_bipartite_mindist(m,p1,p2,sps);
 }
 
 void add_y2h_restraint (Model *m,
