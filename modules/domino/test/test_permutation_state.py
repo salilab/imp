@@ -13,6 +13,7 @@ class DOMINOTests(IMP.test.TestCase):
         dps= IMP.domino.IndexStates(10)
         pps= IMP.domino.PermutationStates(dps)
         all=[pps.get_inner_state(i) for i in range(0,10)]
+        print all
         for i in range(0,10):
             self.assert_(i in all)
 if __name__ == '__main__':
