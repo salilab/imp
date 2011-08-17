@@ -19,6 +19,17 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 IMPMEMBRANEEXPORT Pointer<core::MonteCarlo> setup_SPBMonteCarlo
 (Model *m, core::Movers& mvs, double temp, SPBParameters myparam);
 
+IMPMEMBRANEEXPORT void add_BallMover
+ (Particles ps, double dx, core::Movers& mvs);
+
+IMPMEMBRANEEXPORT void add_PbcBoxedMover
+(Particles ps, double dx, algebra::Vector3Ds centers,
+ algebra::Transformation3Ds trs, core::Movers& mvs);
+
+IMPMEMBRANEEXPORT void add_PbcBoxedRigidBodyMover
+(Particles ps,double dx,double dang,algebra::Vector3Ds centers,
+ algebra::Transformation3Ds trs, core::Movers& mvs);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_SAMPLER_H */
