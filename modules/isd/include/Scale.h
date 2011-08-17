@@ -14,6 +14,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Decorator.h>
+#include <IMP/isd/Nuisance.h>
 
 IMPISD_BEGIN_NAMESPACE
 
