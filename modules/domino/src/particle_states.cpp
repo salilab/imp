@@ -64,7 +64,8 @@ void RigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << states_.size() << std::endl;
 }
 
- RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
+RigidBodyStates
+::RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
     ParticleStates("RigidBodyStates %1%"), states_(states){
    double min_= std::numeric_limits<double>::max();
    double max_=-min_;

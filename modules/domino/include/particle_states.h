@@ -43,7 +43,7 @@ public:
    */
   virtual algebra::VectorKD get_embedding(unsigned int i,
                                           Particle *p) const {
-    Float f(1,i);
+    Floats f(1,i);
     return algebra::VectorKD(f.begin(), f.end());
   }
   virtual ~ParticleStates();
