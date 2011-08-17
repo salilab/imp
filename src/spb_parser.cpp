@@ -35,6 +35,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  bool add_tilt;
  bool add_GFP;
  bool use_GFP_structure;
+ bool keep_GFP_layer;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -59,6 +60,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  desc.add_options()("add_GFP",      value<bool>(&add_GFP),          "ciao");
  desc.add_options()("use_GFP_structure",
   value<bool>(&use_GFP_structure), "ciao");
+ desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer), "ciao");
  desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
  desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
  desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
@@ -131,8 +133,10 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.protein_list["Cmd1p"]=add_Cmd1p;
  ret.protein_list["Cnm67p_c"]=add_Cnm67p_c;
  ret.protein_list["Spc110p"]=add_Spc110p;
+// GFP stuff
  ret.add_GFP=add_GFP;
  ret.use_GFP_structure=use_GFP_structure;
+ ret.keep_GFP_layer=keep_GFP_layer;
 // file map
  if(load_Spc42p.length()>0.0)   ret.file_list["Spc42p"]=load_Spc42p;
  if(load_Spc29p.length()>0.0)   ret.file_list["Spc29p"]=load_Spc29p;

@@ -477,41 +477,59 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
  core::Movers& mvs, SPBParameters mydata)
 {
-if(!mydata.use_GFP_structure){
-    atom::Molecule gfp=
-     create_protein(m,name,27,4,
-                      display::Color(124./255.,252./255.,0./255.),
-                      copy,mydata.kappa,x0);
-    if(copy==0){
-     Particles ps_gfp=atom::get_leaves(gfp);
-     lsc->add_particles(ps_gfp);
-     IMP_NEW(membrane::PbcBoxedMover,mv,
-      (ps_gfp[0],ps_gfp,mydata.MC.dx,mydata.CP_centers,mydata.trs));
-     mvs.push_back(mv);
-     for(unsigned int k=1;k<ps_gfp.size();++k){
-      Particles pps;
-      pps.push_back(ps_gfp[k]);
-      IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-      mvs.push_back(bmv);
-     }
-    }
-    return gfp;
-   } else {
-    atom::Molecule gfp=
-     create_protein(m,name,"1EMA.pdb",mydata.resolution,
-                      display::Color(124./255.,252./255.,0./255.),
-                      copy,x0);
-    if(copy==0){
-     Particles ps_gfp=atom::get_leaves(gfp);
-     Particles fake;
-     lsc->add_particles(ps_gfp);
-     core::RigidBody prb=core::RigidMember(ps_gfp[0]).get_rigid_body();
-     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-       (prb,fake,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
-     mvs.push_back(rbmv);
-    }
-    return gfp;
-   }
+ if(!mydata.use_GFP_structure){
+  IMP_NEW(Particle,p,(m));
+  atom::Molecule gfp=atom::Molecule::setup_particle(p);
+  gfp->set_name(name);
+  const int nbeads=3;
+  const int nres_bead=50;
+  const double ms=27.0*1000.0/(double) nbeads;
+  const double rg=15.0;
+  const display::Color colore=display::Color(124./255.,252./255.,0./255.);
+  core::XYZRs rbps;
+  for(int i=0;i<nbeads;++i){
+   IMP_NEW(Particle,pp,(m));
+   int first=i*nres_bead;
+   int last=(i+1)*nres_bead;
+   std::stringstream out1,out2;
+   out1 << i;
+   out2 << copy;
+   atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
+   dom->set_name(name+out1.str()+"-"+out2.str());
+   core::XYZR d=core::XYZR::setup_particle(pp);
+   d.set_radius(rg);
+   algebra::Vector3D x0i=
+    algebra::Vector3D(x0[0],x0[1],x0[2]+5.0*(double) (i-1));
+   d.set_coordinates(x0i);
+   d.set_coordinates_are_optimized(true);
+   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
+   display::Colored cc=display::Colored::setup_particle(pp,colore);
+   gfp.add_child(dom);
+   rbps.push_back(d);
+  }
+  IMP_NEW(Particle,prb,(m));
+  core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+  rb->set_name(name);
+  if(copy==0){
+   Particles ps_gfp=atom::get_leaves(gfp);
+   if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
+   add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+  }
+  return gfp;
+ } else {
+  atom::Molecule gfp=
+   create_protein(m,name,"1EMA.pdb",mydata.resolution,
+                    display::Color(124./255.,252./255.,0./255.),
+                    copy,x0);
+  if(copy==0){
+   Particles ps_gfp=atom::get_leaves(gfp);
+   if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
+   add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+  }
+  return gfp;
+ }
 }
 
 void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
