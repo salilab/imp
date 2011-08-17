@@ -83,7 +83,7 @@ public:
 
   /** \throw ValueException if f.size() is not appropriate.*/
   VectorD(const Floats &f) {
-    if (D!=-1 && f.size() != D) {
+    if (D!=-1 && static_cast<int>(f.size()) != D) {
       IMP_THROW("Expected " << D << " but got " << f.size(),
                 ValueException);
     }
