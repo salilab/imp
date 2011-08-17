@@ -21,7 +21,8 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/internal/OwnerPointer.h>
-#include <map>
+#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/map.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 /** Handle the states for a particular particle (or "class" of
@@ -59,7 +60,8 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable: public Object {
-  typedef std::map<Particle*, IMP::internal::OwnerPointer<ParticleStates> > Map;
+  typedef IMP::compatibility::map<Particle*,
+                   IMP::internal::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
  public:
@@ -80,11 +82,12 @@ class IMPDOMINOEXPORT ParticleStatesTable: public Object {
          it != enumerators_.end(); ++it) {
       ret.push_back(it->first);
     }
+    std::sort(ret.begin(), ret.end());
     return ret;
   }
   //! Return the subset corresponding to all the particles
   Subset get_subset() const {
-    return Subset(get_particles(), true);
+    return Subset(get_particles());
   }
   /** One can set the states more than once. If you do that, be
       careful.
@@ -105,10 +108,11 @@ IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);
     already have the attribute in question.
 */
 class IMPDOMINOEXPORT IndexStates: public ParticleStates {
-  IntKey k_;
   unsigned int n_;
+  IntKey k_;
 public:
-  IndexStates(unsigned int n): ParticleStates("IndexStates %1%"), n_(n){}
+  IndexStates(unsigned int n, IntKey k=IntKey("state")):
+    ParticleStates("IndexStates %1%"), n_(n), k_(k){}
   IMP_PARTICLE_STATES(IndexStates);
 };
 
@@ -207,13 +211,18 @@ class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
 */
 class IMPDOMINOEXPORT PermutationStates: public ParticleStates {
   IMP::internal::OwnerPointer<ParticleStates> inner_;
-  Ints permutation_;
+  IMP::compatibility::checked_vector<int> permutation_;
  public:
   PermutationStates(ParticleStates *inner);
   /** Return the index of the ith state in the inner ParticleState
       object.*/
   unsigned int get_inner_state(unsigned int i) const {
-    return permutation_[i];
+    IMP_CHECK_OBJECT(this);
+    IMP_USAGE_CHECK(i < permutation_.size(), "Out of range inner state");
+    unsigned int cur= permutation_[i];
+    IMP_INTERNAL_CHECK(cur < inner_->get_number_of_particle_states(),
+                       "Out of range state returned. This is perplexing.");
+    return cur;
   }
   IMP_PARTICLE_STATES(PermutationStates);
 };
