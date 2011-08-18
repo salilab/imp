@@ -32,8 +32,8 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters
     , voxel_size(1)
   {}
 
-  std::vector<double> complementarity_thickness;
-  std::vector<double> complementarity_value;
+  Floats complementarity_thickness;
+  Floats complementarity_value;
   double interior_thickness;
   double voxel_size;
 };
@@ -54,7 +54,7 @@ struct IMPMULTIFITEXPORT ComplementarityParameters {
 
   ComplementarityParameters()
     : maximum_separation(1)
-    , maximum_penetration_score(1000)
+    , maximum_penetration_score(std::numeric_limits<double>::max())
   {}
 
   double maximum_separation;
