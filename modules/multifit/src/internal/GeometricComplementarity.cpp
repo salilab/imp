@@ -186,11 +186,21 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
   IMP_GRID3D_FOREACH_VOXEL(map1,
       float v1 = map1[loop_voxel_index];
       IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
-      float v0 = map0.get_value_always(tc);
+      float v0;
+      // this is probably the only way to check if a voxel is in
+      // the DenseGrid3D?
+      if ( map0.get_has_index(map0.get_extended_index(tc)) )
+      {
+        v0 = map0[tc];
+      }
+      else
+      {
+        v0 = 0;
+      }
       float prod = v0*v1;
       if ( prod < 0 )
         complementarity_score += prod;
-      else
+      else if ( prod > 0 )
         penetration_score += prod;
       );
   if ( penetration_score > params.maximum_penetration_score )
