@@ -10,9 +10,9 @@
 #include "IMP/log.h"
 #include "IMP/Object.h"
 #include "IMP/internal/static.h"
+#include "IMP/VectorOfRefCounted.h"
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
-
 
 
 IMP_BEGIN_NAMESPACE
@@ -57,7 +57,7 @@ void add_failure_handler(FailureHandler *fh) {
 
 
 void remove_failure_handler(FailureHandler *fh) {
-  internal::handlers.remove_if(boost::lambda::_1 == fh);
+  internal::remove_if(internal::handlers, boost::lambda::_1 == fh);
 }
 
 ExceptionBase::~ExceptionBase() throw()
