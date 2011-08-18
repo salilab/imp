@@ -13,6 +13,7 @@
 #include "base_types.h"
 #include "Object.h"
 #include "internal/ref_counting.h"
+#include <IMP/compatibility/checked_vector.h>
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
@@ -322,32 +323,22 @@ inline void swap(std::vector<RC> &b,
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
 
-template <class T, class F>
-inline void remove_if(T &t, const F &f) {
-  t.remove_if(f);
-}
+  template <class T, class P, class F>
+  inline void remove_if( VectorOfRefCounted<T,P> &t, const F &f) {
+    t.remove_if(f);
+  }
 
-template <class T, class F>
-inline void remove_if(std::vector<T> &t, const F &f) {
-  t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
-}
+  template <class T, class F>
+  inline void remove_if(std::vector<T> &t, const F &f) {
+    t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
+  }
 
-
-
+  template <class T, class F>
+  inline void remove_if(IMP::compatibility::checked_vector<T> &t, const F &f) {
+    t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
+  }
 }
 #endif
-
-
-//! A class which is used for representing collections of Object objects
-typedef VectorOfRefCounted<Object*> Objects;
-
-//! A type to use when returning sets of objects so as to avoid refcounting
-/** Always store using Objects instead, but return ObjectsTemp. Objects
-    can be constructed from a ObjectsTemp and vice versa.
- */
-typedef std::vector<Object*> ObjectsTemp;
-
-
 
 IMP_END_NAMESPACE
 
