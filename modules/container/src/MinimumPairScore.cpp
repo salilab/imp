@@ -17,7 +17,7 @@ MinimumPairScore::MinimumPairScore(const PairScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
   PairScore(name),
-  scores_(scores),
+  scores_(scores.begin(), scores.end()),
   n_(n)
 {
 }

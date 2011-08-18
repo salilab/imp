@@ -17,7 +17,7 @@ MinimumTripletScore::MinimumTripletScore(const TripletScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
   TripletScore(name),
-  scores_(scores),
+  scores_(scores.begin(), scores.end()),
   n_(n)
 {
 }

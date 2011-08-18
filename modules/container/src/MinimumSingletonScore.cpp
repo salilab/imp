@@ -17,7 +17,7 @@ MinimumSingletonScore::MinimumSingletonScore(const SingletonScoresTemp &scores,
                                            unsigned int n,
                                            std::string name):
   SingletonScore(name),
-  scores_(scores),
+  scores_(scores.begin(), scores.end()),
   n_(n)
 {
 }

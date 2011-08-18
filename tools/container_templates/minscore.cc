@@ -17,7 +17,7 @@ MINORMAXCLASSNAMEScore::MINORMAXCLASSNAMEScore(const CLASSNAMEScoresTemp &scores
                                            unsigned int n,
                                            std::string name):
   CLASSNAMEScore(name),
-  scores_(scores),
+  scores_(scores.begin(), scores.end()),
   n_(n)
 {
 }
