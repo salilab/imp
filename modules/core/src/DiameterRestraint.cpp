@@ -11,11 +11,13 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/CorePairsRestraint.h>
+#include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/SingletonConstraint.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/FixedRefiner.h>
+#include <IMP/core/generic.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -88,6 +90,45 @@ ParticlesTemp DiameterRestraint::get_input_particles() const {
 
 ContainersTemp DiameterRestraint::get_input_containers() const {
   return ContainersTemp(1, sc_);
+}
+
+
+Restraints DiameterRestraint::create_decomposition() const {
+  Restraints ret;
+  ParticlesTemp ps= sc_->get_particles();
+  IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
+          (diameter_, 1));
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(create_restraint(sps.get(),
+                                     ParticlePair(ps[i], ps[j])));
+      ret.back()->set_maximum_score(get_maximum_score());
+      std::ostringstream oss;
+      oss << get_name() << " " << i << " " << j;
+      ret.back()->set_name(oss.str());
+    }
+  }
+  return ret;
+}
+
+Restraints DiameterRestraint::create_current_decomposition() const {
+  Restraints ret;
+  ParticlesTemp ps= sc_->get_particles();
+  IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
+          (diameter_, 1));
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      if (sps->evaluate(ParticlePair(ps[i], ps[j]), NULL) > 0) {
+        ret.push_back(create_restraint(sps.get(),
+                                       ParticlePair(ps[i], ps[j])));
+        ret.back()->set_maximum_score(get_maximum_score());
+        std::ostringstream oss;
+        oss << get_name() << " " << i << " " << j;
+        ret.back()->set_name(oss.str());
+      }
+    }
+  }
+  return ret;
 }
 
 IMPCORE_END_NAMESPACE
