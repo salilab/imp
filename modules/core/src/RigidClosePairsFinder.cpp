@@ -59,11 +59,16 @@ namespace {
   void divvy_up_particles(const ParticlesTemp &ps,
                           ParticlesTemp &out,
                           RBM &members) {
+    IMP_IF_CHECK(USAGE) {
+      compatibility::set<Particle*> ups(ps.begin(), ps.end());
+      IMP_USAGE_CHECK(ups.size()==ps.size(),
+                      "Duplicate particles in input: "
+                      << ups.size() << "!= " << ps.size());
+    }
     for (unsigned int i=0; i< ps.size(); ++i) {
       if (RigidMember::particle_is_instance(ps[i])) {
         RigidBody rb=RigidMember(ps[i]).get_rigid_body();
-        if (members.find(rb)
-            == members.end()) {
+        if (members.find(rb)  == members.end()) {
           out.push_back(rb);
         }
         members[rb].push_back(ps[i]->get_index());
