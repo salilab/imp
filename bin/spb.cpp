@@ -84,7 +84,7 @@ for(unsigned int i=0;i<all_mol.size();++i){
 }
 // adding key for score
 rmf::KeyCategory my_kc= rmf::add_key_category("my data");
-rmf::FloatKey my_key=rh.add_float_key(my_kc,trajname,true);
+rmf::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
 
 //
 // CREATING RESTRAINTS
