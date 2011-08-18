@@ -21,6 +21,7 @@ files = [
 #         'restraints_utils.cpp',
 #         'sampling_space_utils.cpp',
          'WeightedExcludedVolumeRestraint.cpp',
+                 'WeightedExcludedVolumeRestraint3.cpp',
          'anchor_graph.cpp',
 #         'mc_cg_refinement.cpp'
          'RMSDClustering.cpp',
