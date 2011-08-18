@@ -80,7 +80,7 @@ ContainersTemp MinimumSingletonScore
 
 
 Restraints MinimumSingletonScore
-::get_instant_decomposition(Particle* vt) const {
+::get_current_decomposition(Particle* vt) const {
   Restraints ret;
   MinimumSingletonScoreMS bestn
     = find_minimal_set_MinimumSingletonScore(scores_.begin(),

@@ -83,7 +83,7 @@ double MinimumTripletRestraint
 }
 
 Restraints MinimumTripletRestraint
-::get_instant_decomposition() const {
+::get_current_decomposition() const {
   IMP_OBJECT_LOG;
   TripletMinimumMS bestn
     = find_minimal_set_TripletMinimum(c_.get(),

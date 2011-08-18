@@ -83,7 +83,7 @@ double MINORMAXCLASSNAMERestraint
 }
 
 Restraints MINORMAXCLASSNAMERestraint
-::get_instant_decomposition() const {
+::get_current_decomposition() const {
   IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
     = find_minimal_set_CLASSNAMEMINORMAX(c_.get(),

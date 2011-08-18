@@ -83,7 +83,7 @@ double MinimumPairRestraint
 }
 
 Restraints MinimumPairRestraint
-::get_instant_decomposition() const {
+::get_current_decomposition() const {
   IMP_OBJECT_LOG;
   PairMinimumMS bestn
     = find_minimal_set_PairMinimum(c_.get(),

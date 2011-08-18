@@ -29,7 +29,7 @@ public:
                        std::string name="TripletScore %1%");
   IMP_TRIPLET_SCORE(MinimumTripletScore);
 
-  Restraints get_instant_decomposition(const ParticleTriplet& vt) const;
+  Restraints get_current_decomposition(const ParticleTriplet& vt) const;
 };
 
 IMP_OBJECTS(MinimumTripletScore,MinimumTripletScores);

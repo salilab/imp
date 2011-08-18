@@ -83,7 +83,7 @@ double MinimumSingletonRestraint
 }
 
 Restraints MinimumSingletonRestraint
-::get_instant_decomposition() const {
+::get_current_decomposition() const {
   IMP_OBJECT_LOG;
   SingletonMinimumMS bestn
     = find_minimal_set_SingletonMinimum(c_.get(),

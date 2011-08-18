@@ -29,7 +29,7 @@ public:
                        std::string name="QuadScore %1%");
   IMP_QUAD_SCORE(MinimumQuadScore);
 
-  Restraints get_instant_decomposition(const ParticleQuad& vt) const;
+  Restraints get_current_decomposition(const ParticleQuad& vt) const;
 };
 
 IMP_OBJECTS(MinimumQuadScore,MinimumQuadScores);
