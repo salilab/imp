@@ -52,7 +52,7 @@ modfile="${IMPINSTALL}/build/imp-modules"
 python <<END
 def Import(var): pass
 def SConscript(var): pass
-env = {}
+env = {'local':True}
 exec(open('imp/modules/SConscript').read())
 f = open('$modfile', 'w')
 for m in modules:
