@@ -12,6 +12,7 @@
 #include "Key.h"
 #include <string>
 #include <vector>
+#include <IMP/compatibility/checked_vector.h>
 
 IMP_BEGIN_NAMESPACE
 
