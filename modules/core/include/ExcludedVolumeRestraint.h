@@ -71,7 +71,8 @@ public:
                                       double max) const;
 #endif
   IMP_RESTRAINT(ExcludedVolumeRestraint);
-  Restraints get_instantaneous_decomposition() const;
+  Restraints create_decomposition() const;
+  Restraints create_current_decomposition() const;
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
 };

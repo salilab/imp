@@ -382,18 +382,36 @@ ContainersTemp ExcludedVolumeRestraint
 ::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
-
-Restraints ExcludedVolumeRestraint
-::get_instantaneous_decomposition() const {
-  unprotected_evaluate_if_good(NULL, get_maximum_score());
-  Restraints ret(cur_list_.size());
-  for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    ret[i]= new PairRestraint(ssps_,
-               ParticlePair(get_model()->get_particle(cur_list_[i][0]),
-                          get_model()->get_particle(cur_list_[i][1])));
+Restraints ExcludedVolumeRestraint::create_decomposition() const {
+  Restraints ret;
+  ParticlesTemp ps= sc_->get_particles();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(create_restraint(ssps_.get(),
+                                     ParticlePair(ps[i], ps[j])));
+      ret.back()->set_maximum_score(get_maximum_score());
+      std::ostringstream oss;
+      oss << get_name() << " " << i << " " << j;
+      ret.back()->set_name(oss.str());
+    }
   }
   return ret;
 }
+
+Restraints ExcludedVolumeRestraint::create_current_decomposition() const {
+  Restraints ret;
+  for (unsigned int i=0; i< cur_list_.size(); ++i) {
+    ret.push_back(create_restraint(ssps_.get(),
+                                   IMP::internal::get_particle(get_model(),
+                                                               cur_list_[i])));
+    ret.back()->set_maximum_score(get_maximum_score());
+    std::ostringstream oss;
+    oss << get_name() << " " << i;
+    ret.back()->set_name(oss.str());
+  }
+  return ret;
+}
+
 
 IMP_LIST_IMPL(ExcludedVolumeRestraint, PairFilter,
               pair_filter,

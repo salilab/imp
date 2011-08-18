@@ -61,9 +61,9 @@ ContainersTemp SingletonRestraint::get_input_containers() const
 }
 
 
-Restraints SingletonRestraint::get_instant_decomposition() const {
+Restraints SingletonRestraint::get_current_decomposition() const {
   Pointer<Particle> vi= IMP::internal::get_particle(get_model(), v_);
-  return ss_->get_instant_decomposition(vi);
+  return ss_->get_current_decomposition(vi);
 }
 
 void SingletonRestraint::do_show(std::ostream& out) const
