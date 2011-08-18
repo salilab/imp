@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
     This class is C++ only.
  */
 template <class Data>
-class IMPCOREEXPORT DataObject: public Object
+class DataObject: public Object
 {
   Data data_;
 public:
