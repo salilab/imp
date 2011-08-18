@@ -11,6 +11,7 @@ files = [
          'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',
          'weighted_excluded_volume.h',
+                 'WeightedExcludedVolumeRestraint3.h',
 #         'sampling_space.h',
          'FittingSolutionRecord.h',
 #         'SingleDominoRun.h',
