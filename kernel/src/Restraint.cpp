@@ -68,6 +68,10 @@ double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   RestraintsTemp restraints;
   fill_restraints(restraints, this);
+  IMP_USAGE_CHECK(get_model(), "You must add the restraint to the"
+                  << " model before attempting to evaluate it."
+                  << " Use either Model::add_restraint() or "
+                  << "Model::add_temporary_restraint().");
   Floats ret= get_model()->evaluate(restraints, calc_derivs);
   return finish(ret, this);
 }
