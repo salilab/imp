@@ -122,6 +122,13 @@ public:
     set_pointer(o);
     return *this;
   }
+  //! Set it from a possibly NULL pointer.
+  template <class OT>
+  Pointer<O>& operator=(const Pointer<OT> &o) {
+    set_pointer(o.get());
+    return *this;
+  }
+
   //! Relinquish control of the pointer
   /** This must be the only pointer pointing to the object. Its
       reference count will be 0 after the function is called, but
