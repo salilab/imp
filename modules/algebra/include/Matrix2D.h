@@ -15,6 +15,7 @@
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
 #include <IMP/Object.h>
+#include <IMP/Pointer.h>
 #include <complex>
 
 IMPALGEBRA_BEGIN_NAMESPACE
