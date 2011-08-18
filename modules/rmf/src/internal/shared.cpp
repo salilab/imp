@@ -198,8 +198,8 @@ Ints SharedData::get_children(int node) const {
 
 
 
-KeyCategories SharedData::get_categories() const {
-  KeyCategories ret;
+Categories SharedData::get_categories() const {
+  Categories ret;
   for (unsigned int i=0; i< file_.get_number_of_children(); ++i) {
     std::string name= file_.get_child_name(i);
     if (name.rfind("list")== name.size()-4) {

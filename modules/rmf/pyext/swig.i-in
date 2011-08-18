@@ -15,7 +15,7 @@ IMP_SWIG_GRAPH(IMP::rmf, NodeTree, NodeTree, IMP::rmf::NodeHandle);
 IMP_SWIG_VALUE(IMP::rmf, NodeHandle, NodeHandles);
 IMP_SWIG_VALUE(IMP::rmf, RootHandle, RootHandles);
 IMP_SWIG_VALUE(IMP::rmf, NodeID, NodeIDs);
-IMP_SWIG_VALUE(IMP::rmf, Category, KeyCategories);
+IMP_SWIG_VALUE(IMP::rmf, Category, Categories);
 IMP_SWIG_VALUE_TEMPLATE(IMP::rmf, Key);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, FloatKey, FloatKey, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, IntKey, IntKey, IntKeys);

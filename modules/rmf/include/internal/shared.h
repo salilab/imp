@@ -322,7 +322,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   HDF5Group get_group() const {
     return file_;
   }
-  KeyCategories get_categories() const;
+  Categories get_categories() const;
   void set_association(int id, void *d, bool overwrite) {
     if (!d) {
       IMP_RMF_THROW("NULL association", ValueException);
