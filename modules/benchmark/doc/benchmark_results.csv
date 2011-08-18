@@ -7170,9 +7170,6 @@ container ssps direct bind set in 249500, 6.76e-03, 3.3e-02
 container direct bind set in 249500, 6.74e-03,    3.3e-02
 container set in 249500,      5.51e-03,           4.1e-02
 container set out 249500,     1.26e-02,           1.8e-02
-name is small_protein.pdb rigid body positions
-name is small_protein.pdb rigid body positions
-2418 particles
 k close random,               5.84e+01,           3.9e+02
 k close systematic,           1.46e+01,           2.8e+02
 k close far,                  2.84e+00,           4.0e+02
@@ -7225,18 +7222,8 @@ col grid 10000 0.1,           2.61e-01,           1.5e+07
 col grid 10000 0.5,           5.10e-01,           1.2e+07
 refiner children,             2.88e-03,           5.1e+08
 refiner leaves,               7.94e-02,           1.9e+07
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid quadratic 10,           3.32e-02,           0.0e+00
 rigid quadratic 30,           2.44e-02,           0.0e+00
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid hierarchy 10,           2.97e-04,           0.0e+00
 rigid hierarchy 30,           2.98e-04,           0.0e+00
 rmf large,                    inf,                0.0e+00
@@ -7337,86 +7324,6 @@ cpf quadratic 10000 5,        2.10e+00,           3.2e+07
 bcpf quadratic 10000 5,       4.97e+00,           3.1e+07
 connectivity slow,            7.72e-01,           5.3e-02
 connectivity fast,            1.52e-02,           1.2e+00
-name is MET positions
-name is VAL positions
-name is LEU positions
-name is SER positions
-name is GLU positions
-name is GLY positions
-name is GLU positions
-name is TRP positions
-name is GLN positions
-name is LEU positions
-name is VAL positions
-name is LEU positions
-name is HIS positions
-name is VAL positions
-name is TRP positions
-name is ALA positions
-name is LYS positions
-name is VAL positions
-name is GLU positions
-name is ALA positions
-name is ASP positions
-name is VAL positions
-name is ALA positions
-name is GLY positions
-name is HIS positions
-name is GLY positions
-name is GLN positions
-name is ASP positions
-name is ILE positions
-name is LEU positions
-name is ILE positions
-name is ARG positions
-name is LEU positions
-name is PHE positions
-name is LYS positions
-name is SER positions
-name is HIS positions
-name is PRO positions
-name is GLU positions
-name is THR positions
-name is LEU positions
-name is GLU positions
-name is LYS positions
-name is PHE positions
-name is ASP positions
-name is ARG positions
-name is VAL positions
-name is LYS positions
-name is HIS positions
-name is LEU positions
-name is LYS positions
-name is THR positions
-name is GLU positions
-name is ALA positions
-name is GLU positions
-name is MET positions
-name is LYS positions
-name is ALA positions
-name is SER positions
-name is GLU positions
-name is ASP positions
-name is LEU positions
-name is LYS positions
-name is LYS positions
-name is HIS positions
-name is GLY positions
-name is VAL positions
-name is THR positions
-name is VAL positions
-name is LEU positions
-name is THR positions
-name is ALA positions
-name is LEU positions
-name is GLY positions
-name is ALA positions
-name is ILE positions
-name is LEU positions
-name is LYS positions
-name is LYS positions
-name is LYS positions
 domino small,                 6.08e+00,           1.0e+00
 container direct list in 4950, 1.36e-04,          0.0e+00
 container ssps direct list in 4950, 1.38e-04,     0.0e+00
@@ -7446,9 +7353,6 @@ container ssps direct bind set in 249500, 6.76e-03, 1.1e+00
 container direct bind set in 249500, 6.72e-03,    1.1e+00
 container set in 249500,      5.49e-03,           1.4e+00
 container set out 249500,     1.27e-02,           5.9e-01
-name is small_protein.pdb rigid body positions
-name is small_protein.pdb rigid body positions
-2418 particles
 k close random,               6.10e+01,           3.9e+02
 k close systematic,           1.52e+01,           2.8e+02
 k close far,                  3.04e+00,           4.0e+02
@@ -7501,18 +7405,8 @@ col grid 10000 0.1,           2.58e-01,           1.5e+07
 col grid 10000 0.5,           5.12e-01,           1.2e+07
 refiner children,             2.87e-03,           5.1e+08
 refiner leaves,               7.94e-02,           1.9e+07
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid quadratic 10,           3.33e-02,           0.0e+00
 rigid quadratic 30,           2.40e-02,           0.0e+00
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid hierarchy 10,           2.95e-04,           0.0e+00
 rigid hierarchy 30,           2.97e-04,           0.0e+00
 rmf large,                    inf,                0.0e+00
@@ -7613,86 +7507,6 @@ cpf quadratic 10000 5,        2.11e+00,           3.1e+07
 bcpf quadratic 10000 5,       4.96e+00,           3.1e+07
 connectivity slow,            8.07e-01,           1.6e-02
 connectivity fast,            1.54e-02,           1.2e+00
-name is MET positions
-name is VAL positions
-name is LEU positions
-name is SER positions
-name is GLU positions
-name is GLY positions
-name is GLU positions
-name is TRP positions
-name is GLN positions
-name is LEU positions
-name is VAL positions
-name is LEU positions
-name is HIS positions
-name is VAL positions
-name is TRP positions
-name is ALA positions
-name is LYS positions
-name is VAL positions
-name is GLU positions
-name is ALA positions
-name is ASP positions
-name is VAL positions
-name is ALA positions
-name is GLY positions
-name is HIS positions
-name is GLY positions
-name is GLN positions
-name is ASP positions
-name is ILE positions
-name is LEU positions
-name is ILE positions
-name is ARG positions
-name is LEU positions
-name is PHE positions
-name is LYS positions
-name is SER positions
-name is HIS positions
-name is PRO positions
-name is GLU positions
-name is THR positions
-name is LEU positions
-name is GLU positions
-name is LYS positions
-name is PHE positions
-name is ASP positions
-name is ARG positions
-name is VAL positions
-name is LYS positions
-name is HIS positions
-name is LEU positions
-name is LYS positions
-name is THR positions
-name is GLU positions
-name is ALA positions
-name is GLU positions
-name is MET positions
-name is LYS positions
-name is ALA positions
-name is SER positions
-name is GLU positions
-name is ASP positions
-name is LEU positions
-name is LYS positions
-name is LYS positions
-name is HIS positions
-name is GLY positions
-name is VAL positions
-name is THR positions
-name is VAL positions
-name is LEU positions
-name is THR positions
-name is ALA positions
-name is LEU positions
-name is GLY positions
-name is ALA positions
-name is ILE positions
-name is LEU positions
-name is LYS positions
-name is LYS positions
-name is LYS positions
 domino small,                 6.04e+00,           1.0e+00
 container direct list in 4950, 1.37e-04,          0.0e+00
 container ssps direct list in 4950, 1.37e-04,     0.0e+00
@@ -7722,9 +7536,6 @@ container ssps direct bind set in 249500, 6.76e-03, 0.0e+00
 container direct bind set in 249500, 6.76e-03,    0.0e+00
 container set in 249500,      5.48e-03,           0.0e+00
 container set out 249500,     1.42e-02,           0.0e+00
-name is small_protein.pdb rigid body positions
-name is small_protein.pdb rigid body positions
-2418 particles
 k close random,               6.36e+01,           3.8e+02
 k close systematic,           1.52e+01,           2.8e+02
 k close far,                  3.01e+00,           4.0e+02
@@ -7777,18 +7588,8 @@ col grid 10000 0.1,           2.58e-01,           1.5e+07
 col grid 10000 0.5,           5.16e-01,           1.2e+07
 refiner children,             2.91e-03,           5.1e+08
 refiner leaves,               7.97e-02,           1.9e+07
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid quadratic 10,           3.30e-02,           0.0e+00
 rigid quadratic 30,           2.42e-02,           0.0e+00
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
-name is small_protein.pdb positions
 rigid hierarchy 10,           2.98e-04,           0.0e+00
 rigid hierarchy 30,           2.98e-04,           0.0e+00
 rmf large,                    inf,                0.0e+00
@@ -7810,5 +7611,556 @@ xyz decorator huge,           1.66e+02,           6.3e+11
 xyz particle huge,            6.03e+02,           6.3e+11
 xyz decorator from index huge, 8.47e+01,          6.3e+11
 xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  08/16/11
+mode,fast
+cpf index grid 10 0.1,        2.29e-06,           0.0e+00
+cpf grid 10 0.1,              2.32e-06,           0.0e+00
+cpf index grid 100 0.1,       1.67e-04,           0.0e+00
+cpf grid 100 0.1,             1.57e-04,           0.0e+00
+cpf index grid 1000 0.1,      1.69e-03,           5.9e+03
+cpf grid 1000 0.1,            1.60e-03,           7.8e+03
+cpf index grid 1000 0.5,      5.64e-03,           1.5e+05
+cpf grid 1000 0.5,            4.94e-03,           1.7e+05
+cpf index grid 1000 5,        1.92e-02,           2.1e+07
+cpf grid 1000 5,              2.25e-02,           1.7e+07
+cpf index grid 10000 0.1,     1.86e-02,           4.2e+04
+cpf grid 10000 0.1,           1.72e-02,           4.1e+04
+cpf index grid 10000 0.5,     6.15e-02,           1.5e+06
+cpf grid 10000 0.5,           5.60e-02,           1.7e+06
+cpf index grid 10000 5,       1.59e+00,           3.1e+07
+cpf grid 10000 5,             1.88e+00,           3.2e+07
+cpf index nn 1000 0.1,        1.60e-03,           9.3e+03
+cpf nn 1000 0.1,              1.65e-03,           1.1e+04
+bcpf nn 1000 0.1,             1.61e-03,           2.3e+04
+cpf index nn 1000 0.5,        2.63e-03,           9.2e+05
+cpf nn 1000 0.5,              2.59e-03,           8.7e+05
+bcpf nn 1000 0.5,             2.53e-03,           1.8e+06
+cpf index nn 1000 5,          2.51e-01,           3.0e+06
+cpf nn 1000 5,                2.46e-01,           3.4e+06
+bcpf nn 1000 5,               2.76e-01,           6.0e+06
+cpf index nn 10000 0.1,       2.07e-02,           9.3e+04
+cpf nn 10000 0.1,             2.10e-02,           1.0e+05
+bcpf nn 10000 0.1,            2.21e-02,           1.7e+05
+cpf index nn 10000 0.5,       1.10e-01,           2.1e+06
+cpf nn 10000 0.5,             1.08e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.23e-01,           3.8e+06
+cpf index box 1000 0.1,       7.31e-04,           1.7e+04
+cpf box 1000 0.1,             7.40e-04,           1.4e+04
+bcpf box 1000 0.1,            1.38e-03,           1.4e+04
+cpf index box 1000 0.5,       2.00e-03,           4.3e+05
+cpf box 1000 0.5,             2.02e-03,           4.5e+05
+bcpf box 1000 0.5,            4.01e-03,           4.9e+05
+cpf index box 1000 5,         2.20e-02,           1.7e+07
+cpf box 1000 5,               2.03e-02,           1.9e+07
+bcpf box 1000 5,              4.87e-02,           1.7e+07
+cpf index box 10000 0.1,      2.61e-02,           3.3e+04
+cpf box 10000 0.1,            2.64e-02,           3.2e+04
+bcpf box 10000 0.1,           5.21e-02,           3.1e+04
+cpf index box 10000 0.5,      6.58e-02,           1.3e+06
+cpf box 10000 0.5,            6.58e-02,           1.4e+06
+bcpf box 10000 0.5,           1.35e-01,           1.4e+06
+cpf index box 10000 5,        2.08e+00,           3.2e+07
+cpf box 10000 5,              1.80e+00,           3.2e+07
+bcpf box 10000 5,             4.15e+00,           3.2e+07
+cpf index quadratic 10 0.1,   1.07e-06,           0.0e+00
+cpf quadratic 10 0.1,         9.91e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.59e-06,           0.0e+00
+cpf index quadratic 100 0.1,  4.11e-05,           0.0e+00
+cpf quadratic 100 0.1,        3.98e-05,           0.0e+00
+bcpf quadratic 100 0.1,       8.60e-05,           0.0e+00
+cpf index quadratic 1000 0.1, 4.62e-03,           3.2e+03
+cpf quadratic 1000 0.1,       4.65e-03,           0.0e+00
+bcpf quadratic 1000 0.1,      9.92e-03,           1.3e+03
+cpf index quadratic 1000 0.5, 5.48e-03,           1.7e+05
+cpf quadratic 1000 0.5,       5.51e-03,           1.7e+05
+bcpf quadratic 1000 0.5,      1.16e-02,           1.6e+05
+cpf index quadratic 1000 5,   1.87e-02,           2.1e+07
+cpf quadratic 1000 5,         1.75e-02,           2.3e+07
+bcpf quadratic 1000 5,        4.10e-02,           1.9e+07
+cpf index quadratic 10000 0.1, 4.70e-01,          1.8e+03
+cpf quadratic 10000 0.1,      4.73e-01,           2.0e+03
+bcpf quadratic 10000 0.1,     1.00e+00,           1.9e+03
+cpf index quadratic 10000 0.5, 5.56e-01,          1.8e+05
+cpf quadratic 10000 0.5,      5.58e-01,           1.8e+05
+bcpf quadratic 10000 0.5,     1.18e+00,           2.2e+05
+cpf index quadratic 10000 5,  2.40e+00,           3.1e+07
+cpf quadratic 10000 5,        2.09e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.94e+00,           3.1e+07
+connectivity slow,            8.15e-01,           3.3e-02
+connectivity fast,            1.95e-02,           1.0e+00
+domino small,                 6.04e+00,           1.0e+00
+container direct list in 4950, 1.37e-04,          0.0e+00
+container ssps direct list in 4950, 1.37e-04,     0.0e+00
+container ssps direct call list in 4950, 1.15e-04, 0.0e+00
+container ssps direct bind list in 4950, 1.33e-04, 0.0e+00
+container direct bind list in 4950, 1.33e-04,     0.0e+00
+container list in 4950,       1.10e-04,           0.0e+00
+container list out 4950,      5.36e-02,           0.0e+00
+container direct list in 499500, 1.41e-02,        5.4e-03
+container ssps direct list in 499500, 1.42e-02,   5.4e-03
+container ssps direct call list in 499500, 1.21e-02, 6.3e-03
+container ssps direct bind list in 499500, 1.38e-02, 5.5e-03
+container direct bind list in 499500, 1.38e-02,   5.5e-03
+container list in 499500,     1.11e-02,           6.9e-03
+container list out 499500,    2.83e+03,           3.0e-05
+container direct set in 2450, 6.72e-05,           0.0e+00
+container ssps direct set in 2450, 6.73e-05,      0.0e+00
+container ssps direct call set in 2450, 5.72e-05, 0.0e+00
+container ssps direct bind set in 2450, 6.56e-05, 0.0e+00
+container direct bind set in 2450, 6.55e-05,      0.0e+00
+container set in 2450,        5.47e-05,           0.0e+00
+container set out 2450,       3.12e-02,           0.0e+00
+container direct set in 249500, 6.91e-03,         1.3e-02
+container ssps direct set in 249500, 6.91e-03,    1.3e-02
+container ssps direct call set in 249500, 5.87e-03, 1.5e-02
+container ssps direct bind set in 249500, 6.74e-03, 1.3e-02
+container direct bind set in 249500, 6.72e-03,    1.3e-02
+container set in 249500,      5.51e-03,           1.6e-02
+container set out 249500,     1.02e+03,           3.5e-05
+k close random,               5.88e+01,           3.9e+02
+k close systematic,           1.85e+01,           2.8e+02
+k close far,                  6.57e+00,           4.0e+02
+k close close,                1.58e+01,           0.0e+00
+k close random if good,       6.29e+01,           3.8e+02
+k close systematic if good,   1.83e+01,           2.8e+02
+k close far if good,          6.06e+00,           4.0e+02
+k close close if good,        1.57e+01,           0.0e+00
+excluded volume random,       3.93e-01,           2.7e+03
+excluded volume systematic,   7.13e-01,           1.1e+03
+excluded volume far,          1.73e+00,           8.0e+02
+excluded volume close,        2.26e+01,           0.0e+00
+excluded volume random if good, 2.28e-01,         4.3e+03
+excluded volume systematic if good, 6.62e-01,     1.2e+03
+excluded volume far if good,  5.40e-02,           1.9e+04
+excluded volume close if good, 1.26e+00,          9.6e+01
+pairs restraint random,       1.68e+01,           0.0e+00
+pairs restraint systematic,   1.98e+01,           0.0e+00
+pairs restraint far,          1.67e+01,           0.0e+00
+pairs restraint close,        3.30e+01,           0.0e+00
+pairs restraint random if good, 1.69e+01,         0.0e+00
+pairs restraint systematic if good, 1.98e+01,     0.0e+00
+pairs restraint far if good,  1.66e+01,           0.0e+00
+pairs restraint close if good, 3.30e+01,          0.0e+00
+knn cgal uniform 10 0,        2.25e-05,           4.4e+05
+knn cgal uniform 10 0.1,      2.37e-05,           4.3e+05
+knn cgal uniform 10 0.5,      2.25e-05,           4.4e+05
+knn cgal uniform 100 0,       5.30e-04,           2.2e+05
+knn cgal uniform 100 0.1,     5.25e-04,           2.4e+05
+knn cgal uniform 100 0.5,     4.40e-04,           2.8e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.53e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.43e-03,           1.9e+05
+knn linear uniform 10 0,      4.77e-06,           2.1e+06
+knn linear uniform 10 0.1,    4.32e-06,           2.7e+06
+knn linear uniform 10 0.5,    4.64e-06,           2.5e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.19e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.17e-04,           9.9e+05
+knn linear uniform 1000 0,    6.67e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.68e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.69e-03,           1.9e+05
+md charmm,                    4.14e+00,           -nan
+pdb,                          3.31e-01,           8.5e+07
+col quadratic 10000 0.1,      1.09e+00,           4.5e+06
+col quadratic 10000 0.5,      1.27e+00,           4.9e+06
+col box 10000 0.1,            3.84e-01,           1.1e+07
+col box 10000 0.5,            5.58e-01,           1.2e+07
+col grid 10000 0.1,           2.60e-01,           1.5e+07
+col grid 10000 0.5,           5.10e-01,           1.2e+07
+refiner children,             2.79e-03,           5.3e+08
+refiner leaves,               7.94e-02,           1.9e+07
+rigid quadratic 10,           3.32e-02,           0.0e+00
+rigid quadratic 30,           2.47e-02,           0.0e+00
+rigid hierarchy 10,           3.02e-04,           0.0e+00
+rigid hierarchy 30,           3.03e-04,           0.0e+00
+rmf large,                    inf,                0.0e+00
+rotation (cache),             1.30e-04,           1.4e+06
+rotation (nocache),           1.83e-04,           1.0e+06
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz decorator from index small, 3.57e-02,         4.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.59e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.28e+00,           6.8e+09
+xyz decorator from index large, 1.14e+00,         1.0e+10
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.66e+02,           6.3e+11
+xyz particle huge,            6.02e+02,           6.3e+11
+xyz decorator from index huge, 8.47e+01,          6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  08/17/11
+mode,fast
+cpf index grid 10 0.1,        2.30e-06,           0.0e+00
+cpf grid 10 0.1,              2.31e-06,           0.0e+00
+cpf index grid 100 0.1,       1.61e-04,           0.0e+00
+cpf grid 100 0.1,             1.55e-04,           0.0e+00
+cpf index grid 1000 0.1,      1.68e-03,           0.0e+00
+cpf grid 1000 0.1,            1.59e-03,           7.9e+03
+cpf index grid 1000 0.5,      5.53e-03,           1.6e+05
+cpf grid 1000 0.5,            4.97e-03,           1.8e+05
+cpf index grid 1000 5,        1.90e-02,           2.1e+07
+cpf grid 1000 5,              2.23e-02,           1.8e+07
+cpf index grid 10000 0.1,     1.83e-02,           4.5e+04
+cpf grid 10000 0.1,           1.70e-02,           4.2e+04
+cpf index grid 10000 0.5,     6.10e-02,           1.5e+06
+cpf grid 10000 0.5,           5.54e-02,           1.6e+06
+cpf index grid 10000 5,       1.60e+00,           3.2e+07
+cpf grid 10000 5,             1.88e+00,           3.2e+07
+cpf index nn 1000 0.1,        1.63e-03,           7.7e+03
+cpf nn 1000 0.1,              1.62e-03,           1.1e+04
+bcpf nn 1000 0.1,             1.57e-03,           2.2e+04
+cpf index nn 1000 0.5,        2.62e-03,           8.8e+05
+cpf nn 1000 0.5,              2.57e-03,           8.3e+05
+bcpf nn 1000 0.5,             2.50e-03,           1.8e+06
+cpf index nn 1000 5,          2.49e-01,           3.4e+06
+cpf nn 1000 5,                2.43e-01,           3.3e+06
+bcpf nn 1000 5,               2.82e-01,           5.6e+06
+cpf index nn 10000 0.1,       2.07e-02,           9.1e+04
+cpf nn 10000 0.1,             2.10e-02,           9.0e+04
+bcpf nn 10000 0.1,            2.19e-02,           1.8e+05
+cpf index nn 10000 0.5,       1.12e-01,           2.1e+06
+cpf nn 10000 0.5,             1.08e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.20e-01,           3.8e+06
+cpf index box 1000 0.1,       7.32e-04,           3.4e+03
+cpf box 1000 0.1,             7.50e-04,           3.3e+03
+bcpf box 1000 0.1,            1.40e-03,           1.8e+03
+cpf index box 1000 0.5,       1.98e-03,           4.9e+05
+cpf box 1000 0.5,             1.95e-03,           4.3e+05
+bcpf box 1000 0.5,            3.83e-03,           4.7e+05
+cpf index box 1000 5,         2.21e-02,           1.8e+07
+cpf box 1000 5,               2.05e-02,           1.9e+07
+bcpf box 1000 5,              4.70e-02,           1.7e+07
+cpf index box 10000 0.1,      2.63e-02,           3.1e+04
+cpf box 10000 0.1,            2.61e-02,           3.0e+04
+bcpf box 10000 0.1,           5.16e-02,           3.0e+04
+cpf index box 10000 0.5,      6.61e-02,           1.4e+06
+cpf box 10000 0.5,            6.54e-02,           1.4e+06
+bcpf box 10000 0.5,           1.35e-01,           1.4e+06
+cpf index box 10000 5,        2.07e+00,           3.2e+07
+cpf box 10000 5,              1.81e+00,           3.2e+07
+bcpf box 10000 5,             4.16e+00,           3.2e+07
+cpf index quadratic 10 0.1,   1.11e-06,           0.0e+00
+cpf quadratic 10 0.1,         9.55e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.46e-06,           0.0e+00
+cpf index quadratic 100 0.1,  4.03e-05,           0.0e+00
+cpf quadratic 100 0.1,        3.99e-05,           0.0e+00
+bcpf quadratic 100 0.1,       8.57e-05,           0.0e+00
+cpf index quadratic 1000 0.1, 4.60e-03,           1.1e+03
+cpf quadratic 1000 0.1,       4.63e-03,           3.2e+03
+bcpf quadratic 1000 0.1,      9.88e-03,           1.0e+03
+cpf index quadratic 1000 0.5, 5.49e-03,           1.7e+05
+cpf quadratic 1000 0.5,       5.49e-03,           1.7e+05
+bcpf quadratic 1000 0.5,      1.16e-02,           1.6e+05
+cpf index quadratic 1000 5,   1.89e-02,           2.1e+07
+cpf quadratic 1000 5,         1.76e-02,           2.3e+07
+bcpf quadratic 1000 5,        4.15e-02,           1.9e+07
+cpf index quadratic 10000 0.1, 4.68e-01,          1.8e+03
+cpf quadratic 10000 0.1,      4.70e-01,           1.8e+03
+bcpf quadratic 10000 0.1,     1.01e+00,           1.9e+03
+cpf index quadratic 10000 0.5, 5.54e-01,          1.8e+05
+cpf quadratic 10000 0.5,      5.56e-01,           1.8e+05
+bcpf quadratic 10000 0.5,     1.18e+00,           2.2e+05
+cpf index quadratic 10000 5,  2.44e+00,           3.2e+07
+cpf quadratic 10000 5,        2.10e+00,           3.1e+07
+bcpf quadratic 10000 5,       5.07e+00,           3.2e+07
+connectivity slow,            8.07e-01,           3.7e-02
+connectivity fast,            1.94e-02,           1.2e+00
+domino small,                 6.08e+00,           1.0e+00
+container direct list in 4950, 1.37e-04,          0.0e+00
+container ssps direct list in 4950, 1.36e-04,     0.0e+00
+container ssps direct call list in 4950, 1.15e-04, 0.0e+00
+container ssps direct bind list in 4950, 1.33e-04, 0.0e+00
+container direct bind list in 4950, 1.33e-04,     0.0e+00
+container list in 4950,       1.10e-04,           0.0e+00
+container list out 4950,      5.34e-02,           0.0e+00
+container direct list in 499500, 1.41e-02,        0.0e+00
+container ssps direct list in 499500, 1.41e-02,   0.0e+00
+container ssps direct call list in 499500, 1.20e-02, 0.0e+00
+container ssps direct bind list in 499500, 1.37e-02, 0.0e+00
+container direct bind list in 499500, 1.38e-02,   0.0e+00
+container list in 499500,     1.10e-02,           0.0e+00
+container list out 499500,    2.84e+03,           0.0e+00
+container direct set in 2450, 6.69e-05,           0.0e+00
+container ssps direct set in 2450, 6.74e-05,      0.0e+00
+container ssps direct call set in 2450, 5.72e-05, 0.0e+00
+container ssps direct bind set in 2450, 6.53e-05, 0.0e+00
+container direct bind set in 2450, 6.56e-05,      0.0e+00
+container set in 2450,        5.44e-05,           0.0e+00
+container set out 2450,       3.15e-02,           0.0e+00
+container direct set in 249500, 6.91e-03,         0.0e+00
+container ssps direct set in 249500, 6.91e-03,    0.0e+00
+container ssps direct call set in 249500, 5.85e-03, 0.0e+00
+container ssps direct bind set in 249500, 6.74e-03, 0.0e+00
+container direct bind set in 249500, 6.74e-03,    0.0e+00
+container set in 249500,      5.52e-03,           0.0e+00
+container set out 249500,     1.02e+03,           0.0e+00
+k close random,               6.39e+01,           3.9e+02
+k close systematic,           1.84e+01,           2.8e+02
+k close far,                  6.63e+00,           4.0e+02
+k close close,                1.61e+01,           0.0e+00
+k close random if good,       6.16e+01,           3.8e+02
+k close systematic if good,   1.86e+01,           2.8e+02
+k close far if good,          6.64e+00,           4.0e+02
+k close close if good,        1.63e+01,           0.0e+00
+excluded volume random,       4.13e-01,           2.7e+03
+excluded volume systematic,   7.27e-01,           1.1e+03
+excluded volume far,          1.97e+00,           8.0e+02
+excluded volume close,        2.37e+01,           0.0e+00
+excluded volume random if good, 2.49e-01,         4.2e+03
+excluded volume systematic if good, 7.32e-01,     1.2e+03
+excluded volume far if good,  5.54e-02,           1.8e+04
+excluded volume close if good, 1.29e+00,          7.5e+01
+pairs restraint random,       1.68e+01,           0.0e+00
+pairs restraint systematic,   4.79e+00,           0.0e+00
+pairs restraint far,          1.66e+01,           0.0e+00
+pairs restraint close,        2.18e+01,           0.0e+00
+pairs restraint random if good, 1.67e+01,         0.0e+00
+pairs restraint systematic if good, 4.79e+00,     0.0e+00
+pairs restraint far if good,  1.66e+01,           0.0e+00
+pairs restraint close if good, 2.19e+01,          0.0e+00
+incremental mc,               9.62e-03,           3.2e+05
+knn cgal uniform 10 0,        2.76e-05,           4.5e+05
+knn cgal uniform 10 0.1,      2.19e-05,           4.6e+05
+knn cgal uniform 10 0.5,      2.04e-05,           7.0e+05
+knn cgal uniform 100 0,       5.46e-04,           2.4e+05
+knn cgal uniform 100 0.1,     5.06e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.53e-04,           2.6e+05
+knn cgal uniform 1000 0,      8.04e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.84e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.30e-03,           2.0e+05
+knn linear uniform 10 0,      4.90e-06,           3.1e+06
+knn linear uniform 10 0.1,    4.65e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.64e-06,           1.9e+06
+knn linear uniform 100 0,     1.13e-04,           1.2e+06
+knn linear uniform 100 0.1,   1.18e-04,           9.8e+05
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.65e-03,           1.9e+05
+md charmm,                    3.98e+00,           -nan
+pdb,                          3.34e-01,           3.4e+08
+col quadratic 10000 0.1,      1.09e+00,           4.5e+06
+col quadratic 10000 0.5,      1.26e+00,           4.9e+06
+col box 10000 0.1,            3.74e-01,           1.1e+07
+col box 10000 0.5,            5.48e-01,           1.2e+07
+col grid 10000 0.1,           2.62e-01,           1.5e+07
+col grid 10000 0.5,           5.10e-01,           1.2e+07
+refiner children,             2.71e-03,           5.4e+08
+refiner leaves,               7.97e-02,           1.9e+07
+rigid quadratic 10,           3.26e-02,           0.0e+00
+rigid quadratic 30,           2.32e-02,           0.0e+00
+rigid hierarchy 10,           4.26e-04,           0.0e+00
+rigid hierarchy 30,           4.23e-04,           0.0e+00
+rmf large,                    inf,                0.0e+00
+rotation (cache),             1.31e-04,           -8.5e+05
+rotation (nocache),           1.82e-04,           -6.4e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz decorator from index small, 3.57e-02,         4.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.28e+00,           6.8e+09
+xyz decorator from index large, 1.14e+00,         1.0e+10
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.65e+02,           6.3e+11
+xyz particle huge,            5.99e+02,           6.3e+11
+xyz decorator from index huge, 8.47e+01,          6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.47e+01,           6.3e+11
+date,  08/18/11
+mode,fast
+cpf index grid 10 0.1,        2.35e-06,           0.0e+00
+cpf grid 10 0.1,              2.35e-06,           0.0e+00
+cpf index grid 100 0.1,       1.64e-04,           0.0e+00
+cpf grid 100 0.1,             1.56e-04,           0.0e+00
+cpf index grid 1000 0.1,      1.69e-03,           4.4e+03
+cpf grid 1000 0.1,            1.60e-03,           0.0e+00
+cpf index grid 1000 0.5,      5.57e-03,           1.5e+05
+cpf grid 1000 0.5,            5.02e-03,           1.9e+05
+cpf index grid 1000 5,        1.88e-02,           2.0e+07
+cpf grid 1000 5,              2.27e-02,           1.8e+07
+cpf index grid 10000 0.1,     1.85e-02,           4.1e+04
+cpf grid 10000 0.1,           1.71e-02,           4.8e+04
+cpf index grid 10000 0.5,     6.05e-02,           1.5e+06
+cpf grid 10000 0.5,           5.60e-02,           1.6e+06
+cpf index grid 10000 5,       1.60e+00,           3.2e+07
+cpf grid 10000 5,             1.86e+00,           3.1e+07
+cpf index nn 1000 0.1,        1.66e-03,           9.0e+03
+cpf nn 1000 0.1,              1.65e-03,           1.7e+04
+bcpf nn 1000 0.1,             1.60e-03,           2.2e+04
+cpf index nn 1000 0.5,        2.62e-03,           8.8e+05
+cpf nn 1000 0.5,              2.57e-03,           8.5e+05
+bcpf nn 1000 0.5,             2.55e-03,           1.7e+06
+cpf index nn 1000 5,          2.55e-01,           3.1e+06
+cpf nn 1000 5,                2.44e-01,           3.3e+06
+bcpf nn 1000 5,               2.84e-01,           5.6e+06
+cpf index nn 10000 0.1,       2.11e-02,           9.3e+04
+cpf nn 10000 0.1,             2.11e-02,           8.7e+04
+bcpf nn 10000 0.1,            2.27e-02,           1.8e+05
+cpf index nn 10000 0.5,       1.12e-01,           2.1e+06
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.22e-01,           3.8e+06
+cpf index box 1000 0.1,       7.21e-04,           0.0e+00
+cpf box 1000 0.1,             7.40e-04,           1.0e+04
+bcpf box 1000 0.1,            1.39e-03,           1.3e+04
+cpf index box 1000 0.5,       1.97e-03,           4.6e+05
+cpf box 1000 0.5,             2.02e-03,           4.8e+05
+bcpf box 1000 0.5,            3.88e-03,           4.4e+05
+cpf index box 1000 5,         2.23e-02,           1.8e+07
+cpf box 1000 5,               2.13e-02,           1.9e+07
+bcpf box 1000 5,              4.69e-02,           1.7e+07
+cpf index box 10000 0.1,      2.61e-02,           3.0e+04
+cpf box 10000 0.1,            2.65e-02,           3.1e+04
+bcpf box 10000 0.1,           5.21e-02,           2.8e+04
+cpf index box 10000 0.5,      6.58e-02,           1.4e+06
+cpf box 10000 0.5,            6.58e-02,           1.4e+06
+bcpf box 10000 0.5,           1.35e-01,           1.4e+06
+cpf index box 10000 5,        2.06e+00,           3.1e+07
+cpf box 10000 5,              1.78e+00,           3.2e+07
+bcpf box 10000 5,             4.14e+00,           3.2e+07
+cpf index quadratic 10 0.1,   1.08e-06,           0.0e+00
+cpf quadratic 10 0.1,         9.87e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.47e-06,           0.0e+00
+cpf index quadratic 100 0.1,  4.07e-05,           0.0e+00
+cpf quadratic 100 0.1,        4.05e-05,           0.0e+00
+bcpf quadratic 100 0.1,       8.61e-05,           0.0e+00
+cpf index quadratic 1000 0.1, 4.67e-03,           2.1e+03
+cpf quadratic 1000 0.1,       4.66e-03,           1.6e+03
+bcpf quadratic 1000 0.1,      9.88e-03,           1.3e+03
+cpf index quadratic 1000 0.5, 5.54e-03,           1.5e+05
+cpf quadratic 1000 0.5,       5.54e-03,           1.6e+05
+bcpf quadratic 1000 0.5,      1.16e-02,           1.6e+05
+cpf index quadratic 1000 5,   1.87e-02,           2.1e+07
+cpf quadratic 1000 5,         1.77e-02,           2.3e+07
+bcpf quadratic 1000 5,        4.03e-02,           1.9e+07
+cpf index quadratic 10000 0.1, 4.75e-01,          2.0e+03
+cpf quadratic 10000 0.1,      4.77e-01,           1.6e+03
+bcpf quadratic 10000 0.1,     1.01e+00,           1.9e+03
+cpf index quadratic 10000 0.5, 5.66e-01,          1.9e+05
+cpf quadratic 10000 0.5,      5.66e-01,           1.9e+05
+bcpf quadratic 10000 0.5,     1.18e+00,           2.2e+05
+cpf index quadratic 10000 5,  2.42e+00,           3.1e+07
+cpf quadratic 10000 5,        2.12e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.94e+00,           3.1e+07
+connectivity slow,            8.00e-01,           6.0e-02
+connectivity fast,            1.92e-02,           9.4e-01
+domino small,                 6.09e+00,           1.0e+00
+container direct list in 4950, 1.36e-04,          0.0e+00
+container ssps direct list in 4950, 1.36e-04,     0.0e+00
+container ssps direct call list in 4950, 1.15e-04, 0.0e+00
+container ssps direct bind list in 4950, 1.32e-04, 0.0e+00
+container direct bind list in 4950, 1.32e-04,     0.0e+00
+container list in 4950,       1.10e-04,           0.0e+00
+container list out 4950,      5.34e-02,           0.0e+00
+container direct list in 499500, 1.40e-02,        0.0e+00
+container ssps direct list in 499500, 1.41e-02,   0.0e+00
+container ssps direct call list in 499500, 1.21e-02, 0.0e+00
+container ssps direct bind list in 499500, 1.37e-02, 0.0e+00
+container direct bind list in 499500, 1.37e-02,   0.0e+00
+container list in 499500,     1.11e-02,           0.0e+00
+container list out 499500,    2.81e+03,           0.0e+00
+container direct set in 2450, 6.70e-05,           0.0e+00
+container ssps direct set in 2450, 6.76e-05,      0.0e+00
+container ssps direct call set in 2450, 5.71e-05, 0.0e+00
+container ssps direct bind set in 2450, 6.54e-05, 0.0e+00
+container direct bind set in 2450, 6.57e-05,      0.0e+00
+container set in 2450,        5.45e-05,           0.0e+00
+container set out 2450,       3.12e-02,           0.0e+00
+container direct set in 249500, 6.93e-03,         1.3e-02
+container ssps direct set in 249500, 6.91e-03,    1.3e-02
+container ssps direct call set in 249500, 5.85e-03, 1.6e-02
+container ssps direct bind set in 249500, 6.72e-03, 1.4e-02
+container direct bind set in 249500, 6.76e-03,    1.4e-02
+container set in 249500,      5.49e-03,           1.7e-02
+container set out 249500,     9.83e+02,           3.7e-05
+k close random,               6.25e+01,           3.8e+02
+k close systematic,           1.84e+01,           2.8e+02
+k close far,                  6.72e+00,           4.0e+02
+k close close,                1.59e+01,           0.0e+00
+k close random if good,       7.01e+01,           3.9e+02
+k close systematic if good,   1.84e+01,           2.8e+02
+k close far if good,          6.63e+00,           4.0e+02
+k close close if good,        1.60e+01,           0.0e+00
+excluded volume random,       4.90e-01,           2.3e+03
+excluded volume systematic,   7.25e-01,           1.1e+03
+excluded volume far,          1.94e+00,           8.0e+02
+excluded volume close,        2.41e+01,           0.0e+00
+excluded volume random if good, 2.45e-01,         4.3e+03
+excluded volume systematic if good, 7.32e-01,     1.2e+03
+excluded volume far if good,  5.48e-02,           1.8e+04
+excluded volume close if good, 1.34e+00,          5.5e+01
+pairs restraint random,       1.69e+01,           0.0e+00
+pairs restraint systematic,   4.86e+00,           0.0e+00
+pairs restraint far,          1.67e+01,           0.0e+00
+pairs restraint close,        2.44e+01,           0.0e+00
+pairs restraint random if good, 1.68e+01,         0.0e+00
+pairs restraint systematic if good, 4.80e+00,     0.0e+00
+pairs restraint far if good,  1.67e+01,           0.0e+00
+pairs restraint close if good, 2.23e+01,          0.0e+00
+incremental mc,               9.47e-03,           9.2e+05
+knn cgal uniform 10 0,        2.21e-05,           5.1e+05
+knn cgal uniform 10 0.1,      2.15e-05,           5.2e+05
+knn cgal uniform 10 0.5,      2.28e-05,           4.9e+05
+knn cgal uniform 100 0,       5.63e-04,           2.3e+05
+knn cgal uniform 100 0.1,     5.00e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.18e-04,           3.0e+05
+knn cgal uniform 1000 0,      7.94e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.42e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.33e-03,           2.0e+05
+knn linear uniform 10 0,      4.75e-06,           2.6e+06
+knn linear uniform 10 0.1,    4.80e-06,           3.0e+06
+knn linear uniform 10 0.5,    4.83e-06,           3.2e+06
+knn linear uniform 100 0,     1.16e-04,           1.0e+06
+knn linear uniform 100 0.1,   1.17e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.16e-04,           1.1e+06
+knn linear uniform 1000 0,    6.67e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.67e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.72e-03,           1.8e+05
+md charmm,                    4.12e+00,           -nan
+pdb,                          3.27e-01,           3.1e+08
+col quadratic 10000 0.1,      1.10e+00,           4.5e+06
+col quadratic 10000 0.5,      1.29e+00,           4.9e+06
+col box 10000 0.1,            3.73e-01,           1.1e+07
+col box 10000 0.5,            5.50e-01,           1.2e+07
+col grid 10000 0.1,           2.64e-01,           1.5e+07
+col grid 10000 0.5,           5.10e-01,           1.2e+07
+refiner children,             2.79e-03,           5.3e+08
+refiner leaves,               7.97e-02,           1.9e+07
+rigid quadratic 10,           3.27e-02,           0.0e+00
+rigid quadratic 30,           2.32e-02,           0.0e+00
+rigid hierarchy 10,           3.01e-04,           0.0e+00
+rigid hierarchy 30,           3.02e-04,           0.0e+00
+rmf large,                    inf,                0.0e+00
+rotation (cache),             1.31e-04,           4.4e+05
+rotation (nocache),           1.82e-04,           1.9e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz decorator from index small, 3.57e-02,         4.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz decorator from index large, 1.14e+00,         1.0e+10
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.66e+02,           6.3e+11
+xyz particle huge,            6.06e+02,           6.3e+11
+xyz decorator from index huge, 8.48e+01,          6.3e+11
+xyz vector huge,              8.49e+01,           6.3e+11
 xyz struct huge,              8.48e+01,           6.3e+11
 xyz vector space huge,        8.48e+01,           6.3e+11
