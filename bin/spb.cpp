@@ -82,6 +82,9 @@ for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
+// adding key for score
+rmf::KeyCategory my_kc= rmf::add_key_category("my data");
+rmf::FloatKey my_key=rh.add_float_key(my_kc,trajname,true);
 
 //
 // CREATING RESTRAINTS
@@ -245,8 +248,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  logfile << imc << " " << myindex << " " << myscore << " "
  << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
 
-// save configuration to file
+// save configuration and score to file
  if(imc%mydata.MC.nwrite==0){
+  rh.set_value(my_key,myscore,imc/mydata.MC.nwrite);
   for(unsigned int i=0;i<all_mol.size();++i){
    atom::Hierarchies hs=all_mol[i].get_children();
    for(unsigned int j=0;j<hs.size();++j){
