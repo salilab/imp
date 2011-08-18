@@ -72,6 +72,28 @@ ContainersTemp HarmonicSphereDistancePairScore
 
 
 
+HarmonicUpperBoundSphereDiameterPairScore
+::HarmonicUpperBoundSphereDiameterPairScore(double d0, double k):
+  x0_(d0), k_(k){}
+
+void HarmonicUpperBoundSphereDiameterPairScore
+::do_show(std::ostream &out) const {
+  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
+}
+
+ParticlesTemp HarmonicUpperBoundSphereDiameterPairScore
+::get_input_particles(Particle*p) const {
+  return ParticlesTemp(1, p);
+}
+
+ContainersTemp HarmonicUpperBoundSphereDiameterPairScore
+::get_input_containers(Particle*) const {
+  return ContainersTemp();
+}
+
+
+
+
 HarmonicUpperBoundSphereDistancePairScore
 ::HarmonicUpperBoundSphereDistancePairScore(double d0, double k):
   x0_(d0), k_(k){}
