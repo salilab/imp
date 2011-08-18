@@ -10,7 +10,6 @@
 #define IMPRMF_KEY_CATEGORY_H
 
 #include "rmf_config.h"
-#include "internal/utility.h"
 #include "infrastructure_macros.h"
 #include <IMP/exception.h>
 #include <vector>

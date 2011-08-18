@@ -11,15 +11,13 @@
 
 #include "rmf_config.h"
 #include "NodeID.h"
-#include "internal/utility.h"
+#include "infrastructure_macros.h"
 #include "internal/intrusive_ptr_object.h"
 #include <hdf5.h>
 #include <algorithm>
 #include <vector>
 #include <exception>
 
-#include <IMP/exception.h>
-#include <IMP/RefCounted.h>
 #include <limits>
 #include <boost/utility.hpp>
 

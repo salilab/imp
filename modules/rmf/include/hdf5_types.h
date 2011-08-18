@@ -13,7 +13,7 @@
 #include <IMP/base_types.h>
 #include "NodeID.h"
 #include "hdf5_handle.h"
-#include "internal/utility.h"
+#include "infrastructure_macros.h"
 #include <hdf5.h>
 #include <algorithm>
 #include <vector>
