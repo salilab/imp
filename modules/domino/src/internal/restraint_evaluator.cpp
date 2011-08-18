@@ -139,7 +139,7 @@ void ModelData::initialize() {
   {
     double max=rs_[0]->get_model()->get_maximum_score();
     if (max < std::numeric_limits<double>::max()) {
-      std::pair<Restraints, Floats> cur=
+      std::pair<RestraintsTemp, Floats> cur=
         get_restraints_and_weights(get_as<RestraintsTemp>(rs_),
                                    1);
       Ints curi;
@@ -173,7 +173,7 @@ void ModelData::validate() const {
                   == dependencies_.size(),
                      "The restraints changed after Domino was set up. "
                   << "This is a bad thing: "
-                  << get_restraints(rs_).size()
+                  << get_restraints(get_as<RestraintsTemp>(rs_)).size()
                   << " vs " << dependencies_.size());
   IMP_INTERNAL_CHECK(dependencies_.size()== rdata_.size(),
                      "Inconsistent data in Restraint evaluator or Filter");
