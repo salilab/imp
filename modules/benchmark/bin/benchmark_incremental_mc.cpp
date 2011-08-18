@@ -56,12 +56,13 @@ void add_DOPE(Model *m, atom::Hierarchy h) {
   m->add_restraint(dope);
 }
 
-int main(int, char *[]) {
+void benchmark_it(std::string name, bool incr) {
   IMP_NEW(Model, m, ());
+  m->set_log_level(IMP::SILENT);
   atom::Hierarchy h= atom::Hierarchy::setup_particle(new Particle(m));
   int nrbs=5;
   RigidBodies rbs;
-  for (unsigned int i=0; i < nrbs; ++i) {
+  for ( int i=0; i < nrbs; ++i) {
     rbs.push_back(create_rb(h));
   }
   add_excluded_volume(m, h, 1.0);
@@ -69,7 +70,7 @@ int main(int, char *[]) {
   add_DOPE(m, h);
   IMP_NEW(MonteCarlo, mc, (m));
   mc->set_return_best(false);
-  mc->set_use_incremental_evaluate(true);
+  mc->set_use_incremental_evaluate(incr);
   mc->set_kt(1.0);
   Movers mvs;
   for (unsigned int i=0; i< rbs.size(); ++i) {
@@ -79,7 +80,13 @@ int main(int, char *[]) {
   mc->add_mover(new SerialMover(mvs));
   double runtime, score=0;
   IMP_TIME(
-    score+=mc->optimize(500), runtime);
-  IMP::benchmark::report("incremental mc", runtime, score);
+           score+=mc->optimize(500), runtime);
+  IMP::benchmark::report(name+" mc", runtime, score);
+}
+
+
+int main(int, char *[]) {
+  benchmark_it("non incremental", false);
+  benchmark_it("incremental", true);
   return 0;
 }
