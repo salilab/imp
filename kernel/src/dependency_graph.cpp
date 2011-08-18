@@ -198,7 +198,7 @@ namespace {
         ContainersTemp ct= filter((*c)->get_input_containers());
         if (!ct.empty()) {
           IMP_LOG(VERBOSE, ", containers are "
-                  << Containers(ct));
+                  << ct);
                   }
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
@@ -236,7 +236,7 @@ namespace {
         IMP_IF_LOG(VERBOSE) {
           if (!ct.empty()) {
             IMP_LOG(VERBOSE, ", containers are "
-                    << Containers(ct));
+                    << ct);
           }
         }
         for (unsigned int j=0; j < ct.size(); ++j) {
@@ -250,7 +250,7 @@ namespace {
         ParticlesTemp pt= filter((*c)->get_output_particles());
         if (!pt.empty()) {
           IMP_LOG(VERBOSE, ", particles are "
-                  << Particles(pt));
+                  << pt);
         }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);

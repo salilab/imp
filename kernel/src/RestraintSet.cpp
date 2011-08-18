@@ -129,7 +129,8 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     RestraintsTemp frs= get_restraints(rs);
-    RestraintsTemp fret= get_restraints(ret);
+    RestraintsTemp fret= get_restraints(RestraintsTemp(ret.begin(),
+                                                       ret.end()));
     Floats efrs= rs[0]->get_model()->evaluate(frs, false);
     Floats efret= rs[0]->get_model()->evaluate(fret, false);
     double s0= std::accumulate(efrs.begin(), efrs.end(), 0);

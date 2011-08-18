@@ -54,8 +54,9 @@ double Optimizer::optimize(unsigned int max_steps) {
     setup_incremental();
   } else {
     flattened_restraints_
-    =IMP::get_restraints(RestraintsTemp(restraints_.begin(),
-                                        restraints_.end()));
+      =get_as<Restraints>(IMP::get_restraints(
+                                RestraintsTemp(restraints_.begin(),
+                                               restraints_.end())));
   }
   set_was_used(true);
 
@@ -84,8 +85,9 @@ double Optimizer::evaluate(bool compute_derivatives) const {
   if (restraints_.empty()) {
     last_score_= get_model()->evaluate(compute_derivatives);
   } else {
-    IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
-                                           compute_derivatives);
+    IMP::Floats ret
+      = get_model()->evaluate(get_as<RestraintsTemp>(flattened_restraints_),
+                              compute_derivatives);
     last_score_= std::accumulate(ret.begin(), ret.end(), 0.0);
   }
   return last_score_;
@@ -94,7 +96,8 @@ double Optimizer::evaluate(bool compute_derivatives) const {
 double Optimizer::evaluate_if_below(bool compute_derivatives,
                                    double max) const {
   IMP_FUNCTION_LOG;
-  RestraintsTemp rs= flattened_restraints_;
+  RestraintsTemp rs(flattened_restraints_.begin(),
+                    flattened_restraints_.end());
   if (rs.empty()) {
     rs
       = IMP::get_restraints(RestraintsTemp(1, get_model()
@@ -111,7 +114,7 @@ RestraintsTemp Optimizer::get_restraints() const {
   if (restraints_.empty()) {
     return RestraintsTemp(1, model_->get_root_restraint_set());
   } else {
-    return restraints_;
+    return get_as<RestraintsTemp>(restraints_);
   }
 }
 
@@ -122,8 +125,11 @@ void Optimizer::setup_incremental() {
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     get_model()->add_temporary_restraint(flattened_restraints_[i]);
   }
-  incremental_scores_= get_model()->evaluate(flattened_restraints_, false);
-  DependencyGraph dg= get_dependency_graph(flattened_restraints_);
+  incremental_scores_
+    = get_model()->evaluate(get_as<RestraintsTemp>(flattened_restraints_),
+                            false);
+  DependencyGraph dg
+    = get_dependency_graph(get_as<RestraintsTemp>(flattened_restraints_));
   compatibility::map<Restraint*, int> index;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     index[flattened_restraints_[i]]=i;

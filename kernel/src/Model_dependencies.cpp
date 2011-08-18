@@ -214,14 +214,15 @@ void Model::compute_dependencies() const {
           << " restraints " << score_states.size() << " score states "
           << " and " << get_number_of_particles()
           << " particles." << std::endl);
-  DependencyGraph dg= get_dependency_graph(score_states,
-                                           all_restraints);
+  DependencyGraph dg
+    = get_dependency_graph(get_as<ScoreStatesTemp>(score_states),
+                           get_as<RestraintsTemp>(all_restraints));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   order_score_states(dg, ordered_score_states_);
   compute_restraint_dependencies(dg, all_restraints,
                                  ordered_score_states_);
   IMP_LOG(VERBOSE, "Ordered score states are "
-          << ScoreStates(ordered_score_states_) << std::endl);
+          << ordered_score_states_ << std::endl);
 }
 
 
