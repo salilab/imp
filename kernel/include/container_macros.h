@@ -226,7 +226,7 @@ Data get_##lcname(unsigned int i) const {                               \
 void reserve_##lcnames(unsigned int sz) {                               \
   lcname##_vector_.reserve(sz);                                         \
 }                                                                       \
-IMP_EXPOSE_ITERATORS(IMP::VectorOfRefCounted<Data>,                     \
+IMP_EXPOSE_ITERATORS(PluralData,                                        \
                      lcname##_vector_, Ucname, Ucnames, lcname, lcnames); \
 private:                                                                \
 const PluralData &access_##lcnames() const {return lcname##_vector_;}   \
