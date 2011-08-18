@@ -18,6 +18,7 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/domino/particle_states.h>
 #include <boost/graph/depth_first_search.hpp>
+#include <IMP/core/GridClosePairsFinder.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <IMP/compatibility/vector_property_map.h>
 
@@ -161,6 +162,46 @@ create_assignments_container(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
                                      "Assignments from file %1%");
 }
 #endif
+
+
+
+ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
+                                            double max_distance,
+                                            ParticleStatesTable *pst) {
+  if (ps.empty()) return ParticlePairsTemp();
+  ParticleStatesList psl;
+  ParticlesTemp all= pst->get_particles();
+  unsigned int max=0;
+  for (unsigned int i=0; i< all.size(); ++i) {
+    psl.push_back( pst->get_particle_states(all[i]));
+    max= std::max(psl[i]->get_number_of_particle_states(), max);
+  }
+  algebra::BoundingBox3Ds bbs(ps.size());
+  for (unsigned int i=0; i< max; ++i) {
+    for (unsigned int j=0; j< all.size(); ++j) {
+      psl[j]->load_particle_state(std::min(i,
+                 psl[j]->get_number_of_particle_states()-1),
+                                      all[j]);
+    }
+    ps[0]->get_model()->update();
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      core::XYZ d(ps[j]);
+      bbs[j]+= d.get_coordinates();
+    }
+  }
+  for (unsigned int j=0; j< ps.size(); ++j) {
+    core::XYZR d(ps[j]);
+    bbs[j]+= d.get_radius() + max_distance;
+  }
+  IMP_NEW(core::GridClosePairsFinder, gcpf, ());
+  gcpf->set_distance(max_distance);
+  IntPairs ips= gcpf->get_close_pairs(bbs);
+  ParticlePairsTemp ret(ips.size());
+  for (unsigned int i=0; i< ips.size(); ++i) {
+    ret[i]= ParticlePair(ps[ips[i].first], ps[ips[i].second]);
+  }
+  return ret;
+}
 
 
 

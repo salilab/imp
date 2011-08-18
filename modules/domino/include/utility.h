@@ -118,6 +118,14 @@ create_assignments_container(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
 /** @} */
 #endif
 
+/** Return the list of interactions implied by the passed balls
+    given the allowed positions specified by the ParticleStatesTable.
+*/
+IMPDOMINOEXPORT
+ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
+                                            double max_distance,
+                                            ParticleStatesTable *pst);
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_UTILITY_H */

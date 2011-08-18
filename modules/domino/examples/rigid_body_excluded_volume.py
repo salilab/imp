@@ -21,12 +21,7 @@ def create_excluded_volume(m, helices):
     for h in helices:
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
     lsc= IMP.container.ListSingletonContainer(all)
-    cpf=IMP.core.RigidClosePairsFinder()
-    cpf.set_log_level(IMP.SILENT)
-    nbl= IMP.container.ClosePairContainer(lsc, 0, cpf)
-    nbl.set_log_level(IMP.SILENT)
-    ps= IMP.core.SoftSpherePairScore(1000)
-    evr= IMP.container.PairsRestraint(ps, nbl)
+    evr= IMP.core.ExcludedVolumeRestraint(lsc, 1)
     m.add_restraint(evr)
     m.set_maximum_score(evr, .01)
 
