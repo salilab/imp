@@ -128,11 +128,12 @@ namespace {
   void get_restraint_sets_internal(It b, It e,
                                    RestraintSetsTemp &ret) {
     for (It c=b; c!= e; ++c) {
-      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      Restraint *r=*c;
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(r);
       if (rs) {
         get_restraint_sets_internal(rs->restraints_begin(),
                                     rs->restraints_end(), ret);
-        ret.push_back(dynamic_cast<RestraintSet*>(*c));
+        ret.push_back(dynamic_cast<RestraintSet*>(r));
       } else {
       }
     }
