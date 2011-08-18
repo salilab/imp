@@ -61,9 +61,9 @@ ContainersTemp QuadRestraint::get_input_containers() const
 }
 
 
-Restraints QuadRestraint::get_instant_decomposition() const {
+Restraints QuadRestraint::get_current_decomposition() const {
   ParticleQuad vi= IMP::internal::get_particle(get_model(), v_);
-  return ss_->get_instant_decomposition(vi);
+  return ss_->get_current_decomposition(vi);
 }
 
 void QuadRestraint::do_show(std::ostream& out) const
