@@ -512,7 +512,7 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
       }
       cg->set_color(colors[em[*ebe.first]->get_name()]);
       cg->set_name(on);
-      ret.push_back(cg);
+      ret.push_back(cg.get());
     }
   }
   return ret;
@@ -534,7 +534,7 @@ get_subset_graph_geometry(const SubsetGraph &ig) {
               (algebra::Sphere3D(pi.get_coordinates(), 1)));
       cg->set_color(c);
       cg->set_name(s.get_name());
-      ret.push_back(cg);
+      ret.push_back(cg.get());
     }
   }
   return ret;

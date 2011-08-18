@@ -15,8 +15,8 @@
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 ModelData::ModelData(const RestraintsTemp& rs,
-                          ParticleStatesTable* pst) {
-  rs_=rs;
+                     ParticleStatesTable* pst):
+  rs_(rs.begin(), rs.end()){
   pst_=pst;
   initialized_=false;
   cache_=true;
@@ -89,7 +89,7 @@ namespace {
 void ModelData::initialize() {
   IMP_FUNCTION_LOG;
   //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
-  DependencyGraph dg= get_dependency_graph(rs_);
+  DependencyGraph dg= get_dependency_graph(get_as<RestraintsTemp>(rs_));
   const ParticlesTemp all= pst_->get_particles();
   IMP::compatibility::map<Particle*, ParticlesTemp> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
@@ -101,8 +101,8 @@ void ModelData::initialize() {
   }
   IMP::compatibility::map<Restraint*, Ints> index;
   RestraintsTemp restraints
-    = get_restraints(rs_);
-  for (Restraints::const_iterator rit= restraints.begin();
+    = get_restraints(get_as<RestraintsTemp>(rs_));
+  for (RestraintsTemp::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
     handle_restraint(*rit, idm, preload_,
