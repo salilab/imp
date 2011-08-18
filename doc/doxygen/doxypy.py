@@ -196,6 +196,11 @@ class Doxypy(object):
                and len(self.comment) > 0:
                 self.comment.insert(0, "@internal Private Python class")
 
+            # Hide wrappers of swig namespace utility classes
+            elif re.match('\s*class\s*IMP.*_SwigPyIterator', self.defclass[0]) \
+                 and len(self.comment) > 0:
+                self.comment.insert(0, "@internal SWIG utility class")
+
             # If the class is not documented in Python, strip any inheritance
             # information, otherwise doxygen gets confused when building the
             # class hierarchical index and includes each SWIG class twice
