@@ -36,7 +36,7 @@ namespace {
 
   template <class TypeT>
   bool show_type_data_xml(IMP::rmf::NodeHandle nh,
-                          IMP::rmf::KeyCategory kc,
+                          IMP::rmf::Category kc,
                           bool opened, std::ostream &out) {
     IMP::rmf::RootHandle rh= nh.get_root_handle();
     std::vector<IMP::rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
@@ -94,7 +94,7 @@ namespace {
     return opened;
   }
   void show_data_xml(IMP::rmf::NodeHandle nh,
-                     IMP::rmf::KeyCategory kc,
+                     IMP::rmf::Category kc,
                      std::ostream &out) {
     bool opened=false;
     opened=show_type_data_xml<IMP::rmf::IntTraits>(nh, kc, opened, out);
@@ -115,14 +115,14 @@ namespace {
               << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
               << "\"/>\n";
     if (verbose) {
-      for (unsigned int i=0; I< cs.size(); ++i) {
+      for (unsigned int i=0; i< cs.size(); ++i) {
         show_data_xml(nh, cs[i], out);
       }
     }
     IMP::rmf::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       out << "<child>\n";
-      show_xml(children[i], out);
+      show_xml(children[i],cs,  out);
       out << "</child>\n";
     }
   }
