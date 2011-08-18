@@ -80,7 +80,7 @@ ContainersTemp MinimumTripletScore
 
 
 Restraints MinimumTripletScore
-::get_instant_decomposition(const ParticleTriplet& vt) const {
+::get_current_decomposition(const ParticleTriplet& vt) const {
   Restraints ret;
   MinimumTripletScoreMS bestn
     = find_minimal_set_MinimumTripletScore(scores_.begin(),

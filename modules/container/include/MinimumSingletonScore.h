@@ -29,7 +29,7 @@ public:
                        std::string name="SingletonScore %1%");
   IMP_SINGLETON_SCORE(MinimumSingletonScore);
 
-  Restraints get_instant_decomposition(Particle* vt) const;
+  Restraints get_current_decomposition(Particle* vt) const;
 };
 
 IMP_OBJECTS(MinimumSingletonScore,MinimumSingletonScores);

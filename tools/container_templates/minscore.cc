@@ -80,7 +80,7 @@ ContainersTemp MINORMAXCLASSNAMEScore
 
 
 Restraints MINORMAXCLASSNAMEScore
-::get_instant_decomposition(ARGUMENTTYPE vt) const {
+::get_current_decomposition(ARGUMENTTYPE vt) const {
   Restraints ret;
   MINORMAXCLASSNAMEScoreMS bestn
     = find_minimal_set_MINORMAXCLASSNAMEScore(scores_.begin(),

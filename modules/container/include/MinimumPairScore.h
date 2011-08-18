@@ -29,7 +29,7 @@ public:
                        std::string name="PairScore %1%");
   IMP_PAIR_SCORE(MinimumPairScore);
 
-  Restraints get_instant_decomposition(const ParticlePair& vt) const;
+  Restraints get_current_decomposition(const ParticlePair& vt) const;
 };
 
 IMP_OBJECTS(MinimumPairScore,MinimumPairScores);
