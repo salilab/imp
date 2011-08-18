@@ -14,7 +14,7 @@
 #include "../hdf5_types.h"
 #include "../names.h"
 #include "../hdf5_wrapper.h"
-#include "utility.h"
+#include "../infrastructure_macros.h"
 #include <IMP/compatibility/set.h>
 #include <boost/tuple/tuple.hpp>
 #include <hdf5.h>

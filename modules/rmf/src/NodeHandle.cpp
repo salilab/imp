@@ -7,7 +7,7 @@
  */
 
 #include <IMP/rmf/NodeHandle.h>
-#include <IMP/internal/utility.h>
+#include <IMP/infrastructure_macros.h>
 #include <boost/tuple/tuple.hpp>
 #include <IMP/rmf/Category.h>
 #include <IMP/rmf/RootHandle.h>

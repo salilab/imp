@@ -38,7 +38,7 @@
 #ifndef IMPRMF_INTRUSIVE_PTR_OBJECT_H
 #define IMPRMF_INTRUSIVE_PTR_OBJECT_H
 
-#include "utility.h"
+#include "../infrastructure_macros.h"
 #include <boost/intrusive_ptr.hpp>
 // avoid thread overhead if not required/available
 #if defined(BOOST_HAS_THREADS)

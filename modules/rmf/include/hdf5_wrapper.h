@@ -12,7 +12,7 @@
 #include "rmf_config.h"
 #include "hdf5_types.h"
 #include "hdf5_handle.h"
-#include "internal/utility.h"
+#include "infrastructure_macros.h"
 #include <IMP/base_types.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
