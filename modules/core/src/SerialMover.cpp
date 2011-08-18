@@ -12,7 +12,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SerialMover::SerialMover(const MoversTemp& mvs):
-  mvs_(mvs), imov_(-1) {
+  mvs_(mvs.begin(), mvs.end()), imov_(-1) {
 }
 
 ParticlesTemp SerialMover::propose_move(Float f) {
