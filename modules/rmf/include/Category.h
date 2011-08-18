@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -15,24 +15,27 @@
 #include <vector>
 
 IMPRMF_BEGIN_NAMESPACE
-class KeyCategory;
 
-/** Add a new key category.
- */
-IMPRMFEXPORT KeyCategory add_key_category(std::string name);
-
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+  class SharedData;
+}
+#endif
+class Category;
 
 /** The category for a key. */
-class IMPRMFEXPORT KeyCategory {
+class IMPRMFEXPORT Category {
   int i_;
-  KeyCategory(unsigned int i): i_(i){}
-#ifndef SWIG
-  friend KeyCategory add_key_category(std::string name);
-#endif
+  friend class RootHandle;
+  friend class internal::SharedData;
+  static Category get_category(std::string name);
 public:
-  KeyCategory(): i_(-1){}
+#ifndef IMP_DOXYGEN
+  Category(unsigned int i): i_(i){}
+#endif
+  Category(): i_(-1){}
   unsigned int get_index() const {
-    IMP_USAGE_CHECK(i_ >=0, "Invalid KeyCategory used");
+    IMP_USAGE_CHECK(i_ >=0, "Invalid Category used");
     return i_;
   }
   std::string get_name() const;
@@ -40,14 +43,14 @@ public:
     // int, string, float
     return 3*i_;
   }
-  IMP_HASHABLE_INLINE(KeyCategory, return i_);
-  IMP_COMPARISONS_1(KeyCategory, i_);
+  IMP_HASHABLE_INLINE(Category, return i_);
+  IMP_COMPARISONS_1(Category, i_);
   void show(std::ostream &out) const {
     out << get_name();
   }
 };
 
-IMP_VALUES(KeyCategory, KeyCategories);
+IMP_VALUES(Category, KeyCategories);
 
 /** Standard physical keys are
     - "cartesian_x", "cartesian_y", "cartesian_z" for
@@ -55,7 +58,7 @@ IMP_VALUES(KeyCategory, KeyCategories);
     - "radius" for radius in angstroms
     - "mass" for mass in daltons
  */
-IMPRMFEXPORT extern const KeyCategory Physics;
+IMPRMFEXPORT extern const Category Physics;
 
 /** Standard sequence keys are:
     - "begin residue index", "beyond residue index" for one
@@ -69,7 +72,7 @@ IMPRMFEXPORT extern const KeyCategory Physics;
     from pdb files, the position in the alphabet of the chain should probably
     be used (eg, chain 'A' is 0)
 */
-IMPRMFEXPORT extern const KeyCategory Sequence;
+IMPRMFEXPORT extern const Category Sequence;
 
 
 /** Float keys are
@@ -83,7 +86,7 @@ IMPRMFEXPORT extern const KeyCategory Sequence;
         - 2 for cylinder, described by cartesian_x0,cartesian_y0,cartesian_z0,
         cartesian_x1,cartesian_y1,cartesian_z1, r
  */
-IMPRMFEXPORT extern const KeyCategory Shape;
+IMPRMFEXPORT extern const Category Shape;
 
 
 /** Float keys are
@@ -91,7 +94,7 @@ IMPRMFEXPORT extern const KeyCategory Shape;
     Index keys are:
     - representation{i} for the representation nodes involved
 */
-IMPRMFEXPORT extern const KeyCategory Feature;
+IMPRMFEXPORT extern const Category Feature;
 
 IMPRMF_END_NAMESPACE
 

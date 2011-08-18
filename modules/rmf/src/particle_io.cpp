@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -16,6 +16,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 void add_particle(RootHandle fh, Particle* ps) {
   NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
+  Category IMP= fh.add_category("IMP");
   n.set_association(ps);
   {
     IMP::FloatKeys fks= ps->get_float_keys();
@@ -66,6 +67,7 @@ void add_particle(RootHandle fh, Particle* ps) {
 
 ParticlesTemp create_particles(RootHandle fh, Model *m) {
   NodeHandles ch= fh.get_children();
+  Category IMP= fh.add_category("IMP");
   ParticlesTemp ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
     NodeHandle cur= ch[i];
@@ -126,7 +128,4 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
   }
   return ret;
 }
-
-const KeyCategory IMP=add_key_category("IMP");
-
 IMPRMF_END_NAMESPACE

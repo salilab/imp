@@ -10,7 +10,7 @@
 #define IMPRMF_KEY_H
 
 #include "rmf_config.h"
-#include "KeyCategory.h"
+#include "Category.h"
 #include "hdf5_types.h"
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -28,9 +28,9 @@ class Key {
   friend class NodeHandle;
   friend class internal::SharedData;
   int i_;
-  KeyCategory ci_;
+  Category ci_;
   bool pf_;
-  Key(KeyCategory category_id,
+  Key(Category category_id,
       int i, bool pf): i_(i), ci_(category_id),
                        pf_(pf) {}
   int get_index() const {
@@ -39,7 +39,7 @@ class Key {
   bool get_is_per_frame() const {
     return pf_;
   }
-  KeyCategory get_category() const {
+  Category get_category() const {
     return ci_;
   }
 public:

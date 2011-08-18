@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- IMP::rmf::KeyCategory was renamed to IMP::rmf::Category
 - The deprecated constructors for various rmf/hdf5 things from files have been removed. Now use the methods IMP::rmf::open_rmf_file(), IMP::rmf::create_rmf_file(), IMP::rmf::open_rmf_file_read_only(), IMP::rmf::open_hdf5_file(), IMP::rmf::create_hdf5_file().
 - IMP::rmf broke backward compatibility in order to accelerate loading times of files and use a more compact storage for strings.
 - The IMP::core::MoverBase was changed to move it off of the IMP::SingletonContainer. This resulted in the IMP::core::BallMover and IMP::core::NormalMover having new constructors. Now create them from a list of particles, a list of float keys and a radius/standard deviation. This removes some complexity and inefficiencies as well is removes some scope for errors.

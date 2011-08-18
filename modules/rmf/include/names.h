@@ -41,7 +41,7 @@ inline std::string get_bond_data_data_set_name() {
   return "bond_data";
 }
 //! Get the name of the attribute which lists all the keys of the category
-inline std::string get_key_list_data_set_name(KeyCategory category_id,
+inline std::string get_key_list_data_set_name(Category category_id,
                                               std::string type_name,
                                                bool per_frame) {
   std::ostringstream oss;
@@ -50,7 +50,7 @@ inline std::string get_key_list_data_set_name(KeyCategory category_id,
   return oss.str();
 }
 //! Get the name of the data set for storing a particular type of data
-inline std::string get_data_data_set_name(KeyCategory category_id,
+inline std::string get_data_data_set_name(Category category_id,
                                           std::string type_name,
                                           bool per_frame) {
   std::ostringstream oss;

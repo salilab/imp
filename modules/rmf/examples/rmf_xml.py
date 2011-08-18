@@ -22,19 +22,17 @@ def show_data_xml(nh, kc):
     if opened:
         print "/>"
 
-def show_xml(nh):
+def show_xml(nh, kcs):
     name=nh.get_name()
     name.replace(" ", "_")
     print "<node name=\""+name+"\" id=\""+str(nh.get_id())+"\" type=\""+IMP.rmf.get_type_name(nh.get_type())+"\"/>";
     if verbose:
-        show_data_xml(nh, IMP.rmf.Physics)
-        show_data_xml(nh, IMP.rmf.Sequence)
-        show_data_xml(nh, IMP.rmf.Shape)
-        show_data_xml(nh, IMP.rmf.Feature)
+        for kc in kcs:
+            show_data_xml(nh, kc)
     children= nh.get_children()
     for c in children:
         print "<child>"
-        show_xml(c);
+        show_xml(c, kcs);
         print "</child>"
 
 # open the file, and don't clear the contents
@@ -47,7 +45,8 @@ print "</description>"
 print "<path>"
 print input
 print "</path>"
-show_xml(rh)
+kcs= rh.get_categories()
+show_xml(rh, kcs)
 if rh.get_number_of_bonds() >0:
     print "<bonds>";
     for b in rh.get_bonds():

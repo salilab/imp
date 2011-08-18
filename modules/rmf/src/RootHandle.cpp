@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -46,6 +46,21 @@ std::vector<std::pair<NodeHandle, NodeHandle> > RootHandle::get_bonds() const {
     ret[i]= get_bond(i);
   }
   return ret;
+}
+
+
+Category RootHandle::add_category(std::string name) {
+  return Category::get_category(name);
+}
+bool RootHandle::get_has_category(std::string name) const {
+  KeyCategories all= get_categories();
+  for (unsigned int i=0; i< all.size(); ++i) {
+    if (all[i].get_name()==name) return true;
+  }
+  return false;
+}
+KeyCategories RootHandle::get_categories() const {
+  return shared_->get_categories();
 }
 
 IMPRMF_END_NAMESPACE

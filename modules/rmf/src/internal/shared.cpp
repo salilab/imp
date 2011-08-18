@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -196,4 +196,29 @@ Ints SharedData::get_children(int node) const {
   return ret;
 }
 
+
+
+KeyCategories SharedData::get_categories() const {
+  KeyCategories ret;
+  for (unsigned int i=0; i< file_.get_number_of_children(); ++i) {
+    std::string name= file_.get_child_name(i);
+    if (name.rfind("list")== name.size()-4) {
+      size_t first= name.find('_');
+      if (first == std::string::npos) continue;
+      std::string trunc(name, first+1);
+      std::string catname(trunc, 0, trunc.find('_'));
+      bool found=false;
+      for (unsigned int j=0; j< ret.size(); ++j) {
+        if (ret[j].get_name() == catname) {
+          found=true;
+          break;
+        }
+      }
+      if (!found) {
+        ret.push_back(Category::get_category(catname));
+      }
+    }
+  }
+  return ret;
+}
 IMPRMF_END_INTERNAL_NAMESPACE

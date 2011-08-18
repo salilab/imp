@@ -21,12 +21,10 @@ IMPRMF_BEGIN_NAMESPACE
     supported. Note that currently particles must be added so that
     any particles that are store in a given particles attributes are
     added to the file first.
+
+    The data is stored in a category named IMP.
     @{
 */
-/**
-*/
-IMPRMFEXPORT extern const KeyCategory IMP;
-
 /** Write the attributes of an arbitrary particle to the file.
  */
 IMPRMFEXPORT void add_particle(RootHandle fh, Particle* ps);
