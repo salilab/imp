@@ -22,6 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
 /** This class also serves as an example of how to build restraints which
     have internal ScoreStates and perhaps more than one actual restraint
     object.
+
+    \note, Currently, decomposing this restraint results in pieces which
+    score deviations from the diameter with a harmonic upper bound of strength
+    1.
  */
 class IMPCOREEXPORT DiameterRestraint: public Restraint
 {
@@ -39,7 +43,8 @@ public:
                     SingletonContainer *sc, Float diameter);
 
   IMP_RESTRAINT(DiameterRestraint);
-
+  Restraints create_decomposition() const;
+  Restraints create_current_decomposition() const;
   void set_model(Model *m);
 };
 
