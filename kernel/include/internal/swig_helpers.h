@@ -16,6 +16,7 @@
 #include "../SingletonScore.h"
 #include "../macros.h"
 #include "../Object.h"
+#include "IMP/compatibility/checked_vector.h"
 #include <boost/array.hpp>
 #include <vector>
 
@@ -138,6 +139,14 @@ namespace swig {
 
   template <class T>
   struct ValueOrObject<T*, typename enable_if<is_base_of<Object, T> >::type > {
+    static const T* get(const T*t) {return *t;}
+    typedef T type;
+    typedef T* store_type;
+  };
+
+  template <class T>
+  struct ValueOrObject<Pointer<T>,
+                       typename enable_if<is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
@@ -533,6 +542,12 @@ namespace swig {
   struct Convert<VectorOfRefCounted<T, P> > :
     public ConvertVectorBase< VectorOfRefCounted<T, P> > {
     static const int converter=8;
+  };
+
+  template <class T>
+  struct Convert<IMP::compatibility::checked_vector<T> > :
+    public ConvertVectorBase< IMP::compatibility::checked_vector<T> > {
+    static const int converter=20;
   };
 
   template <class T, class P>
