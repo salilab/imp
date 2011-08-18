@@ -55,7 +55,7 @@ class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
     clear_matrix_before_projecting = true;
   }
 public:
-  ImageReaderWriter *srw; // Writer used to save the images
+  IMP::Pointer<ImageReaderWriter> srw; // Writer used to save the images
   bool save_images; // Save images after projeting
   bool normalize; // Normalize the projection after generating it
   bool clear_matrix_before_projecting; // Set the matrix to zeros
