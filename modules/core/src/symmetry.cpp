@@ -48,8 +48,10 @@ void TransformationSymmetry::apply(Particle *p) const
 ParticlesTemp TransformationSymmetry::get_input_particles(Particle *p) const {
   ParticlesTemp ret;
   ret.push_back(p);
-  for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
-    ret.push_back(RigidBody(p).get_member(i));
+  if (RigidBody::particle_is_instance(p)) {
+    for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
+      ret.push_back(RigidBody(p).get_member(i));
+    }
   }
   ret.push_back(Reference(p).get_reference_particle());
   return ret;
@@ -57,8 +59,10 @@ ParticlesTemp TransformationSymmetry::get_input_particles(Particle *p) const {
 
 ParticlesTemp TransformationSymmetry::get_output_particles(Particle *p) const {
   ParticlesTemp ret(1,p);
-  for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
-    ret.push_back(RigidBody(p).get_member(i));
+  if (RigidBody::particle_is_instance(p)) {
+    for (unsigned int i=0; i< RigidBody(p).get_number_of_members(); ++i) {
+      ret.push_back(RigidBody(p).get_member(i));
+    }
   }
   return ret;
 }
