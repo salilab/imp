@@ -33,7 +33,7 @@ public:
 };
 template <class Data>
 inline void DataObject<Data>::do_show(std::ostream &out) const {
-  out << data_;
+  IMP_UNUSED(out);
 }
 
 IMPCORE_END_NAMESPACE
