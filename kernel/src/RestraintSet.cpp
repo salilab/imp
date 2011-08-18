@@ -119,11 +119,24 @@ void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
 
 
 Restraints create_decomposition(const RestraintsTemp &rs) {
+  IMP_FUNCTION_LOG;
+  if (rs.empty()) return Restraints();
   Restraints ret;
   RestraintsTemp all= get_restraints(rs);
   for (unsigned int i=0; i< all.size(); ++i) {
     Restraints cur= all[i]->create_decomposition();
     ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    RestraintsTemp frs= get_restraints(rs);
+    RestraintsTemp fret= get_restraints(ret);
+    Floats efrs= rs[0]->get_model()->evaluate(frs, false);
+    Floats efret= rs[0]->get_model()->evaluate(fret, false);
+    double s0= std::accumulate(efrs.begin(), efrs.end(), 0);
+    double s1= std::accumulate(efret.begin(), efret.end(), 0);
+    IMP_INTERNAL_CHECK(std::abs(s0-s1) < .1*std::abs(s0+s1)+.1,
+                       "The before and after scores don't agree: "
+                       << s0 << " vs " << s1);
   }
   return ret;
 }
