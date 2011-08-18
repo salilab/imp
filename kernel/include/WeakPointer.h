@@ -63,7 +63,6 @@ public:
   WeakPointer(): o_(NULL) {}
   /** initialize from a pointer */
   explicit WeakPointer(O* o): o_(NULL) {
-    IMP_INTERNAL_CHECK(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
   const O& operator*() const {
