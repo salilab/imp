@@ -354,18 +354,18 @@ struct ArrayTraits {
   static void write_values_dataset(hid_t d, hid_t is,
                                    hid_t s,
                                    const Types& v) {
-    IMP_NOT_IMPLEMENTED;
+    IMP_RMF_NOT_IMPLEMENTED;
   }
   static Types read_values_dataset(hid_t d, hid_t is,
                                    hid_t sp,
                                    unsigned int sz) {
-    IMP_NOT_IMPLEMENTED;
+    IMP_RMF_NOT_IMPLEMENTED;
   }
   static Types read_values_attribute(hid_t a, unsigned int size) {
-    IMP_NOT_IMPLEMENTED;
+    IMP_RMF_NOT_IMPLEMENTED;
   }
   static void write_values_attribute(hid_t a, const Types &v) {
-    IMP_NOT_IMPLEMENTED;
+    IMP_RMF_NOT_IMPLEMENTED;
   }
   static hid_t get_hdf5_fill_type() {
     return get_hdf5_memory_type();

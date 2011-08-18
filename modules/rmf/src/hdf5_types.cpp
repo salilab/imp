@@ -202,32 +202,32 @@ std::string StringTraits::read_value_dataset(hid_t d,
 void StringTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
                                         const std::vector<std::string>& ) {
-  IMP_UNUSED(d);
-  IMP_UNUSED(is);
-  IMP_UNUSED(s);
+  IMP_RMF_UNUSED(d);
+  IMP_RMF_UNUSED(is);
+  IMP_RMF_UNUSED(s);
   //IMP_UNUSED(v);
-  IMP_NOT_IMPLEMENTED;
+  IMP_RMF_NOT_IMPLEMENTED;
 }
 std::vector<std::string> StringTraits::read_values_dataset(hid_t d, hid_t is,
                                                            hid_t sp,
                                                            unsigned int sz) {
-  IMP_UNUSED(d);
-  IMP_UNUSED(is);
-  IMP_UNUSED(sp);
-  IMP_UNUSED(sz);
-  IMP_NOT_IMPLEMENTED;
+  IMP_RMF_UNUSED(d);
+  IMP_RMF_UNUSED(is);
+  IMP_RMF_UNUSED(sp);
+  IMP_RMF_UNUSED(sz);
+  IMP_RMF_NOT_IMPLEMENTED;
 }
 
 void StringTraits::write_values_attribute(hid_t d,
                                 const std::vector<std::string> &) {
-  IMP_UNUSED(d);
-  IMP_NOT_IMPLEMENTED;
+  IMP_RMF_UNUSED(d);
+  IMP_RMF_NOT_IMPLEMENTED;
 }
 std::vector<std::string> StringTraits::read_values_attribute(hid_t d,
                                                              unsigned int num) {
-  IMP_UNUSED(d);
-  IMP_UNUSED(num);
-  IMP_NOT_IMPLEMENTED;
+  IMP_RMF_UNUSED(d);
+  IMP_RMF_UNUSED(num);
+  IMP_RMF_NOT_IMPLEMENTED;
 }
 
 std::string StringTraits::get_name() {

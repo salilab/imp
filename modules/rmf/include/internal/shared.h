@@ -340,24 +340,6 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
     }
     association_[id]=d;
     back_association_[d]=id;
-    /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      unsigned int azs=0;
-      for (unsigned int i=0; i< association_.size(); ++i) {
-      if (association_[i]) ++azs;
-      }
-      IMP_INTERNAL_CHECK(azs== back_association_.size(),
-      "Sizes don't match: " << azs
-      << " vs " << back_association_.size());
-      for (unsigned int i=0; i< association_.size(); ++i) {
-      if (!association_[i]) continue;
-      IMP_INTERNAL_CHECK(back_association_.find(association_[i])
-      != back_association_.end(),
-      "Back and forth not found");
-      IMP_INTERNAL_CHECK(back_association_.find(association_[i])->second
-      == i,
-      "Back and forth don't match");
-      }
-      }*/
   }
   bool get_has_association(void* d) const {
     return back_association_.find(d) != back_association_.end();

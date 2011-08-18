@@ -10,7 +10,7 @@
 #define IMPRMF_NODE_ID_H
 
 #include "rmf_config.h"
-#include <IMP/macros.h>
+#include "infrastructure_macros.h"
 #include <vector>
 #include <iostream>
 
@@ -31,11 +31,13 @@ public:
   int get_index() const {
     return i_;
   }
-  IMP_COMPARISONS_1(NodeID, i_);
-  IMP_HASHABLE_INLINE(NodeID, return i_);
+  IMP_RMF_COMPARISONS_1(NodeID, i_);
+  IMP_RMF_HASHABLE(NodeID, return i_);
 };
 
-IMP_VALUES(NodeID, NodeIDs);
+typedef std::vector<NodeID> NodeIDs;
+IMP_OUTPUT_OPERATOR(NodeID);
+
 
 IMPRMF_END_NAMESPACE
 

@@ -1,3 +1,5 @@
+%include "IMP/rmf/infrastructure_macros.h"
+
 
 namespace IMP {
 namespace rmf {

@@ -17,7 +17,6 @@ RootHandle::RootHandle(HDF5Group root, bool create):
 }
 
 NodeHandle RootHandle::get_node_handle_from_id(NodeID id) const {
-  //IMP_USAGE_CHECK( id >=0, "Invalid id " << id);
   return NodeHandle(id.get_index(), shared_.get());
 }
 
@@ -34,9 +33,9 @@ std::string RootHandle::get_description() const {
   return shared_->get_group().get_char_attribute("description");
 }
 void RootHandle::set_description(std::string descr) {
-  IMP_USAGE_CHECK(descr.empty()
-                  || descr[descr.size()-1]=='\n',
-                  "Description should end in a newline.");
+  IMP_RMF_USAGE_CHECK(descr.empty()
+                      || descr[descr.size()-1]=='\n',
+                      "Description should end in a newline.");
   shared_->get_group().set_char_attribute("description", descr);
 }
 

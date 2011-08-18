@@ -17,12 +17,50 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/intrusive_ptr.hpp>
 
+
+
+#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName)                  \
+  /** \brief get the value of the attribute k from this node
+      The node must have the attribute and if it is a per-frame
+      attribute, and frame is not specified then frame 0 is
+      used.
+  */                                                                    \
+  UCName##Traits::Type get_value(UCName##Key k,                         \
+                                 unsigned int frame=0) const {          \
+    IMP_RMF_USAGE_CHECK(get_has_value(k, frame), "Node " << get_name()  \
+                    << " does not have a value for key "                \
+                    << shared_->get_name(k) << " on frame "             \
+                    << frame);                                          \
+    return shared_->get_value<UCName##Traits>(node_, k, frame);         \
+  }                                                                     \
+  /** \brief  set the value of the attribute k for this node
+
+      If it is a per-frame attribute, frame must be specified.
+  */                                                                    \
+  void set_value(UCName##Key k, UCName##Traits::Type v,                 \
+                 unsigned int frame =0) {                               \
+    shared_->set_value<UCName##Traits>(node_, k, v, frame);             \
+    IMP_RMF_INTERNAL_CHECK(!shared_->get_is_per_frame(k)                \
+                       || shared_->get_number_of_frames(k) >= frame,    \
+                       "Frame not set right: "                          \
+                       << shared_->get_number_of_frames(k)              \
+                       << " " << frame);                                \
+  }                                                                     \
+  bool get_has_value(UCName##Key k, unsigned int frame=0) const {       \
+    IMP_RMF_USAGE_CHECK(!shared_->get_is_per_frame(k) || frame==0       \
+                        || frame < shared_->get_number_of_frames(k),    \
+                        "Out of range frame: " << frame << " >= "       \
+                        << shared_->get_number_of_frames(k)             \
+                        << " in node " << get_name() << " for key "     \
+                        << shared_->get_name(k));                       \
+    return shared_->get_has_value<UCName##Traits>(node_, k, frame);     \
+  }
+
+
 IMPRMF_BEGIN_NAMESPACE
-#ifdef SWIG
 class NodeHandle;
 // for children
 typedef std::vector<NodeHandle> NodeHandles;
-#endif
 
 //! The types of the nodes.
 enum NodeType {
@@ -61,8 +99,8 @@ class IMPRMFEXPORT NodeHandle {
   boost::intrusive_ptr<internal::SharedData> shared_;
   NodeHandle(int node, internal::SharedData *shared);
  public:
-  IMP_COMPARISONS_2(NodeHandle, node_, shared_.get());
-  IMP_HASHABLE_INLINE(NodeHandle, return node_);
+  IMP_RMF_COMPARISONS_2(NodeHandle, node_, shared_.get());
+  IMP_RMF_HASHABLE(NodeHandle, return node_);
   NodeHandle():node_(-1){}
   /** Create a new node as a child of this one.
    */
@@ -75,11 +113,7 @@ class IMPRMFEXPORT NodeHandle {
   void set_name(std::string name) {
     shared_->set_name(node_, name);
   }
-#ifdef SWIG
   NodeHandles
-#else
-    std::vector<NodeHandle>
-#endif
     get_children() const;
 
   /** Either the association must not have been set before
@@ -101,44 +135,6 @@ class IMPRMFEXPORT NodeHandle {
 
       @{
   */
-#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName)                  \
-  /** \brief get the value of the attribute k from this node
-      The node must have the attribute and if it is a per-frame
-      attribute, and frame is not specified then frame 0 is
-      used.
-  */                                                                    \
-  UCName##Traits::Type get_value(UCName##Key k,                         \
-                                 unsigned int frame=0) const {          \
-    IMP_USAGE_CHECK(get_has_value(k, frame), "Node " << get_name()      \
-                    << " does not have a value for key "                \
-                    << shared_->get_name(k) << " on frame "             \
-                    << frame);                                          \
-    return shared_->get_value<UCName##Traits>(node_, k, frame);         \
-  }                                                                     \
-  /** \brief  set the value of the attribute k for this node
-
-      If it is a per-frame attribute, frame must be specified.
-  */                                                                    \
-  void set_value(UCName##Key k, UCName##Traits::Type v,                 \
-                 unsigned int frame =0) {                               \
-    shared_->set_value<UCName##Traits>(node_, k, v, frame);             \
-    IMP_INTERNAL_CHECK(!shared_->get_is_per_frame(k)                    \
-                       || shared_->get_number_of_frames(k) >= frame,    \
-                       "Frame not set right: "                          \
-                       << shared_->get_number_of_frames(k)              \
-                       << " " << frame);                                \
-  }                                                                     \
-  bool get_has_value(UCName##Key k, unsigned int frame=0) const {       \
-    IMP_USAGE_CHECK(!shared_->get_is_per_frame(k) || frame==0           \
-                    || frame < shared_->get_number_of_frames(k),        \
-                    "Out of range frame: " << frame << " >= "           \
-                    << shared_->get_number_of_frames(k)                 \
-                    << " in node " << get_name() << " for key "         \
-                    << shared_->get_name(k));                           \
-    return shared_->get_has_value<UCName##Traits>(node_, k, frame);     \
-  }
-
-
   IMP_HDF5_NODE_KEY_TYPE_METHODS(int, Int);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(float, Float);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(string, String);
@@ -155,8 +151,12 @@ class IMPRMFEXPORT NodeHandle {
 };
 
 #ifndef SWIG
-IMP_VALUES(NodeHandle, NodeHandles);
+inline std::ostream &operator<<(std::ostream &out, const NodeHandle &nh) {
+  nh.show(out);
+  return out;
+}
 #endif
+
 
 /** Print out the hierarchy as an ascii tree.
  */
@@ -168,7 +168,7 @@ IMPRMFEXPORT void show_hierarchy(NodeHandle root,
 /** \class NodeTree
     A tree corresponding to the hierarchy of the rmf file.
 */
-IMP_GRAPH(NodeTree, bidirectional, NodeHandle, int);
+IMP_RMF_GRAPH(NodeTree, bidirectional, NodeHandle, int);
 IMPRMFEXPORT NodeTree get_node_tree(NodeHandle n);
 
 IMPRMF_END_NAMESPACE
