@@ -201,7 +201,7 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   };
 
   bool initialized_, cache_;
-  mutable Pointer<RestraintSet> rs_;
+  Restraints rs_;
 
   std::vector<RestraintData> rdata_;
   std::vector<std::pair<double, Ints> > sets_;
@@ -214,10 +214,10 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
 
   void initialize();
 
-  ModelData(RestraintSet *rs,
+  ModelData(const RestraintsTemp &rs,
             ParticleStatesTable* pst);
   Model *get_model() const {
-    return rs_->get_model();
+    return rs_[0]->get_model();
   }
   unsigned int get_number_of_restraints(const Subset &s,
                                         const Subsets &exclusions) const;

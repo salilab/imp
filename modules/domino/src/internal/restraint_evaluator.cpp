@@ -14,7 +14,7 @@
 
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
-ModelData::ModelData(RestraintSet *rs,
+ModelData::ModelData(const RestraintsTemp& rs,
                           ParticleStatesTable* pst) {
   rs_=rs;
   pst_=pst;
@@ -89,7 +89,7 @@ namespace {
 void ModelData::initialize() {
   IMP_FUNCTION_LOG;
   //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
-  DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
+  DependencyGraph dg= get_dependency_graph(rs_);
   const ParticlesTemp all= pst_->get_particles();
   IMP::compatibility::map<Particle*, ParticlesTemp> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
@@ -101,8 +101,7 @@ void ModelData::initialize() {
   }
   IMP::compatibility::map<Restraint*, Ints> index;
   RestraintsTemp restraints
-    = get_restraints(rs_->restraints_begin(),
-                     rs_->restraints_end());
+    = get_restraints(rs_);
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
@@ -111,15 +110,10 @@ void ModelData::initialize() {
                      rdata_, index, cache_);
   }
   RestraintSetsTemp restraint_sets
-    = get_restraint_sets(rs_->restraints_begin(),
-                         rs_->restraints_end());
-  restraint_sets.push_back(rs_);
+    = get_restraint_sets(rs_.begin(), rs_.end());
   for (unsigned int i=0; i< restraint_sets.size(); ++i) {
     double max=restraint_sets[i]
       ->get_maximum_score();
-    if (max >= std::numeric_limits<double>::max() && restraint_sets[i]==rs_) {
-      max= restraint_sets[i]->get_model()->get_maximum_score();
-    }
     if (max >= std::numeric_limits<double>::max()) {
       continue;
     }
@@ -141,6 +135,27 @@ void ModelData::initialize() {
             << " over " << cur.first.size() << " restraints."
             << std::endl);
   }
+  // the model
+  {
+    double max=rs_[0]->get_model()->get_maximum_score();
+    if (max < std::numeric_limits<double>::max()) {
+      std::pair<Restraints, Floats> cur=
+        get_restraints_and_weights(rs_, 1);
+      Ints curi;
+      Floats curw;
+      for (unsigned int j=0; j< cur.first.size(); ++j) {
+        curi.insert(curi.end(), index[cur.first[j]].begin(),
+                    index[cur.first[j]].end());
+        curw.push_back(cur.second[j]);
+      }
+      sets_.push_back(std::make_pair(max, curi));
+      set_weights_.push_back(curw);
+      IMP_LOG(TERSE, "Model "
+              << " has maximum score " << max
+              << " over " << cur.first.size() << " restraints."
+              << std::endl);
+    }
+  }
 
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rdata_[i].get_restraint()->get_maximum_score();
@@ -153,13 +168,11 @@ void ModelData::initialize() {
 }
 
 void ModelData::validate() const {
-  IMP_USAGE_CHECK(get_restraints(rs_->restraints_begin(),
-                                 rs_->restraints_end()).size()
+  IMP_USAGE_CHECK(get_restraints(rs_).size()
                   == dependencies_.size(),
                      "The restraints changed after Domino was set up. "
                   << "This is a bad thing: "
-                  << get_restraints(rs_->restraints_begin(),
-                                    rs_->restraints_end()).size()
+                  << get_restraints(rs_).size()
                   << " vs " << dependencies_.size());
   IMP_INTERNAL_CHECK(dependencies_.size()== rdata_.size(),
                      "Inconsistent data in Restraint evaluator or Filter");
