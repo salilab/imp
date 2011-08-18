@@ -97,14 +97,11 @@ class Pointer: public WeakPointer<O>
   BOOST_STATIC_ASSERT((boost::is_base_of<RefCounted, O>::value));
 
 public:
-  /** copy constructor */
-  Pointer(const Pointer &o): WeakPointer<O>() {
-    set_pointer(o.o_);
-  }
-  /** copy from another */
-  Pointer& operator=(const Pointer &o){
-    set_pointer(o.o_);
-    return *this;
+  template <class OT>
+  Pointer(const Pointer<OT> &o): WeakPointer<O>() {
+    if (o) {
+      set_pointer(o.get());
+    }
   }
   //! initialize to NULL
   Pointer() {}
@@ -122,13 +119,14 @@ public:
     set_pointer(o);
     return *this;
   }
-  //! Set it from a possibly NULL pointer.
+  /** copy from another */
   template <class OT>
-  Pointer<O>& operator=(const Pointer<OT> &o) {
-    set_pointer(o.get());
+  Pointer<O>& operator=(const Pointer<OT> &o){
+    if (o) {
+      set_pointer(o.get());
+    }
     return *this;
   }
-
   //! Relinquish control of the pointer
   /** This must be the only pointer pointing to the object. Its
       reference count will be 0 after the function is called, but
