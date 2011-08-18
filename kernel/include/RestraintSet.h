@@ -90,7 +90,8 @@ namespace {
                             compatibility::map<Restraint*, int> &index) {
     if (initial_weight ==0) return;
     for (It c=b; c!= e; ++c) {
-      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      Restraint *rc=*c;
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(rc);
       if (rs) {
         get_restraints_and_weights_internal(rs->restraints_begin(),
                                              rs->restraints_end(),
