@@ -13,9 +13,13 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
                                                body="boost::filesystem::path p;",
                                                extra_boost_libs=["system"])
+scons_tools.dependency.boost.add_boost_library(env, "Thread", "thread",
+                                               'boost/thread/mutex.hpp',
+                                               body="boost::mutex p;",
+                                               extra_boost_libs=["system"])
 
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
                                      'statistics', 'display', "display"],
-                   required_dependencies=['HDF5', "Boost.FileSystem"])
+                   required_dependencies=['HDF5', "Boost.FileSystem", "Boost.Thread"])
