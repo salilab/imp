@@ -50,7 +50,8 @@ IMP_BEGIN_NAMESPACE
                                                 const ParticlesTemp &ps) {
       Pointer<core::LeavesRefiner> lr
           = new core::LeavesRefiner(atom::Hierarchy::get_traits());
-      IMP::Pointer<IMP::em::DensityMap> map= em::read_map("file_name.mrc");
+      IMP::Pointer<IMP::em::DensityMap> map
+          = em::read_map("file_name.mrc");
       Pointer<em::FitRestraint> fr= new em::FitRestraint(ps, map, lr));
       return fr.release();
     }
@@ -109,7 +110,6 @@ public:
   Pointer() {}
   /** initialize from a pointer */
   Pointer(O* o) {
-    IMP_INTERNAL_CHECK(o, "Can't initialize with NULL pointer");
     set_pointer(o);
   }
   /** drop control of the object */
@@ -151,6 +151,8 @@ std::ostream &operator<<(std::ostream &out,
   return out;
 }
 #endif
+
+IMP_OBJECTS(Object, Objects);
 
 IMP_END_NAMESPACE
 
