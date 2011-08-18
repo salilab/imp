@@ -94,7 +94,7 @@ namespace {
 
 Restraints
 CLASSNAMEScore
-::get_instant_decomposition(ARGUMENTTYPE vt) const {
+::get_current_decomposition(ARGUMENTTYPE vt) const {
   return Restraints(1,
                     new CLASSNAMERestraint(const_cast<CLASSNAMEScore*>(this),
                                            vt,

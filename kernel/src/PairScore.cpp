@@ -94,7 +94,7 @@ namespace {
 
 Restraints
 PairScore
-::get_instant_decomposition(const ParticlePair& vt) const {
+::get_current_decomposition(const ParticlePair& vt) const {
   return Restraints(1,
                     new PairRestraint(const_cast<PairScore*>(this),
                                            vt,
