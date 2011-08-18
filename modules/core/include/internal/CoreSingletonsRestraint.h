@@ -66,7 +66,7 @@ public:
 
   Restraints create_decomposition() const;
 
-  Restraints create_instant_decomposition() const;
+  Restraints create_current_decomposition() const;
 
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
