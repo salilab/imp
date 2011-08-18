@@ -124,6 +124,8 @@ public:
   Pointer<O>& operator=(const Pointer<OT> &o){
     if (o) {
       set_pointer(o.get());
+    } else {
+      set_pointer(NULL);
     }
     return *this;
   }
