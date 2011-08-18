@@ -15,7 +15,7 @@ IMP_SWIG_GRAPH(IMP::rmf, NodeTree, NodeTree, IMP::rmf::NodeHandle);
 IMP_SWIG_VALUE(IMP::rmf, NodeHandle, NodeHandles);
 IMP_SWIG_VALUE(IMP::rmf, RootHandle, RootHandles);
 IMP_SWIG_VALUE(IMP::rmf, NodeID, NodeIDs);
-IMP_SWIG_VALUE(IMP::rmf, KeyCategory, KeyCategories);
+IMP_SWIG_VALUE(IMP::rmf, Category, KeyCategories);
 IMP_SWIG_VALUE_TEMPLATE(IMP::rmf, Key);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, FloatKey, FloatKey, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, IntKey, IntKey, IntKeys);
@@ -55,7 +55,7 @@ IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
 %include "IMP/rmf/hdf5_handle.h"
 %include "IMP/rmf/hdf5_types.h"
 %include "IMP/rmf/hdf5_wrapper.h"
-%include "IMP/rmf/KeyCategory.h"
+%include "IMP/rmf/Category.h"
 %include "IMP/rmf/Key.h"
 %include "IMP/rmf/NodeHandle.h"
 %include "IMP/rmf/RootHandle.h"

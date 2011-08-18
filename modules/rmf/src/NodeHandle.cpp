@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #include <IMP/rmf/NodeHandle.h>
 #include <IMP/internal/utility.h>
 #include <boost/tuple/tuple.hpp>
-#include <IMP/rmf/KeyCategory.h>
+#include <IMP/rmf/Category.h>
 #include <IMP/rmf/RootHandle.h>
 IMPRMF_BEGIN_NAMESPACE
 NodeHandle::NodeHandle(int node, internal::SharedData *shared):

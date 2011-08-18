@@ -1,5 +1,5 @@
 /**
- *  \file IMP/rmf/KeyCategory.h
+ *  \file IMP/rmf/Category.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -11,22 +11,32 @@
 IMPRMF_BEGIN_NAMESPACE
 namespace {;
   std::vector<std::string> category_names;
+  Category get_category(std::string name) {
+    IMP_USAGE_CHECK(name.find('_')==std::string::npos,
+                    "Category names cannot contain '_'");
+    for (unsigned int i=0; i < category_names.size(); ++i) {
+      if (category_names[i]==name) {
+        return Category(i);
+      }
+    }
+    category_names.push_back(name);
+    return Category(category_names.size()-1);
+  }
 }
 
-KeyCategory add_key_category(std::string name) {
-  category_names.push_back(name);
-  return KeyCategory(category_names.size()-1);
+Category Category::get_category(std::string name) {
+  return IMP::rmf::get_category(name);
 }
 
-std::string KeyCategory::get_name() const {
+std::string Category::get_name() const {
   if (i_ < 0) return "invalid";
   return category_names[i_];
 }
 
-const KeyCategory Physics=add_key_category("physics");
-const KeyCategory Sequence=add_key_category("sequence");
-const KeyCategory Bond=add_key_category("bond");
-const KeyCategory Shape=add_key_category("shape");
-const KeyCategory Feature=add_key_category("feature");
+const Category Physics=get_category("physics");
+const Category Sequence=get_category("sequence");
+const Category Bond=get_category("bond");
+const Category Shape=get_category("shape");
+const Category Feature=get_category("feature");
 
 IMPRMF_END_NAMESPACE

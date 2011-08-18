@@ -58,7 +58,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
     mutable HDF5DataSet<TypeTraits> null_;
   public:
     HDF5DataSet<TypeTraits>& get(HDF5Group file,
-                                 KeyCategory kc,
+                                 Category kc,
                                  bool per_frame,
                                  bool create_if_needed) const {
       bool found=true;
@@ -109,7 +109,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
     mutable HDF5DataSet<StringTraits> null_;
   public:
     HDF5DataSet<StringTraits>& get(HDF5Group file,
-                                   KeyCategory kc,
+                                   Category kc,
                                    unsigned int type_index,
                                    std::string type_name,
                                    bool per_frame,
@@ -161,7 +161,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   mutable Ints max_cache_;
   mutable IMP::compatibility::set<std::string> known_data_sets_;
   mutable int last_node_;
-  mutable KeyCategory last_category_;
+  mutable Category last_category_;
   mutable int last_vi_;
   DataDataSetCache<IntTraits> int_data_sets_;
   DataDataSetCache<StringTraits> string_data_sets_;
@@ -173,50 +173,50 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   KeyNameDataSetCache key_name_data_sets_;
 
   HDF5DataSet<IntTraits>& get_data_set_i(IntTraits,
-                                         KeyCategory kc,
+                                         Category kc,
                                          bool per_frame,
                                          bool create_if_needed) const {
     return int_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<FloatTraits>& get_data_set_i(FloatTraits,
-                                           KeyCategory kc,
+                                           Category kc,
                                            bool per_frame,
                                            bool create_if_needed) const {
     return float_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<StringTraits>& get_data_set_i(StringTraits,
-                                            KeyCategory kc,
+                                            Category kc,
                                             bool per_frame,
                                             bool create_if_needed) const {
     return string_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<IndexTraits>& get_data_set_i(IndexTraits,
-                                           KeyCategory kc,
+                                           Category kc,
                                            bool per_frame,
                                            bool create_if_needed) const {
     return index_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<NodeIDTraits>& get_data_set_i(NodeIDTraits,
-                                            KeyCategory kc,
+                                            Category kc,
                                             bool per_frame,
                                             bool create_if_needed) const {
     return node_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<NodeIDsTraits>& get_data_set_i(NodeIDsTraits,
-                                             KeyCategory kc,
+                                             Category kc,
                                              bool per_frame,
                                              bool create_if_needed) const {
     return nodes_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
   HDF5DataSet<DataSetTraits>& get_data_set_i(DataSetTraits,
-                                             KeyCategory kc,
+                                             Category kc,
                                              bool per_frame,
                                              bool create_if_needed) const {
     return set_data_sets_.get(file_, kc, per_frame, create_if_needed);
   }
 
   template <class TypeTraits>
-    HDF5DataSet<StringTraits>& get_key_list_data_set(KeyCategory kc,
+    HDF5DataSet<StringTraits>& get_key_list_data_set(Category kc,
                                                      bool per_frame,
                                                      bool create_if_needed)
     const {
@@ -226,12 +226,11 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   }
 
   template <class TypeTraits>
-    HDF5DataSet<TypeTraits>& get_data_data_set(KeyCategory kc,
+    HDF5DataSet<TypeTraits>& get_data_data_set(Category kc,
                                                bool per_frame,
                                                bool create_if_needed) const {
     return get_data_set_i(TypeTraits(), kc, per_frame, create_if_needed);
   }
-
 
   enum Indexes {TYPE=0, CHILD=1, SIBLING=2, FIRST_KEY=3};
   typedef Ints Ind;
@@ -251,13 +250,13 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
     ret[2]=k;
     return ret;
   }
-  unsigned int get_index(KeyCategory k) const {
+  unsigned int get_index(Category k) const {
     return k.get_index()+FIRST_KEY;
   }
   void check_node(unsigned int node) const;
   void audit_key_name(std::string name) const;
   void audit_node_name(std::string name) const;
-  unsigned int get_column_maximum(KeyCategory cat) const {
+  unsigned int get_column_maximum(Category cat) const {
     if (max_cache_.size() > cat.get_index()
         && max_cache_[cat.get_index()]>-2) {
       return max_cache_[cat.get_index()];
@@ -323,6 +322,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   HDF5Group get_group() const {
     return file_;
   }
+  KeyCategories get_categories() const;
   void set_association(int id, void *d, bool overwrite) {
     if (!d) {
       IMP_RMF_THROW("NULL association", ValueException);
@@ -476,7 +476,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
                            << get_value(node, k, frame));
   }
   template <class TypeTraits>
-    Key<TypeTraits> add_key(KeyCategory category_id,
+    Key<TypeTraits> add_key(Category category_id,
                             std::string name, bool per_frame) {
     audit_key_name(name);
     // check that it is unique
@@ -508,7 +508,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   }
   // create the data sets and add rows to the table
   template <class TypeTraits>
-    std::vector<Key<TypeTraits> > get_keys(KeyCategory category_id) const {
+    std::vector<Key<TypeTraits> > get_keys(Category category_id) const {
     std::vector<Key<TypeTraits> > ret;
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
@@ -537,7 +537,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   }
 
   template <class TypeTraits>
-    Key<TypeTraits> get_key(KeyCategory category_id, std::string name) {
+    Key<TypeTraits> get_key(Category category_id, std::string name) {
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
       HDF5DataSet<StringTraits>& nameds

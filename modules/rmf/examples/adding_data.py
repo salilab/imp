@@ -20,7 +20,7 @@ print "File name is", tfn
 # open the temporary file, clearing any existing contents
 rh = IMP.rmf.create_rmf_file(tfn)
 
-my_kc= IMP.rmf.add_key_category("my data");
+my_kc= rh.add_category("my data");
 
 # add the hierarchy to the file
 IMP.rmf.add_hierarchy(rh, h)

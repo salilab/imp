@@ -40,7 +40,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
       given type.
   */
   template <class TypeT>
-    Key<TypeT> get_key(KeyCategory category_id, std::string name) const {
+    Key<TypeT> get_key(Category category_id, std::string name) const {
     return shared_->get_key<TypeT>(category_id, name);
   }
   //! Lift NodeHandle::get_name() into class scope
@@ -51,34 +51,34 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
       already be a key with the same name of any type.
   */
   template <class TypeT>
-    Key<TypeT> add_key(KeyCategory category_id,
+    Key<TypeT> add_key(Category category_id,
                        std::string name, bool per_frame) const {
     return shared_->add_key<TypeT>(category_id, name, per_frame);
   }
   template <class TypeT>
-    bool get_has_key(KeyCategory category_id,
+    bool get_has_key(Category category_id,
                      std::string name) const {
     return shared_->get_key<TypeT>(category_id, name) != Key<TypeT>();
   }
   /** Get a list of all keys of the given type,
    */
   template <class TypeT>
-  std::vector<Key<TypeT> > get_keys(KeyCategory category_id) const {
+  std::vector<Key<TypeT> > get_keys(Category category_id) const {
     return shared_->get_keys<TypeT>(category_id);
   }
   /** \name Non-template versions for python
       @{
   */
 #define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName)                  \
-  UCName##Key get_##lcname##_key(KeyCategory category_id,               \
+  UCName##Key get_##lcname##_key(Category category_id,               \
                                  std::string nm) const {                \
     return get_key<UCName##Traits>(category_id, nm);                    \
   }                                                                     \
-  bool get_has_##lcname##_key(KeyCategory category_id,                  \
+  bool get_has_##lcname##_key(Category category_id,                  \
                                      std::string nm) const {            \
     return get_has_key<UCName##Traits>(category_id, nm);                \
   }                                                                     \
-  UCName##Key add_##lcname##_key(KeyCategory category_id,               \
+  UCName##Key add_##lcname##_key(Category category_id,               \
                                  std::string nm,                        \
                                  bool per_frame) const {                \
     return add_key<UCName##Traits>(category_id, nm, per_frame);         \
@@ -87,7 +87,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
     return shared_->get_name(k);                                        \
   }                                                                     \
   UCName##Key##s                                                        \
-    get_##lcname##_keys(KeyCategory category_id) const {                \
+    get_##lcname##_keys(Category category_id) const {                \
     return get_keys<UCName##Traits>(category_id);                       \
   }                                                                     \
   unsigned int get_number_of_frames(UCName##Key k) const {              \
@@ -112,7 +112,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
       @{
   */
   //! Return a list with all the keys from that category
-  PythonList get_keys(KeyCategory c) const;
+  PythonList get_keys(Category c) const;
   /** @} */
 #endif
   /** Each node in the hierarchy can be associated with some arbitrary bit
@@ -163,6 +163,15 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   */
   std::string get_description() const;
   void set_description(std::string descr);
+  /** @} */
+
+  /** \name Key categories
+      Methods for managing the key categories in this RMF.
+      @{
+  */
+  Category add_category(std::string name);
+  bool get_has_category(std::string name) const;
+  KeyCategories get_categories() const;
   /** @} */
 };
 IMP_VALUES(RootHandle, RootHandles);
