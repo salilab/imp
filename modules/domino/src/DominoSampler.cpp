@@ -22,12 +22,13 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
                              std::string name):
-  DiscreteSampler(m, pst, name), has_sg_(false), has_mt_(false), csf_(false) {
+  DiscreteSampler(m, pst, name), has_sg_(false), has_mt_(false), csf_(false),
+  or_(true){
 }
 
 DominoSampler::DominoSampler(Model *m, std::string name):
   DiscreteSampler(m, new ParticleStatesTable(), name), has_sg_(false),
-  csf_(false){
+  csf_(false), or_(true){
 }
 
 
@@ -75,7 +76,10 @@ Assignments DominoSampler
           << " particles as " << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
-  OptimizeRestraints ro(rs, get_particle_states_table());
+  boost::scoped_ptr<OptimizeRestraints> ro;
+  if (or_) {
+    ro.reset(new OptimizeRestraints(rs, get_particle_states_table()));
+  }
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
