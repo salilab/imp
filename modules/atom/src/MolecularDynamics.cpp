@@ -75,7 +75,8 @@ void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
   // of freedom accordingly (kind of ugly...)
   for (OptimizerStateIterator o = optimizer_states_begin();
        o != optimizer_states_end(); ++o) {
-    if (dynamic_cast<RemoveRigidMotionOptimizerState *>(*o)) {
+    OptimizerState *os=*o;
+    if (dynamic_cast<RemoveRigidMotionOptimizerState *>(os)) {
       degrees_of_freedom_ -= 6;
       break;
     }
