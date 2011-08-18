@@ -23,7 +23,7 @@ namespace {
 
   template <class TypeT>
   double show_type_data_xml(IMP::rmf::NodeHandle nh,
-                          IMP::rmf::KeyCategory kc) {
+                          IMP::rmf::Category kc) {
     double ret=0;
     IMP::rmf::RootHandle rh= nh.get_root_handle();
     std::vector<IMP::rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
@@ -36,7 +36,7 @@ namespace {
     return ret;
   }
   double show_data_xml(IMP::rmf::NodeHandle nh,
-                     IMP::rmf::KeyCategory kc) {
+                     IMP::rmf::Category kc) {
     double ret=0;
     ret+=show_type_data_xml<IMP::rmf::IntTraits>(nh, kc);
     ret+=show_type_data_xml<IMP::rmf::FloatTraits>(nh, kc);
