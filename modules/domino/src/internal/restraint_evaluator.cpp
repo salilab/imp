@@ -117,7 +117,7 @@ void ModelData::initialize() {
     if (max >= std::numeric_limits<double>::max()) {
       continue;
     }
-    std::pair<Restraints, Floats> cur=
+    std::pair<RestraintsTemp, Floats> cur=
       get_restraints_and_weights(restraint_sets[i]->restraints_begin(),
                                  restraint_sets[i]->restraints_end(),
                                  restraint_sets[i]->get_weight());
@@ -140,7 +140,8 @@ void ModelData::initialize() {
     double max=rs_[0]->get_model()->get_maximum_score();
     if (max < std::numeric_limits<double>::max()) {
       std::pair<Restraints, Floats> cur=
-        get_restraints_and_weights(rs_, 1);
+        get_restraints_and_weights(get_as<RestraintsTemp>(rs_),
+                                   1);
       Ints curi;
       Floats curw;
       for (unsigned int j=0; j< cur.first.size(); ++j) {
@@ -168,7 +169,7 @@ void ModelData::initialize() {
 }
 
 void ModelData::validate() const {
-  IMP_USAGE_CHECK(get_restraints(rs_).size()
+  IMP_USAGE_CHECK(get_restraints(get_as<RestraintsTemp>(rs_)).size()
                   == dependencies_.size(),
                      "The restraints changed after Domino was set up. "
                   << "This is a bad thing: "
