@@ -97,6 +97,14 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                                        const ParticleIndexes &constituents):
   Object("RigidBodyHierarchy%1%"), rb_(d),
   constituents_(constituents){
+  IMP_IF_CHECK(USAGE) {
+    ParticleIndexes uc=constituents;
+    std::sort(uc.begin(), uc.end());
+    uc.erase(std::unique(uc.begin(), uc.end()), uc.end());
+    IMP_USAGE_CHECK(uc.size()== constituents.size(),
+                    "Duplicate particles passed to rigid body tree: "
+                    << constituents.size() << " > " << uc.size());
+  }
   Model *m= d.get_model();
   // they had better be up to date
   //d.update_members();
@@ -216,7 +224,13 @@ ParticleIndexes RigidBodyHierarchy::validate_internal(Model *m, int cur,
     for (unsigned int j=0; j< bounds.size(); ++j) {
       for (unsigned int i=0; i< get_number_of_particles(cur); ++i) {
         XYZR p(m, get_particle(cur, i));
-        if (j==0) seen.push_back(get_particle(cur, i));
+        if (j==0) {
+          IMP_INTERNAL_CHECK(std::find(seen.begin(), seen.end(),
+                                       p.get_particle_index())==seen.end(),
+                             "Particle " << p->get_name()
+                             << " was seen more than once.");
+          seen.push_back(get_particle(cur, i));
+        }
         RigidMember rm(m, get_particle(cur, i));
         algebra::Sphere3D sc(rb_.get_reference_frame()
                 .get_global_coordinates(rm.get_internal_coordinates()),
