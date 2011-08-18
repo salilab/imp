@@ -85,6 +85,7 @@ namespace {
     SET_ONLY(Masks::read_mask_, restraint->get_input_particles(),       \
              restraint->get_input_containers()                          \
              );                                                         \
+    IMP_CHECK_OBJECT(restraint);                                        \
     expr;                                                               \
   }
 
@@ -246,8 +247,8 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   // make sure stage is restored on an exception
   SetIt<IMP::internal::Stage, internal::NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
-  IMP_LOG(VERBOSE, "On restraints " << Restraints(restraints)
-          << " and score states " << ScoreStates(states)
+  IMP_LOG(VERBOSE, "On restraints " << restraints
+          << " and score states " << states
           << std::endl);
 
   before_evaluate(states);
