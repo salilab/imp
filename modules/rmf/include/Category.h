@@ -50,7 +50,7 @@ public:
   }
 };
 
-IMP_VALUES(Category, KeyCategories);
+IMP_VALUES(Category, Categories);
 
 /** Standard physical keys are
     - "cartesian_x", "cartesian_y", "cartesian_z" for

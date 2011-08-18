@@ -171,7 +171,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   */
   Category add_category(std::string name);
   bool get_has_category(std::string name) const;
-  KeyCategories get_categories() const;
+  Categories get_categories() const;
   /** @} */
 };
 IMP_VALUES(RootHandle, RootHandles);

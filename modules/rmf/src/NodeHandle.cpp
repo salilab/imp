@@ -97,15 +97,12 @@ namespace {
 
   template <class TypeT>
   std::vector< Key<TypeT> > get_keys(RootHandle f) {
+    Categories kcs= f.get_categories();
     std::vector<Key<TypeT> > ret;
-    std::vector<Key<TypeT> > curp=f.get_keys<TypeT>(Physics);
-    ret.insert(ret.end(), curp.begin(), curp.end());
-    std::vector<Key<TypeT> > curs=f.get_keys<TypeT>(Sequence);
-    ret.insert(ret.end(), curs.begin(), curs.end());
-    std::vector<Key<TypeT> > curh=f.get_keys<TypeT>(Shape);
-    ret.insert(ret.end(), curh.begin(), curh.end());
-    std::vector<Key<TypeT> > curf=f.get_keys<TypeT>(Feature);
-    ret.insert(ret.end(), curf.begin(), curf.end());
+    for (unsigned int i=0; i< kcs.size(); ++i) {
+      std::vector<Key<TypeT> > curp=f.get_keys<TypeT>(kcs[i]);
+      ret.insert(ret.end(), curp.begin(), curp.end());
+    }
     return ret;
   }
 }

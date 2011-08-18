@@ -53,13 +53,13 @@ Category RootHandle::add_category(std::string name) {
   return Category::get_category(name);
 }
 bool RootHandle::get_has_category(std::string name) const {
-  KeyCategories all= get_categories();
+  Categories all= get_categories();
   for (unsigned int i=0; i< all.size(); ++i) {
     if (all[i].get_name()==name) return true;
   }
   return false;
 }
-KeyCategories RootHandle::get_categories() const {
+Categories RootHandle::get_categories() const {
   return shared_->get_categories();
 }
 

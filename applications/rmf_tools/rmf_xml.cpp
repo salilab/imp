@@ -108,16 +108,16 @@ namespace {
     }
   }
 
-  void show_xml(IMP::rmf::NodeHandle nh, std::ostream &out) {
+  void show_xml(IMP::rmf::NodeHandle nh,
+                const IMP::rmf::Categories& cs, std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
               << nh.get_id() << "\" "
               << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
               << "\"/>\n";
     if (verbose) {
-      show_data_xml(nh, IMP::rmf::Physics, out);
-      show_data_xml(nh, IMP::rmf::Sequence, out);
-      show_data_xml(nh, IMP::rmf::Shape, out);
-      show_data_xml(nh, IMP::rmf::Feature, out);
+      for (unsigned int i=0; I< cs.size(); ++i) {
+        show_data_xml(nh, cs[i], out);
+      }
     }
     IMP::rmf::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
@@ -157,6 +157,7 @@ int main(int argc, char **argv) {
     std::cerr << "Error opening file " << output << std::endl;
     return 1;
   }
+  IMP::rmf::Categories cs= rh.get_categories();
   out << "<?xml version=\"1.0\"?>\n";
   out << "<rmf>\n";
   out << "<description>\n";
@@ -165,7 +166,7 @@ int main(int argc, char **argv) {
   out << "<path>\n";
   out << input <<std::endl;
   out << "</path>\n";
-  show_xml(rh, out);
+  show_xml(rh, cs, out);
   if (rh.get_number_of_bonds() >0) {
     out << "<bonds>\n";
     for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
