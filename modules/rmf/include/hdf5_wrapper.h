@@ -54,7 +54,7 @@ class HDF5DataSet {
     hsize_t ret[max_dims]={-1,-1,-1};
     IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
                                             ret, NULL));
-    IMP_INTERNAL_CHECK(ret[data_->dim_-1] <1000000,
+    IMP_RMF_INTERNAL_CHECK(ret[data_->dim_-1] <1000000,
                        "extents not returned properly");
     if (ret[data_->dim_-1] > 0) {
       // some versions will spew an error on this
@@ -154,7 +154,7 @@ class HDF5DataSet {
 
   void set_value(const Ints &ijk,
                  typename TypeTraits::Type value) {
-    IMP_IF_CHECK(USAGE) {
+    IMP_RMF_IF_CHECK {
       check_index(ijk);
     }
     std::copy(ijk.begin(), ijk.end(), data_->pos_);
@@ -178,7 +178,7 @@ class HDF5DataSet {
                                               s);
                                               }*/
   typename TypeTraits::Type get_value(const Ints &ijk) const {
-    IMP_IF_CHECK(USAGE) {
+    IMP_RMF_IF_CHECK {
       check_index(ijk);
     }
     std::copy(ijk.begin(), ijk.end(), data_->pos_);
@@ -194,7 +194,7 @@ class HDF5DataSet {
   void set_row( Ints ijk,
                const typename TypeTraits::Types& value) {
     ijk.push_back(0);
-    IMP_IF_CHECK(USAGE) {
+    IMP_RMF_IF_CHECK {
       check_index(ijk);
     }
     std::copy(ijk.begin(), ijk.end(), data_->pos_);
@@ -211,7 +211,7 @@ class HDF5DataSet {
   }
   typename TypeTraits::Types get_row( Ints ijk) const {
     ijk.push_back(0);
-    IMP_IF_CHECK(USAGE) {
+    IMP_RMF_IF_CHECK {
       check_index(ijk);
     }
     std::copy(ijk.begin(), ijk.end(), data_->pos_);

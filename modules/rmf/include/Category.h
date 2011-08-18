@@ -10,7 +10,8 @@
 #define IMPRMF_KEY_CATEGORY_H
 
 #include "rmf_config.h"
-#include <IMP/macros.h>
+#include "internal/utility.h"
+#include "infrastructure_macros.h"
 #include <IMP/exception.h>
 #include <vector>
 
@@ -35,7 +36,7 @@ public:
 #endif
   Category(): i_(-1){}
   unsigned int get_index() const {
-    IMP_USAGE_CHECK(i_ >=0, "Invalid Category used");
+    IMP_RMF_USAGE_CHECK(i_ >=0, "Invalid Category used");
     return i_;
   }
   std::string get_name() const;
@@ -43,14 +44,20 @@ public:
     // int, string, float
     return 3*i_;
   }
-  IMP_HASHABLE_INLINE(Category, return i_);
-  IMP_COMPARISONS_1(Category, i_);
+  IMP_RMF_HASHABLE(Category, return i_);
+  IMP_RMF_COMPARISONS_1(Category, i_);
   void show(std::ostream &out) const {
     out << get_name();
   }
 };
 
-IMP_VALUES(Category, Categories);
+typedef std::vector<Category> Categories;
+#ifndef SWIG
+inline std::ostream &operator<<(std::ostream &out, const Category &nh) {
+  nh.show(out);
+  return out;
+}
+#endif
 
 /** Standard physical keys are
     - "cartesian_x", "cartesian_y", "cartesian_z" for

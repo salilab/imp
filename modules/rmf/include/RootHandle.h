@@ -174,8 +174,8 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   Categories get_categories() const;
   /** @} */
 };
-IMP_VALUES(RootHandle, RootHandles);
 
+typedef std::vector<RootHandle> RootHandles;
 
 /** Create an RMF from a file system path.*/
 inline RootHandle create_rmf_file(std::string path) {

@@ -48,41 +48,42 @@ public:
   void show(std::ostream &out) const {
     out << ci_.get_name() << (pf_?'E':'I') << i_;
   }
-  IMP_COMPARISONS_2(Key, ci_, i_);
-  IMP_HASHABLE_INLINE(Key, return i_*ci_.get_index());
+  IMP_RMF_COMPARISONS_2(Key, ci_, i_);
+  IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
 };
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class TypeTraits>
-std::ostream &operator<<(std::ostream &out, Key<TypeTraits> k) {
-  out << k;
+
+#ifndef SWIG
+template <class Traits>
+inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
+  nh.show(out);
   return out;
 }
 #endif
 
 //! Store an arbitrary floating point value
 typedef Key<FloatTraits> FloatKey;
-IMP_VALUES(FloatKey, FloatKeys);
+typedef std::vector<FloatKey> FloatKeys;
 //! Store an abitrary integer value
 typedef Key<IntTraits> IntKey;
-IMP_VALUES(IntKey, IntKeys);
+typedef std::vector<IntKey> IntKeys;
 //! Store an arbitrary string value
 typedef Key<StringTraits> StringKey;
-IMP_VALUES(StringKey, StringKeys);
+typedef std::vector<StringKey> StringKeys;
 //! Store a zero-based index to something
 typedef Key<IndexTraits> IndexKey;
-IMP_VALUES(IndexKey, IndexKeys);
+typedef std::vector<IndexKey> IndexKeys;
 //! Store the ID of an existing node in the RMF file
 typedef Key<NodeIDTraits> NodeIDKey;
-IMP_VALUES(NodeIDKey, NodeIDKeys);
+typedef std::vector<NodeIDKey> NodeIDKeys;
 //! Store the name of a data set in the hdf5 file
 /** The handling of this data type may change as
     it is currently a bit limited.
 */
 typedef Key<DataSetTraits> DataSetKey;
-IMP_VALUES(DataSetKey, DataSetKeys);
+typedef std::vector<DataSetKey> DataSetKeys;
 //! Store a list of IDs of nodes in the file
 typedef Key<NodeIDsTraits> NodeIDsKey;
-IMP_VALUES(NodeIDsKey, NodeIDsKeys);
+typedef std::vector<NodeIDsKey> NodeIDsKeys;
 
 
 IMPRMF_END_NAMESPACE

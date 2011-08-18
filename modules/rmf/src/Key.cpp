@@ -12,8 +12,8 @@ IMPRMF_BEGIN_NAMESPACE
 namespace {;
   std::vector<std::string> category_names;
   Category get_category(std::string name) {
-    IMP_USAGE_CHECK(name.find('_')==std::string::npos,
-                    "Category names cannot contain '_'");
+    IMP_RMF_USAGE_CHECK(name.find('_')==std::string::npos,
+                        "Category names cannot contain '_'");
     for (unsigned int i=0; i < category_names.size(); ++i) {
       if (category_names[i]==name) {
         return Category(i);

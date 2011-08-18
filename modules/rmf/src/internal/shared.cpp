@@ -26,7 +26,7 @@ bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
     file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
   } else {
     std::string version=file_.get_attribute<CharTraits>("version");
-    IMP_USAGE_CHECK(version== "rmf 1",
+    IMP_RMF_USAGE_CHECK(version== "rmf 1",
                     "Unsupported rmf version string found: \""
                     << version << "\" expected \"" << "rmf 1" << "\"");
   }
@@ -46,11 +46,11 @@ bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
     }
   }
   if (create) {
-    IMP_USAGE_CHECK(!file_.get_has_child("root"),
+    IMP_RMF_USAGE_CHECK(!file_.get_has_child("root"),
                     "Already has a root Group");
     add_node("root", ROOT);
   } else {
-    IMP_USAGE_CHECK(get_name(0)=="root",
+    IMP_RMF_USAGE_CHECK(get_name(0)=="root",
                     "Root node is not so named");
   }
 }
@@ -93,7 +93,8 @@ void SharedData::audit_node_name(std::string name) const {
 }
 
 void SharedData::check_node(unsigned int node) const {
-  IMP_USAGE_CHECK(names_.get_size()[0] > int(node), "Invalid node specified: "
+  IMP_RMF_USAGE_CHECK(names_.get_size()[0] > int(node),
+                      "Invalid node specified: "
                   << node);
 }
 int SharedData::add_node(std::string name, unsigned int type) {
@@ -149,7 +150,7 @@ unsigned int SharedData::get_type(unsigned int node) const {
 
 
 void SharedData::add_bond( int ida,  int idb,  int type) {
-  IMP_USAGE_CHECK(ida>=0 && idb>=0 && type>=0,
+  IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0 && type>=0,
                   "Invalid bond " << ida << " " << idb << " " << type);
   int ret;
   if (free_bonds_.empty()) {
