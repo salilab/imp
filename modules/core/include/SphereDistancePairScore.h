@@ -62,6 +62,34 @@ IMP_OBJECTS(HarmonicUpperBoundSphereDistancePairScore,
 
 
 
+//!A harmonic upper bound on the diameter of the span of two spheres
+/** This restraint restraints how far the furthest points of two spheres
+    are from one another.
+
+    \see XYZR
+    \see SpherePairScore
+    \see SoftSpherePairScore
+    \see NormalizedSphereDistancePairScore
+ */
+class IMPCOREEXPORT HarmonicUpperBoundSphereDiameterPairScore : public PairScore
+{
+  double x0_, k_;
+public:
+  HarmonicUpperBoundSphereDiameterPairScore(double d0, double k);
+  double get_rest_length() const {
+    return x0_;
+  }
+  double get_stiffness() const {
+    return k_;
+  }
+  IMP_INDEX_PAIR_SCORE(HarmonicUpperBoundSphereDiameterPairScore);
+};
+
+IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,
+            HarmonicUpperBoundSphereDiameterPairScores);
+
+
+
 //!A harmonic score on the distance between two spheres
 /** \see XYZR
     \see SpherePairScore
@@ -121,6 +149,29 @@ HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
   double shifted_distance = distance- x0_
     - m->get_sphere(p[0]).get_radius()
     - m->get_sphere(p[1]).get_radius();
+  if (shifted_distance < 0) return 0;
+  double score= .5*k_*square(shifted_distance);
+  if (da && distance > MIN_DISTANCE) {
+    double deriv= k_*shifted_distance;
+    algebra::Vector3D uv= delta/distance;
+    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
+    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
+  }
+  return score;
+}
+
+
+inline double
+HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(Model *m,
+                                  const ParticleIndexPair& p,
+           DerivativeAccumulator *da) const {
+  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
+    - m->get_sphere(p[1]).get_center();
+  static const double MIN_DISTANCE = .00001;
+  double distance= delta.get_magnitude();
+  double shifted_distance = distance- x0_
+    + m->get_sphere(p[0]).get_radius()
+    + m->get_sphere(p[1]).get_radius();
   if (shifted_distance < 0) return 0;
   double score= .5*k_*square(shifted_distance);
   if (da && distance > MIN_DISTANCE) {
