@@ -91,7 +91,15 @@ RestraintScoreSubsetFilterTable
 ::RestraintScoreSubsetFilterTable(RestraintSet *eval,
                                   ParticleStatesTable *pst):
   SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
-  mset_(new internal::ModelData(eval, pst))
+  mset_(new internal::ModelData(RestraintsTemp(1, eval), pst))
+{
+}
+
+RestraintScoreSubsetFilterTable
+::RestraintScoreSubsetFilterTable(const RestraintsTemp &m,
+                                  ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
+  mset_(new internal::ModelData(m, pst))
 {
 }
 
@@ -99,7 +107,8 @@ RestraintScoreSubsetFilterTable
 ::RestraintScoreSubsetFilterTable(Model *m,
                                   ParticleStatesTable *pst):
   SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
-  mset_(new internal::ModelData(m->get_root_restraint_set(), pst))
+  mset_(new internal::ModelData(RestraintsTemp(1, m->get_root_restraint_set()),
+                                pst))
 {
 }
 
