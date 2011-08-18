@@ -82,7 +82,6 @@ def main():
         try:
             open(infile, "w").write(pns.getvalue())
             command="cpp -C "+ " ".join(macros) + " %s > %s" % (infile, outfile)
-            print >> sys.stderr, "BW>", command
             ret=os.system(command)
             if ret != 0:
                 lns= pns.getvalue().split("\n")
