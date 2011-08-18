@@ -111,7 +111,7 @@ class IMPEXPORT SingletonScore : public Object
       restraints. The scoring function and derivatives should
       be equal to the current score. The defualt implementation
       just returns this object bound to the pair.*/
-  Restraints get_instant_decomposition(Particle* vt) const;
+  Restraints get_current_decomposition(Particle* vt) const;
 
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };

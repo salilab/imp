@@ -94,7 +94,7 @@ namespace {
 
 Restraints
 TripletScore
-::get_instant_decomposition(const ParticleTriplet& vt) const {
+::get_current_decomposition(const ParticleTriplet& vt) const {
   return Restraints(1,
                     new TripletRestraint(const_cast<TripletScore*>(this),
                                            vt,
