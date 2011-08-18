@@ -167,8 +167,8 @@ double Optimizer::evaluate_incremental(const ParticleIndexes &moved) const {
                          incremental_scores_.end(), 0);
 }
 
-double Optimizer::evaluate_incremental_if_below(const ParticleIndexes &moved,
-                                     double max) const {
+double Optimizer::evaluate_incremental_if_below(const ParticleIndexes &,
+                                     double ) const {
   IMP_NOT_IMPLEMENTED;
 }
 
