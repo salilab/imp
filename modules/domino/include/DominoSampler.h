@@ -35,7 +35,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   SubsetGraph sg_;
   MergeTree mt_;
   bool has_sg_, has_mt_;
-  bool csf_;
+  bool csf_; bool or_;
   mutable internal::InferenceStatistics stats_;
 
  public:
@@ -119,6 +119,12 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
                                =std::numeric_limits<int>::max()) const;
 
   /** @} */
+  /** As a temporary measure, allow turning off of old-style restraint
+      optimization.
+   */
+  void set_optimize_restraints(bool tf) {
+    or_=tf;
+  }
 };
 
 
