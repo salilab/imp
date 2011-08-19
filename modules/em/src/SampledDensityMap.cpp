@@ -11,8 +11,9 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-SampledDensityMap::SampledDensityMap(const DensityHeader &header):
-  DensityMap(header, "SampledDensityMap%1%")
+SampledDensityMap::SampledDensityMap(const DensityHeader &header,
+                                     KernelType kt):
+  DensityMap(header, "SampledDensityMap%1%"),kt_(kt)
 {
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
@@ -69,7 +70,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
 }
 SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
                    emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
-                   int sig_cutoff) {
+                                     int sig_cutoff,KernelType kt) : kt_(kt){
   IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
           "and voxel size: "<<voxel_size<<std::endl);
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
@@ -102,9 +103,70 @@ IMP::algebra::BoundingBox3D
   return IMP::algebra::BoundingBox3D(all_points);
 }
 
+
+  class BinarizedSphereKernel {
+  public:
+    double get_radius(Particle *p) const {
+      return core::XYZR(p).get_radius();
+    }
+    algebra::Vector3D get_center(Particle *p) const {
+      return core::XYZ(p).get_coordinates();
+    }
+    double get_value(Particle *p, const algebra::Vector3D &pt) const {
+      if (algebra::get_squared_distance(get_center(p),pt)<
+          square(get_radius(p))) {
+        return 1.;
+      }
+      return 0.;
+    }
+  };
+
+  class GaussianKernel {
+    mutable KernelParameters &kps_;
+    const RadiusDependentKernelParameters*
+    get_radius_dependent_parameters(Particle *p) const {
+      double r=core::XYZR(p).get_radius();
+      const RadiusDependentKernelParameters*params
+        = kps_.get_params(r);
+      if (!params) {
+        IMP_LOG(TERSE, "EM map is using default params" << std::endl);
+        kps_.set_params(r);
+        params = kps_.get_params(r);
+      }
+      return params;
+    }
+  public:
+    GaussianKernel(KernelParameters& kps): kps_(kps){}
+    double get_radius(Particle *p) const {
+      const RadiusDependentKernelParameters* kernel_params
+        =get_radius_dependent_parameters(p);
+      return kernel_params->get_kdist();
+    }
+    algebra::Vector3D get_center(Particle *p) const {
+      return core::XYZ(p).get_coordinates();
+    }
+    double get_value(Particle *p, const algebra::Vector3D &pt) const {
+      core::XYZR d(p);
+      algebra::Vector3D cs=d.get_coordinates();
+      double rsq= (cs-pt).get_squared_magnitude();
+      const RadiusDependentKernelParameters* kernel_params
+        =get_radius_dependent_parameters(p);
+      double tmp = EXP(-rsq * kernel_params->get_inv_sigsq());
+      //tmp = exp(-rsq * params->get_inv_sigsq());
+      // if statement to ensure even sampling within the box
+      if (tmp>kps_.get_lim()) {
+        return
+          kernel_params->get_normfac() * atom::Mass(p).get_mass() * tmp;
+      } else {
+        return 0;
+      }
+    }
+  };
+
+  template <class F>
   void internal_resample(em::DensityMap *dmap,
                          Particles ps,
-                         KernelParameters &kernel_params) {
+                         const F &f) {
     FloatKey weight_key = atom::Mass::get_mass_key();
     emreal*data=dmap->get_data();
    IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
@@ -130,26 +192,14 @@ IMP::algebra::BoundingBox3D
    emreal tmpx,tmpy,tmpz;
    // variables to avoid some multiplications
    int nxny=header->get_nx()*header->get_ny(); int znxny;
-   emreal rsq,tmp;
-   const RadiusDependentKernelParameters* params;
    IMP_LOG(VERBOSE,"sampling "<<ps.size()<<" particles "<< std::endl);
    for (unsigned int ii=0; ii<xyzr.size(); ii++) {
-     float x,y,z;
-     x=xyzr[ii].get_x();y=xyzr[ii].get_y();z=xyzr[ii].get_z();
-     // If the kernel parameters for the particles have not been
-     // precomputed, do it
-     params = kernel_params.get_params(xyzr[ii].get_radius());
-     if (!params) {
-       IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-       kernel_params.set_params(xyzr[ii].get_radius());
-       params = kernel_params.get_params(xyzr[ii].get_radius());
-     }
-     IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
+     algebra::Vector3D center=f.get_center(xyzr[ii]);
      // compute the box affected by each particle
      calc_local_bounding_box(
        dmap,
-       x,y,z,
-       params->get_kdist(),
+       center[0], center[1], center[2],
+       f.get_radius(xyzr[ii]),
        iminx, iminy, iminz, imaxx, imaxy, imaxz);
      IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
         " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
@@ -161,17 +211,11 @@ IMP::algebra::BoundingBox3D
          // operations.
          ivox = znxny + ivoxy * header->get_nx() + iminx;
          for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-           tmpx=dmap->get_location_in_dim_by_voxel(ivox,0) - x;
-           tmpy=dmap->get_location_in_dim_by_voxel(ivox,1) - y;
-           tmpz=dmap->get_location_in_dim_by_voxel(ivox,2) - z;
-           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
-           tmp = EXP(-rsq * params->get_inv_sigsq());
-           //tmp = exp(-rsq * params->get_inv_sigsq());
-           // if statement to ensure even sampling within the box
-           if (tmp>kernel_params.get_lim()) {
-             data[ivox]+=
-               params->get_normfac() * ps[ii]->get_value(weight_key) * tmp;
-           }
+           algebra::Vector3D cur(dmap->get_location_in_dim_by_voxel(ivox,0),
+                                 dmap->get_location_in_dim_by_voxel(ivox,1),
+                                 dmap->get_location_in_dim_by_voxel(ivox,2));
+           double value= f.get_value(xyzr[ii], cur);
+           data[ivox]+=value;
            ivox++;
          }
        }
@@ -181,9 +225,11 @@ IMP::algebra::BoundingBox3D
 }
 
  void SampledDensityMap::resample() {
-
-   internal_resample(this,ps_,kernel_params_);
-
+   if (kt_== GAUSSIAN) {
+     internal_resample(this,ps_,GaussianKernel(kernel_params_));
+   } else {
+     internal_resample(this,ps_,BinarizedSphereKernel());
+   }
 
    // IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
    // //check that the particles bounding box is within the density bounding box
