@@ -10,6 +10,7 @@
 #include "isd_config.h"
 #include <IMP/Particle.h>
 #include <IMP/isd/Nuisance.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/Object.h>
 
 #define MINIMUM 1e-7
@@ -167,24 +168,28 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 /* \f[w(x,x') = \tau^2 \exp\left(-\frac{|x-x'|^\alpha}{2\lambda^\alpha}\f]
  * \f$\tau\f$ and \f$\lambda\f$ are ISD nuisance,s \f$\alpha\f$ is set up front and
  * should be positive, usually greater than 1. Default is 2.
+ * Jitter is a parameter that helps to condition the covariance matrices (avoids
+ * NANs). Try a jitter of 0.1 if you get NANs. Minimum value: 1e-3.
  */
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 {
     public:
-        Covariance1DFunction(double alpha, Particle* tau, Particle* lambda) :
+        Covariance1DFunction(double alpha, Particle* tau, Particle* lambda, double jitter = 0.0) :
             BivariateFunction("Covariance1DFunction %1%"), alpha_(alpha),
-            tau_(tau), lambda_(lambda) 
+            tau_(tau), lambda_(lambda), J_(jitter)
     {
         IMP_LOG(TERSE, "Covariance1DFunction: constructor" << std::endl);
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(tau); }
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(lambda);}
-        lambda_val_= Nuisance(lambda).get_nuisance();
-        tau_val_= Nuisance(tau).get_nuisance();
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(tau); }
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(lambda);}
+        lambda_val_= Scale(lambda).get_nuisance();
+        tau_val_= Scale(tau).get_nuisance();
+        do_jitter = (jitter > 1e-3);
+
     }
 
         bool has_changed() const {
-            double tmpt = Nuisance(tau_).get_nuisance();
-            double tmpl = Nuisance(lambda_).get_nuisance();
+            double tmpt = Scale(tau_).get_nuisance();
+            double tmpl = Scale(lambda_).get_nuisance();
             if ((std::abs(tmpt - tau_val_) > MINIMUM)
                     || (std::abs(tmpl - lambda_val_) > MINIMUM))
             {
@@ -197,8 +202,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         }
 
         void update() {
-            lambda_val_= Nuisance(lambda_).get_nuisance();
-            tau_val_= Nuisance(tau_).get_nuisance();
+            lambda_val_= Scale(lambda_).get_nuisance();
+            tau_val_= Scale(tau_).get_nuisance();
             IMP_LOG(TERSE, "Covariance1DFunction: update()  tau:= "
                     << tau_val_ << " lambda:=" << lambda_val_ << std::endl);
         }
@@ -208,12 +213,12 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         {
             //d[w(x1,x2)]/dtau = 2/tau*w(x1,x2)
             std::vector<double> val = (*this)(x1,x2);
-            Nuisance(tau_).add_to_nuisance_derivative(
+            Scale(tau_).add_to_nuisance_derivative(
                     2./tau_val_ * val[0], accum);
             //d[w(x,x')]/dlambda 
             //= w(x,x') ( alpha |x'-x|^alpha/(2 lambda^{alpha+1}))
             
-            Nuisance(lambda_).add_to_nuisance_derivative(
+            Scale(lambda_).add_to_nuisance_derivative(
                     val[0] * (alpha_ * 
                         std::pow((std::abs(x1[0]-x2[0])/lambda_val_),alpha_)
                         /(2.*lambda_val_)), accum);
@@ -232,6 +237,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                                 , alpha_)
                         )
                     );
+            if (x1[0]==x2[0] && do_jitter) ret[0] += J_; 
             return ret;
         }
 
@@ -260,7 +266,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
     private:
         double alpha_;
         Pointer<Particle> tau_,lambda_;
-        double tau_val_,lambda_val_;
+        double tau_val_,lambda_val_,J_;
+        bool do_jitter;
     
 };
 
