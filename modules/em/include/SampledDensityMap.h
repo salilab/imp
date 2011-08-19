@@ -27,7 +27,9 @@ IMPEM_BEGIN_NAMESPACE
 //#define PI 3.141592653589793238462643383
 //define could be manipulated with a const *int ptr declaration.
 
-
+enum KernelType {
+  GAUSSIAN,BINARIZED_SPHERE
+};
 //! Class for sampling a density map from particles
 class IMPEMEXPORT SampledDensityMap: public DensityMap
 {
@@ -38,11 +40,13 @@ public:
   //! Creates a new density map for sampled map.
   /** The header of the map is not determined and no data is being allocated
    */
-  SampledDensityMap(): DensityMap("SampledDensityMap%1%") {
+  SampledDensityMap(KernelType kt=GAUSSIAN):
+    DensityMap("SampledDensityMap%1%"),kt_(kt) {
   }
 
   //! The size of the map is determined by the header and the data is allocated.
-  SampledDensityMap(const DensityHeader &header);
+  SampledDensityMap(const DensityHeader &header,
+                    KernelType kt=GAUSSIAN);
 
   //! Generatea a sampled density map from the particles.
   /** /param[in] ps     particles with XYZ, radius and weight attributes
@@ -57,7 +61,7 @@ public:
   SampledDensityMap(const Particles &ps, emreal resolution,
    emreal voxel_size,
    IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
-   int sig_cuttoff=3);
+                    int sig_cuttoff=3,KernelType kt=GAUSSIAN);
 
   //! Resampling beads on an EM grid
   /**
@@ -127,6 +131,7 @@ protected:
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
   FloatKey weight_key_;
   FloatKey x_key_,y_key_,z_key_;
+  KernelType kt_;
 };
 IMP_OBJECTS(SampledDensityMap, SampledDensityMaps);
 
