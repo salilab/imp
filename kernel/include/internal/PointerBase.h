@@ -87,28 +87,20 @@ class PointerBase
     o_=p;
   }
 public:
+  template <class OT>
+  explicit PointerBase(const OT &o): o_(NULL) {
+    if (o) {
+      set_pointer(get_pointer(o));
+    }
+  }
   //! This is needed as the template one is not reliably invoked
   PointerBase(const PointerBase &o): o_(NULL) {
     if (o) {
       set_pointer(o.get());
     }
   }
-  template <class OT, class OTraits>
-  explicit PointerBase(const PointerBase<OT, OTraits> &o): o_(NULL) {
-    if (o) {
-      set_pointer(o.get());
-    }
-  }
   //! initialize to NULL
   PointerBase(): o_(NULL) {}
-  /** initialize from a pointer */
-  explicit PointerBase(O* o): o_(NULL) {
-    set_pointer(o);
-  }
-  /** initialize from a pointer */
-  explicit PointerBase(const long int o): o_(NULL) {
-    IMP_USAGE_CHECK(o==0, "Non-null constant used for pointer.");
-  }
   /** drop control of the object */
   ~PointerBase(){
     set_pointer(NULL);
@@ -177,24 +169,19 @@ public:
   template <class OT>
   PointerBase<O, Traits>& operator=(const OT &o){
     if (o) {
-      set_pointer(static_cast<O*>(o));
+      set_pointer(get_pointer(o));
     } else {
       set_pointer(NULL);
     }
     return *this;
   }
- /** copy from another */
+  /** copy from another */
   PointerBase<O, Traits>& operator=(const PointerBase &o){
     if (o) {
       set_pointer(static_cast<O*>(o));
     } else {
       set_pointer(NULL);
     }
-    return *this;
-  }
-  PointerBase<O, Traits>& operator=(const long int &o){
-    IMP_USAGE_CHECK(!o, "Non-null constant");
-    set_pointer(NULL);
     return *this;
   }
   //! Relinquish control of the pointer
