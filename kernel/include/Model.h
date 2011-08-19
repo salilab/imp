@@ -11,6 +11,7 @@
 
 #include "kernel_config.h"
 #include "Object.h"
+#include "Pointer.h"
 #include "Restraint.h"
 #include "RestraintSet.h"
 #include "ScoreState.h"
@@ -94,7 +95,7 @@ public:
 private:
   typename std::vector<typename Traits::Container > data_;
 #if IMP_BUILD < IMP_FAST
-  WeakPointer<Mask > read_mask_, write_mask_, add_remove_mask_;
+  Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
   compatibility::set<Key> caches_;
 
@@ -126,7 +127,11 @@ public:
   }
 #endif
 
-  BasicAttributeTable(){}
+  BasicAttributeTable()
+#if IMP_BUILD < IMP_FAST
+  : read_mask_(NULL), write_mask_(NULL), add_remove_mask_(NULL)
+#endif
+  {}
 
   void add_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
@@ -254,8 +259,8 @@ class FloatAttributeTable {
   BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
   std::vector<FloatRange> ranges_;
 #if IMP_BUILD < IMP_FAST
-  WeakPointer<Mask > read_mask_, write_mask_,add_remove_mask_,
-                read_derivatives_mask_, write_derivatives_mask_;
+  Mask *read_mask_, *write_mask_,*add_remove_mask_,
+                *read_derivatives_mask_, *write_derivatives_mask_;
 #endif
   algebra::Sphere3D get_invalid_sphere() const {
     double iv= internal::FloatAttributeTableTraits::get_invalid();
@@ -273,7 +278,14 @@ public:
     IMP_SWAP_MEMBER(derivatives_);
     IMP_SWAP_MEMBER(optimizeds_);
   }
-  FloatAttributeTable(){}
+  FloatAttributeTable()
+#if IMP_BUILD < IMP_FAST
+  : read_mask_(NULL), write_mask_(NULL),
+    add_remove_mask_(NULL),
+    read_derivatives_mask_(NULL),
+    write_derivatives_mask_(NULL)
+#endif
+{}
 #if IMP_BUILD < IMP_FAST
   void set_masks(Mask *read_mask,
                  Mask *write_mask,
@@ -619,7 +631,7 @@ private:
   std::map<FloatKey, FloatRange> ranges_;
   mutable internal::Stage cur_stage_;
   unsigned int eval_count_;
-  internal::OwnerPointer<RestraintSet> rs_;
+  OwnerPointer<RestraintSet> rs_;
   RestraintsTemp temp_restraints_;
   bool first_call_;
   double max_score_;
