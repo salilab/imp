@@ -50,17 +50,22 @@ echo "${rev}" > $verfile
 # Write out list of all modules
 modfile="${IMPINSTALL}/build/imp-modules"
 python <<END
+import glob
 def Import(var): pass
 def SConscript(var): pass
-env = {'local':True}
-exec(open('imp/modules/SConscript').read())
+env = {'local':True} 
+for path in ('imp/modules/', 'imp/applications/',
+             'imp/biological_systems/'):
+    def Glob(pattern):
+        lp = len(path)
+        return [x[lp:] for x in glob.glob(path + pattern)]
+    exec(open(path + 'SConscript').read())
+    
 f = open('$modfile', 'w')
 for m in modules:
     print >> f, "module\t" + m
-exec(open('imp/applications/SConscript').read())
 for m in applications:
     print >> f, "application\t" + m
-exec(open('imp/biological_systems/SConscript').read())
 for m in systems:
     print >> f, "system\t" + m
 END
