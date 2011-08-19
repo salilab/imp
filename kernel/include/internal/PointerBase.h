@@ -105,6 +105,10 @@ public:
   explicit PointerBase(O* o): o_(NULL) {
     set_pointer(o);
   }
+  /** initialize from a pointer */
+  explicit PointerBase(const long int o): o_(NULL) {
+    IMP_USAGE_CHECK(o==0, "Non-null constant used for pointer.");
+  }
   /** drop control of the object */
   ~PointerBase(){
     set_pointer(NULL);
