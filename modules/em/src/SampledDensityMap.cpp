@@ -110,9 +110,11 @@ namespace {
 
   class SphereKernel {
     double voxel_size_cube_;
+    FloatKey mass_key_;
   public:
-    SphereKernel(double voxel_size):
-      voxel_size_cube_(voxel_size*voxel_size*voxel_size)
+    SphereKernel(double voxel_size,FloatKey mass_key):
+      voxel_size_cube_(voxel_size*voxel_size*voxel_size),
+      mass_key_(mass_key)
     {};
     double get_radius(Particle *p) const {
       return core::XYZR(p).get_radius();
@@ -121,7 +123,7 @@ namespace {
       return core::XYZ(p).get_coordinates();
     }
     double get_value(Particle *p, const algebra::Vector3D &pt) const {
-      double wmass = atom::Mass(p).get_mass()
+      double wmass = p->get_value(mass_key_)
         /(algebra::get_volume(core::XYZR(p).get_sphere())/voxel_size_cube_);
       if (algebra::get_squared_distance(get_center(p),pt)<
           square(get_radius(p))) {
@@ -133,7 +135,9 @@ namespace {
 
 
   class BinarizedSphereKernel {
+    FloatKey mass_key_;
   public:
+    BinarizedSphereKernel(const FloatKey mass_key):mass_key_(mass_key){}
     double get_radius(Particle *p) const {
       return core::XYZR(p).get_radius();
     }
@@ -151,6 +155,7 @@ namespace {
 
   class GaussianKernel {
     mutable KernelParameters &kps_;
+    FloatKey mass_key_;
     const RadiusDependentKernelParameters*
     get_radius_dependent_parameters(Particle *p) const {
       double r=core::XYZR(p).get_radius();
@@ -164,7 +169,9 @@ namespace {
       return params;
     }
   public:
-    GaussianKernel(KernelParameters& kps): kps_(kps){}
+    GaussianKernel(KernelParameters& kps,
+                   const FloatKey &mass_key):
+      kps_(kps),mass_key_(mass_key){}
     double get_radius(Particle *p) const {
       const RadiusDependentKernelParameters* kernel_params
         =get_radius_dependent_parameters(p);
@@ -184,7 +191,7 @@ namespace {
       // if statement to ensure even sampling within the box
       if (tmp>kps_.get_lim()) {
         return
-          kernel_params->get_normfac() * atom::Mass(p).get_mass() * tmp;
+          kernel_params->get_normfac() * p->get_value(mass_key_) * tmp;
       } else {
         return 0;
       }
@@ -195,7 +202,6 @@ namespace {
   void internal_resample(em::DensityMap *dmap,
                          Particles ps,
                          const F &f) {
-    FloatKey weight_key = atom::Mass::get_mass_key();
     emreal*data=dmap->get_data();
     IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
     //check that the particles bounding box is within the density bounding box
@@ -254,12 +260,12 @@ namespace {
 
 void SampledDensityMap::resample() {
   if (kt_== GAUSSIAN) {
-    internal_resample(this,ps_,GaussianKernel(kernel_params_));
+    internal_resample(this,ps_,GaussianKernel(kernel_params_,weight_key_));
   } else if (kt_==BINARIZED_SPHERE){
-    internal_resample(this,ps_,BinarizedSphereKernel());
+    internal_resample(this,ps_,BinarizedSphereKernel(weight_key_));
   }
   else {
-    internal_resample(this,ps_,SphereKernel(get_spacing()));
+    internal_resample(this,ps_,SphereKernel(get_spacing(),weight_key_));
   }
   // The values of dmean, dmin,dmax, and rms have changed
   rms_calculated_ = false;
