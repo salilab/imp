@@ -86,6 +86,8 @@ class PointerBase
     check(p);
     o_=p;
   }
+
+  struct UnusedClass{};
 public:
   template <class OT>
   explicit PointerBase(const OT &o): o_(NULL) {
@@ -98,6 +100,11 @@ public:
     if (o) {
       set_pointer(o.get());
     }
+  }
+  //! for null pointers
+  PointerBase(const UnusedClass*nu): o_(NULL) {
+    IMP_USAGE_CHECK(!nu, "Non-null const ptr");
+    IMP_UNUSED(nu);
   }
   //! initialize to NULL
   PointerBase(): o_(NULL) {}
@@ -182,6 +189,12 @@ public:
     } else {
       set_pointer(NULL);
     }
+    return *this;
+  }
+  PointerBase<O, Traits>& operator=(const UnusedClass* o){
+    IMP_USAGE_CHECK(!o, "Non-null pointer passed");
+    set_pointer(NULL);
+    IMP_UNUSED(o);
     return *this;
   }
   //! Relinquish control of the pointer
