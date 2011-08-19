@@ -349,14 +349,14 @@ bool test_1D(int N){
     return true;
 }
 
-//test when M=2 and N=2
+//test when M=2 and N=1
 bool test_2D(){
     //observation matrix
     Array2D<double> FA(1,2);
     FA[0][0]=0.5;
     FA[0][1]=1.0;
-    FA[1][0]=0.7;
-    FA[1][1]=1.2;
+    //FA[1][0]=0.7;
+    //FA[1][1]=1.2;
     //Jacobian
     double JA =1.0;
     //mean vector
