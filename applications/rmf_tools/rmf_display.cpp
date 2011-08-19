@@ -78,7 +78,8 @@ IMP::display::Geometry *create_restraint_geometry(IMP::rmf::NodeHandle nh,
     return NULL;
   } else if (gs.size()==1) {
     set_color(nh, frame, gs[0]);
-    IMP::Pointer<IMP::display::Geometry> ret(gs[0]);
+    IMP::Pointer<IMP::display::Geometry>
+      ret(static_cast<IMP::display::Geometry*>(gs[0]));
     gs.clear();
     return ret.release();
   } else {
