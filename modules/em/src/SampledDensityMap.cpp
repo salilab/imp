@@ -10,6 +10,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+
 SampledDensityMap::SampledDensityMap(const DensityHeader &header):
   DensityMap(header, "SampledDensityMap%1%")
 {
@@ -86,14 +87,33 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
 }
 
 
- void SampledDensityMap::resample() {
+namespace {
+
+
+IMP::algebra::BoundingBox3D
+  calculate_particles_bounding_box_internal(const Particles &ps) {
+  IMP_INTERNAL_CHECK(ps.size()>0,
+    "Can not calculate a particles bounding box for zero particles"<<std::endl);
+  //read the points and determine the dimentions of the map
+  algebra::Vector3Ds all_points;
+  for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
+    all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
+  }
+  return IMP::algebra::BoundingBox3D(all_points);
+}
+
+  void internal_resample(em::DensityMap *dmap,
+                         Particles ps,
+                         KernelParameters &kernel_params) {
+    FloatKey weight_key = atom::Mass::get_mass_key();
+    emreal*data=dmap->get_data();
    IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
    //check that the particles bounding box is within the density bounding box
    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
      IMP::algebra::BoundingBox3D particles_bb =
-         calculate_particles_bounding_box(ps_);
+         calculate_particles_bounding_box_internal(ps);
      IMP::algebra::BoundingBox3D density_bb =
-        get_bounding_box(this);
+        get_bounding_box(dmap);
      if (!density_bb.get_contains(particles_bb)) {
           IMP_WARN("The particles to sample are not contained within" <<
                     " the sampled density map"
@@ -101,31 +121,33 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
                    << std::endl);
      }
    }
-   reset_data();
-   calc_all_voxel2loc();
+   dmap->reset_data();
+   dmap->calc_all_voxel2loc();
+   core::XYZRs xyzr(ps);
+   const em::DensityHeader *header = dmap->get_header();
    int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
    // actual sampling
    emreal tmpx,tmpy,tmpz;
    // variables to avoid some multiplications
-   int nxny=header_.get_nx()*header_.get_ny(); int znxny;
+   int nxny=header->get_nx()*header->get_ny(); int znxny;
    emreal rsq,tmp;
    const RadiusDependentKernelParameters* params;
-   IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
-   for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
+   IMP_LOG(VERBOSE,"sampling "<<ps.size()<<" particles "<< std::endl);
+   for (unsigned int ii=0; ii<xyzr.size(); ii++) {
      float x,y,z;
-     x=xyzr_[ii].get_x();y=xyzr_[ii].get_y();z=xyzr_[ii].get_z();
+     x=xyzr[ii].get_x();y=xyzr[ii].get_y();z=xyzr[ii].get_z();
      // If the kernel parameters for the particles have not been
      // precomputed, do it
-     params = kernel_params_.get_params(xyzr_[ii].get_radius());
+     params = kernel_params.get_params(xyzr[ii].get_radius());
      if (!params) {
        IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-       kernel_params_.set_params(xyzr_[ii].get_radius());
-       params = kernel_params_.get_params(xyzr_[ii].get_radius());
+       kernel_params.set_params(xyzr[ii].get_radius());
+       params = kernel_params.get_params(xyzr[ii].get_radius());
      }
      IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
      // compute the box affected by each particle
      calc_local_bounding_box(
-       this,
+       dmap,
        x,y,z,
        params->get_kdist(),
        iminx, iminy, iminz, imaxx, imaxy, imaxz);
@@ -137,24 +159,100 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
        for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
          // we increment ivox this way to avoid unneceessary multiplication
          // operations.
-         ivox = znxny + ivoxy * header_.get_nx() + iminx;
+         ivox = znxny + ivoxy * header->get_nx() + iminx;
          for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-           tmpx=x_loc_[ivox] - x;
-           tmpy=y_loc_[ivox] - y;
-           tmpz=z_loc_[ivox] - z;
+           tmpx=dmap->get_location_in_dim_by_voxel(ivox,0) - x;
+           tmpy=dmap->get_location_in_dim_by_voxel(ivox,1) - y;
+           tmpz=dmap->get_location_in_dim_by_voxel(ivox,2) - z;
            rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
            tmp = EXP(-rsq * params->get_inv_sigsq());
            //tmp = exp(-rsq * params->get_inv_sigsq());
            // if statement to ensure even sampling within the box
-           if (tmp>kernel_params_.get_lim()) {
-             data_[ivox]+=
-               params->get_normfac() * ps_[ii]->get_value(weight_key_) * tmp;
+           if (tmp>kernel_params.get_lim()) {
+             data[ivox]+=
+               params->get_normfac() * ps[ii]->get_value(weight_key) * tmp;
            }
            ivox++;
          }
        }
      }
    }
+  }
+}
+
+ void SampledDensityMap::resample() {
+
+   internal_resample(this,ps_,kernel_params_);
+
+
+   // IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
+   // //check that the particles bounding box is within the density bounding box
+   // IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+   //   IMP::algebra::BoundingBox3D particles_bb =
+   //       calculate_particles_bounding_box(ps_);
+   //   IMP::algebra::BoundingBox3D density_bb =
+   //      get_bounding_box(this);
+   //   if (!density_bb.get_contains(particles_bb)) {
+   //        IMP_WARN("The particles to sample are not contained within" <<
+   //                  " the sampled density map"
+   //                 << density_bb << " does not contain " << particles_bb
+   //                 << std::endl);
+   //   }
+   // }
+   // reset_data();
+   // calc_all_voxel2loc();
+   // int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
+   // // actual sampling
+   // emreal tmpx,tmpy,tmpz;
+   // // variables to avoid some multiplications
+   // int nxny=header_.get_nx()*header_.get_ny(); int znxny;
+   // emreal rsq,tmp;
+   // const RadiusDependentKernelParameters* params;
+   // IMP_LOG(VERBOSE,"sampling "<<ps_.size()<<" particles "<< std::endl);
+   // for (unsigned int ii=0; ii<xyzr_.size(); ii++) {
+   //   float x,y,z;
+   //   x=xyzr_[ii].get_x();y=xyzr_[ii].get_y();z=xyzr_[ii].get_z();
+   //   // If the kernel parameters for the particles have not been
+   //   // precomputed, do it
+   //   params = kernel_params_.get_params(xyzr_[ii].get_radius());
+   //   if (!params) {
+   //     IMP_LOG(TERSE, "EM map is using default params" << std::endl);
+   //     kernel_params_.set_params(xyzr_[ii].get_radius());
+   //     params = kernel_params_.get_params(xyzr_[ii].get_radius());
+   //   }
+   //   IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
+   //   // compute the box affected by each particle
+   //   calc_local_bounding_box(
+   //     this,
+   //     x,y,z,
+   //     params->get_kdist(),
+   //     iminx, iminy, iminz, imaxx, imaxy, imaxz);
+   //   IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
+   //      " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
+   //      imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
+   //   for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
+   //     znxny=ivoxz * nxny;
+   //     for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
+   //       // we increment ivox this way to avoid unneceessary multiplication
+   //       // operations.
+   //       ivox = znxny + ivoxy * header_.get_nx() + iminx;
+   //       for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+   //         tmpx=x_loc_[ivox] - x;
+   //         tmpy=y_loc_[ivox] - y;
+   //         tmpz=z_loc_[ivox] - z;
+   //         rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
+   //         tmp = EXP(-rsq * params->get_inv_sigsq());
+   //         //tmp = exp(-rsq * params->get_inv_sigsq());
+   //         // if statement to ensure even sampling within the box
+   //         if (tmp>kernel_params_.get_lim()) {
+   //           data_[ivox]+=
+   //             params->get_normfac() * ps_[ii]->get_value(weight_key_) * tmp;
+   //         }
+   //         ivox++;
+   //       }
+   //     }
+   //   }
+   // }
    // The values of dmean, dmin,dmax, and rms have changed
    rms_calculated_ = false;
    normalized_ = false;
@@ -219,9 +317,9 @@ DensityMap* SampledDensityMap::project(const Particles &ps,
     z1=z0+1;
     //check that the point is within the boundaries
     bool is_valid=true;
-    is_valid = is_valid & (x0<upper_margin[0]) & (x1 >= lower_margin[0]);
-    is_valid = is_valid & (y0<upper_margin[1]) & (y1 >= lower_margin[1]);
-    is_valid = is_valid & (z0<upper_margin[2]) & (z1 >= lower_margin[2]);
+    is_valid = is_valid && (x0<upper_margin[0]) && (x1 >= lower_margin[0]);
+    is_valid = is_valid && (y0<upper_margin[1]) && (y1 >= lower_margin[1]);
+    is_valid = is_valid && (z0<upper_margin[2]) && (z1 >= lower_margin[2]);
     if (!is_valid) {
       IMP_WARN("particle:"<<it->get_particle()->get_name()
                <<" is not interpolated \n");
