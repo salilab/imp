@@ -28,7 +28,7 @@ IMPEM_BEGIN_NAMESPACE
 //define could be manipulated with a const *int ptr declaration.
 
 enum KernelType {
-  GAUSSIAN,BINARIZED_SPHERE
+  GAUSSIAN,BINARIZED_SPHERE,SPHERE
 };
 //! Class for sampling a density map from particles
 class IMPEMEXPORT SampledDensityMap: public DensityMap
