@@ -11,7 +11,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 FloatKey Scale::get_scale_key() {
-  static FloatKey k("scale");
+  static FloatKey k("nuisance");
   return k;
 }
 
