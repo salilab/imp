@@ -73,8 +73,9 @@ Model::~Model()
   rs_->set_model(NULL);
   for (unsigned int i=0; i< particle_index_.size(); ++i) {
     if (particle_index_[i]) {
-      Object* op=particle_index_[i];
-      dynamic_cast<Particle*>(op)->m_=NULL;
+      IMP_CHECK_OBJECT(particle_index_[i]);
+      Particle* op=particle_index_[i];
+      op->m_=NULL;
     }
   }
 }
