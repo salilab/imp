@@ -229,7 +229,7 @@ IMP_END_NAMESPACE
 #define IMP_CHECK_OBJECT(obj)
 #elif IMP_BUILD < IMP_FAST
 #define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_INTERNAL_CHECK((obj) != NULL, "NULL object");                   \
+    IMP_INTERNAL_CHECK((obj), "NULL object");                          \
     IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object " << obj    \
                << " was previously freed");                             \
 } while (false)
