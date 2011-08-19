@@ -38,6 +38,8 @@ public:
     return get_particle()->get_value(get_scale_key());
   }
 
+  Float get_nuisance() const { return get_scale(); }
+
   Float get_upper() const {
     double upper = get_particle()->get_value(get_upper_key());
     if (upper < -0.5) {
@@ -57,8 +59,15 @@ public:
 
   void set_scale(Float d); 
 
+  void set_nuisance(Float d) {set_scale(d);}
+
   void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_scale_key(), d, accum);
+  }
+
+  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum)
+  {
+      add_to_scale_derivative(d, accum);
   }
 
   Float get_scale_derivative() const
@@ -66,9 +75,13 @@ public:
     return get_particle()->get_derivative(get_scale_key());
   }
 
+  Float get_nuisance_derivative() const {return get_scale_derivative(); }
+
   IMP_DECORATOR(Scale, Decorator);
 
   static FloatKey get_scale_key();
+
+  static FloatKey get_nuisance_key() { return get_scale_key(); }
 
   static FloatKey get_upper_key();
   
