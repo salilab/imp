@@ -67,6 +67,35 @@ IMPEMEXPORT SampledDensityMap * particles2density(
    int sig_cutoff=3,
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
 
+
+//! Resample a set of particles into a binarized density map
+//! 1 for voxels containing particles and 0 otherwise
+/**
+Each such particle should be have xyz radius and weight attributes
+\param[in] ps         the particles to sample
+\param[in] resolution the resolution of the new sampled map
+\param[in] apix the voxel size of the sampled map
+\param[in] sig_cutoff sigma cutoff used in sampling
+\param[in] rad_key   the radius attribute key of the particles
+\param[in] weight_key the weight attribute key of the particles
+\return the sampled density grid
+\relatesalso SampledDensityMap
+ */
+inline IMPEMEXPORT SampledDensityMap * particles2binarized_density(
+   const Particles &ps,
+   Float resolution, Float apix,
+   int sig_cutoff=3,
+   const FloatKey &weight_key=IMP::atom::Mass::get_mass_key()) {
+
+  IMP::Pointer<SampledDensityMap> dmap(new SampledDensityMap(
+                                     ps, resolution,
+                                     apix,weight_key,sig_cutoff,
+                                     BINARIZED_SPHERE));
+   return dmap.release();
+
+}
+
+
 //! Resample a set of particles into a density grid
 /**
 Each such particle should be have xyz radius and weight attributes

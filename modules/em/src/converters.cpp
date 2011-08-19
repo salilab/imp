@@ -92,4 +92,6 @@ Float calculate_intersection_score(const SurfaceShellDensityMap *d1,
   return CoarseCC::cross_correlation_coefficient(d1,d2,1.+EPS,true);
 }
 
+
+
 IMPEM_END_NAMESPACE
