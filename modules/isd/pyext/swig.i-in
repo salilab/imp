@@ -14,6 +14,7 @@ IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugat
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
 IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
+IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
@@ -31,6 +32,7 @@ IMP_SWIG_OBJECT(IMP::isd, Linear1DFunction, Linear1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, BivariateFunction,  BivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Covariance1DFunction, Covariance1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolation, GaussianProcessInterpolations);
+IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraint, GaussianProcessInterpolationRestraints);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_N, SAXSRestraint_Ns);
 /*
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_LN, SAXSRestraint_LNs);
@@ -58,9 +60,14 @@ def create_model_and_particles():
   return (m, sc)
 %}
 
+%template(VectorOfFloats) ::std::vector<IMP::Floats >;
+//%template(VectorOfInts) ::std::vector<IMP::Ints >;
+
+
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
 %include "IMP/isd/ISDRestraint.h"
+%include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
 %include "IMP/isd/ScaleRangeModifier.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
@@ -82,6 +89,7 @@ def create_model_and_particles():
 %include "IMP/isd/AmbiguousRestraint.h"
 %include "IMP/isd/functions.h"
 %include "IMP/isd/GaussianProcessInterpolation.h"
+%include "IMP/isd/GaussianProcessInterpolationRestraint.h"
 %include "IMP/isd/SAXSRestraint_N.h"
 /*
 %include "IMP/isd/SAXSRestraint_LN.h"
