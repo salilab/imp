@@ -214,6 +214,11 @@ env.Depends(doxconf, ['#/build/include'])
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
                      source=["doxygen.conf"]+sources+[doxyheader])
 env.Depends(dox, '#/doc/doxygen/doxypy.py')
+
+# Need to have the top level IMP Python package in place (even if we don't
+# parse it for Python classes) so that doxygen can figure out that modules
+# live under the IMP Python module (e.g. IMP.restrainer rather than restrainer)
+env.Depends(dox, '#/build/lib/IMP/__init__.py')
 env.Requires(dox, env.Alias("doc-files"))
 
 install=env.Command(Dir(env.subst(docdir)), dox,
