@@ -12,6 +12,7 @@
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "Pointer.h"
+#include "WeakPointer.h"
 #include "Object.h"
 
 #include <iostream>
