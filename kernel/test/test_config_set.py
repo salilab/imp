@@ -34,6 +34,7 @@ class ParticleTests(IMP.test.TestCase):
         p.add_attribute(pk0, p)
         p.add_attribute(pk1, op)
     def _test_base(self, p, n, op):
+        print "testing"
         self.assertEqual(p.get_value(fk0), n)
         self.assertEqual(p.get_value(fk1), n+1)
         self.assertEqual(p.get_value(ik0), 100*n)
@@ -82,20 +83,28 @@ class ParticleTests(IMP.test.TestCase):
         self._force_remove(p, pk1)
         self._force_set(p, pk2, p)
     def _make_things(self):
+        IMP.set_log_level(IMP.MEMORY)
+        print "starting"
         m= IMP.Model()
+        print "adding"
         ps=[IMP.Particle(m), IMP.Particle(m), IMP.Particle(m)]
+        print "adding attribute"
         self._add_attributes(ps[0], 0, ps[1])
         self._add_attributes(ps[1], 1, ps[1])
         self._add_attributes(ps[2], 2, ps[0])
+        print "removing"
         m.remove_particle(ps[2])
+        print "returning"
         return (m, ps)
     def test_noop(self):
         """Testing no-ops with the ConfigurationSet"""
         (m, ps)= self._make_things()
+        print "create"
         cs= IMP.ConfigurationSet(m)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])
         #no-op
+        print "load"
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
         self._test_base(ps[1], 1, ps[1])

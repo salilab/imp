@@ -9,14 +9,8 @@
 #ifndef IMP_POINTER_H
 #define IMP_POINTER_H
 
-
-#include "WeakPointer.h"
-#include "RefCounted.h"
-#include "Object.h"
-#include "internal/ref_counting.h"
+#include "internal/PointerBase.h"
 #include "internal/OwnerPointer.h"
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -70,94 +64,31 @@ IMP_BEGIN_NAMESPACE
     non-ref-counted objects.
 
     \param[in] O The type of IMP::RefCounted-derived object to point to
- */
+*/
 template <class O>
-class Pointer: public WeakPointer<O>
-{
-  // Make sure O is not RefCounted itself as RefCounted is not polymorphic
-  BOOST_STATIC_ASSERT((!boost::is_base_of<O, RefCounted>::value));
-
-  void check(const RefCounted *){}
-  void check(const Object *o) {
-    if (o) {
-      IMP_CHECK_OBJECT(o);
-    }
-  }
-
-  typedef WeakPointer<O> P;
-
-  void set_pointer(O* p) {
-    if (p == P::o_) return;
-    if (P::o_) internal::unref(P::o_);
-    if (p) internal::ref(p);
-    check(p);
-    P::o_=p;
-  }
-  // issue with commas
-  BOOST_STATIC_ASSERT((boost::is_base_of<RefCounted, O>::value));
-
-public:
-  template <class OT>
-  Pointer(const Pointer<OT> &o): WeakPointer<O>() {
-    if (o) {
-      set_pointer(o.get());
-    }
-  }
-  //! initialize to NULL
-  Pointer() {}
-  /** initialize from a pointer */
-  Pointer(O* o) {
-    set_pointer(o);
-  }
-  /** drop control of the object */
-  ~Pointer(){
-    set_pointer(NULL);
-  }
-
-  //! Set it from a possibly NULL pointer.
-  Pointer<O>& operator=(O* o) {
-    set_pointer(o);
-    return *this;
-  }
-  /** copy from another */
-  template <class OT>
-  Pointer<O>& operator=(const Pointer<OT> &o){
-    if (o) {
-      set_pointer(o.get());
-    } else {
-      set_pointer(NULL);
-    }
-    return *this;
-  }
-  //! Relinquish control of the pointer
-  /** This must be the only pointer pointing to the object. Its
-      reference count will be 0 after the function is called, but
-      the object will not be destroyed. Use this to safely return
-      objects allocated within functions.
-  */
-  O* release() {
-    internal::release(P::o_);
-    O* ret=P::o_;
-    P::o_= NULL;
-    return ret;
-  }
+struct Pointer: internal::PointerBase<O, internal::RefCountedPointerTraits> {
+  typedef internal::PointerBase<O, internal::RefCountedPointerTraits> P;
+  template <class Any>
+  Pointer(const Any &o): P(o){}
+  Pointer(){}
+  using P::operator=;
 };
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class T>
-std::ostream &operator<<(std::ostream &out,
-                         const std::vector<Pointer<T> > &data) {
-  out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i]->get_name();
-  }
-  out << "]";
-  return out;
-}
-#endif
+//! A reference counted pointer to an object.
+/** The object being pointed to must inherit from IMP::RefCountedObject.
+    Use an IMP::WeakPointer to break cycles or to point to
+    non-ref-counted objects.
+
+    \param[in] O The type of IMP::RefCounted-derived object to point to
+ */
+template <class O>
+struct OwnerPointer: internal::PointerBase<O, internal::OwnerPointerTraits> {
+  typedef internal::PointerBase<O, internal::OwnerPointerTraits> P;
+  template <class Any>
+  OwnerPointer(const Any &o): P(o){}
+  OwnerPointer(){}
+  using P::operator=;
+};
 
 IMP_OBJECTS(Object, Objects);
 

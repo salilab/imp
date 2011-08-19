@@ -8,17 +8,8 @@
 
 #ifndef IMP_WEAK_POINTER_H
 #define IMP_WEAK_POINTER_H
+#include "internal/PointerBase.h"
 
-#include "Object.h"
-#include "macros.h"
-#include "exception.h"
-
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/utility/enable_if.hpp>
-#include <boost/mpl/not.hpp>
-#include <boost/mpl/and.hpp>
-#include <IMP/compatibility/hash.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -32,97 +23,13 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
-class WeakPointer
-{
-
-  void set_pointer(O* p) {
-    if (p == o_) return;
-    if (p) {
-      //IMP_CHECK_OBJECT(p);
-    }
-    o_=p;
-  }
-  void audit(const void *t) const {
-    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
-  }
-  void audit(const RefCounted*t) const {
-    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
-    IMP_INTERNAL_CHECK(t->get_ref_count() >0, "Ref count is null");
-  }
-  void audit(const Object*t) const {
-    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
-    IMP_CHECK_OBJECT(t);
-  }
-  void audit() const {
-    audit(o_);
-  }
-protected:
-  IMP_NO_DOXYGEN(O* o_);
-public:
-  //! initialize to NULL
-  WeakPointer(): o_(NULL) {}
-  /** initialize from a pointer */
-  explicit WeakPointer(O* o): o_(NULL) {
-    set_pointer(o);
-  }
-  const O& operator*() const {
-    audit();
-    return *o_;
-  }
-  O& operator*()  {
-    audit();
-    return *o_;
-  }
-  O* operator->() const {
-    audit();
-    return o_;
-  }
-  O* operator->() {
-    audit();
-    return o_;
-  }
-  //! get the raw pointer
-  O* get() const {
-    audit();
-    return o_;
-  }
-  //! Set it from a possibly NULL pointer.
-  WeakPointer<O>& operator=(O* o) {
-    set_pointer(o);
-    return *this;
-  }
-
-  IMP_COMPARISONS_1(WeakPointer, o_);
-
-  //! Return true if the pointer is not NULL
-  bool operator!() const {
-    return !o_;
-  }
-
-  //! convert to the raw pointer
-  operator O*() const {
-    return o_;
-  }
-
-  IMP_HASHABLE_INLINE(WeakPointer, return boost::hash_value(o_););
+struct WeakPointer: internal::PointerBase<O, internal::WeakPointerTraits> {
+  typedef  internal::PointerBase<O, internal::WeakPointerTraits> P;
+  template <class Any>
+  WeakPointer(const Any &o): P(o){}
+  WeakPointer(){}
+  using P::operator=;
 };
-
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class T>
-std::ostream &operator<<(std::ostream &out,
-                         const std::vector<WeakPointer<T> > &data) {
-  out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i]->get_name();
-  }
-  out << "]";
-  return out;
-}
-#endif
 
 IMP_END_NAMESPACE
 
