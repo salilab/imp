@@ -109,7 +109,7 @@ class IMPMULTIFITEXPORT FFTFitting {
   multifit::internal::FFTWGrid<double> low_map_data_;   // low resolution map
   Pointer<em::DensityMap> low_map_;
   Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
-  multifit::internal::FFTWGrid<double> sampled_map_data_;
+  multifit::internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
   // high resolution map
   multifit::internal::FFTWGrid<double> reversed_fftw_data_;
   double*  kernel_filter_;
