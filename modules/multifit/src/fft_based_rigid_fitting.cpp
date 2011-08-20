@@ -410,12 +410,13 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
   rotate_mol(copy_mol_,rot.psi,rot.theta,rot.phi);
   Particles mol_ps=core::get_leaves(orig_mol_);
   sampled_map_->reset_data(0.);
-  sampled_map_->project(
+  Pointer<em::DensityMap> temp = sampled_map_->project(
                       temp_ps,
                       margin_ignored_in_conv_[0],
                       margin_ignored_in_conv_[1],
                       margin_ignored_in_conv_[2],
                       map_cen_-core::get_centroid(core::XYZs(mol_ps)));
+  temp=NULL;
   sampled_map_->convolute_kernel(filtered_kernel_, filtered_kernel_ext_);
   sampled_map_->multiply(1./(sampled_norm_*nvox_));
 
