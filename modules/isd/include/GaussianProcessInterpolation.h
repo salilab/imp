@@ -64,7 +64,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
    * \f[\hat{\sigma}^2(x,x') =
    *    w(x,x') - {}^t\mathbf{w}(x)
    *              (\mathbf{W} + \mathbf{S})^{-1}
-   *              \mathbf{x'} \f]
+   *              \mathbf{w}(x') \f]
    * where \f$\mathbf{m}\f$ is the vector built by evaluating the prior mean
    * function at the observation points; \f$\mathbf{w}(x)\f$ is the vector of
    * covariances between each observation point and the current point;
