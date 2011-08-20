@@ -33,7 +33,8 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.mean = Linear1DFunction(self.alpha,self.beta)
         self.tau = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.cov = Covariance1DFunction(2.0, self.tau, self.lam)
+        self.sig = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
+        self.cov = Covariance1DFunction(2.0, self.tau, self.lam, self.sig)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.gpi)

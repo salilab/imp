@@ -45,7 +45,9 @@ void GaussianProcessInterpolationRestraint::compute_mean_vector()
     for (unsigned i=0; i<M_; i++)
     {
         mean_[i] = gpi_->get_posterior_mean(gpi_->x_[i]);
+        IMP_LOG(TERSE, "GPIR: mean_["<<i<<"]= "<<mean_[i]<< std::endl);
     }
+    IMP_LOG(TERSE, std::endl);
 }
 
 void GaussianProcessInterpolationRestraint::compute_covariance_matrix()
@@ -54,10 +56,14 @@ void GaussianProcessInterpolationRestraint::compute_covariance_matrix()
     for (unsigned i=0; i<M_; i++)
     {
         Cov_[i][i] = gpi_->get_posterior_covariance(gpi_->x_[i],gpi_->x_[i]);
+        IMP_LOG(TERSE, "GPIR: Cov_["<<i<<"]["<<i<<"]= "
+                                    <<Cov_[i][i]<< std::endl);
         for (unsigned j=i+1; j<M_; j++)
         {
             Cov_[i][j] = gpi_->get_posterior_covariance(gpi_->x_[i],gpi_->x_[j]);
             Cov_[j][i] = Cov_[i][j];
+            IMP_LOG(TERSE, "GPIR: Cov_["<<i<<"]["<<j<<"]= "
+                    <<Cov_[i][j]<< std::endl);
         }
     }
 }

@@ -96,6 +96,7 @@ using IMP::algebra::internal::TNT::Array2D;
         {
             right[i] += WS_[i][j]*wx_[j];
         }
+        IMP_LOG(TERSE, "   WSwx["<<i<<"] = "<< right[i] << std::endl);
     }
     if (x1 != x2) compute_wx_vector(x1);
     double ret=0;
@@ -103,6 +104,7 @@ using IMP::algebra::internal::TNT::Array2D;
     {
         ret += wx_[i]*right[i];
     }
+    IMP_LOG(TERSE, "   ret = "<<ret<<std::endl);
     return (*covariance_function_)(x1,x2)[0] - ret;
 }
 
@@ -151,6 +153,8 @@ using IMP::algebra::internal::TNT::Array2D;
     for (unsigned i=0; i<M_; i++)
     {
         W_[i][i] = (*covariance_function_)(x_[i],x_[i])[0];
+        IMP_LOG(TERSE, "W[" << i << "][" << i << "]: " 
+                                << W_[i][i] << std::endl);
         for (unsigned j=i+1; j<M_; j++)
         {
             W_[i][j] = (*covariance_function_)(x_[i],x_[j])[0];
