@@ -331,6 +331,21 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
   }
   fftw_execute(fftw_plan_forward_lo_.get());
   IMP_LOG(TERSE,"Start FFT search for all rotations\n");
+  //create all plans needed for fft
+  //plan for FFT the molecule
+  fftw_r_grid_mol_.resize(nx_*ny_*nz_);
+  fftw_grid_hi_.resize(fftw_nvox_c2r_);
+  fftw_plan_forward_hi_ = fftw_plan_dft_r2c_3d(
+                         nz_, ny_, nx_,
+                         fftw_r_grid_mol_, fftw_grid_hi_,FFTW_MEASURE);
+  fftw_r_grid_mol_.resize(nx_*ny_*nz_);
+  //plan for IFFT (mol*EM)
+  fftw_grid_hi_.resize(fftw_nvox_c2r_);
+  reversed_fftw_data_.resize(fftw_nvox_r2c_);
+  fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
+                                  nz_, ny_, nx_,
+                                  fftw_grid_hi_,reversed_fftw_data_
+                                  ,FFTW_MEASURE);
   boost::progress_display show_progress(rots_.size());
   std::cout<<"number of rots_:"<<rots_.size()<<std::endl;
   for (unsigned int kk=0;kk<rots_.size();kk++) {
@@ -405,15 +420,7 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
   sampled_map_->multiply(1./(sampled_norm_*nvox_));
 
   // FFT the molecule
-  multifit::internal::FFTWGrid<double> fftw_r_grid_mol;
-  fftw_r_grid_mol.resize(nx_*ny_*nz_);
-  fftw_grid_hi_.resize(fftw_nvox_c2r_);
-  //  copy_density_data(sampled_map_,sampled_map_data_);
-  fftw_plan_forward_hi_ = fftw_plan_dft_r2c_3d(
-                         nz_, ny_, nx_,
-                         fftw_r_grid_mol, fftw_grid_hi_,FFTW_MEASURE);
-  fftw_r_grid_mol.resize(nx_*ny_*nz_);
-  copy_density_data(sampled_map_,fftw_r_grid_mol);
+  copy_density_data(sampled_map_,fftw_r_grid_mol_);
   fftw_execute(fftw_plan_forward_hi_.get());
   // IFFT(molxEM*)
   double save_b_re;
@@ -426,23 +433,6 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
     fftw_grid_hi_[i][1] =(fftw_grid_lo_[i][0] *
                           fftw_grid_hi_[i][1] -
                           fftw_grid_lo_[i][1] * save_b_re)*fftw_scale_;
-  }
-
-  // assign the translation data to reversed_fftw_data_
-  multifit::internal::FFTWGrid<fftw_complex> fftw_grid_hi_copy;
-  fftw_grid_hi_copy.resize(fftw_nvox_c2r_);
-  for(unsigned long k=0;k<fftw_nvox_c2r_;k++) {
-    fftw_grid_hi_copy[k][0]=fftw_grid_hi_[k][0];
-    fftw_grid_hi_copy[k][1]=fftw_grid_hi_[k][1];
-  }
-  reversed_fftw_data_.resize(fftw_nvox_r2c_);
-  fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
-                                  nz_, ny_, nx_,
-                                  fftw_grid_hi_,reversed_fftw_data_
-                                  ,FFTW_MEASURE);
-  for(unsigned long k=0;k<fftw_nvox_c2r_;k++) {
-    fftw_grid_hi_[k][0]=fftw_grid_hi_copy[k][0];
-    fftw_grid_hi_[k][1]=fftw_grid_hi_copy[k][1];
   }
 
   for(long jj=0;jj<<fftw_nvox_r2c_;jj++) reversed_fftw_data_[jj]=0.;
