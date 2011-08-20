@@ -106,12 +106,12 @@ class IMPMULTIFITEXPORT FFTFitting {
   unsigned int nx_half_,ny_half_,nz_half_;// half of the map extent
   double spacing_;                      //map voxel size
   double origx_,origy_,origz_;// map origin
-  multifit::internal::FFTWGrid<double> low_map_data_;   // low resolution map
+  internal::FFTWGrid<double> low_map_data_;   // low resolution map
   Pointer<em::DensityMap> low_map_;
   Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
-  multifit::internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
+  internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
   // high resolution map
-  multifit::internal::FFTWGrid<double> reversed_fftw_data_;
+  internal::FFTWGrid<double> reversed_fftw_data_;
   double*  kernel_filter_;
   unsigned int kernel_filter_ext_;
   double* gauss_kernel_;   // low-pass (Gaussian) kernel
@@ -127,9 +127,9 @@ class IMPMULTIFITEXPORT FFTFitting {
   //FFT variables
  unsigned long fftw_nvox_r2c_;        /* FFTW real to complex voxel count */
  unsigned long fftw_nvox_c2r_;        /* FFTW complex to real voxel count */
- multifit::internal::FFTWGrid<fftw_complex> fftw_grid_lo_,fftw_grid_hi_;
- multifit::internal::FFTWPlan fftw_plan_forward_lo_,fftw_plan_forward_hi_;
- multifit::internal::FFTWPlan fftw_plan_reverse_hi_;
+ internal::FFTWGrid<fftw_complex> fftw_grid_lo_,fftw_grid_hi_;
+ internal::FFTWPlan fftw_plan_forward_lo_,fftw_plan_forward_hi_;
+ internal::FFTWPlan fftw_plan_reverse_hi_;
  double fftw_scale_; //eq to 1./nvox_
 
   //molecule to fit
