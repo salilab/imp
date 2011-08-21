@@ -11,7 +11,6 @@
 
 #include "core_config.h"
 #include "internal/hierarchy_helpers.h"
-#include "internal/ArrayOnAttributesHelper.h"
 
 #include <IMP/SingletonModifier.h>
 #include <IMP/Particle.h>
