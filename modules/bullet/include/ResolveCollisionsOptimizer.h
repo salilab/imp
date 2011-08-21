@@ -41,7 +41,7 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
   void set_xyzrs_internal(const core::XYZRs &ps);
   double local_;
   double damp_;
-  IMP::internal::OwnerPointer<display::Writer> debug_writer_;
+  IMP::OwnerPointer<display::Writer> debug_writer_;
   int debug_period_;
   std::vector<std::pair<algebra::Vector3D, algebra::Transformation3D> >
     boxes_;

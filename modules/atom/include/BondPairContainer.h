@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT BondPairContainer :
   public PairContainer
 {
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
   IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
   BondPairContainer(SingletonContainer *sc, bool);
 

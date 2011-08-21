@@ -253,7 +253,7 @@ namespace {
                        bool noradii)
 {
   IMP_FUNCTION_LOG;
-  IMP::internal::OwnerPointer<PDBSelector> sp(selector);
+  IMP::OwnerPointer<PDBSelector> sp(selector);
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
@@ -386,7 +386,7 @@ Hierarchy read_pdb(TextInput in, Model *model,
                    bool select_first_model,
                    bool no_radii)
 {
-  IMP::internal::OwnerPointer<PDBSelector> sp(selector);
+  IMP::OwnerPointer<PDBSelector> sp(selector);
   Hierarchies ret= read_pdb(in, nicename(in.get_name()), model, selector,
                             select_first_model, false, no_radii);
   if (ret.empty()) {
@@ -400,7 +400,7 @@ Hierarchy read_pdb(TextInput in, Model *model,
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                                 PDBSelector* selector)
 {
-  IMP::internal::OwnerPointer<PDBSelector> sp(selector);
+  IMP::OwnerPointer<PDBSelector> sp(selector);
   return read_pdb(in, nicename(in.get_name()), model, selector, false,
                   true, false);
 }

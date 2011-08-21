@@ -37,7 +37,7 @@ public:
 IMP_OBJECTS(Metric, Metrics);
 
 class IMPSTATISTICSEXPORT EuclideanMetric: public Metric {
-  IMP::internal::OwnerPointer<Embedding> em_;
+  IMP::OwnerPointer<Embedding> em_;
 public:
   EuclideanMetric(Embedding *em);
   IMP_METRIC(EuclideanMetric);
@@ -47,8 +47,8 @@ public:
 /** Compute the RMSD between two sets of particles in two configurations.
  */
 class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
-  IMP::internal::OwnerPointer<ConfigurationSet> cs_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<ConfigurationSet> cs_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
   bool align_;
  public:
   ConfigurationSetRMSDMetric(ConfigurationSet *cs,
@@ -66,8 +66,8 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
     clustering of the original elements using create_full_clustering().
 */
 class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric: public Metric {
-  IMP::internal::OwnerPointer<Metric> metric_;
-  IMP::internal::OwnerPointer<PartitionalClustering> clustering_;
+  IMP::OwnerPointer<Metric> metric_;
+  IMP::OwnerPointer<PartitionalClustering> clustering_;
  public:
   RecursivePartitionalClusteringMetric(Metric *metric,
                                        PartitionalClustering *clustering);

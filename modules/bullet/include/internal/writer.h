@@ -17,7 +17,7 @@ IMPBULLET_BEGIN_INTERNAL_NAMESPACE
 
 
 class IMPBULLETEXPORT DebugWriter: public btIDebugDraw {
-  IMP::internal::OwnerPointer<display::Writer> writer_;
+  IMP::OwnerPointer<display::Writer> writer_;
   int mode_;
  public:
   void set_writer(display::Writer *w);

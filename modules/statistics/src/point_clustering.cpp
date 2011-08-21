@@ -318,7 +318,7 @@ create_connectivity_clustering(Embedding *embed,
 PartitionalClusteringWithCenter*
 create_bin_based_clustering(Embedding *embed,
                          double side) {
-  IMP::internal::OwnerPointer<Embedding> e(embed);
+  IMP::OwnerPointer<Embedding> e(embed);
   typedef algebra::SparseUnboundedGridD<-1, Ints> Grid;
   int dim= embed->get_point(0).get_dimension();
   Grid grid(side, dim);
@@ -346,7 +346,7 @@ create_bin_based_clustering(Embedding *embed,
 PartitionalClustering *create_centrality_clustering(Embedding *d,
                                                  double far,
                                                  int k) {
-  IMP::internal::OwnerPointer<Embedding> dp(d);
+  IMP::OwnerPointer<Embedding> dp(d);
   const unsigned int n=d->get_number_of_items();
   algebra::VectorKDs vs= get_all(d);
   IMP_NEW(algebra::NearestNeighborKD, nn, (vs));

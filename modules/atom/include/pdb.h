@@ -201,7 +201,7 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
 
 //! Select non water and non hydrogen atoms
 class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
-  IMP::internal::OwnerPointer<PDBSelector> ws_, hs_;
+  IMP::OwnerPointer<PDBSelector> ws_, hs_;
  public:
   bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
@@ -223,7 +223,7 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
 
 //! Select all non-water non-alternative ATOM and HETATM records
 class NonWaterPDBSelector : public NonAlternativePDBSelector {
-  IMP::internal::OwnerPointer<PDBSelector> ws_;
+  IMP::OwnerPointer<PDBSelector> ws_;
  public:
   bool get_is_selected(const std::string &pdb_line) const {
     if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
@@ -259,7 +259,7 @@ class PPDBSelector : public NonAlternativePDBSelector {
     \endcode
  */
 class AndPDBSelector: public PDBSelector {
-  const IMP::internal::OwnerPointer<PDBSelector> a_, b_;
+  const IMP::OwnerPointer<PDBSelector> a_, b_;
 public:
   bool get_is_selected(const std::string &pdb_line) const {
    return a_->get_is_selected(pdb_line)
@@ -277,7 +277,7 @@ public:
     \endcode
  */
 class OrPDBSelector: public PDBSelector {
-  const IMP::internal::OwnerPointer<PDBSelector> a_, b_;
+  const IMP::OwnerPointer<PDBSelector> a_, b_;
 public:
   bool get_is_selected(const std::string &pdb_line) const {
    return a_->get_is_selected(pdb_line)
@@ -295,7 +295,7 @@ public:
     \endcode
  */
 class NotPDBSelector: public PDBSelector {
-  const IMP::internal::OwnerPointer<PDBSelector> a_;
+  const IMP::OwnerPointer<PDBSelector> a_;
 public:
   bool get_is_selected(const std::string &pdb_line) const {
     return !a_->get_is_selected(pdb_line);
