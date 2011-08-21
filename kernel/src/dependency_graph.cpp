@@ -30,18 +30,18 @@ namespace {
 }
 
 
-template <class Graph, class Type>
+template <class Graph, class Type, class Types>
 class DirectCollectVisitor: public boost::default_dfs_visitor {
   typename boost::property_map<Graph,
                       boost::vertex_name_t>::const_type vm_;
-  std::vector<Type*> &vals_;
+  Types &vals_;
 public:
-  const std::vector<Type*> &get_collected() {
+  const Types &get_collected() {
     std::sort(vals_.begin(), vals_.end());
     vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
     return vals_;
   }
-  DirectCollectVisitor(const Graph &g, std::vector<Type*> &vals): vals_(vals)
+  DirectCollectVisitor(const Graph &g, Types &vals): vals_(vals)
     {
       vm_=boost::get(boost::vertex_name, g);
     }
@@ -84,7 +84,7 @@ ParticlesTemp get_dependent_particles(Particle *p,
     return ParticlesTemp();
   }
   ParticlesTemp pt;
-  DirectCollectVisitor<DependencyGraph, Particle> cv(dg, pt);
+  DirectCollectVisitor<DependencyGraph, Particle, ParticlesTemp> cv(dg, pt);
   boost::depth_first_visit(dg, start, cv, color);
   return cv.get_collected();
 }
@@ -121,7 +121,7 @@ RestraintsTemp get_dependent_restraints(Particle *p,
     return RestraintsTemp();
   }
   RestraintsTemp pt;
-  DirectCollectVisitor<DependencyGraph, Restraint> cv(dg, pt);
+  DirectCollectVisitor<DependencyGraph, Restraint, RestraintsTemp> cv(dg, pt);
   boost::depth_first_visit(dg, start, cv, color);
   return cv.get_collected();
 }
