@@ -29,11 +29,11 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DiameterRestraint: public Restraint
 {
-  IMP::internal::OwnerPointer<ScoreState> ss_;
-  IMP::internal::OwnerPointer<Particle> p_;
+  IMP::OwnerPointer<ScoreState> ss_;
+  IMP::OwnerPointer<Particle> p_;
   Float diameter_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey dr_;
 public:
   //! Use f to restraint sc to be withing diameter of one another

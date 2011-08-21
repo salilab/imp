@@ -35,8 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT TripletConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<TripletModifier> f_;
-  IMP::internal::OwnerPointer<TripletDerivativeModifier> af_;
+  IMP::OwnerPointer<TripletModifier> f_;
+  IMP::OwnerPointer<TripletDerivativeModifier> af_;
   ParticleIndexTriplet v_;
 public:
   /** before and after are the modifiers to apply before and after

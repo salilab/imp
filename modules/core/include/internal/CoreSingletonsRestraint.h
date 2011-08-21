@@ -35,8 +35,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreSingletonsRestraint :
   public SingletonsScoreRestraint
 {
-  IMP::internal::OwnerPointer<SingletonScore> ss_;
-  IMP::internal::OwnerPointer<SingletonContainer> pc_, ac_, rc_;
+  IMP::OwnerPointer<SingletonScore> ss_;
+  IMP::OwnerPointer<SingletonContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

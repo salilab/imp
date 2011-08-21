@@ -35,8 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT PairConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<PairModifier> f_;
-  IMP::internal::OwnerPointer<PairDerivativeModifier> af_;
+  IMP::OwnerPointer<PairModifier> f_;
+  IMP::OwnerPointer<PairDerivativeModifier> af_;
   ParticleIndexPair v_;
 public:
   /** before and after are the modifiers to apply before and after

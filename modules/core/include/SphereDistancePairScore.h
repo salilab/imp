@@ -25,7 +25,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
   SphereDistancePairScore(UnaryFunction *f,
@@ -193,7 +193,7 @@ HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(Model *m,
  */
 class IMPCOREEXPORT NormalizedSphereDistancePairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey radius_;
 public:
   NormalizedSphereDistancePairScore(UnaryFunction *f,
@@ -211,7 +211,7 @@ public:
  */
 class IMPCOREEXPORT WeightedSphereDistancePairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey radius_;
   FloatKey weight_;
 public:

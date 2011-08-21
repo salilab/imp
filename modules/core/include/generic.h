@@ -39,7 +39,7 @@ public Restraint
 public IMP::internal::SimpleRestraintParentTraits<Score>::SimpleRestraint
 #endif
 {
-  IMP::internal::OwnerPointer<Score> ss_;
+  IMP::OwnerPointer<Score> ss_;
   typename Score::Argument v_;
   mutable double score_;
 public:
@@ -82,8 +82,8 @@ inline Restraint* create_restraint(Score *s,
 template <class Before, class After>
 class TupleConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<Before> f_;
-  IMP::internal::OwnerPointer<After> af_;
+  IMP::OwnerPointer<Before> f_;
+  IMP::OwnerPointer<After> af_;
   typename Before::Argument v_;
 public:
   TupleConstraint(Before *before,

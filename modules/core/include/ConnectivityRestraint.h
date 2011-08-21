@@ -37,8 +37,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ConnectivityRestraint : public Restraint
 {
-  IMP::internal::OwnerPointer<PairScore> ps_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<PairScore> ps_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
 public:
   //! Use the given PairScore
   /** If sc is NULL, a ListSingletonContainer is created internally.

@@ -58,8 +58,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
 {
-  IMP::internal::OwnerPointer<PairScore> ps_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<PairScore> ps_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
   double eps_;
 public:
   //! Use the given PairScore

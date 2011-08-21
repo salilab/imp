@@ -22,8 +22,8 @@ IMPCORE_BEGIN_NAMESPACE
 /** \untested{VolumeRestraint}*/
 class IMPCOREEXPORT VolumeRestraint: public Restraint
 {
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   double volume_;
   typedef algebra::DenseGrid3D<int> Grid;
   mutable Grid grid_;

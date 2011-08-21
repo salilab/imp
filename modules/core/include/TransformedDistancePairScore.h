@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT TransformedDistancePairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   algebra::Transformation3D t_;
   algebra::Rotation3D ri_;
  public:

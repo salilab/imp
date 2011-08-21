@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   algebra::Vector3D pt_;
 public:
   DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
@@ -47,7 +47,7 @@ public:
  */
 class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   algebra::Vector3D pt_;
 public:
   SphereDistanceToSingletonScore(UnaryFunction *f,

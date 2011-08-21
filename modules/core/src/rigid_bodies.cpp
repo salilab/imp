@@ -898,7 +898,7 @@ void RigidMembersRefiner::do_show(std::ostream &) const {
 
 namespace internal {
   IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner() {
-    static IMP::internal::OwnerPointer<RigidMembersRefiner> pt
+    static IMP::OwnerPointer<RigidMembersRefiner> pt
       = new RigidMembersRefiner();
     return pt;
   }

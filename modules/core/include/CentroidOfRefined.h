@@ -32,7 +32,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT CentroidOfRefined:
 public SingletonModifier
 {
-  IMP::internal::OwnerPointer<Refiner> refiner_;
+  IMP::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
   FloatKey w_;
 public:
