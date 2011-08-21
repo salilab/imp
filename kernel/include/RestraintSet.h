@@ -46,6 +46,9 @@ class IMPEXPORT RestraintSet : public Restraint
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
 
+  Restraints create_decomposition() const;
+  Restraints create_current_decomposition() const;
+
   IMP_RESTRAINT(RestraintSet);
   /** @name Methods to control the nested Restraint objects
 
