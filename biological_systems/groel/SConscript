@@ -1,9 +1,15 @@
 Import('env')
 
-env= env.IMPSystem(name="Groel", version="SVN",
+env= env.IMPSystem(name="Groel", version="1.0",
                    authors=["Keren Lasker"],
-                   brief="Solve the structure of Groel using some data.",
-                   overview="The structures have been computed from various data. The resulting structure has a XX nm resolution.",
+                   brief="Solve the structure of Groel using comparative models and density maps",
+                   overview="""A full description of the scripts can be found in
+                   \salilab{pdf/Lasker_MethodsMolBiol_2011.pdf, Macromolecular assembly structures by comparative modeling and electron microscopy}.""",
                    license=env.IMPStandardLicense(),
-                   publications=[],
+                   publications=[env.IMPPublication(authors=["Keren Lasker", "Javier A. Velazquez-Muriel",
+                                                             "Benjamin M. Webb", "Zheng Yang",
+                                                             "Thomas E. Ferrin", "Andrej Sali"],
+                                                    title="Macromolecular assembly structures by comparative modeling and electron microscopy",
+                                                    journal="Methods in Molecular Biology",
+                                                    year=2011)],
                    required_modules=['em'])
