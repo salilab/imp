@@ -390,7 +390,9 @@ namespace {
             }
           }
           increment= next- cur.back();
-          IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive");
+          IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
+                             << " it was not"
+                             << " for \"" << filters.back()[i] << "\"");
           ok=false;
           break;
         }
