@@ -389,6 +389,8 @@ namespace {
                                  << " skipping until " << next);
             }
           }
+          IMP_INTERNAL_CHECK(cur.back()==cura[pos],
+                             "Assignments don't match");
           increment= next- cur.back();
           IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
                              << " it was not"
