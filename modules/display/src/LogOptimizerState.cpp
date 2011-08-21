@@ -11,7 +11,7 @@
 IMPDISPLAY_BEGIN_NAMESPACE
 
 void WriteOptimizerState::write(WriterOutput w) const {
-  IMP::internal::OwnerPointer<Writer> wp(w);
+  IMP::OwnerPointer<Writer> wp(w);
   for (unsigned int i=0; i< get_number_of_geometries(); ++i) {
     get_geometry(i)->set_was_used(true);
     w->add_geometry(get_geometry(i));

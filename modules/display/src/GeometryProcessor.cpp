@@ -25,7 +25,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
                                                   bool has_color,
                                                   Color c,
                                                   std::string name) {
-  IMP::internal::OwnerPointer<Geometry> pg(g);
+  IMP::OwnerPointer<Geometry> pg(g);
   if (!has_color && g->get_has_color()) {
     c= g->get_color();
     has_color=true;

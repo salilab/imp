@@ -69,7 +69,7 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
-      IMP::internal::OwnerPointer<Geometry> gp(g[i]);
+      IMP::OwnerPointer<Geometry> gp(g[i]);
       add_geometry(gp);
     }
   }
@@ -172,7 +172,7 @@ IMP_OBJECTS(TextWriter, TextWriters);
     In the later case it determines what type of writer is needed from
     the file suffix. */
 class IMPDISPLAYEXPORT WriterOutput {
-  IMP::internal::OwnerPointer<Writer> writer_;
+  IMP::OwnerPointer<Writer> writer_;
  public:
   WriterOutput(std::string name): writer_(create_writer(name)){}
   WriterOutput(Writer *w): writer_(w){}

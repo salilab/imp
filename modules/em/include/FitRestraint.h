@@ -76,10 +76,10 @@ private:
   //! Create density maps: one for each rigid body and one for the rest.
   void initialize_model_density_map(FloatKey weight_key);
 
-  IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
-  mutable IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
+  IMP::OwnerPointer<DensityMap> target_dens_map_;
+  mutable IMP::OwnerPointer<SampledDensityMap> model_dens_map_;
   mutable SampledDensityMaps rb_model_dens_map_;
-  mutable IMP::internal::OwnerPointer<SampledDensityMap>
+  mutable IMP::OwnerPointer<SampledDensityMap>
     none_rb_model_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
