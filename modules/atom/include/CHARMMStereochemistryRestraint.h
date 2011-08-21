@@ -37,10 +37,10 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint
 {
   Particles bonds_, angles_, dihedrals_, impropers_;
-  IMP::internal::OwnerPointer<BondSingletonScore> bond_score_;
-  IMP::internal::OwnerPointer<AngleSingletonScore> angle_score_;
-  IMP::internal::OwnerPointer<DihedralSingletonScore> dihedral_score_;
-  IMP::internal::OwnerPointer<ImproperSingletonScore> improper_score_;
+  IMP::OwnerPointer<BondSingletonScore> bond_score_;
+  IMP::OwnerPointer<AngleSingletonScore> angle_score_;
+  IMP::OwnerPointer<DihedralSingletonScore> dihedral_score_;
+  IMP::OwnerPointer<ImproperSingletonScore> improper_score_;
 public:
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
 

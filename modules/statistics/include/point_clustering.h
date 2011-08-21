@@ -47,7 +47,7 @@ IMP_OBJECTS(Embedding, Embeddings);
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   mutable Pointer<ConfigurationSet> cs_;
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
   bool align_;
 public:
   /** If align is true, all the configurations are rigidly aligned with
@@ -216,8 +216,8 @@ Ints get_representatives(Embedding* d, PartitionalClustering *pc);
 */
 class IMPSTATISTICSEXPORT RecursivePartitionalClusteringEmbedding:
   public Embedding {
-  IMP::internal::OwnerPointer<Embedding> metric_;
-  IMP::internal::OwnerPointer<PartitionalClustering> clustering_;
+  IMP::OwnerPointer<Embedding> metric_;
+  IMP::OwnerPointer<PartitionalClustering> clustering_;
  public:
   RecursivePartitionalClusteringEmbedding(Embedding *metric,
                                           PartitionalClustering *clustering);

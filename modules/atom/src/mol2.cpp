@@ -285,7 +285,7 @@ namespace {
                       std::map<Int, Particle*>& molecule_atoms,
                       Mol2Selector* mol2sel)
   {
-    IMP::internal::OwnerPointer<Mol2Selector> sel(mol2sel);
+    IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
     std::string line;
     char c;
 
@@ -396,7 +396,7 @@ Hierarchy read_mol2(TextInput mol2_file,
   if (!mol2sel) {
     mol2sel=new AllMol2Selector();
   }
-  IMP::internal::OwnerPointer<Mol2Selector> sel(mol2sel);
+  IMP::OwnerPointer<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
   std::map<Int, Particle*>molecule_atoms;
 

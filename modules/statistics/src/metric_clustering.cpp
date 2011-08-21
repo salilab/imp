@@ -81,7 +81,7 @@ void ConfigurationSetRMSDMetric::do_show(std::ostream &) const {
 PartitionalClustering *create_centrality_clustering(Metric *d,
                                                  double far,
                                                  int k) {
-  IMP::internal::OwnerPointer<Metric> dp(d);
+  IMP::OwnerPointer<Metric> dp(d);
   unsigned int n=d->get_number_of_items();
   internal::CentralityGraph g(n);
   boost::property_map<internal::CentralityGraph,
@@ -146,7 +146,7 @@ namespace {
 
 PartitionalClustering *create_connectivity_clustering(Metric *d,
                                                       double maximum_distance) {
-  IMP::internal::OwnerPointer<Metric> mp(d);
+  IMP::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
   std::vector<Floats> matrix;
   fill_distance_matrix(d, matrix);
@@ -184,7 +184,7 @@ PartitionalClustering *create_connectivity_clustering(Metric *d,
 
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
-  IMP::internal::OwnerPointer<Metric> mp(d);
+  IMP::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
   std::vector<Floats> matrix;
   fill_distance_matrix(d, matrix);

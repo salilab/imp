@@ -26,7 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT CoulombPairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<SmoothingFunction> smoothing_function_;
+  IMP::OwnerPointer<SmoothingFunction> smoothing_function_;
   double relative_dielectric_;
   double multiplication_factor_;
 

@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT AngleSingletonScore : public SingletonScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
 public:
   //! Use f to penalize deviations in angle
   AngleSingletonScore(UnaryFunction *f);
