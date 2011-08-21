@@ -90,6 +90,26 @@ void RestraintSet::on_remove(RestraintSet *container, Restraint* obj) {
   obj->set_model(NULL);
 }
 
+Restraints RestraintSet::create_decomposition() const {
+  Restraints ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+
+    Restraints cur= (*it)->create_decomposition();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
+Restraints RestraintSet::create_current_decomposition() const {
+  Restraints ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+
+    Restraints cur= (*it)->create_current_decomposition();
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return ret;
+}
 
 RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,
                                     double initial_weight) {
@@ -125,19 +145,33 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
   RestraintsTemp all= get_restraints(rs);
   for (unsigned int i=0; i< all.size(); ++i) {
     Restraints cur= all[i]->create_decomposition();
+
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      RestraintsTemp frs= get_restraints(RestraintsTemp(1, all[i]));
+      RestraintsTemp fret= get_restraints(RestraintsTemp(cur.begin(),
+                                                         cur.end()));
+      {for (unsigned int i=0; i< cur.size(); ++i) {
+        all[0]->get_model()->add_temporary_restraint(cur[i]);
+        }}
+      IMP_LOG(TERSE, "Evaluating before" << std::endl);
+      Floats efrs= rs[0]->get_model()->evaluate(frs, false);
+      IMP_LOG(TERSE, "Evaluating after" << std::endl);
+      Floats efret= rs[0]->get_model()->evaluate(fret, false);
+      double s0= std::accumulate(efrs.begin(), efrs.end(), 0.0);
+      double s1= std::accumulate(efret.begin(), efret.end(), 0.0);
+      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1){
+        IMP_WARN("The before and after scores don't agree for: "
+                 << all[i]->get_name() << " got "
+                 << s0 << " and " << s1 << " over "
+                 << cur.size() << " new restraints: "
+                 << efrs << " vs " << efret);
+      }
+      {for (unsigned int i=0; i< cur.size(); ++i) {
+        rs[0]->get_model()->remove_temporary_restraint(cur[i]);
+        }}
+    }
+
     ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    RestraintsTemp frs= get_restraints(rs);
-    RestraintsTemp fret= get_restraints(RestraintsTemp(ret.begin(),
-                                                       ret.end()));
-    Floats efrs= rs[0]->get_model()->evaluate(frs, false);
-    Floats efret= rs[0]->get_model()->evaluate(fret, false);
-    double s0= std::accumulate(efrs.begin(), efrs.end(), 0);
-    double s1= std::accumulate(efret.begin(), efret.end(), 0);
-    IMP_INTERNAL_CHECK(std::abs(s0-s1) < .1*std::abs(s0+s1)+.1,
-                       "The before and after scores don't agree: "
-                       << s0 << " vs " << s1);
   }
   return ret;
 }
