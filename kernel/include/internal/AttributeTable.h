@@ -28,7 +28,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class T, class K >
 struct DefaultTraits
 {
-  typedef std::vector<T> Container;
+  typedef compatibility::checked_vector<T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
@@ -43,8 +43,8 @@ struct DefaultTraits
 template <class T, class K >
 struct ArrayTraits
 {
-  typedef std::vector<T> Value;
-  typedef std::vector<Value> Container;
+  typedef IMP::compatibility::checked_vector<T> Value;
+  typedef IMP::compatibility::checked_vector<Value> Container;
   typedef const Value& PassValue;
   typedef K Key;
   static Value get_invalid() {
@@ -124,7 +124,7 @@ struct ObjectsAttributeTableTraits
   typedef Objects Value;
   typedef const Objects& PassValue;
   typedef ObjectsKey Key;
-  typedef std::vector<Objects> Container;
+  typedef compatibility::checked_vector<Objects> Container;
   static Value get_invalid() {
     return Value();
   }

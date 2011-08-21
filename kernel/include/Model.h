@@ -93,7 +93,7 @@ class BasicAttributeTable {
 public:
   typedef typename Traits::Key Key;
 private:
-  typename std::vector<typename Traits::Container > data_;
+  typename compatibility::checked_vector<typename Traits::Container > data_;
 #if IMP_BUILD < IMP_FAST
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
@@ -226,8 +226,9 @@ public:
     }
   }
 
-  std::vector<Key> get_attribute_keys(ParticleIndex particle) const {
-    std::vector<Key> ret;
+  IMP::compatibility::checked_vector<Key>
+  get_attribute_keys(ParticleIndex particle) const {
+    compatibility::checked_vector<Key> ret;
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (data_[i].size() > static_cast<unsigned int>(particle)
           && Traits::get_is_valid(data_[i][particle])) {
@@ -257,7 +258,7 @@ class FloatAttributeTable {
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
   BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
-  std::vector<FloatRange> ranges_;
+  FloatRanges ranges_;
 #if IMP_BUILD < IMP_FAST
   Mask *read_mask_, *write_mask_,*add_remove_mask_,
                 *read_derivatives_mask_, *write_derivatives_mask_;
@@ -483,8 +484,9 @@ public:
     FloatIndex(FloatKey k, ParticleIndex p): p_(p), k_(k){}
     FloatIndex() {}
   };
-  std::vector<FloatIndex> get_optimized_attributes() const {
-    std::vector<FloatIndex> ret;
+  IMP_BUILTIN_VALUES(FloatIndex, FloatIndexes);
+ FloatIndexes get_optimized_attributes() const {
+    FloatIndexes ret;
     for (unsigned int i=0; i< optimizeds_.size(); ++i) {
       for (unsigned int j=0; j< optimizeds_.size(i); ++j) {
         if (optimizeds_.get_has_attribute(FloatKey(i), j)) {
@@ -526,8 +528,8 @@ public:
     derivatives_.clear_attributes(particle);
     optimizeds_.clear_attributes(particle);
   }
-  std::vector<FloatKey> get_attribute_keys(ParticleIndex particle) const {
-    std::vector<FloatKey> ret=data_.get_attribute_keys(particle);
+  FloatKeys get_attribute_keys(ParticleIndex particle) const {
+    FloatKeys ret=data_.get_attribute_keys(particle);
     for (unsigned int i=0; i< ret.size(); ++i) {
       ret[i]= FloatKey(ret[i].get_index()+4);
     }
@@ -640,7 +642,7 @@ private:
 
   Ints free_particles_;
   unsigned int next_particle_;
-  std::vector<Pointer<Particle> > particle_index_;
+  compatibility::checked_vector<Pointer<Particle> > particle_index_;
  private:
   // statistics
   bool gather_statistics_;
@@ -974,7 +976,9 @@ public:
     }
   };
   typedef boost::filter_iterator<NotNull,
-      std::vector<Pointer<Particle> >::const_iterator> ParticleIterator;
+                                 compatibility
+                                 ::checked_vector<Pointer<Particle> >
+                                 ::const_iterator> ParticleIterator;
 
 #endif
   ParticleIterator particles_begin() const {
