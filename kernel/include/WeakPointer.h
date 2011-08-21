@@ -23,8 +23,8 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
-struct WeakPointer: internal::PointerBase<O, internal::WeakPointerTraits> {
-  typedef  internal::PointerBase<O, internal::WeakPointerTraits> P;
+struct WeakPointer: internal::PointerBase<internal::WeakPointerTraits<O> > {
+  typedef  internal::PointerBase<internal::WeakPointerTraits<O> > P;
   template <class Any>
   WeakPointer(const Any &o): P(o){}
   WeakPointer(){}

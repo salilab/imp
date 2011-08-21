@@ -66,8 +66,8 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::RefCounted-derived object to point to
 */
 template <class O>
-struct Pointer: internal::PointerBase<O, internal::RefCountedPointerTraits> {
-  typedef internal::PointerBase<O, internal::RefCountedPointerTraits> P;
+struct Pointer: internal::PointerBase<internal::RefCountedPointerTraits<O> > {
+  typedef internal::PointerBase<internal::RefCountedPointerTraits<O> > P;
   template <class Any>
   Pointer(const Any &o): P(o){}
   Pointer(){}
@@ -82,8 +82,8 @@ struct Pointer: internal::PointerBase<O, internal::RefCountedPointerTraits> {
     \param[in] O The type of IMP::RefCounted-derived object to point to
  */
 template <class O>
-struct OwnerPointer: internal::PointerBase<O, internal::OwnerPointerTraits> {
-  typedef internal::PointerBase<O, internal::OwnerPointerTraits> P;
+struct OwnerPointer: internal::PointerBase<internal::OwnerPointerTraits<O> > {
+  typedef internal::PointerBase<internal::OwnerPointerTraits<O> > P;
   template <class Any>
   OwnerPointer(const Any &o): P(o){}
   OwnerPointer(){}
