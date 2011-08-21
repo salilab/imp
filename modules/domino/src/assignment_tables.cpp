@@ -488,6 +488,7 @@ void BranchAndBoundAssignmentsTable
       break;
     }
   } while (true);
+#if 0
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     int space=1;
     for (unsigned int i=0; i< s.size(); ++i) {
@@ -539,6 +540,7 @@ void BranchAndBoundAssignmentsTable
       }
     }
   }
+#endif
 }
 
 void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
