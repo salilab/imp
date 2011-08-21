@@ -9,6 +9,7 @@
 #ifndef IMPEM_KERNEL_PARAMETERS_H
 #define IMPEM_KERNEL_PARAMETERS_H
 #include "def.h"
+#include <IMP/base_types.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/exception.h>
 #include <IMP/log.h>
