@@ -189,7 +189,7 @@ _pass_decorators(const internal::_TrivialDecorators &p);
 IMPEXPORT const _TrivialTraitsDecorators &
 _pass_decorator_traits(const _TrivialTraitsDecorators &p);
 
-IMPEXPORT const ParticlePairsTemp &
+IMPEXPORT ParticlePairsTemp
 _pass_particle_pairs(const ParticlePairs &p);
 
 
