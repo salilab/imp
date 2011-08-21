@@ -16,7 +16,7 @@ IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 typedef int ParticleIndex;
 static const int INVALID_PARTICLE_INDEX=-1;
-typedef std::vector<ParticleIndex> ParticleIndexes;
+IMP_BUILTIN_VALUES(ParticleIndex, ParticleIndexes);
 
 
 
@@ -107,9 +107,9 @@ typedef ParticleIndexTuple<2> ParticleIndexPair;
 typedef ParticleIndexTuple<3> ParticleIndexTriplet;
 typedef ParticleIndexTuple<4> ParticleIndexQuad;
 
-typedef std::vector<ParticleIndexPair> ParticleIndexPairs;
-typedef std::vector<ParticleIndexTriplet> ParticleIndexTriplets;
-typedef std::vector<ParticleIndexQuad> ParticleIndexQuads;
+IMP_VALUES(ParticleIndexPair, ParticleIndexPairs);
+IMP_VALUES(ParticleIndexTriplet, ParticleIndexTriplets);
+IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
 
 
