@@ -35,7 +35,7 @@ namespace {
   class PairRestraint :
     public PairScoreRestraint
   {
-    IMP::internal::OwnerPointer<PairScore> ss_;
+    IMP::OwnerPointer<PairScore> ss_;
     ParticlePair v_;
   public:
     //! Create the restraint.

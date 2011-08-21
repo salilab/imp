@@ -35,7 +35,7 @@ namespace {
   class SingletonRestraint :
     public SingletonScoreRestraint
   {
-    IMP::internal::OwnerPointer<SingletonScore> ss_;
+    IMP::OwnerPointer<SingletonScore> ss_;
     Pointer<Particle> v_;
   public:
     //! Create the restraint.

@@ -80,7 +80,7 @@ template <class BaseStream>
 struct OwnedStreamStorage: public internal::IOStorage<BaseStream>{
   typedef internal::IOStorage<BaseStream> P;
   BaseStream &stream_;
-  internal::OwnerPointer<Object> ref_;
+  OwnerPointer<Object> ref_;
   OwnedStreamStorage(BaseStream &stream,
                      Object*o): P("python stream"),
                                 stream_(stream),
