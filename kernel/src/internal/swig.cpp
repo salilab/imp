@@ -232,13 +232,13 @@ _pass_decorator_traits(const _TrivialTraitsDecorators &p) {
   return p;
 }
 
-const ParticlePairsTemp &
+ParticlePairsTemp
 _pass_particle_pairs(const ParticlePairs &p) {
   for (unsigned int i=0; i< p.size(); ++i) {
     std::cout << p[i] << " ";
   }
   std::cout << std::endl;
-  return p;
+  return get_as<ParticlePairsTemp>(p);
 }
 
 
