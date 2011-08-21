@@ -10,6 +10,7 @@
 
 #include "kernel_config.h"
 #include "Key.h"
+#include "macros.h"
 #include <string>
 #include <vector>
 #include <IMP/compatibility/checked_vector.h>
@@ -24,35 +25,35 @@ typedef double Float;
 
 //! A pair representing a function value with its first derivative
 typedef std::pair<double, double> DerivativePair;
-typedef std::vector<DerivativePair> DerivativePairs;
+IMP_BUILTIN_VALUES(DerivativePair, DerivativePairs);
 
 //! A generic pair of floats
 typedef std::pair<double, double> FloatPair;
-typedef std::vector<FloatPair> FloatPairs;
+IMP_BUILTIN_VALUES(FloatPair, FloatPairs);
 
 //! A pair representing the allowed range for a Float attribute
 typedef std::pair<Float, Float> FloatRange;
+IMP_BUILTIN_VALUES(FloatRange, FloatRanges);
 
 //! Basic integer value
 typedef int Int;
 
 typedef std::pair<Int, Int> IntRange;
-typedef std::vector<IntRange> IntRanges;
+IMP_BUILTIN_VALUES(IntRange, IntRanges);
 
 typedef std::pair<Int, Int> IntPair;
-typedef std::vector<IntPair> IntPairs;
+IMP_BUILTIN_VALUES(IntPair, IntPairs);
 
 
 //! Basic string value
 typedef std::string String;
 
-
 //! Standard way to pass a bunch of Float values
-typedef std::vector<Float> Floats;
+IMP_BUILTIN_VALUES(Float, Floats);
 //! Standard way to pass a bunch of Int values
-typedef std::vector<Int> Ints;
+IMP_BUILTIN_VALUES(Int, Ints);
 //! Standard way to pass a bunch of String values
-typedef std::vector<String> Strings;
+IMP_BUILTIN_VALUES(String, Strings);
 
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
