@@ -17,7 +17,7 @@ IMP_BEGIN_NAMESPACE
 
 //! A class to store a tuple of particles.
 /** \note These do not ref counting currently. SWIG prevents
-    use of internal::OwnerPointer<Particle> as the storage type without some
+    use of OwnerPointer<Particle> as the storage type without some
     gymnastics.
 
     Only the constructor with the correct number of arguments for the

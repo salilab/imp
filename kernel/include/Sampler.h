@@ -27,7 +27,7 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT Sampler: public Object
 {
-  internal::OwnerPointer<Model> model_;
+  OwnerPointer<Model> model_;
  public:
   Sampler(Model *m, std::string name="Sampler %1%");
 

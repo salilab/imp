@@ -53,7 +53,7 @@ IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
 IMP_MODEL_SAVE(SaveToConfigurationSet,
                (ConfigurationSet *cs, std::string file_name),
-               mutable internal::OwnerPointer<ConfigurationSet> cs_;,
+               mutable OwnerPointer<ConfigurationSet> cs_;,
                cs_=cs;,
                ,
                {

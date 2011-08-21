@@ -35,7 +35,7 @@ namespace {
   class QuadRestraint :
     public QuadScoreRestraint
   {
-    IMP::internal::OwnerPointer<QuadScore> ss_;
+    IMP::OwnerPointer<QuadScore> ss_;
     ParticleQuad v_;
   public:
     //! Create the restraint.

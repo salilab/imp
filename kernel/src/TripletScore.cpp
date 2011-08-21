@@ -35,7 +35,7 @@ namespace {
   class TripletRestraint :
     public TripletScoreRestraint
   {
-    IMP::internal::OwnerPointer<TripletScore> ss_;
+    IMP::OwnerPointer<TripletScore> ss_;
     ParticleTriplet v_;
   public:
     //! Create the restraint.
