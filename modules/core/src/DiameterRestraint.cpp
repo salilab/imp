@@ -70,10 +70,11 @@ DiameterRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   XYZ dp(p_);
   double radius= diameter_/2.0;
   IMP_FOREACH_SINGLETON(sc_, {
+      double dc= XYZR(_1).get_radius();
     v+= internal::evaluate_distance_pair_score(dp,
                                                XYZ(_1),
                                                da, f_.get(),
-                                               boost::lambda::_1-radius);
+                                               boost::lambda::_1-radius+dc);
     });
   return v;
 }
@@ -96,8 +97,9 @@ ContainersTemp DiameterRestraint::get_input_containers() const {
 Restraints DiameterRestraint::create_decomposition() const {
   Restraints ret;
   ParticlesTemp ps= sc_->get_particles();
+  // since we are adding two deviations before squaring, make k=.25
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
-          (diameter_, 1));
+          (diameter_, .25));
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       ret.push_back(create_restraint(sps.get(),
