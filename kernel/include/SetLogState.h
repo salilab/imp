@@ -9,6 +9,7 @@
 #define IMP_SET_LOG_STATE_H
 
 #include "log.h"
+#include "base_types.h"
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
