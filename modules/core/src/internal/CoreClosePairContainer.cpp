@@ -318,6 +318,7 @@ ParticleIndexPairs CoreClosePairContainer::get_all_possible_indexes() const {
       ret.push_back(ParticleIndexPair(pis[i], pis[j]));
     }
   }
+  internal::filter_close_pairs(this, ret);
   return ret;
 }
 
