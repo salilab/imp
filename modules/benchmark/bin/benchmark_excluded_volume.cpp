@@ -42,7 +42,8 @@ void test_one(std::string name,
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
 
-  Restraints rs= get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
+  RestraintsTemp rs
+    = get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
   Floats weights(rs.size(), 1);
 
   IMP::algebra::BoundingBox3D bb
