@@ -35,8 +35,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CorePairsRestraint :
   public PairsScoreRestraint
 {
-  IMP::internal::OwnerPointer<PairScore> ss_;
-  IMP::internal::OwnerPointer<PairContainer> pc_, ac_, rc_;
+  IMP::OwnerPointer<PairScore> ss_;
+  IMP::OwnerPointer<PairContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

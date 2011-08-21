@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** */
 class IMPCOREEXPORT AngleTripletScore : public TripletScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
 public:
   //! Score the angle (in radians) using f
   AngleTripletScore(UnaryFunction *f);

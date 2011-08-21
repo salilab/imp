@@ -35,8 +35,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreTripletsRestraint :
   public TripletsScoreRestraint
 {
-  IMP::internal::OwnerPointer<TripletScore> ss_;
-  IMP::internal::OwnerPointer<TripletContainer> pc_, ac_, rc_;
+  IMP::OwnerPointer<TripletScore> ss_;
+  IMP::OwnerPointer<TripletContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

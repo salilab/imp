@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT BoundingBox3DSingletonScore: public SingletonScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UnaryFunction> f_;
   algebra::BoundingBoxD<3> bb_;
 public:
   BoundingBox3DSingletonScore(UnaryFunction *f,

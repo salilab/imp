@@ -105,8 +105,8 @@ public:
 class IMPCOREEXPORT RigidMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  IMP::internal::OwnerPointer<CoreListSingletonContainer> normal_;
-  IMP::internal::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
+  IMP::OwnerPointer<CoreListSingletonContainer> normal_;
+  IMP::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
   std::vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
   ParticleIndexes rbs_;
   Ints rbs_moved_;

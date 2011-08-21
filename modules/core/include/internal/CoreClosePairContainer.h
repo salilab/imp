@@ -25,9 +25,9 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreClosePairContainer :
 public internal::ListLikePairContainer
 {
-  IMP::internal::OwnerPointer<SingletonContainer> c_;
-  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP::internal::OwnerPointer<internal::MovedSingletonContainer> moved_;
+  IMP::OwnerPointer<SingletonContainer> c_;
+  IMP::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::OwnerPointer<internal::MovedSingletonContainer> moved_;
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;

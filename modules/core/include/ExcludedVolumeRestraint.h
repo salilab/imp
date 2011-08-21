@@ -45,7 +45,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
-  IMP::internal::OwnerPointer<SoftSpherePairScore> ssps_;
+  IMP::OwnerPointer<SoftSpherePairScore> ssps_;
   // moved stuff
   mutable ParticleIndexes rbs_;
   mutable ParticleIndexes xyzrs_;

@@ -173,7 +173,7 @@ private:
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
-  IMP::internal::OwnerPointer<Configuration> best_;
+  IMP::OwnerPointer<Configuration> best_;
   ::boost::uniform_real<> rand_;
 };
 
@@ -182,7 +182,7 @@ private:
 //! This variant of Monte Carlo that relaxes after each move
 class IMPCOREEXPORT MonteCarloWithLocalOptimization: public MonteCarlo
 {
-  IMP::internal::OwnerPointer<Optimizer> opt_;
+  IMP::OwnerPointer<Optimizer> opt_;
   unsigned int num_local_;
 public:
   MonteCarloWithLocalOptimization(Optimizer *opt,

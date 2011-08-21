@@ -19,7 +19,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 #define IMP_MANAGER(UCName, lcname)             \
   class Manage##UCName: boost::noncopyable {    \
-    typedef IMP::internal::OwnerPointer<UCName> P;                  \
+    typedef IMP::OwnerPointer<UCName> P;                  \
     P r_;                                       \
   public:                                       \
   Manage##UCName(){}                            \

@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT DerivativesToRefined:
 public SingletonDerivativeModifier
 {
-  IMP::internal::OwnerPointer<Refiner> refiner_;
+  IMP::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
 public:
   //! Copy ks to the particles returned by r.

@@ -35,8 +35,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreQuadsRestraint :
   public QuadsScoreRestraint
 {
-  IMP::internal::OwnerPointer<QuadScore> ss_;
-  IMP::internal::OwnerPointer<QuadContainer> pc_, ac_, rc_;
+  IMP::OwnerPointer<QuadScore> ss_;
+  IMP::OwnerPointer<QuadContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

@@ -47,7 +47,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;
-    IMP::internal::OwnerPointer<Optimizer> local_opt_;
+    IMP::OwnerPointer<Optimizer> local_opt_;
     Parameters();
   };
   Parameters default_parameters_;
