@@ -33,7 +33,7 @@ Assignments BranchAndBoundSampler
     = DiscreteSampler
     ::get_subset_filter_tables_to_use(get_model()->get_root_restraint_set(),
                                       get_particle_states_table());
-  IMP::internal::OwnerPointer<AssignmentsTable> sst
+  IMP::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts);
   IMP_NEW(PackedAssignmentContainer, pac, ());
   sst->load_assignments(s, pac);

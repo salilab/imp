@@ -51,8 +51,8 @@ typedef std::vector<IntsList> IntsLists;
  */
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler
 {
-  IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
-  IMP::internal::OwnerPointer<AssignmentsTable> sst_;
+  IMP::OwnerPointer<ParticleStatesTable> pst_;
+  IMP::OwnerPointer<AssignmentsTable> sst_;
   unsigned int max_;
 #ifndef IMP_DOXYGEN
  protected:

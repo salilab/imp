@@ -137,7 +137,7 @@ void save_assignments(AssignmentContainer *assignments,
                       rmf::HDF5DataSet<rmf::IndexTraits> dataset
                      ) {
   IMP_FUNCTION_LOG;
-  IMP::internal::OwnerPointer<AssignmentContainer> op(assignments);
+  IMP::OwnerPointer<AssignmentContainer> op(assignments);
   Ints order= get_order(s, all_particles);
   Ints sz(2);
   sz[1]= s.size();

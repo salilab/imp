@@ -21,8 +21,8 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT LowestRefinedPairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<Refiner> r_;
-  IMP::internal::OwnerPointer<PairScore> f_;
+  IMP::OwnerPointer<Refiner> r_;
+  IMP::OwnerPointer<PairScore> f_;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs

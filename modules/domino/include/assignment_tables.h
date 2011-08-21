@@ -122,7 +122,7 @@ public:
 */
 class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
   IMP::compatibility::map<Subset,
-                          IMP::internal::OwnerPointer<AssignmentContainer> >
+                          IMP::OwnerPointer<AssignmentContainer> >
     states_;
  public:
   ListAssignmentsTable(std::string name="ListSubsetStatesTable %1%");
