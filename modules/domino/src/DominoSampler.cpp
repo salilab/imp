@@ -91,7 +91,7 @@ Assignments DominoSampler
     }
     IMP_LOG(TERSE, std::endl);
   }
-  IMP::internal::OwnerPointer<AssignmentsTable> sst
+  IMP::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts);
 
   Assignments final_solutions;
@@ -237,7 +237,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
                                          get_particle_states_table());
-  IMP::internal::OwnerPointer<AssignmentsTable> sst
+  IMP::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
   ListSubsetFilterTable* lsft=NULL;
   if (csf_) {

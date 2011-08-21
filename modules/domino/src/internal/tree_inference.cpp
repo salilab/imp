@@ -25,7 +25,7 @@ void load_merged_assignments(const Subset &first_subset,
                              unsigned int max,
                              AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);
-  IMP::internal::OwnerPointer<AssignmentContainer> firstp(first),
+  IMP::OwnerPointer<AssignmentContainer> firstp(first),
     secondp(second);
   IMP_FUNCTION_LOG;
   EdgeData ed= get_edge_data(first_subset, second_subset, filters);
