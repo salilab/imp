@@ -89,8 +89,7 @@ lazily (at the time of the first use), and not be created as static
 variables. The reason for this is that initialized attribute keys result
 in space being allocated in decorators, even before they are used.\n\n
 Implementors should consult IMP::example::ExampleDecorator,
-IMP_DECORATOR(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET(),
-IMP_DECORATOR_ARRAY_DECL().
+IMP_DECORATOR(), IMP_DECORATOR_WITH_TRAITS(), IMP_DECORATOR_GET().
 
 \advanceddoc Lists of decorators are reference counted even though the
 individual decorators are not. For more efficiency
