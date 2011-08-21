@@ -403,6 +403,7 @@ namespace {
     }
     IMP_USAGE_CHECK(!std::binary_search(used.begin(), used.end(), st),
                     "Found");
+    IMP_INTERNAL_CHECK(st > state[pos], "Too low an index returned.");
     return st;
   }
   int get_next_equality(int pos, const Assignment& state,
@@ -480,7 +481,10 @@ namespace {
         mx=std::max(mx, state[set[i]]);
       }
     }
-    return std::max(mx, state[pos]);
+    int ret= std::max(mx, state[pos]);
+    IMP_INTERNAL_CHECK(ret > state[pos],
+                       "Too low a permutation index returned");
+    return ret;
   }
 }
 
