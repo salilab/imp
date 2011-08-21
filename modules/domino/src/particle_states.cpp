@@ -188,8 +188,10 @@ void RecursiveStates::do_show(std::ostream &out) const{
 namespace {
   struct RandomWrapper {
     int operator()(int i) {
-      boost::uniform_int<int> ri(0,i);
-      return ri(random_number_generator);
+      IMP_INTERNAL_CHECK(i>0, "Zero i");
+      boost::uniform_int<unsigned int> ri(0,i-i);
+      unsigned int ret= ri(random_number_generator);
+      return ret;
     }
   };
 }
