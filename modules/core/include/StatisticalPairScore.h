@@ -68,6 +68,8 @@ class StatisticalPairScore: public PairScore {
     }
     if (!da) {
       double v= table_.get_score(iptype, iltype, distance);
+      IMP_LOG(VERBOSE, "For pair" << pxyz->get_name()
+              << " and " << lxyz->get_name() << " got " << v << std::endl);
       return v;
     } else {
       DerivativePair dp= table_.get_score_with_derivative(iptype,
@@ -128,6 +130,7 @@ template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE>
 double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
 ::evaluate(const ParticlePair &pp,
            DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
   int pt= pp[0]->get_value(key_);
   int lt= pp[1]->get_value(key_);
   core::XYZ pxyz(pp[0]);
