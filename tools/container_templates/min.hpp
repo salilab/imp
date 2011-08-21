@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MINORMAXCLASSNAMERestraint
 : public Restraint
 {
-  IMP::internal::OwnerPointer<CLASSNAMEScore> f_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::OwnerPointer<CLASSNAMEScore> f_;
+  IMP::OwnerPointer<CLASSNAMEContainer> c_;
   unsigned int n_;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;

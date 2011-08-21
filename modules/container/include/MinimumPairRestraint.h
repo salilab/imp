@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumPairRestraint
 : public Restraint
 {
-  IMP::internal::OwnerPointer<PairScore> f_;
-  IMP::internal::OwnerPointer<PairContainer> c_;
+  IMP::OwnerPointer<PairScore> f_;
+  IMP::OwnerPointer<PairContainer> c_;
   unsigned int n_;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;

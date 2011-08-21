@@ -39,9 +39,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT TripletsConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<TripletModifier> f_;
-  IMP::internal::OwnerPointer<TripletDerivativeModifier> af_;
-  IMP::internal::OwnerPointer<TripletContainer> c_;
+  IMP::OwnerPointer<TripletModifier> f_;
+  IMP::OwnerPointer<TripletDerivativeModifier> af_;
+  IMP::OwnerPointer<TripletContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The TripletModifier to apply to all elements

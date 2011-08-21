@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumTripletRestraint
 : public Restraint
 {
-  IMP::internal::OwnerPointer<TripletScore> f_;
-  IMP::internal::OwnerPointer<TripletContainer> c_;
+  IMP::OwnerPointer<TripletScore> f_;
+  IMP::OwnerPointer<TripletContainer> c_;
   unsigned int n_;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;

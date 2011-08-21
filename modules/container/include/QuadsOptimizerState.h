@@ -30,8 +30,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT QuadsOptimizerState : public OptimizerState
 {
-  IMP::internal::OwnerPointer<QuadModifier> f_;
-  IMP::internal::OwnerPointer<QuadContainer> c_;
+  IMP::OwnerPointer<QuadModifier> f_;
+  IMP::OwnerPointer<QuadContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The QuadModifier to apply to all elements.

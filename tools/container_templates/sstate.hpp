@@ -35,8 +35,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT CLASSNAMEConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::internal::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
+  IMP::OwnerPointer<CLASSNAMEModifier> f_;
+  IMP::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
   INDEXTYPE v_;
 public:
   /** before and after are the modifiers to apply before and after

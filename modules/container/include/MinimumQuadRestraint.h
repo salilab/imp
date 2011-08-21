@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumQuadRestraint
 : public Restraint
 {
-  IMP::internal::OwnerPointer<QuadScore> f_;
-  IMP::internal::OwnerPointer<QuadContainer> c_;
+  IMP::OwnerPointer<QuadScore> f_;
+  IMP::OwnerPointer<QuadContainer> c_;
   unsigned int n_;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;

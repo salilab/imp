@@ -33,9 +33,9 @@ public DecomposableRestraint
 public IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint
 #endif
 {
-  IMP::internal::OwnerPointer<Score> ss_;
-  IMP::internal::OwnerPointer<Container> pc_;
-  IMP::internal::OwnerPointer<IMP::Container> ac_, rc_;
+  IMP::OwnerPointer<Score> ss_;
+  IMP::OwnerPointer<Container> pc_;
+  IMP::OwnerPointer<IMP::Container> ac_, rc_;
   mutable double score_;
 public:
   ContainerRestraint(Score *ss,
@@ -87,9 +87,9 @@ inline Restraint *create_restraint(Score *s, Container*c,
 template <class Container, class Before, class After>
 class ContainerConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<Before> f_;
-  IMP::internal::OwnerPointer<After> af_;
-  IMP::internal::OwnerPointer<Container> c_;
+  IMP::OwnerPointer<Before> f_;
+  IMP::OwnerPointer<After> af_;
+  IMP::OwnerPointer<Container> c_;
 public:
   ContainerConstraint(Container *c, Before *before,
                       After *after,

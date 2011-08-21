@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerPairFilter : public PairFilter
 {
-  IMP::internal::OwnerPointer<PairContainer> c_;
+  IMP::OwnerPointer<PairContainer> c_;
 public:
   InContainerPairFilter(PairContainer *c,
                              std::string name="PairFilter %1%");
