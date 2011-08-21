@@ -36,6 +36,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
 void add_excluded_volume(Model *m, atom::Hierarchy h, double k) {
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k));
+  evr->set_name("excluded volume");
   m->add_restraint(evr);
 }
 
@@ -43,6 +44,7 @@ void add_diameter_restraint(Model *m, RigidBodies rbs, double d) {
   IMP_NEW(ListSingletonContainer, lsc, (rbs));
   IMP_NEW(HarmonicUpperBound, hub, (0,1.0));
   IMP_NEW(DiameterRestraint, dr, (hub, lsc, d));
+  dr->set_name("diameter");
   m->add_restraint(dr);
 }
 
@@ -50,7 +52,8 @@ void add_DOPE(Model *m, atom::Hierarchy h) {
   add_dope_score_data(h);
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 15.0));
-  IMP_NEW(DopePairScore, dps, (15));
+  IMP_NEW(DopePairScore, dps, (15.0));
+  //dps->set_log_level(VERBOSE);
   IMP_NEW(PairsRestraint, dope, (dps, cpc));
   dope->set_name("DOPE");
   m->add_restraint(dope);
@@ -77,7 +80,7 @@ void benchmark_it(std::string name, bool incr) {
     IMP_NEW(RigidBodyMover, mv, (rbs[i], .5, .2));
     mvs.push_back(mv);
   }
-  mc->add_mover(new SerialMover(mvs));
+  mc->add_mover(new SerialMover(get_as<MoversTemp>(mvs)));
   double runtime, score=0;
   IMP_TIME(
            score+=mc->optimize(500), runtime);
@@ -86,7 +89,7 @@ void benchmark_it(std::string name, bool incr) {
 
 
 int main(int, char *[]) {
-  benchmark_it("non incremental", false);
   benchmark_it("incremental", true);
+  benchmark_it("non incremental", false);
   return 0;
 }
