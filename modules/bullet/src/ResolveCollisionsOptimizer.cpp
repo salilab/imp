@@ -231,7 +231,7 @@ namespace {
     }
     if (!p->has_attribute(surface_key)) {
       //std::cout << "Mass of " << p->get_name() << " is " << mass << std::endl;
-      std::vector<algebra::Sphere3D> spheres;
+     algebra::Sphere3Ds spheres;
       for (unsigned int i=0; i< rp.size(); ++i) {
         core::XYZR dc(rp[i]);
         core::RigidMember dm(rp[i]);
@@ -333,7 +333,7 @@ namespace {
     IMP_NEW(Particle, p1, (m));
     core::XYZ::setup_particle(p0);
     core::XYZ::setup_particle(p1);
-    ParticlePairs pp;
+    ParticlePairsTemp pp;
     pp.push_back(ParticlePair(p0, p1));
     IMP_NEW(container::ListPairContainer, lpc, (pp));
     Pointer<Restraint> r= container::create_restraint(hdps, lpc);
@@ -449,8 +449,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   IMP_OBJECT_LOG;
   test_cast();
   RestraintsTemp before_sets= get_restraints();
-  Restraints before_restraints= IMP::get_restraints(before_sets.begin(),
-                                                    before_sets.end());
+  RestraintsTemp before_restraints = IMP::get_restraints(before_sets);
   {
 
     IMP_OBJECT_LOG;
@@ -557,7 +556,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
       {
         for (unsigned int i=0; i< rs.size(); ++i) {
-          Restraints crs= IMP::get_restraints(RestraintsTemp(1, rs[i]));
+          RestraintsTemp crs= IMP::get_restraints(RestraintsTemp(1, rs[i]));
           for (unsigned int j=0; j< crs.size(); ++j) {
             IMP_LOG(TERSE, crs[j]->get_name() <<" ");
           }
@@ -577,7 +576,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       if (get_model()->get_number_of_restraints() > 0
           || get_number_of_optimizer_states() > 0) {
         internal::copy_back_coordinates(map);
-        get_model()->evaluate(scr.get_restraints(),
+        get_model()->evaluate(get_as<RestraintsTemp>(scr.get_restraints()),
                               get_model()->get_number_of_restraints() >0);
         update_states();
         for (internal::RigidBodyMap::const_iterator
@@ -624,8 +623,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
 
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     RestraintsTemp after_sets= get_restraints();
-    Restraints after_restraints= IMP::get_restraints(after_sets.begin(),
-                                                   after_sets.end());\
+    RestraintsTemp after_restraints= IMP::get_restraints(after_sets);
     RestraintsTemp bt= before_restraints;
     RestraintsTemp at= after_restraints;
     std::sort(bt.begin(), bt.end());
@@ -636,7 +634,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
     std::set_difference(bt.begin(), bt.end(), at.begin(), at.end(),
                         std::back_inserter(diff));
     IMP_USAGE_CHECK(diff.empty(), "Restraints not restored "
-                    << Restraints(diff));
+                    << diff);
   }
   return ret;
 }
