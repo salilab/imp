@@ -48,12 +48,6 @@ public:
   void add_particle_quad(const ParticleQuad& vt);
   void add_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c);
-  IMP_NO_DOXYGEN(void add_particle_quads(const ParticleQuads &c) {
-      add_particle_quads(static_cast<const ParticleQuadsTemp&>(c));
-    })
-  IMP_NO_DOXYGEN(void set_particle_quads(const ParticleQuads &c) {
-      set_particle_quads(static_cast<ParticleQuadsTemp>(c));
-    })
   void clear_particle_quads();
   /**@}*/
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);

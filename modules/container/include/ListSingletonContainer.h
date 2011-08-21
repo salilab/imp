@@ -48,12 +48,6 @@ public:
   void add_particle(Particle* vt);
   void add_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c);
-  IMP_NO_DOXYGEN(void add_particles(const Particles &c) {
-      add_particles(static_cast<const ParticlesTemp&>(c));
-    })
-  IMP_NO_DOXYGEN(void set_particles(const Particles &c) {
-      set_particles(static_cast<ParticlesTemp>(c));
-    })
   void clear_particles();
   /**@}*/
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
