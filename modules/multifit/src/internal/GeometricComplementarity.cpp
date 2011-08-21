@@ -159,7 +159,7 @@ get_complentarity_grid(const IMP::Particles &ps,
           // outside voxel
           v = -v;
           // assume complementarity_thickness is sorted!!!
-          std::vector<double>::const_iterator p = std::lower_bound(
+          Floats::const_iterator p = std::lower_bound(
             params.complementarity_thickness.begin(),
             params.complementarity_thickness.end(), v);
           if ( p == params.complementarity_thickness.end() )
