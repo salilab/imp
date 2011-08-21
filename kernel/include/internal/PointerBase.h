@@ -19,66 +19,109 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+template <class TT>
 struct RefCountedPointerTraits {
-  template <class T>
-  static void handle_set(T* t) {
+  typedef TT Type;
+  static void handle_set(TT* t) {
     internal::ref(t);
   }
-  template <class T>
-  static void handle_unset(T* t) {
+  static void handle_unset(TT* t) {
     internal::unref(t);
   }
-  static void check(const RefCounted *o) {
-    IMP_INTERNAL_CHECK(o->get_ref_count() >0, "Ref count is null");
-  }
-  static void check(const Object *o) {
+  static void check(const TT *o) {
     IMP_CHECK_OBJECT(o);
   }
 };
-
-struct OwnerPointerTraits: public RefCountedPointerTraits {
-  template <class T>
-  static void handle_set(T* t) {
+template <class TT>
+struct OwnerPointerTraits: public RefCountedPointerTraits<TT> {
+  typedef TT Type;
+  static void handle_set(TT* t) {
     t->set_was_used(true);
-    RefCountedPointerTraits::handle_set(t);
+    RefCountedPointerTraits<TT>::handle_set(t);
   }
 };
+template <class TT>
 struct WeakPointerTraits {
-  template <class T>
-  static void handle_set(T* ) {
+  typedef TT Type;
+  static void handle_set(TT* ) {
   }
-  template <class T>
-  static void handle_unset(T* ) {
+  static void handle_unset(TT* ) {
   }
-  template <class T>
-  static void check(T*){}
-  static void check(const RefCounted *o) {
-    IMP_INTERNAL_CHECK(o->get_ref_count() >0, "Ref count is null");
-  }
-  static void check(const Object *o) {
-    IMP_CHECK_OBJECT(o);
+  static void check(const TT *) {
+    // needs to support incomplete types
+    //IMP_CHECK_OBJECT(o);
   }
 };
 
-template <class O, class Traits>
+
+#define IMP_POINTER_MEMBERS(templ, arg)                                 \
+  templ                                                                 \
+  bool operator==(arg o) const {                                        \
+    return (o_== get_pointer(o));                                       \
+  }                                                                     \
+  templ                                                                 \
+  bool operator!=(arg o) const {                                        \
+    return (o_!= get_pointer(o));                                       \
+  }                                                                     \
+  templ                                                                 \
+  bool operator<(arg o) const {                                         \
+    return (o_< get_pointer(o));                                        \
+  }                                                                     \
+  templ                                                                 \
+  bool operator>(arg o) const {                                         \
+    return (o_> get_pointer(o));                                        \
+  }                                                                     \
+  templ                                                                 \
+  bool operator>=(arg o) const {                                        \
+    return (o_>= get_pointer(o));                                       \
+  }                                                                     \
+  templ                                                                 \
+  bool operator<=(arg o) const {                                        \
+    return (o_<= get_pointer(o));                                       \
+  }                                                                     \
+  templ                                                                 \
+  int compare(arg o) const {                                            \
+    if (operator<(o)) return -1;                                        \
+    else if (operator>(o)) return 1;                                    \
+    else return 0;                                                      \
+  }                                                                     \
+  templ                                                                 \
+  explicit PointerBase(arg o): o_(NULL) {                               \
+    if (o) {                                                            \
+      set_pointer(get_pointer(o));                                      \
+    }                                                                   \
+  }                                                                     \
+  templ                                                                 \
+  PointerBase<Traits>& operator=( arg o){                               \
+    if (o) {                                                            \
+      set_pointer(get_pointer(o));                                      \
+    } else {                                                            \
+      set_pointer(NULL);                                                \
+    }                                                                   \
+    return *this;                                                       \
+  }
+
+
+template <class Traits>
 class PointerBase
 {
+  typedef typename Traits::Type O;
   O* o_;
-  static void check(const O *o) {
+  static void check(const O * o) {
     if (o) {
       Traits::check(o);
     }
   }
-  static void check_non_null(const O*t) {
+  static void check_non_null(const O*  t) {
     IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
     check(t);
   }
   static O* get_pointer(O*o) {return o;}
-  static O* get_pointer(size_t t) {
+  /*static O* get_pointer(size_t t) {
     IMP_INTERNAL_CHECK(t==0, "Only can compare with NULL ints");
     return NULL;
-  }
-  static O* get_pointer(const PointerBase<O, Traits>&o) {return o.o_;}
+    }*/
+  static O* get_pointer(const PointerBase<Traits>&o) {return o.o_;}
   void set_pointer(O* p) {
     if (p == o_) return;
     if (o_) Traits::handle_unset(o_);
@@ -89,58 +132,14 @@ class PointerBase
 
   struct UnusedClass{};
 public:
-  template <class OT>
-  explicit PointerBase(const OT &o): o_(NULL) {
-    if (o) {
-      set_pointer(get_pointer(o));
-    }
-  }
-  //! This is needed as the template one is not reliably invoked
   PointerBase(const PointerBase &o): o_(NULL) {
-    if (o) {
-      set_pointer(o.get());
-    }
-  }
-  //! for null pointers
-  PointerBase(const UnusedClass*nu): o_(NULL) {
-    IMP_USAGE_CHECK(!nu, "Non-null const ptr");
-    IMP_UNUSED(nu);
+    set_pointer(o.o_);
   }
   //! initialize to NULL
   PointerBase(): o_(NULL) {}
   /** drop control of the object */
   ~PointerBase(){
     set_pointer(NULL);
-  }
-  template <class OT>
-  bool operator==(const OT &o) const {
-    return (o_== get_pointer(o));
-  }
-  template <class OT>
-  bool operator!=(const OT &o) const {
-    return (o_!= get_pointer(o));
-  }
-  template <class OT>
-  bool operator<(const OT &o) const {
-    return (o_< get_pointer(o));
-  }
-  template <class OT>
-  bool operator>(const OT &o) const {
-    return (o_> get_pointer(o));
-  }
-  template <class OT>
-  bool operator>=(const OT &o) const {
-    return (o_>= get_pointer(o));
-  }
-  template <class OT>
-  bool operator<=(const OT &o) const {
-    return (o_<= get_pointer(o));
-  }
-  template <class OT>
-  int compare(const OT &o) const {
-    if (operator<(o)) return -1;
-    else if (operator>(o)) return 1;
-    else return 0;
   }
   //! Return true if the pointer is not NULL
   bool operator!() const {
@@ -172,29 +171,16 @@ public:
     check_non_null(o_);
     return o_;
   }
-  /** copy from another */
-  template <class OT>
-  PointerBase<O, Traits>& operator=(const OT &o){
+  IMP_POINTER_MEMBERS(template <class OTraits>,
+                      const PointerBase<OTraits>&);
+  IMP_POINTER_MEMBERS(,
+                      typename Traits::Type* const);
+  PointerBase<Traits>& operator=( const PointerBase & o){
     if (o) {
       set_pointer(get_pointer(o));
     } else {
       set_pointer(NULL);
     }
-    return *this;
-  }
-  /** copy from another */
-  PointerBase<O, Traits>& operator=(const PointerBase &o){
-    if (o) {
-      set_pointer(static_cast<O*>(o));
-    } else {
-      set_pointer(NULL);
-    }
-    return *this;
-  }
-  PointerBase<O, Traits>& operator=(const UnusedClass* o){
-    IMP_USAGE_CHECK(!o, "Non-null pointer passed");
-    set_pointer(NULL);
-    IMP_UNUSED(o);
     return *this;
   }
   //! Relinquish control of the pointer
@@ -209,15 +195,15 @@ public:
     o_= NULL;
     return ret;
   }
-  void swap_with(PointerBase<O, Traits> &o) {
+  void swap_with(PointerBase<Traits> &o) {
     std::swap(o_, o.o_);
   }
 };
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <class T, class Traits>
+template <class Traits>
 inline std::ostream &operator<<(std::ostream &out,
-                const std::vector<PointerBase<T, Traits> > &data) {
+                const std::vector<PointerBase<Traits> > &data) {
   out << "[";
   for (unsigned int i=0; i< data.size(); ++i) {
     if (i != 0) {
@@ -228,33 +214,33 @@ inline std::ostream &operator<<(std::ostream &out,
   out << "]";
   return out;
 }
-template <class T, class Traits>
-inline void swap(PointerBase<T, Traits> &a, PointerBase<T, Traits> &b) {
+template <class Traits>
+inline void swap(PointerBase<Traits> &a, PointerBase<Traits> &b) {
   a.swap_with(b);
 }
 
 template <class OT, class OTraits>
-inline bool operator==(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator==(OT *o, const PointerBase<OTraits> &p) {
   return p==o;
 }
 template <class OT, class OTraits>
-inline bool operator!=(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator!=(OT *o, const PointerBase<OTraits> &p) {
   return p!= o;
 }
 template <class OT, class OTraits>
-inline bool operator<(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator<(OT *o, const PointerBase<OTraits> &p) {
   return p >= o;
 }
 template <class OT, class OTraits>
-inline bool operator>(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator>(OT *o, const PointerBase<OTraits> &p) {
   return p <= o;
 }
 template <class OT, class OTraits>
-inline bool operator>=(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator>=(OT *o, const PointerBase<OTraits> &p) {
   return p < o;
 }
 template <class OT, class OTraits>
-inline bool operator<=(OT *o, const PointerBase<OT, OTraits> &p) {
+inline bool operator<=(OT *o, const PointerBase<OTraits> &p) {
   return p > o;
 }
 #endif

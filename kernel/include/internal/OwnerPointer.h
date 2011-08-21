@@ -15,10 +15,10 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class O>
-struct OwnerPointer: internal::PointerBase<O, internal::OwnerPointerTraits> {
+struct OwnerPointer: internal::PointerBase<OwnerPointerTraits<O> > {
   template <class Any>
   OwnerPointer(const Any &o):
-    internal::PointerBase<O, internal::OwnerPointerTraits>(o){}
+    internal::PointerBase<OwnerPointerTraits<O> >(o){}
   OwnerPointer(){}
 };
 
