@@ -60,16 +60,7 @@ protected:
   Object(std::string name);
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
-#ifndef IMP_DOXYGEN
-  // Return whether the object already been freed
-  bool get_is_valid() const {
-#if IMP_BUILD >= IMP_FAST
-    return true;
-#else
-    return static_cast<int>(check_value_)==111111111;
-#endif
-  }
-#endif
+
 
   //! Set the logging level used in this object
   /** Each object can be assigned a different log level in order to,

@@ -18,6 +18,7 @@ RefCounted::~ RefCounted() {
   IMP_INTERNAL_CHECK(get_ref_count()== 0,
                      "Deleting object which still has references");
 #if IMP_BUILD < IMP_FAST
+  check_value_=666666666;
   --live_objects_;
 #endif
 }
@@ -26,7 +27,6 @@ Object::Object(std::string name)
 {
 #if IMP_BUILD < IMP_FAST
   log_level_=DEFAULT;
-  check_value_=111111111;
   was_owned_=false;
   add_live_object(this);
 #endif
@@ -59,7 +59,6 @@ Object::~Object()
                      << "that all C++ code uses IMP::Pointer objects to"
                      << " store it.");
 #if IMP_BUILD < IMP_FAST
-  check_value_=666666666;
   if (!was_owned_) {
     IMP_WARN("Object \"" << get_name() << "\" was never used."
              << " See the IMP::Object documentation for an explanation."
