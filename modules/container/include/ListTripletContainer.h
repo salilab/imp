@@ -48,12 +48,6 @@ public:
   void add_particle_triplet(const ParticleTriplet& vt);
   void add_particle_triplets(const ParticleTripletsTemp &c);
   void set_particle_triplets(ParticleTripletsTemp c);
-  IMP_NO_DOXYGEN(void add_particle_triplets(const ParticleTriplets &c) {
-      add_particle_triplets(static_cast<const ParticleTripletsTemp&>(c));
-    })
-  IMP_NO_DOXYGEN(void set_particle_triplets(const ParticleTriplets &c) {
-      set_particle_triplets(static_cast<ParticleTripletsTemp>(c));
-    })
   void clear_particle_triplets();
   /**@}*/
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);

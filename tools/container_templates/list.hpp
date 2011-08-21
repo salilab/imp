@@ -48,12 +48,6 @@ public:
   void add_FUNCTIONNAME(ARGUMENTTYPE vt);
   void add_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c);
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
-  IMP_NO_DOXYGEN(void add_FUNCTIONNAMEs(const PLURALSTORAGETYPE &c) {
-      add_FUNCTIONNAMEs(static_cast<const PLURALVARIABLETYPE&>(c));
-    })
-  IMP_NO_DOXYGEN(void set_FUNCTIONNAMEs(const PLURALSTORAGETYPE &c) {
-      set_FUNCTIONNAMEs(static_cast<PLURALVARIABLETYPE>(c));
-    })
   void clear_FUNCTIONNAMEs();
   /**@}*/
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
