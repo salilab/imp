@@ -31,6 +31,7 @@ Model::Model(std::string name):
   eval_count_=0;
   set_was_used(true);
   rs_->set_model(this);
+  rs_->set_name("root restraint set");
   first_call_=true;
   max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
