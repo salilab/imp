@@ -242,12 +242,6 @@ double ClusteredAssignmentContainer::get_minimum_distance() const {
   return 2*md+.1;
 }
 
-template <class A, class B>
-inline std::ostream &operator<<(std::ostream &out, const std::pair<A, B> &p) {
-  out << "(" << p.first << ", " << p.second << ")";
-  return out;
-}
-
 void ClusteredAssignmentContainer::recluster() {
   using IMP::operator<<;
   IMP_LOG(VERBOSE, "Reclustering from " << d_ << std::endl);
