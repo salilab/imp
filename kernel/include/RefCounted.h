@@ -82,16 +82,30 @@ class IMPEXPORT RefCounted
  public:
 #endif // _MSC_VER
   mutable int count_;
+#if IMP_BUILD <= IMP_FAST
+  double check_value_;
+#endif
 protected:
   RefCounted() {
 #if IMP_BUILD < IMP_FAST
      ++live_objects_;
+     check_value_=111111111;
 #endif
      count_=0;
   }
   ~RefCounted();
 
  public:
+#ifndef IMP_DOXYGEN
+  // Return whether the object already been freed
+  bool get_is_valid() const {
+#if IMP_BUILD >= IMP_FAST
+    return true;
+#else
+    return static_cast<int>(check_value_)==111111111;
+#endif
+  }
+#endif
   unsigned int get_ref_count() const {
     return count_;
   }
