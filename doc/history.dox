@@ -1,5 +1,7 @@
 /** \page recent Change History
 \par Summer 2011
+- the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
+- all the plural types in IMP have moved to bounds checked vectors when using debug builds with gcc. If you get a non-imp error about an invalid access, it is probably some code that walks off the end of an array. Please report it.
 - IMP::rmf::KeyCategory was renamed to IMP::rmf::Category
 - The deprecated constructors for various rmf/hdf5 things from files have been removed. Now use the methods IMP::rmf::open_rmf_file(), IMP::rmf::create_rmf_file(), IMP::rmf::open_rmf_file_read_only(), IMP::rmf::open_hdf5_file(), IMP::rmf::create_hdf5_file().
 - IMP::rmf broke backward compatibility in order to accelerate loading times of files and use a more compact storage for strings.
