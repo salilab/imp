@@ -45,7 +45,7 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 private:
-  IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
+  IMP::OwnerPointer<DensityMap> target_dens_map_;
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   IMP::core::XYZs xyz_;

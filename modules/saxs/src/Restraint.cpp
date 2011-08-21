@@ -23,7 +23,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
-  IMP::internal::OwnerPointer<Refiner> ref
+  IMP::OwnerPointer<Refiner> ref
     = new core::LeavesRefiner(atom::Hierarchy::get_traits());
   for(unsigned int i=0; i<particles.size(); i++) {
     if(core::RigidBody::particle_is_instance(particles[i])) {
