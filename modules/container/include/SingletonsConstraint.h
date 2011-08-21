@@ -39,9 +39,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT SingletonsConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<SingletonModifier> f_;
-  IMP::internal::OwnerPointer<SingletonDerivativeModifier> af_;
-  IMP::internal::OwnerPointer<SingletonContainer> c_;
+  IMP::OwnerPointer<SingletonModifier> f_;
+  IMP::OwnerPointer<SingletonDerivativeModifier> af_;
+  IMP::OwnerPointer<SingletonContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The SingletonModifier to apply to all elements

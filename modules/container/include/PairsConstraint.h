@@ -39,9 +39,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT PairsConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<PairModifier> f_;
-  IMP::internal::OwnerPointer<PairDerivativeModifier> af_;
-  IMP::internal::OwnerPointer<PairContainer> c_;
+  IMP::OwnerPointer<PairModifier> f_;
+  IMP::OwnerPointer<PairDerivativeModifier> af_;
+  IMP::OwnerPointer<PairContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The PairModifier to apply to all elements

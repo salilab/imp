@@ -27,8 +27,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT MinimumSingletonRestraint
 : public Restraint
 {
-  IMP::internal::OwnerPointer<SingletonScore> f_;
-  IMP::internal::OwnerPointer<SingletonContainer> c_;
+  IMP::OwnerPointer<SingletonScore> f_;
+  IMP::OwnerPointer<SingletonContainer> c_;
   unsigned int n_;
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;

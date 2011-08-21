@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerQuadFilter : public QuadFilter
 {
-  IMP::internal::OwnerPointer<QuadContainer> c_;
+  IMP::OwnerPointer<QuadContainer> c_;
 public:
   InContainerQuadFilter(QuadContainer *c,
                              std::string name="QuadFilter %1%");

@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerTripletFilter : public TripletFilter
 {
-  IMP::internal::OwnerPointer<TripletContainer> c_;
+  IMP::OwnerPointer<TripletContainer> c_;
 public:
   InContainerTripletFilter(TripletContainer *c,
                              std::string name="TripletFilter %1%");

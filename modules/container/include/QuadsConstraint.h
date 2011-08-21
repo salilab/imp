@@ -39,9 +39,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT QuadsConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<QuadModifier> f_;
-  IMP::internal::OwnerPointer<QuadDerivativeModifier> af_;
-  IMP::internal::OwnerPointer<QuadContainer> c_;
+  IMP::OwnerPointer<QuadModifier> f_;
+  IMP::OwnerPointer<QuadDerivativeModifier> af_;
+  IMP::OwnerPointer<QuadContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The QuadModifier to apply to all elements

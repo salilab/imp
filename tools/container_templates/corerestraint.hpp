@@ -35,8 +35,8 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT CoreCLASSNAMEsRestraint :
   public CLASSNAMEsScoreRestraint
 {
-  IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;
+  IMP::OwnerPointer<CLASSNAMEScore> ss_;
+  IMP::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

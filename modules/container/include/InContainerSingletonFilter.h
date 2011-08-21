@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerSingletonFilter : public SingletonFilter
 {
-  IMP::internal::OwnerPointer<SingletonContainer> c_;
+  IMP::OwnerPointer<SingletonContainer> c_;
 public:
   InContainerSingletonFilter(SingletonContainer *c,
                              std::string name="SingletonFilter %1%");

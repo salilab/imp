@@ -39,9 +39,9 @@ public IMP::core::internal::ListLikePairContainer
 #endif
 {
   typedef IMP::core::internal::ListLikePairContainer P;
-  IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
-  IMP::internal::OwnerPointer<core::ClosePairsFinder> cpf_;
-  IMP::internal::OwnerPointer<core::internal::MovedSingletonContainer>
+  IMP::OwnerPointer<SingletonContainer> a_, b_;
+  IMP::OwnerPointer<core::ClosePairsFinder> cpf_;
+  IMP::OwnerPointer<core::internal::MovedSingletonContainer>
     moveda_, movedb_;
   bool first_call_;
   double distance_, slack_;

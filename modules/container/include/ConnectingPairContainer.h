@@ -44,8 +44,8 @@ public PairContainer
 public IMP::core::internal::ListLikePairContainer
 #endif
 {
-  IMP::internal::OwnerPointer<SingletonContainer> sc_;
-  IMP::internal::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
+  IMP::OwnerPointer<SingletonContainer> sc_;
+  IMP::OwnerPointer<core::internal::MovedSingletonContainer> mv_;
   ParticlePairsTemp data_;
   double error_;
   bool mst_;

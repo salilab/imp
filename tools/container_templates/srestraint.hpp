@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT CLASSNAMERestraint :
   public CLASSNAMEScoreRestraint
 {
-  IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
+  IMP::OwnerPointer<CLASSNAMEScore> ss_;
   INDEXTYPE v_;
 public:
   //! Create the restraint.

@@ -26,7 +26,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT InContainerCLASSNAMEFilter : public CLASSNAMEFilter
 {
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::OwnerPointer<CLASSNAMEContainer> c_;
 public:
   InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
                              std::string name="CLASSNAMEFilter %1%");

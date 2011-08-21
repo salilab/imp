@@ -30,8 +30,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT CLASSNAMEsOptimizerState : public OptimizerState
 {
-  IMP::internal::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::OwnerPointer<CLASSNAMEModifier> f_;
+  IMP::OwnerPointer<CLASSNAMEContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] gf The CLASSNAMEModifier to apply to all elements.

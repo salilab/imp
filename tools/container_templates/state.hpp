@@ -39,9 +39,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
  */
 class IMPCONTAINEREXPORT CLASSNAMEsConstraint : public Constraint
 {
-  IMP::internal::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::internal::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
+  IMP::OwnerPointer<CLASSNAMEModifier> f_;
+  IMP::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
+  IMP::OwnerPointer<CLASSNAMEContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The CLASSNAMEModifier to apply to all elements

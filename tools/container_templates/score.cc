@@ -35,7 +35,7 @@ namespace {
   class CLASSNAMERestraint :
     public CLASSNAMEScoreRestraint
   {
-    IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
+    IMP::OwnerPointer<CLASSNAMEScore> ss_;
     STORAGETYPE v_;
   public:
     //! Create the restraint.

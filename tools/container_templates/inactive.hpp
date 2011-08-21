@@ -29,7 +29,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT RemoveInactiveCLASSNAMEsOptimizerState :
   public OptimizerState
 {
-  IMP::internal::OwnerPointer<ListCLASSNAMEContainer> c_;
+  IMP::OwnerPointer<ListCLASSNAMEContainer> c_;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] name The name to use for this Object
