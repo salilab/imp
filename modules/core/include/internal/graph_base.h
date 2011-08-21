@@ -9,7 +9,6 @@
 #define IMPCORE_GRAPH_BASE_H
 
 #include "../core_config.h"
-#include "ArrayOnAttributesHelper.h"
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
@@ -24,16 +23,16 @@ namespace internal
 {
 
 /** \internal */
-struct IMPCOREEXPORT GraphData:
-    public ArrayOnAttributesHelper<ParticleKey, Particle*>
+struct IMPCOREEXPORT GraphData
 {
-  typedef ArrayOnAttributesHelper<ParticleKey, Particle*> P;
   GraphData() {}
-  GraphData(std::string prefix): P(prefix) {
-    node_keys_[0]=ParticleKey((P::get_prefix()+" node 0").c_str());
-    node_keys_[1]=ParticleKey((P::get_prefix()+" node 1").c_str());
+  GraphData(std::string prefix) {
+    node_keys_[0]=ParticleKey((prefix+" node 0").c_str());
+    node_keys_[1]=ParticleKey((prefix+" node 1").c_str());
+    edges_key_=ParticlesKey(prefix+" edges");
   }
   ParticleKey node_keys_[2];
+  ParticlesKey edges_key_;
 };
 
 

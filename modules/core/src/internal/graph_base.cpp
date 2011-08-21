@@ -12,15 +12,14 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-void graph_initialize_node(Particle* a, const GraphData &d)
+void graph_initialize_node(Particle* , const GraphData &)
 {
-  d.add_required_attributes(a);
 }
 
 /** \internal */
-bool graph_is_node(Particle* a, const GraphData &d)
+bool graph_is_node(Particle*, const GraphData &)
 {
-  return d.has_required_attributes(a);
+  return true;
 }
 
 
@@ -32,7 +31,14 @@ Particle* graph_connect(Particle* a, Particle* b, GraphData &d)
   p->add_attribute(d.node_keys_[1], b);
   for (int i=0; i< 2; ++i) {
     Particle *cp=((i==0)?a:b);
-    d.push_back(cp, p);
+    if (m->get_has_attribute(d.edges_key_, cp->get_index())) {
+      ParticleIndexes c=m->get_attribute(d.edges_key_, cp->get_index());
+      c.push_back(p->get_index());
+      m->set_attribute(d.edges_key_, cp->get_index(), c);
+    } else {
+      m->add_attribute(d.edges_key_, cp->get_index(),
+                   ParticleIndexes(1, p->get_index()));
+    }
   }
 
   return p;
@@ -44,11 +50,15 @@ void graph_disconnect(Particle* e, const GraphData &d)
   p[0]= graph_get_node(e, 0, d);
   p[1]= graph_get_node(e, 1, d);
   for (int i=0; i< 2; ++i) {
-    for (unsigned int j=0; j< d.get_size(p[i]); ++j) {
-      if (d.get_value(p[i], j) == e) {
-        d.erase(p[i], j);
-        break;
-      }
+    ParticleIndexes pis= e->get_model()->get_attribute(d.edges_key_,
+                                                       p[i]->get_index());
+    pis.erase(std::find(pis.begin(), pis.end(), e->get_index()));
+    if (!pis.empty()) {
+      e->get_model()->set_attribute(d.edges_key_,
+                                    p[i]->get_index(), pis);
+    } else {
+      e->get_model()->remove_attribute(d.edges_key_,
+                                       p[i]->get_index());
     }
   }
   e->get_model()->remove_particle(e);
@@ -58,12 +68,21 @@ void graph_disconnect(Particle* e, const GraphData &d)
 
 Particle* graph_get_edge(Particle* a, int i, const GraphData &d)
 {
-  return d.get_value(a,i);
+  IMP_USAGE_CHECK(a->get_model()->get_has_attribute(d.edges_key_,
+                                                a->get_index()),
+                  "Particle " << a->get_name() << " does not have "
+                  << "enough edges");
+  ParticleIndexes all= a->get_model()->get_attribute(d.edges_key_,
+                                                 a->get_index());
+  IMP_USAGE_CHECK(all.size()>static_cast<unsigned int>(i),  "Particle "
+                  << a->get_name()
+                  << " does not have enough edges");
+  return a->get_model()->get_particle(all[i]);
 }
 
 Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
 {
-  Particle *edge= d.get_value(a,i);
+  Particle *edge= graph_get_edge(a, i, d);
   if (graph_get_node(edge, 0, d) == a) {
     return graph_get_node(edge, 1, d);
   } else {
@@ -75,7 +94,10 @@ Particle* graph_get_neighbor(Particle* a, int i, const GraphData &d)
 
 unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d)
 {
-  return d.get_size(a);
+  if (!a->get_model()->get_has_attribute(d.edges_key_,
+                                     a->get_index())) return 0;
+  else return a->get_model()->get_attribute(d.edges_key_,
+                                        a->get_index()).size();
 }
 
 void graph_initialize_edge(Particle *a, const GraphData &d)

@@ -1,5 +1,4 @@
 files = [
-         'ArrayOnAttributesHelper.h',
          'CoreClosePairContainer.h',
          'CoreListPairContainer.h',
          'CoreListQuadContainer.h',
