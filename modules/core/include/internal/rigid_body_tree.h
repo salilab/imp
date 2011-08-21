@@ -28,7 +28,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
 
   typedef std::vector<unsigned int> SphereIndexes;
   typedef std::vector<SphereIndexes> SpheresSplit;
-  SpheresSplit divide_spheres(const std::vector< algebra::Sphere3D > &ss,
+  SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
                               const SphereIndexes &s);
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
   void set_leaf(unsigned int ni, const ParticleIndexes &ids);
