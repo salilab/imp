@@ -89,8 +89,18 @@ inline Out get_as(const In &in) {
 }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class T, class TT>
+inline std::ostream &operator<<(std::ostream &out,
+                         const std::pair<T,TT> &data) {
+  out << "(";
+  out << data.first << ", " << data.second;
+  out << ")";
+  return out;
+}
+
+
 template <class T>
-std::ostream &operator<<(std::ostream &out,
+inline std::ostream &operator<<(std::ostream &out,
                          const std::vector<T> &data) {
   out << "[";
   for (unsigned int i=0; i< data.size(); ++i) {
