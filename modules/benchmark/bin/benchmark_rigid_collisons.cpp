@@ -99,7 +99,7 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
 int main() {
   {
     RigidBodies rbs;
-    IMP::internal::OwnerPointer<Model> m
+    IMP::OwnerPointer<Model> m
       = setup(false, rbs);
     //std::cout << "Quadratic:" << std::endl;
     test_one("quadratic", m, rbs, 10, 2.578245);
@@ -107,7 +107,7 @@ int main() {
   }
   {
     RigidBodies rbs;
-    IMP::internal::OwnerPointer<Model> m
+    IMP::OwnerPointer<Model> m
       = setup(true, rbs);
     //std::cout << "Hierarchy:" << std::endl;
     test_one("hierarchy", m, rbs, 10, 11.549620);
