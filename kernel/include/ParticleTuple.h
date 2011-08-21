@@ -123,15 +123,15 @@ struct RefCountParticleTuple {
 };
 
 typedef ParticleTuple<2> ParticlePair;
-typedef std::vector<ParticleTuple<2> > ParticlePairsTemp;
+IMP_VALUES(ParticlePair, ParticlePairsTemp);
 typedef VectorOfRefCounted<ParticleTuple<2>,
                            RefCountParticleTuple<2> > ParticlePairs;
 typedef ParticleTuple<3> ParticleTriplet;
-typedef std::vector<ParticleTuple<3> > ParticleTripletsTemp;
+IMP_VALUES(ParticleTriplet, ParticleTripletsTemp);
 typedef VectorOfRefCounted<ParticleTuple<3>,
                            RefCountParticleTuple<3> > ParticleTriplets;
 typedef ParticleTuple<4> ParticleQuad;
-typedef std::vector<ParticleTuple<4> > ParticleQuadsTemp;
+IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
 typedef VectorOfRefCounted<ParticleTuple<4>,
                            RefCountParticleTuple<4> > ParticleQuads;
 #endif
