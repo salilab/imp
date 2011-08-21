@@ -70,7 +70,7 @@ def create_restraints(m, all):
     m.add_restraint(evr)
     S= IMP.atom.Selection
     s0=S(hierarchy=all, molecule="Nup145C", residue_indexes=[(0,423)])
-    s1=S(hierarchy=all, molecule="Nup84", molecules=[])
+    s1=S(hierarchy=all, molecule="Nup84")
     s2=S(hierarchy=all, molecule="Sec13")
     add_connectivity_restraint([s0,s1,s2])
     add_distance_restraint(S(hierarchy=all, molecule="Nup145C", residue_indexes=[(0,423)]),
