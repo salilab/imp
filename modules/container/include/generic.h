@@ -45,7 +45,8 @@ public:
   IMP_RESTRAINT(ContainerRestraint);
 
   //! Get the container used to store Particles
-  std::vector<typename Score::Argument> get_arguments() const {
+  compatibility::checked_vector<typename Score::Argument>
+  get_arguments() const {
     return pc_->get();
   }
 

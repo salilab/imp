@@ -772,131 +772,6 @@ public:                                                                 \
 
 
 
-//! Define a set of attributes which form an array
-/** The macro defines a set of functions for using the array:
-    - get_name(unsigned int)
-
-    - get_number_of_name()
-
-    - add_name(ExternalType)
-
-    - add_name_at(ExternalType, unsigned int)
-
-    - remove_name(ExternalType)
-
-    in addition it defines the private methods
-    - add_required_attributes_for_name(Particle *)
-
-    \param[in] protection Whether it should be public, protected or private
-    \param[in] Class The name of the wrapping class
-    \param[in] Name The capitalized name of the prefix to use
-    \param[in] name the name prefix to use, see the above method names
-    \param[in] plural the plural form of the name
-    \param[in] instance_traits the traits object to use to manipulate things.
-    This should inherit from or implement the interface of
-    internal::ArrayOnAttributesHelper
-    \param[in] ExternalType The name of the type to wrap the return type with.
-    \param[in] ExternalTypes A vector of the return type.
-*/
-#define IMP_DECORATOR_ARRAY_DECL(protection, Class,                     \
-                                 Name, name, plural,                    \
-                                 instance_traits,                       \
-                                 ExternalType, ExternalTypes)           \
-  private:                                                              \
-  template <class T>                                                    \
-  static bool has_required_attributes_for_##name(Particle *p,           \
-                                                 const T &traits) {     \
-    return traits.has_required_attributes(p);                           \
-  }                                                                     \
-  template <class T>                                                    \
-  static void add_required_attributes_for_##name(Particle *p,           \
-                                                 const T &traits) {     \
-    return traits.add_required_attributes(p);                           \
-  }                                                                     \
-  struct Name##AttrArrayAccessor {                                      \
-    const Class *d_;                                                    \
-    Name##AttrArrayAccessor(const Class *d): d_(d){}                    \
-    Name##AttrArrayAccessor(): d_(NULL){}                               \
-    typedef ExternalType result_type;                                   \
-    result_type operator()(unsigned int i) const {                      \
-      return d_->get_##name(i);                                         \
-    }                                                                   \
-    bool operator==(const Name##AttrArrayAccessor &o) const {           \
-      return d_== o.d_;                                                 \
-    }                                                                   \
-  };                                                                    \
-protection:                                                             \
- IMP_NO_SWIG(typedef IMP::internal                                      \
-             ::IndexingIterator<Name##AttrArrayAccessor>                \
-             Name##Iterator;)                                           \
- IMP_NO_SWIG(Name##Iterator plural##_begin() const {                    \
-     return Name##Iterator(Name##AttrArrayAccessor(this));              \
-   }                                                                    \
-   Name##Iterator plural##_end() const {                                \
-     return Name##Iterator(Name##AttrArrayAccessor(this),               \
-                           get_number_of_##plural());                   \
-   })                                                                   \
- ExternalType get_##name(unsigned int i) const {                        \
-   return instance_traits.wrap(instance_traits.get_value(get_particle(), i)); \
- }                                                                      \
- unsigned int get_number_of_##plural() const {                          \
-   return instance_traits.get_size(get_particle());                     \
- }                                                                      \
- unsigned int add_##name(ExternalType t) {                              \
-   instance_traits.audit_value(t);                                      \
-   unsigned int i= instance_traits.push_back(get_particle(),            \
-                                             instance_traits.get_value(t)); \
-   instance_traits.on_add(get_particle(), t, i);                        \
-   return i;                                                            \
- }                                                                      \
- void add_##name##_at(ExternalType t, unsigned int idx) {               \
-   instance_traits.audit_value(t);                                      \
-   instance_traits.insert(get_particle(),                               \
-                          idx,                                          \
-                          instance_traits.get_value(t));                \
-   instance_traits.on_add(get_particle(), t, idx);                      \
-   for (unsigned int i= idx+1; i < get_number_of_##plural(); ++i) {     \
-     instance_traits.on_change(get_particle(),                          \
-                               instance_traits.get_value( get_particle(), i), \
-                      i-1, i);                                          \
-   }                                                                    \
- }                                                                      \
- ExternalTypes get_##plural() const {                                   \
-   ExternalTypes ret;                                                   \
-   for (unsigned int i=0; i< get_number_of_##plural(); ++i) {           \
-     ret.push_back(get_##name(i));                                      \
-   }                                                                    \
-   return ret;                                                          \
- }                                                                      \
- void add_##plural(const ExternalTypes &et) {                           \
-   for (unsigned int i=0; i< et.size(); ++i) {                          \
-     add_##name(et[i]);                                                 \
-   }                                                                    \
- }                                                                      \
- void remove_##name(ExternalType t) {                                   \
-   instance_traits.audit_value(t);                                      \
-   unsigned int idx= instance_traits.get_index(get_particle(), t);      \
-   instance_traits.on_remove(get_particle(), t);                        \
-   instance_traits.erase(get_particle(),                                \
-                idx);                                                   \
-   for (unsigned int i= idx; i < get_number_of_##plural(); ++i) {       \
-     instance_traits.on_change(get_particle(),                          \
-                               instance_traits.get_value(get_particle(), i), \
-                               i+1, i);                                 \
-   }                                                                    \
- }                                                                      \
- void clear_##plural() {                                                \
-   for (unsigned int i=0; i< get_number_of_##plural(); ++i) {           \
-     instance_traits.on_remove(get_particle(), get_##name(i));          \
-   }                                                                    \
-   instance_traits.clear(get_particle());                               \
- }                                                                      \
- IMP_REQUIRE_SEMICOLON_CLASS(array##Name)
-
-//! @}
-
-
-
 #ifdef IMP_DOXYGEN
 //! Define the type for storing sets of values
 /** The macro defines the type Names. PluralName should be
@@ -912,8 +787,20 @@ protection:                                                             \
 #else
 #define IMP_VALUES(Name, PluralName)                     \
   IMP_OUTPUT_OPERATOR(Name);                             \
-  typedef std::vector<Name> PluralName
+  typedef IMP::compatibility::checked_vector<Name> PluralName
 #endif
+
+
+#ifdef IMP_DOXYGEN
+/** This is like IMP_VALUES() but for built in types that have
+    now show.
+ */
+#define IMP_BUILTIN_VALUES(Name, PluralName)
+#else
+#define IMP_BUILTIN_VALUES(Name, PluralName)                     \
+  typedef IMP::compatibility::checked_vector<Name> PluralName
+#endif
+
 
 #ifdef IMP_DOXYGEN
 /** \name Showable
@@ -1184,9 +1071,9 @@ private:                                                        \
  */
 #define IMP_OBJECTS(Name, PluralName)
 #else
-#define IMP_OBJECTS(Name, PluralName)                   \
-  typedef IMP::VectorOfRefCounted<Name*> PluralName;    \
-  typedef std::vector<Name*> PluralName##Temp
+#define IMP_OBJECTS(Name, PluralName)                                   \
+  typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
+  typedef IMP::compatibility::checked_vector<Name*> PluralName##Temp
 #endif
 
 //! Define the basic things you need for a Restraint.
