@@ -100,7 +100,7 @@ IMPCONTAINEREXPORT double
 get_slack_estimate(const ParticlesTemp& ps,
                    double upper_bound,
                    double step,
-                   const Restraints &restraints,
+                   const RestraintsTemp &restraints,
                    bool derivatives,
                    Optimizer *opt,
                    ClosePairContainer *cpc);
