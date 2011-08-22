@@ -2,28 +2,24 @@ Import('env')
 import scons_tools.examples
 
 env= env.IMPSystem(version="SVN",
-                   authors=["Daniel Russel"],
-                   brief="Solve a simplified Nup84 complex.",
-                   overview="""This is a simple example biological system. The computations are more or less identical to those in \\ref nup84_rb "Nup84 with rigid bodies", but it is divided in to the expected phases for a biological system.
-
-                   See \\ref example_sys_callgraphs "callgraphs" for the callgraphs
-                   of the scripts and \\ref Example_system_code "example system code" to review
-                   the code.
+                   authors=["Keren Lasker"],
+                   brief="Compute a structure for the humap RNAPII complex.",
+                   overview="""Let's find a paragraph.
                    """,
                    license=env.IMPStandardLicense(),
-                   publications=[],
-                   required_modules=['core', 'atom', 'rmf'],
-                   last_imp_version="""core SVN 7432M with CGAL
-atom SVN 7432M with CGAL, Boost.FileSystem
-container SVN 7432
-kernel SVN 7432 with Boost.FileSystem, NetCDF
-cgal SVN 7432""",
+                   # jeremy, update the publication(s)
+                   publications=[env.IMPPublication(authors=["Keren Lasker", "Daniel Russel", "Jeremy Phillips", "Haim Wolfson", "Andrej Sali"],
+                                                    title="Determining architectures of macromolecular assemblies by aligning interaction networks to electon microscopy density maps",
+                                                    journal="submitted",
+                                                    year=2011)],
+                   required_modules=['core', 'atom', 'rmf', 'multifit'],
+                   last_imp_version="""None""",
                    # this is true if the scripts can be run incompletely as test cases
                    # eg if it works to do "sample_0.py 1 1000" and then "analyze_0.py"
                    # without doing all of the sampling required. This can be implementedf
                    # either by providing intermediate data or by only analyzing the data
                    # that happens to be there
-                   testable=True, parallelizable=True)
+                   testable=False, parallelizable=False)
 if env:
     files= ["setup",
             "sample_0",
