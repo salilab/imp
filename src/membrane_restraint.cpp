@@ -128,7 +128,7 @@ int nsig=packing_nsig_;
 //  and the number of clusters
 int ncl=packing_ncl_;
 // create allowed intervals (omega in radians)
-std::vector<double> om_b, om_e, dd_b, dd_e;
+Floats om_b, om_e, dd_b, dd_e;
 
 for(int i=0;i<ncl;++i){
  dd_b.push_back(dd0[i]-double(nsig)*sig_dd0[i]);

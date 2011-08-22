@@ -29,7 +29,7 @@ Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
  }
  mc->set_return_best(false);
 
- core::Movers mvs;
+ core::MoversTemp mvs;
  for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);
   s.set_molecule(myparam->TM.name[i]);

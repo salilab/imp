@@ -221,6 +221,7 @@ if(mydata.add_GFP){
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
+//mc->set_use_incremental_evaluate(true);
 
 // hot steps
 if(mydata.MC.nhot>0){

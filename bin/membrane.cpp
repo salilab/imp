@@ -73,6 +73,7 @@ create_restraints(m,all,tbr,&mydata);
 if(myrank==0) {std::cout << "Creating sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
+//mc->set_use_incremental_evaluate(true);
 
 // sampling
 if(myrank==0) {std::cout << "Sampling" << std::endl;}
@@ -145,7 +146,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    Floats val(fbias, fbias+2*nbins);
    ptr->set_bias(val);
   }
-
  }
 
 // in any case, update index vector
