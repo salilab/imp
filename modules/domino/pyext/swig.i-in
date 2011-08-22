@@ -37,6 +37,7 @@ IMP_SWIG_OBJECT(IMP::domino, DisjointSetsSubsetFilterTable, DisjointSetsSubsetFi
 IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);
 IMP_SWIG_OBJECT(IMP::domino, EqualitySubsetFilterTable, EqualitySubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, EquivalenceSubsetFilterTable, EquivalenceSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, EquivalenceAndExclusionSubsetFilterTable, EquivalenceAndExclusionSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, ExclusionSubsetFilterTable, ExclusionSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, IndexStates, IndexStatesList);
 IMP_SWIG_OBJECT(IMP::domino, ListSubsetFilterTable, ListSubsetFilterTables);

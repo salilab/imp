@@ -424,14 +424,17 @@ namespace {
 
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
-    Ints states;
     for (unsigned int i=0; i< members.size(); ++i) {
       if (members[i] != -1) {
-        states.push_back( state[members[i]] );
+        int si= state[members[i]];
+        for (unsigned int j=0; j < i; ++j) {
+          if (members[j] != -1) {
+            if (si== state[members[j]]) return false;
+          }
+        }
       }
     }
-    std::sort(states.begin(), states.end());
-    return std::unique(states.begin(), states.end())==states.end();
+    return true;
   },return get_default_strength(s, excluded, members),
   return get_next_exclusion(pos, state, set));
 
@@ -446,6 +449,8 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
     return true;
   }, return get_default_strength(s, excluded, members),
   return get_next_equality(pos, state, set));
+
+
 
 
 namespace {
@@ -516,6 +521,39 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     return true;
   }, return get_sorted_strength(s, excluded, members),
   return get_next_permutation(pos, state, set));
+
+
+namespace {
+
+  int get_next_equivalence_exclusion(int pos, const Assignment& state,
+                                    const Ints &set) {
+    int max=0;
+    for (unsigned int i=0; i<set.size();++i){
+      max= std::max(max, state[set[i]]+1);
+      if (set[i]==pos){
+        // could have failed because too low for space below, or
+        // too high for space after
+        // or already covered
+        return std::max<unsigned int>(i, max);
+      }
+    }
+    IMP_THROW("!found", ValueException);
+    return -1;
+  }
+}
+
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(EquivalenceAndExclusion, {
+    int last=-1;
+    for (unsigned int i=0; i< members.size(); ++i) {
+      if (members[i] != -1) {
+        unsigned int si= state[members[i]];
+        if (si < i || static_cast<int>(si) <= last) return false;
+        last=state[members[i]];
+      }
+    }
+    return true;
+  },return get_sorted_strength(s, excluded, members),
+  return get_next_equivalence_exclusion(pos, state, set));
 
 
 // **************************************** List ********************
