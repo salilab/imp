@@ -53,6 +53,18 @@ struct WeakPointerTraits {
   }
 };
 
+template <class TT>
+struct CheckedWeakPointerTraits {
+  typedef TT Type;
+  static void handle_set(TT* ) {
+  }
+  static void handle_unset(TT* ) {
+  }
+  static void check(const TT *o) {
+    IMP_CHECK_OBJECT(o);
+  }
+};
+
 
 #define IMP_POINTER_MEMBERS(templ, arg)                                 \
   templ                                                                 \
