@@ -144,19 +144,22 @@ struct ModelData;
 class IMPDOMINOEXPORT SubsetData {
   const ModelData *md_;
   Ints ris_;
-  std::vector<Ints> indices_;
-  std::vector<std::pair<double, Ints> > set_ris_;
-  std::vector< std::vector<Ints> > set_indices_;
-  std::vector<Floats> set_weights_;
+  compatibility::checked_vector<Ints> indices_;
+  compatibility::checked_vector<std::pair<double, Ints> > set_ris_;
+  compatibility::checked_vector< compatibility::checked_vector<Ints> >
+    set_indices_;
+  compatibility::checked_vector<Floats> set_weights_;
   Subset s_;
  public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
-             const std::vector<std::pair< double, Ints> > &set_ris,
-             std::vector<Ints> indices,
-             const std::vector<std::vector<Ints> >& set_indices,
-             const std::vector<Floats>& set_weights,
+             const compatibility::checked_vector<std::pair< double, Ints> >
+             &set_ris,
+             compatibility::checked_vector<Ints> indices,
+     const compatibility::checked_vector<compatibility::checked_vector<Ints> >&
+             set_indices,
+             const compatibility::checked_vector<Floats>& set_weights,
              const Subset &s): md_(md), ris_(ris),
     indices_(indices),
     set_ris_(set_ris), set_indices_(set_indices), set_weights_(set_weights),
@@ -203,10 +206,10 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   bool initialized_, cache_;
   Restraints rs_;
 
-  std::vector<RestraintData> rdata_;
-  std::vector<std::pair<double, Ints> > sets_;
-  std::vector<Floats> set_weights_;
-  std::vector<Subset> dependencies_;
+  compatibility::checked_vector<RestraintData> rdata_;
+  compatibility::checked_vector<std::pair<double, Ints> > sets_;
+  compatibility::checked_vector<Floats> set_weights_;
+  compatibility::checked_vector<Subset> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
 

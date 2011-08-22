@@ -101,7 +101,7 @@ struct EdgeData {
   Subset union_subset;
   SubsetFilters filters;
 };
-typedef std::vector<EdgeData> EdgeDatas;
+typedef compatibility::checked_vector<EdgeData> EdgeDatas;
 
 inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
   out << nd.intersection_subset << " " << nd.union_subset << std::endl;

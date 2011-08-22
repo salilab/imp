@@ -82,7 +82,7 @@ inline void maximal_cliques( const Graph& graph, CliqueOutputIterator out)
   typedef boost::graph_traits< Graph>               graph_traits;
   typedef typename graph_traits::vertex_descriptor  vertex_descriptor;
   typedef typename graph_traits::vertex_iterator    vertex_iterator;
-  typedef std::vector< vertex_descriptor>           Vector;
+  typedef compatibility::checked_vector< vertex_descriptor>           Vector;
   // Empty graphs are out
   if( boost::num_vertices( graph) == 0) return;
 
@@ -103,6 +103,11 @@ inline void maximal_cliques( const Graph& graph, CliqueOutputIterator out)
 // Private Function Implementation
 namespace _maximal_cliques
 {
+  template <class It>
+  inline void opt_incr(bool incr, It &it) {
+    if (incr) ++it;
+  }
+
 
   // Algorithm IK_GX
   // ---------------
@@ -135,16 +140,16 @@ namespace _maximal_cliques
       // Go backward heuristic (Afra) - Since we're in a vector
       // and most times, the element is deleted, it does
       // less shifts -- not verified with timing yet.
-      for( typename Vector::reverse_iterator ri = P.rbegin();
-           ri != P.rend();
-           ++ri) {
-        vertex_descriptor u_i = *ri;
+
+      for( int ii=P.size()-1; ii>=0; --ii) {
+        vertex_descriptor u_i = P[ii];
         // If *i is not a neighbor of pivot
         if( !edge( pivot, u_i, graph).second) {
 
           // P = P - { u_i }
           // Based on Meyer's Effective STL, Item 28
-          P.erase( (ri+1).base());
+          // hack added by daniel to avoid incremented end iterator
+          P.erase( P.begin()+ii);
 
           // R_new = R U { u_i }
           Vector R_new( R.begin(), R.end());
@@ -166,10 +171,11 @@ namespace _maximal_cliques
 
           // X_new = X \cap N[u_i]
           Vector X_new;
-          std::set_intersection( Nu_i.begin(), Nu_i.end(),
-                                 X.begin(), X.end(),
-                                 std::back_insert_iterator< Vector>( X_new));
-
+          if (!X.empty() && !Nu_i.empty()) {
+            std::set_intersection( Nu_i.begin(), Nu_i.end(),
+                                   X.begin(), X.end(),
+                                   std::back_insert_iterator< Vector>( X_new));
+          }
           // Recursive call
           _maximal_cliques::IK_GX( graph, out, R_new, P_new, X_new);
 

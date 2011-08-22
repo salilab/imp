@@ -35,17 +35,17 @@ namespace {
                         ParticlesTemp> &idm,
       const IMP::compatibility::map<Restraint*,
                         ModelData::PreloadData> &preload,
-                                 std::vector<Subset> &dependencies,
+                        compatibility::checked_vector<Subset> &dependencies,
                                  ParticlesTemp ip,
-                                 std::vector<RestraintData> &rdata,
+                     compatibility::checked_vector<RestraintData> &rdata,
                         IMP::compatibility::map<Restraint*, Ints> &index,
                         bool cache) {
-    std::vector<ParticlesTemp> oip;
+    compatibility::checked_vector<ParticlesTemp> oip;
     oip.push_back(ParticlesTemp());
     for (unsigned int i=0; i< ip.size(); ++i) {
       if (idm.find(ip[i]) != idm.end()) {
         if (idm.find(ip[i])->second.size() > 1) {
-          std::vector<ParticlesTemp> noip;
+          compatibility::checked_vector<ParticlesTemp> noip;
           int last=0;
           for (unsigned int j=0; j< idm.find(ip[i])->second.size(); ++j) {
             noip.insert(noip.end(), oip.begin(), oip.end());
@@ -222,9 +222,9 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
   if (sdata_.find(id) == sdata_.end()) {
     ParticleIndex pi= get_index(s);
     Ints ris;
-    std::vector<Ints> inds;
+    compatibility::checked_vector<Ints> inds;
     Ints total_ris;
-    std::vector<Ints> total_inds;
+    compatibility::checked_vector<Ints> total_inds;
     IMP::compatibility::set<Restraint*> found;
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
@@ -259,12 +259,13 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
         }
       }
     }
-    std::vector<std::pair<double, Ints> > set_ris;
-    std::vector<std::vector<Ints> > set_inds;
-    std::vector<Floats> set_weights;
+    compatibility::checked_vector<std::pair<double, Ints> > set_ris;
+    compatibility::checked_vector<compatibility::checked_vector<Ints> >
+      set_inds;
+    compatibility::checked_vector<Floats> set_weights;
     for (unsigned int i=0; i< sets_.size(); ++i) {
       Ints cris;
-      std::vector<Ints> cinds;
+      compatibility::checked_vector<Ints> cinds;
       Floats weights;
       for (unsigned int j=0; j< ris.size(); ++j) {
         for (unsigned int k=0; k < sets_[i].second.size(); ++k) {
