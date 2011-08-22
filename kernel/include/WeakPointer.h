@@ -31,6 +31,19 @@ struct WeakPointer: internal::PointerBase<internal::WeakPointerTraits<O> > {
   using P::operator=;
 };
 
+/** This version of a WeakPointer only works on complete types, but adds
+    additional checks of correct usage.
+ */
+template <class O>
+struct CheckedWeakPointer:
+  internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
+  typedef  internal::PointerBase<internal::CheckedWeakPointerTraits<O> > P;
+  template <class Any>
+  CheckedWeakPointer(const Any &o): P(o){}
+  CheckedWeakPointer(){}
+  using P::operator=;
+};
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_WEAK_POINTER_H */

@@ -10,7 +10,7 @@
 #define IMP_POINTER_H
 
 #include "internal/PointerBase.h"
-#include "internal/OwnerPointer.h"
+#include "WeakPointer.h"
 
 IMP_BEGIN_NAMESPACE
 

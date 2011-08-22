@@ -152,6 +152,14 @@ namespace swig {
     typedef T* store_type;
   };
 
+  template <class T>
+  struct ValueOrObject<CheckedWeakPointer<T>,
+                       typename enable_if<is_base_of<Object, T> >::type > {
+    static const T* get(const T*t) {return *t;}
+    typedef T type;
+    typedef T* store_type;
+  };
+
 
 
   template <class T>

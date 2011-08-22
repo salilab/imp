@@ -312,7 +312,8 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
   }
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< restraints.size(); ++i) {
-      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(restraints[i]),
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(
+                                 static_cast<Restraint*>(restraints[i])),
                       "Cannot pass restraint sets to model to evaluate");
     }
   }

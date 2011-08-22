@@ -1073,7 +1073,8 @@ private:                                                        \
 #else
 #define IMP_OBJECTS(Name, PluralName)                                   \
   typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
-  typedef IMP::compatibility::checked_vector<Name*> PluralName##Temp
+  typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
+  PluralName##Temp
 #endif
 
 //! Define the basic things you need for a Restraint.
