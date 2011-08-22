@@ -214,10 +214,10 @@ domino::IntsList
 domino::IntsList
   DensitySegmentationByCommunities::calculate_connected_components() {
 
-  std::vector<int> component(num_vertices(g_));
+  Ints component(num_vertices(g_));
   int num = boost::connected_components(g_, &component[0]);
-  std::vector<int>::size_type i;
-  std::vector<Ints> cc_inds;
+  Ints::size_type i;
+  domino::IntsList cc_inds;
   cc_inds.insert(cc_inds.end(),num,Ints());
   for (i = 0; i != component.size(); ++i) {
     cc_inds[component[i]].push_back(node2voxel_ind_[node_index_[i]]);
