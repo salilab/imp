@@ -156,7 +156,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 }
 
+logfile.flush();
 logfile.close();
+MPI::COMM_WORLD.Barrier();
 MPI::Finalize();
 return 0;
 }
