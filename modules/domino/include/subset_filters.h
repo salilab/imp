@@ -179,7 +179,7 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
                                boost::vector_property_map<int> > disjoint_sets_;
   IMP::compatibility::map<const Particle*, int> index_;
-  mutable std::vector<ParticlesTemp> sets_;
+  mutable compatibility::checked_vector<ParticlesTemp> sets_;
   mutable IMP::compatibility::map<const Particle *, int> set_indexes_;
 
   int get_index(Particle *p);
@@ -204,7 +204,7 @@ protected:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   void get_indexes(const Subset &s,
                    const Subsets &excluded,
-                   std::vector<Ints> &ret,
+                   compatibility::checked_vector<Ints> &ret,
                    int lb,
                    Ints &used) const;
 #endif
@@ -267,7 +267,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   IMP::compatibility::map<Particle*,int > map_;
-  std::vector< boost::dynamic_bitset<> > states_;
+  compatibility::checked_vector< boost::dynamic_bitset<> > states_;
   Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle*p) const;
@@ -312,7 +312,7 @@ class IMPDOMINOEXPORT PairListSubsetFilterTable:
   void fill(const Subset &s,
             const Subsets &e,
             IntPairs& indexes,
-            std::vector<IntPairs>& allowed) const;
+            compatibility::checked_vector<IntPairs>& allowed) const;
  public:
   PairListSubsetFilterTable();
   void set_allowed_states(ParticlePair p, const IntPairs &states);

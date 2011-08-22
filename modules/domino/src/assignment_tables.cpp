@@ -25,7 +25,7 @@ namespace {
 
   template <class T>
   std::ostream &operator<<(std::ostream &out,
-                           const std::vector<T> &v) {
+                           const compatibility::checked_vector<T> &v) {
     out << "[";
     for (unsigned int i=0; i< v.size(); ++i) {
       if (i>0) out << ", ";
@@ -294,7 +294,7 @@ namespace {
   Assignment get_next_assignment_base(
                                  Ints cur,
                                  const Ints &maxs,
-                                 const std::vector<SubsetFilters> &filters) {
+              const compatibility::checked_vector<SubsetFilters> &filters) {
     unsigned int increment=1;
     while (true) {
       cur[0]+=increment;
@@ -318,10 +318,10 @@ namespace {
 
   Assignment get_next_assignment(const ParticlesTemp &s,
                                      const Subsets &subsets,
-                                     const std::vector<Ints>& orders,
+                     const compatibility::checked_vector<Ints>& orders,
                                      Ints cur,
                                      const Ints &maxs,
-                                  const std::vector<SubsetFilters> &filters) {
+              const compatibility::checked_vector<SubsetFilters> &filters) {
     IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
     IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
     IMP_INTERNAL_CHECK(s.size() == orders.size(),
@@ -337,18 +337,18 @@ namespace {
         if (s.size()==2) {
           inner= get_next_assignment_base(Ints(cur.begin(), cur.end()-1),
                                           Ints(maxs.begin(), maxs.end()-1),
-                              std::vector<SubsetFilters>(filters.begin(),
+                   compatibility::checked_vector<SubsetFilters>(filters.begin(),
                                                           filters.end()-1));
         } else {
           inner= get_next_assignment(ParticlesTemp(s.begin(),
                                                    s.end()-1),
                                      Subsets(subsets.begin(),
                                              subsets.end()-1),
-                                     std::vector<Ints>(orders.begin(),
+                             compatibility::checked_vector<Ints>(orders.begin(),
                                                        orders.end()-1),
                                      Ints(cur.begin(), cur.end()-1),
                                      Ints(maxs.begin(), maxs.end()-1),
-                           std::vector<SubsetFilters>(filters.begin(),
+                  compatibility::checked_vector<SubsetFilters>(filters.begin(),
                                                       filters.end()-1));
         }
         if (inner.size()==0) {
@@ -392,10 +392,10 @@ namespace {
           IMP_INTERNAL_CHECK(cur.back()==cura[pos],
                              "Assignments don't match");
           increment= next- cur.back();
+          ok=false;
           IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
                              << " it was not"
                              << " for \"" << filters.back()[i] << "\"");
-          ok=false;
           break;
         }
       }
@@ -435,8 +435,8 @@ void BranchAndBoundAssignmentsTable
   for (unsigned int i=0; i< maxs.size(); ++i) {
     maxs[i]= pst_->get_particle_states(spt[i])->get_number_of_particle_states();
   }
-  std::vector<SubsetFilters> filters(maxs.size());
-  std::vector<Ints> orders(maxs.size());
+  compatibility::checked_vector<SubsetFilters> filters(maxs.size());
+  compatibility::checked_vector<Ints> orders(maxs.size());
   Subsets subsets(maxs.size());
   for (unsigned int i=0; i< maxs.size(); ++i) {
     Subsets excluded;

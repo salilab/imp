@@ -26,7 +26,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     classes, like the Assignment classes simply store
     a constant list (in this case of particles). The list
     is stored in sorted order. Their interface is more or
-    less that of a constant std::vector in C++ or
+    less that of a constant compatibility::checked_vector in C++ or
     a constant list in python.
  */
 class IMPDOMINOEXPORT Subset {

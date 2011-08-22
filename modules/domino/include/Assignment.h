@@ -26,7 +26,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     a Subset is the ith value in the Assignment.
 
     Like Subset objects, Assignment objects cannot be
-    modified and provide a std::vector/python list like
+    modified and provide a compatibility::checked_vector/python list like
     interface.
 */
 class IMPDOMINOEXPORT Assignment {
