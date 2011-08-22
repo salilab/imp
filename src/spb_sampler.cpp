@@ -36,7 +36,7 @@ Pointer<core::MonteCarlo> setup_SPBMonteCarlo
  return mc.release();
 }
 
-void add_BallMover(Particles ps, double dx, core::Movers& mvs)
+void add_BallMover(Particles ps, double dx, core::MoversTemp& mvs)
 {
  for(unsigned int k=0;k<ps.size();++k){
   Particles pps;
@@ -48,7 +48,7 @@ void add_BallMover(Particles ps, double dx, core::Movers& mvs)
 
 void add_PbcBoxedMover
 (Particles ps, double dx, algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs)
+ algebra::Transformation3Ds trs, core::MoversTemp& mvs)
 {
  IMP_NEW(membrane::PbcBoxedMover,mv,(ps[0],ps,dx,centers,trs));
  mvs.push_back(mv);
@@ -62,7 +62,7 @@ void add_PbcBoxedMover
 
 void add_PbcBoxedRigidBodyMover
 (Particles ps,double dx,double dang,algebra::Vector3Ds centers,
- algebra::Transformation3Ds trs, core::Movers& mvs)
+ algebra::Transformation3Ds trs, core::MoversTemp& mvs)
 {
  Particles fake;
  core::RigidBody prb=core::RigidMember(ps[0]).get_rigid_body();

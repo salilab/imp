@@ -26,7 +26,8 @@ atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
 container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
-container::ListSingletonContainer *IL2_ps, core::Movers& mvs)
+container::ListSingletonContainer *IL2_ps,
+core::MoversTemp& mvs)
 {
 
 atom::Hierarchies hs=atom::Hierarchies();
@@ -475,7 +476,7 @@ atom::Molecules create_coiled_coil (Model *m,
 
 atom::Molecule create_GFP(Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, SPBParameters mydata)
+ core::MoversTemp& mvs, SPBParameters mydata)
 {
  if(!mydata.use_GFP_structure){
   IMP_NEW(Particle,p,(m));

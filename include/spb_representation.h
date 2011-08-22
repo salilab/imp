@@ -19,7 +19,8 @@ IMPMEMBRANEEXPORT atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
 container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
-container::ListSingletonContainer *IL2_ps, core::Movers& mvs);
+container::ListSingletonContainer *IL2_ps,
+core::MoversTemp& mvs);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
@@ -49,7 +50,7 @@ IMPMEMBRANEEXPORT void load_restart
 IMPMEMBRANEEXPORT atom::Molecule create_GFP
  (Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, SPBParameters mydata);
+ core::MoversTemp& mvs, SPBParameters mydata);
 
 IMPMEMBRANE_END_NAMESPACE
 
