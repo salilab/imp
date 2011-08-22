@@ -1,4 +1,9 @@
-import subprocess
+import sys
+try:
+    import subprocess
+except ImportError:
+    # Work with Python 2.3, which doesn't ship with subprocess
+    from IMP.parallel import compat_subprocess as subprocess
 
 class _Popen4(subprocess.Popen):
     """Utility class to provide a portable way to spawn a child process and
@@ -17,9 +22,24 @@ class _Popen4(subprocess.Popen):
         if r != 0:
             raise IOError("Process failed with exit status %d" % r)
 
+if sys.platform == 'win32':
+    def _run_background(cmdline, out):
+        """Run a process in the background and direct its output to a file"""
+        print "%s > %s" % (cmdline, out)
+        try:
+            # shell isn't needed on Win32, and may not be found under wine
+            # anyway
+            p = subprocess.Popen(cmd, shell=False, stdout=fp,
+                                 stderr=subprocess.STDOUT)
+        # Ignore Windows "file not found" errors, so that behavior is consistent
+        # between Unix and Windows
+        except WindowsError, detail:
+            print("WindowsError: %s (ignored)" % detail)
 
-def _run_background(cmdline, out):
-    """Run a process in the background and direct its output to a file"""
-    print "%s > %s" % (cmdline, out)
-    subprocess.Popen(cmdline, shell=True, stdout=open(out, 'w'),
-                     stderr=subprocess.STDOUT)
+else:
+
+    def _run_background(cmdline, out):
+        """Run a process in the background and direct its output to a file"""
+        print "%s > %s" % (cmdline, out)
+        subprocess.Popen(cmdline, shell=True, stdout=open(out, 'w'),
+                         stderr=subprocess.STDOUT)
