@@ -1,7 +1,19 @@
-class NetworkError(Exception):
+class Error(Exception):
+    """Base class for all errors specific to the IMP.parallel module"""
     pass
 
-class RemoteError(Exception):
+class _NoMoreTasksError(Error):
+    pass
+
+class NoMoreSlavesError(Error):
+    """Error raised if all slaves failed, so tasks cannot be run"""
+    pass
+
+class _NetworkError(Error):
+    pass
+
+class RemoteError(Error):
+    """Error raised if a slave has an unhandled exception"""
     def __init__(self, exc, traceback, slave):
         self.exc = exc
         self.traceback = traceback

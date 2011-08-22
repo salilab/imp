@@ -1,28 +1,10 @@
 import sys
 import os
 import re
-import subprocess
+from IMP.parallel.subproc import _run_background
 from IMP.parallel.slave import Slave
 from IMP.parallel.local_slave import LocalSlave
 from IMP.parallel.slave_array import SlaveArray
-
-class _Popen4(subprocess.Popen):
-    """Utility class to provide a portable way to spawn a child process and
-       communicate with its stdin and combined stdout/stderr."""
-
-    def __init__(self, cmd):
-        # shell isn't needed on Win32, and may not be found under wine anyway
-        shell = (sys.platform != "win32")
-        subprocess.Popen.__init__(self, cmd, shell=shell, stdin=subprocess.PIPE,
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT)
-
-    def require_clean_exit(self):
-        """Make sure the child exited with a zero return code"""
-        r = self.wait()
-        if r != 0:
-            raise IOError("Process failed with exit status %d" % r)
-
 
 class _SGEQsubSlave(Slave):
     def __init__(self, array):
@@ -99,10 +81,7 @@ class _SGEPESlave(Slave):
     def _start(self, command, unique_id, output):
         Slave._start(self, command, unique_id, output)
         cmdline = "qrsh -inherit %s %s %s" % (self._host, command, unique_id)
-        print "%s > %s" % (cmdline, output)
-        fp = open(output, 'w')
-        subprocess.Popen(cmdline, shell=True, stdout=fp,
-                         stderr=subprocess.STDOUT)
+        _run_background(cmdline, output)
 
     def __repr__(self):
         return "<SGE PE slave on %s>" % self._host

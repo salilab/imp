@@ -4,39 +4,7 @@ import sys
 import random
 from IMP.parallel.context import Context
 from IMP.parallel.errors import NetworkError
-
-class NoMoreTasksError(Exception):
-    pass
-
-
-class NoMoreSlavesError(Exception):
-    pass
-
-
-class _ListenSocket(socket.socket):
-    def __init__(self, host, timeout):
-        socket.socket.__init__(self, socket.AF_INET, socket.SOCK_STREAM)
-        self.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.port = self._bind_to_random_port(host, timeout)
-        self.settimeout(timeout)
-        self.listen(15)
-
-    def _bind_to_random_port(self, host, timeout):
-        """Bind to a random high-numbered port"""
-        tries = 0
-        while True:
-            port = random.randint(10000, 60000)
-            try:
-                self.bind((host, port))
-            # gaierror is a subclass of error, so catch it separately
-            except socket.gaierror:
-                raise
-            except socket.error:
-                tries += 1
-                if tries > 10: raise
-            else:
-                break
-        return port
+from IMP.parallel.util import _ListenSocket
 
 class Manager(object):
     """Manages slaves and contexts"""
@@ -77,7 +45,7 @@ class Manager(object):
             while True:
                 for task in self._get_finished_tasks(context):
                     yield task._results
-        except NoMoreTasksError:
+        except _NoMoreTasksError:
             return
 
     def _start_all_slaves(self):
@@ -150,7 +118,7 @@ class Manager(object):
                     return task
                 else: # the slave sent back a heartbeat
                     self._kill_timed_out_slaves(context)
-            except NetworkError, detail:
+            except _NetworkError, detail:
                 task = event._kill()
                 print "Slave %s failed (%s): rescheduling task %s" \
                       % (str(event), str(detail), str(task))
@@ -190,7 +158,7 @@ class Manager(object):
         running = [a for a in self._all_slaves if a.running_task(context)]
         if len(running) == 0:
             if len(context._tasks) == 0:
-                raise NoMoreTasksError()
+                raise _NoMoreTasksError()
             elif len(self._starting_slaves) == 0:
                 raise NoMoreSlavesError("Ran out of slaves to run tasks")
             # Otherwise, wait for starting slaves to connect back and get tasks
