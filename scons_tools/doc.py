@@ -22,9 +22,9 @@ version 2 of the License, or (at your option) any later version.
 
 def IMPStandardPublications(env):
     return [env.IMPPublication(authors=["Daniel Russel", "Keren Lasker", "Ben Webb", "Dina Schneidman", "Javier Vel&aacute;zquez-Muriel", "Andrej Sali"],
-                            title="Integrative assembly modeling using IMP",
+                            title="Putting the pieces together: integrative structure determination of macromolecular assemblies",
                             journal="submitted",
-                            year=2010,
+                            year=2011,
                             description="This paper provides an overview of the key concepts in \\imp and how to apply them to biological problems."),
             env.IMPPublication(authors=["Frank Alber", "Friedrich Foerster", "Dmitry Korkin",  "Maya Topf", "Andrej Sali"], year=2008,
                             title="Integrating diverse data for structure determination of macromolecular assemblies", journal="Annual Review of Biochemistry",
