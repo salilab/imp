@@ -252,6 +252,13 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equality);
 */
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equivalence);
 
+/** \brief Define sets of equivalent and exclusive particles
+
+    This is equivalent to having both an EquivalenceSubsetFilterTable
+    and an ExclusionSubsetFilterTable on the same particles, but faster.
+*/
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(EquivalenceAndExclusion);
+
 
 
 
