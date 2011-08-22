@@ -16,7 +16,11 @@ from IMP.parallel.util import _ListenSocket
 
 
 class Slave(Communicator):
-    """Representation of a single slave, on the master"""
+    """Representation of a single slave.
+       Each slave uses a single thread of execution (i.e. a single CPU core)
+       to run tasks sequentially.
+       Slave is an abstract class; instead of using this class directly, use
+       a subclass such as LocalSlave or SGEQsubSlaveArray."""
 
     def __init__(self):
         Communicator.__init__(self)
@@ -85,7 +89,10 @@ class Slave(Communicator):
 
 
 class SlaveArray(object):
-    """Representation of an array of slaves, on the master"""
+    """Representation of an array of slaves.
+       This is similar to Slave, except that it represents a collection of
+       slaves that are controlled together, such as a batch submission system
+       array job on a compute cluster."""
 
     def _get_slaves(self):
         """Return a list of Slave objects contained within this array"""
@@ -97,7 +104,7 @@ class SlaveArray(object):
 
 
 class LocalSlave(Slave):
-    """A slave running on the same machine"""
+    """A slave running on the same machine as the master."""
 
     def _start(self, command, unique_id, output):
         Slave._start(self, command, unique_id, output)
@@ -126,6 +133,18 @@ class _SGEQsubSlave(Slave):
 
 
 class SGEQsubSlaveArray(SlaveArray):
+    """An array of slaves on a Sun Grid Engine system, started with 'qsub'.
+       To use this class, the master process must be running on a machine that
+       can submit Sun Grid Engine (SGE) jobs using the 'qsub' command (this
+       is termed a 'submit host' by SGE). The class starts an SGE job array
+       (every slave has the same SGE job ID, but a different task ID).
+       @param numslave The number of slaves, which correponds to the number of
+                       tasks in the SGE job.
+       @param options  A string of SGE options that are passed on the 'qsub'
+                       command line. This is added to standard_options.
+    """
+
+
     standard_options = '-j y -cwd -r n -o sge-errors'
 
     def __init__(self, numslave, options):
@@ -190,6 +209,12 @@ class _SGEPESlave(Slave):
 
 
 class SGEPESlaveArray(SlaveArray):
+    """An array of slaves in a Sun Grid Engine system parallel environment.
+       In order to use this class, the master must be run via Sun Grid Engine's
+       'qsub' command and submitted to a parallel environment using the qsub
+       -pe option. This class will start slaves on every node in the parallel
+       environment (including the node running the master). Each slave is
+       started using the 'qrsh' command with the '-inherit' option."""
 
     def _get_slaves(self):
         slaves = []
@@ -212,20 +237,54 @@ class SGEPESlaveArray(SlaveArray):
 
 
 class Context(object):
+    """A collection of tasks that run in the same environment.
+       Context objects are typically created by calling Manager::get_context().
+    """
     def __init__(self, manager, startup=None):
         self._manager = manager
         self._startup = startup
         self._tasks = []
 
     def add_task(self, task):
+        """Add a task to this context.
+           Tasks are any Python callable object that can be pickled (e.g. a
+           function or a class that implements the __call__ method). When the
+           task is run on the slave its arguments are the return value from this
+           context's startup function."""
         self._tasks.append(task)
 
     def get_results_unordered(self):
+        """Run all of the tasks on available slaves, and return results.
+           If there are more tasks than slaves, subsequent tasks are
+           started only once a running task completes: each slave only runs
+           a single task at a time. As each task completes, the return value(s)
+           from the task callable are returned from this method, as a
+           Python generator. Note that the results are returned in the order
+           that tasks complete, which may not be the same as the order they
+           were submitted in.
+
+           \exception NoMoreSlavesError there are no slaves available
+                      to run the tasks (or they all failed during execution).
+           \exception RemoteError a slave encountered an unhandled exception.
+        """
         return self._manager._get_results_unordered(self)
 
 
 class Manager(object):
-    """Manages slaves and contexts"""
+    """Manages slaves and contexts.
+       @param python If not None, the command to run to start a Python
+                     interpreter that can import the IMP module. Otherwise,
+                     the same interpreter that the master is currently using
+                     is used.
+       @param host   The hostname to listen on for connections from new slaves.
+                     If not specified, the machine's primary IP address is used.
+                     On multi-homed machines, this may need to be changed to
+                     allow all slaves to reach the master (use '0.0.0.0' to
+                     listen on all interfaces). If only running local slaves,
+                     'localhost' can be used to prohibit connections across the
+                     network.
+    """
+  
     connect_timeout = 7200
 
     # Note: must be higher than that in slave_handler._HeartBeatThread
@@ -248,12 +307,21 @@ class Manager(object):
         self._listen_sock = _ListenSocket(self._host, self.connect_timeout)
 
     def add_slave(self, slave):
+        """Add a Slave object."""
         if hasattr(slave, '_get_slaves'):
             self._slave_arrays.append(slave)
         else:
             self._all_slaves.append(slave)
 
     def get_context(self, startup=None):
+        """Create and return a new Context in which tasks can be run.
+           @param startup If not None, a callable (Python function or class
+                          that implements the __call__ method) that sets up
+                          the slave to run tasks. This method is only called
+                          once per slave. The return values from this method
+                          are passed to the task object when it runs on
+                          the slave.
+        """
         return Context(self, startup)
 
     def _get_results_unordered(self, context):
