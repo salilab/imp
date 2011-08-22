@@ -30,28 +30,50 @@ const double epsilon = 1e-12;
 void store_in_hash(const IMP::algebra::DenseGrid3D<float> &map,
   InsideHash &inside, BoundaryHash &boundary)
 {
-  const IMP::algebra::Vector3D unit_cell = (1 + epsilon)*map.get_unit_cell();
+  const IMP::algebra::Vector3D unit_cell = map.get_unit_cell();
+  long n_boundary = 0, n_inside = 0;
   IMP_GRID3D_FOREACH_VOXEL(map,
-    if ( map[loop_voxel_index] == 1 )
+    if ( map[voxel_center] == 1 )
     {
       inside.add(voxel_center, true);
+      //IMP_LOG(VERBOSE, "Processing " << voxel_center << std::endl);
+      ++n_inside;
       // check if the voxel_center is at the boundary of the molecule
-      IMP::algebra::BoundingBoxD<3> bb(voxel_center - unit_cell,
-         voxel_center + unit_cell);
       bool on_boundary = false;
-      for ( IMP::algebra::DenseGrid3D<float>::VoxelConstIterator it =
-        map.voxels_begin(bb);
-        it != map.voxels_end(bb); ++it )
-      {
-        if ( *it == 0 )
-        {
-          on_boundary = true;
-          break;
-        }
-      }
+      for ( int x = -1; x <= 1; ++x )
+        for ( int y = -1; y <= 1; ++y )
+          for ( int z = -1; z <= 1; ++z )
+            if ( x || y || z )
+            {
+              IMP::algebra::Vector3D neighbor(
+                voxel_center[0] + x*unit_cell[0],
+                voxel_center[1] + y*unit_cell[1],
+                voxel_center[2] + z*unit_cell[2]);
+              if ( map.get_has_index(map.get_extended_index(neighbor)) )
+              {
+                if ( map[neighbor] == 0 )
+                {
+             //IMP_LOG(VERBOSE, "map[" << neighbor << "] is zero" << std::endl);
+                  on_boundary = true;
+                  goto end_loop;
+                }
+              }
+              else
+              {
+                //IMP_LOG(VERBOSE, neighbor << "is outside" << std::endl);
+                on_boundary = true;
+                goto end_loop;
+              }
+            }
+    end_loop:
       if ( on_boundary )
+      {
+        ++n_boundary;
         boundary.add(voxel_center, PointLabel());
+      }
     } );
+  IMP_LOG(VERBOSE, __FUNCTION__ << ": boundary voxels = " << n_boundary
+      << ", inside voxels = " << n_inside << std::endl);
 }
 
 
@@ -100,7 +122,9 @@ CriticalPointType classify_voxel(BoundaryHash &boundary,
   PointLabel &pt_data = pt.second;
   CriticalPointType candidate;
   if ( pt_data.shape_value > 2.0/3.0 )
+  {
     candidate = HOLE;
+  }
   else if ( pt_data.shape_value < 1.0/3.0 )
     candidate = KNOB;
   else
@@ -123,10 +147,16 @@ CriticalPointType classify_voxel(BoundaryHash &boundary,
   {
     int idx = point_distances[i].index;
     double other_shape_value = points[idx]->second.shape_value;
-    if ( candidate == HOLE && other_shape_value >= pt_data.shape_value )
-      return OTHER;
-    if ( other_shape_value <= pt_data.shape_value )
-      return OTHER;
+    if ( candidate == HOLE )
+    {
+      if ( other_shape_value > pt_data.shape_value )
+        return OTHER;
+    }
+    else
+    {
+      if ( other_shape_value < pt_data.shape_value )
+        return OTHER;
+    }
   }
   return candidate;
 }
@@ -219,7 +249,7 @@ bool match_angles(const BoundaryHash::ValueType &critical0,
 }
 
 IMP::algebra::Transformation3Ds
-    get_candidate_transformations_matching_first_surface_to_second(
+    get_candidate_transformations_match_1st_surface_to_2nd(
   const IMP::algebra::DenseGrid3D<float> &map0,
   const IMP::algebra::DenseGrid3D<float> &map1,
   const CandidateSurfaceMatchingParameters &params)
@@ -227,19 +257,35 @@ IMP::algebra::Transformation3Ds
   double ball_radius = params.get_ball_radius();
   InsideHash inside0(ball_radius);
   BoundaryHash boundary0(ball_radius);
+  IMP_LOG(VERBOSE,
+     __FUNCTION__ << ": splitting map0 into boundary and inside" << std::endl);
   store_in_hash(map0, inside0, boundary0);
+  IMP_LOG(VERBOSE,
+     __FUNCTION__ << ": calculating the shape function of map0" << std::endl);
   calculate_shape_function(inside0, boundary0, ball_radius,
                            calculate_unit_volume(map0));
   BoundaryHash::HashResult knobs0, holes0;
+  IMP_LOG(VERBOSE, __FUNCTION__ << ": classifying voxels of map0" << std::endl);
   classify_voxels(boundary0, knobs0, holes0, ball_radius);
+  IMP_LOG(VERBOSE,
+      __FUNCTION__ << ": map0(knobs: " << knobs0.size() << ", holes:" <<
+      holes0.size() << ")\n");
   InsideHash inside1(ball_radius);
   BoundaryHash boundary1(ball_radius);
+  IMP_LOG(VERBOSE,
+    __FUNCTION__ << ": splitting map1 into boundary and inside" << std::endl);
   store_in_hash(map1, inside1, boundary1);
+  IMP_LOG(VERBOSE,
+    __FUNCTION__ << ": calculating the shape function of map1" << std::endl);
   calculate_shape_function(inside1, boundary1, ball_radius,
     calculate_unit_volume(map1));
   BoundaryHash::HashResult knobs1, holes1;
+  IMP_LOG(VERBOSE, __FUNCTION__ << ": classifying voxels of map1" << std::endl);
   classify_voxels(boundary1, knobs1, holes1, ball_radius);
   IMP::algebra::Transformation3Ds result;
+  IMP_LOG(VERBOSE,
+      __FUNCTION__ << ": map1(knobs: " << knobs1.size() << ", holes:" <<
+      holes1.size() << ")" << std::endl);
   for ( size_t i = 0; i < knobs0.size(); ++i )
   {
     const BoundaryHash::ValueType &knob0 = *knobs0[i];

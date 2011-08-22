@@ -152,7 +152,7 @@ get_complentarity_grid(const IMP::Particles &ps,
         if ( v > 0 )
         {
           //inside voxel
-          grid[loop_voxel_index] = int((v - 1)/params.interior_thickness) + 1;
+          grid[voxel_center] = int((v - 1)/params.interior_thickness) + 1;
         }
         else if ( v < 0 )
         {
@@ -169,7 +169,7 @@ get_complentarity_grid(const IMP::Particles &ps,
             v = params.complementarity_value[
               p - params.complementarity_thickness.begin()];
           }
-          grid[loop_voxel_index] = v;
+          grid[voxel_center] = v;
         }
       });
   return grid;
@@ -184,7 +184,7 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
 {
   double complementarity_score = 0, penetration_score = 0;
   IMP_GRID3D_FOREACH_VOXEL(map1,
-      float v1 = map1[loop_voxel_index];
+      float v1 = map1[voxel_center];
       IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
       float v0;
       // this is probably the only way to check if a voxel is in

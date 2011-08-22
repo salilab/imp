@@ -13,7 +13,7 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-class CandidateSurfaceMatchingParameters
+class IMPMULTIFITEXPORT CandidateSurfaceMatchingParameters
 {
   double ball_radius_;
   double maximum_pair_distance_;
@@ -93,8 +93,8 @@ public:
 
 };
 
-IMP::algebra::Transformation3Ds
-  get_candidate_transformations_matching_first_surface_to_second(
+IMPMULTIFITEXPORT IMP::algebra::Transformation3Ds
+  get_candidate_transformations_match_1st_surface_to_2nd(
   const IMP::algebra::DenseGrid3D<float> &map0,
   const IMP::algebra::DenseGrid3D<float> &map1,
   const CandidateSurfaceMatchingParameters &params =
