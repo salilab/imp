@@ -1,0 +1,26 @@
+import socket
+
+class _ListenSocket(socket.socket):
+    def __init__(self, host, timeout):
+        socket.socket.__init__(self, socket.AF_INET, socket.SOCK_STREAM)
+        self.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.port = self._bind_to_random_port(host, timeout)
+        self.settimeout(timeout)
+        self.listen(15)
+
+    def _bind_to_random_port(self, host, timeout):
+        """Bind to a random high-numbered port"""
+        tries = 0
+        while True:
+            port = random.randint(10000, 60000)
+            try:
+                self.bind((host, port))
+            # gaierror is a subclass of error, so catch it separately
+            except socket.gaierror:
+                raise
+            except socket.error:
+                tries += 1
+                if tries > 10: raise
+            else:
+                break
+        return port
