@@ -367,6 +367,8 @@ namespace {
       //std::cout << "Trying " << cur  << " = " << reordered_cur << std::endl;
       Assignment cura(reordered_cur);
       bool ok=true;
+      IMP_LOG(VERBOSE, "Trying " << cura << " for "
+              << subsets.back() << std::endl);
       for (unsigned int i=0; i< filters.back().size(); ++i) {
         if (!filters.back()[i]->get_is_ok(cura)) {
           unsigned int pos=0;
@@ -482,6 +484,7 @@ void BranchAndBoundAssignmentsTable
       /*std::cout << "adding " << cura
                 << " = " << Assignment(cura_reordered)
                 << std::endl;*/
+      IMP_LOG(VERBOSE, "Found " << cura_reordered << std::endl);
       pac->add_assignment(Assignment(cura_reordered));
       std::copy(cura.begin(), cura.end(), cur.begin());
     } else {
