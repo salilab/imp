@@ -3,7 +3,7 @@ import select
 import sys
 import random
 from IMP.parallel.context import Context
-from IMP.parallel.errors import NetworkError
+from IMP.parallel.errors import _NetworkError
 from IMP.parallel.util import _ListenSocket
 
 class Manager(object):
