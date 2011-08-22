@@ -117,7 +117,9 @@ struct CheckedWeakPointerTraits {
 template <class Traits>
 class PointerBase
 {
+public:
   typedef typename Traits::Type O;
+private:
   O* o_;
   static void check(const O * o) {
     if (o) {
