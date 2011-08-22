@@ -211,7 +211,7 @@ domino::IntsList
 }
 
 
-std::vector<Ints>
+domino::IntsList
   DensitySegmentationByCommunities::calculate_connected_components() {
 
   std::vector<int> component(num_vertices(g_));

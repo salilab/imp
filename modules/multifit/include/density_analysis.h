@@ -66,7 +66,7 @@ public:
     }
     return centers;
   }
-  std::vector<Ints> calculate_connected_components();
+  domino::IntsList calculate_connected_components();
  protected:
   Pointer<em::DensityMap> dmap_;
   DensityGraph g_;
