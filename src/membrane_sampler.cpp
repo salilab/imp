@@ -29,7 +29,7 @@ Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
  }
  mc->set_return_best(false);
 
- core::MoversTemp mvs;
+ core::Movers mvs;
  for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);
   s.set_molecule(myparam->TM.name[i]);
@@ -49,8 +49,7 @@ Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
   IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,dx_,dy_,MCp->dx,MCp->dang));
   mvs.push_back(mv);
  }
- IMP_NEW(core::SerialMover,mvmv,(mvs));
- mc->add_mover(mvmv);
+ mc->add_mover(new core::SerialMover(get_as<core::MoversTemp>(mvs)));
  return mc.release();
 }
 

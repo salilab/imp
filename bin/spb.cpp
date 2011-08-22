@@ -62,7 +62,7 @@ IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC
-core::MoversTemp mvs;
+core::Movers mvs;
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
 //
