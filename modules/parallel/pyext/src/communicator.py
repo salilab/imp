@@ -59,12 +59,12 @@ class Communicator(object):
                 try:
                     data = self._socket.recv(4096)
                 except socket.error, detail:
-                    raise NetworkError("Connection lost to %s: %s" \
-                                       % (str(self), str(detail)))
+                    raise _NetworkError("Connection lost to %s: %s" \
+                                        % (str(self), str(detail)))
                 if len(data) > 0:
                     self._ibuffer += data
                 else:
-                    raise NetworkError("%s closed connection" % str(self))
+                    raise _NetworkError("%s closed connection" % str(self))
 
     def _unpickle(self, ibuffer):
         p = xdrlib.Unpacker(ibuffer)
