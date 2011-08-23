@@ -138,7 +138,8 @@ def _add_platform_flags(env):
         # "-Werror",  "-Wno-uninitialized"
         env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
-                             "-Wcast-align", "-fno-operator-names"])
+                             "-Wcast-align", "-fno-operator-names",
+                             "-Wmissing-prototypes"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
@@ -176,7 +177,9 @@ def _add_platform_flags(env):
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
                                      if x not in ['-Wall', '-Wextra', '-Wformat',
                                                   '-Wstrict-aliasing=2',
-                                                  '-O3', '-O2']])
+                                                  '-O3', '-O2',"-Wmissing-prototypes"]])
+        env.Append(IMP_BIN_CXXFLAGS=[x for x in env['CXXFLAGS']
+                                     if x not in ["-Wmissing-prototypes"]])
         #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
     env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
     env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
@@ -398,6 +401,8 @@ def get_staticlib_environment(env):
 def get_bin_environment(envi, extra_modules=[]):
     env= bug_fixes.clone_env(envi)
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
+    if env.get('IMP_BIN_CXXFLAGS', None):
+        env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
     _add_flags(env, extra_modules=extra_modules)
     return env
 
