@@ -173,6 +173,10 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   bool get_has_category(std::string name) const;
   Categories get_categories() const;
   /** @} */
+
+  /** Make sure all data gets written to disk.
+   */
+  void flush();
 };
 
 typedef std::vector<RootHandle> RootHandles;
