@@ -192,9 +192,9 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
  protected:
   std::vector<ProteinRecordData> prot_data_;
   std::map<std::string,int> prot_map_;
-  std::vector<Ints>interactions_;
+  domino::IntsList interactions_;
   std::vector<std::pair<IntPair,IntPair> > xlinks_;
-  std::vector<IntPair> ev_; //pairs of proteins to calcualte EV between
+  IntPairs ev_; //pairs of proteins to calcualte EV between
 };
 
 //! Proteomics reader
@@ -206,6 +206,6 @@ IMPMULTIFITEXPORT ProteomicsData read_proteomics_data(
 IMPMULTIFITEXPORT
 ProteomicsData get_partial_proteomics_data(
                        const ProteomicsData &pd,
-                       const std::vector<std::string> &prot_names);
+                       const Strings &prot_names);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_PROTEOMICS_READER_H */
