@@ -34,7 +34,9 @@ def setup_standards(env):
               "#/kernel/examples/*/*.py",
               "#/kernel/test/*.py",
               "#/modules/*/bin/*.cpp",
-              "#/kernel/bin/*.cpp"]
+              "#/kernel/bin/*.cpp",
+              "#/applications/*/*.cpp",
+              "#/biological_systems/*/*/*.cpp"]
     outfiles=[]
     for g in patterns:
         files= Glob(g)
