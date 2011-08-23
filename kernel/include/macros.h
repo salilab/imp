@@ -1071,6 +1071,13 @@ private:                                                        \
  */
 #define IMP_OBJECTS(Name, PluralName)
 #else
+#ifdef SWIG
+#define IMP_OBJECTS(Name, PluralName)                                   \
+  typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
+  typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
+  PluralName##Temp
+
+#else
 #define IMP_OBJECTS(Name, PluralName)                                   \
   typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
   typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
@@ -1081,11 +1088,12 @@ private:                                                        \
     return out;                                                         \
   }                                                                     \
   inline std::ostream& operator<<(std::ostream &out,                    \
-                                  const PluralNameTemp &os) {           \
+                                  const PluralName##Temp &os) {         \
     show_objects(os, out);                                              \
     return out;                                                         \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
+#endif //swig
 #endif
 
 //! Define the basic things you need for a Restraint.
