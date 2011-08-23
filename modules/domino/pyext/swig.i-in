@@ -7,8 +7,6 @@ namespace domino {
 }
 }
 
-IMP_SWIG_VALUE
-
 namespace IMP {
 namespace domino {
   %template(_Ints) ::IMP::compatibility::checked_vector<int>;
