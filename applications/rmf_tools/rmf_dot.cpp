@@ -18,7 +18,7 @@ void print_help() {
 }
 
 int main(int argc, char **argv) {
-  namespace {
+  try {
     desc.add_options()
     ("help,h",
      "Print the contents of an rmf file to the terminal as a dot graph.")

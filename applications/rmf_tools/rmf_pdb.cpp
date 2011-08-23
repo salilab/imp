@@ -36,7 +36,7 @@ std::string get_suffix(std::string name) {
 }
 
 int main(int argc, char **argv) {
-  namespace {
+  try {
     desc.add_options()
     ("help,h", "Translate and hdf5 file to pdb.")
     ("frame,f", po::value< int >(&frame),
