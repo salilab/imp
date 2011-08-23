@@ -37,7 +37,7 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[]
         IMP.set_log_level(IMP.SILENT)
         pst= IMP.domino.ParticleStatesTable()
-        state= IMP.domino.IndexStates(20)
+        state= IMP.domino.IndexStates(8)
         for i in range(0,5):
             ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
@@ -46,11 +46,12 @@ class DOMINOTests(IMP.test.TestCase):
         ps.sort()
         s= IMP.domino.Subset(ps)
         sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft, exft])
+        sst.set_log_level(IMP.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print ss
-        self.assertEqual(len(ss), 1)
+        self.assertEqual(len(ss), 56)
 
     def test_global_min5(self):
         """Testing enumeration with equiv excl ordering"""
