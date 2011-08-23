@@ -254,6 +254,7 @@ void save_frame(RootHandle fh,
   }
   save_conformation_internal(fh, hs, frame, pd.get(),
                              IMP_HDF5_PASS_MOLECULE_KEYS);
+  fh.flush();
 }
 
 
@@ -305,6 +306,7 @@ void add_hierarchy(RootHandle fh, atom::Hierarchy hs) {
     create_bond(bds[i], fh);
     if (pd) ++(*pd);
   }
+  fh.flush();
 }
 
 
@@ -486,6 +488,7 @@ void set_hierarchies(RootHandle rh, atom::Hierarchies hs,
   if (hsi != hs.size()) {
     IMP_THROW("Mismatched sizes", ValueException);
   }
+  rh.flush();
 }
 
 

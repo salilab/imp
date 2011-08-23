@@ -188,6 +188,7 @@ void add_restraint(RootHandle parent, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(parent);
   add_restraint_internal(r, parent, IMP_HDF5_PASS_RESTRAINT_KEYS);
+  parent.flush();
 }
 
 namespace {
@@ -219,6 +220,7 @@ void save_frame(RootHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
+  f.flush();
 }
 
 ParticlesTemp get_restraint_particles(NodeHandle f,
