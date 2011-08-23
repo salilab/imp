@@ -43,7 +43,7 @@ IMP_SWIG_OBJECT(IMP::em2d, DistanceFilterTable,DistanceFilterTables);
 IMP_SWIG_OBJECT(IMP::em2d, RigidBodiesImageFitRestraint,
                             RigidBodiesImageFitRestraints);
 
-
+IMP_SWIG_VALUE_BUILTIN(IMP::em2d, Floats, VectorOfFloats, IMP::Floats)
 
 
 // IMP_SWIG_OBJECT(IMP::em2d, TemplateFinder, TemplateFinders);
@@ -88,7 +88,7 @@ namespace IMP {
             ::std::pair< IMP::algebra::Transformation2D,double >;
 
 //    %template(VectorOfInts)   ::std::vector< IMP::Ints >;
-    %template(VectorOfFloats) ::std::vector< IMP::Floats >;
+//    %template(VectorOfFloats) ::std::vector< IMP::Floats >;
 
    %template(_do_hierarchical_clustering_single_linkage)
           ::IMP::em2d::do_hierarchical_agglomerative_clustering<SingleLinkage>;
