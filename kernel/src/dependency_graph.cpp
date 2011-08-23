@@ -51,7 +51,10 @@ public:
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
     if (p) {
+      IMP_LOG(VERBOSE, "Found vertex " << o->get_name() << std::endl);
       vals_.push_back(p);
+    } else {
+      IMP_LOG(VERBOSE, "Visited vertex " << o->get_name() << std::endl);
     }
   }
 };
@@ -80,7 +83,9 @@ ParticlesTemp get_dependent_particles(Particle *p,
       color[*be.first]= boost::color_traits<int>::black();
     }
   }
-  if (start==-1) {
+  if (start == -1) {
+    IMP_LOG(TERSE, "Start particle not found in graph: " << p->get_name()
+            << std::endl);
     return ParticlesTemp();
   }
   ParticlesTemp pt;
@@ -102,6 +107,7 @@ ParticlesTemp get_dependent_particles(Particle *p,
 RestraintsTemp get_dependent_restraints(Particle *p,
                                       const ParticlesTemp &all,
                                       const DependencyGraph &dg) {
+  IMP_FUNCTION_LOG;
   // find p in graph, ick
   DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
   std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
@@ -117,7 +123,9 @@ RestraintsTemp get_dependent_restraints(Particle *p,
       color[*be.first]= boost::color_traits<int>::black();
     }
   }
-  if (start==-1) {
+  if (start == -1) {
+    IMP_LOG(TERSE, "Start particle not found in graph: " << p->get_name()
+            << std::endl);
     return RestraintsTemp();
   }
   RestraintsTemp pt;
@@ -304,8 +312,8 @@ get_dependency_graph(const RestraintsTemp &irs) {
   IMP_FUNCTION_LOG;
   if (irs.empty()) return DependencyGraph();
   RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
-  ScoreStatesTemp ss
-    = irs[0]->get_model()->get_score_states(rs);
+  ScoreStatesTemp ss( irs[0]->get_model()->score_states_begin(),
+                      irs[0]->get_model()->score_states_end());
   return get_dependency_graph(ss, rs);
 }
 
