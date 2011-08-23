@@ -105,110 +105,121 @@ void add_restraints(IMP::rmf::RootHandle rh,
 }
 
 int main(int argc, char **argv) {
-  desc.add_options()
-    ("help,h", "Translate an hdf5 file to graphics.")
-    ("recolor,c", "Recolor the hierarchies using the display colors.")
-    ("frame,f", po::value< int >(&frame),
-     "Frame to use. Do '-#' for every #th frame (eg -1 is every frame).")
-    ("score,s", po::value< double >(&restraint_max),
-     "The upper bound for the restraints scores to color the "\
-     "restraints by score.")
-    ("type,T", po::value< std::string >(&file_type),
-     "The program to display with (one of pymol or chimera or auto).")
-    ("input-file,i", po::value< std::string >(&input),
-     "input hdf5 file")
-    ("output-file,o", po::value< std::string >(&output),
-     "output graphics file");
-  po::positional_options_description p;
-  p.add("input-file", 1);
-  p.add("output-file", 1);
-  po::variables_map vm;
-  po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
-  po::notify(vm);
-  if (vm.count("help") || input.empty()) {
-    print_help();
-    return 1;
-  }
-  bool exec=false;
-  if (output.empty()) {
-    exec=true;
-    if (file_type=="auto") {
+  try {
+    desc.add_options()
+      ("help,h", "Translate an hdf5 file to graphics.")
+      ("recolor,c", "Recolor the hierarchies using the display colors.")
+      ("frame,f", po::value< int >(&frame),
+       "Frame to use. Do '-#' for every #th frame (eg -1 is every frame).")
+      ("score,s", po::value< double >(&restraint_max),
+       "The upper bound for the restraints scores to color the "\
+       "restraints by score.")
+      ("type,T", po::value< std::string >(&file_type),
+       "The program to display with (one of pymol or chimera or auto).")
+      ("input-file,i", po::value< std::string >(&input),
+       "input hdf5 file")
+      ("output-file,o", po::value< std::string >(&output),
+       "output graphics file");
+    po::positional_options_description p;
+    p.add("input-file", 1);
+    p.add("output-file", 1);
+    po::variables_map vm;
+    po::store(
+              po::command_line_parser(argc,
+                                      argv).options(desc).positional(p).run(),
+              vm);
+    po::notify(vm);
+    if (vm.count("help") || input.empty()) {
       print_help();
       return 1;
     }
-    if (file_type=="pymol") {
-      output= IMP::create_temporary_file_name("display", ".pym");
-    } else if (file_type=="chimera") {
-      output= IMP::create_temporary_file_name("display", ".py");
-    } else {
-      print_help();
-      return 1;
-    }
-  }
-
-  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
-  IMP_NEW(IMP::Model, m, ());
-  IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
-  IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
-  int minframe, maxframe;
-  if (frame>=0) {
-    minframe=frame;
-    maxframe=minframe+1;
-  } else {
-    minframe=0;
-    IMP::rmf::FloatKey xk
-      =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
-    std::cout << xk << std::endl;
-    maxframe= rh.get_number_of_frames(xk)+1;
-  }
-  int step=1;
-  if (frame<0) step=std::abs(frame);
-  std::cout << "Reading frames [" << minframe << ", "
-            << maxframe << ": " << step << ")" <<std::endl;
-
-  IMP::Pointer<IMP::display::Writer> w
-    = IMP::display::create_writer(output);
-  for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
-    if (cur_frame%10==0) {
-      std::cout << cur_frame << " ";
-    }
-    w->set_frame((cur_frame-minframe)/step);
-    for (unsigned int i=0; i< hs.size(); ++i) {
-      IMP::rmf::load_frame(rh, cur_frame, hs[i]);
-      IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
-      if (vm.count("recolor")) {
-        g->set_color(IMP::display::get_display_color(i));
+    bool exec=false;
+    if (output.empty()) {
+      exec=true;
+      if (file_type=="auto") {
+        print_help();
+        return 1;
       }
-      w->add_geometry(g);
+      if (file_type=="pymol") {
+        output= IMP::create_temporary_file_name("display", ".pym");
+      } else if (file_type=="chimera") {
+        output= IMP::create_temporary_file_name("display", ".py");
+      } else {
+        print_help();
+        return 1;
+      }
     }
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      /*if (frame!= 0) {
-        IMP::rmf::load_configuration(rh, hs[i], frame);
-        }*/
-      if (IMP::core::XYZR::particle_is_instance(ps[i])) {
-        IMP::core::XYZR d(ps[i]);
-        IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+    std::cout<< "writing to file " << output << std::endl;
+    IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
+    IMP_NEW(IMP::Model, m, ());
+    IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
+    IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
+    int minframe, maxframe;
+    if (frame>=0) {
+      minframe=frame;
+      maxframe=minframe+1;
+    } else {
+      minframe=0;
+      IMP::rmf::FloatKey xk
+        =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
+      std::cout << xk << std::endl;
+      maxframe= rh.get_number_of_frames(xk)+1;
+    }
+    int step=1;
+    if (frame<0) step=std::abs(frame);
+    std::cout << "Reading frames [" << minframe << ", "
+              << maxframe << ": " << step << ")" <<std::endl;
+
+    IMP::Pointer<IMP::display::Writer> w
+      = IMP::display::create_writer(output);
+    for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
+      if (cur_frame%10==0) {
+        std::cout << cur_frame << " ";
+      }
+      w->set_frame((cur_frame-minframe)/step);
+      for (unsigned int i=0; i< hs.size(); ++i) {
+        IMP::rmf::load_frame(rh, cur_frame, hs[i]);
+        IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
         if (vm.count("recolor")) {
           g->set_color(IMP::display::get_display_color(i));
         }
         w->add_geometry(g);
       }
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        /*if (frame!= 0) {
+          IMP::rmf::load_configuration(rh, hs[i], frame);
+          }*/
+        if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+          IMP::core::XYZR d(ps[i]);
+          IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+          if (vm.count("recolor")) {
+            g->set_color(IMP::display::get_display_color(i));
+          }
+          w->add_geometry(g);
+        }
+      }
+      IMP::display::Geometries gs=
+        IMP::rmf::create_geometries(rh, cur_frame);
+      for (unsigned int i=0; i< gs.size(); ++i) {
+        w->add_geometry(gs[i]);
+      }
+      add_restraints(rh, cur_frame, w);
     }
-    IMP::display::Geometries gs=
-      IMP::rmf::create_geometries(rh, cur_frame);
-    for (unsigned int i=0; i< gs.size(); ++i) {
-      w->add_geometry(gs[i]);
-    }
-    add_restraints(rh, cur_frame, w);
-  }
-  if (exec) {
-    if (file_type=="pymol") {
-      return system((std::string("pymol")+" "+output).c_str());
+    if (exec) {
+      if (file_type=="pymol") {
+        std::cout << "launching pymol..." << std::endl;
+        return system((std::string("pymol")+" "+output).c_str());
+      } else {
+        std::cout << "launching chimera..." << std::endl;
+        return system((std::string("chimera")+" "+output).c_str());
+      }
     } else {
-      return system((std::string("chimera")+" "+output).c_str());
+      return 0;
     }
-  } else {
-    return 0;
+  } catch (const IMP::Exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
+  } catch (const std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
   }
 }
