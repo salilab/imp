@@ -3,8 +3,13 @@ import bug_fixes
 import data
 import install
 
-def IMPPublication(env, authors, title, journal, year, description=""):
-    ret= ", ".join(authors)+", \\quote{"+title+"}, <em>"+journal+"</em>, "+str(year)+"."
+def IMPPublication(env, authors, title, journal, year, description="", url=None):
+    basetitle="\\quote{"+title+"}"
+    if url:
+        title= "\external{"+url+","+basetitle+"}"
+    else:
+        title=basetitle
+    ret= ", ".join(authors)+ ", "+title+", <em>"+journal+"</em>, "+str(year)+"."
     if len(description) >0:
         ret=ret+"\n  <SMALL>"+description+"</SMALL>"
     return ret
