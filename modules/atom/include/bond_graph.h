@@ -29,7 +29,7 @@ IMPATOM_BEGIN_NAMESPACE
     - edge_list_graph.
 
     See the
-\external{www.boost.org/doc/libs/1_39_0/libs/graph/doc/table_of_contents.html,
+\external{http://www.boost.org/doc/libs/1_39_0/libs/graph/doc/table_of_contents.html,
     Boost.Graph manual} for more details and a list of algorithms.
 
     The vertices are Bondeds. The type of the edge_descriptors
@@ -97,7 +97,7 @@ public:
       attribute used to store the data. Attempt to store to an attribute
       which the particle does not already have adds the attribute to the
       particle. More information about property maps can be found in
-\external{www.boost.org/doc/libs/1_39_0/libs/property_map/property_map.html,
+\external{http://www.boost.org/doc/libs/1_39_0/libs/property_map/property_map.html,
       the Boost.PropertyMap documentation}.
       @{
   */
