@@ -318,6 +318,9 @@ public:
     internal::operate_scalar_and_array(X,a1,result,"/");
     return result;
   }
+  std::string get_name() const {
+    return "Matrix2D";
+  }
 
 protected:
 };
