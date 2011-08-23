@@ -219,6 +219,7 @@ void add_geometry(RootHandle parent, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   add_internal(parent, g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
+  parent.flush();
 }
 
 namespace {
@@ -247,6 +248,8 @@ void save_frame(RootHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   save_internal(parent, frame, g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
+
+  parent.flush();
 }
 
 
