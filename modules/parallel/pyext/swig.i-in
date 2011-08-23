@@ -7,15 +7,94 @@ import sys
 import os
 import re
 import random
+import socket
+import xdrlib
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 from IMP.parallel import slavestate
-from IMP.parallel.communicator import Communicator, _ContextWrapper
-from IMP.parallel.communicator import _TaskWrapper, _HeartBeat
 from IMP.parallel.subproc import _run_background
+from IMP.parallel.util import _ListenSocket, _ErrorWrapper
+from IMP.parallel.util import _TaskWrapper, _HeartBeat, _ContextWrapper
 from IMP.parallel.errors import *
-from IMP.parallel.util import _ListenSocket
+
+class Error(Exception):
+    """Base class for all errors specific to the parallel module"""
+    pass
 
 
-class Slave(Communicator):
+class _NoMoreTasksError(Error):
+    pass
+
+
+class NoMoreSlavesError(Error):
+    """Error raised if all slaves failed, so tasks cannot be run"""
+    pass
+
+
+class _NetworkError(Error):
+    pass
+
+
+class RemoteError(Error):
+    """Error raised if a slave has an unhandled exception"""
+    def __init__(self, exc, traceback, slave):
+        self.exc = exc
+        self.traceback = traceback
+        self.slave = slave
+
+    def __str__(self):
+        errstr = str(self.exc.__class__).replace("exceptions.", "")
+        return "%s: %s from %s\nRemote traceback:\n%s" \
+               % (errstr, str(self.exc), str(self.slave), self.traceback)
+
+class _Communicator(object):
+    """Simple support for sending Python pickled objects over the network"""
+
+    def __init__(self):
+        self._socket = None
+        self._ibuffer = ''
+
+    def _send(self, obj):
+        p = xdrlib.Packer()
+        try:
+            p.pack_string(pickle.dumps(obj, -1))
+        # Python < 2.5 can fail trying to send Inf or NaN floats in binary
+        # mode, so fall back to the old protocol in this case:
+        except SystemError:
+            p.pack_string(pickle.dumps(obj, 0))
+        self._socket.sendall(p.get_buffer())
+
+    def get_data_pending(self):
+        return len(self._ibuffer) > 0
+
+    def _recv(self):
+        while True:
+            try:
+                obj, self._ibuffer = self._unpickle(self._ibuffer)
+                if isinstance(obj, _ErrorWrapper):
+                    raise RemoteError(obj.obj, obj.traceback, self)
+                else:
+                    return obj
+            except (IndexError, EOFError):
+                try:
+                    data = self._socket.recv(4096)
+                except socket.error, detail:
+                    raise _NetworkError("Connection lost to %s: %s" \
+                                        % (str(self), str(detail)))
+                if len(data) > 0:
+                    self._ibuffer += data
+                else:
+                    raise _NetworkError("%s closed connection" % str(self))
+
+    def _unpickle(self, ibuffer):
+        p = xdrlib.Unpacker(ibuffer)
+        obj = p.unpack_string()
+        return (pickle.loads(obj), ibuffer[p.get_position():])
+
+
+class Slave(_Communicator):
     """Representation of a single slave.
        Each slave uses a single thread of execution (i.e. a single CPU core)
        to run tasks sequentially.
@@ -23,7 +102,7 @@ class Slave(Communicator):
        a subclass such as LocalSlave or SGEQsubSlaveArray."""
 
     def __init__(self):
-        Communicator.__init__(self)
+        _Communicator.__init__(self)
         self._state = slavestate.init
         self._context = None
         self._task = None

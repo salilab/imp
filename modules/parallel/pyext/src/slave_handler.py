@@ -2,10 +2,10 @@ import sys
 import traceback
 import socket
 import threading
-from IMP.parallel.errors import _NetworkError
+from IMP.parallel import _NetworkError
 from IMP.parallel.master_communicator import MasterCommunicator
-from IMP.parallel.communicator import _TaskWrapper, _ContextWrapper
-from IMP.parallel.communicator import _ErrorWrapper, _HeartBeat
+from IMP.parallel.util import _TaskWrapper, _ContextWrapper
+from IMP.parallel.util import _ErrorWrapper, _HeartBeat
 
 class _HeartBeatThread(threading.Thread):
     """Periodically send a 'heartbeat' back to the master, so that it can

@@ -24,3 +24,23 @@ class _ListenSocket(socket.socket):
             else:
                 break
         return port
+
+
+class _ContextWrapper(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+
+class _TaskWrapper(object):
+    def __init__(self, obj):
+        self.obj = obj
+
+
+class _ErrorWrapper(object):
+    def __init__(self, obj, traceback):
+        self.obj = obj
+        self.traceback = traceback
+
+
+class _HeartBeat(object):
+    pass
