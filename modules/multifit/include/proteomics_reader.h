@@ -10,6 +10,7 @@
 #define IMPMULTIFIT_PROTEOMICS_READER_H
 
 #include <IMP/algebra/Transformation3D.h>
+#include <IMP/domino/DominoSampler.h>
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
 #include <IMP/file.h>
