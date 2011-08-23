@@ -158,6 +158,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 MPI::COMM_WORLD.Barrier();
 // close rmf
+rh.flush();
 rh=rmf::RootHandle();
 // flush and close logfile
 logfile.flush();
