@@ -35,9 +35,12 @@ namespace {
 }
 namespace CGAL {
   namespace internal {
+    unsigned int hash_value( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh);
     unsigned int hash_value( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
+    bool operator<( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh0,
+                    CGAL::Polyhedron_3<EKernel>::Vertex_handle vh1);
     bool operator<( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh0,
                     CGAL::Polyhedron_3<EKernel>::Vertex_handle vh1) {
       return &*vh0 < &*vh1;
@@ -45,15 +48,21 @@ namespace CGAL {
   }
   // older CGAL
   namespace CGALi {
+    unsigned int hash_value( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh);
     unsigned int hash_value( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
+    bool operator<( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh0,
+                    CGAL::Polyhedron_3<EKernel>::Vertex_handle vh1);
     bool operator<( CGAL::Polyhedron_3<EKernel>::Vertex_handle vh0,
                     CGAL::Polyhedron_3<EKernel>::Vertex_handle vh1) {
       return &*vh0 < &*vh1;
     }
   }
   namespace internal {
+    unsigned int hash_value( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh) ;
+    bool operator<( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh0,
+                    CGAL::Polyhedron_3<IKernel>::Vertex_handle vh1);
     unsigned int hash_value( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
@@ -64,6 +73,10 @@ namespace CGAL {
   }
   // older CGAL
   namespace CGALi {
+    unsigned int hash_value( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh);
+    bool operator<( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh0,
+                    CGAL::Polyhedron_3<IKernel>::Vertex_handle vh1);
+
     unsigned int hash_value( CGAL::Polyhedron_3<IKernel>::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
