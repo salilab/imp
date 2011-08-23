@@ -306,7 +306,7 @@
     You should think very hard before implementing a class which
     requires a custom copy custructor as it is easy to get wrong
     and you can easily wrap most resources with RAII objects
-    (\external{en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
+    (\external{http://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization,
     wikipedia entry}).
 */
 #define IMP_COPY_CONSTRUCTOR(Name, Base) Name(const Name &o): Base()    \
@@ -1074,7 +1074,16 @@ private:                                                        \
 #define IMP_OBJECTS(Name, PluralName)                                   \
   typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
   typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
-  PluralName##Temp
+  PluralName##Temp;                                                     \
+  inline operator<<(std::ostream &out, const PluralName &os) {          \
+    show_objects(os, out);                                              \
+    return out;                                                         \
+  }                                                                     \
+  inline operator<<(std::ostream &out, const PluralNameTemp &os) {      \
+    show_objects(os, out);                                              \
+    return out;                                                         \
+  }
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
 #endif
 
 //! Define the basic things you need for a Restraint.
