@@ -9,8 +9,7 @@ namespace domino {
 
 namespace IMP {
 namespace domino {
-  %template(_Ints) ::IMP::compatibility::checked_vector<int>;
-  %template(_IntsList) ::IMP::compatibility::checked_vector<::IMP::Ints>;
+  %template(_IntsList) ::std::vector<::IMP::Ints>;
 /*  %template(_IntsLists) ::std::vector<::IMP::domino::IntsList>; */
 }}
 
@@ -79,3 +78,8 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/analysis.h"
 %include "IMP/domino/DependencyScoreState.h"
 
+%inline %{
+IMP::domino::IntsList _get_ints_list(const IMP::domino::IntsList &in) {
+return in;
+}
+%}
