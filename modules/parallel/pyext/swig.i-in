@@ -33,7 +33,8 @@ class NoMoreSlavesError(Error):
     pass
 
 
-class _NetworkError(Error):
+class NetworkError(Error):
+    """Error raised if a problem occurs with the network"""
     pass
 
 
@@ -81,12 +82,12 @@ class _Communicator(object):
                 try:
                     data = self._socket.recv(4096)
                 except socket.error, detail:
-                    raise _NetworkError("Connection lost to %s: %s" \
-                                        % (str(self), str(detail)))
+                    raise NetworkError("Connection lost to %s: %s" \
+                                       % (str(self), str(detail)))
                 if len(data) > 0:
                     self._ibuffer += data
                 else:
-                    raise _NetworkError("%s closed connection" % str(self))
+                    raise NetworkError("%s closed connection" % str(self))
 
     def _unpickle(self, ibuffer):
         p = xdrlib.Unpacker(ibuffer)
@@ -345,6 +346,8 @@ class Context(object):
            \exception NoMoreSlavesError there are no slaves available
                       to run the tasks (or they all failed during execution).
            \exception RemoteError a slave encountered an unhandled exception.
+           \exception NetworkError the master lost (or was unable to
+                      establish) communication with any slave.
         """
         return self._manager._get_results_unordered(self)
 
@@ -464,7 +467,7 @@ class Manager(object):
         while True:
             events = self._get_network_events(context)
             if len(events) == 0:
-                self._kill_timed_out_slaves(context)
+                self._kill_all_running_slaves(context)
             for event in events:
                 task = self._process_event(event, context)
                 if task:
@@ -483,7 +486,7 @@ class Manager(object):
                     return task
                 else: # the slave sent back a heartbeat
                     self._kill_timed_out_slaves(context)
-            except _NetworkError, detail:
+            except NetworkError, detail:
                 task = event._kill()
                 print "Slave %s failed (%s): rescheduling task %s" \
                       % (str(event), str(detail), str(task))
@@ -502,6 +505,14 @@ class Manager(object):
             context._tasks.append(task)
         if len(timed_out) > 0:
             self._send_tasks_to_slaves(context)
+
+    def _kill_all_running_slaves(self, context):
+        running = [a for a in self._all_slaves if a.running_task(context)]
+        for slave in running:
+            task = slave._kill()
+            context._tasks.append(task)
+        raise NetworkError("Did not hear from any running slave in "
+                           "%d seconds" % self.heartbeat_timeout)
 
     def _accept_slave(self, sock, context):
         sock.setblocking(True)
