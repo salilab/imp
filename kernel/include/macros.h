@@ -1082,7 +1082,7 @@ private:                                                        \
   inline operator<<(std::ostream &out, const PluralNameTemp &os) {      \
     show_objects(os, out);                                              \
     return out;                                                         \
-  }
+  }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 #endif
 
