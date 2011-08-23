@@ -7,11 +7,8 @@ namespace domino {
 }
 }
 
-namespace IMP {
-namespace domino {
-  %template(_IntsList) ::std::vector<::IMP::Ints>;
-/*  %template(_IntsLists) ::std::vector<::IMP::domino::IntsList>; */
-}}
+
+IMP_SWIG_VALUE_BUILTIN(IMP::domino, Ints, IntsList, IMP::Ints);
 
 
 /* Tell swig how to treat various types when moving them to and from pyton */
