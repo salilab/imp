@@ -124,9 +124,15 @@ IMPCOREEXPORT Particle* closest_particle(Model *m,
                                          const RigidBodyHierarchy *da,
                                          XYZR pt);
 
+IMPCOREEXPORT Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
+                                         XYZR pt, double dist
+                                         =std::numeric_limits<double>::max());
 
 IMPCOREEXPORT ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db);
+IMPCOREEXPORT ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
+                                        const RigidBodyHierarchy *db,
+                              double dist=std::numeric_limits<double>::max());
 
 
 struct LessFirst {

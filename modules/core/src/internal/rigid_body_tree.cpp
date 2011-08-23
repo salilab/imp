@@ -316,8 +316,7 @@ RigidBodyHierarchy::get_tree() const {
 
 
 Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
-                           XYZR pt, double dist
-                           =std::numeric_limits<double>::max()) {
+                           XYZR pt, double dist) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, pt.get_particle_index());
@@ -370,7 +369,7 @@ Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
 
 ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                           const RigidBodyHierarchy *db,
-                          double dist=std::numeric_limits<double>::max()) {
+                          double dist) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
