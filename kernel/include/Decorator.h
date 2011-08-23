@@ -338,6 +338,12 @@ public:                                                                 \
   Name##pc(Name::particle_is_instance, function);
 #endif
 
+#ifndef IMP_DOXYGEN
+/** Check that the particle satisfies invariants registered by decorators.
+ */
+IMPEXPORT void check_particle(Particle*p);
+#endif
+
 IMP_END_NAMESPACE
 
 #if !defined(SWIG) && !defined IMP_DOXYGEN
