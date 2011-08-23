@@ -92,7 +92,7 @@ Bond get_bond(Bonded a, Bonded b) {
   return Bond();
 }
 
-
+namespace {
 bool check_bond(Particle*p) {
   if (p->get_value(internal::get_bond_data().length_) <0) {
     IMP_THROW("Invalid bond length: "
@@ -120,9 +120,11 @@ bool check_bond(Particle*p) {
   }
   return true;
 }
+}
 
 IMP_CHECK_DECORATOR(Bond, check_bond);
 
+namespace {
 bool check_bonded(Particle*p) {
   Bonded bdd(p);
   for (unsigned int i=0; i< bdd.get_number_of_bonds(); ++i) {
@@ -133,6 +135,7 @@ bool check_bonded(Particle*p) {
     }
   }
   return true;
+}
 }
 
 IMP_CHECK_DECORATOR(Bonded, check_bonded);

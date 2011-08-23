@@ -182,7 +182,7 @@ char get_one_letter_code(ResidueType c) {
   return 'X';
 }
 
-
+namespace {
 bool check_residue(Particle*p) {
   unsigned int t=p->get_value(Residue::get_residue_type_key());
   if (t >= ResidueType::get_number_unique()) {
@@ -190,6 +190,7 @@ bool check_residue(Particle*p) {
               ValueException);
   }
   return true;
+}
 }
 
 IMP_CHECK_DECORATOR(Residue, check_residue);
