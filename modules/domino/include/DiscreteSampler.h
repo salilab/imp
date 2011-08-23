@@ -19,8 +19,11 @@
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
-typedef IMP::compatibility::checked_vector<Ints> IntsList;
-typedef IMP::compatibility::checked_vector<IntsList> IntsLists;
+#ifndef IMP_DOXYGEN
+typedef std::vector<Ints> IntsList;
+typedef std::vector<IntsList> IntsLists;
+#endif
+
 
 //! A base class for discrete samplers in Domino2
 /** All the samplers derived from it share some common properties:
