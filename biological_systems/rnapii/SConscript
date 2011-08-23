@@ -20,15 +20,15 @@ env= env.IMPSystem(version="SVN",
                    # either by providing intermediate data or by only analyzing the data
                    # that happens to be there
                    testable=False, parallelizable=False)
-if env:
-    files= ["setup",
-            "sample_0",
-            "analyze_0"]
-    scons_tools.examples.add_python_example(env, "setup.py",
-                                            "General setup code common to sampling and analysis.")
-    scons_tools.examples.add_python_example(env, "sample_0.py",
-                                            "Sampling using MCCG and random starting points.")
-    scons_tools.examples.add_python_example(env, "analyze_0.py",
-                                            "Cluster into 10 solutions.")
-    scons_tools.examples.add_page(env, "Example system code",
-                                  [x+".py" for x in files])
+#if env:
+#    files= ["setup",
+#            "sample_0",
+#            "analyze_0"]
+#    scons_tools.examples.add_python_example(env, "setup.py",
+#                                            "General setup code common to sampling and analysis.")
+#    scons_tools.examples.add_python_example(env, "sample_0.py",
+#                                            "Sampling using MCCG and random starting points.")
+#    scons_tools.examples.add_python_example(env, "analyze_0.py",
+#                                            "Cluster into 10 solutions.")
+#    scons_tools.examples.add_page(env, "Example system code",
+#                                  [x+".py" for x in files])
