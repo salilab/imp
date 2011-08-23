@@ -321,8 +321,8 @@ public:
   std::string get_name() const {
     return "Matrix2D";
   }
-bool get_is_valid() const {
-  return true;
+  bool get_is_valid() const {
+    return true;
   }
 
 protected:
