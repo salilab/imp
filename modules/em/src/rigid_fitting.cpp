@@ -151,7 +151,8 @@ FittingSolutions local_rigid_fitting_around_point(
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
-   core::MonteCarlo *opt = set_optimizer(model, display_log, p,refiner,
+   OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+                                                      display_log, p,refiner,
                            number_of_cg_steps, max_translation, max_rotation);
 
    //optimize
@@ -194,7 +195,8 @@ FittingSolutions local_rigid_fitting_around_points(
 
    RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);
-   core::MonteCarlo *opt = set_optimizer(model, display_log, p,refiner,
+   OwnerPointer<core::MonteCarlo> opt = set_optimizer(model,
+                                                      display_log, p,refiner,
                            number_of_cg_steps,max_translation, max_rotation);
 
    for(algebra::Vector3Ds::const_iterator it
@@ -235,8 +237,7 @@ FittingSolutions local_rigid_fitting_grid_search(
       << " number of rotations : " << number_of_rotations <<std::endl);
 
    //init the sampled density map
-   IMP::em::SampledDensityMap *model_dens_map =
-       new IMP::em::SampledDensityMap(*dmap->get_header());
+   IMP_NEW(IMP::em::SampledDensityMap, model_dens_map, (*dmap->get_header()));
    IMP_INTERNAL_CHECK(
       model_dens_map->same_dimensions(dmap),
       "sampled density map is of wrong dimensions"<<std::endl);
