@@ -42,7 +42,7 @@ public:
   void remove_vertex(VertexDescriptor);
 };
 
-/** Use the python \external{packages.python.org/altgraph/core.html,altgraph}
+/** Use the python \external{http://packages.python.org/altgraph/core.html,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
     your Utilities folder in MacOS) and the window produced is shockingly
@@ -57,7 +57,7 @@ public:
     and finally view the pdf.
 */
 void show_altgraph(Graph g);
-/** Export an IMP graph to a \external{networkx.lanl.gov/,networkx} graph.
+/** Export an IMP graph to a \external{http://networkx.lanl.gov/,networkx} graph.
     The resulting graph can be analyzed and displaye, although the graph
     layout algorithms in networkx seem to be quite poor compared to
     graphviz.
