@@ -23,7 +23,7 @@ class BinormalTerm;
 /** This implements a multiple binormal restraint on the two dihedral angles
     between the two quads of Particles passed to the restraint, by implementing
     equation A.76 in the
-    \external{salilab.org/modeller/9v7/manual/node441.html, Modeller manual}.
+    \external{http://salilab.org/modeller/9v7/manual/node441.html, Modeller manual}.
     The two angles are typically the phi and psi dihedrals of a residue.
  */
 class IMPMODELLEREXPORT MultipleBinormalRestraint : public Restraint
