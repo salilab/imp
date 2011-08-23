@@ -152,7 +152,9 @@ public:
         return evaluate_incremental_if_below(IMP::internal::get_index(moved),
                                              last_energy_+max_difference_);
       } else {
-        return evaluate_incremental(IMP::internal::get_index(moved));
+        ParticleIndexes pis=IMP::internal::get_index(moved);
+        IMP_INTERNAL_CHECK(pis.size()==moved.size(), "Sizes don't match");
+        return evaluate_incremental(pis);
       }
     } else {
       if (get_maximum_difference()
