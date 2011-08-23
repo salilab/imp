@@ -311,9 +311,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  } // end if nproc > 1
 } // end mc
 
+MPI::COMM_WORLD.Barrier();
 logfile.flush();
 logfile.close();
-MPI::COMM_WORLD.Barrier();
 MPI::Finalize();
 return 0;
 }
