@@ -82,7 +82,7 @@ XYZRs create_xyzr_particles(Model *m,
   return ret;
 }
 
-
+namespace {
 bool check_radius(Particle *p) {
   XYZR d(p);
   if (d.get_radius()<0) {
@@ -90,7 +90,7 @@ bool check_radius(Particle *p) {
   }
   return true;
 }
-
+}
 IMP_CHECK_DECORATOR(XYZR, check_radius);
 
 

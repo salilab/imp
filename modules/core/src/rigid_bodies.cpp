@@ -905,7 +905,7 @@ namespace internal {
 }
 
 
-
+namespace {
 bool check_rigid_body(Particle*p) {
   algebra::Vector4D
     v(p->get_value(internal::rigid_body_data().quaternion_[0]),
@@ -917,6 +917,7 @@ bool check_rigid_body(Particle*p) {
     IMP_THROW("Bad quaternion in rigid body: " << v, ValueException);
   }
   return true;
+}
 }
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);

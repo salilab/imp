@@ -362,13 +362,13 @@ bool Assignment::next()
   }
   return false;
 }
-
-bool is_connected(NNGraph &G)
-{
-  Ints components(num_vertices(G));
-  return boost::connected_components(G, &components[0]) == 1;
+namespace {
+  bool is_connected(NNGraph &G)
+  {
+    Ints components(num_vertices(G));
+    return boost::connected_components(G, &components[0]) == 1;
+  }
 }
-
 
 typedef std::set< std::pair<size_t, size_t> > EdgeSet;
 
