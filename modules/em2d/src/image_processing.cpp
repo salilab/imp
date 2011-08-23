@@ -95,19 +95,21 @@ void do_remove_small_objects(cvIntMat &m,
   Ints pixel_count(labels_found,0);
   for (cvIntMatIterator it = aux.begin();it!=aux.end();++it) {
     int val = (*it);
-    if( val!= background) pixel_count[val-1]++;
+    if(val != background) pixel_count[val-1]++;
   }
   // Count the pixels of the largest object and the percentage in size of
   // The others
   unsigned int max_pixels = *max_element(pixel_count.begin(),pixel_count.end());
   Floats percentages;
-  for(Ints::iterator it=pixel_count.begin(); it!=pixel_count.end(); ++it) {
+  for(Ints::iterator it = pixel_count.begin(); it!=pixel_count.end(); ++it) {
     percentages.push_back(double(*it)/double(max_pixels));
   }
   // Remove objects of size lower than the percentage
-  for (cvIntMatIterator it = aux.begin();it!=aux.end();++it) {
+  for (cvIntMatIterator it = aux.begin(); it != aux.end(); ++it) {
     int val= (*it);
-    (*it) = percentages[val-1]>percentage ? foreground : background;
+    if(val != background) {
+      (*it) = percentages[val-1]>percentage ? foreground : background;
+    }
   }
   aux.copyTo(m);
 }
