@@ -59,25 +59,25 @@ def IMPSystem(env, name=None, version="",
             pm=[]
         lkname="system_"+name.replace(" ", "_").replace(":", "_")
         pre="\page "+lkname+" "+name
+        extrasections=[]
         if testable:
-            rtxt= "\n\\section testable Testable\nYes.\n"
+            extrasections.append(("Testable", "Yes"))
         else:
-            rtxt= "\n\\section testable Testable\nNo.\n"
+            extrasections.append(("Testable", "No"))
         if parallelizable:
-            rtxt= "\n\\section testable Parallelizable\nYes.\n"
+            extrasections.append(("Parallelizeable", "Yes"))
         else:
-            rtxt= "\n\\section testable Parallelizable\nNo.\n"
+            extrasections.append(("Parallelizeable", "no"))
         if last_imp_version != "unknown":
-            vtxt= "\n\\section lkgversion Last known good IMP version\n"+\
-                last_imp_version+"\n"
+            extrasections.append(("Last know good IMP version", last_imp_version))
         else:
             vtxt=  "\n\\section lkgversion Last known good IMP version\n"+\
                 "unknown"+"\n"
         doc.add_doc_page(env, "\page "+lkname+" "+name,
                                  authors, version,
-                                 brief, overview+rtxt+vtxt,
+                                 brief, overview,
                                  publications,
-                                 license)
+                                 license, extra_sections=extrasections)
         data.get(env).add_system(name, link="\\ref "+lkname+' "'+name+'"',
                                  dependencies=required_dependencies\
                                      +found_optional_dependencies,
