@@ -2,7 +2,7 @@ import sys
 import traceback
 import socket
 import threading
-from IMP.parallel import _NetworkError
+from IMP.parallel import NetworkError
 from IMP.parallel.master_communicator import MasterCommunicator
 from IMP.parallel.util import _TaskWrapper, _ContextWrapper
 from IMP.parallel.util import _ErrorWrapper, _HeartBeat
@@ -58,7 +58,7 @@ class SlaveHandler(object):
         while True:
             try:
                 obj = master._recv()
-            except _NetworkError:
+            except NetworkError:
                 break
             try:
                 if isinstance(obj, _ContextWrapper):
@@ -68,7 +68,7 @@ class SlaveHandler(object):
                         setup_args = obj.obj()
                 elif isinstance(obj, _TaskWrapper):
                     master._send(obj.obj(*setup_args))
-            except _NetworkError:
+            except NetworkError:
                 raise
             except Exception, detail:
                 # Send all other exceptions back to the master and reraise
