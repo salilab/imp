@@ -1,11 +1,11 @@
 import socket
-from IMP.parallel.communicator import Communicator
+from IMP.parallel import _Communicator
 
-class MasterCommunicator(Communicator):
+class MasterCommunicator(_Communicator):
     connect_timeout = 600
 
     def __init__(self, master_addr, lock):
-        Communicator.__init__(self)
+        _Communicator.__init__(self)
         self._master_addr = master_addr
         self._connect_to_master()
         self._lock = lock
@@ -23,6 +23,6 @@ class MasterCommunicator(Communicator):
         # Since the slave is multi-threaded, must lock all access
         self._lock.acquire()
         try:
-            Communicator._send(self, obj)
+            _Communicator._send(self, obj)
         finally:
             self._lock.release()
