@@ -1075,11 +1075,13 @@ private:                                                        \
   typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
   typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
   PluralName##Temp;                                                     \
-  inline operator<<(std::ostream &out, const PluralName &os) {          \
+  inline std::ostream &operator<<(std::ostream &out,                    \
+                                  const PluralName &os) {               \
     show_objects(os, out);                                              \
     return out;                                                         \
   }                                                                     \
-  inline operator<<(std::ostream &out, const PluralNameTemp &os) {      \
+  inline std::ostream& operator<<(std::ostream &out,                    \
+                                  const PluralNameTemp &os) {           \
     show_objects(os, out);                                              \
     return out;                                                         \
   }                                                                     \
