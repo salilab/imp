@@ -62,4 +62,8 @@ Categories RootHandle::get_categories() const {
   return shared_->get_categories();
 }
 
+void RootHandle::flush() {
+  shared_->flush();
+}
+
 IMPRMF_END_NAMESPACE

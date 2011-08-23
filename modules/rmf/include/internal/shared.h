@@ -322,6 +322,10 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   HDF5Group get_group() const {
     return file_;
   }
+  void flush() const {
+    IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
+  }
+
   Categories get_categories() const;
   void set_association(int id, void *d, bool overwrite) {
     if (!d) {
