@@ -62,7 +62,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
     String name="";
     if(options.save_images) name = names[i];
     get_projection(img,ps,registration_values[i], options, masks, name);
-    projections.set(i,img);
+    projections[i]=img;
   }
   return projections;
 }
