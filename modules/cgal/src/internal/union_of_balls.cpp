@@ -1721,7 +1721,7 @@ SpacefillingVolumetric<Gt>::SpacefillingVolumetric(){
 
 
 
-
+namespace {
 std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 
  SpacefillingVolumetric<Gt> spacefill;
@@ -1863,7 +1863,7 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 
  return std::pair<double,double> (volumeAccumulator,surfaceAreaAccumulator);
 }
-
+}
 
 std::pair<double, double>
 get_surface_area_and_volume(const algebra::Sphere3Ds &ss) {
