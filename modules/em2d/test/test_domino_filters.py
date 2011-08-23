@@ -43,9 +43,9 @@ class DominoFilters(IMP.test.TestCase):
 
         # Filters
         ftable1 = domino.ExclusionSubsetFilterTable(states_table)
-        ftable2 = em2d.DistanceFilterTable([particles[0], particles[1]],
+        ftable2 = em2d.DistanceFilterTable(IMP.domino.Subset([particles[0], particles[1]]),
                                             states_table, 21.)
-        ftable3 = em2d.DistanceFilterTable([particles[1], particles[2]],
+        ftable3 = em2d.DistanceFilterTable(IMP.domino.Subset([particles[1], particles[2]]),
                                             states_table, 21.)
         filter_tables = [ ftable1, ftable2, ftable3]
 
