@@ -10,6 +10,8 @@
 #include "IMP/OptimizerState.h"
 #include "IMP/RestraintSet.h"
 #include "IMP/dependency_graph.h"
+#include "IMP/internal/graph_utility.h"
+#include "IMP/internal/container_helpers.h"
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <limits>
@@ -130,6 +132,10 @@ void Optimizer::setup_incremental() {
                             false);
   DependencyGraph dg
     = get_dependency_graph(get_as<RestraintsTemp>(flattened_restraints_));
+  {
+    std::ofstream out("out.dot");
+    IMP::internal::show_as_graphviz(dg, out);
+  }
   compatibility::map<Restraint*, int> index;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     index[flattened_restraints_[i]]=i;
@@ -142,9 +148,12 @@ void Optimizer::setup_incremental() {
     incremental_used_.resize(std::max<unsigned int>(incremental_used_.size(),
                                       pi+1));
     for (unsigned int j=0; j< cur.size(); ++j) {
-      if (index.find(cur[j]) != index.end()) {
-        incremental_used_[pi].push_back(index.find(cur[j])->second);
-      }
+      IMP_INTERNAL_CHECK(index.find(cur[j]) != index.end(),
+                         "Cannot find restraints " << cur[j]->get_name()
+                         << " in index");
+      incremental_used_[pi].push_back(index.find(cur[j])->second);
+      IMP_LOG(VERBOSE, "Restraint " << cur[j]->get_name()
+              << " depends on particle " << ap[i] << std::endl);
     }
   }
   IMP_LOG(TERSE, "Done setting up incremental evaluation." << std::endl);
@@ -156,21 +165,39 @@ void Optimizer::teardown_incremental() {
 }
 
 double Optimizer::evaluate_incremental(const ParticleIndexes &moved) const {
+  if (moved.empty()) {
+    IMP_LOG(TERSE, "Nothing changed for evaluate"<< std::endl);
+  }
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
     allr.insert(allr.end(), incremental_used_[i].begin(),
                 incremental_used_[i].end());
   }
-  RestraintsTemp cur(allr.size());
+  RestraintsTemp curr(allr.size());
   for (unsigned int i=0; i< allr.size(); ++i) {
-    cur[i]= flattened_restraints_[allr[i]];
+    curr[i]= flattened_restraints_[allr[i]];
   }
-  Floats score= get_model()->evaluate(cur, false);
+  IMP_USAGE_CHECK(moved.empty()== curr.empty(),
+                  "Particles were moved but no restraints were found: "
+                  << IMP::internal::get_particle(get_model(), moved));
+  Floats scores= get_model()->evaluate(curr, false);
   for (unsigned int i=0; i< allr.size(); ++i) {
-    incremental_scores_[allr[i]]=score[i];
+    incremental_scores_[allr[i]]=scores[i];
   }
-  return std::accumulate(incremental_scores_.begin(),
-                         incremental_scores_.end(), 0);
+  double ret= std::accumulate(incremental_scores_.begin(),
+                              incremental_scores_.end(), 0.0);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
+      double cur= flattened_restraints_[i]->evaluate(false);
+      IMP_INTERNAL_CHECK(std::abs(cur-incremental_scores_[i])
+                         < .1*std::abs(cur+incremental_scores_[i])+.1,
+                         "Scores don't match for restraint "
+                         << flattened_restraints_[i]->get_name()
+                         << " have " << incremental_scores_[i]
+                         << " but got " << cur);
+    }
+  }
+  return ret;
 }
 
 double Optimizer::evaluate_incremental_if_below(const ParticleIndexes &,
