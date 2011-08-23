@@ -55,6 +55,8 @@ def _action_make_module_page(target, source, env):
 
     if source[6].get_contents() != "None":
         print >> fh, "\n\\license "+source[6].get_contents()
+    if source[7].get_contents() != "":
+        print >> fh, source[7].get_contents()
     pubs= _unmangle(source[5])
     if pubs and len(pubs) != 0:
         print >> fh, "\n\\publications\n"+"\n".join([" - "+x for x in pubs])
@@ -72,15 +74,21 @@ def add_doc_page(env, type,
                  version,
                  brief, overview,
                  publications,
-                 license):
+                 license,
+                 extra_sections=[]):
     env=bug_fixes.clone_env(env)
+    if extra_sections!=[]:
+        extras="./n".join(["\\section "+s[0].replace(" ", "")+" "+ s[0] +"\n"+s[1] for s in extra_sections])
+    else:
+        extras=""
     pg=_MakeModPage(source=[env.Value(type),
                             env.Value(authors),
                             env.Value(version),
                             env.Value(brief),
                             env.Value(overview),
                             env.Value(publications),
-                            env.Value(license)],
+                            env.Value(license),
+                            env.Value(extras)],
                     target='generated/overview.dox', env=env)
     return pg
 
