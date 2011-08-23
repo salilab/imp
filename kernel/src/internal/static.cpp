@@ -25,8 +25,6 @@ compatibility::map<std::string, unsigned int> object_type_counts;
 // The error message is already in the exception
 bool print_exceptions=true;
 
-FailureHandlers handlers;
-
 
  CheckLevel check_mode =
 #if IMP_BUILD == IMP_FAST
@@ -89,5 +87,28 @@ void check_live_objects() {
                     "Object " << (*it)->get_name() << " is not ref counted.");
   }
 }
+
+struct LiveObjectChecker {
+  ~LiveObjectChecker() {
+    if (live_.size() != 0) {
+      std::cerr << "The following " << live_.size()
+                << " IMP::Objects were not cleaned up properly:" << std::endl;
+      for (compatibility::set<Object*>::const_iterator it= live_.begin();
+           it != live_.end(); ++it) {
+        std::cerr << (*it)->get_name() << " of type "
+                  << (*it)->get_type_name() << std::endl;
+      }
+    }
+  }
+};
+LiveObjectChecker loc;
+
 IMP_END_INTERNAL_NAMESPACE
 #endif
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+
+// put this after loc
+FailureHandlers handlers;
+
+IMP_END_INTERNAL_NAMESPACE
