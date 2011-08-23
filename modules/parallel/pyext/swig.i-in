@@ -493,8 +493,8 @@ class Manager(object):
             pass # Slave not running a task
 
     def _kill_timed_out_slaves(self, context):
-        timed_out = [a for a in self._all_slaves if a.running_task() and \
-                     a.get_contact_timed_out(self.heartbeat_timeout)]
+        timed_out = [a for a in self._all_slaves if a.running_task(context) \
+                     and a.get_contact_timed_out(self.heartbeat_timeout)]
         for slave in timed_out:
             print("Did not hear from slave %s in %d seconds; rescheduling "
                   "task %s" % (str(slave), str(task)))
