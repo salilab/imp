@@ -76,8 +76,8 @@ namespace {
             out << oss.str() << "\"\n";
           } else {
             /*std::cout << "No frames " << rh.get_name(keys[i])
-                << " " << rh.get_is_per_frame(keys[i]) << " " << frame
-                << " " << nh.get_has_value(keys[i], frame) << std::endl;*/
+              << " " << rh.get_is_per_frame(keys[i]) << " " << frame
+              << " " << nh.get_has_value(keys[i], frame) << std::endl;*/
           }
         }
       } else {
@@ -111,9 +111,9 @@ namespace {
   void show_xml(IMP::rmf::NodeHandle nh,
                 const IMP::rmf::Categories& cs, std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
-              << nh.get_id() << "\" "
-              << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
-              << "\"/>\n";
+        << nh.get_id() << "\" "
+        << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
+        << "\"/>\n";
     if (verbose) {
       for (unsigned int i=0; i< cs.size(); ++i) {
         show_data_xml(nh, cs[i], out);
@@ -130,53 +130,62 @@ namespace {
 
 
 int main(int argc, char **argv) {
-  desc.add_options()
-    ("help,h", "Print the contents of an rmf file to the terminal as xml.")
-    ("verbose,v", "Include lots of information about each node.")
-    ("frame,f", po::value< int >(&frame),
-     "Frame to use")
-    ("input-file,i", po::value< std::string >(&input),
-     "input hdf5 file")
-    ("output-file,o", po::value< std::string >(&output),
-     "output xml file");
-  po::positional_options_description p;
-  p.add("input-file", 1);
-  p.add("output-file", 1);
-  po::variables_map vm;
-  po::store(
-      po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
-  po::notify(vm);
-  verbose= vm.count("verbose");
-  if (vm.count("help") || input.empty()) {
-    print_help();
-    return 1;
-  }
-  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
-  std::ofstream out(output.c_str());
-  if (!out) {
-    std::cerr << "Error opening file " << output << std::endl;
-    return 1;
-  }
-  IMP::rmf::Categories cs= rh.get_categories();
-  out << "<?xml version=\"1.0\"?>\n";
-  out << "<rmf>\n";
-  out << "<description>\n";
-  out << rh.get_description() <<std::endl;
-  out << "</description>\n";
-  out << "<path>\n";
-  out << input <<std::endl;
-  out << "</path>\n";
-  show_xml(rh, cs, out);
-  if (rh.get_number_of_bonds() >0) {
-    out << "<bonds>\n";
-    for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
-      std::pair<IMP::rmf::NodeHandle, IMP::rmf::NodeHandle> handles
-        = rh.get_bond(i);
-      out << "<bond id0=\""<< handles.first.get_id()
-                << "\" id1=\"" << handles.second.get_id() << "\"/>\n";
+  try {
+    desc.add_options()
+      ("help,h", "Print the contents of an rmf file to the terminal as xml.")
+      ("verbose,v", "Include lots of information about each node.")
+      ("frame,f", po::value< int >(&frame),
+       "Frame to use")
+      ("input-file,i", po::value< std::string >(&input),
+       "input hdf5 file")
+      ("output-file,o", po::value< std::string >(&output),
+       "output xml file");
+    po::positional_options_description p;
+    p.add("input-file", 1);
+    p.add("output-file", 1);
+    po::variables_map vm;
+    po::store(
+              po::command_line_parser(argc,
+                                      argv).options(desc).positional(p).run(),
+              vm);
+    po::notify(vm);
+    verbose= vm.count("verbose");
+    if (vm.count("help") || input.empty()) {
+      print_help();
+      return 1;
     }
-    out << "</bonds>\n";
+    IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
+    std::ofstream out(output.c_str());
+    if (!out) {
+      std::cerr << "Error opening file " << output << std::endl;
+      return 1;
+    }
+    IMP::rmf::Categories cs= rh.get_categories();
+    out << "<?xml version=\"1.0\"?>\n";
+    out << "<rmf>\n";
+    out << "<description>\n";
+    out << rh.get_description() <<std::endl;
+    out << "</description>\n";
+    out << "<path>\n";
+    out << input <<std::endl;
+    out << "</path>\n";
+    show_xml(rh, cs, out);
+    if (rh.get_number_of_bonds() >0) {
+      out << "<bonds>\n";
+      for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
+        std::pair<IMP::rmf::NodeHandle, IMP::rmf::NodeHandle> handles
+          = rh.get_bond(i);
+        out << "<bond id0=\""<< handles.first.get_id()
+            << "\" id1=\"" << handles.second.get_id() << "\"/>\n";
+      }
+      out << "</bonds>\n";
+    }
+    out << "</rmf>\n";
+    return 0;
+  } catch (const IMP::Exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
+  } catch (const std::exception &e) {
+    std::cerr << "Error: " << e.what() << std::endl;
   }
-  out << "</rmf>\n";
-  return 0;
 }
