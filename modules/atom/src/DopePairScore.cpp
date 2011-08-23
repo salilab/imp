@@ -230,7 +230,7 @@ DopePairScore::DopePairScore(double threshold, TextInput file):
   P(get_dope_type_key(), threshold, file){
   }
 
-
+namespace {
 void add_dope_score_data(Atom atom) {
   int type;
   Residue rd= get_residue(atom);
@@ -257,6 +257,7 @@ void add_dope_score_data(Atom atom) {
   } else {
     atom->add_attribute(get_dope_type_key(), type);
   }
+}
 }
 
 void add_dope_score_data(Hierarchy h) {
