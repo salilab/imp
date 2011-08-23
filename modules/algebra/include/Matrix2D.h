@@ -391,6 +391,10 @@ public:
     return (get_number_of_rows() == get_number_of_columns());
   }
 
+  std::string get_name() const {
+    return "Matrix2D";
+  }
+
 protected:
 };
 
