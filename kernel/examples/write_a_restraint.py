@@ -39,3 +39,8 @@ r= MyRestraint(ps, k)
 m.add_restraint(r)
 #IMP.set_log_level(IMP.TERSE)
 print r.evaluate(True)
+
+# this is needed to clean up properly, for some reason
+m.remove_restraint(r)
+del r
+del m
