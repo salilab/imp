@@ -19,6 +19,17 @@ class StartupTests(IMP.test.TestCase):
         self.assertEqual(results, list(range(10)))
         util.unlink("slave0.output")
 
+    def test_startup(self):
+        """Test context startup callable"""
+        m = IMP.parallel.Manager()
+        m.add_slave(IMP.parallel.LocalSlave())
+        c = m.get_context(startup=tasks.SimpleTask(("foo", "bar")))
+        c.add_task(tasks.simple_func)
+        c.add_task(tasks.simple_func)
+        results = list(c.get_results_unordered())
+        self.assertEqual(results, [('foo', 'bar'), ('foo', 'bar')])
+        util.unlink("slave0.output")
+
     def test_startup_heartbeat(self):
         """Make sure that startup failures cause a timeout"""
         def empty_task():
@@ -31,6 +42,15 @@ class StartupTests(IMP.test.TestCase):
         self.assertRaises(IMP.parallel.NetworkError, list,
                           c.get_results_unordered())
         util.unlink('slave0.output')
+
+    def test_startup_no_slaves(self):
+        """Test that startup with no slaves causes a failure"""
+        m = IMP.parallel.Manager()
+        c = m.get_context()
+        c.add_task(tasks.simple_func)
+        self.assertRaises(IMP.parallel.NoMoreSlavesError, list,
+                          c.get_results_unordered())
+
 
 if __name__ == '__main__':
     IMP.test.main()
