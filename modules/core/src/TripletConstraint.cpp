@@ -73,8 +73,8 @@ ParticlesTemp TripletConstraint::get_input_particles() const {
                         "The particles written by "
                         << " the after modifier in " << get_name() << " must "
                         << "be a subset of those read by the before "
-                        << "modifier. Before: " << Particles(ret)
-                        << " and after " << Particles(oret));
+                        << "modifier. Before: " << ret
+                        << " and after " << oret);
       }
     }
   } else {
