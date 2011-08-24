@@ -57,8 +57,8 @@ void DiameterRestraint::set_model(Model *m) {
       get_model()->remove_score_state(ss_);
       get_model()->remove_particle(p_);
     }
-    ss_=NULL;
-    p_=NULL;
+    ss_=static_cast<core::SingletonConstraint*>(NULL);
+    p_=static_cast<Particle*>(NULL);
   }
   Restraint::set_model(m);
 }

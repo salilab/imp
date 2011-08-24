@@ -330,7 +330,7 @@ void MCCGSampler::set_save_rejected_configurations(bool tf) {
   if (tf && !rejected_) {
     rejected_= new ConfigurationSet(get_model(), "Rejected");
   } else if (!tf) {
-    rejected_=NULL;
+    rejected_=static_cast<ConfigurationSet*>(NULL);
   }
 }
 
