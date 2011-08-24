@@ -24,7 +24,7 @@ class StartupTests(IMP.test.TestCase):
         def empty_task():
             pass
         m = IMP.parallel.Manager(python="/path/does/not/exist")
-        m.heartbeat_timeout = 1
+        m.heartbeat_timeout = 0.1
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
         c.add_task(empty_task)
