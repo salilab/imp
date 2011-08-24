@@ -1,4 +1,5 @@
 import socket
+import select
 import sys
 import random
 
@@ -57,3 +58,37 @@ class _SetPathAction(_SlaveAction):
         self.path = path
     def execute(self):
         sys.path.insert(0, self.path)
+
+
+if hasattr(select, 'poll'):
+    def _poll_events(listen_sock, slaves, timeout):
+        fileno = listen_sock.fileno()
+        slavemap = { fileno: listen_sock }
+
+        p = select.poll()
+        p.register(fileno, select.POLLIN)
+        for slave in slaves:
+            fileno = slave._socket.fileno()
+            slavemap[fileno] = slave
+            p.register(fileno, select.POLLIN)
+        ready = p.poll(timeout * 1000)
+        return [slavemap[fd[0]] for fd in ready]
+
+else:
+    # Use select on systems that don't have poll()
+    def _poll_events(listen_sock, slaves, timeout):
+        fileno = listen_sock.fileno()
+        slavemap = { fileno: listen_sock }
+        waitin = [fileno]
+
+        for slave in slaves:
+            fileno = slave._socket.fileno()
+            slavemap[fileno] = slave
+            waitin.append(fileno)
+        (ready,rout,rerr) = select.select(waitin, [], [], timeout)
+        return [slavemap[fd[0]] for fd in ready]
+
+        if len(ready) == 0:
+            return []
+        else:
+            return [slavemap[fd[0]] for fd in ready]
