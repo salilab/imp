@@ -180,9 +180,10 @@ def _add_platform_flags(env):
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
                                      if x not in ['-Wall', '-Wextra', '-Wformat',
                                                   '-Wstrict-aliasing=2',
-                                                  '-O3', '-O2',"-Wmissing-prototypes"]])
+                                                  '-O3', '-O2',"-Wmissing-prototypes",
+                                                  "-Wmissing-declarations"]])
         env.Append(IMP_BIN_CXXFLAGS=[x for x in env['CXXFLAGS']
-                                     if x not in ["-Wmissing-prototypes"]])
+                                     if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
         #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
     env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
     env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
