@@ -168,7 +168,7 @@ int main(int argc, char **argv) {
       exit(0);
   }
   atom::Hierarchy smh = atom::read_pdb(opt[0],smodel,ssel,true);
-  IMP::Particles sps = core::get_leaves(smh);
+  IMP::ParticlesTemp sps = core::get_leaves(smh);
 //  atom::add_radii(smh);
   double resolution = vm["res"].as<double>();
   IMP_NEW(em2d::SpiderImageReaderWriter,  srw, ());
