@@ -52,7 +52,7 @@ namespace {
   }
 }
 
-void ConnectivityRestraint::set_particles(const Particles &ps) {
+void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
     sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
@@ -60,7 +60,7 @@ void ConnectivityRestraint::set_particles(const Particles &ps) {
   get_list(sc_)->set_particles(ps);
 }
 
-void ConnectivityRestraint::add_particles(const Particles &ps) {
+void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
     sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
