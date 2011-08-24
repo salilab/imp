@@ -55,8 +55,8 @@ public:
   */
   /*@{*/
   void add_particle(Particle *p);
-  void add_particles(const Particles &ps);
-  void set_particles(const Particles &ps);
+  void add_particles(const ParticlesTemp &ps);
+  void set_particles(const ParticlesTemp &ps);
   /*@}*/
 
   //! Return the set of pairs which are connected by the restraint
