@@ -67,13 +67,13 @@ def IMPSystem(env, name=None, version="",
         if parallelizable:
             extrasections.append(("Parallelizeable", "Yes"))
         else:
-            extrasections.append(("Parallelizeable", "no"))
+            extrasections.append(("Parallelizeable", "No"))
         if last_imp_version != "unknown":
-            extrasections.append(("Last know good IMP version", last_imp_version))
+            extrasections.append(("Last know good \imp version", last_imp_version))
         else:
             vtxt=  "\n\\section lkgversion Last known good IMP version\n"+\
                 "unknown"+"\n"
-        doc.add_doc_page(env, "\page "+lkname+" "+name,
+        doc.add_doc_page(env, "\\page "+lkname+" "+name.capitalize(),
                                  authors, version,
                                  brief, overview,
                                  publications,

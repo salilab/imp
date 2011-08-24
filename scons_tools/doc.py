@@ -50,16 +50,16 @@ def _action_make_module_page(target, source, env):
     #print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
     if source[4].get_contents() != "None":
         print >> fh, "\n"+ source[4].get_contents()
-    print >> fh, "\n\\section auth Author(s)\n"+", ".join(_unmangle(source[1]))
-    print >> fh, "\n\\section vers Version\n"+ source[2].get_contents()+"\n"
+    print >> fh, "\n<b>Author(s):</b> "+", ".join(_unmangle(source[1]))
+    print >> fh, "\n<b>Version:</b> "+ source[2].get_contents()+"\n"
 
     if source[6].get_contents() != "None":
-        print >> fh, "\n\\license "+source[6].get_contents()
+        print >> fh, "\n<b>License:</b> "+source[6].get_contents()
     if source[7].get_contents() != "":
         print >> fh, source[7].get_contents()
     pubs= _unmangle(source[5])
     if pubs and len(pubs) != 0:
-        print >> fh, "\n\\publications\n"+"\n".join([" - "+x for x in pubs])
+        print >> fh, "\n<b>Publications:</b>\n"+"\n".join([" - "+x for x in pubs])
     print >> fh, "*/"
     fh.close()
 
@@ -78,7 +78,7 @@ def add_doc_page(env, type,
                  extra_sections=[]):
     env=bug_fixes.clone_env(env)
     if extra_sections!=[]:
-        extras="./n".join(["\\section "+s[0].replace(" ", "")+" "+ s[0] +"\n"+s[1] for s in extra_sections])
+        extras=".\n\n".join(["<b>"+ s[0] +":</b> "+s[1] for s in extra_sections])
     else:
         extras=""
     pg=_MakeModPage(source=[env.Value(type),
