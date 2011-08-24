@@ -11,8 +11,8 @@ using namespace IMP::core;
 using namespace IMP::atom;
 using namespace IMP::container;
 using namespace IMP::algebra;
-const unsigned int np=2;//5
-const unsigned int nrb=2;
+const unsigned int np=10;//5
+const unsigned int nrb=10;
 
 RigidBody create_rb(atom::Hierarchy hr) {
   Model *m=hr.get_model();
@@ -88,9 +88,11 @@ void benchmark_it(std::string name, bool incr) {
     mvs.push_back(mv);
   }
   mc->add_mover(new SerialMover(get_as<MoversTemp>(mvs)));
+  // trigger init
+  mc->optimize(1);
   double runtime, score=0;
   IMP_TIME(
-           score+=mc->optimize(500), runtime);
+           score+=mc->optimize(30000), runtime);
   IMP::benchmark::report(name+" mc", runtime, score);
 }
 
