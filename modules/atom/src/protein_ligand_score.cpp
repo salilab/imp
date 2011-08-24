@@ -249,7 +249,7 @@ namespace {
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
   P(get_protein_ligand_type_key(), threshold,
-    get_data_path("protein_ligand_pose_score.lib"),
+    get_data_path("protein_ligand_rank_score.lib"),
     ni+1){
   }
 
