@@ -135,7 +135,13 @@ private:
     IMP_INTERNAL_CHECK(t==0, "Only can compare with NULL ints");
     return NULL;
     }*/
+  template <class OT>
+  static O* get_pointer(const PointerBase<OT> &o) {
+    if (o) return o.get();
+    else return NULL;
+  }
   static O* get_pointer(const PointerBase<Traits>&o) {return o.o_;}
+  static O* get_pointer(const long int) {return NULL;}
   void set_pointer(O* p) {
     if (p == o_) return;
     if (o_) Traits::handle_unset(o_);
@@ -184,6 +190,15 @@ public:
   O* get() const {
     check_non_null(o_);
     return o_;
+  }
+  template <class O>
+  PointerBase<Traits>& operator=( const O& o){
+    if (o) {
+      set_pointer(get_pointer(o));
+    } else {
+      set_pointer(NULL);
+    }
+    return *this;
   }
   IMP_POINTER_MEMBERS(template <class OTraits>,
                       const PointerBase<OTraits>&);
@@ -243,19 +258,19 @@ inline bool operator!=(OT *o, const PointerBase<OTraits> &p) {
 }
 template <class OT, class OTraits>
 inline bool operator<(OT *o, const PointerBase<OTraits> &p) {
-  return p >= o;
+  return p > o;
 }
 template <class OT, class OTraits>
 inline bool operator>(OT *o, const PointerBase<OTraits> &p) {
-  return p <= o;
-}
-template <class OT, class OTraits>
-inline bool operator>=(OT *o, const PointerBase<OTraits> &p) {
   return p < o;
 }
 template <class OT, class OTraits>
+inline bool operator>=(OT *o, const PointerBase<OTraits> &p) {
+  return p <= o;
+}
+template <class OT, class OTraits>
 inline bool operator<=(OT *o, const PointerBase<OTraits> &p) {
-  return p > o;
+  return p >= o;
 }
 #endif
 
