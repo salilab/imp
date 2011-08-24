@@ -96,7 +96,7 @@ ParticleEmbedding::ParticleEmbedding(const ParticlesTemp &ps,
                                      const FloatKeys &ks,
                                      bool rescale):
   Embedding("ParticleEmbedding"),
-  ps_(ps), ks_(ks), rescale_(rescale){
+  ps_(ps.begin(), ps.end()), ks_(ks), rescale_(rescale){
   if (rescale && !ps.empty()) {
     ranges_.resize(ks.size());
     for (unsigned int i=0; i< ks.size(); ++i) {
