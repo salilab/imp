@@ -76,6 +76,9 @@ ParticlesTemp get_dependent_particles(Particle *p,
   boost::vector_property_map<int> color(boost::num_vertices(dg));
   int start=-1;
   for (; be.first != be.second; ++be.first) {
+    IMP_INTERNAL_CHECK(color[*be.first]==
+                       boost::color_traits<int>::white(),
+                       "Vertex does not start white");
     if (dpm[*be.first]==p) {
       start=*be.first;
     } else if (block.find(dpm[*be.first]) != block.end()) {
@@ -116,10 +119,15 @@ RestraintsTemp get_dependent_restraints(Particle *p,
   boost::vector_property_map<int> color(boost::num_vertices(dg));
   int start=-1;
   for (; be.first != be.second; ++be.first) {
+     IMP_INTERNAL_CHECK(color[*be.first]==
+                         boost::color_traits<int>::white(),
+                        "Vertex does not start white");
     if (dpm[*be.first]==p) {
       start=*be.first;
     } else if (block.find(dpm[*be.first]) != block.end()) {
       // block traversal though the other nodes
+      IMP_LOG(VERBOSE, "Blocking transit through " << dpm[*be.first]->get_name()
+              << std::endl);
       color[*be.first]= boost::color_traits<int>::black();
     }
   }
@@ -218,7 +226,7 @@ namespace {
       {
         ParticlesTemp pt= filter((*c)->get_input_particles());
         if (!pt.empty()) {
-          IMP_LOG(VERBOSE, ", particles are " << Particles(pt));
+          IMP_LOG(VERBOSE, ", particles are " << pt);
           }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
