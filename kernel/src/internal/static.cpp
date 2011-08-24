@@ -91,13 +91,13 @@ void check_live_objects() {
 struct LiveObjectChecker {
   ~LiveObjectChecker() {
     if (live_.size() != 0) {
-      std::cerr << "The following " << live_.size()
-                << " IMP::Objects were not cleaned up properly:" << std::endl;
-      for (compatibility::set<Object*>::const_iterator it= live_.begin();
+      std::cerr << live_.size()
+                << " IMP::Objects were not cleaned up properly" << std::endl;
+      /*for (compatibility::set<Object*>::const_iterator it= live_.begin();
            it != live_.end(); ++it) {
         std::cerr << (*it)->get_name() << " of type "
                   << (*it)->get_type_name() << std::endl;
-      }
+                  }*/
     }
   }
 };
