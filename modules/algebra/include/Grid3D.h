@@ -205,6 +205,7 @@ IMPALGEBRA_END_NAMESPACE
           voxel_center[2]= macro_map_origin[2]                          \
             +(voxel_index[2]+.5)*macro_map_unit_cell[2];                \
           unsigned int loop_voxel_index=next_loop_voxel_index;          \
+          IMP_UNUSED(loop_voxel_index);                                 \
           ++next_loop_voxel_index;                                      \
           {action};                                                     \
         }                                                               \
