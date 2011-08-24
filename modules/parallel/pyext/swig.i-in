@@ -20,6 +20,10 @@ from IMP.parallel.util import _TaskWrapper, _HeartBeat, _ContextWrapper
 from IMP.parallel.util import _SetPathAction
 from IMP.parallel.errors import *
 
+# Save sys.path at import time, so that slaves can import using the same
+# path that works for the master imports
+_import_time_path = sys.path[:]
+
 class Error(Exception):
     """Base class for all errors specific to the parallel module"""
     pass
@@ -532,7 +536,9 @@ class Manager(object):
             print "Ignoring request from unknown slave"
 
     def _init_slave(self, slave):
-        if sys.path[0] != '':
+        if _import_time_path[0] != '':
+            slave._set_python_search_path(_import_time_path[0])
+        if sys.path[0] != '' and sys.path[0] != _import_time_path[0]:
             slave._set_python_search_path(sys.path[0])
 
     def _get_network_events(self, context):
