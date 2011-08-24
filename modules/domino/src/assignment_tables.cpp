@@ -285,7 +285,7 @@ namespace {
     }
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE, "Order for " << s << " is ");
-      Particles ps(get_sub_particles(s, order.begin(), order.end()));
+      ParticlesTemp ps(get_sub_particles(s, order.begin(), order.end()));
       IMP_LOG(TERSE, ps << std::endl);
     }
     return get_sub_particles(s, order.begin(), order.end());

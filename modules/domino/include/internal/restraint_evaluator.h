@@ -112,7 +112,7 @@ public:
     } else {
       double score= compute_score<Filter>(pst, ps, state);
       IMP_LOG(VERBOSE, "State " << state << " of particles "
-              << Particles(ps) << " has score "
+              << ps << " has score "
               << score << " for restraint " << r_->get_name()
               << std::endl);
       if (Filter) {
