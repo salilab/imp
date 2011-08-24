@@ -23,13 +23,11 @@
 IMPATOM_BEGIN_NAMESPACE
 
 /** \name Protein-ligand scoring
+    \anchor protein_ligand
 
     \imp provides a statistical scoring function for scoring
-    protein-ligand complexes. Papers will be forthcoming.
-
-    Neither of the scoring methods provide derivatives.
-
-    As will more documentation and examples.
+    protein-ligand complexes. See the \ref ligand_score "ligand scoring"
+    application for more information.
     @{
  */
 class ProteinLigandRestraint;
