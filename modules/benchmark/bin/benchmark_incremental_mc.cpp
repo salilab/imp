@@ -11,15 +11,19 @@ using namespace IMP::core;
 using namespace IMP::atom;
 using namespace IMP::container;
 using namespace IMP::algebra;
+const unsigned int np=2;//5
+const unsigned int nrb=2;
 
 RigidBody create_rb(atom::Hierarchy hr) {
   Model *m=hr.get_model();
   Molecule h= Molecule::setup_particle(new Particle(m));
   XYZRs rbs;
-  for (unsigned int i=0; i< 5; ++i) {
+  for (unsigned int i=0; i< np; ++i) {
     IMP_NEW(Particle, p, (m));
+    p->set_name("residue g");
     Residue r= Residue::setup_particle(p, get_residue_type('G'), i);
     IMP_NEW(Particle, p1, (m));
+    p1->set_name("atom");
     Atom a=Atom::setup_particle(p1, AT_CA);
     XYZR xyz= XYZR::setup_particle(p1, Sphere3D(Vector3D(8*i, 0,0), 4.0));
     r.add_child(a);
@@ -28,6 +32,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
   }
   hr.add_child(h);
   IMP_NEW(Particle, prb, (m));
+  prb->set_name(h->get_name() + " rb");
   RigidBody rb= RigidBody::setup_particle(prb, rbs);
   return rb;
 }
@@ -37,6 +42,7 @@ void add_excluded_volume(Model *m, atom::Hierarchy h, double k) {
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k));
   evr->set_name("excluded volume");
+  evr->set_log_level(VERBOSE);
   m->add_restraint(evr);
 }
 
@@ -63,15 +69,16 @@ void benchmark_it(std::string name, bool incr) {
   IMP_NEW(Model, m, ());
   m->set_log_level(IMP::SILENT);
   atom::Hierarchy h= atom::Hierarchy::setup_particle(new Particle(m));
-  int nrbs=5;
+  h->set_name("root");
   RigidBodies rbs;
-  for ( int i=0; i < nrbs; ++i) {
+  for (unsigned int i=0; i < nrb; ++i) {
     rbs.push_back(create_rb(h));
   }
   add_excluded_volume(m, h, 1.0);
   add_diameter_restraint(m, rbs, 50.0);
   add_DOPE(m, h);
   IMP_NEW(MonteCarlo, mc, (m));
+  //mc->set_log_level(IMP::VERBOSE);
   mc->set_return_best(false);
   mc->set_use_incremental_evaluate(incr);
   mc->set_kt(1.0);

@@ -50,7 +50,7 @@ void test_one(std::string name,
   set_check_level(IMP::NONE);
   Vector3D minc(0,0,0), maxc(10,10,10);
   Model *m= new Model();
-  Particles ps = create_xyzr_particles(m, n, rmin);
+  ParticlesTemp ps = create_xyzr_particles(m, n, rmin);
   ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i=0; i< ps.size(); ++i) {

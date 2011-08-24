@@ -140,7 +140,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
 void test(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
-  Particles ps= create_xyzr_particles(m, n, .1);
+  ParticlesTemp ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc, (m));
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
@@ -154,7 +154,7 @@ void test(int n) {
 void test_set(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
-  Particles ps= create_xyzr_particles(m, n, .1);
+  ParticlesTemp ps= create_xyzr_particles(m, n, .1);
   IMP_NEW(ListPairContainer, lpc0, (m));
   for (unsigned int i=0; i< ps.size()/2; ++i) {
     for (unsigned int j=0; j< i; ++j) {

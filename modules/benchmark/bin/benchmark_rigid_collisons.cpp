@@ -63,7 +63,7 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
   for (int i=0; i< 5; ++i) {
     atom::Hierarchy mhd
       = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
-    Particles catoms= get_by_type(mhd, atom::ATOM_TYPE);
+    ParticlesTemp catoms= get_by_type(mhd, atom::ATOM_TYPE);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
     RigidBody rbd=RigidBody::setup_particle(mhd.get_particle(),
@@ -77,15 +77,15 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
 
   PairContainer *cpc;
   if (rpcpf) {
-    Particles rbsp(rbs.size());
+    ParticlesTemp rbsp(rbs.size());
     for (unsigned int i=0; i< rbs.size(); ++i){
-      rbsp.set(i, rbs[i].get_particle());
+      rbsp[i]=rbs[i].get_particle();
     }
     lsc->set_particles(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps,());
     cpc= new ClosePairContainer(lsc, 0.0, rcps);
   } else {
-    lsc->set_particles(atoms);
+    lsc->set_particles(get_as<ParticlesTemp>(atoms));
     cpc = new ClosePairContainer(lsc, 0.0);
   }
   IMP_NEW(PairsRestraint, pr,

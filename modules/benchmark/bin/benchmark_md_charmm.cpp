@@ -99,9 +99,11 @@ int do_benchmark() {
     #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
 
     # GO! */
-  IMP_NEW(atom::RemoveRigidMotionOptimizerState, rmos, (atoms, 10));
+  IMP_NEW(atom::RemoveRigidMotionOptimizerState, rmos,
+          (get_as<ParticlesTemp>(atoms), 10));
   md->add_optimizer_state(rmos);
-  IMP_NEW(atom::LangevinThermostatOptimizerState, therm, (atoms, 300, 500));
+  IMP_NEW(atom::LangevinThermostatOptimizerState, therm,
+          (get_as<ParticlesTemp>(atoms), 300, 500));
   md->add_optimizer_state(therm);
   double time, score=0;
   IMP_TIME({

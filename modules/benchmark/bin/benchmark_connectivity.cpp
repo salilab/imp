@@ -40,7 +40,7 @@ int main() {
   IMP_NEW(Model, m, ());
   IMP_NEW(HarmonicUpperBound, ub, (1.0, 0.1));
   IMP_NEW(SphereDistancePairScore, ss,(ub));
-  Particles ps = create_xyzr_particles(m, npart, .1);
+  ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   {
     ConnectivityRestraint* r= new ConnectivityRestraint(ss, lsc);
