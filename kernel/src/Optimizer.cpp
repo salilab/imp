@@ -132,10 +132,6 @@ void Optimizer::setup_incremental() {
                             false);
   DependencyGraph dg
     = get_dependency_graph(get_as<RestraintsTemp>(flattened_restraints_));
-  {
-    std::ofstream out("out.dot");
-    IMP::internal::show_as_graphviz(dg, out);
-  }
   compatibility::map<Restraint*, int> index;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     index[flattened_restraints_[i]]=i;
@@ -153,7 +149,7 @@ void Optimizer::setup_incremental() {
                          << " in index");
       incremental_used_[pi].push_back(index.find(cur[j])->second);
       IMP_LOG(VERBOSE, "Restraint " << cur[j]->get_name()
-              << " depends on particle " << ap[i] << std::endl);
+              << " depends on particle " << ap[i]->get_name() << std::endl);
     }
   }
   IMP_LOG(TERSE, "Done setting up incremental evaluation." << std::endl);
@@ -170,8 +166,8 @@ double Optimizer::evaluate_incremental(const ParticleIndexes &moved) const {
   }
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
-    allr.insert(allr.end(), incremental_used_[i].begin(),
-                incremental_used_[i].end());
+    allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
+                incremental_used_[moved[i]].end());
   }
   RestraintsTemp curr(allr.size());
   for (unsigned int i=0; i< allr.size(); ++i) {
