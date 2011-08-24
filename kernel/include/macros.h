@@ -1071,17 +1071,11 @@ private:                                                        \
  */
 #define IMP_OBJECTS(Name, PluralName)
 #else
-#ifdef SWIG
-#define IMP_OBJECTS(Name, PluralName)                                   \
-  typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
-  typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
-  PluralName##Temp
 
+#ifdef SWIG
+#define IMP_OBJECTS_IO(Name, PluralName)
 #else
-#define IMP_OBJECTS(Name, PluralName)                                   \
-  typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
-  typedef IMP::compatibility::checked_vector<IMP::CheckedWeakPointer<Name> >\
-  PluralName##Temp;                                                     \
+#define IMP_OBJECTS_IO(Name, PluralName)                                \
   inline std::ostream &operator<<(std::ostream &out,                    \
                                   const PluralName &os) {               \
     show_objects(os, out);                                              \
@@ -1093,7 +1087,19 @@ private:                                                        \
     return out;                                                         \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
-#endif //swig
+#endif
+
+#if IMP_BUILD < IMP_FAST
+#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::CheckedWeakPointer<Name>
+#else
+#define IMP_OBJECTS_TEMP_POINTER(Name) Name*
+#endif
+
+#define IMP_OBJECTS(Name, PluralName)                                   \
+  typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
+  typedef IMP::compatibility::checked_vector<IMP_OBJECTS_TEMP_POINTER(Name) > \
+  PluralName##Temp;                                                     \
+  IMP_OBJECTS_IO(Name, PluralName)
 #endif
 
 //! Define the basic things you need for a Restraint.
