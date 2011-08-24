@@ -29,7 +29,7 @@ namespace {
     return ret;
   }
 
-  std::pair<double, ParticlePair> get_lowest(Particles ps[2],
+  std::pair<double, ParticlePair> get_lowest(ParticlesTemp ps[2],
                                              PairScore* f) {
     double ret=std::numeric_limits<Float>::max();
     ParticlePair lowest;
@@ -49,7 +49,7 @@ namespace {
 
 ParticlePair LowestRefinedPairScore
 ::get_lowest_refined_pair(const ParticlePair &p) const {
-  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
   std::pair<double, ParticlePair> r= get_lowest(ps, f_);
   return r.second;
 }
@@ -57,7 +57,7 @@ ParticlePair LowestRefinedPairScore
 Float LowestRefinedPairScore::evaluate(const ParticlePair &p,
                                     DerivativeAccumulator *da) const
 {
-  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  ParticlesTemp ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
 
   std::pair<double, ParticlePair> r= get_lowest(ps, f_);
 
