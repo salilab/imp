@@ -20,6 +20,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/VersionInfo.h>
+#include <IMP/internal/OwnerPointer.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -63,6 +64,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
   Profile rigid_bodies_profile_; // non-changing part of the profile
+  Profile exp_profile_; // experimental profile
   Pointer<Score> saxs_score_; // computes profiles
   Pointer<DerivativeCalculator> derivative_calculator_; // computes derivatives
   FormFactorType ff_type_; // type of the form factors to use

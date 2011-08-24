@@ -16,15 +16,17 @@ IMPSAXS_BEGIN_NAMESPACE
 
 Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                      FormFactorType ff_type) :
-  IMP::Restraint("SAXS restraint"), ff_type_(ff_type) {
+  IMP::Restraint("SAXS restraint"), exp_profile_(exp_profile),
+    ff_type_(ff_type)
+{
 
   saxs_score_ = new Score(exp_profile);
   derivative_calculator_ = new DerivativeCalculator(exp_profile);
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
-  IMP::OwnerPointer<Refiner> ref
-    = new core::LeavesRefiner(atom::Hierarchy::get_traits());
+  IMP::internal::OwnerPointer<Refiner> ref
+      = new core::LeavesRefiner(atom::Hierarchy::get_traits());
   for(unsigned int i=0; i<particles.size(); i++) {
     if(core::RigidBody::particle_is_instance(particles[i])) {
       rigid_bodies_decorators_.push_back(
@@ -113,58 +115,20 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
 
-  std::vector<IMP::algebra::Vector3D > derivatives;
-  const FloatKeys keys = IMP::core::XYZ::get_xyz_keys();
+  // do we need to resample the curve since it's just been created??
+  /*
+  Profile resampled_profile(exp_profile_.get_min_q(),exp_profile_.get_max_q(),
+          exp_profile_.get_delta_q());
+  saxs_score_->resample(model_profile, resampled_profile);
+  */
 
-  // 1. compute derivatives for each rigid body
-  for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
-    if(!rigid_bodies_decorators_[i].get_coordinates_are_optimized()) continue;
-    // contribution from other rigid bodies
-    for(unsigned int j=0; j<rigid_bodies_.size(); j++) {
-      if(i == j) continue;
-      derivative_calculator_->compute_chi_derivative(model_profile,
-                                                     rigid_bodies_[i],
-                                          rigid_bodies_[j], derivatives);
-      for (unsigned int k = 0; k < rigid_bodies_[i].size(); k++) {
-        rigid_bodies_[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
-        rigid_bodies_[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
-        rigid_bodies_[i][k]->add_to_derivative(keys[2],derivatives[k][2], *acc);
-      }
-    }
-    if(particles_.size() > 0) {
-      // contribution from other particles
-      derivative_calculator_->compute_chi_derivative(model_profile,
-                                                     rigid_bodies_[i],
-                                          particles_, derivatives);
-      for (unsigned int k = 0; k < rigid_bodies_[i].size(); k++) {
-        rigid_bodies_[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
-        rigid_bodies_[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
-        rigid_bodies_[i][k]->add_to_derivative(keys[2],derivatives[k][2], *acc);
-      }
-    }
-  }
+  bool use_offset = false;
+  std::vector<double> effect_size; //gaussian model-specific derivative weights
+  effect_size = derivative_calculator_->compute_gaussian_effect_size(
+          model_profile, saxs_score_, use_offset);
+  derivative_calculator_->compute_all_derivatives(particles_, rigid_bodies_,
+          rigid_bodies_decorators_, model_profile, effect_size, acc);
 
-  // 2. compute derivatives for other particles
-  if(particles_.size() > 0) {
-    // particles own contribution
-    derivative_calculator_->compute_chi_derivative(model_profile,
-                                                   particles_, derivatives);
-    for (unsigned int i = 0; i < particles_.size(); i++) {
-      particles_[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
-      particles_[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);
-      particles_[i]->add_to_derivative(keys[2], derivatives[i][2], *acc);
-    }
-    // rigid bodies contribution
-    for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
-      derivative_calculator_->compute_chi_derivative(model_profile, particles_,
-                                          rigid_bodies_[i], derivatives);
-      for (unsigned int i = 0; i < particles_.size(); i++) {
-        particles_[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
-        particles_[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);
-        particles_[i]->add_to_derivative(keys[2], derivatives[i][2], *acc);
-      }
-    }
-  }
   IMP_LOG(TERSE, "SAXS Restraint::done derivatives, score " << score << "\n");
   return score;
 }
