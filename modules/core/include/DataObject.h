@@ -31,10 +31,12 @@ public:
   Data &access_data() {return data_;}
   IMP_OBJECT(DataObject);
 };
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class Data>
 inline void DataObject<Data>::do_show(std::ostream &out) const {
   IMP_UNUSED(out);
 }
+#endif
 
 IMPCORE_END_NAMESPACE
 
