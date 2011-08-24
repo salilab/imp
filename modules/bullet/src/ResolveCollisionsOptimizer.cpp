@@ -381,6 +381,13 @@ void ResolveCollisionsOptimizer
 
 
 // not anon due to bind issues
+
+bool handle_harmonic(btDiscreteDynamicsWorld *world,
+                     const internal::RigidBodyMap &map,
+                     internal::Memory* memory,
+                     const ParticlePair &pp,
+                     double x0, double k, double damping);
+
 bool handle_harmonic(btDiscreteDynamicsWorld *world,
                      const internal::RigidBodyMap &map,
                      internal::Memory* memory,
@@ -413,13 +420,15 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
              *memory);
   return true;
 }
-
+bool dont_handle_harmonic(
+                     const ParticlePair &,
+                     double, double);
 bool dont_handle_harmonic(
                      const ParticlePair &,
                      double, double) {
   return true;
 }
-
+bool handle_ev();
 bool handle_ev() {
   return true;
 }
