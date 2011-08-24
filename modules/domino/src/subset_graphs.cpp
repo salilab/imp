@@ -189,7 +189,7 @@ IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
   CGVertexMap cm
     = boost::get(boost::vertex_name, cg);
   for (unsigned int i=0; i< cliques.size(); ++i) {
-    Particles cur;
+    ParticlesTemp cur;
     for (unsigned int j=0; j< cliques[i].size(); ++j) {
       cur.push_back(pm[cliques[i][j]]);
     }
