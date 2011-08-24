@@ -1,0 +1,46 @@
+==========================================
+===       Build the RNAPII complex    ====
+==========================================
+
+=====0. user preparation
+The user needs to prepare:
+I. a file with the subunits list. Each line describes a subunit and contains:
+name pdb_file [global/local]_fit
+Make sure that the subunit names are unique.
+II. a mrc file of the assembly
+
+The input subunit list file used for this example is rnapii.subunit.list.txt
+RPB1   input/1y1v_A.pdb  1
+RPB2   input/1y1v_B.pdb  1
+RPB3   input/1y1v_C.pdb  1
+RPB4_7 input/1y1v_DG.pdb 1
+RPB5   input/1y1v_E.pdb 1
+RPB6   input/1y1v_F.pdb 1
+RPB8   input/1y1v_H.pdb 1 
+RPB9   input/1y1v_I.pdb 1 
+RPB10  input/1y1v_J.pdb 1
+RPB11_12 input/1y1v_KL.pdb 1
+
+In this example all subunits are going to be sampled globally
+
+=====1.generate the parameters file
+
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_input.py -i rnapii.asmb.input -- rnapii input/rnapii.subunit.list.txt 10 input/emd_1283.mrc 20 2.5 60 60 60 
+
+=====2. Running MultiFit
+The steps to execute:
+==2.0. create all surfaces
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_all_surfaces.py rnapii.asmb.input
+==2.1. generate the assembly anchor graph
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_anchor_graph.py rnapii.asmb.input rnapii.asmb.anchors
+
+Files being generated:
+rnapii.asmb.anchors.pdb  : The graph in pdb format
+rnapii.asmb.anchors.txt  : The graph in txt format
+rnapii.asmb.anchors.cmm  : The graph in cmm format
+
+==2.2. generate the fits
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -p rnapii.multifit.param  rnapii.asmb.input -c 6
+
+FFT fitting for each of the proteins
+the -c option means how many CPU will be used for the process
