@@ -17,7 +17,6 @@ from IMP.parallel.subproc import _run_background
 from IMP.parallel.util import _ListenSocket, _ErrorWrapper
 from IMP.parallel.util import _TaskWrapper, _HeartBeat, _ContextWrapper
 from IMP.parallel.util import _SetPathAction
-from IMP.parallel.errors import *
 
 # Save sys.path at import time, so that slaves can import using the same
 # path that works for the master imports
