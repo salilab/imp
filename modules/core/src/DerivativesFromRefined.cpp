@@ -23,7 +23,7 @@ void DerivativesFromRefined
 ::apply(Particle *p,
         DerivativeAccumulator &da) const
 {
-  Particles ps = refiner_->get_refined(p);
+  ParticlesTemp ps = refiner_->get_refined(p);
 
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< ks_.size(); ++j) {
