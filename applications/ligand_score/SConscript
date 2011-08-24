@@ -10,7 +10,7 @@ env= env.IMPApplication(name="ligand_score", version="SVN",
     - protein_ligand_rank_score.lib for use when screening a compound database
     against a single protein to choose putative binders.
 
-    The pose score is used by default.
+    The rank score is used by default.
 
     They are both located in the IMP.atom data directory. This directory is
     available within \imp python scripts via the IMP::atom::get_data_path() function.
