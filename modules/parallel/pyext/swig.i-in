@@ -1,7 +1,6 @@
 %pythoncode %{
 
 import socket
-import select
 import time
 import sys
 import os
@@ -542,10 +541,6 @@ class Manager(object):
             slave._set_python_search_path(sys.path[0])
 
     def _get_network_events(self, context):
-        fileno = self._listen_sock.fileno()
-        slavemap = { fileno: self._listen_sock }
-        p = select.poll()
-        p.register(fileno, select.POLLIN)
         running = [a for a in self._all_slaves if a.running_task(context)]
         if len(running) == 0:
             if len(context._tasks) == 0:
@@ -554,14 +549,7 @@ class Manager(object):
                 raise NoMoreSlavesError("Ran out of slaves to run tasks")
             # Otherwise, wait for starting slaves to connect back and get tasks
 
-        for slave in running:
-            fileno = slave._socket.fileno()
-            slavemap[fileno] = slave
-            p.register(fileno, select.POLLIN)
-        ready = p.poll(self.heartbeat_timeout * 1000)
+        return util._poll_events(self._listen_sock, running,
+                                 self.heartbeat_timeout)
 
-        if len(ready) == 0:
-            return []
-        else:
-            return [slavemap[fd[0]] for fd in ready]
 %}
