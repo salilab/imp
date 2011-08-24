@@ -40,7 +40,7 @@ namespace {
 ExampleSubsetFilterTable::ExampleSubsetFilterTable(unsigned int max_diff,
                                                    const ParticlesTemp &ps):
   domino::SubsetFilterTable("ExampleSubsetFilterTable%1%"),
-  max_diff_(max_diff), ps_(ps){}
+  max_diff_(max_diff), ps_(ps.begin(), ps.end()){}
 
 
 Ints ExampleSubsetFilterTable
