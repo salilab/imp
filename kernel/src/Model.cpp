@@ -76,7 +76,7 @@ Model::~Model()
     if (particle_index_[i]) {
       IMP_CHECK_OBJECT(particle_index_[i]);
       Particle* op=particle_index_[i];
-      op->m_=NULL;
+      op->m_=static_cast<Model*>(NULL);
     }
   }
 }
@@ -205,8 +205,8 @@ void Model::do_show(std::ostream& out) const
 void Model::remove_particle(Particle *p) {
   int pi= p->get_index();
   free_particles_.push_back(pi);
-  particle_index_[pi]=NULL;
-  p->m_=NULL;
+  particle_index_[pi]=static_cast<Particle*>(NULL);
+  p->m_=static_cast<Model*>(NULL);
   FloatAttributeTable::clear_attributes(pi);
   StringAttributeTable::clear_attributes(pi);
   IntAttributeTable::clear_attributes(pi);

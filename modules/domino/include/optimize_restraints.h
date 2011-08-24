@@ -54,7 +54,7 @@ public:
              if (m_&& m_->get_is_part_of_model()) {
                removed_.clear();
                added_.clear();
-               m_=NULL;
+               m_=static_cast<RestraintSet*>(NULL);
              }
            },);
 };
