@@ -22,7 +22,7 @@ void TableRefiner::add_particle(Particle *p,
                                 const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(map_.find(p) == map_.end(),
             "Particle " << p->get_name() << " already in map.");
-  map_[p]=Particles(ps);
+  map_[p]=get_as<Particles>(ps);
 }
 
 void TableRefiner::remove_particle(Particle *p) {
@@ -35,7 +35,7 @@ void TableRefiner::set_particle(Particle *p,
                                 const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(map_.find(p) != map_.end(),
             "Particle " << p->get_name() << " not found in map.");
-  map_[p]=Particles(ps);
+  map_[p]=get_as<Particles>(ps);
 }
 
 bool TableRefiner::get_can_refine(Particle *p) const {

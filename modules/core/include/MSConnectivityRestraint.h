@@ -77,7 +77,7 @@ public:
     can only be used if none is passed.
    */
   /*@{*/
-  size_t add_type(const Particles &ps);
+  size_t add_type(const ParticlesTemp &ps);
   size_t add_composite(const Ints &components);
   size_t add_composite(const Ints &components, size_t parent);
   //void add_particle(Particle *p);
@@ -150,7 +150,7 @@ public:
     }
 
     size_t add_particle(Particle *p, size_t id);
-    size_t add_type(const Particles &ps);
+    size_t add_type(const ParticlesTemp &ps);
     void create_distance_matrix(const PairScore *ps);
     void clear_particles()
     {
@@ -170,7 +170,7 @@ public:
     {
       return dist_matrix_[p1*size() + p2];
     }
-    std::vector<size_t> const &get_ordered_neighbors(size_t p) const
+    Ints const &get_ordered_neighbors(size_t p) const
     {
       return order_[p];
     }
@@ -178,7 +178,7 @@ public:
     {
       return particles_[p];
     }
-    std::vector<size_t> const &get_all_proteins_in_class(
+    Ints const &get_all_proteins_in_class(
         size_t id) const
     {
       return protein_by_class_[id];
@@ -212,8 +212,8 @@ public:
 
     std::vector<ParticleData> particles_;
     Floats dist_matrix_;
-    std::vector< std::vector<size_t> > order_;
-    std::vector< std::vector<size_t> > protein_by_class_;
+    std::vector< Ints > order_;
+    std::vector< Ints > protein_by_class_;
     double min_distance_;
     double max_distance_;
     size_t current_id_;
