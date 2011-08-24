@@ -370,7 +370,7 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
   //keep the translated position of temp_ps
   core::XYZs temp_ps=core::XYZs(core::get_leaves(copy_mol_));
   algebra::Vector3Ds origs(temp_ps.size());
-  for(int i=0;i<temp_ps.size();i++) {
+  for(unsigned int i=0;i<temp_ps.size();i++) {
     origs[i]=core::XYZ(temp_ps[i]).get_coordinates();
   }
   core::XYZs orig_ps=core::XYZs(core::get_leaves(orig_mol_copy_));
@@ -410,13 +410,12 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
   rotate_mol(copy_mol_,rot.psi,rot.theta,rot.phi);
   Particles mol_ps=core::get_leaves(orig_mol_);
   sampled_map_->reset_data(0.);
-  Pointer<em::DensityMap> temp = sampled_map_->project(
+  sampled_map_->project(
                       temp_ps,
                       margin_ignored_in_conv_[0],
                       margin_ignored_in_conv_[1],
                       margin_ignored_in_conv_[2],
                       map_cen_-core::get_centroid(core::XYZs(mol_ps)));
-  temp=NULL;
   sampled_map_->convolute_kernel(filtered_kernel_, filtered_kernel_ext_);
   sampled_map_->multiply(1./(sampled_norm_*nvox_));
 
@@ -791,7 +790,6 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
 }
 
 void FFTFitting::prepare_poslist_flipped (em::DensityMap *dmap) {
-  em::emreal* data = dmap->get_data();
   Pointer<em::DensityMap> mask_inside2 = em::get_binarized_interior(dmap);
   em::emreal* mdata2 = mask_inside2->get_data();
   inside_num_flipped_=0;
