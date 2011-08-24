@@ -122,10 +122,10 @@ recommended q value is 0.2")
                                     new IMP::atom::NonWaterPDBSelector(),
                                     // don't add radii
                                     true, true);
-      IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
+      IMP::ParticlesTemp particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
-        particles_vec.push_back(particles);
+        particles_vec.push_back(IMP::get_as<IMP::Particles>(particles));
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
       }
