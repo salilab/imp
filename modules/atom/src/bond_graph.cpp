@@ -24,7 +24,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 BondGraph::BondGraph(Hierarchy bd):
-  sc_(get_leaves(bd)) {
+  sc_(get_as<Particles>(get_leaves(bd))) {
   for (unsigned int i=0; i< sc_.size(); ++i) {
     if (!Bonded::particle_is_instance(sc_[i])) {
       Bonded::setup_particle(sc_[i]);

@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
 {
  public:
-  LangevinThermostatOptimizerState(const Particles &pis,
+  LangevinThermostatOptimizerState(const ParticlesTemp &pis,
                                    double temperature,
                                    double gamma);
 

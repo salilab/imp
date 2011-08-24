@@ -20,7 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
 class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState
 {
  public:
-  RemoveRigidMotionOptimizerState(const Particles &pis,
+  RemoveRigidMotionOptimizerState(const ParticlesTemp &pis,
                                   unsigned skip_steps);
 
   //! Set the number of update calls to skip between removals.
