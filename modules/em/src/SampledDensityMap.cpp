@@ -283,14 +283,11 @@ void SampledDensityMap::set_particles(const IMP::Particles &ps,
 }
 
 
-DensityMap* SampledDensityMap::project(const Particles &ps,
+void SampledDensityMap::project(const Particles &ps,
                                        int x_margin,int y_margin,int z_margin,
                                        algebra::Vector3D shift,
                                        FloatKey mass_key){
 
-  //ret will be a binarized version of the projection
-  Pointer<DensityMap> ret = create_density_map(this);
-  emreal *ret_data=ret->get_data();
 
   int lower_margin[3];
   int upper_margin[3];
@@ -352,30 +349,21 @@ DensityMap* SampledDensityMap::project(const Particles &ps,
     long ind;
     ind=xyz_ind2voxel(x0,y0,z0);
     data_[ind]+=ab*c*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x0,y0,z1);
     data_[ind]+=ab*a*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x0,y1,z0);
     data_[ind]+=ab1*c*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x0,y1,z1);
     data_[ind]+=ab1*a*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x1,y0,z0);
     data_[ind]+=a1b*c*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x1,y0,z1);
     data_[ind]+=a1b*a*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x1,y1,z0);
     data_[ind]+=a1b1*c*mass;
-    ret_data[ind]=1;
     ind=xyz_ind2voxel(x1,y1,z1);
     data_[ind]+=a1b1*a*mass;
-    ret_data[ind]=1;
   }
-  return ret.release();
 }
 
 void SampledDensityMap::determine_grid_size(emreal resolution,
