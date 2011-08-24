@@ -163,6 +163,7 @@ rh=rmf::RootHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();
+MPI::COMM_WORLD.Barrier();
 // finalize MPI
 MPI::Finalize();
 return 0;
