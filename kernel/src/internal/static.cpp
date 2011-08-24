@@ -93,11 +93,12 @@ struct LiveObjectChecker {
     if (live_.size() != 0) {
       std::cerr << live_.size()
                 << " IMP::Objects were not cleaned up properly" << std::endl;
-      /*for (compatibility::set<Object*>::const_iterator it= live_.begin();
+      for (compatibility::set<Object*>::const_iterator it= live_.begin();
            it != live_.end(); ++it) {
-        std::cerr << (*it)->get_name() << " of type "
-                  << (*it)->get_type_name() << std::endl;
-                  }*/
+        IMP_CHECK_OBJECT((*it));
+        // the type goes through swig directors
+        std::cerr << (*it)->get_name() << std::endl;
+      }
     }
   }
 };
