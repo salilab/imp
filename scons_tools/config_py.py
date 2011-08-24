@@ -34,6 +34,7 @@ def write_config(h, env, extra=[]):
     for vp in [('cxxcompiler', 'CXX', " "),
                ('cxxflags', 'CXXFLAGS', " "),
                ('pythoncxxflags', 'IMP_PYTHON_CXXFLAGS', " "),
+               ('bincxxflags', 'IMP_BIN_CXXFLAGS', " "),
                ('shliblinkflags', 'IMP_SHLIB_LINKFLAGS', " "),
                ('arliblinkflags', 'IMP_ARLIB_LINKFLAGS', " "),
                ('binlinkflags', 'IMP_BIN_LINKFLAGS', " "),

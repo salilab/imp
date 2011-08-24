@@ -65,6 +65,12 @@ def _propagate_variables(env):
         env.Append(IMP_PYTHON_CXXFLAGS = env['cxxflags'].split())
     else:
         env.Append(IMP_PYTHON_CXXFLAGS=[])
+    if env.get('bincxxflags', None):
+        env.Append(IMP_BIN_CXXFLAGS = env['bincxxflags'].split())
+    elif env.get('cxxflags', None):
+        env.Append(IMP_BIN_CXXFLAGS = env['cxxflags'].split())
+    else:
+        env.Append(IMP_BIN_CXXFLAGS=[])
 
     if env.get('linkflags', None):
         env.Append(IMP_LINKFLAGS=env['linkflags'].split())
@@ -206,7 +212,8 @@ def add_common_variables(vars, package):
              None)
     vars.Add('pythoncxxflags', 'C++ flags for building the python libraries (e.g. "-fno-rounding:-DFOOBAR")',
              None)
-
+    vars.Add('bincxxflags', 'C++ flags for building executables libraries (e.g. "-fno-rounding:-DFOOBAR")',
+             None)
     vars.Add(EnumVariable('boost_autolink',
                           'Whether to use Boost autolinking to find Boost '
                           'dynamic or static libraries on supported platforms',
