@@ -17,6 +17,7 @@ from IMP.parallel import slavestate
 from IMP.parallel.subproc import _run_background
 from IMP.parallel.util import _ListenSocket, _ErrorWrapper
 from IMP.parallel.util import _TaskWrapper, _HeartBeat, _ContextWrapper
+from IMP.parallel.util import _SetPathAction
 from IMP.parallel.errors import *
 
 class Error(Exception):
@@ -117,6 +118,9 @@ class Slave(_Communicator):
         self._socket = sock
         self._state = slavestate.connected
         self.update_contact_time()
+
+    def _set_python_search_path(self, path):
+        self._send(_SetPathAction(path))
 
     def update_contact_time(self):
         self.last_contact_time = time.time()
@@ -521,10 +525,15 @@ class Manager(object):
             slave = self._starting_slaves.pop(identifier)
             slave._accept_connection(sock)
             print "Identified slave %s " % str(slave)
+            self._init_slave(slave)
             self._send_task_to_slave(slave, context)
             return slave
         else:
             print "Ignoring request from unknown slave"
+
+    def _init_slave(self, slave):
+        if sys.path[0] != '':
+            slave._set_python_search_path(sys.path[0])
 
     def _get_network_events(self, context):
         fileno = self._listen_sock.fileno()
