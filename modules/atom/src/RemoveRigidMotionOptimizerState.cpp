@@ -14,8 +14,8 @@
 IMPATOM_BEGIN_NAMESPACE
 
 RemoveRigidMotionOptimizerState::RemoveRigidMotionOptimizerState(
-    const Particles &pis, unsigned skip_steps) :
-    pis_(pis), skip_steps_(skip_steps),
+    const ParticlesTemp &pis, unsigned skip_steps) :
+  pis_(pis.begin(), pis.end()), skip_steps_(skip_steps),
     call_number_(0)
 {
   vs_[0] = FloatKey("vx");

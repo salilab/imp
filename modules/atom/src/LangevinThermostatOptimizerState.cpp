@@ -13,9 +13,9 @@ IMPATOM_BEGIN_NAMESPACE
 
 LangevinThermostatOptimizerState
 ::LangevinThermostatOptimizerState(
-                                   const Particles &pis,
+                                   const ParticlesTemp &pis,
                                    Float temperature, double gamma) :
-  pis_(pis), temperature_(temperature), gamma_(gamma)
+  pis_(pis.begin(), pis.end()), temperature_(temperature), gamma_(gamma)
 {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
