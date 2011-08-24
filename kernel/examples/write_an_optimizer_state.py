@@ -19,6 +19,7 @@ r1.set_name("restraint 1")
 m.add_restraint(r1)
 
 os= MyOptimizerState()
+os.set_name("python optimizer state")
 # we don't have any optimizers either
 co= IMP._ConstOptimizer(m)
 co.add_optimizer_state(os)
@@ -26,3 +27,8 @@ m.set_gather_statistics(True)
 # so we only see the statistics
 IMP.set_log_level(IMP.SILENT)
 print co.optimize(100)
+
+# this is needed to clean up memory properly for some reason
+co.remove_optimizer_state(os)
+del os
+del m
