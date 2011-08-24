@@ -102,7 +102,7 @@ int main(int argc, char **argv) {
       core::transform(rb,
                       final_fits[i].get_fit_transformation());
       char pdb_out_fn[pdb_fit_filename.size()+10];
-      sprintf(pdb_out_fn, "%s.%03d.pdb",pdb_fit_filename.c_str(),i+1);
+      sprintf(pdb_out_fn, "%s.%03d.pdb",pdb_fit_filename.c_str(),i);
       atom::write_pdb(mol2fit,pdb_out_fn);
       core::transform(rb,
                       final_fits[i].get_fit_transformation().get_inverse());
@@ -116,6 +116,10 @@ int main(int argc, char **argv) {
       core::transform(rb,
                       final_fits[i].get_fit_transformation().get_inverse());
     }
+  }
+  //set the index numbers
+  for(unsigned int i=0;i<final_fits.size();i++){
+    final_fits[i].set_index(i);
   }
   multifit::write_fitting_solutions(sol_filename.c_str(),final_fits);
   multifit::write_fitting_solutions("best_trans_for_rot.log",
