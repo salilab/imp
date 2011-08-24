@@ -57,7 +57,7 @@ int main(int , char **) {
       IMP_NEW(Particle, p, (m));
       ps.push_back(p);
       core::Hierarchy h0= core::Hierarchy::setup_particle(p,tr);
-      Particles lps= lr->get_refined(hs[i]);
+      ParticlesTemp lps= lr->get_refined(hs[i]);
       for (unsigned int i=0; i< lps.size(); ++i) {
         h0.add_child(core::Hierarchy::setup_particle(lps[i], tr));
       }

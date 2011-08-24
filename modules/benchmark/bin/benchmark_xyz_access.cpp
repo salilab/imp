@@ -48,10 +48,10 @@ namespace {
 
 // TEST 1
 double compute_distances_decorator_access(
-                     const IMP::Particles& particles) ATTRIBUTES;
+                     const IMP::ParticlesTemp& particles) ATTRIBUTES;
 
 double compute_distances_decorator_access(
-   const IMP::Particles& particles) {
+   const IMP::ParticlesTemp& particles) {
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::core::XYZ d1(particles[i]);
@@ -68,10 +68,10 @@ double compute_distances_decorator_access(
 
 // TEST 1.1
 double compute_distances_particle_access(
-                     const IMP::Particles& particles) ATTRIBUTES;
+                     const IMP::ParticlesTemp& particles) ATTRIBUTES;
 
 double compute_distances_particle_access(
-   const IMP::Particles& particles) {
+   const IMP::ParticlesTemp& particles) {
   FloatKey xk= hidden_keys[0];
   FloatKey yk= hidden_keys[1];
   FloatKey zk= hidden_keys[2];
@@ -257,7 +257,7 @@ void do_benchmark(std::string descr, std::string fname) {
   Model *model = new IMP::Model();
   atom::Hierarchy mhd
     = read_pdb(fname, model, new NonWaterNonHydrogenPDBSelector());
-  IMP::Particles particles =
+  IMP::ParticlesTemp particles =
     get_by_type(mhd, atom::ATOM_TYPE);
   //std::cout << "Number of particles " << particles.size() << std::endl;
   //set_check_level(IMP::NONE);
