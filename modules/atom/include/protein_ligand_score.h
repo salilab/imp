@@ -26,7 +26,8 @@ IMPATOM_BEGIN_NAMESPACE
     \anchor protein_ligand
 
     \imp provides a statistical scoring function for scoring
-    protein-ligand complexes. See the \ref ligand_score "ligand scoring"
+    protein-ligand complexes. See the
+    \ref application_ligand_score "ligand scoring"
     application for more information.
     @{
  */
