@@ -92,7 +92,7 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
 
   // Get the particles of the rigid body
   core::RigidMembers rbm = rb.get_members();
-  Particles ps;
+  ParticlesTemp ps;
 
   for (unsigned int i=0; i < rbm.size(); ++i) {
     // Discard particles that do not have mass
