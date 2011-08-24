@@ -120,7 +120,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name()
-          << " and particles " << Particles(rb_.get_members())
+          << " and particles " << rb_.get_members()
           << std::endl);
   tree_.push_back(Data());
   set_name(std::string("Rigid body hierachy for particle "

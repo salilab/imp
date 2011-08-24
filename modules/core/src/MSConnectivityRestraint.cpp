@@ -184,9 +184,10 @@ MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps):
 
 
 
-size_t MSConnectivityRestraint::ParticleMatrix::add_type(const Particles &ps)
+size_t MSConnectivityRestraint::ParticleMatrix
+::add_type(const ParticlesTemp &ps)
 {
-  protein_by_class_.push_back(std::vector<size_t>());
+  protein_by_class_.push_back(Ints());
   for ( size_t i = 0; i < ps.size(); ++i )
   {
     size_t n = particles_.size();
@@ -235,7 +236,7 @@ typedef boost::adjacency_list<boost::setS, boost::vecS,
 class Tuples
 {
 public:
-  Tuples(const std::vector<size_t> &elements, size_t k)
+  Tuples(const Ints &elements, size_t k)
     : current_tuple_(k)
     , indices_(k)
     , elements_(elements)
@@ -246,7 +247,7 @@ public:
     reset();
   }
 
-  std::vector<size_t> const &get_tuple() const
+  Ints const &get_tuple() const
   {
     return current_tuple_;
   }
@@ -263,9 +264,9 @@ public:
 private:
   void create_current_tuple();
 
-  std::vector<size_t> current_tuple_;
-  std::vector<size_t> indices_;
-  std::vector<size_t> elements_;
+  Ints current_tuple_;
+  Ints indices_;
+  Ints elements_;
   size_t k_;
   size_t n_;
   bool empty_;
@@ -281,7 +282,7 @@ bool Tuples::next()
   while ( i > 0 )
   {
     --i;
-    if ( indices_[i] != i + n_ - k_ )
+    if ( indices_[i] != static_cast<int>(i + n_ - k_) )
     {
       found = true;
       break;
@@ -447,7 +448,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
   boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
     boost::get(boost::vertex_name, G);
   NNGraph ng(num_vertices(G));
-  std::vector<size_t> vertex_id_to_n(restraint_.particle_matrix_.size(), -1);
+  Ints vertex_id_to_n(restraint_.particle_matrix_.size(), -1);
   for ( size_t i = 0; i < num_vertices(ng); ++i )
   {
     size_t id = boost::get(vertex_id, i);
@@ -521,7 +522,7 @@ NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
   for ( size_t i = 0; i < n; ++i )
   {
     boost::put(vertex_id, i, i);
-    std::vector<size_t> const &neighbors =
+    Ints const &neighbors =
       restraint_.particle_matrix_.get_ordered_neighbors(i);
     for ( size_t j = 0; j < neighbors.size(); ++j )
     {
@@ -540,11 +541,11 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
     Assignment const &assignment) const
 {
   size_t num_particles = restraint_.particle_matrix_.size();
-  std::vector<size_t> vertices;
+  Ints vertices;
   for ( size_t i = 0; i < assignment.size(); ++i )
     if ( ! assignment[i].empty() )
     {
-      std::vector<size_t> const &conf = assignment[i].get_tuple();
+      Ints const &conf = assignment[i].get_tuple();
       for ( size_t j = 0; j < conf.size(); ++j )
         vertices.push_back(conf[j]);
     }
@@ -559,7 +560,7 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
     boost::get(boost::edge_weight, ng);
   for ( size_t i = 0; i < vertices.size(); ++i )
     boost::put(new_vertex_id, i, vertices[i]);
-  std::vector<size_t> vertex_id_to_idx(num_particles, -1);
+  Ints vertex_id_to_idx(num_particles, -1);
   for ( size_t i = 0; i < vertices.size(); ++i )
     vertex_id_to_idx[vertices[i]] = i;
   NNGraph::edge_iterator e, end;
@@ -588,7 +589,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
        node->get_label();
   std::vector<Tuples> new_tuples;
-  std::vector<size_t> empty_vector;
+  Ints empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
   {
     int prot_count = lb[i].second;
@@ -599,7 +600,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
     {
       if ( ! assignment[id].empty() )
       {
-        std::vector<size_t> const &configuration =
+        Ints const &configuration =
           assignment[id].get_tuple();
         if ( prot_count > int(configuration.size()) )
         {
@@ -659,7 +660,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
        node->get_label();
   std::vector<Tuples> tuples;
-  std::vector<size_t> empty_vector;
+  Ints empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
   {
     int prot_count = lb[i].second;
@@ -823,7 +824,7 @@ namespace {
   }
 }
 
-size_t MSConnectivityRestraint::add_type(const Particles &ps)
+size_t MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
 {
   if (!sc_&& !ps.empty()) {
     sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
@@ -885,8 +886,8 @@ ParticlePairs MSConnectivityRestraint::get_connected_pairs() const {
   unsigned index = 0;
   for ( EdgeSet::iterator p = edges.begin(); p != edges.end(); ++p )
   {
-    ret.set(index++, ParticlePair(mcs.get_particle(p->first),
-      mcs.get_particle(p->second)));
+    ret[index++]= ParticlePair(mcs.get_particle(p->first),
+                               mcs.get_particle(p->second));
   }
   return ret;
 }

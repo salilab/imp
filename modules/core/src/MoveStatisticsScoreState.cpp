@@ -10,7 +10,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 MoveStatisticsScoreState::MoveStatisticsScoreState(const ParticlesTemp &ps):
-  ps_(ps){
+  ps_(ps.begin(), ps.end()){
   reset();
 }
 
@@ -43,7 +43,7 @@ ContainersTemp MoveStatisticsScoreState::get_output_containers() const {
   return ContainersTemp();
 }
 ParticlesTemp MoveStatisticsScoreState::get_input_particles() const {
-  return ps_;
+  return get_as<ParticlesTemp>(ps_);
 }
 ParticlesTemp MoveStatisticsScoreState::get_output_particles() const {
   return ParticlesTemp();
