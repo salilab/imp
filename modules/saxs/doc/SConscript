@@ -1,7 +1,7 @@
 Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Dina Schneidman", "Seung Joong Kim"],
+                 authors=["Dina Schneidman", "Seung Joong Kim", "Yannick Spill"],
                  brief="This module adds small angle X-ray scattering support to \\imp",
                  overview="",
                  publications=env.IMPStandardPublications(),
