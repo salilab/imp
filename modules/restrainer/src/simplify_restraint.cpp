@@ -51,7 +51,7 @@ SimpleConnectivity create_simple_connectivity_on_molecules(
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
-  Particles ps;
+  ParticlesTemp ps;
 
   for ( size_t i=0; i<mhs_size; ++i )
   {
@@ -111,7 +111,7 @@ SimpleDiameter create_simple_diameter(const Particles &ps, Float diameter)
   /****** Set the restraint ******/
 
   IMP_NEW(core::HarmonicUpperBound, h, (0, 1));
-  IMP_NEW(container::ListSingletonContainer, lsc, (ps));
+  IMP_NEW(container::ListSingletonContainer, lsc, (get_as<ParticlesTemp>(ps)));
   IMP_NEW(core::DiameterRestraint, dr, (h, lsc, diameter));
 
   /****** Add restraint to the model ******/
@@ -222,10 +222,10 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
-  Particles ps;
+  ParticlesTemp ps;
   for ( size_t i=0; i<mhs_size; ++i )
   {
-    Particles pss = core::get_leaves(mhs[i]);
+    ParticlesTemp pss = core::get_leaves(mhs[i]);
     ps.insert(ps.end(),pss.begin(),pss.end());
   }
 
