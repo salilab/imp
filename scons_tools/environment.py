@@ -139,7 +139,7 @@ def _add_platform_flags(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wcast-align", "-fno-operator-names",])
-        if dependency.gcc.get_version() > 4.1:
+        if dependency.gcc.get_version(env) > 4.1:
             env.Append(CXXFLAGS=["-Wmissing-prototypes"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
