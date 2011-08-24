@@ -18,6 +18,8 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/core/TableRefiner.h>
+#include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
@@ -42,7 +44,24 @@ initialize() const {
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Initializing ExcludedVolumeRestraint with "
           << sc_->get_name()  << std::endl);
+  IMP_IF_CHECK(USAGE) {
+    ParticleIndexes pis = sc_->get_indexes();
+    IMP::compatibility::set<ParticleIndex> spis(pis.begin(), pis.end());
+    IMP_USAGE_CHECK(pis.size() == spis.size(),
+                    "Duplicate particle indexes in input");
+  }
+  IMP_IF_CHECK(USAGE) {
+    ParticlesTemp pis = sc_->get();
+    IMP::compatibility::set<Particle*> spis(pis.begin(), pis.end());
+    IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
+  }
+  constituents_.clear();
+  xyzrs_.clear();
+  rbs_.clear();
+  using IMP::operator<<;
   IMP_FOREACH_SINGLETON(sc_, {
+      IMP_LOG(VERBOSE, "Processing " << _1->get_name()
+              << " (" << _1->get_index() << ")" << std::endl);
       if (RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
         ParticleIndex pi= rb.get_particle_index();
@@ -52,6 +71,16 @@ initialize() const {
                                                  _1->get_index())));
         } else {
           constituents_[pi].push_back(_1->get_index());
+        }
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          ParticleIndexes cur= constituents_[pi];
+          IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
+                          "A rigid body cann't be its own constituent.");
+          IMP::compatibility::set<ParticleIndex> scur(cur.begin(), cur.end());
+          IMP_USAGE_CHECK(cur.size() == scur.size(),
+                          "Duplicate constituents for "
+                          << get_model()->get_particle(pi)->get_name()
+                          << ": " << cur);
         }
       } else {
         xyzrs_.push_back(_1->get_index());
@@ -69,6 +98,22 @@ initialize() const {
   initialized_=true;
   xyzrs_backup_.clear();
   rbs_backup_.clear();
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+     for (IMP::compatibility::map<ParticleIndex,
+                                  ParticleIndexes>::const_iterator it
+         = constituents_.begin();
+       it != constituents_.end(); ++it) {
+       ParticleIndexes cur= it->second;
+       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(),
+                                 it->first) == cur.end(),
+                       "A rigid body cann't be its own constituent.");
+       IMP::compatibility::set<ParticleIndex> scur(cur.begin(), cur.end());
+       IMP_USAGE_CHECK(cur.size() == scur.size(),
+                       "Duplicate constituents for "
+                       << get_model()->get_particle(it->first)->get_name()
+                       << ": " << cur);
+     }
+  }
 }
 
 
@@ -383,12 +428,49 @@ ContainersTemp ExcludedVolumeRestraint
   return ContainersTemp(1, sc_);
 }
 Restraints ExcludedVolumeRestraint::create_decomposition() const {
+  if (!initialized_) initialize();
   Restraints ret;
-  ParticlesTemp ps= sc_->get_particles();
-  for (unsigned int i=0; i< ps.size(); ++i) {
+  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       ret.push_back(create_restraint(ssps_.get(),
-                                     ParticlePair(ps[i], ps[j])));
+                    ParticlePair(IMP::internal::get_particle(get_model(),
+                                                             xyzrs_[i]),
+                                 IMP::internal::get_particle(get_model(),
+                                                             xyzrs_[j]))));
+      ret.back()->set_maximum_score(get_maximum_score());
+      std::ostringstream oss;
+      oss << get_name() << " " << i << " " << j;
+      ret.back()->set_name(oss.str());
+    }
+  }
+  IMP_NEW(TableRefiner, tr, ());
+  for (IMP::compatibility::map<ParticleIndex,
+                               ParticleIndexes>::const_iterator it
+         = constituents_.begin();
+       it != constituents_.end(); ++it) {
+    tr->add_particle( IMP::internal::get_particle(get_model(), it->first),
+                      IMP::internal::get_particle(get_model(), it->second));
+  }
+  IMP_NEW(ClosePairsPairScore, cpps, (ssps_, tr, 0));
+  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
+    for (unsigned int j=0; j< rbs_.size(); ++j) {
+      ret.push_back(create_restraint(cpps,
+                      ParticlePair(IMP::internal::get_particle(get_model(),
+                                                               xyzrs_[i]),
+                                   IMP::internal::get_particle(get_model(),
+                                                               rbs_[j]))));
+      ret.back()->set_maximum_score(get_maximum_score());
+      std::ostringstream oss;
+      oss << get_name() << " " << i << " " << j;
+      ret.back()->set_name(oss.str());
+    }
+  }
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(create_restraint(cpps,
+                   ParticlePair(IMP::internal::get_particle(get_model(),
+                                                            rbs_[i]),
+                       IMP::internal::get_particle(get_model(),rbs_[j]))));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
