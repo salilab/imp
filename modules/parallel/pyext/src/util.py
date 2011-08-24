@@ -1,4 +1,5 @@
 import socket
+import sys
 import random
 
 class _ListenSocket(socket.socket):
@@ -45,3 +46,14 @@ class _ErrorWrapper(object):
 
 class _HeartBeat(object):
     pass
+
+
+class _SlaveAction(object):
+    pass
+
+
+class _SetPathAction(_SlaveAction):
+    def __init__(self, path):
+        self.path = path
+    def execute(self):
+        sys.path.insert(0, self.path)

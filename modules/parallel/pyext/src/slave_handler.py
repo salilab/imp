@@ -5,7 +5,7 @@ import threading
 from IMP.parallel import NetworkError
 from IMP.parallel.master_communicator import MasterCommunicator
 from IMP.parallel.util import _TaskWrapper, _ContextWrapper
-from IMP.parallel.util import _ErrorWrapper, _HeartBeat
+from IMP.parallel.util import _ErrorWrapper, _HeartBeat, _SlaveAction
 
 class _HeartBeatThread(threading.Thread):
     """Periodically send a 'heartbeat' back to the master, so that it can
@@ -68,6 +68,8 @@ class SlaveHandler(object):
                         setup_args = obj.obj()
                 elif isinstance(obj, _TaskWrapper):
                     master._send(obj.obj(*setup_args))
+                elif isinstance(obj, _SlaveAction):
+                    obj.execute()
             except NetworkError:
                 raise
             except Exception, detail:
