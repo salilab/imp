@@ -52,6 +52,15 @@ public:
 
   static FloatKey get_nuisance_key() { FloatKey k("nuisance"); return k;}
 
+  bool get_nuisance_is_optimized() const
+  { 
+      return get_particle()->get_is_optimized(get_nuisance_key());
+  }
+
+  void set_nuisance_is_optimized(bool val)
+  {
+      get_particle()->set_is_optimized(get_nuisance_key(), val);
+  }
 
   IMP_DECORATOR(Nuisance, Decorator);
 
