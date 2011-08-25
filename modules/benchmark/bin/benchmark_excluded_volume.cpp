@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
   leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
   lsc->set_was_used(true);
-  std::cout << leaves.size() << " particles" << std::endl;
+  //std::cout << leaves.size() << " particles" << std::endl;
   if (argc==1 || (argc >1 && argv[1][0]=='k')) {
     IMP_NEW(SoftSpherePairScore, ps, (1));
     IMP_NEW(TableRefiner, tr,());
