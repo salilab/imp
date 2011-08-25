@@ -127,6 +127,17 @@ public:
                     obj->set_was_used(true);
                   },{},{obj->set_optimizer(NULL);});
   /** @} */
+
+  /** Set whether to use incremental evaluate or evaluate all restraints
+      each time. This cannot be changed during optimization.
+  */
+  void set_use_incremental_evaluate(bool tf) {
+    eval_incremental_=tf;
+  }
+  bool get_use_incremental_evaluate() const {
+    return eval_incremental_;
+  }
+
  protected:
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
@@ -166,6 +177,19 @@ public:
     }
   }
 private:
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate_incremental(const ParticleIndexes &moved) const;
+
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate_incremental_if_below(const ParticleIndexes &moved,
+                           double max) const;
+
+  void setup_incremental();
+  void teardown_incremental();
+  void rollback_incremental();
+
   double temp_;
   double last_energy_;
   double best_energy_;
@@ -177,6 +201,15 @@ private:
   bool return_best_;
   IMP::OwnerPointer<Configuration> best_;
   ::boost::uniform_real<> rand_;
+
+  // incremental
+  Restraints flattened_restraints_;
+  bool eval_incremental_;
+  mutable Floats incremental_scores_;
+  mutable Floats old_incremental_scores_;
+  mutable Ints old_incremental_score_indexes_;
+  compatibility::checked_vector<Ints> incremental_used_;
+
 };
 
 
