@@ -9,7 +9,7 @@ int main(int, char *[]) {
   //
   // test computation for two non intersecting balls
   //
-  algebra::Sphere3Ds balls;
+  IMP::algebra::Sphere3Ds balls;
   balls.push_back(S(V(2.441, 12.404, 7.789), 1.85));
   balls.push_back(S(V(396, 13.826, 7.425), 2.275));
   std::pair<double, double> dp
