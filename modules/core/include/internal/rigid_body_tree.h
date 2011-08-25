@@ -164,8 +164,10 @@ inline void fill_close_pairs(Model *m,
                              const RigidBodyHierarchy *db,
                              double dist,
                              Sink sink) {
-  da->validate(m);
-  db->validate(m);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    da->validate(m);
+    db->validate(m);
+  }
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
