@@ -174,7 +174,9 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
         particles[i]= constituents_[cur.second[i]];
       }
       set_leaf(cur.first, particles);
-      validate_internal(m, cur.first, algebra::Sphere3Ds());
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        validate_internal(m, cur.first, algebra::Sphere3Ds());
+      }
     } else {
       SpheresSplit ss= divide_spheres(spheres, cur.second);
       unsigned int nc= add_children(cur.first, ss.size());
@@ -183,7 +185,9 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
       }
     }
   } while (!stack.empty());
-  validate(m);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    validate(m);
+  }
 }
 
 
@@ -485,7 +489,9 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                               cur.get());
         }
         IMP_CHECK_OBJECT(cur);
-        cur->validate(rb.get_model());
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          cur->validate(rb.get_model());
+        }
         if (mykey != ObjectKey()) {
           IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
           rb.get_model()->add_cache_attribute(mykey,
@@ -514,7 +520,9 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                         h.get());
   }
   IMP_CHECK_OBJECT(h);
-  h->validate(rb.get_model());
+  IMP_IF_CHECK( USAGE_AND_INTERNAL) {
+    h->validate(rb.get_model());
+  }
   return h;
 }
 
