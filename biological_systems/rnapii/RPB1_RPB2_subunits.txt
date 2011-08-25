@@ -1,0 +1,2 @@
+RPB1   data/1y1v_A.pdb  1
+RPB2   data/1y1v_B.pdb  1
