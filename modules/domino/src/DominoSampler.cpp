@@ -13,6 +13,7 @@
 
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
+#include <boost/scoped_ptr.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <IMP/domino/internal/loopy_inference.h>
 

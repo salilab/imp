@@ -116,6 +116,7 @@ Ints get_index(const ParticlesTemp &particles,
 
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
+namespace {
   Ints get_order(const Subset &s,
                  const ParticlesTemp &all_particles) {
     Ints ret(s.size(), -1);
@@ -130,6 +131,7 @@ Ints get_index(const ParticlesTemp &particles,
     }
     return ret;
   }
+}
 
 void save_assignments(AssignmentContainer *assignments,
                       const Subset &s,
