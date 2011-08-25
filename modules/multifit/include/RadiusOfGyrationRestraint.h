@@ -34,13 +34,14 @@ public:
    */
   RadiusOfGyrationRestraint(Particles ps,int num_residues,Float scale=1.);
   IMP_RESTRAINT(RadiusOfGyrationRestraint);
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
   //! Set the predicted radius of gyration used in the restraint
   void set_radius_of_gyration(Float r) {
     predicted_rog_=r;
     hub_=new core::HarmonicUpperBound(predicted_rog_*scale_,1);}
   //! Get the predicted radius of gyration used in the restraint
   inline Float get_radius_of_gyration() {return predicted_rog_;}
+
+  IMP_LIST(private, Particle, particle, Particle*, Particles);
  protected:
   Model *mdl_;
   Float predicted_rog_;
