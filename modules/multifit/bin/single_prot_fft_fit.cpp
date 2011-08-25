@@ -46,7 +46,40 @@ bool parse_input(int argc, char *argv[],
                 int &num_top_fits_to_store_for_each_rotation);
 
 multifit::FFTFitting ff;
-//TODO - start with your usage and move everything to a class.
+
+
+em::DensityMap* set_map(const std::string &density_filename,
+            float resolution, float spacing,
+            float &x_origin, float &y_origin, float &z_origin) {
+  em::DensityMap* rmap=NULL;
+  try{
+    rmap = em::read_map(density_filename.c_str());
+  }
+  catch (const Exception &err){
+    std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
+    exit(-1);
+  }
+  if (rmap==NULL){
+    std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
+    exit(-1);
+  }
+
+  rmap->get_header_writable()->set_resolution(resolution);
+  rmap->update_voxel_size(spacing);
+  algebra::Vector3D v = rmap->get_origin();
+  if (x_origin == INT_MAX) {
+    x_origin = v[0];
+  }
+  if (y_origin == INT_MAX) {
+    y_origin = v[1];
+  }
+  if (z_origin == INT_MAX) {
+    z_origin = v[2];
+  }
+  rmap->set_origin(x_origin, y_origin, z_origin);
+  return rmap;
+}
+
 int main(int argc, char **argv) {
   std::string density_filename,protein_filename;
   std::string ref_filename,sol_filename,log_filename;
@@ -65,9 +98,32 @@ int main(int argc, char **argv) {
     exit(1);
   }
   //read EM density map
-  Pointer<em::DensityMap> dmap = em::read_map(density_filename.c_str());
-  dmap->get_header_writable()->set_resolution(resolution);
+  Pointer<em::DensityMap> dmap =
+    set_map(density_filename,resolution,spacing,x_origin,y_origin,z_origin);
+  //  Pointer<em::DensityMap> dmap = em::read_map(density_filename.c_str());
+  //dmap->get_header_writable()->set_resolution(resolution);
   dmap->set_was_used(true);
+
+
+  //write parameters
+  std::cout<<"============= parameters ============"<<std::endl;
+  std::cout<<"density filename : " << density_filename <<std::endl;
+  std::cout<<"spacing : " << spacing <<std::endl;
+  std::cout<<"resolution : " << resolution <<std::endl;
+  std::cout<<"delta angle:"<<delta_angle<<std::endl;
+  std::cout<<"origin : (" << x_origin << "," <<
+    y_origin<<"," << z_origin << ")" << std::endl;
+  std::cout<<"protein name : " << protein_filename <<std::endl;
+  std::cout<<"ref name : " << ref_filename <<std::endl;
+  std::cout<<"output filename : " << sol_filename << std::endl;
+  std::cout<<"solution filename : " << sol_filename << std::endl;
+  std::cout<<"number of top fits to report :"<<
+    num_top_fits_to_report<<std::endl;
+  dmap->show();
+  std::cout<<"====================================="<<std::endl;
+
+
+
   //read protein
   IMP_NEW(Model,mdl,());
   atom::Hierarchy mol2fit = atom::read_pdb(protein_filename.c_str(),mdl);
