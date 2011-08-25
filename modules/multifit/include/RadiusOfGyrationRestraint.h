@@ -40,7 +40,7 @@ public:
     predicted_rog_=r;
     hub_=new core::HarmonicUpperBound(predicted_rog_*scale_,1);}
   //! Get the predicted radius of gyration used in the restraint
-  inline Float get_radius_of_gyration() {return redicted_rog_;}
+  inline Float get_radius_of_gyration() {return predicted_rog_;}
  protected:
   Model *mdl_;
   Float predicted_rog_;
