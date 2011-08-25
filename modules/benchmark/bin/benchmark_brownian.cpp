@@ -1,6 +1,10 @@
 /**
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
+#include <IMP/benchmark/benchmark_config.h>
+
+#ifdef IMP_BENCHMARK_USE_IMP_RMF
+
 #include <IMP.h>
 #include <IMP/core.h>
 #include <IMP/algebra.h>
@@ -325,3 +329,9 @@ int main(int argc , char **argv) {
   }
   return IMP::benchmark::get_return_value();
 }
+
+#else
+int main(int, const char*) {
+  return 1;
+}
+#endif
