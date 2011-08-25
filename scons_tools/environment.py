@@ -139,7 +139,7 @@ def _add_platform_flags(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wcast-align", "-fno-operator-names",])
-        if dependency.gcc.get_version(env) < 4.4:
+        if sys.platform == 'darwin':
             env.Append(CXXFLAGS=["-Wmissing-prototypes"])
         else:
             env.Append(CXXFLAGS=["-Wmissing-declarations"])
