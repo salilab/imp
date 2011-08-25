@@ -126,6 +126,14 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
                                             double max_distance,
                                             ParticleStatesTable *pst);
 
+
+/** Return a list of indexes into s, representing a permutation of the
+    particles in s, so that they are ordered according to all_particles.
+    This order can be used to write s to disk, as the order in s can
+    change between domino runs.
+*/
+IMPDOMINOEXPORT Ints get_order(const Subset &s,
+                               const ParticlesTemp &all_particles);
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_UTILITY_H */
