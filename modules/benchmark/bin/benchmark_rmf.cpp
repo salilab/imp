@@ -1,6 +1,8 @@
 /**
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
+#include <IMP/benchmark/benchmark_config.h>
+#ifdef IMP_BENCHMARK_USE_IMP_RMF
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/RootHandle.h>
 #include <IMP/internal/graph_utility.h>
@@ -91,3 +93,8 @@ int main(int, char **) {
 
   return 0;
 }
+#else
+int main(int, const char*) {
+  return 1;
+}
+#endif
