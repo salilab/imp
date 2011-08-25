@@ -5,6 +5,8 @@ env= env.IMPSystem(version="SVN",
                    authors=["Keren Lasker"],
                    brief="Compute a structure for the humap RNAPII complex.",
                    overview="""
+\note Currently, generating the structure requires \\c multifit2. We are working on moving the needed functionallity into \imp propper. Your patience is appreciated.
+
 \\section input Input files
 The input files are
  - \\c subunits.txt which contains a list of the subunits and the path to the pdb file for the structure of each
