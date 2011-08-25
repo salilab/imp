@@ -141,7 +141,7 @@ def _add_platform_flags(env):
                              "-Wcast-align", "-fno-operator-names",])
         if sys.platform == 'darwin':
             env.Append(CXXFLAGS=["-Wmissing-prototypes"])
-        else:
+        elif dependency.gcc.get_version(env)>= 4.2:
             env.Append(CXXFLAGS=["-Wmissing-declarations"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
