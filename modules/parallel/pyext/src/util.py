@@ -86,9 +86,4 @@ else:
             slavemap[fileno] = slave
             waitin.append(fileno)
         (ready,rout,rerr) = select.select(waitin, [], [], timeout)
-        return [slavemap[fd[0]] for fd in ready]
-
-        if len(ready) == 0:
-            return []
-        else:
-            return [slavemap[fd[0]] for fd in ready]
+        return [slavemap[fd] for fd in ready]
