@@ -287,7 +287,7 @@ class _SGEPESlave(Slave):
 
     def _start(self, command, unique_id, output):
         Slave._start(self, command, unique_id, output)
-        cmdline = "qrsh -inherit %s %s %s" % (self._host, command, unique_id)
+        cmdline = "qrsh -inherit -V %s %s %s" % (self._host, command, unique_id)
         _run_background(cmdline, output)
 
     def __repr__(self):
@@ -313,7 +313,7 @@ class SGEPESlaveArray(SlaveArray):
                 break
             (node, num, queue) = line.split(None, 2)
             for i in range(int(num)):
-                slaves.append(SGEPESlave(node))
+                slaves.append(_SGEPESlave(node))
         # Replace first slave with a local slave, as this is ourself, and SGE
         # won't let us start this process with qrsh (as we are already
         # occupying the slot)
