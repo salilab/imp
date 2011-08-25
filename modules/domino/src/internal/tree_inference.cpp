@@ -7,7 +7,9 @@
  */
 
 #include <IMP/domino/internal/inference_utility.h>
+#include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/assignment_tables.h>
+#include <IMP/Particle.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -53,9 +55,7 @@ void load_leaf_assignments(const Subset &merged_subset,
   //IMP_LOG(VERBOSE, "Subset data is\n" << ret << std::endl);
   stats.add_subset(merged_subset, out);
 }
-
 namespace {
-
   void
   load_best_conformations_internal(const MergeTree &jt,
                                   unsigned int root,
