@@ -15,13 +15,13 @@ This work demonstrates that integrative approaches based on low resolution data 
 functionally informative structures at intermediate resolution.""",
                    license=env.IMPStandardLicense(),
                    # jeremy, update the publication(s)
-                   publications=[env.IMPPublication(authors=["Keren Lasker", "Javier A. Velazquez-Muriel",
-                                                             "Benjamin M. Webb", "Zheng Yang",
-                                                             "Thomas E. Ferrin", "Andrej Sali"],
-                                                    title="Macromolecular assembly structures by comparative modeling and electron microscopy",
-                                                    journal="Methods in Molecular Biology",
-                                                    year=2011)],
-                   required_modules=['core', 'atom', 'rmf'],
+                   #publications=[env.IMPPublication(authors=["Keren Lasker", "Javier A. Velazquez-Muriel",
+                   #                                          "Benjamin M. Webb", "Zheng Yang",
+                   #                                          "Thomas E. Ferrin", "Andrej Sali"],
+                   #                                 title="Macromolecular assembly structures by comparative modeling and electron microscopy",
+                   #                                 journal="Methods in Molecular Biology",
+                   #                                 year=2011)],
+                   required_modules=['core', 'atom', 'em2d', 'em', 'multifit2', 'gamb'],
                    last_imp_version="""None""",
                    # this is true if the scripts can be run incompletely as test cases
                    # eg if it works to do "sample_0.py 1 1000" and then "analyze_0.py"
