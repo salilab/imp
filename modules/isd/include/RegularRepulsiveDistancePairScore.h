@@ -15,6 +15,7 @@
 #include <IMP/Pointer.h> 
 #include <IMP/atom/LennardJones.h>
 #include <IMP/atom/smoothing_functions.h>
+#include <IMP/internal/OwnerPointer.h>
 
 
 IMPISD_BEGIN_NAMESPACE
