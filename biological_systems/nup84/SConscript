@@ -4,8 +4,15 @@ import scons_tools.examples
 env= env.IMPSystem(version="SVN",
                    authors=["Jeremy Phillips"],
                    brief="Compute a structure for the Nup84 complex.",
-                   overview="""Jeremy, paste your abstract here or something.
-                   """,
+                   overview="""The nuclear pore complex (NPC) is a multiprotein assembly that serves as the sole mediator
+of nucleocytoplasmic exchange in eukaryotic cells. Here, we use an integrative approach to determine
+the structure of an essential component of the yeast NPC, the ~600 kDa heptameric Nup84 complex. The configuration of the subunit structures was determined by satisfaction of
+spatial restraints derived from a diverse set of negative stain EM and protein domain mapping data.
+Phenotypic data was mapped onto the complex, allowing us to find regions that stabilize the NPC's
+interaction with the NE membrane and connect the complex to the rest of the NPC. We suggest a
+scenario for the evolution of the Nup84 complex through a series of gene duplication and loss events.
+This work demonstrates that integrative approaches based on low resolution data can generate
+functionally informative structures at intermediate resolution.""",
                    license=env.IMPStandardLicense(),
                    # jeremy, update the publication(s)
                    publications=[env.IMPPublication(authors=["Keren Lasker", "Javier A. Velazquez-Muriel",
