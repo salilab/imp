@@ -10,6 +10,7 @@
 #include <IMP/random.h>
 #include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
+#include <IMP/dependency_graph.h>
 
 #include <limits>
 #include <cmath>
@@ -154,9 +155,6 @@ void MonteCarlo::setup_incremental() {
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Setting up incremental evaluation." << std::endl);
   flattened_restraints_=create_decomposition(get_restraints());
-  for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
-    get_model()->add_temporary_restraint(flattened_restraints_[i]);
-  }
   incremental_scores_
     = get_model()->evaluate(get_as<RestraintsTemp>(flattened_restraints_),
                             false);
