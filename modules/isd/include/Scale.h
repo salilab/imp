@@ -23,9 +23,11 @@ IMPISD_BEGIN_NAMESPACE
     or theory uncertainty. It is positive. It can be initialized with or without    specifying bounds. Default bounds: 0 and infinity. Setting it to values
     outside of bounds results in setting it to the bound value with a warning.
  */
-class IMPISDEXPORT Scale: public Decorator
+class IMPISDEXPORT Scale: public Nuisance
 {
 public:
+    IMP_DECORATOR(Scale, Nuisance);
+
   static Scale setup_particle(Particle *p, double scale=1.0, 
           double lower=0.0, 
           double upper=-1.0); //std::numeric_limits<double>::infinity()); 
@@ -37,8 +39,6 @@ public:
   Float get_scale() const {
     return get_particle()->get_value(get_scale_key());
   }
-
-  Float get_nuisance() const { return get_scale(); }
 
   Float get_upper() const {
     double upper = get_particle()->get_value(get_upper_key());
@@ -59,15 +59,8 @@ public:
 
   void set_scale(Float d); 
 
-  void set_nuisance(Float d) {set_scale(d);}
-
   void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_scale_key(), d, accum);
-  }
-
-  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum)
-  {
-      add_to_scale_derivative(d, accum);
   }
 
   Float get_scale_derivative() const
@@ -75,21 +68,28 @@ public:
     return get_particle()->get_derivative(get_scale_key());
   }
 
-  Float get_nuisance_derivative() const {return get_scale_derivative(); }
-
-  IMP_DECORATOR(Scale, Decorator);
-
   static FloatKey get_scale_key();
-
-  static FloatKey get_nuisance_key() { return get_scale_key(); }
 
   static FloatKey get_upper_key();
   
   static FloatKey get_lower_key();
 
+  bool get_scale_is_optimized() const
+  { 
+      return get_particle()->get_is_optimized(get_scale_key());
+  }
+
+  void set_scale_is_optimized(bool val)
+  {
+      get_particle()->set_is_optimized(get_scale_key(), val);
+  }
+
+
 };
 
-typedef Decorators<Scale, Particles> Scales;
+IMP_OUTPUT_OPERATOR(Scale);
+
+IMP_DECORATORS(Scale, Scales, Nuisances);
 
 IMPISD_END_NAMESPACE
 

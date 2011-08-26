@@ -6,13 +6,12 @@
  *
  */
 
-#include "IMP/isd/Scale.h"
+#include <IMP/isd/Scale.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 FloatKey Scale::get_scale_key() {
-  static FloatKey k("nuisance");
-  return k;
+  return Nuisance::get_nuisance_key();
 }
 
 FloatKey Scale::get_upper_key() {
@@ -61,6 +60,9 @@ void Scale::set_scale(Float d) {
 
 Scale Scale::setup_particle(Particle *p, double scale, 
         double lower, double upper) {
+    if (!Nuisance::particle_is_instance(p)) {
+        Nuisance::setup_particle(p, scale);
+    }
     double lo_ = std::max(lower,0.0);
     double up_;
     if (upper < lo_) {
@@ -73,9 +75,9 @@ Scale Scale::setup_particle(Particle *p, double scale,
     }
     p->add_attribute(get_lower_key(), lo_);
     p->add_attribute(get_upper_key(), up_);
-    p->add_attribute(get_scale_key(), scale);
     return Scale(p);
 }
+
 
 
 IMPISD_END_NAMESPACE
