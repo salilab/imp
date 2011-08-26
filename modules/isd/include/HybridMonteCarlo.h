@@ -12,6 +12,7 @@
 #include "isd_config.h"
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/isd/MolecularDynamics.h>
+#include <IMP/isd/MolecularDynamicsMover.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -19,15 +20,57 @@ IMPISD_BEGIN_NAMESPACE
 
 class IMPISDEXPORT HybridMonteCarlo : public core::MonteCarlo
 {
-  Pointer<Particle> p_;
 
 public:
-  HybridMonteCarlo(atom::MolecularDynamics *md, unsigned int steps=100);
+  HybridMonteCarlo(Model *m, Float kT=1.0, unsigned steps=100,
+          Float timestep=1.0, unsigned persistence=1);
+
+  Float get_kinetic_energy() const;
+
+  Float get_potential_energy() const;
+
+  Float get_total_energy() const;
+
+  //set md timestep
+  void set_timestep(Float ts);
+  double get_timestep() const;
+
+  //set number of md steps per mc step
+  void set_number_of_md_steps(unsigned nsteps);
+  unsigned get_number_of_md_steps() const;
+
+  //set how many mc steps happen until you redraw the momenta
+  void set_persistence(unsigned persistence=1);
+  unsigned get_persistence() const;
+
+  //return pointer to isd::MolecularDynamics instance
+  //useful if you want to set other stuff that is not exposed here
+  MolecularDynamics* get_md() const;
+
 
   IMP_MONTE_CARLO(HybridMonteCarlo);
+  
+  //evaluate should return the total energy
+  double do_evaluate(const ParticlesTemp &moved) const
+{
+    IMP_UNUSED(moved);
+    double ekin = md_->get_kinetic_energy();
+    double epot;
+    if (get_maximum_difference() < std::numeric_limits<double>::max()) {
+        epot = evaluate_if_below(false, 
+                get_last_accepted_energy()+get_maximum_difference());
+    } else {
+        epot = evaluate(false);
+    }
+    return ekin + epot;
+}
+
+
 
 private:
-  unsigned num_md_steps_;
+  unsigned num_md_steps_,persistence_;
+  unsigned persistence_counter_;
+  IMP::internal::OwnerPointer<MolecularDynamicsMover> mv_;
   IMP::Pointer<MolecularDynamics> md_;
 
 };
