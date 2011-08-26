@@ -23,6 +23,8 @@ IMPCORE_BEGIN_NAMESPACE
     have internal ScoreStates and perhaps more than one actual restraint
     object.
 
+    The diameter scored includes the radius of the involved particles.
+
     \note, Currently, decomposing this restraint results in pieces which
     score deviations from the diameter with a harmonic upper bound of strength
     1.
