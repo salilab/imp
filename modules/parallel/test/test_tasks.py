@@ -10,7 +10,7 @@ class TaskTests(IMP.test.TestCase):
 
     def test_pass_exceptions(self):
         """Test that exceptions can be passed to and from tasks"""
-        m = IMP.parallel.Manager()
+        m = util.Manager()
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
         c.add_task(tasks.SimpleTask(IndexError("test")))
@@ -20,7 +20,7 @@ class TaskTests(IMP.test.TestCase):
 
     def test_raise_exceptions(self):
         """Test that exceptions raised by a task are propagated"""
-        m = IMP.parallel.Manager()
+        m = util.Manager()
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
         c.add_task(tasks.error_task)
@@ -33,7 +33,7 @@ class TaskTests(IMP.test.TestCase):
         if sys.platform in ('irix6', 'osf1V5'):
             self.skipTest("Cannot reliably handle NaN and Inf on Irix or Alpha")
 
-        m = IMP.parallel.Manager()
+        m = util.Manager()
         m.add_slave(IMP.parallel.LocalSlave())
         c = m.get_context()
 
