@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- the IMP::core::DiameterRestraint was ignoring the radii of the particles involved and so was giving artifically low scores. It now is on the actual diameter of this molecule.
 - the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
 - all the plural types in IMP have moved to bounds checked vectors when using debug builds with gcc. If you get a non-imp error about an invalid access, it is probably some code that walks off the end of an array. Please report it.
 - IMP::rmf::KeyCategory was renamed to IMP::rmf::Category
