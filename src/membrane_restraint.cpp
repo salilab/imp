@@ -207,8 +207,10 @@ for(int i=0;i<TM->num;++i){
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  lrb->add_particle(rb);
 }
-IMP_NEW(core::HarmonicUpperBound,hub,(0.0,kappa));
-IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter));
+IMP_NEW(container::AllPairContainer,apc,(lrb));
+IMP_NEW(core::HarmonicUpperBound,hub,(diameter,kappa));
+IMP_NEW(core::DistancePairScore,dps,(hub));
+IMP_NEW(container::PairsRestraint,dr,(dps,apc));
 dr->set_name("Diameter restraint");
 m->add_restraint(dr);
 }
