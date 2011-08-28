@@ -59,8 +59,8 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[]
         IMP.set_log_level(IMP.SILENT)
         pst= IMP.domino.ParticleStatesTable()
-        state= IMP.domino.IndexStates(20)
-        for i in range(0,20):
+        state= IMP.domino.IndexStates(11)
+        for i in range(0,10):
             ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceAndExclusionSubsetFilterTable(pst)
@@ -72,7 +72,7 @@ class DOMINOTests(IMP.test.TestCase):
         sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print ss
-        self.assertEqual(len(ss), 1)
+        self.assertEqual(len(ss), 11)
 
     def _test_global_min3(self):
         """Testing ordering with other node"""
