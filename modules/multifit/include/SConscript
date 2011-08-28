@@ -1,30 +1,21 @@
 Import('env')
 files = [
-#'learn_fftw.h',
-#        'random_rotations.h',
          'DataPoints.h',
          'DataPointsAssignment.h',
          'ClusteringEngine.h',
          'VQClustering.h',
-#         'HVQClustering.h',
          'density_analysis.h',
          'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',
          'weighted_excluded_volume.h',
                  'WeightedExcludedVolumeRestraint3.h',
-#         'sampling_space.h',
          'FittingSolutionRecord.h',
-#         'SingleDominoRun.h',
          'pca_based_rigid_fitting.h',
          'fitting_solutions_reader_writer.h',
          'fitting_tools.h',
          'SettingsData.h',
-#         'DataContainer.h',
-#         'restraints_utils.h',
-#         'sampling_space_utils.h',
          'WeightedExcludedVolumeRestraint.h',
          'anchor_graph.h',
-#         'mc_cg_refinement.h'
          'RMSDClustering.h',
          'fitting_clustering.h',
         'GeometricHash.h',
@@ -34,7 +25,7 @@ files = [
         'coarse_molecule.h',
         'fitting_utils.h',
         'RadiusOfGyrationRestraint.h',
-#        'RigidBodiesRMSDClustering.h'
+        'anchor_utilities.h'
         ] \
         + SConscript('internal/SConscript')
 
