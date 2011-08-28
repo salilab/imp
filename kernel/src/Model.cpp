@@ -220,8 +220,8 @@ void Model::do_show(std::ostream& out) const
 void Model::remove_particle(Particle *p) {
   int pi= p->get_index();
   free_particles_.push_back(pi);
-  particle_index_[pi]=static_cast<Particle*>(NULL);
   p->m_=static_cast<Model*>(NULL);
+  particle_index_[pi]=static_cast<Particle*>(NULL);
   FloatAttributeTable::clear_attributes(pi);
   StringAttributeTable::clear_attributes(pi);
   IntAttributeTable::clear_attributes(pi);
