@@ -108,6 +108,7 @@ Restraints DiameterRestraint::create_decomposition() const {
       std::ostringstream oss;
       oss << get_name() << " " << i << " " << j;
       ret.back()->set_name(oss.str());
+      ret.back()->set_model(get_model());
     }
   }
   return ret;
@@ -127,6 +128,7 @@ Restraints DiameterRestraint::create_current_decomposition() const {
         std::ostringstream oss;
         oss << get_name() << " " << i << " " << j;
         ret.back()->set_name(oss.str());
+        ret.back()->set_model(get_model());
       }
     }
   }

@@ -301,6 +301,7 @@ Restraints ClosePairsPairScore
     ret[i]= new PairRestraint(f_,
                               IMP::internal::get_particle(pp[0]->get_model(),
                                                               ppt[i]));
+    ret[i]->set_model(pp[0]->get_model());
   }
   return ret;
 }
@@ -315,6 +316,7 @@ Restraints KClosePairsPairScore
     ret[i]= new PairRestraint(f_,
                               IMP::internal::get_particle(pp[0]->get_model(),
                                                               ppt[i]));
+    ret[i]->set_model(pp[0]->get_model());
   }
   return ret;
 }
