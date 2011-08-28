@@ -871,6 +871,7 @@ Restraints MSConnectivityRestraint::create_current_decomposition() const {
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
     ret[i]=pr;
+    ret[i]->set_model(get_model());
   }
   return ret;
 }
