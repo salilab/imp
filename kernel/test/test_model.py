@@ -164,12 +164,12 @@ class ModelTests(IMP.test.TestCase):
         for s in m.get_restraints():
             s.show()
     def test_temp_restraints(self):
-        """Check temporary restraint methods"""
+        """Check free restraint methods"""
         m = IMP.Model()
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
-        m.add_temporary_restraint(r)
+        r.set_model(m)
         print r.evaluate(False)
         del r
         m.evaluate(False)

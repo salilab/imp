@@ -107,16 +107,31 @@ Model::RestraintConstIterator Model::restraints_end() const {
   return rs_->restraints_end();
 }
 
-void Model::add_temporary_restraint(Restraint *r) {
+void Model::add_tracked_restraint(Restraint *r) {
+  IMP_OBJECT_LOG;
+  if (dynamic_cast<RestraintSet*>(r)) {
+    // ignore it
+    return;
+  }
+  IMP_LOG(TERSE, "Adding tracked restraint " << r->get_name()
+          << std::endl);
   reset_dependencies();
-  r->set_model(this);
-  temp_restraints_.push_back(r);
+  IMP_USAGE_CHECK(tracked_restraints_.find(r)
+                  == tracked_restraints_.end(),
+                  "Tracked restraint found on add");
+  tracked_restraints_.insert(r);
+
 }
-void Model::remove_temporary_restraint(Restraint *r) {
+void Model::remove_tracked_restraint(Restraint *r) {
+  if (dynamic_cast<RestraintSet*>(r)) {
+    // ignore it
+    return;
+  }
   reset_dependencies();
-  r->set_model(NULL);
-  temp_restraints_.erase(std::find(temp_restraints_.begin(),
-                                   temp_restraints_.end(), r));
+  IMP_USAGE_CHECK(tracked_restraints_.find(r)
+                  != tracked_restraints_.end(),
+                  "Tracked restraint not found on removal");
+  tracked_restraints_.erase(r);
 }
 
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,

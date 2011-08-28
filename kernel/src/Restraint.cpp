@@ -25,9 +25,15 @@ Restraint::Restraint(std::string name):
 
 Restraint::~Restraint()
 {
+  IMP_OBJECT_LOG;
   if (model_) {
+    IMP_LOG(TERSE, "Removing trackedf restraint " << get_name()
+            << " from model." << std::endl);
     IMP_CHECK_OBJECT(model_);
-    model_->remove_temporary_restraint(this);
+    model_->remove_tracked_restraint(this);
+  } else {
+     IMP_LOG(TERSE, "Not removing restraint " << get_name()
+            << " from model." << std::endl);
   }
 }
 
@@ -37,9 +43,15 @@ void Restraint::set_model(Model* model)
   IMP_USAGE_CHECK(model==NULL || model_==NULL
             || (model_ && model_ == model),
             "Model* different from already stored model "
-            << model << " " << model_);
+                  << model << " " << model_);
+  if (model_) {
+    model_->remove_tracked_restraint(this);
+  }
   model_=model;
-  if (model) set_was_used(true);
+  if (model_) {
+    set_was_used(true);
+    model_->add_tracked_restraint(this);
+  }
 }
 
 namespace {
