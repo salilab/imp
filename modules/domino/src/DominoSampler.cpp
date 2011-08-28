@@ -83,8 +83,9 @@ Assignments DominoSampler
   }
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
-  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
-                                             get_particle_states_table());
+  SubsetFilterTables sfts
+    = get_subset_filter_tables_to_use(RestraintsTemp(1, rs),
+                                      get_particle_states_table());
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Filtering with ");
     for (unsigned int i=0; i< sfts.size(); ++i) {
@@ -236,7 +237,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
   OptimizeRestraints ro(rs, get_particle_states_table());
   //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
-  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(RestraintsTemp(1,rs),
                                          get_particle_states_table());
   IMP::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
@@ -275,7 +276,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   OptimizeRestraints ro(rs, get_particle_states_table());
   //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
   //ParticlesTemp pt(known_particles.begin(), known_particles.end())
-  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(RestraintsTemp(1,rs),
                                          get_particle_states_table());
   ListSubsetFilterTable* lsft=NULL;
   if (csf_) {

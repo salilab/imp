@@ -136,7 +136,7 @@ void ModelData::initialize() {
             << std::endl);
   }
   // the model
-  {
+  if (!rs_.empty()){
     double max=rs_[0]->get_model()->get_maximum_score();
     if (max < std::numeric_limits<double>::max()) {
       std::pair<RestraintsTemp, Floats> cur=

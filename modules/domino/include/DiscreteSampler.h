@@ -60,7 +60,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler
 #ifndef IMP_DOXYGEN
  protected:
   SubsetFilterTables
-    get_subset_filter_tables_to_use(RestraintSet *rs,
+    get_subset_filter_tables_to_use(const RestraintsTemp &rs,
                                     ParticleStatesTable *pst) const;
   AssignmentsTable*
     get_assignments_table_to_use(const SubsetFilterTables &sfts,
