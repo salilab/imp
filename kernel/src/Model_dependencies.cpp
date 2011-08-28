@@ -182,7 +182,7 @@ namespace {
 
 
 void Model::reset_dependencies() {
-  ordered_restraints_.clear();
+  scoring_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
 }
@@ -191,24 +191,15 @@ void Model::compute_dependencies() const {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
   Floats weights;
-  boost::tie(ordered_restraints_,
+  boost::tie(scoring_restraints_,
              weights)
     = get_restraints_and_weights(restraints_begin(),
                                  restraints_end());
-  for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
-    ordered_restraints_[i]->model_weight_= weights[i];
+  for (unsigned int i=0; i< scoring_restraints_.size(); ++i) {
+    scoring_restraints_[i]->model_weight_= weights[i];
   }
-  RestraintsTemp all_restraints=ordered_restraints_;
-  for (unsigned int i=0; i< temp_restraints_.size(); ++i) {
-    RestraintsTemp curr;
-    Floats curw;
-    boost::tie(curr, curw)
-      = get_restraints_and_weights(RestraintsTemp(1, temp_restraints_[i]));
-    for (unsigned int i=0; i< curr.size(); ++i) {
-      curr[i]->model_weight_= curw[i];
-    }
-    all_restraints.insert(all_restraints.end(), curr.begin(), curr.end());
-  }
+  RestraintsTemp all_restraints(tracked_restraints_.begin(),
+                                tracked_restraints_.end());
   ScoreStates score_states= access_score_states();
   IMP_LOG(VERBOSE, "Making dependency graph on " << weights.size()
           << " restraints " << score_states.size() << " score states "
@@ -288,7 +279,7 @@ double Model::evaluate(bool calc_derivs) {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  Floats ret= do_evaluate(ordered_restraints_,
+  Floats ret= do_evaluate(scoring_restraints_,
                      ordered_score_states_,
                           calc_derivs, false, false);
   first_call_=false;

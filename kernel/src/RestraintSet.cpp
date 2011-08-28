@@ -144,14 +144,18 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
   Restraints ret;
   RestraintsTemp all= get_restraints(rs);
   for (unsigned int i=0; i< all.size(); ++i) {
+    IMP_USAGE_CHECK(all[i]->get_model(),
+                    "Need to add all restraints to model before decomposing");
     Restraints cur= all[i]->create_decomposition();
-
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       RestraintsTemp frs= get_restraints(RestraintsTemp(1, all[i]));
       RestraintsTemp fret= get_restraints(RestraintsTemp(cur.begin(),
                                                          cur.end()));
       {for (unsigned int i=0; i< cur.size(); ++i) {
-        all[0]->get_model()->add_temporary_restraint(cur[i]);
+          IMP_INTERNAL_CHECK(cur[i]->get_is_part_of_model(),
+                             "Restraint " << cur[i]->get_name()
+                             << " produced from " << all[i]->get_name()
+                             << " is not already part of model.");
         }}
       IMP_LOG(TERSE, "Evaluating before" << std::endl);
       Floats efrs= rs[0]->get_model()->evaluate(frs, false);
@@ -159,18 +163,14 @@ Restraints create_decomposition(const RestraintsTemp &rs) {
       Floats efret= rs[0]->get_model()->evaluate(fret, false);
       double s0= std::accumulate(efrs.begin(), efrs.end(), 0.0);
       double s1= std::accumulate(efret.begin(), efret.end(), 0.0);
-      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1){
+      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1) {
         IMP_WARN("The before and after scores don't agree for: "
                  << all[i]->get_name() << " got "
                  << s0 << " and " << s1 << " over "
                  << cur.size() << " new restraints: "
                  << efrs << " vs " << efret);
       }
-      {for (unsigned int i=0; i< cur.size(); ++i) {
-        rs[0]->get_model()->remove_temporary_restraint(cur[i]);
-        }}
     }
-
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;

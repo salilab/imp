@@ -634,7 +634,7 @@ private:
   mutable internal::Stage cur_stage_;
   unsigned int eval_count_;
   OwnerPointer<RestraintSet> rs_;
-  RestraintsTemp temp_restraints_;
+  compatibility::set<Restraint*> tracked_restraints_;
   bool first_call_;
   double max_score_;
   mutable bool has_good_score_;
@@ -670,11 +670,11 @@ private:
 
 
   // dependencies
-  mutable RestraintsTemp ordered_restraints_;
+  mutable RestraintsTemp scoring_restraints_;
   mutable ScoreStatesTemp ordered_score_states_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
-    return (!ordered_restraints_.empty()
+    return (!scoring_restraints_.empty()
             || get_number_of_restraints() ==0)
       && ordered_score_states_.size()
       == get_number_of_score_states();
@@ -786,15 +786,17 @@ public:
     return rs_;
   }
   /**@}*/
+#ifndef IMP_DOXYGEN
  /** \name Temporary Restraints
 
       Temporary restraints are ones that are not part of the scoring function
       but that well be evaluated at some point. Restraints that are part of
       these sets cannot be part of non-temporary sets or other temporary sets.
   */
-  void add_temporary_restraint(Restraint *r);
-  void remove_temporary_restraint(Restraint *r);
+  void add_tracked_restraint(Restraint *r);
+  void remove_tracked_restraint(Restraint *r);
   /** @} */
+#endif
  public:
 
   /** \name Filtering

@@ -73,17 +73,11 @@ public:
   //! See Model::evaluate_if_good()
   double evaluate_if_good(bool calc_derivatives) const;
 
-  /** \brief The restraint can override this in order to take action
-      when added to a Model
-
-      Users should generally not call this method directly; instead
-      they should just use Model::add_restraint() to add the
-      restraint to the Model.
-
-      Restraints
-      that want to take action when they are added to the model can
-      override this method (but be sure to call Restraint::set_model()
-      to set the actual model pointer).
+  /** This method is called to register a restrain with a model.
+      Adding the restraint the model (Model::add_restraint()) will
+      call this methodm but it can be called directly if one
+      wants to use the restraint, just not as part of the normal
+      scoring function.
    */
   virtual void set_model(Model* model);
 
@@ -121,6 +115,9 @@ public:
   /** Given the set of input particles, decompose the restraint into as
       simple parts as possible. For many restraints, the simplest
       part is simply the restraint itself.
+
+      The restraints returned have had set_model() called and so can
+      be evaluated.
    */
   virtual Restraints create_decomposition() const {
     return Restraints(1, const_cast<Restraint*>(this));
@@ -130,6 +127,9 @@ public:
       but will not necessarily be valid if any of the particles are
       changed. This is the same as create_decomposition() for
       non-conditional restraints.
+
+      The restraints returned have had set_model() called and so can be
+      evaluated.
    */
   virtual Restraints create_current_decomposition() const {
     return create_decomposition();
