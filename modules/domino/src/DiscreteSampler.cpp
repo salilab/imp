@@ -28,7 +28,7 @@ IMP_LIST_IMPL(DiscreteSampler, SubsetFilterTable,
 
 SubsetFilterTables
 DiscreteSampler
-::get_subset_filter_tables_to_use(RestraintSet *rs,
+::get_subset_filter_tables_to_use(const RestraintsTemp &rs,
                                   ParticleStatesTable *pst) const {
   if (get_number_of_subset_filter_tables() > 0) {
     for (unsigned int i=0; i< get_number_of_subset_filter_tables(); ++i) {
@@ -38,7 +38,12 @@ DiscreteSampler
                               subset_filter_tables_end());
   } else {
     SubsetFilterTables sfts;
-    sfts.push_back(new RestraintScoreSubsetFilterTable(rs, pst));
+    Restraints rd= create_decomposition(rs);
+    IMP_LOG(TERSE, "Decomposed input restraints to " << rd.size()
+            << " restraints." << std::endl);
+    sfts
+      .push_back(new RestraintScoreSubsetFilterTable(get_as<RestraintsTemp>(rd),
+                                                     pst));
     sfts.back()->set_was_used(true);
     sfts.push_back(new ExclusionSubsetFilterTable
                    (get_particle_states_table()));
