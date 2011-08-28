@@ -145,6 +145,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    MPI::COMM_WORLD.Recv (fbias, 2*nbins,MPI::DOUBLE,frank,123);
    Floats val(fbias, fbias+2*nbins);
    ptr->set_bias(val);
+   delete(fbias);
   }
  }
 
