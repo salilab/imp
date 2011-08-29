@@ -17,7 +17,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-//! Constraint a particle to be in the x,y plane
+//! Restrain a particle to be in the x,y plane
 /** \note Be sure to check out the swig wrapper file and how it
     wraps this class.
 
