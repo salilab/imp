@@ -57,7 +57,8 @@ public:
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= atom::Mass::get_mass_key(),
                float scale=1,
-               bool use_rigid_bodies=true);
+               bool use_rigid_bodies=true,
+               KernelType kt=GAUSSIAN);
   //! \return the predicted density map of the model
   SampledDensityMap * get_model_dens_map() const {
     return model_dens_map_;
@@ -101,6 +102,7 @@ private:
   Particles not_part_of_rb_; //all particles that are not part of a rigid body
   Particles part_of_rb_;
   core::RigidBodies rbs_;
+  KernelType kt_;
 };
 
 IMPEM_END_NAMESPACE
