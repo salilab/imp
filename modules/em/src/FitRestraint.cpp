@@ -10,6 +10,7 @@
 #include <IMP/em/envelope_penetration.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/HarmonicUpperBound.h>
+#include <IMP/atom/pdb.h>
 #include "IMP/container_macros.h"
 #include <IMP/log.h>
 
@@ -21,8 +22,9 @@ FitRestraint::FitRestraint(
    FloatPair norm_factors,
    FloatKey weight_key,
    float scale,
-   bool use_rigid_bodies
-   ): Restraint("Fit restraint")
+   bool use_rigid_bodies,
+   KernelType kt
+                           ): Restraint("Fit restraint"),kt_(kt)
 {
   use_rigid_bodies_=use_rigid_bodies;
   IMP_LOG(TERSE,"Load fit restraint with the following input:"<<
@@ -48,7 +50,7 @@ FitRestraint::FitRestraint(
   scalefac_ = scale;
   store_particles(ps);
   IMP_LOG(TERSE,"after adding "<< all_ps_.size()<<" particles"<<std::endl);
-  model_dens_map_ = new SampledDensityMap(*em_map->get_header());
+  model_dens_map_ = new SampledDensityMap(*em_map->get_header(),kt_);
   model_dens_map_->set_particles(all_ps_,weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
   dist_mask_=new DistanceMask(model_dens_map_->get_header());
@@ -68,7 +70,7 @@ void FitRestraint::initialize_model_density_map(
   //none_rb_model_dens_map_ will include all particles
   //that are not part of a rigid body
   none_rb_model_dens_map_ =
-    new SampledDensityMap(*(target_dens_map_->get_header()));
+    new SampledDensityMap(*(target_dens_map_->get_header()),kt_);
   none_rb_model_dens_map_->set_name(get_name()+" scratch map");
   none_rb_model_dens_map_->reset_data(0.0);
   if (use_rigid_bodies_) {
@@ -91,7 +93,7 @@ void FitRestraint::initialize_model_density_map(
       core::transform(rb,move2map_center);
       rbs_orig_rf_.push_back(rb.get_reference_frame());
       rb_model_dens_map_.push_back(
-                    new SampledDensityMap(*(target_dens_map_->get_header())));
+             new SampledDensityMap(*(target_dens_map_->get_header()),kt_));
       rb_model_dens_map_.back()->set_was_used(true);
       rb_model_dens_map_.back()->set_name(get_name()+" internal rb map");
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
@@ -126,6 +128,8 @@ void FitRestraint::initialize_model_density_map(
   }
 }
 void FitRestraint::resample() const {
+  //TODO - first check that the bounding box of the particles
+  //match the one of the sampled ones.
   //resample the map containing all non rigid body particles
   //this map has all of the non rigid body particles.
   if (not_part_of_rb_.size()>0) {
@@ -161,7 +165,21 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_LOG(VERBOSE,"before resample\n");
   resample();
   IMP_LOG(VERBOSE,"after resample\n");
-
+  /*
+  static int kkk=0;
+  std::stringstream name;
+  name<<"resample."<<kkk<<".mrc";
+  em::write_map(model_dens_map_,name.str());
+  std::stringstream name1;
+  name1<<"resample."<<kkk<<".pdb";
+  std::ofstream f (name1.str().c_str());
+  for(int i=0;i<all_ps_.size();i++){
+    f<<atom::get_pdb_string(core::XYZ(all_ps_[i]).get_coordinates(),i,
+                            atom::AT_CA,atom::ALA,'A',i);
+  }
+  f.close();
+  kkk=kkk+1;
+  */
   //In many optimization senarios particles are can be found outside of
   //the density. When all particles are outside of the density the
   //cross-correlation score is zero and the derivatives are meaningless.
