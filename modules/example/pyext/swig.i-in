@@ -13,6 +13,7 @@ IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifier
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleRefCounted, ExampleRefCounteds);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::example, ExampleConstraint, ExampleConstraints);
 // don't ask why the _NAME, it will be fixed at some point
 IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
@@ -44,6 +45,7 @@ def create_model_and_particles():
 %include "IMP/example/ExampleTemplateClass.h"
 %include "IMP/example/ExamplePairScore.h"
 %include "IMP/example/ExampleSubsetFilterTable.h"
+%include "IMP/example/ExampleConstraint.h"
 
 namespace IMP {
   namespace example {
