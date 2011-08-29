@@ -62,7 +62,8 @@ public:
   SampledDensityMap * get_model_dens_map() const {
     return model_dens_map_;
   }
-
+  void set_scale_factor(float scale) {scalefac_=scale;}
+  float get_scale_factor() const {return scalefac_;}
   IMP_RESTRAINT(FitRestraint);
 
 #ifndef SWIG
