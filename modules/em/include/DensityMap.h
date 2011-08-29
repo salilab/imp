@@ -456,7 +456,7 @@ public:
     Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap,kernel,dim_len);
-    cmap=NULL;
+    cmap=static_cast<DensityMap*>(NULL);
   }
 #endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
