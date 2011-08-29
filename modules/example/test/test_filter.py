@@ -13,10 +13,10 @@ class DistanceTests(IMP.test.TestCase):
         sft= IMP.example.ExampleSubsetFilterTable(3, [ps[0], ps[4]])
         self.assertEqual(sft.get_subset_filter(IMP.domino.Subset([ps[0], ps[1], ps[6]]), []),
                          None)
-        self.assertEqual(sft.get_subset_filter([ps[0], ps[1], ps[6], ps[4]],
+        self.assertEqual(sft.get_subset_filter(IMP.domino.Subset([ps[0], ps[1], ps[6], ps[4]]),
                                                [IMP.domino.Subset([ps[0], ps[4], ps[3]])]),
                          None)
-        sf= sft.get_subset_filter([ps[0], ps[1], ps[6], ps[4]],
+        sf= sft.get_subset_filter(IMP.domino.Subset([ps[0], ps[1], ps[6], ps[4]]),
                                                [])
         self.assertEqual(sf.get_is_ok([3,3,3,3]), True)
         self.assertEqual(sf.get_is_ok([0,4,8,12]), False)
