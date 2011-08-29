@@ -166,7 +166,11 @@ void HeapAssignmentContainer::add_assignment(const Assignment& a) {
                          "Assignment " << a << " already here.");
     }
   }
-  double score=rssf_->get_score(a);
+  //rssf_ may be null if no restraints are assigned to the particles
+  double score=INT_MAX;
+  if (rssf_!=NULL){
+    score=rssf_->get_score(a);
+  }
   d_.push_back(AP(a,score));
   std::push_heap(d_.begin(), d_.end(), GreaterSecond());
   while (d_.size() > k_){
@@ -174,9 +178,9 @@ void HeapAssignmentContainer::add_assignment(const Assignment& a) {
                   GreaterSecond());
     d_.pop_back();
   }
-  if (d_.size()%1000000 == 0) {
-    std::cout<<"Current subset size:"<<d_.size()<<" : "<<a<<std::endl;
-  }
+  // if (d_.size()%1000000 == 0) {
+  //   std::cout<<"Current subset size:"<<d_.size()<<" : "<<a<<std::endl;
+  // }
 }
 
 //////////// CLUSTERED
