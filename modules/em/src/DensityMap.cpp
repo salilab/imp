@@ -1637,7 +1637,6 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
           if ((check > 0)&&(mdata2[q] == 1)) {mdata2[q]=0;}
         }
       }
-  mask_inside=NULL;
   return mask_inside2.release();
 }
 IMPEM_END_NAMESPACE

@@ -47,7 +47,6 @@ double get_percentage_of_voxels_covered_by_particles(
   emreal* new_data = dmap_ind->get_data();
   IMP_LOG(IMP::VERBOSE,"START get_percentage_of_voxels_covered_by_particles"
          << std::endl);
-  long num_covered_particles=0;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz,ivoxz,ivoxy,ivoxx,znxny,ivox;
   int nxny=dmap->get_header()->get_nx()*dmap->get_header()->get_ny();
   int nx=dmap->get_header()->get_nx();
