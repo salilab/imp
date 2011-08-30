@@ -97,7 +97,7 @@ public:
     return ps_;
   }
 
-  Restraints create_current_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 
   IMP_RESTRAINT(MSConnectivityRestraint);
 

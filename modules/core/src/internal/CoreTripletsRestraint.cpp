@@ -67,30 +67,23 @@ ContainersTemp CoreTripletsRestraint::get_input_containers() const
 }
 
 
-Restraints CoreTripletsRestraint::create_decomposition() const {
-  IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(get_is_part_of_model(),
-                  "Restraint must be part of model before being decomposed.");
-  Restraints ret= pc_->create_decomposition(ss_);
-  for (unsigned int i=0; i < ret.size(); ++i) {
-    ret[i]->set_maximum_score(get_maximum_score());
+Restraints CoreTripletsRestraint::do_create_decomposition() const {
+  Restraints cur= pc_->create_decomposition(ss_);
+  for (unsigned int i=0; i < cur.size(); ++i) {
+    cur[i]->set_maximum_score(get_maximum_score());
   }
-  for (unsigned int i=0; i< ret.size(); ++i) {
+  for (unsigned int i=0; i< cur.size(); ++i) {
     std::ostringstream oss;
     oss << get_name() << " " << i;
-    ret[i]->set_name(oss.str());
-    ret[i]->set_model(get_model());
+    cur[i]->set_name(oss.str());
   }
-  return ret;
+  return cur;
 }
 
-Restraints CoreTripletsRestraint::create_current_decomposition() const {
-  IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(get_is_part_of_model(),
-                  "Restraint must be part of model before being decomposed.");
+Restraints CoreTripletsRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< pc_->get_number(); ++i) {
-    Restraints cur=ss_->get_current_decomposition(pc_->get(i));
+    Restraints cur=ss_->create_current_decomposition(pc_->get(i));
     for (unsigned int i=0; i < cur.size(); ++i) {
       cur[i]->set_maximum_score(get_maximum_score());
     }
@@ -100,7 +93,6 @@ Restraints CoreTripletsRestraint::create_current_decomposition() const {
     std::ostringstream oss;
     oss << get_name() << " " << i;
     ret[i]->set_name(oss.str());
-    ret[i]->set_model(get_model());
   }
   return ret;
 }

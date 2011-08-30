@@ -427,7 +427,7 @@ ContainersTemp ExcludedVolumeRestraint
 ::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
-Restraints ExcludedVolumeRestraint::create_decomposition() const {
+Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   if (!initialized_) initialize();
   Restraints ret;
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
@@ -483,7 +483,7 @@ Restraints ExcludedVolumeRestraint::create_decomposition() const {
   return ret;
 }
 
-Restraints ExcludedVolumeRestraint::create_current_decomposition() const {
+Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
     ret.push_back(create_restraint(ssps_.get(),

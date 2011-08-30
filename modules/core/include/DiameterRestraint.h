@@ -45,9 +45,11 @@ public:
                     SingletonContainer *sc, Float diameter);
 
   IMP_RESTRAINT(DiameterRestraint);
-  Restraints create_decomposition() const;
-  Restraints create_current_decomposition() const;
+#ifndef IMP_DOXYGEN
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
   void set_model(Model *m);
+#endif
 };
 
 
