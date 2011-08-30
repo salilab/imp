@@ -88,8 +88,15 @@ namespace {
 
 void ModelData::initialize() {
   IMP_FUNCTION_LOG;
+  Restraints decomposed;
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    Pointer<Restraint> r(rs_[i]->create_decomposition());
+    if (r) {
+      decomposed.push_back(r);
+    }
+  }
   //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
-  DependencyGraph dg= get_dependency_graph(get_as<RestraintsTemp>(rs_));
+  DependencyGraph dg= get_dependency_graph(get_as<RestraintsTemp>(decomposed));
   const ParticlesTemp all= pst_->get_particles();
   IMP::compatibility::map<Particle*, ParticlesTemp> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
@@ -101,7 +108,7 @@ void ModelData::initialize() {
   }
   IMP::compatibility::map<Restraint*, Ints> index;
   RestraintsTemp restraints
-    = get_restraints(get_as<RestraintsTemp>(rs_));
+    = get_restraints(get_as<RestraintsTemp>(decomposed));
   for (RestraintsTemp::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
@@ -110,7 +117,7 @@ void ModelData::initialize() {
                      rdata_, index, cache_);
   }
   RestraintSetsTemp restraint_sets
-    = get_restraint_sets(rs_.begin(), rs_.end());
+    = get_restraint_sets(decomposed.begin(), decomposed.end());
   for (unsigned int i=0; i< restraint_sets.size(); ++i) {
     double max=restraint_sets[i]
       ->get_maximum_score();
@@ -136,11 +143,11 @@ void ModelData::initialize() {
             << std::endl);
   }
   // the model
-  if (!rs_.empty()){
-    double max=rs_[0]->get_model()->get_maximum_score();
+  if (!decomposed.empty()){
+    double max=decomposed[0]->get_model()->get_maximum_score();
     if (max < std::numeric_limits<double>::max()) {
       std::pair<RestraintsTemp, Floats> cur=
-        get_restraints_and_weights(get_as<RestraintsTemp>(rs_),
+        get_restraints_and_weights(get_as<RestraintsTemp>(decomposed),
                                    1);
       Ints curi;
       Floats curw;
@@ -169,11 +176,18 @@ void ModelData::initialize() {
 }
 
 void ModelData::validate() const {
-  IMP_USAGE_CHECK(get_restraints(get_as<RestraintsTemp>(rs_)).size()
+  Restraints decomposed;
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    Pointer<Restraint> r(rs_[i]->create_decomposition());
+    if (r) {
+      decomposed.push_back(r);
+    }
+  }
+  IMP_USAGE_CHECK(get_restraints(get_as<RestraintsTemp>(decomposed)).size()
                   == dependencies_.size(),
                      "The restraints changed after Domino was set up. "
                   << "This is a bad thing: "
-                  << get_restraints(get_as<RestraintsTemp>(rs_)).size()
+                  << get_restraints(get_as<RestraintsTemp>(decomposed)).size()
                   << " vs " << dependencies_.size());
   IMP_INTERNAL_CHECK(dependencies_.size()== rdata_.size(),
                      "Inconsistent data in Restraint evaluator or Filter");
@@ -318,5 +332,7 @@ RestraintsTemp SubsetData::get_restraints() const {
   }
   return ret;
 }
+
+
 
 IMPDOMINO_END_INTERNAL_NAMESPACE

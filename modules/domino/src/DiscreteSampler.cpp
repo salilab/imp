@@ -38,11 +38,8 @@ DiscreteSampler
                               subset_filter_tables_end());
   } else {
     SubsetFilterTables sfts;
-    Restraints rd= create_decomposition(rs);
-    IMP_LOG(TERSE, "Decomposed input restraints to " << rd.size()
-            << " restraints." << std::endl);
     sfts
-      .push_back(new RestraintScoreSubsetFilterTable(get_as<RestraintsTemp>(rd),
+      .push_back(new RestraintScoreSubsetFilterTable(rs,
                                                      pst));
     sfts.back()->set_was_used(true);
     sfts.push_back(new ExclusionSubsetFilterTable
