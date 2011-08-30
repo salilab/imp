@@ -24,7 +24,7 @@ class SurfaceDistanceMap
 {
 public:
 
-  SurfaceDistanceMap(const IMP::Particles &ps, float voxel_size)
+  SurfaceDistanceMap(const IMP::ParticlesTemp &ps, float voxel_size)
     : SurfaceShellDensityMap(ps, voxel_size)
   {}
 
@@ -132,7 +132,7 @@ void SurfaceDistanceMap::resample() {
 
 
 IMP::algebra::DenseGrid3D<float>
-get_complentarity_grid(const IMP::Particles &ps,
+get_complentarity_grid(const IMP::ParticlesTemp &ps,
   const ComplementarityGridParameters &params)
 {
   SurfaceDistanceMap sdm(ps, params.voxel_size);
@@ -144,6 +144,7 @@ get_complentarity_grid(const IMP::Particles &ps,
         sdm.y_loc(num_voxels - 1), sdm.z_loc(num_voxels - 1)));
   IMP::algebra::DenseGrid3D<float> grid(params.voxel_size, bb);
   IMP_GRID3D_FOREACH_VOXEL(grid,
+                           IMP_UNUSED(loop_voxel_index);
       long idx = sdm.get_voxel_by_location(
         voxel_center[0], voxel_center[1], voxel_center[2]);
       if ( idx > -1 )
@@ -184,6 +185,7 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
 {
   double complementarity_score = 0, penetration_score = 0;
   IMP_GRID3D_FOREACH_VOXEL(map1,
+                           IMP_UNUSED(loop_voxel_index);
       float v1 = map1[voxel_center];
       IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
       float v0;

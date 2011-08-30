@@ -12,7 +12,7 @@
 #include <boost/format.hpp>
 #include <boost/bind.hpp>
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
 bool is_protein_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -202,6 +202,7 @@ void parse_interaction_line(
     inter_prots.push_back(index);
   }
   dp->add_interaction(inter_prots);
+}
 }
 
 ProteomicsData read_proteomics_data(const char *prot_fn) {

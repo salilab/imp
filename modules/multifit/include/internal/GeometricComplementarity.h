@@ -40,7 +40,7 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters
 
 
 IMPMULTIFITEXPORT IMP::algebra::DenseGrid3D<float>
-get_complentarity_grid(const IMP::Particles &ps,
+get_complentarity_grid(const IMP::ParticlesTemp &ps,
   const ComplementarityGridParameters &params=ComplementarityGridParameters());
 
 

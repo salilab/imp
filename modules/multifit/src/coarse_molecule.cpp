@@ -51,8 +51,8 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
   }
   //todo - mass should be a parameter
   atom::Hierarchy ret_prot=create_molecule(vecs,bead_radius,3,mdl);
-  Particles leaves=core::get_leaves(ret_prot);
-  for (Particles::iterator it = leaves.begin();it != leaves.end();it++){
+  ParticlesTemp leaves=core::get_leaves(ret_prot);
+  for (ParticlesTemp::iterator it = leaves.begin();it != leaves.end();it++){
     sel.push_back(atom::Selection(atom::Hierarchy(*it)));
   }
   if (add_conn_restraint){

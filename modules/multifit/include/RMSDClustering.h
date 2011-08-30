@@ -93,7 +93,7 @@ public:
   void cluster(float max_dist, const std::vector<TransT>& input_trans,
                std::vector<TransT>& output_trans);
   //! prepare for clustering
-  void prepare(const Particles &ps);
+  void prepare(const ParticlesTemp &ps);
   void set_bin_size(float bin_size) {bin_size_=bin_size;}
 protected:
   //! returns the RMSD between two transformations with respect to
@@ -245,7 +245,7 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
   return num_joins;
 }
 template<class TransT>
-void RMSDClustering<TransT>::prepare(const Particles& ps) {
+void RMSDClustering<TransT>::prepare(const ParticlesTemp& ps) {
   rmsd_calc_=atom::RMSDCalculator(ps);
   // save centroid
   centroid_ = algebra::Vector3D(0,0,0);

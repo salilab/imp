@@ -14,11 +14,11 @@
 
 
 
-IMP::Particles create_balls(IMP::Model *m,
+IMP::ParticlesTemp create_balls(IMP::Model *m,
     const std::vector<double> &radii,
     const std::vector<IMP::algebra::Vector3D> &coords)
 {
-  IMP::Particles res;
+  IMP::ParticlesTemp res;
   for ( size_t i = 0; i < radii.size(); ++i )
   {
     IMP::Particle *p = new IMP::Particle(m);
@@ -40,7 +40,7 @@ int main()
   std::vector<IMP::algebra::Vector3D> coords;
   coords.push_back(IMP::algebra::Vector3D(0, 0, 0));
   IMP::Model *m = new IMP::Model;
-  IMP::Particles particles0 = create_balls(m, radii, coords);
+  IMP::ParticlesTemp particles0 = create_balls(m, radii, coords);
   IMP::multifit::internal::ComplementarityGridParameters cgpar;
   cgpar.voxel_size = 1;
   cgpar.interior_thickness = 2;

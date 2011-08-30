@@ -24,11 +24,12 @@
 #include <algorithm>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
 bool sort_data_points_first_larger_than_second(
             const std::pair<float,algebra::Vector3D> &a,
             const std::pair<float,algebra::Vector3D> &b) {
   return a.first>b.first;
+}
 }
 DataPointsAssignment::DataPointsAssignment(
                       const XYZDataPoints *data,
@@ -57,7 +58,7 @@ algebra::Vector3Ds
   DataPointsAssignment::set_cluster(int cluster_ind) {
   //remove outliers
   Pointer<Model> mdl = new Model();
-  Particles full_set;//all points of the cluster
+  ParticlesTemp full_set;//all points of the cluster
   for (int i=0;i<data_->get_number_of_data_points();i++) {
     if (cluster_engine_->is_part_of_cluster(i,cluster_ind)) {
       core::XYZR x = core::XYZR::setup_particle(new Particle(mdl),
@@ -124,7 +125,7 @@ void DataPointsAssignment::set_edges(double voxel_size) {
   Pointer<Model> mdl = new Model();
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
     algebra::Vector3Ds vecs =get_cluster_vectors(i);
-    Particles ps(vecs.size());
+    ParticlesTemp ps(vecs.size());
     for(unsigned int j=0;j<vecs.size();j++) {
       core::XYZR x = core::XYZR::setup_particle(new Particle(mdl),
                           algebra::Sphere3D(vecs[j],voxel_size));

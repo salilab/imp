@@ -23,6 +23,7 @@ statistics::Histogram get_density_histogram(const em::DensityMap *dmap,
   }
   return hist;
 }
+namespace {
 void calc_local_bounding_box(
   em::DensityMap *dmap,long v_index,
   int &iminx,int &iminy, int &iminz,
@@ -45,7 +46,7 @@ void calc_local_bounding_box(
   if (z==0){iminz=0;}
   if (z==(nz-1)){imaxz=nz-1;}
 }
-
+}
 
 void DensitySegmentationByCommunities::build_density_graph(float edge_threshold)
 {

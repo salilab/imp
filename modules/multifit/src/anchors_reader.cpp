@@ -11,7 +11,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
 bool is_edges_line(const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -62,6 +62,7 @@ IntPair parse_edge_line(const std::string &line){
                  boost::lexical_cast<int>(line_split[0]),
                  boost::lexical_cast<int>(line_split[1]));
 }
+}
 
 AnchorsData read_anchors_data(const char *txt_fn){
   std::fstream in;
@@ -104,6 +105,7 @@ void write_txt(const std::string &txt_filename,
   out.close();
 }
 
+namespace {
 void write_cmm_helper(std::ostream &out,
                       const std::string &marker_set_name,
                       const algebra::Vector3Ds &nodes,
@@ -132,6 +134,7 @@ void write_cmm_helper(std::ostream &out,
         << "\" radius=\"1.0\"/>" << std::endl;
   }
   out << "</marker_set>" << std::endl;
+}
 }
 
 void write_cmm(const std::string &cmm_filename,

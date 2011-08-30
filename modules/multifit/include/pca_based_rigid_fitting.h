@@ -56,7 +56,7 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-  Particles ps,
+  ParticlesTemp ps,
   em::DensityMap *em_map,Float threshold,
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=

@@ -22,7 +22,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 void add_surface_index(core::Hierarchy mh,Float apix,
                 FloatKey shell_key,
                 FloatKey ,FloatKey )  {
-  Particles ps = core::get_leaves(mh);
+  ParticlesTemp ps = core::get_leaves(mh);
   Pointer<em::SurfaceShellDensityMap> shell_map
     = new em::SurfaceShellDensityMap(ps,apix);
 
@@ -42,7 +42,7 @@ IMP::Restraint *create_weighted_excluded_volume_restraint(
   IMP::Model* mdl=rb1.get_particle()->get_model();
   //generate the list singleton contrainers
   IMP_NEW(core::LeavesRefiner,leaves_refiner,(atom::Hierarchy::get_traits()));
-  Particles ps1= leaves_refiner->get_refined(rb1),
+  ParticlesTemp ps1= leaves_refiner->get_refined(rb1),
     ps2= leaves_refiner->get_refined(rb2);
   IMP_NEW(container::ListSingletonContainer,ls1,(ps1));
   IMP_NEW(container::ListSingletonContainer,ls2,(ps2));

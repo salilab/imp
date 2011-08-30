@@ -75,10 +75,10 @@ public:
   ParticlesDataPoints() : XYZDataPoints() {
   }
 
-  ParticlesDataPoints(Particles ps) : XYZDataPoints() {
+  ParticlesDataPoints(ParticlesTemp ps) : XYZDataPoints() {
     populate_data_points(ps);
   }
-  void populate_data_points(Particles ps);
+  void populate_data_points(ParticlesTemp ps);
   Particle* get_particle(int i) const { return ps_[i];}
   const Particles  &get_particles() const { return ps_;}
 

@@ -18,7 +18,6 @@ namespace {
   {
     return path + "/" + boost::lexical_cast<std::string>(name);
   }
-}
 
 ComponentHeader *parse_component_line(
    const std::string &path,const std::string &line) {
@@ -108,6 +107,7 @@ AssemblyHeader *parse_assembly_line(
   dens->set_fine_ap_fn(join_path(path, line_split[9]));
   dens->set_fine_over_sampled_ap_fn(join_path(path, line_split[10]));
   return dens.release();
+}
 }
 
 SettingsData *read_settings(const char *filename,const char *data_path) {

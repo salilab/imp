@@ -13,7 +13,7 @@
 #include <boost/format.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
 FittingSolutionRecord parse_fitting_line(const std::string &line) {
   IMP_LOG(VERBOSE,"line:"<<line<<std::endl);
   FittingSolutionRecord fit_sol;
@@ -79,7 +79,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   IMP_LOG(VERBOSE,"finish parsing line"<<std::endl);
   return fit_sol;
 }
-
+}
 
 FittingSolutionRecords read_fitting_solutions(const char *fitting_fn) {
   std::fstream in;
