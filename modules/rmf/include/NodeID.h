@@ -14,31 +14,38 @@
 #include <vector>
 #include <iostream>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 
-/** A key for a node in the hierarchy. */
-class NodeID {
-  int i_;
-  friend class NodeHandle;
-  friend struct NodeIDTraits;
-  friend class RootHandle;
-public:
-  explicit NodeID(unsigned int i): i_(i){}
-  NodeID(): i_(-1){}
-  void show(std::ostream &out) const {
-    out << i_;
+  /** A key for a node in the hierarchy. */
+  class NodeID {
+    int i_;
+    friend class NodeHandle;
+    friend struct NodeIDTraits;
+    friend class RootHandle;
+  public:
+    explicit NodeID(unsigned int i): i_(i){}
+    NodeID(): i_(-1){}
+    void show(std::ostream &out) const {
+      out << i_;
+    }
+    int get_index() const {
+      return i_;
+    }
+    IMP_RMF_COMPARISONS_1(NodeID, i_);
+    IMP_RMF_HASHABLE(NodeID, return i_);
+  };
+
+  typedef std::vector<NodeID> NodeIDs;
+
+#ifndef SWIG
+  inline std::ostream &operator<<(std::ostream &out,
+                                  NodeID id) {
+    id.show(out);
+    return out;
   }
-  int get_index() const {
-    return i_;
-  }
-  IMP_RMF_COMPARISONS_1(NodeID, i_);
-  IMP_RMF_HASHABLE(NodeID, return i_);
-};
-
-typedef std::vector<NodeID> NodeIDs;
-IMP_OUTPUT_OPERATOR(NodeID);
+#endif
 
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_NODE_ID_H */

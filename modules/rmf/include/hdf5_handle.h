@@ -26,7 +26,8 @@
 typedef int hid_t;
 #endif
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
+
 #ifndef SWIG
 //! The signature for the HDF5 close functions
 typedef herr_t (*HDF5CloseFunction)(hid_t) ;
@@ -43,7 +44,7 @@ class IMPRMFEXPORT HDF5Handle : public boost::noncopyable
 public:
   HDF5Handle(hid_t h, HDF5CloseFunction f): h_(h), f_(f) {
     if (h_<0) {
-      IMP_RMF_THROW("Invalid handle returned", ValueException);
+      IMP_RMF_THROW("Invalid handle returned", std::runtime_error);
     }
   }
   HDF5Handle(): h_(-1){}
@@ -90,6 +91,7 @@ public:
  };
 
 #endif // SWIG
-IMPRMF_END_NAMESPACE
+
+} // namespace rmf
 
 #endif /* IMPRMF_HDF_5_HANDLE_H */

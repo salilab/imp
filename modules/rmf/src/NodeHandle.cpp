@@ -11,7 +11,9 @@
 #include <boost/tuple/tuple.hpp>
 #include <IMP/rmf/Category.h>
 #include <IMP/rmf/RootHandle.h>
-IMPRMF_BEGIN_NAMESPACE
+
+namespace rmf {
+
 NodeHandle::NodeHandle(int node, internal::SharedData *shared):
   node_(node), shared_(shared) {
 }
@@ -151,4 +153,9 @@ NodeTree get_node_tree(NodeHandle n) {
   return tree;
 }
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
+
+// there is something wrong with the standards checks (or at least
+// the errors they produce
+IMP_RMF_BEGIN_NAMESPACE
+IMP_RMF_END_NAMESPACE

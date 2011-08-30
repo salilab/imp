@@ -7,20 +7,22 @@
  */
 
 #include <IMP/rmf/restraint_io.h>
-#include <IMP/rmf/operations.h>
+#include <IMP/rmf/internal/imp_operations.h>
 #include <IMP/scoped.h>
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
+using namespace ::rmf;
 
 #define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
   RootHandle imp_f=node.get_root_handle();                              \
-  FloatKey sk= get_or_add_key<FloatTraits>(imp_f, Feature, "score",     \
+  ::rmf::FloatKey sk                                                    \
+  = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
                                            true);                       \
-  NodeIDsKey nk                                                         \
-  = get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
+  ::rmf::NodeIDsKey nk                                                  \
+  = internal::get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
 
 #define IMP_HDF5_ACCEPT_RESTRAINT_KEYS\
-  FloatKey sk, NodeIDsKey nk
+  ::rmf::FloatKey sk, ::rmf::NodeIDsKey nk
 
 #define IMP_HDF5_PASS_RESTRAINT_KEYS\
   sk, nk
@@ -168,15 +170,18 @@ namespace {
     double s=r->evaluate(false);
     cur.set_value(sk, s, 0);
 
-    Restraints rd= r->create_current_decomposition();
-    Index index;
-    for (unsigned int i=0; i<rd.size(); ++i) {
-      //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
-      rd[i]->set_was_used(true);
-      NodeHandle rc=get_child(cur,rd[i], index,
-                              IMP_HDF5_PASS_RESTRAINT_KEYS);
-      double score = rd[i]->unprotected_evaluate(NULL);
-      rc.set_value(sk, score, 0);
+    Pointer<Restraint> rd= r->create_current_decomposition();
+    RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+    if (rs) {
+      Index index;
+      for (unsigned int i=0; i<rs->get_number_of_restraints(); ++i) {
+        //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
+        rs->get_restraint(i)->set_was_used(true);
+        NodeHandle rc=get_child(cur,rs->get_restraint(i), index,
+                                IMP_HDF5_PASS_RESTRAINT_KEYS);
+        double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
+        rc.set_value(sk, score, 0);
+      }
     }
     set_particles(cur, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
   }
@@ -200,13 +205,14 @@ namespace {
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
     rn.set_value(sk, s, frame);
-    Restraints rd= r->create_current_decomposition();
-    for (unsigned int i=0; i< rd.size(); ++i) {
+    Pointer<Restraint> rd= r->create_current_decomposition();
+    RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+    for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
       //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
-      rd[i]->set_was_used(true);
-      NodeHandle rc=get_child(rn, rd[i], index,
+      rs->get_restraint(i)->set_was_used(true);
+      NodeHandle rc=get_child(rn, rs->get_restraint(i), index,
                               IMP_HDF5_PASS_RESTRAINT_KEYS);
-      double score = rd[i]->unprotected_evaluate(NULL);
+      double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
       rc.set_value(sk, score, frame);
     }
   }

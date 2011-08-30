@@ -38,12 +38,12 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
+    rmf::RootHandle rh= rmf::open_rmf_file(input);
     std::string descr= rh.get_description();
     if (!descr.empty()) {
       std::cout << descr << std::endl;
     }
-    IMP::rmf::show_hierarchy(rh, std::cout, vm.count("verbose"), frame);
+    rmf::show_hierarchy(rh, std::cout, vm.count("verbose"), frame);
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;

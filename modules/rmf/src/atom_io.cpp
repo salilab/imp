@@ -7,6 +7,7 @@
  */
 
 #include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/internal/imp_operations.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Mass.h>
@@ -15,47 +16,66 @@
 #include <IMP/atom/Copy.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
-#include <IMP/rmf/operations.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <boost/progress.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
-#define  IMP_HDF5_CREATE_MOLECULE_KEYS(node)\
+using namespace ::rmf;
+
+#define  IMP_HDF5_CREATE_MOLECULE_KEYS(node)                            \
   RootHandle f=node;                                                    \
-  FloatKey x= get_or_add_key<FloatTraits>(f, Physics, "cartesian x",    \
+  ::rmf::FloatKey x                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian x",    \
+                                                    true);              \
+  ::rmf::FloatKey y                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian y",    \
                                           true);                        \
-  FloatKey y= get_or_add_key<FloatTraits>(f, Physics, "cartesian y",    \
+  ::rmf::FloatKey z                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian z",    \
                                           true);                        \
-  FloatKey z= get_or_add_key<FloatTraits>(f, Physics, "cartesian z",    \
-                                          true);                        \
-  FloatKey r= get_or_add_key<FloatTraits>(f, Physics, "radius");        \
-  FloatKey m= get_or_add_key<FloatTraits>(f, Physics, "mass");          \
-  IndexKey ib= get_or_add_key<IndexTraits>(f, Sequence,                 \
-                                           "residue index begin");      \
-  IndexKey ie= get_or_add_key<IndexTraits>(f, Sequence,                 \
-                                           "residue index end");        \
-  IndexKey e= get_or_add_key<IndexTraits>(f, Physics, "element");       \
-  IndexKey ci= get_or_add_key<IndexTraits>(f, Sequence, "chain id");    \
-  StringKey tk= get_or_add_key<StringTraits>(f, Sequence, "type");      \
-  FloatKey cr= get_or_add_key<FloatTraits>(f, Shape, "rgb color red",   \
-                                           false);                      \
-  FloatKey cg= get_or_add_key<FloatTraits>(f, Shape, "rgb color green", \
-                                           false);                      \
-  FloatKey cb= get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",  \
-                                           false);                      \
-  FloatKey dk= get_or_add_key<FloatTraits>(f, Physics, "D in cm2/s");   \
-  StringKey rt= get_or_add_key<StringTraits>(f, Sequence, "residue type");\
-  IntKey nk= get_or_add_key<IntTraits>(f, Sequence, "copy index");
+  ::rmf::FloatKey r                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "radius");        \
+  ::rmf::FloatKey m                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "mass");          \
+  ::rmf::IndexKey ib                                                    \
+  = internal::get_or_add_key<IndexTraits>(f, Sequence,                  \
+                                          "residue index begin");       \
+  ::rmf::IndexKey ie                                                    \
+  = internal::get_or_add_key<IndexTraits>(f, Sequence,                  \
+                                          "residue index end");         \
+  ::rmf::IndexKey e                                                     \
+  = internal::get_or_add_key<IndexTraits>(f, Physics, "element");       \
+  ::rmf::IndexKey ci                                                    \
+  = internal::get_or_add_key<IndexTraits>(f, Sequence, "chain id");     \
+  ::rmf::StringKey tk                                                   \
+  = internal::get_or_add_key<StringTraits>(f, Sequence, "type");        \
+  ::rmf::FloatKey cr                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
+                                          false);                       \
+  ::rmf::FloatKey cg                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
+                                          false);                       \
+  ::rmf::FloatKey cb                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
+                                          false);                       \
+  ::rmf::FloatKey dk                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Physics, "D in cm2/s");    \
+  ::rmf::StringKey rt                                                   \
+  = internal::get_or_add_key<StringTraits>(f, Sequence, "residue type"); \
+  ::rmf::IntKey nk                                                      \
+  = internal::get_or_add_key<IntTraits>(f, Sequence, "copy index");
 
-#define IMP_HDF5_ACCEPT_MOLECULE_KEYS\
-  FloatKey x, FloatKey y, FloatKey z, FloatKey r,                       \
-    FloatKey m, IndexKey e, IndexKey ci, IndexKey ib, IndexKey ie,      \
-    StringKey rt, FloatKey cr, FloatKey cg, FloatKey cb, StringKey tk,\
-    FloatKey dk, IntKey nk
+#define IMP_HDF5_ACCEPT_MOLECULE_KEYS                                   \
+  ::rmf::FloatKey x, ::rmf::FloatKey y, ::rmf::FloatKey z,              \
+    ::rmf::FloatKey r,  ::rmf::FloatKey m, ::rmf::IndexKey e,           \
+    ::rmf::IndexKey ci, ::rmf::IndexKey ib, ::rmf::IndexKey ie,         \
+    ::rmf::StringKey rt, ::rmf::FloatKey cr, ::rmf::FloatKey cg,        \
+    ::rmf::FloatKey cb, ::rmf::StringKey tk,                            \
+    ::rmf::FloatKey dk, ::rmf::IntKey nk
 
-#define IMP_HDF5_PASS_MOLECULE_KEYS\
+#define IMP_HDF5_PASS_MOLECULE_KEYS                             \
   x, y, z, r, m, e, ci, ib, ie, rt, cr, cg, cb, tk, dk, nk
 
 namespace {
@@ -74,7 +94,7 @@ namespace {
   }
 
   template <class TypeTag, class T>
-  void set_one(NodeHandle n, Key<TypeTag> k,
+  void set_one(NodeHandle n, ::rmf::Key<TypeTag> k,
                T v, unsigned int frame) {
     n.set_value(k, v, frame);
   }
@@ -138,12 +158,12 @@ namespace {
 
 
 
-#define GET_DECORATOR(type)                                             \
-  type d;                                                               \
-  if (type::particle_is_instance(cur)) {                                \
-    d=type(cur);                                                        \
-  } else {                                                              \
-    d= type::setup_particle(cur);                                       \
+#define GET_DECORATOR(type)                     \
+  type d;                                       \
+  if (type::particle_is_instance(cur)) {        \
+    d=type(cur);                                \
+  } else {                                      \
+    d= type::setup_particle(cur);               \
   }
   void copy_data(NodeHandle ncur, atom::Hierarchy cur, int frame,
                  IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
@@ -178,7 +198,7 @@ namespace {
     if (ncur.get_has_value(rt)) {
       int b= ncur.get_value(ib);
       atom::Residue::setup_particle(cur,
-                 atom::ResidueType(ncur.get_value(rt))).set_index(b);
+          atom::ResidueType(ncur.get_value(rt))).set_index(b);
     }
     if (ncur.get_has_value(ib)) {
       int b= ncur.get_value(ib);
@@ -244,7 +264,7 @@ namespace {
 }
 
 void save_frame(RootHandle fh,
-               unsigned int frame, atom::Hierarchy hs) {
+                unsigned int frame, atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
@@ -260,8 +280,8 @@ void save_frame(RootHandle fh,
 
 namespace {
   void add_hierarchy_internal(NodeHandle parent, atom::Hierarchy hierarchy,
-                             boost::progress_display* pd,
-                             IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
+                              boost::progress_display* pd,
+                              IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     NodeHandle cur= parent.add_child(get_name(hierarchy), REPRESENTATION);
     cur.set_association(hierarchy.get_particle());
     copy_data(hierarchy, cur, 0, IMP_HDF5_PASS_MOLECULE_KEYS);
@@ -296,7 +316,7 @@ void add_hierarchy(RootHandle fh, atom::Hierarchy hs) {
                                          std::cout));
   }
   add_hierarchy_internal(fh, hs, pd.get(),
-               IMP_HDF5_PASS_MOLECULE_KEYS);
+                         IMP_HDF5_PASS_MOLECULE_KEYS);
   atom::Bonds bds= atom::get_internal_bonds(hs);
   if (get_log_level()<TERSE) {
     pd.reset(new boost::progress_display(bds.size(),
@@ -428,9 +448,10 @@ void load_frame(RootHandle fh,
 
 unsigned int get_number_of_frames(RootHandle fh,
                                   atom::Hierarchy) {
-    FloatKey x= get_or_add_key<FloatTraits>(fh, Physics, "cartesian x",
+  ::rmf::FloatKey x
+    = internal::get_or_add_key<FloatTraits>(fh, Physics, "cartesian x",
                                             true);
-    return fh.get_number_of_frames(x);
+  return fh.get_number_of_frames(x);
 }
 
 

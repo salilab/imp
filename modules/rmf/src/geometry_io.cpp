@@ -12,43 +12,58 @@
 #include <IMP/rmf/Key.h>
 #include <IMP/rmf/NodeHandle.h>
 #include <IMP/rmf/RootHandle.h>
-#include <IMP/rmf/operations.h>
+#include <IMP/rmf/internal/imp_operations.h>
 
 IMPRMF_BEGIN_NAMESPACE
+
+using namespace ::rmf;
+
 namespace {
-#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)\
-  RootHandle f= node;                                 \
-  FloatKey x= get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
+#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                    \
+  RootHandle f= node;                                           \
+  ::rmf::FloatKey x                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
                                           true);                        \
-  FloatKey y= get_or_add_key<FloatTraits>(f, Shape, "cartesian y",      \
+  ::rmf::FloatKey y                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian y",      \
                                           true);                        \
-  FloatKey z= get_or_add_key<FloatTraits>(f, Shape, "cartesian z",      \
+  ::rmf::FloatKey z                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian z",      \
                                           true);                        \
-  FloatKey xp= get_or_add_key<FloatTraits>(f, Shape, "cartesian xp",    \
-                                           true);                       \
-  FloatKey yp= get_or_add_key<FloatTraits>(f, Shape, "cartesian yp",    \
-                                           true);                       \
-  FloatKey zp= get_or_add_key<FloatTraits>(f, Shape, "cartesian zp",    \
-                                           true);                       \
-  FloatKey cr= get_or_add_key<FloatTraits>(f, Shape, "rgb color red",   \
-                                           false);                      \
-  FloatKey cg= get_or_add_key<FloatTraits>(f, Shape, "rgb color green", \
-                                           false);                      \
-  FloatKey cb= get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",  \
-                                           false);                      \
-  FloatKey r= get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  DataSetKey vn= get_or_add_key<DataSetTraits>(f, Shape, "vertices", false);\
-  DataSetKey in= get_or_add_key<DataSetTraits>(f, Shape, "indices", false);
+  ::rmf::FloatKey xp                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian xp",     \
+                                          true);                        \
+  ::rmf::FloatKey yp                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian yp",     \
+                                          true);                        \
+  ::rmf::FloatKey zp                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian zp",     \
+                                          true);                        \
+  ::rmf::FloatKey cr                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
+                                          false);                       \
+  ::rmf::FloatKey cg                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
+                                          false);                       \
+  ::rmf::FloatKey cb                                                    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
+                                          false);                       \
+  ::rmf::FloatKey r                                                     \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
+  ::rmf::DataSetKey vn                                                  \
+  = internal::get_or_add_key<DataSetTraits>(f, Shape, "vertices", false); \
+  ::rmf::DataSetKey in                                          \
+  = internal::get_or_add_key<DataSetTraits>(f, Shape, "indices", false);
 
-#define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                   \
-  FloatKey x, FloatKey y, FloatKey z,                   \
-                               FloatKey xp, FloatKey yp, FloatKey zp,   \
-                               FloatKey cr, FloatKey cg, FloatKey cb,   \
-                               FloatKey r, DataSetKey vn, DataSetKey in
+#define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
+  ::rmf::FloatKey x, ::rmf::FloatKey y, ::rmf::FloatKey z,              \
+    ::rmf::FloatKey xp, ::rmf::FloatKey yp, ::rmf::FloatKey zp,         \
+    ::rmf::FloatKey cr, ::rmf::FloatKey cg, ::rmf::FloatKey cb,         \
+    ::rmf::FloatKey r, ::rmf::DataSetKey vn, ::rmf::DataSetKey in
 
-#define IMP_HDF5_PASS_GEOMETRY_KEYS                             \
-  x,y,z,xp, yp,                                                 \
-                               zp, cr, cg, cb, r, vn, in
+#define IMP_HDF5_PASS_GEOMETRY_KEYS             \
+  x,y,z,xp, yp,                                 \
+    zp, cr, cg, cb, r, vn, in
 
   void process(display::SphereGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
@@ -171,9 +186,9 @@ namespace {
     cur.set_value(in, inm);
   }
 
-#define IMP_TRY(type) if (dynamic_cast<type*>(g)) {              \
-    process(dynamic_cast<type*>(g), cur, frame,                  \
-            IMP_HDF5_PASS_GEOMETRY_KEYS);                        \
+#define IMP_TRY(type) if (dynamic_cast<type*>(g)) {     \
+    process(dynamic_cast<type*>(g), cur, frame,         \
+            IMP_HDF5_PASS_GEOMETRY_KEYS);               \
   }
 
   void add_internal(NodeHandle parent,  display::Geometry *tag,
@@ -187,22 +202,22 @@ namespace {
     cur.set_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry)
-    else IMP_TRY(display::SegmentGeometry)
-    else IMP_TRY(display::SurfaceMeshGeometry)
-    else {
-      display::Geometries gt= g->get_components();
-      if (gt.size()==1 && gt[0]== g) {
-        IMP_THROW("Unable to process geometry of type "
-                  << g->get_type_name(), IOException);
-      }
-      if (gt.size()==1) {
-        add_internal(cur, tag, gt.front(), IMP_HDF5_PASS_GEOMETRY_KEYS);
-      } else {
-        for (unsigned int i=0; i< gt.size(); ++i) {
-          add_internal(cur, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
-        }
-      }
-    }
+      else IMP_TRY(display::SegmentGeometry)
+        else IMP_TRY(display::SurfaceMeshGeometry)
+          else {
+            display::Geometries gt= g->get_components();
+            if (gt.size()==1 && gt[0]== g) {
+              IMP_THROW("Unable to process geometry of type "
+                        << g->get_type_name(), IOException);
+            }
+            if (gt.size()==1) {
+              add_internal(cur, tag, gt.front(), IMP_HDF5_PASS_GEOMETRY_KEYS);
+            } else {
+              for (unsigned int i=0; i< gt.size(); ++i) {
+                add_internal(cur, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+              }
+            }
+          }
     if (g->get_has_color()) {
       display::Color c= g->get_color();
       cur.set_value(cr, c.get_red(), frame);
@@ -247,7 +262,7 @@ namespace {
 void save_frame(RootHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   save_internal(parent, frame, g, g,
-               IMP_HDF5_PASS_GEOMETRY_KEYS);
+                IMP_HDF5_PASS_GEOMETRY_KEYS);
 
   parent.flush();
 }
@@ -275,7 +290,7 @@ namespace {
   }
 
   display::Geometry *try_read_sphere(NodeHandle cur, int frame,
-                            IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+                                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(xp);
     IMP_UNUSED(yp);
     IMP_UNUSED(zp);
@@ -295,7 +310,7 @@ namespace {
   }
 
   display::Geometry *try_read_cylinder(NodeHandle cur, int frame,
-                            IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
@@ -310,7 +325,7 @@ namespace {
                              algebra::Vector3D(cur.get_value(xp, frame),
                                                cur.get_value(yp, frame),
                                                cur.get_value(zp, frame))),
-                          cur.get_value(r));
+          cur.get_value(r));
       Pointer<display::Geometry> ret=new display::CylinderGeometry(s);
       return ret.release();
     }
@@ -318,7 +333,7 @@ namespace {
   }
 
   display::Geometry *try_read_segment(NodeHandle cur, int frame,
-                            IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+                                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
@@ -341,7 +356,7 @@ namespace {
 
 
   display::Geometry *try_read_surface(NodeHandle cur,
-                            IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+                                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
     IMP_UNUSED(z);
@@ -370,7 +385,7 @@ namespace {
       Ints ids(1);
       for (unsigned int i=0; i< is.size()/4; ++i) {
         ids[0]= i;
-        Ints cur=id.get_row(ids);
+        ::rmf::Ints cur=id.get_row(ids);
         IMP_USAGE_CHECK(cur.size()==3, "Triangle not found. Found face of size "
                         << cur.size() << " instead.");
         std::copy(cur.begin(), cur.end(), is.begin()+i*4);
@@ -382,7 +397,7 @@ namespace {
   }
 
   display::Geometries read_internal(NodeHandle parent,int frame,
-                           IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+                                    IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     NodeHandles ch= parent.get_children();
     display::Geometries ret;
     for (unsigned int i=0; i< ch.size(); ++i) {
@@ -398,7 +413,7 @@ namespace {
                                         IMP_HDF5_PASS_GEOMETRY_KEYS)));
         else {
           display::Geometries c=read_internal(ch[i], frame,
-                                     IMP_HDF5_PASS_GEOMETRY_KEYS);
+                                              IMP_HDF5_PASS_GEOMETRY_KEYS);
           if (!c.empty()) {
             curg=new display::CompoundGeometry(c);
           }
@@ -414,11 +429,11 @@ namespace {
 }
 
 display::Geometries create_geometries(RootHandle parent,
-                                        int frame) {
+                                      int frame) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   display::Geometries ret=
-  read_internal(parent, frame,
-                IMP_HDF5_PASS_GEOMETRY_KEYS);
+    read_internal(parent, frame,
+                  IMP_HDF5_PASS_GEOMETRY_KEYS);
   return ret;
 }
 

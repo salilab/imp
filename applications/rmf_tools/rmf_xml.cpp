@@ -35,11 +35,11 @@ namespace {
   }
 
   template <class TypeT>
-  bool show_type_data_xml(IMP::rmf::NodeHandle nh,
-                          IMP::rmf::Category kc,
+  bool show_type_data_xml(rmf::NodeHandle nh,
+                          rmf::Category kc,
                           bool opened, std::ostream &out) {
-    IMP::rmf::RootHandle rh= nh.get_root_handle();
-    std::vector<IMP::rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
+    rmf::RootHandle rh= nh.get_root_handle();
+    std::vector<rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       //std::cout << "key " << rh.get_name(keys[i]) << std::endl;
       if (rh.get_is_per_frame(keys[i])) {
@@ -93,33 +93,33 @@ namespace {
     }
     return opened;
   }
-  void show_data_xml(IMP::rmf::NodeHandle nh,
-                     IMP::rmf::Category kc,
+  void show_data_xml(rmf::NodeHandle nh,
+                     rmf::Category kc,
                      std::ostream &out) {
     bool opened=false;
-    opened=show_type_data_xml<IMP::rmf::IntTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<IMP::rmf::FloatTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<IMP::rmf::IndexTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<IMP::rmf::StringTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<IMP::rmf::NodeIDTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<IMP::rmf::DataSetTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::IntTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::FloatTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::IndexTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::StringTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::NodeIDTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::DataSetTraits>(nh, kc, opened, out);
     if (opened) {
       out << "/>\n";
     }
   }
 
-  void show_xml(IMP::rmf::NodeHandle nh,
-                const IMP::rmf::Categories& cs, std::ostream &out) {
+  void show_xml(rmf::NodeHandle nh,
+                const rmf::Categories& cs, std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
         << nh.get_id() << "\" "
-        << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
+        << "type=\"" << rmf::get_type_name(nh.get_type())
         << "\"/>\n";
     if (verbose) {
       for (unsigned int i=0; i< cs.size(); ++i) {
         show_data_xml(nh, cs[i], out);
       }
     }
-    IMP::rmf::NodeHandles children= nh.get_children();
+    rmf::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       out << "<child>\n";
       show_xml(children[i],cs,  out);
@@ -154,13 +154,13 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
+    rmf::RootHandle rh= rmf::open_rmf_file(input);
     std::ofstream out(output.c_str());
     if (!out) {
       std::cerr << "Error opening file " << output << std::endl;
       return 1;
     }
-    IMP::rmf::Categories cs= rh.get_categories();
+    rmf::Categories cs= rh.get_categories();
     out << "<?xml version=\"1.0\"?>\n";
     out << "<rmf>\n";
     out << "<description>\n";
@@ -173,7 +173,7 @@ int main(int argc, char **argv) {
     if (rh.get_number_of_bonds() >0) {
       out << "<bonds>\n";
       for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
-        std::pair<IMP::rmf::NodeHandle, IMP::rmf::NodeHandle> handles
+        std::pair<rmf::NodeHandle, rmf::NodeHandle> handles
           = rh.get_bond(i);
         out << "<bond id0=\""<< handles.first.get_id()
             << "\" id1=\"" << handles.second.get_id() << "\"/>\n";

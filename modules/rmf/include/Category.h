@@ -14,7 +14,7 @@
 #include <IMP/exception.h>
 #include <vector>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -102,6 +102,6 @@ IMPRMFEXPORT extern const Category Shape;
 */
 IMPRMFEXPORT extern const Category Feature;
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_KEY_CATEGORY_H */

@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/Key.h>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 namespace {;
   std::vector<std::string> category_names;
   Category get_category(std::string name) {
@@ -25,7 +25,7 @@ namespace {;
 }
 
 Category Category::get_category(std::string name) {
-  return IMP::rmf::get_category(name);
+  return rmf::get_category(name);
 }
 
 std::string Category::get_name() const {
@@ -39,4 +39,9 @@ const Category Bond=get_category("bond");
 const Category Shape=get_category("shape");
 const Category Feature=get_category("feature");
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
+
+// there is something wrong with the standards checks (or at least
+// the errors they produce
+IMP_RMF_BEGIN_NAMESPACE
+IMP_RMF_END_NAMESPACE

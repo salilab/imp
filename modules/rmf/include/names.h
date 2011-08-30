@@ -14,52 +14,52 @@
 #include "Key.h"
 #include <sstream>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 
-/** \name Data set names
-    The RMF format stores various pieces of data in data sets and attributes
-    attached to the HDF5 group which is acting as the root. These functions
-    return the names for the various data sets.
-    @{
-*/
+  /** \name Data set names
+      The RMF format stores various pieces of data in data sets and attributes
+      attached to the HDF5 group which is acting as the root. These functions
+      return the names for the various data sets.
+      @{
+  */
 #ifndef IMP_DOXYGEN
-inline std::string get_per_frame_name(bool per_frame) {
-  return per_frame? "dynamic" : "static";
-}
+  inline String get_per_frame_name(bool per_frame) {
+    return per_frame? "dynamic" : "static";
+  }
 #endif
 
-//! Get the name of the data set storing the data about each node
-inline std::string get_node_data_data_set_name() {
-  return "node_data";
-}
-//! Get the name of the data set storing the name for each node
-inline std::string get_node_name_data_set_name() {
-  return "node_name";
-}
-//! Get the name of the data set for storing bonds
-inline std::string get_bond_data_data_set_name() {
-  return "bond_data";
-}
-//! Get the name of the attribute which lists all the keys of the category
-inline std::string get_key_list_data_set_name(Category category_id,
-                                              std::string type_name,
-                                               bool per_frame) {
-  std::ostringstream oss;
-  oss << type_name << "_" << category_id.get_name() << "_"
-      << get_per_frame_name(per_frame) << "_list";
-  return oss.str();
-}
-//! Get the name of the data set for storing a particular type of data
-inline std::string get_data_data_set_name(Category category_id,
-                                          std::string type_name,
-                                          bool per_frame) {
-  std::ostringstream oss;
-  oss << type_name << "_" << category_id.get_name() << "_"
-      << get_per_frame_name(per_frame) << "_storage";
-  return oss.str();
-}
-/** @} */
+  //! Get the name of the data set storing the data about each node
+  inline String get_node_data_data_set_name() {
+    return "node_data";
+  }
+  //! Get the name of the data set storing the name for each node
+  inline String get_node_name_data_set_name() {
+    return "node_name";
+  }
+  //! Get the name of the data set for storing bonds
+  inline String get_bond_data_data_set_name() {
+    return "bond_data";
+  }
+  //! Get the name of the attribute which lists all the keys of the category
+  inline String get_key_list_data_set_name(Category category_id,
+                                           String type_name,
+                                           bool per_frame) {
+    std::ostringstream oss;
+    oss << type_name << "_" << category_id.get_name() << "_"
+        << get_per_frame_name(per_frame) << "_list";
+    return oss.str();
+  }
+  //! Get the name of the data set for storing a particular type of data
+  inline String get_data_data_set_name(Category category_id,
+                                       String type_name,
+                                       bool per_frame) {
+    std::ostringstream oss;
+    oss << type_name << "_" << category_id.get_name() << "_"
+        << get_per_frame_name(per_frame) << "_storage";
+    return oss.str();
+  }
+  /** @} */
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_NAMES_H */

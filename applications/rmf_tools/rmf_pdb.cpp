@@ -60,16 +60,16 @@ int main(int argc, char **argv) {
     }
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies inhs;
-    IMP::rmf::RootHandle rh;
+    rmf::RootHandle rh;
     int nframes=-1;
     if (get_suffix(input) == ".pdb") {
       IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
       nframes=inhs.size();
     } else {
-      IMP_CATCH_AND_TERMINATE(rh= IMP::rmf::open_rmf_file(input));
+      IMP_CATCH_AND_TERMINATE(rh= rmf::open_rmf_file(input));
       inhs= IMP::rmf::create_hierarchies(rh, m);
-      IMP::rmf::FloatKey xk
-        =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
+      rmf::FloatKey xk
+        =rh.get_key<rmf::FloatTraits>(rmf::Physics, "cartesian x");
       std::cout << xk << std::endl;
       nframes= rh.get_number_of_frames(xk)+1;
     }
@@ -83,7 +83,7 @@ int main(int argc, char **argv) {
       maxframe=nframes;
       step=-frame;
     }
-    IMP::rmf::RootHandle rho;
+    rmf::RootHandle rho;
     int outframe=0;
     for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
       if (outframe%10==0) {
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
         IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, out, outframe));
       } else {
         if (outframe==0) {
-          rho= IMP::rmf::create_rmf_file(output);
+          rho= rmf::create_rmf_file(output);
           for (unsigned int i=0; i< cur.size(); ++i) {
             IMP::rmf::add_hierarchy(rh, cur[i]);
           }

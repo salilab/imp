@@ -36,15 +36,16 @@ IMPRMF_BEGIN_NAMESPACE
 /** Write the hierarchies as a file with data store in the frame. The
     hierarchies must have been previously read from the file if you are
     adding a frame.*/
-IMPRMFEXPORT void save_frame(RootHandle fh,
+IMPRMFEXPORT void save_frame(::rmf::RootHandle fh,
                              unsigned int frame, atom::Hierarchy hs);
 
-IMPRMFEXPORT void add_hierarchy(RootHandle fh, atom::Hierarchy hs);
+IMPRMFEXPORT void add_hierarchy(::rmf::RootHandle fh, atom::Hierarchy hs);
 
 
 /** Create a hierarchy from part of the file.
  */
-IMPRMFEXPORT atom::Hierarchies create_hierarchies(RootHandle fh, Model *m);
+IMPRMFEXPORT atom::Hierarchies create_hierarchies(::rmf::RootHandle fh,
+                                                  Model *m);
 
 
 /** Associate the passed hierarchies with all the hierarchies in the file.
@@ -53,7 +54,7 @@ IMPRMFEXPORT atom::Hierarchies create_hierarchies(RootHandle fh, Model *m);
     If overwrite is false, then it is an error if the file already is
     associated with something.
 */
-IMPRMFEXPORT void set_hierarchies(RootHandle rh,
+IMPRMFEXPORT void set_hierarchies(::rmf::RootHandle rh,
                                   atom::Hierarchies hs,
                                   bool overwrite=false);
 
@@ -62,11 +63,11 @@ IMPRMFEXPORT void set_hierarchies(RootHandle rh,
     will have its orientation updated based on the loaded coordinates
     of the core::RigidMember particles.
  */
-IMPRMFEXPORT void load_frame(RootHandle fh,
+IMPRMFEXPORT void load_frame(::rmf::RootHandle fh,
                              unsigned int frame,
                              atom::Hierarchy hs);
 
-IMPRMFEXPORT unsigned int get_number_of_frames(RootHandle fh,
+IMPRMFEXPORT unsigned int get_number_of_frames(::rmf::RootHandle fh,
                                                atom::Hierarchy h);
 /** @} */
 
@@ -77,10 +78,10 @@ IMPRMFEXPORT unsigned int get_number_of_frames(RootHandle fh,
 class IMPRMFEXPORT SaveHierarchyConfigurationOptimizerState:
   public OptimizerState {
   atom::Hierarchies hs_;
-  RootHandle fh_;
+  ::rmf::RootHandle fh_;
  public:
   SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
-                                           RootHandle fh);
+                                           ::rmf::RootHandle fh);
   IMP_PERIODIC_OPTIMIZER_STATE(SaveHierarchyConfigurationOptimizerState);
 };
 

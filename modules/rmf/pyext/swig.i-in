@@ -25,13 +25,11 @@ def get_data_types():
 
 /* Declare the needed things for each type */
 %define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname)
-namespace IMP {
 namespace rmf {
 %rename(_##Ucname##Traits) Ucname##Traits;
 }
-}
-IMP_SWIG_VALUE_INSTANCE(IMP::rmf, Ucname##Key, Ucname##Key, Ucname##Keys);
-IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5##Ucname##DataSet, HDF5##Ucname##DataSet, HDF5##Ucname##DataSets);
+IMP_SWIG_VALUE_INSTANCE(rmf, Ucname##Key, Ucname##Key, Ucname##Keys);
+IMP_SWIG_VALUE_INSTANCE(rmf, HDF5##Ucname##DataSet, HDF5##Ucname##DataSet, HDF5##Ucname##DataSets);
 %pythoncode %{
 _types_list.append(#lcname)
 %}
@@ -39,34 +37,32 @@ _types_list.append(#lcname)
 
 
 %define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname)
-%template(HDF5##Ucname##DataSet) IMP::rmf::HDF5DataSet<IMP::rmf::Ucname##Traits>;
-%template(Ucname##Key) IMP::rmf::Key<IMP::rmf::Ucname##Traits>;
+%template(HDF5##Ucname##DataSet) rmf::HDF5DataSet<rmf::Ucname##Traits>;
+%template(Ucname##Key) rmf::Key<rmf::Ucname##Traits>;
 %enddef
 
 
-IMP_SWIG_GRAPH(IMP::rmf, NodeTree, NodeTree, IMP::rmf::NodeHandle);
-IMP_SWIG_VALUE(IMP::rmf, NodeHandle, NodeHandles);
-IMP_SWIG_VALUE(IMP::rmf, RootHandle, RootHandles);
-IMP_SWIG_VALUE(IMP::rmf, NodeID, NodeIDs);
-IMP_SWIG_VALUE(IMP::rmf, Category, Categories);
-IMP_SWIG_VALUE_TEMPLATE(IMP::rmf, Key);
-IMP_SWIG_VALUE(IMP::rmf, HDF5Group, HDF5Groups);
-IMP_SWIG_VALUE(IMP::rmf, HDF5File, HDF5Files);
-IMP_SWIG_VALUE_TEMPLATE(IMP::rmf, HDF5DataSet);
-IMP_SWIG_PAIR(IMP::rmf, NodeHandle, BondPair, BondPairs)
+IMP_SWIG_GRAPH(rmf, NodeTree, NodeTree, rmf::NodeHandle);
+IMP_SWIG_VALUE(rmf, NodeHandle, NodeHandles);
+IMP_SWIG_VALUE(rmf, RootHandle, RootHandles);
+IMP_SWIG_VALUE(rmf, NodeID, NodeIDs);
+IMP_SWIG_VALUE(rmf, Category, Categories);
+IMP_SWIG_VALUE_TEMPLATE(rmf, Key);
+IMP_SWIG_VALUE(rmf, HDF5Group, HDF5Groups);
+IMP_SWIG_VALUE(rmf, HDF5File, HDF5Files);
+IMP_SWIG_VALUE_TEMPLATE(rmf, HDF5DataSet);
+IMP_SWIG_PAIR(rmf, NodeHandle, BondPair, BondPairs)
 IMP_SWIG_OBJECT(IMP::rmf, SaveHierarchyConfigurationOptimizerState, SaveHierarchyConfigurationOptimizerStates);
 IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
 // char is special cased since it is just used for attributes
-namespace IMP {
 namespace rmf {
 %rename(_CharTraits) CharTraits;
 }
-}
 
-%extend IMP::rmf::RootHandle {
+%extend rmf::RootHandle {
    %pythoncode %{
     def get_keys(self, kc):
         ret=[]
@@ -80,15 +76,14 @@ namespace rmf {
 %include "IMP/rmf/NodeID.h"
 %include "IMP/rmf/hdf5_handle.h"
 %include "IMP/rmf/hdf5_types.h"
-%template(_IntsTraits) IMP::rmf::ArrayTraits<IMP::rmf::IntTraits>;
-%template(_NodeIDsTraits) IMP::rmf::ArrayTraits<IMP::rmf::NodeIDTraits>;
+%template(_IntsTraits) rmf::ArrayTraits<rmf::IntTraits>;
+%template(_NodeIDsTraits) rmf::ArrayTraits<rmf::NodeIDTraits>;
 
 %include "IMP/rmf/hdf5_wrapper.h"
 %include "IMP/rmf/Category.h"
 %include "IMP/rmf/Key.h"
 %include "IMP/rmf/NodeHandle.h"
 %include "IMP/rmf/RootHandle.h"
-%include "IMP/rmf/operations.h"
 %include "IMP/rmf/atom_io.h"
 %include "IMP/rmf/restraint_io.h"
 %include "IMP/rmf/particle_io.h"
