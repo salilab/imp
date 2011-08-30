@@ -244,7 +244,8 @@ class HDF5DataSet {
 #endif
 };
 
-#define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname, PassValue, ReturnValue) \
+#define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname, PassValue, ReturnValue,\
+                                 PassValues, ReturnValues)              \
   typedef HDF5DataSet<Ucname##Traits> HDF5##Ucname##DataSet;            \
   typedef std::vector<HDF5##Ucname##DataSet> HDF5##Ucname##DataSets
 
@@ -288,7 +289,8 @@ class IMPRMFEXPORT HDF5Group {
       return add_child_data_set<TypeTraits>(name, dim);
     }
   }
-#define IMP_HDF5_DATA_SET_METHODS(lcname, UCName, PassValue, ReturnValue) \
+#define IMP_HDF5_DATA_SET_METHODS(lcname, UCName, PassValue, ReturnValue,\
+                                  PassValues, ReturnValues)             \
   HDF5DataSet<UCName##Traits> add_child_##lcname##_data_set(std::string name, \
                                                             int dim) {  \
     return add_child_data_set<UCName##Traits>(name, dim);               \
@@ -369,18 +371,19 @@ class IMPRMFEXPORT HDF5Group {
   }
   bool get_has_attribute(std::string nm) const;
 
-#define IMP_HDF5_ATTRIBUTE(lcname, UCName, PassValue, ReturnValue)      \
+#define IMP_HDF5_ATTRIBUTE(lcname, UCName, PassValue, ReturnValue,      \
+                           PassValues, ReturnValues)                    \
   void set_##lcname##_attribute(std::string nm,                         \
-                                const UCName##Traits::Types &value) {   \
+                                PassValues value) {                     \
     set_attribute< UCName##Traits>(nm, value);                          \
   }                                                                     \
-  UCName##Traits::Types                                                 \
+  ReturnValues                                                          \
     get_##lcname##_attribute(std::string nm) const {                    \
     return get_attribute< UCName##Traits>(nm);                          \
   }                                                                     \
 
   IMP_RMF_FOREACH_SIMPLE_TYPE(IMP_HDF5_ATTRIBUTE);
-  IMP_HDF5_ATTRIBUTE(char, Char, char, char);
+  IMP_HDF5_ATTRIBUTE(char, Char, char, char, std::string, std::string);
 };
 
 

@@ -19,7 +19,8 @@
 
 
 
-#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue) \
+#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue, \
+                                       PassValues, ReturnValues)        \
   /** \brief get the value of the attribute k from this node
       The node must have the attribute and if it is a per-frame
       attribute, and frame is not specified then frame 0 is

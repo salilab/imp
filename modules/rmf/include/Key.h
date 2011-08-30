@@ -60,7 +60,8 @@ inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
 }
 #endif
 
-#define IMP_RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue)     \
+#define IMP_RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue,     \
+                            PassValues, ReturnValues)                   \
   typedef Key<Ucname##Traits> Ucname##Key;                              \
   typedef std::vector<Ucname##Key> Ucname##Keys
 

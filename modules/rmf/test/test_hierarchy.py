@@ -94,8 +94,9 @@ class GenericTest(IMP.test.TestCase):
              (f.add_node_ids_key, [nh.get_id()]),
              (f.add_string_key, "there"),
              (f.add_index_key, 3),
-             (f.add_data_set_key, "ds"+str(pccc))]
-        IMP.rmf._pass_node_ids([nh.get_id()])
+             (f.add_data_set_key, "ds"+str(pccc)),
+             (f.add_ints_key, [3,4,5,6])]
+        self.assertEqual(len(lst),len(IMP.rmf.get_data_types()))
         for p in lst:
             print p[0]
             k = p[0](cat, "hi", pccc)

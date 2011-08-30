@@ -229,24 +229,36 @@
     to string).
 
     \see IMP_RMF_FOREACH_TYPE()
- */
-#define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)  \
-  macroname(int, Int, int, int);                \
-  macroname(float, Float, double, double);      \
-  macroname(index, Index, int, int)
+*/
+#define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)                          \
+  macroname(int, Int, int, int,                                         \
+            const Ints&, Ints);                                         \
+  macroname(float, Float, double, double,                               \
+            const Floats&, Floats);                                     \
+  macroname(index, Index, int, int,                                     \
+            const Ints&, Ints)
+
 
 /** Expand to applying the macro to each type supported by
-    the rmf library. The macro should take four argments, the first
-    is the lower case name of the type and the second is the upper
-    case name, the third is the C++ type for accepting the value
-    and the fourth is the C++ type for returning the value.
+    the rmf library. The macro should take six argments
+    - the lower case name of the type
+    - the upper case name
+    - the C++ type for accepting the value
+    - the C++ type for returning the value
+    - the C++ type for accepting more than one value
+    - the C++ type for returning more than one value
 */
-#define IMP_RMF_FOREACH_TYPE(macroname)                         \
-  IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);                       \
-  macroname(string, String, std::string, std::string);          \
-  macroname(node_id, NodeID, NodeID, NodeID);                   \
-  macroname(data_set, DataSet, std::string, std::string);       \
-  macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs);        \
-  macroname(ints, Ints, const std::vector<int>&, std::vector<int>)
+#define IMP_RMF_FOREACH_TYPE(macroname)                                 \
+  IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);                               \
+  macroname(string, String, std::string, std::string,                   \
+            const std::vector<std::string> &, std::vector<std::string>); \
+  macroname(node_id, NodeID, NodeID, NodeID, const NodeIDs&, NodeIDs);  \
+  macroname(data_set, DataSet, std::string, std::string,                \
+            const std::vector<std::string> &, std::vector<std::string>); \
+  macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs,                 \
+            const std::vector<NodeIDs> &, std::vector<NodeIDs>);        \
+  macroname(ints, Ints, const std::vector<int>&, std::vector<int>,      \
+            const std::vector<std::vector<int> > &,                     \
+            std::vector<std::vector<int> >)
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

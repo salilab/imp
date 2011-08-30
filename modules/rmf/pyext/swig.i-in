@@ -95,13 +95,3 @@ namespace rmf {
 %include "IMP/rmf/geometry_io.h"
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
-
-%inline %{
-namespace IMP {
-namespace rmf {
-NodeIDs _pass_node_ids(const NodeIDs &nis) {
-return nis;
-}
-}
-}
-%}
