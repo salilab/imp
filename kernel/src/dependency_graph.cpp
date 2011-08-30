@@ -315,6 +315,13 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   return ret;
 }
 
+namespace {
+  template <class P>
+  bool get_range_is_empty(const P &p) {
+    return p.first==p.second;
+  }
+}
+
 DependencyGraph
 get_dependency_graph(const RestraintsTemp &irs) {
   IMP_FUNCTION_LOG;
@@ -322,7 +329,24 @@ get_dependency_graph(const RestraintsTemp &irs) {
   RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
   ScoreStatesTemp ss( irs[0]->get_model()->score_states_begin(),
                       irs[0]->get_model()->score_states_end());
-  return get_dependency_graph(ss, rs);
+  DependencyGraph dg= get_dependency_graph(ss, rs);
+   boost::property_map<DependencyGraph, boost::vertex_name_t>::type
+    vm = boost::get(boost::vertex_name, dg);
+  bool delta=false;
+  do {
+    delta=false;
+    IMP_LOG(TERSE, "Pruning unneeded nodes." << std::endl);
+    for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
+      Object *o= vm[i];
+      if (get_range_is_empty(boost::out_edges(i, dg))
+          && !dynamic_cast<Restraint*>(o)) {
+        boost::clear_vertex(i, dg);
+        boost::remove_vertex(i, dg);
+        delta=true;
+      }
+    }
+  } while (delta);
+  return dg;
 }
 
 
