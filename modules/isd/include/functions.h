@@ -11,6 +11,7 @@
 #include <IMP/Particle.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
+#include <IMP/isd/Switching.h>
 #include <IMP/Object.h>
 
 #define MINIMUM 1e-7
@@ -175,7 +176,8 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 {
     public:
-        Covariance1DFunction(double alpha, Particle* tau, Particle* lambda, Particle* sigma, double jitter =0.0) :
+        Covariance1DFunction(Particle* tau, Particle* lambda, Particle* sigma,
+                double alpha=2.0, double jitter =0.0) :
             BivariateFunction("Covariance1DFunction %1%"), alpha_(alpha),
             tau_(tau), lambda_(lambda), sigma_(sigma), J_(jitter)
     {
@@ -286,6 +288,139 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         double alpha_;
         Pointer<Particle> tau_,lambda_,sigma_;
         double tau_val_,lambda_val_,sigma_val_,J_;
+        bool do_jitter;
+    
+};
+
+//! Reparametrized covariance function
+/* This is the previous covariance function, with
+ * \f[\theta = \frac{\tau^2}{\tilde{\sigma}^2+\tau^2}\f] and
+ * \f[\sigma^2 = \frac{\tilde{\sigma}^2+\tau^2}\f] ( with \f$\tilde{\sigma}\f$
+ * being the parameter of the original covariance function). With this
+ * parametrization, we have
+ * \f[w(x,x) = \sigma^2 + J\f]
+ * \f[w(x,x') = \sigma^2\theta
+   \exp\left(-\frac{|x-x'|^\alpha}{2\lambda^\alpha}\right)\f]
+ * \f$\sigma\f$ and \f$\lambda\f$ are Scales, \f$\theta\f$ is a Switching,
+ * \f$\alpha\f$ is set up front and should be positive, usually greater than 1.
+ * (default is 2).  J is some jitter, needed when sigma gets really small. try
+ * J=0.01 if you get NANs.
+ */
+class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
+{
+    public:
+        ReparametrizedCovariance1DFunction(Particle* sigma, Particle* lambda,
+                Particle* theta, double alpha=2.0, double jitter =0.0) :
+            BivariateFunction("ReparametrizedCovariance1DFunction %1%"),
+            alpha_(alpha), sigma_(sigma), lambda_(lambda), theta_(theta),
+            J_(jitter) 
+    { 
+        IMP_LOG(TERSE, "ReparametrizedCovariance1DFunction: constructor" 
+                << std::endl); 
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Switching::decorate_particle(theta); }
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(lambda);}
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(sigma);} 
+        lambda_val_= Scale(lambda).get_scale(); 
+        theta_val_= Switching(theta).get_switching(); 
+        sigma_val_= Scale(sigma).get_scale(); 
+        do_jitter = (jitter>1e-7);
+
+    }
+
+        bool has_changed() const {
+            double tmpt = Switching(theta_).get_switching();
+            double tmpl = Scale(lambda_).get_scale();
+            double tmps = Scale(sigma_).get_scale();
+            if ((std::abs(tmpt - theta_val_) > MINIMUM)
+                    || (std::abs(tmpl - lambda_val_) > MINIMUM)
+                    || (std::abs(tmps - sigma_val_) > MINIMUM))
+            {
+                IMP_LOG(TERSE, "ReparametrizedCovariance1DFunction: has_changed():");
+                IMP_LOG(TERSE, "true" << std::endl);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        void update() {
+            lambda_val_= Scale(lambda_).get_scale();
+            theta_val_= Switching(theta_).get_switching();
+            sigma_val_= Scale(sigma_).get_scale();
+            IMP_LOG(TERSE, 
+                    "ReparametrizedCovariance1DFunction: update()  tau:= " 
+                    << theta_val_ << " lambda:=" << lambda_val_ 
+                    <<" sigma:=" << sigma_val_ << std::endl);
+        }
+
+        void add_to_derivatives(std::vector<double> x1, std::vector<double> x2,
+                DerivativeAccumulator &accum) const
+        {
+            if (x1[0] == x2[0]) {
+                Scale(sigma_).add_to_scale_derivative(2*sigma_val_, accum);
+            } else { 
+                double exponent = std::pow( std::abs( 
+                            (x1[0]-x2[0])/lambda_val_
+                            ) , alpha_);
+                double expterm = std::exp( -0.5*exponent);
+                Scale(sigma_).add_to_scale_derivative(
+                        2*theta_val_*sigma_val_*expterm, accum);
+                Scale(lambda_).add_to_scale_derivative(
+                        IMP::square(sigma_val_)*theta_val_
+                        *exponent*alpha_/(2*lambda_val_)*expterm, accum);
+                Switching(theta_).add_to_switching_derivative(
+                        IMP::square(sigma_val_)*expterm, accum);
+            }
+        }
+
+
+        std::vector<double> operator()(std::vector<double> x1,
+                std::vector<double> x2) const {
+            IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
+            IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+            double ret=IMP::square(sigma_val_);
+            if (x1[0]!=x2[0])
+            {
+                    ret *=theta_val_ * std::exp(
+                        -0.5*std::pow(
+                                std::abs( (x1[0]-x2[0])/lambda_val_ )
+                                , alpha_)
+                        );
+            } else {
+                if (do_jitter) ret += J_;
+            }
+            return std::vector<double> (1,ret);
+        }
+
+        unsigned get_ndims_x1() const {return 1;}
+        unsigned get_ndims_x2() const {return 1;}
+        unsigned get_ndims_y() const {return 1;}
+
+        ParticlesTemp get_input_particles() const
+        {
+            ParticlesTemp ret;
+            ret.push_back(theta_);
+            ret.push_back(lambda_);
+            ret.push_back(sigma_);
+            return ret;
+        }
+
+        ContainersTemp get_input_containers() const
+        {
+            ContainersTemp ret;
+            return ret;
+        }
+
+
+        IMP_OBJECT_INLINE(ReparametrizedCovariance1DFunction, out << 
+                "Reparametrized covariance function with alpha = " 
+                << alpha_ << std::endl, {});
+
+
+    private:
+        double alpha_;
+        Pointer<Particle> sigma_,lambda_,theta_;
+        double theta_val_,lambda_val_,sigma_val_,J_;
         bool do_jitter;
     
 };
