@@ -10,7 +10,7 @@
 #include <boost/scoped_array.hpp>
 #include <IMP/base_types.h>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 
 void FloatTraits::write_value_dataset(hid_t d, hid_t is,
                                         hid_t s,
@@ -201,16 +201,16 @@ std::string StringTraits::read_value_dataset(hid_t d,
 }
 void StringTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
-                                        const std::vector<std::string>& ) {
+                                        const Strings & ) {
   IMP_RMF_UNUSED(d);
   IMP_RMF_UNUSED(is);
   IMP_RMF_UNUSED(s);
   //IMP_UNUSED(v);
   IMP_RMF_NOT_IMPLEMENTED;
 }
-std::vector<std::string> StringTraits::read_values_dataset(hid_t d, hid_t is,
-                                                           hid_t sp,
-                                                           unsigned int sz) {
+Strings StringTraits::read_values_dataset(hid_t d, hid_t is,
+                                          hid_t sp,
+                                          unsigned int sz) {
   IMP_RMF_UNUSED(d);
   IMP_RMF_UNUSED(is);
   IMP_RMF_UNUSED(sp);
@@ -219,12 +219,12 @@ std::vector<std::string> StringTraits::read_values_dataset(hid_t d, hid_t is,
 }
 
 void StringTraits::write_values_attribute(hid_t d,
-                                const std::vector<std::string> &) {
+                                const Strings &) {
   IMP_RMF_UNUSED(d);
   IMP_RMF_NOT_IMPLEMENTED;
 }
-std::vector<std::string> StringTraits::read_values_attribute(hid_t d,
-                                                             unsigned int num) {
+Strings StringTraits::read_values_attribute(hid_t d,
+                                            unsigned int num) {
   IMP_RMF_UNUSED(d);
   IMP_RMF_UNUSED(num);
   IMP_RMF_NOT_IMPLEMENTED;
@@ -254,35 +254,35 @@ NodeID NodeIDTraits::read_value_dataset(hid_t d,
 }
 void NodeIDTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
-                                       const std::vector<NodeID>& v) {
+                                       const NodeIDs& v) {
   Ints vi(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
     vi[i]= v[i].get_index();
   }
   IntTraits::write_values_dataset(d, is, s, vi);
 }
-std::vector<NodeID> NodeIDTraits::read_values_dataset(hid_t d, hid_t is,
+NodeIDs NodeIDTraits::read_values_dataset(hid_t d, hid_t is,
                                                 hid_t sp,
                                                 unsigned int sz) {
   Ints reti= IntTraits::read_values_dataset(d, is, sp, sz);
-  std::vector<NodeID> ret(reti.size());
+  NodeIDs ret(reti.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= NodeID(reti[i]);
   }
   return ret;
 }
 void NodeIDTraits::write_values_attribute(hid_t d,
-                                const std::vector<NodeID> &values) {
+                                const NodeIDs &values) {
   Ints is(values.size());
   for (unsigned int i=0; i< values.size(); ++i) {
     is[i]=values[i].get_index();
   }
   IndexTraits::write_values_attribute(d, is);
 }
-std::vector<NodeID> NodeIDTraits::read_values_attribute(hid_t d,
+NodeIDs NodeIDTraits::read_values_attribute(hid_t d,
                                                              unsigned int num) {
   Ints is= IndexTraits::read_values_attribute(d, num);
-  std::vector<NodeID> ret(is.size());
+  NodeIDs ret(is.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]=NodeID(is[i]);
   }
@@ -294,4 +294,9 @@ std::string NodeIDTraits::get_name() {
 
 
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
+
+// there is something wrong with the standards checks (or at least
+// the errors they produce
+IMP_RMF_BEGIN_NAMESPACE
+IMP_RMF_END_NAMESPACE

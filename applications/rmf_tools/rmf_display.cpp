@@ -23,7 +23,7 @@ void print_help() {
   std::cerr << desc << std::endl;
 }
 
-IMP::core::XYZRs get_xyzr_particles(IMP::rmf::NodeHandle nh,
+IMP::core::XYZRs get_xyzr_particles(rmf::NodeHandle nh,
                                     int frame) {
   IMP::ParticlesTemp ps= IMP::rmf::get_restraint_particles(nh, frame);
   IMP::core::XYZRs ret;
@@ -35,7 +35,7 @@ IMP::core::XYZRs get_xyzr_particles(IMP::rmf::NodeHandle nh,
   return ret;
 }
 
-void set_color(IMP::rmf::NodeHandle nh,
+void set_color(rmf::NodeHandle nh,
                int frame, IMP::display::Geometry *g) {
   if (restraint_max==-1) {
     return;
@@ -49,11 +49,11 @@ void set_color(IMP::rmf::NodeHandle nh,
   }
 }
 
-IMP::display::Geometry *create_restraint_geometry(IMP::rmf::NodeHandle nh,
+IMP::display::Geometry *create_restraint_geometry(rmf::NodeHandle nh,
                                                   int frame) {
   double score=IMP::rmf::get_restraint_score(nh, frame);
   if (score < -std::numeric_limits<double>::max()) return NULL;
-  IMP::rmf::NodeHandles children=nh.get_children();
+  rmf::NodeHandles children=nh.get_children();
   IMP::display::Geometries gs;
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g
@@ -89,10 +89,10 @@ IMP::display::Geometry *create_restraint_geometry(IMP::rmf::NodeHandle nh,
   }
 }
 
-void add_restraints(IMP::rmf::RootHandle rh,
+void add_restraints(rmf::RootHandle rh,
                     int frame,
                     IMP::display::Writer *w) {
-  IMP::rmf::NodeHandles children = rh.get_children();
+  rmf::NodeHandles children = rh.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g= create_restraint_geometry(children[i],
                                                          frame);
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
       }
     }
     std::cout<< "writing to file " << output << std::endl;
-    IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
+    rmf::RootHandle rh= rmf::open_rmf_file(input);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
@@ -160,8 +160,8 @@ int main(int argc, char **argv) {
       maxframe=minframe+1;
     } else {
       minframe=0;
-      IMP::rmf::FloatKey xk
-        =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
+      rmf::FloatKey xk
+        =rh.get_key<rmf::FloatTraits>(rmf::Physics, "cartesian x");
       std::cout << xk << std::endl;
       maxframe= rh.get_number_of_frames(xk)+1;
     }

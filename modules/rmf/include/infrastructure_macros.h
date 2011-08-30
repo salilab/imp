@@ -250,15 +250,15 @@
 */
 #define IMP_RMF_FOREACH_TYPE(macroname)                                 \
   IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);                               \
-  macroname(string, String, std::string, std::string,                   \
-            const std::vector<std::string> &, std::vector<std::string>); \
+  macroname(string, String, String, String,                             \
+            const Strings &, Strings);                                  \
   macroname(node_id, NodeID, NodeID, NodeID, const NodeIDs&, NodeIDs);  \
-  macroname(data_set, DataSet, std::string, std::string,                \
-            const std::vector<std::string> &, std::vector<std::string>); \
+  macroname(data_set, DataSet, String, String,                          \
+            const Strings &, Strings);                                  \
   macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs,                 \
-            const std::vector<NodeIDs> &, std::vector<NodeIDs>);        \
-  macroname(ints, Ints, const std::vector<int>&, std::vector<int>,      \
-            const std::vector<std::vector<int> > &,                     \
-            std::vector<std::vector<int> >)
+            const NodeIDsList &, NodeIDsLst);                           \
+  macroname(ints, Ints, const Ints&, Ints,                              \
+            const IntsList &,                                           \
+            IntsList)
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

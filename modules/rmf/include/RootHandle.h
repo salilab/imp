@@ -15,7 +15,7 @@
 #include "Key.h"
 #include "NodeHandle.h"
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 class NodeHandle;
 
 typedef std::pair<NodeHandle, NodeHandle> BondPair;
@@ -191,6 +191,6 @@ inline RootHandle open_rmf_file_read_only(std::string path) {
   return RootHandle(open_hdf5_file_read_only(path), false);
 }
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_ROOT_HANDLE_H */

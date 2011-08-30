@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/hdf5_wrapper.h>
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 
 HDF5Group::HDF5Group(HDF5SharedHandle *h): h_(h) {
 }
@@ -107,4 +107,9 @@ HDF5File::~HDF5File() {
 }
 
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
+
+// there is something wrong with the standards checks (or at least
+// the errors they produce
+IMP_RMF_BEGIN_NAMESPACE
+IMP_RMF_END_NAMESPACE

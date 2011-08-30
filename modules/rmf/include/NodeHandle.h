@@ -51,7 +51,8 @@ bool get_has_value(UCName##Key k, unsigned int frame=0) const {         \
 }
 
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
+
 class NodeHandle;
 // for children
 typedef std::vector<NodeHandle> NodeHandles;
@@ -159,6 +160,6 @@ IMPRMFEXPORT void show_hierarchy(NodeHandle root,
 IMP_RMF_GRAPH(NodeTree, bidirectional, NodeHandle, int);
 IMPRMFEXPORT NodeTree get_node_tree(NodeHandle n);
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_NODE_HANDLE_H */

@@ -19,17 +19,18 @@
 #include <algorithm>
 #include <IMP/Pointer.h>
 #include <boost/shared_array.hpp>
+#include <boost/shared_ptr.hpp>
 #include <boost/intrusive_ptr.hpp>
 
 
-IMPRMF_BEGIN_NAMESPACE
+namespace rmf {
 class HDF5Group;
 
 /** Wrap an HDF5 data set.*/
 template <class TypeTraits>
 class HDF5DataSet {
   static const int max_dims=3;
-  struct Data: public RefCounted {
+  struct Data {
     HDF5Handle h_;
     HDF5Handle ids_;
     HDF5Handle rds_;
@@ -38,7 +39,8 @@ class HDF5DataSet {
     mutable hsize_t pos_[max_dims];
     unsigned int dim_;
   };
-  Pointer<Data> data_;
+  boost::shared_ptr<Data> data_;
+
   bool get_is_null_value(const Ints &ijk) const {
     return TypeTraits::get_is_null_value(get_value(ijk));
   }
@@ -419,6 +421,6 @@ inline int get_number_of_open_hdf5_handles() {
 }
 
 
-IMPRMF_END_NAMESPACE
+} // namespace rmf
 
 #endif /* IMPRMF_HDF_5_WRAPPER_H */

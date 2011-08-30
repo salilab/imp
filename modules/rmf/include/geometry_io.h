@@ -31,18 +31,18 @@ IMPRMF_BEGIN_NAMESPACE
     @{
  */
 /** Add the geometry to the file */
-IMPRMFEXPORT void add_geometry(RootHandle parent, display::Geometry *r);
+IMPRMFEXPORT void add_geometry(::rmf::RootHandle parent, display::Geometry *r);
 /** Save the geometry for the specified frame. */
-IMPRMFEXPORT void save_frame(RootHandle parent, int frame,
+IMPRMFEXPORT void save_frame(::rmf::RootHandle parent, int frame,
                               display::Geometry *r);
 
 
-IMPRMFEXPORT display::Geometries create_geometries(RootHandle parent,
-                                                        int frame);
+IMPRMFEXPORT display::Geometries create_geometries(::rmf::RootHandle parent,
+                                                   int frame);
 /** @} */
 
 class IMPRMFEXPORT RMFWriter: public display::Writer {
-  RootHandle rh_;
+  ::rmf::RootHandle rh_;
   void on_set_frame();
   bool handle(display::SphereGeometry *g,
                display::Color color, std::string name);
@@ -53,7 +53,7 @@ class IMPRMFEXPORT RMFWriter: public display::Writer {
   bool handle(display::SurfaceMeshGeometry *g,
                display::Color color, std::string name);
  public:
-  RMFWriter(RootHandle rh);
+  RMFWriter(::rmf::RootHandle rh);
   IMP_WRITER(RMFWriter);
 };
 IMPRMF_END_NAMESPACE
