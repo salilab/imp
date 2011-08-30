@@ -69,7 +69,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
   header_.compute_xyz_top();
   header_.update_cell_dimensions();
 }
-SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
+SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
                     emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
                     int sig_cutoff,KernelType kt) : kt_(kt){
   IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
@@ -78,7 +78,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
   weight_key_=mass_key;
-  ps_=ps;
+  ps_=get_as<Particles>(ps);
   xyzr_=IMP::core::XYZRs(ps_);
   determine_grid_size(resolution,voxel_size,sig_cutoff);
   header_.set_resolution(resolution);
@@ -223,7 +223,6 @@ namespace {
     const em::DensityHeader *header = dmap->get_header();
     int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
     // actual sampling
-    emreal tmpx,tmpy,tmpz;
     // variables to avoid some multiplications
     int nxny=header->get_nx()*header->get_ny(); int znxny;
     IMP_LOG(VERBOSE,"sampling "<<ps.size()<<" particles "<< std::endl);
@@ -273,17 +272,17 @@ void SampledDensityMap::resample() {
   IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
 }
 
-void SampledDensityMap::set_particles(const IMP::Particles &ps,
+void SampledDensityMap::set_particles(const IMP::ParticlesTemp &ps,
                                       IMP::FloatKey mass_key) {
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");
   IMP_INTERNAL_CHECK(xyzr_.size()==0,"data inconsistency in SampledDensityMap");
-  ps_=ps;
+  ps_=get_as<Particles>(ps);
   weight_key_=mass_key;
   xyzr_=IMP::core::XYZRs(ps_);
 }
 
 
-void SampledDensityMap::project(const Particles &ps,
+void SampledDensityMap::project(const ParticlesTemp &ps,
                                        int x_margin,int y_margin,int z_margin,
                                        algebra::Vector3D shift,
                                        FloatKey mass_key){

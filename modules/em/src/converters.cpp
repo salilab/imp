@@ -63,7 +63,7 @@ Particles density2particles(DensityMap *dmap, Float threshold,
 
 
 SampledDensityMap * particles2density(
-   const Particles &ps,
+   const ParticlesTemp &ps,
    Float resolution, Float apix,
    int sig_cuttoff,
    const FloatKey &weight_key)
@@ -75,7 +75,7 @@ SampledDensityMap * particles2density(
 }
 
 SurfaceShellDensityMap * particles2surface(
-   const Particles &ps,Float apix,
+   const ParticlesTemp &ps,Float apix,
    const FloatKey &weight_key){
   IMP::Pointer<SurfaceShellDensityMap> dmap(new SurfaceShellDensityMap(
                                      ps,

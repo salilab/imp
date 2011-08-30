@@ -62,7 +62,7 @@ Each such particle should be have xyz radius and weight attributes
 \relatesalso SampledDensityMap
  */
 IMPEMEXPORT SampledDensityMap * particles2density(
-   const Particles &ps,
+   const ParticlesTemp &ps,
    Float resolution, Float apix,
    int sig_cutoff=3,
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
@@ -82,7 +82,7 @@ Each such particle should be have xyz radius and weight attributes
 \relatesalso SampledDensityMap
  */
 inline IMPEMEXPORT SampledDensityMap * particles2binarized_density(
-   const Particles &ps,
+   const ParticlesTemp &ps,
    Float resolution, Float apix,
    int sig_cutoff=3,
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key()) {
@@ -107,7 +107,7 @@ Each such particle should be have xyz radius and weight attributes
 \relatesalso SampledDensityMap
  */
 IMPEMEXPORT SurfaceShellDensityMap * particles2surface(
-   const Particles &ps,Float apix,
+   const ParticlesTemp &ps,Float apix,
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
 
 IMPEMEXPORT Float calculate_intersection_score(

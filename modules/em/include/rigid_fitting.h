@@ -236,7 +236,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
-   const Particles &ps,
+   const ParticlesTemp &ps,
    const FloatKey &wei_key,
    DensityMap *dmap,
    Int max_voxels_translation=2,
@@ -265,7 +265,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
 \return The scored fitting solutions
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
+IMPEMEXPORT FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
    DensityMap *em_map,
    const algebra::Transformation3Ds &transformations,
    bool fast_version=false, bool local_score=false,
@@ -304,7 +304,7 @@ inline FittingSolutions compute_fitting_scores(
 \param[in] wei_key  The weight key of the particles in the rigid body
 \note the function assumes the density map holds its density
  */
-IMPEMEXPORT Float compute_fitting_score(const Particles &ps,
+IMPEMEXPORT Float compute_fitting_score(const ParticlesTemp &ps,
    DensityMap *em_map,
    FloatKey wei_key=atom::Mass::get_mass_key(),
    bool local=false);

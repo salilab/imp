@@ -17,7 +17,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
-   Particles ps,
+   ParticlesTemp ps,
    DensityMap *em_map,
    FloatPair norm_factors,
    FloatKey weight_key,
@@ -51,7 +51,7 @@ FitRestraint::FitRestraint(
   store_particles(ps);
   IMP_LOG(TERSE,"after adding "<< all_ps_.size()<<" particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header(),kt_);
-  model_dens_map_->set_particles(all_ps_,weight_key);
+  model_dens_map_->set_particles(get_as<ParticlesTemp>(all_ps_),weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
   dist_mask_=new DistanceMask(model_dens_map_->get_header());
   IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
@@ -78,7 +78,7 @@ void FitRestraint::initialize_model_density_map(
       core::RigidBody rb = *it;
       IMP_LOG(VERBOSE,"working on rigid body:"<<
               (*it)->get_name()<<std::endl);
-      Particles members=member_map_[*it];
+      ParticlesTemp members=get_as<ParticlesTemp>(member_map_[*it]);
       //The rigid body may be outside of the density. This means
       //that the generated SampledDensityMap will be empty,
       //as it ignore particles outside of the boundaries.
@@ -104,7 +104,8 @@ void FitRestraint::initialize_model_density_map(
     }
   }
   //update the none rigid bodies map
-  none_rb_model_dens_map_->set_particles(not_part_of_rb_,weight_key);
+  none_rb_model_dens_map_->set_particles(get_as<ParticlesTemp>(not_part_of_rb_),
+                                         weight_key);
   if(not_part_of_rb_.size()>0){
     none_rb_model_dens_map_->resample();
     none_rb_model_dens_map_->calcRMS();
@@ -234,7 +235,7 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 ParticlesTemp FitRestraint::get_input_particles() const
 {
-  ParticlesTemp pt=all_ps_;
+  ParticlesTemp pt(all_ps_.begin(), all_ps_.end());
   for(int i=0;i<(int)rbs_.size();i++) {
     pt.push_back(rbs_[i]);
   }
@@ -249,8 +250,8 @@ void FitRestraint::do_show(std::ostream& out) const
 {
   out<<"FitRestraint"<<std::endl;
 }
-void FitRestraint::store_particles(Particles ps) {
-  all_ps_=ps;
+void FitRestraint::store_particles(ParticlesTemp ps) {
+  all_ps_=get_as<Particles>(ps);
   add_particles(ps);
   //sort to rigid and not rigid members
   if (use_rigid_bodies_) {
