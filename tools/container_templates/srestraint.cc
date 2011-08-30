@@ -61,9 +61,9 @@ ContainersTemp CLASSNAMERestraint::get_input_containers() const
 }
 
 
-Restraints CLASSNAMERestraint::get_current_decomposition() const {
+Restraints CLASSNAMERestraint::do_create_current_decomposition() const {
   STORAGETYPE vi= IMP::internal::get_particle(get_model(), v_);
-  return ss_->get_current_decomposition(vi);
+  return ss_->create_current_decomposition(vi);
 }
 
 void CLASSNAMERestraint::do_show(std::ostream& out) const

@@ -67,7 +67,7 @@ ContainersTemp CoreCLASSNAMEsRestraint::get_input_containers() const
 }
 
 
-Restraints CoreCLASSNAMEsRestraint::create_decomposition() const {
+Restraints CoreCLASSNAMEsRestraint::do_create_decomposition() const {
   Restraints cur= pc_->create_decomposition(ss_);
   for (unsigned int i=0; i < cur.size(); ++i) {
     cur[i]->set_maximum_score(get_maximum_score());
@@ -80,10 +80,10 @@ Restraints CoreCLASSNAMEsRestraint::create_decomposition() const {
   return cur;
 }
 
-Restraints CoreCLASSNAMEsRestraint::create_current_decomposition() const {
+Restraints CoreCLASSNAMEsRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< pc_->get_number(); ++i) {
-    Restraints cur=ss_->get_current_decomposition(pc_->get(i));
+    Restraints cur=ss_->create_current_decomposition(pc_->get(i));
     for (unsigned int i=0; i < cur.size(); ++i) {
       cur[i]->set_maximum_score(get_maximum_score());
     }
