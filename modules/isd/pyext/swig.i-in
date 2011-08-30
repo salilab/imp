@@ -17,12 +17,14 @@ IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
+IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
+IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, MarginalHBondRestraint, AmbigousHBondRestraints);
 IMP_SWIG_OBJECT(IMP::isd, TALOSRestraint, TALOSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
-IMP_SWIG_OBJECT(IMP::isd, ScaleRangeModifier, ScaleRangeModifiers);
+IMP_SWIG_OBJECT(IMP::isd, NuisanceRangeModifier, NuisanceRangeModifiers);
 IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
@@ -72,7 +74,7 @@ def create_model_and_particles():
 %include "IMP/isd/ISDRestraint.h"
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
-%include "IMP/isd/ScaleRangeModifier.h"
+%include "IMP/isd/NuisanceRangeModifier.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/SlidingPriorRestraint.h"
@@ -82,6 +84,8 @@ def create_model_and_particles():
 %include "IMP/isd/vonMisesKappaJeffreysRestraint.h"
 %include "IMP/isd/vonMisesKappaConjugateRestraint.h"
 %include "IMP/isd/NOERestraint.h"
+%include "IMP/isd/GaussianRestraint.h"
+%include "IMP/isd/LognormalRestraint.h"
 %include "IMP/isd/AmbiguousNOERestraint.h"
 %include "IMP/isd/MarginalNOERestraint.h"
 %include "IMP/isd/MarginalHBondRestraint.h"
