@@ -80,7 +80,7 @@ ContainersTemp MinimumPairScore
 
 
 Restraints MinimumPairScore
-::get_current_decomposition(const ParticlePair& vt) const {
+::create_current_decomposition(const ParticlePair& vt) const {
   Restraints ret;
   MinimumPairScoreMS bestn
     = find_minimal_set_MinimumPairScore(scores_.begin(),

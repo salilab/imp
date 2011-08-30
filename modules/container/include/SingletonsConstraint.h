@@ -65,8 +65,6 @@ public:
     f_=f;
   }
 
-  ScoreStates get_decomposition() const;
-
   IMP_CONSTRAINT(SingletonsConstraint);
 };
 

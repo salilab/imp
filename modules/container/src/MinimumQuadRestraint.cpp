@@ -83,17 +83,15 @@ double MinimumQuadRestraint
 }
 
 Restraints MinimumQuadRestraint
-::get_current_decomposition() const {
+::do_create_current_decomposition() const {
   IMP_OBJECT_LOG;
   QuadMinimumMS bestn
     = find_minimal_set_QuadMinimum(c_.get(),
                                          f_.get(), n_);
-
   Restraints ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     ret.push_back(new core::QuadRestraint(f_, bestn[i].second));
   }
-
   return ret;
 }
 
