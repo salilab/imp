@@ -225,5 +225,27 @@
 /** Call a function and throw an exception if the return values is bad */
 #define IMP_HDF5_CALL(v) IMP_RMF_USAGE_CHECK((v)>=0, "Error calling "<< (#v))
 
+/** Apply the macro to each supported constant size type (eg int as opposed
+    to string).
+
+    \see IMP_RMF_FOREACH_TYPE()
+ */
+#define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)  \
+  macroname(int, Int);                          \
+  macroname(float, Float);                      \
+  macroname(index, Index)
+
+/** Expand to applying the macro to each type supported by
+    the rmf library. The macro should take two argments, the first
+    is the lower case name of the type and the second is the upper
+    case name.
+*/
+#define IMP_RMF_FOREACH_TYPE(macroname)         \
+  IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);       \
+  macroname(string, String);                    \
+  macroname(node_id, NodeID);                   \
+  macroname(data_set, DataSet);                 \
+  macroname(node_ids, NodeIDs);                 \
+  macroname(ints, Ints)
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

@@ -35,6 +35,14 @@ inline std::ostream &operator<<(std::ostream &out,
 }
 
 
+#define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname)                        \
+  DataDataSetCache<Ucname##Traits> lcname##_data_sets_;                 \
+  HDF5DataSet<Ucname##Traits>& get_data_set_i(Ucname##Traits,           \
+                                              Category kc,              \
+                                              bool per_frame,           \
+                                              bool create_if_needed) const { \
+    return lcname##_data_sets_.get(file_, kc, per_frame, create_if_needed); \
+  }
 class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   // indexed first by per frame, then by
   // TypeInfo::get_index() then by ID
@@ -163,57 +171,8 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   mutable int last_node_;
   mutable Category last_category_;
   mutable int last_vi_;
-  DataDataSetCache<IntTraits> int_data_sets_;
-  DataDataSetCache<StringTraits> string_data_sets_;
-  DataDataSetCache<IndexTraits> index_data_sets_;
-  DataDataSetCache<FloatTraits> float_data_sets_;
-  DataDataSetCache<NodeIDTraits> node_data_sets_;
-  DataDataSetCache<DataSetTraits> set_data_sets_;
-  DataDataSetCache<NodeIDsTraits> nodes_data_sets_;
   KeyNameDataSetCache key_name_data_sets_;
-
-  HDF5DataSet<IntTraits>& get_data_set_i(IntTraits,
-                                         Category kc,
-                                         bool per_frame,
-                                         bool create_if_needed) const {
-    return int_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<FloatTraits>& get_data_set_i(FloatTraits,
-                                           Category kc,
-                                           bool per_frame,
-                                           bool create_if_needed) const {
-    return float_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<StringTraits>& get_data_set_i(StringTraits,
-                                            Category kc,
-                                            bool per_frame,
-                                            bool create_if_needed) const {
-    return string_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<IndexTraits>& get_data_set_i(IndexTraits,
-                                           Category kc,
-                                           bool per_frame,
-                                           bool create_if_needed) const {
-    return index_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<NodeIDTraits>& get_data_set_i(NodeIDTraits,
-                                            Category kc,
-                                            bool per_frame,
-                                            bool create_if_needed) const {
-    return node_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<NodeIDsTraits>& get_data_set_i(NodeIDsTraits,
-                                             Category kc,
-                                             bool per_frame,
-                                             bool create_if_needed) const {
-    return nodes_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
-  HDF5DataSet<DataSetTraits>& get_data_set_i(DataSetTraits,
-                                             Category kc,
-                                             bool per_frame,
-                                             bool create_if_needed) const {
-    return set_data_sets_.get(file_, kc, per_frame, create_if_needed);
-  }
+  IMP_RMF_FOREACH_TYPE(IMP_RMF_SHARED_DATA_TYPE);
 
   template <class TypeTraits>
     HDF5DataSet<StringTraits>& get_key_list_data_set(Category kc,
