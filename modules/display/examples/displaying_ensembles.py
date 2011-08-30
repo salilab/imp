@@ -5,7 +5,7 @@ Segment= IMP.algebra.Segment3D
 Cylinder= IMP.algebra.Cylinder3D
 
 # turn off internal checks to speed things up
-IMP.set_check_leve(IMP.USAGE)
+IMP.set_check_level(IMP.USAGE)
 
 def read(m, beyond_file):
     print "reading"
