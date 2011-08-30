@@ -38,6 +38,7 @@ class IMPEXPORT RestraintSet : public Restraint
   void on_add(Restraint*r);
   void on_change();
   static void on_remove(RestraintSet *container, Restraint *r);
+  void show_it(std::ostream &out) const;
  public:
   //! Create an empty set
   RestraintSet(double weight,
@@ -46,10 +47,11 @@ class IMPEXPORT RestraintSet : public Restraint
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
 
-  Restraints create_decomposition() const;
-  Restraints create_current_decomposition() const;
-
-  IMP_RESTRAINT(RestraintSet);
+  double unprotected_evaluate(DerivativeAccumulator *accum) const;
+  ContainersTemp get_input_containers() const;
+  ParticlesTemp get_input_particles() const;
+  IMP_OBJECT_INLINE(RestraintSet,show_it(out),
+                    Restraint::set_model(NULL));
   /** @name Methods to control the nested Restraint objects
 
       This container manages a set of Restraint objects. To
@@ -63,9 +65,11 @@ class IMPEXPORT RestraintSet : public Restraint
   /**@}*/
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
- protected:
-  friend class Model;
   void set_model(Model *m);
+ protected:
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
+  friend class Model;
 #endif
 };
 
@@ -172,11 +176,6 @@ inline RestraintSetsTemp get_restraint_sets(It b, It e) {
 }
 
 /** @} */
-
-/** Return a list of restraints that is created by decomposing each restraint
-    in the passed set.
-*/
-IMPEXPORT Restraints create_decomposition(const RestraintsTemp &rs);
 
 //! Print the hierarchy of restraints
 IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs,

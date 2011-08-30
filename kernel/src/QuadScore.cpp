@@ -94,7 +94,7 @@ namespace {
 
 Restraints
 QuadScore
-::get_current_decomposition(const ParticleQuad& vt) const {
+::create_current_decomposition(const ParticleQuad& vt) const {
   return Restraints(1,
                     new QuadRestraint(const_cast<QuadScore*>(this),
                                            vt,

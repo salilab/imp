@@ -116,12 +116,15 @@ public:
       simple parts as possible. For many restraints, the simplest
       part is simply the restraint itself.
 
+      If a restraint can be decomposed, it should return a
+      RestraintSet so that the maximum score and weight can be
+      passed properly.
+
       The restraints returned have had set_model() called and so can
       be evaluated.
    */
-  virtual Restraints create_decomposition() const {
-    return Restraints(1, const_cast<Restraint*>(this));
-  }
+  Restraint* create_decomposition() const;
+
   //! Decompose this restraint into constituent terms for the current conf
   /** Return a decomposition that is value for the current conformation,
       but will not necessarily be valid if any of the particles are
@@ -131,9 +134,8 @@ public:
       The restraints returned have had set_model() called and so can be
       evaluated.
    */
-  virtual Restraints create_current_decomposition() const {
-    return create_decomposition();
-  }
+  Restraint* create_current_decomposition() const;
+
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
 /** \name Filtering
@@ -160,6 +162,24 @@ public:
   }
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Restraint);
+ protected:
+  /** A Restraint should override this if they want to decompose themselves
+      for domino and other purposes. The returned restraints will be made
+      in to a RestraintSet, if needed and the weight and maximum score
+      set for the restraint set.
+  */
+  virtual Restraints do_create_decomposition() const {
+    return Restraints(1, const_cast<Restraint*>(this));
+  }
+  /** A Restraint should override this if they want to decompose themselves
+      for display and other purposes. The returned restraints will be made
+      in to a RestraintSet, if needed and the weight and maximum score
+      set for the restraint set.
+   */
+  virtual Restraints do_create_current_decomposition() const {
+    return Restraints(1, const_cast<Restraint*>(this));
+  }
+
 private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object.

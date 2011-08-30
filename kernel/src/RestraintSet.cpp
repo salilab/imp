@@ -31,8 +31,6 @@ RestraintSet::RestraintSet(const std::string& name)
 }
 
 
-
-
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints);
 
@@ -51,6 +49,15 @@ void RestraintSet::set_model(Model *m) {
   }
 }
 
+void RestraintSet::show_it(std::ostream &out) const {
+  IMP_CHECK_OBJECT(this);
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    (*it)->show(out);
+  }
+  out << "... end restraint set " << get_name() << std::endl;
+}
+
 ParticlesTemp RestraintSet::get_input_particles() const
 {
   IMP_FAILURE("RestraintSets are special cased in the Model");
@@ -58,16 +65,6 @@ ParticlesTemp RestraintSet::get_input_particles() const
 
 ContainersTemp RestraintSet::get_input_containers() const {
   IMP_FAILURE("RestraintSets are special cased in the Model");
-}
-
-void RestraintSet::do_show(std::ostream& out) const
-{
-  IMP_CHECK_OBJECT(this);
-  for (RestraintConstIterator it= restraints_begin();
-       it != restraints_end(); ++it) {
-    (*it)->show(out);
-  }
-  out << "... end restraint set " << get_name() << std::endl;
 }
 
 
@@ -87,26 +84,21 @@ void RestraintSet::on_change() {
 }
 void RestraintSet::on_remove(RestraintSet *container, Restraint* obj) {
   if (container) obj->get_model()->reset_dependencies();
-  obj->set_model(NULL);
 }
 
-Restraints RestraintSet::create_decomposition() const {
+Restraints RestraintSet::do_create_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-
-    Restraints cur= (*it)->create_decomposition();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+    ret.push_back((*it)->create_decomposition());
   }
   return ret;
 }
-Restraints RestraintSet::create_current_decomposition() const {
+Restraints RestraintSet::do_create_current_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-
-    Restraints cur= (*it)->create_current_decomposition();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+    ret.push_back((*it)->create_current_decomposition());
   }
   return ret;
 }
@@ -136,44 +128,5 @@ void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
                  out << n->get_name());
 }
 
-
-
-Restraints create_decomposition(const RestraintsTemp &rs) {
-  IMP_FUNCTION_LOG;
-  if (rs.empty()) return Restraints();
-  Restraints ret;
-  RestraintsTemp all= get_restraints(rs);
-  for (unsigned int i=0; i< all.size(); ++i) {
-    IMP_USAGE_CHECK(all[i]->get_model(),
-                    "Need to add all restraints to model before decomposing");
-    Restraints cur= all[i]->create_decomposition();
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      RestraintsTemp frs= get_restraints(RestraintsTemp(1, all[i]));
-      RestraintsTemp fret= get_restraints(RestraintsTemp(cur.begin(),
-                                                         cur.end()));
-      {for (unsigned int i=0; i< cur.size(); ++i) {
-          IMP_INTERNAL_CHECK(cur[i]->get_is_part_of_model(),
-                             "Restraint " << cur[i]->get_name()
-                             << " produced from " << all[i]->get_name()
-                             << " is not already part of model.");
-        }}
-      IMP_LOG(TERSE, "Evaluating before" << std::endl);
-      Floats efrs= rs[0]->get_model()->evaluate(frs, false);
-      IMP_LOG(TERSE, "Evaluating after" << std::endl);
-      Floats efret= rs[0]->get_model()->evaluate(fret, false);
-      double s0= std::accumulate(efrs.begin(), efrs.end(), 0.0);
-      double s1= std::accumulate(efret.begin(), efret.end(), 0.0);
-      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1) {
-        IMP_WARN("The before and after scores don't agree for: "
-                 << all[i]->get_name() << " got "
-                 << s0 << " and " << s1 << " over "
-                 << cur.size() << " new restraints: "
-                 << efrs << " vs " << efret);
-      }
-    }
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
 
 IMP_END_NAMESPACE

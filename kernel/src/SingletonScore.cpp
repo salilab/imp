@@ -94,7 +94,7 @@ namespace {
 
 Restraints
 SingletonScore
-::get_current_decomposition(Particle* vt) const {
+::create_current_decomposition(Particle* vt) const {
   return Restraints(1,
                     new SingletonRestraint(const_cast<SingletonScore*>(this),
                                            vt,
