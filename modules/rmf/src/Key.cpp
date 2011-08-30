@@ -41,7 +41,4 @@ const Category Feature=get_category("feature");
 
 } // namespace rmf
 
-// there is something wrong with the standards checks (or at least
-// the errors they produce
-IMP_RMF_BEGIN_NAMESPACE
-IMP_RMF_END_NAMESPACE
+/* This is just here to make the standards checks happy */
