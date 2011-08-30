@@ -91,15 +91,6 @@ public:
   virtual ParticlesTemp get_output_particles() const=0;
   /** @} */
 
-  //! Decompose this score state into constituent terms
-  /** Given the set of input particles, decompose the score state into as
-      simple parts as possible. For many restraints, the simplest
-      part is simply the restraint itself.
-   */
-  virtual ScoreStates create_decomposition() const {
-    return ScoreStates(1, const_cast<ScoreState*>(this));
-  }
-
   /** \brief For python, cast a generic Object to this type. Throw a
       ValueException of object is not the right type.*/
   static ScoreState* get_from(Object *o) {
