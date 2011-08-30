@@ -60,6 +60,6 @@ namespace rmf {
   }
   /** @} */
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_NAMES_H */

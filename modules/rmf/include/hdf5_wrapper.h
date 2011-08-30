@@ -421,6 +421,6 @@ inline int get_number_of_open_hdf5_handles() {
 }
 
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_HDF_5_WRAPPER_H */

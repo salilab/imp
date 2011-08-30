@@ -102,6 +102,6 @@ IMPRMFEXPORT extern const Category Shape;
 */
 IMPRMFEXPORT extern const Category Feature;
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_KEY_CATEGORY_H */

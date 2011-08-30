@@ -405,6 +405,6 @@ namespace rmf {
   /** @} */
 
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_HDF_5_TYPES_H */

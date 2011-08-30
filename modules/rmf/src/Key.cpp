@@ -39,6 +39,4 @@ const Category Bond=get_category("bond");
 const Category Shape=get_category("shape");
 const Category Feature=get_category("feature");
 
-} // namespace rmf
-
-/* This is just here to make the standards checks happy */
+} /* namespace rmf */

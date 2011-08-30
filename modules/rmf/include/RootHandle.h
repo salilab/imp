@@ -191,6 +191,6 @@ inline RootHandle open_rmf_file_read_only(std::string path) {
   return RootHandle(open_hdf5_file_read_only(path), false);
 }
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_ROOT_HANDLE_H */
