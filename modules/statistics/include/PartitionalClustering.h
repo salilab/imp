@@ -34,5 +34,11 @@ class IMPSTATISTICSEXPORT PartitionalClustering: public Object {
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PartitionalClustering);
 };
 
+/** Check that the clustering is a valid clustering of n elements. An
+ exception is thrown if it is not, if the build is not a fast build.*/
+IMPSTATISTICSEXPORT
+void validate_partitional_clustering(PartitionalClustering*pc,
+                                     unsigned int n);
+
 IMPSTATISTICS_END_NAMESPACE
 #endif /* IMPSTATISTICS_PARTITIONAL_CLUSTERING_H */

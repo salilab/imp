@@ -127,14 +127,15 @@ public:
 */
 class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter:
   public PartitionalClustering {
-  std::vector<Ints> clusters_;
+  IMP::compatibility::checked_vector<Ints> clusters_;
   Ints reps_;
-  std::vector<algebra::VectorKD> centers_;
+  algebra::VectorKDs centers_;
 public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  template <unsigned int D>
-    PartitionalClusteringWithCenter(const std::vector<Ints> &clusters,
-                     const std::vector< algebra::VectorD<D> > &centers,
+  template <int D>
+    PartitionalClusteringWithCenter(const
+              IMP::compatibility::checked_vector<Ints> &clusters,
+ const IMP::compatibility::checked_vector<algebra::VectorD<D> > &centers,
                      const Ints &reps):
     PartitionalClustering("k-means"),
     clusters_(clusters),
@@ -146,12 +147,6 @@ public:
       }
   }
 #endif
-  PartitionalClusteringWithCenter(const std::vector<Ints> &clusters,
-                     const std::vector<algebra::VectorKD> &centers,
-                   const Ints &reps): PartitionalClustering("k-means"),
-                                      clusters_(clusters),
-                                      reps_(reps),
-                                      centers_(centers){}
   const algebra::VectorKD& get_cluster_center(unsigned int i) const {
     return centers_[i];
   }

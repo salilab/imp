@@ -81,7 +81,7 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
     int s= ds.find_set(i);
     sets[s].push_back(i);
   }
-  std::vector<Ints> clusters;
+  IMP::compatibility::checked_vector<Ints> clusters;
   for (IMP::compatibility::map<int, Ints>::const_iterator it
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
