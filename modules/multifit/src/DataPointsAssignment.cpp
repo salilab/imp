@@ -55,7 +55,6 @@ DataPointsAssignment::get_cluster_vectors(int cluster_id) const {
 
 algebra::Vector3Ds
   DataPointsAssignment::set_cluster(int cluster_ind) {
-
   //remove outliers
   Pointer<Model> mdl = new Model();
   Particles full_set;//all points of the cluster
@@ -77,11 +76,23 @@ algebra::Vector3Ds
   }
   full_map->set_was_used(true);
   domino::IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
+  IMP_LOG(TERSE,"Number of connected components:"<<conn_comp.size()<<std::endl);
+  unsigned int num_elements=0;
+  for(int i=0;i<conn_comp.size();i++) {
+    num_elements+=conn_comp[i].size();
+  }
   //use only connected components that consist of at least 40% of the density
   algebra::Vector3Ds cluster_set;
   for(unsigned int i=0;i<conn_comp.size();i++) {
-    if (conn_comp[i].size()<0.4*full_set.size())
+    IMP_LOG(TERSE,
+            "====connected component:"<<i<<" is of size "
+            <<conn_comp[i].size()<< " " << full_set.size()
+            <<" "<< num_elements<<" "<<0.4*num_elements
+            <<" "<< (conn_comp[i].size()<(0.4*num_elements))<<std::endl);
+    if (conn_comp[i].size()<(0.4*num_elements))
       continue;
+    IMP_LOG(TERSE,
+            "====connected component:"<<i<<" is being considered"<<std::endl);
     for (unsigned int j=0;j<conn_comp[i].size();j++) {
       if (voxel_particle_map.find(conn_comp[i][j]) != voxel_particle_map.end())
         {
@@ -107,7 +118,7 @@ void DataPointsAssignment::set_clusters() {
 }
 
 void DataPointsAssignment::set_edges(double voxel_size) {
-  //create projects density maps for each cluster
+  //create projected density maps for each cluster
   std::vector<Pointer<em::SampledDensityMap> > dmaps;
   std::vector<algebra::BoundingBox3D> boxes;
   Pointer<Model> mdl = new Model();
@@ -123,6 +134,7 @@ void DataPointsAssignment::set_edges(double voxel_size) {
     boxes.push_back(core::get_bounding_box(core::XYZRs(ps)));
     Pointer<em::SampledDensityMap> segment_map =
       em::particles2density(ps,voxel_size*1.5,voxel_size);
+    segment_map->set_was_used(true);
     dmaps.push_back(segment_map);
   }//end create maps
 
