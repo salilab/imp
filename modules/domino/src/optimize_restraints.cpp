@@ -212,20 +212,14 @@ ParticlesTemp pt= c_->get_particles();
         }
       }
     }
-    Restraints rs= r->create_decomposition();
-    if (rs.size()==0 || (rs.size() >=1 && rs[0] != r)) {
+    Pointer<Restraint> rd= r->create_decomposition();
+    RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+    if (rs) {
       IMP_LOG(TERSE, "Restraint \"" << r->get_name()
-              << "\" is being decompsed into " << rs.size() << " restraints"
+              << "\" is being decompsed into " << rs->get_number_of_restraints()
+              << " restraints"
               << std::endl);
-      IMP_NEW(RestraintSet, rss, (r->get_name()));
-      added.push_back(new ScopedRestraint(rss, p));
-      rss->add_restraints(rs);
-      double max= r->get_maximum_score();
-      if (max < std::numeric_limits<double>::max()) {
-        /*std::cout << "Setting maximum score of " << rss->get_name()
-          << " to " << max << std::endl;*/
-        rss->set_maximum_score(max);
-      }
+      added.push_back(new ScopedRestraint(rs, p));
       removed.push_back(new ScopedRemoveRestraint(r, p));
     } else {
     }
@@ -296,7 +290,7 @@ ParticlesTemp pt= c_->get_particles();
         }
       }
     }
-    ScoreStates sss= ss->create_decomposition();
+    /*ScoreStates sss= ss->create_decomposition();
     if (sss.size() >1) {
       Model *m= ss->get_model();
       IMP_LOG(TERSE, "Decomposing state " << ss->get_name()
@@ -308,7 +302,7 @@ ParticlesTemp pt= c_->get_particles();
     } else {
       IMP_LOG(TERSE, "State " << ss->get_name()
               << " cannot be decomposed" << std::endl);
-    }
+              }*/
   }
 }
 
