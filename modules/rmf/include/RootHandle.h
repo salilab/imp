@@ -69,16 +69,17 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   /** \name Non-template versions for python
       @{
   */
-#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue) \
-  UCName##Key get_##lcname##_key(Category category_id,               \
+#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue,\
+                                       PassValues, ReturnValues)        \
+  UCName##Key get_##lcname##_key(Category category_id,                  \
                                  std::string nm) const {                \
     return get_key<UCName##Traits>(category_id, nm);                    \
   }                                                                     \
-  bool get_has_##lcname##_key(Category category_id,                  \
-                                     std::string nm) const {            \
+  bool get_has_##lcname##_key(Category category_id,                     \
+                              std::string nm) const {                   \
     return get_has_key<UCName##Traits>(category_id, nm);                \
   }                                                                     \
-  UCName##Key add_##lcname##_key(Category category_id,               \
+  UCName##Key add_##lcname##_key(Category category_id,                  \
                                  std::string nm,                        \
                                  bool per_frame) const {                \
     return add_key<UCName##Traits>(category_id, nm, per_frame);         \
@@ -87,7 +88,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
     return shared_->get_name(k);                                        \
   }                                                                     \
   UCName##Key##s                                                        \
-    get_##lcname##_keys(Category category_id) const {                \
+    get_##lcname##_keys(Category category_id) const {                   \
     return get_keys<UCName##Traits>(category_id);                       \
   }                                                                     \
   unsigned int get_number_of_frames(UCName##Key k) const {              \
