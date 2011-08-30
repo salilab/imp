@@ -95,6 +95,7 @@ class GenericTest(IMP.test.TestCase):
              (f.add_string_key, "there"),
              (f.add_index_key, 3),
              (f.add_data_set_key, "ds"+str(pccc))]
+        IMP.rmf._pass_node_ids([nh.get_id()])
         for p in lst:
             print p[0]
             k = p[0](cat, "hi", pccc)
