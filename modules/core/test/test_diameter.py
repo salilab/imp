@@ -23,8 +23,10 @@ class DistanceTests(IMP.test.TestCase):
         max=0
         for p0 in lc.get_particles():
             for p1 in lc.get_particles():
-                d=IMP.core.get_distance(IMP.core.XYZ(p0),
-                                    IMP.core.XYZ(p1))
+                d=IMP.core.get_distance(IMP.core.XYZR(p0),
+                                        IMP.core.XYZR(p1))\
+                                        + 2*(IMP.core.XYZR(p0).get_radius()\
+                                             + IMP.core.XYZR(p1).get_radius())
                 self.assertLess(d, 1.1*diameter)
 
     def test_diameter(self):

@@ -61,9 +61,9 @@ ContainersTemp PairRestraint::get_input_containers() const
 }
 
 
-Restraints PairRestraint::get_current_decomposition() const {
+Restraints PairRestraint::do_create_current_decomposition() const {
   ParticlePair vi= IMP::internal::get_particle(get_model(), v_);
-  return ss_->get_current_decomposition(vi);
+  return ss_->create_current_decomposition(vi);
 }
 
 void PairRestraint::do_show(std::ostream& out) const

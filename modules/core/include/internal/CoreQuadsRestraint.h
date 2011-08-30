@@ -63,11 +63,11 @@ public:
   QuadContainer* get_container() const {
     return pc_;
   }
+#ifndef IMP_DOXYGEN
+  Restraints do_create_decomposition() const;
 
-  Restraints create_decomposition() const;
-
-  Restraints create_current_decomposition() const;
-
+  Restraints do_create_current_decomposition() const;
+#endif
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
 };

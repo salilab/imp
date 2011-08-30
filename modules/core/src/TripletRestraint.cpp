@@ -61,9 +61,9 @@ ContainersTemp TripletRestraint::get_input_containers() const
 }
 
 
-Restraints TripletRestraint::get_current_decomposition() const {
+Restraints TripletRestraint::do_create_current_decomposition() const {
   ParticleTriplet vi= IMP::internal::get_particle(get_model(), v_);
-  return ss_->get_current_decomposition(vi);
+  return ss_->create_current_decomposition(vi);
 }
 
 void TripletRestraint::do_show(std::ostream& out) const

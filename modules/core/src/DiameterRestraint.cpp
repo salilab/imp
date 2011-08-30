@@ -94,7 +94,7 @@ ContainersTemp DiameterRestraint::get_input_containers() const {
 }
 
 
-Restraints DiameterRestraint::create_decomposition() const {
+Restraints DiameterRestraint::do_create_decomposition() const {
   Restraints ret;
   ParticlesTemp ps= sc_->get_particles();
   // since we are adding two deviations before squaring, make k=.25
@@ -114,7 +114,7 @@ Restraints DiameterRestraint::create_decomposition() const {
   return ret;
 }
 
-Restraints DiameterRestraint::create_current_decomposition() const {
+Restraints DiameterRestraint::do_create_current_decomposition() const {
   Restraints ret;
   ParticlesTemp ps= sc_->get_particles();
   IMP_NEW(HarmonicUpperBoundSphereDiameterPairScore, sps,
