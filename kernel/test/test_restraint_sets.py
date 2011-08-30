@@ -51,6 +51,13 @@ class RestraintSetTests(IMP.test.TestCase):
         (m, rs, r0, r1, r2)= self._make_stuff()
         m.add_restraint(r0)
         self.assertEqual(m.evaluate(False), 3)
-
+    def test_removed(self):
+        """Test that restraints are usable after set is destroyed"""
+        (m, rs, r0, r1, r2)= self._make_stuff()
+        m.add_restraint(rs)
+        m.remove_restraint(rs)
+        print "print removed", r1.evaluate(False)
+        del rs
+        print "destroyed", r1.evaluate(False)
 if __name__ == '__main__':
     IMP.test.main()
