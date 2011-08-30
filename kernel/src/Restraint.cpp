@@ -112,6 +112,57 @@ void Restraint::set_maximum_score(double w) {
   }
 }
 
+namespace {
+  void check_decomposition(Restraint *in, Restraint *out) {
+    IMP_INTERNAL_CHECK(out->get_is_part_of_model(),
+                       "Restraint " << out->get_name()
+                       << " produced from " << in->get_name()
+                       << " is not already part of model.");
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      RestraintsTemp frs= get_restraints(RestraintsTemp(1, in));
+      RestraintsTemp fret= get_restraints(RestraintsTemp(1, out));
+      IMP_LOG(TERSE, "Evaluating before" << std::endl);
+      Floats efrs= in->get_model()->evaluate(frs, false);
+      IMP_LOG(TERSE, "Evaluating after" << std::endl);
+      Floats efret= in->get_model()->evaluate(fret, false);
+      double s0= std::accumulate(efrs.begin(), efrs.end(), 0.0);
+      double s1= std::accumulate(efret.begin(), efret.end(), 0.0);
+      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1) {
+        IMP_WARN("The before and after scores don't agree for: "
+                 << in->get_name() << " got "
+                 << s0 << " and " << s1 << " over "
+                 << efrs << " vs " << efret);
+      }
+    }
+  }
+}
+
+namespace {
+  Restraint* create_decomp_helper(const Restraint* me,
+                                  const Restraints &created) {
+    if (created.empty()) return NULL;
+    if (created.size()== 1 && created[0]==me) {
+      return created[0];
+    } else {
+      IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposed"));
+      rs->add_restraints(created);
+      rs->set_maximum_score(me->get_maximum_score());
+      rs->set_weight(me->get_weight());
+      rs->set_model(me->get_model());
+      return rs.release();
+    }
+  }
+}
+
+Restraint* Restraint::create_decomposition() const {
+  return create_decomp_helper(this, do_create_decomposition());
+}
+
+
+Restraint* Restraint::create_current_decomposition() const {
+  return create_decomp_helper(this, do_create_current_decomposition());
+}
+
 
 
 IMP_END_NAMESPACE
