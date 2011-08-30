@@ -4,6 +4,9 @@ import IMP.atom
 Segment= IMP.algebra.Segment3D
 Cylinder= IMP.algebra.Cylinder3D
 
+# turn off internal checks to speed things up
+IMP.set_check_leve(IMP.USAGE)
+
 def read(m, beyond_file):
     print "reading"
     hs=[]
