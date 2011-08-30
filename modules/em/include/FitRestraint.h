@@ -52,7 +52,7 @@ public:
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
    */
-  FitRestraint(Particles ps,
+  FitRestraint(ParticlesTemp ps,
                DensityMap *em_map,
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= atom::Mass::get_mass_key(),
@@ -72,7 +72,7 @@ public:
 #endif
 private:
   //! Store particles
-  void store_particles(Particles ps);
+  void store_particles(ParticlesTemp ps);
   //! Resample the model density map
   void resample() const;
   //! Create density maps: one for each rigid body and one for the rest.

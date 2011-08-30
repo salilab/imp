@@ -58,7 +58,7 @@ public:
                  (ii) to determine the voxels around the coords participating
                       in the sampling procedure.
    */
-  SampledDensityMap(const Particles &ps, emreal resolution,
+  SampledDensityMap(const ParticlesTemp &ps, emreal resolution,
    emreal voxel_size,
    IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
                     int sig_cuttoff=3,KernelType kt=GAUSSIAN);
@@ -81,14 +81,14 @@ public:
 \param[in] z_margin sampling is restricted to [z_margin,nz-z_maring]
 \param[in] shift the positions of all particles are shifted by
                  this value before projection
-*/
-void project(const Particles &ps,
+ */
+void project(const ParticlesTemp &ps,
        int x_margin,int y_margin,int z_margin,
              algebra::Vector3D shift=algebra::Vector3D(0.,0.,0.),
              FloatKey mass_key=atom::Mass::get_mass_key());
 
 //!setting particles in case they were not set by the constructor
- void set_particles(const IMP::Particles &ps,
+ void set_particles(const IMP::ParticlesTemp &ps,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
 #if !defined(DOXYGEN) && !defined(SWIG)

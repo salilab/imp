@@ -215,7 +215,7 @@ FittingSolutions local_rigid_fitting_around_points(
 }
 
 FittingSolutions local_rigid_fitting_grid_search(
-   const Particles &ps,
+   const ParticlesTemp &ps,
    const FloatKey &wei_key,
    DensityMap *dmap,
    Int max_voxels_translation,
@@ -293,7 +293,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    return fr;
 }
 
-FittingSolutions compute_fitting_scores(const Particles &ps,
+FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
   DensityMap *em_map,
   const algebra::Transformation3Ds &transformations,
   bool fast_version,
@@ -424,7 +424,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
     return fr;
 }
 
-Float compute_fitting_score(const Particles &ps,
+Float compute_fitting_score(const ParticlesTemp &ps,
                             DensityMap *em_map,
                             FloatKey wei_key,bool local) {
   //create a grid that covers both the particles and the map
