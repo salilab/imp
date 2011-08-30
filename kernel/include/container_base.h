@@ -14,6 +14,7 @@
 #include "Pointer.h"
 #include "macros.h"
 #include "WeakPointer.h"
+#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 class Model;
