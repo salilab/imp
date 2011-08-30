@@ -17,8 +17,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         e= IMP.statistics.VectorDEmbedding(vs)
         m= IMP.statistics.EuclideanMetric(e)
         c= IMP.statistics.create_diameter_clustering(m, 14)
-        self.skipTest("not a very good test")
-        self.assert_(c.get_number_of_clusters()<= 5)
+        #self.assert_(c.get_number_of_clusters()<= 5)
 
         for i in range(0, c.get_number_of_clusters()):
             cl= c.get_cluster(i)

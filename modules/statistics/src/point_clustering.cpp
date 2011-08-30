@@ -204,7 +204,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
                      == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
-  std::vector<algebra::VectorKD> centers(k);
+  IMP::compatibility::checked_vector<algebra::VectorKD> centers(k);
   for (unsigned int i = 0; i < k; i++) {
     internal::KMPoint *kmp = best_clusters[i];
     centers[i]=algebra::VectorKD(kmp->begin(), kmp->end());
@@ -215,7 +215,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
   const Ints &close_center = *best_clusters.get_assignments();
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
-  std::vector<Ints> clusters(k);
+  IMP::compatibility::checked_vector<Ints> clusters(k);
   for (unsigned int i=0;i<names.size();i++) {
     //std::cout<<"ps number i: " << i << " close center : "
     //<< (*close_center)[i] << std::endl;
@@ -239,10 +239,9 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
     reps[i]=names[c];
   }
 
-  PartitionalClusteringWithCenter *cl
-    = new PartitionalClusteringWithCenter(clusters, centers, reps);
-  cl->set_was_used(true);
-  return cl;
+  IMP_NEW(PartitionalClusteringWithCenter, ret, (clusters, centers, reps));
+  validate_partitional_clustering(ret, metric->get_number_of_items());
+  return ret.release();
 }
 }
 
@@ -286,8 +285,8 @@ create_connectivity_clustering(Embedding *embed,
   }
   std::map<int,int> cluster_map;
   Ints reps;
-  std::vector<Ints> clusters;
-  algebra::VectorKDs centers;
+  IMP::compatibility::checked_vector<Ints> clusters;
+  IMP::compatibility::checked_vector<algebra::VectorKD> centers;
   for (unsigned int i=0; i < vs.size(); ++i) {
     int p= uf.find_set(i);
     if (cluster_map.find(p) == cluster_map.end()) {
@@ -311,7 +310,9 @@ create_connectivity_clustering(Embedding *embed,
       }
     }
   }
-  return new PartitionalClusteringWithCenter(clusters, centers, reps);
+  IMP_NEW(PartitionalClusteringWithCenter, ret, (clusters, centers, reps));
+  validate_partitional_clustering(ret, embed->get_number_of_items());
+  return ret.release();
 }
 
 
@@ -330,8 +331,8 @@ create_bin_based_clustering(Embedding *embed,
       grid[grid.get_index(ei)].push_back(i);
     }
   }
-  std::vector<Ints> clusters;
-  std::vector<algebra::VectorKD> centers;
+  IMP::compatibility::checked_vector<Ints> clusters;
+  IMP::compatibility::checked_vector<algebra::VectorKD> centers;
   Ints reps;
   for (Grid::AllConstIterator it= grid.all_begin();
        it != grid.all_end(); ++it) {
@@ -339,7 +340,10 @@ create_bin_based_clustering(Embedding *embed,
     centers.push_back(grid.get_center(it->first));
     reps.push_back(clusters.back()[0]);
   }
-  return new PartitionalClusteringWithCenter(clusters, centers, reps);
+  IMP_NEW(PartitionalClusteringWithCenter, ret, (clusters, centers, reps));
+  validate_partitional_clustering(ret, embed->get_number_of_items());
+  return ret.release();
+
 }
 
 
@@ -413,7 +417,8 @@ RecursivePartitionalClusteringEmbedding
 PartitionalClustering*
  RecursivePartitionalClusteringEmbedding
 ::create_full_clustering(PartitionalClustering *center_cluster) {
-  std::vector<Ints> clusters(center_cluster->get_number_of_clusters());
+  IMP::compatibility::checked_vector<Ints>
+    clusters(center_cluster->get_number_of_clusters());
   Ints reps(clusters.size());
   for (unsigned int i=0; i< clusters.size(); ++i) {
     Ints outer= center_cluster->get_cluster(i);
@@ -424,7 +429,9 @@ PartitionalClustering*
       clusters[i].insert(clusters[i].end(),inner.begin(), inner.end());
     }
   }
-  return new internal::TrivialPartitionalClustering(clusters, reps);
+  IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters, reps));
+  validate_partitional_clustering(ret, metric_->get_number_of_items());
+  return ret.release();
 }
 
 
