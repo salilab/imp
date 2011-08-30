@@ -538,7 +538,7 @@ namespace rmf {
 
 
   } // namespace internal
-} // namespace rmf
+} /* namespace rmf */
 
 
 #endif /* IMPRMF_INTERNAL_SHARED_H */

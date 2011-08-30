@@ -66,9 +66,4 @@ void RootHandle::flush() {
   shared_->flush();
 }
 
-} // namespace rmf
-
-// there is something wrong with the standards checks (or at least
-// the errors they produce
-IMP_RMF_BEGIN_NAMESPACE
-IMP_RMF_END_NAMESPACE
+} /* namespace rmf */

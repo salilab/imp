@@ -160,6 +160,6 @@ IMPRMFEXPORT void show_hierarchy(NodeHandle root,
 IMP_RMF_GRAPH(NodeTree, bidirectional, NodeHandle, int);
 IMPRMFEXPORT NodeTree get_node_tree(NodeHandle n);
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_NODE_HANDLE_H */

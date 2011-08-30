@@ -46,6 +46,6 @@ namespace rmf {
 #endif
 
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_NODE_ID_H */

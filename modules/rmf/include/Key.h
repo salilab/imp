@@ -82,6 +82,6 @@ inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
 IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEY);
 /** @} */
 
-} // namespace rmf
+} /* namespace rmf */
 
 #endif /* IMPRMF_KEY_H */
