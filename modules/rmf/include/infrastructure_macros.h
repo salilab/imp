@@ -231,21 +231,22 @@
     \see IMP_RMF_FOREACH_TYPE()
  */
 #define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)  \
-  macroname(int, Int);                          \
-  macroname(float, Float);                      \
-  macroname(index, Index)
+  macroname(int, Int, int, int);                \
+  macroname(float, Float, double, double);      \
+  macroname(index, Index, int, int)
 
 /** Expand to applying the macro to each type supported by
-    the rmf library. The macro should take two argments, the first
+    the rmf library. The macro should take four argments, the first
     is the lower case name of the type and the second is the upper
-    case name.
+    case name, the third is the C++ type for accepting the value
+    and the fourth is the C++ type for returning the value.
 */
-#define IMP_RMF_FOREACH_TYPE(macroname)         \
-  IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);       \
-  macroname(string, String);                    \
-  macroname(node_id, NodeID);                   \
-  macroname(data_set, DataSet);                 \
-  macroname(node_ids, NodeIDs);                 \
-  macroname(ints, Ints)
+#define IMP_RMF_FOREACH_TYPE(macroname)                         \
+  IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);                       \
+  macroname(string, String, std::string, std::string);          \
+  macroname(node_id, NodeID, NodeID, NodeID);                   \
+  macroname(data_set, DataSet, std::string, std::string);       \
+  macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs);        \
+  macroname(ints, Ints, const std::vector<int>&, std::vector<int>)
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

@@ -19,36 +19,35 @@
 
 
 
-#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName)                  \
+#define IMP_HDF5_NODE_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue) \
   /** \brief get the value of the attribute k from this node
       The node must have the attribute and if it is a per-frame
       attribute, and frame is not specified then frame 0 is
       used.
   */                                                                    \
-  UCName##Traits::Type get_value(UCName##Key k,                         \
-                                 unsigned int frame=0) const {          \
-    IMP_RMF_USAGE_CHECK(get_has_value(k, frame), "Node " << get_name()  \
-                    << " does not have a value for key "                \
-                    << shared_->get_name(k) << " on frame "             \
-                    << frame);                                          \
-    return shared_->get_value<UCName##Traits>(node_, k, frame);         \
-  }                                                                     \
-  /** \brief  set the value of the attribute k for this node
-
-      If it is a per-frame attribute, frame must be specified.
-  */                                                                    \
-  void set_value(UCName##Key k, UCName##Traits::Type v,                 \
-                 unsigned int frame =0) {                               \
-    shared_->set_value<UCName##Traits>(node_, k, v, frame);             \
-    IMP_RMF_INTERNAL_CHECK(!shared_->get_is_per_frame(k)                \
-                       || shared_->get_number_of_frames(k) >= frame,    \
-                       "Frame not set right: "                          \
-                       << shared_->get_number_of_frames(k)              \
-                       << " " << frame);                                \
-  }                                                                     \
-  bool get_has_value(UCName##Key k, unsigned int frame=0) const {       \
-    return shared_->get_has_value<UCName##Traits>(node_, k, frame);     \
-  }
+ReturnValue get_value(UCName##Key k,                                    \
+                      unsigned int frame=0) const {                     \
+  IMP_RMF_USAGE_CHECK(get_has_value(k, frame), "Node " << get_name()    \
+                      << " does not have a value for key "              \
+                      << shared_->get_name(k) << " on frame "           \
+                      << frame);                                        \
+  return shared_->get_value<UCName##Traits>(node_, k, frame);           \
+}                                                                       \
+/** \brief  set the value of the attribute k for this node
+    If it is a per-frame attribute, frame must be specified.
+*/                                                                      \
+void set_value(UCName##Key k, PassValue v,                              \
+               unsigned int frame =0) {                                 \
+  shared_->set_value<UCName##Traits>(node_, k, v, frame);               \
+  IMP_RMF_INTERNAL_CHECK(!shared_->get_is_per_frame(k)                  \
+                         || shared_->get_number_of_frames(k) >= frame,  \
+                         "Frame not set right: "                        \
+                         << shared_->get_number_of_frames(k)            \
+                         << " " << frame);                              \
+}                                                                       \
+bool get_has_value(UCName##Key k, unsigned int frame=0) const {         \
+  return shared_->get_has_value<UCName##Traits>(node_, k, frame);       \
+}
 
 
 IMPRMF_BEGIN_NAMESPACE

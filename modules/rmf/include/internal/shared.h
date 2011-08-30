@@ -35,7 +35,7 @@ inline std::ostream &operator<<(std::ostream &out,
 }
 
 
-#define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname)                        \
+#define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname, PassValue, ReturnValue) \
   DataDataSetCache<Ucname##Traits> lcname##_data_sets_;                 \
   HDF5DataSet<Ucname##Traits>& get_data_set_i(Ucname##Traits,           \
                                               Category kc,              \

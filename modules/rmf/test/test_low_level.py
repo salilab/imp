@@ -3,7 +3,7 @@ import IMP.rmf
 import IMP.test
 from IMP.algebra import *
 
-num_base_handles=3
+num_base_handles=5
 
 class GenericTest(IMP.test.TestCase):
     def _show(self, g):

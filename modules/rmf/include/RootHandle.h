@@ -69,7 +69,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   /** \name Non-template versions for python
       @{
   */
-#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName)                  \
+#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue) \
   UCName##Key get_##lcname##_key(Category category_id,               \
                                  std::string nm) const {                \
     return get_key<UCName##Traits>(category_id, nm);                    \
