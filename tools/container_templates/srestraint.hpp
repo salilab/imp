@@ -53,8 +53,9 @@ public:
 
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
-
-  Restraints get_current_decomposition() const;
+#ifndef IMP_DOXYGEN
+  Restraints do_create_current_decomposition() const;
+#endif
 };
 
 IMPCORE_END_NAMESPACE

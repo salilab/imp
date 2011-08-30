@@ -45,8 +45,9 @@ public:
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}
-
-  Restraints get_current_decomposition() const;
+#ifndef IMP_DOXYGEN
+  Restraints do_create_current_decomposition() const;
+#endif
 };
 
 IMP_OBJECTS(MINORMAXCLASSNAMERestraint,MINORMAXCLASSNAMERestraints);

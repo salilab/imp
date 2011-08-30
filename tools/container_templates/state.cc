@@ -119,16 +119,6 @@ ParticlesTemp CLASSNAMEsConstraint::get_output_particles() const {
   return ret;
 }
 
-
-ScoreStates CLASSNAMEsConstraint::get_decomposition() const {
-  ScoreStates ret(c_->get_number());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= new core::CLASSNAMEConstraint(f_, af_, c_->get(i),
-                        get_name()+internal::streamable(c_->get(i)));
-  }
-  return ret;
-}
-
 void CLASSNAMEsConstraint::do_show(std::ostream &out) const {
   out << "on " << *c_ << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
