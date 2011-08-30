@@ -71,6 +71,19 @@ double RestraintScoreSubsetFilter::get_score(const Assignment& state) const {
   return score;
 }
 
+Floats RestraintScoreSubsetFilter::get_scores(const Assignment& state) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  return data_.get_scores(state);
+}
+
+RestraintsTemp
+RestraintScoreSubsetFilter::get_restraints() const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  return data_.get_restraints();
+}
+
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Restraint filtration statistics (attempts, passes):\n");
@@ -112,7 +125,7 @@ RestraintScoreSubsetFilterTable
 {
 }
 
-SubsetFilter*
+RestraintScoreSubsetFilter*
 RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
@@ -133,14 +146,14 @@ RestraintScoreSubsetFilterTable
   } else {
     IMP_LOG(VERBOSE, mset_->get_subset_data(s, excluded)
             .get_number_of_total_restraints() << " found" << std::endl);
-    SubsetFilter* ret
-      = new RestraintScoreSubsetFilter(mset_,
-                                       mset_->get_subset_data(s,
-                                                              excluded),
-                                       mset_->get_model()
-                                       ->get_maximum_score());
+    IMP_NEW(RestraintScoreSubsetFilter, ret,
+            (mset_,
+             mset_->get_subset_data(s,
+                                    excluded),
+             mset_->get_model()
+             ->get_maximum_score()));
     ret->set_log_level(get_log_level());
-    return ret;
+    return ret.release();
   }
 }
 

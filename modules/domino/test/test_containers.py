@@ -110,7 +110,7 @@ class DOMINOTests(IMP.test.TestCase):
         sampler= IMP.domino.DominoSampler(m, pst)
         rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
         s=IMP.domino.Subset(pst.get_particles())
-        rssf=rssft.get_restraint_score_subset_filter(s,[])
+        rssf=rssft.get_subset_filter(s,[])
         assignments=sampler.get_sample_assignments(s);
         print "number of assignments:",len(assignments)
         scores=[]
