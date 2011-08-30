@@ -151,9 +151,10 @@ RestraintGeometry::RestraintGeometry(Restraint*r, Model *m):
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
   m_->update();
-  Restraints rs= r_->create_current_decomposition();
+  Pointer<Restraint> rd= r_->create_current_decomposition();
+  RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
   IMP::display::Geometries ret;
-  if (rs.size()==1 && rs[0]== r_) {
+  if (!rs) {
     ParticlesTemp ps= r_->get_input_particles();
     for (unsigned int i=0; i < ps.size(); ++i) {
       if (!core::XYZ::particle_is_instance(ps[i])) continue;
@@ -167,14 +168,14 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
       }
     }
   } else {
-    for (unsigned int i=0; i< rs.size(); ++i) {
-      Restraint *rc=rs[i];
+    for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
+      Restraint *rc=rs->get_restraint(i);
       rc->set_was_used(true);
       core::PairRestraint *pr= dynamic_cast<core::PairRestraint*>(rc);
       if (pr) {
         ret.push_back(new PairRestraintGeometry(pr));
       } else {
-        ret.push_back(new RestraintGeometry(rs[i], m_));
+        ret.push_back(new RestraintGeometry(rc, m_));
       }
     }
   }
