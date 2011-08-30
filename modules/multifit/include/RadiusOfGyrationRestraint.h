@@ -52,7 +52,7 @@ public:
 IMPMULTIFITEXPORT
 float get_approximated_radius_of_gyration(int len);
 IMPMULTIFITEXPORT
-float get_actual_radius_of_gyration(Particles ps);
+float get_actual_radius_of_gyration(ParticlesTemp ps);
 IMPMULTIFITEXPORT
 float get_approximated_radius(int len);
 IMPMULTIFIT_END_NAMESPACE

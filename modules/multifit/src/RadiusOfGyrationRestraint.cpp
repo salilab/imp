@@ -45,7 +45,7 @@ float get_approximated_radius(int len) {
   float rad=3.478*pow(len,1./3.);
   return rad;
 }
-  float get_actual_radius_of_gyration(Particles ps) {
+float get_actual_radius_of_gyration(ParticlesTemp ps) {
   algebra::Vector3D cm(0,0,0);
   for (unsigned int i=0; i< ps.size(); ++i) {
     cm+= core::XYZ(ps[i]).get_coordinates();
@@ -57,8 +57,7 @@ float get_approximated_radius(int len) {
     ret+= d;
   }
   return ret/ps.size();
-  }
-
+}
 
 
 RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(Particles ps,

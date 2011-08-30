@@ -301,7 +301,7 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
   //create the sample map
   sampled_map_ = new em::SampledDensityMap(*(low_map_->get_header()));
   sampled_map_->set_was_used(true);
-  Particles mol_ps=core::get_leaves(orig_mol_);
+  ParticlesTemp mol_ps=core::get_leaves(orig_mol_);
   IMP_LOG(TERSE,"Projecting probe structure to lattice \n");
   sampled_map_->reset_data();
   sampled_map_->project(core::get_leaves(orig_mol_),
@@ -402,13 +402,13 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
                                            const EulerAngles &rot,
                                            int rot_ind) {
   //save original coordinates of the copy mol
-  Particles temp_ps=core::get_leaves(copy_mol_);
+  ParticlesTemp temp_ps=core::get_leaves(copy_mol_);
   algebra::Vector3Ds origs(temp_ps.size());
-  for(int i=0;i<temp_ps.size();i++) {
+  for(unsigned int i=0;i<temp_ps.size();i++) {
     origs[i]=core::XYZ(temp_ps[i]).get_coordinates();
   }
   rotate_mol(copy_mol_,rot.psi,rot.theta,rot.phi);
-  Particles mol_ps=core::get_leaves(orig_mol_);
+  ParticlesTemp mol_ps=core::get_leaves(orig_mol_);
   sampled_map_->reset_data(0.);
   sampled_map_->project(
                       temp_ps,
@@ -472,7 +472,7 @@ void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
   //" "<<rot.phi*180/PI<< " "<<spacing_*nx_half_-spacing_*grid_ind[0]<<
   //" "<< spacing_*ny_half_-spacing_*grid_ind[1]<<" "<<
   //spacing_*nz_half_-spacing_*grid_ind[2] <<" "<< max_score << std::endl;
-  for(int i=0;i<temp_ps.size();i++) {
+  for(unsigned int i=0;i<temp_ps.size();i++) {
     core::XYZ(temp_ps[i]).set_coordinates(origs[i]);
   }
 }
@@ -900,7 +900,6 @@ void FFTFitting::prepare_poslist (em::DensityMap *dmap) {
           curr++;
         }
       }
-  mask_inside2=NULL;
 }
 
 FittingSolutionRecords fft_based_rigid_fitting(
