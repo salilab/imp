@@ -80,7 +80,7 @@ ContainersTemp MinimumQuadScore
 
 
 Restraints MinimumQuadScore
-::get_current_decomposition(const ParticleQuad& vt) const {
+::create_current_decomposition(const ParticleQuad& vt) const {
   Restraints ret;
   MinimumQuadScoreMS bestn
     = find_minimal_set_MinimumQuadScore(scores_.begin(),

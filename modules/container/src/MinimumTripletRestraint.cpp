@@ -83,17 +83,15 @@ double MinimumTripletRestraint
 }
 
 Restraints MinimumTripletRestraint
-::get_current_decomposition() const {
+::do_create_current_decomposition() const {
   IMP_OBJECT_LOG;
   TripletMinimumMS bestn
     = find_minimal_set_TripletMinimum(c_.get(),
                                          f_.get(), n_);
-
   Restraints ret;
   for (unsigned int i=0; i< bestn.size(); ++i) {
     ret.push_back(new core::TripletRestraint(f_, bestn[i].second));
   }
-
   return ret;
 }
 
