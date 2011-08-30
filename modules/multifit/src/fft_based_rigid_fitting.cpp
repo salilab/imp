@@ -722,8 +722,8 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
 
       peak_count++;
     }}
-  lpeak=NULL;
-  gpeak=NULL;
+  lpeak=static_cast<em::DensityMap*>(NULL);
+  gpeak=static_cast<em::DensityMap*>(NULL);
   //add the num_fits_reported_ saved maximum scoring peaks
   for (int i=0;i<num_fits_reported_;i++) {
     found_peak[peak_count+i] = max_peaks[i];
@@ -810,7 +810,7 @@ void FFTFitting::prepare_poslist_flipped (em::DensityMap *dmap) {
         long s=(nx_-1-ix)+(nx_)*((ny_-1-iy)+ny_*(nz_-1-iz));
         mdata3[q]=mdata2[s];
       }
-  mask_inside2=NULL;
+  mask_inside2=static_cast<em::DensityMap*>(NULL);
   fft_scores_flipped_.clear();
   fft_scores_flipped_.insert(fft_scores_.end(),inside_num_flipped_,FFTScore());
 
@@ -833,7 +833,7 @@ void FFTFitting::prepare_poslist_flipped (em::DensityMap *dmap) {
           curr++;
         }
       }
-  mask_inside3=NULL;
+  mask_inside3=static_cast<em::DensityMap*>(NULL);
 }
 //! get the unwrapped index
 /**

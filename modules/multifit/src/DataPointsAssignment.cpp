@@ -79,7 +79,7 @@ algebra::Vector3Ds
   domino::IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
   IMP_LOG(TERSE,"Number of connected components:"<<conn_comp.size()<<std::endl);
   unsigned int num_elements=0;
-  for(int i=0;i<conn_comp.size();i++) {
+  for(unsigned int i=0;i<conn_comp.size();i++) {
     num_elements+=conn_comp[i].size();
   }
   //use only connected components that consist of at least 40% of the density
@@ -208,7 +208,7 @@ new em::DensityMap(*(dmap->get_header())));
 vecs[i][0],vecs[i][1],vecs[i][2],dmap->get_value(vecs[i]));
   }
   em::write_map(segment_map,filename.c_str(),new em::MRCReaderWriter());
-  segment_map=NULL;
+  segment_map=static_cast<em::DensityMap*>(NULL);
 }
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
