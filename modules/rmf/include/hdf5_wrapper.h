@@ -244,26 +244,11 @@ class HDF5DataSet {
 #endif
 };
 
+#define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname)                        \
+  typedef HDF5DataSet<Ucname##Traits> HDF5##Ucname##DataSet;            \
+  typedef std::vector<HDF5##Ucname##DataSet> HDF5##Ucname##DataSets
 
-typedef HDF5DataSet<FloatTraits> HDF5FloatDataSet;
-typedef HDF5DataSet<StringTraits> HDF5StringDataSet;
-typedef HDF5DataSet<IntTraits> HDF5IntDataSet;
-typedef HDF5DataSet<IndexTraits> HDF5IndexDataSet;
-typedef HDF5DataSet<NodeIDTraits> HDF5NodeIDDataSet;
-typedef HDF5DataSet<DataSetTraits> HDF5DataSetDataSet;
-typedef HDF5DataSet<IntsTraits> HDF5IntsDataSet;
-typedef HDF5DataSet<IntsTraits> HDF5NodeIDsDataSet;
-#ifndef IMP_DOXYGEN
-typedef std::vector<HDF5FloatDataSet> HDF5FloatDataSets;
-typedef std::vector<HDF5StringDataSet> HDF5StringDataSets;
-typedef std::vector<HDF5IntDataSet> HDF5IntDataSets;
-typedef std::vector<HDF5IndexDataSet> HDF5IndexDataSets;
-typedef std::vector<HDF5NodeIDDataSet> HDF5NodeIDDataSets;
-typedef std::vector<HDF5DataSetDataSet> HDF5DataSetDataSets;
-typedef std::vector<HDF5IntsDataSet> HDF5IntsDataSets;
-typedef std::vector<HDF5NodeIDsDataSet> HDF5NodeIDsDataSets;
-#endif
-
+IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_DATA_SET);
 
 /** Wrap an HDF5 Group. */
 class IMPRMFEXPORT HDF5Group {
@@ -316,14 +301,8 @@ class IMPRMFEXPORT HDF5Group {
                                                             int dim) {  \
     return get_child_data_set<UCName##Traits>(name, dim);               \
   }
+  IMP_RMF_FOREACH_TYPE(IMP_HDF5_DATA_SET_METHODS);
 
-  IMP_HDF5_DATA_SET_METHODS(int, Int);
-  IMP_HDF5_DATA_SET_METHODS(index, Index);
-  IMP_HDF5_DATA_SET_METHODS(float, Float);
-  IMP_HDF5_DATA_SET_METHODS(string, String);
-  IMP_HDF5_DATA_SET_METHODS(data_set, DataSet);
-  IMP_HDF5_DATA_SET_METHODS(node_id, NodeID);
-  IMP_HDF5_DATA_SET_METHODS(ints, Ints);
   unsigned int get_number_of_children() const;
   std::string get_child_name(unsigned int i) const;
   bool get_has_child(std::string name) const;
@@ -400,11 +379,8 @@ class IMPRMFEXPORT HDF5Group {
     return get_attribute< UCName##Traits>(nm);                          \
   }                                                                     \
 
-  IMP_HDF5_ATTRIBUTE(float, Float);
-  IMP_HDF5_ATTRIBUTE(int, Int);
+  IMP_RMF_FOREACH_SIMPLE_TYPE(IMP_HDF5_ATTRIBUTE);
   IMP_HDF5_ATTRIBUTE(char, Char);
-  IMP_HDF5_ATTRIBUTE(string, String);
-  IMP_HDF5_ATTRIBUTE(index, Index);
 };
 
 

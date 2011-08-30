@@ -23,7 +23,7 @@ class NodeID {
   friend struct NodeIDTraits;
   friend class RootHandle;
 public:
-  NodeID(unsigned int i): i_(i){}
+  explicit NodeID(unsigned int i): i_(i){}
   NodeID(): i_(-1){}
   void show(std::ostream &out) const {
     out << i_;

@@ -60,32 +60,26 @@ inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
 }
 #endif
 
-//! Store an arbitrary floating point value
-typedef Key<FloatTraits> FloatKey;
-typedef std::vector<FloatKey> FloatKeys;
-//! Store an abitrary integer value
-typedef Key<IntTraits> IntKey;
-typedef std::vector<IntKey> IntKeys;
-//! Store an arbitrary string value
-typedef Key<StringTraits> StringKey;
-typedef std::vector<StringKey> StringKeys;
-//! Store a zero-based index to something
-typedef Key<IndexTraits> IndexKey;
-typedef std::vector<IndexKey> IndexKeys;
-//! Store the ID of an existing node in the RMF file
-typedef Key<NodeIDTraits> NodeIDKey;
-typedef std::vector<NodeIDKey> NodeIDKeys;
-//! Store the name of a data set in the hdf5 file
-/** The handling of this data type may change as
-    it is currently a bit limited.
+#define IMP_RMF_DECLARE_KEY(lcname, Ucname)     \
+  typedef Key<Ucname##Traits> Ucname##Key;      \
+  typedef std::vector<Ucname##Key> Ucname##Keys
+
+/** \name Key types
+    RMF files support storing a variety of different types of data. These
+    include
+    - IntKey: store an arbitrary integer as a 64 bit integer
+    - FloatKey: store an arbitrary floating point number as a double
+    - StringKey: store an arbitrary length string
+    - IndexKey: store non-negative indexes as 64 bit integers
+    - NodeIDKey: store the ID of a node in the hierarchy
+    - NodeIDsKey: store a list of NodeIDs
+    - DataSetKey: store a reference to an HDF5 data set via the path to the
+    data set
+    - IntsKey: store a list of arbitrary integers
+    @{
 */
-typedef Key<DataSetTraits> DataSetKey;
-typedef std::vector<DataSetKey> DataSetKeys;
-//! Store a list of IDs of nodes in the file
-typedef Key<NodeIDsTraits> NodeIDsKey;
-typedef std::vector<NodeIDsKey> NodeIDsKeys;
-
-
+IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEY);
+/** @} */
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_KEY_H */

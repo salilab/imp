@@ -129,13 +129,7 @@ class IMPRMFEXPORT NodeHandle {
 
       @{
   */
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(int, Int);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(float, Float);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(string, String);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(index, Index);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(node_id, NodeID);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(data_set, DataSet);
-  IMP_HDF5_NODE_KEY_TYPE_METHODS(node_ids, NodeIDs);
+  IMP_RMF_FOREACH_TYPE(IMP_HDF5_NODE_KEY_TYPE_METHODS);
   /** @} */
   void show(std::ostream &out= std::cout) const {
     out << get_name() << "(" << get_type() << ", " << node_ << ")";

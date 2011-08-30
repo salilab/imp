@@ -97,14 +97,8 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
     return shared_->get_is_per_frame(k);                                \
   }
 
+  IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_KEY_TYPE_METHODS);
 
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(int, Int);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(float, Float);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(string, String);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(index, Index);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(node_id, NodeID);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(data_set, DataSet);
-  IMP_HDF5_ROOT_KEY_TYPE_METHODS(node_ids, NodeIDs);
   /** @} */
 #ifdef IMP_DOXYGEN
   /** \name Python only
@@ -134,8 +128,8 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   }
   BondPair get_bond(unsigned int i) const {
     boost::tuple<int,int,int> t= shared_->get_bond(i);
-    return std::make_pair(get_node_handle_from_id(t.get<0>()),
-                          get_node_handle_from_id(t.get<1>()));
+    return std::make_pair(get_node_handle_from_id(NodeID(t.get<0>())),
+                          get_node_handle_from_id(NodeID(t.get<1>())));
   }
   void add_bond(NodeHandle na, NodeHandle nb, unsigned int type) {
     NodeID ida= na.get_id();
