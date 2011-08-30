@@ -119,6 +119,12 @@ public:
   IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
   int get_next_state(int pos, const Assignment& state) const;
   double get_score(const Assignment& state) const;
+  //! Get the restraints involved in this subset
+  RestraintsTemp get_restraints() const;
+  //! Return the scores for the restraints
+  /** The order is the same as get_restraints().
+   */
+  Floats get_scores(const Assignment &state) const;
 };
 
 
@@ -150,13 +156,13 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
       case and the memory usage can be quite high.
   */
   void set_use_caching(bool tf);
-  RestraintScoreSubsetFilter* get_restraint_score_subset_filter(
-                                 const Subset &s,
-                                 const Subsets &prior_subsets) {
-    return dynamic_cast<RestraintScoreSubsetFilter*>(
-                        get_subset_filter(s,prior_subsets));
-  }
-  IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
+
+  RestraintScoreSubsetFilter*
+  get_subset_filter(const IMP::domino::Subset&s,
+                    const IMP::domino::Subsets &excluded) const;
+  double get_strength(const IMP::domino::Subset&s,
+                      const IMP::domino::Subsets &excluded) const;
+  IMP_OBJECT(RestraintScoreSubsetFilterTable);
 };
 
 IMP_OBJECTS(RestraintScoreSubsetFilterTable,

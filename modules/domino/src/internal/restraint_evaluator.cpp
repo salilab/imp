@@ -311,5 +311,12 @@ void ModelData
   preload_[r].scores.push_back(score);
 }
 
+RestraintsTemp SubsetData::get_restraints() const {
+  RestraintsTemp ret;
+  for (unsigned int i=0; i< ris_.size(); ++i) {
+    ret.push_back(md_->rdata_[ris_[i]].get_restraint());
+  }
+  return ret;
+}
 
 IMPDOMINO_END_INTERNAL_NAMESPACE

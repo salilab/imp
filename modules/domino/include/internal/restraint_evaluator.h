@@ -173,6 +173,8 @@ class IMPDOMINOEXPORT SubsetData {
     return set_ris_.size()+ ris_.size();
   }
   Subset get_subset() const {return s_;}
+  RestraintsTemp get_restraints() const;
+  Floats get_scores(const Assignment &state) const;
 };
 
 struct IMPDOMINOEXPORT ModelData: public RefCounted {
@@ -234,9 +236,8 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
 
 
 
-
-inline double SubsetData::get_score(const Assignment &state) const {
-  double score=0;
+inline Floats SubsetData::get_scores(const Assignment &state) const {
+  Floats scores;
   for (unsigned int i=0; i< ris_.size(); ++i) {
     Ints ssi(indices_[i].size());
     for (unsigned int j=0; j< ssi.size();++j) {
@@ -249,9 +250,14 @@ inline double SubsetData::get_score(const Assignment &state) const {
     }
     double ms=md_->rdata_[ris_[i]].get_score<false>(md_->pst_,
                                                     ps, ss);
-    score+= ms;
+    scores.push_back(ms);
   }
-  return score;
+  return scores;
+}
+
+inline double SubsetData::get_score(const Assignment &state) const {
+  Floats r=get_scores(state);
+  return std::accumulate(r.begin(), r.end(), 0.0);
 }
 inline bool SubsetData::get_is_ok(const Assignment &state, double max) const {
   double total=0;
