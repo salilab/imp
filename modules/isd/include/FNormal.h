@@ -46,12 +46,14 @@ class IMPISDEXPORT FNormal : public Object
             + 1/(2*square(sigma_))*square(FA_-FM_); 
   }
 
+  //derivative of score wrt F(A)
   virtual double evaluate_derivative_FA() const
   { return (FA_-FM_)/square(sigma_); }
 
   virtual double evaluate_derivative_JA() const
   { return -1/JA_; }
 
+  //derivative wrt F(M)
   virtual double evaluate_derivative_FM() const
   { return (FM_-FA_)/square(sigma_); }
 
