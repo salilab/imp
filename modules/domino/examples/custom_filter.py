@@ -113,7 +113,7 @@ s=create_sampler(m, ps, pst)
 print "creating score function"
 rs=create_scoring(m, ps)
 
-cs.set_log_level(IMP.SILENT)
+s.set_log_level(IMP.SILENT)
 print "sampling"
 cs=s.get_sample()
 
