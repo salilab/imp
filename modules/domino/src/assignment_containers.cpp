@@ -71,7 +71,7 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
 Ints get_order(const Subset &s,
                const ParticlesTemp &all_particles);
 
-HDF5AssignmentContainer::HDF5AssignmentContainer(rmf::HDF5Group parent,
+HDF5AssignmentContainer::HDF5AssignmentContainer(::rmf::HDF5Group parent,
                                                  const Subset &s,
                                            const ParticlesTemp &all_particles,
                                                  std::string name):
@@ -80,7 +80,7 @@ HDF5AssignmentContainer::HDF5AssignmentContainer(rmf::HDF5Group parent,
 
 
 HDF5AssignmentContainer
-::HDF5AssignmentContainer(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+::HDF5AssignmentContainer(::rmf::HDF5DataSet< ::rmf::IndexTraits> dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name):
@@ -93,7 +93,7 @@ unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
 }
 
 Assignment HDF5AssignmentContainer::get_assignment(unsigned int i) const {
-  Ints is= ds_.get_row(Ints(1,i));
+  ::rmf::Ints is= ds_.get_row(Ints(1,i));
   Ints ret(is.size());
   IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
   for (unsigned int i=0; i< ret.size(); ++i) {
@@ -114,7 +114,7 @@ void HDF5AssignmentContainer::add_assignment(const Assignment& a) {
   for (unsigned int i=0; i< a.size(); ++i) {
     is[i]= a[order_[i]];
   }
-  Ints sz= ds_.get_size();
+  ::rmf::Ints sz= ds_.get_size();
   ++sz[0];
   ds_.set_size(sz);
   IMP_USAGE_CHECK(ds_.get_size()[1]==static_cast<int>(a.size()),
