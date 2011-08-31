@@ -29,7 +29,7 @@ SAXSRestraint_sliding_N::SAXSRestraint_sliding_N(const Particles& particles, con
     if(core::RigidBody::particle_is_instance(particles[i])) {
       rigid_bodies_decorators_.push_back(
                               core::RigidBody::decorate_particle(particles[i]));
-     rigid_bodies_.push_back(ref->get_refined(rigid_bodies_decorators_.back()));
+      rigid_bodies_.push_back(get_as<Particles>(ref->get_refined(rigid_bodies_decorators_.back())));
       // compute non-changing profile
      saxs::Profile rigid_part_profile;
       rigid_part_profile.calculate_profile(rigid_bodies_.back(), ff_type);
