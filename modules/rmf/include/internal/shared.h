@@ -13,7 +13,7 @@
 #include "../Key.h"
 #include "../hdf5_types.h"
 #include "../names.h"
-#include "../hdf5_wrapper.h"
+#include "../HDF5Group.h"
 #include "../infrastructure_macros.h"
 #include <IMP/compatibility/set.h>
 #include <boost/tuple/tuple.hpp>

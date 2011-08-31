@@ -79,7 +79,8 @@ namespace rmf {
 %template(_IntsTraits) rmf::ArrayTraits<rmf::IntTraits>;
 %template(_NodeIDsTraits) rmf::ArrayTraits<rmf::NodeIDTraits>;
 
-%include "IMP/rmf/hdf5_wrapper.h"
+%include "IMP/rmf/HDF5DataSet.h"
+%include "IMP/rmf/HDF5Group.h"
 %include "IMP/rmf/Category.h"
 %include "IMP/rmf/Key.h"
 %include "IMP/rmf/NodeHandle.h"

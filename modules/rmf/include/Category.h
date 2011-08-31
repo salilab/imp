@@ -29,6 +29,11 @@ class IMPRMFEXPORT Category {
   friend class RootHandle;
   friend class internal::SharedData;
   static Category get_category(std::string name);
+  int compare(const Category &o) const {
+    if (i_ < o.i_) return -1;
+    else if (i_ > o.i_) return 1;
+    else return 0;
+  }
 public:
 #ifndef IMP_DOXYGEN
   Category(unsigned int i): i_(i){}
@@ -44,7 +49,7 @@ public:
     return 3*i_;
   }
   IMP_RMF_HASHABLE(Category, return i_);
-  IMP_RMF_COMPARISONS_1(Category, i_);
+  IMP_RMF_COMPARISONS(Category);
   void show(std::ostream &out) const {
     out << get_name();
   }

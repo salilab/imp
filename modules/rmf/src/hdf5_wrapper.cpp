@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/rmf/hdf5_wrapper.h>
+#include <IMP/rmf/HDF5Group.h>
 
 namespace rmf {
 
