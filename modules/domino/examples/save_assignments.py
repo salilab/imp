@@ -15,7 +15,7 @@ print "File name is", file_name
 rt= IMP.rmf.create_hdf5_file(file_name)
 
 # add a data set to store it in, it must have dimension 2
-data_set= rt.add_child_index_data_set("node_1_assignments", 2)
+data_set= rt.add_child_index_data_set_2d("node_1_assignments")
 
 # create a list of assignments
 asl=IMP.domino.PackedAssignmentContainer()
