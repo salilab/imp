@@ -10,7 +10,7 @@
 #define IMPRMF_NODE_HANDLE_H
 
 #include "rmf_config.h"
-#include "hdf5_wrapper.h"
+#include "HDF5Group.h"
 #include "internal/shared.h"
 #include "hdf5_types.h"
 #include "NodeID.h"
@@ -93,8 +93,15 @@ class IMPRMFEXPORT NodeHandle {
   friend class RootHandle;
   boost::intrusive_ptr<internal::SharedData> shared_;
   NodeHandle(int node, internal::SharedData *shared);
+  int compare(const NodeHandle &o) const {
+    if (node_ < o.node_) return -1;
+    else if (node_ > o.node_) return 1;
+    else if (shared_.get() < o.shared_.get()) return -1;
+    else if (shared_.get() > o.shared_.get()) return 1;
+    else return 0;
+  }
  public:
-  IMP_RMF_COMPARISONS_2(NodeHandle, node_, shared_.get());
+  IMP_RMF_COMPARISONS(NodeHandle);
   IMP_RMF_HASHABLE(NodeHandle, return node_);
   NodeHandle():node_(-1){}
   /** Create a new node as a child of this one.

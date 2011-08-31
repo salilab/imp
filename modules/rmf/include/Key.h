@@ -30,6 +30,13 @@ class Key {
   int i_;
   Category ci_;
   bool pf_;
+  int compare(const Key &o) const {
+    if (i_ < o.i_) return -1;
+    else if (i_ > o.i_) return 1;
+    else if (ci_ < o.ci_) return -1;
+    else if (ci_ > o.ci_) return 1;
+    else return 0;
+  }
   Key(Category category_id,
       int i, bool pf): i_(i), ci_(category_id),
                        pf_(pf) {}
@@ -48,7 +55,7 @@ public:
   void show(std::ostream &out) const {
     out << ci_.get_name() << (pf_?'E':'I') << i_;
   }
-  IMP_RMF_COMPARISONS_2(Key, ci_, i_);
+  IMP_RMF_COMPARISONS(Key);
   IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
 };
 

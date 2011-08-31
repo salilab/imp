@@ -22,6 +22,11 @@ namespace rmf {
     friend class NodeHandle;
     friend struct NodeIDTraits;
     friend class RootHandle;
+    int compare(const NodeID &o) const {
+      if (i_ < o.i_) return -1;
+      else if (i_ > o.i_) return 1;
+      else return 0;
+    }
   public:
     explicit NodeID(unsigned int i): i_(i){}
     NodeID(): i_(-1){}
@@ -31,7 +36,7 @@ namespace rmf {
     int get_index() const {
       return i_;
     }
-    IMP_RMF_COMPARISONS_1(NodeID, i_);
+    IMP_RMF_COMPARISONS(NodeID);
     IMP_RMF_HASHABLE(NodeID, return i_);
   };
 

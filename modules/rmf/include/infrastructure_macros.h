@@ -25,14 +25,7 @@
 /** \param[in] Name the name of the class
     \param[in] field the first field to compare on
 */
-#define IMP_RMF_COMPARISONS_1(Name, field)
-
-//! Implement comparison in a class using field as the variable to compare
-/** \param[in] Name the name of the class
-    \param[in] f0 the first field to compare on
-    \param[in] f1 the second field to compare on
-*/
-#define IMP_RMF_COMPARISONS_2(Name, f0, f1)
+#define IMP_RMF_COMPARISONS(Name)
 
 /** @} */
 #elif defined(SWIG)
@@ -45,10 +38,7 @@
   bool __le__(const Name &o) const
 
 
-#define IMP_RMF_COMPARISONS_1(Name, field)      \
-  IMP_RMF_SWIG_COMPARISONS(Name)
-
-#define IMP_RMF_COMPARISONS_2(Name, f0, f1)     \
+#define IMP_RMF_COMPARISONS(Name)               \
   IMP_RMF_SWIG_COMPARISONS(Name)
 
 #else // not doxygen
@@ -76,59 +66,24 @@
     return compare(o);                                                  \
   }
 
-#define IMP_RMF_COMPARISONS_1(Name, field)      \
+#define IMP_RMF_COMPARISONS(Name)               \
   bool operator==(const Name &o) const {        \
-    return (field== o.field);                   \
+    return compare(o)==0;                       \
   }                                             \
   bool operator!=(const Name &o) const {        \
-    return (field!= o.field);                   \
+    return compare(o) != 0;                     \
   }                                             \
   bool operator<(const Name &o) const {         \
-    return (field< o.field);                    \
+    return compare(o)<0;                        \
   }                                             \
   bool operator>(const Name &o) const {         \
-    return (field> o.field);                    \
+    return compare(o)>0;                        \
   }                                             \
   bool operator>=(const Name &o) const {        \
-    return (field>= o.field);                   \
+    return compare(o) >=0;                      \
   }                                             \
   bool operator<=(const Name &o) const {        \
-    return (field<= o.field);                   \
-  }                                             \
-  int compare(const Name &o) const {            \
-    if (operator<(o)) return -1;                \
-    else if (operator>(o)) return 1;            \
-    else return 0;                              \
-  }                                             \
-  IMP_RMF_SWIG_COMPARISONS(Name)
-
-#define IMP_RMF_COMPARISONS_2(Name, f0, f1)     \
-  bool operator==(const Name &o) const {        \
-    return (f0== o.f0 && f1==o.f1);             \
-  }                                             \
-  bool operator!=(const Name &o) const {        \
-    return (f0!= o.f0 || f1 != o.f1);           \
-  }                                             \
-  bool operator<(const Name &o) const {         \
-    if (f0< o.f0) return true;                  \
-    else if (f0 > o.f0) return false;           \
-    else return f1 < o.f1;                      \
-  }                                             \
-  bool operator>(const Name &o) const {         \
-    if (f0 > o.f0) return true;                 \
-    else if (f0 < o.f0) return false;           \
-    else return f1 > o.f1;                      \
-  }                                             \
-  bool operator>=(const Name &o) const {        \
-    return operator>(o) || operator==(o);       \
-  }                                             \
-  bool operator<=(const Name &o) const {        \
-    return operator<(o) || operator==(o);       \
-  }                                             \
-  int compare(const Name &o) const {            \
-    if (operator<(o)) return -1;                \
-    else if (operator>(o)) return 1;            \
-    else return 0;                              \
+    return compare(o) <= 0;                     \
   }                                             \
   IMP_RMF_SWIG_COMPARISONS(Name)
 

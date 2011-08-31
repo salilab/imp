@@ -10,7 +10,7 @@
 #define IMPRMF_ROOT_HANDLE_H
 
 #include "rmf_config.h"
-#include "hdf5_wrapper.h"
+#include "HDF5Group.h"
 #include "internal/shared.h"
 #include "Key.h"
 #include "NodeHandle.h"
