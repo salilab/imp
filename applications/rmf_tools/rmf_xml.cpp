@@ -102,7 +102,8 @@ namespace {
     opened=show_type_data_xml<rmf::IndexTraits>(nh, kc, opened, out);
     opened=show_type_data_xml<rmf::StringTraits>(nh, kc, opened, out);
     opened=show_type_data_xml<rmf::NodeIDTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<rmf::DataSetTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::IndexDataSet2DTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<rmf::FloatDataSet2DTraits>(nh, kc, opened, out);
     if (opened) {
       out << "/>\n";
     }
