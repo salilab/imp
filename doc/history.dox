@@ -1,5 +1,10 @@
 /** \page recent Change History
 \par Summer 2011
+- ::rmf::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::rmf::HDF5IndexDataSet2D now.
+- Various low level classes of IMP::rmf have been moved to the plain old ::rmf namespace as pat of cleaning things up to separate the RMF low level library from \imp. This include ::rmf::HDF5DataSetD.
+- IMP::Restraint::get_decomposition() and IMP::Restraint::get_current_decomposition() changed to return a single Restraint, instead of a list. This makes it easier to propagate the weight and maximum reliably.
+- \imp now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.
+- IMP::domino::DominoSampler does not use the IMP::domino::OptimizeRestraints restraint optimization by default. Instead, if it is asked to create the IMP::domino::RestraintScoreSubsetFilterTable, it decomposes the restraints first (via IMP::create_decomposition()). This avoids several bugs and very fragile code.
 - the IMP::core::DiameterRestraint was ignoring the radii of the particles involved and so was giving artifically low scores. It now is on the actual diameter of this molecule.
 - the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
 - all the plural types in IMP have moved to bounds checked vectors when using debug builds with gcc. If you get a non-imp error about an invalid access, it is probably some code that walks off the end of an array. Please report it.
