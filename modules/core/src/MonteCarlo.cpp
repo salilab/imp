@@ -156,7 +156,10 @@ void MonteCarlo::setup_incremental() {
   IMP_LOG(TERSE, "Setting up incremental evaluation." << std::endl);
   RestraintsTemp base= get_restraints();
   for (unsigned int i=0; i< base.size(); ++i) {
-    flattened_restraints_.push_back(base[i]->create_decomposition());
+    Pointer<Restraint> cur= base[i]->create_decomposition();
+    RestraintsTemp curf= IMP::get_restraints(RestraintsTemp(1, cur));
+    flattened_restraints_.insert(flattened_restraints_.end(),
+                                 curf.begin(), curf.end());
   }
   incremental_scores_
     = get_model()->evaluate(get_as<RestraintsTemp>(flattened_restraints_),
