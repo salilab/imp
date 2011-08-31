@@ -280,6 +280,7 @@ namespace rmf {
     }
   };
 
+
   /** Store a single string. Currently this is not supported
       for data sets.*/
   struct IMPRMFEXPORT CharTraits {

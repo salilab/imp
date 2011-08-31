@@ -66,6 +66,14 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   std::vector<Key<TypeT> > get_keys(Category category_id) const {
     return shared_->get_keys<TypeT>(category_id);
   }
+
+  /** Return the number of frames in the file. Currently, this is the number
+      of frames that the x-coordinate has, but it should be made more general.
+  */
+  unsigned int get_number_of_frames() const {
+    return shared_->get_number_of_frames(get_key<FloatTraits>(Physics, "x"));
+  }
+
   /** \name Non-template versions for python
       @{
   */

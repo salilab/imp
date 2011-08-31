@@ -20,7 +20,7 @@
 #include <IMP/dependency_graph.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <IMP/rmf/hdf5_wrapper.h>
+#include <IMP/rmf/HDF5Group.h>
 #endif
 
 
@@ -109,10 +109,10 @@ class AssignmentContainer;
 IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
                                       const Subset &s,
                                       const ParticlesTemp &all_particles,
-                        ::rmf::HDF5DataSet< ::rmf::IndexTraits> dataset);
+                                      ::rmf::HDF5IndexDataSet2D dataset);
 /** See \ref hdf5io "HDF5 I/O". */
 IMPDOMINOEXPORT AssignmentContainer*
-create_assignments_container(::rmf::HDF5DataSet< ::rmf::IndexTraits> dataset,
+create_assignments_container(::rmf::HDF5IndexDataSet2D dataset,
                              const Subset &s,
                              const ParticlesTemp &all_particles);
 /** @} */
