@@ -43,7 +43,7 @@ def get_assignments(vertex):
     ss= mt.get_vertex_name(vertex)
     print "computing assignments for", ss
     ssn= str(ss)
-    dataset= root.add_child_index_data_set(ssn, 2)
+    dataset= root.add_child_index_data_set_2d(ssn)
     dataset.set_size([0, len(ss)])
     mine= IMP.domino.HDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn)
     if len(on)==0:
