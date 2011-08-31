@@ -28,7 +28,7 @@ Parameters get_parameters(TextInput in) {
  options_description desc;
  std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res,inter,loop;
- bool add_dope,use_volume,do_wte;
+ bool do_random,add_dope,use_volume,do_wte;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
@@ -44,7 +44,7 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("add_dope",    value< bool >(&add_dope),           "ciao");
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
  desc.add_options()("do_wte",      value< bool >(&do_wte),             "ciao");
-
+ desc.add_options()("do_random",   value< bool >(&do_random),          "ciao");
 
 
  OPTION(double, grid_dtilt);
@@ -92,6 +92,7 @@ Parameters get_parameters(TextInput in) {
 // General Parameters
  ret.ass_file=ass_file;
  ret.traj_file=traj_file;
+ ret.do_random=do_random;
 
 // MonteCarlo Parameters
  ret.MC.tmin=mc_tmin;
