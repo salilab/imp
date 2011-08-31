@@ -139,7 +139,18 @@ namespace rmf {
       HDF5Handle sel_;
       hsize_t ones_[D];
     };
+
     boost::shared_ptr<Data> data_;
+
+    int compare(const HDF5DataSetD<TypeTraits, D> &o) const {
+      // not great, but...
+      if (data_ && !o.data_) return -1;
+      else if (o.data_ && !data_) return 1;
+      else if (!o.data_ && !data_) return 0;
+      else if (get_name() < o.get_name()) return -1;
+      else if (get_name() > o.get_name()) return 1;
+      else return 0;
+    }
 
     bool get_is_null_value(const HDF5DataSetIndexD<D> &ijk) const {
       return TypeTraits::get_is_null_value(get_value(ijk));
@@ -178,7 +189,6 @@ namespace rmf {
       initialize_handles();
     }
     friend class HDF5Group;
-    friend class IndexDataSet2DTraits;
     HDF5DataSetD(HDF5SharedHandle* parent, std::string name):
       data_(new Data()) {
       //std::cout << "Creating data set " << name << std::endl;
@@ -231,6 +241,15 @@ namespace rmf {
                           << " but expected " << D);
       initialize();
     }
+    void check_index(const HDF5DataSetIndexD<D> &ijk) const {
+      HDF5DataSetIndexD<D> sz= get_size();
+      for (unsigned int i=0; i< D; ++i) {
+        IMP_RMF_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
+                            << ijk[i] << " >= " << sz[i]);
+      }
+    }
+  public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
     HDF5DataSetD(hid_t file, std::string name): data_(new Data()) {
       IMP_RMF_USAGE_CHECK(H5Lexists(file,
                                     name.c_str(), H5P_DEFAULT),
@@ -246,14 +265,7 @@ namespace rmf {
                           << " but expected " << D);
       initialize();
     }
-    void check_index(const HDF5DataSetIndexD<D> &ijk) const {
-      HDF5DataSetIndexD<D> sz= get_size();
-      for (unsigned int i=0; i< D; ++i) {
-        IMP_RMF_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
-                            << ijk[i] << " >= " << sz[i]);
-      }
-    }
-  public:
+#endif
     typedef HDF5DataSetIndexD<D> Index;
     std::string get_name() const {
       char buf[10000];
@@ -369,38 +381,90 @@ namespace rmf {
       return !data_;
     }
 #endif
+    IMP_RMF_COMPARISONS(HDF5DataSetD);
   };
 
 
-#if 0
   /** An HDF5 data set for integers with dimension 2. */
-  class IMPRMFEXPORT IndexDataSet2DTraits: public StringTraits {
-    static HDF5DataSetD<IndexTraits, 2> get_data_set(hid_t dsc,
-                                                     std::string name);
+  template <class Traits, unsigned int D>
+  class HDF5DataSetDTraits: public StringTraits {
+    static HDF5DataSetD<Traits, D> get_data_set(hid_t dsc,
+                                                std::string name) {
+      if (name.empty()) {
+        return HDF5DataSetD<Traits, D>();
+      } else {
+        hid_t file=H5Iget_file_id(dsc);
+        return HDF5DataSetD<Traits, D>(file, name);
+      }
+    }
   public:
-    typedef HDF5DataSetD<IndexTraits, 2> Type;
+    typedef HDF5DataSetD<Traits, D> Type;
     typedef std::vector<Type> Types;
     static void write_value_dataset(hid_t d, hid_t is,
                                     hid_t s,
-                                    Type v);
+                                    Type v) {
+      return StringTraits::write_value_dataset(d, is, s, v.get_name());
+    }
     static Type read_value_dataset(hid_t d, hid_t is,
-                                                     hid_t sp);
+                                   hid_t sp) {
+      String i= StringTraits::read_value_dataset(d, is, sp);
+      if (!i.empty()) return get_data_set(d, i);
+      else return Type();
+    }
     static void write_values_dataset(hid_t d, hid_t is,
                                      hid_t s,
-                                     const Types& v);
+                                     const Types& v) {
+      Strings vi(v.size());
+      for (unsigned int i=0; i< v.size(); ++i) {
+        vi[i]= v[i].get_name();
+      }
+      StringTraits::write_values_dataset(d, is, s, vi);
+    }
     static Types read_values_dataset(hid_t d, hid_t is,
-                                       hid_t sp,
-                                       unsigned int sz);
+                                     hid_t sp,
+                                     unsigned int sz)  {
+      Strings reti= StringTraits::read_values_dataset(d, is, sp, sz);
+      Types ret(reti.size());
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ret[i]= get_data_set(d, reti[i]);
+      }
+      return ret;
+    }
     static Types
-      read_values_attribute(hid_t a, unsigned int size);
+      read_values_attribute(hid_t a, unsigned int size) {
+      Strings is= StringTraits::read_values_attribute(a, size);
+      Types ret(is.size());
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ret[i]=get_data_set(a, is[i]);
+      }
+      return ret;
+    }
     static void write_values_attribute(hid_t a,
-                                       const Types &v);
-    static std::string get_name();
+                                       const Types &v) {
+      Strings is(v.size());
+      for (unsigned int i=0; i< v.size(); ++i) {
+        is[i]=v[i].get_name();
+      }
+      StringTraits::write_values_attribute(a, is);
+    }
+    static std::string get_name() {
+      std::ostringstream oss;
+      oss << "data set " << Traits::get_name() << " " << D << "d";
+      return oss.str();
+    }
     static unsigned int get_index() {
-      return 5;
+      return 10+Traits::get_index()+10*D;
+    }
+    static Type get_null_value() {
+      return Type();
+    }
+    static bool get_is_null_value(Type i) {
+      return i== get_null_value();
     }
   };
-#endif
+
+  typedef HDF5DataSetDTraits<IndexTraits, 2> IndexDataSet2DTraits;
+  typedef HDF5DataSetDTraits<FloatTraits, 2> FloatDataSet2DTraits;
 
 #define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname, PassValue, ReturnValue, \
                                  PassValues, ReturnValues)              \

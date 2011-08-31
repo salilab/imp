@@ -210,21 +210,21 @@
   macroname(string, String, String, String,                             \
             const Strings &, Strings);                                  \
   macroname(node_id, NodeID, NodeID, NodeID, const NodeIDs&, NodeIDs);  \
-  macroname(data_set, DataSet, String, String,                          \
-            const Strings &, Strings);                                  \
   macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs,                 \
             const NodeIDsList &, NodeIDsLst);                           \
   macroname(ints, Ints, const Ints&, Ints,                              \
             const IntsList &,                                           \
-            IntsList)
-
-/*
-;                                                  \
+            IntsList);                                                  \
   macroname(index_data_set_2d, IndexDataSet2D, HDF5IndexDataSet2D,      \
             HDF5IndexDataSet2D,                                         \
             const HDF5IndexDataSet2Ds &,                                \
-            HDF5IndexDataSet2Ds)
-*/
+            HDF5IndexDataSet2Ds);                                       \
+  macroname(float_data_set_2d, FloatDataSet2D, HDF5FloatDataSet2D,      \
+            HDF5FloatDataSet2D,                                         \
+            const HDF5FloatDataSet2Ds &,                                \
+            HDF5FloatDataSet2Ds)
+
+
 
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

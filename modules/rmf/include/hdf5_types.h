@@ -62,8 +62,11 @@ namespace rmf {
       - Index: 2
       - String: 3
       - NodeID: 4
-      - DataSet: 5
       - Char: 6
+      - array types are 10-20
+      - data set types are 20-30
+
+      This integers do not affect the rmf file on disk.
       @{
   */
   /** Store floating point numbers as doubles. */
@@ -267,16 +270,6 @@ namespace rmf {
     static std::string get_name();
     static unsigned int get_index() {
       return 4;
-    }
-  };
-
-  /** An HDF5 data set. Currently, the type of data stored in the data
-      set must be known implicitly. The path to the HDF5 data
-      set relative to the node containing the data is passed.*/
-  struct IMPRMFEXPORT DataSetTraits: public StringTraits {
-    static std::string get_name();
-    static unsigned int get_index() {
-      return 5;
     }
   };
 

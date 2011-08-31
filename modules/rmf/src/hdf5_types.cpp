@@ -216,6 +216,7 @@ namespace rmf {
     IMP_RMF_UNUSED(sp);
     IMP_RMF_UNUSED(sz);
     IMP_RMF_NOT_IMPLEMENTED;
+    return Strings();
   }
 
   void StringTraits::write_values_attribute(hid_t d,
@@ -228,15 +229,11 @@ namespace rmf {
     IMP_RMF_UNUSED(d);
     IMP_RMF_UNUSED(num);
     IMP_RMF_NOT_IMPLEMENTED;
+    return Strings();
   }
 
   std::string StringTraits::get_name() {
     return std::string("string");
-  }
-
-
-  std::string DataSetTraits::get_name() {
-    return std::string("dataset");
   }
 
 
@@ -291,68 +288,5 @@ namespace rmf {
   std::string NodeIDTraits::get_name() {
     return std::string("node id");
   }
-
-
-#if 0
-  // from DataSet
-  HDF5IndexDataSet2D IndexDataSet2DTraits::get_data_set(hid_t dsc,
-                                                        std::string name) {
-    hid_t file=H5Iget_file_id(dsc);
-    return HDF5IndexDataSet2D(file, name);
-  }
-
-  void IndexDataSet2DTraits::write_value_dataset(hid_t d, hid_t is,
-                                               hid_t s,
-                                                 HDF5IndexDataSet2D str) {
-    return StringTraits::write_value_dataset(d, is, s, str.get_name());
-  }
-  HDF5IndexDataSet2D IndexDataSet2DTraits::read_value_dataset(hid_t d,
-                                                      hid_t is,
-                                                      hid_t sp) {
-    String i= StringTraits::read_value_dataset(d, is, sp);
-    if (!i.empty()) return get_data_set(d, i);
-    else return HDF5IndexDataSet2D();
-  }
-  void IndexDataSet2DTraits::write_values_dataset(hid_t d, hid_t is,
-                                                hid_t s,
-                                                const HDF5IndexDataSet2Ds& v) {
-    Strings vi(v.size());
-    for (unsigned int i=0; i< v.size(); ++i) {
-      vi[i]= v[i].get_name();
-    }
-    StringTraits::write_values_dataset(d, is, s, vi);
-  }
-  HDF5IndexDataSet2Ds IndexDataSet2DTraits::read_values_dataset(hid_t d,
-                                                                hid_t is,
-                                                                hid_t sp,
-                                                              unsigned int sz) {
-    Strings reti= StringTraits::read_values_dataset(d, is, sp, sz);
-    HDF5IndexDataSet2Ds ret(reti.size());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= get_data_set(d, reti[i]);
-    }
-    return ret;
-  }
-  void IndexDataSet2DTraits::write_values_attribute(hid_t d,
-                                        const HDF5IndexDataSet2Ds &values) {
-    Strings is(values.size());
-    for (unsigned int i=0; i< values.size(); ++i) {
-      is[i]=values[i].get_name();
-    }
-    StringTraits::write_values_attribute(d, is);
-  }
-  HDF5IndexDataSet2Ds IndexDataSet2DTraits::read_values_attribute(hid_t d,
-                                                      unsigned int num) {
-    Strings is= StringTraits::read_values_attribute(d, num);
-    HDF5IndexDataSet2Ds ret(is.size());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]=get_data_set(d, is[i]);
-    }
-    return ret;
-  }
-  std::string IndexDataSet2DTraits::get_name() {
-    return std::string("int ds 2d");
-  }
-#endif
 
 } /* namespace rmf */

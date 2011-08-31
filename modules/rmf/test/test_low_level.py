@@ -3,7 +3,7 @@ import IMP.rmf
 import IMP.test
 from IMP.algebra import *
 
-num_base_handles=5
+num_base_handles=8
 
 I1= IMP.rmf.HDF5DataSetIndex1D
 I2= IMP.rmf.HDF5DataSetIndex2D
