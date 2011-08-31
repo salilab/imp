@@ -3,6 +3,7 @@ from modeller import *
 import IMP
 import IMP.test
 import IMP.core
+import IMP.atom
 import IMP.modeller
 
 def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
@@ -10,7 +11,7 @@ def assertSimilarModellerIMPScores(tst, modeller_model, imp_atoms):
     modeller_energy = selection(modeller_model).energy()[0]
     imp_score = imp_atoms.get_model().evaluate(True)
     tst.assertAlmostEqual(modeller_energy, imp_score, delta=0.001)
-    for imp_atom, modeller_atom in zip(imp_atoms.get_leaves(),
+    for imp_atom, modeller_atom in zip(IMP.atom.get_leaves(imp_atoms),
                                        modeller_model.atoms):
         imp_deriv = IMP.core.XYZ(imp_atom).get_derivatives()
         tst.assertAlmostEqual(imp_deriv[0], modeller_atom.dvx, delta=1e-2,
