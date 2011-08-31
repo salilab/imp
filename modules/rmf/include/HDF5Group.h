@@ -10,7 +10,7 @@
 #define IMPRMF_HDF_5GROUP_H
 
 #include "rmf_config.h"
-#include "HDF5DataSet.h"
+#include "HDF5DataSetD.h"
 
 
 namespace rmf {
@@ -29,44 +29,47 @@ class IMPRMFEXPORT HDF5Group {
   HDF5Group(HDF5SharedHandle *h);
 #endif
  public:
+  std::string get_name() const {
+    char buf[10000];
+    IMP_HDF5_CALL(H5Iget_name(h_->get_hid(), buf, 10000));
+    return std::string(buf);
+  }
   void show(std::ostream &out) const {
-    out << "HDF5Group";
+    out << "HDF5Group " << get_name();
   }
 
   // create from an existing group
   HDF5Group(HDF5Group parent, std::string name);
   HDF5Group add_child(std::string name);
-  template <class TypeTraits>
-    HDF5DataSet<TypeTraits> add_child_data_set(std::string name,
-                                    int dim) {
-    return HDF5DataSet<TypeTraits>(h_.get(), name, dim);
+  template <class TypeTraits, unsigned int D>
+    HDF5DataSetD<TypeTraits, D> add_child_data_set(std::string name) {
+    return HDF5DataSetD<TypeTraits, D>(h_.get(), name);
   }
-  template <class TypeTraits>
-    HDF5DataSet<TypeTraits> get_child_data_set(std::string name) const {
-    return HDF5DataSet<TypeTraits>(h_.get(), name);
+  template <class TypeTraits, unsigned int D>
+    HDF5DataSetD<TypeTraits, D> get_child_data_set(std::string name) const {
+    return HDF5DataSetD<TypeTraits, D>(h_.get(), name, true);
   }
-  template <class TypeTraits>
-    HDF5DataSet<TypeTraits> get_child_data_set(std::string name, int dim) {
-    if (get_has_child(name)) {
-      return HDF5DataSet<TypeTraits>(h_.get(), name);
-    } else {
-      return add_child_data_set<TypeTraits>(name, dim);
-    }
+#define IMP_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue,\
+                                    PassValues, ReturnValues, D)        \
+  HDF5DataSetD<UCName##Traits, D>                                       \
+    add_child_##lcname##_data_set_##D##d(std::string name){             \
+    return add_child_data_set<UCName##Traits, D>(name);                 \
+  }                                                                     \
+  HDF5DataSetD<UCName##Traits, D>                                       \
+    get_child_##lcname##_data_set_##D##d(std::string name)              \
+    const {                                                             \
+    return get_child_data_set<UCName##Traits, D>(name);                 \
   }
+
 #define IMP_HDF5_DATA_SET_METHODS(lcname, UCName, PassValue, ReturnValue,\
                                   PassValues, ReturnValues)             \
-  HDF5DataSet<UCName##Traits> add_child_##lcname##_data_set(std::string name, \
-                                                            int dim) {  \
-    return add_child_data_set<UCName##Traits>(name, dim);               \
-  }                                                                     \
-  HDF5DataSet<UCName##Traits> get_child_##lcname##_data_set(std::string name)\
-    const {                                                             \
-    return get_child_data_set<UCName##Traits>(name);                    \
-  }                                                                     \
-  HDF5DataSet<UCName##Traits> get_child_##lcname##_data_set(std::string name, \
-                                                            int dim) {  \
-    return get_child_data_set<UCName##Traits>(name, dim);               \
-  }
+  IMP_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue,   \
+                              PassValues, ReturnValues, 1);             \
+  IMP_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue,   \
+                              PassValues, ReturnValues, 2);             \
+  IMP_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue,   \
+                              PassValues, ReturnValues, 3)
+
   IMP_RMF_FOREACH_TYPE(IMP_HDF5_DATA_SET_METHODS);
 
   unsigned int get_number_of_children() const;

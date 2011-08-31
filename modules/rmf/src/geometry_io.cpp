@@ -151,27 +151,27 @@ namespace {
       }
       ++offset;
     } while (true);
-    HDF5DataSet<IndexTraits> id
+    HDF5DataSetD<IndexTraits, 2> id
       = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<IndexTraits>(inm, 2);
-    HDF5DataSet<FloatTraits> vd
+      .add_child_data_set<IndexTraits, 2>(inm);
+    HDF5DataSetD<FloatTraits,2> vd
       = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<FloatTraits>(vnm, 2);
+      .add_child_data_set<FloatTraits, 2>(vnm);
 
     Ints tris
       = display::internal::get_triangles(sg);
-    Ints size(2);
+    HDF5DataSetIndexD<2> size;
     size[0]= tris.size()/3;
     size[1]=3;
     id.set_size(size);
-    Ints index(1);
+    HDF5DataSetIndexD<1> index;
     for (unsigned int i=0; i< tris.size(); i+=3) {
       Ints curtri(3);
       std::copy(tris.begin()+i, tris.begin()+i+3, curtri.begin());
       index[0]=i/3;
       id.set_row(index, curtri);
     }
-    Ints vsz(2);
+    HDF5DataSetIndexD<2> vsz;
     vsz[0]= sg->get_vertexes().size();
     vsz[1]= 3;
     vd.set_size(vsz);
@@ -368,21 +368,21 @@ namespace {
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
     if (cur.get_has_value(in) && cur.get_has_value(vn)) {
-      HDF5DataSet<IndexTraits> id=
+      HDF5DataSetD<IndexTraits, 2> id=
         cur.get_root_handle().get_hdf5_group()
-        .get_child_data_set<IndexTraits>(cur.get_value(in));
-      HDF5DataSet<FloatTraits> vd=
+        .get_child_data_set<IndexTraits, 2>(cur.get_value(in));
+      HDF5DataSetD<FloatTraits, 2> vd=
         cur.get_root_handle().get_hdf5_group()
-        .get_child_data_set<FloatTraits>(cur.get_value(vn));
+        .get_child_data_set<FloatTraits, 2>(cur.get_value(vn));
       algebra::Vector3Ds vs(vd.get_size()[0]);
-      Ints vds(2);
-      for (vds[0]=0; vds[0]< static_cast<int>(vs.size()); ++vds[0]) {
+      HDF5DataSetIndexD<2> vds;
+      for (vds[0]=0; vds[0]< vs.size(); ++vds[0]) {
         for (vds[1]=0; vds[1]< 3; ++vds[1]) {
           vs[vds[0]][vds[1]]=vd.get_value(vds);
         }
       }
       Ints is(id.get_size()[0]*4, -1);
-      Ints ids(1);
+      HDF5DataSetIndexD<1> ids(1);
       for (unsigned int i=0; i< is.size()/4; ++i) {
         ids[0]= i;
         ::rmf::Ints cur=id.get_row(ids);

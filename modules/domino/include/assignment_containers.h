@@ -13,7 +13,7 @@
 #include "Assignment.h"
 #include "subset_filters.h"
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <IMP/rmf/hdf5_wrapper.h>
+#include <IMP/rmf/HDF5Group.h>
 #endif
 #include <boost/shared_array.hpp>
 #include <algorithm>
@@ -159,7 +159,7 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
 /** Store the assignments in an HDF5DataSet
  */
 class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
-  ::rmf::HDF5DataSet< ::rmf::IndexTraits> ds_;
+  ::rmf::HDF5IndexDataSet2D ds_;
   bool init_;
   Ints order_;
  public:
@@ -168,7 +168,7 @@ class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
                           const ParticlesTemp &all_particles,
                           std::string name);
 
-  HDF5AssignmentContainer(::rmf::HDF5DataSet< ::rmf::IndexTraits> dataset,
+  HDF5AssignmentContainer(::rmf::HDF5IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);

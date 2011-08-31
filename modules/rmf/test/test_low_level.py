@@ -5,6 +5,9 @@ from IMP.algebra import *
 
 num_base_handles=5
 
+I1= IMP.rmf.HDF5DataSetIndex1D
+I2= IMP.rmf.HDF5DataSetIndex2D
+I3= IMP.rmf.HDF5DataSetIndex3D
 class GenericTest(IMP.test.TestCase):
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
@@ -33,24 +36,25 @@ class GenericTest(IMP.test.TestCase):
         print "adding"
         g= f.add_child("hi")
         self._show(f)
-        ds= f.add_child_float_data_set("x", 3)
+        ds= f.add_child_float_data_set_3d("x")
+        print "name is", ds.get_name()
         self._show(f)
-        ds.set_size([1,1,1])
-        ds.set_value([0,0,0], 1)
-        print ds.get_value([0,0,0])
-        self.assertEqual(ds.get_value([0,0,0]), 1)
-        ds= f.add_child_string_data_set("str", 3)
+        ds.set_size(I3(1,1,1))
+        ds.set_value(I3(0,0,0), 1)
+        print ds.get_value(I3(0,0,0))
+        self.assertEqual(ds.get_value(I3(0,0,0)), 1)
+        ds= f.add_child_string_data_set_3d("str")
         self._show(f)
-        ds.set_size([2,1,1])
+        ds.set_size(I3(2,1,1))
         ds.set_value([1,0,0],"there")
         print ds.get_value([1,0,0])
-        self.assertEqual(ds.get_value([1,0,0]), "there")
-        ds= f.add_child_int_data_set("int", 3)
+        self.assertEqual(ds.get_value(I3(1,0,0)), "there")
+        ds= f.add_child_int_data_set_3d("int")
         self._show(f)
-        ds.set_size([1,1,1])
-        ds.set_value([0,0,0],1)
-        print ds.get_value([0,0,0])
-        self.assertEqual(ds.get_value([0,0,0]), 1)
+        ds.set_size(I3(1,1,1))
+        ds.set_value(I3(0,0,0),1)
+        print ds.get_value(I3(0,0,0))
+        self.assertEqual(ds.get_value(I3(0,0,0)), 1)
         del f
         del g
         del ds
@@ -62,8 +66,7 @@ class GenericTest(IMP.test.TestCase):
         print "adding"
         g= f.add_child("hi")
         self._show(f)
-        ds= f.add_child_float_data_set("coords",
-                                 3)
+        ds= f.add_child_float_data_set_3d("coords")
         print "setting num"
         ds.set_size([1,3,1])
         print "setting values",[0,0,0]
@@ -96,8 +99,7 @@ class GenericTest(IMP.test.TestCase):
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testadg.hdf5"))
         self._show(f)
         print "adding"
-        ds= f.add_child_ints_data_set("coords",
-                                      2)
+        ds= f.add_child_ints_data_set_2d("coords")
         print "setting num"
         ds.set_size([1,3])
         ind=[0,1,2,3]
@@ -112,7 +114,7 @@ class GenericTest(IMP.test.TestCase):
         del ds
         del f
         f= IMP.rmf.open_hdf5_file(self.get_tmp_file_name("testadg.hdf5"))
-        ds= f.get_child_ints_data_set("coords")
+        ds= f.get_child_ints_data_set_2d("coords")
         in2=ds.get_value([0,0])
         in3=ds.get_value([1,1])
         self.assertEqual(in2, out)
@@ -122,8 +124,7 @@ class GenericTest(IMP.test.TestCase):
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testadgs.hdf5"))
         self._show(f)
         print "adding"
-        ds= f.add_child_string_data_set("strings",
-                                        2)
+        ds= f.add_child_string_data_set_2d("strings")
         print "setting num"
         ds.set_size([1,3])
         ind="0123"
@@ -138,7 +139,7 @@ class GenericTest(IMP.test.TestCase):
         del ds
         del f
         f= IMP.rmf.open_hdf5_file(self.get_tmp_file_name("testadgs.hdf5"))
-        ds= f.get_child_string_data_set("strings")
+        ds= f.get_child_string_data_set_2d("strings")
         in2=ds.get_value([0,0])
         in3=ds.get_value([1,1])
         self.assertEqual(in2, out)
@@ -148,8 +149,7 @@ class GenericTest(IMP.test.TestCase):
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testadgs1.hdf5"))
         self._show(f)
         print "adding"
-        ds= f.add_child_string_data_set("strings",
-                                        1)
+        ds= f.add_child_string_data_set_1d("strings")
         print "setting num"
         ds.set_size([1])
         ind="0123"
@@ -165,7 +165,7 @@ class GenericTest(IMP.test.TestCase):
         del ds
         del f
         f= IMP.rmf.open_hdf5_file(self.get_tmp_file_name("testadgs1.hdf5"))
-        ds= f.get_child_string_data_set("strings")
+        ds= f.get_child_string_data_set_1d("strings")
         in2=ds.get_value([0])
         in3=ds.get_value([1])
         self.assertEqual(in2, out)

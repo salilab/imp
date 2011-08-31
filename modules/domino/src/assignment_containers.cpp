@@ -75,12 +75,12 @@ HDF5AssignmentContainer::HDF5AssignmentContainer(::rmf::HDF5Group parent,
                                                  const Subset &s,
                                            const ParticlesTemp &all_particles,
                                                  std::string name):
-  AssignmentContainer(name), ds_(parent.add_child_index_data_set(name, 2)),
+  AssignmentContainer(name), ds_(parent.add_child_index_data_set_2d(name)),
   init_(false), order_(get_order(s, all_particles)) {}
 
 
 HDF5AssignmentContainer
-::HDF5AssignmentContainer(::rmf::HDF5DataSet< ::rmf::IndexTraits> dataset,
+::HDF5AssignmentContainer(::rmf::HDF5IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name):
@@ -114,10 +114,10 @@ void HDF5AssignmentContainer::add_assignment(const Assignment& a) {
   for (unsigned int i=0; i< a.size(); ++i) {
     is[i]= a[order_[i]];
   }
-  ::rmf::Ints sz= ds_.get_size();
+  ::rmf::HDF5DataSetIndexD<2> sz= ds_.get_size();
   ++sz[0];
   ds_.set_size(sz);
-  IMP_USAGE_CHECK(ds_.get_size()[1]==static_cast<int>(a.size()),
+  IMP_USAGE_CHECK(ds_.get_size()[1]==a.size(),
                   "Sizes don't match: " << a.size() << " vs "
                   << ds_.get_size()[1]);
   ds_.set_row(Ints(1,sz[0]-1), is);

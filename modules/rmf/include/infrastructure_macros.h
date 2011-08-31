@@ -9,7 +9,7 @@
 #ifndef IMPRMF_INFRASTRUCTURE_MACROS_H
 #define IMPRMF_INFRASTRUCTURE_MACROS_H
 
-#include <stdexcept>
+#include "internal/errors.h"
 #include <sstream>
 
 #if defined(IMP_DOXYGEN)
@@ -144,29 +144,31 @@
 #endif
 
 
-#define IMP_RMF_USAGE_CHECK(check, message)                  \
-  do {                                                       \
-    if (!(check)) {                                          \
-      IMP_RMF_THROW("Usage check failed: " << #check << "\n" \
-                    << message, std::runtime_error);         \
-    }                                                        \
+#define IMP_RMF_USAGE_CHECK(check, message)                     \
+  do {                                                          \
+    if (!(check)) {                                             \
+      std::ostringstream oss;                                   \
+      oss << "Usage check failed: " << #check << "\n"           \
+          << message;                                           \
+      rmf::internal::handle_usage_error(oss.str());             \
+    }                                                           \
   } while (false)
 
 #define IMP_RMF_INTERNAL_CHECK(check, message)                          \
   do {                                                                  \
     if (!(check)) {                                                     \
-      IMP_RMF_THROW("Internal check failed: " << #check << "\n"         \
-                    << message << "\nThis is a bug in the RMF library"  \
-                    << " please report it.", std::logic_error);         \
+      std::ostringstream oss;                                           \
+      oss << "Internal check failed: " << #check << "\n"                \
+          << message;                                                   \
+      rmf::internal::handle_internal_error(oss.str());                  \
     }                                                                   \
   } while (false)
 
 #define IMP_RMF_IF_CHECK\
   if (true)
 
-#define IMP_RMF_NOT_IMPLEMENTED\
-  IMP_RMF_THROW("The function " << IMP_RMF_FUNCTION << " is not implemented", \
-                std::logic_error)
+#define IMP_RMF_NOT_IMPLEMENTED                                         \
+  rmf::internal::handle_internal_error("Not implemented")
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
 
@@ -215,5 +217,14 @@
   macroname(ints, Ints, const Ints&, Ints,                              \
             const IntsList &,                                           \
             IntsList)
+
+/*
+;                                                  \
+  macroname(index_data_set_2d, IndexDataSet2D, HDF5IndexDataSet2D,      \
+            HDF5IndexDataSet2D,                                         \
+            const HDF5IndexDataSet2Ds &,                                \
+            HDF5IndexDataSet2Ds)
+*/
+
 
 #endif  /* IMPRMF_INFRASTRUCTURE_MACROS_H */

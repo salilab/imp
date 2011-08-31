@@ -86,7 +86,7 @@ class GenericTest(IMP.test.TestCase):
         nh= f.add_child("testn", IMP.rmf.REPRESENTATION)
         cat= f.add_category("mine"+str(pccc))
         g= f.get_hdf5_group()
-        ds= g.add_child_float_data_set("ds"+str(pccc), 3)
+        ds= g.add_child_float_data_set_3d("ds"+str(pccc))
 
         lst=[(f.add_int_key, 4),
              (f.add_float_key, 3.1415),
