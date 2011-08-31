@@ -1,20 +1,16 @@
 %include "IMP/rmf/infrastructure_macros.h"
 
-/* Apply the passed macro to each basic type used in RMF*/
-%define IMP_RMF_SWIG_FOREACH_SIMPLE_TYPE(macroname)
+/* Apply the passed macro to each type used in RMF */
+%define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
   macroname(int, Int);
   macroname(float, Float);
   macroname(index, Index);
-%enddef
-
-/* Apply the passed macro to each type used in RMF */
-%define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
-  IMP_RMF_SWIG_FOREACH_SIMPLE_TYPE(macroname);
   macroname(string, String);
   macroname(node_id, NodeID);
-  macroname(data_set, DataSet);
   macroname(node_ids, NodeIDs);
   macroname(ints, Ints);
+  macroname(index_data_set_2d, IndexDataSet2D);
+  macroname(float_data_set_2d, FloatDataSet2D);
 %enddef
 
 %pythoncode %{
@@ -82,7 +78,6 @@ namespace rmf {
 %include "IMP/rmf/NodeID.h"
 %include "IMP/rmf/hdf5_handle.h"
 %include "IMP/rmf/hdf5_types.h"
-%include "IMP/rmf/Key.h"
 %template(_IntsTraits) rmf::ArrayTraits<rmf::IntTraits>;
 %template(_NodeIDsTraits) rmf::ArrayTraits<rmf::NodeIDTraits>;
 
@@ -90,6 +85,10 @@ namespace rmf {
 %template(HDF5DataSetIndex1D) ::rmf::HDF5DataSetIndexD<1>;
 %template(HDF5DataSetIndex2D) ::rmf::HDF5DataSetIndexD<2>;
 %template(HDF5DataSetIndex3D) ::rmf::HDF5DataSetIndexD<3>;
+%template(_IndexDataSet2DTraits) rmf::HDF5DataSetDTraits<rmf::IndexTraits, 2>;
+%template(_FloatDataSet2DTraits) rmf::HDF5DataSetDTraits<rmf::FloatTraits, 2>;
+
+%include "IMP/rmf/Key.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 
 %include "IMP/rmf/HDF5Group.h"

@@ -12,6 +12,7 @@
 #include "rmf_config.h"
 #include "Category.h"
 #include "hdf5_types.h"
+#include "HDF5DataSetD.h"
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 class SharedData;

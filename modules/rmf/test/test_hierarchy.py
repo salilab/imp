@@ -86,15 +86,16 @@ class GenericTest(IMP.test.TestCase):
         nh= f.add_child("testn", IMP.rmf.REPRESENTATION)
         cat= f.add_category("mine"+str(pccc))
         g= f.get_hdf5_group()
-        ds= g.add_child_float_data_set_3d("ds"+str(pccc))
-
+        ds= g.add_child_float_data_set_2d("ds"+str(pccc))
+        dsi= g.add_child_index_data_set_2d("dsi"+str(pccc))
         lst=[(f.add_int_key, 4),
              (f.add_float_key, 3.1415),
              (f.add_node_id_key, nh.get_id()),
              (f.add_node_ids_key, [nh.get_id()]),
              (f.add_string_key, "there"),
              (f.add_index_key, 3),
-             (f.add_data_set_key, "ds"+str(pccc)),
+             (f.add_float_data_set_2d_key, ds),
+             (f.add_index_data_set_2d_key, dsi),
              (f.add_ints_key, [3,4,5,6])]
         self.assertEqual(len(lst),len(IMP.rmf.get_data_types()))
         for p in lst:

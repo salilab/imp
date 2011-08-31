@@ -50,16 +50,19 @@ namespace {
                                           false);                       \
   ::rmf::FloatKey r                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  ::rmf::DataSetKey vn                                                  \
-  = internal::get_or_add_key<DataSetTraits>(f, Shape, "vertices", false); \
-  ::rmf::DataSetKey in                                          \
-  = internal::get_or_add_key<DataSetTraits>(f, Shape, "indices", false);
+  ::rmf::FloatDataSet2DKey vn                                           \
+  = internal::get_or_add_key<FloatDataSet2DTraits>(f, Shape, "vertices",\
+                                                   false);              \
+  ::rmf::IndexDataSet2DKey in                                                \
+  = internal::get_or_add_key<IndexDataSet2DTraits>(f, Shape, "indices", \
+                                                   false)
 
 #define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
   ::rmf::FloatKey x, ::rmf::FloatKey y, ::rmf::FloatKey z,              \
     ::rmf::FloatKey xp, ::rmf::FloatKey yp, ::rmf::FloatKey zp,         \
     ::rmf::FloatKey cr, ::rmf::FloatKey cg, ::rmf::FloatKey cb,         \
-    ::rmf::FloatKey r, ::rmf::DataSetKey vn, ::rmf::DataSetKey in
+    ::rmf::FloatKey r, ::rmf::FloatDataSet2DKey vn,                     \
+    ::rmf::IndexDataSet2DKey in
 
 #define IMP_HDF5_PASS_GEOMETRY_KEYS             \
   x,y,z,xp, yp,                                 \
@@ -117,7 +120,7 @@ namespace {
   }
 
 
-  void process(display::SurfaceMeshGeometry *sg, NodeHandle cur, int,
+  void process(display::SurfaceMeshGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -151,10 +154,10 @@ namespace {
       }
       ++offset;
     } while (true);
-    HDF5DataSetD<IndexTraits, 2> id
+    HDF5IndexDataSet2D id
       = cur.get_root_handle().get_hdf5_group()
       .add_child_data_set<IndexTraits, 2>(inm);
-    HDF5DataSetD<FloatTraits,2> vd
+    HDF5FloatDataSet2D vd
       = cur.get_root_handle().get_hdf5_group()
       .add_child_data_set<FloatTraits, 2>(vnm);
 
@@ -182,8 +185,8 @@ namespace {
         vd.set_value(vsz, sg->get_vertexes()[i][j]);
       }
     }
-    cur.set_value(vn, vnm);
-    cur.set_value(in, inm);
+    cur.set_value(vn, vd, frame);
+    cur.set_value(in, id, frame);
   }
 
 #define IMP_TRY(type) if (dynamic_cast<type*>(g)) {     \
@@ -368,12 +371,8 @@ namespace {
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
     if (cur.get_has_value(in) && cur.get_has_value(vn)) {
-      HDF5DataSetD<IndexTraits, 2> id=
-        cur.get_root_handle().get_hdf5_group()
-        .get_child_data_set<IndexTraits, 2>(cur.get_value(in));
-      HDF5DataSetD<FloatTraits, 2> vd=
-        cur.get_root_handle().get_hdf5_group()
-        .get_child_data_set<FloatTraits, 2>(cur.get_value(vn));
+      HDF5IndexDataSet2D id= cur.get_value(in);
+      HDF5FloatDataSet2D vd=cur.get_value(vn);
       algebra::Vector3Ds vs(vd.get_size()[0]);
       HDF5DataSetIndexD<2> vds;
       for (vds[0]=0; vds[0]< vs.size(); ++vds[0]) {
