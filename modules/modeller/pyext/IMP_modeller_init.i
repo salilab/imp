@@ -573,7 +573,7 @@ class ModelLoader(object):
         edat = self._modeller_model.env.edat
         libs = self._modeller_model.env.libs
         atoms = IMP.container.ListSingletonContainer(
-                                  self._modeller_hierarchy.get_leaves())
+                                  IMP.atom.get_leaves(self._modeller_hierarchy))
         
         if edat.dynamic_sphere:
             # Note: cannot use Modeller's cutoff distance, as that is
