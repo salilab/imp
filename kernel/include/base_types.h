@@ -55,6 +55,13 @@ IMP_BUILTIN_VALUES(Int, Ints);
 //! Standard way to pass a bunch of String values
 IMP_BUILTIN_VALUES(String, Strings);
 
+//! Standard way to pass a bunch of Floats values
+IMP_BUILTIN_VALUES(Floats, FloatsList);
+//! Standard way to pass a bunch of Ints values
+IMP_BUILTIN_VALUES(Ints, IntsList);
+//! Standard way to pass a bunch of Strings values
+IMP_BUILTIN_VALUES(Strings, StringsList);
+
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
     be constructed from a string. Such construction can be expensive
