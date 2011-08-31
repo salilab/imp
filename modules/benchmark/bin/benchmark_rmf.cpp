@@ -45,7 +45,8 @@ namespace {
     ret+=show_type_data_xml< ::rmf::IndexTraits>(nh, kc);
     ret+=show_type_data_xml< ::rmf::StringTraits>(nh, kc);
     ret+=show_type_data_xml< ::rmf::NodeIDTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::DataSetTraits>(nh, kc);
+    ret+=show_type_data_xml< ::rmf::IndexDataSet2DTraits>(nh, kc);
+    ret+=show_type_data_xml< ::rmf::FloatDataSet2DTraits>(nh, kc);
     return ret;
   }
 
