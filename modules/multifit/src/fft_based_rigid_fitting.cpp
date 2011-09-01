@@ -6,99 +6,15 @@
  *
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
+#include <IMP/multifit/internal/fft_fitting_utils.h>
 #include <boost/progress.hpp>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-namespace {
-  void get_rotation_matrix (double m[3][3],
-                       double psi, double theta, double phi) {
-    double s1 = std::sin(psi);
-    double c1 = std::cos(psi);
-    double s2 = std::sin(theta);
-    double c2 = std::cos(theta);
-    double s3 = std::sin(phi);
-    double c3 = std::cos(phi);
-    m[0][0] = c1 * c3 - c2 * s3 * s1;
-    m[0][1] = c1 * s3 + c2 * c3 * s1;
-    m[0][2] = s1 * s2;
-    m[1][0] = -s1 * c3- c2 * s3 * c1;
-    m[1][1] = -s1 * s3+ c2 * c3 * c1;
-    m[1][2] =  c1 * s2;
-    m[2][0] =  s2 * s3;
-    m[2][1] = -s2 * c3;
-    m[2][2] =  c2;
-  }
-  void rotate_mol(atom::Hierarchy mh,double psi,double theta,double phi) {
-    core::XYZs ps = core::XYZs(core::get_leaves(mh));
-    double m[3][3];
-    get_rotation_matrix(m,psi,theta,phi);
-    algebra::Vector3D curr;
-    for(unsigned int i=0;i<ps.size();i++) {
-      curr=ps[i].get_coordinates();
-      double currx=curr[0];
-      double curry=curr[1];
-      double currz=curr[2];
-      ps[i].set_coordinates(algebra::Vector3D(
-         currx * m[0][0] + curry * m[0][1] + currz * m[0][2],
-         currx * m[1][0] + curry * m[1][1] + currz * m[1][2],
-         currx * m[2][0] + curry * m[2][1] + currz * m[2][2]));
-    }
-  }
+namespace FBRF {
 
-
-  void translate_mol(atom::Hierarchy mh,algebra::Vector3D t) {
-    core::XYZs ps = core::XYZs(core::get_leaves(mh));
-    algebra::Vector3D curr;
-    for(unsigned int i=0;i<ps.size();i++) {
-      curr=ps[i].get_coordinates();
-      double currx=curr[0];
-      double curry=curr[1];
-      double currz=curr[2];
-      ps[i].set_coordinates(algebra::Vector3D(
-                                              currx+t[0],
-                                              curry+t[1],
-                                              currz+t[2]));
-    }
-  }
-
-
-
-  void create_vector(double **vec, unsigned long len) {
-    *vec = (double *) malloc(len*sizeof(double));
-    IMP_INTERNAL_CHECK(vec!=NULL,"Can not allocate vector");
-  }
-  double* convolve_array (double *in_arr,
-                          unsigned int nx,
-                          unsigned int ny,
-                          unsigned int nz,
-                          double *kernel,
-                          unsigned int nk){
-  int margin=(nk-1)/2;
-  long n_out=nx*ny*nz;
-  double *out_arr;
-  create_vector(&out_arr,n_out);
-  for(int i=0;i<n_out;i++) {
-    out_arr[i]=0.;
-  }
-
-  double val;
-  for (int indz=margin;indz<(int)nz-margin;indz++)
-    for (int indy=margin;indy<(int)ny-margin;indy++)
-      for (int indx=margin;indx<(int)nx-margin;indx++) {
-        val = in_arr[indz*nx*ny+indy*nx+indx];
-        if ((val < em::EPS) && (val > -em::EPS))
-          continue;
-        for (int zz=-margin;zz<=margin;zz++)
-          for (int yy=-margin;yy<=margin;yy++)
-            for (int xx=-margin;xx<=margin;xx++) {
-              out_arr[(indz+zz)*nx*ny+(indy+yy)*nx+indx+xx]+=
-                kernel[(zz+margin)*nk*nk+(yy+margin)*nk+xx+margin]*val;
-            }}
-  return out_arr;
-}
 }//end namespace
 
 
@@ -154,14 +70,14 @@ void FFTFitting::prepare_kernels() {
   em::Kernel3D g1 = em::create_3d_gaussian(sigma1d,3.0);
   em::Kernel3D g2 = em::create_3d_gaussian(sigma1d,5.0);
 
-  create_vector(&gauss_kernel_,g1.get_size());
+  internal::create_vector(&gauss_kernel_,g1.get_size());
   for(int i=0;i<g1.get_size();i++) {
     gauss_kernel_[i]=g1.get_data()[i];
   }
   gauss_kernel_nvox_=g1.get_size();
   gauss_kernel_ext_=g1.get_extent();
 
-  create_vector(&phi_ga_save,g2.get_size());
+  internal::create_vector(&phi_ga_save,g2.get_size());
   for(int i=0;i<g2.get_size();i++) {
     phi_ga_save[i]=g2.get_data()[i];
   }
@@ -173,13 +89,13 @@ void FFTFitting::prepare_kernels() {
   case 0:
     //    filtered_kernel_nvox_=1;
     kernel_filter_ext_=1;
-    create_vector(&kernel_filter_,1);
+    internal::create_vector(&kernel_filter_,1);
     kernel_filter_[0]=1;
     sigma_factor = 3.0;
     break;
   case 1:
     em::Kernel3D l = em::create_3d_laplacian();
-    create_vector(&kernel_filter_,l.get_size());
+    internal::create_vector(&kernel_filter_,l.get_size());
     for(int i=0;i<l.get_size();i++) {
       kernel_filter_[i]=l.get_data()[i];
     }
@@ -189,12 +105,12 @@ void FFTFitting::prepare_kernels() {
   }
 
   // create convolved filter
-  phi_fx_save=convolve_array(phi_ga_save, ext_ga_save,
+  phi_fx_save=internal::convolve_array(phi_ga_save, ext_ga_save,
                              ext_ga_save, ext_ga_save,
                              kernel_filter_, kernel_filter_ext_);
   em::Kernel3D k =
     em::get_truncated(phi_fx_save,ext_ga_save,sigma1d, sigma_factor);
-  create_vector(&filtered_kernel_,k.get_size());
+  internal::create_vector(&filtered_kernel_,k.get_size());
   filtered_kernel_ext_ = k.get_extent();
   for(int jj=0;jj<k.get_size();jj++) filtered_kernel_[jj]=k.get_data()[jj];
 }
@@ -258,8 +174,11 @@ em::DensityMap* FFTFitting::crop_margin(em::DensityMap *in_map) {
 
 FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
                                  atom::Hierarchy mol2fit,
-                                 const EulerAnglesList &rots,
+                                 double angle_sampling_interval_rad,
                                  int num_fits_to_report) {
+  multifit::internal::EulerAnglesList rots=
+    internal::get_uniformly_sampled_rotations(angle_sampling_interval_rad);
+
   resolution_ = dmap->get_header()->get_resolution();
   rots_=rots;
   num_fits_reported_=num_fits_to_report;
@@ -310,7 +229,16 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
                         margin_ignored_in_conv_[2],
                         map_cen_-core::get_centroid(core::XYZs(mol_ps)));
   IMP_LOG(TERSE,"Applying filters to target and probe maps\n");
-  low_map_->convolute_kernel(kernel_filter_,kernel_filter_ext_);
+  switch (corr_mode_) {
+    case 0:
+      low_map_->convolute_kernel(kernel_filter_,kernel_filter_ext_);
+      break;
+   case 1:
+    internal::relax_laplacian(low_map_,fftw_zero_padding_extent_,5.);
+    internal::convolve_kernel_inside_erode(low_map_,
+                                           kernel_filter_,kernel_filter_ext_);
+    break;
+  }
   sampled_map_->convolute_kernel(filtered_kernel_,filtered_kernel_ext_);
   sampled_norm_ = sampled_map_->calcRMS();
   asmb_norm_ = low_map_->calcRMS();
@@ -380,8 +308,8 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
       best_fits_[i].get_dock_transformation().get_translation();
     algebra::Vector3D translation=
       best_fits_[i].get_fit_transformation().get_translation();
-    rotate_mol(copy_mol_,angles[0],angles[1],angles[2]);
-    translate_mol(copy_mol_,translation+map_cen_);
+    internal::rotate_mol(copy_mol_,angles[0],angles[1],angles[2]);
+    internal::translate_mol(copy_mol_,translation+map_cen_);
     final_fits[i].set_fit_transformation(
          algebra::get_transformation_aligning_first_to_second(orig_ps,temp_ps));
     for(unsigned int i=0;i<temp_ps.size();i++) {
@@ -398,16 +326,16 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
   return ret;
 }
 
-void FFTFitting::fftw_translational_search(//const algebra::Rotation3D &rot,
-                                           const EulerAngles &rot,
-                                           int rot_ind) {
+void FFTFitting::fftw_translational_search(
+                                    const multifit::internal::EulerAngles &rot,
+                                    int rot_ind) {
   //save original coordinates of the copy mol
   ParticlesTemp temp_ps=core::get_leaves(copy_mol_);
   algebra::Vector3Ds origs(temp_ps.size());
   for(unsigned int i=0;i<temp_ps.size();i++) {
     origs[i]=core::XYZ(temp_ps[i]).get_coordinates();
   }
-  rotate_mol(copy_mol_,rot.psi,rot.theta,rot.phi);
+  internal::rotate_mol(copy_mol_,rot.psi,rot.theta,rot.phi);
   ParticlesTemp mol_ps=core::get_leaves(orig_mol_);
   sampled_map_->reset_data(0.);
   sampled_map_->project(
@@ -906,11 +834,11 @@ FittingSolutionRecords fft_based_rigid_fitting(
    atom::Hierarchy mol2fit,
    em::DensityMap *dmap,
    double angle_sampling_interval) {
-  multifit::EulerAnglesList rots=
-    get_uniformly_sampled_rotations(angle_sampling_interval);
+  multifit::internal::EulerAnglesList rots=
+    internal::get_uniformly_sampled_rotations(angle_sampling_interval);
   multifit::FFTFitting ff;
   multifit::FFTFittingOutput fits =
-    ff.fit(dmap,mol2fit,rots,rots.size());
+    ff.fit(dmap,mol2fit,angle_sampling_interval,rots.size());
   return fits.best_fits_;
 }
 IMPMULTIFIT_END_NAMESPACE

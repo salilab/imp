@@ -1,7 +1,8 @@
 files = [
          'FFTWPlan.cpp',
          'SurfaceMatching.cpp',
-         'GeometricComplementarity.cpp'
+         'GeometricComplementarity.cpp',
+         'fft_fitting_utils.cpp',
         ]
 
 files = [File(x) for x in files]

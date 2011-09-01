@@ -132,16 +132,10 @@ int main(int argc, char **argv) {
   core::RigidBody rb=atom::create_rigid_body(mol2fit);
   IMP_NEW(core::LeavesRefiner,rb_refiner,(atom::Hierarchy::get_traits()));
   //create rotations
-  //  algebra::Rotation3Ds rots=
-  //    algebra::get_uniformly_sampled_rotations(1.*delta_angle/180*PI);
-  multifit::EulerAnglesList rots=
-    multifit::get_uniformly_sampled_rotations(1.*delta_angle/180*PI);
-
-
   IMP_USAGE_CHECK(rots.size()>0,
                   "There should be at least one rotation to sample\n");
   multifit::FFTFittingOutput fits =
-    ff.fit(dmap,mol2fit,rots,num_top_fits_to_report);
+    ff.fit(dmap,mol2fit,1.*delta_angle/180*PI,num_top_fits_to_report);
   //read the reference if provided (for debugging)
   atom::Hierarchy ref_mh;
   core::XYZs ref_mh_xyz;
