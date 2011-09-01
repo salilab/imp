@@ -5,6 +5,7 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
+
 #ifndef IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H
 #define IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H
 
@@ -18,65 +19,14 @@
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/KernelParameters.h>
-
+#include <IMP/multifit/internal/fft_fitting_utils.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
-
-class EulerAngles {
-public:
-  EulerAngles(double in_psi,double in_theta,double in_phi) {
-    psi=in_psi;
-    theta=in_theta;
-    phi=in_phi;
-  }
-  double psi;
-  double theta;
-  double phi;
-};
-
-typedef std::vector<EulerAngles> EulerAnglesList;
-
-//! Generates a nondegenerate set of Euler angles with a delta resolution
-inline multifit::EulerAnglesList get_uniformly_sampled_rotations(
-                      double angle_sampling_internal_rad) {
-  double delta= angle_sampling_internal_rad/IMP::PI*180.0;
-  algebra::Vector3D eu_start(0.,0.,0.);//psi,theta,phi
-  algebra::Vector3D eu_end(360.,180.,360.);
-  algebra::Vector3D eu_range=eu_end-eu_start;
-  double phi_steps       = algebra::get_rounded(eu_range[2]/delta+0.499);
-  double phi_real_dist   = eu_range[2] / phi_steps;
-  double theta_steps     = algebra::get_rounded(eu_range[1]/delta+0.499);
-  double theta_real_dist = eu_range[1] / theta_steps;
-  double angle2rad=PI/180.;
-  double psi_steps,psi_ang_dist,psi_real_dist;
-
-  multifit::EulerAnglesList ret;
-  for (double phi=eu_start[2]; phi < eu_end[2];  phi+=phi_real_dist) {
-    for (double theta=eu_start[1]; theta <= eu_end[1]; theta+=theta_real_dist) {
-      if (theta == 0.0 || theta == 180.0) {
-        psi_steps = 1;
-      }
-      else {
-        psi_steps =
-          algebra::get_rounded(360.0*std::cos((90.0-theta)*angle2rad)/delta);
-      }
-      psi_ang_dist  = 360.0/psi_steps;
-      psi_real_dist = eu_range[0] / (ceil(eu_range[0]/psi_ang_dist));
-      for (double psi=eu_start[0]; psi < eu_end[0];  psi+=psi_real_dist)  {
-        ret.push_back(multifit::EulerAngles(
-                                            psi*angle2rad,
-                                            theta*angle2rad,
-                                            phi*angle2rad));
-      }}}
-  return ret;
-}
-
 
 class IMPMULTIFITEXPORT FFTFittingOutput {
  public:
   FittingSolutionRecords best_fits_;   //final fits
   FittingSolutionRecords best_trans_per_rot_;
 };
-
 typedef struct {
   unsigned long ifft;
   unsigned long ireal;
@@ -155,7 +105,7 @@ class IMPMULTIFITEXPORT FFTFitting {
  unsigned int inside_num_flipped_;
  FFTScores fft_scores_flipped_;
  // algebra::Rotation3Ds rots_;
- EulerAnglesList rots_;
+ multifit::internal::EulerAnglesList rots_;
 
  void prepare_probe(atom::Hierarchy mol2fit);
  void prepare_lowres_map (em::DensityMap *dmap);
@@ -168,7 +118,8 @@ class IMPMULTIFITEXPORT FFTFitting {
  void pad_resolution_map();
  em::DensityMap* crop_margin(em::DensityMap *in_map);
  // void fftw_translational_search(const algebra::Rotation3D &rot,int i);
- void fftw_translational_search(const EulerAngles &rot,int i);
+ void fftw_translational_search(const multifit::internal::EulerAngles &rot,
+                                int i);
  //! Detect the top fits
  multifit::FittingSolutionRecords detect_top_fits(const RotScores &rot_scores);
  public:
@@ -181,7 +132,8 @@ class IMPMULTIFITEXPORT FFTFitting {
    */
   FFTFittingOutput fit(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
-                       const EulerAnglesList &rots,
+                       //const multifit::internal::EulerAnglesList &rots,
+                       double angle_sampling_interval_rad,
                        int num_fits_to_report);
 };
 //! FFT fit of a molecule in the density
@@ -194,7 +146,7 @@ IMPMULTIFITEXPORT
 multifit::FittingSolutionRecords fft_based_rigid_fitting(
    atom::Hierarchy mol2fit,
    em::DensityMap *dmap,
-   double angle_sampling_interval);
+   double angle_sampling_interval_rad);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H */

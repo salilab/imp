@@ -2,7 +2,8 @@ files = [
          'FFTWGrid.h',
          'FFTWPlan.h',
          'SurfaceMatching.h',
-         'GeometricComplementarity.h'
+         'GeometricComplementarity.h',
+         'fft_fitting_utils.h',
         ]
 
 files = [File(x) for x in files]
