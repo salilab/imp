@@ -30,3 +30,10 @@ model_profile.write_SAXS_file('6lyz.dat')
 saxs_score = IMP.saxs.Score(exp_profile)
 chi = saxs_score.compute_chi_score(model_profile)
 print 'Chi = ' + str(chi)
+
+
+#! convert to p(r)
+pr = IMP.saxs.RadialDistributionFunction(0.5)
+model_profile.profile_2_distribution(pr, 48.0)
+pr.normalize()
+pr.show()
