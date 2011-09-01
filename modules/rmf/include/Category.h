@@ -11,7 +11,6 @@
 
 #include "rmf_config.h"
 #include "infrastructure_macros.h"
-#include <IMP/exception.h>
 #include <vector>
 
 namespace RMF {
