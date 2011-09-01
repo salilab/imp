@@ -49,8 +49,13 @@ class ParticleTests(IMP.test.TestCase):
         self._almost_equal_lists(vs, vso)
     def test_b(self):
         """Check int typemaps"""
-        vs=IMP.Ints([1, 2, 3])
+        vs=[1, 2, 3]
         vso= IMP._pass_ints(vs)
+        self._equal_lists(vs, vso)
+    def test_bl(self):
+        """Check ints list typemaps"""
+        vs=[[1,2,3,4],[5,6,7,8]]
+        vso= IMP._pass_ints_list(vs)
         self._equal_lists(vs, vso)
     def test_intpairs(self):
         """Check int pairs typemap"""
