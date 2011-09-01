@@ -10,17 +10,13 @@
 #define IMPRMF_HDF_5_TYPES_H
 
 #include "rmf_config.h"
-#include <IMP/base_types.h>
 #include "NodeID.h"
 #include "hdf5_handle.h"
 #include "infrastructure_macros.h"
 #include <hdf5.h>
 #include <algorithm>
 #include <vector>
-#include <exception>
 
-#include <IMP/exception.h>
-#include <IMP/RefCounted.h>
 #include <limits>
 #include <boost/utility.hpp>
 
