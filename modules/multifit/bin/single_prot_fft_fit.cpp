@@ -132,8 +132,6 @@ int main(int argc, char **argv) {
   core::RigidBody rb=atom::create_rigid_body(mol2fit);
   IMP_NEW(core::LeavesRefiner,rb_refiner,(atom::Hierarchy::get_traits()));
   //create rotations
-  IMP_USAGE_CHECK(rots.size()>0,
-                  "There should be at least one rotation to sample\n");
   multifit::FFTFittingOutput fits =
     ff.fit(dmap,mol2fit,1.*delta_angle/180*PI,num_top_fits_to_report);
   //read the reference if provided (for debugging)
