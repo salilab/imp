@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    rmf::RootHandle rh=rmf::open_rmf_file(input);
-    rmf::NodeTree nt= rmf::get_node_tree(rh);
+    RMF::RootHandle rh=RMF::open_rmf_file(input);
+    RMF::NodeTree nt= RMF::get_node_tree(rh);
     IMP::internal::show_as_graphviz(nt, std::cout);
     return 0;
   } catch (const IMP::Exception &e) {
