@@ -399,6 +399,13 @@ namespace RMF {
   /** @} */
 
 
+  /** Produce hash values for boost hash tables.
+   */
+  template <class T>
+  inline std::size_t hash_value(const T &t) {
+    return t.__hash__();
+  }
+
 } /* namespace RMF */
 
 #endif /* IMPRMF_HDF_5_TYPES_H */
