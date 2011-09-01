@@ -9,6 +9,7 @@
 #define IMP_SCORE_STATE_H
 
 #include "kernel_config.h"
+#include "Particle.h"
 #include "RefCounted.h"
 #include "Pointer.h"
 #include "DerivativeAccumulator.h"
@@ -119,8 +120,6 @@ protected:
   // all of the particle data
   WeakPointer<Model> model_;
 };
-
-class ScoreState;
 
 
 IMP_END_NAMESPACE
