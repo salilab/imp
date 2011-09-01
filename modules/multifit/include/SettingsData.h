@@ -7,7 +7,7 @@
  */
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H
 #define IMPMULTIFIT_SETTINGS_DATA_H
-
+#include <IMP/VectorOfRefCounted.h>
 #include <IMP/container_macros.h>
 #include <IMP/Pointer.h>
 #include <IMP/internal/OwnerPointer.h>
