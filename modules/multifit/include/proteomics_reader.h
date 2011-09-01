@@ -164,7 +164,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
     }
     out<<std::endl;
     out<<"Interactions:"<<std::endl;
-    for(std::vector<Ints >::const_iterator
+    for(IntsList::const_iterator
           it = interactions_.begin();it != interactions_.end();it++){
       for(Ints::const_iterator it1 = it->begin();
           it1 != it->end();it1++){
@@ -193,7 +193,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
  protected:
   std::vector<ProteinRecordData> prot_data_;
   std::map<std::string,int> prot_map_;
-  domino::IntsList interactions_;
+  IntsList interactions_;
   std::vector<std::pair<IntPair,IntPair> > xlinks_;
   IntPairs ev_; //pairs of proteins to calcualte EV between
 };
