@@ -7,7 +7,7 @@
 
 #ifndef IMP_MACROS_H
 #define IMP_MACROS_H
-
+#include "kernel_config.h"
 
 #ifdef IMP_DOXYGEN
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)
@@ -1070,7 +1070,15 @@ private:                                                        \
     different.
  */
 #define IMP_OBJECTS(Name, PluralName)
+#define IMP_OBJECTS_TYPEDEF(Name, PluralName)
+#define IMP_OBJECTS_IO(Name, PluralName)
 #else
+
+#if IMP_BUILD < IMP_FAST
+#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::CheckedWeakPointer<Name>
+#else
+#define IMP_OBJECTS_TEMP_POINTER(Name) Name*
+#endif
 
 #ifdef SWIG
 #define IMP_OBJECTS_IO(Name, PluralName)
@@ -1089,16 +1097,15 @@ private:                                                        \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 #endif
 
-#if IMP_BUILD < IMP_FAST
-#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::CheckedWeakPointer<Name>
-#else
-#define IMP_OBJECTS_TEMP_POINTER(Name) Name*
-#endif
-
-#define IMP_OBJECTS(Name, PluralName)                                   \
+#define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
   typedef IMP::compatibility::checked_vector<IMP::Pointer<Name> > PluralName; \
   typedef IMP::compatibility::checked_vector<IMP_OBJECTS_TEMP_POINTER(Name) > \
-  PluralName##Temp;                                                     \
+  PluralName##Temp;
+
+
+
+#define IMP_OBJECTS(Name, PluralName)                           \
+  IMP_OBJECTS_TYPEDEF(Name, PluralName);                        \
   IMP_OBJECTS_IO(Name, PluralName)
 #endif
 
