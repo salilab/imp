@@ -18,7 +18,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 
    See the ::rmf library page for more information.
 
-\\namespace rmf
+\\namespace RMF
 
 \\brief The support library for reading and writing RMF files.
 

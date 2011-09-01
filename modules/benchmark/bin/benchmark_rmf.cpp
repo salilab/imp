@@ -19,16 +19,16 @@ namespace {
   double count(std::string nm) {
     return nm.size();
   }
-  double count(::rmf::NodeID nm) {
+  double count(RMF::NodeID nm) {
     return nm.get_index();
   }
 
   template <class TypeT>
-  double show_type_data_xml(::rmf::NodeHandle nh,
-                            ::rmf::Category kc) {
+  double show_type_data_xml(RMF::NodeHandle nh,
+                            RMF::Category kc) {
     double ret=0;
-    ::rmf::RootHandle rh= nh.get_root_handle();
-    std::vector< ::rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
+    RMF::RootHandle rh= nh.get_root_handle();
+    std::vector< RMF::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       if (nh.get_has_value(keys[i])) {
         ret+= count(nh.get_value(keys[i]));
@@ -37,28 +37,28 @@ namespace {
     }
     return ret;
   }
-  double show_data_xml(::rmf::NodeHandle nh,
-                     ::rmf::Category kc) {
+  double show_data_xml(RMF::NodeHandle nh,
+                     RMF::Category kc) {
     double ret=0;
-    ret+=show_type_data_xml< ::rmf::IntTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::FloatTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::IndexTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::StringTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::NodeIDTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::IndexDataSet2DTraits>(nh, kc);
-    ret+=show_type_data_xml< ::rmf::FloatDataSet2DTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::IntTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::FloatTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::IndexTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::StringTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::NodeIDTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::IndexDataSet2DTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::FloatDataSet2DTraits>(nh, kc);
     return ret;
   }
 
-  double show_xml(::rmf::NodeHandle nh) {
+  double show_xml(RMF::NodeHandle nh) {
     double ret=0;
     ret+=nh.get_name().size();
     ret+=nh.get_id().get_index();
-    ret+=show_data_xml(nh, ::rmf::Physics);
-    ret+=show_data_xml(nh, ::rmf::Sequence);
-    ret+=show_data_xml(nh, ::rmf::Shape);
-    ret+=show_data_xml(nh, ::rmf::Feature);
-    ::rmf::NodeHandles children= nh.get_children();
+    ret+=show_data_xml(nh, RMF::Physics);
+    ret+=show_data_xml(nh, RMF::Sequence);
+    ret+=show_data_xml(nh, RMF::Shape);
+    ret+=show_data_xml(nh, RMF::Feature);
+    RMF::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       ret+=show_xml(children[i]);
     }
@@ -69,11 +69,11 @@ namespace {
 
 double traverse(std::string name) {
   double ret=0;
-  ::rmf::RootHandle rh= ::rmf::open_rmf_file(name);
+  RMF::RootHandle rh= RMF::open_rmf_file(name);
   ret+=show_xml(rh);
   if (rh.get_number_of_bonds() >0) {
     for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
-      std::pair< ::rmf::NodeHandle, ::rmf::NodeHandle> handles
+      std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
         = rh.get_bond(i);
       ret+=handles.first.get_id().get_index();
       ret+=handles.second.get_id().get_index();

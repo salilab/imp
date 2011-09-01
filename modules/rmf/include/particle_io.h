@@ -27,11 +27,11 @@ IMPRMF_BEGIN_NAMESPACE
 */
 /** Write the attributes of an arbitrary particle to the file.
  */
-IMPRMFEXPORT void add_particle(::rmf::RootHandle fh, Particle* ps);
+IMPRMFEXPORT void add_particle(RMF::RootHandle fh, Particle* ps);
 
 /** Read all particles (as opposed to molecular hierarchy nodes)
  */
-IMPRMFEXPORT ParticlesTemp create_particles(::rmf::RootHandle fh, Model *m);
+IMPRMFEXPORT ParticlesTemp create_particles(RMF::RootHandle fh, Model *m);
 /** @} */
 IMPRMF_END_NAMESPACE
 

@@ -109,10 +109,10 @@ class AssignmentContainer;
 IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
                                       const Subset &s,
                                       const ParticlesTemp &all_particles,
-                                      ::rmf::HDF5IndexDataSet2D dataset);
+                                      RMF::HDF5IndexDataSet2D dataset);
 /** See \ref hdf5io "HDF5 I/O". */
 IMPDOMINOEXPORT AssignmentContainer*
-create_assignments_container(::rmf::HDF5IndexDataSet2D dataset,
+create_assignments_container(RMF::HDF5IndexDataSet2D dataset,
                              const Subset &s,
                              const ParticlesTemp &all_particles);
 /** @} */

@@ -23,7 +23,7 @@
 #include <boost/intrusive_ptr.hpp>
 
 
-namespace rmf {
+namespace RMF {
   class HDF5Group;
 
   /** Store an index into a data set.*/
@@ -478,6 +478,6 @@ namespace rmf {
   IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_DATA_SET);
 
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_HDF_5DATA_SET_D_H */

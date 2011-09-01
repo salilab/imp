@@ -24,7 +24,7 @@
 #include <limits>
 #include <boost/utility.hpp>
 
-namespace rmf {
+namespace RMF {
   typedef int Int;
   typedef std::vector<Int> Ints;
   typedef double Float;
@@ -399,6 +399,6 @@ namespace rmf {
   /** @} */
 
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_HDF_5_TYPES_H */

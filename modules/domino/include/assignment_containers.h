@@ -159,16 +159,16 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
 /** Store the assignments in an HDF5DataSet
  */
 class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
-  ::rmf::HDF5IndexDataSet2D ds_;
+  RMF::HDF5IndexDataSet2D ds_;
   bool init_;
   Ints order_;
  public:
-  HDF5AssignmentContainer(::rmf::HDF5Group parent,
+  HDF5AssignmentContainer(RMF::HDF5Group parent,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
 
-  HDF5AssignmentContainer(::rmf::HDF5IndexDataSet2D dataset,
+  HDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);

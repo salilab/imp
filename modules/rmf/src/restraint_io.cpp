@@ -11,18 +11,18 @@
 #include <IMP/scoped.h>
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
-using namespace ::rmf;
+using namespace RMF;
 
 #define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
   RootHandle imp_f=node.get_root_handle();                              \
-  ::rmf::FloatKey sk                                                    \
+  RMF::FloatKey sk                                                    \
   = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
                                            true);                       \
-  ::rmf::NodeIDsKey nk                                                  \
+  RMF::NodeIDsKey nk                                                  \
   = internal::get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
 
 #define IMP_HDF5_ACCEPT_RESTRAINT_KEYS\
-  ::rmf::FloatKey sk, ::rmf::NodeIDsKey nk
+  RMF::FloatKey sk, RMF::NodeIDsKey nk
 
 #define IMP_HDF5_PASS_RESTRAINT_KEYS\
   sk, nk

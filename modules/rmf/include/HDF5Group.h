@@ -13,7 +13,7 @@
 #include "HDF5DataSetD.h"
 
 
-namespace rmf {
+namespace RMF {
 
 /** Wrap an HDF5 Group. */
 class IMPRMFEXPORT HDF5Group {
@@ -186,6 +186,6 @@ inline int get_number_of_open_hdf5_handles() {
 }
 
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_HDF_5GROUP_H */

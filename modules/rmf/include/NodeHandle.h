@@ -51,7 +51,7 @@ bool get_has_value(UCName##Key k, unsigned int frame=0) const {         \
 }
 
 
-namespace rmf {
+namespace RMF {
 
 class NodeHandle;
 // for children
@@ -167,6 +167,6 @@ IMPRMFEXPORT void show_hierarchy(NodeHandle root,
 IMP_RMF_GRAPH(NodeTree, bidirectional, NodeHandle, int);
 IMPRMFEXPORT NodeTree get_node_tree(NodeHandle n);
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_NODE_HANDLE_H */

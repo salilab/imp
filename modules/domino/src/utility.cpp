@@ -137,7 +137,7 @@ Ints get_index(const ParticlesTemp &particles,
 void save_assignments(AssignmentContainer *assignments,
                       const Subset &s,
                       const ParticlesTemp &all_particles,
-                      ::rmf::HDF5IndexDataSet2D dataset
+                      RMF::HDF5IndexDataSet2D dataset
                      ) {
   IMP_FUNCTION_LOG;
   IMP::OwnerPointer<AssignmentContainer> op(assignments);
@@ -158,7 +158,7 @@ void save_assignments(AssignmentContainer *assignments,
   }
 }
 AssignmentContainer*
-create_assignments_container(::rmf::HDF5IndexDataSet2D dataset,
+create_assignments_container(RMF::HDF5IndexDataSet2D dataset,
                              const Subset &s,
                              const ParticlesTemp &all_particles) {
   return new HDF5AssignmentContainer(dataset, s, all_particles,

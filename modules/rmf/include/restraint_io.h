@@ -27,21 +27,21 @@ IMPRMF_BEGIN_NAMESPACE
     @{
 */
 /** Add a restraint to the file.*/
-IMPRMFEXPORT void add_restraint(::rmf::RootHandle parent, Restraint *r);
+IMPRMFEXPORT void add_restraint(RMF::RootHandle parent, Restraint *r);
 /** Add the current score of the restraint to the given frame.*/
-IMPRMFEXPORT void save_frame(::rmf::RootHandle parent, int frame, Restraint *r);
+IMPRMFEXPORT void save_frame(RMF::RootHandle parent, int frame, Restraint *r);
 
 /** Return the list of particles for a restraint node. This is not
     such a nice interface, but I can't think of a better one at the
     moment.*/
-IMPRMFEXPORT ParticlesTemp get_restraint_particles(::rmf::NodeHandle f,
+IMPRMFEXPORT ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
                                                     int frame);
 
 /** Return the restraint score, if available (or -inf if it is not).
     This is not
     such a nice interface, but I can't think of a better one at the
     moment.*/
-IMPRMFEXPORT double get_restraint_score(::rmf::NodeHandle f,
+IMPRMFEXPORT double get_restraint_score(RMF::NodeHandle f,
                                          int frame);
 
 /** @} */

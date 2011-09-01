@@ -150,7 +150,7 @@
       std::ostringstream oss;                                   \
       oss << "Usage check failed: " << #check << "\n"           \
           << message;                                           \
-      rmf::internal::handle_usage_error(oss.str());             \
+      ::RMF::internal::handle_usage_error(oss.str());           \
     }                                                           \
   } while (false)
 
@@ -160,7 +160,7 @@
       std::ostringstream oss;                                           \
       oss << "Internal check failed: " << #check << "\n"                \
           << message;                                                   \
-      rmf::internal::handle_internal_error(oss.str());                  \
+      ::RMF::internal::handle_internal_error(oss.str());                \
     }                                                                   \
   } while (false)
 
@@ -168,7 +168,7 @@
   if (true)
 
 #define IMP_RMF_NOT_IMPLEMENTED                                         \
-  rmf::internal::handle_internal_error("Not implemented")
+  ::RMF::internal::handle_internal_error("Not implemented")
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
 

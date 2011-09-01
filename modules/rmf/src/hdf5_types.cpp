@@ -10,7 +10,7 @@
 #include <boost/scoped_array.hpp>
 #include <IMP/rmf/HDF5DataSetD.h>
 
-namespace rmf {
+namespace RMF {
 
   void FloatTraits::write_value_dataset(hid_t d, hid_t is,
                                         hid_t s,
@@ -289,4 +289,4 @@ namespace rmf {
     return std::string("node id");
   }
 
-} /* namespace rmf */
+} /* namespace RMF */

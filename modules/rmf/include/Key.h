@@ -20,7 +20,7 @@ class SharedData;
 IMPRMF_END_INTERNAL_NAMESPACE
 #endif
 
-namespace rmf {
+namespace RMF {
 
 /** A key referencing a particular piece of data */
 template <class TypeTraitsT>
@@ -90,6 +90,6 @@ inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
 IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEY);
 /** @} */
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_KEY_H */

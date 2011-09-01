@@ -21,7 +21,7 @@
 #include <algorithm>
 
 
-namespace rmf {
+namespace RMF {
   namespace internal {
 
     template <class T>
@@ -553,7 +553,7 @@ namespace rmf {
 
 
   } // namespace internal
-} /* namespace rmf */
+} /* namespace RMF */
 
 
 #endif /* IMPRMF_INTERNAL_SHARED_H */
