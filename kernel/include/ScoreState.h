@@ -9,7 +9,6 @@
 #define IMP_SCORE_STATE_H
 
 #include "kernel_config.h"
-#include "Particle.h"
 #include "RefCounted.h"
 #include "Pointer.h"
 #include "DerivativeAccumulator.h"
