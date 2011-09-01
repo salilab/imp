@@ -20,7 +20,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 #ifndef IMP_DOXYGEN
-typedef std::vector<Ints> IntsList;
+typedef IMP::IntsList IntsList;
 typedef std::vector<IntsList> IntsLists;
 #endif
 

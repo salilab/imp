@@ -9,7 +9,7 @@
 #include <IMP/rmf/internal/shared.h>
 #include <IMP/rmf/NodeHandle.h>
 
-namespace rmf {
+namespace RMF {
   namespace internal {
 
     template <class Traits, unsigned int D>
@@ -240,4 +240,4 @@ namespace rmf {
     }
 
   } // namespace internal
-} /* namespace rmf */
+} /* namespace RMF */

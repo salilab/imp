@@ -16,53 +16,53 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-using namespace ::rmf;
+using namespace RMF;
 
 namespace {
 #define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                    \
   RootHandle f= node;                                           \
-  ::rmf::FloatKey x                                                     \
+  RMF::FloatKey x                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
                                           true);                        \
-  ::rmf::FloatKey y                                                     \
+  RMF::FloatKey y                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian y",      \
                                           true);                        \
-  ::rmf::FloatKey z                                                     \
+  RMF::FloatKey z                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian z",      \
                                           true);                        \
-  ::rmf::FloatKey xp                                                    \
+  RMF::FloatKey xp                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian xp",     \
                                           true);                        \
-  ::rmf::FloatKey yp                                                    \
+  RMF::FloatKey yp                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian yp",     \
                                           true);                        \
-  ::rmf::FloatKey zp                                                    \
+  RMF::FloatKey zp                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian zp",     \
                                           true);                        \
-  ::rmf::FloatKey cr                                                    \
+  RMF::FloatKey cr                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
                                           false);                       \
-  ::rmf::FloatKey cg                                                    \
+  RMF::FloatKey cg                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
                                           false);                       \
-  ::rmf::FloatKey cb                                                    \
+  RMF::FloatKey cb                                                    \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
                                           false);                       \
-  ::rmf::FloatKey r                                                     \
+  RMF::FloatKey r                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  ::rmf::FloatDataSet2DKey vn                                           \
+  RMF::FloatDataSet2DKey vn                                           \
   = internal::get_or_add_key<FloatDataSet2DTraits>(f, Shape, "vertices",\
                                                    false);              \
-  ::rmf::IndexDataSet2DKey in                                                \
+  RMF::IndexDataSet2DKey in                                                \
   = internal::get_or_add_key<IndexDataSet2DTraits>(f, Shape, "indices", \
                                                    false)
 
 #define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
-  ::rmf::FloatKey x, ::rmf::FloatKey y, ::rmf::FloatKey z,              \
-    ::rmf::FloatKey xp, ::rmf::FloatKey yp, ::rmf::FloatKey zp,         \
-    ::rmf::FloatKey cr, ::rmf::FloatKey cg, ::rmf::FloatKey cb,         \
-    ::rmf::FloatKey r, ::rmf::FloatDataSet2DKey vn,                     \
-    ::rmf::IndexDataSet2DKey in
+  RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,              \
+    RMF::FloatKey xp, RMF::FloatKey yp, RMF::FloatKey zp,         \
+    RMF::FloatKey cr, RMF::FloatKey cg, RMF::FloatKey cb,         \
+    RMF::FloatKey r, RMF::FloatDataSet2DKey vn,                     \
+    RMF::IndexDataSet2DKey in
 
 #define IMP_HDF5_PASS_GEOMETRY_KEYS             \
   x,y,z,xp, yp,                                 \
@@ -384,7 +384,7 @@ namespace {
       HDF5DataSetIndexD<1> ids(1);
       for (unsigned int i=0; i< is.size()/4; ++i) {
         ids[0]= i;
-        ::rmf::Ints cur=id.get_row(ids);
+        RMF::Ints cur=id.get_row(ids);
         IMP_USAGE_CHECK(cur.size()==3, "Triangle not found. Found face of size "
                         << cur.size() << " instead.");
         std::copy(cur.begin(), cur.end(), is.begin()+i*4);

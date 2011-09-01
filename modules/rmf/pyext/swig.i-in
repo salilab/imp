@@ -21,50 +21,50 @@ def get_data_types():
 
 /* Declare the needed things for each type */
 %define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname)
-namespace rmf {
+namespace RMF {
 %rename(_##Ucname##Traits) Ucname##Traits;
 }
-IMP_SWIG_VALUE_INSTANCE(rmf, Ucname##Key, Ucname##Key, Ucname##Keys);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3Ds);
+IMP_SWIG_VALUE_INSTANCE(RMF, Ucname##Key, Ucname##Key, Ucname##Keys);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3Ds);
 %pythoncode %{
 _types_list.append(#lcname)
 %}
 %enddef
 
 %define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname)
-%template(HDF5##Ucname##DataSet1D) rmf::HDF5DataSetD<rmf::Ucname##Traits, 1>;
-%template(HDF5##Ucname##DataSet2D) rmf::HDF5DataSetD<rmf::Ucname##Traits, 2>;
-%template(HDF5##Ucname##DataSet3D) rmf::HDF5DataSetD<rmf::Ucname##Traits, 3>;
-%template(Ucname##Key) rmf::Key<rmf::Ucname##Traits>;
+%template(HDF5##Ucname##DataSet1D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 1>;
+%template(HDF5##Ucname##DataSet2D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 2>;
+%template(HDF5##Ucname##DataSet3D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 3>;
+%template(Ucname##Key) RMF::Key<RMF::Ucname##Traits>;
 %enddef
 
 
-IMP_SWIG_GRAPH(rmf, NodeTree, NodeTree, rmf::NodeHandle);
-IMP_SWIG_VALUE(rmf, NodeHandle, NodeHandles);
-IMP_SWIG_VALUE(rmf, RootHandle, RootHandles);
-IMP_SWIG_VALUE(rmf, NodeID, NodeIDs);
-IMP_SWIG_VALUE(rmf, Category, Categories);
-IMP_SWIG_VALUE_TEMPLATE(rmf, Key);
-IMP_SWIG_VALUE(rmf, HDF5Group, HDF5Groups);
-IMP_SWIG_VALUE(rmf, HDF5File, HDF5Files);
-IMP_SWIG_VALUE_TEMPLATE(rmf, HDF5DataSetD);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
-IMP_SWIG_VALUE_INSTANCE(rmf, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
-IMP_SWIG_PAIR(rmf, NodeHandle, BondPair, BondPairs)
+IMP_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
+IMP_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
+IMP_SWIG_VALUE(RMF, RootHandle, RootHandles);
+IMP_SWIG_VALUE(RMF, NodeID, NodeIDs);
+IMP_SWIG_VALUE(RMF, Category, Categories);
+IMP_SWIG_VALUE_TEMPLATE(RMF, Key);
+IMP_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
+IMP_SWIG_VALUE(RMF, HDF5File, HDF5Files);
+IMP_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
+IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
+IMP_SWIG_PAIR(RMF, NodeHandle, BondPair, BondPairs)
 IMP_SWIG_OBJECT(IMP::rmf, SaveHierarchyConfigurationOptimizerState, SaveHierarchyConfigurationOptimizerStates);
 IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
 // char is special cased since it is just used for attributes
-namespace rmf {
+namespace RMF {
 %rename(_CharTraits) CharTraits;
 }
 
-%extend rmf::RootHandle {
+%extend RMF::RootHandle {
    %pythoncode %{
     def get_keys(self, kc):
         ret=[]
@@ -78,15 +78,15 @@ namespace rmf {
 %include "IMP/rmf/NodeID.h"
 %include "IMP/rmf/hdf5_handle.h"
 %include "IMP/rmf/hdf5_types.h"
-%template(_IntsTraits) rmf::ArrayTraits<rmf::IntTraits>;
-%template(_NodeIDsTraits) rmf::ArrayTraits<rmf::NodeIDTraits>;
+%template(_IntsTraits) RMF::ArrayTraits<RMF::IntTraits>;
+%template(_NodeIDsTraits) RMF::ArrayTraits<RMF::NodeIDTraits>;
 
 %include "IMP/rmf/HDF5DataSetD.h"
-%template(HDF5DataSetIndex1D) ::rmf::HDF5DataSetIndexD<1>;
-%template(HDF5DataSetIndex2D) ::rmf::HDF5DataSetIndexD<2>;
-%template(HDF5DataSetIndex3D) ::rmf::HDF5DataSetIndexD<3>;
-%template(_IndexDataSet2DTraits) rmf::HDF5DataSetDTraits<rmf::IndexTraits, 2>;
-%template(_FloatDataSet2DTraits) rmf::HDF5DataSetDTraits<rmf::FloatTraits, 2>;
+%template(HDF5DataSetIndex1D) RMF::HDF5DataSetIndexD<1>;
+%template(HDF5DataSetIndex2D) RMF::HDF5DataSetIndexD<2>;
+%template(HDF5DataSetIndex3D) RMF::HDF5DataSetIndexD<3>;
+%template(_IndexDataSet2DTraits) RMF::HDF5DataSetDTraits<RMF::IndexTraits, 2>;
+%template(_FloatDataSet2DTraits) RMF::HDF5DataSetDTraits<RMF::FloatTraits, 2>;
 
 %include "IMP/rmf/Key.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);

@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/internal/errors.h>
 #include <stdexcept>
-namespace rmf {
+namespace RMF {
   namespace internal {
     void handle_usage_error(std::string message) {
       throw std::runtime_error(message);
@@ -19,4 +19,4 @@ namespace rmf {
     }
 
   } // namespace internal
-} /* namespace rmf */
+} /* namespace RMF */

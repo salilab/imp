@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/HDF5Group.h>
 
-namespace rmf {
+namespace RMF {
 
 HDF5Group::HDF5Group(HDF5SharedHandle *h): h_(h) {
 }
@@ -107,4 +107,4 @@ HDF5File::~HDF5File() {
 }
 
 
-} /* namespace rmf */
+} /* namespace RMF */

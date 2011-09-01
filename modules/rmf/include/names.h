@@ -14,7 +14,7 @@
 #include "Key.h"
 #include <sstream>
 
-namespace rmf {
+namespace RMF {
 
   /** \name Data set names
       The RMF format stores various pieces of data in data sets and attributes
@@ -60,6 +60,6 @@ namespace rmf {
   }
   /** @} */
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_NAMES_H */

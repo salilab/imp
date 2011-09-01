@@ -11,7 +11,7 @@
 
 #include "../rmf_config.h"
 
-namespace rmf {
+namespace RMF {
   namespace internal {
 
     IMPRMFEXPORT void handle_usage_error(std::string message);
@@ -19,6 +19,6 @@ namespace rmf {
     IMPRMFEXPORT void handle_internal_error(std::string message);
 
   } // namespace internal
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_INTERNAL_ERRORS_H */

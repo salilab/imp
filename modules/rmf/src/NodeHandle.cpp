@@ -12,7 +12,7 @@
 #include <IMP/rmf/Category.h>
 #include <IMP/rmf/RootHandle.h>
 
-namespace rmf {
+namespace RMF {
 
 NodeHandle::NodeHandle(int node, internal::SharedData *shared):
   node_(node), shared_(shared) {
@@ -153,4 +153,4 @@ NodeTree get_node_tree(NodeHandle n) {
   return tree;
 }
 
-} /* namespace rmf */
+} /* namespace RMF */

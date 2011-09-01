@@ -14,7 +14,7 @@
 #include <vector>
 #include <iostream>
 
-namespace rmf {
+namespace RMF {
 
   /** A key for a node in the hierarchy. */
   class NodeID {
@@ -51,6 +51,6 @@ namespace rmf {
 #endif
 
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_NODE_ID_H */

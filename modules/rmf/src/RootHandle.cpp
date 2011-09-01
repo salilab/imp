@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/RootHandle.h>
 
-namespace rmf {
+namespace RMF {
 
 RootHandle::RootHandle(internal::SharedData *shared): NodeHandle(0, shared) {}
 
@@ -66,4 +66,4 @@ void RootHandle::flush() {
   shared_->flush();
 }
 
-} /* namespace rmf */
+} /* namespace RMF */

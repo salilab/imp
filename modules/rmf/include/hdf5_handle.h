@@ -26,7 +26,7 @@
 typedef int hid_t;
 #endif
 
-namespace rmf {
+namespace RMF {
 
 #ifndef SWIG
 //! The signature for the HDF5 close functions
@@ -92,6 +92,6 @@ public:
 
 #endif // SWIG
 
-} /* namespace rmf */
+} /* namespace RMF */
 
 #endif /* IMPRMF_HDF_5_HANDLE_H */

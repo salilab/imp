@@ -8,8 +8,8 @@
 
 #include <IMP/rmf/Key.h>
 
-namespace rmf {
-namespace {;
+namespace RMF {
+namespace {
   std::vector<std::string> category_names;
   Category get_category(std::string name) {
     IMP_RMF_USAGE_CHECK(name.find('_')==std::string::npos,
@@ -25,7 +25,7 @@ namespace {;
 }
 
 Category Category::get_category(std::string name) {
-  return rmf::get_category(name);
+  return RMF::get_category(name);
 }
 
 std::string Category::get_name() const {
@@ -39,4 +39,4 @@ const Category Bond=get_category("bond");
 const Category Shape=get_category("shape");
 const Category Feature=get_category("feature");
 
-} /* namespace rmf */
+} /* namespace RMF */

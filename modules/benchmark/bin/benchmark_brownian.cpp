@@ -92,7 +92,7 @@ namespace {
   }
 
   It create_particles(std::string name) {
-    ::rmf::RootHandle r= ::rmf::open_rmf_file(name);
+    RMF::RootHandle r= RMF::open_rmf_file(name);
     It ret;
     ret.m= new Model();
     ret.chains= IMP::rmf::create_hierarchies(r, ret.m);
@@ -100,7 +100,7 @@ namespace {
     return ret;
   }
 
-  void write_particles(It cur, ::rmf::RootHandle rh, int frame) {
+  void write_particles(It cur, RMF::RootHandle rh, int frame) {
     if (frame==0) {
       for (unsigned int i=0; i< cur.chains.size(); ++i) {
         IMP::rmf::add_hierarchy(rh, cur.chains[i]);
@@ -211,7 +211,7 @@ namespace {
     IMP::benchmark::report(std::string("bd ")+name, runtime, total);
     if (argc>2) {
       IMP_CATCH_AND_TERMINATE(write_particles(it,
-                                        ::rmf::create_rmf_file(argv[2]),
+                                        RMF::create_rmf_file(argv[2]),
                                               0));
     }
   }
@@ -251,7 +251,7 @@ namespace {
 
     if (argc>2) {
       IMP_CATCH_AND_TERMINATE(write_particles(it,
-                                            ::rmf::create_rmf_file(argv[2]),
+                                            RMF::create_rmf_file(argv[2]),
                                               0));
     }
   }
@@ -270,12 +270,12 @@ int main(int argc , char **argv) {
                                     new AttributeSingletonScore(new HLB(0,kk),
                                                                 xk), o);
     {
-      ::rmf::RootHandle fh= ::rmf::create_rmf_file(argv[2]);
+      RMF::RootHandle fh= RMF::create_rmf_file(argv[2]);
       write_particles(it, fh, 0);
     }
     std::cout << it.m->evaluate(false) << " is the score " << std::endl;
     initialize(it);
-    ::rmf::RootHandle fh= ::rmf::create_rmf_file(argv[2]);
+    RMF::RootHandle fh= RMF::create_rmf_file(argv[2]);
     write_particles(it, fh, 0);
   } else if (argc >=2 && std::string(argv[1])=="-t") {
     It cur;

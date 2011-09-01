@@ -12,7 +12,7 @@
 #include <IMP/rmf/internal/imp_operations.h>
 
 IMPRMF_BEGIN_NAMESPACE
-using namespace ::rmf;
+using namespace RMF;
 
 void add_particle(RootHandle fh, Particle* ps) {
   NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
@@ -27,7 +27,7 @@ void add_particle(RootHandle fh, Particle* ps) {
           || fks[i]== IMP::core::XYZ::get_xyz_keys()[2]) {
         mf=true;
       }
-      ::rmf::FloatKey fk= internal::get_or_add_key<FloatTraits>(fh, IMP,
+      RMF::FloatKey fk= internal::get_or_add_key<FloatTraits>(fh, IMP,
                                                fks[i].get_string(), mf);
       n.set_value(fk, ps->get_value(fks[i]));
     }
@@ -35,7 +35,7 @@ void add_particle(RootHandle fh, Particle* ps) {
   {
     IMP::IntKeys fks= ps->get_int_keys();
     for (unsigned int i=0; i< fks.size(); ++i) {
-      ::rmf::IntKey fk
+      RMF::IntKey fk
         = internal::get_or_add_key<IntTraits>(fh, IMP, fks[i].get_string(),
                                               false);
       n.set_value(fk, ps->get_value(fks[i]));
@@ -44,7 +44,7 @@ void add_particle(RootHandle fh, Particle* ps) {
   {
     IMP::StringKeys fks= ps->get_string_keys();
     for (unsigned int i=0; i< fks.size(); ++i) {
-      ::rmf::StringKey fk
+      RMF::StringKey fk
         = internal::get_or_add_key<StringTraits>(fh, IMP,
                                                  fks[i].get_string(),
                                                  false);
@@ -54,7 +54,7 @@ void add_particle(RootHandle fh, Particle* ps) {
   {
     IMP::ParticleKeys fks= ps->get_particle_keys();
     for (unsigned int i=0; i< fks.size(); ++i) {
-      ::rmf::IndexKey fk
+      RMF::IndexKey fk
         = internal::get_or_add_key<IndexTraits>(fh, IMP, fks[i].get_string(),
                                                 false);
       NodeHandle nh= fh.get_node_handle_from_association(ps->get_value(fks[i]));
@@ -81,7 +81,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
       IMP_NEW(Particle, p, (m));
       ch[i].set_association(p);
       {
-        ::rmf::FloatKeys fks= fh.get_keys<FloatTraits>(IMP);
+        RMF::FloatKeys fks= fh.get_keys<FloatTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -91,7 +91,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        ::rmf::IntKeys fks= fh.get_keys<IntTraits>(IMP);
+        RMF::IntKeys fks= fh.get_keys<IntTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -101,7 +101,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        ::rmf::StringKeys fks= fh.get_keys<StringTraits>(IMP);
+        RMF::StringKeys fks= fh.get_keys<StringTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -111,7 +111,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        ::rmf::IndexKeys fks= fh.get_keys<IndexTraits>(IMP);
+        RMF::IndexKeys fks= fh.get_keys<IndexTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
