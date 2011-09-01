@@ -9,6 +9,7 @@
 
 #include "core_config.h"
 #include <IMP/macros.h>
+#include <IMP/Particle.h>
 #include <IMP/ScoreState.h>
 
 IMPCORE_BEGIN_NAMESPACE

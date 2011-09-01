@@ -7,6 +7,7 @@
 
 
 #include <IMP/core/ChecksScoreState.h>
+#include <IMP/Pointer.h>
 #include <IMP/exception.h>
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
