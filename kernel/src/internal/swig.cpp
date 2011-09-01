@@ -247,7 +247,10 @@ _pass_pair(const DerivativePair &p) {
   std::cout << p.first << " " << p.second << std::endl;
   return p;
 }
-
+IntsList _pass_ints_list(const IntsList &in) {
+  std::cout << "IntsList of length " << in.size();
+  return in;
+}
 std::pair<double, double>
 _pass_plain_pair(std::pair<double, double> p) {
   std::cout << p.first << " " << p.second << std::endl;
