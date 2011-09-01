@@ -3,7 +3,6 @@ import IMP.rmf
 import IMP.test
 from IMP.algebra import *
 
-num_base_handles=8
 
 I1= IMP.rmf.HDF5DataSetIndex1D
 I2= IMP.rmf.HDF5DataSetIndex2D
@@ -12,9 +11,41 @@ class GenericTest(IMP.test.TestCase):
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
             print i, g.get_child_name(i), g.get_child_is_group(i)
+
+    def _do_touch_types(self, f, pccc):
+        nh= IMP.rmf.NodeID(0)
+        ds= f.add_child_float_data_set_2d("ds"+str(pccc))
+        dsi= f.add_child_index_data_set_2d("dsi"+str(pccc))
+        lst=[(f.add_child_int_data_set_1d, 4),
+             (f.add_child_float_data_set_1d, 3.1415),
+             (f.add_child_node_id_data_set_1d, nh),
+             (f.add_child_string_data_set_1d, "there"),
+             (f.add_child_index_data_set_1d, 3),
+             (f.add_child_float_data_set_2d_data_set_1d, ds),
+             (f.add_child_index_data_set_2d_data_set_1d, dsi),
+             (f.add_child_ints_data_set_1d, [3,4,5,6]),
+             #(f.add_child_node_ids_data_set_1d, [nh]),
+             ]
+        # swig can't get the node ids array right
+        self.assertEqual(len(lst),len(IMP.rmf.get_data_types())-1)
+        for i,p in enumerate(lst):
+            mds=p[0](str(i))
+            mds.set_size([1])
+            mds.set_value([0], p[1])
+            vo= mds.get_value([0])
+            self.assertEqual(vo, p[1])
+    def _touch_all_types(self):
+        """touch all types so all static hids are created"""
+        print "touching"
+        f= IMP.rmf.create_hdf5_file(IMP.create_temporary_file_name("all_types", ".hdf5"))
+        self._do_touch_types(f, False)
+        print "done touching"
+
     """Test the python code"""
     def test_perturbed(self):
         """Test low level usage of hdf5"""
+        self._touch_all_types()
+        num_base_handles=IMP.rmf.get_number_of_open_hdf5_handles()
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("test.hdf5"))
         self._show(f)
         print "adding"
@@ -31,6 +62,8 @@ class GenericTest(IMP.test.TestCase):
 
     def test_ds(self):
         """Test low level usage of hdf5 with datasets"""
+        self._touch_all_types()
+        num_base_handles=IMP.rmf.get_number_of_open_hdf5_handles()
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testd.hdf5"))
         self._show(f)
         print "adding"
@@ -61,6 +94,8 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(IMP.rmf.get_number_of_open_hdf5_handles(), num_base_handles)
     def test_dsgrow(self):
         """Test low level usage of hdf5 with datasets that grow"""
+        self._touch_all_types()
+        num_base_handles=IMP.rmf.get_number_of_open_hdf5_handles()
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testdg.hdf5"))
         self._show(f)
         print "adding"
@@ -172,6 +207,8 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(in3, 'adfjhslak')
     def test_as(self):
         """Test low level usage of hdf5 with attributes"""
+        self._touch_all_types()
+        num_base_handles=IMP.rmf.get_number_of_open_hdf5_handles()
         f= IMP.rmf.create_hdf5_file(self.get_tmp_file_name("testa.hdf5"))
         self.assertEqual(IMP.rmf.get_number_of_open_hdf5_handles(), num_base_handles+1)
         self._show(f)
