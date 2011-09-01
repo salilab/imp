@@ -32,7 +32,6 @@ IMP_NEW(core::TableRefiner,tbr,());
 
 // native transformations
 algebra::Vector3Ds centers;
-
 centers.push_back(algebra::Vector3D(-12.4386,4.9583,-0.369217));
 centers.push_back(algebra::Vector3D(-9.59595,-2.1878,-0.41745));
 centers.push_back(algebra::Vector3D(-0.380167,-4.82617,-3.05239));

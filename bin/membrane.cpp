@@ -61,7 +61,7 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
 // trajectory file
 std::string trajname="traj"+out.str()+".rmf";
-rmf::RootHandle rh = rmf::create_rmf_file(trajname);
+RMF::RootHandle rh = RMF::create_rmf_file(trajname);
 atom::Hierarchies hs=all.get_children();
 for(int i=0;i<hs.size();++i) {rmf::add_hierarchy(rh, hs[i]);}
 
@@ -73,7 +73,7 @@ create_restraints(m,all,tbr,&mydata);
 if(myrank==0) {std::cout << "Creating sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
-//mc->set_use_incremental_evaluate(true);
+mc->set_use_incremental_evaluate(true);
 
 // sampling
 if(myrank==0) {std::cout << "Sampling" << std::endl;}
@@ -160,7 +160,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 MPI::COMM_WORLD.Barrier();
 // close rmf
 rh.flush();
-rh=rmf::RootHandle();
+rh=RMF::RootHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();

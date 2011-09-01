@@ -74,14 +74,14 @@ if(mydata.file_list.size()>0){
 //
 // Prepare output file
 std::string trajname="traj"+out.str()+".rmf";
-rmf::RootHandle rh = rmf::create_rmf_file(trajname);
+RMF::RootHandle rh = RMF::create_rmf_file(trajname);
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
 // adding key for score
-rmf::Category my_kc= rh.add_category("my data");
-rmf::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
+RMF::Category my_kc= rh.add_category("my data");
+RMF::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
 
 //
 // CREATING RESTRAINTS
@@ -315,7 +315,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 MPI::COMM_WORLD.Barrier();
 // close rmf
 rh.flush();
-rh=rmf::RootHandle();
+rh=RMF::RootHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();

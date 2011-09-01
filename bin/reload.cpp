@@ -34,7 +34,7 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
 // trajectory file
 std::string trajname="traj0.rmf";
-rmf::RootHandle rh = rmf::open_rmf_file(trajname);
+RMF::RootHandle rh = RMF::open_rmf_file(trajname);
 atom::Hierarchies hs=all.get_children();
 rmf::set_hierarchies(rh, hs);
 
