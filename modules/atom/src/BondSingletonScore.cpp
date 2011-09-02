@@ -30,7 +30,7 @@ double BondSingletonScore::evaluate(Particle *b,
     return 0;
   }
   if (s <0) s=1;
-  Particle *pa=NULL, *pb=NULL;
+  Particle *pa=nullptr, *pb=nullptr;
   try {
     pa = bd.get_bonded(0).get_particle();
     pb = bd.get_bonded(1).get_particle();

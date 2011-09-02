@@ -43,8 +43,8 @@ double ImproperSingletonScore::evaluate(Particle *b,
     }
     return dp.first;
   } else {
-    double dih = core::internal::dihedral(d[0], d[1], d[2], d[3], NULL,
-                                          NULL, NULL, NULL);
+    double dih = core::internal::dihedral(d[0], d[1], d[2], d[3], nullptr,
+                                          nullptr, nullptr, nullptr);
     double diff = core::internal::get_angle_difference(dih, ideal);
     return f_->evaluate(s * diff);
   }

@@ -94,7 +94,7 @@ class IMPATOMEXPORT Bonded: public Decorator
   struct GetBond {
     typedef Bond result_type;
     Particle* d_;
-    GetBond():d_(NULL){}
+    GetBond():d_(nullptr){}
     GetBond(Particle* d): d_(d){}
     Bond operator()(unsigned int i) const;
     bool operator==(const GetBond &o) const {
@@ -104,7 +104,7 @@ class IMPATOMEXPORT Bonded: public Decorator
   struct GetBonded {
     typedef Bonded result_type;
     Particle* d_;
-    GetBonded():d_(NULL){}
+    GetBonded():d_(nullptr){}
     GetBonded(Particle* d): d_(d){}
     Bonded operator()(unsigned int i) const;
     bool operator==(const GetBonded &o) const {

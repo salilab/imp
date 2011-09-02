@@ -322,7 +322,7 @@ create_simplified_along_backbone(Chain in,
   IMP_USAGE_CHECK(in.get_is_valid(true), "Chain " << in
                   << " is not valid.");
   if (in.get_number_of_children() ==0 || residue_segments.empty()) {
-    IMP_LOG(TERSE, "Nothing to simplify in " << (in? in->get_name(): "NULL")
+    IMP_LOG(TERSE, "Nothing to simplify in " << (in? in->get_name(): "nullptr")
             << " with " << residue_segments.size() << " segments.\n");
     return Hierarchy();
   }
@@ -667,7 +667,7 @@ Restraint* create_distance_restraint(const Selection &n0,
 Restraint* create_connectivity_restraint(const Selections &s,
                                          double x0,
                                          double k) {
-  if (s.size() < 2) return NULL;
+  if (s.size() < 2) return nullptr;
   if (s.size() ==2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
     Restraint *r= create_distance_restraint(s[0], s[1], ps.get());
@@ -723,7 +723,7 @@ Restraint* create_internal_connectivity_restraint(const Selection &ss,
                                          double x0,
                                          double k) {
   ParticlesTemp s= ss.get_selected_particles();
-  if (s.size() < 2) return NULL;
+  if (s.size() < 2) return nullptr;
   if (s.size() ==2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
     IMP_NEW(core::PairRestraint, r, (ps, ParticlePair(s[0], s[1])));

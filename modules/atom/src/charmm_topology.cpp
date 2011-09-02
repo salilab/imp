@@ -668,12 +668,12 @@ namespace {
                              const std::map<const CHARMMResidueTopology *,
                                             Hierarchy> &resmap,
                              std::vector<ModelInternalCoordinate> &ics) {
-    const CHARMMResidueTopology *prev = NULL;
+    const CHARMMResidueTopology *prev = nullptr;
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *cur = seg->get_residue(nres);
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
-               seg->get_residue(nres + 1) : NULL;
+               seg->get_residue(nres + 1) : nullptr;
       for (unsigned int nic = 0;
            nic < cur->get_number_of_internal_coordinates(); ++nic) {
         const CHARMMInternalCoordinate &ic =
@@ -998,13 +998,13 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
     const CHARMMSegmentTopology *seg = *segit;
-    const CHARMMResidueTopology *prev = NULL;
+    const CHARMMResidueTopology *prev = nullptr;
     for (unsigned int nres = 0; nres < seg->get_number_of_residues();
          ++nres) {
       const CHARMMResidueTopology *cur = seg->get_residue(nres);
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
-               seg->get_residue(nres + 1) : NULL;
+               seg->get_residue(nres + 1) : nullptr;
       add_residue_bonds(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }
@@ -1021,13 +1021,13 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
     const CHARMMSegmentTopology *seg = *segit;
-    const CHARMMResidueTopology *prev = NULL;
+    const CHARMMResidueTopology *prev = nullptr;
     for (unsigned int nres = 0; nres < seg->get_number_of_residues();
          ++nres) {
       const CHARMMResidueTopology *cur = seg->get_residue(nres);
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
-               seg->get_residue(nres + 1) : NULL;
+               seg->get_residue(nres + 1) : nullptr;
       add_residue_impropers(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }
@@ -1044,13 +1044,13 @@ Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
     const CHARMMSegmentTopology *seg = *segit;
-    const CHARMMResidueTopology *prev = NULL;
+    const CHARMMResidueTopology *prev = nullptr;
     for (unsigned int nres = 0; nres < seg->get_number_of_residues();
          ++nres) {
       const CHARMMResidueTopology *cur = seg->get_residue(nres);
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
-               seg->get_residue(nres + 1) : NULL;
+               seg->get_residue(nres + 1) : nullptr;
       add_residue_dihedrals(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }

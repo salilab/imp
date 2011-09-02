@@ -33,7 +33,7 @@ class IMPATOMEXPORT MolecularDynamics : public Simulator
 {
 public:
   /** Score based on the provided model */
-  MolecularDynamics(Model *m=NULL);
+  MolecularDynamics(Model *m=nullptr);
 
   //! \return the current kinetic energy of the system, in kcal/mol
   Float get_kinetic_energy() const;

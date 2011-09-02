@@ -53,12 +53,12 @@ class CHARMMResidueTopology;
 /** An endpoint is an atom in a residue; bonds have two endpoints,
     angles three, and dihedrals, impropers and internal coordinates, four.
 
-    If residue_ is not NULL, the endpoint is the named atom in the
+    If residue_ is not nullptr, the endpoint is the named atom in the
     pointed-to residue. (This is used for bonds that can span multiple
     residues, perhaps in different chains, and is typically only created
     by applying a two-residue patch such as DISU or LINK).
 
-    If residue_ is NULL, the endpoint is the named atom in the "current"
+    If residue_ is nullptr, the endpoint is the named atom in the "current"
     residue, unless the atom name has a +, -, 1: or 2: prefix.
     Atoms prefixed with + are found in the next residue in the chain.
     Atoms prefixed with - are found in the previous residue in the chain.
@@ -70,7 +70,7 @@ class IMPATOMEXPORT CHARMMBondEndpoint {
   Pointer<Object> residue_;
 public:
   CHARMMBondEndpoint(std::string atom_name,
-                     CHARMMResidueTopology *residue=NULL);
+                     CHARMMResidueTopology *residue=nullptr);
 
   std::string get_atom_name() const { return atom_name_; }
 

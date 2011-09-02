@@ -58,7 +58,7 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
 IMPATOMEXPORT Hierarchy read_mol2(TextInput mol2_file,
                                   Model* model,
                                   Mol2Selector* mol2sel
-                                  = NULL);
+                                  = nullptr);
 
 IMPATOMEXPORT void write_mol2(Hierarchy rhd,
                               TextOutput file_name);
