@@ -69,8 +69,8 @@ inline const ParticlesTemp& flatten(const ParticlesTemp &in) {
   return in;
 }
 
-inline const ParticlesTemp& flatten(const Particles &in) {
-  return in;
+inline ParticlesTemp flatten(const Particles &in) {
+  return get_as<ParticlesTemp>(in);
 }
 
 
