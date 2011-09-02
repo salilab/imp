@@ -183,7 +183,7 @@ extern IMPEXPORT const nullptr_t nullptr;
 #endif // IMP_DOXYGEN
 
 #ifdef SWIG
-extern void *nullptr;
+extern const void * const nullptr;
 #endif
 
 
