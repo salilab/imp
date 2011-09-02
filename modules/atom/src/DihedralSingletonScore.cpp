@@ -45,8 +45,8 @@ double DihedralSingletonScore::evaluate(Particle *b,
       d[i].add_to_derivatives(deriv * derv[i], *da);
     }
   } else {
-    dih = core::internal::dihedral(d[0], d[1], d[2], d[3], NULL, NULL,
-                                   NULL, NULL);
+    dih = core::internal::dihedral(d[0], d[1], d[2], d[3], nullptr, nullptr,
+                                   nullptr, nullptr);
   }
   return 0.5 * std::abs(s) * s * (1.0 + std::cos(dih * m - ideal));
 }

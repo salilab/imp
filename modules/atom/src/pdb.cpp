@@ -257,9 +257,9 @@ namespace {
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
-  Particle* root_p = NULL;
-  Particle* cp = NULL;
-  Particle* rp = NULL;
+  Particle* root_p = nullptr;
+  Particle* cp = nullptr;
+  Particle* rp = nullptr;
 
   char curr_residue_icode = '-';
   char curr_chain = '-';
@@ -281,7 +281,7 @@ namespace {
         std::ostringstream oss;
         oss << "Model " << internal::model_index(line);
         root_name= oss.str();
-        root_p=NULL;
+        root_p=nullptr;
       }
       first_model_read=true;
     }
@@ -304,7 +304,7 @@ namespace {
       // (no residues without valid atoms)
       if (ap) {
         // check if new chain
-        if (root_p== NULL) {
+        if (root_p== nullptr) {
           root_p = new Particle(model);
           ret.push_back(Hierarchy::setup_particle(root_p));
           if (!root_name.empty() || !name.empty()) {
@@ -312,17 +312,17 @@ namespace {
           }
         }
 
-        if (cp == NULL || chain != curr_chain) {
+        if (cp == nullptr || chain != curr_chain) {
           curr_chain = chain;
           // create new chain particle
           cp = chain_particle(model, chain);
           chain_name_set = false;
           Hierarchy(root_p).add_child(Chain(cp));
-          rp=NULL; // make sure we get a new residue
+          rp=nullptr; // make sure we get a new residue
         }
 
         // check if new residue
-        if (rp == NULL ||
+        if (rp == nullptr ||
             residue_index != Residue::decorate_particle(rp).get_index() ||
             residue_icode != curr_residue_icode) {
           curr_residue_icode = residue_icode;
@@ -598,15 +598,15 @@ std::string get_pdb_conect_record_string(int a1_ind,int a2_ind){
   //12 - 16 Serial number of bonded atom
   out<<a2_ind;//a2.get_input_index();
   //17 - 21 Serial number of bonded atom
-  // if(a3 != NULL) {
+  // if(a3 != nullptr) {
   //   out<<a3->get_input_index();
   // }
   // //22 - 26  Serial number of bonded atom
-  // if(a4 != NULL) {
+  // if(a4 != nullptr) {
   //   out<<a4->get_input_index();
   // }
   // //27 - 31 Serial number of bonded atom
-  // if(a5 != NULL) {
+  // if(a5 != nullptr) {
   //   out<<a5->get_input_index();
   // }
   return out.str();

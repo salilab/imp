@@ -38,7 +38,7 @@ Hierarchy::get_traits() {
 void Hierarchy::show(std::ostream &out) const
 {
   if (*this == Hierarchy()) {
-    out << "NULL Molecular Hierarchy node";
+    out << "nullptr Molecular Hierarchy node";
     return;
   }
   bool found=false;

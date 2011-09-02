@@ -45,7 +45,8 @@ double AngleSingletonScore::evaluate(Particle *b,
     }
     return dp.first;
   } else {
-    double ang = core::internal::angle(d[0], d[1], d[2], NULL, NULL, NULL);
+    double ang = core::internal::angle(d[0], d[1], d[2],
+                                       nullptr, nullptr, nullptr);
     double diff = core::internal::get_angle_difference(ang, ideal);
     return f_->evaluate(s * diff);
   }
