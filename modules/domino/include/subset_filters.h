@@ -157,6 +157,10 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
   */
   void set_use_caching(bool tf);
 
+  /** Set the maximum number of cache entries for all restraints.
+  */
+  void set_maximum_number_of_cache_entries(unsigned int i);
+
   RestraintScoreSubsetFilter*
   get_subset_filter(const IMP::domino::Subset&s,
                     const IMP::domino::Subsets &excluded) const;

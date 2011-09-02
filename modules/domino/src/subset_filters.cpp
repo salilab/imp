@@ -166,6 +166,11 @@ double RestraintScoreSubsetFilterTable
                     static_cast<int>(nr));
 }
 
+void RestraintScoreSubsetFilterTable
+::set_maximum_number_of_cache_entries(unsigned int i) {
+  mset_->set_maximum_number_of_cache_entries(i);
+}
+
 
 void RestraintScoreSubsetFilterTable
 ::add_score(Restraint *r, const Subset &subset,
