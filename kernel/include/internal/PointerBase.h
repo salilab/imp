@@ -1,6 +1,6 @@
 /**
  *  \file OwnerPointer.h
- *  \brief A NULL-initialized pointer to an IMP Object.
+ *  \brief A nullptr-initialized pointer to an IMP Object.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
@@ -16,6 +16,7 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
+#include <boost/utility/enable_if.hpp>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -66,30 +67,82 @@ struct CheckedWeakPointerTraits {
 };
 
 
+template <class O, class OO, class Enabled=void>
+  struct GetPointer {
+  };
+template <class O, class OO>
+struct GetPointer<O, OO,
+                    typename boost::enable_if<boost::mpl::and_<
+                         boost::mpl::not_<boost::is_integral<OO> >,
+             boost::mpl::not_<boost::is_pointer<OO> > > >::type> {
+    static O* get_pointer(const OO& o) {
+      return o;
+    }
+    static const O* get_const_pointer(const OO& o) {
+      return o;
+    }
+  };
+template <class O, class OO>
+struct GetPointer<O, OO*,
+                  typename boost::enable_if<boost::is_pointer<OO*>
+                                            >::type> {
+    static O* get_pointer(OO* o) {
+      return o;
+    }
+    static const O* get_const_pointer(const OO* o) {
+      return o;
+    }
+  };
+
+
+template <class O, class OO>
+struct GetPointer<O, OO,
+                    typename boost::enable_if<boost::is_integral<OO>
+                                              >::type> {
+    static O* get_pointer(const OO& o) {
+    IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
+      return static_cast<O*>(NULL);
+    }
+    static const O* get_const_pointer(const OO& o) {
+  IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
+      return static_cast<O*>(NULL);
+    }
+  };
+  template <class O>
+  struct GetPointer<O, nullptr_t> {
+    static O* get_pointer(const nullptr_t& ) {
+      return static_cast<O*>(NULL);
+    }
+    static const O* get_const_pointer(const nullptr_t& ) {
+      return static_cast<O*>(NULL);
+    }
+  };
+
+
 #define IMP_POINTER_MEMBERS(templ, arg)                                 \
   templ                                                                 \
   bool operator==(arg o) const {                                        \
-    return (o_== get_pointer(o));                                       \
+    return (o_== get_const_pointer(o));                                 \
   }                                                                     \
   templ                                                                 \
   bool operator!=(arg o) const {                                        \
-    return (o_!= get_pointer(o));                                       \
+    return (o_!= get_const_pointer(o));                                 \
   }                                                                     \
   templ                                                                 \
   bool operator<(arg o) const {                                         \
-    return (o_< get_pointer(o));                                        \
+    return (o_< get_const_pointer(o));                                  \
   }                                                                     \
   templ                                                                 \
   bool operator>(arg o) const {                                         \
-    return (o_> get_pointer(o));                                        \
+    return (o_> get_const_pointer(o));                                  \
   }                                                                     \
   templ                                                                 \
   bool operator>=(arg o) const {                                        \
-    return (o_>= get_pointer(o));                                       \
+    return (o_>= get_const_pointer(o));                                 \
   }                                                                     \
   templ                                                                 \
   bool operator<=(arg o) const {                                        \
-    return (o_<= get_pointer(o));                                       \
+    return (o_<= get_const_pointer(o));                                 \
   }                                                                     \
   templ                                                                 \
   int compare(arg o) const {                                            \
@@ -99,13 +152,13 @@ struct CheckedWeakPointerTraits {
   }                                                                     \
   templ                                                                 \
   explicit PointerBase(arg o): o_(NULL) {                               \
-    if (o) {                                                            \
+    if (get_const_pointer(o)) {                                         \
       set_pointer(get_pointer(o));                                      \
     }                                                                   \
   }                                                                     \
   templ                                                                 \
   PointerBase<Traits>& operator=( arg o){                               \
-    if (o) {                                                            \
+    if (get_const_pointer(o)) {                                         \
       set_pointer(get_pointer(o));                                      \
     } else {                                                            \
       set_pointer(NULL);                                                \
@@ -127,21 +180,25 @@ private:
     }
   }
   static void check_non_null(const O*  t) {
-    IMP_INTERNAL_CHECK(t != NULL, "Pointer is NULL");
+    IMP_INTERNAL_CHECK(t, "Pointer is NULL");
     check(t);
   }
-  static O* get_pointer(O*o) {return o;}
+  //static O* get_pointer(O*o) {return o;}
   /*static O* get_pointer(size_t t) {
     IMP_INTERNAL_CHECK(t==0, "Only can compare with NULL ints");
     return NULL;
     }*/
-  template <class OT>
-  static O* get_pointer(const PointerBase<OT> &o) {
-    if (o) return o.get();
-    else return NULL;
+
+
+  template <class OO>
+  static O* get_pointer(const OO& o) {
+    return GetPointer<O, OO>::get_pointer(o);
   }
-  static O* get_pointer(const PointerBase<Traits>&o) {return o.o_;}
-  static O* get_pointer(const long int) {return NULL;}
+  template <class OO>
+  static const O* get_const_pointer(const OO& o) {
+    return GetPointer<O, OO>::get_const_pointer(o);
+  }
+
   void set_pointer(O* p) {
     if (p == o_) return;
     if (o_) Traits::handle_unset(o_);
@@ -191,7 +248,7 @@ public:
     check_non_null(o_);
     return o_;
   }
-  template <class O>
+  /*template <class O>
   PointerBase<Traits>& operator=( const O& o){
     if (o) {
       set_pointer(get_pointer(o));
@@ -199,11 +256,11 @@ public:
       set_pointer(NULL);
     }
     return *this;
-  }
-  IMP_POINTER_MEMBERS(template <class OTraits>,
-                      const PointerBase<OTraits>&);
-  IMP_POINTER_MEMBERS(,
-                      typename Traits::Type* const);
+    }*/
+  IMP_POINTER_MEMBERS(template <class OO>,
+                      const OO&);
+  IMP_POINTER_MEMBERS(template <class OO>,
+                      OO*);
   PointerBase<Traits>& operator=( const PointerBase & o){
     if (o) {
       set_pointer(get_pointer(o));
