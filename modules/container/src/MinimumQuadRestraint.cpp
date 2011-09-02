@@ -35,7 +35,7 @@ namespace {
             << c->get_number() << std::endl);
     QuadMinimumMS bestn(n);
     IMP_FOREACH_QUAD(c, {
-        double score= f->evaluate(_1, NULL);
+        double score= f->evaluate(_1, nullptr);
         IMP_LOG(VERBOSE, "Found " << score << " for "
                 << _1 << std::endl);
         bestn.insert(score, _1);

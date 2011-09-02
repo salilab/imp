@@ -35,7 +35,7 @@ namespace {
             << std::distance(b,e) << std::endl);
     MinimumQuadScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
-      double score= (*it)->evaluate(v, NULL);
+      double score= (*it)->evaluate(v, nullptr);
       bestn.insert(score, *it);
     }
     return bestn;
