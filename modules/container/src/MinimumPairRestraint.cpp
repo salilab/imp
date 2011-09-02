@@ -35,7 +35,7 @@ namespace {
             << c->get_number() << std::endl);
     PairMinimumMS bestn(n);
     IMP_FOREACH_PAIR(c, {
-        double score= f->evaluate(_1, NULL);
+        double score= f->evaluate(_1, nullptr);
         IMP_LOG(VERBOSE, "Found " << score << " for "
                 << _1 << std::endl);
         bestn.insert(score, _1);
