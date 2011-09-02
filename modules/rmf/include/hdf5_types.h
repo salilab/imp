@@ -19,17 +19,6 @@
 
 #include <limits>
 #include <boost/utility.hpp>
-#include <boost/version.hpp>
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#if BOOST_VERSION < 104500
-namespace boost {
-  //! for boost hash tables
-  inline size_t hash_value(hid_t t) {
-    return t;
-  }
-}
-#endif
-#endif
 
 namespace RMF {
 
