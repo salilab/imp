@@ -97,7 +97,7 @@ get_subset_filter(const domino::Subset& cur_subset,
   Ints its= get_indexes(cur_subset, prior_subsets);
   if (its.size() != ps_.size()) {
     // either the subset doesn't contain the needed particles or the prior does
-    return NULL;
+    return nullptr;
   } else {
     IMP_NEW(ExampleSubsetFilter, ret, (its, max_diff_));
     // remember to release

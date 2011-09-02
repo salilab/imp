@@ -42,7 +42,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
       = new core::CoverRefined(
               new core::FixedRefiner(sc_->get_particles()),
              0);
-    ss_= new core::SingletonConstraint(cr, NULL, p_);
+    ss_= new core::SingletonConstraint(cr, nullptr, p_);
     m->add_score_state(ss_);
   } else {
     IMP_LOG(TERSE, "Removing components of ExampleComplexRestraint"
@@ -52,8 +52,8 @@ void ExampleComplexRestraint::set_model(Model *m) {
       IMP_CHECK_OBJECT(p_.get());
       get_model()->remove_score_state(ss_);
       get_model()->remove_particle(p_);
-      ss_=static_cast<core::SingletonConstraint*>(NULL);
-      p_=static_cast<Particle*>(NULL);
+      ss_=nullptr;
+      p_=nullptr;
     }
   }
   Restraint::set_model(m);
