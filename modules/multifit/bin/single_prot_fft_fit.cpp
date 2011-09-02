@@ -51,7 +51,7 @@ multifit::FFTFitting ff;
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
             float &x_origin, float &y_origin, float &z_origin) {
-  em::DensityMap* rmap=NULL;
+  em::DensityMap* rmap=nullptr;
   try{
     rmap = em::read_map(density_filename.c_str());
   }
@@ -59,7 +59,7 @@ em::DensityMap* set_map(const std::string &density_filename,
     std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
     exit(-1);
   }
-  if (rmap==NULL){
+  if (rmap==nullptr){
     std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
     exit(-1);
   }

@@ -8,6 +8,7 @@
 #ifndef IMPMULTIFIT_FFTW_PLAN_H
 #define IMPMULTIFIT_FFTW_PLAN_H
 
+#include <IMP/base_types.h>
 #include <IMP/log.h>
 #include <IMP/exception.h>
 #include "../multifit_config.h"
@@ -43,9 +44,9 @@ private:
   }
 
 public:
-  FFTWPlan() : data_(NULL) {}
+  FFTWPlan() : data_(nullptr) {}
 
-  FFTWPlan(fftw_plan plan) : data_(NULL) { set_pointer(plan); }
+  FFTWPlan(fftw_plan plan) : data_(nullptr) { set_pointer(plan); }
 
   FFTWPlan &operator=(fftw_plan plan) {
     set_pointer(plan);

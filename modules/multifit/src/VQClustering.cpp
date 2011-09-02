@@ -361,7 +361,7 @@ void VQClustering::run(DataPoints *starting_centers){
   centers_.clear();
   //the initial centers to the clustering are the results of the first run
   //TODO - maybe we can improve that ?
-  if (starting_centers == NULL) {
+  if (starting_centers == nullptr) {
     for(int i=0;i<k_;i++) {
       centers_.push_back(tracking[i]);
     }

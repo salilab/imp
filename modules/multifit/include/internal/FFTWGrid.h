@@ -21,9 +21,9 @@ private:
   T *data_;
 
 public:
-  FFTWGrid() : data_(NULL) {}
+  FFTWGrid() : data_(nullptr) {}
 
-  explicit FFTWGrid(size_t n) : data_(NULL) {
+  explicit FFTWGrid(size_t n) : data_(nullptr) {
     resize(n);
   }
 
@@ -33,13 +33,13 @@ public:
 
   void release() {
     if (data_) fftw_free(data_);
-    data_ = NULL;
+    data_ = nullptr;
   }
 
   void resize(size_t n) {
     release();
     data_ = (T *)fftw_malloc(n * sizeof(T));
-    IMP_INTERNAL_CHECK(data_ != NULL, "FFTW grid memory allocation failure");
+    IMP_INTERNAL_CHECK(data_ != nullptr, "FFTW grid memory allocation failure");
   }
 
   // Get the raw pointer

@@ -208,7 +208,7 @@ new em::DensityMap(*(dmap->get_header())));
 vecs[i][0],vecs[i][1],vecs[i][2],dmap->get_value(vecs[i]));
   }
   em::write_map(segment_map,filename.c_str(),new em::MRCReaderWriter());
-  segment_map=static_cast<em::DensityMap*>(NULL);
+  segment_map=static_cast<em::DensityMap*>(nullptr);
 }
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
@@ -329,7 +329,7 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
 //   for( int i=0;i<gs.size();i++){
 //     w->add_geometry(gs[i]);
 //   }
-//   w=NULL;
+//   w=nullptr;
 // }
 
 IMPMULTIFIT_END_NAMESPACE
