@@ -63,7 +63,7 @@ public:
   ~VQClustering() {}
   void set_equal_clusters(bool v) {par_.eq_clusters_=v;}
 
-  void run(DataPoints *starting_centers=NULL);
+  void run(DataPoints *starting_centers=nullptr);
 
   bool is_part_of_cluster(int data_point_ind,int cluster_ind) const{
     return (get_cluster_assignment(data_point_ind) == cluster_ind);
