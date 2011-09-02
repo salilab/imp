@@ -146,13 +146,13 @@ const std::nullptr_t nullptr;
 #define IMP_DEFINE_NULLPTR 1
 #endif // __GNUC_MINOR__
 
-#elif defined(__MSC_VER)
+#elif defined(_MSC_VER)
 
-#if __MSC_VER >= 1600
+#if _MSC_VER >= 1600
 #define IMP_DEFINE_NULLPTR 0
 #else
 #define IMP_DEFINE_NULLPTR 1
-#endif // __MSC_VER
+#endif // _MSC_VER
 
 #else
 #define IMP_DEFINE_NULLPTR 1
