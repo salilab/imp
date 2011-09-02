@@ -138,27 +138,10 @@ inline std::size_t hash_value(const T &t) {
 const std::nullptr_t nullptr;
 
 #else
-#if defined(__GNUC__)
 
-#if __GNUC__==4 && __GNUC_MINOR__ >= 6 || __GNUC__>4
-#define IMP_DEFINE_NULLPTR 0
-#else
-#define IMP_DEFINE_NULLPTR 1
-#endif // __GNUC_MINOR__
+#if IMP_DEFINE_NULLPTR
 
-#elif defined(_MSC_VER)
-
-#if _MSC_VER >= 1600
-#define IMP_DEFINE_NULLPTR 0
-#else
-#define IMP_DEFINE_NULLPTR 1
-#endif // _MSC_VER
-
-#else
-#define IMP_DEFINE_NULLPTR 1
-#endif // compilers
-
-#if IMP_DEFINE_NULLPTR && !defined(SWIG)
+#if !defined(SWIG)
 struct nullptr_t {
   template <class O>
   operator O*() const {
@@ -178,14 +161,12 @@ inline bool operator!=(O *a, nullptr_t o) {
   return a != static_cast<O*>(o);
 }
 extern IMPEXPORT const nullptr_t nullptr;
+#else
+extern const void * const nullptr;
+#endif //SWIG
 
 #endif // IMP_DEFINE_NULLPTR
 #endif // IMP_DOXYGEN
-
-#ifdef SWIG
-extern const void * const nullptr;
-#endif
-
 
 IMP_END_NAMESPACE
 

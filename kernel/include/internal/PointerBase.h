@@ -257,12 +257,13 @@ public:
     }
     return *this;
   }
-  PointerBase<Traits>& operator=(nullptr_t o) {
+  PointerBase<Traits>& operator=(nullptr_t) {
     set_pointer(NULL);
     return *this;
   }
-  PointerBase<Traits> operator=(const PointerBase<Traits> &o) {
+  PointerBase<Traits>& operator=(const PointerBase<Traits> &o) {
     set_pointer(o.o_);
+    return *this;
   }
   /*IMP_POINTER_MEMBERS(template <class OO>,
     OO*);*/
