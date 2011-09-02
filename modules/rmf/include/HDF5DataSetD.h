@@ -108,7 +108,11 @@ namespace RMF {
     }
     IMP_RMF_COMPARISONS(HDF5DataSetIndexD);
     IMP_RMF_HASHABLE(HDF5DataSetIndexD,
-                     return boost::hash_range(d_, d_+D));
+                     size_t ret=0;
+                     for (unsigned int i=0; i< D; ++i) {
+                       boost::hash_combine(ret, static_cast<size_t>(d_[i]));
+                     }
+                     return ret;);
   };
 #ifndef SWIG
   template <int D>
