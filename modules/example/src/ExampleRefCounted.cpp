@@ -39,7 +39,7 @@ void usage_example() {
   // reference count is 2
 
   // the object is still around since rc2 points to it
-  rc=static_cast<ExampleRefCounted*>(NULL);
+  rc=static_cast<ExampleRefCounted*>(nullptr);
   // reference count is 1
 
   std::cout << rc2->get_data(100);
