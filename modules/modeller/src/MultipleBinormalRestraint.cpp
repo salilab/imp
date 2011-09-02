@@ -95,9 +95,9 @@ double MultipleBinormalRestraint::unprotected_evaluate(
   } else {
     Float dihedral[2];
     dihedral[0] = core::internal::dihedral(d0[0], d0[1], d0[2], d0[3],
-                                           NULL, NULL, NULL, NULL);
+                                           nullptr, nullptr, nullptr, nullptr);
     dihedral[1] = core::internal::dihedral(d1[0], d1[1], d1[2], d1[3],
-                                           NULL, NULL, NULL, NULL);
+                                           nullptr, nullptr, nullptr, nullptr);
 
     for (std::vector<BinormalTerm>::const_iterator term = terms_.begin();
          term != terms_.end(); ++term) {
