@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ConjugateGradients : public Optimizer
 {
 public:
-  ConjugateGradients(Model *m=NULL);
+  ConjugateGradients(Model *m=nullptr);
 
   //! Set the threshold for the minimum gradient
   void set_gradient_threshold(Float t){ threshold_=t;}

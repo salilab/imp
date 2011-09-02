@@ -30,7 +30,7 @@ class IMPCOREEXPORT CoreListTripletContainer:
   CoreListTripletContainer(Model *m, const char *name);
   void add_particle_triplet(const ParticleTriplet& vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Triplet cannot be NULL (or None)");
+                    "Passed Triplet cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle_triplets(const ParticleTripletsTemp &c) {

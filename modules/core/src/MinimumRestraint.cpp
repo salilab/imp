@@ -29,7 +29,7 @@ MinimumRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
   algebra::internal::MinimalSet<double, Restraint*> ms(k_);
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    ms.insert((*it)->unprotected_evaluate(NULL), *it);
+    ms.insert((*it)->unprotected_evaluate(nullptr), *it);
   }
   if (!da) {
     double sum=0;

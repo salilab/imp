@@ -919,7 +919,7 @@ ContainersTemp MSConnectivityRestraint::get_input_containers() const {
 void MSConnectivityRestraint::do_show(std::ostream& out) const
 {
   if (!sc_) {
-    out << "container is NULL" << std::endl;
+    out << "container is nullptr" << std::endl;
   } else {
     out << "container is " << *sc_ << std::endl;
   }

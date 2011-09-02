@@ -50,7 +50,7 @@ void CoreListPairContainer
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
       IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Pair cannot be NULL (or None)");
+                    "Passed Pair cannot be nullptr (or None)");
     }
   }
 }

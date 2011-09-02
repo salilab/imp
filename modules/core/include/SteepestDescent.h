@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SteepestDescent : public Optimizer
 {
  public:
-  SteepestDescent(Model *m= NULL);
+  SteepestDescent(Model *m= nullptr);
 
   IMP_OPTIMIZER(SteepestDescent);
 

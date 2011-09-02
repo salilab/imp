@@ -153,7 +153,7 @@ inline double get_distance(XYZ a, XYZ b) {
     \relatesalso XYZ
  */
 inline double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
-  return internal::dihedral(a, b, c, d, NULL, NULL, NULL, NULL);
+  return internal::dihedral(a, b, c, d, nullptr, nullptr, nullptr, nullptr);
 }
 
 //! Apply a transformation to the particle

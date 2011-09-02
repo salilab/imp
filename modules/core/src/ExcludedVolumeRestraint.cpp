@@ -133,7 +133,7 @@ fill_list_if_good(double max) const {
                  internal::ParticleIndexPairSinkWithMax<SoftSpherePairScore>
                          (get_model(), cur_list_,
                           ssps_.get(),
-                          NULL,
+                          nullptr,
                           score,
                           max));
   if (score < max) {
@@ -148,7 +148,7 @@ fill_list_if_good(double max) const {
                          internal::RigidBodyParticleParticleIndexPairSinkWithMax
                          <SoftSpherePairScore>(get_model(), cur_list_,
                                                ssps_.get(),
-                                               NULL, score, max,
+                                               nullptr, score, max,
                                                key_, myslack, constituents_));
   }
   if (score< max) {
@@ -160,7 +160,7 @@ fill_list_if_good(double max) const {
                      internal::RigidBodyRigidBodyParticleIndexPairSinkWithMax
                          <SoftSpherePairScore>(get_model(), cur_list_,
                                                ssps_.get(),
-                                               NULL, score, max,
+                                               nullptr, score, max,
                                                key_, myslack, constituents_));
     /* Assume incoherent motion
        if (score < max) {
@@ -319,7 +319,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
               || !RigidMember::particle_is_instance(all[j])
               || RigidMember(all[i]).get_rigid_body()
               != RigidMember(all[j]).get_rigid_body()) {
-            double cur= ssps_->evaluate(ParticlePair(all[i], all[j]), NULL);
+            double cur= ssps_->evaluate(ParticlePair(all[i], all[j]), nullptr);
             check+=cur;
             if (cur > 0) {
               ++found;
@@ -367,7 +367,7 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
               || !RigidMember::particle_is_instance(all[j])
               || RigidMember(all[i]).get_rigid_body()
               != RigidMember(all[j]).get_rigid_body()) {
-            check+= ssps_->evaluate(ParticlePair(all[i], all[j]), NULL);
+            check+= ssps_->evaluate(ParticlePair(all[i], all[j]), nullptr);
           }
         }
       }

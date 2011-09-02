@@ -24,7 +24,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
   public:                                       \
   Manage##UCName(){}                            \
   ~Manage##UCName() {                           \
-    set(NULL, NULL);                            \
+    set(nullptr, nullptr);                            \
   }                                             \
   void set(UCName *r, Model *m) {               \
     if (r_) {                                   \

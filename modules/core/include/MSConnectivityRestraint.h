@@ -63,7 +63,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
   double eps_;
 public:
   //! Use the given PairScore
-  /** If sc is NULL, a ListSingletonContainer is created internally.
+  /** If sc is nullptr, a ListSingletonContainer is created internally.
     eps is set to 0.1 by default.
    */
   MSConnectivityRestraint(PairScore* ps, double eps=0.1);

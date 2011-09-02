@@ -30,7 +30,7 @@ class IMPCOREEXPORT CoreListQuadContainer:
   CoreListQuadContainer(Model *m, const char *name);
   void add_particle_quad(const ParticleQuad& vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Quad cannot be NULL (or None)");
+                    "Passed Quad cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle_quads(const ParticleQuadsTemp &c) {
