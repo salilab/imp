@@ -39,7 +39,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     IMP_TIME(
              {
                for (unsigned int i=0; i< pps.size(); ++i) {
-                 total+=ps->evaluate(pps[i], NULL);
+                 total+=ps->evaluate(pps[i], nullptr);
                }
              }, runtime);
     std::ostringstream oss;
@@ -54,7 +54,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     IMP_TIME(
              {
                for (unsigned int i=0; i< pps.size(); ++i) {
-                 total+=ssps->evaluate(pps[i], NULL);
+                 total+=ssps->evaluate(pps[i], nullptr);
                }
              }, runtime);
     std::ostringstream oss;
@@ -70,7 +70,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
              {
                for (unsigned int i=0; i< pps.size(); ++i) {
                  total+=ssps->SoftSpherePairScore::evaluate(pps[i],
-                                   static_cast<DerivativeAccumulator*>(NULL));
+                                                            nullptr);
                }
              }, runtime);
     std::ostringstream oss;
@@ -87,7 +87,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                total+=my_accumulate(pps.begin(), pps.end(),
                              boost::bind(IMP_GET_EVALUATE(SoftSpherePairScore),
                                              ssps, _1,
-                                    static_cast<DerivativeAccumulator*>(NULL)));
+                                    nullptr));
              }, runtime);
     std::ostringstream oss;
     oss << "container ssps direct bind " << name << " in "
@@ -103,7 +103,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                total+=my_accumulate(pps.begin(), pps.end(),
                                  boost::bind(IMP_GET_EVALUATE(PairScore),
                                              ssps, _1,
-                            static_cast<DerivativeAccumulator*>(NULL)));
+                            static_cast<DerivativeAccumulator*>(nullptr)));
              }, runtime);
     std::ostringstream oss;
     oss << "container direct bind " << name << " in "
@@ -114,7 +114,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
     double runtime=0, total=0;
     IMP_TIME(
              {
-               total+=pc->evaluate(ps, NULL);
+               total+=pc->evaluate(ps, nullptr);
              }, runtime);
     std::ostringstream oss;
     oss << "container " << name << " in "
@@ -127,7 +127,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
              {
                for (unsigned int i=0; i< pc->get_number_of_particle_pairs();
                     ++i) {
-                 total+= ps->evaluate(pc->get_particle_pair(i), NULL);
+                 total+= ps->evaluate(pc->get_particle_pair(i), nullptr);
                }
              }, runtime);
     std::ostringstream oss;
