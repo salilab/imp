@@ -43,7 +43,7 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Optimizer: public Object
 {
  public:
-  Optimizer(Model *m= NULL, std::string name="Optimizer %1%");
+  Optimizer(Model *m= nullptr, std::string name="Optimizer %1%");
 
   /** Optimize the model
 
@@ -115,7 +115,7 @@ class IMPEXPORT Optimizer: public Object
                     Optimizer::set_optimizer_state_optimizer(obj, this);
                     obj->set_was_used(true);
                   },{},
-                  {Optimizer::set_optimizer_state_optimizer(obj, NULL);});
+                  {Optimizer::set_optimizer_state_optimizer(obj, nullptr);});
   /**@}*/
 
   /** \brief The optimizer can be told to use only a subset of the
