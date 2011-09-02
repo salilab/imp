@@ -121,7 +121,7 @@ Assignments DominoSampler
                                                get_particle_states_table()));
       mt= get_merge_tree(jt);
     }
-    ListSubsetFilterTable* lsft=NULL;
+    ListSubsetFilterTable* lsft=nullptr;
     if (csf_) {
       lsft= new ListSubsetFilterTable(get_particle_states_table());
       sfts.push_back(lsft);
@@ -241,7 +241,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
                                          get_particle_states_table());
   IMP::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
-  ListSubsetFilterTable* lsft=NULL;
+  ListSubsetFilterTable* lsft=nullptr;
   if (csf_) {
     lsft= new ListSubsetFilterTable(get_particle_states_table());
     sfts.push_back(lsft);
@@ -278,7 +278,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   //ParticlesTemp pt(known_particles.begin(), known_particles.end())
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(RestraintsTemp(1,rs),
                                          get_particle_states_table());
-  ListSubsetFilterTable* lsft=NULL;
+  ListSubsetFilterTable* lsft=nullptr;
   if (csf_) {
     lsft= new ListSubsetFilterTable(get_particle_states_table());
     sfts.push_back(lsft);

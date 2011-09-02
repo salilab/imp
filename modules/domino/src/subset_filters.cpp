@@ -142,7 +142,7 @@ RestraintScoreSubsetFilterTable
   if (mset_->get_subset_data(s, excluded)
       .get_number_of_total_restraints() ==0) {
     IMP_LOG(VERBOSE, "none found" << std::endl);
-    return NULL;
+    return nullptr;
   } else {
     IMP_LOG(VERBOSE, mset_->get_subset_data(s, excluded)
             .get_number_of_total_restraints() << " found" << std::endl);
@@ -275,7 +275,7 @@ namespace {
                           LogLevel ll,
                           const compatibility::checked_vector<Ints> &all,
                           const Ints &) {
-    if (all.empty()) return NULL;
+    if (all.empty()) return nullptr;
     typedef DisjointSetsSubsetFilter<FF, Next> CF;
     IMP_NEW(CF, f, (all));
     f->set_log_level(ll);
@@ -800,7 +800,7 @@ PairListSubsetFilterTable
   if (!indexes.empty()) {
     return new PairListSubsetFilter(indexes, allowed);
   } else {
-    return NULL;
+    return nullptr;
   }
 }
 

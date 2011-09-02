@@ -46,8 +46,8 @@ class IMPDOMINOEXPORT Assignment {
     return 0;
   }
   void validate() const {
-    if (v_==NULL) {
-      IMP_USAGE_CHECK(sz_==0, "NULL but not uninitialized");
+    if (!v_) {
+      IMP_USAGE_CHECK(sz_==0, "nullptr but not uninitialized");
     } else {
       for (unsigned int i=0; i< sz_; ++i) {
         IMP_USAGE_CHECK(v_[i] != -1, "Invalid initialization");
