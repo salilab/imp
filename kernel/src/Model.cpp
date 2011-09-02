@@ -71,12 +71,12 @@ Model::Model(std::string name):
 Model::~Model()
 {
   IMP_CHECK_OBJECT(this);
-  rs_->set_model(NULL);
+  rs_->set_model(nullptr);
   for (unsigned int i=0; i< particle_index_.size(); ++i) {
     if (particle_index_[i]) {
       IMP_CHECK_OBJECT(particle_index_[i]);
       Particle* op=particle_index_[i];
-      op->m_=static_cast<Model*>(NULL);
+      op->m_=nullptr;
     }
   }
 }
@@ -220,8 +220,8 @@ void Model::do_show(std::ostream& out) const
 void Model::remove_particle(Particle *p) {
   int pi= p->get_index();
   free_particles_.push_back(pi);
-  p->m_=static_cast<Model*>(NULL);
-  particle_index_[pi]=static_cast<Particle*>(NULL);
+  p->m_=nullptr;
+  particle_index_[pi]=nullptr;
   FloatAttributeTable::clear_attributes(pi);
   StringAttributeTable::clear_attributes(pi);
   IntAttributeTable::clear_attributes(pi);
