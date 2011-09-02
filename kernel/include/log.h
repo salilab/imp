@@ -348,6 +348,12 @@ public:
            pop_log_context(),);
 };
 
+//! Create a new long context from a streamed name
+#define IMP_LOG_CONTEXT(name)                                           \
+  std::ostringstream imp_log_context_stream;                            \
+  imp_log_context_stream << name;                                       \
+  CreateLogContext imp_log_context(imp_log_context_stream.str())
+
 /** @} */
 
 IMP_END_NAMESPACE
