@@ -168,7 +168,7 @@ void HeapAssignmentContainer::add_assignment(const Assignment& a) {
   }
   //rssf_ may be null if no restraints are assigned to the particles
   double score=INT_MAX;
-  if (rssf_!=NULL){
+  if (rssf_){
     score=rssf_->get_score(a);
   }
   d_.push_back(AP(a,score));
