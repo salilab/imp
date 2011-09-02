@@ -128,7 +128,7 @@ inline double evaluate_distance_pair_score(W0 d0, W1 d1,
   }
 
   algebra::Vector3D d;
-  double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd,
+  double score= compute_distance_pair_score(delta, f, (da? &d : nullptr), sd,
                                             deriv_multiplier);
 
   if (da) {

@@ -50,7 +50,7 @@ void CoreListQuadContainer
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
       IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Quad cannot be NULL (or None)");
+                    "Passed Quad cannot be nullptr (or None)");
     }
   }
 }

@@ -41,7 +41,7 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
     d1.add_to_derivatives(derv1 * deriv, *da);
     d2.add_to_derivatives(derv2 * deriv, *da);
   } else {
-    double angle = internal::angle(d0, d1, d2, NULL, NULL, NULL);
+    double angle = internal::angle(d0, d1, d2, nullptr, nullptr, nullptr);
     score = f_->evaluate(angle);
   }
   return score;

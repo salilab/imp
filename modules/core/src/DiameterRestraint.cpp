@@ -45,7 +45,7 @@ void DiameterRestraint::set_model(Model *m) {
       = new core::CoverRefined(
                                new FixedRefiner(sc_->get_particles()),
             0);
-    ss_= new core::SingletonConstraint(cr, NULL, p_);
+    ss_= new core::SingletonConstraint(cr, nullptr, p_);
 
     m->add_score_state(ss_);
     // make sure model hasn't been cleanup up already
@@ -57,8 +57,8 @@ void DiameterRestraint::set_model(Model *m) {
       get_model()->remove_score_state(ss_);
       get_model()->remove_particle(p_);
     }
-    ss_=static_cast<core::SingletonConstraint*>(NULL);
-    p_=static_cast<Particle*>(NULL);
+    ss_=static_cast<core::SingletonConstraint*>(nullptr);
+    p_=static_cast<Particle*>(nullptr);
   }
   Restraint::set_model(m);
 }
@@ -121,7 +121,7 @@ Restraints DiameterRestraint::do_create_current_decomposition() const {
           (diameter_, 1));
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      if (sps->evaluate(ParticlePair(ps[i], ps[j]), NULL) > 0) {
+      if (sps->evaluate(ParticlePair(ps[i], ps[j]), nullptr) > 0) {
         ret.push_back(create_restraint(sps.get(),
                                        ParticlePair(ps[i], ps[j])));
         ret.back()->set_maximum_score(get_maximum_score());

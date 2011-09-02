@@ -193,7 +193,7 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
                                        const ParticleIndexes &ma,
                                        const ParticleIndexes &mb) const {
   IMP_INTERNAL_CHECK(a!= b, "Can't pass equal particles");
-  internal::RigidBodyHierarchy *da=NULL, *db=NULL;
+  internal::RigidBodyHierarchy *da=nullptr, *db=nullptr;
   ParticlePairsTemp out;
   if (ma.size()>0) {
     da= internal::get_rigid_body_hierarchy(RigidBody(a), ma, k_);
@@ -203,9 +203,9 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
     db= internal::get_rigid_body_hierarchy(RigidBody(b), mb, k_);
     IMP_INTERNAL_CHECK(db, "No hierarchy gotten");
   }
-  /*IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(a)==(da!=NULL),
+  /*IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(a)==(da!=nullptr),
                      "Rigid body does not imply hierarchy");
-  IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(b)==(db!=NULL),
+  IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(b)==(db!=nullptr),
   "Rigid body does not imply hierarchy");*/
   if (da && db) {
     out = internal::close_pairs(a->get_model(),

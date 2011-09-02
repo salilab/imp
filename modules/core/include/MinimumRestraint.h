@@ -44,7 +44,7 @@ public:
                 }
               }, {
                 if (container) obj->get_model()->reset_dependencies();
-                obj->set_model(NULL);
+                obj->set_model(nullptr);
               });
   void set_model(Model *m);
 };

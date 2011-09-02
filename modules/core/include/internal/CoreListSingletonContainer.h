@@ -30,7 +30,7 @@ class IMPCOREEXPORT CoreListSingletonContainer:
   CoreListSingletonContainer(Model *m, const char *name);
   void add_particle(Particle* vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Singleton cannot be NULL (or None)");
+                    "Passed Singleton cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particles(const ParticlesTemp &c) {

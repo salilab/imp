@@ -20,7 +20,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 //! Calculate the angle between the given three XYZ particles.
 /** \return the angle.
-    If derv0 is non-NULL, all three algebra::Vector3D parameters are filled
+    If derv0 is non-nullptr, all three algebra::Vector3D parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
 template <class P>

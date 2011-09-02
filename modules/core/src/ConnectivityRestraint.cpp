@@ -96,7 +96,7 @@ namespace {
         for (unsigned int j=0; j<i; ++j) {
           double d= ps->evaluate_index(m,
                                        ParticleIndexPair(pis[i],
-                                                         pis[j]), NULL);
+                                                         pis[j]), nullptr);
           IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
                   << ParticleIndexPair(pis[i],
                                        pis[j]) << " with weight "
@@ -203,7 +203,7 @@ ContainersTemp ConnectivityRestraint::get_input_containers() const {
 void ConnectivityRestraint::do_show(std::ostream& out) const
 {
   if (!sc_) {
-    out << "container is NULL" << std::endl;
+    out << "container is nullptr" << std::endl;
   } else {
     out << "container is " << *sc_ << std::endl;
   }

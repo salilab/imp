@@ -32,7 +32,7 @@ DihedralRestraint::DihedralRestraint(UnaryFunction* score_func,
 }
 
 //! Calculate the score for this dihedral restraint.
-/** \param[in] accum If not NULL, use this object to accumulate partial first
+/** \param[in] accum If not nullptr, use this object to accumulate partial first
                      derivatives.
     \return Current score.
  */
@@ -60,7 +60,8 @@ DihedralRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     d2.add_to_derivatives(derv2 * deriv, *accum);
     d3.add_to_derivatives(derv3 * deriv, *accum);
   } else {
-    double angle = internal::dihedral(d0, d1, d2, d3, NULL, NULL, NULL, NULL);
+    double angle = internal::dihedral(d0, d1, d2, d3, nullptr,
+                                      nullptr, nullptr, nullptr);
     score = score_func_->evaluate(angle);
   }
   return score;

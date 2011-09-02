@@ -30,7 +30,7 @@ class IMPCOREEXPORT CoreListPairContainer:
   CoreListPairContainer(Model *m, const char *name);
   void add_particle_pair(const ParticlePair& vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed Pair cannot be NULL (or None)");
+                    "Passed Pair cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle_pairs(const ParticlePairsTemp &c) {

@@ -16,7 +16,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 //! Calculate the dihedral angle between the given four XYZ particles.
 /** \return the dihedral angle.
-    If derv0 is non-NULL, all four algebra::Vector3D parameters are filled
+    If derv0 is non-nullptr, all four algebra::Vector3D parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
 template <class P>

@@ -37,7 +37,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT MonteCarlo: public Optimizer
 {
 public:
-  MonteCarlo(Model *m=NULL);
+  MonteCarlo(Model *m=nullptr);
 
   IMP_OPTIMIZER(MonteCarlo);
  public:
@@ -125,7 +125,7 @@ public:
   IMP_LIST_ACTION(public, Mover, Movers, mover, movers, Mover*, Movers,
                   {obj->set_optimizer(this);
                     obj->set_was_used(true);
-                  },{},{obj->set_optimizer(NULL);});
+                  },{},{obj->set_optimizer(nullptr);});
   /** @} */
 
   /** Set whether to use incremental evaluate or evaluate all restraints

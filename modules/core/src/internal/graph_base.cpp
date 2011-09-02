@@ -102,8 +102,8 @@ unsigned int graph_get_number_of_edges(Particle *a, const GraphData &d)
 
 void graph_initialize_edge(Particle *a, const GraphData &d)
 {
-  a->add_attribute(d.node_keys_[0], NULL);
-  a->add_attribute(d.node_keys_[1], NULL);
+  a->add_attribute(d.node_keys_[0], nullptr);
+  a->add_attribute(d.node_keys_[1], nullptr);
 }
 
 IMPCORE_END_INTERNAL_NAMESPACE

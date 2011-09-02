@@ -383,7 +383,7 @@ inline F visit_depth_first(HD d,  F f)
       typedef int result_type;
       result_type operator()(Particle *p, int i) const
       {
-        if (p==NULL) return 0;
+        if (p==nullptr) return 0;
         else return i+1;
       }
     };

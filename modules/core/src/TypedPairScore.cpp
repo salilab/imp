@@ -42,7 +42,7 @@ PairScore *TypedPairScore::get_pair_score(const ParticlePair &p) const {
       score_map_.find(std::pair<Int,Int>(std::min(atype, btype),
                                          std::max(atype, btype)));
   if (psit == score_map_.end()) {
-    return NULL;
+    return nullptr;
   } else {
     PairScore *ps = psit->second.get();
     return ps;

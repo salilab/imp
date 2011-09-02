@@ -330,7 +330,7 @@ void MCCGSampler::set_save_rejected_configurations(bool tf) {
   if (tf && !rejected_) {
     rejected_= new ConfigurationSet(get_model(), "Rejected");
   } else if (!tf) {
-    rejected_=static_cast<ConfigurationSet*>(NULL);
+    rejected_=static_cast<ConfigurationSet*>(nullptr);
   }
 }
 
@@ -359,7 +359,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     if (sc->get_indexes().size()==0) {
       IMP_WARN("There are no particles with optimized cartesian coordinates."
                << std::endl);
-      return NULL;
+      return nullptr;
     }
   }
   IMP_CHECK_OBJECT(sc);
