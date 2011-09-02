@@ -44,7 +44,7 @@ double
                  target_dens_map_,ps_,
                  IMP::algebra::get_identity_transformation_3d(),
                  threshold_);
-  if (accum != NULL) {
+  if (accum != nullptr) {
     IMP_WARN(
      "No derivatives have been assigned to the envelope penetration score\n");
   }

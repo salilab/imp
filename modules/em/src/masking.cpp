@@ -38,7 +38,7 @@ IMPEM_BEGIN_NAMESPACE
     IMP_USAGE_CHECK(initialized_,
                     "distance mask is not initialized\n");
     const RadiusDependentDistanceMask *mask=get_mask(sampling_radius);
-    IMP_USAGE_CHECK(mask==NULL,"mask for radius "<<sampling_radius<<
+    IMP_USAGE_CHECK(mask==nullptr,"mask for radius "<<sampling_radius<<
                     " has already been calculated \n");
     IMP_LOG(TERSE,"generating a distance mask for radius:"<<
             sampling_radius<<"\n");
@@ -58,7 +58,7 @@ IMPEM_BEGIN_NAMESPACE
   //map if no match is found for the key.
   MASK_MAP::const_iterator lower_closest = masks_.lower_bound(radius);
   MASK_MAP::const_iterator upper_closest = masks_.upper_bound(radius);
-  const RadiusDependentDistanceMask *closest = NULL;
+  const RadiusDependentDistanceMask *closest = nullptr;
   if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
      IMP_LOG(IMP::VERBOSE,"for radius:"<<radius<<
@@ -71,7 +71,7 @@ IMPEM_BEGIN_NAMESPACE
        }
      }
    }
-   if (closest == NULL) {
+   if (closest == nullptr) {
      IMP_WARN("could not find parameters for radius:"<<radius<<std::endl);
    }
    return closest;

@@ -59,14 +59,14 @@ public:
     \note The parameters are indexes by the radius. To maintain
     numeratical stability, look for a radius within +-eps from the
     queried radius.
-   \note the function return NULL and writes a warning if parameters
+   \note the function return nullptr and writes a warning if parameters
    for this radius were not found.
   */
   const RadiusDependentDistanceMask* get_mask(
         float radius,float eps=0.001) const;
 #endif
   bool is_mask_set(float radius,float eps=0.001) {
-    return get_mask(radius, eps) != NULL;
+    return get_mask(radius, eps) != nullptr;
   }
 protected:
   typedef
