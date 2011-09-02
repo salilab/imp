@@ -21,6 +21,12 @@
 #include <boost/utility.hpp>
 
 namespace RMF {
+
+  //! for boost hash tables
+  inline size_t hash_value(hid_t t) {
+    return t;
+  }
+
   typedef int Int;
   typedef std::vector<Int> Ints;
   typedef double Float;
