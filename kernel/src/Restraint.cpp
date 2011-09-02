@@ -40,9 +40,9 @@ Restraint::~Restraint()
 
 void Restraint::set_model(Model* model)
 {
-  IMP_USAGE_CHECK(model==NULL || model_==NULL
-            || (model_ && model_ == model),
-            "Model* different from already stored model "
+  IMP_USAGE_CHECK(!model || !model_
+                  || (model_ && model_ == model),
+                  "Model* different from already stored model "
                   << model << " " << model_);
   if (model_) {
     model_->remove_tracked_restraint(this);
@@ -145,6 +145,12 @@ namespace {
       return created[0];
     } else {
       IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposed"));
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        for (unsigned int i=0; i< created.size(); ++i) {
+          IMP_INTERNAL_CHECK(created[i],
+                             "NULL restraint returned in decomposition");
+        }
+      }
       rs->add_restraints(created);
       rs->set_maximum_score(me->get_maximum_score());
       rs->set_weight(me->get_weight());

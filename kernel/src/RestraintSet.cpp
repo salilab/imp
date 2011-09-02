@@ -90,7 +90,10 @@ Restraints RestraintSet::do_create_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    ret.push_back((*it)->create_decomposition());
+    Pointer<Restraint> r=(*it)->create_decomposition();
+    if (r) {
+      ret.push_back(r);
+    }
   }
   return ret;
 }
@@ -98,7 +101,10 @@ Restraints RestraintSet::do_create_current_decomposition() const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    ret.push_back((*it)->create_current_decomposition());
+    Pointer<Restraint> r=(*it)->create_current_decomposition();
+    if (r) {
+      ret.push_back(r);
+    }
   }
   return ret;
 }
