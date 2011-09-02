@@ -47,7 +47,7 @@ class RestraintData {
   Pointer<Restraint> r_;
   double weight_;
   double max_;
-  bool cache_;
+  unsigned int max_cache_;
   mutable int filter_attempts_;
   mutable int filter_passes_;
   template <bool Filter>
@@ -67,18 +67,29 @@ class RestraintData {
       << " on " << state << "= " << score << std::endl;*/
     return score;
   }
+  void clean_cache() const {
+    if (scores_.size() > max_cache_) {
+      IMP_LOG(VERBOSE, "Cleaning cache from " << scores_.size());
+      int numr= std::min<int>(max_cache_*.3+1, scores_.size());
+      for (int i=0; i< numr; ++i) {
+        scores_.erase(scores_.begin());
+      }
+      IMP_LOG(VERBOSE, " to " << scores_.size() << std::endl);
+    }
+  }
 public:
   RestraintData(Restraint *r): r_(r),
                                max_(std::numeric_limits<double>::max()){
     filter_attempts_=0;
     filter_passes_=0;
-    cache_=true;
+    max_cache_=std::numeric_limits<unsigned int>::max();
   }
   void set_score(const Assignment &ss, double s) {
     IMP_USAGE_CHECK(scores_.find(ss) == scores_.end(),
                     "Cannot preload scores twice for state "
                     << ss);
     scores_[ss]=s;
+    clean_cache();
   }
   void set_max(double max) { max_=max;}
   Restraint *get_restraint() const {return r_;}
@@ -86,8 +97,13 @@ public:
   double get_score(ParticleStatesTable *pst,
                    const ParticlesTemp &ps,
                    const Assignment &state) const {
-    Scores::const_iterator it= scores_.find(state);
-    if (cache_ && it != scores_.end()) {
+    Scores::const_iterator it;
+    if (max_cache_>0) {
+      it= scores_.find(state);
+    } else {
+      it= scores_.end();
+    }
+    if (max_cache_>0 && it != scores_.end()) {
       /*std::cout << "Found cached score for " << r_->get_name()
         << " on " << state << "= " << it->second
         << "(" << it->first << ")" << std::endl;*/
@@ -122,8 +138,9 @@ public:
           ++filter_passes_;
         }
       }
-      if (cache_) {
+      if (max_cache_>0) {
         scores_[state]=score;
+        clean_cache();
       }
       return score;
     }
@@ -131,11 +148,8 @@ public:
   std::pair<int,int> get_statistics() const {
     return std::make_pair(filter_attempts_, filter_passes_);
   }
-  void set_use_caching(bool tf) {
-    cache_=tf;
-    if (!cache_) {
-      scores_.clear();
-    }
+  void set_max_cache(unsigned int ma) {
+    max_cache_=ma;
   }
 };
 
@@ -205,9 +219,9 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
     }
   };
 
-  bool initialized_, cache_;
+  bool initialized_;
   Restraints rs_;
-
+  unsigned int max_cache_;
   compatibility::checked_vector<RestraintData> rdata_;
   compatibility::checked_vector<std::pair<double, Ints> > sets_;
   compatibility::checked_vector<Floats> set_weights_;
@@ -231,6 +245,9 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   void add_score(Restraint *r, const Subset &subset,
                  const Assignment &state, double score);
   void set_use_caching(bool tf);
+  void set_maximum_number_of_cache_entries(int max) {
+    max_cache_=max;
+  }
   IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 

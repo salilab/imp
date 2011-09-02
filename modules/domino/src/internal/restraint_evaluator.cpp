@@ -19,13 +19,17 @@ ModelData::ModelData(const RestraintsTemp& rs,
   rs_(rs.begin(), rs.end()){
   pst_=pst;
   initialized_=false;
-  cache_=true;
+  max_cache_=std::numeric_limits<unsigned int>::max();
 }
 
 void ModelData::set_use_caching(bool tf) {
-  cache_= tf;
+  if (tf && max_cache_==0) {
+    max_cache_=std::numeric_limits<unsigned int>::max();
+  } else {
+    max_cache_=0;
+  }
   for (unsigned int i=0; i < rdata_.size(); ++i) {
-    rdata_[i].set_use_caching(tf);
+    rdata_[i].set_max_cache(max_cache_);
   }
 }
 
@@ -39,7 +43,7 @@ namespace {
                                  ParticlesTemp ip,
                      compatibility::checked_vector<RestraintData> &rdata,
                         IMP::compatibility::map<Restraint*, Ints> &index,
-                        bool cache) {
+                        unsigned int max_cache) {
     compatibility::checked_vector<ParticlesTemp> oip;
     oip.push_back(ParticlesTemp());
     for (unsigned int i=0; i< ip.size(); ++i) {
@@ -79,7 +83,7 @@ namespace {
           ret.set_score(data.sss[j], data.scores[j]);
         }
       }
-      ret.set_use_caching(cache);
+      ret.set_max_cache(max_cache);
       rdata.push_back(ret);
       index[r].push_back(rdata.size()-1);
     }
@@ -114,7 +118,7 @@ void ModelData::initialize() {
     ParticlesTemp ip= (*rit)->get_input_particles();
     handle_restraint(*rit, idm, preload_,
                      dependencies_, ip,
-                     rdata_, index, cache_);
+                     rdata_, index, max_cache_);
   }
   RestraintSetsTemp restraint_sets
     = get_restraint_sets(decomposed.begin(), decomposed.end());
