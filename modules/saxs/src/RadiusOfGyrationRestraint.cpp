@@ -32,7 +32,7 @@ ContainersTemp RadiusOfGyrationRestraint::get_input_containers() const
 }
 
 //! Calculate the score and the derivatives for particles of the restraint.
-/** \param[in] acc If true (not NULL), partial first derivatives should be
+/** \param[in] acc If true (not nullptr), partial first derivatives should be
     calculated.
     \return score associated with this restraint for the given state of
             the model.
