@@ -1,6 +1,6 @@
 /**
  *  \file Pointer.h
- *  \brief A NULL-initialized pointer to an \imp Object.
+ *  \brief A nullptr-initialized pointer to an \imp Object.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *

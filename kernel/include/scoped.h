@@ -33,7 +33,7 @@ public:
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(ss_->get_model());
         ss_->get_model()->remove_score_state(ss_);
-        ss_=static_cast<SS*>(NULL);
+        ss_=nullptr;
       }
     },{
       if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
@@ -66,8 +66,8 @@ public:
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(ss_->get_model());
         rs_->remove_restraint(ss_);
-        ss_=static_cast<SS*>(NULL);
-        rs_=static_cast<RestraintSet*>(NULL);
+        ss_=nullptr;
+        rs_=nullptr;
       }
     }, {
       if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
@@ -98,8 +98,8 @@ class GenericScopedRemoveRestraint {
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(rs_->get_model());
         rs_->add_restraint(ss_);
-        ss_=static_cast<SS*>(NULL);
-        rs_=static_cast<RestraintSet*>(NULL);
+        ss_=nullptr;
+        rs_=nullptr;
       } else if (ss_) {
         IMP_LOG(VERBOSE, "Not restoring restraint "
                 << ss_->get_name() << std::endl);
@@ -148,8 +148,8 @@ class GenericScopedRemoveScoreState {
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(rs_);
         rs_->add_score_state(ss_);
-        ss_=static_cast<SS*>(NULL);
-        rs_=static_cast<Model*>(NULL);
+        ss_=nullptr;
+        rs_=nullptr;
       }
   }
   void setup(ScoreState* ss, Model *rs) {
@@ -198,14 +198,14 @@ class ScopedFailureHandler {
   FailureHandler* fh_;
 public:
   IMP_RAII(ScopedFailureHandler, (FailureHandler *fh),
-           {fh_=NULL;},
+           {fh_=nullptr;},
            {
              fh_=fh;
              if (fh_) add_failure_handler(fh_);
            },
            {
              if (fh_) remove_failure_handler(fh_);
-             fh_=static_cast<FailureHandler*>(NULL);
+             fh_=nullptr;
            },
            );
 };

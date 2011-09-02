@@ -129,7 +129,7 @@ public:
 
   BasicAttributeTable()
 #if IMP_BUILD < IMP_FAST
-  : read_mask_(NULL), write_mask_(NULL), add_remove_mask_(NULL)
+  : read_mask_(nullptr), write_mask_(nullptr), add_remove_mask_(nullptr)
 #endif
   {}
 
@@ -281,10 +281,10 @@ public:
   }
   FloatAttributeTable()
 #if IMP_BUILD < IMP_FAST
-  : read_mask_(NULL), write_mask_(NULL),
-    add_remove_mask_(NULL),
-    read_derivatives_mask_(NULL),
-    write_derivatives_mask_(NULL)
+  : read_mask_(nullptr), write_mask_(nullptr),
+    add_remove_mask_(nullptr),
+    read_derivatives_mask_(nullptr),
+    write_derivatives_mask_(nullptr)
 #endif
 {}
 #if IMP_BUILD < IMP_FAST
@@ -753,7 +753,7 @@ public:
                                   << obj->get_name());
                 }
               },{reset_dependencies();},
-              {Model::set_score_state_model(obj, NULL);
+              {Model::set_score_state_model(obj, nullptr);
                if(container) container->reset_dependencies(); });
   /**@}*/
 

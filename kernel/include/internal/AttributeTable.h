@@ -106,7 +106,7 @@ struct ObjectAttributeTableTraits
   typedef ObjectKey Key;
   typedef Objects Container;
   static Value get_invalid() {
-    return NULL;
+    return nullptr;
   }
   static bool get_is_valid(const Value& f) {
     return f;
