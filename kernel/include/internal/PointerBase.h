@@ -156,15 +156,6 @@ struct GetPointer<O, OO,
       set_pointer(get_pointer(o));                                      \
     }                                                                   \
   }                                                                     \
-  templ                                                                 \
-  PointerBase<Traits>& operator=( arg o){                               \
-    if (get_const_pointer(o)) {                                         \
-      set_pointer(get_pointer(o));                                      \
-    } else {                                                            \
-      set_pointer(NULL);                                                \
-    }                                                                   \
-    return *this;                                                       \
-  }
 
 
 template <class Traits>
@@ -209,9 +200,6 @@ private:
 
   struct UnusedClass{};
 public:
-  PointerBase(const PointerBase &o): o_(NULL) {
-    set_pointer(o.o_);
-  }
   //! initialize to NULL
   PointerBase(): o_(NULL) {}
   /** drop control of the object */
@@ -248,27 +236,40 @@ public:
     check_non_null(o_);
     return o_;
   }
-  /*template <class O>
-  PointerBase<Traits>& operator=( const O& o){
-    if (o) {
-      set_pointer(get_pointer(o));
-    } else {
-      set_pointer(NULL);
-    }
-    return *this;
-    }*/
   IMP_POINTER_MEMBERS(template <class OO>,
                       const OO&);
-  IMP_POINTER_MEMBERS(template <class OO>,
-                      OO*);
-  PointerBase<Traits>& operator=( const PointerBase & o){
-    if (o) {
+
+  template <class OT>
+  PointerBase<Traits>& operator=( const PointerBase<OT> &o){
+    if (get_const_pointer(o)) {
       set_pointer(get_pointer(o));
     } else {
       set_pointer(NULL);
     }
     return *this;
   }
+  template <class OT>
+    PointerBase<Traits>& operator=( OT* o){
+    if (get_const_pointer(o)) {
+      set_pointer(get_pointer(o));
+    } else {
+      set_pointer(NULL);
+    }
+    return *this;
+  }
+  PointerBase<Traits>& operator=(nullptr_t o) {
+    set_pointer(NULL);
+    return *this;
+  }
+  PointerBase<Traits> operator=(const PointerBase<Traits> &o) {
+    set_pointer(o.o_);
+  }
+  /*IMP_POINTER_MEMBERS(template <class OO>,
+    OO*);*/
+  PointerBase(const PointerBase &o): o_(NULL) {
+    set_pointer(o.o_);
+  }
+
   //! Relinquish control of the pointer
   /** This must be the only pointer pointing to the object. Its
       reference count will be 0 after the function is called, but
