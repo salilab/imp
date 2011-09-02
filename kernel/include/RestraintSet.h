@@ -51,7 +51,7 @@ class IMPEXPORT RestraintSet : public Restraint
   ContainersTemp get_input_containers() const;
   ParticlesTemp get_input_particles() const;
   IMP_OBJECT_INLINE(RestraintSet,show_it(out),
-                    Restraint::set_model(NULL));
+                    Restraint::set_model(nullptr));
   /** @name Methods to control the nested Restraint objects
 
       This container manages a set of Restraint objects. To
