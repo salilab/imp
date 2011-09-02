@@ -20,12 +20,16 @@
 #include <limits>
 #include <boost/utility.hpp>
 
-namespace RMF {
-
+#ifndef IMP_DOXYGEN
+namespace boost {
   //! for boost hash tables
   inline size_t hash_value(hid_t t) {
     return t;
   }
+}
+#endif
+
+namespace RMF {
 
   typedef int Int;
   typedef std::vector<Int> Ints;
