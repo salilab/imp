@@ -37,7 +37,7 @@ public:
          node (even an empty leaf). Otherwise, it returns with a null tree.
   */
   KMCentersTree( KMData *data_points, KMCenters *centers,
-     KMPoint *bb_lo = NULL, KMPoint *bb_hi = NULL);
+     KMPoint *bb_lo = nullptr, KMPoint *bb_hi = nullptr);
 
 
   //! Compute the neighboring data points of each center
@@ -96,11 +96,11 @@ protected:
   \param[in] bb_lo bounding box low point (optional)
   \param[in] bb_hi bounding box high point (optional)
   \param[in] p_id point indices (optional)
-  /note If p_id is NULL then the constructor should initialize the array of
+  /note If p_id is nullptr then the constructor should initialize the array of
         indices
   */
   void skeleton_tree(const Ints &pi,
-   KMPoint *bb_lo=NULL, KMPoint *bb_hi=NULL);
+   KMPoint *bb_lo=nullptr, KMPoint *bb_hi=nullptr);
    //!Recursive construction of the tree from a set of points.
    /**
    \param[in] pa the points

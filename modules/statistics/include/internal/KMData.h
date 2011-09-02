@@ -110,7 +110,7 @@ inline KMPointArray* allocate_points(int n,int dim) {
 //! Clear a vector of KMPoints and make sure the memory allocated
 //! for the individual points is deallocated
 inline void clear_points(KMPointArray *points) {
-  if (points == NULL)
+  if (points == nullptr)
     return;
   for(unsigned int i=0;i<points->size();i++){
     delete (*points)[i];
@@ -119,7 +119,7 @@ inline void clear_points(KMPointArray *points) {
 }
 //! Dellocate a point array
 inline void deallocate_points(KMPointArray *points) {
-  if (points == NULL)
+  if (points == nullptr)
     return;
   for(unsigned int i=0;i<points->size();i++){
     delete (*points)[i];

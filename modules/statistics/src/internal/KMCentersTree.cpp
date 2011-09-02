@@ -26,7 +26,7 @@ KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
 //TODO: check if we need to add anything
 KMCentersTree::~KMCentersTree()
 {
-  if (root_ != NULL) delete root_;
+  if (root_ != nullptr) delete root_;
 }
 
 
@@ -46,7 +46,7 @@ void KMCentersTree::show(std::ostream &out) {
   //TODO - consider uncommenting
   //out << "    Points:\n";
   //print_points("Points:\n",*(data_points_->get_points()),out);
-  if (root_ == NULL)
+  if (root_ == nullptr)
   out << "    Null tree.\n";
  else {
    root_->show(out);
@@ -71,7 +71,7 @@ void KMCentersTree::get_assignments(Ints &close_center)
 void KMCentersTree::skeleton_tree(const Ints &p_id,
   KMPoint *bb_lo,KMPoint *bb_hi) {
   //TODO: where do get n from ?
-  IMP_INTERNAL_CHECK(data_points_ != NULL,
+  IMP_INTERNAL_CHECK(data_points_ != nullptr,
                      "Points must be supplied to construct tree.");
   if (p_id.size() == 0) {
     for (int i = 0; i < data_points_->get_number_of_points(); i++)
@@ -81,17 +81,17 @@ void KMCentersTree::skeleton_tree(const Ints &p_id,
     for (int i = 0; i < data_points_->get_number_of_points(); i++)
       p_id_.push_back(p_id[i]);
   }
-  if (bb_lo == NULL || bb_hi == NULL) {
+  if (bb_lo == nullptr || bb_hi == nullptr) {
     bnd_box_ = bounding_rectangle(0,data_points_->get_number_of_points()-1);;
   }
   // if points are provided, use it
-  if (bb_lo != NULL) {
+  if (bb_lo != nullptr) {
     copy_point(bb_lo,bnd_box_->get_point(0));
   }
-  if (bb_hi != NULL) {
+  if (bb_hi != nullptr) {
     copy_point(bb_hi,bnd_box_->get_point(1));
   }
-  root_ = NULL;
+  root_ = nullptr;
 }
 
 KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,

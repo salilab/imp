@@ -51,7 +51,7 @@ public:
   \param[in] ps a set of particles which are the initial k-means.
                 If non are provided, the initial ones are set randomly.
    */
-  void run(Particles *ps=NULL);
+  void run(Particles *ps=nullptr);
   std::string get_cmm_string() const;
   void log_header() const;
   //  Particles get_particles_for_center(unsigned int k) const;

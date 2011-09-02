@@ -191,7 +191,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
     *(data[i])= Floats(v.coordinates_begin(),
                        v.coordinates_end());
   }
-  internal::KMFilterCenters ctrs(k, &data, NULL, 1.0);
+  internal::KMFilterCenters ctrs(k, &data, nullptr, 1.0);
 
   //apply lloyd search
   IMP_LOG(VERBOSE,"KMLProxy::run load lloyd \n");

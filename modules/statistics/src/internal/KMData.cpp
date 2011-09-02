@@ -70,7 +70,7 @@ void KMData::sample_centers( KMPointArray *sample,int k,
 }
 
 void copy_points(KMPointArray *from, KMPointArray *to) {
-  if (from == NULL) {
+  if (from == nullptr) {
     return;
   }
   for (unsigned int i=0;i<from->size();i++) {

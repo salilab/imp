@@ -38,7 +38,7 @@ public:
      */
   KMCentersNodeSplit(
    int level,KMRectangle &bb,KMCenters *centers,int cd,double cv, double lv,
-   double hv, KMCentersNode * lc=NULL, KMCentersNode * hc=NULL)
+   double hv, KMCentersNode * lc=nullptr, KMCentersNode * hc=nullptr)
     : KMCentersNode(bb, centers,level) {
   cut_dim_ = cd;
   cut_val_ = cv;
