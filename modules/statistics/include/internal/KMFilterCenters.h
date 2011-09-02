@@ -32,7 +32,7 @@ public:
   \param[in] ini_cen_arr initial centers
   \param[in] df    damp factor
    */
-  KMFilterCenters(int k, KMData* data,KMPointArray *ini_cen_arr=NULL,
+  KMFilterCenters(int k, KMData* data,KMPointArray *ini_cen_arr=nullptr,
                   double df = 1);
   virtual ~KMFilterCenters();
 public:

@@ -13,7 +13,7 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 KMCentersNodeSplit::~KMCentersNodeSplit() {
   for(int i=0;i<2;i++) {
-    if (children_[i] != NULL) delete children_[i];
+    if (children_[i] != nullptr) delete children_[i];
   }
 }
 

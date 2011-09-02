@@ -36,8 +36,8 @@ void KMLProxy::run(Particles *initial_centers) {
   IMP_INTERNAL_CHECK(is_init_,"The proxy was not initialized");
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
-  KMPointArray *kmc=NULL;
-  if (initial_centers != NULL)  {
+  KMPointArray *kmc=nullptr;
+  if (initial_centers != nullptr)  {
     IMP_INTERNAL_CHECK(kcenters_ == initial_centers->size(),
     "the number of initial points differs from the number of required"
     <<" centers\n");

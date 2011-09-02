@@ -26,7 +26,7 @@ KMFilterCenters::KMFilterCenters(int k, KMData* data,
 KMFilterCenters::~KMFilterCenters() {
   deallocate_points(sums_);
   deallocate_points(ini_cen_arr_);
-  if (tree_ != NULL)
+  if (tree_ != nullptr)
     delete tree_;
 }
 
@@ -37,7 +37,7 @@ void KMFilterCenters::invalidate() {
 }
 
 void KMFilterCenters::generate_random_centers(int k) {
-  if (ini_cen_arr_ != NULL) {
+  if (ini_cen_arr_ != nullptr) {
     IMP_LOG(VERBOSE,"KMFilterCenters::generate_random_centers"
     <<" with initial points"<<std::endl);
     for (int i=0;i<k;i++) {
@@ -57,10 +57,10 @@ void KMFilterCenters::generate_random_centers(int k) {
   invalidate();
 }
 void KMFilterCenters::clear_data() {
-  if (sums_ != NULL) {
+  if (sums_ != nullptr) {
     for(unsigned int i=0;i<sums_->size();i++) {
       KMPoint *p = (*sums_)[i];
-      if (p != NULL) {
+      if (p != nullptr) {
         for(unsigned int j=0;j<p->size();j++) {
           (*p)[j]=0.;
         }
@@ -76,8 +76,8 @@ void KMFilterCenters::clear_data() {
 }
 void KMFilterCenters::compute_distortion()
 {
-  IMP_INTERNAL_CHECK(tree_ != NULL,"The tree should be initialized");
-  IMP_INTERNAL_CHECK(sums_!=NULL,"sums_ were not allocated\n");
+  IMP_INTERNAL_CHECK(tree_ != nullptr,"The tree should be initialized");
+  IMP_INTERNAL_CHECK(sums_!=nullptr,"sums_ were not allocated\n");
   clear_data();
   tree_->get_neighbors(sums_,&sum_sqs_,&weights_);
   curr_dist_=0.;
@@ -99,7 +99,7 @@ void KMFilterCenters::compute_distortion()
 
 void KMFilterCenters::get_assignments(Ints &close_center)
 {
-  IMP_INTERNAL_CHECK(tree_ != NULL,"The tree is NULL");
+  IMP_INTERNAL_CHECK(tree_ != nullptr,"The tree is nullptr");
   tree_->get_assignments(close_center);
 }
 
