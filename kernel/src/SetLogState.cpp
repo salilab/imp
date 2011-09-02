@@ -16,7 +16,7 @@ void SetLogState::do_set(Object*o, LogLevel l) {
     level_= obj_->get_log_level();
     obj_->set_log_level(l);
   } else {
-    obj_=NULL;
+    obj_=nullptr;
     level_=DEFAULT;
   }
 }
@@ -28,7 +28,7 @@ void SetLogState::do_reset() {
                } else {
       set_log_level(level_);
     }
-    obj_=NULL;
+    obj_=nullptr;
     level_=DEFAULT;
   }
 }
