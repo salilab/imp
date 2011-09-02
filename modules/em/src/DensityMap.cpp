@@ -252,7 +252,7 @@ DensityMap* read_map(std::string filename, MapReaderWriter *reader)
   // we need to pass a pointer to data_
   Pointer<MapReaderWriter> ptr(reader);
   Pointer<DensityMap> m= new DensityMap();
-  float *f_data=NULL;
+  float *f_data=nullptr;
   reader->read(filename.c_str(), &f_data, m->header_);
   reader->set_was_used(true);
   boost::scoped_array<float> f_datap(f_data);

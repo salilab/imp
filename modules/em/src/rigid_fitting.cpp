@@ -286,7 +286,7 @@ FittingSolutions local_rigid_fitting_grid_search(
          }//z
        }//y
      }//x
-     rotated_sampled_map=static_cast<DensityMap*>(NULL);
+     rotated_sampled_map=static_cast<DensityMap*>(nullptr);
    }//end rotations
    fr.sort();
    return fr;
@@ -379,7 +379,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
       for(unsigned int i=0;i<ps_xyz.size();i++){
         ps_xyz[i].set_coordinates(original_cooridnates[i]);
       }
-      model_dens_map2=static_cast<SampledDensityMap*>(NULL);
+      model_dens_map2=static_cast<SampledDensityMap*>(nullptr);
     }
     else { //fast version
       // static int counter=0;
@@ -408,10 +408,10 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
         }
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it*move_ps_to_map_center,score);
-        transformed_sampled_map=static_cast<DensityMap*>(NULL);
+        transformed_sampled_map=static_cast<DensityMap*>(nullptr);
       }
     }
-    model_dens_map=static_cast<SampledDensityMap*>(NULL);
+    model_dens_map=static_cast<SampledDensityMap*>(nullptr);
   //move the particles back to original position
     algebra::Transformation3D move_ps_to_map_center_inv =
       move_ps_to_map_center.get_inverse();
@@ -478,8 +478,8 @@ Float compute_fitting_score(const ParticlesTemp &ps,
   model_dens_map->calcRMS();
   double score = em::CoarseCC::calc_score(union_map, model_dens_map,
                                    1.0,true,false,FloatPair(0.,0.));//,local);
-  union_map=static_cast<DensityMap*>(NULL);
-  model_dens_map=static_cast<SampledDensityMap*>(NULL);
+  union_map=static_cast<DensityMap*>(nullptr);
+  model_dens_map=static_cast<SampledDensityMap*>(nullptr);
   return score;
 }
 

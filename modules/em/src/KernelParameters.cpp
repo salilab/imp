@@ -116,7 +116,7 @@ const RadiusDependentKernelParameters* KernelParameters::get_params(
   //map if no match is found for the key.
   kernel_map::iterator lower_closest = radii2params_.lower_bound(radius);
   kernel_map::iterator upper_closest = radii2params_.upper_bound(radius);
-   const RadiusDependentKernelParameters *closest = NULL;
+   const RadiusDependentKernelParameters *closest = nullptr;
    if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
      IMP_LOG(IMP::VERBOSE,"for radius:"<<radius<<
@@ -129,7 +129,7 @@ const RadiusDependentKernelParameters* KernelParameters::get_params(
        }
      }
    }
-   if (closest == NULL) {
+   if (closest == nullptr) {
      IMP_WARN("could not find parameters for radius:"<<radius<<std::endl);
      IMP_WARN("Setting params for radius :"<<radius<<std::endl);
      closest = set_params(radius);

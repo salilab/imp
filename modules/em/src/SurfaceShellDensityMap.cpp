@@ -80,7 +80,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
   for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // compute kernel parameters if needed
     params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    if (params == NULL) {
+    if (params == nullptr) {
       kernel_params_.set_params(xyzr_[ii].get_radius());
       params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }

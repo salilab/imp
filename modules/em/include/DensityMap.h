@@ -109,13 +109,13 @@ public:
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header, std::string name= "DensityMap%1%");
   void release(){
-    /*    if (data_ != NULL) {
-          data_.reset(NULL);}
+    /*    if (data_ != nullptr) {
+          data_.reset(nullptr);}
     x_loc_.reset();
-    if (y_loc_ != NULL){
-      y_loc_.reset(NULL);}
-    if (z_loc_ != NULL){
-    z_loc_.reset(NULL);}*/
+    if (y_loc_ != nullptr){
+      y_loc_.reset(nullptr);}
+    if (z_loc_ != nullptr){
+    z_loc_.reset(nullptr);}*/
   }
 
 #ifndef IMP_DOXYGEN
@@ -456,7 +456,7 @@ public:
     Pointer<DensityMap> cmap = em::create_density_map(this);
     cmap->set_was_used(true);
     convolute_kernel(cmap,kernel,dim_len);
-    cmap=static_cast<DensityMap*>(NULL);
+    cmap=static_cast<DensityMap*>(nullptr);
   }
 #endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;

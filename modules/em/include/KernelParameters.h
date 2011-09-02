@@ -99,14 +99,14 @@ public:
     \note The parameters are indexes by the radius. To maintain
     numeratical stability, look for a radius within +-eps from the
     queried radius.
-   \note the function return NULL and writes a warning if parameters
+   \note the function return nullptr and writes a warning if parameters
    for this radius were not found.
   */
   const RadiusDependentKernelParameters* get_params(
         float radius,float eps=0.001);
 #endif
   bool are_params_set(float radius,float eps=0.001) {
-    return get_params(radius, eps) != NULL;
+    return get_params(radius, eps) != nullptr;
   }
 
   //! Get sigma as a function of the resolution according to th

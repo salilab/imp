@@ -61,7 +61,7 @@ int XplorReaderWriter::read_header(std::ifstream & XPLORstream,
       }
       else // mod == 2
         header.top[div]=result;
-      lineBreaker = strtok (NULL," ");
+      lineBreaker = strtok (nullptr," ");
   }
   for(int j=0;j<3;j++) {
     header.extent[j]=header.top[j]-header.orig[j]+1;
@@ -85,7 +85,7 @@ int XplorReaderWriter::read_header(std::ifstream & XPLORstream,
     else {  // div == 1
       header.cellangle[mod]=val;
     }
-    lineBreaker = strtok (NULL," ");
+    lineBreaker = strtok (nullptr," ");
   }
 
   for(int j=0;j<3;j++) {
