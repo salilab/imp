@@ -156,8 +156,8 @@ namespace {
   C filter(C c) {
     std::sort(c.begin(), c.end());
     c.erase(std::unique(c.begin(), c.end()), c.end());
-    IMP_INTERNAL_CHECK(c.empty() || c[0] != NULL,
-                       "NULL returned for dependencies.");
+    IMP_INTERNAL_CHECK(c.empty() || c[0],
+                       "nullptr returned for dependencies.");
     return c;
   }
 

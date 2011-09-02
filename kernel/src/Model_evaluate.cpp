@@ -75,6 +75,7 @@ namespace {
 
 #define WRAP_EVALUATE_CALL(restraint, expr)                             \
   {                                                                     \
+    IMP_LOG_CONTEXT("Evaluate " << restraint->get_name());              \
     ResetBitset rbr(Masks::read_mask_, true);                           \
     ResetBitset rbw(Masks::write_mask_, true);                          \
     ResetBitset rbar(Masks::add_remove_mask_, true);                    \
@@ -114,6 +115,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       if (gather_statistics_) timer.restart();
       {
 #if IMP_BUILD < IMP_FAST
+        IMP_LOG_CONTEXT("Update " << states[i]->get_name());
         ResetBitset rbr(Masks::read_mask_, true);
         ResetBitset rbw(Masks::write_mask_, true);
         ResetBitset rbar(Masks::add_remove_mask_, true);
@@ -153,6 +155,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       if (gather_statistics_) timer.restart();
       {
 #if IMP_BUILD < IMP_FAST
+        IMP_LOG_CONTEXT("Update " << states[i]->get_name());
         ResetBitset rbr(Masks::read_mask_, true);
         ResetBitset rbw(Masks::write_mask_, true);
         ResetBitset rbar(Masks::add_remove_mask_, true);
@@ -169,7 +172,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
         SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput, output,
                    coutput);
 #endif
-        ss->after_evaluate(calc_derivs?&accum:NULL);
+        ss->after_evaluate(calc_derivs?&accum:nullptr);
       }
       if (gather_statistics_) {
         add_to_update_after_time(ss, timer.elapsed());
@@ -204,19 +207,19 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
       WRAP_EVALUATE_CALL(restraints[i],
                          value=
                    restraints[i]->unprotected_evaluate_if_good(calc_derivs?
-                                                              &accum:NULL,
+                                                              &accum:nullptr,
                                                                    max));
     } else if (if_max) {
       WRAP_EVALUATE_CALL(restraints[i],
                          value=
                    restraints[i]->unprotected_evaluate_if_good(calc_derivs?
-                                                              &accum:NULL,
+                                                              &accum:nullptr,
                                                                    remaining));
     } else {
       WRAP_EVALUATE_CALL(restraints[i],
                          value=
                          restraints[i]->unprotected_evaluate(calc_derivs?
-                                                             &accum:NULL));
+                                                             &accum:nullptr));
     }
     double wvalue= weight*value;
     remaining-=wvalue;
