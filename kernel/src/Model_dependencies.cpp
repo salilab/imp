@@ -165,8 +165,9 @@ namespace {
       /*std::cout << "Finding dependencies for "
         << ordered_restraints[i]->get_name()
         << std::endl;*/
-      IMP_USAGE_CHECK(ordered_restraints[i]
-                      == om[index.find(ordered_restraints[i])->second],
+      IMP_USAGE_CHECK(static_cast<Object*>(ordered_restraints[i])
+                      ==
+     om[index.find(static_cast<Object*>(ordered_restraints[i]))->second],
                       "Restraints and vertices don't match");
       Ints cur;
       boost::depth_first_visit(boost::make_reverse_graph(dg),
