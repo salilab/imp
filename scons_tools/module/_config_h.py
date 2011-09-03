@@ -181,7 +181,7 @@ namespace internal {
         print >> h, """#    error "Do not define macro """+name+""" directly.\""""
         print >> h, "#  endif"
         if value is not None:
-            print >> h, "#  define "+name+" "+value
+            print >> h, "#  define "+name+" "+str(value)
         else:
             print >> h, "#  define "+name
     print >> h
