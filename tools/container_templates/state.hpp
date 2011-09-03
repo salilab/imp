@@ -64,6 +64,7 @@ public:
   void set_before_evaluate_modifier(CLASSNAMEModifier* f) {
     f_=f;
   }
+  ScoreStates create_decomposition() const;
 
   IMP_CONSTRAINT(CLASSNAMEsConstraint);
 };
