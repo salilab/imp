@@ -122,7 +122,7 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
 ScoreStates TripletsConstraint::create_decomposition() const {
   ScoreStates ret;
   IMP_FOREACH_TRIPLET_INDEX(c_, {
-      ret.push_back(core::create_constraint(f_.get(), af_.get(),
+      ret.push_back(new core::TripletConstraint(f_.get(), af_.get(),
                                IMP::internal::get_particle(get_model(),
                                                            _1)));
     });
