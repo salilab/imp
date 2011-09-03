@@ -142,15 +142,27 @@ void ContainerConstraint<C, Before, After>
   IMP_LOG(TERSE, "End ContainerConstraint::after_evaluate" << std::endl);
 }
 
+namespace {
+  template <class Indexes, class BF, class AF>
+  inline ScoreStates create_decomposition_internal(Model *m,
+                                                   const Indexes &a,
+                                                   BF *bf, AF *af) {
+    ScoreStates ret(a.size());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= core::create_constraint(af, bf,
+                                      IMP::internal::get_particle(m, a[i]));
+    }
+    return ret;
+  }
+}
+
 template <class C, class Before, class After>
 ScoreStates ContainerConstraint<C, Before, After>
 ::create_decomposition() const {
-  ScoreStates ret;
-  IMP_FOREACH_HEADERNAME_INDEX(c_, {
-      ret.push_back(core::create_constraint(f_, af_,
-                                 IMP::internal::get_particle(get_model(),
-                                                             _1)));
-    });
+  ScoreStates ret=create_decomposition_internal(get_model(),
+                                                c_->get_indexes(),
+                                                f_.get(),
+                                                af_.get());
   return ret;
 }
 

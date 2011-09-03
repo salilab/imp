@@ -88,6 +88,41 @@ inline std::string streamable(const ParticleTuple<D> &p) {
 
 
 
+template <unsigned int D, class Score>
+inline ContainersTemp get_input_containers(Score *s,
+                                     const ParticleTuple<D>& p) {
+  ContainersTemp ret;
+  for (unsigned int i=0; i< D; ++i) {
+    ContainersTemp c= s->get_input_containers(p[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+template <unsigned int D, class Score>
+inline ContainersTemp get_output_containers(Score *s,
+                                     const ParticleTuple<D>& p) {
+  ContainersTemp ret;
+  for (unsigned int i=0; i< D; ++i) {
+    ContainersTemp c= s->get_output_containers(p[i]);
+    ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+template <unsigned int D, class Score>
+inline ContainersTemp get_input_containers(Score *s,
+                                     Particle * p) {
+  return s->get_input_containers(p);
+}
+
+template <unsigned int D, class Score>
+inline ContainersTemp get_output_containers(Score *s,
+                                     Particle* p) {
+  return s->get_output_containers(p);
+}
+
+
 template <class Score, class C>
 inline ParticlesTemp get_output_particles(Score *s,
                                    const C& p) {
