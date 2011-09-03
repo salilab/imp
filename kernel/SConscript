@@ -25,6 +25,10 @@ if not env.GetOption('help'):
 
     if env.get("BOOST_VERSION", None):
         config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
+    if env.get("IMP_COMPILER_NULLPTR"):
+        config.append(["IMP_DEFINE_NULLPTR", 0])
+    else:
+        config.append(["IMP_DEFINE_NULLPTR", 1])
     config.append(["IMP_DEBUG", "0"])
     config.append(["IMP_RELEASE", "1"])
     config.append(["IMP_FAST", "2"])
