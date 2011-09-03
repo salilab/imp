@@ -30,7 +30,7 @@ class IMPCOREEXPORT CoreListCLASSNAMEContainer:
   CoreListCLASSNAMEContainer(Model *m, const char *name);
   void add_FUNCTIONNAME(ARGUMENTTYPE vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                    "Passed CLASSNAME cannot be NULL (or None)");
+                    "Passed CLASSNAME cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {

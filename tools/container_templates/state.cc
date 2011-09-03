@@ -119,6 +119,16 @@ ParticlesTemp CLASSNAMEsConstraint::get_output_particles() const {
   return ret;
 }
 
+ScoreStates CLASSNAMEsConstraint::create_decomposition() const {
+  ScoreStates ret;
+  IMP_FOREACH_HEADERNAME_INDEX(c_, {
+      ret.push_back(core::create_constraint(f_, af_,
+                                            IMP::internal::get_particle(get_model(),
+                                                                        _1)));
+    });
+  return ret;
+}
+
 void CLASSNAMEsConstraint::do_show(std::ostream &out) const {
   out << "on " << *c_ << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
