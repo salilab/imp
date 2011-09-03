@@ -111,9 +111,9 @@ template <class Before, class After>
 ContainersTemp TupleConstraint<Before, After>::get_input_containers() const {
   ContainersTemp ret;
   if (f_) {
-    ret= f_->get_input_containers(v_);
+    ret= IMP::internal::get_input_containers(f_.get(), v_);
   } else if (af_) {
-    ret= af_->get_output_containers(v_);
+    ret= IMP::internal::get_input_containers(af_.get(), v_);
   }
   return ret;
 }
@@ -122,9 +122,9 @@ template <class Before, class After>
 ContainersTemp TupleConstraint<Before, After>::get_output_containers() const {
   ContainersTemp ret;
   if (f_) {
-    ret= f_->get_output_containers(v_);
+    ret= IMP::internal::get_output_containers(f_.get(), v_);
   } else if (af_) {
-    ret= af_->get_input_containers(v_);
+    ret= IMP::internal::get_output_containers(af_.get(), v_);
   }
   return ret;
 }
