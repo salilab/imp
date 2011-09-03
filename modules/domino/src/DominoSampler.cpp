@@ -24,12 +24,12 @@ IMPDOMINO_BEGIN_NAMESPACE
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
                              std::string name):
   DiscreteSampler(m, pst, name), has_sg_(false), has_mt_(false), csf_(false),
-  or_(false){
+  or_(true){
 }
 
 DominoSampler::DominoSampler(Model *m, std::string name):
   DiscreteSampler(m, new ParticleStatesTable(), name), has_sg_(false),
-  csf_(false), or_(false){
+  csf_(false), or_(true){
 }
 
 
