@@ -290,7 +290,7 @@ ParticlesTemp pt= c_->get_particles();
         }
       }
     }
-    /*ScoreStates sss= ss->create_decomposition();
+    ScoreStates sss= ss->create_decomposition();
     if (sss.size() >1) {
       Model *m= ss->get_model();
       IMP_LOG(TERSE, "Decomposing state " << ss->get_name()
@@ -302,7 +302,7 @@ ParticlesTemp pt= c_->get_particles();
     } else {
       IMP_LOG(TERSE, "State " << ss->get_name()
               << " cannot be decomposed" << std::endl);
-              }*/
+    }
   }
 }
 

@@ -64,6 +64,7 @@ public:
   void set_before_evaluate_modifier(PairModifier* f) {
     f_=f;
   }
+  ScoreStates create_decomposition() const;
 
   IMP_CONSTRAINT(PairsConstraint);
 };

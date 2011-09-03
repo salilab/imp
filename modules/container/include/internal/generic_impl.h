@@ -143,6 +143,18 @@ void ContainerConstraint<C, Before, After>
 }
 
 template <class C, class Before, class After>
+void ContainerConstraint<C, Before, After>
+::create_decomposition() const {
+  ScoreStates ret;
+  IMP_FOREACH_HEADERNAME_INDEX(c_, {
+      ret.push_back(core::create_constraint(f_, af_,
+                                 IMP::internal::get_particle(get_model(),
+                                                             _1)));
+    });
+  return ret;
+}
+
+template <class C, class Before, class After>
 ContainersTemp ContainerConstraint<C, Before, After>
 ::get_input_containers() const {
   return ContainersTemp(1, c_);
