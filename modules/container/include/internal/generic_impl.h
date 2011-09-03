@@ -143,7 +143,7 @@ void ContainerConstraint<C, Before, After>
 }
 
 template <class C, class Before, class After>
-void ContainerConstraint<C, Before, After>
+ScoreStates ContainerConstraint<C, Before, After>
 ::create_decomposition() const {
   ScoreStates ret;
   IMP_FOREACH_HEADERNAME_INDEX(c_, {
