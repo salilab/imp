@@ -122,7 +122,7 @@ ParticlesTemp QuadsConstraint::get_output_particles() const {
 ScoreStates QuadsConstraint::create_decomposition() const {
   ScoreStates ret;
   IMP_FOREACH_QUAD_INDEX(c_, {
-      ret.push_back(core::create_constraint(f_, af_,
+      ret.push_back(core::create_constraint(f_.get(), af_.get(),
                                IMP::internal::get_particle(get_model(),
                                                            _1)));
     });
