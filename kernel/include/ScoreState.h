@@ -96,6 +96,11 @@ public:
   static ScoreState* get_from(Object *o) {
     return object_cast<ScoreState>(o);
   }
+
+  virtual ScoreStates create_decomposition() const {
+    return ScoreStates(1, const_cast<ScoreState*>(this));
+  }
+
 protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.

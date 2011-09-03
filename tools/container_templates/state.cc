@@ -123,8 +123,8 @@ ScoreStates CLASSNAMEsConstraint::create_decomposition() const {
   ScoreStates ret;
   IMP_FOREACH_HEADERNAME_INDEX(c_, {
       ret.push_back(core::create_constraint(f_, af_,
-                                            IMP::internal::get_particle(get_model(),
-                                                                        _1)));
+                               IMP::internal::get_particle(get_model(),
+                                                           _1)));
     });
   return ret;
 }

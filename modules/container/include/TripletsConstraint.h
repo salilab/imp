@@ -64,6 +64,7 @@ public:
   void set_before_evaluate_modifier(TripletModifier* f) {
     f_=f;
   }
+  ScoreStates create_decomposition() const;
 
   IMP_CONSTRAINT(TripletsConstraint);
 };
