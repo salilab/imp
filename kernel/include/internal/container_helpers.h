@@ -110,13 +110,13 @@ inline ContainersTemp get_output_containers(Score *s,
   return ret;
 }
 
-template <unsigned int D, class Score>
+template class Score>
 inline ContainersTemp get_input_containers(Score *s,
                                      Particle * const p) {
   return s->get_input_containers(p);
 }
 
-template <unsigned int D, class Score>
+template <class Score>
 inline ContainersTemp get_output_containers(Score *s,
                                      Particle* const p) {
   return s->get_output_containers(p);
