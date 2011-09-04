@@ -12,6 +12,7 @@
 #include <IMP/Model.h>
 
 int main(int argc, char *argv[]) {
+  IMP::set_log_level(IMP::SILENT);
   std::string mol2name, pdbname;
   for (int i=1; i < argc; ++i) {
     std::string nm(argv[i]);
@@ -57,7 +58,7 @@ int main(int argc, char *argv[]) {
   IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
 
   for (unsigned int i=0; i< mols.size(); ++i) {
-    IMP::SetLogState ss(i==0? IMP::TERSE: IMP::SILENT);
+    //IMP::SetLogState ss(i==0? IMP::TERSE: IMP::SILENT);
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
     IMP::ParticlePairsTemp ppt= gcpf->get_close_pairs(patoms, latoms);
     double score=ps->evaluate(ppt, NULL);
