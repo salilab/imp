@@ -41,6 +41,7 @@ class IMPDOMINOEXPORT OptimizeRestraints {
   boost::ptr_vector<ScopedScoreState> addeds_;
   boost::ptr_vector<ScopedRemoveScoreState> removeds_;
   Pointer<RestraintSet> m_;
+  Model *mm_;
 
   void optimize_model(RestraintSet *m, const ParticleStatesTable *particles);
 public:
@@ -48,6 +49,7 @@ public:
                                 const ParticleStatesTable *pst), {},
            {
              m_=m;
+             mm_= m->get_model();
              optimize_model(m, pst);
            },
            {
