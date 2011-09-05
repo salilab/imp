@@ -4,9 +4,12 @@ import IMP.algebra
 import IMP.atom
 import IMP.container
 import random
-import networkx as nx
-import networkx.algorithms
-
+try:
+    import networkx as nx
+    import networkx.algorithms
+except:
+    print "Script requires networkx to run"
+    sys.exit()
 pdbs=[IMP.get_example_path('dock_data/chainf.pdb'),
       IMP.get_example_path('dock_data/chaind.pdb')]
 xlinks=[
