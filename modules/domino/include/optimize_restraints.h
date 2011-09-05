@@ -36,12 +36,12 @@ IMPDOMINO_BEGIN_NAMESPACE
       core::PairRestraint or core::SingletonRestraint objects.
 */
 class IMPDOMINOEXPORT OptimizeRestraints {
+  Pointer<Model> mm_;
   boost::ptr_vector<ScopedRemoveRestraint> removed_;
   boost::ptr_vector<ScopedRestraint> added_;
   boost::ptr_vector<ScopedScoreState> addeds_;
   boost::ptr_vector<ScopedRemoveScoreState> removeds_;
   Pointer<RestraintSet> m_;
-  Model *mm_;
 
   void optimize_model(RestraintSet *m, const ParticleStatesTable *particles);
 public:
