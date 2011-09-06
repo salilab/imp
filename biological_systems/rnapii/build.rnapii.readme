@@ -1,0 +1,61 @@
+==========================================
+===       Build the RNAPII complex    ====
+==========================================
+
+=====0. user preparation
+The user needs to prepare:
+I. a file with the subunits list. Each line describes a subunit and contains:
+name pdb_file [global/local]_fit
+Make sure that the subunit names are unique.
+II. a mrc file of the assembly
+
+The input subunit list file used for this example is rnapii.subunit.list.txt
+RPB1   data/1y1v_A.pdb  1
+RPB2   data/1y1v_B.pdb  1
+RPB3   data/1y1v_C.pdb  1
+RPB4_7 data/1y1v_DG.pdb 1
+RPB5   data/1y1v_E.pdb 1
+RPB6   data/1y1v_F.pdb 1
+RPB8   data/1y1v_H.pdb 1 
+RPB9   data/1y1v_I.pdb 1 
+RPB10  data/1y1v_J.pdb 1
+RPB11_12 data/1y1v_KL.pdb 1
+
+In this example all subunits are going to be sampled globally
+
+=====1.generate the parameters file
+
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_input.py -i rnapii.asmb.input -- rnapii data/rnapii.subunit.list.txt 30 data/emd_1283.mrc 20 2.5 0.2 60 60 60 
+
+=====2. Running MultiFit
+The steps to execute:
+==2.0. create all surfaces
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_all_surfaces.py rnapii.asmb.input
+
+==2.1. generate assembly anchor graph:
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_fine_assembly_anchor_graph.py rnapii.asmb.input
+
+
+Files being generated:
+rnapii.asmb.anchors.pdb  : The graph in pdb format
+rnapii.asmb.anchors.txt  : The graph in txt format
+rnapii.asmb.anchors.cmm  : The graph in cmm format
+
+==2.2. generate the fits
+>> $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -p rnapii.multifit.param  rnapii.asmb.data -c 6 -z -n 10000
+
+==2.3. generate indexes
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py rnapii rnapii.asmb.input 1000
+
+==2.4 create automated proteomics file
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_auto_proteomics_file.py rnapii.asmb.input rnapii_em_coarse_anchors_FINE.txt rnapii.proteomics.input
+
+
+==2.5. assemble fitting solutions
+
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py -m 30 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param 1z5s.docking.param combinations.output scores.output
+
+Now segment RPB1, RPB2 from the density and fit the rest of the subunits
+
+Now assemble all of the subunits together
+
