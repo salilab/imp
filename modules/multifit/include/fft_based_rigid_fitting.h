@@ -121,20 +121,43 @@ class IMPMULTIFITEXPORT FFTFitting {
  void fftw_translational_search(const multifit::internal::EulerAngles &rot,
                                 int i);
  //! Detect the top fits
- multifit::FittingSolutionRecords detect_top_fits(const RotScores &rot_scores);
+ multifit::FittingSolutionRecords detect_top_fits(const RotScores &rot_scores,
+                                                  bool cluster_fits);
  public:
   FFTFitting() {}
   ~FFTFitting();
   //! Fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into
-     \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
+     \param[in] mol2fit the molecule to fit The molecule has to be a rigid body
+     \param[in] angle_sampling_interval_rad Sample every internal angles
+     \param[in] num_fits_to_report number of top fits to report
+     \param[in] cluster_fits if true the fits are clustered.
+                Not recommended for refinement mode
    */
   FFTFittingOutput fit(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
-                       //const multifit::internal::EulerAnglesList &rots,
                        double angle_sampling_interval_rad,
-                       int num_fits_to_report);
+                       int num_fits_to_report,
+                       bool cluster_fits=true);
+  //! Locally fit a molecule inside its density
+  /**
+     \param[in] dmap the density map to fit into
+     \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
+     \param[in] angle_sampling_interval_rad sample the mol
+                within the range of  +- this angle
+     \param[in] max_translation sample the mol within +-
+                                this translation is all directions
+     \param[in] cluster_fits if true the fits are clustered.
+                Not recommended for refinement mode
+   */
+  FFTFittingOutput fit_local_fitting(em::DensityMap *dmap,
+                       atom::Hierarchy mol2fit,
+                       double angle_sampling_interval_rad,
+                       double max_angle_sampling_rad,
+                       double max_translation,
+                       int num_fits_to_report,
+                       bool cluster_fits);
 };
 //! FFT fit of a molecule in the density
 /**
