@@ -53,9 +53,6 @@ $IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_auto_proteomics_fil
 
 ==2.5. assemble fitting solutions
 
-$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py -m 30 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param 1z5s.docking.param combinations.output scores.output
+$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py -m 30 rnapii.asmb.input rnapii.proteomics.input rnapii.indexes.mapping.input rnapii.alignment.param rnapii.docking.param aa1 aa2 aa3
 
-Now segment RPB1, RPB2 from the density and fit the rest of the subunits
-
-Now assemble all of the subunits together
 
