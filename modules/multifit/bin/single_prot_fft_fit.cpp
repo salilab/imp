@@ -35,15 +35,17 @@ bool parse_input(int argc, char *argv[],
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,
                 float &rmsd_cluster,
-                int &delta_angle,
+                double &delta_angle,
+                double &max_angle,
+                double &max_trans,
                 std::string &protein_filename,
                 std::string &ref_filename,
                 std::string &sol_filename,
                 std::string &log_filename,
                 std::string &pdb_fit_filename,
-                std::string &pre_calc_rot_filename,
                 int &num_top_fits_to_report,
-                int &num_top_fits_to_store_for_each_rotation);
+                 int &num_top_fits_to_store_for_each_rotation,
+                 bool &cluster_on);
 
 multifit::FFTFitting ff;
 
@@ -83,17 +85,19 @@ em::DensityMap* set_map(const std::string &density_filename,
 int main(int argc, char **argv) {
   std::string density_filename,protein_filename;
   std::string ref_filename,sol_filename,log_filename;
-  std::string pdb_fit_filename,pre_calc_rot_filename;
+  std::string pdb_fit_filename;
   float spacing, x_origin,y_origin,z_origin,resolution,rmsd_cluster;
-  int delta_angle,num_top_fits_to_report;
+  double delta_angle,max_angle,max_trans;
+  int num_top_fits_to_report;
   int num_top_fits_to_store_for_each_rotation;
+  bool cluster_on;
   if (!parse_input(argc, argv,density_filename, spacing,
                    x_origin,y_origin,z_origin, resolution, rmsd_cluster,
-              delta_angle, protein_filename, ref_filename, sol_filename,
+                   delta_angle, max_angle,max_trans,protein_filename,
+                   ref_filename, sol_filename,
               log_filename, pdb_fit_filename,
-              pre_calc_rot_filename,
               num_top_fits_to_report,
-                   num_top_fits_to_store_for_each_rotation)) {
+                   num_top_fits_to_store_for_each_rotation,cluster_on)) {
     std::cerr<<"Wrong input data"<<std::endl;
     exit(1);
   }
@@ -111,6 +115,8 @@ int main(int argc, char **argv) {
   std::cout<<"spacing : " << spacing <<std::endl;
   std::cout<<"resolution : " << resolution <<std::endl;
   std::cout<<"delta angle:"<<delta_angle<<std::endl;
+  std::cout<<"max angle:"<<max_angle<<std::endl;
+  std::cout<<"max translation:"<<max_trans<<std::endl;
   std::cout<<"origin : (" << x_origin << "," <<
     y_origin<<"," << z_origin << ")" << std::endl;
   std::cout<<"protein name : " << protein_filename <<std::endl;
@@ -119,6 +125,7 @@ int main(int argc, char **argv) {
   std::cout<<"solution filename : " << sol_filename << std::endl;
   std::cout<<"number of top fits to report :"<<
     num_top_fits_to_report<<std::endl;
+  std::cout<<"cluster on :"<< cluster_on<<std::endl;
   dmap->show();
   std::cout<<"====================================="<<std::endl;
 
@@ -131,9 +138,20 @@ int main(int argc, char **argv) {
   //create a rigid body
   core::RigidBody rb=atom::create_rigid_body(mol2fit);
   IMP_NEW(core::LeavesRefiner,rb_refiner,(atom::Hierarchy::get_traits()));
-  //create rotations
-  multifit::FFTFittingOutput fits =
-    ff.fit(dmap,mol2fit,1.*delta_angle/180*PI,num_top_fits_to_report);
+  //run the fitting
+  multifit::FFTFittingOutput fits;
+  if (max_angle==-1.) {
+  fits=
+    ff.fit(dmap,mol2fit,1.*delta_angle/180*PI,
+           num_top_fits_to_report,cluster_on);
+  }
+  else {
+    //local fitting
+  fits=
+    ff.fit_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
+                         1.*max_angle/180*PI,max_trans,
+                         num_top_fits_to_report,false);
+  }
   //read the reference if provided (for debugging)
   atom::Hierarchy ref_mh;
   core::XYZs ref_mh_xyz;
@@ -181,24 +199,27 @@ bool parse_input(int argc, char *argv[],
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,
                 float &rmsd_cluster,
-                int &delta_angle,
+                 double &delta_angle, double &max_angle,double &max_trans,
                 std::string &protein_filename,
                 std::string &ref_filename,
                 std::string &sol_filename,
                 std::string &log_filename,
                 std::string &pdb_fit_filename,
-                std::string &pre_calc_rot_filename,
                 int &num_top_fits_to_report,
-                int &num_top_fits_to_store_for_each_rotation) {
-  pre_calc_rot_filename="";
+                 int &num_top_fits_to_store_for_each_rotation,
+                 bool &cluster_on) {
   num_top_fits_to_report=100;
+  cluster_on=true;
   num_top_fits_to_store_for_each_rotation=50;
+  max_trans=INT_MAX;
   x_origin=INT_MAX;y_origin=INT_MAX,z_origin=INT_MAX;
   ref_filename="";
   sol_filename="multifit.solutions.txt";
   log_filename="multifit.log";
   pdb_fit_filename="";
   delta_angle=30.;
+  max_angle=-1.;
+  int cluster_off_ind=0;
   po::options_description
     optional_params("Allowed options"),po,ao,required_params("Hideen options");
   required_params.add_options()
@@ -231,9 +252,6 @@ bool parse_input(int argc, char *argv[],
      " The default file is multifit.solutions.txt")
     ("sol",po::value<std::string>(&pdb_fit_filename),
      "Solutions will be printed in PDB format and named <sol>_i.pdb")
-    ("rot-file", po::value<std::string>
-     (&pre_calc_rot_filename),
-     "run FFT translational search only on those rotations")
     ("rmsd",po::value<float>(&rmsd_cluster),
      "RMSD threshold for clusetering. The default is resolution/2")
     ("n-hits",po::value<int>(&num_top_fits_to_report),
@@ -241,10 +259,16 @@ bool parse_input(int argc, char *argv[],
     ("n-angle-hits",po::value<int>
      (&num_top_fits_to_store_for_each_rotation),
      "Number of best fits to store for each angle (default is 50)")
-    ("angle",po::value<int>(&delta_angle),
+    ("angle",po::value<double>(&delta_angle),
      "angle step to sample")
+    ("max-angle",po::value<double>(&max_angle),
+     "max angle to sample")
+    ("max-translation",po::value<double>(&max_trans),
+     "max translation to sample")
     ("log-filename",po::value<std::string>(&log_filename),
-     "write log messages here");
+     "write log messages here")
+    ("cluster-off",po::value<int>(&cluster_off_ind),
+     "if set the clustering is off");
 
   po::positional_options_description p;
   p.add("density", 1);
@@ -272,6 +296,9 @@ bool parse_input(int argc, char *argv[],
    }
    if (vm.count("rmsd")==0) {
      rmsd_cluster=resolution/2;
+   }
+   if (cluster_off_ind==1) {
+     cluster_on=false;
    }
   return true;
 }
