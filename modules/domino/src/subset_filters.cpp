@@ -96,6 +96,7 @@ RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
       }
     }
   }
+  IMP_LOG(TERSE, "end Resraint filtration statistics (attempts, passes):\n");
 }
 
 
@@ -138,6 +139,7 @@ RestraintScoreSubsetFilterTable
     }
     IMP_LOG(VERBOSE, std::endl);
   }
+
   // if there are no restraints just here, the total score can't change
   if (mset_->get_subset_data(s, excluded)
       .get_number_of_total_restraints() ==0) {
@@ -188,6 +190,136 @@ void RestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 }
 
 
+
+
+/***************************MINIMUM ******************************/
+bool MinimumRestraintScoreSubsetFilter::get_is_ok(const Assignment &state)
+  const{
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  const bool ok=
+    data_.get_is_ok_minimal(state, max_number_of_violated_restraints_);
+  IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
+          << (ok?" accepted":" rejected")
+          << " state " << state << std::endl);
+  return ok;
+}
+
+void MinimumRestraintScoreSubsetFilter::do_show(std::ostream &out) const{
+  out << "subset: " << data_.get_subset() << std::endl;
+}
+
+int MinimumRestraintScoreSubsetFilter::get_next_state(int pos,
+                                               const Assignment& state) const {
+  Particle *p= data_.get_subset()[pos];
+  unsigned int num
+    = keepalive_->pst_->get_particle_states(p)->get_number_of_particle_states();
+  Ints cur(state.begin(), state.end());
+  for (unsigned int i=state[pos]+1; i<num; ++i) {
+    cur[pos]=i;
+    Assignment as(cur);
+    if (get_is_ok(as)) {
+      return i;
+    }
+  }
+  return num;
+}
+
+
+double MinimumRestraintScoreSubsetFilter::get_score(const Assignment& state)
+  const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  const double score=data_.get_score(state);
+  return score;
+}
+
+MinimumRestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE,
+            "Minimum restraint filtration statistics (attempts, passes):\n");
+    for (unsigned int i=0; i< get()->rdata_.size(); ++i) {
+      std::pair<int,int> stat= get()->rdata_[i].get_statistics();
+      if (stat.first >0) {
+        IMP_LOG(TERSE, "  \""
+                << get()->rdata_[i].get_restraint()->get_name()
+                << "\" " << stat.first << " " << stat.second << std::endl);
+      }
+    }
+  }
+  IMP_LOG(TERSE, "end Resraint filtration statistics (attempts, passes):\n");
+}
+
+
+
+MinimumRestraintScoreSubsetFilterTable
+::MinimumRestraintScoreSubsetFilterTable(RestraintSet *eval,
+             ParticleStatesTable *pst,int max_number_of_violated_restraints):
+  SubsetFilterTable("MinimumRestraintScoreSubsetFilterTable%1%"),
+  mset_(new internal::ModelData(RestraintsTemp(1, eval), pst)),
+  max_number_of_violated_restraints_(max_number_of_violated_restraints) {
+  }
+
+MinimumRestraintScoreSubsetFilterTable
+::MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &m,
+               ParticleStatesTable *pst,int max_number_of_violated_restraints):
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
+  mset_(new internal::ModelData(m, pst)),
+  max_number_of_violated_restraints_(max_number_of_violated_restraints) {
+  }
+
+SubsetFilter*
+MinimumRestraintScoreSubsetFilterTable
+::get_subset_filter(const Subset &s,
+                    const Subsets &excluded) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "Looking for restraints acting on " << s << " minus ");
+    for (unsigned int i=0; i< excluded.size(); ++i) {
+      IMP_LOG(VERBOSE, excluded[i] << " ");
+    }
+    IMP_LOG(VERBOSE, std::endl);
+  }
+
+  // if there are no restraints just here, the total score can't change
+  if (mset_->get_subset_data(s)
+      .get_number_of_total_restraints() ==0) {
+    IMP_LOG(VERBOSE, "none found" << std::endl);
+    return NULL;
+  } else {
+    IMP_LOG(VERBOSE, mset_->get_subset_data(s)
+            .get_number_of_total_restraints() << " found" << std::endl);
+    SubsetFilter* ret
+      = new MinimumRestraintScoreSubsetFilter(mset_,
+                              mset_->get_subset_data(s),
+                              max_number_of_violated_restraints_);
+    ret->set_log_level(get_log_level());
+    return ret;
+  }
+}
+
+double MinimumRestraintScoreSubsetFilterTable
+::get_strength(const Subset &s,
+               const Subsets &excluded) const {
+  set_was_used(true);
+  unsigned int nr= mset_->get_number_of_restraints(s, excluded);
+  return 1-std::pow(.5,
+                    static_cast<int>(nr));
+}
+
+
+void MinimumRestraintScoreSubsetFilterTable
+::set_use_caching(bool tf) {
+  mset_->set_use_caching(tf);
+}
+void MinimumRestraintScoreSubsetFilterTable
+::set_maximum_number_of_cache_entries(unsigned int i) {
+  mset_->set_maximum_number_of_cache_entries(i);
+}
+
+void MinimumRestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
+}
 
 // ******************************* Disjoint sets ********************
 

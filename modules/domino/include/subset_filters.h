@@ -99,6 +99,7 @@ class IMPDOMINOEXPORT SubsetFilterTable: public Object {
 IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
 
 class RestraintScoreSubsetFilterTable;
+class MinimumRestraintScoreSubsetFilterTable;
 
 /** A restraint score based SubsetFilter.
     See RestraintScoreSubsetFilterTable.
@@ -171,6 +172,63 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
 
 IMP_OBJECTS(RestraintScoreSubsetFilterTable,
             RestraintScoreSubsetFilterTables);
+
+/** A minimum restraint score based SubsetFilter.
+    See MinimumRestraintScoreSubsetFilterTable.
+ */
+class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter: public SubsetFilter {
+  Pointer<const internal::ModelData> keepalive_;
+  const internal::SubsetData &data_;
+  int max_number_of_violated_restraints_;
+  friend class MinimumRestraintScoreSubsetFilterTable;
+  MinimumRestraintScoreSubsetFilter(const internal::ModelData *t,
+                             const internal::SubsetData &data,
+                             int max_number_of_violated_restraints):
+    SubsetFilter("Minimum restraint score filter"),
+    keepalive_(t), data_(data),
+    max_number_of_violated_restraints_(max_number_of_violated_restraints){
+  }
+public:
+  IMP_SUBSET_FILTER(MinimumRestraintScoreSubsetFilter);
+  int get_next_state(int pos, const Assignment& state) const;
+  double get_score(const Assignment& state) const;
+};
+
+
+//! Filter a configuration of the subset using the Model thresholds
+/** This filter table creates filters using the maximum scores
+    set in the Model for various restraints.
+ */
+class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable:
+  public SubsetFilterTable {
+  struct StatsPrinter:public Pointer<internal::ModelData>{
+  public:
+    StatsPrinter(internal::ModelData *mset):
+      Pointer<internal::ModelData>(mset){}
+    ~StatsPrinter();
+  };
+  StatsPrinter mset_;
+  int max_number_of_violated_restraints_;
+ public:
+  MinimumRestraintScoreSubsetFilterTable(RestraintSet *rs,
+                                         ParticleStatesTable *pst,
+                                         int max_number_of_violated_restraints);
+  MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
+                                         ParticleStatesTable *pst,
+                                         int max_number_of_violated_restraints);
+  /** By default the filter table caches each score that it computes.
+      While this can often accelerate things, that is not always the
+      case and the memory usage can be quite high.
+  */
+  void set_use_caching(bool tf);
+  /** Set the maximum number of cache entries for all restraints.
+  */
+  void set_maximum_number_of_cache_entries(unsigned int i);
+  IMP_SUBSET_FILTER_TABLE(MinimumRestraintScoreSubsetFilterTable);
+};
+
+IMP_OBJECTS(MinimumRestraintScoreSubsetFilterTable,
+            MinimumRestraintScoreSubsetFilterTables);
 
 
 /** \brief A base class
