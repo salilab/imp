@@ -180,6 +180,8 @@ class IMPDOMINOEXPORT SubsetData {
     s_(s){}
   double get_score(const Assignment &state) const ;
   bool get_is_ok(const Assignment &state, double max) const ;
+  bool get_is_ok_minimal(const Assignment &state,
+                         int max_number_of_violated_restraints) const ;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
@@ -320,6 +322,31 @@ inline bool SubsetData::get_is_ok(const Assignment &state, double max) const {
   }
   return true;
 }
+inline bool SubsetData::get_is_ok_minimal(const Assignment &state,
+                                  int max_number_of_violated_restraints) const {
+  int violated=0;
+  for (unsigned int i=0; i< ris_.size(); ++i) {
+    //ris_ all restraint in of subset minus already seen
+    Ints ssi(indices_[i].size());
+    for (unsigned int j=0; j< ssi.size();++j) {
+      ssi[j]= state[indices_[i][j]];
+    }
+    Assignment ss(ssi);
+    ParticlesTemp ps(ss.size());
+    for (unsigned int j=0; j< ss.size(); ++j) {
+      ps[j]= s_[indices_[i][j]];
+    }
+    double ms=md_->rdata_[ris_[i]].get_score<true>(md_->pst_,
+                                                   ps, ss);
+    if (ms >= std::numeric_limits<double>::max()) {
+      ++violated;
+      if (violated>max_number_of_violated_restraints) {
+        return false;}
+    }
+  }
+  return true;
+}
+
 IMPDOMINO_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPDOMINO_INTERNAL_RESTRAINT_EVALUATOR_H */
