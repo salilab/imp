@@ -108,7 +108,7 @@ public:
   This operator++(int) {
     IMP_INTERNAL_CHECK(*this != VI(), "Incrementing invalid iterator");
     This o= *this;
-    operator++;
+    operator++();
     return o;
   }
   reference operator*() const {
