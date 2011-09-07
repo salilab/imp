@@ -357,7 +357,7 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
   //transform the molecule and check the centroid translation
   core::XYZs ps=core::XYZs(core::get_leaves(orig_mol_));
   algebra::Vector3D orig_cen = core::get_centroid(ps);
-  for(int i=0;i<final_fits.size();i++) {
+  for(unsigned int i=0;i<final_fits.size();i++) {
     core::transform(orig_rb_,final_fits[i].get_fit_transformation());
     if (algebra::get_distance(orig_cen,core::get_centroid(ps))) {
       final_fits_pruned.push_back(final_fits[i]);
