@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     each Mover is called at each Monte Carlo iteration. If you only want to
     use one mover at a time, use a SerialMover.
     The movers propose some modification, which is then
-    accepted or rejected based on the Metropolis criteria. Optionally, a
+    accepted or rejected based on the Metropolis criterion. Optionally, a
     number of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
 
@@ -143,7 +143,12 @@ public:
       state of the model. Also, if the move is accepted, the
       optimizer states will be updated.
   */
-  bool do_accept_or_reject_move(double score);
+  bool do_accept_or_reject_move(double score, double last);
+  bool do_accept_or_reject_move(double score)
+  {
+      return do_accept_or_reject_move(score, get_last_accepted_energy());
+  }
+
   ParticlesTemp do_move(double probability);
   //! a class that inherits from this should override this method
   virtual void do_step();

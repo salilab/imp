@@ -32,16 +32,16 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo%1%"),
                                   return_best_(true),
                                   rand_(0,1), eval_incremental_(false){}
 
-bool MonteCarlo::do_accept_or_reject_move(double score) {
+bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
   bool ok=false;
-  if  (score < last_energy_) {
+  if  (score < last) {
     ok=true;
     if (score < best_energy_ && return_best_) {
       best_= new Configuration(get_model());
       best_energy_=score;
     }
   } else {
-    double diff= score- last_energy_;
+    double diff= score- last;
     double e= std::exp(-diff/temp_);
     double r= rand_(random_number_generator);
     IMP_LOG(VERBOSE, diff << " " << temp_ << " " << e << " " << r
@@ -55,14 +55,14 @@ bool MonteCarlo::do_accept_or_reject_move(double score) {
   }
   if (ok) {
     IMP_LOG(VERBOSE, "Accept: " << score
-            << " previous score was " << last_energy_ << std::endl);
+            << " previous score was " << last << std::endl);
     ++stat_forward_steps_taken_;
     last_energy_=score;
     update_states();
     return true;
   } else {
     IMP_LOG(VERBOSE, "Reject: " << score
-            << " current score stays " << last_energy_ << std::endl);
+            << " current score stays " << last << std::endl);
     for (int i= get_number_of_movers()-1; i>=0; --i) {
       get_mover(i)->reset_move();
     }
