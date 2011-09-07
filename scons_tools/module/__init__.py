@@ -232,6 +232,10 @@ def _make_programs(envi, files):
     for f in files:
         if str(f).endswith(".cpp"):
             ret.append(env.Program(f))
+        elif str(f).endswith(".py"):
+            dest=Dir('#/modules/'+scons_tools.environment.get_current_name(env)+'/bin/')
+            #print "handling", f.abspath, dest.path
+            ret.append(scons_tools.install.install(env, dest.path, f))
     return ret
 
 def IMPModuleBin(env, files):

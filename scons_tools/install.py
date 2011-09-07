@@ -66,7 +66,7 @@ def get_install_directory(env, varname, *subdirs):
         installdir = env.Dir('#/' + installdir).abspath
     return os.path.join(installdir, *subdirs)
 
-def _get_prefix(varname):
+def _get_prefix(env, varname):
     if varname=="datadir":
         prefix="#/build/data"
     elif varname=="bindir":
@@ -85,8 +85,10 @@ def _get_prefix(varname):
         prefix="#/build/swig"
     elif varname=="srcdir":
         prefix="#/build/src"
+    elif varname=="moduledir":
+        prefix="#/modules/"+environment.get_current_name(env)
     else:
-        print "Unknwn", varname
+        prefix=varname
     return prefix
 
 def _get_path(env, target, prefix):
@@ -101,7 +103,7 @@ def _get_path(env, target, prefix):
 
 def get_build_path(env, target):
     varname= str(target).split("/")[0]
-    prefix= _get_prefix(varname)
+    prefix= _get_prefix(env, varname)
     return _get_path(env, target, prefix)
 
 
@@ -109,7 +111,7 @@ def install(env, target, source, **keys):
     """Like the standard Install builder, but using symlinks if available."""
     #print str(target), str(source)
     varname= str(target).split("/")[0]
-    prefix=_get_prefix(varname)
+    prefix=_get_prefix(env, varname)
     installpath= _get_path(env, target, prefix)
     #print Dir(installpath).get_abspath(), Dir("/".join(str(source).split("/")[:-1])).get_abspath()
     ret=[]
@@ -120,7 +122,9 @@ def install(env, target, source, **keys):
         ret.append(inst[0])
     else:
         data.get(env).add_to_alias(environment.get_current_name(env), source)
-    if varname=='swigdir' or varname=='srcdir':
+    # ick, need a better mechanism for installed vs not
+    if varname=='swigdir' or varname=='srcdir' or varname=='moduledir' or varname=="#"\
+           or varname=="biological_systems" or varname=="." or varname=="modules":
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
     inst= env.Install(installpath, source, **keys)
@@ -132,7 +136,7 @@ def install(env, target, source, **keys):
 def install_as(env, target, source, **keys):
     #print "in", target, source
     varname= str(target).split("/")[0]
-    prefix=_get_prefix(varname)
+    prefix=_get_prefix(env, varname)
     installpath= _get_path(env, target, prefix)
     #print File(installpath).get_abspath(), File(str(source)).get_abspath()
     ret=[]
