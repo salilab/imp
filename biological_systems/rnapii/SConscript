@@ -3,62 +3,78 @@ import scons_tools.examples
 
 env= env.IMPSystem(version="SVN",
                    authors=["Keren Lasker"],
-                   brief="Compute a structure for the humap RNAPII complex.",
+                   brief="Compute a structure for the human RNAPII complex.",
                    overview="""
-\note Currently, generating the structure requires \\c multifit2. We are working on moving the needed functionallity into \imp propper. Your patience is appreciated.
+\\note Currently, generating the structure requires \\c IMP.multifit2. It can be obtained from the author (Keren). We are working on moving the needed functionallity into \imp propper. Your patience is appreciated.
 
-\\section input Input files
-The input files are
- - \\c subunits.txt which contains a list of the subunits and the path to the pdb file for the structure of each
- - the mentioned pdb files, located in the \\c data directory
- - the \\c .mrc file for the assembly, also located in the \\c data directory
+\\section howtorun How to run
 
-\\section generate_params Generating structures
+All command here are given as if run from the \c biological_systems/rnapii directory in the build directory
 
-First we need to generate the paramters files for running multifit.
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_input.py -i rnapii.asmb.input -- rnapii subunits.txt 10 data/emd_1283.mrc 20 2.5 0.2 60 60 60}
+\\subsection input Input
 
-We the run multifit to create all the surfaces {what does this mean?}
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_all_surfaces.py rnapii.asmb.data}
+ - \\c rnapii.subunit.list.txt: The subunits list. Each line describes a subunit and contains:
+\\verbatim
+name pdb_file [global/local]_fit
+\\endverbatim
 
-We then generate the anchor graph
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_anchor_graph.py rnapii.asmb.data rnapii.asmb.anchors}
+ - \\c data/emd_1283.mrc: a mrc file of the assembly
 
-This generates the following files:
- - \\c rnapii.asmb.anchors.pdb The graph in pdb format
- - \\c rnapii.asmb.anchors.txt The graph in txt format
- - \\c rnapii.asmb.anchors.cmm The graph in cmm format
+ - \\c data/*.pdb: pdb files of the subunits, derived from the yeast homologues.
 
-We then need to fit the subunits. We could do all at once in parallel by running
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -p rnapii.multifit.param  rnapii.asmb.data -c 6}
-where \\c -c specifies the number of processes to use. See $IMP/modules/multifit2/example for more such examples.
+ - \\c rnapii.subunit.list.txt: the list of subunits and corresponding pdb files
 
-However, since the first two subunits are much larger than the rest, we first fit fit and assemble the first two subunits and then the rest:
+\\subsection params Generating the parameters file
 
-We start by creating a parameter file just for the first two subunits:
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_assembly_input.py -i RPB1.RPB2.asmb.input -- rnapii RPB1_RPB2_subunits.txt 10 data/emd_1283.mrc 20 2.5 0.2 60 60 60}
+\command{../../tools/imppy.sh python ../../modules/multifit2/bin/generate_assembly_input.py -i rnapii.asmb.input -- rnapii data/rnapii.subunit.list.txt 30 data/emd_1283.mrc 20 2.5 0.2 60 60 60}
 
-and then fit the two subunits
+This creates the file \c rnapii.asmb.input which can be used to run multifit.
 
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -p rnapii.multifit.param  RPB1.RPB2.asmb.data -c 2 -a 15}
+\\subsection runmf Running multifit
+First, create all the molecular surfaces to be used when computing excluded volumes.
+\command{../../tools/imppy.sh python ../../modules/multifit2/bin/create_all_surfaces.py rnapii.asmb.input}
 
-generate indexes
-We now create fit indexes for the assembly {What does this mean?}
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py RPB1_RPB2 RPB1_RPB2.asmb.input 10}
+Creates \c X.ms for each input pdb.
 
-Assemble only the first two subunits.
+Second, generate the assembly anchor graph:
+\command{../../tools/imppy.sh python ../../modules/multifit2/bin/generate_fine_assembly_anchor_graph.py rnapii.asmb.input}
 
-create a proteomics file
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/create_auto_proteomics_file.py 1z5s.asmb.input 1z5s.asmb.anchors.txt  1z5s.proteomics.input}
+This creates:
+- \\c rnapii.asmb.anchors.pdb  : The graph in pdb format
+- \\c rnapii.asmb.anchors.txt  : The graph in txt format
+- \\c rnapii.asmb.anchors.cmm  : The graph in cmm format
 
-\\c 1z5s.asmb.anchors.txt was generated above. This will generate \\c 1z5s.proteomics.input.
+Then generate the fits
+\\command{../../tools/imppy.sh python $IMP/modules/multifit2/bin/run_fitting_fft.py -p rnapii.multifit.param  rnapii.asmb.data -c 6 -z -n 10000}
+The fits are put in files named \\c X_fitting.txt.
 
-We then assemble the fitting solutions:
-\\command{$IMP/tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py -m 30 1z5s.asmb.input 1z5s.proteomics.input 1z5s.indexes.mapping.input 1z5s.alignment.param 1z5s.docking.param combinations.output scores.output}
+Then generate the indexes
+\\command{../../tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py rnapii rnapii.asmb.input 1000}
+The indexes are put into files name \\c X.fit.indexes.txt.
 
-Now segment RPB1, RPB2 from the density and fit the rest of the subunits
+Next we create the automated proteomics file
+\\command{../../tools/imppy.sh python ../../modules/multifit2/bin/create_auto_proteomics_file.py rnapii.asmb.input rnapii_em_coarse_anchors_FINE.txt rnapii.ev_proteomics.input}
 
-Now assemble all of the subunits together
+This produces the file \c rnapii.ev_proteomics.input for assembling the components using only excluded volume.
+
+Finally we create the assembly fitting structures.
+\\command{../../tools/imppy.sh python $IMP/modules/multifit2/bin/align_proteomics_em_atomic_plan.py -m 30 rnapii.asmb.input rnapii.ev_proteomics.input rnapii.indexes.mapping.input rnapii.alignment.param rnapii.docking.param rnapii.combinations.output rnapii.scores ignored}
+
+If you want to use proteomics restraints taken from \external{http://thebiogrid.org, BioGrid}, you can modify the \c rnapii.ev_proteomics.input file, or use the provided \\c rnapii.biogrid_proteomics.input instead.
+
+The output files
+- \c rnapii.combinations.output gives the indexes into X_fitting.txt of each solution.
+- \c rnapii.scores gives the fitting score of each solution.
+
+\subsection results Analyzing and displaying the results
+
+To convert the output files to pdbs do
+\command{../../tools/imppy.sh python ../../modules/multifit2/bin/write_ensemble_models.py 1z5s.asmb.input combinations.output asmb.mdl}
+
+And to print more detailed information about the various excluded volume,
+docking and proteomics scores run:
+\command{../../tools/imppy.sh ../../modules/multifit2/bin/score_ensemble_modles.py rnapii.asmb.input rnapii.proteomics.input rnapii.indexes.mapping.input rnapii.alignment.param rnapii.docking.param rnapii.combinations.output rnapii_detailed.scores}
+
                    """,
                    license=env.IMPStandardLicense(),
                    # jeremy, update the publication(s)
@@ -68,21 +84,4 @@ Now assemble all of the subunits together
                                                     year=2011)],
                    required_modules=['core', 'atom', 'rmf', 'multifit'],
                    last_imp_version="""None""",
-                   # this is true if the scripts can be run incompletely as test cases
-                   # eg if it works to do "sample_0.py 1 1000" and then "analyze_0.py"
-                   # without doing all of the sampling required. This can be implementedf
-                   # either by providing intermediate data or by only analyzing the data
-                   # that happens to be there
                    testable=False, parallelizable=False)
-#if env:
-#    files= ["setup",
-#            "sample_0",
-#            "analyze_0"]
-#    scons_tools.examples.add_python_example(env, "setup.py",
-#                                            "General setup code common to sampling and analysis.")
-#    scons_tools.examples.add_python_example(env, "sample_0.py",
-#                                            "Sampling using MCCG and random starting points.")
-#    scons_tools.examples.add_python_example(env, "analyze_0.py",
-#                                            "Cluster into 10 solutions.")
-#    scons_tools.examples.add_page(env, "Example system code",
-#                                  [x+".py" for x in files])
