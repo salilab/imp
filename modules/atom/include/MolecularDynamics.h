@@ -36,7 +36,7 @@ public:
   MolecularDynamics(Model *m=nullptr);
 
   //! \return the current kinetic energy of the system, in kcal/mol
-  Float get_kinetic_energy() const;
+  virtual Float get_kinetic_energy() const;
 
   //! \return the current kinetic temperature of the system
   /** \param[in] ekinetic kinetic energy, e.g. from get_kinetic_energy()
@@ -56,18 +56,20 @@ public:
   void set_velocity_cap(Float velocity_cap) { velocity_cap_ = velocity_cap; }
 
   //! Assign velocities representative of the given temperature
-  void assign_velocities(Float temperature);
+  virtual void assign_velocities(Float temperature);
   IMP_SIMULATOR(MolecularDynamics);
-private:
+protected:
   void initialize();
 
-  void setup_degrees_of_freedom(const ParticleIndexes &ps);
+  virtual void setup_degrees_of_freedom(const ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  void propagate_coordinates(const ParticleIndexes &ps, double step_size);
+  virtual void propagate_coordinates(const ParticleIndexes &ps, double
+          step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  void propagate_velocities(const ParticleIndexes &ps, double step_size);
+  virtual void propagate_velocities(const ParticleIndexes &ps, double
+          step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
