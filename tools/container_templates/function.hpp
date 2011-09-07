@@ -104,12 +104,12 @@ FunctorCLASSNAMEModifier<Functor>::get_output_particles(Particle *p) const {
 }
 template <class Functor>
 ContainersTemp
-FunctorCLASSNAMEModifier<Functor>::get_input_containers(Particle *p) const {
+FunctorCLASSNAMEModifier<Functor>::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 template <class Functor>
 ContainersTemp
-FunctorCLASSNAMEModifier<Functor>::get_output_containers(Particle *p) const {
+FunctorCLASSNAMEModifier<Functor>::get_output_containers(Particle *) const {
   return ContainersTemp();
 }
 
