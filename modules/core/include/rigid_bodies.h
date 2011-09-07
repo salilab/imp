@@ -217,6 +217,7 @@ public:
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
 
+  /** The units are kCal/Mol/Radian */
   algebra::Vector3D get_torque() const;
 #endif
 
