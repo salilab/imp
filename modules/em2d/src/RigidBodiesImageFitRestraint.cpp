@@ -210,7 +210,7 @@ unsigned int RigidBodiesImageFitRestraint::get_rigid_body_index(
                                         const core::RigidBody &rb) const {
   IMP_LOG(IMP::TERSE, "Check rigid body index " << rb->get_name() << std::endl);
   unsigned int   j = rigid_bodies_.size();
-  for ( uint i=0; i < rigid_bodies_.size(); ++i) {
+  for ( unsigned int i=0; i < rigid_bodies_.size(); ++i) {
     IMP_LOG(IMP::VERBOSE,"Comparing " << rigid_bodies_[i].get_particle()
             << " with " << rb.get_particle() << std::endl);
 
