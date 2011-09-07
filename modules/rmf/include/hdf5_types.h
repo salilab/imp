@@ -353,22 +353,22 @@ namespace RMF {
       free(data.p);
       return ret;
     }
-    static void write_values_dataset(hid_t d, hid_t is,
-                                     hid_t s,
-                                     const Types& v) {
+    static void write_values_dataset(hid_t , hid_t,
+                                     hid_t ,
+                                     const Types& ) {
       IMP_RMF_NOT_IMPLEMENTED;
     }
-    static Types read_values_dataset(hid_t d, hid_t is,
-                                     hid_t sp,
-                                     unsigned int sz) {
-      IMP_RMF_NOT_IMPLEMENTED;
-      return Types();
-    }
-    static Types read_values_attribute(hid_t a, unsigned int size) {
+    static Types read_values_dataset(hid_t, hid_t,
+                                     hid_t,
+                                     unsigned int) {
       IMP_RMF_NOT_IMPLEMENTED;
       return Types();
     }
-    static void write_values_attribute(hid_t a, const Types &v) {
+    static Types read_values_attribute(hid_t, unsigned int) {
+      IMP_RMF_NOT_IMPLEMENTED;
+      return Types();
+    }
+    static void write_values_attribute(hid_t, const Types &) {
       IMP_RMF_NOT_IMPLEMENTED;
     }
     static hid_t get_hdf5_fill_type() {
