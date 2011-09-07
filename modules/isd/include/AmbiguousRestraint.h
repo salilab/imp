@@ -10,7 +10,7 @@
 #define IMPISD_AMBIGUOUS_RESTRAINT_H
 
 #include "isd_config.h"
-#include <IMP/Restraint.h>
+#include <IMP/isd/ISDRestraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -24,7 +24,7 @@ IMPISD_BEGIN_NAMESPACE
     \include AmbiguousRestraint.h
     \include AmbiguousRestraint.cpp
 */
-class IMPISDEXPORT AmbiguousRestraint : public Restraint
+class IMPISDEXPORT AmbiguousRestraint : public ISDRestraint
 {
   int d_;
   Restraints rs_;
@@ -37,6 +37,10 @@ public:
   AmbiguousRestraint(int d, Restraint *r0, Restraint *r1);
   AmbiguousRestraint(int d, Restraints rs);
 
+  double get_probability() const
+  {
+      return exp(-unprotected_evaluate(NULL));
+  }
 
   /** This macro declares the basic needed methods: evaluate and show
    */
