@@ -1,5 +1,5 @@
 /**
- *  \file Molecule.h     \brief A decorator for Molecules.
+ *  \file atom/Molecule.h     \brief A decorator for Molecules.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
