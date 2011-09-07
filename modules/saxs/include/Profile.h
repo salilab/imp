@@ -65,8 +65,14 @@ public:
                                  const Floats& surface = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
+  // void calculate_profile_partial(const Particles& particles1,
+  //                                const Particles& particles2,
+  //                                FormFactorType ff_type = HEAVY_ATOMS);
+
   void calculate_profile_partial(const Particles& particles1,
                                  const Particles& particles2,
+                                 const Floats& surface1 = Floats(),
+                                 const Floats& surface2 = Floats(),
                                  FormFactorType ff_type = HEAVY_ATOMS);
 
   //! computes theoretical profile contribution from iter-molecular

@@ -48,9 +48,9 @@ Profile::Profile(const String& file_name) : experimental_(true)
 void Profile::init()
 {
   profile_.clear();
-  unsigned int number_of_q_entries = std::ceil((max_q_ - min_q_) / delta_q_ );
+  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
 
-  for (unsigned int i=0; i<number_of_q_entries; i++) {
+  for (int i=0; i<number_of_q_entries; i++) {
     IntensityEntry entry(min_q_ + i * delta_q_);
     profile_.push_back(entry);
   }
@@ -273,7 +273,7 @@ void Profile::calculate_profile_partial(const Particles& particles,
     water_ff.resize(particles.size());
     Float ff_water = ff_table_->get_water_form_factor();
     for (unsigned int i=0; i<particles.size(); i++) {
-      water_ff[i] += surface[i]*ff_water;
+      water_ff[i] = surface[i]*ff_water;
     }
   }
 
@@ -320,6 +320,8 @@ void Profile::calculate_profile_partial(const Particles& particles,
 
 void Profile::calculate_profile_partial(const Particles& particles1,
                                         const Particles& particles2,
+                                        const Floats& surface1,
+                                        const Floats& surface2,
                                         FormFactorType ff_type)
 {
   IMP_LOG(TERSE, "start real partial profile calculation for "
@@ -330,19 +332,34 @@ void Profile::calculate_profile_partial(const Particles& particles1,
   std::vector <algebra::Vector3D> coordinates1,coordinates2;
   get_coordinates(particles1, coordinates1);
   get_coordinates(particles2, coordinates2);
+  int r_size = 3;
   // get form factors
-  Floats vacuum_ff1(particles1.size()), dummy_ff1(particles1.size());
-  for (unsigned int i=0; i<particles1.size(); i++) {
+  Floats vacuum_ff1(particles1.size()), dummy_ff1(particles1.size()), water_ff1;
+  for(unsigned int i=0; i<particles1.size(); i++) {
     vacuum_ff1[i] = ff_table_->get_vacuum_form_factor(particles1[i], ff_type);
     dummy_ff1[i] = ff_table_->get_dummy_form_factor(particles1[i], ff_type);
   }
-  Floats vacuum_ff2(particles2.size()), dummy_ff2(particles2.size());
-  for (unsigned int i=0; i<particles2.size(); i++) {
+  Floats vacuum_ff2(particles2.size()), dummy_ff2(particles2.size()), water_ff2;
+  for(unsigned int i=0; i<particles2.size(); i++) {
     vacuum_ff2[i] = ff_table_->get_vacuum_form_factor(particles2[i], ff_type);
     dummy_ff2[i] = ff_table_->get_dummy_form_factor(particles2[i], ff_type);
   }
+  // water layer
+  if(surface1.size() > 0 && surface2.size() > 0 &&
+     surface1.size() == particles1.size() &&
+     surface2.size() == particles2.size()) {
+    Float ff_water = ff_table_->get_water_form_factor();
+    water_ff1.resize(particles1.size());
+    water_ff2.resize(particles2.size());
+    for(unsigned int i=0; i<particles1.size(); i++) {
+      water_ff1[i] = surface1[i]*ff_water;
+    }
+    for(unsigned int i=0; i<particles2.size(); i++) {
+      water_ff2[i] = surface2[i]*ff_water;
+    }
+    r_size = 6;
+  }
 
-  int r_size = 3;
   std::vector<RadialDistributionFunction> r_dist(r_size);
 
   // iterate over pairs of atoms
@@ -354,15 +371,20 @@ void Profile::calculate_profile_partial(const Particles& particles1,
       r_dist[1].add_to_distribution(dist, 2*dummy_ff1[i]*dummy_ff2[j]);  // c1^2
       r_dist[2].add_to_distribution(dist, 2*(vacuum_ff1[i] * dummy_ff2[j]
                                         + vacuum_ff2[j] * dummy_ff1[i])); // -c1
+      if(r_size > 3) {
+        r_dist[3].add_to_distribution(dist, 2*water_ff1[i]*water_ff2[j]); //c2^2
+        r_dist[4].add_to_distribution(dist, 2*(vacuum_ff1[i] * water_ff2[j]
+                                        + vacuum_ff2[j] * water_ff1[i])); // c2
+        r_dist[5].add_to_distribution(dist, 2*(water_ff1[i] * dummy_ff2[j]
+                                       + water_ff2[j] * dummy_ff1[i])); //-c1*c2
+      }
     }
   }
 
   // convert to reciprocal space
   partial_profiles_.insert(partial_profiles_.begin(), r_size,
                            Profile(min_q_, max_q_, delta_q_));
-  for(int i=0; i<r_size; i++) {
-    partial_profiles_[i].squared_distribution_2_profile(r_dist[i]);
-  }
+  squared_distributions_2_partial_profiles(r_dist);
 
   // compute default profile c1 = 1, c2 = 0
   sum_partial_profiles(1.0, 0.0, *this);
