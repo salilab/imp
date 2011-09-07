@@ -14,19 +14,17 @@
 #include "Pointer.h"
 #include "macros.h"
 #include "WeakPointer.h"
-#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 class Model;
 class Particle;
-typedef IMP::VectorOfRefCounted<Particle*> Particles;
-typedef std::vector<Particle*> ParticlesTemp;
+IMP_OBJECTS_TYPEDEF(Particle, Particles);
 
 template <unsigned int D>
 class ParticleTuple;
 
 class Container;
-IMP_OBJECTS(Container,Containers);
+IMP_OBJECTS_TYPEDEF(Container,Containers);
 
 //! Abstract class for containers of particles
 /** Containers store sets of tuples of particles. The degree of the tuple
@@ -56,7 +54,7 @@ class IMPEXPORT Container : public Object
 {
   friend class Model;
   friend class Particle;
-  WeakPointer<Model> m_;
+  UncheckedWeakPointer<Model> m_;
 
  protected:
   bool is_ok(Particle *p);
@@ -106,6 +104,8 @@ class IMPEXPORT Container : public Object
 
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
+
+IMP_OBJECTS_IO(Container, Containers);
 
 IMP_END_NAMESPACE
 

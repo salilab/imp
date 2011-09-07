@@ -71,7 +71,24 @@ struct Pointer: internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   template <class Any>
   Pointer(const Any &o): P(o){}
   Pointer(){}
-  using P::operator=;
+  template <class OT>
+  Pointer<O>& operator=( const internal::PointerBase<OT> &o){
+    P::operator=(o);
+    return *this;
+  }
+  template <class OT>
+  Pointer<O>& operator=( OT* o){
+    P::operator=(o);
+    return *this;
+  }
+  Pointer<O>& operator=(nullptr_t o) {
+    P::operator=(o);
+    return *this;
+  }
+  Pointer<O>& operator=(const P &o) {
+    P::operator=(o);
+    return *this;
+  }
 };
 
 //! A reference counted pointer to an object.
@@ -87,7 +104,24 @@ struct OwnerPointer: internal::PointerBase<internal::OwnerPointerTraits<O> > {
   template <class Any>
   OwnerPointer(const Any &o): P(o){}
   OwnerPointer(){}
-  using P::operator=;
+  template <class OT>
+  OwnerPointer<O>& operator=( const internal::PointerBase<OT> &o){
+    P::operator=(o);
+    return *this;
+  }
+  template <class OT>
+  OwnerPointer<O>& operator=( OT* o){
+    P::operator=(o);
+    return *this;
+  }
+  OwnerPointer<O>& operator=(nullptr_t o) {
+    P::operator=(o);
+    return *this;
+  }
+  OwnerPointer<O>& operator=(const P &o) {
+    P::operator=(o);
+    return *this;
+  }
 };
 
 IMP_OBJECTS(Object, Objects);

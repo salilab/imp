@@ -23,25 +23,60 @@ IMP_BEGIN_NAMESPACE
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
-struct WeakPointer: internal::PointerBase<internal::WeakPointerTraits<O> > {
+struct UncheckedWeakPointer:
+  internal::PointerBase<internal::WeakPointerTraits<O> > {
   typedef  internal::PointerBase<internal::WeakPointerTraits<O> > P;
   template <class Any>
-  WeakPointer(const Any &o): P(o){}
-  WeakPointer(){}
-  using P::operator=;
+  UncheckedWeakPointer(const Any &o): P(o){}
+  UncheckedWeakPointer(){}
+  template <class OT>
+  UncheckedWeakPointer<O>& operator=( const internal::PointerBase<OT> &o){
+    P::operator=(o);
+    return *this;
+  }
+  template <class OT>
+  UncheckedWeakPointer<O>& operator=( OT* o){
+    P::operator=(o);
+    return *this;
+  }
+  UncheckedWeakPointer<O>& operator=(nullptr_t o) {
+    P::operator=(o);
+    return *this;
+  }
+  UncheckedWeakPointer<O>& operator=(const P &o) {
+    P::operator=(o);
+    return *this;
+  }
 };
 
 /** This version of a WeakPointer only works on complete types, but adds
     additional checks of correct usage.
  */
 template <class O>
-struct CheckedWeakPointer:
+struct WeakPointer:
   internal::PointerBase<internal::CheckedWeakPointerTraits<O> > {
   typedef  internal::PointerBase<internal::CheckedWeakPointerTraits<O> > P;
   template <class Any>
-  CheckedWeakPointer(const Any &o): P(o){}
-  CheckedWeakPointer(){}
-  using P::operator=;
+  WeakPointer(const Any &o): P(o){}
+  WeakPointer(){}
+  template <class OT>
+  WeakPointer<O>& operator=( const internal::PointerBase<OT> &o){
+    P::operator=(o);
+    return *this;
+  }
+  template <class OT>
+  WeakPointer<O>& operator=( OT* o){
+    P::operator=(o);
+    return *this;
+  }
+  WeakPointer<O>& operator=(nullptr_t o) {
+    P::operator=(o);
+    return *this;
+  }
+  WeakPointer<O>& operator=(const P &o) {
+    P::operator=(o);
+    return *this;
+  }
 };
 
 IMP_END_NAMESPACE

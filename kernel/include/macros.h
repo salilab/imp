@@ -1075,7 +1075,7 @@ private:                                                        \
 #else
 
 #if IMP_BUILD < IMP_FAST
-#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::CheckedWeakPointer<Name>
+#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::WeakPointer<Name>
 #else
 #define IMP_OBJECTS_TEMP_POINTER(Name) Name*
 #endif

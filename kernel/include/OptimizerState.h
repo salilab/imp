@@ -52,7 +52,7 @@ public:
   }
   IMP_REF_COUNTED_DESTRUCTOR(OptimizerState);
 protected:
-  WeakPointer<Optimizer> optimizer_;
+  UncheckedWeakPointer<Optimizer> optimizer_;
 };
 
 IMP_OBJECTS(OptimizerState,OptimizerStates);
