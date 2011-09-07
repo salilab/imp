@@ -54,12 +54,12 @@ ContainersTemp MaintainScaleOrderConstraint::get_output_containers() const {
 
 
 ParticlesTemp MaintainScaleOrderConstraint::get_input_particles() const {
-  ParticlesTemp ret(p_);
+  ParticlesTemp ret(p_.begin(), p_.end());
   return ret;
 }
 
 ParticlesTemp MaintainScaleOrderConstraint::get_output_particles() const {
-  ParticlesTemp ret(p_);
+  ParticlesTemp ret(p_.begin(), p_.end());
   return ret;
 }
 
