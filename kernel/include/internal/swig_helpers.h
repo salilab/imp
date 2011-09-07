@@ -27,7 +27,7 @@ namespace swig {
   struct PyPointer: boost::noncopyable {
     PyObject* ptr_;
     PyPointer(PyObject* ptr): ptr_(ptr){
-      IMP_INTERNAL_CHECK(ptr, "NULL pointer passed");
+      IMP_INTERNAL_CHECK(ptr, "nullptr pointer passed");
       if (!REFED) {
         Py_INCREF(ptr_);
       } else {
@@ -43,7 +43,7 @@ namespace swig {
     PyObject *release() {
       IMP_INTERNAL_CHECK(ptr_->ob_refcnt >=1, "No refcount");
       PyObject *ret=ptr_;
-      ptr_=NULL;
+      ptr_=nullptr;
       return ret;
     }
     ~PyPointer() {
@@ -153,7 +153,15 @@ namespace swig {
   };
 
   template <class T>
-  struct ValueOrObject<CheckedWeakPointer<T>,
+  struct ValueOrObject<WeakPointer<T>,
+                       typename enable_if<is_base_of<Object, T> >::type > {
+    static const T* get(const T*t) {return *t;}
+    typedef T type;
+    typedef T* store_type;
+  };
+
+  template <class T>
+  struct ValueOrObject<UncheckedWeakPointer<T>,
                        typename enable_if<is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
@@ -289,7 +297,7 @@ namespace swig {
                              SwigData particle_st, SwigData decorator_st) {
       void *vp;
       int res=SWIG_ConvertPtr(o, &vp,particle_st, 0 );
-      Particle *p=NULL;
+      Particle *p=nullptr;
       if (!SWIG_IsOK(res)) {
         int res=SWIG_ConvertPtr(o, &vp,decorator_st, 0 );
         if (!SWIG_IsOK(res)) {
@@ -300,7 +308,7 @@ namespace swig {
           if (*d) {
             p= d->get_particle();
           } else {
-            p=NULL;
+            p=nullptr;
           }
         }
       } else {
@@ -544,12 +552,6 @@ namespace swig {
   struct Convert<std::vector<T> > :
     public ConvertVectorBase<std::vector<T> > {
     static const int converter=7;
-  };
-
-  template <class T, class P>
-  struct Convert<VectorOfRefCounted<T, P> > :
-    public ConvertVectorBase< VectorOfRefCounted<T, P> > {
-    static const int converter=8;
   };
 
   template <class T>
