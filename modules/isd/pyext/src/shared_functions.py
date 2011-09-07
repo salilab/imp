@@ -407,7 +407,8 @@ class sfo_common():
         Sets up a lognormal distance restraint using the given sigma and gamma.
         Returns the restraint.
         assumes atoms = (atom1, atom2)
-        where atom1 is (resno, atomname) and resno starts at 0.
+        where atom1 is (resno, atomname) and resno is the residue sequence
+        number.
         """
         #find corresponding atoms
         p0=self.find_atom(atoms[0], prot)
@@ -419,9 +420,8 @@ class sfo_common():
     def init_model_ambiguous_NOE_restraint(self, prot, contributions, distance, 
             sigma, gamma):
         """Reads an ambiguous NOE restraint. contributions is a list of
-        (atom1, atom2) pairs, where atom1 is (resno, atomname) and resno starts
-        at 0.  Sets up a lognormal distance restraint using the given sigma and
-        gamma.  
+        (atom1, atom2) pairs, where atom1 is (resno, atomname).  Sets up a
+        lognormal distance restraint using the given sigma and gamma.
         Returns the restraint.
         """
         #create pairs list
@@ -442,7 +442,7 @@ class sfo_common():
         - seqfile: a file with 3-letter sequence
         - tblfile: a TBL file with the restraints
         - name: an optional name for the restraintset
-        - prior_rs: when not None, add new sigma and gamma to this 
+        - prior_rs: when not None, add new sigma and gamma to this
                     RestraintSet instance.
         - bounds_sigma or gamma: tuple of (initial value, lower, upper bound)
             bounds can be -1 to set to default range [0,+inf]
@@ -471,7 +471,6 @@ class sfo_common():
             #a restraint is (contributions, dist, upper, lower, volume)
             #where contributions is a tuple of contributing pairs
             #and a pair is (c1, c2), where c1 is of the form (resno, atname)
-            #residue numbers start at 0
             if len(restraint[0]) > 1:
                 ln = self.init_model_ambiguous_NOE_restraint(prot, restraint[0],
                         restraint[1], sigma, gamma)
