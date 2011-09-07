@@ -75,11 +75,6 @@ def IMPSystem(env, name=None, version="",
         else:
             vtxt=  "\n\\section lkgversion Last known good IMP version\n"+\
                 "unknown"+"\n"
-        doc.add_doc_page(env, "\\page "+lkname+" "+name.capitalize(),
-                                 authors, version,
-                                 brief, overview,
-                                 publications,
-                                 license, extra_sections=extrasections)
         data.get(env).add_system(name, link="\\ref "+lkname+' "'+name+'"',
                                  dependencies=required_dependencies\
                                      +found_optional_dependencies,
@@ -117,7 +112,16 @@ def IMPSystem(env, name=None, version="",
         for f in allfiles+extra_data:
             inst=install.install(env, "biological_systems/"+name+"/", f)
             scons_tools.data.get(env).add_to_alias(env.Alias(name), inst)
+            #if f.path.endswith(".py"):
+            #     example.add_python_example(env, f, f.path)
             #env.AlwaysBuild(install)
+
+        doc.add_doc_page(env, "\\page "+lkname+" "+name.capitalize(),
+                         authors, version,
+                         brief, overview,
+                         publications,
+                         license, extra_sections=extrasections)
+
         return env
 
 
