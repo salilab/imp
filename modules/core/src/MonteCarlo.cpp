@@ -79,8 +79,11 @@ ParticlesTemp MonteCarlo::do_move(double probability) {
   for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
     IMP_LOG(VERBOSE, "Moving using " << (*it)->get_name() << std::endl);
     IMP_CHECK_OBJECT(*it);
-    ParticlesTemp cur=(*it)->propose_move(probability);
-    ret.insert(ret.end(), cur.begin(), cur.end());
+    {
+      IMP_LOG_CONTEXT("Mover " << (*it)->get_name());
+      ParticlesTemp cur=(*it)->propose_move(probability);
+      ret.insert(ret.end(), cur.begin(), cur.end());
+    }
     IMP_LOG(VERBOSE, "end\n");
   }
   return ret;
