@@ -89,7 +89,7 @@ namespace RMF {
     }
 #endif
     int __getitem__(unsigned int i) const {
-      if (!i > D) {
+      if (i >= D) {
         IMP_RMF_THROW("Bad index " << i, std::runtime_error);
       }
       return operator[](i);
