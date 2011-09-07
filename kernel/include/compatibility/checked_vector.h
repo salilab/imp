@@ -10,7 +10,7 @@
 
 #include "compatibility_config.h"
 
-#if IMP_BUILD < IMP_FAST && defined(__GNUC__)
+#if IMP_BUILD < IMP_RELEASE && defined(__GNUC__)
 #include <debug/vector>
 #define IMP_VECTOR_PARENT __gnu_debug::vector
 #else
