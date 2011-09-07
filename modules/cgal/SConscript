@@ -3,6 +3,11 @@ import scons_tools.dependency.gcc
 import scons_tools.dependency.cgal
 import scons_tools.dependency.boost
 
+# the CGAL lib requires too much memory when built together
+opercppcompilation=env['percppcompilation']
+env['percppcompilation']="cgal"
+
+
 cgal_libs=scons_tools.dependency.cgal.get_libs(env,
                          scons_tools.dependency.boost.get_boost_lib_name(env,"thread"))
 
@@ -40,3 +45,5 @@ env.IMPModuleBuild(version='SVN',
                    required_modules=["kernel"],
                    required_dependencies=["CGAL"],
                    cxxflags=cxxflags)
+
+env['percppcompilation']=opercppcompilation
