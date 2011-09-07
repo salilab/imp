@@ -22,7 +22,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         #IMP.set_log_level(IMP.MEMORY)
-        #IMP.set_log_level(0)
+        IMP.set_log_level(0)
         self.m = IMP.Model()
         self.q=[[0],[1]]
         self.I=[1,1]
@@ -34,7 +34,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         self.tau = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.sig = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
-        self.cov = Covariance1DFunction(2.0, self.tau, self.lam, self.sig)
+        self.cov = Covariance1DFunction(self.tau, self.lam, self.sig)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
 
