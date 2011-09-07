@@ -210,6 +210,10 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     }
   });
 
+IMP_PARTICLE_GEOMETRY(RigidBodyFrame, core::RigidBody, {
+    ret.push_back(new ReferenceFrameGeometry(d.get_reference_frame()));
+  });
+
 
 /** \class EdgePairGeometry
     \brief Display an IMP::atom::Bond particle as a segment.
