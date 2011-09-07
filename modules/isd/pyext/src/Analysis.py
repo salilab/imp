@@ -33,6 +33,64 @@ class Analysis:
                 pass
         h.add_data(cat,name,data)
 
+    def read_variables(self, statfile):
+        """reads a *_stats.txt file and returns variables present in it"""
+        h=History(statfile)
+        #read title and setup history
+        self.correspondences=[]
+        for line in open(statfile):
+            if line.startswith('*'):
+                continue
+            tokens=line.split()
+            if not tokens[0][1].isdigit():
+                continue
+            lineno = int(tokens[0][1:])-1
+            if line.startswith('#'):
+                for el in tokens[1:]:
+                    self.create_entry(h, lineno, el)
+                continue
+            break
+        return self.correspondences
+
+    def read_AMBER_variables(self, statfile):
+        """reads an AMBER mden file and returns variables present in it"""
+        h=History(statfile)
+        #read title and setup history
+        self.correspondences=[]
+        oldnum=-1
+        for line in open(statfile):
+            tokens=line.split()
+            lineno = int(tokens[0][1:])
+            if lineno < oldnum:
+                break
+            oldnum = lineno
+            for i,el in enumerate(tokens[1:]):
+                self.create_entry(h, lineno, '%d:global:%s' % (i+1,el))
+        return self.correspondences
+
+    def read_AMBER_stats(self, statfile):
+        """reads an AMBER mden file and returns a History instance"""
+        h=History(statfile)
+        #read title and setup history
+        read_title=True
+        oldnum=-1
+        self.correspondences=[]
+        for line in open(statfile):
+            tokens=line.split()
+            lineno = int(tokens[0][1:])
+            if lineno < oldnum and read_title:
+                read_title=False
+            oldnum = lineno
+            if read_title:
+                for i,el in enumerate(tokens[1:]):
+                    self.create_entry(h, lineno, '%d:global:%s' % (i+1,el))
+                continue
+            #from here on, the line contains data
+            for i, el in enumerate(tokens[1:]):
+                self.add_data(h, lineno, i, el)
+        #h.sanity_check()
+        return h
+
     def read_stats(self, statfile):
         """reads a *_stats.txt file and returns a History instance"""
         h=History(statfile)
@@ -131,4 +189,5 @@ if __name__ == '__main__':
     a=Analysis()
     h=a.read_stats(sys.argv[1])
     h.toc()
+    matplotlib.pyplot.ion() #interactive
 
