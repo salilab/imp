@@ -67,7 +67,7 @@ class TestMaintainScaleOrderConstraint(IMP.test.TestCase):
         for rep in xrange(100):
             scales = [uniform(-10,2*self.upper) for i in xrange(self.n_sigmas)]
             for (i,j) in  zip(self.sigmas,scales):
-                i.get_particle().set_value(IMP.FloatKey("scale"), j)
+                i.get_particle().set_value(IMP.FloatKey("nuisance"), j)
             expected = sorted([self.contain(i) for i in scales])
             self.m.evaluate(None)
             observed = [ i.get_scale() for i in self.sigmas ]
