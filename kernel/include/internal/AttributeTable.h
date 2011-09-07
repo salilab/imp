@@ -53,10 +53,10 @@ struct ArrayTraits
   static bool get_is_valid(const Value &v) {
     return !v.empty();
   }
-  static const Value &max(const Value &a, const Value &b) {
+  static const Value &max(const Value &a, const Value &) {
     return a;
   }
-  static const Value &min(const Value &a, const Value &b) {
+  static const Value &min(const Value &, const Value &b) {
     return b;
   }
 };
