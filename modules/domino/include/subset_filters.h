@@ -121,6 +121,12 @@ public:
   int get_next_state(int pos, const Assignment& state) const;
   double get_score(const Assignment& state) const;
   //! Get the restraints involved in this subset
+  /** \note this order is not persistent across runs or even different
+      RestraintScoreSubsetFilter objects produced on the same subset.
+      If you want to use these results systematically, you should
+      probably ensure that the names are unique use those to re-order
+      the results.
+  */
   RestraintsTemp get_restraints() const;
   //! Return the scores for the restraints
   /** The order is the same as get_restraints().
