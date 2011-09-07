@@ -184,7 +184,7 @@ private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object.
    */
-  WeakPointer<Model> model_;
+  UncheckedWeakPointer<Model> model_;
 
   double weight_;
   double max_;
