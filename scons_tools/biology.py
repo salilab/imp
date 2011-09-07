@@ -5,6 +5,7 @@ import bug_fixes
 import scons_tools
 import data
 import environment
+import install
 import test
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -29,6 +30,7 @@ def IMPSystem(env, name=None, version="",
               required_modules=[],
               optional_dependencies=[],
               required_dependencies=[],
+              extra_data=[],
               testable=False,
               parallelizable=False,
               last_imp_version="unknown",
@@ -90,7 +92,7 @@ def IMPSystem(env, name=None, version="",
         for d in dirs:
             if str(d).split("/")[0] != "local":
                 env.SConscript(d, exports=['env'])
-
+        scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
         env= nenv
         for m in required_modules+found_optional_modules:
             env.Depends(scons_tools.data.get(env).get_alias(name+"-install"),
@@ -107,6 +109,15 @@ def IMPSystem(env, name=None, version="",
             env.Depends(tst,
                         scons_tools.data.get(env).get_alias(name))
 
+        # link files in build dir
+        allfiles= []
+        for suff in ["*.txt", "*.mrc", "*.pdb", ".py"]:
+            allfiles.extend(Glob("*/*"+suff))
+            allfiles.extend(Glob("*"+suff))
+        for f in allfiles+extra_data:
+            inst=install.install(env, "biological_systems/"+name+"/", f)
+            scons_tools.data.get(env).add_to_alias(env.Alias(name), inst)
+            #env.AlwaysBuild(install)
         return env
 
 
