@@ -87,6 +87,7 @@ void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
 double MolecularDynamics::do_step(const ParticleIndexes &ps,
                                   double ts)
 {
+  IMP_OBJECT_LOG;
   // Get coordinates at t+(delta t) and velocities at t+(delta t/2)
   propagate_coordinates(ps, ts);
 
