@@ -111,7 +111,7 @@ def IMPSystem(env, name=None, version="",
 
         # link files in build dir
         allfiles= []
-        for suff in ["*.txt", "*.mrc", "*.pdb", ".py"]:
+        for suff in ["*.txt", "*.mrc", "*.pdb", ".py", ".param", ".input", ".lib"]:
             allfiles.extend(Glob("*/*"+suff))
             allfiles.extend(Glob("*"+suff))
         for f in allfiles+extra_data:
