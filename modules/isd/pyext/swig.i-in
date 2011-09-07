@@ -16,6 +16,7 @@ IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
+IMP_SWIG_DECORATOR(IMP::isd, Switching, Switchings);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, GaussianRestraint, GaussianRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LognormalRestraint, LognormalRestraints);
@@ -38,16 +39,6 @@ IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraint, GaussianProcess
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamics, MolecularDynamicss);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_N, SAXSRestraint_Ns);
-/*
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_LN, SAXSRestraint_LNs);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_N, SAXSRestraint_sliding_Ns);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_LN, SAXSRestraint_sliding_LNs);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_marginal_N, SAXSRestraint_marginal_Ns);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_marginal_LN, SAXSRestraint_marginal_LNs);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_multiple_N, SAXSRestraint_empirical_multiple_Ns);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_multiple_LN, SAXSRestraint_empirical_multiple_LNs);
-*/
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -74,6 +65,7 @@ def create_model_and_particles():
 %include "IMP/isd/ISDRestraint.h"
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/Scale.h"
+%include "IMP/isd/Switching.h"
 %include "IMP/isd/NuisanceRangeModifier.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
@@ -100,16 +92,6 @@ def create_model_and_particles():
 %include "IMP/isd/MolecularDynamics.h"
 %include "IMP/isd/MolecularDynamicsMover.h"
 %include "IMP/isd/HybridMonteCarlo.h"
-%include "IMP/isd/SAXSRestraint_N.h"
-/*
-%include "IMP/isd/SAXSRestraint_LN.h"
-%include "IMP/isd/SAXSRestraint_sliding_N.h"
-%include "IMP/isd/SAXSRestraint_sliding_LN.h"
-%include "IMP/isd/SAXSRestraint_marginal_N.h"
-%include "IMP/isd/SAXSRestraint_marginal_LN.h"
-%include "IMP/isd/SAXSRestraint_empirical_multiple_N.h"
-%include "IMP/isd/SAXSRestraint_empirical_multiple_LN.h"
-*/
 
 namespace IMP {
   namespace atom {
