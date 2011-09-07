@@ -155,18 +155,22 @@ namespace {
       rs->set_maximum_score(me->get_maximum_score());
       rs->set_weight(me->get_weight());
       rs->set_model(me->get_model());
+      check_decomposition(const_cast<Restraint*>(me), rs);
       return rs.release();
     }
   }
 }
 
 Restraint* Restraint::create_decomposition() const {
-  return create_decomp_helper(this, do_create_decomposition());
+  Pointer<Restraint> ret= create_decomp_helper(this, do_create_decomposition());
+  return ret.release();
 }
 
 
 Restraint* Restraint::create_current_decomposition() const {
-  return create_decomp_helper(this, do_create_current_decomposition());
+  Pointer<Restraint> ret= create_decomp_helper(this,
+                                     do_create_current_decomposition());
+  return ret.release();
 }
 
 
