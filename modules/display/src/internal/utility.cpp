@@ -16,6 +16,7 @@
 IMPDISPLAY_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
   Ints get_fan_triangles(Ints::const_iterator b,
                          Ints::const_iterator e) {
     IMP_INTERNAL_CHECK(std::distance(b,e)>= 3, "Too few vertices");
@@ -29,7 +30,7 @@ namespace {
                        == ret.end(), "Still -1 found");
     return ret;
   }
-#ifdef IMP_DISPLAY_USE_IMP_CGAL
+
   Ints get_triangulation_of_convex_faces(const Ints &faces) {
     using IMP::operator<<;
     IMP_LOG(VERBOSE, "Convex faces are " << faces << std::endl);
