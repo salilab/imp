@@ -32,10 +32,10 @@ class RefCountedParticleTuple;
 */
 template <unsigned int D>
 class ParticleTuple:
-  public internal::ParticleTupleBase<D, CheckedWeakPointer<Particle> >
+  public internal::ParticleTupleBase<D, WeakPointer<Particle> >
 {
 public:
-  typedef internal::ParticleTupleBase<D, CheckedWeakPointer<Particle> > P;
+  typedef internal::ParticleTupleBase<D, WeakPointer<Particle> > P;
   ParticleTuple(){
   }
   ParticleTuple(const RefCountedParticleTuple<D> &o): P(o){}
