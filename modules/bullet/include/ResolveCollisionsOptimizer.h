@@ -30,6 +30,11 @@ IMPBULLET_BEGIN_NAMESPACE
       IMP::core::SoftSpherePairScore is an excluded volume term acting (only)
       on all involved IMP::core::XYZRs
 
+    \note While rigid bodies are supported, they don't work very well. One
+    should expect good results only with simple bodies (spheres, boxes).
+    This appears to be a limitation of bullet rather than our code, but this is
+    not entirely clear.
+
 
     \unstable{ResolveCollisionsOptimizer}
  */
