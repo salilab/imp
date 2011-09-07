@@ -362,9 +362,11 @@ namespace RMF {
                                      hid_t sp,
                                      unsigned int sz) {
       IMP_RMF_NOT_IMPLEMENTED;
+      return Types();
     }
     static Types read_values_attribute(hid_t a, unsigned int size) {
       IMP_RMF_NOT_IMPLEMENTED;
+      return Types();
     }
     static void write_values_attribute(hid_t a, const Types &v) {
       IMP_RMF_NOT_IMPLEMENTED;
