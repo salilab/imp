@@ -154,24 +154,24 @@ namespace {
   };
 
   class GaussianKernel {
-    mutable KernelParameters &kps_;
+    KernelParameters *kps_;
     FloatKey mass_key_;
     const RadiusDependentKernelParameters*
     get_radius_dependent_parameters(Particle *p) const {
       double r=core::XYZR(p).get_radius();
       const RadiusDependentKernelParameters*params
-        = kps_.get_params(r);
+        = kps_->get_params(r);
       if (!params) {
         IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-        kps_.set_params(r);
-        params = kps_.get_params(r);
+        kps_->set_params(r);
+        params = kps_->get_params(r);
       }
       return params;
     }
   public:
     GaussianKernel(KernelParameters& kps,
                    const FloatKey &mass_key):
-      kps_(kps),mass_key_(mass_key){}
+      kps_(&kps),mass_key_(mass_key){}
     double get_radius(Particle *p) const {
       const RadiusDependentKernelParameters* kernel_params
         =get_radius_dependent_parameters(p);
@@ -189,7 +189,7 @@ namespace {
       double tmp = EXP(-rsq * kernel_params->get_inv_sigsq());
       //tmp = exp(-rsq * params->get_inv_sigsq());
       // if statement to ensure even sampling within the box
-      if (tmp>kps_.get_lim()) {
+      if (tmp>kps_->get_lim()) {
         return
           kernel_params->get_normfac() * p->get_value(mass_key_) * tmp;
       } else {
