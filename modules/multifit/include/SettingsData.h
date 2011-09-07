@@ -7,9 +7,10 @@
  */
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H
 #define IMPMULTIFIT_SETTINGS_DATA_H
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/base_types.h>
 #include <IMP/container_macros.h>
 #include <IMP/Pointer.h>
+#include <IMP/Object.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <IMP/algebra/Transformation3D.h>
 #include "multifit_config.h"

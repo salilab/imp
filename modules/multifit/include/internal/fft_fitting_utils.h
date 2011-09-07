@@ -16,8 +16,7 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-IMPMULTIFITEXPORT
-class EulerAngles {
+class IMPMULTIFITEXPORT EulerAngles {
 public:
   EulerAngles(double in_psi,double in_theta,double in_phi) {
     psi=in_psi;
