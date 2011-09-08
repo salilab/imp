@@ -87,6 +87,14 @@ namespace {
     SET_ONLY(Masks::read_mask_, restraint->get_input_particles(),       \
              restraint->get_input_containers()                          \
              );                                                         \
+    SET_ONLY(Masks::write_derivatives_mask_,                            \
+            restraint->get_input_particles(),                           \
+             restraint->get_input_containers()                          \
+             );                                                         \
+    SET_ONLY(Masks::read_derivatives_mask_,                             \
+            restraint->get_input_particles(),                           \
+             restraint->get_input_containers()                          \
+             );                                                         \
     IMP_CHECK_OBJECT(restraint);                                        \
     expr;                                                               \
   }
