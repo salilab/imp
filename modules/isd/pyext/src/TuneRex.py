@@ -780,7 +780,7 @@ def compute_indicators(replicanums, subs = 1, start=0):
 
 #### Main routines
 
-def update_params_nonergodic(pup, params, write_g=True, num=False):
+def update_params_nonergodic(pup, params, write_g=False, num=False):
     
     from numpy import linspace
     #g = spline(zip(pup,params),0,method='monoH.FC')
