@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <IMP/rmf/RootHandle.h>
+#include <RMF/RootHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/pdb.h>
 
