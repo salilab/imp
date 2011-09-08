@@ -1,4 +1,4 @@
-%include "IMP/domino/domino_macros.h"
+\%include "IMP/domino/domino_macros.h"
 namespace IMP {
 namespace domino {
 %warnfilter(473) AssignmentsTable;
@@ -31,6 +31,7 @@ IMP_SWIG_OBJECT(IMP::domino, SimpleAssignmentsTable, SimpleAssignmentsTables);
 IMP_SWIG_OBJECT(IMP::domino, CompoundStates, CompoundStatesList);
 IMP_SWIG_OBJECT(IMP::domino, DisjointSetsSubsetFilterTable, DisjointSetsSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, MinimumRestraintScoreSubsetFilterTable, MinimumRestraintScoreSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, MinimumRestraintScoreSubsetFilter, MinimumRestraintScoreSubsetFilters);
 IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);
 IMP_SWIG_OBJECT(IMP::domino, EqualitySubsetFilterTable, EqualitySubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, EquivalenceSubsetFilterTable, EquivalenceSubsetFilterTables);
