@@ -358,10 +358,7 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
             final_dependencies.append(dc)
     module_libs=[]
     for m in final_modules:
-        if m=='kernel':
-            module_libs.append('imp')
-        else:
-            module_libs.append('imp_'+m)
+        module_libs.append(d.modules[m].libname)
     _add_dependency_flags(env, final_dependencies)
     dependency_libs=[]
     for dc in final_dependencies:

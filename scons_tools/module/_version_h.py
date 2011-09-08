@@ -22,8 +22,8 @@ def _action_version_h(target, source, env):
  *
  */
 
-#ifndef %(PREPROC)s_VERSION_H
-#define %(PREPROC)s_VERSION_H
+#ifndef %(EXPORT)s_VERSION_H
+#define %(EXPORT)s_VERSION_H
 
 """ % vars
 
@@ -59,7 +59,7 @@ def _action_version_h(target, source, env):
 #endif"""%vars
 
     print >> h, """
-#endif  /* %(PREPROC)s_CONFIG_H */""" % vars
+#endif  /* %(EXPORT)s_CONFIG_H */""" % vars
 
 def _print_version_h(target, source, env):
     vars= scons_tools.module._get_module_variables(env)

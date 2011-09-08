@@ -47,9 +47,11 @@ included_methods={"kernel":{"set_check_level":("void", "(CheckLevel)"),
                          "create_geometries":("display::Geometries", "(RMF::RootHandle, int)"),
                          "add_particle":("void", "(RMF::RootHandle, Particle*)"),
                          "create_particles":("ParticlesTemp", "(RMF::RootHandle, Model*)"),
-                         "create_hdf5_file":("RMF::HDF5Group", "(std::string)"),
+                          },
+                  "RMF":{"create_hdf5_file":("RMF::HDF5Group", "(std::string)"),
                          "open_hdf5_file":("RMF::HDF5Group", "(std::string)"),
                           },
+
                   "domino":{"set_assignments":("void", "(AssignmentContainer *, const Subset &, const ParticlesTemp, RMF::HDF5IndexDataSet2D)"),
                             "create_assignments_container":("AssignmentContainer*", "(RMF::HDF5IndexDataSet2D,const Subset &,const ParticlesTemp&)"),
                             "get_junction_tree":("SubsetGraph", "(const InteractionGraph&)"),
@@ -63,7 +65,7 @@ class IMPData:
     class ModuleData:
         def __init__(self, name, dependencies=[], direct_dependencies=[],
                      unfound_dependencies=[], modules=[],
-                     unfound_modules=[],
+                     unfound_modules=[], libname=None,
                      python_modules=[], version=None, external=False, ok=True):
             self.build=[]
             if ok:
@@ -74,6 +76,7 @@ class IMPData:
                 self.modules=modules
                 self.unfound_modules=unfound_modules
                 self.python_modules=python_modules
+                self.libname=libname
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"
@@ -188,7 +191,7 @@ class IMPData:
         return dret
     def add_module(self, name, directory="",
                    dependencies=[], unfound_dependencies=[], modules=[],
-                   unfound_modules=[],
+                   unfound_modules=[], libname=None,
                    python_modules=[], version="", ok=True,
                    external=False):
         #print name, dependencies, unfound_dependencies
@@ -206,6 +209,7 @@ class IMPData:
             self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
                                                unfound_dependencies,
                                                passmodules, unfound_modules,
+                                               libname,
                                                passpythonmodules, version, external)
     def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
                        includepath=None, libpath=None, version=None,

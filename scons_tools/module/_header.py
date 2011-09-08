@@ -19,7 +19,7 @@ def _build_header(target, source, env):
              % vars
     print >> fh, " *  Copyright 2007-2011 IMP Inventors. All rights reserved."
     print >> fh, " *\n */\n"
-    print >> fh, "#ifndef %(PREPROC)s_H\n#define %(PREPROC)s_H\n" % vars
+    print >> fh, "#ifndef %(EXPORT)s_H\n#define %(EXPORT)s_H\n" % vars
     # prefix does not work when there are a mix of generated and source files
     #= len(os.path.commonprefix([f.path for f in source]))
     for f in source[0].get_contents().split(" "):
@@ -28,7 +28,7 @@ def _build_header(target, source, env):
             vars['header']= f
             print >> fh, '#include <%(module_include_path)s/%(header)s>' %vars
     print >> fh, "#include <%(module_include_path)s/%(module)s_config.h>"%vars
-    print >> fh, "\n#endif  /* %(PREPROC)s_H */" % vars
+    print >> fh, "\n#endif  /* %(EXPORT)s_H */" % vars
 
 def build_header(env, dir, sources):
     source_list=[str(x) for x in sources]

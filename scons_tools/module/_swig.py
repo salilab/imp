@@ -96,9 +96,12 @@ def _action_swig_file(target, source, env):
 #include "IMP/internal/swig_helpers.h"
 #include "IMP/internal/swig.h"
 """%vars['module_include_path'].replace("/", ".")]
+    dta= scons_tools.data.get(env)
     for d in deps:
         if d != "kernel":
-            preface.append("#include \"IMP/%s.h\""% d)
+            ln= dta.modules[d].libname
+            nm=ln.replace("imp", "IMP").replace("_", "/")
+            preface.append("#include \"%s.h\""% nm)
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
     preface.append("""%}
@@ -130,9 +133,13 @@ _plural_types=[]
 #endif
 %}
 """)
-
+    dta= scons_tools.data.get(env)
     for d in deps:
-        preface.append("%%import \"IMP_%s.i\""% d)
+        ln= dta.modules[d].libname
+        lnr=ln.replace("imp", "IMP")
+        if lnr=="IMP":
+            lnr="IMP_kernel"
+        preface.append("%%import \"%s.i\""% lnr)
     preface.append(warning)
 
     preface.append("""
@@ -141,24 +148,15 @@ _plural_types=[]
     preface.append(warning)
     preface.append(open(source[0].abspath, "r").read())
     preface.append(warning)
-    if vars['module']== 'kernel':
-        preface.append("""
-namespace IMP {
-const VersionInfo& get_module_version_info();
+    for ns in vars['namespace'].split("::"):
+        preface.append("namespace "+ns + " {")
+    preface.append("""
+const ::IMP::VersionInfo& get_module_version_info();
 std::string get_example_path(std::string fname);
 std::string get_data_path(std::string fname);
-}
 """)
-    else:
-        preface.append("""
-namespace IMP {
-namespace %(module)s {
-const VersionInfo& get_module_version_info();
-std::string get_example_path(std::string fname);
-std::string get_data_path(std::string fname);
-}
-}
-"""%vars)
+    for ns in vars['namespace'].split("::"):
+        preface.append("}")
     preface.append(warning)
     deps= source[2].get_contents().split(" ")
     udeps= source[3].get_contents().split(" ")
@@ -211,7 +209,7 @@ def _action_simple_swig(target, source, env):
     else:
         warnings=["-Wextra"]
 
-    command = [env['SWIG'], "-castmode -interface", "_IMP%(module_suffix)s",
+    command = [env['SWIG'], "-castmode -interface", "%(module_pylibname)s",
                "-DPySwigIterator=%(PREPROC)s_PySwigIterator",
                "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
                "-python", "-c++", "-naturalvar",
@@ -238,10 +236,10 @@ def _print_simple_swig(target, source, env):
 
 def _action_version_check(target, source, env):
     def get_module(name):
-        if name=='kernel':
-            return "IMP"
-        else:
-            return "IMP."+name
+        dta= scons_tools.data.get(env)
+        ln= dta.modules[mn].libname
+        inm= ln.replace("_", ".").replace("imp", "IMP")
+        return inm
     out= open(target[0].abspath, "w")
     print >> out, "def check_version(myversion):"
     print >> out, "  def _check_one(name, expected, found):"
