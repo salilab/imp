@@ -56,10 +56,8 @@ def add(env, plural_exceptions=[], show_exceptions=[], function_name_exceptions=
         value_object_exceptions=[], class_name_exceptions=[],
         spelling_exceptions=[]):
     name= scons_tools.environment.get_current_name(env)
-    if name=='kernel':
-        module="IMP"
-    else:
-        module="IMP."+name
+    vars= scons_tools.module._get_module_variables(env)
+    module=vars['module_pylibname'][1:].replace("_", ".")
     return _Standards(env, target=["test_standards.py"],
                       source=[env.Value(module),
                               env.Value(plural_exceptions),

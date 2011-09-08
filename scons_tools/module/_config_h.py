@@ -11,17 +11,23 @@ def _add_use_or_no(env, h, name):
     if nd==name:
         nd= name.replace("_NO_", "_USE_")
     print >> h, "\n",
-    print >> h, "#  if defined("+nd+") || defined("+name+")"
-    print >> h, '#    error "Do not define macro '+name+' directly."'
-    print >> h, "#  endif"
+    #print >> h, "#  if defined("+nd+") || defined("+name+")"
+    #print >> h, '#    error "Do not define macro '+name+' directly."'
+    #print >> h, "#  endif"
     print >> h, "#  define "+name
 
 def _add_use(env, h, nm):
-    curn= scons_tools.module._get_module_name(env)
-    _add_use_or_no(env, h, "IMP_"+curn.upper()+"_USE_"+nm.upper())
+    vars= scons_tools.module._get_module_variables(env)
+    curn= vars['PREPROC']
+    if curn=="IMP":
+        curn="IMP_KERNEL"
+    _add_use_or_no(env, h, curn.upper()+"_USE_"+nm.upper())
 def _add_no_use(env, h, nm):
-    curn= scons_tools.module._get_module_name(env)
-    _add_use_or_no(env, h, "IMP_"+curn.upper()+"_NO_"+nm.upper())
+    vars= scons_tools.module._get_module_variables(env)
+    curn= vars['PREPROC']
+    if curn=="IMP":
+        curn="IMP_KERNEL"
+    _add_use_or_no(env, h, curn.upper()+"_NO_"+nm.upper())
 def _add_version(env, h, nm, version, versionheader, versioncpp):
     print >> h, "#ifndef SWIG"
     print >> h, "\n#include <"+versionheader+">\n"
@@ -53,10 +59,10 @@ def _action_config_h(target, source, env):
  * \\brief Provide macros to mark functions and classes as exported
  *        from a DLL/.so, and to set up namespaces
  *
- * When building the module, %(PREPROC)s_EXPORTS should be defined, and when
+ * When building the module, %(EXPORT)s_EXPORTS should be defined, and when
  * using the module externally, it should not be. Classes and functions
  * declared in the module's headers should then be marked with
- * %(PREPROC)sEXPORT if they are intended to be part of the API and
+ * %(EXPORT)sEXPORT if they are intended to be part of the API and
  * they are not defined entirely in a header.
  *
  * The Windows build environment requires applications to mark exports in
@@ -65,7 +71,7 @@ def _action_config_h(target, source, env):
  *
  * All code in this module should live in the %(namespace)s namespace.
  * This is simply achieved by wrapping things with the
- * %(PREPROC)s_BEGIN_NAMESPACE and %(PREPROC)s_END_NAMESPACE macros.
+ * %(EXPORT)s_BEGIN_NAMESPACE and %(EXPORT)s_END_NAMESPACE macros.
  * There are similar macros for module code that is designed to be for
  * internal use only.
  *
@@ -76,8 +82,8 @@ def _action_config_h(target, source, env):
  *
  */
 
-#ifndef %(PREPROC)s_CONFIG_H
-#define %(PREPROC)s_CONFIG_H
+#ifndef %(EXPORT)s_CONFIG_H
+#define %(EXPORT)s_CONFIG_H
 
 #include <boost/static_assert.hpp>
 
@@ -85,69 +91,69 @@ def _action_config_h(target, source, env):
 
 #  ifdef _MSC_VER
 
-#    ifdef %(PREPROC)s_EXPORTS
-#      define %(PREPROC)sEXPORT __declspec(dllexport)
+#    ifdef %(EXPORT)s_EXPORTS
+#      define %(EXPORT)sEXPORT __declspec(dllexport)
 #    else // EXPORTS
-#      define %(PREPROC)sEXPORT __declspec(dllimport)
+#      define %(EXPORT)sEXPORT __declspec(dllimport)
 #    endif // EXPORTS
 
 #  else // _MSC_VER
 
 #    ifdef GCC_VISIBILITY
-#      define %(PREPROC)sEXPORT __attribute__ ((visibility("default")))
+#      define %(EXPORT)sEXPORT __attribute__ ((visibility("default")))
 #    else // GCC_VISIBILITY
-#      define %(PREPROC)sEXPORT
+#      define %(EXPORT)sEXPORT
 #    endif // GCC_VISIBILITY
 #  endif // _MSC_VER
 
 #  if defined(_MSC_VER) && !defined(SWIG)
-#    ifdef %(PREPROC)s_EXPORTS
+#    ifdef %(EXPORT)s_EXPORTS
 
-#      define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+#      define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
           template class __declspec(dllexport) name
 
 #    else //EXPORTS
 
-#      define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+#      define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
           template class __declspec(dllimport) name
 
 #    endif // EXPORTS
 
 #  else // MSC and SWIG
-#    define %(PREPROC)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+#    define %(EXPORT)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #  endif // MSC and SWIG
 
 
 """ % vars
-    print >> h, "#  define %(PREPROC)s_BEGIN_NAMESPACE \\"%vars
+    print >> h, "#  define %(EXPORT)s_BEGIN_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "namespace %s {\\" %comp
     print >> h
-    print >> h, "#  define %(PREPROC)s_END_NAMESPACE \\"%vars
+    print >> h, "#  define %(EXPORT)s_END_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "} /* namespace %s */ \\" %comp
     print >> h
-    print >> h, """#  define %(PREPROC)s_BEGIN_INTERNAL_NAMESPACE \\
-%(PREPROC)s_BEGIN_NAMESPACE \\
+    print >> h, """#  define %(EXPORT)s_BEGIN_INTERNAL_NAMESPACE \\
+%(EXPORT)s_BEGIN_NAMESPACE \\
 namespace internal {
 """ %vars
     print >> h
-    print >> h, """#  define %(PREPROC)s_END_INTERNAL_NAMESPACE \\
+    print >> h, """#  define %(EXPORT)s_END_INTERNAL_NAMESPACE \\
 } /* namespace internal */ \\
-%(PREPROC)s_END_NAMESPACE
+%(EXPORT)s_END_NAMESPACE
 """ %vars
     print >> h
-
+    dta=scons_tools.data.get(env)
     for d in scons_tools.module._get_module_direct_dependencies(env):
         #print "processing", d
         nm=scons_tools.dependency.get_dependency_string(d)
         _add_use(env, h, nm)
-        if scons_tools.data.get(env).dependencies[d].version:
+        if dta.dependencies[d].version:
             _add_version(env, h, nm,
-                         scons_tools.data.get(env).dependencies[d].version,
-                         scons_tools.data.get(env).dependencies[d].versionheader,
-                         scons_tools.data.get(env).dependencies[d].versioncpp)
+                         dta.dependencies[d].version,
+                         dta.dependencies[d].versionheader,
+                         dta.dependencies[d].versioncpp)
         else:
             #print "no version for", d
             pass
@@ -171,15 +177,15 @@ namespace internal {
         nd= name.replace("_USE_","_NO_")
         if nd==name:
             nd= name.replace("_NO_", "_USE_")
-        if nd != name:
-            print >> h, "#  ifdef "+nd
-            print >> h, "/* Do not define IMP config macros directly */"
-            print >> h, """#    error "Do not define macro """+nd+""" directly.\""""
-            print >> h, "#  endif"
-        print >> h, "#  ifdef "+name
-        print >> h, "/* Do not define IMP config macros directly */"
-        print >> h, """#    error "Do not define macro """+name+""" directly.\""""
-        print >> h, "#  endif"
+        #if nd != name:
+        #    print >> h, "#  ifdef "+nd
+        #    print >> h, "/* Do not define IMP config macros directly */"
+        #    print >> h, """#    error "Do not define macro """+nd+""" directly.\""""
+        #    print >> h, "#  endif"
+        #print >> h, "#  ifdef "+name
+        #print >> h, "/* Do not define IMP config macros directly */"
+        #print >> h, """#    error "Do not define macro """+name+""" directly.\""""
+        #print >> h, "#  endif"
         if value is not None:
             print >> h, "#  define "+name+" "+str(value)
         else:
@@ -214,13 +220,13 @@ namespace IMP {
   class VersionInfo;
 }
 
-%(PREPROC)s_BEGIN_NAMESPACE
-/** \name Standard module methods
+%(EXPORT)s_BEGIN_NAMESPACE
+/** \\name Standard module methods
   All \imp modules have a set of standard methods to help get information
   about the module and about file associated with the modules.
   @{
   */
-%(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
+%(EXPORT)sEXPORT const IMP::VersionInfo& get_module_version_info();
 
 inline std::string get_module_name() {
    return "%(namespace)s";
@@ -258,11 +264,11 @@ inline std::string get_example_path(std::string file_name)  {
 /** @} */
 
 
-%(PREPROC)s_END_NAMESPACE
+%(EXPORT)s_END_NAMESPACE
 
 #endif // SWIG
 
-#endif  /* %(PREPROC)s_CONFIG_H */""" % vars
+#endif  /* %(EXPORT)s_CONFIG_H */""" % vars
 
 def _print_config_h(target, source, env):
     vars= scons_tools.module._get_module_variables(env)
@@ -290,12 +296,12 @@ def _action_config_cpp(target, source, env):
 """  % vars
 
 
-    print >> cpp, "%(PREPROC)s_BEGIN_NAMESPACE\n" % vars
+    print >> cpp, "%(EXPORT)s_BEGIN_NAMESPACE\n" % vars
 
 
     print >> cpp, """
-const VersionInfo& get_module_version_info() {
-    static VersionInfo vi("%(module)s", "%(version)s");
+const IMP::VersionInfo& get_module_version_info() {
+    static IMP::VersionInfo vi("%(module)s", "%(version)s");
     return vi;
 }
 """ %vars
@@ -307,7 +313,7 @@ namespace internal {
 }
 """%(source[1].get_contents(), source[2].get_contents())
 
-    print >> cpp, "\n%(PREPROC)s_END_NAMESPACE" % vars
+    print >> cpp, "\n%(EXPORT)s_END_NAMESPACE" % vars
 
 
 
