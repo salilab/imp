@@ -2,22 +2,22 @@
 \par Summer 2011
 - to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in \imp code that you want to run cross platform.
 - IMP::IntsList, IMP::FloatsList and IMP::StringsList have been added to replace the various scattered solutions for passing such types.
-- ::rmf::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::rmf::HDF5IndexDataSet2D now.
-- Various low level classes of IMP::rmf have been moved to the plain old ::rmf namespace as pat of cleaning things up to separate the RMF low level library from \imp. This include ::rmf::HDF5DataSetD.
+- ::RMF::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::RMF::HDF5IndexDataSet2D now.
+- Various low level classes of IMP::rmf have been moved to the plain old ::RMF namespace as pat of cleaning things up to separate the RMF low level library from \imp. This include ::RMF::HDF5DataSetD.
 - IMP::Restraint::get_decomposition() and IMP::Restraint::get_current_decomposition() changed to return a single Restraint, instead of a list. This makes it easier to propagate the weight and maximum reliably.
 - \imp now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.
 - IMP::domino::DominoSampler does not use the IMP::domino::OptimizeRestraints restraint optimization by default. Instead, if it is asked to create the IMP::domino::RestraintScoreSubsetFilterTable, it decomposes the restraints first (via IMP::create_decomposition()). This avoids several bugs and very fragile code.
 - the IMP::core::DiameterRestraint was ignoring the radii of the particles involved and so was giving artifically low scores. It now is on the actual diameter of this molecule.
 - the IMP::core::MonteCarlo optimizers now support incremental evaluation. This can be a lot faster when only a few particles are moved each step.
 - all the plural types in IMP have moved to bounds checked vectors when using debug builds with gcc. If you get a non-imp error about an invalid access, it is probably some code that walks off the end of an array. Please report it.
-- IMP::rmf::KeyCategory was renamed to IMP::rmf::Category
-- The deprecated constructors for various rmf/hdf5 things from files have been removed. Now use the methods IMP::rmf::open_rmf_file(), IMP::rmf::create_rmf_file(), IMP::rmf::open_rmf_file_read_only(), IMP::rmf::open_hdf5_file(), IMP::rmf::create_hdf5_file().
-- IMP::rmf broke backward compatibility in order to accelerate loading times of files and use a more compact storage for strings.
+- RMF::KeyCategory was renamed to RMF::Category
+- The deprecated constructors for various rmf/hdf5 things from files have been removed. Now use the methods RMF::open_rmf_file(), RMF::create_rmf_file(), RMF::open_rmf_file_read_only(), RMF::open_hdf5_file(), RMF::create_hdf5_file().
+- RMF:: broke backward compatibility in order to accelerate loading times of files and use a more compact storage for strings.
 - The IMP::core::MoverBase was changed to move it off of the IMP::SingletonContainer. This resulted in the IMP::core::BallMover and IMP::core::NormalMover having new constructors. Now create them from a list of particles, a list of float keys and a radius/standard deviation. This removes some complexity and inefficiencies as well is removes some scope for errors.
 - Temp and non-temp decorator lists have been merged in C++. This was done to simplifity code since no one was using the non-temp variants. Now all decorator lists are temp (non-reference counted) variants.
 - restraints and restraint sets are now evaluated only using "canonical" weights. That is, each restraint has one weight for the model (the total over all the restraint sets it is contained in and will always be evaluated with that weight). This allows the evaluation of simple restraints to be faster.
 - The IMP_LIST() macros have been changed slightly. If your usage needs to take action upon addition, removal or changes to the list, use the IMP_LIST_ACTION() variant in your header. The IMP_LIST_IMPL() macro no longer takes the actions, and the last three (generally empty arguments) will have to be removed from the call to get it to work. This is needed to move towards more flexible and efficient passing of lists of values.
-- IMP::rmf::create_hdf5_file() and IMP::rmf::open_hdf5_file() were added to avoid the dangerous and unclear bool paramter on the HDF5Group constructor. That constructor has been deprecated.
+- RMF::create_hdf5_file() and RMF::open_hdf5_file() were added to avoid the dangerous and unclear bool paramter on the HDF5Group constructor. That constructor has been deprecated.
 - IMP::domino uses the new IMP::Model::evaluate_if_good() support to accelerate computations
 - IMP::core::MonteCarlo can use the IMP::Model::evaluate_if_good() support to more quickly reject
   very bad conformations. See IMP::core::MonteCarlo::set_maximum_difference().
@@ -28,7 +28,7 @@
 - incremental evaluation support was removed from \imp. The reason for doing this was that the code was complicated, created overhead even when incremental support was not used and was not commonly used. Further, decomposing the restraints and using the dependency graph yields similar results and is more transparent.
 - the RMF helper binaries have been moved to their own application so that they get installed.
 - IMP::display::Writer has been revised to better support writers that write multiple frames to a single file and ones that write binary data. The noticeable changes are that the existing IMP::display::Writer instances must be created with a file name. And the IMP::display::WriteOptimizerState just takes a writer rather than a write and a file name template. IMP::display::Writer::set_frame() has been added so that you can directly control the frame being written.
-- IMP::rmf::RMFWriter has been added which writes geometry to an RMF file.
+- RMF::RMFWriter has been added which writes geometry to an RMF file.
 
 \par Spring 2011
 - An interactive mode has been added to IMP::domino::DominoSampler. The interactive mode is useful for understanding domino sampling runs and distributing domino comptutations across a cluster.
