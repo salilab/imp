@@ -102,7 +102,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             dist=IMP.core.get_distance(p0,p1)
             expected=-log(gamma*dist**-6/self.V_obs)
             self.noe.unprotected_evaluate(None)
-            self.assertAlmostEqual(self.noe.get_chi_square(),
+            self.assertAlmostEqual(self.noe.get_chi(),
                     expected,delta=0.001)
 
     def testValueEDist(self):
