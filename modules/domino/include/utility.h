@@ -20,7 +20,7 @@
 #include <IMP/dependency_graph.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <IMP/rmf/HDF5Group.h>
+#include <RMF/HDF5Group.h>
 #endif
 
 

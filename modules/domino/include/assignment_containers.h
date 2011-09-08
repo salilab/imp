@@ -13,7 +13,7 @@
 #include "Assignment.h"
 #include "subset_filters.h"
 #ifdef IMP_DOMINO_USE_IMP_RMF
-#include <IMP/rmf/HDF5Group.h>
+#include <RMF/HDF5Group.h>
 #endif
 #include <boost/shared_array.hpp>
 #include <algorithm>

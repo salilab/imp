@@ -16,6 +16,8 @@ class LogRestraint(IMP.Restraint):
         return 1
     def get_input_particles(self):
         return self.ps
+    def reset(self):
+        self.count=0
     def get_input_containers(self):
         return []
     def show(self, out):
@@ -37,7 +39,9 @@ class DOMINOTests(IMP.test.TestCase):
         rft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
         f= rft.get_subset_filter(IMP.domino.Subset([p]),[])
         IMP.set_check_level(IMP.NONE)
+        lr.reset()
         f.get_is_ok(IMP.domino.Assignment([0]))
+        self.assertEqual(lr.count, 1)
         f.get_is_ok(IMP.domino.Assignment([0]))
         # they can get re-evaluated for checking purposes
         self.assertEqual(lr.count, 1)
@@ -55,7 +59,9 @@ class DOMINOTests(IMP.test.TestCase):
         rft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
         rft.set_use_caching(False)
         f= rft.get_subset_filter(IMP.domino.Subset([p]),[])
+        lr.reset()
         f.get_is_ok(IMP.domino.Assignment([0]))
+        self.assertEqual(lr.count, 1)
         f.get_is_ok(IMP.domino.Assignment([0]))
         self.assertEqual(lr.count, 2)
     def test_global_min3(self):
@@ -77,6 +83,7 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         # turn off checks to avoid restraint re-evals
         IMP.set_check_level(IMP.NONE)
+        lr.reset()
         f.get_is_ok(IMP.domino.Assignment([0]))
         f.get_is_ok(IMP.domino.Assignment([0]))
         f.get_is_ok(IMP.domino.Assignment([1]))
