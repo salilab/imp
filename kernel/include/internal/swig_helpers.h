@@ -554,6 +554,12 @@ namespace swig {
     static const int converter=7;
   };
 
+ template <class T, class P>
+  struct Convert<VectorOfRefCounted<T, P> > :
+    public ConvertVectorBase< VectorOfRefCounted<T, P> > {
+    static const int converter=8;
+  };
+
   template <class T>
   struct Convert<IMP::compatibility::checked_vector<T> > :
     public ConvertVectorBase< IMP::compatibility::checked_vector<T> > {
