@@ -3,8 +3,7 @@
  */
 #include <IMP/benchmark/benchmark_config.h>
 #ifdef IMP_BENCHMARK_USE_IMP_RMF
-#include <IMP/rmf/atom_io.h>
-#include <IMP/rmf/RootHandle.h>
+#include <RMF/RootHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
@@ -83,7 +82,8 @@ double traverse(std::string name) {
 }
 
 int main(int, char **) {
-   double runtime, dist=0;
+  try {
+    double runtime, dist=0;
     IMP_TIME(
              {
                dist+=traverse(IMP::benchmark::get_data_path("rnapii.rmf"));
@@ -91,7 +91,9 @@ int main(int, char **) {
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("rmf large", runtime, dist);
-
+  } catch (const std::exception &e) {
+    std::cerr << "Exception thrown: " << e.what() << std::endl;
+  }
   return 0;
 }
 #else
