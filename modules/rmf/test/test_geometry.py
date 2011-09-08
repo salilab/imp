@@ -1,6 +1,7 @@
 import unittest
 import IMP.rmf
 import IMP.test
+import RMF
 from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
@@ -11,7 +12,7 @@ class GenericTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h1)))
     def test_round_trip(self):
         """Test reading and writing geometry"""
-        f= IMP.rmf.create_rmf_file(self.get_tmp_file_name("geometry.hdf5"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("geometry.hdf5"))
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10, 10, 10))
         g= IMP.display.BoundingBoxGeometry(bb)
@@ -35,10 +36,10 @@ class GenericTest(IMP.test.TestCase):
         #    print i, g.get_center(i), g[i]
         gg= IMP.display.IsosurfaceGeometry(g, 95.0)
         gg.set_name("isosurface")
-        rmf= IMP.rmf.create_rmf_file(self.get_tmp_file_name("iso.rmf"))
+        rmf= RMF.create_rmf_file(self.get_tmp_file_name("iso.rmf"))
         IMP.rmf.add_geometry(rmf, gg)
         del rmf
-        rmf= IMP.rmf.open_rmf_file(self.get_tmp_file_name("iso.rmf"))
+        rmf= RMF.open_rmf_file(self.get_tmp_file_name("iso.rmf"))
         gs= IMP.rmf.create_geometries(rmf,0)
         w=IMP.display.PymolWriter(self.get_tmp_file_name("iso.pym"))
         w.add_geometry(gg)

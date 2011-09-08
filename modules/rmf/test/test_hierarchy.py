@@ -1,6 +1,7 @@
 import unittest
 import IMP.rmf
 import IMP.test
+import RMF
 from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
@@ -12,10 +13,10 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(len(IMP.atom.get_internal_bonds(h0)),
                          len(IMP.atom.get_internal_bonds(h1)))
     def _test_round_trip(self, h0, name):
-        f= IMP.rmf.create_rmf_file(name)
+        f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h0)
         del f
-        f= IMP.rmf.open_rmf_file(name)
+        f= RMF.open_rmf_file(name)
         h1= IMP.rmf.create_hierarchies(f, h0.get_model())
         self._assert_same(h0, h1[0])
     def _show(self, g):
@@ -70,10 +71,10 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)
         IMP.atom.add_bonds(h)
         name=self.get_tmp_file_name("test_large.rmf")
-        f= IMP.rmf.create_rmf_file(name)
+        f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h)
         del f
-        f= IMP.rmf.open_rmf_file(name)
+        f= RMF.open_rmf_file(name)
         h1= IMP.rmf.create_hierarchies(f, m)
         res= IMP.atom.get_by_type(h1[0], IMP.atom.RESIDUE_TYPE)
         nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))

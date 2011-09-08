@@ -10,8 +10,8 @@
 #define IMPRMF_ATOM_IO_H
 
 #include "rmf_config.h"
-#include "NodeHandle.h"
-#include "RootHandle.h"
+#include <RMF/NodeHandle.h>
+#include <RMF/RootHandle.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/OptimizerState.h>
 

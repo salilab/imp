@@ -1,6 +1,7 @@
 import unittest
 import IMP.rmf
 import IMP.test
+import RMF
 from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
@@ -19,11 +20,11 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
-        f= IMP.rmf.create_rmf_file(self.get_tmp_file_name("test_rt.rmf"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_rt.rmf"))
         IMP.rmf.add_hierarchy(f, h)
         print "reopening"
         del f
-        f= IMP.rmf.open_rmf_file_read_only(self.get_tmp_file_name("test_rt.rmf"))
+        f= RMF.open_rmf_file_read_only(self.get_tmp_file_name("test_rt.rmf"))
         print "reading"
         print f, type(f)
         h2=IMP.rmf.create_hierarchies(f, m)
@@ -52,14 +53,14 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
-        f= IMP.rmf.create_rmf_file(self.get_tmp_file_name("test_rt_parts.rmf"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_rt_parts.rmf"))
         print f, type(f)
         IMP.rmf.add_hierarchy(f, h)
     def test_part2(self):
         """Test round trip 2"""
         m= IMP.Model()
         print "reopening"
-        f= IMP.rmf.open_rmf_file_read_only(self.get_tmp_file_name("test_rt_parts.rmf"))
+        f= RMF.open_rmf_file_read_only(self.get_tmp_file_name("test_rt_parts.rmf"))
         print "reading"
         h2=IMP.rmf.create_hierarchies(f, m)
 
