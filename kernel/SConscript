@@ -45,7 +45,8 @@ if not env.GetOption('help'):
 
 
 env.IMPModuleBuild(version='SVN', config_macros=config,
-                   module='kernel', module_suffix="", module_include_path="IMP",
+                   module='kernel', module_libname="imp",
+                   module_pylibname="_IMP", module_include_path="IMP",
                    module_preproc="IMP",
                    module_namespace="IMP",
                    required_dependencies=['Boost'],
