@@ -11,6 +11,8 @@ try:
 except:
     print "Script requires networkx to run"
     sys.exit()
+# remove internal checks
+IMP.set_check_level(IMP.USAGE)
 pdbs=[IMP.get_example_path('dock_data/chainf.pdb'),
       IMP.get_example_path('dock_data/chaind.pdb')]
 xlinks=[
