@@ -3,6 +3,7 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
+import RMF
 
 class TrivialParticleStates(IMP.domino.ParticleStates):
     def __init__(self, n):
@@ -35,7 +36,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino.Subset(ps)
         tfn= self.get_tmp_file_name("subsetassignments.hdf5")
-        h5= IMP.rmf.create_hdf5_file(tfn)
+        h5= RMF.create_hdf5_file(tfn)
         pss= IMP.domino.HDF5AssignmentContainer(h5, lsc, ps, "assignments")
         dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
