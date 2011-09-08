@@ -9,9 +9,9 @@
 #include <IMP/rmf/geometry_io.h>
 #include "IMP/display/internal/utility.h"
 #include <IMP/display/geometry.h>
-#include <IMP/rmf/Key.h>
-#include <IMP/rmf/NodeHandle.h>
-#include <IMP/rmf/RootHandle.h>
+#include <RMF/Key.h>
+#include <RMF/NodeHandle.h>
+#include <RMF/RootHandle.h>
 #include <IMP/rmf/internal/imp_operations.h>
 
 IMPRMF_BEGIN_NAMESPACE

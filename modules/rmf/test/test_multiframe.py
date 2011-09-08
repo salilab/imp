@@ -1,6 +1,7 @@
 import unittest
 import IMP.rmf
 import IMP.test
+import RMF
 from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
@@ -20,13 +21,13 @@ class GenericTest(IMP.test.TestCase):
         d.set_z(0)
         nf=10
         IMP.set_log_level(IMP.PROGRESS)
-        f=IMP.rmf.create_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
+        f=RMF.create_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
         IMP.rmf.add_hierarchy(f, h)
         for i in range(0,nf):
             d.set_x(i)
             IMP.rmf.save_frame(f, i, h)
         del f
-        f= IMP.rmf.open_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
+        f= RMF.open_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
         [h]= IMP.rmf.create_hierarchies(f, m)
         for i in range(0,nf):
             IMP.rmf.load_frame( f, i, h)

@@ -10,7 +10,7 @@
 #define IMPRMF_RESTRAINT_IO_H
 
 #include "rmf_config.h"
-#include "NodeHandle.h"
+#include <RMF/NodeHandle.h>
 #include <IMP/Restraint.h>
 
 IMPRMF_BEGIN_NAMESPACE

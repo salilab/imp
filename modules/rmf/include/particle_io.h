@@ -10,7 +10,7 @@
 #define IMPRMF_PARTICLE_IO_H
 
 #include "rmf_config.h"
-#include "NodeHandle.h"
+#include <RMF/NodeHandle.h>
 #include <IMP/atom/Hierarchy.h>
 
 IMPRMF_BEGIN_NAMESPACE

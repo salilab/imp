@@ -10,9 +10,9 @@
 #define IMPRMF_INTERNAL_IMP_OPERATIONS_H
 
 #include "../rmf_config.h"
-#include "../NodeHandle.h"
-#include "../RootHandle.h"
-#include "../hdf5_types.h"
+#include <RMF/NodeHandle.h>
+#include <RMF/RootHandle.h>
+#include <RMF/hdf5_types.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
