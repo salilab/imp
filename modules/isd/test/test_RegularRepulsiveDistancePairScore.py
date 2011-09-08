@@ -58,7 +58,6 @@ class TestRegularRepulsiveDistancePairScoreSimple(IMP.test.TestCase):
         p1=self.p1
 	r0 = p0.get_radius()
 	r1 = p1.get_radius()
-        fl=open('plot.dat', 'w')
         for i in xrange(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-3,3) \
                     for i in range(3)]))

@@ -27,10 +27,10 @@ TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa) :kappa
   if (p.size() != 4){
           IMP_THROW("please provide a list with 4 particles!", ModelException);
       }
-  p_[0]=p[0];
-  p_[1]=p[1];
-  p_[2]=p[2];
-  p_[3]=p[3];
+  p_[0]=static_cast<Particle*>(p[0]);
+  p_[1]=static_cast<Particle*>(p[1]);
+  p_[2]=static_cast<Particle*>(p[2]);
+  p_[3]=static_cast<Particle*>(p[3]);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
@@ -43,10 +43,10 @@ TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
       {
         IMP_THROW("please provide a list with 4 particles!", ModelException); 
       }
-  p_[0]=p[0];
-  p_[1]=p[1];
-  p_[2]=p[2];
-  p_[3]=p[3];
+  p_[0]=static_cast<Particle*>(p[0]);
+  p_[1]=static_cast<Particle*>(p[1]);
+  p_[2]=static_cast<Particle*>(p[2]);
+  p_[3]=static_cast<Particle*>(p[3]);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
@@ -56,10 +56,10 @@ TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
 TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, 
         Floats data, Particle * kappa) : kappa_(kappa) 
 {
-  p_[0]=p1;
-  p_[1]=p2;
-  p_[2]=p3;
-  p_[3]=p4;
+  p_[0]=static_cast<Particle*>(p1);
+  p_[1]=static_cast<Particle*>(p2);
+  p_[2]=static_cast<Particle*>(p3);
+  p_[3]=static_cast<Particle*>(p4);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
@@ -69,10 +69,10 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particl
 TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
           unsigned N, double R0, double chiexp, Particle *kappa) : kappa_(kappa)
 {
-  p_[0]=p1;
-  p_[1]=p2;
-  p_[2]=p3;
-  p_[3]=p4;
+  p_[0]=static_cast<Particle*>(p1);
+  p_[1]=static_cast<Particle*>(p2);
+  p_[2]=static_cast<Particle*>(p3);
+  p_[3]=static_cast<Particle*>(p4);
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);

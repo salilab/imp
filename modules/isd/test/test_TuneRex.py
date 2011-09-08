@@ -53,8 +53,8 @@ class TestTuneRex(IMP.test.TestCase):
          for i in range(5000):
 	      self.replica.replica_exchange()
     	      self.replica.write_rex_stats()
-              if os.path.exists('pup'):
-                os.rename('pup','pup_%d' % i)
+              #if os.path.exists('pup'):
+              #  os.rename('pup','pup_%d' % i)
 
          self.replica.tune_data['dumb_scale']=0.1
 	 
@@ -70,10 +70,10 @@ class TestTuneRex(IMP.test.TestCase):
 	
     def tearDown(self):
         IMP.test.TestCase.tearDown(self)
-        #if os.path.exists('temps.txt'):
-        #    os.remove('temps.txt')
-        #if os.path.exists('replicanums.txt'):
-        #    os.remove('replicanums.txt')
+        if os.path.exists('temps.txt'):
+            os.remove('temps.txt')
+        if os.path.exists('replicanums.txt'):
+            os.remove('replicanums.txt')
 
     
 
