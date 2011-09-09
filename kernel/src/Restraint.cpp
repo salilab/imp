@@ -44,6 +44,7 @@ void Restraint::set_model(Model* model)
                   || (model_ && model_ == model),
                   "Model* different from already stored model "
                   << model << " " << model_);
+  if (model==model_) return;
   if (model_) {
     model_->remove_tracked_restraint(this);
   }
