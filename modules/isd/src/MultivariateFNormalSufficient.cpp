@@ -12,7 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_lu.h>
+#include <IMP/algebra/internal/jama_cholesky.h>
 #include <boost/scoped_ptr.hpp>
 
 IMPISD_BEGIN_NAMESPACE
@@ -35,7 +35,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double>
         FM_=FM.copy();
         set_FX(FX); //also computes W, Fbar and epsilon.
         set_JF(JF);
-        set_Sigma(Sigma); //computes the LU decomp.
+        set_Sigma(Sigma); //computes the Cholesky decomp.
 }
 
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
@@ -187,11 +187,17 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
             }
         Sigma_=Sigma;
         IMP_LOG(TERSE, "MVN:   set Sigma to new matrix" << std::endl);
-        IMP_LOG(TERSE, "MVN:   computing LU decomposition" << std::endl);
-        // compute LU decomposition for determinant and inverse
-        LUSigma_.reset(new algebra::internal::JAMA::LU<double> (Sigma_));
+        IMP_LOG(TERSE, "MVN:   computing Cholesky decomposition" << std::endl);
+        // compute Cholesky decomposition for determinant and inverse
+        CholeskySigma_.reset(new algebra::internal::JAMA::Cholesky<double> 
+                (Sigma_));
+        IMP_USAGE_CHECK(CholeskySigma_->is_spd(), 
+                "Sigma matrix is not symmetric positive definite!");
         // determinant and derived constants
-        double detSigma=LUSigma_->det();
+        double detSigma=1;
+        Array2D<double> L(CholeskySigma_->getL());
+        for (int i=0; i<M_; i++) detSigma *= L[i][i];
+        detSigma *= detSigma;
         IMP_LOG(TERSE, "MVN:   det(Sigma) = " << detSigma << std::endl);
         norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) * pow(detSigma, -double(N_)/2.0);
         lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * log(detSigma);
@@ -201,7 +207,7 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
         IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
         Array2D<double> id(M_, M_, 0.0);
         for (int i=0; i<M_; i++) id[i][i] = 1.0;
-        P_=LUSigma_->solve(id);
+        P_=CholeskySigma_->solve(id);
         IMP_LOG(TERSE, "MVN:   done" << std::endl);
     }
   }

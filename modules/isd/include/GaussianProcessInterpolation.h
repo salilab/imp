@@ -11,7 +11,7 @@
 #include <IMP/macros.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_lu.h>
+#include <IMP/algebra/internal/jama_cholesky.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/isd/functions.h>
 
@@ -47,7 +47,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
       *
       * Computes the necessary matrices and inverses when called.
       */
-  GaussianProcessInterpolation(std::vector<std::vector<double> > x,
+  GaussianProcessInterpolation(FloatsList x,
                                std::vector<double> sample_mean,
                                std::vector<double> sample_std,
                                std::vector<int> n_obs,
@@ -110,9 +110,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   void compute_WSIm();
 
  private:
-    unsigned M_; // number of dimensions of the abscissa
-    unsigned N_; // number of observations to learn from
-    std::vector<std::vector<double> > x_; // abscissa
+    unsigned N_; // number of dimensions of the abscissa
+    unsigned M_; // number of observations to learn from
+    FloatsList x_; // abscissa
     std::vector<int> n_obs_; // number of observations
     // pointer to the prior mean function
     IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
@@ -121,7 +121,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
     Array1D<double> I_,m_,wx_; 
     Array2D<double> S_,W_,WS_; // WS = (W + S)^{-1}
     Array1D<double> WSIm_; // WS * (I - m)
-    boost::scoped_ptr<algebra::internal::JAMA::LU<double> > LU_;
+    boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > Cholesky_;
 
 };
 

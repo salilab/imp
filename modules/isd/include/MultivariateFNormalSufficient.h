@@ -15,7 +15,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_lu.h>
+#include <IMP/algebra/internal/jama_cholesky.h>
 #include <boost/scoped_ptr.hpp>
 
 
@@ -96,7 +96,8 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
  * \param[in] Sigma : MxM variance-covariance matrix Sigma.
  * */
   MultivariateFNormalSufficient(Array1D<double> Fbar, double JF, 
-            Array1D<double> FM, int Nobs,  Array2D<double> W, Array2D<double> Sigma);
+            Array1D<double> FM, int Nobs,  Array2D<double> W, 
+            Array2D<double> Sigma);
 
   /* probability density function */
   double density() const;
@@ -159,7 +160,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   Array1D<int> Nobs_;
   double JF_,lJF_,norm_,lnorm_;
   Array2D<double> P_,W_,Sigma_,FX_ ;
-  boost::scoped_ptr<algebra::internal::JAMA::LU<double> > LUSigma_;
+  boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > CholeskySigma_;
   int N_; //number of repetitions
   int M_; //number of variables
 };
