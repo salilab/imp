@@ -277,10 +277,15 @@ def swig_scanner(node, env, path):
         oldret=[]
         ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
-                +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
+                +re.findall('\n%import\s"IMP_([^"]*).i"', contents)\
+                +re.findall('\n%include\s"RMF([^"]*).i"', contents)\
+                +re.findall('\n%import\s"RMF([^"]*).i"', contents):
             mn= x.split("_")[0]
             if not dta.modules[mn].external:
-                ret.append("#/build/swig/IMP_"+x+".i")
+                if x== "librmf":
+                    ret.append("#/build/swig/RMF.i")
+                else:
+                    ret.append("#/build/swig/IMP_"+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
