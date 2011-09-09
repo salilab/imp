@@ -117,8 +117,9 @@ Assignments DominoSampler
       IMP_LOG(TERSE,"DOMINOO END merge tree"<<std::endl);
     } else {
       IMP_LOG(TERSE,"DOMINOO has junction tree"<<std::endl);
-      SubsetGraph jt= get_junction_tree(get_interaction_graph(rs,
-                                               get_particle_states_table()));
+      SubsetGraph jt
+        = get_junction_tree(get_interaction_graph(RestraintsTemp(1, rs),
+                                         get_particle_states_table()));
       mt= get_merge_tree(jt);
     }
     ListSubsetFilterTable* lsft=nullptr;

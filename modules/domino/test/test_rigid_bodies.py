@@ -42,7 +42,7 @@ class DOMINOTests(IMP.test.TestCase):
         rg= IMP.domino.get_restraint_graph(m.get_root_restraint_set(), pst)
         #rg.show_dotty()
         print "ig"
-        ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(), pst)
+        ig= IMP.domino.get_interaction_graph([m.get_root_restraint_set()], pst)
         IMP.show_graphviz(ig)
         print "dg"
         IMP.set_log_level(IMP.VERBOSE)
