@@ -29,6 +29,7 @@ class SampleTests(IMP.test.TestCase):
         r=IMP.multifit.WeightedExcludedVolumeRestraint3(l0, l1)
         r.set_maximum_separation(10)
         r.set_complementarity_value(-10)
+        r.set_maximum_penetration_score(30)
         r.set_interior_layer_thickness(5)
         r.set_complementarity_thickness(5)
 
@@ -39,13 +40,22 @@ class SampleTests(IMP.test.TestCase):
         (m, rb0, rb1, l0, l1)= self._setup()
         rb1.set_coordinates_are_optimized(True)
         IMP.set_log_level(IMP.TERSE)#VERBOSE)
-        mc= IMP.core.MonteCarlo(m)
-        mv = IMP.core.RigidBodyMover(rb1, 5, .2)
-        mc.add_mover(mv)
-        mc.optimize(100)
+        #mc= IMP.core.MonteCarlo(m)
+        #mv = IMP.core.RigidBodyMover(rb1, 500, .2)
+        #mv.set_log_level(IMP.VERBOSE)
+        #mc.add_mover(mv)
+        #mc.optimize(100)
+        for i in range(48,58):
+            tr= IMP.algebra.Transformation3D(IMP.algebra.Vector3D(i,0,0))
+            nrf=IMP.algebra.ReferenceFrame3D(tr)
+            rb0.set_reference_frame(nrf)
+            s=m.evaluate(False)
+            print "score is", s
+            IMP.atom.write_pdb(l0, "a"+str(i)+".pdb")
+            IMP.atom.write_pdb(l1, "b"+str(i)+".pdb")
+            if s < 0:
+                break
         print "Final score", m.evaluate(False)
-        IMP.atom.write_pdb(l0, "a.pdb")
-        IMP.atom.write_pdb(l1, "b.pdb")
         lsc= IMP.container.ListSingletonContainer(l0+ l1)
         evr= IMP.core.ExcludedVolumeRestraint(lsc, 1)
         IMP.set_check_level(IMP.USAGE)
