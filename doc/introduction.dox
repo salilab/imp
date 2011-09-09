@@ -121,7 +121,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
   - export to Chimera via the IMP::display::ChimeraWriter
   - export to Pymol via the IMP::display::PymolWriter
   Clustering methods are currently based around k-means clustering
-  (IMP::statistics::get_lloyds_kmeans()) and supports
+  (IMP::statistics::create_lloyds_kmeans()) and supports
   clustering of
   - configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
   - arbitrary points using IMP::statistics::VectorDEmbedding
@@ -224,7 +224,7 @@ never be set as optimized. Examples include the x,y,z coordinates of
 members of a rigid body.
 
 Finally, the found conformations should be analyzed. These conformations would typically be stored in an IMP::ConformationSet. The conformations can be clustered via the
-IMP::statistics::get_lloyds_kmeans() function coupled with an IMP::statistics::ConfigurationSetXYZEmbedding. Alternatively, they can be exported
+IMP::statistics::create_lloyds_kmeans() function coupled with an IMP::statistics::ConfigurationSetXYZEmbedding. Alternatively, they can be exported
 as PDB files (IMP::atom::write_pdb()), Pymol files (IMP::display::PymolWriter) or Chimera
 files (IMP::display::ChimeraWriter).
 
@@ -233,11 +233,13 @@ files (IMP::display::ChimeraWriter).
 The following examples give some idea of the basics of using \imp. They are all are in Python,
 but the C++ code is nearly the same.
 
-Each module has an examples page linked from its main page.
+Each \ref examples_index "module has an examples page" linked from its main page.
 
 \subsection i7 Creating some particles
 The function creates a bunch of particles and uses the IMP::core::XYZR decorator to
-given them random coordinates and a radius of 1.
+given them random coordinates and a radius of 1. Note that this is not a fully runable
+snippet. Please see, eg, \ref nup84_cg "the coarse grained nup84 example" for a similar code
+that can be run.
 \pythonexample{setup}
 
 \subsection i7 Restrain some distances
