@@ -22,6 +22,10 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     rigid body. And, currently, each rigid body can only be associated with
     one list of particles (that is, there cannot be multiple restraints with
     different lists of particles that all belong to the same rigid body).
+
+    \note The name will change at some point.
+
+    \note The restraint does not support derivatives.
 */
 class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint3 : public Restraint
 {
@@ -58,9 +62,19 @@ public:
   }
   IMP_RESTRAINT(WeightedExcludedVolumeRestraint3);
  private:
+  typedef std::pair<algebra::Transformation3D,
+                    algebra::DenseGrid3D<float> > GridPair;
+  typedef core::DataObject<GridPair> GridObject;
+  GridObject *get_grid_object(const ParticlesTemp &a,
+                              ObjectKey ok,
+                              double thickness,
+                              double value,
+                              double interior_thickness,
+                              double voxel) const;
+  double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
+                                      double max) const;
 
   void update_voxel();
-
   ParticlesTemp a_, b_;
   core::RigidBody rba_, rbb_;
   ObjectKey ok_;

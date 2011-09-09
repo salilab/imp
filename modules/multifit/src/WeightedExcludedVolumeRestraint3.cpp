@@ -13,12 +13,13 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-namespace {
-  typedef core::DataObject<algebra::DenseGrid3D<float> > GridObject;
-  GridObject *get_grid_object(const ParticlesTemp &a, ObjectKey ok,
-                              double thickness, double value,
-                              double interior_thickness,
-                              double voxel) {
+WeightedExcludedVolumeRestraint3::GridObject *
+WeightedExcludedVolumeRestraint3::get_grid_object(const ParticlesTemp &a,
+                                                  ObjectKey ok,
+                                                  double thickness,
+                                                  double value,
+                                                  double interior_thickness,
+                                                  double voxel) const {
     IMP_USAGE_CHECK(!a.empty(), "No particles passed for excluded volume");
     for (unsigned int i=1; i< a.size(); ++i) {
       IMP_USAGE_CHECK(core::RigidMember(a[0]).get_rigid_body()
@@ -27,6 +28,9 @@ namespace {
     }
     core::RigidBody rb= core::RigidMember(a[0]).get_rigid_body();
     if (!rb->has_attribute(ok)) {
+      IMP_LOG(TERSE, "Creating grid for rigid body " << rb->get_name()
+              << std::endl);
+      algebra::ReferenceFrame3D tr= rb.get_reference_frame();
       internal::ComplementarityGridParameters params;
       params.complementarity_thickness=Floats(1, thickness);
       params.complementarity_value=Floats(1, value);
@@ -34,13 +38,19 @@ namespace {
       params.voxel_size=voxel;
       IMP::algebra::DenseGrid3D<float> grid
         = internal::get_complentarity_grid(a, params);
-      Pointer<GridObject> n(new GridObject(grid));
+      IMP_LOG(TERSE, "Grid has size " << grid.get_number_of_voxels(0)
+              << ", " << grid.get_number_of_voxels(1)
+              << ", " << grid.get_number_of_voxels(2)
+              << std::endl);
+      Pointer<GridObject> n(new GridObject(GridPair(tr.get_transformation_to(),
+                                                    grid)));
       rb->add_cache_attribute(ok, n);
     }
     IMP_CHECK_OBJECT(rb->get_value(ok));
+    IMP_INTERNAL_CHECK(dynamic_cast<GridObject*>(rb->get_value(ok)),
+                       "The saved grid is not a grid.");
     return dynamic_cast<GridObject*>(rb->get_value(ok));
   }
-}
 WeightedExcludedVolumeRestraint3
 ::WeightedExcludedVolumeRestraint3(
                                    const ParticlesTemp &a,
@@ -58,21 +68,24 @@ WeightedExcludedVolumeRestraint3
   update_voxel();
 }
 
-//! A value of 1 means that the proteins are penetrating
-//! A value of 0 means that the proteins are not touching.
-//! A negative value is the geometric complimintarity
 double WeightedExcludedVolumeRestraint3::unprotected_evaluate(
                          DerivativeAccumulator *accum) const
+{
+  return unprotected_evaluate_if_good(accum,
+                                      std::numeric_limits<double>::max());
+}
+
+
+double WeightedExcludedVolumeRestraint3::unprotected_evaluate_if_good(
+                                       DerivativeAccumulator *accum,
+                                       double max) const
 {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(!accum,
                   "WeightedExcludedVolume3 does not support derivatives.");
-  algebra::Transformation3D tr
-    = rba_.get_reference_frame().get_transformation_from()
-    *rba_.get_reference_frame().get_transformation_to();
   internal::ComplementarityParameters params;
   params.maximum_separation= maximum_separation_;
-  params.maximum_penetration_score= maximum_penetration_score_;
+  params.maximum_penetration_score= std::min(maximum_penetration_score_, max);
 
   Pointer<GridObject> ga=get_grid_object(a_, ok_,
                                          complementarity_thickeness_,
@@ -82,10 +95,24 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate(
                                          complementarity_thickeness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
+  algebra::Transformation3D tra=ga->get_data().first
+    *rba_.get_reference_frame().get_transformation_from();
+  algebra::Transformation3D trb=rbb_.get_reference_frame()
+    .get_transformation_to()
+    /gb->get_data().first;
+  // transform a by tra and b by trb
+  // same as transforming b by na/oa Ma= oa/ nai nb/ob p
+  algebra::Transformation3D tr= tra*trb;
+  IMP_LOG(TERSE, "Transformation is " << tr << " between "
+          << rba_.get_reference_frame()
+          << " and " << rbb_.get_reference_frame() << std::endl);
+
   FloatPair ps= IMP::multifit::internal
-    ::get_penetration_and_complementarity_scores(ga->get_data(),
-                                                 gb->get_data(),
+    ::get_penetration_and_complementarity_scores(ga->get_data().second,
+                                                 gb->get_data().second,
                                                  tr, params);
+  IMP_LOG(TERSE, "Scores are " << ps.first << " and " << ps.second
+          << std::endl);
   double vol= cube(voxel_size_);
   if (ps.first==ps.second && ps.second==0) {
     return std::numeric_limits<double>::max();
