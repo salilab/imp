@@ -283,11 +283,11 @@ IMPEXPORT void set_print_exceptions(bool tf);
 #define IMP_FAILURE(message) do {                                       \
   std::ostringstream oss;                                               \
   oss << message << std::endl;                                          \
-  IMP::internal::assert_fail(oss.str().c_str());                        \
+  IMP::handle_error(oss.str().c_str());                                 \
   throw InternalException(oss.str().c_str());                           \
   } while (true)
 #define IMP_NOT_IMPLEMENTED do {                                        \
-    IMP::internal::assert_fail("This method is not implemented.");      \
+    IMP::handle_error("This method is not implemented.");               \
     throw InternalException("Not implemented");                         \
   } while(true)
 
@@ -304,7 +304,7 @@ IMPEXPORT void set_print_exceptions(bool tf);
           << "  File \"" << __FILE__ << "\", line " << __LINE__ \
           << IMP::get_context_message()                         \
           << std::endl;                                         \
-      IMP::internal::assert_fail(oss.str().c_str());            \
+      IMP::handle_error(oss.str().c_str());                     \
       throw IMP::InternalException(oss.str().c_str());          \
     }                                                           \
   } while(false)
@@ -315,7 +315,7 @@ IMPEXPORT void set_print_exceptions(bool tf);
       oss << "Usage check failure: " << message                 \
           << IMP::get_context_message()                         \
           << std::endl;                                         \
-      IMP::internal::assert_fail(oss.str().c_str());            \
+      IMP::handle_error(oss.str().c_str());                     \
       throw IMP::UsageException(oss.str().c_str());             \
     }                                                           \
   } while (false)
@@ -332,12 +332,10 @@ IMPEXPORT void set_print_exceptions(bool tf);
 
 
 
-
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-namespace internal {
-IMPEXPORT void assert_fail(const char *msg);
-}
-#endif
+/** This function is called whenever IMP detects an error. It can be
+    useful to add a breakpoint in the function when using a debugger.
+*/
+IMPEXPORT void handle_error(const char *msg);
 
 
 

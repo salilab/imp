@@ -26,8 +26,7 @@ CheckLevel get_maximum_check_level() {
 #endif
 }
 
-namespace internal {
-void assert_fail(const char *msg)
+void handle_error(const char *msg)
 {
   static bool is_handling=false;
 
@@ -38,16 +37,15 @@ void assert_fail(const char *msg)
   for (int i=internal::handlers.size()-1; i >=0; --i) {
     IMP_CHECK_OBJECT(internal::handlers[i]);
     try {
-      handlers[i]->handle_failure();
+      internal::handlers[i]->handle_failure();
     } catch (const Exception &e) {
       IMP_WARN("Caught exception in failure handler \""
                << internal::handlers[i]->get_name() << "\": "
                << e.what() << std::endl);
     }
   }
-  if (print_exceptions) IMP_ERROR(msg);
+  if (internal::print_exceptions) IMP_ERROR(msg);
   is_handling=false;
-}
 }
 
 void add_failure_handler(FailureHandler *fh) {
@@ -57,7 +55,8 @@ void add_failure_handler(FailureHandler *fh) {
 
 
 void remove_failure_handler(FailureHandler *fh) {
-  internal::remove_if(internal::handlers, boost::lambda::_1 == fh);
+  internal::handlers.erase(std::find(internal::handlers.begin(),
+                                     internal::handlers.end(), fh));
 }
 
 ExceptionBase::~ExceptionBase() throw()
