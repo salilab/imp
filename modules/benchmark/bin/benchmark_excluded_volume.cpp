@@ -6,6 +6,7 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
+#include <IMP/multifit.h>
 #include <IMP/container.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -18,6 +19,7 @@ using namespace IMP::benchmark;
 using namespace IMP::container;
 using namespace IMP::atom;
 using namespace IMP::container;
+using namespace IMP::multifit;
 
 /** One bringing slowly together and one jumping around randomly, with
     all pairs, pair container, evr and evaluate if good or not for each
@@ -188,6 +190,24 @@ int main(int argc, char *argv[]) {
     }
     if (argc<3 || argv[2][0]=='g') {
       test_one<ClosePairContainer>("pairs restraint", m, rb0,
+                                   true, argc, argv);
+    }
+  }
+  if (argc==1 || (argc >1 && argv[1][0]=='3')) {
+    IMP_NEW(ComplementarityRestraint, r, (atom::get_leaves(h0),
+                                                  atom::get_leaves(h1)));
+    r->set_maximum_penetration_score(10);
+    r->set_maximum_separation(10);
+    r->set_complementarity_value(0);
+    r->set_complementarity_thickness(0);
+    r->set_interior_layer_thickness(4);
+    m->add_restraint(r);
+    if (argc<3 || argv[2][0]=='b') {
+      test_one<ComplementarityRestraint>("wev3", m, rb0,
+                                   false, argc, argv);
+    }
+    if (argc<3 || argv[2][0]=='g') {
+      test_one<ComplementarityRestraint>("wev3", m, rb0,
                                    true, argc, argv);
     }
   }

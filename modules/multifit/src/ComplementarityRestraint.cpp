@@ -6,14 +6,14 @@
  *
  */
 
-#include <IMP/multifit/WeightedExcludedVolumeRestraint3.h>
+#include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
 #include <IMP/core/DataObject.h>
 #include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 IMP::algebra::DenseGrid3D<float>
-WeightedExcludedVolumeRestraint3::get_grid(const ParticlesTemp &a,
+ComplementarityRestraint::get_grid(const ParticlesTemp &a,
                                            double thickness,
                                            double value,
                                            double interior_thickness,
@@ -28,8 +28,8 @@ WeightedExcludedVolumeRestraint3::get_grid(const ParticlesTemp &a,
   return grid;
 }
 
-WeightedExcludedVolumeRestraint3::GridObject *
-WeightedExcludedVolumeRestraint3::get_grid_object(core::RigidBody rb,
+ComplementarityRestraint::GridObject *
+ComplementarityRestraint::get_grid_object(core::RigidBody rb,
                                                   const ParticlesTemp &a,
                                                   ObjectKey ok,
                                                   double thickness,
@@ -61,8 +61,8 @@ WeightedExcludedVolumeRestraint3::get_grid_object(core::RigidBody rb,
                        "The saved grid is not a grid.");
     return dynamic_cast<GridObject*>(rb->get_value(ok));
   }
-WeightedExcludedVolumeRestraint3
-::WeightedExcludedVolumeRestraint3(
+ComplementarityRestraint
+::ComplementarityRestraint(
                                    const ParticlesTemp &a,
                                    const ParticlesTemp &b,
                                    std::string name)
@@ -78,7 +78,7 @@ WeightedExcludedVolumeRestraint3
   update_voxel();
 }
 
-double WeightedExcludedVolumeRestraint3::unprotected_evaluate(
+double ComplementarityRestraint::unprotected_evaluate(
                          DerivativeAccumulator *accum) const
 {
   return unprotected_evaluate_if_good(accum,
@@ -86,7 +86,7 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate(
 }
 
 
-double WeightedExcludedVolumeRestraint3::unprotected_evaluate_if_good(
+double ComplementarityRestraint::unprotected_evaluate_if_good(
                                        DerivativeAccumulator *accum,
                                        double max) const
 {
@@ -151,7 +151,7 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate_if_good(
   else return ps.first*vol;
 }
 
-void WeightedExcludedVolumeRestraint3::update_voxel() {
+void ComplementarityRestraint::update_voxel() {
   double val;
   if (complementarity_thickeness_==0) {
     val= interior_thickness_;
@@ -164,7 +164,7 @@ void WeightedExcludedVolumeRestraint3::update_voxel() {
   voxel_size_=val/2.0;
 }
 
-ParticlesTemp WeightedExcludedVolumeRestraint3::get_input_particles() const
+ParticlesTemp ComplementarityRestraint::get_input_particles() const
 {
   ParticlesTemp ret= a_;
   ret.insert(ret.end(), b_.begin(), b_.end());
@@ -173,13 +173,13 @@ ParticlesTemp WeightedExcludedVolumeRestraint3::get_input_particles() const
   return ret;
 }
 
-ContainersTemp WeightedExcludedVolumeRestraint3::get_input_containers() const {
+ContainersTemp ComplementarityRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 
-void WeightedExcludedVolumeRestraint3::do_show(std::ostream& out) const
+void ComplementarityRestraint::do_show(std::ostream& out) const
 {
-  out<<"WeightedExcludedVolumeRestraint3"<<std::endl;
+  out<<"ComplementarityRestraint"<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE
