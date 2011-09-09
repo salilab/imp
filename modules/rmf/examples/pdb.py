@@ -11,7 +11,7 @@ tfn=IMP.create_temporary_file_name("pdb", ".rmf")
 print "File name is", tfn
 
 # open the temporary file, clearing any existing contents
-rh = IMP.rmf.create_rmf_file(tfn)
+rh = RMF.create_rmf_file(tfn)
 
 # add the hierarchy to the file
 IMP.rmf.add_hierarchy(rh, h)
@@ -26,7 +26,7 @@ IMP.rmf.save_frame(rh, 1, h)
 del rh
 
 # reopen it, don't clear the file when opening it
-rh= IMP.rmf.open_rmf_file(tfn)
+rh= RMF.open_rmf_file(tfn)
 
 # hps is a list with one element which is a copy of h
 hps= IMP.rmf.create_hierarchies(rh, m)
