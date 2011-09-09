@@ -12,9 +12,25 @@
 #include <IMP/log.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+IMP::algebra::DenseGrid3D<float>
+WeightedExcludedVolumeRestraint3::get_grid(const ParticlesTemp &a,
+                                           double thickness,
+                                           double value,
+                                           double interior_thickness,
+                                           double voxel) const {
+  internal::ComplementarityGridParameters params;
+  params.complementarity_thickness=Floats(1, thickness);
+  params.complementarity_value=Floats(1, value);
+  params.interior_thickness=interior_thickness;
+  params.voxel_size=voxel;
+  IMP::algebra::DenseGrid3D<float> grid
+    = internal::get_complentarity_grid(a, params);
+  return grid;
+}
 
 WeightedExcludedVolumeRestraint3::GridObject *
-WeightedExcludedVolumeRestraint3::get_grid_object(const ParticlesTemp &a,
+WeightedExcludedVolumeRestraint3::get_grid_object(core::RigidBody rb,
+                                                  const ParticlesTemp &a,
                                                   ObjectKey ok,
                                                   double thickness,
                                                   double value,
@@ -26,23 +42,17 @@ WeightedExcludedVolumeRestraint3::get_grid_object(const ParticlesTemp &a,
                       == core::RigidMember(a[i]).get_rigid_body(),
                       "Not all particles are from the same rigid body.");
     }
-    core::RigidBody rb= core::RigidMember(a[0]).get_rigid_body();
     if (!rb->has_attribute(ok)) {
       IMP_LOG(TERSE, "Creating grid for rigid body " << rb->get_name()
-              << std::endl);
-      algebra::ReferenceFrame3D tr= rb.get_reference_frame();
-      internal::ComplementarityGridParameters params;
-      params.complementarity_thickness=Floats(1, thickness);
-      params.complementarity_value=Floats(1, value);
-      params.interior_thickness=interior_thickness;
-      params.voxel_size=voxel;
+          << std::endl);
       IMP::algebra::DenseGrid3D<float> grid
-        = internal::get_complentarity_grid(a, params);
+        = get_grid(a, thickness, value, interior_thickness, voxel);
       IMP_LOG(TERSE, "Grid has size " << grid.get_number_of_voxels(0)
               << ", " << grid.get_number_of_voxels(1)
               << ", " << grid.get_number_of_voxels(2)
               << std::endl);
-      Pointer<GridObject> n(new GridObject(GridPair(tr.get_transformation_to(),
+      Pointer<GridObject> n(new GridObject(GridPair(rb.get_reference_frame()
+                                                    .get_transformation_to(),
                                                     grid)));
       rb->add_cache_attribute(ok, n);
     }
@@ -83,15 +93,18 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate_if_good(
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(!accum,
                   "WeightedExcludedVolume3 does not support derivatives.");
+  double vol= cube(voxel_size_);
+
   internal::ComplementarityParameters params;
   params.maximum_separation= maximum_separation_;
-  params.maximum_penetration_score= std::min(maximum_penetration_score_, max);
+  params.maximum_penetration_score= std::min(maximum_penetration_score_/vol,
+                                             max);
 
-  Pointer<GridObject> ga=get_grid_object(a_, ok_,
+  Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
                                          complementarity_thickeness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
-  Pointer<GridObject> gb=get_grid_object(b_, ok_,
+  Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
                                          complementarity_thickeness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
@@ -113,10 +126,28 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate_if_good(
                                                  tr, params);
   IMP_LOG(TERSE, "Scores are " << ps.first << " and " << ps.second
           << std::endl);
-  double vol= cube(voxel_size_);
+  /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP::algebra::DenseGrid3D<float> ga=get_grid(a_,
+                                                 complementarity_thickeness_,
+                                                 complementarity_value_,
+                                                 interior_thickness_,
+                                                 voxel_size_);
+    IMP::algebra::DenseGrid3D<float> gb=get_grid(b_,
+                                                 complementarity_thickeness_,
+                                                 complementarity_value_,
+                                                 interior_thickness_,
+                                                 voxel_size_);
+
+    FloatPair psc= IMP::multifit::internal
+      ::get_penetration_and_complementarity_scores(ga, gb,
+                                   algebra::get_identity_transformation_3d(),
+                                                   params);
+    IMP_LOG(TERSE, "Check scores are " << psc.first << " and " << ps.second
+            << std::endl);
+            }*/
   if (ps.first==ps.second && ps.second==0) {
     return std::numeric_limits<double>::max();
-  } else if (ps.first < maximum_penetration_score_) return ps.second*vol;
+  } else if (ps.first*vol < maximum_penetration_score_) return ps.second*vol;
   else return ps.first*vol;
 }
 

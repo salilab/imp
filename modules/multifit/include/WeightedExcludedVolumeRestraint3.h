@@ -26,6 +26,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     \note The name will change at some point.
 
     \note The restraint does not support derivatives.
+
+    \note The restraint pretty much only makes sense for use with Domino.
 */
 class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint3 : public Restraint
 {
@@ -65,12 +67,19 @@ public:
   typedef std::pair<algebra::Transformation3D,
                     algebra::DenseGrid3D<float> > GridPair;
   typedef core::DataObject<GridPair> GridObject;
-  GridObject *get_grid_object(const ParticlesTemp &a,
+  GridObject *get_grid_object(core::RigidBody rb,
+                              const ParticlesTemp &a,
                               ObjectKey ok,
                               double thickness,
                               double value,
                               double interior_thickness,
                               double voxel) const;
+  IMP::algebra::DenseGrid3D<float>
+    get_grid(const ParticlesTemp &a,
+             double thickness,
+             double value,
+             double interior_thickness,
+             double voxel) const;
   double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
                                       double max) const;
 
