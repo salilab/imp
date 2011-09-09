@@ -79,6 +79,10 @@ Model::~Model()
       op->m_=nullptr;
     }
   }
+  Restraints rs(tracked_restraints_.begin(), tracked_restraints_.end());
+  for (unsigned int i=0; i < rs.size(); ++i) {
+    rs[i]->set_model(NULL);
+  }
 }
 
 void Model::set_maximum_score(double d) {
