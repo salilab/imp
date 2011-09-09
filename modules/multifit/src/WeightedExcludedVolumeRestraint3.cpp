@@ -86,10 +86,11 @@ double WeightedExcludedVolumeRestraint3::unprotected_evaluate(
     ::get_penetration_and_complementarity_scores(ga->get_data(),
                                                  gb->get_data(),
                                                  tr, params);
+  double vol= cube(voxel_size_);
   if (ps.first==ps.second && ps.second==0) {
     return std::numeric_limits<double>::max();
-  } else if (ps.first < maximum_penetration_score_) return ps.second;
-  else return ps.first;
+  } else if (ps.first < maximum_penetration_score_) return ps.second/vol;
+  else return ps.first/vol;
 }
 
 void WeightedExcludedVolumeRestraint3::update_voxel() {
