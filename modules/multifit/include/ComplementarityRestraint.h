@@ -1,13 +1,13 @@
 /**
- *  \file WeightedExcludedVolumeRestraint3.h
+ *  \file ComplementarityRestraint.h
  *  \brief Calculate weighted excluded volume between rigid bodies
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_3_H
-#define IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_3_H
+#ifndef IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H
+#define IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H
 
 #include "multifit_config.h"
 #include <IMP/core/rigid_bodies.h>
@@ -30,19 +30,19 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     one list of particles (that is, there cannot be multiple restraints with
     different lists of particles that all belong to the same rigid body).
 
-    \note The name will change at some point.
-
     \note The restraint does not support derivatives.
 
-    \note The restraint pretty much only makes sense for use with Domino.
+    \note The restraint pretty much only makes sense for use with Domino as it
+    returns infinity for many cases. Monte Carlo might make sense with certain
+    paramters.
 */
-class IMPMULTIFITEXPORT WeightedExcludedVolumeRestraint3 : public Restraint
+class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint
 {
 public:
-  WeightedExcludedVolumeRestraint3(const ParticlesTemp &a,
+  ComplementarityRestraint(const ParticlesTemp &a,
                                    const ParticlesTemp &b,
                                    std::string name
-                                   ="WeightedExcludedVolumeRestraint3 %1%");
+                                   ="ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
       cubic angstroms that the two molecules overlap. */
@@ -70,7 +70,7 @@ public:
     interior_thickness_=th;
     update_voxel();
   }
-  IMP_RESTRAINT(WeightedExcludedVolumeRestraint3);
+  IMP_RESTRAINT(ComplementarityRestraint);
  private:
   typedef std::pair<algebra::Transformation3D,
                     algebra::DenseGrid3D<float> > GridPair;
@@ -103,4 +103,4 @@ public:
 
 IMPMULTIFIT_END_NAMESPACE
 
-#endif  /* IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_3_H */
+#endif  /* IMPMULTIFIT_COMPLEMENTARITY_RESTRAINT_H */

@@ -8,7 +8,7 @@ IMP_SWIG_OBJECT(IMP::multifit, ComponentHeader, ComponentHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
-IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint3, WeightedExcludedVolumeRestraints3);
+IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestraints);
 /*IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList); */
 
 /* Make selected classes extensible in Python */
@@ -30,7 +30,7 @@ IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint3, WeightedExclude
 %include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
 %include "IMP_multifit_GeometricHash.i"
-%include "IMP/multifit/WeightedExcludedVolumeRestraint3.h"
+%include "IMP/multifit/ComplementarityRestraint.h"
 IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
 namespace IMP {
  namespace multifit {

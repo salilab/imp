@@ -26,7 +26,7 @@ class SampleTests(IMP.test.TestCase):
         l0= IMP.atom.get_leaves(h0)
         l1= IMP.atom.get_leaves(h1)
         #set the restraint
-        r=IMP.multifit.WeightedExcludedVolumeRestraint3(l0, l1)
+        r=IMP.multifit.ComplementarityRestraint(l0, l1)
         r.set_maximum_separation(10)
         r.set_complementarity_value(-10)
         r.set_maximum_penetration_score(30)

@@ -175,14 +175,32 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
       });
   return grid;
 }
-
 typedef IMP::algebra::DenseGrid3D<float> Grid;
+
+namespace {
+  algebra::Sphere3D get_bounding_sphere(const Grid &g) {
+    algebra::BoundingBox3D bb= algebra::get_bounding_box(g);
+    algebra::Vector3D center= .5*(bb.get_corner(0)+ bb.get_corner(1));
+    double r= algebra::get_distance(center, bb.get_corner(0));
+    return algebra::Sphere3D(center, r);
+  }
+}
+
 IMP::FloatPair get_penetration_and_complementarity_scores(
     const Grid &map0,
     const Grid &map1,
     IMP::algebra::Transformation3D tr_map1,
     const ComplementarityParameters &params)
 {
+  algebra::Sphere3D s0= get_bounding_sphere(map0);
+  algebra::Sphere3D s1= get_bounding_sphere(map1);
+  s1= algebra::Sphere3D(tr_map1.get_transformed(s1.get_center()),
+                        s1.get_radius());
+  double d= algebra::get_distance(s0, s1);
+  if (d > params.maximum_separation) {
+    return std::make_pair(std::numeric_limits<double>::max(),
+                          std::numeric_limits<double>::max());
+  }
   double complementarity_score = 0, penetration_score = 0;
   IMP_GRID3D_FOREACH_VOXEL(map1,
                            {

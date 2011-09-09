@@ -8,7 +8,7 @@ files = [
          'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',
          'weighted_excluded_volume.h',
-                 'WeightedExcludedVolumeRestraint3.h',
+                 'ComplementarityRestraint.h',
          'FittingSolutionRecord.h',
          'pca_based_rigid_fitting.h',
          'fitting_solutions_reader_writer.h',
