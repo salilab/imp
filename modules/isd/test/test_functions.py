@@ -321,6 +321,196 @@ class TestCovariance1DFunction(IMP.test.TestCase):
         if skipped > 10:
             self.fail("too many NANs")
 
+class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
+
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        self.m = IMP.Model()
+        IMP.set_log_level(0)
+        self.theta = Switching.setup_particle(IMP.Particle(self.m), 0.5)
+        self.lam = Scale.setup_particle(IMP.Particle(self.m),  1.0)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m),  1.0)
+        self.cov = ReparametrizedCovariance1DFunction(
+                self.sig,self.lam,self.theta)
+        self.DA=IMP.DerivativeAccumulator()
+
+    def shuffle_particle_values(self):
+        particles = [(self.theta,    0, 1),
+                     (self.lam,    1, 10),
+                     (self.sig,    0, 10)]
+        #number of shuffled values
+        for i in xrange(random.randint(0,len(particles))):
+            #which particle
+            p,imin,imax = particles.pop(random.randint(0,len(particles)))
+            p.set_nuisance(random.uniform(imin, imax))
+        self.cov.update()
+
+    def testFail(self):
+        q=IMP.Particle(self.m)
+        self.assertRaises(IMP.InternalException, Covariance1DFunction, self.theta,q,self.lam)
+        self.assertRaises(IMP.InternalException, Covariance1DFunction, q,self.theta,self.lam)
+        self.assertRaises(IMP.InternalException, Covariance1DFunction, self.theta,self.lam,q)
+
+    def testValue(self):
+        """
+        test the value of the function by shuffling all particles
+        """
+        for rep in xrange(100):
+            self.shuffle_particle_values()
+            for i in xrange(10):
+                pos1 = random.uniform(-10,10)
+                for j in xrange(10):
+                    pos2 = random.uniform(-10,10)
+                    observed = self.cov([pos1],[pos2])[0]
+                    t = self.theta.get_nuisance()
+                    l = self.lam.get_nuisance()
+                    s = self.sig.get_nuisance()
+                    if abs(pos1-pos2)<1e-7:
+                        expected = s**2
+                    else:
+                        expected=s**2*t*exp(-0.5*(abs(pos1-pos2)/l)**2)
+                    if expected != 0:
+                        self.assertAlmostEqual(observed/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed,expected ,delta=0.001)
+                pos2=pos1
+                observed = self.cov([pos1],[pos2])[0]
+                t = self.theta.get_nuisance()
+                l = self.lam.get_nuisance()
+                s = self.sig.get_nuisance()
+                expected=s**2
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+
+    def testDerivOne(self):
+        """
+        test the derivatives of the function by shuffling all particles
+        Test on one point at a time
+        """
+        skipped = 0
+        for rep in xrange(10):
+            self.shuffle_particle_values()
+            for i in xrange(10):
+                pos1 = random.uniform(-10,10)
+                for j in xrange(10):
+                    pos2 = random.uniform(-10,10)
+                    t = self.theta.get_nuisance()
+                    l = self.lam.get_nuisance()
+                    s = self.sig.get_nuisance()
+                    self.cov.add_to_derivatives([pos1],[pos2],self.DA)
+                    #theta
+                    if abs(pos1-pos2)<1e-7:
+                        expected = 0
+                    else:
+                        expected=s**2*exp(-0.5*(abs(pos1-pos2)/l)**2)
+                    observed = self.theta.get_nuisance_derivative()
+                    if isnan(expected):
+                        skipped += 1
+                        continue
+                    if expected != 0:
+                        self.assertAlmostEqual(observed/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed,expected
+                            ,delta=0.001)
+                    #lambda
+                    if abs(pos1-pos2)<1e-7:
+                        expected=0
+                    else:
+                        expected = s**2*t*exp(-0.5*(abs(pos1-pos2)/l)**2)*abs(pos1-pos2)**2/l**3
+                    observed = self.lam.get_nuisance_derivative()
+                    if isnan(expected):
+                        skipped += 1
+                        continue
+                    if expected != 0:
+                        self.assertAlmostEqual(observed/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed,expected
+                            ,delta=0.001)
+                    #sigma
+                    if abs(pos1-pos2)<1e-7:
+                        expected = 2*s
+                    else:
+                        expected=2*s*t*exp(-0.5*(abs(pos1-pos2)/l)**2)
+                    observed = self.sig.get_nuisance_derivative()
+                    if isnan(expected):
+                        skipped += 1
+                        continue
+                    if expected != 0:
+                        self.assertAlmostEqual(observed/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed,expected
+                            ,delta=0.001)
+                    self.theta.add_to_nuisance_derivative(-self.theta.get_nuisance_derivative(),self.DA)
+                    self.lam.add_to_nuisance_derivative(-self.lam.get_nuisance_derivative(),self.DA)
+                    self.sig.add_to_nuisance_derivative(-self.sig.get_nuisance_derivative(),self.DA)
+        if skipped > 10:
+            self.fail("too many NANs")
+
+    def testDerivOneSame(self):
+        """
+        test the derivatives of the function by shuffling all particles
+        Test on one point at a time when pos1==pos2
+        """
+        skipped = 0
+        for rep in xrange(10):
+            self.shuffle_particle_values()
+            for i in xrange(10):
+                pos1 = random.uniform(-10,10)
+                pos2 = pos1
+                t = self.theta.get_nuisance()
+                l = self.lam.get_nuisance()
+                s = self.sig.get_nuisance()
+                self.cov.add_to_derivatives([pos1],[pos2],self.DA)
+                #theta
+                expected = 0
+                observed = self.theta.get_nuisance_derivative()
+                if isnan(expected):
+                    skipped += 1
+                    continue
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+                #lambda
+                expected=0
+                observed = self.lam.get_nuisance_derivative()
+                if isnan(expected):
+                    skipped += 1
+                    continue
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+                #sigma
+                expected = 2*s
+                observed = self.sig.get_nuisance_derivative()
+                if isnan(expected):
+                    skipped += 1
+                    continue
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+                self.theta.add_to_nuisance_derivative(-self.theta.get_nuisance_derivative(),self.DA)
+                self.lam.add_to_nuisance_derivative(-self.lam.get_nuisance_derivative(),self.DA)
+                self.sig.add_to_nuisance_derivative(-self.sig.get_nuisance_derivative(),self.DA)
+        if skipped > 10:
+            self.fail("too many NANs")
+
 if __name__ == '__main__':
     IMP.test.main()
 
