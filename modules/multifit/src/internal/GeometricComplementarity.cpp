@@ -198,8 +198,7 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                         s1.get_radius());
   double d= algebra::get_distance(s0, s1);
   if (d > params.maximum_separation) {
-    return std::make_pair(std::numeric_limits<double>::max(),
-                          std::numeric_limits<double>::max());
+    return std::make_pair(0.0, 0.0);
   }
   double complementarity_score = 0, penetration_score = 0;
   IMP_GRID3D_FOREACH_VOXEL(map1,
