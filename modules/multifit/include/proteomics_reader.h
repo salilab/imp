@@ -91,8 +91,9 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
     if (prot_map_.find(name) == prot_map_.end()) return -1;
     return prot_map_.find(name)->second;
   }
-  void add_interaction(const Ints &ii) {
+  void add_interaction(const Ints &ii,bool used_for_jt) {
     interactions_.push_back(ii);
+    interaction_in_jt_.push_back(used_for_jt);
   }
   void add_xlink_interaction(Int prot1,Int res1,Int prot2,Int res2){
     xlinks_.push_back(std::make_pair(IntPair(prot1,res1),IntPair(prot2,res2)));
@@ -106,7 +107,11 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
     IMP_USAGE_CHECK(interaction_ind<(int)interactions_.size(),
                     "index out of range\n");
     return interactions_[interaction_ind];}
-
+  bool get_interaction_used_to_build_jt(int interaction_ind) const {
+    IMP_USAGE_CHECK(interaction_ind<(int)interaction_in_jt_.size(),
+                    "index out of range\n");
+    return interaction_in_jt_[interaction_ind];
+  }
   int get_number_of_xlinks() const {return xlinks_.size();}
   std::pair<IntPair,IntPair> get_xlink(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
@@ -194,6 +199,8 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   std::vector<ProteinRecordData> prot_data_;
   std::map<std::string,int> prot_map_;
   IntsList interactions_;
+  std::vector<bool> interaction_in_jt_;//for each interaction in interactions_
+  //decide if it used to build the JT or just for scoring
   std::vector<std::pair<IntPair,IntPair> > xlinks_;
   IntPairs ev_; //pairs of proteins to calcualte EV between
 };
