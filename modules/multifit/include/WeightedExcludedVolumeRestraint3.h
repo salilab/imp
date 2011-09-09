@@ -16,8 +16,15 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+//! Compute the complementarity between two molecules.
+/**
+    The score returned is infinity if the two molecules overlap by more
+    than the value set for set_maximum_penetration_score() or if the
+    two molecules are separated by more than set_maximum_separation().
+    Otherwise, the integral of the set_complementarity_value() value over
+    a layer of thickness set_complementarity_thickness() around the molecule
+    is returned.
 
-/** Compute the complementarity between two molecules.
     \note currently each of the particle lists must belong to exactly one
     rigid body. And, currently, each rigid body can only be associated with
     one list of particles (that is, there cannot be multiple restraints with
@@ -37,7 +44,8 @@ public:
                                    std::string name
                                    ="WeightedExcludedVolumeRestraint3 %1%");
   /** If the two molecules have a penetration score of more than this,
-      infinity is returned as the score.*/
+      infinity is returned as the score. This score is roughly the number of
+      cubic angstroms that the two molecules overlap. */
   void set_maximum_penetration_score(double s) {
     maximum_penetration_score_=s;
   }
