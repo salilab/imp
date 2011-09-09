@@ -188,7 +188,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         lambda_val_= Scale(lambda).get_nuisance();
         tau_val_= Scale(tau).get_nuisance();
         sigma_val_= Scale(sigma).get_nuisance();
-        do_jitter = (jitter>1e-7);
+        do_jitter = (jitter>MINIMUM);
 
     }
 
@@ -222,7 +222,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         {
             //d[w(x1,x2)]/dtau = 2/tau*(w(x1,x2)-delta_ij sigma^2)
             double val;
-            if (x1[0] == x2[0]) {
+            if (std::abs(x1[0] - x2[0])<MINIMUM) {
                 val = (*this)(x1,x2)[0]-IMP::square(sigma_val_);
             } else { 
                 val = (*this)(x1,x2)[0]; 
@@ -236,7 +236,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                         std::pow((std::abs(x1[0]-x2[0])/lambda_val_),alpha_)
                         /(2.*lambda_val_)), accum);
             //d[w(x,x')]/dsigma = 2 delta_ij sigma
-            if (x1[0] == x2[0]) Scale(sigma_).add_to_nuisance_derivative(2*sigma_val_, accum);
+            if (std::abs(x1[0] - x2[0])<MINIMUM)
+                Scale(sigma_).add_to_nuisance_derivative(2*sigma_val_, accum);
 
         }
 
@@ -256,14 +257,16 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                                 , alpha_)
                         )
                     );
-            //std::cout<<"exp " << ret[0];
-            if (x1[0]==x2[0])
+            //std::cout<<" exp " << ret[0];
+            //std::cout<<" x1= " << x1[0] << " x2= " << x2[0];
+            //std::cout<<" abs(x1-x2)= " << std::abs(x1[0]-x2[0]);
+            if (std::abs(x1[0]-x2[0])<MINIMUM)
             {
-                //std::cout<<"x1==x2 ";
+                //std::cout<<" x1==x2 ";
                 ret[0] += IMP::square(sigma_val_);
                 if (do_jitter) ret[0] += J_;
             }
-            //std::cout <<"retval " << ret[0] << std::endl;
+            //std::cout <<" retval " << ret[0] << std::endl;
             return ret;
         }
 
@@ -329,7 +332,7 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
         lambda_val_= Scale(lambda).get_scale(); 
         theta_val_= Switching(theta).get_switching(); 
         sigma_val_= Scale(sigma).get_scale(); 
-        do_jitter = (jitter>1e-7);
+        do_jitter = (jitter>MINIMUM);
 
     }
 
@@ -362,7 +365,7 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
         void add_to_derivatives(std::vector<double> x1, std::vector<double> x2,
                 DerivativeAccumulator &accum) const
         {
-            if (x1[0] == x2[0]) {
+            if (std::abs(x1[0] - x2[0])<MINIMUM) {
                 Scale(sigma_).add_to_scale_derivative(2*sigma_val_, accum);
             } else { 
                 double exponent = std::pow( std::abs( 
@@ -385,7 +388,7 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
             IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
             IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
             double ret=IMP::square(sigma_val_);
-            if (x1[0]!=x2[0])
+            if (std::abs(x1[0]-x2[0])>MINIMUM)
             {
                     ret *=theta_val_ * std::exp(
                         -0.5*std::pow(
