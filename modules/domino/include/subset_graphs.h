@@ -103,7 +103,7 @@ SubsetGraph get_restraint_graph(RestraintSet *rs,
     @{
  */
 IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph(RestraintSet *rs,
+get_interaction_graph(const RestraintsTemp &rs,
                       const ParticleStatesTable *pst);
 
 /** Assuming that all the particles have Cartesian coordinates,

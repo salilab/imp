@@ -426,11 +426,11 @@ namespace {
 
 }
 
-InteractionGraph get_interaction_graph(RestraintSet *irs,
+InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
                                        const ParticleStatesTable* pst) {
   Subset ps = pst->get_subset();
   InteractionGraph ret(ps.size());
-  RestraintsTemp rs= get_restraints(RestraintsTemp(1,irs));
+  RestraintsTemp rs= get_restraints(rsi);
   //Model *m= ps[0]->get_model();
   IMP::compatibility::map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
@@ -691,7 +691,7 @@ bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
 MergeTree get_merge_tree(RestraintSet *rs,
                          const ParticleStatesTable *pst) {
   OptimizeRestraints ors(rs, pst);
-  InteractionGraph ig= get_interaction_graph(rs, pst);
+  InteractionGraph ig= get_interaction_graph(RestraintsTemp(1, rs), pst);
   SubsetGraph jt= get_junction_tree(ig);
   return get_merge_tree(jt);
 }

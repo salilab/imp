@@ -27,7 +27,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, NullStates())
-        g= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
+        g= IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino.get_interaction_graph_geometry(g):
@@ -64,7 +64,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, NullStates())
-        g= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
+        g= IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig-large.pym"))
         gs=IMP.domino.get_interaction_graph_geometry(g)
@@ -94,7 +94,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         for p in ps:
             pst.set_particle_states(p, NullStates())
-        g= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
+        g= IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("ig0.pym"))
         for gg in IMP.domino.get_interaction_graph_geometry(g):
