@@ -930,15 +930,17 @@ namespace grids {
               "This grid constructor can only be used with bounded grids.");
     IMP_USAGE_CHECK(side>0, "Side cannot be 0");
     VectorD<D> nuc(side, side, side);
-    int dd[D];
-    for (unsigned int i=0; i< D; ++i ) {
+    boost::scoped_array<int> dd(new int[bb.get_dimension()]);
+    for (unsigned int i=0; i< bb.get_dimension(); ++i ) {
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/side;
       double cd= std::ceil(d);
       dd[i]= std::max<int>(1, static_cast<int>(cd));
     }
-    Storage::set_number_of_voxels(Ints(dd, dd+D));
-    set_unit_cell(side*get_ones_vector_d<D>());
+    Storage::set_number_of_voxels(Ints(dd.get(), dd.get()+D));
+    algebra::VectorD<D> sides= bb.get_corner(0);
+    std::fill(sides.coordinates_begin(), sides.coordinates_end(), side);
+    set_unit_cell(sides);
     origin_= bb.get_corner(0);
     IMP_LOG(TERSE, "Constructing grid with side "
             << unit_cell_[0]
@@ -1152,7 +1154,7 @@ namespace grids {
         is[i]= std::max(0, ei[i]);
         is[i]= std::min<int>(Storage::get_number_of_voxels(i)-1, is[i]);
       }
-      return ExtendedGridIndexD<3>(is.get(), is.get()+get_dimension());
+      return ExtendedGridIndexD<D>(is.get(), is.get()+get_dimension());
     }
   /** @} */
 
