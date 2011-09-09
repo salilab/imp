@@ -54,18 +54,18 @@ using namespace std;
 template <class Real>
 class Cholesky
 {
-  IMP::algebra::TNT::Array2D<Real> L_;    // lower triangular factor
+  IMP::algebra::internal::TNT::Array2D<Real> L_;    // lower triangular factor
   int isspd;        // 1 if matrix to be factored was SPD
 
 public:
 
   Cholesky();
-  Cholesky(const IMP::algebra::TNT::Array2D<Real> &A);
-  IMP::algebra::TNT::Array2D<Real> getL() const;
-  IMP::algebra::TNT::Array1D<Real>
-  solve(const IMP::algebra::TNT::Array1D<Real> &B);
-  IMP::algebra::TNT::Array2D<Real>
-  solve(const IMP::algebra::TNT::Array2D<Real> &B);
+  Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A);
+  IMP::algebra::internal::TNT::Array2D<Real> getL() const;
+  IMP::algebra::internal::TNT::Array1D<Real>
+  solve(const IMP::algebra::internal::TNT::Array1D<Real> &B);
+  IMP::algebra::internal::TNT::Array2D<Real>
+  solve(const IMP::algebra::internal::TNT::Array2D<Real> &B);
   int is_spd() const;
 
 };
@@ -87,7 +87,7 @@ int Cholesky<Real>::is_spd() const
   @return the lower triangular factor, L, such that L*L'=A.
 */
 template <class Real>
-IMP::algebra::TNT::Array2D<Real> Cholesky<Real>::getL() const
+IMP::algebra::internal::TNT::Array2D<Real> Cholesky<Real>::getL() const
 {
   return L_;
 }
@@ -99,7 +99,7 @@ IMP::algebra::TNT::Array2D<Real> Cholesky<Real>::getL() const
   evalutate true (1) then the factorizaiton was successful.
 */
 template <class Real>
-Cholesky<Real>::Cholesky(const IMP::algebra::TNT::Array2D<Real> &A)
+Cholesky<Real>::Cholesky(const IMP::algebra::internal::TNT::Array2D<Real> &A)
 {
 
 
@@ -110,11 +110,11 @@ Cholesky<Real>::Cholesky(const IMP::algebra::TNT::Array2D<Real> &A)
 
   if (m != n)
   {
-    L_ = IMP::algebra::TNT::Array2D<Real>(0,0);
+    L_ = IMP::algebra::internal::TNT::Array2D<Real>(0,0);
     return;
   }
 
-  L_ = IMP::algebra::TNT::Array2D<Real>(n,n);
+  L_ = IMP::algebra::internal::TNT::Array2D<Real>(n,n);
 
 
       // Main loop.
@@ -153,15 +153,15 @@ Cholesky<Real>::Cholesky(const IMP::algebra::TNT::Array2D<Real> &A)
                array is returned.
 */
 template <class Real>
-IMP::algebra::TNT::Array1D<Real>
-Cholesky<Real>::solve(const IMP::algebra::TNT::Array1D<Real> &b)
+IMP::algebra::internal::TNT::Array1D<Real>
+Cholesky<Real>::solve(const IMP::algebra::internal::TNT::Array1D<Real> &b)
 {
   int n = L_.dim1();
   if (b.dim1() != n)
-    return IMP::algebra::TNT::Array1D<Real>();
+    return IMP::algebra::internal::TNT::Array1D<Real>();
 
 
-  IMP::algebra::TNT::Array1D<Real> x = b.copy();
+  IMP::algebra::internal::TNT::Array1D<Real> x = b.copy();
 
 
       // Solve L*y = b;
@@ -196,15 +196,15 @@ Cholesky<Real>::solve(const IMP::algebra::TNT::Array1D<Real> &b)
                array is returned.
 */
 template <class Real>
-IMP::algebra::TNT::Array2D<Real>
-Cholesky<Real>::solve(const IMP::algebra::TNT::Array2D<Real> &B)
+IMP::algebra::internal::TNT::Array2D<Real>
+Cholesky<Real>::solve(const IMP::algebra::internal::TNT::Array2D<Real> &B)
 {
   int n = L_.dim1();
   if (B.dim1() != n)
-    return IMP::algebra::TNT::Array2D<Real>();
+    return IMP::algebra::internal::TNT::Array2D<Real>();
 
 
-  IMP::algebra::TNT::Array2D<Real> X = B.copy();
+  IMP::algebra::internal::TNT::Array2D<Real> X = B.copy();
   int nx = B.dim2();
 
 // Cleve's original code
