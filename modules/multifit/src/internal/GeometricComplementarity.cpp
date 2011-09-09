@@ -176,38 +176,41 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
   return grid;
 }
 
-
+typedef IMP::algebra::DenseGrid3D<float> Grid;
 IMP::FloatPair get_penetration_and_complementarity_scores(
-    const IMP::algebra::DenseGrid3D<float> &map0,
-    const IMP::algebra::DenseGrid3D<float> &map1,
+    const Grid &map0,
+    const Grid &map1,
     IMP::algebra::Transformation3D tr_map1,
     const ComplementarityParameters &params)
 {
   double complementarity_score = 0, penetration_score = 0;
   IMP_GRID3D_FOREACH_VOXEL(map1,
-                           IMP_UNUSED(loop_voxel_index);
-      float v1 = map1[voxel_center];
-      IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
-      float v0;
-      // this is probably the only way to check if a voxel is in
-      // the DenseGrid3D?
-      if ( map0.get_has_index(map0.get_extended_index(tc)) )
-      {
-        v0 = map0[tc];
-      }
-      else
-      {
-        v0 = 0;
-      }
-      float prod = v0*v1;
-      if ( prod < 0 )
-        complementarity_score += prod;
-      else if ( prod > 0 )
-        penetration_score += prod;
-      );
-  if ( penetration_score > params.maximum_penetration_score )
-    return std::make_pair(std::numeric_limits<double>::max(),
-        std::numeric_limits<double>::max());
+                           {
+                             IMP_UNUSED(loop_voxel_index);
+                             Grid::Index gic(voxel_index, voxel_index+3);
+                             float v1 = map1[gic];
+                             IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
+                             float v0;
+                             Grid::ExtendedIndex ei=map0.get_extended_index(tc);
+                             if ( map0.get_has_index(ei) ) {
+                               Grid::Index i= map0.get_index(ei);
+                               v0 = map0[i];
+                             } else {
+                               v0 = 0;
+                             }
+                             float prod = v0*v1;
+                             if ( prod < 0 ) {
+                               complementarity_score += prod;
+                             } else if ( prod > 0 ) {
+                               penetration_score += prod;
+                             }
+                             if ( penetration_score
+                                  > params.maximum_penetration_score ) {
+                    return std::make_pair(std::numeric_limits<double>::max(),
+                                          std::numeric_limits<double>::max());
+                             }
+                           }
+                           );
   return std::make_pair(penetration_score, complementarity_score);
 }
 
