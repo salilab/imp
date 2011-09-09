@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- The RMF base support (stuff in the ::RMF namespace), has been moved to a new module, simply called RMF (no IMP). Now the functionality should be called like RMF.open_rmf_file() and headers include like \c RMF/RootHandle.h. This most was done in order to make the spin off of the RMF library as transparent as possible when it occurs later.
 - to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in \imp code that you want to run cross platform.
 - IMP::IntsList, IMP::FloatsList and IMP::StringsList have been added to replace the various scattered solutions for passing such types.
 - ::RMF::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::RMF::HDF5IndexDataSet2D now.
