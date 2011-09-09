@@ -138,7 +138,9 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e= do_evaluate(get_model()->get_particles()));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
-      IMP_INTERNAL_CHECK(std::abs(best_energy_ - e)
+      IMP_INTERNAL_CHECK(e >= std::numeric_limits<double>::max()
+                         && best_energy_ >= std::numeric_limits<double>::max()
+                         || std::abs(best_energy_ - e)
                          < .01+.1* std::abs(best_energy_ +e),
                          "Energies do not match "
                          << best_energy_ << " vs " << e << std::endl);
