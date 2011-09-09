@@ -21,7 +21,7 @@ using IMP::algebra::internal::TNT::Array1D;
 using IMP::algebra::internal::TNT::Array2D;
 
     GaussianProcessInterpolation::GaussianProcessInterpolation(
-                               std::vector<std::vector<double> > x,
+                               FloatsList x,
                                std::vector<double> sample_mean,
                                std::vector<double> sample_std,
                                std::vector<int> n_obs,
@@ -195,15 +195,16 @@ using IMP::algebra::internal::TNT::Array2D;
                 IMP_LOG(TERSE, std::endl);
             }
             };
-    IMP_LOG(TERSE,"  compute_inverse: LU" << std::endl);
-    //compute LU decomp
-    LU_.reset(new algebra::internal::JAMA::LU<double> (WpS));
+    IMP_LOG(TERSE,"  compute_inverse: Cholesky" << std::endl);
+    //compute Cholesky decomp
+    Cholesky_.reset(new algebra::internal::JAMA::Cholesky<double> (WpS));
+    IMP_USAGE_CHECK(Cholesky_->is_spd(), 
+            "Matrix is not symmetric positive definite!");
     //get inverse
-    IMP_LOG(TERSE,"  compute_inverse: determinant = " <<LU_->det() << std::endl);
     IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
     Array2D<double> id(M_,M_,0.0);
     for (unsigned i=0; i<M_; i++) id[i][i] = 1.0;
-    WS_= LU_->solve(id);
+    WS_= Cholesky_->solve(id);
     for (unsigned i=0; i<M_; i++) {
         for (unsigned j=0; j<M_; j++) {
             IMP_LOG(TERSE, "WS[" << i << "][" << j << "]: " 
