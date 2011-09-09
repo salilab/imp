@@ -53,13 +53,14 @@ namespace RMF {
     HDF5DataSetIndexD(unsigned int i, unsigned int j) {
       IMP_RMF_USAGE_CHECK(D==2, "Constructor does not match dimension.");
       d_[0]=i;
-      d_[1]=j;
+      if (D>1) d_[1]=j;
     }
     HDF5DataSetIndexD(unsigned int i, unsigned int j, unsigned int k) {
       IMP_RMF_USAGE_CHECK(D==3, "Constructor does not match dimension.");
       d_[0]=i;
-      d_[1]=j;
-      d_[2]=k;
+      // for clang
+      if (D>1) d_[1]=j;
+      if (D>2) d_[2]=k;
     }
 #ifndef SWIG
     hsize_t& operator[](unsigned int i) {
