@@ -1,5 +1,6 @@
 import IMP.atom
 import IMP.rmf
+import RMF
 m= IMP.Model()
 
 # Create a new IMP.atom.Hierarchy from the contents of the pdb file
