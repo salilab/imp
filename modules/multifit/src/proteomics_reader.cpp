@@ -90,8 +90,9 @@ void parse_xlink_line(
      ProteomicsData *dp){
   std::cout<<"parse_xlink_line:"<<line<<std::endl;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
-  IMP_USAGE_CHECK(line.size() > 2,
-     "no data to parse. the last two tabs should contain header data\n");
+  IMP_USAGE_CHECK(line.size() !=5,
+                  "no data to parse. The format of the line should be:\n"<<
+                  "|0/1|prot-name|residue-number|prot-name|residue-number|\n");
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -99,12 +100,16 @@ void parse_xlink_line(
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
-  std::string name1 =  boost::lexical_cast<std::string>(line_split[0]);
+  bool use_in_jt = true;
+  if (boost::lexical_cast<int>(line_split[0])==0) {
+    use_in_jt=false;
+  }
+  std::string name1 =  boost::lexical_cast<std::string>(line_split[1]);
   int prot1_ind = dp->find(name1);
-  int res1_ind= boost::lexical_cast<int>(line_split[1]);
-  std::string name2 =  boost::lexical_cast<std::string>(line_split[2]);
+  int res1_ind= boost::lexical_cast<int>(line_split[2]);
+  std::string name2 =  boost::lexical_cast<std::string>(line_split[3]);
   int prot2_ind = dp->find(name2);
-  int res2_ind= boost::lexical_cast<int>(line_split[3]);
+  int res2_ind= boost::lexical_cast<int>(line_split[4]);
   std::cout<<"XLINK between "<<name1<<" "<<name2<<std::endl;
   IMP_USAGE_CHECK(prot1_ind != -1,
                   "The protein "<<name1<<
@@ -113,7 +118,7 @@ void parse_xlink_line(
                   "The protein "<<name2<<
                   " was not specified in the proteins list"<<std::endl);
   //todo - for now the residue index is not used
-  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind);
+  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,use_in_jt);
 }
 
 void parse_ev_line(
@@ -202,7 +207,9 @@ void parse_interaction_line(
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
-  bool used_in_jt=boost::lexical_cast<bool>(line_split[0]);
+  bool used_in_jt=true;
+  if (boost::lexical_cast<int>(line_split[0])==0)
+    used_in_jt=false;
   for(unsigned int i=1;i<line_split.size()-2;i++) {//last two are header
     std::string name =  boost::lexical_cast<std::string>(line_split[i]);
     int index = dp->find(name);

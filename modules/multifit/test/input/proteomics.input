@@ -5,4 +5,7 @@
 |interactions|
 |1|A|B|authors|type|
 |1|A|B|C|authors|type|
+|residue-xlink|
+|0|A|30|B|50|
+|1|C|30|B|50|
 |ev|
