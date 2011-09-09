@@ -85,7 +85,7 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
             {
                 ParticlePair pair = contribs_[i]->get_particle_pair(p);
                 double deriv_pair = alldists[i][p]/meandists[i];
-                if (abs(deriv_pair) > 1e2) {std::cout << "NOE derivative warning : deriv mean " << deriv_mean << " pair " << deriv_pair << std::endl;}
+                if (std::abs(deriv_pair) > 1e2) {std::cout << "NOE derivative warning : deriv mean " << deriv_mean << " pair " << deriv_pair << std::endl;}
                 core::XYZ d0(pair[0]),d1(pair[1]);
                 algebra::Vector3D dev = (d1.get_coordinates() - d0.get_coordinates());
                 double dist = dev.get_squared_magnitude();
