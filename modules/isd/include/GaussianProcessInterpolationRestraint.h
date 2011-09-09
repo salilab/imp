@@ -36,37 +36,16 @@ using IMP::algebra::internal::TNT::Array2D;
 class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 {
    private:
-        //compute posterior mean vector
-        void compute_mean_vector();
-        //compute posterior covariance matrix
-        void compute_covariance_matrix();
         // checks and makes necessary updates
         void update_mean_and_covariance();
 
-        // trans(W)(W+S)^{-1} needed for routines below
-        void compute_tWWS();
-        
-        //derivative of posterior mean vector wrt prior mean vector entry i
-        Array1D<double> compute_dmdm(unsigned i);
-        //derivative of posterior mean vector wrt prior covariance matrix
-        //entry (i,j)
-        Array1D<double> compute_dmdW(unsigned i, unsigned j);
-        //derivative of posterior covariance matrix wrt prior covariance
-        //matrix
-        Array2D<double> compute_dCdW(unsigned i, unsigned j);
-
-    private:
+   private:
         IMP::Pointer<GaussianProcessInterpolation> gpi_;
         IMP::internal::OwnerPointer<MultivariateFNormalSufficient> mvn_;
-        //posterior mean vector
-        Array1D<double> mean_;
-        //posterior covariance matrix
-        Array2D<double> Cov_;
         //number of observation points
         unsigned M_;
-        // trans(W)(W+S)^{-1}
-        Array2D<double> tWWS_;
-public:
+
+   public:
         // this is a restraint on other restraints. It first constructs the
         // necessary vectors from GaussianProcessInterpolation, then creates a
         // multivariate normal distribution around it. Upon evaluation, it
