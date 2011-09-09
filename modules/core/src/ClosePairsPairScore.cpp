@@ -226,8 +226,10 @@ namespace {
     ret.insert(ret.end(), c.begin(), c.end());
   }
   ret.push_back(p);
-  ParticlesTemp rp= r->get_input_particles(p);
-  ret.insert(ret.end(), rp.begin(), rp.end());
+  if (r->get_can_refine(p)) {
+    ParticlesTemp rp= r->get_input_particles(p);
+    ret.insert(ret.end(), rp.begin(), rp.end());
+  }
   ParticlesTemp cpfr
     = cpf->get_input_particles(IMP::internal::get_particle(p->get_model(),
                                                            ea));
@@ -251,8 +253,10 @@ ContainersTemp ClosePairsPairScore
                                                              ea[i]));
     ret.insert(ret.end(), c.begin(), c.end());
   }
-  ContainersTemp rp= r_->get_input_containers(p);
-  ret.insert(ret.end(), rp.begin(), rp.end());
+  if (r_->get_can_refine(p)) {
+    ContainersTemp rp= r_->get_input_containers(p);
+    ret.insert(ret.end(), rp.begin(), rp.end());
+  }
   return ret;
 }
 
@@ -279,8 +283,10 @@ ContainersTemp KClosePairsPairScore
                                                              ea[i]));
     ret.insert(ret.end(), c.begin(), c.end());
   }
-  ContainersTemp rp= r_->get_input_containers(p);
-  ret.insert(ret.end(), rp.begin(), rp.end());
+  if (r_->get_can_refine(p)) {
+    ContainersTemp rp= r_->get_input_containers(p);
+    ret.insert(ret.end(), rp.begin(), rp.end());
+  }
   return ret;
 }
 
