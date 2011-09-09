@@ -336,7 +336,7 @@ namespace grids {
       d[1]=j;
       d_=ExtendedGridIndexD<D>(d);
     }
-    BoundedGridStorageD(Ints bds) {
+    explicit BoundedGridStorageD(Ints bds) {
       set_number_of_voxels(bds);
     }
     void set_number_of_voxels(Ints bds) {
@@ -539,6 +539,7 @@ namespace grids {
       data_.reset(new VT[extent_]);
       std::copy(o.data_.get(), o.data_.get()+o.extent_,
                 data_.get());
+      BoundedGridStorageD<D>::operator=(o);
     }
   public:
     IMP_COPY_CONSTRUCTOR(DenseGridStorageD, BoundedGridStorageD<D>);
