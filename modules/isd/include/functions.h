@@ -245,6 +245,9 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                 std::vector<double> x2) const {
             IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
             IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+            //std::cout<<"eval ";
+            //std::cout<<"tau = " << tau_val_ << " sig = " << sigma_val_
+            //         <<"lambda = " << lambda_val_ << " alpha = " << alpha_ << std::endl;
             std::vector<double> ret(1,
                     IMP::square(tau_val_)
                     *std::exp(
@@ -253,11 +256,14 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                                 , alpha_)
                         )
                     );
+            //std::cout<<"exp " << ret[0];
             if (x1[0]==x2[0])
             {
+                //std::cout<<"x1==x2 ";
                 ret[0] += IMP::square(sigma_val_);
                 if (do_jitter) ret[0] += J_;
             }
+            //std::cout <<"retval " << ret[0] << std::endl;
             return ret;
         }
 
