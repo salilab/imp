@@ -1,4 +1,4 @@
-/* Wrap our own classes */
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::statistics, Histogram);
 
 IMP_SWIG_OBJECT(IMP::statistics, PartitionalClustering, PartitionalClusterings);
 IMP_SWIG_OBJECT(IMP::statistics, PartitionalClusteringWithCenter, PartitionalClusteringWithCenters);
@@ -19,3 +19,6 @@ IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, Recurs
 %include "IMP/statistics/point_clustering.h"
 %include "IMP/statistics/Histogram.h"
 %include "IMP/statistics/metric_clustering.h"
+%include "IMP/statistics/HistogramD.h"
+
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
