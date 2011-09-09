@@ -3,5 +3,6 @@
 |B|1|100|nn|
 |C|1|100|nn|
 |interactions|
-|A|B|authors|type|
-|A|B|C|authors|type|
+|1|A|B|authors|type|
+|1|A|B|C|authors|type|
+|ev|
