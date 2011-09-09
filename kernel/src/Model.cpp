@@ -113,7 +113,7 @@ void Model::add_tracked_restraint(Restraint *r) {
     // ignore it
     return;
   }
-  IMP_LOG(TERSE, "Adding tracked restraint " << r->get_name()
+  IMP_LOG(VERBOSE, "Adding tracked restraint " << r->get_name()
           << std::endl);
   reset_dependencies();
   IMP_USAGE_CHECK(tracked_restraints_.find(r)
