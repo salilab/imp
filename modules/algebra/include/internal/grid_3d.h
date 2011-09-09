@@ -127,7 +127,7 @@ public:
 
 template <class ED>
 inline int snap(unsigned int dim, int v, ED d) {
-  IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
+  IMP_INTERNAL_CHECK(dim <d.get_dimension(), "Invalid dim");
   if (v < 0) return 0;
   else if (v > d[dim]) {
     return d[dim];
@@ -137,9 +137,11 @@ inline int snap(unsigned int dim, int v, ED d) {
 
 template <class EI, class ED>
 inline EI snap(const EI &v, ED d) {
-  return EI(snap(0, v[0], d),
-            snap(1, v[1], d),
-            snap(2, v[2], d));
+  Ints is(v.begin(), v.end());
+  for (unsigned int i=0; i< is.size(); ++i) {
+    is[i]= snap(i, is[i], d);
+  }
+  return EI(is.begin(), is.end());
 }
 template <class EI>
 inline std::pair<EI, EI> empty_range() {
@@ -153,7 +155,7 @@ inline std::pair<EI, EI> intersect(EI l,
                                    ED d) {
   EI rlb;
   EI rub;
-  for (unsigned int i=0; i< 3; ++i) {
+  for (unsigned int i=0; i< l.get_dimension(); ++i) {
     if (u[i] <= 0) return empty_range<EI>();
     if (l[i] >= d[i])
       return empty_range<EI>();
