@@ -26,6 +26,7 @@ IMP_SWIG_OBJECT(IMP::display, BondGeometry, BondGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZDerivativeGeometry, XYZDerivativeGeometries);
 IMP_SWIG_OBJECT(IMP::display, RigidBodyDerivativeGeometry, RigidBodyDerivativeGeometries);
 IMP_SWIG_OBJECT(IMP::display, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
+IMP_SWIG_OBJECT(IMP::display, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
 IMP_SWIG_OBJECT(IMP::display, BondsGeometry, BondsGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZDerivativesGeometry, XYZDerivativesGeometries);
 IMP_SWIG_OBJECT(IMP::display, RigidBodyDerivativesGeometry, RigidBodyDerivativesGeometries);
