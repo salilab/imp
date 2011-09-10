@@ -14,18 +14,23 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Decorator.h>
+#include <IMP/isd/Nuisance.h>
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Simple particle with one "nuisance" attribute
+//! Add nuisance parameter to particle
+/** The value of the nuisance parameter may express data
+    or theory uncertainty. It can be initialized with or without    
+    specifying its value. Default is 1. On construction, the Nuisance is unbounded.
+    It can be bounded with set_upper and set_lower. Setting it to values outside
+    of bounds results in setting it to the bound value. 
+ */
 class IMPISDEXPORT Nuisance: public Decorator
 {
 public:
-  static Nuisance setup_particle(Particle *p, double value)
-  {
-      p->add_attribute(get_nuisance_key(), value);
-      return Nuisance(p);
-  }
+    IMP_DECORATOR(Nuisance, Decorator);
+
+  static Nuisance setup_particle(Particle *p, double nuisance=1.0);
 
   static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_nuisance_key());
@@ -35,10 +40,25 @@ public:
     return get_particle()->get_value(get_nuisance_key());
   }
 
-  virtual void set_nuisance(Float d)
-  {
-      get_particle()->set_value(get_nuisance_key(), d);
+  Float get_upper() const {
+    Particle *p = get_particle();
+    if (! p->has_attribute(get_upper_key()))
+        return std::numeric_limits<double>::infinity();
+    return p->get_value(get_upper_key());
   }
+
+  Float get_lower() const {
+    Particle *p = get_particle();
+    if (! p->has_attribute(get_lower_key()))
+        return - std::numeric_limits<double>::infinity();
+    return p->get_value(get_lower_key());
+  }
+
+  void set_upper(Float d);
+  
+  void set_lower(Float d); 
+
+  void set_nuisance(Float d);
 
   void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_nuisance_key(), d, accum);
@@ -49,7 +69,11 @@ public:
     return get_particle()->get_derivative(get_nuisance_key());
   }
 
-  static FloatKey get_nuisance_key() { FloatKey k("nuisance"); return k;}
+  static FloatKey get_nuisance_key();
+
+  static FloatKey get_upper_key();
+  
+  static FloatKey get_lower_key();
 
   bool get_nuisance_is_optimized() const
   { 
@@ -61,7 +85,6 @@ public:
       get_particle()->set_is_optimized(get_nuisance_key(), val);
   }
 
-  IMP_DECORATOR(Nuisance, Decorator);
 
 };
 

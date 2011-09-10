@@ -11,6 +11,7 @@
 
 #include "isd_config.h"
 #include <IMP/SingletonModifier.h>
+#include <IMP/isd/Nuisance.h>
 
 IMPISD_BEGIN_NAMESPACE
 

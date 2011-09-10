@@ -8,7 +8,6 @@
  */
 
 #include "IMP/isd/NuisanceRangeModifier.h"
-#include "IMP/isd/Nuisance.h"
 
 
 IMPISD_BEGIN_NAMESPACE
