@@ -19,75 +19,49 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Add scale parameter to particle
-/** The value of the scale parameter may express data
-    or theory uncertainty. It is positive. It can be initialized with or without    specifying bounds. Default bounds: 0 and infinity. Setting it to values
-    outside of bounds results in setting it to the bound value with a warning.
+/** This is just syntactic sugar for a Nuisance bounded to be positive.
  */
 class IMPISDEXPORT Scale: public Nuisance
 {
 public:
-    IMP_DECORATOR(Scale, Nuisance);
+  IMP_DECORATOR(Scale, Nuisance);
 
-  static Scale setup_particle(Particle *p, double scale=1.0, 
-          double lower=0.0, 
-          double upper=-1.0); //std::numeric_limits<double>::infinity()); 
+  static Scale setup_particle(Particle *p, double scale=1.0);
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_scale_key());
+    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0;
   }
 
   Float get_scale() const {
-    return get_particle()->get_value(get_scale_key());
+    return Nuisance(get_particle()).get_nuisance();
   }
 
-  Float get_upper() const {
-    double upper = get_particle()->get_value(get_upper_key());
-    if (upper < -0.5) {
-        return std::numeric_limits<double>::infinity(); 
-    } else {
-        return upper;
-    }
-  }
+  void set_scale(Float d) { set_nuisance(d); }
 
-  Float get_lower() const {
-    return get_particle()->get_value(get_lower_key());
-  }
-
-  void set_upper(Float d);
-  
-  void set_lower(Float d); 
-
-  void set_scale(Float d); 
-
-  void set_nuisance(Float d) {set_scale(d);}
-
-  void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) {
-    get_particle()->add_to_derivative(get_scale_key(), d, accum);
+  void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) 
+  {
+      add_to_nuisance_derivative(d, accum);
   }
 
   Float get_scale_derivative() const
   {
-    return get_particle()->get_derivative(get_scale_key());
+      return get_nuisance_derivative();
   }
 
-  static FloatKey get_scale_key();
-
-  static FloatKey get_upper_key();
-  
-  static FloatKey get_lower_key();
+  static FloatKey get_scale_key() { return get_nuisance_key(); }
 
   bool get_scale_is_optimized() const
   { 
-      return get_particle()->get_is_optimized(get_scale_key());
+      return get_nuisance_is_optimized();
   }
 
   void set_scale_is_optimized(bool val)
   {
-      get_particle()->set_is_optimized(get_scale_key(), val);
+      set_nuisance_is_optimized(val);
   }
 
-
 };
+
 
 IMP_OUTPUT_OPERATOR(Scale);
 

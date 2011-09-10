@@ -6,7 +6,7 @@ import IMP
 import IMP.core
 
 #our project
-from IMP.isd import Scale
+from IMP.isd import Scale,Nuisance
 
 #unit testing framework
 import IMP.test
@@ -27,28 +27,18 @@ class TestScaleParam(IMP.test.TestCase):
         self.assertTrue(math.isinf(si.get_upper()))
 
     def test_Setup2(self):
-        si = Scale.setup_particle(IMP.Particle(self.m), 2.0, 0.1, 10.0)
+        si = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        si.set_lower(0.1)
+        si.set_upper(10)
         self.assertAlmostEqual(float(si.get_scale()),2.0, delta=1e-6)
         self.assertAlmostEqual(float(si.get_lower()),0.1, delta=1e-6)
         self.assertAlmostEqual(float(si.get_upper()),10.0, delta=1e-6)
 
-    def test_Bounds(self):
-        si = Scale.setup_particle(IMP.Particle(self.m), 2.0, -1.0, 10.0)
-        self.assertAlmostEqual(float(si.get_scale()),2.0, delta=1e-6)
-        self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
-        self.assertAlmostEqual(float(si.get_upper()),10.0, delta=1e-6)
-
-    def test_Bounds2(self):
-        si = Scale.setup_particle(IMP.Particle(self.m), 2.0, -1.0, -2.0)
-        self.assertAlmostEqual(float(si.get_scale()),2.0, delta=1e-6)
-        self.assertAlmostEqual(float(si.get_lower()),0.0, delta=1e-6)
-        self.assertTrue(math.isinf(si.get_upper()))
-
-    def test_Bounds3(self):
-        si = Scale.setup_particle(IMP.Particle(self.m), 2.0, 0.1, -2.0)
-        self.assertAlmostEqual(float(si.get_scale()),2.0, delta=1e-6)
-        self.assertAlmostEqual(float(si.get_lower()),0.1, delta=1e-6)
-        self.assertTrue(math.isinf(si.get_upper()))
+    def test_Nuisance(self):
+        "test that a Nuisance can be converted to a Scale"
+        n=Nuisance.setup_particle(IMP.Particle(self.m),3.0)
+        n.set_lower(0)
+        self.assertTrue(Scale.particle_is_instance(n.get_particle()))
 
     def test_Set(self):
         "set returns nothing"
@@ -59,6 +49,7 @@ class TestScaleParam(IMP.test.TestCase):
         self.sigma.add_to_scale_derivative(123,IMP.DerivativeAccumulator())
         self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                 123.0,delta=0.01)
+
     def test_String(self):
         "a parameter cannot take other things than numbers as input"
         self.assertRaises(TypeError, self.sigma.set_scale,"a")
@@ -73,7 +64,9 @@ class TestScaleParam(IMP.test.TestCase):
 
     def test_GetSet2(self):
         "tests get and set (border check)"
-        scale = Scale.setup_particle(IMP.Particle(self.m), 50.0, 10.0, 80.0)
+        scale = Scale.setup_particle(IMP.Particle(self.m), 50.0)
+        scale.set_lower(10)
+        scale.set_upper(80)
         for si in range(1,100):
             scale.set_scale(si)
             if si < 10:
@@ -86,16 +79,4 @@ class TestScaleParam(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
 

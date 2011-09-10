@@ -1,83 +1,30 @@
 /**
- *  \file Scale.cpp
- *  \brief defines a one-dimensional scale parameter (sigma, gamma, ...)
+ *  \file Scale.h
+ *  \brief A decorator for scale parameters particles
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
- *
  */
 
 #include <IMP/isd/Scale.h>
 
 IMPISD_BEGIN_NAMESPACE
 
-FloatKey Scale::get_scale_key() {
-  return Nuisance::get_nuisance_key();
-}
+  Scale Scale::setup_particle(Particle *p, double scale)
+  {
+      if (!Nuisance::particle_is_instance(p))
+          Nuisance::setup_particle(p,scale);
+      Nuisance(p).set_lower(0);
+      return Scale(p);
+  }
 
-FloatKey Scale::get_upper_key() {
-  static FloatKey k("sc_up");
-  return k;
-}
-
-FloatKey Scale::get_lower_key() {
-  static FloatKey k("sc_lo");
-  return k;
-}
 
 void Scale::show(std::ostream &out) const {
-  out << get_lower() << " < Scale " << get_scale() << " < " 
-      << get_upper() <<  std::endl;
+  Particle * p = get_particle();
+  bool hasupper = p->has_attribute(get_upper_key());
+  out << get_lower() << " < ";
+  out << " Scale = " << get_nuisance();
+  if (hasupper) out << " < " << get_upper();
 }
-
-void Scale::set_upper(Float d) {
-    Float d_;
-    if (d < 0) {
-        d_ = -1; //std::numeric_limits<double>::infinity();
-    } else {
-        d_ = d;
-    }
-    get_particle()->set_value(get_upper_key(), d_);
-}
-
-void Scale::set_lower(Float d) {
-    Float d_ = std::max(d,0.0);
-    get_particle()->set_value(get_lower_key(), d_);
-}
-
-void Scale::set_scale(Float d) {
-    Float d_;
-    Float lo = get_lower();
-    Float up = get_upper();
-    if (d < lo) {
-        d_ = lo;
-    } else if (d > up) {
-        d_ = up;
-    } else {
-        d_ = d;
-    }
-    get_particle()->set_value(get_scale_key(), d_);
-}
-
-Scale Scale::setup_particle(Particle *p, double scale, 
-        double lower, double upper) {
-    if (!Nuisance::particle_is_instance(p)) {
-        Nuisance::setup_particle(p, scale);
-    }
-    double lo_ = std::max(lower,0.0);
-    double up_;
-    if (upper < lo_) {
-        up_ = -1; //std::numeric_limits<double>::infinity();
-    } else {
-        up_ = upper;
-    }
-    if (lo_ > scale || (up_ < scale && up_ > -0.5) ) {
-        IMP_THROW("scale value out of bounds!", ModelException);
-    }
-    p->add_attribute(get_lower_key(), lo_);
-    p->add_attribute(get_upper_key(), up_);
-    return Scale(p);
-}
-
-
 
 IMPISD_END_NAMESPACE
+

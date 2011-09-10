@@ -19,56 +19,53 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Add switching parameter to particle
-/** The value of the switching parameter may express a probability.
+/** This is just syntactic sugar for a Nuisance bounded to be betweeen 0 and 1.
  */
 class IMPISDEXPORT Switching: public Nuisance
 {
 public:
     IMP_DECORATOR(Switching, Nuisance);
 
-  static Switching setup_particle(Particle *p, double switching=0.5);
+  static Switching setup_particle(Particle *p, double switching=0.5)
+  {
+      if (!Nuisance::particle_is_instance(p))
+          Nuisance::setup_particle(p,switching);
+      Nuisance(p).set_lower(0);
+      Nuisance(p).set_upper(1);
+      return Switching(p);
+  }
 
   static bool particle_is_instance(Particle *p) {
-    return p->has_attribute(get_switching_key());
+    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0 && Nuisance(p).get_upper()<=1;
   }
 
   Float get_switching() const {
-    return get_particle()->get_value(get_switching_key());
+    return Nuisance(get_particle()).get_nuisance();
   }
 
-  Float get_upper() const {
-        return 1;
-  }
+  void set_switching(Float d) { set_nuisance(d); }
 
-  Float get_lower() const {
-    return 0;
-  }
-
-  void set_switching(Float d); 
-
-  void set_nuisance(Float d) {set_switching(d);}
-
-  void add_to_switching_derivative(Float d, DerivativeAccumulator &accum) {
-    get_particle()->add_to_derivative(get_switching_key(), d, accum);
+  void add_to_switching_derivative(Float d, DerivativeAccumulator &accum) 
+  {
+      add_to_nuisance_derivative(d, accum);
   }
 
   Float get_switching_derivative() const
   {
-    return get_particle()->get_derivative(get_switching_key());
+      return get_nuisance_derivative();
   }
 
-  static FloatKey get_switching_key();
+  static FloatKey get_switching_key() { return get_nuisance_key(); }
 
   bool get_switching_is_optimized() const
   { 
-      return get_particle()->get_is_optimized(get_switching_key());
+      return get_nuisance_is_optimized();
   }
 
   void set_switching_is_optimized(bool val)
   {
-      get_particle()->set_is_optimized(get_switching_key(), val);
+      set_nuisance_is_optimized(val);
   }
-
 
 };
 
