@@ -59,6 +59,8 @@ public:
 
   void set_scale(Float d); 
 
+  void set_nuisance(Float d) {set_scale(d);}
+
   void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_scale_key(), d, accum);
   }

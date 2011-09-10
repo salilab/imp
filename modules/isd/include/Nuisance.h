@@ -18,7 +18,6 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Simple particle with one "nuisance" attribute
-// TODO might want to consider changing the name of the attribute
 class IMPISDEXPORT Nuisance: public Decorator
 {
 public:
@@ -36,7 +35,7 @@ public:
     return get_particle()->get_value(get_nuisance_key());
   }
 
-  void set_nuisance(Float d)
+  virtual void set_nuisance(Float d)
   {
       get_particle()->set_value(get_nuisance_key(), d);
   }

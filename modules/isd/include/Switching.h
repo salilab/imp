@@ -46,6 +46,8 @@ public:
 
   void set_switching(Float d); 
 
+  void set_nuisance(Float d) {set_switching(d);}
+
   void add_to_switching_derivative(Float d, DerivativeAccumulator &accum) {
     get_particle()->add_to_derivative(get_switching_key(), d, accum);
   }
