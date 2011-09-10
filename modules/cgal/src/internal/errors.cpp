@@ -17,7 +17,7 @@ namespace {
     std::ostringstream oss;
     oss << type << " error in CGAL " << expression << " at " << file << ": "
         << line << ": " << explanation << std::endl;
-    IMP::internal::assert_fail(oss.str().c_str());
+    IMP::handle_error(oss.str().c_str());
     throw IMP::UsageException(oss.str().c_str());
   }
   struct Registrar {
