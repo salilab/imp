@@ -120,7 +120,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
                     "index out of range\n");
     return xlinks_[xlink_ind];
   }
-  bool get_xlink_used_in_jt(int xlink_ind) const {
+  bool get_xlink_used_to_build_jt(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlink_in_jt_[xlink_ind];
