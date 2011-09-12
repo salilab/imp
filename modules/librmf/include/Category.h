@@ -67,7 +67,8 @@ inline std::ostream &operator<<(std::ostream &out, const Category &nh) {
     cartesian coordinates in angstroms
     - "radius" for radius in angstroms
     - "mass" for mass in daltons
-    - "d" for the diffusion coeffient in angstroms squared per femptosecond
+    - "diffusion coefficient" for the diffusion coeffient in
+    angstroms squared per femptosecond
  */
 RMFEXPORT extern const Category Physics;
 
