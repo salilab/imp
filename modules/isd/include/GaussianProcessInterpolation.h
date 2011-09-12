@@ -108,9 +108,10 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
  private:
 
   // ensures the mean/covariance function has updated parameters. Signals an
-  // update by changing the state flags.
-  void update_flags_mean();
-  void update_flags_covariance();
+  // update by changing the state flags. Returns true if the function has
+  // changed. This is used by GaussianProcessInterpolationRestraint.
+  bool update_flags_mean();
+  bool update_flags_covariance();
 
   // compute prior covariance matrix
   void compute_W();

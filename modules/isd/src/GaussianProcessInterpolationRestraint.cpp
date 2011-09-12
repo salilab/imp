@@ -31,35 +31,27 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     IMP_IF_CHECK(USAGE) {
         for (unsigned i=1; i<M_; i++)
             IMP_USAGE_CHECK(N == gpi_->n_obs_[i], 
-                "must have the same number of observations for each point!");
+                "must have the same number of repetitions for each point!");
     }
     // build multivariate normal with 
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
     IMP_LOG(TERSE, "GPIR: updating mean and covariance" << std::endl);
-    gpi_->update_covariance();
-    gpi_->update_mean();
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean, 
     // nobs, sample variance, true variance
-    mvn_ = new MultivariateFNormalSufficient(gpi_->I_, 1.0, gpi_->m_,
-            N, gpi_->S_, gpi_->W_);
+    mvn_ = new MultivariateFNormalSufficient(gpi_->get_I(), 1.0, gpi_->get_m(),
+            N, gpi_->get_S(), gpi_->get_W());
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);
 }
 
 void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
 {
-    bool cov = gpi_->update_covariance();
-    bool mean = gpi_->update_mean();
-    if (mean || cov)
-    {
-        mvn_->set_FM(gpi_->m_);
-    }
-    if (cov)
-    {
-        mvn_->set_Sigma(gpi_->W_);
-    }
+    bool cov = gpi_->update_flags_cov()
+    bool mean = gpi_->update_flags_mean();
+    if (mean) mvn_->set_FM(gpi_->get_m());
+    if (cov) mvn_->set_Sigma(gpi_->get_W());
 }
 
 double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
