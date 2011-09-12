@@ -110,9 +110,12 @@ def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]
             rep=env['repository']
             dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
             pf=Dir(".").abspath[len(dp)+1:]
-            #print pf
-            reppath=Dir("#/"+rep).abspath
-            path=os.path.join(reppath, pf)
+            if rep.startswith('../'):
+                #print pf
+                reppath=Dir("#/"+rep).abspath
+                path=os.path.join(reppath, pf)
+            else:
+                path=os.path.join(rep, pf)
         else:
             path=Dir(".").abspath
         try:
