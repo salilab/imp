@@ -34,7 +34,7 @@ r= IMP.container.PairsRestraint(ps, acp)
 m.add_restraint(r)
 
 # compute the interaction graph based on all the restraints
-ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
+ig= IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                      pst)
 # generate a junction tree from the interaction graph
 jt= IMP.domino.get_junction_tree(ig)
