@@ -193,6 +193,7 @@ int main(int argc, char *argv[]) {
                                    true, argc, argv);
     }
   }
+#ifdef IMP_BENCHMARK_USE_IMP_MULTIFIT
   if (argc==1 || (argc >1 && argv[1][0]=='3')) {
     IMP_NEW(ComplementarityRestraint, r, (atom::get_leaves(h0),
                                                   atom::get_leaves(h1)));
@@ -211,6 +212,7 @@ int main(int argc, char *argv[]) {
                                    true, argc, argv);
     }
   }
+#endif
 
   return IMP::benchmark::get_return_value();
 }
