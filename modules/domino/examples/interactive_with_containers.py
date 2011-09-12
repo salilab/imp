@@ -1,6 +1,7 @@
 import IMP.domino
 import IMP.algebra
 import IMP
+import RMF
 
 m = IMP.Model()
 
@@ -35,7 +36,7 @@ ds.set_log_level(IMP.SILENT)
 
 # create a database to store the results
 name=IMP.create_temporary_file_name("assignments", ".hdf5")
-root= IMP.rmf.create_hdf5_file(name)
+root= RMF.create_hdf5_file(name)
 
 # recurse down the tree getting the assignments and printing them
 def get_assignments(vertex):
