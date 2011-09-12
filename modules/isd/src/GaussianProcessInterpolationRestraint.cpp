@@ -37,7 +37,6 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
-    IMP_LOG(TERSE, "GPIR: updating mean and covariance" << std::endl);
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean, 
     // nobs, sample variance, true variance
@@ -48,10 +47,20 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
 
 void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
 {
-    bool cov = gpi_->update_flags_cov()
+    IMP_LOG(TERSE, "GPIR: update_mean_and_covariance" << std::endl);
+    bool cov = gpi_->update_flags_covariance();
     bool mean = gpi_->update_flags_mean();
-    if (mean) mvn_->set_FM(gpi_->get_m());
-    if (cov) mvn_->set_Sigma(gpi_->get_W());
+    if (mean) 
+    {
+        mvn_->set_FM(gpi_->get_m());
+        IMP_LOG(TERSE, " updated mean");
+    }
+    if (cov) 
+    {
+        mvn_->set_Sigma(gpi_->get_W());
+        IMP_LOG(TERSE, " updated covariance");
+    }
+    IMP_LOG(TERSE, std::endl);
 }
 
 double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const

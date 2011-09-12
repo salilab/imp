@@ -31,9 +31,9 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
         self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  0.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)
-        self.tau = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.lam = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.cov = Covariance1DFunction(self.tau, self.lam, self.sig, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
@@ -49,9 +49,9 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         obserr=diag(self.err*self.err/N)
         P=linalg.inv(W)
         eps=transpose([I-m])
-        ret = exp(-N/2*dot(dot(transpose(eps),P),eps) \
-             - 1/2*trace(dot(obserr,P)))               \
-             * ((2*pi)**M*linalg.det(W))**(-N/2)
+        ret = exp(-N/2.*dot(dot(transpose(eps),P),eps) \
+             - 1/2.*trace(dot(obserr,P)))               \
+             * ((2*pi)**M*linalg.det(W))**(-N/2.)
         assert ret.shape==(1,1)
         return ret[0,0]
 
@@ -64,9 +64,9 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         obserr=diag(self.err*self.err/N)
         P=linalg.inv(W)
         eps=transpose([I-m])
-        ret =  N/2*dot(dot(transpose(eps),P),eps)   \
-             + 1/2*trace(dot(obserr,P))             \
-             + N/2*log((2*pi)**M*linalg.det(W))
+        ret =  N/2.*dot(dot(transpose(eps),P),eps)   \
+             + 1/2.*trace(dot(obserr,P))             \
+             + N/2.*log((2*pi)**M*linalg.det(W))
         assert ret.shape==(1,1)
         return ret[0,0]
 
@@ -90,9 +90,9 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         P=linalg.inv(W)
         eps=transpose([I-m])
         se=dot(P,eps)
-        return -N/2*dot(se,transpose(se))           \
-               -1/2*dot(dot(transpose(P),obserr),P) \
-               +N/2*transpose(P)
+        return -N/2.*dot(se,transpose(se))           \
+               -1/2.*dot(dot(transpose(P),obserr),P) \
+               +N/2.*transpose(P)
 
     def get_dmudalpha(self,q):
         return q
@@ -103,7 +103,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
     def get_dcovdtau(self,q1,q2):
         t=self.tau.get_nuisance()
         l=self.lam.get_nuisance()
-        return 2*t*exp(-(q2-q1)**2/(2*l**2))
+        return 2*t*exp(-(q2-q1)**2./(2*l**2))
 
     def get_dcovdsigma(self,q1,q2):
         return 2*self.sig.get_nuisance() if abs(q1-q2)<1e-7 else 0
@@ -245,10 +245,10 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                 continue
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.1)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.1)
+                    ,delta=0.001)
         if skipped > 10:
             self.fail("too many NANs")
 
@@ -346,50 +346,49 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             expected = self.get_derivative_alpha()
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.01)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.01)
+                    ,delta=0.001)
             #beta
             observed = self.beta.get_nuisance_derivative()
             expected = self.get_derivative_beta()
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.01)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.01)
+                    ,delta=0.001)
             #tau
             observed = self.tau.get_nuisance_derivative()
             expected=observed
             expected = self.get_derivative_tau()
-            print a,observed,expected
             continue
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.01)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.01)
+                    ,delta=0.001)
             #lambda
             observed = self.lam.get_nuisance_derivative()
             expected=observed
             expected = self.get_derivative_lambda()
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.01)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.01)
+                    ,delta=0.001)
             #sigma
             observed = self.sig.get_nuisance_derivative()
             expected = self.get_derivative_sigma()
             if expected != 0:
                 self.assertAlmostEqual(observed/expected
-                    ,1.0,delta=0.01)
+                    ,1.0,delta=0.001)
             else:
                 self.assertAlmostEqual(observed,expected
-                    ,delta=0.01)
+                    ,delta=0.001)
 
     def testDerivativesBeta(self):
         """test derivatives by varying beta"""
