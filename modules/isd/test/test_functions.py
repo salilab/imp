@@ -36,6 +36,13 @@ class TestLinear1DFunction(IMP.test.TestCase):
             p.set_nuisance(random.uniform(imin, imax))
         self.mean.update()
 
+    def test_has_changed(self):
+        for p in self.alpha, self.beta:
+            p.set_nuisance(p.get_nuisance()+1)
+            self.assertTrue(self.mean.has_changed())
+            self.mean.update()
+            self.assertFalse(self.mean.has_changed())
+
     def testValue(self):
         """
         test the value of the function by shuffling all particles
@@ -157,6 +164,13 @@ class TestCovariance1DFunction(IMP.test.TestCase):
             p,imin,imax = particles.pop(random.randint(0,len(particles)))
             p.set_scale(random.uniform(imin, imax))
         self.cov.update()
+
+    def test_has_changed(self):
+        for p in self.tau, self.lam, self.sig:
+            p.set_nuisance(p.get_nuisance()+1)
+            self.assertTrue(self.cov.has_changed())
+            self.cov.update()
+            self.assertFalse(self.cov.has_changed())
 
     def testFail(self):
         q=IMP.Particle(self.m)
@@ -344,6 +358,13 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
             p,imin,imax = particles.pop(random.randint(0,len(particles)))
             p.set_nuisance(random.uniform(imin, imax))
         self.cov.update()
+
+    def test_has_changed(self):
+        for p in self.theta, self.lam, self.sig:
+            p.set_nuisance(p.get_nuisance()+1)
+            self.assertTrue(self.cov.has_changed())
+            self.cov.update()
+            self.assertFalse(self.cov.has_changed())
 
     def testFail(self):
         q=IMP.Particle(self.m)
