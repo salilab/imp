@@ -61,7 +61,8 @@ using namespace RMF;
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
                                           false);                       \
   RMF::FloatKey dk                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Physics, "D in cm2/s");    \
+  = internal::get_or_add_key<FloatTraits>(f, Physics,                 \
+                                          "diffusion coefficient");   \
   RMF::StringKey rt                                                   \
   = internal::get_or_add_key<StringTraits>(f, Sequence, "residue type"); \
   RMF::IntKey nk                                                      \
@@ -148,7 +149,7 @@ namespace {
     }
     if (atom::Diffusion::particle_is_instance(h)) {
       atom::Diffusion d(h);
-      set_one(n, dk, d.get_d_in_cm2_per_second(), frame);
+      set_one(n, dk, d.get_d(), frame);
     }
     if (atom::Copy::particle_is_instance(h)) {
       atom::Copy d(h);
