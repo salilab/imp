@@ -61,12 +61,13 @@ using IMP::algebra::internal::TNT::Array2D;
     compute_S(sample_std,n_obs);
 }
 
-  double GaussianProcessInterpolation::force_mean_update()
+  void GaussianProcessInterpolation::force_mean_update()
 {
     flag_m_ = false;
+    flag_WSIm_ = false;
 }
 
-  double GaussianProcessInterpolation::force_covariance_update()
+  void GaussianProcessInterpolation::force_covariance_update()
 {
     flag_WS_ = false;
     flag_WSIm_ = false;
@@ -130,7 +131,7 @@ using IMP::algebra::internal::TNT::Array2D;
         }
         IMP_LOG(TERSE, "   WSwx["<<i<<"] = "<< right[i] << std::endl);
     }
-    if (x1 != x2) wx(get_wx_vector(x1));
+    if (x1 != x2) wx = get_wx_vector(x1);
     double ret=0;
     for (unsigned i=0; i<M_; i++)
     {
@@ -143,10 +144,15 @@ using IMP::algebra::internal::TNT::Array2D;
 
   bool GaussianProcessInterpolation::update_flags_mean()
 {
+
     bool ret = mean_function_->has_changed();
     if (ret) mean_function_->update();
     if (flag_m_) flag_m_ = !ret; 
-    return ret
+    if (flag_WSIm_) flag_WSIm_ = !ret; 
+    IMP_LOG(TERSE, "update_flags_mean: ret " << ret 
+            << " flag_m_ " << flag_m_
+            << " flag_WSIm_ " << flag_WSIm_ << std::endl );
+    return ret;
 }
 
   bool GaussianProcessInterpolation::update_flags_covariance()
@@ -156,6 +162,11 @@ using IMP::algebra::internal::TNT::Array2D;
     if (flag_WS_) flag_WS_ = !ret; 
     if (flag_WSIm_) flag_WSIm_ = !ret; 
     if (flag_W_) flag_W_ = !ret; 
+    IMP_LOG(TERSE, "update_flags_covariance: ret " << ret 
+            << " flag_WS_ " << flag_WS_ 
+            << " flag_WSIm_ " << flag_WSIm_ 
+            << " flag_W_ " << flag_W_ 
+            << std::endl );
     return ret;
 }
 
@@ -174,8 +185,9 @@ using IMP::algebra::internal::TNT::Array2D;
     return wx_;
 }
 
- Array2D<double> GaussianProcessInterpolation::get_WSIm()
+ Array1D<double> GaussianProcessInterpolation::get_WSIm()
 {
+    IMP_LOG(TERSE, "get_WSIm()" << std::endl);
     update_flags_mean();
     update_flags_covariance();
     if (!flag_WSIm_) 
@@ -209,6 +221,7 @@ using IMP::algebra::internal::TNT::Array2D;
 
   Array1D<double> GaussianProcessInterpolation::get_m()
 {
+    IMP_LOG(TERSE, "get_m()" << std::endl);
     update_flags_mean();
     if (!flag_m_)
     { 
@@ -233,6 +246,7 @@ using IMP::algebra::internal::TNT::Array2D;
 
   Array2D<double> GaussianProcessInterpolation::get_WS()
 {
+    IMP_LOG(TERSE, "get_WS()" << std::endl);
     update_flags_covariance();
     if (!flag_WS_)
     { 
@@ -278,6 +292,7 @@ using IMP::algebra::internal::TNT::Array2D;
 
   Array2D<double> GaussianProcessInterpolation::get_W()
 {
+    IMP_LOG(TERSE, "get_W()" << std::endl);
     update_flags_covariance();
     if (!flag_W_)
     { 

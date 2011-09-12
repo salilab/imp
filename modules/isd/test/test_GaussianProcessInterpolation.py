@@ -31,9 +31,9 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  1.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)
-        self.tau = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.lam = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
+        self.tau = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m), 0.0)
         self.cov = Covariance1DFunction(self.tau, self.lam, self.sig)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
@@ -100,6 +100,26 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         for t in linspace(0.01,10,num=10):
             self.tau.set_nuisance(t)
             for q in linspace(0,1,num=10):
+                observed = self.gpi.get_posterior_mean([q])
+                expected = self.get_I(q)
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+
+    def testValuePosteriorMeanTau2(self):
+        """
+        test the value of the posterior mean function between 0 and 1 by
+        changing tau and getting the covariance first.
+        """
+        for t in linspace(0.01,10,num=10):
+            self.tau.set_nuisance(t)
+            for q in linspace(0,1,num=10):
+                #calling this updates the W matrix
+                self.gpi.get_posterior_covariance([q],[q])
+                #this only works if WSIm_ is updated
                 observed = self.gpi.get_posterior_mean([q])
                 expected = self.get_I(q)
                 if expected != 0:
