@@ -80,8 +80,7 @@ inline std::string get_unit_name<MolarTag>(int) {
 
 } // namespace unit::internal
 
-
-
+typedef boost::mpl::vector_c<int, 0,0,0,0,0> Scalar;
 typedef boost::mpl::vector_c<int, 1,0,0,0,0> Mass;
 typedef boost::mpl::vector_c<int, 0,1,0,0,0> Length;
 typedef boost::mpl::vector_c<int, 0,3,0,0,0> Volume;
@@ -95,6 +94,7 @@ typedef boost::mpl::vector_c<int, 1,-1,-2,0,0> Pressure;
 typedef boost::mpl::vector_c<int, 0,-1,0,0,1> HeatEnergyDerivative;
 
 
+typedef Unit<internal::MKSTag, 0, Scalar> MKSScalar;
 typedef Unit<internal::MKSTag, 0, Length> Meter;
 typedef Unit<internal::MKSTag, -2, Length> Centimeter;
 typedef Unit<internal::MKSTag, 0, Mass> Kilogram;
@@ -105,15 +105,17 @@ typedef Unit<internal::MKSTag, 0, Temperature> Kelvin;
 typedef Unit<internal::MKSTag, -3, Volume> Liter;
 typedef Unit<internal::MKSTag, 0, Volume> CubicMeter;
 typedef Shift<Meter, -10>::type Angstrom;
-  typedef Shift<Meter, -9>::type Nanometer;
+typedef Shift<Meter, -9>::type Nanometer;
 typedef Multiply<Angstrom, Angstrom>::type SquareAngstrom;
 typedef Shift<Joule, -15>::type Femtojoule;
 typedef Shift<Joule, -12>::type Picojoule;
 typedef Divide<Joule, Kelvin>::type JoulePerKelvin;
 typedef Multiply<Meter, Meter>::type SquareMeter;
 typedef Divide<SquareMeter, Second>::type SquareMeterPerSecond;
-typedef Shift<SquareMeterPerSecond, -4>::type SquareCentimeterPerSecond;
 typedef Unit<internal::MKSTag, -15, Time> Femtosecond;
+typedef Shift<SquareMeterPerSecond, -4>::type SquareCentimeterPerSecond;
+typedef Divide<SquareAngstrom, Femtosecond>::type SquareAngstromPerFemtosecond;
+typedef Divide<MKSScalar, Femtosecond>::type PerFemtosecond;
 typedef Unit<internal::MKSTag, -15, Force> Femtonewton;
 typedef Unit<internal::MKSTag, -12,Force> Piconewton;
 typedef Unit<internal::MKSTag, -18, Mass> Femtogram;
