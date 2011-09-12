@@ -8,18 +8,16 @@
 
 #include "IMP/core/VolumeRestraint.h"
 #include <IMP/core/XYZR.h>
-#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
+
+#ifdef IMP_CORE_USE_IMP_CGAL
 
 VolumeRestraint::VolumeRestraint(UnaryFunction *f,
                                  SingletonContainer *sc,
                                  double volume):
-  sc_(sc), f_(f), volume_(volume),
-  grid_(40,40,40,
-        algebra::BoundingBox3D(algebra::Vector3D(0,0,0),
-                               algebra::Vector3D(1,1,1)),
-        -1)
+  sc_(sc), f_(f), volume_(volume)
 {
 }
 
@@ -28,7 +26,14 @@ VolumeRestraint::VolumeRestraint(UnaryFunction *f,
 double
 VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_LOG(VERBOSE, "Begin volume restraint." << std::endl);
+  IMP_USAGE_CHECK(!da, "VolumeRestraint does not support derivatives.");
+  algebra::Sphere3Ds spheres;
+  IMP_FOREACH_SINGLETON(sc_, {
+      spheres.push_back(XYZR(_1).get_sphere());
+    });
+  double vol= algebra::get_surface_area_and_volume(spheres).second;
+  return f_->evaluate(vol-volume_);
+  /*IMP_LOG(VERBOSE, "Begin volume restraint." << std::endl);
   algebra::BoundingBox3D bb3;
   IMP_FOREACH_SINGLETON(sc_, {
       XYZR d(_1);
@@ -176,8 +181,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
               << rf << std::endl);
       dec.add_to_radius_derivative(dr, *da);
       });
-    return rv.first;
-  }
+      return rv.first;*/
 }
 
 void VolumeRestraint::do_show(std::ostream &out) const {
@@ -194,5 +198,5 @@ ContainersTemp VolumeRestraint::get_input_containers() const {
   return ContainersTemp(1, sc_);
 }
 
-
+#endif
 IMPCORE_END_NAMESPACE

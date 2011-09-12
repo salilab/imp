@@ -9,24 +9,20 @@
 #define IMPCORE_VOLUME_RESTRAINT_H
 
 #include "core_config.h"
-
-#include <IMP/algebra/Grid3D.h>
-
 #include <IMP/SingletonContainer.h>
 #include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>
 
 IMPCORE_BEGIN_NAMESPACE
-
+#if defined(IMP_CORE_USE_IMP_CGAL) || defined(IMP_DOXYGEN)
 //! Restraint the volume of a set of spheres
-/** \untested{VolumeRestraint}*/
+/** \note This restraint does not support derivatives.
+    \note This restraint requires CGAL.*/
 class IMPCOREEXPORT VolumeRestraint: public Restraint
 {
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP::OwnerPointer<UnaryFunction> f_;
   double volume_;
-  typedef algebra::DenseGrid3D<int> Grid;
-  mutable Grid grid_;
 public:
   VolumeRestraint(UnaryFunction *f,
                   SingletonContainer *sc,
@@ -34,7 +30,7 @@ public:
 
   IMP_RESTRAINT(VolumeRestraint);
 };
-
+#endif
 
 IMPCORE_END_NAMESPACE
 

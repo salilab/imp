@@ -78,7 +78,9 @@ IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePai
 IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
 IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
 IMP_SWIG_OBJECT( IMP::core, TypedPairScore, TypedPairScores);
+#ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
+#endif
 IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
 IMP_SWIG_OBJECT( IMP::core, MinimumRestraint, MinimumRestraints);
