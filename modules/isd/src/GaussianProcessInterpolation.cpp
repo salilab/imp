@@ -235,11 +235,9 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::compute_m()
 {
     m_ = Array1D<double> (M_);
-    IMP_LOG(TERSE, "m: ");
     for (unsigned i=0; i<M_; i++)
     {
         m_[i] = (*mean_function_)(x_[i])[0];
-        IMP_LOG(TERSE, m_[i] << " ");
     }
     IMP_LOG(TERSE, std::endl);
 }
@@ -309,14 +307,10 @@ using IMP::algebra::internal::TNT::Array2D;
     for (unsigned i=0; i<M_; i++)
     {
         W_[i][i] = (*covariance_function_)(x_[i],x_[i])[0];
-        IMP_LOG(TERSE, "W[" << i << "][" << i << "]: " 
-                                << W_[i][i] << std::endl);
         for (unsigned j=i+1; j<M_; j++)
         {
             W_[i][j] = (*covariance_function_)(x_[i],x_[j])[0];
             W_[j][i] = W_[i][j];
-            IMP_LOG(TERSE, "W[" << i << "][" << j << "]: " 
-                                << W_[i][j] << std::endl);
         }
     }
 }
