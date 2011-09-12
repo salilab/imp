@@ -1,4 +1,5 @@
 import IMP.domino
+import RMF
 
 # create a model and some particles, they are just used as markers here
 m= IMP.Model()
@@ -12,7 +13,7 @@ file_name= IMP.create_temporary_file_name("assignments", ".hdf5")
 print "File name is", file_name
 
 # open the file and clear any existing contents
-rt= IMP.rmf.create_hdf5_file(file_name)
+rt= RMF.create_hdf5_file(file_name)
 
 # add a data set to store it in, it must have dimension 2
 data_set= rt.add_child_index_data_set_2d("node_1_assignments")
