@@ -141,20 +141,22 @@ using IMP::algebra::internal::TNT::Array2D;
                                                     //is up to date
 }
 
-  void GaussianProcessInterpolation::update_flags_mean()
+  bool GaussianProcessInterpolation::update_flags_mean()
 {
     bool ret = mean_function_->has_changed();
     if (ret) mean_function_->update();
-    if (flag_m_) flag_m_ = ret; 
+    if (flag_m_) flag_m_ = !ret; 
+    return ret
 }
 
-  void GaussianProcessInterpolation::update_flags_covariance()
+  bool GaussianProcessInterpolation::update_flags_covariance()
 {
     bool ret = covariance_function_->has_changed();
     if (ret) covariance_function_->update();
-    if (flag_WS_) flag_WS_ = ret; 
-    if (flag_WSIm_) flag_WSIm_ = ret; 
-    if (flag_W_) flag_W_ = ret; 
+    if (flag_WS_) flag_WS_ = !ret; 
+    if (flag_WSIm_) flag_WSIm_ = !ret; 
+    if (flag_W_) flag_W_ = !ret; 
+    return ret;
 }
 
   Array1D<double> GaussianProcessInterpolation::get_wx_vector(
