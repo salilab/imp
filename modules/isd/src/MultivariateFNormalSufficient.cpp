@@ -194,14 +194,15 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
         IMP_USAGE_CHECK(CholeskySigma_->is_spd(), 
                 "Sigma matrix is not symmetric positive definite!");
         // determinant and derived constants
-        double detSigma=1;
+        double logDetSigma=0;
         Array2D<double> L(CholeskySigma_->getL());
-        for (int i=0; i<M_; i++) detSigma *= L[i][i];
-        detSigma *= detSigma;
-        IMP_LOG(TERSE, "MVN:   det(Sigma) = " << detSigma << std::endl);
-        norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) * pow(detSigma, -double(N_)/2.0);
-        lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * log(detSigma);
-        IMP_LOG(TERSE, "MVN:   norm = " << norm_ << "lnorm = " 
+        for (int i=0; i<M_; i++) logDetSigma += std::log(L[i][i]);
+        logDetSigma *= 2;
+        IMP_LOG(TERSE, "MVN:   det(Sigma) = " << exp(logDetSigma) << std::endl);
+        norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) 
+                    * exp(-double(N_)/2.0*logDetSigma);
+        lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * logDetSigma;
+        IMP_LOG(TERSE, "MVN:   norm = " << norm_ << " lnorm = " 
                 << lnorm_ << std::endl);
         //inverse (taken from TNT website)
         IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
@@ -263,13 +264,20 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
       //compute PWP
       IMP_LOG(TERSE, "MVN:   computing PWP" << std::endl);
       Array2D<double> R(M_,M_);
+      Array2D<double> WP(M_,M_);
+      for (int k=0; k<M_; k++){
+        for (int j=0; j<M_; j++){
+            WP[k][j] = 0.0;
+            for (int l=0; l<M_; l++){
+                WP[k][j] += W_[k][l]*P_[l][j];
+            }
+        }
+      }
       for (int i=0; i<M_; i++){
         for (int j=0; j<M_; j++){
             R[i][j] = 0.0;
             for (int k=0; k<M_; k++){
-                for (int l=0; l<M_; l++){
-                    R[i][j] += P_[i][k]*W_[k][l]*P_[l][j];
-                }
+                R[i][j] += P_[i][k]*WP[k][j];
             }
         }
       }
