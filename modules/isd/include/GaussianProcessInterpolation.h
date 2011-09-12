@@ -101,7 +101,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   //returns updated prior covariance matrix
   Array2D<double> get_W();
   //returns updated (W+S)^{-1}
-  Array1D<double> get_WS();
+  Array2D<double> get_WS();
   //returns updated (W+S)^{-1}(I-m)
   Array1D<double> get_WSIm();
 
