@@ -80,34 +80,51 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   double get_posterior_covariance(std::vector<double> x1, 
                                   std::vector<double> x2);
 
+  // call these if you called update() on the mean or covariance function. 
+  // it will force update any internal variables dependent on these functions.
+  void force_mean_update();
+  void force_covariance_update();
+
   friend class GaussianProcessInterpolationRestraint;
 
   IMP_OBJECT(GaussianProcessInterpolation);
 
  protected:
-  // update mean vector if the mean function has changed. Return true on change.
-  bool update_mean();
-  // update covariance matrix if the covariance function has changed. 
-  // Return true on change.
-  bool update_covariance();
+  //returns updated data vector
+  Array1D<double> get_I() const {return I_;}
+  //returns updated prior mean vector
+  Array1D<double> get_m();
+  // returns updated prior covariance vector
+  Array1D<double> get_wx_vector(std::vector<double> xval);
+  //returns updated data covariance matrix
+  Array2D<double> get_S() const {return S_;}
+  //returns updated prior covariance matrix
+  Array2D<double> get_W();
+  //returns updated (W+S)^{-1}
+  Array1D<double> get_WS();
+  //returns updated (W+S)^{-1}(I-m)
+  Array1D<double> get_WSIm();
 
  private:
-  //  computes necessary matrices.
-  void compute_matrices();
+
+  // ensures the mean/covariance function has updated parameters. Signals an
+  // update by changing the state flags.
+  void update_flags_mean();
+  void update_flags_covariance();
+
+  // compute prior covariance matrix
+  void compute_W();
+  // compute \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ (if necessary).
+  void compute_WS();
+  // compute (W+S)^{-1} (I-m)
+  void compute_WSIm();
+
   // compute mean observations
   void compute_I(std::vector<double> mean);
   // compute diagonal covariance matrix of observations
   void compute_S(std::vector<double> std, std::vector<int> n);
   // compute prior mean vector
   void compute_m();
-  // compute prior covariance matrix
-  void compute_W_matrix();
-  // compute prior covariance vector
-  void compute_wx_vector(std::vector<double> xval);
-  // compute \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ (if necessary).
-  void compute_inverse();
-  // compute (W+S)^{-1} (I-m)
-  void compute_WSIm();
 
  private:
     unsigned N_; // number of dimensions of the abscissa
@@ -121,6 +138,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
     Array1D<double> I_,m_,wx_; 
     Array2D<double> S_,W_,WS_; // WS = (W + S)^{-1}
     Array1D<double> WSIm_; // WS * (I - m)
+    bool flag_m_, flag_WS_, flag_WSIm_, flag_W_;
     boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > Cholesky_;
 
 };
