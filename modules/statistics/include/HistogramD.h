@@ -76,7 +76,7 @@ class HistogramD {
     return grid_.get_dimension();
   }
   algebra::VectorD<D>
-  get_standard_deviations(const algebra::VectorD<D> &mean) const {
+  get_standard_deviation(const algebra::VectorD<D> &mean) const {
     algebra::VectorD<D> ret;
     std::fill(ret.coordinates_begin(), ret.coordinates_end(), 0.0);
     for (typename Grid::AllIndexIterator it= grid_.all_indexes_begin();

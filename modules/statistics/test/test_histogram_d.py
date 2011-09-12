@@ -17,9 +17,12 @@ class HistogramTests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector2D(random.gauss(0, 10),
                                           random.gauss(0, 10)))
         mean= hist.get_mean()
-        sigmaout= hist.get_standard_deviations(mean)
+        sigmaout= hist.get_standard_deviation(mean)
         print mean
         print sigmaout
+        for i in range(0,2):
+            self.assertInTolerance(mean[i], 0, delta=.5)
+            self.assertInTolerance(sigmaout[i], 10, delta=.5)
 
 if __name__ == '__main__':
     IMP.test.main()
