@@ -18,6 +18,7 @@ IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
 IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
+IMP_SWIG_DECORATOR(IMP::atom, RigidBodyDiffusion, RigidBodyDiffusions);
 IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
 IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
