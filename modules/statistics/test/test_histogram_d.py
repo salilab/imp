@@ -21,8 +21,8 @@ class HistogramTests(IMP.test.TestCase):
         print mean
         print sigmaout
         for i in range(0,2):
-            self.assertInTolerance(mean[i], 0, delta=.5)
-            self.assertInTolerance(sigmaout[i], 10, delta=.5)
+            self.assertAlmostEqual(mean[i], 0, delta=.5)
+            self.assertAlmostEqual(sigmaout[i], 10, delta=.5)
 
 if __name__ == '__main__':
     IMP.test.main()
