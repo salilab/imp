@@ -184,6 +184,19 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
       out<<std::endl;
     }
   }
+  int get_num_allowed_violated_interactions() const {
+    return num_allowed_violated_interactions_;}
+  void set_num_allowed_violated_interactions(int n) {
+    num_allowed_violated_interactions_=n;}
+  int get_num_allowed_violated_xlinks() const {
+    return num_allowed_violated_xlinks_;}
+  void set_num_allowed_violated_xlinks(int n) {
+    num_allowed_violated_xlinks_=n;}
+  int get_num_allowed_violated_ev() const {
+    return num_allowed_violated_ev_;}
+  void set_num_allowed_violated_ev(int n) {
+    num_allowed_violated_ev_=n;}
+
   /*IMP_OBJECT_INLINE(ProteomicsData, {
         out<<"Proteins:";
         for(std::vector<ProteinRecordData>::const_iterator
@@ -206,10 +219,13 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   std::map<std::string,int> prot_map_;
   IntsList interactions_;
   std::vector<bool> interaction_in_jt_;//for each interaction in interactions_
+  int num_allowed_violated_interactions_;
   //decide if it used to build the JT or just for scoring
   std::vector<std::pair<IntPair,IntPair> > xlinks_;
   std::vector<bool> xlink_in_jt_;
+  int num_allowed_violated_xlinks_;
   IntPairs ev_; //pairs of proteins to calcualte EV between
+  int num_allowed_violated_ev_;
 };
 
 //! Proteomics reader

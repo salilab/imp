@@ -2,10 +2,11 @@
 |A|1|100|nn|
 |B|1|100|nn|
 |C|1|100|nn|
-|interactions|
+|interactions|1|
 |1|A|B|authors|type|
 |1|A|B|C|authors|type|
-|residue-xlink|
+|residue-xlink|3|
 |0|A|30|B|50|
 |1|C|30|B|50|
-|ev|
+|ev-pairs|2|
+|A|B|

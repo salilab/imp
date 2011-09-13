@@ -13,7 +13,8 @@
 #include <boost/bind.hpp>
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
-bool is_protein_line(const std::string &line) {
+  bool is_protein_line(const std::string &line,
+                       ProteomicsData *dp) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -29,8 +30,8 @@ bool is_protein_line(const std::string &line) {
 }
 
   bool is_interaction_line(const std::string &line,
-                           int &num_allowed_violations) {
-    num_allowed_violations=0;
+                           ProteomicsData *dp) {
+  int num_allowed_violations=0;
   std::cout<<"INTERATION LINE:"<<line;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -40,18 +41,23 @@ bool is_protein_line(const std::string &line) {
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  if ((line_split.size() != 1))// || (line_split.size() != 2))
+  std::cout<<"Size :: "<<line_split.size()<<std::endl;
+  if ((line_split.size() != 1) && (line_split.size() != 2))
       return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "interactions")
     return false;
-  // if (line_split.size()==2) {
-  //   num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
-  // }
+  if (line_split.size()==2) {
+    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+  }
+  std::cout<<"num_allowed_violations:"<<num_allowed_violations<<std::endl;
+  dp->set_num_allowed_violated_interactions(num_allowed_violations);
   return true;
   }
 
 
-bool is_xlink_line(const std::string &line) {
+  bool is_xlink_line(const std::string &line,
+                     ProteomicsData *dp) {
+    int num_allowed_violations=0;
   std::cout<<"XLINK LINE:"<<line;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -61,15 +67,20 @@ bool is_xlink_line(const std::string &line) {
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  if (line_split.size() != 1) return false;
+  if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "residue-xlink")
     return false;
+  if (line_split.size()==2) {
+    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+  }
+  std::cout<<"num_allowed_violations:"<<num_allowed_violations<<std::endl;
+  dp->set_num_allowed_violated_xlinks(num_allowed_violations);
   return true;
-}
+  }
 
-
-
-bool is_ev_line(const std::string &line) {
+  bool is_ev_line(const std::string &line,
+                  ProteomicsData *dp) {
+  int num_allowed_violations=0;
   std::cout<<"EV LINE:"<<line;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -79,9 +90,14 @@ bool is_ev_line(const std::string &line) {
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  if (line_split.size() != 1) return false;
+  if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "ev-pairs")
     return false;
+  if (line_split.size()==2) {
+    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+  }
+  std::cout<<"num_allowed_violations:"<<num_allowed_violations<<std::endl;
+  dp->set_num_allowed_violated_ev(num_allowed_violations);
   return true;
 }
 
@@ -124,7 +140,8 @@ void parse_xlink_line(
 void parse_ev_line(
      const std::string &line,
      ProteomicsData *dp){
-  std::cout<<"parse_ev_line:"<<line<<std::endl;
+  std::cout<<"=============="<<std::endl;
+  std::cout<<"parse_ev_line:"<<line<<"|"<<line.size()<<std::endl;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 2,
      "no data to parse. the last two tabs should contain header data\n");
@@ -220,7 +237,7 @@ void parse_interaction_line(
   }
   dp->add_interaction(inter_prots,used_in_jt);
 }
-}
+}//end namespace
 
 ProteomicsData read_proteomics_data(const char *prot_fn) {
   std::fstream in;
@@ -241,21 +258,20 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
   getline(in, line); //skip proteins header line
   std::cout<<"|-----"<<std::endl;
   std::cout<<line<<std::endl;
-  int num_allowed_violations;
-  while ((!in.eof()) && (!is_interaction_line(line,num_allowed_violations))){
+  while ((!in.eof()) && (!is_interaction_line(line,
+                                              &data))){
     std::cout<<line<<std::endl;
     parse_protein_line(line,&data);
     if (!getline(in, line)) break;
   }
   getline(in, line);
-  while ((!in.eof()) && (!is_xlink_line(line))){
-    //  while (!is_xlink_line(line)){
+  while ((!in.eof()) && (!is_xlink_line(line,&data))){
     parse_interaction_line(line,&data);
     std::cout<<"==finish"<<std::endl;
     if (!getline(in, line)) break;
   }
   getline(in, line);
-  while (!in.eof() && (!is_ev_line(line))) {
+  while (!in.eof() && (!is_ev_line(line,&data))){
     parse_xlink_line(line,&data);
     if (!getline(in, line)) break;
   }
