@@ -21,6 +21,8 @@
 #include <IMP/algebra/LinearFit.h>
 
 #include <IMP/core/ConjugateGradients.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/algebra/vector_generators.h>
 
 #include <cmath>
 #include <limits>
@@ -35,8 +37,8 @@ unit::Shift<unit::Multiply<unit::Pascal,
 
 
 BrownianDynamics::BrownianDynamics(Model *m) :
-  Simulator(m, "BrownianDynamics %1%"), nd_(0,1),
-  sampler_(random_number_generator, nd_),
+  Simulator(m, "BrownianDynamics %1%"), //nd_(0,1),
+  //sampler_(random_number_generator, nd_),
   max_step_(std::numeric_limits<double>::max()),
   srk_(false) {
 }
@@ -53,21 +55,19 @@ BrownianDynamics::BrownianDynamics(Model *m) :
 
 bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi) const {
   return (Diffusion::particle_is_instance(get_model(), pi)
-          && IMP::core::XYZ::particle_is_instance(get_model(), pi)
           && IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
 }
 
 namespace {
-  unit::Angstrom get_force(Model *m, ParticleIndex p, unsigned int i,
+  inline unit::Angstrom get_force(Model *m, ParticleIndex p, unsigned int i,
                            unit::Divide<unit::Femtosecond,
                                         unit::Femtojoule>::type dtikt) {
     Diffusion d(m, p);
-    unit::KilocaloriePerAngstromPerMol
-      cforce( -d.get_derivative(i));
-    unit::Femtonewton nforce
-      = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+    unit::Femtonewton nforce(get_force_in_femto_newtons(-d.get_derivative(i)));
     //unit::Angstrom R(sampler_());
-    unit::Angstrom force_term(nforce*d.get_d()*dtikt);
+    unit::Angstrom force_term(nforce*
+                              unit::SquareAngstromPerFemtosecond(d.get_d())
+                              *dtikt);
     /*if (force_term > unit::Angstrom(.5)) {
       std::cout << "Forces on " << _1->get_name() << " are "
       << force << " and " << nforce
@@ -76,8 +76,39 @@ namespace {
       }*/
     return force_term;
   }
-  unit::Angstrom get_sigma(Model *m, ParticleIndex p, unit::Femtosecond dtfs) {
-    return sqrt(2.0*Diffusion(m, p).get_d()*dtfs);
+  // radians
+  inline double get_torque(Model *m, ParticleIndex p, unsigned int i,
+                    unit::Divide<unit::Femtosecond,
+                                 unit::Femtojoule>::type dtikt) {
+    RigidBodyDiffusion d(m, p);
+    core::RigidBody rb(m, p);
+
+    unit::KilocaloriePerMol cforce( rb.get_torque()[i]);
+    unit::Joule nforce
+      = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+    //unit::Angstrom R(sampler_());
+    double force_term=unit::strip_units(d.get_d_rotation()*(nforce*dtikt));
+    /*if (force_term > unit::Angstrom(.5)) {
+      std::cout << "Forces on " << _1->get_name() << " are "
+      << force << " and " << nforce
+      << " and " << force_term <<
+      " vs " << delta[j] << ", " << sigma << std::endl;
+      }*/
+    return force_term;
+  }
+
+  unit::Angstrom get_sigma(Model *m, ParticleIndex p,
+                           unit::Femtosecond dtfs) {
+    return sqrt(6.0*unit::SquareAngstromPerFemtosecond(Diffusion(m,
+                                                                 p).get_d())
+                *dtfs);
+  }
+  double get_rotational_sigma(Model *m, ParticleIndex p,
+                              unit::Femtosecond dtfs) {
+    return sqrt(6.0*unit::PerFemtosecond(RigidBodyDiffusion(m,
+                                                             p)
+                                         .get_d_rotation())
+                *dtfs);
   }
 }
 
@@ -122,6 +153,86 @@ namespace {
       }
   }
 }
+
+void BrownianDynamics
+::advance_ball_1(ParticleIndex pi,
+                 unsigned int i,
+                 unit::Femtosecond /*dtfs*/,
+                 unit::Divide<unit::Femtosecond,
+                              unit::Femtojoule>::type dtikt) {
+  Diffusion d(get_model(), pi);
+  core::XYZ xd(get_model(), pi);
+  algebra::Vector3D force(get_force(get_model(), pi,
+                                    0, dtikt).get_value(),
+                          get_force(get_model(), pi,
+                                    1, dtikt).get_value(),
+                          get_force(get_model(), pi,
+                                    2, dtikt).get_value());
+  algebra::Vector3D delta=(force-forces_[i])/2.0;
+  check_delta(delta, max_step_);
+  xd.set_coordinates(xd.get_coordinates()+delta);
+}
+
+
+void BrownianDynamics
+::advance_ball_0(ParticleIndex pi, unsigned int i,
+                 unit::Femtosecond dtfs,
+                 unit::Divide<unit::Femtosecond,
+                              unit::Femtojoule>::type dtikt) {
+  core::XYZ xd(get_model(), pi);
+  double sigma= get_sigma(get_model(), pi, dtfs).get_value();
+  boost::normal_distribution<double> nd(0, sigma);
+  RNG sampler(random_number_generator, nd);
+  double r= sampler();
+  algebra::Vector3D random
+    = r*get_random_vector_on(algebra::get_unit_sphere_d<3>());
+  algebra::Vector3D force(get_force(get_model(), pi, 0,
+                                    dtikt).get_value(),
+                          get_force(get_model(), pi, 1,
+                                    dtikt).get_value(),
+                          get_force(get_model(), pi, 2,
+                                    dtikt).get_value());
+  if (srk_) {
+    forces_[i]=force;
+  }
+  algebra::Vector3D delta=random+force;
+  if (!srk_) {
+    check_delta(delta, max_step_);
+  }
+  xd.set_coordinates(xd.get_coordinates()+delta);
+}
+
+void BrownianDynamics
+::advance_rigid_body_0(ParticleIndex pi, unsigned int ,
+                       unit::Femtosecond dtfs,
+                       unit::Divide<unit::Femtosecond,
+                                    unit::Femtojoule>::type dtikt) {
+  core::RigidBody rb(get_model(), pi);
+  double sigma= get_rotational_sigma(get_model(), pi, dtfs);
+  boost::normal_distribution<double> nd(0, sigma);
+  RNG sampler(random_number_generator, nd);
+  double angle= sigma*sampler();
+  algebra::Vector3D axis
+    = algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
+  algebra::Rotation3D rrot= algebra::get_rotation_about_axis(axis, angle);
+  algebra::Vector3D torque( get_torque(get_model(), pi, 0, dtikt),
+                            get_torque(get_model(), pi, 1, dtikt),
+                            get_torque(get_model(), pi, 2, dtikt));
+  double tangle= torque.get_magnitude();
+  algebra::Vector3D taxis;
+  if (tangle > 0) {
+    taxis = torque/tangle;
+  } else {
+    taxis= algebra::Vector3D(0,0,0);
+  }
+  algebra::Rotation3D frot= algebra::get_rotation_about_axis(taxis, tangle);
+  algebra::Transformation3D nt
+    = rb.get_reference_frame().get_transformation_to()*
+    algebra::Transformation3D(rrot)*algebra::Transformation3D(frot);
+  rb.set_reference_frame(algebra::ReferenceFrame3D(nt));
+}
+
+
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
@@ -133,42 +244,18 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
     =dtfs
     /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
   evaluate(true);
+  unsigned int numrb=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
-    Diffusion d(get_model(), ps[i]);
-    core::XYZ xd(get_model(), ps[i]);
-    double sigma= get_sigma(get_model(), ps[i], dtfs).get_value();
-    algebra::Vector3D random(sigma*sampler_(),
-                             sigma*sampler_(),
-                             sigma*sampler_());
-    algebra::Vector3D force(get_force(get_model(), ps[i], 0,
-                                      dtikt).get_value(),
-                            get_force(get_model(), ps[i], 1,
-                                      dtikt).get_value(),
-                            get_force(get_model(), ps[i], 2,
-                                      dtikt).get_value());
-    if (srk_) {
-      forces_[i]=force;
+    if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
+      advance_rigid_body_0(ps[i], numrb, dtfs, dtikt);
+      ++numrb;
     }
-    algebra::Vector3D delta=random+force;
-    if (!srk_) {
-      check_delta(delta, max_step_);
-    }
-    xd.set_coordinates(xd.get_coordinates()+delta);
+    advance_ball_0(ps[i], i, dtfs, dtikt);
   }
   if (srk_) {
     evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      Diffusion d(get_model(), ps[i]);
-      core::XYZ xd(get_model(), ps[i]);
-      algebra::Vector3D force(get_force(get_model(), ps[i],
-                                        0, dtikt).get_value(),
-                              get_force(get_model(), ps[i],
-                                        1, dtikt).get_value(),
-                              get_force(get_model(), ps[i],
-                                        2, dtikt).get_value());
-      algebra::Vector3D delta=(force-forces_[i])/2.0;
-      check_delta(delta, max_step_);
-      xd.set_coordinates(xd.get_coordinates()+delta);
+      advance_ball_1(ps[i], i, dtfs, dtikt);
     }
   }
   return dt;
@@ -250,6 +337,13 @@ IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd){
   bd->set_maximum_time_step(ots);
   c->load_configuration();
   return lb;
+}
+
+
+
+
+double get_harmonic_sigma(double D, double f) {
+  return 0;
 }
 
 IMPATOM_END_NAMESPACE

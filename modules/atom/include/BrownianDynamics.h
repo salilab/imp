@@ -66,10 +66,22 @@ public:
   }
   IMP_SIMULATOR(BrownianDynamics);
  private:
-  boost::normal_distribution<double> nd_;
+  typedef unit::Divide<unit::Femtosecond,
+                       unit::Femtojoule>::type DTIKT;
+  void advance_ball_1(ParticleIndex pi,
+                      unsigned int i,
+                      unit::Femtosecond dtfs,
+                      DTIKT dtikt);
+  void advance_ball_0(ParticleIndex pi, unsigned int i,
+                      unit::Femtosecond dtfs,
+                      unit::Divide<unit::Femtosecond,
+                                   unit::Femtojoule>::type dtikt);
+  void advance_rigid_body_0(ParticleIndex pi, unsigned int i,
+                            unit::Femtosecond dtfs,
+                            DTIKT dtikt);
+
   typedef boost::variate_generator<RandomNumberGenerator&,
                                    boost::normal_distribution<double> > RNG;
-  RNG sampler_;
   double max_step_;
   bool srk_;
   std::vector<algebra::Vector3D> forces_;
@@ -78,6 +90,9 @@ public:
 
 IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd);
 
+#ifndef IMP_DOXYGEN
+IMPATOMEXPORT double get_harmonic_sigma(double D, double f);
+#endif
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_BROWNIAN_DYNAMICS_H */

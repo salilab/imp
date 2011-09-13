@@ -8,6 +8,7 @@
 #include <IMP/atom/Simulator.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/internal/units.h>
 
 IMPATOM_BEGIN_NAMESPACE
 Simulator::Simulator(Model *m,
@@ -32,6 +33,10 @@ double Simulator::simulate(double time) {
     update_states();
   }
   return Optimizer::evaluate(false);
+}
+
+double Simulator::get_kt() const {
+  return get_kb_t(get_temperature());
 }
 
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
@@ -68,4 +73,39 @@ void Simulator::do_show(std::ostream &out) const {
 
 IMP_LIST_IMPL(Simulator, Particle, particle, Particle*,
               Particles);
+
+
+
+IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol) {
+  unit::KilocaloriePerMol cforce(energy_in_kcal_per_mol);
+  unit::Femtojoule nforce
+    = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+  return nforce.get_value();
+}
+IMPATOMEXPORT double
+get_force_in_femto_newtons(double f) {
+  unit::KilocaloriePerAngstromPerMol cforce( f);
+  unit::Femtonewton nforce
+    = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+  return nforce.get_value();
+}
+
+IMPATOMEXPORT double
+get_spring_constant_in_femto_newtons_per_angstrom(double
+                    k) {
+  // cheating a bit
+  unit::KilocaloriePerAngstromPerMol cforce( k);
+  unit::Femtonewton nforce
+    = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+  return nforce.get_value();
+}
+
+double get_kb_t(double T) {
+  unit::Femtojoule fj(IMP::internal::KB*unit::Kelvin(T));
+  unit::KilocaloriePerMol e
+    =unit::convert_J_to_Cal(fj) *unit::ATOMS_PER_MOL;
+  return e.get_value();
+}
+
+
 IMPATOM_END_NAMESPACE

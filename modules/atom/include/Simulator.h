@@ -57,6 +57,8 @@ public:
     if (last_time_step_ <0) return get_maximum_time_step();
     else return last_time_step_;
   }
+  /** Return kt in kCal/mol */
+  double get_kt() const;
   /** @} */
 #ifndef IMP_DOXYGEN
   void set_time_step(double ts) {
@@ -111,6 +113,26 @@ protected:
 
 
 IMP_OBJECTS(Simulator, Simulators);
+
+/**\name Energy conversions
+
+   The native energy units in \imp are difficult to do any sort of math with.
+   One can convert the quantities into more useful ones.
+   @{
+*/
+IMPATOMEXPORT double get_energy_in_femto_joules(double energy_in_kcal_per_mol);
+IMPATOMEXPORT double
+get_force_in_femto_newtons(double force_in_kcal_per_mol_per_angstrom);
+
+IMPATOMEXPORT double
+get_spring_constant_in_femto_newtons_per_angstrom(double
+                                k_in_kcal_per_mol_per_angstrom_square);
+
+/** @} */
+
+//! get kt
+IMPATOMEXPORT double get_kb_t(double temperature);
+
 
 IMPATOM_END_NAMESPACE
 
