@@ -20,6 +20,27 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
 inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
+  BoundingBoxD<D> bb= get_bounding_box(s);
+  do {
+    VectorD<D> pt= get_random_vector_in(bb);
+    double r2= (s.get_center()-pt).get_squared_magnitude();
+    if (r2 < square(s.get_radius()) && r2 > square(.1*s.get_radius())) {
+      VectorD<D> diff= pt-s.get_center();
+      VectorD<D> udiff= diff.get_unit_vector();
+      return s.get_center()+udiff*s.get_radius();
+    }
+  } while (true);
+}
+
+inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
+  ::boost::uniform_real<> rand(0, 2*PI);
+  double angle=rand(random_number_generator);
+  VectorD<2> ret(s.get_radius()*sin(angle),
+                 s.get_radius()*cos(angle));
+  return ret+ s.get_center();
+}
+
+/*inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   double cur_radius2=square(s.get_radius());
   Floats up(s.get_center().get_dimension());
   for (unsigned int i=s.get_dimension()-1; i>0; --i) {
@@ -36,18 +57,26 @@ inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   }
   up[0]=x;
 
-  IMP_INTERNAL_CHECK(std::abs(VectorD<D>(up.begin(),
+  IMP_INTERNAL_CHECK(std::abs(VectorD<3>(up.begin(),
                                          up.end()).get_magnitude()
                               -s.get_radius()) < .1,
                      "Error generating vector on sphere: "
-                     << VectorD<D>(up.begin(), up.end())
+                     << VectorD<3>(up.begin(), up.end())
                      << " for " << s.get_radius());
   //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
 
-  return s.get_center()+ VectorD<D>(up.begin(), up.end());
-}
+  return s.get_center()+ VectorD<3>(up.begin(), up.end());
+  }*/
 
-
+/*inline VectorKD get_random_vector_on(const SphereKD &s) {
+  if (s.get_dimension()==2) {
+    Vector2D pt
+    = get_random_vector_on(Sphere2D(Vector2D(s.get_center().coordinates_begin(),
+    s.get_center().coordinates_end()),
+                                               s.get_radius()));
+    return pt;
+  }
+  }*/
 
 template <int D>
 inline std::vector<VectorD<D> >
