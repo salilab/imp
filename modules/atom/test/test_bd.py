@@ -2,23 +2,32 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import sympy
-from sympy.physics.units import *
+try:
+    import sympy
+    from sympy.physics.units import *
+    use_sympy=True
+except:
+    use_sympy=False
+
 import math
 nreps=10000
 nsteps=500
-timestep=100
-timestep_u=timestep*femto*second
-t_u= timestep_u*nsteps
-angstrom= sympy.Rational(1,10)*nano*meter
+timestep=1000
 D=.0002
-D_u= .0002*angstrom*angstrom/(femto*second)
 k=.01
-k_u=  IMP.atom.get_spring_constant_in_femto_newtons_per_angstrom(k)*femto*newton/angstrom
 f=.1
-f_u= IMP.atom.get_force_in_femto_newtons(f)*femto*newton
 kt_silly=IMP.atom.get_kb_t(273.)
-kT_u= IMP.atom.get_energy_in_femto_joules(kt_silly)*femto*joule
+
+if use_sympy:
+    timestep_u=timestep*femto*second
+    t_u= timestep_u*nsteps
+    angstrom= sympy.Rational(1,10)*nano*meter
+    D_u= .0002*angstrom*angstrom/(femto*second)
+    k_u=  IMP.atom.get_spring_constant_in_femto_newtons_per_angstrom(k)*femto*newton/angstrom
+    f_u= IMP.atom.get_force_in_femto_newtons(f)*femto*newton
+    kT_u= IMP.atom.get_energy_in_femto_joules(kt_silly)*femto*joule
+else:
+    angstrom=1.0
 
 class BDTests(IMP.test.TestCase):
     def _setup(self):
@@ -35,8 +44,8 @@ class BDTests(IMP.test.TestCase):
         xyzr.set_coordinates_are_optimized(True)
         return (m, xyzr, d, bd)
     def _measure(self, m, xyzr, bd):
-        ub= IMP.algebra.Vector3D(50,50,50)
-        h = IMP.statistics.Histogram3D(1, IMP.algebra.BoundingBox3D(-ub, ub))
+        ub= IMP.algebra.Vector3D(20,20,20)
+        h = IMP.statistics.Histogram3D(.1, IMP.algebra.BoundingBox3D(-ub, ub))
         for i in range(0,nreps):
             xyzr.set_coordinates(IMP.algebra.Vector3D(0,0,0))
             bd.optimize(nsteps)
@@ -65,27 +74,36 @@ class BDTests(IMP.test.TestCase):
         sigma= (6.0*t_u*D_u)**sympy.Rational(1,2)
         return sigma
     def _get_sigma_1_free(self):
-        sigma= (2.0*t_u*D_u)**sympy.Rational(1,2)
-        return sigma
+        if use_sympy:
+            sigma= (2.0*t_u*D_u)**sympy.Rational(1,2)
+            return sigma
+        else:
+            return 14
     def _get_sigma_harmonic(self):
-        delta2= (kT_u/k_u)
-        delta= delta2**sympy.Rational(1,2)
-        print "delta", delta
-        taut= 2*delta2/D_u
-        print "taut", taut.evalf()
-        tau= t_u/taut
-        print "tau", tau.evalf()
-        scale= 2*delta2
-        print "scale", scale.evalf()
-        sigma2= scale*(1-sympy.E**(-4*tau))
-        print "sigma2", sigma2.evalf()
-        sigma= sigma2**sympy.Rational(1,2)
-        print "sigma", sigma.evalf()
-        return sigma
+        if use_sympy:
+            delta2= (kT_u/k_u)
+            delta= delta2**sympy.Rational(1,2)
+            print "delta", delta
+            taut= 2*delta2/D_u
+            print "taut", taut.evalf()
+            tau= t_u/taut
+            print "tau", tau.evalf()
+            scale= 2*delta2
+            print "scale", scale.evalf()
+            sigma2= scale*(1-sympy.E**(-4*tau))
+            print "sigma2", sigma2.evalf()
+            sigma= sigma2**sympy.Rational(1,2)
+            print "sigma", sigma.evalf()
+            return sigma
+        else:
+            return 10
     def _get_sigma_limit_harmonic(self):
-        sigmass= 2*kT_u/k_u
-        print "sigma steady state 2", sigmass.evalf()
-        return sigmass**sympy.Rational(1,2)
+        if use_sympy:
+            sigmass= 2*kT_u/k_u
+            print "sigma steady state 2", sigmass.evalf()
+            return sigmass**sympy.Rational(1,2)
+        else:
+            return 0
     def _check(self, (mn, std), (calc_mn, calc_std)):
         print [(x.evalf()/angstrom).evalf() for x in calc_std]
         print "mean", mn, [float((x/angstrom).evalf()) for x in calc_mn]
@@ -96,9 +114,10 @@ class BDTests(IMP.test.TestCase):
     def test_free(self):
         """Test a brownian free diffusion"""
         (m, xyzr, d, bd)= self._setup()
+        sigma= self._get_sigma_1_free()
+        print "free sigma is", sigma
         (mn, std)= self._measure(m, xyzr, bd)
         print mn, std
-        sigma= self._get_sigma_1_free()
         self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
     def test_linear(self):
         """Test a brownian linear"""
@@ -106,7 +125,10 @@ class BDTests(IMP.test.TestCase):
         (m, xyzr, d, bd)= self._setup()
         #print D_u, f_u, kT_u
         #print D_u*f_u, f_u/kT_u, 1/kT_u
-        mean= -D_u*f_u*t_u/kT_u
+        if use_sympy:
+            mean= -D_u*f_u*t_u/kT_u
+        else:
+            mean=-18
         print "mean", mean
         h = IMP.core.Linear(0, f)
         dss= IMP.core.AttributeSingletonScore(h, IMP.core.XYZ.get_xyz_keys()[0])
@@ -120,6 +142,7 @@ class BDTests(IMP.test.TestCase):
         # taken from chapter 13 of course notes http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd)= self._setup()
         sigma=self._get_sigma_harmonic()
+        print "harmonic sigma", sigma
         sigmaf= self._get_sigma_1_free()
         sigmass= self._get_sigma_limit_harmonic()
 
