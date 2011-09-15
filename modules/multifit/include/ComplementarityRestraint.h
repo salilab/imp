@@ -45,9 +45,15 @@ public:
                                    ="ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
-      cubic angstroms that the two molecules overlap. */
+      cubic angstroms that the two molecules overlap (assuming only one
+      internal layer). */
   void set_maximum_penetration_score(double s) {
     maximum_penetration_score_=s;
+  }
+  /** Alternatively, you can bound the maximum allowed penetration.
+   */
+  void set_maximum_penetration(double d) {
+    maximum_penetration_=d;
   }
   /** If the two molecules are separated by more than this,
       infinity is returned.
@@ -97,6 +103,7 @@ public:
   ObjectKey ok_;
   // parameters
   double maximum_separation_, maximum_penetration_score_;
+  double maximum_penetration_;
   double complementarity_thickeness_, complementarity_value_;
   double interior_thickness_, voxel_size_;
 };
