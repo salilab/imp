@@ -22,6 +22,8 @@ ComplementarityRestraint::get_grid(const ParticlesTemp &a,
   params.complementarity_thickness=Floats(1, thickness);
   params.complementarity_value=Floats(1, value);
   params.interior_thickness=interior_thickness;
+  params.interior_cutoff_distance= maximum_penetration_;
+  params.interior_large_value= std::numeric_limits<double>::max();
   params.voxel_size=voxel;
   IMP::algebra::DenseGrid3D<float> grid
     = internal::get_complentarity_grid(a, params);
@@ -73,6 +75,7 @@ ComplementarityRestraint
   ok_("wev grid"),
   maximum_separation_(std::numeric_limits<double>::max()),
   maximum_penetration_score_(std::numeric_limits<double>::max()),
+  maximum_penetration_(std::numeric_limits<double>::max()),
   complementarity_thickeness_(10), complementarity_value_(-1),
   interior_thickness_(2){
   update_voxel();
