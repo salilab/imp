@@ -153,7 +153,10 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
         if ( v > 0 )
         {
           //inside voxel
-          grid[voxel_center] = int((v - 1)/params.interior_thickness) + 1;
+          if ( v - 1 > params.interior_cutoff_distance )
+            grid[voxel_center] = params.interior_large_value;
+          else
+            grid[voxel_center] = int((v - 1)/params.interior_thickness) + 1;
         }
         else if ( v < 0 )
         {
