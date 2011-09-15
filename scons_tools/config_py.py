@@ -39,13 +39,16 @@ def write_config(h, env, extra=[]):
                ('arliblinkflags', 'IMP_ARLIB_LINKFLAGS', " "),
                ('binlinkflags', 'IMP_BIN_LINKFLAGS', " "),
                ('pythonlinkflags', 'IMP_PYTHON_LINKFLAGS', " "),
-               ('python', 'IMP_PROVIDE_PYTHON', " "),
                ('rpath', 'IMP_USE_RPATH', " "),
                ('static', 'IMP_BUILD_STATIC', " "),
                ('pythonsosuffix', 'IMP_PYTHON_SO', " "),
                ('pkgconfig', "IMP_HAS_PKG_CONFIG", " ")]:
         _export_to_config(vp[0], vp[1], env, delim=vp[2])
     config.append('path="'+_flatten(os.environ['PATH'], ":")+'"')
+    if env['IMP_PROVIDE_PYTHON']:
+        config.append('python="'+env['PYTHON']+'"')
+    else:
+        config.append('python="no"')
     #print "opening h at " +target[0].abspath + " for module %(module)s"%vars
     #print "Generating "+str(h)
     s= config

@@ -104,13 +104,25 @@ def _add_platform_flags(env):
     env.Append(LIBPATH=[])
 
     if not env.get('wine', None):
-        from distutils.sysconfig import get_config_vars
+        #from distutils.sysconfig import get_config_vars
         # The compile and link programs used by python must both produce outputs
         # that are compatible with the compiler we are already using as well
         # as much take all command line options we are already using. As a
         # result, we might as well used the same compiler as before. It would
         # be great to check if they match, but that is kind of hard.
-        (opt, cflags, so) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
+        #(oopt, ocflags, oso) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
+        opt=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('OPT')])")
+        cflags=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('BASECFLAGS')])")
+        so=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "' '.join([x for x in distutils.sysconfig.get_config_vars('SO')])")
+        print opt
+        print cflags
+        print so
+        #print oopt
+        ##print ocflags
+        #print oso
         env['IMP_PYTHON_SO']=so
         includepath=[]
         if dependency.gcc.get_is_gcc_like(env):
@@ -227,7 +239,7 @@ def get_base_environment(variables=None, *args, **kw):
         env = Environment(variables=variables,
                           ENV = {'PATH':newpath},
                           *args, **kw)
-        env['PYTHON'] = 'python'
+        #env['PYTHON'] = 'python'
     data.add(env)
     impvariables.update(env, variables)
     if env['IMP_USE_PLATFORM_FLAGS']:
