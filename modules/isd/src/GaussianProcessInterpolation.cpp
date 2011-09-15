@@ -64,6 +64,7 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::force_mean_update()
 {
     flag_m_ = false;
+    flag_m_gpir_ = false;
     flag_WSIm_ = false;
 }
 
@@ -72,6 +73,8 @@ using IMP::algebra::internal::TNT::Array2D;
     flag_WS_ = false;
     flag_WSIm_ = false;
     flag_W_ = false;
+    flag_W_gpir_ = false; // the gpi restraint needs to know when 
+                          // to update the mvn's Sigma:=W matrix.
 }
 
   void GaussianProcessInterpolation::compute_I(std::vector<double> mean)
@@ -142,32 +145,34 @@ using IMP::algebra::internal::TNT::Array2D;
                                                     //is up to date
 }
 
-  bool GaussianProcessInterpolation::update_flags_mean()
+  void GaussianProcessInterpolation::update_flags_mean()
 {
 
     bool ret = mean_function_->has_changed();
     if (ret) mean_function_->update();
     if (flag_m_) flag_m_ = !ret; 
+    if (flag_m_gpir_) flag_m_gpir_ = !ret; 
     if (flag_WSIm_) flag_WSIm_ = !ret; 
     IMP_LOG(TERSE, "update_flags_mean: ret " << ret 
             << " flag_m_ " << flag_m_
+            << " flag_m_gpir_ " << flag_m_gpir_
             << " flag_WSIm_ " << flag_WSIm_ << std::endl );
-    return ret;
 }
 
-  bool GaussianProcessInterpolation::update_flags_covariance()
+  void GaussianProcessInterpolation::update_flags_covariance()
 {
     bool ret = covariance_function_->has_changed();
     if (ret) covariance_function_->update();
     if (flag_WS_) flag_WS_ = !ret; 
     if (flag_WSIm_) flag_WSIm_ = !ret; 
     if (flag_W_) flag_W_ = !ret; 
+    if (flag_W_gpir_) flag_W_gpir_ = !ret; 
     IMP_LOG(TERSE, "update_flags_covariance: ret " << ret 
             << " flag_WS_ " << flag_WS_ 
             << " flag_WSIm_ " << flag_WSIm_ 
             << " flag_W_ " << flag_W_ 
+            << " flag_W_gpir_ " << flag_W_gpir_ 
             << std::endl );
-    return ret;
 }
 
   Array1D<double> GaussianProcessInterpolation::get_wx_vector(
@@ -273,8 +278,9 @@ using IMP::algebra::internal::TNT::Array2D;
     IMP_LOG(TERSE,"  compute_inverse: Cholesky" << std::endl);
     //compute Cholesky decomp
     Cholesky_.reset(new algebra::internal::JAMA::Cholesky<double> (WpS));
-    IMP_USAGE_CHECK(Cholesky_->is_spd(), 
-            "Matrix is not symmetric positive definite!");
+    if (!Cholesky_->is_spd()) 
+            IMP_THROW("Matrix is not symmetric positive definite!", 
+                    ModelException);
     //get inverse
     IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
     Array2D<double> id(M_,M_,0.0);
