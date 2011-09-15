@@ -77,7 +77,6 @@ namespace {
           XYZR d= XYZR::setup_particle(p);
           d.set_radius(r);
           Diffusion dd= Diffusion::setup_particle(p);
-          dd.set_d_from_radius();
           d.set_coordinates_are_optimized(k!=0);
           d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
           atom::Mass::setup_particle(p, 1);
@@ -259,6 +258,7 @@ namespace {
 //new LowerBound(kk)
 
 int main(int argc , char **argv) {
+  try {
   // shorten lines, ick
   typedef HarmonicLowerBound HLB;
   FloatKey xk=  XYZ::get_xyz_keys()[0];
@@ -326,6 +326,11 @@ int main(int argc , char **argv) {
                              new AttributeSingletonScore(new HLB(0,kk),
                                                                   xk));
     }
+  }
+  } catch (IMP::Exception e) {
+    std::cerr << "Error: " << e.what() << std::endl;
+  } catch (std::exception e) {
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   return IMP::benchmark::get_return_value();
 }
