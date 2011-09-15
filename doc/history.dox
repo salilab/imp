@@ -1,5 +1,7 @@
 /** \page recent Change History
 \par Summer 2011
+- you can now pick which python to use with the \c python argument to scons.
+- the units for BD diffusion coefficients changed to be consistent with other IMP units.
 - IMP::domino::get_interaction_graph() now takes an IMP::RestraintsTemp, like other functions
 - The assert failure handling function was documented and renamed to IMP::handle_error() so it is easier to find when  you want to use gdb.
 - The RMF base support (stuff in the ::RMF namespace), has been moved to a new module, simply called RMF (no IMP). Now the functionality should be called like RMF.open_rmf_file() and headers include like \c RMF/RootHandle.h. This most was done in order to make the spin off of the RMF library as transparent as possible when it occurs later.
