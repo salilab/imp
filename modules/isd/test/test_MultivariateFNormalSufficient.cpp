@@ -469,6 +469,63 @@ bool test_100D(){
     return true;
 }
 
+//test that sparse and non-sparse versions agree
+bool test_sparseness(){
+    //observation matrix
+    Array2D<double> FA(10,100);
+    for (int i=0; i<10; i++){
+        for (int j=0; j<100; j++){
+            FA[i][j] = rand();
+        }
+    }
+    //Jacobian
+    double JA =1.0;
+    //mean vector
+    Array1D<double> FM(100);
+    for (int i=0; i<100; i++){
+        FM[i]=rand();
+    }
+    //Covariance matrix should be sparse with a bandwidth of 6 at delta=1e-7
+    Array2D<double> Sigma(100,100,0.0);
+    for (int i=0; i<100; i++){
+            for (int j=0; j<100; j++)
+                Sigma[i][j] = std::exp(-0.5*std::pow(std::abs(i-j),2));
+            Sigma[i][i]+=1;
+    }
+    
+    std::cout << "TEST: MVSP"<< std::endl;
+    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mvsp, (FA,JA,FM,Sigma));
+    //mvsp->set_sparseness(true,1e-7);
+    std::cout << "TEST: MV"<< std::endl;
+    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
+    //mv->set_was_used(true);
+
+    std::cout << "TEST: EVAL"<< std::endl;
+    {
+    //evaluate
+    double observed=mvsp->evaluate();
+    double expected=mv->evaluate();
+    if (naeq(observed,expected,1e-5)) FAIL("evaluate");
+    }
+
+    std::cout << "TEST: DERIV"<< std::endl;
+    {
+    //evaluate
+    Array2D<double> observed=mvsp->evaluate_derivative_Sigma();
+    Array2D<double> expected=mv->evaluate_derivative_Sigma();
+    for (unsigned i=0; i<100; i++)
+    {
+        for (unsigned j=0; j<100; j++)
+        {
+        if (naeq(observed[i][j],expected[i][j],1e-5)) 
+            FAIL("derivative_Sigma["<<i<<"]["<<j<<"]");
+        }
+    }
+    }
+
+    return true;
+}
+
 /*
 //test when M=2 and N=1 TODO: P->Sigma
 bool gen_2D(){
@@ -787,6 +844,8 @@ int main(int, char *[]) {
     RUNTEST(test_2D,100);
     PRINT("100D");
     RUNTEST(test_100D,1);
+    //PRINT("sparseness");
+    //RUNTEST(test_sparseness,1);
     //TODO
     //PRINT("setting values");
     //RUNTEST(test_setval,1);
