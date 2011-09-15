@@ -110,8 +110,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
   // ensures the mean/covariance function has updated parameters. Signals an
   // update by changing the state flags. Returns true if the function has
   // changed. This is used by GaussianProcessInterpolationRestraint.
-  bool update_flags_mean();
-  bool update_flags_covariance();
+  void update_flags_mean();
+  void update_flags_covariance();
 
   // compute prior covariance matrix
   void compute_W();
@@ -139,7 +139,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
     Array1D<double> I_,m_,wx_; 
     Array2D<double> S_,W_,WS_; // WS = (W + S)^{-1}
     Array1D<double> WSIm_; // WS * (I - m)
-    bool flag_m_, flag_WS_, flag_WSIm_, flag_W_;
+    bool flag_m_, flag_m_gpir_, flag_WS_, flag_WSIm_, flag_W_, flag_W_gpir_;
     boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > Cholesky_;
 
 };

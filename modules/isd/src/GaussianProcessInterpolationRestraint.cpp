@@ -48,16 +48,18 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
 void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
 {
     IMP_LOG(TERSE, "GPIR: update_mean_and_covariance" << std::endl);
-    bool cov = gpi_->update_flags_covariance();
-    bool mean = gpi_->update_flags_mean();
-    if (mean) 
+    gpi_->update_flags_covariance();
+    gpi_->update_flags_mean();
+    if (!(gpi_->flag_m_gpir_))  // gpi says that our m is not up to date
     {
         mvn_->set_FM(gpi_->get_m());
+        gpi_->flag_m_gpir_ = true;
         IMP_LOG(TERSE, " updated mean");
     }
-    if (cov) 
+    if (!(gpi_->flag_W_gpir_)) 
     {
         mvn_->set_Sigma(gpi_->get_W());
+        gpi_->flag_W_gpir_ = true;
         IMP_LOG(TERSE, " updated covariance");
     }
     IMP_LOG(TERSE, std::endl);
