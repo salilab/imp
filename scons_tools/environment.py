@@ -77,18 +77,9 @@ def _get_python_include(env):
     elif pythoninclude:
         return pythoninclude
     else:
-        oldpath = os.environ['PATH']
-        os.environ['PATH']=env['ENV']['PATH']
-        p = MyPopen('python')
-        os.environ['PATH'] = oldpath
-        print >> p.stdin, """
-import distutils.sysconfig
-print distutils.sysconfig.get_python_inc()
-"""
-        p.stdin.close()
-        p.wait()
-
-        pythoninclude = p.stdout.read().split('\n')[0]
+        pythoninclude=utility.get_python_result(env, "import distutils.sysconfig",
+                                      "distutils.sysconfig.get_python_inc()")
+        print "include", pythoninclude
         return pythoninclude
 
 
@@ -117,9 +108,9 @@ def _add_platform_flags(env):
                                       "' '.join([x for x in distutils.sysconfig.get_config_vars('BASECFLAGS')])")
         so=utility.get_python_result(env, "import distutils.sysconfig",
                                       "' '.join([x for x in distutils.sysconfig.get_config_vars('SO')])")
-        print opt
-        print cflags
-        print so
+        #print opt
+        #print cflags
+        #print so
         #print oopt
         ##print ocflags
         #print oso

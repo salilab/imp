@@ -22,7 +22,7 @@ def _propagate_variables(env):
         if env['python'] =="auto":
             env['PYTHON']=env['python']
         else:
-            env['PYTHON']='python'
+            env['PYTHON']=env['python']
     else:
         env['IMP_PROVIDE_PYTHON']=False
     env['IMP_PROVIDE_PYTHON']= env['python']

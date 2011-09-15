@@ -288,7 +288,8 @@ def get_python_result(env, setup, cmd):
     else:
         olddylib=None
     #print setup, cmd
-    scmd=' '.join(["python", "-c", "\""+setpp+setup+";"+"print "+cmd+",\""])
+    scmd=' '.join([env['PYTHON'], "-c", "\""+setpp+setup+";"+"print "+cmd+",\""])
+    #print scmd
     #print "\n*****"
     #print scmd
     #print "*****"
