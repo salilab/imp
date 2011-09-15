@@ -191,8 +191,9 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
         // compute Cholesky decomposition for determinant and inverse
         CholeskySigma_.reset(new algebra::internal::JAMA::Cholesky<double> 
                 (Sigma_));
-        IMP_USAGE_CHECK(CholeskySigma_->is_spd(), 
-                "Sigma matrix is not symmetric positive definite!");
+        if (!CholeskySigma_->is_spd())
+            IMP_THROW("Sigma matrix is not symmetric positive definite!", 
+                    ModelException);
         // determinant and derived constants
         double logDetSigma=0;
         Array2D<double> L(CholeskySigma_->getL());
