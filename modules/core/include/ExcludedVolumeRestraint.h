@@ -59,12 +59,15 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   int get_if_moved() const;
   void fill_list() const;
   double fill_list_if_good(double max) const;
+  ExcludedVolumeRestraint(SingletonContainer *sc,
+                          SoftSpherePairScore *ssps,
+                          ObjectKey ok, double slack=10);
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainer *sc,
-                          double k=1, double slack_=10);
+                          double k=1, double slack=10);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
@@ -72,6 +75,7 @@ public:
 #endif
   IMP_RESTRAINT(ExcludedVolumeRestraint);
   Restraints do_create_decomposition() const;
+  Restraints do_create_incremental_decomposition(unsigned int n) const;
   Restraints do_create_current_decomposition() const;
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);

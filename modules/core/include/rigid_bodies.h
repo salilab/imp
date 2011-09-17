@@ -170,6 +170,10 @@ public:
                                   RigidBody other,
                                 const RigidMembers &members);
 
+  /** Set it up with the provided initial reference frame.*/
+  static RigidBody setup_particle(Particle *p,
+                                  const algebra::ReferenceFrame3D &rf);
+
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
 

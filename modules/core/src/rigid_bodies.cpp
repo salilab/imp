@@ -540,6 +540,15 @@ RigidBody RigidBody::setup_particle(Particle *p,
   return d;
 }
 
+RigidBody RigidBody::setup_particle(Particle *p,
+                                    const algebra::ReferenceFrame3D &rf) {
+  internal::add_required_attributes_for_body(p);
+  RigidBody d(p);
+  d.set_reference_frame(rf);
+  return d;
+}
+
+
 void RigidBody::teardown_particle(RigidBody rb) {
   {
     const ParticleIndexes& members= rb.get_member_particle_indexes();
