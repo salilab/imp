@@ -13,8 +13,6 @@
 #include <IMP/log.h>
 #include <IMP/exception.h>
 
-#include <boost/algorithm/string.hpp>
-
 #include <string>
 #include <IMP/compatibility/map.h>
 
