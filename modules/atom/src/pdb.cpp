@@ -31,6 +31,39 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+bool HydrogenPDBSelector::is_hydrogen(std::string pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    std::string elem = internal::atom_element(pdb_line);
+    boost::trim(elem);
+    // determine if the line is hydrogen atom as follows:
+    // 1. if the record has element field (columns 76-77),
+    // check that it is indeed H. Note that it may be missing
+    // in some files.
+    // some programms do not output element, so the ATOM
+    // line can be shorter.
+    if(elem.length() == 1 && elem[0]=='H') return true;
+    // 2. support elements that starts with H: He, Ho, Hf, Hg
+    if(elem.length() == 2 && elem[0]=='H' &&
+       (elem[1]=='E' || elem[1]=='e' || elem[1]=='O'
+        || elem[1]=='o' ||
+        elem[1]=='F' || elem[1]=='f' || elem[1]=='G'
+        || elem[1]=='g'))
+      return false;
+    // 3. if no hydrogen is found in the element record,
+    // try atom type field.
+    // some NMR structures have 'D' for labeled hydrogens
+    std::string atom_name = internal::atom_type(pdb_line);
+    return (// " HXX" or " DXX" or "1HXX" ...
+            ((atom_name[0] == ' ' || isdigit(atom_name[0])) &&
+             (atom_name[1] == 'H' || atom_name[1] == 'D')) ||
+            // "HXXX" or "DXXX"
+            (atom_name[0] == 'H' || atom_name[0] == 'D'));
+  }
+
+
+
 namespace {
   std::string nicename(std::string name) {
 #if defined(IMP_ATOM_USE_BOOST_FILESYSTEM) && BOOST_VERSION > 103600
