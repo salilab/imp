@@ -8,6 +8,7 @@
 
 #include <IMP/atom/internal/mol2.h>
 #include <IMP/atom/bond_decorators.h>
+#include <boost/algorithm/string.hpp>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
