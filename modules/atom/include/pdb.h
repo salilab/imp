@@ -162,7 +162,7 @@ class WaterPDBSelector : public NonAlternativePDBSelector {
 };
 
 //! Select all hydrogen ATOM and HETATM records
-class HydrogenPDBSelector : public NonAlternativePDBSelector {
+class IMPATOMEXPORT HydrogenPDBSelector : public NonAlternativePDBSelector {
   bool is_hydrogen(std::string pdb_line) const;
  public:
   IMP_PDB_SELECTOR(HydrogenPDBSelector, NonAlternativePDBSelector,
