@@ -30,7 +30,9 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo%1%"),
                                   stat_upward_steps_taken_(0),
                                   stat_num_failures_(0),
                                   return_best_(true),
-                                  rand_(0,1), eval_incremental_(false){}
+                                  rand_(0,1), eval_incremental_(false),
+                                  incremental_restraint_evals_(0),
+                                  incremental_evals_(0){}
 
 bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
   bool ok=false;
@@ -161,7 +163,7 @@ void MonteCarlo::setup_incremental() {
   IMP_LOG(TERSE, "Setting up incremental evaluation." << std::endl);
   RestraintsTemp base= get_restraints();
   for (unsigned int i=0; i< base.size(); ++i) {
-    Pointer<Restraint> cur= base[i]->create_decomposition();
+    Pointer<Restraint> cur= base[i]->create_incremental_decomposition(1);
     RestraintsTemp curf= IMP::get_restraints(RestraintsTemp(1, cur));
     flattened_restraints_.insert(flattened_restraints_.end(),
                                  curf.begin(), curf.end());
@@ -214,6 +216,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   if (moved.empty()) {
     IMP_LOG(TERSE, "Nothing changed for evaluate"<< std::endl);
   }
+  ++incremental_restraint_evals_;
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
     allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
@@ -228,6 +231,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   IMP_USAGE_CHECK(moved.empty()== curr.empty(),
                   "Particles were moved but no restraints were found: "
                   << IMP::internal::get_particle(get_model(), moved));
+  incremental_restraint_evals_+= curr.size();
   Floats scores= get_model()->evaluate(curr, false);
   old_incremental_scores_.resize(allr.size());
   //old_incremenal_scores_indexes_.resize(incremental_scores_.size());

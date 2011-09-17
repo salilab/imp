@@ -267,8 +267,8 @@ struct Helper {
     for (It c= b; c != e; ++c) {
       for (It cp= b; cp != c; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
-                  << do_show(*cp) << std::endl);
+          /*IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
+            << do_show(*cp) << std::endl);*/
           if (!out(*c, *cp)) {
             return false;
           }
@@ -291,8 +291,8 @@ struct Helper {
     for (ItA c= ab; c != ae; ++c) {
       for (ItB cp= bb; cp != be; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
-                  << do_show(*cp) << std::endl);
+          /*IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
+            << do_show(*cp) << std::endl);*/
           if (!out( *c, *cp)) {
             return false;
           }

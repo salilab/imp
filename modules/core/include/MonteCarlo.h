@@ -181,6 +181,11 @@ public:
       }
     }
   }
+  //! Return the average number of restraints per evaluate
+  double get_average_number_of_incremental_restraints() const {
+    return static_cast<double>(incremental_restraint_evals_)
+      / incremental_evals_;
+  }
 private:
   //! Evaluate the score of the model (or of a subset of the restraints
   //! if desired.
@@ -214,7 +219,8 @@ private:
   mutable Floats old_incremental_scores_;
   mutable Ints old_incremental_score_indexes_;
   compatibility::checked_vector<Ints> incremental_used_;
-
+  mutable unsigned int incremental_restraint_evals_;
+  mutable unsigned int incremental_evals_;
 };
 
 

@@ -39,6 +39,18 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
   key_=ObjectKey(oss.str());
 }
 
+ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
+                                                 SoftSpherePairScore *ssps,
+                                                 ObjectKey ok,
+                                                 double s):
+  Restraint("ExcludedVolumeRestraint %1%"), sc_(sc),
+  initialized_(false),
+  ssps_(ssps)
+{
+  slack_=s;
+  key_=ok;
+}
+
 void ExcludedVolumeRestraint::
 initialize() const {
   IMP_OBJECT_LOG;
@@ -493,6 +505,49 @@ Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
     std::ostringstream oss;
     oss << get_name() << " " << i;
     ret.back()->set_name(oss.str());
+  }
+  return ret;
+}
+
+Restraints
+ExcludedVolumeRestraint
+::do_create_incremental_decomposition(unsigned int n) const {
+  Restraints ret;
+  unsigned int chunk= std::max<unsigned int>(1, std::sqrt(sc_->get_number()));
+  // change chunk here
+  IMP::compatibility::checked_vector<ParticleIndexes>
+    bins(1, ParticleIndexes());
+  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
+    bins.back().push_back(xyzrs_[i]);
+    if (bins.back().size() >= chunk) {
+      bins.push_back(ParticleIndexes(1, xyzrs_[i]));
+    }
+  }
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    bins.back().insert(bins.back().end(),
+                       constituents_[rbs_[i]].begin(),
+                       constituents_[rbs_[i]].end());
+    if (bins.back().size() >= chunk) {
+      bins.push_back(ParticleIndexes(1, xyzrs_[i]));
+    }
+  }
+  if (bins.back().empty()) bins.pop_back();
+  for (unsigned int i=0; i< bins.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ParticleIndexes all(bins[i]);
+      all.insert(all.end(), bins[j].begin(), bins[j].end());
+      std::ostringstream oss;
+      oss << i << " and " << j;
+      IMP_NEW(internal::CoreListSingletonContainer, lsc, (get_model(),
+                                                          oss.str()));
+      lsc->set_particles(IMP::internal::get_particle(get_model(), all));
+      IMP_NEW(ExcludedVolumeRestraint, ev, (lsc, ssps_, key_, slack_));
+      PairFiltersTemp pfs(pair_filters_begin(),
+                          pair_filters_end());
+      ev->set_pair_filters(pfs);
+      ev->set_name(std::string("R")+oss.str());
+      ret.push_back(ev);
+    }
   }
   return ret;
 }
