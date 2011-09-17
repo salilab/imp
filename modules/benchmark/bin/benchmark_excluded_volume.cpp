@@ -6,7 +6,7 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
-#include <IMP/multifit.h>
+#include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/container.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
