@@ -125,6 +125,13 @@ public:
    */
   Restraint* create_decomposition() const;
 
+
+  //! Decompose a restraint parts for incremental evaluation
+  /** The restraint should be decomposed as efficiently as possible for
+      evaluation when n particles are moved each evaluate call.
+  */
+  Restraint* create_incremental_decomposition(unsigned int n) const;
+
   //! Decompose this restraint into constituent terms for the current conf
   /** Return a decomposition that is value for the current conformation,
       but will not necessarily be valid if any of the particles are
@@ -169,6 +176,14 @@ public:
       set for the restraint set.
   */
   virtual Restraints do_create_decomposition() const {
+    return Restraints(1, const_cast<Restraint*>(this));
+  }
+  /** int should override this if they want to decompose themselves
+      for incremental montecarlo and other purposes. The returned restraints
+      will be made in to a RestraintSet, if needed and the weight and maximum
+      score set for the restraint set.
+  */
+  virtual Restraints do_create_incremental_decomposition(unsigned int) const {
     return Restraints(1, const_cast<Restraint*>(this));
   }
   /** A Restraint should override this if they want to decompose themselves
