@@ -33,6 +33,7 @@
 #include "IMP.h"
 
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/timer.hpp>
 #include <iostream>
 #include <cmath>

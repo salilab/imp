@@ -27,6 +27,7 @@
 #include "IMP/constants.h"
 #include "IMP/Pointer.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/program_options.hpp>
 #include <time.h> // time
 #include <stdlib.h> // srand, rand
