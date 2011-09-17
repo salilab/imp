@@ -7,16 +7,13 @@
  */
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H
 #define IMPMULTIFIT_SETTINGS_DATA_H
+#include "multifit_config.h"
 #include <IMP/base_types.h>
 #include <IMP/container_macros.h>
 #include <IMP/Pointer.h>
 #include <IMP/Model.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <IMP/algebra/Transformation3D.h>
-#include "multifit_config.h"
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/format.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
