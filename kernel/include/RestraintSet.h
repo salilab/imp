@@ -69,6 +69,7 @@ class IMPEXPORT RestraintSet : public Restraint
  protected:
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
+  Restraints do_create_incremental_decomposition() const;
   friend class Model;
 #endif
 };
