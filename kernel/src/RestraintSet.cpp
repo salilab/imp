@@ -109,6 +109,19 @@ Restraints RestraintSet::do_create_current_decomposition() const {
   return ret;
 }
 
+
+Restraints RestraintSet::do_create_incremental_decomposition() const {
+  Restraints ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    Pointer<Restraint> r=(*it)->create_current_decomposition();
+    if (r) {
+      ret.push_back(r);
+    }
+  }
+  return ret;
+}
+
 RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,
                                     double initial_weight) {
   return get_restraints_and_weights(rs.begin(), rs.end(), initial_weight);
