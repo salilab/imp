@@ -11,10 +11,12 @@
 #include "membrane_config.h"
 #include <IMP.h>
 #include <IMP/membrane.h>
+#include <string>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT SPBParameters get_SPBParameters(TextInput in);
+IMPMEMBRANEEXPORT SPBParameters
+ get_SPBParameters(TextInput in, std::string suffix);
 
 IMPMEMBRANE_END_NAMESPACE
 

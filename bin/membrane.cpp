@@ -14,6 +14,7 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
+#include <RMF/RootHandle.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -73,7 +74,7 @@ create_restraints(m,all,tbr,&mydata);
 if(myrank==0) {std::cout << "Creating sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
-mc->set_use_incremental_evaluate(true);
+//mc->set_use_incremental_evaluate(true);
 
 // sampling
 if(myrank==0) {std::cout << "Sampling" << std::endl;}

@@ -16,6 +16,7 @@
 #include <sstream>
 #include <iostream>
 #include "mpi.h"
+#include <RMF/RootHandle.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -45,7 +46,7 @@ logfile.open(name);
 
 // parsing input
 if(myrank==0) {std::cout << "Parsing input file" << std::endl;}
-SPBParameters mydata=get_SPBParameters("config.ini");
+SPBParameters mydata=get_SPBParameters("config.ini",out.str());
 
 // create temperature and index array
 double* temp=create_temperatures(mydata.MC.tmin,mydata.MC.tmax,nproc);
@@ -221,7 +222,7 @@ if(mydata.add_GFP){
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
-mc->set_use_incremental_evaluate(true);
+//mc->set_use_incremental_evaluate(true);
 
 // hot steps
 if(mydata.MC.nhot>0){
