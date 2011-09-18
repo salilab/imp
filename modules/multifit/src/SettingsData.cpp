@@ -7,6 +7,9 @@
  */
 
 #include <IMP/multifit/SettingsData.h>
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
