@@ -110,11 +110,12 @@ Restraints RestraintSet::do_create_current_decomposition() const {
 }
 
 
-Restraints RestraintSet::do_create_incremental_decomposition() const {
+Restraints
+RestraintSet::do_create_incremental_decomposition(unsigned int n) const {
   Restraints ret;
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
-    Pointer<Restraint> r=(*it)->create_current_decomposition();
+    Pointer<Restraint> r=(*it)->create_incremental_decomposition(n);
     if (r) {
       ret.push_back(r);
     }
