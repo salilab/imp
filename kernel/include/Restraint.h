@@ -184,7 +184,7 @@ public:
       score set for the restraint set.
   */
   virtual Restraints do_create_incremental_decomposition(unsigned int) const {
-    return Restraints(1, const_cast<Restraint*>(this));
+    return do_create_decomposition();
   }
   /** A Restraint should override this if they want to decompose themselves
       for display and other purposes. The returned restraints will be made
@@ -192,7 +192,7 @@ public:
       set for the restraint set.
    */
   virtual Restraints do_create_current_decomposition() const {
-    return Restraints(1, const_cast<Restraint*>(this));
+    return do_create_decomposition();
   }
 
 private:
