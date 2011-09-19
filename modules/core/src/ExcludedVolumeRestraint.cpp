@@ -512,15 +512,18 @@ Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
 Restraints
 ExcludedVolumeRestraint
 ::do_create_incremental_decomposition(unsigned int n) const {
+  IMP_OBJECT_LOG;
+  if (!initialized_) initialize();
   Restraints ret;
   unsigned int chunk= std::max<unsigned int>(1, std::sqrt(sc_->get_number()));
+  //std::cout << "Chunks of size " << chunk << std::endl;
   // change chunk here
   IMP::compatibility::checked_vector<ParticleIndexes>
     bins(1, ParticleIndexes());
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     bins.back().push_back(xyzrs_[i]);
     if (bins.back().size() >= chunk) {
-      bins.push_back(ParticleIndexes(1, xyzrs_[i]));
+      bins.push_back(ParticleIndexes());
     }
   }
   for (unsigned int i=0; i< rbs_.size(); ++i) {
@@ -528,7 +531,7 @@ ExcludedVolumeRestraint
                        constituents_[rbs_[i]].begin(),
                        constituents_[rbs_[i]].end());
     if (bins.back().size() >= chunk) {
-      bins.push_back(ParticleIndexes(1, xyzrs_[i]));
+      bins.push_back(ParticleIndexes());
     }
   }
   if (bins.back().empty()) bins.pop_back();
@@ -549,6 +552,7 @@ ExcludedVolumeRestraint
       ret.push_back(ev);
     }
   }
+  //std::cout << "Created " << ret.size() << " restraints" << std::endl;
   return ret;
 }
 
