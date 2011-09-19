@@ -216,7 +216,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   if (moved.empty()) {
     IMP_LOG(TERSE, "Nothing changed for evaluate"<< std::endl);
   }
-  ++incremental_restraint_evals_;
+  ++incremental_evals_;
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
     allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
