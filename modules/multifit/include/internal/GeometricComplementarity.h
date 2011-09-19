@@ -30,7 +30,6 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters
   ComplementarityGridParameters()
     : interior_thickness(1)
     , interior_cutoff_distance(std::numeric_limits<double>::max())
-    , interior_large_value(std::numeric_limits<double>::max())
     , voxel_size(1)
   {}
 
@@ -38,7 +37,6 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters
   Floats complementarity_value;
   double interior_thickness;
   double interior_cutoff_distance;
-  double interior_large_value;
   double voxel_size;
 };
 

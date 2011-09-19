@@ -154,7 +154,7 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
         {
           //inside voxel
           if ( v - 1 > params.interior_cutoff_distance )
-            grid[voxel_center] = params.interior_large_value;
+            grid[voxel_center] = std::numeric_limits<float>::max();
           else
             grid[voxel_center] = int((v - 1)/params.interior_thickness) + 1;
         }
@@ -208,9 +208,9 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                            {
                              IMP_UNUSED(loop_voxel_index);
                              Grid::Index gic(voxel_index, voxel_index+3);
-                             float v1 = map1[gic];
+                             double v1 = map1[gic];
                              IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
-                             float v0;
+                             double v0;
                              Grid::ExtendedIndex ei=map0.get_extended_index(tc);
                              if ( map0.get_has_index(ei) ) {
                                Grid::Index i= map0.get_index(ei);
@@ -218,16 +218,20 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                              } else {
                                v0 = 0;
                              }
-                             float prod = v0*v1;
+                             double prod = v0*v1;
                              if ( prod < 0 ) {
                                complementarity_score += prod;
                              } else if ( prod > 0 ) {
                                penetration_score += prod;
-                             }
-                             if ( penetration_score
-                                  > params.maximum_penetration_score ) {
-                    return std::make_pair(std::numeric_limits<double>::max(),
+                               if ( penetration_score
+                                    > params.maximum_penetration_score ||
+                                    v0 > 0 && v1 > 0 &&
+                                    (v0 >= std::numeric_limits<float>::max() ||
+                                     v1 >= std::numeric_limits<float>::max())){
+                                  return std::make_pair(
+                                          std::numeric_limits<double>::max(),
                                           std::numeric_limits<double>::max());
+                               }
                              }
                            }
                            );
