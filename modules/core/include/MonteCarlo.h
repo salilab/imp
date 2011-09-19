@@ -137,7 +137,11 @@ public:
   bool get_use_incremental_evaluate() const {
     return eval_incremental_;
   }
-
+  //! Return the average number of restraints per evaluate
+  double get_average_number_of_incremental_restraints() const {
+    return static_cast<double>(incremental_restraint_evals_)
+      / incremental_evals_;
+  }
  protected:
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
@@ -180,11 +184,6 @@ public:
         return evaluate(false);
       }
     }
-  }
-  //! Return the average number of restraints per evaluate
-  double get_average_number_of_incremental_restraints() const {
-    return static_cast<double>(incremental_restraint_evals_)
-      / incremental_evals_;
   }
 private:
   //! Evaluate the score of the model (or of a subset of the restraints
