@@ -173,7 +173,7 @@ def _add_platform_flags(env):
                                      '-freciprocal-math',
                                      '-fassociative-math'])
         elif env['build'] == 'release':
-            env.Append(CXXFLAGS=["-O2"])
+            env.Append(CXXFLAGS=["-O2", "-g"])
         elif env['build'] == 'debug':
             env.Append(CXXFLAGS=["-g"])
             env.Append(LINKFLAGS=["-g"])
