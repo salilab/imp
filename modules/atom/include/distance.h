@@ -11,6 +11,8 @@
 #include "atom_config.h"
 #include <IMP/core/XYZ.h>
 #include "Hierarchy.h"
+#include "IMP/base_types.h"
+#include "IMP.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -94,6 +96,63 @@ inline double get_drms(const Vecto3DsOrXYZs0& m1,
                                           get_vector_d_geometry(m2[j]));
       drms += (sqd1 - sqd2)*(sqd1 - sqd2);
       sum_d1ij += sqd1;
+    }
+  }
+  drms /= (4 * sum_d1ij);
+  return sqrt(drms);
+}
+
+
+/*! DRMS between to sets of rigid bodies. Points ij belonging to the same
+rigid body are not evaluated, as they are the same in both sets
+  \param[in] m1 set of points
+  \param[in] m2 set of points
+  \param[in] ranges of points considered to be the same rigid body. Eg,
+        (0-29,30-49) means two rigid bodies, first with the 30 first atoms,
+        second with the last 20
+*/
+template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
+inline double get_rigid_bodies_drms(const Vecto3DsOrXYZs0 &m1,
+                                    const Vecto3DsOrXYZs1 &m2,
+                                    const IMP::IntRanges &ranges) {
+IMP_USAGE_CHECK(m1.size() == m2.size(),
+            "get_rigid_bodies_drms: The input sets of XYZ points "
+            <<"should be of the same size");
+  unsigned int n = m1.size();
+  unsigned int rn = ranges.size();
+  double drms = 0.0;
+  double sum_d1ij = 0.0;
+  for (unsigned int i=0; i < n; ++i) {
+    int range1 = -1;
+    for (unsigned int k=0; k < rn; ++k) {
+      if(i >= ranges[k].first && i <= ranges[k].second) {
+        range1 = k;
+        break;
+      }
+    }
+    IMP_USAGE_CHECK(range1 >=0, "Point " << i << " of m1 does not belong to "
+                   "any range");
+    for (unsigned int j= i+1; j < n; ++j) {
+      int range2 = -1;
+      for (unsigned int k=0; k < rn; ++k) {
+        if(j >= ranges[k].first && j <= ranges[k].second) {
+          range2 = k;
+          break;
+        }
+      }
+      IMP_USAGE_CHECK(range2 >=0, "Point " << j << " of m2 does not belong to "
+               "any range");
+
+      double sqd1 = algebra::get_squared_distance(get_vector_d_geometry(m1[i]),
+                                                  get_vector_d_geometry(m1[j]));
+      sum_d1ij += sqd1;
+      if(range1 != range2) {
+        // points i and j in different ranges compare distances
+        double sqd2 = algebra::get_squared_distance(
+                                                get_vector_d_geometry(m2[i]),
+                                                get_vector_d_geometry(m2[j]));
+        drms += (sqd1 - sqd2) * (sqd1 - sqd2);
+      }
     }
   }
   drms /= (4 * sum_d1ij);
