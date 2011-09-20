@@ -136,7 +136,6 @@ namespace RMF {
   /** Wrap an HDF5 data set.*/
   template <class TypeTraits, unsigned int D>
   class HDF5DataSetD {
-    static const int max_dims=3;
     struct Data {
       HDF5Handle h_;
       HDF5Handle ids_;
@@ -169,7 +168,8 @@ namespace RMF {
     void initialize_handles() {
       data_->sel_.open(H5Dget_space(data_->h_.get_hid()), &H5Sclose);
       // must be second
-      hsize_t ret[max_dims]={-1,-1,-1};
+      hsize_t ret[D];
+      std::fill(ret, ret+D, -1);
       IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
                                               ret, NULL));
       IMP_RMF_INTERNAL_CHECK(ret[D-1] <1000000,
@@ -200,15 +200,15 @@ namespace RMF {
       IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
                                      name.c_str(), H5P_DEFAULT),
                           "Data set " << name << " already exists");
-      hsize_t dims[max_dims]={0};
-      hsize_t cdims[max_dims]={64};
+      hsize_t dims[D]={0};
+      hsize_t cdims[D]={64};
       if (D >2) {
         std::fill(cdims+1, cdims+D-1, 2);
       }
       if (D >1) {
         cdims[D-1]=1;
       }
-      hsize_t maxs[max_dims];
+      hsize_t maxs[D];
       std::fill(maxs, maxs+D, H5S_UNLIMITED);
       HDF5Handle ds(H5Screate_simple(D, dims, maxs), &H5Sclose);
       HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose);
@@ -306,17 +306,6 @@ namespace RMF {
                                       data_->ids_.get_hid(),
                                       get_data_space(), value);
     }
-    /*std::vector<typename TypeTraits::Type get_row(unsigned int dim,
-      unsigned int index) const {
-      HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
-      std::vector<hsize_t> pos(ijk.begin(), ijk.end());
-      std::vector<hsize_t> ones(dim_, 1);
-      IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
-      &ones[0], &ones[0],
-      NULL));
-      return TypeTraits::read_value_dataset(h_->get_hid(), ids_->get_hid(),
-      s);
-      }*/
     typename TypeTraits::Type get_value(const HDF5DataSetIndexD<D> &ijk) const {
       IMP_RMF_IF_CHECK {
         check_index(ijk);
@@ -340,7 +329,7 @@ namespace RMF {
       IMP_RMF_IF_CHECK {
         check_index(ijk);
       }
-      hsize_t size[max_dims]; std::fill(size, size+D-1, 1);
+      hsize_t size[D]; std::fill(size, size+D-1, 1);
       size[D-1]= get_size()[D-1]; // set last to size of row
       //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
       IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
@@ -358,7 +347,7 @@ namespace RMF {
       IMP_RMF_IF_CHECK {
         check_index(ijk);
       }
-      hsize_t size[max_dims]; std::fill(size, size+D-1, 1);
+      hsize_t size[D]; std::fill(size, size+D-1, 1);
       size[D-1]= get_size()[D-1]; // set last to size of row
       //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
       IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
@@ -371,8 +360,57 @@ namespace RMF {
                                              size[D-1]);
     }
 #endif
+    //! Write a rectangular block starting at ln of size size
+    void set_block(const Index&lb, const Index &size,
+                   const typename TypeTraits::Types& value) {
+      IMP_RMF_IF_CHECK {
+        check_index(lb);
+        // offset size by one and check...
+        unsigned int total=1;
+        for (unsigned int i=0; i< D; ++i) {
+          total*= size[i];
+        }
+        IMP_RMF_USAGE_CHECK(total==value.size(),
+                            "Block has size " << total << " but found "
+                            << value.size() << " values");
+      }
+      //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+      IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                        H5S_SELECT_SET, lb.get(),
+                                        data_->ones_, size.get(),
+                                        NULL));
+      hsize_t sz= value.size();
+      HDF5Handle input(H5Screate_simple(1, &sz,
+                                        NULL), &H5Sclose);
+      TypeTraits::write_values_dataset(data_->h_.get_hid(),
+                                       input,
+                                       get_data_space(), value);
+    }
+    //! Write a rectangular block starting at ln of size size
+    typename TypeTraits::Types get_block( const Index &lb,
+                                          const Index &size) const {
+      hsize_t total=1;
+      for (unsigned int i=0; i< D; ++i) {
+        total*= size[i];
+      }
+      IMP_RMF_IF_CHECK {
+        check_index(lb);
+      }
+      //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+      IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                        H5S_SELECT_SET, lb.get(),
+                                        data_->ones_, size.get(),
+                                        NULL));
+      HDF5Handle input(H5Screate_simple(1, &total,
+                                        NULL), &H5Sclose);
+      return TypeTraits::read_values_dataset(data_->h_.get_hid(),
+                                             input,
+                                             get_data_space(),
+                                             total);
+    }
+
     void set_size(const HDF5DataSetIndexD<D> &ijk) {
-      hsize_t nd[max_dims]; std::copy(ijk.begin(), ijk.end(), nd);;
+      hsize_t nd[D]; std::copy(ijk.begin(), ijk.end(), nd);;
       IMP_HDF5_CALL(H5Dset_extent(data_->h_.get_hid(),
                                   &nd[0]));
       initialize_handles();

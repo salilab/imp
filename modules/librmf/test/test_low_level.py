@@ -92,6 +92,26 @@ class GenericTest(IMP.test.TestCase):
         del g
         del ds
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
+    def test_dsb(self):
+        """Test writing of blocks with data sets"""
+        self._touch_all_types()
+        num_base_handles=RMF.get_number_of_open_hdf5_handles()
+        f= RMF.create_hdf5_file(self.get_tmp_file_name("testdb.hdf5"))
+        self._show(f)
+        print "adding"
+        g= f.add_child("hi")
+        self._show(f)
+        ds= f.add_child_index_data_set_3d("x")
+        print "name is", ds.get_name()
+        self._show(f)
+        ds.set_size(I3(10,10,10))
+        ds.set_block(I3(2,3,4), I3(3,4,5), range(0,3*4*5))
+        got= ds.get_block(I3(2,3,4), I3(3,4,5))
+        self.assertEqual(got, range(0,3*4*5))
+        del g
+        del f
+        del ds
+        self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
     def test_dsgrow(self):
         """Test low level usage of hdf5 with datasets that grow"""
         self._touch_all_types()
