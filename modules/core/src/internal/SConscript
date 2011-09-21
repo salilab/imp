@@ -1,4 +1,5 @@
 files = [
+         'CoreCloseBipartitePairContainer.cpp',
          'CoreClosePairContainer.cpp',
          'CoreListPairContainer.cpp',
          'CoreListQuadContainer.cpp',
