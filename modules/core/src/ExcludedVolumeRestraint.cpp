@@ -516,7 +516,7 @@ ExcludedVolumeRestraint
   IMP_OBJECT_LOG;
   if (!initialized_) initialize();
   Restraints ret;
-  unsigned int chunk= std::max<unsigned int>(1, std::sqrt(sc_->get_number()));
+  unsigned int chunk= std::max<unsigned int>(1, std::sqrt(sc_->get_number())/2);
   //std::cout << "Chunks of size " << chunk << std::endl;
   // change chunk here
   IMP::compatibility::checked_vector<ParticleIndexes>
@@ -547,15 +547,20 @@ ExcludedVolumeRestraint
   IMP_NEW(RigidClosePairsFinder, rcpf, ());
   PairFiltersTemp pfs(pair_filters_begin(),
                       pair_filters_end());
+  internal::MovedSingletonContainers mscs(bins.size());
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       std::ostringstream oss;
       oss << i << " and " << j;
       IMP_NEW(internal::CoreCloseBipartitePairContainer, ccbpc, (bincs[i].get(),
                                                                  bincs[j].get(),
+                                                                 mscs[i],
+                                                                 mscs[j],
                                                                  0.0,
                                                                  rcpf.get(),
                                                                  slack_));
+      mscs[i]= ccbpc->get_moved_singleton_container(0);
+      mscs[j]= ccbpc->get_moved_singleton_container(1);
       IMP_NEW(internal::CorePairsRestraint, ev, (ssps_, ccbpc));
       ccbpc->set_pair_filters(pfs);
       ev->set_name(std::string("R")+oss.str());
