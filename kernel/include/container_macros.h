@@ -228,8 +228,10 @@ void reserve_##lcnames(unsigned int sz) {                               \
 }                                                                       \
 IMP_EXPOSE_ITERATORS(PluralData,                                        \
                      lcname##_vector_, Ucname, Ucnames, lcname, lcnames); \
+protected:                                                              \
+IMP_NO_DOXYGEN(const PluralData &access_##lcnames() const {             \
+    return lcname##_vector_;})                                          \
 private:                                                                \
-const PluralData &access_##lcnames() const {return lcname##_vector_;}   \
 void lcname##_handle_remove( Data obj) {                                \
   Ucname##DataWrapper::do_handle_remove(obj, this);                     \
 }                                                                       \
