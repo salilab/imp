@@ -99,10 +99,10 @@ domino::DominoSampler* create_sampler
 {
 IMP_NEW(domino::DominoSampler,s,(m,pst));
 // interaction graph, junction tree and merge tree
-domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
-domino::SubsetGraph      jt=domino::get_junction_tree(ig);
-domino::MergeTree        mt=domino::get_merge_tree(jt);
-s->set_merge_tree(mt);
+//domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
+//domino::SubsetGraph      jt=domino::get_junction_tree(ig);
+//domino::MergeTree        mt=domino::get_merge_tree(jt);
+//s->set_merge_tree(mt);
 // filters
 domino::SubsetFilterTables filters=domino::SubsetFilterTables();
 IMP_NEW(domino::ExclusionSubsetFilterTable,esft,(pst));

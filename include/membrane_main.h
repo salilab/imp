@@ -57,6 +57,7 @@ struct MCParameters {
  int            nwrite;
  int            nhot;
  bool           do_wte;
+ bool           wte_restart;
 };
 
 struct RstParameters {

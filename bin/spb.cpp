@@ -224,6 +224,22 @@ Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
 //mc->set_use_incremental_evaluate(true);
 
+// wte restart
+if(mydata.MC.do_wte && mydata.MC.wte_restart){
+ Floats val;
+ double bias;
+ std::ifstream biasfile;
+ std::string names="BIAS"+out.str();
+ char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+ strcpy(name, names.c_str());
+ biasfile.open(name);
+ while (biasfile >> bias){val.push_back(bias);}
+ biasfile.close();
+ Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+ ptr->set_bias(val);
+}
+
 // hot steps
 if(mydata.MC.nhot>0){
  if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
@@ -255,6 +271,21 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    for(unsigned int j=0;j<hs.size();++j){
     rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[j]);
    }
+  }
+ // dump bias on file if wte
+  if(mydata.MC.do_wte){
+   std::ofstream biasfile;
+   std::string names="BIAS"+out.str();
+   char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+   strcpy(name, names.c_str());
+   biasfile.open(name);
+   Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+   double* mybias=ptr->get_bias_buffer();
+   for(unsigned int i=0;i<2*ptr->get_nbin();++i){
+    biasfile << mybias[i] << "\n";
+   }
+   biasfile.close();
   }
  }
 // now it's time to try an exchange

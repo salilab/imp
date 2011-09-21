@@ -24,6 +24,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  using namespace boost::program_options;
  options_description desc;
  bool do_wte;
+ bool wte_restart;
  bool use_structure;
  bool use_compact_Cmd1p;
  bool add_Spc42p;
@@ -46,6 +47,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  std::map<std::string,std::string> file_list;
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
+ desc.add_options()("wte_restart",  value<bool>(&wte_restart),      "ciao");
  desc.add_options()("use_structure",value<bool>(&use_structure),    "ciao");
  desc.add_options()("use_compact_Cmd1p",
   value<bool>(&use_compact_Cmd1p), "ciao");
@@ -111,6 +113,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.MC.wte_gamma=wte_gamma;
  ret.MC.wte_emin=wte_emin;
  ret.MC.wte_emax=wte_emax;
+ ret.MC.wte_restart=wte_restart;
 
 
 // General Parameters

@@ -13,6 +13,7 @@
 #include <IMP/domino.h>
 #include <IMP/display.h>
 #include <boost/program_options.hpp>
+#include <boost/algorithm/string.hpp>
 #include <string>
 #include <iostream>
 #include <time.h>
@@ -240,8 +241,8 @@ algebra::Vector3Ds cover, algebra::Vector3Ds cover_x, double scale)
  fs.push_back(lsft);
  fs.push_back(rssft);
  if(scale<=12.0) fs.push_back(esft);
- domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
- domino::SubsetGraph      jt=domino::get_junction_tree(ig);
+ //domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
+ //domino::SubsetGraph      jt=domino::get_junction_tree(ig);
  s->set_subset_filter_tables(fs);
  return lsft.release();
 }
