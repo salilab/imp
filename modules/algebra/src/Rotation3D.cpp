@@ -402,8 +402,11 @@ std::pair<Vector3D,double> get_axis_and_angle(
 
   double angle = std::acos(a)*2;
   double s = std::sin(angle/2);
+  if (s< .000001) {
+    return std::make_pair(IMP::algebra::Vector3D(1,0,0), 0.0);
+  }
   Vector3D axis(b/s,c/s,d/s);
-  return std::pair<Vector3D,double>(axis.get_unit_vector(),angle);
+  return std::make_pair(axis.get_unit_vector(),angle);
 }
 
 
