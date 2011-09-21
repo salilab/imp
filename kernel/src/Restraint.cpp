@@ -120,19 +120,20 @@ namespace {
                        << " produced from " << in->get_name()
                        << " is not already part of model.");
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      RestraintsTemp frs= get_restraints(RestraintsTemp(1, in));
-      RestraintsTemp fret= get_restraints(RestraintsTemp(1, out));
+      RestraintsTemp rin= get_restraints(RestraintsTemp(1, in));
+      RestraintsTemp rout= get_restraints(RestraintsTemp(1, out));
       IMP_LOG(TERSE, "Evaluating before" << std::endl);
-      Floats efrs= in->get_model()->evaluate(frs, false);
+      Floats sin= in->get_model()->evaluate(rin, false);
       IMP_LOG(TERSE, "Evaluating after" << std::endl);
-      Floats efret= in->get_model()->evaluate(fret, false);
-      double s0= std::accumulate(efrs.begin(), efrs.end(), 0.0);
-      double s1= std::accumulate(efret.begin(), efret.end(), 0.0);
-      if (std::abs(s0-s1) > .1*std::abs(s0+s1)+.1) {
+      Floats sout= in->get_model()->evaluate(rout, false);
+      double tin= std::accumulate(sin.begin(), sin.end(), 0.0);
+      double tout= std::accumulate(sout.begin(), sout.end(), 0.0);
+      if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: "
                  << in->get_name() << " got "
-                 << s0 << " and " << s1 << " over "
-                 << efrs << " vs " << efret);
+                 << tin << " and " << tout << " over "
+                 << sin << " vs " << sout << " with restraints "
+                 << rin << " vs " << rout << std::endl);
       }
     }
   }
