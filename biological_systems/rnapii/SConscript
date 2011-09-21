@@ -49,7 +49,7 @@ Then generate the fits
 The fits are put in files named \\c X_fitting.txt.
 
 Then generate the indexes
-\\command{../../tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py rnapii rnapii.asmb.input 1000}
+\\command{../../tools/imppy.sh python $IMP/modules/multifit2/bin/generate_indexes_from_fitting_solutions.py rnapii rnapii.asmb.input 1000 -f data/subunit.indexes}
 The indexes are put into files name \\c X.fit.indexes.txt.
 
 Next we create the automated proteomics file
