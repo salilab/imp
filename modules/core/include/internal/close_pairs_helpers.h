@@ -11,6 +11,7 @@
 #include "../core_config.h"
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
+#include "rigid_body_tree.h"
 #include "../XYZR.h"
 #include "CoreListPairContainer.h"
 
@@ -152,7 +153,157 @@ struct InList {
   }
 };
 
+inline void
+reset_moved(Model *m,
+            ParticleIndexes &xyzrs_,
+            ParticleIndexes &rbs_,
+            IMP::compatibility::map<ParticleIndex,
+                                            ParticleIndexes>&
+            /*constituents_*/,
+            std::vector<algebra::Transformation3D >&
+            rbs_backup_,
+            std::vector<algebra::Vector3D>&xyzrs_backup_) {
+  xyzrs_backup_.resize(xyzrs_.size());
+  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
+    xyzrs_backup_[i]= m->get_sphere(xyzrs_[i]).get_center();
+  }
+  rbs_backup_.resize(rbs_.size());
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    rbs_backup_[i]= RigidBody(m, rbs_[i]).get_reference_frame()
+      .get_transformation_to();
+  }
+}
 
+
+inline void initialize_particles( SingletonContainer*sc,
+                                  ObjectKey key,
+                                 ParticleIndexes &xyzrs_,
+                                 ParticleIndexes &rbs_,
+                                  IMP::compatibility::map<ParticleIndex,
+                                                          ParticleIndexes>&
+                                  constituents_,
+                                  std::vector<algebra::Transformation3D >&
+                                  rbs_backup_,
+                            std::vector<algebra::Vector3D>&xyzrs_backup_) {
+  IMP_IF_CHECK(USAGE) {
+    ParticleIndexes pis = sc->get_indexes();
+    IMP::compatibility::set<ParticleIndex> spis(pis.begin(), pis.end());
+    IMP_USAGE_CHECK(pis.size() == spis.size(),
+                    "Duplicate particle indexes in input");
+  }
+  IMP_IF_CHECK(USAGE) {
+    ParticlesTemp pis = sc->get();
+    IMP::compatibility::set<Particle*> spis(pis.begin(), pis.end());
+    IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
+  }
+  constituents_.clear();
+  xyzrs_.clear();
+  rbs_.clear();
+  using IMP::operator<<;
+  IMP_FOREACH_SINGLETON(sc, {
+      IMP_LOG(VERBOSE, "Processing " << _1->get_name()
+              << " (" << _1->get_index() << ")" << std::endl);
+      if (RigidMember::particle_is_instance(_1)) {
+        RigidBody rb=RigidMember(_1).get_rigid_body();
+        ParticleIndex pi= rb.get_particle_index();
+        rbs_.push_back(rb.get_particle_index());
+        if (constituents_.find(pi) == constituents_.end()) {
+          constituents_.insert(std::make_pair(pi, ParticleIndexes(1,
+                                                 _1->get_index())));
+        } else {
+          constituents_[pi].push_back(_1->get_index());
+        }
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          ParticleIndexes cur= constituents_[pi];
+          IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
+                          "A rigid body cann't be its own constituent.");
+          IMP::compatibility::set<ParticleIndex> scur(cur.begin(), cur.end());
+          IMP_USAGE_CHECK(cur.size() == scur.size(),
+                          "Duplicate constituents for "
+                          << sc->get_model()->get_particle(pi)->get_name()
+                          << ": " << cur);
+        }
+      } else {
+        xyzrs_.push_back(_1->get_index());
+      }
+    });
+  std::sort(rbs_.begin(), rbs_.end());
+  rbs_.erase(std::unique(rbs_.begin(), rbs_.end()), rbs_.end());
+  for (unsigned int i=0; i < rbs_.size(); ++i) {
+    internal::get_rigid_body_hierarchy(RigidBody(sc->get_model(), rbs_[i]),
+                                       constituents_[rbs_[i]],
+                                       key);
+  }
+  reset_moved(sc->get_model(),
+              xyzrs_, rbs_, constituents_, rbs_backup_, xyzrs_backup_);
+  xyzrs_backup_.clear();
+  rbs_backup_.clear();
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+     for (IMP::compatibility::map<ParticleIndex,
+                                  ParticleIndexes>::const_iterator it
+         = constituents_.begin();
+       it != constituents_.end(); ++it) {
+       ParticleIndexes cur= it->second;
+       IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(),
+                                 it->first) == cur.end(),
+                       "A rigid body cann't be its own constituent.");
+       IMP::compatibility::set<ParticleIndex> scur(cur.begin(), cur.end());
+       IMP_USAGE_CHECK(cur.size() == scur.size(),
+                       "Duplicate constituents for "
+                       << sc->get_model()->get_particle(it->first)->get_name()
+                       << ": " << cur);
+     }
+  }
+}
+
+
+inline bool
+get_if_moved(Model *m, double slack_,
+             ParticleIndexes &xyzrs_,
+             ParticleIndexes &rbs_,
+             IMP::compatibility::map<ParticleIndex,
+                                             ParticleIndexes>&
+             /*constituents_*/,
+             std::vector<algebra::Transformation3D >&
+             rbs_backup_,
+             std::vector<algebra::Vector3D>&xyzrs_backup_) {
+  IMP_INTERNAL_CHECK(xyzrs_.size()== xyzrs_backup_.size(),
+                     "Backup is not a backup");
+  const double s22= square(slack_/2);
+  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
+    double diff2=0;
+    for (unsigned int j=0; j< 3; ++j) {
+      double diffc2= square(m->get_sphere(xyzrs_[i]).get_center()[j]
+                            - xyzrs_backup_[i][j]);
+      diff2+=diffc2;
+      if (diff2> s22) {
+        return true;
+      }
+    }
+  }
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    double diff2=0;
+    for (unsigned int j=0; j< 3; ++j) {
+      double diffc2= square(m->get_sphere(rbs_[i]).get_center()[j]
+                            - rbs_backup_[i].get_translation()[j]);
+      diff2+=diffc2;
+      if (diff2> s22) {
+        return true;
+      }
+    }
+    algebra::Rotation3D nrot=RigidBody(m,
+                                       rbs_[i]).get_reference_frame()
+      .get_transformation_to().get_rotation();
+    algebra::Rotation3D diffrot
+      = rbs_backup_[i].get_rotation().get_inverse()*nrot;
+    double angle= algebra::get_axis_and_angle(diffrot).second;
+    double drot= std::abs(angle*m->get_sphere(rbs_[i]).get_radius());
+    if (s22 < square(drot)+drot*std::sqrt(diff2)+ diff2) {
+      return true;
+    }
+  }
+  return false;
+}
 IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H */

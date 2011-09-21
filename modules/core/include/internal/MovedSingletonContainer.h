@@ -30,6 +30,8 @@ class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
   double threshold_;
   Pointer<SingletonContainer> pc_;
   bool first_call_;
+  bool reset_all_;
+  bool reset_moved_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
   virtual ParticleIndexes do_get_moved()=0;
   virtual void do_reset_all()=0;
