@@ -55,7 +55,7 @@ class IMPCOREEXPORT CoreListQuadContainer:
   }
   IMP_LISTLIKE_QUAD_CONTAINER(CoreListQuadContainer);
 };
-
+IMP_OBJECTS(CoreListQuadContainer, CoreListQuadContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

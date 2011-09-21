@@ -1,4 +1,5 @@
 files = [
+         'CoreCloseBipartitePairContainer.h',
          'CoreClosePairContainer.h',
          'CoreListPairContainer.h',
          'CoreListQuadContainer.h',
