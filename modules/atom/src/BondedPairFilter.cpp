@@ -11,7 +11,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondedPairFilter
-::BondedPairFilter(){
+::BondedPairFilter(): PairFilter("BondedPairFilter%1%"){
 }
 
 ParticlesTemp BondedPairFilter
