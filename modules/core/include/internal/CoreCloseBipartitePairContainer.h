@@ -8,20 +8,18 @@
  *  Copyright 2007-2011 IMP Inventors. Close rights reserved.
  */
 
-#ifndef IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
-#define IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H
+#ifndef IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H
+#define IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H
 
-#include "container_config.h"
-#include <IMP/core/ClosePairsFinder.h>
-#include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
-#include <IMP/core/internal/MovedSingletonContainer.h>
+#include "../core_config.h"
+#include "../ClosePairsFinder.h"
+#include "MovedSingletonContainer.h"
 #include <IMP/PairContainer.h>
 #include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/container/ListPairContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
+#include "pair_helpers.h"
 
-IMPCONTAINER_BEGIN_NAMESPACE
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 /** \brief Return all close unordered pairs of particles taken from
     the SingletonContainer
@@ -32,29 +30,34 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \usesconstraint
  */
-class IMPCONTAINEREXPORT CloseBipartitePairContainer:
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-public PairContainer
-#else
-public IMP::core::internal::CoreCloseBipartitePairContainer
-#endif
+class IMPCOREEXPORT CoreCloseBipartitePairContainer:
+public IMP::core::internal::ListLikePairContainer
 {
-  typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
+  typedef IMP::core::internal::ListLikePairContainer P;
+  IMP::OwnerPointer<SingletonContainer> a_, b_;
+  IMP::OwnerPointer<core::ClosePairsFinder> cpf_;
+  IMP::OwnerPointer<core::internal::MovedSingletonContainer>
+    moveda_, movedb_;
+  bool first_call_;
+  double distance_, slack_;
+  IMP_ACTIVE_CONTAINER_DECL(CoreCloseBipartitePairContainer);
+  void initialize(SingletonContainer *a,
+                  SingletonContainer *b, double distance,
+                  double slack, core::ClosePairsFinder *cpf);
 public:
   //! Get the individual particles from the passed SingletonContainer
-  CloseBipartitePairContainer(SingletonContainer *a,
+  CoreCloseBipartitePairContainer(SingletonContainer *a,
                               SingletonContainer *b,
                               double distance,
                               double slack=1);
 
   //! Get the individual particles from the passed SingletonContainer
-  CloseBipartitePairContainer(SingletonContainer *a,
+  CoreCloseBipartitePairContainer(SingletonContainer *a,
                               SingletonContainer *b,
                               double distance,
                               core::ClosePairsFinder *cpf,
                               double slack=1);
 
-#if defined(IMP_DOXYGEN) || defined(SWIG)
   /** @name Methods to control the set of filters
 
      PairContainer objects can be used as filters to prevent
@@ -67,11 +70,21 @@ public:
                   pair_filters,
                   PairFilter*, PairFilters, obj->set_was_used(true);,,);
    /**@}*/
-  IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
-  bool get_is_up_to_date() const;
-#endif
+  ParticlesTemp get_contained_particles() const;
+  bool get_is_up_to_date() const {
+    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
+      return get_last_update_evaluation() == get_model()->get_evaluation();
+    } else {
+      if (!a_->get_is_up_to_date()
+          || !b_->get_is_up_to_date()) return false;
+      return true;
+    }
+  }
+  IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
 };
 
-IMPCONTAINER_END_NAMESPACE
+IMP_OBJECTS(CoreCloseBipartitePairContainer,CoreCloseBipartitePairContainers);
 
-#endif  /* IMPCONTAINER_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
+IMPCORE_END_INTERNAL_NAMESPACE
+
+#endif  /* IMPCORE_INTERNAL_CORE_CLOSE_BIPARTITE_PAIR_CONTAINER_H */
