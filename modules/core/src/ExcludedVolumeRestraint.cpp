@@ -22,6 +22,7 @@
 #include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
+#include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <boost/lambda/lambda.hpp>
 
@@ -535,22 +536,37 @@ ExcludedVolumeRestraint
     }
   }
   if (bins.back().empty()) bins.pop_back();
+  internal::CoreListSingletonContainers bincs;
+  for (unsigned int i=0; i< bins.size(); ++i) {
+    std::ostringstream oss;
+    oss << "C"<< i;
+    bincs.push_back(new internal::CoreListSingletonContainer(get_model(),
+                                                             oss.str()));
+    bincs.back()->set_particles(bins[i]);
+  }
+  IMP_NEW(RigidClosePairsFinder, rcpf, ());
+  PairFiltersTemp pfs(pair_filters_begin(),
+                      pair_filters_end());
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      ParticleIndexes all(bins[i]);
-      all.insert(all.end(), bins[j].begin(), bins[j].end());
       std::ostringstream oss;
       oss << i << " and " << j;
-      IMP_NEW(internal::CoreListSingletonContainer, lsc, (get_model(),
-                                                          oss.str()));
-      lsc->set_particles(IMP::internal::get_particle(get_model(), all));
-      IMP_NEW(ExcludedVolumeRestraint, ev, (lsc, ssps_, key_, slack_));
-      PairFiltersTemp pfs(pair_filters_begin(),
-                          pair_filters_end());
-      ev->set_pair_filters(pfs);
+      IMP_NEW(internal::CoreCloseBipartitePairContainer, ccbpc, (bincs[i].get(),
+                                                                 bincs[j].get(),
+                                                                 0.0,
+                                                                 rcpf.get(),
+                                                                 slack_));
+      IMP_NEW(internal::CorePairsRestraint, ev, (ssps_, ccbpc));
+      ccbpc->set_pair_filters(pfs);
       ev->set_name(std::string("R")+oss.str());
       ret.push_back(ev);
     }
+    std::ostringstream oss;
+    oss << i;
+    IMP_NEW(ExcludedVolumeRestraint, evr, (bincs[i], ssps_, key_, slack_));
+    evr->set_name(std::string("R")+oss.str());
+    evr->set_pair_filters(pfs);
+    ret.push_back(evr);
   }
   //std::cout << "Created " << ret.size() << " restraints" << std::endl;
   return ret;
