@@ -282,6 +282,18 @@ RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
     ParticlesTemp rm= RigidBody(rbs[i]).get_members();
     ret.insert(ret.end(), rm.begin(), rm.end());
   }
+  if (get_number_of_pair_filters() >0) {
+    ParticlesTemp retc;
+    for (PairFilterConstIterator it= pair_filters_begin();
+         it != pair_filters_end(); ++it) {
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
+        retc.insert(retc.end(), cur.begin(), cur.end());
+      }
+    }
+    ret.insert(ret.end(), retc.begin(), retc.end());
+  }
+  return ret;
   return ret;
 }
 

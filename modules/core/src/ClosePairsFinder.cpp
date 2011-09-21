@@ -25,5 +25,10 @@ ClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
   return new internal::XYZRMovedSingletonContainer(in, threshold);
 }
 
+IMP_LIST_IMPL(ClosePairsFinder,
+              PairFilter,
+              pair_filter,
+              PairFilter*,
+              PairFilters);
 
 IMPCORE_END_NAMESPACE

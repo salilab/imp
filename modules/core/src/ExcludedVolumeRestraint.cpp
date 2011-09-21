@@ -80,7 +80,8 @@ fill_list_if_good(double max) const {
                                             xyzrs_.end(),0),
                          internal::ParticleIndexTraits(get_model(), myslack),
                  internal::ParticleIndexPairSinkWithMax<SoftSpherePairScore>
-                         (get_model(), cur_list_,
+                         (get_model(), access_pair_filters(),
+                          cur_list_,
                           ssps_.get(),
                           nullptr,
                           score,
@@ -95,7 +96,9 @@ fill_list_if_good(double max) const {
                                             rbs_.end(),1),
                          internal::ParticleIndexTraits(get_model(), myslack),
                          internal::RigidBodyParticleParticleIndexPairSinkWithMax
-                         <SoftSpherePairScore>(get_model(), cur_list_,
+                         <SoftSpherePairScore>(get_model(),
+                                               access_pair_filters(),
+                                               cur_list_,
                                                ssps_.get(),
                                                nullptr, score, max,
                                                key_, myslack, constituents_));
@@ -107,7 +110,9 @@ fill_list_if_good(double max) const {
                                             rbs_.end(),0),
                          internal::ParticleIndexTraits(get_model(), myslack),
                      internal::RigidBodyRigidBodyParticleIndexPairSinkWithMax
-                         <SoftSpherePairScore>(get_model(), cur_list_,
+                         <SoftSpherePairScore>(get_model(),
+                                               access_pair_filters(),
+                                               cur_list_,
                                                ssps_.get(),
                                                nullptr, score, max,
                                                key_, myslack, constituents_));
@@ -134,7 +139,9 @@ fill_list() const {
                          ::get_particle_set(xyzrs_.begin(),
                                             xyzrs_.end(),0),
                          internal::ParticleIndexTraits(get_model(), slack_),
-                   internal::ParticleIndexPairSink(get_model(), cur_list_));
+                   internal::ParticleIndexPairSink(get_model(),
+                                                   access_pair_filters(),
+                                                   cur_list_));
   internal::ParticleIndexHelper
     ::fill_close_pairs(internal::ParticleIndexHelper
                        ::get_particle_set(rbs_.begin(),
@@ -144,6 +151,7 @@ fill_list() const {
                                           xyzrs_.end(),1),
                        internal::ParticleIndexTraits(get_model(), slack_),
                internal::RigidBodyParticleParticleIndexPairSink(get_model(),
+                                                       access_pair_filters(),
                                                                    cur_list_,
                                                                    key_,
                                                                    slack_,
@@ -154,6 +162,7 @@ fill_list() const {
                                           rbs_.end(),0),
                        internal::ParticleIndexTraits(get_model(), slack_),
                internal::RigidBodyRigidBodyParticleIndexPairSink(get_model(),
+                                                    access_pair_filters(),
                                                                     cur_list_,
                                                                     key_,
                                                                     slack_,

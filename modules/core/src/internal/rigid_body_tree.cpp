@@ -532,7 +532,9 @@ ParticlePairsTemp close_pairs(Model *m,
                               const RigidBodyHierarchy *db,
                               double dist) {
   ParticlePairsTemp ret;
-  fill_close_pairs(m, da, db, dist, ParticlePairSink(m, ret));
+  fill_close_pairs(m, da, db, dist, ParticlePairSink(m,
+                                                     PairFilters(),
+                                                     ret));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());
     ParticleIndexes psa= da->get_constituents();
