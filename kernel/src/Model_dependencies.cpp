@@ -192,6 +192,13 @@ void Model::compute_dependencies() const {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
   Floats weights;
+  // kind of a hack, make sure it is overwritten for ones that are part of the
+  // model
+  RestraintsTemp all_restraints(tracked_restraints_.begin(),
+                                tracked_restraints_.end());
+  for (unsigned int i=0; i< all_restraints.size(); ++i) {
+    all_restraints[i]->model_weight_= 1;
+  }
   boost::tie(scoring_restraints_,
              weights)
     = get_restraints_and_weights(restraints_begin(),
@@ -199,8 +206,6 @@ void Model::compute_dependencies() const {
   for (unsigned int i=0; i< scoring_restraints_.size(); ++i) {
     scoring_restraints_[i]->model_weight_= weights[i];
   }
-  RestraintsTemp all_restraints(tracked_restraints_.begin(),
-                                tracked_restraints_.end());
   ScoreStates score_states= access_score_states();
   IMP_LOG(VERBOSE, "Making dependency graph on " << weights.size()
           << " restraints " << score_states.size() << " score states "
