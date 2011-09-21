@@ -232,7 +232,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     double wvalue= weight*value;
     remaining-=wvalue;
     IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
-              << wvalue << std::endl);
+            << wvalue << " (" << weight << ")" << std::endl);
     if (gather_statistics_) {
       add_to_restraint_evaluate(restraints[i], timer.elapsed(), wvalue);
     }
