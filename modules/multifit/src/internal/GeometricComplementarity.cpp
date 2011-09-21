@@ -157,6 +157,13 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
             grid[voxel_center] = std::numeric_limits<float>::max();
           else
             grid[voxel_center] = int((v - 1)/params.interior_thickness) + 1;
+
+          /***Shouldn't happen
+          if(grid[voxel_center] < 0)
+            std::cout << "INSIDE voxel negative "
+                            <<  grid[voxel_center] << std::endl;
+          **/
+
         }
         else if ( v < 0 )
         {
@@ -174,6 +181,14 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
               p - params.complementarity_thickness.begin()];
           }
           grid[voxel_center] = v;
+          /*** Shouldn't happen
+          if(grid[voxel_center] >= std::numeric_limits<float>::max())
+            std::cout << "OUTSIDE voxel infinite "
+                                      <<  grid[voxel_center] << std::endl;
+          if(grid[voxel_center] > 0)
+            std::cout << "OUTSIDE voxel positive "
+                                      <<  grid[voxel_center] << std::endl;
+          /**/
         }
       });
   return grid;
@@ -204,6 +219,8 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
     return std::make_pair(0.0, 0.0);
   }
   double complementarity_score = 0, penetration_score = 0;
+  double inf = std::numeric_limits<float>::max();
+
   IMP_GRID3D_FOREACH_VOXEL(map1,
                            {
                              IMP_UNUSED(loop_voxel_index);
@@ -218,19 +235,31 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                              } else {
                                v0 = 0;
                              }
-                             double prod = v0*v1;
-                             if ( prod < 0 ) {
-                               complementarity_score += prod;
-                             } else if ( prod > 0 ) {
-                               penetration_score += prod;
-                               if ( penetration_score
-                                    > params.maximum_penetration_score ||
-                                    v0 > 0 && v1 > 0 &&
-                                    (v0 >= std::numeric_limits<float>::max() ||
-                                     v1 >= std::numeric_limits<float>::max())){
-                                  return std::make_pair(
-                                          std::numeric_limits<double>::max(),
-                                          std::numeric_limits<double>::max());
+                             double prod = 0.0;
+                             if((v0 > 0 && v1>0) && (v0 >= inf || v1 >= inf)) {
+                                // An interior voxel of one molecule is
+                                // touching the layer beyond
+                                // the interior_thickness.
+                                return std::make_pair(inf, inf);
+                             }
+
+                             if((v0 < 0 && v1>=inf) || (v1 < 0 && v0 >= inf)) {
+                                // An voxel outside a molecule is
+                                // touching the layer beyond the
+                                // interior_thickness
+                                // This is fine, but to avoid numerical problems
+                                // the product is set to 0 instead of v0*v1
+                                prod = 0.0;
+                             } else {
+                               prod = v0*v1;
+                               if ( prod < 0 ) {
+                                 complementarity_score += prod;
+                               } else if (prod > 0) {
+                                 penetration_score += prod;
+                                 if ( penetration_score
+                                    > params.maximum_penetration_score) {
+                                  return std::make_pair(inf, inf);
+                                 }
                                }
                              }
                            }
