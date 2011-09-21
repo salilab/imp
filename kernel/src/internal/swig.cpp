@@ -23,6 +23,13 @@ ParticlesTemp _ConstRestraint::get_input_particles() const {
   return ps_;
 }
 
+Restraints _ConstRestraint::do_create_decomposition() const {
+  Restraints ret;
+  ret.push_back(new _ConstRestraint(v_/2.0, ps_));
+  ret.push_back(new _ConstRestraint(v_/2.0, ps_));
+  return ret;
+}
+
 
 double _ConstSingletonScore::evaluate(Particle *,
                                       IMP::DerivativeAccumulator *) const {

@@ -37,6 +37,7 @@ public:
                   const ParticlesTemp ps= ParticlesTemp()): v_(v),
     ps_(ps){}
   double get_value() const {return v_;}
+  Restraints do_create_decomposition() const;
   IMP_RESTRAINT(_ConstRestraint);
 };
 
