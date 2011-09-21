@@ -365,14 +365,17 @@ namespace RMF {
                    const typename TypeTraits::Types& value) {
       IMP_RMF_IF_CHECK {
         check_index(lb);
+         Index last=lb;
         // offset size by one and check...
         unsigned int total=1;
         for (unsigned int i=0; i< D; ++i) {
           total*= size[i];
+          last[i]+=size[i]-1;
         }
         IMP_RMF_USAGE_CHECK(total==value.size(),
                             "Block has size " << total << " but found "
                             << value.size() << " values");
+        check_index(last);
       }
       //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
       IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
