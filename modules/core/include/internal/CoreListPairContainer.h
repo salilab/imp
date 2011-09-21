@@ -55,7 +55,7 @@ class IMPCOREEXPORT CoreListPairContainer:
   }
   IMP_LISTLIKE_PAIR_CONTAINER(CoreListPairContainer);
 };
-
+IMP_OBJECTS(CoreListPairContainer, CoreListPairContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
