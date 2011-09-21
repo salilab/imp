@@ -145,17 +145,7 @@
 IMP_OBJECT(Name)
 
 
-/** This macro declares:
-    - AssignmentsContainer::get_number_of_assignments()
-    - AssignmentsContainer::get_assignment()
-    - AssignmentsContainer::add_assignment()
-    and defines:
-    - AssignmentsContainer::get_assignments(IntRange)
-    - AssignmentsContainer::add_assignments()
-    - AssignmentsContainer::get_assignments(unsigned int)
-    in addition to the IMP_OBJECT() declarations and definitions.
-*/
-#define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
+#define IMP_ASSIGNMENT_CONTAINER_BASE(Name)                             \
   public:                                                               \
   virtual unsigned int get_number_of_assignments() const;               \
   virtual Assignment get_assignment(unsigned int i) const;              \
@@ -182,7 +172,26 @@ IMP_OBJECT(Name)
       ret[i]= get_assignment(i)[index];                                 \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
+  }
+
+
+/** This macro declares:
+    - AssignmentsContainer::get_number_of_assignments()
+    - AssignmentsContainer::get_assignment()
+    - AssignmentsContainer::add_assignment()
+    and defines:
+    - AssignmentsContainer::get_assignments(IntRange)
+    - AssignmentsContainer::add_assignments()
+    - AssignmentsContainer::get_assignments(unsigned int)
+    in addition to the IMP_OBJECT() declarations and definitions.
+*/
+#define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
+  IMP_ASSIGNMENT_CONTAINER_BASE(Name);                                  \
   IMP_OBJECT(Name)
+
+
+#define IMP_ASSIGNMENT_CONTAINER_INLINE(Name, show, dest)               \
+  IMP_ASSIGNMENT_CONTAINER_BASE(Name);                                  \
+  IMP_OBJECT_INLINE(Name, show, dest)
 
 #endif  /* IMPDOMINO_MACROS_H */

@@ -160,8 +160,10 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
  */
 class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
   RMF::HDF5IndexDataSet2D ds_;
-  bool init_;
   Ints order_;
+  Ints cache_;
+  unsigned int max_cache_;
+  void flush();
  public:
   HDF5AssignmentContainer(RMF::HDF5Group parent,
                           const Subset &s,
@@ -172,8 +174,9 @@ class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
-
-  IMP_ASSIGNMENT_CONTAINER(HDF5AssignmentContainer);
+  void set_cache_size(unsigned int words);
+  IMP_ASSIGNMENT_CONTAINER_INLINE(HDF5AssignmentContainer,
+                                  IMP_UNUSED(out),flush());
 };
 #endif
 
