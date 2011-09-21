@@ -31,6 +31,8 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
 {
   initialize_active_container(pc->get_model());
   first_call_=true;
+  reset_all_=false;
+  reset_moved_=false;
 }
 
 
@@ -41,6 +43,17 @@ void MovedSingletonContainer::do_show(std::ostream &) const
 
 void MovedSingletonContainer::do_after_evaluate() {
   internal::ListLikeSingletonContainer::do_after_evaluate();
+  if (reset_all_) {
+    do_reset_all();
+    ParticleIndexes t;
+    update_list(t);
+  } else if (reset_moved_) {
+    do_reset_moved();
+    ParticleIndexes t;
+    update_list(t);
+  }
+  reset_moved_=false;
+  reset_all_=false;
 }
 
 void MovedSingletonContainer::do_before_evaluate()
@@ -71,9 +84,7 @@ ContainersTemp MovedSingletonContainer::get_state_input_containers() const {
 
 void MovedSingletonContainer::reset()
 {
-  do_reset_all();
-  ParticleIndexes t;
-  update_list(t);
+  reset_all_=true;
 }
 
 void MovedSingletonContainer::initialize()
@@ -85,9 +96,7 @@ void MovedSingletonContainer::initialize()
 
 void MovedSingletonContainer::reset_moved()
 {
-  do_reset_moved();
-  ParticleIndexes t;
-  update_list(t);
+  reset_moved_=true;
 }
 
 void MovedSingletonContainer::set_threshold(double d) {
