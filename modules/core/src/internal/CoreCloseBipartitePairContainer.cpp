@@ -33,7 +33,7 @@ CoreCloseBipartitePairContainer
                               double distance,
                               double slack):
   P(a->get_model(), "CoreCloseBipartitePairContainer") {
-  initialize(a,b, distance, slack,
+  initialize(a,b, NULL, NULL, distance, slack,
              core::internal::default_cpf(a->get_number_of_particles()
                                          +b->get_number_of_particles()));
 }
@@ -45,12 +45,27 @@ CoreCloseBipartitePairContainer
                               core::ClosePairsFinder *cpf,
                               double slack):
   P(a->get_model(), "CoreCloseBipartitePairContainer") {
-  initialize(a,b, distance, slack,
+  initialize(a,b, NULL, NULL, distance, slack,
+             cpf);
+}
+
+CoreCloseBipartitePairContainer
+::CoreCloseBipartitePairContainer(SingletonContainer *a,
+                              SingletonContainer *b,
+                                  MovedSingletonContainer *ma,
+                                  MovedSingletonContainer *mb,
+                              double distance,
+                              core::ClosePairsFinder *cpf,
+                              double slack):
+  P(a->get_model(), "CoreCloseBipartitePairContainer") {
+  initialize(a,b, ma, mb, distance, slack,
              cpf);
 }
 
 void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
                                              SingletonContainer *b,
+                                                 MovedSingletonContainer*ma,
+                                                 MovedSingletonContainer*mb,
                                              double distance,
                                              double slack,
                                              core::ClosePairsFinder *cpf) {
@@ -61,8 +76,16 @@ void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
   cpf_=cpf;
   cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
-  moveda_= cpf_->get_moved_singleton_container(a_, slack_);
-  movedb_= cpf_->get_moved_singleton_container(b_, slack_);
+  if (ma) {
+    moveda_=ma;
+  } else {
+    moveda_= cpf_->get_moved_singleton_container(a_, slack_);
+  }
+  if (mb) {
+    movedb_=mb;
+  } else {
+    movedb_= cpf_->get_moved_singleton_container(b_, slack_);
+  }
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CoreCloseBipartitePairContainer, {

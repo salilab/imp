@@ -149,6 +149,7 @@ public:
   ParticleIndexes
     get_all_possible_indexes() const;
 };
+IMP_OBJECTS(MovedSingletonContainer, MovedSingletonContainers);
 
 
 IMPCORE_END_INTERNAL_NAMESPACE

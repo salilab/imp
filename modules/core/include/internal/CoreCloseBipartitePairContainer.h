@@ -42,7 +42,10 @@ public IMP::core::internal::ListLikePairContainer
   double distance_, slack_;
   IMP_ACTIVE_CONTAINER_DECL(CoreCloseBipartitePairContainer);
   void initialize(SingletonContainer *a,
-                  SingletonContainer *b, double distance,
+                  SingletonContainer *b,
+                  MovedSingletonContainer*ma,
+                  MovedSingletonContainer*mb,
+                  double distance,
                   double slack, core::ClosePairsFinder *cpf);
 public:
   //! Get the individual particles from the passed SingletonContainer
@@ -57,6 +60,21 @@ public:
                               double distance,
                               core::ClosePairsFinder *cpf,
                               double slack=1);
+
+  //! make sure you know what you are doing
+  CoreCloseBipartitePairContainer(SingletonContainer *a,
+                                  SingletonContainer *b,
+                                  MovedSingletonContainer*ma,
+                                  MovedSingletonContainer*mb,
+                                  double distance,
+                                  core::ClosePairsFinder *cpf,
+                                  double slack=1);
+
+  core::internal::MovedSingletonContainer*
+    get_moved_singleton_container(unsigned int ab) const {
+    if (ab==0) return moveda_;
+    else return movedb_;
+  }
 
   /** @name Methods to control the set of filters
 
