@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- IMP::domino::HDF5AssignmentTable now caches internally, which makes it several times faster than before.
 - you can now pick which python to use with the \c python argument to scons.
 - the units for BD diffusion coefficients changed to be consistent with other IMP units.
 - IMP::domino::get_interaction_graph() now takes an IMP::RestraintsTemp, like other functions
