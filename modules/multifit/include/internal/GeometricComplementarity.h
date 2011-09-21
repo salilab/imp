@@ -64,7 +64,13 @@ struct IMPMULTIFITEXPORT ComplementarityParameters {
 };
 
 
-
+/*! Computes the penetration and complementarity score for the grids map0 and
+  map1. The function returns both scores (penetration first). The function
+  returns the maximum numeric limits if one of these cases happpens:
+    1) The maximum penetration score is reached.
+    2) An interior voxel of one molecule is touching the layer beyond
+       the interior_thickness of other molecule (penetration test)
+*/
 IMPMULTIFITEXPORT IMP::FloatPair get_penetration_and_complementarity_scores(
     const IMP::algebra::DenseGrid3D<float> &map0,
     const IMP::algebra::DenseGrid3D<float> &map1,
