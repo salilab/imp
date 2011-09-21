@@ -90,17 +90,6 @@ ContainersTemp CoreClosePairContainer
 
 ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
   ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
-  if (get_number_of_pair_filters() >0) {
-    ParticlesTemp retc;
-    for (PairFilterConstIterator it= pair_filters_begin();
-         it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
-        retc.insert(retc.end(), cur.begin(), cur.end());
-      }
-    }
-    ret.insert(ret.end(), retc.begin(), retc.end());
-  }
   return ret;
 }
 
@@ -230,6 +219,7 @@ void CoreClosePairContainer::do_incremental() {
           << std::endl);
   using IMP::operator<<;
   IMP_LOG(VERBOSE, "Moved " << moved << std::endl);
+  cpf_->set_pair_filters(access_pair_filters());
   ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(),
                                                 c_->get_indexes(),
                                                 moved);
@@ -256,6 +246,7 @@ void CoreClosePairContainer::do_incremental() {
 void CoreClosePairContainer::do_rebuild() {
   IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
           << std::endl);
+  cpf_->set_pair_filters(access_pair_filters());
   ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(), c_->get_indexes());
   internal::fix_order(ret);
   IMP_LOG(TERSE, "Found before filtering " << ret.size()

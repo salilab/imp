@@ -101,7 +101,8 @@ get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
 
 
 bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
-  return internal::get_are_close(a->get_model(), a->get_index(),
+  return internal::get_are_close(a->get_model(), access_pair_filters(),
+                                 a->get_index(),
                                  b->get_index(), get_distance());
 }
 
@@ -113,7 +114,19 @@ void QuadraticClosePairsFinder::do_show(std::ostream &out) const {
 
 ParticlesTemp
 QuadraticClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
-  return ps;
+  ParticlesTemp ret=ps;
+  if (get_number_of_pair_filters() >0) {
+    ParticlesTemp retc;
+    for (PairFilterConstIterator it= pair_filters_begin();
+         it != pair_filters_end(); ++it) {
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
+        retc.insert(retc.end(), cur.begin(), cur.end());
+      }
+    }
+    ret.insert(ret.end(), retc.begin(), retc.end());
+  }
+  return ret;
 }
 
 

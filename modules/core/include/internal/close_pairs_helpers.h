@@ -92,9 +92,17 @@ inline void filter_same(ParticleIndexPairs &c) {
                          SameParticle()),
           c.end());
 }
+inline bool get_filters_contains(Model *m,
+                                 const PairFilters &filters,
+                                 ParticleIndexPair pip) {
+  for (unsigned int i=0; i< filters.size(); ++i) {
+    if (filters[i]->get_contains(m, pip)) return true;
+  }
+  return false;
+}
 
-
-inline bool get_are_close(Model *m, ParticleIndex a, ParticleIndex b,
+inline bool get_are_close(Model *m, const PairFilters &filters,
+                          ParticleIndex a, ParticleIndex b,
                           double distance) {
   XYZ da(m, a);
   XYZ db(m, b);
@@ -109,15 +117,17 @@ inline bool get_are_close(Model *m, ParticleIndex a, ParticleIndex b,
   }
   return get_interiors_intersect(algebra::Sphere3D(da.get_coordinates(),
                                                      ra+distance),
-                                 algebra::Sphere3D(db.get_coordinates(), rb));
+                                 algebra::Sphere3D(db.get_coordinates(), rb))
+    && !get_filters_contains(m, filters, ParticleIndexPair(a,b));
 }
 
 struct FarParticle {
   double d_;
   Model *m_;
-  FarParticle( Model *m, double d): d_(d), m_(m){}
+  FarParticle( Model *m,
+               double d): d_(d), m_(m){}
   bool operator()(const ParticleIndexPair& pp) const {
-    return !get_are_close(m_, pp[0], pp[1], d_);
+    return !get_are_close(m_, PairFilters(), pp[0], pp[1], d_);
   }
 };
 
