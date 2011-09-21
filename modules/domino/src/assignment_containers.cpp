@@ -76,7 +76,12 @@ HDF5AssignmentContainer::HDF5AssignmentContainer(RMF::HDF5Group parent,
                                            const ParticlesTemp &all_particles,
                                                  std::string name):
   AssignmentContainer(name), ds_(parent.add_child_index_data_set_2d(name)),
-  init_(false), order_(get_order(s, all_particles)) {}
+  order_(get_order(s, all_particles)),
+  max_cache_(10000) {
+  RMF::HDF5IndexDataSet2D::Index sz;
+  sz[0]=0; sz[1]=s.size();
+  ds_.set_size(sz);
+}
 
 
 HDF5AssignmentContainer
@@ -85,49 +90,79 @@ HDF5AssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name), ds_(dataset),
-  init_(true), order_(get_order(s, all_particles)) {}
+  order_(get_order(s, all_particles)),
+  max_cache_(10000) {
+  if (ds_.get_size()[1] != s.size()) {
+    RMF::HDF5IndexDataSet2D::Index sz;
+    sz[0]=0; sz[1]=s.size();
+    ds_.set_size(sz);
+  }
+}
 
 
 unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
-  return ds_.get_size()[0];
+  return ds_.get_size()[0]+cache_.size()/order_.size();
 }
 
 Assignment HDF5AssignmentContainer::get_assignment(unsigned int i) const {
-  RMF::Ints is= ds_.get_row(Ints(1,i));
-  Ints ret(is.size());
-  IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[order_[i]]=is[i];
+  unsigned int dsz=ds_.get_size()[0];
+  if (i < dsz) {
+    RMF::Ints is= ds_.get_row(Ints(1,i));
+    Ints ret(is.size());
+    IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[order_[i]]=is[i];
+    }
+    return Assignment(ret);
+  } else {
+    return Assignment(cache_.begin()+(i-dsz)*order_.size(),
+                      cache_.begin()+(i+1-dsz)*order_.size());
   }
-  return Assignment(ret);
+}
+
+void HDF5AssignmentContainer::flush() {
+  if (cache_.empty()) return;
+  RMF::HDF5IndexDataSet2D::Index size= ds_.get_size();
+  RMF::HDF5IndexDataSet2D::Index nsize=size;
+  nsize[0]+= cache_.size()/order_.size();
+  ds_.set_size(nsize);
+  RMF::HDF5IndexDataSet2D::Index write_size;
+  write_size[0]=cache_.size()/order_.size();
+  write_size[1]=order_.size();
+  size[1]=0;
+  ds_.set_block(size, write_size, cache_);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    unsigned int num=cache_.size()/order_.size();
+    Assignments n(num);
+    for (unsigned int i=0; i< num;++i) {
+      n[i]=Assignment(cache_.begin()+i*order_.size(),
+                      cache_.begin()+(i+1)*order_.size());
+    }
+    IMP_INTERNAL_CHECK(ds_.get_size()[0] >= num,
+                       "Not enough on disk: " << ds_.get_size()[0]
+                       << " vs " << num);
+    for (unsigned int i=0; i< num; ++i) {
+      Assignment read=get_assignment(get_number_of_assignments()-num+i);
+      IMP_INTERNAL_CHECK(read==n[i], "Mismatch on read: " << read
+                         << " vs " << n[i]);
+    }
+  }
+  cache_.clear();
+}
+
+void HDF5AssignmentContainer::set_cache_size(unsigned int words) {
+  max_cache_=words;
+  if (cache_.size()>max_cache_) flush();
 }
 
 void HDF5AssignmentContainer::add_assignment(const Assignment& a) {
-  if (!init_) {
-    Ints sz(2);
-    sz[0]=0; sz[1]=a.size();
-    ds_.set_size(sz);
-    init_=true;
-  }
-  Ints is(a.size());
-  IMP_USAGE_CHECK(a.size()== order_.size(), "Wrong size assignment");
-  for (unsigned int i=0; i< a.size(); ++i) {
-    is[i]= a[order_[i]];
-  }
-  RMF::HDF5DataSetIndexD<2> sz= ds_.get_size();
-  ++sz[0];
-  ds_.set_size(sz);
-  IMP_USAGE_CHECK(ds_.get_size()[1]==a.size(),
-                  "Sizes don't match: " << a.size() << " vs "
-                  << ds_.get_size()[1]);
-  ds_.set_row(Ints(1,sz[0]-1), is);
+  IMP_RMF_USAGE_CHECK(a.size()==order_.size(),
+                      "Sizes don't match: " << a.size()
+                      << " vs " << order_.size());
+  cache_.insert(cache_.end(), a.begin(), a.end());
+  if (cache_.size() > max_cache_) flush();
 }
 
-
-
-void HDF5AssignmentContainer::do_show(std::ostream &) const {
-  //out << "dataset: " << ds_.get_name() << std::endl;
-}
 
 #endif
 

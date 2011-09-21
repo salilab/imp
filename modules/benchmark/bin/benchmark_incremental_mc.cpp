@@ -76,7 +76,7 @@ void benchmark_it(std::string name, bool incr) {
   }
   add_excluded_volume(m, h, 1.0);
   add_diameter_restraint(m, rbs, 50.0);
-  add_DOPE(m, h);
+  //add_DOPE(m, h);
   IMP_NEW(MonteCarlo, mc, (m));
   //mc->set_log_level(IMP::VERBOSE);
   mc->set_return_best(false);
@@ -93,6 +93,8 @@ void benchmark_it(std::string name, bool incr) {
   double runtime, score=0;
   IMP_TIME(
            score+=mc->optimize(30000), runtime);
+  //std::cout << "average: "
+  //<< mc->get_average_number_of_incremental_restraints() << std::endl;
   IMP::benchmark::report(name+" mc", runtime, score);
 }
 
