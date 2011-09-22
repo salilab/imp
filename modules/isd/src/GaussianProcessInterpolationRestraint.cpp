@@ -42,6 +42,7 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     // nobs, sample variance, true variance
     mvn_ = new MultivariateFNormalSufficient(gpi_->get_I(), 1.0, gpi_->get_m(),
             N, gpi_->get_S(), gpi_->get_W());
+    mvn_->set_W_nonzero(true,1e-7); // W for MVN is S for GPI.
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);
 }
 

@@ -33,6 +33,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double>
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
         FM_=FM.copy();
+        set_W_nonzero(false);
         set_FX(FX); //also computes W, Fbar and epsilon.
         set_JF(JF);
         set_Sigma(Sigma); //computes the Cholesky decomp.
@@ -51,6 +52,8 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
         FM_=FM.copy();
+        W_is_diagonal_ = false;
+        W_is_zero_ = false;
         set_Fbar(Fbar); //also computes epsilon
         set_W(W);
         set_JF(JF);
@@ -210,16 +213,58 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
         Array2D<double> id(M_, M_, 0.0);
         for (int i=0; i<M_; i++) id[i][i] = 1.0;
         P_=CholeskySigma_->solve(id);
+        ////WP
+        //IMP_LOG(TERSE, "MVN:   solving for WP" << std::endl);
+        //Array2D<double> WP_(M_, M_);
+        //WP_=CholeskySigma_->solve(W_);
         IMP_LOG(TERSE, "MVN:   done" << std::endl);
     }
   }
 
+  void MultivariateFNormalSufficient::set_W(Array2D<double> f)
+{
+    W_=f.copy();
+}
+
+  void MultivariateFNormalSufficient::set_W_nonzero(bool yes, double val)
+{
+    if (!yes)
+    {
+        W_is_diagonal_ = false;
+        W_is_zero_ = false;
+    } else {
+        W_is_diagonal_ = true;
+        W_is_zero_ = true;
+        for (int i=0; i<M_; i++)
+        {
+            for (int j=0; j<M_; j++)
+            {
+                if (std::abs(W_[i][j]) > val)
+                {
+                    if ((i!=j) && W_is_diagonal_) W_is_diagonal_ = false;
+                    if (W_is_zero_) W_is_zero_ = false;
+                }
+            }
+        }
+    }
+    IMP_LOG(TERSE, "W is diagonal: " << W_is_diagonal_ << std::endl);
+    IMP_LOG(TERSE, "W is zero: " << W_is_zero_ << std::endl);
+}
+
   double MultivariateFNormalSufficient::trace_WP() const 
   {
       double trace=0;
-      for (int i=0; i<M_; i++){
-          for (int j=0; j<M_; j++){
-              trace += W_[i][j]*P_[i][j];
+      if (!W_is_zero_)
+      {
+          if (W_is_diagonal_)
+          {
+              for (int i=0; i<M_; i++) trace += W_[i][i]*P_[i][i];
+          } else {
+              for (int i=0; i<M_; i++){
+                  for (int j=0; j<M_; j++){
+                      trace += W_[i][j]*P_[i][j];
+                  }
+              }
           }
       }
       IMP_LOG(TERSE, "MVN:   trace(WP) = " << trace << std::endl);
@@ -264,23 +309,44 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
 {
       //compute PWP
       IMP_LOG(TERSE, "MVN:   computing PWP" << std::endl);
-      Array2D<double> R(M_,M_);
-      Array2D<double> WP(M_,M_);
-      for (int k=0; k<M_; k++){
-        for (int j=0; j<M_; j++){
-            WP[k][j] = 0.0;
-            for (int l=0; l<M_; l++){
-                WP[k][j] += W_[k][l]*P_[l][j];
+      Array2D<double> R(M_,M_,0.0);
+      if (W_is_zero_)
+      {
+          for (int i=0; i<M_; i++){
+            for (int j=0; j<M_; j++){
+                R[i][j] = 0.0;
             }
-        }
-      }
-      for (int i=0; i<M_; i++){
-        for (int j=0; j<M_; j++){
-            R[i][j] = 0.0;
-            for (int k=0; k<M_; k++){
-                R[i][j] += P_[i][k]*WP[k][j];
-            }
-        }
+          }
+      } else {
+          if (W_is_diagonal_)
+          {
+              for (int i=0; i<M_; i++){
+                for (int j=0; j<M_; j++){
+                    R[i][j] = 0.0;
+                    for (int k=0; k<M_; k++){
+                        R[i][j] += P_[i][k]*W_[k][k]*P_[k][j];
+                    }
+                }
+              }
+          } else {
+              Array2D<double> WP(M_,M_);
+              for (int k=0; k<M_; k++){
+                for (int j=0; j<M_; j++){
+                    WP[k][j] = 0.0;
+                    for (int l=0; l<M_; l++){
+                        WP[k][j] += W_[k][l]*P_[l][j];
+                    }
+                }
+              }
+              for (int i=0; i<M_; i++){
+                for (int j=0; j<M_; j++){
+                    R[i][j] = 0.0;
+                    for (int k=0; k<M_; k++){
+                        R[i][j] += P_[i][k]*WP[k][j];
+                    }
+                }
+              }
+          }
       }
       IMP_LOG(TERSE, "MVN:   done" << std::endl);
       return R;

@@ -493,14 +493,10 @@ bool test_sparseness(){
             Sigma[i][i]+=1;
     }
     
-    std::cout << "TEST: MVSP"<< std::endl;
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mvsp, (FA,JA,FM,Sigma));
-    //mvsp->set_sparseness(true,1e-7);
-    std::cout << "TEST: MV"<< std::endl;
+    mvsp->set_W_nonzero(true,1e-7);
     IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
-    //mv->set_was_used(true);
 
-    std::cout << "TEST: EVAL"<< std::endl;
     {
     //evaluate
     double observed=mvsp->evaluate();
@@ -508,7 +504,6 @@ bool test_sparseness(){
     if (naeq(observed,expected,1e-5)) FAIL("evaluate");
     }
 
-    std::cout << "TEST: DERIV"<< std::endl;
     {
     //evaluate
     Array2D<double> observed=mvsp->evaluate_derivative_Sigma();
@@ -844,8 +839,8 @@ int main(int, char *[]) {
     RUNTEST(test_2D,100);
     PRINT("100D");
     RUNTEST(test_100D,1);
-    //PRINT("sparseness");
-    //RUNTEST(test_sparseness,1);
+    PRINT("sparseness");
+    RUNTEST(test_sparseness,1);
     //TODO
     //PRINT("setting values");
     //RUNTEST(test_setval,1);
