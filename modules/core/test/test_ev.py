@@ -15,9 +15,9 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
         m = IMP.Model()
-        h0=IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
+        h0=IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                               m)
-        h1=IMP.atom.read_pdb(self.get_input_file_name("1z5s_C1.pdb"),
+        h1=IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
                               m)
         rb0 = IMP.atom.create_rigid_body(h0)
         rb1 = IMP.atom.create_rigid_body(h1)
