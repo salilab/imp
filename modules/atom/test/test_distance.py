@@ -91,25 +91,17 @@ class DistanceTest(IMP.test.TestCase):
 
         hchains1 = atom.get_by_type(prot1, atom.CHAIN_TYPE)
         hchains2 = atom.get_by_type(prot2, atom.CHAIN_TYPE)
-        # The drms with the same protein must be 0 and equal to the VersionInfo
-        # no working with the rigid bodies.
-#        xyzs1 = []
-#        xyzs2 = []
         xyzs1 = core.XYZs(atom.get_leaves(prot1))
         xyzs2 = core.XYZs(atom.get_leaves(prot2))
         x = 0
         ranges = []
-#        for h1, h2 in zip(hchains1, hchains2):
         for h in hchains1:
             ls1 = (atom.get_leaves(h))
             y = x + len(ls1)
-            print x, y
-            ranges.append((x,y ))
-            print ranges
+            ranges.append((x, y))
             x = y
         drms = atom.get_drms(xyzs1, xyzs2)
         rb_drms = atom.get_rigid_bodies_drms(xyzs1, xyzs2, ranges)
-        print "drms",drms, "rb_drms",rb_drms
         self.assertAlmostEqual(rb_drms, 0)
         self.assertAlmostEqual(drms, rb_drms, delta=1e-3, msg="rb_drms != drms")
         # Same thing after transformation of each of the chains
@@ -122,7 +114,6 @@ class DistanceTest(IMP.test.TestCase):
                 core.transform(l.get_as_xyz(), T)
         drms = atom.get_drms(xyzs1, xyzs2)
         rb_drms = atom.get_rigid_bodies_drms(xyzs1, xyzs2, ranges)
-        print "drms",drms,"rb_drms",rb_drms
         self.assertAlmostEqual(drms, rb_drms, delta=0.1, msg="rb_drms != drms")
 
 if __name__ == '__main__':
