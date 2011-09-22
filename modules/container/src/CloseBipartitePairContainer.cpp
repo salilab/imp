@@ -23,8 +23,8 @@ CloseBipartitePairContainer::CloseBipartitePairContainer(SingletonContainer *a,
 CloseBipartitePairContainer::CloseBipartitePairContainer(SingletonContainer *a,
                                                          SingletonContainer *b,
                                                          double distance,
-                                                  core::ClosePairsFinder *cpf,
+                                                  core::ClosePairsFinder *,
                                                          double slack):
-  P(a,b,distance, cpf, slack) {
+  P(a,b,distance, slack) {
 }
 IMPCONTAINER_END_NAMESPACE

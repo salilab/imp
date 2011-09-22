@@ -30,6 +30,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
 
+    \note Any passed ClosePairsFinder is ignored.
+
     \usesconstraint
  */
 class IMPCONTAINEREXPORT CloseBipartitePairContainer:
