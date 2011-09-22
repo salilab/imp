@@ -151,7 +151,7 @@ Parameters get_parameters(TextInput in) {
   res = vm["residues"].as< std::vector<std::string> >();
   for(unsigned int i=0;i<res.size();++i){
    std::vector<std::string> strs;
-   boost::split(strs, res[i], boost::is_any_of("\t "));
+   boost::split(strs, res[i],  boost::is_any_of(","));
    ret.TM.resid.push_back
    (std::pair<int,int> (atoi(strs[0].c_str()),atoi(strs[1].c_str())));
   }
@@ -174,7 +174,7 @@ Parameters get_parameters(TextInput in) {
   for(unsigned int i=0;i<inter.size();++i){
    std::vector<std::string> strs;
    int pos1,pos2;
-   boost::split(strs, inter[i], boost::is_any_of("\t "));
+   boost::split(strs, inter[i],  boost::is_any_of(","));
    pos1 = std::find(ret.TM.name.begin(),ret.TM.name.end(),strs[0]) -
    ret.TM.name.begin();
    pos2 = std::find(ret.TM.name.begin(),ret.TM.name.end(),strs[1]) -
@@ -188,7 +188,7 @@ if (vm.count("loop")){
   for(unsigned int i=0;i<loop.size();++i){
    std::vector<std::string> strs;
    int pos1,pos2;
-   boost::split(strs, loop[i], boost::is_any_of("\t "));
+   boost::split(strs, loop[i],  boost::is_any_of(","));
    pos1 = std::find(ret.TM.name.begin(),ret.TM.name.end(),strs[0]) -
    ret.TM.name.begin();
    pos2 = std::find(ret.TM.name.begin(),ret.TM.name.end(),strs[1]) -
