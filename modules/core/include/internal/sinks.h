@@ -205,6 +205,21 @@ struct HalfParticleIndexPairSink: public ParticleIndexPairSink {
   }
 };
 
+struct SwappedHalfParticleIndexPairSink: public ParticleIndexPairSink {
+  ParticleIndex p_;
+  SwappedHalfParticleIndexPairSink(Model *m, const PairFilters &filters,
+                            ParticleIndexPairs &out,
+                            ParticleIndex p):
+    ParticleIndexPairSink(m, filters, out),
+    p_(p) {}
+  bool operator()(ParticleIndex c) {
+    return ParticleIndexPairSink::operator()(c, p_);
+  }
+  void check_contains(ParticleIndex c) const {
+    ParticleIndexPairSink::check_contains(c, p_);
+  }
+};
+
 template <class PS>
 struct HalfParticlePairSinkWithMax: public ParticlePairSinkWithMax<PS> {
   ParticleIndex p_;
@@ -314,6 +329,42 @@ struct RigidBodyParticleParticleIndexPairSink:
   }
 };
 
+
+
+struct ParticleRigidBodyParticleIndexPairSink:
+  public ParticleIndexPairSink {
+  ObjectKey key_;
+  double dist_;
+  const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map_;
+  ParticleRigidBodyParticleIndexPairSink(Model *m,
+                                         const PairFilters &filters,
+                                    ParticleIndexPairs &out,
+                                    ObjectKey key, double dist,
+               const IMP::compatibility::map<ParticleIndex,
+                                    ParticleIndexes> &map):
+    ParticleIndexPairSink(m, filters, out),
+    key_(key), dist_(dist), map_(map){}
+  RigidBodyHierarchy *get_hierarchy(ParticleIndex p) const {
+    RigidBody rb(m_, p);
+    return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
+  }
+  bool operator()(ParticleIndex a, ParticleIndex b) {
+    IMP_LOG(VERBOSE, "Processing p-rb interesction between "
+            << a << " and "
+            << b << std::endl);
+    SwappedHalfParticleIndexPairSink hps(m_, filters_, out_, a);
+    fill_close_particles(m_, get_hierarchy(b),
+                         a,
+                         dist_, hps);
+    return true;
+  }
+  void check_contains(ParticleIndex, ParticleIndex) const {
+    // can't look for root pair, too lazy to check for actual pairs
+  }
+};
+
+
 template <class PS>
 struct RigidBodyParticleIndexPairSinkWithMax:
   public ParticleIndexPairSinkWithMax<PS> {
@@ -342,6 +393,7 @@ struct RigidBodyParticleIndexPairSinkWithMax:
     // can't look for root pair, too lazy to check for actual pairs
   }
 };
+
 
 template <class PS>
 struct RigidBodyRigidBodyParticleIndexPairSinkWithMax:

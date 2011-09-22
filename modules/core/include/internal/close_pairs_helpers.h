@@ -200,7 +200,7 @@ inline void initialize_particles( SingletonContainer*sc,
     IMP::compatibility::set<Particle*> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
   }
-  constituents_.clear();
+  //constituents_.clear();
   xyzrs_.clear();
   rbs_.clear();
   using IMP::operator<<;
@@ -379,7 +379,7 @@ inline void fill_list(Model *m, const PairFilters &filters,
                                             xyzrs_[0].end(),0),
                          internal::ParticleIndexHelper
                          ::get_particle_set(xyzrs_[1].begin(),
-                                            xyzrs_[1].end(),0),
+                                            xyzrs_[1].end(),1),
                          internal::ParticleIndexTraits(m, slack_),
                          internal::ParticleIndexPairSink(m, filters,
                                                          cur_list_));
@@ -405,19 +405,19 @@ inline void fill_list(Model *m, const PairFilters &filters,
                        ::get_particle_set(rbs_[1].begin(),
                                           rbs_[1].end(),1),
                        internal::ParticleIndexTraits(m, slack_),
-               internal::RigidBodyParticleParticleIndexPairSink(m,
-                                                                filters,
-                                                                   cur_list_,
-                                                                   key_,
-                                                                   slack_,
-                                                            constituents_));
+                       internal::ParticleRigidBodyParticleIndexPairSink(m,
+                                                                        filters,
+                                                                  cur_list_,
+                                                                        key_,
+                                                                        slack_,
+                                                                constituents_));
   internal::ParticleIndexHelper
     ::fill_close_pairs(internal::ParticleIndexHelper
                        ::get_particle_set(rbs_[0].begin(),
                                           rbs_[0].end(),0),
                        internal::ParticleIndexHelper
                        ::get_particle_set(rbs_[1].begin(),
-                                          rbs_[1].end(),0),
+                                          rbs_[1].end(),1),
                        internal::ParticleIndexTraits(m, slack_),
                internal::RigidBodyRigidBodyParticleIndexPairSink(m,
                                                                  filters,

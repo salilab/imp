@@ -89,6 +89,10 @@ ParticlesTemp CoreCloseBipartitePairContainer
                                                     access_pair_filters(),
                                                    xyzrs_[1], rbs_[1],
                                                    constituents_);
+  if (covers_[0] != -1) {
+    ret.push_back(get_model()->get_particle(covers_[0]));
+    ret.push_back(get_model()->get_particle(covers_[1]));
+  }
   ret.insert(ret.end(), ret1.begin(), ret1.end());
   return ret;
 }
@@ -102,12 +106,15 @@ ContainersTemp CoreCloseBipartitePairContainer
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   core::internal::ListLikePairContainer::do_before_evaluate();
-  // ignore covers for now
-  if (true) {
+  if (covers_[0]==-1
+      || algebra::get_distance(get_model()->get_sphere(covers_[0]),
+                               get_model()->get_sphere(covers_[1]))
+      < distance_) {
     if (were_close_ && !internal::get_if_moved(get_model(), slack_,
                                                xyzrs_[0], rbs_[0],
                                                constituents_,
-                                               rbs_backup_[0], xyzrs_backup_[0])
+                                               rbs_backup_[0],
+                                               xyzrs_backup_[0])
       && !internal::get_if_moved(get_model(), slack_,
                                  xyzrs_[1], rbs_[1], constituents_,
                                  rbs_backup_[1], xyzrs_backup_[1])){
@@ -122,13 +129,34 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
                             rbs_backup_[1], xyzrs_backup_[1]);
       ParticleIndexPairs pips;
       internal::fill_list(get_model(), access_pair_filters(),
-                          key_, slack_+2*distance_, xyzrs_, rbs_,
+                          key_, 2*slack_+distance_, xyzrs_, rbs_,
                           constituents_, pips);
       update_list(pips);
     }
+    were_close_=true;
   } else {
     ParticleIndexPairs none;
     update_list(none);
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< sc_[0]->get_number_of_particles(); ++i) {
+      XYZR d0(sc_[0]->get_particle(i));
+      for (unsigned int j=0; j< sc_[1]->get_number_of_particles(); ++j) {
+        XYZR d1(sc_[1]->get_particle(j));
+        double dist = get_distance(d0, d1);
+        if (dist < .9*distance_) {
+          ParticleIndexPair pip(d0.get_particle_index(),
+                                d1.get_particle_index());
+          IMP_INTERNAL_CHECK(std::find(get_access().begin(),
+                                       get_access().end(), pip)
+                             != get_access().end(),
+                             "Pair " << pip
+                             << " not found in list with coordinates "
+                             << d0 << " and " << d1
+                             << " list is " << get_access());
+        }
+      }
+    }
   }
 }
 
