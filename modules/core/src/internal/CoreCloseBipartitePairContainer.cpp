@@ -33,161 +33,102 @@ CoreCloseBipartitePairContainer
                               double distance,
                               double slack):
   P(a->get_model(), "CoreCloseBipartitePairContainer") {
-  initialize(a,b, NULL, NULL, distance, slack,
-             core::internal::default_cpf(a->get_number_of_particles()
-                                         +b->get_number_of_particles()));
+  std::ostringstream oss;
+  oss << "BCPC " << get_name() << " hierarchy " << this;
+  ObjectKey key=ObjectKey(oss.str());
+  initialize(a,b, -1, -1, distance, slack, key);
 }
 
 CoreCloseBipartitePairContainer
 ::CoreCloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack):
+                                  SingletonContainer *b,
+                                  ParticleIndex cover_a,
+                                  ParticleIndex cover_b,
+                                  ObjectKey key,
+                                  double distance,
+                                  double slack):
   P(a->get_model(), "CoreCloseBipartitePairContainer") {
-  initialize(a,b, NULL, NULL, distance, slack,
-             cpf);
-}
-
-CoreCloseBipartitePairContainer
-::CoreCloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                                  MovedSingletonContainer *ma,
-                                  MovedSingletonContainer *mb,
-                              double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack):
-  P(a->get_model(), "CoreCloseBipartitePairContainer") {
-  initialize(a,b, ma, mb, distance, slack,
-             cpf);
+  initialize(a,b, cover_a, cover_b, distance, slack, key);
 }
 
 void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
-                                             SingletonContainer *b,
-                                                 MovedSingletonContainer*ma,
-                                                 MovedSingletonContainer*mb,
-                                             double distance,
-                                             double slack,
-                                             core::ClosePairsFinder *cpf) {
+                                                 SingletonContainer *b,
+                                                 ParticleIndex cover_a,
+                                                 ParticleIndex cover_b,
+                                                 double distance,
+                                                 double slack,
+                                                 ObjectKey key) {
   initialize_active_container(get_model());
   slack_=slack;
   distance_=distance;
-  a_=a; b_=b;
-  cpf_=cpf;
-  cpf_->set_distance(distance_+2*slack_);
-  first_call_=true;
-  if (ma) {
-    moveda_=ma;
-  } else {
-    moveda_= cpf_->get_moved_singleton_container(a_, slack_);
-  }
-  if (mb) {
-    movedb_=mb;
-  } else {
-    movedb_= cpf_->get_moved_singleton_container(b_, slack_);
+  key_=key;
+  sc_[0]=a;
+  sc_[1]=b;
+  were_close_=false;
+  covers_[0]=cover_a;
+  covers_[1]=cover_b;
+  for (unsigned int i=0; i< 2; ++i) {
+    internal::initialize_particles(sc_[i], key_,
+                                   xyzrs_[i],
+                                   rbs_[i], constituents_,
+                                   rbs_backup_[i], xyzrs_backup_[i]);
   }
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CoreCloseBipartitePairContainer, {
-    moveda_->set_log_level(l);
-    movedb_->set_log_level(l);
   });
 
 ParticlesTemp CoreCloseBipartitePairContainer
 ::get_state_input_particles() const {
-  ParticlesTemp ret(cpf_->get_input_particles(a_->get_particles()));
-  ParticlesTemp retb(cpf_->get_input_particles(b_->get_particles()));
-  ret.insert(ret.end(), retb.begin(), retb.end());
-  if (get_number_of_pair_filters() >0) {
-    ParticlesTemp retc;
-    for (PairFilterConstIterator it= pair_filters_begin();
-         it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
-        retc.insert(retc.end(), cur.begin(), cur.end());
-      }
-    }
-    ret.insert(ret.end(), retc.begin(), retc.end());
-  }
+  ParticlesTemp ret= internal::get_input_particles(get_model(),
+                                                   sc_[0],
+                                                   access_pair_filters(),
+                                                   xyzrs_[0], rbs_[0],
+                                                   constituents_);
+  ParticlesTemp ret1= internal::get_input_particles(get_model(), sc_[1],
+                                                    access_pair_filters(),
+                                                   xyzrs_[1], rbs_[1],
+                                                   constituents_);
+  ret.insert(ret.end(), ret1.begin(), ret1.end());
   return ret;
 }
 
 ContainersTemp CoreCloseBipartitePairContainer
 ::get_state_input_containers() const {
-  ContainersTemp ret= cpf_->get_input_containers(a_->get_particles());
-  ContainersTemp retb= cpf_->get_input_containers(b_->get_particles());
-  ret.insert(ret.end(), retb.begin(), retb.end());
-  ret.push_back(a_);
-  ret.push_back(b_);
-  ret.push_back(moveda_);
-  ret.push_back(movedb_);
-  if (get_number_of_pair_filters() >0) {
-    ParticlesTemp ps(cpf_->get_input_particles(a_->get_particles()));
-    ParticlesTemp psb(cpf_->get_input_particles(b_->get_particles()));
-    ps.insert(ps.end(), psb.begin(), psb.end());
-    ContainersTemp retc;
-    for (PairFilterConstIterator it= pair_filters_begin();
-         it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< ps.size(); ++i) {
-        ContainersTemp cur= (*it)->get_input_containers(ps[i]);
-        retc.insert(retc.end(), cur.begin(), cur.end());
-      }
-    }
-    ret.insert(ret.end(), retc.begin(), retc.end());
-  }
+  ContainersTemp ret(sc_, sc_+2);
   return ret;
 }
 
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(a_);
-  IMP_CHECK_OBJECT(b_);
-  IMP_CHECK_OBJECT(cpf_);
   core::internal::ListLikePairContainer::do_before_evaluate();
-  if (first_call_) {
-    ParticleIndexPairs t= cpf_->get_close_pairs(get_model(),
-                                                a_->get_indexes(),
-                                                b_->get_indexes());
-    core::internal::filter_close_pairs(this, t);
-    moveda_->reset();
-    movedb_->reset();
-    update_list(t);
-    first_call_=false;
-  } else {
-    if (moveda_->get_number_of_particles() != 0
-        || movedb_->get_number_of_particles() != 0) {
-      if ((moveda_->get_number_of_particles()
-           + movedb_->get_number_of_particles())
-          < a_->get_number_of_particles()*.1
-          + b_->get_number_of_particles()*.1) {
-        ParticleIndexPairs ret0= cpf_->get_close_pairs(get_model(),
-                                                       moveda_->get_indexes(),
-                                                       movedb_->get_indexes());
-        ParticleIndexPairs ret1= cpf_->get_close_pairs(get_model(),
-                                                       moveda_->get_indexes(),
-                                                       b_->get_indexes());
-        ParticleIndexPairs ret2= cpf_->get_close_pairs(get_model(),
-                                                       a_->get_indexes(),
-                                                       movedb_->get_indexes());
-        ParticleIndexPairs ret; ret.reserve(ret0.size()
-                                           + ret1.size()+ret2.size());
-        ret.insert(ret.end(), ret0.begin(), ret0.end());
-        ret.insert(ret.end(), ret1.begin(), ret1.end());
-        ret.insert(ret.end(), ret2.begin(), ret2.end());
-        core::internal::filter_close_pairs(this, ret);
-        add_to_list(ret);
-        moveda_->reset_moved();
-        movedb_->reset_moved();
-      } else {
-        ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(),
-                                                      a_->get_indexes(),
-                                                      b_->get_indexes());
-        core::internal::filter_close_pairs(this, ret);
-        update_list(ret);
-        moveda_->reset();
-        movedb_->reset();
-      }
+  // ignore covers for now
+  if (true) {
+    if (were_close_ && !internal::get_if_moved(get_model(), slack_,
+                                               xyzrs_[0], rbs_[0],
+                                               constituents_,
+                                               rbs_backup_[0], xyzrs_backup_[0])
+      && !internal::get_if_moved(get_model(), slack_,
+                                 xyzrs_[1], rbs_[1], constituents_,
+                                 rbs_backup_[1], xyzrs_backup_[1])){
+      // all ok
+    } else {
+      // rebuild
+      internal::reset_moved(get_model(),
+                            xyzrs_[0], rbs_[0], constituents_,
+                            rbs_backup_[0], xyzrs_backup_[0]);
+      internal::reset_moved(get_model(),
+                            xyzrs_[1], rbs_[1], constituents_,
+                            rbs_backup_[1], xyzrs_backup_[1]);
+      ParticleIndexPairs pips;
+      internal::fill_list(get_model(), access_pair_filters(),
+                          key_, slack_+2*distance_, xyzrs_, rbs_,
+                          constituents_, pips);
+      update_list(pips);
     }
+  } else {
+    ParticleIndexPairs none;
+    update_list(none);
   }
 }
 
@@ -200,21 +141,21 @@ void CoreCloseBipartitePairContainer::do_after_evaluate() {
 void CoreCloseBipartitePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "container "
-      << *a_ << " and " << *b_ << std::endl;
+      << sc_[0]->get_name() << " and " << sc_[1]->get_name() << std::endl;
 }
 
 
 ParticlesTemp CoreCloseBipartitePairContainer::get_contained_particles() const {
-  ParticlesTemp ret =cpf_->get_input_particles(a_->get_particles());
-  ParticlesTemp ret0 =cpf_->get_input_particles(b_->get_particles());
-  ret.insert(ret.end(), ret0.begin(), ret0.end());
+  ParticlesTemp ret = sc_[0]->get_particles();
+  ParticlesTemp ret1= sc_[1]->get_particles();
+  ret.insert(ret.end(), ret1.begin(), ret1.end());
   return ret;
 }
 
 ParticleIndexPairs
 CoreCloseBipartitePairContainer::get_all_possible_indexes() const {
-  ParticleIndexes pis= a_->get_all_possible_indexes();
-  ParticleIndexes pjs= b_->get_all_possible_indexes();
+  ParticleIndexes pis= sc_[0]->get_all_possible_indexes();
+  ParticleIndexes pjs= sc_[0]->get_all_possible_indexes();
   ParticleIndexPairs ret; ret.resize(pis.size()*pjs.size());
   for (unsigned int i=0; i< pis.size(); ++i) {
     for (unsigned int j=0; j< pjs.size(); ++j) {

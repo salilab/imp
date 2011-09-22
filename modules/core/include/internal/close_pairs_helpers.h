@@ -11,6 +11,7 @@
 #include "../core_config.h"
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
+#include "grid_close_pairs_impl.h"
 #include "rigid_body_tree.h"
 #include "../XYZR.h"
 #include "CoreListPairContainer.h"
@@ -92,14 +93,7 @@ inline void filter_same(ParticleIndexPairs &c) {
                          SameParticle()),
           c.end());
 }
-inline bool get_filters_contains(Model *m,
-                                 const PairFilters &filters,
-                                 ParticleIndexPair pip) {
-  for (unsigned int i=0; i< filters.size(); ++i) {
-    if (filters[i]->get_contains(m, pip)) return true;
-  }
-  return false;
-}
+
 
 inline bool get_are_close(Model *m, const PairFilters &filters,
                           ParticleIndex a, ParticleIndex b,
@@ -170,9 +164,9 @@ reset_moved(Model *m,
             IMP::compatibility::map<ParticleIndex,
                                             ParticleIndexes>&
             /*constituents_*/,
-            std::vector<algebra::Transformation3D >&
+            algebra::Transformation3Ds&
             rbs_backup_,
-            std::vector<algebra::Vector3D>&xyzrs_backup_) {
+            algebra::Vector3Ds &xyzrs_backup_) {
   xyzrs_backup_.resize(xyzrs_.size());
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     xyzrs_backup_[i]= m->get_sphere(xyzrs_[i]).get_center();
@@ -192,9 +186,9 @@ inline void initialize_particles( SingletonContainer*sc,
                                   IMP::compatibility::map<ParticleIndex,
                                                           ParticleIndexes>&
                                   constituents_,
-                                  std::vector<algebra::Transformation3D >&
+                                  algebra::Transformation3Ds&
                                   rbs_backup_,
-                            std::vector<algebra::Vector3D>&xyzrs_backup_) {
+                                  algebra::Vector3Ds&xyzrs_backup_) {
   IMP_IF_CHECK(USAGE) {
     ParticleIndexes pis = sc->get_indexes();
     IMP::compatibility::set<ParticleIndex> spis(pis.begin(), pis.end());
@@ -274,9 +268,9 @@ get_if_moved(Model *m, double slack_,
              IMP::compatibility::map<ParticleIndex,
                                              ParticleIndexes>&
              /*constituents_*/,
-             std::vector<algebra::Transformation3D >&
+             algebra::Transformation3Ds&
              rbs_backup_,
-             std::vector<algebra::Vector3D>&xyzrs_backup_) {
+             algebra::Vector3Ds&xyzrs_backup_) {
   IMP_INTERNAL_CHECK(xyzrs_.size()== xyzrs_backup_.size(),
                      "Backup is not a backup");
   const double s22= square(slack_/2);
@@ -313,6 +307,149 @@ get_if_moved(Model *m, double slack_,
     }
   }
   return false;
+}
+
+
+
+inline void fill_list(Model *m, const PairFilters &filters,
+                      ObjectKey key_,
+                      double slack_,
+                      ParticleIndexes &xyzrs_,
+                      ParticleIndexes &rbs_,
+                      IMP::compatibility::map<ParticleIndex,
+                                             ParticleIndexes>&
+                      constituents_,
+                      ParticleIndexPairs &cur_list_) {
+  IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
+  /*IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
+    << " on " << sc_->get_name());*/
+  cur_list_.clear();
+  internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
+                         ::get_particle_set(xyzrs_.begin(),
+                                            xyzrs_.end(),0),
+                         internal::ParticleIndexTraits(m, slack_),
+                         internal::ParticleIndexPairSink(m, filters,
+                                                         cur_list_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_.begin(),
+                                          rbs_.end(),0),
+                       internal::ParticleIndexHelper
+                       ::get_particle_set(xyzrs_.begin(),
+                                          xyzrs_.end(),1),
+                       internal::ParticleIndexTraits(m, slack_),
+               internal::RigidBodyParticleParticleIndexPairSink(m,
+                                                                filters,
+                                                                   cur_list_,
+                                                                   key_,
+                                                                   slack_,
+                                                            constituents_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_.begin(),
+                                          rbs_.end(),0),
+                       internal::ParticleIndexTraits(m, slack_),
+               internal::RigidBodyRigidBodyParticleIndexPairSink(m,
+                                                                 filters,
+                                                                 cur_list_,
+                                                                 key_,
+                                                                 slack_,
+                                                             constituents_));
+  IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
+}
+
+
+inline void fill_list(Model *m, const PairFilters &filters,
+                      ObjectKey key_,
+                      double slack_,
+                      ParticleIndexes xyzrs_[],
+                      ParticleIndexes rbs_[],
+                      IMP::compatibility::map<ParticleIndex,
+                                              ParticleIndexes>&
+                      constituents_,
+                      ParticleIndexPairs &cur_list_) {
+  IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
+  /*IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
+    << " on " << sc_->get_name());*/
+  cur_list_.clear();
+  internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
+                         ::get_particle_set(xyzrs_[0].begin(),
+                                            xyzrs_[0].end(),0),
+                         internal::ParticleIndexHelper
+                         ::get_particle_set(xyzrs_[1].begin(),
+                                            xyzrs_[1].end(),0),
+                         internal::ParticleIndexTraits(m, slack_),
+                         internal::ParticleIndexPairSink(m, filters,
+                                                         cur_list_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_[0].begin(),
+                                          rbs_[0].end(),0),
+                       internal::ParticleIndexHelper
+                       ::get_particle_set(xyzrs_[1].begin(),
+                                          xyzrs_[1].end(),1),
+                       internal::ParticleIndexTraits(m, slack_),
+               internal::RigidBodyParticleParticleIndexPairSink(m,
+                                                                filters,
+                                                                   cur_list_,
+                                                                   key_,
+                                                                   slack_,
+                                                            constituents_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(xyzrs_[0].begin(),
+                                          xyzrs_[0].end(),0),
+                       internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_[1].begin(),
+                                          rbs_[1].end(),1),
+                       internal::ParticleIndexTraits(m, slack_),
+               internal::RigidBodyParticleParticleIndexPairSink(m,
+                                                                filters,
+                                                                   cur_list_,
+                                                                   key_,
+                                                                   slack_,
+                                                            constituents_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_[0].begin(),
+                                          rbs_[0].end(),0),
+                       internal::ParticleIndexHelper
+                       ::get_particle_set(rbs_[1].begin(),
+                                          rbs_[1].end(),0),
+                       internal::ParticleIndexTraits(m, slack_),
+               internal::RigidBodyRigidBodyParticleIndexPairSink(m,
+                                                                 filters,
+                                                                    cur_list_,
+                                                                    key_,
+                                                                    slack_,
+                                                             constituents_));
+  IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
+}
+
+
+inline ParticlesTemp
+get_input_particles(Model *m, SingletonContainer *sc_,
+                    const PairFilters &filters_,
+                    const ParticleIndexes &/*xyzrs_*/,
+                    const ParticleIndexes &rbs_,
+                    const IMP::compatibility::map<ParticleIndex,
+                                            ParticleIndexes>&
+                    /*constituents_*/) {
+  ParticlesTemp ret= sc_->get_contained_particles();
+  ParticlesTemp all;
+  for (unsigned int i=0; i< filters_.size(); ++i) {
+    for (unsigned int j=0; j< ret.size(); ++j) {
+      ParticlesTemp cur= filters_[i]->get_input_particles(ret[j]);
+      all.insert(all.end(), cur.begin(), cur.end());
+    }
+  }
+  ret.insert(ret.end(), all.begin(), all.end());
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    ret.push_back(m->get_particle(rbs_[i]));
+  }
+  return ret;
 }
 IMPCORE_END_INTERNAL_NAMESPACE
 

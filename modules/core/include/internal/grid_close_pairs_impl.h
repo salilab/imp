@@ -11,8 +11,8 @@
 #include "../core_config.h"
 #include "../GridClosePairsFinder.h"
 #include "sinks.h"
-#include "IMP/core/QuadraticClosePairsFinder.h"
-#include "IMP/core/XYZR.h"
+#include "../QuadraticClosePairsFinder.h"
+#include "../XYZR.h"
 #include <IMP/algebra/Grid3D.h>
 #include <IMP/core/utility.h>
 
