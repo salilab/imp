@@ -20,7 +20,7 @@ class BallTests(IMP.test.TestCase):
         std= h.get_standard_deviation(center)
         print center, std
         for i in range(0,2):
-            self.assertAlmostEqual(center[i], .5, delta=.01)
+            self.assertAlmostEqual(center[i], .5, delta=.05)
             self.assertAlmostEqual(std[i], .7*1.5, delta=.05)
     def test_sphere(self):
         """Testing the creation of a points on a sphere"""
