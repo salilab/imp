@@ -15,6 +15,15 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+inline bool get_filters_contains(Model *m,
+                                 const PairFilters &filters,
+                                 ParticleIndexPair pip) {
+  for (unsigned int i=0; i< filters.size(); ++i) {
+    if (filters[i]->get_contains(m, pip)) return true;
+  }
+  return false;
+}
+
 struct ParticleSink {
   Model *m_;
   ParticlesTemp &out_;

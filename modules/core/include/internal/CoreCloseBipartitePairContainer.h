@@ -28,25 +28,32 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
 
+    \note Any passed ClosePairsFinder is ignored.
+
     \usesconstraint
  */
 class IMPCOREEXPORT CoreCloseBipartitePairContainer:
 public IMP::core::internal::ListLikePairContainer
 {
   typedef IMP::core::internal::ListLikePairContainer P;
-  IMP::OwnerPointer<SingletonContainer> a_, b_;
-  IMP::OwnerPointer<core::ClosePairsFinder> cpf_;
-  IMP::OwnerPointer<core::internal::MovedSingletonContainer>
-    moveda_, movedb_;
-  bool first_call_;
-  double distance_, slack_;
+  IMP::OwnerPointer<SingletonContainer> sc_[2];
+  bool were_close_;
+  ObjectKey key_;
+  // moved stuff
+  ParticleIndexes rbs_[2];
+  ParticleIndexes xyzrs_[2];
+  IMP::compatibility::map<ParticleIndex, ParticleIndexes> constituents_;
+  double slack_, distance_;
+  algebra::Transformation3Ds rbs_backup_[2];
+  algebra::Vector3Ds xyzrs_backup_[2];
+  ParticleIndex covers_[2];
   IMP_ACTIVE_CONTAINER_DECL(CoreCloseBipartitePairContainer);
   void initialize(SingletonContainer *a,
                   SingletonContainer *b,
-                  MovedSingletonContainer*ma,
-                  MovedSingletonContainer*mb,
-                  double distance,
-                  double slack, core::ClosePairsFinder *cpf);
+                  ParticleIndex cover_a,
+                  ParticleIndex cover_b,
+                  double distance, double slack,
+                  ObjectKey key);
 public:
   //! Get the individual particles from the passed SingletonContainer
   CoreCloseBipartitePairContainer(SingletonContainer *a,
@@ -54,27 +61,15 @@ public:
                               double distance,
                               double slack=1);
 
-  //! Get the individual particles from the passed SingletonContainer
-  CoreCloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
-                              double distance,
-                              core::ClosePairsFinder *cpf,
-                              double slack=1);
 
   //! make sure you know what you are doing
   CoreCloseBipartitePairContainer(SingletonContainer *a,
                                   SingletonContainer *b,
-                                  MovedSingletonContainer*ma,
-                                  MovedSingletonContainer*mb,
+                                  ParticleIndex cover_a,
+                                  ParticleIndex cover_b,
+                                  ObjectKey key,
                                   double distance,
-                                  core::ClosePairsFinder *cpf,
                                   double slack=1);
-
-  core::internal::MovedSingletonContainer*
-    get_moved_singleton_container(unsigned int ab) const {
-    if (ab==0) return moveda_;
-    else return movedb_;
-  }
 
   /** @name Methods to control the set of filters
 
@@ -93,8 +88,8 @@ public:
     if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
       return get_last_update_evaluation() == get_model()->get_evaluation();
     } else {
-      if (!a_->get_is_up_to_date()
-          || !b_->get_is_up_to_date()) return false;
+      if (!sc_[0]->get_is_up_to_date()
+          || !sc_[1]->get_is_up_to_date()) return false;
       return true;
     }
   }

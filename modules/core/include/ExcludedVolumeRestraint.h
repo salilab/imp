@@ -51,8 +51,8 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   mutable ParticleIndexes xyzrs_;
   mutable IMP::compatibility::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_;
-  mutable std::vector<algebra::Transformation3D > rbs_backup_;
-  mutable std::vector<algebra::Vector3D> xyzrs_backup_;
+  mutable algebra::Transformation3Ds rbs_backup_;
+  mutable algebra::Vector3Ds xyzrs_backup_;
 
   void reset_moved() const;
   void initialize() const;

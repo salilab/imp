@@ -125,50 +125,11 @@ fill_list_if_good(double max) const {
   return score;
 }
 
-void ExcludedVolumeRestraint::
-fill_list() const {
+void ExcludedVolumeRestraint::fill_list() const {
   IMP_OBJECT_LOG;
-  IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
-  IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
-          << " on " << sc_->get_name());
-    xyzrs_backup_.clear();
-  rbs_backup_.clear();
-  cur_list_.clear();
-  internal::ParticleIndexHelper
-      ::fill_close_pairs(internal::ParticleIndexHelper
-                         ::get_particle_set(xyzrs_.begin(),
-                                            xyzrs_.end(),0),
-                         internal::ParticleIndexTraits(get_model(), slack_),
-                   internal::ParticleIndexPairSink(get_model(),
-                                                   access_pair_filters(),
-                                                   cur_list_));
-  internal::ParticleIndexHelper
-    ::fill_close_pairs(internal::ParticleIndexHelper
-                       ::get_particle_set(rbs_.begin(),
-                                          rbs_.end(),0),
-                       internal::ParticleIndexHelper
-                       ::get_particle_set(xyzrs_.begin(),
-                                          xyzrs_.end(),1),
-                       internal::ParticleIndexTraits(get_model(), slack_),
-               internal::RigidBodyParticleParticleIndexPairSink(get_model(),
-                                                       access_pair_filters(),
-                                                                   cur_list_,
-                                                                   key_,
-                                                                   slack_,
-                                                            constituents_));
-  internal::ParticleIndexHelper
-    ::fill_close_pairs(internal::ParticleIndexHelper
-                       ::get_particle_set(rbs_.begin(),
-                                          rbs_.end(),0),
-                       internal::ParticleIndexTraits(get_model(), slack_),
-               internal::RigidBodyRigidBodyParticleIndexPairSink(get_model(),
-                                                    access_pair_filters(),
-                                                                    cur_list_,
-                                                                    key_,
-                                                                    slack_,
-                                                             constituents_));
-  IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
-  reset_moved();
+  internal::fill_list(get_model(), access_pair_filters(), key_,
+                      slack_, xyzrs_, rbs_, constituents_,
+                      cur_list_);
   was_bad_=false;
 }
 
@@ -221,6 +182,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
   if (was_bad_ || get_if_moved()>0) {
     cur_list_.clear();
     fill_list();
+    reset_moved();
     recomputed=true;
   }
   double ret=0;
@@ -336,11 +298,9 @@ do_show(std::ostream &) const {
 ParticlesTemp ExcludedVolumeRestraint
 ::get_input_particles() const {
   if (!initialized_) initialize();
-  ParticlesTemp ret= sc_->get_contained_particles();
-  for (unsigned int i=0; i< rbs_.size(); ++i) {
-    ret.push_back(get_model()->get_particle(rbs_[i]));
-  }
-  return ret;
+  return internal::get_input_particles(get_model(),
+                                       sc_, access_pair_filters(),
+                                       xyzrs_, rbs_, constituents_);
 }
 
 ContainersTemp ExcludedVolumeRestraint
@@ -455,20 +415,21 @@ ExcludedVolumeRestraint
   IMP_NEW(RigidClosePairsFinder, rcpf, ());
   PairFiltersTemp pfs(pair_filters_begin(),
                       pair_filters_end());
-  internal::MovedSingletonContainers mscs(bins.size());
+  //internal::MovedSingletonContainers mscs(bins.size());
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       std::ostringstream oss;
       oss << i << " and " << j;
       IMP_NEW(internal::CoreCloseBipartitePairContainer, ccbpc, (bincs[i].get(),
                                                                  bincs[j].get(),
-                                                                 mscs[i],
-                                                                 mscs[j],
+                                                                 /*mscs[i],
+                                                                   mscs[j],*/
+                                                                 -1, -1,
+                                                                 key_,
                                                                  0.0,
-                                                                 rcpf.get(),
                                                                  slack_));
-      mscs[i]= ccbpc->get_moved_singleton_container(0);
-      mscs[j]= ccbpc->get_moved_singleton_container(1);
+      /*mscs[i]= ccbpc->get_moved_singleton_container(0);
+        mscs[j]= ccbpc->get_moved_singleton_container(1);*/
       IMP_NEW(internal::CorePairsRestraint, ev, (ssps_, ccbpc));
       ccbpc->set_pair_filters(pfs);
       ev->set_name(std::string("R")+oss.str());
