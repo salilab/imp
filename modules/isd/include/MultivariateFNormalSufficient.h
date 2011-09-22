@@ -122,9 +122,14 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
 
   void set_Nobs(int f){Nobs_=f;}
 
-  void set_W(Array2D<double> f){W_=f.copy();}
+  void set_W(Array2D<double> f);
 
   void set_Sigma(Array2D<double> f);
+
+  /* speed up calculations with W by considering values smaller than val 
+   * to be zero.
+   */
+  void set_W_nonzero(bool yes, double val=1e-7);
 
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficient, out << "MultivariateFNormalSufficient: " << N_ << " observations of " <<  M_ << " variables " <<std::endl, {});
@@ -147,7 +152,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   /* return P*epsilon*transpose(P*epsilon), O(M^2) */
   Array2D<double> compute_PTP() const;
 
-  /* return P * W * P, O(M^4) */
+  /* return P * W * P, O(M^3) */
   Array2D<double> compute_PWP() const;
 
   /* compute epsilon, W and Fbar, O(N*M^2) */
@@ -159,10 +164,12 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   Array1D<double> FM_, Fbar_, epsilon_;
   Array1D<int> Nobs_;
   double JF_,lJF_,norm_,lnorm_;
-  Array2D<double> P_,W_,Sigma_,FX_ ;
+  Array2D<double> P_,W_,Sigma_,FX_,WP_ ;
   boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > CholeskySigma_;
   int N_; //number of repetitions
   int M_; //number of variables
+  bool W_is_diagonal_;
+  bool W_is_zero_;
 };
 
 IMPISD_END_NAMESPACE

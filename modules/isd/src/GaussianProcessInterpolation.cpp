@@ -92,6 +92,9 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::compute_S(std::vector<double> std,
           std::vector<int> n) 
     { 
+        //if you modify this routine so that
+        //S is not diagonal check the GPIR to make sure it still needs
+        //to call set_W_nonzero of MVN.
         S_ = Array2D<double> (M_,M_,0.0); 
         IMP_LOG(TERSE, "S: ");
         for (unsigned i=0; i<M_; i++) 
