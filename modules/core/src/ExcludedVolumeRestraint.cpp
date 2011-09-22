@@ -24,6 +24,7 @@
 #include <IMP/core/internal/grid_close_pairs_impl.h>
 #include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
+#include <IMP/algebra/eigen_analysis.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -377,6 +378,85 @@ Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   return ret;
 }
 
+namespace {
+  void deposite(Model *m,
+                const ParticleIndexes &s,
+                const IMP::compatibility::map<ParticleIndex, ParticleIndexes>
+                &constituents,
+                unsigned int chunk,
+                IMP::compatibility::checked_vector<ParticleIndexes> &bins) {
+    IMP_INTERNAL_CHECK(!s.empty(), "Empty list");
+    bins.push_back(ParticleIndexes());
+    for (unsigned int i=0; i< s.size(); ++i) {
+      if (bins.back().size() > chunk) {
+        bins.push_back(ParticleIndexes());
+      }
+      if (RigidBody::particle_is_instance(m, s[i])) {
+        bins.back().insert(bins.back().end(),
+                           constituents.find(s[i])->second.begin(),
+                           constituents.find(s[i])->second.end());
+      } else {
+        bins.back().push_back(s[i]);
+      }
+    }
+  }
+  void divide_particles(Model *m,
+                        const ParticleIndexes &s,
+                        const IMP::compatibility::map<ParticleIndex,
+                        ParticleIndexes>
+                        &constituents,
+                        unsigned int chunk,
+                        IMP::compatibility::checked_vector<ParticleIndexes>
+                        &bins) {
+    if (s.size() <chunk) {
+      deposite(m, s, constituents, chunk, bins);
+      return;
+    }
+    IMP_LOG(VERBOSE, "Dividing particles [");
+    IMP_IF_LOG(VERBOSE) {
+      for (unsigned int i=0; i< s.size(); ++i) {
+        IMP_LOG(VERBOSE, "(" << XYZ(m, s[i]).get_coordinates() << ") ");
+      }
+      IMP_LOG(VERBOSE, "]" << std::endl);
+    }
+    algebra::Vector3D minc(std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::max(),
+                           std::numeric_limits<double>::max()),
+      maxc(-std::numeric_limits<double>::max(),
+           -std::numeric_limits<double>::max(),
+           -std::numeric_limits<double>::max());
+    algebra::BoundingBox3D bb;
+    for (unsigned int i=0; i< s.size(); ++i) {
+      algebra::Vector3D pt= m->get_sphere(s[i]).get_center();
+      bb+=pt;
+    }
+    bb+=.1;
+    double side=0;
+    for (unsigned int j=0; j< 3; ++j) {
+      side= std::max(side, (bb.get_corner(1)[j]-bb.get_corner(0)[j])/2.0);
+    }
+    typedef algebra::DenseGrid3D<ParticleIndexes> Grid;
+    Grid grid(side, bb, ParticleIndexes());
+    for (unsigned int i=0; i< s.size(); ++i) {
+      Grid::Index ix= grid.get_nearest_index(m->get_sphere(s[i]).get_center());
+      grid[ix].push_back(s[i]);
+    }
+    for (Grid::AllIndexIterator it= grid.all_indexes_begin();
+       it != grid.all_indexes_end(); ++it) {
+      if (!grid[*it].empty()) {
+        ParticleIndexes cur= grid[*it];
+        if (cur.empty()) continue;
+        if (cur.size() < s.size()) {
+          divide_particles(m, cur, constituents, chunk, bins);
+        } else {
+          deposite(m, cur, constituents, chunk, bins);
+        }
+      }
+    }
+  }
+}
+
+
 Restraints
 ExcludedVolumeRestraint
 ::do_create_incremental_decomposition(unsigned int n) const {
@@ -388,22 +468,22 @@ ExcludedVolumeRestraint
   //std::cout << "Chunks of size " << chunk << std::endl;
   // change chunk here
   IMP::compatibility::checked_vector<ParticleIndexes>
-    bins(1, ParticleIndexes());
-  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
-    bins.back().push_back(xyzrs_[i]);
-    if (bins.back().size() >= chunk) {
-      bins.push_back(ParticleIndexes());
+    bins;
+  ParticleIndexes all=xyzrs_;
+  all.insert(all.end(), rbs_.begin(), rbs_.end());
+  divide_particles(get_model(),
+                   all, constituents_, chunk, bins);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    ParticleIndexes all;
+    for (unsigned int i=0; i< bins.size(); ++i) {
+      all.insert(all.end(), bins[i].begin(), bins[i].end());
     }
+    std::sort(all.begin(), all.end());
+    IMP_INTERNAL_CHECK(std::unique(all.begin(), all.end())==all.end(),
+                    "Not unique in division");
+    IMP_INTERNAL_CHECK(all.size()== sc_->get_number_of_particles(),
+                       "Sizes don't match in division");
   }
-  for (unsigned int i=0; i< rbs_.size(); ++i) {
-    bins.back().insert(bins.back().end(),
-                       constituents_[rbs_[i]].begin(),
-                       constituents_[rbs_[i]].end());
-    if (bins.back().size() >= chunk) {
-      bins.push_back(ParticleIndexes());
-    }
-  }
-  if (bins.back().empty()) bins.pop_back();
   internal::CoreListSingletonContainers bincs;
   for (unsigned int i=0; i< bins.size(); ++i) {
     std::ostringstream oss;
@@ -411,10 +491,21 @@ ExcludedVolumeRestraint
     bincs.push_back(new internal::CoreListSingletonContainer(get_model(),
                                                              oss.str()));
     bincs.back()->set_particles(bins[i]);
+    using IMP::operator<<;
+    //using IMP::compatibility::operator<<;
+    //std::cout << "bin " << i << " is " << bins[i] << std::endl;
   }
-  IMP_NEW(RigidClosePairsFinder, rcpf, ());
   PairFiltersTemp pfs(pair_filters_begin(),
                       pair_filters_end());
+  ParticleIndexes covers(bins.size());
+  for (unsigned int i=0; i< bins.size(); ++i) {
+    IMP_INTERNAL_CHECK(!bins[i].empty(), "empty bin");
+    IMP_NEW(Particle, p, (get_model()));
+    Cover::setup_particle(p,
+                          get_as<XYZs>(IMP::internal::get_particle(get_model(),
+                                                                  bins[i])));
+    covers[i]=p->get_index();
+  }
   //internal::MovedSingletonContainers mscs(bins.size());
   for (unsigned int i=0; i< bins.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
@@ -422,9 +513,8 @@ ExcludedVolumeRestraint
       oss << i << " and " << j;
       IMP_NEW(internal::CoreCloseBipartitePairContainer, ccbpc, (bincs[i].get(),
                                                                  bincs[j].get(),
-                                                                 /*mscs[i],
-                                                                   mscs[j],*/
-                                                                 -1, -1,
+                                                                 covers[i],
+                                                                 covers[j],
                                                                  key_,
                                                                  0.0,
                                                                  slack_));
