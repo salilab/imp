@@ -9,17 +9,15 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_cholesky.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/isd/functions.h>
-
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 IMPISD_BEGIN_NAMESPACE
 #ifndef SWIG
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 #endif
 
 class GaussianProcessInterpolationRestraint;
@@ -35,15 +33,15 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
 {
  public:
      /** Constructor for the gaussian process
-      * \param[in] x : a list of coordinates in N-dimensional space
+      * \param(in) x : a list of coordinates in N-dimensional space
       *                corresponding to the abscissa of each observation
-      * \param[in] sample_mean \f$I\f$ : vector of mean observations at each of
+      * \param(in) sample_mean \f$I\f$ : vector of mean observations at each of
       *                                  the previously defined coordinates
-      * \param[in] sample_std \f$s\f$ : vector of sample standard deviations
-      * \param[in] mean_function \f$m\f$ : a pointer to the prior mean function
+      * \param(in) sample_std \f$s\f$ : vector of sample standard deviations
+      * \param(in) mean_function \f$m\f$ : a pointer to the prior mean function
       *                                    to use.  Should be compatible with
-      *                                    the size of x[i].  
-      * \param[in] covariance_function \f$w\f$: prior covariance function.
+      *                                    the size of x(i).  
+      * \param(in) covariance_function \f$w\f$: prior covariance function.
       *
       * Computes the necessary matrices and inverses when called.
       */
@@ -91,19 +89,19 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
 
  protected:
   //returns updated data vector
-  Array1D<double> get_I() const {return I_;}
+  VectorXd get_I() const {return I_;}
   //returns updated prior mean vector
-  Array1D<double> get_m();
+  VectorXd get_m();
   // returns updated prior covariance vector
-  Array1D<double> get_wx_vector(std::vector<double> xval);
+  VectorXd get_wx_vector(std::vector<double> xval);
   //returns updated data covariance matrix
-  Array2D<double> get_S() const {return S_;}
+  MatrixXd get_S() const {return S_;}
   //returns updated prior covariance matrix
-  Array2D<double> get_W();
+  MatrixXd get_W();
   //returns updated (W+S)^{-1}
-  Array2D<double> get_WS();
+  MatrixXd get_WS();
   //returns updated (W+S)^{-1}(I-m)
-  Array1D<double> get_WSIm();
+  VectorXd get_WSIm();
 
  private:
 
@@ -136,11 +134,10 @@ class IMPISDEXPORT GaussianProcessInterpolation : public Object
     IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
     // pointer to the prior covariance function
     IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
-    Array1D<double> I_,m_,wx_; 
-    Array2D<double> S_,W_,WS_; // WS = (W + S)^{-1}
-    Array1D<double> WSIm_; // WS * (I - m)
+    VectorXd I_,m_,wx_; 
+    MatrixXd S_,W_,WS_; // WS = (W + S)^{-1}
+    VectorXd WSIm_; // WS * (I - m)
     bool flag_m_, flag_m_gpir_, flag_WS_, flag_WSIm_, flag_W_, flag_W_gpir_;
-    boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > Cholesky_;
 
 };
 

@@ -17,9 +17,6 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
-
     GaussianProcessInterpolation::GaussianProcessInterpolation(
                                FloatsList x,
                                std::vector<double> sample_mean,
@@ -79,12 +76,12 @@ using IMP::algebra::internal::TNT::Array2D;
 
   void GaussianProcessInterpolation::compute_I(std::vector<double> mean)
 {
-    I_ = Array1D<double> (M_);
+    I_ = VectorXd (M_);
     IMP_LOG(TERSE, "I: ");
     for (unsigned i=0; i<M_; i++)
     {
-        I_[i] = mean[i];
-        IMP_LOG(TERSE, I_[i] << " ");
+        I_(i) = mean[i];
+        IMP_LOG(TERSE, I_(i) << " ");
     }
     IMP_LOG(TERSE, std::endl);
 }
@@ -95,28 +92,28 @@ using IMP::algebra::internal::TNT::Array2D;
         //if you modify this routine so that
         //S is not diagonal check the GPIR to make sure it still needs
         //to call set_W_nonzero of MVN.
-        S_ = Array2D<double> (M_,M_,0.0); 
+        VectorXd v(M_);
         IMP_LOG(TERSE, "S: ");
         for (unsigned i=0; i<M_; i++) 
         { 
-            S_[i][i] = IMP::square(std[i])/double(n[i]); 
-            IMP_LOG(TERSE, S_[i][i] << " ");
+            v(i) = IMP::square(std[i])/double(n[i]); 
+            IMP_LOG(TERSE, v(i) << " ");
         } 
+        S_ = MatrixXd(v.asDiagonal());
     IMP_LOG(TERSE, std::endl);
     }
 
   double GaussianProcessInterpolation::get_posterior_mean(std::vector<double> x)
 {
-   // std::cerr << "posterior mean at q=" << x[0] << std::endl;
-    Array1D<double> wx(get_wx_vector(x));
-    Array1D<double> WSIm(get_WSIm());
-    double ret=0;
-    for (unsigned i=0; i<M_; i++) ret += wx[i]*WSIm[i];
+   // std::cerr << "posterior mean at q=" << x(0) << std::endl;
+    VectorXd wx(get_wx_vector(x));
+    VectorXd WSIm(get_WSIm());
+    double ret = wx.transpose()*WSIm;
     //std::cerr << "wx : ";
-    //for (unsigned i=0; i<M_; i++) std::cerr << wx[i] << " ";
+    //for (unsigned i=0; i<M_; i++) std::cerr << wx(i) << " ";
     //std::cerr << std::endl << "WSIm : ";
-    //for (unsigned i=0; i<M_; i++) std::cerr << WSIm[i] << " ";
-    //std::cerr << std::endl << "mean func: " << (*mean_function_)(x)[0] 
+    //for (unsigned i=0; i<M_; i++) std::cerr << WSIm(i) << " ";
+    //std::cerr << std::endl << "mean func: " << (*mean_function_,x,0) 
     //    << std::endl;
     return ret + (*mean_function_)(x)[0]; //licit because WSIm is up to date
 }
@@ -124,26 +121,17 @@ using IMP::algebra::internal::TNT::Array2D;
   double GaussianProcessInterpolation::get_posterior_covariance(
           std::vector<double> x1, std::vector<double> x2)
 {
-    //std::cerr << "posterior covariance at q=" << x1[0] << std::endl;
-    Array1D<double> wx(get_wx_vector(x2));
-    Array2D<double> WS(get_WS());
-    Array1D<double> right(M_);
-    for (unsigned i=0; i<M_; i++)
+    //std::cerr << "posterior covariance at q=" << x1(0) << std::endl;
+    VectorXd wx2(get_wx_vector(x2));
+    MatrixXd WS(get_WS());
+    VectorXd wx1;
+    if (x1 != x2)
     {
-        right[i] = 0.0;
-        for (unsigned j=0; j<M_; j++)
-        {
-            right[i] += WS[i][j]*wx[j];
-        }
-        IMP_LOG(TERSE, "   WSwx["<<i<<"] = "<< right[i] << std::endl);
+         wx1=get_wx_vector(x1);
+    } else {
+         wx1=wx2;
     }
-    if (x1 != x2) wx = get_wx_vector(x1);
-    double ret=0;
-    for (unsigned i=0; i<M_; i++)
-    {
-        ret += wx[i]*right[i];
-    }
-    IMP_LOG(TERSE, "   ret = "<<ret<<std::endl);
+    double ret = wx1.transpose()*WS*wx2;
     return (*covariance_function_)(x1,x2)[0] - ret; //licit because WS 
                                                     //is up to date
 }
@@ -178,22 +166,22 @@ using IMP::algebra::internal::TNT::Array2D;
             << std::endl );
 }
 
-  Array1D<double> GaussianProcessInterpolation::get_wx_vector(
+  VectorXd GaussianProcessInterpolation::get_wx_vector(
                                     std::vector<double> xval)
 {
     update_flags_covariance();
     IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
-    wx_ = Array1D<double> (M_);
+    wx_ = VectorXd (M_);
     for (unsigned i=0; i<M_; i++)
     {
-        wx_[i] = (*covariance_function_)(x_[i],xval)[0];
-        IMP_LOG(TERSE, wx_[i] << " ");
+        wx_(i) = (*covariance_function_)(x_[i],xval)[0];
+        IMP_LOG(TERSE, wx_(i) << " ");
     }
     IMP_LOG(TERSE, std::endl);
     return wx_;
 }
 
- Array1D<double> GaussianProcessInterpolation::get_WSIm()
+ VectorXd GaussianProcessInterpolation::get_WSIm()
 {
     IMP_LOG(TERSE, "get_WSIm()" << std::endl);
     update_flags_mean();
@@ -209,25 +197,16 @@ using IMP::algebra::internal::TNT::Array2D;
 
  void GaussianProcessInterpolation::compute_WSIm()
 {
-        Array1D<double> I(get_I());
-        Array1D<double> m(get_m());
-        Array2D<double> WS(get_WS());
+        VectorXd I(get_I());
+        VectorXd m(get_m());
+        MatrixXd WS(get_WS());
 
-        WSIm_ = Array1D<double> (M_);
         IMP_LOG(TERSE, "WSIm ");
-        for (unsigned i=0; i<M_; i++)
-        {
-            WSIm_[i] = 0.0;
-            for (unsigned j=0; j<M_; j++)
-            {
-                WSIm_[i] += WS[i][j] * (I[j] - m[j]);
-            }
-            IMP_LOG(TERSE, WSIm_[i] << " ");
-        }
+        WSIm_ = WS*(I-m);
         IMP_LOG(TERSE, std::endl);
 }
 
-  Array1D<double> GaussianProcessInterpolation::get_m()
+  VectorXd GaussianProcessInterpolation::get_m()
 {
     IMP_LOG(TERSE, "get_m()" << std::endl);
     update_flags_mean();
@@ -242,15 +221,15 @@ using IMP::algebra::internal::TNT::Array2D;
 
   void GaussianProcessInterpolation::compute_m()
 {
-    m_ = Array1D<double> (M_);
+    m_ = VectorXd (M_);
     for (unsigned i=0; i<M_; i++)
     {
-        m_[i] = (*mean_function_)(x_[i])[0];
+        m_(i) = (*mean_function_)(x_[i])[0];
     }
     IMP_LOG(TERSE, std::endl);
 }
 
-  Array2D<double> GaussianProcessInterpolation::get_WS()
+  MatrixXd GaussianProcessInterpolation::get_WS()
 {
     IMP_LOG(TERSE, "get_WS()" << std::endl);
     update_flags_covariance();
@@ -266,38 +245,20 @@ using IMP::algebra::internal::TNT::Array2D;
   void GaussianProcessInterpolation::compute_WS()
 {
     //compute W+S
-    Array2D<double> WpS = get_W().copy();
-    Array2D<double> S(get_S());
-
-    for (unsigned i =0; i<M_; i++) WpS[i][i] += S[i][i];
-    IMP_IF_LOG(TERSE) { 
-            for (unsigned i=0; i<M_; i++) {
-                for (unsigned j=0; j<M_; j++) {
-                    IMP_LOG(TERSE, WpS[i][j] << " ");
-                }
-                IMP_LOG(TERSE, std::endl);
-            }
-            };
+    MatrixXd WpS = get_W() + get_S();
     IMP_LOG(TERSE,"  compute_inverse: Cholesky" << std::endl);
     //compute Cholesky decomp
-    Cholesky_.reset(new algebra::internal::JAMA::Cholesky<double> (WpS));
-    if (!Cholesky_->is_spd()) 
-            IMP_THROW("Matrix is not symmetric positive definite!", 
+    Eigen::LDLT<MatrixXd> ldlt;
+    ldlt.compute(WpS);
+    if (!ldlt.isPositive())
+            IMP_THROW("Matrix is not positive semidefinite!", 
                     ModelException);
     //get inverse
     IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
-    Array2D<double> id(M_,M_,0.0);
-    for (unsigned i=0; i<M_; i++) id[i][i] = 1.0;
-    WS_= Cholesky_->solve(id);
-    for (unsigned i=0; i<M_; i++) {
-        for (unsigned j=0; j<M_; j++) {
-            IMP_LOG(TERSE, "WS[" << i << "][" << j << "]: " 
-                                << WS_[i][j] << std::endl);
-        }
-    }
+    WS_= ldlt.solve(MatrixXd::Identity(M_,M_));
 }
 
-  Array2D<double> GaussianProcessInterpolation::get_W()
+  MatrixXd GaussianProcessInterpolation::get_W()
 {
     IMP_LOG(TERSE, "get_W()" << std::endl);
     update_flags_covariance();
@@ -312,14 +273,14 @@ using IMP::algebra::internal::TNT::Array2D;
 
   void GaussianProcessInterpolation::compute_W()
 {
-    W_ = Array2D<double> (M_,M_);
+    W_ = MatrixXd (M_,M_);
     for (unsigned i=0; i<M_; i++)
     {
-        W_[i][i] = (*covariance_function_)(x_[i],x_[i])[0];
+        W_(i,i) = (*covariance_function_)(x_[i],x_[i])[0];
         for (unsigned j=i+1; j<M_; j++)
         {
-            W_[i][j] = (*covariance_function_)(x_[i],x_[j])[0];
-            W_[j][i] = W_[i][j];
+            W_(i,j) = (*covariance_function_)(x_[i],x_[j])[0];
+            W_(j,i) = W_(i,j);
         }
     }
 }

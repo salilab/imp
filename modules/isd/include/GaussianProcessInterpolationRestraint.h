@@ -9,23 +9,20 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/algebra/internal/tnt_array1d.h>
-#include <IMP/algebra/internal/tnt_array1d_utils.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_lu.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/isd/functions.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
 #include <IMP/internal/OwnerPointer.h>
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 
 IMPISD_BEGIN_NAMESPACE
 #ifndef SWIG
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 #endif
 
 //! gaussian process restraint
