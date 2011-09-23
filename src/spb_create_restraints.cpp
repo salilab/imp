@@ -14,140 +14,148 @@
 using namespace IMP;
 using namespace IMP::membrane;
 
-void create_restraints (Model *m,atom::Hierarchies& all_mol,
+IMPMEMBRANE_BEGIN_NAMESPACE
+
+void spb_assemble_restraints
+(Model *m, atom::Hierarchies& all_mol,
  container::ListSingletonContainer *bCP_ps,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps,
- SPBParameters mydata)
+ SPBParameters myparam)
 {
 //
 // Excluded volume
 //
-add_SPBexcluded_volume(m,all_mol,mydata.kappa);
+add_SPBexcluded_volume(m,all_mol,myparam.kappa);
 //
 // Symmetry
 //
-add_symmetry_restraint(m,all_mol,mydata.trs);
+add_symmetry_restraint(m,all_mol,myparam.trs);
 //
 // Layer restraint
 //
 // CP and below
 add_layer_restraint(m, bCP_ps,
- FloatRange(-1.0e+34,mydata.CP_thickness/2.0),mydata.kappa);
+ FloatRange(-1.0e+34,myparam.CP_thickness/2.0),myparam.kappa);
 // inside CP
 add_layer_restraint(m, CP_ps,
- FloatRange(-mydata.CP_thickness/2.0,mydata.CP_thickness/2.0),
- mydata.kappa);
+ FloatRange(-myparam.CP_thickness/2.0,myparam.CP_thickness/2.0),
+ myparam.kappa);
 // inside IL2
-double dz=mydata.IL2_centers[0][2];
+double dz=myparam.IL2_centers[0][2];
 add_layer_restraint(m, IL2_ps,
- FloatRange(-mydata.IL2_thickness/2.0+dz,mydata.IL2_thickness/2.0+dz),
- mydata.kappa);
+ FloatRange(-myparam.IL2_thickness/2.0+dz,myparam.IL2_thickness/2.0+dz),
+ myparam.kappa);
 //
 // TILT restraint
 //
-if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
- add_tilt(m,all_mol[0],"Spc110p",mydata.tilt,mydata.kappa);
+if(myparam.add_tilt && myparam.protein_list["Spc110p"]){
+ add_tilt(m,all_mol[0],"Spc110p",myparam.tilt,myparam.kappa);
 }
 //
 // FRET
 //
-if(mydata.add_fret){
+if(myparam.add_fret){
 // intra-CP
  add_fret_restraint(m,all_mol[0], "Spc29p",   "C",
                       all_mol,     "Cmd1p",   "C", 1.69,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Spc29p",   "N",
                       all_mol,     "Cmd1p",   "C", 1.75,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0],  "Spc29p",  "C",
                       all_mol,    "Spc110p",  "C", 1.37,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Spc29p",   "C",
                       all_mol,    "Spc42p",   "N", 2.05,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0],  "Cmd1p",   "C",
                       all_mol,    "Spc42p",   "N", 2.07,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0],   "Cmd1p",  "C",
                       all_mol,    "Spc110p",  "C", 2.15,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0],  "Spc42p",  "N",
                       all_mol,    "Spc110p",  "C", 2.02,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
 // inter CP-IL2
 
  add_fret_restraint(m,all_mol[0],  "Spc42p",  "C",
                       all_mol,    "Spc110p",  "C", 1.07,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Cnm67p_c", "C",
                       all_mol,       "Cmd1p", "C", 1.09,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Spc42p",   "C",
                       all_mol,     "Cmd1p",   "C", 1.1,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Cnm67p_c", "C",
                       all_mol,      "Spc29p", "C", 1.1,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Cnm67p_c", "C",
                       all_mol,      "Spc42p", "N", 1.13,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Spc42p",   "C",
                       all_mol,    "Spc29p",   "C", 1.17,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
  add_fret_restraint(m,all_mol[0], "Spc42p",   "C",
                       all_mol,    "Spc42p",   "N", 1.27,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
 
 // intra-IL2
  add_fret_restraint(m,all_mol[0],   "Spc42p", "C",
                       all_mol,    "Cnm67p_c", "C", 2.29,
-                      mydata.kappa, mydata.add_GFP);
+                      myparam.kappa, myparam.add_GFP);
 }
-if(mydata.add_y2h){
 //
 // TWO-HYBRID SCREENING
 //
+if(myparam.add_y2h){
 // CP
  // substitued by link restraint
  //add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
- //                    all_mol, "Spc110p",    IntRange(900,927), mydata.kappa);
+ //                    all_mol, "Spc110p",    IntRange(900,927), myparam.kappa);
  add_y2h_restraint(m,all_mol[0],  "Spc42p",               "N",
-                     all_mol,    "Spc110p",               "C", mydata.kappa);
+                     all_mol,    "Spc110p",               "C", myparam.kappa);
  add_y2h_restraint(m,all_mol[0],  "Spc29p",             "ALL",
-                     all_mol,    "Spc110p", IntRange(811,944), mydata.kappa);
+                     all_mol,    "Spc110p", IntRange(811,944), myparam.kappa);
  add_y2h_restraint(m,all_mol[0], "Spc110p",               "C",
-                     all_mol,    "Spc110p",               "C", mydata.kappa);
+                     all_mol,    "Spc110p",               "C", myparam.kappa);
  add_y2h_restraint(m,all_mol[0],  "Spc42p",   IntRange(1,138),
-                     all_mol,     "Spc29p",             "ALL", mydata.kappa);
+                     all_mol,     "Spc29p",             "ALL", myparam.kappa);
 // Having a rigid coiled-coil, this is always satisfied
 // add_y2h_restraint(m,all_mol[0], "Spc42p",     IntRange(1,138),
-//                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
+//                     all_mol, "Spc42p",     IntRange(1,138), myparam.kappa);
 // IL2
  add_y2h_restraint(m,all_mol[0], "Cnm67p_c",             "C",
-                     all_mol,      "Spc42p",             "C", mydata.kappa);
+                     all_mol,      "Spc42p",             "C", myparam.kappa);
 }
 //
 // Add link between Spc110p_C and Cmd1p
-  add_link(m,all_mol[0],   "Cmd1p",             "ALL",
-             all_mol,    "Spc110p", IntRange(900,927),mydata.kappa);
+//
+add_link(m,all_mol[0],   "Cmd1p",             "ALL",
+             all_mol,    "Spc110p", IntRange(900,927),myparam.kappa);
+//
 // Add link with GFPs
-if(mydata.add_GFP){
+//
+if(myparam.add_GFP){
   add_link(m,all_mol[0],      "Spc110p", "C",
-             all_mol,   "Spc110p-C-GFP", "N", mydata.kappa);
+             all_mol,   "Spc110p-C-GFP", "N", myparam.kappa);
   add_link(m,all_mol[0],        "Cmd1p", "N",
-             all_mol,     "Cmd1p-N-GFP", "C", mydata.kappa);
+             all_mol,     "Cmd1p-N-GFP", "C", myparam.kappa);
   add_link(m,all_mol[0],        "Cmd1p", "C",
-             all_mol,     "Cmd1p-C-GFP", "N", mydata.kappa);
+             all_mol,     "Cmd1p-C-GFP", "N", myparam.kappa);
   add_link(m,all_mol[0],       "Spc42p", "N",
-             all_mol,    "Spc42p-N-GFP", "C", mydata.kappa);
+             all_mol,    "Spc42p-N-GFP", "C", myparam.kappa);
   add_link(m,all_mol[0],       "Spc42p", "C",
-             all_mol,    "Spc42p-C-GFP", "N", mydata.kappa);
+             all_mol,    "Spc42p-C-GFP", "N", myparam.kappa);
   add_link(m,all_mol[0],       "Spc29p", "N",
-             all_mol,    "Spc29p-N-GFP", "C", mydata.kappa);
+             all_mol,    "Spc29p-N-GFP", "C", myparam.kappa);
   add_link(m,all_mol[0],       "Spc29p", "C",
-             all_mol,    "Spc29p-C-GFP", "N", mydata.kappa);
+             all_mol,    "Spc29p-C-GFP", "N", myparam.kappa);
   add_link(m,all_mol[0],     "Cnm67p_c", "C",
-             all_mol,  "Cnm67p_c-C-GFP", "N", mydata.kappa);
+             all_mol,  "Cnm67p_c-C-GFP", "N", myparam.kappa);
 }
 }
+
+IMPMEMBRANE_END_NAMESPACE

@@ -67,7 +67,7 @@ core::Movers mvs;
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
 //
-// RESTART from individual rmf file
+// restart from individual rmf file
 if(mydata.file_list.size()>0){
  if(myrank==0){std::cout << "Restart from file" << std::endl;}
  load_restart(all_mol,mydata);
@@ -87,7 +87,7 @@ RMF::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
 //
 // Create Restraints
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
-create_restraints(m,all_mol,bCP_ps,CP_ps,IL2_ps,mydata);
+spb_assemble_restraints(m,all_mol,bCP_ps,CP_ps,IL2_ps,mydata);
 
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}

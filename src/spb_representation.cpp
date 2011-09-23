@@ -563,6 +563,7 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
    rmf::load_frame(rh,iframe-1,hs[i]);
   }
  }
+
 }
 
 IMPMEMBRANE_END_NAMESPACE
