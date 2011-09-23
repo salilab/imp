@@ -54,16 +54,17 @@ int*    index=create_indexes(nproc);
 
 // create a new model
 IMP_NEW(Model,m,());
-//
-// PROTEIN REPRESENTATION
-//
-if(myrank==0) {std::cout << "Creating representation" << std::endl;}
+
 // List of particles for layer restraint
 IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC
 core::Movers mvs;
+//
+// PROTEIN REPRESENTATION
+//
+if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
 //
@@ -87,7 +88,7 @@ RMF::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
 //
 // Create Restraints
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
-spb_assemble_restraints(m,all_mol,bCP_ps,CP_ps,IL2_ps,mydata);
+spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}

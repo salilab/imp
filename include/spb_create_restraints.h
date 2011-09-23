@@ -1,6 +1,6 @@
 /**
- *  \file spb_representation.h
- *  \brief SPB Representation
+ *  \file spb_create_restraints.h
+ *  \brief SPB create restraints
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
@@ -16,11 +16,10 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT void spb_assemble_restraints
-(Model *m, atom::Hierarchies& all_mol,
-container::ListSingletonContainer *bCP_ps,
-container::ListSingletonContainer *CP_ps,
-container::ListSingletonContainer *IL2_ps,
-SPBParameters myparam);
+(Model *m, SPBParameters mydata, atom::Hierarchies& all_mol,
+ container::ListSingletonContainer *bCP_ps,
+ container::ListSingletonContainer *CP_ps,
+ container::ListSingletonContainer *IL2_ps);
 
 IMPMEMBRANE_END_NAMESPACE
 
