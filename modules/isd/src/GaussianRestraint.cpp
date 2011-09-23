@@ -46,14 +46,20 @@ void GaussianRestraint::check_particles()
 {
     IMP_IF_CHECK(USAGE) {
         if (isx_) 
+        {
             IMP_USAGE_CHECK(Nuisance::particle_is_instance(px_),
                     "x particle should be a Nuisance!");
+        }
         if (ismu_) 
+        {
             IMP_USAGE_CHECK(Nuisance::particle_is_instance(pmu_),
                     "mu particle should be a Nuisance!");
+        }
         if (issigma_) 
+        {
             IMP_USAGE_CHECK(Scale::particle_is_instance(psigma_),
                     "sigma particle should be a Scale!");
+        }
     }
 }
 
