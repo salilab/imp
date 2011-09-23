@@ -30,31 +30,6 @@ class Tests(IMP.test.TestCase):
         r=IMP.core.ExcludedVolumeRestraint(lsc, 1)
         m.add_restraint(r)
         return (m, rb0, rb1, l0, l1)
-    def test_weighted_excluded_volume_restraint(self):
-        """Check that excluded volume works"""
-        (m, rb0, rb1, l0, l1)= self._setup()
-        rb1.set_coordinates_are_optimized(True)
-        IMP.set_log_level(IMP.SILENT)#VERBOSE)
-        #mc= IMP.core.MonteCarlo(m)
-        #mv = IMP.core.RigidBodyMover(rb1, 500, .2)
-        #mv.set_log_level(IMP.VERBOSE)
-        #mc.add_mover(mv)
-        #mc.optimize(100)
-        for i in range(48,58):
-            tr= IMP.algebra.Transformation3D(IMP.algebra.Vector3D(i,0,0))
-            nrf=IMP.algebra.ReferenceFrame3D(tr)
-            rb0.set_reference_frame(nrf)
-            s=m.evaluate(False)
-            print "score is", s
-            IMP.atom.write_pdb(l0, "a"+str(i)+".pdb")
-            IMP.atom.write_pdb(l1, "b"+str(i)+".pdb")
-            if s == 0:
-                break
-        print "Final score", m.evaluate(False)
-        mr= IMP.core.RigidMembersRefiner()
-        hub= IMP.core.HarmonicUpperBoundSphereDistancePairScore(6, 1)
-        kcp= IMP.core.KClosePairsPairScore(hub, mr)
-        self.assertEqual(kcp.evaluate((rb0, rb1), None), 0)
     def test_filters(self):
         """Test filters on excluded volume"""
         m = IMP.Model()
