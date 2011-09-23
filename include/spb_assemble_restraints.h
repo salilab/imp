@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPMEMBRANE_SPB_TEST_H
-#define IMPMEMBRANE_SPB_TEST_H
+#ifndef IMPMEMBRANE_SPB_ASSEMBLE_RESTRAINTS_H
+#define IMPMEMBRANE_SPB_ASSEMBLE_RESTRAINTS_H
 #include "membrane_config.h"
 #include <IMP.h>
 #include <IMP/atom.h>
@@ -24,4 +24,4 @@ IMPMEMBRANEEXPORT void spb_assemble_restraints
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_SPB_TEST_H */
+#endif  /* IMPMEMBRANE_SPB_ASSEMBLE_RESTRAINTS_H */
