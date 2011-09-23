@@ -17,41 +17,38 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
-
-MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double>
-        FX, double JF, Array1D<double> FM, Array2D<double> Sigma) :
+MultivariateFNormalSufficient::MultivariateFNormalSufficient( 
+        MatrixXd FX, double JF, VectorXd FM, MatrixXd Sigma) :
     Object("Multivariate Normal distribution %1%")
 {
-        N_=FX.dim1();
-        M_=FX.dim2(); 
+        N_=FX.rows();
+        M_=FX.cols(); 
         IMP_LOG(TERSE, "MVN: direct init with N=" << N_ 
                 << " and M=" << M_ << std::endl);
         IMP_USAGE_CHECK( N_ > 0, 
             "please provide at least one observation per dimension");
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
-        FM_=FM.copy();
+        FM_=FM;
         set_W_nonzero(false);
         set_FX(FX); //also computes W, Fbar and epsilon.
         set_JF(JF);
         set_Sigma(Sigma); //computes the Cholesky decomp.
 }
 
-MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
-        Fbar, double JF, Array1D<double> FM, int Nobs,  Array2D<double> W,
-        Array2D<double> Sigma) : Object("Multivariate Normal distribution %1%")
+MultivariateFNormalSufficient::MultivariateFNormalSufficient(
+        VectorXd Fbar, double JF, VectorXd FM, int Nobs,  MatrixXd W,
+        MatrixXd Sigma) : Object("Multivariate Normal distribution %1%")
 {
         N_=Nobs;
-        M_=Fbar.dim1();
+        M_=Fbar.rows();
         IMP_LOG(TERSE, "MVN: sufficient statistics init with N=" << N_ 
                 << " and M=" << M_ << std::endl);
         IMP_USAGE_CHECK( N_ > 0, 
             "please provide at least one observation per dimension");
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
-        FM_=FM.copy();
+        FM_=FM;
         W_is_diagonal_ = false;
         W_is_zero_ = false;
         set_Fbar(Fbar); //also computes epsilon
@@ -79,71 +76,36 @@ double MultivariateFNormalSufficient::evaluate() const
       return e;
   }
 
-Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
+VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
 { 
       // d(-log(p))/d(FM) = - N * P * epsilon
       IMP_LOG(TERSE, "MVN: evaluate_derivative_FM() = " << std::endl);
-      Array1D<double> retval(M_);
-      for (int i=0; i<M_; i++) {
-          retval[i]=0.0;
-          for (int j=0; j<M_; j++) {
-              retval[i] += - N_*P_[i][j]*epsilon_[j];
-          }
-      }
-      return retval;
+      return -N_ * P_ * epsilon_;
 }
 
-  Array2D<double> MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
+  MatrixXd MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
   { 
       //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - P W P)
       IMP_LOG(TERSE, "MVN: evaluate_derivative_Sigma() = " << std::endl);
-      Array2D<double> ptp(compute_PTP());  //O(M^2)
-      Array2D<double> pwp(compute_PWP()); //O(M^4), can be easily optimized
-      Array2D<double> R(M_,M_);
-      for (int i=0; i<M_; i++){
-          for (int j=0; j<M_; j++){
-              R[i][j] = 0.5*(N_*(P_[i][j] - ptp[i][j]) - pwp[i][j]);
-          }
-      }
-      return R;
+      MatrixXd ptp(compute_PTP());  //O(M^2)
+      MatrixXd pwp(compute_PWP()); //O(M^4), can be easily optimized
+      MatrixXd R(M_,M_);
+      return 0.5*(N_*(P_-ptp)-pwp);
 
   }
   
-  bool MultivariateFNormalSufficient::are_equal(Array1D<double> A,
-                 Array1D<double> B) const 
-   {
-      if (A.dim1() != B.dim1()) return false;
-      for (int i=0; i<A.dim1(); i++){
-              if (A[i] != B[i]) return false;
-      }
-      return true;
-  }
-
-  bool MultivariateFNormalSufficient::are_equal(Array2D<double> A,
-                 Array2D<double> B) const 
-   {
-      if (A.dim1() != B.dim1()) return false;
-      if (A.dim2() != B.dim2()) return false;
-      for (int i=0; i<A.dim1(); i++){
-          for (int j=0; j<A.dim2(); j++){
-              if (A[i][j] != B[i][j]) return false;
-          }
-      }
-      return true;
-  }
-
-  void MultivariateFNormalSufficient::set_FX(Array2D<double> FX) 
+  void MultivariateFNormalSufficient::set_FX(MatrixXd FX) 
   {
-    if (!are_equal(FX,FX_)){
-        if (FX.dim1() != N_) {
+    if (FX.rows() != FX_.rows() || FX.cols() != FX_.cols() || FX != FX_){
+        if (FX.rows() != N_) {
             IMP_THROW("size mismatch for FX in the number of repetitions: got " 
-                    << FX.dim1() << " instead of "<<N_, ModelException);
+                    << FX.rows() << " instead of "<<N_, ModelException);
             }
-        if (FX.dim2() != M_) {
+        if (FX.cols() != M_) {
             IMP_THROW("size mismatch for FX in the number of variables: got " 
-                    <<FX.dim2() << " instead of "<<M_, ModelException);
+                    <<FX.cols() << " instead of "<<M_, ModelException);
             }
-        FX_=FX.copy();
+        FX_=FX;
         IMP_LOG(TERSE, "MVN:   set FX to new matrix"<< std::endl);
         compute_sufficient_statistics();
     }
@@ -156,75 +118,72 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
     IMP_LOG(TERSE, "MVN:   set JF = " << JF_ << " lJF_ = " << lJF_ <<std::endl);
   }
 
-  void MultivariateFNormalSufficient::set_FM(Array1D<double> FM) 
+  void MultivariateFNormalSufficient::set_FM(VectorXd FM) 
   {
-    if (!are_equal(FM,FM_)){
-        if (FM.dim1() != M_) {
+    if (FM.rows() != FM_.rows() || FM.cols() != FM_.cols() || FM != FM_){
+        if (FM.rows() != M_) {
             IMP_THROW("size mismatch for FM: got "
-                    <<FM.dim1() << " instead of " << M_, ModelException);
+                    <<FM.rows() << " instead of " << M_, ModelException);
             }
-        FM_=FM.copy();
+        FM_=FM;
         IMP_LOG(TERSE, "MVN:   set FM to new vector" << std::endl);
         compute_epsilon();
     }
   }
 
-  void MultivariateFNormalSufficient::set_Fbar(Array1D<double> Fbar) 
+  void MultivariateFNormalSufficient::set_Fbar(VectorXd Fbar) 
   {
-    if (!are_equal(Fbar,Fbar_)){
-        if (Fbar.dim1() != M_) {
+    if (Fbar.rows() != Fbar_.rows() || Fbar.cols() != Fbar_.cols() 
+            || Fbar != Fbar_){
+        if (Fbar.rows() != M_) {
             IMP_THROW("size mismatch for Fbar: got "
-                    << Fbar.dim1() << " instead of " << M_, ModelException);
+                    << Fbar.rows() << " instead of " << M_, ModelException);
             }
-        Fbar_=Fbar.copy();
+        Fbar_=Fbar;
         IMP_LOG(TERSE, "MVN:   set Fbar to new vector" << std::endl);
         compute_epsilon();
     }
   }
 
-  void MultivariateFNormalSufficient::set_Sigma(Array2D<double> Sigma)  
+  void MultivariateFNormalSufficient::set_Sigma(MatrixXd Sigma)  
   {
-    if (!are_equal(Sigma,Sigma_)) {
-        if (Sigma.dim2() != Sigma.dim1()) {
+    if (Sigma.rows() != Sigma_.rows() || Sigma.cols() != Sigma_.cols() 
+            || Sigma != Sigma_){
+        if (Sigma.cols() != Sigma.rows()) {
             IMP_THROW("need a square matrix!", ModelException);
             }
         Sigma_=Sigma;
+        //std::cout << "Sigma: " << Sigma_ << std::endl << std::endl;
         IMP_LOG(TERSE, "MVN:   set Sigma to new matrix" << std::endl);
         IMP_LOG(TERSE, "MVN:   computing Cholesky decomposition" << std::endl);
         // compute Cholesky decomposition for determinant and inverse
-        CholeskySigma_.reset(new algebra::internal::JAMA::Cholesky<double> 
-                (Sigma_));
-        if (!CholeskySigma_->is_spd())
-            IMP_THROW("Sigma matrix is not symmetric positive definite!", 
+        Eigen::LDLT<MatrixXd> ldlt;
+        ldlt.compute(Sigma_);
+        if (!ldlt.isPositive())
+            IMP_THROW("Sigma matrix is not positive semidefinite!", 
                     ModelException);
         // determinant and derived constants
-        double logDetSigma=0;
-        Array2D<double> L(CholeskySigma_->getL());
-        for (int i=0; i<M_; i++) logDetSigma += std::log(L[i][i]);
-        logDetSigma *= 2;
+        MatrixXd L(ldlt.matrixU());
+        //std::cout << "L: " << L << std::endl << std::endl;
+        //std::cout << "D: " << ldlt.vectorD() << std::endl << std::endl;
+        double logDetSigma=2*L.diagonal().array().log().sum() 
+                           + ldlt.vectorD().array().log().sum();
         IMP_LOG(TERSE, "MVN:   det(Sigma) = " << exp(logDetSigma) << std::endl);
         norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) 
                     * exp(-double(N_)/2.0*logDetSigma);
         lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * logDetSigma;
         IMP_LOG(TERSE, "MVN:   norm = " << norm_ << " lnorm = " 
                 << lnorm_ << std::endl);
-        //inverse (taken from TNT website)
+        //inverse
         IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
-        Array2D<double> id(M_, M_, 0.0);
-        for (int i=0; i<M_; i++) id[i][i] = 1.0;
-        P_=CholeskySigma_->solve(id);
+        P_=ldlt.solve(MatrixXd::Identity(M_,M_));
         ////WP
         //IMP_LOG(TERSE, "MVN:   solving for WP" << std::endl);
-        //Array2D<double> WP_(M_, M_);
+        //MatrixXd WP_(M_, M_);
         //WP_=CholeskySigma_->solve(W_);
         IMP_LOG(TERSE, "MVN:   done" << std::endl);
     }
   }
-
-  void MultivariateFNormalSufficient::set_W(Array2D<double> f)
-{
-    W_=f.copy();
-}
 
   void MultivariateFNormalSufficient::set_W_nonzero(bool yes, double val)
 {
@@ -239,7 +198,7 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
         {
             for (int j=0; j<M_; j++)
             {
-                if (std::abs(W_[i][j]) > val)
+                if (std::abs(W_(i,j)) > val)
                 {
                     if ((i!=j) && W_is_diagonal_) W_is_diagonal_ = false;
                     if (W_is_zero_) W_is_zero_ = false;
@@ -258,13 +217,9 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
       {
           if (W_is_diagonal_)
           {
-              for (int i=0; i<M_; i++) trace += W_[i][i]*P_[i][i];
+              trace=W_.diagonal().transpose()*P_.diagonal();
           } else {
-              for (int i=0; i<M_; i++){
-                  for (int j=0; j<M_; j++){
-                      trace += W_[i][j]*P_[i][j];
-                  }
-              }
+              trace = (W_.array() * P_.array()).sum();
           }
       }
       IMP_LOG(TERSE, "MVN:   trace(WP) = " << trace << std::endl);
@@ -273,79 +228,30 @@ Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
  
   double MultivariateFNormalSufficient::mean_dist() const
 {
-    double dist=0;
-    for (int i=0; i<M_; i++){
-        for (int j=0; j<M_; j++){
-            dist += epsilon_[i]*P_[i][j]*epsilon_[j];
-        }
-    }
+    double dist = epsilon_.transpose()*P_*epsilon_;
     IMP_LOG(TERSE, "MVN:   mean_dist = " << dist << std::endl);
     return dist;
 }
 
-  Array2D<double> MultivariateFNormalSufficient::compute_PTP() const 
+  MatrixXd MultivariateFNormalSufficient::compute_PTP() const 
 {
-  //compute P*epsilon
   IMP_LOG(TERSE, "MVN:   computing PTP" << std::endl);
-  Array1D<double> peps(M_);
-  for (int i=0; i<M_; i++){
-      peps[i] = 0.0;
-      for (int j=0; j<M_; j++){
-          peps[i] += P_[i][j]*epsilon_[j];
-      }
-  }
-  //compute peps*trans(peps)
-  Array2D<double> R(M_,M_);
-  for (int i=0; i<M_; i++){
-      for (int j=0; j<M_; j++){
-          R[i][j] = peps[i]*peps[j];
-      }
-  }
-  IMP_LOG(TERSE, "MVN:   done" << std::endl);
-  return R;
+  VectorXd peps(M_);
+  peps = P_*epsilon_;
+  return peps*peps.transpose();
 }
 
-Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
+MatrixXd MultivariateFNormalSufficient::compute_PWP() const
 {
       //compute PWP
       IMP_LOG(TERSE, "MVN:   computing PWP" << std::endl);
-      Array2D<double> R(M_,M_,0.0);
-      if (W_is_zero_)
-      {
-          for (int i=0; i<M_; i++){
-            for (int j=0; j<M_; j++){
-                R[i][j] = 0.0;
-            }
-          }
-      } else {
+      MatrixXd R(MatrixXd::Zero(M_,M_));
+      if (!W_is_zero_) {
           if (W_is_diagonal_)
           {
-              for (int i=0; i<M_; i++){
-                for (int j=0; j<M_; j++){
-                    R[i][j] = 0.0;
-                    for (int k=0; k<M_; k++){
-                        R[i][j] += P_[i][k]*W_[k][k]*P_[k][j];
-                    }
-                }
-              }
+              R = P_*W_.diagonal().asDiagonal()*P_;
           } else {
-              Array2D<double> WP(M_,M_);
-              for (int k=0; k<M_; k++){
-                for (int j=0; j<M_; j++){
-                    WP[k][j] = 0.0;
-                    for (int l=0; l<M_; l++){
-                        WP[k][j] += W_[k][l]*P_[l][j];
-                    }
-                }
-              }
-              for (int i=0; i<M_; i++){
-                for (int j=0; j<M_; j++){
-                    R[i][j] = 0.0;
-                    for (int k=0; k<M_; k++){
-                        R[i][j] += P_[i][k]*WP[k][j];
-                    }
-                }
-              }
+              R = P_*W_*P_;
           }
       }
       IMP_LOG(TERSE, "MVN:   done" << std::endl);
@@ -355,40 +261,19 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
   void MultivariateFNormalSufficient::compute_sufficient_statistics()
 {
     IMP_LOG(TERSE, "MVN:   computing sufficient statistics" << std::endl);
-    Fbar_ = Array1D<double> (M_,0.0);
-    for (int j=0; j<M_; j++){
-        for (int i=0; i<N_; i++){
-            Fbar_[j] += FX_[i][j];
-        }
-        Fbar_[j] = Fbar_[j]/N_;
-    }
+    Fbar_ = FX_.colwise().mean();
     compute_epsilon();
     //
-    W_ = Array2D<double> (M_,M_,0.0);
-    for (int k=0; k<N_; k++){
-        for (int i=0; i<M_; i++){
-            double aik = FX_[k][i] - Fbar_[i];
-            for (int j=0; j<=i; j++){
-                double ajk=FX_[k][j] - Fbar_[j];
-                W_[i][j] += aik*ajk;
-            }
-        }
-    }
-    for (int i=0; i<M_; i++){
-        for (int j=i+1; j<M_; j++){
-            W_[i][j] = W_[j][i];
-        }
-    }
+    MatrixXd A(N_,M_);
+    A = FX_.rowwise() - Fbar_.transpose();
+    W_ = A.transpose()*A;
     IMP_LOG(TERSE, "MVN:   done sufficient statistics" << std::endl);
 }
 
 void MultivariateFNormalSufficient::compute_epsilon()
 {
     IMP_LOG(TERSE, "MVN:      computing epsilon" << std::endl);
-    epsilon_ = Array1D<double> (M_);
-    for (int i=0; i<M_; i++){
-        epsilon_[i] = Fbar_[i] - FM_[i];
-    }
+    epsilon_ = Fbar_ - FM_;
     IMP_LOG(TERSE, "MVN:      done epsilon" << std::endl);
 }
 

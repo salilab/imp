@@ -12,16 +12,13 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_cholesky.h>
-#include <boost/scoped_ptr.hpp>
+#include <Eigen/Dense>
+#include <Eigen/Cholesky>
 
 
 IMPISD_BEGIN_NAMESPACE
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
+using Eigen::MatrixXd;
+using Eigen::VectorXd;
 
 //! MultivariateFNormalSufficient
 /** Probability density function and -log(p) of multivariate normal
@@ -40,7 +37,7 @@ using IMP::algebra::internal::TNT::Array2D;
  *  where
  *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad 
  *  \overline{F(x)} = \frac{1}{N} \sum_{i=1}^N F(x_i)\f]
- *  \f[ W = \sum_{i=1}^N (F(x_i) - \overline{F(x)}){}^t(F(x_i) - \overline{F(x)}) \f]
+ *  \f( W = \sum_{i=1}^N (F(x_i) - \overline{F(x)}){}^t(F(x_i) - \overline{F(x)}) \f)
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
@@ -79,25 +76,25 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
 {
  public:
      /** Initialize with all observed data
- * \param[in] F(X) matrix of observations with M columns and N rows.
- * \param[in] J(F) determinant of Jacobian of F with respect to observation matrix X. 
- * \param[in] F(M) mean vector \f$F(\mu)\f$ of size M.
- * \param[in] Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
+ * \param(in) F(X) matrix of observations with M columns and N rows.
+ * \param(in) J(F) determinant of Jacobian of F with respect to observation matrix X. 
+ * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
+ * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
  * */
-  MultivariateFNormalSufficient(Array2D<double> FX, double JF, 
-            Array1D<double> FM, Array2D<double> Sigma);
+  MultivariateFNormalSufficient(MatrixXd FX, double JF, 
+            VectorXd FM, MatrixXd Sigma);
 
      /** Initialize with sufficient statistics
- * \param[in] Fbar : M-dimensional vector of mean observations.
- * \param[in] J(F) determinant of Jacobian of F with respect to observation matrix X. 
- * \param[in] F(M) : M-dimensional true mean vector \f$\mu\f$.
- * \param[in] Nobs : number of observations for each variable.
- * \param[in] W : MxM matrix of sample variance-covariances.
- * \param[in] Sigma : MxM variance-covariance matrix Sigma.
+ * \param(in) Fbar : M-dimensional vector of mean observations.
+ * \param(in) J(F) determinant of Jacobian of F with respect to observation matrix X. 
+ * \param(in) F(M) : M-dimensional true mean vector \f$\mu\f$.
+ * \param(in) Nobs : number of observations for each variable.
+ * \param(in) W : MxM matrix of sample variance-covariances.
+ * \param(in) Sigma : MxM variance-covariance matrix Sigma.
  * */
-  MultivariateFNormalSufficient(Array1D<double> Fbar, double JF, 
-            Array1D<double> FM, int Nobs,  Array2D<double> W, 
-            Array2D<double> Sigma);
+  MultivariateFNormalSufficient(VectorXd Fbar, double JF, 
+            VectorXd FM, int Nobs,  MatrixXd W, 
+            MatrixXd Sigma);
 
   /* probability density function */
   double density() const;
@@ -106,25 +103,23 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   double evaluate() const;
 
   /* gradient of the energy wrt the mean F(M) */
-  Array1D<double> evaluate_derivative_FM() const;
+  VectorXd evaluate_derivative_FM() const;
 
   /* gradient of the energy wrt the variance-covariance matrix Sigma */
-  Array2D<double> evaluate_derivative_Sigma() const;
-  
+  MatrixXd evaluate_derivative_Sigma() const;
+
   /* change of parameters */
-  void set_FX(Array2D<double> f);
+  void set_FX(MatrixXd f);
 
   void set_JF(double f);
 
-  void set_FM(Array1D<double> f);
+  void set_FM(VectorXd f);
 
-  void set_Fbar(Array1D<double> f);
+  void set_Fbar(VectorXd f);
 
-  void set_Nobs(int f){Nobs_=f;}
+  void set_W(MatrixXd f) {W_=f;}
 
-  void set_W(Array2D<double> f);
-
-  void set_Sigma(Array2D<double> f);
+  void set_Sigma(MatrixXd f);
 
   /* speed up calculations with W by considering values smaller than val 
    * to be zero.
@@ -136,13 +131,6 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
 
  private:
 
-  /* compare two matrices */
-  bool are_equal(Array1D<double> A,
-                 Array1D<double> B) const;
-
-  bool are_equal(Array2D<double> A,
-                 Array2D<double> B) const;
-
   /* return trace(W.P), O(M^2) */
   double trace_WP() const;
 
@@ -150,10 +138,10 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   double mean_dist() const;
 
   /* return P*epsilon*transpose(P*epsilon), O(M^2) */
-  Array2D<double> compute_PTP() const;
+  MatrixXd compute_PTP() const;
 
   /* return P * W * P, O(M^3) */
-  Array2D<double> compute_PWP() const;
+  MatrixXd compute_PWP() const;
 
   /* compute epsilon, W and Fbar, O(N*M^2) */
   void compute_sufficient_statistics();
@@ -161,11 +149,9 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   /*computes the discrepancy vector*/
   void compute_epsilon();
 
-  Array1D<double> FM_, Fbar_, epsilon_;
-  Array1D<int> Nobs_;
+  VectorXd FM_, Fbar_, epsilon_;
   double JF_,lJF_,norm_,lnorm_;
-  Array2D<double> P_,W_,Sigma_,FX_,WP_ ;
-  boost::scoped_ptr<algebra::internal::JAMA::Cholesky<double> > CholeskySigma_;
+  MatrixXd P_,W_,Sigma_,FX_,WP_ ;
   int N_; //number of repetitions
   int M_; //number of variables
   bool W_is_diagonal_;

@@ -9,15 +9,11 @@
 #include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/jama_lu.h>
 #include <boost/scoped_ptr.hpp>
 
 IMPISD_BEGIN_NAMESPACE
-
-using IMP::algebra::internal::TNT::Array1D;
-using IMP::algebra::internal::TNT::Array2D;
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
         GaussianProcessInterpolation *gpi) : gpi_(gpi)
@@ -76,20 +72,20 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
 
     if (accum)
     {
-        Array1D<double> dmv = mvn_->evaluate_derivative_FM();
+        VectorXd dmv = mvn_->evaluate_derivative_FM();
         //derivatives for mean particles
         for (unsigned i=0; i<M_; i++)
         {
-            DerivativeAccumulator a(*accum, dmv[i]);
+            DerivativeAccumulator a(*accum, dmv(i));
             gpi_->mean_function_->add_to_derivatives(gpi_->x_[i], a);
         }
         //derivatives for covariance particles
-        Array2D<double> dmvS = mvn_->evaluate_derivative_Sigma();
+        MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
         for (unsigned k=0; k<M_; k++)
         {
             for (unsigned l=0; l<M_; l++)
             {
-                DerivativeAccumulator a(*accum, dmvS[k][l]);
+                DerivativeAccumulator a(*accum, dmvS(k,l));
                 gpi_->covariance_function_->add_to_derivatives(
                         gpi_->x_[k],gpi_->x_[l], a);
             }
