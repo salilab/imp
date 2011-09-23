@@ -23,13 +23,13 @@ rh = RMF.create_rmf_file(tfn)
 my_kc= rh.add_category("my data");
 
 # add the hierarchy to the file
-RMF.add_hierarchy(rh, h)
+IMP.rmf.add_hierarchy(rh, h)
 
 # change a coordinate
 IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 
 # add the new configuration to the file as frame 1
-RMF.save_frame(rh, 1, h)
+IMP.rmf.save_frame(rh, 1, h)
 
 # create my key
 my_key= get_key(rh, "my score", True, my_kc)
