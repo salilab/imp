@@ -90,6 +90,14 @@ ContainersTemp CoreClosePairContainer
 
 ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
   ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
+  ParticlesTemp all;
+  for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
+    for (unsigned int j=0; j< ret.size(); ++j) {
+      ParticlesTemp cur= get_pair_filter(i)->get_input_particles(ret[j]);
+      all.insert(all.end(), cur.begin(), cur.end());
+    }
+  }
+  ret.insert(ret.end(), all.begin(), all.end());
   return ret;
 }
 
