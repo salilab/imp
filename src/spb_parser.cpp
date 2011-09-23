@@ -10,6 +10,7 @@
 #include <IMP/membrane.h>
 #include <string>
 
+using namespace IMP;
 using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE

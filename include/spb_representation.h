@@ -16,7 +16,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT atom::Hierarchies create_representation
-(Model *m, SPBParameters mydata,
+(Model *m, membrane::SPBParameters mydata,
 container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps,
@@ -45,12 +45,12 @@ int nbeads,display::Color colore,int copy,
 algebra::Vector3D x0,int offset=0);
 
 IMPMEMBRANEEXPORT void load_restart
- (atom::Hierarchies& all_mol,SPBParameters mydata);
+ (atom::Hierarchies& all_mol, membrane::SPBParameters mydata);
 
 IMPMEMBRANEEXPORT atom::Molecule create_GFP
  (Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
- core::Movers& mvs, SPBParameters mydata);
+ core::Movers& mvs, membrane::SPBParameters mydata);
 
 IMPMEMBRANE_END_NAMESPACE
 
