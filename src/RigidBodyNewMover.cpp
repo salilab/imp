@@ -30,20 +30,30 @@ ParticlesTemp RigidBodyNewMover::propose_move(Float f) {
     double fc =rand(random_number_generator);
     if (fc > f) return ParticlesTemp();
   }
+
   last_transformation_= d_.get_reference_frame().get_transformation_to();
-  algebra::VectorD<3> tr_x
-    = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
-                                                      max_x_translation_));
-  algebra::VectorD<3> tr_y
-    = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
-                                                      max_y_translation_));
-  algebra::VectorD<3> tr_z
-    = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
-                                                      max_z_translation_));
+  algebra::VectorD<3> coord = d_.get_coordinates();
+
+  algebra::VectorD<3> tr_x= coord;
+  if(max_x_translation_>0.0){
+   tr_x =
+    algebra::get_random_vector_in(algebra::Sphere3D(coord,max_x_translation_));
+  }
+
+  algebra::VectorD<3> tr_y= coord;
+  if(max_y_translation_>0.0){
+   tr_y =
+    algebra::get_random_vector_in(algebra::Sphere3D(coord,max_y_translation_));
+  }
+
+  algebra::VectorD<3> tr_z= coord;
+  if(max_z_translation_>0.0){
+   tr_z =
+    algebra::get_random_vector_in(algebra::Sphere3D(coord,max_z_translation_));
+  }
 
   algebra::VectorD<3> translation
     = algebra::VectorD<3>(tr_x[0],tr_y[1],tr_z[2]);
-
 
   algebra::VectorD<3> axis =
     algebra::get_random_vector_on(algebra::Sphere3D(algebra::VectorD<3>(0.0,

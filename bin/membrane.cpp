@@ -76,15 +76,17 @@ Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
 //mc->set_use_incremental_evaluate(true);
 
-// sampling
-if(myrank==0) {std::cout << "Sampling" << std::endl;}
-
-// high temperature short run
-mc->set_kt(mydata.MC.tmax);
-if(mydata.MC.nhot>0) mc->optimize(mydata.MC.nhot);
-// reset temperature
+// hot steps
+if(mydata.MC.nhot>0){
+ if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
+ mc->set_kt(mydata.MC.tmax);
+ mc->optimize(mydata.MC.nhot);
+}
+// set temperature
 mc->set_kt(temp[index[myrank]]);
 
+// sampling
+if(myrank==0) {std::cout << "Sampling" << std::endl;}
 // Monte Carlo loop
 for(int imc=0;imc<mydata.MC.nsteps;++imc)
 {
