@@ -24,7 +24,9 @@ struct SPBParameters {
  double       kappa;
  double       tilt;
  double       resolution;
+ double       cutoff;
  std::string  cell_type;
+ std::string  trajfile;
  int          num_cells;
  int          num_copies;
  algebra::Vector3Ds CP_centers;

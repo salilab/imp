@@ -12,6 +12,7 @@
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/container.h>
+#include <IMP/membrane/spb_main.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 

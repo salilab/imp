@@ -45,6 +45,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  std::string load_Spc110p;
  std::string load_Cmd1p;
  std::string load_Cnm67p_c;
+ std::string trajfile;
  std::map<std::string,std::string> file_list;
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
@@ -64,13 +65,13 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  desc.add_options()("add_GFP",      value<bool>(&add_GFP),          "ciao");
  desc.add_options()("use_GFP_structure",
   value<bool>(&use_GFP_structure), "ciao");
- desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer), "ciao");
- desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
- desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
- desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
- desc.add_options()("load_Cmd1p",value<std::string>(&load_Cmd1p), "ciao");
- desc.add_options()("load_Cnm67p_c",value<std::string>(&load_Cnm67p_c),"ciao");
-
+ desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
+ desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
+ desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
+ desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
+ desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
+ desc.add_options()("load_Cnm67p_c", value<std::string>(&load_Cnm67p_c),"ciao");
+ desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -88,6 +89,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  OPTION(double, wte_gamma);
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
+ OPTION(double, cutoff);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -128,6 +130,9 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.use_structure=use_structure;
  ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
+// Postprocess parameters
+ ret.trajfile=trajfile;
+ ret.cutoff=cutoff;
 // restraint
  ret.add_fret=add_fret;
  ret.add_y2h=add_y2h;

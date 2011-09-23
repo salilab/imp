@@ -40,14 +40,44 @@ core::Movers mvs;
 std::cout << "Creating representation" << std::endl;
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
-
 //
 // CREATING RESTRAINTS
+//
 std::cout << "Creating restraints" << std::endl;
 spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 
-// here we need to reload the trajectory
-// and if a configuration is good enough, do a small coniugate gradient run
+// here we reload the trajectory
+// and if a configuration is good enough,
+// we do a small coniugate gradient run
+RMF::RootHandle rh = RMF::open_rmf_file(mydata.trajfile);
+atom::Hierarchies hhs;
+for(unsigned int i=0;i<all_mol.size();++i){
+ atom::Hierarchies hs=all_mol[i].get_children();
+ for(unsigned int j=0;j<hs.size();++j) {hhs.push_back(hs[j]);}
+}
+rmf::set_hierarchies(rh, hhs);
+// getting key for score
+RMF::Category my_kc= rh.add_category("my data");
+RMF::FloatKey my_key=rh.get_float_key(my_kc,"my score");
+
+// number of frames
+unsigned int nframes=rmf::get_number_of_frames(rh,hhs[0]);
+
+for(int imc=0;imc<nframes;++imc)
+{
+// retrieve score
+ double myscore = rh.get_value(my_key,imc);
+ std::cout << imc << " " << myscore << std::endl;
+// if good enough, load configuration from file
+ if(myscore<mydata.cutoff){
+  for(unsigned int i=0;i<all_mol.size();++i){
+   atom::Hierarchies hs=all_mol[i].get_children();
+   for(unsigned int j=0;j<hs.size();++j) {
+    rmf::load_frame(rh,imc,hs[j]);
+   }
+  }
+ }
+}
 
 return 0;
 }

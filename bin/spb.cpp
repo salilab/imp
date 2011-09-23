@@ -84,9 +84,9 @@ for(unsigned int i=0;i<all_mol.size();++i){
 // adding key for score
 RMF::Category my_kc= rh.add_category("my data");
 RMF::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
-
 //
-// Create Restraints
+// CREATING RESTRAINTS
+//
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
 spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 
