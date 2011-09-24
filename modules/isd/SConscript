@@ -2,11 +2,11 @@ Import('env')
 import scons_tools.dependency 
 
 scons_tools.dependency.add_external_library(env,
-    "Eigen", ['m'],
-    "Eigen/Eigen")
+    "eigen3", ['m'],
+    "eigen3/Eigen/Eigen")
 
 
 env.IMPModuleBuild(version='SVN',
        required_modules=['kernel', 'container', 'core', 'atom', 'em',
        'statistics', 'saxs'], 
-       required_dependencies=['Eigen'])
+       required_dependencies=['eigen3'])
