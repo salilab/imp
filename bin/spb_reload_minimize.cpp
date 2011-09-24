@@ -72,6 +72,9 @@ for(unsigned int i=0;i<all_mol.size();++i){
 RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
 unsigned int nminimized=0;
 
+// Optimized
+IMP_NEW(core::ConjugateGradients,cg,(m));
+
 for(int imc=0;imc<nframes;++imc)
 {
 // retrieve score
@@ -86,6 +89,7 @@ for(int imc=0;imc<nframes;++imc)
    }
   }
 // do coniugate gradient
+  cg->do_optimize(mydata.cg_steps);
 
   double myscore_min = m->evaluate(false);
   std::cout << nminimized << " " << imc << " " << myscore

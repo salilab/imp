@@ -90,6 +90,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
  OPTION(double, cutoff);
+ OPTION(int,    cg_steps);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -134,6 +135,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
 // Postprocess parameters
  ret.trajfile=trajfile;
  ret.cutoff=cutoff;
+ ret.cg_steps=cg_steps;
 
 // restraint
  ret.add_fret=add_fret;
