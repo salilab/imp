@@ -130,13 +130,16 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.use_structure=use_structure;
  ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
+
 // Postprocess parameters
  ret.trajfile=trajfile;
  ret.cutoff=cutoff;
+
 // restraint
  ret.add_fret=add_fret;
  ret.add_y2h=add_y2h;
  ret.add_tilt=add_tilt;
+
 // protein_list
  ret.protein_list["Spc42p"]=add_Spc42p;
  ret.protein_list["Spc29p"]=add_Spc29p;
