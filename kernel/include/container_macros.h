@@ -204,7 +204,7 @@ void add_##lcnames(List objs) {                                         \
     Data obj= lcname##_vector_[osz+i];                                  \
     unsigned int index(osz+i);                                          \
     OnAdd;                                                              \
-    if (false) {obj=obj; index=index;}                                  \
+    IMP_UNUSED(obj); IMP_UNUSED(index);                                 \
   }                                                                     \
   lcname##_handle_change();                                             \
 }                                                                       \
