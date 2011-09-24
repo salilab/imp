@@ -31,6 +31,7 @@ struct SPBParameters {
  int          cg_steps;
  int          nrep;
  int          niter;
+ int          chunk;
  int          num_cells;
  int          num_copies;
  algebra::Vector3Ds CP_centers;

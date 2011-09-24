@@ -59,7 +59,6 @@ for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // adding key for score
 RMF::Category my_kc= rh_out.add_category("my data");
 RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
-unsigned int nminimized=0;
 //
 std::ofstream logfile;
 logfile.open("log.emin");
@@ -73,6 +72,9 @@ IMP_NEW(core::ConjugateGradients,cg,(m));
 IMP_NEW(ConfigurationSet,cset,(m));
 
 std::cout << "Minimizing good configurations" << std::endl;
+std::vector<unsigned> counter;
+unsigned int nminimized=0;
+
 // cycle on all iterations
 for(unsigned iter=0;iter<mydata.niter;++iter){
  std::vector<RMF::RootHandle> rhs;
@@ -116,6 +118,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     cset->save_configuration();
    }
   }
+  if(imc%mydata.chunk==0){counter.push_back(nminimized);}
  }
 }
 std::cout << "Number of good configurations " << nminimized << std::endl;

@@ -94,6 +94,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
  OPTION(int,    niter);
+ OPTION(int,    chunk);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -142,6 +143,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.nrep=nrep;
  ret.niter=niter;
  ret.clustergrid=clustergrid;
+ ret.chunk=chunk;
 
 // restraint
  ret.add_fret=add_fret;
