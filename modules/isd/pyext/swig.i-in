@@ -28,7 +28,6 @@ IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
 IMP_SWIG_OBJECT(IMP::isd, NuisanceRangeModifier, NuisanceRangeModifiers);
 IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
-IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, UnivariateFunction, UnivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Linear1DFunction, Linear1DFunctions);
@@ -84,7 +83,6 @@ def create_model_and_particles():
 %include "IMP/isd/TALOSRestraint.h"
 %include "IMP/isd/LogicalORRestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
-%include "IMP/isd/RegularRepulsiveDistancePairScore.h"
 %include "IMP/isd/AmbiguousRestraint.h"
 %include "IMP/isd/functions.h"
 %include "IMP/isd/GaussianProcessInterpolation.h"
