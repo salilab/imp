@@ -28,6 +28,8 @@ struct SPBParameters {
  std::string  cell_type;
  std::string  trajfile;
  int          cg_steps;
+ int          nrep;
+ int          niter;
  int          num_cells;
  int          num_copies;
  algebra::Vector3Ds CP_centers;

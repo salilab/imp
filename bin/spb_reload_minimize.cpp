@@ -40,69 +40,72 @@ core::Movers mvs;
 std::cout << "Creating representation" << std::endl;
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
-//
-// CREATING RESTRAINTS
-//
-std::cout << "Creating restraints" << std::endl;
-spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
-
-// here we reload the trajectory
-// and if a configuration is good enough,
-// we do a small coniugate gradient run
-RMF::RootHandle rh = RMF::open_rmf_file(mydata.trajfile+".rmf");
 atom::Hierarchies hhs;
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {hhs.push_back(hs[j]);}
 }
-rmf::set_hierarchies(rh, hhs);
-// getting key for score
-RMF::Category my_kc= rh.add_category("my data");
-RMF::FloatKey my_key=rh.get_float_key(my_kc,"my score");
-// number of frames
-unsigned int nframes=rmf::get_number_of_frames(rh,hhs[0]);
-
+//
+// CREATING RESTRAINTS
+//
+std::cout << "Creating restraints" << std::endl;
+spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
+//
 // PREPARE OUTPUT FILE
-RMF::RootHandle rh_out = RMF::create_rmf_file(mydata.trajfile+"_minimized.rmf");
-for(unsigned int i=0;i<all_mol.size();++i){
- atom::Hierarchies hs=all_mol[i].get_children();
- for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh_out, hs[j]);}
-}
+//
+RMF::RootHandle rh_out = RMF::create_rmf_file("traj_minimized.rmf");
+for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // adding key for score
+RMF::Category my_kc= rh_out.add_category("my data");
 RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
 unsigned int nminimized=0;
-
-// Optimized
+//
+// OPTIMIZER
+//
 IMP_NEW(core::ConjugateGradients,cg,(m));
 
-for(int imc=0;imc<nframes;++imc)
-{
-// retrieve score
- double myscore = rh.get_value(my_key,imc);
-// if good enough...
- if(myscore<mydata.cutoff){
-// load configuration from file
-  for(unsigned int i=0;i<all_mol.size();++i){
-   atom::Hierarchies hs=all_mol[i].get_children();
-   for(unsigned int j=0;j<hs.size();++j) {
-    rmf::load_frame(rh,imc,hs[j]);
-   }
-  }
-// do coniugate gradient
-  cg->do_optimize(mydata.cg_steps);
+// cycle on all iterations
+for(unsigned iter=0;iter<mydata.niter;++iter){
+ std::vector<RMF::RootHandle> rhs;
+ std::stringstream iter_str;
+ iter_str << iter;
+ for(unsigned irep=0;irep<mydata.nrep;++irep){
+  std::stringstream irep_str;
+  irep_str << irep;
+  rhs.push_back(RMF::open_rmf_file(mydata.trajfile+irep_str.str()+
+                                   "_"+iter_str.str()+".rmf"));
+  rmf::set_hierarchies(rhs[irep], hhs);
+ }
+ // getting key for score
+ RMF::Category my_kc= rhs[0].add_category("my data");
+ RMF::FloatKey my_key=rhs[0].get_float_key(my_kc,"my score");
+// number of frames
+ unsigned int nframes=rmf::get_number_of_frames(rhs[0],hhs[0]);
 
-  double myscore_min = m->evaluate(false);
-  std::cout << nminimized << " " << imc << " " << myscore
-   << " " << myscore_min << std::endl;
+//
+ for(unsigned int imc=0;imc<nframes;++imc){
+  for(unsigned irep=0;irep<mydata.nrep;++irep){
+ // retrieve score
+   double myscore = rhs[irep].get_value(my_key,imc);
+// if good enough...
+   if(myscore<mydata.cutoff){
+// load configuration from file
+    for(unsigned int i=0;i<hhs.size();++i){
+     rmf::load_frame(rhs[irep],imc,hhs[i]);
+    }
+// do coniugate gradient
+    cg->do_optimize(mydata.cg_steps);
+    double myscore_min = m->evaluate(false);
+    std::cout << nminimized << " " << imc << " " <<
+     myscore << " " << myscore_min << std::endl;
 // write to file
-  rh_out.set_value(my_key_out,myscore_min,nminimized);
-  for(unsigned int i=0;i<all_mol.size();++i){
-   atom::Hierarchies hs=all_mol[i].get_children();
-   for(unsigned int j=0;j<hs.size();++j){
-    rmf::save_frame(rh_out,nminimized,hs[j]);
+    rh_out.set_value(my_key_out,myscore_min,nminimized);
+    for(unsigned int i=0;i<hhs.size();++i){
+     rmf::save_frame(rh_out,nminimized,hhs[i]);
+    }
+    ++nminimized;
    }
   }
-  ++nminimized;
  }
 }
 
