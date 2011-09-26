@@ -23,8 +23,9 @@ if not env.GetOption('help'):
     else:
         config.append('IMP_BIG_ENDIAN')
 
-    if env.get("BOOST_VERSION", None):
-        config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
+    if env['versionchecks']:
+        if env.get("BOOST_VERSION", None):
+            config.append(["IMP_BOOST_VERSION", env["BOOST_VERSION"]])
     if env.get("IMP_COMPILER_NULLPTR"):
         config.append(["IMP_DEFINE_NULLPTR", 0])
     else:

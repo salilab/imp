@@ -149,7 +149,7 @@ namespace internal {
         #print "processing", d
         nm=scons_tools.dependency.get_dependency_string(d)
         _add_use(env, h, nm)
-        if dta.dependencies[d].version:
+        if env['versionchecks'] and dta.dependencies[d].version:
             _add_version(env, h, nm,
                          dta.dependencies[d].version,
                          dta.dependencies[d].versionheader,

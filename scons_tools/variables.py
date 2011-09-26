@@ -25,6 +25,7 @@ def _propagate_variables(env):
             env['PYTHON']=env['python']
     else:
         env['IMP_PROVIDE_PYTHON']=False
+        env['PYTHON']="python"
     env['IMP_PROVIDE_PYTHON']= env['python']
     env['IMP_USE_PLATFORM_FLAGS']= env['platformflags']
     env['IMP_USE_RPATH']= env['rpath']
@@ -190,6 +191,13 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('wine',
                           'Build using MS Windows tools via Wine emulation',
                           False))
+    vars.Add(BoolVariable('versionchecks',
+                          "By default IMP checks the versions of its dependencies a"
+                          "runtime. This is useful to ensure that there are no link "
+                          "problems and to avoid very difficult to track down errors. "
+                          "In some scenarios, these cannot be implemented properly and "
+                          "need to be disabled. If you don't have a good reason, leave "
+                          "this on.", True))
     vars.Add(EnumVariable('build',
                           "Set to 'release' for a normal build," \
                           +" 'debug' to disable optimization," \
