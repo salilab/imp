@@ -9,10 +9,11 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_INTERNAL_VECTOR_PROPERTY_MAP_H
-#define IMP_INTERNAL_VECTOR_PROPERTY_MAP_H
+#ifndef IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
+#define IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H
 
 #include "compatibility_config.h"
+#include <boost/version.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -21,4 +22,4 @@
 #endif
 
 
-#endif  /* IMP_INTERNAL_VECTOR_PROPERTY_MAP_H */
+#endif  /* IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H */
