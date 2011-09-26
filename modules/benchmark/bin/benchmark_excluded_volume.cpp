@@ -6,7 +6,6 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
-#include <IMP/multifit/ComplementarityRestraint.h>
 #include <IMP/container.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -19,7 +18,11 @@ using namespace IMP::benchmark;
 using namespace IMP::container;
 using namespace IMP::atom;
 using namespace IMP::container;
+
+#ifdef IMP_BENCHMARK_USE_IMP_MULTIFIT
+#include <IMP/multifit/ComplementarityRestraint.h>
 using namespace IMP::multifit;
+#endif
 
 /** One bringing slowly together and one jumping around randomly, with
     all pairs, pair container, evr and evaluate if good or not for each
