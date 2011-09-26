@@ -5,10 +5,11 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_COMPATIBILITY_SET_H
-#define IMP_COMPATIBILITY_SET_H
+#ifndef IMPKERNEL_COMPATIBILITY_SET_H
+#define IMPKERNEL_COMPATIBILITY_SET_H
 
 #include "compatibility_config.h"
+#include <boost/version.hpp>
 
 // creates warnings in clang and we only use clang for diagnostics anyway
 #if BOOST_VERSION > 103500 && !defined(__clang__)
@@ -53,4 +54,4 @@ public:
 
 IMP_END_COMPATIBILITY_NAMESPACE
 
-#endif  /* IMP_COMPATIBILITY_SET_H */
+#endif  /* IMPKERNEL_COMPATIBILITY_SET_H */
