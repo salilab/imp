@@ -33,7 +33,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
   IMP::benchmark::report(name, runtime, num);
 }
 
-int main(int argc, char *[]) {
+int main(int , char *[]) {
   IMP_NEW(Model, m, ());
   for (unsigned int i=0; i< 10; ++i) {
     IMP_NEW(Particle, p, (m));
