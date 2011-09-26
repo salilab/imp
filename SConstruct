@@ -72,7 +72,7 @@ if not env.GetOption('help'):
     # Make these objects available to SConscript files:
 
 
-first=["kernel", "modules", "applications", "biological_systems"]
+first=["modules", "applications", "biological_systems"]
 last=["doc"]
 reordered=[]
 reordered_last=[]

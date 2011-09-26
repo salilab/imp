@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- the source for the kernel has been moved from \c kernel to \c modules/kernel. This is unlikely to effect anyone.
 - IMP::core::ExcludedVolumeRestraint now supports filters
 - IMP::domino::HDF5AssignmentTable now caches internally, which makes it several times faster than before.
 - you can now pick which python to use with the \c python argument to scons.

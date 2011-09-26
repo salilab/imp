@@ -1,0 +1,50 @@
+/**
+ *  \file key_helpers.h    \brief helpers for declaring keys.
+ *
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef IMP_INTERNAL_KEY_HELPERS_H
+#define IMP_INTERNAL_KEY_HELPERS_H
+
+#include "../kernel_config.h"
+#include "../compatibility/map.h"
+#include <vector>
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+/** \internal The data concerning keys.
+  */
+struct IMPEXPORT KeyData
+{
+  typedef IMP::compatibility::map<std::string, int> Map;
+  typedef std::vector<std::string> RMap;
+
+  void show(std::ostream &out= std::cout) const;
+  KeyData();
+  void assert_is_initialized() const;
+  unsigned int add_key(std::string str) {
+    unsigned int i= rmap_.size();
+    map_[str]=i;
+    rmap_.push_back(str);
+    return i;
+  }
+  unsigned int add_alias(std::string str, unsigned int i) {
+    IMP_INTERNAL_CHECK(rmap_.size() > i, "The aliased key doesn't exist");
+    map_[str]=i;
+    return i;
+  }
+  const Map &get_map() const {return map_;}
+  const RMap &get_rmap() const {return rmap_;}
+
+private:
+  double heuristic_;
+  Map map_;
+  RMap rmap_;
+};
+
+IMPEXPORT KeyData& get_key_data(unsigned int index);
+
+IMP_END_INTERNAL_NAMESPACE
+
+#endif  /* IMP_INTERNAL_KEY_HELPERS_H */
