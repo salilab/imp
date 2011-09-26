@@ -15,7 +15,7 @@ HDF5Group::HDF5Group(HDF5SharedHandle *h): h_(h) {
 
 // create from possibly group
 HDF5Group::HDF5Group(HDF5Group parent, std::string name) {
-  h_= new HDF5SharedHandle(H5Gopen(parent.h_->get_hid(), name.c_str(),
+  h_= new HDF5SharedHandle(H5Gopen2(parent.h_->get_hid(), name.c_str(),
                                    H5P_DEFAULT), &H5Gclose);
 }
 HDF5Group HDF5Group::add_child(std::string name) {

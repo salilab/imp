@@ -221,7 +221,7 @@ namespace RMF {
         32));*/
       IMP_HDF5_CALL(H5Pset_deflate(plist, 9));
       //std::cout << "creating..." << name << std::endl;
-      data_->h_.open(H5Dcreate(parent->get_hid(),
+      data_->h_.open(H5Dcreate2(parent->get_hid(),
                                name.c_str(),
                                TypeTraits::get_hdf5_disk_type(),
                                ds, H5P_DEFAULT, plist, H5P_DEFAULT),
@@ -235,7 +235,7 @@ namespace RMF {
       IMP_RMF_USAGE_CHECK(H5Lexists(parent->get_hid(),
                                     name.c_str(), H5P_DEFAULT),
                           "Data set " << name << " does not exist");
-      data_->h_.open(H5Dopen(parent->get_hid(),
+      data_->h_.open(H5Dopen2(parent->get_hid(),
                              name.c_str(), H5P_DEFAULT),
                      &H5Dclose);
       //HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
@@ -259,7 +259,7 @@ namespace RMF {
       IMP_RMF_USAGE_CHECK(H5Lexists(file,
                                     name.c_str(), H5P_DEFAULT),
                           "Data set " << name << " does not exist");
-      data_->h_.open(H5Dopen(file,
+      data_->h_.open(H5Dopen2(file,
                              name.c_str(), H5P_DEFAULT),
                      &H5Dclose);
       //HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
