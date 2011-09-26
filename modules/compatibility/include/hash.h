@@ -5,8 +5,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_INTERNAL_HASH_H
-#define IMP_INTERNAL_HASH_H
+#ifndef IMPCOMPATIBILITY_INTERNAL_HASH_H
+#define IMPCOMPATIBILITY_INTERNAL_HASH_H
 
 #include "compatibility_config.h"
 
@@ -24,4 +24,4 @@
 #include <boost/graph/adjacency_list.hpp>
 
 
-#endif  /* IMP_INTERNAL_HASH_H */
+#endif  /* IMPCOMPATIBILITY_INTERNAL_HASH_H */

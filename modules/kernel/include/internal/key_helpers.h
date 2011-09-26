@@ -5,12 +5,12 @@
  *
  */
 
-#ifndef IMP_INTERNAL_KEY_HELPERS_H
-#define IMP_INTERNAL_KEY_HELPERS_H
+#ifndef IMPKERNEL_INTERNAL_KEY_HELPERS_H
+#define IMPKERNEL_INTERNAL_KEY_HELPERS_H
 
 #include "../kernel_config.h"
-#include "../compatibility/map.h"
-#include <vector>
+#include <IMP/compatibility/map.h>
+#include <IMP/compatibility/checked_vector.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
@@ -18,7 +18,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 struct IMPEXPORT KeyData
 {
   typedef IMP::compatibility::map<std::string, int> Map;
-  typedef std::vector<std::string> RMap;
+  typedef IMP::compatibility::checked_vector<std::string> RMap;
 
   void show(std::ostream &out= std::cout) const;
   KeyData();
@@ -47,4 +47,4 @@ IMPEXPORT KeyData& get_key_data(unsigned int index);
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INTERNAL_KEY_HELPERS_H */
+#endif  /* IMPKERNEL_INTERNAL_KEY_HELPERS_H */

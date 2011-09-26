@@ -5,20 +5,20 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPKERNEL_COMPATIBILITY_SET_H
-#define IMPKERNEL_COMPATIBILITY_SET_H
+#ifndef IMPCOMPATIBILITY_SET_H
+#define IMPCOMPATIBILITY_SET_H
 
 #include "compatibility_config.h"
 #include <boost/version.hpp>
 
 // creates warnings in clang and we only use clang for diagnostics anyway
 #if BOOST_VERSION > 103500 && !defined(__clang__)
-#define IMP_USE_BOOST_SET 1
+#define IMPCOMPATIBILITY_USE_BOOST_SET 1
 #else
-#define IMP_USE_BOOST_SET 0
+#define IMPCOMPATIBILITY_USE_BOOST_SET 0
 #endif
 
-#if IMP_USE_BOOST_SET
+#if IMPCOMPATIBILITY_USE_BOOST_SET
 #include <boost/unordered_set.hpp>
 #include "hash.h"
 #else
@@ -26,7 +26,7 @@
 #endif
 
 
-IMP_BEGIN_COMPATIBILITY_NAMESPACE
+IMPCOMPATIBILITY_BEGIN_NAMESPACE
 
 /** This class chooses the best of STL compatible non-ordered
     set available. This will, in general, be a hash set if it
@@ -34,13 +34,13 @@ IMP_BEGIN_COMPATIBILITY_NAMESPACE
 */
 template <class Key>
 class set:
-#if IMP_USE_BOOST_SET
+#if IMPCOMPATIBILITY_USE_BOOST_SET
   public boost::unordered_set<Key>
 #else
   public std::set<Key>
 #endif
 {
-#if IMP_USE_BOOST_SET
+#if IMPCOMPATIBILITY_USE_BOOST_SET
   typedef boost::unordered_set<Key> P;
 #else
   typedef std::set<Key> P;
@@ -52,6 +52,6 @@ public:
 
 };
 
-IMP_END_COMPATIBILITY_NAMESPACE
+IMPCOMPATIBILITY_END_NAMESPACE
 
-#endif  /* IMPKERNEL_COMPATIBILITY_SET_H */
+#endif  /* IMPCOMPATIBILITY_SET_H */
