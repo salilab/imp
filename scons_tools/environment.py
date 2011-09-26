@@ -79,7 +79,7 @@ def _get_python_include(env):
     else:
         pythoninclude=utility.get_python_result(env, "import distutils.sysconfig",
                                       "distutils.sysconfig.get_python_inc()")
-        print "include", pythoninclude
+        #print "include", pythoninclude
         return pythoninclude
 
 
