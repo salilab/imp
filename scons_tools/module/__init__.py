@@ -506,6 +506,7 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
 def IMPModuleBuild(env, version, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
+                   lib_only_optional_modules=[],
                    optional_dependencies=[], config_macros=[],
                    module=None, module_libname=None,
                    module_pylibname=None,
@@ -513,7 +514,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], python_docs=False,
-                   local_module=False):
+                   local_module=False, python=True):
     if env.GetOption('help'):
         return
 
@@ -537,17 +538,25 @@ def IMPModuleBuild(env, version, required_modules=[],
         module_nicename= "IMP."+module
     if python_docs:
         env.Append(IMP_PYTHON_DOCS=[module])
-    (nenv, version, found_optional_modules, found_optional_dependencies)\
+    (nenv, version, found_optional_modules_out, found_optional_dependencies)\
          = scons_tools.utility.configure(env, module, "module", version,
                              required_modules=required_modules+lib_only_required_modules,
                              optional_dependencies=optional_dependencies,
-                             optional_modules= optional_modules,
+                             optional_modules= optional_modules+lib_only_optional_modules,
                              required_dependencies= required_dependencies)
+    found_optional_modules=[]
+    found_lib_only_optional_modules=[]
+    if found_optional_modules_out:
+        for m in found_optional_modules_out:
+            if m in optional_modules:
+                found_optional_modules.append(m)
+            else:
+                found_lib_only_optional_modules.append(m)
     if nenv:
         scons_tools.data.get(env).add_module(module,
                                  modules= required_modules+found_optional_modules\
-                                     +lib_only_required_modules,
-                                             unfound_modules=[x for x in optional_modules if x not in
+                                     +lib_only_required_modules+found_lib_only_optional_modules,
+                                             unfound_modules=[x for x in optional_modules+lib_only_optional_modules if x not in
                                               found_optional_modules],
                                  python_modules=required_modules+found_optional_modules,
                                  dependencies=[x for x in found_optional_dependencies if x in optional_dependencies]\
@@ -589,7 +598,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
     env.SConscript('bin/SConscript', exports='env')
-    if env['IMP_PROVIDE_PYTHON']:
+    if env['IMP_PROVIDE_PYTHON'] and python:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)

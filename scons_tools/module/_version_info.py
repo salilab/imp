@@ -42,7 +42,7 @@ class VersionInfo;
     print >> h, "%(EXPORT)s_BEGIN_INTERNAL_NAMESPACE\n" % vars
 
     print >> h, """//! Version and authorship of the %(module)s module.
-extern %(EXPORT)sEXPORT VersionInfo version_info;""" \
+extern %(EXPORT)sEXPORT std::string version_info;""" \
         % vars
 
     print >> h, "\n%(EXPORT)s_END_INTERNAL_NAMESPACE" % vars
@@ -89,7 +89,7 @@ def _action_version_info_cpp(target, source, env):
     print >> cpp, "%(EXPORT)s_BEGIN_INTERNAL_NAMESPACE\n" % vars
 
 
-    print >> cpp, 'VersionInfo version_info("%(author)s", "%(version)s");' \
+    print >> cpp, 'std::string version_info("%(version)s");' \
               %vars
 
     print >> cpp, "\n%(EXPORT)s_END_INTERNAL_NAMESPACE" % vars

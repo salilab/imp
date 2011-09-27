@@ -226,7 +226,7 @@ namespace IMP {
   about the module and about file associated with the modules.
   @{
   */
-%(EXPORT)sEXPORT const IMP::VersionInfo& get_module_version_info();
+%(EXPORT)sEXPORT std::string get_module_version();
 
 inline std::string get_module_name() {
    return "%(namespace)s";
@@ -300,9 +300,8 @@ def _action_config_cpp(target, source, env):
 
 
     print >> cpp, """
-const IMP::VersionInfo& get_module_version_info() {
-    static IMP::VersionInfo vi("%(module)s", "%(version)s");
-    return vi;
+std::string get_module_version() {
+    return std::string("%(version)s");
 }
 """ %vars
     if vars['module']=="kernel":

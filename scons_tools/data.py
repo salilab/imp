@@ -180,6 +180,16 @@ class IMPData:
             if not m in ml[i+1:]:
                 mret.append(m)
         return mret
+    def _expand_python_modules(self, imodules):
+        modules=imodules[:]
+        ml=[]
+        for m in modules:
+            ml+=[m]+ self.modules[m].python_modules
+        mret=[]
+        for i,m in enumerate(ml):
+            if not m in ml[i+1:]:
+                mret.append(m)
+        return mret
     def _expand_dependencies(self, modules, idependencies):
         dependencies=idependencies[:]
         dret=[]
@@ -203,7 +213,7 @@ class IMPData:
             self.modules[name]=self.ModuleData(name, ok=ok)
         else:
             passmodules= self._expand_modules(modules)
-            passpythonmodules= self._expand_modules(python_modules)
+            passpythonmodules= self._expand_python_modules(python_modules)
             passdependencies= self._expand_dependencies(passpythonmodules,
                                                         dependencies)
             self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
