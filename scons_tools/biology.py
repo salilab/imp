@@ -71,7 +71,7 @@ def IMPSystem(env, name=None, version="",
         else:
             extrasections.append(("Parallelizeable", "No"))
         if last_imp_version != "unknown":
-            extrasections.append(("Last know good \imp version", last_imp_version))
+            extrasections.append(("Last known good \imp version", last_imp_version))
         else:
             vtxt=  "\n\\section lkgversion Last known good IMP version\n"+\
                 "unknown"+"\n"
