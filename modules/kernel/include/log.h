@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_LOG_H
-#define IMP_LOG_H
+#ifndef IMPKERNEL_LOG_H
+#define IMPKERNEL_LOG_H
 
 #include "kernel_config.h"
 #include "macros.h"
@@ -237,7 +237,7 @@ inline bool get_is_log_output(LogLevel l)
 
 struct WarningContext {
 public:
-  void add_warning(std::string ) const {}
+  void add_warning(std::string, std::string ) const {}
   void clear_warnings() const {}
   void dump_warnings() const {}
   void show(std::ostream &) const {}
@@ -358,4 +358,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_LOG_H */
+#endif  /* IMPKERNEL_LOG_H */
