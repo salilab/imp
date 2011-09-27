@@ -1,5 +1,6 @@
 import IMP.atom
 import RMF
+import IMP.rmf
 m= IMP.Model()
 
 # get the key with a given name from an rmf file, adding it if needed
