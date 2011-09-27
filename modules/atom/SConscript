@@ -13,7 +13,7 @@ else:
 
 env.IMPModuleBuild(version="SVN",
                    required_modules=['core', 'algebra', 'container'],
-                   optional_modules=['cgal'],
+                   lib_only_optional_modules=['cgal'],
                    lib_only_required_modules=[],
                    optional_dependencies=['Boost.FileSystem'])
 
