@@ -1,0 +1,167 @@
+%include "IMP_base_random.i"
+
+namespace IMP {
+namespace base {
+%warnfilter(403) FailureHandlerBase;
+%implicitconv TextInput;
+%implicitconv TextOutput;
+}
+}
+
+
+%extend IMP::base::Object {
+  bool __eq__(const Object *o) const {
+     return self ==o;
+  }
+  bool __ne__(const Object *o) const {
+     return self !=o;
+  }
+  bool __le__(const Object *o) const {
+     return self <= o;
+  }
+  bool __lt__(const Object *o) const {
+     return self < o;
+  }
+  bool __ge__(const Object *o) const {
+     return self >= o;
+  }
+  bool __gt__(const Object *o) const {
+     return self > o;
+  }
+  /*bool __eq__(const IMP::Decorator &d) const {
+     return self == d.get_particle();
+  }
+  bool __ne__(const IMP::Decorator &d) const {
+     return self != d.get_particle();
+  }
+  bool __le__(const IMP::Decorator &d) const {
+     return self <= d.get_particle();
+  }
+  bool __lt__(const IMP::Decorator &d) const {
+     return self < d.get_particle();
+  }
+  bool __ge__(const IMP::Decorator &d) const {
+     return self >= d.get_particle();
+  }
+  bool __gt__(const IMP::Decorator &d) const {
+     return self > d.get_particle();
+  }*/
+}
+
+%feature("ref")   IMP::base::RefCounted "IMP::base::internal::ref($this);"
+%feature("unref") IMP::base::RefCounted "IMP::base::internal::unref($this);"
+
+IMP_SWIG_RAII(IMP::base, SetLogState);
+IMP_SWIG_OBJECT(IMP::base, RefCounted, RefCounteds);
+IMP_SWIG_OBJECT(IMP::base, Object, Objects);
+IMP_SWIG_OBJECT(IMP::base, FailureHandler, FailureHandlers);
+IMP_SWIG_DIRECTOR(IMP::base, Object);
+IMP_SWIG_VALUE(IMP::base, VersionInfo, VersionInfos);
+/*IMP_SWIG_VALUE(IMP::base, TextOutput, TextOutputs);
+IMP_SWIG_VALUE(IMP::base, TextInput, TextInputs);*/
+IMP_SWIG_RAII(IMP::base, CreateLogContext)
+IMP_SWIG_RAII(IMP::base, WarningContext)
+IMP_SWIG_RAII(IMP::base, SetLogTarget);
+
+IMP_SWIG_NATIVE_PAIR(IMP, double, DerivativePair, DerivativePairs);
+IMP_SWIG_NATIVE_PAIR(IMP, double, FloatRange, FloatRanges);
+IMP_SWIG_NATIVE_PAIR(IMP, double, FloatPair, FloatPairs);
+IMP_SWIG_NATIVE_PAIR(IMP, int, IntRange, IntRanges);
+IMP_SWIG_NATIVEPAIR(IMP, int, IntPair, IntPairs);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, double, Floats, FloatsList);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, int, Ints, IntsList);
+IMP_SWIG_NATIVE_VALUES_LIST(IMP, std::string, Strings, StringsList);
+IMP_SWIG_VALUE_BUILTIN(IMP, Float, Floats, double);
+IMP_SWIG_VALUE_BUILTIN(IMP, Int, Ints, int);
+IMP_SWIG_VALUE_BUILTIN(IMP, String, Strings, std::string);
+IMP_SWIG_NATIVE_VALUE(float);
+IMP_SWIG_NATIVE_VALUE(double);
+IMP_SWIG_NATIVE_VALUE(int);
+IMP_SWIG_NATIVE_VALUE(std::string);
+
+%include "IMP/base/types.h"
+%include "IMP/base/VersionInfo.h"
+%include "IMP/base/RefCounted.h"
+%include "IMP/base/file.h"
+%include "IMP/base/log.h"
+%include "IMP/base/Object.h"
+%include "IMP/base/FailureHandler.h"
+%include "IMP/base/SetLogState.h"
+%include "IMP/base/utility.h"
+%include "IMP/base/internal/swig.h"
+
+%pythoncode %{
+#used_modules=[]
+#def show_used_modules():
+#    for m in used_modules:
+#        print "%-20s %s" % (m.get_module(), m.get_version())
+
+
+def get_networkx_graph(ig):
+   import networkx
+   g= networkx.DiGraph()
+   if len(ig.get_vertices())==0:
+       return g
+   class NodeWrapper:
+     def __init__(self, p):
+        self.p=p
+     def __str__(self):
+        return self.p.get_name()
+     def __call__(self, name):
+        return self.p.__call__(name)
+     
+   for vi in ig.get_vertices():
+      n= ig.get_vertex_name(vi)
+      g.add_node(NodeWrapper(n))
+   for vi in ig.get_vertices():
+      n= ig.get_vertex_name(vi)
+      for ni in ig.get_out_neighbors(vi):
+         nn= ig.get_vertex_name(ni)
+         g.add_edge(NodeWrapper(n), NodeWrapper(nn))
+   return g
+
+
+def show_altgraph(g):
+           def clean(name):
+              try:
+                n0=name.get_name()
+              except:
+                n0=str(name)
+              n1= str(n0).replace('"','')
+              n2= n1.replace("\n",'')
+              return n2
+           import altgraph
+           from altgraph import Graph, Dot
+           graph= Graph.Graph()
+           for i,v in enumerate(g.get_vertices()):
+               graph.add_node(i) #, node_data=g.get_vertex_name(v)
+           for i,v in enumerate(g.get_vertices()):
+               for n in g.get_out_neighbors(v):
+                  graph.add_edge(v, n)
+           dot = Dot.Dot(graph) #, graph_type="digraph"
+           for i,v in enumerate(g.get_vertices()):
+               dot.node_style(i, label=clean(g.get_vertex_name(v)))
+           dot.display()
+
+def show_graphviz(g):
+           tfn= create_temporary_file_name("graph", ".dot")
+           tfon= create_temporary_file_name("graph", ".pdf")
+           st= g.get_graphviz_string()
+           open(tfn, "w").write(st)
+           import subprocess
+           try:
+             sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
+             sp.wait()
+           except:
+             import sys
+             print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
+             return
+           try:
+             subprocess.Popen(["open", tfon])
+           except:
+             try:
+                subprocess.Popen(["acroread", tfon])
+             except:
+                print "Could not display file. It is saved at", tfon
+           return tfon
+%}
