@@ -105,11 +105,13 @@ def _action_swig_file(target, source, env):
             preface.append('#include "IMP/internal/swig_helpers.h"')
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
+    preface.append("#include \"%(module_include_path)s/%(module)s_config.h\""%vars)
     preface.append("""%}
 %implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_pair.i"
+%include "IMP/compatibility/compatibility_config.h"
 
 %pythoncode %{
 _value_types=[]

@@ -9,7 +9,7 @@
 #define IMPCOMPATIBILITY_COMPATIBILITY_MAP_H
 
 #include "compatibility_config.h"
-
+#include <boost/version.hpp>
 // creates warnings in clang and we only use clang for diagnostics anyway
 #if BOOST_VERSION > 103500 && !defined(__clang__)
 #define IMPCOMPATIBILITY_USE_BOOST_MAP 1
