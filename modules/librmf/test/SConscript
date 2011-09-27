@@ -4,7 +4,4 @@ Import('env')
 # matching test_*.cpp
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  value_object_exceptions=[],
-                  function_name_exceptions=["HDF5File.flush", "RootHandle.flush"],
-                  show_exceptions=[],
-                  spelling_exceptions=[])
+                  check_standards=False)
