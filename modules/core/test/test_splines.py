@@ -16,7 +16,7 @@ class CubicSplineTests(IMP.test.TestCase):
 
     def test_range(self):
         """Test for spline out of range condition"""
-        floats = IMP.Floats()
+        floats = []
         floats.append(0.)
         floats.append(0.)
         floats.append(0.)
@@ -45,7 +45,7 @@ class CubicSplineTests(IMP.test.TestCase):
 
     def __interpolate(self, minrange, spline_spacing, test_spacing, test_func,
                       spline_func):
-        floats = IMP.Floats()
+        floats = []
         # Build spline using test function values:
         for i in range(10):
             floats.append(test_func(minrange + spline_spacing * i)[0])
@@ -64,7 +64,7 @@ class CubicSplineTests(IMP.test.TestCase):
 
     def test_show(self):
         """Check cubic spline show() methods"""
-        floats = IMP.Floats()
+        floats = []
         floats.append(0.)
         floats.append(0.)
         floats.append(0.)
