@@ -115,16 +115,16 @@ template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
 inline double get_rigid_bodies_drms(const Vecto3DsOrXYZs0 &m1,
                                     const Vecto3DsOrXYZs1 &m2,
                                     const IMP::IntRanges &ranges) {
-IMP_USAGE_CHECK(m1.size() == m2.size(),
-            "get_rigid_bodies_drms: The input sets of XYZ points "
-            <<"should be of the same size");
-  unsigned int n = m1.size();
-  unsigned int rn = ranges.size();
+  IMP_USAGE_CHECK(m1.size() == m2.size(),
+                  "get_rigid_bodies_drms: The input sets of XYZ points "
+                  <<"should be of the same size");
+  int n = m1.size();
+  int rn = ranges.size();
   double drms = 0.0;
   double sum_d1ij = 0.0;
-  for (unsigned int i=0; i < n; ++i) {
+  for ( int i=0; i < n; ++i) {
     int range1 = -1;
-    for (unsigned int k=0; k < rn; ++k) {
+    for ( int k=0; k < rn; ++k) {
       if(i >= ranges[k].first && i <= ranges[k].second) {
         range1 = k;
         break;
@@ -132,9 +132,9 @@ IMP_USAGE_CHECK(m1.size() == m2.size(),
     }
     IMP_USAGE_CHECK(range1 >=0, "Point " << i << " of m1 does not belong to "
                    "any range");
-    for (unsigned int j= i+1; j < n; ++j) {
+    for ( int j= i+1; j < n; ++j) {
       int range2 = -1;
-      for (unsigned int k=0; k < rn; ++k) {
+      for ( int k=0; k < rn; ++k) {
         if(j >= ranges[k].first && j <= ranges[k].second) {
           range2 = k;
           break;
