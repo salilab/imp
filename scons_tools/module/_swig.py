@@ -13,8 +13,8 @@ base_includes= ["IMP_kernel_macros.i",
                 "IMP_kernel_directors.i",
                 "IMP_kernel_types.i",
                 "IMP_kernel_refcount.i",
-                "IMP_kernel_streams_kernel.i",
-                "IMP_kernel_streams.i",]
+                "IMP_kernel_streams.i",
+                "IMP_kernel_streams_kernel.i"]
 
 
 def _null_scanner(node, env, path):
@@ -151,7 +151,7 @@ _plural_types=[]
     for ns in vars['namespace'].split("::"):
         preface.append("namespace "+ns + " {")
     preface.append("""
-const ::IMP::VersionInfo& get_module_version_info();
+const std::string get_module_version();
 std::string get_example_path(std::string fname);
 std::string get_data_path(std::string fname);
 """)
@@ -176,17 +176,17 @@ std::string get_data_path(std::string fname);
         preface.append("""
 %pythoncode %{
 import IMP
-IMP.used_modules.append(get_module_version_info())
+IMP.used_modules.append(IMP.VersionInfo(get_module_name(), get_module_version()))
 %}""")
     else:
         preface.append("""
 %pythoncode %{
-used_modules.append(get_module_version_info())
+used_modules.append(VersionInfo("IMP", get_module_version()))
 %}""")
     preface.append("""
 %pythoncode %{
 import _version_check
-_version_check.check_version(get_module_version_info().get_version())
+_version_check.check_version(get_module_version())
 %}""")
     open(target[0].abspath, "w").write("\n".join(preface))
 
@@ -255,7 +255,7 @@ def _action_version_check(target, source, env):
         ver= source[i+1].get_contents()
         print >> out, "  import "+get_module(mn)
         print >> out, "  _check_one('"+mn+\
-          "', '"+ver+"', "+get_module(mn)+".get_module_version_info().get_version())"
+          "', '"+ver+"', "+get_module(mn)+".get_module_version())"
 
 def _print_version_check(target, source, env):
     print "Building version check "+target[0].abspath
