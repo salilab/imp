@@ -6,5 +6,5 @@ scons_tools.dependency.add_external_library(env, "ANN", ["ANN"],
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['kernel'],
-                   optional_modules=['cgal'],
+                   lib_only_optional_modules=['cgal'],
                    optional_dependencies=['ANN'])
