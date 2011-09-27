@@ -1,29 +1,4 @@
 Import('env')
 
-files = [
-         'Cone3D.cpp',
-         'Cylinder3D.cpp',
-         'Ellipsoid3D.cpp',
-         'LinearFit.cpp',
-         'ParabolicFit.cpp',
-         'ReferenceFrame3D.cpp',
-         'Rotation3D.cpp',
-         'Segment3D.cpp',
-         'Sphere3D.cpp',
-         'Sphere3DPatch.cpp',
-         'SphericalVector3D.cpp',
-         'Transformation2D.cpp',
-         'Transformation3D.cpp',
-         'Triangle3D.cpp',
-         'eigen_analysis.cpp',
-         'endian.cpp',
-         'geometric_alignment.cpp',
-         'io.cpp',
-         'shortest_segment.cpp',
-         'vector_generators.cpp',
-         'vector_search.cpp',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
