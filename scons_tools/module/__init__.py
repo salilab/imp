@@ -239,7 +239,7 @@ def _make_programs(envi, files):
             dest=Dir('#/modules/'+scons_tools.environment.get_current_name(env)+'/bin/')
             #print "handling", f.abspath, dest.path
             nm=f.path[f.path.rfind("/")+1:]
-            print dest.path, f.path, nm
+            #print dest.path, f.path, nm
             ret.append(scons_tools.install.install(env, dest.path, nm))
     return ret
 
@@ -514,7 +514,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], python_docs=False,
-                   local_module=False, python=True):
+                   local_module=False, python=True, data=True):
     if env.GetOption('help'):
         return
 
@@ -594,7 +594,12 @@ def IMPModuleBuild(env, version, required_modules=[],
     env['IMP_MODULE_CONFIG']=real_config_macros
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('doc/SConscript', exports='env')
-    env.SConscript('data/SConscript', exports='env')
+    if data:
+        env.SConscript('data/SConscript', exports='env')
+        # evil hack for now
+        env['MODULE_HAS_DATA']=True
+    else:
+        env['MODULE_HAS_DATA']=False
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
     env.SConscript('bin/SConscript', exports='env')

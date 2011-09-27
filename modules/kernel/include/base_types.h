@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_BASE_TYPES_H
-#define IMP_BASE_TYPES_H
+#ifndef IMPKERNEL_BASE_TYPES_H
+#define IMPKERNEL_BASE_TYPES_H
 
 #include "kernel_config.h"
 #include "Key.h"
@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 #include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/nullptr.h>
+#include <IMP/compatibility/hash.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -119,55 +121,7 @@ inline void show(std::ostream &out, T*i) {
 #endif
 
 
-#ifndef IMP_DOXYGEN
-template <class T>
-inline std::size_t hash_value(const T &t) {
-  return t.__hash__();
-}
-
-
-
-
-#endif
-
-#ifdef IMP_DOXYGEN
-/** The C++0x standard adds the nullptr keyword to get around a variety of
-    problems with NULL. We provide an emulation within the IMP namespace when
-    it is not available.
-*/
-const std::nullptr_t nullptr;
-
-#else
-
-#if IMP_DEFINE_NULLPTR
-
-#if !defined(SWIG)
-struct nullptr_t {
-  template <class O>
-  operator O*() const {
-    return static_cast<O*>(NULL);
-  }
-  /*template <class O, class C>
-  operator O C::*() const {
-    return static_cast<const O*>(NULL);
-    }*/
-};
-template <class O>
-inline bool operator==(O *a, nullptr_t o) {
-  return a == static_cast<O*>(o);
-}
-template <class O>
-inline bool operator!=(O *a, nullptr_t o) {
-  return a != static_cast<O*>(o);
-}
-extern IMPEXPORT const nullptr_t nullptr;
-#else
-extern const void * const nullptr;
-#endif //SWIG
-
-#endif // IMP_DEFINE_NULLPTR
-#endif // IMP_DOXYGEN
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_BASE_TYPES_H */
+#endif  /* IMPKERNEL_BASE_TYPES_H */

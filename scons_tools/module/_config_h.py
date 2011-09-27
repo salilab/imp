@@ -86,6 +86,8 @@ def _action_config_h(target, source, env):
 #define %(EXPORT)s_CONFIG_H
 
 #include <boost/static_assert.hpp>
+#include <IMP/compatibility/compatibility_config.h>
+#include <string>
 
 #ifndef IMP_DOXYGEN
 
@@ -195,13 +197,10 @@ namespace internal {
 
     # This needs to be called get_module_version_info() to make it easy
     # to call from Objects (which have their own get_version_info() method
-    print >> h, """
-
+    if env['MODULE_HAS_DATA']:
+        print >> h, """
 #  ifndef SWIG
 #    include <IMP/internal/directories.h>
-#    include <IMP/kernel_config.h>
-#    include <string>
-
 IMP_BEGIN_INTERNAL_NAMESPACE
 IMPEXPORT std::string get_data_path(std::string module_name,
                                     std::string file_name);
@@ -210,15 +209,12 @@ IMPEXPORT std::string get_example_path(std::string module_name,
 
 IMP_END_INTERNAL_NAMESPACE
 #  endif // SWIG
+"""
+    print >> h, """
 #endif // IMP_DOXYGEN
-
-#include <string>
 
 //  functions are defined explicitly for swig
 #ifndef SWIG
-namespace IMP {
-  class VersionInfo;
-}
 
 %(EXPORT)s_BEGIN_NAMESPACE
 /** \\name Standard module methods
@@ -231,7 +227,9 @@ namespace IMP {
 inline std::string get_module_name() {
    return "%(namespace)s";
 }
-
+"""%vars
+    if env['MODULE_HAS_DATA']:
+        print >> h, """
 //! Return the full path to installed data
 /** Each module has its own data directory, so be sure to use
     the version of this function in the correct module. To read
@@ -262,7 +260,9 @@ inline std::string get_example_path(std::string file_name)  {
   return IMP::internal::get_example_path("%(module)s", file_name);
 }
 /** @} */
+"""% vars
 
+    print >> h,"""
 
 %(EXPORT)s_END_NAMESPACE
 
@@ -292,7 +292,6 @@ def _action_config_cpp(target, source, env):
 """ % vars
 
     print >> cpp, """#include <%(module_include_path)s/%(module)s_config.h>
-#include <IMP/VersionInfo.h>
 """  % vars
 
 
