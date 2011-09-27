@@ -187,7 +187,8 @@ class IMPRESTRAINEREXPORT SimpleConnectivity
 
   VersionInfo get_version_info() const
   {
-    return IMP::get_module_version_info();
+    return IMP::VersionInfo("restrainer",
+                            get_module_version());
   }
 
   void show(std::ostream &out = std::cout) const
@@ -264,7 +265,8 @@ class IMPRESTRAINEREXPORT SimpleDistance
 
   VersionInfo get_version_info() const
   {
-    return IMP::get_module_version_info();
+    return VersionInfo("restrainer",
+                       get_module_version());
   }
 
   void show(std::ostream &out = std::cout) const
@@ -339,7 +341,8 @@ class IMPRESTRAINEREXPORT SimpleDiameter
 
   VersionInfo get_version_info() const
   {
-    return IMP::get_module_version_info();
+    return VersionInfo("restrainer",
+                       get_module_version());
   }
 
   void show(std::ostream &out = std::cout) const
@@ -387,7 +390,8 @@ class IMPRESTRAINEREXPORT SimpleExcludedVolume
 
   VersionInfo get_version_info() const
   {
-    return IMP::get_module_version_info();
+    return VersionInfo("restrainer",
+                       get_module_version());
   }
 
   void show(std::ostream &out = std::cout) const
@@ -426,7 +430,8 @@ public:
 
   VersionInfo get_version_info() const
   {
-    return IMP::get_module_version_info();
+    return VersionInfo("restrainer",
+                       get_module_version());
   }
 
   void show(std::ostream &out = std::cout) const
