@@ -188,7 +188,9 @@ public:
   void do_show(std::ostream &out) const {
   }
   std::string get_type_name() const {return "Pyton output file";}
-  IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo("IMP", IMP::get_module_version());
+  }
   void pubsync() {
     stream_buf_->pubsync();
   }
@@ -389,7 +391,9 @@ public:
   void do_show(std::ostream &out) const {
   }
   std::string get_type_name() const {return "Pyton input file";}
-  IMP::VersionInfo get_version_info() const {return IMP::get_module_version_info();}
+  IMP::VersionInfo get_version_info() const {
+    return IMP::VersionInfo("IMP", IMP::get_module_version());
+  }
   // Given a Python file object, return an istream that will read from this
   // object, or NULL if the object is not suitable.
   std::istream* set_python_file(PyObject *p) {

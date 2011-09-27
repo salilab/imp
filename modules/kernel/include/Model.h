@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_MODEL_H
-#define IMP_MODEL_H
+#ifndef IMPKERNEL_MODEL_H
+#define IMPKERNEL_MODEL_H
 
 #include "kernel_config.h"
 #include "Object.h"
@@ -903,7 +903,7 @@ public:
 #ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
     IMP_CHECK_OBJECT(this);
-    return IMP::get_module_version_info();
+    return IMP::VersionInfo("IMP", get_module_version());
   }
 
   std::string get_type_name() const {
@@ -1056,4 +1056,4 @@ inline ParticleKeys Particle::get_particle_keys() const {
 }
 IMP_END_NAMESPACE
 
-#endif  /* IMP_MODEL_H */
+#endif  /* IMPKERNEL_MODEL_H */

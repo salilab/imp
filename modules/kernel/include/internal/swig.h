@@ -5,8 +5,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_INTERNAL_SWIG_H
-#define IMP_INTERNAL_SWIG_H
+#ifndef IMPKERNEL_INTERNAL_SWIG_H
+#define IMPKERNEL_INTERNAL_SWIG_H
 
 #include "../kernel_config.h"
 #include "../Particle.h"
@@ -328,7 +328,7 @@ public:
   }
   std::string get_type_name() const {return "Graph";}
   ::IMP::VersionInfo get_version_info() const {
-    return get_module_version_info();
+    return ::IMP::VersionInfo("IMP", get_module_version());
   }
 
   void add_edge(VertexDescriptor v0, VertexDescriptor v1) {
@@ -355,6 +355,8 @@ inline void bad_pass(FloatKey*) {}
 inline void bad_pass(FloatKeys*) {}
 #endif
 
+
+
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INTERNAL_SWIG_H */
+#endif  /* IMPKERNEL_INTERNAL_SWIG_H */

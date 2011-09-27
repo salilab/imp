@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_MACROS_H
-#define IMP_MACROS_H
+#ifndef IMPKERNEL_MACROS_H
+#define IMPKERNEL_MACROS_H
 #include "kernel_config.h"
 
 #ifdef IMP_DOXYGEN
@@ -1006,7 +1006,7 @@ public:                                                                 \
   public:                                                               \
   virtual std::string get_type_name() const {return #Name;}             \
   virtual ::IMP::VersionInfo get_version_info() const {                 \
-    return get_module_version_info();                                   \
+    return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                     \
   /** \brief For python, cast a generic Object to this type. Throw a
       ValueException of object is not the right type.*/                 \
@@ -1029,7 +1029,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();)
   public:                                                               \
   virtual std::string get_type_name() const {return #Name;}             \
   virtual ::IMP::VersionInfo get_version_info() const {                 \
-    return get_module_version_info();                                   \
+    return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
   }                                                                     \
   /** \brief For python, cast a generic Object to this type. Throw a
       ValueException of object is not the right type.*/                 \
@@ -1048,18 +1048,18 @@ static Name* get_from(Object *o) {                                      \
 /** \see IMP_OBJECT
     This version also defines IMP::Object::do_show()
 */
-#define IMP_INTERNAL_OBJECT(Name)                               \
-  public:                                                       \
-  virtual ::IMP::VersionInfo get_version_info() const {         \
-    return get_module_version_info();                           \
-  }                                                             \
-  virtual std::string get_type_name() const {                   \
-    return #Name;                                               \
-  }                                                             \
-private:                                                        \
- virtual void do_show(std::ostream & =std::cout) const {        \
- }                                                              \
- IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                        \
+#define IMP_INTERNAL_OBJECT(Name)                                       \
+  public:                                                               \
+  virtual ::IMP::VersionInfo get_version_info() const {                 \
+    return ::IMP::VersionInfo(get_module_name(), get_module_version()); \
+  }                                                                     \
+  virtual std::string get_type_name() const {                           \
+    return #Name;                                                       \
+  }                                                                     \
+private:                                                                \
+ virtual void do_show(std::ostream & =std::cout) const {                \
+ }                                                                      \
+ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                \
                                    Object::_on_destruction();)
 
 
@@ -1619,4 +1619,4 @@ _Pragma(IMP_STRINGIFY(GCC diagnostic ignored name))
 #include "triplet_macros.h"
 #include "quad_macros.h"
 
-#endif  /* IMP_MACROS_H */
+#endif  /* IMPKERNEL_MACROS_H */
