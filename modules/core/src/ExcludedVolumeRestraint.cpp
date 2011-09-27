@@ -459,7 +459,7 @@ namespace {
 
 Restraints
 ExcludedVolumeRestraint
-::do_create_incremental_decomposition(unsigned int n) const {
+::do_create_incremental_decomposition(unsigned int) const {
   IMP_OBJECT_LOG;
   if (!initialized_) initialize();
   Restraints ret;
