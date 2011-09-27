@@ -66,7 +66,7 @@ public:
   double get_distance() const {return distance_;}
   virtual std::string get_type_name() const {return "CoreClosePairContainer";}
   virtual ::IMP::VersionInfo get_version_info() const {
-    return get_module_version_info();
+    return VersionInfo("core", get_module_version());
   }
   void update() {
     do_before_evaluate();
