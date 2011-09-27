@@ -514,7 +514,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], python_docs=False,
-                   local_module=False, python=True, data=True):
+                   local_module=False,python=True, data=True):
     if env.GetOption('help'):
         return
 
@@ -562,7 +562,11 @@ def IMPModuleBuild(env, version, required_modules=[],
                                  dependencies=[x for x in found_optional_dependencies if x in optional_dependencies]\
                                      +required_dependencies,
                                              libname= module_libname,
-                                 unfound_dependencies=[x for x in optional_dependencies if not x in found_optional_dependencies], version=version)
+                                 unfound_dependencies=[x for x in optional_dependencies\
+                                                         if not x in\
+                                                         found_optional_dependencies],\
+                                               version=version,
+                                             python=python, data=data)
     else:
         scons_tools.data.get(env).add_module(module, ok=False)
         return
