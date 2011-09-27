@@ -93,8 +93,6 @@ def _action_swig_file(target, source, env):
 #include <boost/utility/enable_if.hpp>
 #include <exception>
 #include "IMP.h"
-#include "IMP/internal/swig_helpers.h"
-#include "IMP/internal/swig.h"
 """%vars['module_include_path'].replace("/", ".")]
     dta= scons_tools.data.get(env)
     for d in deps:
@@ -102,6 +100,9 @@ def _action_swig_file(target, source, env):
             ln= dta.modules[d].libname
             nm=ln.replace("imp", "IMP").replace("_", "/")
             preface.append("#include \"%s.h\""% nm)
+        else:
+            preface.append('#include "IMP/internal/swig.h"')
+            preface.append('#include "IMP/internal/swig_helpers.h"')
     if vars['module'] != 'kernel':
         preface.append("#include \"%(module_include_path)s.h\""%vars)
     preface.append("""%}
@@ -174,10 +175,10 @@ std::string get_data_path(std::string fname);
     preface.append("}")
     if vars['module'] != "kernel":
         preface.append("""
-%pythoncode %{
+%%pythoncode %%{
 import IMP
-IMP.used_modules.append(IMP.VersionInfo(get_module_name(), get_module_version()))
-%}""")
+IMP.used_modules.append(IMP.VersionInfo("%s", get_module_version()))
+%%}"""%vars['module'])
     else:
         preface.append("""
 %pythoncode %{
