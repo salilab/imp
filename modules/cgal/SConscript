@@ -44,6 +44,6 @@ else:
 env.IMPModuleBuild(version='SVN',
                    required_modules=["kernel"],
                    required_dependencies=["CGAL"],
-                   cxxflags=cxxflags)
+                   cxxflags=cxxflags, python=False)
 
 env['percppcompilation']=opercppcompilation
