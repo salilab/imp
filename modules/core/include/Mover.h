@@ -27,7 +27,7 @@ class MonteCarlo;
     if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public Object
+class IMPCOREEXPORT Mover: public IMP::base::Object
 {
   friend class MonteCarlo;
   UncheckedWeakPointer<Optimizer> opt_;

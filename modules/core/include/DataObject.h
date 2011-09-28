@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
     This class is C++ only.
  */
 template <class Data>
-class DataObject: public Object
+class DataObject: public IMP::base::Object
 {
   Data data_;
 public:

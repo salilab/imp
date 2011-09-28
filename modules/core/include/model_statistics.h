@@ -27,7 +27,7 @@ class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
   TextOutput out_;
  public:
   WriteRestraintScoresOptimizerState(const Restraints &rs,
-                                     TextOutput out);
+                                     base::TextOutput out);
   IMP_PERIODIC_OPTIMIZER_STATE(WriteRestraintScoresOptimizerState);
 };
 

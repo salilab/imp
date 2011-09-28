@@ -17,7 +17,7 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-class IMPCOREEXPORT RigidBodyHierarchy: public Object {
+class IMPCOREEXPORT RigidBodyHierarchy: public IMP::base::Object {
   RigidBody rb_;
   struct Data {
     Ints children_;

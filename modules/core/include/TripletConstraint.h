@@ -18,10 +18,10 @@
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
-IMP_BEGIN_NAMESPACE
+namespace IMP {
 // for swig
 class TripletModifier;
-IMP_END_NAMESPACE
+}
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a Triplet
