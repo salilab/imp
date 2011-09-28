@@ -13,6 +13,7 @@
 #include "IMP/algebra/constants.h"
 #include "IMP/exception.h"
 #include "IMP/log.h"
+#include <IMP/constants.h>
 
 IMPEM2D_BEGIN_NAMESPACE
 
