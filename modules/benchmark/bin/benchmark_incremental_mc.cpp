@@ -40,7 +40,7 @@ RigidBody create_rb(atom::Hierarchy hr) {
 
 void add_excluded_volume(Model *m, atom::Hierarchy h, double k) {
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
-  IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k));
+  IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k, 10));
   evr->set_name("excluded volume");
   evr->set_log_level(VERBOSE);
   m->add_restraint(evr);
@@ -65,14 +65,16 @@ void add_DOPE(Model *m, atom::Hierarchy h) {
   m->add_restraint(dope);
 }
 
-void benchmark_it(std::string name, bool incr) {
+void benchmark_it(std::string name, bool incr, bool longr) {
   IMP_NEW(Model, m, ());
   m->set_log_level(IMP::SILENT);
+  set_check_level(IMP::USAGE_AND_INTERNAL);
   atom::Hierarchy h= atom::Hierarchy::setup_particle(new Particle(m));
   h->set_name("root");
   RigidBodies rbs;
   for (unsigned int i=0; i < nrb; ++i) {
     rbs.push_back(create_rb(h));
+    rbs.back().set_coordinates(algebra::Vector3D(0,1000*i,0));
   }
   add_excluded_volume(m, h, 1.0);
   add_diameter_restraint(m, rbs, 50.0);
@@ -90,17 +92,19 @@ void benchmark_it(std::string name, bool incr) {
   mc->add_mover(new SerialMover(get_as<MoversTemp>(mvs)));
   // trigger init
   mc->optimize(1);
+  unsigned int nsteps=30000;
+  if (longr) nsteps*=100;
   double runtime, score=0;
   IMP_TIME(
-           score+=mc->optimize(30000), runtime);
+           score+=mc->optimize(nsteps), runtime);
   //std::cout << "average: "
   //<< mc->get_average_number_of_incremental_restraints() << std::endl;
   IMP::benchmark::report(name+" mc", runtime, score);
 }
 
 
-int main(int, char *[]) {
-  benchmark_it("incremental", true);
-  benchmark_it("non incremental", false);
+int main(int argc, char *[]) {
+  benchmark_it("incremental", true, argc>1);
+  benchmark_it("non incremental", false, false);
   return 0;
 }
