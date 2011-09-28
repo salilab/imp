@@ -28,7 +28,7 @@ class Restraint;
   experimental and computational profile. In addition, derivatives with respect
   to the experimental profile can be computed and further used for optimization.
 */
-class IMPSAXSEXPORT Score: public RefCounted {
+class IMPSAXSEXPORT Score: public base::RefCounted {
 public:
   //! Constructor
   /**

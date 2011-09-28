@@ -17,7 +17,7 @@ IMPSAXS_BEGIN_NAMESPACE
 //class Restraint;
 class Score;
 
-class IMPSAXSEXPORT DerivativeCalculator : public RefCounted {
+class IMPSAXSEXPORT DerivativeCalculator : public base::RefCounted {
 public:
   DerivativeCalculator(const Profile& exp_profile);
 
