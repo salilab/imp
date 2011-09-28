@@ -28,7 +28,7 @@ def _action_unit_test(target, source, env):
         disab = ' "%s"' % ":".join(disabled_modules)
     else:
         disab = ''
-    tmpdir=Dir("#/build/tmp").abspath
+    tmpdir=Dir(env["builddir"]+"/tmp").abspath
     if type=="unit test":
         cmd= File("#/scons_tools/run-all-tests.py").abspath
         #if len(fsource) > 0:
@@ -42,7 +42,7 @@ def _action_unit_test(target, source, env):
                 dmod.append(d)
         cmd= cmd+ ' "'+":".join(dmod) + '"'
     elif type=='system':
-        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
+        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir(env["builddir"]+"/tmp").abspath
     else:
         utility.report_error(env, "Unknown test type "+type)
     app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
@@ -68,7 +68,10 @@ UnitTest = Builder(action=Action(_action_unit_test,
 def add_test(env, source, type, expensive_source=[]):
     test=UnitTest(env, target="fast-test.passed", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
     etest=UnitTest(env, target="test.passed", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
-    env.Requires(test, "#/build/lib/compat_python")
+    env.Requires(test, env["builddir"]+"/lib/compat_python")
+    env.Requires(test, env["builddir"]+"/lib/IMP/test")
+    env.Requires(etest, env["builddir"]+"/lib/compat_python")
+    env.Requires(etest, env["builddir"]+"/lib/IMP/test")
     env.AlwaysBuild("test.passed")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
