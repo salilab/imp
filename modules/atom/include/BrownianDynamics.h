@@ -13,7 +13,7 @@
 #include "Diffusion.h"
 #include "Simulator.h"
 #include "atom_macros.h"
-
+#include <IMP/random.h>
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 #include <IMP/internal/units.h>
