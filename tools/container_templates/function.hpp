@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_HEADERNAME_MODIFIER_H
-#define IMP_HEADERNAME_MODIFIER_H
+#ifndef IMPKERNEL_HEADERNAME_MODIFIER_H
+#define IMPKERNEL_HEADERNAME_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -29,7 +29,7 @@ class Particle;
     Implementors should see IMP_HEADERNAME_MODIFIER(). Also see
     CLASSNAMEDerivativeModifier.
  */
-class IMPEXPORT CLASSNAMEModifier : public Object
+class IMPEXPORT CLASSNAMEModifier : public base::Object
 {
 public:
   typedef VARIABLETYPE Argument;
@@ -155,4 +155,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_HEADERNAME_MODIFIER_H */
+#endif  /* IMPKERNEL_HEADERNAME_MODIFIER_H */

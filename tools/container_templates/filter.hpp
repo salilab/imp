@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_HEADERNAME_FILTER_H
-#define IMP_HEADERNAME_FILTER_H
+#ifndef IMPKERNEL_HEADERNAME_FILTER_H
+#define IMPKERNEL_HEADERNAME_FILTER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementors should see IMP_HEADERNAME_FILTER().
  */
-class IMPEXPORT CLASSNAMEFilter : public Object
+class IMPEXPORT CLASSNAMEFilter : public base::Object
 {
 public:
   CLASSNAMEFilter(std::string name="CLASSNAMEFilter %1%");
@@ -67,4 +67,4 @@ IMP_OBJECTS(CLASSNAMEFilter,CLASSNAMEFilters);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_HEADERNAME_FILTER_H */
+#endif  /* IMPKERNEL_HEADERNAME_FILTER_H */
