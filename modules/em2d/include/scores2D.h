@@ -54,7 +54,7 @@ IMPEM2DEXPORT double get_global_score(const RegistrationResults &RRs);
 
 
 //! Base class for all scoring functions related to em2d
-class IMPEM2DEXPORT ScoreFunction: public Object {
+class IMPEM2DEXPORT ScoreFunction: public IMP::base::Object {
 public:
   ScoreFunction(): Object("ScoreFunction%1%") {}
   //! Given an image and a projection, returns the appropiate score
