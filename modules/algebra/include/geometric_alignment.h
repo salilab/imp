@@ -16,7 +16,7 @@
 #include "Transformation2D.h"
 #include "internal/tnt_array2d.h"
 #include "internal/jama_svd.h"
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -61,13 +61,13 @@ const Vector3DsOrXYZs1 &to
     //double x= p_it->x();
     center_from+= get_vector_d_geometry(from[i]);
     center_to += get_vector_d_geometry(to[i]);
-    IMP_LOG(VERBOSE, i << ": (" << get_vector_d_geometry(from[i])
+    IMP_LOG(base::VERBOSE, i << ": (" << get_vector_d_geometry(from[i])
             << ") (" << get_vector_d_geometry(to[i]) << ")\n");
   }
   center_from = center_from/from.size();
   center_to = center_to/to.size();
 
-  IMP_LOG(VERBOSE, "Centers are (" << center_from << ") (" << center_to
+  IMP_LOG(base::VERBOSE, "Centers are (" << center_from << ") (" << center_to
           << ")\n");
   Vector3Ds shifted_from(from.size()), shifted_to(to.size());
   for (unsigned int i=0; i< from.size(); ++i) {
@@ -90,42 +90,42 @@ const Vector3DsOrXYZs1 &to
     }
   }
 
-  IMP_LOG(VERBOSE, "H is " << H << std::endl);
+  IMP_LOG(base::VERBOSE, "H is " << H << std::endl);
 
   internal::JAMA::SVD<double> svd(H);
   internal::TNT::Array2D<double> U(3, 3), V(3, 3);
   svd.getU(U);
   svd.getV(V);
 
-  IMP_LOG(VERBOSE, "SVD is " << U << std::endl << V << std::endl);
+  IMP_LOG(base::VERBOSE, "SVD is " << U << std::endl << V << std::endl);
 
   internal::TNT::Array1D<double> SV;
   svd.getSingularValues(SV);
   double det= SV[0]*SV[1]*SV[2];
   IMP_IF_CHECK(USAGE) {
     if (det < .00001) {
-      IMP_LOG(TERSE, "FROM:\n");
+      IMP_LOG(base::TERSE, "FROM:\n");
       for (unsigned int i=0; i< from.size(); ++i) {
-        IMP_LOG(TERSE, from[i] << std::endl);
+        IMP_LOG(base::TERSE, from[i] << std::endl);
       }
-      IMP_LOG(TERSE, "TO:\n");
+      IMP_LOG(base::TERSE, "TO:\n");
       for (unsigned int i=0; i< from.size(); ++i) {
-        IMP_LOG(TERSE, to[i] << std::endl);
+        IMP_LOG(base::TERSE, to[i] << std::endl);
       }
-      IMP_LOG(TERSE, H);
+      IMP_LOG(base::TERSE, H);
       IMP_WARN("Degenerate point set. I may not be able to align them."
                << std::endl);
     }
   }
 
-  IMP_IF_LOG(VERBOSE) {
+  IMP_IF_LOG(base::VERBOSE) {
     internal::TNT::Array2D<double> Sigma(3,3, 0.0);
 
     for (int i=0; i < 3; ++i) {
       Sigma[i][i]= SV[i];
     }
 
-    IMP_LOG(VERBOSE, "Reconstructed is "
+    IMP_LOG(base::VERBOSE, "Reconstructed is "
             << internal::TNT::matmult(internal::TNT::matmult(U,Sigma),
                                       internal::TNT::transpose(V))
             << std::endl);
@@ -138,7 +138,7 @@ const Vector3DsOrXYZs1 &to
 
   // check for reflection
   if (determinant(rot) < 0) {
-    IMP_LOG(VERBOSE, "Flipping matrix"<<std::endl);
+    IMP_LOG(base::VERBOSE, "Flipping matrix"<<std::endl);
     internal::TNT::Array2D<double> VT = internal::TNT::transpose(V);
     internal::TNT::Array2D<double> UVT = internal::TNT::matmult(U, VT);
     internal::TNT::Array2D<double> S(3, 3);
@@ -148,13 +148,13 @@ const Vector3DsOrXYZs1 &to
     rot = internal::TNT::matmult(internal::TNT::matmult(U, S), VT);
   }
 
-  IMP_LOG(VERBOSE, "Rotation matrix is " << rot << std::endl);
+  IMP_LOG(base::VERBOSE, "Rotation matrix is " << rot << std::endl);
 
   Rotation3D rotation
     = get_rotation_from_matrix(rot[0][0], rot[0][1], rot[0][2],
                                rot[1][0], rot[1][1], rot[1][2],
                                rot[2][0], rot[2][1], rot[2][2]);
-  IMP_LOG(VERBOSE, "Rotation is " << rotation << std::endl);
+  IMP_LOG(base::VERBOSE, "Rotation is " << rotation << std::endl);
   Vector3D translation=center_to - rotation.get_rotated(center_from);
 
   Transformation3D ret(rotation, translation);

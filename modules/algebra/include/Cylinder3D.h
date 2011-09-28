@@ -12,7 +12,7 @@
 #include "Transformation3D.h"
 #include "Segment3D.h"
 #include <iostream>
-#include <IMP/constants.h>
+#include "constants.h"
 
 
 IMPALGEBRA_BEGIN_NAMESPACE

@@ -319,7 +319,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
           << sin_tilt_sin_psi/sin_tilt << std::endl);*/
   IMP_IF_CHECK(USAGE) {
     Rotation3D rrot= get_rotation_from_fixed_zyz(rot, tilt, psi);
-    IMP_LOG(VERBOSE,
+    IMP_LOG(base::VERBOSE,
             "Input is " << r << " output results in " << rrot << std::endl);
     IMP_INTERNAL_CHECK(get_distance(r, rrot) < .1,
                "The input and output rotations are far apart " << r
@@ -371,7 +371,7 @@ Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,
   double angle = std::acos(dot);
   //check a special case: the input vectors are parallel / antiparallel
   if (std::abs(dot) >.999999) {
-    IMP_LOG(VERBOSE," the input vectors are (anti)parallel "<<std::endl);
+    IMP_LOG(base::VERBOSE," the input vectors are (anti)parallel "<<std::endl);
     return get_rotation_about_axis(get_orthogonal_vector(v1),
                                               angle);
   }
@@ -414,7 +414,7 @@ std::pair<Vector3D,double> get_axis_and_angle(
 
 //! Generates a nondegenerate set of Euler angles with a delta resolution
 algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta_rad) {
-  double delta= delta_rad/IMP::PI*180.0;
+  double delta= delta_rad/PI*180.0;
   Vector3D eu_start(0.,0.,0.);//psi,theta,phi
   Vector3D eu_end(360.,180.,360.);
   Vector3D eu_range=eu_end-eu_start;

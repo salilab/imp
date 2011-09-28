@@ -9,9 +9,9 @@
 #ifndef IMPALGEBRA_EIGEN_ANALYSIS_H
 #define IMPALGEBRA_EIGEN_ANALYSIS_H
 
-#include "IMP/algebra/Vector3D.h"
-#include "IMP/algebra/Transformation3D.h"
-#include <IMP/log.h>
+#include "Vector3D.h"
+#include "Transformation3D.h"
+#include <IMP/base/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a eigen analysis of some data.

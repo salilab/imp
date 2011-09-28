@@ -45,7 +45,7 @@ struct LinearKNNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, double distance,
                               double , Ints &ret) const {
-    double d2= square(distance);
+    double d2= base::square(distance);
     VectorD<D> v= get_vector_d_geometry(g);
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (get_squared_distance(v, data_[i]) < d2) {

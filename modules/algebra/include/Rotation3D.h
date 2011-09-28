@@ -11,9 +11,9 @@
 #include "algebra_config.h"
 #include "Vector3D.h"
 #include "utility.h"
-#include <IMP/constants.h>
+#include "constants.h"
 
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -68,7 +68,7 @@ class IMPALGEBRAEXPORT Rotation3D {
   //! Create an invalid rotation
   Rotation3D():v_(0,0,0,0) {}
   //! Create a rotation from a quaternion
-  /** \throw ValueException if the rotation is not a unit vector.
+  /** \throw base::ValueException if the rotation is not a unit vector.
    */
   Rotation3D(double a, double b, double c, double d): v_(a,b,c,d),
     has_cache_(false) {
@@ -122,7 +122,7 @@ class IMPALGEBRAEXPORT Rotation3D {
       break;
     default:
       IMP_THROW("Out of range coordinate " << coord,
-                IndexException);
+                base::IndexException);
     }
   }
 #endif

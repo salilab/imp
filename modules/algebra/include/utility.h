@@ -10,7 +10,7 @@
 
 #include <cmath> // abs
 #include "algebra_config.h"
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN

@@ -10,7 +10,7 @@
 
 #include "algebra_config.h"
 
-#include <IMP/base_types.h>
+#include <IMP/base/types.h>
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
@@ -941,7 +941,7 @@ namespace grids {
     Storage::set_number_of_voxels(Ints(dd.get(), dd.get()+D));
     set_unit_cell(nuc);
     origin_= bb.get_corner(0);
-    IMP_LOG(TERSE, "Constructing grid with side "
+    IMP_LOG(base::TERSE, "Constructing grid with side "
             << unit_cell_[0]
             << " from request with " << side << " and " << bb << std::endl);
   }

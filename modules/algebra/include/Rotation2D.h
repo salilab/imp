@@ -12,7 +12,7 @@
 #include "utility.h"
 #include "Vector2D.h"
 #include "Matrix2D.h"
-#include "IMP/constants.h"
+#include "constants.h"
 #include <cmath>
 //#include <stdlib.h>
 
