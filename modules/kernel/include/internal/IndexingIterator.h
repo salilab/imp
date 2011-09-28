@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_INDEXING_ITERATOR_H
-#define IMP_INDEXING_ITERATOR_H
+#ifndef IMPKERNEL_INDEXING_ITERATOR_H
+#define IMPKERNEL_INDEXING_ITERATOR_H
 
 #include "../macros.h"
 
@@ -156,4 +156,4 @@ inline IndexingIterator<A> operator+(int i,
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INDEXING_ITERATOR_H */
+#endif  /* IMPKERNEL_INDEXING_ITERATOR_H */

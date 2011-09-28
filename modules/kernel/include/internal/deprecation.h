@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_INTERNAL_DEPRECATION_H
-#define IMP_INTERNAL_DEPRECATION_H
+#ifndef IMPKERNEL_INTERNAL_DEPRECATION_H
+#define IMPKERNEL_INTERNAL_DEPRECATION_H
 
 #include "../kernel_config.h"
 
@@ -19,4 +19,4 @@ IMPEXPORT void set_printed_deprecation_message(const char *name, bool tr);
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif /* IMP_INTERNAL_DEPRECATION_H */
+#endif /* IMPKERNEL_INTERNAL_DEPRECATION_H */

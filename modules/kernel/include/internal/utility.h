@@ -5,8 +5,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_INTERNAL_UTILITY_H
-#define IMP_INTERNAL_UTILITY_H
+#ifndef IMPKERNEL_INTERNAL_UTILITY_H
+#define IMPKERNEL_INTERNAL_UTILITY_H
 
 #include "../kernel_config.h"
 #include "../Particle.h"
@@ -88,4 +88,4 @@ struct ParticleCheck {
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INTERNAL_UTILITY_H */
+#endif  /* IMPKERNEL_INTERNAL_UTILITY_H */

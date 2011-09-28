@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_UNITS_H
-#define IMP_UNITS_H
+#ifndef IMPKERNEL_UNITS_H
+#define IMPKERNEL_UNITS_H
 
 #include "Unit.h"
 #include "../base_types.h"
@@ -273,4 +273,4 @@ namespace unit= internal::unit;
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_UNITS_H */
+#endif  /* IMPKERNEL_UNITS_H */

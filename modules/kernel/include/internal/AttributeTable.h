@@ -5,12 +5,12 @@
  *
  */
 
-#ifndef IMP_ATTRIBUTE_TABLE_H
-#define IMP_ATTRIBUTE_TABLE_H
+#ifndef IMPKERNEL_ATTRIBUTE_TABLE_H
+#define IMPKERNEL_ATTRIBUTE_TABLE_H
 
 #include "../base_types.h"
 #include "../utility.h"
-#include "../log.h"
+#include <IMP/base/log.h>
 #include "../Pointer.h"
 #include <boost/dynamic_bitset.hpp>
 
@@ -213,4 +213,4 @@ namespace {
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_ATTRIBUTE_TABLE_H */
+#endif  /* IMPKERNEL_ATTRIBUTE_TABLE_H */

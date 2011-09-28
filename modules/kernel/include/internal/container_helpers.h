@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_INTERNAL_CONTAINER_HELPERS_H
-#define IMP_INTERNAL_CONTAINER_HELPERS_H
+#ifndef IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H
+#define IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H
 
 #include "../base_types.h"
 #include "../Particle.h"
@@ -383,4 +383,4 @@ public:                                                         \
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif /* IMP_INTERNAL_CONTAINER_HELPERS_H */
+#endif /* IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H */
