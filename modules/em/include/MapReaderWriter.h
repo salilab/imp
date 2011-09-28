@@ -22,7 +22,7 @@ IMPEM_BEGIN_NAMESPACE
     They should never be stored, only created immediately and passed to
     the read or write function.
  */
-class IMPEMEXPORT MapReaderWriter : public Object
+class IMPEMEXPORT MapReaderWriter : public IMP::base::Object
 {
 public:
   MapReaderWriter(): Object("MapReaderWriter%1%"){}

@@ -15,6 +15,7 @@
 #include <IMP/core/Transform.h>
 #include <IMP/core/SteepestDescent.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/random.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
 #include <IMP/algebra/eigen_analysis.h>

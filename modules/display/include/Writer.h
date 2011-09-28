@@ -29,7 +29,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     of the file being written to before writing using the
     IMP::display::Writer::set_file_name() method.
  */
-class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
+class IMPDISPLAYEXPORT Writer:
+  public GeometryProcessor, public IMP::base::Object
 {
   int frame_;
  public:
@@ -127,7 +128,7 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
       such as CMM or Chimera that writes multiple frames to different
       files.
   */
-  TextWriter(TextOutput fn);
+  TextWriter(base::TextOutput fn);
   //! Create a write for a file or files with the passed name or pattern
   /** The name should contain %1% if you want to write different frames
       to separate files. Otherwise, it will either write all frames to the
