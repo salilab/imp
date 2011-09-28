@@ -833,12 +833,12 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #define IMP_OBJECTS_IO(Name, PluralName)                                \
   inline std::ostream &operator<<(std::ostream &out,                    \
                                   const PluralName &os) {               \
-    show_objects(os, out);                                              \
+    IMP::base::show_objects(os, out);                                   \
     return out;                                                         \
   }                                                                     \
   inline std::ostream& operator<<(std::ostream &out,                    \
                                   const PluralName##Temp &os) {         \
-    show_objects(os, out);                                              \
+    IMP::base::show_objects(os, out);                                   \
     return out;                                                         \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
