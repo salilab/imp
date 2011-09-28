@@ -9,12 +9,13 @@ import scons_tools.data
 
 # standard include files
 base_includes= ["IMP_kernel_macros.i",
-                "IMP_kernel_exceptions.i",
-                "IMP_kernel_directors.i",
-                "IMP_kernel_types.i",
-                "IMP_kernel_refcount.i",
-                "IMP_kernel_streams.i",
-                "IMP_kernel_streams_kernel.i"]
+                "IMP_base_macros.i",
+                "IMP_base_exceptions.i",
+                "IMP_base_directors.i",
+                "IMP_base_types.i",
+                "IMP_base_refcount.i",
+                "IMP_base_streams.i",
+                "IMP_base_streams_kernel.i"]
 
 
 def _null_scanner(node, env, path):
@@ -92,26 +93,34 @@ def _action_swig_file(target, source, env):
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <exception>
-#include "IMP.h"
+#include "IMP/base.h"
 """%vars['module_include_path'].replace("/", ".")]
     dta= scons_tools.data.get(env)
     for d in deps:
+        # kind of evil
         if d != "kernel":
             ln= dta.modules[d].libname
             nm=ln.replace("imp", "IMP").replace("_", "/")
             preface.append("#include \"%s.h\""% nm)
         else:
+            preface.append('#include "IMP.h"')
             preface.append('#include "IMP/internal/swig.h"')
             preface.append('#include "IMP/internal/swig_helpers.h"')
-    if vars['module'] != 'kernel':
-        preface.append("#include \"%(module_include_path)s.h\""%vars)
+    preface.append("#include \"%(module_include_path)s.h\""%vars)
+    if vars['module'] == 'kernel':
+        preface.append('#include "IMP/internal/swig.h"')
+        preface.append('#include "IMP/internal/swig_helpers.h"')
+    preface.append('#include "IMP/base/internal/swig_helpers.h"')
+    preface.append('#include "IMP/base/internal/swig.h"')
     preface.append("#include \"%(module_include_path)s/%(module)s_config.h\""%vars)
+    preface.append("#include \"%(module_include_path)s.h\""%vars)
     preface.append("""%}
 %implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_pair.i"
 %include "IMP/compatibility/compatibility_config.h"
+%include "IMP/base/base_config.h"
 
 %pythoncode %{
 _value_types=[]
@@ -175,16 +184,19 @@ std::string get_data_path(std::string fname);
             nm=scons_tools.dependency.get_dependency_string(d).lower()
             preface.append("has_"+nm+"=False")
     preface.append("}")
-    if vars['module'] != "kernel":
-        preface.append("""
+    if False:
+        if vars['module'] != "kernel" and vars['module']!= 'base' and vars['module']!='algebra':
+            preface.append("""
 %%pythoncode %%{
+import IMP.base
 import IMP
-IMP.used_modules.append(IMP.VersionInfo("%s", get_module_version()))
+IMP.used_modules.append(IMP.base.VersionInfo("%s", get_module_version()))
 %%}"""%vars['module'])
-    else:
-        preface.append("""
+        else:
+            preface.append("""
 %pythoncode %{
-used_modules.append(VersionInfo("IMP", get_module_version()))
+import IMP.base
+used_modules.append(IMP.base.VersionInfo("IMP", get_module_version()))
 %}""")
     preface.append("""
 %pythoncode %{

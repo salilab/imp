@@ -200,14 +200,15 @@ namespace internal {
     if env['MODULE_HAS_DATA']:
         print >> h, """
 #  ifndef SWIG
-#    include <IMP/internal/directories.h>
-IMP_BEGIN_INTERNAL_NAMESPACE
-IMPEXPORT std::string get_data_path(std::string module_name,
+#    include <IMP/base/internal/directories.h>
+
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+IMPBASEEXPORT std::string get_data_path(std::string module_name,
                                     std::string file_name);
-IMPEXPORT std::string get_example_path(std::string module_name,
+IMPBASEEXPORT std::string get_example_path(std::string module_name,
                                        std::string file_name);
 
-IMP_END_INTERNAL_NAMESPACE
+IMPBASE_END_INTERNAL_NAMESPACE
 #  endif // SWIG
 """
     print >> h, """
@@ -242,7 +243,7 @@ inline std::string get_module_name() {
     used via the \c tools/imppy.sh script.
 */
 inline std::string get_data_path(std::string file_name) {
-  return IMP::internal::get_data_path("%(module)s", file_name);
+  return IMP::base::internal::get_data_path("%(module)s", file_name);
 }
 
 //! Return the path to installed example data for this module
@@ -257,7 +258,7 @@ inline std::string get_data_path(std::string file_name) {
     used via the \c tools/imppy.sh script.
 */
 inline std::string get_example_path(std::string file_name)  {
-  return IMP::internal::get_example_path("%(module)s", file_name);
+  return IMP::base::internal::get_example_path("%(module)s", file_name);
 }
 /** @} */
 """% vars
@@ -303,7 +304,7 @@ std::string get_module_version() {
     return std::string("%(version)s");
 }
 """ %vars
-    if vars['module']=="kernel":
+    if vars['module']=="base":
         print >> cpp, """
 namespace internal {
  std::string imp_data_path="%s";
