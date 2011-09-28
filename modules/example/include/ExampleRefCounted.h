@@ -27,7 +27,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleRefCounted.h
     \include ExampleRefCounted.cpp
  */
-class IMPEXAMPLEEXPORT ExampleRefCounted: public RefCounted
+class IMPEXAMPLEEXPORT ExampleRefCounted: public base::RefCounted
 {
   Floats data_;
 public:

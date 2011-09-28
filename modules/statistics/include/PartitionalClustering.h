@@ -21,7 +21,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     data items and the information needed by the clustering algorithm is
     maintained by a helper object such as Embedding.
 */
-class IMPSTATISTICSEXPORT PartitionalClustering: public Object {
+class IMPSTATISTICSEXPORT PartitionalClustering: public IMP::base::Object {
  public:
   PartitionalClustering(std::string name): Object(name){}
   virtual unsigned int get_number_of_clusters() const=0;
