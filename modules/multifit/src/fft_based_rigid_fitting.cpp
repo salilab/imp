@@ -8,6 +8,7 @@
 #include <IMP/multifit/fft_based_rigid_fitting.h>
 #include <IMP/multifit/internal/fft_fitting_utils.h>
 #include <boost/progress.hpp>
+#include <IMP/constants.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
 
