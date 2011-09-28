@@ -235,10 +235,10 @@ def _action_simple_swig(target, source, env):
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
     ussp=env.get('swigpath', "")
-    command=command+[" -Ibuild/swig"]\
+    command=command+[" -I"+env['builddir']+"/swig"]\
         + ["-I"+x for x in
            scons_tools.utility.get_env_paths(env, 'includepath')]\
-        + ["-I"+Dir("#build/include").abspath]\
+        + ["-I"+Dir(env['builddir']+"/include").abspath]\
         + ["-I"+str(x) for x in
            scons_tools.utility.get_env_paths(env, 'swigpath')]
     command.append("-DIMP_SWIG")
@@ -290,15 +290,18 @@ def swig_scanner(node, env, path):
         return []
     else :
         oldret=[]
-        ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
+        ret= [env["builddir"]+"/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
             mn= x.split("_")[0]
             if not dta.modules[mn].external:
-                ret.append("#/build/swig/IMP_"+x+".i")
+                ret.append(env["builddir"]+"/swig/IMP_"+x+".i")
         if re.search('\n%include\s"RMF.i"', contents)\
                or re.search('\n%import\s"RMF.i"', contents):
-            ret.append("#/build/swig/RMF.i")
+            ret.append(env["builddir"]+"/swig/RMF.i")
+        if re.search('\n%include\s"RMF_types.i"', contents)\
+               or re.search('\n%import\s"RMF_types.i"', contents):
+            ret.append(env["builddir"]+"/swig/RMF_types.i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
@@ -309,7 +312,7 @@ def inswig_scanner(node, env, path):
         return swig_scanner(node, env, path)
     ret= swig_scanner(node, env, path)
     for i in base_includes:
-        f= "#/build/swig/"+i
+        f= env["builddir"]+"/swig/"+i
         ret.append(f)
     for m in scons_tools.module._get_module_python_modules(env):
         ret.append("#/modules/"+m+"/pyext/swig.i-in")

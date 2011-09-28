@@ -169,6 +169,8 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('docdir', 'Documentation installation directory',
                           '${prefix}/share/doc/%s' % package,
                           PathVariable.PathAccept))
+    vars.Add(PathVariable('builddir', 'The directory when things are build. The default is almost always fine.',
+                          "#/build", PathVariable.PathAccept))
     # Note that destdir should not affect any compiled-in paths; see
     # http://www.gnu.org/prep/standards/html_node/DESTDIR.html
     vars.Add(PathVariable('destdir',
@@ -191,6 +193,9 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('wine',
                           'Build using MS Windows tools via Wine emulation',
                           False))
+    #vars.Add(BoolVariable('timetests',
+    #                      'Print running time for each test',
+    #                      False))
     vars.Add(BoolVariable('versionchecks',
                           "By default IMP checks the versions of its dependencies a"
                           "runtime. This is useful to ensure that there are no link "

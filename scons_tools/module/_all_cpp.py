@@ -29,5 +29,5 @@ def get(env, files):
     prefix=vars['module_libname']
     if prefix=="imp":
         prefix="imp_kernel"
-    target=File("#/build/src/"+prefix+"_all.cpp")
+    target=File(env["builddir"]+"/src/"+prefix+"_all.cpp")
     return _All(env=env, target=target, source=files)

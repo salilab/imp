@@ -188,7 +188,7 @@ def _add_platform_flags(env):
                                                   "-Wmissing-declarations"]])
         env.Append(IMP_BIN_CXXFLAGS=[x for x in env['CXXFLAGS']
                                      if x not in ["-Wmissing-prototypes", "-Wmissing-declarations"]])
-        #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+        #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir(envi["builddir"]+"/lib").abspath])
     env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
     env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
     env.Prepend(IMP_SHLIB_LINKFLAGS=env['IMP_LINKFLAGS'])
@@ -238,9 +238,9 @@ def get_base_environment(variables=None, *args, **kw):
         _add_platform_flags(env)
     #col = colorizer.colorizer()
     #col.colorize(env)
-    env['PYTHONPATH'] = '#/build/lib'
+    env['PYTHONPATH'] = env['builddir']+'/lib'
     if env.get('pythonpath', None):
-        env['PYTHONPATH'] = os.path.pathsep.join(['#/build/lib']+[env['PYTHONPATH']])
+        env['PYTHONPATH'] = os.path.pathsep.join([env['builddir']+'/lib']+[env['PYTHONPATH']])
     env['all_modules']=[]
     env.Decider('MD5-timestamp')
 
@@ -264,9 +264,9 @@ def get_base_environment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
-    env.Prepend(CPPPATH=[Dir('#/build/include').abspath,
-                         Dir('#/build/src').abspath])
-    env.Prepend(LIBPATH=['#/build/lib'])
+    env.Prepend(CPPPATH=[Dir(env['builddir']+'/include').abspath,
+                         Dir(env['builddir']+'/src').abspath])
+    env.Prepend(LIBPATH=[env['builddir']+'/lib'])
     env.Append(BUILDERS={'IMPRun': run.Run})
     # these should be in application, but...
     env.AddMethod(application.IMPApplication)
