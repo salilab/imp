@@ -66,7 +66,7 @@ IMP.set_log_level(IMP.TERSE)
 
 print "found", cs.get_number_of_configurations(), "solutions"
 
-out= IMP.rmf.create_rmf_file(IMP.system.get_output_path("configurations_"+str(i)+".rmf"))
+out= RMF.create_rmf_file(IMP.system.get_output_path("configurations_"+str(i)+".rmf"))
 IMP.rmf.add_hierarchy(out, all)
 for i in range(0, cs.get_number_of_configurations()):
     cs.load_configuration(i)
