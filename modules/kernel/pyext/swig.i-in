@@ -1,6 +1,5 @@
 %{
-#include "IMP/internal/swig.h"
-#include "IMP/internal/swig_helpers.h"
+#include <IMP/internal/swig.h>
 %}
 
 %pythoncode %{
@@ -28,6 +27,44 @@ def _forward_set_value(self, name, value):
   strings_must_be_passed_by_std_string;
 }
 
+%extend IMP::Particle {
+  bool __eq__(const Particle *o) const {
+     return self ==o;
+  }
+  bool __ne__(const Particle *o) const {
+     return self !=o;
+  }
+  bool __le__(const Particle *o) const {
+     return self <= o;
+  }
+  bool __lt__(const Particle *o) const {
+     return self < o;
+  }
+  bool __ge__(const Particle *o) const {
+     return self >= o;
+  }
+  bool __gt__(const Particle *o) const {
+     return self > o;
+  }
+  bool __eq__(const IMP::Decorator &d) const {
+     return self == d.get_particle();
+  }
+  bool __ne__(const IMP::Decorator &d) const {
+     return self != d.get_particle();
+  }
+  bool __le__(const IMP::Decorator &d) const {
+     return self <= d.get_particle();
+  }
+  bool __lt__(const IMP::Decorator &d) const {
+     return self < d.get_particle();
+  }
+  bool __ge__(const IMP::Decorator &d) const {
+     return self >= d.get_particle();
+  }
+  bool __gt__(const IMP::Decorator &d) const {
+     return self > d.get_particle();
+  }
+}
 
 
 #if IMP_BUILD == IMP_FAST
@@ -46,7 +83,6 @@ build="debug"
 
 
 namespace IMP {
-%warnfilter(403) FailureHandlerBase;
 %warnfilter(473) Refiner;
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
@@ -54,11 +90,8 @@ namespace IMP {
 %warnfilter(473) Sampler;
 }
 // to avoid extend clash
-IMP_SWIG_OBJECT(IMP, Object, Objects);
-IMP_SWIG_DIRECTOR(IMP, Object);
 IMP_SWIG_BASE_OBJECT(IMP,Constraint, Constraints);
 IMP_SWIG_BASE_OBJECT(IMP,Container, Containers);
-IMP_SWIG_BASE_OBJECT(IMP,FailureHandler, FailureHandlers);
 IMP_SWIG_BASE_OBJECT(IMP,Optimizer, Optimizers);
 IMP_SWIG_BASE_OBJECT(IMP,OptimizerState, OptimizerStates);
 IMP_SWIG_BASE_OBJECT(IMP,PairContainer, PairContainers);
@@ -119,14 +152,8 @@ IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFai
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
-IMP_SWIG_NATIVE_PAIR(IMP, double, DerivativePair, DerivativePairs);
-IMP_SWIG_NATIVE_PAIR(IMP, double, FloatRange, FloatRanges);
-IMP_SWIG_NATIVE_PAIR(IMP, double, FloatPair, FloatPairs);
-IMP_SWIG_NATIVE_PAIR(IMP, int, IntRange, IntRanges);
-IMP_SWIG_NATIVEPAIR(IMP, int, IntPair, IntPairs);
 IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
 
-IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
@@ -135,18 +162,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleKey, Key, ParticleKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
-IMP_SWIG_NATIVE_VALUES_LIST(IMP, double, Floats, FloatsList);
-IMP_SWIG_NATIVE_VALUES_LIST(IMP, int, Ints, IntsList);
-IMP_SWIG_NATIVE_VALUES_LIST(IMP, std::string, Strings, StringsList);
-IMP_SWIG_VALUE_BUILTIN(IMP, Float, Floats, double);
-IMP_SWIG_VALUE_BUILTIN(IMP, Int, Ints, int);
-IMP_SWIG_VALUE_BUILTIN(IMP, String, Strings, std::string);
-IMP_SWIG_NATIVE_VALUE(float);
-IMP_SWIG_NATIVE_VALUE(double);
-IMP_SWIG_NATIVE_VALUE(int);
-IMP_SWIG_NATIVE_VALUE(std::string);
-IMP_SWIG_RAII(IMP, SetLogState);
-IMP_SWIG_RAII(IMP, SetLogTarget);
 IMP_SWIG_RAII(IMP, ScopedFailureHandler);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveRestraint, GenericScopedRemoveRestraint);
@@ -154,12 +169,6 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveScoreState, GenericScopedRemoveScoreStat
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedScoreState, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedRestraint);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedScoreState);
-IMP_SWIG_RAII(IMP, CreateLogContext)
-IMP_SWIG_RAII(IMP, WarningContext)
-
-
-IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
-IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
 
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 
@@ -171,53 +180,8 @@ IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialT
 IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
 IMP_SWIG_OBJECT(IMP::internal, _ConstOptimizer, _ConstOptimizers);
 IMP_SWIG_VALUE(IMP::internal, _Value, _Values);
-IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
+IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::base::Object*);
 
-/*%typemap(in) IMP::VersionInfo* {
- values_like_##Name##_must_be_passed_by_value_or_const_ref;
-}*/
-
-%extend IMP::Object {
-  bool __eq__(const Object *o) const {
-     return self ==o;
-  }
-  bool __ne__(const Object *o) const {
-     return self !=o;
-  }
-  bool __le__(const Object *o) const {
-     return self <= o;
-  }
-  bool __lt__(const Object *o) const {
-     return self < o;
-  }
-  bool __ge__(const Object *o) const {
-     return self >= o;
-  }
-  bool __gt__(const Object *o) const {
-     return self > o;
-  }
-  bool __eq__(const IMP::Decorator &d) const {
-     return self == d.get_particle();
-  }
-  bool __ne__(const IMP::Decorator &d) const {
-     return self != d.get_particle();
-  }
-  bool __le__(const IMP::Decorator &d) const {
-     return self <= d.get_particle();
-  }
-  bool __lt__(const IMP::Decorator &d) const {
-     return self < d.get_particle();
-  }
-  bool __ge__(const IMP::Decorator &d) const {
-     return self >= d.get_particle();
-  }
-  bool __gt__(const IMP::Decorator &d) const {
-     return self > d.get_particle();
-  }
-}
-
-%feature("ref")   IMP::RefCounted "IMP::internal::ref($this);"
-%feature("unref") IMP::RefCounted "IMP::internal::unref($this);"
 
 IMP_SWIG_CONTAINER(IMP, IMP, RestraintSet, Restraint, restraint)
 IMP_SWIG_CONTAINER(IMP, IMP, Model, ScoreState, score_state)
@@ -233,8 +197,6 @@ namespace IMP {
   %template(StringKey) ::IMP::Key<2, true>;
   %template(ParticleKey) ::IMP::Key<3, true>;
   %template(ObjectKey) ::IMP::Key<4, true>;
-  %implicitconv TextInput;
-  %implicitconv TextOutput;
 }
 
 %inline %{
@@ -269,18 +231,12 @@ class ParticleQuadsTemp;
     return (a,b,c,d)
 %}
 
-%include "IMP/log.h"
 %include "IMP/particle_index.h"
 %include "IMP/base_types.h"
-%include "IMP/file.h"
 
 %include "IMP/utility.h"
 %include "IMP/deprecation.h"
-%include "IMP/VersionInfo.h"
-%include "IMP/RefCounted.h"
 //%include "IMP/VectorOfRefCounted.h"
-%include "IMP/Object.h"
-%include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/container_base.h"
 
@@ -299,7 +255,6 @@ namespace IMP {
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Refiner.h"
-%include "IMP_kernel_random.i"
 %include "IMP/Optimizer.h"
 %include "IMP/ConfigurationSet.h"
 %include "IMP/Configuration.h"
@@ -324,7 +279,6 @@ namespace IMP {
 %include "IMP/QuadContainer.h"
 %include "IMP/TripletFilter.h"
 %include "IMP/QuadFilter.h"
-%include "IMP/SetLogState.h"
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
@@ -332,7 +286,6 @@ namespace IMP {
 
 
 namespace IMP {
-  %template(DependencyGraph) ::IMP::internal::BoostDigraph< IMP::DependencyGraph, IMP::Object*>;
   %template(ScopedScoreState) ::IMP::GenericScopedScoreState< IMP::ScoreState>;
   %template(ScopedRestraint) ::IMP::GenericScopedRestraint< IMP::Restraint>;
   %template(ScopedRemoveRestraint) ::IMP::GenericScopedRemoveRestraint< IMP::Restraint>;
@@ -341,77 +294,37 @@ namespace IMP {
 
 
 %pythoncode %{
-used_modules=[]
-def show_used_modules():
-    for m in used_modules:
-        print "%-20s %s" % (m.get_module(), m.get_version())
+#used_modules=[]
+#def show_used_modules():
+#    for m in used_modules:
+#        print "%-20s %s" % (m.get_module(), m.get_version())
 
 
-def get_networkx_graph(ig):
-   import networkx
-   g= networkx.DiGraph()
-   if len(ig.get_vertices())==0:
-       return g
-   class NodeWrapper:
-     def __init__(self, p):
-        self.p=p
-     def __str__(self):
-        return self.p.get_name()
-     def __call__(self, name):
-        return self.p.__call__(name)
-     
-   for vi in ig.get_vertices():
-      n= ig.get_vertex_name(vi)
-      g.add_node(NodeWrapper(n))
-   for vi in ig.get_vertices():
-      n= ig.get_vertex_name(vi)
-      for ni in ig.get_out_neighbors(vi):
-         nn= ig.get_vertex_name(ni)
-         g.add_edge(NodeWrapper(n), NodeWrapper(nn))
-   return g
-
-
-def show_altgraph(g):
-           def clean(name):
-              try:
-                n0=name.get_name()
-              except:
-                n0=str(name)
-              n1= str(n0).replace('"','')
-              n2= n1.replace("\n",'')
-              return n2
-           import altgraph
-           from altgraph import Graph, Dot
-           graph= Graph.Graph()
-           for i,v in enumerate(g.get_vertices()):
-               graph.add_node(i) #, node_data=g.get_vertex_name(v)
-           for i,v in enumerate(g.get_vertices()):
-               for n in g.get_out_neighbors(v):
-                  graph.add_edge(v, n)
-           dot = Dot.Dot(graph) #, graph_type="digraph"
-           for i,v in enumerate(g.get_vertices()):
-               dot.node_style(i, label=clean(g.get_vertex_name(v)))
-           dot.display()
-
-def show_graphviz(g):
-           tfn= create_temporary_file_name("graph", ".dot")
-           tfon= create_temporary_file_name("graph", ".pdf")
-           st= g.get_graphviz_string()
-           open(tfn, "w").write(st)
-           import subprocess
-           try:
-             sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
-             sp.wait()
-           except:
-             import sys
-             print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
-             return
-           try:
-             subprocess.Popen(["open", tfon])
-           except:
-             try:
-                subprocess.Popen(["acroread", tfon])
-             except:
-                print "Could not display file. It is saved at", tfon
-           return tfon
+import IMP.base
+get_networkx_graph=IMP.base.get_networkx_graph
+show_altgraph=IMP.base.show_altgraph
+show_graphviz=IMP.base.show_graphviz
+SetLogState= IMP.base.SetLogState
+SetLogTarget= IMP.base.SetLogTarget
+NONE= IMP.base.NONE
+USAGE= IMP.base.USAGE
+USAGE_AND_INTERNAL= IMP.base.USAGE_AND_INTERNAL
+TERSE= IMP.base.TERSE
+SILENT= IMP.base.SILENT
+VERBOSE= IMP.base.VERBOSE
+WARNING= IMP.base.WARNING
+PROGRESS= IMP.base.PROGRESS
+MEMORY= IMP.base.MEMORY
+Object= IMP.base.Object
+create_temporary_file= IMP.base.create_temporary_file
+create_temporary_file_name= IMP.base.create_temporary_file_name
+FailureHandler= IMP.base.FailureHandler
+FailureHandlerBase= IMP.base.FailureHandlerBase
+add_failure_handler= IMP.base.add_failure_handler
+remove_failure_handler= IMP.base.remove_failure_handler
+random_number_generator= IMP.base.random_number_generator
+set_log_level=IMP.base.set_log_level
+set_log_timer=IMP.base.set_log_timer
+get_log_level=IMP.base.get_log_level
+add_to_log= IMP.base.add_to_log
 %}
