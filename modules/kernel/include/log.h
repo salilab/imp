@@ -24,6 +24,7 @@ using IMP::base::PROGRESS;
 using IMP::base::set_log_level;
 using IMP::base::CreateLogContext;
 using IMP::base::get_log_level;
+using IMP::base::set_log_target;
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_LOG_H */
