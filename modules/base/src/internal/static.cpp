@@ -55,6 +55,8 @@ internal::LogStream stream;
 
 compatibility::map<std::string, unsigned int> object_type_counts;
 
+FailureHandlers handlers;
+
 IMPBASE_END_INTERNAL_NAMESPACE
 
 
@@ -107,9 +109,6 @@ struct LiveObjectChecker {
   }
 };
 LiveObjectChecker loc;
-
-
-FailureHandlers handlers;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 #endif
