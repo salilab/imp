@@ -160,13 +160,6 @@ RMFEXPORT void show_hierarchy(NodeHandle root,
                                   std::ostream &out= std::cout,
                                   bool verbose=false,
                                   unsigned int frame=0);
-
-/** \class NodeTree
-    A tree corresponding to the hierarchy of the rmf file.
-*/
-IMP_RMF_GRAPH(NodeTree, bidirectional, NodeHandle, int);
-RMFEXPORT NodeTree get_node_tree(NodeHandle n);
-
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_NODE_HANDLE_H */

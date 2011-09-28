@@ -199,6 +199,23 @@ inline RootHandle open_rmf_file_read_only(std::string path) {
   return RootHandle(open_hdf5_file_read_only(path), false);
 }
 
+/** \name Batch data access
+    These methods provide batch access to attribute data to try
+    to reduce the overhead of repeated function calls.
+
+    The missing_value argument is a placeholder that can fill in
+    for values which are not found in the respective node.
+
+    \note These methods are experimental and subject to change.
+    @{
+*/
+RMFEXPORT Floats get_values(const NodeHandles &nodes,
+                            FloatKey k,
+                            unsigned int frame,
+                            Float missing_value
+                            =std::numeric_limits<double>::max());
+/** @} */
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_ROOT_HANDLE_H */

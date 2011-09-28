@@ -1,9 +1,7 @@
 import unittest
 import RMF
-import IMP.test
-from IMP.algebra import *
 
-class GenericTest(IMP.test.TestCase):
+class GenericTest(RMF.TestCase):
     def _do_test_type(self, nh, k, v):
         print k, v
         nh.set_value(k, v)

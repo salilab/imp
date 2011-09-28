@@ -66,4 +66,21 @@ void RootHandle::flush() {
   shared_->flush();
 }
 
+
+
+Floats get_values(const NodeHandles &nodes,
+                  FloatKey k,
+                  unsigned int frame,
+                  Float missing_value) {
+  Floats ret(nodes.size(), missing_value);
+  for (unsigned int i=0; i< nodes.size(); ++i) {
+    if (nodes[i].get_has_value(k, frame)) {
+      ret[i]=nodes[i].get_value(k, frame);
+    }
+  }
+  return ret;
+}
+
+
+
 } /* namespace RMF */

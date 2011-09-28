@@ -7,7 +7,6 @@
  */
 
 #include <RMF/NodeHandle.h>
-#include <IMP/internal/utility.h>
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>
 #include <RMF/RootHandle.h>
@@ -109,6 +108,34 @@ namespace {
   }
 }
 
+// Note that older g++ is confused by queue.back().get<2>()
+#define IMP_RMF_PRINT_TREE(stream, NodeType, start, num_children,       \
+                       get_child, show)                                 \
+  {                                                                     \
+    std::vector<boost::tuple<std::string, std::string, NodeType> >      \
+      queue;                                                            \
+    queue.push_back(boost::make_tuple(std::string(),                    \
+                                      std::string(), start));           \
+    do {                                                                \
+      boost::tuple<std::string, std::string, NodeType> &back = queue.back(); \
+      NodeType n= back.get<2>();                                        \
+      std::string prefix0= back.get<0>();                               \
+      std::string prefix1= back.get<1>();                               \
+      queue.pop_back();                                                 \
+      stream << prefix0;                                                \
+      unsigned int nc= num_children;                                    \
+      if (nc>0) stream << " + ";                                        \
+      else stream << " - ";                                             \
+      show;                                                             \
+      stream  << std::endl;                                             \
+      for (int i=static_cast<int>(nc-1); i>=0; --i) {                   \
+        queue.push_back(boost::make_tuple(prefix1+" ",                  \
+                                          prefix1+" ", get_child(i)));  \
+      }                                                                 \
+    } while (!queue.empty());                                           \
+  }                                                                     \
+
+
 void show_hierarchy(NodeHandle root,
                     std::ostream &out,
                     bool verbose,
@@ -123,34 +150,10 @@ void show_hierarchy(NodeHandle root,
     xks=get_keys<IndexTraits>(root.get_root_handle());
     sks=get_keys<StringTraits>(root.get_root_handle());
   }
-  IMP_PRINT_TREE(out, NodeHandle, root, n.get_children().size(),
+  IMP_RMF_PRINT_TREE(out, NodeHandle, root, n.get_children().size(),
                  n.get_children().at,
                  show_node(n, out, fks, iks, xks, sks, frame,
                            prefix0+"   "));
-}
-
-namespace {
-  void fill_node_tree(NodeHandle n, int parent,
-                      NodeTree &tree) {
-    typedef boost::property_map<NodeTree,
-                                boost::vertex_name_t>::type VertexMap;
-    VertexMap pm= boost::get(boost::vertex_name, tree);
-    int vi= add_vertex(tree);
-    pm[vi]= n;
-    if (parent != -1) {
-      boost::add_edge(parent, vi, tree);
-    }
-    NodeHandles chs= n.get_children();
-    for (unsigned int i=0; i< chs.size(); ++i) {
-      fill_node_tree(chs[i], vi, tree);
-    }
-  }
-}
-
-NodeTree get_node_tree(NodeHandle n) {
-  NodeTree tree;
-  fill_node_tree(n, -1, tree);
-  return tree;
 }
 
 } /* namespace RMF */

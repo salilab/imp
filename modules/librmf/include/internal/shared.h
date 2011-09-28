@@ -1,5 +1,5 @@
 /**
- *  \file IMP/utility.h
+ *  \file RMF/internal/shared.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -15,7 +15,8 @@
 #include "../names.h"
 #include "../HDF5Group.h"
 #include "../infrastructure_macros.h"
-#include <IMP/compatibility/set.h>
+#include "map.h"
+#include "set.h"
 #include <boost/tuple/tuple.hpp>
 #include <hdf5.h>
 #include <algorithm>
@@ -71,7 +72,7 @@ namespace RMF {
       Ints free_ids_;
       Ints free_bonds_;
       std::vector<void*> association_;
-      IMP::compatibility::map<void*, int> back_association_;
+      map<void*, int> back_association_;
       unsigned int frames_hint_;
 
       // caches
@@ -169,7 +170,7 @@ namespace RMF {
         }
       };
       mutable Ints max_cache_;
-      mutable IMP::compatibility::set<std::string> known_data_sets_;
+      mutable set<std::string> known_data_sets_;
       mutable int last_node_;
       mutable Category last_category_;
       mutable int last_vi_;

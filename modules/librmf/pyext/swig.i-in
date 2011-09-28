@@ -1,16 +1,20 @@
+%{
+#include <IMP/base/internal/swig_helpers.h>
+%}
+%include "RMF_types.i"
 %include "RMF/infrastructure_macros.h"
 
 /* Apply the passed macro to each type used in RMF */
 %define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
-  macroname(int, Int);
-  macroname(float, Float);
-  macroname(index, Index);
-  macroname(string, String);
-  macroname(node_id, NodeID);
-  macroname(node_ids, NodeIDs);
-  macroname(ints, Ints);
-  macroname(index_data_set_2d, IndexDataSet2D);
-  macroname(float_data_set_2d, FloatDataSet2D);
+  macroname(int, Int, Ints);
+  macroname(float, Float, Floats);
+  macroname(index, Index, Indexes);
+  macroname(string, String, Strings);
+  macroname(node_id, NodeID, NodeIDs);
+  macroname(node_ids, NodeIDs, NodeIDsList);
+  macroname(ints, Ints, IntsList);
+  macroname(index_data_set_2d, IndexDataSet2D, IndexDataSet2Ds);
+  macroname(float_data_set_2d, FloatDataSet2D, FloatDataSet2Ds);
 %enddef
 
 %pythoncode %{
@@ -20,20 +24,20 @@ def get_data_types():
 %}
 
 /* Declare the needed things for each type */
-%define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname)
+%define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname, Ucnames)
 namespace RMF {
 %rename(_##Ucname##Traits) Ucname##Traits;
 }
-IMP_SWIG_VALUE_INSTANCE(RMF, Ucname##Key, Ucname##Key, Ucname##Keys);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3Ds);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Ucname##Key, Ucname##Key, Ucname##Keys);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3Ds);
 %pythoncode %{
 _types_list.append(#lcname)
 %}
 %enddef
 
-%define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname)
+%define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname, Ucnames)
 %template(HDF5##Ucname##DataSet1D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 1>;
 %template(HDF5##Ucname##DataSet2D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 2>;
 %template(HDF5##Ucname##DataSet3D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 3>;
@@ -41,19 +45,31 @@ _types_list.append(#lcname)
 %enddef
 
 
-IMP_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
-IMP_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
-IMP_SWIG_VALUE(RMF, RootHandle, RootHandles);
-IMP_SWIG_VALUE(RMF, NodeID, NodeIDs);
-IMP_SWIG_VALUE(RMF, Category, Categories);
-IMP_SWIG_VALUE_TEMPLATE(RMF, Key);
-IMP_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
-IMP_SWIG_VALUE(RMF, HDF5File, HDF5Files);
-IMP_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
-IMP_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
-IMP_SWIG_PAIR(RMF, NodeHandle, BondPair, BondPairs)
+IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, double, Floats, FloatsList);
+IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, int, Ints, IntsList);
+IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, std::string, Strings, StringsList);
+IMP_RMF_SWIG_VALUE_BUILTIN(RMF, Float, Floats, double);
+IMP_RMF_SWIG_VALUE_BUILTIN(RMF, Int, Ints, int);
+IMP_RMF_SWIG_VALUE_BUILTIN(RMF, String, Strings, std::string);
+IMP_RMF_SWIG_NATIVE_VALUE(float);
+IMP_RMF_SWIG_NATIVE_VALUE(double);
+IMP_RMF_SWIG_NATIVE_VALUE(int);
+IMP_RMF_SWIG_NATIVE_VALUE(std::string);
+
+
+IMP_RMF_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
+IMP_RMF_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
+IMP_RMF_SWIG_VALUE(RMF, RootHandle, RootHandles);
+IMP_RMF_SWIG_VALUE(RMF, NodeID, NodeIDs);
+IMP_RMF_SWIG_VALUE(RMF, Category, Categories);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, Key);
+IMP_RMF_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
+IMP_RMF_SWIG_VALUE(RMF, HDF5File, HDF5Files);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
+IMP_RMF_SWIG_PAIR(RMF, NodeHandle, BondPair, BondPairs)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
@@ -97,3 +113,79 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"
 
+%pythoncode %{
+
+import re
+import math
+import sys
+import os
+import random
+import time
+import types
+import shutil
+import datetime
+import unittest
+
+
+
+class TestCase(unittest.TestCase):
+    """Super class for RMF test cases"""
+
+    def setUp(self):
+        self.start_time=datetime.datetime.now()
+
+    def tearDown(self):
+        delta= datetime.datetime.now()-self.start_time
+        print >> sys.stderr, " in ", delta," ... ",
+
+    def get_input_file_name(self, filename):
+        """Get the full name of an input file in the top-level
+           test directory."""
+        # If we ran from run-all-tests.py, it set an env variable for us with
+        # the top-level test directory
+        if 'TEST_DIRECTORY' in os.environ:
+            top = os.environ['TEST_DIRECTORY']
+            return os.path.join(top, 'input', filename)
+        else:
+            # Otherwise, search up from the test's directory until we find
+            # the input directory
+            testdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+            dirs = testdir.split(os.path.sep)
+            for i in range(len(dirs), 0, -1):
+                input = os.path.sep.join(dirs[:i] + ['input'])
+                if os.path.isdir(input):
+                    return os.path.join(input, filename)
+        # If not found, default to the current working directory:
+        ret= os.path.join('input', filename)
+        if not open(ret, "r"):
+            raise IOError("Test input file "+ret+" does not exist")
+
+    def get_tmp_file_name(self, filename):
+        """Get the full name of an output file in the build/tmp directory."""
+        dirpath=os.environ['IMP_TMP_DIR']
+        if not os.path.exists(dirpath):
+            os.mkdir(dirpath)
+        return os.path.join(dirpath, filename)
+
+
+class _TestResult(unittest.TextTestResult):
+    def getDescription(self, test):
+        doc_first_line = test.shortDescription()
+        if self.descriptions and doc_first_line:
+            return doc_first_line
+        else:
+            return str(test)
+
+
+class _TestRunner(unittest.TextTestRunner):
+    def _makeResult(self):
+        return _TestResult(self.stream, self.descriptions, self.verbosity)
+
+
+def main(*args, **keys):
+    """Run a set of tests; essentially the same as unittest.main(). Obviates
+       the need to separately import the 'unittest' module, and ensures that
+       main() is from the same unittest module that the IMP.test testcases
+       are."""
+    return unittest.main(testRunner=_TestRunner, *args, **keys)
+%}
