@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- some functionality from the kernel has been spun off into a new module IMP.base. You probably won't notice anything. The only significant changes are that functions that accept or return IMP::base::TextInput and IMP::base::TextOutput must declare them with the \c base qualifier (eg base::TextInput) so that swig is happy.
 - the source for the kernel has been moved from \c kernel to \c modules/kernel. This is unlikely to effect anyone.
 - IMP::core::ExcludedVolumeRestraint now supports filters
 - IMP::domino::HDF5AssignmentTable now caches internally, which makes it several times faster than before.
