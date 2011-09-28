@@ -23,8 +23,8 @@ IMPEM2D_BEGIN_NAMESPACE
 
 typedef std::pair<unsigned int ,double> pair_cluster_id_distance;
 typedef std::list< pair_cluster_id_distance > list_cluster_id_distance;
-typedef std::vector< IMP::Floats > VectorOfFloats;
-typedef std::vector< IMP::Ints > VectorOfInts;
+typedef FloatsList VectorOfFloats;
+typedef IntsList VectorOfInts;
 
 
 
@@ -92,7 +92,7 @@ public:
     A[i][1] - id of the second cluster merged at step i
     A[i][2] - distance between the clusters
   */
-  VectorOfFloats get_linkage_matrix() const;
+  FloatsList get_linkage_matrix() const;
 
   // Returns the linkage matrix compatible with Matlab format
   /*!
@@ -100,7 +100,7 @@ public:
      with Matlab.
     Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
   */
-  VectorOfFloats get_linkage_matrix_in_matlab_format() const;
+  FloatsList get_linkage_matrix_in_matlab_format() const;
 
   // Returns the number of steps of clustering recorded
   unsigned int get_number_of_steps() const {
@@ -122,7 +122,7 @@ private:
   Floats cluster_distances_;
   // each element of the outermost vector is a vector with all the elements
   // in a cluster
-  VectorOfInts clusters_elements_;
+  IntsList clusters_elements_;
 };
 IMP_VALUES(ClusterSet,ClusterSets);
 
@@ -146,7 +146,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorOfFloats &distances ) const;
+                  const FloatsList &distances ) const;
 
   void show(std::ostream &out) const {
     out << "SingleLinkage";
@@ -169,7 +169,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorOfFloats &distances );
+                  const FloatsList &distances );
 
   void show(std::ostream &out) const {
      out << "CompleteLinkage";
@@ -193,7 +193,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorOfFloats &distances );
+                  const FloatsList &distances );
 
   void show(std::ostream &out) const {
      out << "AverageDistanceLinkage";
@@ -214,7 +214,7 @@ IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
 */
 template<class LinkageFunction>
 ClusterSet
-    do_hierarchical_agglomerative_clustering(const VectorOfFloats &distances) {
+    do_hierarchical_agglomerative_clustering(const FloatsList &distances) {
 // Based on:
 // http://nlp.stanford.edu/IR-book/html/htmledition/
 //      time-complexity-of-hac-1.html)
