@@ -65,7 +65,7 @@ def IMPCPPExecutable(envi, target, source):
         return
     env= environment.get_bin_environment(envi)
 
-    prog= env.Program(target="#/build/bin/"+target, source=source)
+    prog= env.Program(target=envi["builddir"]+"/bin/"+target, source=source)
     bindir = install.install(env,'bindir', prog[0])
 
 def IMPPythonExecutable(env, file):

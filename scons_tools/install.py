@@ -68,23 +68,23 @@ def get_install_directory(env, varname, *subdirs):
 
 def _get_prefix(env, varname):
     if varname=="datadir":
-        prefix="#/build/data"
+        prefix=env["builddir"]+"/data"
     elif varname=="bindir":
-        prefix="#/build/bin"
+        prefix=env["builddir"]+"/bin"
     elif varname=="docdir":
-        prefix="#/build/doc"
+        prefix=env["builddir"]+"/doc"
     elif varname=="libdir":
-        prefix="#/build/lib"
+        prefix=env["builddir"]+"/lib"
     elif varname=="includedir":
-        prefix="#/build/include"
+        prefix=env["builddir"]+"/include"
     elif varname=="pythondir":
-        prefix="#/build/lib"
+        prefix=env["builddir"]+"/lib"
     elif varname=="pyextdir":
-        prefix="#/build/lib"
+        prefix=env["builddir"]+"/lib"
     elif varname=="swigdir":
-        prefix="#/build/swig"
+        prefix=env["builddir"]+"/swig"
     elif varname=="srcdir":
-        prefix="#/build/src"
+        prefix=env["builddir"]+"/src"
     elif varname=="moduledir":
         prefix="#/modules/"+environment.get_current_name(env)
     else:

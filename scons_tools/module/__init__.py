@@ -101,7 +101,7 @@ def IMPModuleLib(envi, files):
     prefix=vars['module_libname']
     if prefix=="imp":
         prefix="imp_kernel"
-    config= envi.IMPModuleConfigCPP(target=["#/build/src/"+prefix+"_config.cpp"],
+    config= envi.IMPModuleConfigCPP(target=[envi['builddir']+"/src/"+prefix+"_config.cpp"],
                                    source=[envi.Value(version),
                                            envi.Value(envi.subst(envi['datadir'])),
                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
@@ -111,27 +111,27 @@ def IMPModuleLib(envi, files):
            or module in envi['percppcompilation'].split(":"):
         allf=files+config
         if envi['build']=="debug" and envi['linktest']:
-            link0=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link_0.cpp'%vars],
+            link0=envi.IMPModuleLinkTest(target=[envi['builddir']+'/src/%(module_libname)s_link_0.cpp'%vars],
                                           source=[])
-            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link_1.cpp'%vars],
+            link1=envi.IMPModuleLinkTest(target=[envi['builddir']+'/src/%(module_libname)s_link_1.cpp'%vars],
                                           source=[])
             allf= allf+link0+link1
     else:
         allf= [_all_cpp.get(envi, list(files))]+config
         if envi['build']=="debug" and envi['linktest']:
-            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link.cpp'%vars],
+            link1=envi.IMPModuleLinkTest(target=[envi['builddir']+'/src/%(module_libname)s_link.cpp'%vars],
                                           source=[])
             allf= allf+link1
     if envi['IMP_BUILD_STATIC']:
         env= scons_tools.environment.get_staticlib_environment(envi)
-        sl= env.StaticLibrary('#/build/lib/%s' % module_libname,
+        sl= env.StaticLibrary(envi['builddir']+'/lib/%s' % module_libname,
                               allf)
         data.build.append(sl[0])
         scons_tools.install.install(env, "libdir", sl[0])
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(EXPORT)s_EXPORTS' % vars,
                                     cplusplus=True)
-        sl=env.SharedLibrary('#/build/lib/%s' % module_libname,
+        sl=env.SharedLibrary(envi['builddir']+'/lib/%s' % module_libname,
                                        allf )
         data.build.append(sl[0])
         scons_tools.utility.postprocess_lib(env, sl)
@@ -252,10 +252,10 @@ def _fake_scanner_cpp(node, env, path):
     if node.abspath.endswith(".h") or node.abspath.endswith(".cpp"):
         print "fake scanning", node.abspath
     if _get_module_name(env) == 'kernel':
-        return [File("#/build/include/IMP.h")]
+        return [File(envi["builddir"]+"/include/IMP.h")]
     else:
-        return ([File("#/build/include/IMP/"+_get_module_name(env)+".h")]\
-               + [File("#/build/include/IMP/"+x+".h") for x in _get_module_modules(env)]+ [File("#/build/include/IMP.h")]).sorted()
+        return ([File(envi["builddir"]+"/include/IMP/"+_get_module_name(env)+".h")]\
+               + [File(envi["builddir"]+"/include/IMP/"+x+".h") for x in _get_module_modules(env)]+ [File(envi["builddir"]+"/include/IMP.h")]).sorted()
 
 def _filtered_h(node, env, path):
     #print "filtered scanning", node.abspath

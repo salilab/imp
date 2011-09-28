@@ -49,12 +49,12 @@ def builder_script_file(target, source, env):
     if ldpath == ['']: ldpath = []
     if path == ['']: path = []
 
-    libdir= os.path.join(root, "build", "lib")
+    libdir= os.path.join(root, Dir(env["builddir"]).abspath, "lib")
     impdir= os.path.join(libdir, "IMP")
-    bindir= os.path.join(root, "build", "bin")
-    datadir= os.path.join(root, "build", "data")
-    exampledir= os.path.join(root, "build", "doc", "examples")
-    tmpdir= os.path.join(root, "build", "tmp")
+    bindir= os.path.join(root, Dir(env["builddir"]).abspath, "bin")
+    datadir= os.path.join(root, Dir(env["builddir"]).abspath, "data")
+    exampledir= os.path.join(root, Dir(env["builddir"]).abspath, "doc", "examples")
+    tmpdir= os.path.join(root, Dir(env["builddir"]).abspath, "tmp")
 
     varname= utility.get_dylib_name(env)
 

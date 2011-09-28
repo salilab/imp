@@ -247,7 +247,7 @@ def add_doc_files(env, files):
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
-            b=env.Install("#/build/doc/html/", f)
+            b=env.Install(env["builddir"]+"/doc/html/", f)
             data.get(env).add_to_alias('doc-files', [b])
 
 
