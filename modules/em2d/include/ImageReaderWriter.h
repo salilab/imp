@@ -15,7 +15,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-class ImageReaderWriter : public Object
+class ImageReaderWriter : public IMP::base::Object
 {
 public:
   ImageReaderWriter(): Object("ImageReaderWriter%1%"){}

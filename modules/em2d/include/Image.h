@@ -29,7 +29,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! 2D Electron Microscopy images in IMP
-class IMPEM2DEXPORT Image : public Object
+class IMPEM2DEXPORT Image : public IMP::base::Object
 {
 public:
 

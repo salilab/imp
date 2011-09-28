@@ -20,7 +20,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Matching of the projections of a set of particles in an image
-class IMPEM2DEXPORT TemplateFinder: public Object {
+class IMPEM2DEXPORT TemplateFinder: public IMP::base::Object {
   IMP_OBJECT_INLINE(TemplateFinder, show(out), {});
 
 protected:

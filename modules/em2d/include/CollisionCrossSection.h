@@ -21,7 +21,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-class IMPEM2DEXPORT CollisionCrossSection: public Object {
+class IMPEM2DEXPORT CollisionCrossSection: public IMP::base::Object {
 public:
 
   /*!
