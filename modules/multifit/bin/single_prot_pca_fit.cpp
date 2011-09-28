@@ -15,6 +15,7 @@
 #include <boost/progress.hpp>
 //imp
 #include <IMP/multifit/fitting_clustering.h>
+#include <IMP/log.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
