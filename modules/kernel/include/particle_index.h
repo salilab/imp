@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_PARTICLE_INDEX_H
-#define IMP_PARTICLE_INDEX_H
+#ifndef IMPKERNEL_PARTICLE_INDEX_H
+#define IMPKERNEL_PARTICLE_INDEX_H
 
 #include "kernel_config.h"
 #include <boost/array.hpp>
@@ -116,4 +116,4 @@ IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 #endif
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PARTICLE_INDEX_H */
+#endif  /* IMPKERNEL_PARTICLE_INDEX_H */

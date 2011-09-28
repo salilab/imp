@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_PARTICLE_TUPLE_H
-#define IMP_PARTICLE_TUPLE_H
+#ifndef IMPKERNEL_PARTICLE_TUPLE_H
+#define IMPKERNEL_PARTICLE_TUPLE_H
 
 #include "Particle.h"
 #include "Pointer.h"
@@ -95,4 +95,4 @@ ParticleQuads;
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PARTICLE_TUPLE_H */
+#endif  /* IMPKERNEL_PARTICLE_TUPLE_H */

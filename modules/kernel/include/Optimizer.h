@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_OPTIMIZER_H
-#define IMP_OPTIMIZER_H
+#ifndef IMPKERNEL_OPTIMIZER_H
+#define IMPKERNEL_OPTIMIZER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -40,10 +40,11 @@ IMP_BEGIN_NAMESPACE
 
     \implementationwithoutexample{Optimizer, IMP_OPTIMIZER}
 */
-class IMPEXPORT Optimizer: public Object
+class IMPEXPORT Optimizer: public IMP::base::Object
 {
  public:
-  Optimizer(Model *m= nullptr, std::string name="Optimizer %1%");
+  Optimizer();
+  Optimizer(Model *m, std::string name="Optimizer %1%");
 
   /** Optimize the model
 
@@ -241,4 +242,4 @@ IMP_OBJECTS(Optimizer,Optimizers);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_OPTIMIZER_H */
+#endif  /* IMPKERNEL_OPTIMIZER_H */

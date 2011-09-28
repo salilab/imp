@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_TRIPLET_MACROS_H
-#define IMP_TRIPLET_MACROS_H
+#ifndef IMPKERNEL_TRIPLET_MACROS_H
+#define IMPKERNEL_TRIPLET_MACROS_H
 
 #ifndef IMP_DOXYGEN
 
@@ -394,4 +394,4 @@ public:                                                                 \
     }                                                                   \
   } while (false)
 
-#endif  /* IMP_TRIPLET_MACROS_H */
+#endif  /* IMPKERNEL_TRIPLET_MACROS_H */

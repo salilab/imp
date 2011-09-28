@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_RESTRAINT_SET_H
-#define IMP_RESTRAINT_SET_H
+#ifndef IMPKERNEL_RESTRAINT_SET_H
+#define IMPKERNEL_RESTRAINT_SET_H
 
 #include "kernel_config.h"
 #include "Restraint.h"
@@ -184,4 +184,4 @@ IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs,
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_RESTRAINT_SET_H */
+#endif  /* IMPKERNEL_RESTRAINT_SET_H */

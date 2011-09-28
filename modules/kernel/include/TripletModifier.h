@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_TRIPLET_MODIFIER_H
-#define IMP_TRIPLET_MODIFIER_H
+#ifndef IMPKERNEL_TRIPLET_MODIFIER_H
+#define IMPKERNEL_TRIPLET_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -29,7 +29,7 @@ class Particle;
     Implementors should see IMP_TRIPLET_MODIFIER(). Also see
     TripletDerivativeModifier.
  */
-class IMPEXPORT TripletModifier : public Object
+class IMPEXPORT TripletModifier : public base::Object
 {
 public:
   typedef ParticleTriplet Argument;
@@ -155,4 +155,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_TRIPLET_MODIFIER_H */
+#endif  /* IMPKERNEL_TRIPLET_MODIFIER_H */

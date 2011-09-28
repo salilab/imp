@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_CONSTRAINT_H
-#define IMP_CONSTRAINT_H
+#ifndef IMPKERNEL_CONSTRAINT_H
+#define IMPKERNEL_CONSTRAINT_H
 
 #include "ScoreState.h"
 
@@ -60,4 +60,4 @@ IMP_OBJECTS(Constraint,Constraints);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_CONSTRAINT_H */
+#endif  /* IMPKERNEL_CONSTRAINT_H */

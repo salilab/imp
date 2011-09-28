@@ -579,7 +579,7 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
           a user-passed set of Particles or Restraints instead.
  */
 class IMPEXPORT Model:
-  public Object
+  public IMP::base::Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   , public Masks,
   public FloatAttributeTable,
@@ -693,7 +693,7 @@ private:
 #else
  private:
 #ifndef IMP_DOXYGEN
-  template <class T, class E> friend struct internal::RefStuff;
+  template <class T, class E> friend struct base::internal::RefStuff;
 #endif
 #endif
 

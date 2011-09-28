@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_SCOPED_H
-#define IMP_SCOPED_H
+#ifndef IMPKERNEL_SCOPED_H
+#define IMPKERNEL_SCOPED_H
 
 #include "macros.h"
 #include "kernel_config.h"
@@ -212,4 +212,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_SCOPED_H */
+#endif  /* IMPKERNEL_SCOPED_H */

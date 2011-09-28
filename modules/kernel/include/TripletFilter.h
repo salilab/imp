@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_TRIPLET_FILTER_H
-#define IMP_TRIPLET_FILTER_H
+#ifndef IMPKERNEL_TRIPLET_FILTER_H
+#define IMPKERNEL_TRIPLET_FILTER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementors should see IMP_TRIPLET_FILTER().
  */
-class IMPEXPORT TripletFilter : public Object
+class IMPEXPORT TripletFilter : public base::Object
 {
 public:
   TripletFilter(std::string name="TripletFilter %1%");
@@ -67,4 +67,4 @@ IMP_OBJECTS(TripletFilter,TripletFilters);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_TRIPLET_FILTER_H */
+#endif  /* IMPKERNEL_TRIPLET_FILTER_H */

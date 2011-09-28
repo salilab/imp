@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_PYTHON_ONLY_H
-#define IMP_PYTHON_ONLY_H
+#ifndef IMPKERNEL_PYTHON_ONLY_H
+#define IMPKERNEL_PYTHON_ONLY_H
 
 #include "kernel_config.h"
 #include "Model.h"
@@ -86,4 +86,4 @@ std::string show_graphviz(Graph g);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PYTHON_ONLY_H */
+#endif  /* IMPKERNEL_PYTHON_ONLY_H */

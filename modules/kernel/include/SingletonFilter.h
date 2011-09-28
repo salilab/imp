@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_SINGLETON_FILTER_H
-#define IMP_SINGLETON_FILTER_H
+#ifndef IMPKERNEL_SINGLETON_FILTER_H
+#define IMPKERNEL_SINGLETON_FILTER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementors should see IMP_SINGLETON_FILTER().
  */
-class IMPEXPORT SingletonFilter : public Object
+class IMPEXPORT SingletonFilter : public base::Object
 {
 public:
   SingletonFilter(std::string name="SingletonFilter %1%");
@@ -67,4 +67,4 @@ IMP_OBJECTS(SingletonFilter,SingletonFilters);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_SINGLETON_FILTER_H */
+#endif  /* IMPKERNEL_SINGLETON_FILTER_H */

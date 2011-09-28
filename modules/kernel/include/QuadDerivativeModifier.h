@@ -8,8 +8,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_QUAD_DERIVATIVE_MODIFIER_H
-#define IMP_QUAD_DERIVATIVE_MODIFIER_H
+#ifndef IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H
+#define IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -30,7 +30,7 @@ class Particle;
     IMP_QUAD_DERIVATIVE_MODIFIER() and
     IMP::QuadModifier.
  */
-class IMPEXPORT QuadDerivativeModifier : public Object
+class IMPEXPORT QuadDerivativeModifier : public base::Object
 {
 public:
   typedef ParticleQuad Argument;
@@ -108,4 +108,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_QUAD_DERIVATIVE_MODIFIER_H */
+#endif  /* IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H */

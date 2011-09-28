@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_SCORE_STATE_H
-#define IMP_SCORE_STATE_H
+#ifndef IMPKERNEL_SCORE_STATE_H
+#define IMPKERNEL_SCORE_STATE_H
 
 #include "kernel_config.h"
 #include "RefCounted.h"
@@ -45,7 +45,7 @@ IMP_OBJECTS(ScoreState,ScoreStates);
 
     \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
  */
-class IMPEXPORT ScoreState : public Object
+class IMPEXPORT ScoreState : public IMP::base::Object
 {
   friend class Model;
 #ifndef _MSC_VER
@@ -129,4 +129,4 @@ protected:
 IMP_END_NAMESPACE
 
 
-#endif  /* IMP_SCORE_STATE_H */
+#endif  /* IMPKERNEL_SCORE_STATE_H */

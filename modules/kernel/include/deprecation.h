@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_DEPRECATION_H
-#define IMP_DEPRECATION_H
+#ifndef IMPKERNEL_DEPRECATION_H
+#define IMPKERNEL_DEPRECATION_H
 
 #include "kernel_config.h"
 #include "internal/deprecation.h"
@@ -63,4 +63,4 @@ IMP_END_NAMESPACE
 #define IMP_DEPRECATED_WARN
 #endif
 
-#endif /* IMP_DEPRECATION_H */
+#endif /* IMPKERNEL_DEPRECATION_H */

@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_CONFIGURATION_SET_H
-#define IMP_CONFIGURATION_SET_H
+#ifndef IMPKERNEL_CONFIGURATION_SET_H
+#define IMPKERNEL_CONFIGURATION_SET_H
 
 #include "kernel_config.h"
 #include "Object.h"
@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
     protocol and allows them to be queried and loaded and saved.
     \pythonexample{basic_optimization}
 */
-class IMPEXPORT ConfigurationSet: public Object
+class IMPEXPORT ConfigurationSet: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
   Pointer<Configuration> base_;
@@ -65,4 +65,4 @@ IMP_MODEL_SAVE(SaveToConfigurationSet,
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_CONFIGURATION_SET_H */
+#endif  /* IMPKERNEL_CONFIGURATION_SET_H */

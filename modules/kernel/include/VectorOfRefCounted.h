@@ -6,13 +6,13 @@
  *
  */
 
-#ifndef IMP_VECTOR_OF_REF_COUNTED_H
-#define IMP_VECTOR_OF_REF_COUNTED_H
+#ifndef IMPKERNEL_VECTOR_OF_REF_COUNTED_H
+#define IMPKERNEL_VECTOR_OF_REF_COUNTED_H
 
 #include "RefCounted.h"
 #include "base_types.h"
-#include "Object.h"
-#include "internal/ref_counting.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/internal/ref_counting.h>
 #include <IMP/compatibility/checked_vector.h>
 #include <vector>
 
@@ -22,11 +22,11 @@ IMP_BEGIN_NAMESPACE
 struct RefCountPolicy {
   template <class O>
   static void ref(O*o) {
-    IMP::internal::ref(o);
+    IMP::base::internal::ref(o);
   }
   template <class O>
   static void unref(O*o) {
-    IMP::internal::unref(o);
+    IMP::base::internal::unref(o);
   }
 };
 struct NoRefCountPolicy {
@@ -41,13 +41,13 @@ struct ControllableRefCountPolicy {
   template <class O>
   static void ref(O o) {
     if (o.get_is_ref_counted()) {
-      IMP::internal::ref(static_cast<Object*>(o));
+      IMP::base::internal::ref(static_cast<Object*>(o));
     }
   }
   template <class O>
   static void unref(O o) {
     if (o.get_is_ref_counted()) {
-      IMP::internal::unref(static_cast<Object*>(o));
+      IMP::base::internal::unref(static_cast<Object*>(o));
     }
   }
 };
@@ -342,4 +342,4 @@ namespace internal {
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_VECTOR_OF_REF_COUNTED_H */
+#endif  /* IMPKERNEL_VECTOR_OF_REF_COUNTED_H */

@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_PARTICLE_H
-#define IMP_PARTICLE_H
+#ifndef IMPKERNEL_PARTICLE_H
+#define IMPKERNEL_PARTICLE_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -225,4 +225,4 @@ IMP_END_NAMESPACE
 
 #include "Model.h"
 
-#endif  /* IMP_PARTICLE_H */
+#endif  /* IMPKERNEL_PARTICLE_H */

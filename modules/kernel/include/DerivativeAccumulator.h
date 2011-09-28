@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_DERIVATIVE_ACCUMULATOR_H
-#define IMP_DERIVATIVE_ACCUMULATOR_H
+#ifndef IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
+#define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -48,4 +48,4 @@ IMP_VALUES(DerivativeAccumulator, DerivativeAccumulators);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_DERIVATIVE_ACCUMULATOR_H */
+#endif  /* IMPKERNEL_DERIVATIVE_ACCUMULATOR_H */

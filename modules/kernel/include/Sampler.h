@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_SAMPLER_H
-#define IMP_SAMPLER_H
+#ifndef IMPKERNEL_SAMPLER_H
+#define IMPKERNEL_SAMPLER_H
 
 #include "kernel_config.h"
 #include "Model.h"
@@ -25,7 +25,7 @@ IMP_BEGIN_NAMESPACE
     types to search for configurations which minimize the scoring
     function.
 */
-class IMPEXPORT Sampler: public Object
+class IMPEXPORT Sampler: public IMP::base::Object
 {
   OwnerPointer<Model> model_;
  public:
@@ -46,4 +46,4 @@ IMP_OBJECTS(Sampler,Samplers);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_SAMPLER_H */
+#endif  /* IMPKERNEL_SAMPLER_H */
