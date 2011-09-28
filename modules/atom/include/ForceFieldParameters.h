@@ -15,7 +15,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Storage and access to force field
-class IMPATOMEXPORT ForceFieldParameters: public Object {
+class IMPATOMEXPORT ForceFieldParameters: public IMP::base::Object {
 public:
   ForceFieldParameters(): Object("ForceFieldParameters%1%"){}
   //! get radius

@@ -36,7 +36,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     \see read_pdb
 */
-class IMPATOMEXPORT PDBSelector: public Object {
+class IMPATOMEXPORT PDBSelector: public IMP::base::Object {
  public:
   PDBSelector(std::string name): Object(name){}
   //! Return true if the line should be processed
@@ -304,13 +304,13 @@ public:
 
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy read_pdb(TextInput in,
+IMPATOMEXPORT Hierarchy read_pdb(base::TextInput in,
                                  Model* model);
 
 /** \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-read_pdb(TextInput in,
+read_pdb(base::TextInput in,
          Model* model,
          PDBSelector* selector,
          bool select_first_model = true
@@ -323,12 +323,12 @@ read_pdb(TextInput in,
 
 /** \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput in,
                                               Model *model,
                                               PDBSelector* selector);
 /** \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput in,
                                               Model *model);
 /** @} */
 
@@ -352,18 +352,18 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(Hierarchy mhd,
-                             TextOutput out,
+                             base::TextOutput out,
                              unsigned int model=0);
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
-                             TextOutput out,
+                             base::TextOutput out,
                              unsigned int model=0);
 
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_multimodel_pdb(
-                        const Hierarchies& mhd, TextOutput out);
+                        const Hierarchies& mhd, base::TextOutput out);
 
 /** @} */
 
@@ -409,7 +409,7 @@ IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                mh_=mh;,
                ,
                {
-                 TextOutput to(file_name, append);
+                 base::TextOutput to(file_name, append);
                  IMP_LOG(TERSE, "Writing pdb file " << file_name << std::endl);
                  atom::write_pdb(mh_,to, append?call:0);
                });

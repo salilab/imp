@@ -35,7 +35,7 @@ em::DensityMap *grid2map(const DensGrid &dg,float spacing);
 
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
-class IMPMULTIFITEXPORT DataPoints : public Object {
+class IMPMULTIFITEXPORT DataPoints : public IMP::base::Object {
  public:
   DataPoints(): Object("DataPoints%1%"){
     atts_ = core::XYZ::get_xyz_keys();

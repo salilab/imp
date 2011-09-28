@@ -391,7 +391,7 @@ namespace {
         if (!ret[i].get_is_valid(true)) {
           IMP_ERROR("Invalid hierarchy produced ");
           IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
-          throw InternalException("Bad hierarchy");
+          throw base::InternalException("Bad hierarchy");
           // should clean up
         }
       }

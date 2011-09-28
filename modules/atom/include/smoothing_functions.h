@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
     (a shift function) or smooth it from its normal value to zero over
     a defined range (a switch function, such as ForceSwitch).
  */
-class IMPATOMEXPORT SmoothingFunction : public Object
+class IMPATOMEXPORT SmoothingFunction : public IMP::base::Object
 {
 public:
   SmoothingFunction();
