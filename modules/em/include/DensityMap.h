@@ -95,7 +95,7 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
      for sampling function as well as for functions
      like get_location_in_dim_by_voxel.
  */
-class IMPEMEXPORT DensityMap: public Object
+class IMPEMEXPORT DensityMap: public IMP::base::Object
 {
   typedef IMP::algebra::DenseGrid3D<double> DGrid;
   IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(std::string filename,

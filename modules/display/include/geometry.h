@@ -36,7 +36,7 @@ IMP_OBJECTS(Geometry, Geometries);
 //! The base class for geometry.
 /** This class doesn't have much to say other than the color.
  */
-class IMPDISPLAYEXPORT Geometry: public Object
+class IMPDISPLAYEXPORT Geometry: public IMP::base::Object
 {
   bool has_color_;
   Color color_;
