@@ -47,9 +47,9 @@ def make_one(params, test=True):
     
   
 
-    files= [("kernel/include/"+multi + "Container.h",
+    files= [("modules/kernel/include/"+multi + "Container.h",
                path+"tools/container_templates/container.hpp"),
-              ("kernel/src/"+multi + "Container.cpp",
+              ("modules/kernel/src/"+multi + "Container.cpp",
                path+"/tools/container_templates/container.cc"),
               ("modules/core/include/internal/"+multi.lower() + "_helpers.h",
                path+"tools/container_templates/helper.hpp"),
@@ -74,7 +74,7 @@ def make_one(params, test=True):
               ("modules/core/src/internal/CoreList"+multi + "Container.cpp",
                path+"/tools/container_templates/corelist.cc"),
 
-              ("kernel/include/"+multi.lower() + "_macros.h",
+              ("modules/kernel/include/"+multi.lower() + "_macros.h",
                path+"/tools/container_templates/macros.hpp"),
 
 
@@ -113,25 +113,25 @@ def make_one(params, test=True):
               ("modules/core/src/"+multi + "Constraint.cpp",
                path+"/tools/container_templates/sstate.cc"),
   
-              ("kernel/include/"+multi + "Modifier.h",
+              ("modules/kernel/include/"+multi + "Modifier.h",
                path+"/tools/container_templates/function.hpp"),
-              ("kernel/src/"+multi + "Modifier.cpp",
+              ("modules/kernel/src/"+multi + "Modifier.cpp",
                path+"/tools/container_templates/function.cc"),
 
 
-              ("kernel/include/"+multi + "DerivativeModifier.h",
+              ("modules/kernel/include/"+multi + "DerivativeModifier.h",
                path+"/tools/container_templates/derivfunction.hpp"),
-              ("kernel/src/"+multi + "DerivativeModifier.cpp",
+              ("modules/kernel/src/"+multi + "DerivativeModifier.cpp",
                path+"/tools/container_templates/derivfunction.cc"),
 
-              ("kernel/include/"+multi + "Filter.h",
+              ("modules/kernel/include/"+multi + "Filter.h",
                path+"/tools/container_templates/filter.hpp"),
-              ("kernel/src/"+multi + "Filter.cpp",
+              ("modules/kernel/src/"+multi + "Filter.cpp",
                path+"/tools/container_templates/filter.cc"),
 
-              ("kernel/include/"+multi + "Score.h",
+              ("modules/kernel/include/"+multi + "Score.h",
                path+"/tools/container_templates/score.hpp"),
-              ("kernel/src/"+multi + "Score.cpp",
+              ("modules/kernel/src/"+multi + "Score.cpp",
                path+"/tools/container_templates/score.cc"),
 
               ("modules/container/include/"+multi + "ContainerStatistics.h",
