@@ -88,7 +88,7 @@ public:
   */
   StatisticalPairScore(IntKey k,
                        double threshold,
-                       TextInput data_file):
+                       base::TextInput data_file):
     table_(0),
     threshold_(threshold), key_(k){
     IMP_USAGE_CHECK(!BIPARTITE,
@@ -104,7 +104,7 @@ public:
   */
   StatisticalPairScore(IntKey k,
                        double threshold,
-                       TextInput data_file,
+                       base::TextInput data_file,
                        unsigned int shift):
     table_(shift),
     threshold_(threshold), key_(k){

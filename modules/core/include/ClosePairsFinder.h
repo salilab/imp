@@ -29,7 +29,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see ClosePairContainer
     \see CloseBipartitePairContainer
  */
-class IMPCOREEXPORT ClosePairsFinder : public Object
+class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
 {
   double distance_;
  protected:

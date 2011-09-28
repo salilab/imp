@@ -55,6 +55,7 @@ class IMPCOREEXPORT CoreListSingletonContainer:
   }
   IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer);
 };
+
 IMP_OBJECTS(CoreListSingletonContainer, CoreListSingletonContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE

@@ -55,6 +55,7 @@ class IMPCOREEXPORT CoreListTripletContainer:
   }
   IMP_LISTLIKE_TRIPLET_CONTAINER(CoreListTripletContainer);
 };
+
 IMP_OBJECTS(CoreListTripletContainer, CoreListTripletContainers);
 
 IMPCORE_END_INTERNAL_NAMESPACE
