@@ -5,8 +5,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
-#ifndef IMP_CONTAINER_MACROS_H
-#define IMP_CONTAINER_MACROS_H
+#ifndef IMPKERNEL_CONTAINER_MACROS_H
+#define IMPKERNEL_CONTAINER_MACROS_H
 
 #include "RefCounted.h"
 #include "Object.h"
@@ -289,4 +289,4 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#endif  /* IMP_CONTAINER_MACROS_H */
+#endif  /* IMPKERNEL_CONTAINER_MACROS_H */

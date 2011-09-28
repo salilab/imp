@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_QUAD_FILTER_H
-#define IMP_QUAD_FILTER_H
+#ifndef IMPKERNEL_QUAD_FILTER_H
+#define IMPKERNEL_QUAD_FILTER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementors should see IMP_QUAD_FILTER().
  */
-class IMPEXPORT QuadFilter : public Object
+class IMPEXPORT QuadFilter : public base::Object
 {
 public:
   QuadFilter(std::string name="QuadFilter %1%");
@@ -67,4 +67,4 @@ IMP_OBJECTS(QuadFilter,QuadFilters);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_QUAD_FILTER_H */
+#endif  /* IMPKERNEL_QUAD_FILTER_H */

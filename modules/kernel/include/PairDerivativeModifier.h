@@ -8,8 +8,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_PAIR_DERIVATIVE_MODIFIER_H
-#define IMP_PAIR_DERIVATIVE_MODIFIER_H
+#ifndef IMPKERNEL_PAIR_DERIVATIVE_MODIFIER_H
+#define IMPKERNEL_PAIR_DERIVATIVE_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -30,7 +30,7 @@ class Particle;
     IMP_PAIR_DERIVATIVE_MODIFIER() and
     IMP::PairModifier.
  */
-class IMPEXPORT PairDerivativeModifier : public Object
+class IMPEXPORT PairDerivativeModifier : public base::Object
 {
 public:
   typedef ParticlePair Argument;
@@ -108,4 +108,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PAIR_DERIVATIVE_MODIFIER_H */
+#endif  /* IMPKERNEL_PAIR_DERIVATIVE_MODIFIER_H */

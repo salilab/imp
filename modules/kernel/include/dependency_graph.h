@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_DEPENDENCY_GRAPH_H
-#define IMP_DEPENDENCY_GRAPH_H
+#ifndef IMPKERNEL_DEPENDENCY_GRAPH_H
+#define IMPKERNEL_DEPENDENCY_GRAPH_H
 
 #include "kernel_config.h"
 #include "Model.h"
@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
 
     See \ref graphs "Graphs in IMP" for more information.
 */
-IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
+IMP_GRAPH(DependencyGraph, bidirectional, base::Object*, int);
 
 /** The dependency graph captures the interactions between Restraint,
     ScoreState and Particle objects. The graph has an edge if the source
@@ -106,4 +106,4 @@ get_is_static_container(Container *c,
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_DEPENDENCY_GRAPH_H */
+#endif  /* IMPKERNEL_DEPENDENCY_GRAPH_H */

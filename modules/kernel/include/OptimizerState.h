@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_OPTIMIZER_STATE_H
-#define IMP_OPTIMIZER_STATE_H
+#ifndef IMPKERNEL_OPTIMIZER_STATE_H
+#define IMPKERNEL_OPTIMIZER_STATE_H
 
 #include "kernel_config.h"
 #include "VersionInfo.h"
@@ -35,7 +35,7 @@ class Optimizer;
 
     Implementors should see IMP_OPTIMIZER_STATE().
  */
-class IMPEXPORT OptimizerState : public Object
+class IMPEXPORT OptimizerState : public IMP::base::Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
@@ -58,4 +58,4 @@ protected:
 IMP_OBJECTS(OptimizerState,OptimizerStates);
 IMP_END_NAMESPACE
 
-#endif  /* IMP_OPTIMIZER_STATE_H */
+#endif  /* IMPKERNEL_OPTIMIZER_STATE_H */

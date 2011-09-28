@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_CONFIGURATION_H
-#define IMP_CONFIGURATION_H
+#ifndef IMPKERNEL_CONFIGURATION_H
+#define IMPKERNEL_CONFIGURATION_H
 
 #include "kernel_config.h"
 #include "Object.h"
@@ -20,7 +20,7 @@ IMP_BEGIN_NAMESPACE
 
 //! A class to store a configuration of a model
 /** */
-class IMPEXPORT Configuration: public Object
+class IMPEXPORT Configuration: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
   FloatAttributeTable floats_;
@@ -45,4 +45,4 @@ IMP_OBJECTS(Configuration,Configurations);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_CONFIGURATION_H */
+#endif  /* IMPKERNEL_CONFIGURATION_H */

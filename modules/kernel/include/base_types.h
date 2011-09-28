@@ -11,58 +11,10 @@
 #include "kernel_config.h"
 #include "Key.h"
 #include "macros.h"
-#include <string>
-#include <vector>
-#include <IMP/compatibility/checked_vector.h>
-#include <IMP/compatibility/nullptr.h>
-#include <IMP/compatibility/hash.h>
+#include <IMP/base/types.h>
 
 IMP_BEGIN_NAMESPACE
 
-/** \internal \namespace IMP::internal Implementation details.
- */
-
-//! Basic floating-point value (could be float, double...)
-typedef double Float;
-
-//! A pair representing a function value with its first derivative
-typedef std::pair<double, double> DerivativePair;
-IMP_BUILTIN_VALUES(DerivativePair, DerivativePairs);
-
-//! A generic pair of floats
-typedef std::pair<double, double> FloatPair;
-IMP_BUILTIN_VALUES(FloatPair, FloatPairs);
-
-//! A pair representing the allowed range for a Float attribute
-typedef std::pair<Float, Float> FloatRange;
-IMP_BUILTIN_VALUES(FloatRange, FloatRanges);
-
-//! Basic integer value
-typedef int Int;
-
-typedef std::pair<Int, Int> IntRange;
-IMP_BUILTIN_VALUES(IntRange, IntRanges);
-
-typedef std::pair<Int, Int> IntPair;
-IMP_BUILTIN_VALUES(IntPair, IntPairs);
-
-
-//! Basic string value
-typedef std::string String;
-
-//! Standard way to pass a bunch of Float values
-IMP_BUILTIN_VALUES(Float, Floats);
-//! Standard way to pass a bunch of Int values
-IMP_BUILTIN_VALUES(Int, Ints);
-//! Standard way to pass a bunch of String values
-IMP_BUILTIN_VALUES(String, Strings);
-
-//! Standard way to pass a bunch of Floats values
-IMP_BUILTIN_VALUES(Floats, FloatsList);
-//! Standard way to pass a bunch of Ints values
-IMP_BUILTIN_VALUES(Ints, IntsList);
-//! Standard way to pass a bunch of Strings values
-IMP_BUILTIN_VALUES(Strings, StringsList);
 
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
@@ -119,8 +71,6 @@ inline void show(std::ostream &out, T*i) {
   out << i->get_name();
 }
 #endif
-
-
 
 IMP_END_NAMESPACE
 

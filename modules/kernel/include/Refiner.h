@@ -4,8 +4,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_REFINER_H
-#define IMP_REFINER_H
+#ifndef IMPKERNEL_REFINER_H
+#define IMPKERNEL_REFINER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -28,7 +28,7 @@ class DerivativeAccumulator;
 
     Implementors should see IMP_REFINER().
 */
-class IMPEXPORT Refiner : public Object
+class IMPEXPORT Refiner : public IMP::base::Object
 {
   struct Accessor;
 public:
@@ -101,4 +101,4 @@ inline Refiner::RefinedIterator Refiner::refined_end(Particle *a) const {
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_REFINER_H */
+#endif  /* IMPKERNEL_REFINER_H */

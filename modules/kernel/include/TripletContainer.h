@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_TRIPLET_CONTAINER_H
-#define IMP_TRIPLET_CONTAINER_H
+#ifndef IMPKERNEL_TRIPLET_CONTAINER_H
+#define IMPKERNEL_TRIPLET_CONTAINER_H
 
 #include "kernel_config.h"
 #include "internal/IndexingIterator.h"
@@ -164,4 +164,4 @@ IMP_OBJECTS(TripletContainer,TripletContainers);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_TRIPLET_CONTAINER_H */
+#endif  /* IMPKERNEL_TRIPLET_CONTAINER_H */

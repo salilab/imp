@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_TRIPLET_SCORE_H
-#define IMP_TRIPLET_SCORE_H
+#ifndef IMPKERNEL_TRIPLET_SCORE_H
+#define IMPKERNEL_TRIPLET_SCORE_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_TRIPLET_SCORE().
 */
-class IMPEXPORT TripletScore : public Object
+class IMPEXPORT TripletScore : public base::Object
 {
  public:
   typedef ParticleTriplet Argument;
@@ -147,4 +147,4 @@ IMP_OBJECTS(TripletsScoreRestraint, TripletsScoreRestraints);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_TRIPLET_SCORE_H */
+#endif  /* IMPKERNEL_TRIPLET_SCORE_H */

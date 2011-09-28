@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_IO_H
-#define IMP_IO_H
+#ifndef IMPKERNEL_IO_H
+#define IMPKERNEL_IO_H
 
 #include "kernel_config.h"
 #include "file.h"
@@ -45,4 +45,4 @@ IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
 
 IMP_END_NAMESPACE
 
-#endif /* IMP_IO_H */
+#endif /* IMPKERNEL_IO_H */

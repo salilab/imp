@@ -4,8 +4,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_UNARY_FUNCTION_H
-#define IMP_UNARY_FUNCTION_H
+#ifndef IMPKERNEL_UNARY_FUNCTION_H
+#define IMPKERNEL_UNARY_FUNCTION_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -21,7 +21,7 @@ IMP_BEGIN_NAMESPACE
     Implementers should check out IMP_UNARY_FUNCTION() and
     IMP_UNARY_FUNCTION_INLINE().
  */
-class IMPEXPORT UnaryFunction : public Object
+class IMPEXPORT UnaryFunction : public IMP::base::Object
 {
 public:
   UnaryFunction();
@@ -46,4 +46,4 @@ IMP_OBJECTS(UnaryFunction,UnaryFunctions);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_UNARY_FUNCTION_H */
+#endif  /* IMPKERNEL_UNARY_FUNCTION_H */

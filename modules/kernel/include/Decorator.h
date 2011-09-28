@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_DECORATOR_H
-#define IMP_DECORATOR_H
+#ifndef IMPKERNEL_DECORATOR_H
+#define IMPKERNEL_DECORATOR_H
 
 #include "Object.h"
 #include "Pointer.h"
@@ -115,7 +115,7 @@ protected:
                           pi_(p->get_index()){}
   Decorator() :model_(NULL), pi_(-1)
   {}
-  int compare(Particle *o) const {
+  int compare(Object *o) const {
     if (o < get_particle()) return -1;
     else if (o > get_particle()) return 1;
     else return 0;
@@ -128,25 +128,44 @@ public:
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN
-  bool __eq__(Particle* o) const {
+  bool __eq__(Object* o) const {
     return operator==(o);
   }
-  bool __ne__(Particle* o) const {
+  bool __ne__(Object* o) const {
     return operator!=(o);
   }
-  bool __lt__(Particle* o) const {
+  bool __lt__(Object* o) const {
     return operator<(o);
   }
-  bool __gt__(Particle* o) const {
+  bool __gt__(Object* o) const {
     return operator>(o);
   }
-  bool __ge__(Particle* o) const {
+  bool __ge__(Object* o) const {
     return operator>=(o);
   }
-  bool __le__(Particle* o) const {
+  bool __le__(Object* o) const {
     return operator<=(o);
   }
 #ifndef SWIG
+  bool operator==(Object* o) const {
+    return (compare(o) == 0);
+  }
+  bool operator!=(Object* o) const {
+    return (compare(o) != 0);
+  }
+  bool operator<(Object* o) const {
+    return (compare(o) <0);
+  }
+  bool operator>(Object* o) const {
+    return (compare(o) > 0);
+  }
+  bool operator>=(Object* o) const {
+    return !(compare(o) < 0);
+  }
+  bool operator<=(Object* o) const {
+    return !(compare(o) > 0);
+  }
+
   bool operator==(Particle* o) const {
     return (compare(o) == 0);
   }
@@ -263,16 +282,17 @@ template <class D>
 class RefCountingDecorator: public D {
 public:
   RefCountingDecorator(){}
-  RefCountingDecorator(const D &d): D(d){internal::ref(D::get_particle());}
-  ~RefCountingDecorator(){ if (*this) internal::unref(D::get_particle());}
+  RefCountingDecorator(const D &d):
+    D(d){base::internal::ref(D::get_particle());}
+  ~RefCountingDecorator(){ if (*this) base::internal::unref(D::get_particle());}
 #ifndef SWIG
   void operator=(const D &d) {
     if (*this) {
-      internal::unref(D::get_particle());
+      base::internal::unref(D::get_particle());
     }
     D::operator=(d);
     if (*this) {
-      internal::ref(D::get_particle());
+      base::internal::ref(D::get_particle());
     }
   }
   const D&get_decorator() const {
@@ -349,13 +369,13 @@ IMP_END_NAMESPACE
 #if !defined(SWIG) && !defined IMP_DOXYGEN
 IMP_BEGIN_INTERNAL_NAMESPACE
 inline void unref(Decorator d) {
-  return unref(static_cast<Particle*>(d));
+  return base::internal::unref(static_cast<Particle*>(d));
 }
 inline void release(Decorator d) {
-  return release(static_cast<Particle*>(d));
+  return base::internal::release(static_cast<Particle*>(d));
 }
 inline void ref(Decorator d) {
-  return ref(static_cast<Particle*>(d));
+  return base::internal::ref(static_cast<Particle*>(d));
 }
 
 IMP_END_INTERNAL_NAMESPACE
@@ -364,4 +384,4 @@ IMP_END_INTERNAL_NAMESPACE
 
 #include "Decorators.h"
 
-#endif  /* IMP_DECORATOR_H */
+#endif  /* IMPKERNEL_DECORATOR_H */

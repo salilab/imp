@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_QUAD_SCORE_H
-#define IMP_QUAD_SCORE_H
+#ifndef IMPKERNEL_QUAD_SCORE_H
+#define IMPKERNEL_QUAD_SCORE_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_QUAD_SCORE().
 */
-class IMPEXPORT QuadScore : public Object
+class IMPEXPORT QuadScore : public base::Object
 {
  public:
   typedef ParticleQuad Argument;
@@ -147,4 +147,4 @@ IMP_OBJECTS(QuadsScoreRestraint, QuadsScoreRestraints);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_QUAD_SCORE_H */
+#endif  /* IMPKERNEL_QUAD_SCORE_H */

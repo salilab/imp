@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_QUAD_MODIFIER_H
-#define IMP_QUAD_MODIFIER_H
+#ifndef IMPKERNEL_QUAD_MODIFIER_H
+#define IMPKERNEL_QUAD_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -29,7 +29,7 @@ class Particle;
     Implementors should see IMP_QUAD_MODIFIER(). Also see
     QuadDerivativeModifier.
  */
-class IMPEXPORT QuadModifier : public Object
+class IMPEXPORT QuadModifier : public base::Object
 {
 public:
   typedef ParticleQuad Argument;
@@ -155,4 +155,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_QUAD_MODIFIER_H */
+#endif  /* IMPKERNEL_QUAD_MODIFIER_H */

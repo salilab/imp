@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_RESTRAINT_H
-#define IMP_RESTRAINT_H
+#ifndef IMPKERNEL_RESTRAINT_H
+#define IMPKERNEL_RESTRAINT_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -54,7 +54,7 @@ IMP_OBJECTS(Restraint,Restraints);
 
     \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */
-class IMPEXPORT Restraint : public Object
+class IMPEXPORT Restraint : public base::Object
 {
 public:
   Restraint(std::string name="Restraint %1%");
@@ -213,4 +213,4 @@ private:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_RESTRAINT_H */
+#endif  /* IMPKERNEL_RESTRAINT_H */

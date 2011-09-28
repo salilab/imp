@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_PAIR_SCORE_H
-#define IMP_PAIR_SCORE_H
+#ifndef IMPKERNEL_PAIR_SCORE_H
+#define IMPKERNEL_PAIR_SCORE_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementers should check out IMP_PAIR_SCORE().
 */
-class IMPEXPORT PairScore : public Object
+class IMPEXPORT PairScore : public base::Object
 {
  public:
   typedef ParticlePair Argument;
@@ -147,4 +147,4 @@ IMP_OBJECTS(PairsScoreRestraint, PairsScoreRestraints);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PAIR_SCORE_H */
+#endif  /* IMPKERNEL_PAIR_SCORE_H */

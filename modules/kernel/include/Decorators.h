@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_DECORATORS_H
-#define IMP_DECORATORS_H
+#ifndef IMPKERNEL_DECORATORS_H
+#define IMPKERNEL_DECORATORS_H
 
 #include "Decorator.h"
 #include "internal/IndexingIterator.h"
@@ -326,4 +326,4 @@ IMP_SWAP_2(Decorators);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_DECORATORS_H */
+#endif  /* IMPKERNEL_DECORATORS_H */

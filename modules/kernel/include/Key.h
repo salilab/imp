@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_KEY_H
-#define IMP_KEY_H
+#ifndef IMPKERNEL_KEY_H
+#define IMPKERNEL_KEY_H
 
 #include "macros.h"
 #include "exception.h"
@@ -217,4 +217,4 @@ std::vector<std::string> Key<ID, LA>::get_all_strings()
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_KEY_H */
+#endif  /* IMPKERNEL_KEY_H */

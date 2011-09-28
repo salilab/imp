@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_PAIR_FILTER_H
-#define IMP_PAIR_FILTER_H
+#ifndef IMPKERNEL_PAIR_FILTER_H
+#define IMPKERNEL_PAIR_FILTER_H
 
 #include "kernel_config.h"
 #include "base_types.h"
@@ -26,7 +26,7 @@ IMP_BEGIN_NAMESPACE
 
     Implementors should see IMP_PAIR_FILTER().
  */
-class IMPEXPORT PairFilter : public Object
+class IMPEXPORT PairFilter : public base::Object
 {
 public:
   PairFilter(std::string name="PairFilter %1%");
@@ -67,4 +67,4 @@ IMP_OBJECTS(PairFilter,PairFilters);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_PAIR_FILTER_H */
+#endif  /* IMPKERNEL_PAIR_FILTER_H */

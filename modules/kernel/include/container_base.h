@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_CONTAINER_BASE_H
-#define IMP_CONTAINER_BASE_H
+#ifndef IMPKERNEL_CONTAINER_BASE_H
+#define IMPKERNEL_CONTAINER_BASE_H
 
 #include "kernel_config.h"
 #include "Object.h"
@@ -54,7 +54,7 @@ IMP_OBJECTS_TYPEDEF(Container,Containers);
 
     \note Containers store \em sets and so are fundamentally unordered.
  */
-class IMPEXPORT Container : public Object
+class IMPEXPORT Container : public IMP::base::Object
 {
   friend class Model;
   friend class Particle;
@@ -113,4 +113,4 @@ IMP_OBJECTS_IO(Container, Containers);
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_CONTAINER_BASE_H */
+#endif  /* IMPKERNEL_CONTAINER_BASE_H */

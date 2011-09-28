@@ -7,8 +7,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_SINGLETON_MODIFIER_H
-#define IMP_SINGLETON_MODIFIER_H
+#ifndef IMPKERNEL_SINGLETON_MODIFIER_H
+#define IMPKERNEL_SINGLETON_MODIFIER_H
 
 #include "kernel_config.h"
 #include "DerivativeAccumulator.h"
@@ -29,7 +29,7 @@ class Particle;
     Implementors should see IMP_SINGLETON_MODIFIER(). Also see
     SingletonDerivativeModifier.
  */
-class IMPEXPORT SingletonModifier : public Object
+class IMPEXPORT SingletonModifier : public base::Object
 {
 public:
   typedef Particle* Argument;
@@ -155,4 +155,4 @@ public:
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_SINGLETON_MODIFIER_H */
+#endif  /* IMPKERNEL_SINGLETON_MODIFIER_H */
