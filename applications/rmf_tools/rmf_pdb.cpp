@@ -5,6 +5,7 @@
 #include <RMF/RootHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/exception.h>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;

@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     }
     RMF::RootHandle rh=RMF::open_rmf_file(input);
     RMF::NodeTree nt= RMF::get_node_tree(rh);
-    IMP::internal::show_as_graphviz(nt, std::cout);
+    IMP::base::internal::show_as_graphviz(nt, std::cout);
     return 0;
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
