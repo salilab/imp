@@ -2,9 +2,10 @@ Import('env')
 
 # modules must be listed after modules that use them
 modules=['compatibility',
-         'kernel',
+         'base',
          'cgal',
          'algebra',
+         'kernel',
          'statistics',
          'core',
          'container',
