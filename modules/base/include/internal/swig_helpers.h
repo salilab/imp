@@ -284,6 +284,12 @@ using namespace IMP::base;
     static const int converter=1;
   };
 
+template <class T>
+  struct Convert<T*, typename enable_if< is_base_of< Object, T> >
+                 ::type >: public ConvertObjectBase<T > {
+    static const int converter=1;
+  };
+
 
 
   /*
