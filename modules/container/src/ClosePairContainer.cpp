@@ -10,7 +10,7 @@
 
 #include "IMP/container/ClosePairContainer.h"
 #include "IMP/core/internal/close_pairs_helpers.h"
-#include <IMP/SetLogState.h>
+#include <IMP/log.h>
 #include <algorithm>
 #include <boost/timer.hpp>
 #include <IMP/algebra/internal/tnt_array2d.h>
