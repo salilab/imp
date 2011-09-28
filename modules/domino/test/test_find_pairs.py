@@ -27,7 +27,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, yxz)
         allp= IMP.domino.get_possible_interactions(ps, 2, pst)
         cpf= IMP.core.GridClosePairsFinder()
-        cpf.set_distance(2)
+        cpf.set_distance(1.8)
         pst.set_was_used(True)
         for rep in range(0,1000):
             for p in ps:

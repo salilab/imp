@@ -31,7 +31,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     in these rather than as Assignments to help increase efficiency as
     well as provide flexibility as to how and where they are stored.
 */
-class IMPDOMINOEXPORT AssignmentContainer: public Object {
+class IMPDOMINOEXPORT AssignmentContainer: public IMP::base::Object {
  public:
   AssignmentContainer(std::string name="AssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const=0;

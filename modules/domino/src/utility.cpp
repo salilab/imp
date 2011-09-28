@@ -46,7 +46,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
                       s.begin(), s.end(),
                       std::back_inserter(oms));
   IMP::compatibility::map<Restraint*, int> index
-    = IMP::internal::get_graph_index<Restraint>(dg);
+    = IMP::base::internal::get_graph_index<Restraint>(dg);
   Ints to_remove;
   for (unsigned int i=0; i< rw.first.size(); ++i) {
     if (IMP::internal::get_has_ancestor(dg, index[rw.first[i]], oms)) {

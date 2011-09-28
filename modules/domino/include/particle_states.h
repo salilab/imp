@@ -32,7 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     n and update_to_state would modify the particle to have the
     coordiantes for state i.
  */
-class IMPDOMINOEXPORT ParticleStates: public Object {
+class IMPDOMINOEXPORT ParticleStates: public IMP::base::Object {
 public:
   ParticleStates(std::string name="ParticleStates %1%"): Object(name){}
   virtual unsigned int get_number_of_particle_states() const=0;
@@ -59,7 +59,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     and gets to all the right places. It is initialized internally
     in the DominoSampler.
  */
-class IMPDOMINOEXPORT ParticleStatesTable: public Object {
+class IMPDOMINOEXPORT ParticleStatesTable: public IMP::base::Object {
   typedef IMP::compatibility::map<Particle*,
                    IMP::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;

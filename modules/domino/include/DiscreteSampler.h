@@ -19,7 +19,7 @@
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 typedef IMP::IntsList IntsList;
 typedef std::vector<IntsList> IntsLists;
 #endif
