@@ -4,12 +4,12 @@
  */
 
 #include <IMP/benchmark/utility.h>
-#include <IMP/exception.h>
+#include <IMP/base/exception.h>
 #include <iostream>
 #include <boost/format.hpp>
 #include <algorithm>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/log.h>
+#include <IMP/base/log.h>
 IMPBENCHMARK_BEGIN_NAMESPACE
 
 
