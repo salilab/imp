@@ -24,9 +24,12 @@ using namespace IMP::benchmark;
 #endif
 
 namespace {
-VersionInfo get_module_version_info() {
-  return IMP::benchmark::get_module_version_info();
+  std::string get_module_version() {
+  return IMP::benchmark::get_module_version();
 }
+  std::string get_module_name() {
+    return std::string("benchmark");
+  }
 
 class DistanceScore: public SingletonModifier {
 public:

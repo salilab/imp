@@ -17,9 +17,12 @@ using namespace IMP::benchmark;
 using namespace IMP::container;
 
 namespace {
-VersionInfo get_module_version_info() {
-  return IMP::benchmark::get_module_version_info();
-}
+  std::string get_module_name() {
+    return std::string("benchmark");
+  }
+  std::string get_module_version() {
+    return IMP::benchmark::get_module_version();
+  }
 
 class ConstPairScore: public PairScore {
 public:
