@@ -1,13 +1,11 @@
 import unittest
 import RMF
-import IMP.test
-from IMP.algebra import *
 
 
 I1= RMF.HDF5DataSetIndex1D
 I2= RMF.HDF5DataSetIndex2D
 I3= RMF.HDF5DataSetIndex3D
-class GenericTest(IMP.test.TestCase):
+class GenericTest(RMF.TestCase):
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
             print i, g.get_child_name(i), g.get_child_is_group(i)
@@ -34,17 +32,17 @@ class GenericTest(IMP.test.TestCase):
             mds.set_value([0], p[1])
             vo= mds.get_value([0])
             self.assertEqual(vo, p[1])
-    def _touch_all_types(self):
+    def _touch_all_types(self, nm):
         """touch all types so all static hids are created"""
         print "touching"
-        f= RMF.create_hdf5_file(IMP.create_temporary_file_name("all_types", ".hdf5"))
+        f= RMF.create_hdf5_file(self.get_tmp_file_name(nm+"_types.hdf5"))
         self._do_touch_types(f, False)
         print "done touching"
 
     """Test the python code"""
     def test_perturbed(self):
         """Test low level usage of hdf5"""
-        self._touch_all_types()
+        self._touch_all_types("pert")
         num_base_handles=RMF.get_number_of_open_hdf5_handles()
         f= RMF.create_hdf5_file(self.get_tmp_file_name("test.hdf5"))
         self._show(f)
@@ -62,7 +60,7 @@ class GenericTest(IMP.test.TestCase):
 
     def test_ds(self):
         """Test low level usage of hdf5 with datasets"""
-        self._touch_all_types()
+        self._touch_all_types("datasets")
         num_base_handles=RMF.get_number_of_open_hdf5_handles()
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testd.hdf5"))
         self._show(f)
@@ -94,7 +92,7 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
     def test_dsb(self):
         """Test writing of blocks with data sets"""
-        self._touch_all_types()
+        self._touch_all_types("block_datasets")
         num_base_handles=RMF.get_number_of_open_hdf5_handles()
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testdb.hdf5"))
         self._show(f)
@@ -114,7 +112,7 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
     def test_dsgrow(self):
         """Test low level usage of hdf5 with datasets that grow"""
-        self._touch_all_types()
+        self._touch_all_types("growing_datasets")
         num_base_handles=RMF.get_number_of_open_hdf5_handles()
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testdg.hdf5"))
         self._show(f)
@@ -227,7 +225,7 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(in3, 'adfjhslak')
     def test_as(self):
         """Test low level usage of hdf5 with attributes"""
-        self._touch_all_types()
+        self._touch_all_types("attributes")
         num_base_handles=RMF.get_number_of_open_hdf5_handles()
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testa.hdf5"))
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles+1)

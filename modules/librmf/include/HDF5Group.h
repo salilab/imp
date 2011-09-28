@@ -176,9 +176,16 @@ RMFEXPORT HDF5File open_hdf5_file(std::string name);
 */
 RMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
 
-IMP_VALUES(HDF5Group, HDF5Groups);
-IMP_VALUES(HDF5File, HDF5Files);
-
+  typedef std::vector<HDF5Group> HDF5Groups;
+  typedef std::vector<HDF5File> HDF5Files;
+  inline std::ostream &operator<<(std::ostream &out, HDF5Group g) {
+    g.show(out);
+    return out;
+  }
+  inline std::ostream &operator<<(std::ostream &out, HDF5File g) {
+    g.show(out);
+    return out;
+  }
 
 inline int get_number_of_open_hdf5_handles() {
   H5garbage_collect();

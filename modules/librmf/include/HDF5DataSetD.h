@@ -13,14 +13,13 @@
 #include "hdf5_types.h"
 #include "hdf5_handle.h"
 #include "infrastructure_macros.h"
-#include <IMP/base_types.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <algorithm>
-#include <IMP/Pointer.h>
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/intrusive_ptr.hpp>
+#include <boost/functional/hash.hpp>
 
 
 namespace RMF {
