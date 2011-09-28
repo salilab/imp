@@ -9,5 +9,5 @@ scons_tools.dependency.add_external_library(env, "GSL", ["gsl",'gslcblas'],
                                                         "GSL_MINOR_VERSION"])
 
 env.IMPModuleBuild(version='SVN',
-                   required_modules=['algebra'],
+                   required_modules=['algebra', 'kernel'],
                    required_dependencies=['GSL'])
