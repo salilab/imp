@@ -35,6 +35,7 @@ class DOMINOTests(IMP.test.TestCase):
         del w
         print "done"
         vs= g.get_vertices()
+        IMP.show_graphviz(g)
         for v in vs:
             print v
             l= g.get_vertex_name(v)
@@ -102,6 +103,7 @@ class DOMINOTests(IMP.test.TestCase):
         del w
         print g
         vs= g.get_vertices()
+        IMP.show_graphviz(g)
         for v in vs:
             print v
             l= g.get_vertex_name(v)

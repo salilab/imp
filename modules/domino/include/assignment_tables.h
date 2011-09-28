@@ -34,7 +34,7 @@ class DominoSampler;
     subset. The main method of interest is get_assignments()
     which returns a Assignments containing the valid states.
 */
-class IMPDOMINOEXPORT AssignmentsTable: public Object {
+class IMPDOMINOEXPORT AssignmentsTable: public IMP::base::Object {
  public:
   AssignmentsTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
   virtual void load_assignments(const Subset &s,

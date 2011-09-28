@@ -42,7 +42,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     same order as they were in the Subset that was passed to the
     table in order to create the filter.
 */
-class IMPDOMINOEXPORT SubsetFilter: public Object {
+class IMPDOMINOEXPORT SubsetFilter: public IMP::base::Object {
 public:
   SubsetFilter(std::string name= "SubsetFilter %1%");
   //! Return true if the given state passes this filter for the Subset
@@ -77,7 +77,7 @@ IMP_OBJECTS(SubsetFilter, SubsetFilters);
     to be checked, as ones involve a and b and b and c have already been
     checked previously.
 */
-class IMPDOMINOEXPORT SubsetFilterTable: public Object {
+class IMPDOMINOEXPORT SubsetFilterTable: public IMP::base::Object {
  public:
   SubsetFilterTable(std::string name="SubsetFilterTable%1%"): Object(name){}
   /** Return a SubsetFilter which acts on the Subset s, given that all

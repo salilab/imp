@@ -314,7 +314,8 @@ InteractionGraph get_triangulated(const InteractionGraph& ig) {
     IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
   IMP_LOG(VERBOSE, "Triangulated graph is " << std::endl);
-  IMP_LOG_WRITE(VERBOSE, IMP::internal::show_as_graphviz(cig, IMP_STREAM));
+  IMP_LOG_WRITE(VERBOSE,
+                IMP::base::internal::show_as_graphviz(cig, IMP_STREAM));
   return cig;
 
 }
