@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/log.h"
+#include <IMP/base/log.h>
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/RestraintSet.h"
@@ -18,6 +18,14 @@
 #include <algorithm>
 
 IMP_BEGIN_NAMESPACE
+
+Optimizer::Optimizer(): Object("Optimizer%1%")
+{
+  set_was_used(true);
+  min_score_= -std::numeric_limits<double>::max();
+  stop_on_good_score_=false;
+  last_score_= std::numeric_limits<double>::max();
+}
 
 Optimizer::Optimizer(Model *m, std::string name): Object(name)
 {

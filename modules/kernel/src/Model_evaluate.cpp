@@ -8,13 +8,13 @@
 
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
-#include "IMP/log.h"
+#include <IMP/base/log.h>
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
 #include "IMP/compatibility/set.h"
-#include <IMP/internal/static.h>
+#include <IMP/base/internal/static.h>
 #include <numeric>
 
 
@@ -108,7 +108,7 @@ IMP_BEGIN_NAMESPACE
 
 void Model::before_evaluate(const ScoreStatesTemp &states) const {
 #if IMP_BUILD < IMP_FAST
-  internal::check_live_objects();
+  base::internal::check_live_objects();
 #endif
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");

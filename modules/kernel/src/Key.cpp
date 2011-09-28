@@ -6,7 +6,7 @@
  */
 
 #include "IMP/Key.h"
-#include "IMP/exception.h"
+#include "IMP/base/exception.h"
 #include "IMP/base_types.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/Particle.h"
