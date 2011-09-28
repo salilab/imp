@@ -34,7 +34,7 @@ inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
 
 inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   ::boost::uniform_real<> rand(0, 2*PI);
-  double angle=rand(random_number_generator);
+  double angle=rand(base::random_number_generator);
   VectorD<2> ret(s.get_radius()*sin(angle),
                  s.get_radius()*cos(angle));
   return ret+ s.get_center();
@@ -229,7 +229,7 @@ struct RandomVectorOnBB {
       std::cout << areas[i] << " ";
       }*/
     ::boost::uniform_real<> rand(0, areas[2*bb.get_dimension()-1]);
-    double a= rand(random_number_generator);
+    double a= rand(base::random_number_generator);
     //std::cout << ": " << a << std::endl;
     unsigned int side;
     for (side=0; side< 2*bb.get_dimension(); ++side) {
@@ -270,7 +270,7 @@ template <>
 struct RandomVectorOnBB<1> {
   static VectorD<1> get(BoundingBoxD<1> bb) {
     ::boost::uniform_int<> rand(0, 1);
-    return bb.get_corner(rand(random_number_generator));
+    return bb.get_corner(rand(base::random_number_generator));
   }
 };
 

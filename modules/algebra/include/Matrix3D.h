@@ -8,8 +8,8 @@
 #ifndef IMPALGEBRA_MATRIX_3D_H
 #define IMPALGEBRA_MATRIX_3D_H
 
-#include "IMP/base_types.h"
-#include "IMP/exception.h"
+#include "IMP/base/types.h"
+#include "IMP/base/exception.h"
 #include "MultiArray.h"
 #include <complex>
 
@@ -136,7 +136,7 @@ public:
       return (T&)(*this)[k][j][i];
     } else {
       String msg = "Matri3D::(): Index out of range." ;
-      throw ValueException(msg.c_str());
+      throw base::ValueException(msg.c_str());
     }
   }
 

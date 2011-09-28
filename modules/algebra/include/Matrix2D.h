@@ -12,10 +12,10 @@
 
 #include "MultiArray.h"
 #include "VectorD.h"
-#include "IMP/base_types.h"
-#include "IMP/exception.h"
-#include <IMP/Object.h>
-#include <IMP/Pointer.h>
+#include "IMP/base/types.h"
+#include "IMP/base/exception.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include <complex>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -140,7 +140,7 @@ public:
       return (*this)(j+this->get_start(0),i+this->get_start(1));
     } else {
       String msg = "Matri2D::physical_get: index out of range." ;
-      throw ValueException(msg.c_str());
+      throw base::ValueException(msg.c_str());
     }
   }
 
@@ -155,7 +155,7 @@ public:
       (*this)(j+this->get_start(0),i+this->get_start(1))=val;
     } else {
       String msg = "Matri2D::physical_set: index out of range." ;
-      throw ValueException(msg.c_str());
+      throw base::ValueException(msg.c_str());
     }
   }
 
@@ -209,7 +209,7 @@ public:
       return (T&)((*this)[j][i]);
     } else {
       String msg = "Matri2D::(): Index out of range." ;
-      throw ValueException(msg.c_str());
+      throw base::ValueException(msg.c_str());
     }
   }
 

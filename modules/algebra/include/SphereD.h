@@ -8,7 +8,7 @@
 #define IMPALGEBRA_SPHERE_D_H
 
 #include "algebra_macros.h"
-#include <IMP/constants.h>
+#include "constants.h"
 #include "BoundingBoxD.h"
 #include "Vector3D.h"
 #include <cmath>

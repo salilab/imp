@@ -24,8 +24,8 @@
 #include "../algebra_config.h"
 #include <cstdlib>
 #include <cassert>
-#include <IMP/utility.h>
-#include <IMP/exception.h>
+#include <IMP/base/utility.h>
+#include <IMP/base/exception.h>
 #include "jama_lu.h"
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE

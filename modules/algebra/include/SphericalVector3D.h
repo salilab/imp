@@ -9,8 +9,8 @@
 
 #include "algebra_config.h"
 #include "Vector3D.h"
-#include "IMP/exception.h"
-#include "IMP/constants.h"
+#include "IMP/base/exception.h"
+#include "constants.h"
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -45,7 +45,7 @@ class IMPALGEBRAEXPORT SphericalVector3D
     if(apply_check) {
       if(!check(r,theta,psi)) {
         String msg = "SphericalCoords:: wrong SphericalCoords coordinates." ;
-        throw ValueException(msg.c_str());
+        throw base::ValueException(msg.c_str());
       }
     }
     v_[0] = r;

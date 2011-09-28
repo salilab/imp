@@ -40,7 +40,7 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
   for (unsigned int i=0; i< bb.get_dimension(); ++i) {
     ::boost::uniform_real<> rand(bb.get_corner(0)[i],
                                  bb.get_corner(1)[i]);
-    ret[i]=rand(random_number_generator);
+    ret[i]=rand(base::random_number_generator);
   }
   return ret;
 }

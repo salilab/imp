@@ -9,14 +9,14 @@
 #define IMPALGEBRA_INTERNAL_GRID_RANGE_D_H
 
 #include "../VectorD.h"
-#include <IMP/RefCounted.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/RefCounted.h>
+#include <IMP/base/Pointer.h>
 #include <boost/range.hpp>
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
-struct GridRangeData: public RefCounted {
+struct GridRangeData: public base::RefCounted {
   const BoundingBoxD<D> bb;
   double step;
   GridRangeData(const BoundingBoxD<D> &ibb,
@@ -32,7 +32,7 @@ std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
 template <int D>
 class GridIteratorD
 {
-  Pointer<GridRangeData<D> > data_;
+  base::Pointer<GridRangeData<D> > data_;
   VectorD<D> cur_;
 public:
   typedef const VectorD<D>  value_type;
@@ -41,7 +41,7 @@ public:
   typedef const VectorD<D>* pointer;
   typedef std::forward_iterator_tag iterator_category;
 
-  GridIteratorD(Pointer<GridRangeData<D> > d, reference cur):
+  GridIteratorD(base::Pointer<GridRangeData<D> > d, reference cur):
     data_(d), cur_(cur) {
   }
   reference operator*() const {
@@ -97,7 +97,7 @@ IMP_OUTPUT_OPERATOR_D(GridIteratorD);
 template <int D>
 class GridRangeD {
 private:
-  IMP::Pointer<GridRangeData<D> > data_;
+  IMP::base::Pointer<GridRangeData<D> > data_;
 public:
   typedef GridIteratorD<D> iterator;
   typedef iterator const_iterator;

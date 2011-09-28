@@ -10,9 +10,9 @@
 
 #include "algebra_config.h"
 #include "endian.h"
-#include <IMP/base_types.h>
-#include <IMP/exception.h>
-#include <IMP/random.h>
+#include <IMP/base/types.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/random.h>
 #include "internal/output_helpers.h"
 #include "utility.h"
 #include "internal/multi_array_helpers.h"

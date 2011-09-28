@@ -9,10 +9,10 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include "algebra_config.h"
-#include <IMP/base_types.h>
-#include <IMP/macros.h>
-#include <IMP/exception.h>
-#include <IMP/utility.h>
+#include <IMP/base/types.h>
+#include <IMP/base/base_macros.h>
+#include <IMP/base/exception.h>
+#include <IMP/base/utility.h>
 #include "internal/vector.h"
 #include <boost/static_assert.hpp>
 
@@ -81,11 +81,11 @@ public:
   }
 #endif
 
-  /** \throw ValueException if f.size() is not appropriate.*/
+  /** \throw base::ValueException if f.size() is not appropriate.*/
   VectorD(const Floats &f) {
     if (D!=-1 && static_cast<int>(f.size()) != D) {
       IMP_THROW("Expected " << D << " but got " << f.size(),
-                ValueException);
+                base::ValueException);
     }
     data_.set_coordinates(f.begin(), f.end());
   }

@@ -9,8 +9,8 @@
 #define IMPALGEBRA_VECTOR_SEARCH_H
 
 #include "VectorD.h"
-#include <IMP/base_types.h>
-#include <IMP/Object.h>
+#include <IMP/base/types.h>
+#include <IMP/base/Object.h>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/knn.h>
 #endif
@@ -45,7 +45,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, ANN}
  */
 template <int D>
-class NearestNeighborD: public Object {
+class NearestNeighborD: public IMP::base::Object {
   IMP_KNN_DATA data_;
   double eps_;
 #if IMP_BUILD < IMP_FAST

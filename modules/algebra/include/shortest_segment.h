@@ -9,7 +9,7 @@
 
 #include "algebra_config.h"
 #include "Segment3D.h"
-#include <IMP/base_types.h>
+#include <IMP/base/types.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 

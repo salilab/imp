@@ -11,7 +11,7 @@
 #include "BoundingBoxD.h"
 #include "algebra_macros.h"
 #include <iostream>
-#include <IMP/constants.h>
+#include "constants.h"
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
