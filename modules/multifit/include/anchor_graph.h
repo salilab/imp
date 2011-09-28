@@ -16,7 +16,7 @@
 #include <IMP/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public Object {
+class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public IMP::base::Object {
 // Property types
 typedef boost::property<boost::edge_weight_t, float> EdgeWeightProperty;
 typedef boost::property<boost::vertex_index_t, int> VertexIndexProperty;

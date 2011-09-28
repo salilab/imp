@@ -20,7 +20,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! The topology of a single CHARMM segment in a model.
 /** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
-class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
+class IMPATOMEXPORT CHARMMSegmentTopology : public IMP::base::Object {
   /** @name Residues
 
       The segment contains a chain of residues.
@@ -70,7 +70,7 @@ IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologies);
     topology information to an existing Hierarchy (e.g. add_atom_types(),
     add_bonds(), add_charges()).
  */
-class IMPATOMEXPORT CHARMMTopology : public Object {
+class IMPATOMEXPORT CHARMMTopology : public IMP::base::Object {
   Pointer<const CHARMMParameters> force_field_;
   WarningContext warn_context_;
   typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;

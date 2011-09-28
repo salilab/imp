@@ -230,7 +230,7 @@ public:
 IMP_VALUES(CHARMMInternalCoordinate, CHARMMInternalCoordinates);
 
 //! Base class for all CHARMM residue-based topology
-class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
+class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object
 {
   std::string type_;
 protected:

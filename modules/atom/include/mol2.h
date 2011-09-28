@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! A base class for choosing which Mol2 atoms to read
 /**
  */
-class IMPATOMEXPORT Mol2Selector: public Object {
+class IMPATOMEXPORT Mol2Selector: public IMP::base::Object {
  public:
   Mol2Selector():Object("Mol2Selector%1%"){}
   virtual bool get_is_selected(const std::string& atom_line) const=0;
@@ -55,13 +55,13 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
     hierarchy writes all the Residue types in the hierarchy to the file.
     @{
 */
-IMPATOMEXPORT Hierarchy read_mol2(TextInput mol2_file,
+IMPATOMEXPORT Hierarchy read_mol2(base::TextInput mol2_file,
                                   Model* model,
                                   Mol2Selector* mol2sel
                                   = nullptr);
 
 IMPATOMEXPORT void write_mol2(Hierarchy rhd,
-                              TextOutput file_name);
+                              base::TextOutput file_name);
 
 /** @} */
 

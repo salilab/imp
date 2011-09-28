@@ -62,7 +62,7 @@ public:
     std::string surface_filename_;
     std::string ref_filename_;
   };
-class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
+class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
  protected:
  public:
   ProteomicsData() {}//: Object("ProteomicsData%1%") {}
