@@ -21,7 +21,7 @@ scons_tools.dependency.boost.add_boost_library(env, "Thread", "thread",
 olinktest=env['linktest']
 env['linktest']=False
 env.IMPModuleBuild(version='SVN',
-                   required_modules=['kernel'],
+                   required_modules=['base'],
                    required_dependencies=['HDF5', "Boost.FileSystem", "Boost.Thread"],
                    module='RMF', module_libname="RMF", module_pylibname="_RMF",
                    module_include_path="RMF",
