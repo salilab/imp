@@ -13,6 +13,7 @@ import types
 import shutil
 import _compat_python
 import _compat_python.unittest2
+import datetime
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
@@ -123,10 +124,13 @@ class TestCase(unittest.TestCase):
         # python ints are bigger than C++ ones, so we need to make sure it fits
         # otherwise python throws fits
         IMP.random_number_generator.seed(hash(time.time())%2**30)
+        self.start_time=datetime.datetime.now()
 
     def tearDown(self):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
+        delta= datetime.datetime.now()-self.start_time
+        print >> sys.stderr, " in ", delta," ... ",
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
