@@ -15,7 +15,10 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            'InternalException', 'ModelException', 'PairFunctor',
                                            'QuadFunctor', 'RandomNumberGenerator', 'RefCounted',
                                            'SingletonFunctor', 'TripletFunctor', 'UsageException',
-                                           'PairDerivativeFunctor', 'QuadDerivativeFunctor', 'SingletonDerivativeFunctor', 'TripletDerivativeFunctor',
+                                           'PairDerivativeFunctor', 'QuadDerivativeFunctor',
+                                           'SingletonDerivativeFunctor', 'TripletDerivativeFunctor',
                                            'ValueException', 'WarningContext', 'DerivativeAccumulator',
-                                           'FailureHandlerBase'],
+                                           # imported
+                                           'FailureHandlerBase', 'FailureHandler', 'Object', 'SetLogState',
+                                           'SetLogTarget'],
                   spelling_exceptions=['altgraph'])
