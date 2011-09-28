@@ -75,7 +75,7 @@ public:
 
   /** This method is called to register a restrain with a model.
       Adding the restraint the model (Model::add_restraint()) will
-      call this methodm but it can be called directly if one
+      call this method but it can be called directly if one
       wants to use the restraint, just not as part of the normal
       scoring function.
    */
