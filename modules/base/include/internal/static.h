@@ -11,6 +11,7 @@
 #include "../base_config.h"
 #include "../log.h"
 #include "../exception.h"
+#include "../FailureHandler.h"
 #include <IMP/compatibility/map.h>
 
 
