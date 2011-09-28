@@ -14,6 +14,7 @@
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/log.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/compatibility/map.h>
