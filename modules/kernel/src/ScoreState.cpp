@@ -5,7 +5,7 @@
  *
  */
 
-#include "IMP/log.h"
+#include "IMP/base/log.h"
 #include "IMP/ScoreState.h"
 #include "IMP/internal/utility.h"
 #include <cmath>
