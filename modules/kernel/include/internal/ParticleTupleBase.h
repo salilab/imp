@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMP_INTERNAL_PARTICLE_TUPLE_BASE_H
-#define IMP_INTERNAL_PARTICLE_TUPLE_BASE_H
+#ifndef IMPKERNEL_INTERNAL_PARTICLE_TUPLE_BASE_H
+#define IMPKERNEL_INTERNAL_PARTICLE_TUPLE_BASE_H
 
 #include "../Particle.h"
 #include <boost/array.hpp>
@@ -113,4 +113,4 @@ std::ostream &operator<<(std::ostream &out,
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INTERNAL_PARTICLE_TUPLE_BASE_H */
+#endif  /* IMPKERNEL_INTERNAL_PARTICLE_TUPLE_BASE_H */

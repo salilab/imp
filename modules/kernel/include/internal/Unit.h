@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_UNIT_H
-#define IMP_UNIT_H
+#ifndef IMPKERNEL_UNIT_H
+#define IMPKERNEL_UNIT_H
 
 
 #include "ExponentialNumber.h"
@@ -475,4 +475,4 @@ operator/(ExponentialNumber<EXP2> o, Unit<Tag, EXP, Units> u) {
 
 IMP_END_NAMESPACE
 
-#endif  /* IMP_UNIT_H */
+#endif  /* IMPKERNEL_UNIT_H */

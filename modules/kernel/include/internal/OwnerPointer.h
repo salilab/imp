@@ -6,23 +6,26 @@
  *
  */
 
-#ifndef IMP_INTERNAL_OWNER_POINTER_H
-#define IMP_INTERNAL_OWNER_POINTER_H
+#ifndef IMPKERNEL_INTERNAL_OWNER_POINTER_H
+#define IMPKERNEL_INTERNAL_OWNER_POINTER_H
 
-
-#include "PointerBase.h"
+#include "../kernel_config.h"
+#include <IMP/base/internal/PointerBase.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class O>
-struct OwnerPointer: internal::PointerBase<OwnerPointerTraits<O> > {
+struct OwnerPointer:
+    IMP::base::internal::PointerBase<IMP::base::internal
+                                     ::OwnerPointerTraits<O> > {
   template <class Any>
   OwnerPointer(const Any &o):
-    internal::PointerBase<OwnerPointerTraits<O> >(o){}
+      IMP::base::internal::PointerBase<IMP::base
+                                       ::internal::OwnerPointerTraits<O> >(o){}
   OwnerPointer(){}
 };
 
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_INTERNAL_OWNER_POINTER_H */
+#endif  /* IMPKERNEL_INTERNAL_OWNER_POINTER_H */

@@ -5,13 +5,13 @@
  *
  */
 
-#ifndef IMP_VECTOR_H
-#define IMP_VECTOR_H
+#ifndef IMPKERNEL_VECTOR_H
+#define IMPKERNEL_VECTOR_H
 
 #include "../exception.h"
-#include "../Object.h"
-#include "../RefCounted.h"
-#include "ref_counting.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/RefCounted.h>
+#include <IMP/base/internal/ref_counting.h>
 
 #include <vector>
 #include <algorithm>
@@ -41,4 +41,4 @@ inline ListContains<T> list_contains(const T&t) {
 
 IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMP_VECTOR_H */
+#endif  /* IMPKERNEL_VECTOR_H */
