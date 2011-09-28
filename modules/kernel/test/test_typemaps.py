@@ -44,7 +44,7 @@ class ParticleTests(IMP.test.TestCase):
             self.assertAlmostEqual(va[i], vb[i], delta=.01)
     def test_a(self):
         """Check float typemaps"""
-        vs=IMP.Floats([1.1, 2.1, 3])
+        vs=[1.1, 2.1, 3]
         vso= IMP._pass_floats(vs)
         self._almost_equal_lists(vs, vso)
     def test_b(self):
@@ -63,7 +63,7 @@ class ParticleTests(IMP.test.TestCase):
         self.assertEqual(IMP._test_intranges(ips), 2)
     def test_c(self):
         """Check string typemaps"""
-        vs=IMP.Strings(["1.0", "2.0", "3"])
+        vs=["1.0", "2.0", "3"]
         vso= IMP._pass_strings(vs)
         self._equal_lists(vs, vso)
     def test_d(self):
