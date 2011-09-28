@@ -19,7 +19,7 @@ env.IMPModuleBuild(version='SVN',
                    module_pylibname="_IMP", module_include_path="IMP",
                    module_preproc="IMP",
                    module_namespace="IMP",
-                   required_modules=['algebra'],
+                   required_modules=['algebra', 'base'],
                    lib_only_required_modules=['compatibility'],
                    required_dependencies=['Boost'],
                    optional_dependencies=deplist)
