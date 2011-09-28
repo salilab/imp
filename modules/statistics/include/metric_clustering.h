@@ -25,7 +25,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 /** Metric clustering needs a way of computing the
     distances between the things being clustered.
  */
-class IMPSTATISTICSEXPORT Metric: public Object {
+class IMPSTATISTICSEXPORT Metric: public IMP::base::Object {
 public:
   Metric(std::string name);
   virtual double get_distance(unsigned int i,
