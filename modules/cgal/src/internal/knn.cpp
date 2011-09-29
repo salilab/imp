@@ -40,8 +40,8 @@ struct Distance {
     double distance(0.0);
     for (unsigned int i=0; i< p.get_dimension(); ++i) {
       double h = p[i];
-      if (h < b.min_coord(i)) distance += square(b.min_coord(i)-h);
-      if (h > b.max_coord(i)) distance += square(h-b.max_coord(i));
+      if (h < b.min_coord(i)) distance += base::square(b.min_coord(i)-h);
+      if (h > b.max_coord(i)) distance += base::square(h-b.max_coord(i));
     }
     return distance;
   }
