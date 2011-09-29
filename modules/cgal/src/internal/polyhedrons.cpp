@@ -5,6 +5,7 @@
  */
 
 #include <IMP/cgal/internal/polyhedrons.h>
+#include <IMP/base/log.h>
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
@@ -378,8 +379,8 @@ namespace {
     CGALImplicitSurface<Grid> cs(grid, iso_level);
     Sphere_3 bs= cs.get_bounding_sphere();
     //bs= Sphere_3(Point_3(30, 30, 0), 200);
-    IMP_LOG(TERSE, "Bounding sphere is" << bs << std::endl);
-    IMP_LOG(TERSE, "Scale is " << cs.get_scale() << std::endl);
+    IMP_LOG(base::TERSE, "Bounding sphere is" << bs << std::endl);
+    IMP_LOG(base::TERSE, "Scale is " << cs.get_scale() << std::endl);
     typedef CGAL::Implicit_surface_3<GT, CGALImplicitSurface<Grid> > Surface_3;
 
     Surface_3 surface(cs,             // pointer to function
@@ -392,10 +393,10 @@ namespace {
                .2*cs.get_scale()); // distance bound
     // meshing surface
     //std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
-    IMP_LOG(TERSE, "Beginning surface meshing." << std::endl);
+    IMP_LOG(base::TERSE, "Beginning surface meshing." << std::endl);
     CGAL::make_surface_mesh(c2t3, surface, criteria,
                             CGAL::Manifold_tag());
-    IMP_LOG(TERSE, "Ending surface meshing." << std::endl);
+    IMP_LOG(base::TERSE, "Ending surface meshing." << std::endl);
     //CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
 
   }

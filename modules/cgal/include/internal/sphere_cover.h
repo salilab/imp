@@ -8,7 +8,7 @@
 #define IMPCGAL_INTERNAL_SPHERE_COVER_H
 
 #include "../cgal_config.h"
-#include <IMP/base_types.h>
+#include <IMP/base/types.h>
 #include <IMP/algebra/VectorD.h>
 #include <vector>
 

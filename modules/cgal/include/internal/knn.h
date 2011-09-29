@@ -8,11 +8,11 @@
 #define IMPCGAL_INTERNAL_KNN_H
 
 #include "../cgal_config.h"
-#include <IMP/base_types.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/types.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/algebra/VectorD.h>
 #include <boost/static_assert.hpp>
-#include <IMP/RefCounted.h>
+#include <IMP/base/RefCounted.h>
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
@@ -39,13 +39,13 @@ std::vector<VectorWithIndex > create_vectors_with_index(It b, It e) {
   return v;
 }
 
-struct IMPCGALEXPORT RCTree: public RefCounted {
+struct IMPCGALEXPORT RCTree: public base::RefCounted {
   virtual ~RCTree();
 };
 
 
 struct IMPCGALEXPORT KNNData {
-  mutable Pointer<RCTree> tree_;
+  mutable base::Pointer<RCTree> tree_;
   std::vector<VectorWithIndex > vsi_;
   template <class It>
   KNNData(It b, It e) {
