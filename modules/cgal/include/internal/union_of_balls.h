@@ -8,7 +8,7 @@
 #define IMPCGAL_INTERNAL_UNION_OF_BALLS_H
 
 #include "../cgal_config.h"
-#include <IMP/base_types.h>
+#include <IMP/base/types.h>
 #include <IMP/algebra/SphereD.h>
 #include <vector>
 
