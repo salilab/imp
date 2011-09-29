@@ -110,7 +110,7 @@ def _action_swig_file(target, source, env):
             preface.append('#include "IMP/base/base_config.h"')
         else:
             ln= dta.modules[d].libname
-            nm=ln.replace("imp", "IMP").replace("_", "/")
+            nm=ln.replace("imp", "IMP").replace("IMP_", "IMP/")
             preface.append("#include \"%s.h\""% nm)
             preface.append("#include \"%s/%s_config.h\""% (nm, d))
     preface.append("""%}
@@ -130,7 +130,7 @@ def _action_swig_file(target, source, env):
             else:
                 ln= dta.modules[d].libname
                 sn= ln.replace("imp", "IMP")
-                nm=ln.replace("imp", "IMP").replace("_", "/")
+                nm=ln.replace("imp", "IMP").replace("IMP_", "IMP/")
                 preface.append('%%include "%s/%s_config.h"'%(nm, d))
     for d in deps+[vars['module']]:
         #print d
@@ -150,7 +150,7 @@ def _action_swig_file(target, source, env):
         else:
             ln= dta.modules[d].libname
             sn= ln.replace("imp", "IMP")
-            nm=ln.replace("imp", "IMP").replace("_", "/")
+            nm=ln.replace("imp", "IMP").replace("IMP_", "IMP/")
             preface.append('%%include "%s/%s_config.h"'%(nm, d))
             preface.append('%%import "%s.i"'%sn)
     preface.append("""
