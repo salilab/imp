@@ -63,7 +63,7 @@ inline std::ostream &operator<<(std::ostream &out, const Category &nh) {
 #endif
 
 /** Standard physical keys are
-    - "cartesian_x", "cartesian_y", "cartesian_z" for
+    - "cartesian x", "cartesian y", "cartesian z" for
     cartesian coordinates in angstroms
     - "radius" for radius in angstroms
     - "mass" for mass in daltons

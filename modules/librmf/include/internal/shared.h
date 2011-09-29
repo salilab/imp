@@ -225,7 +225,7 @@ namespace RMF {
         max_cache_[cat.get_index()]=mx;
         return mx;
       }
-
+    public:
       template <class TypeTraits>
         typename TypeTraits::Type get_value_always(unsigned int node,
                                                    Key<TypeTraits> k,
@@ -285,7 +285,6 @@ namespace RMF {
           }
         }
       }
-    public:
       HDF5Group get_group() const {
         return file_;
       }

@@ -25,9 +25,15 @@ def get_data_types():
 
 /* Declare the needed things for each type */
 %define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname, Ucnames)
+%inline %{
+namespace RMF {
+ const Ucname##Traits::Type Null##Ucname=Ucname##Traits::get_null_value();
+}
+%}
 namespace RMF {
 %rename(_##Ucname##Traits) Ucname##Traits;
 }
+
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Ucname##Key, Ucname##Key, Ucname##Keys);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
