@@ -41,19 +41,17 @@ struct ControllableRefCountPolicy {
   template <class O>
   static void ref(O o) {
     if (o.get_is_ref_counted()) {
-      IMP::base::internal::ref(static_cast<Object*>(o));
+      IMP::base::internal::ref(static_cast<base::Object*>(o));
     }
   }
   template <class O>
   static void unref(O o) {
     if (o.get_is_ref_counted()) {
-      IMP::base::internal::unref(static_cast<Object*>(o));
+      IMP::base::internal::unref(static_cast<base::Object*>(o));
     }
   }
 };
 #endif
-
-class Object;
 
 //! A vector-like container for reference counted objects
 /** The interface of this class is like that of std::vector.
