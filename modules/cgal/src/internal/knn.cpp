@@ -11,8 +11,7 @@
 #include <CGAL/K_neighbor_search.h>
 #include <CGAL/Fuzzy_sphere.h>
 #include <boost/static_assert.hpp>
-#include <IMP/RefCounted.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/utility.h>
 #include <limits>
 
 
@@ -54,7 +53,7 @@ struct Distance {
     for (unsigned int i=0; i< p.get_dimension(); ++i) {
       double h = p[i];
       double di = (h >= (b.min_coord(i)+b.max_coord(i))/2.0) ?
-        square(h-b.min_coord(i)) : square(b.max_coord(i)-h);
+        base::square(h-b.min_coord(i)) : base::square(b.max_coord(i)-h);
       d+=di;
     }
     return d;
