@@ -7,6 +7,7 @@
  */
 #include <IMP/core/RigidBodyMover.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/random.h>
 #include <IMP/algebra/vector_generators.h>
 IMPCORE_BEGIN_NAMESPACE
 
