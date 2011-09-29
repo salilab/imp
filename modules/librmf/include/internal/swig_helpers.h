@@ -13,9 +13,8 @@
 #include "../infrastructure_macros.h"
 #include <boost/array.hpp>
 #include <vector>
+#include <stdexcept>
 
-//using namespace IMP;
-using namespace IMP::base;
 #ifndef SWIG
   template <bool REFED>
   struct PyPointer: boost::noncopyable {
@@ -37,7 +36,7 @@ using namespace IMP::base;
     PyObject *release() {
       IMP_RMF_INTERNAL_CHECK(ptr_->ob_refcnt >=1, "No refcount");
       PyObject *ret=ptr_;
-      ptr_=IMP::nullptr;
+      ptr_=NULL;
       return ret;
     }
     ~PyPointer() {
@@ -146,10 +145,10 @@ using namespace IMP::base;
       void *vp;
       int res=SWIG_ConvertPtr(o, &vp,st, 0 );
       if (!SWIG_IsOK(res)) {
-        IMP_THROW( "Wrong type.", ValueException);
+        IMP_RMF_THROW( "Wrong type.", std::runtime_error);
       }
       if (!vp) {
-        IMP_THROW( "Wrong type.", ValueException);
+        IMP_RMF_THROW( "Wrong type.", std::runtime_error);
       }
       return *reinterpret_cast<T*>(vp);
     }
@@ -160,30 +159,6 @@ using namespace IMP::base;
     }
   };
 
-  // T should not be a pointer to the object
-  template <class T>
-  struct ConvertRAII: public ConvertAllBase<T> {
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
-    template <class SwigData>
-    static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
-      void *vp;
-      int res=SWIG_ConvertPtr(o, &vp,st, 0 );
-      if (!SWIG_IsOK(res)) {
-        IMP_THROW( "Wrong type.", ValueException);
-      }
-      if (!vp) {
-        IMP_THROW( "Wrong type.", ValueException);
-      }
-      T* p= reinterpret_cast<T*>(vp);
-      return p;
-    }
-    template <class SwigData>
-    static PyObject* create_python_object( T* t, SwigData st, int OWN) {
-      PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-      internal::ref(t);
-      return o.release();
-    }
-  };
 
 
   /*
@@ -263,7 +238,7 @@ using namespace IMP::base;
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        IMP_THROW("Argument not of correct type", ValueException);
+        IMP_RMF_THROW("Argument not of correct type", std::runtime_error);
       }
       T ret;
       Helper::fill(o, st, particle_st, decorator_st, ret);
@@ -301,7 +276,7 @@ using namespace IMP::base;
                                          SwigData particle_st,
                                          SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        IMP_THROW("Argument not of correct type", ValueException);
+        IMP_RMF_THROW("Argument not of correct type", std::runtime_error);
       }
       Intermediate im;
       Helper::fill(o, st, particle_st, decorator_st, im);
@@ -338,7 +313,7 @@ using namespace IMP::base;
     static T get_cpp_object(PyObject *o, SwigData st,
                             SwigData particle_st, SwigData decorator_st) {
       if (!get_is_cpp_object(o, st, particle_st, decorator_st)) {
-        IMP_THROW("Argument not of correct type", ValueException);
+        IMP_RMF_THROW("Argument not of correct type", std::runtime_error);
       }
       T ret(PySequence_Size(o));
       Helper::fill(o, st, particle_st, decorator_st, ret);
@@ -377,8 +352,8 @@ using namespace IMP::base;
                                       SwigData particle_st,
                                       SwigData decorator_st) {
       if (!o || !PyString_Check(o)) {
-        IMP_THROW("Not all objects in list have correct type.",
-                  ValueException);
+        IMP_RMF_THROW("Not all objects in list have correct type.",
+                  std::runtime_error);
       } else {
         return std::string(PyString_AsString(o));
       }
@@ -399,8 +374,8 @@ using namespace IMP::base;
     static double get_cpp_object(PyObject *o, SwigData st,
                                  SwigData particle_st, SwigData decorator_st) {
       if (!o || !PyNumber_Check(o)) {
-        IMP_THROW("Not all objects in list have correct type.",
-                  ValueException);
+        IMP_RMF_THROW("Not all objects in list have correct type.",
+                  std::runtime_error);
       } else {
         return PyFloat_AsDouble(o);
       }
@@ -437,8 +412,8 @@ using namespace IMP::base;
     static int get_cpp_object(PyObject *o, SwigData st,
                               SwigData particle_st, SwigData decorator_st) {
       if (!PyInt_Check(o)) {
-        IMP_THROW("Not all objects in list have correct number type.",
-                  ValueException);
+        IMP_RMF_THROW("Not all objects in list have correct number type.",
+                  std::runtime_error);
       } else {
         return PyInt_AsLong(o);
       }

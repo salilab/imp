@@ -1,5 +1,5 @@
 %{
-#include <IMP/base/internal/swig_helpers.h>
+#include <RMF/internal/swig_helpers.h>
 %}
 %include "RMF_types.i"
 %include "RMF/infrastructure_macros.h"
