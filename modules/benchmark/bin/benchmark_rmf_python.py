@@ -1,4 +1,5 @@
 import IMP.rmf
+import RMF
 import IMP.benchmark
 import datetime
 
@@ -33,7 +34,7 @@ def show_xml(nh, kcs):
 
 start=datetime.datetime.now()
 # open the file, and don't clear the contents
-rh= IMP.rmf.open_rmf_file(file_name);
+rh= RMF.open_rmf_file(file_name);
 count= len( rh.get_description())
 kcs= rh.get_categories()
 count=count+show_xml(rh, kcs)

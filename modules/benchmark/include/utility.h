@@ -19,8 +19,6 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 IMPBENCHMARKEXPORT void report(std::string name, double value,
                                double check);
 
-IMPBENCHMARKEXPORT std::pair<double,double> get_baseline();
-
 IMPBENCHMARKEXPORT int get_return_value();
 
 IMPBENCHMARK_END_NAMESPACE
