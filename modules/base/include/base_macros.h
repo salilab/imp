@@ -21,7 +21,7 @@
 #define IMP_REQUIRE_SEMICOLON_NAMESPACE
 #else
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)                       \
-  IMP_NO_DOXYGEN(IMP_NO_SWIG(friend void dummy_f_##Name()))
+  IMP_NO_DOXYGEN(IMP_NO_SWIG(struct semicolon_##Name##_helper_struct{}))
 #define IMP_REQUIRE_SEMICOLON_NAMESPACE void dummy_f()
 #endif
 
