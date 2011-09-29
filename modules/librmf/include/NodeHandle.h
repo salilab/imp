@@ -34,6 +34,13 @@ ReturnValue get_value(UCName##Key k,                                    \
                       << frame);                                        \
   return shared_->get_value<UCName##Traits>(node_, k, frame);           \
 }                                                                       \
+/** Return the attribute value or TypeTraits::get_null_value() if the
+    node does not have the attribute. In python the method returns eg
+    RMF.NullFloat if the attribute is not there.*/                      \
+ReturnValue get_value_always(UCName##Key k,                             \
+                             unsigned int frame=0) const {              \
+  return shared_->get_value_always(node_, k, frame);                    \
+}                                                                       \
 /** \brief  set the value of the attribute k for this node
     If it is a per-frame attribute, frame must be specified.
 */                                                                      \
