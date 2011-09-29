@@ -88,7 +88,7 @@
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const std::exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -133,7 +133,7 @@
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const std::exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -352,7 +352,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const std::exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -379,7 +379,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<std::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::base::Exception &e) {
+  } catch (const std::exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -413,7 +413,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
   $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
-} catch (const IMP::base::Exception &e) {
+ } catch (const std::exception &e) {
   //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
   PyErr_SetString(PyExc_TypeError, e.what());
   return NULL;
@@ -477,44 +477,5 @@ IMP_RMF_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::Plu
 %pythoncode %{
   def PairName(a,b):
     return (a,b)
-%}
-%enddef
-
-
-
-%define IMP_RMF_SWIG_GRAPH(Namespace, Name, Type, Label)
-%inline %{
-template <class G, class L>
-class BoostDigraph;
-%}
-%typemap(out) Namespace::Type {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label > GT;
-  GT* ret= new GT($1);
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
- }
-%typemap(out) Namespace::Type const& {
-  typedef IMP::base::internal::BoostDigraph<Namespace::Type, Label > GT;
-  GT *ret= new GT(*$1);
-  %set_output(SWIG_NewPointerObj(%as_voidptr(ret), $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), $owner | SWIG_POINTER_OWN));
- }
-%typecheck(SWIG_TYPECHECK_POINTER) Namespace::Type const& {
-  void *vp;
-  $1=SWIG_IsOK(SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), 0 ));
- }
-%typemap(in) Namespace::Type const& {
-      void *vp;
-      int res=SWIG_ConvertPtr($input, &vp, $descriptor(IMP::base::internal::BoostDigraph<Namespace::Type, Label >*), 0 );
-      if (!SWIG_IsOK(res)) {
-        IMP_THROW( "Wrong type.", IMP::base::ValueException);
-      }
-      if (!vp) {
-        IMP_THROW( "Wrong type.", IMP::base::ValueException);
-      }
-      BoostDigraph<Namespace::Type, Label >* p= reinterpret_cast< BoostDigraph<Namespace::Type, Label >*>(vp);
-      $1= &p->access_graph();
- }
-%template(Name) BoostDigraph< Namespace::Type, Label>;
-%pythoncode %{
-_value_types.append(#Name)
 %}
 %enddef

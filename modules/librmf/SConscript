@@ -25,5 +25,5 @@ env.IMPModuleBuild(version='SVN',
                    required_dependencies=['HDF5', "Boost.FileSystem", "Boost.Thread"],
                    module='RMF', module_libname="RMF", module_pylibname="_RMF",
                    module_include_path="RMF",
-                   module_preproc="RMF", module_namespace="RMF")
+                   module_preproc="RMF", module_namespace="RMF", data=False)
 env['linktest']=olinktest
