@@ -18,6 +18,7 @@
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/core_macros.h>
+#include <IMP/random.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
