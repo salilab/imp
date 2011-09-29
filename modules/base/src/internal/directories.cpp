@@ -55,8 +55,9 @@ namespace {
                     "File name should be relative to the IMP directory and"
                     << " non-empty, not " << file_name);
     if (module != "kernel") {
-      return get_concatenated_path(base,
+      std::string ret= get_concatenated_path(base,
                                    get_concatenated_path(module, file_name));
+      return ret;
     } else {
       return get_concatenated_path(base, file_name);
     }
@@ -73,7 +74,8 @@ namespace {
       // Default to compiled-in value
       base=def;
     }
-    return path_cat(base, module, file_name);
+    std::string ret= path_cat(base, module, file_name);
+    return ret;
   }
 }
 
