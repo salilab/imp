@@ -1,13 +1,4 @@
 Import('env')
 
-files = [
-         'CommonEndpointPairFilter.cpp',
-         'CustomXYZR.cpp',
-         'LowestRefinedPairScore.cpp',
-         'SoftCylinderPairScore.cpp',
-         'StateAdaptor.cpp',
-         'interaction_graph.cpp',
-        ]
-
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
