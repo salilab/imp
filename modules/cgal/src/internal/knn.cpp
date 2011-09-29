@@ -92,7 +92,7 @@ void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD &g,
     K_neighbor_search search(dynamic_cast<RealRCTree*>(tree_.get())
                              ->tree,
                              d, k, eps);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     int nump=std::distance(dynamic_cast<RealRCTree*>(tree_.get())
                            ->tree.begin(),
                            dynamic_cast<RealRCTree*>(tree_.get())
