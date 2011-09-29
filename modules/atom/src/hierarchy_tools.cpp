@@ -34,6 +34,7 @@
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
+#include <IMP/constants.h>
 #include <algorithm>
 IMPATOM_BEGIN_NAMESPACE
 

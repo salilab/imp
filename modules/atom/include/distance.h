@@ -12,7 +12,6 @@
 #include <IMP/core/XYZ.h>
 #include "Hierarchy.h"
 #include "IMP/base_types.h"
-#include "IMP.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
