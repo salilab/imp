@@ -9,6 +9,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/angle_decorators.h>
+#include <IMP/constants.h>
 #include <IMP/atom/internal/charmm_helpers.h>
 
 #include <boost/algorithm/string.hpp>
