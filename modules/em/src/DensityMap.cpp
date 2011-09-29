@@ -1402,7 +1402,7 @@ void DensityMap::convolute_kernel(DensityMap *other,
   //smooth the density using the kernel
   float val;
   int kernel_ind,ny,nx;
-  long map_ind_z,map_ind_zy,map_ind;
+  long map_ind;
   nx=header_.get_nx();
   ny=header_.get_ny();
   for (unsigned int iz=margin;iz<header_.get_nz()-margin;iz++) {
