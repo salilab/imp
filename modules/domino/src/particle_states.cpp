@@ -9,6 +9,7 @@
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/random.h>
 #include <boost/random.hpp>
 #include <algorithm>
 
