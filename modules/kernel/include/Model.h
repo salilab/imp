@@ -299,7 +299,7 @@ public:
     optimizeds_.set_masks(read_mask, write_mask, add_remove_mask);
     read_mask_=read_mask;
     write_mask_=write_mask;
-    add_remove_mask_=add_remove_mask_;
+    add_remove_mask_=add_remove_mask;
     read_derivatives_mask_=read_derivatives_mask;
     write_derivatives_mask_=write_derivatives_mask;
   }
