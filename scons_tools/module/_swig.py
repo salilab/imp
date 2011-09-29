@@ -8,14 +8,14 @@ import scons_tools.module
 import scons_tools.data
 
 # standard include files
-base_includes= ["IMP_kernel_macros.i",
-                "IMP_base_macros.i",
+base_includes= ["IMP_base_macros.i",
                 "IMP_base_exceptions.i",
                 "IMP_base_directors.i",
                 "IMP_base_types.i",
                 "IMP_base_refcount.i",
                 "IMP_base_streams.i",
                 "IMP_base_streams_kernel.i"]
+kernel_includes= ["IMP_kernel_macros.i"]
 
 
 def _null_scanner(node, env, path):
@@ -93,35 +93,54 @@ def _action_swig_file(target, source, env):
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <exception>
-#include "IMP/base.h"
 """%vars['module_include_path'].replace("/", ".")]
     dta= scons_tools.data.get(env)
-    for d in deps:
+    for d in deps+[vars['module']]:
         # kind of evil
-        if d != "kernel":
-            ln= dta.modules[d].libname
-            nm=ln.replace("imp", "IMP").replace("_", "/")
-            preface.append("#include \"%s.h\""% nm)
-        else:
+        if d== "kernel":
             preface.append('#include "IMP.h"')
             preface.append('#include "IMP/internal/swig.h"')
             preface.append('#include "IMP/internal/swig_helpers.h"')
-    preface.append("#include \"%(module_include_path)s.h\""%vars)
-    if vars['module'] == 'kernel':
-        preface.append('#include "IMP/internal/swig.h"')
-        preface.append('#include "IMP/internal/swig_helpers.h"')
-    preface.append('#include "IMP/base/internal/swig_helpers.h"')
-    preface.append('#include "IMP/base/internal/swig.h"')
-    preface.append("#include \"%(module_include_path)s/%(module)s_config.h\""%vars)
-    preface.append("#include \"%(module_include_path)s.h\""%vars)
+            preface.append('#include "IMP/kernel_config.h"')
+        elif d=="base":
+            preface.append('#include "IMP/base.h"')
+            preface.append('#include "IMP/base/internal/swig.h"')
+            preface.append('#include "IMP/base/internal/swig_helpers.h"')
+            preface.append('#include "IMP/base/base_config.h"')
+        else:
+            ln= dta.modules[d].libname
+            nm=ln.replace("imp", "IMP").replace("_", "/")
+            preface.append("#include \"%s.h\""% nm)
+            preface.append("#include \"%s/%s_config.h\""% (nm, d))
+
     preface.append("""%}
 %implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_pair.i"
-%include "IMP/compatibility/compatibility_config.h"
-%include "IMP/base/base_config.h"
-
+""")
+    for d in deps+[vars['module']]:
+        #print d
+        if d== "base":
+            for i in base_includes:
+                preface.append('%%include "%s"'%i)
+            preface.append('%include "IMP/base/base_config.h"')
+            preface.append('%import "IMP_base.i"')
+        elif d== "kernel":
+            preface.append('%include "IMP/kernel_config.h"')
+            preface.append('%import "IMP_kernel.i"')
+            for i in kernel_includes:
+                preface.append('%%include "%s"'%i)
+        elif d=="RMF":
+            preface.append('%include "RMF/RMF_config.h"')
+            preface.append('%import "RMF.i"')
+        else:
+            ln= dta.modules[d].libname
+            sn= ln.replace("imp", "IMP")
+            nm=ln.replace("imp", "IMP").replace("_", "/")
+            preface.append('%%include "%s/%s_config.h"'%(nm, d))
+            preface.append('%%import "%s.i"'%sn)
+    preface.append("""
 %pythoncode %{
 _value_types=[]
 _object_types=[]
@@ -130,8 +149,6 @@ _plural_types=[]
 %}
 
 """)
-    for i in base_includes:
-        preface.append('%include "'+ i + '"')
     preface.append("""
 %%include "typemaps.i"
 """%vars)
@@ -146,17 +163,8 @@ _plural_types=[]
 %}
 """)
     dta= scons_tools.data.get(env)
-    for d in deps:
-        ln= dta.modules[d].libname
-        lnr=ln.replace("imp", "IMP")
-        if lnr=="IMP":
-            lnr="IMP_kernel"
-        preface.append("%%import \"%s.i\""% lnr)
     preface.append(warning)
 
-    preface.append("""
-%%include "%(module_include_path)s/%(module)s_config.h"
-"""%vars)
     preface.append(warning)
     preface.append(open(source[0].abspath, "r").read())
     preface.append(warning)
@@ -164,8 +172,11 @@ _plural_types=[]
         preface.append("namespace "+ns + " {")
     preface.append("""
 const std::string get_module_version();
-std::string get_example_path(std::string fname);
-std::string get_data_path(std::string fname);
+""")
+    if env['MODULE_HAS_DATA']:
+        preface.append("""
+        std::string get_example_path(std::string fname);
+        std::string get_data_path(std::string fname);
 """)
     for ns in vars['namespace'].split("::"):
         preface.append("}")
@@ -184,20 +195,6 @@ std::string get_data_path(std::string fname);
             nm=scons_tools.dependency.get_dependency_string(d).lower()
             preface.append("has_"+nm+"=False")
     preface.append("}")
-    if False:
-        if vars['module'] != "kernel" and vars['module']!= 'base' and vars['module']!='algebra':
-            preface.append("""
-%%pythoncode %%{
-import IMP.base
-import IMP
-IMP.used_modules.append(IMP.base.VersionInfo("%s", get_module_version()))
-%%}"""%vars['module'])
-        else:
-            preface.append("""
-%pythoncode %{
-import IMP.base
-used_modules.append(IMP.base.VersionInfo("IMP", get_module_version()))
-%}""")
     preface.append("""
 %pythoncode %{
 import _version_check
