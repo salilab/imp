@@ -6,6 +6,8 @@
 
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/internal/rotation_helper.h"
+#include <IMP/constants.h>
+
 
 IMPEM2D_BEGIN_NAMESPACE
 
