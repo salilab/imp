@@ -42,7 +42,7 @@ if scons_tools.dependency.gcc.get_is_gcc(env):
 else:
     cxxflags=[]
 env.IMPModuleBuild(version='SVN',
-                   required_modules=["kernel"],
+                   required_modules=["base"],
                    required_dependencies=["CGAL"],
                    cxxflags=cxxflags, python=False)
 
