@@ -64,6 +64,7 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 def _action_swig_file(target, source, env):
     vars= scons_tools.module._get_module_variables(env)
     deps= scons_tools.module._get_module_python_modules(env)
+    npdeps= scons_tools.module._get_module_modules(env)
     deps.reverse()
     #print "dependencies are " +str(deps)
     warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
@@ -112,13 +113,25 @@ def _action_swig_file(target, source, env):
             nm=ln.replace("imp", "IMP").replace("_", "/")
             preface.append("#include \"%s.h\""% nm)
             preface.append("#include \"%s/%s_config.h\""% (nm, d))
-
     preface.append("""%}
 %implicitconv;
 %include "std_vector.i"
 %include "std_string.i"
 %include "std_pair.i"
 """)
+    for d in npdeps:
+        if d not in deps:
+            if d== "base":
+                preface.append('%include "IMP/base/base_config.h"')
+            elif d== "kernel":
+                preface.append('%include "IMP/kernel_config.h"')
+            elif d=="RMF":
+                preface.append('%include "RMF/RMF_config.h"')
+            else:
+                ln= dta.modules[d].libname
+                sn= ln.replace("imp", "IMP")
+                nm=ln.replace("imp", "IMP").replace("_", "/")
+                preface.append('%%include "%s/%s_config.h"'%(nm, d))
     for d in deps+[vars['module']]:
         #print d
         if d== "base":
