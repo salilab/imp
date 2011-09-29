@@ -9,6 +9,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/angle_decorators.h>
 #include <IMP/atom/internal/charmm_helpers.h>
+#include <IMP/constants.h>
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
