@@ -448,7 +448,7 @@ Float compute_fitting_score(const ParticlesTemp &ps,
   const DensityHeader *uheader = union_map->get_header();
   int onx=em_map->get_header()->get_nx();
   int ony=em_map->get_header()->get_ny();
-  int onz=em_map->get_header()->get_nz();
+  //int onz=em_map->get_header()->get_nz();
   int oz_temp,ozy_temp;
   int uz_temp,uzy_temp;
   int uz_start,uy_start,ux_start;
