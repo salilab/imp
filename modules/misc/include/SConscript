@@ -1,15 +1,4 @@
 Import('env')
 
-files = [
-         'CommonEndpointPairFilter.h',
-         'CustomXYZR.h',
-         'LogPairScore.h',
-         'LowestRefinedPairScore.h',
-         'SoftCylinderPairScore.h',
-         'StateAdaptor.h',
-         'WormLikeChain.h',
-         'interaction_graph.h',
-        ]
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
