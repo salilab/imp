@@ -8,6 +8,7 @@
 #include "IMP/algebra/eigen_analysis.h"
 #include "IMP/algebra/internal/utility.h"
 #include "IMP/algebra/ReferenceFrame3D.h"
+#include <IMP/log.h>
 #include <IMP/algebra/internal/jama_svd.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
