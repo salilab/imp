@@ -23,7 +23,6 @@
 IMP_BEGIN_NAMESPACE
 class Model;
 class Particle;
-class Object;
 IMP_END_NAMESPACE
 
 IMPDOMINO_BEGIN_NAMESPACE
