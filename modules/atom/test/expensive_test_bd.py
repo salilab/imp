@@ -116,6 +116,7 @@ class BDTests(IMP.test.TestCase):
             self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2)
     def test_free(self):
         """Test brownian free diffusion"""
+        self.skipTest("too expensive")
         (m, xyzr, d, bd)= self._setup()
         sigma= self._get_sigma_1_free()
         print "free sigma is", sigma
@@ -124,6 +125,7 @@ class BDTests(IMP.test.TestCase):
         self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
     def test_linear(self):
         """Test brownian linear diffusion"""
+        self.skipTest("too expensive")
         # from of course notes http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd)= self._setup()
         #print D_u, f_u, kT_u
@@ -142,6 +144,7 @@ class BDTests(IMP.test.TestCase):
         self._check((mn, std), ([mean, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
     def test_harmonic(self):
         """Test a brownian harmonic"""
+        self.skipTest("too expensive")
         # taken from chapter 13 of course notes http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd)= self._setup()
         sigma=self._get_sigma_harmonic()
