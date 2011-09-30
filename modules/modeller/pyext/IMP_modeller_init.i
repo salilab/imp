@@ -194,7 +194,7 @@ def _LinearGenerator(parameters, modalities):
 
 def _SplineGenerator(parameters, modalities):
     (open, low, high, delta, lowderiv, highderiv) = parameters[:6]
-    values = IMP.Floats()
+    values = []
     for v in parameters[6:]:
         values.append(v)
     if open < 0.0:
