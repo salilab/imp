@@ -98,7 +98,7 @@ int _overloaded_decorator(_TrivialDerivedDecorator) {
 
 
 
-std::string _test_ifile(TextInput a) {
+std::string _test_ifile(base::TextInput a) {
   std::string read;
   while (true) {
     std::string cur;
@@ -109,7 +109,7 @@ std::string _test_ifile(TextInput a) {
   std::cout << read;
   return read;
 }
-std::string _test_ofile(TextOutput a) {
+std::string _test_ofile(base::TextOutput a) {
   static_cast<std::ostream &>(a) << "hi\n"
                                  << " there, how are things"<< std::endl;
   return "hi\n";
@@ -117,16 +117,16 @@ std::string _test_ofile(TextOutput a) {
 
 
 
-std::string _test_ifile_overloaded(TextInput a, std::string) {
+std::string _test_ifile_overloaded(base::TextInput a, std::string) {
   return _test_ifile(a);
 }
-std::string _test_ofile_overloaded(TextOutput a, std::string) {
+std::string _test_ofile_overloaded(base::TextOutput a, std::string) {
   return _test_ofile(a);
 }
-std::string _test_ifile_overloaded(TextInput a, int) {
+std::string _test_ifile_overloaded(base::TextInput a, int) {
   return _test_ifile(a);
 }
-std::string _test_ofile_overloaded(TextOutput a, int) {
+std::string _test_ofile_overloaded(base::TextOutput a, int) {
   return _test_ofile(a);
 }
 
@@ -150,7 +150,8 @@ unsigned int _take_particles(Model *, const Particles &ps) {
   return ps.size();
 }
 
-unsigned int _take_particles(Model *, const Particles &ps, TextOutput) {
+unsigned int _take_particles(Model *, const Particles &ps,
+                             base::TextOutput) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     IMP_CHECK_OBJECT(ps[i]);
   }
