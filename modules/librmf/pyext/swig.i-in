@@ -173,7 +173,7 @@ class TestCase(unittest.TestCase):
             os.mkdir(dirpath)
         return os.path.join(dirpath, filename)
 
-
+"""
 class _TestResult(unittest.TextTestResult):
     def getDescription(self, test):
         doc_first_line = test.shortDescription()
@@ -186,12 +186,13 @@ class _TestResult(unittest.TextTestResult):
 class _TestRunner(unittest.TextTestRunner):
     def _makeResult(self):
         return _TestResult(self.stream, self.descriptions, self.verbosity)
-
+"""
 
 def main(*args, **keys):
     """Run a set of tests; essentially the same as unittest.main(). Obviates
        the need to separately import the 'unittest' module, and ensures that
        main() is from the same unittest module that the IMP.test testcases
        are."""
-    return unittest.main(testRunner=_TestRunner, *args, **keys)
+    #testRunner=_TestRunner
+    return unittest.main( *args, **keys)
 %}
