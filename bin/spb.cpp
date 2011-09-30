@@ -154,7 +154,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    double* mybias=ptr->get_bias_buffer();
-   for(unsigned int i=0;i<2*ptr->get_nbin();++i){
+   for(unsigned int i=0;i<ptr->get_nbin();++i){
     biasfile << mybias[i] << "\n";
    }
    biasfile.close();
@@ -199,16 +199,17 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
     ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
     int     nbins=ptr->get_nbin();
     double* mybias=ptr->get_bias_buffer();
-    double* fbias=new double[2*nbins];
-    MPI::COMM_WORLD.Isend(mybias,2*nbins,MPI::DOUBLE,frank,123);
-    MPI::COMM_WORLD.Recv (fbias, 2*nbins,MPI::DOUBLE,frank,123);
-    Floats val(fbias, fbias+2*nbins);
+    double* fbias=new double[nbins];
+    MPI::COMM_WORLD.Isend(mybias,nbins,MPI::DOUBLE,frank,123);
+    MPI::COMM_WORLD.Recv (fbias, nbins,MPI::DOUBLE,frank,123);
+    Floats val(fbias, fbias+nbins);
     ptr->set_bias(val);
     delete(fbias);
    }
   }
 
  // in any case, update index vector
+  MPI::COMM_WORLD.Barrier();
   int buf[nproc];
   for(int i=0; i<nproc; ++i) {buf[i]=0;}
   buf[myrank]=myindex;

@@ -76,6 +76,22 @@ Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
 //mc->set_use_incremental_evaluate(true);
 
+// wte restart
+if(mydata.MC.do_wte && mydata.MC.wte_restart){
+ Floats val;
+ double bias;
+ std::ifstream biasfile;
+ std::string names="BIAS"+out.str();
+ char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+ strcpy(name, names.c_str());
+ biasfile.open(name);
+ while (biasfile >> bias){val.push_back(bias);}
+ biasfile.close();
+ Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+ ptr->set_bias(val);
+}
+
 // hot steps
 if(mydata.MC.nhot>0){
  if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
@@ -104,8 +120,22 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   for(int i=0;i<hs.size();++i){
    rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[i]);
   }
+ // dump bias on file if wte
+  if(mydata.MC.do_wte){
+   std::ofstream biasfile;
+   std::string names="BIAS"+out.str();
+   char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+   strcpy(name, names.c_str());
+   biasfile.open(name);
+   Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+   double* mybias=ptr->get_bias_buffer();
+   for(unsigned int i=0;i<ptr->get_nbin();++i){
+    biasfile << mybias[i] << "\n";
+   }
+   biasfile.close();
+  }
  }
-
 // now it's time to try an exchange
  int    frank=get_friend(index,myrank,imc,nproc);
  int    findex=index[frank];
@@ -143,16 +173,17 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();
    double* mybias=ptr->get_bias_buffer();
-   double* fbias=new double[2*nbins];
-   MPI::COMM_WORLD.Isend(mybias,2*nbins,MPI::DOUBLE,frank,123);
-   MPI::COMM_WORLD.Recv (fbias, 2*nbins,MPI::DOUBLE,frank,123);
-   Floats val(fbias, fbias+2*nbins);
+   double* fbias=new double[nbins];
+   MPI::COMM_WORLD.Isend(mybias,nbins,MPI::DOUBLE,frank,123);
+   MPI::COMM_WORLD.Recv (fbias, nbins,MPI::DOUBLE,frank,123);
+   Floats val(fbias, fbias+nbins);
    ptr->set_bias(val);
    delete(fbias);
   }
  }
 
 // in any case, update index vector
+ MPI::COMM_WORLD.Barrier();
  int buf[nproc];
  for(int i=0; i<nproc; ++i) {buf[i]=0;}
  buf[myrank]=myindex;

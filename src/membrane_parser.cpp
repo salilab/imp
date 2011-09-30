@@ -30,7 +30,7 @@ Parameters get_parameters(TextInput in) {
  std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res,inter,loop;
  bool do_random,add_dope,use_volume,do_wte;
-
+ bool wte_restart;
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
  desc.add_options()("ass_file",    value< std::string >(&ass_file),    "ciao");
@@ -46,7 +46,7 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
  desc.add_options()("do_wte",      value< bool >(&do_wte),             "ciao");
  desc.add_options()("do_random",   value< bool >(&do_random),          "ciao");
-
+ desc.add_options()("wte_restart", value< bool >(&wte_restart),        "ciao");
 
  OPTION(double, grid_dtilt);
  OPTION(double, grid_dswing);
@@ -110,6 +110,7 @@ Parameters get_parameters(TextInput in) {
  ret.MC.wte_gamma=wte_gamma;
  ret.MC.wte_emin=wte_emin;
  ret.MC.wte_emax=wte_emax;
+ ret.MC.wte_restart=wte_restart;
 
 // Restraints Parameters
  ret.RST.diameter=diameter;
