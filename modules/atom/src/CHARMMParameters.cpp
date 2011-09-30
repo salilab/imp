@@ -127,13 +127,13 @@ namespace {
     }
     return atom_name;
   }
-
-  Strings get_atom_names(std::string *first, std::string *last,
+  template <class It>
+  Strings get_atom_names(It first, It last,
                          CHARMMResidueTopologyBase *residue,
                          bool translate_names_to_pdb)
   {
     Strings ret;
-    for (std::string *str = first; str != last; ++str) {
+    for (It str = first; str != last; ++str) {
       ret.push_back(get_atom_name(*str, residue, translate_names_to_pdb));
     }
     return ret;
@@ -195,7 +195,8 @@ namespace {
 
     for (unsigned int i = 1; i < split_results.size(); i += 3) {
       if (split_results[i][0] == '!') return;  // comments start
-      residue->add_angle(get_atom_names(&split_results[i], &split_results[i+3],
+      residue->add_angle(get_atom_names(split_results.begin()+i,
+                                        split_results.begin()+i+3,
                                         residue, translate_names_to_pdb));
     }
   }
@@ -209,8 +210,8 @@ namespace {
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
       if (split_results[i][0] == '!') return;  // comments start
-      residue->add_dihedral(get_atom_names(&split_results[i],
-                                           &split_results[i+4],
+      residue->add_dihedral(get_atom_names(split_results.begin()+i,
+                                           split_results.begin()+i+4,
                                            residue, translate_names_to_pdb));
     }
   }
@@ -224,8 +225,8 @@ namespace {
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
       if (split_results[i][0] == '!') return;  // comments start
-      residue->add_improper(get_atom_names(&split_results[i],
-                                           &split_results[i+4],
+      residue->add_improper(get_atom_names(split_results.begin()+i,
+                                           split_results.begin()+i+4,
                                            residue, translate_names_to_pdb));
     }
   }
@@ -238,7 +239,8 @@ namespace {
                  boost::token_compress_on);
     if (split_results.size() < 10) return; // IC line has at least 10 fields
 
-    Strings atom_names = get_atom_names(&split_results[1], &split_results[5],
+    Strings atom_names = get_atom_names(split_results.begin()+1,
+                                        split_results.begin()+5,
                                         residue, translate_names_to_pdb);
     // Improper IC entries have a leading * on the third atom name
     bool improper = false;
@@ -309,20 +311,20 @@ namespace {
 
 }
 
-CHARMMParameters::CHARMMParameters(TextInput top_file,
-                                   TextInput par_file,
+CHARMMParameters::CHARMMParameters(base::TextInput top_file,
+                                   base::TextInput par_file,
                                    bool translate_names_to_pdb)
 {
   // Parameter objects are not designed to be added into other containers
   set_was_used(true);
   read_topology_file(top_file, translate_names_to_pdb);
 
-  if(par_file != TextInput()) {
+  if(par_file != base::TextInput()) {
     read_parameter_file(par_file);
   }
 }
 
-void CHARMMParameters::read_topology_file(TextInput input_file,
+void CHARMMParameters::read_topology_file(base::TextInput input_file,
                                           bool translate_names_to_pdb)
 {
   IMP_OBJECT_LOG;
@@ -373,7 +375,7 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
       } else if (patch) {
         add_patch(patch.release());
       }
-      std::vector<String> split_results;
+      Strings split_results;
       boost::split(split_results, line, boost::is_any_of(" \t"),
                    boost::token_compress_on);
       if (split_results.size() < 3) {
@@ -448,7 +450,7 @@ void CHARMMParameters::read_topology_file(TextInput input_file,
 ResidueType CHARMMParameters::parse_residue_line(const String& line,
                                                  bool translate_names_to_pdb)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 3) {
@@ -469,7 +471,7 @@ void CHARMMParameters::parse_atom_line(const String& line,
                                        CHARMMResidueTopologyBase *residue,
                                        bool translate_names_to_pdb)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 4) return; // ATOM line has at least 4 fields
@@ -506,7 +508,7 @@ void CHARMMParameters::parse_bond_line(const String& line,
                                        CHARMMResidueTopologyBase *residue,
                                        bool translate_names_to_pdb)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 3) return; // BOND line has at least 3 fields
@@ -514,7 +516,8 @@ void CHARMMParameters::parse_bond_line(const String& line,
   std::vector<Bond> bonds;
   for(unsigned int i=1; i<split_results.size(); i+=2) {
     if(split_results[i][0] == '!') return;  // comments start
-    Strings atom_names = get_atom_names(&split_results[i], &split_results[i+2],
+    Strings atom_names = get_atom_names(split_results.begin()+i,
+                                        split_results.begin()+i+2,
                                         residue, translate_names_to_pdb);
     if (excess_patch_bond(atom_names, residue, translate_names_to_pdb)) {
       continue;
@@ -547,7 +550,7 @@ void CHARMMParameters::parse_bond_line(const String& line,
 
 void CHARMMParameters::parse_nonbonded_parameters_line(String line)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 4)
@@ -561,7 +564,7 @@ void CHARMMParameters::parse_nonbonded_parameters_line(String line)
 
 void CHARMMParameters::parse_bonds_parameters_line(String line)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 4)
@@ -576,7 +579,7 @@ void CHARMMParameters::parse_bonds_parameters_line(String line)
 
 void CHARMMParameters::parse_angles_parameters_line(String line)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 5)
@@ -593,7 +596,7 @@ void CHARMMParameters::parse_angles_parameters_line(String line)
 void CHARMMParameters::parse_dihedrals_parameters_line(String line,
                                        DihedralParameters &param)
 {
-  std::vector<String> split_results;
+  Strings split_results;
   boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 7)
@@ -610,7 +613,7 @@ void CHARMMParameters::parse_dihedrals_parameters_line(String line,
                                                   split_results[3]), p));
 }
 
-void CHARMMParameters::read_parameter_file(TextInput input_file) {
+void CHARMMParameters::read_parameter_file(base::TextInput input_file) {
   IMP_OBJECT_LOG;
   const String BONDS_LINE = "BOND";
   const String ANGLES_LINE = "ANGL";
