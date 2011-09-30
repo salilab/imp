@@ -103,8 +103,8 @@ public:
         removing the HN, HN and O atoms respectively, and adding excess bonds
         to these atoms.
    */
-  CHARMMParameters(TextInput topology_file_name,
-                   TextInput par_file_name = TextInput(),
+  CHARMMParameters(base::TextInput topology_file_name,
+                   base::TextInput par_file_name = TextInput(),
                    bool translate_names_to_pdb=false);
 
   /** \name Residue topology
