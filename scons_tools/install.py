@@ -113,23 +113,31 @@ def install(env, target, source, **keys):
     varname= str(target).split("/")[0]
     prefix=_get_prefix(env, varname)
     installpath= _get_path(env, target, prefix)
-    #print Dir(installpath).get_abspath(), Dir("/".join(str(source).split("/")[:-1])).get_abspath()
     ret=[]
+    internal_installpath=installpath
     if Dir(installpath).get_abspath() !=\
            Dir("/".join(str(source).split("/")[:-1])).get_abspath():
         inst= _link_install(env, installpath, source, **keys)
         data.get(env).add_to_alias(environment.get_current_name(env), inst)
         ret.append(inst[0])
     else:
+        inst=[]
         data.get(env).add_to_alias(environment.get_current_name(env), source)
     # ick, need a better mechanism for installed vs not
-    if varname=='swigdir' or varname=='srcdir' or varname=='moduledir' or varname=="#"\
-           or varname=="biological_systems" or varname=="." or varname=="modules":
-        return
+    if varname=='swigdir' or varname=='srcdir'\
+            or varname=='moduledir' or varname=="#"\
+           or varname=="biological_systems"\
+           or varname=="." or varname=="modules":
+        return ret
     installpath= _get_path(env, target, env.subst(env[varname]))
+    #print Dir(installpath).get_abspath(), internal_installpath
+    # handle hacks involving setting the datapath to "./data"
+    if Dir(installpath) == Dir(internal_installpath):
+        return ret
     inst= env.Install(installpath, source, **keys)
     ret.append(inst[0])
-    data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
+    data.get(env).add_to_alias(environment.get_current_name(env)\
+                                   +"-install", inst)
     data.get(env).add_to_alias("install", inst)
     return ret
 
@@ -168,7 +176,8 @@ def install_hierarchy(env, dir, root_dir, sources):
             cdir=""
         else:
             cdir=name[:f]
-        (b,i)= install(env, Dir(dir+"/"+cdir), File(s))
-        build.append(b)
-        inst.append(i)
+        l= install(env, Dir(dir+"/"+cdir), File(s))
+        build.append(l[0])
+        if len(l)>1:
+            inst.append(l[1])
     return (build, inst)
