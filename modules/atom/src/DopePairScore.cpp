@@ -226,7 +226,7 @@ DopePairScore::DopePairScore(double threshold):
   P(get_dope_type_key(), threshold, get_data_path("dope_score.lib")){
   }
 
-DopePairScore::DopePairScore(double threshold, TextInput file):
+DopePairScore::DopePairScore(double threshold, base::TextInput file):
   P(get_dope_type_key(), threshold, file){
   }
 

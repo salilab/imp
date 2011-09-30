@@ -104,7 +104,7 @@ public:
         to these atoms.
    */
   CHARMMParameters(base::TextInput topology_file_name,
-                   base::TextInput par_file_name = TextInput(),
+                   base::TextInput par_file_name = base::TextInput(),
                    bool translate_names_to_pdb=false);
 
   /** \name Residue topology
@@ -305,9 +305,9 @@ private:
 
   virtual String get_force_field_atom_type(Atom atom) const;
 
-  void read_parameter_file(TextInput input_file);
+  void read_parameter_file(base::TextInput input_file);
   // read topology file
-  void read_topology_file(TextInput input_file,
+  void read_topology_file(base::TextInput input_file,
                           bool translate_names_to_pdb);
 
   void add_angle(Particle *p1, Particle *p2, Particle *p3, Particles &ps) const;

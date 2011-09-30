@@ -106,7 +106,7 @@ class IMPDISPLAYEXPORT Writer:
 class IMPDISPLAYEXPORT TextWriter: public Writer
 {
   std::string file_name_;
-  TextOutput out_;
+  base::TextOutput out_;
  protected:
   void open();
 // vc includes the protection level in the function signature

@@ -2,14 +2,17 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#include <IMP.h>
-#include <IMP/core.h>
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
+#include <IMP/core/ExcludedVolumeRestraint.h>
+#include <IMP/container/generic.h>
+#include <IMP/container/ClosePairContainer.h>
+#include <IMP/Model.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/container.h>
+#include <IMP/atom/pdb.h>
+#include <IMP/algebra/vector_generators.h>
+#include <IMP/core/TableRefiner.h>
+#include <IMP/core/ClosePairsPairScore.h>
+#include <IMP/container/ListSingletonContainer.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -133,8 +136,8 @@ void test_one(std::string name,
 }
 }
 
-int main(int argc, char *argv[]) {
-  IMP_NEW(Model, m, ());
+void do_it(int argc, char *argv[]) {
+ IMP_NEW(Model, m, ());
   atom::Hierarchy h0
     = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
   atom::Hierarchy h1
@@ -216,6 +219,9 @@ int main(int argc, char *argv[]) {
     }
   }
 #endif
+}
 
+int main(int argc, char *argv[]) {
+  IMP_CATCH_AND_TERMINATE(do_it(argc, argv););
   return IMP::benchmark::get_return_value();
 }

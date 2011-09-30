@@ -401,7 +401,7 @@ namespace {
 }
 }
 
-Hierarchy read_pdb(TextInput in, Model *model) {
+Hierarchy read_pdb(base::TextInput in, Model *model) {
   IMP_NEW(NonWaterPDBSelector, sel, ());
   Hierarchies ret= read_pdb(in,nicename(in.get_name()), model,
                             sel, true, false, false);
@@ -414,7 +414,7 @@ Hierarchy read_pdb(TextInput in, Model *model) {
 
 
 
-Hierarchy read_pdb(TextInput in, Model *model,
+Hierarchy read_pdb(base::TextInput in, Model *model,
                    PDBSelector* selector,
                    bool select_first_model,
                    bool no_radii)
@@ -430,7 +430,7 @@ Hierarchy read_pdb(TextInput in, Model *model,
 }
 
 
-Hierarchies read_multimodel_pdb(TextInput in, Model *model,
+Hierarchies read_multimodel_pdb(base::TextInput in, Model *model,
                                 PDBSelector* selector)
 {
   IMP::OwnerPointer<PDBSelector> sp(selector);
@@ -438,7 +438,7 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                   true, false);
 }
 
-Hierarchies read_multimodel_pdb(TextInput in, Model *model)
+Hierarchies read_multimodel_pdb(base::TextInput in, Model *model)
 {
   IMP_NEW(AllPDBSelector, s, ());
   return read_multimodel_pdb(in, model, s);
@@ -448,7 +448,7 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model)
 bool check_arbond(Particle* atom_p);
 
 namespace {
-  void write_pdb(const ParticlesTemp& ps, TextOutput out)
+  void write_pdb(const ParticlesTemp& ps, base::TextOutput out)
 {
   IMP_FUNCTION_LOG;
   int last_index=0;
@@ -503,7 +503,8 @@ namespace {
   }
 }
 
-  void write_model(const Hierarchies& hs, TextOutput out, unsigned int model) {
+  void write_model(const Hierarchies& hs, base::TextOutput out,
+                   unsigned int model) {
     out.get_stream() << boost::format("MODEL%1$9d")%model << std::endl;
     for (unsigned int i=0; i< hs.size(); ++i) {
       write_pdb(get_as<ParticlesTemp>(get_leaves(hs[i])), out);
@@ -512,18 +513,18 @@ namespace {
   }
 }
 
-void write_pdb(Hierarchy mhd, TextOutput out, unsigned int model)
+void write_pdb(Hierarchy mhd, base::TextOutput out, unsigned int model)
 {
   write_model(Hierarchies(1, mhd), out, model);
 }
 
-void write_pdb(const Hierarchies& mhd, TextOutput out, unsigned int model)
+void write_pdb(const Hierarchies& mhd, base::TextOutput out, unsigned int model)
 {
   write_model(mhd, out, model);
 }
 
 
-void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
+void write_multimodel_pdb(const Hierarchies& mhd, base::TextOutput oout)
 {
   for (unsigned int i=0; i< mhd.size(); ++i) {
     write_model(Hierarchies(1, mhd[i]), oout, i);

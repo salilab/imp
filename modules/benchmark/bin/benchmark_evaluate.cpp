@@ -1,19 +1,16 @@
 /**
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
-#include <IMP.h>
-#include <IMP/core.h>
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/Particle.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-
+#include <IMP/container/PairContainerSet.h>
+#include <IMP/container/ListPairContainer.h>
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
-using namespace IMP::atom;
 using namespace IMP::container;
 
 namespace {
@@ -183,13 +180,7 @@ int main(int , char **) {
     test(100);
   }
   {
-    test(1000);
-  }
-  {
     test_set(100);
-  }
-  {
-    test_set(1000);
   }
   return IMP::benchmark::get_return_value();
 }
