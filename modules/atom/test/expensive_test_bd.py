@@ -11,6 +11,8 @@ except:
 
 import math
 nreps=10000
+if IMP.build=="debug":
+    nreps=nreps/100
 nsteps=500
 timestep=1000
 D=.0002
@@ -112,7 +114,7 @@ class BDTests(IMP.test.TestCase):
             self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=2)
             self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2)
     def test_free(self):
-        """Test a brownian free diffusion"""
+        """Test brownian free diffusion"""
         (m, xyzr, d, bd)= self._setup()
         sigma= self._get_sigma_1_free()
         print "free sigma is", sigma
@@ -120,7 +122,7 @@ class BDTests(IMP.test.TestCase):
         print mn, std
         self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
     def test_linear(self):
-        """Test a brownian linear"""
+        """Test brownian linear diffusion"""
         # from of course notes http://www.ks.uiuc.edu/~kosztin/
         (m, xyzr, d, bd)= self._setup()
         #print D_u, f_u, kT_u
