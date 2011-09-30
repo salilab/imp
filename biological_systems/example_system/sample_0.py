@@ -6,6 +6,7 @@ import IMP.statistics
 import IMP.example
 import IMP.rmf
 import IMP.system
+import RMF
 from IMP.example_system_local import *
 import parameters
 import setup
