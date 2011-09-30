@@ -9,11 +9,7 @@ class DecoratorTests(IMP.test.TestCase):
         m = IMP.Model()
         p=IMP.Particle(m)
         f= IMP.atom.Fragment.setup_particle(p)
-        rs= IMP.Ints()
-        rs.append(0)
-        rs.append(1)
-        rs.append(2)
-        rs.append(6)
+        rs=[0,1,2,6]
         f.set_residue_indexes(rs)
         self.assertTrue(f.get_contains_residue(0))
         self.assertTrue(f.get_contains_residue(1))
