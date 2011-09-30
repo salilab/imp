@@ -114,7 +114,7 @@ namespace {
     try {
       boost::topological_sort(dg, std::back_inserter(sorted));
     } catch (...) {
-      TextOutput out=create_temporary_file();
+      base::TextOutput out=create_temporary_file();
       base::internal::show_as_graphviz(dg, out);
       compatibility::checked_vector<MDGVertex> cycle= get_cycle(dg);
       std::ostringstream oss;
