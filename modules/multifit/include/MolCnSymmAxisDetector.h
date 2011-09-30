@@ -14,6 +14,7 @@
 #include <IMP/em/DensityMap.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Hierarchy.h>
+#include <IMP/constants.h>
 #include <vector>
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
