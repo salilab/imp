@@ -87,6 +87,7 @@ struct Parameters {
  std::string    ass_file;
  std::string    traj_file;
  bool           do_random;
+ std::string    reload;
 };
 
 // packing restraint cluster stuff

@@ -27,7 +27,7 @@ Parameters get_parameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- std::string score_name,ass_file,traj_file,sequence;
+ std::string reload,score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res,inter,loop;
  bool do_random,add_dope,use_volume,do_wte;
  bool wte_restart;
@@ -36,6 +36,7 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("ass_file",    value< std::string >(&ass_file),    "ciao");
  desc.add_options()("traj_file",   value< std::string >(&traj_file),   "ciao");
  desc.add_options()("sequence",    value< std::string >(&sequence),    "ciao");
+ desc.add_options()("reload",      value< std::string >(&reload),      "ciao");
  desc.add_options()("residues",    value< std::vector<std::string> >(),"ciao");
  desc.add_options()("topology",    value< std::vector<double> >(),     "ciao");
  desc.add_options()("name",        value< std::vector<std::string> >(),"ciao");
@@ -94,6 +95,7 @@ Parameters get_parameters(TextInput in) {
  ret.ass_file=ass_file;
  ret.traj_file=traj_file;
  ret.do_random=do_random;
+ ret.reload=reload;
 
 // MonteCarlo Parameters
  ret.MC.tmin=mc_tmin;

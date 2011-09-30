@@ -60,6 +60,20 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
+// reload
+if(mydata.reload.length()>0){
+ if(myrank==0){std::cout << "Reload" << std::endl;}
+ std::string trajname=mydata.reload+out.str()+".rmf";
+ RMF::RootHandle rh = RMF::open_rmf_file(trajname);
+ atom::Hierarchies hs=all.get_children();
+ rmf::set_hierarchies(rh, hs);
+ // reload last frame
+ for(unsigned int i=0;i<hs.size();++i){
+  unsigned int iframe=rmf::get_number_of_frames(rh,hs[i]);
+  rmf::load_frame(rh,iframe-1,hs[i]);
+ }
+}
+
 // trajectory file
 std::string trajname="traj"+out.str()+".rmf";
 RMF::RootHandle rh = RMF::create_rmf_file(trajname);
