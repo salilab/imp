@@ -13,7 +13,7 @@ try:
 except ImportError:
     import pickle
 from IMP.parallel import slavestate
-from IMP.parallel.subproc import _run_background
+from IMP.parallel.subproc import _run_background, _Popen4
 from IMP.parallel.util import _ListenSocket, _ErrorWrapper
 from IMP.parallel.util import _TaskWrapper, _HeartBeat, _ContextWrapper
 from IMP.parallel.util import _SetPathAction
