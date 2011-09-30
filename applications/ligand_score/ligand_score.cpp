@@ -29,9 +29,9 @@ int main(int argc, char *argv[]) {
               << " file.mol2 file.pdb [libfile]" << std::endl;
     return EXIT_FAILURE;
   }
-  IMP::TextInput lib;
+  IMP::base::TextInput lib;
   if (argc==4) {
-    lib= IMP::TextInput(argv[3]);
+    lib= IMP::base::TextInput(argv[3]);
   }
 
   IMP_NEW(IMP::Model, m, ());

@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
         cur= inhs;
       }
       if (get_suffix(output) == ".pdb") {
-        IMP::TextOutput out(output, outframe!=0);
+        IMP::base::TextOutput out(output, outframe!=0);
         IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, out, outframe));
       } else {
         if (outframe==0) {
