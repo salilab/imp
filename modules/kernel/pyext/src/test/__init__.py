@@ -130,7 +130,11 @@ class TestCase(unittest.TestCase):
         # Restore original check level
         IMP.set_check_level(self.__check_level)
         delta= datetime.datetime.now()-self.start_time
-        print >> sys.stderr, " in ", delta.total_seconds(),"s ... ",
+        try:
+            pv= delta.total_second()
+        except:
+            pv=(float(delta.microseconds) + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
+        print >> sys.stderr, " in ", pv,"s ... ",
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
