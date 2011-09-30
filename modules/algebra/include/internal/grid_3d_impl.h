@@ -36,8 +36,8 @@ namespace trilep_helpers {
   template <class Storage>
   typename Storage::Value get_value(const grids::GridD<3, Storage,
                                          typename Storage::Value> &g,
-                  unsigned int xi,
-                  unsigned int yi, unsigned int zi,
+                  const unsigned int xi,
+                  const unsigned int yi, const unsigned int zi,
                   const typename Storage::Value &outside) {
     //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
     //if (xi < 0 || yi < 0 || zi < 0) return outside;
@@ -45,7 +45,7 @@ namespace trilep_helpers {
         || yi >= g.get_number_of_voxels(1)
         || zi >= g.get_number_of_voxels(2)) return outside;
     else {
-      int vals[]={xi, yi, zi};
+      unsigned int vals[]={xi, yi, zi};
       return g[grids::GridIndex3D(vals, vals+3)];
     }
   }
