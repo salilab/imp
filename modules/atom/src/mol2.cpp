@@ -390,7 +390,7 @@ namespace {
 }
 
 
-Hierarchy read_mol2(TextInput mol2_file,
+Hierarchy read_mol2(base::TextInput mol2_file,
                     Model *model,  Mol2Selector* mol2sel)
 {
   if (!mol2sel) {
@@ -434,7 +434,7 @@ Hierarchy read_mol2(TextInput mol2_file,
 }
 
 // argv[1] file_name_type should contain file type e.g. ".mol2"
-void write_mol2(Hierarchy rhd, TextOutput file) {
+void write_mol2(Hierarchy rhd, base::TextOutput file) {
   Hierarchies hs= get_by_type(rhd, RESIDUE_TYPE);
   for(unsigned int i=0; i<hs.size(); ++i) {
     write_molecule_mol2(hs[i], file);

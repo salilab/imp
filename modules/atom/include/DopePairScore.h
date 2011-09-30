@@ -47,7 +47,7 @@ class IMPATOMEXPORT DopePairScore:
   DopePairScore(double threshold
                              = std::numeric_limits<double>::max());
   DopePairScore(double threshold,
-                TextInput data_file);
+                base::TextInput data_file);
 };
 
 /** Add the dope atom types to the atoms in the hierarchy.

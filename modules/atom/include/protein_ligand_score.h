@@ -51,7 +51,7 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());
   ProteinLigandAtomPairScore(double threshold,
-                             TextInput data_file);
+                             base::TextInput data_file);
 };
 
 IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
@@ -67,7 +67,7 @@ class IMPATOMEXPORT ProteinLigandRestraint: public container::PairsRestraint {
                          double threshold= std::numeric_limits<double>::max());
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
                          double threshold,
-                         TextInput data_file);
+                         base::TextInput data_file);
 };
 
 IMP_OBJECTS(ProteinLigandRestraint,ProteinLigandRestraints);

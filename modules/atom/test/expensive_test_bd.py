@@ -41,6 +41,7 @@ class BDTests(IMP.test.TestCase):
         xyzr.set_radius(1)
         d=IMP.atom.Diffusion.setup_particle(p)
         d.set_d(D)
+        IMP.set_check_level(IMP.NONE)
         bd= IMP.atom.BrownianDynamics(m)
         bd.set_maximum_time_step(float(timestep))
         xyzr.set_coordinates_are_optimized(True)

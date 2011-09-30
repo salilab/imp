@@ -2,13 +2,16 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#include <IMP.h>
-#include <IMP/core.h>
+#include <IMP/core/ConnectivityRestraint.h>
+#include <IMP/core/MSConnectivityRestraint.h>
+#include <IMP/container/ConnectingPairContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/algebra/vector_generators.h>
+#include <IMP/container/generic.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/algebra.h>
-#include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -38,8 +41,7 @@ int main() {
   set_log_level(SILENT);
   //set_check_level(NONE);
   IMP_NEW(Model, m, ());
-  IMP_NEW(HarmonicUpperBound, ub, (1.0, 0.1));
-  IMP_NEW(SphereDistancePairScore, ss,(ub));
+  IMP_NEW(HarmonicUpperBoundSphereDistancePairScore, ss,(0, 1));
   ParticlesTemp ps = create_xyzr_particles(m, npart, .1);
   IMP_NEW(ListSingletonContainer, lsc, (ps));
   {
@@ -48,9 +50,20 @@ int main() {
     benchmark_it("connectivity slow", lsc, m);
     m->remove_restraint(r);
   }
+ {
+    MSConnectivityRestraint* r= new MSConnectivityRestraint(ss);
+    Ints composite;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      composite.push_back(r->add_type(ParticlesTemp(1, ps[i])));
+    }
+    r->add_composite(composite);
+    m->add_restraint(r);
+    benchmark_it("connectivity slow", lsc, m);
+    m->remove_restraint(r);
+  }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1));
-    IMP_NEW(PairsRestraint, pr, (ss, cpc));
+    Pointer<Restraint> pr(create_restraint(ss, cpc));
     m->add_restraint(pr);
     benchmark_it("connectivity fast", lsc, m);
     m->remove_restraint(pr);
