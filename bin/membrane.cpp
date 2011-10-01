@@ -22,14 +22,16 @@ using namespace IMP::membrane;
 int main(int argc, char* argv[])
 {
 
-MPI::Init(argc,argv);
-const int nproc= MPI::COMM_WORLD.Get_size();
-const int myrank=MPI::COMM_WORLD.Get_rank();
+MPI_Init(&argc,&argv);
+int nproc, myrank;
+MPI_Comm_size(MPI_COMM_WORLD, &nproc);
+MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+MPI_Status status;
 
 // initialize seed
 unsigned int iseed = time(NULL);
 // broadcast seed
-MPI::COMM_WORLD.Bcast(&iseed,1,MPI::UNSIGNED,0);
+MPI_Bcast(&iseed,1,MPI_UNSIGNED,0,MPI_COMM_WORLD);
 // initialize random generator
 srand (iseed);
 
@@ -155,8 +157,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  int    findex=index[frank];
  double fscore;
 // send and receive score
- MPI::COMM_WORLD.Isend(&myscore,1,MPI::DOUBLE,frank,123);
- MPI::COMM_WORLD.Recv (&fscore, 1,MPI::DOUBLE,frank,123);
+ MPI_Sendrecv(&myscore,1,MPI_DOUBLE,frank,myrank,
+               &fscore,1,MPI_DOUBLE,frank,frank,
+               MPI_COMM_WORLD, &status);
 
 // if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
  double delta_wte=0.0;
@@ -166,8 +169,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
-  MPI::COMM_WORLD.Isend(U_mybias,2,MPI::DOUBLE,frank,123);
-  MPI::COMM_WORLD.Recv (U_fbias, 2,MPI::DOUBLE,frank,123);
+  MPI_Sendrecv(U_mybias,2,MPI_DOUBLE,frank,myrank,
+                U_fbias,2,MPI_DOUBLE,frank,frank,
+                MPI_COMM_WORLD, &status);
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
             (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
@@ -188,8 +192,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    int     nbins=ptr->get_nbin();
    double* mybias=ptr->get_bias_buffer();
    double* fbias=new double[nbins];
-   MPI::COMM_WORLD.Isend(mybias,nbins,MPI::DOUBLE,frank,123);
-   MPI::COMM_WORLD.Recv (fbias, nbins,MPI::DOUBLE,frank,123);
+   MPI_Sendrecv(mybias,nbins,MPI_DOUBLE,frank,myrank,
+                 fbias,nbins,MPI_DOUBLE,frank,frank,
+                MPI_COMM_WORLD, &status);
    Floats val(fbias, fbias+nbins);
    ptr->set_bias(val);
    delete(fbias);
@@ -197,23 +202,22 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  }
 
 // in any case, update index vector
- MPI::COMM_WORLD.Barrier();
+ MPI_Barrier(MPI_COMM_WORLD);
  int buf[nproc];
  for(int i=0; i<nproc; ++i) {buf[i]=0;}
  buf[myrank]=myindex;
- MPI::COMM_WORLD.Allreduce(buf,index,nproc,MPI::INT,MPI::SUM);
-
+ MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
 }
 
-MPI::COMM_WORLD.Barrier();
+MPI_Barrier(MPI_COMM_WORLD);
 // close rmf
 rh.flush();
 rh=RMF::RootHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();
-MPI::COMM_WORLD.Barrier();
+MPI_Barrier(MPI_COMM_WORLD);
 // finalize MPI
-MPI::Finalize();
+MPI_Finalize();
 return 0;
 }
