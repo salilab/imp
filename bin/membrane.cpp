@@ -28,6 +28,11 @@ MPI_Comm_size(MPI_COMM_WORLD, &nproc);
 MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
 MPI_Status status;
 
+// myrank string
+std::stringstream tmp_str;
+tmp_str << myrank;
+std::string myrank_str=tmp_str.str();
+
 // initialize seed
 unsigned int iseed = time(NULL);
 // broadcast seed
@@ -37,9 +42,7 @@ srand (iseed);
 
 // log file
 std::ofstream logfile;
-std::stringstream out;
-out << myrank;
-std::string names="log"+out.str();
+std::string names="log"+myrank_str;
 char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
 strcpy(name, names.c_str());
 logfile.open(name);
@@ -65,7 +68,7 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 // reload
 if(mydata.reload.length()>0){
  if(myrank==0){std::cout << "Reload" << std::endl;}
- std::string trajname=mydata.reload+out.str()+".rmf";
+ std::string trajname=mydata.reload+myrank_str+".rmf";
  RMF::RootHandle rh = RMF::open_rmf_file(trajname);
  atom::Hierarchies hs=all.get_children();
  rmf::set_hierarchies(rh, hs);
@@ -77,7 +80,7 @@ if(mydata.reload.length()>0){
 }
 
 // trajectory file
-std::string trajname="traj"+out.str()+".rmf";
+std::string trajname="traj"+myrank_str+".rmf";
 RMF::RootHandle rh = RMF::create_rmf_file(trajname);
 atom::Hierarchies hs=all.get_children();
 for(int i=0;i<hs.size();++i) {rmf::add_hierarchy(rh, hs[i]);}
@@ -92,15 +95,17 @@ Pointer<core::MonteCarlo> mc=
  setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
 //mc->set_use_incremental_evaluate(true);
 
+// wte stuff
+std::fstream biasfile;
+names="BIAS"+myrank_str;
+char* biasname=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+strcpy(biasname, names.c_str());
+
 // wte restart
 if(mydata.MC.do_wte && mydata.MC.wte_restart){
  Floats val;
  double bias;
- std::ifstream biasfile;
- std::string names="BIAS"+out.str();
- char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
- strcpy(name, names.c_str());
- biasfile.open(name);
+ biasfile.open(biasname);
  while (biasfile >> bias){val.push_back(bias);}
  biasfile.close();
  Pointer<membrane::MonteCarloWithWte> ptr=
@@ -138,11 +143,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   }
  // dump bias on file if wte
   if(mydata.MC.do_wte){
-   std::ofstream biasfile;
-   std::string names="BIAS"+out.str();
-   char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
-   strcpy(name, names.c_str());
-   biasfile.open(name);
+   biasfile.open(biasname);
    Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    double* mybias=ptr->get_bias_buffer();
@@ -189,11 +190,21 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
+
+ int facc,acc=0;
+ if(do_accept) acc=1;
+ MPI_Sendrecv( &acc,1,MPI_INT,frank,myrank,
+              &facc,1,MPI_INT,frank,frank,
+                MPI_COMM_WORLD, &status);
+ if(acc!=facc){
+  logfile << "ERROR:: " << acc << " " << facc << "STEP " << imc << "\n";
+  logfile.flush();
+ }
+
 // if accepted exchange what is needed
  if(do_accept){
   myindex=findex;
   mc->set_kt(temp[myindex]);
-
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
    Pointer<membrane::MonteCarloWithWte> ptr=
@@ -213,10 +224,14 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // in any case, update index vector
  MPI_Barrier(MPI_COMM_WORLD);
- int buf[nproc];
- for(int i=0; i<nproc; ++i) {buf[i]=0;}
- buf[myrank]=myindex;
- MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ int sbuf[nproc],rbuf[nproc];
+ for(int i=0;i<nproc;++i) {
+  sbuf[i]=0;
+  rbuf[i]=0;
+ }
+ sbuf[myrank]=myindex;
+ MPI_Allreduce(sbuf,rbuf,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ for(int i=0;i<nproc;++i){index[i]=rbuf[i];}
 }
 
 MPI_Barrier(MPI_COMM_WORLD);
