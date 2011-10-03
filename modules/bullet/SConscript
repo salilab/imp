@@ -2,9 +2,11 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.bug_fixes
 
-scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "BulletCollision",
-                                                        "BulletSoftBody",
-                                                        "LinearMath"],
+scons_tools.dependency.add_external_library(env, "Bullet",
+                                            ["BulletDynamics",
+                                             "BulletCollision",
+                                             "BulletSoftBody",
+                                             "LinearMath"],
                                        "btBulletDynamicsCommon.h",
                                         body="""btBroadphaseInterface* broadphase = new btDbvtBroadphase();""",
                                         extra_libs=[],

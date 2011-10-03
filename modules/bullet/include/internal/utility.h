@@ -15,13 +15,13 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/container/PairsRestraint.h>
-#include <IMP/domino/utility.h>
 #include <IMP/scoped.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 
 #include <btBulletDynamicsCommon.h>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/scoped_ptr.hpp>
 
 IMPBULLET_BEGIN_INTERNAL_NAMESPACE
 
