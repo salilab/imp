@@ -53,4 +53,4 @@ for i in range(0, confs.get_number_of_configurations()):
         d.add_geometry(IMP.display.XYZRGeometry(p))
 
 # print out info about used modules so that the versions are known
-IMP.show_used_modules()
+#IMP.show_used_modules()
