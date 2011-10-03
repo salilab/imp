@@ -7,6 +7,7 @@
 
 
 #include <IMP/multifit/internal/fft_fitting_utils.h>
+#include <IMP/constants.h>
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
   double* convolve_array (double *in_arr,
                           unsigned int nx,
