@@ -10,6 +10,7 @@
 
 #include "saxs_config.h"
 #include "Profile.h"
+#include "FitParameters.h"
 
 #include <IMP/Model.h>
 
@@ -44,29 +45,43 @@ public:
                                          use_offset, fit_file_name));
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+// #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+//   //! fit experimental profile through optimization of c1 and c2 parameters
+//   /**
+//      \param[in] partial_profile  partial profiles computed
+//  \param[in] c1, c2 - the optimal values will be returned in these parameters
+//      c1 - adjusts the excluded volume, valid range [0.95 - 1.12]
+//      c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
+//      \return chi value
+//   */
+//   Float fit_profile(Profile partial_profile, float& c1, float& c2,
+//                     bool fixed_c1 = false, bool fixed_c2 = false,
+//                     bool use_offset = false,
+//                     const std::string fit_file_name = "") const;
+// #endif
+//   //! fit experimental profile through optimization of c1 and c2 parameters
+//   Float fit_profile(const Profile& partial_profile,
+//                     bool use_offset, // = false,
+//                     const std::string fit_file_name = "") const {
+//     // this function version is for python
+//     float c1, c2;
+//     return fit_profile(partial_profile, c1, c2, false, false,
+//                        use_offset, fit_file_name);
+//   }
+
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
      \param[in] partial_profile  partial profiles computed
-     \param[in] c1, c2 - the optimal values will be returned in these parameters
+     \param[in] min/max c1, min/max c2 - search range for c1 and c2
      c1 - adjusts the excluded volume, valid range [0.95 - 1.12]
      c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
      \return chi value
   */
-  Float fit_profile(Profile partial_profile, float& c1, float& c2,
-                    bool fixed_c1 = false, bool fixed_c2 = false,
-                    bool use_offset = false,
-                    const std::string fit_file_name = "") const;
-#endif
-  //! fit experimental profile through optimization of c1 and c2 parameters
-  Float fit_profile(const Profile& partial_profile,
-                    bool use_offset = false,
-                    const std::string fit_file_name = "") const {
-    // this function version is for python
-    float c1, c2;
-    return fit_profile(partial_profile, c1, c2, false, false,
-                       use_offset, fit_file_name);
-  }
+  FitParameters fit_profile(Profile partial_profile,
+                            float min_c1=0.95, float max_c1=1.12,
+                            float min_c2=-4.0, float max_c2=4.0,
+                            bool use_offset = false,
+                            const std::string fit_file_name = "") const;
 
   //! compute squared chi value
   Float compute_chi_square_score(const Profile& model_profile,
@@ -92,6 +107,11 @@ public:
   // computes chi square given scale factor c and offset
   Float compute_chi_square_score_internal(const Profile& model_profile,
                                        const Float c, const Float offset) const;
+
+  FitParameters search_fit_parameters(Profile& partial_profile,
+                                      float min_c1, float max_c1,
+                                      float min_c2, float max_c2,
+                                      bool use_offset, float old_chi) const;
 
   // writes 3 column fit file, given scale factor c, offset and chi square
   void write_SAXS_fit_file(const std::string& file_name,

@@ -34,7 +34,7 @@ int main(int argc, char **argv)
   bool water_layer = true;
   bool heavy_atoms_only = true;
   bool residue_level = false;
-  //float charge_weight = 1.0;
+  float charge_weight = 1.0;
   po::options_description desc("Usage: <pdb_file1> <pdb_file2> \
 ... <profile_file1> <profile_file2> ...");
   desc.add_options()
@@ -171,15 +171,21 @@ recommended q value is 0.2")
       //   IMP::atom::ResidueType residue_type =
       //     IMP::atom::get_residue(
       //       IMP::atom::Atom(particles_vec[i][j])).get_residue_type();
-      //   if(residue_type == IMP::atom::ARG || residue_type ==IMP::atom::LYS ||
-      //      residue_type == IMP::atom::ASP || residue_type ==IMP::atom::GLU) {
-      //     surface_area[j] *= charge_weight;
+      //   IMP::atom::Element e =
+      //(IMP::atom::Element)IMP::atom::Atom(particles_vec[i][j]).get_element();
+      // IMP::atom::AtomType atom_type =
+      //IMP::atom::Atom(particles_vec[i][j]).get_atom_type();
+      //if((residue_type != IMP::atom::ARG && residue_type != IMP::atom::LYS &&
+      //   residue_type != IMP::atom::ASP && residue_type != IMP::atom::GLU) &&
+      //   (e == IMP::atom::O || e == IMP::atom::N) &&
+      //    atom_type != IMP::atom::AT_N) {
       //     el_total += surface_area[j];
+      //     surface_area[j] *= charge_weight;
       //   }
       //   total += surface_area[j];
       // }
       // std::cerr << "Total = " << total << " el_total " << el_total
-      // << " ratio " << el_total/total << std::endl;
+      //           << " ratio " << el_total/total << std::endl;
     }
 
     // compute profile
@@ -213,14 +219,16 @@ recommended q value is 0.2")
         trim_extension(basename(const_cast<char *>(dat_files[j].c_str())))
         + ".dat";
 
-      float C1, C2;
-      bool fixed_c1 = false;
-      bool fixed_c2 = false;
-      if(excluded_volume_c1 > 0.0) { C1 = excluded_volume_c1; fixed_c1 = true; }
-      if(!water_layer) { C2 = 0.0; fixed_c2 = true; }
       std::cout << pdb_files[i] << " " << dat_files[j];
-      saxs_score->fit_profile(*partial_profile, C1, C2, fixed_c1, fixed_c2,
-                              use_offset, fit_file_name2);
+
+      float min_c1=0.95; float max_c1=1.12;
+      float min_c2=-4.0; float max_c2=4.0;
+      if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
+      if(!water_layer) { min_c2 = max_c2 = 0.0; }
+      IMP::saxs::FitParameters fp = saxs_score->fit_profile(*partial_profile,
+                                                min_c1, max_c1, min_c2, max_c2,
+                                                use_offset, fit_file_name2);
+
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
     }
   }

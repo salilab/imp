@@ -3,6 +3,7 @@ Import('env')
 files = [
          'DerivativeCalculator.h',
          'Distribution.h',
+         'FitParameters.h',
          'FormFactorTable.h',
          'Profile.h',
          'Restraint.h',

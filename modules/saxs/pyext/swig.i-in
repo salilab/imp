@@ -15,6 +15,7 @@ namespace std {
 %include "IMP/saxs/FormFactorTable.h"
 %include "IMP/saxs/Profile.h"
 %include "IMP/saxs/DerivativeCalculator.h"
+%include "IMP/saxs/FitParameters.h"
 %include "IMP/saxs/Score.h"
 %include "IMP/saxs/Restraint.h"
 %include "IMP/saxs/RadiusOfGyrationRestraint.h"
