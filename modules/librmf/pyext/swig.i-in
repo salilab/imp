@@ -6,15 +6,15 @@
 
 /* Apply the passed macro to each type used in RMF */
 %define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
-  macroname(int, Int, Ints);
-  macroname(float, Float, Floats);
-  macroname(index, Index, Indexes);
-  macroname(string, String, Strings);
-  macroname(node_id, NodeID, NodeIDs);
-  macroname(node_ids, NodeIDs, NodeIDsList);
-  macroname(ints, Ints, IntsList);
-  macroname(index_data_set_2d, IndexDataSet2D, IndexDataSet2Ds);
-  macroname(float_data_set_2d, FloatDataSet2D, FloatDataSet2Ds);
+  macroname(int, Int, Ints, int);
+  macroname(float, Float, Floats, double);
+  macroname(index, Index, Indexes, int);
+  macroname(string, String, Strings, std::string);
+  macroname(node_id, NodeID, NodeIDs, RMF::NodeID);
+  macroname(node_ids, NodeIDs, NodeIDsList, RMF::NodeIDs);
+  macroname(ints, Ints, IntsList, RMF::Ints);
+  macroname(index_data_set_2d, IndexDataSet2D, IndexDataSet2Ds, RMF::HDF5IndexDataSet2D);
+  macroname(float_data_set_2d, FloatDataSet2D, FloatDataSet2Ds, RMF::HDF5FloatDataSet2D);
 %enddef
 
 %pythoncode %{
@@ -24,10 +24,10 @@ def get_data_types():
 %}
 
 /* Declare the needed things for each type */
-%define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname, Ucnames)
+%define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname, Ucnames, Type)
 %inline %{
 namespace RMF {
- const Ucname##Traits::Type Null##Ucname=Ucname##Traits::get_null_value();
+ const Type Null##Ucname=Ucname##Traits::get_null_value();
 }
 %}
 namespace RMF {
@@ -43,7 +43,7 @@ _types_list.append(#lcname)
 %}
 %enddef
 
-%define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname, Ucnames)
+%define IMP_RMF_SWIG_DEFINE_TYPE(lcname, Ucname, Ucnames, Type)
 %template(HDF5##Ucname##DataSet1D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 1>;
 %template(HDF5##Ucname##DataSet2D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 2>;
 %template(HDF5##Ucname##DataSet3D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 3>;
