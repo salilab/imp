@@ -63,10 +63,12 @@ class IMPALGEBRAEXPORT Rotation3D {
   }
  public:
   //! Create a rotation from an unnormalized vector 4
-  Rotation3D(const VectorD<4> &v): v_(v.get_unit_vector()){}
+  Rotation3D(const VectorD<4> &v):
+    v_(v.get_unit_vector()),
+    has_cache_(false){}
 
   //! Create an invalid rotation
-  Rotation3D():v_(0,0,0,0) {}
+  Rotation3D():v_(0,0,0,0), has_cache_(false) {}
   //! Create a rotation from a quaternion
   /** \throw base::ValueException if the rotation is not a unit vector.
    */
