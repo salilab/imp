@@ -27,7 +27,13 @@ rmdir ${ROOT}/lib/python2.6/site-packages
 rmdir ${ROOT}/lib/python2.6
 
 # Add redist MSVC runtime DLLs
-cp /usr/lib/w32comp/windows/system/msvc*71.dll ${ROOT}/lib
+DLLSRC=/usr/lib/w32comp/windows/system
+cp ${DLLSRC}/msvc*100.dll ${ROOT}/lib
+
+# Add other DLL dependencies
+cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${ROOT}/lib
+cp ${DLLSRC}/boost_filesystem-vc100-mt-1_44.dll ${ROOT}/lib
+cp ${DLLSRC}/boost_system-vc100-mt-1_44.dll ${ROOT}/lib
 
 tools/w32/gen-w32instlist w32-inst > w32files.tmp
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install
