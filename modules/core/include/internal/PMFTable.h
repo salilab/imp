@@ -60,7 +60,7 @@ private:
 public:
   PMFTable(unsigned int split): split_(split){}
   template <class Key>
-  void initialize(TextInput tin)  {
+  void initialize(base::TextInput tin)  {
     std::istream &in =tin;
     double bin;
     std::string line;
