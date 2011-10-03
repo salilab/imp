@@ -41,5 +41,5 @@ saxs_score = IMP.saxs.Score(exp_profile)
 chi = saxs_score.compute_chi_score(model_profile)
 print 'Chi without parameter fitting = ' + str(chi)
 
-chi = saxs_score.fit_profile(model_profile)
+chi = (saxs_score.fit_profile(model_profile)).get_chi()
 print 'Chi after adjustment of excluded volume and water layer parameters = ' + str(chi)
