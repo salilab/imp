@@ -134,7 +134,10 @@ def install(env, target, source, **keys):
     # handle hacks involving setting the datapath to "./data"
     if Dir(installpath) == Dir(internal_installpath):
         return ret
-    inst= env.Install(installpath, source, **keys)
+    destdir = env.subst(env['destdir'])
+    if not os.path.isabs(destdir):
+        destdir = Dir('#/' + destdir).abspath
+    inst= env.Install(destdir + installpath, source, **keys)
     ret.append(inst[0])
     data.get(env).add_to_alias(environment.get_current_name(env)\
                                    +"-install", inst)
@@ -158,7 +161,10 @@ def install_as(env, target, source, **keys):
     if varname=='swigdir' or varname=='srcdir':
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
-    inst= env.InstallAs(File(installpath), source, **keys)
+    destdir = env.subst(env['destdir'])
+    if not os.path.isabs(destdir):
+        destdir = Dir('#/' + destdir).abspath
+    inst= env.InstallAs(File(destdir + installpath), source, **keys)
     ret.append(inst[0])
     data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
     data.get(env).add_to_alias("install", inst)
