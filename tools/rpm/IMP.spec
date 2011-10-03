@@ -9,7 +9,7 @@ URL:           http://www.integrativemodeling.org/
 Source0:       imp-%{version}.tar.gz
 BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 BuildRequires: scons >= 0.98, boost-devel, swig, python-devel
-BuildRequires: modeller
+BuildRequires: modeller, gsl-devel, hdf5-devel, fftw-devel
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL; on Fedora,
 # add it in as a dependency
