@@ -24,7 +24,7 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT WriteRestraintScoresOptimizerState:
   public OptimizerState {
   Restraints rs_;
-  TextOutput out_;
+  base::TextOutput out_;
  public:
   WriteRestraintScoresOptimizerState(const Restraints &rs,
                                      base::TextOutput out);
