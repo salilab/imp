@@ -6,11 +6,12 @@
  */
 
 #include <IMP/core/model_statistics.h>
-
+#include <IMP/base/file.h>
 IMPCORE_BEGIN_NAMESPACE
 WriteRestraintScoresOptimizerState
 ::WriteRestraintScoresOptimizerState(const Restraints &rs,
-                                     TextOutput out): rs_(rs), out_(out){
+                                     base::TextOutput out): rs_(rs),
+                                                            out_(out){
   for (unsigned int i=0; i< rs_.size(); ++i) {
     if (i!= 0) out_.get_stream() << ", ";
     out_.get_stream() << rs_[i]->get_name();
