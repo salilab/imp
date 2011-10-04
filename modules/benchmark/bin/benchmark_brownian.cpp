@@ -5,22 +5,29 @@
 
 #ifdef IMP_BENCHMARK_USE_IMP_RMF
 
-#include <IMP.h>
-#include <IMP/core.h>
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/display.h>
-#include <IMP/rmf.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/container.h>
+#include <IMP/atom/BrownianDynamics.h>
+#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/container/ClosePairContainer.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/rmf/atom_io.h>
+#include <IMP/rmf/particle_io.h>
+#include <IMP/container/ConsecutivePairContainer.h>
+#include <IMP/atom/Mass.h>
+#include <IMP/container/PairsRestraint.h>
+#include <IMP/container/generic.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/core/DistancePairScore.h>
+#include <IMP/container/SingletonsRestraint.h>
+#include <IMP/core/HarmonicLowerBound.h>
+#include <IMP/core/AttributeSingletonScore.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
-using namespace IMP::display;
 
 const double r=10;
 const double len=r;
@@ -329,8 +336,10 @@ int main(int argc , char **argv) {
   }
   } catch (IMP::Exception e) {
     std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   } catch (std::exception e) {
     std::cerr << "Error: " << e.what() << std::endl;
+    return 1;
   }
   return IMP::benchmark::get_return_value();
 }
