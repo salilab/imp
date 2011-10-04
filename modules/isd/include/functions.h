@@ -19,11 +19,11 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Base class for functions of one variable
-class IMPISDEXPORT UnivariateFunction : public Object
+class IMPISDEXPORT UnivariateFunction : public base::Object
 {
  public:
 
-     UnivariateFunction(std::string str) : Object(str) {}
+ UnivariateFunction(std::string str) : base::Object(str) {}
 
      //! evaluate the function at a certain point
      virtual std::vector<double> operator() (std::vector<double> x) const = 0; 
@@ -52,11 +52,11 @@ class IMPISDEXPORT UnivariateFunction : public Object
 };
 
 //! Base class for functions of two variables
-class IMPISDEXPORT BivariateFunction : public Object
+class IMPISDEXPORT BivariateFunction : public base::Object
 {
  public:
 
-     BivariateFunction(std::string str) : Object(str) {}
+ BivariateFunction(std::string str) : base::Object(str) {}
 
      //! evaluate the function at a certain point
      virtual std::vector<double> operator()

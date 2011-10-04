@@ -29,11 +29,11 @@ IMPISD_BEGIN_NAMESPACE
  *  program will not check for that.
  */
 
-class IMPISDEXPORT FNormal : public Object
+class IMPISDEXPORT FNormal : public base::Object
 {
  public:
   FNormal(double FA, double JA, double FM, double sigma): 
-    Object("FNormal %1%"),
+  base::Object("FNormal %1%"),
     FA_(FA),
     JA_(JA),
     FM_(FM),
