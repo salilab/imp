@@ -5,8 +5,13 @@ scons_tools.dependency.add_external_library(env,
     "eigen3", ['m'],
     "eigen3/Eigen/Eigen")
 
+scons_tools.dependency.add_external_library(env,
+    "CHOLMOD", ['cholmod','amd','metis','colamd','ccolamd','camd','blas'],
+    "ufsparse/cholmod.h")
+
 
 env.IMPModuleBuild(version='SVN',
        required_modules=['kernel', 'container', 'core', 'atom', 'em',
        'statistics', 'saxs'], 
-       required_dependencies=['eigen3'])
+       required_dependencies=['eigen3'],
+       optional_dependencies=['CHOLMOD'])
