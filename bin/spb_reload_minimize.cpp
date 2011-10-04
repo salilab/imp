@@ -71,6 +71,7 @@ std::cout << "Minimizing good configurations" << std::endl;
 unsigned int nminimized=0;
 unsigned int totframes=0;
 unsigned int currentframe=0;
+unsigned int iout_name=0;
 
 // cycle on all iterations
 for(unsigned iter=0;iter<mydata.niter;++iter){
@@ -106,8 +107,8 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 // do coniugate gradient
     if(mydata.cg_steps>0){cg->do_optimize(mydata.cg_steps);}
     double myscore_min = m->evaluate(false);
-    logfile << nminimized << " " << imc << " " <<
-     myscore << " " << myscore_min << "\n";
+    logfile << nminimized << " " << myscore <<
+      " " << myscore_min << " " << iout_name << "\n";
 // write to file
     rh_out.set_value(my_key_out,myscore_min,currentframe);
     for(unsigned int i=0;i<hhs.size();++i){
@@ -120,7 +121,8 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
    if(totframes%mydata.chunk==0){
     currentframe=0;
     std::stringstream iout;
-    iout << totframes/mydata.chunk;
+    iout_name = totframes/mydata.chunk;
+    iout << iout_name;
     rh_out = RMF::create_rmf_file("traj_minimized_"+iout.str()+".rmf");
     for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
     RMF::Category my_kc= rh_out.add_category("my data");
