@@ -25,7 +25,6 @@ struct SPBParameters {
  double       tilt;
  double       resolution;
  double       cutoff;
- double       clustergrid;
  std::string  cell_type;
  std::string  trajfile;
  int          cg_steps;
