@@ -69,7 +69,7 @@ IMP_NEW(core::ConjugateGradients,cg,(m));
 //
 // CLUSTERING
 //
-IMP_NEW(ConfigurationSet,cset,(m));
+//IMP_NEW(ConfigurationSet,cset,(m));
 
 std::cout << "Minimizing good configurations" << std::endl;
 std::vector<unsigned> counter;
@@ -105,7 +105,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      rmf::load_frame(rhs[irep],imc,hhs[i]);
     }
 // do coniugate gradient
-    cg->do_optimize(mydata.cg_steps);
+    if(mydata.cg_steps>0){cg->do_optimize(mydata.cg_steps);}
     double myscore_min = m->evaluate(false);
     logfile << nminimized << " " << imc << " " <<
      myscore << " " << myscore_min << "\n";
@@ -115,7 +115,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      rmf::save_frame(rh_out,nminimized,hhs[i]);
     }
     ++nminimized;
-    cset->save_configuration();
+    //cset->save_configuration();
    }
   }
   if(imc%mydata.chunk==0){counter.push_back(nminimized);}
@@ -123,6 +123,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 }
 std::cout << "Number of good configurations " << nminimized << std::endl;
 
+/*
 std::cout << "Clustering" << std::endl;
 
 IMP_NEW(container::ListSingletonContainer,lsc,(m));
@@ -136,7 +137,7 @@ statistics::PartitionalClusteringWithCenter *clustering
 
 std::cout << "Number of clusters " <<
  (*clustering).get_number_of_clusters() << std::endl;
-
+*/
 // STORING CLUSTER REPRESENTATIVE ON FILE
 
 return 0;
