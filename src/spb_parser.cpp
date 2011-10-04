@@ -90,7 +90,6 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
  OPTION(double, cutoff);
- OPTION(double, clustergrid);
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
  OPTION(int,    niter);
@@ -142,7 +141,6 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.cg_steps=cg_steps;
  ret.nrep=nrep;
  ret.niter=niter;
- ret.clustergrid=clustergrid;
  ret.chunk=chunk;
 
 // restraint
