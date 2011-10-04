@@ -1001,8 +1001,8 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y,
   int nx=header_.get_nx();
   int n_nx=new_header->get_nx();
   emreal *new_data = ret->get_data();
-  long n_xyz=get_number_of_voxels();
-  long new_n_xyz=ret->get_number_of_voxels();
+  //long n_xyz=get_number_of_voxels();
+  //long new_n_xyz=ret->get_number_of_voxels();
   for(int iz=0;iz<header_.get_nz();iz++){ //z slowest
     z_term_curr = iz*nxny;
     z_term_new = (iz+mrg_z)*n_nxny;
@@ -1571,13 +1571,12 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
   mask_inside->set_was_used(true);
   mask_inside->reset_data(0.);
   em::emreal* mdata = mask_inside->get_data();
-  long q;
   int check;
   // mark inside voxels
-  for (unsigned int iz=0;iz<nz;iz++)
-    for (unsigned int iy=0;iy<ny;iy++)
+  for (unsigned int iz=0;iz<nz;iz++) {
+    for (unsigned int iy=0;iy<ny;iy++) {
       for (unsigned int ix=0;ix<nx;ix++) {
-        q=ix+(nx)*(iy+ny*iz);
+        long q=ix+(nx)*(iy+ny*iz);
         if (data[q]>0.0) { //inside or on the surface
           mdata[q]=1;
         } else { //check all directions
@@ -1611,17 +1610,19 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
           }
         }
       }
+    }
+  }
   //remove surface
   Pointer<em::DensityMap> mask_inside2 = em::create_density_map(mask_inside);
   mask_inside2->set_was_used(true);
   em::emreal* mdata2 = mask_inside2->get_data();
   long ind,ind2;
   int shell_w=1;
-  for (int iz=0;iz<(int)nz;iz++)
-    for (int iy=0;iy<(int)ny;iy++)
+  for (int iz=0;iz<(int)nz;iz++) {
+    for (int iy=0;iy<(int)ny;iy++) {
       for (int ix=0;ix<(int)nx;ix++) {
-        ind=ix+(nx)*(iy+ny*iz);
-        if (mdata[q]==1) {
+        long ind=ix+(nx)*(iy+ny*iz);
+        if (mdata[ind]==1) {
           check=0;
           for (int iz2=-shell_w;check==0&&iz2<=shell_w;iz2++)
             for (int iy2=-shell_w;check==0&&iy2<=shell_w;iy2++)
@@ -1634,9 +1635,11 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
                   if (mdata[ind2]==0) check=1; //surface point
                 } else check=2; /* out of bounds */
               }
-          if ((check > 0)&&(mdata2[q] == 1)) {mdata2[q]=0;}
+          if ((check > 0)&&(mdata2[ind] == 1)) {mdata2[ind]=0;}
         }
       }
+    }
+  }
   return mask_inside2.release();
 }
 IMPEM_END_NAMESPACE
