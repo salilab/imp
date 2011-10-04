@@ -98,7 +98,7 @@ namespace {
   }
 
   It create_particles(std::string name) {
-    RMF::RootHandle r= RMF::open_rmf_file(name);
+    RMF::RootHandle r= RMF::open_rmf_file_read_only(name);
     It ret;
     ret.m= new Model();
     ret.chains= IMP::rmf::create_hierarchies(r, ret.m);
