@@ -157,7 +157,7 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
         IMP_LOG(TERSE, "MVN:   set Sigma to new matrix" << std::endl);
         IMP_LOG(TERSE, "MVN:   computing Cholesky decomposition" << std::endl);
         // compute Cholesky decomposition for determinant and inverse
-        Eigen::LDLT<MatrixXd> ldlt;
+        Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt;
         ldlt.compute(Sigma_);
         if (!ldlt.isPositive())
             IMP_THROW("Sigma matrix is not positive semidefinite!", 
@@ -177,6 +177,7 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
         //inverse
         IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
         P_=ldlt.solve(MatrixXd::Identity(M_,M_));
+        //std::cout << "P: " << P_ << std::endl << std::endl;
         ////WP
         //IMP_LOG(TERSE, "MVN:   solving for WP" << std::endl);
         //MatrixXd WP_(M_, M_);
@@ -228,6 +229,8 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
  
   double MultivariateFNormalSufficient::mean_dist() const
 {
+    //std::cout << "P " << std::endl << P_ << std::endl;
+    //std::cout << "epsilon " << std::endl << epsilon_ << std::endl;
     double dist = epsilon_.transpose()*P_*epsilon_;
     IMP_LOG(TERSE, "MVN:   mean_dist = " << dist << std::endl);
     return dist;
