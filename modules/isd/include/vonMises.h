@@ -25,10 +25,10 @@ IMPISD_BEGIN_NAMESPACE
  *  and \f$\kappa = 1/\sigma^2\f$.
  */
 
-class vonMises : public Object
+class vonMises : public base::Object
 {
  public:
-  vonMises(double x, double mu, double kappa): Object("von Mises %1%"), x_(x),
+ vonMises(double x, double mu, double kappa): base::Object("von Mises %1%"), x_(x),
     mu_(mu) 
     {
         set_kappa(kappa);
