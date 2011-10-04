@@ -3,6 +3,7 @@
 #include <IMP/isd/FNormal.h>
 #include <IMP/macros.h>
 #include <IMP/Pointer.h>
+#include <IMP/base/exception.h>
 #include <math.h>
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
@@ -850,7 +851,7 @@ int main(int, char *[]) {
     //PRINT("setting values");
     //RUNTEST(test_setval,1);
     return 0;
-    } catch (const IMP::ExceptionBase& e) {
+    } catch (const IMP::base::ExceptionBase &e) {
         std::cerr << e.what() << std::endl;
     }
 }

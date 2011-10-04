@@ -1,12 +1,16 @@
 //testing of the Multivariate FNormal. tests return true when they succeed.
-#include <IMP/isd/MultivariateFNormalSufficientSparse.h>
-#include <IMP/isd/MultivariateFNormalSufficient.h>
-#include <IMP/isd/FNormal.h>
-#include <IMP/macros.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/exception.h>
 #include <math.h>
 #include <IMP/random.h>
 #include <boost/random/uniform_real.hpp>
+#include <IMP/macros.h>
+#include <IMP/Pointer.h>
+#include <IMP/isd/MultivariateFNormalSufficient.h>
+#include <IMP/isd/FNormal.h>
+
+#ifdef IMP_ISD_USE_CHOLMOD
+
+#include <IMP/isd/MultivariateFNormalSufficientSparse.h>
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
@@ -899,7 +903,9 @@ bool test_degenerate_N(int N){
 }
 */
 
+#endif /*IMP_ISD_USE_CHOLMOD*/
 int main(int, char *[]) {
+#ifdef IMP_ISD_USE_CHOLMOD
     cholmod_start(&c_);
     try {
     //test_mu(20);
@@ -942,10 +948,15 @@ int main(int, char *[]) {
     //PRINT("setting values");
     //RUNTEST(test_setval,1);
     return 0;
-    } catch (const IMP::ExceptionBase& e) {
+    } catch (const IMP::base::ExceptionBase& e) {
         std::cerr << e.what() << std::endl;
     }
     cholmod_finish(&c_);
+#endif /*IMP_ISD_USE_CHOLMOD*/
+#ifndef IMP_ISD_USE_CHOLMOD
+    std::cout << "test skipped because CHOLMOD is not available" << std::endl;
+    return 0;
+#endif
 }
 
 
