@@ -135,7 +135,7 @@ def install(env, target, source, **keys):
     if Dir(installpath) == Dir(internal_installpath):
         return ret
     destdir = env.subst(env['destdir'])
-    if not os.path.isabs(destdir):
+    if destdir != '' and not os.path.isabs(destdir):
         destdir = Dir('#/' + destdir).abspath
     inst= env.Install(destdir + installpath, source, **keys)
     ret.append(inst[0])
@@ -162,7 +162,7 @@ def install_as(env, target, source, **keys):
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
     destdir = env.subst(env['destdir'])
-    if not os.path.isabs(destdir):
+    if destdir != '' and not os.path.isabs(destdir):
         destdir = Dir('#/' + destdir).abspath
     inst= env.InstallAs(File(destdir + installpath), source, **keys)
     ret.append(inst[0])
