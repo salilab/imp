@@ -70,6 +70,7 @@ IMP_NEW(core::ConjugateGradients,cg,(m));
 std::cout << "Minimizing good configurations" << std::endl;
 unsigned int nminimized=0;
 unsigned int totframes=0;
+unsigned int currentframe=0;
 
 // cycle on all iterations
 for(unsigned iter=0;iter<mydata.niter;++iter){
@@ -108,14 +109,16 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     logfile << nminimized << " " << imc << " " <<
      myscore << " " << myscore_min << "\n";
 // write to file
-    rh_out.set_value(my_key_out,myscore_min,nminimized);
+    rh_out.set_value(my_key_out,myscore_min,currentframe);
     for(unsigned int i=0;i<hhs.size();++i){
-     rmf::save_frame(rh_out,nminimized,hhs[i]);
+     rmf::save_frame(rh_out,currentframe,hhs[i]);
     }
     ++nminimized;
+    ++currentframe;
    }
 // time to create a new file for output?
    if(totframes%mydata.chunk==0){
+    currentframe=0;
     std::stringstream iout;
     iout << totframes/mydata.chunk;
     rh_out = RMF::create_rmf_file("traj_minimized_"+iout.str()+".rmf");
