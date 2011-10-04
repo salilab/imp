@@ -493,7 +493,7 @@ bool test_sparseness(){
     MatrixXd Sigma(MatrixXd::Zero(100,100));
     for (int i=0; i<100; i++){
             for (int j=0; j<100; j++)
-                Sigma(i,j) = std::exp(-0.5*std::pow(std::abs(i-j),2));
+                Sigma(i,j) = std::exp(-0.5*std::pow(double(std::abs(i-j)),2));
             Sigma(i,i)+=1;
     }
     
