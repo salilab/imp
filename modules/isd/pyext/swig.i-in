@@ -34,7 +34,9 @@ IMP_SWIG_OBJECT(IMP::isd, Linear1DFunction, Linear1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, BivariateFunction,  BivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Covariance1DFunction, Covariance1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolation, GaussianProcessInterpolations);
+IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationSparse, GaussianProcessInterpolationSparses);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraint, GaussianProcessInterpolationRestraints);
+IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolationRestraintSparse, GaussianProcessInterpolationRestraintSparses);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamics, MolecularDynamicss);
 IMP_SWIG_OBJECT(IMP::isd, MolecularDynamicsMover, MolecularDynamicsMovers);
 IMP_SWIG_OBJECT(IMP::isd, HybridMonteCarlo, HybridMonteCarlos);
@@ -87,6 +89,8 @@ def create_model_and_particles():
 %include "IMP/isd/functions.h"
 %include "IMP/isd/GaussianProcessInterpolation.h"
 %include "IMP/isd/GaussianProcessInterpolationRestraint.h"
+%include "IMP/isd/GaussianProcessInterpolationSparse.h"
+%include "IMP/isd/GaussianProcessInterpolationRestraintSparse.h"
 %include "IMP/isd/MolecularDynamics.h"
 %include "IMP/isd/MolecularDynamicsMover.h"
 %include "IMP/isd/HybridMonteCarlo.h"
