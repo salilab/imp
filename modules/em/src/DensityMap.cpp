@@ -1001,8 +1001,10 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y,
   int nx=header_.get_nx();
   int n_nx=new_header->get_nx();
   emreal *new_data = ret->get_data();
-  //long n_xyz=get_number_of_voxels();
-  //long new_n_xyz=ret->get_number_of_voxels();
+  long n_xyz=get_number_of_voxels();
+  long new_n_xyz=ret->get_number_of_voxels();
+  IMP_UNUSED(n_xyz);
+  IMP_UNUSED(new_n_xyz);
   for(int iz=0;iz<header_.get_nz();iz++){ //z slowest
     z_term_curr = iz*nxny;
     z_term_new = (iz+mrg_z)*n_nxny;
