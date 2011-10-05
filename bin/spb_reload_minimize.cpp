@@ -9,8 +9,6 @@
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
 #include <IMP/rmf.h>
-#include <IMP/display.h>
-#include <IMP/statistics.h>
 #include <fstream>
 #include <sstream>
 #include <iostream>

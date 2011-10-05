@@ -27,6 +27,7 @@ struct SPBParameters {
  double       cutoff;
  std::string  cell_type;
  std::string  trajfile;
+ std::string  label;
  int          cg_steps;
  int          nrep;
  int          niter;

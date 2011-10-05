@@ -46,6 +46,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  std::string load_Cmd1p;
  std::string load_Cnm67p_c;
  std::string trajfile;
+ std::string label;
  std::map<std::string,std::string> file_list;
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
@@ -72,6 +73,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
  desc.add_options()("load_Cnm67p_c", value<std::string>(&load_Cnm67p_c),"ciao");
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
+ desc.add_options()("label",         value<std::string>(&label),        "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -137,6 +139,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
 
 // Postprocess parameters
  ret.trajfile=trajfile;
+ ret.label=label;
  ret.cutoff=cutoff;
  ret.cg_steps=cg_steps;
  ret.nrep=nrep;
