@@ -48,10 +48,10 @@ def _action_unit_test(target, source, env):
         utility.report_error(env, "Unknown test type "+type)
     tf=target[0].abspath
     print "tempfile", tf, tmpdir, target[0].path+".result"
-    app = "mkdir -p %s; cd %s; (%s %s %s%s %s >%s) |& tee %s; cat %s" \
+    app = "mkdir -p %s; cd %s; (%s %s %s%s %s >%s) > /dev/null" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
                  cmd, disab,
-                 " ".join(fsource), tf+".out", tf, tf)
+                 " ".join(fsource), tf+".out")
     print app
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
