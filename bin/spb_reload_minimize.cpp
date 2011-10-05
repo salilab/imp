@@ -102,9 +102,12 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     for(unsigned int i=0;i<hhs.size();++i){
      rmf::load_frame(rhs[irep],imc,hhs[i]);
     }
+    double myscore_min = myscore;
 // do coniugate gradient
-    if(mydata.cg_steps>0){cg->do_optimize(mydata.cg_steps);}
-    double myscore_min = m->evaluate(false);
+    if(mydata.cg_steps>0){
+     cg->do_optimize(mydata.cg_steps);
+     myscore_min = m->evaluate(false);
+    }
     logfile << nminimized << " " << myscore <<
       " " << myscore_min << " " << iout_name << "\n";
 // write to file

@@ -199,16 +199,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
 
- int facc,acc=0;
- if(do_accept) acc=1;
- MPI_Sendrecv( &acc,1,MPI_INT,frank,myrank,
-              &facc,1,MPI_INT,frank,frank,
-                MPI_COMM_WORLD, &status);
- if(acc!=facc){
-  logfile << "ERROR:: " << acc << " " << facc << "STEP " << imc << "\n";
-  logfile.flush();
- }
-
 // if accepted exchange what is needed
  if(do_accept){
   myindex=findex;
@@ -233,10 +223,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // in any case, update index vector
  MPI_Barrier(MPI_COMM_WORLD);
  int sbuf[nproc],rbuf[nproc];
- for(int i=0;i<nproc;++i) {
-  sbuf[i]=0;
-  rbuf[i]=0;
- }
+ for(int i=0;i<nproc;++i){sbuf[i]=0;}
  sbuf[myrank]=myindex;
  MPI_Allreduce(sbuf,rbuf,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
  for(int i=0;i<nproc;++i){index[i]=rbuf[i];}
