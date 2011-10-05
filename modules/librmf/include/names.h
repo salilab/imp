@@ -60,6 +60,10 @@ namespace RMF {
   }
   /** @} */
 
+  /** Return the path to an example file from the name.*/
+  RMFEXPORT std::string get_example_path(std::string file_name);
+
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_NAMES_H */

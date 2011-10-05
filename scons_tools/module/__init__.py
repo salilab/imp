@@ -102,9 +102,9 @@ def IMPModuleLib(envi, files):
     if prefix=="imp":
         prefix="imp_kernel"
     config= envi.IMPModuleConfigCPP(target=[envi['builddir']+"/src/"+prefix+"_config.cpp"],
-                                   source=[envi.Value(version),
-                                           envi.Value(envi.subst(envi['datadir'])),
-                                           envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
+                                    source=[envi.Value(version),
+                                            envi.Value(envi.subst(envi['datadir'])),
+                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     build=[]
     if envi['percppcompilation']=="yes"\

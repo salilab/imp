@@ -6,6 +6,7 @@ import os.path
 import module
 import utility
 import data
+import tempfile
 
 # List of all disabled IMP modules (populated at configure time)
 disabled_modules = []
@@ -45,10 +46,13 @@ def _action_unit_test(target, source, env):
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir(env["builddir"]+"/tmp").abspath
     else:
         utility.report_error(env, "Unknown test type "+type)
-    app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
+    tf=target[0].abspath
+    print "tempfile", tf, tmpdir, target[0].path+".result"
+    app = "mkdir -p %s; cd %s; (%s %s %s%s %s >%s) |& tee %s; cat %s" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
                  cmd, disab,
-                 " ".join(fsource))
+                 " ".join(fsource), tf+".out", tf, tf)
+    print app
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
         print "%s %ss succeeded" % (_get_name(env), source[-1])
@@ -66,13 +70,13 @@ UnitTest = Builder(action=Action(_action_unit_test,
 
 
 def add_test(env, source, type, expensive_source=[]):
-    test=UnitTest(env, target="fast-test.passed", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
-    etest=UnitTest(env, target="test.passed", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
+    test=UnitTest(env, target="fast-test.results", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
+    etest=UnitTest(env, target="test.results", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
     env.Requires(test, env["builddir"]+"/lib/compat_python")
     env.Requires(test, env["builddir"]+"/lib/IMP/test")
     env.Requires(etest, env["builddir"]+"/lib/compat_python")
     env.Requires(etest, env["builddir"]+"/lib/IMP/test")
-    env.AlwaysBuild("test.passed")
+    env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
     if type=='unit test':
