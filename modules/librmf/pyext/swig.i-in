@@ -118,6 +118,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/Category.h"
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"
+%include "RMF/names.h"
 
 %pythoncode %{
 

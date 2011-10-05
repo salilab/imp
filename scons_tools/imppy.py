@@ -78,21 +78,34 @@ def builder_script_file(target, source, env):
         if lines.has_key(line):
             val= lines[line]
             if val[0] and len(val[1])>0:
-                print >> outfile, val[0]+"='"+val[1]+"'"
+                print >> outfile, val[0]+"=\""+val[1]+"\""
                 if val[2]:
                     print >> outfile, "export", val[0]
         elif line== "@MODULEROOTS@":
             for m in modules:
-                varname="IMP_"+m.upper()+"_DATA"
-                print >>outfile, varname+"='"+datadir+"'"
-                print >>outfile, "export", varname
-                varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
-                print >>outfile, varname+"='"+exampledir+"'"
-                print >>outfile, "export", varname
+                if m =="RMF":
+                    varname="RMF_DATA"
+                    print >>outfile, varname+"='"+datadir+"'"
+                    print >>outfile, "export", varname
+                    varname="RMF_EXAMPLE_DATA"
+                    print >>outfile, varname+"='"+exampledir+"'"
+                    print >>outfile, "export", varname
+                else:
+                    varname="IMP_"+m.upper()+"_DATA"
+                    print >>outfile, varname+"='"+datadir+"'"
+                    print >>outfile, "export", varname
+                    varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
+                    print >>outfile, varname+"='"+exampledir+"'"
+                    print >>outfile, "export", varname
             for m in externmodules:
-                varname="IMP_"+m.upper()+"_DATA"
-                print >>outfile, varname+"='"+externdata+"'"
-                print >>outfile, "export", varname
+                if m =="RMF":
+                    varname="RMF_DATA"
+                    print >>outfile, varname+"='"+externdata+"'"
+                    print >>outfile, "export", varname
+                else:
+                    varname="IMP_"+m.upper()+"_DATA"
+                    print >>outfile, varname+"='"+externdata+"'"
+                    print >>outfile, "export", varname
         else:
             print >> outfile, line
     outfile.close()
