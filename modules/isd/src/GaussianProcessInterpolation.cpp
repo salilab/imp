@@ -109,12 +109,13 @@ IMPISD_BEGIN_NAMESPACE
     VectorXd wx(get_wx_vector(x));
     VectorXd WSIm(get_WSIm());
     double ret = wx.transpose()*WSIm;
-    //std::cerr << "wx : ";
-    //for (unsigned i=0; i<M_; i++) std::cerr << wx(i) << " ";
-    //std::cerr << std::endl << "WSIm : ";
-    //for (unsigned i=0; i<M_; i++) std::cerr << WSIm(i) << " ";
-    //std::cerr << std::endl << "mean func: " << (*mean_function_,x,0) 
-    //    << std::endl;
+    /*std::cerr << "wx : ";
+    for (unsigned i=0; i<M_; i++) std::cerr << wx(i) << " ";
+    std::cerr << std::endl << "WSIm : ";
+    for (unsigned i=0; i<M_; i++) std::cerr << WSIm(i) << " ";
+    std::cerr << std::endl << "mean func: " << (*mean_function_)(x)[0] 
+        << std::endl;
+    std::cerr << "product " << ret << std::endl;*/
     return ret + (*mean_function_)(x)[0]; //licit because WSIm is up to date
 }
 
@@ -200,7 +201,6 @@ IMPISD_BEGIN_NAMESPACE
         VectorXd I(get_I());
         VectorXd m(get_m());
         MatrixXd WS(get_WS());
-
         IMP_LOG(TERSE, "WSIm ");
         WSIm_ = WS*(I-m);
         IMP_LOG(TERSE, std::endl);

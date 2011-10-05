@@ -22,6 +22,12 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
     Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
+        W_=NULL;
+        Sigma_=NULL;
+        P_=NULL;
+        PW_=NULL;
+        epsilon_=NULL;
+        L_=NULL;
         N_=FX.rows();
         M_=FX.cols(); 
         IMP_LOG(TERSE, "MVNsparse: direct init with N=" << N_ 
@@ -42,6 +48,12 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
         : Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
+        W_=NULL;
+        Sigma_=NULL;
+        P_=NULL;
+        PW_=NULL;
+        epsilon_=NULL;
+        L_=NULL;
         N_=Nobs;
         M_=Fbar.rows();
         IMP_LOG(TERSE, "MVNsparse: sufficient statistics init with N=" << N_ 
@@ -111,10 +123,11 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
   
   void MultivariateFNormalSufficientSparse::set_W(SparseMatrix<double> W)
 {
-    //if (W_) cholmod_free_sparse(&W_, c_); 
-    cholmod_sparse Wtmp = Eigen::viewAsCholmod(W);
+    if (W_) cholmod_free_sparse(&W_, c_); 
+    cholmod_sparse Wtmp = Eigen::viewAsCholmod(
+            W.selfadjointView<Eigen::Upper>());
     //W_ = cholmod_copy_sparse(&Wtmp, c_);
-    W_ = cholmod_copy(&Wtmp, 1, 0, c_); //unsym for spsolve
+    W_ = cholmod_copy(&Wtmp, 0, 1, c_); //unsym for spsolve
 }
 
   void MultivariateFNormalSufficientSparse::set_FX(MatrixXd FX, 
@@ -176,7 +189,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
             IMP_THROW("need a square matrix!", ModelException);
             }
         //std::cout << "set_sigma" << std::endl; 
-        //if (Sigma_) cholmod_free_sparse(&Sigma_, c_);
+        if (Sigma_) cholmod_free_sparse(&Sigma_, c_);
         cholmod_sparse A(Eigen::viewAsCholmod(
                             Sigma.selfadjointView<Eigen::Upper>()));
         Sigma_=cholmod_copy_sparse(&A, c_);
@@ -218,11 +231,13 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
         //inverse
         IMP_LOG(TERSE, "MVNsparse:   solving for inverse" << std::endl);
         cholmod_sparse* id = cholmod_speye(M_,M_,CHOLMOD_REAL,c_);
+        if (P_) cholmod_free_sparse(&P_, c_);
         P_ = cholmod_spsolve(CHOLMOD_A, L_, id, c_);
         cholmod_free_sparse(&id, c_);
         if (!P_) IMP_THROW("Unable to solve for inverse!", ModelException);
         //WP
         IMP_LOG(TERSE, "MVNsparse:   solving for PW" << std::endl);
+        if (PW_) cholmod_free_sparse(&PW_, c_);
         PW_ = cholmod_spsolve(CHOLMOD_A, L_, W_, c_);
         if (!PW_) IMP_THROW("Unable to solve for PW!", ModelException);
         IMP_LOG(TERSE, "MVNsparse:   done" << std::endl);
@@ -335,7 +350,7 @@ void MultivariateFNormalSufficientSparse::compute_epsilon()
 {
     IMP_LOG(TERSE, "MVNsparse:      computing epsilon" << std::endl);
     VectorXd epsilon = Fbar_ - FM_;
-    //if (epsilon_ != NULL) cholmod_free_dense(&epsilon_, c_);
+    if (epsilon_) cholmod_free_dense(&epsilon_, c_);
     cholmod_dense epstmp = Eigen::viewAsCholmod(epsilon);
     epsilon_ = cholmod_copy_dense(&epstmp, c_);
     IMP_LOG(TERSE, "MVNsparse:      done epsilon" << std::endl);

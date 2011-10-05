@@ -40,7 +40,7 @@ GaussianProcessInterpolationRestraintSparse::
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean, 
     // nobs, sample variance, true variance
-    c_ = &Common_;
+    c_ = gpi_->get_cholmod_common();
     mvn_ = new MultivariateFNormalSufficientSparse(gpi_->get_I(), 1.0,
             gpi_->get_m(), N, gpi_->get_S(), gpi_->get_W(), c_);
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);

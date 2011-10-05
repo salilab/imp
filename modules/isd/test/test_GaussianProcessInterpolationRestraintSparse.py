@@ -35,9 +35,9 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.cov = Covariance1DFunction(self.tau, self.lam, self.sig, 2.0)
-        self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
+        self.gpi = IMP.isd.GaussianProcessInterpolationSparse(self.q, self.I,
                 self.err, self.N, self.mean, self.cov)
-        self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.gpi)
+        self.gpr = IMP.isd.GaussianProcessInterpolationRestraintSparse(self.gpi)
         self.m.add_restraint(self.gpr)
 
     def get_probability(self):
