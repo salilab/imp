@@ -143,6 +143,9 @@ class IMPISDEXPORT MultivariateFNormalSufficientSparse : public Object
 
   void set_Sigma(SparseMatrix<double> f);
 
+  /* small change to Sigma by adding f to it */
+  void update_Sigma(SparseMatrix<double> f);
+
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficientSparse, 
           out << "MultivariateFNormalSufficientSparse: " 

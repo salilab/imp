@@ -49,7 +49,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse : public ISDRestr
         IMP::internal::OwnerPointer<MultivariateFNormalSufficientSparse> mvn_;
         //number of observation points
         unsigned M_;
-        cholmod_common *c_, Common_;
+        cholmod_common *c_;
 
    public:
         // this is a restraint on other restraints. It first constructs the

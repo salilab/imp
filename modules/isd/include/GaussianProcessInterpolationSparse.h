@@ -146,6 +146,9 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public Object
   // compute prior mean vector
   void compute_m();
 
+  // for GPIR.
+  cholmod_common *get_cholmod_common() { return c_; }
+
  private:
     unsigned N_; // number of dimensions of the abscissa
     unsigned M_; // number of observations to learn from
