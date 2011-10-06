@@ -286,6 +286,7 @@ def get_python_result(env, setup, cmd):
         olddylib= os.environ[varname]
         os.environ[varname]=ldpath+get_separator(env)+olddylib
     else:
+        os.environ[varname]=ldpath
         olddylib=None
     #print setup, cmd
     scmd=' '.join([env['PYTHON'], "-c", "\""+setpp+setup+";"+"print "+cmd+",\""])
