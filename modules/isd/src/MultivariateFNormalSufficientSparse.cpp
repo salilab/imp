@@ -198,8 +198,8 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
         IMP_LOG(TERSE, "MVNsparse:   computing Cholesky decomposition" 
                 << std::endl);
         // compute Cholesky decomposition for determinant and inverse
-        c_->final_asis=1; // setup LDLT calculation
-        c_->supernodal = CHOLMOD_SIMPLICIAL;
+        //c_->final_asis=1; // setup LDLT calculation
+        //c_->supernodal = CHOLMOD_SIMPLICIAL;
         // convert matrix to cholmod format
         //symbolic and numeric factorization
         L_ = cholmod_analyze(Sigma_, c_); 
@@ -210,15 +210,19 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
             IMP_THROW("Sigma matrix is not positive semidefinite!", 
                     ModelException);
         // determinant and derived constants
+        cholmod_factor *Lcp(cholmod_copy_factor(L_, c_));
+        cholmod_sparse *Lsp(cholmod_factor_to_sparse(Lcp,c_));
         double logDetSigma=0;
-        if ((L_->itype != CHOLMOD_INT) && 
-                (L_->xtype != CHOLMOD_REAL))
+        if ((Lsp->itype != CHOLMOD_INT) && 
+                (Lsp->xtype != CHOLMOD_REAL))
             IMP_THROW("types are not int and real, update them here first",
                     ModelException);
-        int *p=(int*) L_->p;
-        double *x=(double*) L_->x;
+        int *p=(int*) Lsp->p;
+        double *x=(double*) Lsp->x;
         for (size_t i=0; i < (size_t) M_; ++i)
             logDetSigma += std::log(x[p[i]]);
+        cholmod_free_sparse(&Lsp,c_);
+        cholmod_free_factor(&Lcp,c_);
         IMP_LOG(TERSE, "MVNsparse:   log det(Sigma) = " 
                 << logDetSigma << std::endl);
         IMP_LOG(TERSE, "MVNsparse:   det(Sigma) = " 
