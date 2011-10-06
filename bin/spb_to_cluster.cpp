@@ -75,19 +75,26 @@ assfile.close();
 //
 // PREPARE INPUT/OUTPUT
 //
-std::ofstream trajfile;
+std::ofstream trajfile, logscore;
 trajfile.open("traj.xyz");
+logscore.open("log.score");
 //
 RMF::RootHandle rh=RMF::open_rmf_file(mydata.trajfile);
 rmf::set_hierarchies(rh, hhs);
-
+// getting key for score
+RMF::Category my_kc= rh.add_category("my data");
+RMF::FloatKey my_key=rh.get_float_key(my_kc,"my score");
+// number of frames
 unsigned int nframes=rmf::get_number_of_frames(rh,hhs[0]);
 
 for(unsigned int imc=0;imc<nframes;++imc){
  for(unsigned int i=0;i<hhs.size();++i){
   rmf::load_frame(rh,imc,hhs[i]);
  }
-// write to cluster file
+ double myscore = rh.get_value(my_key,imc);
+// write score to file
+ logscore << imc+1 << " " << myscore << "\n";
+// write configuration to file
  trajfile << "XYZ " << imc+1 << "\n";
  for(unsigned int i=0;i<cluster_ps.size();++i){
   algebra::Vector3D xx=cluster_ps[i].get_coordinates();
