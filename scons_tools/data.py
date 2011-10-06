@@ -289,14 +289,14 @@ class IMPData:
             modname="IMP."+m
         conf = self.env.Configure()
         ret=conf.CheckLibWithHeader(libname, header=[headername],
-                                    call=namespace+"::get_module_version_info();",
+                                    call=namespace+"::get_module_version();",
                                     language="CXX", autoadd=False)
         # get version number
         if ret:
             print "Checking for version info in "+modname+"...",
             version= utility.get_python_result(self.env,
                                                "import "+modname,
-                                               modname+".get_module_version_info().get_version()")
+                                               modname+".get_module_version()")
                 #print "version", version
             if version:
                 print version
