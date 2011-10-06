@@ -11,6 +11,7 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
         olibs= context.env.get('LIBS', [])
         context.env.Append(LIBS=lc)
         #print context.env['LINKFLAGS']
+        #print "checking", libname, lc
         ret=context.sconf.CheckLibWithHeader(libname, header=headers, call=body, language='CXX',
                                              autoadd=False)
         context.env.Replace(LIBS=olibs)
