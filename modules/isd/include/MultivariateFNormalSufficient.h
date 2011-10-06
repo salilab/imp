@@ -81,8 +81,8 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
  * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
  * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
  * */
-  MultivariateFNormalSufficient(MatrixXd FX, double JF, 
-            VectorXd FM, MatrixXd Sigma);
+  MultivariateFNormalSufficient(const MatrixXd& FX, double JF, 
+            const VectorXd& FM, const MatrixXd& Sigma);
 
      /** Initialize with sufficient statistics
  * \param(in) Fbar : M-dimensional vector of mean observations.
@@ -92,9 +92,9 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
  * \param(in) W : MxM matrix of sample variance-covariances.
  * \param(in) Sigma : MxM variance-covariance matrix Sigma.
  * */
-  MultivariateFNormalSufficient(VectorXd Fbar, double JF, 
-            VectorXd FM, int Nobs,  MatrixXd W, 
-            MatrixXd Sigma);
+  MultivariateFNormalSufficient(const VectorXd& Fbar, double JF, 
+            const VectorXd& FM, int Nobs,  const MatrixXd& W, 
+            const MatrixXd& Sigma);
 
   /* probability density function */
   double density() const;
@@ -109,53 +109,83 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   MatrixXd evaluate_derivative_Sigma() const;
 
   /* change of parameters */
-  void set_FX(MatrixXd f);
+  void set_FX(const MatrixXd& f);
+  MatrixXd get_FX() const; 
 
-  void set_JF(double f);
+  void set_FM(const VectorXd& f);
+  VectorXd get_FM() const;
 
-  void set_FM(VectorXd f);
+  void set_Fbar(const VectorXd& f);
+  VectorXd get_Fbar() const;
 
-  void set_Fbar(VectorXd f);
+  void set_W(const MatrixXd& f);
+  MatrixXd get_W() const;
 
-  void set_W(MatrixXd f) {W_=f;}
+  void set_Sigma(const MatrixXd& f);
+  MatrixXd get_Sigma() const;
 
-  void set_Sigma(MatrixXd f);
-
-  /* speed up calculations with W by considering values smaller than val 
-   * to be zero.
-   */
-  void set_W_nonzero(bool yes, double val=1e-7);
+  //if you want to force a recomputation of all stored variables
+  void reset_flags();
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficient, out << "MultivariateFNormalSufficient: " << N_ << " observations of " <<  M_ << " variables " <<std::endl, {});
+  IMP_OBJECT_INLINE(MultivariateFNormalSufficient, 
+          out << "MultivariateFNormalSufficient: " 
+          << N_ << " observations of " 
+          <<  M_ << " variables " <<std::endl, 
+          {});
 
  private:
+  
+  //precision matrix
+  MatrixXd get_P() const;
+  void set_P(const MatrixXd& P);
 
-  /* return trace(W.P), O(M^2) */
+  //precision * W
+  MatrixXd get_PW() const;
+  void set_PW(const MatrixXd& PW);
+
+  //precision * epsilon
+  VectorXd get_Peps() const;
+  void set_Peps(const VectorXd& Peps);
+
+  // epsilon = Fbar - FM
+  VectorXd get_epsilon() const;
+  void set_epsilon(const VectorXd& eps);
+
+  // gets factorization object
+  Eigen::LLT<MatrixXd, Eigen::Upper> get_ldlt() const;
+  void set_ldlt(const Eigen::LLT<MatrixXd, Eigen::Upper>& ldlt);
+ 
+  // compute determinant and norm
+  void set_norms(double norm, double lnorm);
+  std::vector<double> get_norms() const;
+
+  /* return trace(W.P) */
   double trace_WP() const;
 
-  /* return transpose(epsilon)*P*epsilon, O(M^2) */
+  /* return transpose(epsilon)*P*epsilon */
   double mean_dist() const;
 
-  /* return P*epsilon*transpose(P*epsilon), O(M^2) */
+  /* return P*epsilon*transpose(P*epsilon) */
   MatrixXd compute_PTP() const;
 
-  /* return P * W * P, O(M^3) */
+  /* return P * W * P, O(M^2) */
   MatrixXd compute_PWP() const;
-
-  /* compute epsilon, W and Fbar, O(N*M^2) */
-  void compute_sufficient_statistics();
 
   /*computes the discrepancy vector*/
   void compute_epsilon();
 
-  VectorXd FM_, Fbar_, epsilon_;
+  VectorXd FM_, Fbar_, epsilon_,Peps_;
   double JF_,lJF_,norm_,lnorm_;
-  MatrixXd P_,W_,Sigma_,FX_,WP_ ;
+  MatrixXd P_,W_,Sigma_,FX_,PW_ ;
   int N_; //number of repetitions
   int M_; //number of variables
-  bool W_is_diagonal_;
-  bool W_is_zero_;
+  Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
+  //flags are true if the corresponding object is up to date.
+  bool flag_FM_, flag_FX_, flag_Fbar_, 
+       flag_W_, flag_Sigma_, flag_epsilon_,
+       flag_PW_, flag_P_, flag_ldlt_, flag_norms_,
+       flag_Peps_;
 };
 
 IMPISD_END_NAMESPACE
