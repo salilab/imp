@@ -474,6 +474,7 @@ bool test_100D(){
     return true;
 }
 
+/*
 //test that sparse and non-sparse versions agree
 bool test_sparseness(){
     //observation matrix
@@ -526,7 +527,6 @@ bool test_sparseness(){
     return true;
 }
 
-/*
 //test when M=2 and N=1 TODO: P->Sigma
 bool gen_2D(){
     //observation matrix
@@ -845,8 +845,8 @@ int main(int, char *[]) {
     RUNTEST(test_2D,100);
     PRINT("100D");
     RUNTEST(test_100D,1);
-    PRINT("sparseness");
-    RUNTEST(test_sparseness,1);
+    //PRINT("sparseness");
+    //RUNTEST(test_sparseness,1);
     //TODO
     //PRINT("setting values");
     //RUNTEST(test_setval,1);
