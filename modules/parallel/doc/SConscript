@@ -53,7 +53,7 @@ solutions.
    Usually this is because no slaves have successfully started up. Check the
    slave output files to determine what the problem is.
 
- - <b>Slave output files contain only a Python traceback ending in
+ - <b>%Slave output files contain only a Python traceback ending in
    <tt>ImportError: No module named IMP.parallel.slave_handler</tt>.</b>\\n
    The slaves simply run 'python' and expect to be able to load in the \\imp
    Python modules. If you need to run a modified version of Python, or usually
@@ -62,7 +62,7 @@ solutions.
    needed to start a suitable Python interpreter as the 'python' argument when
    you create the Manager object.
 
- - <b>Slave output files contain only a Python traceback ending in
+ - <b>%Slave output files contain only a Python traceback ending in
    <tt>socket.error: (110, 'Connection timed out')</tt>.</b>\\n
    The slaves need to connect to the machine running the master process
    over the network. This connection can fail (or time out) if that machine
@@ -72,7 +72,7 @@ solutions.
    to tell the slaves the name of the machine as visible to them (typically
    this is the name of the machine's internal network interface).
 
- - <b>Slave output files contain only a Python traceback ending in
+ - <b>%Slave output files contain only a Python traceback ending in
    <tt>socket.error: (111, 'Connection refused')</tt>.</b>\\n
    If the master encounters an error and exits, it will no longer be around
    to accept connections from slaves, so they will get this error when they
