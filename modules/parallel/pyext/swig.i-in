@@ -363,14 +363,17 @@ class Manager(object):
        @param python If not None, the command to run to start a Python
                      interpreter that can import the IMP module. Otherwise,
                      the same interpreter that the master is currently using
-                     is used.
-       @param host   The hostname to listen on for connections from new slaves.
-                     If not specified, the machine's primary IP address is used.
-                     On multi-homed machines, this may need to be changed to
-                     allow all slaves to reach the master (use '0.0.0.0' to
-                     listen on all interfaces). If only running local slaves,
-                     'localhost' can be used to prohibit connections across the
-                     network.
+                     is used. This is passed to the shell, so a full command
+                     line (including multiple words separated by spaces) can
+                     be used if necessary.
+       @param host   The hostname that slaves use to connect back to the master.
+                     If not specified, the master machine's primary IP address
+                     is used. On multi-homed machines, such as compute cluster
+                     headnodes, this may need to be changed to allow all
+                     slaves to reach the master (typically the name of the
+                     machine's internal network address is needed). If only
+                     running local slaves, 'localhost' can be used to prohibit
+                     connections across the network.
     """
   
     connect_timeout = 7200
