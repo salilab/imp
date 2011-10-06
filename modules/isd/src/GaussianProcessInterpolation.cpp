@@ -172,7 +172,7 @@ IMPISD_BEGIN_NAMESPACE
 {
     update_flags_covariance();
     IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
-    wx_ = VectorXd (M_);
+    wx_.resize(M_);
     for (unsigned i=0; i<M_; i++)
     {
         wx_(i) = (*covariance_function_)(x_[i],xval)[0];
@@ -221,7 +221,7 @@ IMPISD_BEGIN_NAMESPACE
 
   void GaussianProcessInterpolation::compute_m()
 {
-    m_ = VectorXd (M_);
+    m_.resize(M_);
     for (unsigned i=0; i<M_; i++)
     {
         m_(i) = (*mean_function_)(x_[i])[0];
@@ -273,7 +273,7 @@ IMPISD_BEGIN_NAMESPACE
 
   void GaussianProcessInterpolation::compute_W()
 {
-    W_ = MatrixXd (M_,M_);
+    W_.resize(M_,M_);
     for (unsigned i=0; i<M_; i++)
     {
         W_(i,i) = (*covariance_function_)(x_[i],x_[i])[0];
