@@ -34,6 +34,52 @@ setup for the tasks. This function will be run on the slave before any tasks
 from that context are started (the return values from this function are
 passed to the task functions). If multiple tasks from the same context are
 run on the same slave, the setup function is only called once.
+
+<b>Troubleshooting</b>
+
+Several common problems with this module are described below, together with
+solutions.
+
+ - <b>Master process fails with <tt>/bin/sh: qsub: command not found</tt>,
+   but <tt>qsub</tt> works fine from a terminal.</b>\\n
+   SGEQsubSlaveArray uses the <tt>qsub</tt> command to submit the SGE job that
+   starts the slaves. Thus, <tt>qsub</tt> must be in your system PATH. This may
+   not be the case if you are using a shell script such as <tt>imppy.sh</tt>
+   to start \\imp. To fix this, modify the shell script to add the directory
+   containing <tt>qsub</tt> to the PATH, or remove the setting of PATH entirely.
+
+ - <b>The master process 'hangs' and does not do anything when
+   Context::get_results_unordered() is called.</b>\\n
+   Usually this is because no slaves have successfully started up. Check the
+   slave output files to determine what the problem is.
+
+ - <b>Slave output files contain only a Python traceback ending in
+   <tt>ImportError: No module named IMP.parallel.slave_handler</tt>.</b>\\n
+   The slaves simply run 'python' and expect to be able to load in the \\imp
+   Python modules. If you need to run a modified version of Python, or usually
+   prefix your Python command with a shell script such as <tt>imppy.sh</tt>,
+   you need to tell the slaves to do that too. Specify the full command line
+   needed to start a suitable Python interpreter as the 'python' argument when
+   you create the Manager object.
+
+ - <b>Slave output files contain only a Python traceback ending in
+   <tt>socket.error: (110, 'Connection timed out')</tt>.</b>\\n
+   The slaves need to connect to the machine running the master process
+   over the network. This connection can fail (or time out) if that machine
+   is firewalled. It can also fail if the master machine is multi-homed (a
+   common setup for the headnode of a compute cluster). For a multi-homed
+   master machine, use the 'host' argument when you create the Manager object
+   to tell the slaves the name of the machine as visible to them (typically
+   this is the name of the machine's internal network interface).
+
+ - <b>Slave output files contain only a Python traceback ending in
+   <tt>socket.error: (111, 'Connection refused')</tt>.</b>\\n
+   If the master encounters an error and exits, it will no longer be around
+   to accept connections from slaves, so they will get this error when they
+   try to start up. Check the master log file for errors. Alternatively, the
+   master may have simply finished all of its work and exited normally before
+   the slave started (either the master had little work to do, or the slave
+   took a very long time to start up). This is normal.
 """,
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())
