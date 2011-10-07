@@ -270,7 +270,7 @@ void save_frame(RootHandle fh,
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
-  if (get_log_level()< TERSE) {
+  if (get_log_level()== PROGRESS) {
     pd.reset(new boost::progress_display(atom::get_leaves(hs).size(),
                                          std::cout));
   }
@@ -313,14 +313,14 @@ void add_hierarchy(RootHandle fh, atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
-  if (get_log_level()< TERSE) {
+  if (get_log_level()== PROGRESS) {
     pd.reset(new boost::progress_display(atom::get_leaves(hs).size(),
                                          std::cout));
   }
   add_hierarchy_internal(fh, hs, pd.get(),
                          IMP_HDF5_PASS_MOLECULE_KEYS);
   atom::Bonds bds= atom::get_internal_bonds(hs);
-  if (get_log_level()<TERSE) {
+  if (get_log_level()==PROGRESS) {
     pd.reset(new boost::progress_display(bds.size(),
                                          std::cout));
   }
