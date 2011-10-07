@@ -460,7 +460,7 @@ class Manager(object):
             if len(context._tasks) == 0:
                 break
             else:
-                self._send_task_to_slave(self, slave, context)
+                self._send_task_to_slave(slave, context)
 
     def _send_task_to_slave(self, slave, context):
         if len(context._tasks) == 0:
