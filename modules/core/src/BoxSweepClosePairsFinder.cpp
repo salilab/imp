@@ -130,8 +130,8 @@ BoxSweepClosePairsFinder::BoxSweepClosePairsFinder():
   ClosePairsFinder("BoxSweepCPF") {}
 
 ParticlePairsTemp BoxSweepClosePairsFinder
-::get_close_pairs(IMP_RESTRICT const ParticlesTemp &ca,
-                  IMP_RESTRICT const ParticlesTemp &cb) const {
+::get_close_pairs( const ParticlesTemp &ca,
+                   const ParticlesTemp &cb) const {
   set_was_used(true);
   std::vector<NBLBbox> boxes0, boxes1;
   copy_particles_to_boxes(ca, get_distance(), boxes0);
@@ -145,7 +145,7 @@ ParticlePairsTemp BoxSweepClosePairsFinder
 }
 
 ParticlePairsTemp BoxSweepClosePairsFinder
-::get_close_pairs(IMP_RESTRICT const ParticlesTemp &ca) const {
+::get_close_pairs( const ParticlesTemp &ca) const {
   set_was_used(true);
   ParticlePairsTemp out;
   std::vector<NBLBbox> boxes;

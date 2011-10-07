@@ -89,6 +89,7 @@ class IMPEXPORT QuadContainer : public Container
 #endif
 public:
   typedef ParticleQuad ContainedType;
+  typedef ParticleQuadsTemp ContainedTypes;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

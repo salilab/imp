@@ -89,6 +89,7 @@ class IMPEXPORT SingletonContainer : public Container
 #endif
 public:
   typedef Particle* ContainedType;
+  typedef ParticlesTemp ContainedTypes;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

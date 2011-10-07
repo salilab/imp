@@ -89,6 +89,7 @@ class IMPEXPORT PairContainer : public Container
 #endif
 public:
   typedef ParticlePair ContainedType;
+  typedef ParticlePairsTemp ContainedTypes;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

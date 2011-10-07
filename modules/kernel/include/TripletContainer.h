@@ -89,6 +89,7 @@ class IMPEXPORT TripletContainer : public Container
 #endif
 public:
   typedef ParticleTriplet ContainedType;
+  typedef ParticleTripletsTemp ContainedTypes;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */

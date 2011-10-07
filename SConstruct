@@ -123,7 +123,8 @@ if not env.GetOption('help'):
     config_py=scons_tools.config_py.add(env)
     senv= scons_tools.environment.get_named_environment(env, "scons", [], [])
     scons_tools.install.install(senv, "datadir/scons", "SConstruct")
-    scons_tools.install.install_hierarchy(senv, "datadir/scons/scons_tools", "scons_tools",
+    scons_tools.install.install_hierarchy(senv, "datadir/scons/scons_tools",
+                                          "scons_tools",
                                           Glob("scons_tools/*.py")+
                                           Glob("scons_tools/*/*.py"))
 
