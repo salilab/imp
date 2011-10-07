@@ -63,6 +63,4 @@ bool CMMWriter::handle(PointGeometry *g, Color color,
   return true;
 }
 
-IMP_REGISTER_WRITER(CMMWriter, ".cmm")
-
 IMPDISPLAY_END_NAMESPACE
