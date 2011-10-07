@@ -202,6 +202,12 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
               || !RigidMember::particle_is_instance(all[j])
               || RigidMember(all[i]).get_rigid_body()
               != RigidMember(all[j]).get_rigid_body()) {
+            if( internal::get_filters_contains(get_model(),
+                                      PairFilters(pair_filters_begin(),
+                                                  pair_filters_end()),
+                                      ParticleIndexPair(all[i]->get_index(),
+                                                        all[j]->get_index())))
+                continue;
             double cur= ssps_->evaluate(ParticlePair(all[i], all[j]), nullptr);
             check+=cur;
             if (cur > 0) {
