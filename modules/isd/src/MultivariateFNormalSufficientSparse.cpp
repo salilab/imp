@@ -17,8 +17,8 @@
 IMPISD_BEGIN_NAMESPACE
 
 MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse( 
-        MatrixXd FX, double JF, VectorXd FM, 
-        SparseMatrix<double> Sigma, cholmod_common *c, double cutoff) :
+        const MatrixXd& FX, double JF, const VectorXd& FM, 
+        const SparseMatrix<double>& Sigma, cholmod_common *c, double cutoff) :
     Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
@@ -43,8 +43,9 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
 }
 
 MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
-        VectorXd Fbar, double JF, VectorXd FM, int Nobs,  
-        SparseMatrix<double> W, SparseMatrix<double> Sigma, cholmod_common *c) 
+        const VectorXd& Fbar, double JF, const VectorXd& FM, int Nobs,  
+        const SparseMatrix<double>& W, const SparseMatrix<double>& Sigma, 
+        cholmod_common *c) 
         : Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
@@ -121,7 +122,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       return R;
   }
   
-  void MultivariateFNormalSufficientSparse::set_W(SparseMatrix<double> W)
+  void MultivariateFNormalSufficientSparse::set_W(const SparseMatrix<double>& W)
 {
     if (W_) cholmod_free_sparse(&W_, c_); 
     cholmod_sparse Wtmp = Eigen::viewAsCholmod(
@@ -130,7 +131,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     W_ = cholmod_copy(&Wtmp, 0, 1, c_); //unsym for spsolve
 }
 
-  void MultivariateFNormalSufficientSparse::set_FX(MatrixXd FX, 
+  void MultivariateFNormalSufficientSparse::set_FX(const MatrixXd& FX, 
           double cutoff) 
   {
     if (FX.rows() != FX_.rows() || FX.cols() != FX_.cols() || FX != FX_){
@@ -155,7 +156,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     IMP_LOG(TERSE, "MVNsparse:   set JF = " << JF_ << " lJF_ = " << lJF_ <<std::endl);
   }
 
-  void MultivariateFNormalSufficientSparse::set_FM(VectorXd FM) 
+  void MultivariateFNormalSufficientSparse::set_FM(const VectorXd& FM) 
   {
     if (FM.rows() != FM_.rows() || FM.cols() != FM_.cols() || FM != FM_){
         if (FM.rows() != M_) {
@@ -168,7 +169,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     }
   }
 
-  void MultivariateFNormalSufficientSparse::set_Fbar(VectorXd Fbar) 
+  void MultivariateFNormalSufficientSparse::set_Fbar(const VectorXd& Fbar) 
   {
     if (Fbar.rows() != Fbar_.rows() || Fbar.cols() != Fbar_.cols() 
             || Fbar != Fbar_){
@@ -183,7 +184,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
   }
 
   void MultivariateFNormalSufficientSparse::set_Sigma(
-          SparseMatrix<double> Sigma)  
+          const SparseMatrix<double>& Sigma)  
   {
         if (Sigma.cols() != Sigma.rows()) {
             IMP_THROW("need a square matrix!", ModelException);

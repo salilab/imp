@@ -98,8 +98,8 @@ class IMPISDEXPORT MultivariateFNormalSufficientSparse : public Object
  * \param(in) cholmod_common : the control struct for cholmod.
  *  
  * */
-  MultivariateFNormalSufficientSparse(MatrixXd FX, double JF, 
-            VectorXd FM, SparseMatrix<double> Sigma, 
+  MultivariateFNormalSufficientSparse(const MatrixXd& FX, double JF, 
+            const VectorXd& FM, const SparseMatrix<double>& Sigma, 
             cholmod_common *c, double cutoff=1e-7);
 
      /** Initialize with sufficient statistics
@@ -114,9 +114,9 @@ class IMPISDEXPORT MultivariateFNormalSufficientSparse : public Object
  * note that for W and Sigma, it is only necessary to fill in the upper corner
  * of the matrix since symmetry will be used.
  * */
-  MultivariateFNormalSufficientSparse(VectorXd Fbar, double JF, 
-            VectorXd FM, int Nobs, SparseMatrix<double> W, 
-            SparseMatrix<double> Sigma, cholmod_common *c);
+  MultivariateFNormalSufficientSparse(const VectorXd& Fbar, double JF, 
+            const VectorXd& FM, int Nobs, const SparseMatrix<double>& W, 
+            const SparseMatrix<double>& Sigma, cholmod_common *c);
 
   /* probability density function */
   double density() const;
@@ -131,20 +131,17 @@ class IMPISDEXPORT MultivariateFNormalSufficientSparse : public Object
   cholmod_sparse *evaluate_derivative_Sigma() const;
 
   /* change of parameters */
-  void set_FX(MatrixXd f, double cutoff=1e-7);
+  void set_FX(const MatrixXd& f, double cutoff=1e-7);
 
   void set_JF(double f);
 
-  void set_FM(VectorXd f);
+  void set_FM(const VectorXd& f);
 
-  void set_Fbar(VectorXd f);
+  void set_Fbar(const VectorXd& f);
 
-  void set_W(SparseMatrix<double> f);
+  void set_W(const SparseMatrix<double>& f);
 
-  void set_Sigma(SparseMatrix<double> f);
-
-  /* small change to Sigma by adding f to it */
-  void update_Sigma(SparseMatrix<double> f);
+  void set_Sigma(const SparseMatrix<double>& f);
 
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficientSparse, 
