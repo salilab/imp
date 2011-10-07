@@ -6,6 +6,7 @@
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
+#include <RMF.h>
 using namespace IMP;
 using namespace IMP::domino;
 using namespace IMP::atom;
