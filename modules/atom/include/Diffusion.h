@@ -85,6 +85,8 @@ class IMPATOMEXPORT Diffusion:
 
 IMPATOMEXPORT double get_d_from_cm2_per_second(double din);
 
+IMPATOMEXPORT double get_d_from_radius(double radius);
+
 IMP_OUTPUT_OPERATOR(Diffusion);
 
 
