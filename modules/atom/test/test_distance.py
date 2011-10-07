@@ -114,7 +114,7 @@ class DistanceTest(IMP.test.TestCase):
                 core.transform(l.get_as_xyz(), T)
         drms = atom.get_drms(xyzs1, xyzs2)
         rb_drms = atom.get_rigid_bodies_drms(xyzs1, xyzs2, ranges)
-        self.assertAlmostEqual(drms, rb_drms, delta=0.1, msg="rb_drms != drms")
+        self.assertAlmostEqual(drms, rb_drms, delta=0.3, msg="rb_drms != drms")
 
 if __name__ == '__main__':
     IMP.test.main()
