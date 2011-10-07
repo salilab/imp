@@ -6,7 +6,10 @@
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
+#ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF.h>
+#endif
+
 using namespace IMP;
 using namespace IMP::domino;
 using namespace IMP::atom;
@@ -40,6 +43,7 @@ int main(int , char *[]) {
     IMP_NEW(Particle, p, (m));
   }
   Subset s(m->get_particles());
+#ifdef IMP_DOMINO_USE_IMP_RMF
   {
     RMF::HDF5File file
       = RMF::create_hdf5_file(create_temporary_file_name("benchmark", ".hdf5"));
@@ -56,6 +60,7 @@ int main(int , char *[]) {
     ac->set_cache_size(1000000);
     benchmark_table<HDF5AssignmentContainer>(ac, "hdf5");
   }
+#endif
   {
     IMP_NEW(PackedAssignmentContainer, ac,("hi"));
     benchmark_table<HDF5AssignmentContainer>(ac, "packed container");
