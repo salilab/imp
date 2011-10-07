@@ -70,7 +70,8 @@ class RestraintData {
   void clean_cache() const {
     if (scores_.size() > max_cache_) {
       IMP_LOG(VERBOSE, "Cleaning cache from " << scores_.size());
-      int numr= std::min<int>(max_cache_*.3+1, scores_.size());
+      int numr= std::min<int>(static_cast<int>(max_cache_*.3+1),
+                              scores_.size());
       for (int i=0; i< numr; ++i) {
         scores_.erase(scores_.begin());
       }
@@ -110,6 +111,7 @@ public:
       double score= it->second;
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         double cscore= compute_score<Filter>(pst, ps, state);
+        IMP_UNUSED(cscore);
         IMP_INTERNAL_CHECK((score >= max_ && cscore >= max_)
                            || (score < max_ && cscore < max_)
                            || (score-cscore) < .01,
