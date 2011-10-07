@@ -105,7 +105,7 @@ KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
     }
     return new KMCentersNodeLeaf(level,*bnd_box_,centers_,curr_inds);
   }
-  int cd; //the cutting dimension
+  int cd=0; //the cutting dimension
   double cv;//the cutting value
   int n_lo; // number on low side of cut
   KMCentersNode *lo, *hi; // low and high children
