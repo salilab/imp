@@ -513,6 +513,7 @@ namespace grids {
               *BoundedGridStorageD<D>::get_number_of_voxels(0)
               *BoundedGridStorageD<D>::get_number_of_voxels(1)
               + i[1]*BoundedGridStorageD<D>::get_number_of_voxels(0)+i[0];
+            IMP_UNUSED(check);
             IMP_USAGE_CHECK(check== ii, "Wrong value returned");
           }
         }
