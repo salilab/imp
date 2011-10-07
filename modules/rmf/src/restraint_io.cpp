@@ -206,7 +206,9 @@ namespace {
     double s=r->evaluate(false);
     rn.set_value(sk, s, frame);
     Pointer<Restraint> rd= r->create_current_decomposition();
+    if (!rd) return;
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+    if (!rs) return;
     for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
       //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
       rs->get_restraint(i)->set_was_used(true);
