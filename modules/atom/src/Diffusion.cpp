@@ -78,6 +78,9 @@ namespace {
   }
 }
 
+double get_d_from_radius(double r) {
+  return get_d_from_r(r);
+}
 
 Diffusion Diffusion::setup_particle(Particle *p) {
   IMP_USAGE_CHECK(core::XYZR::particle_is_instance(p),
