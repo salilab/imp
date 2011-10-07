@@ -1618,7 +1618,7 @@ DensityMap* get_binarized_interior(DensityMap *dmap) {
   Pointer<em::DensityMap> mask_inside2 = em::create_density_map(mask_inside);
   mask_inside2->set_was_used(true);
   em::emreal* mdata2 = mask_inside2->get_data();
-  long ind,ind2;
+  long ind2;
   int shell_w=1;
   for (int iz=0;iz<(int)nz;iz++) {
     for (int iy=0;iy<(int)ny;iy++) {
