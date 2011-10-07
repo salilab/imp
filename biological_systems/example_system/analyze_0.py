@@ -36,7 +36,7 @@ gs= setup.create_geometry(all)
 cs= IMP.ConfigurationSet(m)
 for f in glob.glob(IMP.system.get_input_path("configurations_*.rmf")):
     print f
-    fh= IMP.rmf.open_rmf_file(f)
+    fh= RMF.open_rmf_file(f)
     IMP.rmf.set_hierarchies(fh, [all], True)
     for i in range(0, IMP.rmf.get_number_of_frames(fh, all)):
         IMP.rmf.load_frame(fh, i, all)
