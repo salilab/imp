@@ -247,6 +247,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
       double cur= flattened_restraints_[i]->evaluate(false);
+      IMP_UNUSED(cur);
       IMP_INTERNAL_CHECK(std::abs(cur-incremental_scores_[i])
                          < .1*std::abs(cur+incremental_scores_[i])+.1,
                          "Scores don't match for restraint "
