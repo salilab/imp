@@ -359,6 +359,7 @@ Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
     for (unsigned int i=0; i< ps.size(); ++i) {
       XYZR d0(m, ps[i]);
       double d= get_distance(d0, pt);
+      IMP_UNUSED(d);
       IMP_INTERNAL_CHECK(d>.9*best_d,
                          "Missed the particle: " << d0
                          << " for " << pt << " at " << d
@@ -449,6 +450,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
         XYZR d0a(m, psa[i]);
         XYZR d0b(m, psb[j]);
         double d= get_distance(d0a, d0b);
+        IMP_UNUSED(d);
         IMP_INTERNAL_CHECK(d > .9*best_d,
                            "Missed the pair: " << d0a << " and " << d0b
                            << " at " << d << " vs "
