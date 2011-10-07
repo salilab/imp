@@ -76,7 +76,7 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
   if (mass >0) {
     shape->calculateLocalInertia(mass,fallInertia);
   }
-  std::cout << "Inertia is " << tr(fallInertia) << std::endl;
+  //std::cout << "Inertia is " << tr(fallInertia) << std::endl;
   if (fallInertia[0]==0) {
     fallInertia= btVector3(1,1,1);
   }
