@@ -89,6 +89,7 @@ class IMPEXPORT CLASSNAMEContainer : public Container
 #endif
 public:
   typedef VARIABLETYPE ContainedType;
+  typedef PLURALVARIABLETYPE ContainedTypes;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
