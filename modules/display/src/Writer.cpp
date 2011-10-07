@@ -8,6 +8,10 @@
 
 #include "IMP/display/Writer.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <IMP/display/PymolWriter.h>
+#include <IMP/display/ChimeraWriter.h>
+#include <IMP/display/CMMWriter.h>
+#include <IMP/display/BildWriter.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -77,5 +81,15 @@ Writer *create_writer(std::string name) {
 }
 
 WriterOutput::~WriterOutput(){}
+
+
+
+IMP_REGISTER_WRITER(PymolWriter, ".pym")
+
+IMP_REGISTER_WRITER(ChimeraWriter, ".py")
+
+IMP_REGISTER_WRITER(CMMWriter, ".cmm")
+
+IMP_REGISTER_WRITER(BildWriter, ".bild")
 
 IMPDISPLAY_END_NAMESPACE

@@ -244,7 +244,4 @@ bool PymolWriter::handle(SurfaceMeshGeometry *g,
   return true;
 }
 
-
-IMP_REGISTER_WRITER(PymolWriter, ".pym")
-
 IMPDISPLAY_END_NAMESPACE

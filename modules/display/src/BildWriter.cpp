@@ -17,7 +17,4 @@ void BildWriter::do_open() {
 void BildWriter::do_close() {
 }
 
-
-IMP_REGISTER_WRITER(BildWriter, ".bild")
-
 IMPDISPLAY_END_NAMESPACE

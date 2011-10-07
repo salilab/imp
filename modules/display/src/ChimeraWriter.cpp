@@ -172,6 +172,4 @@ void ChimeraWriter::do_close() {
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
 }
 
-IMP_REGISTER_WRITER(ChimeraWriter, ".py")
-
 IMPDISPLAY_END_NAMESPACE
