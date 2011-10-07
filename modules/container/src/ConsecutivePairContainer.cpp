@@ -44,7 +44,7 @@ ConsecutivePairContainer::get_contents_changed() const {
 ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
   ParticleIndexPairs ret(ps_.size()-1);
   for (unsigned int i=1; i< ps_.size(); ++i) {
-    ret[i]= ParticleIndexPair(ps_[i-1], ps_[i]);
+    ret[i-1]= ParticleIndexPair(ps_[i-1], ps_[i]);
   }
   return ret;
 }
