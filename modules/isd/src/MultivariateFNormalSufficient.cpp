@@ -9,13 +9,10 @@
 #include <IMP/Object.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
-#include <IMP/algebra/internal/tnt_array2d_utils.h>
-#include <IMP/algebra/internal/jama_cholesky.h>
-#include <boost/scoped_ptr.hpp>
 
 IMPISD_BEGIN_NAMESPACE
+
+enum func_names { EVAL, TRWP, MD, DFM, DSIGMA, PTP, PWP, CHOLESKY, SOLVE };
 
 MultivariateFNormalSufficient::MultivariateFNormalSufficient( 
         const MatrixXd& FX, double JF, const VectorXd& FM, 
@@ -23,6 +20,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
     Object("Multivariate Normal distribution %1%")
 {
         reset_flags();
+        internal::CallTimer<9> timer_();
         N_=FX.rows();
         M_=FX.cols(); 
         IMP_LOG(TERSE, "MVN: direct init with N=" << N_ 
@@ -44,6 +42,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
 : Object("Multivariate Normal distribution %1%")
 {
         reset_flags();
+        internal::CallTimer<9> timer_();
         N_=Nobs;
         M_=Fbar.rows();
         IMP_LOG(TERSE, "MVN: sufficient statistics init with N=" << N_ 
@@ -60,6 +59,15 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
         set_Sigma(Sigma);
 }
 
+
+void MultivariateFNormalSufficient::stats() const
+{
+    static std::string func_displays[9] =
+      { "eval/density", "  trace(WP)", 
+          "  mean_dist", "deriv_FM", "deriv_Sigma", 
+          "  compute_PTP", "  compute_PWP", "Cholesky", "Sigma*X=B" };
+    timer_.stats(func_displays);
+}
 
 void MultivariateFNormalSufficient::reset_flags()
 {
@@ -79,34 +87,44 @@ void MultivariateFNormalSufficient::reset_flags()
   /* probability density function */
 double MultivariateFNormalSufficient::density() const
   { 
+      std::cout <<EVAL<< std::endl;
+      timer_.start(EVAL);
       double d = get_norms()[0]*JF_
           *exp(-0.5*(trace_WP() + N_ * mean_dist()));
       IMP_LOG(TERSE, "MVN: density() = " << d << std::endl);
+      timer_.stop(EVAL);
       return d;
   }
  
   /* energy (score) functions, aka -log(p) */
 double MultivariateFNormalSufficient::evaluate() const 
   { 
+      timer_.start(EVAL);
       double e = get_norms()[1] + lJF_
           + 0.5*( trace_WP() + double(N_)*mean_dist()) ;
       IMP_LOG(TERSE, "MVN: evaluate() = " << e << std::endl);
+      timer_.stop(EVAL);
       return e;
   }
 
 VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
 { 
+      timer_.start(DFM);
       // d(-log(p))/d(FM) = - N * P * epsilon
       IMP_LOG(TERSE, "MVN: evaluate_derivative_FM() = " << std::endl);
-      return -N_ * ldlt_.solve(epsilon_);
+      VectorXd tmp(-N_ * ldlt_.solve(epsilon_));
+      timer_.stop(DFM);
+      return tmp;
 }
 
   MatrixXd MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
   { 
+      timer_.start(DSIGMA);
       //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - P W P)
       IMP_LOG(TERSE, "MVN: evaluate_derivative_Sigma() = " << std::endl);
-      return 0.5*(N_*(get_P()-compute_PTP())-compute_PWP());
-
+      MatrixXd R(0.5*(N_*(get_P()-compute_PTP())-compute_PWP()));
+      timer_.stop(DSIGMA);
+      return R;
   }
   
   MatrixXd MultivariateFNormalSufficient::get_FX() const
@@ -276,6 +294,7 @@ MultivariateFNormalSufficient::get_ldlt() const
 {
     if (!flag_ldlt_)
     {
+        timer_.start(CHOLESKY);
         IMP_LOG(TERSE, "MVN:   computing Cholesky decomposition" << std::endl);
         // compute Cholesky decomposition for determinant and inverse
         Eigen::LLT<MatrixXd, Eigen::Upper> ldlt(get_Sigma());
@@ -285,6 +304,7 @@ MultivariateFNormalSufficient::get_ldlt() const
                     ModelException);
         }
         const_cast<MultivariateFNormalSufficient *>(this)->set_ldlt(ldlt);
+        timer_.stop(CHOLESKY);
     }
     return ldlt_;
 }
@@ -341,10 +361,12 @@ MatrixXd MultivariateFNormalSufficient::get_P() const
     if (!flag_P_)
     {
         //inverse
+        timer_.start(SOLVE);
         Eigen::LLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
         IMP_LOG(TERSE, "MVN:   solving for inverse" << std::endl);
         const_cast<MultivariateFNormalSufficient *>(this)
             ->set_P(ldlt.solve(MatrixXd::Identity(M_,M_)));
+        timer_.stop(SOLVE);
     }
     return P_;
 }
@@ -362,10 +384,12 @@ MatrixXd MultivariateFNormalSufficient::get_PW() const
     if (!flag_PW_)
     {
         ////PW
+        timer_.start(SOLVE);
         Eigen::LLT<MatrixXd, Eigen::Upper> ldlt(get_ldlt());
         IMP_LOG(TERSE, "MVN:   solving for WP" << std::endl);
         const_cast<MultivariateFNormalSufficient *>(this)
             ->set_PW(ldlt.solve(get_W()));
+        timer_.stop(SOLVE);
     }
     return PW_;
 }
@@ -383,9 +407,11 @@ VectorXd MultivariateFNormalSufficient::get_Peps() const
     if (!flag_Peps_)
     {
         ////Peps
+        timer_.start(SOLVE);
         IMP_LOG(TERSE, "MVN:   solving for P*epsilon" << std::endl);
         const_cast<MultivariateFNormalSufficient *>(this)
             ->set_Peps(get_ldlt().solve(get_epsilon()));
+        timer_.stop(SOLVE);
     }
     return Peps_;
 }
@@ -400,32 +426,40 @@ void MultivariateFNormalSufficient::set_Peps(const VectorXd& Peps)
 
   double MultivariateFNormalSufficient::trace_WP() const 
   {
+      timer_.start(TRWP);
       //double trace = get_PW().trace();
       double trace = (get_P()*get_W()).trace();
       IMP_LOG(TERSE, "MVN:   trace(WP) = " << trace << std::endl);
+      timer_.stop(TRWP);
       return trace;
   }
  
   double MultivariateFNormalSufficient::mean_dist() const
 {
+    timer_.start(MD);
     //std::cout << "P " << std::endl << P_ << std::endl;
     //std::cout << "epsilon " << std::endl << epsilon_ << std::endl;
     VectorXd Peps(get_Peps());
     VectorXd epsilon(get_epsilon());
     double dist = epsilon.transpose()*Peps;
     IMP_LOG(TERSE, "MVN:   mean_dist = " << dist << std::endl);
+    timer_.stop(MD);
     return dist;
 }
 
   MatrixXd MultivariateFNormalSufficient::compute_PTP() const 
 {
+  timer_.start(PTP);
   IMP_LOG(TERSE, "MVN:   computing PTP" << std::endl);
   VectorXd peps(get_Peps());
-  return peps*peps.transpose();
+  MatrixXd tmp(peps*peps.transpose());
+  timer_.stop(PTP);
+  return tmp;
 }
 
 MatrixXd MultivariateFNormalSufficient::compute_PWP() const
 {
+      timer_.start(PWP);
       //compute PWP
       IMP_LOG(TERSE, "MVN:   computing PWP" << std::endl);
       //MatrixXd WP(get_PW().transpose());
@@ -433,8 +467,9 @@ MatrixXd MultivariateFNormalSufficient::compute_PWP() const
       //return get_P()*WP;
       MatrixXd P(get_P());
       MatrixXd W(get_W());
-      return P*W*P;
-
+      MatrixXd tmp(P*W*P);
+      timer_.stop(PWP);
+      return tmp;
 }
 
 IMPISD_END_NAMESPACE

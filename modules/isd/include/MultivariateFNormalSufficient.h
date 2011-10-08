@@ -8,6 +8,7 @@
 #define IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
 
 #include "isd_config.h"
+#include "internal/timer.h"
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
@@ -19,6 +20,9 @@
 IMPISD_BEGIN_NAMESPACE
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+
+//NFUNCS is the number of functions used by the timer
+#define NFUNCS 9
 
 //! MultivariateFNormalSufficient
 /** Probability density function and -log(p) of multivariate normal
@@ -74,6 +78,23 @@ using Eigen::VectorXd;
 
 class IMPISDEXPORT MultivariateFNormalSufficient : public Object
 {
+
+private:
+
+  VectorXd FM_, Fbar_, epsilon_,Peps_;
+  double JF_,lJF_,norm_,lnorm_;
+  MatrixXd P_,W_,Sigma_,FX_,PW_ ;
+  int N_; //number of repetitions
+  int M_; //number of variables
+  Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
+  //flags are true if the corresponding object is up to date.
+  bool flag_FM_, flag_FX_, flag_Fbar_, 
+       flag_W_, flag_Sigma_, flag_epsilon_,
+       flag_PW_, flag_P_, flag_ldlt_, flag_norms_,
+       flag_Peps_;
+
+  internal::CallTimer<NFUNCS> timer_;
+
  public:
      /** Initialize with all observed data
  * \param(in) F(X) matrix of observations with M columns and N rows.
@@ -127,6 +148,9 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   //if you want to force a recomputation of all stored variables
   void reset_flags();
 
+  // print runtime statistics
+  void stats() const;
+
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficient, 
           out << "MultivariateFNormalSufficient: " 
@@ -175,17 +199,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public Object
   /*computes the discrepancy vector*/
   void compute_epsilon();
 
-  VectorXd FM_, Fbar_, epsilon_,Peps_;
-  double JF_,lJF_,norm_,lnorm_;
-  MatrixXd P_,W_,Sigma_,FX_,PW_ ;
-  int N_; //number of repetitions
-  int M_; //number of variables
-  Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
-  //flags are true if the corresponding object is up to date.
-  bool flag_FM_, flag_FX_, flag_Fbar_, 
-       flag_W_, flag_Sigma_, flag_epsilon_,
-       flag_PW_, flag_P_, flag_ldlt_, flag_norms_,
-       flag_Peps_;
+  
 };
 
 IMPISD_END_NAMESPACE

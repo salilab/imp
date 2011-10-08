@@ -58,6 +58,11 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
             return mvn_->density();
         }
 
+        void stats() const
+        {
+            return mvn_->stats();
+        }
+
         IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
     
 };
