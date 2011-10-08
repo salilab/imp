@@ -298,9 +298,7 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
   fftw_plan_forward_hi_ = fftw_plan_dft_r2c_3d(
                          nz_, ny_, nx_,
                          fftw_r_grid_mol_, fftw_grid_hi_,FFTW_MEASURE);
-  fftw_r_grid_mol_.resize(nx_*ny_*nz_);
   //plan for IFFT (mol*EM)
-  fftw_grid_hi_.resize(fftw_nvox_c2r_);
   reversed_fftw_data_.resize(fftw_nvox_r2c_);
   fftw_plan_reverse_hi_ = fftw_plan_dft_c2r_3d(
                                   nz_, ny_, nx_,
@@ -313,7 +311,8 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
     ++show_progress;
   }
   //clear grids
-  free(fftw_grid_lo_); free(fftw_grid_hi_);
+  fftw_grid_lo_.release();
+  fftw_grid_hi_.release();
   //detect the best fits
   best_fits_=detect_top_fits(fits_hash_,cluster_fits);
 
