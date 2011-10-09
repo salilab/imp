@@ -27,7 +27,8 @@ Parameters get_parameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- std::string reload,score_name,ass_file,traj_file,sequence;
+ std::string reload,score_name,ass_file;
+ std::string saxs_profile,traj_file,sequence;
  std::vector<std::string> res,inter,loop;
  bool do_random,add_dope,use_volume,do_wte;
  bool wte_restart;
@@ -37,6 +38,7 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("traj_file",   value< std::string >(&traj_file),   "ciao");
  desc.add_options()("sequence",    value< std::string >(&sequence),    "ciao");
  desc.add_options()("reload",      value< std::string >(&reload),      "ciao");
+ desc.add_options()("saxs_profile",value< std::string >(&saxs_profile),"ciao");
  desc.add_options()("residues",    value< std::vector<std::string> >(),"ciao");
  desc.add_options()("topology",    value< std::vector<double> >(),     "ciao");
  desc.add_options()("name",        value< std::vector<std::string> >(),"ciao");
@@ -66,14 +68,15 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, zetarange);
  OPTION(double, cm_dist);
  OPTION(double, d0_inter);
- OPTION(double, k_depth)
- OPTION(double, k_tilt)
- OPTION(double, k_volume)
- OPTION(double, k_pack)
- OPTION(double, k_diameter)
- OPTION(double, k_endtoend)
- OPTION(double, k_cmdist)
- OPTION(double, k_inter)
+ OPTION(double, k_depth);
+ OPTION(double, k_tilt);
+ OPTION(double, k_volume);
+ OPTION(double, k_pack);
+ OPTION(double, k_diameter);
+ OPTION(double, k_endtoend);
+ OPTION(double, k_cmdist);
+ OPTION(double, k_inter);
+ OPTION(double, k_saxs);
  OPTION(double, wte_w0);
  OPTION(double, wte_sigma);
  OPTION(double, wte_gamma);
@@ -117,6 +120,7 @@ Parameters get_parameters(TextInput in) {
 // Restraints Parameters
  ret.RST.diameter=diameter;
  ret.RST.score_name=score_name;
+ ret.RST.saxs_profile=saxs_profile;
  ret.RST.add_dope=add_dope;
  ret.RST.use_volume=use_volume;
  ret.RST.tilt=radians(tiltrange);
@@ -132,6 +136,7 @@ Parameters get_parameters(TextInput in) {
  ret.RST.k_endtoend=k_endtoend;
  ret.RST.k_cmdist=k_cmdist;
  ret.RST.k_inter=k_inter;
+ ret.RST.k_saxs=k_saxs;
 
 // Grid Parameters
  ret.grid.tilt=radians(grid_dtilt);

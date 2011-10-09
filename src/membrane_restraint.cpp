@@ -10,6 +10,7 @@
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/membrane.h>
+#include <IMP/saxs.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -40,6 +41,8 @@ if(RST->add_dope)    add_DOPE(m,protein,RST->score_name);
 if(RST->k_pack>0.)   add_packing_restraint(m,protein,tbr,TM,RST->k_pack);
 if(RST->k_diameter>0.)
  add_diameter_restraint(m,protein,RST->diameter,TM,RST->k_diameter);
+if(RST->k_saxs>0.)
+ add_saxs_restraint(m,protein,RST->saxs_profile,RST->k_saxs);
 
 // two-body restraints
 for(unsigned int i=0;i<TM->loop.size();++i){
@@ -213,6 +216,19 @@ IMP_NEW(core::DistancePairScore,dps,(hub));
 IMP_NEW(container::PairsRestraint,dr,(dps,apc));
 dr->set_name("Diameter restraint");
 m->add_restraint(dr);
+}
+
+void add_saxs_restraint
+ (Model *m,atom::Hierarchy protein,std::string saxs_profile,double kappa)
+{
+ saxs::Profile profile = saxs::Profile(saxs_profile);
+ saxs::FormFactorType ff_type = saxs::CA_ATOMS;
+ atom::Selection s=atom::Selection(protein);
+ s.set_atom_type(atom::AT_CA);
+ Particles ps=s.get_selected_particles();
+ IMP_NEW(saxs::Restraint,sr,(ps,profile,ff_type));
+ sr->set_name("SAXS restraint");
+ m->add_restraint(sr);
 }
 
 IMPMEMBRANE_END_NAMESPACE

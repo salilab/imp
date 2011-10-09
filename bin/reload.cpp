@@ -33,16 +33,18 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
 // trajectory file
-std::string trajname="traj0.rmf";
-RMF::RootHandle rh = RMF::open_rmf_file(trajname);
+RMF::RootHandle rh = RMF::open_rmf_file(mydata.traj_file);
 atom::Hierarchies hs=all.get_children();
 rmf::set_hierarchies(rh, hs);
+
+// number of frames
+unsigned int nframes=rmf::get_number_of_frames(rh,hs[0]);
 
 // create restraints
 create_restraints(m,all,tbr,&mydata);
 
 // Monte Carlo loop
-for(int imc=0;imc<mydata.MC.nsteps;++imc)
+for(int imc=0;imc<nframes;++imc)
 {
 
 // load configuration from file

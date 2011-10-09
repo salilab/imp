@@ -67,6 +67,7 @@ struct RstParameters {
  double         d0_inter;
  double         cm_dist;
  std::string    score_name;
+ std::string    saxs_profile;
  bool           add_dope;
  bool           use_volume;
  double         k_depth;
@@ -77,6 +78,7 @@ struct RstParameters {
  double         k_endtoend;
  double         k_cmdist;
  double         k_inter;
+ double         k_saxs;
 };
 
 struct Parameters {

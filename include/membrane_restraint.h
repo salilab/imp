@@ -45,6 +45,9 @@ IMPMEMBRANEEXPORT void add_diameter_restraint
 IMPMEMBRANEEXPORT void add_tilt_restraint
 (Model *m,Particle *p,FloatRange trange,double kappa);
 
+IMPMEMBRANEEXPORT void add_saxs_restraint
+(Model *m,atom::Hierarchy protein,std::string saxs_profile,double kappa);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_MEMBRANE_RESTRAINT_H */
