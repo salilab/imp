@@ -25,7 +25,7 @@ void spb_assemble_restraints
 //
 // Excluded volume
 //
-add_SPBexcluded_volume(m,all_mol,mydata.kappa);
+add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa);
 //
 // Symmetry
 //

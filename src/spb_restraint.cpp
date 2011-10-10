@@ -10,6 +10,7 @@
 #include <IMP/algebra.h>
 #include <IMP/container.h>
 #include <IMP/membrane.h>
+#include <boost/algorithm/string.hpp>
 #include <string>
 
 using namespace IMP;
@@ -40,11 +41,19 @@ core::SphereDistancePairScore*
  return ps.release();
 }
 
-void add_SPBexcluded_volume (Model *m,atom::Hierarchies& hs,double kappa)
+void add_SPBexcluded_volume
+ (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
  IMP_NEW(container::ListSingletonContainer,lsc,(m));
- for(unsigned int i=0;i<hs.size();++i){
-  lsc->add_particles(atom::get_leaves(hs[i]));
+ for(unsigned int i=0;i<hhs.size();++i){
+  atom::Hierarchies hs=hhs[i].get_children();
+  for(unsigned int j=0;j<hs.size();++j) {
+   std::vector<std::string> strs;
+   boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
+   if(GFP_exc_volume || strs[strs.size()-1]!="GFP"){
+    lsc->add_particles(atom::get_leaves(hs[j]));
+   }
+  }
  }
  IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa));
  evr->set_name("Excluded Volume");

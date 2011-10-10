@@ -39,6 +39,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  bool add_GFP;
  bool use_GFP_structure;
  bool keep_GFP_layer;
+ bool GFP_exc_volume;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -66,6 +67,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  desc.add_options()("add_GFP",      value<bool>(&add_GFP),          "ciao");
  desc.add_options()("use_GFP_structure",
   value<bool>(&use_GFP_structure), "ciao");
+ desc.add_options()("GFP_exc_volume",value<bool>(&GFP_exc_volume),      "ciao");
  desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
@@ -161,6 +163,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.add_GFP=add_GFP;
  ret.use_GFP_structure=use_GFP_structure;
  ret.keep_GFP_layer=keep_GFP_layer;
+ ret.GFP_exc_volume=GFP_exc_volume;
 
 // file map
  if(load_Spc42p.length()>0.0){

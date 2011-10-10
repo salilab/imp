@@ -46,6 +46,7 @@ struct SPBParameters {
  bool         add_GFP;
  bool         use_GFP_structure;
  bool         keep_GFP_layer;
+ bool         GFP_exc_volume;
  std::map<std::string,std::string> file_list;
 };
 
