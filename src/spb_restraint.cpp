@@ -36,7 +36,7 @@ core::SphereDistancePairScore*
 core::SphereDistancePairScore*
  get_sphere_pair_score(double dist, double kappa)
 {
- IMP_NEW(core::HarmonicUpperBound,hu,(dist,kappa));
+ IMP_NEW(core::Harmonic,hu,(dist,kappa));
  IMP_NEW(core::SphereDistancePairScore,ps,(hu));
  return ps.release();
 }
