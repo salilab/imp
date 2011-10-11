@@ -181,6 +181,18 @@ class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
 #endif
 
 
+/** Expose a range [begin, end) of an inner assignement container to
+    consumers. One cannot add assignments to this container.
+ */
+class IMPDOMINOEXPORT RangeViewAssignmentContainer: public AssignmentContainer {
+  Pointer<AssignmentContainer> inner_;
+  int begin_, end_;
+ public:
+  RangeViewAssignmentContainer(AssignmentContainer *inner,
+                               unsigned int begin, unsigned int end);
+  IMP_ASSIGNMENT_CONTAINER(RangeViewAssignmentContainer);
+};
+
 
 /** Store a set of k top scoring assignemnts
  */

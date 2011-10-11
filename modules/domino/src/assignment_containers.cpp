@@ -168,6 +168,39 @@ void HDF5AssignmentContainer::add_assignment(const Assignment& a) {
 
 
 
+
+////////////////////////// RangeViewAssignmentContainer
+
+inline unsigned int
+RangeViewAssignmentContainer::get_number_of_assignments() const {
+  return end_-begin_;
+}
+
+inline Assignment
+RangeViewAssignmentContainer::get_assignment(unsigned int i) const {
+  IMP_USAGE_CHECK(i < get_number_of_assignments(),
+                  "Invalid assignment requested: " << i);
+  return inner_->get_assignment(i+begin_);
+}
+RangeViewAssignmentContainer
+::RangeViewAssignmentContainer(AssignmentContainer *inner,
+                               unsigned int begin, unsigned int):
+  AssignmentContainer("RangeViewAssignmentContainer%1%"),
+  inner_(inner), begin_(begin),
+  end_(std::min<unsigned int>(end_, inner->get_number_of_assignments())) {}
+
+void RangeViewAssignmentContainer::do_show(std::ostream &out) const {
+  out << "inner: " << inner_->get_name() << std::endl;
+  out << "range: " << begin_ << "..." << end_ << std::endl;
+}
+
+
+
+void RangeViewAssignmentContainer::add_assignment(const Assignment&) {
+  IMP_NOT_IMPLEMENTED;
+}
+
+
 ////////////////////////// HEAP ASSIGNMENT CONTAINER
 
 inline unsigned int
