@@ -335,12 +335,17 @@ namespace RMF {
       }
       template <class TypeTraits>
         unsigned int get_number_of_frames(Key<TypeTraits> k) const {
-        if (!get_is_per_frame(k)) return 0;
-        else {
+        if (!get_is_per_frame(k)) {
+          IMP_RMF_THROW("Attribue " << k << " does not have frames.",
+                        std::runtime_error);
+        } else {
           HDF5DataSetD<TypeTraits, 3> &ds
             =get_per_frame_data_data_set<TypeTraits>(k.get_category(),
                                                      false);
-          if (!ds) return 0;
+          if (!ds) {
+            IMP_RMF_THROW("Attribute " << k << " does not have any data.",
+                        std::runtime_error);
+          }
           HDF5DataSetIndexD<3> sz= ds.get_size();
           return sz[2];
         }
