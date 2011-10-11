@@ -43,6 +43,9 @@ IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
     - it is a tree
     - for any two vertices whose subsets both contain a vertex, that vertex
     is contained in all subsets along the path connecting those two vertices.
+
+    \note the junction tree is not nececessarily deterministic (you can
+    get different answers if you run it different times with the same inputs).
 */
 IMPDOMINOEXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
@@ -139,6 +142,9 @@ MergeTree get_merge_tree(RestraintSet *rs,
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
 
     Compute the merge tree from a junction tree.
+
+    \note the merge tree is not nececessarily deterministic (you can
+    get different answers if you run it different times with the same inputs).
  */
 IMPDOMINOEXPORT
 MergeTree get_merge_tree(const SubsetGraph &junction_tree);
@@ -149,6 +155,9 @@ MergeTree get_merge_tree(const SubsetGraph &junction_tree);
 
     Compute the merge tree from a junction tree, attempting to keep it fairly
     balanced.
+
+    \note the merge tree is not nececessarily deterministic (you can
+    get different answers if you run it different times with the same inputs).
  */
 IMPDOMINOEXPORT
 MergeTree get_balanced_merge_tree(const SubsetGraph &junction_tree);
