@@ -11,6 +11,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
 #include <IMP/compatibility/map.h>
+#include <IMP/dependency_graph.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/domino/internal/restraint_evaluator.h>
