@@ -85,6 +85,9 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
 
       For each method, you can pass max_states to limit how many states are
       generated.
+
+      You might want to just use load_leaf_assignments() and
+      load_merged_assignments() instead.
       @{
   */
   //! Fill in assignments for a leaf
