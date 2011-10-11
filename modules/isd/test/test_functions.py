@@ -141,6 +141,42 @@ class TestLinear1DFunction(IMP.test.TestCase):
             self.alpha.add_to_nuisance_derivative(-self.alpha.get_nuisance_derivative(),self.DA)
             self.beta.add_to_nuisance_derivative(-self.beta.get_nuisance_derivative(),self.DA)
 
+    def testValues(self):
+        """
+        tests if we can get multiple values at once
+        """
+        for rep in xrange(10):
+            self.shuffle_particle_values()
+            data = random.uniform(-10,10,random.randint(100))
+            expected = [self.mean([i]) for i in data]
+            observed = self.mean([[i] for i in data])
+            self.assertEqual(observed,expected)
+
+    def testGetDerivativeMatrix(self):
+        for rep in xrange(3):
+            self.shuffle_particle_values()
+            xlist = random.uniform(-10,10,random.randint(100))
+            data = self.mean.get_derivative_matrix([[i] for  i in xlist], True)
+            self.assertEqual(len(data), len(xlist))
+            self.assertEqual(len(data[0]), 2)
+            self.assertEqual([i[0] for i in data], xlist)
+            self.assertEqual([i[1] for i in data], [1 for i in data])
+
+    def testAddToParticleDerivative(self):
+        for i in xrange(10):
+            val = random.uniform(-10,10)
+            self.mean.add_to_particle_derivative(0, val, self.DA)
+            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), val)
+            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), 0.0)
+            self.alpha.add_to_nuisance_derivative(
+                    -self.alpha.get_nuisance_derivative(),self.DA)
+            val = random.uniform(-10,10)
+            self.mean.add_to_particle_derivative(1, val, self.DA)
+            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), 0.0)
+            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), val)
+            self.beta.add_to_nuisance_derivative(
+                    -self.beta.get_nuisance_derivative(),self.DA)
+
 class TestCovariance1DFunction(IMP.test.TestCase):
     """ test of tau**2 exp( -(q-q')**2/(2 lambda**2) ) + sigma**2 """
 
