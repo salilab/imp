@@ -96,8 +96,6 @@ class IMPDOMINOEXPORT SubsetFilterTable: public IMP::base::Object {
   virtual ~SubsetFilterTable();
 };
 
-IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
-
 class RestraintScoreSubsetFilterTable;
 class MinimumRestraintScoreSubsetFilterTable;
 
@@ -423,6 +421,13 @@ class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable:
 };
 
 
+#ifdef SWIG
+IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
+#endif
+
 IMPDOMINO_END_NAMESPACE
+
+// ick, needed to get plural types
+#include "utility.h"
 
 #endif  /* IMPDOMINO_SUBSET_FILTERS_H */

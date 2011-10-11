@@ -15,6 +15,7 @@
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/domino/internal/restraint_evaluator.h>
+#include <IMP/domino/internal/tree_inference.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/domino/particle_states.h>
 #include <boost/graph/depth_first_search.hpp>
@@ -204,6 +205,36 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
     ret[i]= ParticlePair(ps[ips[i].first], ps[ips[i].second]);
   }
   return ret;
+}
+
+
+
+
+void load_leaf_assignments(const Subset& subset,
+                             AssignmentsTable *at,
+                             AssignmentContainer *ac) {
+  IMP_FUNCTION_LOG;
+  internal::InferenceStatistics stats;
+  internal::load_leaf_assignments(subset,
+                                  at, nullptr, stats,
+                                  ac);
+}
+
+
+void load_merged_assignments(const Subset &first_subset,
+                             AssignmentContainer* first,
+                             const Subset &second_subset,
+                             AssignmentContainer* second,
+                             const SubsetFilterTablesTemp &filters,
+                             AssignmentContainer* ret,
+                             unsigned int max_states) {
+  IMP_FUNCTION_LOG;
+  internal::InferenceStatistics stats;
+  SubsetFilterTables ts(filters.begin(), filters.end());
+  internal::load_merged_assignments(first_subset, first,
+                                    second_subset, second,
+                                    ts, nullptr, stats,
+                                    max_states, ret);
 }
 
 

@@ -30,9 +30,10 @@ try:
 except:
     print "Unable to display graph using 'dot'"
 
-ds= IMP.domino.DominoSampler(m, pst)
-ds.set_merge_tree(mt)
-ds.set_log_level(IMP.SILENT)
+ors= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
+filters=[IMP.domino.RestraintScoreSubsetFilterTable(m, pst),
+         IMP.domino.ExclusionSubsetFilterTable(pst)]
+leaf_table=IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
 
 # create a database to store the results
 name=IMP.create_temporary_file_name("assignments", ".hdf5")
@@ -49,17 +50,14 @@ def get_assignments(vertex):
     mine= IMP.domino.HDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn)
     if len(on)==0:
         # we have a leaf
-        ret= ds.load_vertex_assignments(vertex, mine)
+        IMP.domino.load_leaf_assignments(ss, leaf_table, mine)
     else:
-        if on[0] > on[1]:
-            # the get_vertex_assignment methods expects the children in sorted order
-            on=[on[1], on[0]]
         # recurse on the two children
-        a0= get_assignments(on[0])
-        a1= get_assignments(on[1])
-        ds.load_vertex_assignments(vertex, a0, a1, mine)
+        (ss0, a0)= get_assignments(on[0])
+        (ss1, a1)= get_assignments(on[1])
+        IMP.domino.load_merged_assignments(ss0, a0, ss1, a1, filters, mine)
     print ss, mine.get_number_of_assignments()
-    return mine
+    return (ss, mine)
 
 # the root is the last vetex
 all=get_assignments(mt.get_vertices()[-1])
