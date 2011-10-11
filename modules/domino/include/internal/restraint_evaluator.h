@@ -11,7 +11,6 @@
 
 #include "../Subset.h"
 #include "../Assignment.h"
-#include "../utility.h"
 #include "../particle_states.h"
 //#include "inference.h"
 #include <IMP/Restraint.h>

@@ -420,14 +420,9 @@ class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable:
   IMP_SUBSET_FILTER_TABLE(ProbabilisticSubsetFilterTable);
 };
 
-
-#ifdef SWIG
 IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
-#endif
 
 IMPDOMINO_END_NAMESPACE
 
-// ick, needed to get plural types
-#include "utility.h"
 
 #endif  /* IMPDOMINO_SUBSET_FILTERS_H */
