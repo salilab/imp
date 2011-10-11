@@ -572,7 +572,6 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                     ,delta=0.001)
         if skipped > 10:
             self.fail("too many NANs")
-        self.gpr.stats()
 
 if __name__ == '__main__':
     IMP.test.main()
