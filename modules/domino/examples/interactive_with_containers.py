@@ -61,6 +61,6 @@ def get_assignments(vertex):
 
 # the root is the last vetex
 all=get_assignments(mt.get_vertices()[-1])
-all.set_was_used(True)
+all[1].set_was_used(True)
 
 print 'try: h5dump', name
