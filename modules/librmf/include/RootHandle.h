@@ -71,7 +71,8 @@ class RMFEXPORT RootHandle: public NodeHandle {
       of frames that the x-coordinate has, but it should be made more general.
   */
   unsigned int get_number_of_frames() const {
-    return shared_->get_number_of_frames(get_key<FloatTraits>(Physics, "x"));
+    return shared_->get_number_of_frames(get_key<FloatTraits>(Physics,
+                                                              "cartesian x"));
   }
 
   /** \name Non-template versions for python
