@@ -11,6 +11,7 @@
 #include "domino_config.h"
 #include "Assignment.h"
 #include "Subset.h"
+#include "subset_filters.h"
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
@@ -31,6 +32,13 @@ IMP_END_NAMESPACE
 
 IMPDOMINO_BEGIN_NAMESPACE
 
+class AssignmentsTable;
+class AssignmentContainer;
+class SubsetFilterTable;
+#ifndef SWIG
+IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
+#endif
+
 /** \name Debug tools
 
     We provide a number of different functions for helpering
@@ -45,8 +53,8 @@ class ParticleStatesTable;
 
 /** Load the appropriate state for each particle in a Subset. */
 IMPDOMINOEXPORT void load_particle_states(const Subset &s,
-                                           const Assignment &ss,
-                                           const ParticleStatesTable *pst);
+                                          const Assignment &ss,
+                                          const ParticleStatesTable *pst);
 
 
 
@@ -133,6 +141,28 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
 */
 IMPDOMINOEXPORT Ints get_order(const Subset &s,
                                const ParticlesTemp &all_particles);
+
+
+
+  //! Fill in assignments for a leaf
+IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
+                                           AssignmentsTable *at,
+                                           AssignmentContainer *ac);
+
+  //! Fill in assignments for an internal node
+  /** The passed assignments, the ordering for the children is that of
+      the node indexes for the children.
+  */
+IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
+                                             AssignmentContainer* first,
+                                             const Subset &second_subset,
+                                             AssignmentContainer* second,
+                                             const SubsetFilterTablesTemp
+                                             &filters,
+                                             AssignmentContainer* ret,
+                                             unsigned int max_states
+                                             =std::numeric_limits<int>::max());
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_UTILITY_H */
