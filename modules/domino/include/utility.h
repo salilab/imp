@@ -35,9 +35,6 @@ IMPDOMINO_BEGIN_NAMESPACE
 class AssignmentsTable;
 class AssignmentContainer;
 class SubsetFilterTable;
-#ifndef SWIG
-IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
-#endif
 
 /** \name Debug tools
 
