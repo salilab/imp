@@ -209,7 +209,7 @@ class _SGEQsubSlave(Slave):
 
     def _start(self, command, unique_id, output):
         Slave._start(self, command, unique_id, output)
-        self._array._slave_started(unique_id, output)
+        self._array._slave_started(unique_id, output, self)
 
     def __repr__(self):
         jobid = self._jobid
@@ -243,8 +243,8 @@ class SGEQsubSlaveArray(SlaveArray):
         """Return a list of Slave objects contained within this array"""
         return [_SGEQsubSlave(self) for x in range(self._numslave)]
 
-    def _slave_started(self, command, output):
-        self._starting_slaves.append((command, output))
+    def _slave_started(self, command, output, slave):
+        self._starting_slaves.append((command, output, slave))
 
     def _start(self, command):
         qsub = "qsub -S /bin/sh %s %s -t 1-%d" % \
@@ -277,7 +277,7 @@ class SGEQsubSlaveArray(SlaveArray):
             if m:
                 self._jobid = int(m.group())
                 for (num, slave) in enumerate(self._starting_slaves):
-                    slave._jobid = "%d.%d" % (self._jobid, num+1)
+                    slave[2]._jobid = "%d.%d" % (self._jobid, num+1)
 
 
 class _SGEPESlave(Slave):
