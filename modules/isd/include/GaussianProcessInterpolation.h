@@ -29,7 +29,7 @@ class GaussianProcessInterpolationRestraint;
  * mean and covariance functions. It outputs the value of the posterior mean and
  * covariance functions at points requested by the user.
  */
-class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
+class IMPISDEXPORT GaussianProcessInterpolation : public Object
 {
  public:
      /** Constructor for the gaussian process
@@ -46,9 +46,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
       * Computes the necessary matrices and inverses when called.
       */
   GaussianProcessInterpolation(FloatsList x,
-                               std::vector<double> sample_mean,
-                               std::vector<double> sample_std,
-                               std::vector<int> n_obs,
+                               Floats sample_mean,
+                               Floats sample_std,
+                               Ints n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function);
 
@@ -74,9 +74,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
    * since the last call, and will recompute 
    * \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ if necessary.
    */
-  double get_posterior_mean(std::vector<double> x);
-  double get_posterior_covariance(std::vector<double> x1, 
-                                  std::vector<double> x2);
+  double get_posterior_mean(Floats x);
+  double get_posterior_covariance(Floats x1, 
+                                  Floats x2);
 
   // call these if you called update() on the mean or covariance function. 
   // it will force update any internal variables dependent on these functions.
@@ -93,7 +93,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   //returns updated prior mean vector
   VectorXd get_m();
   // returns updated prior covariance vector
-  VectorXd get_wx_vector(std::vector<double> xval);
+  VectorXd get_wx_vector(Floats xval);
   //returns updated data covariance matrix
   MatrixXd get_S() const {return S_;}
   //returns updated prior covariance matrix
@@ -119,9 +119,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void compute_WSIm();
 
   // compute mean observations
-  void compute_I(std::vector<double> mean);
+  void compute_I(Floats mean);
   // compute diagonal covariance matrix of observations
-  void compute_S(std::vector<double> std, std::vector<int> n);
+  void compute_S(Floats std, Ints n);
   // compute prior mean vector
   void compute_m();
 
@@ -129,7 +129,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     unsigned N_; // number of dimensions of the abscissa
     unsigned M_; // number of observations to learn from
     FloatsList x_; // abscissa
-    std::vector<int> n_obs_; // number of observations
+    Ints n_obs_; // number of observations
     // pointer to the prior mean function
     IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
     // pointer to the prior covariance function
