@@ -19,9 +19,9 @@ IMPISD_BEGIN_NAMESPACE
 
     GaussianProcessInterpolation::GaussianProcessInterpolation(
                                FloatsList x,
-                               std::vector<double> sample_mean,
-                               std::vector<double> sample_std,
-                               std::vector<int> n_obs,
+                               Floats sample_mean,
+                               Floats sample_std,
+                               Ints n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function) :
         Object("GaussianProcessInterpolation%1%"), x_(x), n_obs_(n_obs),
@@ -74,7 +74,7 @@ IMPISD_BEGIN_NAMESPACE
                           // to update the mvn's Sigma:=W matrix.
 }
 
-  void GaussianProcessInterpolation::compute_I(std::vector<double> mean)
+  void GaussianProcessInterpolation::compute_I(Floats mean)
 {
     I_ = VectorXd (M_);
     IMP_LOG(TERSE, "I: ");
@@ -86,8 +86,8 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, std::endl);
 }
 
-  void GaussianProcessInterpolation::compute_S(std::vector<double> std,
-          std::vector<int> n) 
+  void GaussianProcessInterpolation::compute_S(Floats std,
+          Ints n) 
     { 
         //if you modify this routine so that
         //S is not diagonal check the GPIR to make sure it still needs
@@ -103,7 +103,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, std::endl);
     }
 
-  double GaussianProcessInterpolation::get_posterior_mean(std::vector<double> x)
+  double GaussianProcessInterpolation::get_posterior_mean(Floats x)
 {
    // std::cerr << "posterior mean at q=" << x(0) << std::endl;
     VectorXd wx(get_wx_vector(x));
@@ -120,7 +120,7 @@ IMPISD_BEGIN_NAMESPACE
 }
 
   double GaussianProcessInterpolation::get_posterior_covariance(
-          std::vector<double> x1, std::vector<double> x2)
+          Floats x1, Floats x2)
 {
     //std::cerr << "posterior covariance at q=" << x1(0) << std::endl;
     VectorXd wx2(get_wx_vector(x2));
@@ -168,7 +168,7 @@ IMPISD_BEGIN_NAMESPACE
 }
 
   VectorXd GaussianProcessInterpolation::get_wx_vector(
-                                    std::vector<double> xval)
+                                    Floats xval)
 {
     update_flags_covariance();
     IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
@@ -221,12 +221,7 @@ IMPISD_BEGIN_NAMESPACE
 
   void GaussianProcessInterpolation::compute_m()
 {
-    m_.resize(M_);
-    for (unsigned i=0; i<M_; i++)
-    {
-        m_(i) = (*mean_function_)(x_[i])[0];
-    }
-    IMP_LOG(TERSE, std::endl);
+    m_ = (*mean_function_)(x_);
 }
 
   MatrixXd GaussianProcessInterpolation::get_WS()
@@ -273,16 +268,7 @@ IMPISD_BEGIN_NAMESPACE
 
   void GaussianProcessInterpolation::compute_W()
 {
-    W_.resize(M_,M_);
-    for (unsigned i=0; i<M_; i++)
-    {
-        W_(i,i) = (*covariance_function_)(x_[i],x_[i])[0];
-        for (unsigned j=i+1; j<M_; j++)
-        {
-            W_(i,j) = (*covariance_function_)(x_[i],x_[j])[0];
-            W_(j,i) = W_(i,j);
-        }
-    }
+    W_ = (*covariance_function_)(x_);
 }
 
   void GaussianProcessInterpolation::do_show(std::ostream &out) const
