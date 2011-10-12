@@ -22,9 +22,9 @@ IMPISD_BEGIN_NAMESPACE
 
     GaussianProcessInterpolationSparse::GaussianProcessInterpolationSparse(
                                FloatsList x,
-                               std::vector<double> sample_mean,
-                               std::vector<double> sample_std,
-                               std::vector<int> n_obs,
+                               Floats sample_mean,
+                               Floats sample_std,
+                               Ints n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function, 
                                double cutoff) :
@@ -84,7 +84,7 @@ IMPISD_BEGIN_NAMESPACE
                           // to update the mvn's Sigma:=W matrix.
 }
 
-  void GaussianProcessInterpolationSparse::compute_I(std::vector<double> mean)
+  void GaussianProcessInterpolationSparse::compute_I(Floats mean)
 {
     I_ = VectorXd (M_);
     IMP_LOG(TERSE, "I: ");
@@ -96,8 +96,8 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, std::endl);
 }
 
-  void GaussianProcessInterpolationSparse::compute_S(std::vector<double> std,
-          std::vector<int> n) 
+  void GaussianProcessInterpolationSparse::compute_S(Floats std,
+          Ints n) 
     { 
         //if you modify this routine so that
         //S is not diagonal check the GPIR to make sure it still needs
@@ -117,7 +117,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, std::endl);
     }
 
-  double GaussianProcessInterpolationSparse::get_posterior_mean(std::vector<double> x)
+  double GaussianProcessInterpolationSparse::get_posterior_mean(Floats x)
 {
    // std::cerr << "posterior mean at q=" << x(0) << std::endl;
     cholmod_sparse *wx(get_wx_vector(x));
@@ -139,7 +139,7 @@ IMPISD_BEGIN_NAMESPACE
 }
 
   double GaussianProcessInterpolationSparse::get_posterior_covariance(
-          std::vector<double> x1, std::vector<double> x2)
+          Floats x1, Floats x2)
 {
     //std::cerr << "posterior covariance at q=" << x1(0) << std::endl;
     cholmod_sparse *wx2(get_wx_vector(x2));
@@ -188,7 +188,7 @@ IMPISD_BEGIN_NAMESPACE
 }
 
   cholmod_sparse *GaussianProcessInterpolationSparse::get_wx_vector(
-                                    std::vector<double> xval)
+                                    Floats xval)
 {
     update_flags_covariance();
     IMP_LOG(TERSE,"  get_wx_vector at q= " << xval[0] << " ");
