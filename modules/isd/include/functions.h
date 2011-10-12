@@ -389,18 +389,20 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             {
                 for (unsigned j=i; j<M; j++)
                 {
-                    Floats x1 = xlist[i];
-                    Floats x2 = xlist[j];
-                    IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
-                    IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(xlist[i].size() == 1, 
+                            "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(xlist[j].size() == 1, 
+                            "expecting a 1-D vector");
+                    double x1 = xlist[i][0];
+                    double x2 = xlist[j][0];
                     double ret =
                             IMP::square(tau_val_)
                             *std::exp(
                                 -0.5*std::pow(
-                                        std::abs( (x1[0]-x2[0])/lambda_val_ )
+                                        std::abs( (x1-x2)/lambda_val_ )
                                         , alpha_)
                                 ) ;
-                    if (std::abs(x1[0]-x2[0])<MINIMUM)
+                    if (std::abs(x1-x2)<MINIMUM)
                     {
                         ret += IMP::square(sigma_val_);
                         if (do_jitter) ret += J_;
@@ -660,16 +662,18 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
             {
                 for (unsigned j=i; j<M; j++)
                 {
-                    Floats x1 = xlist[i];
-                    Floats x2 = xlist[j];
-                    IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
-                    IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(xlist[i].size() == 1, 
+                            "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(xlist[j].size() == 1, 
+                            "expecting a 1-D vector");
+                    double x1 = xlist[i][0];
+                    double x2 = xlist[j][0];
                     double ret=IMP::square(sigma_val_);
-                    if (std::abs(x1[0]-x2[0])>MINIMUM)
+                    if (std::abs(x1-x2)>MINIMUM)
                     {
                         ret *=theta_val_ * std::exp(
                             -0.5*std::pow(
-                                    std::abs( (x1[0]-x2[0])/lambda_val_ )
+                                    std::abs( (x1-x2)/lambda_val_ )
                                     , alpha_)
                             );
                     } else {
