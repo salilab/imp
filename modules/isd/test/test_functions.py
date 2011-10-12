@@ -149,7 +149,7 @@ class TestLinear1DFunction(IMP.test.TestCase):
             self.shuffle_particle_values()
             data = random.uniform(-10,10,random.randint(100))
             expected = [self.mean([i]) for i in data]
-            observed = self.mean([[i] for i in data])
+            observed = self.mean([[i] for i in data],True)
             self.assertEqual(observed,expected)
 
     def testGetDerivativeMatrix(self):
@@ -159,8 +159,9 @@ class TestLinear1DFunction(IMP.test.TestCase):
             data = self.mean.get_derivative_matrix([[i] for  i in xlist], True)
             self.assertEqual(len(data), len(xlist))
             self.assertEqual(len(data[0]), 2)
-            self.assertEqual([i[0] for i in data], xlist)
-            self.assertEqual([i[1] for i in data], [1 for i in data])
+            for i,j in zip(data,xlist):
+                self.assertAlmostEqual(i[0],j, delta=1e-5)
+                self.assertAlmostEqual(i[1],1, delta=1e-5)
 
     def testAddToParticleDerivative(self):
         for i in xrange(10):
@@ -370,6 +371,45 @@ class TestCovariance1DFunction(IMP.test.TestCase):
                 self.sig.add_to_nuisance_derivative(-self.sig.get_nuisance_derivative(),self.DA)
         if skipped > 10:
             self.fail("too many NANs")
+
+    def testValues(self):
+        """
+        tests if we can get multiple values at once
+        """
+        for rep in xrange(10):
+            self.shuffle_particle_values()
+            data = random.uniform(-10,10,random.randint(100))
+            expected = [self.cov([i],[j]) for i in data for j in data]
+            observed = self.cov([[i] for i in data],True)
+            self.assertEqual(observed,expected)
+
+    def testGetDerivativeMatrix(self):
+        for rep in xrange(3):
+            self.shuffle_particle_values()
+            xlist = random.uniform(-10,10,random.randint(100))
+            for part in xrange(3):
+                data = self.cov.get_derivative_matrix(part,
+                        [[i] for  i in xlist], True)
+                self.assertEqual(len(data), len(xlist))
+                self.assertEqual(len(data[0]), len(xlist))
+                for i,j in zip(data,xlist):
+                    self.assertAlmostEqual(i[0],j, delta=1e-5)
+                    self.assertAlmostEqual(i[1],1, delta=1e-5)
+
+    def testAddToParticleDerivative(self):
+        for i in xrange(10):
+            val = random.uniform(-10,10)
+            self.mean.add_to_particle_derivative(0, val, self.DA)
+            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), val)
+            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), 0.0)
+            self.alpha.add_to_nuisance_derivative(
+                    -self.alpha.get_nuisance_derivative(),self.DA)
+            val = random.uniform(-10,10)
+            self.mean.add_to_particle_derivative(1, val, self.DA)
+            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), 0.0)
+            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), val)
+            self.beta.add_to_nuisance_derivative(
+                    -self.beta.get_nuisance_derivative(),self.DA)
 
 class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
 
