@@ -205,9 +205,9 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             Eigen::VectorXd retlist(M);
             for (unsigned i = 0; i < M; i++)
             {
-                Floats x = xlist[i];
-                IMP_USAGE_CHECK(x.size() == 1, "expecting a 1-D vector");
-                retlist(i) = a_val_*x[0]+b_val_;
+                IMP_USAGE_CHECK(xlist[i].size() == 1, 
+                        "expecting a 1-D vector");
+                retlist(i) = a_val_*xlist[i][0]+b_val_;
             }
             return retlist;
         }
