@@ -132,6 +132,8 @@ namespace RMF {
   typedef std::vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
 
 
+  enum Compression {GZIP_COMPRESSION, SLIB_COMPRESSION, NO_COMPRESSION};
+
   /** Wrap an HDF5 data set.*/
   template <class TypeTraits, unsigned int D>
   class HDF5DataSetD {
@@ -193,7 +195,8 @@ namespace RMF {
       initialize_handles();
     }
     friend class HDF5Group;
-    HDF5DataSetD(HDF5SharedHandle* parent, std::string name):
+    HDF5DataSetD(HDF5SharedHandle* parent, std::string name,
+                 Compression comp= NO_COMPRESSION):
       data_(new Data()) {
       //std::cout << "Creating data set " << name << std::endl;
       IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
@@ -218,7 +221,12 @@ namespace RMF {
       IMP_HDF5_CALL(H5Pset_alloc_time(plist, H5D_ALLOC_TIME_LATE));
       /*IMP_HDF5_CALL(H5Pset_szip (plist, H5_SZIP_NN_OPTION_MASK,
         32));*/
-      IMP_HDF5_CALL(H5Pset_deflate(plist, 9));
+      if (comp==GZIP_COMPRESSION) {
+        IMP_HDF5_CALL(H5Pset_deflate(plist, 9));
+      } else if (comp == SLIB_COMPRESSION) {
+        IMP_HDF5_CALL(H5Pset_szip (plist, H5_SZIP_NN_OPTION_MASK,
+                                   32));
+      }
       //std::cout << "creating..." << name << std::endl;
       data_->h_.open(H5Dcreate2(parent->get_hid(),
                                name.c_str(),
