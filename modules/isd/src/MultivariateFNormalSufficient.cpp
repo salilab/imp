@@ -87,7 +87,6 @@ void MultivariateFNormalSufficient::reset_flags()
   /* probability density function */
 double MultivariateFNormalSufficient::density() const
   { 
-      std::cout <<EVAL<< std::endl;
       timer_.start(EVAL);
       double d = get_norms()[0]*JF_
           *exp(-0.5*(trace_WP() + N_ * mean_dist()));
