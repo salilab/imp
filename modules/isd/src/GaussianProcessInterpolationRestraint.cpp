@@ -73,21 +73,22 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
     {
         VectorXd dmv = mvn_->evaluate_derivative_FM();
         //derivatives for mean particles
-        for (unsigned i=0; i<M_; i++)
-        {
-            DerivativeAccumulator a(*accum, dmv(i));
-            gpi_->mean_function_->add_to_derivatives(gpi_->x_[i], a);
-        }
+        MatrixXd dmean = gpi_->mean_function_->get_derivative_matrix(gpi_->x_);
+        VectorXd meanprod = dmv.transpose()*dmean;
+        unsigned npart=meanprod.cols(); //should be 2 for Linear1DFunction
+        for (unsigned i=0; i<meanprod.cols(); i++)
+            gpi_->mean_function_->add_to_particle_derivative(i, meanprod(i), 
+                    accum);
         //derivatives for covariance particles
         MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
-        for (unsigned k=0; k<M_; k++)
+        npart = gpi_->covariance_function_->get_number_of_particles();
+        for (unsigned i=0; i<npart; i++)
         {
-            for (unsigned l=0; l<M_; l++)
-            {
-                DerivativeAccumulator a(*accum, dmvS(k,l));
-                gpi_->covariance_function_->add_to_derivatives(
-                        gpi_->x_[k],gpi_->x_[l], a);
-            }
+            MatrixXd dcov = 
+                gpi_->covariance_function_->get_derivative_matrix(i, gpi_->x_);
+            double val = (dmvS.transpose()*dcov).trace();
+            gpi_->covariance_function_->add_to_particle_derivative(i, val,
+                    accum);
         }
     }
     return ene;

@@ -78,6 +78,9 @@ class IMPISDEXPORT UnivariateFunction : public Object
      //! returns the number of output dimensions
      virtual unsigned get_ndims_y() const = 0;
 
+     //! returns the number of particles that this function uses
+     virtual unsigned get_number_of_particles() const = 0;
+
      //! particle manipulation
      virtual ParticlesTemp get_input_particles() const = 0;
      virtual ContainersTemp get_input_containers() const = 0;
@@ -148,6 +151,9 @@ class IMPISDEXPORT BivariateFunction : public Object
 
      //! returns the number of output dimensions
      virtual unsigned get_ndims_y() const = 0;
+
+     //! returns the number of particles that this function uses
+     virtual unsigned get_number_of_particles() const = 0;
 
      //! particle manipulation
      virtual ParticlesTemp get_input_particles() const = 0;
@@ -276,6 +282,8 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 
         unsigned get_ndims_x() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
+
+        unsigned get_number_of_particles() const { return 2; }
 
         ParticlesTemp get_input_particles() const
         {
@@ -548,6 +556,8 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         unsigned get_ndims_x2() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
 
+        unsigned get_number_of_particles() const { return 3; }
+
         ParticlesTemp get_input_particles() const
         {
             ParticlesTemp ret;
@@ -809,6 +819,8 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
         unsigned get_ndims_x1() const {return 1;}
         unsigned get_ndims_x2() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
+
+        unsigned get_number_of_particles() const { return 3; }
 
         ParticlesTemp get_input_particles() const
         {
