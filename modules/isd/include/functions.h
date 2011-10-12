@@ -20,18 +20,22 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Base class for functions of one variable
-class IMPISDEXPORT UnivariateFunction : public base::Object
+class IMPISDEXPORT UnivariateFunction : public Object
 {
  public:
 
- UnivariateFunction(std::string str) : base::Object(str) {}
+ UnivariateFunction(std::string str) : Object(str) {}
 
      //! evaluate the function at a certain point
-     virtual std::vector<double> operator() (std::vector<double> x) const = 0; 
+     virtual Floats operator() (const Floats& x) const = 0; 
 
      //! evaluate the function at a list of points
-     virtual std::vector<std::vector<double> > operator() (
-             std::vector<std::vector<double> > xlist) const = 0; 
+     virtual Eigen::VectorXd operator() (
+             const IMP::FloatsList& xlist) const = 0; 
+
+     //! used for testing only
+     virtual FloatsList operator() (const IMP::FloatsList& xlist, 
+             bool stupid) const = 0; 
 
      //! return true if internal parameters have changed.
      virtual bool has_changed() const = 0; 
@@ -43,7 +47,7 @@ class IMPISDEXPORT UnivariateFunction : public base::Object
      /* add to each particle the derivative of the function 
       * times the weight of the DA.
       */
-     virtual void add_to_derivatives(std::vector<double> x,
+     virtual void add_to_derivatives(const Floats& x,
              DerivativeAccumulator &accum) const = 0;
 
      //! update derivatives of particles
@@ -61,11 +65,11 @@ class IMPISDEXPORT UnivariateFunction : public base::Object
       * associated to this function.
       */
      virtual Eigen::MatrixXd get_derivative_matrix(
-             std::vector<std::vector<double> > xlist) const = 0;
+             const FloatsList& xlist) const = 0;
 
-     //for testing purposes
-     virtual std::vector<std::vector<double> > get_derivative_matrix(
-             std::vector<std::vector<double> > xlist,
+     //! for testing purposes
+     virtual FloatsList get_derivative_matrix(
+             const FloatsList& xlist,
              bool stupid) const = 0;
 
      //! returns the number of input dimensions
@@ -82,20 +86,27 @@ class IMPISDEXPORT UnivariateFunction : public base::Object
 };
 
 //! Base class for functions of two variables
-class IMPISDEXPORT BivariateFunction : public base::Object
+class IMPISDEXPORT BivariateFunction : public Object
 {
  public:
 
- BivariateFunction(std::string str) : base::Object(str) {}
+ BivariateFunction(std::string str) : Object(str) {}
 
      //! evaluate the function at a certain point
-     virtual std::vector<double> operator()
-                (std::vector<double> x1, std::vector<double> x2) const = 0;
+     virtual Floats operator()
+                (const Floats& x1, 
+                 const Floats& x2) const = 0;
 
      //! evaluate the function at a list of points
-     virtual std::vector<std::vector<double> > operator()
-                (std::vector<std::vector<double> > x1, 
-                 std::vector<std::vector<double> > x2) const = 0;
+     /* returns a NxN matrix of entries where N=xlist.rows()
+      * and entry ij of the matrix is f(xlist(i),xlist(j))
+      */
+     virtual Eigen::MatrixXd operator()
+                (const IMP::FloatsList& xlist) const = 0;
+
+     //! used for testing only
+     virtual FloatsList operator() (const IMP::FloatsList& xlist, 
+             bool stupid) const = 0; 
 
      //! return true if internal parameters have changed.
      virtual bool has_changed() const = 0;
@@ -104,8 +115,10 @@ class IMPISDEXPORT BivariateFunction : public base::Object
      virtual void update() = 0;
 
      //! update derivatives of particles
-     virtual void add_to_derivatives(std::vector<double> x1,
-             std::vector<double> x2, DerivativeAccumulator &accum) const = 0;
+     virtual void add_to_derivatives(
+             const Floats& x1,
+             const Floats& x2, 
+             DerivativeAccumulator &accum) const = 0;
 
      //! update derivatives of particles
      /* add to the given particle the specified derivative
@@ -121,12 +134,12 @@ class IMPISDEXPORT BivariateFunction : public base::Object
       */
      virtual Eigen::MatrixXd get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist) const = 0;
+             const FloatsList& xlist) const = 0;
 
      //for testing purposes
-     virtual std::vector<std::vector<double> > get_derivative_matrix(
+     virtual FloatsList get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist,
+             const FloatsList& xlist,
              bool stupid) const = 0;
 
      //! returns the number of input dimensions
@@ -180,28 +193,35 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
                     << a_val_ << " b:=" << b_val_ << std::endl);
         }
 
-        std::vector<double> operator()(std::vector<double> x) const {
+        Floats operator()(const Floats& x) const {
             IMP_USAGE_CHECK(x.size() == 1, "expecting a 1-D vector");
-            std::vector<double> ret(1,a_val_*x[0]+b_val_);
+            Floats ret(1,a_val_*x[0]+b_val_);
             return ret;
         }
 
-        std::vector<std::vector<double> > operator()(
-                std::vector<std::vector<double> > xlist) const 
+        Eigen::VectorXd operator()(const FloatsList& xlist) const 
         {
-            std::vector<std::vector<double> >::const_iterator it;
-            std::vector<std::vector<double> > retlist;
-            for (it = xlist.begin(); it != xlist.end(); ++it)
+            double M=xlist.size();
+            Eigen::VectorXd retlist(M);
+            for (unsigned i = 0; i < M; i++)
             {
-                std::vector<double> x = *it;
+                Floats x = xlist[i];
                 IMP_USAGE_CHECK(x.size() == 1, "expecting a 1-D vector");
-                std::vector<double> ret(1,a_val_*x[0]+b_val_);
-                retlist.push_back(ret);
+                retlist(i) = a_val_*x[0]+b_val_;
             }
             return retlist;
         }
 
-        void add_to_derivatives(std::vector<double> x,
+        FloatsList operator()(const FloatsList& xlist, bool) const 
+        {
+            Eigen::VectorXd vec((*this)(xlist));
+            FloatsList ret;
+            for (unsigned i=0; i<xlist.size(); i++)
+                ret.push_back(Floats(1,vec(i)));
+            return ret;
+        }
+
+        void add_to_derivatives(const Floats& x,
                 DerivativeAccumulator &accum) const
         {
             //d[f(x)]/da = x
@@ -227,7 +247,7 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
         }
 
         Eigen::MatrixXd get_derivative_matrix(
-             std::vector<std::vector<double> > xlist) const
+             const FloatsList& xlist) const
         {
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,2);
@@ -239,14 +259,14 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
             return ret;
         }
 
-        std::vector<std::vector<double> > get_derivative_matrix(
-             std::vector<std::vector<double> > xlist, bool) const
+        FloatsList get_derivative_matrix(
+             const FloatsList& xlist, bool) const
         {
             Eigen::MatrixXd mat(get_derivative_matrix(xlist));
-            std::vector<std::vector<double> > ret;
+            FloatsList ret;
             for (unsigned i=0; i<mat.rows(); i++)
             {
-                std::vector<double> line;
+                Floats line;
                 for (unsigned j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
@@ -332,15 +352,15 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                     <<" sigma:=" << sigma_val_ << std::endl);
         }
 
-        std::vector<double> operator()(std::vector<double> x1,
-                std::vector<double> x2) const 
+        Floats operator()(const Floats& x1,
+                const Floats& x2) const 
         {
             IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
             IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
             //std::cout<<"eval ";
             //std::cout<<"tau = " << tau_val_ << " sig = " << sigma_val_
             //         <<"lambda = " << lambda_val_ << " alpha = " << alpha_ << std::endl;
-            std::vector<double> ret(1,
+            Floats ret(1,
                     IMP::square(tau_val_)
                     *std::exp(
                         -0.5*std::pow(
@@ -361,42 +381,49 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             return ret;
         }
 
-        std::vector<std::vector<double> > operator()(
-                std::vector<std::vector<double> > xlist1,
-                std::vector<std::vector<double> > xlist2) const 
+        Eigen::MatrixXd operator()(const IMP::FloatsList& xlist) const
         {
-            IMP_USAGE_CHECK(xlist1.size() == xlist2.size(), 
-                    "expecting two arguments of the same size!");
-            std::vector<std::vector<double> >::const_iterator it1;
-            std::vector<std::vector<double> >::const_iterator it2;
-            std::vector<std::vector<double> > retlist;
-            for (it1 = xlist1.begin(), it2=xlist2.begin(); 
-                    it1 != xlist1.end(); 
-                    ++it1, ++it2)
+            const unsigned M=xlist.size();
+            Eigen::MatrixXd Mret(M,M);
+            for (unsigned i=0; i<M; i++)
             {
-                std::vector<double> x1 = *it1;
-                std::vector<double> x2 = *it2;
-                IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
-                IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
-                std::vector<double> ret(1,
-                        IMP::square(tau_val_)
-                        *std::exp(
-                            -0.5*std::pow(
-                                    std::abs( (x1[0]-x2[0])/lambda_val_ )
-                                    , alpha_)
-                            )
-                        );
-                if (std::abs(x1[0]-x2[0])<MINIMUM)
+                for (unsigned j=i; j<M; j++)
                 {
-                    ret[0] += IMP::square(sigma_val_);
-                    if (do_jitter) ret[0] += J_;
+                    Floats x1 = xlist[i];
+                    Floats x2 = xlist[j];
+                    IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+                    double ret =
+                            IMP::square(tau_val_)
+                            *std::exp(
+                                -0.5*std::pow(
+                                        std::abs( (x1[0]-x2[0])/lambda_val_ )
+                                        , alpha_)
+                                ) ;
+                    if (std::abs(x1[0]-x2[0])<MINIMUM)
+                    {
+                        ret += IMP::square(sigma_val_);
+                        if (do_jitter) ret += J_;
+                    }
+                    Mret(i,j) = ret;
+                    if (i != j) Mret(j,i) = ret;
                 }
-                retlist.push_back(ret);
             }
-            return retlist;
+            return Mret;
         }
 
-        void add_to_derivatives(std::vector<double> x1, std::vector<double> x2,
+        FloatsList operator()(const IMP::FloatsList& xlist, bool) const
+        {
+            Eigen::MatrixXd mat((*this)(xlist));
+            FloatsList ret;
+            for (unsigned i=0; i<xlist.size(); i++)
+                for (unsigned j=0; j<xlist.size(); j++)
+                    ret.push_back(Floats(1,mat(i,j)));
+            return ret;
+        }
+
+        void add_to_derivatives(const Floats& x1, 
+                const Floats& x2,
                 DerivativeAccumulator &accum) const
         {
             //d[w(x1,x2)]/dtau = 2/tau*(w(x1,x2)-delta_ij sigma^2)
@@ -441,7 +468,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 
         Eigen::MatrixXd get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist) const
+             const FloatsList& xlist) const
         {
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,N);
@@ -449,7 +476,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             {
                 for (unsigned j=i; j<N; j++)
                 {
-                    std::vector<double> x1(xlist[i]), x2(xlist[j]);
+                    Floats x1(xlist[i]), x2(xlist[j]);
                     double val;
                     switch (particle_no)
                     {
@@ -499,15 +526,15 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             return ret;
         }
 
-        std::vector<std::vector<double> > get_derivative_matrix(
+        FloatsList get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist, bool) const
+             const FloatsList& xlist, bool) const
         {
             Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
-            std::vector<std::vector<double> > ret;
+            FloatsList ret;
             for (unsigned i=0; i<mat.rows(); i++)
             {
-                std::vector<double> line;
+                Floats line;
                 for (unsigned j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
@@ -607,8 +634,8 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
                     <<" sigma:=" << sigma_val_ << std::endl);
         }
 
-        std::vector<double> operator()(std::vector<double> x1,
-                std::vector<double> x2) const {
+        Floats operator()(const Floats& x1,
+                const Floats& x2) const {
             IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
             IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
             double ret=IMP::square(sigma_val_);
@@ -622,43 +649,51 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
             } else {
                 if (do_jitter) ret += J_;
             }
-            return std::vector<double> (1,ret);
+            return Floats (1,ret);
         }
 
-        std::vector<std::vector<double> > operator()(
-                std::vector<std::vector<double> > xlist1,
-                std::vector<std::vector<double> > xlist2) const
+        Eigen::MatrixXd operator()(const FloatsList& xlist) const
         {
-            IMP_USAGE_CHECK(xlist1.size() == xlist2.size(), 
-                    "expecting two arguments of the same size!");
-            std::vector<std::vector<double> >::const_iterator it1;
-            std::vector<std::vector<double> >::const_iterator it2;
-            std::vector<std::vector<double> > retlist;
-            for (it1 = xlist1.begin(), it2=xlist2.begin(); 
-                    it1 != xlist1.end(); 
-                    ++it1, ++it2)
+            const unsigned M=xlist.size();
+            Eigen::MatrixXd Mret(M,M);
+            for (unsigned i=0; i<M; i++)
             {
-                std::vector<double> x1 = *it1;
-                std::vector<double> x2 = *it2;
-                IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
-                IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
-                double ret=IMP::square(sigma_val_);
-                if (std::abs(x1[0]-x2[0])>MINIMUM)
+                for (unsigned j=i; j<M; j++)
                 {
-                    ret *=theta_val_ * std::exp(
-                        -0.5*std::pow(
-                                std::abs( (x1[0]-x2[0])/lambda_val_ )
-                                , alpha_)
-                        );
-                } else {
-                    if (do_jitter) ret += J_;
+                    Floats x1 = xlist[i];
+                    Floats x2 = xlist[j];
+                    IMP_USAGE_CHECK(x1.size() == 1, "expecting a 1-D vector");
+                    IMP_USAGE_CHECK(x2.size() == 1, "expecting a 1-D vector");
+                    double ret=IMP::square(sigma_val_);
+                    if (std::abs(x1[0]-x2[0])>MINIMUM)
+                    {
+                        ret *=theta_val_ * std::exp(
+                            -0.5*std::pow(
+                                    std::abs( (x1[0]-x2[0])/lambda_val_ )
+                                    , alpha_)
+                            );
+                    } else {
+                        if (do_jitter) ret += J_;
+                    }
+                    Mret(i,j) = ret;
+                    if (i!=j) Mret(j,i) = ret;
                 }
-                retlist.push_back(std::vector<double> (1,ret));
             }
-            return retlist;
+            return Mret;
         }
 
-        void add_to_derivatives(std::vector<double> x1, std::vector<double> x2,
+        FloatsList operator()(const IMP::FloatsList& xlist, bool) const
+        {
+            Eigen::MatrixXd mat((*this)(xlist));
+            FloatsList ret;
+            for (unsigned i=0; i<xlist.size(); i++)
+                for (unsigned j=0; j<xlist.size(); j++)
+                    ret.push_back(Floats(1,mat(i,j)));
+            return ret;
+        }
+
+        void add_to_derivatives(const Floats& x1, 
+                const Floats& x2,
                 DerivativeAccumulator &accum) const
         {
             if (std::abs(x1[0] - x2[0])<MINIMUM) {
@@ -699,7 +734,7 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
 
         Eigen::MatrixXd get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist) const
+             const FloatsList& xlist) const
         {
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,N);
@@ -707,7 +742,7 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
             {
                 for (unsigned j=i; j<N; j++)
                 {
-                    std::vector<double> x1(xlist[i]), x2(xlist[j]);
+                    Floats x1(xlist[i]), x2(xlist[j]);
                     if (std::abs(x1[0] - x2[0])<MINIMUM) 
                     {
                         switch (particle_no)
@@ -751,15 +786,15 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
             return ret;
         }
              
-        std::vector<std::vector<double> > get_derivative_matrix(
+        FloatsList get_derivative_matrix(
              unsigned particle_no,
-             std::vector<std::vector<double> > xlist, bool) const
+             const FloatsList& xlist, bool) const
         {
             Eigen::MatrixXd mat(get_derivative_matrix(particle_no, xlist));
-            std::vector<std::vector<double> > ret;
+            FloatsList ret;
             for (unsigned i=0; i<mat.rows(); i++)
             {
-                std::vector<double> line;
+                Floats line;
                 for (unsigned j=0; j<mat.cols(); j++)
                     line.push_back(mat(i,j));
                 ret.push_back(line);
