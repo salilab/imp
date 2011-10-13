@@ -480,7 +480,7 @@ class TestCase(unittest.TestCase):
         # other Python modules in the same directory
         path, name = os.path.split(filename)
         oldsyspath = sys.path[:]
-        sys.path.append(path)
+        sys.path.insert(0, path)
         vars = {}
         try:
             try:
