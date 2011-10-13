@@ -23,6 +23,7 @@ IMPISD_BEGIN_NAMESPACE
 #ifndef SWIG
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using Eigen::RowVectorXd;
 #endif
 
 //! gaussian process restraint

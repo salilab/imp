@@ -74,11 +74,11 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
         VectorXd dmv = mvn_->evaluate_derivative_FM();
         //derivatives for mean particles
         MatrixXd dmean = gpi_->mean_function_->get_derivative_matrix(gpi_->x_);
-        VectorXd meanprod = dmv.transpose()*dmean;
+        RowVectorXd meanprod = dmv.transpose()*dmean;
         unsigned npart=meanprod.cols(); //should be 2 for Linear1DFunction
         for (unsigned i=0; i<meanprod.cols(); i++)
             gpi_->mean_function_->add_to_particle_derivative(i, meanprod(i), 
-                    accum);
+                    *accum);
         //derivatives for covariance particles
         MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
         npart = gpi_->covariance_function_->get_number_of_particles();
@@ -88,7 +88,7 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
                 gpi_->covariance_function_->get_derivative_matrix(i, gpi_->x_);
             double val = (dmvS.transpose()*dcov).trace();
             gpi_->covariance_function_->add_to_particle_derivative(i, val,
-                    accum);
+                    *accum);
         }
     }
     return ene;
