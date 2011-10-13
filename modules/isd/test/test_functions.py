@@ -103,7 +103,8 @@ class TestLinear1DFunction(IMP.test.TestCase):
                 else:
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
-                self.alpha.add_to_nuisance_derivative(-self.alpha.get_nuisance_derivative(),self.DA)
+                self.alpha.add_to_nuisance_derivative(
+                        -self.alpha.get_nuisance_derivative(),self.DA)
                 self.beta.add_to_nuisance_derivative(-self.beta.get_nuisance_derivative(),self.DA)
         if skipped > 10:
             self.fail("too many NANs")
@@ -188,7 +189,8 @@ class TestCovariance1DFunction(IMP.test.TestCase):
         self.tau = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam = Scale.setup_particle(IMP.Particle(self.m),  1.0)
         self.sig = Scale.setup_particle(IMP.Particle(self.m),  1.0)
-        self.cov = Covariance1DFunction(self.tau,self.lam,self.sig)
+        self.particles=[self.tau,self.lam,self.sig]
+        self.cov = Covariance1DFunction(*self.particles)
         self.DA=IMP.DerivativeAccumulator()
 
     def shuffle_particle_values(self):
@@ -232,7 +234,7 @@ class TestCovariance1DFunction(IMP.test.TestCase):
                     expected=t**2*exp(-0.5*(abs(pos1-pos2)/l)**2)
                     if abs(pos1-pos2) < 1e-7:
                         expected += s**2
-                    if expected != 0:
+                    if abs(expected) > 1e-7:
                         self.assertAlmostEqual(observed/expected
                             ,1.0,delta=0.001)
                     else:
@@ -386,30 +388,38 @@ class TestCovariance1DFunction(IMP.test.TestCase):
     def testGetDerivativeMatrix(self):
         for rep in xrange(3):
             self.shuffle_particle_values()
-            xlist = random.uniform(-10,10,random.randint(100))
-            for part in xrange(3):
-                data = self.cov.get_derivative_matrix(part,
+            #xlist = random.uniform(-10,10,random.randint(100))
+            xlist = random.uniform(-10,10,3)
+            for ipart,part in enumerate(self.particles):
+                data = self.cov.get_derivative_matrix(ipart,
                         [[i] for  i in xlist], True)
                 self.assertEqual(len(data), len(xlist))
                 self.assertEqual(len(data[0]), len(xlist))
-                for i,j in zip(data,xlist):
-                    self.assertAlmostEqual(i[0],j, delta=1e-5)
-                    self.assertAlmostEqual(i[1],1, delta=1e-5)
+                for (i,j),obs in ndenumerate(data):
+                    self.cov.add_to_derivatives([xlist[i]],[xlist[j]], self.DA)
+                    expected=part.get_nuisance_derivative()
+                    if abs(expected)>1e-7:
+                        self.assertAlmostEqual(obs/expected,1, delta=1e-5)
+                    else:
+                        self.assertAlmostEqual(obs, 0, delta=1e-5)
+                    for p in self.particles:
+                        p.add_to_nuisance_derivative(
+                                -p.get_nuisance_derivative(), self.DA)
 
     def testAddToParticleDerivative(self):
         for i in xrange(10):
-            val = random.uniform(-10,10)
-            self.mean.add_to_particle_derivative(0, val, self.DA)
-            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), val)
-            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), 0.0)
-            self.alpha.add_to_nuisance_derivative(
-                    -self.alpha.get_nuisance_derivative(),self.DA)
-            val = random.uniform(-10,10)
-            self.mean.add_to_particle_derivative(1, val, self.DA)
-            self.assertAlmostEqual(self.alpha.get_nuisance_derivative(), 0.0)
-            self.assertAlmostEqual(self.beta.get_nuisance_derivative(), val)
-            self.beta.add_to_nuisance_derivative(
-                    -self.beta.get_nuisance_derivative(),self.DA)
+            for ipart,part in enumerate(self.particles):
+                val = random.uniform(-10,10)
+                self.cov.add_to_particle_derivative(ipart, val, self.DA)
+                for jpart in xrange(3):
+                    if ipart == jpart:
+                        self.assertAlmostEqual(
+                                part.get_nuisance_derivative(), val)
+                        part.add_to_nuisance_derivative(-val, self.DA)
+                    else:
+                        self.assertAlmostEqual(
+                            self.particles[jpart].get_nuisance_derivative(), 
+                            0.0)
 
 class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
 
@@ -420,8 +430,8 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
         self.theta = Switching.setup_particle(IMP.Particle(self.m), 0.5)
         self.lam = Scale.setup_particle(IMP.Particle(self.m),  1.0)
         self.sig = Scale.setup_particle(IMP.Particle(self.m),  1.0)
-        self.cov = ReparametrizedCovariance1DFunction(
-                self.sig,self.lam,self.theta)
+        self.particles=[self.theta,self.lam,self.sig]
+        self.cov = ReparametrizedCovariance1DFunction(*self.particles)
         self.DA=IMP.DerivativeAccumulator()
 
     def shuffle_particle_values(self):
@@ -466,7 +476,7 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
                         expected = s**2
                     else:
                         expected=s**2*t*exp(-0.5*(abs(pos1-pos2)/l)**2)
-                    if expected != 0:
+                    if abs(expected) > 1e-7:
                         self.assertAlmostEqual(observed/expected
                             ,1.0,delta=0.001)
                     else:
@@ -607,6 +617,53 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
                 self.sig.add_to_nuisance_derivative(-self.sig.get_nuisance_derivative(),self.DA)
         if skipped > 10:
             self.fail("too many NANs")
+
+    def testValues(self):
+        """
+        tests if we can get multiple values at once
+        """
+        for rep in xrange(10):
+            self.shuffle_particle_values()
+            data = random.uniform(-10,10,random.randint(100))
+            expected = [self.cov([i],[j]) for i in data for j in data]
+            observed = self.cov([[i] for i in data],True)
+            self.assertEqual(observed,expected)
+
+    def testGetDerivativeMatrix(self):
+        for rep in xrange(3):
+            self.shuffle_particle_values()
+            #xlist = random.uniform(-10,10,random.randint(100))
+            xlist = random.uniform(-10,10,3)
+            for ipart,part in enumerate(self.particles):
+                data = self.cov.get_derivative_matrix(ipart,
+                        [[i] for  i in xlist], True)
+                self.assertEqual(len(data), len(xlist))
+                self.assertEqual(len(data[0]), len(xlist))
+                for (i,j),obs in ndenumerate(data):
+                    self.cov.add_to_derivatives([xlist[i]],[xlist[j]], self.DA)
+                    expected=part.get_nuisance_derivative()
+                    if abs(expected)>1e-7:
+                        self.assertAlmostEqual(obs/expected,1, delta=1e-5)
+                    else:
+                        self.assertAlmostEqual(obs, 0, delta=1e-5)
+                    for p in self.particles:
+                        p.add_to_nuisance_derivative(
+                                -p.get_nuisance_derivative(), self.DA)
+
+    def testAddToParticleDerivative(self):
+        for i in xrange(10):
+            for ipart,part in enumerate(self.particles):
+                val = random.uniform(-10,10)
+                self.cov.add_to_particle_derivative(ipart, val, self.DA)
+                for jpart in xrange(3):
+                    if ipart == jpart:
+                        self.assertAlmostEqual(
+                                part.get_nuisance_derivative(), val)
+                        part.add_to_nuisance_derivative(-val, self.DA)
+                    else:
+                        self.assertAlmostEqual(
+                            self.particles[jpart].get_nuisance_derivative(),
+                            0.0)
 
 if __name__ == '__main__':
     IMP.test.main()

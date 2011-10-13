@@ -12,7 +12,7 @@
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/Switching.h>
-#include <IMP/Object.h>
+#include <IMP/base/Object.h>
 #include <Eigen/Dense>
 
 #define MINIMUM 1e-7
@@ -20,7 +20,7 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Base class for functions of one variable
-class IMPISDEXPORT UnivariateFunction : public Object
+class IMPISDEXPORT UnivariateFunction : public base::Object
 {
  public:
 
@@ -89,7 +89,7 @@ class IMPISDEXPORT UnivariateFunction : public Object
 };
 
 //! Base class for functions of two variables
-class IMPISDEXPORT BivariateFunction : public Object
+class IMPISDEXPORT BivariateFunction : public base::Object
 {
  public:
 
@@ -311,18 +311,25 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 //! Covariance function
 /* \f[w(x,x') = \tau^2 \exp\left(-\frac{|x-x'|^\alpha}{2\lambda^\alpha} +
  * \delta_{ij} (\sigma^2 + J)\f]
- * \f$\sigma\f$, \f$\tau\f$ and \f$\lambda\f$ are ISD nuisance,s \f$\alpha\f$ is set up front and
- * should be positive, usually greater than 1. Default is 2.
- * J is some jitter, needed when sigma gets really small. try J=0.01 if you get
- * NANs.
+ * \param[in] \f$\tau\f$ ISD Scale
+ * \param[in] \f$\lambda\f$ ISD Scale
+ * \param[in] \f$\sigma\f$ ISD Scale
+ * \param[in] \f$\alpha\f$ positive double, usually greater than 1. 
+ *             Default is 2.
+ * \param[in] J is some jitter, needed when sigma gets really small. 
+ *            Try J=0.01 if you get NANs.
+ * \param[in] cutoff is a positive double indicating when to consider that
+ * values are zero (to avoid computing exponentials). cutoff is relative to the
+ * value when x=x', and affects only the call get_derivative_matrix.
  */
 class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 {
     public:
         Covariance1DFunction(Particle* tau, Particle* lambda, Particle* sigma,
-                double alpha=2.0, double jitter =0.0) :
+                double alpha=2.0, double jitter =0.0, double cutoff=1e-7) :
             BivariateFunction("Covariance1DFunction %1%"), alpha_(alpha),
-            tau_(tau), lambda_(lambda), sigma_(sigma), J_(jitter)
+            tau_(tau), lambda_(lambda), sigma_(sigma), J_(jitter), 
+            cutoff_(cutoff)
     {
         IMP_LOG(TERSE, "Covariance1DFunction: constructor" << std::endl);
         IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(tau); }
@@ -454,7 +461,6 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
             //d[w(x,x')]/dsigma = 2 delta_ij sigma
             if (std::abs(x1[0] - x2[0])<MINIMUM)
                 Scale(sigma_).add_to_nuisance_derivative(2*sigma_val_, accum);
-
         }
 
         void add_to_particle_derivative(unsigned particle_no,
@@ -480,57 +486,110 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
              unsigned particle_no,
              const FloatsList& xlist) const
         {
+            // Strategy: fill in the main diagonal, then fill with zeros 
+            // if the value of the function falls below cutoff. 
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,N);
+            double diag;
+            switch (particle_no)
+            {
+                case 0: //tau
+                    //d[w(x1,x1)]/dtau 
+                    //  = 2/tau*(w(x1,x1)-sigma^2)
+                    diag = (*this)(xlist[0],xlist[0])[0]
+                        -IMP::square(sigma_val_);
+                    diag *= 2./tau_val_;
+                    break;
+                case 1: //lambda
+                    //d[w(x,x)]/dlambda 
+                    //= (w(x,x)-sigma^2) 
+                    //  *( alpha /(2 lambda^{alpha+1}))
+                    diag = 0;
+                    break;
+                case 2: //sigma
+                    //d[w(x,x)]/dsigma = 2 sigma
+                    diag = 2*sigma_val_;
+                    break;
+                default:
+                    IMP_THROW("Invalid particle number", 
+                            ModelException);
+            }
+            for (unsigned i=0; i<N; i++) ret(i,i) = diag;
+            //
+            bool initial_loop=true;
+            double abs_cutoff = cutoff_*diag;
+            double dmax=-1;
             for (unsigned i=0; i<N; i++)
             {
-                for (unsigned j=i; j<N; j++)
+                for (unsigned j=i+1; j<N; j++)
                 {
-                    Floats x1(xlist[i]), x2(xlist[j]);
+                    double x1(xlist[i][0]), x2(xlist[j][0]);
                     double val;
-                    switch (particle_no)
+                    double dist(std::abs(x1-x2));
+                    //compute all entries as long as the cutoff distance was
+                    //not recorded (initial_loop) or as long as the distance is
+                    //smaller than the cutoff distance
+                    if (initial_loop || dist <= dmax)
                     {
-                        case 0: //tau
-                            //d[w(x1,x2)]/dtau 
-                            //  = 2/tau*(w(x1,x2)-delta_ij sigma^2)
-                            if (std::abs(x1[0] - x2[0])<MINIMUM) {
-                                val = (*this)(x1,x2)[0]-IMP::square(sigma_val_);
-                            } else { 
-                                val = (*this)(x1,x2)[0]; 
-                            }
-                            ret(i,j) = 2./tau_val_ * val;
-                            if (i != j) ret(j,i) = ret(i,j);
-                            break;
-                        case 1: //lambda
-                            //d[w(x,x')]/dlambda 
-                            //= (w(x,x')-delta_ij sigma^2) 
-                            //  *( alpha |x'-x|^alpha/(2 lambda^{alpha+1}))
-                            if (std::abs(x1[0] - x2[0])<MINIMUM) {
-                                val = (*this)(x1,x2)[0]-IMP::square(sigma_val_);
-                            } else { 
-                                val = (*this)(x1,x2)[0]; 
-                            }
-                            ret(i,j) = val * (alpha_ * 
-                                std::pow(
-                                    (std::abs(x1[0]-x2[0])/lambda_val_), alpha_)
-                                /(2.*lambda_val_));
-                            if (i!=j) ret(j,i) = ret(i,j);
-                            break;
-                        case 2: //sigma
-                            //d[w(x,x')]/dsigma = 2 delta_ij sigma
-                            if (std::abs(x1[0] - x2[0])<MINIMUM)
+                        switch (particle_no)
+                        {
+                            case 0: //tau
+                                //d[w(x1,x2)]/dtau 
+                                //  = 2/tau*(w(x1,x2)-delta_ij sigma^2)
+                                if (dist<MINIMUM) {
+                                    val = (*this)(xlist[i],xlist[j])[0]
+                                        -IMP::square(sigma_val_);
+                                } else { 
+                                    val = (*this)(xlist[i],xlist[j])[0]; 
+                                }
+                                val *= 2./tau_val_;
+                                break;
+                            case 1: //lambda
+                                //d[w(x,x')]/dlambda 
+                                //= (w(x,x')-delta_ij sigma^2) 
+                                //  *( alpha |x'-x|^alpha/(2 lambda^{alpha+1}))
+                                if (dist<MINIMUM) {
+                                    val = 0;
+                                } else { 
+                                    val = (*this)(xlist[i],xlist[j])[0]; 
+                                    val *= alpha_ * 
+                                        std::pow(
+                                            (dist/lambda_val_), alpha_)
+                                        /(2.*lambda_val_);
+                                }
+                                break;
+                            case 2: //sigma
+                                //d[w(x,x')]/dsigma = 2 delta_ij sigma
+                                if (dist<MINIMUM)
+                                {
+                                    val = 2*sigma_val_;
+                                } else {
+                                    val = 0;
+                                }
+                                break;
+                            default:
+                                IMP_THROW("Invalid particle number", 
+                                        ModelException);
+                        }
+                        // the value has been computed and is in val
+                        //now check if it is smaller than the cutoff. 
+                        //If true change the flag and update the distance
+                        if (std::abs(val) <= abs_cutoff)
+                        {
+                            if (initial_loop) 
                             {
-                                ret(i,j) = 2*sigma_val_;
-                                if (i!=j) ret(j,i) = ret(i,j);
-                            } else {
-                                ret(i,j) = 0;
-                                if (i!=j) ret(j,i) = 0;
+                                initial_loop = false;
+                                dmax = dist;
+                            } else if (dist < dmax)
+                            {
+                                dmax = dist;
                             }
-                            break;
-                        default:
-                            IMP_THROW("Invalid particle number", 
-                                    ModelException);
+                        }
+                    } else { // e.g. initial_loop == false && dist > dmax
+                        val = 0;
                     }
+                    ret(i,j) = val;
+                    ret(j,i) = val; 
                 }
             }
             return ret;
@@ -580,7 +639,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
     private:
         double alpha_;
         Pointer<Particle> tau_,lambda_,sigma_;
-        double tau_val_,lambda_val_,sigma_val_,J_;
+        double tau_val_,lambda_val_,sigma_val_,J_,cutoff_;
         bool do_jitter;
     
 };
@@ -602,11 +661,12 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
 class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
 {
     public:
-        ReparametrizedCovariance1DFunction(Particle* sigma, Particle* lambda,
-                Particle* theta, double alpha=2.0, double jitter =0.0) :
+        ReparametrizedCovariance1DFunction(Particle* theta, Particle* lambda,
+                Particle* sigma, double alpha=2.0, double jitter =0.0,
+                double cutoff=1e-7) :
             BivariateFunction("ReparametrizedCovariance1DFunction %1%"),
-            alpha_(alpha), sigma_(sigma), lambda_(lambda), theta_(theta),
-            J_(jitter) 
+            theta_(theta), lambda_(lambda), sigma_(sigma), alpha_(alpha),
+            J_(jitter), cutoff_(cutoff) 
     { 
         IMP_LOG(TERSE, "ReparametrizedCovariance1DFunction: constructor" 
                 << std::endl); 
@@ -717,11 +777,15 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
                             (x1[0]-x2[0])/lambda_val_
                             ) , alpha_);
                 double expterm = std::exp( -0.5*exponent);
+                //dcov/dsigma = 2*theta*sigma*exp(-0.5*(dist/lambda)^alpha)
                 Scale(sigma_).add_to_scale_derivative(
                         2*theta_val_*sigma_val_*expterm, accum);
+                //dcov/dlambda = sigma^2*theta*(dist/lambda)^alpha
+                //               *alpha/(2*lambda) * exp(-...)
                 Scale(lambda_).add_to_scale_derivative(
                         IMP::square(sigma_val_)*theta_val_
                         *exponent*alpha_/(2*lambda_val_)*expterm, accum);
+                //dcov/dtheta = sigma^2*exp(-...)
                 Switching(theta_).add_to_switching_derivative(
                         IMP::square(sigma_val_)*expterm, accum);
             }
@@ -750,51 +814,115 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
              unsigned particle_no,
              const FloatsList& xlist) const
         {
+            // See Covariance1DFunction for a description of the strategy
+            // the diagonal term is not the maximal term so it is computed
+            // separately
+            // since for lambda the maximum is not at a simple value, we
+            // skip the optimization.
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,N);
+            double diag;
+            //compute diagonal
+            switch (particle_no)
+            {
+                case 0: //theta
+                case 1: //lambda
+                    diag = 0;
+                    break;
+                case 2: //sigma
+                    diag = 2*sigma_val_;
+                    break;
+                default:
+                    IMP_THROW("Invalid particle number", 
+                            ModelException);
+            }
+            for (unsigned i=0; i<N; i++) ret(i,i) = diag;
+            //
+            //compute maximal term. 
+            switch (particle_no)
+            {
+                case 0: //theta
+                    diag = IMP::square(sigma_val_);
+                case 1: //lambda
+                    break;
+                case 2: //sigma
+                    diag = 2*sigma_val_;
+                    break;
+                default:
+                    IMP_THROW("Invalid particle number", 
+                            ModelException);
+            }
+            //
+            bool initial_loop = true;
+            double abs_cutoff = cutoff_*diag;
+            double dmax=-1;
             for (unsigned i=0; i<N; i++)
             {
-                for (unsigned j=i; j<N; j++)
+                for (unsigned j=i+1; j<N; j++)
                 {
-                    Floats x1(xlist[i]), x2(xlist[j]);
-                    if (std::abs(x1[0] - x2[0])<MINIMUM) 
+                    double x1(xlist[i][0]), x2(xlist[j][0]);
+                    double val;
+                    double dist(std::abs(x1-x2));
+                    if (particle_no == 1)
                     {
-                        switch (particle_no)
+                        if (dist<MINIMUM) 
                         {
-                            case 0: //theta
-                            case 1: //lambda
-                                ret(i,j) = 0;
-                                ret(j,i) = 0;
-                                break;
-                            case 2: //sigma
-                                ret(i,j) = 2*sigma_val_;
-                                break;
-                            default:
-                                IMP_THROW("Invalid particle number", 
-                                        ModelException);
+                            val = 0;
+                        } else {
+                            double exponent = 
+                                std::pow( dist/lambda_val_ , alpha_);
+                            double expterm = std::exp( -0.5*exponent);
+                            val = IMP::square(sigma_val_)*theta_val_
+                                    *exponent*alpha_/(2*lambda_val_)
+                                    *expterm;
                         }
-                    } else { 
-                        double exponent = std::pow( std::abs( 
-                                    (x1[0]-x2[0])/lambda_val_
-                                    ) , alpha_);
-                        double expterm = std::exp( -0.5*exponent);
-                        switch (particle_no)
+                    } else {
+                        if (initial_loop || dist <= dmax)
                         {
-                            case 0: //theta
-                                ret(i,j) = IMP::square(sigma_val_)*expterm;
-                                if (i!=j) ret(j,i) = ret(i,j);
-                                break;
-                            case 1: //lambda
-                                ret(i,j) = IMP::square(sigma_val_)*theta_val_
-                                        *exponent*alpha_/(2*lambda_val_)
-                                        *expterm;
-                                if (i!=j) ret(j,i) = ret(i,j);
-                                break;
-                            case 2: //sigma
-                                ret(i,j) = 2*theta_val_*sigma_val_*expterm;
-                                if (i!=j) ret(j,i) = ret(i,j);
+                            if (dist<MINIMUM) 
+                            {
+                                switch (particle_no)
+                                {
+                                    case 0: //theta
+                                        val = 0;
+                                        break;
+                                    case 2: //sigma
+                                        val = 2*sigma_val_;
+                                        break;
+                                    default:
+                                        IMP_THROW("Invalid particle number", 
+                                                ModelException);
+                                }
+                            } else { 
+                                double exponent = 
+                                    std::pow( dist/lambda_val_ , alpha_);
+                                double expterm = std::exp( -0.5*exponent);
+                                switch (particle_no)
+                                {
+                                    case 0: //theta
+                                        val = IMP::square(sigma_val_)*expterm;
+                                        break;
+                                    case 2: //sigma
+                                        val = 2*theta_val_*sigma_val_*expterm;
+                                }
+                            }
+                            if (std::abs(val) <= abs_cutoff)
+                            {
+                                if (initial_loop) 
+                                {
+                                    initial_loop = false;
+                                    dmax = dist;
+                                } else if (dist < dmax)
+                                {
+                                    dmax = dist;
+                                }
+                            }
+                        } else {
+                            val = 0;
                         }
                     }
+                    ret(i,j) = val;
+                    ret(j,i) = val;
                 }
             }
             return ret;
@@ -844,9 +972,9 @@ class IMPISDEXPORT ReparametrizedCovariance1DFunction : public BivariateFunction
 
 
     private:
-        double alpha_;
-        Pointer<Particle> sigma_,lambda_,theta_;
-        double theta_val_,lambda_val_,sigma_val_,J_;
+        Pointer<Particle> theta_,lambda_,sigma_;
+        double alpha_,J_,cutoff_;
+        double theta_val_,lambda_val_,sigma_val_;
         bool do_jitter;
     
 };
