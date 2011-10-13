@@ -27,7 +27,7 @@ class _HeartBeatThread(threading.Thread):
             if self._event.isSet():
                 break
             else:
-                self.master._send(_HeartBeat())
+                self._master._send(_HeartBeat())
 
 
 class SlaveHandler(object):
