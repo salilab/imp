@@ -37,7 +37,7 @@ class GaussianProcessInterpolationRestraintSparse;
  * mean and covariance functions. It outputs the value of the posterior mean and
  * covariance functions at points requested by the user.
  */
-class IMPISDEXPORT GaussianProcessInterpolationSparse : public Object
+class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
 {
  public:
      /** Constructor for the gaussian process
