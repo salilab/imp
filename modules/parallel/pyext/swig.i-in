@@ -421,7 +421,12 @@ class Manager(object):
         try:
             while True:
                 for task in self._get_finished_tasks(context):
+                    tasks_queued = len(context._tasks)
                     yield task._results
+                    # If the user added more tasks while processing these
+                    # results, make sure they get sent off to the slaves 
+                    if len(context._tasks) > tasks_queued:
+                        self._send_tasks_to_slaves(context)
         except _NoMoreTasksError:
             return
 
