@@ -476,14 +476,24 @@ class TestCase(unittest.TestCase):
            performed correctly."""
         class _FatalError(Exception): pass
 
+        # Add directory containing the example to sys.path, so it can import
+        # other Python modules in the same directory
+        path, name = os.path.split(filename)
+        oldsyspath = sys.path[:]
+        sys.path.append(path)
         vars = {}
         try:
-            exec open(filename) in vars
-        # Catch sys.exit() called from within the example; a non-zero exit
-        # value should cause the test case to fail
-        except SystemExit, e:
-            if e.code != 0 and e.code is not None:
-                raise _FatalError("Example exit with code %s" % str(e.code))
+            try:
+                exec open(filename) in vars
+            # Catch sys.exit() called from within the example; a non-zero exit
+            # value should cause the test case to fail
+            except SystemExit, e:
+                if e.code != 0 and e.code is not None:
+                    raise _FatalError("Example exit with code %s" % str(e.code))
+        finally:
+            # Restore sys.path (note that Python 2.3 does not allow
+            # try/except/finally, so we need to use nested trys)
+            sys.path = oldsyspath
 
         return vars
 
