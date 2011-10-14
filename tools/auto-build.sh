@@ -25,7 +25,7 @@ cd ${TMPDIR}
 rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
 
 # Get date and revision-specific install directories
-IMPINSTALL=${IMPTOP}/`date "+%Y%m%d"`-${rev}
+IMPINSTALL=${IMPTOP}/`date -d '8 hours' "+%Y%m%d"`-${rev}
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp.tar.gz
 rm -rf ${IMPINSTALL}
 mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
