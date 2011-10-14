@@ -166,15 +166,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  int    findex=index[frank];
  double fscore;
 
-// check frank
- if(frank>=nproc){
-  logfile << "ERROR:: " << myrank << " " << frank <<
-   "STEP " << imc << "\n";
-  for(int i=0;i<nproc;++i){logfile << index[i] << " ";}
-  logfile << "\n";
-  logfile.flush();
- }
-
 // send and receive score
  MPI_Sendrecv(&myscore,1,MPI_DOUBLE,frank,myrank,
                &fscore,1,MPI_DOUBLE,frank,frank,
