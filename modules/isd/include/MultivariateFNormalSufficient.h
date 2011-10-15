@@ -1,5 +1,6 @@
 /**
- *  \file MultivariateFNormalSufficient.h    \brief Normal distribution of Function
+ *  \file MultivariateFNormalSufficient.h
+ *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -12,48 +13,52 @@
 #include <IMP/macros.h>
 #include <IMP/Model.h>
 #include <IMP/constants.h>
+#include <IMP/base/Object.h>
 #include <math.h>
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
-
+#include <IMP/isd/internal/cg_eigen.h>
 
 IMPISD_BEGIN_NAMESPACE
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-//NFUNCS is the number of functions used by the timer
-#define NFUNCS 9
+//IMP_MVN_TIMER_NFUNCS is the number of functions used by the timer
+#define IMP_MVN_TIMER_NFUNCS 11
 
 //! MultivariateFNormalSufficient
 /** Probability density function and -log(p) of multivariate normal
  * distribution of N M-variate observations.
  *
- * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = \left((2\pi)^M|\Sigma|\right)^{-N/2} J(F) 
+ * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = \left((2\pi)^M|\Sigma|\right)^{-N/2}
+ *  J(F)
  *  \exp\left(-\frac{1}{2}
  *   \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i))
- *      \right) 
+ *      \right)
  *  \f]
  *  which is implemented as
- * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi)^M|\Sigma|)^{-N/2} J(F) 
+ * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi)^M|\Sigma|)^{-N/2} J(F)
  *  \exp\left(-\frac{N}{2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
  *  \eps\left(-\frac{1}{2} \tr(W\Sigma^{-1})\right)
  *  \f]
  *  where
- *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad 
+ *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad
  *  \overline{F(x)} = \frac{1}{N} \sum_{i=1}^N F(x_i)\f]
- *  \f( W = \sum_{i=1}^N (F(x_i) - \overline{F(x)}){}^t(F(x_i) - \overline{F(x)}) \f)
+ *  \f( W = \sum_{i=1}^N (F(x_i) - \overline{F(x)}){}^t(F(x_i)
+ *          - \overline{F(x)}) \f)
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
  * The Sufficient statistics are calculated at initialization.
  *
- *  Example: if F is the log function, the multivariate F-normal distribution is the
- *  multivariate lognormal distribution with mean \f$\mu\f$ and standard deviation \f$\Sigma\f$.
+ *  Example: if F is the log function, the multivariate F-normal distribution
+ *  is the multivariate lognormal distribution with mean \f$\mu\f$ and
+ *  standard deviation \f$\Sigma\f$.
  *
  *  \note This is an implementation of the matrix normal distribution for F(X),
  *  where rows of F(X) are independent and homoscedastic (they represent
- *  repetitions of the same experiment), but columns might be correlated, though
- *  the provided matrix.
+ *  repetitions of the same experiment), but columns might be correlated,
+ *  though the provided matrix.
  *
  *  \note For now, F must be monotonically increasing, so that J(F) > 0. The
  *  program will not check for that. The inverse of \f$\Sigma\f$ is computed at
@@ -83,43 +88,49 @@ private:
 
   VectorXd FM_, Fbar_, epsilon_,Peps_;
   double JF_,lJF_,norm_,lnorm_;
-  MatrixXd P_,W_,Sigma_,FX_,PW_ ;
+  MatrixXd P_,W_,Sigma_,FX_,PW_,precond_;
   int N_; //number of repetitions
   int M_; //number of variables
   Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
   //flags are true if the corresponding object is up to date.
-  bool flag_FM_, flag_FX_, flag_Fbar_, 
+  bool flag_FM_, flag_FX_, flag_Fbar_,
        flag_W_, flag_Sigma_, flag_epsilon_,
        flag_PW_, flag_P_, flag_ldlt_, flag_norms_,
        flag_Peps_;
+  //cg-related variables
+  bool use_cg_, first_PW_, first_PWP_;
+  double cg_tol_;
+  IMP::Pointer<internal::ConjugateGradientEigen> cg_;
 
-  internal::CallTimer<NFUNCS> timer_;
+  internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
 
  public:
      /** Initialize with all observed data
  * \param(in) F(X) matrix of observations with M columns and N rows.
- * \param(in) J(F) determinant of Jacobian of F with respect to observation matrix X. 
+ * \param(in) J(F) determinant of Jacobian of F with respect to
+ *                 observation matrix X.
  * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
  * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
  * */
-  MultivariateFNormalSufficient(const MatrixXd& FX, double JF, 
+  MultivariateFNormalSufficient(const MatrixXd& FX, double JF,
             const VectorXd& FM, const MatrixXd& Sigma);
 
      /** Initialize with sufficient statistics
  * \param(in) Fbar : M-dimensional vector of mean observations.
- * \param(in) J(F) determinant of Jacobian of F with respect to observation matrix X. 
+ * \param(in) J(F) determinant of Jacobian of F with respect to observation
+ *                  matrix X.
  * \param(in) F(M) : M-dimensional true mean vector \f$\mu\f$.
  * \param(in) Nobs : number of observations for each variable.
  * \param(in) W : MxM matrix of sample variance-covariances.
  * \param(in) Sigma : MxM variance-covariance matrix Sigma.
  * */
-  MultivariateFNormalSufficient(const VectorXd& Fbar, double JF, 
-            const VectorXd& FM, int Nobs,  const MatrixXd& W, 
+  MultivariateFNormalSufficient(const VectorXd& Fbar, double JF,
+            const VectorXd& FM, int Nobs,  const MatrixXd& W,
             const MatrixXd& Sigma);
 
   /* probability density function */
   double density() const;
-    
+
   /* energy (score) functions, aka -log(p) */
   double evaluate() const;
 
@@ -131,7 +142,7 @@ private:
 
   /* change of parameters */
   void set_FX(const MatrixXd& f);
-  MatrixXd get_FX() const; 
+  MatrixXd get_FX() const;
 
   void set_FM(const VectorXd& f);
   VectorXd get_FM() const;
@@ -148,24 +159,32 @@ private:
   //if you want to force a recomputation of all stored variables
   void reset_flags();
 
+  // use conjugate gradients (default false)
+  void set_use_cg(bool use, double tol);
+
   // print runtime statistics
   void stats() const;
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficient, 
-          out << "MultivariateFNormalSufficient: " 
-          << N_ << " observations of " 
-          <<  M_ << " variables " <<std::endl, 
+  IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
+          out << "MultivariateFNormalSufficient: "
+          << N_ << " observations of "
+          <<  M_ << " variables " <<std::endl,
           {});
 
  private:
-  
+
+  //conjugate gradient init
+  void setup_cg();
+
   //precision matrix
   MatrixXd get_P() const;
   void set_P(const MatrixXd& P);
 
   //precision * W
   MatrixXd get_PW() const;
+  MatrixXd compute_PW_direct() const;
+  MatrixXd compute_PW_cg() const;
   void set_PW(const MatrixXd& PW);
 
   //precision * epsilon
@@ -179,7 +198,7 @@ private:
   // gets factorization object
   Eigen::LLT<MatrixXd, Eigen::Upper> get_ldlt() const;
   void set_ldlt(const Eigen::LLT<MatrixXd, Eigen::Upper>& ldlt);
- 
+
   // compute determinant and norm
   void set_norms(double norm, double lnorm);
   std::vector<double> get_norms() const;
@@ -199,7 +218,7 @@ private:
   /*computes the discrepancy vector*/
   void compute_epsilon();
 
-  
+
 };
 
 IMPISD_END_NAMESPACE
