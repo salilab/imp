@@ -1,5 +1,6 @@
 /**
- *  \file GaussianProcessInterpolation.h    \brief Normal distribution of Function
+ *  \file GaussianProcessInterpolation.h
+ *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -64,8 +65,11 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
             return mvn_->stats();
         }
 
+        //use conjugate gradients when possible (default false)
+        void set_use_cg(bool use, double tol) {mvn_->set_use_cg(use,tol);}
+
         IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
-    
+
 };
 
 IMPISD_END_NAMESPACE

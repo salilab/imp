@@ -1,5 +1,5 @@
 /**
- *  \file GaussianProcessInterpolationRestraint.cpp  
+ *  \file GaussianProcessInterpolationRestraint.cpp
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -26,18 +26,19 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     //check if the number of repetitions is the same for every point
     IMP_IF_CHECK(USAGE) {
         for (unsigned i=1; i<M_; i++)
-            IMP_USAGE_CHECK(N == gpi_->n_obs_[i], 
+            IMP_USAGE_CHECK(N == gpi_->n_obs_[i],
                 "must have the same number of repetitions for each point!");
     }
-    // build multivariate normal with 
+    // build multivariate normal with
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
-    //args are: sample mean, jacobian, true mean, 
+    //args are: sample mean, jacobian, true mean,
     // nobs, sample variance, true variance
     mvn_ = new MultivariateFNormalSufficient(gpi_->get_I(), 1.0, gpi_->get_m(),
             N, gpi_->get_S(), gpi_->get_W());
+    mvn_->set_use_cg(false,0.0);
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);
 }
 
@@ -52,7 +53,7 @@ void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
         gpi_->flag_m_gpir_ = true;
         IMP_LOG(TERSE, " updated mean");
     }
-    if (!(gpi_->flag_W_gpir_)) 
+    if (!(gpi_->flag_W_gpir_))
     {
         mvn_->set_Sigma(gpi_->get_W());
         gpi_->flag_W_gpir_ = true;
@@ -61,12 +62,13 @@ void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
     IMP_LOG(TERSE, std::endl);
 }
 
-double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double GaussianProcessInterpolationRestraint::unprotected_evaluate(
+        DerivativeAccumulator *accum) const
 {
     //check if the functions have changed
     const_cast<GaussianProcessInterpolationRestraint*>(this)->
         update_mean_and_covariance();
-    
+
     double ene = mvn_->evaluate();
 
     if (accum)
@@ -77,14 +79,14 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
         RowVectorXd meanprod = dmv.transpose()*dmean;
         unsigned npart=meanprod.cols(); //should be 2 for Linear1DFunction
         for (unsigned i=0; i<meanprod.cols(); i++)
-            gpi_->mean_function_->add_to_particle_derivative(i, meanprod(i), 
+            gpi_->mean_function_->add_to_particle_derivative(i, meanprod(i),
                     *accum);
         //derivatives for covariance particles
         MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
         npart = gpi_->covariance_function_->get_number_of_particles();
         for (unsigned i=0; i<npart; i++)
         {
-            MatrixXd dcov = 
+            MatrixXd dcov =
                 gpi_->covariance_function_->get_derivative_matrix(i, gpi_->x_);
             double val = (dmvS.transpose()*dcov).trace();
             gpi_->covariance_function_->add_to_particle_derivative(i, val,
@@ -94,7 +96,8 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(DerivativeAcc
     return ene;
 }
 
-ParticlesTemp GaussianProcessInterpolationRestraint::get_input_particles() const
+ParticlesTemp
+GaussianProcessInterpolationRestraint::get_input_particles() const
 {
     ParticlesTemp ret;
     ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
@@ -103,8 +106,8 @@ ParticlesTemp GaussianProcessInterpolationRestraint::get_input_particles() const
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }
-    
-ContainersTemp GaussianProcessInterpolationRestraint::get_input_containers() 
+
+ContainersTemp GaussianProcessInterpolationRestraint::get_input_containers()
     const
 {
     ContainersTemp ret;
@@ -114,12 +117,11 @@ ContainersTemp GaussianProcessInterpolationRestraint::get_input_containers()
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }
-    
+
 void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
 {
-    out << "GaussianProcessInterpolationRestraint on " 
+    out << "GaussianProcessInterpolationRestraint on "
         << get_input_particles().size() << " particles" << std::endl;
 }
 
 IMPISD_END_NAMESPACE
-
