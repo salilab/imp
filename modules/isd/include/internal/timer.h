@@ -1,3 +1,10 @@
+/**
+ *  \brief A timer class to time function calls
+ *
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *
+ */
+
 #ifndef IMPISD_INTERNAL_TIMER_H
 #define IMPISD_INTERNAL_TIMER_H
 
@@ -12,7 +19,7 @@ using boost::posix_time::ptime;
 using boost::posix_time::time_duration;
 
 //struct for call statistics
-struct func_stats 
+struct func_stats
 {
     ptime start;
     ptime stop;
@@ -54,12 +61,12 @@ public:
         }
     }
 
-    void start(int name) const 
+    void start(int name) const
     {
         const_cast<CallTimer *>(this)->start_helper(name);
     }
 
-    void stop(int name) const 
+    void stop(int name) const
     {
         const_cast<CallTimer *>(this)->stop_helper(name);
     }
@@ -70,7 +77,7 @@ public:
             << "\t" << stats_[name].total.total_milliseconds();
         if (stats_[name].ncalls > 0)
         {
-            std::cout << "\t" 
+            std::cout << "\t"
                 << stats_[name].total.total_microseconds()/stats_[name].ncalls;
         } else {
             std::cout << "\t---";
@@ -83,14 +90,19 @@ public:
 
     void stats(std::string dispnames[]) const
     {
-        std::cout << 
+        std::cout <<
             "Function\tTotal(ms)\tMean(mus)\tFirst(mus)\tLast(mus)\tNumber\n";
         for (unsigned i=0; i<nfuncs; i++) stats(i,dispnames[i]);
     }
-            
+
+    func_stats stats_data(int name)
+    {
+        return stats_[name];
+    }
+
 };
 
 IMPISD_END_INTERNAL_NAMESPACE
-    
+
 
 #endif /* IMPISD_INTERNAL_TIMER_H */
