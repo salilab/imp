@@ -40,7 +40,7 @@ using namespace IMP::base;
     PyObject *release() {
       IMP_INTERNAL_CHECK(ptr_->ob_refcnt >=1, "No refcount");
       PyObject *ret=ptr_;
-      ptr_=IMP::nullptr;
+      ptr_= IMP_NULLPTR;
       return ret;
     }
     ~PyPointer() {

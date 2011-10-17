@@ -15,6 +15,13 @@ namespace IMP {
 /** The C++0x standard adds the nullptr keyword to get around a variety of
     problems with NULL. We provide an emulation within the IMP namespace when
     it is not available.
+
+    Use "nullptr" in code; the compiler will use our IMP::nullptr emulation
+    automatically on systems that don't provide a native nullptr implementation.
+
+    If you are not in the IMP namespace, use the IMP_NULLPTR macro rather
+    than asking for "IMP::nullptr". The latter does not work with some compilers
+    (e.g. MSVC, which gets confused because nullptr is a keyword).
 */
 const std::nullptr_t nullptr;
 
@@ -45,7 +52,9 @@ extern IMPCOMPATIBILITYEXPORT const nullptr_t nullptr;
 #else
 extern const void * const nullptr;
 #endif //SWIG
-
+#define IMP_NULLPTR IMP::nullptr
+#else  // IMP_DEFINE_NULLPTR
+#define IMP_NULLPTR nullptr
 #endif // IMP_DEFINE_NULLPTR
 #endif // IMP_DOXYGEN
 
