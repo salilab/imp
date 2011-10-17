@@ -82,7 +82,7 @@ public:
     );
   Transformation3D get_inverse() const;
 private:
-  Vector3D trans_; //tranlation
+  Vector3D trans_; //translation
   Rotation3D rot_;  //rotation
 };
 
