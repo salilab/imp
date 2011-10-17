@@ -228,7 +228,7 @@ using namespace IMP::base;
     static PyObject* create_python_object( T* t, SwigData st, int OWN) {
       IMP_CHECK_OBJECT(t);
       PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
-      base::internal::ref(t);
+      IMP::base::internal::ref(t);
       return o.release();
     }
   };
