@@ -536,18 +536,37 @@ try:
                                       stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
                                       stderr=subprocess.PIPE, env=env)
-        def wait(self):
-            err = self.stderr.read()
-            ret = subprocess.Popen.wait(self)
-            return ret, err
 except ImportError:
+    import threading
     # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
     class _SubprocessWrapper(object):
         def __init__(self, app, args):
             self.stdin, self.stdout, self.stderr = \
                              os.popen3(app + " " + " ".join(args))
-        def wait(self):
-            return (0, "")
+
+        def _readerthread(self, fh, buffer):
+            buffer.append(fh.read())
+
+        def communicate(self, input=None):
+            stdout = []
+            stderr = []
+            stdout_thread = threading.Thread(target=self._readerthread,
+                                             args=(self.stdout, stdout))
+            stdout_thread.setDaemon(True)
+            stdout_thread.start()
+            stderr_thread = threading.Thread(target=self._readerthread,
+                                             args=(self.stderr, stderr))
+            stderr_thread.setDaemon(True)
+            stderr_thread.start()
+
+            if input:
+                self.stdin.write(input)
+            self.stdin.close()
+            stdout_thread.join()
+            stderr_thread.join()
+            self.returncode = 0
+            return stdout[0], stderr[0]
+
 
 class ApplicationTestCase(TestCase):
     """Super class for simple IMP application test cases"""

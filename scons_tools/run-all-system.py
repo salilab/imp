@@ -25,9 +25,8 @@ def _test_example(dir, working_dir, index, filename, shortname):
             os.chdir("%(dir)s")
             cmd="python %(script)s %(args)s"
             app=self.run_script("%(script)s", %(args)s)
-            out = app.stdout.readlines()
-            ret, err= app.wait()
-            self.assertApplicationExitedCleanly(ret, err)
+            out, err = app.communicate()
+            self.assertApplicationExitedCleanly(app.returncode, err)
             return""" % {"shortname":shortname, "dir":dir, "script":os.path.join(dir,filename), "args":str(args)})
     return RunExample("test_run_example")
 

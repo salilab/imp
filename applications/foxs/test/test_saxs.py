@@ -11,12 +11,10 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         p = self.run_application('foxs',
                                  [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
-        p.stdin.close()
-        out = p.stdout.readlines()
-        ret, err = p.wait()
+        out, err = p.communicate()
         sys.stderr.write(err)
-        self.assertApplicationExitedCleanly(ret, err)
-        m = re.search('Chi\s+=\s+([\d\.]+)\r?', out[-1])
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        m = re.search('Chi\s+=\s+([\d\.]+)\r?', out)
         self.assertNotEqual(m, None, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.44, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):

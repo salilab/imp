@@ -8,11 +8,10 @@ class LigandScoreApplicationTest(IMP.test.ApplicationTestCase):
         p = self.run_application('ligand_score',
                               [self.get_input_file_name('1d3d-protein.pdb'),
                                self.get_input_file_name('1d3d-ligands.mol2')])
-        p.stdin.close()
-        out = p.stdout.readlines()
-        ret, err = p.wait()
+        out, err = p.communicate()
         sys.stderr.write(err)
-        self.assertApplicationExitedCleanly(ret, err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
+        out = out.split('\n')
         for line, nligand, score in [(out[-2], '001', 8.39),
                                      (out[-1], '002', 6.54)]:
             m = re.match('Score for 1d3d\-ligand\.1d3d\.(\d+) is ([\d\.]+)',
