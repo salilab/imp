@@ -99,8 +99,8 @@ public:
     \note The parameters are indexes by the radius. To maintain
     numeratical stability, look for a radius within +-eps from the
     queried radius.
-   \note the function return nullptr and writes a warning if parameters
-   for this radius were not found.
+   \note if parameters for this radius were not found, a warning is printed
+         and the parameters are calculated using set_params().
   */
   const RadiusDependentKernelParameters* get_params(
         float radius,float eps=0.001);
