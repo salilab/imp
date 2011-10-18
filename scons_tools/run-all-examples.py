@@ -7,7 +7,8 @@ import re
 def get_unmet_module_deps(f, disabled_modules):
     unmet_deps = []
     def check_disabled(modname):
-        if modname.startswith("IMP.") and modname[4:] in disabled_modules:
+        if (modname.startswith("IMP.") and modname[4:] in disabled_modules) \
+           or (modname == 'RMF' and modname in disabled_modules):
             unmet_deps.append(modname[4:])
     # Note that we currently only match import lines with no indentation. It is
     # assumed that indented imports are within try/except blocks, and thus
