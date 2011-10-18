@@ -167,9 +167,12 @@ int main(int argc, char **argv) {
     for(unsigned int i=0;i<final_fits.size();i++){
       core::transform(rb,
                       final_fits[i].get_fit_transformation());
-      char pdb_out_fn[pdb_fit_filename.size()+10];
-      sprintf(pdb_out_fn, "%s.%03d.pdb",pdb_fit_filename.c_str(),i);
-      atom::write_pdb(mol2fit,pdb_out_fn);
+      std::ostringstream pdb_out_fn;
+      pdb_out_fn << pdb_fit_filename << ".";
+      pdb_out_fn.width(3);
+      pdb_out_fn.fill('0');
+      pdb_out_fn << i << ".pdb";
+      atom::write_pdb(mol2fit, pdb_out_fn.str());
       core::transform(rb,
                       final_fits[i].get_fit_transformation().get_inverse());
     }
