@@ -63,7 +63,6 @@ using namespace IMP::base;
   using boost::mpl::and_;
   using boost::mpl::not_;
   using boost::is_convertible;
-  using boost::is_base_of;
   //using namespace boost;
   //using namespace boost::mpl;
 
@@ -127,14 +126,16 @@ using namespace IMP::base;
   };
 
   template <class T>
-  struct ValueOrObject<T, typename enable_if<is_base_of<Object, T> >::type > {
+  struct ValueOrObject<T,
+               typename enable_if<boost::is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
   };
 
   template <class T>
-  struct ValueOrObject<T*, typename enable_if<is_base_of<Object, T> >::type > {
+  struct ValueOrObject<T*,
+               typename enable_if<boost::is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
@@ -142,7 +143,7 @@ using namespace IMP::base;
 
   template <class T>
   struct ValueOrObject<Pointer<T>,
-                       typename enable_if<is_base_of<Object, T> >::type > {
+               typename enable_if<boost::is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
@@ -150,7 +151,7 @@ using namespace IMP::base;
 
   template <class T>
   struct ValueOrObject<WeakPointer<T>,
-                       typename enable_if<is_base_of<Object, T> >::type > {
+               typename enable_if<boost::is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
@@ -158,7 +159,7 @@ using namespace IMP::base;
 
   template <class T>
   struct ValueOrObject<UncheckedWeakPointer<T>,
-                       typename enable_if<is_base_of<Object, T> >::type > {
+               typename enable_if<boost::is_base_of<Object, T> >::type > {
     static const T* get(const T*t) {return *t;}
     typedef T type;
     typedef T* store_type;
@@ -182,7 +183,7 @@ using namespace IMP::base;
   template <class T>
   struct ConvertValueBase: public ConvertAllBase<T> {
     BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
-    BOOST_STATIC_ASSERT(!(is_base_of< Object, T>::value));
+    BOOST_STATIC_ASSERT(!(boost::is_base_of< Object, T>::value));
     template <class SwigData>
     static const T& get_cpp_object(PyObject *o,
                                    SwigData st, SwigData, SwigData) {
@@ -208,7 +209,7 @@ using namespace IMP::base;
   template <class T>
   struct ConvertObjectBase: public ConvertAllBase<T> {
     BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
-    BOOST_STATIC_ASSERT((is_base_of< Object, T>::value));
+    BOOST_STATIC_ASSERT((boost::is_base_of< Object, T>::value));
     template <class SwigData>
     static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
       void *vp;
@@ -278,13 +279,13 @@ using namespace IMP::base;
 
 
   template <class T>
-  struct Convert<T, typename enable_if< is_base_of< Object, T> >
+  struct Convert<T, typename enable_if< boost::is_base_of< Object, T> >
                  ::type >: public ConvertObjectBase<T > {
     static const int converter=1;
   };
 
 template <class T>
-  struct Convert<T*, typename enable_if< is_base_of< Object, T> >
+  struct Convert<T*, typename enable_if< boost::is_base_of< Object, T> >
                  ::type >: public ConvertObjectBase<T > {
     static const int converter=1;
   };
@@ -339,7 +340,7 @@ template <class T>
   };
 
   template <class T, class ConvertT>
-  struct ConvertSequence<T, ConvertT, typename enable_if< is_base_of<
+  struct ConvertSequence<T, ConvertT, typename enable_if< boost::is_base_of<
        boost::array<typename T::value_type, T::static_size>, T> >::type > {
     static const int converter=5;
     typedef ConvertSequenceHelper<T, typename T::value_type, ConvertT> Helper;
