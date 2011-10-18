@@ -12,8 +12,8 @@ class LigandScoreApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
         out = out.split('\n')
-        for line, nligand, score in [(out[-2], '001', 8.39),
-                                     (out[-1], '002', 6.54)]:
+        for line, nligand, score in [(out[-3], '001', 8.39),
+                                     (out[-2], '002', 6.54)]:
             m = re.match('Score for 1d3d\-ligand\.1d3d\.(\d+) is ([\d\.]+)',
                          line)
             self.assertNotEqual(m, None,
