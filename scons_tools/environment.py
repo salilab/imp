@@ -53,6 +53,7 @@ class _WineEnvironment(Environment):
         self.Append(CFLAGS="/MD")
         self.Append(CXXFLAGS=["/MD", "/GR", "/EHsc", "/DNOMINMAX"])
         self.Append(IMP_PYTHON_CXXFLAGS=["/MD", "/GR", "/EHsc"])
+        self.Append(IMP_BIN_CXXFLAGS=["/MD", "/GR", "/EHsc"])
 
     def _fix_scons_msvc_detect(self):
         """Ensure that MSVC auto-detection finds tools on Wine builds"""
