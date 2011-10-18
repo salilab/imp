@@ -21,13 +21,12 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
-        #IMP.set_log_level(IMP.MEMORY)
-        IMP.set_log_level(0)
+        #IMP.set_log_level(0)
         self.m = IMP.Model()
         self.q=[[0],[1]]
         self.I=[1,1]
         self.err=array([sqrt(10),sqrt(20)])
-        self.N=[10,10]
+        self.N=10
         self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 0.0)
         self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  0.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)
@@ -41,7 +40,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         self.m.add_restraint(self.gpr)
 
     def get_probability(self):
-        N=self.N[0]
+        N=self.N
         M=len(self.q)
         I=array(self.I)
         m=array([self.mean(i)[0] for i in self.q])
@@ -56,7 +55,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         return ret[0,0]
 
     def get_energy(self):
-        N=self.N[0]
+        N=self.N
         M=len(self.q)
         I=array(self.I)
         m=array([self.mean(i)[0] for i in self.q])
@@ -71,7 +70,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         return ret[0,0]
 
     def get_dmvndmu(self):
-        N=self.N[0]
+        N=self.N
         M=len(self.q)
         I=array(self.I)
         m=array([self.mean(i)[0] for i in self.q])
@@ -81,7 +80,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         return -N*dot(P,eps)
 
     def get_dmvndcov(self):
-        N=self.N[0]
+        N=self.N
         M=len(self.q)
         I=array(self.I)
         m=array([self.mean(i)[0] for i in self.q])

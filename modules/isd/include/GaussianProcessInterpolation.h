@@ -1,5 +1,6 @@
 /**
- *  \file GaussianProcessInterpolation.h    \brief Normal distribution of Function
+ *  \file GaussianProcessInterpolation.h
+ *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -40,21 +41,23 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
       * \param(in) sample_std \f$s\f$ : vector of sample standard deviations
       * \param(in) mean_function \f$m\f$ : a pointer to the prior mean function
       *                                    to use.  Should be compatible with
-      *                                    the size of x(i).  
+      *                                    the size of x(i).
       * \param(in) covariance_function \f$w\f$: prior covariance function.
+      * \param(in) sparse_cutoff : when to consider that a matrix entry is zero
       *
       * Computes the necessary matrices and inverses when called.
       */
   GaussianProcessInterpolation(FloatsList x,
                                Floats sample_mean,
                                Floats sample_std,
-                               Ints n_obs,
+                               unsigned n_obs,
                                UnivariateFunction *mean_function,
-                               BivariateFunction *covariance_function);
+                               BivariateFunction *covariance_function,
+                               double sparse_cutoff=1e-7);
 
   /** Get posterior mean and covariance functions, at the points requested
    * Posterior mean is defined as
-   * \f[\hat{I}(x) = m(x) 
+   * \f[\hat{I}(x) = m(x)
    *        + {}^t\mathbf{w}(q)
    *        (\mathbf{W}+\mathbf{S})^{-1}
    *        (\mathbf{I}-\mathbf{m}) \f]
@@ -69,16 +72,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
    * \f$\mathbf{W}\f$ is the prior covariance matrix built by evaluating the
    * covariance function at each of the observations; \f$\mathbf{S}\f$ is the
    * diagonal covariance matrix built from sample_std and n_obs.
-   * 
+   *
    * Both functions will check if the mean or covariance functions have changed
-   * since the last call, and will recompute 
+   * since the last call, and will recompute
    * \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ if necessary.
    */
   double get_posterior_mean(Floats x);
-  double get_posterior_covariance(Floats x1, 
+  double get_posterior_covariance(Floats x1,
                                   Floats x2);
 
-  // call these if you called update() on the mean or covariance function. 
+  // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.
   void force_mean_update();
   void force_covariance_update();
@@ -95,12 +98,17 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // returns updated prior covariance vector
   VectorXd get_wx_vector(Floats xval);
   //returns updated data covariance matrix
-  MatrixXd get_S() const {return S_;}
+  Eigen::DiagonalMatrix<double, Eigen::Dynamic> get_S() const
+  {
+      return S_;
+  }
   //returns updated prior covariance matrix
   MatrixXd get_W();
-  //returns updated (W+S)^{-1}
+  //returns Omega=(W+S/N)
+  MatrixXd get_Omega() { return get_W()+MatrixXd(get_S())/n_obs_; }
+  //returns updated Omega^{-1}
   MatrixXd get_WS();
-  //returns updated (W+S)^{-1}(I-m)
+  //returns updated Omega^{-1}(I-m)
   VectorXd get_WSIm();
 
  private:
@@ -121,7 +129,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // compute mean observations
   void compute_I(Floats mean);
   // compute diagonal covariance matrix of observations
-  void compute_S(Floats std, Ints n);
+  void compute_S(Floats std);
   // compute prior mean vector
   void compute_m();
 
@@ -129,15 +137,17 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     unsigned N_; // number of dimensions of the abscissa
     unsigned M_; // number of observations to learn from
     FloatsList x_; // abscissa
-    Ints n_obs_; // number of observations
+    unsigned n_obs_; // number of observations
     // pointer to the prior mean function
-    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
+    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_;
     // pointer to the prior covariance function
     IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
-    VectorXd I_,m_,wx_; 
-    MatrixXd S_,W_,WS_; // WS = (W + S)^{-1}
+    VectorXd I_,m_,wx_;
+    MatrixXd W_,WS_; // WS = (W + S)^{-1}
+    Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
     VectorXd WSIm_; // WS * (I - m)
     bool flag_m_, flag_m_gpir_, flag_WS_, flag_WSIm_, flag_W_, flag_W_gpir_;
+    double cutoff_;
 
 };
 
