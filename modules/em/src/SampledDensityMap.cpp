@@ -156,26 +156,19 @@ namespace {
   class GaussianKernel {
     KernelParameters *kps_;
     FloatKey mass_key_;
-    const RadiusDependentKernelParameters*
+    const RadiusDependentKernelParameters&
     get_radius_dependent_parameters(Particle *p) const {
       double r=core::XYZR(p).get_radius();
-      const RadiusDependentKernelParameters*params
-        = kps_->get_params(r);
-      if (!params) {
-        IMP_LOG(TERSE, "EM map is using default params" << std::endl);
-        kps_->set_params(r);
-        params = kps_->get_params(r);
-      }
-      return params;
+      return kps_->get_params(r);
     }
   public:
     GaussianKernel(KernelParameters& kps,
                    const FloatKey &mass_key):
       kps_(&kps),mass_key_(mass_key){}
     double get_radius(Particle *p) const {
-      const RadiusDependentKernelParameters* kernel_params
+      const RadiusDependentKernelParameters& kernel_params
         =get_radius_dependent_parameters(p);
-      return kernel_params->get_kdist();
+      return kernel_params.get_kdist();
     }
     algebra::Vector3D get_center(Particle *p) const {
       return core::XYZ(p).get_coordinates();
@@ -184,14 +177,14 @@ namespace {
       core::XYZR d(p);
       algebra::Vector3D cs=d.get_coordinates();
       double rsq= (cs-pt).get_squared_magnitude();
-      const RadiusDependentKernelParameters* kernel_params
+      const RadiusDependentKernelParameters& kernel_params
         =get_radius_dependent_parameters(p);
-      double tmp = EXP(-rsq * kernel_params->get_inv_sigsq());
+      double tmp = EXP(-rsq * kernel_params.get_inv_sigsq());
       //tmp = exp(-rsq * params->get_inv_sigsq());
       // if statement to ensure even sampling within the box
       if (tmp>kps_->get_lim()) {
         return
-          kernel_params->get_normfac() * p->get_value(mass_key_) * tmp;
+          kernel_params.get_normfac() * p->get_value(mass_key_) * tmp;
       } else {
         return 0;
       }

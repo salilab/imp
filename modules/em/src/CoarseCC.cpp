@@ -373,16 +373,16 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
             em_map->get_dim_index_by_location(vv,1)<<","<<
             em_map->get_dim_index_by_location(vv,2)<<std::endl);
     }
-    const RadiusDependentKernelParameters *params =
+    const RadiusDependentKernelParameters &params =
       kernel_params->get_params(
             model_xyzr[ii].get_radius());
     calc_local_bounding_box(//em_map,
                             model_map,
                             x,y,z,
-                            params->get_kdist(),
+                            params.get_kdist(),
                             iminx, iminy, iminz,
                             imaxx, imaxy, imaxz);
-    IMP_LOG_WRITE(VERBOSE,params->show());
+    IMP_LOG_WRITE(VERBOSE,params.show());
     IMP_LOG(VERBOSE,"local bb: ["<<iminx<<","<<iminy<<","<<iminz<<"] ["<<imaxx
                     <<","<<imaxy<<","<<imaxz<<"] \n");
     tdvx = .0;tdvy=.0; tdvz=.0;
@@ -399,7 +399,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
           float dy = y_loc[ivox] - y;
           float dz = z_loc[ivox] - z;
           rsq = dx * dx + dy * dy + dz * dz;
-          rsq = EXP(-rsq * params->get_inv_sigsq());
+          rsq = EXP(-rsq * params.get_inv_sigsq());
           tmp = (x-x_loc[ivox]) * rsq;
           if (std::abs(tmp) > lim) {
             tdvx += tmp * em_data[ivox];
@@ -416,8 +416,8 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
         }
       }
       }
-    tmp =  model_ps[ii]->get_value(w_key) * 2.*params->get_inv_sigsq()
-          * scalefac * params->get_normfac() / lower_comp;
+    tmp =  model_ps[ii]->get_value(w_key) * 2.*params.get_inv_sigsq()
+          * scalefac * params.get_normfac() / lower_comp;
     IMP_LOG(VERBOSE,"for particle:"<<ii<<" ("<<tdvx<<","<<tdvy<<
             ","<<tdvz<<")"<<std::endl);
     dv_out[ii][0] = tdvx * tmp;

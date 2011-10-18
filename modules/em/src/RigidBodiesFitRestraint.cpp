@@ -179,11 +179,11 @@ void RigidBodiesFitRestraint::sample_rigid_body_derivatives_map(
   //each voxel contains the sum of contributions from all particles
   for (unsigned int ii=0; ii<rb_ps.size(); ii++) {
     core::XYZR xyzr(rb_ps[ii]);
-    const RadiusDependentKernelParameters *params =
+    const RadiusDependentKernelParameters &params =
         model_dens_map_->get_kernel_params()->get_params(xyzr.get_radius());
     calc_local_bounding_box(*model_dens_map_,
                             xyzr.get_coordinates(),
-                            params->get_kdist(),
+                            params.get_kdist(),
                             iminx, iminy, iminz,
                             imaxx, imaxy, imaxz);
     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
@@ -194,9 +194,9 @@ void RigidBodiesFitRestraint::sample_rigid_body_derivatives_map(
           float dx = x_loc[ivox] - xyzr.get_x();
           float dy = y_loc[ivox] - xyzr.get_y();
           float dz = z_loc[ivox] - xyzr.get_z();
-          d_vec=algebra::Vector3D(dx,dy,dz)/params->get_sig();
+          d_vec=algebra::Vector3D(dx,dy,dz)/params.get_sig();
           rsq = dx * dx + dy * dy + dz * dz;
-          rsq = EXP(-0.5 * rsq * params->get_inv_sigsq());
+          rsq = EXP(-0.5 * rsq * params.get_inv_sigsq());
           d_vecs[ivox]+=d_vec*rsq;
          ivox++;
         }
