@@ -1,12 +1,12 @@
 /**
- *  \file MultivariateFNormalSufficient.h
+ *  \file MultivariateFNormalSufficientDiagonalW.h
  *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
-#define IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H
+#ifndef IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_DIAGONAL_W_H
+#define IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_DIAGONAL_W_H
 
 #include "isd_config.h"
 #include "internal/timer.h"
@@ -26,7 +26,7 @@ using Eigen::VectorXd;
 //IMP_MVN_TIMER_NFUNCS is the number of functions used by the timer
 #define IMP_MVN_TIMER_NFUNCS 11
 
-//! MultivariateFNormalSufficient
+//! MultivariateFNormalSufficientDiagonalW
 /** Probability density function and -log(p) of multivariate normal
  * distribution of N M-variate observations.
  *
@@ -49,7 +49,7 @@ using Eigen::VectorXd;
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
- * The Sufficient statistics are calculated at initialization.
+ * The SufficientDiagonalW statistics are calculated at initialization.
  *
  *  Example: if F is the log function, the multivariate F-normal distribution
  *  is the multivariate lognormal distribution with mean \f$\mu\f$ and
@@ -81,14 +81,14 @@ using Eigen::VectorXd;
  *
  */
 
-class IMPISDEXPORT MultivariateFNormalSufficient : public Object
+class IMPISDEXPORT MultivariateFNormalSufficientDiagonalW : public Object
 {
 
 private:
 
   VectorXd FM_, Fbar_, epsilon_,Peps_;
   double JF_,lJF_,norm_,lnorm_;
-  MatrixXd P_,W_,Sigma_,FX_,PW_;
+  MatrixXd P_,W_,Sigma_,FX_,PW_,precond_;
   int N_; //number of repetitions
   int M_; //number of variables
   Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
@@ -98,7 +98,6 @@ private:
        flag_PW_, flag_P_, flag_ldlt_, flag_norms_,
        flag_Peps_;
   //cg-related variables
-  MatrixXd precond_;
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
   IMP::Pointer<internal::ConjugateGradientEigen> cg_;
@@ -113,7 +112,7 @@ private:
  * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
  * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
  * */
-  MultivariateFNormalSufficient(const MatrixXd& FX, double JF,
+  MultivariateFNormalSufficientDiagonalW(const MatrixXd& FX, double JF,
             const VectorXd& FM, const MatrixXd& Sigma);
 
      /** Initialize with sufficient statistics
@@ -125,7 +124,7 @@ private:
  * \param(in) W : MxM matrix of sample variance-covariances.
  * \param(in) Sigma : MxM variance-covariance matrix Sigma.
  * */
-  MultivariateFNormalSufficient(const VectorXd& Fbar, double JF,
+  MultivariateFNormalSufficientDiagonalW(const VectorXd& Fbar, double JF,
             const VectorXd& FM, int Nobs,  const MatrixXd& W,
             const MatrixXd& Sigma);
 
@@ -167,8 +166,8 @@ private:
   void stats() const;
 
   /* remaining stuff */
-  IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
-          out << "MultivariateFNormalSufficient: "
+  IMP_OBJECT_INLINE(MultivariateFNormalSufficientDiagonalW,
+          out << "MultivariateFNormalSufficientDiagonalW: "
           << N_ << " observations of "
           <<  M_ << " variables " <<std::endl,
           {});
@@ -224,4 +223,4 @@ private:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_H */
+#endif  /* IMPISD_MULTIVARIATE_FNORMAL_SUFFICIENT_DIAGONAL_W_H */
