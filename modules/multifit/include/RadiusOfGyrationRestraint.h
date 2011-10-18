@@ -41,7 +41,9 @@ public:
   //! Get the predicted radius of gyration used in the restraint
   inline Float get_radius_of_gyration() {return predicted_rog_;}
 
+#ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);
+#endif
  protected:
   Model *mdl_;
   Float predicted_rog_;

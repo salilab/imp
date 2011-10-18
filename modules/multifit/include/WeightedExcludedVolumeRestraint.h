@@ -45,7 +45,9 @@ public:
 
   IMP_RESTRAINT(WeightedExcludedVolumeRestraint);
 
+#ifndef SWIG
   IMP_LIST(private, Particle, particle, Particle*, Particles);
+#endif
 private:
   //! Create density maps: one for each rigid body
   /**
