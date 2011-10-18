@@ -117,14 +117,14 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
   boost::algorithm::split(required,required_params,
                           boost::algorithm::is_any_of(" ,"));
   for (unsigned int i=0;i<required.size();++i) {
-    if(vm.count(required[i]) == false) { return false; }
+    if(vm.count(required[i]) == 0) { return false; }
   }
   // If checking the choosing parameters is not required return true
   if(choosing_params == "") { return true; }
   boost::algorithm::split(choosing,choosing_params,
                           boost::algorithm::is_any_of(" ,"));
   for (unsigned int i=0;i<choosing.size();++i) {
-    if(vm.count(choosing[i]) == true) { return true; }
+    if(vm.count(choosing[i]) == 1) { return true; }
   }
   return false;
 }
