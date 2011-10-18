@@ -6,7 +6,7 @@ import IMP.parallel
 # Set a shorter default heartbeat timeout, so failures to start up slaves
 # don't hang the tests for a very long time
 class Manager(IMP.parallel.Manager):
-    heartbeat_timeout = 1.0
+    heartbeat_timeout = 5.0
 
 # On Windows sytems, we cannot delete a file if another process has it open.
 # This leads to occasional failures due to a race between the master and the
