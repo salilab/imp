@@ -148,7 +148,12 @@ def show_graphviz(g):
            tfon= create_temporary_file_name("graph", ".pdf")
            st= g.get_graphviz_string()
            open(tfn, "w").write(st)
-           import subprocess
+           try:
+             import subprocess
+           except ImportError:
+             import sys
+             print >> sys.stderr, "Cannot run dot on Python 2.3 systems."
+             return
            try:
              sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
              sp.wait()
