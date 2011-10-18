@@ -64,7 +64,6 @@ using namespace IMP::base;
   using boost::mpl::not_;
   using boost::is_convertible;
   using boost::is_base_of;
-  using boost::is_pointer;
   //using namespace boost;
   //using namespace boost::mpl;
 
@@ -169,7 +168,7 @@ using namespace IMP::base;
 
   template <class T>
   struct ConvertAllBase {
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
     template <class SwigData>
     static bool get_is_cpp_object(PyObject *o, SwigData st,
                                   SwigData particle_st, SwigData decorator_st) {
@@ -182,7 +181,7 @@ using namespace IMP::base;
 
   template <class T>
   struct ConvertValueBase: public ConvertAllBase<T> {
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
     BOOST_STATIC_ASSERT(!(is_base_of< Object, T>::value));
     template <class SwigData>
     static const T& get_cpp_object(PyObject *o,
@@ -208,7 +207,7 @@ using namespace IMP::base;
   // T should not be a pointer to the object
   template <class T>
   struct ConvertObjectBase: public ConvertAllBase<T> {
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
     BOOST_STATIC_ASSERT((is_base_of< Object, T>::value));
     template <class SwigData>
     static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
@@ -236,7 +235,7 @@ using namespace IMP::base;
   // T should not be a pointer to the object
   template <class T>
   struct ConvertRAII: public ConvertAllBase<T> {
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
     template <class SwigData>
     static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
       void *vp;
@@ -300,7 +299,7 @@ template <class T>
   template <class T, class VT, class ConvertVT>
   struct ConvertSequenceHelper {
     typedef typename ValueOrObject< VT >::type V;
-    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
     template <class SwigData>
     static bool get_is_cpp_object(PyObject *in, SwigData st,
                                   SwigData particle_st, SwigData decorator_st) {
