@@ -41,7 +41,7 @@ class IMPEM2DEXPORT ProjectionMask {
 public:
 #if !defined(DOXYGEN) && !defined(SWIG)
   ProjectionMask(const em::KernelParameters &KP,
-            const em::RadiusDependentKernelParameters *params,
+            const em::RadiusDependentKernelParameters &params,
             double voxelsize,
             double mass =1.0);
 
@@ -52,7 +52,7 @@ public:
     \param[in] mass Mass to give to the mask
   */
   void create(const em::KernelParameters &KP,
-                 const em::RadiusDependentKernelParameters *params,
+                 const em::RadiusDependentKernelParameters &params,
                  double mass = 1.0);
 #endif
 

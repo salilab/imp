@@ -15,13 +15,13 @@ ProjectionMask::~ProjectionMask() {
 }
 
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
-         const em::RadiusDependentKernelParameters *params,
+         const em::RadiusDependentKernelParameters &params,
          double pixelsize,
          double mass) {
   sq_pixelsize_ = pixelsize*pixelsize;
 //  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
 //  data_.create(dim_,dim_,CV_64FC1);
-  dim_ = floor(params->get_kdist()/pixelsize);
+  dim_ = floor(params.get_kdist()/pixelsize);
   int mask_size = 2*dim_+1; // enough to go from -dim to dim
   data_.create(mask_size,mask_size,CV_64FC1);
   data_.setTo(0.0);
@@ -39,7 +39,7 @@ void ProjectionMask::apply(cv::Mat &m,
 
 
 void  ProjectionMask::create(const em::KernelParameters &KP,
-                 const em::RadiusDependentKernelParameters *params,
+                 const em::RadiusDependentKernelParameters &params,
                  double mass) {
 
   // Decorate the masks to use centered coordinates
@@ -56,10 +56,10 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
       for(int k=-dim_;k<=dim_;++k) {
         square_radius = (ijsq + static_cast<double>(k*k))*sq_pixelsize_;
         // Add the value to the mask
-        tmp= em::EXP(-square_radius * params->get_inv_sigsq());
+        tmp= em::EXP(-square_radius * params.get_inv_sigsq());
         // if statement to ensure even sampling within the box
         if (tmp> KP.get_lim() && centered_mask.get_is_in_range(i,j) ) {
-          centered_mask(i,j) += params->get_normfac()*tmp * mass;
+          centered_mask(i,j) += params.get_normfac()*tmp * mass;
         }
       }
     }
@@ -110,12 +110,12 @@ void MasksManager::create_mask(double radius, double mass) {
   if(is_setup_ == false) {
     IMP_THROW("MasksManager: kernel not setup",ValueException);
   }
-  const  em::RadiusDependentKernelParameters *params;
   // kernel_params_.set_params(radius); // Due to numerical instability with
                                         // doubles, this call can throw an
                                         // exception
   // This call creates the params, but gives a warning
-  params = kernel_params_.get_params(radius);
+  const em::RadiusDependentKernelParameters
+            &params = kernel_params_.get_params(radius);
   ProjectionMaskPtr ptr(new ProjectionMask(kernel_params_,
                                            params,
                                            pixelsize_,
