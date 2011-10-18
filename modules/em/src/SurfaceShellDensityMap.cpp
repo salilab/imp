@@ -76,18 +76,14 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
   int znxny;
   float rsq,tmp;
 
-  const RadiusDependentKernelParameters *params;
   for (unsigned int ii=0; ii<ps_.size(); ii++) {
     // compute kernel parameters if needed
-    params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    if (params == nullptr) {
-      kernel_params_.set_params(xyzr_[ii].get_radius());
-      params = kernel_params_.get_params(xyzr_[ii].get_radius());
-    }
+    const RadiusDependentKernelParameters &params
+                   = kernel_params_.get_params(xyzr_[ii].get_radius());
     // compute the box affected by each particle
     calc_local_bounding_box(this,
      xyzr_[ii].get_x(),xyzr_[ii].get_y(),xyzr_[ii].get_z(),
-     params->get_kdist(),
+     params.get_kdist(),
      iminx, iminy, iminz, imaxx, imaxy, imaxz);
     for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       znxny=ivoxz * nxny;
@@ -100,7 +96,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
           tmpy=y_loc_[ivox] - xyzr_[ii].get_y();
           tmpz=z_loc_[ivox] - xyzr_[ii].get_z();
           rsq = tmpx*tmpx+tmpy*tmpy+tmpz*tmpz;
-          tmp = EXP(-rsq * params->get_inv_sigsq());
+          tmp = EXP(-rsq * params.get_inv_sigsq());
           //tmp = exp(-rsq * params->get_inv_sigsq());
           // if statement to ensure even sampling within the box
           if (tmp>kernel_params_.get_lim()){

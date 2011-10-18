@@ -83,14 +83,13 @@ public:
     initialized_ = true;
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Sets the parameters that depend on the radius of a given particle.
   /** The other variables of the parameters
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
     \param[in] radius the radius
     \return the radius based parameters
   */
-  const RadiusDependentKernelParameters* set_params(float radius);
+  const RadiusDependentKernelParameters& set_params(float radius);
 
   //! Finds the precomputed parameters given a particle radius.
   /**
@@ -102,12 +101,8 @@ public:
    \note if parameters for this radius were not found, a warning is printed
          and the parameters are calculated using set_params().
   */
-  const RadiusDependentKernelParameters* get_params(
+  const RadiusDependentKernelParameters& get_params(
         float radius,float eps=0.001);
-#endif
-  bool are_params_set(float radius,float eps=0.001) {
-    return get_params(radius, eps) != nullptr;
-  }
 
   //! Get sigma as a function of the resolution according to th
   //! Full width at half maximum criterion

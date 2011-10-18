@@ -85,7 +85,7 @@ void KernelParameters::init(float resolution)
                   "lim out of range");
 }
 
-const RadiusDependentKernelParameters*
+const RadiusDependentKernelParameters&
   KernelParameters::set_params(float radius) {
   IMP_USAGE_CHECK(initialized_,
             "The Kernel Parameters are not initialized");
@@ -97,10 +97,10 @@ const RadiusDependentKernelParameters*
   radii2params_[radius]=new RadiusDependentKernelParameters(
      radius,rsigsq_,timessig_,sq2pi3_,
      inv_rsigsq_,rnormfac_,rkdist_);
-  return radii2params_[radius];
+  return *radii2params_[radius];
 }
 
-const RadiusDependentKernelParameters* KernelParameters::get_params(
+const RadiusDependentKernelParameters& KernelParameters::get_params(
   float radius,  float eps) {
   IMP_USAGE_CHECK(initialized_, "The Kernel Parameters are not initialized");
   typedef
@@ -132,9 +132,10 @@ const RadiusDependentKernelParameters* KernelParameters::get_params(
    if (closest == nullptr) {
      IMP_WARN("could not find parameters for radius:"<<radius<<std::endl);
      IMP_WARN("Setting params for radius :"<<radius<<std::endl);
-     closest = set_params(radius);
+     return set_params(radius);
+   } else {
+     return *closest;
    }
-   return closest;
 }
 
 //! Create a truncated 3D Gaussian

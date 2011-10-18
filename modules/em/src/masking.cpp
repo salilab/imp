@@ -13,7 +13,7 @@ IMPEM_BEGIN_NAMESPACE
                  float sampling_radius, const DensityHeader &header)
 {
     KernelParameters kernel_params(header.get_resolution());
-    const RadiusDependentKernelParameters *rad_params =
+    const RadiusDependentKernelParameters &rad_params =
       kernel_params.set_params(sampling_radius);
     int delta=static_cast<int>(
             std::floor(sampling_radius/header.get_spacing()));
@@ -27,7 +27,7 @@ IMPEM_BEGIN_NAMESPACE
                  y * header.get_nx() + x);
           double rsq=header.get_spacing()*header.get_spacing()*(x*x+y*y+z*z);
           neighbor_dist_.push_back(rsq);
-          neighbor_dist_exp_.push_back(EXP(-rsq * rad_params->get_inv_sigsq()));
+          neighbor_dist_exp_.push_back(EXP(-rsq * rad_params.get_inv_sigsq()));
         }
       }
     }

@@ -35,8 +35,6 @@ class KernelParametersTest(IMP.test.TestCase):
         rad=[1.2,1.5,2.,2.2]
         for r in rad:
             self.kp.set_params(r)
-        for r in rad:
-            self.assertEqual(self.kp.are_params_set(r),True)
 
     def setUp(self):
         """Build test model and optimizer"""
