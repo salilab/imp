@@ -4,6 +4,7 @@ import IMP.container
 import IMP.display
 import IMP.statistics
 import IMP.example
+import RMF
 import parameters
 import setup
 import glob
