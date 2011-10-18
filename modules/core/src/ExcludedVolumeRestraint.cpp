@@ -469,8 +469,8 @@ ExcludedVolumeRestraint
   IMP_OBJECT_LOG;
   if (!initialized_) initialize();
   Restraints ret;
-  unsigned int chunk= std::max<unsigned int>(1, std::sqrt(sc_->get_number())
-                                             /10);
+  unsigned int chunk= std::max<unsigned int>(1,
+                            std::sqrt(static_cast<float>sc_->get_number()) /10);
   //std::cout << "Chunks of size " << chunk << std::endl;
   // change chunk here
   IMP::compatibility::checked_vector<ParticleIndexes>
