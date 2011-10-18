@@ -48,7 +48,9 @@ class SlaveHandler(object):
 
     def _send_exception_to_master(self, master, exc):
         try:
-            master._send(_ErrorWrapper(exc, traceback.format_exc()))
+            exc_type, exc_value, tb = sys.exc_info()
+            master._send(_ErrorWrapper(exc,
+                          traceback.format_exception(exc_type, exc_value, tb)))
         except socket.error:
             # ignore errors encountered while trying to send error to master
             pass
