@@ -40,7 +40,8 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
    private:
         IMP::Pointer<GaussianProcessInterpolation> gpi_;
-        IMP::internal::OwnerPointer<MultivariateFNormalSufficient> mvn_;
+        IMP::internal::OwnerPointer<MultivariateFNormalSufficient>
+            mvn_;
         //number of observation points
         unsigned M_;
 

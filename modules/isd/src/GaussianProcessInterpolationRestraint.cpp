@@ -20,15 +20,7 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
 {
     //number of observation points
     IMP_LOG(TERSE, "GPIR: init" << std::endl);
-    M_ = gpi_->n_obs_.size();
-    //number of repetitions
-    int N=gpi_->n_obs_[0];
-    //check if the number of repetitions is the same for every point
-    IMP_IF_CHECK(USAGE) {
-        for (unsigned i=1; i<M_; i++)
-            IMP_USAGE_CHECK(N == gpi_->n_obs_[i],
-                "must have the same number of repetitions for each point!");
-    }
+    M_ = gpi_->M_;
     // build multivariate normal with
     // mean : prior mean
     // covariance : prior covariance
@@ -36,8 +28,9 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
     //args are: sample mean, jacobian, true mean,
     // nobs, sample variance, true variance
-    mvn_ = new MultivariateFNormalSufficient(gpi_->get_I(), 1.0, gpi_->get_m(),
-            N, gpi_->get_S(), gpi_->get_W());
+    mvn_ = new MultivariateFNormalSufficient(
+            gpi_->get_I(), 1.0, gpi_->get_m(),
+            1, Eigen::VectorXd::Zero(M_), gpi_->get_Omega());
     mvn_->set_use_cg(false,0.0);
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);
 }
@@ -69,8 +62,6 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     const_cast<GaussianProcessInterpolationRestraint*>(this)->
         update_mean_and_covariance();
 
-    double ene = mvn_->evaluate();
-
     if (accum)
     {
         VectorXd dmv = mvn_->evaluate_derivative_FM();
@@ -93,6 +84,8 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
                     *accum);
         }
     }
+    double ene = mvn_->evaluate();
+
     return ene;
 }
 

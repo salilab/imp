@@ -27,7 +27,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         self.q=[[0],[1]]
         self.I=[1,1]
         self.err=[sqrt(10),sqrt(20)]
-        self.N=[10,10]
+        self.N=10
         self.alpha = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
         self.beta = Nuisance.setup_particle(IMP.Particle(self.m),  1.0)
         self.mean = Linear1DFunction(self.alpha,self.beta)
@@ -276,5 +276,3 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
