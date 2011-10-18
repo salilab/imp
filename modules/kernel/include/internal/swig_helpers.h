@@ -81,7 +81,7 @@ using namespace IMP;
 
   template <class T>
   struct Convert<T,
-                 typename enable_if< and_< is_base_of<Decorator, T>,
+                 typename enable_if< and_< boost::is_base_of<Decorator, T>,
                              not_<typename T::DecoratorHasTraits > > >::type >:
     public ConvertValueBase<T> {
     static const int converter=3;
