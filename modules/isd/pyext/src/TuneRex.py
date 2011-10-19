@@ -440,7 +440,10 @@ def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
     _rrootfn = r('rootfn <- function(t2) {ovboltz(%f,t2)-%f}' % (newp[0],targetAR))
 
     #find upper bound for estimation, raise an error if cv is negative
-    tmp = newp[0]*1.05 if oldp[1] > oldp[0] else newp[0]*0.95
+    if oldp[1] > oldp[0]:
+        tmp = newp[0]*1.05
+    else:
+        tmp = newp[0]*0.95
     nloops = 0
     while _rrootfn(tmp)[0] >= 0:
         nloops += 1
@@ -486,7 +489,10 @@ def are_equal_to_targetAR(indicators,targetAR=0.4,alpha=0.05, method = "binom"):
     try:
         test,pval = ttest(deviant[1],targetAR)
     except:
-        pval = 0 if abs(targetAR - sum(deviant[1])/len(deviant[1])) > EPSILON else 1
+        if abs(targetAR - sum(deviant[1])/len(deviant[1])) > EPSILON:
+            pval = 0
+        else:
+            pval = 1
     if pval < alpha:
         return False
     else:
@@ -582,7 +588,10 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
         try:
             test,pval = ttest(ind,targetAR)
         except:
-            pval = 0 if abs(targetAR - mean) > EPSILON else 1
+            if abs(targetAR - mean) > EPSILON:
+                pval = 0
+            else:
+                pval = 1
         if pval < alpha:
             #means are different
             isGoodTuple.append((pos,False))
@@ -770,12 +779,17 @@ def compute_indicators(replicanums, subs = 1, start=0):
     output: an indicator function of exchanges (size (N-1)x(M-1)), 1 if exchange and
     0 if not.
     """
+    def exchange(n, m):
+        if replicanums[n][m] == replicanums[n+1][m+1] \
+           and replicanums[n][m+1] == replicanums[n+1][m]:
+            return 1
+        else:
+            return 0
+
     indicators = []
     for n in xrange(len(replicanums)-1):
-        indicators.append([1 if (replicanums[n][m] == replicanums[n+1][m+1] \
-                                and replicanums[n][m+1] == replicanums[n+1][m] ) \
-                             else 0 \
-                             for m in xrange(len(replicanums[n])-1)][start::subs])
+        indicators.append([exchange(n, m) \
+                           for m in xrange(len(replicanums[n])-1)][start::subs])
     return indicators
 
 #### Main routines
