@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 class Entry:
-    """The entry class represents a column in the statistics file. 
+    """The entry class represents a column in the statistics file.
     Its components are a title, a format and an additional object.
     It's what gets written to the statistics file in a column.
     - title: the title of the column
@@ -9,8 +9,8 @@ class Entry:
     - something: either something that can be formattable, a string, a number
       etc. This is a static entry. In that case all remaining arguments are
       discarded and get_value returns the formatted string : format % something.
-      If something is a function, this is a dynamic entry, and the format 
-      string is used on the result of the function call 
+      If something is a function, this is a dynamic entry, and the format
+      string is used on the result of the function call
       something(*args,**kwargs).
     """
     def __init__(self, title, fmt, something, *args, **kwargs):
@@ -58,5 +58,3 @@ class Entry:
 
     def get_was_updated(self):
         return self.is_function or self.was_updated_since_last_get
-
-

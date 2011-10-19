@@ -3,7 +3,7 @@ from numpy import *
 import sys
 
 class History:
-    """Class that contains the output of one replica, used by the 
+    """Class that contains the output of one replica, used by the
     Analysis class.
     """
     def __init__(self, filename):
@@ -102,4 +102,3 @@ class History:
                     except:
                         pass
                 out.write("\t%20s\t%12d\t%20s\n" % (name, len(ent),tp))
-

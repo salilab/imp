@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Darima Lamazhapova and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided'as is' without warranty of any
@@ -19,7 +19,7 @@
 import os
 import sys
 import socket
-import threading 
+import threading
 import time
 import Queue
 import Pyro.core, Pyro.errors, Pyro.util
@@ -46,11 +46,11 @@ def get_sge_host_list():
 
 class PyroGrid(AbstractGrid):
 
-    def __init__(self, hosts, src_path, display, X11_delay, 
-                 debug, verbose, 
-                 shared_temp_path, nshost, terminate_during_publish, 
+    def __init__(self, hosts, src_path, display, X11_delay,
+                 debug, verbose,
+                 shared_temp_path, nshost, terminate_during_publish,
                  method='ssh'):
-        
+
         AbstractGrid.__init__(self, hosts, src_path, display, X11_delay,\
                               debug, verbose, shared_temp_path)
 
@@ -60,7 +60,7 @@ class PyroGrid(AbstractGrid):
 
         #set the pyro loader as the loader
         self.set_loader(src_path, 'PyroHandlerLoader')
-        
+
         #method is either ssh or qsub
         if method != 'ssh' and method != 'qsub':
             raise ValueError, "unknown method: %s. Try ssh or qsub" % method
@@ -70,19 +70,19 @@ class PyroGrid(AbstractGrid):
         self.n_hosts = len(hosts)
 
         #name of the host having the pyro-ns nameserver
-        self.nshost = nshost         
-        
-        self.timeout = 60.0 ## (for WatchDog, in minutes) 
+        self.nshost = nshost
+
+        self.timeout = 60.0 ## (for WatchDog, in minutes)
 
         self.handlers = {}  ## maps instance (URI) to a handler (proxy)
 
         self.__terminate_during_publish = terminate_during_publish
         self.__published = {}
-        
+
         self.comm_acquired = False
 
         self.__stopped = False
-        
+
     def _launch_handler(self, handler_uri, host):
         """start up handlers in parallel. Handlers have URI 'handler_uri' and
         are launched on 'host'.
@@ -94,8 +94,8 @@ class PyroGrid(AbstractGrid):
         #arguments to be passed to the handler script launched on each client.
         argv = "%s %s %s %s %s %s %s %s" \
                % (handler_script, host.niceness, self.nshost, handler_uri, \
-                  self.timeout, self.debug, self.display, host.temp_path)        
-        
+                  self.timeout, self.debug, self.display, host.temp_path)
+
         #if x11 forwarding is requested
         if self.display:
             try:
@@ -103,12 +103,12 @@ class PyroGrid(AbstractGrid):
             except:
                 title = host.name
             cmd =  "xterm -T %s -geometry %s -hold -e \"%s -i %s\"" \
-                  % (title, self.window_size, host.python, argv) 
-        
+                  % (title, self.window_size, host.python, argv)
+
         else: #no x11 forwarding
             cmd = "%s %s" % (host.python, argv)
 
-        #if requested, add required init commands prior to 
+        #if requested, add required init commands prior to
         #launching anything else on the target host.
         if host.init_cmd != '':
             if host.init_cmd.rstrip().endswith(';'):
@@ -116,7 +116,7 @@ class PyroGrid(AbstractGrid):
             elif host.init_cmd.rstrip().endswith('!'):
                 cmd = host.init_cmd.rstrip()[:-1] + cmd
             else:
-                cmd = host.init_cmd + ';' + cmd 
+                cmd = host.init_cmd + ';' + cmd
 
         #now wrap everything for ssh
         if self.method == 'ssh':
@@ -125,8 +125,8 @@ class PyroGrid(AbstractGrid):
             cmd = "qrsh -inherit %s '%s' " % (host.name, cmd)
 
         #if debug then be verbose. In any case do this in background.
-        if self.debug: 
-            cmd = cmd + " > /dev/null &" 
+        if self.debug:
+            cmd = cmd + " > /dev/null &"
             print 'PYRO echo: %s' % cmd
         else:
             cmd = cmd + "&"
@@ -136,7 +136,7 @@ class PyroGrid(AbstractGrid):
 
     def _connect_handlers(self, handler_uris, handlers, handlers_lock, hosts_map):
 
-        #handlers: a FIFO queue, 
+        #handlers: a FIFO queue,
         #handlers_lock: a Condition lock
         #handler (see below): the PyroHandler proxy
 
@@ -150,9 +150,9 @@ class PyroGrid(AbstractGrid):
             except:
                 print 'PyroGrid._connect_handlers: failed to connect to "%s"' % handler_uris[i]
                 raise
-                                        
+
             #tell the pyro proxy to close the socket for now.
-            handler._release()                                    
+            handler._release()
             #tell the handler on which host he's running.
             handler.host = hosts_map[handler_uris[i]]
 
@@ -178,25 +178,25 @@ class PyroGrid(AbstractGrid):
 
         ## launch instances in parallel (handler.publish launch instance in a thread)
 
-        #handlers: PyroHandler proxies in a Queue(). It's different from 
+        #handlers: PyroHandler proxies in a Queue(). It's different from
         # self.handlers, which is a dict['URI']=handler proxy.
         #handlers_lock: the condition lock associated to filling this queue.
 
         ns_clear_interval = 5
 
         for i in range(self.n_hosts):
-            
+
             #get the lock, and obtain the next queue element, or wait for it to be filled.
-            handlers_lock.acquire()            
+            handlers_lock.acquire()
             if handlers.empty(): handlers_lock.wait()
             handler = handlers.get()
-            handlers_lock.release()            
-            
+            handlers_lock.release()
+
             instance_uri = instance_uris[i]
 
             if self.debug:
                 print 'PyroGrid._launch_instances: "%s" is being published remotely...' % instance_uri
-            
+
             #TODO: remove the release(), since it was done previously
             handler._release()
             handler.publish(instance, instance_uri, delegate = True)
@@ -218,7 +218,7 @@ class PyroGrid(AbstractGrid):
             #if i and not i % ns_clear_interval:
             #    print 'Pausing for 1 min'
             #    sleep(60.)
-                
+
     def _connect_instances(self, service_id, \
                            launched_instances, launched_instances_lock, \
                            self_handlers_lock, servers_lock):
@@ -226,11 +226,11 @@ class PyroGrid(AbstractGrid):
         ## connect to instances sequentially
 
         _ns = PyroUtils.get_nameserver(self.nshost)
-        
+
         for i in range(self.n_hosts):
 
-            launched_instances_lock.acquire()            
-            if launched_instances.empty(): launched_instances_lock.wait()                
+            launched_instances_lock.acquire()
+            if launched_instances.empty(): launched_instances_lock.wait()
             instance_uri = launched_instances.get()
             launched_instances_lock.release()
 
@@ -248,25 +248,25 @@ class PyroGrid(AbstractGrid):
                                   self_handlers_lock, servers_lock)
 
         self.__published[service_id] = True
-            
+
     def _append_instance(self, service_id, instance_proxy, \
                          self_handlers_lock, servers_lock):
 
         ## extracts parameters needed for PyroProxy below
-        
+
         instance_proxy._release()
         instance_uri = instance_proxy._pyro_suppl['uri']
 
         self_handlers_lock.acquire()
-        handler = self.handlers[instance_uri]        
+        handler = self.handlers[instance_uri]
         handler._release()
-        host = handler.host        
+        host = handler.host
         self_handlers_lock.release()
 
         ## wrap raw Pyro proxy in PyroProxy (smart remote object)
         ## and then in PyroServer (for grid interface)
 
-        proxy = PyroProxy(instance_proxy, debug = self.debug, verbose = self.verbose) 
+        proxy = PyroProxy(instance_proxy, debug = self.debug, verbose = self.verbose)
         server = PyroServer(proxy, service_id, host, self.debug)
 
         ## register the handler in the proxy (to monitor whether the grid is alive)
@@ -277,59 +277,59 @@ class PyroGrid(AbstractGrid):
 
         ## register the server in the grid
 
-        #add the grid to server.grid and fill in self.queues and self.servers 
-        #self.queues: a dict[service_id of instance 
+        #add the grid to server.grid and fill in self.queues and self.servers
+        #self.queues: a dict[service_id of instance
         #to be published]=Queue(-1) containing the DerivedServers
-        #self.servers:  dict[service_id of instance 
+        #self.servers:  dict[service_id of instance
         #to be published]=[list of PyroServer instances]
         servers_lock.acquire()
         self.add_server(server)
-        
+
         if self.debug:
             print 'PyroGrid._append_instance: notifies %s is ready' % server
 
         servers_lock.notify()
-        servers_lock.release()        
-        
+        servers_lock.release()
+
     def start_handlers(self, service_id):
         """
-        Starts PyroHandler on each host (non-blocking) and 
-        returns a Condition lock object and 
-                a FIFO queue that is being filled with their 
+        Starts PyroHandler on each host (non-blocking) and
+        returns a Condition lock object and
+                a FIFO queue that is being filled with their
                 Pyro proxies by a separate thread
-                   
-        """        
+
+        """
         #create a list of unique URIs for each host
         handler_uris = PyroUtils.create_unique_uri(\
             string.join(('PyroHandler', service_id),'.'),\
             n = self.n_hosts,  ns = self.nshost)
-        
+
         #create a FIFO queue of infinite capacity
         handlers = Queue.Queue(-1)
         #create the condition lock, see effbot.org/zone/thread-synchronization.htm
         handlers_lock = threading.Condition()
 
         hosts_map = {}
-        
+
         for i in range(self.n_hosts):
             #ssh to each host and fork a PyroHandler thread.
             self._launch_handler(handler_uris[i], self.hosts[i])
             hosts_map[handler_uris[i]] = self.hosts[i]
 
             ## sleep here is to avoid errors like
-            ## "Warning: No xauth data; using fake 
-            ##  authentication data for X11 forwarding."           
-            
+            ## "Warning: No xauth data; using fake
+            ##  authentication data for X11 forwarding."
+
             #TODO: speedup things by checking if it is necessary
-            time.sleep(self.X11_delay) 
+            time.sleep(self.X11_delay)
 
         #fill the queue asynchronously with the handler proxy objects that were launched.
         t = threading.Thread(target = self._connect_handlers, \
-                   args = (handler_uris, handlers, handlers_lock, hosts_map)) 
+                   args = (handler_uris, handlers, handlers_lock, hosts_map))
         t.start()
 
         return handlers, handlers_lock
-        
+
     def start_instances(self, service_id, instance, handlers, handlers_lock):
 
         #create n unique URIs for the instance, out of its service_id.
@@ -356,9 +356,9 @@ class PyroGrid(AbstractGrid):
 
         #Create a PyroServer instance for each host, and put
         #them into
-        #self.queues: a dict[service_id of instance 
+        #self.queues: a dict[service_id of instance
         #to be published]=Queue(-1) containing the DerivedServers
-        #self.servers:  dict[service_id of instance 
+        #self.servers:  dict[service_id of instance
         #to be published]=[list of PyroServer instances]
         t1 = threading.Thread(target = self._connect_instances, \
                     args = (service_id, \
@@ -379,9 +379,9 @@ class PyroGrid(AbstractGrid):
 
         It creates list of servers performing the job
         specified by this service_id
-        
+
         """
-     
+
         #get unique identifier for this instance
         service_id = self.create_service_id(instance)
 
@@ -389,7 +389,7 @@ class PyroGrid(AbstractGrid):
 
         #start PyroHandlers and give them an URI which contains service_id)
         handlers, handlers_lock = self.start_handlers(service_id)
-        
+
         #start the PyroServer instances which control the underlying 'instance' objects
         #published on each host by the PyroHandler
         servers_lock = self.start_instances(service_id, instance,
@@ -399,30 +399,30 @@ class PyroGrid(AbstractGrid):
             print 'PyroGrid.publish: waiting for service %s to become available' % service_id
 
         print 'Distributing jobs on the grid...'
-                 
+
         servers_lock.acquire()
         if not service_id in self.servers: servers_lock.wait()
         servers_lock.release()
 
         #now that there is at least one server in the queue that can accept a job, launch the sims.
         print 'Start calculations on the grid... '
-        
+
         return service_id
 
     def check_published(self):
 
         def publishing():
-            
+
             return False in self.__published.values() or \
                    False in [ len(self.hosts) == len(self.servers[service_id])
-                              for service_id in self.__published.keys() ]                                                
-        
+                              for service_id in self.__published.keys() ]
+
         if publishing():
-            
+
             print 'WARNING: Attempting shutdown while publishing!'
-            
+
             if not self.__terminate_during_publish:
-                print '         Wait until publishing is complete...' 
+                print '         Wait until publishing is complete...'
                 while publishing():
                     time.sleep(0.5)
             else:
@@ -431,7 +431,7 @@ class PyroGrid(AbstractGrid):
 
     def ishalted(self):
         return self.__stopped
-                    
+
     def terminate(self):
 
         ## AbstractGrid.terminate:
@@ -445,7 +445,7 @@ class PyroGrid(AbstractGrid):
         ## PyroGrid.terminate:
         ##
         ## 3. terminates handler [ PyroHandler.terminate ]
-        
+
         self.check_published()
 
         AbstractGrid.terminate(self)
@@ -456,12 +456,12 @@ class PyroGrid(AbstractGrid):
                 handler._release()
                 handler.terminate()
                 self.handlers.pop(instance_uri)
-                
+
             except Pyro.errors.PyroError,e:
                 print  ''.join(Pyro.util.getPyroTraceback(e))
 
         self.__stopped = True
-        
+
         if self.debug: ## please do not remove.
             print 'PyroGrid: terminated'
 
@@ -503,17 +503,17 @@ class PyroGrid(AbstractGrid):
         self.comm_acquired = False
 
 class PyroHandler(Pyro.core.ObjBase):
-    """    
-    Runs on remote side, non-specific object. 
+    """
+    Runs on remote side, non-specific object.
 
     It is a tool to launch instances of any picklable object
     on the remote host (where it resides)
 
     If PyroHandler is idle longer than .timeout time, it kills itself
     on the remote side (together with all registered instances)
-    
+
     Returns: raw Pyro proxy
-    
+
     """
 
     def __init__(self, timeout, nshost, debug):
@@ -525,23 +525,23 @@ class PyroHandler(Pyro.core.ObjBase):
         self.instance_uri = None
         self.host = None
 
-        #fork a WatchDog thread, which sleeps all the time and quits if it 
+        #fork a WatchDog thread, which sleeps all the time and quits if it
         #hasn't been pinged after timeout minutes, by calling self.watchdog.set(xxx)
         #where xxx is a float (the current time).
         self.watchdog = WatchDog(timeout, debug, logfile='watchdog.debug')
-        self.watchdog.start()        
+        self.watchdog.start()
 
     def set(self, time):
         self.watchdog.set(time)
- 
+
     def publish(self, instance, instance_uri, delegate):
         """
         delegate = False for descendants of Pyro.core.ObjBase
 
         Publishes a copy of the instance on the host where PyroHandler
         is running.
-        
-        """        
+
+        """
 
         if self.debug:
             print 'PyroHandler.publish: publishing instance %s with URI %s' % (instance, instance_uri)
@@ -564,7 +564,7 @@ class PyroHandler(Pyro.core.ObjBase):
         if self.debug:
             print 'PyroHandler.terminate: %s terminating... ' % self
 
-        ##--- call terminate only 
+        ##--- call terminate only
         ## if the handler is already terminated (e.g. by hands)
         ## then function is not called on the exit
 
@@ -573,28 +573,28 @@ class PyroHandler(Pyro.core.ObjBase):
         if True in topop:
             atexit._exithandlers.pop( topop.index(True) )
 
-        ##--- unregister from the nameserver            
+        ##--- unregister from the nameserver
         ## it will waits PyroUtils.default_timeout to let it
         ## finish self-unregistration
-            
+
         if not self.instance_uri == None:
             PyroUtils.unregister(self.instance_uri, ns = self.nshost)
 
         ##--- shuts down remote process
         ## will leave interpreter alive if debug = True
-            
+
         ## PyroHandler itself is an object instance managed
         ## by Pyro.core.Daemon, hence will be stopped by setting
         ## PyroHandler._pyro_stop to True
-            
+
         self._pyro_stop = True
-        
+
         ## PyroUtils.is_stopped(self._pyro_suppl['uri'], ns = self.nshost)
         ##
         ## but also it may cause problems when running without xterm  (unconfirmed)
         ## because it shuts down the python process (daemon.shutdown()) causing
         ## connection lost error
-    
+
     def __str__(self):
 
         if hasattr(self, '_pyro_suppl'):
@@ -602,9 +602,9 @@ class PyroHandler(Pyro.core.ObjBase):
                 self._pyro_suppl['uri'], self._pyro_suppl['host'])
         else:
             s = self.__class__.__name__
-            
+
         return s
-            
+
 class PyroServer(Server):
 
     def terminate(self):
@@ -613,12 +613,12 @@ class PyroServer(Server):
             print 'PyroServer.terminate: is terminating %s...' % self.proxy
 
         self.proxy.terminate()
-        
- 
+
+
 class PyroProxy(threading.Thread):
     """
     This is high level wrapper of Pyro proxy objects,
-    returns immediately with an empty Result object    
+    returns immediately with an empty Result object
 
     Used to be able to be used alone (without a grid) since it could take care
     of clashing invocations.
@@ -626,33 +626,33 @@ class PyroProxy(threading.Thread):
     REMARK:
 
         Calls always has to be in the following order:
-    
+
         proxy = g.acquire_service(service_id) ## returns proxy object
-        
+
         proxy.set_parameters(p)  # these functions will be performed sequentally
         proxy.f()                # and service won't be freed
         proxy.g()                # unless .release_service() is called
-    
+
         g.release_service(proxy)
 
         However if g.acquire_service call is followed immediately by
         g.release_service, without calling proxy.f() or other proxy functions,
         service will never be actually freed. Because service is freed from
         inside PyroProxy in the run() cycle.
-             
+
     """
-    
+
     def __init__(self, pyro_proxy, debug = False, verbose = False):
         """
         pyro_proxy = raw Pyro proxy object
-        
+
         """
         threading.Thread.__init__(self)
         Pyro.core.initClient()
 
         self.__verbose = verbose
         self.__debug = debug
-                
+
         self.__called = threading.Event()
         self.__call_method_name   = None
         self.__call_method_args   = None
@@ -679,26 +679,26 @@ class PyroProxy(threading.Thread):
 
         if self.__debug and self.__verbose:
             self.__dp('%s is created' % self)
-                
-        self.start()        
+
+        self.start()
 
     def __dp(self, str):
 
         if self.__verbose: s0 = '%s ' % self.__uri
         else: s0 = ''
-        
+
         if self.__pyro_lock.locked(): s1 = '  locked'
         else: s1 = 'unlocked'
 
         if self.__called.isSet(): s2 = 'called'
         else: s2 = '  idle'
-                
+
         print >>self.__debug_out, '[%s %s, %s] %s' \
               % (s0, s1, s2, str)
 
         if self.__verbose:
             self.__debug_out.flush()
-        
+
     def __setattr__(self, name, val):
 
         if '__pyro_proxy' in self.__dict__.keys() and \
@@ -708,11 +708,11 @@ class PyroProxy(threading.Thread):
             self.__pyro_proxy._release()
             setattr(self.__pyro_proxy, name, val)
             self.__pyro_lock.release()
-            
+
         else:
-            
+
             threading.Thread.__setattr__(self, name, val)
-        
+
     def __getattr__(self, name):
 
         ## Called when an attribute lookup has not found the attribute
@@ -722,7 +722,7 @@ class PyroProxy(threading.Thread):
         msg = 'PyroProxy.__getattr__(%s): ' % name
 
         if name in self.__callable:
-            
+
             if self.__callable[name]:
 
                 ## function '_call_method' will be invoked instead of function 'name'
@@ -730,19 +730,19 @@ class PyroProxy(threading.Thread):
 
                 if self.__debug and self.__verbose:
                     self.__dp( msg + 'is callable')
-                
+
                 return lambda *args: self.__call_method(name, *args)
 
             else:
                 self.__pyro_lock.acquire()
-                self.__pyro_proxy._release()                
+                self.__pyro_proxy._release()
                 attr = getattr(self.__pyro_proxy, name)
                 self.__pyro_lock.release()
 
-                return attr            
+                return attr
         else:
             raise ValueError, 'Proxy object does not have attribute "%s"' % name
-        
+
     def __call_method(self, name, *args):
 
         msg = 'PyroProxy.__call_method(%s): ' % name
@@ -752,19 +752,19 @@ class PyroProxy(threading.Thread):
                      % (name, args) )
 
         self.__pyro_lock.acquire()
-        
+
         ## NOTE: we do not have to _release here because
         ##       it is done in remote_call (also it is faster if we do not
         ##       reconnect when call is from within of the same thread)
         ##
         ## self.__pyro_proxy._release()
-            
+
         if self.__debug and self.__verbose:
             self.__dp( msg + 'acquired the lock "%s", args = <%s>' % (name, args) )
 
         self.__call_method_name = name
-        self.__call_method_args = args 
-        self.__call_method_result = Result(self) 
+        self.__call_method_args = args
+        self.__call_method_result = Result(self)
 
         if self.__debug and self.__verbose:
             self.__dp( msg + '"%s", args = <%s>' \
@@ -776,7 +776,7 @@ class PyroProxy(threading.Thread):
             self.__dp( msg + 'now called (triggers START )')
 
         return self.__call_method_result
-        
+
     def run(self):
 
         while not self.__stop:
@@ -790,7 +790,7 @@ class PyroProxy(threading.Thread):
             if self.__stop: break
 
             msg = 'PyroProxy.run(%s): ' % self.__call_method_name
-            
+
             if self.__debug and self.__verbose:
                 self.__dp( msg + 'now called (START)' )
 
@@ -798,7 +798,7 @@ class PyroProxy(threading.Thread):
                 if hasattr(self, '_handler'):
                     remote_call( self.__debug, self.__verbose, self._handler,
                             'set', time.time() )
-                
+
                 self.__call_method_result.value = remote_call( self.__debug, self.__verbose,\
                     self.__pyro_proxy, self.__call_method_name, *self.__call_method_args )
 
@@ -813,7 +813,7 @@ class PyroProxy(threading.Thread):
             self.__call_method_result.event.set()
 
             ## when the result is ready
-            
+
             if self.__debug and self.__verbose:
                 self.__dp( msg + 'becoming idle...' )
 
@@ -823,7 +823,7 @@ class PyroProxy(threading.Thread):
 
             if self.__debug and self.__verbose:
                 self.__dp( msg + 'now idle (FINISH)' )
-                
+
            ## calculations are finished -> release the service in the grid
 
             if hasattr(self, '_server') and hasattr(self._server, 'grid') \
@@ -831,8 +831,8 @@ class PyroProxy(threading.Thread):
 
                 if self.__debug and self.__verbose:
                     self.__dp( msg + 'releasing server %s for the grid' % self._server )
-                
-                self._selfrelease = False                
+
+                self._selfrelease = False
 
                 self._server.grid._release_service(self)
 
@@ -844,21 +844,21 @@ class PyroProxy(threading.Thread):
             self.__debug_out.close()
 
         self.__stopped = True
-        
+
         if self.__debug:
             print msg + ' %s terminated' % self
 
     def ishalted(self):
         return self.__stopped
-    
+
     def terminate(self, terminate_proxy = 0):
 
-        if self.__debug and self.__verbose: 
+        if self.__debug and self.__verbose:
             print 'PyroProxy.terminate: %s terminating...' % self
 
         self.__stop = True
         self.__called.set()
-            
+
         ## if this proxy is used within PyroGrid,
         ## PyroHandler.terminate will clean up by:
         ##
@@ -868,39 +868,39 @@ class PyroProxy(threading.Thread):
         ## therefore terminate_proxy should be 0
 
         if terminate_proxy:
-        
+
             self.__pyro_lock.acquire()
 
             ## 1. unregister Pyro URI from nameserver and handler
             ## 2. leaves remote python process intact
-            
+
             self.__pyro_proxy._release()
             self.__pyro_proxy._pyro_stop = True
 
             if not PyroUtils.is_stopped(self.__uri, ns = self.__nshost):
                 PyroUtils.unregister(self.__uri, ns = self.__nshost)
 
-            if hasattr(self, '_handler'): 
+            if hasattr(self, '_handler'):
                 self._handler._release()
                 self._handler.instance_uri = None
 
             while not self.__stopped:
                 time.sleep(0.1)
-        
+
     def __str__(self):
 
         #s = '%s(uri="%s", host="%s")' % (self.__class__.__name__, self.__uri, self.__host)
-        s = '%s("%s")' % (self.__class__.__name__, self.__uri) 
-        
+        s = '%s("%s")' % (self.__class__.__name__, self.__uri)
+
         return s
-            
+
     __repr__ = __str__
 
 def remote_call(debug, verbose, proxy, method, *args):
     """
     for long calls when connection can fail
     during the call
-    
+
     """
 
     i = 1
@@ -908,17 +908,17 @@ def remote_call(debug, verbose, proxy, method, *args):
 
         try:
             proxy._release()
-            result = getattr(proxy, method)(*args)            
+            result = getattr(proxy, method)(*args)
             return result
-        
+
         except Pyro.errors.ConnectionClosedError,e:
 
             if verbose:
                 e = ''.join(Pyro.util.getPyroTraceback(e))
-                
+
             if debug:
                 print '%s\nPyroUtils.remote_call(%s): Connection to %s is lost, trying reconnect...' \
                   % (e, method, proxy)
-                
+
             proxy.adapter.rebindURI(tries = 50)
             i += 1

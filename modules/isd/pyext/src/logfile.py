@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -23,4 +23,3 @@ class logfile(file):
     def __init__(self, name = None):
         if name is None: name = self.default_path
         file.__init__(self, name, 'w', 1)
-

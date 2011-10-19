@@ -128,15 +128,15 @@ class Analysis:
         toplot = []
         for i in range(len(data)):
             toplot.extend([x,data[i]])
-        matplotlib.pyplot.plot(*data, **kwargs) 
+        matplotlib.pyplot.plot(*data, **kwargs)
         matplotlib.pyplot.grid(True)
         matplotlib.pyplot.legend()
         matplotlib.pyplot.show()
-        
+
     def histogram(self, h, *datums, **kwargs):
         """plots histogram of datum (cat,name) from hierarchy h, optionnally
         specifying a range. To plot multiple data at the same time, add them
-        sequentially. 
+        sequentially.
         """
         data=[array(h.get_data(*dat), dtype=float) \
                 for dat in datums]
@@ -190,4 +190,3 @@ if __name__ == '__main__':
     h=a.read_stats(sys.argv[1])
     h.toc()
     matplotlib.pyplot.ion() #interactive
-

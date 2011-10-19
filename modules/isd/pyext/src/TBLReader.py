@@ -66,7 +66,7 @@ class TBLReader:
             char = '*'
         elif '#' in atom_name:
             char = '#'
-            
+
         atom_name = atom_name.replace(char, '%')
 
         ## TODO: Assumes that pseudo-atom names are compatible with
@@ -116,11 +116,11 @@ class TBLReader:
             key = atom_name, residue_type
 
             if not key in self.missing_atoms:
-                
+
                 if '*' in atom_name or '#' in atom_name:
 
                     msg = 'Pseudoatoms not upported: %s' % atom_name
-                    
+
                     if self.ignore:
                         print msg
 
@@ -134,9 +134,9 @@ class TBLReader:
                     raise KeyError, msg % key
 
                 self.missing_atoms.append(key)
-                    
+
             return atom_name
-            
+
         return iupac_name
 
     def resolve_dihedral_name(self, atoms):
@@ -147,7 +147,7 @@ class TBLReader:
 
         try:
             res_type = self.sequence[atoms[1]['resid']]
-                
+
         except IndexError:
             print 'Residue number overflow in atoms', atoms
             return ''
@@ -174,7 +174,7 @@ class TBLReader:
         if self.ignore:
             print msg
             return ''
-        
+
         raise KeyError, msg
 
     def extract_atom(self, a):
@@ -208,7 +208,7 @@ class TBLReader:
                         atom[key] = words[i+1][:-1]
                     else:
                         atom[key] = words[i+1]
-                        
+
                     skip_next = True
                     break
 
@@ -229,11 +229,11 @@ class TBLReader:
 
             try:
                 res_type = self.sequence[a['resid']]
-                
+
             except IndexError:
                 print 'Residue number overflow in atoms', atoms
                 return []
-                
+
             atom_name = a['name']
 
             if atom_name[-1] in self.pseudoatom_char:
@@ -287,7 +287,7 @@ class TBLReader:
         return distances, volume
 
     def read_contents(self, filename):
-    
+
         keywords = 'class',
 
         filename = os.path.expanduser(filename)
@@ -315,11 +315,11 @@ class TBLReader:
         return [x.strip() for x in all.split('assi')]
 
     def find_contributions(self, line):
-        
+
         contribs = [del_comment(x).strip() for x in line.split('or')]
-        
+
         ## use alternative parser for implicitly listed atom pairs
-        
+
         if 1 in [x.count('resid') for x in contribs]:
 
             atoms = []
@@ -339,7 +339,7 @@ class TBLReader:
                 for i in range(len(selection)):
 
                     val = selection[i]
-                    
+
                     if not '(' in val:
                         val = '(' + val
 
@@ -372,7 +372,7 @@ class TBLReader:
                         atom = atom[:n+1]
 
                     g.append(atom)
-                    
+
                 l.append(g)
 
             a, b = l
@@ -387,7 +387,7 @@ class TBLReader:
                     contribs.append('%s %s' % (i,j))
 
             contribs[0] += ' ' + distances
-                 
+
         return contribs
 
     def create_distance_restraint(self, distances, volume, contributions):
@@ -449,7 +449,7 @@ class TBLReader:
         if restraints:
 
             if decompose:
-                
+
                 d = decompose_restraints(restraints)
 
                 for _type in d.keys():
@@ -458,11 +458,11 @@ class TBLReader:
 
                 if len(d) > 1:
                     for _type, val in d.items():
-                        
+
                         if val:
                             new_key =  key + '_%s' % _type
                             d[new_key] = val
-                            
+
                         del d[_type]
 
                 else:
@@ -552,4 +552,3 @@ if __name__ == '__main__':
     sequence = read_sequence_file('seq.dat', first_residue_number=1)
     reader = TBLReader(sequence, ignore_warnings=True)
     reader.read_distances(noe, key='test')
-

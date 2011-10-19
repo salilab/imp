@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -58,13 +58,13 @@ def average(x):
     return sum(x)/float(len(x))
 
 def atexit_register(*args):
-    
+
     atexit.register(*args)
 
 def atexit_unregister(func):
 
     exit_funcs= [x[0]  for x in atexit._exithandlers]
-    
+
     try:
         i = exit_funcs.index(func)
     except:
@@ -80,11 +80,11 @@ def os_system(args, raise_exception = True):
     try:
         retcode = subprocess.call(args, shell = True)
 
-        if raise_exception and not retcode == 0:        
+        if raise_exception and not retcode == 0:
             print >>sys.stderr, "ERROR:", "Child returned", retcode
             print >>sys.stderr, "      ", "subprocess.call:", args
             raise
-        
+
     except OSError, e:
 
         if raise_exception:
@@ -102,7 +102,7 @@ class WatchDog(Thread):
         """
         timeout: in minutes.
         """
-        
+
         Thread.__init__(self)
 
         self.timeout = timeout*60.
@@ -125,11 +125,11 @@ class WatchDog(Thread):
 
         if self.debug:
             print 'Watchdog: set(%s) called.' % str(x)
-        
+
         self._last_ping = x
 
     def run(self):
-        """run the Watchdog thread, which sits in a loop sleeping for timeout/4. at 
+        """run the Watchdog thread, which sits in a loop sleeping for timeout/4. at
         each iteration, and if abs(time() - _last_ping) > timeout, exits.
         """
 
@@ -146,10 +146,10 @@ class WatchDog(Thread):
                     val = 'N/A s'
                 else:
                     val = '%.0f s' % delta
-                
+
                 print 'Watchdog: last life sign %s ago; timeout is %d min(s).' % \
                       (val, self.timeout/60.)
-                
+
             if self._last_ping is not None and delta > self.timeout:
 
                 s = 'No life sign for > %d minute(s)' % (self.timeout/60.)
@@ -167,7 +167,7 @@ class WatchDog(Thread):
                         f = open(self.logfile, mode)
                         f.write(s+'; host %s, %s\n' % (socket.gethostname(), time.ctime()))
                         f.close()
-                        
+
                     except IOError:
                         pass
 
@@ -187,12 +187,12 @@ class SpinWheel:
         self.state = 0
 
     def update(self, s=''):
-        
+
         import sys
-        
+
         sys.stdout.write('\r%s%s' % (s, self.symbols[self.state]))
         sys.stdout.flush()
-        
+
         self.state = (self.state + 1) % len(self.symbols)
 
 class Pipe(object):
@@ -204,11 +204,11 @@ class Pipe(object):
         self.pipe = []
 
     def put(self, x):
-        """if x is subscriptable, insert its contents at the beginning of the pipe. 
-        Else insert the element itself. 
+        """if x is subscriptable, insert its contents at the beginning of the pipe.
+        Else insert the element itself.
         If the pipe is full, drop the oldest element.
         """
-        
+
         try:
             x[0]
             self.pipe = list(x) + self.pipe
@@ -223,11 +223,11 @@ class Pipe(object):
         """ x must be a list and will be appended to the end of the pipe, dropping
         rightmost elements if necessary
         """
-        
+
         self.pipe = (list(x) + self.pipe)[:self.length]
 
     def get(self):
-        """returns the oldest element, without popping it out of the pipe. 
+        """returns the oldest element, without popping it out of the pipe.
         Popping occurs in the put() method
         """
         return self.pipe[-1]
@@ -271,7 +271,7 @@ class SortedQueue(Queue):
 
         p = 1. - rescale_uniform(self.times)
         p = power(p, 2.)
-    
+
         index = draw_dirichlet(p)
 
         val = self.queue[index]
@@ -304,7 +304,7 @@ def copyfiles(src_path, dest_path, pattern=None, verbose=False):
 
     for f in file_list:
         copyfile(f, os.path.join(dest_path, os.path.basename(f)))
- 
+
         if verbose:
             print f
 
@@ -313,7 +313,7 @@ def touch(filename):
     try:
         f = open(filename, 'w')
         f.close()
-    
+
     except IOError, error:
         import os
         if os.path.isdir(filename):
@@ -401,20 +401,20 @@ def Dump(this, filename, gzip = 0, mode = 'w', bin=1):
     """
 
     import os, cPickle
-    
+
     filename = os.path.expanduser(filename)
 
     if not mode in ['w', 'a']:
         raise "mode has to be 'w' (write) or 'a' (append)"
-        
+
     if gzip:
         import gzip
         f = gzip.GzipFile(filename, mode)
     else:
         f = open(filename, mode)
-        
+
     cPickle.dump(this, f, bin)
-        
+
     f.close()
 
 def Load(filename, gzip = 0, force=0):
@@ -427,21 +427,21 @@ def Load(filename, gzip = 0, force=0):
     import cPickle, os
 
     filename = os.path.expanduser(filename)
-        
+
     if gzip:
         import gzip
         try:
             f = gzip.GzipFile(filename)
         except:
             return
-        
+
     f = open(filename)
 
     objects = None
 
     eof = 0
     n = 0
-    
+
     while not eof:
 
         try:
@@ -454,7 +454,7 @@ def Load(filename, gzip = 0, force=0):
                 objects += object
 
             n += 1
-                
+
         except EOFError:
             eof = 1
 
@@ -465,7 +465,7 @@ def Load(filename, gzip = 0, force=0):
                 eof = 1
             else:
                 object = cPickle.load(f)
-            
+
     f.close()
 
     return objects
@@ -502,7 +502,7 @@ def get_pdb(pdb_entry, dest='.', verbose_level=0):
 
     except ftplib.error_perm:
         raise IOError, 'File %s not found on server' % filename
-    
+
     os.system('gunzip -f %s' % filename)
 
 def compile_index_list(chain, atom_names, residue_index_list=None):
@@ -620,7 +620,7 @@ def _make_block(s, length, tol):
         g[-1] = g[-1][:-1] + ' '
 
         words += g
-    
+
     l = []
     line = ''
 
@@ -629,7 +629,7 @@ def _make_block(s, length, tol):
 
         if len(line + word) <= length:
             line += word
-            
+
         else:
             if length - len(line) > tol:
                 m = length - len(line)
@@ -664,7 +664,7 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
 
         if err_msg is None:
             print 'IOError: %s' % str(msg)
-            
+
         else:
             if show_io_err:
                 print '%s. %s' % (str(msg), err_msg)
@@ -674,7 +674,7 @@ def _save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
         while 1:
 
             ## wait for 10 minutes
-                
+
             time.sleep(60. * delay)
 
             try:
@@ -708,4 +708,3 @@ def save_dump(x, filename, err_msg=None, delay=10, show_io_err=True,
 
     else:
         raise StandardError, 'Mode "%s" invalid.' % mode
-    
