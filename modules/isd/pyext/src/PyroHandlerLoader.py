@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Darima Lamazhapova and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck, Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -35,13 +35,13 @@ if __name__ == '__main__':
     from threading import Thread
     from IMP.isd.PyroGrid import PyroHandler
     from IMP.isd.PyroUtils import launch_instance #, get_proxy
-    
-    
+
+
     # niceness = 19
     # nshost = 'horse--bio'
     # obj_name = 'PyroHandler.0'
     # debug = True
-    
+
     #Profile=False
     #if Profile:
     #    import yappi
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     handler_instance = PyroHandler(timeout, nshost, debug)
 
     print 'PyroHandlerLoader: starting launch_instance in a thread'
-    
+
     #the delegate approach is not used since PyroHandler is inherited from Pyro.core.ObjBase
     t = Thread(target = launch_instance, \
                args = (handler_instance, uri, False, \
@@ -93,5 +93,3 @@ if __name__ == '__main__':
     #    for stat in yappi.get_stats(): fl.write(stat+"\n")
     #    fl.close()
     #    yappi.stop()
-
-

@@ -36,7 +36,7 @@ def valid_timestamp(name, max_delay):
         creation_time = os.stat(name).st_ctime
     except:
         return True
-    
+
     sys_time = time.time()
 
     if creation_time-sys_time > 1.:
@@ -63,9 +63,9 @@ class FIFOBasedCommunicator:
         if tid is None:
 
             self.tid_counter = random.randint(0, 12345678)
-            
+
             tid = self.tid_counter
-            
+
             self.create_slot(tid)
 
         self.tid = tid
@@ -75,7 +75,7 @@ class FIFOBasedCommunicator:
         self.data = OrderedDict()
 
         self.debug = debug
-        
+
         self.nfs_care = nfs_care
 
         self.__stop = False
@@ -93,7 +93,7 @@ class FIFOBasedCommunicator:
     def create_slot(self, tid):
 
         slot = '%s/%d' % (self.comm_path, tid)
-        
+
         if not os.path.exists(slot):
             os.mkfifo(slot)
             open(slot+'.lockr','w').close()
@@ -120,16 +120,16 @@ class FIFOBasedCommunicator:
         init_data['nfs_care'] = self.nfs_care
 
         args =  ' '.join([str(x) for x in args])
-        
+
         filename = os.path.join(self.temp_path, 'init_data.%d' % init_data['tid'])
 
         f = open(filename, 'w')
         cPickle.dump(init_data, f)
         f.close()
-        
+
         sh_cmd = "%s %s '%s %s %s %s' &" % (ssh_cmd, host_name, command, args,
                                           filename, pipe)
-        
+
         os.system(sh_cmd)
 
         return self.tid_counter
@@ -163,9 +163,9 @@ class FIFOBasedCommunicator:
         data = self.data
 
         if key in data and data[key]:
-                
+
             value = data[key].pop(0)
-            
+
             if not data[key]:
                 del data[key]
 
@@ -178,7 +178,7 @@ class FIFOBasedCommunicator:
             return None
 
     def poll(self):
-        """block until message arrives, 
+        """block until message arrives,
         extract data and register to self.data construct,
         """
 
@@ -228,7 +228,7 @@ class FIFOBasedCommunicator:
             else:
                 return self.pop_message(sender, msg)
         return None
-            
+
     def recv(self, sender, msg):
         """get new message from FIFO, block if necessary
         returns (tid, msg, data)
@@ -281,7 +281,7 @@ class FIFOBasedRemoteObjectHandler(RemoteObjectHandler):
     def __init__(self, kill_on_error=0, signal_file='', temp_path='',
                  parent_tid=None, tid=None, debug=False, nfs_care=False):
 
-        
+
         RemoteObjectHandler.__init__(self, kill_on_error, signal_file, debug)
 
         ## create watchdog to check every 60 mins whether child processes
@@ -289,7 +289,7 @@ class FIFOBasedRemoteObjectHandler(RemoteObjectHandler):
 
         self.watchdog = WatchDog(60, debug=debug)
         self.watchdog.start()
-        
+
         self.create_communicator(temp_path, tid, debug, nfs_care)
 
         self.parent_tid = parent_tid
@@ -297,9 +297,9 @@ class FIFOBasedRemoteObjectHandler(RemoteObjectHandler):
         self.message_id = 0
 
         self.initialize()
-        
+
     def create_communicator(self, temp_path, tid, debug, nfs_care):
-        
+
         self.communicator = FIFOBasedCommunicator(temp_path, tid, debug,
                                                   nfs_care)
 
@@ -308,7 +308,7 @@ class FIFOBasedRemoteObjectHandler(RemoteObjectHandler):
 
     def recv(self, msg):
         return self.communicator.recv(self.parent_tid, msg)
-    
+
     def initialize(self):
         """wait for initialization request and initialize accordingly"""
 
@@ -374,7 +374,7 @@ class FIFOBasedRemoteObjectHandler(RemoteObjectHandler):
             print 'Debugging mode, keeping Python interpreter alive.'
 
     def terminate(self, x=None):
-        
+
         self._terminate = True
 
 class FIFOBasedRemoteObject(RemoteObject):
@@ -387,14 +387,14 @@ class FIFOBasedRemoteObject(RemoteObject):
         result = self.__manager.create_result_object(self)
 
         result.info = {'name': name, 'args': args, 'kw': kw}
-        
+
         value = (result.key, name, args, kw)
-            
+
         self.__manager.send(self.__handler_tid, MSG_CALL_METHOD, value)
 
-        return result  
+        return result
 
-class FIFOBasedGrid(AbstractGrid):    
+class FIFOBasedGrid(AbstractGrid):
 
     def __init__(self, hosts, src_path, display, X11_delay, debug, verbose, nfs_care=False):
 
@@ -408,13 +408,13 @@ class FIFOBasedGrid(AbstractGrid):
 
         if self.debug: print "setting filebased_loader"
         self.set_loader(src_path, 'fifobased_loader')
-        
+
         if self.debug: print "creating communicator"
-        self.create_communicator(nfs_care) 
-        
-        self.results = {}        
+        self.create_communicator(nfs_care)
+
+        self.results = {}
         self.key = 0
-        
+
         self.__stop = False
         self.__stopped = False
 
@@ -422,12 +422,12 @@ class FIFOBasedGrid(AbstractGrid):
             print 'FIFOBasedGrid created: tid = ', self.communicator.tid
 
     def set_debug(self, debug):
-    
+
         AbstractGrid.set_debug(self, debug)
         self.communicator.debug = debug
 
     def create_communicator(self, nfs_care):
-        
+
         self.communicator = FIFOBasedCommunicator(self.hosts[0].temp_path,
                                 debug = self.debug, nfs_care = nfs_care)
 
@@ -439,7 +439,7 @@ class FIFOBasedGrid(AbstractGrid):
             setting an attribute of the proxy results in a message being sent to
             the concerned host.
             - create a FIFOBasedServed for the proxy
-            - add it to the queue self.queues[sid] 
+            - add it to the queue self.queues[sid]
                 and to the list self.servers[sid]
                 and set server.grid and server.proxy
         returns the service id associated to this instance.
@@ -447,10 +447,10 @@ class FIFOBasedGrid(AbstractGrid):
         note from the authors
         In FIFOBasedGrid there is one to one correspondence between
         a Server and a Handler...
-        
+
         """
 
-        if self.debug: 
+        if self.debug:
             try:
                 print "publishing instance %s" % \
                     instance.__class__.__name__
@@ -459,14 +459,14 @@ class FIFOBasedGrid(AbstractGrid):
 
         if self.debug: print " creating sevice id"
         service_id = self.create_service_id(instance)
-    
+
         for host in self.hosts:
 
             if self.debug: print " host ",host.name
 
             if self.debug: print "  creating proxy"
             proxy = self.create_proxy(instance, host, self.display, daemon = 1)
-            
+
             if self.debug: print "  creating FIFOBasedServer"
             server = FIFOBasedServer(proxy, service_id, host, self.debug)
 
@@ -478,13 +478,13 @@ class FIFOBasedGrid(AbstractGrid):
 
             if self.display and self.X11_delay is not None:
                 time.sleep(self.X11_delay)
-                            
+
         return service_id
 
     def create_proxy(self, instance, host, display = 0, daemon = 0):
         """
         (copied from Grid, called from AbstractISDGrid.create_server)
-        
+
         """
 
         if self.debug: print "   creating handler"
@@ -495,7 +495,7 @@ class FIFOBasedGrid(AbstractGrid):
 
         if self.debug:
             print 'Connected: tid=%d' % handler_tid
-            
+
         return proxy
 
     def create_handler(self, instance, host, display, daemon):
@@ -528,11 +528,11 @@ class FIFOBasedGrid(AbstractGrid):
         #add required init commands prior to launching anything else on the target host.
         if host.init_cmd != '':
             if host.init_cmd.rstrip().endswith(';'):
-                command = host.init_cmd 
+                command = host.init_cmd
             elif host.init_cmd.rstrip().endswith('!'):
                 command = host.init_cmd.rstrip()[:-1]
             else:
-                command = host.init_cmd + ';' 
+                command = host.init_cmd + ';'
         else:
             command = ''
 
@@ -546,17 +546,17 @@ class FIFOBasedGrid(AbstractGrid):
                     display = ':0.0'
                 else:
                     display = master_name + ':0.0'
-            
+
             command += 'xterm'
 
-            argv = ['-title', host.name, 
+            argv = ['-title', host.name,
                     '-geometry', self.window_size,
-                    '-hold', 
+                    '-hold',
                     '-e',
                     host.python, '-i'] + argv
 
             pipe = ''
-            
+
         else:
             command += host.python
             pipe = '> /dev/null'
@@ -572,21 +572,21 @@ class FIFOBasedGrid(AbstractGrid):
         if self.debug:
             print 'Service spawned: tid = ', tid
 
-        return tid                                                                                   
+        return tid
 
     def recv(self, tid, msg):
         return self.communicator.recv(tid, msg)
 
-    def send(self, tid, msg, value = None):    
-        self.communicator.send(tid, msg, value)    
+    def send(self, tid, msg, value = None):
+        self.communicator.send(tid, msg, value)
 
     def create_result_object(self, proxy):
         """
         Results has to be temporarily stored in the Grid
         until their values are calculated
-    
+
         """
-    
+
         key = self.key
         self.key += 1
 
@@ -596,7 +596,7 @@ class FIFOBasedGrid(AbstractGrid):
         #result = Result(tid, key, self)
 
         result = Result(proxy)
-        
+
         result.key = key
 
         self.results[key] = result
@@ -615,7 +615,7 @@ class FIFOBasedGrid(AbstractGrid):
                  server in self.servers[service_id]]
 
                 #self.halt()
-                self.terminate() 
+                self.terminate()
 
                 break
 
@@ -713,17 +713,17 @@ class FIFOBasedGrid(AbstractGrid):
 
     def terminate(self, service_id = None):
 
-         AbstractGrid.terminate(self, service_id)
-         
-         self.communicator.halt()
-         self.__stop = True
+        AbstractGrid.terminate(self, service_id)
 
-         if self.debug: ## please keep debug statement!
-             print 'FIFOBasedGrid: terminated.'
+        self.communicator.halt()
+        self.__stop = True
+
+        if self.debug: ## please keep debug statement!
+            print 'FIFOBasedGrid: terminated.'
 
     def __del__(self):
         self.terminate()
-       
+
     #### YS: a few additions
 
     def broadcast(self, sfo_id, funcname, *args, **kw):
@@ -749,4 +749,3 @@ class FIFOBasedGrid(AbstractGrid):
         for server in results:
             retval.append(server.get())
         return retval
-

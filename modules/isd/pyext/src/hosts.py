@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -17,7 +17,7 @@
 ##
 
 import os
-    
+
 def abspath(x):
 
     return os.path.abspath(os.path.expanduser(x))
@@ -25,10 +25,10 @@ def abspath(x):
 def remote_mkdirs(host, folder, debug):
 
     exists = False
-    
+
     command = "ssh %s '%s -c \"import os, sys; print %s, os.path.exists(os.path.abspath(os.path.expanduser(sys.argv[1]))) \" %s'"
 
-    tag = '%s' % id(command)    
+    tag = '%s' % id(command)
     out = os.popen(command % (host.name, host.python, tag, folder))
     lines = out.readlines()
 
@@ -60,8 +60,8 @@ class Host(object):
     def __init__(self, name, temp_path, n_cpu=1, niceness=0, python='python', init_cmd=''):
 
         self.name = name
-        self.set_temp_path(temp_path)        
-        self.set_niceness(niceness)        
+        self.set_temp_path(temp_path)
+        self.set_niceness(niceness)
         self.python = python
         self.isd_shared_lib_path = None
         self.n_cpu = n_cpu
@@ -77,7 +77,7 @@ class Host(object):
         self.niceness = n
 
 def create_host_list(host_names, temp_path, niceness=0, python='python', init_cmd=''):
-    
+
     host_list = [Host(name, temp_path, niceness=niceness, python=python, init_cmd=init_cmd) for name in host_names]
 
     return host_list

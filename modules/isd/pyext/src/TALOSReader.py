@@ -69,8 +69,8 @@ class TALOSReader:
                 continue
             if float(tokens[4]) < 0.999 and not self.keep_all:
                 continue
-            phi.append(float(tokens[1])*2*pi/360.) 
-            psi.append(float(tokens[2])*2*pi/360.) 
+            phi.append(float(tokens[1])*2*pi/360.)
+            psi.append(float(tokens[2])*2*pi/360.)
         self.add_full_datum(resno, phi, psi)
 
     def _read_predAll(self, fname):
@@ -134,4 +134,3 @@ if __name__ == '__main__':
     reader = TALOSReader(sequence)
     reader.read(talos)
     data=reader.get_data()
-

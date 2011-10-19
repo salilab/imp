@@ -16,7 +16,7 @@ class Statistics:
               stuff whatever you want in it. If append is False, files will be
               numbered according to the counter of their category.
     - num_entries_per_line: number of entries per line in the output. -1 to
-                            disable wrapping. 
+                            disable wrapping.
     - repeat_title: if 0 (default) only print it in the beginning. Else repeat
                     it every 'repeat_title' outputted lines in the statistics file.
     - separate_lines: If False the entries are not separated (default). If True,
@@ -25,11 +25,11 @@ class Statistics:
                 time so many steps have elapsed, appending the current frame
                 number to the filename. Only works in append mode, and when it
                 is set to a multiple of rate.
-                
+
     TODO: check if everything was updated nicely
     """
 
-    def __init__(self, prefix='r01', rate=1, trajrate=1, statfile='_stats.txt', 
+    def __init__(self, prefix='r01', rate=1, trajrate=1, statfile='_stats.txt',
             append=True, num_entries_per_line=5, repeat_title=0,
             separate_lines=False,compress=10000):
         self.prefix = prefix
@@ -87,7 +87,7 @@ class Statistics:
 
     def add_category(self, name=None):
         """creates a logging entry for a simulation substep of the gibbs
-        sampler. Each category has its own counter, initialized to zero. 
+        sampler. Each category has its own counter, initialized to zero.
         The global category does not need to be created, it's already created by
         the init method, and its key is 'global'.
         - name: an optional name, must be string.
@@ -105,7 +105,7 @@ class Statistics:
             self.__counter_pos += 1
         else:
             self.entries.append(entry)
-    
+
     def add_entry(self, key, name=None, entry=None):
         """add an entry for the statistics file
         - key: which category it belongs to (key returned by add_category)
@@ -223,11 +223,11 @@ class Statistics:
 
     def write_stats(self):
         """Writes statistics to the stats file and writes/appends
-        trajectories. Only does that if the global step matches 
+        trajectories. Only does that if the global step matches
         the output rate. Trajectories are written more sparsely, see trajrate.
         Returns: True if data was written, False if not.
         """
-        stepno = self.categories['global']['counter'].get_raw_value() 
+        stepno = self.categories['global']['counter'].get_raw_value()
         if stepno % self.rate != 0:
             return False
         #stats file
@@ -265,4 +265,3 @@ class Statistics:
             fl.write(self.categories[key][name])
             fl.close()
         return True
-

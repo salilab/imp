@@ -25,7 +25,7 @@ class PyMDMover():
         self.cont = cont
         self.md = md
         self.n_md_steps = n_md_steps
-        self.velkeys=[IMP.FloatKey("vx"), 
+        self.velkeys=[IMP.FloatKey("vx"),
                     IMP.FloatKey("vy"), IMP.FloatKey("vz")]
 
     def store_move(self):
@@ -47,7 +47,7 @@ class PyMDMover():
             #    p.set_value(k, self.oldvel[i][j])
             d=IMP.core.XYZ(p)
             d.set_coordinates(self.oldcoords[i])
-    
+
     def get_number_of_steps(self):
         return self.n_md_steps
 
@@ -56,16 +56,16 @@ class PyMDMover():
 
 class PyMC(IMP.Optimizer):
     debug =True
-    
+
     def __init__(self,model):
         self.m=model
-    
+
     def add_mover(self,mv):
         self.mv = mv
-    
+
     def set_kt(self,kT):
         self.kT=kT
-    
+
     def set_return_best(self,thing):
         pass
     def set_move_probability(self,thing):
@@ -118,11 +118,11 @@ class PyMC(IMP.Optimizer):
 
 class sfo_common():
     """nonspecific methods used across all shared function objects.
-    Rules: 
+    Rules:
         - Their name starts with the name of the parent function (e.g.
                 init_model_* )
         - they don't store anything in the class, but instead
-                return all created objects. 
+                return all created objects.
                 Exceptions: the model, which is self._m
                             the statistics class, which is self.stat
         - they store what they have to store in the model (e.g. restraints)
@@ -154,15 +154,15 @@ class sfo_common():
 
     def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
             ff_temp=300.0, disulfides=None, representation='custom'):
-        """creates a CHARMM protein representation.  
+        """creates a CHARMM protein representation.
         creates the charmm force field, bonded and nonbonded.
         - initpdb: initial structure in pdb format
         - top is a CHARMM top.lib, read if representation=='custom' (default)
         - par is a CHARMM par.lib
         - selector is an instance of
             one of the selectors of IMP.atom, for example
-            IMP.atom.NonWaterNonHydrogenPDBSelector(). 
-        - pairscore is an instance of a Pair Score to score the interaction 
+            IMP.atom.NonWaterNonHydrogenPDBSelector().
+        - pairscore is an instance of a Pair Score to score the interaction
             between two atoms. usually, it's either
             LennardJonesDistancePairScore(0,1) or
             RepulsiveDistancePairScore(0,1)
@@ -206,7 +206,7 @@ class sfo_common():
             # set radii
             for ca in IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE):
                 IMP.core.XYZR(ca.get_particle()).set_radius(1.89)
-                #IMP.atom.Mass(ca.get_particle()).set_mass(1.) 
+                #IMP.atom.Mass(ca.get_particle()).set_mass(1.)
             #create bonds by getting pairs and applying a pairscore
             pairs=[]
             for chain in prot.get_children():
@@ -362,7 +362,7 @@ class sfo_common():
 
     def find_atom(self, atom, prot):
         """scans the prot hierarchy and tries to find atom = (resno, name)
-        assumes that resno follows the same numbering as the sequence. 
+        assumes that resno follows the same numbering as the sequence.
         Stores already found atoms for increased speed.
         """
         if not hasattr(self,'__memoized'):
@@ -417,7 +417,7 @@ class sfo_common():
         ln = IMP.isd.NOERestraint(p0,p1,sigma,gamma,distance**(-6))
         return ln
 
-    def init_model_ambiguous_NOE_restraint(self, prot, contributions, distance, 
+    def init_model_ambiguous_NOE_restraint(self, prot, contributions, distance,
             sigma, gamma):
         """Reads an ambiguous NOE restraint. contributions is a list of
         (atom1, atom2) pairs, where atom1 is (resno, atomname).  Sets up a
@@ -466,8 +466,8 @@ class sfo_common():
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         for i,restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-               print "\r%d" % i,
-               sys.stdout.flush()
+                print "\r%d" % i,
+                sys.stdout.flush()
             #a restraint is (contributions, dist, upper, lower, volume)
             #where contributions is a tuple of contributing pairs
             #and a pair is (c1, c2), where c1 is of the form (resno, atname)
@@ -475,15 +475,15 @@ class sfo_common():
                 ln = self.init_model_ambiguous_NOE_restraint(prot, restraint[0],
                         restraint[1], sigma, gamma)
             else:
-                ln = self.init_model_NOE_restraint(prot, restraint[0][0], 
+                ln = self.init_model_NOE_restraint(prot, restraint[0][0],
                         restraint[1], sigma, gamma)
             rs.add_restraint(ln)
         if verbose:
             print "\r%d NOE restraints read" % i
-        #set weight of rs and add to model. 
+        #set weight of rs and add to model.
         #Weight is 1.0 cause sigma particle already has this role.
         rs.set_weight(1.0)
-        self._m.add_restraint(rs) 
+        self._m.add_restraint(rs)
         return rs, prior_rs, sigma, gamma
 
     def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
@@ -509,8 +509,8 @@ class sfo_common():
         ln = IMP.isd.MarginalNOERestraint()
         for i,restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-               print "\r%d" % i,
-               sys.stdout.flush()
+                print "\r%d" % i,
+                sys.stdout.flush()
             #a restraint is (contributions, dist, upper, lower, volume)
             #where contributions is a tuple of contributing pairs
             #and a pair is (c1, c2), where c1 is of the form (resno, atname)
@@ -547,8 +547,8 @@ class sfo_common():
         ln = IMP.isd.MarginalHBondRestraint()
         for i,restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
-               print "\r%d" % i,
-               sys.stdout.flush()
+                print "\r%d" % i,
+                sys.stdout.flush()
             #a restraint is (contributions, dist, upper, lower, volume)
             #where contributions is a tuple of contributing pairs
             #and a pair is (c1, c2), where c1 is of the form (resno, atname)
@@ -685,7 +685,7 @@ class sfo_common():
         - temperature: target temperature
         - thermostat: one of 'NVE', rescale_velocities',
                                 'berendsen', 'langevin'
-        - coupling: coupling constant (tau (fs) for berendsen, 
+        - coupling: coupling constant (tau (fs) for berendsen,
                                         gamma (/fs) for langevin)
         - md_restraints: if not None, specify the terms of the energy to be used
                             during the md steps via a list of restraints.
@@ -815,7 +815,7 @@ class sfo_common():
         """setup hybrid monte-carlo on protein. Uses NVE MD and tries the full
         - prot: protein hierarchy.
         - temperature: target temperature.
-        - coupling: coupling constant (tau (fs) for berendsen, 
+        - coupling: coupling constant (tau (fs) for berendsen,
                                         gamma (/fs) for langevin)
         - n_md_steps: number of md steps per mc step
         - md_restraints: if not None, specify the terms of the energy to be used
@@ -867,9 +867,9 @@ class sfo_common():
         mc = self._setup_mc(nm, temperature, mc_restraints)
         return mc, nm
 
-    def _mc_and_update_nm(self, nsteps, mc, nm, stats_key, 
+    def _mc_and_update_nm(self, nsteps, mc, nm, stats_key,
             adjust_stepsize=True):
-        """run mc using a normal mover on a single particle, 
+        """run mc using a normal mover on a single particle,
         update stepsize and store nsteps, acceptance and stepsize in the
         statistics instance self.stat by using the key stats_key.
         """
@@ -927,7 +927,7 @@ class sfo_common():
     def get_netcdf(self, prot):
         raise NotImplementedError
 
-    def do_md_protein_statistics(self, md_key, nsteps, md_instance, 
+    def do_md_protein_statistics(self, md_key, nsteps, md_instance,
             temperature=300.0, prot_coordinates=None):
         """updates statistics for md simulation: target temp, kinetic energy,
         kinetic temperature, writes coordinates and increments counter.
@@ -941,7 +941,7 @@ class sfo_common():
         self.stat.update(md_key, 'target_temp', temperature)
         kinetic = md_instance.get_kinetic_energy()
         self.stat.update(md_key, 'E_kinetic', kinetic)
-        self.stat.update(md_key, 'instant_temp', 
+        self.stat.update(md_key, 'instant_temp',
                          md_instance.get_kinetic_temperature(kinetic))
         self.stat.update_coordinates(md_key, 'protein', prot_coordinates)
         self.stat.increment_counter(md_key, nsteps)
@@ -966,7 +966,7 @@ class sfo_common():
     def init_stats_add_md_category(self, stat, name='md', coord='protein'):
         """shortcut for a frequent series of operations on MD simulations'
         statistics. Creates an entry for target temp, instantaneous temp,
-        kinetic energy, and one set of coordinates called 'protein' by 
+        kinetic energy, and one set of coordinates called 'protein' by
         default.
         """
         #create category
@@ -1007,5 +1007,3 @@ class sfo_common():
         for p in particles:
             for k in keys:
                 p.set_value(k, p.get_value(k)*factor)
-
-

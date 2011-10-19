@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping,
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     import IMP.isd.logfile as logfile
 
     import IMP.isd.shared_functions as sf
-    
+
     log_output = True
 
     f = open(sys.argv[1])
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         sys.path.insert(0, temp_path)
 
     os.nice(init_data['niceness'])
-    
+
     kill_on_error = not init_data['display']
     signal_file = '%s/kill' % temp_path
 
@@ -63,5 +63,3 @@ if __name__ == '__main__':
         debug, init_data['nfs_care'])
 
     handler.start()
-
-

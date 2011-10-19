@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -61,10 +61,10 @@ class MyResult(object):
         self.event.wait(timeout)
 
         if timeout is not None:
-            
+
             if not self.isSet():
                 raise TimeoutError
-        
+
         return self.value
 
     def __call__(self):
@@ -78,7 +78,7 @@ class MyResult(object):
 
     def clear(self):
         return self.event.clear()
-    
+
 def _wrapper(f, result, *args, **kw):
 
     result.value = f(*args, **kw)
@@ -87,9 +87,9 @@ def _wrapper(f, result, *args, **kw):
 def threaded(f, *args, **kw):
 
     result = MyResult()
-    
+
     start_new_thread(_wrapper, (f, result) + args, kw)
-    
+
     return result
 
 class RemoteObjectHandler:
@@ -104,12 +104,12 @@ class RemoteObjectHandler:
         self.bindings = {MSG_QUIT: self.quit,
                          MSG_GET_ATTR: self.getattr,
                          MSG_SET_ATTR: self.setattr,
-                         MSG_CALL_METHOD: self.call_method,                         
+                         MSG_CALL_METHOD: self.call_method,
                          MSG_TERMINATE: self.terminate,
                          MSG_GET_TIME: self.get_time}
 
         self.object = None ## defined in derived classes
-        
+
         self.times = []
         self.t_expire = 30. * 60
 
@@ -121,14 +121,14 @@ class RemoteObjectHandler:
 
     def recv(self, msg):
         raise NotImplementedError
-        
+
     def setattr(self, name, val):
-        
+
         setattr(self.object, name, val)
         self.send(MSG_SETATTR, None)
 
     def getattr(self, name):
-        
+
         val = getattr(self.object, name)
         self.send(MSG_GET_ATTR, val)
 
@@ -173,7 +173,7 @@ class RemoteObjectHandler:
 
         return t
 
-    def set_object(self, o):        
+    def set_object(self, o):
         self.object = o
 
     def initialize(self):
@@ -217,7 +217,7 @@ class RemoteObject(object):
         return self.__dict__[ '_%s__handler_tid' % self.__class__.__name__]
 
     def _call_method(self, name, *args, **kw):
-        raise NotImplementedError        
+        raise NotImplementedError
 
     def _get_attr(self, value):
 
@@ -235,7 +235,7 @@ class RemoteObject(object):
     def __getattr__(self, name):
 
         #print 'DEBUG RemoteObject.__getattr__: name = %s (%s)' \
-        #     % (name, id(self))        
+        #     % (name, id(self))
 
         if hasattr(self._op, name):
 

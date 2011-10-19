@@ -33,15 +33,15 @@ _rinterp = None
 
 def erfinv(x):
     return _rinverf(x)[0]
-    
+
 def erf(x):
     return _rerf(x)[0]
 
 def Finv(x,d1,d2):
     return _rinvF(x,d1,d2)[0]
-    
+
 def spline(xy, mean,method=None):
-    """spline interpolation of (x,y) coordinates. If interpolation goes 
+    """spline interpolation of (x,y) coordinates. If interpolation goes
     negative, replace by mean value.
     """
     x,y = zip(*xy)
@@ -199,10 +199,10 @@ class CvEstimator:
     returns a single point, and mean() returns the linear average between two
     points.
     """
-    
+
     def __init__(self, params, energies=None, indicators=None,
             method="constant", temps=None, write_cv = False):
-        
+
         kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
         self.__initialized = False
         self.__cv = []
@@ -263,15 +263,15 @@ class CvEstimator:
         if self.__cvmean < 0:
             raise ValueError, "Cv mean is negative!"
         self.__cvfun = spline(self.__cv, self.__cvmean)
-        return 
-             
+        return
+
     def estimate_cv_constant(self, params, indicators):
         """try to guess which constant cv fits best"""
         if self.__initialized :
             return
         self.estimate_cv_interpolate(params, indicators)
         self.__cv = self.__cvmean
-        return   
+        return
 
     def needs_init(self):
         if not self.__initialized:
@@ -281,7 +281,7 @@ class CvEstimator:
         "use MBAR to get the heat capacity"
         raise NotImplementedError, method
         if self.__initialized :
-             return
+            return
 
     def _isinbounds(self,p,params):
         """returns True if p is within parms, else false. the params list must be sorted ascendingly."""
@@ -292,7 +292,7 @@ class CvEstimator:
             return True
 
     def _interpolate(self,xval,xlist):
-        """return interpolation of Cv at point xval, and return the average instead 
+        """return interpolation of Cv at point xval, and return the average instead
         if this value is negative.
         """
         self._isinbounds(xval,xlist)
@@ -332,9 +332,9 @@ class CvEstimator:
 ##### Parameter updating methods
 def update_good_dumb(newp, oldp, *args, **kwargs):
     """Here the old parameters are oldp[0] and oldp[1], and the starting point
-    is newp[0]. We should modify newp[1] so that the AR in the following cycle 
+    is newp[0]. We should modify newp[1] so that the AR in the following cycle
     is equal to the targetAR.
-    In the "dumb" method, the Cv and targetAR keywords are ignored. 
+    In the "dumb" method, the Cv and targetAR keywords are ignored.
     Here the newp[1] parameter is modified because prior changes have set
     newp[0] to a different value than oldp[0]. Thus, we should move newp[1] by
     minimizing the effect on the AR since it is supposedly equal to targetAR. In
@@ -346,14 +346,14 @@ def update_good_dumb(newp, oldp, *args, **kwargs):
 
 def update_bad_dumb(newp, oldp, ind, targetAR = 0.4, scale=0.1, **kwargs):
     """Here the old parameters are oldp[0] and oldp[1], and the starting point
-    is newp[0]. We should modify newp[1] so that the AR in the following cycle 
+    is newp[0]. We should modify newp[1] so that the AR in the following cycle
     is equal to the targetAR.
     In the "dumb" method, the Cv keyword is ignored. Here the newp[1]
     parameter is modified to follow the possible translation of newp[0] by
     calling update_good_dumb, and then newp[1] is added or substracted scale% of
     (oldp[1] - oldp[0]) to adjust to targetAR.
     """
-    
+
     if newp[0] != oldp[0]:
         newp[1] = update_good_dumb(newp,oldp)
     if targetAR > sum(ind)/float(len(ind)):
@@ -373,7 +373,7 @@ def update_any_cv_step(newp, oldp, ind, targetAR = 0.4, Cv = None, **kwargs):
     capacity at position newp[0] as an estimate of the mean of the heat capacity
     between newp[0] and newp[1]. This does not require any self-consistent loop.
     """
-    
+
     global kB
 
     if abs(oldp[0] - newp[0]) < EPSILON and targetAR < 0:
@@ -386,8 +386,8 @@ def update_any_cv_step(newp, oldp, ind, targetAR = 0.4, Cv = None, **kwargs):
         raise ValueError, """targetAR too small for this approximate method, use
         the full self-consistent method instead."""
     return newp[0]*(cv+Y*sqrt(2*cv - Y**2))/(cv-Y**2)
-    
-def  update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None, 
+
+def  update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
         tol=1e-6, maxiter=10000):
     """self-consistent solver version"""
 
@@ -421,7 +421,7 @@ def  update_any_cv_sc(newp, oldp, ind, targetAR=0.4, Cv=None,
     prdb("converged after %d iterations and a tolerance of %f for x=%f" %
             (i,tol,oldp[1]))
     return targetp
- 
+
 def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
         tol=1e-6, maxiter=10000):
     """self-consistent solver version, on the exact average AR equation"""
@@ -449,8 +449,8 @@ def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
             raise RuntimeError, "heat capacity goes negative"
         if nloops > maxiter:
             raise RuntimeError,'could not find zero of function!'
-    
-    #find root 
+
+    #find root
     _runiroot = r('uniroot(rootfn,c(%f,%f),f.lower = %f, f.upper = %f, tol = %f, maxiter = %d)' % (newp[0],tmp,
         1-targetAR, -targetAR, tol, maxiter))
     prdb("self-consistent solver converged after %s iterations and an estimated precision of %s " % (_runiroot[2][0],_runiroot[3][0]))
@@ -459,7 +459,7 @@ def update_any_cv_scfull(newp, oldp, ind, targetAR=0.4, Cv=None,
 
 def update_any_cv_nr(newp, oldp, ind, targetAR = 0.4, Cv = None, **kwargs):
     """newton-raphson solver version"""
-    
+
     #use nlm
     raise NotImplementedError
 
@@ -474,7 +474,7 @@ def are_equal_to_targetAR(indicators,targetAR=0.4,alpha=0.05, method = "binom"):
     deviations.sort()
     deviant = deviations[-1]
 
-    #perform t-test 
+    #perform t-test
     if method == "ttest":
         #from statlib.stats import ttest_1samp as ttest
         ttest = ttest
@@ -493,10 +493,10 @@ def are_equal_to_targetAR(indicators,targetAR=0.4,alpha=0.05, method = "binom"):
         return True
 
 def are_stationnary(indicators, alpha=0.05, method = "anova"):
-    """test on the stationarity of the observations (block analysis). Done so by 
+    """test on the stationarity of the observations (block analysis). Done so by
     launching an anova on the difference between the two halves of each observations.
     """
- 
+
     if method == "kruskal":
         test = kruskal
     else:
@@ -509,10 +509,10 @@ def are_stationnary(indicators, alpha=0.05, method = "anova"):
         return False
     else:
         return True
-       
+
 def are_equal(indicators, targetAR=0.4, alpha = 0.05,
         method = "anova", varMethod = "skip", power=0.8):
-    """Perform a one-way ANOVA or kruskal-wallis test on the indicators set, 
+    """Perform a one-way ANOVA or kruskal-wallis test on the indicators set,
     and return True if one cannot exclude with risk alpha that the indicators
     AR are different (i.e. True = all means are equal). Also performs a test
     on the variance (they must be equal).
@@ -565,7 +565,7 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
     means=[(sum(ind)/float(len(ind)),pos,ind) for pos,ind in enumerate(indicators)]
     means.sort()
 
-    #perform t-test 
+    #perform t-test
     if method == "ttest":
         #from statlib.stats import ttest_1samp as ttest
         ttest = ttest
@@ -600,7 +600,7 @@ def find_good_ARs(indicators, targetAR=0.4, alpha=0.05, method="binom"):
         else:
             goodstop = len(means)-1-i
             break
-    
+
     #limiting cases: all different
     if len(isGoodTuple) > len(indicators):
         return tuple([False]*len(indicators))
@@ -622,7 +622,7 @@ def mean_first_passage_times(replicanums_ori, subs=1, start=0, use_avgAR=False):
 
     use_avgAR : if a list of average ARs is given computes everything from
     average AR; if it is False, compute by direct counting of events.
-    
+
     returns:
         If use_avgAR == False:
             tau0, tauN, chose_N, times0, timesN
@@ -640,7 +640,7 @@ def mean_first_passage_times(replicanums_ori, subs=1, start=0, use_avgAR=False):
     N = len(replicanums)
     tauN = [0]*N
     tau0 = [0]*N
-    
+
     if use_avgAR:
         tau0[0] = 0.0
         tauN[-1] = 0.0
@@ -651,14 +651,14 @@ def mean_first_passage_times(replicanums_ori, subs=1, start=0, use_avgAR=False):
                     + (N-(state-1))/(float(use_avgAR[state-1]))
 
         return tau0, tauN, None, None, None
-    
+
     else:
         #prdb('not using average AR')
         from itertools import izip
         #the algorithm looks for replicas that start at the lowest temp, and
         #records the farthest state it went to before returning to zero. Once
         #back it increments the counter of all concerned replicas. Similar
-        #procedure if starting from N. 
+        #procedure if starting from N.
         store0 = zeros((N,N), dtype=bool)
         last0=[0 for i in xrange(N)]
         already0 = [False for i in xrange(N)]
@@ -667,7 +667,7 @@ def mean_first_passage_times(replicanums_ori, subs=1, start=0, use_avgAR=False):
         lastN=[0 for i in xrange(N)]
         alreadyN = [False for i in xrange(N)]
         timesN=[[] for i in xrange(N)]
-        
+
         #prdb('looping over replicanums')
         for time, frame in enumerate(izip(*replicanums)):
             #case of the replica in state 0
@@ -700,8 +700,8 @@ def mean_first_passage_times(replicanums_ori, subs=1, start=0, use_avgAR=False):
         chose_N = [len(timesN[state]) > len(times0[state]) for state in \
                 xrange(N)]
         for state in xrange(N):
-                tauN[state] = sum(timesN[state])/float(len(timesN[state]))
-                tau0[state] = sum(times0[state])/float(len(times0[state]))
+            tauN[state] = sum(timesN[state])/float(len(timesN[state]))
+            tau0[state] = sum(times0[state])/float(len(times0[state]))
         #prdb(len(chose_N))
 
         return tau0, tauN, chose_N, times0, timesN
@@ -710,7 +710,7 @@ def compute_effective_fraction(tau0, tauN, chose_N):
     """input: tau0, tauN, chose_N
     output: effective fraction f(T) (P_up(n)) as introduced in
     Trebst S, Troyer M, Hansmann UHE, J Chem Phys *124* 174903 (2006).
-    formalized in 
+    formalized in
     Nadler W, Hansmann UHE, Phys Rev E *75* 026109 (2007)
     and whose calculation is enhanced in
     Nadler W, Meinke J, Hansmann UHE, Phys Rev E *78* 061905 (2008)
@@ -727,7 +727,7 @@ def compute_effective_fraction(tau0, tauN, chose_N):
     prdb("n* = %d" % nstar)
     #compute helper functions h
     h0=[0]*N
-    h0[1] = tau0[1] 
+    h0[1] = tau0[1]
     for state in xrange(2,nstar+1):
         h0[state] = h0[state-1] + (tau0[state]-tau0[state-1])/float(state)
 
@@ -781,7 +781,7 @@ def compute_indicators(replicanums, subs = 1, start=0):
 #### Main routines
 
 def update_params_nonergodic(pup, params, write_g=False, num=False):
-    
+
     from numpy import linspace
     #g = spline(zip(pup,params),0,method='monoH.FC')
     g = linear_interpolation(zip(pup,params),0)
@@ -806,7 +806,7 @@ def update_params_nonergodic(pup, params, write_g=False, num=False):
     #for numerical issues
     newparams[0] = params[0]
     newparams[-1] = params[-1]
-        
+
     return newparams
 
 def update_params(indicators, params, isGood, targetAR = 0.4, immobilePoint = 1,
@@ -818,7 +818,7 @@ def update_params(indicators, params, isGood, targetAR = 0.4, immobilePoint = 1,
 
     if immobilePoint != 1:
         raise NotImplementedError
-    
+
     if Cv is None and (badMethod != "dumb" or goodMethod != "dumb"):
         raise RuntimeError, """Cv needs to be estimated if using other methods
         than 'dumb' for updating!"""
@@ -851,16 +851,16 @@ def update_params(indicators, params, isGood, targetAR = 0.4, immobilePoint = 1,
     #scan each position starting from the immobilePoint
     for pos in xrange(len(params)-1):
         if isGood[pos]:
-            newparams[pos+1] = update_good(newparams[pos:pos+2],params[pos:pos+2], 
+            newparams[pos+1] = update_good(newparams[pos:pos+2],params[pos:pos+2],
                     indicators[pos], targetAR = targetAR, Cv = Cv)
         else:
-            newparams[pos+1] = update_bad(newparams[pos:pos+2],params[pos:pos+2], 
+            newparams[pos+1] = update_bad(newparams[pos:pos+2],params[pos:pos+2],
                     indicators[pos], targetAR = targetAR, Cv = Cv, scale=dumb_scale)
-    
+
     return tuple(newparams)
 
-def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05, 
-        testMethod = 'anova', meanMethod = 'binom', use_avgAR=False, 
+def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05,
+        testMethod = 'anova', meanMethod = 'binom', use_avgAR=False,
         power = 0.8, num=False):
     #num is here if you want to add some more temperatures. indicate total
     #number of replicas
@@ -872,7 +872,7 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05,
     prdb("computing mean first passage times")
     tau0, tauN, chose_N, times0, timesN = mean_first_passage_times(replicanums,
             subs=subs, start=start, use_avgAR=use_avgAR)
-    
+
     prdb("average round trip time: %.2f (%d+%d events)" % \
         (tau0[-1]+tauN[0],len(times0[-1]),len(timesN[0])))
     prdb("checking if the parameterset needs to be improved")
@@ -890,7 +890,7 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05,
         else:
             reduced.append([i*2.0/(n*(n+1)) for i in times0[n]])
 
-    anova_result = are_equal(reduced, alpha = alpha, method = testMethod, 
+    anova_result = are_equal(reduced, alpha = alpha, method = testMethod,
             power=power)
     if (anova_result['result']):  #TODO test if equal to targetAR
         prdb("flux is constant, nothing to do!")
@@ -912,7 +912,7 @@ def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05,
 
 def tune_params_ar(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePoint
         = 1, CvMethod = "skip", badMethod = "dumb", goodMethod = "dumb",
-        varMethod = "skip", testMethod = "anova", meanMethod = "binom", 
+        varMethod = "skip", testMethod = "anova", meanMethod = "binom",
         energies = None, temps = None, power=0.8, dumb_scale=0.1):
     """Tune the replica-exchange parameters and return a new set.
 
@@ -936,18 +936,18 @@ def tune_params_ar(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePo
             target value (default: "dumb", options: "step", "sc", "scfull", "nr")
         goodMethod -- how to update the value of the (j+1)th parameter
             in the case of a correctly exchanging couple, but if the jth
-            parameter has been modified (default: "dumb",options: "step", 
-            "sc" self-consistent, "scfull" self-consistent using the exact equation, 
+            parameter has been modified (default: "dumb",options: "step",
+            "sc" self-consistent, "scfull" self-consistent using the exact equation,
             "nr" newton-raphson solver for the exact equation)
-	dumb_scale -- (0.0-1.0) in the "dumb" method, scale wrong temperature 
-	    intervals by this amount. (default: 0.1)
+        dumb_scale -- (0.0-1.0) in the "dumb" method, scale wrong temperature
+            intervals by this amount. (default: 0.1)
         testMethod -- how to test for the difference of the means,
             either "anova" for a one-way anova, or "kruskal" for a
             Kruskal-Wallis one-way non-parametric anova.
-        meanMethod -- "ttest" for a two-sided one-sample t-test, 
+        meanMethod -- "ttest" for a two-sided one-sample t-test,
             "binom" for an exact binomial test of the probability.
-        varMethod -- how to test for the equality of variances. 
-            "fligner" for the Fligner-Killeen non-parametric test, 
+        varMethod -- how to test for the equality of variances.
+            "fligner" for the Fligner-Killeen non-parametric test,
             "bartlett" for Bartlett's test, "skip" to pass.
         energies -- if CvMethod is set to "mbar", the energies of each
             state as a function of time are used to estimate the heat capacity.
@@ -1034,6 +1034,3 @@ if __name__ == '__main__':
             print "PROBLEM IN NEW PARAMETERSET -> not saved"
     print "params    :",params
     print "new params:",newparams
-
-
-

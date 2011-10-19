@@ -2,9 +2,9 @@
 ## The Inferential Structure Determination (ISD) software library
 ##
 ## Authors: Michael Habeck and Wolfgang Rieping
-##        
+##
 ##          Copyright (C) Michael Habeck and Wolfgang Rieping
-## 
+##
 ##          All rights reserved.
 ##
 ## NO WARRANTY. This library is provided 'as is' without warranty of any
@@ -25,7 +25,7 @@ class OrderedDict(dict):
 
         if order is None:
             order = []
-        
+
         self.__order = order
 
     def keys(self):
@@ -72,13 +72,12 @@ class OrderedDict(dict):
         return value
 
     def __setitem__(self, key, value):
-        
+
         if key not in self.__order:
-            self.__order.append(key) 
+            self.__order.append(key)
 
         dict.__setitem__(self, key, value)
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
         self.__order.remove(key)
-

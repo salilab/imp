@@ -9,7 +9,7 @@ kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 import TuneRex
 
 class ReplicaTracker():
-    
+
     def __init__(self,nreps,inv_temps,grid,sfo_id,
             rexlog='replicanums.txt', scheme='standard', xchg='random',
             convectivelog='stirred.txt', tune_temps = False,
@@ -45,7 +45,7 @@ class ReplicaTracker():
             self.stirred['pos']=0
             #what direction should this replica should go to
             if self.stirred['replica'] != self.nreps-1:
-                self.stirred['dir']=1 #up 
+                self.stirred['dir']=1 #up
             else:
                 self.stirred['dir']=0 #down
             #how many steps are remaining til we change stirring replica
@@ -58,13 +58,13 @@ class ReplicaTracker():
         if len(inplist) != self.nreps:
             raise ValueError, 'list has wrong size'
         return [inplist[i] for i in self.replicanums]
-        
+
     def sort_per_replica(self, inplist):
         "sorts a state list per replica number"
         if len(inplist) != self.nreps:
             raise ValueError, 'list has wrong size'
         return [inplist[i] for i in self.statenums]
-        
+
     def get_energies(self):
         "return replica-sorted energies"
         return self.grid.gather(
@@ -109,7 +109,7 @@ class ReplicaTracker():
             pair = init.pop(i)
             #print pair
             #remove overlapping
-            init = [(r,q) for (r,q) in init 
+            init = [(r,q) for (r,q) in init
                       if (r not in pair and q not in pair)]
             #print init
             #add to pairslist
@@ -147,12 +147,12 @@ class ReplicaTracker():
         else:
             raise NotImplementedError, \
                     "unknown exchange scheme: %s" % self.scheme
-        
+
     def get_cross_energies(self, pairslist):
         "get energies assuming all exchanges have succeeded"
         print "this is not needed for temperature replica-exchange"
         raise NotImplementedError
-            
+
     def get_metropolis(self, pairslist, old_ene):
         """compute metropolis criterion for temperature replica exchange
         e.g. exp(Delta beta Delta E)
@@ -164,7 +164,7 @@ class ReplicaTracker():
                 min(1,exp((old_ene[s2]-old_ene[s1])*
                         (self.inv_temps[s2]-self.inv_temps[s1])))
         return metrop
-                    
+
     def try_exchanges(self, plist, metrop):
         accepted = []
         for couple in plist:
@@ -195,7 +195,7 @@ class ReplicaTracker():
             buf = states[ri]
             states[ri] = states[rj]
             states[rj] = buf
-        for temp,state in zip(newtemps,states):	    
+        for temp,state in zip(newtemps,states):
             state['inv_temp'] = temp
         self.grid.gather(
                 self.grid.scatter(self.sfo_id, 'set_state', states))
@@ -222,7 +222,7 @@ class ReplicaTracker():
             fl.close()
 
     def tune_rex(self):
-        """use TuneRex to optimize temp set. Temps are optimized every 
+        """use TuneRex to optimize temp set. Temps are optimized every
         'rate' steps and 'method' is used. Data is accumulated as long as
         the temperatures weren't optimized.
         td keys that should be passed to init:
@@ -238,15 +238,15 @@ class ReplicaTracker():
                 and len(self.rn_history) > 0:
             temps = [1/(kB*la) for la in self.inv_temps]
             kwargs={}
-	    if td['method'] == 'ar':
-		if 'targetAR'  in td: kwargs['targetAR']=td['targetAR']
-		if 'alpha' in td: kwargs['alpha']=td['alpha']
-		if 'dumb_scale' in td: kwargs['dumb_scale']=td['dumb_scale']   
+            if td['method'] == 'ar':
+                if 'targetAR'  in td: kwargs['targetAR']=td['targetAR']
+                if 'alpha' in td: kwargs['alpha']=td['alpha']
+                if 'dumb_scale' in td: kwargs['dumb_scale']=td['dumb_scale']
                 indicators = TuneRex.compute_indicators(
                         transpose(self.rn_history))
                 changed, newparams = TuneRex.tune_params_ar(indicators, temps, **kwargs)
             elif td['method'] == 'flux':
-		if 'alpha' in td: kwargs['alpha']=td['alpha']
+                if 'alpha' in td: kwargs['alpha']=td['alpha']
                 changed, newparams = TuneRex.tune_params_flux(
                         transpose(self.rn_history),
                         temps, **kwargs)
@@ -254,7 +254,7 @@ class ReplicaTracker():
                 self.rn_history = []
                 print newparams
                 self.inv_temps = [1/(kB*t) for t in newparams]
-                
+
     def do_bookkeeping_before(self):
         self.stepno += 1
         if self.scheme == 'convective':
@@ -303,7 +303,3 @@ class ReplicaTracker():
         #print "book"
         self.do_bookkeeping_after(accepted)
         #print "done"
-
-
-
-
