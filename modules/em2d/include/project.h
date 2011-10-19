@@ -58,10 +58,10 @@ public:
 #ifndef SWIG
   IMP::Pointer<ImageReaderWriter> srw; // Writer used to save the images
 #endif
-  void set_srw(ImageReaderWriter*w) {
+  void set_writer(ImageReaderWriter*w) {
     srw=w;
   }
-  ImageReaderWriter* get_srw() const {
+  ImageReaderWriter* get_writer() const {
     return srw;
   }
   bool save_images; // Save images after projeting
