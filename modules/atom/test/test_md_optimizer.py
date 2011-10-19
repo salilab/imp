@@ -171,7 +171,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         velocity = self.particles[0].get_value(vxkey)
         self.md.assign_velocities(100.0)
         velocity2 = self.particles[0].get_value(vxkey)
-        self.assertNotAlmostEqual(velocity, velocity2, delta=1e-5)
+        self.assertNotAlmostEqual(velocity, velocity2, delta=1e-6)
         # Kinetic energy, however, should be almost identical
         ekinetic2 = self.md.get_kinetic_energy()
         self.assertAlmostEqual(ekinetic, ekinetic2, delta=1e-2)
