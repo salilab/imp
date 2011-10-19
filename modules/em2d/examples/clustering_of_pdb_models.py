@@ -74,8 +74,7 @@ for fn in fn_models:
     coords.append( [x.get_coordinates() for x in xyz])
 
 print "Computing matrix of RMSD ..."
-rmsds=[IMP.Floats(0.0 for i in range(0,n_models))
-                                  for n in range(0,n_models)]
+rmsds=[[0.0 for i in range(0,n_models)] for n in range(0,n_models)]
 transformations=[[[] for i in range(0,n_models)]  for j in range(0,n_models)]
 # fill rmsd and transformations
 for i in xrange(0,n_models):
