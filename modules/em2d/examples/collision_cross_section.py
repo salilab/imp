@@ -23,5 +23,5 @@ resolution = 1.0
 pixel_size = 1.5
 img_size = 80
 ccs = em2d.CollisionCrossSection(projections, resolution, pixel_size, img_size)
-ccs.set_model_particles( prot.get_leaves() )
+ccs.set_model_particles(IMP.atom.get_leaves(prot))
 print "CCS",ccs.get_ccs(),"A**2"
