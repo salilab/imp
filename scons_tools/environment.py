@@ -401,6 +401,7 @@ def get_staticlib_environment(env):
        shared library is done."""
     e = bug_fixes.clone_env(env)
     e.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
+    _add_flags(e)
     _fix_aix_cpp_link(e, True, 'LINKFLAGS')
     return e
 
