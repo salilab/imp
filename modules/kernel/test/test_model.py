@@ -223,7 +223,6 @@ class ModelTests(IMP.test.TestCase):
         for r in rs:
             print "now restraint",r
             rcsl=IMP.get_required_score_states([r])
-            rcs= set(rcsl)
             rdg= IMP.get_dependency_graph([r])
             #IMP.show_graphviz(rdg)
             ccsl=[]
@@ -238,7 +237,6 @@ class ModelTests(IMP.test.TestCase):
                 else:
                     print "found", nn.get_name()
                     ccsl.append(nn)
-            ccs= set(ccsl)
             # disabled as the graphs now include all score states
             #self.assertEqual(ccs, rcs)
 if __name__ == '__main__':
