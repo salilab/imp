@@ -36,7 +36,7 @@ class BallTests(IMP.test.TestCase):
         std= h.get_standard_deviation(center)
         print center, std
         for i in range(0,3):
-            self.assertAlmostEqual(center[i], .75, delta=.01)
+            self.assertAlmostEqual(center[i], .75, delta=.015)
             self.assertAlmostEqual(std[i], .58*.7, delta=.05)
 if __name__ == '__main__':
     IMP.test.main()
