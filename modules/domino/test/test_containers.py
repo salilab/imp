@@ -3,7 +3,6 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
-import RMF
 
 class TrivialParticleStates(IMP.domino.ParticleStates):
     def __init__(self, n):
@@ -20,10 +19,10 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min1(self):
         """Testing default subset states writing to a file"""
         m= IMP.Model()
-        #try:
-        #    import IMP.rmf
-        #except:
-        #    self.skipTest("RMF is disabled")
+        try:
+            import RMF
+        except ImportError:
+            self.skipTest("RMF is disabled")
         ps=[]
         ns=5
         np=4
