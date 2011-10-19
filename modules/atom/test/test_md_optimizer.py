@@ -166,11 +166,15 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self.assertNotEqual(ekinetic, 0.0)
         self._check_temperature(100.0, 20.0)
         # Make sure that the random number generator is working properly;
-        # we should get different values each time we assign velocities
-        # (NOT the case with r452 or earlier):
+        # we should get different particle velocities each time we assign
+        # velocities (NOT the case with r452 or earlier):
+        velocity = self.particles[0].get_value(vxkey)
         self.md.assign_velocities(100.0)
+        velocity2 = self.particles[0].get_value(vxkey)
+        self.assertNotAlmostEqual(velocity, velocity2, delta=1e-5)
+        # Kinetic energy, however, should be almost identical
         ekinetic2 = self.md.get_kinetic_energy()
-        self.assertNotAlmostEqual(ekinetic, ekinetic2, delta=1e-2)
+        self.assertAlmostEqual(ekinetic, ekinetic2, delta=1e-2)
 
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method"""
