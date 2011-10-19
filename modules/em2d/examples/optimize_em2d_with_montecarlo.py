@@ -1,4 +1,5 @@
 import IMP
+import IMP.base
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
@@ -94,7 +95,7 @@ print "model has ",m.get_number_of_restraints(),"restraints"
 # set em2D restraint
 srw = em2d.SpiderImageReaderWriter()
 selection_file=em2d.get_example_path("all-1z5s-projections.sel")
-images_to_read_names=[IMP.get_relative_path(selection_file, x) for x in
+images_to_read_names=[IMP.base.get_relative_path(selection_file, x) for x in
         em2d.read_selection_file(selection_file)]
 em_images =em2d.read_images(images_to_read_names,srw)
 print len(em_images),"images read"
