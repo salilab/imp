@@ -170,7 +170,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         # (NOT the case with r452 or earlier):
         self.md.assign_velocities(100.0)
         ekinetic2 = self.md.get_kinetic_energy()
-        self.assertNotEqual(ekinetic, ekinetic2)
+        self.assertNotAlmostEqual(ekinetic, ekinetic2, delta=1e-2)
 
     def test_get_optimizer_states(self):
         """Test get_optimizer_states() method"""
