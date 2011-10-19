@@ -61,9 +61,8 @@ class ClusteringTests(IMP.test.TestCase):
             xyz=IMP.core.XYZs(IMP.atom.get_leaves(h))
             coords.append( [x.get_coordinates() for x in xyz])
         # compute rmsds
-        x=IMP.Floats(0.0 for i in range(0,n_models))
-        rmsds=[IMP.Floats(0.0 for i in range(0,n_models))
-                  for n in xrange(0,n_models)]
+        x= [0.0 for i in range(0,n_models)]
+        rmsds=[[0.0 for i in range(0,n_models)] for n in xrange(0,n_models)]
         for i in xrange(0,n_models):
             for j in xrange(i+1,n_models):
                 if(i!=j):
