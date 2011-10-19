@@ -20,7 +20,7 @@ from random import random
 
 kB= (1.381 * 6.02214) / 4184.0
 
-class PyMDMover():
+class PyMDMover:
     def __init__(self, cont, md, n_md_steps):
         self.cont = cont
         self.md = md
@@ -116,7 +116,7 @@ class PyMC(IMP.Optimizer):
     def get_number_of_forward_steps(self):
         return self.naccept
 
-class sfo_common():
+class sfo_common:
     """nonspecific methods used across all shared function objects.
     Rules:
         - Their name starts with the name of the parent function (e.g.

@@ -8,7 +8,7 @@ from numpy.random import shuffle
 kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 import TuneRex
 
-class ReplicaTracker():
+class ReplicaTracker:
 
     def __init__(self,nreps,inv_temps,grid,sfo_id,
             rexlog='replicanums.txt', scheme='standard', xchg='random',
