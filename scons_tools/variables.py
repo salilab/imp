@@ -25,7 +25,10 @@ def _propagate_variables(env):
             env['PYTHON']=env['python']
     else:
         env['IMP_PROVIDE_PYTHON']=False
-        env['PYTHON']="python"
+        if env['wine']:
+            env['PYTHON']="w32python"
+        else:
+            env['PYTHON']="python"
     env['IMP_PROVIDE_PYTHON']= env['python']
     env['IMP_USE_PLATFORM_FLAGS']= env['platformflags']
     env['IMP_USE_RPATH']= env['rpath']
