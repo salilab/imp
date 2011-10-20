@@ -107,11 +107,11 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
         md.add_optimizer_state(scaler)
         md.optimize(0)
         ts = []
-        for i in range(100):
+        for i in range(140):
             ts.append(md.get_kinetic_temperature(md.get_kinetic_energy()))
             scaler.rescale_velocities()
         # After a while, temperature should have stabilized at set value
-        equilibrium_temp = sum(ts[40:100])/60.0
+        equilibrium_temp = sum(ts[40:140])/100.0
         self.assertAlmostEqual(equilibrium_temp, 298.0, delta=20.0)
 
 if __name__ == '__main__':
