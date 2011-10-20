@@ -17,7 +17,7 @@ from IMP.isd import vonMisesSufficient, vonMises
 import IMP.test
 
 class TestvonMisesSufficient(IMP.test.TestCase):
-    """Tests the von Mises distribution for N observations using the 
+    """Tests the von Mises distribution for N observations using the
     sufficient statistics formulation
     """
 
@@ -115,12 +115,12 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             cpp=fn.density()
             py=exp(R*kappa*cos(x-chiexp))/(2*pi*i0(kappa)**N)
             if py == 0.0:
-               self.assertAlmostEqual(cpp,0.0,delta=0.001)
+                self.assertAlmostEqual(cpp,0.0,delta=0.001)
             else:
-               self.assertAlmostEqual(cpp/py,1.0,delta=0.001)
+                self.assertAlmostEqual(cpp/py,1.0,delta=0.001)
 
 class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
-    """the sufficient von Mises should reduce to the von Mises 
+    """the sufficient von Mises should reduce to the von Mises
     when N=R=1
     """
 
@@ -173,4 +173,3 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-

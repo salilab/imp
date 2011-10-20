@@ -76,7 +76,7 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
         "raise ValueError if out of bounds"
         self.q0.set_scale(self.qmin-1)
         self.assertRaises(IMP.ModelException, self.J.get_probability)
-        
+
     def testSanityEP(self):
         "test if score is -log(prob)"
         for i in xrange(100):
@@ -96,16 +96,3 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-

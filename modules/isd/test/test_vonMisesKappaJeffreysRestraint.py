@@ -37,7 +37,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
                     sqrt(ratio*(no-ratio-no*ratio*ratio)),
                     delta=0.001)
 
-    def testValueE(self): 
+    def testValueE(self):
         "test if score is log(scale)"
         for i in xrange(100):
             no=uniform(0.1,100)
@@ -78,7 +78,7 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
         "raise ValueError if zero"
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.ModelException, self.J.get_probability)
-        
+
     def testNegativeP(self):
         "raise ValueError if negative"
         self.kappa.set_scale(-1.0)
@@ -103,16 +103,3 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-

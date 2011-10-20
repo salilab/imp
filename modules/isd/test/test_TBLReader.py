@@ -29,7 +29,7 @@ class TestTBLReader(IMP.test.TestCase):
             os.write(handle, line+'\n')
         os.close(handle)
         return name
-        
+
     def test_nonambiguous(self):
         "test whether the reader can read nonambiguous TBL files"
         tbl = TBLReader(self.sequence)
@@ -39,7 +39,7 @@ class TestTBLReader(IMP.test.TestCase):
         name = self.writetotbl(data)
         res = tbl.read_distances(name, 'test')['test']
         #distance
-        self.assertAlmostEqual(res[0][1], 1.75, delta=1e-7) 
+        self.assertAlmostEqual(res[0][1], 1.75, delta=1e-7)
         self.assertAlmostEqual(res[1][1], 4.65, delta=1e-7)
         #lower
         self.assertAlmostEqual(res[0][2], 0.75, delta=1e-7)
@@ -59,7 +59,7 @@ class TestTBLReader(IMP.test.TestCase):
         self.assertEqual(res[1][0][0][0],(14, 'HA2'))
         self.assertEqual(res[1][0][0][1],(10, 'HA'))
 
-        
+
     def tearDown(self):
         IMP.test.TestCase.tearDown(self)
         if self.tmpfile:
@@ -67,16 +67,3 @@ class TestTBLReader(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-

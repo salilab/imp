@@ -28,7 +28,7 @@ class TestFNormal(IMP.test.TestCase):
                     uniform(-100,100),uniform(0.1,100)]
             fn=FNormal(*randno)
             self.assertAlmostEqual(fn.evaluate(),
-                    0.5*log(2*pi) + log(randno[3]/randno[1]) 
+                    0.5*log(2*pi) + log(randno[3]/randno[1])
                     + 0.5/randno[3]**2*(randno[0]-randno[2])**2,
                     delta=0.001)
 
@@ -84,16 +84,3 @@ class TestFNormal(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-
