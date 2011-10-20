@@ -37,7 +37,7 @@ class DopeType;
   See M.-y. Shen and A. Sali. Statistical potential for assessment and
   prediction of protein structures. Protein Science 15, 2507–2524, 2006.
 
-  Dope should not be applied to two atoms from the same residue.
+  DOPE should not be applied to two atoms from the same residue.
   You may need to use the SameResiduePairFilter to filter these out.
 */
 class IMPATOMEXPORT DopePairScore:
