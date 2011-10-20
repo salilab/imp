@@ -94,4 +94,30 @@ void Em2DRestraint::do_show(std::ostream& out) const
   out << "container " << *particles_container_ << std::endl;
 }
 
+
+double
+DummyRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
+  return 0;
+}
+
+void DummyRestraint::do_show(std::ostream& out) const
+{
+  out << "Dummy" << std::endl;
+}
+
+
+ParticlesTemp DummyRestraint::get_input_particles() const
+{
+  ParticlesTemp ret;
+  ret.push_back(p0_);
+  ret.push_back(p1_);
+  return ret;
+}
+
+ContainersTemp DummyRestraint::get_input_containers() const
+{
+  // Returns a vector of one container with the particles
+  return ContainersTemp();
+}
+
 IMPEM2D_END_NAMESPACE
