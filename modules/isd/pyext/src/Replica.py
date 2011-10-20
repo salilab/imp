@@ -6,7 +6,6 @@ from numpy import *
 from numpy.random import random, randint
 from numpy.random import shuffle
 kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
-import TuneRex
 
 class ReplicaTracker:
 
@@ -27,8 +26,6 @@ class ReplicaTracker:
         self.stepno = 1
         self.scheme = scheme
         self.xchg = xchg
-        #if tune_temps:
-        #    import TuneRex #avoid importing rpy2 if not needed
         self.tune_temps = tune_temps
         self.tune_data = tune_data
         self.rn_history = []
@@ -231,6 +228,7 @@ class ReplicaTracker:
             targetAR : for ar only, target acceptance rate
             alpha : Type I error to use.
         """
+        import TuneRex
         #update replicanum
         self.rn_history.append([i for i in self.replicanums])
         td = self.tune_data
