@@ -3,7 +3,7 @@
 import numpy.random as random
 kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 example_nreps = 10
-example_temps = [300.0 + (600.0-300.0)*i/float(example_nreps-1) for i in 
+example_temps = [300.0 + (600.0-300.0)*i/float(example_nreps-1) for i in
         xrange(example_nreps)]
 example_steps = [1.0 for i in xrange(example_nreps)]
 
@@ -29,14 +29,14 @@ class MockSlave():
         self.temp = temp
         self.mc_stepsize = mc_stepsize
         self._m = MockModel(temp)
-    
+
     def m(self, funcname, *args, **kwargs):
         try:
             func=getattr(self._m, funcname)
         except AttributeError:
             raise NotImplementedError
         return func(*args, **kwargs)
-    
+
     def get_temp(self):
         return self.temp
 
@@ -51,7 +51,7 @@ class MockSlave():
         self.mc_stepsize=mc
 
     def get_state(self):
-        return {'inv_temp':1/(kB*self.get_temp()), 
+        return {'inv_temp':1/(kB*self.get_temp()),
                 'mcstep':self.get_mc_stepsize()}
 
     def set_state(self, state):
@@ -67,7 +67,7 @@ class MockResult():
 
 class MockGrid():
     """fake grid to test Replica.py"""
-    def __init__(self, nreps=example_nreps, 
+    def __init__(self, nreps=example_nreps,
             temps=example_temps, stepsizes=example_steps):
         if len(temps) != nreps or len(stepsizes) != nreps:
             raise ValueError, "adjust temps and stepsizes to nreps!"
@@ -97,12 +97,9 @@ class MockGrid():
             func=getattr(prox, funcname)
             results.append(MockResult(func(*args, **kw)))
         return results
-    
+
     def gather(self, results):
         if self._replay is not None:
             return self._replay
         else:
             return [res.get() for res in results]
-
-
-

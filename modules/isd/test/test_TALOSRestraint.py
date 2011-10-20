@@ -114,7 +114,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
             obscos=pos[0]/sqrt(pos[0]**2+pos[2]**2)
             self.assertAlmostEqual(obscos,cos(pi/3),delta=1e-6)
             self.assertAlmostEqual(obssin,sin(pi/3),delta=1e-6)
-    
+
     def testValueDKappa1(self):
         """test derivatives for kappa by varying kappa"""
         self.setup_restraint()
@@ -145,7 +145,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                 self.assertEqual(cpp,0)
             else:
                 self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
-    
+
     def testValueEDist(self):
         """test energy of the restraint by varying p3"""
         self.setup_restraint()
@@ -160,7 +160,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                 self.assertEqual(cpp,0)
             else:
                 self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
-    
+
     def testValueEKappa(self):
         """test energy of the restraint by varying kappa"""
         self.setup_restraint()
@@ -174,7 +174,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                 self.assertEqual(cpp,0)
             else:
                 self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
-    
+
     def testParticles(self):
         "test get_input_particles"
         self.setup_restraint()
@@ -231,8 +231,6 @@ class TestTALOSRestraint(IMP.test.TestCase):
         expkappa = 5.3046890629577175140
         self.assertAlmostEqual(kappa,expkappa,delta=1e-6)
         self.assertAlmostEqual(E,expE,delta=1e-6)
-    
+
 if __name__ == '__main__':
     IMP.test.main()
-
-

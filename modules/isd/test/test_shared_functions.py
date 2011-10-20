@@ -6,7 +6,7 @@ import math
 import tempfile,os
 
 class testSharedFunctions(IMP.test.TestCase):
-    
+
     kB= (1.381 * 6.02214) / 4184.0
 
     def setUp(self):
@@ -110,7 +110,7 @@ class testSharedFunctions(IMP.test.TestCase):
         prot,ff,rsb,rs = self.init_protein('1G6J_MODEL1.pdb')
         sigma=IMP.isd.Scale(1.0)
         gamma=IMP.isd.Scale(1.0)
-        ln=self.sfo.init_model_ambiguous_NOE_restraint(prot, 
+        ln=self.sfo.init_model_ambiguous_NOE_restraint(prot,
                 (((1, 'HE22'), (2, 'O')),((1, 'HE21'), (2, 'O'))),
                 1.0, sigma, gamma)
         self.assertIsInstance(ln, IMP.isd.AmbiguousNOERestraint)
@@ -128,9 +128,9 @@ class testSharedFunctions(IMP.test.TestCase):
         self.assertIsInstance(data_rs, IMP.RestraintSet)
         #self.assertEqual(data_rs.get_type_name(), 'test')
         self.assertEqual(data_rs.get_number_of_restraints(), 2)
-        #self.assertIsInstance(data_rs.get_restraint(0), 
+        #self.assertIsInstance(data_rs.get_restraint(0),
         #        IMP.isd.NOERestraint)
-        #self.assertIsInstance(data_rs.get_restraint(1), 
+        #self.assertIsInstance(data_rs.get_restraint(1),
         #        IMP.isd.NOERestraint)
         self.assertAlmostEqual(data_rs.get_weight(), 1.0)
         self.assertTrue(data_rs.get_is_part_of_model())
@@ -138,9 +138,9 @@ class testSharedFunctions(IMP.test.TestCase):
         self.assertIsInstance(prior_rs, IMP.RestraintSet)
         #self.assertEqual(prior_rs.get_type_name(), 'prior')
         self.assertEqual(prior_rs.get_number_of_restraints(), 2)
-        #self.assertIsInstance(prior_rs.get_restraint(0), 
+        #self.assertIsInstance(prior_rs.get_restraint(0),
         #        IMP.isd.JeffreysRestraint)
-        #self.assertIsInstance(prior_rs.get_restraint(1), 
+        #self.assertIsInstance(prior_rs.get_restraint(1),
         #        IMP.isd.JeffreysRestraint)
         self.assertAlmostEqual(prior_rs.get_weight(), 1.0)
         self.assertTrue(prior_rs.get_is_part_of_model())
@@ -155,7 +155,7 @@ class testSharedFunctions(IMP.test.TestCase):
         self.assertIsInstance(rs, IMP.RestraintSet)
         #self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 1)
-        self.assertIsInstance(prior_rs.get_restraint(0), 
+        self.assertIsInstance(prior_rs.get_restraint(0),
                 IMP.saxs.Restraint)
         self.assertAlmostEqual(rs.get_weight(), 1.0)
 
@@ -204,7 +204,7 @@ class testSharedFunctions(IMP.test.TestCase):
             self.assertEqual(st2.get_gamma(), 600)
             self.assertAlmostEqual(st2.get_temperature(), 400.0, delta=1e-6)
             self.assertEqual(st1.get_skip_steps(), 10)
-        
+
     def test_init_model__setup_md_NVE(self):
         prot, ff, rsb, rs = self.init_protein('1G6J_MODEL1.pdb')
         md, os = self.sfo._setup_md(prot, thermostat='NVE', md_restraints=None)

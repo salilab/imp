@@ -158,4 +158,3 @@ class TestHybridMonteCarlo(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-

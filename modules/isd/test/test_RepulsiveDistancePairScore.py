@@ -76,19 +76,6 @@ class TestRepulsiveDistancePairScoreSimple(IMP.test.TestCase):
                         -expected*delta[i], delta=0.001)
 
 
-       
+
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-

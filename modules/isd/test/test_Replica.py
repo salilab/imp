@@ -14,14 +14,14 @@ class TestReplicaExchange(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         random.seed()
         nreps = self.nreps = 9
-        temps = self.temps = [300.0 + (600.0-300.0)*i/float(nreps-1) for i in 
+        temps = self.temps = [300.0 + (600.0-300.0)*i/float(nreps-1) for i in
                 xrange(nreps)]
         steps = self.steps = [1.0 for i in xrange(nreps)]
         grid=self.grid=MockGrid.MockGrid(nreps,temps,steps)
         replica=self.replica=IMP.isd.Replica.ReplicaTracker(grid.nreps,
-            [1/(MockGrid.kB*t) for t in grid._temps], 
+            [1/(MockGrid.kB*t) for t in grid._temps],
             grid, 123, tune_temps=False)
-    
+
     def tearDown(self):
         IMP.test.TestCase.tearDown(self)
         if os.path.exists('temps.txt'):
@@ -34,7 +34,7 @@ class TestReplicaExchange(IMP.test.TestCase):
         self.replica.replicanums = replist = [1, 3, 5, 7, 0, 2, 4, 6, 8]
         #state numbers as a function of replica
         self.replica.statenums = state = [4, 0, 5, 1, 6, 2, 7, 3, 8]
-        self.assertEqual(self.replica.sort_per_state(state), 
+        self.assertEqual(self.replica.sort_per_state(state),
                 range(self.replica.nreps))
 
     def test_sort_per_replica(self):
@@ -57,9 +57,9 @@ class TestReplicaExchange(IMP.test.TestCase):
                         self.replica.sort_per_state(testlist)))
 
     def test_sort_errors(self):
-        self.assertRaises(ValueError, 
+        self.assertRaises(ValueError,
                 self.replica.sort_per_state, range(self.nreps-1))
-        self.assertRaises(ValueError, 
+        self.assertRaises(ValueError,
                 self.replica.sort_per_replica, range(self.nreps-1))
 
     def test_energies(self):
@@ -84,7 +84,7 @@ class TestReplicaExchange(IMP.test.TestCase):
         #nreps=10 dir=1
         expected=[(1,2),(3,4),(5,6),(7,8)]
         self.assertEqual(self.replica.gen_pairs_list_gromacs(1),expected)
-        
+
     def test_gen_pairs_list_gromacs_neighbors(self):
         self.replica.nreps=9
         for i in xrange(100):
@@ -125,10 +125,10 @@ class TestReplicaExchange(IMP.test.TestCase):
             singletons = a - plist
             #print singletons
             for i in singletons:
-	        if i != 0 and i+1 != self.nreps-1:
-                   self.assertEqual((i+1) in singletons, False)
-		if i-1 != 0 and  i != self.nreps-1:
-                   self.assertEqual((i-1) in singletons, False)
+                if i != 0 and i+1 != self.nreps-1:
+                    self.assertEqual((i+1) in singletons, False)
+                if i-1 != 0 and  i != self.nreps-1:
+                    self.assertEqual((i-1) in singletons, False)
         self.replica.nreps=10
         for i in xrange(100):
             plist=set()
@@ -138,10 +138,10 @@ class TestReplicaExchange(IMP.test.TestCase):
             a=set(range(self.nreps))
             singletons = a - plist
             for i in singletons:
-	        if i != 0 and i+1 != self.nreps-1:
-                   self.assertEqual((i+1) in singletons, False)
-		if i-1 != 0 and  i != self.nreps-1:
-                   self.assertEqual((i-1) in singletons, False)
+                if i != 0 and i+1 != self.nreps-1:
+                    self.assertEqual((i+1) in singletons, False)
+                if i-1 != 0 and  i != self.nreps-1:
+                    self.assertEqual((i-1) in singletons, False)
 
     def test_gen_pairs_list_rand_uniform_distr(self):
         "Test uniformity of randomly generated replica pairs"
@@ -153,9 +153,9 @@ class TestReplicaExchange(IMP.test.TestCase):
                 else:
                     pairs[pair] = 1
         s=float(sum(pairs.values()))/len(pairs)
-	
+
         for i in pairs.values():
-	     self.assertAlmostEqual(i/s,1.0,delta=1e-2)
+            self.assertAlmostEqual(i/s,1.0,delta=1e-2)
         #print sorted(pairs.items())
 
     def test_get_metropolis(self):

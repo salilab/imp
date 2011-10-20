@@ -187,7 +187,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.m.add_restraint(self.J)
         self.kappa.set_scale(0.0)
         self.assertRaises(IMP.ModelException, self.J.get_probability)
-        
+
     def testNegativeP(self):
         "raise ValueError if negative"
         c=10
@@ -225,5 +225,3 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-

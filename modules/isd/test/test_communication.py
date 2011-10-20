@@ -64,7 +64,7 @@ class TestCommunication(IMP.test.TestCase):
 
         grid.copy_files(self.src_path, ['shared_functions.py'])
 
-        #use grid.publish(stuff) to send stuff to all nodes. 
+        #use grid.publish(stuff) to send stuff to all nodes.
         #returns a service id.
 
         instance=sf.sfo_common()

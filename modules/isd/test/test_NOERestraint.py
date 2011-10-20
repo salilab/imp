@@ -264,7 +264,7 @@ class TestNOERestraintApplied(IMP.test.TestCase):
         self.V_obs=3.0
         self.noe = IMP.isd.NOERestraint(self.p0,self.p1,
                 self.sigma, self.gamma, self.V_obs)
-    
+
     def testSimpleOptimization(self):
         "tests to satisfy a restraint between two points"
         m=self.m
@@ -280,16 +280,3 @@ class TestNOERestraintApplied(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
-

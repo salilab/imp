@@ -204,7 +204,7 @@ class TestCovariance1DFunction(IMP.test.TestCase):
             p.set_scale(random.uniform(imin, imax))
         self.cov.update()
 
-    def test_has_changed(self):
+    def test_has_changed2(self):
         for p in self.tau, self.lam, self.sig:
             p.set_nuisance(p.get_nuisance()+1)
             self.assertTrue(self.cov.has_changed())
@@ -418,7 +418,7 @@ class TestCovariance1DFunction(IMP.test.TestCase):
                         part.add_to_nuisance_derivative(-val, self.DA)
                     else:
                         self.assertAlmostEqual(
-                            self.particles[jpart].get_nuisance_derivative(), 
+                            self.particles[jpart].get_nuisance_derivative(),
                             0.0)
 
 class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
@@ -445,7 +445,7 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
             p.set_nuisance(random.uniform(imin, imax))
         self.cov.update()
 
-    def test_has_changed(self):
+    def test_has_changed3(self):
         for p in self.theta, self.lam, self.sig:
             p.set_nuisance(p.get_nuisance()+1)
             self.assertTrue(self.cov.has_changed())
@@ -667,5 +667,3 @@ class TestReparametrizedCovariance1DFunction(IMP.test.TestCase):
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
