@@ -29,7 +29,7 @@ nreps = 8
 kB= (1.381 * 6.02214) / 4184.0
 lambda_1 = 1.0
 lambda_N = 0.8
-lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1)) 
+lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1))
         for k in xrange(1,nreps+1)]
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
@@ -45,7 +45,7 @@ sequence='sequence.dat'
 #export the files in a local tmp directory
 filelist=[initpdb,charmmtop,charmmpar,sequence,
           restraints,'shared_functions.py'] #add whatever you want
-#prefix of output files 
+#prefix of output files
 nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
 #thermalization (mc parameters stay fixed)
 n_therm = 100 #number of loops, where temperatures are scaled to target value
@@ -83,7 +83,7 @@ imppy = os.path.abspath(
         os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
 src_path = os.path.abspath(
         os.path.join(os.getenv('IMP_ISD_DATA'),'../lib/IMP/isd'))
-showX11 = False 
+showX11 = False
 grid_debug = False
 grid_verbose = False
 X11_delay = 1.0
@@ -94,7 +94,7 @@ terminate_during_publish = False
 nshost = None
 
 def mkdir_p(path):
-    "mkdir -p, taken from stackoverflow" 
+    "mkdir -p, taken from stackoverflow"
     try:
         os.makedirs(path)
     except OSError as exc: # Python >2.5
@@ -107,28 +107,28 @@ def launch_grid():
     for host in hosts:
         #ugly hack
         host.init_cmd = imppy + ' !'
-	
+
     #pyro grid
     grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
             grid_verbose, shared_temp_path, nshost, terminate_during_publish,
             method=grid_method, qsub_config=qsub_config)
-	    
-    #uncomment the following lines and comments the two previous ones to use file based grid	
+
+    #uncomment the following lines and comments the two previous ones to use file based grid
     #file based grid
     #grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
     #        grid_verbose)
-    #grid.shared_temp_path = shared_temp_path	    
+    #grid.shared_temp_path = shared_temp_path
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
     #grid.copy_files(src_path,["shared_functions.py"])
-    
+
     #start grid on all nodes
     grid.start()
     return grid
 
 def main():
-    
+
     # launch grid
     print "launching grid"
     grid = launch_grid()
@@ -162,23 +162,23 @@ def main():
     # evaluate the score of the whole system (without derivatives, False flag)
     print "initial energy"
     grid.gather(grid.broadcast(sfo_id, 'm', 'evaluate', False))
-    
+
     #berendsen 300K tau=0.5ps
     #perform two independent MC moves for sigma and gamma
     print "initializing simulation and statistics"
-    grid.gather(grid.scatter(sfo_id, 'init_simulation', 
+    grid.gather(grid.scatter(sfo_id, 'init_simulation',
         zip(lambdas, tau)))
     grid.gather(grid.scatter(sfo_id, 'init_stats', zip(nums, stat_rate)))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
             rexlog=rexlog,
-            scheme=rex_scheme, xchg=rex_xchg, 
+            scheme=rex_scheme, xchg=rex_xchg,
             tune_temps=tune_temps, tune_data=tune_data, templog=templog)
 
     print "thermalization"
     for i in range(n_therm):
         print "\rgibbs step %d" % i,
         sys.stdout.flush()
-        grid.gather(grid.scatter(sfo_id, 'set_inv_temp', 
+        grid.gather(grid.scatter(sfo_id, 'set_inv_temp',
             [ n_therm/float(i+1) * l for l in lambdas ]))
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_hmc_therm))
         grid.gather(grid.broadcast(sfo_id, 'write_stats'))
@@ -193,7 +193,7 @@ def main():
         grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
         grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
-	replica.tune_data['dumb_scale']=0.5
+        replica.tune_data['dumb_scale']=0.5
         replica.replica_exchange()
         #print " stats"
         replica.write_rex_stats()
@@ -208,7 +208,7 @@ def main():
         grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
         grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
-	replica.tune_data['dumb_scale']=0.2
+        replica.tune_data['dumb_scale']=0.2
         replica.replica_exchange()
         #print " stats"
         replica.write_rex_stats()
@@ -223,7 +223,7 @@ def main():
         grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
         grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
-	replica.tune_temps=False
+        replica.tune_temps=False
         replica.replica_exchange()
         #print " stats"
         replica.write_rex_stats()
@@ -231,10 +231,8 @@ def main():
     print "terminating grid"
     grid.terminate()
     print "done."
-    
+
 
 if __name__ == '__main__':
 
     main()
-
-    
