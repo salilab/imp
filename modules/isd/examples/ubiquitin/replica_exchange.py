@@ -6,8 +6,12 @@ import random
 
 # Comment either this line or the following to attain different communication schemes:
 # to start pyro
-from IMP.isd.PyroGrid import PyroGrid as Grid
-#from IMP.isd.FileBasedGrid import FileBasedGrid as Grid
+try:
+    from IMP.isd.PyroGrid import PyroGrid as Grid
+#   from IMP.isd.FileBasedGrid import FileBasedGrid as Grid
+except ImportError:
+    print >> sys.stderr, "This example needs the Python Pyro module"
+    sys.exit(0)
 from IMP.isd.hosts import create_host_list
 import IMP.atom
 import IMP.container
