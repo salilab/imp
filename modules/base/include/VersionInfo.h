@@ -22,7 +22,7 @@ IMPBASE_BEGIN_NAMESPACE
 /** All IMP::Object -derived objects have a method
     IMP::Object::get_version_info() returning such an object. The
     version info allows one to determine the module and version of
-    all restraints used to help creating reproducable results.
+    all restraints used to help creating reproducible results.
  */
 class IMPBASEEXPORT VersionInfo
 {
