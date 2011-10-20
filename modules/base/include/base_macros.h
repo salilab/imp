@@ -753,8 +753,8 @@ public:                                                                 \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version());                \
   }                                                                     \
-  /** \brief For python, cast a generic Object to this type. Throw a
-      ValueException of object is not the right type.*/                 \
+  /** \brief For Python, cast a generic Object to this type. Throw a
+      ValueException if object is not the right type.*/                 \
 static Name* get_from(IMP::base::Object *o) {                           \
   return IMP::base::object_cast<Name>(o);                               \
   }                                                                     \
