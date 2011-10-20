@@ -43,6 +43,8 @@ IMP_SWIG_OBJECT(IMP::em2d, DistanceFilterTable,DistanceFilterTables);
 IMP_SWIG_OBJECT(IMP::em2d, RigidBodiesImageFitRestraint,
                             RigidBodiesImageFitRestraints);
 
+IMP_SWIG_OBJECT(IMP::em2d, DummyRestraint, DummyRestraints);
+
 //IMP_SWIG_VALUE_BUILTIN(IMP::em2d, Floats, VectorOfFloats, IMP::Floats)
 
 
