@@ -113,6 +113,31 @@ public:
 IMP_OBJECTS(Em2DRestraint,Em2DRestraints);
 
 
+
+class IMPEM2DEXPORT DummyRestraint: public Restraint {
+protected:
+  Pointer<Particle> p0_;
+  Pointer<Particle> p1_;
+
+public:
+
+  DummyRestraint(IMP::Particle *p, IMP::Particle *q) {
+    p0_ = p;
+    p1_ = q;
+  }
+
+
+  void show(std::ostream &out = std::cout) const {
+    std::cout << "Dummy Restraint" << std::endl;
+  }
+
+  IMP_RESTRAINT(DummyRestraint);
+
+};
+IMP_OBJECTS(DummyRestraint,DummyRestraints);
+
+
+
 IMPEM2D_END_NAMESPACE
 
 #endif  /* IMPEM2D_EM_2DRESTRAINT_H */
