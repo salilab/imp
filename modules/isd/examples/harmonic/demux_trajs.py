@@ -15,7 +15,7 @@ if __name__ == '__main__':
         tokens=line.split()
         replicanums.append([int(i)-1 for i in tokens[1:]])
         stepno.append(int(tokens[0]))
-    
+
     #demux p??_stats.txt files
     infiles = [open('r%02d_stats.txt' % i) for i in xrange(1,nreps+1)]
     outfiles = [open('p%02d_stats.txt' % i, 'w') for i in xrange(1,nreps+1)]
@@ -27,7 +27,3 @@ if __name__ == '__main__':
             for i in xrange(nreps):
                 outfiles[i].write(lines[rn[i]])
             lines = [fl.readline() for fl in infiles]
-
-
-
-

@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import IMP.container
 import IMP.isd
-from IMP.isd.shared_functions import sfo_common 
+from IMP.isd.shared_functions import sfo_common
 from IMP.isd.Statistics import Statistics
 from IMP.isd.Entry import Entry
 
@@ -65,7 +65,7 @@ class sfo(sfo_common):
         print "done initting stats"
 
     def do_mc_and_update_stepsize(self,nsteps):
-        """perform mc on scales for nsteps, updating stepsizes to target 
+        """perform mc on scales for nsteps, updating stepsizes to target
         50% acceptance. Don't make nsteps too small (say << 50).
         """
         print "running mc"
@@ -83,7 +83,7 @@ class sfo(sfo_common):
         "sets inverse temperature of mc and md sims (used in replica exchange)"
         self.inv_temp = inv_temp
         self._mc.set_temperature(1/self.inv_temp)
-    
+
     def get_inv_temp(self):
         return self.inv_temp
 

@@ -25,7 +25,7 @@ nreps = 10
 kB= (1.381 * 6.02214) / 4184.0
 lambda_1 = 1.0/(kB*100)
 lambda_N = 1.0/(kB*1000)
-lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1)) 
+lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1))
         for k in xrange(1,nreps+1)]
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
@@ -34,7 +34,7 @@ tau=[500.0]*nreps
 stat_rate=[1]*nreps
 #list of files relative to the current dir to copy over to all nodes
 filelist=['shared_functions.py'] #add whatever you want
-#prefix of output files 
+#prefix of output files
 nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
 #number of gibbs sampling steps
 n_gibbs = 1000
@@ -54,7 +54,7 @@ imppy = os.path.abspath(
         os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
 src_path = os.path.abspath(
         os.path.join(os.getenv('IMP_ISD_DATA'),'../lib/IMP/isd'))
-showX11 = False 
+showX11 = False
 grid_debug = False
 grid_verbose = False
 X11_delay = 1.0
@@ -65,7 +65,7 @@ terminate_during_publish = False
 nshost = None
 
 def mkdir_p(path):
-    "mkdir -p, taken from stackoverflow" 
+    "mkdir -p, taken from stackoverflow"
     try:
         os.makedirs(path)
     except OSError as exc: # Python >2.5
@@ -78,27 +78,27 @@ def launch_grid():
     for host in hosts:
         #ugly hack
         host.init_cmd = imppy + ' !'
-	
+
     #pyro grid
     grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
             grid_verbose, shared_temp_path, nshost, terminate_during_publish)
-	    
-    #uncomment the following lines and comments the two previous ones to use file based grid	
+
+    #uncomment the following lines and comments the two previous ones to use file based grid
     #file based grid
     #grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
     #        grid_verbose)
-    #grid.shared_temp_path = shared_temp_path	    
+    #grid.shared_temp_path = shared_temp_path
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
     #grid.copy_files(src_path,["shared_functions.py"])
-    
+
     #start grid on all nodes
     grid.start()
     return grid
 
 def main():
-    
+
     # launch grid
     print "launching grid"
     grid = launch_grid()
@@ -132,16 +132,16 @@ def main():
     # evaluate the score of the whole system (without derivatives, False flag)
     print "initial energy"
     grid.gather(grid.broadcast(sfo_id, 'm', 'evaluate', False))
-    
+
     #berendsen 300K tau=0.5ps
     #perform two independent MC moves for sigma and gamma
     print "initializing simulation and statistics"
-    grid.gather(grid.scatter(sfo_id, 'init_simulation', 
+    grid.gather(grid.scatter(sfo_id, 'init_simulation',
         zip(lambdas, tau)))
     grid.gather(grid.scatter(sfo_id, 'init_stats', zip(nums, stat_rate)))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
             rexlog=rexlog,
-            scheme=rex_scheme, xchg=rex_xchg, 
+            scheme=rex_scheme, xchg=rex_xchg,
             tune_temps=False)
 
     print "start gibbs sampling loop"
@@ -159,10 +159,8 @@ def main():
     print "terminating grid"
     grid.terminate()
     print "done."
-    
+
 
 if __name__ == '__main__':
 
     main()
-
-    
