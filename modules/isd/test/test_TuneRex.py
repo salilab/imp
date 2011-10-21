@@ -6,8 +6,12 @@ from numpy import *
 
 import IMP
 import IMP.isd.Replica
-import IMP.isd.TuneRex
-IMP.isd.TuneRex.debug=False
+try:
+    from IMP.isd import TuneRex
+    TuneRex.debug=False
+except ImportError:
+    TuneRex = None
+
 import MockGrid
 import IMP.test
 
@@ -39,6 +43,8 @@ class TestTuneRex(IMP.test.TestCase):
         return transpose(longls)-1
 
     def test_flux(self):
+        if TuneRex is None:
+            self.skipTest("test requires the rpy2 module")
         #self.replica.tune_data['dumb_scale']=0.5
         #for i in range(1000):
         #     self.replica.replica_exchange()
@@ -59,13 +65,15 @@ class TestTuneRex(IMP.test.TestCase):
         self.replica.tune_data['dumb_scale']=0.1
 
         replicanums=self.read_replicanums_file()
-        indicators = IMP.isd.TuneRex.compute_indicators(replicanums, subs=1,start=0)
+        indicators = TuneRex.compute_indicators(replicanums, subs=1,start=0)
         print  array([sum(ind)/float(len(ind)) for ind in indicators])
 
     def test_repnums(self):
-        IMP.isd.TuneRex.debug=True
+        if TuneRex is None:
+            self.skipTest("test requires the rpy2 module")
+        TuneRex.debug=True
         rn=self.read_replicanums_file()
-        changed,params=IMP.isd.TuneRex.tune_params_flux(rn,self.temps)
+        changed,params=TuneRex.tune_params_flux(rn,self.temps)
         print params
 
     def tearDown(self):
