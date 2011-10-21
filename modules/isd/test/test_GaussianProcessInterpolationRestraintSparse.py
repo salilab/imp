@@ -9,6 +9,7 @@ from random import *
 import IMP
 
 #our project
+import IMP.isd
 from IMP.isd import *
 
 #unit testing framework
@@ -20,6 +21,8 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
     """
 
     def setUp(self):
+        if not IMP.isd.has_cholmod:
+            self.skipTest("IMP not built with CHOLMOD")
         IMP.test.TestCase.setUp(self)
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
