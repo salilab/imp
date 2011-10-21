@@ -3,9 +3,7 @@
 #general imports
 from math import *
 from numpy import *
-from scipy.special import i0,i1
 from random import uniform,randint,gauss
-
 
 #imp general
 import IMP
@@ -65,6 +63,10 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testEvaluate(self):
         "tests vonMisesSufficient.evaluate"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
@@ -91,6 +93,10 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testEvaluateDKappa(self):
         "tests vonMisesSufficient.evaluate_derivative_kappa"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
@@ -104,6 +110,10 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
     def testDensity(self):
         "tests vonMisesSufficient.density"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             #x, N, cmu1, smu2, kappa
             x=uniform(-4*pi,4*pi)

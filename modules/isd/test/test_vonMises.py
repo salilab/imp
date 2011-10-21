@@ -2,9 +2,7 @@
 
 #general imports
 from numpy import *
-from scipy.special import i0,i1
 from random import uniform
-
 
 #imp general
 import IMP
@@ -24,6 +22,10 @@ class TestvonMises(IMP.test.TestCase):
 
     def testEvaluate(self):
         "tests vonMises.evaluate"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
@@ -54,6 +56,10 @@ class TestvonMises(IMP.test.TestCase):
 
     def testEvaluateDKappa(self):
         "tests vonMises.evaluate_derivative_kappa"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
@@ -64,6 +70,10 @@ class TestvonMises(IMP.test.TestCase):
 
     def testDensity(self):
         "tests vonMises.density"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
