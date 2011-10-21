@@ -126,7 +126,7 @@ void do_histogram_stretching(cv::Mat &m,
   cv::minMaxLoc(m,&min_val,&max_val);
   double maxmin = max_val-min_val;
   // Histogram of boxes posible values
-  Ints hist(boxes,0.0);
+  Ints hist(boxes, 0);
   for (cvDoubleMatIterator it = m.begin<double>();it!=m.end<double>();++it) {
     double b = static_cast<double>(boxes);
     int k = algebra::get_rounded((b-1) * ((*it) -min_val)/(maxmin));
