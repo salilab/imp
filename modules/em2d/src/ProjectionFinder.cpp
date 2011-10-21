@@ -378,8 +378,7 @@ void ProjectionFinder::get_complete_registration() {
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);
-      simplex_optimizer->optimize(
-                            static_cast<double>(params_.optimization_steps));
+      simplex_optimizer->optimize(params_.optimization_steps);
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
 
