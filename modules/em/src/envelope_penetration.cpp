@@ -37,6 +37,20 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
   return out_of_dens;
 }
 
+Ints get_numbers_of_particles_outside_of_the_density(
+        DensityMap *dmap,const Particles &ps,
+        const IMP::algebra::Transformation3Ds &transforms,float thr) {
+  IMP_LOG(IMP::VERBOSE,"start calculating the how many particles out of "
+         <<ps.size()<<" in density"<< std::endl);
+  Ints results;
+  for (algebra::Transformation3Ds::const_iterator it =
+         transforms.begin(); it != transforms.end();it++) {
+    results.push_back(
+      get_number_of_particles_outside_of_the_density(dmap,ps,*it,thr));
+  }
+  return results;
+}
+
 double get_percentage_of_voxels_covered_by_particles(
      DensityMap *dmap,const Particles &ps,
      float smoothing_radius,
