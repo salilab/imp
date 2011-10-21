@@ -43,7 +43,9 @@ def check_c_file(filename, txn, repos, errors):
             errors.append('%s:%d: Line has trailing whitespace' \
                           % (filename, num+1))
         if not filename.endswith(".cpp") and line.startswith("#define ") \
-           and not line.startswith("#define IMP"):
+           and not line.startswith("#define IMP") \
+           and not line.startswith("#define EIGEN_YES_I_KNOW_SPARSE_"
+                                   "MODULE_IS_NOT_STABLE_YET"):
             errors.append('%s:%d: Preprocessor symbols must start with IMP' \
                           % (filename, num+1))
         blank = (len(line) == 0)
