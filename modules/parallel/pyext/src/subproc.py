@@ -29,7 +29,7 @@ if sys.platform == 'win32':
         try:
             # shell isn't needed on Win32, and may not be found under wine
             # anyway
-            p = subprocess.Popen(cmdline, shell=False, stdout=fp,
+            p = subprocess.Popen(cmdline, shell=False, stdout=open(out, 'w'),
                                  stderr=subprocess.STDOUT)
         # Ignore Windows "file not found" errors, so that behavior is consistent
         # between Unix and Windows
