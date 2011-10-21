@@ -157,7 +157,9 @@ s.add_optimizer_state(ostate2)
 # Perform optimization
 # m.set_gather_statistics(True) # Writes a lot of information!
 temperatures=[200,100,60,40,20,5]
-optimization_steps = 200
+# 200 steps recommended for accurate optimization; a smaller number is used
+# here for demonstration purposes
+optimization_steps = 10
 for T in temperatures:
     s.set_kt(T)
     s.optimize(optimization_steps)
