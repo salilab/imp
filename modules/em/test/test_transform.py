@@ -1,4 +1,5 @@
 import IMP.test
+import IMP.algebra
 import IMP.em
 import random,math
 from IMP.algebra import *
@@ -39,28 +40,41 @@ class DensityTransformTest(IMP.test.TestCase):
 
     def test_transformed_into(self):
         """Check functionality of the get_transformed_into function"""
-        IMP.set_log_level(IMP.TERSE)
-        from_m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
-        from_m.show()
+        bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-8,-9,-7),
+                                       IMP.algebra.Vector3D(4,5,6))
+
+        from_m = IMP.em.DensityMap(IMP.em.create_density_header(bb, 1))
+
+        # Make the map empty except for a blob of density around (-3,-2,-1)
+        for i in range(from_m.get_number_of_voxels()):
+            from_m.set_value(i, 0.)
+        for x in range(-5,0):
+            for y in range(-4,1):
+                for z in range(-3,2):
+                    from_m.set_value(x,y,z, 10.0)
+        self.assertAlmostEqual(IMP.em.get_density(from_m,
+                                           IMP.algebra.Vector3D(-3,-2,-1)),
+                               10.0, delta=0.1)
+        self.assertAlmostEqual(IMP.em.get_density(from_m,
+                                           IMP.algebra.Vector3D(3,2,1)),
+                               0.0, delta=0.1)
+
+        # Transform with a random rotation and then back again
+        tr = IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
+                                          IMP.algebra.Vector3D(0,0,0))
+
         into_m = IMP.em.DensityMap()
-        back_m = IMP.em.DensityMap()
-        tr= Transformation3D(get_random_rotation_3d(), Vector3D(0,0,0))
         IMP.em.get_transformed_into(from_m, tr, into_m)
-        into_m.show()
-        print "====||1"
-        print into_m.get_top()
-        print "====||2"
-        IMP.em.get_transformed_into(into_m, tr.get_inverse(),back_m)
-        errors=0
-        for v in range(from_m.get_number_of_voxels()):
-            pt= Vector3D(from_m.get_location_in_dim_by_voxel(v,0),
-                         from_m.get_location_in_dim_by_voxel(v,1),
-                         from_m.get_location_in_dim_by_voxel(v,2))
-            oval= IMP.em.get_density(from_m, pt)
-            nval= IMP.em.get_density(back_m, pt)
-            if abs(oval-nval)>(oval+nval+1)*.3:
-                errors=errors+1
-        self.assertLess(errors,.1 *from_m.get_number_of_voxels(), errors)
+
+        back_m = IMP.em.DensityMap()
+        IMP.em.get_transformed_into(into_m, tr.get_inverse(), back_m)
+
+        self.assertAlmostEqual(IMP.em.get_density(back_m,
+                                           IMP.algebra.Vector3D(-3,-2,-1)),
+                               10.0, delta=0.1)
+        self.assertAlmostEqual(IMP.em.get_density(back_m,
+                                           IMP.algebra.Vector3D(3,2,1)),
+                               0.0, delta=0.1)
 
 
 if __name__ == '__main__':
