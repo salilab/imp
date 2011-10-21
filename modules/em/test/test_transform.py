@@ -71,7 +71,7 @@ class DensityTransformTest(IMP.test.TestCase):
 
         self.assertAlmostEqual(IMP.em.get_density(back_m,
                                            IMP.algebra.Vector3D(-3,-2,-1)),
-                               10.0, delta=0.1)
+                               10.0, delta=0.2)
         self.assertAlmostEqual(IMP.em.get_density(back_m,
                                            IMP.algebra.Vector3D(3,2,1)),
                                0.0, delta=0.1)
