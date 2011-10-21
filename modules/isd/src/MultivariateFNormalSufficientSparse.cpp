@@ -1,5 +1,5 @@
 /**
- *  \file MultivariateFNormalSufficientSparse.cpp  
+ *  \file MultivariateFNormalSufficientSparse.cpp
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -16,8 +16,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse( 
-        const MatrixXd& FX, double JF, const VectorXd& FM, 
+MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
+        const MatrixXd& FX, double JF, const VectorXd& FM,
         const SparseMatrix<double>& Sigma, cholmod_common *c, double cutoff) :
     Object("Multivariate Normal distribution %1%")
 {
@@ -29,10 +29,10 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
         epsilon_=NULL;
         L_=NULL;
         N_=FX.rows();
-        M_=FX.cols(); 
-        IMP_LOG(TERSE, "MVNsparse: direct init with N=" << N_ 
+        M_=FX.cols();
+        IMP_LOG(TERSE, "MVNsparse: direct init with N=" << N_
                 << " and M=" << M_ << std::endl);
-        IMP_USAGE_CHECK( N_ > 0, 
+        IMP_USAGE_CHECK( N_ > 0,
             "please provide at least one observation per dimension");
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
@@ -43,9 +43,9 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
 }
 
 MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
-        const VectorXd& Fbar, double JF, const VectorXd& FM, int Nobs,  
-        const SparseMatrix<double>& W, const SparseMatrix<double>& Sigma, 
-        cholmod_common *c) 
+        const VectorXd& Fbar, double JF, const VectorXd& FM, int Nobs,
+        const SparseMatrix<double>& W, const SparseMatrix<double>& Sigma,
+        cholmod_common *c)
         : Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
@@ -57,9 +57,9 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
         L_=NULL;
         N_=Nobs;
         M_=Fbar.rows();
-        IMP_LOG(TERSE, "MVNsparse: sufficient statistics init with N=" << N_ 
+        IMP_LOG(TERSE, "MVNsparse: sufficient statistics init with N=" << N_
                 << " and M=" << M_ << std::endl);
-        IMP_USAGE_CHECK( N_ > 0, 
+        IMP_USAGE_CHECK( N_ > 0,
             "please provide at least one observation per dimension");
         IMP_USAGE_CHECK( M_ > 0,
             "please provide at least one variable");
@@ -72,15 +72,15 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
 
   /* probability density function */
 double MultivariateFNormalSufficientSparse::density() const
-  { 
+  {
       double d = norm_*JF_*exp(-0.5*(trace_WP() + N_ * mean_dist()));
       IMP_LOG(TERSE, "MVNsparse: density() = " << d << std::endl);
       return d;
   }
- 
+
   /* energy (score) functions, aka -log(p) */
-double MultivariateFNormalSufficientSparse::evaluate() const 
-  { 
+double MultivariateFNormalSufficientSparse::evaluate() const
+  {
       //std::cout << " mean " << double(N_)*mean_dist();
       //std::cout << " WP " << trace_WP();
       double e = lnorm_ + lJF_ + 0.5*( trace_WP() + double(N_)*mean_dist()) ;
@@ -88,8 +88,9 @@ double MultivariateFNormalSufficientSparse::evaluate() const
       return e;
   }
 
-cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() const
-{ 
+cholmod_dense *
+MultivariateFNormalSufficientSparse::evaluate_derivative_FM() const
+{
       // d(-log(p))/d(FM) = - N * P * epsilon
       IMP_LOG(TERSE, "MVNsparse: evaluate_derivative_FM() = " << std::endl);
       cholmod_dense *tmp = cholmod_solve(CHOLMOD_A, L_, epsilon_, c_);
@@ -101,8 +102,9 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       return tmp;
 }
 
-  cholmod_sparse *MultivariateFNormalSufficientSparse::evaluate_derivative_Sigma() const
-  { 
+  cholmod_sparse *
+  MultivariateFNormalSufficientSparse::evaluate_derivative_Sigma() const
+  {
       //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - P W P)
       IMP_LOG(TERSE, "MVNsparse: evaluate_derivative_Sigma() = " << std::endl);
       cholmod_sparse *ptp(compute_PTP());
@@ -111,7 +113,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       //std::cout << " pwp " << std::endl << pwp << std::endl << std::endl;
       static double one[2]={1,0};
       static double minusone[2]={-1,0};
-      cholmod_sparse *tmp = 
+      cholmod_sparse *tmp =
           cholmod_add(P_, ptp, one, minusone, true, false, c_);
       double enn[2]={0.5*N_,0};
       static double ptfive[2]={-0.5,0};
@@ -121,26 +123,26 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       cholmod_free_sparse(&tmp, c_);
       return R;
   }
-  
+
   void MultivariateFNormalSufficientSparse::set_W(const SparseMatrix<double>& W)
 {
-    if (W_) cholmod_free_sparse(&W_, c_); 
+    if (W_) cholmod_free_sparse(&W_, c_);
     cholmod_sparse Wtmp = Eigen::viewAsCholmod(
             W.selfadjointView<Eigen::Upper>());
     //W_ = cholmod_copy_sparse(&Wtmp, c_);
     W_ = cholmod_copy(&Wtmp, 0, 1, c_); //unsym for spsolve
 }
 
-  void MultivariateFNormalSufficientSparse::set_FX(const MatrixXd& FX, 
-          double cutoff) 
+  void MultivariateFNormalSufficientSparse::set_FX(const MatrixXd& FX,
+          double cutoff)
   {
     if (FX.rows() != FX_.rows() || FX.cols() != FX_.cols() || FX != FX_){
         if (FX.rows() != N_) {
-            IMP_THROW("size mismatch for FX in the number of repetitions: got " 
+            IMP_THROW("size mismatch for FX in the number of repetitions: got "
                     << FX.rows() << " instead of "<<N_, ModelException);
             }
         if (FX.cols() != M_) {
-            IMP_THROW("size mismatch for FX in the number of variables: got " 
+            IMP_THROW("size mismatch for FX in the number of variables: got "
                     <<FX.cols() << " instead of "<<M_, ModelException);
             }
         FX_=FX;
@@ -149,14 +151,15 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     }
   }
 
-  void MultivariateFNormalSufficientSparse::set_JF(double f) 
+  void MultivariateFNormalSufficientSparse::set_JF(double f)
   {
     JF_=f;
     lJF_=-log(JF_);
-    IMP_LOG(TERSE, "MVNsparse:   set JF = " << JF_ << " lJF_ = " << lJF_ <<std::endl);
+    IMP_LOG(TERSE, "MVNsparse:   set JF = " << JF_ << " lJF_ = " << lJF_
+            <<std::endl);
   }
 
-  void MultivariateFNormalSufficientSparse::set_FM(const VectorXd& FM) 
+  void MultivariateFNormalSufficientSparse::set_FM(const VectorXd& FM)
   {
     if (FM.rows() != FM_.rows() || FM.cols() != FM_.cols() || FM != FM_){
         if (FM.rows() != M_) {
@@ -169,9 +172,9 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     }
   }
 
-  void MultivariateFNormalSufficientSparse::set_Fbar(const VectorXd& Fbar) 
+  void MultivariateFNormalSufficientSparse::set_Fbar(const VectorXd& Fbar)
   {
-    if (Fbar.rows() != Fbar_.rows() || Fbar.cols() != Fbar_.cols() 
+    if (Fbar.rows() != Fbar_.rows() || Fbar.cols() != Fbar_.cols()
             || Fbar != Fbar_){
         if (Fbar.rows() != M_) {
             IMP_THROW("size mismatch for Fbar: got "
@@ -184,37 +187,37 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
   }
 
   void MultivariateFNormalSufficientSparse::set_Sigma(
-          const SparseMatrix<double>& Sigma)  
+          const SparseMatrix<double>& Sigma)
   {
         if (Sigma.cols() != Sigma.rows()) {
             IMP_THROW("need a square matrix!", ModelException);
             }
-        //std::cout << "set_sigma" << std::endl; 
+        //std::cout << "set_sigma" << std::endl;
         if (Sigma_) cholmod_free_sparse(&Sigma_, c_);
         cholmod_sparse A(Eigen::viewAsCholmod(
                             Sigma.selfadjointView<Eigen::Upper>()));
         Sigma_=cholmod_copy_sparse(&A, c_);
         //cholmod_print_sparse(Sigma_,"Sigma",c_);
         IMP_LOG(TERSE, "MVNsparse:   set Sigma to new matrix" << std::endl);
-        IMP_LOG(TERSE, "MVNsparse:   computing Cholesky decomposition" 
+        IMP_LOG(TERSE, "MVNsparse:   computing Cholesky decomposition"
                 << std::endl);
         // compute Cholesky decomposition for determinant and inverse
         //c_->final_asis=1; // setup LDLT calculation
         //c_->supernodal = CHOLMOD_SIMPLICIAL;
         // convert matrix to cholmod format
         //symbolic and numeric factorization
-        L_ = cholmod_analyze(Sigma_, c_); 
+        L_ = cholmod_analyze(Sigma_, c_);
         int success = cholmod_factorize(Sigma_, L_, c_);
         //cholmod_print_factor(L_,"L",c_);
 
-        if (success == 0 || L_->minor < L_->n) 
-            IMP_THROW("Sigma matrix is not positive semidefinite!", 
+        if (success == 0 || L_->minor < L_->n)
+            IMP_THROW("Sigma matrix is not positive semidefinite!",
                     ModelException);
         // determinant and derived constants
         cholmod_factor *Lcp(cholmod_copy_factor(L_, c_));
         cholmod_sparse *Lsp(cholmod_factor_to_sparse(Lcp,c_));
         double logDetSigma=0;
-        if ((Lsp->itype != CHOLMOD_INT) && 
+        if ((Lsp->itype != CHOLMOD_INT) &&
                 (Lsp->xtype != CHOLMOD_REAL))
             IMP_THROW("types are not int and real, update them here first",
                     ModelException);
@@ -224,14 +227,14 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
             logDetSigma += std::log(x[p[i]]);
         cholmod_free_sparse(&Lsp,c_);
         cholmod_free_factor(&Lcp,c_);
-        IMP_LOG(TERSE, "MVNsparse:   log det(Sigma) = " 
+        IMP_LOG(TERSE, "MVNsparse:   log det(Sigma) = "
                 << logDetSigma << std::endl);
-        IMP_LOG(TERSE, "MVNsparse:   det(Sigma) = " 
+        IMP_LOG(TERSE, "MVNsparse:   det(Sigma) = "
                 << exp(logDetSigma) << std::endl);
-        norm_= std::pow(2*IMP::PI, -double(N_*M_)/2.0) 
+        norm_= std::pow(2*IMP::PI, -double(N_*M_)/2.0)
                     * exp(-double(N_)/2.0*logDetSigma);
         lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * logDetSigma;
-        IMP_LOG(TERSE, "MVNsparse:   norm = " << norm_ << " lnorm = " 
+        IMP_LOG(TERSE, "MVNsparse:   norm = " << norm_ << " lnorm = "
                 << lnorm_ << std::endl);
         //inverse
         IMP_LOG(TERSE, "MVNsparse:   solving for inverse" << std::endl);
@@ -248,7 +251,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
         IMP_LOG(TERSE, "MVNsparse:   done" << std::endl);
   }
 
-  double MultivariateFNormalSufficientSparse::trace_WP() const 
+  double MultivariateFNormalSufficientSparse::trace_WP() const
   {
       //solve for Sigma.X=W
       //cholmod_print_sparse(PW_,"PW",c_);
@@ -257,7 +260,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       //cholmod_print_sparse(tmp,"diag(PW)",c_);
       double trace=0;
       if ((tmp->itype != CHOLMOD_INT) || (tmp->xtype != CHOLMOD_REAL))
-          IMP_THROW("matrix types different from int and double", 
+          IMP_THROW("matrix types different from int and double",
                   ModelException);
       double *x = (double *) tmp->x;
       for (size_t i=0; i < tmp->nzmax; ++i) trace += x[i];
@@ -265,10 +268,10 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
       IMP_LOG(TERSE, "MVNsparse:   trace(WP) = " << trace << std::endl);
       return trace;
   }
- 
+
   // compute trans(epsilon)*Sigma^{-1}*epsilon by solving for the
   // rhs product and multiplying by trans(epsilon)
-  // could be made more stable by using a LLt factorization and 
+  // could be made more stable by using a LLt factorization and
   // solving for LPepsilon and then multiplying by
   // its transpose.
   double MultivariateFNormalSufficientSparse::mean_dist() const
@@ -286,7 +289,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     return dist;
 }
 
-  cholmod_sparse *MultivariateFNormalSufficientSparse::compute_PTP() const 
+  cholmod_sparse *MultivariateFNormalSufficientSparse::compute_PTP() const
 {
   IMP_LOG(TERSE, "MVNsparse:   computing PTP" << std::endl);
   cholmod_sparse *eps = cholmod_dense_to_sparse(epsilon_, true, c_);
@@ -338,7 +341,7 @@ cholmod_dense *MultivariateFNormalSufficientSparse::evaluate_derivative_FM() con
     Wsp.finalize();
     cholmod_sparse Wtmp = Eigen::viewAsCholmod(
             Wsp.selfadjointView<Eigen::Upper>());
-    if (Wtmp.x == NULL) 
+    if (Wtmp.x == NULL)
     {
         W_ = cholmod_spzeros(M_,M_,0,CHOLMOD_REAL, c_);
     } else {

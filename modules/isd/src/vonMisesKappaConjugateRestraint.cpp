@@ -14,7 +14,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(Particle *p, double c, double R0): 
+vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(Particle *p,
+                                                      double c, double R0):
     kappa_(p),c_(c),R0_(R0) {
     if (!(0<=R0 && 0<c && R0<=c)) {
         IMP_THROW("Must have 0 < R0 <= c", ModelException);
@@ -33,11 +34,12 @@ double vonMisesKappaConjugateRestraint::get_kappa() const
     Scale kappascale(kappa_);
     double kappaval=kappascale.get_scale();
     if (kappaval <= 0) {
-        IMP_THROW("cannot use conjugate prior on negative or zero scale", 
+        IMP_THROW("cannot use conjugate prior on negative or zero scale",
                 ModelException);
     }
     if ( kappaval != old_kappaval) {
-        const_cast<vonMisesKappaConjugateRestraint*>(this)->update_bessel(kappaval);
+        const_cast<vonMisesKappaConjugateRestraint*>(this)->update_bessel(
+                                                              kappaval);
     }
     return kappaval;
 
@@ -46,8 +48,8 @@ double vonMisesKappaConjugateRestraint::get_probability() const
 {
     Scale kappascale(kappa_);
     double kappaval=get_kappa();
-    //std::cout << "kappa " << kappaval << " c " << c_ << " R0 " << R0_ 
-    //    << " I0 " << I0_ << " exp "  << std::exp(kappaval*R0_) 
+    //std::cout << "kappa " << kappaval << " c " << c_ << " R0 " << R0_
+    //    << " I0 " << I0_ << " exp "  << std::exp(kappaval*R0_)
     //    << " pow " << pow(I0_,-c_) << std::endl;
     if (R0_ > 0) {
         return std::exp(kappaval*R0_)*pow(I0_,-c_);
@@ -56,7 +58,8 @@ double vonMisesKappaConjugateRestraint::get_probability() const
     }
 }
 
-double vonMisesKappaConjugateRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double vonMisesKappaConjugateRestraint::unprotected_evaluate(
+                                  DerivativeAccumulator *accum) const
 {
   double score;
   Scale kappascale(kappa_);

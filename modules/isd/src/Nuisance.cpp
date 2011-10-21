@@ -65,7 +65,7 @@ void Nuisance::set_nuisance(Float d) {
 }
 
 Nuisance Nuisance::setup_particle(Particle *p, double nuisance) {
-    if (!Nuisance::particle_is_instance(p)) 
+    if (!Nuisance::particle_is_instance(p))
     {
         p->add_attribute(get_nuisance_key(), nuisance);
     } else {

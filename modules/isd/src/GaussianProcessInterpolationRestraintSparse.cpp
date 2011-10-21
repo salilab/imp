@@ -1,5 +1,5 @@
 /**
- *  \file GaussianProcessInterpolationRestraintSparse.cpp  
+ *  \file GaussianProcessInterpolationRestraintSparse.cpp
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -30,15 +30,15 @@ GaussianProcessInterpolationRestraintSparse::
     //check if the number of repetitions is the same for every point
     IMP_IF_CHECK(USAGE) {
         for (unsigned i=1; i<M_; i++)
-            IMP_USAGE_CHECK(N == gpi_->n_obs_[i], 
+            IMP_USAGE_CHECK(N == gpi_->n_obs_[i],
                 "must have the same number of repetitions for each point!");
     }
-    // build multivariate normal with 
+    // build multivariate normal with
     // mean : prior mean
     // covariance : prior covariance
     // observed at : the original observations
     IMP_LOG(TERSE, "GPIR: multivariate normal()" << std::endl);
-    //args are: sample mean, jacobian, true mean, 
+    //args are: sample mean, jacobian, true mean,
     // nobs, sample variance, true variance
     c_ = gpi_->get_cholmod_common();
     mvn_ = new MultivariateFNormalSufficientSparse(gpi_->get_I(), 1.0,
@@ -57,7 +57,7 @@ void GaussianProcessInterpolationRestraintSparse::update_mean_and_covariance()
         gpi_->flag_m_gpir_ = true;
         IMP_LOG(TERSE, " updated mean");
     }
-    if (!(gpi_->flag_W_gpir_)) 
+    if (!(gpi_->flag_W_gpir_))
     {
         mvn_->set_Sigma(gpi_->get_W());
         gpi_->flag_W_gpir_ = true;
@@ -66,12 +66,13 @@ void GaussianProcessInterpolationRestraintSparse::update_mean_and_covariance()
     IMP_LOG(TERSE, std::endl);
 }
 
-double GaussianProcessInterpolationRestraintSparse::unprotected_evaluate(DerivativeAccumulator *accum) const
+double GaussianProcessInterpolationRestraintSparse::unprotected_evaluate(
+                         DerivativeAccumulator *accum) const
 {
     //check if the functions have changed
     const_cast<GaussianProcessInterpolationRestraintSparse*>(this)->
         update_mean_and_covariance();
-    
+
     double ene = mvn_->evaluate();
 
     if (accum)
@@ -113,7 +114,8 @@ double GaussianProcessInterpolationRestraintSparse::unprotected_evaluate(Derivat
     return ene;
 }
 
-ParticlesTemp GaussianProcessInterpolationRestraintSparse::get_input_particles() const
+ParticlesTemp
+GaussianProcessInterpolationRestraintSparse::get_input_particles() const
 {
     ParticlesTemp ret;
     ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
@@ -122,8 +124,9 @@ ParticlesTemp GaussianProcessInterpolationRestraintSparse::get_input_particles()
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }
-    
-ContainersTemp GaussianProcessInterpolationRestraintSparse::get_input_containers() 
+
+ContainersTemp
+GaussianProcessInterpolationRestraintSparse::get_input_containers()
     const
 {
     ContainersTemp ret;
@@ -133,10 +136,11 @@ ContainersTemp GaussianProcessInterpolationRestraintSparse::get_input_containers
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
 }
-    
-void GaussianProcessInterpolationRestraintSparse::do_show(std::ostream& out) const
+
+void GaussianProcessInterpolationRestraintSparse::do_show(
+                                           std::ostream& out) const
 {
-    out << "GaussianProcessInterpolationRestraintSparse on " 
+    out << "GaussianProcessInterpolationRestraintSparse on "
         << get_input_particles().size() << " particles" << std::endl;
 }
 

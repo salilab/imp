@@ -18,12 +18,10 @@
 IMPISD_BEGIN_NAMESPACE
 
 AmbiguousNOERestraint::AmbiguousNOERestraint(PairContainer *pc,
-			   Particle *sigma, Particle *gamma,
-			   double Vexp) : pc_(pc),
-					  sigma_(sigma),
-					  gamma_(gamma),
-					  Vexp_(Vexp) {}
-                                          
+                           Particle *sigma, Particle *gamma,
+                           double Vexp) : pc_(pc), sigma_(sigma),
+                                          gamma_(gamma), Vexp_(Vexp) {}
+
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */
 double
@@ -40,7 +38,8 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
         IMP::core::XYZ d1=IMP::core::XYZ(it[1]);
         algebra::Vector3D c0 = d0.get_coordinates();
         algebra::Vector3D c1 = d1.get_coordinates();
-        double tmp = 1.0/(c0-c1).get_squared_magnitude(); //will raise an error if c0 == c1
+        //will raise an error if c0 == c1
+        double tmp = 1.0/(c0-c1).get_squared_magnitude();
         vols.push_back(IMP::cube(tmp)); // store di^-6
         vol += vols.back();
   }
@@ -61,7 +60,7 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   if (accum)
   {
       /* derivative for gamma */
-      double DFM = lognormal->evaluate_derivative_FM();  
+      double DFM = lognormal->evaluate_derivative_FM();
       gamma_scale.add_to_scale_derivative(DFM/gamma_val, *accum);
       /* derivative for sigma */
       sigma_scale.add_to_scale_derivative(
@@ -75,7 +74,8 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
         IMP::core::XYZ d1=IMP::core::XYZ(it[1]);
         algebra::Vector3D c0 = d0.get_coordinates();
         algebra::Vector3D c1 = d1.get_coordinates();
-        algebra::Vector3D deriv = DFM*factor*(c0-c1)*vols[i]/(c0-c1).get_squared_magnitude();
+        algebra::Vector3D deriv = DFM*factor*(c0-c1)*vols[i]
+                                  /(c0-c1).get_squared_magnitude();
         d0.add_to_derivatives(deriv, *accum);
         d1.add_to_derivatives( -deriv, *accum);
       }

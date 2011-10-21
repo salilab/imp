@@ -12,16 +12,16 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-LogicalORRestraint::LogicalORRestraint(ISDRestraint *r0, ISDRestraint *r1) 
+LogicalORRestraint::LogicalORRestraint(ISDRestraint *r0, ISDRestraint *r1)
                                      : r0_(r0), r1_(r1) {}
 
-                                          
+
 /* Apply the restraint to two other restraints
  */
 double
 LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  
+
   double p0 = r0_->get_probability();
   double p1 = r1_->get_probability();
   double score = -log(p0 + p1 - p0*p1);
@@ -34,7 +34,7 @@ LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     DerivativeAccumulator a1(*accum,(p1 * (1 - p0))/score);
     r0_->unprotected_evaluate(&a0);
     r1_->unprotected_evaluate(&a1);
-  }  
+  }
   return score;
 }
 

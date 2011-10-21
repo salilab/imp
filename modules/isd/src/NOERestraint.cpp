@@ -16,13 +16,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-NOERestraint::NOERestraint(Particle *p0, Particle *p1, 
-			   Particle *sigma, Particle *gamma,
-			   double Vexp) : p0_(p0), p1_(p1),
-					  sigma_(sigma),
-					  gamma_(gamma),
-					  Vexp_(Vexp) {}
-                                          
+NOERestraint::NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
+                           Particle *gamma, double Vexp)
+    : p0_(p0), p1_(p1), sigma_(sigma), gamma_(gamma), Vexp_(Vexp) {}
+
 /* Apply the restraint to two atoms, two Scales, one experimental value.
  */
 double
@@ -52,7 +49,7 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   if (accum)
   {
       /* derivative for coordinates */
-      double DFM = lognormal->evaluate_derivative_FM();  
+      double DFM = lognormal->evaluate_derivative_FM();
       double factor = -6/diff; /* d(log(gamma*pow(diff,-6)))/d(diff) */
       algebra::Vector3D deriv = DFM*factor*(c0-c1)/diff;
       d0.add_to_derivatives(deriv, *accum);

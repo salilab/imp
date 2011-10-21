@@ -26,7 +26,7 @@ HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps, Float
     persistence_counter_=0;
 }
 
-void HybridMonteCarlo::do_step() 
+void HybridMonteCarlo::do_step()
 {
     persistence_counter_ += 1;
     if (persistence_counter_ == persistence_)

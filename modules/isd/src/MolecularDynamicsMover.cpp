@@ -1,6 +1,6 @@
 /**
  *  \file MolecularDynamicsMover.cpp
- *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy 
+ *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy
  *  MD simulation.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -15,7 +15,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  MolecularDynamicsMover::MolecularDynamicsMover(Model *m, 
+MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
       unsigned nsteps, Float timestep) : Mover("MolecularDynamicsMover%1%"),
     nsteps_(nsteps)
 {
@@ -62,14 +62,14 @@ void MolecularDynamicsMover::save_coordinates()
     {
         bool isnuisance = Nuisance::particle_is_instance(ps[i]);
         bool isxyz = core::XYZ::particle_is_instance(ps[i]);
-        IMP_USAGE_CHECK(isnuisance||isxyz, 
+        IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)
         {
-            std::vector<double> x(1, 
+            std::vector<double> x(1,
                     Nuisance(ps[i]).get_nuisance());
             coordinates_.push_back(x);
-            std::vector<double> v(1, 
+            std::vector<double> v(1,
                     ps[i]->get_value(FloatKey("vel")));
             velocities_.push_back(v);
         }
@@ -103,7 +103,7 @@ void MolecularDynamicsMover::reset_coordinates()
     {
         bool isnuisance = Nuisance::particle_is_instance(ps[i]);
         bool isxyz = core::XYZ::particle_is_instance(ps[i]);
-        IMP_USAGE_CHECK(isnuisance||isxyz, 
+        IMP_USAGE_CHECK(isnuisance||isxyz,
                 "Particle " << ps[i] << " is neither nuisance nor xyz!");
         if (isnuisance)
         {
@@ -129,10 +129,5 @@ void MolecularDynamicsMover::reset_coordinates()
         }
     }
 }
-        
-
-
-
-
 
 IMPISD_END_NAMESPACE

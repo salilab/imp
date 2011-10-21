@@ -27,7 +27,7 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   Scale sig(p_);
   double score;
   if (sig.get_scale() <= 0) {
-      IMP_THROW("cannot use jeffreys prior on negative or zero scale", 
+      IMP_THROW("cannot use jeffreys prior on negative or zero scale",
               ModelException);
   }
   score=log(sig.get_scale());

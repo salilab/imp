@@ -12,9 +12,10 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SlidingPriorRestraint::SlidingPriorRestraint(Particle *p, double qmin, double qmax, double sq): 
-    p_(p), qmin_(qmin), qmax_(qmax) {
-        sq_ = sq*(qmax_-qmin_);
+SlidingPriorRestraint::SlidingPriorRestraint(Particle *p, double qmin,
+                                             double qmax, double sq)
+  : p_(p), qmin_(qmin), qmax_(qmax) {
+  sq_ = sq*(qmax_-qmin_);
 }
 
 
@@ -29,7 +30,7 @@ SlidingPriorRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   Scale q0(p_);
   double score;
   if (q0.get_scale() <= 0) {
-      IMP_THROW("cannot use jeffreys prior on negative or zero scale", 
+      IMP_THROW("cannot use jeffreys prior on negative or zero scale",
               ModelException);
   }
   double qval = q0.get_scale();

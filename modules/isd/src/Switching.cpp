@@ -16,4 +16,3 @@ void Switching::show(std::ostream &out) const {
 }
 
 IMPISD_END_NAMESPACE
-

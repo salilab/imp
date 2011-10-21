@@ -42,7 +42,8 @@ void MaintainScaleOrderConstraint::do_update_attributes()
     IMP_LOG(TERSE, "End MaintainScaleOrderConstraint::update" << std::endl);
 }
 
-void MaintainScaleOrderConstraint::do_update_derivatives(DerivativeAccumulator *){}
+void MaintainScaleOrderConstraint::do_update_derivatives(
+                                               DerivativeAccumulator *){}
 
 ContainersTemp MaintainScaleOrderConstraint::get_input_containers() const {
   return ContainersTemp();
