@@ -34,7 +34,6 @@ int main(int argc, char **argv)
   bool water_layer = true;
   bool heavy_atoms_only = true;
   bool residue_level = false;
-  float charge_weight = 1.0;
   po::options_description desc("Usage: <pdb_file1> <pdb_file2> \
 ... <profile_file1> <profile_file2> ...");
   desc.add_options()
