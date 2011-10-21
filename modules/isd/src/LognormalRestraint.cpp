@@ -15,48 +15,48 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu, 
+  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu,
           Particle *sigma) : px_(x), pmu_(mu), psigma_(sigma), isx_(true),
-    ismu_(true), issigma_(true) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(double x, Particle *mu, 
+    ismu_(true), issigma_(true) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(double x, Particle *mu,
           Particle *sigma) : x_(x), pmu_(mu), psigma_(sigma), isx_(false),
-    ismu_(true), issigma_(true) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(Particle *x, double mu, 
+    ismu_(true), issigma_(true) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(Particle *x, double mu,
           Particle *sigma) : px_(x), mu_(mu), psigma_(sigma), isx_(true),
-    ismu_(false), issigma_(true) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu, 
+    ismu_(false), issigma_(true) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(Particle *x, Particle *mu,
           double sigma) : px_(x), pmu_(mu), sigma_(sigma), isx_(true),
-    ismu_(true), issigma_(false) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(Particle *x, double mu, 
+    ismu_(true), issigma_(false) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(Particle *x, double mu,
           double sigma) : px_(x), mu_(mu), sigma_(sigma), isx_(true),
-    ismu_(false), issigma_(false) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(double x, double mu, 
+    ismu_(false), issigma_(false) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(double x, double mu,
           Particle *sigma) : x_(x), mu_(mu), psigma_(sigma), isx_(false),
-    ismu_(false), issigma_(true) {check_particles();} 
-  
-  LognormalRestraint::LognormalRestraint(double x, Particle *mu, 
+    ismu_(false), issigma_(true) {check_particles();}
+
+  LognormalRestraint::LognormalRestraint(double x, Particle *mu,
           double sigma) : x_(x), pmu_(mu), sigma_(sigma), isx_(false),
-    ismu_(true), issigma_(false) {check_particles();} 
-  
+    ismu_(true), issigma_(false) {check_particles();}
+
 void LognormalRestraint::check_particles()
 {
     IMP_IF_CHECK(USAGE) {
-        if (isx_) 
+        if (isx_)
         {
             IMP_USAGE_CHECK(Nuisance::particle_is_instance(px_),
                     "x particle should be a Nuisance!");
         }
-        if (ismu_) 
+        if (ismu_)
         {
             IMP_USAGE_CHECK(Nuisance::particle_is_instance(pmu_),
                     "mu particle should be a Nuisance!");
         }
-        if (issigma_) 
+        if (issigma_)
         {
             IMP_USAGE_CHECK(Scale::particle_is_instance(psigma_),
                     "sigma particle should be a Scale!");
@@ -89,7 +89,7 @@ LognormalRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       if (isx_ || ismu_)
       {
           // d(score)/dM = d(score)/dF(M) * dF(M)/dM
-          double DFM = normal->evaluate_derivative_FM();  
+          double DFM = normal->evaluate_derivative_FM();
           if (isx_) Nuisance(px_).add_to_nuisance_derivative((1-DFM)/x, *accum);
           if (ismu_) Nuisance(pmu_).add_to_nuisance_derivative(DFM/mu, *accum);
       }

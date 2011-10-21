@@ -1,5 +1,5 @@
 /**
- *  \file GaussianProcessInterpolationSparse.cpp  
+ *  \file GaussianProcessInterpolationSparse.cpp
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -26,10 +26,10 @@ IMPISD_BEGIN_NAMESPACE
                                Floats sample_std,
                                Ints n_obs,
                                UnivariateFunction *mean_function,
-                               BivariateFunction *covariance_function, 
+                               BivariateFunction *covariance_function,
                                double cutoff) :
         Object("GaussianProcessInterpolationSparse%1%"), x_(x), n_obs_(n_obs),
-        mean_function_(mean_function), 
+        mean_function_(mean_function),
         covariance_function_(covariance_function),
         cutoff_(cutoff)
 {
@@ -42,21 +42,21 @@ IMPISD_BEGIN_NAMESPACE
     M_ = x.size();
     N_ = x[0].size();
     //basic checks
-    IMP_USAGE_CHECK(sample_mean.size() == M_, 
+    IMP_USAGE_CHECK(sample_mean.size() == M_,
             "sample_mean should have the same size as x");
-    IMP_USAGE_CHECK(sample_std.size() == M_, 
+    IMP_USAGE_CHECK(sample_std.size() == M_,
             "sample_std should have the same size as x");
-    IMP_USAGE_CHECK(n_obs.size() == M_, 
+    IMP_USAGE_CHECK(n_obs.size() == M_,
             "n_obs should have the same size as x");
-    IMP_USAGE_CHECK(mean_function->get_ndims_x() == N_, 
+    IMP_USAGE_CHECK(mean_function->get_ndims_x() == N_,
             "mean_function should have " << N_ << " input dimensions");
     IMP_USAGE_CHECK(mean_function->get_ndims_y() == 1,
             "mean_function should have 1 output dimension");
-    IMP_USAGE_CHECK(covariance_function->get_ndims_x1() == N_, 
-            "covariance_function should have " << N_ 
+    IMP_USAGE_CHECK(covariance_function->get_ndims_x1() == N_,
+            "covariance_function should have " << N_
                         << " input dimensions for first vector");
-    IMP_USAGE_CHECK(covariance_function->get_ndims_x2() == N_, 
-            "covariance_function should have " << N_ 
+    IMP_USAGE_CHECK(covariance_function->get_ndims_x2() == N_,
+            "covariance_function should have " << N_
                         << " input dimensions for second vector");
     IMP_USAGE_CHECK(covariance_function->get_ndims_y() == 1,
             "covariance_function should have 1 output dimension");
@@ -80,7 +80,7 @@ IMPISD_BEGIN_NAMESPACE
     flag_WS_ = false;
     flag_WSIm_ = false;
     flag_W_ = false;
-    flag_W_gpir_ = false; // the gpi restraint needs to know when 
+    flag_W_gpir_ = false; // the gpi restraint needs to know when
                           // to update the mvn's Sigma:=W matrix.
 }
 
@@ -97,8 +97,8 @@ IMPISD_BEGIN_NAMESPACE
 }
 
   void GaussianProcessInterpolationSparse::compute_S(Floats std,
-          Ints n) 
-    { 
+          Ints n)
+    {
         //if you modify this routine so that
         //S is not diagonal check the GPIR to make sure it still needs
         //to call set_W_nonzero of MVN.
@@ -106,13 +106,13 @@ IMPISD_BEGIN_NAMESPACE
         IMP_LOG(TERSE, "S: ");
         S_ = SparseMatrix<double>(M_,M_);
         S_.reserve(M_);
-        for (unsigned i=0; i<M_; i++) 
-        { 
-            double v = IMP::square(std[i])/double(n[i]); 
+        for (unsigned i=0; i<M_; i++)
+        {
+            double v = IMP::square(std[i])/double(n[i]);
             IMP_LOG(TERSE, v << " ");
             S_.startVec(i);
             S_.insertBack(i,i) = v;
-        } 
+        }
         S_.finalize();
     IMP_LOG(TERSE, std::endl);
     }
@@ -130,10 +130,10 @@ IMPISD_BEGIN_NAMESPACE
     //for (unsigned i=0; i<M_; i++) std::cerr << wx(i) << " ";
     //std::cerr << std::endl << "WSIm : ";
     //for (unsigned i=0; i<M_; i++) std::cerr << WSIm(i) << " ";
-    //std::cerr << std::endl << "mean func: " << (*mean_function_,x,0) 
+    //std::cerr << std::endl << "mean func: " << (*mean_function_,x,0)
     //    << std::endl;
     //licit because WSIm is up to date
-    double ret = ((double*)retmat->x)[0] + (*mean_function_)(x)[0]; 
+    double ret = ((double*)retmat->x)[0] + (*mean_function_)(x)[0];
     cholmod_free_dense(&retmat, c_);
     return ret;
 }
@@ -153,7 +153,7 @@ IMPISD_BEGIN_NAMESPACE
     if (result->x) ret = ((double*)result->x)[0];
     cholmod_free_sparse(&wx1, c_);
     cholmod_free_sparse(&result, c_);
-    return (*covariance_function_)(x1,x2)[0] - ret; //licit because WS 
+    return (*covariance_function_)(x1,x2)[0] - ret; //licit because WS
                                                     //is up to date
 }
 
@@ -162,10 +162,10 @@ IMPISD_BEGIN_NAMESPACE
 
     bool ret = mean_function_->has_changed();
     if (ret) mean_function_->update();
-    if (flag_m_) flag_m_ = !ret; 
-    if (flag_m_gpir_) flag_m_gpir_ = !ret; 
-    if (flag_WSIm_) flag_WSIm_ = !ret; 
-    IMP_LOG(TERSE, "update_flags_mean: ret " << ret 
+    if (flag_m_) flag_m_ = !ret;
+    if (flag_m_gpir_) flag_m_gpir_ = !ret;
+    if (flag_WSIm_) flag_WSIm_ = !ret;
+    IMP_LOG(TERSE, "update_flags_mean: ret " << ret
             << " flag_m_ " << flag_m_
             << " flag_m_gpir_ " << flag_m_gpir_
             << " flag_WSIm_ " << flag_WSIm_ << std::endl );
@@ -175,15 +175,15 @@ IMPISD_BEGIN_NAMESPACE
 {
     bool ret = covariance_function_->has_changed();
     if (ret) covariance_function_->update();
-    if (flag_WS_) flag_WS_ = !ret; 
-    if (flag_WSIm_) flag_WSIm_ = !ret; 
-    if (flag_W_) flag_W_ = !ret; 
-    if (flag_W_gpir_) flag_W_gpir_ = !ret; 
-    IMP_LOG(TERSE, "update_flags_covariance: ret " << ret 
-            << " flag_WS_ " << flag_WS_ 
-            << " flag_WSIm_ " << flag_WSIm_ 
-            << " flag_W_ " << flag_W_ 
-            << " flag_W_gpir_ " << flag_W_gpir_ 
+    if (flag_WS_) flag_WS_ = !ret;
+    if (flag_WSIm_) flag_WSIm_ = !ret;
+    if (flag_W_) flag_W_ = !ret;
+    if (flag_W_gpir_) flag_W_gpir_ = !ret;
+    IMP_LOG(TERSE, "update_flags_covariance: ret " << ret
+            << " flag_WS_ " << flag_WS_
+            << " flag_WSIm_ " << flag_WSIm_
+            << " flag_W_ " << flag_W_
+            << " flag_W_gpir_ " << flag_W_gpir_
             << std::endl );
 }
 
@@ -197,7 +197,7 @@ IMPISD_BEGIN_NAMESPACE
     for (unsigned i=0; i<M_; i++)
     {
         double val = (*covariance_function_)(x_[i],xval)[0];
-        if (std::abs(val) > cutoff_) 
+        if (std::abs(val) > cutoff_)
         {
             wx_.insertBack(i,0) = val;
             IMP_LOG(TERSE, val << " ");
@@ -216,7 +216,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, "get_WSIm()" << std::endl);
     update_flags_mean();
     update_flags_covariance();
-    if (!flag_WSIm_) 
+    if (!flag_WSIm_)
     {
         IMP_LOG(TERSE, "need to update WSIm_" << std::endl);
         compute_WSIm();
@@ -240,7 +240,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, "get_m()" << std::endl);
     update_flags_mean();
     if (!flag_m_)
-    { 
+    {
         IMP_LOG(TERSE, "need to update m" << std::endl);
         compute_m();
         flag_m_ = true;
@@ -263,7 +263,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, "get_WS()" << std::endl);
     update_flags_covariance();
     if (!flag_WS_)
-    { 
+    {
         IMP_LOG(TERSE, "need to update (W+S)^{-1}" << std::endl);
         compute_WS();
         flag_WS_ = true;
@@ -276,7 +276,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, "get_L()" << std::endl);
     update_flags_covariance();
     if (!flag_WS_)
-    { 
+    {
         IMP_LOG(TERSE, "need to update (W+S)^{-1}" << std::endl);
         compute_WS();
         flag_WS_ = true;
@@ -298,7 +298,7 @@ IMPISD_BEGIN_NAMESPACE
     L_ = cholmod_analyze(&cWpS, c_);
     int success = cholmod_factorize(&cWpS, L_, c_);
     if (success == 0 || L_->minor < L_->n)
-            IMP_THROW("Matrix is not positive semidefinite!", 
+            IMP_THROW("Matrix is not positive semidefinite!",
                     ModelException);
     //get inverse
     IMP_LOG(TERSE,"  compute_inverse: inverse" << std::endl);
@@ -313,7 +313,7 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, "get_W()" << std::endl);
     update_flags_covariance();
     if (!flag_W_)
-    { 
+    {
         IMP_LOG(TERSE, "need to update W" << std::endl);
         compute_W();
         flag_W_ = true;

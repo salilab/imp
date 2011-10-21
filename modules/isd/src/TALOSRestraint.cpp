@@ -23,10 +23,11 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa) :kappa_(kappa) {
-  if (p.size() != 4){
-          IMP_THROW("please provide a list with 4 particles!", ModelException);
-      }
+TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa)
+    : kappa_(kappa) {
+  if (p.size() != 4) {
+    IMP_THROW("please provide a list with 4 particles!", ModelException);
+  }
   p_[0]=static_cast<Particle*>(p[0]);
   p_[1]=static_cast<Particle*>(p[1]);
   p_[2]=static_cast<Particle*>(p[2]);
@@ -38,11 +39,10 @@ TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa) :kappa
   }
 
 TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
-          chiexp, Particle *kappa) : kappa_(kappa) { 
-  if (p.size() != 4)
-      {
-        IMP_THROW("please provide a list with 4 particles!", ModelException); 
-      }
+          chiexp, Particle *kappa) : kappa_(kappa) {
+  if (p.size() != 4) {
+    IMP_THROW("please provide a list with 4 particles!", ModelException);
+  }
   p_[0]=static_cast<Particle*>(p[0]);
   p_[1]=static_cast<Particle*>(p[1]);
   p_[2]=static_cast<Particle*>(p[2]);
@@ -53,8 +53,9 @@ TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
   //mises_->set_was_used(true);
   }
 
-TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, 
-        Floats data, Particle * kappa) : kappa_(kappa) 
+TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3,
+                               Particle *p4, Floats data, Particle *kappa)
+    : kappa_(kappa)
 {
   p_[0]=static_cast<Particle*>(p1);
   p_[1]=static_cast<Particle*>(p2);
@@ -66,8 +67,9 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particl
   //mises_->set_was_used(true);
 }
 
-TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
-          unsigned N, double R0, double chiexp, Particle *kappa) : kappa_(kappa)
+TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3,
+                               Particle *p4, unsigned N, double R0,
+                               double chiexp, Particle *kappa) : kappa_(kappa)
 {
   p_[0]=static_cast<Particle*>(p1);
   p_[1]=static_cast<Particle*>(p2);
@@ -111,14 +113,15 @@ TALOSRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
   //store derivatives if necessary
   if (accum) {
-      
+
     double deriv=mises_->evaluate_derivative_x();
     d0.add_to_derivatives(derv0 * deriv, *accum);
     d1.add_to_derivatives(derv1 * deriv, *accum);
     d2.add_to_derivatives(derv2 * deriv, *accum);
     d3.add_to_derivatives(derv3 * deriv, *accum);
 
-    kappascale.add_to_scale_derivative(mises_->evaluate_derivative_kappa(), *accum);
+    kappascale.add_to_scale_derivative(mises_->evaluate_derivative_kappa(),
+                                       *accum);
   }
   return score;
 }

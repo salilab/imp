@@ -16,9 +16,10 @@
 IMPISD_BEGIN_NAMESPACE
 
 //MarginalHBondRestraint::MarginalHBondRestraint() {}
-                                          
+
 // add a contribution: simple case
-void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2, double Iexp)
+void MarginalHBondRestraint::add_contribution(Particle *p1, Particle *p2,
+                                              double Iexp)
 {
     ParticlePair pc(p1,p2);
     ParticlePairsTemp pct(1,pc);
@@ -40,18 +41,20 @@ MarginalHBondRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     //compute logsquares
     double logsquares=0;
     std::vector<double> meandists; //mean distances^-6, length(volumes_)
-    std::vector<std::vector<double> > alldists; //store interparticle distances^-6
+    //store interparticle distances^-6
+    std::vector<std::vector<double> > alldists;
     int ncontribs = volumes_.size();
     for (int i=0; i< ncontribs; ++i) //loop on all contributions
     {
-        int npairs = contribs_[i]->get_number_of_particle_pairs(); 
+        int npairs = contribs_[i]->get_number_of_particle_pairs();
         double mean=0;
         std::vector<double> dists;
         for (int p=0; p<npairs; ++p)//loop on all pairs of contribution i
         {
             ParticlePair pair = contribs_[i]->get_particle_pair(p);
             core::XYZ d0(pair[0]),d1(pair[1]);
-            double dist = (d1.get_coordinates() - d0.get_coordinates()).get_squared_magnitude();
+            double dist = (d1.get_coordinates()
+                           - d0.get_coordinates()).get_squared_magnitude();
             dist = 1.0/cube(dist);
             mean += dist;
             if (accum) dists.push_back(dist);
@@ -68,14 +71,17 @@ MarginalHBondRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     {
         for (int i=0; i<ncontribs; ++i)
         {
-            double deriv_mean = ncontribs/logsquares * log(volumes_[i]/meandists[i]) * pow(meandists[i],1./6)*6;
-            int npairs = contribs_[i]->get_number_of_particle_pairs(); 
+            double deriv_mean = ncontribs/logsquares
+                                * log(volumes_[i]/meandists[i])
+                                * pow(meandists[i],1./6)*6;
+            int npairs = contribs_[i]->get_number_of_particle_pairs();
             for (int p=0; p<npairs; ++p)
             {
                 ParticlePair pair = contribs_[i]->get_particle_pair(p);
                 double deriv_pair = pow(alldists[i][p]/meandists[i],-7./6);
                 core::XYZ d0(pair[0]),d1(pair[1]);
-                algebra::Vector3D dev = (d1.get_coordinates() - d0.get_coordinates());
+                algebra::Vector3D dev = (d1.get_coordinates()
+                                         - d0.get_coordinates());
                 double dist = dev.get_magnitude();
                 algebra::Vector3D deriv = deriv_mean * deriv_pair * dev / dist;
                 d1.add_to_derivatives(deriv, *accum);
@@ -93,7 +99,7 @@ ParticlesTemp MarginalHBondRestraint::get_input_particles() const
   ParticlesTemp ret;
   for (unsigned i=0; i<volumes_.size(); ++i)
   {
-      int npairs = contribs_[i]->get_number_of_particle_pairs(); 
+      int npairs = contribs_[i]->get_number_of_particle_pairs();
       for (int j=0; j < npairs; ++j)
       {
           ret.push_back(contribs_[i]->get_particle_pair(j)[0]);
@@ -115,7 +121,8 @@ ContainersTemp MarginalHBondRestraint::get_input_containers() const
 
 void MarginalHBondRestraint::do_show(std::ostream& out) const
 {
-  out << "Marginal HBond restraint with " << volumes_.size() << " contributions " << std::endl;
+  out << "Marginal HBond restraint with " << volumes_.size()
+      << " contributions " << std::endl;
 }
 
 IMPISD_END_NAMESPACE

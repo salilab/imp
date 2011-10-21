@@ -14,7 +14,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-vonMisesKappaJeffreysRestraint::vonMisesKappaJeffreysRestraint(Particle *p): kappa_(p) {}
+vonMisesKappaJeffreysRestraint::vonMisesKappaJeffreysRestraint(Particle *p)
+  : kappa_(p) {}
 
 void vonMisesKappaJeffreysRestraint::update_bessel(double kappaval) {
         //compute bessel functions
@@ -28,11 +29,12 @@ double vonMisesKappaJeffreysRestraint::get_probability() const
     Scale kappascale(kappa_);
     double kappaval=kappascale.get_scale();
     if (kappaval <= 0) {
-        IMP_THROW("cannot use jeffreys prior on negative or zero scale", 
+        IMP_THROW("cannot use jeffreys prior on negative or zero scale",
                 ModelException);
     }
     if ( kappaval != old_kappaval) {
-        const_cast<vonMisesKappaJeffreysRestraint*>(this)->update_bessel(kappaval);
+        const_cast<vonMisesKappaJeffreysRestraint*>(this)->update_bessel(
+                                                               kappaval);
     }
     double ratio = I1_/I0_;
     return sqrt(ratio*(kappaval-ratio-kappaval*ratio*ratio));
@@ -41,16 +43,18 @@ double vonMisesKappaJeffreysRestraint::get_probability() const
 
 /* Apply the score if it's a scale decorator.
  */
-double vonMisesKappaJeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
+double vonMisesKappaJeffreysRestraint::unprotected_evaluate(
+                   DerivativeAccumulator *accum) const
 {
   double score;
   Scale kappascale(kappa_);
   double kappaval=kappascale.get_scale();
-  score=-std::log(get_probability()); //computes the bessel functions if necessary
+  //computes the bessel functions if necessary
+  score=-std::log(get_probability());
   if (accum) {
     /* calculate derivative and add to 1st coordinate of kappascale */
     double ratio=I1_/I0_;
-    double deriv=0.5*(-1.0/ratio + 3*ratio + 1/kappaval 
+    double deriv=0.5*(-1.0/ratio + 3*ratio + 1/kappaval
             + 1/(kappaval*(1 - kappaval/ratio) + ratio*kappaval*kappaval));
     kappascale.add_to_scale_derivative(deriv,*accum);
   }

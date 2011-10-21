@@ -34,7 +34,7 @@ MolecularDynamics::MolecularDynamics(Model *m): atom::MolecularDynamics(m)
 
 
 
-bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const 
+bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const
 {
   Particle *p=get_model()->get_particle(pi);
   bool ret=IMP::core::XYZ::particle_is_instance(p)
@@ -85,14 +85,14 @@ void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
 
        Float coord = d.get_nuisance();
        Float dcoord = d.get_nuisance_derivative();
-      
+
        // calculate velocity at t+(delta t/2) from that at t
        Float velocity = get_model()->get_attribute(vnuis_, ps[i]);
        velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
-      
+
        cap_velocity_component(velocity);
        get_model()->set_attribute(vnuis_, ps[i], velocity);
-      
+
        // calculate position at t+(delta t) from that at t
        coord += velocity * ts;
        d.set_nuisance(coord);

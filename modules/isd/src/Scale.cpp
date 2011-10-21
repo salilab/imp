@@ -27,4 +27,3 @@ void Scale::show(std::ostream &out) const {
 }
 
 IMPISD_END_NAMESPACE
-
