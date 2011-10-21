@@ -54,6 +54,7 @@ class TestCommunication(IMP.test.TestCase):
 
     def test_hello(self):
         "test if grid can do simple tasks"
+        self.skipTest("grid tests require specific machine setup")
         grid = self.create_grid()
         self.grid = grid
         #fork and execute grid.run() in a child
