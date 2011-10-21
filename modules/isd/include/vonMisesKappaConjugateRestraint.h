@@ -15,13 +15,12 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Conjugate prior for the \f$\kappa\f$ concentration parameter of a von Mises
-//! distribution.
-//! \f[ p(\kappa|c,R_0) = \frac{\exp(\kappa R_0)}{I_0(\kappa)^c} \f]
-//! \f$0 < R_0 \le c\f$ 
-//  Default values: \f$R_0=1\f$ and \f$c=10\f$
-//
-
+//! Conjugate prior for the concentration parameter of a von Mises distribution.
+/** \f[ p(\kappa|c,R_0) = \frac{\exp(\kappa R_0)}{I_0(\kappa)^c} \f]
+    \f$0 < R_0 \le c\f$
+    where \f$kappa\f$ is the concentration parameter.
+    Default values: \f$R_0=1\f$ and \f$c=10\f$
+ */
 class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 {
   Pointer<Particle> kappa_;
@@ -31,18 +30,19 @@ class IMPISDEXPORT vonMisesKappaConjugateRestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  vonMisesKappaConjugateRestraint(Particle *kappa, double c=10.0, double R0=0.0); 
+  vonMisesKappaConjugateRestraint(Particle *kappa, double c=10.0,
+                                  double R0=0.0);
 
   /** This macro declares the basic needed methods: evaluate and show
    */
   IMP_RESTRAINT(vonMisesKappaConjugateRestraint);
 
-virtual double get_probability() const;
+  virtual double get_probability() const;
 
 private:
 
-void update_bessel(double kappaval); // update memoized bessel value
-double get_kappa() const;
+  void update_bessel(double kappaval); // update memoized bessel value
+  double get_kappa() const;
 
 };
 

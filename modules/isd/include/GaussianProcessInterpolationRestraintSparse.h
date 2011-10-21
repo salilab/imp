@@ -1,5 +1,6 @@
 /**
- *  \file GaussianProcessInterpolation.h    \brief Normal distribution of Function
+ *  \file GaussianProcessInterpolation.h
+ *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -38,7 +39,8 @@ using Eigen::VectorXd;
 * observations with mean and standard deviation given by the posterior of the
 * gaussian process.
 */
-class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse : public ISDRestraint
+class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse
+      : public ISDRestraint
 {
    private:
         // checks and makes necessary updates
@@ -68,7 +70,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraintSparse : public ISDRestr
         }
 
         IMP_RESTRAINT(GaussianProcessInterpolationRestraintSparse);
-    
+
 };
 
 IMPISD_END_NAMESPACE

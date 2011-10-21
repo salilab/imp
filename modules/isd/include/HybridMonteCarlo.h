@@ -49,7 +49,7 @@ public:
 
 
   IMP_MONTE_CARLO(HybridMonteCarlo);
-  
+
   //evaluate should return the total energy
   double do_evaluate(const ParticlesTemp &moved) const
 {
@@ -57,7 +57,7 @@ public:
     double ekin = md_->get_kinetic_energy();
     double epot;
     if (get_maximum_difference() < std::numeric_limits<double>::max()) {
-        epot = evaluate_if_below(false, 
+        epot = evaluate_if_below(false,
                 get_last_accepted_energy()+get_maximum_difference());
     } else {
         epot = evaluate(false);

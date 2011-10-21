@@ -32,7 +32,7 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT FNormal : public base::Object
 {
  public:
-  FNormal(double FA, double JA, double FM, double sigma): 
+  FNormal(double FA, double JA, double FM, double sigma):
   base::Object("FNormal %1%"),
     FA_(FA),
     JA_(JA),
@@ -40,10 +40,10 @@ class IMPISDEXPORT FNormal : public base::Object
     sigma_(sigma) {}
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const 
-  { 
-      return -log(JA_/sigma_) + 0.5*log(2*IMP::PI) 
-            + 1/(2*square(sigma_))*square(FA_-FM_); 
+  virtual double evaluate() const
+  {
+      return -log(JA_/sigma_) + 0.5*log(2*IMP::PI)
+            + 1/(2*square(sigma_))*square(FA_-FM_);
   }
 
   //derivative of score wrt F(A)
@@ -59,14 +59,14 @@ class IMPISDEXPORT FNormal : public base::Object
 
   virtual double evaluate_derivative_sigma() const
   { return 1/sigma_ - square(FA_-FM_)/pow(sigma_,3); }
-  
+
   /* probability density function */
   virtual double density() const
-  { 
+  {
       return JA_/(sqrt(2*IMP::PI)*sigma_)*
           exp(-square(FA_-FM_)/(2*square(sigma_)));
   }
- 
+
   /* change of parameters */
   void set_FA(double f) {
     FA_=f;

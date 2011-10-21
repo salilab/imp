@@ -33,7 +33,7 @@ class IMPISDEXPORT vonMisesKappaJeffreysRestraint : public ISDRestraint
 
 public:
   //! Create the restraint.
-  vonMisesKappaJeffreysRestraint(Particle *kappa); 
+  vonMisesKappaJeffreysRestraint(Particle *kappa);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

@@ -15,11 +15,11 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Score a Scale particle with unnormalized probability 
-// \f[\frac{1}{\sigma_{q}} \exp\left(+\frac{(q-qmin)^2}{2 \sigma_q^2}\right) \f]
-// where q is between qmin and qmax.
-//     
-
+//! Score a Scale particle with unnormalized probability.
+/** \f[\frac{1}{\sigma_{q}} \exp\left(+\frac{(q-qmin)^2}{2 \sigma_q^2}\right)
+    \f]
+    where q is between qmin and qmax.
+ */
 class IMPISDEXPORT SlidingPriorRestraint : public ISDRestraint
 {
   Pointer<Particle> p_;
@@ -33,7 +33,7 @@ public:
    */
   IMP_RESTRAINT(SlidingPriorRestraint);
 
-   /* call for probability */
+  //! Call for probability
   virtual double get_probability() const
   {
     return exp(-unprotected_evaluate(NULL));
@@ -43,4 +43,4 @@ public:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_JEFFREYS_RESTRAINT_H */
+#endif  /* IMPISD_SLIDING_PRIOR_RESTRAINT_H */

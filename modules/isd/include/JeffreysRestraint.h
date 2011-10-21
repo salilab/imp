@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPISD_JEFFREYSRESTRAINT_H
-#define IMPISD_JEFFREYSRESTRAINT_H
+#ifndef IMPISD_JEFFREYS_RESTRAINT_H
+#define IMPISD_JEFFREYS_RESTRAINT_H
 
 #include "isd_config.h"
 #include <IMP/SingletonScore.h>

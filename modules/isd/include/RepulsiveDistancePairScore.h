@@ -12,7 +12,7 @@
 #include "isd_config.h"
 #include <IMP/core/XYZR.h>
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h> 
+#include <IMP/Pointer.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -26,7 +26,7 @@ class IMPISDEXPORT RepulsiveDistancePairScore : public PairScore
 {
   double x0_, k_;
 public:
-  
+
   RepulsiveDistancePairScore(double d0, double k);
 
   double get_rest_length() const {
@@ -36,7 +36,6 @@ public:
     return k_;
   }
 
-  
   IMP_SIMPLE_PAIR_SCORE(RepulsiveDistancePairScore);
 };
 

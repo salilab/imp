@@ -16,27 +16,27 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Apply a lognormal distance restraint between two particles. Marginal of the 
-// lognormal model for NOEs where only \f$\sigma\f$ was marginalized, and
-// \f$\gamma\f$ was set to 1.
-// Since the restraint is complicated, pass individual particles to
-// add_contribution() command.
-//
-/** 
-   \f[p(D|X,I) = 
-    \left(\sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}{d_i^{-6}(X)}\right)\right)^{-\frac{N}{2}}
+//! Apply a lognormal distance restraint between two particles.
+/** Marginal of the lognormal model for NOEs where only \f$\sigma\f$ was
+    marginalized, and \f$\gamma\f$ was set to 1.
+    Since the restraint is complicated, pass individual particles to
+    add_contribution() command.
+
+   \f[p(D|X,I) =
+    \left(\sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}
+                     {d_i^{-6}(X)}\right)\right)^{-\frac{N}{2}}
     \f]
 
     The source code is as follows:
     \include MarginalHBondRestraint.h
     \include MarginalHBondRestraint.cpp
-*/
+ */
 class IMPISDEXPORT MarginalHBondRestraint : public ISDRestraint
 {
-    PairContainers contribs_;
-    std::vector<double> volumes_;
-    double logsquares_;
-    void set_logsquares(double logsquares) {logsquares_=logsquares;}
+  PairContainers contribs_;
+  std::vector<double> volumes_;
+  double logsquares_;
+  void set_logsquares(double logsquares) {logsquares_=logsquares;}
 
 public:
   //! Create the restraint.

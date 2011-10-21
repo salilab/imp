@@ -1,5 +1,6 @@
 /**
- *  \file GaussianProcessInterpolationSparse.h    \brief Normal distribution of Function
+ *  \file GaussianProcessInterpolationSparse.h
+ *  \brief Normal distribution of Function
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -48,7 +49,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
       * \param(in) sample_std \f$s\f$ : vector of sample standard deviations
       * \param(in) mean_function \f$m\f$ : a pointer to the prior mean function
       *                                    to use.  Should be compatible with
-      *                                    the size of x(i).  
+      *                                    the size of x(i).
       * \param(in) covariance_function \f$w\f$: prior covariance function.
       * \param(in) cutoff : when to consider that W matrix entries are zero.
       *
@@ -64,7 +65,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
 
   /** Get posterior mean and covariance functions, at the points requested
    * Posterior mean is defined as
-   * \f[\hat{I}(x) = m(x) 
+   * \f[\hat{I}(x) = m(x)
    *        + {}^t\mathbf{w}(q)
    *        (\mathbf{W}+\mathbf{S})^{-1}
    *        (\mathbf{I}-\mathbf{m}) \f]
@@ -79,16 +80,16 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
    * \f$\mathbf{W}\f$ is the prior covariance matrix built by evaluating the
    * covariance function at each of the observations; \f$\mathbf{S}\f$ is the
    * diagonal covariance matrix built from sample_std and n_obs.
-   * 
+   *
    * Both functions will check if the mean or covariance functions have changed
-   * since the last call, and will recompute 
+   * since the last call, and will recompute
    * \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ if necessary.
    */
   double get_posterior_mean(Floats x);
-  double get_posterior_covariance(Floats x1, 
+  double get_posterior_covariance(Floats x1,
                                   Floats x2);
 
-  // call these if you called update() on the mean or covariance function. 
+  // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.
   void force_mean_update();
   void force_covariance_update();
@@ -97,7 +98,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
 
   IMP_OBJECT_INLINE(GaussianProcessInterpolationSparse,
           out << "GaussianProcessInterpolationSparse :"
-          "learning from " << M_ << " " 
+          "learning from " << M_ << " "
           << N_ << "-dimensional observations" << std::endl,
           {
           cholmod_free_factor(&L_, c_);
@@ -119,7 +120,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
   SparseMatrix<double> get_W();
   //returns updated (W+S)^{-1}
   cholmod_sparse *get_WS();
-  //returns updated cholesky factor 
+  //returns updated cholesky factor
   cholmod_factor *get_L();
   //returns updated (W+S)^{-1}(I-m)
   cholmod_dense *get_WSIm();
@@ -155,7 +156,7 @@ class IMPISDEXPORT GaussianProcessInterpolationSparse : public base::Object
     FloatsList x_; // abscissa
     Ints n_obs_; // number of observations
     // pointer to the prior mean function
-    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_; 
+    IMP::internal::OwnerPointer<UnivariateFunction> mean_function_;
     // pointer to the prior covariance function
     IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
     VectorXd I_,m_;
@@ -174,4 +175,4 @@ IMPISD_END_NAMESPACE
 
 #endif /* IMP_ISD_USE_CHOLMOD */
 
-#endif  /* IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_H */
+#endif  /* IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_SPARSE_H */

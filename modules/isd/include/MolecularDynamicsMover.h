@@ -1,6 +1,6 @@
 /**
  *  \file MolecularDynamicsMover.h
- *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy 
+ *  \brief A modifier which perturbs XYZs or Nuisances with a constant energy
  *  MD simulation.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -22,8 +22,8 @@ IMPISD_BEGIN_NAMESPACE
  */
 class IMPISDEXPORT MolecularDynamicsMover : public core::Mover
 {
-public: 
-  
+public:
+
   MolecularDynamicsMover(Model *m, unsigned nsteps=100, Float timestep=1.);
 
   MolecularDynamics * get_md() const { return md_; }
