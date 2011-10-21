@@ -12,7 +12,7 @@
 #include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
-#include <boost/math/special_functions/bessel.hpp>
+#include "internal/bessel.h"
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -120,8 +120,8 @@ class vonMisesSufficient : public base::Object
   void set_kappa(double kappa) {
     if (kappa_ != kappa) {
         kappa_ = kappa;
-        I0_ = double(boost::math::cyl_bessel_i(0, kappa));
-        I1_ = double(boost::math::cyl_bessel_i(1, kappa));
+        I0_ = internal::bessel_i0(kappa);
+        I1_ = internal::bessel_i1(kappa);
         I0N_=pow(I0_,N_);
         logterm_ = log(2*IMP::PI*I0N_);
     }
