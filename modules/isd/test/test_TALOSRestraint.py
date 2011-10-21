@@ -2,7 +2,7 @@
 
 #general imports
 from math import *
-from numpy import *
+import math
 from random import gauss,uniform,randint
 from scipy.special import i0,i1
 
@@ -41,9 +41,9 @@ class TestTALOSRestraint(IMP.test.TestCase):
         self.N=N
         self.meanv=uniform(-pi,pi)
         self.stdev=uniform(0,2*pi)
-        self.obs = array([gauss(self.meanv,self.stdev) for i in xrange(N)])
-        self.cosbar = cos(self.obs).sum()
-        self.sinbar = sin(self.obs).sum()
+        self.obs = [gauss(self.meanv,self.stdev) for i in xrange(N)]
+        self.cosbar = sum([math.cos(x) for x in self.obs])
+        self.sinbar = sum([math.sin(x) for x in self.obs])
         self.R=sqrt(self.cosbar**2+self.sinbar**2)
         R=self.R
         self.chiexp=acos(self.cosbar/R)
