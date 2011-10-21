@@ -38,7 +38,7 @@ public:
 
   void set_scale(Float d) { set_nuisance(d); }
 
-  void add_to_scale_derivative(Float d, DerivativeAccumulator &accum) 
+  void add_to_scale_derivative(Float d, DerivativeAccumulator &accum)
   {
       add_to_nuisance_derivative(d, accum);
   }
@@ -51,7 +51,7 @@ public:
   static FloatKey get_scale_key() { return get_nuisance_key(); }
 
   bool get_scale_is_optimized() const
-  { 
+  {
       return get_nuisance_is_optimized();
   }
 

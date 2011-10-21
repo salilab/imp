@@ -36,7 +36,8 @@ public:
   }
 
   static bool particle_is_instance(Particle *p) {
-    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0 && Nuisance(p).get_upper()<=1;
+    return Nuisance::particle_is_instance(p) && Nuisance(p).get_lower()>=0
+           && Nuisance(p).get_upper()<=1;
   }
 
   Float get_switching() const {
@@ -45,7 +46,7 @@ public:
 
   void set_switching(Float d) { set_nuisance(d); }
 
-  void add_to_switching_derivative(Float d, DerivativeAccumulator &accum) 
+  void add_to_switching_derivative(Float d, DerivativeAccumulator &accum)
   {
       add_to_nuisance_derivative(d, accum);
   }
@@ -58,7 +59,7 @@ public:
   static FloatKey get_switching_key() { return get_nuisance_key(); }
 
   bool get_switching_is_optimized() const
-  { 
+  {
       return get_nuisance_is_optimized();
   }
 

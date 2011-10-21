@@ -19,7 +19,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Apply an ambiguous NOE distance restraint between a number of pairs of particles.
+//! Ambiguous NOE distance restraint between a number of pairs of particles.
 /**
     The source code is as follows:
     \include AmbiguousNOERestraint.h
@@ -38,7 +38,8 @@ public:
   /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  AmbiguousNOERestraint(PairContainer *pc, Particle *sigma, Particle *gamma, double Iexp);
+  AmbiguousNOERestraint(PairContainer *pc, Particle *sigma, Particle *gamma,
+                        double Iexp);
 
   /* call for probability */
   double get_probability() const

@@ -1,5 +1,6 @@
 /**
- *  \file TALOSRestraint.h  \brief TALOS dihedral restraint between four particles.
+ *  \file TALOSRestraint.h
+ *  \brief TALOS dihedral restraint between four particles.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
@@ -19,47 +20,49 @@ IMPISD_BEGIN_NAMESPACE
 
 //! phi/psi dihedral restraint between four particles, using data from TALOS.
 /** The likelihood is
-       \f[ 
-       f(\chi_{exp}^1,\cdots,\chi_{exp)^N|\chi(X),\kappa,I) 
+       \f[
+       f(\chi_{exp}^1,\cdots,\chi_{exp)^N|\chi(X),\kappa,I)
         = \frac{1]{2\pi I_0(\kappa)^N}
         \exp \left(R_0 \kappa \cos (\chi_{exp}-\chi(X)) \right)
       \f]
-      where the sufficient statistics are \f$N\f$ the number of observations, R and \chi_{exp}.
-      \see vonMisesSufficient.h for further detail.
+    where the sufficient statistics are \f$N\f$ the number of observations,
+    R and \chi_{exp}.
+    \see vonMisesSufficient.h for further detail.
 */
-
 class IMPISDEXPORT TALOSRestraint : public Restraint
 {
 public:
 
-    /** create restraint from a list of particles and the data.
-      \param[in] p list of 4 particles that make the dihedral angle.
+  //! Create restraint from a list of particles and the data.
+  /** \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
    */
-  TALOSRestraint(Particles p, Floats data, Particle *kappa); 
+  TALOSRestraint(Particles p, Floats data, Particle *kappa);
 
-   /** create restraint from 4 particles and the data.
-      \param[in] p1 Pointer to first particle in dihedral restraint.
+  //! Create restraint from 4 particles and the data.
+  /** \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
       \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
-  */
-  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, Floats data, Particle *kappa); 
+   */
+  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
+                 Floats data, Particle *kappa);
 
-    /** create restraint from a list of particles and the sufficient statistics.
-      \param[in] p list of 4 particles that make the dihedral angle.
+  //! Create restraint from a list of particles and the sufficient statistics.
+  /** \param[in] p list of 4 particles that make the dihedral angle.
       \param[in] N Number of observations
       \param[in] R0 component on the x axis
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
-  */
-  TALOSRestraint(Particles p, unsigned N, double R0, double chiexp, Particle *kappa);
+   */
+  TALOSRestraint(Particles p, unsigned N, double R0, double chiexp,
+                 Particle *kappa);
 
-    /** create restraint from 4 particles and the sufficient statistics.
-      \param[in] p1 Pointer to first particle in dihedral restraint.
+  //! Create restraint from 4 particles and the sufficient statistics.
+  /** \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
@@ -67,12 +70,12 @@ public:
       \param[in] R0 component on the x axis
       \param[in] chiexp average observed angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
-  */
+   */
   TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
           unsigned N, double R0, double chiexp, Particle *kappa);
 
 
-  /* call for probability */
+  //! Call for probability
   double get_probability() const
   {
     return exp(-unprotected_evaluate(NULL));

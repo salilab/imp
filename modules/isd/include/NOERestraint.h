@@ -42,8 +42,8 @@ public:
   /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
    */
-  NOERestraint(Particle *p0, Particle *p1, Particle *sigma, 
-	       Particle *gamma,double Iexp);
+  NOERestraint(Particle *p0, Particle *p1, Particle *sigma,
+               Particle *gamma,double Iexp);
 
   /* call for probability */
   double get_probability() const

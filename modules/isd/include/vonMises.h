@@ -18,25 +18,24 @@ IMPISD_BEGIN_NAMESPACE
 
 //! vonMises
 /** Probability density function and -log(p) of von Mises distribution
- *  \f[ f(x|\mu,\kappa) = \f{\exp \left(\kappa \cos (x-\mu)\right)}{2\pi
- *  I_0(\kappa)} \f]
- *  This is the proper treatment for a "normally distributed" angle.
- *  When \f$\kappa\f$ becomes infinite, the distribution tends to a gaussian,
- *  and \f$\kappa = 1/\sigma^2\f$.
+    \f[ f(x|\mu,\kappa) = \f{\exp \left(\kappa \cos (x-\mu)\right)}{2\pi
+    I_0(\kappa)} \f]
+    This is the proper treatment for a "normally distributed" angle.
+    When \f$\kappa\f$ becomes infinite, the distribution tends to a gaussian,
+    and \f$\kappa = 1/\sigma^2\f$.
  */
 
 class vonMises : public base::Object
 {
- public:
- vonMises(double x, double mu, double kappa): base::Object("von Mises %1%"), x_(x),
-    mu_(mu) 
-    {
-        set_kappa(kappa);
-    }
+public:
+  vonMises(double x, double mu, double kappa)
+  : base::Object("von Mises %1%"), x_(x), mu_(mu) {
+    set_kappa(kappa);
+  }
 
   /* energy (score) functions, aka -log(p) */
-  virtual double evaluate() const 
-  { 
+  virtual double evaluate() const
+  {
       return logterm_ - kappa_*cos(x_-mu_);
   }
 
@@ -51,10 +50,10 @@ class vonMises : public base::Object
 
   /* probability density function */
   virtual double density() const
-  { 
+  {
       return exp(kappa_*cos(x_-mu_))/(2*IMP::PI*I0_);
   }
- 
+
   /* change of parameters */
   void set_x(double x) {
     x_=x;

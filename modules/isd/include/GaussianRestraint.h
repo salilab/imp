@@ -43,7 +43,7 @@ public:
   /** The restraint is a 3-particle restraint, linking together the mean,
    * observed value and variance, which can all be either Nuisances or doubles.
    * If F is the identity function, this is a gaussian (e.g. harmonic)
-   * restraint. 
+   * restraint.
    */
   GaussianRestraint(Particle *x, Particle *mu, Particle *sigma);
   GaussianRestraint(double x, Particle *mu, Particle *sigma);

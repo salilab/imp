@@ -20,10 +20,10 @@ IMPISD_BEGIN_NAMESPACE
 
 //! Add nuisance parameter to particle
 /** The value of the nuisance parameter may express data
-    or theory uncertainty. It can be initialized with or without    
-    specifying its value. Default is 1. On construction, the Nuisance is unbounded.
-    It can be bounded with set_upper and set_lower. Setting it to values outside
-    of bounds results in setting it to the bound value. 
+    or theory uncertainty. It can be initialized with or without
+    specifying its value. Default is 1. On construction, the Nuisance is
+    unbounded. It can be bounded with set_upper and set_lower. Setting it
+    to values outside of bounds results in setting it to the bound value.
  */
 class IMPISDEXPORT Nuisance: public Decorator
 {
@@ -55,8 +55,8 @@ public:
   }
 
   void set_upper(Float d);
-  
-  void set_lower(Float d); 
+
+  void set_lower(Float d);
 
   void set_nuisance(Float d);
 
@@ -72,11 +72,11 @@ public:
   static FloatKey get_nuisance_key();
 
   static FloatKey get_upper_key();
-  
+
   static FloatKey get_lower_key();
 
   bool get_nuisance_is_optimized() const
-  { 
+  {
       return get_particle()->get_is_optimized(get_nuisance_key());
   }
 

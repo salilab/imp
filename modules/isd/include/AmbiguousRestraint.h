@@ -15,9 +15,9 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Apply an ambiguous restraint by computing the d-norm.
-//  d is an integer. 
-//  If d>0, behaves like an "and" function. 
-//  If d<0, behaves like an "or" function. 
+//  d is an integer.
+//  If d>0, behaves like an "and" function.
+//  If d<0, behaves like an "or" function.
 //  Limits are fuzzy "and" (min) and fuzzy "or" (max) when d is infinite.
 /*
     The source code is as follows:

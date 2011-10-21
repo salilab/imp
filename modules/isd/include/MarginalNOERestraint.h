@@ -16,28 +16,29 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Apply an NOE distance restraint between two particles. Marginal of the NOE
-//lognormal model. Since restraint is complicated, pass individual particles to
-//add_contribution() command. Supports ambiguous NOEs and derivatives.
-//
-/** 
+//! Apply an NOE distance restraint between two particles.
+/** Marginal of the NOE lognormal model. Since restraint is complicated,
+    pass individual particles to add_contribution() command. Supports
+    ambiguous NOEs and derivatives.
+
    \f[p(D|X,I) = SS^{-\frac{N-1}{2}} \quad
-    SS = \sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}{d_i^{-6}(X) \hat{\gamma}}\right) \quad
+    SS = \sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}{d_i^{-6}(X)
+          \hat{\gamma}}\right) \quad
     \hat{\gamma} = \left(\prod_{i=1}^N \frac{V_i^{exp}}{d_i^{-6}}\right)^{1/N}
     \f]
 
     The source code is as follows:
     \include MarginalNOERestraint.h
     \include MarginalNOERestraint.cpp
-*/
+ */
 class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
 {
-    PairContainers contribs_;
-    std::vector<double> volumes_;
-    double loggammahat_;
-    void set_log_gammahat(double loggammahat) {loggammahat_=loggammahat;}
-    double SS_;
-    void set_SS(double SS) {SS_=SS;}
+  PairContainers contribs_;
+  std::vector<double> volumes_;
+  double loggammahat_;
+  void set_log_gammahat(double loggammahat) {loggammahat_=loggammahat;}
+  double SS_;
+  void set_SS(double SS) {SS_=SS;}
 
 public:
   //! Create the restraint.
