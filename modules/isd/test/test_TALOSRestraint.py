@@ -4,8 +4,6 @@
 from math import *
 import math
 from random import gauss,uniform,randint
-from scipy.special import i0,i1
-
 
 #imp general
 import IMP
@@ -117,6 +115,10 @@ class TestTALOSRestraint(IMP.test.TestCase):
 
     def testValueDKappa1(self):
         """test derivatives for kappa by varying kappa"""
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         self.p3.set_coordinates(IMP.algebra.Vector3D(0,1,-1))
         for i in xrange(100):
@@ -132,6 +134,10 @@ class TestTALOSRestraint(IMP.test.TestCase):
 
     def testValueDKappa2(self):
         """test derivatives for kappa by varying the angle"""
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         for i in xrange(100):
             x=i/(2*pi)
@@ -148,6 +154,10 @@ class TestTALOSRestraint(IMP.test.TestCase):
 
     def testValueEDist(self):
         """test energy of the restraint by varying p3"""
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         for i in xrange(100):
             x=i/(2*pi)
@@ -163,6 +173,10 @@ class TestTALOSRestraint(IMP.test.TestCase):
 
     def testValueEKappa(self):
         """test energy of the restraint by varying kappa"""
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         self.setup_restraint()
         self.p3.set_coordinates(IMP.algebra.Vector3D(0,1,-1))
         for i in xrange(100):

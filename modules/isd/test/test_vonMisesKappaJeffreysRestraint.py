@@ -2,9 +2,7 @@
 
 #general imports
 from numpy import *
-from scipy.special import i0,i1
 from random import uniform
-
 
 #imp general
 import IMP
@@ -29,6 +27,10 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
 
     def testValueP(self):
         "test probability"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)
@@ -39,6 +41,10 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
 
     def testValueE(self):
         "test if score is log(scale)"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)
@@ -49,6 +55,10 @@ class TestvonMisesKappaJeffreysRestraint(IMP.test.TestCase):
 
     def testDerivative(self):
         "test the derivative of the restraint"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         for i in xrange(100):
             no=uniform(0.1,100)
             self.kappa.set_scale(no)

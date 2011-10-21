@@ -2,7 +2,6 @@
 
 #general imports
 from numpy import *
-from scipy.special import i0,i1
 from random import uniform
 
 #imp general
@@ -26,6 +25,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValuePKappa(self):
         "test probability by changing kappa"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -40,6 +43,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValuePc(self):
         "test probability by changing c"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         R0=1.0
         no=1.0
         self.kappa.set_scale(no)
@@ -55,6 +62,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValuePR0(self):
         "test probability by changing R0"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         c=10.0
         no=1.0
         self.kappa.set_scale(no)
@@ -70,6 +81,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValueEKappa(self):
         "test energy by changing kappa"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
@@ -84,6 +99,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValueEc(self):
         "test energy by changing c"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         R0=1
         no=1.0
         self.kappa.set_scale(no)
@@ -99,6 +118,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testValueER0(self):
         "test energy by changing R0"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         c=10.0
         no=1.0
         self.kappa.set_scale(no)
@@ -114,6 +137,10 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
 
     def testDerivativeKappa(self):
         "test the derivative of the restraint by changing kappa"
+        try:
+            from scipy.special import i0,i1
+        except ImportError:
+            self.skipTest("this test requires the scipy Python module")
         c=10
         R0=1
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
