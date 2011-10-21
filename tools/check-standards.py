@@ -42,7 +42,9 @@ def check_c_file(filename, errors):
             errors.append('%s:%d: error: Line has trailing whitespace' \
                           % (filename, num+1))
         if not filename.endswith(".cpp") and line.startswith("#define ") \
-           and not line.startswith("#define IMP"):
+           and not line.startswith("#define IMP") \
+           and not line.startswith("#define EIGEN_YES_I_KNOW_SPARSE_"
+                                   "MODULE_IS_NOT_STABLE_YET"):
             found=False
             fline=line.replace("#define", "#undef")
             for (onum, oline) in enumerate(fh):
