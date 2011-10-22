@@ -434,7 +434,7 @@ class Manager(object):
         for array in self._slave_arrays:
             self._all_slaves.extend(array._get_slaves())
 
-        command = ("%s -c 'import IMP.parallel.slave_handler as s; s.main()' "
+        command = ("%s -c \"import IMP.parallel.slave_handler as s; s.main()\" "
                    "%s %d") % (self._python, self._host, self._listen_sock.port)
 
         for (num, slave) in enumerate(self._all_slaves):
