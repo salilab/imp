@@ -49,7 +49,6 @@ class DecoratorTests(IMP.test.TestCase):
         h= IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         del m
         del h
-        print IMP.Object.get_live_object_names()
         refcnt.assert_number(0)
 
     def test_rbbonded(self):
@@ -62,11 +61,6 @@ class DecoratorTests(IMP.test.TestCase):
         del m
         del h
         print "initial live"
-        try:
-            print IMP.Object.get_live_object_names()
-        except:
-            #for fast
-            pass
         while (True):
             # charm creates all sorts of things
             refcnt = IMP.test.RefCountChecker(self)

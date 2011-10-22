@@ -217,11 +217,6 @@ class RefCountTests(IMP.test.TestCase):
         del m
         del ps
         del p
-        try:
-            print "live are", IMP.Object.get_live_object_names()
-        except:
-            # we not there is fast
-            pass
         refcnt.assert_number(0)
 
 
