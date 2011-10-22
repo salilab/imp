@@ -10,7 +10,7 @@
 #include <IMP/isd/Scale.h>
 #include <IMP/isd/vonMisesKappaConjugateRestraint.h>
 #include <math.h>
-#include <boost/math/special_functions/bessel.hpp>
+#include <IMP/isd/internal/bessel.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ vonMisesKappaConjugateRestraint::vonMisesKappaConjugateRestraint(Particle *p,
 }
 
 void vonMisesKappaConjugateRestraint::update_bessel(double kappaval) {
-        //compute bessel functions
-        I0_=boost::math::cyl_bessel_i(0, kappaval);
-        I1_=boost::math::cyl_bessel_i(1, kappaval);
-        old_kappaval=kappaval;
+  //compute bessel functions
+  I0_ = internal::bessel_i0(kappaval);
+  I1_ = internal::bessel_i1(kappaval);
+  old_kappaval=kappaval;
 }
 
 double vonMisesKappaConjugateRestraint::get_kappa() const
