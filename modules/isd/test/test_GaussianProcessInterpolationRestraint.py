@@ -105,7 +105,10 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         return 2*t*exp(-(q2-q1)**2./(2*l**2))
 
     def get_dcovdsigma(self,q1,q2):
-        return 2*self.sig.get_nuisance() if abs(q1-q2)<1e-7 else 0
+        if abs(q1-q2)<1e-7:
+            return 2*self.sig.get_nuisance()
+        else:
+            return 0
 
     def get_dcovdlambda(self,q1,q2):
         t=self.tau.get_nuisance()
