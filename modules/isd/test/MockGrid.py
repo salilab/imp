@@ -7,7 +7,7 @@ example_temps = [300.0 + (600.0-300.0)*i/float(example_nreps-1) for i in
         xrange(example_nreps)]
 example_steps = [1.0 for i in xrange(example_nreps)]
 
-class MockModel():
+class MockModel:
     """fake model for a slave"""
     def __init__(self,temp):
         self.temp = temp
@@ -23,7 +23,7 @@ class MockModel():
     def set_temp(self,temp):
         self.temp = temp
 
-class MockSlave():
+class MockSlave:
     """fake slave for the grid"""
     def __init__(self,temp,mc_stepsize):
         self.temp = temp
@@ -58,14 +58,14 @@ class MockSlave():
         self.set_temp(1/(kB*state['inv_temp']))
         self.set_mc_stepsize(state['mcstep'])
 
-class MockResult():
+class MockResult:
     """fake result object for the grid"""
     def __init__(self,value):
         self.value = value
     def get(self):
         return self.value
 
-class MockGrid():
+class MockGrid:
     """fake grid to test Replica.py"""
     def __init__(self, nreps=example_nreps,
             temps=example_temps, stepsizes=example_steps):
