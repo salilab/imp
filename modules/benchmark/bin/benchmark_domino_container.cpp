@@ -63,11 +63,11 @@ int main(int , char *[]) {
 #endif
   {
     IMP_NEW(PackedAssignmentContainer, ac,("hi"));
-    benchmark_table<HDF5AssignmentContainer>(ac, "packed container");
+    benchmark_table<PackedAssignmentContainer>(ac, "packed container");
   }
   {
     IMP_NEW(ListAssignmentContainer, ac,("hi"));
-    benchmark_table<HDF5AssignmentContainer>(ac, "list container");
+    benchmark_table<ListAssignmentContainer>(ac, "list container");
   }
   return IMP::benchmark::get_return_value();
 }
