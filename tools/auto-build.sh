@@ -63,6 +63,9 @@ for path in ('imp/modules/', 'imp/applications/',
     
 f = open('$modfile', 'w')
 for m in modules:
+    # Hack for librmf->RMF renaming
+    if m == 'librmf':
+        m = 'RMF'
     print >> f, "module\t" + m
 for m in applications:
     print >> f, "application\t" + m
