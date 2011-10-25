@@ -7,7 +7,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  overview="""
 This module implements inferential scoring in \\imp, building on methods
 developed as part of the
-\external{http://http://www.isd.bio.cam.ac.uk/, Inferential Structure
+\\external{http://www.isd.bio.cam.ac.uk/, Inferential Structure
 Determination} software (ISD).
                  """,
                  publications=env.IMPStandardPublications(),
