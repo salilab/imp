@@ -308,11 +308,11 @@ on shared functionality (IMP::core or IMP::container).
 
 If you are new to programming you should check out a general python 
 introduction such as
-\external{docs.python.org/tutorial/introduction.html, the official introduction to Python} and
-\external{www.rexx.com/~dkuhlman/python_101/python_101.html, Python
+\external{http://docs.python.org/tutorial/introduction.html, the official introduction to Python} and
+\external{http://www.rexx.com/~dkuhlman/python_101/python_101.html, Python
 101}. Users who have
 programmed but are not familiar with Python should take a look at
-\external{diveintopython.org/toc/index.html, Dive into Python},
+\external{http://diveintopython.org/toc/index.html, Dive into Python},
 especially chapters 1-6, and 15-18.
 
 While effort has been made to ensure that the interfaces are the same
@@ -520,14 +520,14 @@ generate the connection between the two languages. Key differences are
 
 \section graphs 8. Graphs
 
-Graphs in \imp are represented using the \external{www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
-are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
+Graphs in \imp are represented using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
+are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph.
 
 \section fasterfaster 9. Making IMP run faster
 
-Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{developer.apple.com/tools/sharkoptimize.html,Shark} and \external{developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
+Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{http://developer.apple.com/tools/sharkoptimize.html,Shark} and \external{http://developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{http://www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
 
 Once you know where your application is spending its time, we provide a number of facilities to speed up \imp computations. These include:
 
