@@ -200,12 +200,12 @@ Notes on how to work around various platform issues can be found at
 Mac users must first install Xcode (previously known as Developer Tools)
 which is not installed by default with OS X, but is available on the OS X
 DVD. Newer versions of Xcode
-\external{developer.apple.com/technologies/xcode.html,are also available}
+\external{http://developer.apple.com/technologies/xcode.html,are also available}
 from the App Store (the cost is $5).
 
 Then Mac users should use one of the available collections of Unix tools,
-either \external{www.macports.org/, MacPorts} (recommended) or
-\external{www.finkproject.org/, Fink}. If you use MacPorts, you must
+either \external{http://www.macports.org/, MacPorts} (recommended) or
+\external{http://www.finkproject.org/, Fink}. If you use MacPorts, you must
 add \c /opt/local/bin to your path (either by modifying your shell's
 config file or by making an \c environment.plist file-see the
 \salilab{imp/wiki/FAQ, FAQ}) and then do
@@ -244,9 +244,9 @@ better functionality.
 
 \subsubsection doxygen Doxygen and Dot
 \anchor doxygen
-Building the documentation requires \external{www.doxygen.org/,Doxygen}.
+Building the documentation requires \external{http://www.doxygen.org/,Doxygen}.
 In addition the documentation will look prettier if you have
-\external{www.graphviz.org/,graphviz} installed. It is available as
+\external{http://www.graphviz.org/,graphviz} installed. It is available as
 part of most Unix tool sets (MacPorts, all Linux distributions etc.).
 
 \subsubsection modeller MODELLER
@@ -259,7 +259,7 @@ using the following argument:
 
 \subsubsection HDF5 HDF5
 \anchor HDF5
-Much IO support requires \external{www.hdf5.org, HDF5}.
+Much IO support requires \external{http://www.hdf5.org, HDF5}.
 It is available as a prebuilt package on all supported platforms.
 
 \subsubsection CGAL CGAL
@@ -271,7 +271,7 @@ is free for academic use, but commercial use requires a license.
 
 \subsubsection ANN ANN
 \anchor ANN
-\external{www.cs.umd.edu/~mount/ANN, ANN} is a library implementing fast
+\external{http://www.cs.umd.edu/~mount/ANN, ANN} is a library implementing fast
 nearest neighbor searches. Certain data structures will be faster if
 it is installed. While compilation of the library from source is quite
 straight forward, it is not avaible as a package for common platforms.
@@ -280,7 +280,7 @@ library. See the \salilab{imp/wiki/FAQ, FAQ}.
 
 \subsubsection GSL GSL
 \anchor GSL
-The IMP.gsl module requires \external{www.gnu.org/software/gsl/,GSL}. It
+The IMP.gsl module requires \external{http://www.gnu.org/software/gsl/,GSL}. It
 is available as a prebuilt package on all supported platforms. Note that
 GSL is distributed under the GPL and so cannot be used in C++ applications
 with certain other dependencies such as CGAL.

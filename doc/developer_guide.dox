@@ -55,7 +55,7 @@ This creates a new module in the \c modules directory, complete with
 %example code.
 
 We highly recommend using a revision control system such as
-\svn or \external{git-scm.com/,
+\svn or \external{http://git-scm.com/,
 GIT} to keep track of changes to your module.
 
 If, instead, you choose to add code to an existing module you need to
@@ -220,7 +220,7 @@ characters.
     column output without tabs.
 
     All Python code should conform to the
-    \external{www.python.org/dev/peps/pep-0008/, Python style guide}.
+    \external{http://www.python.org/dev/peps/pep-0008/, Python style guide}.
     In essence this
     translates to 4-space indents, no tabs, and similar class, method
     and variable naming to the C++ code. You can ensure that your
@@ -322,7 +322,7 @@ As a result, such functions do not need to obey all the coding conventions
 \section docs Documenting your code
 
 \imp is documented using \doxygen. See
-\external{www.doxygen.nl/docblocks.html, documenting source code with doxygen}
+\external{http://www.doxygen.nl/docblocks.html, documenting source code with doxygen}
 to get started. We use \c //! and \c /** ... * / blocks for documentation.
 
 Python code should provide Python doc strings.
@@ -354,8 +354,8 @@ or \c \\commandname if there are no arguments.
 
 - To produce a link to the outside world do
     \verbatim
-    \external{boost.org, Boost}\endverbatim
-    produces \external{boost.org, Boost}
+    \external{http://boost.org, Boost}\endverbatim
+    produces \external{http://boost.org, Boost}
 
 - When writing the name \imp do
     \verbatim
@@ -718,9 +718,9 @@ also to python.
 
 Two excellent sources for general C++ coding guidelines are
 
-    - \external{www.amazon.com/Coding-Standards-Rules-Guidelines-Practices/dp/0321113586, C++ Coding Standards} by Sutter and Alexandrescu
+    - \external{http://www.amazon.com/Coding-Standards-Rules-Guidelines-Practices/dp/0321113586, C++ Coding Standards} by Sutter and Alexandrescu
 
-    - \external{www.amazon.com/Effective-Specific-Addison-Wesley-Professional-Computing/dp/0201924889, Effective C++} by Meyers
+    - \external{http://www.amazon.com/Effective-Specific-Addison-Wesley-Professional-Computing/dp/0201924889, Effective C++} by Meyers
 
 \imp endeavors to follow all the of the guidelines published in those
 books. The Sali lab owns copies of both of these books that you
