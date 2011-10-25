@@ -21,18 +21,34 @@ class SimpleExcludedVolumeTests(IMP.test.TestCase):
         for mh in mhs:
             ps.append(mh.get_particle())
 
-        rbs = IMP.restrainer.set_rigid_bodies(mhs)
-        # Set radius of each atom for excluded volume
-        for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
-            d= IMP.core.XYZR(p.get_particle())
-            d.set_radius(1)
-
-        # Randomize the position of each chain
-        for p in ps:
-            d= IMP.core.XYZ(p)
-            d.set_coordinates(IMP.algebra.get_random_vector_in(
+        # Randomize position of the first particle
+        t0 = IMP.algebra.Transformation3D(
+            IMP.algebra.get_identity_rotation_3d(),
+            IMP.algebra.get_random_vector_in(
                     IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                               IMP.algebra.Vector3D(20,20,20))))
+        for p in IMP.core.get_leaves(p0):
+            d= IMP.core.XYZR(p.get_particle())
+            d.set_radius(1)
+            coords = t0.get_transformed(d.get_coordinates())
+            d.set_coordinates(coords)
+
+        # Randomize position of the second particle
+        t1 = IMP.algebra.Transformation3D(
+            IMP.algebra.get_identity_rotation_3d(),
+            IMP.algebra.get_random_vector_in(
+                    IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                              IMP.algebra.Vector3D(20,20,20))))
+        for p in IMP.core.get_leaves(p1):
+            d= IMP.core.XYZR(p.get_particle())
+            d.set_radius(1)
+            coords = t1.get_transformed(d.get_coordinates())
+            d.set_coordinates(coords)
+
+
+        # Setup rigid bodies
+        rbs = IMP.restrainer.set_rigid_bodies(mhs)
+
         return m, mhs, rbs
 
     def optimize_system(self, m, mhs, simple_exvol):
