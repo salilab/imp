@@ -25,18 +25,18 @@ The input files in the \imp directory are structured as follows:
    - \c include contains the C++ header files
    - \c src contains the C++ source files
    - \c bin contains C++ source files each of which is built into an executable
-   - \c pyext contains files defining the python interface to the module as well as python source files (in \c pyext/src)
+   - \c pyext contains files defining the Python interface to the module as well as Python source files (in \c pyext/src)
    - \c test contains test files. When \c scons \c test or \c scons \c name-test is run each file in this directory named \c test_ is executed (after being built if it is a .cpp file) 
    - \c doc contains the overview documentation for the file (in the \c SConscript file) as well as any other documentation that is provided via \c .dox files
-   - \c examples contains examples, in python as well as any data needed for examples
+   - \c examples contains examples, in Python as well as any data needed for examples
    - \c data contains any data files needed by the module
 
 When \imp is built, the \c build directory is created and filled with
 the results of the build. \c build contains a number of
 subdirectories. They are
  - \c include which includes all the headers. The headers for the \c kernel are placed in \c include/IMP and those for module \c name are placed in \c include/IMP/name
- - \c lib where the C++ and python libraries are placed. Module \c name is built into a C++ library \c lib/libimp_name.so (or \c .dylib on a mac) and a python library
-   with python files located in \c lib/IMP/name and the binary part in \c lib/_IMP_name.so.
+ - \c lib where the C++ and Python libraries are placed. Module \c name is built into a C++ library \c lib/libimp_name.so (or \c .dylib on a mac) and a Python library
+   with Python files located in \c lib/IMP/name and the binary part in \c lib/_IMP_name.so.
  - \c doc where the html documentation is placed in \c doc/html and the examples in \c doc/examples with a subdirectory for each module
  - \c data where each module gets a subdirectory for its data.
 
@@ -44,7 +44,7 @@ Unfortunately, various intermediate files from the build are scattered throughou
 and \c kernel hierarchies. This messiness is part of the reason we strongly recommend doing an
 \ref devbuild "out of source build".
 
-When \imp is installed, the structure from the \c build directory is moved over more or less intact except that the C++ and python libraries are put in the (different) appropriate locations.
+When \imp is installed, the structure from the \c build directory is moved over more or less intact except that the C++ and Python libraries are put in the (different) appropriate locations.
 
 
 \section usage Writing new functions and classes
@@ -142,7 +142,7 @@ When writing C++ code that depends on extern, surround it with
 some code using extern
 #endif
 \endcode
-And when writing python code check if \c IMP.mymodule.use_extern is \c True.
+And when writing Python code check if \c IMP.mymodule.use_extern is \c True.
 
 Each module has an auto-generated header called \c modulename_config.h. This header
 contains basic definitions needed for the module and should be included (first) in each
@@ -172,15 +172,15 @@ The second is logging macros such as:
 - IMP_LOG() which allows controlled display of messages about what the
   code is doing. See \ref log "logging" for more information.
 
-Finally, each module has a set of unit tests. These are python scripts
-which test the behavior of a particular piece of the modules API. The
+Finally, each module has a set of unit tests. These are Python scripts
+which test the behavior of a particular piece of the module's API. The
 scripts are located in the \c modules/modulename/test directory.
 These tests should try, as much as possible to provide independent
 verification of the correctness of the C++ code. The command
 \command{scons test} or \command{scons modulename-test} run all modules unit
 tests or only those for the module \c modulename, respectively. Any
 file in that directory or a subdirectory whose name matches \c
-test_*.py is considered a test. The python files are scanned for
+test_*.py is considered a test. The Python files are scanned for
 classes which inherit from \c IMP.test.TestCase. For each such class
 found, any method whose name starts with \c test_ is run.
 
@@ -311,7 +311,7 @@ include directory \c modulename/internal. Any function which is
 should be declared in an internal header and placed in the internal namespace.
 
 The functionality in such internal headers is
- - not exported to python
+ - not exported to Python
  - and not part of of documented API
 
 As a result, such functions do not need to obey all the coding conventions
@@ -531,7 +531,7 @@ Note that the restraints is free to put anything into to particle derivative and
 \section examples Writing Examples
 
 Writing examples is very important part of being an \imp developer and
-one of the best ways to help people use your code. To write a (python)
+one of the best ways to help people use your code. To write a (Python)
 example, create a file \c myexample.py in the example directory of an
 appropriate module, along with a file \c myexample.readme. The readme
 should provide a brief overview of what the code in the module is
@@ -540,7 +540,7 @@ it uses.
 
 When writing examples, one should try (as appropriate) to do the following:
 -# begin the example with \c import lines for the \imp modules used
--# have parameters describing the process taking place. These include names of pdb files, the resolution to perform computations at etc.
+-# have parameters describing the process taking place. These include names of PDB files, the resolution to perform computations at etc.
 -# define a function \c create_representating which creates and returns the model with the needed particles along with a data structure so that key particles can be located. It should define nested functions as needed to encapsulate commonly used code
 -# define a function \c create_restraints which creates the  restraints to score conformations of the representation
 -# define a function \c get_conformations to perform the sampling
@@ -581,15 +581,15 @@ The example should have enough comments that the reasoning behind each line of c
     - add C++ code to your module by putting \string{.h} files
       in \string{modules/my_module/include} and \string{.cpp} files in
       \string{modules/my_module/src}. In order to use use your new functions and
-      classes in python, you must add a line 
+      classes in Python, you must add a line 
       \string{%include "IMP/my_module/myheader.h"} near the end of the file
       \string{modules/my_module/pyext/my_module.i}.
     - write C++ programs using \imp by creating \string{.cpp} files in
       \string{modules/my_module/bin}. Each \string{.cpp} file placed there
       is built into a separate executable.
-    - add python code to your library by putting a \string{.py} file in
+    - add Python code to your library by putting a \string{.py} file in
       \string{modules/my_module/pyext/my_module/}
-    - add python code to your library by by adding
+    - add Python code to your library by by adding
       \string{%pythoncode} blocks to \string{modules/my_module/pyext/my_module.i}.
     - add test code to your library by putting \string{.py} files in
       \string{modules/my_module/test} or a subdirectory.
@@ -712,7 +712,7 @@ In order to make it more likely that your code works on all the supported platfo
 \section cpp Good programming practices
 
 The contents of this page are aimed at C++ programmers, but most apply
-also to python.
+also to Python.
 
 \subsection coding General resources
 
@@ -772,7 +772,7 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
 
     \code
     #include <IMP/mymodule/mymodule_exports.h>
-    #include <IMP/mymodlule/MyRestraint.h>
+    #include <IMP/mymodule/MyRestraint.h>
     #include <IMP/Restraint.h>
     #include <vector>
     \endcode
@@ -808,8 +808,7 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
           state. If there is more than one way, anyone who writes
           library code which uses that type of state has to handle all
           ways.  For %example, there is only one scheme for
-          representing proteins, namely the
-          IMP::atom::MolecularHierarchyDecorator.       
+          representing proteins, namely the IMP::atom::Hierarchy.       
         - Each class/method should do exactly one thing. The presence
           of arguments which dramatically change the behavior of the
           class/method is a sign that it should be split. Splitting
@@ -822,26 +821,26 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
           easy for a user to mix up the order of arguments and the compiler will
           not complain. \c int and \c double count as
           equivalent types for this rule since the compiler will
-          transparent convert an \c int into a \c double.
+          transparently convert an \c int into a \c double.
 
 
-\section swig Exporting code to python
+\section swig Exporting code to Python
 
-\imp uses SWIG to wrap code C++ code and export it to Python. Since swig is
+\imp uses SWIG to wrap code C++ code and export it to Python. Since SWIG is
 relatively complicated, we provide a number of helper macros and an example
-file (see modules/example/python/swig.i-in). The key bits are
-- the information goes into a file called swig.i-in in the module python directory
+file (see modules/example/pyext/swig.i-in). The key bits are
+- the information goes into a file called swig.i-in in the module pyext directory
 - the first part should be one \c IMP_SWIG_VALUE(), \c IMP_SWIG_OBJECT() or
   \c IMP_SWIG_DECORATOR() line per value type, object type or decorator object
-  the module exports to python. Each of these lines looks like
+  the module exports to Python. Each of these lines looks like
   \code
   IMP_SWIG_VALUE(IMP::module_namespace, ClassName, ClassNames);
   \endcode
 - then there should be a number of \c %include lines, one per header file
-  in the module which exports a class or function to python. The header files
+  in the module which exports a class or function to Python. The header files
   must be in order such that no class is used before a declaration for it
-  is encountered (swig does not search \c #include files for the \c %include headers)
-- finally, any templates that are to be exported to swig must have a
+  is encountered (SWIG does not search \c #include files for the \c %include headers)
+- finally, any templates that are to be exported to SWIG must have a
   \c %template call. It should look something like
   \code
   namespace IMP {
