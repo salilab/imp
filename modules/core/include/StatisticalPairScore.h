@@ -23,7 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
     as a template argument are used to determine how to map the names of
     the types as described in the loaded file to indexes. That is, if
     atom::ResidueKey is passed as the Keys, the potential will expect a file
-    which has lines one per each pair of residue names.
+    which has one line for each pair of residue names.
 
     The expected file format is:
 \verbatim
@@ -34,7 +34,8 @@ IMPCORE_BEGIN_NAMESPACE
 
     The order of the lines (after the first one) does not matter.
     The bin_width is how much distance is allocated per bin (the distance used
-    is that between the points).
+    is that between the points). number_a and number_b are the numbers of
+    particle types (number_b should only be specified if BIPARTITE is set).
 
     \note The values read in the file are for bins. That is, the first bin
     is from offset to offset+width. The second is offset+width to offset+
@@ -44,11 +45,11 @@ IMPCORE_BEGIN_NAMESPACE
 
     \param[in] Key is an IMP::Key which maps between names and indices
     \param[in] BIPARTITE If true, the two sets of particles being stored are
-    difference (eg a protein atom and a ligand atom), otherwise they are
-    assumed to both be the same. Appropriate value must be provided
+    different (e.g. a protein atom and a ligand atom), otherwise they are
+    assumed to both be the same. Appropriate values must be provided
     in the file.
     \param[in] INTERPOLATE If true, even the scores without derivatives are
-    spline interpolated. If false, only the evaluates with derivatives are
+    spline interpolated. If false, only the evaluation of derivatives is
     interpolated with a spline.
 */
 template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
