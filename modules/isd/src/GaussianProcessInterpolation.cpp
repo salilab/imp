@@ -246,9 +246,15 @@ IMPISD_BEGIN_NAMESPACE
 }
 
 unsigned
-GaussianProcessInterpolation::get_number_of_optimized_m_particles() const
+GaussianProcessInterpolation::get_number_of_m_particles() const
 {
-    return mean_function_->get_number_of_optimized_particles();
+    return mean_function_->get_number_of_particles();
+}
+
+bool
+GaussianProcessInterpolation::get_m_particle_is_optimized(unsigned i) const
+{
+    return mean_function_->get_particle_is_optimized(i);
 }
 
 VectorXd GaussianProcessInterpolation::get_m_derivative(unsigned particle) const
@@ -260,13 +266,6 @@ void GaussianProcessInterpolation::add_to_m_particle_derivative(
         unsigned particle, double value, DerivativeAccumulator &accum)
 {
     mean_function_->add_to_particle_derivative(particle, value, accum);
-}
-
-unsigned
-GaussianProcessInterpolation::get_number_of_optimized_Omega_particles() const
-{
-    //sigma is optimized locally
-    return covariance_function_->get_number_of_optimized_particles() + 1;
 }
 
 MatrixXd GaussianProcessInterpolation::get_Omega()
@@ -289,6 +288,24 @@ void GaussianProcessInterpolation::compute_Omega()
 {
     //sigma_val_ is up-to-date because update_flags_covariance was just called
     Omega_ = get_W() + sigma_val_ * MatrixXd(get_S())/n_obs_;
+}
+
+unsigned
+GaussianProcessInterpolation::get_number_of_Omega_particles() const
+{
+    //sigma is optimized locally
+    return covariance_function_->get_number_of_particles() + 1;
+}
+
+bool
+GaussianProcessInterpolation::get_Omega_particle_is_optimized(unsigned i) const
+{
+    //sigma is optimized locally
+    if (i==0) {
+        return Scale(sigma_).get_nuisance_is_optimized();
+    } else {
+        return covariance_function_->get_particle_is_optimized(i-1);
+    }
 }
 
 MatrixXd
