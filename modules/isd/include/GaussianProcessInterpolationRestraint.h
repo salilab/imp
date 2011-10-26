@@ -1,6 +1,6 @@
 /**
- *  \file GaussianProcessInterpolation.h
- *  \brief Normal distribution of Function
+ *  \file GaussianProcessInterpolationRestraint.h
+ *  \brief Restraint and ScoreState for GaussianProcessInterpolation
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -19,6 +19,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
 
+#include <IMP/ScoreState.h>
+
 
 IMPISD_BEGIN_NAMESPACE
 #ifndef SWIG
@@ -26,6 +28,8 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using Eigen::RowVectorXd;
 #endif
+
+class GaussianProcessInterpolationScoreState;
 
 //! gaussian process restraint
 /* the restraint is a multivariate normal distribution on the vector of
@@ -40,8 +44,8 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
    private:
         IMP::Pointer<GaussianProcessInterpolation> gpi_;
-        IMP::internal::OwnerPointer<MultivariateFNormalSufficient>
-            mvn_;
+        IMP::internal::OwnerPointer<MultivariateFNormalSufficient> mvn_;
+        IMP::internal::OwnerPointer<GaussianProcessInterpolationScoreState> ss_;
         //number of observation points
         unsigned M_;
 
@@ -54,10 +58,10 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         GaussianProcessInterpolationRestraint(
                 GaussianProcessInterpolation *gpi);
 
+        //to call this, you need to update the scorestate before.
+        //calling model.evaluate(False) is enough.
         double get_probability() const
         {
-            const_cast<GaussianProcessInterpolationRestraint*>(this)->
-                update_mean_and_covariance();
             return mvn_->density();
         }
 
@@ -71,6 +75,27 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
         IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
 
+        //needed to register the score state
+        void set_model(Model *m);
+
+        //to allow the scorestate to get the restraint's objects
+        friend class GaussianProcessInterpolationScoreState;
+
+};
+
+class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
+{
+    private:
+        IMP::Pointer<GaussianProcessInterpolationRestraint> gpir_;
+
+    private:
+        GaussianProcessInterpolationScoreState(
+                GaussianProcessInterpolationRestraint *gpir) : gpir_(gpir) {}
+
+    public:
+        //only the GPIR can create this and add it to the model
+        friend class GaussianProcessInterpolationRestraint;
+        IMP_SCORE_STATE(GaussianProcessInterpolationScoreState);
 };
 
 IMPISD_END_NAMESPACE
