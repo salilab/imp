@@ -100,6 +100,22 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void force_mean_update();
   void force_covariance_update();
 
+  //returns the number of particles that control m's values.
+  //public for testing purposes
+  unsigned get_number_of_m_particles() const;
+
+  //returns true if a particle is optimized
+  //public for testing purposes
+  bool get_m_particle_is_optimized(unsigned i) const;
+
+  //returns the number of particles that control Omega's values.
+  //public for testing purposes
+  unsigned get_number_of_Omega_particles() const;
+
+  //returns true if a particle is optimized
+  //public for testing purposes
+  bool get_Omega_particle_is_optimized(unsigned i) const;
+
   friend class GaussianProcessInterpolationRestraint;
   friend class GaussianProcessInterpolationScoreState;
 
@@ -110,8 +126,6 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   VectorXd get_I() const {return I_;}
   //returns updated prior mean vector
   VectorXd get_m();
-  //returns the number of particles that control m's values and that are active.
-  unsigned get_number_of_optimized_m_particles() const;
   //returns dm/dparticle
   VectorXd get_m_derivative(unsigned particle) const;
   // returns updated prior covariance vector
@@ -128,8 +142,6 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   MatrixXd get_W();
   //returns Omega=(W+S/N)
   MatrixXd get_Omega();
-  //returns the number of particles that control m's values.
-  unsigned get_number_of_optimized_Omega_particles() const;
   //returns dOmega/dparticle
   MatrixXd get_Omega_derivative(unsigned particle) const;
   // returns updated prior covariance vector

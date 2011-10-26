@@ -62,22 +62,28 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     {
         //derivatives for mean particles
         VectorXd dmv = mvn_->evaluate_derivative_FM();
-        unsigned npart=gpi_->get_number_of_optimized_m_particles();
+        unsigned npart=gpi_->get_number_of_m_particles();
+        //std::cout << "derivs: ";
         for (unsigned i=0; i<npart; i++)
         {
+            if (!gpi_->get_m_particle_is_optimized(i)) continue;
             VectorXd dmean = gpi_->get_m_derivative(i);
             double tmp = dmv.transpose()*dmean;
+            //std::cout << i << " = " << tmp << " ";
             gpi_->add_to_m_particle_derivative(i, tmp, *accum);
         }
         //derivatives for covariance particles
         MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
-        npart=gpi_->get_number_of_optimized_Omega_particles();
+        npart=gpi_->get_number_of_Omega_particles();
         for (unsigned i=0; i<npart; i++)
         {
+            if (!gpi_->get_Omega_particle_is_optimized(i)) continue;
             MatrixXd dcov = gpi_->get_Omega_derivative(i);
             double tmp = (dmvS.transpose()*dcov).trace();
+            //std::cout << i+2 << " = " << tmp << " ";
             gpi_->add_to_Omega_particle_derivative(i, tmp, *accum);
         }
+        //std::cout << std::endl;
     }
     double ene = mvn_->evaluate();
 
@@ -139,6 +145,13 @@ void GaussianProcessInterpolationScoreState::do_before_evaluate()
         IMP_LOG(TERSE, " updated covariance");
     }
     IMP_LOG(TERSE, std::endl);
+    /*ParticlesTemp tmp(gpir_->get_input_particles());
+    std::cout << "values: ";
+    for (unsigned i=0; i<tmp.size(); i++)
+    {
+        std::cout << i << " = " << Scale(tmp[i]).get_nuisance() << " ";
+    }
+    std::cout <<std::endl;*/
 }
 
 void GaussianProcessInterpolationScoreState::do_after_evaluate(
