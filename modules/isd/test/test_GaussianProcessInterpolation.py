@@ -33,10 +33,10 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         self.mean = Linear1DFunction(self.alpha,self.beta)
         self.tau = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig = Scale.setup_particle(IMP.Particle(self.m), 0.0)
-        self.cov = Covariance1DFunction(self.tau, self.lam, self.sig)
+        self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
+        self.cov = Covariance1DFunction(self.tau, self.lam)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
-                self.err, self.N, self.mean, self.cov)
+                self.err, self.N, self.mean, self.cov, self.sig)
 
     def get_I(self, q):
         a=self.alpha.get_nuisance()
@@ -157,35 +157,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         if skipnan > 10: # less than 10%
             self.fail("too much NANs")
 
-    @IMP.test.expectedFailure #("need to update test mean function")
-    def testValuePosteriorMeanSigma(self):
-        """
-        test the value of the posterior mean function between 0 and 1 by
-        changing sigma
-        """
-        skipnan =0
-        for s in linspace(0.01,10,num=10):
-            self.sig.set_nuisance(s)
-            #fl=open('out%d'%(int(s)),'w')
-            for q in linspace(0,1,num=10):
-                #print "posterior mean sigma=",s,"q=",q
-                observed = self.gpi.get_posterior_mean([q])
-                expected = self.get_I(q)
-                if isnan(expected):
-                    skipnan += 1
-                    continue
-                #print "PYTHON:",q,s,observed,expected
-                #fl.write(' '.join(['%G' % i for i in [q,s,observed,expected]]))
-                #fl.write('\n')
-                if expected != 0:
-                    self.assertAlmostEqual(observed/expected
-                        ,1.0,delta=0.001)
-                else:
-                    self.assertAlmostEqual(observed,expected
-                        ,delta=0.001)
-        if skipnan > 10: # less than 10%
-            self.fail("too much NANs")
-
     def testValuePosteriorCovarianceTau(self):
         """
         test the value of the posterior covariance function between 0 and 1 by
@@ -228,38 +199,6 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                     #print "PYTHON:",q1,q2,t,observed,expected
                     #fl.write(' '.join(['%G' % i
                     #    for i in [q1,q2,l,observed,expected]]))
-                    #fl.write('\n')
-                    #continue
-                    if isnan(expected):
-                        skipnan += 1
-                        continue
-                    if expected != 0:
-                        self.assertAlmostEqual(observed/expected
-                            ,1.0,delta=0.001)
-                    else:
-                        self.assertAlmostEqual(observed,expected
-                            ,delta=0.001)
-        if skipnan > 100: # less than 10%
-            self.fail("too much NANs")
-
-    @IMP.test.expectedFailure #("need to update test covariance function")
-    def testValuePosteriorCovarianceSigma(self):
-        """
-        test the value of the posterior covariance function between 0 and 1 by
-        changing sigma
-        """
-        skipnan = 0
-        for s in linspace(0.01,10,num=10):
-            self.sig.set_nuisance(s)
-            #fl=open('out%d'%(int(s)),'w')
-            for q1 in linspace(0,1,num=10):
-                for q2 in linspace(0,1,num=10):
-                    #print "posterior mean sigma=",s,"q1=",q1,"q2=",q2
-                    observed = self.gpi.get_posterior_covariance([q1],[q2])
-                    expected = self.get_cov(q1,q2)
-                    #print "PYTHON:",q1,q2,t,observed,expected
-                    #fl.write(' '.join(['%G' % i
-                    #    for i in [q1,q2,s,observed,expected]]))
                     #fl.write('\n')
                     #continue
                     if isnan(expected):

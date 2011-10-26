@@ -1,7 +1,7 @@
 /**
  *  \file GaussianProcessInterpolationRestraint.cpp
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/isd/GaussianProcessInterpolationRestraint.h>
@@ -30,58 +30,53 @@ GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
     // nobs, sample variance, true variance
     mvn_ = new MultivariateFNormalSufficient(
             gpi_->get_I(), 1.0, gpi_->get_m(),
-            1, Eigen::VectorXd::Zero(M_), gpi_->get_Omega());
+            1, Eigen::MatrixXd::Zero(M_,M_), gpi_->get_Omega());
     mvn_->set_use_cg(false,0.0);
     IMP_LOG(TERSE, "GPIR: done init" << std::endl);
 }
 
-void GaussianProcessInterpolationRestraint::update_mean_and_covariance()
+void GaussianProcessInterpolationRestraint::set_model(Model *m)
 {
-    IMP_LOG(TERSE, "GPIR: update_mean_and_covariance" << std::endl);
-    gpi_->update_flags_covariance();
-    gpi_->update_flags_mean();
-    if (!(gpi_->flag_m_gpir_))  // gpi says that our m is not up to date
-    {
-        mvn_->set_FM(gpi_->get_m());
-        gpi_->flag_m_gpir_ = true;
-        IMP_LOG(TERSE, " updated mean");
+    if (m) {
+        IMP_LOG(TERSE, "GPIR: registering the model and scorestate"<<std::endl);
+        Model *m = gpi_->sigma_->get_model();
+        ss_ = new GaussianProcessInterpolationScoreState(this);
+        m->add_score_state(ss_);
+    } else {
+        if (ss_) {
+            Model *m = gpi_->sigma_->get_model();
+            m->remove_score_state(ss_);
+            ss_=nullptr;
+        }
     }
-    if (!(gpi_->flag_W_gpir_))
-    {
-        mvn_->set_Sigma(gpi_->get_W());
-        gpi_->flag_W_gpir_ = true;
-        IMP_LOG(TERSE, " updated covariance");
-    }
-    IMP_LOG(TERSE, std::endl);
+    Restraint::set_model(m);
 }
 
 double GaussianProcessInterpolationRestraint::unprotected_evaluate(
         DerivativeAccumulator *accum) const
 {
-    //check if the functions have changed
-    const_cast<GaussianProcessInterpolationRestraint*>(this)->
-        update_mean_and_covariance();
+    //the functions are all up-to-date since
+    //the ScoreState has taken care of this
 
     if (accum)
     {
-        VectorXd dmv = mvn_->evaluate_derivative_FM();
         //derivatives for mean particles
-        MatrixXd dmean = gpi_->mean_function_->get_derivative_matrix(gpi_->x_);
-        RowVectorXd meanprod = dmv.transpose()*dmean;
-        unsigned npart=meanprod.cols(); //should be 2 for Linear1DFunction
-        for (unsigned i=0; i<meanprod.cols(); i++)
-            gpi_->mean_function_->add_to_particle_derivative(i, meanprod(i),
-                    *accum);
-        //derivatives for covariance particles
-        MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
-        npart = gpi_->covariance_function_->get_number_of_particles();
+        VectorXd dmv = mvn_->evaluate_derivative_FM();
+        unsigned npart=gpi_->get_number_of_optimized_m_particles();
         for (unsigned i=0; i<npart; i++)
         {
-            MatrixXd dcov =
-                gpi_->covariance_function_->get_derivative_matrix(i, gpi_->x_);
-            double val = (dmvS.transpose()*dcov).trace();
-            gpi_->covariance_function_->add_to_particle_derivative(i, val,
-                    *accum);
+            VectorXd dmean = gpi_->get_m_derivative(i);
+            double tmp = dmv.transpose()*dmean;
+            gpi_->add_to_m_particle_derivative(i, tmp, *accum);
+        }
+        //derivatives for covariance particles
+        MatrixXd dmvS = mvn_->evaluate_derivative_Sigma();
+        npart=gpi_->get_number_of_optimized_Omega_particles();
+        for (unsigned i=0; i<npart; i++)
+        {
+            MatrixXd dcov = gpi_->get_Omega_derivative(i);
+            double tmp = (dmvS.transpose()*dcov).trace();
+            gpi_->add_to_Omega_particle_derivative(i, tmp, *accum);
         }
     }
     double ene = mvn_->evaluate();
@@ -95,6 +90,7 @@ GaussianProcessInterpolationRestraint::get_input_particles() const
     ParticlesTemp ret;
     ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
     ret.insert(ret.end(),ret1.begin(),ret1.end());
+    ret.push_back(gpi_->sigma_);
     ParticlesTemp ret2 = gpi_->covariance_function_->get_input_particles();
     ret.insert(ret.end(),ret2.begin(),ret2.end());
     return ret;
@@ -115,6 +111,60 @@ void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
 {
     out << "GaussianProcessInterpolationRestraint on "
         << get_input_particles().size() << " particles" << std::endl;
+}
+
+
+
+
+void GaussianProcessInterpolationScoreState::do_before_evaluate()
+{
+    IMP_LOG(TERSE, "GPISS: do_before_evaluate()" << std::endl);
+    GaussianProcessInterpolation *gpi_;
+    gpi_ = gpir_->gpi_;
+    MultivariateFNormalSufficient *mvn_;
+    mvn_ = gpir_->mvn_;
+    //
+    gpi_->update_flags_covariance();
+    gpi_->update_flags_mean();
+    if (!(gpi_->flag_m_gpir_))  // gpi says that our m is not up to date
+    {
+        mvn_->set_FM(gpi_->get_m());
+        gpi_->flag_m_gpir_ = true;
+        IMP_LOG(TERSE, " updated mean");
+    }
+    if (!(gpi_->flag_Omega_gpir_))
+    {
+        mvn_->set_Sigma(gpi_->get_Omega());
+        gpi_->flag_Omega_gpir_ = true;
+        IMP_LOG(TERSE, " updated covariance");
+    }
+    IMP_LOG(TERSE, std::endl);
+}
+
+void GaussianProcessInterpolationScoreState::do_after_evaluate(
+        DerivativeAccumulator *) {
+}
+
+ContainersTemp
+GaussianProcessInterpolationScoreState::get_input_containers() const {
+  return gpir_->get_input_containers();
+}
+ContainersTemp
+GaussianProcessInterpolationScoreState::get_output_containers() const {
+  return ContainersTemp();
+}
+ParticlesTemp
+GaussianProcessInterpolationScoreState::get_input_particles() const {
+  return gpir_->get_input_particles();
+}
+ParticlesTemp
+GaussianProcessInterpolationScoreState::get_output_particles() const {
+  return ParticlesTemp();
+}
+
+void GaussianProcessInterpolationScoreState::do_show(std::ostream &out) const
+{
+    out << "GPI score state" << std::endl;
 }
 
 IMPISD_END_NAMESPACE

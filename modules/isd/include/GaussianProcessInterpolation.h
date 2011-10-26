@@ -2,7 +2,7 @@
  *  \file GaussianProcessInterpolation.h
  *  \brief Normal distribution of Function
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_GAUSSIAN_PROCESS_INTERPOLATION_H
@@ -12,6 +12,7 @@
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/isd/functions.h>
+#include <IMP/isd/Scale.h>
 #include <Eigen/Dense>
 #include <Eigen/Cholesky>
 
@@ -19,9 +20,11 @@ IMPISD_BEGIN_NAMESPACE
 #ifndef SWIG
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
+using Eigen::RowVectorXd;
 #endif
 
 class GaussianProcessInterpolationRestraint;
+class GaussianProcessInterpolationScoreState;
 
 //! GaussianProcessInterpolation
 /** This class provides methods to perform bayesian interpolation/smoothing of
@@ -43,6 +46,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
       *                                    to use.  Should be compatible with
       *                                    the size of x(i).
       * \param(in) covariance_function \f$w\f$: prior covariance function.
+      * \param(in) sigma : ISD Scale (proportionality factor to S)
       * \param(in) sparse_cutoff : when to consider that a matrix entry is zero
       *
       * Computes the necessary matrices and inverses when called.
@@ -53,6 +57,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
                                unsigned n_obs,
                                UnivariateFunction *mean_function,
                                BivariateFunction *covariance_function,
+                               Particle *sigma,
                                double sparse_cutoff=1e-7);
 
   /** Get posterior mean and covariance functions, at the points requested
@@ -81,12 +86,22 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   double get_posterior_covariance(Floats x1,
                                   Floats x2);
 
+  /** Compute the Hessian of the -log(likelihood)
+   * wrt all dependent particles that can be optimized
+   */
+  FloatsList get_Hessian();
+
+  // returns the particles for which the hessian was computed, in order
+  // the order is guaranteed by functions.h.
+  ParticlesTemp get_Hessian_particles();
+
   // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.
   void force_mean_update();
   void force_covariance_update();
 
   friend class GaussianProcessInterpolationRestraint;
+  friend class GaussianProcessInterpolationScoreState;
 
   IMP_OBJECT(GaussianProcessInterpolation);
 
@@ -95,6 +110,13 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   VectorXd get_I() const {return I_;}
   //returns updated prior mean vector
   VectorXd get_m();
+  //returns the number of particles that control m's values and that are active.
+  unsigned get_number_of_optimized_m_particles() const;
+  //returns dm/dparticle
+  VectorXd get_m_derivative(unsigned particle) const;
+  // returns updated prior covariance vector
+  void add_to_m_particle_derivative(unsigned particle, double value,
+          DerivativeAccumulator &accum);
   // returns updated prior covariance vector
   VectorXd get_wx_vector(Floats xval);
   //returns updated data covariance matrix
@@ -105,11 +127,18 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   //returns updated prior covariance matrix
   MatrixXd get_W();
   //returns Omega=(W+S/N)
-  MatrixXd get_Omega() { return get_W()+MatrixXd(get_S())/n_obs_; }
+  MatrixXd get_Omega();
+  //returns the number of particles that control m's values.
+  unsigned get_number_of_optimized_Omega_particles() const;
+  //returns dOmega/dparticle
+  MatrixXd get_Omega_derivative(unsigned particle) const;
+  // returns updated prior covariance vector
+  void add_to_Omega_particle_derivative(unsigned particle, double value,
+          DerivativeAccumulator &accum);
   //returns updated Omega^{-1}
-  MatrixXd get_WS();
+  MatrixXd get_Omi();
   //returns updated Omega^{-1}(I-m)
-  VectorXd get_WSIm();
+  VectorXd get_OmiIm();
 
  private:
 
@@ -121,10 +150,12 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
 
   // compute prior covariance matrix
   void compute_W();
-  // compute \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ (if necessary).
-  void compute_WS();
-  // compute (W+S)^{-1} (I-m)
-  void compute_WSIm();
+  // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
+  void compute_Omega();
+  // compute \f$(\mathbf{W} + \frac{\sigma}{N}\mathbf{S})^{-1}\f$.
+  void compute_Omi();
+  // compute (W+sigma*S/N)^{-1} (I-m)
+  void compute_OmiIm();
 
   // compute mean observations
   void compute_I(Floats mean);
@@ -143,11 +174,14 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     // pointer to the prior covariance function
     IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
     VectorXd I_,m_,wx_;
-    MatrixXd W_,WS_; // WS = (W + S)^{-1}
+    MatrixXd W_,Omega_,Omi_; // Omi = Omega^{-1}
     Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
-    VectorXd WSIm_; // WS * (I - m)
-    bool flag_m_, flag_m_gpir_, flag_WS_, flag_WSIm_, flag_W_, flag_W_gpir_;
+    VectorXd OmiIm_; // Omi * (I - m)
+    bool flag_m_, flag_m_gpir_, flag_Omi_, flag_OmiIm_, flag_W_,
+         flag_Omega_, flag_Omega_gpir_;
+    Pointer<Particle> sigma_;
     double cutoff_;
+    double sigma_val_; //to know if an update is needed
 
 };
 
