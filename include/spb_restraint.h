@@ -30,6 +30,9 @@ IMPMEMBRANEEXPORT void add_SPBexcluded_volume
 IMPMEMBRANEEXPORT void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
 
+IMPMEMBRANEEXPORT void add_my_connectivity
+(Model *m,std::string name,atom::Molecule protein, double kappa);
+
 IMPMEMBRANEEXPORT FloatRange get_range_from_fret_class(std::string r_class);
 
 IMPMEMBRANEEXPORT FloatRange get_range_from_fret_value(double r_value);

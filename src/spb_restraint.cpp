@@ -76,6 +76,19 @@ atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
  m->add_restraint(r);
 }
 
+void add_my_connectivity(Model *m,std::string name,
+atom::Molecule protein, double kappa)
+{
+ core::SphereDistancePairScore*
+ sdps=get_sphere_pair_score(0.0,kappa);
+ Particles ps=atom::get_leaves(protein);
+ for(unsigned int i=0;i<ps.size()-1;++i){
+  IMP_NEW(core::PairRestraint,r,(sdps,ParticlePair(ps[i],ps[i+1])));
+  r->set_name("My connectivity " + name);
+  m->add_restraint(r);
+ }
+}
+
 FloatRange get_range_from_fret_class(std::string r_class)
 {
  FloatRange range;

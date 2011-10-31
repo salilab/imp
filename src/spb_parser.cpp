@@ -40,6 +40,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  bool use_GFP_structure;
  bool keep_GFP_layer;
  bool GFP_exc_volume;
+ bool use_connectivity;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -69,6 +70,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
   value<bool>(&use_GFP_structure), "ciao");
  desc.add_options()("GFP_exc_volume",value<bool>(&GFP_exc_volume),      "ciao");
  desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
+ desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
@@ -138,6 +140,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
  ret.use_structure=use_structure;
  ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
+ ret.use_connectivity=use_connectivity;
 
 // Postprocess parameters
  ret.trajfile=trajfile;
