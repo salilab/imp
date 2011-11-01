@@ -513,9 +513,9 @@ class Manager(object):
         timed_out = [a for a in self._all_slaves if a.running_task(context) \
                      and a.get_contact_timed_out(self.heartbeat_timeout)]
         for slave in timed_out:
+            task = slave._kill()
             print("Did not hear from slave %s in %d seconds; rescheduling "
                   "task %s" % (str(slave), str(task)))
-            task = slave._kill()
             context._tasks.append(task)
         if len(timed_out) > 0:
             self._send_tasks_to_slaves(context)
