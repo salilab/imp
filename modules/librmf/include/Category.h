@@ -62,51 +62,122 @@ inline std::ostream &operator<<(std::ostream &out, const Category &nh) {
 }
 #endif
 
-/** Standard physical keys are
-    - "cartesian x", "cartesian y", "cartesian z" for
-    cartesian coordinates in angstroms
-    - "radius" for radius in angstroms
-    - "mass" for mass in daltons
-    - "diffusion coefficient" for the diffusion coeffient in
-    angstroms squared per femptosecond
+//! Keys for storing physics-based attributes of the node
+/** \rmfattributetable_begin{Physics}
+    \rmfattribute{cartesian x, Float, the x coordinate in angstrom, }
+    \rmfattribute{cartesian y, Float, the y coordinate in angstrom,
+    required if other cartesian coordinates are included}
+    \rmfattribute{cartesian z, Float, the z coordinate in angstrom,
+    required if other cartesian coordinates are included}
+    \rmfattribute{radius, Float,
+    the radius of the volume occupied by the entity in angstrom,
+    positive; requires coordinates }
+    \rmfattribute{mass, Float, the mass of the node in Daltons,
+    positive; requires coordinates}
+    \rmfattribute{diffusion coefficient, Float,
+    the diffusion coefficient for the node in angstroms per squared femtosecond,
+    positive}
+    \rmfattributetable_end
  */
-RMFEXPORT extern const Category Physics;
+RMFEXPORT extern const Category physics;
 
-/** Standard sequence keys are:
-    - "begin residue index", "beyond residue index" for one
-    or more residue indexes eg [begin_residue_index, beyond_residue_index)
-    - "element" for the element by atomic number
-    - "seconard structure" 1 for helix, 2 for strand
-    - "sequence" store the sequence as a series of space-deliminted 3-letter
-    codes
-    - "residue type" store the three letter code for the residue type
-    - "chain id" stores an integer for the chain identifier. When translating
-    from pdb files, the position in the alphabet of the chain should probably
-    be used (eg, chain 'A' is 0)
+//! Keys for storing information about protein and nucleotide sequence
+/** \rmfattributetable_begin{Sequence}
+    \rmfattribute{first residue index, Int,
+    the first residue index included in this node,
+    any descendent that has an index must be in the specified range}
+    \rmfattribute{last residue index, Int,
+    the last residue index included in this node,
+    must be greater than begin residue index}
+    \rmfattribute{element, Index, the atomic number of the element,
+    nodes with elements cannot have children}
+    \rmfattribute{secondary structure, Index,
+    0 for unstructured; 1 for helix; 2 for strand,
+    node must have a residue type}
+    \rmfattribute{sequence, Strings,
+    store the sequence as a list of three letter codes,
+    if the index range is specified then the lengths must match;
+    children with residue types must match}
+    \rmfattribute{residue type, String,
+    the three letter code for the residue type,
+    this must match any sequence information higher in the tree and no
+    descendent must have a residue type}
+    \rmfattribute{chain id, Index,
+    stores an integer for the chain identifier. When translating from
+    pdb files the position in the alphabet of the chain should probably
+    be used (eg chain 'A' is 0), }
+    \rmfattributetable_end
 */
-RMFEXPORT extern const Category Sequence;
+RMFEXPORT extern const Category sequence;
 
-
-/** Float keys are
-    - cartesian_x,cartesian_y,cartesian_z,radius
-    - rgb_color_red, rgb_color_blue, rgb_color_green
-
-    Int keys are
-    - shape which is
-        - 1 for sphere described by cartesian_x0,cartesian_y0,cartesian_z0,
-        radius
-        - 2 for cylinder, described by cartesian_x0,cartesian_y0,cartesian_z0,
-        cartesian_x1,cartesian_y1,cartesian_z1, r
+//! Information about geometric shapes
+/**
+    \rmfattributetable_begin{Shape}
+    \rmfattribute{cartesian x, Float, the x coordinate,
+    must have y and z and no coordinates fields}
+    \rmfattribute{cartesian y, Float, the y coordinate,
+    must have x and z and no coordinates fields}
+    \rmfattribute{cartesian z, Float, the z coordinate,
+    must have x and y and no coordinates fields}
+    \rmfattribute{cartesian xs, Floats, the x coordinates,
+    the number must match that of the y and z coordinates}
+    \rmfattribute{cartesian ys, Floats, the y coordinates,
+    the number must match that of the x and z coordinates}
+    \rmfattribute{cartesian zs, Floats, the z coordinates,
+    the number must match that of the x and y coordinates}
+    \rmfattribute{radius, Float, the radius, positive}
+    \rmfattribute{rgb red, Float, the red channel for the color,
+    between 0 and 1; must have green and blue}
+    \rmfattribute{rgb green, Float, the green channel for the color,
+    between 0 and 1; must have red and blue}
+    \rmfattribute{rgb blue, Float, the blue channel for the color,
+    between 0 and 1; must have red and green}
+    \rmfattribute{triangles, Indexes,
+    indexes into the coordinates fields to define triangular faces,
+    indexes must be less than the coordinates length;
+    the number must be divisible by 3}
+    \rmfattribute{shape, Index, 0 for sphere(s); 1 for cylinder(s);
+    2 for surface,
+    appropriate attributes must be there;
+    if cylinders or spheres there must be a radius;
+    if cylinder and the coordinates fields are used the size
+    must be divisible by 2}
+    \rmfattributetable_end
  */
-RMFEXPORT extern const Category Shape;
+RMFEXPORT extern const Category shape;
 
-
-/** Float keys are
-    - score
-    Index keys are:
-    - representation{i} for the representation nodes involved
+//! Keys for providing markup of parts of the structure
+/** \rmfattributetable_begin{Feature}
+    \rmfattribute{score, Float, the score, }
+    \rmfattribute{representation, NodeIDs, the nodes involved in the feature, }
+    \rmfattributetable_end
 */
-RMFEXPORT extern const Category Feature;
+RMFEXPORT extern const Category feature;
+
+//! Store information about associated publications
+/** \rmfattributetable_begin{Publication}
+    \rmfattribute{title, String, article title, }
+    \rmfattribute{book title, String, the book title, }
+    \rmfattribute{chapter, String, the book chapter, must have book title}
+    \rmfattribute{journal, String, the name of the journal, }
+    \rmfattribute{url, String, a url for the publication, }
+    \rmfattribute{pubmed id, Int, the pubmed id, }
+    \rmfattribute{year, Int, the year of publication, }
+    \rmfattribute{first page, Index, the first page number, }
+    \rmfattribute{last page, Index, the last page number, }
+    \rmfattribute{author, Strings,
+    the author names as a list for "Firstname Lastname", }
+    \rmfattributetable_end
+*/
+RMFEXPORT extern const Category publication;
+
+#ifndef IMP_DOXYGEN
+  RMFEXPORT extern const Category Physics;
+  RMFEXPORT extern const Category Sequence;
+  RMFEXPORT extern const Category Shape;
+  RMFEXPORT extern const Category Feature;
+  RMFEXPORT extern const Category Publication;
+#endif
 
 } /* namespace RMF */
 

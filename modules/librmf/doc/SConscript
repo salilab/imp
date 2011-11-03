@@ -2,96 +2,212 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel"],
-                 brief="This module provides RMF I/O for \imp.",
-                 overview="""This modules provides support for RMF file format
-                 for storing hierarchical molecular data (such as atomic
-                 or coarse grained representations of proteins), along with
-                 markup, including geometry and score data.
+                 brief="This module provides RMF I/O",
+                 overview="""
 
- IMP.rmf supports I/O of IMP::atom::Hierarchy and associated
-   types as well as output of IMP::display::Geometry, IMP::Restraint and arbitrary IMP::Particles. These
-   work by having an \c add_X() method which adds the object to the file and then
-   \c set_frame() methods can set the ith frame of the object from the objects current
-   state. Similarly, there are \c create_Xs and \c load_frame() methods which create
-   an object of the type in question and load the data from the corresponding frame
-   into already created objects.
-
-   See the ::rmf library page for more information.
+The library provides support for the %RMF file format for storing
+hierarchical molecular data (such as atomic or coarse
+grained representations of proteins), along with
+markup, including geometry and score data.
 
 \\namespace RMF
 
-\\brief The support library for reading and writing RMF files.
+This modules provides support for %RMF file format for
+storing hierarchical molecular data (such as atomic
+or coarse grained representations of proteins), along
+with markup, including geometry and score data. The
+format uses the \\external{http://www.hdf5.org,HDF5} library to manage the data on
+disk.
 
-                 This modules provides support for RMF file format
-                 for storing hierarchical molecular data (such as atomic
-                 or coarse grained representations of proteins), along with
-                 markup, including geometry and score data. The format uses
-                 the hdf5 library to manage the data on disk.
+\\section ff 1 RMF Files
 
-   \\section ff RMF Files
-   The RMF file format stores hierarchical data in a binary file. For example, a protein
-   can be stored as a hierarchy where the root is the whole molecule. The root has one node
-   per chain, each chain has one node per residue and each residue one node per atom. Each
-   node in the hierarchy has the appropriate data stored along with it. That is, a chain node
-   has the chain identifier, and a residue node has the type of the residue stored. Other types
-   of data can also be stored in the hierarchy such as arbitrary geometry or features which
-   describe some set of other nodes (such as marking a distance between a pair of residues
-   which had be labeled with FRET dyes).
+The %RMF file format stores hierarchical data about a molecular
+structure in a binary file. This data can include
 
-   The file can store multiple frames. Each frame has the same hierarchical structure, but
-   some aspects of the data (eg coordinates) can vary from frame to frame.
+- molecular structures stored hierarchically. These structures need not be atomic resolution.
 
-   More technically, each node in the RMF
-   hierarchy has a type (IMP::rmf::NodeType), a name (IMP::rmf::NodeHandle::get_name(),
-   an ID (IMP::rmf::NodeHandle::get_id()) that is unique within the file,
-   and associated attributes. Each attribute is identified by a key (IMP::rmf::Key) and
-   consists of a unique combination of a type, category (IMP::rmf::KeyCategory) and name
-   (IMP::rmf::RootHandle::get_name(IMP::rmf::Key). On a per RMF basis, the data stored under a given
-   key can either have
-   one value for each node which has that attribute, or one value per frame per node with
-   the attribute. The methods in IMP::rmf::NodeHandle to get and set the attributes take
-   an optional frame number.
+- feature information about parts
+of the structures, such as how well it fits a particular
+measurement.
 
-   A number of data categories and values have been defined so far. New ones can be added as needed,
-   without affecting existing files. See the documentation for each data type for more information:
-   IMP::rmf::Physics, IMP::rmf::Sequence, IMP::rmf::Shape, IMP::rmf::Feature.
+- geometric markup such as segments, surfaces, balls,
+colors which can be used to improve visualization
 
-   In addition, there are bonds associated with the root of the hierarchy. Bonds are identified by a pair of IMP::rmf::NodeHandles
-   and do not vary from frame to frame.
+For example, a protein can be stored as a hierarchy where the root
+is the whole molecule. The root has one node per chain, each chain
+has one node per residue and each residue one node per atom. Each
+node in the hierarchy has the appropriate data stored along with
+it: a chain node has the chain identifier, and a residue
+node has the type of the residue stored and atom nodes have coordinates,
+atom type and elements. Bonds between atoms are stored explicity.
+b
+The file might also include a feature node storing the r-value for a
+FRET measurement between two residues as well as extra markers to hilight
+key parts of the molecule.
 
-                 \\section contents Contents
-                 The module provides code for general purpose I/O of such data,
-                 designed to be used in other packages (we have not yet separated
-                 it out into a separate library), along with \imp specific code.
-                 Accordingly, support is provided at two different levels:
+Multiple conformations on the hierarchy are stored as frames.
+Each frame has the same hierarchical structure, but some aspects of
+the data (eg coordinates) can have one value for each frame (or no
+value for a particle frame if they happen not be be applicable
+then).
 
--# The hierarchy layer: supports general traversal of the encoded hierarchy
-   and addition and reading of arbitrary hierarchical data. This layer primarily
-   consists of IMP::rmf::RootHandle and IMP::rmf::NodeHandle. It is designed
-   to be used by programs to traverse the file while they create their own data
-   structures.
--# The HDF5 layer: provides a C++ interface to access the raw HDF5 file.
-   This layer consists of IMP::rmf::HDF5DataSet and IMP::rmf::HDF5Group along
-   with the IMP::rmf::HDF5Handle and type traits classes. It acts as a more useful,
-   but limited, replacement for the HDF5 C++ bindings.
+\\subsection structure 1.1 The RMF Hierarchy
+R
+More technically, each node in the %RMF hierarchy has - a type
+(RMF::NodeType)
 
-   \section assoc Associations
-   The RMF wrapper has the concept of an association between nodes in its hierarchy
-   and objects in the program accessing. Such association is used in \imp too,
-   for example, map between particles and the nodes on disk saving data for that
-   particle. This association can only be set once each time the file is open,
-   trying to reset is an error. It is set either when an object is added to the file
-   eg IMP::rmf::add_hierarchies() or when explicitly requested,
-   eg IMP::rmf::set_hierarchies().
+- a human readible name (RMF::NodeHandle::get_name()
 
-   \\section bins Helper programs
+- an ID that is unique within the file
+  (RMF::NodeHandle::get_id())
 
-   See the \\ref application_rmf_tools "RMF tools" application for helper programs.
+- and associated attributes.
 
-   \\section rmf_hdf5 RMF and HDF5
-   The RMF data is stored in a single HDF Group. As a result, one could easily put multiple RMF
-   "files" in a single HDF5 archive, as well as store other data in the archive (such as
-   electron density maps) along with the RMF data.
+Each attribute is identified by a key (RMF::Key) and is
+defined a unique combination of
+- a type. The currently supported types are
+   - \c Float: a 64 bit floating point value
+   - \c String: an ascii string
+   - \c Int: a 64 bit integer
+   - \c Index: a postive 64 bit index
+   - \c Node: another node in the hierarchy
+   - \c Floats: a list of 64 bit floats
+   - \c Strings: a list of strings
+   - \c Nodes: a list of nodes
+   - \c Indexes: a list of indexes
+
+- a category such as RMF::physics, identified by
+an RMF::Category
+
+- a name string
+
+On a per %RMF basis, the data associated with a given key can either
+have one value for each node which has that attribute, or one value
+per frame per node with the attribute. The methods in
+RMF::NodeHandle to get and set the attributes take an optional
+frame number.
+
+A number of data categories and attributes have been defined so
+far. New ones can be added as needed, without affecting existing
+files. See the documentation for each category for more
+information:
+- RMF::physics
+- RMF::sequence,
+- RMF::shape
+- RMF::feature
+- RMF::publication.
+
+In addition, there are bonds associated with the root of the
+hierarchy. Bonds are identified by a pair of RMF::NodeHandle objects
+and do not vary from frame to frame. We can add support for dynamic
+bonds if desired.
+
+\\subsection adding 1.2 Adding custom data to an RMF
+
+When adding data to an %RMF file that is just to be used for
+internal consumption, one should create a new category. For
+example, \imp defines an ''imp'' category when arbitrary particle
+data is store.
+
+If, instead, the data is likely to be a general interest, it
+probably makes sense to add it to the documentation of this library
+so that the names used can be standardized.
+
+
+\\subsection rmf_hdf5 1.3 RMF and HDF5
+
+The %RMF data is stored in a single
+\\external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,HDF5
+group} in the file on disk. As a result, one could easily put
+multiple %RMF "files" in a single HDF5 archive, as well as store
+other data (such as electron density maps).  However, adding extra
+data sets within the %RMF HDF5 group is not supported.
+
+\note The following information about how the data is stored on disk
+is not complete. Implementers should instead use the API provided by this
+library.
+
+The %RMF data is spread over various data sets, divided up based on
+the RMF::Category, data type and whether the particular attribute
+has one value per frame or just one for the whole file. Each node
+has space allocated where it can store information about whether it
+has attributes in a given class, and if so, where in the corresponding
+data set the attributes are stored.
+
+Space is allocated in the appropriate table if an attribute in a particular
+class is used in a node. A special marker value
+is used to signify when a particular attribute in a class is not found for a
+particular node (e.g. a -1 is used to signify that a node does not
+have an index attribute).
+
+\\section lib 2 The RMF library
+
+The %RMF library provides an intermediate level interface to facilitate I/O of
+%RMF data into and out of programs. The primary classes of interest are
+RMF::RootHandle representing the root of an %RMF hierarchy and RMF::NodeHandle
+representing a node in the hierarchy.
+
+The file is automatically closed when the last handle to it is destroyed.
+
+\\subsection assoc 2.1 Associations
+
+The %RMF wrapper has the concept of an association between nodes in
+its hierarchy and objects in the program accessing. The methods
+RMF::RootHandle::get_node_handle_from_association(),
+RMF::NodeHandle::set_association() and
+RMF::NodeHandle::get_assocation() can be used to take advantage of
+this. The idea is that one can store pointers to the programatic
+data structures corresponding to the nodes and so avoid maintaining
+ones own lookup table.
+
+\\subsection accelerating 2.2 Accelerated I/O
+
+Traversing large %RMF files can be slow, especially when doing so in scripting
+languages. The library provides a few methods RMF::get_values() to accelerate
+this process when loading values for each of a number of frames. Other such
+batch methods can be added as appropriate.
+
+\\subsection parallel 2.3 Parallel I/O
+
+If RMF::RootHandle::flush() has been called since the last change, it is safe
+to read the file from another process. Writing from more than one process is not
+supported. Nor is reading or writing from more than one thread of the same
+program.
+
+\\subsection invariants 2.4 Invariants
+
+Currently, there is little explicit checking of invariants between attributes
+in the %RMF file. An extensible framework for checking invariants on file
+close and open will be added.
+
+
+\\subsection bindings 2.5 Other language bindings
+
+The %RMF library currently supports C++ and Python. The API is
+written so that \\external{http://www.swig.org,swig} can be used to
+easily generate bindings for most languages. The two main
+exceptions are C and fortrain. Until the swig C target support is
+finished, these can be supported by writing a simple C API
+manually, probably a weeks work.
+
+\\subsection hdf5access 2.6 HDF5 wrappers
+
+The library provides a \ref hdf5 "simple wrapper for the HDF5 library".
+
+\\section bins 3 Helper programs
+
+   - \c rmf_show prints out the hierarchy written to the file.
+
+   - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
+   in the rmf file are atomic resolution.
+
+   - \c rmf_xml converts an rmf file to an XML files that can be opened in an XML viewer
+   (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
+   makes it much easier to get around large hierarchies.
+
+See the \\ref application_rmf_tools "RMF tools" application for
+\\imp-related helper programs.
+
 """,
-                 publications=env.IMPStandardPublications(),
+              publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())

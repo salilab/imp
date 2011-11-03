@@ -21,7 +21,11 @@ class NodeHandle;
 typedef std::pair<NodeHandle, NodeHandle> BondPair;
 typedef std::vector<BondPair> BondPairs;
 
-/** A handle for an hdf5 root */
+//! A handle for an RMF root
+/** Use this handle to perform operations relevant to the
+    whole RMF hierarchy as well as to start traversal of the
+    hierarchy.
+ */
 class RMFEXPORT RootHandle: public NodeHandle {
   void gather_ids(NodeHandle n, Ints &ids,
                   std::vector<std::string> &paths,
@@ -95,6 +99,9 @@ class RMFEXPORT RootHandle: public NodeHandle {
   }                                                                     \
   std::string get_name(UCName##Key k) const {                           \
     return shared_->get_name(k);                                        \
+  }                                                                     \
+  Category get_category(UCName##Key k) const {                          \
+    return k.get_category();                                            \
   }                                                                     \
   UCName##Key##s                                                        \
     get_##lcname##_keys(Category category_id) const {                   \

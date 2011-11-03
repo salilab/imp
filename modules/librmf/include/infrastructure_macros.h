@@ -23,7 +23,6 @@
 
 //! Implement comparison in a class using field as the variable to compare
 /** \param[in] Name the name of the class
-    \param[in] field the first field to compare on
 */
 #define IMP_RMF_COMPARISONS(Name)
 

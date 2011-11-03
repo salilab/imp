@@ -33,10 +33,16 @@ std::string Category::get_name() const {
   return category_names[i_];
 }
 
-const Category Physics=get_category("physics");
-const Category Sequence=get_category("sequence");
-const Category Bond=get_category("bond");
-const Category Shape=get_category("shape");
-const Category Feature=get_category("feature");
+const Category physics=get_category("physics");
+const Category sequence=get_category("sequence");
+const Category shape=get_category("shape");
+const Category feature=get_category("feature");
+const Category publication=get_category("publication");
+
+  const Category Physics=physics;
+  const Category Sequence=sequence;
+  const Category Shape=shape;
+  const Category Feature=feature;
+  const Category Publication=publication;
 
 } /* namespace RMF */
