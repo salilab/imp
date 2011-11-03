@@ -1,5 +1,6 @@
 /**
- *  \file log.h     \brief Logging and error reporting support.
+ *  \file base/log.h
+ *  \brief Logging and error reporting support.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
