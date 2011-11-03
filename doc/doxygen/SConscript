@@ -134,6 +134,7 @@ env.Append(BUILDERS = {'GenerateDoxygenHeader':
 
 rawheaders=[]
 for h in Glob("#/build/include/*.h", ondisk=False) \
+         + Glob("#/build/include/RMF/*.h", ondisk=False) \
          + Glob("#/build/include/IMP/*.h", ondisk=False) \
          + Glob("#/build/include/IMP/*/*.h", ondisk=False):
     if h.path.find("internal")==-1:

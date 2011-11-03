@@ -228,7 +228,10 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}" \
                          "quote{1}=&ldquo;\1&rdquo;" \
                          "uses{2}=The \1 uses \ref \2 \"\2\" in order to improve its functionality. It will fall back on less good code without it." \
-                         "requires{2}=The \1 requires \ref \2 \"\2\" in order to function."
+                         "requires{2}=The \1 requires \ref \2 \"\2\" in order to function."\
+                         "rmfattributetable_begin{1}=Keys for \1 are <table><tr><td><b>name</b></td><td><b>type</b></td><td><b>description</b></td><td><b>invariants</b></td></tr>"\
+                          "rmfattributetable_end=</table>"\
+                           "rmfattribute{4}=<tr><td><tt>\1</tt></td><td>\2</td><td>\3</td><td>\4</td></tr>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C
 # sources only. Doxygen will then generate output that is more tailored for C.
@@ -1467,7 +1470,7 @@ INCLUDE_FILE_PATTERNS  = *.h
 # undefined via #undef or recursively expanded use the := operator
 # instead of the = operator.
 
-PREDEFINED             = IMP_DOXYGEN
+PREDEFINED             = IMP_DOXYGEN RMFEXPORT
 
 # If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then
 # this tag can be used to specify a list of macro names that should be expanded.
