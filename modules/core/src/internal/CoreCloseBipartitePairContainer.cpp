@@ -184,7 +184,7 @@ ParticleIndexPairs
 CoreCloseBipartitePairContainer::get_all_possible_indexes() const {
   ParticleIndexes pis= sc_[0]->get_all_possible_indexes();
   ParticleIndexes pjs= sc_[1]->get_all_possible_indexes();
-  ParticleIndexPairs ret; ret.resize(pis.size()*pjs.size());
+  ParticleIndexPairs ret; ret.reserve(pis.size()*pjs.size());
   for (unsigned int i=0; i< pis.size(); ++i) {
     for (unsigned int j=0; j< pjs.size(); ++j) {
       ret.push_back(ParticleIndexPair(pis[i], pjs[j]));
