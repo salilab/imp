@@ -23,9 +23,12 @@
 
 
 namespace RMF {
+
   class HDF5Group;
 
-  /** Store an index into a data set.*/
+  /** Store an index into a data set.
+      \ingroup hdf5
+   */
   template <int D>
   class HDF5DataSetIndexD
   {
@@ -124,17 +127,27 @@ namespace RMF {
 #endif
 
 
+  /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<1> HDF5DataSetIndex1D;
+  /** \ingroup hdf5 */
   typedef std::vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
+  /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<2> HDF5DataSetIndex2D;
+  /** \ingroup hdf5 */
   typedef std::vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
+  /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<3> HDF5DataSetIndex3D;
+  /** \ingroup hdf5 */
   typedef std::vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
+  /** \ingroup hdf5 */
 
 
+  /** \ingroup hdf5 */
   enum Compression {GZIP_COMPRESSION, SLIB_COMPRESSION, NO_COMPRESSION};
 
-  /** Wrap an HDF5 data set.*/
+  /** Wrap an HDF5 data set.
+   \ingroup hdf5
+  */
   template <class TypeTraits, unsigned int D>
   class HDF5DataSetD {
     struct Data {
@@ -438,7 +451,8 @@ namespace RMF {
   };
 
 
-  /** An HDF5 data set for integers with dimension 2. */
+  /** An HDF5 data set for integers with dimension 2.
+   \ingroup hdf5 */
   template <class Traits, unsigned int D>
   class HDF5DataSetDTraits: public StringTraits {
     static HDF5DataSetD<Traits, D> get_data_set(hid_t dsc,
@@ -516,7 +530,9 @@ namespace RMF {
     }
   };
 
+  /** \ingroup hdf5 */
   typedef HDF5DataSetDTraits<IndexTraits, 2> IndexDataSet2DTraits;
+  /** \ingroup hdf5 */
   typedef HDF5DataSetDTraits<FloatTraits, 2> FloatDataSet2DTraits;
 
 #define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname, PassValue, ReturnValue, \
@@ -528,8 +544,12 @@ namespace RMF {
   typedef HDF5DataSetD<Ucname##Traits, 3> HDF5##Ucname##DataSet3D;      \
   typedef std::vector<HDF5##Ucname##DataSet3D> HDF5##Ucname##DataSet3Ds
 
+  /** \name Basic data set types
+       \ingroup hdf5
+       @{
+  */
   IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_DATA_SET);
-
+  /** @} */
 
 } /* namespace RMF */
 

@@ -22,21 +22,43 @@
 
 namespace RMF {
 
+  /** \defgroup hdf5 HDF Support
+      These functions provide low level support for reading and writing HDF5
+      files. As such, they aren't really part of the RMF library itself, but
+      are needed and very useful.
+  */
+
+  /** \addtogroup hdf5
+      @{
+  */
+  /** The type used to store integral values.*/
   typedef int Int;
+  /** The type used to store lists of integral values.*/
   typedef std::vector<Int> Ints;
+  /** The type used to store lists of floating point values.*/
   typedef double Float;
+  /** The type used to store lists of floating point values.*/
   typedef std::vector<Float> Floats;
+  /** The type used to store lists of index values.*/
   typedef int Index;
+  /** The type used to store lists of index values.*/
   typedef std::vector<Index> Indexes;
+  /** The type used to store lists of string values.*/
   typedef std::string String;
+  /** The type used to store lists of string values.*/
   typedef std::vector<String> Strings;
+  /** The type used to store lists of NodeID values.*/
   typedef std::vector<NodeIDs> NodeIDsList;
+  /** The type used to store lists of lists of integers values.*/
   typedef std::vector<Ints> IntsList;
+  /** The type used to store char values.*/
   typedef char Char;
+  /** The type used to store lists of char values.*/
   typedef std::string Chars;
+  /** @} */
 
   /** \name Traits classes
-
+      \ingroup hdf5
       The traits class for mapping between C++ types and HDF5 types. It defines
       - Type: the C++ type of the data to store
       - Types: the C++ type for more than one value of the data

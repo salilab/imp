@@ -94,7 +94,14 @@ std::string get_type_name(NodeType t);
 
 class RootHandle;
 
-/** A handle for a particular node in the hierarchy.*/
+//! A handle for a particular node in the hierarchy.
+/** Use these handles to access and modify parts of the
+    hierarchy.
+
+    The get_value_always() methods return the appropriate
+    value or TypeTraits::get_null_value() if the node does
+    not have that attribute.
+*/
 class RMFEXPORT NodeHandle {
   int node_;
   friend class RootHandle;
@@ -129,6 +136,7 @@ class RMFEXPORT NodeHandle {
       or overwrite must be true.
   */
   void set_association(void *d, bool overwrite=false);
+  //! Return the associated pointer for this node, or NULL
   void* get_association() const;
 
   //! get the type of this node
