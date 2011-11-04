@@ -23,6 +23,7 @@
 #include <IMP/internal/OwnerPointer.h>
 #include <IMP/compatibility/checked_vector.h>
 #include <IMP/compatibility/map.h>
+#include <IMP/algebra/vector_search.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 /** Handle the states for a particular particle (or "class" of
@@ -42,10 +43,18 @@ public:
       The vector needs to have the same dimension for each value of
       i.
    */
-  virtual algebra::VectorKD get_embedding(unsigned int i,
-                                          Particle *) const {
+  virtual algebra::VectorKD get_embedding(unsigned int i) const {
     Floats f(1,i);
     return algebra::VectorKD(f.begin(), f.end());
+  }
+  //! Return the state closest to a given embedding
+  virtual unsigned int get_nearest_state(const algebra::VectorKD &v) const {
+    IMP_INTERNAL_CHECK(v.get_dimension()==1, "This is not a defaultly produced"
+                       << " embedding.");
+    IMP_INTERNAL_CHECK(v[0] >=0 && v[0] < get_number_of_particle_states(),
+                       "Out of range state found, this is not a default "
+                       << "embedding.");
+    return v[0];
   }
   virtual ~ParticleStates();
 };
@@ -121,19 +130,23 @@ public:
 */
 class IMPDOMINOEXPORT XYZStates: public ParticleStates {
   algebra::Vector3Ds states_;
+  base::Pointer<algebra::NearestNeighbor3D> nn_;
 public:
   XYZStates(const algebra::Vector3Ds &states):
-    ParticleStates("XYZStates %1%"), states_(states){}
+      ParticleStates("XYZStates %1%"), states_(states),
+      nn_(new algebra::NearestNeighbor3D(states)) {}
   algebra::Vector3D get_vector(unsigned int i) const {
     IMP_USAGE_CHECK(i < states_.size(),
                     "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i,
-                                  Particle *) const {
+  algebra::VectorKD get_embedding(unsigned int i) const {
     IMP_USAGE_CHECK(i < states_.size(),
                     "Out of range");
     return states_[i];
+  }
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const {
+    return nn_->get_nearest_neighbors(v, 1)[0];
   }
   IMP_PARTICLE_STATES(XYZStates);
 };
@@ -143,16 +156,18 @@ public:
 */
 class IMPDOMINOEXPORT RigidBodyStates: public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
-  double irange_;
+  double scale_;
+  base::Pointer<algebra::NearestNeighbor6D> nn_;
 public:
-  RigidBodyStates(const algebra::ReferenceFrame3Ds &states);
+  RigidBodyStates(const algebra::ReferenceFrame3Ds &states,
+                  double scale=1);
   algebra::ReferenceFrame3D get_reference_frame(unsigned int i) const {
     IMP_USAGE_CHECK(i < states_.size(),
                     "Out of range");
     return states_[i];
   }
-  algebra::VectorKD get_embedding(unsigned int i,
-                                  Particle *) const;
+  algebra::VectorKD get_embedding(unsigned int i) const;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 
@@ -161,17 +176,21 @@ public:
 */
 class IMPDOMINOEXPORT NestedRigidBodyStates: public ParticleStates {
   algebra::Transformation3Ds states_;//states of a nested rigid body
+  double scale_;
+  base::Pointer<algebra::NearestNeighbor6D> nn_;
 public:
   /**
      \param[in] states states of a rigid member with respect to its parent
    */
-  NestedRigidBodyStates(const algebra::Transformation3Ds &states):
-    ParticleStates("NestedRigidBodyStates %1%"), states_(states){}
+  NestedRigidBodyStates(const algebra::Transformation3Ds &states,
+                        double scale=100);
   algebra::Transformation3D get_transformation(unsigned int i) const {
     IMP_USAGE_CHECK(i < states_.size(),
                     "Out of range");
     return states_[i];
   }
+  algebra::VectorKD get_embedding(unsigned int i) const;
+  unsigned int get_nearest_state(const algebra::VectorKD &v) const;
   IMP_PARTICLE_STATES(NestedRigidBodyStates);
 };
 

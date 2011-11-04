@@ -65,39 +65,65 @@ void RigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << states_.size() << std::endl;
 }
 
-RigidBodyStates
-::RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
-    ParticleStates("RigidBodyStates %1%"), states_(states){
-   double min_= std::numeric_limits<double>::max();
-   double max_=-min_;
-   for (unsigned int i=0; i< states_.size(); ++i) {
-     for (unsigned int j=0; j< 3; ++j) {
-       min_= std::min(states_[i].get_transformation_to().
-                      get_translation()[j], min_);
-       max_= std::max(states_[i].get_transformation_to()
-                      .get_translation()[j], max_);
-     }
-   }
-   if (max_-min_ < .000001) {
-     irange_=1;
-   } else {
-     irange_=1.0/(max_-min_);
-   }
- }
-
-algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i,
-                                                 Particle *) const {
-  Floats e(6);
-  for (unsigned int j=0; j < 3; ++j) {
-    e[j]= states_[i].get_transformation_to().get_translation()[j];
+namespace {
+algebra::Vector6D get_as_vector(const algebra::Transformation3D &state,
+                                double scale) {
+  algebra::Vector6D ret;
+  for (unsigned int i=0; i< 3; ++i) {
+    ret[i]=state.get_translation()[i];
   }
-  for (unsigned int j=0; j < 3; ++j) {
-    e[3+j]= states_[i].get_transformation_to()
-      .get_rotation().get_quaternion()[j]*irange_;
+  for (unsigned int i=0; i< 3; ++i) {
+    ret[i+3]=state.get_rotation().get_quaternion()[i+1]
+        *scale;
   }
-  return algebra::VectorKD(e.begin(), e.end());
+  return ret;
+}
+algebra::Vector6Ds get_as_vectors(const algebra::Transformation3Ds &states,
+                                  double scale) {
+  algebra::Vector6Ds ret(states.size());
+  for (unsigned int i=0; i< states.size(); ++i) {
+    ret[i]= get_as_vector(states[i], scale);
+  }
+  return ret;
+}
+algebra::Vector6D get_as_vector(const algebra::ReferenceFrame3D &state,
+                                double scale) {
+  return get_as_vector(state.get_transformation_to(), scale);
+}
+algebra::Vector6Ds get_as_vectors(const algebra::ReferenceFrame3Ds &states,
+                                  double scale) {
+  algebra::Vector6Ds ret(states.size());
+  for (unsigned int i=0; i< states.size(); ++i) {
+    ret[i]= get_as_vector(states[i], scale);
+  }
+  return ret;
+}
 }
 
+RigidBodyStates
+::RigidBodyStates(const algebra::ReferenceFrame3Ds &states, double scale):
+    ParticleStates("RigidBodyStates %1%"), states_(states),
+    scale_(scale),
+    nn_(new algebra::NearestNeighbor6D(get_as_vectors(states, scale))) {
+ }
+
+algebra::VectorKD RigidBodyStates::get_embedding(unsigned int i) const {
+  algebra::Vector6D v= get_as_vector(states_[i], scale_);
+  return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
+}
+unsigned int
+RigidBodyStates::get_nearest_state(const algebra::VectorKD &v) const {
+  return nn_->get_nearest_neighbors(v, 1)[0];
+}
+
+
+
+NestedRigidBodyStates
+::NestedRigidBodyStates(const algebra::Transformation3Ds &states, double scale):
+    ParticleStates("NestedRigidBodyStates %1%"), states_(states),
+    scale_(scale),
+    nn_(new algebra::NearestNeighbor6D(get_as_vectors(states, scale))) {
+ }
 unsigned int NestedRigidBodyStates::get_number_of_particle_states() const {
   return states_.size();
 }
@@ -105,7 +131,14 @@ void NestedRigidBodyStates::load_particle_state(unsigned int i,
                                                 Particle *p) const {
   core::RigidMember(p).set_internal_transformation(states_[i]);
 }
-
+algebra::VectorKD NestedRigidBodyStates::get_embedding(unsigned int i) const {
+  algebra::Vector6D v= get_as_vector(states_[i], scale_);
+  return algebra::VectorKD(v.coordinates_begin(), v.coordinates_end());
+}
+unsigned int
+NestedRigidBodyStates::get_nearest_state(const algebra::VectorKD &v) const {
+  return nn_->get_nearest_neighbors(v, 1)[0];
+}
 void NestedRigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << get_number_of_particle_states() << std::endl;
 }
