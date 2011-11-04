@@ -227,6 +227,8 @@ void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer* second,
                              const SubsetFilterTablesTemp &filters,
                              AssignmentContainer* ret,
+                             double max_error,
+                             ParticleStatesTable *pst,
                              unsigned int max_states) {
   IMP_FUNCTION_LOG;
   internal::InferenceStatistics stats;
@@ -234,9 +236,41 @@ void load_merged_assignments(const Subset &first_subset,
   internal::load_merged_assignments(first_subset, first,
                                     second_subset, second,
                                     ts, nullptr, stats,
+                                    max_error, pst,
                                     max_states, ret);
 }
 
+ algebra::VectorKD get_embedding(const Subset &s,
+                                 const Assignment &a,
+                                 ParticleStatesTable *pst){
+   Floats embed;
+  for (unsigned int i=0; i< s.size(); ++i) {
+    algebra::VectorKD cur
+        = pst->get_particle_states(s[i])->get_embedding(a[i]);
+    embed.insert(embed.end(), cur.coordinates_begin(),
+                 cur.coordinates_end());
+  }
+  return embed;
+ }
 
+
+Assignment
+get_nearest_assignment(const Subset &s,
+                       const algebra::VectorKD &embedding,
+                       ParticleStatesTable *pst) {
+
+  Ints ret(s.size());
+  unsigned int cur=0;
+  // kind of a hack to get size
+  for (unsigned int i=0; i< s.size(); ++i) {
+    unsigned int sz
+        = pst->get_particle_states(s[i])->get_embedding(0).get_dimension();
+    algebra::VectorKD cpt(embedding.coordinates_begin()+cur,
+                          embedding.coordinates_begin()+cur+sz);
+    cur+=sz;
+    ret[i]= pst->get_particle_states(s[i])->get_nearest_state(cpt);
+  }
+  return ret;
+}
 
 IMPDOMINO_END_NAMESPACE
