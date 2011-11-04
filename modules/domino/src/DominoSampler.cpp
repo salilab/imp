@@ -310,6 +310,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   internal::load_merged_assignments(firsts, first,
                                     seconds, second,
                                     sfts, lsft, stats_,
+                                    0.0, NULL,
                                     max_states, ret);
 }
 
