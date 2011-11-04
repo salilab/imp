@@ -8,13 +8,24 @@
 #           includepath=/opt/local/include modeller=/Library/modeller-9v7/ \
 #           install
 
+TARGET_OSX_VER=`sw_vers -productVersion | cut -f 1-2 -d.`
+case ${TARGET_OSX_VER} in
+  10.4):
+    PYTHON=2.3
+    ;;
+  10.6):
+    PYTHON=2.6
+    ;;
+  *):
+    echo "This script currently only works on Mac OS X 10.4 or 10.6 machines"
+    exit 1
+    ;;
+esac
 
 VER=1.0
 DESTDIR=/tmp/imp-${VER}
 SOURCE=/Users/ben/imp-${VER}
 PREFIX=/usr/local
-PYTHON=2.3
-TARGET_OSX_VER=10.4
 
 mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/
 echo "${PREFIX}/lib/python${PYTHON}/site-packages/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
