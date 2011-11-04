@@ -106,9 +106,9 @@ bool PymolWriter::handle(SphereGeometry *g,
 }
 bool PymolWriter::handle(LabelGeometry *g,
                           Color color, std::string name) {
-  setup(name, OTHER);
-  write_color(get_stream(), color);
-  get_stream() << "  ]\ncyl_text(curdata,plain, ["
+  cleanup(lastname_, true);
+  //write_color(get_stream(), color);
+  get_stream() << "cyl_text(curdata,plain, ["
                << g->get_location().get_center()[0]
     + g->get_location().get_radius() << ", "
                << g->get_location().get_center()[1]
@@ -118,12 +118,11 @@ bool PymolWriter::handle(LabelGeometry *g,
                << "], '" << g->get_text() << "', 0.05,"
                << " axes=[[1,0,0],[0,1,0],[0,0,1]])"
                << "\n";
-  cleanup(name, false);
   return true;
 }
 bool PymolWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
-  setup(name, OTHER);
+  cleanup(name, OTHER);
   get_stream() << "CYLINDER,\n"
                << algebra::commas_io(g->get_geometry()
                                      .get_segment().get_point(0)) << ",\n"
