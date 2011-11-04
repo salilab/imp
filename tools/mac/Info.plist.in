@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>1.0, Sali Lab</string>
+	<string>@VERSION@, Sali Lab</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.salilab.imp</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>@VERSION@</string>
 	<key>IFPkgFlagAllowBackRev</key>
 	<false/>
 	<key>IFPkgFlagAuthorizationAction</key>
