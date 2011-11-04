@@ -153,6 +153,8 @@ IMPDOMINOEXPORT void
 load_union(const Subset &s0, const Subset &s1,
            AssignmentContainer* nd0, AssignmentContainer* nd1,
            const EdgeData &ed,
+           double max_error,
+           ParticleStatesTable* pst,
            unsigned int max,
            AssignmentContainer* out);
 

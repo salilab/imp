@@ -157,8 +157,21 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              const SubsetFilterTablesTemp
                                              &filters,
                                              AssignmentContainer* ret,
+                                             double max_error=0,
+                                             ParticleStatesTable *pst=NULL,
                                              unsigned int max_states
                                              =std::numeric_limits<int>::max());
+
+//! Return an embedding for an assignment
+IMPDOMINOEXPORT algebra::VectorKD get_embedding(const Subset &s,
+                                                const Assignment &a,
+                                                ParticleStatesTable *pst);
+
+//! Return the nearest assignment from an embedding
+IMPDOMINOEXPORT Assignment
+get_nearest_assignment(const Subset &s,
+                       const algebra::VectorKD &embedding,
+                       ParticleStatesTable *pst);
 
 IMPDOMINO_END_NAMESPACE
 

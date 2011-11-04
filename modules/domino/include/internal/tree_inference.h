@@ -30,6 +30,8 @@ void load_merged_assignments(const Subset &first_subset,
                              const SubsetFilterTables &filters,
                              ListSubsetFilterTable *lsft,
                              InferenceStatistics &stats,
+                             double max_error,
+                             ParticleStatesTable* pst,
                              unsigned int max,
                              AssignmentContainer *out);
 
