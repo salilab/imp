@@ -281,7 +281,7 @@ ClusteredAssignmentContainer::get_embedding(const Assignment &a) const {
   Floats embed;
   for (unsigned int i=0; i< s_.size(); ++i) {
     algebra::VectorKD cur
-      = pst_->get_particle_states(s_[i])->get_embedding(a[i], s_[i]);
+      = pst_->get_particle_states(s_[i])->get_embedding(a[i]);
     embed.insert(embed.end(), cur.coordinates_begin(),
                  cur.coordinates_end());
   }
