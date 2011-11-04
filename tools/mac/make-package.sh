@@ -27,6 +27,14 @@ DESTDIR=/tmp/imp-${VER}
 SOURCE=/Users/ben/imp-${VER}
 PREFIX=/usr/local
 
+# Make sure we can find the rest of our input files
+MAC_TOOL_DIR=`dirname $0`
+if [ ! -f ${MAC_TOOL_DIR}/Info.plist.in -o \
+     ! -f ${MAC_TOOL_DIR}/Description.plist.in ];
+  echo "Could not find plist files in script directory"
+  exit 1
+fi
+
 mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/
 echo "${PREFIX}/lib/python${PYTHON}/site-packages/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
 cd ${DESTDIR}${PREFIX}/lib && for lib in *.dylib; do
@@ -44,10 +52,17 @@ cd ${DESTDIR}${PREFIX}/lib && for lib in *.dylib; do
 done
 
 cd /tmp
+
+# Substitute version number in plist files
+for fname in Info Description; do
+  sed -e "s/@VERSION@/${VER}/g" \
+      < ${MAC_TOOL_DIR}/${fname}.plist.in > ${fname}.plist
+done
+
 mkdir imp-${VER}-package
 /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker \
-       -build -i ${SOURCE}/tools/mac/Info.plist \
-       -d ${SOURCE}/tools/mac/Description.plist -ds \
+       -build -i Info.plist \
+       -d Description.plist -ds \
        -p "imp-${VER}-package/IMP ${VER} ${TARGET_OSX_VER}.pkg" -f ${DESTDIR}
 hdiutil create -fs HFS+ -volname "IMP ${VER} for OS X ${TARGET_OSX_VER}" \
                -srcfolder imp-${VER}-package IMP-${VER}-${TARGET_OSX_VER}.dmg

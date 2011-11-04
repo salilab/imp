@@ -5,6 +5,6 @@
 	<key>IFPkgDescriptionDescription</key>
 	<string></string>
 	<key>IFPkgDescriptionTitle</key>
-	<string>IMP 1.0</string>
+	<string>IMP @VERSION@</string>
 </dict>
 </plist>
