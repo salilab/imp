@@ -6,11 +6,10 @@ import os
 import scons_tools.utility
 
 def _check(context):
-    context.Message( 'Checking for pkg-config... ' )
-    #os.environ['PATH']=context.env['ENV']['PATH']
-    ret = context.TryAction('pkg-config --atleast-pkgconfig-version=1')[0]
-    context.Result( ret==0 )
-    return ret==0
+    context.Message('Checking for pkg-config >= 0.15... ')
+    ret = context.TryAction('pkg-config --atleast-pkgconfig-version=0.15')[0]
+    context.Result(ret)
+    return ret
 
 
 def configure_check(env):
