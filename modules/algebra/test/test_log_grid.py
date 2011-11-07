@@ -17,7 +17,7 @@ class Vector3DTests(IMP.test.TestCase):
         bb=BoundingBox3D(Vector3D(1,1,1), Vector3D(15, 15, 15))
         sz=[5,5,5]
         le=LogEmbedding3D(bb, Vector3D(2.0, 2.0, 2.0), sz);
-        g= DenseFloatLogGrid3D(sz, le)
+        g= DenseIntLogGrid3D(sz, le)
         bbo= g.get_bounding_box()
         print bb, bbo
         if displayit:
