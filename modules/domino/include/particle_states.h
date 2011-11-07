@@ -181,6 +181,9 @@ class IMPDOMINOEXPORT NestedRigidBodyStates: public ParticleStates {
 public:
   /**
      \param[in] states states of a rigid member with respect to its parent
+     \param[in] scale an estimate of the radius of the rigid bodies used.
+     Unfortunately, this is hard to determine automatically in the right
+     place.
    */
   NestedRigidBodyStates(const algebra::Transformation3Ds &states,
                         double scale=100);
