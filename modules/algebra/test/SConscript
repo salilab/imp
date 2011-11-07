@@ -18,7 +18,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
                   matrix_function_name_exceptions,
                   value_object_exceptions=['BoundedGridStorage3D', 'DenseDoubleGrid3D',
-                                           'DenseFloatGrid3D', 'SparseIntGrid3D',
+                                           'DenseFloatGrid3D', 'DenseFloatLogGrid3D', 'SparseIntGrid3D',
                                            'SparseUnboundedIntGrid3D',
                                            'Matrix2D', 'Matrix3D'],
                   spelling_exceptions=["xyz", "zyz", "zxz", "kd"])
