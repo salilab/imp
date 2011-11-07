@@ -1214,7 +1214,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
       The origin in the corner 0 of the bounding box.
    */
   GridD(int xd, int yd, int zd,
-         const BoundingBoxD<3> &bb,
+         const BoundingBoxD<D> &bb,
          Value def=Value()):
     Storage(xd, yd, zd, def),
     Embedding(bb.get_corner(0), get_sides(xd, yd, zd, bb)) {

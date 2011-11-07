@@ -145,15 +145,21 @@ namespace IMP {
  namespace algebra {
    namespace grids {
    %template(_BoundedGridStorage3D) BoundedGridStorageD<3>;
+   %template(_BoundedGridStorageKD) BoundedGridStorageD<-1>;
    %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorageD<3> >;
    %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
+   %template(_SparseUBIntStorageK) grids::SparseGridStorageD<-1, int, UnboundedGridStorageD<-1> >;
+   %template(_SparseIntStorageK) grids::SparseGridStorageD<-1, int, BoundedGridStorageD<-1> >;
    %template(_DenseDoubleStorage) DenseGridStorageD<3, double>;
    %template(_DenseFloatStorage) DenseGridStorageD<3, float>;
+   %template(_DenseIntStorage) DenseGridStorageD<3, int>;
    %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridStorageD<3> >, int, DefaultEmbeddingD<3> >;
    %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridStorageD<3> >, int, DefaultEmbeddingD<3> >;
+   %template(SparseUnboundedIntGridKD) GridD<-1, SparseGridStorageD<-1, int, UnboundedGridStorageD<-1> >, int, DefaultEmbeddingD<-1> >;
    %template(DenseDoubleGrid3D) GridD<3, DenseGridStorageD<3, double>, double, DefaultEmbeddingD<3> >;
    %template(DenseFloatGrid3D) GridD<3, DenseGridStorageD<3, float>, float, DefaultEmbeddingD<3> >;
-   %template(DenseFloatLogGrid3D) GridD<3, DenseGridStorageD<3, float>, float, LogEmbeddingD<3> >;
+   %template(DenseIntLogGrid3D) GridD<3, DenseGridStorageD<3, int>, int, LogEmbeddingD<3> >;
+   %template(SparseIntLogGrid3D) GridD<-1, SparseGridStorageD<-1, int, BoundedGridStorageD<-1 > >, int, LogEmbeddingD<-1> >;
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
    }
 
