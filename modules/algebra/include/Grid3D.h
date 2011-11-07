@@ -77,10 +77,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
     grid. The type Voxel must support get_linearly_interpolated().
     \relatesalso Grid3D
 */
-template <class Storage>
+template <class Storage, class Embedding>
 inline const typename Storage::Value
 get_trilinearly_interpolated(const grids::GridD<3, Storage,
-                             typename Storage::Value> &g,
+                             typename Storage::Value, Embedding> &g,
                              const Vector3D &v,
                              const typename Storage::Value& outside=0) {
   // trilirp in z, y, x
@@ -126,8 +126,10 @@ get_trilinearly_interpolated(const grids::GridD<3, Storage,
 */
 template <class VT>
 struct DenseGrid3D:
-  public grids::GridD<3, grids::DenseGridStorageD<3, VT>, VT> {
-  typedef grids::GridD<3, grids::DenseGridStorageD<3,  VT>, VT > P;
+  public grids::GridD<3, grids::DenseGridStorageD<3, VT>, VT,
+                      grids::DefaultEmbeddingD<3> > {
+  typedef grids::GridD<3, grids::DenseGridStorageD<3,  VT>, VT,
+                       grids::DefaultEmbeddingD<3> > P;
   DenseGrid3D(double side,
               const BoundingBoxD<3> &bb,
               VT def=VT()): P(side, bb, def) {}
@@ -142,9 +144,11 @@ struct DenseGrid3D:
 template <class VT>
 struct SparseGrid3D:
   public grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                           grids::BoundedGridStorageD<3> >, VT > {
+                                   grids::BoundedGridStorageD<3> >, VT,
+                      grids::DefaultEmbeddingD<3> > {
   typedef grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                grids::BoundedGridStorageD<3> >, VT > P;
+                                   grids::BoundedGridStorageD<3> >, VT,
+                       grids::DefaultEmbeddingD<3> > P;
   SparseGrid3D(double side,
                   const BoundingBoxD<3> &bb,
                   VT def=VT()): P(side, bb, def) {}
@@ -159,9 +163,11 @@ struct SparseGrid3D:
 template <class VT>
 struct SparseUnboundedGrid3D:
   public grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                grids::UnboundedGridStorageD<3> >, VT >{
+                                  grids::UnboundedGridStorageD<3> >, VT,
+                      grids::DefaultEmbeddingD<3> >{
   typedef grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                               grids::UnboundedGridStorageD<3> >, VT > P;
+                                  grids::UnboundedGridStorageD<3> >, VT,
+                       grids::DefaultEmbeddingD<3> > P;
   SparseUnboundedGrid3D(double side,
                            const Vector3D &origin,
                            VT def=VT()): P(side, origin, def){}
