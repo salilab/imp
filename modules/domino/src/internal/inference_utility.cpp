@@ -106,6 +106,7 @@ Assignment get_merged_assignment(const Subset &s,
   return Assignment(ret);
 }
 
+namespace {
 Assignment get_merged_assignment(const Subset &s,
                                  const Assignment &ss0,
                                  const Ints &i0,
@@ -138,6 +139,7 @@ Assignment get_merged_assignment(const Subset &s,
     }
   }
   return Assignment(ret);
+}
 }
 
 
