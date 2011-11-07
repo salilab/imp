@@ -12,9 +12,9 @@
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace trilep_helpers {
   // trilerp helper
-  template <class Storage>
+  template <class Storage, class Embedding>
   void compute_voxel(const grids::GridD<3, Storage,
-                     typename Storage::Value> &g,
+                     typename Storage::Value, Embedding> &g,
                      const Vector3D &v,
                      int *ivox,
                      Vector3D &remainder) {
@@ -33,9 +33,9 @@ namespace trilep_helpers {
                          << " " << fvox);
     }
   }
-  template <class Storage>
+  template <class Storage, class Embedding>
   typename Storage::Value get_value(const grids::GridD<3, Storage,
-                                         typename Storage::Value> &g,
+                             typename Storage::Value, Embedding> &g,
                   const unsigned int xi,
                   const unsigned int yi, const unsigned int zi,
                   const typename Storage::Value &outside) {

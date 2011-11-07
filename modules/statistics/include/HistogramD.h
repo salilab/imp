@@ -25,7 +25,8 @@ class HistogramD {
   algebra::grids::GridD<D,
                         typename algebra::grids::DenseGridStorageD<D,
                                                           int>,
-                        int > Grid;
+                        int, typename algebra::grids::DefaultEmbeddingD<D> >
+  Grid;
   Grid grid_;
   int count_;
   public:
@@ -52,7 +53,9 @@ class HistogramD {
   algebra::grids::GridD<D,
                         typename algebra::grids::DenseGridStorageD<D,
                                                           float>,
-                        float > FrequencyGrid;
+                        float,
+                        typename algebra::grids::DefaultEmbeddingD<D> >
+  FrequencyGrid;
   FrequencyGrid get_frequency_grid() const {
     FrequencyGrid ret(grid_.get_unit_cell()[0],
                       algebra::get_bounding_box(grid_), 0);
