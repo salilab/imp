@@ -941,9 +941,34 @@ namespace grids {
                + get_elementwise_product(unit_cell_,get_uniform_offset(ei, 1)));
     }
     /** @} */
+    IMP_SHOWABLE_INLINE(DefaultEmbeddingD, out<< "origin: "<<  origin_
+                        << "  unit cell: " << unit_cell_);
   };
 
+IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
+#if !defined(IMP_DOXYGEN)
+  typedef DefaultEmbeddingD<1> DefaultEmbedding1D;
+  typedef std::vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
 
+
+  typedef DefaultEmbeddingD<2> DefaultEmbedding2D;
+  typedef std::vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
+
+  typedef DefaultEmbeddingD<3> DefaultEmbedding3D;
+  typedef std::vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
+
+  typedef DefaultEmbeddingD<4> DefaultEmbedding4D;
+  typedef std::vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
+
+  typedef DefaultEmbeddingD<5> DefaultEmbedding5D;
+  typedef std::vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
+
+  typedef DefaultEmbeddingD<6> DefaultEmbedding6D;
+  typedef std::vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
+
+  typedef DefaultEmbeddingD<-1> DefaultEmbeddingKD;
+  typedef std::vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
+#endif
 
 
  /** Embed a grid as an evenly spaced axis aligned grid.*/
@@ -953,26 +978,16 @@ namespace grids {
     VectorD<D> unit_cell_;
     VectorD<D> base_;
     template <class O>
-    VectorD<D> get_elementwise_product( VectorD<D> v0,
-                                       const O &v1) const {
-      for (unsigned int i=0; i< get_dimension(); ++i) {
-        v0[i]*= v1[i];
-      }
-      return v0;
-    }
-    template <class O>
-    VectorD<D> get_elementwise_power(VectorD<D> v0,
-                                     const O &v1) const {
-      for (unsigned int i=0; i< get_dimension(); ++i) {
-        v0[i]= std::pow(v0[i], v1[i]);
-      }
-      return v0;
-    }
-    template <class O>
     VectorD<D> get_coordinates(const O &index) const {
-      return origin_+get_elementwise_product(unit_cell_,
-                                             get_elementwise_power(base_,
-                                                                   index));
+      VectorD<D> ret= origin_;
+      for (unsigned int i=0; i< unit_cell_.get_dimension(); ++i) {
+        IMP_USAGE_CHECK(index[i] >=0, "Out of range index in log graph.'");
+        if (index[i] > 0) {
+          ret[i]+=unit_cell_[i]*(1.0-std::pow(base_[i], index[i]))
+              /(1.0-base_[i]);
+        }
+      }
+      return ret;
     }
     template <class O>
     VectorD<D> get_uniform_offset(const O &v0,
@@ -1089,11 +1104,37 @@ namespace grids {
         return get_bounding_box(ExtendedGridIndexD<D>(ei.begin(), ei.end()));
     }
     /** @} */
+    IMP_SHOWABLE_INLINE(LogEmbeddingD, out<< "origin: " << origin_
+                        << " base: " << base_);
   };
 
 
 
+IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 
+#if !defined(IMP_DOXYGEN)
+  typedef LogEmbeddingD<1> LogEmbedding1D;
+  typedef std::vector<LogEmbedding1D> LogEmbedding1Ds;
+
+
+  typedef LogEmbeddingD<2> LogEmbedding2D;
+  typedef std::vector<LogEmbedding2D> LogEmbedding2Ds;
+
+  typedef LogEmbeddingD<3> LogEmbedding3D;
+  typedef std::vector<LogEmbedding3D> LogEmbedding3Ds;
+
+  typedef LogEmbeddingD<4> LogEmbedding4D;
+  typedef std::vector<LogEmbedding4D> LogEmbedding4Ds;
+
+  typedef LogEmbeddingD<5> LogEmbedding5D;
+  typedef std::vector<LogEmbedding5D> LogEmbedding5Ds;
+
+  typedef LogEmbeddingD<6> LogEmbedding6D;
+  typedef std::vector<LogEmbedding6D> LogEmbedding6Ds;
+
+  typedef LogEmbeddingD<-1> LogEmbeddingKD;
+  typedef std::vector<LogEmbeddingKD> LogEmbeddingKDs;
+#endif
 
 
 
