@@ -64,7 +64,7 @@ void PymolWriter::cleanup(std::string name, bool close){
                << "  data[k]= data[k]+curdata\nelse:\n"
                << "  data[k]= curdata\n\n";
 }
-void PymolWriter::setup(std::string name, Type type){
+void PymolWriter::setup(std::string name, Type type, bool opendata){
   if (name==lastname_) {
     if (open_type_!= type && open_type_ != NONE) {
       get_stream() << "END,\n";
@@ -81,7 +81,7 @@ void PymolWriter::setup(std::string name, Type type){
   get_stream() << "k= '" << strip_quotes(name) << "'\n";
   get_stream() << "if not k in data.keys():\n"
                << "   data[k]=[]\n";
-  get_stream() << "curdata=[\n";
+  if (opendata) get_stream() << "curdata=[\n";
   lastname_=name;
 }
 namespace {
@@ -105,8 +105,10 @@ bool PymolWriter::handle(SphereGeometry *g,
   return true;
 }
 bool PymolWriter::handle(LabelGeometry *g,
-                          Color color, std::string name) {
+                          Color, std::string name) {
   cleanup(lastname_, true);
+  setup(name, OTHER, false);
+
   //write_color(get_stream(), color);
   get_stream() << "cyl_text(curdata,plain, ["
                << g->get_location().get_center()[0]
