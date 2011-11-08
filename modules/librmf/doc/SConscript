@@ -12,7 +12,7 @@ markup, including geometry and score data.
 
 \\namespace RMF
 
-This modules provides support for %RMF file format for
+This module provides support for %RMF file format for
 storing hierarchical molecular data (such as atomic
 or coarse grained representations of proteins), along
 with markup, including geometry and score data. The
@@ -40,9 +40,9 @@ node in the hierarchy has the appropriate data stored along with
 it: a chain node has the chain identifier, and a residue
 node has the type of the residue stored and atom nodes have coordinates,
 atom type and elements. Bonds between atoms are stored explicity.
-b
+
 The file might also include a feature node storing the r-value for a
-FRET measurement between two residues as well as extra markers to hilight
+FRET measurement between two residues as well as extra markers to highlight
 key parts of the molecule.
 
 Multiple conformations on the hierarchy are stored as frames.
@@ -53,10 +53,11 @@ then).
 
 \\subsection structure 1.1 The RMF Hierarchy
 R
-More technically, each node in the %RMF hierarchy has - a type
-(RMF::NodeType)
+More technically, each node in the %RMF hierarchy has
 
-- a human readible name (RMF::NodeHandle::get_name()
+- a type (RMF::NodeType)
+
+- a human readable name (RMF::NodeHandle::get_name()
 
 - an ID that is unique within the file
   (RMF::NodeHandle::get_id())
@@ -64,10 +65,10 @@ More technically, each node in the %RMF hierarchy has - a type
 - and associated attributes.
 
 Each attribute is identified by a key (RMF::Key) and is
-defined a unique combination of
+defined by a unique combination of
 - a type. The currently supported types are
    - \c Float: a 64 bit floating point value
-   - \c String: an ascii string
+   - \c String: an ASCII string
    - \c Int: a 64 bit integer
    - \c Index: a postive 64 bit index
    - \c Node: another node in the hierarchy
@@ -107,7 +108,7 @@ bonds if desired.
 When adding data to an %RMF file that is just to be used for
 internal consumption, one should create a new category. For
 example, \imp defines an ''imp'' category when arbitrary particle
-data is store.
+data is stored.
 
 If, instead, the data is likely to be a general interest, it
 probably makes sense to add it to the documentation of this library
@@ -123,7 +124,7 @@ multiple %RMF "files" in a single HDF5 archive, as well as store
 other data (such as electron density maps).  However, adding extra
 data sets within the %RMF HDF5 group is not supported.
 
-\note The following information about how the data is stored on disk
+\\note The following information about how the data is stored on disk
 is not complete. Implementers should instead use the API provided by this
 library.
 
@@ -184,15 +185,15 @@ close and open will be added.
 \\subsection bindings 2.5 Other language bindings
 
 The %RMF library currently supports C++ and Python. The API is
-written so that \\external{http://www.swig.org,swig} can be used to
+written so that \\external{http://www.swig.org,SWIG} can be used to
 easily generate bindings for most languages. The two main
-exceptions are C and fortrain. Until the swig C target support is
+exceptions are C and Fortran. Until the SWIG C target support is
 finished, these can be supported by writing a simple C API
 manually, probably a weeks work.
 
 \\subsection hdf5access 2.6 HDF5 wrappers
 
-The library provides a \ref hdf5 "simple wrapper for the HDF5 library".
+The library provides a \\ref hdf5 "simple wrapper for the HDF5 library".
 
 \\section bins 3 Helper programs
 
