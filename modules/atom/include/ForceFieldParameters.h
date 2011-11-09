@@ -24,7 +24,9 @@ public:
   //! get epsilon for non bonded vdW
   Float get_epsilon(Atom atom) const;
 
-  //! add radii to the structure defined in the hierarchy
+  //! Add or replace radii in the structure defined in the hierarchy.
+  /** Each radius is scaled by the given scale.
+   */
   void add_radii(Hierarchy mhd, double scale = 1.0,
                  FloatKey radius_key= FloatKey("radius")) const;
 
