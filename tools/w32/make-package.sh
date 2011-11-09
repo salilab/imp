@@ -3,9 +3,19 @@
 # Make a Win32 installer
 
 # First run the following to install files:
-# scons -j5 destdir=w32-inst wine=true modeller=/synth1/home/ben/modeller \
-#           install w32-inst/usr/share/doc/imp/examples
+# scons -j3 destdir=w32-inst wine=true install
+#
+# Then run (still in the top-level IMP directory)
+# tools/w32/make-package.sh <version>
+#
+# where <version> is the IMP version number, e.g. 1.0
 
+if [ $# -ne 1 ]; then
+  echo "Usage: $0 <IMP version>"
+  exit 1
+fi
+
+VER=$1
 ROOT=w32-inst
 
 # Put things in more w32-like arrangement
@@ -14,8 +24,7 @@ mv ${ROOT}/usr/bin/* ${ROOT}/lib
 rmdir ${ROOT}/usr/bin
 
 mv ${ROOT}/usr/share/imp ${ROOT}/data
-mkdir ${ROOT}/doc
-mv ${ROOT}/usr/share/doc/imp/examples ${ROOT}/doc
+mv ${ROOT}/usr/share/doc/imp/examples ${ROOT}
 
 rmdir ${ROOT}/usr/share/doc/imp
 rmdir ${ROOT}/usr/share/doc
@@ -35,7 +44,10 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${ROOT}/lib
 cp ${DLLSRC}/boost_filesystem-vc100-mt-1_44.dll ${ROOT}/lib
 cp ${DLLSRC}/boost_system-vc100-mt-1_44.dll ${ROOT}/lib
 
+# todo: check all installed DLLs for dependencies, to make sure we didn't
+# miss any
+
 tools/w32/gen-w32instlist w32-inst > w32files.tmp
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install
 tac w32files.tmp | sed -e 's/File "w32-inst\\/Delete "$INSTDIR\\/' -e 's/^SetOutPath/RMDir/' > w32files.uninstall
-makensis -NOCD tools/w32/w32-install.nsi 
+makensis -DVERSION=${VER} -NOCD tools/w32/w32-install.nsi 

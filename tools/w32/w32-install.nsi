@@ -11,7 +11,7 @@ Var STARTMENU_FOLDER
 Var MUI_TEMP
 
 !define PRODUCT "IMP"
-!define VERSION "1.0"
+; note that VERSION is not defined; must run makensis with e.g. -DVERSION=1.0
 !define PRODVER "${PRODUCT}-${VERSION}"
 
 ;!define MUI_ICON "tools\w32\imp.ico"
