@@ -68,6 +68,15 @@ LIBNAMEPATH=$( dirname `otool -L ${DESTDIR}/${PREFIX}/lib/libimp.dylib |grep lib
 
 echo "Setting library name paths and IDs..."
 cd ${DESTDIR}/${PREFIX}/lib
+
+# Get all C++ binaries (not Python scripts)
+bins=""
+for bin in ../bin/*; do
+  if file $bin | grep -q executable; then
+    bins="${bins} ${bin}"
+  fi
+done
+
 for lib in *.dylib; do
   # Make sure library is correct
   install_name_tool -id ${PREFIX}/lib/$lib $lib || exit 1
@@ -83,7 +92,7 @@ for lib in *.dylib; do
   done
 
   # Update library name paths in IMP binaries
-  for bin in ../bin/*; do
+  for bin in ${bins}; do
     install_name_tool -change ${LIBNAMEPATH}/$lib \
                               ${PREFIX}/lib/$lib $bin || exit 1
   done
@@ -119,14 +128,14 @@ for lib in ${BUNDLED_LIBS}; do
   done
 
   # Make sure all IMP libraries and binaries point to the bundled lib
-  for user in *.dylib ../bin/* python*/site-packages/*.so; do
+  for user in *.dylib ${bins} python*/site-packages/*.so; do
     install_name_tool -change ${lib} ${BUNDLED_LIB_DIR}/$base ${user} || exit 1
   done
 done
 
 
 # Make sure we don't link against any non-standard libraries that aren't bundled
-otool -L *.dylib ../bin/* python*/site-packages/*.so |grep -Ev '/usr/(local/)?lib|:'|sort -u > /tmp/non-standard.$$
+otool -L *.dylib ${bins} python*/site-packages/*.so |grep -Ev '/usr/(local/)?lib|:'|sort -u > /tmp/non-standard.$$
 if [ -s /tmp/non-standard.$$ ]; then
   echo "The following non-standard libraries are linked against, and were"
   echo "not bundled:"
