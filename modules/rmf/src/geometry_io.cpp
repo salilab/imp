@@ -30,54 +30,63 @@ namespace {
   RMF::FloatKey z                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian z",      \
                                           true);                        \
-  RMF::FloatKey xp                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian xp",     \
+  RMF::FloatsKey xs                                                     \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian x",      \
                                           true);                        \
-  RMF::FloatKey yp                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian yp",     \
+  RMF::FloatsKey ys                                                     \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian y",      \
                                           true);                        \
-  RMF::FloatKey zp                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian zp",     \
+  RMF::FloatsKey zs                                                     \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian z",      \
                                           true);                        \
   RMF::FloatKey cr                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb red",          \
                                           false);                       \
   RMF::FloatKey cg                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb green",  \
                                           false);                       \
   RMF::FloatKey cb                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb blue",   \
                                           false);                       \
   RMF::FloatKey r                                                     \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  RMF::FloatDataSet2DKey vn                                           \
-  = internal::get_or_add_key<FloatDataSet2DTraits>(f, Shape, "vertices",\
+  RMF::IndexesKey vn0                                                    \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 0s",\
                                                    false);              \
-  RMF::IndexDataSet2DKey in                                                \
-  = internal::get_or_add_key<IndexDataSet2DTraits>(f, Shape, "indices", \
-                                                   false)
+  RMF::IndexesKey vn1                                                    \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 1s",\
+                                                   false);              \
+  RMF::IndexesKey vn2                                                    \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 2s",\
+                                                   false);              \
+  RMF::IndexKey tk                                                     \
+  =internal::get_or_add_key<IndexTraits>(f, Shape, "type",              \
+                                                   false);              \
 
 #define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
   RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,              \
-    RMF::FloatKey xp, RMF::FloatKey yp, RMF::FloatKey zp,         \
+    RMF::FloatsKey xs, RMF::FloatsKey ys, RMF::FloatsKey zs,         \
     RMF::FloatKey cr, RMF::FloatKey cg, RMF::FloatKey cb,         \
-    RMF::FloatKey r, RMF::FloatDataSet2DKey vn,                     \
-    RMF::IndexDataSet2DKey in
+    RMF::FloatKey r,                                                    \
+    RMF::IndexesKey vn0, RMF::IndexesKey vn1, RMF::IndexesKey vn2,      \
+    RMF::IndexKey tk
 
 #define IMP_HDF5_PASS_GEOMETRY_KEYS             \
-  x,y,z,xp, yp,                                 \
-    zp, cr, cg, cb, r, vn, in
+  x,y,z,xs, ys, zs,                             \
+    cr, cg, cb, r, vn0, vn1, vn2, tk
 
   void process(display::SphereGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_UNUSED(xp);
-    IMP_UNUSED(yp);
-    IMP_UNUSED(zp);
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     algebra::Sphere3D s= sg->get_geometry();
     cur.set_value(x, s.get_center()[0], frame);
     cur.set_value(y, s.get_center()[1], frame);
@@ -87,36 +96,54 @@ namespace {
 
   void process(display::CylinderGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     algebra::Cylinder3D s= sg->get_geometry();
-    cur.set_value(x, s.get_segment().get_point(0)[0], frame);
-    cur.set_value(y, s.get_segment().get_point(0)[1], frame);
-    cur.set_value(z, s.get_segment().get_point(0)[2], frame);
-    cur.set_value(xp, s.get_segment().get_point(1)[0], frame);
-    cur.set_value(yp, s.get_segment().get_point(1)[1], frame);
-    cur.set_value(zp, s.get_segment().get_point(1)[2], frame);
+    Floats xvs(2), yvs(2), zvs(2);
+    xvs[0]=s.get_segment().get_point(0)[0];
+    xvs[1]=s.get_segment().get_point(1)[0];
+    yvs[0]=s.get_segment().get_point(0)[1];
+    yvs[1]=s.get_segment().get_point(1)[1];
+    zvs[0]=s.get_segment().get_point(0)[2];
+    zvs[1]=s.get_segment().get_point(1)[2];
+    cur.set_value(xs, xvs, frame);
+    cur.set_value(ys, yvs, frame);
+    cur.set_value(zs, zvs, frame);
     cur.set_value(r, s.get_radius(), frame);
   }
 
   void process(display::SegmentGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     IMP_UNUSED(r);
     algebra::Segment3D s= sg->get_geometry();
-    cur.set_value(x, s.get_point(0)[0], frame);
-    cur.set_value(y, s.get_point(0)[1], frame);
-    cur.set_value(z, s.get_point(0)[2], frame);
-    cur.set_value(xp, s.get_point(1)[0], frame);
-    cur.set_value(yp, s.get_point(1)[1], frame);
-    cur.set_value(zp, s.get_point(1)[2], frame);
+    Floats xvs(2), yvs(2), zvs(2);
+    xvs[0]=s.get_point(0)[0];
+    xvs[1]=s.get_point(1)[0];
+    yvs[0]=s.get_point(0)[1];
+    yvs[1]=s.get_point(1)[1];
+    zvs[0]=s.get_point(0)[2];
+    zvs[1]=s.get_point(1)[2];
+    cur.set_value(xs, xvs, frame);
+    cur.set_value(ys, yvs, frame);
+    cur.set_value(zs, zvs, frame);
   }
 
 
@@ -126,41 +153,17 @@ namespace {
     IMP_UNUSED(y);
     IMP_UNUSED(z);
     IMP_UNUSED(r);
-    IMP_UNUSED(xp);
-    IMP_UNUSED(yp);
-    IMP_UNUSED(zp);
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
+    IMP_UNUSED(tk);
+    IMP_NOT_IMPLEMENTED;
+#if 0
     std::string vnm, inm;
     int offset=0;
-    do {
-      std::ostringstream vns;
-      vns << sg->get_name() << " vertices";
-      if (offset != 0) {
-        vns << " " << offset;
-      }
-      std::ostringstream ins;
-      ins << sg->get_name() << " indices";
-      if (offset != 0) {
-        ins << " " << offset;
-      }
-      if (!cur.get_root_handle().get_hdf5_group().get_has_child(vns.str())
-          && !cur.get_root_handle().get_hdf5_group()
-          .get_has_child(ins.str())) {
-        vnm= vns.str();
-        inm= ins.str();
-        break;
-      }
-      ++offset;
-    } while (true);
-    HDF5IndexDataSet2D id
-      = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<IndexTraits, 2>(inm);
-    HDF5FloatDataSet2D vd
-      = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<FloatTraits, 2>(vnm);
-
     Ints tris
       = display::internal::get_triangles(sg);
     HDF5DataSetIndexD<2> size;
@@ -187,6 +190,7 @@ namespace {
     }
     cur.set_value(vn, vd, frame);
     cur.set_value(in, id, frame);
+#endif
   }
 
 #define IMP_TRY(type) if (dynamic_cast<type*>(g)) {     \
@@ -277,12 +281,10 @@ namespace {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
     IMP_UNUSED(z);
-    IMP_UNUSED(xp);
-    IMP_UNUSED(yp);
-    IMP_UNUSED(zp);
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
     IMP_UNUSED(r);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
     g->set_name(cur.get_name());
     if (cur.get_has_value(cr)) {
       display::Color c(cur.get_value(cr),
@@ -294,14 +296,12 @@ namespace {
 
   display::Geometry *try_read_sphere(NodeHandle cur, int frame,
                                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_UNUSED(xp);
-    IMP_UNUSED(yp);
-    IMP_UNUSED(zp);
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
     if (cur.get_has_value(x, frame) && cur.get_has_value(r, frame)) {
       algebra::Sphere3D s(algebra::Vector3D(cur.get_value(x, frame),
                                             cur.get_value(y, frame),
@@ -317,17 +317,15 @@ namespace {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
-    if (cur.get_has_value(x, frame) && cur.get_has_value(xp, frame)
+    if (cur.get_has_value(xs, frame) && cur.get_value(xs, frame).size()==2
         && cur.get_has_value(r, frame)) {
       algebra::Cylinder3D
-        s(algebra::Segment3D(algebra::Vector3D(cur.get_value(x, frame),
-                                               cur.get_value(y, frame),
-                                               cur.get_value(z, frame)),
-                             algebra::Vector3D(cur.get_value(xp, frame),
-                                               cur.get_value(yp, frame),
-                                               cur.get_value(zp, frame))),
+        s(algebra::Segment3D(algebra::Vector3D(cur.get_value(xs, frame)[0],
+                                               cur.get_value(ys, frame)[0],
+                                               cur.get_value(zs, frame)[0]),
+                             algebra::Vector3D(cur.get_value(xs, frame)[1],
+                                               cur.get_value(ys, frame)[1],
+                                               cur.get_value(zs, frame)[1])),
           cur.get_value(r));
       Pointer<display::Geometry> ret=new display::CylinderGeometry(s);
       return ret.release();
@@ -340,17 +338,15 @@ namespace {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(vn);
-    IMP_UNUSED(in);
     IMP_UNUSED(r);
-    if (cur.get_has_value(x, frame) && cur.get_has_value(xp, frame)) {
+    if (cur.get_has_value(xs, frame) && cur.get_value(xs, frame).size()==2) {
       algebra::Segment3D
-        s(algebra::Vector3D(cur.get_value(x, frame),
-                            cur.get_value(y, frame),
-                            cur.get_value(z, frame)),
-          algebra::Vector3D(cur.get_value(xp, frame),
-                            cur.get_value(yp, frame),
-                            cur.get_value(zp, frame)));
+        s(algebra::Vector3D(cur.get_value(xs, frame)[0],
+                            cur.get_value(ys, frame)[0],
+                            cur.get_value(zs, frame)[0]),
+          algebra::Vector3D(cur.get_value(xs, frame)[1],
+                            cur.get_value(ys, frame)[1],
+                            cur.get_value(zs, frame)[1]));
       Pointer<display::Geometry> ret=new display::SegmentGeometry(s);
       return ret.release();
     }
@@ -363,14 +359,12 @@ namespace {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
     IMP_UNUSED(z);
-    IMP_UNUSED(xp);
-    IMP_UNUSED(yp);
-    IMP_UNUSED(zp);
     IMP_UNUSED(r);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    if (cur.get_has_value(in) && cur.get_has_value(vn)) {
+    if (cur.get_has_value(xs) && cur.get_has_value(vn0)) {
+#if 0
       HDF5IndexDataSet2D id= cur.get_value(in);
       HDF5FloatDataSet2D vd=cur.get_value(vn);
       algebra::Vector3Ds vs(vd.get_size()[0]);
@@ -391,6 +385,7 @@ namespace {
       }
       Pointer<display::Geometry> ret=new display::SurfaceMeshGeometry(vs, is);
       return ret.release();
+#endif
     }
     else return NULL;
   }

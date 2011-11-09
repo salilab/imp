@@ -5,6 +5,7 @@
 #include <RMF/RootHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/pdb.h>
+#include <IMP/atom/force_fields.h>
 #include <IMP/exception.h>
 
 #include <boost/program_options.hpp>
@@ -66,11 +67,14 @@ int main(int argc, char **argv) {
     if (get_suffix(input) == ".pdb") {
       IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
       nframes=inhs.size();
+      for (unsigned int i=0; i< inhs.size(); ++i) {
+        IMP::atom::add_bonds(inhs[i]);
+      }
     } else {
       IMP_CATCH_AND_TERMINATE(rh= RMF::open_rmf_file(input));
       inhs= IMP::rmf::create_hierarchies(rh, m);
       RMF::FloatKey xk
-        =rh.get_key<RMF::FloatTraits>(RMF::Physics, "cartesian x");
+          =rh.get_key<RMF::FloatTraits, 1>(RMF::Physics, "cartesian x");
       std::cout << xk << std::endl;
       nframes= rh.get_number_of_frames(xk)+1;
     }
@@ -106,16 +110,39 @@ int main(int argc, char **argv) {
         if (outframe==0) {
           rho= RMF::create_rmf_file(output);
           for (unsigned int i=0; i< cur.size(); ++i) {
-            IMP::rmf::add_hierarchy(rh, cur[i]);
+            IMP::rmf::add_hierarchy(rho, cur[i]);
           }
         } else {
           IMP::rmf::set_hierarchies(rh, cur);
           for (unsigned int i=0; i< cur.size(); ++i) {
-            IMP::rmf::save_frame(rh, outframe, cur[i]);
+            IMP::rmf::save_frame(rho, outframe, cur[i]);
           }
         }
       }
       ++outframe;
+    }
+
+
+    IMP::atom::Bonds bds;
+    for (unsigned int i=0; i< inhs.size(); ++i) {
+      IMP::atom::Bonds cur=IMP::atom::get_internal_bonds(inhs[i]);
+      bds.insert(bds.end(), cur.begin(), cur.end());
+    }
+    std::cout << bds.size() << " bonds" << std::endl;
+    RMF::PairIndexKey bk;
+    if (rho.get_has_key<RMF::IndexTraits, 2>(RMF::bond, "type")) {
+      bk= rho.get_key<RMF::IndexTraits, 2>(RMF::bond, "type");
+    } else {
+      bk= rho.add_key<RMF::IndexTraits, 2>(RMF::bond, "type", false);
+    }
+    for (unsigned int i=0; i< bds.size(); ++i) {
+      IMP::Particle *p0= bds[i].get_bonded(0).get_particle();
+      IMP::Particle *p1= bds[i].get_bonded(1).get_particle();
+      RMF::NodeHandle n0= rho.get_node_handle_from_association(p0);
+      RMF::NodeHandle n1= rho.get_node_handle_from_association(p1);
+      RMF::NodeHandles nhs(2); nhs[0]=n0; nhs[1]=n1;
+      RMF::NodePairHandle obd= rho.add_node_tuple<2>(nhs, RMF::BOND);
+      obd.set_value(bk, 0);
     }
     return 0;
   } catch (const IMP::Exception &e) {

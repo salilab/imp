@@ -12,6 +12,13 @@
 #include "internal/errors.h"
 #include <sstream>
 
+#if !defined(NDEBUG) && defined(__GNUC__)
+#include <debug/vector>
+#else
+#include <vector>
+#endif
+
+
 #if defined(IMP_DOXYGEN)
 /** \name Comparisons
     Helper macros for implementing comparisons in terms of
@@ -211,9 +218,15 @@
   macroname(node_id, NodeID, NodeID, NodeID, const NodeIDs&, NodeIDs);  \
   macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs,                 \
             const NodeIDsList &, NodeIDsLst);                           \
+  macroname(floats, Floats, const Floats&, Floats,                      \
+            const FloatsList &,                                         \
+            FloatsList);                                                \
   macroname(ints, Ints, const Ints&, Ints,                              \
             const IntsList &,                                           \
             IntsList);                                                  \
+  macroname(indexes, Indexes, const Indexes&, Indexes,                  \
+            const IndexesList &,                                        \
+            IndexesList);                                               \
   macroname(index_data_set_2d, IndexDataSet2D, HDF5IndexDataSet2D,      \
             HDF5IndexDataSet2D,                                         \
             const HDF5IndexDataSet2Ds &,                                \
@@ -224,6 +237,15 @@
             HDF5FloatDataSet2Ds)
 
 
-
+namespace RMF {
+#if !defined(NDEBUG) && defined(__GNUC__)
+  using __gnu_debug::vector;
+#elif !defined(SWIG)
+  using vector;
+#else
+  template <class T>
+  class vector{};
+#endif
+}
 
 #endif  /* IMPLIBRMF_INFRASTRUCTURE_MACROS_H */

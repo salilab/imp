@@ -39,8 +39,8 @@ void RootHandle::set_description(std::string descr) {
   shared_->get_group().set_char_attribute("description", descr);
 }
 
-std::vector<std::pair<NodeHandle, NodeHandle> > RootHandle::get_bonds() const {
-  std::vector<std::pair<NodeHandle, NodeHandle> > ret(get_number_of_bonds());
+vector<std::pair<NodeHandle, NodeHandle> > RootHandle::get_bonds() const {
+  vector<std::pair<NodeHandle, NodeHandle> > ret(get_number_of_bonds());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= get_bond(i);
   }

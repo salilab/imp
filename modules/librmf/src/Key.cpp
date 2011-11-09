@@ -10,7 +10,7 @@
 
 namespace RMF {
 namespace {
-  std::vector<std::string> category_names;
+  vector<std::string> category_names;
   Category get_category(std::string name) {
     IMP_RMF_USAGE_CHECK(name.find('_')==std::string::npos,
                         "Category names cannot contain '_'");
@@ -38,6 +38,7 @@ const Category sequence=get_category("sequence");
 const Category shape=get_category("shape");
 const Category feature=get_category("feature");
 const Category publication=get_category("publication");
+const Category bond=get_category("bond");
 
   const Category Physics=physics;
   const Category Sequence=sequence;

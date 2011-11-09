@@ -130,15 +130,15 @@ namespace RMF {
   /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<1> HDF5DataSetIndex1D;
   /** \ingroup hdf5 */
-  typedef std::vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
+  typedef vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
   /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<2> HDF5DataSetIndex2D;
   /** \ingroup hdf5 */
-  typedef std::vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
+  typedef vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
   /** \ingroup hdf5 */
   typedef HDF5DataSetIndexD<3> HDF5DataSetIndex3D;
   /** \ingroup hdf5 */
-  typedef std::vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
+  typedef vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
   /** \ingroup hdf5 */
 
 
@@ -466,7 +466,7 @@ namespace RMF {
     }
   public:
     typedef HDF5DataSetD<Traits, D> Type;
-    typedef std::vector<Type> Types;
+    typedef vector<Type> Types;
     static void write_value_dataset(hid_t d, hid_t is,
                                     hid_t s,
                                     Type v) {
@@ -538,11 +538,11 @@ namespace RMF {
 #define IMP_RMF_DECLARE_DATA_SET(lcname, Ucname, PassValue, ReturnValue, \
                                  PassValues, ReturnValues)              \
   typedef HDF5DataSetD<Ucname##Traits, 1> HDF5##Ucname##DataSet1D;      \
-  typedef std::vector<HDF5##Ucname##DataSet1D> HDF5##Ucname##DataSet1Ds; \
+  typedef vector<HDF5##Ucname##DataSet1D> HDF5##Ucname##DataSet1Ds; \
   typedef HDF5DataSetD<Ucname##Traits, 2> HDF5##Ucname##DataSet2D;      \
-  typedef std::vector<HDF5##Ucname##DataSet2D> HDF5##Ucname##DataSet2Ds; \
+  typedef vector<HDF5##Ucname##DataSet2D> HDF5##Ucname##DataSet2Ds; \
   typedef HDF5DataSetD<Ucname##Traits, 3> HDF5##Ucname##DataSet3D;      \
-  typedef std::vector<HDF5##Ucname##DataSet3D> HDF5##Ucname##DataSet3Ds
+  typedef vector<HDF5##Ucname##DataSet3D> HDF5##Ucname##DataSet3Ds
 
   /** \name Basic data set types
        \ingroup hdf5

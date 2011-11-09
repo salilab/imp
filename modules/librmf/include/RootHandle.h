@@ -14,25 +14,29 @@
 #include "internal/shared.h"
 #include "Key.h"
 #include "NodeHandle.h"
+#include "NodeTupleHandle.h"
 
 namespace RMF {
+
 class NodeHandle;
 
+#ifndef IMP_DOXYGEN
 typedef std::pair<NodeHandle, NodeHandle> BondPair;
-typedef std::vector<BondPair> BondPairs;
+typedef vector<BondPair> BondPairs;
+#endif
 
 //! A handle for an RMF root
 /** Use this handle to perform operations relevant to the
     whole RMF hierarchy as well as to start traversal of the
     hierarchy.
- */
+*/
 class RMFEXPORT RootHandle: public NodeHandle {
   void gather_ids(NodeHandle n, Ints &ids,
-                  std::vector<std::string> &paths,
+                  vector<std::string> &paths,
                   std::string path) const;
   friend class NodeHandle;
   RootHandle(internal::SharedData *shared_);
- public:
+public:
   //! Empty root handle, no open file.
   RootHandle(){}
 
@@ -43,9 +47,10 @@ class RMFEXPORT RootHandle: public NodeHandle {
   /** Get an existing key that has the given name of the
       given type.
   */
-  template <class TypeT>
-    Key<TypeT> get_key(Category category_id, std::string name) const {
-    return shared_->get_key<TypeT>(category_id, name);
+  template <class TypeT, int Arity>
+      Key<TypeT, Arity> get_key(Category category_id,
+                                std::string name) const {
+    return shared_->get_key<TypeT, Arity>(category_id, name);
   }
   //! Lift NodeHandle::get_name() into class scope
   std::string get_name() const {
@@ -54,48 +59,49 @@ class RMFEXPORT RootHandle: public NodeHandle {
   /** Create a key for a new type of data. There must not
       already be a key with the same name of any type.
   */
-  template <class TypeT>
-    Key<TypeT> add_key(Category category_id,
-                       std::string name, bool per_frame) const {
-    return shared_->add_key<TypeT>(category_id, name, per_frame);
+  template <class TypeT, int Arity>
+      Key<TypeT, Arity> add_key(Category category_id,
+                            std::string name, bool per_frame) const {
+    return shared_->add_key<TypeT, Arity>(category_id, name, per_frame);
   }
-  template <class TypeT>
-    bool get_has_key(Category category_id,
-                     std::string name) const {
-    return shared_->get_key<TypeT>(category_id, name) != Key<TypeT>();
+  template <class TypeT, int Arity>
+      bool get_has_key(Category category_id,
+                       std::string name) const {
+    return shared_->get_key<TypeT, Arity>(category_id, name)
+        != Key<TypeT, Arity>();
   }
   /** Get a list of all keys of the given type,
    */
-  template <class TypeT>
-  std::vector<Key<TypeT> > get_keys(Category category_id) const {
-    return shared_->get_keys<TypeT>(category_id);
+  template <class TypeT, int Arity>
+      vector<Key<TypeT, Arity> > get_keys(Category category_id) const {
+    return shared_->get_keys<TypeT, Arity>(category_id);
   }
 
   /** Return the number of frames in the file. Currently, this is the number
       of frames that the x-coordinate has, but it should be made more general.
   */
   unsigned int get_number_of_frames() const {
-    return shared_->get_number_of_frames(get_key<FloatTraits>(Physics,
+    return shared_->get_number_of_frames(get_key<FloatTraits, 1>(Physics,
                                                               "cartesian x"));
   }
 
   /** \name Non-template versions for python
       @{
   */
-#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue,\
+#define IMP_HDF5_ROOT_KEY_TYPE_METHODS(lcname, UCName, PassValue, ReturnValue, \
                                        PassValues, ReturnValues)        \
   UCName##Key get_##lcname##_key(Category category_id,                  \
                                  std::string nm) const {                \
-    return get_key<UCName##Traits>(category_id, nm);                    \
+    return get_key<UCName##Traits, 1>(category_id, nm);                 \
   }                                                                     \
   bool get_has_##lcname##_key(Category category_id,                     \
                               std::string nm) const {                   \
-    return get_has_key<UCName##Traits>(category_id, nm);                \
+    return get_has_key<UCName##Traits, 1>(category_id, nm);             \
   }                                                                     \
   UCName##Key add_##lcname##_key(Category category_id,                  \
                                  std::string nm,                        \
                                  bool per_frame) const {                \
-    return add_key<UCName##Traits>(category_id, nm, per_frame);         \
+    return add_key<UCName##Traits, 1>(category_id, nm, per_frame);      \
   }                                                                     \
   std::string get_name(UCName##Key k) const {                           \
     return shared_->get_name(k);                                        \
@@ -104,8 +110,8 @@ class RMFEXPORT RootHandle: public NodeHandle {
     return k.get_category();                                            \
   }                                                                     \
   UCName##Key##s                                                        \
-    get_##lcname##_keys(Category category_id) const {                   \
-    return get_keys<UCName##Traits>(category_id);                       \
+      get_##lcname##_keys(Category category_id) const {                 \
+    return get_keys<UCName##Traits, 1>(category_id);                    \
   }                                                                     \
   unsigned int get_number_of_frames(UCName##Key k) const {              \
     return shared_->get_number_of_frames(k);                            \
@@ -123,7 +129,12 @@ class RMFEXPORT RootHandle: public NodeHandle {
       @{
   */
   //! Return a list with all the keys from that category
-  PythonList get_keys(Category c) const;
+  /** If arity>1 then the keys for the appropriate tuples are
+      returned.
+  */
+  PythonList get_keys(Category c, int arity=1) const;
+  //! Return all tuples of that arity
+  PythonList get_node_tuples(int arity) const;
   /** @} */
 #endif
   /** Each node in the hierarchy can be associated with some arbitrary bit
@@ -135,6 +146,7 @@ class RMFEXPORT RootHandle: public NodeHandle {
   void show(std::ostream &out= std::cout) const {
     out << "RootHandle";
   }
+#ifndef IMP_DOXYGEN
   /** \name Bonds
       The hierarchy also contains information about bonds connecting
       arbitrary nodes in the hierarchy.
@@ -155,6 +167,102 @@ class RMFEXPORT RootHandle: public NodeHandle {
   }
   BondPairs get_bonds() const;
   /** @} */
+#endif
+
+  template <int Arity>
+      unsigned int get_number_of_node_tuples() const {
+    return shared_->get_number_of_tuples(Arity);
+  }
+  template <int Arity>
+      vector<NodeTupleHandle<Arity> > get_node_tuples() const {
+    Indexes ids= shared_->get_tuple_indexes(Arity);
+    vector<NodeTupleHandle<Arity> > ret(ids.size());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]=NodeTupleHandle<Arity>(ids[i], shared_.get());
+    }
+    return ret;
+  }
+  template <int Arity>
+  NodeTupleHandle<Arity>  add_node_tuple(const NodeHandles &nh,
+                                            NodeTupleType tt) {
+    IMP_RMF_USAGE_CHECK(nh.size()==Arity, "Wrong size for handles list");
+    Indexes ix(nh.size());
+    for (unsigned int i=0; i< nh.size(); ++i) {
+      ix[i]=nh[i].get_id().get_index();
+    }
+    int id=shared_->add_tuple(ix, tt);
+    return NodeTupleHandle<Arity>(id, shared_.get());
+  }
+
+#define IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS_INNER(lctupe, UCTuple, D,  \
+                                                   lcname, UCName, PassValue, \
+                                                   ReturnValue,         \
+                                                   PassValues, ReturnValues) \
+  UCTuple##UCName##Key get_##lctupe##_##lcname##_key(Category category_id, \
+                                                   std::string nm) const { \
+    return get_key<UCName##Traits, D>(category_id, nm);                 \
+  }                                                                     \
+  bool get_has_##lctupe##_##lcname##_key(Category category_id,             \
+                                      std::string nm) const {           \
+    return get_has_key<UCName##Traits, D>(category_id, nm);             \
+  }                                                                     \
+  UCTuple##UCName##Key add_##lctupe##_##lcname##_key(Category category_id, \
+                                                  std::string nm,       \
+                                                  bool per_frame) const { \
+    return add_key<UCName##Traits, D>(category_id, nm, per_frame);      \
+  }                                                                     \
+  std::string get_name(UCTuple##UCName##Key k) const {                  \
+    return shared_->get_name(k);                                        \
+  }                                                                     \
+  Category get_category(UCTuple##UCName##Key k) const {                 \
+    return k.get_category();                                            \
+  }                                                                     \
+  UCTuple##UCName##Key##s                                               \
+      get_##lctupe##_##lcname##_keys(Category category_id) const {      \
+    return get_keys<UCName##Traits, D>(category_id);                    \
+  }                                                                     \
+  unsigned int get_number_of_frames(UCTuple##UCName##Key k) const {     \
+    return shared_->get_number_of_frames(k);                            \
+  }                                                                     \
+  bool get_is_per_frame(UCTuple##UCName##Key k) const {                 \
+    return shared_->get_is_per_frame(k);                                \
+  }
+
+#define IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS(lcname, UCName, PassValue, \
+                                             ReturnValue,               \
+                                             PassValues, ReturnValues)  \
+  IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS_INNER(pair, Pair, 2,             \
+                                             lcname, UCName, PassValue, \
+                                             ReturnValue,               \
+                                             PassValues, ReturnValues); \
+  IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS_INNER(triplet, Triplet, 3,       \
+                                             lcname, UCName, PassValue, \
+                                             ReturnValue,               \
+                                             PassValues, ReturnValues); \
+  IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS_INNER(quad, Quad, 4,             \
+                                             lcname, UCName, PassValue, \
+                                             ReturnValue,               \
+                                             PassValues, ReturnValues)
+
+#define IMP_HDF5_ROOT_KEY_TUPLE_METHODS(lctuple, UCTuple, D)            \
+  unsigned int get_number_of_node_##lctuple##s() const {                \
+    return get_number_of_node_tuples<D>();                              \
+  }                                                                     \
+  Node##UCTuple##Handles get_node_##lctuple##s() const {                \
+    return get_node_tuples<D>();                                        \
+  }                                                                     \
+  Node##UCTuple##Handle add_node_##lctuple(const NodeHandles &nh,       \
+                                          NodeTupleType tt) {           \
+    return add_node_tuple<D>(nh, tt);                                   \
+  }
+
+  IMP_HDF5_ROOT_KEY_TUPLE_METHODS(pair, Pair, 2);
+  IMP_HDF5_ROOT_KEY_TUPLE_METHODS(triplet, Triplet, 3);
+  IMP_HDF5_ROOT_KEY_TUPLE_METHODS(quad, Quad, 4);
+  IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_KEY_TUPLE_TYPE_METHODS);
+
+
+
   HDF5Group get_hdf5_group() const {
     return shared_->get_group();
   }
@@ -190,7 +298,7 @@ class RMFEXPORT RootHandle: public NodeHandle {
   void flush();
 };
 
-typedef std::vector<RootHandle> RootHandles;
+typedef vector<RootHandle> RootHandles;
 
 /** Create an RMF from a file system path.*/
 inline RootHandle create_rmf_file(std::string path) {
@@ -223,6 +331,12 @@ RMFEXPORT Floats get_values(const NodeHandles &nodes,
                             Float missing_value
                             =std::numeric_limits<double>::max());
 /** @} */
+
+
+template <int D>
+inline RootHandle NodeTupleHandle<D>::get_root_handle() const {
+  return get_node(0).get_root_handle();
+}
 
 } /* namespace RMF */
 

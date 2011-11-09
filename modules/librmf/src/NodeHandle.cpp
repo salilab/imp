@@ -33,9 +33,9 @@ RootHandle NodeHandle::get_root_handle() const {
   return RootHandle(shared_.get());
 }
 
-std::vector<NodeHandle> NodeHandle::get_children() const {
+vector<NodeHandle> NodeHandle::get_children() const {
   Ints children= shared_->get_children(node_);
-  std::vector<NodeHandle> ret(children.size());
+  vector<NodeHandle> ret(children.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= NodeHandle(children[ret.size()-i-1], shared_.get());
   }
@@ -61,7 +61,7 @@ namespace {
   template <class KT>
   void show_data(NodeHandle n,
                  std::ostream &out,
-                 const std::vector<KT> &ks,
+                 const vector<KT> &ks,
                  int frame, std::string prefix) {
     for (unsigned int i=0; i< ks.size(); ++i) {
       if ((n.get_root_handle().get_is_per_frame(ks[i])
@@ -97,11 +97,11 @@ namespace {
   }
 
   template <class TypeT>
-  std::vector< Key<TypeT> > get_keys(RootHandle f) {
+  vector< Key<TypeT, 1> > get_keys(RootHandle f) {
     Categories kcs= f.get_categories();
-    std::vector<Key<TypeT> > ret;
+    vector<Key<TypeT, 1> > ret;
     for (unsigned int i=0; i< kcs.size(); ++i) {
-      std::vector<Key<TypeT> > curp=f.get_keys<TypeT>(kcs[i]);
+      vector<Key<TypeT, 1> > curp=f.get_keys<TypeT, 1>(kcs[i]);
       ret.insert(ret.end(), curp.begin(), curp.end());
     }
     return ret;
@@ -112,7 +112,7 @@ namespace {
 #define IMP_RMF_PRINT_TREE(stream, NodeType, start, num_children,       \
                        get_child, show)                                 \
   {                                                                     \
-    std::vector<boost::tuple<std::string, std::string, NodeType> >      \
+    vector<boost::tuple<std::string, std::string, NodeType> >      \
       queue;                                                            \
     queue.push_back(boost::make_tuple(std::string(),                    \
                                       std::string(), start));           \

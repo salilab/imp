@@ -22,12 +22,12 @@ namespace {
     return nm.get_index();
   }
 
-  template <class TypeT>
+template <class TypeT, int Arity>
   double show_type_data_xml(RMF::NodeHandle nh,
                             RMF::Category kc) {
     double ret=0;
     RMF::RootHandle rh= nh.get_root_handle();
-    std::vector< RMF::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
+    std::vector< RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT, Arity>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       if (nh.get_has_value(keys[i])) {
         ret+= count(nh.get_value(keys[i]));
@@ -39,13 +39,13 @@ namespace {
   double show_data_xml(RMF::NodeHandle nh,
                      RMF::Category kc) {
     double ret=0;
-    ret+=show_type_data_xml< RMF::IntTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::FloatTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::IndexTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::StringTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::NodeIDTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::IndexDataSet2DTraits>(nh, kc);
-    ret+=show_type_data_xml< RMF::FloatDataSet2DTraits>(nh, kc);
+    ret+=show_type_data_xml< RMF::IntTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::FloatTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::IndexTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::StringTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::NodeIDTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::IndexDataSet2DTraits, 1>(nh, kc);
+    ret+=show_type_data_xml< RMF::FloatDataSet2DTraits, 1>(nh, kc);
     return ret;
   }
 
@@ -70,13 +70,12 @@ double traverse(std::string name) {
   double ret=0;
   RMF::RootHandle rh= RMF::open_rmf_file(name);
   ret+=show_xml(rh);
-  if (rh.get_number_of_bonds() >0) {
-    for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
-      std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
-        = rh.get_bond(i);
-      ret+=handles.first.get_id().get_index();
-      ret+=handles.second.get_id().get_index();
-    }
+  RMF::NodePairHandles ps= rh.get_node_tuples<2>();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
+        (ps[i].get_node(0),ps[i].get_node(1));
+    ret+=handles.first.get_id().get_index();
+    ret+=handles.second.get_id().get_index();
   }
   return ret;
 }

@@ -81,7 +81,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
       IMP_NEW(Particle, p, (m));
       ch[i].set_association(p);
       {
-        RMF::FloatKeys fks= fh.get_keys<FloatTraits>(IMP);
+        RMF::FloatKeys fks= fh.get_keys<FloatTraits, 1>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -91,7 +91,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        RMF::IntKeys fks= fh.get_keys<IntTraits>(IMP);
+        RMF::IntKeys fks= fh.get_keys<IntTraits, 1>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -101,7 +101,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        RMF::StringKeys fks= fh.get_keys<StringTraits>(IMP);
+        RMF::StringKeys fks= fh.get_keys<StringTraits, 1>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
@@ -111,7 +111,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         }
       }
       {
-        RMF::IndexKeys fks= fh.get_keys<IndexTraits>(IMP);
+        RMF::IndexKeys fks= fh.get_keys<IndexTraits, 1>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;

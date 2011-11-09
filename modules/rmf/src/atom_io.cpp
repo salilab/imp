@@ -96,7 +96,7 @@ namespace {
   }
 
   template <class TypeTag, class T>
-  void set_one(NodeHandle n, RMF::Key<TypeTag> k,
+  void set_one(NodeHandle n, RMF::Key<TypeTag, 1> k,
                T v, unsigned int frame) {
     n.set_value(k, v, frame);
   }

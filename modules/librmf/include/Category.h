@@ -54,7 +54,7 @@ public:
   }
 };
 
-typedef std::vector<Category> Categories;
+typedef vector<Category> Categories;
 #ifndef SWIG
 inline std::ostream &operator<<(std::ostream &out, const Category &nh) {
   nh.show(out);
@@ -132,11 +132,19 @@ RMFEXPORT extern const Category sequence;
     between 0 and 1; must have red and blue}
     \rmfattribute{rgb blue, Float, the blue channel for the color,
     between 0 and 1; must have red and green}
-    \rmfattribute{triangles, Indexes,
+    \rmfattribute{triangle vertex 0s Indexes,
     indexes into the coordinates fields to define triangular faces,
     indexes must be less than the coordinates length;
-    the number must be divisible by 3}
-    \rmfattribute{shape, Index, 0 for sphere(s); 1 for cylinder(s);
+    triangle vertex 1s and triangle vertex 2s must be there}
+    \rmfattribute{triangle vertex 1s, Indexes,
+    indexes into the coordinates fields to define triangular faces,
+    indexes must be less than the coordinates length;
+    triangles vertex 1 and triangles vertex 2 must be there}
+    \rmfattribute{triangle vertex 2s, Indexes,
+    indexes into the coordinates fields to define triangular faces,
+    indexes must be less than the coordinates length;
+    triangles vertex 1 and triangles vertex 2 must be there}
+    \rmfattribute{type, Index, 0 for sphere(s); 1 for cylinder(s);
     2 for surface,
     appropriate attributes must be there;
     if cylinders or spheres there must be a radius;
@@ -171,12 +179,20 @@ RMFEXPORT extern const Category feature;
 */
 RMFEXPORT extern const Category publication;
 
+  //! Store information about a bond
+  /** \rmfattributetable_begin{Bond}
+      \rmfattribute{length, Float, the length in angstroms, }
+      \rmfattribute{type, Index, the bond type (0 covalent, 1 ionic,
+      2 hydrogen...),
+      \rmfattributetable_end
+   */
+RMFEXPORT extern const Category bond;
+
 #ifndef IMP_DOXYGEN
   RMFEXPORT extern const Category Physics;
   RMFEXPORT extern const Category Sequence;
   RMFEXPORT extern const Category Shape;
   RMFEXPORT extern const Category Feature;
-  RMFEXPORT extern const Category Publication;
 #endif
 
 } /* namespace RMF */

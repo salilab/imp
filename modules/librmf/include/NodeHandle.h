@@ -62,7 +62,7 @@ namespace RMF {
 
 class NodeHandle;
 // for children
-typedef std::vector<NodeHandle> NodeHandles;
+typedef vector<NodeHandle> NodeHandles;
 
 //! The types of the nodes.
 enum NodeType {
@@ -106,7 +106,6 @@ class RMFEXPORT NodeHandle {
   int node_;
   friend class RootHandle;
   boost::intrusive_ptr<internal::SharedData> shared_;
-  NodeHandle(int node, internal::SharedData *shared);
   int compare(const NodeHandle &o) const {
     if (node_ < o.node_) return -1;
     else if (node_ > o.node_) return 1;
@@ -114,6 +113,11 @@ class RMFEXPORT NodeHandle {
     else if (shared_.get() > o.shared_.get()) return 1;
     else return 0;
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+ public:
+  NodeHandle(int node, internal::SharedData *shared);
+#endif
+
  public:
   IMP_RMF_COMPARISONS(NodeHandle);
   IMP_RMF_HASHABLE(NodeHandle, return node_);

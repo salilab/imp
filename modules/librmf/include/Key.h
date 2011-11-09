@@ -25,7 +25,7 @@ class SharedData;
 namespace RMF {
 
 /** A key referencing a particular piece of data */
-template <class TypeTraitsT>
+  template <class TypeTraitsT, int Arity>
 class Key {
   friend class RootHandle;
   friend class NodeHandle;
@@ -52,6 +52,9 @@ class Key {
   Category get_category() const {
     return ci_;
   }
+    int get_arity() const {
+      return Arity;
+    }
 public:
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
@@ -63,8 +66,9 @@ public:
 };
 
 #ifndef SWIG
-template <class Traits>
-inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
+  template <class Traits, int Arity>
+  inline std::ostream &operator<<(std::ostream &out,
+                                  const Key<Traits, Arity> &nh) {
   nh.show(out);
   return out;
 }
@@ -72,8 +76,16 @@ inline std::ostream &operator<<(std::ostream &out, const Key<Traits> &nh) {
 
 #define IMP_RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue,     \
                             PassValues, ReturnValues)                   \
-  typedef Key<Ucname##Traits> Ucname##Key;                              \
-  typedef std::vector<Ucname##Key> Ucname##Keys
+  typedef Key<Ucname##Traits, 1> Ucname##Key;                           \
+  typedef vector<Ucname##Key> Ucname##Keys;                        \
+  typedef Key<Ucname##Traits, 2> Pair##Ucname##Key;                     \
+  typedef vector<Pair##Ucname##Key> Pair##Ucname##Keys;            \
+  typedef Key<Ucname##Traits, 3> Triplet##Ucname##Key;                  \
+  typedef vector<Triplet##Ucname##Key> Triplet##Ucname##Keys;      \
+  typedef Key<Ucname##Traits, 4> Quad##Ucname##Key;                     \
+  typedef vector<Quad##Ucname##Key> Quad##Ucname##Keys
+
+
 
 /** \name Key types
     RMF files support storing a variety of different types of data. These
