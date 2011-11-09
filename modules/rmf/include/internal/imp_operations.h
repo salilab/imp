@@ -19,14 +19,14 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 /** Get the requested key, adding it to the file if necessary.
  */
 template <class TypeT>
-inline RMF::Key<TypeT> get_or_add_key(RMF::RootHandle f,
-                                        RMF::Category category_id,
-                                        std::string name,
-                                        bool per_frame=false) {
-  if (f.get_has_key<TypeT>(category_id, name)) {
-    return f.get_key<TypeT>(category_id, name);
+inline RMF::Key<TypeT, 1> get_or_add_key(RMF::RootHandle f,
+                                      RMF::Category category_id,
+                                      std::string name,
+                                      bool per_frame=false) {
+  if (f.get_has_key<TypeT, 1>(category_id, name)) {
+    return f.get_key<TypeT, 1>(category_id, name);
   } else {
-    return f.add_key<TypeT>(category_id, name, per_frame);
+    return f.add_key<TypeT, 1>(category_id, name, per_frame);
   }
 }
 

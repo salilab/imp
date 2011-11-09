@@ -1,637 +1,418 @@
-found env /home/drussel/src/imp/debug/build/doc/examples/RMF
 <?xml version="1.0"?>
 <rmf>
 <description>
 
 </description>
 <path>
-<built-in function input>
+../svn/modules/librmf/examples/simple.rmf
 </path>
-<node name="root" id="0" type="root"/>
+<node name="root" id="0" type="root">
 <child>
-<node name="simple.pdb" id="1" type="rep"/>
+<node name="simple.pdb" id="1" type="rep">
 <child>
-<node name="A" id="2" type="rep"/>
-< sequence
-chain id ="0"
+<node name="A" id="2" type="rep">
+<sequence
+chain_id="0"
 />
 <child>
-<node name="0" id="3" type="rep"/>
-< sequence
-residue index begin ="0"
-residue index end ="1"
-residue type ="MET"
+<node name="0" id="3" type="rep">
+<sequence
+residue_index_begin="0"
+residue_index_end="1"
+residue_type="MET"
 />
 <child>
-<node name="N" id="4" type="rep"/>
-< physics
-cartesian x ="24.2770004272"
-cartesian y ="8.37399959564"
-cartesian z ="-9.85400009155"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
+<node name="N" id="4" type="rep">
+<physics
+cartesian_x="24.277"
+cartesian_y="8.374"
+cartesian_z="-9.854"
+radius="1.85"
+mass="14.0067"
+element="7"
 />
+</node>
 </child>
 <child>
-<node name="CA" id="5" type="rep"/>
-< physics
-cartesian x ="24.4039993286"
-cartesian y ="9.85900020599"
-cartesian z ="-9.9390001297"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
+<node name="CA" id="5" type="rep">
+<physics
+cartesian_x="24.404"
+cartesian_y="9.859"
+cartesian_z="-9.939"
+radius="2.275"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="C" id="6" type="rep"/>
-< physics
-cartesian x ="25.813999176"
-cartesian y ="10.2489995956"
-cartesian z ="-10.359000206"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
+<node name="C" id="6" type="rep">
+<physics
+cartesian_x="25.814"
+cartesian_y="10.249"
+cartesian_z="-10.359"
+radius="2"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="O" id="7" type="rep"/>
-< physics
-cartesian x ="26.7479991913"
-cartesian y ="9.46899986267"
-cartesian z ="-10.1969995499"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
+<node name="O" id="7" type="rep">
+<physics
+cartesian_x="26.748"
+cartesian_y="9.469"
+cartesian_z="-10.197"
+radius="1.7"
+mass="15.9994"
+element="8"
 />
+</node>
 </child>
 <child>
-<node name="CB" id="8" type="rep"/>
-< physics
-cartesian x ="24.0699996948"
-cartesian y ="10.4949998856"
-cartesian z ="-8.59599971771"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
+<node name="CB" id="8" type="rep">
+<physics
+cartesian_x="24.07"
+cartesian_y="10.495"
+cartesian_z="-8.596"
+radius="2.175"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CG" id="9" type="rep"/>
-< physics
-cartesian x ="24.8799991608"
-cartesian y ="9.9390001297"
-cartesian z ="-7.44199991226"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
+<node name="CG" id="9" type="rep">
+<physics
+cartesian_x="24.88"
+cartesian_y="9.939"
+cartesian_z="-7.442"
+radius="2.175"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="SD" id="10" type="rep"/>
-< physics
-cartesian x ="24.2619991302"
-cartesian y ="10.5550003052"
-cartesian z ="-5.87300014496"
-radius ="2.0"
-mass ="32.065"
-element ="16"
+<node name="SD" id="10" type="rep">
+<physics
+cartesian_x="24.262"
+cartesian_y="10.555"
+cartesian_z="-5.873"
+radius="2"
+mass="32.065"
+element="16"
 />
+</node>
 </child>
 <child>
-<node name="CE" id="11" type="rep"/>
-< physics
-cartesian x ="24.8220005035"
-cartesian y ="12.265999794"
-cartesian z ="-5.96700000763"
-radius ="2.05999994278"
-mass ="12.0107"
-element ="6"
+<node name="CE" id="11" type="rep">
+<physics
+cartesian_x="24.822"
+cartesian_y="12.266"
+cartesian_z="-5.967"
+radius="2.06"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
+</node>
 </child>
 <child>
-<node name="1" id="12" type="rep"/>
-< sequence
-residue index begin ="1"
-residue index end ="2"
-residue type ="VAL"
+<node name="1" id="12" type="rep">
+<sequence
+residue_index_begin="1"
+residue_index_end="2"
+residue_type="VAL"
 />
 <child>
-<node name="N" id="13" type="rep"/>
-< physics
-cartesian x ="25.9640007019"
-cartesian y ="11.4530000687"
-cartesian z ="-10.9029998779"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
+<node name="N" id="13" type="rep">
+<physics
+cartesian_x="25.964"
+cartesian_y="11.453"
+cartesian_z="-10.903"
+radius="1.85"
+mass="14.0067"
+element="7"
 />
+</node>
 </child>
 <child>
-<node name="CA" id="14" type="rep"/>
-< physics
-cartesian x ="27.2630004883"
-cartesian y ="11.9239997864"
-cartesian z ="-11.359000206"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
+<node name="CA" id="14" type="rep">
+<physics
+cartesian_x="27.263"
+cartesian_y="11.924"
+cartesian_z="-11.359"
+radius="2.275"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="C" id="15" type="rep"/>
-< physics
-cartesian x ="27.3920001984"
-cartesian y ="13.4280004501"
-cartesian z ="-11.1149997711"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
+<node name="C" id="15" type="rep">
+<physics
+cartesian_x="27.392"
+cartesian_y="13.428"
+cartesian_z="-11.115"
+radius="2"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="O" id="16" type="rep"/>
-< physics
-cartesian x ="26.4430007935"
-cartesian y ="14.1840000153"
-cartesian z ="-11.3269996643"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
+<node name="O" id="16" type="rep">
+<physics
+cartesian_x="26.443"
+cartesian_y="14.184"
+cartesian_z="-11.327"
+radius="1.7"
+mass="15.9994"
+element="8"
 />
+</node>
 </child>
 <child>
-<node name="CB" id="17" type="rep"/>
-< physics
-cartesian x ="27.4549999237"
-cartesian y ="11.6309995651"
-cartesian z ="-12.8780002594"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
+<node name="CB" id="17" type="rep">
+<physics
+cartesian_x="27.455"
+cartesian_y="11.631"
+cartesian_z="-12.878"
+radius="2.275"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CG1" id="18" type="rep"/>
-< physics
-cartesian x ="28.7560005188"
-cartesian y ="12.2089996338"
-cartesian z ="-13.3819999695"
-radius ="2.05999994278"
-mass ="12.0107"
-element ="6"
+<node name="CG1" id="18" type="rep">
+<physics
+cartesian_x="28.756"
+cartesian_y="12.209"
+cartesian_z="-13.382"
+radius="2.06"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CG2" id="19" type="rep"/>
-< physics
-cartesian x ="27.4319992065"
-cartesian y ="10.1309995651"
-cartesian z ="-13.1400003433"
-radius ="2.05999994278"
-mass ="12.0107"
-element ="6"
+<node name="CG2" id="19" type="rep">
+<physics
+cartesian_x="27.432"
+cartesian_y="10.131"
+cartesian_z="-13.14"
+radius="2.06"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
+</node>
 </child>
 <child>
-<node name="2" id="20" type="rep"/>
-< sequence
-residue index begin ="2"
-residue index end ="3"
-residue type ="LEU"
+<node name="2" id="20" type="rep">
+<sequence
+residue_index_begin="2"
+residue_index_end="3"
+residue_type="LEU"
 />
 <child>
-<node name="N" id="21" type="rep"/>
-< physics
-cartesian x ="28.5550003052"
-cartesian y ="13.8549995422"
-cartesian z ="-10.6359996796"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
+<node name="N" id="21" type="rep">
+<physics
+cartesian_x="28.555"
+cartesian_y="13.855"
+cartesian_z="-10.636"
+radius="1.85"
+mass="14.0067"
+element="7"
 />
+</node>
 </child>
 <child>
-<node name="CA" id="22" type="rep"/>
-< physics
-cartesian x ="28.797000885"
-cartesian y ="15.2690000534"
-cartesian z ="-10.3900003433"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
+<node name="CA" id="22" type="rep">
+<physics
+cartesian_x="28.797"
+cartesian_y="15.269"
+cartesian_z="-10.39"
+radius="2.275"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="C" id="23" type="rep"/>
-< physics
-cartesian x ="29.4920005798"
-cartesian y ="15.9029998779"
-cartesian z ="-11.5850000381"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
+<node name="C" id="23" type="rep">
+<physics
+cartesian_x="29.492"
+cartesian_y="15.903"
+cartesian_z="-11.585"
+radius="2"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="O" id="24" type="rep"/>
-< physics
-cartesian x ="30.25"
-cartesian y ="15.2399997711"
-cartesian z ="-12.3059997559"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
+<node name="O" id="24" type="rep">
+<physics
+cartesian_x="30.25"
+cartesian_y="15.24"
+cartesian_z="-12.306"
+radius="1.7"
+mass="15.9994"
+element="8"
 />
+</node>
 </child>
 <child>
-<node name="CB" id="25" type="rep"/>
-< physics
-cartesian x ="29.6879997253"
-cartesian y ="15.470000267"
-cartesian z ="-9.15200042725"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
+<node name="CB" id="25" type="rep">
+<physics
+cartesian_x="29.688"
+cartesian_y="15.47"
+cartesian_z="-9.152"
+radius="2.175"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CG" id="26" type="rep"/>
-< physics
-cartesian x ="29.0839996338"
-cartesian y ="15.4160003662"
-cartesian z ="-7.75099992752"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
+<node name="CG" id="26" type="rep">
+<physics
+cartesian_x="29.084"
+cartesian_y="15.416"
+cartesian_z="-7.751"
+radius="2.275"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CD1" id="27" type="rep"/>
-< physics
-cartesian x ="28.7299995422"
-cartesian y ="13.9879999161"
-cartesian z ="-7.38999986649"
-radius ="2.05999994278"
-mass ="12.0107"
-element ="6"
+<node name="CD1" id="27" type="rep">
+<physics
+cartesian_x="28.73"
+cartesian_y="13.988"
+cartesian_z="-7.39"
+radius="2.06"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
 <child>
-<node name="CD2" id="28" type="rep"/>
-< physics
-cartesian x ="30.0849990845"
-cartesian y ="16.0079994202"
-cartesian z ="-6.77600002289"
-radius ="2.05999994278"
-mass ="12.0107"
-element ="6"
+<node name="CD2" id="28" type="rep">
+<physics
+cartesian_x="30.085"
+cartesian_y="16.008"
+cartesian_z="-6.776"
+radius="2.06"
+mass="12.0107"
+element="6"
 />
+</node>
 </child>
+</node>
 </child>
-<child>
-<node name="3" id="29" type="rep"/>
-< sequence
-residue index begin ="3"
-residue index end ="4"
-residue type ="SER"
+</node>
+</child>
+</node>
+</child>
+</node>
+<tuples2>
+<tuple id="0" type="bond" members="4, 5">
+</tuple>
+<tuple id="1" type="bond" members="6, 5">
+</tuple>
+<tuple id="2" type="bond" members="7, 6">
+</tuple>
+<tuple id="3" type="bond" members="8, 5">
+</tuple>
+<tuple id="4" type="bond" members="9, 8">
+</tuple>
+<tuple id="5" type="bond" members="10, 9">
+</tuple>
+<tuple id="6" type="bond" members="11, 10">
+</tuple>
+<tuple id="7" type="bond" members="6, 13">
+</tuple>
+<tuple id="8" type="bond" members="17, 14">
+</tuple>
+<tuple id="9" type="bond" members="13, 14">
+</tuple>
+<tuple id="10" type="bond" members="16, 15">
+</tuple>
+<tuple id="11" type="bond" members="15, 14">
+</tuple>
+<tuple id="12" type="bond" members="18, 17">
+</tuple>
+<tuple id="13" type="bond" members="19, 17">
+</tuple>
+<tuple id="14" type="bond" members="15, 21">
+</tuple>
+<tuple id="15" type="bond" members="25, 22">
+</tuple>
+<tuple id="16" type="bond" members="21, 22">
+</tuple>
+<tuple id="17" type="bond" members="23, 22">
+</tuple>
+<tuple id="18" type="bond" members="24, 23">
+</tuple>
+<tuple id="19" type="bond" members="26, 25">
+</tuple>
+<tuple id="20" type="bond" members="27, 26">
+</tuple>
+<tuple id="21" type="bond" members="28, 26">
+</tuple>
+<tuple id="22" type="bond" members="4, 5">
+</tuple>
+<tuple id="23" type="bond" members="6, 5">
+</tuple>
+<tuple id="24" type="bond" members="7, 6">
+</tuple>
+<tuple id="25" type="bond" members="8, 5">
+</tuple>
+<tuple id="26" type="bond" members="9, 8">
+</tuple>
+<tuple id="27" type="bond" members="10, 9">
+</tuple>
+<tuple id="28" type="bond" members="11, 10">
+</tuple>
+<tuple id="29" type="bond" members="6, 13">
+</tuple>
+<tuple id="30" type="bond" members="17, 14">
+</tuple>
+<tuple id="31" type="bond" members="13, 14">
+</tuple>
+<tuple id="32" type="bond" members="16, 15">
+</tuple>
+<tuple id="33" type="bond" members="15, 14">
+</tuple>
+<tuple id="34" type="bond" members="18, 17">
+</tuple>
+<tuple id="35" type="bond" members="19, 17">
+</tuple>
+<tuple id="36" type="bond" members="15, 21">
+</tuple>
+<tuple id="37" type="bond" members="25, 22">
+</tuple>
+<tuple id="38" type="bond" members="21, 22">
+</tuple>
+<tuple id="39" type="bond" members="23, 22">
+</tuple>
+<tuple id="40" type="bond" members="24, 23">
+</tuple>
+<tuple id="41" type="bond" members="26, 25">
+</tuple>
+<tuple id="42" type="bond" members="27, 26">
+</tuple>
+<tuple id="43" type="bond" members="28, 26">
+<bond
+type="0"
 />
-<child>
-<node name="N" id="30" type="rep"/>
-< physics
-cartesian x ="29.236000061"
-cartesian y ="17.1849994659"
-cartesian z ="-11.8000001907"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
-/>
-</child>
-<child>
-<node name="CA" id="31" type="rep"/>
-< physics
-cartesian x ="29.8980007172"
-cartesian y ="17.8939990997"
-cartesian z ="-12.8819999695"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="C" id="32" type="rep"/>
-< physics
-cartesian x ="31.281999588"
-cartesian y ="18.3360004425"
-cartesian z ="-12.3839998245"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="O" id="33" type="rep"/>
-< physics
-cartesian x ="31.5650005341"
-cartesian y ="18.267999649"
-cartesian z ="-11.1879997253"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-<child>
-<node name="CB" id="34" type="rep"/>
-< physics
-cartesian x ="29.061000824"
-cartesian y ="19.0970001221"
-cartesian z ="-13.3120002747"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="OG" id="35" type="rep"/>
-< physics
-cartesian x ="28.9160003662"
-cartesian y ="20.0259990692"
-cartesian z ="-12.2600002289"
-radius ="1.76999998093"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-</child>
-<child>
-<node name="4" id="36" type="rep"/>
-< sequence
-residue index begin ="4"
-residue index end ="5"
-residue type ="GLU"
-/>
-<child>
-<node name="N" id="37" type="rep"/>
-< physics
-cartesian x ="32.1510009766"
-cartesian y ="18.7590007782"
-cartesian z ="-13.295999527"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
-/>
-</child>
-<child>
-<node name="CA" id="38" type="rep"/>
-< physics
-cartesian x ="33.4889984131"
-cartesian y ="19.2119998932"
-cartesian z ="-12.9219999313"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="C" id="39" type="rep"/>
-< physics
-cartesian x ="33.3460006714"
-cartesian y ="20.4430007935"
-cartesian z ="-12.0190000534"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="O" id="40" type="rep"/>
-< physics
-cartesian x ="34.1150016785"
-cartesian y ="20.6200008392"
-cartesian z ="-11.0760002136"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-<child>
-<node name="CB" id="41" type="rep"/>
-< physics
-cartesian x ="34.3160018921"
-cartesian y ="19.5510005951"
-cartesian z ="-14.1780004501"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="CG" id="42" type="rep"/>
-< physics
-cartesian x ="35.7200012207"
-cartesian y ="20.158000946"
-cartesian z ="-13.920999527"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="CD" id="43" type="rep"/>
-< physics
-cartesian x ="36.6899986267"
-cartesian y ="19.2099990845"
-cartesian z ="-13.2049999237"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="OE1" id="44" type="rep"/>
-< physics
-cartesian x ="36.4490013123"
-cartesian y ="17.9869995117"
-cartesian z ="-13.1660003662"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-<child>
-<node name="OE2" id="45" type="rep"/>
-< physics
-cartesian x ="37.7109985352"
-cartesian y ="19.6919994354"
-cartesian z ="-12.6840000153"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-</child>
-<child>
-<node name="5" id="46" type="rep"/>
-< sequence
-residue index begin ="5"
-residue index end ="6"
-residue type ="GLY"
-/>
-<child>
-<node name="N" id="47" type="rep"/>
-< physics
-cartesian x ="32.3510017395"
-cartesian y ="21.2800006866"
-cartesian z ="-12.3079996109"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
-/>
-</child>
-<child>
-<node name="CA" id="48" type="rep"/>
-< physics
-cartesian x ="32.1180000305"
-cartesian y ="22.4720001221"
-cartesian z ="-11.5039997101"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="C" id="49" type="rep"/>
-< physics
-cartesian x ="31.8369998932"
-cartesian y ="22.1140003204"
-cartesian z ="-10.0530004501"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="O" id="50" type="rep"/>
-< physics
-cartesian x ="32.3530006409"
-cartesian y ="22.7579994202"
-cartesian z ="-9.13700008392"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-</child>
-<child>
-<node name="6" id="51" type="rep"/>
-< sequence
-residue index begin ="6"
-residue index end ="7"
-residue type ="GLU"
-/>
-<child>
-<node name="N" id="52" type="rep"/>
-< physics
-cartesian x ="31.033000946"
-cartesian y ="21.0690002441"
-cartesian z ="-9.84500026703"
-radius ="1.85000002384"
-mass ="14.0067"
-element ="7"
-/>
-</child>
-<child>
-<node name="CA" id="53" type="rep"/>
-< physics
-cartesian x ="30.7019996643"
-cartesian y ="20.6170005798"
-cartesian z ="-8.49800014496"
-radius ="2.27500009537"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="C" id="54" type="rep"/>
-< physics
-cartesian x ="31.9449996948"
-cartesian y ="20.0069999695"
-cartesian z ="-7.80700016022"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="O" id="55" type="rep"/>
-< physics
-cartesian x ="32.1990013123"
-cartesian y ="20.2779998779"
-cartesian z ="-6.63800001144"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-<child>
-<node name="CB" id="56" type="rep"/>
-< physics
-cartesian x ="29.5100002289"
-cartesian y ="19.6480007172"
-cartesian z ="-8.53299999237"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="CG" id="57" type="rep"/>
-< physics
-cartesian x ="28.1790008545"
-cartesian y ="20.3190002441"
-cartesian z ="-8.91100025177"
-radius ="2.17499995232"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="CD" id="58" type="rep"/>
-< physics
-cartesian x ="27.0559997559"
-cartesian y ="19.3159999847"
-cartesian z ="-9.26200008392"
-radius ="2.0"
-mass ="12.0107"
-element ="6"
-/>
-</child>
-<child>
-<node name="OE1" id="59" type="rep"/>
-< physics
-cartesian x ="27.3379993439"
-cartesian y ="18.2420005798"
-cartesian z ="-9.83199977875"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-<child>
-<node name="OE2" id="60" type="rep"/>
-< physics
-cartesian x ="25.8810005188"
-cartesian y ="19.6119995117"
-cartesian z ="-8.97900009155"
-radius ="1.70000004768"
-mass ="15.9994"
-element ="8"
-/>
-</child>
-</child>
-</child>
-</child>
+</tuple>
+</tuples2>
 </rmf>

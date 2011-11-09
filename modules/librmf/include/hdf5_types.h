@@ -15,12 +15,22 @@
 #include "infrastructure_macros.h"
 #include <hdf5.h>
 #include <algorithm>
-#include <vector>
 
 #include <limits>
 #include <boost/utility.hpp>
 
+
 namespace RMF {
+
+#ifdef IMP_DOXYGEN
+  /** The RMF library uses containers that are equivalent to, but
+      not necessarily the same type as, stl::vectors to store lists of
+      values.
+  */
+  template <class T>
+  class vector {};
+#endif
+
 
   /** \defgroup hdf5 HDF Support
       These functions provide low level support for reading and writing HDF5
@@ -34,23 +44,27 @@ namespace RMF {
   /** The type used to store integral values.*/
   typedef int Int;
   /** The type used to store lists of integral values.*/
-  typedef std::vector<Int> Ints;
+  typedef vector<Int> Ints;
   /** The type used to store lists of floating point values.*/
   typedef double Float;
   /** The type used to store lists of floating point values.*/
-  typedef std::vector<Float> Floats;
+  typedef vector<Float> Floats;
+  /** The type used to store lists of floating point values.*/
+  typedef vector<Floats> FloatsList;
   /** The type used to store lists of index values.*/
   typedef int Index;
   /** The type used to store lists of index values.*/
-  typedef std::vector<Index> Indexes;
+  typedef vector<Index> Indexes;
+ /** The type used to store lists of indexes.*/
+  typedef vector<Indexes> IndexesList;
   /** The type used to store lists of string values.*/
   typedef std::string String;
   /** The type used to store lists of string values.*/
-  typedef std::vector<String> Strings;
+  typedef vector<String> Strings;
   /** The type used to store lists of NodeID values.*/
-  typedef std::vector<NodeIDs> NodeIDsList;
+  typedef vector<NodeIDs> NodeIDsList;
   /** The type used to store lists of lists of integers values.*/
-  typedef std::vector<Ints> IntsList;
+  typedef vector<Ints> IntsList;
   /** The type used to store char values.*/
   typedef char Char;
   /** The type used to store lists of char values.*/
@@ -343,8 +357,8 @@ namespace RMF {
       return ints_type;
     }
   public:
-    typedef std::vector<typename BaseTraits::Type> Type;
-    typedef std::vector< Type > Types;
+    typedef vector<typename BaseTraits::Type> Type;
+    typedef vector< Type > Types;
     static hid_t get_hdf5_disk_type() {
       static HDF5Handle
         ints_type( H5Tvlen_create (BaseTraits::get_hdf5_disk_type()),
@@ -413,7 +427,8 @@ namespace RMF {
       return 7+ BaseTraits::get_index();
     }
   };
-
+  typedef ArrayTraits<FloatTraits> FloatsTraits;
+  typedef ArrayTraits<IndexTraits> IndexesTraits;
   typedef ArrayTraits<IntTraits> IntsTraits;
   typedef ArrayTraits<NodeIDTraits> NodeIDsTraits;
 

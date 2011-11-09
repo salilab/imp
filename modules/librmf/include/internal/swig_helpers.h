@@ -339,8 +339,8 @@
 
 
   template <class T, class ConvertT>
-  struct ConvertSequence<std::vector<T>, ConvertT > :
-    public ConvertVectorBase<std::vector<T>, ConvertT> {
+  struct ConvertSequence< RMF::vector<T>, ConvertT > :
+    public ConvertVectorBase<RMF::vector<T>, ConvertT> {
     static const int converter=7;
   };
 

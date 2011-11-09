@@ -34,12 +34,12 @@ namespace {
     return std::string(data.begin(), data.end());
   }
 
-  template <class TypeT>
-  bool show_type_data_xml(RMF::NodeHandle nh,
+template <class TypeT, int Arity, class Handle>
+  bool show_type_data_xml(Handle nh,
                           RMF::Category kc,
                           bool opened, std::ostream &out) {
     RMF::RootHandle rh= nh.get_root_handle();
-    std::vector<RMF::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
+    std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT, Arity>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       //std::cout << "key " << rh.get_name(keys[i]) << std::endl;
       if (rh.get_is_per_frame(keys[i])) {
@@ -93,41 +93,79 @@ namespace {
     }
     return opened;
   }
-  void show_data_xml(RMF::NodeHandle nh,
+template <int Arity, class Handle>
+  void show_data_xml(Handle nh,
                      RMF::Category kc,
                      std::ostream &out) {
     bool opened=false;
-    opened=show_type_data_xml<RMF::IntTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::FloatTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::IndexTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::StringTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::NodeIDTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::IndexDataSet2DTraits>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::FloatDataSet2DTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::IntTraits, Arity>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::FloatTraits, Arity>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::IndexTraits, Arity>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::StringTraits, Arity>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::NodeIDTraits, Arity>(nh, kc, opened, out);
+    opened=show_type_data_xml<RMF::IndexDataSet2DTraits, Arity>(nh,
+                                                                kc, opened,
+                                                                out);
+    opened=show_type_data_xml<RMF::FloatDataSet2DTraits, Arity>(nh,
+                                                                kc, opened,
+                                                                out);
     if (opened) {
       out << "/>\n";
     }
   }
 
-  void show_xml(RMF::NodeHandle nh,
+  void show_hierarchy(RMF::NodeHandle nh,
                 const RMF::Categories& cs, std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
         << nh.get_id() << "\" "
         << "type=\"" << RMF::get_type_name(nh.get_type())
-        << "\"/>\n";
+        << "\">\n";
     if (verbose) {
       for (unsigned int i=0; i< cs.size(); ++i) {
-        show_data_xml(nh, cs[i], out);
+        show_data_xml<1>(nh, cs[i], out);
       }
     }
     RMF::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       out << "<child>\n";
-      show_xml(children[i],cs,  out);
+      show_hierarchy(children[i],cs,  out);
       out << "</child>\n";
     }
+    out << "</node>" << std::endl;
   }
 }
+
+
+template <int Arity>
+void show_tuples(RMF::RootHandle rh,
+                const RMF::Categories& cs, std::ostream &out) {
+  std::vector<RMF::NodeTupleHandle<Arity> > tuples= rh.get_node_tuples<Arity>();
+  if (!tuples.empty()) {
+    out << "<tuples" << Arity << ">" << std::endl;
+    for (unsigned int i=0; i< tuples.size(); ++i) {
+      out << "<tuple id=\"" << tuples[i].get_id().get_index()
+          << "\" type=\"" << RMF::get_tuple_type_name(tuples[i].get_type())
+          << "\" members=\"";
+      for (unsigned int j=0; j< Arity; ++j) {
+        if (j >0) {
+          out << ", ";
+        }
+        out << tuples[i].get_node(j).get_id().get_index();
+      }
+      out << "\">" << std::endl;
+      if (verbose) {
+        for (unsigned int j=0; j< cs.size(); ++j) {
+          show_data_xml<Arity>(tuples[i], cs[j], out);
+        }
+      }
+      out << "</tuple>" << std::endl;
+    }
+    out << "</tuples"<< Arity << ">" << std::endl;
+  }
+}
+
+
+
 
 
 int main(int argc, char **argv) {
@@ -156,32 +194,33 @@ int main(int argc, char **argv) {
       return 1;
     }
     RMF::RootHandle rh= RMF::open_rmf_file(input);
-    std::ofstream out(output.c_str());
-    if (!out) {
-      std::cerr << "Error opening file " << output << std::endl;
-      return 1;
+    std::ostream *out;
+    std::ofstream fout;
+    if (!output.empty()) {
+      fout.open(output.c_str());
+      if (!fout) {
+        std::cerr << "Error opening file " << output << std::endl;
+        return 1;
+      }
+      out =&fout;
+    } else {
+      out = &std::cout;
     }
     RMF::Categories cs= rh.get_categories();
-    out << "<?xml version=\"1.0\"?>\n";
-    out << "<rmf>\n";
-    out << "<description>\n";
-    out << rh.get_description() <<std::endl;
-    out << "</description>\n";
-    out << "<path>\n";
-    out << input <<std::endl;
-    out << "</path>\n";
-    show_xml(rh, cs, out);
-    if (rh.get_number_of_bonds() >0) {
-      out << "<bonds>\n";
-      for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
-        std::pair<RMF::NodeHandle, RMF::NodeHandle> handles
-          = rh.get_bond(i);
-        out << "<bond id0=\""<< handles.first.get_id()
-            << "\" id1=\"" << handles.second.get_id() << "\"/>\n";
-      }
-      out << "</bonds>\n";
-    }
-    out << "</rmf>\n";
+    *out << "<?xml version=\"1.0\"?>\n";
+    *out << "<rmf>\n";
+    *out << "<description>\n";
+    *out << rh.get_description() <<std::endl;
+    *out << "</description>\n";
+    *out << "<path>\n";
+    *out << input <<std::endl;
+    *out << "</path>\n";
+    show_hierarchy(rh, cs, *out);
+
+    show_tuples<2>(rh, cs, *out);
+    show_tuples<3>(rh, cs, *out);
+    show_tuples<4>(rh, cs, *out);
+    *out << "</rmf>\n";
     return 0;
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;

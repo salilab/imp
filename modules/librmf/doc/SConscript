@@ -1,23 +1,20 @@
 Import('env')
 
-env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Daniel Russel"],
-                 brief="This module provides RMF I/O",
-                 overview="""
+overview="""
 
-The library provides support for the %RMF file format for storing
+The library provides support for the %RMF (short for Rich Molecular Format)
+file format for storing
 hierarchical molecular data (such as atomic or coarse
 grained representations of proteins), along with
 markup, including geometry and score data.
 
 \\namespace RMF
 
-This module provides support for %RMF file format for
+This library provides support for %RMF (Rich Molecular Format) file format for
 storing hierarchical molecular data (such as atomic
 or coarse grained representations of proteins), along
-with markup, including geometry and score data. The
-format uses the \\external{http://www.hdf5.org,HDF5} library to manage the data on
-disk.
+with markup, including geometry and score data. The library uses the \\external{http://www.hdf5.org,HDF5} library to manage the data on
+disk. Other backends (eg mmCIF) could be used, if desired.
 
 \\section ff 1 RMF Files
 
@@ -50,6 +47,18 @@ Each frame has the same hierarchical structure, but some aspects of
 the data (eg coordinates) can have one value for each frame (or no
 value for a particle frame if they happen not be be applicable
 then).
+
+A hierarchical storage format was chose since
+- most biological molecules have a natural hierarchical structure
+- it reduces redundancy (eg the residue type is only stored once, as is the residue index)
+- most software uses a hierarchy of some sort to represent structures at runtime, so less translation is needed
+- low resolution and multiresolution structures are then more natural as they are just truncations of a full, atomic hierarchy.
+
+See \internal{simple.xml, simple.rmf} for an XML dump of the %RMF generated from
+\internal{simple.pdb.txt, simple.pdb}. For a larger example, see
+ \internal{3O3Y.xml, 3O3Y.rmf} from \internal{3O3Y.pdb.txt, 3O3Y.pdb}. Note,
+that viewing XML files works much better with \external{http://www.mozilla.org/firefox, Firefox}
+\external{http://chrome.google.com/, Google Chrome} than with Safari.
 
 \\subsection structure 1.1 The RMF Hierarchy
 R
@@ -92,16 +101,19 @@ A number of data categories and attributes have been defined so
 far. New ones can be added as needed, without affecting existing
 files. See the documentation for each category for more
 information:
-- RMF::physics
+- RMF::physics,
 - RMF::sequence,
-- RMF::shape
-- RMF::feature
-- RMF::publication.
+- RMF::shape,
+- RMF::feature,
+- RMF::publication,
+- RMF::bond.
 
-In addition, there are bonds associated with the root of the
-hierarchy. Bonds are identified by a pair of RMF::NodeHandle objects
-and do not vary from frame to frame. We can add support for dynamic
-bonds if desired.
+In addition, arbitrary data can be associated with tuples of Nodes.
+This mechanism is used to store bond information (which is always stored
+in the file to avoid the difficulties associated with parsing PDB files).
+Information about bond angles or torsion angles could be stored
+using the same mechanism. Currently, the library API supports tuples up to
+size 4, but we can add arbitrary sized tuples when needed.
 
 \\subsection adding 1.2 Adding custom data to an RMF
 
@@ -124,13 +136,20 @@ multiple %RMF "files" in a single HDF5 archive, as well as store
 other data (such as electron density maps).  However, adding extra
 data sets within the %RMF HDF5 group is not supported.
 
+HDF5 was chosen over the other candidates as it
+  - supports binary i/o, avoiding issues parsing and delimiters that occur with text files
+  - supports random access, allowing loading of individual conformations without reading the who file
+  - can use internal compression to reduce the size of files
+  - has well developed support library facilitating easy use from most programming languages and has a variety of command line tools to aid debugging
+
 \\note The following information about how the data is stored on disk
 is not complete. Implementers should instead use the API provided by this
 library.
 
-The %RMF data is spread over various data sets, divided up based on
+The %RMF data is spread over various data sets, divided up into classes based on
 the RMF::Category, data type and whether the particular attribute
-has one value per frame or just one for the whole file. Each node
+has one value per frame or just one for the whole file and whether the data
+is for one one or a tuple of nodes. Each node
 has space allocated where it can store information about whether it
 has attributes in a given class, and if so, where in the corresponding
 data set the attributes are stored.
@@ -140,6 +159,10 @@ class is used in a node. A special marker value
 is used to signify when a particular attribute in a class is not found for a
 particular node (e.g. a -1 is used to signify that a node does not
 have an index attribute).
+
+To get any idea of the data layout in a file, see the dump (produced by
+ \c h5dump) of a tiny %RMF, \internal{simple.hdf5.txt, simple.rmf}. For a larger
+example, see \internal{3O3Y.hdf5.txt, 3O3Y.rmf}.
 
 \\section lib 2 The RMF library
 
@@ -209,6 +232,11 @@ The library provides a \\ref hdf5 "simple wrapper for the HDF5 library".
 See the \\ref application_rmf_tools "RMF tools" application for
 \\imp-related helper programs.
 
-""",
-              publications=env.IMPStandardPublications(),
+"""
+env.IMPModuleDoc(authors=["Daniel Russel"],
+                 brief="This module provides %RMF I/O",
+                 overview=overview,
+                 publications=env.IMPStandardPublications(),
+                 files=["3O3Y.hdf5.txt", "3O3Y.xml", "simple.hdf5.txt",
+                        "simple.xml", "3O3Y.pdb.txt", "simple.pdb.txt"],
                  license=env.IMPStandardLicense())

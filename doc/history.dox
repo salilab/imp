@@ -1,4 +1,7 @@
 /** \page recent Change History
+\par Fall 2011
+- A general purpose scheme to associate data with tuples of hierarchy nodes was added to the RMF format. This deprecates the special purpose bond support.
+- the way various types of geometry is stored in RMF files was changed, breaking backwards compatibility.
 \par Summer 2011
 - some functionality from the kernel has been spun off into a new module IMP.base. You probably won't notice anything. The only significant changes are that functions that accept or return IMP::base::TextInput and IMP::base::TextOutput must declare them with the \c base qualifier (eg base::TextInput) so that swig is happy.
 - the source for the kernel has been moved from \c kernel to \c modules/kernel. This is unlikely to effect anyone.
@@ -322,7 +325,7 @@ other classes have been renamed to be consistent.
 
 - IMP::core::PairRestraint takes a IMP::ParticlePair in the constructor instead of two IMP::Particle*s. A backwards compatible constructor can be added if needed.
 
-- IMP::ParticlePair::first and second went away since no one claimed to be using it and it complicated the implementation. 
+- IMP::ParticlePair::first and second went away since no one claimed to be using it and it complicated the implementation.
 
 - The generic restraints/score states/scores infrastructure has been extended to triplets and quads (for angles and torsion angles).
 
@@ -437,7 +440,7 @@ external code,
 
 - static builds (builds with \c static=True) build both the static and dynamic libraries and just static executables
 
-- the \c profile build target has been removed as \c static=True does the important bit of what is needed. Just do \c linkflags=['-pg'] to add the needed link flag for \c gprof. 
+- the \c profile build target has been removed as \c static=True does the important bit of what is needed. Just do \c linkflags=['-pg'] to add the needed link flag for \c gprof.
 
 - Restraints should now implement IMP::Restraint::unprotected_evaluate() instead of IMP::Restraint::evaluate(). The latter can now be called outside of IMP::Model::evaluate() and will return the right answer always.
 

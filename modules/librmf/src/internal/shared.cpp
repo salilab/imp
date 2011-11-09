@@ -26,13 +26,27 @@ namespace RMF {
       file_(g),
       names_(get_data_set_always<StringTraits, 1>
       (file_, get_node_name_data_set_name())),
-      node_data_(get_data_set_always<IndexTraits, 2>
-                 (file_, get_node_data_data_set_name())),
-      bond_data_(get_data_set_always<IndexTraits, 2>
-                 (file_, get_bond_data_data_set_name())),
-      frames_hint_(0),
-      last_node_(-1), last_vi_(-1)
+      frames_hint_(0)
     {
+      node_data_[0]=get_data_set_always<IndexTraits, 2>
+        (file_, get_node_data_data_set_name());
+      for (unsigned int i=0; i< 4; ++i) {
+        last_node_[i]=-1;
+        last_vi_[i]=-1;
+      }
+      for (unsigned int i=0; i < 3; ++i) {
+        std::string nm=get_tuple_data_data_set_name(i+2);
+        if (file_.get_has_child(nm)) {
+          node_data_[i+1]
+              = get_data_set_always<IndexTraits,
+              2>(file_, nm);
+          for (unsigned int j=0; j< node_data_[i+1].get_size()[0]; ++j) {
+            if (node_data_[i+1].get_value(HDF5DataSetIndexD<2>(j, 0))==-1) {
+              free_ids_[i+1].push_back(j);
+            }
+          }
+        }
+      }
       if (create) {
         file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
       } else {
@@ -41,21 +55,12 @@ namespace RMF {
                             "Unsupported rmf version string found: \""
                             << version << "\" expected \"" << "rmf 1" << "\"");
       }
-      HDF5DataSetIndexD<2> dim= node_data_.get_size();
+      HDF5DataSetIndexD<2> dim= node_data_[0].get_size();
       for (unsigned int i=0; i< dim[0]; ++i) {
         if (IndexTraits::
-            get_is_null_value(node_data_.get_value(HDF5DataSetIndexD<2>(i,
+            get_is_null_value(node_data_[0].get_value(HDF5DataSetIndexD<2>(i,
                                                                         0)))) {
-          free_ids_.push_back(i);
-        }
-      }
-
-      HDF5DataSetIndexD<2> dimb= bond_data_.get_size();
-      for (unsigned int i=0; i< dimb[0]; ++i) {
-        if (IndexTraits::
-            get_is_null_value(node_data_.get_value(HDF5DataSetIndexD<2>(i,
-                                                                        0)))) {
-          free_bonds_.push_back(i);
+          free_ids_[0].push_back(i);
         }
       }
       if (create) {
@@ -113,25 +118,25 @@ namespace RMF {
     }
     int SharedData::add_node(std::string name, unsigned int type) {
       int ret;
-      if (free_ids_.empty()) {
+      if (free_ids_[0].empty()) {
         HDF5DataSetIndexD<1> nsz= names_.get_size();
         ret= nsz[0];
         ++nsz[0];
         names_.set_size(nsz);
-        HDF5DataSetIndexD<2> dsz= node_data_.get_size();
+        HDF5DataSetIndexD<2> dsz= node_data_[0].get_size();
         dsz[0]= ret+1;
         dsz[1]= std::max<hsize_t>(3, dsz[1]);
-        node_data_.set_size(dsz);
+        node_data_[0].set_size(dsz);
       } else {
-        ret= free_ids_.back();
-        free_ids_.pop_back();
+        ret= free_ids_[0].back();
+        free_ids_[0].pop_back();
       }
       audit_node_name(name);
       names_.set_value(HDF5DataSetIndexD<1>(ret), name);
-      node_data_.set_value(HDF5DataSetIndexD<2>(ret, TYPE), type);
-      node_data_.set_value(HDF5DataSetIndexD<2>(ret, CHILD),
+      node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, TYPE), type);
+      node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, CHILD),
                            IndexTraits::get_null_value());
-      node_data_.set_value(HDF5DataSetIndexD<2>(ret, SIBLING),
+      node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, SIBLING),
                            IndexTraits::get_null_value());
       return ret;
     }
@@ -141,19 +146,19 @@ namespace RMF {
     }
     int SharedData::get_first_child(unsigned int node) const {
       check_node(node);
-      return node_data_.get_value(HDF5DataSetIndexD<2>(node, CHILD));
+      return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, CHILD));
     }
     int SharedData::get_sibling(unsigned int node) const {
       check_node(node);
-      return node_data_.get_value(HDF5DataSetIndexD<2>(node, SIBLING));
+      return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, SIBLING));
     }
     void SharedData::set_first_child(unsigned int node, int c) {
       check_node(node);
-      return node_data_.set_value(HDF5DataSetIndexD<2>(node, CHILD), c);
+      return node_data_[0].set_value(HDF5DataSetIndexD<2>(node, CHILD), c);
     }
     void SharedData::set_sibling(unsigned int node, int c) {
       check_node(node);
-      return node_data_.set_value(HDF5DataSetIndexD<2>(node, SIBLING), c);
+      return node_data_[0].set_value(HDF5DataSetIndexD<2>(node, SIBLING), c);
     }
     std::string SharedData::get_name(unsigned int node) const {
       check_node(node);
@@ -161,36 +166,33 @@ namespace RMF {
     }
     unsigned int SharedData::get_type(unsigned int node) const {
       check_node(node);
-      return node_data_.get_value(HDF5DataSetIndexD<2>(node, TYPE));
+      return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, TYPE));
     }
 
 
-    void SharedData::add_bond( int ida,  int idb,  int type) {
+  void SharedData::add_bond( int ida,  int idb, int type) {
       IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0 && type>=0,
                           "Invalid bond " << ida << " " << idb << " " << type);
-      int ret;
-      if (free_bonds_.empty()) {
-        HDF5DataSetIndexD<2> nsz= bond_data_.get_size();
-        nsz[1]=std::max<hsize_t>(3, nsz[1]);
-        ret= nsz[0];
-        ++nsz[0];
-        bond_data_.set_size(nsz);
-      } else {
-        ret= free_bonds_.back();
-        free_bonds_.pop_back();
+      RMF::Indexes tp(2);
+      tp[0]=ida;
+      tp[1]=idb;
+      int ind=add_tuple(tp, BOND);
+      PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
+      if (pik==PairIndexKey()) {
+        pik= add_key<IndexTraits, 2>(bond, "type", false);
       }
-      bond_data_.set_value(HDF5DataSetIndexD<2>(ret, 0), ida);
-      bond_data_.set_value(HDF5DataSetIndexD<2>(ret, 1), idb);
-      bond_data_.set_value(HDF5DataSetIndexD<2>(ret, 2), type);
+      set_value<IndexTraits, 2>(ind, pik, type, -1);
     }
 
     unsigned int SharedData::get_number_of_bonds() const {
-      return bond_data_.get_size()[0];
+      // not really right
+      return get_number_of_tuples(2);
     }
     boost::tuple<int,int,int> SharedData::get_bond(unsigned int i) const {
-      int na= bond_data_.get_value(HDF5DataSetIndexD<2>(i, 0));
-      int nb= bond_data_.get_value(HDF5DataSetIndexD<2>(i, 1));
-      int t= bond_data_.get_value(HDF5DataSetIndexD<2>(i, 2));
+      int na= get_tuple_member(2, i, 0);
+      int nb= get_tuple_member(2, i, 0);
+      PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
+      int t= get_value<IndexTraits, 2>(i, pik, -1);
       return boost::tuple<int,int,int>(na, nb, t);
     }
 
@@ -238,6 +240,82 @@ namespace RMF {
       }
       return ret;
     }
+
+
+  void SharedData::check_tuple(int arity, unsigned int index) const {
+    IMP_RMF_USAGE_CHECK(node_data_[arity-1] != HDF5IndexDataSet2D(),
+                        "Invalid tuple arity requested: " << arity);
+    IMP_RMF_USAGE_CHECK(node_data_[arity-1]
+                        .get_value(HDF5DataSetIndexD<2>(index,
+                                                        0))
+                        >=0,
+                        "Invalid type for tuple: " << arity << " and "
+                        << index);
+    for ( int i=0; i< arity; ++i) {
+      int cur=node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
+                                                                i+1));
+      check_node(cur);
+    }
+  }
+
+  unsigned int SharedData::get_number_of_tuples(int arity) const {
+    if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
+      return 0;
+    }
+    HDF5DataSetIndexD<2> sz= node_data_[arity-1].get_size();
+    unsigned int ct=0;
+    for (unsigned int i=0; i< sz[0]; ++i) {
+      if (node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(i, 0)) >=0) {
+        ++ct;
+      }
+    }
+    return ct;
+  }
+  RMF::Indexes SharedData::get_tuple_indexes(int arity) const {
+    if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
+      return RMF::Indexes();
+    }
+    HDF5DataSetIndexD<2> sz= node_data_[arity-1].get_size();
+    RMF::Indexes ret;
+    for (unsigned int i=0; i< sz[0]; ++i) {
+      if (node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(i, 0)) >=0) {
+        ret.push_back(i);
+      }
+    }
+    return ret;
+  }
+  unsigned int SharedData::add_tuple(const RMF::Indexes &nis, int t) {
+    const int arity=nis.size();
+    if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
+      std::string nm=get_tuple_data_data_set_name(arity);
+      node_data_[arity-1]
+          = file_.add_child_data_set<IndexTraits, 2>(nm);
+    }
+    int slot;
+    if (free_ids_[arity-1].empty()) {
+      slot= node_data_[arity-1].get_size()[0];
+      node_data_[arity-1].set_size(HDF5DataSetIndexD<2>(slot+1, arity+1));
+    } else {
+      slot= free_ids_[arity-1].back();
+      free_ids_[arity-1].pop_back();
+    }
+    node_data_[arity-1].set_value(HDF5DataSetIndexD<2>(slot, 0), t);
+    for ( int i=0; i< arity; ++i) {
+      node_data_[arity-1].set_value(HDF5DataSetIndexD<2>(slot, i+1), nis[i]);
+    }
+    check_tuple(arity, slot);
+    return slot;
+  }
+  unsigned int SharedData::get_tuple_member(int arity, unsigned int index,
+                                            int member_index) const {
+    check_tuple(arity, index);
+    return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
+                                                             member_index+1));
+  }
+  unsigned int SharedData::get_tuple_type(int arity, unsigned int index) const {
+    check_tuple(arity, index);
+    return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
+  }
 
   } // namespace internal
 } /* namespace RMF */

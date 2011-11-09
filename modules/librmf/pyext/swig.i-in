@@ -35,6 +35,9 @@ namespace RMF {
 }
 
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Ucname##Key, Ucname##Key, Ucname##Keys);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Pair##Ucname##Key, Pair##Ucname##Key, Pair##Ucname##Keys);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Triplet##Ucname##Key, Triplet##Ucname##Key, Triplet##Ucname##Keys);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Quad##Ucname##Key, Quad##Ucname##Key, Quad##Ucname##Keys);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1D, HDF5##Ucname##DataSet1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2D, HDF5##Ucname##DataSet2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3D, HDF5##Ucname##DataSet3Ds);
@@ -47,9 +50,16 @@ _types_list.append(#lcname)
 %template(HDF5##Ucname##DataSet1D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 1>;
 %template(HDF5##Ucname##DataSet2D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 2>;
 %template(HDF5##Ucname##DataSet3D) RMF::HDF5DataSetD<RMF::Ucname##Traits, 3>;
-%template(Ucname##Key) RMF::Key<RMF::Ucname##Traits>;
+%template(Ucname##Key) RMF::Key<RMF::Ucname##Traits, 1>;
+%template(Pair##Ucname##Key) RMF::Key<RMF::Ucname##Traits, 2>;
+%template(Triplet##Ucname##Key) RMF::Key<RMF::Ucname##Traits, 3>;
+%template(Quad##Ucname##Key) RMF::Key<RMF::Ucname##Traits, 4>;
 %enddef
 
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeID, NodeID, NodeIDs);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodePairID, NodePairID, NodePairIDs);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeTripletID, NodeTripletID, NodeTripletIDs);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeQuadID, NodeQuadID, NodeQuadIDs);
 
 IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, double, Floats, FloatsList);
 IMP_RMF_SWIG_NATIVE_VALUES_LIST(RMF, int, Ints, IntsList);
@@ -66,7 +76,6 @@ IMP_RMF_SWIG_NATIVE_VALUE(std::string);
 IMP_RMF_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
 IMP_RMF_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
 IMP_RMF_SWIG_VALUE(RMF, RootHandle, RootHandles);
-IMP_RMF_SWIG_VALUE(RMF, NodeID, NodeIDs);
 IMP_RMF_SWIG_VALUE(RMF, Category, Categories);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, Key);
 IMP_RMF_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
@@ -75,6 +84,10 @@ IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, NodeTupleHandle);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodePairHandle, NodePairHandle, NodePairHandles);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeTripletHandle, NodeTripletHandle, NodeTripletHandles);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeQuadHandle, NodeQuadHandle, NodeQuadHandles);
 IMP_RMF_SWIG_PAIR(RMF, NodeHandle, BondPair, BondPairs)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
@@ -86,12 +99,31 @@ namespace RMF {
 
 %extend RMF::RootHandle {
    %pythoncode %{
-    def get_keys(self, kc):
+    def get_keys(self, kc, arity=1):
         ret=[]
         for t in _types_list:
-           fn= getattr(self, "get_"+t+"_keys")
+           if arity==1:
+             fn= getattr(self, "get_"+t+"_keys")
+           elif arity==2:
+             fn= getattr(self, "get_pair_"+t+"_keys")
+           elif arity==3:
+             fn= getattr(self, "get_triplet_"+t+"_keys")
+           elif arity==4:
+             fn= getattr(self, "get_quad_"+t+"_keys")
            ret.extend(fn(kc))
         return ret
+  %}
+   %pythoncode %{
+    def get_node_tuples(self, arity=1):
+        ret=[]
+        if arity==2:
+          return self.get_node_pairs()
+        elif arity==3:
+          return self.get_node_triplets()
+        elif arity==4:
+          return self.get_node_quads()
+        else:
+          return []
   %}
 }
 
@@ -110,12 +142,18 @@ namespace RMF {
 %template(HDF5DataSetIndex3D) RMF::HDF5DataSetIndexD<3>;
 %template(_IndexDataSet2DTraits) RMF::HDF5DataSetDTraits<RMF::IndexTraits, 2>;
 %template(_FloatDataSet2DTraits) RMF::HDF5DataSetDTraits<RMF::FloatTraits, 2>;
+%template(NodeID) RMF::NodeIDD<1>;
+%template(NodePairID) RMF::NodeIDD<2>;
+%template(NodeTripletID) RMF::NodeIDD<3>;
+%template(NodeQuadID) RMF::NodeIDD<4>;
+
 
 %include "RMF/Key.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 
 %include "RMF/HDF5Group.h"
 %include "RMF/Category.h"
+%include "RMF/NodeTupleHandle.h"
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"
 %include "RMF/names.h"

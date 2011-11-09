@@ -181,9 +181,9 @@ namespace RMF {
   RMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
 
   /** \ingroup hdf5 */
-  typedef std::vector<HDF5Group> HDF5Groups;
+  typedef vector<HDF5Group> HDF5Groups;
   /** \ingroup hdf5 */
-  typedef std::vector<HDF5File> HDF5Files;
+  typedef vector<HDF5File> HDF5Files;
   /** \ingroup hdf5 */
   inline std::ostream &operator<<(std::ostream &out, HDF5Group g) {
     g.show(out);

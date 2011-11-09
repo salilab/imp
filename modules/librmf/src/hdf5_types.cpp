@@ -136,7 +136,7 @@ namespace RMF {
     }*/
   std::string CharTraits::read_values_attribute(hid_t a,
                                                 unsigned int size) {
-    std::vector<char> v(size);
+    vector<char> v(size);
     IMP_HDF5_CALL(H5Aread(a, H5T_NATIVE_CHAR, &v[0]));
     return std::string(v.begin(), v.end());
   }
