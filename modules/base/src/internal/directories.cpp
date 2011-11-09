@@ -22,9 +22,70 @@
 
 #include <cstdlib>
 
+#ifdef _MSC_VER
+#include <windows.h>
+
+// Registry functions are not in kernel but advapi32.dll
+#pragma comment(lib,"advapi32")
+#endif
+
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
+
+#ifdef _MSC_VER
+// assume IMP version is the IMP::base version without any 'with' suffix
+std::string get_imp_version() {
+  std::string full_version = get_module_version();
+  size_t pos = full_version.find(" with");
+  if (pos != std::string::npos) {
+    full_version.resize(pos);
+  }
+  return full_version;
+}
+
+/** Get the directory where IMP is installed, by reading the
+    Windows registry key (set by the IMP binary installer).
+    \return true iff the registry key was found.
+ */
+bool get_install_location(std::string &dir) {
+  // Only probe the registry once, then cache the value
+  static bool called, ret;
+  static std::string cached_dir;
+  if (called) {
+    if (ret) {
+      dir.assign(cached_dir);
+    }
+    return ret;
+  }
+
+  std::string version = get_imp_version();
+  std::string regkey = "SOFTWARE\\IMP-" + version;
+  HKEY key;
+  ret = false;
+
+  if (RegOpenKeyEx(HKEY_CURRENT_USER, regkey.c_str(), 0, KEY_READ,
+                   &key) == ERROR_SUCCESS) {
+    DWORD keylen, keytype;
+    if (RegQueryValueEx(key, "", NULL,
+        &keytype, NULL, &keylen) == ERROR_SUCCESS && keytype == REG_SZ) {
+      char *keyval = new char[keylen];
+
+      if (RegQueryValueEx(key, "", NULL,
+          &keytype, (LPBYTE)keyval, &keylen) == ERROR_SUCCESS) {
+        dir.assign(keyval);
+        cached_dir.assign(keyval);
+        ret = true;
+      }
+      delete[] keyval;
+    }
+    RegCloseKey(key);
+  }
+  called = true;
+  return ret;
+}
+#endif
+
 /** Boost versions older than 1.35 cannot handle "hidden" paths,
     e.g. /etc/skel/.bashrc; see https://svn.boost.org/trac/boost/ticket/1378
  */
@@ -64,6 +125,9 @@ namespace {
   }
 
   std::string get_path(std::string envvar,
+#ifdef _MSC_VER
+                       std::string install_subdir,
+#endif
                        std::string def,
                        std::string module, std::string file_name) {
     char *env = getenv(envvar.c_str());
@@ -71,8 +135,20 @@ namespace {
     if (env) {
       base=std::string(env);
     } else {
+#ifdef _MSC_VER
+      // Since on Windows the IMP binary package is relocatable (the user
+      // can install it in any location), try this install location if available
+      // (the binary installer stores the location in the Windows registry)
+      std::string install_location;
+      if (get_install_location(install_location)) {
+        base = install_location + "\\" + install_subdir;
+      } else {
+        base=def;
+      }
+#else
       // Default to compiled-in value
       base=def;
+#endif
     }
     std::string ret= path_cat(base, module, file_name);
     return ret;
@@ -134,8 +210,10 @@ std::string get_data_path(std::string module, std::string file_name)
   std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
     +std::string("_DATA");
   std::string path= get_path(varname,
-                                   imp_data_path,
-                                   module, file_name);
+#ifdef _MSC_VER
+                             "data",
+#endif
+                             imp_data_path, module, file_name);
   {
     if (get_path_exists(path)) {
       return path;
@@ -160,8 +238,10 @@ std::string get_example_path(std::string module, std::string file_name)
   std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
     +std::string("_EXAMPLE_DATA");
   std::string path= get_path(varname,
-                                   imp_example_path,
-                                   module, file_name);
+#ifdef _MSC_VER
+                             "examples",
+#endif
+                             imp_example_path, module, file_name);
   std::ifstream in(path.c_str());
   if (!in) {
     IMP_THROW("Unable to find example file "
