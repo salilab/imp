@@ -7,6 +7,7 @@
  */
 #include <IMP/domino/assignment_containers.h>
 #include <IMP/domino/Subset.h>
+#include <IMP/domino/utility.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
