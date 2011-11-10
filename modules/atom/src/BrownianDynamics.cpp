@@ -144,13 +144,13 @@ namespace {
   void check_delta(algebra::Vector3D &delta,
                    double max_step) {
     for (unsigned int j=0; j< 3; ++j) {
-        if (std::abs(delta[j]) > max_step) {
-          std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
-                    << std::endl;
-          delta[j]= std::min(delta[j], max_step);
-          delta[j]= std::max(delta[j], -max_step);
-        }
+      if (std::abs(delta[j]) > max_step) {
+        std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
+                  << std::endl;
+        delta[j]= std::min(delta[j], max_step);
+        delta[j]= std::max(delta[j], -max_step);
       }
+    }
   }
 }
 
@@ -229,7 +229,7 @@ void BrownianDynamics
   algebra::Transformation3D nt
     = rb.get_reference_frame().get_transformation_to()*
     algebra::Transformation3D(rrot)*algebra::Transformation3D(frot);
-  rb.set_reference_frame(algebra::ReferenceFrame3D(nt));
+  rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(nt));
 }
 
 
@@ -247,8 +247,19 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
   unsigned int numrb=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
+      //std::cout << "rb" << std::endl;
       advance_rigid_body_0(ps[i], numrb, dtfs, dtikt);
       ++numrb;
+    } else {
+      Particle *p= get_model()->get_particle(ps[i]);
+      IMP_INTERNAL_CHECK(!core::RigidBody::particle_is_instance(p),
+                         "A rigid body without rigid body diffusion info"
+                         << " was found: "
+                         << p->get_name());
+      IMP_INTERNAL_CHECK(!core::RigidMember::particle_is_instance(p),
+                         "A rigid member with diffusion info"
+                         << " was found: "
+                         << p->get_name());
     }
     advance_ball_0(ps[i], i, dtfs, dtikt);
   }
