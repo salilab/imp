@@ -32,6 +32,7 @@ void load_merged_assignments(const Subset &first_subset,
                              InferenceStatistics &stats,
                              double max_error,
                              ParticleStatesTable* pst,
+                             const statistics::Metrics &metrics,
                              unsigned int max,
                              AssignmentContainer *out);
 

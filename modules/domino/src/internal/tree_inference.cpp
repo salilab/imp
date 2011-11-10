@@ -26,6 +26,7 @@ void load_merged_assignments(const Subset &first_subset,
                              InferenceStatistics &stats,
                              double max_error,
                              ParticleStatesTable* pst,
+                             const statistics::Metrics &metrics,
                              unsigned int max,
                              AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);
@@ -34,7 +35,7 @@ void load_merged_assignments(const Subset &first_subset,
   IMP_FUNCTION_LOG;
   EdgeData ed= get_edge_data(first_subset, second_subset, filters);
   load_union(first_subset, second_subset, first, second,
-             ed, max_error, pst, max, out);
+             ed, max_error, pst, metrics, max, out);
   stats.add_subset(ed.union_subset, out);
   if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
                                             out);
@@ -101,7 +102,8 @@ namespace {
                               cpd0,
                               boost::get(subset_map, secondi),
                               cpd1,
-                              filters, lsft, stats,0.0, NULL, max,
+                              filters, lsft, stats,0.0, NULL,
+                              statistics::Metrics(), max,
                               out);
       if (progress) {
         ++(*progress);
