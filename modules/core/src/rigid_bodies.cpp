@@ -545,6 +545,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   internal::add_required_attributes_for_body(p);
   RigidBody d(p);
   d.set_reference_frame(rf);
+  setup_constraints(p);
   return d;
 }
 
