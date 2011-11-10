@@ -194,7 +194,7 @@ inline double get_distance_if_smaller_than(const Subset &s,
   double d=0;
   for (unsigned int i=0; i< a.size(); ++i) {
     double cur;
-    if (metrics[i]) {
+    if (!metrics.empty() && metrics[i]) {
       cur= square(metrics[i]->get_distance(a[i], b[i]));
     } else {
       algebra::VectorKD ea
