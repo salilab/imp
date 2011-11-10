@@ -40,7 +40,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
-  Pointer<SingletonContainer> sc_;
+  base::OwnerPointer<SingletonContainer> sc_;
   mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
   mutable bool initialized_;
