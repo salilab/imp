@@ -1,0 +1,10837 @@
+<?xml version="1.0"?>
+<rmf>
+<description>
+
+</description>
+<path>
+../svn/modules/librmf/examples/3O3Y.rmf
+</path>
+<node name="root" id="0" type="root">
+<child>
+<node name="3O3Y.pdb" id="1" type="rep">
+<child>
+<node name="A" id="2" type="rep">
+<sequence
+chain_id="0"
+/>
+<child>
+<node name="2" id="3" type="rep">
+<sequence
+residue_index_begin="2"
+residue_index_end="3"
+residue_type="THR"
+/>
+<child>
+<node name="N" id="4" type="rep">
+<physics
+cartesian_x="-3.942"
+cartesian_y="3.343"
+cartesian_z="18.888"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="5" type="rep">
+<physics
+cartesian_x="-5.088"
+cartesian_y="4.208"
+cartesian_z="19.12"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="6" type="rep">
+<physics
+cartesian_x="-5.411"
+cartesian_y="5.053"
+cartesian_z="17.89"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="7" type="rep">
+<physics
+cartesian_x="-6.445"
+cartesian_y="4.818"
+cartesian_z="17.255"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="8" type="rep">
+<physics
+cartesian_x="-4.892"
+cartesian_y="5.121"
+cartesian_z="20.349"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="9" type="rep">
+<physics
+cartesian_x="-3.219"
+cartesian_y="3.766"
+cartesian_z="18.69"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="10" type="rep">
+<physics
+cartesian_x="-5.855"
+cartesian_y="3.636"
+cartesian_z="19.31"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB" id="11" type="rep">
+<physics
+cartesian_x="-4.258"
+cartesian_y="5.765"
+cartesian_z="20.238"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="3" id="12" type="rep">
+<sequence
+residue_index_begin="3"
+residue_index_end="4"
+residue_type="TRP"
+/>
+<child>
+<node name="N" id="13" type="rep">
+<physics
+cartesian_x="-4.537"
+cartesian_y="6.005"
+cartesian_z="17.538"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="14" type="rep">
+<physics
+cartesian_x="-4.814"
+cartesian_y="6.924"
+cartesian_z="16.408"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="15" type="rep">
+<physics
+cartesian_x="-4.798"
+cartesian_y="6.903"
+cartesian_z="16.414"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="16" type="rep">
+<physics
+cartesian_x="-4.816"
+cartesian_y="6.18"
+cartesian_z="15.063"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="17" type="rep">
+<physics
+cartesian_x="-5.805"
+cartesian_y="6.221"
+cartesian_z="14.334"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="18" type="rep">
+<physics
+cartesian_x="-3.881"
+cartesian_y="8.172"
+cartesian_z="16.366"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="19" type="rep">
+<physics
+cartesian_x="-3.792"
+cartesian_y="8.056"
+cartesian_z="16.394"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="20" type="rep">
+<physics
+cartesian_x="-4.423"
+cartesian_y="9.23"
+cartesian_z="15.4"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="21" type="rep">
+<physics
+cartesian_x="-4.47"
+cartesian_y="9.325"
+cartesian_z="16.129"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="22" type="rep">
+<physics
+cartesian_x="-4.15"
+cartesian_y="9.334"
+cartesian_z="14.069"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="23" type="rep">
+<physics
+cartesian_x="-4.958"
+cartesian_y="10.187"
+cartesian_z="17.047"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="24" type="rep">
+<physics
+cartesian_x="-5.379"
+cartesian_y="10.278"
+cartesian_z="15.694"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="25" type="rep">
+<physics
+cartesian_x="-4.789"
+cartesian_y="9.865"
+cartesian_z="14.853"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="NE1" id="26" type="rep">
+<physics
+cartesian_x="-4.859"
+cartesian_y="10.379"
+cartesian_z="13.52"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="NE1" id="27" type="rep">
+<physics
+cartesian_x="-5.557"
+cartesian_y="11.258"
+cartesian_z="16.428"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CE2" id="28" type="rep">
+<physics
+cartesian_x="-5.622"
+cartesian_y="10.971"
+cartesian_z="14.49"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE2" id="29" type="rep">
+<physics
+cartesian_x="-5.465"
+cartesian_y="11.083"
+cartesian_z="15.076"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE3" id="30" type="rep">
+<physics
+cartesian_x="-6.047"
+cartesian_y="10.695"
+cartesian_z="16.854"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE3" id="31" type="rep">
+<physics
+cartesian_x="-4.573"
+cartesian_y="9.441"
+cartesian_z="13.542"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ2" id="32" type="rep">
+<physics
+cartesian_x="-6.515"
+cartesian_y="12.049"
+cartesian_z="14.411"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ2" id="33" type="rep">
+<physics
+cartesian_x="-5.92"
+cartesian_y="11.881"
+cartesian_z="14.044"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ3" id="34" type="rep">
+<physics
+cartesian_x="-6.941"
+cartesian_y="11.747"
+cartesian_z="16.773"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ3" id="35" type="rep">
+<physics
+cartesian_x="-5.034"
+cartesian_y="10.235"
+cartesian_z="12.52"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CH2" id="36" type="rep">
+<physics
+cartesian_x="-7.167"
+cartesian_y="12.421"
+cartesian_z="15.559"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CH2" id="37" type="rep">
+<physics
+cartesian_x="-5.697"
+cartesian_y="11.449"
+cartesian_z="12.777"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="38" type="rep">
+<physics
+cartesian_x="-3.784"
+cartesian_y="6.139"
+cartesian_z="17.932"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="39" type="rep">
+<physics
+cartesian_x="-5.721"
+cartesian_y="7.271"
+cartesian_z="16.53"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="40" type="rep">
+<physics
+cartesian_x="-5.684"
+cartesian_y="7.299"
+cartesian_z="16.538"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="41" type="rep">
+<physics
+cartesian_x="-3.828"
+cartesian_y="8.564"
+cartesian_z="17.251"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="42" type="rep">
+<physics
+cartesian_x="-3.362"
+cartesian_y="8.131"
+cartesian_z="17.259"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="43" type="rep">
+<physics
+cartesian_x="-2.999"
+cartesian_y="7.904"
+cartesian_z="16.062"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="44" type="rep">
+<physics
+cartesian_x="-3.129"
+cartesian_y="7.912"
+cartesian_z="15.701"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD1" id="45" type="rep">
+<physics
+cartesian_x="-3.561"
+cartesian_y="8.786"
+cartesian_z="13.603"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD1" id="46" type="rep">
+<physics
+cartesian_x="-4.887"
+cartesian_y="10.076"
+cartesian_z="17.964"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE1" id="47" type="rep">
+<physics
+cartesian_x="-4.826"
+cartesian_y="10.622"
+cartesian_z="12.696"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE1" id="48" type="rep">
+<physics
+cartesian_x="-5.92"
+cartesian_y="11.93"
+cartesian_z="16.824"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE3" id="49" type="rep">
+<physics
+cartesian_x="-5.929"
+cartesian_y="10.238"
+cartesian_z="17.656"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE3" id="50" type="rep">
+<physics
+cartesian_x="-4.136"
+cartesian_y="8.639"
+cartesian_z="13.365"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ2" id="51" type="rep">
+<physics
+cartesian_x="-6.72"
+cartesian_y="12.442"
+cartesian_z="13.593"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ2" id="52" type="rep">
+<physics
+cartesian_x="-6.306"
+cartesian_y="12.711"
+cartesian_z="14.21"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ3" id="53" type="rep">
+<physics
+cartesian_x="-7.385"
+cartesian_y="12.029"
+cartesian_z="17.54"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ3" id="54" type="rep">
+<physics
+cartesian_x="-4.896"
+cartesian_y="9.977"
+cartesian_z="11.643"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH2" id="55" type="rep">
+<physics
+cartesian_x="-7.744"
+cartesian_y="13.15"
+cartesian_z="15.541"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH2" id="56" type="rep">
+<physics
+cartesian_x="-5.99"
+cartesian_y="11.972"
+cartesian_z="12.071"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="4" id="57" type="rep">
+<sequence
+residue_index_begin="4"
+residue_index_end="5"
+residue_type="GLU"
+/>
+<child>
+<node name="N" id="58" type="rep">
+<physics
+cartesian_x="-3.731"
+cartesian_y="5.5"
+cartesian_z="14.734"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="59" type="rep">
+<physics
+cartesian_x="-3.672"
+cartesian_y="4.716"
+cartesian_z="13.496"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="60" type="rep">
+<physics
+cartesian_x="-4.922"
+cartesian_y="3.864"
+cartesian_z="13.279"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="61" type="rep">
+<physics
+cartesian_x="-5.456"
+cartesian_y="3.841"
+cartesian_z="12.177"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="62" type="rep">
+<physics
+cartesian_x="-2.413"
+cartesian_y="3.809"
+cartesian_z="13.454"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="63" type="rep">
+<physics
+cartesian_x="-3.012"
+cartesian_y="5.474"
+cartesian_z="15.206"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="64" type="rep">
+<physics
+cartesian_x="-3.607"
+cartesian_y="5.339"
+cartesian_z="12.742"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="65" type="rep">
+<physics
+cartesian_x="-1.626"
+cartesian_y="4.359"
+cartesian_z="13.521"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="66" type="rep">
+<physics
+cartesian_x="-2.435"
+cartesian_y="3.202"
+cartesian_z="14.221"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="5" id="67" type="rep">
+<sequence
+residue_index_begin="5"
+residue_index_end="6"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="68" type="rep">
+<physics
+cartesian_x="-5.388"
+cartesian_y="3.162"
+cartesian_z="14.307"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="69" type="rep">
+<physics
+cartesian_x="-6.51"
+cartesian_y="2.25"
+cartesian_z="14.117"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="70" type="rep">
+<physics
+cartesian_x="-7.822"
+cartesian_y="3.024"
+cartesian_z="14.092"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="71" type="rep">
+<physics
+cartesian_x="-8.537"
+cartesian_y="3.05"
+cartesian_z="13.056"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="72" type="rep">
+<physics
+cartesian_x="-6.542"
+cartesian_y="1.191"
+cartesian_z="15.187"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="73" type="rep">
+<physics
+cartesian_x="-5.078"
+cartesian_y="3.195"
+cartesian_z="15.109"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="74" type="rep">
+<physics
+cartesian_x="-6.416"
+cartesian_y="1.79"
+cartesian_z="13.257"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="75" type="rep">
+<physics
+cartesian_x="-5.739"
+cartesian_y="0.678"
+cartesian_z="15.154"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="76" type="rep">
+<physics
+cartesian_x="-7.303"
+cartesian_y="0.603"
+cartesian_z="15.025"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="77" type="rep">
+<physics
+cartesian_x="-6.645"
+cartesian_y="1.608"
+cartesian_z="16.041"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="6" id="78" type="rep">
+<sequence
+residue_index_begin="6"
+residue_index_end="7"
+residue_type="TRP"
+/>
+<child>
+<node name="N" id="79" type="rep">
+<physics
+cartesian_x="-8.13"
+cartesian_y="3.69"
+cartesian_z="15.199"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="80" type="rep">
+<physics
+cartesian_x="-9.487"
+cartesian_y="4.189"
+cartesian_z="15.412"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="81" type="rep">
+<physics
+cartesian_x="-9.708"
+cartesian_y="5.531"
+cartesian_z="14.73"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="82" type="rep">
+<physics
+cartesian_x="-10.635"
+cartesian_y="5.723"
+cartesian_z="13.942"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="83" type="rep">
+<physics
+cartesian_x="-9.812"
+cartesian_y="4.29"
+cartesian_z="16.905"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="84" type="rep">
+<physics
+cartesian_x="-9.505"
+cartesian_y="3.046"
+cartesian_z="17.775"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="85" type="rep">
+<physics
+cartesian_x="-8.406"
+cartesian_y="2.874"
+cartesian_z="18.6"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="86" type="rep">
+<physics
+cartesian_x="-10.312"
+cartesian_y="1.865"
+cartesian_z="17.96"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="NE1" id="87" type="rep">
+<physics
+cartesian_x="-8.479"
+cartesian_y="1.66"
+cartesian_z="19.249"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CE2" id="88" type="rep">
+<physics
+cartesian_x="-9.637"
+cartesian_y="1.027"
+cartesian_z="18.871"
+radius="1.8"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE3" id="89" type="rep">
+<physics
+cartesian_x="-11.512"
+cartesian_y="1.429"
+cartesian_z="17.422"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ2" id="90" type="rep">
+<physics
+cartesian_x="-10.147"
+cartesian_y="-0.208"
+cartesian_z="19.276"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ3" id="91" type="rep">
+<physics
+cartesian_x="-12.021"
+cartesian_y="0.19"
+cartesian_z="17.837"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CH2" id="92" type="rep">
+<physics
+cartesian_x="-11.332"
+cartesian_y="-0.607"
+cartesian_z="18.74"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="93" type="rep">
+<physics
+cartesian_x="-7.576"
+cartesian_y="3.869"
+cartesian_z="15.832"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="94" type="rep">
+<physics
+cartesian_x="-10.124"
+cartesian_y="3.553"
+cartesian_z="15.023"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="95" type="rep">
+<physics
+cartesian_x="-9.305"
+cartesian_y="5.028"
+cartesian_z="17.277"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="96" type="rep">
+<physics
+cartesian_x="-10.759"
+cartesian_y="4.475"
+cartesian_z="16.996"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD1" id="97" type="rep">
+<physics
+cartesian_x="-7.72"
+cartesian_y="3.483"
+cartesian_z="18.693"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE1" id="98" type="rep">
+<physics
+cartesian_x="-7.899"
+cartesian_y="1.353"
+cartesian_z="19.804"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE3" id="99" type="rep">
+<physics
+cartesian_x="-11.985"
+cartesian_y="1.963"
+cartesian_z="16.829"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ2" id="100" type="rep">
+<physics
+cartesian_x="-9.756"
+cartesian_y="-0.679"
+cartesian_z="19.976"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ3" id="101" type="rep">
+<physics
+cartesian_x="-12.829"
+cartesian_y="-0.112"
+cartesian_z="17.488"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH2" id="102" type="rep">
+<physics
+cartesian_x="-11.687"
+cartesian_y="-1.431"
+cartesian_z="18.981"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="7" id="103" type="rep">
+<sequence
+residue_index_begin="7"
+residue_index_end="8"
+residue_type="ASP"
+/>
+<child>
+<node name="N" id="104" type="rep">
+<physics
+cartesian_x="-8.875"
+cartesian_y="6.504"
+cartesian_z="15.048"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="105" type="rep">
+<physics
+cartesian_x="-9.114"
+cartesian_y="7.849"
+cartesian_z="14.488"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="106" type="rep">
+<physics
+cartesian_x="-8.821"
+cartesian_y="7.831"
+cartesian_z="12.999"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="107" type="rep">
+<physics
+cartesian_x="-9.572"
+cartesian_y="8.431"
+cartesian_z="12.254"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="108" type="rep">
+<physics
+cartesian_x="-8.35"
+cartesian_y="8.896"
+cartesian_z="15.271"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="109" type="rep">
+<physics
+cartesian_x="-8.669"
+cartesian_y="8.79"
+cartesian_z="16.755"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OD1" id="110" type="rep">
+<physics
+cartesian_x="-7.948"
+cartesian_y="8.034"
+cartesian_z="17.438"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OD2" id="111" type="rep">
+<physics
+cartesian_x="-9.697"
+cartesian_y="9.358"
+cartesian_z="17.203"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="112" type="rep">
+<physics
+cartesian_x="-8.184"
+cartesian_y="6.423"
+cartesian_z="15.553"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="113" type="rep">
+<physics
+cartesian_x="-10.064"
+cartesian_y="8.068"
+cartesian_z="14.593"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="114" type="rep">
+<physics
+cartesian_x="-7.404"
+cartesian_y="8.739"
+cartesian_z="15.15"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="115" type="rep">
+<physics
+cartesian_x="-8.595"
+cartesian_y="9.782"
+cartesian_z="14.961"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="8" id="116" type="rep">
+<sequence
+residue_index_begin="8"
+residue_index_end="9"
+residue_type="XPC"
+/>
+<child>
+<node name="HET: N  " id="117" type="rep">
+<physics
+cartesian_x="-7.753"
+cartesian_y="7.154"
+cartesian_z="12.584"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="118" type="rep">
+<physics
+cartesian_x="-7.38"
+cartesian_y="7.069"
+cartesian_z="11.182"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="119" type="rep">
+<physics
+cartesian_x="-5.87"
+cartesian_y="7.136"
+cartesian_z="10.904"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: ND " id="120" type="rep">
+<physics
+cartesian_x="-5.589"
+cartesian_y="6.125"
+cartesian_z="9.785"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="121" type="rep">
+<physics
+cartesian_x="-6.861"
+cartesian_y="5.369"
+cartesian_z="9.47"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="122" type="rep">
+<physics
+cartesian_x="-7.767"
+cartesian_y="5.658"
+cartesian_z="10.669"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="123" type="rep">
+<physics
+cartesian_x="-9.203"
+cartesian_y="5.517"
+cartesian_z="10.218"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="124" type="rep">
+<physics
+cartesian_x="-9.634"
+cartesian_y="6.152"
+cartesian_z="9.279"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="125" type="rep">
+<physics
+cartesian_x="-7.841"
+cartesian_y="7.753"
+cartesian_z="10.653"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="126" type="rep">
+<physics
+cartesian_x="-5.365"
+cartesian_y="6.897"
+cartesian_z="11.709"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="127" type="rep">
+<physics
+cartesian_x="-5.63"
+cartesian_y="8.037"
+cartesian_z="10.609"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HND" id="128" type="rep">
+<physics
+cartesian_x="-5.289"
+cartesian_y="6.6"
+cartesian_z="8.983"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="129" type="rep">
+<physics
+cartesian_x="-6.679"
+cartesian_y="4.408"
+cartesian_z="9.402"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="130" type="rep">
+<physics
+cartesian_x="-7.252"
+cartesian_y="5.703"
+cartesian_z="8.636"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="131" type="rep">
+<physics
+cartesian_x="-7.579"
+cartesian_y="5.004"
+cartesian_z="11.373"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="132" type="rep">
+<physics
+cartesian_x="-7.243"
+cartesian_y="6.74"
+cartesian_z="13.139"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="9" id="133" type="rep">
+<sequence
+residue_index_begin="9"
+residue_index_end="10"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="134" type="rep">
+<physics
+cartesian_x="-9.913"
+cartesian_y="4.668"
+cartesian_z="10.918"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="135" type="rep">
+<physics
+cartesian_x="-11.315"
+cartesian_y="4.398"
+cartesian_z="10.63"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="136" type="rep">
+<physics
+cartesian_x="-12.226"
+cartesian_y="5.607"
+cartesian_z="10.496"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="137" type="rep">
+<physics
+cartesian_x="-13.007"
+cartesian_y="5.71"
+cartesian_z="9.548"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="138" type="rep">
+<physics
+cartesian_x="-11.908"
+cartesian_y="3.346"
+cartesian_z="11.63"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="139" type="rep">
+<physics
+cartesian_x="-9.608"
+cartesian_y="4.217"
+cartesian_z="11.583"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="140" type="rep">
+<physics
+cartesian_x="-11.334"
+cartesian_y="3.962"
+cartesian_z="9.753"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="141" type="rep">
+<physics
+cartesian_x="-11.412"
+cartesian_y="2.527"
+cartesian_z="11.553"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="142" type="rep">
+<physics
+cartesian_x="-12.829"
+cartesian_y="3.192"
+cartesian_z="11.414"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="143" type="rep">
+<physics
+cartesian_x="-11.834"
+cartesian_y="3.689"
+cartesian_z="12.526"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="10" id="144" type="rep">
+<sequence
+residue_index_begin="10"
+residue_index_end="11"
+residue_type="ILE"
+/>
+<child>
+<node name="N" id="145" type="rep">
+<physics
+cartesian_x="-12.139"
+cartesian_y="6.492"
+cartesian_z="11.458"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="146" type="rep">
+<physics
+cartesian_x="-13.025"
+cartesian_y="7.618"
+cartesian_z="11.476"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="147" type="rep">
+<physics
+cartesian_x="-12.692"
+cartesian_y="8.606"
+cartesian_z="10.358"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="148" type="rep">
+<physics
+cartesian_x="-13.588"
+cartesian_y="9.091"
+cartesian_z="9.685"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="149" type="rep">
+<physics
+cartesian_x="-13.053"
+cartesian_y="8.315"
+cartesian_z="12.858"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG1" id="150" type="rep">
+<physics
+cartesian_x="-13.557"
+cartesian_y="7.364"
+cartesian_z="13.947"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG2" id="151" type="rep">
+<physics
+cartesian_x="-13.89"
+cartesian_y="9.577"
+cartesian_z="12.81"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="152" type="rep">
+<physics
+cartesian_x="-13.412"
+cartesian_y="8.005"
+cartesian_z="15.359"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="153" type="rep">
+<physics
+cartesian_x="-11.573"
+cartesian_y="6.463"
+cartesian_z="12.105"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="154" type="rep">
+<physics
+cartesian_x="-13.937"
+cartesian_y="7.297"
+cartesian_z="11.312"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB" id="155" type="rep">
+<physics
+cartesian_x="-12.145"
+cartesian_y="8.569"
+cartesian_z="13.082"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG12" id="156" type="rep">
+<physics
+cartesian_x="-14.497"
+cartesian_y="7.177"
+cartesian_z="13.796"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG13" id="157" type="rep">
+<physics
+cartesian_x="-13.046"
+cartesian_y="6.542"
+cartesian_z="13.932"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG21" id="158" type="rep">
+<physics
+cartesian_x="-13.513"
+cartesian_y="10.176"
+cartesian_z="12.164"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG22" id="159" type="rep">
+<physics
+cartesian_x="-13.889"
+cartesian_y="9.984"
+cartesian_z="13.677"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG23" id="160" type="rep">
+<physics
+cartesian_x="-14.788"
+cartesian_y="9.343"
+cartesian_z="12.557"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="161" type="rep">
+<physics
+cartesian_x="-13.732"
+cartesian_y="7.382"
+cartesian_z="16.019"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="162" type="rep">
+<physics
+cartesian_x="-13.926"
+cartesian_y="8.811"
+cartesian_z="15.391"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="163" type="rep">
+<physics
+cartesian_x="-12.484"
+cartesian_y="8.197"
+cartesian_z="15.521"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="11" id="164" type="rep">
+<sequence
+residue_index_begin="11"
+residue_index_end="12"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="165" type="rep">
+<physics
+cartesian_x="-11.422"
+cartesian_y="8.913"
+cartesian_z="10.187"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="166" type="rep">
+<physics
+cartesian_x="-11.019"
+cartesian_y="9.894"
+cartesian_z="9.196"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="167" type="rep">
+<physics
+cartesian_x="-11.15"
+cartesian_y="9.403"
+cartesian_z="7.769"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="168" type="rep">
+<physics
+cartesian_x="-11.422"
+cartesian_y="10.172"
+cartesian_z="6.865"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="169" type="rep">
+<physics
+cartesian_x="-9.554"
+cartesian_y="10.302"
+cartesian_z="9.437"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="170" type="rep">
+<physics
+cartesian_x="-10.771"
+cartesian_y="8.569"
+cartesian_z="10.633"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="171" type="rep">
+<physics
+cartesian_x="-11.571"
+cartesian_y="10.698"
+cartesian_z="9.292"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="172" type="rep">
+<physics
+cartesian_x="-9.475"
+cartesian_y="10.684"
+cartesian_z="10.316"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="173" type="rep">
+<physics
+cartesian_x="-9.297"
+cartesian_y="10.952"
+cartesian_z="8.778"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="174" type="rep">
+<physics
+cartesian_x="-8.994"
+cartesian_y="9.525"
+cartesian_z="9.367"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="12" id="175" type="rep">
+<sequence
+residue_index_begin="12"
+residue_index_end="13"
+residue_type="B3E"
+/>
+<child>
+<node name="HET: N  " id="176" type="rep">
+<physics
+cartesian_x="-10.95"
+cartesian_y="8.114"
+cartesian_z="7.587"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="177" type="rep">
+<physics
+cartesian_x="-11.038"
+cartesian_y="7.497"
+cartesian_z="6.27"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="178" type="rep">
+<physics
+cartesian_x="-9.62"
+cartesian_y="6.903"
+cartesian_z="6"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="179" type="rep">
+<physics
+cartesian_x="-8.499"
+cartesian_y="7.958"
+cartesian_z="5.993"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="180" type="rep">
+<physics
+cartesian_x="-7.104"
+cartesian_y="7.341"
+cartesian_z="6.161"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF2" id="181" type="rep">
+<physics
+cartesian_x="-6.267"
+cartesian_y="8.051"
+cartesian_z="6.731"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF1" id="182" type="rep">
+<physics
+cartesian_x="-6.817"
+cartesian_y="6.211"
+cartesian_z="5.742"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="183" type="rep">
+<physics
+cartesian_x="-12.056"
+cartesian_y="6.451"
+cartesian_z="6.16"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="184" type="rep">
+<physics
+cartesian_x="-13.424"
+cartesian_y="7.045"
+cartesian_z="6.009"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="185" type="rep">
+<physics
+cartesian_x="-13.797"
+cartesian_y="7.516"
+cartesian_z="4.949"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H  " id="186" type="rep">
+<physics
+cartesian_x="-10.757"
+cartesian_y="7.59"
+cartesian_z="8.24"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="187" type="rep">
+<physics
+cartesian_x="-11.237"
+cartesian_y="8.251"
+cartesian_z="5.496"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG2" id="188" type="rep">
+<physics
+cartesian_x="-9.396"
+cartesian_y="6.148"
+cartesian_z="6.755"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG3" id="189" type="rep">
+<physics
+cartesian_x="-9.625"
+cartesian_y="6.397"
+cartesian_z="5.033"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD2" id="190" type="rep">
+<physics
+cartesian_x="-8.541"
+cartesian_y="8.506"
+cartesian_z="5.05"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD3" id="191" type="rep">
+<physics
+cartesian_x="-8.655"
+cartesian_y="8.679"
+cartesian_z="6.796"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA1" id="192" type="rep">
+<physics
+cartesian_x="-12.018"
+cartesian_y="5.811"
+cartesian_z="7.043"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA2" id="193" type="rep">
+<physics
+cartesian_x="-11.843"
+cartesian_y="5.827"
+cartesian_z="5.289"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="13" id="194" type="rep">
+<sequence
+residue_index_begin="13"
+residue_index_end="14"
+residue_type="TYR"
+/>
+<child>
+<node name="N" id="195" type="rep">
+<physics
+cartesian_x="-14.168"
+cartesian_y="7.017"
+cartesian_z="7.084"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="196" type="rep">
+<physics
+cartesian_x="-15.52"
+cartesian_y="7.557"
+cartesian_z="7.077"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="197" type="rep">
+<physics
+cartesian_x="-15.687"
+cartesian_y="9.008"
+cartesian_z="6.692"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="198" type="rep">
+<physics
+cartesian_x="-16.534"
+cartesian_y="9.354"
+cartesian_z="5.861"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="199" type="rep">
+<physics
+cartesian_x="-16.24"
+cartesian_y="7.213"
+cartesian_z="8.41"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="200" type="rep">
+<physics
+cartesian_x="-17.698"
+cartesian_y="7.594"
+cartesian_z="8.42"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="201" type="rep">
+<physics
+cartesian_x="-18.616"
+cartesian_y="6.834"
+cartesian_z="7.733"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="202" type="rep">
+<physics
+cartesian_x="-18.148"
+cartesian_y="8.751"
+cartesian_z="9.071"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE1" id="203" type="rep">
+<physics
+cartesian_x="-19.944"
+cartesian_y="7.193"
+cartesian_z="7.705"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE2" id="204" type="rep">
+<physics
+cartesian_x="-19.475"
+cartesian_y="9.101"
+cartesian_z="9.047"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CZ" id="205" type="rep">
+<physics
+cartesian_x="-20.371"
+cartesian_y="8.32"
+cartesian_z="8.372"
+radius="1.9924"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OH" id="206" type="rep">
+<physics
+cartesian_x="-21.69"
+cartesian_y="8.669"
+cartesian_z="8.3"
+radius="1.77"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="207" type="rep">
+<physics
+cartesian_x="-13.924"
+cartesian_y="6.688"
+cartesian_z="7.841"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="208" type="rep">
+<physics
+cartesian_x="-16.007"
+cartesian_y="7.056"
+cartesian_z="6.39"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="209" type="rep">
+<physics
+cartesian_x="-16.182"
+cartesian_y="6.256"
+cartesian_z="8.559"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="210" type="rep">
+<physics
+cartesian_x="-15.803"
+cartesian_y="7.685"
+cartesian_z="9.136"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD1" id="211" type="rep">
+<physics
+cartesian_x="-18.336"
+cartesian_y="6.071"
+cartesian_z="7.282"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD2" id="212" type="rep">
+<physics
+cartesian_x="-17.541"
+cartesian_y="9.282"
+cartesian_z="9.534"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE1" id="213" type="rep">
+<physics
+cartesian_x="-20.552"
+cartesian_y="6.668"
+cartesian_z="7.241"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE2" id="214" type="rep">
+<physics
+cartesian_x="-19.763"
+cartesian_y="9.869"
+cartesian_z="9.485"
+radius="1.3582"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH" id="215" type="rep">
+<physics
+cartesian_x="-22.157"
+cartesian_y="8.065"
+cartesian_z="8.601"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="14" id="216" type="rep">
+<sequence
+residue_index_begin="14"
+residue_index_end="15"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="217" type="rep">
+<physics
+cartesian_x="-14.888"
+cartesian_y="9.873"
+cartesian_z="7.295"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="218" type="rep">
+<physics
+cartesian_x="-15.048"
+cartesian_y="11.289"
+cartesian_z="7.049"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="219" type="rep">
+<physics
+cartesian_x="-14.658"
+cartesian_y="11.675"
+cartesian_z="5.603"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="220" type="rep">
+<physics
+cartesian_x="-15.327"
+cartesian_y="12.471"
+cartesian_z="4.984"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="221" type="rep">
+<physics
+cartesian_x="-14.219"
+cartesian_y="12.087"
+cartesian_z="8.039"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="222" type="rep">
+<physics
+cartesian_x="-14.256"
+cartesian_y="9.665"
+cartesian_z="7.841"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="223" type="rep">
+<physics
+cartesian_x="-15.987"
+cartesian_y="11.536"
+cartesian_z="7.184"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="224" type="rep">
+<physics
+cartesian_x="-14.512"
+cartesian_y="11.885"
+cartesian_z="8.928"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="225" type="rep">
+<physics
+cartesian_x="-14.337"
+cartesian_y="13.024"
+cartesian_z="7.861"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="226" type="rep">
+<physics
+cartesian_x="-13.294"
+cartesian_y="11.849"
+cartesian_z="7.934"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="15" id="227" type="rep">
+<sequence
+residue_index_begin="15"
+residue_index_end="16"
+residue_type="XCP"
+/>
+<child>
+<node name="HET: N  " id="228" type="rep">
+<physics
+cartesian_x="-13.575"
+cartesian_y="11.091"
+cartesian_z="5.11"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="229" type="rep">
+<physics
+cartesian_x="-13.041"
+cartesian_y="11.325"
+cartesian_z="3.754"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="230" type="rep">
+<physics
+cartesian_x="-11.535"
+cartesian_y="11.537"
+cartesian_z="3.723"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="231" type="rep">
+<physics
+cartesian_x="-11.043"
+cartesian_y="11.083"
+cartesian_z="2.345"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="232" type="rep">
+<physics
+cartesian_x="-12.175"
+cartesian_y="10.303"
+cartesian_z="1.689"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="233" type="rep">
+<physics
+cartesian_x="-13.209"
+cartesian_y="10.126"
+cartesian_z="2.822"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="234" type="rep">
+<physics
+cartesian_x="-14.619"
+cartesian_y="9.919"
+cartesian_z="2.272"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="235" type="rep">
+<physics
+cartesian_x="-15.024"
+cartesian_y="10.609"
+cartesian_z="1.362"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="236" type="rep">
+<physics
+cartesian_x="-13.478"
+cartesian_y="12.105"
+cartesian_z="3.354"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="237" type="rep">
+<physics
+cartesian_x="-11.105"
+cartesian_y="11.001"
+cartesian_z="4.42"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="238" type="rep">
+<physics
+cartesian_x="-11.328"
+cartesian_y="12.486"
+cartesian_z="3.856"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD " id="239" type="rep">
+<physics
+cartesian_x="-10.257"
+cartesian_y="10.507"
+cartesian_z="2.444"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HDA" id="240" type="rep">
+<physics
+cartesian_x="-10.817"
+cartesian_y="11.864"
+cartesian_z="1.798"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="241" type="rep">
+<physics
+cartesian_x="-11.854"
+cartesian_y="9.431"
+cartesian_z="1.379"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="242" type="rep">
+<physics
+cartesian_x="-12.551"
+cartesian_y="10.817"
+cartesian_z="0.944"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="243" type="rep">
+<physics
+cartesian_x="-12.956"
+cartesian_y="9.324"
+cartesian_z="3.323"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="244" type="rep">
+<physics
+cartesian_x="-13.13"
+cartesian_y="10.531"
+cartesian_z="5.586"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="16" id="245" type="rep">
+<sequence
+residue_index_begin="16"
+residue_index_end="17"
+residue_type="ARG"
+/>
+<child>
+<node name="N" id="246" type="rep">
+<physics
+cartesian_x="-15.344"
+cartesian_y="8.957"
+cartesian_z="2.847"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="247" type="rep">
+<physics
+cartesian_x="-16.694"
+cartesian_y="8.66"
+cartesian_z="2.416"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="248" type="rep">
+<physics
+cartesian_x="-17.647"
+cartesian_y="9.84"
+cartesian_z="2.394"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="249" type="rep">
+<physics
+cartesian_x="-18.295"
+cartesian_y="10.059"
+cartesian_z="1.4"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="250" type="rep">
+<physics
+cartesian_x="-17.243"
+cartesian_y="7.497"
+cartesian_z="3.218"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="251" type="rep">
+<physics
+cartesian_x="-18.605"
+cartesian_y="7.041"
+cartesian_z="2.76"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="252" type="rep">
+<physics
+cartesian_x="-18.998"
+cartesian_y="5.826"
+cartesian_z="3.585"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="NE" id="253" type="rep">
+<physics
+cartesian_x="-20.234"
+cartesian_y="5.181"
+cartesian_z="3.155"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CZ" id="254" type="rep">
+<physics
+cartesian_x="-21.416"
+cartesian_y="5.464"
+cartesian_z="3.671"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="NH1" id="255" type="rep">
+<physics
+cartesian_x="-22.477"
+cartesian_y="4.791"
+cartesian_z="3.243"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="NH2" id="256" type="rep">
+<physics
+cartesian_x="-21.561"
+cartesian_y="6.401"
+cartesian_z="4.63"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="257" type="rep">
+<physics
+cartesian_x="-15.064"
+cartesian_y="8.462"
+cartesian_z="3.492"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="258" type="rep">
+<physics
+cartesian_x="-16.633"
+cartesian_y="8.344"
+cartesian_z="1.49"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="259" type="rep">
+<physics
+cartesian_x="-16.634"
+cartesian_y="6.747"
+cartesian_z="3.135"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="260" type="rep">
+<physics
+cartesian_x="-17.319"
+cartesian_y="7.758"
+cartesian_z="4.147"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="261" type="rep">
+<physics
+cartesian_x="-19.263"
+cartesian_y="7.737"
+cartesian_z="2.91"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="262" type="rep">
+<physics
+cartesian_x="-18.572"
+cartesian_y="6.79"
+cartesian_z="1.824"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD2" id="263" type="rep">
+<physics
+cartesian_x="-18.297"
+cartesian_y="5.168"
+cartesian_z="3.502"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD3" id="264" type="rep">
+<physics
+cartesian_x="-19.072"
+cartesian_y="6.083"
+cartesian_z="4.515"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE" id="265" type="rep">
+<physics
+cartesian_x="-20.136"
+cartesian_y="4.317"
+cartesian_z="2.729"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH11" id="266" type="rep">
+<physics
+cartesian_x="-23.257"
+cartesian_y="4.973"
+cartesian_z="3.557"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH12" id="267" type="rep">
+<physics
+cartesian_x="-22.396"
+cartesian_y="4.196"
+cartesian_z="2.629"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH21" id="268" type="rep">
+<physics
+cartesian_x="-20.889"
+cartesian_y="6.842"
+cartesian_z="4.928"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HH22" id="269" type="rep">
+<physics
+cartesian_x="-22.344"
+cartesian_y="6.568"
+cartesian_z="4.944"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="17" id="270" type="rep">
+<sequence
+residue_index_begin="17"
+residue_index_end="18"
+residue_type="ILE"
+/>
+<child>
+<node name="N" id="271" type="rep">
+<physics
+cartesian_x="-17.731"
+cartesian_y="10.576"
+cartesian_z="3.488"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="272" type="rep">
+<physics
+cartesian_x="-18.684"
+cartesian_y="11.673"
+cartesian_z="3.518"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="273" type="rep">
+<physics
+cartesian_x="-18.257"
+cartesian_y="12.869"
+cartesian_z="2.659"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="274" type="rep">
+<physics
+cartesian_x="-19.044"
+cartesian_y="13.414"
+cartesian_z="1.912"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="275" type="rep">
+<physics
+cartesian_x="-19.006"
+cartesian_y="12.105"
+cartesian_z="4.98"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG1" id="276" type="rep">
+<physics
+cartesian_x="-19.637"
+cartesian_y="10.893"
+cartesian_z="5.709"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG2" id="277" type="rep">
+<physics
+cartesian_x="-19.9"
+cartesian_y="13.318"
+cartesian_z="5.011"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="278" type="rep">
+<physics
+cartesian_x="-20.89"
+cartesian_y="10.289"
+cartesian_z="5.108"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="279" type="rep">
+<physics
+cartesian_x="-17.26"
+cartesian_y="10.469"
+cartesian_z="4.2"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="280" type="rep">
+<physics
+cartesian_x="-19.527"
+cartesian_y="11.355"
+cartesian_z="3.135"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB" id="281" type="rep">
+<physics
+cartesian_x="-18.173"
+cartesian_y="12.329"
+cartesian_z="5.424"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG12" id="282" type="rep">
+<physics
+cartesian_x="-18.978"
+cartesian_y="10.185"
+cartesian_z="5.762"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG13" id="283" type="rep">
+<physics
+cartesian_x="-19.867"
+cartesian_y="11.175"
+cartesian_z="6.608"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG21" id="284" type="rep">
+<physics
+cartesian_x="-19.454"
+cartesian_y="14.044"
+cartesian_z="4.565"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG22" id="285" type="rep">
+<physics
+cartesian_x="-20.074"
+cartesian_y="13.554"
+cartesian_z="5.923"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG23" id="286" type="rep">
+<physics
+cartesian_x="-20.721"
+cartesian_y="13.112"
+cartesian_z="4.559"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="287" type="rep">
+<physics
+cartesian_x="-21.175"
+cartesian_y="9.555"
+cartesian_z="5.656"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="288" type="rep">
+<physics
+cartesian_x="-20.695"
+cartesian_y="9.984"
+cartesian_z="4.222"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="289" type="rep">
+<physics
+cartesian_x="-21.577"
+cartesian_y="10.961"
+cartesian_z="5.083"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="18" id="290" type="rep">
+<sequence
+residue_index_begin="18"
+residue_index_end="19"
+residue_type="GLU"
+/>
+<child>
+<node name="N" id="291" type="rep">
+<physics
+cartesian_x="-16.999"
+cartesian_y="13.231"
+cartesian_z="2.73"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="292" type="rep">
+<physics
+cartesian_x="-16.523"
+cartesian_y="14.353"
+cartesian_z="1.966"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="293" type="rep">
+<physics
+cartesian_x="-16.559"
+cartesian_y="14.126"
+cartesian_z="0.465"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="294" type="rep">
+<physics
+cartesian_x="-16.914"
+cartesian_y="15.01"
+cartesian_z="-0.309"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="295" type="rep">
+<physics
+cartesian_x="-15.051"
+cartesian_y="14.576"
+cartesian_z="2.322"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="296" type="rep">
+<physics
+cartesian_x="-14.348"
+cartesian_y="15.673"
+cartesian_z="1.632"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="297" type="rep">
+<physics
+cartesian_x="-12.85"
+cartesian_y="15.603"
+cartesian_z="1.756"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="298" type="rep">
+<physics
+cartesian_x="-12.228"
+cartesian_y="16.038"
+cartesian_z="0.794"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OE2" id="299" type="rep">
+<physics
+cartesian_x="-12.305"
+cartesian_y="15.13"
+cartesian_z="2.775"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="300" type="rep">
+<physics
+cartesian_x="-16.404"
+cartesian_y="12.842"
+cartesian_z="3.215"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="301" type="rep">
+<physics
+cartesian_x="-17.035"
+cartesian_y="15.16"
+cartesian_z="2.186"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="302" type="rep">
+<physics
+cartesian_x="-14.994"
+cartesian_y="14.756"
+cartesian_z="3.274"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="303" type="rep">
+<physics
+cartesian_x="-14.568"
+cartesian_y="13.759"
+cartesian_z="2.122"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="304" type="rep">
+<physics
+cartesian_x="-14.56"
+cartesian_y="15.657"
+cartesian_z="0.687"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="305" type="rep">
+<physics
+cartesian_x="-14.636"
+cartesian_y="16.516"
+cartesian_z="2.016"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="19" id="306" type="rep">
+<sequence
+residue_index_begin="19"
+residue_index_end="20"
+residue_type="XCP"
+/>
+<child>
+<node name="HET: N  " id="307" type="rep">
+<physics
+cartesian_x="-16.182"
+cartesian_y="12.918"
+cartesian_z="0.065"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="308" type="rep">
+<physics
+cartesian_x="-16.148"
+cartesian_y="12.518"
+cartesian_z="-1.355"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="309" type="rep">
+<physics
+cartesian_x="-14.698"
+cartesian_y="12.207"
+cartesian_z="-1.706"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="310" type="rep">
+<physics
+cartesian_x="-14.836"
+cartesian_y="11.516"
+cartesian_z="-3.055"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="311" type="rep">
+<physics
+cartesian_x="-16.123"
+cartesian_y="10.7"
+cartesian_z="-2.962"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="312" type="rep">
+<physics
+cartesian_x="-16.878"
+cartesian_y="11.261"
+cartesian_z="-1.729"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="313" type="rep">
+<physics
+cartesian_x="-18.332"
+cartesian_y="11.631"
+cartesian_z="-1.982"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="314" type="rep">
+<physics
+cartesian_x="-18.706"
+cartesian_y="12.063"
+cartesian_z="-3.08"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="315" type="rep">
+<physics
+cartesian_x="-16.458"
+cartesian_y="13.254"
+cartesian_z="-1.923"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="316" type="rep">
+<physics
+cartesian_x="-14.302"
+cartesian_y="11.601"
+cartesian_z="-1.045"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="317" type="rep">
+<physics
+cartesian_x="-14.174"
+cartesian_y="13.03"
+cartesian_z="-1.785"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD " id="318" type="rep">
+<physics
+cartesian_x="-14.071"
+cartesian_y="10.925"
+cartesian_z="-3.21"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HDA" id="319" type="rep">
+<physics
+cartesian_x="-14.905"
+cartesian_y="12.181"
+cartesian_z="-3.772"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="320" type="rep">
+<physics
+cartesian_x="-15.911"
+cartesian_y="9.753"
+cartesian_z="-2.825"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="321" type="rep">
+<physics
+cartesian_x="-16.652"
+cartesian_y="10.812"
+cartesian_z="-3.779"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="322" type="rep">
+<physics
+cartesian_x="-16.823"
+cartesian_y="10.617"
+cartesian_z="-0.992"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="323" type="rep">
+<physics
+cartesian_x="-15.936"
+cartesian_y="12.318"
+cartesian_z="0.63"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="20" id="324" type="rep">
+<sequence
+residue_index_begin="20"
+residue_index_end="21"
+residue_type="LEU"
+/>
+<child>
+<node name="N" id="325" type="rep">
+<physics
+cartesian_x="-19.161"
+cartesian_y="11.464"
+cartesian_z="-0.956"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="326" type="rep">
+<physics
+cartesian_x="-20.564"
+cartesian_y="11.785"
+cartesian_z="-1.093"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="327" type="rep">
+<physics
+cartesian_x="-20.888"
+cartesian_y="13.223"
+cartesian_z="-1.391"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="328" type="rep">
+<physics
+cartesian_x="-21.618"
+cartesian_y="13.483"
+cartesian_z="-2.327"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="329" type="rep">
+<physics
+cartesian_x="-21.314"
+cartesian_y="11.314"
+cartesian_z="0.153"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="330" type="rep">
+<physics
+cartesian_x="-22.827"
+cartesian_y="11.53"
+cartesian_z="0.152"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="331" type="rep">
+<physics
+cartesian_x="-23.547"
+cartesian_y="10.733"
+cartesian_z="-0.971"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="332" type="rep">
+<physics
+cartesian_x="-23.395"
+cartesian_y="11.216"
+cartesian_z="1.552"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="333" type="rep">
+<physics
+cartesian_x="-18.932"
+cartesian_y="11.166"
+cartesian_z="-0.182"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="334" type="rep">
+<physics
+cartesian_x="-20.913"
+cartesian_y="11.258"
+cartesian_z="-1.842"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="335" type="rep">
+<physics
+cartesian_x="-21.158"
+cartesian_y="10.363"
+cartesian_z="0.26"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="336" type="rep">
+<physics
+cartesian_x="-20.956"
+cartesian_y="11.787"
+cartesian_z="0.92"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG" id="337" type="rep">
+<physics
+cartesian_x="-23.007"
+cartesian_y="12.469"
+cartesian_z="-0.011"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="338" type="rep">
+<physics
+cartesian_x="-23.206"
+cartesian_y="11.019"
+cartesian_z="-1.824"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="339" type="rep">
+<physics
+cartesian_x="-24.489"
+cartesian_y="10.908"
+cartesian_z="-0.925"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="340" type="rep">
+<physics
+cartesian_x="-23.378"
+cartesian_y="9.797"
+cartesian_z="-0.85"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD21" id="341" type="rep">
+<physics
+cartesian_x="-24.344"
+cartesian_y="11.342"
+cartesian_z="1.545"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD22" id="342" type="rep">
+<physics
+cartesian_x="-22.984"
+cartesian_y="11.79"
+cartesian_z="2.197"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD23" id="343" type="rep">
+<physics
+cartesian_x="-23.197"
+cartesian_y="10.292"
+cartesian_z="1.767"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="21" id="344" type="rep">
+<sequence
+residue_index_begin="21"
+residue_index_end="22"
+residue_type="ILE"
+/>
+<child>
+<node name="N" id="345" type="rep">
+<physics
+cartesian_x="-20.333"
+cartesian_y="14.154"
+cartesian_z="-0.612"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="346" type="rep">
+<physics
+cartesian_x="-20.657"
+cartesian_y="15.572"
+cartesian_z="-0.807"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="347" type="rep">
+<physics
+cartesian_x="-20.092"
+cartesian_y="16.058"
+cartesian_z="-2.133"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="348" type="rep">
+<physics
+cartesian_x="-20.801"
+cartesian_y="16.621"
+cartesian_z="-2.938"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="349" type="rep">
+<physics
+cartesian_x="-20.142"
+cartesian_y="16.436"
+cartesian_z="0.364"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG1" id="350" type="rep">
+<physics
+cartesian_x="-20.904"
+cartesian_y="16.081"
+cartesian_z="1.651"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG2" id="351" type="rep">
+<physics
+cartesian_x="-20.222"
+cartesian_y="17.942"
+cartesian_z="0.043"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="352" type="rep">
+<physics
+cartesian_x="-20.271"
+cartesian_y="16.626"
+cartesian_z="2.938"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="353" type="rep">
+<physics
+cartesian_x="-19.774"
+cartesian_y="13.992"
+cartesian_z="0.021"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="354" type="rep">
+<physics
+cartesian_x="-21.631"
+cartesian_y="15.674"
+cartesian_z="-0.841"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB" id="355" type="rep">
+<physics
+cartesian_x="-19.208"
+cartesian_y="16.217"
+cartesian_z="0.505"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG12" id="356" type="rep">
+<physics
+cartesian_x="-21.798"
+cartesian_y="16.451"
+cartesian_z="1.589"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG13" id="357" type="rep">
+<physics
+cartesian_x="-20.959"
+cartesian_y="15.117"
+cartesian_z="1.736"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG21" id="358" type="rep">
+<physics
+cartesian_x="-19.684"
+cartesian_y="18.124"
+cartesian_z="-0.73"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG22" id="359" type="rep">
+<physics
+cartesian_x="-19.895"
+cartesian_y="18.439"
+cartesian_z="0.794"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG23" id="360" type="rep">
+<physics
+cartesian_x="-21.138"
+cartesian_y="18.176"
+cartesian_z="-0.133"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="361" type="rep">
+<physics
+cartesian_x="-20.808"
+cartesian_y="16.357"
+cartesian_z="3.687"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="362" type="rep">
+<physics
+cartesian_x="-20.235"
+cartesian_y="17.583"
+cartesian_z="2.886"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="363" type="rep">
+<physics
+cartesian_x="-19.386"
+cartesian_y="16.267"
+cartesian_z="3.026"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="22" id="364" type="rep">
+<sequence
+residue_index_begin="22"
+residue_index_end="23"
+residue_type="XPC"
+/>
+<child>
+<node name="HET: N  " id="365" type="rep">
+<physics
+cartesian_x="-18.794"
+cartesian_y="15.822"
+cartesian_z="-2.331"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="366" type="rep">
+<physics
+cartesian_x="-18.144"
+cartesian_y="16.238"
+cartesian_z="-3.552"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="367" type="rep">
+<physics
+cartesian_x="-16.711"
+cartesian_y="16.7"
+cartesian_z="-3.241"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: ND " id="368" type="rep">
+<physics
+cartesian_x="-15.997"
+cartesian_y="16.633"
+cartesian_z="-4.575"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="369" type="rep">
+<physics
+cartesian_x="-16.719"
+cartesian_y="15.591"
+cartesian_z="-5.382"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="370" type="rep">
+<physics
+cartesian_x="-17.915"
+cartesian_y="15.114"
+cartesian_z="-4.541"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="371" type="rep">
+<physics
+cartesian_x="-19.138"
+cartesian_y="14.815"
+cartesian_z="-5.411"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="372" type="rep">
+<physics
+cartesian_x="-19.541"
+cartesian_y="15.612"
+cartesian_z="-6.253"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="373" type="rep">
+<physics
+cartesian_x="-18.634"
+cartesian_y="16.968"
+cartesian_z="-3.983"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="374" type="rep">
+<physics
+cartesian_x="-16.282"
+cartesian_y="16.097"
+cartesian_z="-2.6"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="375" type="rep">
+<physics
+cartesian_x="-16.714"
+cartesian_y="17.619"
+cartesian_z="-2.9"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HND" id="376" type="rep">
+<physics
+cartesian_x="-16.064"
+cartesian_y="17.495"
+cartesian_z="-5.033"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="377" type="rep">
+<physics
+cartesian_x="-16.117"
+cartesian_y="14.838"
+cartesian_z="-5.554"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="378" type="rep">
+<physics
+cartesian_x="-17.02"
+cartesian_y="15.978"
+cartesian_z="-6.23"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="379" type="rep">
+<physics
+cartesian_x="-17.654"
+cartesian_y="14.307"
+cartesian_z="-4.051"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="380" type="rep">
+<physics
+cartesian_x="-18.312"
+cartesian_y="15.421"
+cartesian_z="-1.743"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="23" id="381" type="rep">
+<sequence
+residue_index_begin="23"
+residue_index_end="24"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="382" type="rep">
+<physics
+cartesian_x="-19.73"
+cartesian_y="13.644"
+cartesian_z="-5.193"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="383" type="rep">
+<physics
+cartesian_x="-20.908"
+cartesian_y="13.2"
+cartesian_z="-5.94"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="384" type="rep">
+<physics
+cartesian_x="-22.098"
+cartesian_y="14.159"
+cartesian_z="-6.001"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="385" type="rep">
+<physics
+cartesian_x="-22.649"
+cartesian_y="14.408"
+cartesian_z="-7.076"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="386" type="rep">
+<physics
+cartesian_x="-21.351"
+cartesian_y="11.808"
+cartesian_z="-5.489"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="387" type="rep">
+<physics
+cartesian_x="-19.46"
+cartesian_y="13.074"
+cartesian_z="-4.608"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="388" type="rep">
+<physics
+cartesian_x="-20.616"
+cartesian_y="13.093"
+cartesian_z="-6.869"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="389" type="rep">
+<physics
+cartesian_x="-20.632"
+cartesian_y="11.188"
+cartesian_z="-5.643"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="390" type="rep">
+<physics
+cartesian_x="-22.12"
+cartesian_y="11.548"
+cartesian_z="-5.997"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="391" type="rep">
+<physics
+cartesian_x="-21.564"
+cartesian_y="11.836"
+cartesian_z="-4.554"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="24" id="392" type="rep">
+<sequence
+residue_index_begin="24"
+residue_index_end="25"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="393" type="rep">
+<physics
+cartesian_x="-22.524"
+cartesian_y="14.641"
+cartesian_z="-4.833"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="394" type="rep">
+<physics
+cartesian_x="-23.701"
+cartesian_y="15.467"
+cartesian_z="-4.771"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="395" type="rep">
+<physics
+cartesian_x="-23.491"
+cartesian_y="16.838"
+cartesian_z="-5.418"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="396" type="rep">
+<physics
+cartesian_x="-24.368"
+cartesian_y="17.337"
+cartesian_z="-6.081"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="397" type="rep">
+<physics
+cartesian_x="-24.199"
+cartesian_y="15.553"
+cartesian_z="-3.342"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="398" type="rep">
+<physics
+cartesian_x="-22.141"
+cartesian_y="14.498"
+cartesian_z="-4.076"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="399" type="rep">
+<physics
+cartesian_x="-24.411"
+cartesian_y="15.023"
+cartesian_z="-5.28"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="400" type="rep">
+<physics
+cartesian_x="-24.411"
+cartesian_y="14.669"
+cartesian_z="-3.034"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="401" type="rep">
+<physics
+cartesian_x="-24.982"
+cartesian_y="16.105"
+cartesian_z="-3.319"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="402" type="rep">
+<physics
+cartesian_x="-23.509"
+cartesian_y="15.935"
+cartesian_z="-2.796"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="25" id="403" type="rep">
+<sequence
+residue_index_begin="25"
+residue_index_end="26"
+residue_type="GLN"
+/>
+<child>
+<node name="N" id="404" type="rep">
+<physics
+cartesian_x="-22.297"
+cartesian_y="17.419"
+cartesian_z="-5.236"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="405" type="rep">
+<physics
+cartesian_x="-21.983"
+cartesian_y="18.737"
+cartesian_z="-5.756"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="406" type="rep">
+<physics
+cartesian_x="-21.673"
+cartesian_y="18.715"
+cartesian_z="-7.259"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="407" type="rep">
+<physics
+cartesian_x="-21.949"
+cartesian_y="19.667"
+cartesian_z="-7.95"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="408" type="rep">
+<physics
+cartesian_x="-20.798"
+cartesian_y="19.345"
+cartesian_z="-5.021"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="409" type="rep">
+<physics
+cartesian_x="-21.126"
+cartesian_y="19.807"
+cartesian_z="-3.613"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="410" type="rep">
+<physics
+cartesian_x="-19.927"
+cartesian_y="20.263"
+cartesian_z="-2.808"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="411" type="rep">
+<physics
+cartesian_x="-18.808"
+cartesian_y="19.74"
+cartesian_z="-2.955"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="NE2" id="412" type="rep">
+<physics
+cartesian_x="-20.172"
+cartesian_y="21.234"
+cartesian_z="-1.912"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="413" type="rep">
+<physics
+cartesian_x="-21.649"
+cartesian_y="17.054"
+cartesian_z="-4.804"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="414" type="rep">
+<physics
+cartesian_x="-22.751"
+cartesian_y="19.328"
+cartesian_z="-5.616"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="415" type="rep">
+<physics
+cartesian_x="-20.089"
+cartesian_y="18.685"
+cartesian_z="-4.966"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="416" type="rep">
+<physics
+cartesian_x="-20.485"
+cartesian_y="20.119"
+cartesian_z="-5.516"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="417" type="rep">
+<physics
+cartesian_x="-21.742"
+cartesian_y="20.554"
+cartesian_z="-3.672"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="418" type="rep">
+<physics
+cartesian_x="-21.547"
+cartesian_y="19.078"
+cartesian_z="-3.133"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE21" id="419" type="rep">
+<physics
+cartesian_x="-20.972"
+cartesian_y="21.553"
+cartesian_z="-1.825"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE22" id="420" type="rep">
+<physics
+cartesian_x="-19.539"
+cartesian_y="21.54"
+cartesian_z="-1.419"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="26" id="421" type="rep">
+<sequence
+residue_index_begin="26"
+residue_index_end="27"
+residue_type="B3E"
+/>
+<child>
+<node name="HET: N  " id="422" type="rep">
+<physics
+cartesian_x="-21.102"
+cartesian_y="17.613"
+cartesian_z="-7.72"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="423" type="rep">
+<physics
+cartesian_x="-20.74"
+cartesian_y="17.425"
+cartesian_z="-9.116"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="424" type="rep">
+<physics
+cartesian_x="-19.258"
+cartesian_y="17.049"
+cartesian_z="-9.234"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="425" type="rep">
+<physics
+cartesian_x="-18.345"
+cartesian_y="18.131"
+cartesian_z="-8.658"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="426" type="rep">
+<physics
+cartesian_x="-16.836"
+cartesian_y="17.824"
+cartesian_z="-8.752"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF2" id="427" type="rep">
+<physics
+cartesian_x="-16.059"
+cartesian_y="18.594"
+cartesian_z="-8.136"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF1" id="428" type="rep">
+<physics
+cartesian_x="-16.387"
+cartesian_y="16.828"
+cartesian_z="-9.398"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="429" type="rep">
+<physics
+cartesian_x="-21.536"
+cartesian_y="16.294"
+cartesian_z="-9.715"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="430" type="rep">
+<physics
+cartesian_x="-22.969"
+cartesian_y="16.695"
+cartesian_z="-10.004"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="431" type="rep">
+<physics
+cartesian_x="-23.255"
+cartesian_y="17.385"
+cartesian_z="-10.974"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H  " id="432" type="rep">
+<physics
+cartesian_x="-20.92"
+cartesian_y="16.955"
+cartesian_z="-7.197"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="433" type="rep">
+<physics
+cartesian_x="-20.921"
+cartesian_y="18.336"
+cartesian_z="-9.703"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG2" id="434" type="rep">
+<physics
+cartesian_x="-19.076"
+cartesian_y="16.104"
+cartesian_z="-8.72"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG3" id="435" type="rep">
+<physics
+cartesian_x="-19.006"
+cartesian_y="16.904"
+cartesian_z="-10.287"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD2" id="436" type="rep">
+<physics
+cartesian_x="-18.544"
+cartesian_y="19.07"
+cartesian_z="-9.179"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD3" id="437" type="rep">
+<physics
+cartesian_x="-18.598"
+cartesian_y="18.286"
+cartesian_z="-7.607"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA1" id="438" type="rep">
+<physics
+cartesian_x="-21.517"
+cartesian_y="15.44"
+cartesian_z="-9.038"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA2" id="439" type="rep">
+<physics
+cartesian_x="-21.068"
+cartesian_y="15.978"
+cartesian_z="-10.65"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="27" id="440" type="rep">
+<sequence
+residue_index_begin="27"
+residue_index_end="28"
+residue_type="GLN"
+/>
+<child>
+<node name="N" id="441" type="rep">
+<physics
+cartesian_x="-23.894"
+cartesian_y="16.257"
+cartesian_z="-9.15"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="442" type="rep">
+<physics
+cartesian_x="-25.301"
+cartesian_y="16.587"
+cartesian_z="-9.344"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="443" type="rep">
+<physics
+cartesian_x="-25.708"
+cartesian_y="18.026"
+cartesian_z="-9.354"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="444" type="rep">
+<physics
+cartesian_x="-26.472"
+cartesian_y="18.442"
+cartesian_z="-10.191"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="445" type="rep">
+<physics
+cartesian_x="-26.211"
+cartesian_y="15.757"
+cartesian_z="-8.397"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="446" type="rep">
+<physics
+cartesian_x="-27.685"
+cartesian_y="15.783"
+cartesian_z="-8.747"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="447" type="rep">
+<physics
+cartesian_x="-28.006"
+cartesian_y="15.104"
+cartesian_z="-10.072"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="448" type="rep">
+<physics
+cartesian_x="-27.578"
+cartesian_y="13.998"
+cartesian_z="-10.275"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="NE2" id="449" type="rep">
+<physics
+cartesian_x="-28.793"
+cartesian_y="15.727"
+cartesian_z="-10.931"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="450" type="rep">
+<physics
+cartesian_x="-23.732"
+cartesian_y="15.77"
+cartesian_z="-8.46"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="451" type="rep">
+<physics
+cartesian_x="-25.517"
+cartesian_y="16.265"
+cartesian_z="-10.244"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="452" type="rep">
+<physics
+cartesian_x="-25.918"
+cartesian_y="14.832"
+cartesian_z="-8.416"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="453" type="rep">
+<physics
+cartesian_x="-26.122"
+cartesian_y="16.105"
+cartesian_z="-7.497"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="454" type="rep">
+<physics
+cartesian_x="-28.175"
+cartesian_y="15.315"
+cartesian_z="-8.053"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="455" type="rep">
+<physics
+cartesian_x="-27.992"
+cartesian_y="16.702"
+cartesian_z="-8.797"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE21" id="456" type="rep">
+<physics
+cartesian_x="-29.055"
+cartesian_y="16.504"
+cartesian_z="-10.71"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE22" id="457" type="rep">
+<physics
+cartesian_x="-28.947"
+cartesian_y="15.355"
+cartesian_z="-11.652"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="28" id="458" type="rep">
+<sequence
+residue_index_begin="28"
+residue_index_end="29"
+residue_type="GLN"
+/>
+<child>
+<node name="N" id="459" type="rep">
+<physics
+cartesian_x="-25.273"
+cartesian_y="18.778"
+cartesian_z="-8.369"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="460" type="rep">
+<physics
+cartesian_x="-25.706"
+cartesian_y="20.143"
+cartesian_z="-8.254"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="461" type="rep">
+<physics
+cartesian_x="-25.208"
+cartesian_y="21.013"
+cartesian_z="-9.405"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="462" type="rep">
+<physics
+cartesian_x="-25.947"
+cartesian_y="21.767"
+cartesian_z="-9.98"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="463" type="rep">
+<physics
+cartesian_x="-25.23"
+cartesian_y="20.706"
+cartesian_z="-6.903"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="464" type="rep">
+<physics
+cartesian_x="-25.64"
+cartesian_y="22.163"
+cartesian_z="-6.579"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="465" type="rep">
+<physics
+cartesian_x="-25.204"
+cartesian_y="22.589"
+cartesian_z="-5.148"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="466" type="rep">
+<physics
+cartesian_x="-26.023"
+cartesian_y="23.085"
+cartesian_z="-4.349"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="NE2" id="467" type="rep">
+<physics
+cartesian_x="-23.929"
+cartesian_y="22.38"
+cartesian_z="-4.818"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="468" type="rep">
+<physics
+cartesian_x="-24.726"
+cartesian_y="18.517"
+cartesian_z="-7.758"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="469" type="rep">
+<physics
+cartesian_x="-26.686"
+cartesian_y="20.172"
+cartesian_z="-8.257"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="470" type="rep">
+<physics
+cartesian_x="-25.584"
+cartesian_y="20.143"
+cartesian_z="-6.198"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="471" type="rep">
+<physics
+cartesian_x="-24.261"
+cartesian_y="20.67"
+cartesian_z="-6.887"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="472" type="rep">
+<physics
+cartesian_x="-25.211"
+cartesian_y="22.763"
+cartesian_z="-7.209"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="473" type="rep">
+<physics
+cartesian_x="-26.6"
+cartesian_y="22.252"
+cartesian_z="-6.64"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE21" id="474" type="rep">
+<physics
+cartesian_x="-23.39"
+cartesian_y="22.021"
+cartesian_z="-5.387"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE22" id="475" type="rep">
+<physics
+cartesian_x="-23.645"
+cartesian_y="22.599"
+cartesian_z="-4.038"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="29" id="476" type="rep">
+<sequence
+residue_index_begin="29"
+residue_index_end="30"
+residue_type="B3E"
+/>
+<child>
+<node name="HET: N  " id="477" type="rep">
+<physics
+cartesian_x="-23.934"
+cartesian_y="20.884"
+cartesian_z="-9.721"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="478" type="rep">
+<physics
+cartesian_x="-23.293"
+cartesian_y="21.635"
+cartesian_z="-10.788"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="479" type="rep">
+<physics
+cartesian_x="-21.982"
+cartesian_y="22.192"
+cartesian_z="-10.262"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="480" type="rep">
+<physics
+cartesian_x="-22.205"
+cartesian_y="23.21"
+cartesian_z="-9.161"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="481" type="rep">
+<physics
+cartesian_x="-20.882"
+cartesian_y="23.477"
+cartesian_z="-8.446"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF2" id="482" type="rep">
+<physics
+cartesian_x="-19.877"
+cartesian_y="23.828"
+cartesian_z="-9.133"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: OF1" id="483" type="rep">
+<physics
+cartesian_x="-20.862"
+cartesian_y="23.312"
+cartesian_z="-7.192"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="484" type="rep">
+<physics
+cartesian_x="-22.997"
+cartesian_y="20.718"
+cartesian_z="-11.94"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="485" type="rep">
+<physics
+cartesian_x="-24.205"
+cartesian_y="20.479"
+cartesian_z="-12.858"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="486" type="rep">
+<physics
+cartesian_x="-24.673"
+cartesian_y="21.358"
+cartesian_z="-13.575"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H  " id="487" type="rep">
+<physics
+cartesian_x="-23.428"
+cartesian_y="20.337"
+cartesian_z="-9.291"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="488" type="rep">
+<physics
+cartesian_x="-23.922"
+cartesian_y="22.467"
+cartesian_z="-11.137"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG2" id="489" type="rep">
+<physics
+cartesian_x="-21.365"
+cartesian_y="21.374"
+cartesian_z="-9.886"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG3" id="490" type="rep">
+<physics
+cartesian_x="-21.436"
+cartesian_y="22.671"
+cartesian_z="-11.077"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD2" id="491" type="rep">
+<physics
+cartesian_x="-22.587"
+cartesian_y="24.139"
+cartesian_z="-9.59"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD3" id="492" type="rep">
+<physics
+cartesian_x="-22.939"
+cartesian_y="22.84"
+cartesian_z="-8.443"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA1" id="493" type="rep">
+<physics
+cartesian_x="-22.638"
+cartesian_y="19.765"
+cartesian_z="-11.549"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA2" id="494" type="rep">
+<physics
+cartesian_x="-22.19"
+cartesian_y="21.141"
+cartesian_z="-12.541"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="30" id="495" type="rep">
+<sequence
+residue_index_begin="30"
+residue_index_end="31"
+residue_type="LYS"
+/>
+<child>
+<node name="N" id="496" type="rep">
+<physics
+cartesian_x="-24.729"
+cartesian_y="19.254"
+cartesian_z="-12.838"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="497" type="rep">
+<physics
+cartesian_x="-25.875"
+cartesian_y="18.879"
+cartesian_z="-13.658"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="498" type="rep">
+<physics
+cartesian_x="-27.134"
+cartesian_y="19.702"
+cartesian_z="-13.511"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="499" type="rep">
+<physics
+cartesian_x="-27.75"
+cartesian_y="20.055"
+cartesian_z="-14.513"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="500" type="rep">
+<physics
+cartesian_x="-26.165"
+cartesian_y="17.402"
+cartesian_z="-13.537"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="501" type="rep">
+<physics
+cartesian_x="-26.997"
+cartesian_y="16.913"
+cartesian_z="-14.631"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="502" type="rep">
+<physics
+cartesian_x="-27.098"
+cartesian_y="15.443"
+cartesian_z="-14.513"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CE" id="503" type="rep">
+<physics
+cartesian_x="-27.387"
+cartesian_y="14.763"
+cartesian_z="-15.8"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="NZ" id="504" type="rep">
+<physics
+cartesian_x="-27.328"
+cartesian_y="13.301"
+cartesian_z="-15.517"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="505" type="rep">
+<physics
+cartesian_x="-24.427"
+cartesian_y="18.614"
+cartesian_z="-12.349"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="506" type="rep">
+<physics
+cartesian_x="-25.589"
+cartesian_y="19.015"
+cartesian_z="-14.586"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="507" type="rep">
+<physics
+cartesian_x="-25.323"
+cartesian_y="16.919"
+cartesian_z="-13.552"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="508" type="rep">
+<physics
+cartesian_x="-26.632"
+cartesian_y="17.235"
+cartesian_z="-12.703"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="509" type="rep">
+<physics
+cartesian_x="-27.889"
+cartesian_y="17.287"
+cartesian_z="-14.569"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="510" type="rep">
+<physics
+cartesian_x="-26.587"
+cartesian_y="17.135"
+cartesian_z="-15.482"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD2" id="511" type="rep">
+<physics
+cartesian_x="-26.262"
+cartesian_y="15.08"
+cartesian_z="-14.178"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD3" id="512" type="rep">
+<physics
+cartesian_x="-27.817"
+cartesian_y="15.229"
+cartesian_z="-13.898"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE2" id="513" type="rep">
+<physics
+cartesian_x="-28.276"
+cartesian_y="14.996"
+cartesian_z="-16.11"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HE3" id="514" type="rep">
+<physics
+cartesian_x="-26.712"
+cartesian_y="14.988"
+cartesian_z="-16.46"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ1" id="515" type="rep">
+<physics
+cartesian_x="-26.435"
+cartesian_y="13.082"
+cartesian_z="-15.204"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ2" id="516" type="rep">
+<physics
+cartesian_x="-27.497"
+cartesian_y="12.811"
+cartesian_z="-16.316"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HZ3" id="517" type="rep">
+<physics
+cartesian_x="-27.957"
+cartesian_y="13.068"
+cartesian_z="-14.845"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="31" id="518" type="rep">
+<sequence
+residue_index_begin="31"
+residue_index_end="32"
+residue_type="ASN"
+/>
+<child>
+<node name="N" id="519" type="rep">
+<physics
+cartesian_x="-27.532"
+cartesian_y="19.985"
+cartesian_z="-12.269"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="520" type="rep">
+<physics
+cartesian_x="-28.728"
+cartesian_y="20.734"
+cartesian_z="-12.034"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="521" type="rep">
+<physics
+cartesian_x="-28.602"
+cartesian_y="22.13"
+cartesian_z="-12.597"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="522" type="rep">
+<physics
+cartesian_x="-29.573"
+cartesian_y="22.648"
+cartesian_z="-13.198"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="523" type="rep">
+<physics
+cartesian_x="-29.108"
+cartesian_y="20.787"
+cartesian_z="-10.546"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="524" type="rep">
+<physics
+cartesian_x="-29.514"
+cartesian_y="19.435"
+cartesian_z="-9.969"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OD1" id="525" type="rep">
+<physics
+cartesian_x="-29.767"
+cartesian_y="18.507"
+cartesian_z="-10.702"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="ND2" id="526" type="rep">
+<physics
+cartesian_x="-29.596"
+cartesian_y="19.342"
+cartesian_z="-8.641"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="527" type="rep">
+<physics
+cartesian_x="-27.111"
+cartesian_y="19.748"
+cartesian_z="-11.558"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="528" type="rep">
+<physics
+cartesian_x="-29.467"
+cartesian_y="20.298"
+cartesian_z="-12.509"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="529" type="rep">
+<physics
+cartesian_x="-28.352"
+cartesian_y="21.111"
+cartesian_z="-10.036"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="530" type="rep">
+<physics
+cartesian_x="-29.86"
+cartesian_y="21.39"
+cartesian_z="-10.437"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD21" id="531" type="rep">
+<physics
+cartesian_x="-29.401"
+cartesian_y="20.123"
+cartesian_z="-8.085"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD22" id="532" type="rep">
+<physics
+cartesian_x="-29.854"
+cartesian_y="18.494"
+cartesian_z="-8.226"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="32" id="533" type="rep">
+<sequence
+residue_index_begin="32"
+residue_index_end="33"
+residue_type="GLU"
+/>
+<child>
+<node name="N" id="534" type="rep">
+<physics
+cartesian_x="-27.422"
+cartesian_y="22.722"
+cartesian_z="-12.435"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="535" type="rep">
+<physics
+cartesian_x="-27.226"
+cartesian_y="24.083"
+cartesian_z="-12.883"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="536" type="rep">
+<physics
+cartesian_x="-27.068"
+cartesian_y="24.174"
+cartesian_z="-14.403"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="537" type="rep">
+<physics
+cartesian_x="-27.493"
+cartesian_y="25.129"
+cartesian_z="-15.01"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="538" type="rep">
+<physics
+cartesian_x="-26.009"
+cartesian_y="24.679"
+cartesian_z="-12.222"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="539" type="rep">
+<physics
+cartesian_x="-25.884"
+cartesian_y="24.558"
+cartesian_z="-10.731"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="540" type="rep">
+<physics
+cartesian_x="-26.712"
+cartesian_y="25.482"
+cartesian_z="-9.826"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="541" type="rep">
+<physics
+cartesian_x="-26.387"
+cartesian_y="25.443"
+cartesian_z="-8.591"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OE2" id="542" type="rep">
+<physics
+cartesian_x="-27.656"
+cartesian_y="26.19"
+cartesian_z="-10.295"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="543" type="rep">
+<physics
+cartesian_x="-26.73"
+cartesian_y="22.349"
+cartesian_z="-12.089"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="544" type="rep">
+<physics
+cartesian_x="-28"
+cartesian_y="24.626"
+cartesian_z="-12.625"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="545" type="rep">
+<physics
+cartesian_x="-25.223"
+cartesian_y="24.257"
+cartesian_z="-12.603"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="546" type="rep">
+<physics
+cartesian_x="-25.991"
+cartesian_y="25.627"
+cartesian_z="-12.43"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="547" type="rep">
+<physics
+cartesian_x="-26.124"
+cartesian_y="23.663"
+cartesian_z="-10.477"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="548" type="rep">
+<physics
+cartesian_x="-24.953"
+cartesian_y="24.709"
+cartesian_z="-10.502"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="33" id="549" type="rep">
+<sequence
+residue_index_begin="33"
+residue_index_end="34"
+residue_type="XCP"
+/>
+<child>
+<node name="HET: N  " id="550" type="rep">
+<physics
+cartesian_x="-26.461"
+cartesian_y="23.185"
+cartesian_z="-15.006"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="551" type="rep">
+<physics
+cartesian_x="-26.263"
+cartesian_y="23.182"
+cartesian_z="-16.451"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="552" type="rep">
+<physics
+cartesian_x="-24.855"
+cartesian_y="22.881"
+cartesian_z="-16.957"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CD " id="553" type="rep">
+<physics
+cartesian_x="-25.156"
+cartesian_y="22.567"
+cartesian_z="-18.429"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="554" type="rep">
+<physics
+cartesian_x="-26.43"
+cartesian_y="21.708"
+cartesian_z="-18.432"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="555" type="rep">
+<physics
+cartesian_x="-27.077"
+cartesian_y="22.054"
+cartesian_z="-17.071"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="556" type="rep">
+<physics
+cartesian_x="-28.561"
+cartesian_y="22.351"
+cartesian_z="-17.198"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="557" type="rep">
+<physics
+cartesian_x="-29.011"
+cartesian_y="23.125"
+cartesian_z="-18.043"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="558" type="rep">
+<physics
+cartesian_x="-26.557"
+cartesian_y="24.033"
+cartesian_z="-16.839"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="559" type="rep">
+<physics
+cartesian_x="-24.473"
+cartesian_y="22.103"
+cartesian_z="-16.499"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="560" type="rep">
+<physics
+cartesian_x="-24.274"
+cartesian_y="23.666"
+cartesian_z="-16.874"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HD " id="561" type="rep">
+<physics
+cartesian_x="-24.417"
+cartesian_y="22.076"
+cartesian_z="-18.836"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HDA" id="562" type="rep">
+<physics
+cartesian_x="-25.314"
+cartesian_y="23.399"
+cartesian_z="-18.921"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="563" type="rep">
+<physics
+cartesian_x="-26.203"
+cartesian_y="20.756"
+cartesian_z="-18.473"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="564" type="rep">
+<physics
+cartesian_x="-27.013"
+cartesian_y="21.958"
+cartesian_z="-19.178"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="565" type="rep">
+<physics
+cartesian_x="-26.968"
+cartesian_y="21.268"
+cartesian_z="-16.5"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="566" type="rep">
+<physics
+cartesian_x="-26.159"
+cartesian_y="22.506"
+cartesian_z="-14.574"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="34" id="567" type="rep">
+<sequence
+residue_index_begin="34"
+residue_index_end="35"
+residue_type="ALA"
+/>
+<child>
+<node name="N" id="568" type="rep">
+<physics
+cartesian_x="-29.328"
+cartesian_y="21.721"
+cartesian_z="-16.336"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="569" type="rep">
+<physics
+cartesian_x="-30.745"
+cartesian_y="21.903"
+cartesian_z="-16.341"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="570" type="rep">
+<physics
+cartesian_x="-31.341"
+cartesian_y="23.278"
+cartesian_z="-16.241"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="571" type="rep">
+<physics
+cartesian_x="-32.271"
+cartesian_y="23.515"
+cartesian_z="-16.956"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="572" type="rep">
+<physics
+cartesian_x="-31.39"
+cartesian_y="20.942"
+cartesian_z="-15.325"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="573" type="rep">
+<physics
+cartesian_x="-29.043"
+cartesian_y="21.174"
+cartesian_z="-15.735"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="574" type="rep">
+<physics
+cartesian_x="-31.042"
+cartesian_y="21.571"
+cartesian_z="-17.215"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB1" id="575" type="rep">
+<physics
+cartesian_x="-31.183"
+cartesian_y="20.039"
+cartesian_z="-15.571"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="576" type="rep">
+<physics
+cartesian_x="-32.345"
+cartesian_y="21.071"
+cartesian_z="-15.334"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="577" type="rep">
+<physics
+cartesian_x="-31.046"
+cartesian_y="21.134"
+cartesian_z="-14.45"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="35" id="578" type="rep">
+<sequence
+residue_index_begin="35"
+residue_index_end="36"
+residue_type="LEU"
+/>
+<child>
+<node name="N" id="579" type="rep">
+<physics
+cartesian_x="-30.82"
+cartesian_y="24.137"
+cartesian_z="-15.341"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="580" type="rep">
+<physics
+cartesian_x="-31.424"
+cartesian_y="25.389"
+cartesian_z="-14.948"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="581" type="rep">
+<physics
+cartesian_x="-30.801"
+cartesian_y="26.65"
+cartesian_z="-15.498"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="582" type="rep">
+<physics
+cartesian_x="-31.454"
+cartesian_y="27.665"
+cartesian_z="-15.542"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="583" type="rep">
+<physics
+cartesian_x="-31.348"
+cartesian_y="25.515"
+cartesian_z="-13.433"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="584" type="rep">
+<physics
+cartesian_x="-32.316"
+cartesian_y="24.617"
+cartesian_z="-12.66"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="585" type="rep">
+<physics
+cartesian_x="-31.927"
+cartesian_y="24.595"
+cartesian_z="-11.2"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="586" type="rep">
+<physics
+cartesian_x="-33.817"
+cartesian_y="24.965"
+cartesian_z="-12.836"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="587" type="rep">
+<physics
+cartesian_x="-30.074"
+cartesian_y="23.986"
+cartesian_z="-14.94"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="588" type="rep">
+<physics
+cartesian_x="-32.37"
+cartesian_y="25.389"
+cartesian_z="-15.204"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="589" type="rep">
+<physics
+cartesian_x="-30.447"
+cartesian_y="25.296"
+cartesian_z="-13.146"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="590" type="rep">
+<physics
+cartesian_x="-31.551"
+cartesian_y="26.43"
+cartesian_z="-13.183"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG" id="591" type="rep">
+<physics
+cartesian_x="-32.202"
+cartesian_y="23.712"
+cartesian_z="-12.99"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="592" type="rep">
+<physics
+cartesian_x="-31.031"
+cartesian_y="24.249"
+cartesian_z="-11.123"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="593" type="rep">
+<physics
+cartesian_x="-32.535"
+cartesian_y="24.025"
+cartesian_z="-10.725"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="594" type="rep">
+<physics
+cartesian_x="-31.965"
+cartesian_y="25.486"
+cartesian_z="-10.853"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD21" id="595" type="rep">
+<physics
+cartesian_x="-34.34"
+cartesian_y="24.355"
+cartesian_z="-12.315"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD22" id="596" type="rep">
+<physics
+cartesian_x="-34.046"
+cartesian_y="24.894"
+cartesian_z="-13.763"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD23" id="597" type="rep">
+<physics
+cartesian_x="-33.961"
+cartesian_y="25.865"
+cartesian_z="-12.529"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="36" id="598" type="rep">
+<sequence
+residue_index_begin="36"
+residue_index_end="37"
+residue_type="XPC"
+/>
+<child>
+<node name="HET: N  " id="599" type="rep">
+<physics
+cartesian_x="-29.57"
+cartesian_y="26.607"
+cartesian_z="-15.91"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CB " id="600" type="rep">
+<physics
+cartesian_x="-28.93"
+cartesian_y="27.795"
+cartesian_z="-16.445"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CG " id="601" type="rep">
+<physics
+cartesian_x="-28.19"
+cartesian_y="28.514"
+cartesian_z="-15.303"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: ND " id="602" type="rep">
+<physics
+cartesian_x="-26.718"
+cartesian_y="28.112"
+cartesian_z="-15.406"
+radius="1.7"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CE " id="603" type="rep">
+<physics
+cartesian_x="-26.515"
+cartesian_y="27.517"
+cartesian_z="-16.821"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: CA " id="604" type="rep">
+<physics
+cartesian_x="-27.882"
+cartesian_y="27.473"
+cartesian_z="-17.506"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: C  " id="605" type="rep">
+<physics
+cartesian_x="-27.933"
+cartesian_y="28.591"
+cartesian_z="-18.526"
+radius="1.7"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="HET: O  " id="606" type="rep">
+<physics
+cartesian_x="-28.19"
+cartesian_y="29.747"
+cartesian_z="-18.196"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HB " id="607" type="rep">
+<physics
+cartesian_x="-29.609"
+cartesian_y="28.386"
+cartesian_z="-16.824"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HG " id="608" type="rep">
+<physics
+cartesian_x="-28.555"
+cartesian_y="28.244"
+cartesian_z="-14.435"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HGA" id="609" type="rep">
+<physics
+cartesian_x="-28.262"
+cartesian_y="29.48"
+cartesian_z="-15.412"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HND" id="610" type="rep">
+<physics
+cartesian_x="-26.146"
+cartesian_y="28.9"
+cartesian_z="-15.289"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HE " id="611" type="rep">
+<physics
+cartesian_x="-26.153"
+cartesian_y="26.609"
+cartesian_z="-16.749"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HEA" id="612" type="rep">
+<physics
+cartesian_x="-25.894"
+cartesian_y="28.077"
+cartesian_z="-17.33"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HA " id="613" type="rep">
+<physics
+cartesian_x="-28.05"
+cartesian_y="26.6"
+cartesian_z="-17.915"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: HNA" id="614" type="rep">
+<physics
+cartesian_x="-29.1"
+cartesian_y="25.889"
+cartesian_z="-15.881"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="37" id="615" type="rep">
+<sequence
+residue_index_begin="37"
+residue_index_end="38"
+residue_type="GLU"
+/>
+<child>
+<node name="N" id="616" type="rep">
+<physics
+cartesian_x="-27.691"
+cartesian_y="28.251"
+cartesian_z="-19.748"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="617" type="rep">
+<physics
+cartesian_x="-27.708"
+cartesian_y="29.231"
+cartesian_z="-20.827"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="618" type="rep">
+<physics
+cartesian_x="-27.708"
+cartesian_y="29.235"
+cartesian_z="-20.828"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="619" type="rep">
+<physics
+cartesian_x="-28.172"
+cartesian_y="28.541"
+cartesian_z="-22.099"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="620" type="rep">
+<physics
+cartesian_x="-28.325"
+cartesian_y="27.296"
+cartesian_z="-22.119"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="621" type="rep">
+<physics
+cartesian_x="-26.306"
+cartesian_y="29.84"
+cartesian_z="-20.978"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="622" type="rep">
+<physics
+cartesian_x="-26.312"
+cartesian_y="29.88"
+cartesian_z="-20.987"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="623" type="rep">
+<physics
+cartesian_x="-26.119"
+cartesian_y="31.108"
+cartesian_z="-20.176"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="624" type="rep">
+<physics
+cartesian_x="-25.136"
+cartesian_y="28.893"
+cartesian_z="-21.099"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="625" type="rep">
+<physics
+cartesian_x="-24.884"
+cartesian_y="31.096"
+cartesian_z="-19.293"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD" id="626" type="rep">
+<physics
+cartesian_x="-23.834"
+cartesian_y="29.452"
+cartesian_z="-20.532"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="627" type="rep">
+<physics
+cartesian_x="-24.741"
+cartesian_y="30.171"
+cartesian_z="-18.455"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OE1" id="628" type="rep">
+<physics
+cartesian_x="-23.306"
+cartesian_y="30.439"
+cartesian_z="-21.092"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OE2" id="629" type="rep">
+<physics
+cartesian_x="-24.065"
+cartesian_y="32.04"
+cartesian_z="-19.415"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="OE2" id="630" type="rep">
+<physics
+cartesian_x="-23.333"
+cartesian_y="28.902"
+cartesian_z="-19.526"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="631" type="rep">
+<physics
+cartesian_x="-27.508"
+cartesian_y="27.449"
+cartesian_z="-20.003"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="632" type="rep">
+<physics
+cartesian_x="-28.341"
+cartesian_y="29.952"
+cartesian_z="-20.628"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="633" type="rep">
+<physics
+cartesian_x="-28.353"
+cartesian_y="29.946"
+cartesian_z="-20.628"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="634" type="rep">
+<physics
+cartesian_x="-25.648"
+cartesian_y="29.196"
+cartesian_z="-20.674"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="635" type="rep">
+<physics
+cartesian_x="-26.314"
+cartesian_y="30.423"
+cartesian_z="-21.79"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="636" type="rep">
+<physics
+cartesian_x="-26.149"
+cartesian_y="30.055"
+cartesian_z="-21.911"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="637" type="rep">
+<physics
+cartesian_x="-26.145"
+cartesian_y="30.444"
+cartesian_z="-20.215"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="638" type="rep">
+<physics
+cartesian_x="-26.02"
+cartesian_y="31.834"
+cartesian_z="-20.802"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG2" id="639" type="rep">
+<physics
+cartesian_x="-25.343"
+cartesian_y="28.08"
+cartesian_z="-20.614"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="640" type="rep">
+<physics
+cartesian_x="-26.896"
+cartesian_y="31.26"
+cartesian_z="-19.618"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG3" id="641" type="rep">
+<physics
+cartesian_x="-24.988"
+cartesian_y="28.688"
+cartesian_z="-22.036"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="38" id="642" type="rep">
+<sequence
+residue_index_begin="38"
+residue_index_end="39"
+residue_type="LEU"
+/>
+<child>
+<node name="N" id="643" type="rep">
+<physics
+cartesian_x="-28.418"
+cartesian_y="29.326"
+cartesian_z="-23.147"
+radius="1.85"
+mass="14.0067"
+element="7"
+/>
+</node>
+</child>
+<child>
+<node name="CA" id="644" type="rep">
+<physics
+cartesian_x="-28.835"
+cartesian_y="28.741"
+cartesian_z="-24.416"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="C" id="645" type="rep">
+<physics
+cartesian_x="-27.629"
+cartesian_y="28.021"
+cartesian_z="-25.083"
+radius="2"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="O" id="646" type="rep">
+<physics
+cartesian_x="-26.574"
+cartesian_y="28.629"
+cartesian_z="-25.35"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="CB" id="647" type="rep">
+<physics
+cartesian_x="-29.459"
+cartesian_y="29.791"
+cartesian_z="-25.339"
+radius="2.175"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CG" id="648" type="rep">
+<physics
+cartesian_x="-30.034"
+cartesian_y="29.225"
+cartesian_z="-26.637"
+radius="2.275"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD1" id="649" type="rep">
+<physics
+cartesian_x="-30.92"
+cartesian_y="28.052"
+cartesian_z="-26.403"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="CD2" id="650" type="rep">
+<physics
+cartesian_x="-30.817"
+cartesian_y="30.296"
+cartesian_z="-27.361"
+radius="2.06"
+mass="12.0107"
+element="6"
+/>
+</node>
+</child>
+<child>
+<node name="H" id="651" type="rep">
+<physics
+cartesian_x="-28.35"
+cartesian_y="30.184"
+cartesian_z="-23.148"
+radius="0.2245"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HA" id="652" type="rep">
+<physics
+cartesian_x="-29.519"
+cartesian_y="28.064"
+cartesian_z="-24.233"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB2" id="653" type="rep">
+<physics
+cartesian_x="-30.177"
+cartesian_y="30.238"
+cartesian_z="-24.864"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HB3" id="654" type="rep">
+<physics
+cartesian_x="-28.774"
+cartesian_y="30.433"
+cartesian_z="-25.58"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HG" id="655" type="rep">
+<physics
+cartesian_x="-29.307"
+cartesian_y="28.945"
+cartesian_z="-27.214"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD11" id="656" type="rep">
+<physics
+cartesian_x="-31.25"
+cartesian_y="27.745"
+cartesian_z="-27.248"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD12" id="657" type="rep">
+<physics
+cartesian_x="-31.655"
+cartesian_y="28.336"
+cartesian_z="-25.847"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD13" id="658" type="rep">
+<physics
+cartesian_x="-30.421"
+cartesian_y="27.368"
+cartesian_z="-25.968"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD21" id="659" type="rep">
+<physics
+cartesian_x="-31.522"
+cartesian_y="30.602"
+cartesian_z="-26.805"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD22" id="660" type="rep">
+<physics
+cartesian_x="-31.157"
+cartesian_y="29.933"
+cartesian_z="-28.178"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HD23" id="661" type="rep">
+<physics
+cartesian_x="-30.213"
+cartesian_y="31.03"
+cartesian_z="-27.564"
+radius="1.32"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="40" id="662" type="rep">
+<sequence
+residue_index_begin="40"
+residue_index_end="41"
+residue_type="CL"
+/>
+<child>
+<node name="HET:CL  " id="663" type="rep">
+<physics
+cartesian_x="-13.475"
+cartesian_y="15.186"
+cartesian_z="-3.515"
+radius="1.7"
+mass="35.453"
+element="17"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="41" id="664" type="rep">
+<sequence
+residue_index_begin="41"
+residue_index_end="42"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="665" type="rep">
+<physics
+cartesian_x="-28.75"
+cartesian_y="21.475"
+cartesian_z="-6.861"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="666" type="rep">
+<physics
+cartesian_x="-27.77"
+cartesian_y="21.476"
+cartesian_z="-6.861"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="667" type="rep">
+<physics
+cartesian_x="-29.034"
+cartesian_y="22.414"
+cartesian_z="-6.861"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="42" id="668" type="rep">
+<sequence
+residue_index_begin="42"
+residue_index_end="43"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="669" type="rep">
+<physics
+cartesian_x="-16.647"
+cartesian_y="17.755"
+cartesian_z="0.424"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="670" type="rep">
+<physics
+cartesian_x="-15.663"
+cartesian_y="17.753"
+cartesian_z="0.421"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="671" type="rep">
+<physics
+cartesian_x="-16.927"
+cartesian_y="18.691"
+cartesian_z="0.421"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="43" id="672" type="rep">
+<sequence
+residue_index_begin="43"
+residue_index_end="44"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="673" type="rep">
+<physics
+cartesian_x="-10.673"
+cartesian_y="12.897"
+cartesian_z="6.964"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="674" type="rep">
+<physics
+cartesian_x="-9.69"
+cartesian_y="12.895"
+cartesian_z="6.966"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="675" type="rep">
+<physics
+cartesian_x="-10.953"
+cartesian_y="13.833"
+cartesian_z="6.966"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="44" id="676" type="rep">
+<sequence
+residue_index_begin="44"
+residue_index_end="45"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="677" type="rep">
+<physics
+cartesian_x="-13.439"
+cartesian_y="3.444"
+cartesian_z="7.892"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="678" type="rep">
+<physics
+cartesian_x="-12.459"
+cartesian_y="3.443"
+cartesian_z="7.892"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="679" type="rep">
+<physics
+cartesian_x="-13.722"
+cartesian_y="4.381"
+cartesian_z="7.892"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="45" id="680" type="rep">
+<sequence
+residue_index_begin="45"
+residue_index_end="46"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="681" type="rep">
+<physics
+cartesian_x="-16.815"
+cartesian_y="19.122"
+cartesian_z="-5.395"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="682" type="rep">
+<physics
+cartesian_x="-15.833"
+cartesian_y="19.122"
+cartesian_z="-5.395"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="683" type="rep">
+<physics
+cartesian_x="-17.097"
+cartesian_y="20.06"
+cartesian_z="-5.395"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="46" id="684" type="rep">
+<sequence
+residue_index_begin="46"
+residue_index_end="47"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="685" type="rep">
+<physics
+cartesian_x="-27.443"
+cartesian_y="24.961"
+cartesian_z="-19.873"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="686" type="rep">
+<physics
+cartesian_x="-26.46"
+cartesian_y="24.958"
+cartesian_z="-19.869"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="687" type="rep">
+<physics
+cartesian_x="-27.724"
+cartesian_y="25.896"
+cartesian_z="-19.869"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="47" id="688" type="rep">
+<sequence
+residue_index_begin="47"
+residue_index_end="48"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="689" type="rep">
+<physics
+cartesian_x="-22.758"
+cartesian_y="22.814"
+cartesian_z="-2.109"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="690" type="rep">
+<physics
+cartesian_x="-21.767"
+cartesian_y="22.813"
+cartesian_z="-2.11"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="691" type="rep">
+<physics
+cartesian_x="-23.031"
+cartesian_y="23.751"
+cartesian_z="-2.11"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="48" id="692" type="rep">
+<sequence
+residue_index_begin="48"
+residue_index_end="49"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="693" type="rep">
+<physics
+cartesian_x="-22.869"
+cartesian_y="23.528"
+cartesian_z="-13.977"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="694" type="rep">
+<physics
+cartesian_x="-21.89"
+cartesian_y="23.536"
+cartesian_z="-13.983"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="695" type="rep">
+<physics
+cartesian_x="-23.154"
+cartesian_y="24.474"
+cartesian_z="-13.983"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="49" id="696" type="rep">
+<sequence
+residue_index_begin="49"
+residue_index_end="50"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="697" type="rep">
+<physics
+cartesian_x="-22.562"
+cartesian_y="12.497"
+cartesian_z="-9.084"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="698" type="rep">
+<physics
+cartesian_x="-21.585"
+cartesian_y="12.493"
+cartesian_z="-9.082"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="699" type="rep">
+<physics
+cartesian_x="-22.848"
+cartesian_y="13.431"
+cartesian_z="-9.082"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="50" id="700" type="rep">
+<sequence
+residue_index_begin="50"
+residue_index_end="51"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="701" type="rep">
+<physics
+cartesian_x="-9.604"
+cartesian_y="15.052"
+cartesian_z="3.125"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="702" type="rep">
+<physics
+cartesian_x="-8.624"
+cartesian_y="15.057"
+cartesian_z="3.125"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="703" type="rep">
+<physics
+cartesian_x="-9.887"
+cartesian_y="15.995"
+cartesian_z="3.125"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="51" id="704" type="rep">
+<sequence
+residue_index_begin="51"
+residue_index_end="52"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="705" type="rep">
+<physics
+cartesian_x="-6.958"
+cartesian_y="8.914"
+cartesian_z="19.767"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="706" type="rep">
+<physics
+cartesian_x="-5.981"
+cartesian_y="8.909"
+cartesian_z="19.765"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="707" type="rep">
+<physics
+cartesian_x="-7.244"
+cartesian_y="9.847"
+cartesian_z="19.765"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="52" id="708" type="rep">
+<sequence
+residue_index_begin="52"
+residue_index_end="53"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="709" type="rep">
+<physics
+cartesian_x="-33.764"
+cartesian_y="25.039"
+cartesian_z="-18.649"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="710" type="rep">
+<physics
+cartesian_x="-32.78"
+cartesian_y="25.025"
+cartesian_z="-18.676"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="711" type="rep">
+<physics
+cartesian_x="-34.044"
+cartesian_y="25.963"
+cartesian_z="-18.676"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="53" id="712" type="rep">
+<sequence
+residue_index_begin="53"
+residue_index_end="54"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="713" type="rep">
+<physics
+cartesian_x="-7.835"
+cartesian_y="3.914"
+cartesian_z="5.514"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="714" type="rep">
+<physics
+cartesian_x="-6.863"
+cartesian_y="3.915"
+cartesian_z="5.534"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="715" type="rep">
+<physics
+cartesian_x="-8.126"
+cartesian_y="4.853"
+cartesian_z="5.534"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="54" id="716" type="rep">
+<sequence
+residue_index_begin="54"
+residue_index_end="55"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="717" type="rep">
+<physics
+cartesian_x="-23.854"
+cartesian_y="33.392"
+cartesian_z="-17.256"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="718" type="rep">
+<physics
+cartesian_x="-22.875"
+cartesian_y="33.392"
+cartesian_z="-17.251"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="719" type="rep">
+<physics
+cartesian_x="-24.138"
+cartesian_y="34.33"
+cartesian_z="-17.251"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="55" id="720" type="rep">
+<sequence
+residue_index_begin="55"
+residue_index_end="56"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="721" type="rep">
+<physics
+cartesian_x="-28.162"
+cartesian_y="32.026"
+cartesian_z="-22.931"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="722" type="rep">
+<physics
+cartesian_x="-27.186"
+cartesian_y="32.024"
+cartesian_z="-22.93"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="723" type="rep">
+<physics
+cartesian_x="-28.449"
+cartesian_y="32.962"
+cartesian_z="-22.93"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="56" id="724" type="rep">
+<sequence
+residue_index_begin="56"
+residue_index_end="57"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="725" type="rep">
+<physics
+cartesian_x="-16.647"
+cartesian_y="4.475"
+cartesian_z="5.34"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="726" type="rep">
+<physics
+cartesian_x="-15.652"
+cartesian_y="4.488"
+cartesian_z="5.335"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="727" type="rep">
+<physics
+cartesian_x="-16.915"
+cartesian_y="5.426"
+cartesian_z="5.335"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="57" id="728" type="rep">
+<sequence
+residue_index_begin="57"
+residue_index_end="58"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="729" type="rep">
+<physics
+cartesian_x="-30.893"
+cartesian_y="23.981"
+cartesian_z="-20.113"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="730" type="rep">
+<physics
+cartesian_x="-29.962"
+cartesian_y="23.964"
+cartesian_z="-20.079"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="731" type="rep">
+<physics
+cartesian_x="-31.226"
+cartesian_y="24.902"
+cartesian_z="-20.079"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="58" id="732" type="rep">
+<sequence
+residue_index_begin="58"
+residue_index_end="59"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="733" type="rep">
+<physics
+cartesian_x="-7.708"
+cartesian_y="2.005"
+cartesian_z="10.737"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="734" type="rep">
+<physics
+cartesian_x="-6.718"
+cartesian_y="2.004"
+cartesian_z="10.738"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="735" type="rep">
+<physics
+cartesian_x="-7.981"
+cartesian_y="2.942"
+cartesian_z="10.738"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="59" id="736" type="rep">
+<sequence
+residue_index_begin="59"
+residue_index_end="60"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="737" type="rep">
+<physics
+cartesian_x="-25.044"
+cartesian_y="13.218"
+cartesian_z="-11.133"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="738" type="rep">
+<physics
+cartesian_x="-24.062"
+cartesian_y="13.225"
+cartesian_z="-11.123"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="739" type="rep">
+<physics
+cartesian_x="-25.325"
+cartesian_y="14.163"
+cartesian_z="-11.123"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="60" id="740" type="rep">
+<sequence
+residue_index_begin="60"
+residue_index_end="61"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="741" type="rep">
+<physics
+cartesian_x="-7.552"
+cartesian_y="14.066"
+cartesian_z="11.099"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="742" type="rep">
+<physics
+cartesian_x="-6.578"
+cartesian_y="14.071"
+cartesian_z="11.096"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="743" type="rep">
+<physics
+cartesian_x="-7.841"
+cartesian_y="15.009"
+cartesian_z="11.096"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="61" id="744" type="rep">
+<sequence
+residue_index_begin="61"
+residue_index_end="62"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="745" type="rep">
+<physics
+cartesian_x="-12.828"
+cartesian_y="15.035"
+cartesian_z="5.428"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="746" type="rep">
+<physics
+cartesian_x="-11.85"
+cartesian_y="15.034"
+cartesian_z="5.421"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="747" type="rep">
+<physics
+cartesian_x="-13.113"
+cartesian_y="15.972"
+cartesian_z="5.421"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="62" id="748" type="rep">
+<sequence
+residue_index_begin="62"
+residue_index_end="63"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="749" type="rep">
+<physics
+cartesian_x="-4.243"
+cartesian_y="5.469"
+cartesian_z="6.074"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="750" type="rep">
+<physics
+cartesian_x="-3.263"
+cartesian_y="5.45"
+cartesian_z="6.07"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="751" type="rep">
+<physics
+cartesian_x="-4.526"
+cartesian_y="6.388"
+cartesian_z="6.07"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="63" id="752" type="rep">
+<sequence
+residue_index_begin="63"
+residue_index_end="64"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="753" type="rep">
+<physics
+cartesian_x="-28.133"
+cartesian_y="23.816"
+cartesian_z="-8.353"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="754" type="rep">
+<physics
+cartesian_x="-27.155"
+cartesian_y="23.816"
+cartesian_z="-8.362"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="755" type="rep">
+<physics
+cartesian_x="-28.419"
+cartesian_y="24.754"
+cartesian_z="-8.362"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="64" id="756" type="rep">
+<sequence
+residue_index_begin="64"
+residue_index_end="65"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="757" type="rep">
+<physics
+cartesian_x="-6.905"
+cartesian_y="11.37"
+cartesian_z="6.461"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="758" type="rep">
+<physics
+cartesian_x="-5.933"
+cartesian_y="11.37"
+cartesian_z="6.427"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="759" type="rep">
+<physics
+cartesian_x="-7.196"
+cartesian_y="12.308"
+cartesian_z="6.427"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="65" id="760" type="rep">
+<sequence
+residue_index_begin="65"
+residue_index_end="66"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="761" type="rep">
+<physics
+cartesian_x="-13.827"
+cartesian_y="18.139"
+cartesian_z="-0.644"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="762" type="rep">
+<physics
+cartesian_x="-12.865"
+cartesian_y="18.162"
+cartesian_z="-0.638"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="763" type="rep">
+<physics
+cartesian_x="-14.129"
+cartesian_y="19.1"
+cartesian_z="-0.638"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="66" id="764" type="rep">
+<sequence
+residue_index_begin="66"
+residue_index_end="67"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="765" type="rep">
+<physics
+cartesian_x="-4.203"
+cartesian_y="7.28"
+cartesian_z="8.152"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="766" type="rep">
+<physics
+cartesian_x="-3.228"
+cartesian_y="7.294"
+cartesian_z="8.154"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="767" type="rep">
+<physics
+cartesian_x="-4.491"
+cartesian_y="8.232"
+cartesian_z="8.154"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="67" id="768" type="rep">
+<sequence
+residue_index_begin="67"
+residue_index_end="68"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="769" type="rep">
+<physics
+cartesian_x="-14.353"
+cartesian_y="16.215"
+cartesian_z="-8.812"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="770" type="rep">
+<physics
+cartesian_x="-13.39"
+cartesian_y="16.234"
+cartesian_z="-8.835"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="771" type="rep">
+<physics
+cartesian_x="-14.654"
+cartesian_y="17.172"
+cartesian_z="-8.835"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+<child>
+<node name="68" id="772" type="rep">
+<sequence
+residue_index_begin="68"
+residue_index_end="69"
+residue_type="HOH"
+/>
+<child>
+<node name="HET: O  " id="773" type="rep">
+<physics
+cartesian_x="-12.219"
+cartesian_y="3.178"
+cartesian_z="5.576"
+radius="1.7"
+mass="15.9994"
+element="8"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H1 " id="774" type="rep">
+<physics
+cartesian_x="-11.239"
+cartesian_y="3.177"
+cartesian_z="5.579"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+<child>
+<node name="HET: H2 " id="775" type="rep">
+<physics
+cartesian_x="-12.502"
+cartesian_y="4.115"
+cartesian_z="5.579"
+radius="1.7"
+mass="1.007"
+element="1"
+/>
+</node>
+</child>
+</node>
+</child>
+</node>
+</child>
+</node>
+</child>
+</node>
+<tuples2>
+<tuple id="0" type="bond" members="4, 5">
+</tuple>
+<tuple id="1" type="bond" members="6, 5">
+</tuple>
+<tuple id="2" type="bond" members="7, 6">
+</tuple>
+<tuple id="3" type="bond" members="8, 5">
+</tuple>
+<tuple id="4" type="bond" members="4, 9">
+</tuple>
+<tuple id="5" type="bond" members="5, 10">
+</tuple>
+<tuple id="6" type="bond" members="8, 11">
+</tuple>
+<tuple id="7" type="bond" members="6, 13">
+</tuple>
+<tuple id="8" type="bond" members="13, 14">
+</tuple>
+<tuple id="9" type="bond" members="16, 14">
+</tuple>
+<tuple id="10" type="bond" members="17, 16">
+</tuple>
+<tuple id="11" type="bond" members="18, 14">
+</tuple>
+<tuple id="12" type="bond" members="20, 18">
+</tuple>
+<tuple id="13" type="bond" members="22, 20">
+</tuple>
+<tuple id="14" type="bond" members="24, 20">
+</tuple>
+<tuple id="15" type="bond" members="26, 22">
+</tuple>
+<tuple id="16" type="bond" members="28, 24">
+</tuple>
+<tuple id="17" type="bond" members="26, 28">
+</tuple>
+<tuple id="18" type="bond" members="24, 30">
+</tuple>
+<tuple id="19" type="bond" members="30, 49">
+</tuple>
+<tuple id="20" type="bond" members="32, 28">
+</tuple>
+<tuple id="21" type="bond" members="34, 30">
+</tuple>
+<tuple id="22" type="bond" members="36, 32">
+</tuple>
+<tuple id="23" type="bond" members="34, 36">
+</tuple>
+<tuple id="24" type="bond" members="36, 55">
+</tuple>
+<tuple id="25" type="bond" members="13, 38">
+</tuple>
+<tuple id="26" type="bond" members="14, 39">
+</tuple>
+<tuple id="27" type="bond" members="18, 41">
+</tuple>
+<tuple id="28" type="bond" members="18, 43">
+</tuple>
+<tuple id="29" type="bond" members="22, 45">
+</tuple>
+<tuple id="30" type="bond" members="26, 47">
+</tuple>
+<tuple id="31" type="bond" members="32, 51">
+</tuple>
+<tuple id="32" type="bond" members="34, 53">
+</tuple>
+<tuple id="33" type="bond" members="16, 58">
+</tuple>
+<tuple id="34" type="bond" members="58, 63">
+</tuple>
+<tuple id="35" type="bond" members="62, 59">
+</tuple>
+<tuple id="36" type="bond" members="58, 59">
+</tuple>
+<tuple id="37" type="bond" members="60, 59">
+</tuple>
+<tuple id="38" type="bond" members="59, 64">
+</tuple>
+<tuple id="39" type="bond" members="61, 60">
+</tuple>
+<tuple id="40" type="bond" members="62, 65">
+</tuple>
+<tuple id="41" type="bond" members="62, 66">
+</tuple>
+<tuple id="42" type="bond" members="60, 68">
+</tuple>
+<tuple id="43" type="bond" members="72, 69">
+</tuple>
+<tuple id="44" type="bond" members="68, 69">
+</tuple>
+<tuple id="45" type="bond" members="70, 69">
+</tuple>
+<tuple id="46" type="bond" members="69, 74">
+</tuple>
+<tuple id="47" type="bond" members="71, 70">
+</tuple>
+<tuple id="48" type="bond" members="68, 73">
+</tuple>
+<tuple id="49" type="bond" members="72, 75">
+</tuple>
+<tuple id="50" type="bond" members="72, 76">
+</tuple>
+<tuple id="51" type="bond" members="72, 77">
+</tuple>
+<tuple id="52" type="bond" members="70, 79">
+</tuple>
+<tuple id="53" type="bond" members="79, 93">
+</tuple>
+<tuple id="54" type="bond" members="79, 80">
+</tuple>
+<tuple id="55" type="bond" members="83, 80">
+</tuple>
+<tuple id="56" type="bond" members="80, 94">
+</tuple>
+<tuple id="57" type="bond" members="81, 80">
+</tuple>
+<tuple id="58" type="bond" members="81, 104">
+</tuple>
+<tuple id="59" type="bond" members="82, 81">
+</tuple>
+<tuple id="60" type="bond" members="84, 83">
+</tuple>
+<tuple id="61" type="bond" members="85, 84">
+</tuple>
+<tuple id="62" type="bond" members="86, 84">
+</tuple>
+<tuple id="63" type="bond" members="87, 85">
+</tuple>
+<tuple id="64" type="bond" members="88, 86">
+</tuple>
+<tuple id="65" type="bond" members="87, 88">
+</tuple>
+<tuple id="66" type="bond" members="91, 89">
+</tuple>
+<tuple id="67" type="bond" members="86, 89">
+</tuple>
+<tuple id="68" type="bond" members="90, 88">
+</tuple>
+<tuple id="69" type="bond" members="92, 90">
+</tuple>
+<tuple id="70" type="bond" members="91, 92">
+</tuple>
+<tuple id="71" type="bond" members="83, 95">
+</tuple>
+<tuple id="72" type="bond" members="83, 96">
+</tuple>
+<tuple id="73" type="bond" members="85, 97">
+</tuple>
+<tuple id="74" type="bond" members="87, 98">
+</tuple>
+<tuple id="75" type="bond" members="89, 99">
+</tuple>
+<tuple id="76" type="bond" members="90, 100">
+</tuple>
+<tuple id="77" type="bond" members="91, 101">
+</tuple>
+<tuple id="78" type="bond" members="92, 102">
+</tuple>
+<tuple id="79" type="bond" members="104, 105">
+</tuple>
+<tuple id="80" type="bond" members="107, 106">
+</tuple>
+<tuple id="81" type="bond" members="106, 105">
+</tuple>
+<tuple id="82" type="bond" members="108, 105">
+</tuple>
+<tuple id="83" type="bond" members="109, 108">
+</tuple>
+<tuple id="84" type="bond" members="110, 109">
+</tuple>
+<tuple id="85" type="bond" members="111, 109">
+</tuple>
+<tuple id="86" type="bond" members="104, 112">
+</tuple>
+<tuple id="87" type="bond" members="105, 113">
+</tuple>
+<tuple id="88" type="bond" members="108, 114">
+</tuple>
+<tuple id="89" type="bond" members="108, 115">
+</tuple>
+<tuple id="90" type="bond" members="134, 139">
+</tuple>
+<tuple id="91" type="bond" members="134, 135">
+</tuple>
+<tuple id="92" type="bond" members="138, 135">
+</tuple>
+<tuple id="93" type="bond" members="136, 135">
+</tuple>
+<tuple id="94" type="bond" members="135, 140">
+</tuple>
+<tuple id="95" type="bond" members="137, 136">
+</tuple>
+<tuple id="96" type="bond" members="138, 141">
+</tuple>
+<tuple id="97" type="bond" members="138, 142">
+</tuple>
+<tuple id="98" type="bond" members="138, 143">
+</tuple>
+<tuple id="99" type="bond" members="136, 145">
+</tuple>
+<tuple id="100" type="bond" members="145, 146">
+</tuple>
+<tuple id="101" type="bond" members="147, 146">
+</tuple>
+<tuple id="102" type="bond" members="147, 165">
+</tuple>
+<tuple id="103" type="bond" members="148, 147">
+</tuple>
+<tuple id="104" type="bond" members="149, 146">
+</tuple>
+<tuple id="105" type="bond" members="150, 149">
+</tuple>
+<tuple id="106" type="bond" members="151, 149">
+</tuple>
+<tuple id="107" type="bond" members="152, 150">
+</tuple>
+<tuple id="108" type="bond" members="145, 153">
+</tuple>
+<tuple id="109" type="bond" members="146, 154">
+</tuple>
+<tuple id="110" type="bond" members="149, 155">
+</tuple>
+<tuple id="111" type="bond" members="150, 156">
+</tuple>
+<tuple id="112" type="bond" members="150, 157">
+</tuple>
+<tuple id="113" type="bond" members="151, 158">
+</tuple>
+<tuple id="114" type="bond" members="151, 159">
+</tuple>
+<tuple id="115" type="bond" members="151, 160">
+</tuple>
+<tuple id="116" type="bond" members="152, 161">
+</tuple>
+<tuple id="117" type="bond" members="152, 162">
+</tuple>
+<tuple id="118" type="bond" members="152, 163">
+</tuple>
+<tuple id="119" type="bond" members="165, 166">
+</tuple>
+<tuple id="120" type="bond" members="167, 166">
+</tuple>
+<tuple id="121" type="bond" members="168, 167">
+</tuple>
+<tuple id="122" type="bond" members="169, 166">
+</tuple>
+<tuple id="123" type="bond" members="165, 170">
+</tuple>
+<tuple id="124" type="bond" members="166, 171">
+</tuple>
+<tuple id="125" type="bond" members="169, 172">
+</tuple>
+<tuple id="126" type="bond" members="169, 173">
+</tuple>
+<tuple id="127" type="bond" members="169, 174">
+</tuple>
+<tuple id="128" type="bond" members="195, 196">
+</tuple>
+<tuple id="129" type="bond" members="197, 196">
+</tuple>
+<tuple id="130" type="bond" members="198, 197">
+</tuple>
+<tuple id="131" type="bond" members="199, 196">
+</tuple>
+<tuple id="132" type="bond" members="200, 199">
+</tuple>
+<tuple id="133" type="bond" members="201, 200">
+</tuple>
+<tuple id="134" type="bond" members="202, 200">
+</tuple>
+<tuple id="135" type="bond" members="204, 202">
+</tuple>
+<tuple id="136" type="bond" members="203, 201">
+</tuple>
+<tuple id="137" type="bond" members="205, 203">
+</tuple>
+<tuple id="138" type="bond" members="205, 204">
+</tuple>
+<tuple id="139" type="bond" members="206, 205">
+</tuple>
+<tuple id="140" type="bond" members="195, 207">
+</tuple>
+<tuple id="141" type="bond" members="196, 208">
+</tuple>
+<tuple id="142" type="bond" members="199, 209">
+</tuple>
+<tuple id="143" type="bond" members="199, 210">
+</tuple>
+<tuple id="144" type="bond" members="201, 211">
+</tuple>
+<tuple id="145" type="bond" members="202, 212">
+</tuple>
+<tuple id="146" type="bond" members="203, 213">
+</tuple>
+<tuple id="147" type="bond" members="204, 214">
+</tuple>
+<tuple id="148" type="bond" members="206, 215">
+</tuple>
+<tuple id="149" type="bond" members="197, 217">
+</tuple>
+<tuple id="150" type="bond" members="217, 222">
+</tuple>
+<tuple id="151" type="bond" members="217, 218">
+</tuple>
+<tuple id="152" type="bond" members="221, 218">
+</tuple>
+<tuple id="153" type="bond" members="219, 218">
+</tuple>
+<tuple id="154" type="bond" members="218, 223">
+</tuple>
+<tuple id="155" type="bond" members="220, 219">
+</tuple>
+<tuple id="156" type="bond" members="221, 224">
+</tuple>
+<tuple id="157" type="bond" members="221, 225">
+</tuple>
+<tuple id="158" type="bond" members="221, 226">
+</tuple>
+<tuple id="159" type="bond" members="246, 247">
+</tuple>
+<tuple id="160" type="bond" members="248, 247">
+</tuple>
+<tuple id="161" type="bond" members="249, 248">
+</tuple>
+<tuple id="162" type="bond" members="250, 247">
+</tuple>
+<tuple id="163" type="bond" members="250, 260">
+</tuple>
+<tuple id="164" type="bond" members="251, 250">
+</tuple>
+<tuple id="165" type="bond" members="251, 262">
+</tuple>
+<tuple id="166" type="bond" members="251, 261">
+</tuple>
+<tuple id="167" type="bond" members="252, 251">
+</tuple>
+<tuple id="168" type="bond" members="252, 264">
+</tuple>
+<tuple id="169" type="bond" members="252, 263">
+</tuple>
+<tuple id="170" type="bond" members="253, 252">
+</tuple>
+<tuple id="171" type="bond" members="253, 265">
+</tuple>
+<tuple id="172" type="bond" members="254, 253">
+</tuple>
+<tuple id="173" type="bond" members="255, 254">
+</tuple>
+<tuple id="174" type="bond" members="256, 254">
+</tuple>
+<tuple id="175" type="bond" members="256, 268">
+</tuple>
+<tuple id="176" type="bond" members="256, 269">
+</tuple>
+<tuple id="177" type="bond" members="246, 257">
+</tuple>
+<tuple id="178" type="bond" members="247, 258">
+</tuple>
+<tuple id="179" type="bond" members="250, 259">
+</tuple>
+<tuple id="180" type="bond" members="255, 266">
+</tuple>
+<tuple id="181" type="bond" members="255, 267">
+</tuple>
+<tuple id="182" type="bond" members="248, 271">
+</tuple>
+<tuple id="183" type="bond" members="271, 272">
+</tuple>
+<tuple id="184" type="bond" members="273, 272">
+</tuple>
+<tuple id="185" type="bond" members="274, 273">
+</tuple>
+<tuple id="186" type="bond" members="275, 272">
+</tuple>
+<tuple id="187" type="bond" members="276, 275">
+</tuple>
+<tuple id="188" type="bond" members="277, 275">
+</tuple>
+<tuple id="189" type="bond" members="278, 276">
+</tuple>
+<tuple id="190" type="bond" members="271, 279">
+</tuple>
+<tuple id="191" type="bond" members="272, 280">
+</tuple>
+<tuple id="192" type="bond" members="275, 281">
+</tuple>
+<tuple id="193" type="bond" members="276, 282">
+</tuple>
+<tuple id="194" type="bond" members="276, 283">
+</tuple>
+<tuple id="195" type="bond" members="277, 284">
+</tuple>
+<tuple id="196" type="bond" members="277, 285">
+</tuple>
+<tuple id="197" type="bond" members="277, 286">
+</tuple>
+<tuple id="198" type="bond" members="278, 287">
+</tuple>
+<tuple id="199" type="bond" members="278, 288">
+</tuple>
+<tuple id="200" type="bond" members="278, 289">
+</tuple>
+<tuple id="201" type="bond" members="273, 291">
+</tuple>
+<tuple id="202" type="bond" members="291, 292">
+</tuple>
+<tuple id="203" type="bond" members="293, 292">
+</tuple>
+<tuple id="204" type="bond" members="294, 293">
+</tuple>
+<tuple id="205" type="bond" members="295, 292">
+</tuple>
+<tuple id="206" type="bond" members="296, 295">
+</tuple>
+<tuple id="207" type="bond" members="297, 296">
+</tuple>
+<tuple id="208" type="bond" members="298, 297">
+</tuple>
+<tuple id="209" type="bond" members="299, 297">
+</tuple>
+<tuple id="210" type="bond" members="291, 300">
+</tuple>
+<tuple id="211" type="bond" members="292, 301">
+</tuple>
+<tuple id="212" type="bond" members="295, 302">
+</tuple>
+<tuple id="213" type="bond" members="295, 303">
+</tuple>
+<tuple id="214" type="bond" members="296, 304">
+</tuple>
+<tuple id="215" type="bond" members="296, 305">
+</tuple>
+<tuple id="216" type="bond" members="325, 333">
+</tuple>
+<tuple id="217" type="bond" members="325, 326">
+</tuple>
+<tuple id="218" type="bond" members="327, 326">
+</tuple>
+<tuple id="219" type="bond" members="328, 327">
+</tuple>
+<tuple id="220" type="bond" members="329, 326">
+</tuple>
+<tuple id="221" type="bond" members="330, 329">
+</tuple>
+<tuple id="222" type="bond" members="331, 330">
+</tuple>
+<tuple id="223" type="bond" members="332, 330">
+</tuple>
+<tuple id="224" type="bond" members="326, 334">
+</tuple>
+<tuple id="225" type="bond" members="329, 335">
+</tuple>
+<tuple id="226" type="bond" members="329, 336">
+</tuple>
+<tuple id="227" type="bond" members="330, 337">
+</tuple>
+<tuple id="228" type="bond" members="331, 338">
+</tuple>
+<tuple id="229" type="bond" members="331, 339">
+</tuple>
+<tuple id="230" type="bond" members="331, 340">
+</tuple>
+<tuple id="231" type="bond" members="332, 341">
+</tuple>
+<tuple id="232" type="bond" members="332, 342">
+</tuple>
+<tuple id="233" type="bond" members="332, 343">
+</tuple>
+<tuple id="234" type="bond" members="327, 345">
+</tuple>
+<tuple id="235" type="bond" members="345, 346">
+</tuple>
+<tuple id="236" type="bond" members="346, 354">
+</tuple>
+<tuple id="237" type="bond" members="347, 346">
+</tuple>
+<tuple id="238" type="bond" members="348, 347">
+</tuple>
+<tuple id="239" type="bond" members="349, 346">
+</tuple>
+<tuple id="240" type="bond" members="350, 349">
+</tuple>
+<tuple id="241" type="bond" members="351, 349">
+</tuple>
+<tuple id="242" type="bond" members="352, 350">
+</tuple>
+<tuple id="243" type="bond" members="352, 361">
+</tuple>
+<tuple id="244" type="bond" members="352, 362">
+</tuple>
+<tuple id="245" type="bond" members="352, 363">
+</tuple>
+<tuple id="246" type="bond" members="345, 353">
+</tuple>
+<tuple id="247" type="bond" members="349, 355">
+</tuple>
+<tuple id="248" type="bond" members="350, 356">
+</tuple>
+<tuple id="249" type="bond" members="350, 357">
+</tuple>
+<tuple id="250" type="bond" members="351, 358">
+</tuple>
+<tuple id="251" type="bond" members="351, 359">
+</tuple>
+<tuple id="252" type="bond" members="351, 360">
+</tuple>
+<tuple id="253" type="bond" members="382, 383">
+</tuple>
+<tuple id="254" type="bond" members="384, 383">
+</tuple>
+<tuple id="255" type="bond" members="385, 384">
+</tuple>
+<tuple id="256" type="bond" members="386, 383">
+</tuple>
+<tuple id="257" type="bond" members="382, 387">
+</tuple>
+<tuple id="258" type="bond" members="383, 388">
+</tuple>
+<tuple id="259" type="bond" members="386, 389">
+</tuple>
+<tuple id="260" type="bond" members="386, 390">
+</tuple>
+<tuple id="261" type="bond" members="386, 391">
+</tuple>
+<tuple id="262" type="bond" members="384, 393">
+</tuple>
+<tuple id="263" type="bond" members="393, 398">
+</tuple>
+<tuple id="264" type="bond" members="393, 394">
+</tuple>
+<tuple id="265" type="bond" members="396, 395">
+</tuple>
+<tuple id="266" type="bond" members="395, 394">
+</tuple>
+<tuple id="267" type="bond" members="397, 394">
+</tuple>
+<tuple id="268" type="bond" members="397, 400">
+</tuple>
+<tuple id="269" type="bond" members="397, 401">
+</tuple>
+<tuple id="270" type="bond" members="394, 399">
+</tuple>
+<tuple id="271" type="bond" members="397, 402">
+</tuple>
+<tuple id="272" type="bond" members="395, 404">
+</tuple>
+<tuple id="273" type="bond" members="404, 405">
+</tuple>
+<tuple id="274" type="bond" members="406, 405">
+</tuple>
+<tuple id="275" type="bond" members="407, 406">
+</tuple>
+<tuple id="276" type="bond" members="408, 405">
+</tuple>
+<tuple id="277" type="bond" members="409, 408">
+</tuple>
+<tuple id="278" type="bond" members="410, 409">
+</tuple>
+<tuple id="279" type="bond" members="411, 410">
+</tuple>
+<tuple id="280" type="bond" members="412, 410">
+</tuple>
+<tuple id="281" type="bond" members="404, 413">
+</tuple>
+<tuple id="282" type="bond" members="405, 414">
+</tuple>
+<tuple id="283" type="bond" members="408, 415">
+</tuple>
+<tuple id="284" type="bond" members="408, 416">
+</tuple>
+<tuple id="285" type="bond" members="409, 417">
+</tuple>
+<tuple id="286" type="bond" members="409, 418">
+</tuple>
+<tuple id="287" type="bond" members="412, 419">
+</tuple>
+<tuple id="288" type="bond" members="412, 420">
+</tuple>
+<tuple id="289" type="bond" members="441, 442">
+</tuple>
+<tuple id="290" type="bond" members="443, 442">
+</tuple>
+<tuple id="291" type="bond" members="444, 443">
+</tuple>
+<tuple id="292" type="bond" members="445, 442">
+</tuple>
+<tuple id="293" type="bond" members="446, 445">
+</tuple>
+<tuple id="294" type="bond" members="447, 446">
+</tuple>
+<tuple id="295" type="bond" members="448, 447">
+</tuple>
+<tuple id="296" type="bond" members="449, 447">
+</tuple>
+<tuple id="297" type="bond" members="441, 450">
+</tuple>
+<tuple id="298" type="bond" members="442, 451">
+</tuple>
+<tuple id="299" type="bond" members="445, 452">
+</tuple>
+<tuple id="300" type="bond" members="445, 453">
+</tuple>
+<tuple id="301" type="bond" members="446, 454">
+</tuple>
+<tuple id="302" type="bond" members="446, 455">
+</tuple>
+<tuple id="303" type="bond" members="449, 456">
+</tuple>
+<tuple id="304" type="bond" members="449, 457">
+</tuple>
+<tuple id="305" type="bond" members="443, 459">
+</tuple>
+<tuple id="306" type="bond" members="459, 460">
+</tuple>
+<tuple id="307" type="bond" members="461, 460">
+</tuple>
+<tuple id="308" type="bond" members="462, 461">
+</tuple>
+<tuple id="309" type="bond" members="463, 460">
+</tuple>
+<tuple id="310" type="bond" members="464, 463">
+</tuple>
+<tuple id="311" type="bond" members="465, 464">
+</tuple>
+<tuple id="312" type="bond" members="466, 465">
+</tuple>
+<tuple id="313" type="bond" members="467, 465">
+</tuple>
+<tuple id="314" type="bond" members="459, 468">
+</tuple>
+<tuple id="315" type="bond" members="460, 469">
+</tuple>
+<tuple id="316" type="bond" members="463, 470">
+</tuple>
+<tuple id="317" type="bond" members="463, 471">
+</tuple>
+<tuple id="318" type="bond" members="464, 472">
+</tuple>
+<tuple id="319" type="bond" members="464, 473">
+</tuple>
+<tuple id="320" type="bond" members="467, 474">
+</tuple>
+<tuple id="321" type="bond" members="467, 475">
+</tuple>
+<tuple id="322" type="bond" members="496, 505">
+</tuple>
+<tuple id="323" type="bond" members="496, 497">
+</tuple>
+<tuple id="324" type="bond" members="497, 506">
+</tuple>
+<tuple id="325" type="bond" members="498, 497">
+</tuple>
+<tuple id="326" type="bond" members="499, 498">
+</tuple>
+<tuple id="327" type="bond" members="500, 497">
+</tuple>
+<tuple id="328" type="bond" members="500, 508">
+</tuple>
+<tuple id="329" type="bond" members="500, 507">
+</tuple>
+<tuple id="330" type="bond" members="501, 500">
+</tuple>
+<tuple id="331" type="bond" members="501, 510">
+</tuple>
+<tuple id="332" type="bond" members="501, 509">
+</tuple>
+<tuple id="333" type="bond" members="502, 501">
+</tuple>
+<tuple id="334" type="bond" members="503, 502">
+</tuple>
+<tuple id="335" type="bond" members="502, 512">
+</tuple>
+<tuple id="336" type="bond" members="502, 511">
+</tuple>
+<tuple id="337" type="bond" members="504, 503">
+</tuple>
+<tuple id="338" type="bond" members="503, 513">
+</tuple>
+<tuple id="339" type="bond" members="503, 514">
+</tuple>
+<tuple id="340" type="bond" members="504, 515">
+</tuple>
+<tuple id="341" type="bond" members="504, 516">
+</tuple>
+<tuple id="342" type="bond" members="504, 517">
+</tuple>
+<tuple id="343" type="bond" members="498, 519">
+</tuple>
+<tuple id="344" type="bond" members="519, 527">
+</tuple>
+<tuple id="345" type="bond" members="519, 520">
+</tuple>
+<tuple id="346" type="bond" members="520, 528">
+</tuple>
+<tuple id="347" type="bond" members="521, 520">
+</tuple>
+<tuple id="348" type="bond" members="522, 521">
+</tuple>
+<tuple id="349" type="bond" members="523, 520">
+</tuple>
+<tuple id="350" type="bond" members="524, 523">
+</tuple>
+<tuple id="351" type="bond" members="525, 524">
+</tuple>
+<tuple id="352" type="bond" members="526, 524">
+</tuple>
+<tuple id="353" type="bond" members="526, 532">
+</tuple>
+<tuple id="354" type="bond" members="523, 529">
+</tuple>
+<tuple id="355" type="bond" members="523, 530">
+</tuple>
+<tuple id="356" type="bond" members="526, 531">
+</tuple>
+<tuple id="357" type="bond" members="521, 534">
+</tuple>
+<tuple id="358" type="bond" members="534, 535">
+</tuple>
+<tuple id="359" type="bond" members="536, 535">
+</tuple>
+<tuple id="360" type="bond" members="537, 536">
+</tuple>
+<tuple id="361" type="bond" members="538, 535">
+</tuple>
+<tuple id="362" type="bond" members="539, 538">
+</tuple>
+<tuple id="363" type="bond" members="540, 539">
+</tuple>
+<tuple id="364" type="bond" members="541, 540">
+</tuple>
+<tuple id="365" type="bond" members="542, 540">
+</tuple>
+<tuple id="366" type="bond" members="534, 543">
+</tuple>
+<tuple id="367" type="bond" members="535, 544">
+</tuple>
+<tuple id="368" type="bond" members="538, 545">
+</tuple>
+<tuple id="369" type="bond" members="538, 546">
+</tuple>
+<tuple id="370" type="bond" members="539, 547">
+</tuple>
+<tuple id="371" type="bond" members="539, 548">
+</tuple>
+<tuple id="372" type="bond" members="568, 569">
+</tuple>
+<tuple id="373" type="bond" members="570, 569">
+</tuple>
+<tuple id="374" type="bond" members="571, 570">
+</tuple>
+<tuple id="375" type="bond" members="572, 569">
+</tuple>
+<tuple id="376" type="bond" members="568, 573">
+</tuple>
+<tuple id="377" type="bond" members="569, 574">
+</tuple>
+<tuple id="378" type="bond" members="572, 575">
+</tuple>
+<tuple id="379" type="bond" members="572, 576">
+</tuple>
+<tuple id="380" type="bond" members="572, 577">
+</tuple>
+<tuple id="381" type="bond" members="570, 579">
+</tuple>
+<tuple id="382" type="bond" members="579, 580">
+</tuple>
+<tuple id="383" type="bond" members="581, 580">
+</tuple>
+<tuple id="384" type="bond" members="582, 581">
+</tuple>
+<tuple id="385" type="bond" members="583, 580">
+</tuple>
+<tuple id="386" type="bond" members="584, 583">
+</tuple>
+<tuple id="387" type="bond" members="585, 584">
+</tuple>
+<tuple id="388" type="bond" members="586, 584">
+</tuple>
+<tuple id="389" type="bond" members="579, 587">
+</tuple>
+<tuple id="390" type="bond" members="580, 588">
+</tuple>
+<tuple id="391" type="bond" members="583, 589">
+</tuple>
+<tuple id="392" type="bond" members="583, 590">
+</tuple>
+<tuple id="393" type="bond" members="584, 591">
+</tuple>
+<tuple id="394" type="bond" members="585, 592">
+</tuple>
+<tuple id="395" type="bond" members="585, 593">
+</tuple>
+<tuple id="396" type="bond" members="585, 594">
+</tuple>
+<tuple id="397" type="bond" members="586, 595">
+</tuple>
+<tuple id="398" type="bond" members="586, 596">
+</tuple>
+<tuple id="399" type="bond" members="586, 597">
+</tuple>
+<tuple id="400" type="bond" members="616, 617">
+</tuple>
+<tuple id="401" type="bond" members="619, 617">
+</tuple>
+<tuple id="402" type="bond" members="619, 643">
+</tuple>
+<tuple id="403" type="bond" members="620, 619">
+</tuple>
+<tuple id="404" type="bond" members="621, 617">
+</tuple>
+<tuple id="405" type="bond" members="623, 621">
+</tuple>
+<tuple id="406" type="bond" members="625, 623">
+</tuple>
+<tuple id="407" type="bond" members="627, 625">
+</tuple>
+<tuple id="408" type="bond" members="629, 625">
+</tuple>
+<tuple id="409" type="bond" members="616, 631">
+</tuple>
+<tuple id="410" type="bond" members="617, 632">
+</tuple>
+<tuple id="411" type="bond" members="621, 634">
+</tuple>
+<tuple id="412" type="bond" members="621, 636">
+</tuple>
+<tuple id="413" type="bond" members="623, 638">
+</tuple>
+<tuple id="414" type="bond" members="623, 640">
+</tuple>
+<tuple id="415" type="bond" members="643, 651">
+</tuple>
+<tuple id="416" type="bond" members="647, 644">
+</tuple>
+<tuple id="417" type="bond" members="643, 644">
+</tuple>
+<tuple id="418" type="bond" members="645, 644">
+</tuple>
+<tuple id="419" type="bond" members="644, 652">
+</tuple>
+<tuple id="420" type="bond" members="646, 645">
+</tuple>
+<tuple id="421" type="bond" members="648, 647">
+</tuple>
+<tuple id="422" type="bond" members="649, 648">
+</tuple>
+<tuple id="423" type="bond" members="650, 648">
+</tuple>
+<tuple id="424" type="bond" members="647, 653">
+</tuple>
+<tuple id="425" type="bond" members="647, 654">
+</tuple>
+<tuple id="426" type="bond" members="648, 655">
+</tuple>
+<tuple id="427" type="bond" members="649, 656">
+</tuple>
+<tuple id="428" type="bond" members="649, 657">
+</tuple>
+<tuple id="429" type="bond" members="649, 658">
+</tuple>
+<tuple id="430" type="bond" members="650, 659">
+</tuple>
+<tuple id="431" type="bond" members="650, 660">
+</tuple>
+<tuple id="432" type="bond" members="650, 661">
+</tuple>
+<tuple id="433" type="bond" members="4, 5">
+</tuple>
+<tuple id="434" type="bond" members="6, 5">
+</tuple>
+<tuple id="435" type="bond" members="7, 6">
+</tuple>
+<tuple id="436" type="bond" members="8, 5">
+</tuple>
+<tuple id="437" type="bond" members="4, 9">
+</tuple>
+<tuple id="438" type="bond" members="5, 10">
+</tuple>
+<tuple id="439" type="bond" members="8, 11">
+</tuple>
+<tuple id="440" type="bond" members="6, 13">
+</tuple>
+<tuple id="441" type="bond" members="13, 14">
+</tuple>
+<tuple id="442" type="bond" members="16, 14">
+</tuple>
+<tuple id="443" type="bond" members="17, 16">
+</tuple>
+<tuple id="444" type="bond" members="18, 14">
+</tuple>
+<tuple id="445" type="bond" members="20, 18">
+</tuple>
+<tuple id="446" type="bond" members="22, 20">
+</tuple>
+<tuple id="447" type="bond" members="24, 20">
+</tuple>
+<tuple id="448" type="bond" members="26, 22">
+</tuple>
+<tuple id="449" type="bond" members="28, 24">
+</tuple>
+<tuple id="450" type="bond" members="26, 28">
+</tuple>
+<tuple id="451" type="bond" members="24, 30">
+</tuple>
+<tuple id="452" type="bond" members="30, 49">
+</tuple>
+<tuple id="453" type="bond" members="32, 28">
+</tuple>
+<tuple id="454" type="bond" members="34, 30">
+</tuple>
+<tuple id="455" type="bond" members="36, 32">
+</tuple>
+<tuple id="456" type="bond" members="34, 36">
+</tuple>
+<tuple id="457" type="bond" members="36, 55">
+</tuple>
+<tuple id="458" type="bond" members="13, 38">
+</tuple>
+<tuple id="459" type="bond" members="14, 39">
+</tuple>
+<tuple id="460" type="bond" members="18, 41">
+</tuple>
+<tuple id="461" type="bond" members="18, 43">
+</tuple>
+<tuple id="462" type="bond" members="22, 45">
+</tuple>
+<tuple id="463" type="bond" members="26, 47">
+</tuple>
+<tuple id="464" type="bond" members="32, 51">
+</tuple>
+<tuple id="465" type="bond" members="34, 53">
+</tuple>
+<tuple id="466" type="bond" members="16, 58">
+</tuple>
+<tuple id="467" type="bond" members="58, 63">
+</tuple>
+<tuple id="468" type="bond" members="62, 59">
+</tuple>
+<tuple id="469" type="bond" members="58, 59">
+</tuple>
+<tuple id="470" type="bond" members="60, 59">
+</tuple>
+<tuple id="471" type="bond" members="59, 64">
+</tuple>
+<tuple id="472" type="bond" members="61, 60">
+</tuple>
+<tuple id="473" type="bond" members="62, 65">
+</tuple>
+<tuple id="474" type="bond" members="62, 66">
+</tuple>
+<tuple id="475" type="bond" members="60, 68">
+</tuple>
+<tuple id="476" type="bond" members="72, 69">
+</tuple>
+<tuple id="477" type="bond" members="68, 69">
+</tuple>
+<tuple id="478" type="bond" members="70, 69">
+</tuple>
+<tuple id="479" type="bond" members="69, 74">
+</tuple>
+<tuple id="480" type="bond" members="71, 70">
+</tuple>
+<tuple id="481" type="bond" members="68, 73">
+</tuple>
+<tuple id="482" type="bond" members="72, 75">
+</tuple>
+<tuple id="483" type="bond" members="72, 76">
+</tuple>
+<tuple id="484" type="bond" members="72, 77">
+</tuple>
+<tuple id="485" type="bond" members="70, 79">
+</tuple>
+<tuple id="486" type="bond" members="79, 93">
+</tuple>
+<tuple id="487" type="bond" members="79, 80">
+</tuple>
+<tuple id="488" type="bond" members="83, 80">
+</tuple>
+<tuple id="489" type="bond" members="80, 94">
+</tuple>
+<tuple id="490" type="bond" members="81, 80">
+</tuple>
+<tuple id="491" type="bond" members="81, 104">
+</tuple>
+<tuple id="492" type="bond" members="82, 81">
+</tuple>
+<tuple id="493" type="bond" members="84, 83">
+</tuple>
+<tuple id="494" type="bond" members="85, 84">
+</tuple>
+<tuple id="495" type="bond" members="86, 84">
+</tuple>
+<tuple id="496" type="bond" members="87, 85">
+</tuple>
+<tuple id="497" type="bond" members="88, 86">
+</tuple>
+<tuple id="498" type="bond" members="87, 88">
+</tuple>
+<tuple id="499" type="bond" members="91, 89">
+</tuple>
+<tuple id="500" type="bond" members="86, 89">
+</tuple>
+<tuple id="501" type="bond" members="90, 88">
+</tuple>
+<tuple id="502" type="bond" members="92, 90">
+</tuple>
+<tuple id="503" type="bond" members="91, 92">
+</tuple>
+<tuple id="504" type="bond" members="83, 95">
+</tuple>
+<tuple id="505" type="bond" members="83, 96">
+</tuple>
+<tuple id="506" type="bond" members="85, 97">
+</tuple>
+<tuple id="507" type="bond" members="87, 98">
+</tuple>
+<tuple id="508" type="bond" members="89, 99">
+</tuple>
+<tuple id="509" type="bond" members="90, 100">
+</tuple>
+<tuple id="510" type="bond" members="91, 101">
+</tuple>
+<tuple id="511" type="bond" members="92, 102">
+</tuple>
+<tuple id="512" type="bond" members="104, 105">
+</tuple>
+<tuple id="513" type="bond" members="107, 106">
+</tuple>
+<tuple id="514" type="bond" members="106, 105">
+</tuple>
+<tuple id="515" type="bond" members="108, 105">
+</tuple>
+<tuple id="516" type="bond" members="109, 108">
+</tuple>
+<tuple id="517" type="bond" members="110, 109">
+</tuple>
+<tuple id="518" type="bond" members="111, 109">
+</tuple>
+<tuple id="519" type="bond" members="104, 112">
+</tuple>
+<tuple id="520" type="bond" members="105, 113">
+</tuple>
+<tuple id="521" type="bond" members="108, 114">
+</tuple>
+<tuple id="522" type="bond" members="108, 115">
+</tuple>
+<tuple id="523" type="bond" members="134, 139">
+</tuple>
+<tuple id="524" type="bond" members="134, 135">
+</tuple>
+<tuple id="525" type="bond" members="138, 135">
+</tuple>
+<tuple id="526" type="bond" members="136, 135">
+</tuple>
+<tuple id="527" type="bond" members="135, 140">
+</tuple>
+<tuple id="528" type="bond" members="137, 136">
+</tuple>
+<tuple id="529" type="bond" members="138, 141">
+</tuple>
+<tuple id="530" type="bond" members="138, 142">
+</tuple>
+<tuple id="531" type="bond" members="138, 143">
+</tuple>
+<tuple id="532" type="bond" members="136, 145">
+</tuple>
+<tuple id="533" type="bond" members="145, 146">
+</tuple>
+<tuple id="534" type="bond" members="147, 146">
+</tuple>
+<tuple id="535" type="bond" members="147, 165">
+</tuple>
+<tuple id="536" type="bond" members="148, 147">
+</tuple>
+<tuple id="537" type="bond" members="149, 146">
+</tuple>
+<tuple id="538" type="bond" members="150, 149">
+</tuple>
+<tuple id="539" type="bond" members="151, 149">
+</tuple>
+<tuple id="540" type="bond" members="152, 150">
+</tuple>
+<tuple id="541" type="bond" members="145, 153">
+</tuple>
+<tuple id="542" type="bond" members="146, 154">
+</tuple>
+<tuple id="543" type="bond" members="149, 155">
+</tuple>
+<tuple id="544" type="bond" members="150, 156">
+</tuple>
+<tuple id="545" type="bond" members="150, 157">
+</tuple>
+<tuple id="546" type="bond" members="151, 158">
+</tuple>
+<tuple id="547" type="bond" members="151, 159">
+</tuple>
+<tuple id="548" type="bond" members="151, 160">
+</tuple>
+<tuple id="549" type="bond" members="152, 161">
+</tuple>
+<tuple id="550" type="bond" members="152, 162">
+</tuple>
+<tuple id="551" type="bond" members="152, 163">
+</tuple>
+<tuple id="552" type="bond" members="165, 166">
+</tuple>
+<tuple id="553" type="bond" members="167, 166">
+</tuple>
+<tuple id="554" type="bond" members="168, 167">
+</tuple>
+<tuple id="555" type="bond" members="169, 166">
+</tuple>
+<tuple id="556" type="bond" members="165, 170">
+</tuple>
+<tuple id="557" type="bond" members="166, 171">
+</tuple>
+<tuple id="558" type="bond" members="169, 172">
+</tuple>
+<tuple id="559" type="bond" members="169, 173">
+</tuple>
+<tuple id="560" type="bond" members="169, 174">
+</tuple>
+<tuple id="561" type="bond" members="195, 196">
+</tuple>
+<tuple id="562" type="bond" members="197, 196">
+</tuple>
+<tuple id="563" type="bond" members="198, 197">
+</tuple>
+<tuple id="564" type="bond" members="199, 196">
+</tuple>
+<tuple id="565" type="bond" members="200, 199">
+</tuple>
+<tuple id="566" type="bond" members="201, 200">
+</tuple>
+<tuple id="567" type="bond" members="202, 200">
+</tuple>
+<tuple id="568" type="bond" members="204, 202">
+</tuple>
+<tuple id="569" type="bond" members="203, 201">
+</tuple>
+<tuple id="570" type="bond" members="205, 203">
+</tuple>
+<tuple id="571" type="bond" members="205, 204">
+</tuple>
+<tuple id="572" type="bond" members="206, 205">
+</tuple>
+<tuple id="573" type="bond" members="195, 207">
+</tuple>
+<tuple id="574" type="bond" members="196, 208">
+</tuple>
+<tuple id="575" type="bond" members="199, 209">
+</tuple>
+<tuple id="576" type="bond" members="199, 210">
+</tuple>
+<tuple id="577" type="bond" members="201, 211">
+</tuple>
+<tuple id="578" type="bond" members="202, 212">
+</tuple>
+<tuple id="579" type="bond" members="203, 213">
+</tuple>
+<tuple id="580" type="bond" members="204, 214">
+</tuple>
+<tuple id="581" type="bond" members="206, 215">
+</tuple>
+<tuple id="582" type="bond" members="197, 217">
+</tuple>
+<tuple id="583" type="bond" members="217, 222">
+</tuple>
+<tuple id="584" type="bond" members="217, 218">
+</tuple>
+<tuple id="585" type="bond" members="221, 218">
+</tuple>
+<tuple id="586" type="bond" members="219, 218">
+</tuple>
+<tuple id="587" type="bond" members="218, 223">
+</tuple>
+<tuple id="588" type="bond" members="220, 219">
+</tuple>
+<tuple id="589" type="bond" members="221, 224">
+</tuple>
+<tuple id="590" type="bond" members="221, 225">
+</tuple>
+<tuple id="591" type="bond" members="221, 226">
+</tuple>
+<tuple id="592" type="bond" members="246, 247">
+</tuple>
+<tuple id="593" type="bond" members="248, 247">
+</tuple>
+<tuple id="594" type="bond" members="249, 248">
+</tuple>
+<tuple id="595" type="bond" members="250, 247">
+</tuple>
+<tuple id="596" type="bond" members="250, 260">
+</tuple>
+<tuple id="597" type="bond" members="251, 250">
+</tuple>
+<tuple id="598" type="bond" members="251, 262">
+</tuple>
+<tuple id="599" type="bond" members="251, 261">
+</tuple>
+<tuple id="600" type="bond" members="252, 251">
+</tuple>
+<tuple id="601" type="bond" members="252, 264">
+</tuple>
+<tuple id="602" type="bond" members="252, 263">
+</tuple>
+<tuple id="603" type="bond" members="253, 252">
+</tuple>
+<tuple id="604" type="bond" members="253, 265">
+</tuple>
+<tuple id="605" type="bond" members="254, 253">
+</tuple>
+<tuple id="606" type="bond" members="255, 254">
+</tuple>
+<tuple id="607" type="bond" members="256, 254">
+</tuple>
+<tuple id="608" type="bond" members="256, 268">
+</tuple>
+<tuple id="609" type="bond" members="256, 269">
+</tuple>
+<tuple id="610" type="bond" members="246, 257">
+</tuple>
+<tuple id="611" type="bond" members="247, 258">
+</tuple>
+<tuple id="612" type="bond" members="250, 259">
+</tuple>
+<tuple id="613" type="bond" members="255, 266">
+</tuple>
+<tuple id="614" type="bond" members="255, 267">
+</tuple>
+<tuple id="615" type="bond" members="248, 271">
+</tuple>
+<tuple id="616" type="bond" members="271, 272">
+</tuple>
+<tuple id="617" type="bond" members="273, 272">
+</tuple>
+<tuple id="618" type="bond" members="274, 273">
+</tuple>
+<tuple id="619" type="bond" members="275, 272">
+</tuple>
+<tuple id="620" type="bond" members="276, 275">
+</tuple>
+<tuple id="621" type="bond" members="277, 275">
+</tuple>
+<tuple id="622" type="bond" members="278, 276">
+</tuple>
+<tuple id="623" type="bond" members="271, 279">
+</tuple>
+<tuple id="624" type="bond" members="272, 280">
+</tuple>
+<tuple id="625" type="bond" members="275, 281">
+</tuple>
+<tuple id="626" type="bond" members="276, 282">
+</tuple>
+<tuple id="627" type="bond" members="276, 283">
+</tuple>
+<tuple id="628" type="bond" members="277, 284">
+</tuple>
+<tuple id="629" type="bond" members="277, 285">
+</tuple>
+<tuple id="630" type="bond" members="277, 286">
+</tuple>
+<tuple id="631" type="bond" members="278, 287">
+</tuple>
+<tuple id="632" type="bond" members="278, 288">
+</tuple>
+<tuple id="633" type="bond" members="278, 289">
+</tuple>
+<tuple id="634" type="bond" members="273, 291">
+</tuple>
+<tuple id="635" type="bond" members="291, 292">
+</tuple>
+<tuple id="636" type="bond" members="293, 292">
+</tuple>
+<tuple id="637" type="bond" members="294, 293">
+</tuple>
+<tuple id="638" type="bond" members="295, 292">
+</tuple>
+<tuple id="639" type="bond" members="296, 295">
+</tuple>
+<tuple id="640" type="bond" members="297, 296">
+</tuple>
+<tuple id="641" type="bond" members="298, 297">
+</tuple>
+<tuple id="642" type="bond" members="299, 297">
+</tuple>
+<tuple id="643" type="bond" members="291, 300">
+</tuple>
+<tuple id="644" type="bond" members="292, 301">
+</tuple>
+<tuple id="645" type="bond" members="295, 302">
+</tuple>
+<tuple id="646" type="bond" members="295, 303">
+</tuple>
+<tuple id="647" type="bond" members="296, 304">
+</tuple>
+<tuple id="648" type="bond" members="296, 305">
+</tuple>
+<tuple id="649" type="bond" members="325, 333">
+</tuple>
+<tuple id="650" type="bond" members="325, 326">
+</tuple>
+<tuple id="651" type="bond" members="327, 326">
+</tuple>
+<tuple id="652" type="bond" members="328, 327">
+</tuple>
+<tuple id="653" type="bond" members="329, 326">
+</tuple>
+<tuple id="654" type="bond" members="330, 329">
+</tuple>
+<tuple id="655" type="bond" members="331, 330">
+</tuple>
+<tuple id="656" type="bond" members="332, 330">
+</tuple>
+<tuple id="657" type="bond" members="326, 334">
+</tuple>
+<tuple id="658" type="bond" members="329, 335">
+</tuple>
+<tuple id="659" type="bond" members="329, 336">
+</tuple>
+<tuple id="660" type="bond" members="330, 337">
+</tuple>
+<tuple id="661" type="bond" members="331, 338">
+</tuple>
+<tuple id="662" type="bond" members="331, 339">
+</tuple>
+<tuple id="663" type="bond" members="331, 340">
+</tuple>
+<tuple id="664" type="bond" members="332, 341">
+</tuple>
+<tuple id="665" type="bond" members="332, 342">
+</tuple>
+<tuple id="666" type="bond" members="332, 343">
+</tuple>
+<tuple id="667" type="bond" members="327, 345">
+</tuple>
+<tuple id="668" type="bond" members="345, 346">
+</tuple>
+<tuple id="669" type="bond" members="346, 354">
+</tuple>
+<tuple id="670" type="bond" members="347, 346">
+</tuple>
+<tuple id="671" type="bond" members="348, 347">
+</tuple>
+<tuple id="672" type="bond" members="349, 346">
+</tuple>
+<tuple id="673" type="bond" members="350, 349">
+</tuple>
+<tuple id="674" type="bond" members="351, 349">
+</tuple>
+<tuple id="675" type="bond" members="352, 350">
+</tuple>
+<tuple id="676" type="bond" members="352, 361">
+</tuple>
+<tuple id="677" type="bond" members="352, 362">
+</tuple>
+<tuple id="678" type="bond" members="352, 363">
+</tuple>
+<tuple id="679" type="bond" members="345, 353">
+</tuple>
+<tuple id="680" type="bond" members="349, 355">
+</tuple>
+<tuple id="681" type="bond" members="350, 356">
+</tuple>
+<tuple id="682" type="bond" members="350, 357">
+</tuple>
+<tuple id="683" type="bond" members="351, 358">
+</tuple>
+<tuple id="684" type="bond" members="351, 359">
+</tuple>
+<tuple id="685" type="bond" members="351, 360">
+</tuple>
+<tuple id="686" type="bond" members="382, 383">
+</tuple>
+<tuple id="687" type="bond" members="384, 383">
+</tuple>
+<tuple id="688" type="bond" members="385, 384">
+</tuple>
+<tuple id="689" type="bond" members="386, 383">
+</tuple>
+<tuple id="690" type="bond" members="382, 387">
+</tuple>
+<tuple id="691" type="bond" members="383, 388">
+</tuple>
+<tuple id="692" type="bond" members="386, 389">
+</tuple>
+<tuple id="693" type="bond" members="386, 390">
+</tuple>
+<tuple id="694" type="bond" members="386, 391">
+</tuple>
+<tuple id="695" type="bond" members="384, 393">
+</tuple>
+<tuple id="696" type="bond" members="393, 398">
+</tuple>
+<tuple id="697" type="bond" members="393, 394">
+</tuple>
+<tuple id="698" type="bond" members="396, 395">
+</tuple>
+<tuple id="699" type="bond" members="395, 394">
+</tuple>
+<tuple id="700" type="bond" members="397, 394">
+</tuple>
+<tuple id="701" type="bond" members="397, 400">
+</tuple>
+<tuple id="702" type="bond" members="397, 401">
+</tuple>
+<tuple id="703" type="bond" members="394, 399">
+</tuple>
+<tuple id="704" type="bond" members="397, 402">
+</tuple>
+<tuple id="705" type="bond" members="395, 404">
+</tuple>
+<tuple id="706" type="bond" members="404, 405">
+</tuple>
+<tuple id="707" type="bond" members="406, 405">
+</tuple>
+<tuple id="708" type="bond" members="407, 406">
+</tuple>
+<tuple id="709" type="bond" members="408, 405">
+</tuple>
+<tuple id="710" type="bond" members="409, 408">
+</tuple>
+<tuple id="711" type="bond" members="410, 409">
+</tuple>
+<tuple id="712" type="bond" members="411, 410">
+</tuple>
+<tuple id="713" type="bond" members="412, 410">
+</tuple>
+<tuple id="714" type="bond" members="404, 413">
+</tuple>
+<tuple id="715" type="bond" members="405, 414">
+</tuple>
+<tuple id="716" type="bond" members="408, 415">
+</tuple>
+<tuple id="717" type="bond" members="408, 416">
+</tuple>
+<tuple id="718" type="bond" members="409, 417">
+</tuple>
+<tuple id="719" type="bond" members="409, 418">
+</tuple>
+<tuple id="720" type="bond" members="412, 419">
+</tuple>
+<tuple id="721" type="bond" members="412, 420">
+</tuple>
+<tuple id="722" type="bond" members="441, 442">
+</tuple>
+<tuple id="723" type="bond" members="443, 442">
+</tuple>
+<tuple id="724" type="bond" members="444, 443">
+</tuple>
+<tuple id="725" type="bond" members="445, 442">
+</tuple>
+<tuple id="726" type="bond" members="446, 445">
+</tuple>
+<tuple id="727" type="bond" members="447, 446">
+</tuple>
+<tuple id="728" type="bond" members="448, 447">
+</tuple>
+<tuple id="729" type="bond" members="449, 447">
+</tuple>
+<tuple id="730" type="bond" members="441, 450">
+</tuple>
+<tuple id="731" type="bond" members="442, 451">
+</tuple>
+<tuple id="732" type="bond" members="445, 452">
+</tuple>
+<tuple id="733" type="bond" members="445, 453">
+</tuple>
+<tuple id="734" type="bond" members="446, 454">
+</tuple>
+<tuple id="735" type="bond" members="446, 455">
+</tuple>
+<tuple id="736" type="bond" members="449, 456">
+</tuple>
+<tuple id="737" type="bond" members="449, 457">
+</tuple>
+<tuple id="738" type="bond" members="443, 459">
+</tuple>
+<tuple id="739" type="bond" members="459, 460">
+</tuple>
+<tuple id="740" type="bond" members="461, 460">
+</tuple>
+<tuple id="741" type="bond" members="462, 461">
+</tuple>
+<tuple id="742" type="bond" members="463, 460">
+</tuple>
+<tuple id="743" type="bond" members="464, 463">
+</tuple>
+<tuple id="744" type="bond" members="465, 464">
+</tuple>
+<tuple id="745" type="bond" members="466, 465">
+</tuple>
+<tuple id="746" type="bond" members="467, 465">
+</tuple>
+<tuple id="747" type="bond" members="459, 468">
+</tuple>
+<tuple id="748" type="bond" members="460, 469">
+</tuple>
+<tuple id="749" type="bond" members="463, 470">
+</tuple>
+<tuple id="750" type="bond" members="463, 471">
+</tuple>
+<tuple id="751" type="bond" members="464, 472">
+</tuple>
+<tuple id="752" type="bond" members="464, 473">
+</tuple>
+<tuple id="753" type="bond" members="467, 474">
+</tuple>
+<tuple id="754" type="bond" members="467, 475">
+</tuple>
+<tuple id="755" type="bond" members="496, 505">
+</tuple>
+<tuple id="756" type="bond" members="496, 497">
+</tuple>
+<tuple id="757" type="bond" members="497, 506">
+</tuple>
+<tuple id="758" type="bond" members="498, 497">
+</tuple>
+<tuple id="759" type="bond" members="499, 498">
+</tuple>
+<tuple id="760" type="bond" members="500, 497">
+</tuple>
+<tuple id="761" type="bond" members="500, 508">
+</tuple>
+<tuple id="762" type="bond" members="500, 507">
+</tuple>
+<tuple id="763" type="bond" members="501, 500">
+</tuple>
+<tuple id="764" type="bond" members="501, 510">
+</tuple>
+<tuple id="765" type="bond" members="501, 509">
+</tuple>
+<tuple id="766" type="bond" members="502, 501">
+</tuple>
+<tuple id="767" type="bond" members="503, 502">
+</tuple>
+<tuple id="768" type="bond" members="502, 512">
+</tuple>
+<tuple id="769" type="bond" members="502, 511">
+</tuple>
+<tuple id="770" type="bond" members="504, 503">
+</tuple>
+<tuple id="771" type="bond" members="503, 513">
+</tuple>
+<tuple id="772" type="bond" members="503, 514">
+</tuple>
+<tuple id="773" type="bond" members="504, 515">
+</tuple>
+<tuple id="774" type="bond" members="504, 516">
+</tuple>
+<tuple id="775" type="bond" members="504, 517">
+</tuple>
+<tuple id="776" type="bond" members="498, 519">
+</tuple>
+<tuple id="777" type="bond" members="519, 527">
+</tuple>
+<tuple id="778" type="bond" members="519, 520">
+</tuple>
+<tuple id="779" type="bond" members="520, 528">
+</tuple>
+<tuple id="780" type="bond" members="521, 520">
+</tuple>
+<tuple id="781" type="bond" members="522, 521">
+</tuple>
+<tuple id="782" type="bond" members="523, 520">
+</tuple>
+<tuple id="783" type="bond" members="524, 523">
+</tuple>
+<tuple id="784" type="bond" members="525, 524">
+</tuple>
+<tuple id="785" type="bond" members="526, 524">
+</tuple>
+<tuple id="786" type="bond" members="526, 532">
+</tuple>
+<tuple id="787" type="bond" members="523, 529">
+</tuple>
+<tuple id="788" type="bond" members="523, 530">
+</tuple>
+<tuple id="789" type="bond" members="526, 531">
+</tuple>
+<tuple id="790" type="bond" members="521, 534">
+</tuple>
+<tuple id="791" type="bond" members="534, 535">
+</tuple>
+<tuple id="792" type="bond" members="536, 535">
+</tuple>
+<tuple id="793" type="bond" members="537, 536">
+</tuple>
+<tuple id="794" type="bond" members="538, 535">
+</tuple>
+<tuple id="795" type="bond" members="539, 538">
+</tuple>
+<tuple id="796" type="bond" members="540, 539">
+</tuple>
+<tuple id="797" type="bond" members="541, 540">
+</tuple>
+<tuple id="798" type="bond" members="542, 540">
+</tuple>
+<tuple id="799" type="bond" members="534, 543">
+</tuple>
+<tuple id="800" type="bond" members="535, 544">
+</tuple>
+<tuple id="801" type="bond" members="538, 545">
+</tuple>
+<tuple id="802" type="bond" members="538, 546">
+</tuple>
+<tuple id="803" type="bond" members="539, 547">
+</tuple>
+<tuple id="804" type="bond" members="539, 548">
+</tuple>
+<tuple id="805" type="bond" members="568, 569">
+</tuple>
+<tuple id="806" type="bond" members="570, 569">
+</tuple>
+<tuple id="807" type="bond" members="571, 570">
+</tuple>
+<tuple id="808" type="bond" members="572, 569">
+</tuple>
+<tuple id="809" type="bond" members="568, 573">
+</tuple>
+<tuple id="810" type="bond" members="569, 574">
+</tuple>
+<tuple id="811" type="bond" members="572, 575">
+</tuple>
+<tuple id="812" type="bond" members="572, 576">
+</tuple>
+<tuple id="813" type="bond" members="572, 577">
+</tuple>
+<tuple id="814" type="bond" members="570, 579">
+</tuple>
+<tuple id="815" type="bond" members="579, 580">
+</tuple>
+<tuple id="816" type="bond" members="581, 580">
+</tuple>
+<tuple id="817" type="bond" members="582, 581">
+</tuple>
+<tuple id="818" type="bond" members="583, 580">
+</tuple>
+<tuple id="819" type="bond" members="584, 583">
+</tuple>
+<tuple id="820" type="bond" members="585, 584">
+</tuple>
+<tuple id="821" type="bond" members="586, 584">
+</tuple>
+<tuple id="822" type="bond" members="579, 587">
+</tuple>
+<tuple id="823" type="bond" members="580, 588">
+</tuple>
+<tuple id="824" type="bond" members="583, 589">
+</tuple>
+<tuple id="825" type="bond" members="583, 590">
+</tuple>
+<tuple id="826" type="bond" members="584, 591">
+</tuple>
+<tuple id="827" type="bond" members="585, 592">
+</tuple>
+<tuple id="828" type="bond" members="585, 593">
+</tuple>
+<tuple id="829" type="bond" members="585, 594">
+</tuple>
+<tuple id="830" type="bond" members="586, 595">
+</tuple>
+<tuple id="831" type="bond" members="586, 596">
+</tuple>
+<tuple id="832" type="bond" members="586, 597">
+</tuple>
+<tuple id="833" type="bond" members="616, 617">
+</tuple>
+<tuple id="834" type="bond" members="619, 617">
+</tuple>
+<tuple id="835" type="bond" members="619, 643">
+</tuple>
+<tuple id="836" type="bond" members="620, 619">
+</tuple>
+<tuple id="837" type="bond" members="621, 617">
+</tuple>
+<tuple id="838" type="bond" members="623, 621">
+</tuple>
+<tuple id="839" type="bond" members="625, 623">
+</tuple>
+<tuple id="840" type="bond" members="627, 625">
+</tuple>
+<tuple id="841" type="bond" members="629, 625">
+</tuple>
+<tuple id="842" type="bond" members="616, 631">
+</tuple>
+<tuple id="843" type="bond" members="617, 632">
+</tuple>
+<tuple id="844" type="bond" members="621, 634">
+</tuple>
+<tuple id="845" type="bond" members="621, 636">
+</tuple>
+<tuple id="846" type="bond" members="623, 638">
+</tuple>
+<tuple id="847" type="bond" members="623, 640">
+</tuple>
+<tuple id="848" type="bond" members="643, 651">
+</tuple>
+<tuple id="849" type="bond" members="647, 644">
+</tuple>
+<tuple id="850" type="bond" members="643, 644">
+</tuple>
+<tuple id="851" type="bond" members="645, 644">
+</tuple>
+<tuple id="852" type="bond" members="644, 652">
+</tuple>
+<tuple id="853" type="bond" members="646, 645">
+</tuple>
+<tuple id="854" type="bond" members="648, 647">
+</tuple>
+<tuple id="855" type="bond" members="649, 648">
+</tuple>
+<tuple id="856" type="bond" members="650, 648">
+</tuple>
+<tuple id="857" type="bond" members="647, 653">
+</tuple>
+<tuple id="858" type="bond" members="647, 654">
+</tuple>
+<tuple id="859" type="bond" members="648, 655">
+</tuple>
+<tuple id="860" type="bond" members="649, 656">
+</tuple>
+<tuple id="861" type="bond" members="649, 657">
+</tuple>
+<tuple id="862" type="bond" members="649, 658">
+</tuple>
+<tuple id="863" type="bond" members="650, 659">
+</tuple>
+<tuple id="864" type="bond" members="650, 660">
+</tuple>
+<tuple id="865" type="bond" members="650, 661">
+<bond
+type="0"
+/>
+</tuple>
+</tuples2>
+</rmf>
