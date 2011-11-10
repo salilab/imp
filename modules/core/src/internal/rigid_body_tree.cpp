@@ -236,9 +236,10 @@ ParticleIndexes RigidBodyHierarchy::validate_internal(Model *m, int cur,
           seen.push_back(get_particle(cur, i));
         }
         RigidMember rm(m, get_particle(cur, i));
-        algebra::Sphere3D sc(rb_.get_reference_frame()
-                .get_global_coordinates(rm.get_internal_coordinates()),
-                            p.get_radius());
+        algebra::Vector3D ic= rm.get_internal_coordinates();
+        algebra::ReferenceFrame3D rc=rb_.get_reference_frame();
+        algebra::Sphere3D sc(rc.get_global_coordinates(ic),
+                             p.get_radius());
         algebra::Sphere3D scg= p.get_sphere();
         IMP_INTERNAL_CHECK(algebra::get_distance(scg.get_center(),
                                                  sc.get_center()) < .1,
