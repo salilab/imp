@@ -27,12 +27,12 @@ Restraint::~Restraint()
 {
   IMP_OBJECT_LOG;
   if (model_) {
-    IMP_LOG(TERSE, "Removing trackedf restraint " << get_name()
+    IMP_LOG(VERBOSE, "Removing tracked restraint " << get_name()
             << " from model." << std::endl);
     IMP_CHECK_OBJECT(model_);
     model_->remove_tracked_restraint(this);
   } else {
-     IMP_LOG(TERSE, "Not removing restraint " << get_name()
+    IMP_LOG(VERBOSE, "Not removing restraint " << get_name()
             << " from model." << std::endl);
   }
 }
