@@ -129,6 +129,15 @@ inline EdgeData get_edge_data(const Subset&s0,
 }
 
 
+inline Assignment get_sub_assignment(const Assignment &ss0,
+                                     const Ints &i0) {
+  Ints ret(i0.size());
+  for (unsigned int i=0; i< i0.size(); ++i) {
+    ret[i]= ss0[i0[i]];
+  }
+  return Assignment(ret);
+}
+
 //! return true if the two states are equal on the entries in the lists
 inline bool get_are_equal(const Assignment &ss0,
                           const Ints &i0,
@@ -155,6 +164,7 @@ load_union(const Subset &s0, const Subset &s1,
            const EdgeData &ed,
            double max_error,
            ParticleStatesTable* pst,
+           const statistics::Metrics &metrics,
            unsigned int max,
            AssignmentContainer* out);
 

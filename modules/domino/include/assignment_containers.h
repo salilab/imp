@@ -12,6 +12,8 @@
 #include "domino_config.h"
 #include "Assignment.h"
 #include "subset_filters.h"
+#include <IMP/compatibility/map.h>
+#include <IMP/statistics/metric_clustering.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF/HDF5Group.h>
 #endif
@@ -215,24 +217,26 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
   IMP_ASSIGNMENT_CONTAINER(HeapAssignmentContainer);
 };
 
-/** Store the centers of clusters of the assignments. For now, the embedding
- used cannot be varied. It is a concatenation of embeddings provided by
- the particle states.*/
+/** Store the centers of clusters of the assignments. The metric can either
+    be specified explicitly using the set_metric() function or the
+    default can be used which is to use the l_inf norm on the embedding returned
+    by the ParticleState. We can later add the ability to choose the metric
+    that acts on the vector of distances, but for now it is L2.
+
+    \unstable{ClusteredAssignmentContainer}
+    \untested{ClusteredAssignmentContainer}
+*/
 class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   public AssignmentContainer {
   unsigned int k_;
   Subset s_;
   Pointer<ParticleStatesTable> pst_;
   double r_;
-  typedef std::pair<algebra::VectorKD, Assignment> AP;
-  compatibility::checked_vector<AP> d_;
-  algebra::VectorKD get_embedding(const Assignment &a) const;
-  bool get_in_cluster(const algebra::VectorKD &v) const;
+  compatibility::checked_vector<Assignment> d_;
+  statistics::Metrics metrics_;
+  bool get_in_cluster(const Assignment &v) const;
   double get_minimum_distance() const;
   void recluster();
-  double get_distance_if_smaller_than(const algebra::VectorKD &a,
-                                    const algebra::VectorKD &b,
-                                    double max) const;
  public:
   ClusteredAssignmentContainer(unsigned int k,
                                Subset s,
@@ -240,8 +244,18 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   /** Return the r parameter defining the maximum size of the cluster.
    */
   double get_r() const {return r_;}
+  /** Add a metric to act on the specified particle. Make sure this metric
+      matches the ParticleState (eg if it is an XYZState, that the numbers
+      of the states used in the metric and that in the XYZState coincide).
+  */
+  void add_metric(Particle *p, statistics::Metric *m);
+  //! get the properly ordered metrics
+  const statistics::Metrics &get_metrics() const {
+    return metrics_;
+  }
   IMP_ASSIGNMENT_CONTAINER(ClusteredAssignmentContainer);
 };
+
 
 IMPDOMINO_END_NAMESPACE
 

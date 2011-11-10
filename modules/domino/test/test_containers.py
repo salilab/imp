@@ -63,30 +63,29 @@ class DOMINOTests(IMP.test.TestCase):
     def test_cluster(self):
         """Testing the cluster container"""
         m= IMP.Model()
-        ps= [IMP.Particle(m) for i in range(0,10)]
+        IMP.set_log_level(IMP.VERBOSE)
+        ps= [IMP.Particle(m) for i in range(0,3)]
         s= IMP.domino.Subset(ps)
         pst= IMP.domino.ParticleStatesTable()
         ik= IMP.IntKey("hi")
-        iss= IMP.domino.IndexStates(10000, ik)
+        na=40
+        iss= IMP.domino.IndexStates(na, ik)
         for p in ps:
             p.add_attribute(ik, 1)
             pst.set_particle_states(p, iss)
-        cac= IMP.domino.ClusteredAssignmentContainer(10, s, pst)
+        nc=50
+        cac= IMP.domino.ClusteredAssignmentContainer(nc, s, pst)
         cac.set_log_level(IMP.VERBOSE)
-        for i in range(0,6):
-            ass=[100*i for j in range(0,10)]
-            for j in range(0,6):
-                ass[9]=j
-                print "adding", ass
-                cac.add_assignment(IMP.domino.Assignment(ass))
-        got=[]
-        all= cac.get_assignments()
-        print all
-        for a in all:
-            print a
-            got.append(a[0])
-        for i in range(0,6):
-            self.assert_(i*100 in got)
+        for i in range(0,na):
+            print i
+            for j in range(0,na):
+                for k in range(0,na):
+                    ass=[i,j,k]
+                    cac.add_assignment(ass)
+        print cac.get_assignments()
+        self.assert_(len(cac.get_assignments())< nc)
+        print cac.get_r()
+        self.assert_(cac.get_r() < 20)
 
     def test_heap_container(self):
         """Testing heap sample container"""

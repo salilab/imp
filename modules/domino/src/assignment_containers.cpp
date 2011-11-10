@@ -256,8 +256,17 @@ ClusteredAssignmentContainer
 ::ClusteredAssignmentContainer(unsigned int k,
                                Subset s,
                                ParticleStatesTable *pst):
-  k_(k), s_(s), pst_(pst), r_(0) {}
+  k_(k), s_(s), pst_(pst), r_(0), metrics_(s.size()) {}
 
+
+void ClusteredAssignmentContainer::add_metric(Particle *p,
+                                              statistics::Metric *m) {
+  for (unsigned int i=0; i< s_.size(); ++i) {
+    if (s_[i]==p) {
+      metrics_[i]=m;
+    }
+  }
+}
 
 inline unsigned int
 ClusteredAssignmentContainer::get_number_of_assignments() const {
@@ -268,7 +277,7 @@ inline Assignment
 ClusteredAssignmentContainer::get_assignment(unsigned int i) const {
   IMP_USAGE_CHECK(i < get_number_of_assignments(),
                   "Invalid assignment requested: " << i);
-  return d_[i].second;
+  return d_[i];
 }
 
 void ClusteredAssignmentContainer::do_show(std::ostream &out) const {
@@ -276,24 +285,14 @@ void ClusteredAssignmentContainer::do_show(std::ostream &out) const {
   out << ", max size: " << k_ << std::endl;
 }
 
-algebra::VectorKD
-ClusteredAssignmentContainer::get_embedding(const Assignment &a) const {
-  Floats embed;
-  for (unsigned int i=0; i< s_.size(); ++i) {
-    algebra::VectorKD cur
-      = pst_->get_particle_states(s_[i])->get_embedding(a[i]);
-    embed.insert(embed.end(), cur.coordinates_begin(),
-                 cur.coordinates_end());
-  }
-  return embed;
-}
-
 bool ClusteredAssignmentContainer
-::get_in_cluster(const algebra::VectorKD &v) const {
+::get_in_cluster(const Assignment &v) const {
   for (unsigned int i=0; i< d_.size(); ++i) {
-    double dist=get_distance_if_smaller_than(d_[i].first, v, r_);
+    double dist=get_distance_if_smaller_than(s_, d_[i], v,
+                                             pst_,
+                                             metrics_, r_);
     if (dist < r_) {
-      IMP_LOG(VERBOSE, v << " is in cluster with center " << d_[i].first
+      IMP_LOG(VERBOSE, v << " is in cluster with center " << d_[i]
               << " with radius " << r_ << std::endl);
       return true;
     }
@@ -305,8 +304,10 @@ double ClusteredAssignmentContainer::get_minimum_distance() const {
   double md= std::numeric_limits<double>::max();
   for (unsigned int i=0; i< d_.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      double cd= get_distance_if_smaller_than(d_[i].first,
-                                              d_[j].first,
+      double cd= get_distance_if_smaller_than(s_, d_[i],
+                                              d_[j],
+                                              pst_,
+                                              metrics_,
                                               md);
       if (cd <md) md=cd;
     }
@@ -317,10 +318,10 @@ double ClusteredAssignmentContainer::get_minimum_distance() const {
 void ClusteredAssignmentContainer::recluster() {
   using IMP::operator<<;
   IMP_LOG(VERBOSE, "Reclustering from " << d_ << std::endl);
-  compatibility::checked_vector<AP> nd_;
+  compatibility::checked_vector<Assignment> nd_;
   std::swap(nd_, d_);
   for (unsigned int i=0; i< nd_.size(); ++i) {
-    if (!get_in_cluster(nd_[i].first)) {
+    if (!get_in_cluster(nd_[i])) {
       IMP_LOG(VERBOSE, "Adding state " << nd_[i] << std::endl);
       d_.push_back(nd_[i]);
     }
@@ -328,36 +329,16 @@ void ClusteredAssignmentContainer::recluster() {
   IMP_LOG(VERBOSE, "Reclustered to " << d_ << std::endl);
 }
 
-double ClusteredAssignmentContainer::
-get_distance_if_smaller_than(const algebra::VectorKD &a,
-                             const algebra::VectorKD &b,
-                             double max) const {
-  IMP_USAGE_CHECK(a.get_dimension()==b.get_dimension(),
-                  "Dimensions of embeddings don't match.");
-  double d=0;
-  for (unsigned int i=0; i< a.get_dimension(); ++i) {
-    d+= square(a[i]-b[i]);
-    if (d > square(max)) {
-      IMP_LOG(VERBOSE, "Returning " << std::sqrt(d) << " > " << max
-              << std::endl);
-      return std::sqrt(d);
-    }
-  }
-  IMP_LOG(VERBOSE, "Distance between " << a << " and "
-          << b << " is " << std::sqrt(d) << std::endl);
-  return std::sqrt(d);
-}
 
 void ClusteredAssignmentContainer::add_assignment(const Assignment& a) {
   IMP_OBJECT_LOG;
-  AP ap(get_embedding(a), a);
   if (r_==0) {
     IMP_LOG(VERBOSE, "Adding state to list" << std::endl);
-    d_.push_back(ap);
+    d_.push_back(a);
   } else {
     IMP_INTERNAL_CHECK(r_ > 0,
                        "R is not initialized");
-    if (get_in_cluster(ap.first)) {
+    if (get_in_cluster(a)) {
       IMP_LOG(VERBOSE, "State covered by existing cluster with radius " << r_
               << std::endl);
       return;
@@ -365,7 +346,7 @@ void ClusteredAssignmentContainer::add_assignment(const Assignment& a) {
       IMP_LOG(VERBOSE, "State added to new cluster "
               << std::endl);
       // perhaps update search structure
-      d_.push_back(ap);
+      d_.push_back(a);
     }
   }
   if (d_.size() >k_) {

@@ -229,6 +229,7 @@ void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer* ret,
                              double max_error,
                              ParticleStatesTable *pst,
+                             const statistics::Metrics &metrics,
                              unsigned int max_states) {
   IMP_FUNCTION_LOG;
   internal::InferenceStatistics stats;
@@ -236,7 +237,7 @@ void load_merged_assignments(const Subset &first_subset,
   internal::load_merged_assignments(first_subset, first,
                                     second_subset, second,
                                     ts, nullptr, stats,
-                                    max_error, pst,
+                                    max_error, pst, metrics,
                                     max_states, ret);
 }
 

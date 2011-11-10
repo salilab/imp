@@ -148,6 +148,7 @@ load_union(const Subset &s0, const Subset &s1,
            AssignmentContainer *nd0, AssignmentContainer *nd1,
            const EdgeData &ed, double max_error,
            ParticleStatesTable* pst,
+           const statistics::Metrics &metrics,
            unsigned int max,
            AssignmentContainer *out) {
   Ints ii0= get_index(s0, ed.intersection_subset);
@@ -161,28 +162,20 @@ load_union(const Subset &s0, const Subset &s1,
   unsigned int nd0sz= nd0->get_number_of_assignments();
   for (unsigned int i=0; i< nd0sz; ++i) {
     Assignment nd0a=nd0->get_assignment(i);
-    algebra::VectorKD nd0ae;
-    if (pst) {
-      nd0ae= get_embedding(ed.intersection_subset, nd0a, pst);
-    }
+    Assignment nd0ae=get_sub_assignment(nd0a, ii0);
     for (unsigned int j=0; j< nd1a.size(); ++j) {
-      bool merged_ok=get_are_equal(nd0a, ii0,
-                                   nd1a[j], ii1);
+      Assignment nd1ae=get_sub_assignment(nd1a[j], ii1);
+      bool merged_ok=(nd1ae==nd0ae);
       Assignment ss;
-      if (!merged_ok && pst) {
-        algebra::VectorKD nd1ae= get_embedding(ed.intersection_subset,
-                                               nd1a[j], pst);
-        double n= algebra::get_linf_norm(nd0ae-nd1ae);
+      if (!merged_ok && pst) {;
+        double n= get_distance_if_smaller_than(ed.intersection_subset,
+                                               nd0ae, nd1ae, pst,
+                                               metrics, max_error);
         if ( n < max_error) {
           merged_ok=true;
-          Assignment mid= get_nearest_assignment(ed.union_subset,
-                                                 .5*(nd0ae+nd1ae), pst);
-          ss= get_merged_assignment(ed.union_subset,
-                                    nd0a, ui0,
-                                    nd1a[j], ui1,
-                                    mid, uii);
         }
-      } else {
+      }
+      if (merged_ok) {
         ss= get_merged_assignment(ed.union_subset,
                                   nd0a, ui0,
                                   nd1a[j], ui1);

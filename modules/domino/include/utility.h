@@ -149,6 +149,7 @@ IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
   //! Fill in assignments for an internal node
   /** The passed assignments, the ordering for the children is that of
       the node indexes for the children.
+      \unstable{load_merged_assignments}
   */
 IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              AssignmentContainer* first,
@@ -159,6 +160,8 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              AssignmentContainer* ret,
                                              double max_error=0,
                                              ParticleStatesTable *pst=NULL,
+                                             const statistics::Metrics &metrics
+                                             = statistics::Metrics(),
                                              unsigned int max_states
                                              =std::numeric_limits<int>::max());
 
@@ -172,6 +175,46 @@ IMPDOMINOEXPORT Assignment
 get_nearest_assignment(const Subset &s,
                        const algebra::VectorKD &embedding,
                        ParticleStatesTable *pst);
+
+
+/** Return a distance between two assignments if they are less than
+    a threshold. The distance returned is the l2 norm on the distances
+    between each state as given by the corresponding metric. If no
+    metric is passed, then the l2 norm on the embedding is used.
+   \unstable{get_distance_if_close}
+ */
+inline double get_distance_if_smaller_than(const Subset &s,
+                                           const Assignment &a,
+                                           const Assignment &b,
+                                           ParticleStatesTable *pst,
+                                           const statistics::Metrics &metrics,
+                                           double max) {
+  IMP_USAGE_CHECK(a.size()==b.size(),
+                  "Dimensions of embeddings don't match.");
+  double d=0;
+  for (unsigned int i=0; i< a.size(); ++i) {
+    double cur;
+    if (metrics[i]) {
+      cur= square(metrics[i]->get_distance(a[i], b[i]));
+    } else {
+      algebra::VectorKD ea
+        = pst->get_particle_states(s[i])->get_embedding(a[i]);
+      algebra::VectorKD eb
+        = pst->get_particle_states(s[i])->get_embedding(b[i]);
+      cur= (ea-eb).get_squared_magnitude();
+    }
+    d+= cur;
+    if (d > square(max)) {
+      IMP_LOG(VERBOSE, "Returning " << std::sqrt(d) << " > " << max
+              << " for " << a << " and " << b
+              << std::endl);
+      return std::sqrt(d);
+    }
+  }
+  IMP_LOG(VERBOSE, "Distance between " << a << " and "
+          << b << " is " << std::sqrt(d) << std::endl);
+  return std::sqrt(d);
+}
 
 IMPDOMINO_END_NAMESPACE
 
