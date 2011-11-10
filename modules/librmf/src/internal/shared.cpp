@@ -8,6 +8,7 @@
 
 #include <RMF/internal/shared.h>
 #include <RMF/NodeHandle.h>
+#include <RMF/NodeTupleHandle.h>
 
 namespace RMF {
   namespace internal {
