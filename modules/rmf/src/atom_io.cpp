@@ -106,6 +106,8 @@ namespace {
                  IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     if (core::XYZ::particle_is_instance(h)) {
       core::XYZ d(h);
+      IMP_INTERNAL_CHECK(n.get_root_handle().get_is_per_frame(x),
+                         "Coordinates are not per frame!!!!!");
       set_one(n, x, d.get_x(), frame);
       set_one(n, y, d.get_y(), frame);
       set_one(n, z, d.get_z(), frame);

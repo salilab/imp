@@ -19,6 +19,7 @@
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
+#include <IMP/statistics/metric_clustering.h>
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF/HDF5Group.h>
