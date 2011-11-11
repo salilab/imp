@@ -354,6 +354,9 @@ IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd){
 
 
 double get_harmonic_sigma(double D, double f) {
+  IMP_UNUSED(D);
+  IMP_UNUSED(f);
+  IMP_NOT_IMPLEMENTED;
   return 0;
 }
 
