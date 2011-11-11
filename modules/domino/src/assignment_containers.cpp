@@ -108,7 +108,7 @@ unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
 Assignment HDF5AssignmentContainer::get_assignment(unsigned int i) const {
   unsigned int dsz=ds_.get_size()[0];
   if (i < dsz) {
-    RMF::Ints is= ds_.get_row(Ints(1,i));
+    RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
     Ints ret(is.size());
     IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
     for (unsigned int i=0; i< ret.size(); ++i) {
