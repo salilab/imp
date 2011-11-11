@@ -241,7 +241,7 @@ namespace RMF {
 #if !defined(NDEBUG) && defined(__GNUC__)
   using __gnu_debug::vector;
 #elif !defined(SWIG)
-  using vector;
+  using std::vector;
 #else
   template <class T>
   class vector{};
