@@ -363,6 +363,7 @@ namespace {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
+    IMP_NOT_IMPLEMENTED;
     if (cur.get_has_value(xs) && cur.get_has_value(vn0)) {
 #if 0
       HDF5IndexDataSet2D id= cur.get_value(in);
