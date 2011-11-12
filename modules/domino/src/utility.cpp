@@ -147,15 +147,15 @@ void save_assignments(AssignmentContainer *assignments,
   sz[1]= s.size();
   sz[0]= assignments->get_number_of_assignments();
   dataset.set_size(sz);
-  Ints cur(1);
+  int cur;
   for ( int i=0; i< sz[0]; ++i) {
-    cur[0]=i;
+    cur=i;
     Ints as(s.size());
     Assignment cas= assignments->get_assignment(i);
     for (unsigned int j=0; j< s.size(); ++j) {
       as[j]= cas[order[j]];
     }
-    dataset.set_row(cur, as);
+    dataset.set_row(RMF::HDF5DataSetIndexD<1>(cur), as);
   }
 }
 AssignmentContainer*
