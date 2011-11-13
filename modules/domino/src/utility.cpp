@@ -143,12 +143,11 @@ void save_assignments(AssignmentContainer *assignments,
   IMP_FUNCTION_LOG;
   IMP::OwnerPointer<AssignmentContainer> op(assignments);
   Ints order= get_order(s, all_particles);
-  Ints sz(2);
-  sz[1]= s.size();
-  sz[0]= assignments->get_number_of_assignments();
-  dataset.set_size(sz);
+  unsigned int ns=assignments->get_number_of_assignments();
+  dataset.set_size(RMF::HDF5DataSetIndex2D(ns,
+                                           s.size()));
   int cur;
-  for ( int i=0; i< sz[0]; ++i) {
+  for (unsigned int i=0; i< ns; ++i) {
     cur=i;
     Ints as(s.size());
     Assignment cas= assignments->get_assignment(i);
