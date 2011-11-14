@@ -31,9 +31,11 @@ rmdir ${ROOT}/usr/share/doc || exit 1
 rmdir ${ROOT}/usr/share || exit 1
 rmdir ${ROOT}/usr || exit 1
 
-mv ${ROOT}/lib/python2.6/site-packages/* ${ROOT}/lib || exit 1
-rmdir ${ROOT}/lib/python2.6/site-packages || exit 1
-rmdir ${ROOT}/lib/python2.6 || exit 1
+# Note that Python extensions are installed in the 2.4 location, since we
+# cross-compile (and Python in CentOS 5 is 2.4)
+mv ${ROOT}/lib/python2.4/site-packages/* ${ROOT}/lib || exit 1
+rmdir ${ROOT}/lib/python2.4/site-packages || exit 1
+rmdir ${ROOT}/lib/python2.4 || exit 1
 
 # Add redist MSVC runtime DLLs
 DLLSRC=/usr/lib/w32comp/windows/system
