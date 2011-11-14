@@ -72,7 +72,7 @@ cd ${DESTDIR}/${PREFIX}/lib
 # Get all C++ binaries (not Python scripts)
 bins=""
 for bin in ../bin/*; do
-  if file $bin | grep -q executable; then
+  if file $bin | grep -q 'Mach-O.*executable'; then
     bins="${bins} ${bin}"
   fi
 done
