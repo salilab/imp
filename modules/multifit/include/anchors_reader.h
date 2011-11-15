@@ -31,7 +31,7 @@ class IMPMULTIFITEXPORT AnchorsData {
     bool broken=false;
     for (unsigned int op=0;op<orig.points_.size();op++) {
       for (unsigned int np=0;np<these_indexes.size();np++) {
-        if (these_indexes[np]==op) {
+        if (these_indexes[np]==static_cast<int>(op)) {
           in_subset.push_back(1);
           broken=true;
           if (keep) {
