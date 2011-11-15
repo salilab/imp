@@ -26,7 +26,7 @@ template <int D>
 class BoundingBoxD
 {
   void make_empty() {
-    for (unsigned int i=0; i< D; ++i) {
+    for (int i=0; i< D; ++i) {
       b_[0][i]= std::numeric_limits<double>::max();
       b_[1][i]=-std::numeric_limits<double>::max();
     }
