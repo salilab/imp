@@ -9,10 +9,14 @@
 #define IMPALGEBRA_VECTOR_METRICS_H
 
 #include "VectorD.h"
+#include "BoundingBoxD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
 #include <iostream>
-
+#include <IMP/base/Pointer.h>
+#include <IMP/base/WeakPointer.h>
+#include <algorithm>
+#include <numeric>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
