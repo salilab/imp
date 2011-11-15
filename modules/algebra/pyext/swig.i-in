@@ -13,6 +13,9 @@ def get_sphere(v):
       return v
 %}
 
+IMP_SWIG_BASE_OBJECT(IMP::algebra, VectorKDMetric, VectorKDMetrics);
+IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
+IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
 
 IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
@@ -116,6 +119,8 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, LogEmbedding);
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/shortest_segment.h"
 %include "IMP/algebra/vector_search.h"
+%include "IMP/algebra/vector_metrics.h"
+
 
 IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
 
