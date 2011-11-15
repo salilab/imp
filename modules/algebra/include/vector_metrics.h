@@ -11,6 +11,7 @@
 #include "VectorD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
+#include <iostream>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
