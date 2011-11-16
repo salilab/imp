@@ -33,8 +33,18 @@ namespace grids {
   class ExtendedGridIndexD {
     internal::VectorData<int, D, true> data_;
     int compare(const ExtendedGridIndexD<D> &o) const {
-      IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
-                      "Dimensions don't match");
+      if (D==-1) {
+        if (data_.get_dimension()==0 && o.data_.get_dimension()==0) {
+          return 0;
+        } else if (data_.get_dimension()==0) {
+          return -1;
+        } else if (o.data_.get_dimension()==0) {
+          return 1;
+        }
+      } else {
+        IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
+                        "Dimensions don't match");
+      }
       return internal::lexicographical_compare(begin(), end(),
                                                o.begin(), o.end());
     }
@@ -86,12 +96,12 @@ namespace grids {
     IMP_HASHABLE_INLINE(ExtendedGridIndexD,
                         return boost::hash_range(begin(), end()));
     ExtendedGridIndexD<D> get_uniform_offset(int ii) const {
-      ExtendedGridIndexD<D> ret;
+      Ints ret(get_dimension(), 0);
       for (unsigned int i=0; i< get_dimension(); ++i) {
-        ret.data_.get_data()[i]= operator[](i)+ii;
+        ret[i]= operator[](i)+ii;
       }
       //std::cout << "Offset " << *this << " to get " << ret << std::endl;
-      return ret;
+      return ExtendedGridIndexD<D>(ret);
     }
     ExtendedGridIndexD<D> get_offset(int i, int j, int k) const {
       IMP_USAGE_CHECK(D==3, "Only for 3D");
@@ -133,8 +143,18 @@ namespace grids {
   {
     internal::VectorData<int, D, true> data_;
     int compare(const GridIndexD<D> &o) const {
-      IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
-                      "Dimensions don't match");
+      if (D==-1) {
+        if (data_.get_dimension()==0 && o.data_.get_dimension()==0) {
+          return 0;
+        } else if (data_.get_dimension()==0) {
+          return -1;
+        } else if (o.data_.get_dimension()==0) {
+          return 1;
+        }
+      } else {
+        IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
+                        "Dimensions don't match");
+      }
       return internal::lexicographical_compare(begin(), end(),
                                                o.begin(), o.end());
     }
@@ -340,12 +360,12 @@ namespace grids {
       set_number_of_voxels(bds);
     }
     void set_number_of_voxels(Ints bds) {
-      IMP_USAGE_CHECK(bds.size() ==D, "Wrong number of dimensions");
+      IMP_USAGE_CHECK(D==-1 || bds.size() ==D, "Wrong number of dimensions");
       d_=ExtendedGridIndexD<D>(bds);
     }
     //! Return the number of voxels in a certain direction
     unsigned int get_number_of_voxels(unsigned int i) const {
-      IMP_INTERNAL_CHECK(i < D, "Only D: "<< i);
+      IMP_INTERNAL_CHECK(D==-1 || i < D, "Only D: "<< i);
       return d_[i];
     }
 
@@ -364,11 +384,11 @@ namespace grids {
     AllIndexIterator;
 #endif
   AllIndexIterator all_indexes_begin() const {
-    return indexes_begin(ExtendedGridIndexD<D>(Ints(D, 0)),
+    return indexes_begin(ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0)),
                          d_);
   }
   AllIndexIterator all_indexes_end() const {
-    return indexes_end(ExtendedGridIndexD<D>(Ints(D, 0)),
+    return indexes_end(ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0)),
                        d_);
   }
 #endif
@@ -568,7 +588,7 @@ namespace grids {
     }
   void set_number_of_voxels(Ints dims) {
     extent_=1;
-    for (unsigned int i=0; i < D; ++i) {
+    for (unsigned int i=0; i < dims.size(); ++i) {
       extent_*=dims[i];
     }
     data_.reset(new VT[extent_]);
