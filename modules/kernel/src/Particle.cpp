@@ -44,9 +44,9 @@ void Particle::do_show(std::ostream& out) const
     FloatKeys fks= get_float_keys();
     for (FloatKeys::const_iterator it= fks.begin(); it != fks.end(); ++it) {
       FloatKey k =*it;
-      preout << k << ": " << get_value(k);
+      preout << k << ": " << get_model()->get_attribute(k, id_, false);
       preout << " ("
-             << get_derivative(k) << ") ";
+             << get_model()->get_attribute(k, id_, false) << ") ";
       preout << (get_is_optimized(k)?" (optimized)":"");
       preout << std::endl;
     }
@@ -57,7 +57,8 @@ void Particle::do_show(std::ostream& out) const
       preout.set_prefix("  ");
       IntKeys fks= get_int_keys();
       for (IntKeys::const_iterator it= fks.begin(); it != fks.end(); ++it) {
-        preout << *it << ": " << get_value(*it) << std::endl;
+        preout << *it << ": " << get_model()->get_attribute(*it, id_, false)
+               << std::endl;
       }
     }
 
@@ -68,7 +69,8 @@ void Particle::do_show(std::ostream& out) const
       StringKeys fks= get_string_keys();
       for (StringKeys::const_iterator it= fks.begin();
            it != fks.end(); ++it) {
-        preout << *it << ": " << get_value(*it) << std::endl;
+        preout << *it << ": " << get_model()->get_attribute(*it, id_, false)
+               << std::endl;
       }
     }
     {
@@ -80,7 +82,10 @@ void Particle::do_show(std::ostream& out) const
       for (ParticleKeys::const_iterator it= fks.begin();
            it != fks.end(); ++it) {
         preout << *it << ": "
-               << get_value(*it)->get_name() << std::endl;
+               << get_model()->get_particle(get_model()->get_attribute(*it, id_,
+                                                                       false))
+            ->get_name()
+               << std::endl;
       }
     }
     {
@@ -91,7 +96,8 @@ void Particle::do_show(std::ostream& out) const
         =  get_model()->ParticlesAttributeTable::get_attribute_keys(id_);
       for (ParticlesKeys::const_iterator it= fks.begin();
            it != fks.end(); ++it) {
-        preout << *it << ": " << get_model()->get_attribute(*it, id_).size()
+        preout << *it << ": "
+               << get_model()->get_attribute(*it, id_, false).size()
                << std::endl;
       }
     }
