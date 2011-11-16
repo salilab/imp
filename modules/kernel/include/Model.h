@@ -177,16 +177,19 @@ public:
     data_[k.get_index()][particle]= value;
   }
   typename Traits::PassValue get_attribute(Key k,
-                                           ParticleIndex particle) const {
-    IMP_CHECK_MASK(read_mask_, particle,
-                   "Reading the attribute values is not permitted now");
+                                           ParticleIndex particle,
+                                           bool checked=true) const {
+    if (checked) {
+      IMP_CHECK_MASK(read_mask_, particle,
+                     "Reading the attribute values is not permitted now");
+    }
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Requested invalid attribute: " << k
                     << " of particle " << particle);
     return data_[k.get_index()][particle];
   }
   typename Traits::Container::reference access_attribute(Key k,
-                                           ParticleIndex particle) {
+                                                       ParticleIndex particle) {
     IMP_CHECK_MASK(write_mask_, particle,
                    "Writing the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
@@ -375,15 +378,19 @@ public:
     }
   }
   // check AFTER_EVALUATE, NOT_EVALUATING
-  double get_derivative(FloatKey k, ParticleIndex particle) const {
+  double get_derivative(FloatKey k, ParticleIndex particle,
+                        bool checked=true) const {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there");
     if (k.get_index() < 4) {
-      IMP_CHECK_MASK(read_derivatives_mask_, particle,
-                     "Reading the derivatives is not permitted now");
+      if (checked) {
+        IMP_CHECK_MASK(read_derivatives_mask_, particle,
+                       "Reading the derivatives is not permitted now");
+      }
       return sphere_derivatives_[particle][k.get_index()];
     } else {
-      return derivatives_.get_attribute(FloatKey(k.get_index()-4), particle);
+      return derivatives_.get_attribute(FloatKey(k.get_index()-4), particle,
+                                        checked);
     }
   }
   // check can change EVALUATE, AFTER_EVALUATE< NOT_EVALUATING
@@ -454,15 +461,18 @@ public:
     }
   }
   double get_attribute(FloatKey k,
-                       ParticleIndex particle) const {
-    IMP_CHECK_MASK(read_mask_, particle,
-                   "Reading the attribute values is not permitted now");
+                       ParticleIndex particle,
+                       bool checked=true) const {
+    if (checked) {
+      IMP_CHECK_MASK(read_mask_, particle,
+                     "Reading the attribute values is not permitted now");
+    }
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there");
     if (k.get_index()<4) {
       return spheres_[particle][k.get_index()];
     } else {
-      return data_.get_attribute(FloatKey(k.get_index()-4), particle);
+      return data_.get_attribute(FloatKey(k.get_index()-4), particle, checked);
     }
   }
   double& access_attribute(FloatKey k,
@@ -667,8 +677,6 @@ private:
                               bool calc_derivs,
                               bool if_good, bool if_max,
                               double max= std::numeric_limits<double>::max());
-
-
   // dependencies
   mutable RestraintsTemp scoring_restraints_;
   mutable ScoreStatesTemp ordered_score_states_;
