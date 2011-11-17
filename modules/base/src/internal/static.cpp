@@ -96,6 +96,7 @@ void check_live_objects() {
 
 struct LiveObjectChecker {
   ~LiveObjectChecker() {
+#if IMP_BUILD == IMP_DEBUG
     if (live_.size() != 0) {
       std::cerr << live_.size()
                 << " IMP::Objects were not cleaned up properly" << std::endl;
@@ -105,6 +106,7 @@ struct LiveObjectChecker {
         // the type goes through swig directors
         std::cerr << (*it)->get_name() << std::endl;
       }
+#endif
     }
   }
 };
