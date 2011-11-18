@@ -158,6 +158,10 @@ public:
     embedding (ie [0... embedding->get_number_of_embeddings())).
     These points are then clustered into k clusters. More iterations
     takes longer but produces a better clustering.
+
+    The algorithm uses algebra::EuclideanVectorKDMetric for computing
+    distances between embeddings and cluster centers. This can be
+    parameterized if desired.
 */
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
 create_lloyds_kmeans(Embedding *embedding,
