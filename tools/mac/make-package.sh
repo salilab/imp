@@ -108,7 +108,7 @@ BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
               /opt/local/lib/libfftw3.3.dylib \
               /opt/local/lib/libgsl.0.dylib \
               /opt/local/lib/libgslcblas.0.dylib \
-              /opt/local/lib/libhdf5.6.dylib"
+              /opt/local/lib/libhdf5.7.dylib"
 BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
 mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
 
