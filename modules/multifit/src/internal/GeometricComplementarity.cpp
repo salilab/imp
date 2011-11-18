@@ -10,7 +10,7 @@
 #include <IMP/base_types.h>
 #include <IMP/constants.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
-#include <IMP/em/SurfaceShellDensityMap.h>
+#include <IMP/em/SampledDensityMap.h>
 
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
@@ -20,13 +20,18 @@ namespace
 {
 
 class SurfaceDistanceMap
-  : public IMP::em::SurfaceShellDensityMap
+  : public IMP::em::SampledDensityMap
 {
 public:
 
   SurfaceDistanceMap(const IMP::ParticlesTemp &ps, float voxel_size)
-    : SurfaceShellDensityMap(ps, voxel_size)
-  {}
+    : SampledDensityMap(ps, 1.0, voxel_size, IMP::atom::Mass::get_mass_key(),
+        3, IMP::em::SPHERE)
+  {
+    set_neighbor_mask();
+    header_.dmin=get_min_value();
+    header_.dmax=get_max_value();
+  }
 
   // Resample needs to be overloaded so that the number of layers
   // is not limited by num_shells_
@@ -49,10 +54,62 @@ public:
 
 
 private:
+  void set_surface_shell(std::vector<long> *shell);
+  bool has_background_neighbor(long voxel_ind) const;
+  void set_neighbor_mask();
   void create_distances(const std::vector<long> &surface_voxels,
       std::vector<int> &shell_voxels);
 
+  std::vector<long> neighbor_shift_;
+  std::vector<double> neighbor_dist_;
+
 };
+
+
+void SurfaceDistanceMap::set_neighbor_mask() {
+  for (int x = -1; x <= 1; x++) {
+    for (int y = -1; y <= 1; y++) {
+      for (int z = -1; z <= 1; z++) {
+        if (x == 0 && y == 0 && z == 0)
+          continue;
+        neighbor_shift_.push_back(
+          z * header_.get_nx() * header_.get_ny() + y * header_.get_nx() + x);
+        neighbor_dist_.push_back(
+            header_.get_spacing() * sqrt((1.0*x*x + y*y + z*z)));
+      }
+    }
+  }
+}
+
+
+bool SurfaceDistanceMap::has_background_neighbor(long voxel_ind) const {
+  long n_voxel_ind;
+  long num_voxels = header_.get_number_of_voxels();
+  for (unsigned int j = 0; j < neighbor_shift_.size(); j++) {
+    n_voxel_ind = voxel_ind + neighbor_shift_[j];
+    if ((n_voxel_ind>-1) && (n_voxel_ind<num_voxels)) {
+      if (data_[n_voxel_ind] == 0) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+
+void SurfaceDistanceMap::set_surface_shell(std::vector<long> *shell) {
+  //a voxel is part of the outher shell if it has at least one
+  //background nieghbor
+  for(long i=0;i<get_number_of_voxels();i++) {
+    if ((data_[i]!=0) && (has_background_neighbor(i))) {
+      data_[i] = 1;
+      shell->push_back(i);
+    }
+  }
+}
+
+
+
 
 
 void SurfaceDistanceMap::create_distances(
@@ -94,9 +151,25 @@ void SurfaceDistanceMap::create_distances(
 
 
 void SurfaceDistanceMap::resample() {
-  IMP_LOG(VERBOSE,"going to binaries\n");
-  binaries(std::numeric_limits<float>::max());
-  IMP_LOG(VERBOSE,"after binaries\n");
+  //reset_data(0);
+  IMP::em::SampledDensityMap::resample();
+  long num_voxels = get_number_of_voxels();
+  {
+    double max_val = -std::numeric_limits<double>::max();
+    double min_val = -max_val;
+    for ( long i = 0; i < num_voxels; ++i )
+    {
+      max_val = std::max(max_val, data_[i]);
+      min_val = std::min(min_val, data_[i]);
+      if ( data_[i] > kernel_params_.get_lim() )
+        data_[i] = std::numeric_limits<float>::max();
+      else
+        data_[i] = 0;
+    }
+    IMP_LOG(VERBOSE, "max voxel value = " << max_val <<
+        ", min voxel value = " << min_val << ", threshold = "
+        << kernel_params_.get_lim() << '\n');
+  }
   //find the voxeles that are part of the surface, so we'll have
   //background, surface and interior voxels
   std::vector<long> curr_shell_voxels;
@@ -104,10 +177,10 @@ void SurfaceDistanceMap::resample() {
   set_surface_shell(&curr_shell_voxels);
   //keeps the shell index for each of the data voxels
   IMP_LOG(VERBOSE,"reseting shell voxels\n");
-  long num_voxels = get_number_of_voxels();
+  //num_voxels = get_number_of_voxels();
   std::vector<int> shell_voxels(num_voxels, -1);
   for(long i=0;i<get_number_of_voxels();i++) {
-    if (data_[i] == IMP_SURFACE_VAL) {
+    if (data_[i] == 1) {
       shell_voxels[i]=0;
     }
   }
@@ -137,11 +210,9 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
 {
   SurfaceDistanceMap sdm(ps, params.voxel_size);
   sdm.resample();
-  long num_voxels = sdm.get_number_of_voxels();
-  IMP::algebra::BoundingBox3D bb(
-      IMP::algebra::VectorD<3>(sdm.x_loc(0), sdm.y_loc(0), sdm.z_loc(0)),
-      IMP::algebra::VectorD<3>(sdm.x_loc(num_voxels - 1),
-        sdm.y_loc(num_voxels - 1), sdm.z_loc(num_voxels - 1)));
+  IMP::algebra::BoundingBox3D bb = IMP::em::get_bounding_box(&sdm);
+  IMP_LOG(VERBOSE, __FUNCTION__ << ": Sampled bounding box is "
+      << bb.get_corner(0) << " to " << bb.get_corner(1) << '\n');
   IMP::algebra::DenseGrid3D<float> grid(params.voxel_size, bb);
   IMP_GRID3D_FOREACH_VOXEL(grid,
                            IMP_UNUSED(loop_voxel_index);
@@ -188,7 +259,7 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
           if(grid[voxel_center] > 0)
             std::cout << "OUTSIDE voxel positive "
                                       <<  grid[voxel_center] << std::endl;
-          /**/
+          **/
         }
       });
   return grid;
