@@ -19,6 +19,8 @@ std::string get_tuple_type_name(NodeTupleType t) {
     return "bond";
   case CUSTOM_TUPLE:
     return "custom";
+  default:
+    return "unknown";
   }
 }
 } /* namespace RMF */

@@ -11,22 +11,37 @@ class GenericTest(RMF.TestCase):
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
         r= f
         print r.get_type()
-        ik= f.add_int_key(RMF.Sequence, "ik0", True)
+        sc= f.add_category("sequence")
+        ik= f.add_int_key(sc, "ik0", True)
         r.set_value(ik, 1)
         print r.get_value(ik)
         self.assertEqual(r.get_value(ik), 1)
+    def test_frames(self):
+        """Test creating a simple hierarchy file with frames"""
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
+        r= f
+        print r.get_type()
+        sc= f.add_category("sequence")
+        ik= f.add_int_key(sc, "ik0", True)
+        r.set_value(ik, 1, 0)
+        self.assertEqual(r.get_value(ik), 1)
+        r.set_value(ik, 2, 1)
+        self.assertEqual(r.get_value(ik, 1), 2)
+        self.assertEqual(r.get_value(ik, 0), 1)
+        self.assertEqual(f.get_number_of_frames(ik), 2)
     def test_perturbed_values(self):
         """Test null values"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
         r= f
         print r.get_type()
-        ik= f.add_int_key(RMF.Sequence, "ik0", True)
+        sc= f.add_category("sequence")
+        ik= f.add_int_key(sc, "ik0", True)
         r.set_value(ik, 1)
         ika= r.get_value_always(ik)
         self.assertEqual(ika, 1)
         ikna= r.get_value_always(ik, 1)
         self.assertEqual(ikna, RMF.NullInt)
-        fk= f.add_float_key(RMF.Sequence, "fk0", True)
+        fk= f.add_float_key(sc, "fk0", True)
         r.set_value(fk, 1)
         fka= r.get_value_always(fk)
         self.assertEqual(fka, 1)

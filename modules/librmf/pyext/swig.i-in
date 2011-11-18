@@ -76,7 +76,11 @@ IMP_RMF_SWIG_NATIVE_VALUE(std::string);
 IMP_RMF_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
 IMP_RMF_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
 IMP_RMF_SWIG_VALUE(RMF, RootHandle, RootHandles);
-IMP_RMF_SWIG_VALUE(RMF, Category, Categories);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, CategoryD);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Category, Category, Categories);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, PairCategory, PairCategory, PairCategories);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, TripletCategory, TripletCategory, TripletCategories);
+IMP_RMF_SWIG_VALUE_INSTANCE(RMF, QuadCategory, QuadCategory, QuadCategories);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, Key);
 IMP_RMF_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
 IMP_RMF_SWIG_VALUE(RMF, HDF5File, HDF5Files);
@@ -114,7 +118,7 @@ namespace RMF {
         return ret
   %}
    %pythoncode %{
-    def get_node_tuples(self, arity=1):
+    def get_node_tuples(self, arity):
         ret=[]
         if arity==2:
           return self.get_node_pairs()
@@ -122,6 +126,20 @@ namespace RMF {
           return self.get_node_triplets()
         elif arity==4:
           return self.get_node_quads()
+        else:
+          return []
+  %}
+  %pythoncode %{
+    def get_tuple_categories(self, arity):
+        ret=[]
+        if arity==1:
+          return self.get_categories()
+        if arity==2:
+          return self.get_pair_categories()
+        elif arity==3:
+          return self.get_triplet_categories()
+        elif arity==4:
+          return self.get_quad_categories()
         else:
           return []
   %}
@@ -153,6 +171,12 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 
 %include "RMF/HDF5Group.h"
 %include "RMF/Category.h"
+
+%template(Category) RMF::CategoryD<1>;
+%template(PairCategory) RMF::CategoryD<2>;
+%template(TripletCategory) RMF::CategoryD<3>;
+%template(QuadCategory) RMF::CategoryD<4>;
+
 %include "RMF/NodeTupleHandle.h"
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"

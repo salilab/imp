@@ -31,7 +31,7 @@ class Key {
   friend class NodeHandle;
   friend class internal::SharedData;
   int i_;
-  Category ci_;
+  CategoryD<Arity> ci_;
   bool pf_;
   int compare(const Key &o) const {
     if (i_ < o.i_) return -1;
@@ -40,7 +40,7 @@ class Key {
     else if (ci_ > o.ci_) return 1;
     else return 0;
   }
-  Key(Category category_id,
+  Key(CategoryD<Arity> category_id,
       int i, bool pf): i_(i), ci_(category_id),
                        pf_(pf) {}
   int get_index() const {
@@ -49,7 +49,7 @@ class Key {
   bool get_is_per_frame() const {
     return pf_;
   }
-  Category get_category() const {
+  CategoryD<Arity> get_category() const {
     return ci_;
   }
     int get_arity() const {
@@ -59,7 +59,7 @@ public:
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
   void show(std::ostream &out) const {
-    out << ci_.get_name() << (pf_?'E':'I') << i_;
+    out << ci_ << (pf_?'E':'I') << i_;
   }
   IMP_RMF_COMPARISONS(Key);
   IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
