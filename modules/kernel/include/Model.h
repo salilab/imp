@@ -169,8 +169,10 @@ public:
   }
   void set_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
-    IMP_CHECK_MASK(write_mask_, particle,
-                   "Changing the attribute values is not permitted now");
+    if (caches_.find(k)==caches_.end()) {
+      IMP_CHECK_MASK( write_mask_, particle,
+                      "Changing the attribute values is not permitted now");
+    }
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Setting invalid attribute: " << k
                     << " of particle " << particle);
