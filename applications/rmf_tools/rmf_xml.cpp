@@ -36,10 +36,10 @@ namespace {
 
 template <class TypeT, int Arity, class Handle>
   bool show_type_data_xml(Handle nh,
-                          RMF::Category kc,
+                          RMF::CategoryD<Arity> kc,
                           bool opened, std::ostream &out) {
     RMF::RootHandle rh= nh.get_root_handle();
-    std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT, Arity>(kc);
+    std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       //std::cout << "key " << rh.get_name(keys[i]) << std::endl;
       if (rh.get_is_per_frame(keys[i])) {
@@ -95,7 +95,7 @@ template <class TypeT, int Arity, class Handle>
   }
 template <int Arity, class Handle>
   void show_data_xml(Handle nh,
-                     RMF::Category kc,
+                     RMF::CategoryD<Arity> kc,
                      std::ostream &out) {
     bool opened=false;
     opened=show_type_data_xml<RMF::IntTraits, Arity>(nh, kc, opened, out);
@@ -138,7 +138,8 @@ template <int Arity, class Handle>
 
 template <int Arity>
 void show_tuples(RMF::RootHandle rh,
-                const RMF::Categories& cs, std::ostream &out) {
+                 const RMF::vector<RMF::CategoryD<Arity> >& cs,
+                 std::ostream &out) {
   std::vector<RMF::NodeTupleHandle<Arity> > tuples= rh.get_node_tuples<Arity>();
   if (!tuples.empty()) {
     out << "<tuples" << Arity << ">" << std::endl;
@@ -217,9 +218,9 @@ int main(int argc, char **argv) {
     *out << "</path>\n";
     show_hierarchy(rh, cs, *out);
 
-    show_tuples<2>(rh, cs, *out);
-    show_tuples<3>(rh, cs, *out);
-    show_tuples<4>(rh, cs, *out);
+    show_tuples<2>(rh, rh.get_categories<2>(), *out);
+    show_tuples<3>(rh, rh.get_categories<3>(), *out);
+    show_tuples<4>(rh, rh.get_categories<4>(), *out);
     *out << "</rmf>\n";
     return 0;
   } catch (const IMP::Exception &e) {

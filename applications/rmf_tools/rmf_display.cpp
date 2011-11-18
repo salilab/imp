@@ -160,8 +160,9 @@ int main(int argc, char **argv) {
       maxframe=minframe+1;
     } else {
       minframe=0;
+      RMF::Category physics= rh.get_category<1>("physics");
       RMF::FloatKey xk
-          =rh.get_key<RMF::FloatTraits, 1>(RMF::Physics, "cartesian x");
+          =rh.get_key<RMF::FloatTraits, 1>(physics, "cartesian x");
       std::cout << xk << std::endl;
       maxframe= rh.get_number_of_frames(xk)+1;
     }
