@@ -42,26 +42,36 @@ namespace RMF {
   }
 //! Get the name of the data set for storing bonds
   inline String get_tuple_data_data_set_name(int arity) {
-  std::ostringstream oss;
-  oss << "data_" << arity;
-  return oss.str();
+    std::ostringstream oss;
+    oss << "data_" << arity;
+    return oss.str();
+  }
+//! Get the name of the data set for storing category names
+  inline String get_category_name_data_set_name(int arity) {
+    std::ostringstream oss;
+    oss << "category_names_" << arity;
+    return oss.str();
   }
   //! Get the name of the attribute which lists all the keys of the category
-  inline String get_key_list_data_set_name(Category category_id,
+  inline String get_key_list_data_set_name(std::string category_name,
+                                           int Arity,
                                            String type_name,
                                            bool per_frame) {
     std::ostringstream oss;
-    oss << type_name << "_" << category_id.get_name() << "_"
-        << get_per_frame_name(per_frame) << "_list";
+    oss << type_name << "_" << category_name << "_";
+    if (Arity >1) {
+      oss << Arity << "_";
+    }
+    oss << get_per_frame_name(per_frame) << "_list";
     return oss.str();
   }
   //! Get the name of the data set for storing a particular type of data
-  inline String get_data_data_set_name(Category category_id,
+  inline String get_data_data_set_name(std::string category_name,
                                        int arity,
                                        String type_name,
                                        bool per_frame) {
     std::ostringstream oss;
-    oss << type_name << "_" << category_id.get_name() << "_"
+    oss << type_name << "_" << category_name << "_"
         << get_per_frame_name(per_frame);
     if (arity>1) oss << "_" << arity;
     oss << "_storage";

@@ -19,54 +19,55 @@ IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
 namespace {
-#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                    \
-  RootHandle f= node;                                           \
-  RMF::FloatKey x                                                     \
+#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                            \
+  RootHandle f= node;                                                   \
+  CategoryD<1> Shape=f.get_or_add_category<1>("shape");                 \
+  RMF::FloatKey x                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
                                           true);                        \
-  RMF::FloatKey y                                                     \
+  RMF::FloatKey y                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian y",      \
                                           true);                        \
-  RMF::FloatKey z                                                     \
+  RMF::FloatKey z                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian z",      \
                                           true);                        \
   RMF::FloatsKey xs                                                     \
-  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian x",      \
-                                          true);                        \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian x",     \
+                                           true);                       \
   RMF::FloatsKey ys                                                     \
-  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian y",      \
-                                          true);                        \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian y",     \
+                                           true);                       \
   RMF::FloatsKey zs                                                     \
-  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian z",      \
-                                          true);                        \
-  RMF::FloatKey cr                                                    \
+  = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian z",     \
+                                           true);                       \
+  RMF::FloatKey cr                                                      \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb red",          \
                                           false);                       \
-  RMF::FloatKey cg                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb green",  \
+  RMF::FloatKey cg                                                      \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb green",        \
                                           false);                       \
-  RMF::FloatKey cb                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb blue",   \
+  RMF::FloatKey cb                                                      \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb blue",         \
                                           false);                       \
-  RMF::FloatKey r                                                     \
+  RMF::FloatKey r                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  RMF::IndexesKey vn0                                                    \
-  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 0s",\
-                                                   false);              \
-  RMF::IndexesKey vn1                                                    \
-  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 1s",\
-                                                   false);              \
-  RMF::IndexesKey vn2                                                    \
-  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 2s",\
-                                                   false);              \
-  RMF::IndexKey tk                                                     \
+  RMF::IndexesKey vn0                                                   \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 0s", \
+                                            false);                     \
+  RMF::IndexesKey vn1                                                   \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 1s", \
+                                            false);                     \
+  RMF::IndexesKey vn2                                                   \
+  = internal::get_or_add_key<IndexesTraits>(f, Shape, "triangle vertex 2s", \
+                                            false);                     \
+  RMF::IndexKey tk                                                      \
   =internal::get_or_add_key<IndexTraits>(f, Shape, "type",              \
-                                                   false);              \
+                                         false);                        \
 
 #define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
-  RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,              \
-    RMF::FloatsKey xs, RMF::FloatsKey ys, RMF::FloatsKey zs,         \
-    RMF::FloatKey cr, RMF::FloatKey cg, RMF::FloatKey cb,         \
+  RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,                    \
+    RMF::FloatsKey xs, RMF::FloatsKey ys, RMF::FloatsKey zs,            \
+    RMF::FloatKey cr, RMF::FloatKey cg, RMF::FloatKey cb,               \
     RMF::FloatKey r,                                                    \
     RMF::IndexesKey vn0, RMF::IndexesKey vn1, RMF::IndexesKey vn2,      \
     RMF::IndexKey tk

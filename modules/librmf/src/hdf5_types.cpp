@@ -30,6 +30,7 @@ namespace RMF {
   void FloatTraits::write_values_dataset(hid_t d, hid_t is,
                                          hid_t s,
                                          const Floats& v) {
+    if (v.empty()) return;
     IMP_HDF5_CALL(H5Dwrite(d,
                            H5T_NATIVE_DOUBLE, is, s,
                            H5P_DEFAULT, &v[0]));
@@ -52,6 +53,7 @@ namespace RMF {
   }
   void FloatTraits::write_values_attribute(hid_t a,
                                            const Floats &v) {
+    if (v.empty()) return;
     IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_DOUBLE, &v[0]));
   }
   std::string FloatTraits::get_name() {
@@ -76,6 +78,7 @@ namespace RMF {
   void IntTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
                                        const Ints& v) {
+    if (v.empty()) return;
     IMP_HDF5_CALL(H5Dwrite(d,
                            H5T_NATIVE_INT, is, s,
                            H5P_DEFAULT, &v[0]));
@@ -96,6 +99,7 @@ namespace RMF {
     return v;
   }
   void IntTraits::write_values_attribute(hid_t a, const Ints &v){
+    if (v.empty()) return;
     IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_INT, &v[0]));
   }
   std::string IntTraits::get_name() {
@@ -141,6 +145,7 @@ namespace RMF {
     return std::string(v.begin(), v.end());
   }
   void CharTraits::write_values_attribute(hid_t a, std::string v){
+    if (v.empty()) return;
     IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_CHAR, v.c_str()));
   }
   std::string CharTraits::get_name() {
@@ -201,7 +206,8 @@ namespace RMF {
   }
   void StringTraits::write_values_dataset(hid_t d, hid_t is,
                                           hid_t s,
-                                          const Strings & ) {
+                                          const Strings &v) {
+    if (v.empty()) return;
     IMP_RMF_UNUSED(d);
     IMP_RMF_UNUSED(is);
     IMP_RMF_UNUSED(s);
@@ -220,7 +226,8 @@ namespace RMF {
   }
 
   void StringTraits::write_values_attribute(hid_t d,
-                                            const Strings &) {
+                                            const Strings &v) {
+    if (v.empty()) return;
     IMP_RMF_UNUSED(d);
     IMP_RMF_NOT_IMPLEMENTED;
   }
@@ -252,6 +259,7 @@ namespace RMF {
   void NodeIDTraits::write_values_dataset(hid_t d, hid_t is,
                                           hid_t s,
                                           const NodeIDs& v) {
+    if (v.empty()) return;
     Ints vi(v.size());
     for (unsigned int i=0; i< v.size(); ++i) {
       vi[i]= v[i].get_index();
@@ -270,6 +278,7 @@ namespace RMF {
   }
   void NodeIDTraits::write_values_attribute(hid_t d,
                                             const NodeIDs &values) {
+    if (values.empty()) return;
     Ints is(values.size());
     for (unsigned int i=0; i< values.size(); ++i) {
       is[i]=values[i].get_index();

@@ -25,10 +25,26 @@ namespace RMF {
 
     SharedData::SharedData(HDF5Group g, bool create):
       file_(g),
-      names_(get_data_set_always<StringTraits, 1>
+      node_names_(get_data_set_always<StringTraits, 1>
       (file_, get_node_name_data_set_name())),
       frames_hint_(0)
     {
+      for (unsigned int i=0; i< 4; ++i) {
+        std::string nm=get_category_name_data_set_name(i+1);
+        if (file_.get_has_child(nm)) {
+          category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
+          for (unsigned int j=0; j< category_names_[i].get_size()[0]; ++j) {
+            std::string name
+              = category_names_[i].get_value(HDF5DataSetIndex1D(j));
+            category_names_cache_[i].push_back(name);
+          }
+        } else if (!create && i==0) {
+          add_category(1, "physics");
+          add_category(1, "sequence");
+          add_category(1, "shape");
+          add_category(1, "feature");
+        }
+      }
       node_data_[0]=get_data_set_always<IndexTraits, 2>
         (file_, get_node_data_data_set_name());
       for (unsigned int i=0; i< 4; ++i) {
@@ -113,17 +129,17 @@ namespace RMF {
     }
 
     void SharedData::check_node(unsigned int node) const {
-      IMP_RMF_USAGE_CHECK(names_.get_size()[0] > node,
+      IMP_RMF_USAGE_CHECK(node_names_.get_size()[0] > node,
                           "Invalid node specified: "
                           << node);
     }
     int SharedData::add_node(std::string name, unsigned int type) {
       int ret;
       if (free_ids_[0].empty()) {
-        HDF5DataSetIndexD<1> nsz= names_.get_size();
+        HDF5DataSetIndexD<1> nsz= node_names_.get_size();
         ret= nsz[0];
         ++nsz[0];
-        names_.set_size(nsz);
+        node_names_.set_size(nsz);
         HDF5DataSetIndexD<2> dsz= node_data_[0].get_size();
         dsz[0]= ret+1;
         dsz[1]= std::max<hsize_t>(3, dsz[1]);
@@ -133,7 +149,7 @@ namespace RMF {
         free_ids_[0].pop_back();
       }
       audit_node_name(name);
-      names_.set_value(HDF5DataSetIndexD<1>(ret), name);
+      node_names_.set_value(HDF5DataSetIndexD<1>(ret), name);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, TYPE), type);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, CHILD),
                            IndexTraits::get_null_value());
@@ -143,7 +159,7 @@ namespace RMF {
     }
     void SharedData::set_name(unsigned int node, std::string name) {
       audit_node_name(name);
-      names_.set_value(HDF5DataSetIndexD<1>(node), name);
+      node_names_.set_value(HDF5DataSetIndexD<1>(node), name);
     }
     int SharedData::get_first_child(unsigned int node) const {
       check_node(node);
@@ -163,7 +179,7 @@ namespace RMF {
     }
     std::string SharedData::get_name(unsigned int node) const {
       check_node(node);
-      return names_.get_value(HDF5DataSetIndexD<1>(node));
+      return node_names_.get_value(HDF5DataSetIndexD<1>(node));
     }
     unsigned int SharedData::get_type(unsigned int node) const {
       check_node(node);
@@ -172,26 +188,44 @@ namespace RMF {
 
 
   void SharedData::add_bond( int ida,  int idb, int type) {
-      IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0 && type>=0,
-                          "Invalid bond " << ida << " " << idb << " " << type);
-      RMF::Indexes tp(2);
-      tp[0]=ida;
-      tp[1]=idb;
-      int ind=add_tuple(tp, BOND);
-      PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
-      if (pik==PairIndexKey()) {
-        pik= add_key<IndexTraits, 2>(bond, "type", false);
-      }
-      set_value<IndexTraits, 2>(ind, pik, type, -1);
+    int bond=get_category(2, "bond");
+    if (bond==-1) {
+      bond=add_category(2, "bond");
     }
+    IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0,
+                        "Invalid bond " << ida << " " << idb);
+    RMF::Indexes tp(2);
+    tp[0]=ida;
+    tp[1]=idb;
+    int ind=add_tuple(tp, BOND);
+    PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
+    if (pik==PairIndexKey()) {
+      pik= add_key<IndexTraits, 2>(bond, "type", false);
+    }
+    IMP_RMF_IF_CHECK{
+      flush();
+      for ( int i=0; i< ind; ++i) {
+        boost::tuple<int,int,int> bd= get_bond(i);
+      }
+    }
+    IMP_RMF_USAGE_CHECK(type != -1, "Invalid type passed: " << type);
+    set_value<IndexTraits, 2>(ind, pik, type, -1);
+    IMP_RMF_IF_CHECK{
+      flush();
+      for ( int i=0; i< ind+1; ++i) {
+        boost::tuple<int,int,int> bd= get_bond(i);
+      }
+    }
+  }
 
     unsigned int SharedData::get_number_of_bonds() const {
       // not really right
       return get_number_of_tuples(2);
     }
     boost::tuple<int,int,int> SharedData::get_bond(unsigned int i) const {
+      int bond=get_category(2, "bond");
       int na= get_tuple_member(2, i, 0);
-      int nb= get_tuple_member(2, i, 0);
+      int nb= get_tuple_member(2, i, 1);
       PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
       int t= get_value<IndexTraits, 2>(i, pik, -1);
       return boost::tuple<int,int,int>(na, nb, t);
@@ -215,33 +249,6 @@ namespace RMF {
       }
       return ret;
     }
-
-
-
-    Categories SharedData::get_categories() const {
-      Categories ret;
-      for (unsigned int i=0; i< file_.get_number_of_children(); ++i) {
-        std::string name= file_.get_child_name(i);
-        if (name.rfind("list")== name.size()-4) {
-          size_t first= name.find('_');
-          if (first == std::string::npos) continue;
-          std::string trunc(name, first+1);
-          std::string catname(trunc, 0, trunc.find('_'));
-          bool found=false;
-          for (unsigned int j=0; j< ret.size(); ++j) {
-            if (ret[j].get_name() == catname) {
-              found=true;
-              break;
-            }
-          }
-          if (!found) {
-            ret.push_back(Category::get_category(catname));
-          }
-        }
-      }
-      return ret;
-    }
-
 
   void SharedData::check_tuple(int arity, unsigned int index) const {
     IMP_RMF_USAGE_CHECK(node_data_[arity-1] != HDF5IndexDataSet2D(),
@@ -295,7 +302,9 @@ namespace RMF {
     int slot;
     if (free_ids_[arity-1].empty()) {
       slot= node_data_[arity-1].get_size()[0];
-      node_data_[arity-1].set_size(HDF5DataSetIndexD<2>(slot+1, arity+1));
+      int nsz=std::max<int>(arity+1, node_data_[arity-1].get_size()[1]);
+      node_data_[arity-1].set_size(HDF5DataSetIndexD<2>(slot+1,
+                                                        nsz));
     } else {
       slot= free_ids_[arity-1].back();
       free_ids_[arity-1].pop_back();
@@ -316,6 +325,64 @@ namespace RMF {
   unsigned int SharedData::get_tuple_type(int arity, unsigned int index) const {
     check_tuple(arity, index);
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
+  }
+
+
+  int SharedData::add_category(int Arity, std::string name) {
+    IMP_RMF_USAGE_CHECK(get_category(Arity, name)==-1,
+                        "File already has category " << name
+                        << " with arity " << Arity);
+    if (category_names_[Arity-1]
+        == HDF5DataSetD<StringTraits, 1>()) {
+      std::string nm=get_category_name_data_set_name(Arity);
+      category_names_[Arity-1]
+          =file_.add_child_data_set<StringTraits, 1>(nm);
+    }
+    // fill in later
+    int sz= category_names_[Arity-1].get_size()[0];
+    category_names_[Arity-1].set_size(HDF5DataSetIndex1D(sz+1));
+    category_names_[Arity-1].set_value(HDF5DataSetIndex1D(sz), name);
+    category_names_cache_[Arity-1]
+      .resize(std::max<int>(sz+1,
+                            category_names_cache_[Arity-1].size()));
+    category_names_cache_[Arity-1][sz]=name;
+    return sz;
+  }
+  int SharedData::get_category(int Arity, std::string name) const {
+    if (category_names_cache_[Arity-1].empty()) {
+      return -1;
+    } else {
+      Ints cs= get_categories(Arity);
+      for (unsigned int i=0; i< cs.size(); ++i) {
+        if (get_category_name(Arity, cs[i]) == name) {
+          return cs[i];
+        }
+      }
+    }
+    return -1;
+  }
+    Strings SharedData::get_category_names(int Arity) const {
+      Ints cats= get_categories(Arity);
+      Strings ret(cats.size());
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ret[i]= get_category_name(Arity, cats[i]);
+      }
+      return ret;
+    }
+  Ints SharedData::get_categories(int Arity) const {
+    unsigned int sz= category_names_cache_[Arity-1].size();
+    IMP_RMF_INTERNAL_CHECK((!category_names_[Arity-1] && sz==0)
+                           || (sz == category_names_[Arity-1].get_size()[0]),
+                           "Cache and data set sizes don't match: "
+                           << sz << " vs "
+                           << category_names_[Arity-1].get_size()[0]);
+    Ints ret;
+    for (unsigned int i=0; i< sz; ++i) {
+      if (!category_names_cache_[Arity-1].empty()) {
+        ret.push_back(i);
+      }
+    }
+    return ret;
   }
 
   } // namespace internal

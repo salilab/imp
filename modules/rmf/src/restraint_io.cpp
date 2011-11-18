@@ -15,6 +15,7 @@ using namespace RMF;
 
 #define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
   RootHandle imp_f=node.get_root_handle();                              \
+  RMF::Category Feature= imp_f.get_category<1>("feature");              \
   RMF::FloatKey sk                                                    \
   = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
                                            true);                       \
@@ -91,11 +92,9 @@ namespace {
     show(oss);
     return oss.str();
   }
-#if !defined(__clang__)
   inline std::size_t hash_value(const Subset &t) {
     return t.__hash__();
   }
-#endif
 
 
   typedef IMP::compatibility::map<Subset, NodeHandle> Index;
@@ -135,7 +134,9 @@ namespace {
         =nh.get_root_handle().get_node_handle_from_association(ps[i]).get_id();
       ids[i]=id;
     }
-    nh.set_value(nk, ids);
+    if (!ids.empty()) {
+      nh.set_value(nk, ids);
+    }
   }
 
   NodeHandle get_child(NodeHandle parent,
@@ -235,14 +236,18 @@ ParticlesTemp get_restraint_particles(NodeHandle f,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
   RootHandle rh=f.get_root_handle();
-  NodeIDs ids= f.get_value(nk, frame);
-  ParticlesTemp ret(ids.size());
-  for (unsigned int i=0; i< ids.size(); ++i) {
-    NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
-    Particle *p= reinterpret_cast<Particle*>(nh.get_association());
-    ret[i]=p;
+  if (f.get_has_value(nk, frame)) {
+    NodeIDs ids= f.get_value(nk, frame);
+    ParticlesTemp ret(ids.size());
+    for (unsigned int i=0; i< ids.size(); ++i) {
+      NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
+      Particle *p= reinterpret_cast<Particle*>(nh.get_association());
+      ret[i]=p;
+    }
+    return ret;
+  } else {
+    return ParticlesTemp();
   }
-  return ret;
 }
 
 

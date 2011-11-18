@@ -50,6 +50,7 @@ kcs= rh.get_categories()
 show_xml(rh, kcs)
 for i in range(2,5):
     tuples= rh.get_node_tuples(i)
+    kcs= rh.get_tuple_categories(i)
     if len(tuples) >0:
         print "<"+str(i)+"_tuples>"
         for t in tuples:

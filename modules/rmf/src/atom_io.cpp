@@ -27,54 +27,57 @@ using namespace RMF;
 
 #define  IMP_HDF5_CREATE_MOLECULE_KEYS(node)                            \
   RootHandle f=node;                                                    \
-  RMF::FloatKey x                                                     \
+  CategoryD<1> Physics=f.get_or_add_category<1>("physics");             \
+  RMF::FloatKey x                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian x",    \
-                                                    true);              \
-  RMF::FloatKey y                                                     \
+                                          true);                        \
+  RMF::FloatKey y                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian y",    \
                                           true);                        \
-  RMF::FloatKey z                                                     \
+  RMF::FloatKey z                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian z",    \
                                           true);                        \
-  RMF::FloatKey r                                                     \
+  RMF::FloatKey r                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "radius");        \
-  RMF::FloatKey m                                                     \
+  RMF::FloatKey m                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "mass");          \
-  RMF::IndexKey ib                                                    \
+  CategoryD<1> Sequence=f.get_or_add_category<1>("sequence");           \
+  RMF::IndexKey ib                                                      \
   = internal::get_or_add_key<IndexTraits>(f, Sequence,                  \
                                           "residue index begin");       \
-  RMF::IndexKey ie                                                    \
+  RMF::IndexKey ie                                                      \
   = internal::get_or_add_key<IndexTraits>(f, Sequence,                  \
                                           "residue index end");         \
-  RMF::IndexKey e                                                     \
+  RMF::IndexKey e                                                       \
   = internal::get_or_add_key<IndexTraits>(f, Physics, "element");       \
-  RMF::IndexKey ci                                                    \
+  RMF::IndexKey ci                                                      \
   = internal::get_or_add_key<IndexTraits>(f, Sequence, "chain id");     \
-  RMF::StringKey tk                                                   \
+  RMF::StringKey tk                                                     \
   = internal::get_or_add_key<StringTraits>(f, Sequence, "type");        \
-  RMF::FloatKey cr                                                    \
+  CategoryD<1> Shape=f.get_or_add_category<1>("shape");                 \
+  RMF::FloatKey cr                                                      \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
                                           false);                       \
-  RMF::FloatKey cg                                                    \
+  RMF::FloatKey cg                                                      \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
                                           false);                       \
-  RMF::FloatKey cb                                                    \
+  RMF::FloatKey cb                                                      \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
                                           false);                       \
-  RMF::FloatKey dk                                                    \
-  = internal::get_or_add_key<FloatTraits>(f, Physics,                 \
-                                          "diffusion coefficient");   \
-  RMF::StringKey rt                                                   \
+  RMF::FloatKey dk                                                      \
+  = internal::get_or_add_key<FloatTraits>(f, Physics,                   \
+                                          "diffusion coefficient");     \
+  RMF::StringKey rt                                                     \
   = internal::get_or_add_key<StringTraits>(f, Sequence, "residue type"); \
-  RMF::IntKey nk                                                      \
+  RMF::IntKey nk                                                        \
   = internal::get_or_add_key<IntTraits>(f, Sequence, "copy index");
 
-#define IMP_HDF5_ACCEPT_MOLECULE_KEYS                                   \
-  RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,              \
-    RMF::FloatKey r,  RMF::FloatKey m, RMF::IndexKey e,           \
-    RMF::IndexKey ci, RMF::IndexKey ib, RMF::IndexKey ie,         \
-    RMF::StringKey rt, RMF::FloatKey cr, RMF::FloatKey cg,        \
-    RMF::FloatKey cb, RMF::StringKey tk,                            \
+#define IMP_HDF5_ACCEPT_MOLECULE_KEYS                           \
+  RMF::FloatKey x, RMF::FloatKey y, RMF::FloatKey z,            \
+    RMF::FloatKey r,  RMF::FloatKey m, RMF::IndexKey e,         \
+    RMF::IndexKey ci, RMF::IndexKey ib, RMF::IndexKey ie,       \
+    RMF::StringKey rt, RMF::FloatKey cr, RMF::FloatKey cg,      \
+    RMF::FloatKey cb, RMF::StringKey tk,                        \
     RMF::FloatKey dk, RMF::IntKey nk
 
 #define IMP_HDF5_PASS_MOLECULE_KEYS                             \
@@ -96,7 +99,7 @@ namespace {
   }
 
   template <class TypeTag, class T>
-  void set_one(NodeHandle n, RMF::Key<TypeTag, 1> k,
+  void set_one(RMF::NodeHandle n, RMF::Key<TypeTag, 1> k,
                T v, unsigned int frame) {
     n.set_value(k, v, frame);
   }
@@ -202,7 +205,8 @@ namespace {
     if (ncur.get_has_value(rt)) {
       int b= ncur.get_value(ib);
       atom::Residue::setup_particle(cur,
-          atom::ResidueType(ncur.get_value(rt))).set_index(b);
+                                    atom::ResidueType(ncur.get_value(rt)))
+        .set_index(b);
     }
     if (ncur.get_has_value(ib)) {
       int b= ncur.get_value(ib);
@@ -452,8 +456,9 @@ void load_frame(RootHandle fh,
 
 unsigned int get_number_of_frames(RootHandle fh,
                                   atom::Hierarchy) {
+  RMF::Category physics= fh.get_category<1>("physics");
   RMF::FloatKey x
-    = internal::get_or_add_key<FloatTraits>(fh, Physics, "cartesian x",
+    = internal::get_or_add_key<FloatTraits>(fh, physics, "cartesian x",
                                             true);
   return fh.get_number_of_frames(x);
 }
