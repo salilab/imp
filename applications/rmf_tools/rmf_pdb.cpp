@@ -73,8 +73,9 @@ int main(int argc, char **argv) {
     } else {
       IMP_CATCH_AND_TERMINATE(rh= RMF::open_rmf_file(input));
       inhs= IMP::rmf::create_hierarchies(rh, m);
+      RMF::Category physics= rh.get_category<1>("physics");
       RMF::FloatKey xk
-          =rh.get_key<RMF::FloatTraits, 1>(RMF::Physics, "cartesian x");
+          =rh.get_key<RMF::FloatTraits, 1>(physics, "cartesian x");
       std::cout << xk << std::endl;
       nframes= rh.get_number_of_frames(xk)+1;
     }
@@ -130,10 +131,11 @@ int main(int argc, char **argv) {
     }
     std::cout << bds.size() << " bonds" << std::endl;
     RMF::PairIndexKey bk;
-    if (rho.get_has_key<RMF::IndexTraits, 2>(RMF::bond, "type")) {
-      bk= rho.get_key<RMF::IndexTraits, 2>(RMF::bond, "type");
+    RMF::CategoryD<2> bond= rho.get_category_always<2>("bond");
+    if (rho.get_has_key<RMF::IndexTraits, 2>(bond, "type")) {
+      bk= rho.get_key<RMF::IndexTraits, 2>(bond, "type");
     } else {
-      bk= rho.add_key<RMF::IndexTraits, 2>(RMF::bond, "type", false);
+      bk= rho.add_key<RMF::IndexTraits, 2>(bond, "type", false);
     }
     for (unsigned int i=0; i< bds.size(); ++i) {
       IMP::Particle *p0= bds[i].get_bonded(0).get_particle();
