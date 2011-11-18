@@ -42,12 +42,35 @@ DLLSRC=/usr/lib/w32comp/windows/system
 cp ${DLLSRC}/msvc*100.dll ${ROOT}/lib || exit 1
 
 # Add other DLL dependencies
-cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${ROOT}/lib || exit 1
-cp ${DLLSRC}/boost_filesystem-vc100-mt-1_44.dll ${ROOT}/lib || exit 1
-cp ${DLLSRC}/boost_system-vc100-mt-1_44.dll ${ROOT}/lib || exit 1
+cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
+   ${DLLSRC}/boost_filesystem-vc100-mt-1_44.dll \
+   ${DLLSRC}/boost_program_options-vc100-mt-1_44.dll \
+   ${DLLSRC}/boost_system-vc100-mt-1_44.dll \
+   ${DLLSRC}/libfftw3-3.dll \
+   ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
+   ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/lib || exit 1
 
-# todo: check all installed DLLs for dependencies, to make sure we didn't
-# miss any
+# Check all installed binaries for DLL dependencies, to make sure we
+# didn't miss any
+# We should really parse the PE files properly rather than using 'strings' here!
+strings ${ROOT}/lib/*.exe ${ROOT}/lib/*.pyd ${ROOT}/lib/*.dll \
+        | grep -i '\.dll' | sort -u | tr '[:upper:]' '[:lower:]' > w32.deps
+(cd ${ROOT}/lib && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
+
+# Add standard Windows DLLs and those of our prerequisites (Python 2.6)
+echo "kernel32.dll" >> w32.dlls
+echo "advapi32.dll" >> w32.dlls
+echo "python26.dll" >> w32.dlls
+
+if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
+  echo "The following non-standard libraries are linked against, and were"
+  echo "not bundled:"
+  echo
+  cat w32.unmet_deps
+  exit 1
+fi
+
+rm -f w32.dlls w32.deps w32.unmet_deps
 
 tools/w32/gen-w32instlist w32-inst > w32files.tmp || exit 1
 sed -e '/\.pyc"$/d' < w32files.tmp > w32files.install || exit 1
