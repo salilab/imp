@@ -106,8 +106,8 @@ struct LiveObjectChecker {
         // the type goes through swig directors
         std::cerr << (*it)->get_name() << std::endl;
       }
-#endif
     }
+#endif
   }
 };
 LiveObjectChecker loc;
