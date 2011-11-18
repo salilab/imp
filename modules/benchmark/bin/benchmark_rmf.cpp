@@ -49,17 +49,17 @@ template <class TypeT, int Arity>
     return ret;
   }
 
-  double show_xml(RMF::NodeHandle nh) {
+double show_xml(RMF::NodeHandle nh,
+                const RMF::Categories &kcs) {
     double ret=0;
     ret+=nh.get_name().size();
     ret+=nh.get_id().get_index();
-    ret+=show_data_xml(nh, RMF::Physics);
-    ret+=show_data_xml(nh, RMF::Sequence);
-    ret+=show_data_xml(nh, RMF::Shape);
-    ret+=show_data_xml(nh, RMF::Feature);
+    for (unsigned int i=0; i< kcs.size(); ++i) {
+      ret+=show_data_xml(nh, kcs[i]);
+    }
     RMF::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
-      ret+=show_xml(children[i]);
+      ret+=show_xml(children[i], kcs);
     }
     return ret;
   }
@@ -69,7 +69,8 @@ template <class TypeT, int Arity>
 double traverse(std::string name) {
   double ret=0;
   RMF::RootHandle rh= RMF::open_rmf_file(name);
-  ret+=show_xml(rh);
+  RMF::Categories kcs= rh.get_categories<1>();
+  ret+=show_xml(rh, kcs);
   RMF::NodePairHandles ps= rh.get_node_tuples<2>();
   for (unsigned int i=0; i< ps.size(); ++i) {
     std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
