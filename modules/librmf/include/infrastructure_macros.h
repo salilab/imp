@@ -206,7 +206,7 @@
   macroname(index, Index, int, int,                                     \
             const Ints&, Ints)
 
-
+#ifndef IMP_DOXYGEN
 /** Expand to applying the macro to each type supported by
     the rmf library. The macro should take six argments
     - the lower case name of the type
@@ -232,6 +232,11 @@
   macroname(indexes, Indexes, const Indexes&, Indexes,                  \
             const IndexesList &,                                        \
             IndexesList);
+#else
+#define IMP_RMF_FOREACH_TYPE(macroname)                                 \
+  macroname(type, Type, Type, Types,                                    \
+            const Types &, Types);
+#endif
 
 namespace RMF {
 #if !defined(NDEBUG) && defined(__GNUC__)
