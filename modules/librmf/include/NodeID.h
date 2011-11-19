@@ -16,7 +16,11 @@
 
 namespace RMF {
 
-/** A key for a node in the hierarchy. */
+/** Each node in the hierarchy (RMF::NodeHandle) or set of nodes
+    with associated data has an associated identifier that is unique with
+    that %RMF file. These are stored using NodeID classes. Typedefs are provided
+    for single nodes (NodeID), pairs of nodes NodePairID etc up to quads of
+    nodes. In addition, typedefs are provided for lists of them, eg NodeIDs.*/
 template <int Arity>
 class NodeIDD {
   int i_;
@@ -40,6 +44,7 @@ class NodeIDD {
   IMP_RMF_COMPARISONS(NodeIDD);
   IMP_RMF_HASHABLE(NodeIDD, return i_);
 };
+#ifndef IMP_DOXYGEN
 typedef NodeIDD<1> NodeID;
 typedef vector<NodeID> NodeIDs;
 typedef NodeIDD<2> NodePairID;
@@ -48,14 +53,8 @@ typedef NodeIDD<3> NodeTripletID;
 typedef vector<NodeTripletID> NodeTripletIDs;
 typedef NodeIDD<4> NodeQuadID;
 typedef vector<NodeQuadID> NodeQuadIDs;
-#ifndef SWIG
-template <int A>
-inline std::ostream &operator<<(std::ostream &out,
-                                NodeIDD<A> id) {
-  id.show(out);
-  return out;
-}
 #endif
+
 
 
 } /* namespace RMF */

@@ -63,6 +63,7 @@ namespace {
                  std::ostream &out,
                  const vector<KT> &ks,
                  int frame, std::string prefix) {
+    using std::operator<<;
     for (unsigned int i=0; i< ks.size(); ++i) {
       if ((n.get_root_handle().get_is_per_frame(ks[i])
            && n.get_has_value(ks[i], frame))
@@ -88,6 +89,7 @@ namespace {
                  IndexKeys xks, StringKeys sks,
                  int frame,
                  std::string prefix) {
+    using std::operator<<;
     out << get_type_name(n.get_type()) << " "
         << n.get_id() << " " << n.get_name();
     show_data(n, out, fks, frame, prefix);
@@ -150,6 +152,7 @@ void show_hierarchy(NodeHandle root,
     xks=get_keys<IndexTraits>(root.get_root_handle());
     sks=get_keys<StringTraits>(root.get_root_handle());
   }
+  using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeHandle, root, n.get_children().size(),
                  n.get_children().at,
                  show_node(n, out, fks, iks, xks, sks, frame,

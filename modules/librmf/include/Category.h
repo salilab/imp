@@ -21,7 +21,14 @@ namespace internal {
 }
 #endif
 
-/** The category for a key. */
+/** Data associated with nodes or sets of nodes is divided into
+    categories. Each category is identified by a CategoryD identifier
+    within the scope of a file as returned by RootHandle::get_category().
+    It is undefined behavior to pass a category from one file to another
+    file. Typedefs (and python types are provided for single nodes, up to
+    quads of nodes, named Category, PairCategory, TripletCategory and
+    QuadCategory as well as typedefs for lists of them with names like
+    Categories.*/
 template <int Arity>
 class CategoryD {
   int i_;
@@ -51,6 +58,7 @@ public:
   }
 };
 
+#ifndef IMP_DOXYGEN
 typedef CategoryD<1> Category;
 typedef CategoryD<2> PairCategory;
 typedef CategoryD<3> TripletCategory;
@@ -59,14 +67,9 @@ typedef vector<CategoryD<1> > Categories;
 typedef vector<CategoryD<2> > PairCategories;
 typedef vector<CategoryD<3> > TripletCategories;
 typedef vector<CategoryD<4> > QuadCategories;
-
-#ifndef SWIG
-template <int Arity>
-inline std::ostream &operator<<(std::ostream &out, const CategoryD<Arity> &nh) {
-  nh.show(out);
-  return out;
-}
 #endif
+
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_KEY_CATEGORY_H */

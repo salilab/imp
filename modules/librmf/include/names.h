@@ -41,14 +41,16 @@ namespace RMF {
     return "bond_data";
   }
 //! Get the name of the data set for storing bonds
-  inline String get_tuple_data_data_set_name(int arity) {
+  inline String get_set_data_data_set_name(int arity) {
     std::ostringstream oss;
+    using std::operator<<;
     oss << "data_" << arity;
     return oss.str();
   }
 //! Get the name of the data set for storing category names
   inline String get_category_name_data_set_name(int arity) {
     std::ostringstream oss;
+    using std::operator<<;
     oss << "category_names_" << arity;
     return oss.str();
   }
@@ -58,6 +60,7 @@ namespace RMF {
                                            String type_name,
                                            bool per_frame) {
     std::ostringstream oss;
+    using std::operator<<;
     oss << type_name << "_" << category_name << "_";
     if (Arity >1) {
       oss << Arity << "_";
@@ -71,6 +74,7 @@ namespace RMF {
                                        String type_name,
                                        bool per_frame) {
     std::ostringstream oss;
+    using std::operator<<;
     oss << type_name << "_" << category_name << "_"
         << get_per_frame_name(per_frame);
     if (arity>1) oss << "_" << arity;

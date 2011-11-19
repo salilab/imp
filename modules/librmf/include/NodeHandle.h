@@ -91,6 +91,14 @@ std::string get_type_name(NodeType t);
 
 
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+inline std::ostream &operator<<(std::ostream &out,
+                                NodeType t) {
+  using std::operator<<;
+  return out << get_type_name(t);
+}
+#endif
+
 
 class RootHandle;
 
@@ -159,18 +167,12 @@ class RMFEXPORT NodeHandle {
   IMP_RMF_FOREACH_TYPE(IMP_HDF5_NODE_KEY_TYPE_METHODS);
   /** @} */
   void show(std::ostream &out= std::cout) const {
+    using std::operator<<;
     out << get_name() << "(" << get_type() << ", " << node_ << ")";
   }
 
   RootHandle get_root_handle() const;
 };
-
-#ifndef SWIG
-inline std::ostream &operator<<(std::ostream &out, const NodeHandle &nh) {
-  nh.show(out);
-  return out;
-}
-#endif
 
 
 /** Print out the hierarchy as an ascii tree.

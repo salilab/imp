@@ -24,7 +24,8 @@ class SharedData;
 
 namespace RMF {
 
-/** A key referencing a particular piece of data */
+/** A key referencing a particular piece of data. They are
+ comparable, hashable and printable, but otherwise opaque.*/
   template <class TypeTraitsT, int Arity>
 class Key {
   friend class RootHandle;
@@ -59,20 +60,15 @@ public:
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
   void show(std::ostream &out) const {
+    using std::operator<<;
     out << ci_ << (pf_?'E':'I') << i_;
   }
   IMP_RMF_COMPARISONS(Key);
   IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
 };
 
-#ifndef SWIG
-  template <class Traits, int Arity>
-  inline std::ostream &operator<<(std::ostream &out,
-                                  const Key<Traits, Arity> &nh) {
-  nh.show(out);
-  return out;
-}
-#endif
+
+#ifndef IMP_DOXYGEN
 
 #define IMP_RMF_DECLARE_KEY(lcname, Ucname, PassValue, ReturnValue,     \
                             PassValues, ReturnValues)                   \
@@ -90,7 +86,7 @@ public:
 /** \name Key types
     RMF files support storing a variety of different types of data. These
     include
-    - IntKey: store an arbitrary integer as a 64 bit integer
+    - IntKey: store an arbitrary integher as a 64 bit integer
     - FloatKey: store an arbitrary floating point number as a double
     - StringKey: store an arbitrary length string
     - IndexKey: store non-negative indexes as 64 bit integers
@@ -103,6 +99,7 @@ public:
 */
 IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEY);
 /** @} */
+#endif
 
 } /* namespace RMF */
 

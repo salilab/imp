@@ -26,8 +26,9 @@ namespace RMF {
 
   class HDF5Group;
 
-  /** Store an index into a data set.
-      \ingroup hdf5
+  /** Store an index into a data set. Typedefs are provides
+      for 1,2 and 3 dimension indexes, name like
+      HDF5DataSetIndex2D.
    */
   template <int D>
   class HDF5DataSetIndexD
@@ -100,6 +101,7 @@ namespace RMF {
 
     unsigned int get_dimension() const {return D;}
     void show(std::ostream &out) const {
+      using std::operator<<;
       out << "(";
       for (unsigned int i=0; i< D; ++i) {
         if (i > 0) {
@@ -117,36 +119,27 @@ namespace RMF {
                      }
                      return ret;);
   };
-#ifndef SWIG
-  template <int D>
-  std::ostream &operator<<(std::ostream &out,
-                           const HDF5DataSetIndexD<D> &id) {
-    id.show(out);
-    return out;
-  }
+
+#ifndef IMP_DOXYGEN
+  typedef HDF5DataSetIndexD<1> HDF5DataSetIndex1D;
+  typedef vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
+  typedef HDF5DataSetIndexD<2> HDF5DataSetIndex2D;
+  typedef vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
+  typedef HDF5DataSetIndexD<3> HDF5DataSetIndex3D;
+  typedef vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
 #endif
 
-
-  /** \ingroup hdf5 */
-  typedef HDF5DataSetIndexD<1> HDF5DataSetIndex1D;
-  /** \ingroup hdf5 */
-  typedef vector<HDF5DataSetIndex1D> HDF5DataSetIndex1Ds;
-  /** \ingroup hdf5 */
-  typedef HDF5DataSetIndexD<2> HDF5DataSetIndex2D;
-  /** \ingroup hdf5 */
-  typedef vector<HDF5DataSetIndex2D> HDF5DataSetIndex2Ds;
-  /** \ingroup hdf5 */
-  typedef HDF5DataSetIndexD<3> HDF5DataSetIndex3D;
-  /** \ingroup hdf5 */
-  typedef vector<HDF5DataSetIndex3D> HDF5DataSetIndex3Ds;
-  /** \ingroup hdf5 */
-
-
-  /** \ingroup hdf5 */
+/** Data sets can be compressed using one of several algorithms.
+ */
   enum Compression {GZIP_COMPRESSION, SLIB_COMPRESSION, NO_COMPRESSION};
 
-  /** Wrap an HDF5 data set.
-   \ingroup hdf5
+  /** Wrap an HDF5 data set. Typedefs and python types are provided for
+      data sets in 1,2, and 3 dimensions with all the
+      \ref rmf_types "supported types". They are named as
+      RMF::HDF5IndexDataSet2D (or RMF.HDF5IndexDataSet2).
+   See
+   \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame10Datasets.html,
+  the HDF5 manual} for more information.
   */
   template <class TypeTraits, unsigned int D>
   class HDF5DataSetD {
@@ -298,6 +291,7 @@ namespace RMF {
       return std::string(buf);
     }
     void show(std::ostream &out) const {
+      using std::operator<<;
       out << "HDF5DataSet " << get_name();
     }
     HDF5DataSetD(){}
@@ -450,9 +444,8 @@ namespace RMF {
     IMP_RMF_COMPARISONS(HDF5DataSetD);
   };
 
-
-  /** An HDF5 data set for integers with dimension 2.
-   \ingroup hdf5 */
+#ifndef IMP_DOXYGEN
+  /** An HDF5 data set for integers with dimension 2. */
   template <class Traits, unsigned int D>
   class HDF5DataSetDTraits: public StringTraits {
     static HDF5DataSetD<Traits, D> get_data_set(hid_t dsc,
@@ -516,6 +509,7 @@ namespace RMF {
     }
     static std::string get_name() {
       std::ostringstream oss;
+      using std::operator<<;
       oss << "data set " << Traits::get_name() << " " << D << "d";
       return oss.str();
     }
@@ -529,7 +523,9 @@ namespace RMF {
       return i== get_null_value();
     }
   };
+#endif
 
+#ifndef IMP_DOXYGEN
   /** \ingroup hdf5 */
   typedef HDF5DataSetDTraits<IndexTraits, 2> IndexDataSet2DTraits;
   /** \ingroup hdf5 */
@@ -550,7 +546,7 @@ namespace RMF {
   */
   IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_DATA_SET);
   /** @} */
-
+#endif
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_HDF_5DATA_SET_D_H */

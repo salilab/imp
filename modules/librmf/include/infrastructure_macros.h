@@ -11,6 +11,8 @@
 
 #include "internal/errors.h"
 #include <sstream>
+#include <iostream>
+#include <string>
 
 #if !defined(NDEBUG) && defined(__GNUC__)
 #include <debug/vector>
@@ -154,6 +156,7 @@
   do {                                                          \
     if (!(check)) {                                             \
       std::ostringstream oss;                                   \
+      using std::operator<<;                                    \
       oss << "Usage check failed: " << #check << "\n"           \
           << message;                                           \
       ::RMF::internal::handle_usage_error(oss.str());           \
@@ -164,6 +167,7 @@
   do {                                                                  \
     if (!(check)) {                                                     \
       std::ostringstream oss;                                           \
+      using std::operator<<;                                            \
       oss << "Internal check failed: " << #check << "\n"                \
           << message;                                                   \
       ::RMF::internal::handle_internal_error(oss.str());                \
@@ -181,6 +185,7 @@
 
 #define IMP_RMF_THROW(m,e) do {  \
     std::ostringstream oss;      \
+    using std::operator<<;       \
     oss << m;                    \
     throw e(oss.str().c_str());  \
   } while (false)
@@ -226,16 +231,7 @@
             IntsList);                                                  \
   macroname(indexes, Indexes, const Indexes&, Indexes,                  \
             const IndexesList &,                                        \
-            IndexesList);                                               \
-  macroname(index_data_set_2d, IndexDataSet2D, HDF5IndexDataSet2D,      \
-            HDF5IndexDataSet2D,                                         \
-            const HDF5IndexDataSet2Ds &,                                \
-            HDF5IndexDataSet2Ds);                                       \
-  macroname(float_data_set_2d, FloatDataSet2D, HDF5FloatDataSet2D,      \
-            HDF5FloatDataSet2D,                                         \
-            const HDF5FloatDataSet2Ds &,                                \
-            HDF5FloatDataSet2Ds)
-
+            IndexesList);
 
 namespace RMF {
 #if !defined(NDEBUG) && defined(__GNUC__)
@@ -245,6 +241,33 @@ namespace RMF {
 #else
   template <class T>
   class vector{};
+#endif
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  /** Produce hash values for boost hash tables.
+   */
+  template <class T>
+  inline std::size_t hash_value(const T &t) {
+    return t.__hash__();
+  }
+  template <class T>
+  inline std::ostream &operator<<(std::ostream &out, const T &t) {
+    t.show(out);
+    return out;
+  }
+  template <class T>
+  inline std::ostream &operator<<(std::ostream &out, const vector<T> &t) {
+    using std::operator<<;
+    out << "[";
+    for (unsigned int i=0; i< t.size(); ++i) {
+      if (i != 0) {
+        out << ", ";
+      }
+      out << t[i];
+    }
+    out << "]";
+    return out;
+  }
 #endif
 }
 
