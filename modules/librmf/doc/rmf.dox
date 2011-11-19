@@ -18,7 +18,9 @@ has one node per residue and each residue one node per atom. Each
 node in the hierarchy has the appropriate data stored along with
 it: a chain node has the chain identifier, and a residue
 node has the type of the residue stored and atom nodes have coordinates,
-atom type and elements. Bonds between atoms are stored explicity.
+atom type and elements. Bonds between atoms or coarser elements are stored
+explicity as dealing with external databases to generate bonds is the source
+of much of the difficulty of dealing with other formats such as PDB.
 
 The file might also include a feature node storing the r-value for a
 FRET measurement between two residues as well as extra markers to highlight
