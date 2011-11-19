@@ -61,7 +61,7 @@ Each attribute is identified by a key (RMF::Key) and is
 defined by a unique combination of
 - a \ref rmf_types "type".
 
-- a \ref category "category" such as \ref catphysics "physics", identified by
+- a \ref categories "category" such as \ref catphysics "physics", identified by
 an RMF::CategoryD.
 
 - a name string

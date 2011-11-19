@@ -1009,7 +1009,7 @@ IMP_OUTPUT_OPERATOR(Model);
 
 IMP_OBJECTS(Model,Models);
 
-
+#ifndef IMP_DOXYGEN
 
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
@@ -1064,6 +1064,8 @@ inline ParticleKeys Particle::get_particle_keys() const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->ParticleAttributeTable::get_attribute_keys(id_);
 }
+
+#endif
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_MODEL_H */

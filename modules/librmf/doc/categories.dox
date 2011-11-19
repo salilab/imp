@@ -109,7 +109,7 @@ The following are pre-defined Categories for data stored in single nodes.
     \section pair_categories Pair Categories
     The following are categories for storing data on pairs of nodes.
     \rmfattributetable_begin{Bond,bond}
-      \rmfattribute{length, Float, the length in angstroms, }
-      \rmfattribute{type, Index, the bond type (0 covalent, 1 ionic,2 hydrogen...), }
-      \rmfattributetable_end
+    \rmfattribute{length, Float, the length in angstroms, positive}
+    \rmfattribute{type, Index, the bond type (0 covalent; 1 ionic; 2 hydrogen...), }
+    \rmfattributetable_end
 */
