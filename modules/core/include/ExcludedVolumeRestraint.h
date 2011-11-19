@@ -36,7 +36,7 @@ IMPCORE_BEGIN_NAMESPACE
     \note Changing the set of particles in the SingletonContainer is not
     currently supported after the first evaluate call.
 
-    \not Currently the radius of all particles is assumed to be constant
+    \note Currently the radius of all particles is assumed to be constant
  */
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
