@@ -5,7 +5,7 @@ The data types that can currently be stored in an \ref rmf "RMF File" are
    - \c String: an ASCII string
    - \c Int: a 64 bit integer
    - \c Index: a postive 64 bit index
-   - \c Node: another node in the hierarchy
+   - \c NodeID: another node in the hierarchy
 
 In addition, an arbitrary length list of any of the above can be stored. The type for that
 is the type for the single data with an \c s on the end, eg \c Floats for a list of \c Float
