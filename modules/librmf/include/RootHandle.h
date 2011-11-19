@@ -14,7 +14,10 @@
 #include "internal/shared.h"
 #include "Key.h"
 #include "NodeHandle.h"
-#include "NodeTupleHandle.h"
+#include "NodeSetHandle.h"
+
+/** Hi there */
+class Test{};
 
 namespace RMF {
 
@@ -43,7 +46,31 @@ namespace RMF {
 #ifndef IMP_DOXYGEN
     RootHandle(HDF5Group group, bool create);
 #endif
+    //! Lift NodeHandle::get_name() into class scope
+    std::string get_name() const {
+      return NodeHandle::get_name();
+    }
 
+    /** \name Methods for manipulating keys
+        When using C++ it is most convenient to specify types
+        when adding and using keys through template arguments. For python
+        we provide non-template versions. The full list is ommitted as
+        it is very long. The methods are named like
+        \code
+        TypeKey get_type_key(Category, string);
+        bool get_has_type_key(Category, string);
+        TypeKey add_type_key(Category, string);
+        String get_name(TypeKey);
+        Category get_category(TypeKey);
+        TypeKeys get_type_keys(Category);
+        unsigned int get_number_of_frames(TypeKey);
+        bool get_is_per_frame(TypeKey);
+        \endcode
+        Where \c Category is an appropriately chosen category
+        and \c Type one of the \ref rmf_types "standard types",
+        possibly with an arrity prefix (Pair, Triplet, Quad).
+        @{
+    */
     /** Get an existing key that has the given name of the
         given type.
     */
@@ -51,10 +78,6 @@ namespace RMF {
       Key<TypeT, Arity> get_key(CategoryD<Arity> category_id,
                                 std::string name) const {
       return shared_->get_key<TypeT, Arity>(category_id.get_index(), name);
-    }
-    //! Lift NodeHandle::get_name() into class scope
-    std::string get_name() const {
-      return NodeHandle::get_name();
     }
     /** Create a key for a new type of data. There must not
         already be a key with the same name of any type.
@@ -77,6 +100,7 @@ namespace RMF {
       vector<Key<TypeT, Arity> > get_keys(CategoryD<Arity> category_id) const {
       return shared_->get_keys<TypeT, Arity>(category_id.get_index());
     }
+    /** @} */
 
     /** Return the number of frames in the file. Currently, this is the number
         of frames that the x-coordinate has, but it should be made more general.
@@ -87,6 +111,7 @@ namespace RMF {
                                               "cartesian x"));
     }
 
+#ifndef IMP_DOXYGEN
     /** \name Non-template versions for python
         @{
     */
@@ -151,18 +176,19 @@ namespace RMF {
     IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_KEY_TYPE_METHODS);
 
     /** @} */
+#endif
 #ifdef IMP_DOXYGEN
     /** \name Python only
         The following methods are only available in python.
         @{
     */
     //! Return a list with all the keys from that category
-    /** If arity>1 then the keys for the appropriate tuples are
+    /** If arity>1 then the keys for the appropriate sets are
         returned.
     */
     PythonList get_keys(Category c, int arity=1) const;
-    //! Return all tuples of that arity
-    PythonList get_node_tuples(int arity) const;
+    //! Return all sets of that arity
+    PythonList get_node_sets(int arity) const;
     /** @} */
 #endif
     /** Each node in the hierarchy can be associated with some arbitrary bit
@@ -172,6 +198,7 @@ namespace RMF {
     NodeHandle get_node_handle_from_association(void*d) const;
     NodeHandle get_node_handle_from_id(NodeID id) const;
     void show(std::ostream &out= std::cout) const {
+      using std::operator<<;
       out << "RootHandle";
     }
 #ifndef IMP_DOXYGEN
@@ -198,47 +225,47 @@ namespace RMF {
 #endif
 
     template <int Arity>
-      unsigned int get_number_of_node_tuples() const {
-      return shared_->get_number_of_tuples(Arity);
+      unsigned int get_number_of_node_sets() const {
+      return shared_->get_number_of_sets(Arity);
     }
     template <int Arity>
-      vector<NodeTupleHandle<Arity> > get_node_tuples() const {
-      Indexes ids= shared_->get_tuple_indexes(Arity);
-      vector<NodeTupleHandle<Arity> > ret(ids.size());
+      vector<NodeSetHandle<Arity> > get_node_sets() const {
+      Indexes ids= shared_->get_set_indexes(Arity);
+      vector<NodeSetHandle<Arity> > ret(ids.size());
       for (unsigned int i=0; i< ret.size(); ++i) {
-        ret[i]=NodeTupleHandle<Arity>(ids[i], shared_.get());
+        ret[i]=NodeSetHandle<Arity>(ids[i], shared_.get());
       }
       return ret;
     }
     template <int Arity>
-      NodeTupleHandle<Arity>  add_node_tuple(const NodeHandles &nh,
-                                             NodeTupleType tt) {
+      NodeSetHandle<Arity>  add_node_set(const NodeHandles &nh,
+                                             NodeSetType tt) {
       IMP_RMF_USAGE_CHECK(nh.size()==Arity, "Wrong size for handles list");
       Indexes ix(nh.size());
       for (unsigned int i=0; i< nh.size(); ++i) {
         ix[i]=nh[i].get_id().get_index();
       }
-      int id=shared_->add_tuple(ix, tt);
-      return NodeTupleHandle<Arity>(id, shared_.get());
+      int id=shared_->add_set(ix, tt);
+      return NodeSetHandle<Arity>(id, shared_.get());
     }
 
 
 
-#define IMP_HDF5_ROOT_KEY_TUPLE_METHODS(lctuple, UCTuple, D)            \
-    unsigned int get_number_of_node_##lctuple##s() const {              \
-      return get_number_of_node_tuples<D>();                            \
+#define IMP_HDF5_ROOT_KEY_SET_METHODS(lcset, UCSet, D)                  \
+    unsigned int get_number_of_node_##lcset##s() const {                \
+      return get_number_of_node_sets<D>();                              \
     }                                                                   \
-    Node##UCTuple##Handles get_node_##lctuple##s() const {              \
-      return get_node_tuples<D>();                                      \
+    Node##UCSet##Handles get_node_##lcset##s() const {                  \
+      return get_node_sets<D>();                                        \
     }                                                                   \
-    Node##UCTuple##Handle add_node_##lctuple(const NodeHandles &nh,     \
-                                             NodeTupleType tt) {        \
-      return add_node_tuple<D>(nh, tt);                                 \
+    Node##UCSet##Handle add_node_##lcset(const NodeHandles &nh,         \
+                                         NodeSetType tt) {              \
+      return add_node_set<D>(nh, tt);                                   \
     }
 
-    IMP_HDF5_ROOT_KEY_TUPLE_METHODS(pair, Pair, 2);
-    IMP_HDF5_ROOT_KEY_TUPLE_METHODS(triplet, Triplet, 3);
-    IMP_HDF5_ROOT_KEY_TUPLE_METHODS(quad, Quad, 4);
+    IMP_HDF5_ROOT_KEY_SET_METHODS(pair, Pair, 2);
+    IMP_HDF5_ROOT_KEY_SET_METHODS(triplet, Triplet, 3);
+    IMP_HDF5_ROOT_KEY_SET_METHODS(quad, Quad, 4);
 
 
     HDF5Group get_hdf5_group() const {
@@ -263,13 +290,10 @@ namespace RMF {
     /** @} */
 
 
-    /** \name Key categories
-        Methods for managing the key categories in this RMF. The key
-        categories are maintained per arity, eg, different lists for
-        nodes, pairs of nodes, triplets of nodes etc.
+    /** \name Key categories template methods
+        Methods for managing the key categories in this RMF.
         @{
     */
-#ifndef SWIG
     template <int Arity>
       CategoryD<Arity> add_category(std::string name) {
       return CategoryD<Arity>(shared_->add_category(Arity, name));
@@ -308,7 +332,12 @@ namespace RMF {
       std::string get_category_name(CategoryD<Arity> kc) const {
       return shared_->get_category_name(Arity, kc.get_index());
     }
-#endif
+    /** @} */
+    /** \name Key categories non-template methods
+        We also provide non-template methods for use in \c Python or
+        environments where templates are not convenient.
+        @{
+    */
 #define IMP_RMF_CATEGORY_METHODS(Arity, prefix, Prefix)                 \
     Prefix##Category add_##prefix##category(std::string name) {         \
       return add_category<Arity>(name);                                 \
@@ -331,7 +360,8 @@ namespace RMF {
     IMP_RMF_CATEGORY_METHODS(4, quad_, Quad);
     /** @} */
 
-    /** Make sure all data gets written to disk.
+    /** Make sure all data gets written to disk. Once flush is called, it
+        should be safe to open the file in another process for reading.
      */
     void flush();
   };
@@ -372,7 +402,7 @@ namespace RMF {
 
 
   template <int D>
-  inline RootHandle NodeTupleHandle<D>::get_root_handle() const {
+  inline RootHandle NodeSetHandle<D>::get_root_handle() const {
     return get_node(0).get_root_handle();
   }
 

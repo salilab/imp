@@ -23,15 +23,17 @@
 namespace RMF {
 
 #ifdef IMP_DOXYGEN
-  /** The RMF library uses containers that are equivalent to, but
-      not necessarily the same type as, stl::vectors to store lists of
-      values.
+  /** The RMF library uses containers that have the same interfaces as, but
+      not necessarily the same type as, std::vector to store lists of
+      values. (The reason the types are not necessarily the same is that,
+      bounds checked vectors are used when they are available and the
+      library is not build with \c NDEBUG).
   */
   template <class T>
   class vector {};
 #endif
 
-
+#ifndef IMP_DOXYGEN
   /** \defgroup hdf5 HDF Support
       These functions provide low level support for reading and writing HDF5
       files. As such, they aren't really part of the RMF library itself, but
@@ -71,38 +73,8 @@ namespace RMF {
   typedef std::string Chars;
   /** @} */
 
-  /** \name Traits classes
-      \ingroup hdf5
-      The traits class for mapping between C++ types and HDF5 types. It defines
-      - Type: the C++ type of the data to store
-      - Types: the C++ type for more than one value of the data
-      - static hid_t get_hdf5_type()
-      - static void write_value_dataset(hid_t d, hid_t is,
-      hid_t s,
-      double v)
-      - static double read_value_dataset(hid_t d, hid_t is,
-      hid_t sp)
-      - static Floats read_values_attribute(hid_t a, unsigned int size)
-      - static void write_values_attribute(hid_t a, const Floats &v)
-      - static const double& get_null_value()
-      - static std::string get_name()
-      - static unsigned int get_index()
 
-      Each type must be associated with a unique index. For the moment,
-      the integers are
-      - Int: 0
-      - Float: 1
-      - Index: 2
-      - String: 3
-      - NodeID: 4
-      - Char: 6
-      - array types are 10-20
-      - data set types are 20-30
 
-      This integers do not affect the rmf file on disk.
-      @{
-  */
-  /** Store floating point numbers as doubles. */
   struct RMFEXPORT FloatTraits {
     typedef Float Type;
     typedef Floats Types;
@@ -432,15 +404,7 @@ namespace RMF {
   typedef ArrayTraits<IntTraits> IntsTraits;
   typedef ArrayTraits<NodeIDTraits> NodeIDsTraits;
 
-  /** @} */
-
-
-  /** Produce hash values for boost hash tables.
-   */
-  template <class T>
-  inline std::size_t hash_value(const T &t) {
-    return t.__hash__();
-  }
+#endif
 
 } /* namespace RMF */
 

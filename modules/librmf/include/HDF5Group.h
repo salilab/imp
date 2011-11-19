@@ -14,8 +14,9 @@
 
 
 namespace RMF {
-  /** Wrap an HDF5 Group.
-      \ingroup hdf5
+  /** Wrap an HDF5 Group. See
+      \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,
+      the HDF5 manual} for more information.
   */
   class RMFEXPORT HDF5Group {
     boost::intrusive_ptr<HDF5SharedHandle> h_;
@@ -36,6 +37,7 @@ namespace RMF {
       return std::string(buf);
     }
     void show(std::ostream &out) const {
+      using std::operator<<;
       out << "HDF5Group " << get_name();
     }
 
@@ -71,7 +73,13 @@ namespace RMF {
     IMP_HDF5_DATA_SET_METHODS_D(lcname, UCName, PassValue, ReturnValue, \
                                 PassValues, ReturnValues, 3)
 
+    /** \name Untemplated methods
+        When using Python, you must call the non-templated methods listed
+        below.
+        @{
+    */
     IMP_RMF_FOREACH_TYPE(IMP_HDF5_DATA_SET_METHODS);
+    /** @} */
 
     unsigned int get_number_of_children() const;
     std::string get_child_name(unsigned int i) const;
@@ -80,6 +88,11 @@ namespace RMF {
     bool get_child_is_group(unsigned int i) const;
     bool get_child_is_data_set(unsigned int i) const;
 
+    /** \name Template attribute methods
+        When manipulating attriutes from C++ you can use these
+        templated methods.
+        @{
+    */
     template <class TypeTraits>
       void set_attribute(std::string name,
                          typename TypeTraits::Types value) {
@@ -133,12 +146,17 @@ namespace RMF {
         return ret;
       }
     }
+    /** @} */
     template <class CT, class CF>
       CT copy_to(const CF &cf) const {
       return CT(cf.begin(), cf.end());
     }
     bool get_has_attribute(std::string nm) const;
-
+    /** \name Nontemplated attributes
+        When using python, call the non-template versions of the
+        attribute manipulation methods.
+        @{
+    */
 #define IMP_HDF5_ATTRIBUTE(lcname, UCName, PassValue, ReturnValue,      \
                            PassValues, ReturnValues)                    \
     void set_##lcname##_attribute(std::string nm,                       \
@@ -152,9 +170,12 @@ namespace RMF {
 
     IMP_RMF_FOREACH_SIMPLE_TYPE(IMP_HDF5_ATTRIBUTE);
     IMP_HDF5_ATTRIBUTE(char, Char, char, char, std::string, std::string);
+    /** @} */
   };
 
-  /** \ingroup hdf5 */
+  /** Store a handle to an HDF5 file. See
+   \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame08TheFile.html,
+  the HDF5 manual} for more information.*/
   class RMFEXPORT HDF5File: public HDF5Group {
   public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -166,36 +187,23 @@ namespace RMF {
 
   /** Create a new hdf5 file, clearing any existing file with the same
       name if needed.
-      \ingroup hdf5
   */
   RMFEXPORT HDF5File create_hdf5_file(std::string name);
 
   /** Open an existing hdf5 file.
-      \ingroup hdf5
   */
   RMFEXPORT HDF5File open_hdf5_file(std::string name);
 
-  /** Open an existing hdf5 file.
-      \ingroup hdf5
+  /** Open an existing hdf5 file read only.
   */
   RMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
 
-  /** \ingroup hdf5 */
+  /** */
   typedef vector<HDF5Group> HDF5Groups;
-  /** \ingroup hdf5 */
+  /** */
   typedef vector<HDF5File> HDF5Files;
-  /** \ingroup hdf5 */
-  inline std::ostream &operator<<(std::ostream &out, HDF5Group g) {
-    g.show(out);
-    return out;
-  }
-  /** \ingroup hdf5 */
-  inline std::ostream &operator<<(std::ostream &out, HDF5File g) {
-    g.show(out);
-    return out;
-  }
 
-  /** \ingroup hdf5 */
+  /** */
   inline int get_number_of_open_hdf5_handles() {
     H5garbage_collect();
     return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);

@@ -476,9 +476,9 @@ namespace RMF {
           }
           ds.set_value(HDF5DataSetIndexD<2>(vi, k.get_index()), v);
         }
-        IMP_RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
+        /*IMP_RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
                                "Stored " << v << " but got "
-                               << get_value(node, k, frame));
+                               << get_value(node, k, frame));*/
       }
 
       template <class TypeTraits, int Arity>
@@ -587,13 +587,13 @@ namespace RMF {
         frames_hint_=i;
       }
 
-      void check_tuple(int arity, unsigned int index) const;
-      unsigned int get_number_of_tuples(int arity) const;
-      RMF::Indexes get_tuple_indexes(int Arity) const;
-      unsigned int add_tuple(const RMF::Indexes &nis, int t);
-      unsigned int get_tuple_member(int Arity, unsigned int index,
+      void check_set(int arity, unsigned int index) const;
+      unsigned int get_number_of_sets(int arity) const;
+      RMF::Indexes get_set_indexes(int Arity) const;
+      unsigned int add_set(const RMF::Indexes &nis, int t);
+      unsigned int get_set_member(int Arity, unsigned int index,
                                     int member_index) const;
-      unsigned int get_tuple_type(int Arity, unsigned int index) const;
+      unsigned int get_set_type(int Arity, unsigned int index) const;
 
       int add_category(int Arity, std::string name);
       int get_category(int Arity, std::string name) const;

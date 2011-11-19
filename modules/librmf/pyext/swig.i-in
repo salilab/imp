@@ -13,8 +13,6 @@
   macroname(node_id, NodeID, NodeIDs, RMF::NodeID);
   macroname(node_ids, NodeIDs, NodeIDsList, RMF::NodeIDs);
   macroname(ints, Ints, IntsList, RMF::Ints);
-  macroname(index_data_set_2d, IndexDataSet2D, IndexDataSet2Ds, RMF::HDF5IndexDataSet2D);
-  macroname(float_data_set_2d, FloatDataSet2D, FloatDataSet2Ds, RMF::HDF5FloatDataSet2D);
 %enddef
 
 %pythoncode %{
@@ -88,7 +86,7 @@ IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
-IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, NodeTupleHandle);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, NodeSetHandle);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodePairHandle, NodePairHandle, NodePairHandles);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeTripletHandle, NodeTripletHandle, NodeTripletHandles);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeQuadHandle, NodeQuadHandle, NodeQuadHandles);
@@ -118,7 +116,7 @@ namespace RMF {
         return ret
   %}
    %pythoncode %{
-    def get_node_tuples(self, arity):
+    def get_node_sets(self, arity):
         ret=[]
         if arity==2:
           return self.get_node_pairs()
@@ -130,7 +128,7 @@ namespace RMF {
           return []
   %}
   %pythoncode %{
-    def get_tuple_categories(self, arity):
+    def get_set_categories(self, arity):
         ret=[]
         if arity==1:
           return self.get_categories()
@@ -177,7 +175,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %template(TripletCategory) RMF::CategoryD<3>;
 %template(QuadCategory) RMF::CategoryD<4>;
 
-%include "RMF/NodeTupleHandle.h"
+%include "RMF/NodeSetHandle.h"
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"
 %include "RMF/names.h"

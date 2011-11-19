@@ -8,7 +8,7 @@
 
 #include <RMF/internal/shared.h>
 #include <RMF/NodeHandle.h>
-#include <RMF/NodeTupleHandle.h>
+#include <RMF/NodeSetHandle.h>
 
 namespace RMF {
   namespace internal {
@@ -52,7 +52,7 @@ namespace RMF {
         last_vi_[i]=-1;
       }
       for (unsigned int i=0; i < 3; ++i) {
-        std::string nm=get_tuple_data_data_set_name(i+2);
+        std::string nm=get_set_data_data_set_name(i+2);
         if (file_.get_has_child(nm)) {
           node_data_[i+1]
               = get_data_set_always<IndexTraits,
@@ -197,7 +197,7 @@ namespace RMF {
     RMF::Indexes tp(2);
     tp[0]=ida;
     tp[1]=idb;
-    int ind=add_tuple(tp, BOND);
+    int ind=add_set(tp, BOND);
     PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
     if (pik==PairIndexKey()) {
       pik= add_key<IndexTraits, 2>(bond, "type", false);
@@ -220,12 +220,12 @@ namespace RMF {
 
     unsigned int SharedData::get_number_of_bonds() const {
       // not really right
-      return get_number_of_tuples(2);
+      return get_number_of_sets(2);
     }
     boost::tuple<int,int,int> SharedData::get_bond(unsigned int i) const {
       int bond=get_category(2, "bond");
-      int na= get_tuple_member(2, i, 0);
-      int nb= get_tuple_member(2, i, 1);
+      int na= get_set_member(2, i, 0);
+      int nb= get_set_member(2, i, 1);
       PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
       int t= get_value<IndexTraits, 2>(i, pik, -1);
       return boost::tuple<int,int,int>(na, nb, t);
@@ -250,14 +250,14 @@ namespace RMF {
       return ret;
     }
 
-  void SharedData::check_tuple(int arity, unsigned int index) const {
+  void SharedData::check_set(int arity, unsigned int index) const {
     IMP_RMF_USAGE_CHECK(node_data_[arity-1] != HDF5IndexDataSet2D(),
-                        "Invalid tuple arity requested: " << arity);
+                        "Invalid set arity requested: " << arity);
     IMP_RMF_USAGE_CHECK(node_data_[arity-1]
                         .get_value(HDF5DataSetIndexD<2>(index,
                                                         0))
                         >=0,
-                        "Invalid type for tuple: " << arity << " and "
+                        "Invalid type for set: " << arity << " and "
                         << index);
     for ( int i=0; i< arity; ++i) {
       int cur=node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
@@ -266,7 +266,7 @@ namespace RMF {
     }
   }
 
-  unsigned int SharedData::get_number_of_tuples(int arity) const {
+  unsigned int SharedData::get_number_of_sets(int arity) const {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       return 0;
     }
@@ -279,7 +279,7 @@ namespace RMF {
     }
     return ct;
   }
-  RMF::Indexes SharedData::get_tuple_indexes(int arity) const {
+  RMF::Indexes SharedData::get_set_indexes(int arity) const {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       return RMF::Indexes();
     }
@@ -292,10 +292,10 @@ namespace RMF {
     }
     return ret;
   }
-  unsigned int SharedData::add_tuple(const RMF::Indexes &nis, int t) {
+  unsigned int SharedData::add_set(const RMF::Indexes &nis, int t) {
     const int arity=nis.size();
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
-      std::string nm=get_tuple_data_data_set_name(arity);
+      std::string nm=get_set_data_data_set_name(arity);
       node_data_[arity-1]
           = file_.add_child_data_set<IndexTraits, 2>(nm);
     }
@@ -313,17 +313,17 @@ namespace RMF {
     for ( int i=0; i< arity; ++i) {
       node_data_[arity-1].set_value(HDF5DataSetIndexD<2>(slot, i+1), nis[i]);
     }
-    check_tuple(arity, slot);
+    check_set(arity, slot);
     return slot;
   }
-  unsigned int SharedData::get_tuple_member(int arity, unsigned int index,
+  unsigned int SharedData::get_set_member(int arity, unsigned int index,
                                             int member_index) const {
-    check_tuple(arity, index);
+    check_set(arity, index);
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
                                                              member_index+1));
   }
-  unsigned int SharedData::get_tuple_type(int arity, unsigned int index) const {
-    check_tuple(arity, index);
+  unsigned int SharedData::get_set_type(int arity, unsigned int index) const {
+    check_set(arity, index);
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
   }
 

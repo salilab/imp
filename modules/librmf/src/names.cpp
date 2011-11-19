@@ -34,6 +34,7 @@ namespace RMF {
                          std::string def,std::string file_name) {
       char *env = getenv(envvar.c_str());
       std::string base;
+      using std::operator<<;
       if (env) {
         base=std::string(env);
         base=get_concatenated_path(base, "RMF");

@@ -6,18 +6,18 @@
  *
  */
 
-#include <RMF/NodeTupleHandle.h>
+#include <RMF/NodeSetHandle.h>
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>
 #include <RMF/RootHandle.h>
 
 namespace RMF {
 
-std::string get_tuple_type_name(NodeTupleType t) {
+std::string get_set_type_name(NodeSetType t) {
   switch (t) {
   case BOND:
     return "bond";
-  case CUSTOM_TUPLE:
+  case CUSTOM_SET:
     return "custom";
   default:
     return "unknown";
