@@ -44,8 +44,6 @@ template <class TypeT, int Arity>
     ret+=show_type_data_xml< RMF::IndexTraits, 1>(nh, kc);
     ret+=show_type_data_xml< RMF::StringTraits, 1>(nh, kc);
     ret+=show_type_data_xml< RMF::NodeIDTraits, 1>(nh, kc);
-    ret+=show_type_data_xml< RMF::IndexDataSet2DTraits, 1>(nh, kc);
-    ret+=show_type_data_xml< RMF::FloatDataSet2DTraits, 1>(nh, kc);
     return ret;
   }
 
@@ -71,7 +69,7 @@ double traverse(std::string name) {
   RMF::RootHandle rh= RMF::open_rmf_file(name);
   RMF::Categories kcs= rh.get_categories<1>();
   ret+=show_xml(rh, kcs);
-  RMF::NodePairHandles ps= rh.get_node_tuples<2>();
+  RMF::NodePairHandles ps= rh.get_node_sets<2>();
   for (unsigned int i=0; i< ps.size(); ++i) {
     std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
         (ps[i].get_node(0),ps[i].get_node(1));

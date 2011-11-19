@@ -103,12 +103,6 @@ template <int Arity, class Handle>
     opened=show_type_data_xml<RMF::IndexTraits, Arity>(nh, kc, opened, out);
     opened=show_type_data_xml<RMF::StringTraits, Arity>(nh, kc, opened, out);
     opened=show_type_data_xml<RMF::NodeIDTraits, Arity>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::IndexDataSet2DTraits, Arity>(nh,
-                                                                kc, opened,
-                                                                out);
-    opened=show_type_data_xml<RMF::FloatDataSet2DTraits, Arity>(nh,
-                                                                kc, opened,
-                                                                out);
     if (opened) {
       out << "/>\n";
     }
@@ -137,31 +131,31 @@ template <int Arity, class Handle>
 
 
 template <int Arity>
-void show_tuples(RMF::RootHandle rh,
+void show_sets(RMF::RootHandle rh,
                  const RMF::vector<RMF::CategoryD<Arity> >& cs,
                  std::ostream &out) {
-  std::vector<RMF::NodeTupleHandle<Arity> > tuples= rh.get_node_tuples<Arity>();
-  if (!tuples.empty()) {
-    out << "<tuples" << Arity << ">" << std::endl;
-    for (unsigned int i=0; i< tuples.size(); ++i) {
-      out << "<tuple id=\"" << tuples[i].get_id().get_index()
-          << "\" type=\"" << RMF::get_tuple_type_name(tuples[i].get_type())
+  std::vector<RMF::NodeSetHandle<Arity> > sets= rh.get_node_sets<Arity>();
+  if (!sets.empty()) {
+    out << "<sets" << Arity << ">" << std::endl;
+    for (unsigned int i=0; i< sets.size(); ++i) {
+      out << "<set id=\"" << sets[i].get_id().get_index()
+          << "\" type=\"" << RMF::get_set_type_name(sets[i].get_type())
           << "\" members=\"";
       for (unsigned int j=0; j< Arity; ++j) {
         if (j >0) {
           out << ", ";
         }
-        out << tuples[i].get_node(j).get_id().get_index();
+        out << sets[i].get_node(j).get_id().get_index();
       }
       out << "\">" << std::endl;
       if (verbose) {
         for (unsigned int j=0; j< cs.size(); ++j) {
-          show_data_xml<Arity>(tuples[i], cs[j], out);
+          show_data_xml<Arity>(sets[i], cs[j], out);
         }
       }
-      out << "</tuple>" << std::endl;
+      out << "</set>" << std::endl;
     }
-    out << "</tuples"<< Arity << ">" << std::endl;
+    out << "</sets"<< Arity << ">" << std::endl;
   }
 }
 
@@ -218,9 +212,9 @@ int main(int argc, char **argv) {
     *out << "</path>\n";
     show_hierarchy(rh, cs, *out);
 
-    show_tuples<2>(rh, rh.get_categories<2>(), *out);
-    show_tuples<3>(rh, rh.get_categories<3>(), *out);
-    show_tuples<4>(rh, rh.get_categories<4>(), *out);
+    show_sets<2>(rh, rh.get_categories<2>(), *out);
+    show_sets<3>(rh, rh.get_categories<3>(), *out);
+    show_sets<4>(rh, rh.get_categories<4>(), *out);
     *out << "</rmf>\n";
     return 0;
   } catch (const IMP::Exception &e) {
