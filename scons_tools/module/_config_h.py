@@ -85,7 +85,6 @@ def _action_config_h(target, source, env):
 #ifndef %(EXPORT)s_CONFIG_H
 #define %(EXPORT)s_CONFIG_H
 
-#include <boost/static_assert.hpp>
 #include <IMP/compatibility/compatibility_config.h>
 #include <string>
 
@@ -212,6 +211,8 @@ IMPBASE_END_INTERNAL_NAMESPACE
 #  endif // SWIG
 """
     print >> h, """
+#else // IMP_DOXYGEN
+#define %(EXPORT)sEXPORT
 #endif // IMP_DOXYGEN
 
 //  functions are defined explicitly for swig
