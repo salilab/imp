@@ -204,7 +204,6 @@ namespace RMF {
     IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_KEY_TYPE_METHODS);
 
     /** @} */
-#endif
 #ifdef IMP_DOXYGEN
     /** \name Python only
         The following methods are only available in python.
