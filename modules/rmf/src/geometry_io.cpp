@@ -76,6 +76,47 @@ namespace {
   x,y,z,xs, ys, zs,                             \
     cr, cg, cb, r, vn0, vn1, vn2, tk
 
+  /*void copy_color(display::Geometry *g, NodeHandle cur,
+                   int frame,
+                   IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
+    if (g->get_has_color()) {
+      display::Color c= g->get_color();
+      cur.set_value(cr, c.get_red(), frame);
+      cur.set_value(cg, c.get_green(), frame);
+      cur.set_value(cb, c.get_blue(), frame);
+    }
+  }
+  void copy_color( NodeHandle cur, isplay::Geometry *g,
+                   IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(xs);
+    IMP_UNUSED(ys);
+    IMP_UNUSED(zs);
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
+    if (cur.get_has_value(cr)) {
+      display::Color c(cur.get_value(cr, frame),
+                       cur.get_value(cg, frame),
+                       cur.get_value(cb, frame));
+      g->set_color(c);
+    }
+  }
+  */
+
   void process(display::SphereGeometry *sg, NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(xs);
@@ -154,44 +195,31 @@ namespace {
     IMP_UNUSED(y);
     IMP_UNUSED(z);
     IMP_UNUSED(r);
-    IMP_UNUSED(xs);
-    IMP_UNUSED(ys);
-    IMP_UNUSED(zs);
+    IMP_UNUSED(tk);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_UNUSED(tk);
-    IMP_NOT_IMPLEMENTED;
-#if 0
-    std::string vnm, inm;
-    int offset=0;
     Ints tris
       = display::internal::get_triangles(sg);
-    HDF5DataSetIndexD<2> size;
-    size[0]= tris.size()/3;
-    size[1]=3;
-    id.set_size(size);
-    HDF5DataSetIndexD<1> index;
+    algebra::Vector3Ds vs= sg->get_vertexes();
+    RMF::Floats xcs(vs.size()), ycs(vs.size()), zcs(vs.size());
+    for (unsigned int i=0; i < vs.size(); ++i) {
+      xcs[i]=vs[i][0];
+      ycs[i]=vs[i][1];
+      zcs[i]=vs[i][2];
+    }
+    cur.set_value(xs, xcs, frame);
+    cur.set_value(ys, ycs, frame);
+    cur.set_value(zs, zcs, frame);
+    Ints v0(tris.size()/3), v1(tris.size()/3), v2(tris.size()/3);
     for (unsigned int i=0; i< tris.size(); i+=3) {
-      Ints curtri(3);
-      std::copy(tris.begin()+i, tris.begin()+i+3, curtri.begin());
-      index[0]=i/3;
-      id.set_row(index, curtri);
+      v0[i/3]=tris[i];
+      v1[i/3]=tris[i+1];
+      v2[i/3]=tris[i+2];
     }
-    HDF5DataSetIndexD<2> vsz;
-    vsz[0]= sg->get_vertexes().size();
-    vsz[1]= 3;
-    vd.set_size(vsz);
-    for (unsigned int i=0; i< sg->get_vertexes().size(); ++i) {
-      vsz[0]= i;
-      for (unsigned int j=0; j< 3; ++j) {
-        vsz[1]=j;
-        vd.set_value(vsz, sg->get_vertexes()[i][j]);
-      }
-    }
-    cur.set_value(vn, vd, frame);
-    cur.set_value(in, id, frame);
-#endif
+    cur.set_value(vn0, v0, frame);
+    cur.set_value(vn1, v1, frame);
+    cur.set_value(vn2, v2, frame);
   }
 
 #define IMP_TRY(type) if (dynamic_cast<type*>(g)) {     \
@@ -286,6 +314,10 @@ namespace {
     IMP_UNUSED(ys);
     IMP_UNUSED(zs);
     IMP_UNUSED(r);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     g->set_name(cur.get_name());
     if (cur.get_has_value(cr)) {
       display::Color c(cur.get_value(cr),
@@ -303,6 +335,10 @@ namespace {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     if (cur.get_has_value(x, frame) && cur.get_has_value(r, frame)) {
       algebra::Sphere3D s(algebra::Vector3D(cur.get_value(x, frame),
                                             cur.get_value(y, frame),
@@ -315,9 +351,16 @@ namespace {
 
   display::Geometry *try_read_cylinder(NodeHandle cur, int frame,
                                        IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     if (cur.get_has_value(xs, frame) && cur.get_value(xs, frame).size()==2
         && cur.get_has_value(r, frame)) {
       algebra::Cylinder3D
@@ -336,10 +379,18 @@ namespace {
 
   display::Geometry *try_read_segment(NodeHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+
+    IMP_UNUSED(x);
+    IMP_UNUSED(y);
+    IMP_UNUSED(z);
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
     IMP_UNUSED(r);
+    IMP_UNUSED(vn0);
+    IMP_UNUSED(vn1);
+    IMP_UNUSED(vn2);
+    IMP_UNUSED(tk);
     if (cur.get_has_value(xs, frame) && cur.get_value(xs, frame).size()==2) {
       algebra::Segment3D
         s(algebra::Vector3D(cur.get_value(xs, frame)[0],
@@ -355,7 +406,7 @@ namespace {
   }
 
 
-  display::Geometry *try_read_surface(NodeHandle cur,
+  display::Geometry *try_read_surface(NodeHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -364,30 +415,25 @@ namespace {
     IMP_UNUSED(cr);
     IMP_UNUSED(cg);
     IMP_UNUSED(cb);
-    IMP_NOT_IMPLEMENTED;
+    IMP_UNUSED(tk);
     if (cur.get_has_value(xs) && cur.get_has_value(vn0)) {
-#if 0
-      HDF5IndexDataSet2D id= cur.get_value(in);
-      HDF5FloatDataSet2D vd=cur.get_value(vn);
-      algebra::Vector3Ds vs(vd.get_size()[0]);
-      HDF5DataSetIndexD<2> vds;
-      for (vds[0]=0; vds[0]< vs.size(); ++vds[0]) {
-        for (vds[1]=0; vds[1]< 3; ++vds[1]) {
-          vs[vds[0]][vds[1]]=vd.get_value(vds);
-        }
+      RMF::Floats cxs= cur.get_value(xs, frame);
+      RMF::Floats cys= cur.get_value(ys, frame);
+      RMF::Floats czs= cur.get_value(zs, frame);
+      algebra::Vector3Ds vs(cxs.size());
+      for (unsigned int i=0; i< cxs.size(); ++i) {
+        vs[i]= algebra::Vector3D(cxs[i], cys[i], czs[i]);
       }
-      Ints is(id.get_size()[0]*4, -1);
-      HDF5DataSetIndexD<1> ids(1);
-      for (unsigned int i=0; i< is.size()/4; ++i) {
-        ids[0]= i;
-        RMF::Ints cur=id.get_row(ids);
-        IMP_USAGE_CHECK(cur.size()==3, "Triangle not found. Found face of size "
-                        << cur.size() << " instead.");
-        std::copy(cur.begin(), cur.end(), is.begin()+i*4);
+      RMF::Ints t0= cur.get_value(vn0, frame);
+      RMF::Ints t1= cur.get_value(vn1, frame);
+      RMF::Ints t2= cur.get_value(vn2, frame);
+      Ints tris(t0.size()*3);
+      for (unsigned int i=0; i< t0.size(); ++i) {
+        tris[3*i]= t0[i];
+        tris[3*i+1]=t1[i];
+        tris[3*i+2]=t2[i];
       }
-      Pointer<display::Geometry> ret=new display::SurfaceMeshGeometry(vs, is);
-      return ret.release();
-#endif
+      return new display::SurfaceMeshGeometry(vs, tris);
     }
     else return NULL;
   }
@@ -405,7 +451,7 @@ namespace {
                                         IMP_HDF5_PASS_GEOMETRY_KEYS)));
         else if ((curg=try_read_sphere(ch[i], frame,
                                        IMP_HDF5_PASS_GEOMETRY_KEYS)));
-        else if ((curg=try_read_surface(ch[i],
+        else if ((curg=try_read_surface(ch[i], frame,
                                         IMP_HDF5_PASS_GEOMETRY_KEYS)));
         else {
           display::Geometries c=read_internal(ch[i], frame,

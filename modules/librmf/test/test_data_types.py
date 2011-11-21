@@ -19,8 +19,6 @@ class GenericTest(RMF.TestCase):
              (f.add_node_ids_key, [nh.get_id()]),
              (f.add_string_key, "there"),
              (f.add_index_key, 3),
-             (f.add_float_data_set_2d_key, ds),
-             (f.add_index_data_set_2d_key, dsi),
              (f.add_ints_key, [3,4,5,6])]
         self.assertEqual(len(lst),len(RMF.get_data_types()))
         for p in lst:
