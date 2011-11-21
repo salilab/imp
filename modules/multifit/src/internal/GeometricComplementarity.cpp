@@ -154,21 +154,12 @@ void SurfaceDistanceMap::resample() {
   //reset_data(0);
   IMP::em::SampledDensityMap::resample();
   long num_voxels = get_number_of_voxels();
+  for ( long i = 0; i < num_voxels; ++i )
   {
-    double max_val = -std::numeric_limits<double>::max();
-    double min_val = -max_val;
-    for ( long i = 0; i < num_voxels; ++i )
-    {
-      max_val = std::max(max_val, data_[i]);
-      min_val = std::min(min_val, data_[i]);
-      if ( data_[i] > kernel_params_.get_lim() )
-        data_[i] = std::numeric_limits<float>::max();
-      else
-        data_[i] = 0;
-    }
-    IMP_LOG(VERBOSE, "max voxel value = " << max_val <<
-        ", min voxel value = " << min_val << ", threshold = "
-        << kernel_params_.get_lim() << '\n');
+    if ( data_[i] > 0 )
+      data_[i] = std::numeric_limits<float>::max();
+    else
+      data_[i] = 0;
   }
   //find the voxeles that are part of the surface, so we'll have
   //background, surface and interior voxels
@@ -177,7 +168,6 @@ void SurfaceDistanceMap::resample() {
   set_surface_shell(&curr_shell_voxels);
   //keeps the shell index for each of the data voxels
   IMP_LOG(VERBOSE,"reseting shell voxels\n");
-  //num_voxels = get_number_of_voxels();
   std::vector<int> shell_voxels(num_voxels, -1);
   for(long i=0;i<get_number_of_voxels();i++) {
     if (data_[i] == 1) {
@@ -208,19 +198,19 @@ IMP::algebra::DenseGrid3D<float>
 get_complentarity_grid(const IMP::ParticlesTemp &ps,
   const ComplementarityGridParameters &params)
 {
-  SurfaceDistanceMap sdm(ps, params.voxel_size);
-  sdm.resample();
-  IMP::algebra::BoundingBox3D bb = IMP::em::get_bounding_box(&sdm);
+  IMP_NEW(SurfaceDistanceMap, sdm, (ps, params.voxel_size));
+  sdm->resample();
+  IMP::algebra::BoundingBox3D bb = IMP::em::get_bounding_box(sdm);
   IMP_LOG(VERBOSE, __FUNCTION__ << ": Sampled bounding box is "
       << bb.get_corner(0) << " to " << bb.get_corner(1) << '\n');
   IMP::algebra::DenseGrid3D<float> grid(params.voxel_size, bb);
   IMP_GRID3D_FOREACH_VOXEL(grid,
                            IMP_UNUSED(loop_voxel_index);
-      long idx = sdm.get_voxel_by_location(
+      long idx = sdm->get_voxel_by_location(
         voxel_center[0], voxel_center[1], voxel_center[2]);
       if ( idx > -1 )
       {
-        float v = sdm.get_value(idx);
+        float v = sdm->get_value(idx);
         if ( v > 0 )
         {
           //inside voxel
@@ -239,7 +229,7 @@ get_complentarity_grid(const IMP::ParticlesTemp &ps,
         else if ( v < 0 )
         {
           // outside voxel
-          v = -v;
+          v = -v - 1;
           // assume complementarity_thickness is sorted!!!
           Floats::const_iterator p = std::lower_bound(
             params.complementarity_thickness.begin(),
@@ -325,7 +315,7 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                                prod = v0*v1;
                                if ( prod < 0 ) {
                                  complementarity_score += prod;
-                               } else if (prod > 0) {
+                               } else if ( prod > 0 ) {
                                  penetration_score += prod;
                                  if ( penetration_score
                                     > params.maximum_penetration_score) {
