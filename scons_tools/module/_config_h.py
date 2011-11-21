@@ -89,7 +89,6 @@ def _action_config_h(target, source, env):
 #include <IMP/compatibility/compatibility_config.h>
 #include <string>
 
-#ifndef IMP_DOXYGEN
 
 #  ifdef _MSC_VER
 
@@ -212,7 +211,6 @@ IMPBASE_END_INTERNAL_NAMESPACE
 #  endif // SWIG
 """
     print >> h, """
-#endif // IMP_DOXYGEN
 
 //  functions are defined explicitly for swig
 #ifndef SWIG
