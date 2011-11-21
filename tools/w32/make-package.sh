@@ -48,6 +48,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_system-vc100-mt-1_44.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
+   ${DLLSRC}/opencv_ffmpeg220.dll \
    ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/lib || exit 1
 
 # Check all installed binaries for DLL dependencies, to make sure we
@@ -57,9 +58,21 @@ strings ${ROOT}/lib/*.exe ${ROOT}/lib/*.pyd ${ROOT}/lib/*.dll \
         | grep -i '\.dll' | sort -u | tr '[:upper:]' '[:lower:]' > w32.deps
 (cd ${ROOT}/lib && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
 
-# Add standard Windows DLLs and those of our prerequisites (Python 2.6)
+# Add standard Windows DLLs
 echo "kernel32.dll" >> w32.dlls
 echo "advapi32.dll" >> w32.dlls
+echo "avicap32.dll" >> w32.dlls
+echo "avifil32.dll" >> w32.dlls
+echo "comctl32.dll" >> w32.dlls
+echo "gdi32.dll" >> w32.dlls
+echo "msvcrt.dll" >> w32.dlls
+echo "msvfw32.dll" >> w32.dlls
+echo "ole32.dll" >> w32.dlls
+echo "user32.dll" >> w32.dlls
+echo "wsock32.dll" >> w32.dlls
+echo "ws2_32.dll" >> w32.dlls
+
+# Add DLLs of our prerequisites (Python 2.6)
 echo "python26.dll" >> w32.dlls
 
 if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
