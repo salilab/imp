@@ -61,7 +61,9 @@ public:
   Key(): i_(-1), ci_(), pf_(false) {}
   void show(std::ostream &out) const {
     using std::operator<<;
-    out << ci_ << (pf_?'E':'I') << i_;
+    // out << ci_ trips up some older versions of g++
+    ci_.show(out);
+    out << (pf_?'E':'I') << i_;
   }
   IMP_RMF_COMPARISONS(Key);
   IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
