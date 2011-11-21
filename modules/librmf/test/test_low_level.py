@@ -19,8 +19,8 @@ class GenericTest(RMF.TestCase):
              (f.add_child_node_id_data_set_1d, nh),
              (f.add_child_string_data_set_1d, "there"),
              (f.add_child_index_data_set_1d, 3),
-             (f.add_child_float_data_set_2d_data_set_1d, ds),
-             (f.add_child_index_data_set_2d_data_set_1d, dsi),
+             #(f.add_child_float_data_set_2d_data_set_1d, ds),
+             #(f.add_child_index_data_set_2d_data_set_1d, dsi),
              (f.add_child_ints_data_set_1d, [3,4,5,6]),
              #(f.add_child_node_ids_data_set_1d, [nh]),
              ]
