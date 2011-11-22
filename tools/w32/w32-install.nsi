@@ -68,7 +68,7 @@ Section ""
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoModify" 1
   WriteRegDWORD HKLM "${UNINST_KEY}" "NoRepair" 1
 
-  WriteRegStr HKLM "Software\Python\PythonCore\2.6\PythonPath\${PRODVER}" "" "$INSTDIR\lib"
+  WriteRegStr HKLM "Software\Python\PythonCore\2.6\PythonPath\${PRODVER}" "" "$INSTDIR\python"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN ${PRODVER}
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
