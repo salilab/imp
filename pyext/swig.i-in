@@ -27,3 +27,4 @@ IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
 %include "IMP/membrane/RigidBodyGridStates.h"
 %include "IMP/membrane/MonteCarloWithWte.h"
 %include "IMP/membrane/PbcBoxedMover.h"
+%include "IMP/membrane/ReplicaExchange.h"
