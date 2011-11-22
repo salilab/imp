@@ -10,6 +10,7 @@
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/BoundingBoxD.h"
 #include "IMP/algebra/Grid3D.h"
+#include "IMP/algebra/constants.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
@@ -23,7 +24,7 @@ double sphere_intersection(double radius, double dist)
 {
   double d = 2*radius - dist;
   if ( d > 0 )
-    return M_PI*(4*radius + dist)*d*d/12;
+    return PI*(4*radius + dist)*d*d/12;
   else
     return 0;
 }
