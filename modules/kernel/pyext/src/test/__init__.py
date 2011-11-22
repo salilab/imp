@@ -131,11 +131,12 @@ class TestCase(unittest.TestCase):
         IMP.set_check_level(self.__check_level)
         delta= datetime.datetime.now()-self.start_time
         try:
-            pv= delta.total_second()
-        except:
-            pv=(float(delta.microseconds) + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
+            pv= delta.total_seconds()
+        except AttributeError:
+            pv = (float(delta.microseconds) \
+                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
         if pv > 1:
-            print >> sys.stderr, " in ", pv,"s ... ",
+            print >> sys.stderr, "in %.3fs ... " % pv,
 
 
     def get_input_file_name(self, filename):

@@ -203,7 +203,13 @@ class TestCase(unittest.TestCase):
 
     def tearDown(self):
         delta= datetime.datetime.now()-self.start_time
-        print >> sys.stderr, " in ", delta," ... ",
+        try:
+            pv = delta.total_seconds()
+        except AttributeError:
+            pv = (float(delta.microseconds) \
+                  + (delta.seconds + delta.days * 24 * 3600) * 10**6) / 10**6
+        if pv > 1:
+            print >> sys.stderr, "in %.3fs ... " % pv,
 
     def get_input_file_name(self, filename):
         """Get the full name of an input file in the top-level
