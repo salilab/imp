@@ -20,7 +20,7 @@ using namespace RMF;
 
 namespace {
 #define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                            \
-  RootHandle f= node;                                                   \
+  RMF::RootHandle f= node;                                              \
   CategoryD<1> Shape=f.get_or_add_category<1>("shape");                 \
   RMF::FloatKey x                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
@@ -117,7 +117,7 @@ namespace {
   }
   */
 
-  void process(display::SphereGeometry *sg, NodeHandle cur, int frame,
+  void process(display::SphereGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(xs);
     IMP_UNUSED(ys);
@@ -136,7 +136,7 @@ namespace {
     cur.set_value(r, s.get_radius(), frame);
   }
 
-  void process(display::CylinderGeometry *sg, NodeHandle cur, int frame,
+  void process(display::CylinderGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -162,7 +162,7 @@ namespace {
     cur.set_value(r, s.get_radius(), frame);
   }
 
-  void process(display::SegmentGeometry *sg, NodeHandle cur, int frame,
+  void process(display::SegmentGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -189,7 +189,7 @@ namespace {
   }
 
 
-  void process(display::SurfaceMeshGeometry *sg, NodeHandle cur, int frame,
+  void process(display::SurfaceMeshGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -227,14 +227,14 @@ namespace {
             IMP_HDF5_PASS_GEOMETRY_KEYS);               \
   }
 
-  void add_internal(NodeHandle parent,  display::Geometry *tag,
+  void add_internal(RMF::NodeHandle parent,  display::Geometry *tag,
                     display::Geometry *g,
                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     int frame=0;
     IMP::Pointer<display::Geometry> gp(g);
     gp->set_was_used(true);
     // get_has_color, get_color, get_name, get_components
-    NodeHandle cur= parent.add_child(g->get_name(), GEOMETRY);
+    RMF::NodeHandle cur= parent.add_child(g->get_name(), GEOMETRY);
     cur.set_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry)
@@ -266,7 +266,7 @@ namespace {
 //IMP_REGISTER_WRITER(HDF5Writer, ".pym")
 
 
-void add_geometry(RootHandle parent, display::Geometry *g) {
+void add_geometry(RMF::RootHandle parent, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   add_internal(parent, g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -274,13 +274,13 @@ void add_geometry(RootHandle parent, display::Geometry *g) {
 }
 
 namespace {
-  void save_internal(RootHandle parent,int frame, display::Geometry *tag,
+  void save_internal(RMF::RootHandle parent,int frame, display::Geometry *tag,
                      display::Geometry *g,
                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP::Pointer<display::Geometry> gp(g);
     gp->set_was_used(true);
     // get_has_color, get_color, get_name, get_components
-    NodeHandle cur= parent.get_node_handle_from_association(tag);
+    RMF::NodeHandle cur= parent.get_node_handle_from_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry);
     display::Geometries gt= g->get_components();
@@ -295,7 +295,7 @@ namespace {
   }
 }
 
-void save_frame(RootHandle parent, int frame, display::Geometry *g) {
+void save_frame(RMF::RootHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   save_internal(parent, frame, g, g,
                 IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -305,7 +305,7 @@ void save_frame(RootHandle parent, int frame, display::Geometry *g) {
 
 
 namespace {
-  void read_basic(NodeHandle cur, display::Geometry *g,
+  void read_basic(RMF::NodeHandle cur, display::Geometry *g,
                   IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -327,7 +327,7 @@ namespace {
     }
   }
 
-  display::Geometry *try_read_sphere(NodeHandle cur, int frame,
+  display::Geometry *try_read_sphere(RMF::NodeHandle cur, int frame,
                                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(xs);
     IMP_UNUSED(ys);
@@ -349,7 +349,7 @@ namespace {
     } else return NULL;
   }
 
-  display::Geometry *try_read_cylinder(NodeHandle cur, int frame,
+  display::Geometry *try_read_cylinder(RMF::NodeHandle cur, int frame,
                                        IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -377,7 +377,7 @@ namespace {
     else return NULL;
   }
 
-  display::Geometry *try_read_segment(NodeHandle cur, int frame,
+  display::Geometry *try_read_segment(RMF::NodeHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
 
     IMP_UNUSED(x);
@@ -406,7 +406,7 @@ namespace {
   }
 
 
-  display::Geometry *try_read_surface(NodeHandle cur, int frame,
+  display::Geometry *try_read_surface(RMF::NodeHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -438,7 +438,7 @@ namespace {
     else return NULL;
   }
 
-  display::Geometries read_internal(NodeHandle parent,int frame,
+  display::Geometries read_internal(RMF::NodeHandle parent,int frame,
                                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     NodeHandles ch= parent.get_children();
     display::Geometries ret;
@@ -470,7 +470,7 @@ namespace {
   }
 }
 
-display::Geometries create_geometries(RootHandle parent,
+display::Geometries create_geometries(RMF::RootHandle parent,
                                       int frame) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   display::Geometries ret=
@@ -480,7 +480,7 @@ display::Geometries create_geometries(RootHandle parent,
 }
 
 
-RMFWriter::RMFWriter(RootHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
+RMFWriter::RMFWriter(RMF::RootHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
 
 void RMFWriter::on_set_frame() {
 }
