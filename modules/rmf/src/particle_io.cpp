@@ -14,8 +14,8 @@
 IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
-void add_particle(RootHandle fh, Particle* ps) {
-  NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
+void add_particle(RMF::RootHandle fh, Particle* ps) {
+  RMF::NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
   Category IMP= fh.add_category("IMP");
   n.set_association(ps);
   {
@@ -57,8 +57,9 @@ void add_particle(RootHandle fh, Particle* ps) {
       RMF::IndexKey fk
         = internal::get_or_add_key<IndexTraits>(fh, IMP, fks[i].get_string(),
                                                 false);
-      NodeHandle nh= fh.get_node_handle_from_association(ps->get_value(fks[i]));
-      if (nh== NodeHandle()) {
+      RMF::NodeHandle nh
+        = fh.get_node_handle_from_association(ps->get_value(fks[i]));
+      if (nh== RMF::NodeHandle()) {
         IMP_THROW("Particle " << ps->get_name()
                   << " references particle "
                   << ps->get_value(fks[i])->get_name()
@@ -70,12 +71,12 @@ void add_particle(RootHandle fh, Particle* ps) {
   }
 }
 
-ParticlesTemp create_particles(RootHandle fh, Model *m) {
+ParticlesTemp create_particles(RMF::RootHandle fh, Model *m) {
   NodeHandles ch= fh.get_children();
   Category IMP= fh.add_category("IMP");
   ParticlesTemp ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
-    NodeHandle cur= ch[i];
+    RMF::NodeHandle cur= ch[i];
     if (ch[i].get_type()==CUSTOM) {
       bool has_data=false;
       IMP_NEW(Particle, p, (m));
@@ -115,7 +116,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
-            NodeHandle nh
+            RMF::NodeHandle nh
               = fh.get_node_handle_from_id(NodeID(cur.get_value(fks[i])));
             Particle *op= reinterpret_cast<Particle*>(nh.get_association());
             IMP_CHECK_OBJECT(op);
