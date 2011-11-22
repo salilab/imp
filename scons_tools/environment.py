@@ -144,10 +144,11 @@ def _add_platform_flags(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wcast-align", "-fno-operator-names",])
-        if sys.platform == 'darwin':
-            env.Append(CXXFLAGS=["-Wmissing-prototypes"])
-        elif dependency.gcc.get_version(env)>= 4.2:
-            env.Append(CXXFLAGS=["-Wmissing-declarations"])
+        if dependency.gcc.get_version(env)>= 4.2:
+            if sys.platform == 'darwin':
+                env.Append(CXXFLAGS=["-Wmissing-prototypes"])
+            else:
+                env.Append(CXXFLAGS=["-Wmissing-declarations"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
