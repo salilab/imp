@@ -5,6 +5,14 @@
 # First run the following to install files:
 # scons -j3 destdir=w32-inst wine=true install
 #
+# This will only build Python wrappers for the 'default' Python version. To
+# add wrappers for another version, use something like
+# scons -j3 destdir=w32-inst wine=true pyextdir=/pylib/${PYVER} \
+#           pythoninclude=/usr/lib/w32comp/w32python/${PYVER}/include \
+#           libpath=/usr/lib/w32comp/w32python/${PYVER}/lib/ \
+#           w32-inst/pylib/${PYVER}/
+# where $PYVER is the Python version (e.g. 2.4).
+#
 # Then run (still in the top-level IMP directory)
 # tools/w32/make-package.sh <version>
 #
@@ -31,11 +39,22 @@ rmdir ${ROOT}/usr/share/doc || exit 1
 rmdir ${ROOT}/usr/share || exit 1
 rmdir ${ROOT}/usr || exit 1
 
-# Note that Python extensions are installed in the 2.4 location, since we
-# cross-compile (and Python in CentOS 5 is 2.4)
+# Note that default Python extensions (2.6) are installed in the 2.4 location,
+# since we cross-compile (and Python in CentOS 5 is 2.4)
 mv ${ROOT}/lib/python2.4/site-packages/* ${ROOT}/lib || exit 1
 rmdir ${ROOT}/lib/python2.4/site-packages || exit 1
 rmdir ${ROOT}/lib/python2.4 || exit 1
+
+# Make Python version-specific directories for extensions (.pyd)
+for PYVER in 2.3 2.4 2.5 2.6 2.7; do
+  mkdir ${ROOT}/lib/python${PYVER} || exit 1
+done
+mv ${ROOT}/lib/*.pyd ${ROOT}/lib/python2.6 || exit 1
+for PYVER in 2.3 2.4 2.5 2.7; do
+  mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/lib/python${PYVER} || exit 1
+  rmdir ${ROOT}/pylib/${PYVER} || exit 1
+done
+rmdir ${ROOT}/pylib || exit 1
 
 # Add redist MSVC runtime DLLs
 DLLSRC=/usr/lib/w32comp/windows/system
@@ -72,8 +91,10 @@ echo "user32.dll" >> w32.dlls
 echo "wsock32.dll" >> w32.dlls
 echo "ws2_32.dll" >> w32.dlls
 
-# Add DLLs of our prerequisites (Python 2.6)
-echo "python26.dll" >> w32.dlls
+# Add DLLs of our prerequisites (Python)
+for PYVER in 23 24 25 26 27; do
+  echo "python${PYVER}.dll" >> w32.dlls
+done
 
 if grep -v -f w32.dlls w32.deps > w32.unmet_deps; then
   echo "The following non-standard libraries are linked against, and were"
