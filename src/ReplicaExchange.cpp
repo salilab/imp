@@ -35,12 +35,12 @@ Ints ReplicaExchange::create_indexes()
  return index;
 }
 
-void ReplicaExchange::set_parameter(std::string key, Floats values)
+void ReplicaExchange::set_my_parameter(std::string key, Floats values)
 {
  parameters_[key]=values;
 }
 
-Floats ReplicaExchange::get_parameter(std::string key)
+Floats ReplicaExchange::get_my_parameter(std::string key)
 {
  return parameters_[key];
 }

@@ -29,8 +29,8 @@ private:
 
 public:
   ReplicaExchange();
-  void   set_parameter(std::string key, Floats values);
-  Floats get_parameter(std::string key);
+  void   set_my_parameter(std::string key, Floats values);
+  Floats get_my_parameter(std::string key);
   int    get_friend_index(int istep);
   Floats get_friend_parameter(std::string key, int findex);
   bool   do_exchange(double myscore0, double myscore1, int findex);
