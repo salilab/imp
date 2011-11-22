@@ -41,10 +41,10 @@ def gen_points(N):
 def compare(slow, fast):
     if len(slow) != len(fast):
         return False
-    slow.sort(key = lambda x : x[1])
-    slow.sort(key = lambda x : x[0])
-    fast.sort(key = lambda x : x[1])
-    fast.sort(key = lambda x : x[0])
+    slow.sort(lambda a,b: cmp(a[1], b[1]))
+    slow.sort(lambda a,b: cmp(a[0], b[0]))
+    fast.sort(lambda a,b: cmp(a[1], b[1]))
+    fast.sort(lambda a,b: cmp(a[0], b[0]))
     for s, f in zip(slow, fast):
         if s[0] != f[0] or s[1] != f[1]:
             return False
