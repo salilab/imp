@@ -27,9 +27,9 @@ VER=$1
 ROOT=w32-inst
 
 # Put things in more w32-like arrangement
-mv ${ROOT}/usr/include ${ROOT}/usr/lib ${ROOT} || exit 1
-mv ${ROOT}/usr/bin/* ${ROOT}/lib || exit 1
-rmdir ${ROOT}/usr/bin || exit 1
+mv ${ROOT}/usr/include ${ROOT}/usr/bin ${ROOT} || exit 1
+mv ${ROOT}/usr/lib/* ${ROOT}/bin || exit 1
+rmdir ${ROOT}/usr/lib || exit 1
 
 mv ${ROOT}/usr/share/imp ${ROOT}/data || exit 1
 mv ${ROOT}/usr/share/doc/imp/examples ${ROOT} || exit 1
@@ -41,24 +41,27 @@ rmdir ${ROOT}/usr || exit 1
 
 # Note that default Python extensions (2.6) are installed in the 2.4 location,
 # since we cross-compile (and Python in CentOS 5 is 2.4)
-mv ${ROOT}/lib/python2.4/site-packages/* ${ROOT}/lib || exit 1
-rmdir ${ROOT}/lib/python2.4/site-packages || exit 1
-rmdir ${ROOT}/lib/python2.4 || exit 1
+mv ${ROOT}/bin/python2.4/site-packages ${ROOT}/python || exit 1
+rmdir ${ROOT}/bin/python2.4 || exit 1
+
+# Patch IMP/__init__.py so it can find Python version-specific extensions
+# and the IMP DLLs
+patch -d ${ROOT}/python/IMP -p1 < tools/w32/python-search-path.patch || exit 1
 
 # Make Python version-specific directories for extensions (.pyd)
 for PYVER in 2.3 2.4 2.5 2.6 2.7; do
-  mkdir ${ROOT}/lib/python${PYVER} || exit 1
+  mkdir ${ROOT}/python/python${PYVER} || exit 1
 done
-mv ${ROOT}/lib/*.pyd ${ROOT}/lib/python2.6 || exit 1
+mv ${ROOT}/python/*.pyd ${ROOT}/python/python2.6 || exit 1
 for PYVER in 2.3 2.4 2.5 2.7; do
-  mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/lib/python${PYVER} || exit 1
+  mv ${ROOT}/pylib/${PYVER}/*.pyd ${ROOT}/python/python${PYVER} || exit 1
   rmdir ${ROOT}/pylib/${PYVER} || exit 1
 done
 rmdir ${ROOT}/pylib || exit 1
 
 # Add redist MSVC runtime DLLs
 DLLSRC=/usr/lib/w32comp/windows/system
-cp ${DLLSRC}/msvc*100.dll ${ROOT}/lib || exit 1
+cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1
 
 # Add other DLL dependencies
 cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
@@ -68,14 +71,14 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
    ${DLLSRC}/opencv_ffmpeg220.dll \
-   ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/lib || exit 1
+   ${DLLSRC}/opencv_imgproc220.dll ${ROOT}/bin || exit 1
 
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
 # We should really parse the PE files properly rather than using 'strings' here!
-strings ${ROOT}/lib/*.exe ${ROOT}/lib/*.pyd ${ROOT}/lib/*.dll \
+strings ${ROOT}/bin/*.exe ${ROOT}/bin/*.pyd ${ROOT}/bin/*.dll \
         | grep -i '\.dll' | sort -u | tr '[:upper:]' '[:lower:]' > w32.deps
-(cd ${ROOT}/lib && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
+(cd ${ROOT}/bin && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
 
 # Add standard Windows DLLs
 echo "kernel32.dll" >> w32.dlls
