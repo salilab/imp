@@ -10,35 +10,37 @@
 
 #include "membrane_config.h"
 #include "mpi.h"
+#include <string>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-// rem?
+// Replica Exchange
 class IMPMEMBRANEEXPORT ReplicaExchange
 {
-  double tmin_,tmax_;
-  int myrank_,frank_,nproc_;
-  Floats temp_;
+  int myrank_,nproc_;
   Ints index_;
   MPI_Status status_;
+  std::map<std::string,Floats> parameters_;
 
 private:
-  Floats  create_temperatures(double tmin,double tmax,int nrep);
-  Ints    create_indexes(int nrep);
-  int     get_friend_rank(Ints index,int myrank,int step,int nrep);
-  bool    get_acceptance(double scores[2],double fscores[2],
-                         double mytemp, double ftemp);
+  Ints   create_indexes();
+  bool   get_acceptance(double myscore,double fscore);
+  int    get_rank(int index);
 
 public:
-  ReplicaExchange(double tmin, double tmax);
-  ReplicaExchange(Floats temperatures);
-  int get_friend_index(int istep);
-  int do_exchange(double myscore, double fscore);
-  ~ReplicaExchange(){MPI_Finalize();};
+  ReplicaExchange();
+  void   set_parameter(std::string key, Floats values);
+  Floats get_parameter(std::string key);
+  int    get_friend_index(int istep);
+  Floats get_friend_parameter(std::string key, int findex);
+  bool   do_exchange(double myscore0, double myscore1, int findex);
+  Floats create_temperatures(double tmin,double tmax,int nrep);
 
-  int get_whoiam() const {
+  int    get_my_index() const {
    return index_[myrank_];
   }
+
+  ~ReplicaExchange(){MPI_Finalize();};
 
 };
 

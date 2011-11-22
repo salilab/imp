@@ -6,68 +6,99 @@
  *
  */
 #include <IMP/membrane/ReplicaExchange.h>
-#include <IMP/core.h>
 #include "mpi.h"
 #include <iostream>
+#include <string>
+#include <time.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-ReplicaExchange::ReplicaExchange(double tmin, double tmax){
- tmin_=tmin;
- tmax_=tmax;
+ReplicaExchange::ReplicaExchange(){
  MPI::Init();
  MPI_Comm_size(MPI_COMM_WORLD, &nproc_);
  MPI_Comm_rank(MPI_COMM_WORLD, &myrank_);
- temp_=create_temperatures(tmin_,tmax_,nproc_);
- index_=create_indexes(nproc_);
+ index_=create_indexes();
+// initialize seed
+ unsigned int iseed = time(NULL);
+ // broadcast seed
+ MPI_Bcast(&iseed,1,MPI_UNSIGNED,0,MPI_COMM_WORLD);
+// initialize random generator
+ srand (iseed);
 }
 
-ReplicaExchange::ReplicaExchange(Floats temperatures){
- temp_=temperatures;
- MPI::Init();
- MPI_Comm_size(MPI_COMM_WORLD, &nproc_);
- MPI_Comm_rank(MPI_COMM_WORLD, &myrank_);
- index_=create_indexes(nproc_);
-}
-
-Floats ReplicaExchange::create_temperatures(double tmin,double tmax,int nrep)
-{
- Floats temp;
- double tfact=exp(log(tmax/tmin)/double(nrep-1));
- for(int i=0;i<nrep;++i) {
-  temp.push_back(tmin*pow(tfact,i));
- }
- return temp;
-}
-
-Ints ReplicaExchange::create_indexes(int nrep)
+Ints ReplicaExchange::create_indexes()
 {
  Ints index;
- for(int i=0;i<nrep;++i) {
+ for(int i=0;i<nproc_;++i) {
   index.push_back(i);
  }
  return index;
 }
 
-int ReplicaExchange::get_friend_index(int istep)
+void ReplicaExchange::set_parameter(std::string key, Floats values)
 {
- frank_=get_friend_rank(index_,myrank_,istep,nproc_);
- return index_[frank_];
+ parameters_[key]=values;
 }
 
-int ReplicaExchange::do_exchange(double myscore, double fscore)
+Floats ReplicaExchange::get_parameter(std::string key)
 {
- double scores[2]={myscore,fscore};
- double fscores[2];
- int myindex=index_[myrank_];
- int findex=index_[frank_];
+ return parameters_[key];
+}
 
- MPI_Sendrecv(scores,2,MPI_DOUBLE,frank_,myrank_,
-              fscores,2,MPI_DOUBLE,frank_,frank_,
+int ReplicaExchange::get_friend_index(int step)
+{
+ int myindex=index_[myrank_];
+ int findex;
+
+ if(myindex%2==0 && step%2==0) {findex=myindex+1;}
+ if(myindex%2==0 && step%2==1) {findex=myindex-1;}
+ if(myindex%2==1 && step%2==0) {findex=myindex-1;}
+ if(myindex%2==1 && step%2==1) {findex=myindex+1;}
+ if(findex==-1)     {findex=nproc_-1;}
+ if(findex==nproc_) {findex=0;}
+
+ return findex;
+}
+
+int ReplicaExchange::get_rank(int index)
+{
+ int rank;
+ for(int i=0; i<nproc_; ++i) {if(index_[i]==index) {rank=i;}}
+ return rank;
+}
+
+Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
+{
+ int frank=get_rank(findex);
+ MPI_Barrier(MPI_COMM_WORLD);
+ int nparam=parameters_[key].size();
+ double* myparameters=&(parameters_[key])[0];
+ //double* myparameters=new double[nparam];
+ //std::copy(myparameters, myparameters + nparam, parameters_[key].begin());
+ double* fparameters=new double[nparam];
+
+ MPI_Sendrecv(myparameters,nparam,MPI_DOUBLE,frank,myrank_,
+              fparameters, nparam,MPI_DOUBLE,frank,frank,
+                MPI_COMM_WORLD, &status_);
+
+ Floats fpar(fparameters, fparameters+nparam);
+ delete(fparameters);
+ return fpar;
+}
+
+bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
+{
+ double myscore=myscore0-myscore1;
+ double fscore;
+ int myindex=index_[myrank_];
+ int frank=get_rank(findex);
+
+ MPI_Sendrecv(&myscore,1,MPI_DOUBLE,frank,myrank_,
+               &fscore,1,MPI_DOUBLE,frank,frank,
                 MPI_COMM_WORLD, &status_);
 
  // calculate acceptance
- bool do_accept=get_acceptance(scores,fscores,temp_[myindex],temp_[findex]);
+ bool do_accept=get_acceptance(myscore,fscore);
 
  if(do_accept){myindex=findex;}
 
@@ -79,31 +110,13 @@ int ReplicaExchange::do_exchange(double myscore, double fscore)
  MPI_Allreduce(sbuf,rbuf,nproc_,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
  for(int i=0;i<nproc_;++i){index_[i]=rbuf[i];}
 
- return myindex;
+ return do_accept;
 }
 
-int ReplicaExchange::get_friend_rank(Ints index,int myrank,int step,int nrep)
-{
- int myindex=index[myrank];
- int findex,frank;
-
- if(myindex%2==0 && step%2==0) {findex=myindex+1;}
- if(myindex%2==0 && step%2==1) {findex=myindex-1;}
- if(myindex%2==1 && step%2==0) {findex=myindex-1;}
- if(myindex%2==1 && step%2==1) {findex=myindex+1;}
- if(findex==-1)   {findex=nrep-1;}
- if(findex==nrep) {findex=0;}
-
- for(int i=0; i<nrep; ++i) {if(index[i]==findex) {frank=i;}}
- return frank;
-}
-
-
-bool ReplicaExchange::get_acceptance(double scores[2],double fscores[2],
-                         double mytemp, double ftemp)
+bool ReplicaExchange::get_acceptance(double myscore,double fscore)
 {
  double accept,delta;
- delta=-mytemp*(scores[1]-scores[0])-ftemp*(fscores[1]-fscores[0]);
+ delta=myscore+fscore;
  if(delta>=0.0){
   accept=1.0;
  }else{
@@ -117,5 +130,14 @@ bool ReplicaExchange::get_acceptance(double scores[2],double fscores[2],
  }
 }
 
+Floats ReplicaExchange::create_temperatures(double tmin,double tmax,int nrep)
+{
+ Floats temp;
+ double tfact=exp(log(tmax/tmin)/double(nrep-1));
+ for(int i=0;i<nrep;++i) {
+  temp.push_back(tmin*pow(tfact,i));
+ }
+ return temp;
+}
 
 IMPMEMBRANE_END_NAMESPACE
