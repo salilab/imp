@@ -40,6 +40,10 @@ public:
    return index_[myrank_];
   }
 
+  int    get_number_replicas() const {
+   return nproc_;
+  }
+
   ~ReplicaExchange(){MPI_Finalize();};
 
 };
