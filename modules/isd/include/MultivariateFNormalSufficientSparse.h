@@ -42,7 +42,7 @@ using Eigen::VectorXd;
     which is implemented as
    \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi)^M|\Sigma|)^{-N/2} J(F)
     \exp\left(-\frac{N}{2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
-    \eps\left(-\frac{1}{2} \tr(W\Sigma^{-1})\right)
+    \exp\left(-\frac{1}{2} \operatorname{tr}(W\Sigma^{-1})\right)
     \f]
     where
     \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad
