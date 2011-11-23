@@ -41,7 +41,7 @@ IMP::ParticlesTemp create_balls(IMP::Model *m,
     IMP::core::XYZR d = IMP::core::XYZR::setup_particle(p);
     d.set_radius(radii[i]);
     d.set_coordinates(coords[i]);
-    IMP::atom::Atom a = IMP::atom::Atom::setup_particle(p, IMP::atom::AT_H);
+    IMP::atom::Atom::setup_particle(p, IMP::atom::AT_H);
     res.push_back(p);
   }
   return res;
