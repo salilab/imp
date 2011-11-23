@@ -14,7 +14,7 @@ IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
 #define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
-  RootHandle imp_f=node.get_root_handle();                              \
+  RMF::RootHandle imp_f=node.get_root_handle();                         \
   RMF::Category Feature= imp_f.get_or_add_category<1>("feature");       \
   RMF::FloatKey sk                                                    \
   = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
