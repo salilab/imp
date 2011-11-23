@@ -102,7 +102,11 @@ namespace {
     It ret;
     ret.m= new Model();
     ret.chains= IMP::rmf::create_hierarchies(r, ret.m);
-    ret.sp= IMP::rmf::create_particles(r, ret.m)[0];
+    ParticlesTemp ps= IMP::rmf::create_particles(r, ret.m);
+    if (ps.empty()) {
+      IMP_THROW("No particles read", IOException);
+    }
+    ret.sp=ps[0];
     return ret;
   }
 
