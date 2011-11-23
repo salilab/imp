@@ -21,12 +21,12 @@ IMPISD_BEGIN_NAMESPACE
 //! phi/psi dihedral restraint between four particles, using data from TALOS.
 /** The likelihood is
        \f[
-       f(\chi_{exp}^1,\cdots,\chi_{exp)^N|\chi(X),\kappa,I)
-        = \frac{1]{2\pi I_0(\kappa)^N}
+       f(\chi_{exp}^1,\cdots,\chi_{exp}^N|\chi(X),\kappa,I)
+        = \frac{1}{2\pi I_0(\kappa)^N}
         \exp \left(R_0 \kappa \cos (\chi_{exp}-\chi(X)) \right)
       \f]
     where the sufficient statistics are \f$N\f$ the number of observations,
-    R and \chi_{exp}.
+    \f$R\f$ and \f$\chi_{exp}\f$.
     \see vonMisesSufficient.h for further detail.
 */
 class IMPISDEXPORT TALOSRestraint : public Restraint

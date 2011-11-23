@@ -18,7 +18,7 @@ IMPISD_BEGIN_NAMESPACE
 
 //! vonMises
 /** Probability density function and -log(p) of von Mises distribution
-    \f[ f(x|\mu,\kappa) = \f{\exp \left(\kappa \cos (x-\mu)\right)}{2\pi
+    \f[ f(x|\mu,\kappa) = \frac{\exp \left(\kappa \cos (x-\mu)\right)}{2\pi
     I_0(\kappa)} \f]
     This is the proper treatment for a "normally distributed" angle.
     When \f$\kappa\f$ becomes infinite, the distribution tends to a gaussian,

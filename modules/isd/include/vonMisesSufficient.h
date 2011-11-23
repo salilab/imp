@@ -22,12 +22,12 @@ IMPISD_BEGIN_NAMESPACE
     statistics.
     This is much more efficient than multiplying N von Mises densities.
     \f[ f(\chi|N, R_0, \chi_{exp}, \kappa) =
-       \f{\exp \left(R_0 \kappa \cos (\chi - \chi_{exp})\right)}
+       \frac{\exp \left(R_0 \kappa \cos (\chi - \chi_{exp})\right)}
        {2\pi I_0(\kappa)^N} \f]
     where
     \f[ R = \sqrt{\left(\sum_{i=1}^N \cos \chi_{exp}^i\right)^2
                   + \left(\sum_{i=1}^N \cos \chi_{exp}^i\right)^2} \f]
-    \f[ \exp (i \chi_{exp}) = \f{1}{R} \sum_{j=1}^N \exp(i \chi_{exp}^j) \f]
+    \f[ \exp (i \chi_{exp}) = \frac{1}{R} \sum_{j=1}^N \exp(i \chi_{exp}^j) \f]
     If \f$N=1\f$ and \f$\mu_1=\mu_2\f$ this reduces to the original von Mises
     distribution with known mean and concentration.
     \note derivative with respect to the mean \f$\chi_{exp}\f$ is not provided.
