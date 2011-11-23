@@ -30,6 +30,7 @@ public:
   IMP_PAIR_FILTER(BondedPairFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool BondedPairFilter
 ::get_contains(const ParticlePair& pp) const {
   if (!Bonded::particle_is_instance(pp[0])
@@ -41,6 +42,7 @@ inline bool BondedPairFilter
   Bond bd=get_bond(ba, bb);
   return bd != Bond();
 }
+#endif
 
 IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
 
