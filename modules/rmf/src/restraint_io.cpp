@@ -14,8 +14,8 @@ IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
 #define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
-  RMF::RootHandle imp_f=node.get_root_handle();                              \
-  RMF::Category Feature= imp_f.get_category<1>("feature");              \
+  RootHandle imp_f=node.get_root_handle();                              \
+  RMF::Category Feature= imp_f.get_or_add_category<1>("feature");       \
   RMF::FloatKey sk                                                    \
   = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
                                            true);                       \
@@ -97,8 +97,8 @@ namespace {
   }
 
 
-  typedef IMP::compatibility::map<Subset, RMF::NodeHandle> Index;
-  void build_index(RMF::NodeHandle parent,
+  typedef IMP::compatibility::map<Subset, NodeHandle> Index;
+  void build_index(NodeHandle parent,
                    Index &nodes,
                    IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
     IMP_UNUSED(sk);
@@ -108,7 +108,7 @@ namespace {
       if (children[i].get_has_value(nk)) {
         NodeIDs ids= children[i].get_value(nk);
         for (unsigned int j=0; j< ids.size(); ++j) {
-          RMF::NodeHandle nh
+          NodeHandle nh
             = parent.get_root_handle().get_node_handle_from_id(ids[j]);
           Particle *p= reinterpret_cast<Particle*>(nh.get_association());
           pt.push_back(p);
@@ -124,7 +124,7 @@ namespace {
     }
   }
 
-  void set_particles(RMF::NodeHandle nh,
+  void set_particles(NodeHandle nh,
                      const ParticlesTemp& ps,
                      IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
     IMP_UNUSED(sk);
@@ -139,7 +139,7 @@ namespace {
     }
   }
 
-  RMF::NodeHandle get_child(RMF::NodeHandle parent,
+  NodeHandle get_child(NodeHandle parent,
                        Restraint *r,
                        Index &nodes,
                        IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
@@ -148,7 +148,7 @@ namespace {
     if (nodes.find(s) == nodes.end()) {
       std::ostringstream oss;
       oss << "Feature " << nodes.size();
-      RMF::NodeHandle c= parent.add_child(oss.str(), FEATURE);
+      NodeHandle c= parent.add_child(oss.str(), FEATURE);
       /*std::cout << "Created node for " << s
         << " under " << parent.get_name() << std::endl;*/
       nodes[s]=c;
@@ -162,9 +162,9 @@ namespace {
 
 
   void add_restraint_internal(Restraint *r,
-                              RMF::NodeHandle parent,
+                              NodeHandle parent,
                               IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    RMF::NodeHandle cur= parent.add_child(r->get_name(), FEATURE);
+    NodeHandle cur= parent.add_child(r->get_name(), FEATURE);
     cur.set_association(r);
     //
     ParticlesTemp ip= r->get_input_particles();
@@ -178,7 +178,7 @@ namespace {
       for (unsigned int i=0; i<rs->get_number_of_restraints(); ++i) {
         //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rs->get_restraint(i)->set_was_used(true);
-        RMF::NodeHandle rc=get_child(cur,rs->get_restraint(i), index,
+        NodeHandle rc=get_child(cur,rs->get_restraint(i), index,
                                 IMP_HDF5_PASS_RESTRAINT_KEYS);
         double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
         rc.set_value(sk, score, 0);
@@ -188,7 +188,7 @@ namespace {
   }
 }
 
-void add_restraint(RMF::RootHandle parent, Restraint *r) {
+void add_restraint(RootHandle parent, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(parent);
   add_restraint_internal(r, parent, IMP_HDF5_PASS_RESTRAINT_KEYS);
@@ -198,10 +198,10 @@ void add_restraint(RMF::RootHandle parent, Restraint *r) {
 namespace {
 
   void save_restraint_internal(Restraint *r,
-                               RMF::RootHandle f,
+                               RootHandle f,
                                int frame,
                                IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    RMF::NodeHandle rn= f.get_node_handle_from_association(r);
+    NodeHandle rn= f.get_node_handle_from_association(r);
     Index index;
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
@@ -213,7 +213,7 @@ namespace {
     for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
       //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
       rs->get_restraint(i)->set_was_used(true);
-      RMF::NodeHandle rc=get_child(rn, rs->get_restraint(i), index,
+      NodeHandle rc=get_child(rn, rs->get_restraint(i), index,
                               IMP_HDF5_PASS_RESTRAINT_KEYS);
       double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
       rc.set_value(sk, score, frame);
@@ -221,26 +221,26 @@ namespace {
   }
 }
 
-void save_frame(RMF::RootHandle f, int frame, Restraint *r) {
+void save_frame(RootHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
   f.flush();
 }
 
-ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
+ParticlesTemp get_restraint_particles(NodeHandle f,
                                       int frame) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   IMP_USAGE_CHECK(f.get_type()== FEATURE,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
-  RMF::RootHandle rh=f.get_root_handle();
+  RootHandle rh=f.get_root_handle();
   if (f.get_has_value(nk, frame)) {
     NodeIDs ids= f.get_value(nk, frame);
     ParticlesTemp ret(ids.size());
     for (unsigned int i=0; i< ids.size(); ++i) {
-      RMF::NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
+      NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
       Particle *p= reinterpret_cast<Particle*>(nh.get_association());
       ret[i]=p;
     }
@@ -252,7 +252,7 @@ ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
 
 
 
-double get_restraint_score(RMF::NodeHandle f,
+double get_restraint_score(NodeHandle f,
                            int frame) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
