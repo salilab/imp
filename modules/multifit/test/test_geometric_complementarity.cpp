@@ -110,7 +110,7 @@ int main()
   {
     std::cout << R[i].exact << '\t' << R[i].approx << '\t'
       << R[i].pct_error << std::endl;
-    IMP_INTERNAL_CHECK(R[i].approx < 9, "Error too big");
+    IMP_INTERNAL_CHECK(R[i].pct_error < 9, "Error too big");
   }
   return 0;
 }
