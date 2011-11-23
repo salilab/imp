@@ -232,7 +232,8 @@ IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
 IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 
 /** Get the residue type from the 1-letter amino acid
-    code.
+    code. Throw an exception if an invalid character
+    is passed.
 */
 IMPATOMEXPORT ResidueType get_residue_type(char c);
 
