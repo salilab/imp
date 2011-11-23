@@ -85,7 +85,6 @@ def _action_config_h(target, source, env):
 #ifndef %(EXPORT)s_CONFIG_H
 #define %(EXPORT)s_CONFIG_H
 
-#include <boost/static_assert.hpp>
 #include <IMP/compatibility/compatibility_config.h>
 #include <string>
 
