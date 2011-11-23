@@ -16,7 +16,7 @@ using namespace RMF;
 
 void add_particle(RMF::RootHandle fh, Particle* ps) {
   RMF::NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
-  Category IMP= fh.add_category("IMP");
+  Category IMP= fh.get_or_add_category<1>("IMP");
   n.set_association(ps);
   {
     IMP::FloatKeys fks= ps->get_float_keys();
@@ -73,7 +73,7 @@ void add_particle(RMF::RootHandle fh, Particle* ps) {
 
 ParticlesTemp create_particles(RMF::RootHandle fh, Model *m) {
   NodeHandles ch= fh.get_children();
-  Category IMP= fh.add_category("IMP");
+  Category IMP= fh.get_or_add_category<1>("IMP");
   ParticlesTemp ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
     RMF::NodeHandle cur= ch[i];
