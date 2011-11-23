@@ -24,7 +24,7 @@ double sphere_intersection(double radius, double dist)
 {
   double d = 2*radius - dist;
   if ( d > 0 )
-    return PI*(4*radius + dist)*d*d/12;
+    return IMP::algebra::PI*(4*radius + dist)*d*d/12;
   else
     return 0;
 }
