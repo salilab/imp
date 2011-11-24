@@ -76,6 +76,7 @@ Section ""
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN ${PRODVER}
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\README.lnk" "$INSTDIR\README.txt"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
@@ -91,7 +92,7 @@ Section "Uninstall"
     ReadRegStr $0 HKCU "Software\${PRODVER}" "ShellVarContext"
     StrCmp $0 "all" 0 +2
       SetShellVarContext all
-    Delete "$SMPROGRAMS\$MUI_TEMP\Documentation.lnk"
+    Delete "$SMPROGRAMS\$MUI_TEMP\README.lnk"
     Delete "$SMPROGRAMS\$MUI_TEMP\Uninstall.lnk"
     RMDir "$SMPROGRAMS\$MUI_TEMP" ;Only if empty, so it won't delete other shortcuts
     

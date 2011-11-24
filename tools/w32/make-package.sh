@@ -39,6 +39,9 @@ rmdir ${ROOT}/usr/share/doc || exit 1
 rmdir ${ROOT}/usr/share || exit 1
 rmdir ${ROOT}/usr || exit 1
 
+# Add Windows-specific README
+cp tools/w32/README.txt ${ROOT} || exit 1
+
 # Note that default Python extensions (2.6) are installed in the 2.4 location,
 # since we cross-compile (and Python in CentOS 5 is 2.4)
 mv ${ROOT}/bin/python2.4/site-packages ${ROOT}/python || exit 1
