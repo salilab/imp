@@ -158,9 +158,15 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box,
 typedef BoundingBoxD<3> BoundingBoxD<3>;
 #endif
 
+//! Box with radius one
 template <unsigned int D>
 inline BoundingBoxD<D> get_unit_bounding_box_d() {
-  return BoundingBoxD<D>(get_zero_vector_d<D>(), get_ones_vector_d<D>());
+  return BoundingBoxD<D>(-get_ones_vector_d<D>(), get_ones_vector_d<D>());
+}
+
+//! Box with radius one
+inline BoundingBoxD<-1> get_unit_bounding_box_kd(unsigned int d) {
+  return BoundingBoxD<-1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
 }
 
 //! Return a bounding box containing the transformed box
