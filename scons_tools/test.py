@@ -119,7 +119,7 @@ class TestCppProgram(IMP.test.TestCase):"""
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
         self.assertEqual(p.wait(), 0)""" \
-       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
+       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir(env['builddir']+'/lib').abspath}
     print >> out, """
 if __name__ == '__main__':
     IMP.test.main()"""
