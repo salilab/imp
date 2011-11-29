@@ -17,20 +17,47 @@
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
+template <int D>
+inline VectorD<D>
+get_random_vector_in(const BoundingBoxD<D> &bb) {
+  VectorD<D> ret=bb.get_corner(0); // some appropriate vector
+  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
+    ::boost::uniform_real<> rand(bb.get_corner(0)[i],
+                                 bb.get_corner(1)[i]);
+    ret[i]=rand(base::random_number_generator);
+  }
+  return ret;
+}
+
 
 template <int D>
 inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
-  BoundingBoxD<D> bb= get_bounding_box(s);
+  BoundingBoxD<D> bb= get_unit_bounding_box_d<D>();
   do {
-    VectorD<D> pt= get_random_vector_in(bb);
-    double r2= (s.get_center()-pt).get_squared_magnitude();
-    if (r2 < square(s.get_radius()) && r2 > square(.1*s.get_radius())) {
-      VectorD<D> diff= pt-s.get_center();
-      VectorD<D> udiff= diff.get_unit_vector();
+    VectorD<D> pt= internal::get_random_vector_in(bb);
+    double r2= pt.get_squared_magnitude();
+    if (r2 < 1&& r2 > .1) {
+      VectorD<D> udiff= pt.get_unit_vector();
       return s.get_center()+udiff*s.get_radius();
     }
   } while (true);
 }
+
+
+
+// sillyness due to lack of generic api for creating kd objects
+inline VectorD<-1> get_random_vector_on(const SphereD<-1> &s) {
+    BoundingBoxD<-1> bb= get_unit_bounding_box_kd(s.get_dimension());
+  do {
+    VectorD<-1> pt= get_random_vector_in(bb);
+    double r2= pt.get_squared_magnitude();
+    if (r2 < 1&& r2 > .01) {
+      VectorD<-1> udiff= pt.get_unit_vector();
+      return s.get_center()+udiff*s.get_radius();
+    }
+  } while (true);
+}
+
 
 inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   ::boost::uniform_real<> rand(0, 2*PI);
@@ -38,6 +65,23 @@ inline VectorD<2> get_random_vector_on(const SphereD<2> &s) {
   VectorD<2> ret(s.get_radius()*sin(angle),
                  s.get_radius()*cos(angle));
   return ret+ s.get_center();
+}
+
+inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
+  ::boost::uniform_real<> rand(-1, 1);
+  do {
+    double x1=rand(base::random_number_generator);
+    double x2=rand(base::random_number_generator);
+    double ssq=square(x1)+square(x2);
+    if (ssq <=1) {
+      VectorD<3> ret;
+      double sq=std::sqrt(1-ssq);
+      ret[0]= 2*x1*sq;
+      ret[1]= 2*x2*sq;
+      ret[2]=1-2*ssq;
+      return s.get_center()+ret*s.get_radius();
+    }
+  } while (true);
 }
 
 /*inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
