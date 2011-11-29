@@ -168,11 +168,14 @@ void MonteCarlo::setup_incremental() {
     flattened_restraints_.insert(flattened_restraints_.end(),
                                  curf.begin(), curf.end());
   }
+  IMP_LOG(VERBOSE, "Restraints flattened into " << flattened_restraints_
+          << std::endl);
+  RestraintsTemp restraints=get_as<RestraintsTemp>(flattened_restraints_);
   incremental_scores_
-    = get_model()->evaluate(get_as<RestraintsTemp>(flattened_restraints_),
+    = get_model()->evaluate(restraints,
                             false);
   DependencyGraph dg
-    = get_dependency_graph(get_as<RestraintsTemp>(flattened_restraints_));
+    = get_dependency_graph(restraints);
   compatibility::map<Restraint*, int> index;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     index[flattened_restraints_[i]]=i;
@@ -219,8 +222,10 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   ++incremental_evals_;
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
-    allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
-                incremental_used_[moved[i]].end());
+    if (moved[i] < static_cast<int>(incremental_used_.size())) {
+      allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
+                  incremental_used_[moved[i]].end());
+    }
   }
   std::sort(allr.begin(), allr.end());
   allr.erase(std::unique(allr.begin(), allr.end()), allr.end());
