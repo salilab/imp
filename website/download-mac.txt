@@ -44,5 +44,6 @@ system version by typing <tt>/usr/bin/python</tt> rather than just
 <p>Note that the IMP Mac package does not currently include the
 'foxs' command line tool for small angle X-ray (SAXS) fitting. This will be
 remedied in a future IMP release.
-For now, please <a href="http://salilab.org/foxs">use the web interface</a>
-or install IMP on a Linux machine.</p>
+For now, please <a href="http://salilab.org/foxs">use the web interface</a>,
+install IMP on a Linux machine, or use a
+<a href="http://salilab.org/imp/download.html#nightly">nightly build<a/>.</p>
