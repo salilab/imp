@@ -15,9 +15,11 @@
 
 #include <string>
 // swig is being dumb
+#ifdef SWIG
 IMP_BEGIN_NAMESPACE
 class VersionInfo;
 IMP_END_NAMESPACE
+#endif
 
 IMPATOM_BEGIN_NAMESPACE
 
