@@ -72,7 +72,7 @@ class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
   Particles ps_;
   FloatKeys ks_;
   bool rescale_;
-  std::vector<FloatRange> ranges_;
+  compatibility::checked_vector<FloatRange> ranges_;
 public:
   ParticleEmbedding(const ParticlesTemp &ps,
                     const FloatKeys& ks
@@ -90,10 +90,10 @@ public:
 
 //! Simply return the coordinates of a VectorD
 class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
-  std::vector<algebra::VectorKD > vectors_;
+  compatibility::checked_vector<algebra::VectorKD > vectors_;
 public:
-  template <int D>
-  VectorDEmbedding(const std::vector<algebra::VectorD<D> > &vs):
+  template <class C>
+    VectorDEmbedding(const C &vs):
     Embedding("VectorDs"){
     vectors_.resize(vs.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
