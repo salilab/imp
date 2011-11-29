@@ -54,7 +54,8 @@ def _checks(context):
     context.Result('not found')
     return False
 
-def find_lib_version(env):
+def find_lib_version(ienv):
+    env=scons_tools.environment.get_test_environment(ienv)
     custom_tests = {'CheckBoost':_check}
     tenv= scons_tools.environment.get_test_environment(env)
     conf = tenv.Configure(custom_tests=custom_tests)
@@ -85,7 +86,8 @@ def _tr1check(context):
     return rett
 
 
-def configure_tr1_check(env):
+def configure_tr1_check(ienv):
+    env=scons_tools.environment.get_test_environment(ienv)
     if env.GetOption('help'):
         return
     if  scons_tools.data.get(env).dependencies['Boost'].version < 103500:
