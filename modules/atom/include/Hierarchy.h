@@ -394,6 +394,16 @@ inline Hierarchies get_leaves(Hierarchy h) {
   return Hierarchies(IMP::core::get_leaves(h));
 }
 
+/** \relatesalso Hierarchy */
+inline Hierarchies get_leaves(const Hierarchies& h) {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< h.size(); ++i) {
+    core::GenericHierarchies cur=IMP::core::get_leaves(h[i]);
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  return get_as<Hierarchies>(ret);
+}
+
 //! Print out a molecular hierarchy
 /** \relatesalso Hierarchy
  */
