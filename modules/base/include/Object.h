@@ -267,7 +267,7 @@ IMPBASE_END_NAMESPACE
 
 #if IMP_BUILD < IMP_FAST
 #define IMP_OBJECT_LOG IMP::base::SetLogState                           \
-  log_state_guard__(IMP::base::get_log_level());                        \
+  log_state_guard__(this->get_log_level());                             \
   IMP::base::CreateLogContext log_context__(Object::get_name()          \
                                  + "::" + __func__)
 
