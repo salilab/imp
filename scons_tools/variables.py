@@ -119,7 +119,7 @@ def _propagate_variables(env):
     else:
         env.Append(LIBPATH=[])
     if env.get('libs') is not None:
-        env.Append(LIBS=utility.get_env_paths('libs'))
+        env.Append(LIBS=utility.get_env_paths(env, 'libs'))
     else:
         env.Append(LIBS=[])
 
