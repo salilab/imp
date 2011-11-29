@@ -17,6 +17,7 @@
 #include <vector>
 #include <iostream>
 #include "base_macros.h"
+#include <IMP/compatibility/checked_vector.h>
 
 #if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -101,15 +102,15 @@ inline std::ostream &operator<<(std::ostream &out,
 
 template <class T>
 inline std::ostream &operator<<(std::ostream &out,
-                         const std::vector<T> &data) {
+                         const compatibility::checked_vector<T> &in) {
+  using IMP::base::operator<<;
+  using std::operator<<;
   out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i];
+  for (unsigned int i=0; i< in.size(); ++i) {
+    if (i >0) out << ", ";
+    out << in[i];
   }
-  out << "]";
+  out<< "]";
   return out;
 }
 #endif
