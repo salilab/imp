@@ -418,6 +418,9 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
              core::XYZ(pp[1]).get_coordinates(),
              x0, k, damping, world,
              *memory);
+  IMP_LOG(TERSE, "Adding spring between " << pp[0]->get_name()
+          << " and " << pp[1]->get_name()
+          << " with length " << x0 << std::endl);
   return true;
 }
 bool dont_handle_harmonic(

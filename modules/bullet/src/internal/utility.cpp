@@ -113,6 +113,9 @@ void copy_back_coordinates(const RigidBodyMap &map) {
         .set_reference_frame(algebra::ReferenceFrame3D(internal::tr(trans)));
     } else {
       //std::cout << internal::tr(trans.getOrigin()) << std::endl;
+      IMP_LOG(VERBOSE, it->first->get_name()
+              << " moved " << core::XYZ(it->first).get_coordinates()
+              - internal::tr(trans.getOrigin()) << std::endl);
       core::XYZ(it->first).set_coordinates(internal::tr(trans.getOrigin()));
     }
   }
