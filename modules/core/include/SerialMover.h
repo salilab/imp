@@ -17,13 +17,15 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Apply a list of movers one at a time
-/** Each time a move is requested, on the next mover is applied.
+/** Each time a move is requested, on the next mover is applied. This
+    should probably be used in conjunction with incremental scoring
+    (MonteCarlo::set_use_incremental()).
  */
 class IMPCOREEXPORT SerialMover : public Mover
 {
 public:
   /** The Serial are applied one at a time
-      \param[in] mvs list of Serial
+      \param[in] mvs list of movers to apply one after another
    */
   SerialMover(const MoversTemp& mvs);
   IMP_MOVER(SerialMover);
