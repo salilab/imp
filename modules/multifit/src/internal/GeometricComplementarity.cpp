@@ -265,7 +265,9 @@ namespace {
   }
 }
 
-IMP::FloatPair get_penetration_and_complementarity_scores(
+
+
+FitScore get_fit_scores(
     const Grid &map0,
     const Grid &map1,
     IMP::algebra::Transformation3D tr_map1,
@@ -277,9 +279,9 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                         s1.get_radius());
   double d= algebra::get_distance(s0, s1);
   if (d > params.maximum_separation) {
-    return std::make_pair(0.0, 0.0);
+    return FitScore(0.0, 0.0, 0.0);
   }
-  double complementarity_score = 0, penetration_score = 0;
+  double complementarity_score = 0, penetration_score = 0, boundary_score = 0;
   double inf = std::numeric_limits<float>::max();
 
   IMP_GRID3D_FOREACH_VOXEL(map1,
@@ -301,7 +303,7 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                                 // An interior voxel of one molecule is
                                 // touching the layer beyond
                                 // the interior_thickness.
-                                return std::make_pair(inf, inf);
+                                return FitScore(inf, inf, inf);
                              }
 
                              if((v0 < 0 && v1>=inf) || (v1 < 0 && v0 >= inf)) {
@@ -316,16 +318,21 @@ IMP::FloatPair get_penetration_and_complementarity_scores(
                                if ( prod < 0 ) {
                                  complementarity_score += prod;
                                } else if ( prod > 0 ) {
-                                 penetration_score += prod;
-                                 if ( penetration_score
-                                    > params.maximum_penetration_score) {
-                                  return std::make_pair(inf, inf);
+                                 if ( v0 > 0 && v1 > 0 )
+                                 {
+                                     penetration_score += prod;
+                                     if ( penetration_score
+                                        > params.maximum_penetration_score) {
+                                      return FitScore(inf, inf, inf);
+                                     }
                                  }
+                                 else
+                                     boundary_score += prod;
                                }
                              }
                            }
                            );
-  return std::make_pair(penetration_score, complementarity_score);
+  return FitScore(penetration_score, complementarity_score, boundary_score);
 }
 
 

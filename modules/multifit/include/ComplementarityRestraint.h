@@ -76,6 +76,22 @@ public:
     interior_thickness_=th;
     update_voxel();
   }
+
+  void set_penetration_coefficient(double pc)
+  {
+    penetration_coef_ = pc;
+  }
+
+  void set_complementarity_coefficient(double cc)
+  {
+    complementarity_coef_ = cc;
+  }
+
+  void set_boundary_coefficient(double bc)
+  {
+    boundary_coef_ = bc;
+  }
+
   IMP_RESTRAINT(ComplementarityRestraint);
  private:
   typedef std::pair<algebra::Transformation3D,
@@ -105,6 +121,7 @@ public:
   double maximum_separation_, maximum_penetration_score_;
   double maximum_penetration_;
   double complementarity_thickeness_, complementarity_value_;
+  double penetration_coef_, complementarity_coef_, boundary_coef_;
   double interior_thickness_, voxel_size_;
 };
 
