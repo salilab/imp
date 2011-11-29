@@ -1048,8 +1048,8 @@ IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
       }
       set_unit_cell(cell, bases);
     }
-    LogEmbeddingD(const VectorD<D> &cell,
-                 const VectorD<D> &base) {
+    LogEmbeddingD(const VectorD<D> &,
+                 const VectorD<D> &) {
       IMP_FAILURE("not supported");
     }
     LogEmbeddingD(){}
@@ -1211,7 +1211,6 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
     Ints get_ns(const NS &ds,
                 const BoundingBoxD<D> &bb) const {
       Ints dd(ds.size());
-      VectorD<D> nuc(ds.begin(), ds.end());
       for (unsigned int i=0; i< ds.size(); ++i ) {
         IMP_USAGE_CHECK(ds[i]>0, "Side cannot be 0");
         double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
