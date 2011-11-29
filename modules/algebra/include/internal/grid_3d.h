@@ -23,6 +23,8 @@ inline bool get_is_non_empty(const A &a, const B &b) {
   return true;
 }
 
+// this is an actual compare function unlike std::lexicographical_compare
+// which does less
 template <class It>
 inline int  lexicographical_compare(It b0, It e0, It b1, It e1) {
   IMP_USAGE_CHECK(std::distance(b0, e0)
@@ -153,8 +155,6 @@ template <class EI, class ED>
 inline std::pair<EI, EI> intersect(EI l,
                                    EI u,
                                    ED d) {
-  EI rlb;
-  EI rub;
   for (unsigned int i=0; i< l.get_dimension(); ++i) {
     if (u[i] <= 0) return empty_range<EI>();
     if (l[i] >= d[i])
