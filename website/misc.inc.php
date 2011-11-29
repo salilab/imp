@@ -80,7 +80,6 @@ END;
    }
 
    function print_page_footer() {
-      print "   </td></tr>\n";
       print "   </table>\n";
       print "     </div>\n\n";
       print "<div id=\"footer\">\n";
