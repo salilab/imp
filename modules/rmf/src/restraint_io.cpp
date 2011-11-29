@@ -172,6 +172,7 @@ namespace {
     cur.set_value(sk, s, 0);
 
     Pointer<Restraint> rd= r->create_current_decomposition();
+    if (!rd) return;
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
     if (rs) {
       Index index;
