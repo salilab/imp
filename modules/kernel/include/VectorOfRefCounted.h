@@ -68,6 +68,7 @@ struct ControllableRefCountPolicy {
  */
 template <class RC, class Policy= RefCountPolicy>
 class VectorOfRefCounted {
+  typedef void (*RF)(RC);
   typedef std::vector<RC> Data;
   Data data_;
   // make sure they are converted to RC
@@ -79,15 +80,11 @@ class VectorOfRefCounted {
   }
   template <class It>
   static void ref(It b, It e) {
-    for (It c= b; c != e; ++c) {
-      ref(*c);
-    }
+    std::for_each(b,e, (RF) &Policy::ref);
   }
   template <class It>
   static void unref(It b, It e) {
-    for (It c= b; c != e; ++c) {
-      unref(*c);
-    }
+    std::for_each(b, e, (RF) &Policy::unref);
   }
  public:
   typedef RC const_reference;
