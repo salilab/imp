@@ -28,20 +28,17 @@ bool Container::is_ok(Particle *p) {
 Model *Container::get_model(Particle *p) {return p->get_model();}
 
 
-namespace {
- typedef boost::graph_traits<DependencyGraph> DGTraits;
+bool
+get_is_static_container(Container *c,
+                        const DependencyGraph &dg,
+                        const ParticlesTemp &pst) {
+  typedef boost::graph_traits<DependencyGraph> DGTraits;
   typedef DGTraits::vertex_descriptor DGVertex;
   typedef boost::property_map<DependencyGraph,
                               boost::vertex_name_t>::type DGVertexMap;
   typedef boost::property_map<DependencyGraph,
                               boost::vertex_name_t>::const_type
   DGConstVertexMap;
-}
-
-bool
-get_is_static_container(Container *c,
-                        const DependencyGraph &dg,
-                        const ParticlesTemp &pst) {
   typedef DGTraits::in_edge_iterator IEIt;
   typedef DGTraits::vertex_iterator DVIt;
   DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
