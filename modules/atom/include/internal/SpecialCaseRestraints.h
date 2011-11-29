@@ -168,7 +168,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
       }
     } else {
       if (dynamic_cast<core::SoftSpherePairScore*>(ps)) {
-        IMP_LOG(TERSE, "Handling restraint " << pr->get_name()
+        IMP_LOG(TERSE, "Dropping restraint " << pr->get_name()
                 << std::endl);
         if (fev()) {
           return true;
