@@ -65,7 +65,7 @@ public:
   double get_slack() const {return slack_;}
   double get_distance() const {return distance_;}
   virtual std::string get_type_name() const {return "CoreClosePairContainer";}
-  virtual ::IMP::VersionInfo get_version_info() const {
+  virtual ::IMP::base::VersionInfo get_version_info() const {
     return VersionInfo("core", get_module_version());
   }
   void update() {
