@@ -76,6 +76,8 @@ ComplementarityRestraint
   maximum_penetration_score_(std::numeric_limits<double>::max()),
   maximum_penetration_(std::numeric_limits<double>::max()),
   complementarity_thickeness_(10), complementarity_value_(-1),
+  penetration_coef_(2), complementarity_coef_(1),
+  boundary_coef_(-3),
   interior_thickness_(2){
   update_voxel();
 }
@@ -122,11 +124,13 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
           << rba_.get_reference_frame()
           << " and " << rbb_.get_reference_frame() << std::endl);
 
-  FloatPair ps= IMP::multifit::internal
-    ::get_penetration_and_complementarity_scores(ga->get_data().second,
+  IMP::multifit::internal::FitScore ps= IMP::multifit::internal
+    ::get_fit_scores(ga->get_data().second,
                                                  gb->get_data().second,
                                                  tr, params);
-  IMP_LOG(TERSE, "Scores are " << ps.first << " and " << ps.second
+  IMP_LOG(TERSE, "Scores are " << ps.penetration_score << ", "
+      << ps.complementarity_score << " and "
+      << ps.boundary_score
           << std::endl);
   /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     IMP::algebra::DenseGrid3D<float> ga=get_grid(a_,
@@ -147,10 +151,12 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
     IMP_LOG(TERSE, "Check scores are " << psc.first << " and " << ps.second
             << std::endl);
             }*/
-  if (ps.first==ps.second && ps.second==0) {
+  double score = penetration_coef_*ps.penetration_score
+    + complementarity_coef_*ps.complementarity_score
+    + boundary_coef_*ps.boundary_score;
+  if ( score == 0 || ps.penetration_score >= std::numeric_limits<float>::max())
     return std::numeric_limits<double>::max();
-  } else if (ps.first*vol < maximum_penetration_score_) return ps.second*vol;
-  else return ps.first*vol;
+  return score*vol;
 }
 
 void ComplementarityRestraint::update_voxel() {

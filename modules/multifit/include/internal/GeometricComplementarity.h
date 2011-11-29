@@ -64,14 +64,29 @@ struct IMPMULTIFITEXPORT ComplementarityParameters {
 };
 
 
-/*! Computes the penetration and complementarity score for the grids map0 and
+/*! Computes the penetration, complementarity and boundary score
+  for the grids map0 and
   map1. The function returns both scores (penetration first). The function
   returns the maximum numeric limits if one of these cases happpens:
     1) The maximum penetration score is reached.
     2) An interior voxel of one molecule is touching the layer beyond
        the interior_thickness of other molecule (penetration test)
 */
-IMPMULTIFITEXPORT IMP::FloatPair get_penetration_and_complementarity_scores(
+
+struct IMPMULTIFITEXPORT FitScore
+{
+    FitScore(double penetration, double complementarity, double boundary)
+      : penetration_score(penetration)
+      , complementarity_score(complementarity)
+      , boundary_score(boundary)
+    {}
+
+    double penetration_score;
+    double complementarity_score;
+    double boundary_score;
+};
+
+IMPMULTIFITEXPORT FitScore get_fit_scores(
     const IMP::algebra::DenseGrid3D<float> &map0,
     const IMP::algebra::DenseGrid3D<float> &map1,
     IMP::algebra::Transformation3D tr_map1,
