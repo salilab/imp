@@ -9,6 +9,7 @@
 #define IMPCORE_ANGLE_TRIPLET_SCORE_H
 
 #include "core_config.h"
+#include "generic.h"
 #include <IMP/TripletScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>

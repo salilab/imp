@@ -55,13 +55,32 @@ ContainersTemp ContainerRestraint<Score, C>
 
 
 template <class Score, class C>
-Restraints ContainerRestraint<Score, C>::create_decomposition() const {
-  Restraints ret(pc_->get_number());
+Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
+  Restraints cur= pc_->template create_decomposition_t<Score>(ss_);
+  for (unsigned int i=0; i< cur.size(); ++i) {
+    std::ostringstream oss;
+    oss << this->get_name() << " " << i;
+    cur[i]->set_name(oss.str());
+  }
+  return cur;
+}
+
+template <class Score, class C>
+Restraints
+ContainerRestraint<Score, C>::do_create_current_decomposition() const {
+  Restraints ret;
+  for (unsigned int i=0; i< pc_->get_number(); ++i) {
+    Restraints cur=ss_->create_current_decomposition(pc_->get(i));
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= core::create_restraint(ss_.get(), pc_->get(i));
+    std::ostringstream oss;
+    oss << this->get_name() << " " << i;
+    ret[i]->set_name(oss.str());
   }
   return ret;
 }
+
 
 template <class Score, class C>
 void ContainerRestraint<Score, C>::do_show(std::ostream& out) const

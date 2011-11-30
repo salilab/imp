@@ -135,6 +135,7 @@
   IMP_PROTECTION(protection)                                            \
   /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d) {                                        \
+    IMP_OBJECT_LOG;                                                     \
     for (Ucname##Iterator it= lcnames##_begin();                        \
          it != lcnames##_end(); ++it) {                                 \
       if (*it == d) {                                                   \
@@ -147,6 +148,7 @@
   /** \brief Remove any occurrences for which f is true */              \
   template <class F>                                                    \
   void remove_##lcnames##_if(const F &f) {                              \
+    IMP_OBJECT_LOG;                                                     \
     for (Ucname##Iterator it= lcnames##_begin(); it != lcnames##_end(); \
          ++it) {                                                        \
       if (f(*it)) lcname##_handle_remove(*it);                          \
@@ -157,6 +159,7 @@
   /** \brief Remove any occurences of each item in d. */                \
   template <class List>                                                 \
   void remove_##lcnames(List d) {                                       \
+    IMP_OBJECT_LOG;                                                     \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
@@ -168,6 +171,7 @@
       contents. */                                                      \
 template <class List>                                                   \
 void set_##lcnames(List ps) {                                           \
+  IMP_OBJECT_LOG;                                                       \
   /* Bad things can happen if we use a Temp, as things get unreffed
      before being reffed if they are in both lists */                   \
   clear_##lcnames();                                                    \
@@ -176,6 +180,7 @@ void set_##lcnames(List ps) {                                           \
 /** Must be the same set, just in a different order. */                 \
 template <class List>                                                   \
 void set_##lcnames##_order(List ps) {                                   \
+  IMP_OBJECT_LOG;                                                       \
   IMP_USAGE_CHECK(ps.size() == lcname##_vector_.size(),                 \
                   "Reordered elements don't match.");                   \
   lcname##_vector_.clear();                                             \
@@ -185,6 +190,7 @@ void set_##lcnames##_order(List ps) {                                   \
 /** \return index of object within the object
  */                                                                     \
 unsigned int add_##lcname(Data obj) {                                   \
+  IMP_OBJECT_LOG;                                                       \
   unsigned int index= lcname##_vector_.size();                          \
   lcname##_vector_.push_back(obj);                                      \
   IMP_UNUSED(index); IMP_UNUSED(obj);                                   \
@@ -197,6 +203,7 @@ unsigned int add_##lcname(Data obj) {                                   \
 */                                                                      \
 template <class List>                                                   \
 void add_##lcnames(List objs) {                                         \
+  IMP_OBJECT_LOG;                                                       \
   unsigned int osz= lcname##_vector_.size();                            \
   lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),         \
                           objs.end());                                  \

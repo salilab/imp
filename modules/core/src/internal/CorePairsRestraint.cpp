@@ -69,9 +69,6 @@ ContainersTemp CorePairsRestraint::get_input_containers() const
 
 Restraints CorePairsRestraint::do_create_decomposition() const {
   Restraints cur= pc_->create_decomposition(ss_);
-  for (unsigned int i=0; i < cur.size(); ++i) {
-    cur[i]->set_maximum_score(get_maximum_score());
-  }
   for (unsigned int i=0; i< cur.size(); ++i) {
     std::ostringstream oss;
     oss << get_name() << " " << i;
@@ -84,9 +81,6 @@ Restraints CorePairsRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< pc_->get_number(); ++i) {
     Restraints cur=ss_->create_current_decomposition(pc_->get(i));
-    for (unsigned int i=0; i < cur.size(); ++i) {
-      cur[i]->set_maximum_score(get_maximum_score());
-    }
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   for (unsigned int i=0; i< ret.size(); ++i) {

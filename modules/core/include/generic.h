@@ -21,6 +21,8 @@
 #include <IMP/core/internal/quad_helpers.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -39,6 +41,10 @@ public Restraint
 public IMP::internal::SimpleRestraintParentTraits<Score>::SimpleRestraint
 #endif
 {
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, SingletonScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, PairScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, TripletScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, QuadScore>::value));
   IMP::OwnerPointer<Score> ss_;
   typename Score::Argument v_;
   mutable double score_;
@@ -66,10 +72,22 @@ template <class Score>
 inline Restraint* create_restraint(Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
-    if (name==std::string()) {
+  if (name==std::string()) {
       name= std::string("Restraint on ")+s->get_name();
   }
     return new TupleRestraint<Score>(s, t, name);
+}
+
+/** \relatesalso TupleRestraint
+ */
+template <class Score>
+inline Restraint* create_restraint(const Score *s,
+                            const typename Score::Argument &t,
+                            std::string name= std::string()) {
+    if (name==std::string()) {
+      name= std::string("Restraint on ")+s->get_name();
+  }
+    return new TupleRestraint<Score>(const_cast<Score*>(s), t, name);
 }
 
 

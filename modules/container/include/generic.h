@@ -37,6 +37,15 @@ public IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint
   IMP::OwnerPointer<Container> pc_;
   IMP::OwnerPointer<IMP::Container> ac_, rc_;
   mutable double score_;
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, SingletonScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, PairScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, TripletScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Score, QuadScore>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Container, SingletonContainer>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Container, PairContainer>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Container, TripletContainer>::value));
+  BOOST_STATIC_ASSERT(!(boost::is_same<Container, QuadContainer>::value));
+
 public:
   ContainerRestraint(Score *ss,
                      Container *pc,
@@ -54,7 +63,8 @@ public:
     return ss_;
   }
 
-  Restraints create_decomposition() const;
+  Restraints do_create_decomposition() const;
+  Restraints do_create_current_decomposition() const;
 };
 
 
