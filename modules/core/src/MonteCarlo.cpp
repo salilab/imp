@@ -138,7 +138,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(USAGE) {
-      IMP_CHECK_CODE(double e= do_evaluate(get_model()->get_particles()));
+      IMP_CHECK_CODE(double e= evaluate(false));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
@@ -171,9 +171,9 @@ void MonteCarlo::setup_incremental() {
   IMP_LOG(VERBOSE, "Restraints flattened into " << flattened_restraints_
           << std::endl);
   RestraintsTemp restraints=get_as<RestraintsTemp>(flattened_restraints_);
-  incremental_scores_
-    = get_model()->evaluate(restraints,
-                            false);
+  incremental_scores_.resize(restraints.size(), -10000);
+  /*= get_model()->evaluate(restraints,
+    false);*/
   DependencyGraph dg
     = get_dependency_graph(restraints);
   compatibility::map<Restraint*, int> index;
@@ -241,6 +241,10 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   old_incremental_scores_.resize(allr.size());
   //old_incremenal_scores_indexes_.resize(incremental_scores_.size());
   for (unsigned int i=0; i< allr.size(); ++i) {
+    IMP_LOG(VERBOSE, "Updating score for "
+            << flattened_restraints_[allr[i]]->get_name()
+            << " from " << incremental_scores_[allr[i]]
+            << " to " << scores[i] << std::endl);
     old_incremental_scores_[i]= incremental_scores_[allr[i]];
     incremental_scores_[allr[i]]=scores[i];
   }
@@ -250,6 +254,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   double ret= std::accumulate(incremental_scores_.begin(),
                               incremental_scores_.end(), 0.0);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    base::SetLogState sls(SILENT);
     for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
       double cur= flattened_restraints_[i]->evaluate(false);
       IMP_UNUSED(cur);
