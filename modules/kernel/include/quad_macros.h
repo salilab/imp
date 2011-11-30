@@ -105,6 +105,9 @@
   ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
+  Restraints create_current_decomposition(const ParticleQuad& vt) const {  \
+    return Restraints(1, core::create_restraint(this, vt));             \
+  }                                                                     \
   IMP_QUAD_SCORE_BASE(Name)
 
 
@@ -287,6 +290,18 @@
   bool get_contains_particle_quad(const ParticleQuad& p) const;    \
   ParticleIndexQuads get_indexes() const;                     \
   ParticleIndexQuads get_all_possible_indexes() const;           \
+  template <class S>                                                    \
+  Restraints create_decomposition_t(S *s) const {    \
+    ParticleIndexQuads all= get_all_possible_indexes();            \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]=  IMP::core::create_restraint(s,                           \
+                                              IMP::internal::           \
+                                              get_particle(get_model(), \
+                                                           all[i]));    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   Restraints create_decomposition(QuadScore *s) const {            \
     ParticleIndexQuads all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \

@@ -10,6 +10,7 @@
 
 #include "core_config.h"
 #include "XYZ.h"
+#include "generic.h"
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
@@ -56,6 +57,12 @@ inline double HarmonicDistancePairScore
 ::evaluate_index(Model *m,
                  const ParticleIndexPair &p,
                  DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
+  IMP_LOG(VERBOSE, "Evaluating distancle between "
+          << m->get_particle(p[0])->get_name()
+          << " and " << m->get_particle(p[1])->get_name()
+          << " at " << m->get_sphere(p[0])
+          << " and " << m->get_sphere(p[1]) << std::endl);
   algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
     - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;

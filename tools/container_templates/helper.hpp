@@ -189,6 +189,17 @@ IMPCORE_END_INTERNAL_NAMESPACE
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  template <class S>                                                    \
+  Restraints create_decomposition_t(S *s) const {                       \
+    PLURALINDEXTYPE all= get_all_possible_indexes();                    \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]= IMP::core::create_restraint(s,                            \
+                            IMP::internal::get_particle(get_model(), \
+                                          all[i]));                     \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 

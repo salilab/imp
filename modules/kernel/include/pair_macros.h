@@ -105,6 +105,9 @@
   ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
+  Restraints create_current_decomposition(const ParticlePair& vt) const {  \
+    return Restraints(1, core::create_restraint(this, vt));             \
+  }                                                                     \
   IMP_PAIR_SCORE_BASE(Name)
 
 
@@ -287,6 +290,18 @@
   bool get_contains_particle_pair(const ParticlePair& p) const;    \
   ParticleIndexPairs get_indexes() const;                     \
   ParticleIndexPairs get_all_possible_indexes() const;           \
+  template <class S>                                                    \
+  Restraints create_decomposition_t(S *s) const {    \
+    ParticleIndexPairs all= get_all_possible_indexes();            \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]=  IMP::core::create_restraint(s,                           \
+                                              IMP::internal::           \
+                                              get_particle(get_model(), \
+                                                           all[i]));    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   Restraints create_decomposition(PairScore *s) const {            \
     ParticleIndexPairs all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \

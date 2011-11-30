@@ -9,7 +9,7 @@
 #define IMPCONTAINER_CONSECUTIVE_PAIR_CONTAINER_H
 
 #include "container_config.h"
-
+#include <IMP/core/generic.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>

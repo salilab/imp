@@ -10,7 +10,7 @@
 
 #include "atom_config.h"
 #include "bond_decorators.h"
-
+#include <IMP/core/generic.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>

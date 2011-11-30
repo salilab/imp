@@ -9,6 +9,7 @@
 #define IMPATOM_COULOMB_PAIR_SCORE_H
 
 #include "atom_config.h"
+#include <IMP/core/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/atom/smoothing_functions.h>

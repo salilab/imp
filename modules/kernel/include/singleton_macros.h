@@ -105,6 +105,9 @@
   ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
+  Restraints create_current_decomposition(Particle* vt) const {  \
+    return Restraints(1, core::create_restraint(this, vt));             \
+  }                                                                     \
   IMP_SINGLETON_SCORE_BASE(Name)
 
 
@@ -287,6 +290,18 @@
   bool get_contains_particle(Particle* p) const;    \
   ParticleIndexes get_indexes() const;                     \
   ParticleIndexes get_all_possible_indexes() const;           \
+  template <class S>                                                    \
+  Restraints create_decomposition_t(S *s) const {    \
+    ParticleIndexes all= get_all_possible_indexes();            \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]=  IMP::core::create_restraint(s,                           \
+                                              IMP::internal::           \
+                                              get_particle(get_model(), \
+                                                           all[i]));    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   Restraints create_decomposition(SingletonScore *s) const {            \
     ParticleIndexes all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \

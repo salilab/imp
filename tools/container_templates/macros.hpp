@@ -105,6 +105,9 @@
   ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
+  Restraints create_current_decomposition(ARGUMENTTYPE vt) const {  \
+    return Restraints(1, core::create_restraint(this, vt));             \
+  }                                                                     \
   IMP_HEADERNAME_SCORE_BASE(Name)
 
 
@@ -287,6 +290,18 @@
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const;    \
   PLURALINDEXTYPE get_indexes() const;                     \
   PLURALINDEXTYPE get_all_possible_indexes() const;           \
+  template <class S>                                                    \
+  Restraints create_decomposition_t(S *s) const {    \
+    PLURALINDEXTYPE all= get_all_possible_indexes();            \
+    Restraints ret(all.size());                                         \
+    for (unsigned int i=0; i< all.size(); ++i) {                        \
+      ret[i]=  IMP::core::create_restraint(s,                           \
+                                              IMP::internal::           \
+                                              get_particle(get_model(), \
+                                                           all[i]));    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   Restraints create_decomposition(CLASSNAMEScore *s) const {            \
     PLURALINDEXTYPE all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
