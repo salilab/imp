@@ -10,6 +10,7 @@
 
 #include "misc_config.h"
 #include <IMP/PairScore.h>
+#include <IMP/core/generic.h>
 #include <map>
 
 IMPMISC_BEGIN_NAMESPACE
