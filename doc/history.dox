@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Fall 2011
+- Decomposition of restraints now results in restraints that are faster to evaluate, using the generic restraint mechanism in IMP::core. Certain scores and restraints may need to add the \c IMP/core/generic.h header.
 - IMP::algebra::get_unit_bounding_box_d() was changed to return a bounding box with radius 1 to be consistent with IMP::algebra::get_unit_sphere_d()
 - A general purpose scheme to associate data with tuples of hierarchy nodes was added to the RMF format. This deprecates the special purpose bond support.
 - the way various types of geometry is stored in RMF files was changed, breaking backwards compatibility.
