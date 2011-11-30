@@ -54,8 +54,7 @@ def _checks(context):
     context.Result('not found')
     return False
 
-def find_lib_version(ienv):
-    env=scons_tools.environment.get_test_environment(ienv)
+def find_lib_version(env):
     custom_tests = {'CheckBoost':_check}
     tenv= scons_tools.environment.get_test_environment(env)
     conf = tenv.Configure(custom_tests=custom_tests)
