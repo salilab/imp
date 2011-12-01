@@ -1,23 +1,4 @@
 Import('env')
 
-files = [
-         'BildWriter.h',
-         'CMMWriter.h',
-         'ChimeraWriter.h',
-         'Color.h',
-         'Colored.h',
-         'FilterGeometry.h',
-         'GeometryProcessor.h',
-         'LogOptimizerState.h',
-         'PDBOptimizerState.h',
-         'PymolWriter.h',
-         'Writer.h',
-         'display_macros.h',
-         'geometry.h',
-         'particle_geometry.h',
-         'restraint_geometry.h',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
