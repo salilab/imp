@@ -11,6 +11,8 @@
 #include "VectorD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
+
+#include "GridD.h"
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/knn.h>
 #endif
@@ -172,6 +174,32 @@ typedef NearestNeighborD<6> NearestNeighbor6D;
 typedef NearestNeighborD<-1> NearestNeighborKD;
 #endif
 
+
+
+/** This class provides an incremental nearest neighbor search function.
+    It's interface and behavior is somewhat different than that of
+    NearestNeighborD, so be aware.
+
+    Later this can support balls by copying points multiple times.
+*/
+class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
+  typedef grids::GridD<3, grids::DenseGridStorageD<3, Ints>, Ints,
+               grids::DefaultEmbeddingD<3> > Grid;
+  Grid grid_;
+  typedef Grid::Index Index;
+  typedef Grid::ExtendedIndex EIndex;
+  Vector3Ds coords_;
+  compatibility::checked_vector<Index> indexes_;
+  void audit() const;
+ public:
+  DynamicNearestNeighbor3D(const BoundingBox3D &bb,
+                           const Vector3Ds &vs,
+                           double query_estimate=1);
+  Ints get_in_ball(int id, double distance) const;
+  void set_coordinates(int id, Vector3D nc);
+  IMP_OBJECT_INLINE(DynamicNearestNeighbor3D,out << "on " << coords_.size()
+                    << " points" ,);
+};
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_SEARCH_H */
