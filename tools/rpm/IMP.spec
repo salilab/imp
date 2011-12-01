@@ -1,3 +1,5 @@
+# Build with something like
+# rpmbuild -ba IMP.spec --define 'IMP_VERSION 1.0'
 Name:          IMP
 Version:       %{IMP_VERSION}
 Release:       1%{?dist}
