@@ -31,8 +31,8 @@ class CGOptimizerTests(IMP.test.TestCase):
         mv= IMP.core.SerialMover(ms)
         mc.add_mover(mv)
         mc.optimize(1000)
-        self.assert_(m.evaluate(False), < 3)
         print m.evaluate(False)
+        self.assert_(m.evaluate(False) < 3)
 
 
 
