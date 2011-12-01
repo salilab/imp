@@ -16,6 +16,7 @@ def get_sphere(v):
 IMP_SWIG_BASE_OBJECT(IMP::algebra, VectorKDMetric, VectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, EuclideanVectorKDMetric, EuclideanVectorKDMetrics);
 IMP_SWIG_OBJECT(IMP::algebra, MaxVectorKDMetric, MaxVectorKDMetrics);
+IMP_SWIG_OBJECT(IMP::algebra, DynamicNearestNeighbor3D, DynamicNearestNeighbor3Ds);
 
 IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
