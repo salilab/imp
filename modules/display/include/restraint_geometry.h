@@ -20,42 +20,10 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-/** \name Restraint Geometry
-    \note All these methods are kind of flakey and in flux.
-@{
-*/
-//! Draw edges for various core::PairRestraint.
-/** This currently can handle
-    - IMP::core::PairRestraint
-*/
-class IMPDISPLAYEXPORT PairRestraintGeometry: public Geometry
-{
-  IMP::Pointer<core::PairRestraint> r_;
-public:
-  PairRestraintGeometry(core::PairRestraint *p);
-  core::PairRestraint *get_restraint() const {
-    return r_;
-  }
-  IMP_GEOMETRY(PairRestraintGeometry);
-};
-
-//! Draw edges for various container::PasirRestraint.
-/** This currently can handle
-    - IMP::container::PairsRestraint
-
-*/
-class IMPDISPLAYEXPORT PairsRestraintGeometry: public Geometry
-{
-  IMP::Pointer<container::PairsRestraint> r_;
-public:
-  PairsRestraintGeometry(container::PairsRestraint *p);
-  container::PairsRestraint *get_restraint() const {
-    return r_;
-  }
-  IMP_GEOMETRY(PairsRestraintGeometry);
-};
-
 //! Try to draw some stuff for a generic restraint
+/** Mostly it just breaks the restraint down as much as possible and shows
+    the particles involved in the constituent terms if they are XYZ particles.
+*/
 class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
   IMP::Pointer<Restraint> r_;
   IMP::Pointer<Model> m_;
@@ -69,26 +37,6 @@ public:
   IMP_GEOMETRY(RestraintGeometry);
 };
 
-//! Draw edges for core::ConnectivityRestraint.
-/** It special cases IMP::core::KClosePairsPairScore.
-
-*/
-class IMPDISPLAYEXPORT ConnectivityRestraintGeometry: public Geometry
-{
-  IMP::Pointer<core::ConnectivityRestraint> r_;
-public:
-  ConnectivityRestraintGeometry(core::ConnectivityRestraint *p);
-  Restraint *get_restraint() const {
-    return r_;
-  }
-  IMP_GEOMETRY(ConnectivityRestraintGeometry);
-};
-
-
-/** Attempt to create restraint geometry for the passed restraint.
-    \throws ValueException if it can't handle the restraint.
- */
-IMPDISPLAYEXPORT Geometry* create_restraint_geometry(Restraint *r);
 
 
 /** @} */
