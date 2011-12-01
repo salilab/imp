@@ -20,8 +20,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
             d= IMP.core.XYZ(p)
             dist= IMP.algebra.get_distance(d.get_coordinates(),
                                            sph.get_center())
-            self.assert_(dist < 1.1*sph.get_radius())
-        self.assert_(c.get_radius() < 8)
+            self.assertLess(dist, 1.1*sph.get_radius())
+        self.assertLess(c.get_radius(), 8)
     def _display(self, mp, name, c, s):
         g= IMP.display.XYZRGeometry(c)
         gp= IMP.display.HierarchyGeometry(mp)

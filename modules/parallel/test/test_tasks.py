@@ -15,7 +15,7 @@ class TaskTests(IMP.test.TestCase):
         c = m.get_context()
         c.add_task(tasks.SimpleTask(IndexError("test")))
         results = list(c.get_results_unordered())
-        self.assert_(isinstance(results[0], IndexError))
+        self.assertIsInstance(results[0], IndexError)
         util.unlink("slave0.output")
 
     def test_raise_exceptions(self):

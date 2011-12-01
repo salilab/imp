@@ -42,7 +42,7 @@ class TestBL(IMP.test.TestCase):
         self.assertEqual(c0, c1)
         self.assertEqual(c1, c2)
         self.assertEqual(c0.find("open"), 0)
-        self.assert_(c0.find("close") >0)
+        self.assertGreater(c0.find("close"), 0)
         self.assertRaises(IOError, self._testopen, self.get_tmp_file_name("test.%1%.dum"))
         print "done"
 

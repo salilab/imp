@@ -83,9 +83,9 @@ class DOMINOTests(IMP.test.TestCase):
                     ass=[i,j,k]
                     cac.add_assignment(ass)
         print cac.get_assignments()
-        self.assert_(len(cac.get_assignments())< nc)
+        self.assertLess(len(cac.get_assignments()), nc)
         print cac.get_r()
-        self.assert_(cac.get_r() < 20)
+        self.assertLess(cac.get_r(), 20)
 
     def test_heap_container(self):
         """Testing heap sample container"""

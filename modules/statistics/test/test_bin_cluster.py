@@ -9,7 +9,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         for a in c:
             for b in c:
                 d= IMP.algebra.get_distance(vs[a], vs[b])
-                self.assert_(d < 2*wid)
+                self.assertLess(d, 2*wid)
     def test_connectivity_clustering(self):
         """Test bin clustering"""
         bb= IMP.algebra.BoundingBoxKD(IMP.algebra.VectorKD(0,0,0,0),

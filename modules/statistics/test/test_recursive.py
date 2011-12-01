@@ -40,13 +40,13 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
                 w.add_geometry(g)
         del w
         self.skipTest("bad test")
-        self.assert_(c.get_number_of_clusters()<= 5)
+        self.assertLessEqual(c.get_number_of_clusters(), 5)
         for i in range(0, c.get_number_of_clusters()):
             cl= c.get_cluster(i)
             for a in cl:
                 for b in cl:
                     d= (vs[a]-vs[b]).get_magnitude()
-                    self.assert_(d < 14*scale+2*err)
+                    self.assertLess(d, 14*scale+2*err)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -169,7 +169,7 @@ class DOMINOTests(IMP.test.TestCase):
         for s in ss:
             print s, (s[1]-s[2])**2, (s[0]-s[1])**2
             found_states.append(s)
-            self.assert_((s[1]-s[2])**2 == 1 or (s[0]-s[1])**2 == 1)
+            self.assertTrue((s[1]-s[2])**2 == 1 or (s[0]-s[1])**2 == 1)
             self.assertIn(s, all_states)
         for s in all_states:
             IMP.domino.load_particle_states(lsc, s, pst)

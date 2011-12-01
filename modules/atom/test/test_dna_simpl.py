@@ -18,7 +18,7 @@ class DecoratorTests(IMP.test.TestCase):
             d=IMP.core.XYZR(h)
             r= d.get_radius()
             print r
-            self.assert_(r>3.5 and r < 5.5)
+            self.assertTrue(r>3.5 and r < 5.5)
     def test_bonded2(self):
         """Test simplifying DNA 2"""
         m= IMP.Model()
@@ -32,7 +32,7 @@ class DecoratorTests(IMP.test.TestCase):
             d=IMP.core.XYZR(h)
             r= d.get_radius()
             print r
-            self.assert_(r>4 and r < 6.8)
+            self.assertTrue(r>4 and r < 6.8)
 
 if __name__ == '__main__':
     IMP.test.main()

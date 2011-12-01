@@ -100,7 +100,7 @@ class Vector3DTests(IMP.test.TestCase):
         v= IMP.algebra.Vector3D(1,2,3)
         out= StringIO.StringIO()
         print >> out, v
-        self.assert_(out.getvalue().find("Swig") ==-1)
+        self.assertEqual(out.getvalue().find("Swig"), -1)
 
     def test_addition(self):
         """Check Vector3D addition"""

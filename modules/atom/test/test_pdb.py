@@ -123,7 +123,7 @@ class PDBTests(IMP.test.TestCase):
         #print m.number
         ln= IMP.atom.get_leaves(h)
         print len(ln)
-        self.assert_(len(ln) < 1000)
+        self.assertLess(len(ln), 1000)
     def test_one_atom(self):
         """Check that only the first model is read"""
         m = IMP.Model()
@@ -132,7 +132,7 @@ class PDBTests(IMP.test.TestCase):
         #print m.number
         ln= IMP.atom.get_leaves(h)
         print len(ln)
-        self.assert_(len(ln) < 1000)
+        self.assertLess(len(ln), 1000)
 
 
 if __name__ == '__main__':
