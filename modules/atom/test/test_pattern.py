@@ -13,7 +13,7 @@ class DecoratorTests(IMP.test.TestCase):
         print type(pat)
         got= pat.get_selected_particles()
         print [x.get_name() for x in got]
-        self.assert_(len(got) > 0)
+        self.assertGreater(len(got), 0)
         for g in [IMP.atom.Hierarchy(g) for g in got]:
             self.assertEqual(IMP.atom.Residue(g.get_parent()).get_index(), 10)
 

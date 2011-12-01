@@ -179,14 +179,15 @@ class TestBL(IMP.test.TestCase):
         #nbl.set_log_level(IMP.VERBOSE)
         m.update()
         for p in nbl.get_particle_pairs():
-            self.assert_(IMP.core.RigidMember(p[0]).get_rigid_body() !=\
-                         IMP.core.RigidMember(p[1]).get_rigid_body())
+            self.assertNotEqual(IMP.core.RigidMember(p[0]).get_rigid_body(),
+                                IMP.core.RigidMember(p[1]).get_rigid_body())
 
         def test_empty():
             for l0 in ps0:
                 for l1 in ps1:
-                    self.assert_(IMP.core.get_distance(IMP.core.XYZR(l0),
-                                                       IMP.core.XYZR(l1)) >=0)
+                    self.assertGreaterEqual(
+                           IMP.core.get_distance(IMP.core.XYZR(l0),
+                                                 IMP.core.XYZR(l1)), 0)
         rbm0= IMP.core.RigidBodyMover(rb0, .5, .1)
         rbm1= IMP.core.RigidBodyMover(rb1, .5, .1)
         for i in range(0,1000):

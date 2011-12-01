@@ -24,7 +24,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
             for a in cl:
                 for b in cl:
                     d= (vs[a]-vs[b]).get_magnitude()
-                    self.assert_(d < 14)
+                    self.assertLess(d, 14)
 
 if __name__ == '__main__':
     IMP.test.main()

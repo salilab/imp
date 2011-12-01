@@ -36,6 +36,6 @@ class DOMINOTests(IMP.test.TestCase):
             curp= cpf.get_close_pairs(ps)
             print len(curp)
             for p in curp:
-                self.assert_(p in allp or (p[1], p[0]) in allp)
+                self.assertTrue(p in allp or (p[1], p[0]) in allp)
 if __name__ == '__main__':
     IMP.test.main()

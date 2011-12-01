@@ -36,7 +36,7 @@ class DecoratorTests(IMP.test.TestCase):
         nrdb= IMP.core.XYZ(pb)
         dbr= IMP.core.get_distance(nrda, nrdb)
         print d, dbr
-        self.assert_(d+2.4 < dbr)
+        self.assertLess(d+2.4, dbr)
 
 
 if __name__ == '__main__':

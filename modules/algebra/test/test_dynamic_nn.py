@@ -20,7 +20,7 @@ class NNTests(IMP.test.TestCase):
             for ij, j in enumerate(vecs):
                 if IMP.algebra.get_distance(vecs[i], j) < i*.98 and ij != i:
                     print ij, j, IMP.algebra.get_distance(vecs[i], j)
-                    self.assert_(ij in n1)
+                    self.assertIn(ij, n1)
         for i in range(10):
             npt=IMP.algebra.get_random_vector_in(bb)
             vecs[i]=npt
@@ -31,6 +31,6 @@ class NNTests(IMP.test.TestCase):
             for ij, j in enumerate(vecs):
                 if IMP.algebra.get_distance(vecs[i], j) < i*.98 and ij != i:
                     print ij, j, IMP.algebra.get_distance(vecs[i], j)
-                    self.assert_(ij in n1)
+                    self.assertIn(ij, n1)
 if __name__ == '__main__':
     IMP.test.main()

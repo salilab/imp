@@ -22,12 +22,12 @@ class GetFromTests(IMP.test.TestCase):
         # Test cast to base class
         tr = IMP.core.TripletRestraint.get_from(ar)
         self.assertEqual(tr.get_name(), "test restraint")
-        self.assert_(isinstance(tr, IMP.core.TripletRestraint))
+        self.assertIsInstance(tr, IMP.core.TripletRestraint)
 
         # Test cast to same class or to derived class
         for r in [tr, ar]:
             ar2 = IMP.core.AngleRestraint.get_from(r)
-            self.assert_(isinstance(ar2, IMP.core.AngleRestraint))
+            self.assertIsInstance(ar2, IMP.core.AngleRestraint)
             self.assertEqual(ar, ar2)
 
         # Cast to unrelated class should fail

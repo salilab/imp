@@ -15,6 +15,6 @@ class DOMINOTests(IMP.test.TestCase):
         all=[pps.get_inner_state(i) for i in range(0,10)]
         print all
         for i in range(0,10):
-            self.assert_(i in all)
+            self.assertIn(i, all)
 if __name__ == '__main__':
     IMP.test.main()

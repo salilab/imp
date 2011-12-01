@@ -46,7 +46,7 @@ class DOMINOTests(IMP.test.TestCase):
                     if i==j:
                         continue
                     if (p0, p1) in pairs or (p1, p0) in pairs:
-                        self.assert_(s[i] != s[j])
+                        self.assertNotEqual(s[i], s[j])
     def test_global_min3(self):
         """Test exclusion filtering all"""
         m= IMP.Model()
@@ -68,7 +68,7 @@ class DOMINOTests(IMP.test.TestCase):
                 for j, p1 in enumerate(css):
                     if i==j:
                         continue
-                    self.assert_(s[i] != s[j])
+                    self.assertNotEqual(s[i], s[j])
     def test_global_min4(self):
         """Test equivalence filtering"""
         m= IMP.Model()
@@ -88,7 +88,7 @@ class DOMINOTests(IMP.test.TestCase):
             cur= [x for x in s]
             cur.sort()
             print s, cur
-            self.assert_(cur not in seen)
+            self.assertNotIn(cur, seen)
             seen.append(cur)
 if __name__ == '__main__':
     IMP.test.main()
