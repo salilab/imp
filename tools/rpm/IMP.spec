@@ -1,5 +1,5 @@
 Name:          IMP
-Version:       1.0
+Version:       %{IMP_VERSION}
 Release:       1%{?dist}
 License:       LGPLv2+ and GPLv3
 Summary:       The Integrative Modeling Platform
@@ -11,16 +11,16 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 BuildRequires: scons >= 0.98, boost-devel, swig, python-devel
 BuildRequires: modeller, gsl-devel, hdf5-devel, fftw-devel
 
-# RHEL doesn't have a CGAL package, so build without CGAL on RHEL; on Fedora,
-# add it in as a dependency
+# RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
+# doesn't have a new enough OpenCV in EPEL, or bullet or eigen packages, so
+# disable em2d, bullet and isd modules.
+# on Fedora, all of these packages are available; add them as dependencies
 %if 0%{?fedora}
-BuildRequires: CGAL-devel
-%define cgal_opts cgal=yes
+BuildRequires: CGAL-devel, bullet-devel, opencv-devel, eigen3-devel
+%define scons_opts cgal=yes
 %else
-%define cgal_opts cgal=no
+%define scons_opts cgal=no opencv21=no opencv22=no bullet=no eigen3=no
 %endif
-
-%define scons_opts %{cgal_opts} modeller=/usr/
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
@@ -72,14 +72,14 @@ be used from Python.
 %build
 
 %install
-scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} install ${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/examples
+scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} install
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
 #      c) it is really big
 #  and d) only certain versions of doxygen work correctly
 # You can build the documentation by running, in the IMP source tree:
-# scons dot=True destdir=/tmp docdir=/usr/share/doc/imp-1.0 doc-install
+# scons dot=True destdir=/tmp docdir=/usr/share/doc/imp-%{version} doc-install
 README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
 echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
@@ -93,16 +93,21 @@ echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 /usr/share/imp
 /usr/bin/*
 %{_libdir}/libimp*.so
+%{_libdir}/libRMF*.so
 
 %files devel
 %defattr(-,root,root)
 /usr/include/IMP
 /usr/include/IMP.h
+/usr/include/RMF
+/usr/include/RMF.h
 
 %files python
 %defattr(-,root,root)
 %{_libdir}/python*/site-packages/IMP
 %{_libdir}/python*/site-packages/_IMP*so
+%{_libdir}/python*/site-packages/RMF
+%{_libdir}/python*/site-packages/_RMF*so
 
 %changelog
 * Mon Mar 08 2010 Ben Webb <ben@salilab.org>   1.0-1
