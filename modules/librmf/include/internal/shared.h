@@ -613,6 +613,10 @@ namespace RMF {
                                << " vs " << category_names_cache_[Arity-1][kc]);
         return category_names_cache_[Arity-1][kc];
       }
+
+      void initialize_categories(int i);
+      void initialize_keys(int i);
+      void initialize_free_nodes();
     };
 
 
