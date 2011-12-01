@@ -13,76 +13,72 @@
 namespace RMF {
   namespace internal {
 
-    template <class Traits, unsigned int D>
-    HDF5DataSetD<Traits, D> get_data_set_always(HDF5Group parent,
-                                               std::string name) {
-      if (parent.get_has_child(name)) {
-        return parent.get_child_data_set<Traits, D>(name);
-      } else {
-        return parent.add_child_data_set<Traits, D>(name);
+  void SharedData::initialize_categories(int i) {
+    std::string nm=get_category_name_data_set_name(i+1);
+    if (file_.get_has_child(nm)) {
+      category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
+      for (unsigned int j=0; j< category_names_[i].get_size()[0]; ++j) {
+        std::string name
+            = category_names_[i].get_value(HDF5DataSetIndex1D(j));
+        category_names_cache_[i].push_back(name);
       }
     }
+  }
+
+  void SharedData::initialize_keys(int i) {
+    std::string nm=get_set_data_data_set_name(i+2);
+    if (file_.get_has_child(nm)) {
+      node_data_[i+1]
+          = file_.get_child_data_set<IndexTraits, 2>(nm);
+      for (unsigned int j=0; j< node_data_[i+1].get_size()[0]; ++j) {
+        if (node_data_[i+1].get_value(HDF5DataSetIndexD<2>(j, 0))==-1) {
+          free_ids_[i+1].push_back(j);
+        }
+      }
+    }
+  }
+
+  void SharedData::initialize_free_nodes() {
+    HDF5DataSetIndexD<2> dim= node_data_[0].get_size();
+    for (unsigned int i=0; i< dim[0]; ++i) {
+      if (IndexTraits::
+          get_is_null_value(node_data_[0].get_value(HDF5DataSetIndexD<2>(i,
+                                                                         0)))) {
+        free_ids_[0].push_back(i);
+      }
+    }
+  }
 
     SharedData::SharedData(HDF5Group g, bool create):
       file_(g),
-      node_names_(get_data_set_always<StringTraits, 1>
-      (file_, get_node_name_data_set_name())),
       frames_hint_(0)
     {
-      for (unsigned int i=0; i< 4; ++i) {
-        std::string nm=get_category_name_data_set_name(i+1);
-        if (file_.get_has_child(nm)) {
-          category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
-          for (unsigned int j=0; j< category_names_[i].get_size()[0]; ++j) {
-            std::string name
-              = category_names_[i].get_value(HDF5DataSetIndex1D(j));
-            category_names_cache_[i].push_back(name);
-          }
-        } else if (!create && i==0) {
-          add_category(1, "physics");
-          add_category(1, "sequence");
-          add_category(1, "shape");
-          add_category(1, "feature");
-        }
-      }
-      node_data_[0]=get_data_set_always<IndexTraits, 2>
-        (file_, get_node_data_data_set_name());
-      for (unsigned int i=0; i< 4; ++i) {
-        last_node_[i]=-1;
-        last_vi_[i]=-1;
-      }
-      for (unsigned int i=0; i < 3; ++i) {
-        std::string nm=get_set_data_data_set_name(i+2);
-        if (file_.get_has_child(nm)) {
-          node_data_[i+1]
-              = get_data_set_always<IndexTraits,
-              2>(file_, nm);
-          for (unsigned int j=0; j< node_data_[i+1].get_size()[0]; ++j) {
-            if (node_data_[i+1].get_value(HDF5DataSetIndexD<2>(j, 0))==-1) {
-              free_ids_[i+1].push_back(j);
-            }
-          }
-        }
-      }
       if (create) {
         file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
+        node_names_
+            =file_.add_child_data_set<StringTraits, 1>
+            (get_node_name_data_set_name());
+        node_data_[0]=file_.add_child_data_set<IndexTraits, 2>
+            (get_node_data_data_set_name());
       } else {
         std::string version=file_.get_attribute<CharTraits>("version");
         IMP_RMF_USAGE_CHECK(version== "rmf 1",
                             "Unsupported rmf version string found: \""
                             << version << "\" expected \"" << "rmf 1" << "\"");
+        node_names_=file_.get_child_data_set<StringTraits, 1>
+            (get_node_name_data_set_name());
+        node_data_[0]=file_.get_child_data_set<IndexTraits, 2>
+            (get_node_data_data_set_name());
       }
-      HDF5DataSetIndexD<2> dim= node_data_[0].get_size();
-      for (unsigned int i=0; i< dim[0]; ++i) {
-        if (IndexTraits::
-            get_is_null_value(node_data_[0].get_value(HDF5DataSetIndexD<2>(i,
-                                                                        0)))) {
-          free_ids_[0].push_back(i);
-        }
+      for (unsigned int i=0; i< 4; ++i) {
+        initialize_categories(i);
+        initialize_keys(i);
+        // clear caches
+        last_node_[i]=-1;
+        last_vi_[i]=-1;
       }
+      initialize_free_nodes();
       if (create) {
-        IMP_RMF_USAGE_CHECK(!file_.get_has_child("root"),
-                            "Already has a root Group");
         add_node("root", ROOT);
       } else {
         IMP_RMF_USAGE_CHECK(get_name(0)=="root",
