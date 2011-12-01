@@ -90,6 +90,19 @@ double ComplementarityRestraint::unprotected_evaluate(
 }
 
 
+namespace
+{
+
+bool score_acceptable(const IMP::multifit::internal::FitScore &ps)
+{
+  return ps.penetration_score < std::numeric_limits<float>::max() &&
+    (ps.penetration_score != 0 || ps.complementarity_score != 0 ||
+     ps.boundary_score != 0);
+}
+
+}
+
+
 double ComplementarityRestraint::unprotected_evaluate_if_good(
                                        DerivativeAccumulator *accum,
                                        double max) const
@@ -132,6 +145,8 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
       << ps.complementarity_score << " and "
       << ps.boundary_score
           << std::endl);
+  if ( !score_acceptable(ps) )
+    return std::numeric_limits<double>::max();
   /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     IMP::algebra::DenseGrid3D<float> ga=get_grid(a_,
                                                  complementarity_thickeness_,
@@ -154,10 +169,10 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
   double score = penetration_coef_*ps.penetration_score
     + complementarity_coef_*ps.complementarity_score
     + boundary_coef_*ps.boundary_score;
-  if ( score == 0 || ps.penetration_score >= std::numeric_limits<float>::max())
-    return std::numeric_limits<double>::max();
   return score*vol;
 }
+
+
 
 void ComplementarityRestraint::update_voxel() {
   double val;
