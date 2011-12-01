@@ -84,7 +84,12 @@ scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons
 # scons dot=True destdir=/tmp docdir=/usr/share/doc/imp-%{version} doc-install
 README=${RPM_BUILD_ROOT}/usr/share/doc/%{name}-%{version}/README
 echo "For full IMP documentation, please go to" > ${README}
-echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
+# Direct SVN users to most recent nightly build docs
+if echo ${version} | grep -q SVN; then
+  echo "http://salilab.org/imp/nightly/doc/html/" >> ${README}
+else
+  echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
+fi
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
