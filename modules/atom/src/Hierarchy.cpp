@@ -541,7 +541,7 @@ struct True {
 
 void destroy(Hierarchy d) {
   ParticlesTemp all;
-  core::Hierarchy h=d;
+  //core::Hierarchy h=d;
 
   core::gather(d, True(), std::back_inserter(all));
   for (unsigned int i=0; i< all.size(); ++i) {
