@@ -113,6 +113,7 @@ IMP_SWIG_OBJECT(IMP::core, XYZDerivativeGeometry, XYZDerivativeGeometries);
 IMP_SWIG_OBJECT(IMP::core, XYZDerivativesGeometry, XYZDerivativesGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyDerivativeGeometry, RigidBodyDerivativeGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyDerivativesGeometry, RigidBodyDerivativesGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyHierarchyGeometry, RigidBodyHierarchyGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
@@ -222,6 +223,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/QuadraticClosePairsFinder.h"
 %include "IMP/core/RefinedPairsPairScore.h"
 %include "IMP/core/rigid_bodies.h"
+%include "IMP/core/rigid_body_geometries.h"
 %include "IMP/core/NearestNeighborsClosePairsFinder.h"
 %include "IMP/core/RigidClosePairsFinder.h"
 %include "IMP/core/SphereDistancePairScore.h"

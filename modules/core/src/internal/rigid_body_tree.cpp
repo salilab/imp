@@ -106,6 +106,10 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                     << constituents.size() << " > " << uc.size());
   }
   Model *m= d.get_model();
+ // make sure children are up to date
+  if (m->get_stage()== IMP::internal::NOT_EVALUATING) {
+    d.set_reference_frame(d.get_reference_frame());
+  }
   // they had better be up to date
   //d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
@@ -142,7 +146,6 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   }
   std::sort(leaves.begin(), leaves.end());
 
-  typedef std::pair<unsigned int, SphereIndexes> Node;
   std::vector<Node> stack;
   stack.push_back(Node(0, leaves));
 
@@ -150,46 +153,52 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     Node cur;
     std::swap(cur,stack.back());
     stack.pop_back();
-    IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
-    algebra::Sphere3Ds ss(cur.second.size());
-    for (unsigned int i=0; i< cur.second.size(); ++i) {
-      ss[i]= spheres[cur.second[i]];
-    }
-    algebra::Sphere3D ec= algebra::get_enclosing_sphere(ss);
-    algebra::Sphere3D bs=algebra::Sphere3D(ec.get_center(),
-                                               ec.get_radius()*EXPANSION
-                                               +.1);
-    set_sphere(cur.first, bs);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i=0; i< cur.second.size(); ++i) {
-        algebra::Sphere3D bd(bs.get_center(), 1.1*bs.get_radius());
-        IMP_INTERNAL_CHECK(bd.get_contains(spheres[cur.second[i]]),
-                           "Sphere not contained " << bs
-                           << " not around " << spheres[cur.second[i]]);
-      }
-    }
-    if (cur.second.size() <MAX_LEAF_SIZE) {
-      ParticleIndexes particles(cur.second.size());
-      for (unsigned int i=0; i< particles.size(); ++i) {
-        particles[i]= constituents_[cur.second[i]];
-      }
-      set_leaf(cur.first, particles);
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        validate_internal(m, cur.first, algebra::Sphere3Ds());
-      }
-    } else {
-      SpheresSplit ss= divide_spheres(spheres, cur.second);
-      unsigned int nc= add_children(cur.first, ss.size());
-      for (unsigned int i=0; i< ss.size(); ++i) {
-        stack.push_back(Node(nc+i, ss[i]));
-      }
-    }
+    build_tree(m, cur, spheres, stack);
   } while (!stack.empty());
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     validate(m);
   }
 }
 
+
+void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
+                                    const algebra::Sphere3Ds &spheres,
+                                    std::vector<Node> &stack) {
+  IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
+  algebra::Sphere3Ds ss(cur.second.size());
+  for (unsigned int i=0; i< cur.second.size(); ++i) {
+    ss[i]= spheres[cur.second[i]];
+  }
+  algebra::Sphere3D ec= algebra::get_enclosing_sphere(ss);
+  algebra::Sphere3D bs=algebra::Sphere3D(ec.get_center(),
+                                         ec.get_radius()*EXPANSION
+                                         +.1);
+  set_sphere(cur.first, bs);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< cur.second.size(); ++i) {
+      algebra::Sphere3D bd(bs.get_center(), 1.1*bs.get_radius());
+      IMP_INTERNAL_CHECK(bd.get_contains(spheres[cur.second[i]]),
+                         "Sphere not contained " << bs
+                           << " not around " << spheres[cur.second[i]]);
+    }
+  }
+  if (cur.second.size() <MAX_LEAF_SIZE) {
+    ParticleIndexes particles(cur.second.size());
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      particles[i]= constituents_[cur.second[i]];
+    }
+    set_leaf(cur.first, particles);
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        validate_internal(m, cur.first, algebra::Sphere3Ds());
+    }
+  } else {
+    SpheresSplit ss= divide_spheres(spheres, cur.second);
+    unsigned int nc= add_children(cur.first, ss.size());
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      stack.push_back(Node(nc+i, ss[i]));
+    }
+  }
+}
 
 void RigidBodyHierarchy::set_sphere(unsigned int ni,
                                     const algebra::Sphere3D &s) {
