@@ -44,7 +44,7 @@ class TestBL(IMP.test.TestCase):
         w= IMP.display.BildWriter(self.get_tmp_file_name("qderiv.bild"))
         #oge= display.XYZRGeometryExtractor(FloatKey("hi"))
         for i in range(0,4):
-            gs = IMP.display.RigidBodyDerivativeGeometry(rbd)
+            gs = IMP.core.RigidBodyDerivativeGeometry(rbd)
             w.add_geometry(gs)
             print gs
         del w
