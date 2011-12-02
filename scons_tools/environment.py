@@ -149,6 +149,8 @@ def _add_platform_flags(env):
                 env.Append(CXXFLAGS=["-Wmissing-prototypes"])
             else:
                 env.Append(CXXFLAGS=["-Wmissing-declarations"])
+        if dependency.gcc.get_version(env)>= 4.6:
+            env.Append(CXXFLAGS=["-Wno-c++0x-compat"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
