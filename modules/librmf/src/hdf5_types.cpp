@@ -189,8 +189,8 @@ namespace RMF {
       H5Dvlen_reclaim(get_hdf5_type(), is, H5P_DEFAULT, &data);
       return ret;*/
     char *c=NULL;
-    HDF5Handle mt(create_string_type(),
-                  H5Tclose);
+    IMP_HDF5_HANDLE( mt,create_string_type(),
+                     H5Tclose);
     IMP_HDF5_CALL(H5Dread(d,  mt, is, sp, H5P_DEFAULT, &c));
     std::string ret;
     if (c) {

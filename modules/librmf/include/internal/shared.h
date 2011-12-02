@@ -71,6 +71,7 @@ namespace RMF {
       // TypeInfo::get_index() then by ID
       // then by key.get_index()
       mutable HDF5Group file_;
+      std::string name_;
       HDF5DataSetD<StringTraits, 1> node_names_;
       boost::array<HDF5DataSetD<StringTraits, 1>, 4> category_names_;
       boost::array<Strings, 4> category_names_cache_;
@@ -252,6 +253,7 @@ namespace RMF {
         typename TypeTraits::Type get_value_always(unsigned int node,
                                                    Key<TypeTraits,Arity> k,
                                                    unsigned int frame) const {
+        IMP_RMF_BEGIN_FILE
         int vi=-1;
         unsigned int kc=k.get_category().get_index();
         bool per_frame= k.get_is_per_frame();
@@ -262,6 +264,7 @@ namespace RMF {
             return TypeTraits::get_null_value();
           }
         } else {
+          IMP_RMF_BEGIN_OPERATION
           int index= get_index(Arity, kc);
           HDF5DataSetIndexD<2> nsz= node_data_[Arity-1].get_size();
           IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(nsz[0]) > node,
@@ -275,11 +278,13 @@ namespace RMF {
             vi=node_data_[Arity-1].get_value(HDF5DataSetIndexD<2>(node, index));
           }
           last_vi_[Arity-1]= vi;
+          IMP_RMF_END_OPERATION("getting value index");
         }
         if (IndexTraits::get_is_null_value(vi)) {
           return TypeTraits::get_null_value();
         } else {
           if (per_frame) {
+            IMP_RMF_BEGIN_OPERATION
             HDF5DataSetD<TypeTraits, 3> &ds
               = get_per_frame_data_data_set<TypeTraits>(kc,
                                                         k.get_arity(),
@@ -294,7 +299,9 @@ namespace RMF {
               return ds.get_value(HDF5DataSetIndexD<3>(vi, k.get_index(),
                                                        frame));
             }
+            IMP_RMF_END_OPERATION("fetching data from per frame data set")
           } else {
+            IMP_RMF_BEGIN_OPERATION
             HDF5DataSetD<TypeTraits,2> &ds
               = get_data_data_set<TypeTraits>(kc,
                                               k.get_arity(),
@@ -307,8 +314,10 @@ namespace RMF {
             } else {
               return ds.get_value(HDF5DataSetIndexD<2>(vi, k.get_index()));
             }
+            IMP_RMF_END_OPERATION("fetching data from data set")
           }
         }
+        IMP_RMF_END_FILE(name_);
       }
       HDF5Group get_group() const {
         return file_;
@@ -340,6 +349,9 @@ namespace RMF {
                             "Unassociated id");
         return association_[id];
       }
+      std::string get_file_name() const {
+        return name_;
+      }
       int get_association(void* d) const {
         if (back_association_.find(d) == back_association_.end()) {
           IMP_RMF_IF_CHECK {
@@ -361,7 +373,7 @@ namespace RMF {
         unsigned int kc= k.get_category().get_index();
         if (!get_is_per_frame(k)) {
           IMP_RMF_THROW("Attribue " << k << " does not have frames.",
-                        std::runtime_error);
+                        UsageException);
         } else {
           HDF5DataSetD<TypeTraits, 3> &ds
             =get_per_frame_data_data_set<TypeTraits>(kc,
@@ -369,7 +381,7 @@ namespace RMF {
                                                      false);
           if (!ds) {
             IMP_RMF_THROW("Attribute " << k << " does not have any data.",
-                          std::runtime_error);
+                          UsageException);
           }
           HDF5DataSetIndexD<3> sz= ds.get_size();
           return sz[2];
@@ -411,6 +423,7 @@ namespace RMF {
           vi= last_vi_[Arity-1];
         }
         if (IndexTraits::get_is_null_value(vi)) {
+          IMP_RMF_BEGIN_OPERATION;
           unsigned int index= get_index(Arity, kc);
           HDF5DataSetIndexD<2> nsz= node_data_[Arity-1].get_size();
           IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(nsz[0]) > node,
@@ -434,8 +447,10 @@ namespace RMF {
             max_cache_[kc]=vi;
           }
           last_vi_[Arity-1]=vi;
+          IMP_RMF_END_OPERATION("figuring out where to store value");
         }
         if (per_frame) {
+          IMP_RMF_BEGIN_OPERATION
           HDF5DataSetD<TypeTraits, 3> &ds
             =get_per_frame_data_data_set<TypeTraits>(kc,
                                                      k.get_arity(), true);
@@ -457,7 +472,9 @@ namespace RMF {
             ds.set_size(sz);
           }
           ds.set_value(HDF5DataSetIndexD<3>(vi, k.get_index(), frame), v);
+          IMP_RMF_END_OPERATION("storing per frame value");
         } else {
+          IMP_RMF_BEGIN_OPERATION
           HDF5DataSetD<TypeTraits, 2> &ds
             =get_data_data_set<TypeTraits>(kc, k.get_arity(),
                                            true);
@@ -475,6 +492,7 @@ namespace RMF {
             ds.set_size(sz);
           }
           ds.set_value(HDF5DataSetIndexD<2>(vi, k.get_index()), v);
+          IMP_RMF_END_OPERATION("storing single value")
         }
         /*IMP_RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
                                "Stored " << v << " but got "
@@ -486,6 +504,7 @@ namespace RMF {
                                        std::string name, bool per_frame) {
         audit_key_name(name);
         // check that it is unique
+        IMP_RMF_BEGIN_OPERATION;
         for (unsigned int i=0; i< 2; ++i) {
           bool per_frame=(i==0);
           HDF5DataSetD<StringTraits, 1> &nameds
@@ -500,6 +519,8 @@ namespace RMF {
                                 << " already taken for that type.");
           }
         }
+        IMP_RMF_END_OPERATION("checking that key is unique");
+        IMP_RMF_BEGIN_OPERATION;
         HDF5DataSetD<StringTraits, 1>& nameds
           = get_key_list_data_set<TypeTraits>(category_id, Arity,
                                               per_frame,
@@ -511,6 +532,7 @@ namespace RMF {
         --sz[0];
         nameds.set_value(sz, name);
         return Key<TypeTraits, Arity>(category_id, ret_index, per_frame);
+        IMP_RMF_END_OPERATION("appending key to list")
       }
 
       // create the data sets and add rows to the table
@@ -569,7 +591,7 @@ namespace RMF {
       }
 
 
-      SharedData(HDF5Group g, bool create);
+      SharedData(HDF5Group g, std::string name, bool create);
       ~SharedData();
       int add_node(std::string name, unsigned int type);
       int get_first_child(unsigned int node) const;

@@ -13,6 +13,9 @@
 #include <sstream>
 #include <iostream>
 #include <string>
+#include "exceptions.h"
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/has_xxx.hpp>
 
 #if !defined(NDEBUG) && defined(__GNUC__)
 #include <debug/vector>
@@ -152,25 +155,20 @@
 #endif
 
 
-#define IMP_RMF_USAGE_CHECK(check, message)                     \
-  do {                                                          \
-    if (!(check)) {                                             \
-      std::ostringstream oss;                                   \
-      using std::operator<<;                                    \
-      oss << "Usage check failed: " << #check << "\n"           \
-          << message;                                           \
-      ::RMF::internal::handle_usage_error(oss.str());           \
-    }                                                           \
+#define IMP_RMF_USAGE_CHECK(check, message)                             \
+  do {                                                                  \
+    if (!(check)) {                                                     \
+      IMP_RMF_THROW("Usage check failed: " << #check << "\n"            \
+                    << message, RMF::UsageException);                   \
+    }                                                                   \
   } while (false)
 
 #define IMP_RMF_INTERNAL_CHECK(check, message)                          \
   do {                                                                  \
     if (!(check)) {                                                     \
-      std::ostringstream oss;                                           \
-      using std::operator<<;                                            \
-      oss << "Internal check failed: " << #check << "\n"                \
-          << message;                                                   \
-      ::RMF::internal::handle_internal_error(oss.str());                \
+      IMP_RMF_THROW("Internal check failed: \"" << #check << "\""       \
+                    << " at " << __FILE__ << ":" << __LINE__ << "\n"    \
+                    << message, RMF::InternalException);                \
     }                                                                   \
   } while (false)
 
@@ -178,20 +176,37 @@
   if (true)
 
 #define IMP_RMF_NOT_IMPLEMENTED                                         \
-  ::RMF::internal::handle_internal_error("Not implemented")
+  IMP_RMF_THROW("Not implemented: "<< BOOST_CURRENT_FUNCTION            \
+                << " in " << __FILE__ << ":" << __LINE__,               \
+                RMF::InternalException)
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
 
 
-#define IMP_RMF_THROW(m,e) do {  \
-    std::ostringstream oss;      \
-    using std::operator<<;       \
-    oss << m;                    \
-    throw e(oss.str().c_str());  \
+#define IMP_RMF_THROW(m,e) do {                 \
+    std::ostringstream oss;                     \
+    using std::operator<<;                      \
+    oss << m;                                   \
+    RMF::internal::handle_error(oss.str());     \
+    throw e(oss.str().c_str());                 \
   } while (false)
 
 /** Call a function and throw an exception if the return values is bad */
-#define IMP_HDF5_CALL(v) IMP_RMF_USAGE_CHECK((v)>=0, "Error calling "<< (#v))
+#define IMP_HDF5_CALL(v) {                              \
+    hid_t test_value=(v);                               \
+    if (test_value<0) {                                 \
+      IMP_RMF_THROW("HDF5 call failed: " << #v,         \
+                    RMF::IOException);                  \
+    }                                                   \
+  }
+
+/** Create new HDF5 shared handle.*/
+#define IMP_HDF5_NEW_HANDLE(name, cmd, cleanup)         \
+  boost::intrusive_ptr<RMF::HDF5SharedHandle> name      \
+  = new RMF::HDF5SharedHandle(cmd, cleanup, #cmd)
+
+#define IMP_HDF5_HANDLE(name, cmd, cleanup)     \
+  RMF::HDF5Handle name(cmd, cleanup, #cmd)
 
 /** Apply the macro to each supported constant size type (eg int as opposed
     to string).
@@ -238,6 +253,49 @@
             const Types &, Types);
 #endif
 
+
+#define IMP_RMF_BEGIN_OPERATION                 \
+  try {
+
+#define IMP_RMF_END_OPERATION(name)             \
+  } catch (Exception &e) {                      \
+    using RMF::vector_io::operator<<;           \
+    std::ostringstream oss;                     \
+    oss << name;                                \
+    e.set_operation_name(oss.str().c_str());    \
+    throw;                                      \
+  }
+
+#define IMP_RMF_OPERATION(op, name)             \
+  IMP_RMF_BEGIN_OPERATION                       \
+  op;                                           \
+  IMP_RMF_END_OPERATION(name)
+
+#define IMP_RMF_BEGIN_FILE                      \
+  try {
+
+#define IMP_RMF_END_FILE(name)                  \
+  } catch (Exception &e) {                      \
+    using RMF::vector_io::operator<<;           \
+    std::ostringstream oss;                     \
+    oss << name;                                \
+    e.set_file_name(oss.str().c_str());         \
+    throw;                                      \
+  }
+
+#define IMP_RMF_FILE(op, name)                  \
+  IMP_RMF_BEGIN_FILE                            \
+  op;                                           \
+  IMP_RMF_END_FILE(name)
+
+
+#define IMP_RMF_FILE_OPERATION(op, name, opname)        \
+  IMP_RMF_BEGIN_FILE                                    \
+  IMP_RMF_BEGIN_OPERATION                               \
+  op;                                                   \
+  IMP_RMF_END_FILE(name)                                \
+  IMP_RMF_END_OPERATION(opname)                         \
+
 namespace RMF {
 #if !defined(NDEBUG) && defined(__GNUC__)
   using __gnu_debug::vector;
@@ -255,11 +313,30 @@ namespace RMF {
   inline std::size_t hash_value(const T &t) {
     return t.__hash__();
   }
-  template <class T>
-  inline std::ostream &operator<<(std::ostream &out, const T &t) {
-    t.show(out);
-    return out;
+
+BOOST_MPL_HAS_XXX_TRAIT_DEF(show);
+
+template <class T, class Enabled=void>
+struct Shower{
+  static void do_it(std::ostream &out, const T &t) {
+    using std::operator<<;
+    out << t;
   }
+};
+
+template <class T>
+struct Shower<T, typename boost::enable_if<has_show<T> >::type >{
+  static void do_it(std::ostream &out, const T &t) {
+    t.show(out);
+  }
+};
+
+template <class T>
+inline std::ostream &operator<<(std::ostream &out, const T &t) {
+  Shower<T>::do_it(out, t);
+  return out;
+}
+namespace vector_io {
   template <class T>
   inline std::ostream &operator<<(std::ostream &out, const vector<T> &t) {
     using std::operator<<;
@@ -273,6 +350,8 @@ namespace RMF {
     out << "]";
     return out;
   }
+}
+using namespace vector_io;
 #endif
 }
 

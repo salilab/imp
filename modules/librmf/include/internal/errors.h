@@ -12,13 +12,11 @@
 #include "../RMF_config.h"
 
 namespace RMF {
-  namespace internal {
+namespace internal {
 
-    RMFEXPORT void handle_usage_error(std::string message);
+RMFEXPORT void handle_error(std::string message);
 
-    RMFEXPORT void handle_internal_error(std::string message);
-
-  } // namespace internal
+} // namespace internal
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_INTERNAL_ERRORS_H */

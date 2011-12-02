@@ -10,13 +10,8 @@
 #include <stdexcept>
 namespace RMF {
   namespace internal {
-    void handle_usage_error(std::string message) {
-      throw std::runtime_error(message);
+    void handle_error(std::string) {
+      //throw UsageException(message.c_str());
     }
-
-    void handle_internal_error(std::string message) {
-      throw std::logic_error(message);
-    }
-
   } // namespace internal
 } /* namespace RMF */

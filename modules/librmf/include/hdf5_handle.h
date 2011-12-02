@@ -42,9 +42,10 @@ class RMFEXPORT HDF5Handle : public boost::noncopyable
   hid_t h_;
   HDF5CloseFunction f_;
 public:
-  HDF5Handle(hid_t h, HDF5CloseFunction f): h_(h), f_(f) {
+  HDF5Handle(hid_t h, HDF5CloseFunction f, std::string operation):
+    h_(h), f_(f) {
     if (h_<0) {
-      IMP_RMF_THROW("Invalid handle returned", std::runtime_error);
+      IMP_RMF_THROW("Invalid handle returned from " << operation, IOException);
     }
   }
   HDF5Handle(): h_(-1){}
@@ -86,7 +87,8 @@ class RMFEXPORT HDF5SharedHandle: public HDF5Handle,
 
  {
 public:
-  HDF5SharedHandle(hid_t h, HDF5CloseFunction f): HDF5Handle(h, f) {
+   HDF5SharedHandle(hid_t h, HDF5CloseFunction f, std::string operation):
+     HDF5Handle(h, f, operation) {
   }
  };
 
