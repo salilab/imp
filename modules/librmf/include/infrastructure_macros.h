@@ -316,11 +316,15 @@ namespace RMF {
   }
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(show);
-
+namespace vector_io {
+  template <class T>
+  inline std::ostream &operator<<(std::ostream &out, const vector<T> &t);
+}
 template <class T, class Enabled=void>
 struct Shower{
   static void do_it(std::ostream &out, const T &t) {
     using std::operator<<;
+    using vector_io::operator<<;
     out << t;
   }
 };
