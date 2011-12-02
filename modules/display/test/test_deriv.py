@@ -34,7 +34,7 @@ class TestBL(IMP.test.TestCase):
         m.evaluate(True)
         w= IMP.display.BildWriter(self.get_tmp_file_name("deriv.bild"))
         for i in range(0,4):
-            w.add_geometry(IMP.display.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
+            w.add_geometry(IMP.core.XYZDerivativeGeometry(IMP.core.XYZ(ps[i])))
         del w
 
         rbd= IMP.core.RigidBody.setup_particle(p, IMP.core.XYZs(ps))
