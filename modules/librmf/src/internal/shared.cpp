@@ -223,7 +223,7 @@ namespace RMF {
     IMP_RMF_IF_CHECK{
       flush();
       for ( int i=0; i< ind; ++i) {
-        boost::tuple<int,int,int> bd= get_bond(i);
+        /*boost::tuple<int,int,int> bd=*/ get_bond(i);
       }
     }
     IMP_RMF_USAGE_CHECK(type != -1, "Invalid type passed: " << type);
@@ -231,7 +231,7 @@ namespace RMF {
     IMP_RMF_IF_CHECK{
       flush();
       for ( int i=0; i< ind+1; ++i) {
-        boost::tuple<int,int,int> bd= get_bond(i);
+        /*boost::tuple<int,int,int> bd=*/ get_bond(i);
       }
     }
   }
