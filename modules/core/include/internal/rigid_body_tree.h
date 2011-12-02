@@ -35,6 +35,10 @@ class IMPCOREEXPORT RigidBodyHierarchy: public IMP::base::Object {
   unsigned int add_children(unsigned int ni, unsigned int num_children);
   ParticleIndexes validate_internal(Model *m, int cur,
                                     algebra::Sphere3Ds bounds) const;
+  typedef std::pair<unsigned int, SphereIndexes> Node;
+  void build_tree(Model *m, const Node &n,
+                  const algebra::Sphere3Ds &spheres,
+                  std::vector<Node> &stack);
  public:
   algebra::Sphere3D get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
@@ -118,6 +122,8 @@ class IMPCOREEXPORT RigidBodyHierarchy: public IMP::base::Object {
     return ret;
   }
   void validate(Model *m) const;
+  RigidBody get_rigid_body() const {return rb_;}
+  Model *get_model() const {return rb_->get_model();}
 };
 
 IMPCOREEXPORT Particle* closest_particle(Model *m,
