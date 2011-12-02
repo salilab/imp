@@ -235,7 +235,7 @@ public:
   void normalize_rotation();
 
   //! Set the log level for the associated constraints
-  void set_log_level(LogLevel l);
+  void set_log_level(base::LogLevel l);
 
   //! Update the coordinates of the members
   void update_members();
