@@ -607,8 +607,8 @@ namespace grids {
 #endif
 
 #ifndef IMP_DOXYGEN
-    void add_voxel(const ExtendedGridIndexD<D>&, const VT&) {
-    IMP_USAGE_CHECK(false, "Cannot add voxels to dense grid");
+    GridIndexD<D> add_voxel(const ExtendedGridIndexD<D>&, const VT&) {
+    IMP_FAILURE("Cannot add voxels to dense grid");
   }
 #endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -699,10 +699,12 @@ namespace grids {
     IMP_SHOWABLE_INLINE(SparseGridStorage3D, out << "Sparse grid with "
                         << data_.size() << " cells set");
     //! Add a voxel to the storage, this voxel will now have a GridIndex3D
-    void add_voxel(const ExtendedGridIndexD<D>& i, const VT& gi) {
+    GridIndexD<D> add_voxel(const ExtendedGridIndexD<D>& i, const VT& gi) {
       IMP_USAGE_CHECK(Base::get_has_index(i), "Out of grid domain "
                       << i);
-      data_[GridIndexD<D>(i.begin(), i.end())]=gi;
+      GridIndexD<D> ret(i.begin(), i.end());
+      data_[ret]=gi;
+      return ret;
     }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
     SparseGridStorageD(const VT &def): default_(def) {
@@ -1182,7 +1184,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
       typedef Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
-        std::cout << i << std::endl;
+        //std::cout << i << std::endl;
         return home_->operator[](i);
       }
     };
@@ -1193,7 +1195,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
       typedef const Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
-        std::cout << i << std::endl;
+        //std::cout << i << std::endl;
         return home_->operator[](i);
       }
     };
@@ -1315,11 +1317,11 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
     using Storage::operator[];
 #endif
     // ! Add a voxel to a sparse grid.
-    void add_voxel(const VectorD<D>& pt, const Value &vt) {
+    GridIndexD<D> add_voxel(const VectorD<D>& pt, const Value &vt) {
       IMP_USAGE_CHECK(!Storage::get_is_dense(),
                       "add_voxel() only works on sparse grids.");
       ExtendedGridIndexD<D> ei= Embedding::get_extended_index(pt);
-      Storage::add_voxel(ei, vt);
+      return Storage::add_voxel(ei, vt);
     }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
     Value &get_voxel_always(const VectorD<D>& pt) {
@@ -1339,7 +1341,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 #else
     bool get_has_index(const ExtendedGridIndexD<D>&i) const;
     GridIndexD<D> get_index(const ExtendedGridIndexD<D> &i) const;
-    void add_voxel(const ExtendedGridIndexD<D> &i,
+    GridIndexD<D> add_voxel(const ExtendedGridIndexD<D> &i,
                    const Value &vt);
 #endif
     //! Convert an index back to an extended index
