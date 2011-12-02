@@ -143,6 +143,7 @@ struct Helper {
     int which_;
     ParticleSet(It b, It e, int which): b_(b), e_(e),
                                         which_(which){}
+    unsigned int size() const {return std::distance(b_, e_);}
   };
   template <class It>
   static ParticleSet<It> get_particle_set(It b, It e,
@@ -387,6 +388,7 @@ struct Helper {
   static bool fill_close_pairs(const ParticleSet<It> &ps,
                                const Traits &tr,
                                Out out) {
+    if (ps.size()==0) return true;
     double maxr=get_max_radius(ps, tr);
     std::vector<IDs > bin_contents_g;
     Floats bin_ubs;
@@ -513,6 +515,7 @@ struct Helper {
                                const ParticleSet<ItQ> &psq,
                                const Traits &tr,
                                Out out) {
+    if (psg.size()==0 || psq.size()==0) return true;
     double maxr=std::max(get_max_radius(psg, tr), get_max_radius(psq, tr));
     std::vector<IDs > bin_contents_g, bin_contents_q;
     Floats bin_ubs;
