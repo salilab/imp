@@ -988,14 +988,14 @@ double SpacefillingVolumetric<Gt>::capInter3and2_V(Wpoint const &i,
  dualikl=triangleDual(i,k,l);
  dualikj=triangleDual(i,k,j); dualilj=triangleDual(i,l,j);
  dualilk=triangleDual(i,l,k);
- double dijk,dijl,dikl,dikj,dilj,dilk;
+ double /*dijk,*/dijl,/*dikl,*/dikj,/*dilj,*/dilk;
  //I could pythagore instead of explicit computations, but since dual are
  // computed for center4 I also use it with center3
- dijk=vector_length(center4-dualijk) - vector_length(center3ijk-dualijk);
+ //dijk=vector_length(center4-dualijk) - vector_length(center3ijk-dualijk);
  dijl=vector_length(center4-dualijl) - vector_length(center3ijl-dualijl);
- dikl=vector_length(center4-dualikl) - vector_length(center3ikl-dualikl);
+ //dikl=vector_length(center4-dualikl) - vector_length(center3ikl-dualikl);
  dikj=vector_length(center4-dualikj) - vector_length(center3ijk-dualikj);
- dilj=vector_length(center4-dualilj) - vector_length(center3ijl-dualilj);
+ //dilj=vector_length(center4-dualilj) - vector_length(center3ijl-dualilj);
  dilk=vector_length(center4-dualilk) - vector_length(center3ikl-dualilk);
  return (
  2*Br*capInter3and2_A(i,j,k,l)

@@ -233,6 +233,7 @@ ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
                                       int frame) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  IMP_UNUSED(sk);
   IMP_USAGE_CHECK(f.get_type()== FEATURE,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
@@ -257,6 +258,7 @@ double get_restraint_score(RMF::NodeHandle f,
                            int frame) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  IMP_UNUSED(nk);
   if (f.get_has_value(sk, frame)) {
     return f.get_value(sk, frame);
   } else {
