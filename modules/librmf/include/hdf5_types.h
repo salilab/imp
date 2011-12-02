@@ -13,6 +13,7 @@
 #include "NodeID.h"
 #include "hdf5_handle.h"
 #include "infrastructure_macros.h"
+#include "internal/errors.h"
 #include <hdf5.h>
 #include <algorithm>
 
@@ -187,13 +188,14 @@ namespace RMF {
     typedef String Type;
     typedef Strings Types;
     static hid_t get_hdf5_disk_type() {
-      static HDF5Handle ret(create_string_type(),
+      static IMP_HDF5_HANDLE(ret, create_string_type(),
                             H5Tclose);
       IMP_RMF_INTERNAL_CHECK(H5Tequal(ret, ret),
                              "The type does not equal itself");
       IMP_RMF_INTERNAL_CHECK(H5Tequal(ret,
                                       HDF5Handle(create_string_type(),
-                                                 H5Tclose)),
+                                                 H5Tclose,
+                                      "creating string type")),
                              "The type does not equal a new copy");
       return ret;
     }
@@ -323,18 +325,18 @@ namespace RMF {
   struct ArrayTraits {
   private:
     static hid_t get_hdf5_memory_type() {
-      static HDF5Handle
-        ints_type( H5Tvlen_create (BaseTraits::get_hdf5_memory_type()),
-                   H5Tclose);
+      static IMP_HDF5_HANDLE(ints_type,  H5Tvlen_create
+                             (BaseTraits::get_hdf5_memory_type()),
+                                        H5Tclose);
       return ints_type;
     }
   public:
     typedef vector<typename BaseTraits::Type> Type;
     typedef vector< Type > Types;
     static hid_t get_hdf5_disk_type() {
-      static HDF5Handle
-        ints_type( H5Tvlen_create (BaseTraits::get_hdf5_disk_type()),
-                   H5Tclose);
+      static IMP_HDF5_HANDLE(ints_type, H5Tvlen_create
+                             (BaseTraits::get_hdf5_disk_type()),
+                             H5Tclose);
       return ints_type;
     }
     static void write_value_dataset(hid_t d, hid_t is,

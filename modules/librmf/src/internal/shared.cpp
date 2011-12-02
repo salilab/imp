@@ -49,27 +49,41 @@ namespace RMF {
     }
   }
 
-    SharedData::SharedData(HDF5Group g, bool create):
-      file_(g),
-      frames_hint_(0)
-    {
-      if (create) {
-        file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
-        node_names_
-            =file_.add_child_data_set<StringTraits, 1>
-            (get_node_name_data_set_name());
-        node_data_[0]=file_.add_child_data_set<IndexTraits, 2>
-            (get_node_data_data_set_name());
-      } else {
-        std::string version=file_.get_attribute<CharTraits>("version");
-        IMP_RMF_USAGE_CHECK(version== "rmf 1",
-                            "Unsupported rmf version string found: \""
-                            << version << "\" expected \"" << "rmf 1" << "\"");
-        node_names_=file_.get_child_data_set<StringTraits, 1>
-            (get_node_name_data_set_name());
-        node_data_[0]=file_.get_child_data_set<IndexTraits, 2>
-            (get_node_data_data_set_name());
-      }
+  SharedData::SharedData(HDF5Group g, std::string name, bool create):
+      file_(g), name_(name), frames_hint_(0)
+  {
+    IMP_RMF_BEGIN_FILE;
+    IMP_RMF_BEGIN_OPERATION;
+    if (create) {
+      IMP_RMF_OPERATION(
+          file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
+          "adding version string to file.");
+      IMP_RMF_OPERATION(
+          node_names_
+          =(file_.add_child_data_set<StringTraits, 1>)
+          (get_node_name_data_set_name());,
+          "adding node name data set to file.");
+      IMP_RMF_OPERATION(
+          node_data_[0]=(file_.add_child_data_set<IndexTraits, 2>)
+          (get_node_data_data_set_name());,
+          "adding node data data set to file.");
+    } else {
+      std::string version;
+      IMP_RMF_OPERATION(
+          version=file_.get_attribute<CharTraits>("version"),
+          "reading version string from file.");
+      IMP_RMF_USAGE_CHECK(version== "rmf 1",
+                          "Unsupported rmf version string found: \""
+                          << version << "\" expected \"" << "rmf 1" << "\"");
+      IMP_RMF_OPERATION(
+          node_names_=(file_.get_child_data_set<StringTraits, 1>)
+          (get_node_name_data_set_name());,
+          "opening node name data set.");
+      IMP_RMF_OPERATION(
+          node_data_[0]=(file_.get_child_data_set<IndexTraits, 2>)
+          (get_node_data_data_set_name());,
+          "opening node child data set.");
+    }
       for (unsigned int i=0; i< 4; ++i) {
         initialize_categories(i);
         initialize_keys(i);
@@ -84,6 +98,8 @@ namespace RMF {
         IMP_RMF_USAGE_CHECK(get_name(0)=="root",
                             "Root node is not so named");
       }
+      IMP_RMF_END_OPERATION("initializing");
+      IMP_RMF_END_FILE(name_);
     }
 
     SharedData::~SharedData() {
@@ -92,25 +108,25 @@ namespace RMF {
 
     void SharedData::audit_key_name(std::string name) const {
       if (name.empty()) {
-        IMP_RMF_THROW("Empty key name", std::runtime_error);
+        IMP_RMF_THROW("Empty key name", UsageException);
       }
       static const char *illegal="\\:=()[]{}\"'";
       const char *cur=illegal;
       while (*cur != '\0') {
         if (name.find(*cur) != std::string::npos) {
-          IMP_RMF_THROW("Key names can't contain "<< *cur, std::runtime_error);
+          IMP_RMF_THROW("Key names can't contain "<< *cur, UsageException);
         }
         ++cur;
       }
       if (name.find("  ") != std::string::npos) {
         IMP_RMF_THROW("Key names can't contain two consecutive spaces",
-                      std::runtime_error);
+                      UsageException);
       }
     }
 
     void SharedData::audit_node_name(std::string name) const {
       if (name.empty()) {
-        IMP_RMF_THROW("Empty key name", std::runtime_error);
+        IMP_RMF_THROW("Empty key name", UsageException);
       }
       static const char *illegal="\"";
       const char *cur=illegal;
@@ -118,7 +134,7 @@ namespace RMF {
         if (name.find(*cur) != std::string::npos) {
           IMP_RMF_THROW("Node names names can't contain \""<< *cur
                         << "\", but \"" << name << "\" does.",
-                        std::runtime_error);
+                        UsageException);
         }
         ++cur;
       }
@@ -130,7 +146,9 @@ namespace RMF {
                           << node);
     }
     int SharedData::add_node(std::string name, unsigned int type) {
+      IMP_RMF_BEGIN_FILE;
       int ret;
+      IMP_RMF_BEGIN_OPERATION;
       if (free_ids_[0].empty()) {
         HDF5DataSetIndexD<1> nsz= node_names_.get_size();
         ret= nsz[0];
@@ -144,7 +162,9 @@ namespace RMF {
         ret= free_ids_[0].back();
         free_ids_[0].pop_back();
       }
+      IMP_RMF_END_OPERATION("figuring out where to add node " << name);
       audit_node_name(name);
+      IMP_RMF_BEGIN_OPERATION
       node_names_.set_value(HDF5DataSetIndexD<1>(ret), name);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, TYPE), type);
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, CHILD),
@@ -152,6 +172,8 @@ namespace RMF {
       node_data_[0].set_value(HDF5DataSetIndexD<2>(ret, SIBLING),
                            IndexTraits::get_null_value());
       return ret;
+      IMP_RMF_END_OPERATION("adding node data");
+      IMP_RMF_END_FILE(name_.c_str());
     }
     void SharedData::set_name(unsigned int node, std::string name) {
       audit_node_name(name);
@@ -289,28 +311,36 @@ namespace RMF {
     return ret;
   }
   unsigned int SharedData::add_set(const RMF::Indexes &nis, int t) {
+    IMP_RMF_BEGIN_FILE;
     const int arity=nis.size();
+    IMP_RMF_BEGIN_OPERATION;
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       std::string nm=get_set_data_data_set_name(arity);
       node_data_[arity-1]
           = file_.add_child_data_set<IndexTraits, 2>(nm);
     }
+    IMP_RMF_END_OPERATION("adding data set to store set");
     int slot;
     if (free_ids_[arity-1].empty()) {
+      IMP_RMF_BEGIN_OPERATION
       slot= node_data_[arity-1].get_size()[0];
       int nsz=std::max<int>(arity+1, node_data_[arity-1].get_size()[1]);
       node_data_[arity-1].set_size(HDF5DataSetIndexD<2>(slot+1,
                                                         nsz));
+      IMP_RMF_END_OPERATION("allocating new slot for set");
     } else {
       slot= free_ids_[arity-1].back();
       free_ids_[arity-1].pop_back();
     }
+    IMP_RMF_BEGIN_OPERATION
     node_data_[arity-1].set_value(HDF5DataSetIndexD<2>(slot, 0), t);
     for ( int i=0; i< arity; ++i) {
       node_data_[arity-1].set_value(HDF5DataSetIndexD<2>(slot, i+1), nis[i]);
     }
+    IMP_RMF_END_OPERATION("storing set data");
     check_set(arity, slot);
     return slot;
+    IMP_RMF_END_FILE(name_.c_str());
   }
   unsigned int SharedData::get_set_member(int arity, unsigned int index,
                                             int member_index) const {
@@ -325,15 +355,19 @@ namespace RMF {
 
 
   int SharedData::add_category(int Arity, std::string name) {
+    IMP_RMF_BEGIN_FILE;
     IMP_RMF_USAGE_CHECK(get_category(Arity, name)==-1,
                         "File already has category " << name
                         << " with arity " << Arity);
     if (category_names_[Arity-1]
         == HDF5DataSetD<StringTraits, 1>()) {
+      IMP_RMF_BEGIN_OPERATION;
       std::string nm=get_category_name_data_set_name(Arity);
       category_names_[Arity-1]
           =file_.add_child_data_set<StringTraits, 1>(nm);
+      IMP_RMF_END_OPERATION("add category list data set");
     }
+    IMP_RMF_BEGIN_OPERATION
     // fill in later
     int sz= category_names_[Arity-1].get_size()[0];
     category_names_[Arity-1].set_size(HDF5DataSetIndex1D(sz+1));
@@ -343,6 +377,8 @@ namespace RMF {
                             category_names_cache_[Arity-1].size()));
     category_names_cache_[Arity-1][sz]=name;
     return sz;
+    IMP_RMF_END_OPERATION("adding category to list");
+    IMP_RMF_END_FILE(name_.c_str());
   }
   int SharedData::get_category(int Arity, std::string name) const {
     if (category_names_cache_[Arity-1].empty()) {

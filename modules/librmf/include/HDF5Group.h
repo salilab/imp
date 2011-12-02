@@ -105,9 +105,9 @@ namespace RMF {
         if (!missing) {
           hsize_t dim, maxdim;
           {
-            HDF5Handle a(H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
+            IMP_HDF5_HANDLE(a,H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
                          &H5Aclose);
-            HDF5Handle s(H5Aget_space(a), &H5Sclose);
+            IMP_HDF5_HANDLE(s,H5Aget_space(a), &H5Sclose);
             IMP_HDF5_CALL(H5Sget_simple_extent_dims(s, &dim, &maxdim));
           }
           if (value.size() != dim) {
@@ -116,17 +116,17 @@ namespace RMF {
           }
         }
         if (missing) {
-          HDF5Handle s(H5Screate(H5S_SIMPLE), &H5Sclose);
+          IMP_HDF5_HANDLE(s, H5Screate(H5S_SIMPLE), &H5Sclose);
           hsize_t dim=std::max(value.size(), size_t(1));
           hsize_t max=H5S_UNLIMITED;
           IMP_HDF5_CALL(H5Sset_extent_simple(s, 1, &dim, &max));
-          HDF5Handle a(H5Acreate2(h_->get_hid(), name.c_str(),
+          IMP_HDF5_HANDLE(a, H5Acreate2(h_->get_hid(), name.c_str(),
                                   TypeTraits::get_hdf5_disk_type(),
                                   s, H5P_DEFAULT, H5P_DEFAULT),
                        &H5Aclose);
         }
-        HDF5Handle a(H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
-                     &H5Aclose);
+        IMP_HDF5_HANDLE( a, H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
+                         &H5Aclose);
         TypeTraits::write_values_attribute(a, value);
       }
     }
@@ -136,9 +136,9 @@ namespace RMF {
       if (!H5Aexists(h_->get_hid(), name.c_str())) {
         return typename TypeTraits::Types();
       } else {
-        HDF5Handle a(H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
+        IMP_HDF5_HANDLE(a, H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
                      &H5Aclose);
-        HDF5Handle s(H5Aget_space(a), &H5Sclose);
+        IMP_HDF5_HANDLE(s, H5Aget_space(a), &H5Sclose);
         hsize_t dim, maxdim;
         IMP_HDF5_CALL(H5Sget_simple_extent_dims(s, &dim, &maxdim));
         typename TypeTraits::Types ret

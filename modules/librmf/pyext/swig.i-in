@@ -21,6 +21,36 @@ def get_data_types():
    return _types_list
 %}
 
+
+%{
+namespace {
+void handle_exception(void) {
+    try {
+      throw;
+    } catch (const RMF::Exception &e) {
+      PyErr_SetString(PyExc_RuntimeError, e.what());
+    } catch (...) {
+      PyErr_SetString(PyExc_RuntimeError,
+                      "Unknown error caught by Python wrapper");
+    }
+}
+}
+%}
+
+%exception {
+  try {
+    $action
+  } catch (...) {
+    // If Python error indicator is set (e.g. from a failed director method),
+    // it will be reraised at the end of the method
+    if (!PyErr_Occurred()) {
+      handle_exception();
+    }
+    SWIG_fail;
+  }
+}
+
+
 /* Declare the needed things for each type */
 %define IMP_RMF_SWIG_DECLARE_TYPE(lcname, Ucname, Ucnames, Type)
 %inline %{

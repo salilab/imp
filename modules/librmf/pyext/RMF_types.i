@@ -88,7 +88,7 @@
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<Namespace::PluralName, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const std::exception &e) {
+  } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -133,7 +133,7 @@
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<PluralName, ConvertSequence< IntermediateName, Convert< Name > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const std::exception &e) {
+  } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -352,7 +352,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const std::exception &e) {
+  } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -379,7 +379,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   try {
     // hack to get around swig's value wrapper being randomly used
     assign($1, ConvertSequence<RMF::vector< Name >, Convert< Name > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const std::exception &e) {
+  } catch (const RMF::Exception &e) {
     //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
     PyErr_SetString(PyExc_TypeError, e.what());
     return NULL;
@@ -413,7 +413,7 @@ IMP_RMF_SWIG_SHOWABLE(Namespace, Name);
   BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
   $1=ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
- } catch (const std::exception &e) {
+ } catch (const RMF::Exception &e) {
   //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
   PyErr_SetString(PyExc_TypeError, e.what());
   return NULL;
