@@ -183,8 +183,9 @@ typedef NearestNeighborD<-1> NearestNeighborKD;
     Later this can support balls by copying points multiple times.
 */
 class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
-  typedef grids::GridD<3, grids::DenseGridStorageD<3, Ints>, Ints,
-               grids::DefaultEmbeddingD<3> > Grid;
+  typedef grids::GridD<3, grids::SparseGridStorageD<3, Ints,
+      grids::UnboundedGridStorageD<3> >, Ints,
+      grids::DefaultEmbeddingD<3> > Grid;
   Grid grid_;
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;
@@ -192,11 +193,10 @@ class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
   compatibility::checked_vector<Index> indexes_;
   void audit() const;
  public:
-  DynamicNearestNeighbor3D(const BoundingBox3D &bb,
-                           const Vector3Ds &vs,
+  DynamicNearestNeighbor3D(const Vector3Ds &vs,
                            double query_estimate=1);
   Ints get_in_ball(int id, double distance) const;
-  void set_coordinates(int id, Vector3D nc);
+  void set_coordinates(int id, Vector3D nc, bool audit=true);
   IMP_OBJECT_INLINE(DynamicNearestNeighbor3D,out << "on " << coords_.size()
                     << " points" ,);
 };

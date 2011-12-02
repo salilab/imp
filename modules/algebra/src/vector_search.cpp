@@ -11,15 +11,14 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const BoundingBox3D &bb,
-                                                   const Vector3Ds &vs,
+DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const Vector3Ds &vs,
                                                    double query_estimate):
     Object("DynamicNearestNeighbor3D%1%"),
-    grid_(query_estimate, bb) {
+    grid_(query_estimate) {
   coords_=vs;
   indexes_.resize(vs.size());
   for (unsigned int i=0; i< coords_.size(); ++i) {
-    set_coordinates(i, coords_[i]);
+    set_coordinates(i, coords_[i], false);
   }
   audit();
 }
@@ -46,7 +45,13 @@ Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   return ret;
 }
 
-void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
+void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc,
+                                               bool audit) {
+#if IMP_BUILD < IMP_FAST
+  if (audit) {
+    this->audit();
+  }
+#endif
   if (indexes_[id] != Index()) {
     Ints &it= grid_[indexes_[id]];
     IMP_INTERNAL_CHECK(std::find(it.begin(), it.end(), id) != it.end(),
@@ -58,17 +63,27 @@ void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   }
   EIndex ei= grid_.get_extended_index(nc);
   coords_[id]=nc;
-  Index i= grid_.get_index(ei);
-  grid_[i].push_back(id);
+  Index i;
+  if (grid_.get_has_index(ei)) {
+    i= grid_.get_index(ei);
+    grid_[i].push_back(id);
+  } else {
+    i=grid_.add_voxel(ei, Ints(1, id));
+  }
   indexes_[id]=i;
+#if IMP_BUILD < IMP_FAST
+  if (audit) {
+    this->audit();
+  }
+#endif
 }
 
 void DynamicNearestNeighbor3D::audit() const {
   Ints found;
-  for (Grid::AllIndexIterator it= grid_.all_indexes_begin();
-           it != grid_.all_indexes_end(); ++it) {
-    found.insert(found.end(), grid_[*it].begin(),
-                 grid_[*it].end());
+  for (Grid::AllConstIterator it= grid_.all_begin();
+           it != grid_.all_end(); ++it) {
+    found.insert(found.end(), it->second.begin(),
+                 it->second.end());
   }
   using base::operator<<;
   using std::operator<<;
