@@ -11,8 +11,8 @@ namespace IMP
   }
 }
 
-/* Python prints exception messages */                        
-%pythoncode %{                                                
+/* Python prints exception messages */
+%pythoncode %{
 set_print_exceptions(False)
 %}
 
@@ -158,7 +158,7 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 #if BOOST_VERSION > 103600
     } catch (const boost::exception &e) {
       PyErr_SetString(PyExc_RuntimeError,
-                      "Unknown error in boost caught by Python wrapper");
+                      boost::diagnostic_information(e).c_str());
 #endif
     } catch (...) {
       PyErr_SetString(PyExc_RuntimeError,

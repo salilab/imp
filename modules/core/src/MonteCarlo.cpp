@@ -10,6 +10,7 @@
 #include <IMP/random.h>
 #include <IMP/Model.h>
 #include <IMP/ConfigurationSet.h>
+#include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/dependency_graph.h>
 
 #include <limits>
@@ -56,14 +57,14 @@ bool MonteCarlo::do_accept_or_reject_move(double score, double last) {
     }
   }
   if (ok) {
-    IMP_LOG(VERBOSE, "Accept: " << score
+    IMP_LOG(TERSE, "Accept: " << score
             << " previous score was " << last << std::endl);
     ++stat_forward_steps_taken_;
     last_energy_=score;
     update_states();
     return true;
   } else {
-    IMP_LOG(VERBOSE, "Reject: " << score
+    IMP_LOG(TERSE, "Reject: " << score
             << " current score stays " << last << std::endl);
     for (int i= get_number_of_movers()-1; i>=0; --i) {
       get_mover(i)->reset_move();
@@ -127,10 +128,6 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     do_step();
   }
 
-  if (get_use_incremental_evaluate()) {
-    teardown_incremental();
-  }
-
   IMP_LOG(TERSE, "MC Final energy is " << last_energy_  << std::endl);
   if (return_best_) {
     //std::cout << "Final score is " << get_model()->evaluate(false)
@@ -138,7 +135,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(USAGE) {
-      IMP_CHECK_CODE(double e= evaluate(false));
+      IMP_CHECK_CODE(double e= do_evaluate(get_model()->get_particles()));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
@@ -147,8 +144,16 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
                          "Energies do not match "
                          << best_energy_ << " vs " << e << std::endl);
     }
-    return best_energy_;
+    // ick
+    if (get_use_incremental_evaluate()) {
+      teardown_incremental();
+    }
+    return evaluate(false);
   } else {
+    // ick
+    if (get_use_incremental_evaluate()) {
+      teardown_incremental();
+    }
     return last_energy_;
   }
 }
@@ -171,9 +176,8 @@ void MonteCarlo::setup_incremental() {
   IMP_LOG(VERBOSE, "Restraints flattened into " << flattened_restraints_
           << std::endl);
   RestraintsTemp restraints=get_as<RestraintsTemp>(flattened_restraints_);
-  incremental_scores_.resize(restraints.size(), -10000);
-  /*= get_model()->evaluate(restraints,
-    false);*/
+  incremental_scores_= get_model()->evaluate(restraints,
+                                             false);
   DependencyGraph dg
     = get_dependency_graph(restraints);
   compatibility::map<Restraint*, int> index;
@@ -196,7 +200,20 @@ void MonteCarlo::setup_incremental() {
               << " depends on particle " << ap[i]->get_name() << std::endl);
     }
   }
-  IMP_LOG(TERSE, "Done setting up incremental evaluation." << std::endl);
+
+  // nonbonded
+  if (dnn_) {
+    IMP_NEW(GridClosePairsFinder, cpf, ());
+    cpf->set_distance(nbl_.distance_);
+    ParticleIndexPairs pips= cpf->get_close_pairs(get_model(), nbl_.pis_);
+    nbl_.initialize(get_model(), pips);
+  }
+
+
+  using std::operator<<;
+  using base::operator<<;
+  IMP_LOG(TERSE, "Done setting up incremental evaluation. Initial scores are"
+          << incremental_scores_ << std::endl);
 }
 void MonteCarlo::teardown_incremental() {
   flattened_restraints_.clear();
@@ -211,6 +228,13 @@ void MonteCarlo::rollback_incremental() {
   for (unsigned int i=0; i< old_incremental_scores_.size(); ++i) {
     incremental_scores_[old_incremental_score_indexes_[i]]
       = old_incremental_scores_[i];
+  }
+
+  // nbl
+  if (dnn_) {
+    dnn_->set_coordinates(to_dnn_[moved_], XYZ(get_model(),
+                                               moved_).get_coordinates());
+    nbl_.roll_back(get_model(), moved_);
   }
 }
 
@@ -268,12 +292,184 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
                          <<  curr);
     }
   }
-  return ret;
+  if (moved.size() >1) {
+    // evil hack
+    return ret+ nbl_.prior_;
+  } else {
+    double nb=evaluate_non_bonded(moved);
+    IMP_LOG(TERSE, "New energy is " << ret << " + " << nb << std::endl);
+    return ret+nb;
+  }
 }
 
 double MonteCarlo::evaluate_incremental_if_below(const ParticleIndexes &,
                                      double ) const {
   IMP_NOT_IMPLEMENTED;
+}
+
+
+void MonteCarlo::set_close_pair_score(PairScore *ps,
+                                      double distance,
+                                      const ParticlesTemp &particles,
+                                      const PairFilters &filters) {
+  nbl_= NBLScore(ps, distance, particles, filters);
+  dnn_= new algebra::DynamicNearestNeighbor3D
+    (algebra::Vector3Ds(particles.size(),
+                        algebra::get_zero_vector_d<3>()),
+     distance);
+  to_dnn_.resize(nbl_.cache_.size(), -1);
+  from_dnn_.resize(particles.size());
+  for (unsigned int i=0; i< nbl_.pis_.size(); ++i) {
+    to_dnn_[nbl_.pis_[i]]=i;
+    from_dnn_[i]=nbl_.pis_[i];
+  }
+}
+
+
+namespace {
+struct LessIndex {
+  bool operator()(const std::pair<ParticleIndex, double> &dp,
+                  ParticleIndex pi) {
+    return dp.first < pi;
+  }
+  bool operator()(ParticleIndex pi,
+                  const std::pair<ParticleIndex, double> &dp) {
+    return pi < dp.first;
+  }
+  bool operator()(const std::pair<ParticleIndex, double> &dp,
+                  const std::pair<ParticleIndex, double> &dq) {
+    return dp.first < dq.first;
+  }
+};
+}
+
+MonteCarlo::NBLScore::NBLScore(PairScore *score,
+                   double distance,
+                   const ParticlesTemp &ps,
+                   const PairFilters &filters) {
+  score_=score;
+  distance_=distance;
+  ParticleIndex mi=0;
+  pis_.resize(ps.size());
+  filters_=filters;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    mi=std::max(mi, ps[i]->get_index());
+    pis_[i]=ps[i]->get_index();
+  }
+  cache_.resize(mi+1);
+}
+double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
+                                       const ParticleIndexes& nearby) const {
+  IMP_LOG(VERBOSE, "Moving " << moved << std::endl);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    double nscore=0;
+    for (unsigned int i=0; i< cache_.size(); ++i) {
+      for (unsigned int j=0; j< cache_[i].size(); ++j) {
+        if (static_cast<unsigned int>(cache_[i][j].first) < i) {
+          nscore+=cache_[i][j].second;
+        }
+      }
+    }
+    IMP_INTERNAL_CHECK(std::abs(nscore-prior_) < .05*(nscore+prior_)+.1,
+                       "Cached and stored scores don't match: " << prior_
+                       << " vs " << nscore);
+  }
+  if (moved==-1) return prior_;
+  double old=0;
+  removed_.clear();
+
+  // clean out old pairs
+  for (unsigned int i=0; i< cache_[moved].size(); ++i) {
+    double cur=cache_[moved][i].second;
+    old+=cache_[moved][i].second;
+    ParticleIndex opi= cache_[moved][i].first;
+    for (unsigned int j=0; j< cache_[opi].size(); ++j) {
+      if (cache_[opi][j].first==moved) {
+        cache_[opi].erase(cache_[opi].begin()+j);
+        break;
+      }
+    }
+    removed_.push_back(std::make_pair(ParticleIndexPair(moved, opi),cur));
+  }
+  added_.clear();
+  cache_[moved].clear();
+  ParticleIndexPairs all(nearby.size());
+  for (unsigned int i=0; i< all.size(); ++i) {
+    all[i]= ParticleIndexPair(moved, nearby[i]);
+  }
+  for (unsigned int i=0; i< filters_.size(); ++i) {
+    filters_[i]->filter_in_place(m, all);
+  }
+  double nscore=0;
+  cache_[moved].resize(nearby.size());
+  for (unsigned int i=0; i< all.size(); ++i) {
+    double cur= score_->evaluate_index(m, ParticleIndexPair(moved, all[i][1]),
+                                       nullptr);
+    if (cur!=0) {
+      add_pair(moved, all[i][1], cur);
+      add_pair(all[i][1], moved, cur);
+      added_.push_back(all[i][1]);
+      nscore+=cur;
+    }
+  }
+  double ret= nscore-old+prior_;
+  old_prior_=prior_;
+  prior_=ret;
+  return ret;
+}
+
+void MonteCarlo::NBLScore::roll_back(Model *, ParticleIndex moved) {
+  IMP_LOG(VERBOSE, "Rolling back nbl on " << moved << std::endl);
+  prior_=old_prior_;
+  cache_[moved].clear();
+  for (unsigned int i=0; i< added_.size(); ++i) {
+    cache_[added_[i]].pop_back();
+  }
+  for (unsigned int i=0; i< removed_.size(); ++i) {
+    add_pair(removed_[i].first[0], removed_[i].first[1], removed_[i].second);
+    add_pair(removed_[i].first[1], removed_[i].first[0], removed_[i].second);
+  }
+}
+
+
+void MonteCarlo::NBLScore::add_pair(ParticleIndex a, ParticleIndex b,
+                                    double s) const {
+  cache_[a].push_back(ScorePair(b,s));
+}
+
+void MonteCarlo::NBLScore::initialize(Model *m,  ParticleIndexPairs all) {
+  for (unsigned int i=0; i< filters_.size(); ++i) {
+    filters_[i]->filter_in_place(m, all);
+  }
+  for (unsigned int i=0; i< cache_.size(); ++i) {
+    cache_[i].clear();
+  }
+  prior_=0;
+  for (unsigned int i=0; i< all.size(); ++i) {
+    double cur= score_->evaluate_index(m, all[i], nullptr);
+    if (cur != 0) {
+      prior_+=cur;
+      add_pair(all[i][0], all[i][1], cur);
+      add_pair(all[i][1], all[i][0], cur);
+    }
+  }
+}
+
+double MonteCarlo::evaluate_non_bonded(const ParticleIndexes &moved) const {
+  if (!dnn_) return 0;
+  if (moved.empty()) {
+    return nbl_.get_score(get_model(), -1, ParticleIndexes());
+  } else {
+    IMP_USAGE_CHECK(moved.size()==1, "Only one at a time supported");
+    Ints nearby= dnn_->get_in_ball(to_dnn_[moved[0]],
+                                   nbl_.distance_);
+    ParticleIndexes pisnearby(nearby.size());
+    for (unsigned int i=0; i< pisnearby.size(); ++i) {
+      pisnearby[i]=from_dnn_[nearby[i]];
+    }
+    moved_=moved[0];
+    return nbl_.get_score(get_model(), moved[0], pisnearby);
+  }
 }
 
 

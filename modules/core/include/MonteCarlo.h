@@ -14,7 +14,10 @@
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
+#include <IMP/PairFilter.h>
+#include <IMP/PairScore.h>
 
 #include <boost/random/uniform_real.hpp>
 
@@ -128,6 +131,25 @@ public:
                   },{},{obj->set_optimizer(nullptr);});
   /** @} */
 
+
+  //! Return the average number of restraints per evaluate
+  double get_average_number_of_incremental_restraints() const {
+    return static_cast<double>(incremental_restraint_evals_)
+      / incremental_evals_;
+  }
+
+
+  /** \name Incremental
+      Efficient evaluation of non-bonded list based restraints is
+      a bit tricky with incremental evaluation. To aid this, we
+      offer a temporary solution where by you give a PairScore
+      and a display upper bound (on the centers for the time being)
+      to the MC object. It will then make sure this is applied
+      properly.
+
+      The bounding box is a hack for now.
+      @{
+  */
   /** Set whether to use incremental evaluate or evaluate all restraints
       each time. This cannot be changed during optimization.
   */
@@ -137,11 +159,12 @@ public:
   bool get_use_incremental_evaluate() const {
     return eval_incremental_;
   }
-  //! Return the average number of restraints per evaluate
-  double get_average_number_of_incremental_restraints() const {
-    return static_cast<double>(incremental_restraint_evals_)
-      / incremental_evals_;
-  }
+  //! This is experimental and unstable
+  void set_close_pair_score(PairScore *ps,
+                            double distance,
+                            const ParticlesTemp &particles,
+                            const PairFilters &filters);
+  /** @} */
  protected:
   /** Note that if return best is true, this will save the current
       state of the model. Also, if the move is accepted, the
@@ -185,6 +208,8 @@ public:
       }
     }
   }
+  //! Only for incremental evaluation
+  double evaluate_non_bonded(const ParticleIndexes &moved) const;
 private:
   //! Evaluate the score of the model (or of a subset of the restraints
   //! if desired.
@@ -218,6 +243,39 @@ private:
   mutable Floats old_incremental_scores_;
   mutable Ints old_incremental_score_indexes_;
   compatibility::checked_vector<Ints> incremental_used_;
+
+
+  struct NBLScore {
+    OwnerPointer<PairScore> score_;
+    typedef std::pair<ParticleIndex, double> ScorePair;
+    typedef compatibility::checked_vector<ScorePair> ScorePairs;
+    // first on the particle index then list the neighbors
+    mutable compatibility::checked_vector<ScorePairs> cache_;
+    double distance_;
+    mutable double prior_, old_prior_;
+    ParticleIndexes pis_;
+    PairFilters filters_;
+    mutable compatibility::checked_vector<std::pair<ParticleIndexPair,
+                                                    double> > removed_;
+    mutable ParticleIndexes added_;
+    NBLScore(){}
+    NBLScore(PairScore *ps,
+             double distance,
+             const ParticlesTemp &particles,
+             const PairFilters &filters);
+    void add_pair(ParticleIndex a, ParticleIndex b, double s) const;
+    double get_score(Model *m, ParticleIndex moved,
+                     const ParticleIndexes& nearby) const;
+    void roll_back(Model *m, ParticleIndex moved);
+    void initialize(Model *m,  ParticleIndexPairs all);
+  };
+  Ints nbl_incremental_used_;
+  Ints to_dnn_;
+  Ints from_dnn_;
+  mutable ParticleIndex moved_;
+  OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
+  NBLScore nbl_;
+
   mutable unsigned int incremental_restraint_evals_;
   mutable unsigned int incremental_evals_;
 };

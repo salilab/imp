@@ -447,10 +447,9 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
                               display::Color(0,1,0));
       ret.push_back(rtr);
       display::SegmentGeometry *nrtr
-          = new display::SegmentGeometry
-        (algebra::Segment3D(dm.get_coordinates(),
-                            ntr.get_transformed(dm.get_internal_coordinates())),
-         display::Color(0,0,1));
+         = new display::SegmentGeometry(algebra::Segment3D(dm.get_coordinates(),
+                      ntr.get_transformed(dm.get_internal_coordinates())),
+                              display::Color(0,0,1));
       ret.push_back(nrtr);
     }
   });
