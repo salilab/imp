@@ -41,7 +41,7 @@ void BallMover::do_move(Float scale)
     // Note that this loop would normally run from 0 to nkeys; this slightly
     // unusual formulation works around a g++ bug:
     // https://bugzilla.redhat.com/show_bug.cgi?id=758908
-    for (int j = get_number_of_keys(); j >= 0; --j) {
+    for (int j = get_number_of_keys() - 1; j >= 0; --j) {
       center[j] = get_value(i, j);
     }
     algebra::VectorKD vcenter(center.begin(), center.end());
