@@ -52,7 +52,7 @@ m.add_restraint(rs)
 # FitRestraint doesn't support just passing all the geometry
 r= IMP.em.FitRestraint([fp], dmap)
 rs.add_restraint(r)
-g= IMP.display.XYZDerivativeGeometry(d)
+g= IMP.core.XYZDerivativeGeometry(d)
 g.set_name("deriv")
 w= IMP.display.PymolWriter("derivatives.pym")
 # kind of abusive

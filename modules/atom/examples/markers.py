@@ -18,10 +18,10 @@ m.update()
 
 # display it to a file
 w= IMP.display.PymolWriter("marker.pym")
-g= IMP.display.XYZRGeometry(marker)
+g= IMP.core.XYZRGeometry(marker)
 g.set_color(IMP.display.Color(0,1,0))
-gp= IMP.display.HierarchyGeometry(h)
-gs=IMP.display.SelectionGeometry(s)
+gp= IMP.atom.HierarchyGeometry(h)
+gs=IMP.atom.SelectionGeometry(s)
 gs.set_color(IMP.display.Color(1,0,0))
 w.add_geometry(g)
 w.add_geometry(gp)

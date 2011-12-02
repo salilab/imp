@@ -92,7 +92,11 @@ IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
 IMP_SWIG_OBJECT(IMP::atom, RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, BerendsenThermostatOptimizerState, BerendsenThermostatOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, LangevinThermostatOptimizerState, LangevinThermostatOptimizerStates);
-
+IMP_SWIG_OBJECT(IMP::atom, SelectionGeometry, SelectionGeometries);
+IMP_SWIG_OBJECT(IMP::atom, HierarchyGeometry, HierarchyGeometries);
+IMP_SWIG_OBJECT(IMP::atom, HierarchiesGeometry, HierarchiesGeometries);
+IMP_SWIG_OBJECT(IMP::atom, BondGeometry, BondGeometries);
+IMP_SWIG_OBJECT(IMP::atom, BondsGeometry, BondsGeometries);
 
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);

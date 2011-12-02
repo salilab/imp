@@ -118,7 +118,7 @@ for curi in range(1,len(covers)):
         IMP.domino.load_particle_states(subset, a, pst)
         sw.set_frame(i)
         for p in ds:
-            g= IMP.display.XYZRGeometry(p)
+            g= IMP.core.XYZRGeometry(p)
             sw.add_geometry(g)
         for c in covers[curi]:
             g= IMP.display.PointGeometry(c)

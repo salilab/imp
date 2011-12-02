@@ -13,6 +13,7 @@
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
+#include <IMP/display/geometry.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 
@@ -284,6 +285,26 @@ IMPATOMEXPORT double get_radius_of_gyration(Selection h);
 
 /** Create an excluded volume restraint for a list of selections.*/
 IMPATOMEXPORT Restraint* create_excluded_volume_restraint(Selections ss);
+
+
+
+
+
+/** \class SelectionGeometry
+    \brief Display a Selection.
+*/
+class IMPATOMEXPORT SelectionGeometry: public display::Geometry {
+  atom::Selection res_;
+  mutable IMP::compatibility::map<Particle*, Pointer<Geometry> > components_;
+public:
+  SelectionGeometry(atom::Selection d,
+                    std::string name="Selection"):
+      display::Geometry(name), res_(d) {}
+  display::Geometries get_components() const;
+  IMP_OBJECT_INLINE(SelectionGeometry,IMP_UNUSED(out);,);
+};
+
+
 
 IMPATOM_END_NAMESPACE
 

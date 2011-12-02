@@ -20,33 +20,14 @@ IMP_SWIG_OBJECT(IMP::display, PolygonGeometry, PolygonGeometries);
 IMP_SWIG_OBJECT(IMP::display, ReferenceFrameGeometry, ReferenceFrameGeometries);
 IMP_SWIG_OBJECT(IMP::display, BoundingBoxGeometry, BoundingBoxGeometries);
 IMP_SWIG_OBJECT(IMP::display, LabelGeometry, LabelGeometries);
-IMP_SWIG_OBJECT(IMP::display, XYZRGeometry, XYZRGeometries);
-IMP_SWIG_OBJECT(IMP::display, XYZRsGeometry, XYZRsGeometries);
-IMP_SWIG_OBJECT(IMP::display, BondGeometry, BondGeometries);
-IMP_SWIG_OBJECT(IMP::display, XYZDerivativeGeometry, XYZDerivativeGeometries);
-IMP_SWIG_OBJECT(IMP::display, RigidBodyDerivativeGeometry, RigidBodyDerivativeGeometries);
-IMP_SWIG_OBJECT(IMP::display, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
-IMP_SWIG_OBJECT(IMP::display, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
-IMP_SWIG_OBJECT(IMP::display, BondsGeometry, BondsGeometries);
-IMP_SWIG_OBJECT(IMP::display, XYZDerivativesGeometry, XYZDerivativesGeometries);
-IMP_SWIG_OBJECT(IMP::display, RigidBodyDerivativesGeometry, RigidBodyDerivativesGeometries);
-IMP_SWIG_OBJECT(IMP::display, EdgePairGeometry, EdgePairGeometries);
-IMP_SWIG_OBJECT(IMP::display, EdgePairsGeometry, EdgePairsGeometries);
-IMP_SWIG_OBJECT(IMP::display, PairRestraintGeometry, PairRestraintGeometries);
-IMP_SWIG_OBJECT(IMP::display, PairsRestraintGeometry, PairsRestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintGeometry, RestraintGeometries);
-IMP_SWIG_OBJECT(IMP::display, HierarchyGeometry, HierarchyGeometries);
 IMP_SWIG_OBJECT(IMP::display, CompoundGeometry, CompoundGeometries);
-IMP_SWIG_OBJECT(IMP::display, SelectionGeometry, SelectionGeometries);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
 IMP_SWIG_VALUE(IMP::display, WriterOutput, WriterOutputs);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
 //IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
-
-IMP_SWIG_OBJECT(IMP::display, ConnectivityRestraintGeometry, ConnectivityRestraintGeometries);
-IMP_SWIG_OBJECT(IMP::display, HierarchiesGeometry, HierarchiesGeometries);
 IMP_SWIG_OBJECT(IMP::display, TriangleGeometry, TriangleGeometries);
 IMP_SWIG_OBJECT(IMP::display, SurfaceMeshGeometry, SurfaceMeshGeometries);
 
@@ -86,6 +67,5 @@ namespace display {
 %include "IMP/display/FilterGeometry.h"
 %include "IMP/display/LogOptimizerState.h"
 %include "IMP/display/particle_geometry.h"
-%include "IMP/display/PDBOptimizerState.h"
 %include "IMP/display/PymolWriter.h"
 %include "IMP/display/restraint_geometry.h"

@@ -26,7 +26,7 @@ def create_rigid_body(m, name):
 def display(i, w, hs):
     w.set_frame(i)
     for h in hs:
-        g= IMP.display.HierarchyGeometry(h)
+        g= IMP.atom.HierarchyGeometry(h)
         w.add_geometry(g)
 
 m= IMP.Model()

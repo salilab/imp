@@ -11,10 +11,12 @@
 #include "atom_config.h"
 #include <IMP/core/internal/graph_base.h>
 #include "internal/bond_helpers.h"
+#include <IMP/display/particle_geometry.h>
 
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
+#include <IMP/core/XYZ.h>
 
 #include <IMP/internal/IndexingIterator.h>
 IMPATOM_BEGIN_NAMESPACE
@@ -295,6 +297,27 @@ void destroy_bond(Bond b);
  */
 IMPATOMEXPORT
 Bond get_bond(Bonded a, Bonded b);
+
+
+
+
+/** \class BondGeometry
+    \brief Display an Bond particle as a segment.
+
+    \class BondsGeometry
+    \brief Display an IMP::SingletonContainer of Bond particles
+    as segments.
+*/
+IMP_PARTICLE_GEOMETRY(Bond, Bond,{
+    atom::Bonded ep0=  d.get_bonded(0);
+    core::XYZ epi0(ep0.get_particle());
+    atom::Bonded ep1=  d.get_bonded(1);
+    core::XYZ epi1(ep1.get_particle());
+    algebra::Segment3D s(epi0.get_coordinates(),
+                         epi1.get_coordinates());
+    display::Geometry *g= new display::SegmentGeometry(s);
+    ret.push_back(g);
+  });
 
 IMPATOM_END_NAMESPACE
 

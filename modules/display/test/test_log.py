@@ -29,7 +29,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_radius(1)
         IMP.set_log_level(IMP.VERBOSE)
         a= IMP.display.WriteOptimizerState(writer)
-        g= IMP.display.XYZRGeometry(d0)
+        g= IMP.core.XYZRGeometry(d0)
         #ge= IMP.display.XYZRGeometryExtractor(rk)
         ps= IMP.container.ListSingletonContainer(m)
         ps.add_particle(p1)

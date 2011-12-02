@@ -107,6 +107,19 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmo
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 
 
+IMP_SWIG_OBJECT(IMP::core, XYZRGeometry, XYZRGeometries);
+IMP_SWIG_OBJECT(IMP::core, XYZRsGeometry, XYZRsGeometries);
+IMP_SWIG_OBJECT(IMP::core, XYZDerivativeGeometry, XYZDerivativeGeometries);
+IMP_SWIG_OBJECT(IMP::core, XYZDerivativesGeometry, XYZDerivativesGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyDerivativeGeometry, RigidBodyDerivativeGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyDerivativesGeometry, RigidBodyDerivativesGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
+IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
+IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
+
+
+
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;

@@ -177,7 +177,7 @@ for i in range(all.get_number_of_children()):
     n= all.get_child(i)
     name= n.get_name()
     for l in IMP.atom.get_leaves(n):
-        g= IMP.display.XYZRGeometry(l)
+        g= IMP.core.XYZRGeometry(l)
         g.set_color(color)
         g.set_name(name)
         gs.append(g)
