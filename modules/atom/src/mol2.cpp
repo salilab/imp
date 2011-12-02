@@ -220,7 +220,7 @@ namespace {
     }
 
     // bond decorator
-    Bond ab_d = create_bond(ad, bd, type);
+    /*Bond ab_d =*/ create_bond(ad, bd, type);
 
   }
 
