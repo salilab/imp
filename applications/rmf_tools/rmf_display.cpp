@@ -8,6 +8,7 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>
 #include <IMP/rmf/geometry_io.h>
+#include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
@@ -180,7 +181,7 @@ int main(int argc, char **argv) {
       w->set_frame((cur_frame-minframe)/step);
       for (unsigned int i=0; i< hs.size(); ++i) {
         IMP::rmf::load_frame(rh, cur_frame, hs[i]);
-        IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
+        IMP_NEW(IMP::atom::HierarchyGeometry, g, (hs[i]));
         if (vm.count("recolor")) {
           g->set_color(IMP::display::get_display_color(i));
         }
@@ -192,7 +193,7 @@ int main(int argc, char **argv) {
           }*/
         if (IMP::core::XYZR::particle_is_instance(ps[i])) {
           IMP::core::XYZR d(ps[i]);
-          IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+          IMP_NEW(IMP::core::XYZRGeometry, g, (ps[i]));
           if (vm.count("recolor")) {
             g->set_color(IMP::display::get_display_color(i));
           }

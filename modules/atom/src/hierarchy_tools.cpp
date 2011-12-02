@@ -985,4 +985,22 @@ HierarchyTree get_hierarchy_tree(Hierarchy h) {
 }
 
 
+
+display::Geometries SelectionGeometry::get_components() const {
+    display::Geometries ret;
+    ParticlesTemp ps= res_.get_selected_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      if (components_.find(ps[i]) == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(ps[i])));
+        components_[ps[i]]= g;
+        g->set_name(get_name());
+        if (get_has_color()) {
+          components_[ps[i]]->set_color(get_color());
+        }
+      }
+      ret.push_back(components_.find(ps[i])->second);
+    }
+    return ret;
+  }
+
 IMPATOM_END_NAMESPACE

@@ -11,6 +11,7 @@
 
 #include "XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
+#include <IMP/display/particle_geometry.h>
 
 #include <limits>
 
@@ -165,6 +166,48 @@ inline const algebra::Sphere3D get_sphere_d_geometry(XYZR d) {
 inline void set_sphere_d_geometry(XYZR d, const algebra::Sphere3D &v) {
   d.set_sphere(v);
 }
+
+
+
+/** \class XYZRGeometry
+    \brief Display an IMP::core::XYZR particle as a ball.
+
+    \class XYZRsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::core::XYZR particles
+    as balls.
+*/
+IMP_PARTICLE_GEOMETRY(XYZR, core::XYZR,
+ {
+   display::SphereGeometry *g= new display::SphereGeometry(d.get_sphere());
+   if (display::Colored::particle_is_instance(d)) {
+     g->set_color(display::Colored(d).get_color());
+   }
+   ret.push_back(g);
+  });
+
+
+
+
+IMP_PARTICLE_GEOMETRY(XYZDerivative, core::XYZ, {
+    algebra::Segment3D s(d.get_coordinates(),
+                         d.get_coordinates()+d.get_derivatives());
+    display::Geometry *g= new display::SegmentGeometry(s);
+    ret.push_back(g);
+  });
+
+
+/** \class EdgePairGeometry
+    \brief Display an IMP::atom::Bond particle as a segment.
+
+    \class EdgePairsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::atom::Bond particles
+    as segments.
+*/
+IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
+    ret.push_back(
+        new display::SegmentGeometry(algebra::Segment3D(d0.get_coordinates(),
+                                           d1.get_coordinates())));
+  });
 
 IMPCORE_END_NAMESPACE
 

@@ -23,9 +23,9 @@ class PDBReadWriteTest(IMP.test.TestCase):
             self.assertLess(dist, 1.1*sph.get_radius())
         self.assertLess(c.get_radius(), 8)
     def _display(self, mp, name, c, s):
-        g= IMP.display.XYZRGeometry(c)
-        gp= IMP.display.HierarchyGeometry(mp)
-        gs=IMP.display.SelectionGeometry(s)
+        g= IMP.core.XYZRGeometry(c)
+        gp= IMP.atom.HierarchyGeometry(mp)
+        gs=IMP.atom.SelectionGeometry(s)
         gs.set_color(IMP.display.Color(1,0,0))
         w= IMP.display.PymolWriter(self.get_tmp_file_name(name)+".pym")
         w.add_geometry(g)

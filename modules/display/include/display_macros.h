@@ -44,15 +44,15 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
-  Name::Name(const Type &v): Geometry(#Name), v_(v){}                   \
+  Name::Name(const Type &v): display::Geometry(#Name), v_(v){}          \
   Name::Name(const Type &v, const Color &c):                            \
-    Geometry(c, #Name), v_(v) {}                                        \
+      display::Geometry(c, #Name), v_(v) {}                             \
   Name::Name(const Type &v, const std::string n):                       \
-    Geometry(n), v_(v) {}                                               \
+      display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const Color &c, std::string n):             \
-    Geometry(c,n), v_(v) {}                                             \
-  Geometries Name::get_components() const {                             \
-    return Geometries(1, const_cast<Name*>(this));                      \
+      display::Geometry(c,n), v_(v) {}                                  \
+  display::Geometries Name::get_components() const {                    \
+    return display::Geometries(1, const_cast<Name*>(this));             \
   }                                                                     \
   void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: " << get_geometry();                     \
@@ -63,12 +63,12 @@ protected:                                                              \
 //! Define a geometric object using an IMP::algebra one
 #define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
   /** Display a geometric object.*/                                     \
-  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  class IMPDISPLAYEXPORT Name: public display::Geometry {               \
   public:                                                               \
     Name(const Type &v);                                                \
-    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
-    Name(const Type &v, const Color &c, std::string n);                 \
+    Name(const Type &v, const display::Color &c, std::string n);        \
     const Type& get_geometry() const {return v_;}                       \
     IMP_GEOMETRY(Name);                                                 \
   }                                                                     \
@@ -76,12 +76,12 @@ protected:                                                              \
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)              \
   /** Display a compound geometric object.*/                            \
-  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  class IMPDISPLAYEXPORT Name: public display::Geometry {               \
   public:                                                               \
     Name(const Type &v);                                                \
-    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
-    Name(const Type &v, const Color &c, std::string n);                 \
+    Name(const Type &v, const display::Color &c, std::string n);        \
     IMP_GEOMETRY(Name);                                                 \
   }
 
@@ -90,13 +90,13 @@ protected:                                                              \
 //! Define a geometric object using an IMP::algebra one
 #define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
   /** Display a geometric object.*/                                     \
-  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  class IMPDISPLAYEXPORT Name: public display::Geometry {               \
     Type v_;                                                            \
   public:                                                               \
     Name(const Type &v);                                                \
-    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
-    Name(const Type &v, const Color &c, std::string n);                 \
+    Name(const Type &v, const display::Color &c, std::string n);        \
     const Type& get_geometry() const {return v_;}                       \
     IMP_GEOMETRY(Name);                                                 \
   }                                                                     \
@@ -104,13 +104,13 @@ protected:                                                              \
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)              \
   /** Display a compound geometric object.*/                            \
-  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  class IMPDISPLAYEXPORT Name: public display::Geometry {               \
     Type v_;                                                            \
   public:                                                               \
     Name(const Type &v);                                                \
-    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
-    Name(const Type &v, const Color &c, std::string n);                 \
+    Name(const Type &v, const display::Color &c, std::string n);        \
     const Type& get_geometry() const {return v_;}                       \
     IMP_GEOMETRY(Name);                                                 \
   }
@@ -118,19 +118,19 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
-  Name::Name(const Type &v): Geometry(#Name), v_(v){}                   \
-  Name::Name(const Type &v, const Color &c):                            \
-    Geometry(c, #Name), v_(v) {}                                        \
+  Name::Name(const Type &v): display::Geometry(#Name), v_(v){}          \
+  Name::Name(const Type &v, const display::Color &c):                   \
+      display::Geometry(c, #Name), v_(v) {}                             \
   Name::Name(const Type &v, const std::string n):                       \
-    Geometry(n), v_(v) {}                                               \
-  Name::Name(const Type &v, const Color &c, std::string n):             \
-    Geometry(c,n), v_(v) {}                                             \
+      display::Geometry(n), v_(v) {}                                    \
+  Name::Name(const Type &v, const display::Color &c, std::string n):    \
+      display::Geometry(c,n), v_(v) {}                                  \
   void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: "                                        \
         << get_geometry();                                              \
   }                                                                     \
-  Geometries Name::get_components() const {                             \
-    Geometries ret;                                                     \
+  display::Geometries Name::get_components() const {                    \
+    display::Geometries ret;                                            \
     decomp;                                                             \
     return ret;                                                         \
   }                                                                     \
@@ -138,12 +138,12 @@ protected:                                                              \
 
 #define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \
   /** Display a particle.*/                                             \
-  class Name##Geometry: public SingletonGeometry {                      \
+  class Name##Geometry: public display::SingletonGeometry {             \
   public:                                                               \
-  Name##Geometry(Particle* p): SingletonGeometry(p){}                   \
-  Name##Geometry(Decorator d): SingletonGeometry(d){}                   \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
+  Name##Geometry(Particle* p): display::SingletonGeometry(p){}          \
+  Name##Geometry(Decorator d): display::SingletonGeometry(d){}          \
+  display::Geometries get_components() const {                          \
+    display::Geometries ret;                                            \
     Decorator d(get_particle());                                        \
     action;                                                             \
     return ret;                                                         \
@@ -152,11 +152,11 @@ protected:                                                              \
                     out <<  Decorator(get_particle())<< std::endl;,{}); \
   };                                                                    \
   /** Display multiple particles.*/                                     \
-  class Name##sGeometry: public SingletonsGeometry {                    \
+  class Name##sGeometry: public display::SingletonsGeometry {           \
   public:                                                               \
-  Name##sGeometry(SingletonContainer* sc): SingletonsGeometry(sc){}     \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
+  Name##sGeometry(SingletonContainer* sc): display::SingletonsGeometry(sc){} \
+  display::Geometries get_components() const {                          \
+    display::Geometries ret;                                            \
     IMP_FOREACH_SINGLETON(get_container(), {                            \
         Decorator d(_1);                                                \
         action;                                                         \
@@ -170,12 +170,12 @@ protected:                                                              \
 
 #define IMP_PARTICLE_PAIR_GEOMETRY(Name, Decorator, action)             \
   /** Display a pair of particles.*/                                    \
-  class Name##Geometry: public PairGeometry {                           \
+  class Name##Geometry: public display::PairGeometry {                  \
   public:                                                               \
   Name##Geometry(const ParticlePair &pp):                               \
-  PairGeometry(pp){}                                                    \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
+  display::PairGeometry(pp){}                                           \
+  display::Geometries get_components() const {                          \
+    display::Geometries ret;                                            \
     Decorator d0(get_particle_pair()[0]);                               \
     Decorator d1(get_particle_pair()[1]);                               \
     action;                                                             \
@@ -187,11 +187,11 @@ protected:                                                              \
                     << std::endl;,{});                                  \
   };                                                                    \
   /** Display multiple pairs of particles.*/                            \
-  class Name##sGeometry: public PairsGeometry {                         \
+  class Name##sGeometry: public display::PairsGeometry {                \
   public:                                                               \
-  Name##sGeometry(PairContainer* sc): PairsGeometry(sc){}               \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
+  Name##sGeometry(PairContainer* sc): display::PairsGeometry(sc){}      \
+  display::Geometries get_components() const {                          \
+    display::Geometries ret;                                            \
     IMP_FOREACH_PAIR(get_container(),{                                  \
         Decorator d0(_1[0]);                                            \
         Decorator d1(_1[1]);                                            \

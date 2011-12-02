@@ -153,6 +153,65 @@ IMP_GRAPH(HierarchyTree, bidirectional, Hierarchy, int);
 */
 IMPATOMEXPORT HierarchyTree get_hierarchy_tree(Hierarchy h);
 
+
+
+
+
+/** \class HierarchyGeometry
+    \brief Display an IMP::atom::Hierarchy particle as balls.
+
+    \class HierarchiesGeometry
+    \brief Display an IMP::SingletonContainer of IMP::atom::Hierarchy particles
+    as balls.
+*/
+class HierarchyGeometry: public display::SingletonGeometry {
+  double res_;
+  mutable IMP::compatibility::map<Particle*, Pointer<display::Geometry> >
+  components_;
+public:
+  HierarchyGeometry(core::Hierarchy d, double resolution=-1):
+    SingletonGeometry(d), res_(resolution){}
+  display::Geometries get_components() const {
+    display::Geometries ret;
+    atom::Hierarchy d(get_particle());
+    atom::Selection sel(d);
+    sel.set_target_radius(res_);
+    ParticlesTemp ps= sel.get_selected_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      if (components_.find(ps[i])== components_.end()) {
+        IMP_NEW(core::XYZRGeometry, g, (core::XYZR(ps[i])));
+        components_[ps[i]]=g;
+      }
+      ret.push_back(components_.find(ps[i])->second);
+    }
+    return ret;
+  }
+  IMP_OBJECT_INLINE(HierarchyGeometry,
+                    out <<  atom::Hierarchy(get_particle())<< std::endl;,{});
+};
+class HierarchiesGeometry: public display::SingletonsGeometry {
+  double res_;
+  mutable IMP::compatibility::map<Particle*, Pointer<display::Geometry> >
+  components_;
+  public:
+  HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
+    SingletonsGeometry(sc), res_(resolution){}
+  display::Geometries get_components() const {
+    display::Geometries ret;
+    IMP_FOREACH_SINGLETON(get_container(), {
+        if (components_.find(_1)
+            == components_.end()) {
+          IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(_1), res_));
+          components_[_1]= g;
+        }
+        ret.push_back(components_.find(_1)->second);
+      });
+    return ret;
+  }
+  IMP_OBJECT_INLINE(HierarchiesGeometry,
+                    out <<  get_container() << std::endl;,{});
+};
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_HIERARCHY_TOOLS_H */

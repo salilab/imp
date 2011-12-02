@@ -12,7 +12,7 @@ class DecoratorTests(IMP.test.TestCase):
 
         hs= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(h.get_child(0)), 1)
         w= IMP.display.PymolWriter("1.pym")
-        g= IMP.display.HierarchyGeometry(hs)
+        g= IMP.atom.HierarchyGeometry(hs)
         w.add_geometry(g)
         for h in hs.get_children():
             d=IMP.core.XYZR(h)
@@ -26,7 +26,7 @@ class DecoratorTests(IMP.test.TestCase):
 
         hs= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(h.get_child(0)), 2)
         w= IMP.display.PymolWriter("2.pym")
-        g= IMP.display.HierarchyGeometry(hs)
+        g= IMP.atom.HierarchyGeometry(hs)
         w.add_geometry(g)
         for h in hs.get_children():
             d=IMP.core.XYZR(h)

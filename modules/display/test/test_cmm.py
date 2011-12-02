@@ -19,7 +19,7 @@ class TestBL(IMP.test.TestCase):
             g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(i,i,i), i))
             names.append(w.get_current_file_name())
             w.add_geometry(g)
-            g= IMP.display.XYZRGeometry(p)
+            g= IMP.core.XYZRGeometry(p)
             w.add_geometry(g)
         del w
         for n in names:
@@ -33,7 +33,7 @@ class TestBL(IMP.test.TestCase):
         p=IMP.Particle(m)
         d= IMP.core.XYZR.setup_particle(p)
         w=IMP.display.CMMWriter(name)
-        g= IMP.display.XYZRGeometry(p)
+        g= IMP.core.XYZRGeometry(p)
         print "first"#, w.get_current_index()
         w.add_geometry(g)
         g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))
@@ -60,7 +60,7 @@ class TestBL(IMP.test.TestCase):
         w=IMP.display.CMMWriter(name)
         for i in range(0,10):
             w.set_frame(i)
-            g= IMP.display.XYZRGeometry(p)
+            g= IMP.core.XYZRGeometry(p)
             print "first"#, w.get_current_index()
             w.add_geometry(g)
             g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))

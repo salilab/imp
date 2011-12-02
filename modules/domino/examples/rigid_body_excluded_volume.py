@@ -59,7 +59,7 @@ def display(m,helices,name):
     m.update()
     w= IMP.display.PymolWriter(name)
     for i,h in enumerate(helices):
-        g= IMP.display.HierarchyGeometry(h)
+        g= IMP.atom.HierarchyGeometry(h)
         g.set_color(IMP.display.get_display_color(i))
         w.add_geometry(g)
 

@@ -147,7 +147,7 @@ for i in range(all.get_number_of_children()):
     color= IMP.display.get_display_color(i)
     n= all.get_child(i)
     name= n.get_name()
-    g= IMP.display.HierarchyGeometry(n)
+    g= IMP.atom.HierarchyGeometry(n)
     g.set_color(color)
     gs.append(g)
 

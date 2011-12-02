@@ -32,7 +32,7 @@ class TunnelTest(IMP.test.TestCase):
         m.add_restraint(r)
         w= IMP.display.PymolWriter(self.get_tmp_file_name("connectivity.pym"))
         for d in ds:
-            g= IMP.display.XYZRGeometry(d)
+            g= IMP.core.XYZRGeometry(d)
             w.add_geometry(g)
         g=IMP.display.RestraintGeometry(r)
         w.add_geometry(g)
