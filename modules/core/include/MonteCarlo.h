@@ -146,8 +146,6 @@ public:
       and a display upper bound (on the centers for the time being)
       to the MC object. It will then make sure this is applied
       properly.
-
-      The bounding box is a hack for now.
       @{
   */
   /** Set whether to use incremental evaluate or evaluate all restraints
