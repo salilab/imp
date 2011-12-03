@@ -83,7 +83,7 @@ namespace {
           ret.chains.back().add_child(cur);
           XYZR d= XYZR::setup_particle(p);
           d.set_radius(r);
-          Diffusion dd= Diffusion::setup_particle(p);
+          /*Diffusion dd=*/ Diffusion::setup_particle(p);
           d.set_coordinates_are_optimized(k!=0);
           d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
           atom::Mass::setup_particle(p, 1);
