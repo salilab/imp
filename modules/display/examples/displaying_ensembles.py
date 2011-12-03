@@ -29,7 +29,7 @@ def add_markers(h, c, w):
     """Add markers to a the passed conformation. The marker locations are chosen
     pretty thoughtlessly and don't really illustrate the technique well."""
     def add_marker(s, name):
-        g= IMP.display.XYZRGeometry(s.get_selected_particles()[0])
+        g= IMP.core.XYZRGeometry(s.get_selected_particles()[0])
         g.set_name(name)
         g.set_color(c)
         w.add_geometry(g)
