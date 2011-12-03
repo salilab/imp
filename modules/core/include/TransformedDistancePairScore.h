@@ -10,7 +10,7 @@
 #define IMPCORE_TRANSFORMED_DISTANCE_PAIR_SCORE_H
 
 #include "core_config.h"
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>

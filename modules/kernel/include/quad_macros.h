@@ -106,7 +106,7 @@
     return ContainersTemp();                                            \
   }                                                                     \
   Restraints create_current_decomposition(const ParticleQuad& vt) const {  \
-    return Restraints(1, core::create_restraint(this, vt));             \
+    return Restraints(1, create_restraint(this, vt));             \
   }                                                                     \
   IMP_QUAD_SCORE_BASE(Name)
 
@@ -295,7 +295,7 @@
     ParticleIndexQuads all= get_all_possible_indexes();            \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]=  IMP::core::create_restraint(s,                           \
+      ret[i]=  IMP::create_restraint(s,                           \
                                               IMP::internal::           \
                                               get_particle(get_model(), \
                                                            all[i]));    \

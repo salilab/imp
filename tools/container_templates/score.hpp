@@ -147,4 +147,6 @@ IMP_OBJECTS(CLASSNAMEsScoreRestraint, CLASSNAMEsScoreRestraints);
 
 IMP_END_NAMESPACE
 
+#include "generic.h"
+
 #endif  /* IMPKERNEL_HEADERNAME_SCORE_H */

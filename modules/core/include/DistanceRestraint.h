@@ -11,7 +11,7 @@
 #include "core_config.h"
 #include "DistancePairScore.h"
 #include "XYZ.h"
-#include "generic.h"
+#include <IMP/generic.h>
 
 #include <IMP/Restraint.h>
 

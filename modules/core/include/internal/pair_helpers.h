@@ -18,17 +18,9 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/compatibility/set.h>
+#include <IMP/internal/pair_helpers.h>
 #include <algorithm>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
-template <class Score>
-struct SimpleRestraintParentTraits<Score,
-       typename boost::enable_if<
-         boost::is_base_of<PairScore, Score> >::type> {
-  typedef IMP::PairScoreRestraint SimpleRestraint;
-  typedef IMP::PairsScoreRestraint SimplesRestraint;
-};
-IMP_END_INTERNAL_NAMESPACE
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -194,7 +186,7 @@ IMPCORE_END_INTERNAL_NAMESPACE
     ParticleIndexPairs all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::core::create_restraint(s,                            \
+      ret[i]= IMP::create_restraint(s,                            \
                             IMP::internal::get_particle(get_model(), \
                                           all[i]));                     \
     }                                                                   \

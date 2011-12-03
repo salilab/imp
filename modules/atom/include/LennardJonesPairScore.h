@@ -9,7 +9,7 @@
 #define IMPATOM_LENNARD_JONES_PAIR_SCORE_H
 
 #include "atom_config.h"
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/atom/LennardJones.h>

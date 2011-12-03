@@ -17,7 +17,7 @@
 #include <IMP/core/SingletonConstraint.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/FixedRefiner.h>
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE

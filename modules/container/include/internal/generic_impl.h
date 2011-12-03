@@ -7,7 +7,7 @@
 
 #ifndef IMPCONTAINER_GENERIC_IMPL_H
 #define IMPCONTAINER_GENERIC_IMPL_H
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -168,7 +168,7 @@ inline ScoreStates create_decomposition_internal(Model *m,
                                                  BF *bf, AF *af) {
   ScoreStates ret(a.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= core::create_constraint(af, bf,
+    ret[i]= IMP::create_constraint(af, bf,
                                     IMP::internal::get_particle(m, a[i]));
   }
   return ret;

@@ -13,7 +13,7 @@
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/algebra/internal/jama_eig.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include "IMP/core/generic.h"
+#include "IMP/generic.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>

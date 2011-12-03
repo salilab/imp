@@ -791,4 +791,5 @@ IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
 #include "triplet_macros.h"
 #include "quad_macros.h"
 
+
 #endif  /* IMPKERNEL_MACROS_H */

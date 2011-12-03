@@ -29,7 +29,7 @@
 #include <IMP/core/TableRefiner.h>
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/core/CoverRefined.h>
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
@@ -630,7 +630,7 @@ namespace {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << p0[0]->get_name() << " and "
               << p1[0]->get_name() << std::endl);
-      ret= core::create_restraint(ps,
+      ret= create_restraint(ps,
                                   ParticlePair(p0[0], p1[0]),
                                   "Atom distance restraint %1%");
     } else {
@@ -647,7 +647,7 @@ namespace {
       r->add_particle(p1[0], p1);
       IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
       r, 1));
-      ret= core::create_restraint(nps, ParticlePair(p0[0],
+      ret= create_restraint(nps, ParticlePair(p0[0],
       p1[0]),
       "Atom k distance restraint %1%");
       //}
