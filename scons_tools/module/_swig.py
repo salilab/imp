@@ -309,9 +309,9 @@ def swig_scanner(node, env, path):
         if re.search('\n%include\s"RMF.i"', contents)\
                or re.search('\n%import\s"RMF.i"', contents):
             ret.append(env["builddir"]+"/swig/RMF.i")
-        if re.search('\n%include\s"RMF_types.i"', contents)\
-               or re.search('\n%import\s"RMF_types.i"', contents):
-            ret.append(env["builddir"]+"/swig/RMF_types.i")
+        for x in re.findall('\n%include\s"RMF_([^"]*).i"', contents)\
+                +re.findall('\n%import\s"RMF_([^"]*).i"', contents):
+            ret.append(env["builddir"]+"/swig/RMF_"+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
