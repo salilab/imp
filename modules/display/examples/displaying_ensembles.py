@@ -89,7 +89,7 @@ IMP.set_log_level(IMP.TERSE)
 m= IMP.Model()
 
 # change to 46 to display all of them
-hs= read(m, 10)
+hs= read(m, 3)
 
 # used to test of two molecules are touching one another
 ps= IMP.core.KClosePairsPairScore(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10,1)),
