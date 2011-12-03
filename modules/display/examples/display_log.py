@@ -12,7 +12,7 @@ c= IMP.container.ListSingletonContainer(ps)
 log= IMP.display.WriteOptimizerState(IMP.display.ChimeraWriter("log_file.%1%.pym"))
 # the logging occurs ever two frames
 log.set_period(2)
-g= IMP.display.XYZRsGeometry(c)
+g= IMP.core.XYZRsGeometry(c)
 g.set_name("my particles")
 g.set_color(IMP.display.Color(1,0,0))
 log.add_geometry(g)
