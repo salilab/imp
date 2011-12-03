@@ -192,11 +192,12 @@ class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
   Vector3Ds coords_;
   compatibility::checked_vector<Index> indexes_;
   void audit() const;
+  void set_coordinates_internal(int id, Vector3D nc);
  public:
   DynamicNearestNeighbor3D(const Vector3Ds &vs,
                            double query_estimate=1);
   Ints get_in_ball(int id, double distance) const;
-  void set_coordinates(int id, Vector3D nc, bool audit=true);
+  void set_coordinates(int id, Vector3D nc);
   IMP_OBJECT_INLINE(DynamicNearestNeighbor3D,out << "on " << coords_.size()
                     << " points" ,);
 };
