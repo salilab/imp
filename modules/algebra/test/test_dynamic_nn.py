@@ -12,7 +12,7 @@ class NNTests(IMP.test.TestCase):
         vecs=[]
         for i in range(10):
             vecs.append(IMP.algebra.get_random_vector_in(bb))
-        nn= IMP.algebra.DynamicNearestNeighbor3D(bb, vecs)
+        nn= IMP.algebra.DynamicNearestNeighbor3D(vecs, 2)
         print vecs
         for i in range(10):
             n1 = nn.get_in_ball(i, i)
