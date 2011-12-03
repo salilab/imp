@@ -9,7 +9,7 @@
 #define IMPCORE_ATTRIBUTE_SINGLETON_SCORE_H
 
 #include "core_config.h"
-#include "generic.h"
+#include <IMP/generic.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>

@@ -147,4 +147,6 @@ IMP_OBJECTS(QuadsScoreRestraint, QuadsScoreRestraints);
 
 IMP_END_NAMESPACE
 
+#include "generic.h"
+
 #endif  /* IMPKERNEL_QUAD_SCORE_H */

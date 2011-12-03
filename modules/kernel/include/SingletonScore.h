@@ -147,4 +147,6 @@ IMP_OBJECTS(SingletonsScoreRestraint, SingletonsScoreRestraints);
 
 IMP_END_NAMESPACE
 
+#include "generic.h"
+
 #endif  /* IMPKERNEL_SINGLETON_SCORE_H */

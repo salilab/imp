@@ -12,7 +12,7 @@
 #define IMPCONTAINER_ALL_PAIR_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>

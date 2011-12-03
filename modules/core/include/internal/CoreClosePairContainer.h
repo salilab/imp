@@ -91,7 +91,7 @@ public:
     ParticleIndexPairs all= get_all_possible_indexes();
     Restraints ret(all.size());
     for (unsigned int i=0; i< all.size(); ++i) {
-      ret[i]= core::create_restraint(ps,
+      ret[i]= create_restraint(ps,
                                      IMP::internal::get_particle(get_model(),
                                                                  all[i]));
     }

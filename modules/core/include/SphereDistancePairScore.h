@@ -10,7 +10,7 @@
 
 #include "core_config.h"
 #include "XYZR.h"
-#include "generic.h"
+#include <IMP/generic.h>
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>

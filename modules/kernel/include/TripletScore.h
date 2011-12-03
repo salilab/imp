@@ -147,4 +147,6 @@ IMP_OBJECTS(TripletsScoreRestraint, TripletsScoreRestraints);
 
 IMP_END_NAMESPACE
 
+#include "generic.h"
+
 #endif  /* IMPKERNEL_TRIPLET_SCORE_H */

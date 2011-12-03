@@ -16,7 +16,7 @@
 #include "singleton_helpers.h"
 #include <IMP/ScoreState.h>
 #include <IMP/scoped.h>
-#include "../generic.h"
+#include <IMP/generic.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

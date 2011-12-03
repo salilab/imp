@@ -1,16 +1,16 @@
 /**
- *  \file core/generic.h    \brief Various important functionality
+ *  \file generic.h    \brief Various important functionality
  *                                       for implementing decorators.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPCORE_GENERIC_IMPL_H
-#define IMPCORE_GENERIC_IMPL_H
+#ifndef IMPKERNEL_GENERIC_IMPL_H
+#define IMPKERNEL_GENERIC_IMPL_H
 
 
-IMPCORE_BEGIN_NAMESPACE
+IMP_BEGIN_NAMESPACE
 
 
 template <class Score>
@@ -213,6 +213,6 @@ inline Constraint* create_constraint(Pointer<Before> b, After* a,
 }
 #endif
 
-IMPCORE_END_NAMESPACE
+IMP_END_NAMESPACE
 
-#endif  /* IMPCORE_GENERIC_IMPL_H */
+#endif  /* IMPKERNEL_GENERIC_IMPL_H */

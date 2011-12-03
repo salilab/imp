@@ -1,7 +1,8 @@
 /** \page recent Change History
 \par Fall 2011
+- the core generic restraint and score state support was moved to the kernel to avoid breaking various scores outside of IMP svn.
 - the IMP::display module was refactored and moved up to be a dependency of IMP::core and IMP::atom rather than vice versa. The main observable results are that you should now use IMP::atom::HierarchyGeometry, IMP::atom::SelectionGeometry, IMP::atom::HierarchiesGeometry, IMP::core::XYZRGeometry, IMP::atom::BondGeometry etc instead of finding them in IMP::display. This change means that, display can be used internally when testing and debugging functionality in IMP::core and IMP::atom and that tests that use IMP::display don't need to build all of IMP::atom.
-- Decomposition of restraints now results in restraints that are faster to evaluate, using the generic restraint mechanism in IMP::core. Certain scores and restraints may need to add the \c IMP/core/generic.h header.
+- Decomposition of restraints now results in restraints that are faster to evaluate, using the generic restraint mechanism in IMP kernel.
 - IMP::algebra::get_unit_bounding_box_d() was changed to return a bounding box with radius 1 to be consistent with IMP::algebra::get_unit_sphere_d()
 - A general purpose scheme to associate data with tuples of hierarchy nodes was added to the RMF format. This deprecates the special purpose bond support.
 - the way various types of geometry is stored in RMF files was changed, breaking backwards compatibility.

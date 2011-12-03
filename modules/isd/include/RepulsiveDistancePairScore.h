@@ -13,7 +13,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
-#include <IMP/core/generic.h>
+#include <IMP/generic.h>
 
 IMPISD_BEGIN_NAMESPACE
 

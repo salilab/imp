@@ -44,8 +44,8 @@ def make_one(params, test=True):
     cname=function_name
 
     print "Creating class "+cname + "Container"
-    
-  
+
+
 
     files= [("modules/kernel/include/"+multi + "Container.h",
                path+"tools/container_templates/container.hpp"),
@@ -55,6 +55,10 @@ def make_one(params, test=True):
                path+"tools/container_templates/helper.hpp"),
               ("modules/core/src/internal/"+multi.lower() + "_helpers.cpp",
                path+"tools/container_templates/helper.cc"),
+
+              ("modules/kernel/include/internal/"+multi.lower() + "_helpers.h",
+               path+"tools/container_templates/kernel_helper.hpp"),
+
 
               ("modules/container/include/"+plural_multi + "Restraint.h",
                path+"/tools/container_templates/restraint.hpp"),
@@ -107,12 +111,12 @@ def make_one(params, test=True):
               # path+"/tools/container_templates/inactive.hpp"),
               #("modules/container/src/RemoveInactive"+multi + "sOptimizerState.cpp",
               # path+"/tools/container_templates/inactive.cc"),
-  
+
               ("modules/core/include/"+multi + "Constraint.h",
                path+"/tools/container_templates/sstate.hpp"),
               ("modules/core/src/"+multi + "Constraint.cpp",
                path+"/tools/container_templates/sstate.cc"),
-  
+
               ("modules/kernel/include/"+multi + "Modifier.h",
                path+"/tools/container_templates/function.hpp"),
               ("modules/kernel/src/"+multi + "Modifier.cpp",
@@ -198,7 +202,7 @@ def main():
     #make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 
-  
+
 
 
 if __name__ == '__main__':
