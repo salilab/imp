@@ -679,6 +679,8 @@ namespace grids {
       const SparseGridStorageD<D, VT, Base> *stor_;
       ItHelper(const SparseGridStorageD<D, VT, Base> *stor): stor_(stor){}
       bool get_is_good(const ExtendedGridIndexD<D> &ei) {
+        /*std::cout << "Checking " << ei << " getting "
+          << stor_->get_has_index(ei) << std::endl;*/
         return stor_->get_has_index(ei);
       }
       typedef GridIndexD<D> ReturnType;
@@ -705,6 +707,9 @@ namespace grids {
       GridIndexD<D> ret(i.begin(), i.end());
       data_[ret]=gi;
       return ret;
+    }
+    void remove_voxel(const GridIndexD<D> gi) {
+      data_.erase(gi);
     }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
     SparseGridStorageD(const VT &def): default_(def) {
@@ -812,7 +817,7 @@ namespace grids {
       } else {
         IMP_INTERNAL_CHECK(internal::get_is_non_empty(lb, eub),
                            "empty range");
-        return IndexIterator(lb, ub, ItHelper(this));
+        return IndexIterator(lb, eub, ItHelper(this));
       }
     }
     IndexIterator indexes_end(const ExtendedGridIndexD<D>&,
@@ -1434,30 +1439,36 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
     VoxelConstIterator;
 #endif
     VoxelIterator voxels_begin(const BoundingBoxD<D> &bb) {
-      ExtendedGridIndexD<3> lb= get_extended_index(bb.get_corner(0));
-      ExtendedGridIndexD<3> ub= get_extended_index(bb.get_corner(1));
-      return VoxelIterator(Storage::indexes_begin(lb, ub), GetVoxel(this));
+      return VoxelIterator(indexes_begin(bb), GetVoxel(this));
     }
-    VoxelIterator voxels_end(const BoundingBoxD<D> &) {
+    VoxelIterator voxels_end(const BoundingBoxD<D> &bb) {
       //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
       //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
-      return VoxelIterator(Storage::indexes_end(ExtendedGridIndexD<3>(),
-                                                ExtendedGridIndexD<3>()),
+      return VoxelIterator(indexes_end(bb),
                            GetVoxel(this));
     }
 
     VoxelConstIterator voxels_begin(const BoundingBoxD<D> &bb) const {
-      ExtendedGridIndexD<3> lb= get_extended_index(bb.get_corner(0));
-      ExtendedGridIndexD<3> ub= get_extended_index(bb.get_corner(1));
-      return VoxelConstIterator(Storage::indexes_begin(lb, ub),
+      return VoxelConstIterator(indexes_begin(bb),
                                 ConstGetVoxel(this));
     }
     VoxelConstIterator voxels_end(const BoundingBoxD<D> &bb) const {
+      return VoxelConstIterator(indexes_end(bb),
+                                ConstGetVoxel(this));
+    }
+    using Storage::indexes_begin;
+    using Storage::indexes_end;
+    typename Storage::IndexIterator
+    indexes_begin(const BoundingBoxD<D> &bb) const {
       ExtendedGridIndexD<3> lb= get_extended_index(bb.get_corner(0));
       ExtendedGridIndexD<3> ub= get_extended_index(bb.get_corner(1));
-      return VoxelConstIterator(Storage::indexes_end(ExtendedGridIndexD<3>(),
-                                                     ExtendedGridIndexD<3>()),
-                                ConstGetVoxel(this));
+      return Storage::indexes_begin(lb, ub);
+    }
+    typename Storage::IndexIterator indexes_end(const BoundingBoxD<D> &) const {
+      //ExtendedIndex lb= get_extended_index(bb.get_corner(0));
+      //ExtendedIndex ub= get_extended_index(bb.get_corner(1));
+      return Storage::indexes_end(ExtendedGridIndexD<3>(),
+                                  ExtendedGridIndexD<3>());
     }
 #endif
     /** @} */
