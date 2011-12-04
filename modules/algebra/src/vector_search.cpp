@@ -8,6 +8,7 @@
 
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/utility.h>
+#include <IMP/base/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
