@@ -210,8 +210,9 @@ def add_common_variables(vars, package):
                           "Set to 'release' for a normal build," \
                           +" 'debug' to disable optimization," \
                           +" or 'fast' to disable most runtime checks," \
+                          +" or 'compile' to compile as quickly as possible,"\
                           +" but keep debugging information",
-                          "release", ['release', 'debug', 'fast']))
+                          "release", ['release', 'debug', 'fast', 'compile']))
     vars.Add(EnumVariable('endian',
                           "The endianness of the platform. \"auto\" will determine it automatically.",
                           "auto", ['auto', 'big', 'little']))
