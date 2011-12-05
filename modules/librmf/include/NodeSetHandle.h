@@ -130,14 +130,7 @@ namespace RMF {
     */
     IMP_RMF_FOREACH_TYPE(IMP_HDF5_NODE_SET_KEY_TYPE_METHODS);
     /** @} */
-    void show(std::ostream &out= std::cout) const {
-      using std::operator<<;
-      out << "(" << get_type();
-      for (unsigned int i=0; i< D; ++i) {
-        out << ", " << node_;
-      }
-      out <<")";
-    }
+    IMP_RMF_SHOWABLE(NodeSetHandle, "(" << get_type() << " " << node_ << ")");
 
     RootHandle get_root_handle() const;
   };

@@ -155,6 +155,19 @@
 # define IMP_RMF_FUNCTION __func__
 #endif
 
+#ifndef SWIG
+#define IMP_RMF_SHOWABLE(Name, streamed)        \
+  operator Showable() const {                   \
+    std::ostringstream oss;                     \
+    oss << streamed;                            \
+    return oss.str();                           \
+  }                                             \
+  void show(std::ostream &out) const {          \
+    out << streamed;                            \
+  }
+#else
+#define IMP_RMF_SHOWABLE(Name, streamed)
+#endif
 
 #define IMP_RMF_USAGE_CHECK(check, message)                             \
   do {                                                                  \
@@ -186,7 +199,7 @@
 
 #define IMP_RMF_THROW(m,e) do {                 \
     std::ostringstream oss;                     \
-    using std::operator<<;                      \
+    using RMF::operator<<;                      \
     oss << m;                                   \
     RMF::internal::handle_error(oss.str());     \
     throw e(oss.str().c_str());                 \
@@ -320,25 +333,15 @@ namespace vector_io {
   template <class T>
   inline std::ostream &operator<<(std::ostream &out, const vector<T> &t);
 }
-template <class T, class Enabled=void>
-struct Shower{
-  static void do_it(std::ostream &out, const T &t) {
-    using std::operator<<;
-    using vector_io::operator<<;
-    out << t;
-  }
-};
 
-template <class T>
-struct Shower<T, typename boost::enable_if<has_show<T> >::type >{
-  static void do_it(std::ostream &out, const T &t) {
-    t.show(out);
-  }
-};
+  struct Showable {
+    const std::string t_;
+    Showable( std::string t): t_(t){}
+  };
 
-template <class T>
-inline std::ostream &operator<<(std::ostream &out, const T &t) {
-  Shower<T>::do_it(out, t);
+inline std::ostream &
+operator<<(std::ostream &out, const Showable &t) {
+  out << t.t_;
   return out;
 }
 namespace vector_io {

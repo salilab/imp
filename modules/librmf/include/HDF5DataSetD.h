@@ -100,17 +100,7 @@ namespace RMF {
     }
 
     unsigned int get_dimension() const {return D;}
-    void show(std::ostream &out) const {
-      using std::operator<<;
-      out << "(";
-      for (unsigned int i=0; i< D; ++i) {
-        if (i > 0) {
-          out << ", ";
-        }
-        out << operator[](i);
-      }
-      out << ")";
-    }
+    IMP_RMF_SHOWABLE(HDF5DataSetIndexD, Ints(d_, d_+D));
     IMP_RMF_COMPARISONS(HDF5DataSetIndexD);
     IMP_RMF_HASHABLE(HDF5DataSetIndexD,
                      size_t ret=0;

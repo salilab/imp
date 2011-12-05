@@ -168,10 +168,8 @@ class RMFEXPORT NodeHandle {
   */
   IMP_RMF_FOREACH_TYPE(IMP_HDF5_NODE_KEY_TYPE_METHODS);
   /** @} */
-  void show(std::ostream &out= std::cout) const {
-    using std::operator<<;
-    out << get_name() << "(" << get_type() << ", " << node_ << ")";
-  }
+  IMP_RMF_SHOWABLE(NodeHandle,
+                   get_name() << "(" << get_type() << ", " << node_ << ")");
 
   RootHandle get_root_handle() const;
 };

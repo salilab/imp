@@ -35,12 +35,10 @@ class NodeIDD {
  public:
   explicit NodeIDD(unsigned int i): i_(i){}
   NodeIDD(): i_(-1){}
-  void show(std::ostream &out) const {
-    out << i_;
-  }
   int get_index() const {
     return i_;
   }
+  IMP_RMF_SHOWABLE(NodeIDD, i_);
   IMP_RMF_COMPARISONS(NodeIDD);
   IMP_RMF_HASHABLE(NodeIDD, return i_);
 };
