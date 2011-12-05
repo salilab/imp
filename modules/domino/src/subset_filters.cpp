@@ -324,28 +324,6 @@ void MinimumRestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 // ******************************* Disjoint sets ********************
 
 namespace {
-  void logit(LogLevel l, const Ints &is) {
-    IMP_IF_LOG(l) {
-      IMP_LOG(l, "[");
-      for (unsigned int i=0; i< is.size(); ++i) {
-        if (is[i] >=0) {
-          IMP_LOG(l, is[i] << " ");
-        } else {
-          IMP_LOG(l, "- ");
-        }
-      }
-      IMP_LOG(l, "] ");
-    }
-  }
-  void logit(LogLevel l, const ParticlesTemp &is) {
-    IMP_IF_LOG(l) {
-      IMP_LOG(l, "[");
-      for (unsigned int i=0; i< is.size(); ++i) {
-        IMP_LOG(l, is[i]->get_name() << " ");
-      }
-      IMP_LOG(l, "] ");
-    }
-  }
 
 
   double get_default_strength(const IMP::domino::Subset &s,
@@ -368,7 +346,7 @@ namespace {
       IMP_LOG(TERSE, "Created disjoint set subset filter with ");
       IMP_IF_LOG(TERSE) {
         for (unsigned int i=0; i < sets.size(); ++i) {
-          logit(TERSE, sets_[i]);
+          IMP_LOG(TERSE, sets_[i]);
         }
         IMP_LOG(TERSE, std::endl);
       }
@@ -484,7 +462,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Sets are:\n");
     for (unsigned int i=0; i< sets_.size(); ++i) {
-      logit(TERSE, sets_[i]);
+      IMP_LOG(TERSE, sets_[i]);
       IMP_LOG(TERSE, std::endl);
     }
   }
@@ -646,7 +624,7 @@ namespace {
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     IMP_LOG(TERSE, "State is " << state << " and ");
-    logit(TERSE, members);
+    IMP_LOG(TERSE, members);
     IMP_LOG(TERSE, " are the members." << std::endl);
     int last=-1;
     for (unsigned int i=0; i< members.size(); ++i) {
