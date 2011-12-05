@@ -31,7 +31,7 @@ TemplateFinder::TemplateFinder(const ParticlesTemp &ps, Image *img):
 }
 
 void TemplateFinder::set_particles(const ParticlesTemp &ps) {
-  IMP_LOG(IMP::TERSE, "TemplateFinder: Setting model particles" << std::endl);
+  IMP_LOG(TERSE, "TemplateFinder: Setting model particles" << std::endl);
   my_particles_= ps;
   // Check the particles for coordinates, radius and mass
   for (unsigned int i=0; i<my_particles_.size() ; ++i) {
@@ -66,7 +66,7 @@ void TemplateFinder::create_particles_projections(unsigned int n) {
   unsigned int rows = static_cast<unsigned int>(diameter/pixel_size_) + 8;
   unsigned int cols = rows;
 
-  IMP_LOG(IMP::VERBOSE, "diameter " << diameter << " pixel_size "<< pixel_size_
+  IMP_LOG(VERBOSE, "diameter " << diameter << " pixel_size "<< pixel_size_
       << " rows " << rows <<" cols " << cols<< std::endl);
 
   projections_information_ = get_evenly_distributed_registration_results(n);

@@ -166,11 +166,15 @@ inline bool get_is_log_output(LogLevel l)
     \endcode
  */
 #define IMP_LOG_WRITE(level, expr)                                \
-  if (IMP::base::get_is_log_output(IMP::base::level))             \
-    {std::ostringstream IMP_STREAM;                               \
-      expr;                                                       \
-      IMP::base::add_to_log(IMP_STREAM.str());                    \
-    }
+  {                                                               \
+    using IMP::base::VERBOSE; using IMP::base::TERSE;             \
+    if (IMP::base::get_is_log_output(level))                      \
+      {                                                           \
+        std::ostringstream IMP_STREAM;                            \
+        expr;                                                     \
+        IMP::base::add_to_log(IMP_STREAM.str());                  \
+      }                                                           \
+  }
 #else // IMP_DOXYGEN
 
 #if IMP_BUILD < IMP_FAST
@@ -178,12 +182,15 @@ inline bool get_is_log_output(LogLevel l)
 #define IMP_IF_LOG(level)                       \
   if (IMP::base::level <= ::IMP::base::get_log_level())
 
-#define IMP_LOG(level, expr) \
-  if (IMP::base::get_is_log_output(IMP::base::level))                   \
-  { std::ostringstream oss;                                             \
-    oss<< expr << std::flush;                                           \
-    IMP::base::add_to_log(oss.str());                                   \
-    };
+#define IMP_LOG(level, expr)                                            \
+  {                                                                     \
+    using IMP::base::VERBOSE; using IMP::base::TERSE;                   \
+    if (IMP::base::get_is_log_output(level)){                           \
+      std::ostringstream oss;                                           \
+      oss<< expr << std::flush;                                         \
+      IMP::base::add_to_log(oss.str());                                 \
+    }                                                                   \
+  }
 
 #define IMP_LOG_WRITE(level, expr)                                      \
   if (IMP::base::get_is_log_output(IMP::base::level))                   \

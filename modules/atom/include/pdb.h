@@ -295,7 +295,7 @@ public:
     When no PDB selector is supplied for reading, the
     NonWaterPDBSelector is used.
 
-    Set the IMP::LogLevel to IMP::VERBOSE to see details of parse errors.
+    Set the IMP::LogLevel to VERBOSE to see details of parse errors.
 */
 //!@{
 

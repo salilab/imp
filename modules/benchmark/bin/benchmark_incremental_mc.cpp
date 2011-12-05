@@ -97,7 +97,7 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
   add_excluded_volume(m, mc, h, rbs, 1.0, nbl);
   add_diameter_restraint(m, rbs, 50.0);
   //add_DOPE(m, h);
-  //mc->set_log_level(IMP::VERBOSE);
+  //mc->set_log_level(VERBOSE);
   mc->set_return_best(false);
   mc->set_use_incremental_evaluate(incr);
   mc->set_kt(1.0);

@@ -62,11 +62,11 @@ em::FittingSolutions pca_based_rigid_fitting(
   }
   algebra::PrincipalComponentAnalysis ps_pca =
      algebra::get_principal_components(ps_vecs);
-  IMP_IF_LOG(IMP::VERBOSE) {
-    IMP_LOG(IMP::VERBOSE,"in pca_based_rigid_fitting, density PCA:"<<std::endl);
-    IMP_LOG_WRITE(IMP::VERBOSE,dens_pca.show());
-    IMP_LOG(IMP::VERBOSE,"particles PCA:"<<std::endl);
-    IMP_LOG_WRITE(IMP::VERBOSE,ps_pca.show());
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE,"in pca_based_rigid_fitting, density PCA:"<<std::endl);
+    IMP_LOG_WRITE(VERBOSE,dens_pca.show());
+    IMP_LOG(VERBOSE,"particles PCA:"<<std::endl);
+    IMP_LOG_WRITE(VERBOSE,ps_pca.show());
   }
   algebra::Transformation3Ds all_trans =
     algebra::get_alignments_from_first_to_second(ps_pca,dens_pca);

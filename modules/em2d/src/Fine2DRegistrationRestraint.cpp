@@ -24,7 +24,7 @@ void Fine2DRegistrationRestraint::setup(
                        ScoreFunction *score_function,
                        MasksManagerPtr masks) {
 
-  IMP_LOG(IMP::TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
+  IMP_LOG(TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
   ps_ = ps;
   params_ = params;
   // Generate all the projection masks for the structure
@@ -33,11 +33,11 @@ void Fine2DRegistrationRestraint::setup(
     masks_ = MasksManagerPtr(new MasksManager(params.resolution,
                                               params.pixel_size));
     masks_->create_masks(ps);
-    IMP_LOG(IMP::VERBOSE, "Created " << masks_->get_number_of_masks()
+    IMP_LOG(VERBOSE, "Created " << masks_->get_number_of_masks()
            << " masks withing Fine2DRegistrationRestraint " << std::endl);
   } else {
     masks_= masks;
-    IMP_LOG(IMP::VERBOSE,"masks given to Fine2DRegistrationRestraint "
+    IMP_LOG(VERBOSE,"masks given to Fine2DRegistrationRestraint "
              << std::endl);
   }
   // Set the model
@@ -87,7 +87,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   algebra::Vector3D max_values( s*rows, s*cols, 0.0);
   PP_.set_proper_ranges_for_keys(this->get_model(),min_values,max_values);
 
-  IMP_LOG(IMP::VERBOSE,"Subject set for Fine2DRegistrationRestraint"
+  IMP_LOG(VERBOSE,"Subject set for Fine2DRegistrationRestraint"
                   <<std::endl);
 }
 

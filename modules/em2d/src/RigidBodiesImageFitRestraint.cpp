@@ -38,7 +38,7 @@ RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
   rigid_bodies_masks_.resize(rbs.size());
   projection_ = new Image();
   projection_->set_size(img);
-  IMP_LOG(IMP::TERSE, "RigidBodiesImageFitRestraint: Image for projection "
+  IMP_LOG(TERSE, "RigidBodiesImageFitRestraint: Image for projection "
           "created. Size: " << projection_->get_data().rows << "x"
           << projection_->get_data().cols << std::endl);
 }
@@ -48,7 +48,7 @@ RigidBodiesImageFitRestraint::unprotected_evaluate(
                                           DerivativeAccumulator *accum) const {
   IMP_UNUSED(accum);
   IMP_USAGE_CHECK(!accum, "No derivatives provided");
-  IMP_LOG(IMP::TERSE, "RigidBodiesImageFitRestraint::unprotected_evaluate "
+  IMP_LOG(TERSE, "RigidBodiesImageFitRestraint::unprotected_evaluate "
            << "rigid bodies " << rigid_bodies_.size() <<std::endl);
 
   projection_->set_zeros();
@@ -83,7 +83,7 @@ RigidBodiesImageFitRestraint::unprotected_evaluate(
 void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
                             const algebra::Rotation3Ds &rots) {
 
-  IMP_LOG(IMP::TERSE, "Setting rotations for " << rb->get_name() << std::endl);
+  IMP_LOG(TERSE, "Setting rotations for " << rb->get_name() << std::endl);
 
   IMP_USAGE_CHECK(params_set_ == true,
       "RigidBodiesImageFitRestraint: Parameters for projecting are not set");
@@ -189,7 +189,7 @@ Ints get_unique_index(const algebra::Rotation3D &rot) {
   for (unsigned int i=0; i < unique.size(); ++i) {
     unique[i] = floor(100*v[i]);
   }
-  IMP_LOG(IMP::TERSE, "get_unique_index: quaternion " << v
+  IMP_LOG(TERSE, "get_unique_index: quaternion " << v
           << " index " << unique[0] << " " << unique[1] << " " << unique[2]
           << " " << unique[3] << std::endl);
   return unique;
@@ -208,10 +208,10 @@ Ints get_unique_index(const algebra::Rotation3D &rot) {
 
 unsigned int RigidBodiesImageFitRestraint::get_rigid_body_index(
                                         const core::RigidBody &rb) const {
-  IMP_LOG(IMP::TERSE, "Check rigid body index " << rb->get_name() << std::endl);
+  IMP_LOG(TERSE, "Check rigid body index " << rb->get_name() << std::endl);
   unsigned int   j = rigid_bodies_.size();
   for ( unsigned int i=0; i < rigid_bodies_.size(); ++i) {
-    IMP_LOG(IMP::VERBOSE,"Comparing " << rigid_bodies_[i].get_particle()
+    IMP_LOG(VERBOSE,"Comparing " << rigid_bodies_[i].get_particle()
             << " with " << rb.get_particle() << std::endl);
 
     if(rb.get_particle() == rigid_bodies_[i].get_particle()) {

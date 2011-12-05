@@ -59,7 +59,7 @@ double cross_correlation_coefficient_internal(
   emreal ccc = 0.0;
   long num_elements=0;
   if(same_origin){ // Fastest version
-    IMP_LOG(IMP::VERBOSE,"calc CC with the same origin"<<std::endl);
+    IMP_LOG(VERBOSE,"calc CC with the same origin"<<std::endl);
     for (long i=0;i<nvox;i++) {
       if (grid2_data[i] > grid2_voxel_data_threshold) {
         num_elements++;
@@ -68,7 +68,7 @@ double cross_correlation_coefficient_internal(
   }
 
   else  { // Compute the CCC taking into account the different origins
-    IMP_LOG(IMP::VERBOSE,"calc CC with different origins"<<std::endl);
+    IMP_LOG(VERBOSE,"calc CC with different origins"<<std::endl);
     // Given the same size of the maps and the dimension order, the difference
     // between two positions in voxels is always the same
 
@@ -243,7 +243,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
   emreal em_mean=0.;
   emreal model_rms=0.;
   emreal em_rms=0.;
-  IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
+  IMP_LOG(VERBOSE,"calc local CC with different origins"<<std::endl);
   model_map->get_header_writable()->compute_xyz_top();
 
   // Given the same size of the maps and the dimension order, the difference
