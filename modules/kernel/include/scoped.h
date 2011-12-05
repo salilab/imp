@@ -210,6 +210,63 @@ public:
            );
 };
 
+
+/** Add a cache attribute to a particle and then remove it
+    when this goes out of scope.
+*/
+template <class Key, class Value>
+class ScopedAddCacheAttribute {
+  Pointer<Model> m_;
+  ParticleIndex pi_;
+  Key key_;
+public:
+  IMP_RAII(ScopedAddCacheAttribute, (Particle *p,
+                                  Key key, const Value &value),
+           {pi_=-1;},
+           {
+             m_=p->get_model();
+             pi_=p->get_index();
+             key_=key;
+             m_->add_cache_attribute(key_, pi_, value);
+           },
+           {
+             if (pi_ !=-1) {
+               m_->remove_attribute(key_, pi_);
+             }
+           },);
+};
+
+
+/** Set an attribute to a given value and restore the old
+    value when this goes out of scope..
+*/
+template <class Key, class Value>
+class ScopedSetAttribute {
+  Pointer<Model> m_;
+  ParticleIndex pi_;
+  Key key_;
+  Value old_;
+public:
+  IMP_RAII(ScopedSetAttribute, (Particle *p,
+                                Key key, const Value &value),
+           {pi_=-1;},
+           {
+             m_=p->get_model();
+             pi_=p->get_index();
+             key_=key;
+             old_= m_->get_attribute(key_, pi_);
+             m_->set_attribute(key_, pi_, value);
+           },
+           {
+             if (pi_ != -1) {
+               m_->set_attribute(key_, pi_, old_);
+             }
+           },);
+};
+
+typedef ScopedSetAttribute<FloatKey, Float> ScopedSetFloatAttribute;
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_SCOPED_H */

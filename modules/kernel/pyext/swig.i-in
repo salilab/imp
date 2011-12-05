@@ -169,6 +169,8 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveScoreState, GenericScopedRemoveScoreStat
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedScoreState, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedRestraint);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedScoreState);
+IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
+IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 
@@ -290,6 +292,7 @@ namespace IMP {
   %template(ScopedRestraint) ::IMP::GenericScopedRestraint< IMP::Restraint>;
   %template(ScopedRemoveRestraint) ::IMP::GenericScopedRemoveRestraint< IMP::Restraint>;
   %template(ScopedRemoveScoreState) ::IMP::GenericScopedRemoveScoreState< IMP::ScoreState>;
+  %template(ScopedSetFloatAttribute) ::IMP::ScopedSetAttribute<FloatKey, Float>;
 }
 
 
