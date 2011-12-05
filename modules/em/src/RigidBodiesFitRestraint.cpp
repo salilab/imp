@@ -75,7 +75,7 @@ void RigidBodiesFitRestraint::initialize_model_density_map(
         set_particles(rb_ps,radius_key,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
   }
-  IMP_LOG(IMP::VERBOSE,"in initialize_model_density_map the number of"
+  IMP_LOG(VERBOSE,"in initialize_model_density_map the number of"
           <<" rigid bodies is:"
           <<rbs_.size()<<std::endl);
 }

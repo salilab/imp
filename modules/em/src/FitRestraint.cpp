@@ -273,7 +273,7 @@ void FitRestraint::store_particles(ParticlesTemp ps) {
   else {
     not_part_of_rb_=all_ps_;
   }
-  IMP_LOG(IMP::TERSE,"number of"
+  IMP_LOG(TERSE,"number of"
           <<" particles that are not rigid bodies is:"
           <<not_part_of_rb_.size()<<", "<<part_of_rb_.size()<<" particles "<<
           " are part of "<<rbs_.size()<<" rigid bodies"<<std::endl);

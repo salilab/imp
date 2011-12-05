@@ -227,7 +227,7 @@ namespace {
                               center[0], center[1], center[2],
                               f.get_radius(xyzr[ii]),
                               iminx, iminy, iminz, imaxx, imaxy, imaxz);
-      IMP_LOG(IMP::VERBOSE,"Calculated bounding box for voxel: " << ii <<
+      IMP_LOG(VERBOSE,"Calculated bounding box for voxel: " << ii <<
               " is :"<<iminx<<","<< iminy<<","<< iminz<<","<<
               imaxx<<","<< imaxy<<","<<  imaxz <<std::endl);
       for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {

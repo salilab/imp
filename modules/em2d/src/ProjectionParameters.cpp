@@ -79,7 +79,7 @@ void ProjectionParametersScoreState::do_before_evaluate() {
 void ProjectionParametersScoreState::do_after_evaluate(
                                                 DerivativeAccumulator *) {
 
-  IMP_LOG(IMP::VERBOSE,ProjectionParameters(proj_params_));
+  IMP_LOG(VERBOSE,ProjectionParameters(proj_params_));
 }
 
 void ProjectionParametersScoreState::do_show(std::ostream& out) const {

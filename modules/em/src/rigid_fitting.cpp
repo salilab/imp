@@ -260,7 +260,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
      ++rot_ind;
-     IMP_LOG(IMP::TERSE,"working on rotation "<<
+     IMP_LOG(TERSE,"working on rotation "<<
          rot_ind<<" out of "<< rots.size()<<std::endl);
      algebra::Transformation3D t1 =algebra::get_rotation_about_point(
                                  core::get_centroid(core::XYZs(ps)),*it);
@@ -332,7 +332,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
              "transformations\n");
   }
   if (!fast_version) {
-    IMP_LOG(IMP::VERBOSE,"running slow version of compute_fitting_scores"
+    IMP_LOG(VERBOSE,"running slow version of compute_fitting_scores"
             <<std::endl);
     IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
             (*(em_map->get_header())));
@@ -384,7 +384,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
     }
     else { //fast version
       // static int counter=0;
-      IMP_LOG(IMP::VERBOSE,
+      IMP_LOG(VERBOSE,
               "running fast version of compute_fitting_scores"<<std::endl);
       for (algebra::Transformation3Ds::const_iterator it =
          trans_for_fit.begin(); it != trans_for_fit.end();it++) {

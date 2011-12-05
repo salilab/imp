@@ -98,7 +98,7 @@ int main() {
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
 #if IMP_BUILD == IMP_DEBUG
-    cpf->set_log_level(IMP::VERBOSE);
+    cpf->set_log_level(VERBOSE);
 #endif
     std::string name="grid";
     test_one(name, cpf, 10, 0, .1, true);

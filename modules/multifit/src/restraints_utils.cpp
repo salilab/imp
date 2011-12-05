@@ -51,7 +51,7 @@ Floats read_singleton_restraint_values(const std::string &filename) {
     boost::split(split_vec, line, boost::is_any_of("|"));
     values.push_back(atof(split_vec[split_vec.size()-2].c_str()));
   }
-  IMP_LOG(IMP::VERBOSE,"read " << values.size() << " combinations"<<std::endl);
+  IMP_LOG(VERBOSE,"read " << values.size() << " combinations"<<std::endl);
   return values;
 }
 PairsValues read_pairwise_restraint_values(const std::string &filename,

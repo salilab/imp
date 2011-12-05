@@ -75,7 +75,7 @@ public:
                  double max_distance) :  my_subset_(subset_to_act_on),
                                           ps_table_(ps_table),
                                           max_distance_(max_distance) {
-  IMP_LOG(IMP::TERSE, "DistanceFilter created" << std::endl);
+  IMP_LOG(TERSE, "DistanceFilter created" << std::endl);
                                           };
   void show(std::ostream &out = std::cout) const {
     out << "DistanceFilter" << std::endl;

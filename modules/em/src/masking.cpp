@@ -61,7 +61,7 @@ IMPEM_BEGIN_NAMESPACE
   const RadiusDependentDistanceMask *closest = nullptr;
   if (algebra::get_are_almost_equal(radius,upper_closest->first,eps)) {
      closest = upper_closest->second;
-     IMP_LOG(IMP::VERBOSE,"for radius:"<<radius<<
+     IMP_LOG(VERBOSE,"for radius:"<<radius<<
              " the closest is:"<< upper_closest->first<<std::endl);
    }
    else {
