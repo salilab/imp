@@ -63,13 +63,13 @@
 
 %define IMP_RMF_SWIG_SHOWSTUFF(Name)
   std::string __str__() const {
-    std::ostringstream out;
-    self->show(out);
+  std::ostringstream out;
+  out << *self;
     return out.str();
   }
   std::string __repr__() const {
     std::ostringstream out;
-    self->show(out);
+    out << *self;
     return out.str();
   }
 %enddef

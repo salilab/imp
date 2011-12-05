@@ -36,10 +36,7 @@ namespace RMF {
       IMP_HDF5_CALL(H5Iget_name(h_->get_hid(), buf, 10000));
       return std::string(buf);
     }
-    void show(std::ostream &out) const {
-      using std::operator<<;
-      out << "HDF5Group " << get_name();
-    }
+    IMP_RMF_SHOWABLE(HDF5Group, "HDF5Group " << get_name());
 
     // create from an existing group
     HDF5Group(HDF5Group parent, std::string name);

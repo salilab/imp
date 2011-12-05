@@ -53,9 +53,7 @@ public:
   }
   IMP_RMF_HASHABLE(CategoryD, return i_);
   IMP_RMF_COMPARISONS(CategoryD);
-  void show(std::ostream &out) const {
-    out << i_;
-  }
+  IMP_RMF_SHOWABLE(CategoryD, i_);
 };
 
 #ifndef IMP_DOXYGEN
