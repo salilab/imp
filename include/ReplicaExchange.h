@@ -1,6 +1,6 @@
 /**
  *  \file ReplicaExchange.h
- *  \brief Replica Exchange
+ *  \brief A class to do replica exchange in a generic hamiltonian parameter
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
@@ -9,13 +9,14 @@
 #define IMPMEMBRANE_REPLICA_EXCHANGE_H
 
 #include "membrane_config.h"
+#include <IMP/Object.h>
 #include "mpi.h"
 #include <string>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 // Replica Exchange
-class IMPMEMBRANEEXPORT ReplicaExchange
+class IMPMEMBRANEEXPORT ReplicaExchange: public Object
 {
   int myrank_,nproc_;
   Ints index_;
@@ -29,22 +30,22 @@ private:
 
 public:
   ReplicaExchange();
-  void   set_my_parameter(std::string key, Floats values);
+  void   set_my_parameter(std::string key,Floats values);
   Floats get_my_parameter(std::string key);
   int    get_friend_index(int istep);
-  Floats get_friend_parameter(std::string key, int findex);
-  bool   do_exchange(double myscore0, double myscore1, int findex);
+  Floats get_friend_parameter(std::string key,int findex);
+  bool   do_exchange(double myscore0,double myscore1,int findex);
   Floats create_temperatures(double tmin,double tmax,int nrep);
 
-  int    get_my_index() const {
+  int get_my_index() const {
    return index_[myrank_];
   }
 
-  int    get_number_replicas() const {
+  int get_number_of_replicas() const {
    return nproc_;
   }
 
-  ~ReplicaExchange(){MPI_Finalize();};
+  IMP_OBJECT_INLINE(ReplicaExchange,,MPI_Finalize());
 
 };
 

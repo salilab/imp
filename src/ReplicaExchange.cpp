@@ -13,7 +13,8 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-ReplicaExchange::ReplicaExchange(){
+ReplicaExchange::ReplicaExchange(): Object("Replica Exchange")
+{
  MPI::Init();
  MPI_Comm_size(MPI_COMM_WORLD, &nproc_);
  MPI_Comm_rank(MPI_COMM_WORLD, &myrank_);
@@ -29,9 +30,7 @@ ReplicaExchange::ReplicaExchange(){
 Ints ReplicaExchange::create_indexes()
 {
  Ints index;
- for(int i=0;i<nproc_;++i) {
-  index.push_back(i);
- }
+ for(int i=0;i<nproc_;++i){index.push_back(i);}
  return index;
 }
 
@@ -49,39 +48,34 @@ int ReplicaExchange::get_friend_index(int step)
 {
  int myindex=index_[myrank_];
  int findex;
-
  if(myindex%2==0 && step%2==0) {findex=myindex+1;}
  if(myindex%2==0 && step%2==1) {findex=myindex-1;}
  if(myindex%2==1 && step%2==0) {findex=myindex-1;}
  if(myindex%2==1 && step%2==1) {findex=myindex+1;}
  if(findex==-1)     {findex=nproc_-1;}
  if(findex==nproc_) {findex=0;}
-
  return findex;
 }
 
 int ReplicaExchange::get_rank(int index)
 {
  int rank;
- for(int i=0; i<nproc_; ++i) {if(index_[i]==index) {rank=i;}}
+ for(int i=0;i<nproc_;++i) {if(index_[i]==index) {rank=i;}}
  return rank;
 }
 
 Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
 {
  int frank=get_rank(findex);
- MPI_Barrier(MPI_COMM_WORLD);
  int nparam=parameters_[key].size();
  double* myparameters=&(parameters_[key])[0];
- //double* myparameters=new double[nparam];
- //std::copy(myparameters, myparameters + nparam, parameters_[key].begin());
  double* fparameters=new double[nparam];
 
  MPI_Sendrecv(myparameters,nparam,MPI_DOUBLE,frank,myrank_,
-              fparameters, nparam,MPI_DOUBLE,frank,frank,
-                MPI_COMM_WORLD, &status_);
+               fparameters,nparam,MPI_DOUBLE,frank,frank,
+               MPI_COMM_WORLD,&status_);
 
- Floats fpar(fparameters, fparameters+nparam);
+ Floats fpar(fparameters,fparameters+nparam);
  delete(fparameters);
  return fpar;
 }
@@ -97,10 +91,16 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
                &fscore,1,MPI_DOUBLE,frank,frank,
                 MPI_COMM_WORLD, &status_);
 
- // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore);
 
- if(do_accept){myindex=findex;}
+ if(do_accept){
+  std::map<std::string,Floats>::iterator it;
+  for (it = parameters_.begin(); it != parameters_.end(); it++){
+   Floats par=get_friend_parameter((*it).first,findex);
+   set_my_parameter((*it).first,par);
+  }
+  myindex=findex;
+ }
 
  // in any case, update index vector
  MPI_Barrier(MPI_COMM_WORLD);
