@@ -26,7 +26,8 @@ rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
 
 # Get date and revision-specific install directories
 IMPINSTALL=${IMPTOP}/`date -d '8 hours' "+%Y%m%d"`-${rev}
-IMPSRCTGZ=${IMPINSTALL}/build/sources/imp.tar.gz
+IMPVERSION="SVN.${rev}"
+IMPSRCTGZ=${IMPINSTALL}/build/sources/imp-${IMPVERSION}.tar.gz
 rm -rf ${IMPINSTALL}
 mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/build/logs
 
@@ -74,7 +75,7 @@ for m in systems:
 END
 
 # Write out a tarball:
-tar -czf ${IMPSRCTGZ} imp
+mv imp imp-${IMPVERSION} && tar -czf ${IMPSRCTGZ} imp-${IMPVERSION}
 
 # Cleanup
 cd /
