@@ -89,7 +89,7 @@ struct Result
 
 int main()
 {
-  IMP::set_log_level(VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
   std::vector<Result> R;
   for ( size_t i = 0; i < compile_time_array_size(Examples); ++i )
   {
