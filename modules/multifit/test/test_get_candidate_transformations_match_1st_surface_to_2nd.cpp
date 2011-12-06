@@ -63,23 +63,23 @@ void lower_knob_box(IMP::algebra::DenseGrid3D<float> &map,
 
 int main()
 {
-  IMP::set_log_level(VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
   IMP::algebra::BoundingBox3D bb1(IMP::algebra::VectorD<3>(-40,0,0),
       IMP::algebra::VectorD<3>(40,80,50));
   IMP::algebra::BoundingBox3D bb2(IMP::algebra::VectorD<3>(-40,0,40),
       IMP::algebra::VectorD<3>(40,80,90));
   IMP::algebra::DenseGrid3D<float> m1(1.0, bb1, 0.0), m2(1.0, bb2, 0.0);
-  IMP_LOG(VERBOSE, "Creating first surface" << std::endl);
+  IMP_LOG(IMP::VERBOSE, "Creating first surface" << std::endl);
   upper_knob_box(m1, IMP::algebra::VectorD<3>(0, 0, 0));
-  IMP_LOG(VERBOSE, "Creating second surface" << std::endl);
+  IMP_LOG(IMP::VERBOSE, "Creating second surface" << std::endl);
   lower_knob_box(m2, IMP::algebra::VectorD<3>(0, 0, 50));
-  IMP_LOG(VERBOSE,
+  IMP_LOG(IMP::VERBOSE,
       "Calling get_candidate_transformations_match_1st_surface_to_2nd"
       << std::endl);
   IMP::algebra::Transformation3Ds t =
 IMP::multifit::internal::get_candidate_transformations_match_1st_surface_to_2nd(
         m1, m2);
-  IMP_LOG(VERBOSE, "Total transformations: " << t.size() << std::endl);
+  IMP_LOG(IMP::VERBOSE, "Total transformations: " << t.size() << std::endl);
   IMP_INTERNAL_CHECK(t.size() > 0, "No transformations returned!");
   IMP::algebra::VectorD<3> k0(0, 35, 45), exp_k0(0, 35, 55);
   double best_dist = std::numeric_limits<double>::max();
@@ -96,8 +96,8 @@ IMP::multifit::internal::get_candidate_transformations_match_1st_surface_to_2nd(
     }
   }
   best_dist = std::sqrt(best_dist);
-  IMP_LOG(VERBOSE, "Best dist = " << best_dist << std::endl);
-  IMP_LOG(VERBOSE, "Best k0 = " << best_k0 << std::endl);
+  IMP_LOG(IMP::VERBOSE, "Best dist = " << best_dist << std::endl);
+  IMP_LOG(IMP::VERBOSE, "Best k0 = " << best_k0 << std::endl);
   IMP_INTERNAL_CHECK(best_dist < 1.5, "No good transformations present");
   return 0;
 }
