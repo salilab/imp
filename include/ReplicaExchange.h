@@ -16,15 +16,17 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 // Replica Exchange
-class IMPMEMBRANEEXPORT ReplicaExchange: public Object
+class IMPMEMBRANEEXPORT ReplicaExchange: public base::Object
 {
   int myrank_,nproc_;
   Ints index_;
+  Ints exarray_;
   MPI_Status status_;
   std::map<std::string,Floats> parameters_;
 
 private:
   Ints   create_indexes();
+  Ints   create_exarray();
   bool   get_acceptance(double myscore,double fscore);
   int    get_rank(int index);
 
@@ -33,6 +35,7 @@ public:
   void   set_my_parameter(std::string key,Floats values);
   Floats get_my_parameter(std::string key);
   int    get_friend_index(int istep);
+  Ints   get_exchange_array();
   Floats get_friend_parameter(std::string key,int findex);
   bool   do_exchange(double myscore0,double myscore1,int findex);
   Floats create_temperatures(double tmin,double tmax,int nrep);

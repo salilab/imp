@@ -136,8 +136,10 @@ Floats om_b, om_e, dd_b, dd_e;
 for(int i=0;i<ncl;++i){
  dd_b.push_back(dd0[i]-double(nsig)*sig_dd0[i]);
  dd_e.push_back(dd0[i]+double(nsig)*sig_dd0[i]);
- om_b.push_back(std::max(radians(om0[i]-double(nsig)*sig_om0[i]),-IMP::PI));
- om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]), IMP::PI));
+ om_b.push_back(std::max(radians(om0[i]-double(nsig)*sig_om0[i]),
+-IMP::algebra::PI));
+ om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]),
+IMP::algebra::PI));
 }
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
 for(int i=0;i<TM->num;++i){

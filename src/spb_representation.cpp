@@ -417,7 +417,8 @@ void recenter_rb(core::RigidBody& rb,core::XYZRs& rbps,algebra::Vector3D x0)
     algebra::Vector3D coord=
     core::RigidMember(rbps[k]).get_internal_coordinates();
     algebra::Rotation3D rot=
-     algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+     algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
+IMP::algebra::PI);
     algebra::Transformation3D tr=
      algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
     core::RigidMember(rbps[k]).set_internal_coordinates
@@ -425,7 +426,8 @@ void recenter_rb(core::RigidBody& rb,core::XYZRs& rbps,algebra::Vector3D x0)
    }
   }
   rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
-      (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+      (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
+-IMP::algebra::PI/2.0),
        x0)));
 }
 

@@ -23,7 +23,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  IMP_USAGE_CHECK(name >=0, #name << " is " << name);
 
 
-Parameters get_parameters(TextInput in) {
+Parameters get_parameters(base::TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;

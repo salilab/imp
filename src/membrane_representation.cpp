@@ -109,7 +109,8 @@ for(int i=0;i<TM->num;++i){
   for(unsigned int k=0;k<atoms.size();++k){
    algebra::Vector3D coord=
    core::RigidMember(atoms[k]).get_internal_coordinates();
-   rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+   rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
+IMP::algebra::PI);
    tr=algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
    core::RigidMember(atoms[k]).set_internal_coordinates
     (tr.get_transformed(coord));
@@ -130,11 +131,13 @@ for(int i=0;i<TM->num;++i){
    yy=rand()*2.0*myparam->RST.diameter/RAND_MAX-myparam->RST.diameter;
   }
   rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
-       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
+-IMP::algebra::PI/2.0),
         algebra::Vector3D(xx,yy,0))));
  } else {
   rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
-       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
+-IMP::algebra::PI/2.0),
         centers[i])));
  }
  //initialize helix decorator

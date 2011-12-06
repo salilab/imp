@@ -46,7 +46,7 @@ std::vector< double > native;
 #define CHECK(type, name)                                    \
  IMP_USAGE_CHECK(name >=0, #name << " is " << name);
 
-Parameters get_parameters(TextInput in){
+Parameters get_parameters(base::TextInput in){
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
@@ -505,7 +505,7 @@ if(do_plot && curi==niter-1){
    ii++;
    for(int j=0;j<(ass[i]).size();++j){
     Particle *p=subs[j];
-    IMP_NEW(display::XYZRGeometry,g,(p));
+    IMP_NEW(core::XYZRGeometry,g,(p));
     std::string name=core::XYZR(p)->get_name();
     g->set_name(name);
     g->set_color(display::get_jet_color(1.0/double(j+1)));

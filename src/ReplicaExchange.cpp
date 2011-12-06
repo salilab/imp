@@ -19,6 +19,7 @@ ReplicaExchange::ReplicaExchange(): Object("Replica Exchange")
  MPI_Comm_size(MPI_COMM_WORLD, &nproc_);
  MPI_Comm_rank(MPI_COMM_WORLD, &myrank_);
  index_=create_indexes();
+ exarray_=create_exarray();
 // initialize seed
  unsigned int iseed = time(NULL);
  // broadcast seed
@@ -32,6 +33,15 @@ Ints ReplicaExchange::create_indexes()
  Ints index;
  for(int i=0;i<nproc_;++i){index.push_back(i);}
  return index;
+}
+
+Ints ReplicaExchange::create_exarray()
+{
+ Ints exarray;
+ for(int i=0;i<nproc_-1;++i) {
+  exarray.push_back(0);
+ }
+ return exarray;
 }
 
 void ReplicaExchange::set_my_parameter(std::string key, Floats values)
@@ -80,6 +90,11 @@ Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
  return fpar;
 }
 
+Ints ReplicaExchange::get_exchange_array()
+{
+ return exarray_;
+}
+
 bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
 {
  double myscore=myscore0-myscore1;
@@ -87,42 +102,65 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
  int myindex=index_[myrank_];
  int frank=get_rank(findex);
 
+
  MPI_Sendrecv(&myscore,1,MPI_DOUBLE,frank,myrank_,
                &fscore,1,MPI_DOUBLE,frank,frank,
                 MPI_COMM_WORLD, &status_);
 
  bool do_accept=get_acceptance(myscore,fscore);
 
- if(do_accept){
-  std::map<std::string,Floats>::iterator it;
-  for (it = parameters_.begin(); it != parameters_.end(); it++){
-   Floats par=get_friend_parameter((*it).first,findex);
-   set_my_parameter((*it).first,par);
-  }
-  myindex=findex;
- }
 
- // in any case, update index vector
+ int sdel[nproc_-1],rdel[nproc_-1];
+ for(int i=0;i<nproc_-1;++i) {sdel[i]=0;}
+
+ if(do_accept){
+ std::map<std::string,Floats>::iterator it;
+ for (it = parameters_.begin(); it != parameters_.end(); it++){
+  Floats param = get_friend_parameter((*it).first,findex);
+  set_my_parameter((*it).first,param);
+    }
+  //update the increment vector only to those replicas that upgraded to
+  //a higher temperature to avoid double
+  // calculations (excluding the transition 0 -> nrep-1)
+
+  int delindex=findex-myindex;
+  if (delindex==1){
+   //std::cout << myindex << " " << findex << " " << std::endl;
+   sdel[myindex]=1;
+
+   }
+  //update the indexes
+  myindex=findex;
+  }
+
  MPI_Barrier(MPI_COMM_WORLD);
+ //get the increment vector from all replicas and copy it to the
+ //exchange array
+ MPI_Allreduce(sdel,rdel,nproc_-1,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ for(int i=0;i<nproc_-1;++i) {exarray_[i]=rdel[i];}
+ // in any case, update index vector
  int sbuf[nproc_],rbuf[nproc_];
  for(int i=0;i<nproc_;++i) {sbuf[i]=0;}
  sbuf[myrank_]=myindex;
  MPI_Allreduce(sbuf,rbuf,nproc_,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
  for(int i=0;i<nproc_;++i){index_[i]=rbuf[i];}
-
  return do_accept;
+
 }
 
 bool ReplicaExchange::get_acceptance(double myscore,double fscore)
 {
+// log file
  double accept,delta;
  delta=myscore+fscore;
+
  if(delta>=0.0){
   accept=1.0;
  }else{
   accept=exp(delta);
  }
- double random= (double) rand()/RAND_MAX;
+double random= (double) rand()/(double) RAND_MAX;
+
  if(random<=accept){
   return true;
  }else{

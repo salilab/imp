@@ -16,7 +16,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 // convert degrees to radians
 double radians (double d);
-inline double radians (double d) {return d * IMP::PI/ 180.0;}
+inline double radians (double d) {return d * IMP::algebra::PI/ 180.0;}
 
 // grid structure
 struct GridParameters {

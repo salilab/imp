@@ -37,21 +37,24 @@ for(int i=0;i<myparam->TM.num;++i){
   double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
   double e[]={0.0,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
   algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
-  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,
+-IMP::algebra::PI/2.0));
   pst->set_particle_states(rb,rbs);
  }
 if ( i == 1 ){
   double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
   double e[]={gg->xmax,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
   algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
-  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,
+(begin,end,binsize,-IMP::algebra::PI/2.0));
   pst->set_particle_states(rb,rbs);
  }
 if ( i > 1 ){
   double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
   double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
   algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
-  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,
+(begin,end,binsize,-IMP::algebra::PI/2.0));
   pst->set_particle_states(rb,rbs);
  }
 }
@@ -60,7 +63,8 @@ IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
 
 /*
 
-IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+IMP_NEW(membrane::RigidBodyGridStates,rbs,
+(begin,end,binsize,-IMP::algebra::PI/2.0));
 unsigned int nstates=rbs->get_number_of_particle_states();
 
 for(int i=0;i<myparam->TM.num;++i){

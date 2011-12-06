@@ -39,7 +39,7 @@ bool with_packing;
 
 // convert degrees to radians
 double radians (double d);
-inline double radians (double d) {return d * IMP::PI/ 180.0;}
+inline double radians (double d) {return d * IMP::algebra::PI/ 180.0;}
 
 #define OPTION(type, name)                                   \
  type name=-1;                                              \
@@ -48,7 +48,7 @@ inline double radians (double d) {return d * IMP::PI/ 180.0;}
 #define CHECK(type, name)                                    \
  IMP_USAGE_CHECK(name >=0, #name << " is " << name);
 
-Parameters get_parameters(TextInput in){
+Parameters get_parameters(base::TextInput in){
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
@@ -249,7 +249,8 @@ void do_transform
 (core::RigidBody rb, double psi, double theta, double phi, double dx)
 {
  algebra::Rotation3D rot0=
- algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), IMP::PI/2.0);
+ algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
+ IMP::algebra::PI/2.0);
  algebra::Rotation3D rotz=
  algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1), psi);
  algebra::Rotation3D tilt=
@@ -317,8 +318,8 @@ std::vector<double> om_b,om_e,dd_b,dd_e;
 for(int i=0;i<ncl;++i){
  dd_b.push_back(dd0[i]-nsig*sig_dd0[i]);
  dd_e.push_back(dd0[i]+nsig*sig_dd0[i]);
- om_b.push_back(std::max(radians(om0[i]-nsig*sig_om0[i]),-IMP::PI));
- om_e.push_back(std::min(radians(om0[i]+nsig*sig_om0[i]),IMP::PI));
+ om_b.push_back(std::max(radians(om0[i]-nsig*sig_om0[i]),-IMP::algebra::PI));
+ om_e.push_back(std::min(radians(om0[i]+nsig*sig_om0[i]),IMP::algebra::PI));
 }
 
 std::vector<double> score, minscore;
@@ -389,8 +390,8 @@ for(int id1=0;id1<mydata.num-1;++id1){
         B=B1;
         sign *= -1.0;
        }
-       double omega=dihedral(A,T0,T1,B) + (sign-1.0)*IMP::PI/2.0;
-       if ( omega < -IMP::PI ) omega +=2.0*IMP::PI;
+       double omega=dihedral(A,T0,T1,B) + (sign-1.0)*IMP::algebra::PI/2.0;
+       if ( omega < -IMP::algebra::PI ) omega +=2.0*IMP::algebra::PI;
 
        for(unsigned int i=0;i<om_b.size();++i){
         if ( omega > om_b[i] && omega < om_e[i] &&

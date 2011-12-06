@@ -14,7 +14,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT Parameters get_parameters(TextInput in);
+IMPMEMBRANEEXPORT Parameters get_parameters(base::TextInput in);
 
 IMPMEMBRANE_END_NAMESPACE
 

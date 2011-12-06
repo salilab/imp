@@ -110,8 +110,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   //std::cout << omega << std::endl;
 
   // correction for having changed dihedral points
-  omega += (sign-1.0)*IMP::PI/2.0;
-  if ( omega < -IMP::PI ) {omega += 2.0*IMP::PI;}
+  omega += (sign-1.0)*IMP::algebra::PI/2.0;
+  if ( omega < -IMP::algebra::PI ) {omega += 2.0*IMP::algebra::PI;}
 
   double dist =segment.get_length();
 

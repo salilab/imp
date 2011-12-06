@@ -19,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  type name=-1;                                              \
  desc.add_options()(#name, value< type >(&name), #name);
 
-SPBParameters get_SPBParameters(TextInput in, std::string suffix)
+SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
@@ -238,7 +238,7 @@ SPBParameters get_SPBParameters(TextInput in, std::string suffix)
   translations.push_back(algebra::Vector3D(-1.5*side,-side*sqrt(3.0)/2.0,0.0));
   translations.push_back(algebra::Vector3D(-1.5*side,side*sqrt(3.0)/2.0,0.0));
   num_rotations=ret.num_cells/7;
-  angle=2.0*IMP::PI/(double)num_rotations;
+  angle=2.0*IMP::algebra::PI/(double)num_rotations;
  }else{
   translations.push_back(algebra::Vector3D(0.0,0.0,0.0));
   translations.push_back(algebra::Vector3D(0.0,side,0.0));
