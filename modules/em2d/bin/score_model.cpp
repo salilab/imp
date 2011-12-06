@@ -131,7 +131,7 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
 
 int main(int argc, char **argv) {
 
-  IMP::set_log_level(VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
 
   po::variables_map vm = get_parameters(argc,argv);
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
-  IMP::set_log_level(VERBOSE);
+  IMP::set_log_level(IMP::VERBOSE);
 
 
   boost::timer registration_timer;
