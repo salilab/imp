@@ -11,6 +11,7 @@
 
 #include "base_config.h"
 #include "base_macros.h"
+#include "utility.h"
 #include <boost/timer.hpp>
 
 #include <iostream>
@@ -153,6 +154,7 @@ inline bool get_is_log_output(LogLevel l)
 #define IMP_LOG(level, expr)                                \
   if (IMP::get_is_log_output(IMP::base::level))             \
     { std::ostringstream oss;                               \
+      using std::operator<<;                                \
       oss<< expr << std::flush;                             \
       IMP::base::add_to_log(oss.str());                     \
     };

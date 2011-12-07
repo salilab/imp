@@ -15,7 +15,6 @@ IMP_BEGIN_NAMESPACE
 #ifndef SWIG
 using IMP::base::cube;
 using IMP::base::square;
-using IMP::base::operator<<;
 using IMP::base::is_nan;
 using IMP::base::get_as;
 #endif

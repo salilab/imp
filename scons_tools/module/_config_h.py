@@ -214,6 +214,22 @@ IMPBASE_END_INTERNAL_NAMESPACE
 //  functions are defined explicitly for swig
 #ifndef SWIG
 
+#ifndef IMP_DOXYGEN
+namespace std {
+template <class T, class A>
+class vector;
+template <class A, class B>
+class pair;
+}
+namespace IMP {
+namespace compatibility {
+template <class T>
+class checked_vector;
+}
+}
+#include <sstream>
+#endif
+
 %(EXPORT)s_BEGIN_NAMESPACE
 /** \\name Standard module methods
   All \imp modules have a set of standard methods to help get information
@@ -258,6 +274,44 @@ inline std::string get_example_path(std::string file_name)  {
   return IMP::base::internal::get_example_path("%(module)s", file_name);
 }
 /** @} */
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+struct Showable {
+  std::string str_;
+  template <class T>
+  void show_vector(const T &v) {
+    std::ostringstream out;
+    out << "[";
+    for (unsigned int i=0; i< v.size(); ++i) {
+      if (i >0) out << ", ";
+      out << v[i];
+    }
+    out<< "]";
+    str_= out.str();
+  }
+  Showable(const std::string& str): str_(str){}
+  template <class T, class TT>
+  Showable(const std::pair<T, TT> &p) {
+    std::ostringstream oss;
+    oss << "(" << p.first << ", " << p.second << ")";
+    str_=oss.str();
+  }
+  template <class T, class A>
+  Showable(const std::vector<T, A> &v) {
+    show_vector(v);
+  }
+  template <class T>
+  Showable(const IMP::compatibility::checked_vector<T> &v) {
+    show_vector(v);
+  }
+};
+
+inline std::ostream &operator<<(std::ostream &out, const Showable &s) {
+  out << s.str_;
+  return out;
+}
+#endif
+
 """% vars
 
     print >> h,"""
