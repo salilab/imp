@@ -73,6 +73,7 @@ def get_is_gcc_like(env):
         return (cxx.find('g++') != -1\
                 or cxx.find("icc")!= -1\
                 or cxx.find("clang") != -1\
+                or cxx.find("mpicxx") != -1\
                 or cxx.find("mpic++") != -1)
     else:
         return False
