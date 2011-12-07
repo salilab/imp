@@ -7,6 +7,7 @@
  */
 
 #include <RMF/HDF5Group.h>
+#include <boost/scoped_array.hpp>
 
 namespace RMF {
 
@@ -101,10 +102,28 @@ HDF5File open_hdf5_file_read_only(std::string name) {
   return HDF5File(h.get());
 }
 
+HDF5File HDF5Group::get_file() const {
+  IMP_HDF5_NEW_HANDLE(h, H5Iget_file_id(h_->get_hid()), &H5Fclose);
+  return HDF5File(h.get());
+}
+
 HDF5File::HDF5File(HDF5SharedHandle *h): HDF5Group(h){}
 
 void HDF5File::flush() {
   IMP_HDF5_CALL(H5Fflush(get_handle(), H5F_SCOPE_LOCAL));
+}
+
+bool HDF5File::get_is_writable() const {
+  unsigned int intent;
+  IMP_HDF5_CALL(H5Fget_intent(get_handle(), &intent));
+  return intent==H5F_ACC_RDWR;
+}
+
+std::string HDF5File::get_name() const {
+  int sz=H5Fget_name(get_handle(), NULL, 0);
+  boost::scoped_array<char> buf(new char[sz+1]);
+  IMP_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz+1));
+  return std::string(buf.get());
 }
 
 HDF5File::~HDF5File() {

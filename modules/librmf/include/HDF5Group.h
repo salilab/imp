@@ -14,6 +14,9 @@
 
 
 namespace RMF {
+
+class HDF5File;
+
   /** Wrap an HDF5 Group. See
       \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,
       the HDF5 manual} for more information.
@@ -36,6 +39,10 @@ namespace RMF {
       IMP_HDF5_CALL(H5Iget_name(h_->get_hid(), buf, 10000));
       return std::string(buf);
     }
+
+    //! Get an object for the file containing the group
+    HDF5File get_file() const;
+
     IMP_RMF_SHOWABLE(HDF5Group, "HDF5Group " << get_name());
 
     // create from an existing group
@@ -169,42 +176,6 @@ namespace RMF {
     IMP_HDF5_ATTRIBUTE(char, Char, char, char, std::string, std::string);
     /** @} */
   };
-
-  /** Store a handle to an HDF5 file. See
-   \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame08TheFile.html,
-  the HDF5 manual} for more information.*/
-  class RMFEXPORT HDF5File: public HDF5Group {
-  public:
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-    HDF5File(HDF5SharedHandle *h);
-#endif
-    void flush();
-    ~HDF5File();
-  };
-
-  /** Create a new hdf5 file, clearing any existing file with the same
-      name if needed.
-  */
-  RMFEXPORT HDF5File create_hdf5_file(std::string name);
-
-  /** Open an existing hdf5 file.
-  */
-  RMFEXPORT HDF5File open_hdf5_file(std::string name);
-
-  /** Open an existing hdf5 file read only.
-  */
-  RMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
-
-  /** */
-  typedef vector<HDF5Group> HDF5Groups;
-  /** */
-  typedef vector<HDF5File> HDF5Files;
-
-  /** */
-  inline int get_number_of_open_hdf5_handles() {
-    H5garbage_collect();
-    return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);
-  }
 
 } /* namespace RMF */
 

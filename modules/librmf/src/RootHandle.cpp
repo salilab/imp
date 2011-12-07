@@ -12,8 +12,8 @@ namespace RMF {
 
 RootHandle::RootHandle(internal::SharedData *shared): NodeHandle(0, shared) {}
 
-RootHandle::RootHandle(HDF5Group root, std::string name, bool create):
-    NodeHandle( 0, new internal::SharedData(root, name, create))  {
+RootHandle::RootHandle(HDF5Group root, bool create):
+    NodeHandle( 0, new internal::SharedData(root, create))  {
 }
 
 NodeHandle RootHandle::get_node_handle_from_id(NodeID id) const {

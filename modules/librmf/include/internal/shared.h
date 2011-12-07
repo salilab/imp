@@ -14,6 +14,7 @@
 #include "../hdf5_types.h"
 #include "../names.h"
 #include "../HDF5Group.h"
+#include "../HDF5File.h"
 #include "../infrastructure_macros.h"
 #include "map.h"
 #include "set.h"
@@ -71,7 +72,6 @@ namespace RMF {
       // TypeInfo::get_index() then by ID
       // then by key.get_index()
       mutable HDF5Group file_;
-      std::string name_;
       HDF5DataSetD<StringTraits, 1> node_names_;
       boost::array<HDF5DataSetD<StringTraits, 1>, 4> category_names_;
       boost::array<Strings, 4> category_names_cache_;
@@ -317,7 +317,7 @@ namespace RMF {
             IMP_RMF_END_OPERATION("fetching data from data set")
           }
         }
-        IMP_RMF_END_FILE(name_);
+        IMP_RMF_END_FILE(get_file_name());
       }
       HDF5Group get_group() const {
         return file_;
@@ -350,7 +350,7 @@ namespace RMF {
         return association_[id];
       }
       std::string get_file_name() const {
-        return name_;
+        return file_.get_file().get_name();
       }
       int get_association(void* d) const {
         if (back_association_.find(d) == back_association_.end()) {
@@ -591,7 +591,7 @@ namespace RMF {
       }
 
 
-      SharedData(HDF5Group g, std::string name, bool create);
+      SharedData(HDF5Group g, bool create);
       ~SharedData();
       int add_node(std::string name, unsigned int type);
       int get_first_child(unsigned int node) const;
@@ -622,21 +622,15 @@ namespace RMF {
       Strings get_category_names(int Arity) const;
       Ints get_categories(int Arity) const;
       std::string get_category_name(int Arity, unsigned int kc) const  {
-        IMP_RMF_USAGE_CHECK(category_names_[Arity-1],
+        IMP_RMF_USAGE_CHECK(category_names_cache_.size()
+                            > static_cast<unsigned int>(Arity),
                             "No categories with arity " << Arity);
         IMP_RMF_USAGE_CHECK(category_names_cache_[Arity-1].size() > kc,
                             "No such category with arity " << Arity);
-        IMP_RMF_INTERNAL_CHECK(category_names_[Arity-1]
-                               .get_value(HDF5DataSetIndex1D(kc))
-                               == category_names_cache_[Arity-1][kc],
-                               "Invalid cache value: "
-                               << category_names_[Arity-1]
-                               .get_value(HDF5DataSetIndex1D(kc))
-                               << " vs " << category_names_cache_[Arity-1][kc]);
         return category_names_cache_[Arity-1][kc];
       }
 
-      void initialize_categories(int i);
+      void initialize_categories(int i, bool create);
       void initialize_keys(int i);
       void initialize_free_nodes();
     };

@@ -11,6 +11,7 @@
 
 #include "RMF_config.h"
 #include "HDF5Group.h"
+#include "HDF5File.h"
 #include "internal/shared.h"
 #include "Key.h"
 #include "NodeHandle.h"
@@ -140,7 +141,7 @@ namespace RMF {
     RootHandle(){}
 
 #ifndef IMP_DOXYGEN
-    RootHandle(HDF5Group group, std::string name, bool create);
+    RootHandle(HDF5Group group, bool create);
 #endif
     //! Lift NodeHandle::get_name() into class scope
     std::string get_name() const {
@@ -375,21 +376,21 @@ namespace RMF {
   /** Create an RMF from a file system path.*/
   inline RootHandle create_rmf_file(std::string path) {
     IMP_RMF_FILE_OPERATION(
-        return RootHandle(create_hdf5_file(path), path, true),
+        return RootHandle(create_hdf5_file(path), true),
         path, "creating");
   }
 
   /** Open an RMF from a file system path.*/
   inline RootHandle open_rmf_file(std::string path) {
     IMP_RMF_FILE_OPERATION(
-        return RootHandle(open_hdf5_file(path), path, false),
+        return RootHandle(open_hdf5_file(path), false),
         path, "opening");
   }
 
   /** Open an RMF from a file system path.*/
   inline RootHandle open_rmf_file_read_only(std::string path) {
     IMP_RMF_FILE_OPERATION(
-        return RootHandle(open_hdf5_file_read_only(path), path, false),
+        return RootHandle(open_hdf5_file_read_only(path), false),
         path, "opening read only");
   }
 
