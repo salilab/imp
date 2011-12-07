@@ -23,18 +23,6 @@ typedef Ints Ints;
 
 namespace {
 
-  template <class T>
-  std::ostream &operator<<(std::ostream &out,
-                           const compatibility::checked_vector<T> &v) {
-    out << "[";
-    for (unsigned int i=0; i< v.size(); ++i) {
-      if (i>0) out << ", ";
-      out << v[i];
-    }
-    out << "]";
-    return out;
-  }
-
   class Counter {
     Ints cur_;
     Ints maxs_;
