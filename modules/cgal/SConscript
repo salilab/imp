@@ -17,7 +17,7 @@ scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
                                             versioncpp=["CGAL_VERSION_NR"],
                                             versionheader="CGAL/version.h")
 
-if scons_tools.dependency.gcc.get_is_gcc(env):
+if scons_tools.dependency.gcc.get_is_gcc_like(env):
     cxxflags=[]
     yeslist=['trapping-math',
              'signaling-nans',
