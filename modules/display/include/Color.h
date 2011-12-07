@@ -78,13 +78,13 @@ IMPDISPLAYEXPORT Color get_display_color(unsigned int i);
 struct SpacesIO
 {
   const Color &v_;
-  SpacesIO(const Color &v): v_(v){}
+  explicit SpacesIO(const Color &v): v_(v){}
 };
 
 struct CommasIO
 {
   const Color &v_;
-  CommasIO(const Color &v): v_(v){}
+  explicit CommasIO(const Color &v): v_(v){}
 };
 inline std::ostream &operator<<(std::ostream &out, const SpacesIO &s)
 {
