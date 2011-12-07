@@ -78,7 +78,7 @@ public:
     std::copy(b,e, v_.get());
     validate();
   }
-  Assignment(const Ints &i) {
+  explicit Assignment(const Ints &i) {
     IMP_USAGE_CHECK(!i.empty(),
                     "Can't create Assignment from empty list");
     create(i.size());
