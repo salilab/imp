@@ -16,7 +16,9 @@ def configure_check(env):
     if env.get('pkgconfig') == "auto":
         # We currently only parse pkg-config output for gcc, so don't use
         # pkg-config on non-gcc systems unless the user forces us to
-        if not scons_tools.dependency.gcc.get_is_gcc(env):
+        # Note: really we should use pkg-config for any compiler that accepts
+        # gcc-like options (-I, -L etc.); need a configure test
+        if not scons_tools.dependency.gcc.get_is_gcc_like(env):
             env['IMP_HAS_PKG_CONFIG']=False
         else:
             custom_tests = {'CheckPK':_check}
