@@ -29,7 +29,7 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
 {
  protected:
   void handle(Color color) {
-    get_stream() << ".color " << color << "\n";
+    get_stream() << ".color " << SpacesIO(color) << "\n";
   }
   bool handle(PointGeometry *g, Color color, std::string) {
     handle(color);
