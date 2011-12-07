@@ -1,5 +1,6 @@
 import unittest
 import RMF
+import shutil
 
 class GenericTest(RMF.TestCase):
     def _show(self, g):
@@ -47,5 +48,19 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(fka, 1)
         fkna= r.get_value_always(fk, 1)
         self.assertEqual(fkna, RMF.NullFloat)
+    def test_backwards_0(self):
+        """Test opening pre-category change files"""
+        ifn=self.get_input_file_name("backwards.rmf")
+        f= RMF.open_rmf_file_read_only(ifn)
+        pc= f.get_category("physics")
+        pks= f.get_keys(pc)
+        self.assert_(len(pks)> 3)
+        print pks
+        tfn= self.get_tmp_file_name("test_file.mh")
+        shutil.copy(ifn, tfn)
+        fw= RMF.open_rmf_file(tfn)
+        pc= f.get_category("physics")
+        pks= f.get_keys(pc)
+        self.assert_(len(pks)> 3)
 if __name__ == '__main__':
     unittest.main()

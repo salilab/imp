@@ -13,7 +13,7 @@
 namespace RMF {
   namespace internal {
 
-  void SharedData::initialize_categories(int i) {
+  void SharedData::initialize_categories(int i, bool create) {
     std::string nm=get_category_name_data_set_name(i+1);
     if (file_.get_has_child(nm)) {
       category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
@@ -21,6 +21,19 @@ namespace RMF {
         std::string name
             = category_names_[i].get_value(HDF5DataSetIndex1D(j));
         category_names_cache_[i].push_back(name);
+      }
+    } else if (i==0 && !create) {
+      if (!file_.get_file().get_is_writable()) {
+      // backward compatibility
+        category_names_cache_[i].push_back("physics");
+        category_names_cache_[i].push_back("sequence");
+        category_names_cache_[i].push_back("shape");
+        category_names_cache_[i].push_back("feature");
+      } else {
+        add_category(1, "physics");
+        add_category(1, "sequence");
+        add_category(1, "shape");
+        add_category(1, "feature");
       }
     }
   }
@@ -49,8 +62,8 @@ namespace RMF {
     }
   }
 
-  SharedData::SharedData(HDF5Group g, std::string name, bool create):
-      file_(g), name_(name), frames_hint_(0)
+  SharedData::SharedData(HDF5Group g, bool create):
+      file_(g), frames_hint_(0)
   {
     IMP_RMF_BEGIN_FILE;
     IMP_RMF_BEGIN_OPERATION;
@@ -85,7 +98,7 @@ namespace RMF {
           "opening node child data set.");
     }
       for (unsigned int i=0; i< 4; ++i) {
-        initialize_categories(i);
+        initialize_categories(i, create);
         initialize_keys(i);
         // clear caches
         last_node_[i]=-1;
@@ -99,7 +112,7 @@ namespace RMF {
                             "Root node is not so named");
       }
       IMP_RMF_END_OPERATION("initializing");
-      IMP_RMF_END_FILE(name_);
+      IMP_RMF_END_FILE(get_file_name());
     }
 
     SharedData::~SharedData() {
@@ -173,7 +186,7 @@ namespace RMF {
                            IndexTraits::get_null_value());
       return ret;
       IMP_RMF_END_OPERATION("adding node data");
-      IMP_RMF_END_FILE(name_.c_str());
+      IMP_RMF_END_FILE(get_file_name());
     }
     void SharedData::set_name(unsigned int node, std::string name) {
       audit_node_name(name);
@@ -340,7 +353,7 @@ namespace RMF {
     IMP_RMF_END_OPERATION("storing set data");
     check_set(arity, slot);
     return slot;
-    IMP_RMF_END_FILE(name_.c_str());
+    IMP_RMF_END_FILE(get_file_name());
   }
   unsigned int SharedData::get_set_member(int arity, unsigned int index,
                                             int member_index) const {
@@ -356,6 +369,13 @@ namespace RMF {
 
   int SharedData::add_category(int Arity, std::string name) {
     IMP_RMF_BEGIN_FILE;
+    IMP_RMF_INTERNAL_CHECK((!category_names_[Arity-1]
+                            && category_names_cache_[Arity-1].empty())
+                           || ( category_names_cache_[Arity-1].size()
+                                == category_names_[Arity-1].get_size()[0]),
+                           "Cache and data set sizes don't match: "
+                           << category_names_cache_[Arity-1].size() << " vs "
+                           << category_names_[Arity-1].get_size()[0]);
     IMP_RMF_USAGE_CHECK(get_category(Arity, name)==-1,
                         "File already has category " << name
                         << " with arity " << Arity);
@@ -378,17 +398,14 @@ namespace RMF {
     category_names_cache_[Arity-1][sz]=name;
     return sz;
     IMP_RMF_END_OPERATION("adding category to list");
-    IMP_RMF_END_FILE(name_.c_str());
+    IMP_RMF_END_FILE(get_file_name());
   }
   int SharedData::get_category(int Arity, std::string name) const {
     if (category_names_cache_[Arity-1].empty()) {
       return -1;
     } else {
-      Ints cs= get_categories(Arity);
-      for (unsigned int i=0; i< cs.size(); ++i) {
-        if (get_category_name(Arity, cs[i]) == name) {
-          return cs[i];
-        }
+      for (unsigned int i=0; i< category_names_cache_[Arity-1].size(); ++i) {
+        if (category_names_cache_[Arity-1][i]==name) return i;
       }
     }
     return -1;
@@ -403,14 +420,9 @@ namespace RMF {
     }
   Ints SharedData::get_categories(int Arity) const {
     unsigned int sz= category_names_cache_[Arity-1].size();
-    IMP_RMF_INTERNAL_CHECK((!category_names_[Arity-1] && sz==0)
-                           || (sz == category_names_[Arity-1].get_size()[0]),
-                           "Cache and data set sizes don't match: "
-                           << sz << " vs "
-                           << category_names_[Arity-1].get_size()[0]);
     Ints ret;
     for (unsigned int i=0; i< sz; ++i) {
-      if (!category_names_cache_[Arity-1].empty()) {
+      if (!category_names_cache_[Arity-1][i].empty()) {
         ret.push_back(i);
       }
     }

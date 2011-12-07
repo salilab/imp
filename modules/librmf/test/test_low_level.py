@@ -48,9 +48,12 @@ class GenericTest(RMF.TestCase):
         self._show(f)
         print "adding"
         g= f.add_child("hi")
+        ff= g.get_file()
+        self.assertEqual(ff.get_name(), f.get_name())
         self._show(f)
         del g
         del f
+        del ff
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
         f= RMF.open_hdf5_file(self.get_tmp_file_name("test.hdf5"))
         print "showing"

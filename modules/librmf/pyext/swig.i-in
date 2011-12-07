@@ -172,6 +172,7 @@ namespace RMF {
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 
 %include "RMF/HDF5Group.h"
+%include "RMF/HDF5File.h"
 %include "RMF/Category.h"
 
 %template(Category) RMF::CategoryD<1>;
