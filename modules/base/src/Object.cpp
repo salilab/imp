@@ -11,6 +11,7 @@
 #include "IMP/compatibility/map.h"
 #include <boost/format.hpp>
 #include "IMP/base/internal/static.h"
+#include <exception>
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -59,7 +60,8 @@ Object::~Object()
                      << "that all C++ code uses IMP::Pointer objects to"
                      << " store it.");
 #if IMP_BUILD < IMP_FAST
-  if (!was_owned_) {
+  // if there is no exception currently being handled warn if it was not owned
+  if (!was_owned_ && !std::uncaught_exception()) {
     IMP_WARN("Object \"" << get_name() << "\" was never used."
              << " See the IMP::Object documentation for an explanation."
              << std::endl);
