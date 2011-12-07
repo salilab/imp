@@ -5,9 +5,10 @@ import IMP.rmf
 
 bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                              IMP.algebra.Vector3D(10,10,10));
-ni=10
-nj=10
-np=10
+# in fast do 10,10,10, for the purposes of testing we reduce it
+ni=2
+nj=2
+np=2
 radius=.45
 k=100
 
@@ -18,7 +19,7 @@ lps= IMP.core.HarmonicDistancePairScore(1.5*radius, k)
 sps= IMP.core.SoftSpherePairScore(k)
 
 m= IMP.Model()
-
+IMP.set_log_level(IMP.SILENT)
 aps=[]
 filters=[]
 rs=[]
@@ -70,7 +71,6 @@ mc.set_use_incremental_evaluate(True)
 # use special incremental support for the non-bonded part
 mc.set_close_pair_score(sps, 0, aps, filters)
 
-m.set_log_level(IMP.VERBOSE)
 
 # first relax the bonds a bit
 rs=[]
