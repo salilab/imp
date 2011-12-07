@@ -270,7 +270,7 @@ get_nearest_assignment(const Subset &s,
     cur+=sz;
     ret[i]= pst->get_particle_states(s[i])->get_nearest_state(cpt);
   }
-  return ret;
+  return Assignment(ret);
 }
 
 IMPDOMINO_END_NAMESPACE
