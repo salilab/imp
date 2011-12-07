@@ -1,6 +1,7 @@
 import IMP
 import IMP.domino
 import IMP.core
+import IMP.container
 
 #set restraints
 def create_scoring(m, ps):
