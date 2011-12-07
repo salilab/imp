@@ -490,7 +490,6 @@ public:                                                                 \
 #define IMP_VALUES(Name, PluralName)
 #else
 #define IMP_VALUES(Name, PluralName)                            \
-  IMP_OUTPUT_OPERATOR(Name);                                    \
   typedef IMP::compatibility::checked_vector<Name> PluralName
 #endif
 
@@ -572,15 +571,7 @@ public:                                                                 \
 
 
 #else
-#define IMP_SHOWABLE(Name)                              \
-  void show(std::ostream &out=std::cout) const;         \
-  IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
-#define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
-  void show(std::ostream &out=std::cout) const{         \
-    how_to_show;                                        \
-  }                                                     \
-  IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
 #define IMP_HASHABLE_INLINE(name, hashret)\
   std::size_t __hash__() const {          \
@@ -634,12 +625,40 @@ public:                                                                 \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
+#define IMP_SHOWABLE(Name)                              \
+  void show(std::ostream &out=std::cout) const;         \
+  operator Showable() const {                           \
+    std::ostringstream oss;                             \
+    show(oss);                                          \
+    return Showable(oss.str());                         \
+  }                                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(showable)
+
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
+  void show(std::ostream &out=std::cout) const{         \
+    how_to_show;                                        \
+  }                                                     \
+  operator Showable() const {                           \
+    std::ostringstream oss;                             \
+    show(oss);                                          \
+    return Showable(oss.str());                         \
+  }                                                     \
+  IMP_REQUIRE_SEMICOLON_CLASS(showable)
+
 #else
 #define IMP_OUTPUT_OPERATOR_1(name)
 #define IMP_OUTPUT_OPERATOR_2(name)
 #define IMP_OUTPUT_OPERATOR(name)
 #define IMP_OUTPUT_OPERATOR_D(name)
 #define IMP_OUTPUT_OPERATOR_UD(name)
+
+#define IMP_SHOWABLE(Name)                              \
+  void show(std::ostream &out=std::cout) const
+
+#define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
+  void show(std::ostream &out=std::cout) const;
+
+
 #endif
 #endif
 
@@ -856,6 +875,14 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
   IMP_OBJECTS_TYPEDEF(Name, PluralName);                        \
   IMP_OBJECTS_IO(Name, PluralName)
 #endif
+
+
+#define IMP_GENERIC_OBJECT(Name, lcname, targument, carguments, cparguments) \
+  typedef Generic##Name<targument> Name;                                \
+  template <class targument>                                            \
+  Generic##Name<targument>* create_##lcname carguments {                \
+    return new Generic##Name<targument>cparguments;                      \
+  }
 
 
 #endif  /* IMPBASE_BASE_MACROS_H */
