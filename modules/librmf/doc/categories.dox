@@ -51,11 +51,11 @@ The following are pre-defined Categories for data stored in single nodes.
 
 \rmfattributetable_begin{Shape,shape}
     \rmfattribute{cartesian x, Float, the x coordinate,
-    must have y and z and no coordinates fields}
+    must have y and z or no coordinates fields}
     \rmfattribute{cartesian y, Float, the y coordinate,
-    must have x and z and no coordinates fields}
+    must have x and z or no coordinates fields}
     \rmfattribute{cartesian z, Float, the z coordinate,
-    must have x and y and no coordinates fields}
+    must have x and y or no coordinates fields}
     \rmfattribute{cartesian xs, Floats, the x coordinates,
     the number must match that of the y and z coordinates}
     \rmfattribute{cartesian ys, Floats, the y coordinates,
