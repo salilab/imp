@@ -135,11 +135,11 @@ namespace RMF {
                     vector<std::string> &paths,
                     std::string path) const;
     friend class NodeHandle;
+    friend class internal::SharedData;
     RootHandle(internal::SharedData *shared_);
   public:
     //! Empty root handle, no open file.
     RootHandle(){}
-
 #ifndef IMP_DOXYGEN
     RootHandle(HDF5Group group, bool create);
 #endif
@@ -369,6 +369,11 @@ namespace RMF {
         should be safe to open the file in another process for reading.
      */
     void flush();
+
+    /** Check invariants that should old in the file but are not checked
+        on the fly. New invariants can be added with the IMP_RMF_VALIDATOR()
+        macro.*/
+    void validate() const {shared_->validate();}
   };
 
   typedef vector<RootHandle> RootHandles;
