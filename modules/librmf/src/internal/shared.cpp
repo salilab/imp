@@ -9,6 +9,7 @@
 #include <RMF/internal/shared.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/NodeSetHandle.h>
+#include <RMF/Validator.h>
 
 namespace RMF {
   namespace internal {
@@ -116,6 +117,10 @@ namespace RMF {
     }
 
     SharedData::~SharedData() {
+      // kind of nasty, needed to avoid recursion
+      add_ref();
+      validate();
+      release();
       H5garbage_collect();
     }
 
@@ -323,8 +328,9 @@ namespace RMF {
     }
     return ret;
   }
-  unsigned int SharedData::add_set(const RMF::Indexes &nis, int t) {
+  unsigned int SharedData::add_set( RMF::Indexes nis, int t) {
     IMP_RMF_BEGIN_FILE;
+    std::sort(nis.begin(), nis.end());
     const int arity=nis.size();
     IMP_RMF_BEGIN_OPERATION;
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
@@ -427,6 +433,15 @@ namespace RMF {
       }
     }
     return ret;
+  }
+
+  void SharedData::validate() const {
+    Creators cs= get_validators();
+    for (unsigned int i=0; i< cs.size(); ++i) {
+      boost::scoped_ptr<Validator>
+          ptr(cs[i]->create(RootHandle(const_cast<SharedData*>(this))));
+      ptr->write_errors(std::cerr);
+    }
   }
 
   } // namespace internal

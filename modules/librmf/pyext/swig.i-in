@@ -184,6 +184,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/NodeHandle.h"
 %include "RMF/RootHandle.h"
 %include "RMF/names.h"
+%include "RMF/Validator.h"
 
 %pythoncode %{
 

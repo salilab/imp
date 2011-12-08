@@ -268,7 +268,6 @@
 
 #define IMP_RMF_END_OPERATION(name)             \
   } catch (Exception &e) {                      \
-    using RMF::vector_io::operator<<;           \
     std::ostringstream oss;                     \
     oss << name;                                \
     e.set_operation_name(oss.str().c_str());    \
@@ -285,7 +284,6 @@
 
 #define IMP_RMF_END_FILE(name)                  \
   } catch (Exception &e) {                      \
-    using RMF::vector_io::operator<<;           \
     std::ostringstream oss;                     \
     oss << name;                                \
     e.set_file_name(oss.str().c_str());         \
@@ -305,6 +303,11 @@
   IMP_RMF_END_FILE(name)                                \
   IMP_RMF_END_OPERATION(opname)                         \
 
+/** Register a validator function. See Validator for more
+    information.*/
+#define IMP_RMF_VALIDATOR(Type)               \
+  RMF::Registrar<Type> Type##Reg(#Type);
+
 namespace RMF {
 #if !defined(SWIG)
   using std::vector;
@@ -321,15 +324,23 @@ namespace RMF {
     return t.__hash__();
   }
 
-BOOST_MPL_HAS_XXX_TRAIT_DEF(show);
-namespace vector_io {
-  template <class T>
-  inline std::ostream &operator<<(std::ostream &out, const vector<T> &t);
-}
-
   struct Showable {
-    const std::string t_;
+    std::string t_;
     Showable( std::string t): t_(t){}
+    template <class T>
+    Showable( const vector<T> &t ) {
+      using std::operator<<;
+      std::ostringstream out;
+      out << "[";
+      for (unsigned int i=0; i< t.size(); ++i) {
+        if (i != 0) {
+          out << ", ";
+        }
+        out << t[i];
+      }
+      out << "]";
+      t_=out.str();
+    }
   };
 
 inline std::ostream &
@@ -337,22 +348,7 @@ operator<<(std::ostream &out, const Showable &t) {
   out << t.t_;
   return out;
 }
-namespace vector_io {
-  template <class T>
-  inline std::ostream &operator<<(std::ostream &out, const vector<T> &t) {
-    using std::operator<<;
-    out << "[";
-    for (unsigned int i=0; i< t.size(); ++i) {
-      if (i != 0) {
-        out << ", ";
-      }
-      out << t[i];
-    }
-    out << "]";
-    return out;
-  }
-}
-using namespace vector_io;
+
 #endif
 }
 

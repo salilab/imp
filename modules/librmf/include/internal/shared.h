@@ -27,19 +27,6 @@
 namespace RMF {
   namespace internal {
 
-    template <class T>
-    inline std::ostream &operator<<(std::ostream &out,
-                                    const vector<T> &o) {
-      out << "[";
-      for (unsigned int i=0; i< o.size(); ++i) {
-        if (i != 0) out << ", ";
-        out << o[i];
-      }
-      out << "]";
-      return out;
-    }
-
-
 #define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname, PassValue, ReturnValue, \
                                  PassValues, ReturnValues)              \
     DataDataSetCache<Ucname##Traits, 2> lcname##_data_sets_;            \
@@ -612,7 +599,7 @@ namespace RMF {
       void check_set(int arity, unsigned int index) const;
       unsigned int get_number_of_sets(int arity) const;
       RMF::Indexes get_set_indexes(int Arity) const;
-      unsigned int add_set(const RMF::Indexes &nis, int t);
+      unsigned int add_set( RMF::Indexes nis, int t);
       unsigned int get_set_member(int Arity, unsigned int index,
                                     int member_index) const;
       unsigned int get_set_type(int Arity, unsigned int index) const;
@@ -633,6 +620,7 @@ namespace RMF {
       void initialize_categories(int i, bool create);
       void initialize_keys(int i);
       void initialize_free_nodes();
+      void validate() const;
     };
 
 
