@@ -22,7 +22,9 @@ class DistanceTests(IMP.test.TestCase):
         self.assertEqual(sf.get_is_ok(IMP.domino.Assignment([0,4,8,12])), False)
         ls= list(IMP.domino.Subset([ps[0], ps[1], ps[6], ps[4]]))
         ss= IMP.domino.Assignment([0 for l in ls])
-        ss[ls.index(ps[0])]=6
+        ssl=[x for x in ss]
+        ssl[ls.index(ps[0])]=6
+        ss= IMP.domino.Assignment(ssl)
         self.assertEqual(sf.get_is_ok(ss), False)
 if __name__ == '__main__':
     IMP.test.main()

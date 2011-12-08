@@ -14,11 +14,11 @@ def cross(args):
 
 class DOMINOTests(IMP.test.TestCase):
     def _get_filtered(self, f, n):
-        states= [IMP.domino.Assignment([0,1,2,3,4,5]) for x in range(n)]
+        states= [[0,1,2,3,4,5] for x in range(n)]
         all= cross(states)
         ret=[]
         for s in all:
-            if f.get_is_ok(s):
+            if f.get_is_ok(IMP.domino.Assignment(s)):
                 ret.append(s)
         return ret
     def test_global_min2(self):
