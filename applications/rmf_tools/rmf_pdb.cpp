@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
       RMF::Category physics= rh.get_category<1>("physics");
       RMF::FloatKey xk
           =rh.get_key<RMF::FloatTraits, 1>(physics, "cartesian x");
-      std::cout << xk << std::endl;
+      //std::cout << xk << std::endl;
       nframes= rh.get_number_of_frames(xk)+1;
     }
     int minframe, maxframe, step;
@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     int outframe=0;
     for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
       if (outframe%10==0) {
-        std::cout << outframe << " ";
+        std::cout << outframe << std::endl;
       }
       IMP::atom::Hierarchies cur;
       if (get_suffix(input) == ".pdb") {
@@ -121,30 +121,6 @@ int main(int argc, char **argv) {
         }
       }
       ++outframe;
-    }
-
-
-    IMP::atom::Bonds bds;
-    for (unsigned int i=0; i< inhs.size(); ++i) {
-      IMP::atom::Bonds cur=IMP::atom::get_internal_bonds(inhs[i]);
-      bds.insert(bds.end(), cur.begin(), cur.end());
-    }
-    std::cout << bds.size() << " bonds" << std::endl;
-    RMF::PairIndexKey bk;
-    RMF::CategoryD<2> bond= rho.get_or_add_category<2>("bond");
-    if (rho.get_has_key<RMF::IndexTraits, 2>(bond, "type")) {
-      bk= rho.get_key<RMF::IndexTraits, 2>(bond, "type");
-    } else {
-      bk= rho.add_key<RMF::IndexTraits, 2>(bond, "type", false);
-    }
-    for (unsigned int i=0; i< bds.size(); ++i) {
-      IMP::Particle *p0= bds[i].get_bonded(0).get_particle();
-      IMP::Particle *p1= bds[i].get_bonded(1).get_particle();
-      RMF::NodeHandle n0= rho.get_node_handle_from_association(p0);
-      RMF::NodeHandle n1= rho.get_node_handle_from_association(p1);
-      RMF::NodeHandles nhs(2); nhs[0]=n0; nhs[1]=n1;
-      RMF::NodePairHandle obd= rho.add_node_set<2>(nhs, RMF::BOND);
-      obd.set_value(bk, 0);
     }
     return 0;
   } catch (const IMP::Exception &e) {
