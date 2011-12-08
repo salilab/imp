@@ -80,7 +80,7 @@ class DOMINOTests(IMP.test.TestCase):
             print i
             for j in range(0,na):
                 for k in range(0,na):
-                    ass=[i,j,k]
+                    ass=IMP.domino.Assignment([i,j,k])
                     cac.add_assignment(ass)
         print cac.get_assignments()
         self.assertLess(len(cac.get_assignments()), nc)
