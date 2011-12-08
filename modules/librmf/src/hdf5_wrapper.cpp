@@ -7,6 +7,7 @@
  */
 
 #include <RMF/HDF5Group.h>
+#include <RMF/HDF5File.h>
 #include <boost/scoped_array.hpp>
 
 namespace RMF {
