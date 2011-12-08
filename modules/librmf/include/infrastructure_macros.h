@@ -18,12 +18,7 @@
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/current_function.hpp>
 
-#if !defined(NDEBUG) && defined(__GNUC__)
-#include <debug/vector>
-#else
 #include <vector>
-#endif
-
 
 #if defined(IMP_DOXYGEN)
 /** \name Comparisons
@@ -311,9 +306,7 @@
   IMP_RMF_END_OPERATION(opname)                         \
 
 namespace RMF {
-#if !defined(NDEBUG) && defined(__GNUC__)
-  using __gnu_debug::vector;
-#elif !defined(SWIG)
+#if !defined(SWIG)
   using std::vector;
 #else
   template <class T>
