@@ -306,14 +306,15 @@ namespace {
   }
 
 
-  void create_bond(atom::Bond bd, RMF::RootHandle fh) {
+void create_bond(atom::Bond bd, RMF::RootHandle fh, RMF::PairIndexKey bt) {
     RMF::NodeHandle na
       = fh.get_node_handle_from_association(bd.get_bonded(0).get_particle());
     RMF::NodeHandle nb
       = fh.get_node_handle_from_association(bd.get_bonded(1).get_particle());
-    fh.add_bond(na, nb, 0);
+    RMF::NodeHandles nhs(2); nhs[0]=na; nhs[1]=nb;
+    RMF::NodePairHandle obd= fh.add_node_set<2>(nhs, RMF::BOND);
+    obd.set_value(bt, 0);
   }
-
 
 }
 void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
@@ -331,8 +332,15 @@ void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
     pd.reset(new boost::progress_display(bds.size(),
                                          std::cout));
   }
+  RMF::PairIndexKey bk;
+  RMF::CategoryD<2> bond= fh.get_or_add_category<2>("bond");
+  if (fh.get_has_key<RMF::IndexTraits, 2>(bond, "type")) {
+    bk= fh.get_key<RMF::IndexTraits, 2>(bond, "type");
+  } else {
+    bk= fh.add_key<RMF::IndexTraits, 2>(bond, "type", false);
+  }
   for (unsigned int i=0; i< bds.size(); ++i) {
-    create_bond(bds[i], fh);
+    create_bond(bds[i], fh, bk);
     if (pd) ++(*pd);
   }
   fh.flush();
