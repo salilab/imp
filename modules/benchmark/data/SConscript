@@ -9,7 +9,9 @@ files = [
          "toph19.inp",
          "param19.inp",
          "extended.pdb",
-         "rnapii.rmf"
+         "rnapii.rmf",
+         "1j1jA.pdb",
+         "1j1A_docking.imp.txt"
         ]
 
 # Install the data files:
