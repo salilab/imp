@@ -16,7 +16,7 @@ def add_geometry(w, chains):
         color= IMP.display.get_display_color(i)
         cn= "chain "+str(i)
         for p in c:
-            sg= IMP.display.XYZRGeometry(IMP.core.XYZR(p))
+            sg= IMP.core.XYZRGeometry(IMP.core.XYZR(p))
             sg.set_name(cn)
             sg.set_color(color)
             w.add_geometry(sg)
