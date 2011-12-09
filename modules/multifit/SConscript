@@ -1,5 +1,6 @@
 Import('env')
 import scons_tools.dependency
+import scons_tools.data
 
 scons_tools.dependency.add_external_library(env, "FFTW3", ["fftw3"],
                                             "fftw3.h")
@@ -14,8 +15,22 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "program_options", 'boost/program_options.hpp',
                                                extra_boost_libs=["system"])
 
-env.IMPModuleBuild(version="SVN",
+if not env.GetOption('help') and\
+   int(scons_tools.data.get(env).dependencies['Boost'].version[0]) <= 103301 \
+   and env['percppcompilation']=="no":
+    # there is a bug in boost that two headers can't be included at the
+    # same time as they define different
+    # template <class T> bool boost::contains(T,T).
+    opercppcompilation=env['percppcompilation']
+    env['percppcompilation']="multifit"
+else:
+    opercppcompilation=None
+
+env.IMPModuleBuild(version='SVN.r11965',
         required_modules=['core','em','algebra','domino','atom','statistics'],
         required_dependencies=['FFTW3','Boost.ProgramOptions','Boost.FileSystem'])
 #                   required_dependencies=['Boost.FileSystem'])
 #                   required_dependencies=[])
+
+if opercppcompilation:
+    env['percppcompilation']=opercppcompilation
