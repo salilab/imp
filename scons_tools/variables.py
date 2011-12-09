@@ -272,9 +272,11 @@ def add_common_variables(vars, package):
     vars.Add('dot',
              'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
                           "auto")
+    # Set to False for stable builds
+    svn_build = True
     vars.Add(BoolVariable('svn',
                           'True if this build is from an svn version of IMP. If so, SVN version info is added to the provided version number.',
-                          True))
+                          svn_build))
     vars.Add('python', 'The path to python or "no" if python should not be used.', "python")
     vars.Add(BoolVariable('local', 'Whether to build local modules, applications and biological systems that are not part of the IMP distribution', True))
     vars.Add(BoolVariable('linktest', 'Test for header defined functions which are not inline', True))
