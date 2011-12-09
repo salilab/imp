@@ -17,7 +17,7 @@ BuildRequires: modeller, gsl-devel, hdf5-devel, fftw-devel
 # on Fedora, all of these packages are available; add them as dependencies
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, bullet-devel, opencv-devel, eigen3-devel
-%define scons_opts cgal=yes
+%define scons_opts
 %else
 %define scons_opts cgal=no opencv21=no opencv22=no bullet=no eigen3=no
 %endif
