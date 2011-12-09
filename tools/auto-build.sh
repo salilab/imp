@@ -43,6 +43,9 @@ DATE=`date +'%Y/%m/%d'`
 (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf-in > .dox && mv .dox doxygen.conf-in)
 perl -pi -e "s/version=[\"']SVN[\"']/version='SVN.${rev}'/" imp/modules/*/SConscript imp/applications/*/SConscript imp/biological_systems/*/SConscript
 
+# Don't overwrite version at build time
+perl -pi -e 's/svn_build\s*=.*/svn_build = False/' imp/scons_tools/variables.py
+
 # Write out a version file
 verfile="${IMPINSTALL}/build/imp-version"
 mkdir -p "${IMPINSTALL}/build"
