@@ -112,8 +112,7 @@ public:
   //! The translation is understood as a shift (in pixels)
   void add_in_plane_transformation(algebra::Transformation2D t);
 
-
-  void show(std::ostream& out=std::cout) const;
+  IMP_SHOWABLE(RegistrationResult);
 
   //! Writes a parseable result
   void write(std::ostream& out = std::cout) const;
