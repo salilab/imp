@@ -165,6 +165,7 @@ class ProjectTests(IMP.test.TestCase):
     def test_write_tiff(self):
         """Test of TIFFReaderWriter writing"""
         trw = em2d.TIFFImageReaderWriter()
+        srw = em2d.SpiderImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1=em2d.Image(fn_img1,trw)
         fn_img2 = self.get_input_file_name("temp.tif")
@@ -175,6 +176,7 @@ class ProjectTests(IMP.test.TestCase):
         # Values can change, but the ccc has to be very close to 1.
         ccc= em2d.get_cross_correlation_coefficient(img1.get_data(),
                                            img2.get_data())
+        print ccc
         self.assertAlmostEqual(ccc,1,delta=0.01,
         msg="Written TIFF image is not equal to read ")
         os.remove(fn_img2)
