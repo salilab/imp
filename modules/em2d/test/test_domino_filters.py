@@ -32,10 +32,7 @@ class DominoFilters(IMP.test.TestCase):
         m.add_restraint(r1)
         r3=IMP.core.DistanceRestraint(sf, particles[1],particles[2])
         m.add_restraint(r3)
-
-
-        ig = domino.get_interaction_graph( m.get_root_restraint_set(),
-                                              states_table)
+        ig = domino.get_interaction_graph( m.get_restraints(), states_table)
         # generate a junction tree from the interaction graph
         jt= domino.get_junction_tree(ig)
         print "JUNCTION TREE"
