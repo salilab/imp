@@ -22,7 +22,30 @@ class VAction(argparse.Action):
 
 def create_parser():
     parser = argparse.ArgumentParser(
-            description="Perform a statistical merge of the given SAXS curves")
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description="Perform a statistical merge of the given SAXS curves",
+            epilog="""Output file legend:
+
+Cleanup
+    agood    (bool)   : True if SNR is high enough
+    apvalue  (float)  : p-value of the student t test
+Rescaling
+    cgood    (bool)   : True if data point is both valid (wrt SNR) and in the
+                        validity domain of the gamma reference curve (the last
+                        curve)
+Classification
+    drefnum  (int)    : number of the reference profile for this point
+    drefname (string) : associated filename
+    dgood    (bool)   : True if this point is compatible with the reference and
+                        False otherwise. Undefined if 'agood' is False for that
+                        point.
+    dselfref (bool)   : True if this curve was it's own reference, in which case
+                        dgood is also True
+    dpvalue  (float)  : p-value for the classification test
+Merging
+    eorigin  (int)    : profile index from which this point originates
+    eoriname (string) : associated filename
+""")
     #general
     group = parser.add_argument_group(title="general")
     group.add_argument('files',
@@ -31,7 +54,9 @@ def create_parser():
             help="a 3-column file that contains SAXS data. To specify the "
                  "number of repetitions of this experiment, use the syntax"
                  " file.txt=20 indicating that data in file.txt is an average"
-                 " of 20 experiments. Default is 10.")
+                 " of 20 experiments. Default is 10. Note that in the case of "
+                 "different number of repetitions, the minimum is taken for "
+                 "the final fitting step (Step 5).")
     group.add_argument('--verbose', '-v', nargs='?', action=VAction,
             dest='verbose', default=0) #1: normal 2:detailed
     group.add_argument('--mergename', help="filename suffix for output "
