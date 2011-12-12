@@ -24,27 +24,27 @@ def create_parser():
     parser = argparse.ArgumentParser(
             formatter_class=argparse.RawDescriptionHelpFormatter,
             description="Perform a statistical merge of the given SAXS curves",
-            epilog="""Output file legend:
-
+            epilog="""Output file legend:\n
 Cleanup
-    agood    (bool)   : True if SNR is high enough
-    apvalue  (float)  : p-value of the student t test
+    agood     (bool)   : True if SNR is high enough
+    apvalue   (float)  : p-value of the student t test
 Rescaling
-    cgood    (bool)   : True if data point is both valid (wrt SNR) and in the
-                        validity domain of the gamma reference curve (the last
-                        curve)
+    cgood     (bool)   : True if data point is both valid (wrt SNR) and in the
+                         validity domain of the gamma reference curve (the last
+                         curve)
 Classification
-    drefnum  (int)    : number of the reference profile for this point
-    drefname (string) : associated filename
-    dgood    (bool)   : True if this point is compatible with the reference and
-                        False otherwise. Undefined if 'agood' is False for that
-                        point.
-    dselfref (bool)   : True if this curve was it's own reference, in which case
-                        dgood is also True
-    dpvalue  (float)  : p-value for the classification test
+    drefnum   (int)    : number of the reference profile for this point
+    drefname  (string) : associated filename
+    dgood     (bool)   : True if this point is compatible with the reference and
+                         False otherwise. Undefined if 'agood' is False for that
+                         point.
+    dselfref  (bool)   : True if this curve was it's own reference, in which
+                         case dgood is also True
+    dpvalue   (float)  : p-value for the classification test
 Merging
-    eorigin  (int)    : profile index from which this point originates
-    eoriname (string) : associated filename
+    eorigin   (int)    : profile index from which this point originates
+    eoriname  (string) : associated filename
+    eextrapol (bool)   : True if mean function is being extrapolated.
 """)
     #general
     group = parser.add_argument_group(title="general")
@@ -118,6 +118,11 @@ Merging
     group.add_argument('--eschedule', help='Simulation schedule, see fitting'
             ' step. (default 10:10000/5:1000/1:100)',
             default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
+    group.add_argument('--eextrapolate', metavar="NUM", help='Extrapolate '
+            "NUM percent outside of the curve's bounds. Example: if NUM=50 "
+            "and the highest acceptable data point is at q=0.3, the mean will "
+            "be estimated up to q=0.45. Default is 25.",
+            default=25)
     return parser
 
 def parse_filenames(fnames, defaultvalue=10):
@@ -478,6 +483,7 @@ def merging(profiles, args):
     """
     schedule = args.eschedule
     verbose = args.verbose
+    extrapolate = 1+args.eextrapolate/float(100)
     if verbose > 0:
         print "5. merging"
         print "   gathering data"
@@ -488,6 +494,7 @@ def merging(profiles, args):
     merge.new_flag('drefname',str)
     merge.new_flag('eorigin',int)
     merge.new_flag('eoriname',str)
+    merge.new_flag('eextrapol',bool)
     flags_to_keep=['q','I','err', 'dselfref','drefnum','drefname']
     #loop over profiles and add data
     for i,p in enumerate(profiles):
@@ -505,8 +512,9 @@ def merging(profiles, args):
                 data.pop(k)
         data['eorigin']=[i]*len(data['q'])
         data['eoriname']=[p.filename]*len(data['q'])
+        data['eextrapol']=[False]*len(data['q'])
         cleaned = []
-        all_flags = flags_to_keep + ['eorigin','eoriname']
+        all_flags = flags_to_keep + ['eorigin','eoriname','eextrapol']
         for j in xrange(len(data['q'])):
             entry=[]
             for k in all_flags:
@@ -519,6 +527,11 @@ def merging(profiles, args):
     for n,t in zip(merge.flag_names,merge.flag_types):
         if t != float and n not in ['q','I','err']:
             create_intervals_from_data(merge, n)
+    #create interval for extrapolation
+    data = merge.get_data(colwise=True)['q']
+    merge.set_flag_interval('eextrapol', min(data), max(data), False)
+    merge.set_flag_interval('eextrapol',0,min(data),True)
+    merge.set_flag_interval('eextrapol',max(data), max(data)*extrapolate, True)
     #set Nreps to min of all
     #its the bet we can do when fitting all points simultaneously
     merge.set_Nreps(min([p.get_Nreps() for p in profiles]))
@@ -550,7 +563,9 @@ def write_data(merge, profiles, args):
         i.write_data(destname, bool_to_int=True, dir=args.destdir)
         i.write_mean(destname, bool_to_int=True, dir=args.destdir)
     merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir)
-    merge.write_mean(merge.get_filename(), bool_to_int=True, dir=args.destdir)
+    qmax = merge.get_flag_intervals('eextrapol')[-1][1]
+    merge.write_mean(merge.get_filename(), bool_to_int=True, dir=args.destdir,
+            qmin=0, qmax=qmax)
     fl=open(os.path.join(args.destdir,args.sumname),'w')
     fl.write("#STATISTICAL MERGE: SUMMARY\n\n")
     fl.write("Merge file\n"
