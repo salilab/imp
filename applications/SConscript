@@ -2,6 +2,7 @@ Import('env')
 
 applications=['foxs',
               'saxs_tools',
+              'saxs_merge',
               'em_tools',
               'ligand_score',
               'multifit']
