@@ -12,8 +12,6 @@
 #include "checked_vector.h"
 #include <boost/version.hpp>
 #include <boost/random/uniform_01.hpp>
-#include <boost/exception.hpp>
-#include <boost/throw_exception.hpp>
 #include <numeric>
 #include <algorithm>
 #include <cmath>
