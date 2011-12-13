@@ -138,6 +138,12 @@ def make_one(params, test=True):
               ("modules/kernel/src/"+multi + "Score.cpp",
                path+"/tools/container_templates/score.cc"),
 
+            ("modules/kernel/include/"+multi + "Predicate.h",
+               path+"/tools/container_templates/pred.hpp"),
+              ("modules/kernel/src/"+multi + "Predicate.cpp",
+               path+"/tools/container_templates/pred.cc"),
+
+
               ("modules/container/include/"+multi + "ContainerStatistics.h",
                path+"/tools/container_templates/statistics.hpp"),
               ("modules/container/src/"+multi + "ContainerStatistics.cpp",

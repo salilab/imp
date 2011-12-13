@@ -164,7 +164,35 @@
 
 
 
-
+//! Declare the functions needed for a SingletonPredicate
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::SingletonPredicate::evaluate(IMP::Particle*)
+    - IMP::SingletonPredicate::get_input_particles()
+    - IMP::SingletonPredicate::get_output_particles()
+*/
+#define IMP_SINGLETON_PREDICATE(Name)                                   \
+  int get_value(Particle* a) const;       \
+  Ints get_value(const ParticlesTemp &o) const {       \
+    Ints ret(o.size());                                                 \
+    for (unsigned int i=0; i< o.size(); ++i) {                          \
+      ret[i]+= Name::get_value(o[i]);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  int get_value_index(Model *m, ParticleIndex vt) const { \
+    return Name::get_value(internal::get_particle(m, vt));              \
+  }                                                                     \
+ Ints get_value_index(Model *m,                                         \
+                      const ParticleIndexes &o) const {                 \
+   Ints ret(o.size());                                                  \
+   for (unsigned int i=0; i< o.size(); ++i) {                           \
+     ret[i]+= Name::get_value_index(m, o[i]);                           \
+   }                                                                    \
+   return ret;                                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  IMP_OBJECT(Name)
 
 
 //! Declare the functions needed for a SingletonModifier

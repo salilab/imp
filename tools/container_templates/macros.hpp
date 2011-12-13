@@ -164,7 +164,35 @@
 
 
 
-
+//! Declare the functions needed for a CLASSNAMEPredicate
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::CLASSNAMEPredicate::evaluate(IMP::Particle*)
+    - IMP::CLASSNAMEPredicate::get_input_particles()
+    - IMP::CLASSNAMEPredicate::get_output_particles()
+*/
+#define IMP_HEADERNAME_PREDICATE(Name)                                   \
+  int get_value(ARGUMENTTYPE a) const;       \
+  Ints get_value(const PLURALVARIABLETYPE &o) const {       \
+    Ints ret(o.size());                                                 \
+    for (unsigned int i=0; i< o.size(); ++i) {                          \
+      ret[i]+= Name::get_value(o[i]);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  int get_value_index(Model *m, PASSINDEXTYPE vt) const { \
+    return Name::get_value(internal::get_particle(m, vt));              \
+  }                                                                     \
+ Ints get_value_index(Model *m,                                         \
+                      const PLURALINDEXTYPE &o) const {                 \
+   Ints ret(o.size());                                                  \
+   for (unsigned int i=0; i< o.size(); ++i) {                           \
+     ret[i]+= Name::get_value_index(m, o[i]);                           \
+   }                                                                    \
+   return ret;                                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  IMP_OBJECT(Name)
 
 
 //! Declare the functions needed for a CLASSNAMEModifier
