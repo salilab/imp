@@ -348,34 +348,51 @@ class SAXSProfile:
         return self.Nreps
 
     def write_data(self, filename, prefix='data_', suffix='', sep=' ',
-            bool_to_int=False, dir='./', *args, **kwargs):
+            bool_to_int=False, dir='./', header=True, flags=None,
+            float_fmt='%15f', *args, **kwargs):
         fl=open(os.path.join(dir,prefix+filename+suffix),'w')
-        fl.write('#')
-        for i,name in enumerate(self.get_flag_names()):
-            fl.write("%d:%s%s" % (i+1,name,sep))
-        fl.write('\n')
+        allflags = self.get_flag_names()
+        if flags == None:
+            flags=allflags
+        if header:
+            fl.write('#')
+            for i,name in enumerate(flags):
+                fl.write("%d:%s%s" % (i+1,name,sep))
+            fl.write('\n')
         for d in self.get_data(*args, **kwargs):
-            for ent in d[1:]:
+            for flagname,ent in zip(allflags,d[1:]):
+                if flagname not in flags:
+                    continue
                 if bool_to_int and isinstance(ent, bool):
                     fl.write('%d' % ent)
+                elif isinstance(ent, float):
+                    fl.write(float_fmt % ent)
                 else:
                     fl.write('%s' % ent)
                 fl.write(sep)
-            fl.write(sep.join(['%s' % i for i in d[1:]]))
             fl.write('\n')
         fl.close()
 
     def write_mean(self, filename, prefix='mean_', suffix='', sep=' ',
-            bool_to_int=False, dir='./', *args, **kwargs):
+            bool_to_int=False, dir='./', header=True, flags=None,
+            float_fmt="%15f", *args, **kwargs):
         fl=open(os.path.join(dir,prefix+filename+suffix),'w')
-        fl.write('#')
-        for i,name in enumerate(self.get_flag_names()):
-            fl.write("%d:%s%s" % (i+1,name,sep))
-        fl.write('\n')
+        allflags = self.get_flag_names()
+        if flags == None:
+            flags=allflags
+        if header:
+            fl.write('#')
+            for i,name in enumerate(flags):
+                fl.write("%d:%s%s" % (i+1,name,sep))
+            fl.write('\n')
         for d in self.get_mean(*args, **kwargs):
-            for ent in d:
+            for flagname,ent in zip(allflags,d):
+                if flagname not in flags:
+                    continue
                 if bool_to_int and isinstance(ent, bool):
                     fl.write('%d' % ent)
+                elif isinstance(ent, float):
+                    fl.write(float_fmt % ent)
                 else:
                     fl.write('%s' % ent)
                 fl.write(sep)
