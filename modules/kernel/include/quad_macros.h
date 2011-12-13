@@ -166,7 +166,7 @@
 
 //! Declare the functions needed for a QuadPredicate
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadPredicate::evaluate(IMP::Particle*)
+    - IMP::QuadPredicate::get_value()
     - IMP::QuadPredicate::get_input_particles()
     - IMP::QuadPredicate::get_output_particles()
 */
@@ -183,7 +183,7 @@
     return Name::get_value(internal::get_particle(m, vt));              \
   }                                                                     \
  Ints get_value_index(Model *m,                                         \
-                      const ParticleIndexQuads &o) const {                 \
+                      const ParticleIndexQuads &o) const {         \
    Ints ret(o.size());                                                  \
    for (unsigned int i=0; i< o.size(); ++i) {                           \
      ret[i]+= Name::get_value_index(m, o[i]);                           \
@@ -193,6 +193,44 @@
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ContainersTemp get_input_containers(Particle*) const;                 \
   IMP_OBJECT(Name)
+
+
+//! Declare the functions needed for a QuadPredicate
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::QuadPredicate::get_value_index()
+    - IMP::QuadPredicate::get_input_particles()
+    - IMP::QuadPredicate::get_output_particles()
+*/
+#define IMP_INDEX_QUAD_PREDICATE(Name, gv)                        \
+  int get_value(const ParticleQuad& a) const {                        \
+    return get_value_index(IMP::internal::get_model(a),                 \
+                     IMP::internal::get_index(a));                      \
+  }                                                                     \
+  Ints get_value(const ParticleQuadsTemp &o) const {           \
+    Ints ret(o.size());                                                 \
+    for (unsigned int i=0; i< o.size(); ++i) {                          \
+      ret[i]+= Name::get_value(o[i]);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  int get_value_index(Model *m, const ParticleIndexQuad& pi) const {        \
+    gv;                                                                 \
+  }                                                                     \
+ Ints get_value_index(Model *m,                                         \
+                      const ParticleIndexQuads &o) const {          \
+   Ints ret(o.size());                                                  \
+   for (unsigned int i=0; i< o.size(); ++i) {                           \
+     ret[i]+= Name::get_value_index(m, o[i]);                           \
+   }                                                                    \
+   return ret;                                                          \
+  }                                                                     \
+ ParticlesTemp get_input_particles(Particle*p) const {                  \
+   return ParticlesTemp(1, p);                                          \
+ }                                                                      \
+ ContainersTemp get_input_containers(Particle*) const {                 \
+   return ContainersTemp();                                             \
+ }                                                                      \
+ IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
 
 
 //! Declare the functions needed for a QuadModifier
@@ -214,7 +252,7 @@
 
 //! Declare the functions needed for a QuadModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadDerivativeModifier::apply(IMP::Particle*)
+    - IMP::QuadDerivativeModifier::apply()
     - IMP::QuadDerivativeModifier::get_input_particles()
     - IMP::QuadDerivativeModifier::get_output_particles()
 */
