@@ -38,6 +38,7 @@ template <class TypeT, int Arity, class Handle>
   bool show_type_data_xml(Handle nh,
                           RMF::CategoryD<Arity> kc,
                           bool opened, std::ostream &out) {
+  using RMF::operator<<;
     RMF::RootHandle rh= nh.get_root_handle();
     std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
@@ -46,7 +47,7 @@ template <class TypeT, int Arity, class Handle>
         if (frame >=0) {
           if (nh.get_has_value(keys[i], frame)) {
             if (!opened) {
-              out << "<" << kc << "\n";
+              out << "<" << nh.get_root_handle().get_category_name(kc) << "\n";
               opened=true;
             }
             out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -69,7 +70,7 @@ template <class TypeT, int Arity, class Handle>
           }
           if (some) {
             if (!opened) {
-              out << "<" << kc << "\n";
+              out << "<" << nh.get_root_handle().get_category_name(kc)  << "\n";
               opened=true;
             }
             out << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -83,7 +84,7 @@ template <class TypeT, int Arity, class Handle>
       } else {
         if (nh.get_has_value(keys[i])) {
           if (!opened) {
-            out << "<" << kc << "\n";
+            out << "<" << nh.get_root_handle().get_category_name(kc) << "\n";
             opened=true;
           }
           out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -93,16 +94,16 @@ template <class TypeT, int Arity, class Handle>
     }
     return opened;
   }
+#define IMP_RMF_SHOW_TYPE_DATA_XML(lcname, UCName, PassValue, ReturnValue, \
+                                   PassValues, ReturnValues)            \
+  opened=show_type_data_xml<RMF::UCName##Traits, Arity>(nh, kc, opened, out);
+
 template <int Arity, class Handle>
   void show_data_xml(Handle nh,
                      RMF::CategoryD<Arity> kc,
                      std::ostream &out) {
     bool opened=false;
-    opened=show_type_data_xml<RMF::IntTraits, Arity>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::FloatTraits, Arity>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::IndexTraits, Arity>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::StringTraits, Arity>(nh, kc, opened, out);
-    opened=show_type_data_xml<RMF::NodeIDTraits, Arity>(nh, kc, opened, out);
+    IMP_RMF_FOREACH_TYPE(IMP_RMF_SHOW_TYPE_DATA_XML);
     if (opened) {
       out << "/>\n";
     }
@@ -188,7 +189,7 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    RMF::RootHandle rh= RMF::open_rmf_file(input);
+    RMF::RootHandle rh= RMF::open_rmf_file_read_only(input);
     std::ostream *out;
     std::ofstream fout;
     if (!output.empty()) {
