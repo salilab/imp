@@ -599,8 +599,8 @@ def write_data(merge, profiles, args):
         dflags = ['q','I','err','eorigin','eoriname']
         mflags = ['q','I','err','eorigin','eoriname','eextrapol']
     else:
-        flags = None
         dflags = None
+        mflags = None
     merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir,
             header=args.header, flags=dflags)
     qmax = max([i[1] for i in merge.get_flag_intervals('eextrapol')])
