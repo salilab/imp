@@ -632,6 +632,11 @@ IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
 
+%define IMP_SWIG_GENERIC_OBJECT_TEMPLATE(Namespace, Name, lcname, argument)
+%template(Name) Namespace::Generic##Name<argument>;
+%template(create_##lcname) Namespace::create_##lcname<argument>;
+%enddef
+
 
 
 %define IMP_SWIG_NATIVE_VALUE(Name)

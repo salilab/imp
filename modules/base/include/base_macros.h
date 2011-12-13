@@ -884,5 +884,4 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
     return new Generic##Name<targument>cparguments;                      \
   }
 
-
 #endif  /* IMPBASE_BASE_MACROS_H */

@@ -30,14 +30,25 @@ public:
   /** \param[in] feature Value of feature being tested.
       \return Score
    */
-  virtual double evaluate(double feature) const=0;
+  virtual double evaluate(double feature) const
+#ifdef SWIG
+      =0;
+#else
+  {
+    // to support easy generic classes
+    return evaluate(feature);
+  }
+#endif
 
   //! Calculate score and derivative with respect to the given feature.
   /** \param[in] feature Value of feature being tested.
       \return a FloatPair containing the score and its partial derivative
               with respect to the given feaure.
    */
-  virtual DerivativePair evaluate_with_derivative(double feature) const = 0;
+  virtual DerivativePair evaluate_with_derivative(double feature) const {
+    // to support easy generic classes
+    return evaluate_with_derivative(feature);
+  }
 
   IMP_REF_COUNTED_DESTRUCTOR(UnaryFunction);
 };

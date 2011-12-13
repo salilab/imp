@@ -5,10 +5,10 @@ IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
-IMP_SWIG_OBJECT( IMP::core, AttributeSingletonScore, AttributeSingletonScores);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, AttributeSingletonScore, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
-IMP_SWIG_OBJECT( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
 #endif
@@ -30,7 +30,7 @@ IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
 IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
-IMP_SWIG_OBJECT( IMP::core, DistanceToSingletonScore, DistanceToSingletonScores);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, FixedRefiner, FixedRefiners);
 IMP_SWIG_OBJECT( IMP::core, GridClosePairsFinder, GridClosePairsFinders);
@@ -282,3 +282,7 @@ namespace IMP {
 
   }
 }
+
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, AttributeSingletonScore, attribute_singleton_score, UnaryFunction);
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, BoundingBox3DSingletonScore, bounding_box_3d_singleton_score, UnaryFunction);
+IMP_SWIG_GENERIC_OBJECT_TEMPLATE(IMP::core, DistanceToSingletonScore, distance_to_singleton_score, UnaryFunction);
