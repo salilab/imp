@@ -166,7 +166,7 @@
 
 //! Declare the functions needed for a PairPredicate
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::PairPredicate::evaluate(IMP::Particle*)
+    - IMP::PairPredicate::get_value()
     - IMP::PairPredicate::get_input_particles()
     - IMP::PairPredicate::get_output_particles()
 */
@@ -183,7 +183,7 @@
     return Name::get_value(internal::get_particle(m, vt));              \
   }                                                                     \
  Ints get_value_index(Model *m,                                         \
-                      const ParticleIndexPairs &o) const {                 \
+                      const ParticleIndexPairs &o) const {         \
    Ints ret(o.size());                                                  \
    for (unsigned int i=0; i< o.size(); ++i) {                           \
      ret[i]+= Name::get_value_index(m, o[i]);                           \
@@ -193,6 +193,44 @@
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ContainersTemp get_input_containers(Particle*) const;                 \
   IMP_OBJECT(Name)
+
+
+//! Declare the functions needed for a PairPredicate
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::PairPredicate::get_value_index()
+    - IMP::PairPredicate::get_input_particles()
+    - IMP::PairPredicate::get_output_particles()
+*/
+#define IMP_INDEX_PAIR_PREDICATE(Name, gv)                        \
+  int get_value(const ParticlePair& a) const {                        \
+    return get_value_index(IMP::internal::get_model(a),                 \
+                     IMP::internal::get_index(a));                      \
+  }                                                                     \
+  Ints get_value(const ParticlePairsTemp &o) const {           \
+    Ints ret(o.size());                                                 \
+    for (unsigned int i=0; i< o.size(); ++i) {                          \
+      ret[i]+= Name::get_value(o[i]);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  int get_value_index(Model *m, const ParticleIndexPair& pi) const {        \
+    gv;                                                                 \
+  }                                                                     \
+ Ints get_value_index(Model *m,                                         \
+                      const ParticleIndexPairs &o) const {          \
+   Ints ret(o.size());                                                  \
+   for (unsigned int i=0; i< o.size(); ++i) {                           \
+     ret[i]+= Name::get_value_index(m, o[i]);                           \
+   }                                                                    \
+   return ret;                                                          \
+  }                                                                     \
+ ParticlesTemp get_input_particles(Particle*p) const {                  \
+   return ParticlesTemp(1, p);                                          \
+ }                                                                      \
+ ContainersTemp get_input_containers(Particle*) const {                 \
+   return ContainersTemp();                                             \
+ }                                                                      \
+ IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
 
 
 //! Declare the functions needed for a PairModifier
@@ -214,7 +252,7 @@
 
 //! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::PairDerivativeModifier::apply(IMP::Particle*)
+    - IMP::PairDerivativeModifier::apply()
     - IMP::PairDerivativeModifier::get_input_particles()
     - IMP::PairDerivativeModifier::get_output_particles()
 */
