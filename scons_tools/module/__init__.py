@@ -439,6 +439,8 @@ def IMPModuleDoc(env, files, authors,
                  license="standard"):
     docdir=env['docdir']+"/"+_get_module_variables(env)['module_include_path']
     links= _get_module_links(env)
+    if overview.find('\r') != -1:
+        raise RuntimeError("\\r is not allowed in overview fields as it generally should be \\\\r")
     if len(links) > 0:
         overview+= '\n\nExamples:\n'
         for l in links:
