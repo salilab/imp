@@ -28,11 +28,13 @@ namespace RMF {
       // backward compatibility
         category_names_cache_[i].push_back("physics");
         category_names_cache_[i].push_back("sequence");
+        category_names_cache_[i].push_back("bond-do not use");
         category_names_cache_[i].push_back("shape");
         category_names_cache_[i].push_back("feature");
       } else {
         add_category(1, "physics");
         add_category(1, "sequence");
+        add_category(1, "bond-do not use");
         add_category(1, "shape");
         add_category(1, "feature");
       }
