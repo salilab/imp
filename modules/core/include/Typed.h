@@ -43,6 +43,10 @@ class IMPCOREEXPORT Typed: public Decorator
     return p->has_attribute(get_type_key());
   }
 
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_type_key(), pi);
+  }
+
   ParticleType get_type() const {
     return ParticleType(get_particle()->get_value(get_type_key()));
   }
