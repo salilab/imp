@@ -359,7 +359,8 @@ namespace RMF {
         unsigned int get_number_of_frames(Key<TypeTraits, Arity> k) const {
         unsigned int kc= k.get_category().get_index();
         if (!get_is_per_frame(k)) {
-          IMP_RMF_THROW("Attribue " << k << " does not have frames.",
+          IMP_RMF_THROW("Attribue " << get_name(k)
+                        << " does not have frames.",
                         UsageException);
         } else {
           HDF5DataSetD<TypeTraits, 3> &ds
@@ -367,7 +368,8 @@ namespace RMF {
                                                      k.get_arity(),
                                                      false);
           if (!ds) {
-            IMP_RMF_THROW("Attribute " << k << " does not have any data.",
+            IMP_RMF_THROW("Attribute " << get_name(k)
+                          << " does not have any data.",
                           UsageException);
           }
           HDF5DataSetIndexD<3> sz= ds.get_size();
@@ -542,7 +544,7 @@ namespace RMF {
       }
 
       template <class TypeTraits, int Arity>
-        std::string get_name(Key<TypeTraits, Arity> k) {
+        std::string get_name(Key<TypeTraits, Arity> k) const {
         unsigned int kc=k.get_category().get_index();
         HDF5DataSetD<StringTraits, 1>& nameds
           = get_key_list_data_set<TypeTraits>(kc, k.get_arity(),
