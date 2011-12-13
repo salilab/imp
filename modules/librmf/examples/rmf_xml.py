@@ -14,7 +14,7 @@ def show_data_xml(nh, kc, arity=1):
     for k in keys:
         if nh.get_has_value(k, frame):
             if not opened:
-                print "<", kc
+                print "<", rh.get_category_name(kc)
                 opened=True
             name=rh.get_name(k)
             name.replace(" ", "_")
