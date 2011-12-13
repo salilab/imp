@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
       }
     }
     std::cout<< "writing to file " << output << std::endl;
-    RMF::RootHandle rh= RMF::open_rmf_file(input);
+    RMF::RootHandle rh= RMF::open_rmf_file_read_only(input);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
