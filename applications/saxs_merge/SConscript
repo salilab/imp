@@ -9,4 +9,4 @@ env= env.IMPApplication(name="saxs_merge", version="SVN",
                         required_modules=['saxs','isd','gsl'],
                         required_dependencies=[])
 if env:
-    env.IMPPythonExecutable('merge.py')
+    env.IMPPythonExecutable('saxs_merge.py')
