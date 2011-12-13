@@ -72,7 +72,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=True, cnpoints=100)
+        args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last')
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -103,7 +103,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=False, cnpoints=100)
+        args=MockArgs(verbose=0, cnormal=False, cnpoints=100, creference='last')
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -204,7 +204,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification and merging
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
-                dalpha=0.05)
+                dalpha=0.05, eextrapolate=0)
         self.merge.classification([p1,p2,p3],args)
         self.merge.fitting_step = lambda a,b,c,d: b
         def thing(b,c,d):

@@ -46,6 +46,10 @@ Merging
     eoriname  (string) : associated filename
     eextrapol (bool)   : True if mean function is being extrapolated.
 """)
+    parser.add_argument('--version', action='version', version='%(prog)s 0.2')
+    parser.add_argument('--verbose', '-v', nargs='?', action=VAction,
+            dest='verbose', default=1, help="Verbose level. 0 is quiet, 1-3 is "
+            "more and more verbose. Default is 1.")
     #general
     group = parser.add_argument_group(title="general")
     group.add_argument('files',
@@ -57,15 +61,22 @@ Merging
                  " of 20 experiments. Default is 10. Note that in the case of "
                  "different number of repetitions, the minimum is taken for "
                  "the final fitting step (Step 5).")
-    group.add_argument('--verbose', '-v', nargs='?', action=VAction,
-            dest='verbose', default=0) #1: normal 2:detailed
     group.add_argument('--mergename', help="filename suffix for output "
             "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
     group.add_argument('--sumname', metavar='NAME', default='summary.txt',
             help="File to which the merge summary will be written."
-            " Default is dump.dat")
+            " Default is summary.txt")
     group.add_argument('--destdir', default="./", metavar='DIR',
             help="Destination folder in which files will be written")
+    group.add_argument('--header', default=False, action='store_true',
+            help="First line of output files is a header (default False)")
+    group.add_argument('--outlevel', default='normal', help="Set the output "
+            "level, sparse is for q,I,err columns only, normal adds eorigin, "
+            "eoriname and eextrapol (default), and full outputs all flags.",
+            choices=['normal','sparse','full'])
+    group.add_argument('--allfiles', default=False, action='store_true',
+            help="Output data files for parsed input files as well (default "
+            "is only to output merge and summary files).")
     #cleanup
     group = parser.add_argument_group(title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -100,6 +111,9 @@ Merging
     group = parser.add_argument_group(title="Rescaling (Step 3)",
                 description="Find the most probable scaling factor of all "
                 "curves wrt the first curve.")
+    group.add_argument('--creference', default='last', help="Define which "
+            "input curve the other curves will be recaled to. Options are "
+            "first or last (default is last)", choices=['first','last'])
     group.add_argument('--cnormal', action='store_true', default=False,
             help="Use the normal model instead of the lognormal model "
             "to calculate gamma")
@@ -121,8 +135,8 @@ Merging
     group.add_argument('--eextrapolate', metavar="NUM", help='Extrapolate '
             "NUM percent outside of the curve's bounds. Example: if NUM=50 "
             "and the highest acceptable data point is at q=0.3, the mean will "
-            "be estimated up to q=0.45. Default is 25.",
-            default=25)
+            "be estimated up to q=0.45. Default is 0 (just extrapolate at low "
+            "angle).", default=0)
     return parser
 
 def parse_filenames(fnames, defaultvalue=10):
@@ -381,18 +395,19 @@ def rescaling(profiles, args):
     """third stage of merge: rescaling
     Created flag:
         cgood : True if data point is both valid (wrt SNR) and in the validity
-                domain of the gamma reference curve (the last curve)
+                domain of the rescaling reference curve (option --creference)
     sets profile.gamma to the correct value
     """
     use_normal = args.cnormal
     numpoints = args.cnpoints
     verbose = args.verbose
+    reference = args.creference
     if verbose >0:
         print "3. rescaling"
-    pref = profiles[-1] #take last as reference as there's usually good overlap
+    #take last as internal reference as there's usually good overlap
+    pref = profiles[-1]
+    gammas = []
     for p in profiles:
-        if verbose >1:
-            print "   ",p.filename,
         #find intervals where both functions are valid
         p.new_flag('cgood',bool)
         pdata = p.get_data(colwise=True)
@@ -419,9 +434,17 @@ def rescaling(profiles, args):
             gamma = get_gamma_normal(prefvalues, pvalues)
         else:
             gamma = get_gamma_lognormal(prefvalues, pvalues)
+        gammas.append(gamma)
+    #set gammas wrt reference
+    if reference == 'first':
+        gr=gammas[0]
+    else:
+        gr = gammas[-1]
+    for p,g in zip(profiles,gammas):
+        gamma = g/gr
         p.set_gamma(gamma)
         if verbose >1:
-            print "   ",gamma
+            print "   ",p.filename,"   ",gamma
     return profiles,args
 
 def classification(profiles, args):
@@ -531,7 +554,9 @@ def merging(profiles, args):
     data = merge.get_data(colwise=True)['q']
     merge.set_flag_interval('eextrapol', min(data), max(data), False)
     merge.set_flag_interval('eextrapol',0,min(data),True)
-    merge.set_flag_interval('eextrapol',max(data), max(data)*extrapolate, True)
+    if args.eextrapolate > 0:
+        merge.set_flag_interval('eextrapol',
+                max(data), max(data)*extrapolate, True)
     #set Nreps to min of all
     #its the bet we can do when fitting all points simultaneously
     merge.set_Nreps(min([p.get_Nreps() for p in profiles]))
@@ -558,16 +583,34 @@ def write_data(merge, profiles, args):
         print "writing data"
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
-    for i in profiles:
-        destname = os.path.basename(i.get_filename())
-        i.write_data(destname, bool_to_int=True, dir=args.destdir)
-        i.write_mean(destname, bool_to_int=True, dir=args.destdir)
-    merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir)
-    qmax = merge.get_flag_intervals('eextrapol')[-1][1]
+    #individual profiles
+    if args.allfiles:
+        for i in profiles:
+            destname = os.path.basename(i.get_filename())
+            i.write_data(destname, bool_to_int=True, dir=args.destdir,
+                    header=args.header)
+            i.write_mean(destname, bool_to_int=True, dir=args.destdir,
+                    header=args.header)
+    #merge profile
+    if args.outlevel == 'sparse':
+        dflags = ['q','I','err']
+        mflags = ['q','I','err']
+    elif args.outlevel == 'normal':
+        dflags = ['q','I','err','eorigin','eoriname']
+        mflags = ['q','I','err','eorigin','eoriname','eextrapol']
+    else:
+        flags = None
+        dflags = None
+    merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir,
+            header=args.header, flags=dflags)
+    qmax = max([i[1] for i in merge.get_flag_intervals('eextrapol')])
     merge.write_mean(merge.get_filename(), bool_to_int=True, dir=args.destdir,
-            qmin=0, qmax=qmax)
+            qmin=0, qmax=qmax, header=args.header, flags=mflags)
+    #summary
     fl=open(os.path.join(args.destdir,args.sumname),'w')
     fl.write("#STATISTICAL MERGE: SUMMARY\n\n")
+    fl.write("Ran with the following arguments:\n")
+    fl.write(os.path.basename(sys.argv[0]) + " ".join(sys.argv[1:]) + "\n\n")
     fl.write("Merge file\n"
              "  General\n"
              "   Filename: " + merge.filename + "\n")
@@ -599,7 +642,7 @@ def write_data(merge, profiles, args):
         for i in sorted(data.keys()):
             fl.write("   %s : %f\n" % (i,data[i]))
         data = p.get_gamma()
-        fl.write("  3. Rescaling (reference is last input curve)\n")
+        fl.write("  3. Rescaling\n")
         fl.write("   gamma : %f\n" % data)
         data = p.get_data(filter='dgood',colwise=True)
         fl.write("  4. Classification\n" +
@@ -613,10 +656,6 @@ def main():
     profiles, args = initialize()
     profiles, args = cleanup(profiles, args)
     profiles, args = fitting(profiles, args)
-    for i in profiles:
-        destname = os.path.basename(i.get_filename())
-        i.write_data(destname, bool_to_int=True, dir=args.destdir)
-        i.write_mean(destname, bool_to_int=True, dir=args.destdir)
     profiles, args = rescaling(profiles, args)
     profiles, args = classification(profiles, args)
     merge, profiles, args = merging(profiles, args)
