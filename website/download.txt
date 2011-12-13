@@ -77,21 +77,18 @@ For all other packages, please check the
 <a href="#stable">stable releases</a> but do include new functionality
 (they are updated daily).</p>
 
-<h3>Binary installers</h3>
+<h3>Installers and source code</h3>
 
-<p>Installers for Windows, Mac OS X 10.4 (Tiger) and Mac OS X 10.6 (Snow
+<p>Installers for Windows, Linux (Fedora 16, RHEL 5, RHEL 6), and
+Mac OS X 10.4 (Tiger) and Mac OS X 10.6 (Snow
 Leopard) <a href="http://salilab.org/imp/nightly/download/">are
-available</a>.</p>
+available</a>. The source code can also be obtained from the same location,
+or <a
+href="http://salilab.org/imp/nightly/doc/html/installation.html#devbuild">from
+our Subversion repository</a>.</p>
 
 <h3>Documentation</h3>
 
 <p>Please refer to the
 <a href="http://salilab.org/imp/nightly/doc/html/">online documentation</a>.
 </p>
-
-<h3>Source code</h3>
-
-<p>Latest development IMP source code can be obtained
-<a
-href="http://salilab.org/imp/nightly/doc/html/installation.html#devbuild">from
-our Subversion repository</a>.</p>
