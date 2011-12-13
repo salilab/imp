@@ -146,9 +146,21 @@ template <class Container>
 class GenericInContainerPairFilter: public PairFilter {
   Pointer<Container> c_;
 public:
-  GenericInContainerPairFilter( Container* c): c_(c){}
+  GenericInContainerPairFilter( Container* c,
+                                std::string name):
+      PairFilter(name),
+      c_(c){}
   IMP_PAIR_FILTER(GenericInContainerPairFilter);
 };
+
+template <class Container>
+inline GenericInContainerPairFilter<Container>*
+create_in_container_pair_filter(Container *c, std::string name=std::string()) {
+  if (name==std::string()) {
+    name= std::string("InContainer ") + c->get_name();
+  }
+  return new GenericInContainerPairFilter<Container>(c, name);
+}
 
 
 IMPCONTAINER_END_NAMESPACE
