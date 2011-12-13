@@ -11,7 +11,6 @@
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
 #include <IMP/macros.h>
-#include <IMP/CLASSNAMEScore.h>
 #include <IMP/internal/container_helpers.h>
 IMP_BEGIN_NAMESPACE
 
