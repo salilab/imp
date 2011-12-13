@@ -41,13 +41,13 @@ namespace {
   = internal::get_or_add_key<FloatsTraits>(f, Shape, "cartesian z",     \
                                            true);                       \
   RMF::FloatKey cr                                                      \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb red",          \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
                                           false);                       \
   RMF::FloatKey cg                                                      \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb green",        \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color green",  \
                                           false);                       \
   RMF::FloatKey cb                                                      \
-  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb blue",         \
+  = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",   \
                                           false);                       \
   RMF::FloatKey r                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \

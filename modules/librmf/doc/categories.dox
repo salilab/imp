@@ -63,11 +63,11 @@ The following are pre-defined Categories for data stored in single nodes.
     \rmfattribute{cartesian zs, Floats, the z coordinates,
     the number must match that of the x and y coordinates}
     \rmfattribute{radius, Float, the radius, positive}
-    \rmfattribute{rgb red, Float, the red channel for the color,
+    \rmfattribute{rgb color red, Float, the red channel for the color,
     between 0 and 1; must have green and blue}
-    \rmfattribute{rgb green, Float, the green channel for the color,
+    \rmfattribute{rgb color green, Float, the green channel for the color,
     between 0 and 1; must have red and blue}
-    \rmfattribute{rgb blue, Float, the blue channel for the color,
+    \rmfattribute{rgb color blue, Float, the blue channel for the color,
     between 0 and 1; must have red and green}
     \rmfattribute{triangle vertex 0s Indexes,
     indexes into the coordinates fields to define triangular faces,
