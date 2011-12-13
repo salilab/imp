@@ -360,7 +360,9 @@ namespace grids {
       set_number_of_voxels(bds);
     }
     void set_number_of_voxels(Ints bds) {
-      IMP_USAGE_CHECK(D==-1 || bds.size() ==D, "Wrong number of dimensions");
+      IMP_USAGE_CHECK(D==-1
+                      || static_cast<int>(bds.size()) ==D,
+                      "Wrong number of dimensions");
       d_=ExtendedGridIndexD<D>(bds);
     }
     //! Return the number of voxels in a certain direction
