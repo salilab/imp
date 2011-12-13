@@ -155,7 +155,7 @@ public:
 
 template <class Container>
 inline GenericInContainerPairFilter<Container>*
-create_in_container_pair_filter(Container *c, std::string name=std::string()) {
+create_in_container_filter(Container *c, std::string name=std::string()) {
   if (name==std::string()) {
     name= std::string("InContainer ") + c->get_name();
   }

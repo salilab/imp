@@ -129,13 +129,13 @@ namespace {
 
     PairFilters pfs;
     ParticlesTemp all;
-    typedef GenericInContainerPairFilter<ConsecutivePairContainer> Filter;
     for (unsigned int i=0; i< ret.chains.size(); ++i) {
       ParticlesTemp cur=ret.chains[i].get_children();
       all.insert(all.end(), cur.begin(), cur.end());
       IMP_NEW(ConsecutivePairContainer, cpc,(cur, true));
       // since they all use the same key
-      if (i==0) pfs.push_back(new Filter(cpc));
+      if (i==0) pfs.push_back(container::create_in_container_filter(cpc.get(),
+                                                                    "bonds"));
       ret.m->add_restraint(container::create_restraint(link, cpc));
     }
     ret.lsc=new ListSingletonContainer(all);
