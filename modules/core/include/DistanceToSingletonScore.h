@@ -9,11 +9,14 @@
 #define IMPCORE_DISTANCE_TO_SINGLETON_SCORE_H
 
 #include "core_config.h"
+#include "XYZ.h"
+#include "internal/evaluate_distance_pair_score.h"
 #include <IMP/generic.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
+#include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -26,14 +29,57 @@ IMPCORE_BEGIN_NAMESPACE
     do the following:
     \htmlinclude restrain_in_sphere.py
  */
-class IMPCOREEXPORT DistanceToSingletonScore : public SingletonScore
+template <class UF>
+class GenericDistanceToSingletonScore : public SingletonScore
 {
-  IMP::OwnerPointer<UnaryFunction> f_;
+  IMP::OwnerPointer<UF> f_;
   algebra::Vector3D pt_;
+  struct StaticD
+  {
+    algebra::Vector3D v_;
+    StaticD(algebra::Vector3D v): v_(v){}
+    Float get_coordinate(unsigned int i) {return v_[i];}
+    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+      IMP_LOG(VERBOSE, "DistanceTo dropped deriv of " <<  v << std::endl);
+    }
+  };
 public:
-  DistanceToSingletonScore(UnaryFunction *f, const algebra::Vector3D& pt);
-  IMP_SIMPLE_SINGLETON_SCORE(DistanceToSingletonScore);
+  GenericDistanceToSingletonScore(UF *f,
+                                  const algebra::Vector3D& pt);
+  IMP_SIMPLE_SINGLETON_SCORE(GenericDistanceToSingletonScore);
 };
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+
+
+template <class UF>
+GenericDistanceToSingletonScore<UF>
+::GenericDistanceToSingletonScore(UF *f,
+                                  const algebra::Vector3D &v)
+    : f_(f), pt_(v){}
+template <class UF>
+Float GenericDistanceToSingletonScore<UF>::evaluate(Particle *b,
+                                         DerivativeAccumulator *da) const
+{
+  Float v= internal::evaluate_distance_pair_score(XYZ(b),
+                                                  StaticD(pt_), da,
+                                                  f_.get(), boost::lambda::_1);
+  IMP_LOG(VERBOSE, "DistanceTo from " << XYZ(b) << " to "
+          << pt_ << " scored " << v << std::endl);
+  return v;
+}
+template <class UF>
+void GenericDistanceToSingletonScore<UF>::do_show(std::ostream &out) const
+{
+  out << "function " << *f_;
+}
+
+#endif
+
+IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
+                   UnaryFunction,
+                   (UnaryFunction *f, const algebra::Vector3D& pt),
+                   (f, pt));
 
 
 
@@ -50,6 +96,15 @@ class IMPCOREEXPORT SphereDistanceToSingletonScore : public SingletonScore
 {
   IMP::OwnerPointer<UnaryFunction> f_;
   algebra::Vector3D pt_;
+  struct StaticD
+  {
+    algebra::Vector3D v_;
+    StaticD(algebra::Vector3D v): v_(v){}
+    Float get_coordinate(unsigned int i) {return v_[i];}
+    void add_to_derivatives(algebra::Vector3D v, DerivativeAccumulator){
+      IMP_LOG(VERBOSE, "DistanceTo dropped deriv of " <<  v << std::endl);
+    }
+  };
 public:
   SphereDistanceToSingletonScore(UnaryFunction *f,
                                  const algebra::Vector3D& pt);
