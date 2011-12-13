@@ -39,3 +39,4 @@ if env:
     env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])
     env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
     env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])
+    env.IMPCPPExecutable(target="rmf_info", source=["rmf_info.cpp"])
