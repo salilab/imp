@@ -4,7 +4,7 @@ overview="""
 
 \\namespace RMF
 
-The library provides support for the \ref rmf "RMF"
+The library provides support for the \\ref rmf "RMF"
 file format for storing
 hierarchical molecular data (such as atomic or coarse
 grained representations of proteins), along with
