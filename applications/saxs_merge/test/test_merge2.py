@@ -43,6 +43,10 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
 
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
+        try:
+            import scipy
+        except ImportError:
+            self.skipTest("could not import scipy")
         merge = self.import_python_application('saxs_merge.py')
         self.SAXSProfile = merge.SAXSProfile
         self.merge = merge
