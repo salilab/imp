@@ -19,3 +19,7 @@ simply run 'python foo.py' from a Terminal window in the directory containing
 the script. (If you have multiple versions of Python installed on your
 system, you may need to force use of the default system version by typing
 '/usr/bin/python' rather than just 'python'.)
+
+To completely uninstall IMP, run
+sudo imp_uninstall
+from a Terminal window.

@@ -148,6 +148,32 @@ else
   rm -f /tmp/non-standard.$$
 fi
 
+# Make uninstaller script
+cd ${DESTDIR}
+UNIN=${DESTDIR}/usr/local/bin/imp_uninstall
+cp "${MAC_TOOL_DIR}/imp_uninstall.in" ${UNIN}
+
+# Delete package receipt on older Mac OS (uninstall.in already deletes the
+# receipt on newer OS X)
+if [ "${TARGET_OSX_VER}" = "10.4" ]; then
+  echo -e "       \"/Library/Receipts/IMP ${VER} ${TARGET_OS_VER}.pkg\" \\" \
+          >> ${UNIN}
+fi
+
+# Delete only the dylibs and binaries that we installed
+for file in usr/local/bin/* usr/local/lib/*; do
+  echo -e "       \"/${file}\" \\" >> ${UNIN}
+done
+
+# Remove IMP from the Python path; remove the IMP Python packages
+echo -e "       /Library/Python/${PYTHON}/site-packages/IMP.pth \\" >> ${UNIN}
+echo -e "       /usr/local/lib/python${PYTHON}/site-packages/IMP \\" >> ${UNIN}
+echo "       /usr/local/lib/python${PYTHON}/site-packages/RMF" >> ${UNIN}
+
+echo "echo" >> ${UNIN}
+echo "echo \"IMP successfully uninstalled\"" >> ${UNIN}
+chmod a+x ${UNIN}
+
 cd /tmp
 
 # Substitute version number in plist files
