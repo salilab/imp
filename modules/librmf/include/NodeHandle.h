@@ -39,6 +39,7 @@ ReturnValue get_value(UCName##Key k,                                    \
     eg RMF.NullFloat if the attribute is not there.*/                   \
 ReturnValue get_value_always(UCName##Key k,                             \
                              unsigned int frame=0) const {              \
+  if (k== UCName##Key()) return UCName##Traits::get_null_value();       \
   return shared_->get_value_always(node_, k, frame);                    \
 }                                                                       \
 /** \brief  set the value of the attribute k for this node
@@ -53,7 +54,9 @@ void set_value(UCName##Key k, PassValue v,                              \
                          << shared_->get_number_of_frames(k)            \
                          << " " << frame);                              \
 }                                                                       \
+/** If the default key is passed, false is returned.*/                  \
 bool get_has_value(UCName##Key k, unsigned int frame=0) const {         \
+  if (k== UCName##Key()) return false;                                  \
   return shared_->get_has_value<UCName##Traits>(node_, k, frame);       \
 }
 
