@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys,os
-import argparse
+import optparse
 from numpy import *
 import copy
 from scipy.stats import t as student_t
@@ -409,20 +409,25 @@ class SAXSProfile:
         return self.filename
 
 
-class VAction(argparse.Action):
-    def __call__(self, parser, args, values, option_string=None):
-        if values == None:
-            values = '1'
-        try:
-            values = int(values)
-        except ValueError:
-            values = values.count('v')+1
-        setattr(args, self.dest, values)
+class _RawEpilogFormatter(optparse.IndentedHelpFormatter):
+    """Output the epilog help text as-is"""
+    def format_epilog(self, epilog):
+        return epilog
 
-def create_parser():
-    parser = argparse.ArgumentParser(
-            formatter_class=argparse.RawDescriptionHelpFormatter,
-            description="Perform a statistical merge of the given SAXS curves",
+
+def parse_args():
+    parser = optparse.OptionParser(
+            description="Perform a statistical merge of the given SAXS curves"
+                  "\n\nfile is a 3-column file that contains SAXS data. "
+                  "To specify the number of repetitions of this experiment, "
+                  "use the syntax file.txt=20 indicating that data"
+                  "in file.txt is an average of 20 experiments. Default is "
+                  "10. Note that in the case of different number of "
+                  "repetitions, the minimum is taken for the final "
+                  "fitting step (Step 5).",
+            formatter=_RawEpilogFormatter(),
+            usage="%prog [options] file [file ...]",
+            version='%prog 0.2',
             epilog="""Output file legend:\n
 Cleanup
     agood     (bool)   : True if SNR is high enough
@@ -445,98 +450,100 @@ Merging
     eoriname  (string) : associated filename
     eextrapol (bool)   : True if mean function is being extrapolated.
 """)
-    parser.add_argument('--version', action='version', version='%(prog)s 0.2')
-    parser.add_argument('--verbose', '-v', nargs='?', action=VAction,
-            dest='verbose', default=1, help="Verbose level. 0 is quiet, 1-3 is "
-            "more and more verbose. Default is 1.")
+    parser.add_option('--verbose', '-v', action="count",
+            dest='verbose', default=0,
+            help="Increase verbosity. Can be repeated up to 3 times "
+                 "for more output.")
     #general
-    group = parser.add_argument_group(title="general")
-    group.add_argument('files',
-            nargs='+',
-            type=str,
-            help="a 3-column file that contains SAXS data. To specify the "
-                 "number of repetitions of this experiment, use the syntax"
-                 " file.txt=20 indicating that data in file.txt is an average"
-                 " of 20 experiments. Default is 10. Note that in the case of "
-                 "different number of repetitions, the minimum is taken for "
-                 "the final fitting step (Step 5).")
-    group.add_argument('--mergename', help="filename suffix for output "
+    group = optparse.OptionGroup(parser, title="general")
+    parser.add_option_group(group)
+    group.add_option('--mergename', help="filename suffix for output "
             "(default is merged.dat)", default='merged.dat', metavar='SUFFIX')
-    group.add_argument('--sumname', metavar='NAME', default='summary.txt',
+    group.add_option('--sumname', metavar='NAME', default='summary.txt',
             help="File to which the merge summary will be written."
             " Default is summary.txt")
-    group.add_argument('--destdir', default="./", metavar='DIR',
+    group.add_option('--destdir', default="./", metavar='DIR',
             help="Destination folder in which files will be written")
-    group.add_argument('--header', default=False, action='store_true',
+    group.add_option('--header', default=False, action='store_true',
             help="First line of output files is a header (default False)")
-    group.add_argument('--outlevel', default='normal', help="Set the output "
+    group.add_option('--outlevel', default='normal', help="Set the output "
             "level, sparse is for q,I,err columns only, normal adds eorigin, "
             "eoriname and eextrapol (default), and full outputs all flags.",
-            choices=['normal','sparse','full'])
-    group.add_argument('--allfiles', default=False, action='store_true',
+            type="choice", choices=['normal','sparse','full'])
+    group.add_option('--allfiles', default=False, action='store_true',
             help="Output data files for parsed input files as well (default "
             "is only to output merge and summary files).")
     #cleanup
-    group = parser.add_argument_group(title="Cleanup (Step 1)",
+    group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
                               "points based on their SNR. Points with an error"
                               " of zero are discarded as well")
-    group.add_argument('--aalpha', help='type I error (default 0.001)',
-            default=0.001, metavar='ALPHA')
-    group.add_argument('--acutoff', help='when a value after CUT is discarded,'
+    parser.add_option_group(group)
+
+    group.add_option('--aalpha', help='type I error (default 0.001)',
+                     type="float", default=0.001, metavar='ALPHA')
+    group.add_option('--acutoff', help='when a value after CUT is discarded,'
             ' the rest of the curve is discarded as well (default is 0.1)',
-            default=0.1, metavar='CUT')
+            type="float", default=0.1, metavar='CUT')
     #fitting
-    group = parser.add_argument_group(title="Fitting (Step 2)",
+    group = optparse.OptionGroup(parser, title="Fitting (Step 2)",
                 description="Estimate the mean function and the noise level "
                 "of each SAXS curve.")
-    group.add_argument('--ba', help='Initial value for a (default -100)',
-            default=-100, metavar='A')
-    group.add_argument('--bb', help='Initial value for b (default 10)',
-            default=10, metavar='B')
-    group.add_argument('--btau', help='Initial value for tau (default 10)',
-            default=10, metavar='TAU')
-    group.add_argument('--blambda', help='Initial value for lambda '
+    parser.add_option_group(group)
+    group.add_option('--ba', help='Initial value for a (default -100)',
+                     type="int", default=-100, metavar='A')
+    group.add_option('--bb', help='Initial value for b (default 10)',
+                     type="int", default=10, metavar='B')
+    group.add_option('--btau', help='Initial value for tau (default 10)',
+                     type="int", default=10, metavar='TAU')
+    group.add_option('--blambda', help='Initial value for lambda '
                                         '(default 0.05)',
-            default=0.05, metavar='LAMBDA')
-    group.add_argument('--bsigma', help='Initial value for sigma (default 10)',
-            default=10, metavar='SIGMA')
-    group.add_argument('--bschedule', help='Simulation schedule. Default is '
+                     type="float", default=0.05, metavar='LAMBDA')
+    group.add_option('--bsigma', help='Initial value for sigma (default 10)',
+                     type="int", default=10, metavar='SIGMA')
+    group.add_option('--bschedule', help='Simulation schedule. Default is '
             '"10:10000/5:1000/1:100" which means use every 10 data points for '
             'the first 10000 steps, then every 5 data points for 1000 steps, '
             ' and finally all data points for the last 100 steps.',
             default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
     #rescaling
-    group = parser.add_argument_group(title="Rescaling (Step 3)",
+    group = optparse.OptionGroup(parser, title="Rescaling (Step 3)",
                 description="Find the most probable scaling factor of all "
                 "curves wrt the first curve.")
-    group.add_argument('--creference', default='last', help="Define which "
+    parser.add_option_group(group)
+    group.add_option('--creference', default='last', help="Define which "
             "input curve the other curves will be recaled to. Options are "
-            "first or last (default is last)", choices=['first','last'])
-    group.add_argument('--cnormal', action='store_true', default=False,
+            "first or last (default is last)", type="choice",
+            choices=['first','last'])
+    group.add_option('--cnormal', action='store_true', default=False,
             help="Use the normal model instead of the lognormal model "
             "to calculate gamma")
-    group.add_argument('--cnpoints', default=200, metavar="NUM",
+    group.add_option('--cnpoints', type="int", default=200, metavar="NUM",
             help="Number of points to use to compute gamma (default 200)")
     #classification
-    group = parser.add_argument_group(title="Classification (Step 4)",
+    group = optparse.OptionGroup(parser, title="Classification (Step 4)",
                 description="Classify the mean curves by comparing them using "
                 "a two-sided two-sample student t test")
-    group.add_argument('--dalpha', help='type I error (default 0.05)',
-            default=0.05, metavar='ALPHA')
+    parser.add_option_group(group)
+    group.add_option('--dalpha', help='type I error (default 0.05)',
+                     type="float", default=0.05, metavar='ALPHA')
     #merging
-    group = parser.add_argument_group(title="Merging (Step 5)",
+    group = optparse.OptionGroup(parser, title="Merging (Step 5)",
                 description="Collect compatible data and produce best estimate "
                 "of mean function")
-    group.add_argument('--eschedule', help='Simulation schedule, see fitting'
+    parser.add_option_group(group)
+    group.add_option('--eschedule', help='Simulation schedule, see fitting'
             ' step. (default 10:10000/5:1000/1:100)',
             default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
-    group.add_argument('--eextrapolate', metavar="NUM", help='Extrapolate '
+    group.add_option('--eextrapolate', metavar="NUM", help='Extrapolate '
             "NUM percent outside of the curve's bounds. Example: if NUM=50 "
             "and the highest acceptable data point is at q=0.3, the mean will "
             "be estimated up to q=0.45. Default is 0 (just extrapolate at low "
-            "angle).", default=0)
-    return parser
+            "angle).", type="int", default=0)
+    (args, files) = parser.parse_args()
+    if len(files) == 0:
+        parser.error("No files specified")
+    return (args, files)
 
 def parse_filenames(fnames, defaultvalue=10):
     files = []
@@ -709,11 +716,10 @@ def get_gamma_normal(refdata,data):
     return (weights*I0/I1).sum()/weights.sum()
 
 def initialize():
-    parser = create_parser()
-    args = parser.parse_args()
+    args, files = parse_args()
     if args.verbose >= 2 :
         print "Parsing files and creating profile classes"
-    filenames,Nreps = parse_filenames(args.files, defaultvalue=10)
+    filenames,Nreps = parse_filenames(files, defaultvalue=10)
     args.filenames = filenames
     args.Nreps = Nreps
     profiles = map(create_profile, filenames, Nreps)
