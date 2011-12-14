@@ -11,7 +11,7 @@
 
 #include "rmf_config.h"
 #include <RMF/NodeHandle.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/OptimizerState.h>
 
@@ -36,15 +36,15 @@ IMPRMF_BEGIN_NAMESPACE
 /** Write the hierarchies as a file with data store in the frame. The
     hierarchies must have been previously read from the file if you are
     adding a frame.*/
-IMPRMFEXPORT void save_frame(RMF::RootHandle fh,
+IMPRMFEXPORT void save_frame(RMF::FileHandle fh,
                              unsigned int frame, atom::Hierarchy hs);
 
-IMPRMFEXPORT void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs);
+IMPRMFEXPORT void add_hierarchy(RMF::FileHandle fh, atom::Hierarchy hs);
 
 
 /** Create a hierarchy from part of the file.
  */
-IMPRMFEXPORT atom::Hierarchies create_hierarchies(RMF::RootHandle fh,
+IMPRMFEXPORT atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh,
                                                   Model *m);
 
 
@@ -54,7 +54,7 @@ IMPRMFEXPORT atom::Hierarchies create_hierarchies(RMF::RootHandle fh,
     If overwrite is false, then it is an error if the file already is
     associated with something.
 */
-IMPRMFEXPORT void set_hierarchies(RMF::RootHandle rh,
+IMPRMFEXPORT void set_hierarchies(RMF::FileConstHandle rh,
                                   atom::Hierarchies hs,
                                   bool overwrite=false);
 
@@ -63,11 +63,11 @@ IMPRMFEXPORT void set_hierarchies(RMF::RootHandle rh,
     will have its orientation updated based on the loaded coordinates
     of the core::RigidMember particles.
  */
-IMPRMFEXPORT void load_frame(RMF::RootHandle fh,
+IMPRMFEXPORT void load_frame(RMF::FileConstHandle fh,
                              unsigned int frame,
                              atom::Hierarchy hs);
 
-IMPRMFEXPORT unsigned int get_number_of_frames(RMF::RootHandle fh,
+IMPRMFEXPORT unsigned int get_number_of_frames(RMF::FileConstHandle fh,
                                                atom::Hierarchy h);
 /** @} */
 
@@ -78,10 +78,10 @@ IMPRMFEXPORT unsigned int get_number_of_frames(RMF::RootHandle fh,
 class IMPRMFEXPORT SaveHierarchyConfigurationOptimizerState:
   public OptimizerState {
   atom::Hierarchies hs_;
-  RMF::RootHandle fh_;
+  RMF::FileHandle fh_;
  public:
   SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
-                                           RMF::RootHandle fh);
+                                           RMF::FileHandle fh);
   IMP_PERIODIC_OPTIMIZER_STATE(SaveHierarchyConfigurationOptimizerState);
 };
 

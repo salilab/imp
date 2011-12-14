@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <sstream>
 
@@ -20,9 +20,9 @@ void print_help() {
 
 template <int Arity, class Traits>
 struct GetCount {
-  static int get_count(RMF::RootHandle rh,
+  static int get_count(RMF::FileConstHandle rh,
                        RMF::Key<Traits, Arity> k) {
-    RMF::vector<RMF::NodeSetHandle<Arity> > sets
+    RMF::vector<RMF::NodeSetConstHandle<Arity> > sets
         = rh.get_node_sets<Arity>();
     int found=0;
     for (unsigned int i=0; i< sets.size(); ++i) {
@@ -34,11 +34,15 @@ struct GetCount {
 
 template <class Traits>
 struct GetCount<1, Traits> {
-  static int get_count(RMF::NodeHandle rh,
-                RMF::Key<Traits, 1> k) {
+  static int get_count(RMF::FileConstHandle rh,
+                       RMF::Key<Traits, 1> k) {
+    return get_count(rh.get_root_node(), k);
+  }
+  static int get_count(RMF::NodeConstHandle rh,
+                       RMF::Key<Traits, 1> k) {
     int cur=0;
     if (rh.get_has_value(k)) ++cur;
-    RMF::NodeHandles nhs = rh.get_children();
+    RMF::NodeConstHandles nhs = rh.get_children();
     for (unsigned int i=0; i< nhs.size(); ++i) {
       cur+= get_count(nhs[i], k);
     }
@@ -48,7 +52,7 @@ struct GetCount<1, Traits> {
 
 
 template <int Arity, class Traits>
-void show_key_info(RMF::RootHandle rh,
+void show_key_info(RMF::FileConstHandle rh,
                    RMF::CategoryD<Arity> cat,
                    std::string name,
                    std::ostream &out) {
@@ -59,7 +63,8 @@ void show_key_info(RMF::RootHandle rh,
       out << ", " << rh.get_number_of_frames(keys[i]) << " frames";
     }
     out << ", " << name;
-    out << ", " << GetCount<Arity, Traits>::get_count(rh, keys[i]) << " uses"
+    out << ", " << GetCount<Arity, Traits>::get_count(rh,
+                                                      keys[i]) << " uses"
         << std::endl;
   }
 }
@@ -71,7 +76,7 @@ void show_key_info(RMF::RootHandle rh,
   show_key_info<Arity, RMF::UCName##Traits>(rh, categories[i], #lcname, out);
 
 template <int Arity>
-void show_info(RMF::RootHandle rh, std::ostream &out) {
+void show_info(RMF::FileConstHandle rh, std::ostream &out) {
   if (rh.get_number_of_node_sets<Arity>()==0) {
     return;
   }
@@ -111,7 +116,7 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    RMF::RootHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     show_info<1>(rh, std::cout);
     show_info<2>(rh, std::cout);
     show_info<3>(rh, std::cout);

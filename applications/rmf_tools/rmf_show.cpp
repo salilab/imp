@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
 
 #include <boost/program_options.hpp>
@@ -38,12 +38,13 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    RMF::RootHandle rh= RMF::open_rmf_file(input);
+    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::string descr= rh.get_description();
     if (!descr.empty()) {
       std::cout << descr << std::endl;
     }
-    RMF::show_hierarchy(rh, std::cout, vm.count("verbose"), frame);
+    RMF::show_hierarchy(rh.get_root_node(), std::cout,
+                        vm.count("verbose"), frame);
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;

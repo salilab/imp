@@ -23,7 +23,7 @@ namespace internal {
 
 /** Data associated with nodes or sets of nodes is divided into
     categories. Each category is identified by a CategoryD identifier
-    within the scope of a file as returned by RootHandle::get_category().
+    within the scope of a file as returned by FileHandle::get_category().
     It is undefined behavior to pass a category from one file to another
     file. Typedefs (and python types are provided for single nodes, up to
     quads of nodes, named Category, PairCategory, TripletCategory and
@@ -32,7 +32,7 @@ namespace internal {
 template <int Arity>
 class CategoryD {
   int i_;
-  friend class RootHandle;
+  friend class FileHandle;
   int compare(const CategoryD<Arity> &o) const {
     if (i_ < o.i_) return -1;
     else if (i_ > o.i_) return 1;

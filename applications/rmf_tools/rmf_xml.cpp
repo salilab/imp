@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileConstHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <sstream>
 
@@ -39,7 +39,7 @@ template <class TypeT, int Arity, class Handle>
                           RMF::CategoryD<Arity> kc,
                           bool opened, std::ostream &out) {
   using RMF::operator<<;
-    RMF::RootHandle rh= nh.get_root_handle();
+    RMF::FileConstHandle rh= nh.get_file();
     std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       //std::cout << "key " << rh.get_name(keys[i]) << std::endl;
@@ -47,7 +47,7 @@ template <class TypeT, int Arity, class Handle>
         if (frame >=0) {
           if (nh.get_has_value(keys[i], frame)) {
             if (!opened) {
-              out << "<" << nh.get_root_handle().get_category_name(kc) << "\n";
+              out << "<" << nh.get_file().get_category_name(kc) << "\n";
               opened=true;
             }
             out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -70,7 +70,7 @@ template <class TypeT, int Arity, class Handle>
           }
           if (some) {
             if (!opened) {
-              out << "<" << nh.get_root_handle().get_category_name(kc)  << "\n";
+              out << "<" << nh.get_file().get_category_name(kc)  << "\n";
               opened=true;
             }
             out << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -84,7 +84,7 @@ template <class TypeT, int Arity, class Handle>
       } else {
         if (nh.get_has_value(keys[i])) {
           if (!opened) {
-            out << "<" << nh.get_root_handle().get_category_name(kc) << "\n";
+            out << "<" << nh.get_file().get_category_name(kc) << "\n";
             opened=true;
           }
           out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
@@ -109,7 +109,7 @@ template <int Arity, class Handle>
     }
   }
 
-  void show_hierarchy(RMF::NodeHandle nh,
+  void show_hierarchy(RMF::NodeConstHandle nh,
                 const RMF::Categories& cs, std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
         << nh.get_id() << "\" "
@@ -120,7 +120,7 @@ template <int Arity, class Handle>
         show_data_xml<1>(nh, cs[i], out);
       }
     }
-    RMF::NodeHandles children= nh.get_children();
+    RMF::NodeConstHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       out << "<child>\n";
       show_hierarchy(children[i],cs,  out);
@@ -132,10 +132,10 @@ template <int Arity, class Handle>
 
 
 template <int Arity>
-void show_sets(RMF::RootHandle rh,
+void show_sets(RMF::FileConstHandle rh,
                  const RMF::vector<RMF::CategoryD<Arity> >& cs,
                  std::ostream &out) {
-  std::vector<RMF::NodeSetHandle<Arity> > sets= rh.get_node_sets<Arity>();
+  std::vector<RMF::NodeSetConstHandle<Arity> > sets= rh.get_node_sets<Arity>();
   if (!sets.empty()) {
     out << "<sets" << Arity << ">" << std::endl;
     for (unsigned int i=0; i< sets.size(); ++i) {
@@ -189,7 +189,7 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
-    RMF::RootHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::ostream *out;
     std::ofstream fout;
     if (!output.empty()) {
@@ -211,7 +211,7 @@ int main(int argc, char **argv) {
     *out << "<path>\n";
     *out << input <<std::endl;
     *out << "</path>\n";
-    show_hierarchy(rh, cs, *out);
+    show_hierarchy(rh.get_root_node(), cs, *out);
 
     show_sets<2>(rh, rh.get_categories<2>(), *out);
     show_sets<3>(rh, rh.get_categories<3>(), *out);

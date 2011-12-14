@@ -36,5 +36,5 @@ IMP.rmf.save_frame(rh, 1, h)
 my_key= get_key(rh, "my score", True, my_kc)
 
 # make up scores
-rh.set_value(my_key, 3, 0)
-rh.set_value(my_key, 5, 1)
+rh.get_root_node().set_value(my_key, 3, 0)
+rh.get_root_node().set_value(my_key, 5, 1)

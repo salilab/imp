@@ -8,7 +8,7 @@ class GenericTest(RMF.TestCase):
         vo= nh.get_value(k)
         self.assertEqual(vo, v)
     def _do_test_types(self, f, pccc):
-        nh= f.add_child("testn", RMF.REPRESENTATION)
+        nh= f.get_root_node().add_child("testn", RMF.REPRESENTATION)
         cat= f.add_category("mine"+str(pccc))
         g= f.get_hdf5_group()
         ds= g.add_child_float_data_set_2d("ds"+str(pccc))

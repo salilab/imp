@@ -15,20 +15,21 @@ Creators& get_validators() {
   return vs;
 }
 
-Validator::Validator(RootHandle rh, std::string name): name_(name), rh_(rh){}
-NodeValidator::NodeValidator(RootHandle rh, std::string name):
+Validator::Validator(FileConstHandle rh, std::string name): name_(name),
+                                                            rh_(rh){}
+NodeValidator::NodeValidator(FileConstHandle rh, std::string name):
     Validator(rh, name){}
 
 void NodeValidator::write_errors(std::ostream &out) const {
-  typedef std::pair<NodeHandles, NodeHandle> QI;
+  typedef std::pair<NodeConstHandles, NodeConstHandle> QI;
   vector<QI >
-      queue(1, QI(NodeHandles(), get_root_handle()));
+      queue(1, QI(NodeConstHandles(), get_file().get_root_node()));
   do {
     QI c= queue.back();
     queue.pop_back();
     write_errors_node(c.second, c.first, out);
     c.first.push_back(c.second);
-    NodeHandles children= c.second.get_children();
+    NodeConstHandles children= c.second.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       queue.push_back(QI(c.first, children[i]));
     }
@@ -39,13 +40,13 @@ Validator::~Validator() {
 
 namespace {
 struct NodeIDsLess {
-  bool operator()(const NodeHandles &a, const NodeHandles&b) const {
+  bool operator()(const NodeConstHandles &a, const NodeConstHandles&b) const {
     return std::lexicographical_compare(a.begin(), a.end(),
                                         b.begin(), b.end());
   }
 };
 struct NodeIDsEqual {
-  bool operator()(const NodeHandles &a, const NodeHandles&b) const {
+  bool operator()(const NodeConstHandles &a, const NodeConstHandles&b) const {
     // super lazy
     return !std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end())
         && !std::lexicographical_compare(b.begin(), b.end(),
@@ -56,13 +57,13 @@ struct NodeIDsEqual {
 
 class UniquenessValidator: public Validator {
   template <int Arity>
-  void validate_one(RootHandle rh,
+  void validate_one(FileConstHandle rh,
                     std::ostream &out) const {
-    vector<NodeSetHandle<Arity> > all= rh.get_node_sets<Arity>();
+    vector<NodeSetConstHandle<Arity> > all= rh.get_node_sets<Arity>();
     if (all.empty()) return;
-    vector<NodeHandles> seen(all.size());
+    vector<NodeConstHandles> seen(all.size());
     for (unsigned int i=0; i< all.size(); ++i) {
-      NodeHandles cur(Arity);
+      NodeConstHandles cur(Arity);
       for (unsigned int j=0; j< Arity; ++j) {
         cur[j]= all[i].get_node(j);
         if (j >0 && cur[j] <= cur[j-1]) {
@@ -83,12 +84,12 @@ class UniquenessValidator: public Validator {
     }
   }
  public:
-  UniquenessValidator(RootHandle rh, std::string name):
+  UniquenessValidator(FileConstHandle rh, std::string name):
       Validator(rh, name){}
   void write_errors(std::ostream &out) const {
-    validate_one<2>(get_root_handle(), out);
-    validate_one<3>(get_root_handle(), out);
-    validate_one<4>(get_root_handle(), out);
+    validate_one<2>(get_file(), out);
+    validate_one<3>(get_file(), out);
+    validate_one<4>(get_file(), out);
   }
 };
 
@@ -100,7 +101,7 @@ struct NonNegativeChecker {
   std::string catname_;
   std::string keyname_;
   NonNegativeChecker(){}
-  NonNegativeChecker(RootHandle rh, Category c, std::string name) {
+  NonNegativeChecker(FileConstHandle rh, Category c, std::string name) {
     if (c != Category()) {
       if (rh.get_has_key<FloatTraits>(c, name)) {
         k_=rh.get_key<FloatTraits>(c, name);
@@ -109,7 +110,7 @@ struct NonNegativeChecker {
       }
     }
   }
-  void write_errors(NodeHandle node,
+  void write_errors(NodeConstHandle node,
                     std::ostream &out) const {
     if (k_ != FloatKey() && node.get_has_value(k_)) {
       double v= node.get_value(k_);
@@ -128,7 +129,7 @@ struct TieChecker {
   std::string catname_;
   std::string keynames_;
   TieChecker(){}
-  TieChecker(RootHandle rh, Category c, std::string name, Strings names) {
+  TieChecker(FileConstHandle rh, Category c, std::string name, Strings names) {
     if (c != Category()) {
       for (unsigned int i=0; i< names.size(); ++i) {
         if (rh.get_has_key<FloatTraits>(c, names[i])) {
@@ -139,7 +140,7 @@ struct TieChecker {
     }
     keynames_=name;
   }
-  void write_errors(NodeHandle node,
+  void write_errors(NodeConstHandle node,
                     std::ostream &out) const {
     if (ks_.empty()) return;
     if ( ks_[0] != FloatKey() && node.get_has_value(ks_[0])) {
@@ -165,7 +166,7 @@ class PhysicsValidator: public NodeValidator {
   NonNegativeChecker m_, r_, D_;
   TieChecker coords_;
  public:
-  PhysicsValidator(RootHandle rh, std::string name):
+  PhysicsValidator(FileConstHandle rh, std::string name):
       NodeValidator(rh, name){
     if (rh.get_has_category("physics")) {
       Category c= rh.get_category("physics");
@@ -179,8 +180,8 @@ class PhysicsValidator: public NodeValidator {
       coords_=TieChecker(rh, c, "cartesian coordinates", xyz);
     }
   }
-  void write_errors_node(NodeHandle node,
-                         const NodeHandles &,
+  void write_errors_node(NodeConstHandle node,
+                         const NodeConstHandles &,
                          std::ostream &out) const {
     m_.write_errors(node, out);
     r_.write_errors(node, out);

@@ -7,14 +7,14 @@ verbose=True
 
 # show the data with the specified key category
 def show_data_xml(nh, kc, arity=1):
-    rh= nh.get_root_handle()
+    rh= nh.get_file()
     # get all the keys, we could pull this up in the call stack
     keys= rh.get_keys(kc, arity)
     opened=False
     for k in keys:
         if nh.get_has_value(k, frame):
             if not opened:
-                print "<", rh.get_category_name(kc)
+                print "<", rh.get_name(kc)
                 opened=True
             name=rh.get_name(k)
             name.replace(" ", "_")
@@ -47,7 +47,7 @@ print "<path>"
 print input
 print "</path>"
 kcs= rh.get_categories()
-show_xml(rh, kcs)
+show_xml(rh.get_root_node(), kcs)
 for i in range(2,5):
     sets= rh.get_node_sets(i)
     kcs= rh.get_set_categories(i)

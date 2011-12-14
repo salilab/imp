@@ -11,7 +11,7 @@
 
 #include "../rmf_config.h"
 #include <RMF/NodeHandle.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <RMF/hdf5_types.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
@@ -19,7 +19,7 @@ IMPRMF_BEGIN_INTERNAL_NAMESPACE
 /** Get the requested key, adding it to the file if necessary.
  */
 template <class TypeT>
-inline RMF::Key<TypeT, 1> get_or_add_key(RMF::RootHandle f,
+inline RMF::Key<TypeT, 1> get_or_add_key(RMF::FileHandle f,
                                       RMF::Category category_id,
                                       std::string name,
                                       bool per_frame=false) {
@@ -28,6 +28,32 @@ inline RMF::Key<TypeT, 1> get_or_add_key(RMF::RootHandle f,
   } else {
     return f.add_key<TypeT, 1>(category_id, name, per_frame);
   }
+}
+
+template <class TypeT>
+inline RMF::Key<TypeT, 1> get_or_add_key(RMF::FileConstHandle f,
+                                      RMF::Category category_id,
+                                      std::string name,
+                                      bool =false) {
+  return f.get_key<TypeT, 1>(category_id, name);
+}
+
+
+template <int Arity>
+inline RMF::CategoryD<Arity> get_or_add_category(RMF::FileHandle f,
+                                                std::string name) {
+  if (f.get_has_category<Arity>(name)) {
+    return f.get_category<Arity>(name);
+  } else {
+    return f.add_category<Arity>(name);
+  }
+}
+
+
+template <int Arity>
+inline RMF::CategoryD<Arity> get_or_add_category(RMF::FileConstHandle f,
+                                                 std::string name) {
+  return f.get_category<Arity>(name);
 }
 
 

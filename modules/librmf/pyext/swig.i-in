@@ -76,8 +76,10 @@ IMP_RMF_SWIG_NATIVE_VALUE(std::string);
 
 
 IMP_RMF_SWIG_GRAPH(RMF, NodeTree, NodeTree, RMF::NodeHandle);
+IMP_RMF_SWIG_VALUE(RMF, NodeConstHandle, NodeConstHandles);
+IMP_RMF_SWIG_VALUE(RMF, FileConstHandle, FileConstHandles);
 IMP_RMF_SWIG_VALUE(RMF, NodeHandle, NodeHandles);
-IMP_RMF_SWIG_VALUE(RMF, RootHandle, RootHandles);
+IMP_RMF_SWIG_VALUE(RMF, FileHandle, FileHandles);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, CategoryD);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, Category, Category, Categories);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, PairCategory, PairCategory, PairCategories);
@@ -90,11 +92,12 @@ IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex3D, HDF5DataSetIndex3D, HDF5DataSetIndex3Ds);
+IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, NodeSetConstHandle);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, NodeSetHandle);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodePairHandle, NodePairHandle, NodePairHandles);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeTripletHandle, NodeTripletHandle, NodeTripletHandles);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeQuadHandle, NodeQuadHandle, NodeQuadHandles);
-IMP_RMF_SWIG_PAIR(RMF, NodeHandle, BondPair, BondPairs)
+IMP_RMF_SWIG_PAIR(RMF, NodeConstHandle, BondPair, BondPairs)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
@@ -103,7 +106,7 @@ namespace RMF {
 %rename(_CharTraits) CharTraits;
 }
 
-%extend RMF::RootHandle {
+%extend RMF::FileConstHandle {
    %pythoncode %{
     def get_keys(self, kc, arity=1):
         ret=[]
@@ -180,9 +183,12 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %template(TripletCategory) RMF::CategoryD<3>;
 %template(QuadCategory) RMF::CategoryD<4>;
 
+%include "RMF/NodeSetConstHandle.h"
 %include "RMF/NodeSetHandle.h"
+%include "RMF/NodeConstHandle.h"
 %include "RMF/NodeHandle.h"
-%include "RMF/RootHandle.h"
+%include "RMF/FileConstHandle.h"
+%include "RMF/FileHandle.h"
 %include "RMF/names.h"
 %include "RMF/Validator.h"
 
