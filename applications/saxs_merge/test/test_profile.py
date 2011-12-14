@@ -6,7 +6,6 @@ import tempfile
 import IMP.test
 import IMP.isd
 
-from imp import load_source #to load a module by file
 from numpy import *
 
 class MockGP:
@@ -24,8 +23,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
 
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
-        foo=load_source('saxs_merging', '../profile.py')
-        self.SAXSProfile = foo.SAXSProfile
+        merge = self.import_python_application('saxs_merge.py')
+        self.SAXSProfile = merge.SAXSProfile
         self.datafile = None
 
     def tearDown(self):
