@@ -11,12 +11,13 @@
 #include "compatibility_config.h"
 #include "checked_vector.h"
 #include <boost/version.hpp>
-#include <boost/random/uniform_01.hpp>
+#include <boost/random/uniform_real.hpp>
 #include <numeric>
 #include <algorithm>
 #include <cmath>
 #include <iostream>
 #include <iterator>
+#include <stdexcept>
 
 IMPCOMPATIBILITY_BEGIN_NAMESPACE
 
@@ -31,7 +32,7 @@ class piecewise_linear_distribution {
   checked_vector<T> dividers_;
   checked_vector<T> accum_;
   checked_vector<T> weights_;
-  mutable boost::uniform_01<> un_;
+  mutable boost::uniform_real<> un_;
   double get_divider(int divider) const {
     return dividers_[divider];
   }
@@ -46,7 +47,7 @@ class piecewise_linear_distribution {
     return weights_[divider];  }
  public:
   //! construct a uniform 01
-  piecewise_linear_distribution() {
+  piecewise_linear_distribution(): un_(0,1) {
     dividers_.push_back(0);
     dividers_.push_back(1);
     accum_.push_back(0);
@@ -65,7 +66,8 @@ class piecewise_linear_distribution {
       dividers_(locations_begin,
                 locations_end),
       accum_(std::distance(locations_begin, locations_end)),
-      weights_(std::distance(locations_begin, locations_end)){
+      weights_(std::distance(locations_begin, locations_end)),
+      un_(0,1) {
     for (unsigned int i=0; i< weights_.size(); ++i) {
       weights_[i]=*weights_begin;
       ++weights_begin;
