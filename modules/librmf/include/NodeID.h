@@ -26,7 +26,7 @@ class NodeIDD {
   int i_;
   friend class NodeHandle;
   friend struct NodeIDTraits;
-  friend class RootHandle;
+  friend class FileHandle;
   int compare(const NodeIDD<Arity>&o) const {
     if (i_ < o.i_) return -1;
     else if (i_ > o.i_) return 1;

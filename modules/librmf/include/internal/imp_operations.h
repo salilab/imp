@@ -11,7 +11,7 @@
 
 #include "../RMF_config.h"
 #include "../NodeHandle.h"
-#include "../RootHandle.h"
+#include "../FileHandle.h"
 #include "../hdf5_types.h"
 
 IMPLIBRMF_BEGIN_INTERNAL_NAMESPACE
@@ -19,7 +19,7 @@ IMPLIBRMF_BEGIN_INTERNAL_NAMESPACE
 /** Get the requested key, adding it to the file if necessary.
  */
 template <class TypeT>
-inline RMF::Key<TypeT> get_or_add_key(RMF::RootHandle f,
+inline RMF::Key<TypeT> get_or_add_key(RMF::FileHandle f,
                                         RMF::Category category_id,
                                         std::string name,
                                         bool per_frame=false) {

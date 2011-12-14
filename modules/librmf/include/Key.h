@@ -28,8 +28,8 @@ namespace RMF {
  comparable, hashable and printable, but otherwise opaque.*/
   template <class TypeTraitsT, int Arity>
 class Key {
-  friend class RootHandle;
-  friend class NodeHandle;
+  friend class FileConstHandle;
+  friend class NodeConstHandle;
   friend class internal::SharedData;
   int i_;
   CategoryD<Arity> ci_;

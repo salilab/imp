@@ -9,7 +9,7 @@
 #include <RMF/NodeSetHandle.h>
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 
 namespace RMF {
 

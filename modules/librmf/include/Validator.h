@@ -10,7 +10,7 @@
 #define IMPLIBRMF_VALIDATOR_H
 
 #include "RMF_config.h"
-#include "RootHandle.h"
+#include "FileHandle.h"
 
 namespace RMF {
 /** Validators check invariants of the RMF hierarchy. Use the
@@ -20,7 +20,7 @@ namespace RMF {
 */
 class RMFEXPORT Validator {
   std::string name_;
-  RootHandle rh_;
+  FileConstHandle rh_;
 public:
   /** This method is called with the root handle when
       validation is required.
@@ -28,10 +28,10 @@ public:
   virtual void write_errors(std::ostream &out) const=0;
   virtual ~Validator();
 protected:
-  RootHandle get_root_handle() const {
+  FileConstHandle get_file() const {
     return rh_;
   }
-  Validator(RootHandle rh, std::string name);
+  Validator(FileConstHandle rh, std::string name);
 };
 
 class RMFEXPORT NodeValidator: public Validator {
@@ -41,9 +41,9 @@ public:
   */
   void write_errors(std::ostream &out) const;
 protected:
-  NodeValidator(RootHandle rh, std::string name);
-  virtual void write_errors_node(NodeHandle node,
-                             const NodeHandles &path,
+  NodeValidator(FileConstHandle rh, std::string name);
+  virtual void write_errors_node(NodeConstHandle node,
+                             const NodeConstHandles &path,
                              std::ostream &out) const=0;
 };
 
@@ -52,12 +52,12 @@ protected:
 struct Creator: public boost::intrusive_ptr_object {
   std::string name_;
   Creator(std::string name): name_(name){}
-  virtual Validator *create(RootHandle rh)=0;
+  virtual Validator *create(FileConstHandle rh)=0;
 };
 template <class V>
 struct CreatorImpl: public Creator {
   CreatorImpl(std::string name): Creator(name){}
-  Validator *create(RootHandle rh) {
+  Validator *create(FileConstHandle rh) {
     return new V(rh, name_);
   }
 };

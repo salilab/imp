@@ -25,9 +25,8 @@ IMPRMF_BEGIN_NAMESPACE
 
 using namespace RMF;
 
-#define  IMP_HDF5_CREATE_MOLECULE_KEYS(node)                            \
-  RMF::RootHandle f=node;                                               \
-  CategoryD<1> Physics=f.get_or_add_category<1>("physics");             \
+#define  IMP_HDF5_CREATE_MOLECULE_KEYS(f)                               \
+  CategoryD<1> Physics=internal::get_or_add_category<1>(f, "physics");  \
   RMF::FloatKey x                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "cartesian x",    \
                                           true);                        \
@@ -41,7 +40,7 @@ using namespace RMF;
   = internal::get_or_add_key<FloatTraits>(f, Physics, "radius");        \
   RMF::FloatKey m                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Physics, "mass");          \
-  CategoryD<1> Sequence=f.get_or_add_category<1>("sequence");           \
+  CategoryD<1> Sequence=internal::get_or_add_category<1>(f, "sequence"); \
   RMF::IndexKey ib                                                      \
   = internal::get_or_add_key<IndexTraits>(f, Sequence,                  \
                                           "residue index begin");       \
@@ -54,7 +53,7 @@ using namespace RMF;
   = internal::get_or_add_key<IndexTraits>(f, Sequence, "chain id");     \
   RMF::StringKey tk                                                     \
   = internal::get_or_add_key<StringTraits>(f, Sequence, "type");        \
-  CategoryD<1> Shape=f.get_or_add_category<1>("shape");                 \
+  CategoryD<1> Shape=internal::get_or_add_category<1>(f, "shape");       \
   RMF::FloatKey cr                                                      \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "rgb color red",    \
                                           false);                       \
@@ -109,7 +108,7 @@ namespace {
                  IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     if (core::XYZ::particle_is_instance(h)) {
       core::XYZ d(h);
-      IMP_INTERNAL_CHECK(n.get_root_handle().get_is_per_frame(x),
+      IMP_INTERNAL_CHECK(n.get_file().get_is_per_frame(x),
                          "Coordinates are not per frame!!!!!");
       set_one(n, x, d.get_x(), frame);
       set_one(n, y, d.get_y(), frame);
@@ -172,7 +171,7 @@ namespace {
   } else {                                      \
     d= type::setup_particle(cur);               \
   }
-  void copy_data(RMF::NodeHandle ncur, atom::Hierarchy cur, int frame,
+  void copy_data(RMF::NodeConstHandle ncur, atom::Hierarchy cur, int frame,
                  IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     int real_frame=std::max(frame, 0);
     if (ncur.get_has_value(x, real_frame)) {
@@ -246,14 +245,14 @@ namespace {
 
 
 namespace {
-  void save_conformation_internal(RMF::RootHandle parent,
+  void save_conformation_internal(RMF::FileHandle parent,
                                   atom::Hierarchy hierarchy,
                                   unsigned int frame,
                                   boost::progress_display* pd,
                                   IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     RMF::NodeHandle cur;
     try {
-      cur= parent.get_node_handle_from_association(hierarchy.get_particle());
+      cur= parent.get_node_from_association(hierarchy.get_particle());
     } catch (ValueException) {
       IMP_THROW("Unable to find association for " << hierarchy
                 << " which is " << static_cast<void*>(hierarchy),
@@ -272,7 +271,7 @@ namespace {
   }
 }
 
-void save_frame(RMF::RootHandle fh,
+void save_frame(RMF::FileHandle fh,
                 unsigned int frame, atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
@@ -306,18 +305,18 @@ namespace {
   }
 
 
-void create_bond(atom::Bond bd, RMF::RootHandle fh, RMF::PairIndexKey bt) {
+void create_bond(atom::Bond bd, RMF::FileHandle fh, RMF::PairIndexKey bt) {
     RMF::NodeHandle na
-      = fh.get_node_handle_from_association(bd.get_bonded(0).get_particle());
+      = fh.get_node_from_association(bd.get_bonded(0).get_particle());
     RMF::NodeHandle nb
-      = fh.get_node_handle_from_association(bd.get_bonded(1).get_particle());
+      = fh.get_node_from_association(bd.get_bonded(1).get_particle());
     RMF::NodeHandles nhs(2); nhs[0]=na; nhs[1]=nb;
     RMF::NodePairHandle obd= fh.add_node_set<2>(nhs, RMF::BOND);
     obd.set_value(bt, 0);
   }
 
 }
-void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
+void add_hierarchy(RMF::FileHandle fh, atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
@@ -325,7 +324,7 @@ void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
     pd.reset(new boost::progress_display(atom::get_leaves(hs).size(),
                                          std::cout));
   }
-  add_hierarchy_internal(fh, hs, pd.get(),
+  add_hierarchy_internal(fh.get_root_node(), hs, pd.get(),
                          IMP_HDF5_PASS_MOLECULE_KEYS);
   atom::Bonds bds= atom::get_internal_bonds(hs);
   if (get_log_level()==PROGRESS) {
@@ -333,7 +332,7 @@ void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
                                          std::cout));
   }
   RMF::PairIndexKey bk;
-  RMF::CategoryD<2> bond= fh.get_or_add_category<2>("bond");
+  RMF::CategoryD<2> bond= internal::get_or_add_category<2>(fh,"bond");
   if (fh.get_has_key<RMF::IndexTraits, 2>(bond, "type")) {
     bk= fh.get_key<RMF::IndexTraits, 2>(bond, "type");
   } else {
@@ -349,14 +348,14 @@ void add_hierarchy(RMF::RootHandle fh, atom::Hierarchy hs) {
 
 
 namespace {
-  atom::Hierarchy read_internal(RMF::NodeHandle ncur, Model *model,
+  atom::Hierarchy read_internal(RMF::NodeConstHandle ncur, Model *model,
                                 IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     if (ncur.get_type() != REPRESENTATION) return atom::Hierarchy();
     atom::Hierarchy cur= atom::Hierarchy::setup_particle(new Particle(model));
     cur->set_name(ncur.get_name());
     ncur.set_association(cur);
     copy_data(ncur, cur, -1, IMP_HDF5_PASS_MOLECULE_KEYS);
-    NodeHandles children= ncur.get_children();
+    NodeConstHandles children= ncur.get_children();
     for (unsigned int i=0; i < children.size(); ++i) {
       atom::Hierarchy h= read_internal(children[i], model,
                                        IMP_HDF5_PASS_MOLECULE_KEYS);
@@ -366,12 +365,12 @@ namespace {
   }
 }
 
-atom::Hierarchies create_hierarchies(RMF::RootHandle fh, Model *model) {
+atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh, Model *model) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
-  RMF::NodeHandle root= fh;
+  RMF::NodeConstHandle root= fh.get_root_node();
   atom::Hierarchies ret;
-  NodeHandles children= root.get_children();
+  NodeConstHandles children= root.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     if (children[i].get_type()== REPRESENTATION) {
       atom::Hierarchy c=read_internal(children[i], model,
@@ -381,7 +380,7 @@ atom::Hierarchies create_hierarchies(RMF::RootHandle fh, Model *model) {
   }
 
   for (unsigned int i=0; i< fh.get_number_of_bonds(); ++i) {
-    std::pair<RMF::NodeHandle, RMF::NodeHandle> p= fh.get_bond(i);
+    std::pair<RMF::NodeConstHandle, RMF::NodeConstHandle> p= fh.get_bond(i);
     void *aa= p.first.get_association();
     void *ab= p.second.get_association();
     if (aa && ab) {
@@ -403,12 +402,12 @@ atom::Hierarchies create_hierarchies(RMF::RootHandle fh, Model *model) {
 
 namespace {
   typedef IMP::compatibility::map<Particle*, ParticlesTemp> RBM;
-  void load_internal(RMF::RootHandle file, atom::Hierarchy h,
+  void load_internal(RMF::FileConstHandle file, atom::Hierarchy h,
                      unsigned int frame, RBM &rigid_bodies,
                      IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
-    RMF::NodeHandle ncur
-                  = file.get_node_handle_from_association(h.get_particle());
-    if (ncur != RMF::NodeHandle()) {
+    RMF::NodeConstHandle ncur
+                  = file.get_node_from_association(h.get_particle());
+    if (ncur != RMF::NodeConstHandle()) {
       copy_data(ncur, h, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
     }
     if (core::RigidMember::particle_is_instance(h)) {
@@ -444,13 +443,14 @@ namespace {
   }
 }
 
-void load_frame(RMF::RootHandle fh,
+void load_frame(RMF::FileConstHandle fh,
                 unsigned int frame,
                 atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   RBM rigid_bodies;
-  load_internal(fh, hs, frame, rigid_bodies, IMP_HDF5_PASS_MOLECULE_KEYS);
+  load_internal(fh, hs, frame, rigid_bodies,
+                IMP_HDF5_PASS_MOLECULE_KEYS);
   for (RBM::const_iterator it= rigid_bodies.begin();
        it != rigid_bodies.end(); ++it) {
     if (it->second.size()<3) {
@@ -464,7 +464,7 @@ void load_frame(RMF::RootHandle fh,
 }
 
 
-unsigned int get_number_of_frames(RMF::RootHandle fh,
+unsigned int get_number_of_frames(RMF::FileConstHandle fh,
                                   atom::Hierarchy) {
   RMF::Category physics= fh.get_category<1>("physics");
   RMF::FloatKey x
@@ -476,7 +476,7 @@ unsigned int get_number_of_frames(RMF::RootHandle fh,
 
 SaveHierarchyConfigurationOptimizerState::
 SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
-                                         RMF::RootHandle fh):
+                                         RMF::FileHandle fh):
   OptimizerState("SaveHierarchyConfigurationOptimizerState %1%"),
   hs_(hs),
   fh_(fh){}
@@ -497,10 +497,10 @@ void SaveHierarchyConfigurationOptimizerState
 }
 
 namespace {
-  void associate_internal(RMF::NodeHandle nh, atom::Hierarchy h,
+  void associate_internal(RMF::NodeConstHandle nh, atom::Hierarchy h,
                           bool overwrite) {
     nh.set_association(h, overwrite);
-    NodeHandles children= nh.get_children();
+    NodeConstHandles children= nh.get_children();
     if (h.get_number_of_children() != children.size()) {
       IMP_THROW("Mismatched sizes at " << h, ValueException);
     }
@@ -510,11 +510,11 @@ namespace {
   }
 }
 
-void set_hierarchies(RMF::RootHandle rh, atom::Hierarchies hs,
+void set_hierarchies(RMF::FileConstHandle rh, atom::Hierarchies hs,
                      bool overwrite) {
   IMP_FUNCTION_LOG;
-  RMF::NodeHandle root= rh;
-  NodeHandles children= root.get_children();
+  RMF::NodeConstHandle root= rh.get_root_node();
+  NodeConstHandles children= root.get_children();
   unsigned int hsi=0;
   for (unsigned int i=0; i< children.size(); ++i) {
     if (children[i].get_type()== REPRESENTATION) {

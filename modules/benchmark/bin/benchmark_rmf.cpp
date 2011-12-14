@@ -3,7 +3,7 @@
  */
 #include <IMP/benchmark/benchmark_config.h>
 #ifdef IMP_BENCHMARK_USE_IMP_RMF
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
@@ -23,10 +23,10 @@ namespace {
   }
 
 template <class TypeT, int Arity>
-  double show_type_data_xml(RMF::NodeHandle nh,
+  double show_type_data_xml(RMF::NodeConstHandle nh,
                             RMF::Category kc) {
     double ret=0;
-    RMF::RootHandle rh= nh.get_root_handle();
+    RMF::FileConstHandle rh= nh.get_file();
     std::vector< RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT, Arity>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
       if (nh.get_has_value(keys[i])) {
@@ -36,7 +36,7 @@ template <class TypeT, int Arity>
     }
     return ret;
   }
-  double show_data_xml(RMF::NodeHandle nh,
+  double show_data_xml(RMF::NodeConstHandle nh,
                      RMF::Category kc) {
     double ret=0;
     ret+=show_type_data_xml< RMF::IntTraits, 1>(nh, kc);
@@ -47,7 +47,7 @@ template <class TypeT, int Arity>
     return ret;
   }
 
-double show_xml(RMF::NodeHandle nh,
+double show_xml(RMF::NodeConstHandle nh,
                 const RMF::Categories &kcs) {
     double ret=0;
     ret+=nh.get_name().size();
@@ -55,7 +55,7 @@ double show_xml(RMF::NodeHandle nh,
     for (unsigned int i=0; i< kcs.size(); ++i) {
       ret+=show_data_xml(nh, kcs[i]);
     }
-    RMF::NodeHandles children= nh.get_children();
+    RMF::NodeConstHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       ret+=show_xml(children[i], kcs);
     }
@@ -66,10 +66,10 @@ double show_xml(RMF::NodeHandle nh,
 
 double traverse(std::string name) {
   double ret=0;
-  RMF::RootHandle rh= RMF::open_rmf_file(name);
+  RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(name);
   RMF::Categories kcs= rh.get_categories<1>();
-  ret+=show_xml(rh, kcs);
-  RMF::NodePairHandles ps= rh.get_node_sets<2>();
+  ret+=show_xml(rh.get_root_node(), kcs);
+  RMF::NodePairConstHandles ps= rh.get_node_sets<2>();
   for (unsigned int i=0; i< ps.size(); ++i) {
     std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
         (ps[i].get_node(0),ps[i].get_node(1));

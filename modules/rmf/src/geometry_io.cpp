@@ -11,7 +11,7 @@
 #include <IMP/display/geometry.h>
 #include <RMF/Key.h>
 #include <RMF/NodeHandle.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/rmf/internal/imp_operations.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -19,9 +19,8 @@ IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
 namespace {
-#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(node)                            \
-  RMF::RootHandle f= node;                                              \
-  CategoryD<1> Shape=f.get_or_add_category<1>("shape");                 \
+#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(f)                               \
+  CategoryD<1> Shape=internal::get_or_add_category<1>(f, "shape");      \
   RMF::FloatKey x                                                       \
   = internal::get_or_add_key<FloatTraits>(f, Shape, "cartesian x",      \
                                           true);                        \
@@ -266,21 +265,21 @@ namespace {
 //IMP_REGISTER_WRITER(HDF5Writer, ".pym")
 
 
-void add_geometry(RMF::RootHandle parent, display::Geometry *g) {
+void add_geometry(RMF::FileHandle parent, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
-  add_internal(parent, g, g,
+  add_internal(parent.get_root_node(), g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
   parent.flush();
 }
 
 namespace {
-  void save_internal(RMF::RootHandle parent,int frame, display::Geometry *tag,
+  void save_internal(RMF::FileHandle parent,int frame, display::Geometry *tag,
                      display::Geometry *g,
                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP::Pointer<display::Geometry> gp(g);
     gp->set_was_used(true);
     // get_has_color, get_color, get_name, get_components
-    RMF::NodeHandle cur= parent.get_node_handle_from_association(tag);
+    RMF::NodeHandle cur= parent.get_node_from_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry);
     display::Geometries gt= g->get_components();
@@ -295,7 +294,7 @@ namespace {
   }
 }
 
-void save_frame(RMF::RootHandle parent, int frame, display::Geometry *g) {
+void save_frame(RMF::FileHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   save_internal(parent, frame, g, g,
                 IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -305,7 +304,7 @@ void save_frame(RMF::RootHandle parent, int frame, display::Geometry *g) {
 
 
 namespace {
-  void read_basic(RMF::NodeHandle cur, display::Geometry *g,
+  void read_basic(RMF::NodeConstHandle cur, display::Geometry *g,
                   IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -327,7 +326,7 @@ namespace {
     }
   }
 
-  display::Geometry *try_read_sphere(RMF::NodeHandle cur, int frame,
+  display::Geometry *try_read_sphere(RMF::NodeConstHandle cur, int frame,
                                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(xs);
     IMP_UNUSED(ys);
@@ -349,7 +348,7 @@ namespace {
     } else return NULL;
   }
 
-  display::Geometry *try_read_cylinder(RMF::NodeHandle cur, int frame,
+  display::Geometry *try_read_cylinder(RMF::NodeConstHandle cur, int frame,
                                        IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -377,7 +376,7 @@ namespace {
     else return NULL;
   }
 
-  display::Geometry *try_read_segment(RMF::NodeHandle cur, int frame,
+  display::Geometry *try_read_segment(RMF::NodeConstHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
 
     IMP_UNUSED(x);
@@ -406,7 +405,7 @@ namespace {
   }
 
 
-  display::Geometry *try_read_surface(RMF::NodeHandle cur, int frame,
+  display::Geometry *try_read_surface(RMF::NodeConstHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_UNUSED(x);
     IMP_UNUSED(y);
@@ -438,9 +437,9 @@ namespace {
     else return NULL;
   }
 
-  display::Geometries read_internal(RMF::NodeHandle parent,int frame,
+  display::Geometries read_internal(RMF::NodeConstHandle parent,int frame,
                                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    NodeHandles ch= parent.get_children();
+    NodeConstHandles ch= parent.get_children();
     display::Geometries ret;
     for (unsigned int i=0; i< ch.size(); ++i) {
       Pointer<display::Geometry> curg;
@@ -470,17 +469,17 @@ namespace {
   }
 }
 
-display::Geometries create_geometries(RMF::RootHandle parent,
+display::Geometries create_geometries(RMF::FileConstHandle parent,
                                       int frame) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   display::Geometries ret=
-    read_internal(parent, frame,
+      read_internal(parent.get_root_node(), frame,
                   IMP_HDF5_PASS_GEOMETRY_KEYS);
   return ret;
 }
 
 
-RMFWriter::RMFWriter(RMF::RootHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
+RMFWriter::RMFWriter(RMF::FileHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
 
 void RMFWriter::on_set_frame() {
 }

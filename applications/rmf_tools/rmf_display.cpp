@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/rmf/particle_io.h>
 #include <IMP/display/geometry.h>
 #include <IMP/display/particle_geometry.h>
@@ -24,7 +24,7 @@ void print_help() {
   std::cerr << desc << std::endl;
 }
 
-IMP::core::XYZRs get_xyzr_particles(RMF::NodeHandle nh,
+IMP::core::XYZRs get_xyzr_particles(RMF::NodeConstHandle nh,
                                     int frame) {
   IMP::ParticlesTemp ps= IMP::rmf::get_restraint_particles(nh, frame);
   IMP::core::XYZRs ret;
@@ -36,7 +36,7 @@ IMP::core::XYZRs get_xyzr_particles(RMF::NodeHandle nh,
   return ret;
 }
 
-void set_color(RMF::NodeHandle nh,
+void set_color(RMF::NodeConstHandle nh,
                int frame, IMP::display::Geometry *g) {
   if (restraint_max==-1) {
     return;
@@ -50,11 +50,11 @@ void set_color(RMF::NodeHandle nh,
   }
 }
 
-IMP::display::Geometry *create_restraint_geometry(RMF::NodeHandle nh,
+IMP::display::Geometry *create_restraint_geometry(RMF::NodeConstHandle nh,
                                                   int frame) {
   double score=IMP::rmf::get_restraint_score(nh, frame);
   if (score < -std::numeric_limits<double>::max()) return NULL;
-  RMF::NodeHandles children=nh.get_children();
+  RMF::NodeConstHandles children=nh.get_children();
   IMP::display::Geometries gs;
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g
@@ -90,10 +90,10 @@ IMP::display::Geometry *create_restraint_geometry(RMF::NodeHandle nh,
   }
 }
 
-void add_restraints(RMF::RootHandle rh,
+void add_restraints(RMF::FileConstHandle rh,
                     int frame,
                     IMP::display::Writer *w) {
-  RMF::NodeHandles children = rh.get_children();
+  RMF::NodeConstHandles children = rh.get_root_node().get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g= create_restraint_geometry(children[i],
                                                          frame);
@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
       }
     }
     std::cout<< "writing to file " << output << std::endl;
-    RMF::RootHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);

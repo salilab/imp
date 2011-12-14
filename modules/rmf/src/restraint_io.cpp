@@ -13,13 +13,12 @@
 IMPRMF_BEGIN_NAMESPACE
 using namespace RMF;
 
-#define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
-  RMF::RootHandle imp_f=node.get_root_handle();                         \
-  RMF::Category Feature= imp_f.get_or_add_category<1>("feature");       \
-  RMF::FloatKey sk                                                    \
+#define  IMP_HDF5_CREATE_RESTRAINT_KEYS(imp_f)                          \
+  RMF::Category Feature= internal::get_or_add_category<1>(imp_f, "feature"); \
+  RMF::FloatKey sk                                                      \
   = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
-                                           true);                       \
-  RMF::NodeIDsKey nk                                                  \
+                                          true);                        \
+  RMF::NodeIDsKey nk                                                    \
   = internal::get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
 
 #define IMP_HDF5_ACCEPT_RESTRAINT_KEYS\
@@ -109,7 +108,7 @@ namespace {
         NodeIDs ids= children[i].get_value(nk);
         for (unsigned int j=0; j< ids.size(); ++j) {
           RMF::NodeHandle nh
-            = parent.get_root_handle().get_node_handle_from_id(ids[j]);
+            = parent.get_file().get_node_from_id(ids[j]);
           Particle *p= reinterpret_cast<Particle*>(nh.get_association());
           pt.push_back(p);
         }
@@ -131,7 +130,7 @@ namespace {
     NodeIDs ids(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       NodeID id
-        =nh.get_root_handle().get_node_handle_from_association(ps[i]).get_id();
+        =nh.get_file().get_node_from_association(ps[i]).get_id();
       ids[i]=id;
     }
     if (!ids.empty()) {
@@ -189,20 +188,21 @@ namespace {
   }
 }
 
-void add_restraint(RMF::RootHandle parent, Restraint *r) {
+void add_restraint(RMF::FileHandle parent, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(parent);
-  add_restraint_internal(r, parent, IMP_HDF5_PASS_RESTRAINT_KEYS);
+  add_restraint_internal(r, parent.get_root_node(),
+                         IMP_HDF5_PASS_RESTRAINT_KEYS);
   parent.flush();
 }
 
 namespace {
 
   void save_restraint_internal(Restraint *r,
-                               RMF::RootHandle f,
+                               RMF::FileHandle f,
                                int frame,
                                IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    RMF::NodeHandle rn= f.get_node_handle_from_association(r);
+    RMF::NodeHandle rn= f.get_node_from_association(r);
     Index index;
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
@@ -222,27 +222,27 @@ namespace {
   }
 }
 
-void save_frame(RMF::RootHandle f, int frame, Restraint *r) {
+void save_frame(RMF::FileHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
   f.flush();
 }
 
-ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
+ParticlesTemp get_restraint_particles(RMF::NodeConstHandle f,
                                       int frame) {
   IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(f.get_file());
   IMP_UNUSED(sk);
   IMP_USAGE_CHECK(f.get_type()== FEATURE,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
-  RMF::RootHandle rh=f.get_root_handle();
+  RMF::FileConstHandle rh=f.get_file();
   if (f.get_has_value(nk, frame)) {
     NodeIDs ids= f.get_value(nk, frame);
     ParticlesTemp ret(ids.size());
     for (unsigned int i=0; i< ids.size(); ++i) {
-      RMF::NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
+      RMF::NodeConstHandle nh= rh.get_node_from_id(ids[i]);
       Particle *p= reinterpret_cast<Particle*>(nh.get_association());
       ret[i]=p;
     }
@@ -254,10 +254,10 @@ ParticlesTemp get_restraint_particles(RMF::NodeHandle f,
 
 
 
-double get_restraint_score(RMF::NodeHandle f,
+double get_restraint_score(RMF::NodeConstHandle f,
                            int frame) {
   IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(f.get_file());
   IMP_UNUSED(nk);
   if (f.get_has_value(sk, frame)) {
     return f.get_value(sk, frame);

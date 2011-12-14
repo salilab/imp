@@ -2,7 +2,7 @@
  * Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/rmf/atom_io.h>
-#include <RMF/RootHandle.h>
+#include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
     }
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies inhs;
-    RMF::RootHandle rh;
+    RMF::FileHandle rh;
     int nframes=-1;
     if (get_suffix(input) == ".pdb") {
       IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
@@ -89,7 +89,7 @@ int main(int argc, char **argv) {
       maxframe=nframes;
       step=-frame;
     }
-    RMF::RootHandle rho;
+    RMF::FileHandle rho;
     int outframe=0;
     for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
       if (outframe%10==0) {

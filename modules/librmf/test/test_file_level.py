@@ -10,7 +10,7 @@ class GenericTest(RMF.TestCase):
     def test_perturbed(self):
         """Test creating a simple hierarchy file"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
-        r= f
+        r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")
         ik= f.add_int_key(sc, "ik0", True)
@@ -20,7 +20,7 @@ class GenericTest(RMF.TestCase):
     def test_frames(self):
         """Test creating a simple hierarchy file with frames"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
-        r= f
+        r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")
         ik= f.add_int_key(sc, "ik0", True)
@@ -33,7 +33,7 @@ class GenericTest(RMF.TestCase):
     def test_perturbed_values(self):
         """Test null values"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
-        r= f
+        r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")
         ik= f.add_int_key(sc, "ik0", True)
