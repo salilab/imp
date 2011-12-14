@@ -609,6 +609,14 @@ class ApplicationTestCase(TestCase):
         else:
             return _SubprocessWrapper(app, args)
 
+    def import_python_application(self, app):
+        """Import an installed Python application, rather than running it.
+           This is useful to directly test components of the application.
+           @return the Python module object."""
+        import imp
+        return imp.load_source(os.path.splitext(app)[0],
+                               os.path.join(os.environ['IMP_BIN_DIR'], app))
+
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
            @return a subprocess.Popen-like object containing the child stdin,
