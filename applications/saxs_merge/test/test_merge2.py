@@ -7,7 +7,6 @@ import copy
 import IMP.test
 import IMP.isd
 
-from imp import load_source #to load a module by file
 from numpy import *
 
 class MockArgs:
