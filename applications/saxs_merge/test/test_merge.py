@@ -7,7 +7,6 @@ import copy
 import IMP.test
 import IMP.isd
 
-from imp import load_source #to load a module by file
 from numpy import *
 
 class MockArgs:
@@ -44,10 +43,9 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
 
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
-        foo=load_source('profile', '../profile.py')
-        bar=load_source('merge', '../merge.py')
-        self.SAXSProfile = foo.SAXSProfile
-        self.merge = bar
+        merge = self.import_python_application('saxs_merge.py')
+        self.SAXSProfile = merge.SAXSProfile
+        self.merge = merge
 
     def set_interpolant(self, profile, a, b, interpolant=MockGP):
         m=IMP.Model()

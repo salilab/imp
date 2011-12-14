@@ -44,10 +44,9 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
 
     def setUp(self):
         IMP.test.ApplicationTestCase.setUp(self)
-        foo=load_source('profile', '../profile.py')
-        bar=load_source('merge', '../merge.py')
-        self.SAXSProfile = foo.SAXSProfile
-        self.merge = bar
+        merge = self.import_python_application('saxs_merge.py')
+        self.SAXSProfile = merge.SAXSProfile
+        self.merge = merge
 
     def set_interpolant(self, profile, a, b, interpolant=MockGP):
         m=IMP.Model()
