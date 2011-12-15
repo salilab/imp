@@ -591,7 +591,7 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
           a user-passed set of Particles or Restraints instead.
  */
 class IMPEXPORT Model:
-  public IMP::base::Object
+  public RestraintSet
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   , public Masks,
   public FloatAttributeTable,
@@ -645,7 +645,6 @@ private:
   std::map<FloatKey, FloatRange> ranges_;
   mutable internal::Stage cur_stage_;
   unsigned int eval_count_;
-  OwnerPointer<RestraintSet> rs_;
   compatibility::set<Restraint*> tracked_restraints_;
   bool first_call_;
   double max_score_;
@@ -775,25 +774,9 @@ public:
       The value type for the iterators is a Restraint*.
    */
   /**@{*/
-  void add_restraint(Restraint *r);
-  void remove_restraint(Restraint *r);
-  unsigned int get_number_of_restraints() const {
-    return rs_->get_number_of_restraints();
-  }
-  Restraint *get_restraint(unsigned int i) const {
-    return rs_->get_restraint(i);
-  }
-#ifndef SWIG
-  typedef RestraintSet::RestraintIterator RestraintIterator;
-  RestraintIterator restraints_begin();
-  RestraintIterator restraints_end();
-  typedef RestraintSet::RestraintConstIterator RestraintConstIterator;
-  RestraintConstIterator restraints_begin() const;
-  RestraintConstIterator restraints_end() const;
-#endif
   double get_weight(Restraint *r) const;
   RestraintSet *get_root_restraint_set() const {
-    return rs_;
+    return const_cast<Model*>(this);
   }
   /**@}*/
 #ifndef IMP_DOXYGEN

@@ -9,11 +9,11 @@ class RefCountTests(IMP.test.TestCase):
         """Check that ref counting of particles works within python"""
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
-        refcnt.assert_number(2)
+        refcnt.assert_number(1)
         p= IMP.Particle(m)
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         del p
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         del m
         # Deleting Model should delete all Particles too
         refcnt.assert_number(0)
@@ -136,13 +136,13 @@ class RefCountTests(IMP.test.TestCase):
         m.add_restraint(r)
         s.add_restraint(r)
         m.evaluate(False)
-        refcnt.assert_number(4)
+        refcnt.assert_number(3)
         # Model should hold a ref to restraints, so nothing should be freed
         # until it is
         del r
-        refcnt.assert_number(4)
+        refcnt.assert_number(3)
         del s
-        refcnt.assert_number(4)
+        refcnt.assert_number(3)
         del m
         refcnt.assert_number(0)
 
@@ -171,13 +171,13 @@ class RefCountTests(IMP.test.TestCase):
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
         p= IMP.Particle(m)
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         m.remove_particle(p)
         # Particle should not disappear yet since Python still has a reference
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         self.assertFalse(p.get_is_active(), "Removed particle is still active")
         del p
-        refcnt.assert_number(2)
+        refcnt.assert_number(1)
         del m
         refcnt.assert_number(0)
 
@@ -187,7 +187,7 @@ class RefCountTests(IMP.test.TestCase):
         m= IMP.Model()
         p= IMP.Particle(m)
         self.assertEqual(p.get_ref_count(), 2)
-        refcnt.assert_number(3)
+        refcnt.assert_number(2)
         # New particle p should not go away until we free the Python reference
         del m
         refcnt.assert_number(1)
