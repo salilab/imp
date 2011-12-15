@@ -300,9 +300,9 @@ namespace RMF {
     template <int Arity>
       CategoryD<Arity> get_category(std::string name) const {
       int v=(shared_->get_category(Arity, name));
-      IMP_RMF_USAGE_CHECK(v>=0, "Could not find category " << name
-                          //<< " in list " << shared_->get_category_names(Arity)
-                          << " with arity " << Arity);
+      if (v<0) {
+        return CategoryD<Arity>();
+      }
       return CategoryD<Arity>(v);
     }
     template <int Arity>
