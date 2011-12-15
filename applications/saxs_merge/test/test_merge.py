@@ -7,8 +7,6 @@ import copy
 import IMP.test
 import IMP.isd
 
-from numpy import *
-
 class MockArgs:
     def __init__(self,**kwargs):
         for k,v in kwargs.iteritems():
@@ -45,8 +43,9 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         IMP.test.ApplicationTestCase.setUp(self)
         try:
             import scipy
+            import numpy
         except ImportError:
-            self.skipTest("could not import scipy")
+            self.skipTest("could not import scipy and numpy")
         merge = self.import_python_application('saxs_merge.py')
         self.SAXSProfile = merge.SAXSProfile
         self.merge = merge
