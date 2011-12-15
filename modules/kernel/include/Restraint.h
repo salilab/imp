@@ -196,6 +196,7 @@ public:
   }
 
 private:
+  friend class Model;
   /* This pointer should never be ref counted as Model has a
      pointer to this object.
    */

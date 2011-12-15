@@ -22,16 +22,12 @@ IMP_BEGIN_NAMESPACE
 
 //! Constructor
 Model::Model(std::string name):
-  Object(name),
-  //#if IMP_BUILD < IMP_FAST
-  rs_(new RestraintSet())
+  RestraintSet(name)
 {
   cur_stage_=internal::NOT_EVALUATING;
   gather_statistics_=false;
   eval_count_=0;
   set_was_used(true);
-  rs_->set_model(this);
-  rs_->set_name("root restraint set");
   first_call_=true;
   max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
@@ -64,6 +60,8 @@ Model::Model(std::string name):
                                      &this->Masks::write_mask_,
                                      &this->Masks::add_remove_mask_);
 #endif
+  // be careful as this calls back to model
+  model_=this;
 }
 
 
@@ -71,7 +69,6 @@ Model::Model(std::string name):
 Model::~Model()
 {
   IMP_CHECK_OBJECT(this);
-  rs_->set_model(nullptr);
   for (unsigned int i=0; i< particle_index_.size(); ++i) {
     if (particle_index_[i]) {
       IMP_CHECK_OBJECT(particle_index_[i]);
@@ -90,26 +87,6 @@ void Model::set_maximum_score(double d) {
   reset_dependencies();
 }
 
-void Model::add_restraint(Restraint *r) {
-  IMP_USAGE_CHECK(r, "Cannot add null restraint.");
-  rs_->add_restraint(r);
-}
-void Model::remove_restraint(Restraint *r) {
-  IMP_USAGE_CHECK(r, "Cannot remove null restraint.");
-  rs_->remove_restraint(r);
-}
-Model::RestraintIterator Model::restraints_begin() {
-  return rs_->restraints_begin();
-}
-Model::RestraintIterator Model::restraints_end() {
-  return rs_->restraints_end();
-}
-Model::RestraintConstIterator Model::restraints_begin() const {
-  return rs_->restraints_begin();
-}
-Model::RestraintConstIterator Model::restraints_end() const {
-  return rs_->restraints_end();
-}
 
 void Model::add_tracked_restraint(Restraint *r) {
   IMP_OBJECT_LOG;
