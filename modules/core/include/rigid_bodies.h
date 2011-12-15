@@ -380,7 +380,7 @@ IMP_OUTPUT_OPERATOR(RigidMember);
 
 class IMPCOREEXPORT RigidMembersRefiner: public Refiner {
  public:
-  RigidMembersRefiner():Refiner("RigidMembersRefiner%d"){}
+  RigidMembersRefiner(std::string name="RigidMembersRefiner%d"):Refiner(name){}
   IMP_SIMPLE_REFINER(RigidMembersRefiner);
 };
 

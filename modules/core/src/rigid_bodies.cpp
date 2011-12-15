@@ -64,7 +64,9 @@ namespace {
   class AccumulateRigidBodyDerivatives:
     public SingletonDerivativeModifier {
   public:
-    AccumulateRigidBodyDerivatives(){}
+    AccumulateRigidBodyDerivatives(std::string name
+                                   ="AccumulateRigidBodyDerivatives%1%"):
+        SingletonDerivativeModifier(name){}
     IMP_SINGLETON_DERIVATIVE_MODIFIER(AccumulateRigidBodyDerivatives);
   };
 
@@ -82,7 +84,9 @@ namespace {
       \see AccumulateRigidBodyDerivatives */
   class UpdateRigidBodyMembers: public SingletonModifier {
   public:
-    UpdateRigidBodyMembers(){}
+    UpdateRigidBodyMembers(std::string name
+                           = "UpdateRigidBodyMembers%1%"):
+        SingletonModifier(name) {}
     IMP_SINGLETON_MODIFIER(UpdateRigidBodyMembers);
   };
 
@@ -90,7 +94,9 @@ namespace {
  /** \brief Fix the normalization of the rotation term. */
   class NormalizeRotation: public SingletonModifier {
   public:
-    NormalizeRotation(){}
+    NormalizeRotation(std::string name
+                      = "NormalizeRotation%1%"):
+        SingletonModifier(name){}
     IMP_SINGLETON_MODIFIER(NormalizeRotation);
   };
 
@@ -98,7 +104,8 @@ namespace {
  /** \brief Fix the normalization of the rotation term. */
   class NullSDM: public SingletonDerivativeModifier {
   public:
-    NullSDM(){}
+    NullSDM(std::string name="NullModifier%1%"):
+        SingletonDerivativeModifier(name){}
     IMP_SINGLETON_DERIVATIVE_MODIFIER(NullSDM);
   };
 
@@ -426,15 +433,19 @@ ObjectKey RigidBody::get_constraint_key_1() {
 
 void RigidBody::setup_constraints(Particle *p) {
   Pointer<Constraint> c0
-    = create_constraint(new UpdateRigidBodyMembers(),
-                        new AccumulateRigidBodyDerivatives(), p,
+    = create_constraint(new UpdateRigidBodyMembers(p->get_name()
+                                    +" UpdateMembers%1%"),
+                        new AccumulateRigidBodyDerivatives(p->get_name()
+                                    +" AccumulateDerivatives%1%"), p,
                          p->get_name()+" positions");
   p->get_model()->add_score_state(c0);
   p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
                              c0);
   Pointer<Constraint> c1
-    = create_constraint(new NormalizeRotation(),
-                        new NullSDM(),
+      = create_constraint(new NormalizeRotation(p->get_name()
+                                                +" NormalizeRotation%1%"),
+                        new NullSDM(p->get_name()
+                                    +" Null%1%"),
                         p, p->get_name()+" normalize");
   p->get_model()->add_score_state(c1);
   p->get_model()->add_attribute(get_constraint_key_1(), p->get_index(),
@@ -909,7 +920,7 @@ void RigidMembersRefiner::do_show(std::ostream &) const {
 namespace internal {
   IMPCOREEXPORT RigidMembersRefiner* get_rigid_members_refiner() {
     static IMP::OwnerPointer<RigidMembersRefiner> pt
-      = new RigidMembersRefiner();
+      = new RigidMembersRefiner("The rigid members refiner");
     return pt;
   }
 }
