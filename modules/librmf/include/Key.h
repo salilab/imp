@@ -59,7 +59,9 @@ class Key {
 public:
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
-  IMP_RMF_SHOWABLE(Key, ci_ << (pf_?'E':'I') << i_);
+    IMP_RMF_SHOWABLE(Key, "(Category index: " << ci_
+                     << " per frame: " << (pf_?'T':'F')
+                     << " index: " << i_ << ")");
   IMP_RMF_COMPARISONS(Key);
   IMP_RMF_HASHABLE(Key, return i_*ci_.get_index());
 };
