@@ -161,10 +161,6 @@ public:
   }
 #endif
 
-#if IMP_BUILD < IMP_FAST
-  static Strings get_live_object_names();
-#endif
-
  private:
   Object(const Object &): RefCounted() {}
   const Object& operator=(const Object &) {return *this;}
@@ -222,6 +218,7 @@ inline void show_objects(const OS &os, std::ostream &out) {
   out << "]";
 }
 #endif
+
 
 
 IMPBASE_END_NAMESPACE
@@ -283,6 +280,5 @@ IMPBASE_END_NAMESPACE
 #define IMP_FUNCTION_LOG
 #endif // fast
 
-#include "Pointer.h"
 
 #endif  /* IMPBASE_OBJECT_H */

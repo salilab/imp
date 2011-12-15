@@ -65,8 +65,8 @@ IMPBASE_BEGIN_NAMESPACE
 unsigned int RefCounted::live_objects_=0;
 compatibility::set<Object*> live_;
 
-IMP::compatibility::checked_vector<std::string>
-Object::get_live_object_names() {
+Strings
+get_live_object_names() {
   IMP::compatibility::checked_vector<std::string> ret;
   for (compatibility::set<Object*>::const_iterator it = live_.begin();
        it != live_.end(); ++it) {
@@ -74,10 +74,17 @@ Object::get_live_object_names() {
   }
   return ret;
 }
+Objects get_live_objects() {
+  Objects ret(live_.begin(), live_.end());
+  return ret;
+}
 void Object::add_live_object(Object*o) {
   live_.insert(o);
 }
 void Object::remove_live_object(Object*o) {
+  IMP_INTERNAL_CHECK(live_.find(o) != live_.end(),
+                     "Object " << o->get_name()
+                     << " not found in live list.");
   live_.erase(o);
 }
 #endif
