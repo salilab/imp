@@ -199,6 +199,11 @@ void BrownianDynamics
   if (!srk_) {
     check_delta(delta, max_step_);
   }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    core::XYZR xrd(get_model(), pi);
+    IMP_INTERNAL_CHECK(delta.get_magnitude() < xrd.get_radius(),
+                       "Step is too big");
+  }
   xd.set_coordinates(xd.get_coordinates()+delta);
 }
 
