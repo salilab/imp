@@ -25,7 +25,7 @@ void SetLogState::do_reset() {
   if (level_ != DEFAULT) {
     if (obj_) {
       obj_->set_log_level(level_);
-               } else {
+    } else {
       set_log_level(level_);
     }
     obj_=nullptr;
