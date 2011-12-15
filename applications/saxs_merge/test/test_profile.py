@@ -2,6 +2,7 @@
 
 import sys,os
 import tempfile
+import shutil
 
 import IMP.test
 import IMP.isd
@@ -29,20 +30,21 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
             self.skipTest("could not import scipy")
         merge = self.import_python_application('saxs_merge.py')
         self.SAXSProfile = merge.SAXSProfile
-        self.datafile = None
+        self.tempdir = None
 
     def tearDown(self):
-        if self.datafile:
-            os.unlink(self.datafile)
+        if self.tempdir:
+            shutil.rmtree(self.tempdir, ignore_errors=True)
         IMP.test.ApplicationTestCase.tearDown(self)
 
     def write_data(self, data):
-        fl = tempfile.NamedTemporaryFile(delete=False)
-        self.datafile = fl.name
+        self.tempdir = tempfile.mkdtemp()
+        self.datafile = os.path.join(self.tempdir, 'data')
         datalines = []
         for i in data:
             datalines.append(' '.join(['%f' % k for k in i]))
         datastr='\n'.join(datalines) + '\n'
+        fl = open(self.datafile, 'w')
         fl.write(datastr)
         fl.close()
 
