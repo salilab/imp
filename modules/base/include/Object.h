@@ -15,7 +15,7 @@
 #include "VersionInfo.h"
 #include "base_macros.h"
 #include "log.h"
-#include "SetLogState.h"
+#include "types.h"
 #include <IMP/compatibility/hash.h>
 #include <boost/functional/hash.hpp>
 
@@ -152,14 +152,17 @@ public:
 
   void _on_destruction() {
 #if IMP_BUILD < IMP_FAST
-    for_destruction_.set(log_level_);
+    LogLevel old=IMP::base::get_log_level();
+    if (log_level_!= DEFAULT) {
+      IMP::base::set_log_level(log_level_);
+    }
+    log_level_=old;
 #endif
   }
 #endif
 
 #if IMP_BUILD < IMP_FAST
-  static IMP::compatibility::checked_vector<std::string>
-      get_live_object_names();
+  static Strings get_live_object_names();
 #endif
 
  private:
@@ -173,8 +176,6 @@ public:
   LogLevel log_level_;
   mutable bool was_owned_;
   double check_value_;
-  // keep this last
-  SetLogState for_destruction_;
 #endif
 };
 
@@ -268,6 +269,7 @@ IMPBASE_END_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 #define IMP_OBJECT_LOG IMP::base::SetLogState                           \
   log_state_guard__(this->get_log_level());                             \
+  IMP_CHECK_OBJECT(this);                                               \
   IMP::base::CreateLogContext log_context__(Object::get_name()          \
                                  + "::" + __func__)
 
@@ -281,5 +283,6 @@ IMPBASE_END_NAMESPACE
 #define IMP_FUNCTION_LOG
 #endif // fast
 
+#include "Pointer.h"
 
 #endif  /* IMPBASE_OBJECT_H */

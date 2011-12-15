@@ -43,6 +43,9 @@ struct RefStuff<T,typename boost::enable_if<boost::mpl::not_<
             <<" to " << rc->count_ << std::endl);
     if (rc->count_==0) {
       IMP_LOG(MEMORY, "Deleting ref counted object " << rc << std::endl);
+#if IMP_BUILD < IMP_FAST
+      rc->destructing_=true;
+#endif
       delete o;
     }
   }
@@ -74,6 +77,9 @@ struct RefStuff<T, typename boost::enable_if<
     --o->count_;
     IMP_LOG(MEMORY, "Unrefing object " << o->get_name() << std::endl);
     if (o->count_==0) {
+#if IMP_BUILD < IMP_FAST
+      o->destructing_=true;
+#endif
       delete o;
     }
   }
