@@ -27,9 +27,6 @@
                                              Arity)                     \
     ArityName##UCName##Key get_##lcname##_key(ArityName##Category category_id, \
                                               std::string nm) const {   \
-      if (!get_has_##lcname##_key(category_id, nm)) {                    \
-        return ArityName##UCName##Key();                                \
-      }                                                                 \
       return get_key<UCName##Traits, Arity>(category_id, nm);           \
     }                                                                   \
     bool get_has_##lcname##_key(ArityName##Category category_id,        \
@@ -176,7 +173,8 @@ namespace RMF {
     template <class TypeT, int Arity>
       Key<TypeT, Arity> get_key(CategoryD<Arity> category_id,
                                 std::string name) const {
-      if (!get_has_key<TypeT>(category_id, name)) {
+      if (category_id == CategoryD<Arity>()
+          || !get_has_key<TypeT>(category_id, name)) {
         return Key<TypeT, Arity>();
       } else {
         return shared_->get_key<TypeT, Arity>(category_id.get_index(), name);
@@ -185,6 +183,7 @@ namespace RMF {
     template <class TypeT, int Arity>
       bool get_has_key(CategoryD<Arity> category_id,
                        std::string name) const {
+      if (category_id == CategoryD<Arity>()) return false;
       return shared_->get_key<TypeT, Arity>(category_id.get_index(), name)
         != Key<TypeT, Arity>();
     }
@@ -192,6 +191,7 @@ namespace RMF {
      */
     template <class TypeT, int Arity>
       vector<Key<TypeT, Arity> > get_keys(CategoryD<Arity> category_id) const {
+      if (category_id==CategoryD<Arity>()) return vector<Key<TypeT, Arity> >();
       return shared_->get_keys<TypeT, Arity>(category_id.get_index());
     }
     /** @} */
