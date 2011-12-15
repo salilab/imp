@@ -95,13 +95,15 @@ inline std::ostream &operator<<(std::ostream &out,
 
 class RootConstHandle;
 
-//! A handle for a particular node in the hierarchy.
-/** Use these handles to access and modify parts of the
+//! A handle for a particular node in a read-only hierarchy.
+/** Use these handles to access parts of the
     hierarchy.
 
     The get_value_always() methods return the appropriate
     value or TypeTraits::get_null_value() if the node does
     not have that attribute.
+
+    See the NodeHandle for modifying the contents.
 */
 class RMFEXPORT NodeConstHandle {
   int node_;
