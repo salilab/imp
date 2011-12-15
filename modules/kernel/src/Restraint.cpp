@@ -25,7 +25,6 @@ Restraint::Restraint(std::string name):
 
 Restraint::~Restraint()
 {
-  IMP_OBJECT_LOG;
   if (model_) {
     IMP_LOG(VERBOSE, "Removing tracked restraint " << get_name()
             << " from model." << std::endl);
