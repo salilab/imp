@@ -70,6 +70,12 @@ Object::~Object()
 #endif
   IMP_LOG(MEMORY, "Destroying object \"" << get_name() << "\" ("
           << this << ")" << std::endl);
+  // cleanup
+#if IMP_BUILD < IMP_FAST
+  if (log_level_ != DEFAULT) {
+    IMP::base::set_log_level(log_level_);
+  }
+#endif
 }
 
 
