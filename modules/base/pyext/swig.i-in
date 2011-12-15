@@ -91,7 +91,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/utility.h"
 %include "IMP/base/internal/swig.h"
 
-%{
+%inline %{
 namespace IMP {
 namespace base {
 #ifdef SWIG
