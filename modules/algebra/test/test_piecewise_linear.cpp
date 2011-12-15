@@ -38,7 +38,7 @@ void check_gaussian() {
   double m=4.0;
   IMP::Floats steps;
   for (unsigned int i=0; i< 15; ++i) {
-    steps.push_back(.1*std::pow(1.2, i));
+    steps.push_back(.1*std::pow(1.2, static_cast<double>(i)));
   }
   IMP::Floats locs0(1, 0);
   for (unsigned int i=0; i< steps.size(); ++i) {
