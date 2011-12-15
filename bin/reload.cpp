@@ -33,7 +33,8 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
 // trajectory file
-RMF::RootHandle rh = RMF::open_rmf_file(mydata.traj_file);
+RMF::FileHandle rh = RMF::open_rmf_file(mydata.traj_file);
+
 atom::Hierarchies hs=all.get_children();
 rmf::set_hierarchies(rh, hs);
 

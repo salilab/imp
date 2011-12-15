@@ -14,7 +14,6 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
-#include <RMF/RootHandle.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -66,7 +65,7 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 if(mydata.reload.length()>0){
  if(myrank==0){std::cout << "Restart from file" << std::endl;}
  std::string trajname=mydata.reload+out.str()+".rmf";
- RMF::RootHandle rh = RMF::open_rmf_file(trajname);
+ RMF::FileHandle rh = RMF::open_rmf_file(trajname);
  atom::Hierarchies hs=all.get_children();
  rmf::set_hierarchies(rh, hs);
  // reload last frame
@@ -78,7 +77,7 @@ if(mydata.reload.length()>0){
 //
 // Prepare output file
 std::string trajname="traj"+out.str()+".rmf";
-RMF::RootHandle rh = RMF::create_rmf_file(trajname);
+RMF::FileHandle rh = RMF::create_rmf_file(trajname);
 atom::Hierarchies hs=all.get_children();
 for(unsigned int i=0;i<hs.size();++i) {rmf::add_hierarchy(rh, hs[i]);}
 // adding key for score
@@ -136,7 +135,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){
-  rh.set_value(my_key,myscore,imc/mydata.MC.nwrite);
+  (rh.get_root_node()).set_value(my_key,myscore,imc/mydata.MC.nwrite);
   for(unsigned int i=0;i<hs.size();++i){
    rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[i]);
   }
@@ -219,7 +218,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 MPI_Barrier(MPI_COMM_WORLD);
 // close rmf
 rh.flush();
-rh=RMF::RootHandle();
+rh=RMF::FileHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();

@@ -6,6 +6,8 @@ files = [
          'reload.cpp',
          'spb_reload_minimize.cpp',
          'spb_to_cluster.cpp',
+         'spb.cpp',
+         'membrane.cpp',
         ]
 
 # Not all .cpp files are built into an application

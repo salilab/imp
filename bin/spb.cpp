@@ -14,7 +14,7 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
-#include <RMF/RootHandle.h>
+
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -76,7 +76,8 @@ if(mydata.file_list.size()>0){
 //
 // Prepare output file
 std::string trajname="traj"+out.str()+".rmf";
-RMF::RootHandle rh = RMF::create_rmf_file(trajname);
+RMF::FileHandle rh = RMF::create_rmf_file(trajname);
+
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
@@ -137,7 +138,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // save configuration and score to file
  if(imc%mydata.MC.nwrite==0){
-  rh.set_value(my_key,myscore,imc/mydata.MC.nwrite);
+  (rh.get_root_node()).set_value(my_key,myscore,imc/mydata.MC.nwrite);
   for(unsigned int i=0;i<all_mol.size();++i){
    atom::Hierarchies hs=all_mol[i].get_children();
    for(unsigned int j=0;j<hs.size();++j){
@@ -223,7 +224,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 MPI::COMM_WORLD.Barrier();
 // close rmf
 rh.flush();
-rh=RMF::RootHandle();
+rh=RMF::FileHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();
