@@ -20,8 +20,9 @@ IMP_BEGIN_NAMESPACE
 using IMP::base::Object;
 //using IMP::base::Objects;
 using IMP::base::object_cast;
+using IMP::base::Objects;
+using IMP::base::ObjectsTemp;
 #endif
-IMP_OBJECTS(Object, Objects);
 
 IMP_END_NAMESPACE
 

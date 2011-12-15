@@ -124,6 +124,16 @@ struct OwnerPointer: internal::PointerBase<internal::OwnerPointerTraits<O> > {
   }
 };
 
+IMP_OBJECTS(Object, Objects);
+
+#ifndef IMP_DOXYGEN
+#if IMP_BUILD < IMP_FAST
+
+IMPBASEEXPORT Strings get_live_object_names();
+IMPBASEEXPORT Objects get_live_objects();
+#endif
+#endif
+
 IMPBASE_END_NAMESPACE
 
 #endif  /* IMPBASE_POINTER_H */

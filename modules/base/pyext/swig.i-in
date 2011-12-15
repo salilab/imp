@@ -9,6 +9,7 @@ namespace base {
 }
 
 
+
 %extend IMP::base::Object {
   bool __eq__(const Object *o) const {
      return self ==o;
@@ -90,6 +91,18 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/utility.h"
 %include "IMP/base/internal/swig.h"
 
+%{
+namespace IMP {
+namespace base {
+#ifdef SWIG
+class Objects;
+#endif
+Strings get_live_object_names();
+Objects get_live_objects();
+}
+}
+%}
+
 %pythoncode %{
 #used_modules=[]
 #def show_used_modules():
@@ -109,7 +122,7 @@ def get_networkx_graph(ig):
         return self.p.get_name()
      def __call__(self, name):
         return self.p.__call__(name)
-     
+
    for vi in ig.get_vertices():
       n= ig.get_vertex_name(vi)
       g.add_node(NodeWrapper(n))
