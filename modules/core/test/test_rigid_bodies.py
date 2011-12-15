@@ -95,15 +95,35 @@ class RBDTests(IMP.test.TestCase):
         ps=[IMP.core.XYZ.setup_particle(IMP.Particle(m)) for i in range(3)]
         rbp0= IMP.Particle(m)
         rbp0.set_name("rb0")
-        rb0=IMP.core.RigidBody.setup_particle(rbp0, ps)
         rbp1= IMP.Particle(m)
         rbp1.set_name("rb1")
+        try:
+            before= IMP.base.RefCounted.get_number_of_live_objects()
+            names_before= IMP.base.Object.get_live_object_names()
+        except:
+            pass
+        rb0=IMP.core.RigidBody.setup_particle(rbp0, ps)
         rb1= IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         IMP.core.RigidBody.teardown_particle(rb1)
         print "setting up again"
         rb1= IMP.core.RigidBody.setup_particle(rbp1, [rb0])
         print "tearing down"
         IMP.core.RigidBody.teardown_particle(rb0)
-
+        print "again"
+        IMP.core.RigidBody.teardown_particle(rb1)
+        failure=False
+        # check cleanup
+        try:
+            after= IMP.base.RefCounted.get_number_of_live_objects()
+            names_after= IMP.base.Object.get_live_object_names()
+            for n in names_after:
+                if n not in names_before:
+                    print "found new object", n
+            print before, after, names_before, names_after
+            if before != after or len(names_before) != len(names_after):
+                failure=True
+        except:
+            pass
+        self.assertTrue(not failure)
 if __name__ == '__main__':
     IMP.test.main()
