@@ -3,9 +3,6 @@ import scons_tools.dependency.gcc
 import scons_tools.dependency.cgal
 import scons_tools.dependency.boost
 
-# the CGAL lib requires too much memory when built together
-opercppcompilation=env['percppcompilation']
-env['percppcompilation']="cgal"
 
 
 cgal_libs=scons_tools.dependency.cgal.get_libs(env,
@@ -16,6 +13,11 @@ scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
                                             body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
                                             versioncpp=["CGAL_VERSION_NR"],
                                             versionheader="CGAL/version.h")
+
+
+# the CGAL lib requires too much memory when built together
+opercppcompilation=env['percppcompilation']
+env['percppcompilation']="cgal"
 
 if scons_tools.dependency.gcc.get_is_gcc_like(env):
     cxxflags=[]
