@@ -136,13 +136,17 @@
   /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d) {                                        \
     IMP_OBJECT_LOG;                                                     \
+    bool found=false;                                                   \
     for (Ucname##Iterator it= lcnames##_begin();                        \
          it != lcnames##_end(); ++it) {                                 \
       if (*it == d) {                                                   \
         lcname##_handle_remove(*it);                                    \
+        found=true;                                                     \
         lcname##_vector_.erase(it); break;                              \
       }                                                                 \
     }                                                                   \
+    IMP_USAGE_CHECK(found, d << " not found in container: "             \
+                    << lcname##_vector_);                               \
     lcname##_handle_change();                                           \
   }                                                                     \
   /** \brief Remove any occurrences for which f is true */              \
