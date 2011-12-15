@@ -82,6 +82,9 @@ namespace RMF {
   /** Use this handle to perform operations relevant to the
       whole RMF hierarchy as well as to start traversal of the
       hierarchy.
+
+      Make sure to check out the base class for the non-modifying
+      methods.
   */
   class RMFEXPORT FileHandle: public FileConstHandle {
     friend class NodeHandle;

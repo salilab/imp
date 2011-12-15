@@ -123,7 +123,7 @@ namespace RMF {
   typedef vector<BondPair> BondPairs;
 #endif
 
-  //! A handle for an RMF root
+  //! A handle for a read-only RMF file
   /** Use this handle to perform operations relevant to the
       whole RMF hierarchy as well as to start traversal of the
       hierarchy.
