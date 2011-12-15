@@ -10,6 +10,7 @@
 
 #include "base_config.h"
 #include "log.h"
+#include "Pointer.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -24,7 +25,7 @@ class Object;
 class IMPBASEEXPORT SetLogState
 {
   LogLevel level_;
-  Object* obj_;
+  Pointer<Object> obj_;
   void do_set(Object *o, LogLevel l);
   void do_reset();
   void do_show(std::ostream &out) const;
