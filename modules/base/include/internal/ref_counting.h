@@ -29,7 +29,8 @@ struct RefStuff<T,typename boost::enable_if<boost::mpl::not_<
   static void ref(T* o) {
     if (!o) return;
     const RefCounted *r= o;
-    IMP_LOG(MEMORY, "Refing object " << r << std::endl);
+    IMP_LOG(MEMORY, "Refing object \"" << r
+            << "\" (" << r->count_ << ")" << std::endl);
     ++r->count_;
   }
   static void unref(T *o) {
@@ -38,9 +39,9 @@ struct RefStuff<T,typename boost::enable_if<boost::mpl::not_<
     // or the correct non-virtual one
     const RefCounted *rc= o;
     IMP_INTERNAL_CHECK(rc->count_ !=0, "Too many unrefs on object");
+    IMP_LOG(MEMORY, "Unrefing object \"" << rc
+            << "\" (" << rc->count_ << ")" << std::endl);
     --rc->count_;
-    IMP_LOG(MEMORY, "Unrefing object " << rc
-            <<" to " << rc->count_ << std::endl);
     if (rc->count_==0) {
       IMP_LOG(MEMORY, "Deleting ref counted object " << rc << std::endl);
 #if IMP_BUILD < IMP_FAST
@@ -66,7 +67,8 @@ struct RefStuff<T, typename boost::enable_if<
                      typename boost::is_base_of<Object, T> >::type > {
   static void ref(T* o) {
     if (!o) return;
-    IMP_LOG(MEMORY, "Refing object " << o->get_name() << std::endl);
+    IMP_LOG(MEMORY, "Refing object \"" << o->get_name()
+            << "\" (" << o->count_ << ") {" << o << "} " << std::endl);
     ++o->count_;
   }
   static void unref(T *o) {
@@ -74,8 +76,9 @@ struct RefStuff<T, typename boost::enable_if<
     // need to know about possible virtual destructors
     // or the correct non-virtual one
     IMP_INTERNAL_CHECK(o->count_ !=0, "Too many unrefs on object");
+    IMP_LOG(MEMORY, "Unrefing object \"" << o->get_name()
+            << "\" (" << o->count_ << ") {" << o << "}" << std::endl);
     --o->count_;
-    IMP_LOG(MEMORY, "Unrefing object " << o->get_name() << std::endl);
     if (o->count_==0) {
 #if IMP_BUILD < IMP_FAST
       o->destructing_=true;
@@ -87,7 +90,8 @@ struct RefStuff<T, typename boost::enable_if<
     if (!o) return;
     IMP_INTERNAL_CHECK(o->count_ !=0, "Release called on unowned object");
     --o->count_;
-    IMP_LOG(MEMORY, "Releasing object " << o->get_name() << std::endl);
+    IMP_LOG(MEMORY, "Releasing object \"" << o->get_name()
+            << "\" (" << o->count_ << ") {" << o << "}" << std::endl);
   }
 };
 
