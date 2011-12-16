@@ -94,11 +94,13 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %inline %{
 namespace IMP {
 namespace base {
+#if IMP_BUILD < IMP_FAST
 #ifdef SWIG
 class Objects;
 #endif
 Strings get_live_object_names();
 Objects get_live_objects();
+#endif
 }
 }
 %}
