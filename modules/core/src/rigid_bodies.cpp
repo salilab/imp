@@ -355,6 +355,7 @@ void RigidBody::on_change() {
 
 RigidBody RigidBody::internal_setup_particle(Particle *p,
                                              const XYZs &members) {
+  IMP_FUNCTION_LOG;
   IMP_USAGE_CHECK(!internal::
                   get_has_required_attributes_for_body(p->get_model(),
                                                        p->get_index()),
@@ -391,7 +392,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
   // compute I
   Matrix I = compute_I(ds, v, IMP::algebra::get_identity_rotation_3d());
-  IMP_LOG(VERBOSE, "Initial I is " << I << std::endl);
+  //IMP_LOG(VERBOSE, "Initial I is " << I << std::endl);
   // diagonalize it
   IMP::algebra::internal::JAMA::Eigenvalue<double> eig(I);
   Matrix rm;
@@ -412,13 +413,13 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   IMP::algebra::Rotation3D roti= rot.get_inverse();
 
   Matrix I2= compute_I(ds, v, roti);
-  IMP_LOG(VERBOSE, I << std::endl);
-  IMP_LOG(VERBOSE, I2 << std::endl);
+  //IMP_LOG(VERBOSE, I << std::endl);
+  //IMP_LOG(VERBOSE, I2 << std::endl);
   internal::add_required_attributes_for_body(p);
   RigidBody d(p);
   d.set_reference_frame(algebra::ReferenceFrame3D(
                                 algebra::Transformation3D(rot, v)));
-  IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
+  //IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
   return d;
 }
 
@@ -434,19 +435,19 @@ ObjectKey RigidBody::get_constraint_key_1() {
 void RigidBody::setup_constraints(Particle *p) {
   Pointer<Constraint> c0
     = create_constraint(new UpdateRigidBodyMembers(p->get_name()
-                                    +" UpdateMembers%1%"),
+                                    +" UpdateMembers %1%"),
                         new AccumulateRigidBodyDerivatives(p->get_name()
-                                    +" AccumulateDerivatives%1%"), p,
-                         p->get_name()+" positions");
+                                    +" AccumulateDerivatives %1%"), p,
+                         p->get_name()+" positions %1%");
   p->get_model()->add_score_state(c0);
   p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
                              c0);
   Pointer<Constraint> c1
       = create_constraint(new NormalizeRotation(p->get_name()
-                                                +" NormalizeRotation%1%"),
+                                                +" NormalizeRotation %1%"),
                         new NullSDM(p->get_name()
-                                    +" Null%1%"),
-                        p, p->get_name()+" normalize");
+                                    +" Null %1%"),
+                        p, p->get_name()+" normalize %1%");
   p->get_model()->add_score_state(c1);
   p->get_model()->add_attribute(get_constraint_key_1(), p->get_index(),
                              c1);
@@ -532,6 +533,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const RigidBodies &members){
+  IMP_FUNCTION_LOG;
   IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
   IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
   XYZs xmember;
