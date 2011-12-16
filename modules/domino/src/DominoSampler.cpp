@@ -128,7 +128,11 @@ Assignments DominoSampler
       sfts.push_back(lsft);
     }
     IMP_LOG(TERSE,"domino::DominoSampler entering InferenceStatistics\n");
-    stats_=internal::InferenceStatistics();
+    {
+      // sillyness for mac os with boost 1.48 bug
+      internal::InferenceStatistics tmp;
+      stats_=tmp;
+    }
     IMP_LOG(TERSE,"domino::DominoSampler entering get_best_conformations\n");
     IMP_NEW(PackedAssignmentContainer, as, ());
     as->set_was_used(true);

@@ -34,14 +34,16 @@ Configuration::Configuration(Model *m, std::string name): Object(name),
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  static_cast<FloatAttributeTable&>(*model_)= floats_;
-  static_cast<StringAttributeTable&>(*model_)= strings_;
-  static_cast<IntAttributeTable&>(*model_)= objects_;
-  static_cast<ObjectAttributeTable&>(*model_)= ints_lists_;
-  static_cast<IntsAttributeTable&>(*model_)= objects_lists_;
-  static_cast<ObjectsAttributeTable&>(*model_)= particles_;
-  static_cast<ParticleAttributeTable&>(*model_)= particles_lists_;
-  static_cast<ParticlesAttributeTable&>(*model_)= ints_;
+  // workaround for weird mac os and boost 1.48 bug
+  Configuration *ncthis= const_cast<Configuration*>(this);
+  static_cast<FloatAttributeTable&>(*model_)= ncthis->floats_;
+  static_cast<StringAttributeTable&>(*model_)= ncthis->strings_;
+  static_cast<IntAttributeTable&>(*model_)= ncthis->objects_;
+  static_cast<ObjectAttributeTable&>(*model_)= ncthis->ints_lists_;
+  static_cast<IntsAttributeTable&>(*model_)= ncthis->objects_lists_;
+  static_cast<ObjectsAttributeTable&>(*model_)= ncthis->particles_;
+  static_cast<ParticleAttributeTable&>(*model_)= ncthis->particles_lists_;
+  static_cast<ParticlesAttributeTable&>(*model_)= ncthis->ints_;
 }
 
 void Configuration::swap_configuration() {
