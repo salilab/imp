@@ -59,7 +59,7 @@ void check_gaussian() {
   }
   IMP::Floats vals(locs.size());
   for (unsigned int i=0; i< vals.size(); ++i) {
-    vals[i]=1.0/std::sqrt(2*3.1415*s*s)*std::exp(-IMP::base::square(locs[i]-m)
+    vals[i]=1.0/std::sqrt(2.0*3.1415*s*s)*std::exp(-IMP::base::square(locs[i]-m)
                                                    /(2*s*s));
   }
   IMP::compatibility::piecewise_linear_distribution<> pld(locs.begin(),
@@ -73,7 +73,7 @@ void check_triangle() {
   double weights[]={0,1,0};
   IMP::compatibility::piecewise_linear_distribution<> pld(locs, locs+3,
                                                           weights);
-  check_one(pld, 1, 1.0/std::sqrt(6));
+  check_one(pld, 1, 1.0/std::sqrt(6.0));
 }
 
 int main(int, char*[]) {
