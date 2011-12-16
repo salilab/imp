@@ -221,15 +221,15 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  for(int i=0;i<nproc;++i){index[i]=rbuf[i];}
 }
 
-MPI::COMM_WORLD.Barrier();
+MPI_Barrier(MPI_COMM_WORLD);
 // close rmf
 rh.flush();
 rh=RMF::FileHandle();
 // flush and close logfile
 logfile.flush();
 logfile.close();
-MPI::COMM_WORLD.Barrier();
+MPI_Barrier(MPI_COMM_WORLD);
 // finalize MPI
-MPI::Finalize();
+MPI_Finalize();
 return 0;
 }
