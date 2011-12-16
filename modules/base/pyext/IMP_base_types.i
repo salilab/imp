@@ -205,6 +205,18 @@
 %typemap(in) Namespace::Name const& {
   objects_like_##Name##_must_be_passed_by_pointer;
   }
+%typemap(in) IMP::base::Pointer<Namespace::Name> {
+  objects_like_##Name##_must_be_passed_by_raw_pointer;
+}
+%typemap(out) IMP::base::Pointer<Namespace::Name> {
+  objects_like_##Name##_must_be_passed_by_raw_pointer;
+}
+%typemap(in) IMP::Pointer<Namespace::Name> {
+  objects_like_##Name##_must_be_passed_by_raw_pointer;
+}
+%typemap(out) IMP::Pointer<Namespace::Name> {
+  objects_like_##Name##_must_be_passed_by_raw_pointer;
+}
 %pythoncode %{
 _object_types.append(#Name)
 %}
