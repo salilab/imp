@@ -557,8 +557,8 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   if (atom_name.find("HET:")==0){
     out << std::string(atom_name, 4);
   } else {
-    if (atom_name.size() == 4) {
-      out << atom_name;
+    if (atom_name.size() >= 4) {
+      out << atom_name.substr(0, 4);
     } else if (atom_name.size() ==3) {
       out << " " << atom_name;
     } else if (atom_name.size() ==2) {
@@ -571,7 +571,7 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   out.width(1);
   out << " ";
   // 18-20 : residue name
-  out << std::right << std::setw(3) << rt.get_string();
+  out << std::right << std::setw(3) << rt.get_string().substr(0, 3);
   //skip 21
   out.width(1);
   out << " ";
@@ -580,10 +580,10 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   //23-26: residue number
   out.setf(std::ios::right, std::ios::adjustfield);
   out.width(4);
-  out << res_index;
+  out << res_index.substr(0, 4);
   //27: residue insertion code
   out.width(1);
-  out << res_icode;
+  out << res_icode.substr(0, 1);
   out.setf(std::ios::fixed, std::ios::floatfield);
   out << "   "; // skip 3 undefined positions (28-30)
   // coordinates (31-38,39-46,47-54)
