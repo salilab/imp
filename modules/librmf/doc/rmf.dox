@@ -22,7 +22,7 @@ atom type and elements. Bonds between atoms or coarser elements are stored
 explicity as dealing with external databases to generate bonds is the source
 of much of the difficulty of dealing with other formats such as PDB.
 
-The file might also include a feature node storing the r-value for a
+The file might also include a pair for storing the r-value for a
 FRET measurement between two residues as well as extra markers to highlight
 key parts of the molecule.
 
@@ -47,7 +47,7 @@ information about the library see RMF. And for the standard data storage schemes
 \ref categories "standard categories".
 
 \section structure 1 The RMF Hierarchy
-R
+
 More technically, each node in the %RMF hierarchy has
 
 - a type (RMF::NodeType)
@@ -59,6 +59,10 @@ More technically, each node in the %RMF hierarchy has
 
 - and associated attributes.
 
+One accesses nodes in the hierarchy using handles, RMF::NodeHandle and RMF::NodeConstHandle. The root handle
+can be fetched from the RMF::FileHandle using RMF::FileHandle::get_root_node().
+
+\section attributes 2 Attributes
 Each attribute is identified by a key (RMF::Key) and is
 defined by a unique combination of
 - a \ref rmf_types "type".
@@ -85,14 +89,15 @@ information:
 - \ref catpublication "publication",
 - \ref catbond "bond".
 
-In addition, arbitrary data can be associated with sets of Nodes.
+In addition, arbitrary data can be associated with sets of Nodes, accessed
+via, eg, RMF::NodePairHandle  and RMF::NodePairConstHandle.
 This mechanism is used to store bond information (which is always stored
 in the file to avoid the difficulties associated with parsing PDB files).
 Information about bond angles or torsion angles could be stored
 using the same mechanism. Currently, the library API supports sets up to
 size 4, but we can add arbitrary sized sets when needed.
 
-\section adding 2 Adding custom data to an RMF
+\section adding 3 Adding custom data to an RMF
 
 When adding data to an %RMF file that is just to be used for
 internal consumption, one should create a new category. For
@@ -104,7 +109,7 @@ probably makes sense to add it to the documentation of this library
 so that the names used can be standardized.
 
 
-\section rmf_hdf5 3 RMF and HDF5
+\section rmf_hdf5 4 RMF and HDF5
 
 The %RMF data is stored in a single
 \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,HDF5
