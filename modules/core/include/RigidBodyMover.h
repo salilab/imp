@@ -33,6 +33,20 @@ public:
    */
   RigidBodyMover(RigidBody d,Float max_translation,
                  Float max_rotation);
+  void set_max_translation(Float mt) {
+    IMP_USAGE_CHECK(mt > 0, "Max translation must be positive");
+    max_translation_=mt;
+  }
+  void set_max_rotation(Float mr) {
+    IMP_USAGE_CHECK(mr > 0, "Max rotation must be positive");
+    max_angle_=mr;
+  }
+  Float get_max_translation() const {
+    return max_translation_;
+  }
+  Float get_max_rotation() const {
+    return max_angle_;
+  }
   IMP_MOVER(RigidBodyMover);
 private:
   algebra::Transformation3D last_transformation_;
