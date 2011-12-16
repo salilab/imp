@@ -160,7 +160,7 @@ namespace {
      s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(volume));
    } else {
-     IMP_LOG(VERBOSE, "Approximating volume." << std::endl);
+     //IMP_LOG(VERBOSE, "Approximating volume." << std::endl);
      double v= get_volume_measurement(ss, resolution);
      s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(v));
