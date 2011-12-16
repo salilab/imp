@@ -464,9 +464,8 @@ struct Helper {
                   << " with bb " << bb << " and side "
                   << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
                   << std::endl);
-          Grid ggi, ggj;
-          ggi= create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]);
-          ggj=ggi;
+          Grid ggi(create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]));
+          Grid ggj=ggi;
           fill_grid(bin_contents_g[i], tr, ggi);
           fill_grid(bin_contents_g[j], tr, ggj);
           for (typename Grid::AllConstIterator it
@@ -566,9 +565,8 @@ struct Helper {
                   << " with bb " << bb << " and side "
                   << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
                   << std::endl);
-          Grid gg, gq;
-          gg= create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]);
-          gq= gg;
+          Grid gg= create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]);
+          Grid gq= gg;
           fill_grid(bin_contents_g[i], tr, gg);
           fill_grid(bin_contents_q[j], tr, gq);
           IMP_IF_CHECK(USAGE) {
