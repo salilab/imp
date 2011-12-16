@@ -442,6 +442,9 @@ void RigidBody::setup_constraints(Particle *p) {
   p->get_model()->add_score_state(c0);
   p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
                              c0);
+  IMP_INTERNAL_CHECK(c0->get_ref_count()==3,
+                     "Wrong number of ref counts after constraint creation: "
+                     << c0->get_ref_count());
   Pointer<Constraint> c1
       = create_constraint(new NormalizeRotation(p->get_name()
                                                 +" NormalizeRotation %1%"),
@@ -455,12 +458,12 @@ void RigidBody::setup_constraints(Particle *p) {
 void RigidBody::teardown_constraints(Particle *p) {
   Object *oc0= p->get_model()->get_attribute(get_constraint_key_0(),
                                              p->get_index());
-  Constraint *c0= dynamic_cast<Constraint*>(oc0);
+  Pointer<Constraint> c0= dynamic_cast<Constraint*>(oc0);
   p->get_model()->remove_score_state(c0);
   p->get_model()->remove_attribute(get_constraint_key_0(), p->get_index());
   Object *oc1= p->get_model()->get_attribute(get_constraint_key_1(),
                                              p->get_index());
-  Constraint *c1= dynamic_cast<Constraint*>(oc1);
+  Pointer<Constraint> c1= dynamic_cast<Constraint*>(oc1);
   p->get_model()->remove_score_state(c1);
   p->get_model()->remove_attribute(get_constraint_key_1(), p->get_index());
 }
@@ -564,6 +567,9 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
 
 void RigidBody::teardown_particle(RigidBody rb) {
+  IMP_FUNCTION_LOG;
+  // clear caches
+  rb.on_change();
   {
     const ParticleIndexes& members= rb.get_member_particle_indexes();
     for (unsigned int i=0; i < members.size(); ++i) {
