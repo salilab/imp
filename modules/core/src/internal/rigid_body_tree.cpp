@@ -95,7 +95,7 @@ RigidBodyHierarchy::divide_spheres(const algebra::Sphere3Ds &ss,
 */
 RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                                        const ParticleIndexes &constituents):
-  Object("RigidBodyHierarchy%1%"), rb_(d),
+    Object(d->get_name()+ " RigidBodyHierarchy %1%"), rb_(d),
   constituents_(constituents){
   IMP_IF_CHECK(USAGE) {
     ParticleIndexes uc=constituents;
@@ -129,8 +129,6 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   }
   IMP_LOG(TERSE, std::endl);
   tree_.push_back(Data());
-  set_name(std::string("Rigid body hierachy for particle "
-                       + d.get_particle()->get_name()));
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(constituents_.size() > 0,
                   "Rigid body has no members.");
