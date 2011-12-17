@@ -120,6 +120,10 @@ public:
   //! Set the projections of the model to use for initial coarse correlation
   void set_projections(const em2d::Images &projections);
 
+  //! Set the projections of the model to use for initial coarse correlation
+  void set_variance_images(const em2d::Images &variances);
+
+
   //! Set the particles where the em2D restraint is applied
   void set_model_particles(const ParticlesTemp &ps);
 
@@ -178,6 +182,10 @@ public:
     return subjects_.size();
   }
 
+  void set_number_of_class_averages_members(Ints n_members) {
+    n_members_ = n_members;
+  }
+
   unsigned int get_number_of_projections() const {
     return projections_.size();
   }
@@ -201,10 +209,11 @@ protected:
                                                cv::Mat &POLAR_AUTOC);
   //! Main parameters
   em2d::Images subjects_;
+  em2d::Images variances_;
   em2d::Images projections_;
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
-
+  Ints n_members_;
 
 //  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;

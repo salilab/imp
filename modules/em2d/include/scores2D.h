@@ -57,40 +57,51 @@ IMPEM2DEXPORT double get_global_score(const RegistrationResults &RRs);
 class IMPEM2DEXPORT ScoreFunction: public IMP::base::Object {
 public:
   ScoreFunction(): Object("ScoreFunction%1%") {}
+
   //! Given an image and a projection, returns the appropiate score
   double get_score(Image *image, Image *projection) const {
     // trying to use the non-virtual interface (Alexandrescu, 39)
     return get_private_score(image, projection);
   }
 
+  void set_variance_image(Image *var) {
+    set_variance_image_private(var);
+  }
+
   IMP_OBJECT_INLINE(ScoreFunction, IMP_UNUSED(out), {});
+
+protected:
+  // Number of particle images used to get the class average
+  unsigned int n_members_;
+
 private:
   virtual double get_private_score(Image *image, Image *projection) const = 0;
+  virtual void set_variance_image_private(Image *image) {};
+
+
 };
 IMP_OBJECTS(ScoreFunction,ScoreFunctions);
 IMP_OUTPUT_OPERATOR(ScoreFunction);
 
-
-
 //! Score based on Chi^2 = ((pixels_iamge - pixels_projection)/stddev_image)^2
 class IMPEM2DEXPORT ChiSquaredScore: public ScoreFunction {
 public:
-  ChiSquaredScore() {}
+  ChiSquaredScore(): ScoreFunction() {}
+
 private:
-  double get_private_score(Image *, Image *) const {
-    return 0.0; //  TO DO
-  }
+  mutable Pointer<Image> variance_;
+  double get_private_score(Image *, Image *) const;
+  void set_variance_imag_private(Image *var) {variance_ = var;}
 };
 IMP_OBJECTS(ChiSquaredScore,ChiSquaredScores);
 IMP_OUTPUT_OPERATOR(ChiSquaredScore);
-
 
 
 //! EM2DScore, based on squared differences
 //!  (pixels_iamge - pixels_projection)**2
 class IMPEM2DEXPORT EM2DScore: public ScoreFunction {
 public:
-  EM2DScore() {}
+  EM2DScore(): ScoreFunction() {}
 private:
   double get_private_score(Image *image, Image *projection) const {
     return 1 - get_cross_correlation_coefficient(image->get_data(),
@@ -103,7 +114,7 @@ IMP_OUTPUT_OPERATOR(EM2DScore);
 
 class IMPEM2DEXPORT MeanAbsoluteDifference: public ScoreFunction {
 public:
-  MeanAbsoluteDifference() {}
+  MeanAbsoluteDifference(): ScoreFunction() {}
 private:
   double get_private_score(Image *image, Image *projection) const;
 };

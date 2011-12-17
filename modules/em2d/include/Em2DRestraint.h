@@ -48,6 +48,7 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
 
   //! Projection Masks to fast model projection
   em2d::Images em_images_;
+  em2d::Images em_variances_;
   unsigned int number_of_optimized_projections_;
   bool fast_optimization_mode_;
   bool only_coarse_registration_;
@@ -80,6 +81,13 @@ public:
 
   //! Sets the EM images to use as restraints
   void set_images(const em2d::Images em_images);
+
+  /*! Sets the variance images of EM images. This is useful if the
+      image is a class average
+      Note: Not all the scoring function use this
+      data
+  */
+  void set_variance_images(const em2d::Images variance_images);
 
   /*! Sets fast mode for computing the restraint. This mode only makes sense
       it the set_coarse_registration_mode option is false. This option only
@@ -114,6 +122,17 @@ IMP_OBJECTS(Em2DRestraint,Em2DRestraints);
 
 
 
+//! Dummy restraint between two particles
+/*!
+    The restraint does do anything and returns 0 as a value. Use this
+    restraint to force two particles to be considered by DOMINO as belonging
+    to a restraint. This trick can be useful when building the merge tree for
+    DOMINO, as can add branches that consider pairs of particles before entire
+    subsets.
+    NOTE: Using this restraint for DOMINO requires a fairly good knowledge of
+        the works of merge trees.
+*/
+
 class IMPEM2DEXPORT DummyRestraint: public Restraint {
 protected:
   Pointer<Particle> p0_;
@@ -128,13 +147,40 @@ public:
 
 
   void show(std::ostream &out = std::cout) const {
-    std::cout << "Dummy Restraint" << std::endl;
+    out << "Dummy Restraint" << std::endl;
   }
 
   IMP_RESTRAINT(DummyRestraint);
 
 };
 IMP_OBJECTS(DummyRestraint,DummyRestraints);
+
+
+
+//! Dummy restraint for a set of particles. Same use as DummyRestraint
+/*!
+  \param[in]
+*/
+
+class IMPEM2DEXPORT ParticlesDummyRestraint: public Restraint {
+protected:
+  Pointer<SingletonContainer> container_;
+
+public:
+
+  ParticlesDummyRestraint(SingletonContainer *sc) {
+    container_ = sc;
+  }
+
+
+  void show(std::ostream &out = std::cout) const {
+    std::cout << "Particles Restraint" << std::endl;
+  }
+
+  IMP_RESTRAINT(ParticlesDummyRestraint);
+
+};
+IMP_OBJECTS(ParticlesDummyRestraint, ParticlesDummyRestraints);
 
 
 

@@ -19,8 +19,15 @@ IMPEM2D_BEGIN_NAMESPACE
    em_images_ = em_images;
    finder_->set_subjects(em_images_);
    for (unsigned int i=0;i<em_images_.size();++i) {
-
      em_images_[i]->set_was_used(true);
+   }
+ }
+
+ void Em2DRestraint::set_variance_images(const em2d::Images var_images) {
+   em_variances_ = var_images;
+   finder_->set_variance_images(var_images);
+   for (unsigned int i=0;i<em_variances_.size();++i) {
+     em_variances_[i]->set_was_used(true);
    }
  }
 
@@ -119,5 +126,32 @@ ContainersTemp DummyRestraint::get_input_containers() const
   // Returns a vector of one container with the particles
   return ContainersTemp();
 }
+
+
+
+double
+ParticlesDummyRestraint::unprotected_evaluate(
+                                      DerivativeAccumulator *accum) const {
+  return 0;
+}
+
+void ParticlesDummyRestraint::do_show(std::ostream& out) const
+{
+  out << "ParticlesDummyRestraint" << std::endl;
+}
+
+
+ParticlesTemp ParticlesDummyRestraint::get_input_particles() const
+{
+  ParticlesTemp ret= container_->get_particles();
+  return ret;
+}
+
+ContainersTemp ParticlesDummyRestraint::get_input_containers() const
+{
+  // Returns a vector of one container with the particles
+  return ContainersTemp(1, container_);
+}
+
 
 IMPEM2D_END_NAMESPACE
