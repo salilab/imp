@@ -90,8 +90,10 @@ public:
     double TIFF_min=0;
     double alpha = (TIFF_max-TIFF_min)/(max-min);
     double beta = TIFF_min-alpha*min;
-    data.convertTo(TIFF_data,CV_16UC1,alpha,beta);
+    data.convertTo(TIFF_data,CV_8UC1,alpha,beta);
     // write image
+    cv::minMaxLoc(TIFF_data,&min,&max);
+
     cv::imwrite(filename,TIFF_data);
   }
 

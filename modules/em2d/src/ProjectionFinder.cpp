@@ -64,6 +64,18 @@ IMPEM2D_BEGIN_NAMESPACE
   IMP_LOG(TERSE,"ProjectionFinder: Subject images set" << std::endl);
 }
 
+void ProjectionFinder::set_variance_images(const em2d::Images &variances) {
+  variances_.resize(variances.size());
+  unsigned int n_variances = variances_.size();
+  for (unsigned int i=0;i<n_variances;++i) {
+    variances_[i] = variances[i]; // doest not copy
+    std::ostringstream oss;
+    oss << "Variance subject " << i;
+    variances_[i]->set_name(oss.str());
+  }
+
+}
+
 void ProjectionFinder::set_projections(const em2d::Images &projections) {
   IMP_LOG(TERSE,"ProjectionFinder: Setting projections" << std::endl);
 
@@ -223,6 +235,10 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     // at this point. It will not be optimal, though.
     IMP_NEW(em2d::Image,aux,());
     get_transformed(projections_[j]->get_data(), aux->get_data(), RA.first);
+
+    if(variances_.size() > 0) {
+      score_function_->set_variance_image(variances_[i]);
+    }
     double score = score_function_->get_score(subjects_[i], aux);
     projection_result.set_score(score);
 
@@ -278,7 +294,7 @@ void ProjectionFinder::get_coarse_registration() {
     IMP_THROW("get_coarse_registration:There are not projection images",
               ValueException);
   }
-  /***** Computation *******/
+
   coarse_registration_time_ = 0;
 //  boost::progress_display show_progress(subjects_.size());
   for(unsigned long i=0;i<subjects_.size();++i) {

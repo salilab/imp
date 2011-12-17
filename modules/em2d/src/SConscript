@@ -23,6 +23,7 @@ files = [
   "domino_filter_tables.cpp",
 #  "TemplateFinder.cpp",
    "RigidBodiesImageFitRestraint.cpp",
+   "RelativePositionMover.cpp",
           ]\
         + SConscript("internal/SConscript")
 

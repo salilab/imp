@@ -30,6 +30,8 @@ files = [
     "domino_filter_tables.h",
 #    "TemplateFinder.h",
    "RigidBodiesImageFitRestraint.h",
+    "RelativePositionMover.h",
+
 
       ] + SConscript("internal/SConscript")
 

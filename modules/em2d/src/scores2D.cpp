@@ -93,4 +93,24 @@ double MeanAbsoluteDifference::get_private_score(Image *image,
   return result;
 }
 
+double ChiSquaredScore::get_private_score(Image *image,
+                                          Image *projection) const {
+  double result = 0.0;
+  cvDoubleConstMatIterator img_it = image->get_data().begin<double>();
+  cvDoubleConstMatIterator prj_it = projection->get_data().begin<double>();
+  cvDoubleConstMatIterator var_it = variance_->get_data().begin<double>();
+  double n = 0;
+  for( ; img_it != image->get_data().end<double>() ||
+         prj_it != projection->get_data().end<double>() ;
+         ++img_it, ++prj_it, ++var_it ) {
+    double aux = (*img_it - *prj_it);
+    result += aux * aux / (*var_it);
+    n += 1.0;
+  }
+  result = result / n;
+  return result;
+
+
+}
+
 IMPEM2D_END_NAMESPACE
