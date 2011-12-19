@@ -434,6 +434,23 @@ class IMPBASEEXPORT ModelException: public Exception
   ~ModelException() throw();
 };
 
+/** \brief An exception that signifies some event occurred.
+
+    It is difficult to add exceptions to the python wrappers,
+    so use this type if want to raise an exception when something
+    happens.
+
+    We can add event types later via a key.
+ */
+class IMPBASEEXPORT EventException: public Exception
+{
+ public:
+  //! Create exception with an error message
+  EventException(const char *t=""): Exception(t){}
+  ~EventException() throw();
+};
+
+
 IMPBASE_END_NAMESPACE
 
 #endif  /* IMPBASE_EXCEPTION_H */
