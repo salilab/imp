@@ -25,9 +25,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-class SingletonContainer;
-typedef std::pair<SingletonContainer*,
-                  SingletonContainer*> SingletonContainerPair;
+// for swig
+class SingletonScore;
+class SingletonModifier;
+
 
 //! A shared container for Singletons
 /** Stores a searchable shared collection of Singletons.

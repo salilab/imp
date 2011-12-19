@@ -25,9 +25,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-class QuadContainer;
-typedef std::pair<QuadContainer*,
-                  QuadContainer*> QuadContainerPair;
+// for swig
+class QuadScore;
+class QuadModifier;
+
 
 //! A shared container for Quads
 /** Stores a searchable shared collection of Quads.

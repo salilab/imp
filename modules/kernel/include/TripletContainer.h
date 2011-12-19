@@ -25,9 +25,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-class TripletContainer;
-typedef std::pair<TripletContainer*,
-                  TripletContainer*> TripletContainerPair;
+// for swig
+class TripletScore;
+class TripletModifier;
+
 
 //! A shared container for Triplets
 /** Stores a searchable shared collection of Triplets.

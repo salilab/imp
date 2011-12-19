@@ -25,9 +25,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-class CLASSNAMEContainer;
-typedef std::pair<CLASSNAMEContainer*,
-                  CLASSNAMEContainer*> CLASSNAMEContainerPair;
+// for swig
+class CLASSNAMEScore;
+class CLASSNAMEModifier;
+
 
 //! A shared container for CLASSNAMEs
 /** Stores a searchable shared collection of CLASSNAMEs.
