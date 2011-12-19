@@ -1,6 +1,7 @@
 Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
+import scons_tools.dependency.gcc
 
 scons_tools.dependency.boost.configure_tr1_check(env)
 deplist=[]
@@ -11,6 +12,13 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                extra_boost_libs=["system"])
 deplist.append('Boost.FileSystem')
 
+config=[]
+if scons_tools.dependency.gcc.get_version(env)< 4.2:
+    # partial specialization bug, and the optimizer sucks
+    config.append("IMP_OLD_GCC")
+
+
 env.IMPModuleBuild(version='SVN',
                    lib_only_required_modules=['compatibility'],
-                   optional_dependencies=deplist)
+                   optional_dependencies=deplist,
+                   config_macros=config)
