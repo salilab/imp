@@ -87,6 +87,21 @@ IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
 
 //!@}
 
+
+/** Compute the concentration in molarity from the passed values*/
+inline double get_molarity(double n, const algebra::BoundingBox3D &bb) {
+  double v= algebra::get_volume(bb); // cubic angstrom
+  // n*10^27/(v *6.02e23)
+  return n*1e4/(v*6.02);
+}
+
+/** Compute the concentration in molarity from the passed values*/
+inline double get_kd(double na, double nb, double nab,
+              const algebra::BoundingBox3D &bb) {
+  return get_molarity(na, bb)*get_molarity(nb, bb)/get_molarity(nab, bb);
+}
+
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ESTIMATES_H */
