@@ -68,6 +68,7 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
     CREATE_EXCEPTION_CLASS(imp_internal_exception, InternalException);
     CREATE_EXCEPTION_CLASS(imp_model_exception, ModelException);
     CREATE_EXCEPTION_CLASS(imp_usage_exception, UsageException);
+    CREATE_EXCEPTION_CLASS(imp_event, Event);
 
     /* Create or load subclasses that also derive from Python classes */
     CREATE_EXCEPTION_CLASS_PYTHON(imp_index_exception, IndexException,
@@ -100,7 +101,7 @@ if sys.version_info[:2] < (2,5):
 %{
 static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
                 *imp_usage_exception, *imp_index_exception, *imp_io_exception,
-                *imp_value_exception;
+    *imp_value_exception, *imp_event;
 %}
 
 %{
@@ -141,6 +142,8 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_usage_exception, e.what());
     } catch (const IMP::base::IOException &e) {
       PyErr_SetString(imp_io_exception, e.what());
+    } catch (const IMP::base::EventException &e) {
+      PyErr_SetString(imp_event, e.what());
     } catch (const IMP::base::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
     /* Map Boost exceptions to Python exceptions */

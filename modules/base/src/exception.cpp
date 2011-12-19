@@ -100,6 +100,10 @@ ModelException::~ModelException() throw()
 {
 }
 
+EventException::~EventException() throw()
+{
+}
+
 IOException::~IOException() throw()
 {
 }
