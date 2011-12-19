@@ -77,12 +77,6 @@ class IMPEXPORT QuadPredicate : public base::Object
   virtual ContainersTemp
     get_input_containers(Particle *p) const =0;
 
-  /** Decompose this pair predicate acting on the pair into a set of
-      restraints. The scoring function and derivatives should
-      be equal to the current predicate. The defualt implementation
-      just returns this object bound to the pair.*/
-  Restraints create_current_decomposition(const ParticleQuad& vt) const;
-
   IMP_REF_COUNTED_DESTRUCTOR(QuadPredicate);
 };
 
