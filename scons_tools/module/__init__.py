@@ -562,7 +562,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                                  modules= required_modules+found_optional_modules\
                                      +lib_only_required_modules+found_lib_only_optional_modules,
                                              unfound_modules=[x for x in optional_modules+lib_only_optional_modules if x not in
-                                              found_optional_modules],
+                                              found_optional_modules+found_lib_only_optional_modules],
                                  python_modules=required_modules+found_optional_modules,
                                  dependencies=[x for x in found_optional_dependencies if x in optional_dependencies]\
                                      +required_dependencies,
