@@ -25,9 +25,10 @@
 
 IMP_BEGIN_NAMESPACE
 
-class PairContainer;
-typedef std::pair<PairContainer*,
-                  PairContainer*> PairContainerPair;
+// for swig
+class PairScore;
+class PairModifier;
+
 
 //! A shared container for Pairs
 /** Stores a searchable shared collection of Pairs.

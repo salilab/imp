@@ -139,6 +139,10 @@ IMP_SWIG_OBJECT(IMP, SingletonScoreRestraint,SingletonScoreRestraints);
 IMP_SWIG_OBJECT(IMP, SingletonsScoreRestraint,SingletonsScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletScoreRestraint,TripletScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletsScoreRestraint, TripletsScoreRestraints);
+IMP_SWIG_BASE_OBJECT(IMP, SingletonPredicate, SingletonPredicates);
+IMP_SWIG_BASE_OBJECT(IMP, PairPredicate, PairPredicates);
+IMP_SWIG_BASE_OBJECT(IMP, TripletPredicate, TripletPredicates);
+IMP_SWIG_BASE_OBJECT(IMP, QuadPredicate, QuadPredicates);
 
 #ifdef IMP_USE_DEPRECATED
 IMP_SWIG_OBJECT(IMP, WriteParticlesOptimizerState, WriteParticlesOptimizerStates);
@@ -261,26 +265,30 @@ namespace IMP {
 %include "IMP/ConfigurationSet.h"
 %include "IMP/Configuration.h"
 %include "IMP/Sampler.h"
-%include "IMP/SingletonScore.h"
-%include "IMP/PairScore.h"
-%include "IMP/SingletonModifier.h"
-%include "IMP/SingletonDerivativeModifier.h"
-%include "IMP/PairModifier.h"
 %include "IMP/PairDerivativeModifier.h"
-%include "IMP/SingletonContainer.h"
-%include "IMP/PairContainer.h"
-%include "IMP/SingletonFilter.h"
 %include "IMP/PairFilter.h"
-%include "IMP/TripletScore.h"
-%include "IMP/QuadScore.h"
-%include "IMP/TripletModifier.h"
-%include "IMP/TripletDerivativeModifier.h"
-%include "IMP/QuadModifier.h"
+%include "IMP/PairModifier.h"
+%include "IMP/PairScore.h"
+%include "IMP/PairPredicate.h"
+%include "IMP/PairContainer.h"
 %include "IMP/QuadDerivativeModifier.h"
-%include "IMP/TripletContainer.h"
-%include "IMP/QuadContainer.h"
-%include "IMP/TripletFilter.h"
 %include "IMP/QuadFilter.h"
+%include "IMP/QuadModifier.h"
+%include "IMP/QuadScore.h"
+%include "IMP/QuadPredicate.h"
+%include "IMP/QuadContainer.h"
+%include "IMP/SingletonDerivativeModifier.h"
+%include "IMP/SingletonFilter.h"
+%include "IMP/SingletonModifier.h"
+%include "IMP/SingletonScore.h"
+%include "IMP/SingletonPredicate.h"
+%include "IMP/SingletonContainer.h"
+%include "IMP/TripletDerivativeModifier.h"
+%include "IMP/TripletFilter.h"
+%include "IMP/TripletModifier.h"
+%include "IMP/TripletScore.h"
+%include "IMP/TripletPredicate.h"
+%include "IMP/TripletContainer.h"
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
