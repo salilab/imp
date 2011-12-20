@@ -46,9 +46,9 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                         std::string name="SingletonContainerSet %1%");
 
   bool get_contains_particle(Particle*) const;
-  void apply(const SingletonModifier *sm);
+  void apply(const SingletonModifier *sm) const;
   void apply(const SingletonDerivativeModifier *sm,
-             DerivativeAccumulator &da);
+             DerivativeAccumulator &da) const;
   double evaluate(const SingletonScore *s,
                   DerivativeAccumulator *da) const;
   double evaluate_if_good(const SingletonScore *s,
@@ -56,13 +56,13 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                           double max) const;
  template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
    for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
      get_singleton_container(i)->apply(sm, da);
    }
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
       get_singleton_container(i)->apply(sm);
     }

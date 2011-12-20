@@ -84,14 +84,14 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainers);
 
 
-void SingletonContainerSet::apply(const SingletonModifier *sm) {
+void SingletonContainerSet::apply(const SingletonModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     get_singleton_container(i)->apply(sm);
   }
 }
 
 void SingletonContainerSet::apply(const SingletonDerivativeModifier *sm,
-                               DerivativeAccumulator &da) {
+                               DerivativeAccumulator &da) const {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     get_singleton_container(i)->apply(sm, da);
   }

@@ -46,9 +46,9 @@ class IMPCONTAINEREXPORT TripletContainerSet
                         std::string name="TripletContainerSet %1%");
 
   bool get_contains_particle_triplet(const ParticleTriplet&) const;
-  void apply(const TripletModifier *sm);
+  void apply(const TripletModifier *sm) const;
   void apply(const TripletDerivativeModifier *sm,
-             DerivativeAccumulator &da);
+             DerivativeAccumulator &da) const;
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const;
   double evaluate_if_good(const TripletScore *s,
@@ -56,13 +56,13 @@ class IMPCONTAINEREXPORT TripletContainerSet
                           double max) const;
  template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
      get_triplet_container(i)->apply(sm, da);
    }
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
       get_triplet_container(i)->apply(sm);
     }

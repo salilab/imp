@@ -115,11 +115,10 @@ public:
 #endif
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const PairModifier *sm)=0;
-
+  virtual void apply(const PairModifier *sm) const=0;
   //! Apply a SingletonModifier to the contents
   virtual void apply(const PairDerivativeModifier *sm,
-                     DerivativeAccumulator &da)=0;
+                     DerivativeAccumulator &da) const=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const PairScore *s,

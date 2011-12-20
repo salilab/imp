@@ -95,11 +95,11 @@ protected:
  public:
   template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
     sm->apply_indexes(get_model(), data_, da);
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     sm->apply_indexes(get_model(), data_);
   }
   template <class SS>
@@ -113,11 +113,11 @@ protected:
                                    double max) const {
     return s->evaluate_if_good_indexes(get_model(), data_, da, max);
   }
-  void apply(const CLASSNAMEModifier *sm) {
+  void apply(const CLASSNAMEModifier *sm) const {
     sm->apply_indexes(get_model(), data_);
   }
   void apply(const CLASSNAMEDerivativeModifier *sm,
-             DerivativeAccumulator &da) {
+             DerivativeAccumulator &da) const {
     sm->apply_indexes(get_model(), data_, da);
   }
   double evaluate(const CLASSNAMEScore *s,
