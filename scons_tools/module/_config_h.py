@@ -6,6 +6,27 @@ import os
 import sys
 import re
 
+def _add_dep_control(name, preproc, h, controllable, default):
+    lcname=name
+    if controllable:
+        print >> h, """#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+extern %sEXPORT bool use_%s;
+}
+#endif
+
+inline void set_use_%s(bool tf) {
+   internal::use_%s=tf;
+}
+inline bool get_use_%s() {return internal::use_%s;}
+"""%(preproc.replace("_",""), lcname, lcname, lcname, lcname, lcname)
+    else:
+        print >> h, """
+inline void set_use_%s(bool ) {
+}
+inline bool get_use_%s() {return %s;}
+"""%(lcname, lcname, str(default).lower())
+
 def _add_use_or_no(env, h, name):
     nd= name.replace("_USE_","_NO_")
     if nd==name:
@@ -242,6 +263,12 @@ inline std::string get_module_name() {
    return "%(namespace)s";
 }
 """%vars
+
+    for m in scons_tools.module._get_found_modules(env, scons_tools.module._get_module_modules(env)):
+        _add_dep_control(m, vars['PREPROC'], h, env['build'] != 'fast', True)
+    for m in scons_tools.module._get_module_unfound_modules(env):
+        _add_dep_control(m, vars['PREPROC'], h, False, False)
+
     if env['MODULE_HAS_DATA']:
         print >> h, """
 //! Return the full path to installed data
@@ -370,6 +397,15 @@ std::string rmf_example_path="%s";
 }
 """%(source[1].get_contents(), source[2].get_contents())
 
+    if env['build'] != 'fast':
+        print >> cpp, """
+  namespace internal {
+  """
+        for m in scons_tools.module._get_module_modules(env):
+            print >> cpp, "bool use_%s;"%m
+        print >> cpp, """
+  }
+  """
     print >> cpp, "\n%(EXPORT)s_END_NAMESPACE" % vars
 
 
