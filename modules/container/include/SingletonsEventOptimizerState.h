@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/SingletonPredicate.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/SingletonContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

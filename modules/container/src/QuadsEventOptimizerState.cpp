@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/QuadsEventOptimizerState.h>
+#include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 QuadsEventOptimizerState::
 QuadsEventOptimizerState(QuadPredicate *pred,

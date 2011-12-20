@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/PairContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

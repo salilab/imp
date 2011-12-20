@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/SingletonsEventOptimizerState.h>
+#include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 SingletonsEventOptimizerState::
 SingletonsEventOptimizerState(SingletonPredicate *pred,
