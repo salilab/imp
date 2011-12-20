@@ -40,6 +40,10 @@ IMP_SWIG_OBJECT(IMP::container, SingletonContainerStatistics, SingletonContainer
 IMP_SWIG_OBJECT(IMP::container, PairContainerStatistics, PairContainerStatisticsList);
 IMP_SWIG_OBJECT(IMP::container, TripletContainerStatistics, TripletContainerStatisticsList);
 IMP_SWIG_OBJECT(IMP::container, QuadContainerStatistics, QuadContainerStatisticsList);
+IMP_SWIG_OBJECT(IMP::container, SingletonsEventOptimizerState, SingletonsEventOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, PairsEventOptimizerState, PairsEventOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, TripletsEventOptimizerState, TripletsEventOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, QuadsEventOptimizerState, QuadsEventOptimizerStateList);
 
 
 
@@ -86,4 +90,7 @@ IMP_SWIG_OBJECT(IMP::container, QuadContainerStatistics, QuadContainerStatistics
 %include "IMP/container/PairContainerStatistics.h"
 %include "IMP/container/TripletContainerStatistics.h"
 %include "IMP/container/QuadContainerStatistics.h"
-
+%include "IMP/container/SingletonsEventOptimizerState.h"
+%include "IMP/container/PairsEventOptimizerState.h"
+%include "IMP/container/TripletsEventOptimizerState.h"
+%include "IMP/container/QuadsEventOptimizerState.h"
