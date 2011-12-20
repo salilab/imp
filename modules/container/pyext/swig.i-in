@@ -46,7 +46,6 @@ IMP_SWIG_OBJECT(IMP::container, TripletsEventOptimizerState, TripletsEventOptimi
 IMP_SWIG_OBJECT(IMP::container, QuadsEventOptimizerState, QuadsEventOptimizerStateList);
 
 
-
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"
 %include "IMP/container/AllPairContainer.h"
