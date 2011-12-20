@@ -13,7 +13,7 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
 deplist.append('Boost.FileSystem')
 
 config=[]
-if scons_tools.dependency.gcc.get_version(env)< 4.2:
+if scons_tools.dependency.gcc.get_is_gcc_like(env) and scons_tools.dependency.gcc.get_version(env)< 4.2:
     # partial specialization bug, and the optimizer sucks
     config.append("IMP_OLD_GCC")
 
