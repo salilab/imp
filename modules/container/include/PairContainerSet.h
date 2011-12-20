@@ -46,9 +46,9 @@ class IMPCONTAINEREXPORT PairContainerSet
                         std::string name="PairContainerSet %1%");
 
   bool get_contains_particle_pair(const ParticlePair&) const;
-  void apply(const PairModifier *sm);
+  void apply(const PairModifier *sm) const;
   void apply(const PairDerivativeModifier *sm,
-             DerivativeAccumulator &da);
+             DerivativeAccumulator &da) const;
   double evaluate(const PairScore *s,
                   DerivativeAccumulator *da) const;
   double evaluate_if_good(const PairScore *s,
@@ -56,13 +56,13 @@ class IMPCONTAINEREXPORT PairContainerSet
                           double max) const;
  template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
    for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
      get_pair_container(i)->apply(sm, da);
    }
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
       get_pair_container(i)->apply(sm);
     }

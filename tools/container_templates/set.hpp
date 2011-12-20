@@ -46,9 +46,9 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                         std::string name="CLASSNAMEContainerSet %1%");
 
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE) const;
-  void apply(const CLASSNAMEModifier *sm);
+  void apply(const CLASSNAMEModifier *sm) const;
   void apply(const CLASSNAMEDerivativeModifier *sm,
-             DerivativeAccumulator &da);
+             DerivativeAccumulator &da) const;
   double evaluate(const CLASSNAMEScore *s,
                   DerivativeAccumulator *da) const;
   double evaluate_if_good(const CLASSNAMEScore *s,
@@ -56,13 +56,13 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                           double max) const;
  template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
    for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
      get_CLASSFUNCTIONNAME_container(i)->apply(sm, da);
    }
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
       get_CLASSFUNCTIONNAME_container(i)->apply(sm);
     }

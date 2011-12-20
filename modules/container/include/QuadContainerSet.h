@@ -46,9 +46,9 @@ class IMPCONTAINEREXPORT QuadContainerSet
                         std::string name="QuadContainerSet %1%");
 
   bool get_contains_particle_quad(const ParticleQuad&) const;
-  void apply(const QuadModifier *sm);
+  void apply(const QuadModifier *sm) const;
   void apply(const QuadDerivativeModifier *sm,
-             DerivativeAccumulator &da);
+             DerivativeAccumulator &da) const;
   double evaluate(const QuadScore *s,
                   DerivativeAccumulator *da) const;
   double evaluate_if_good(const QuadScore *s,
@@ -56,13 +56,13 @@ class IMPCONTAINEREXPORT QuadContainerSet
                           double max) const;
  template <class SM>
   void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
+                      DerivativeAccumulator &da) const {
    for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
      get_quad_container(i)->apply(sm, da);
    }
  }
   template <class SM>
-  void template_apply(const SM *sm) {
+  void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
       get_quad_container(i)->apply(sm);
     }

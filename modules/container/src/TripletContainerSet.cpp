@@ -84,14 +84,14 @@ IMP_LIST_IMPL(TripletContainerSet,
               TripletContainers);
 
 
-void TripletContainerSet::apply(const TripletModifier *sm) {
+void TripletContainerSet::apply(const TripletModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
     get_triplet_container(i)->apply(sm);
   }
 }
 
 void TripletContainerSet::apply(const TripletDerivativeModifier *sm,
-                               DerivativeAccumulator &da) {
+                               DerivativeAccumulator &da) const {
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
     get_triplet_container(i)->apply(sm, da);
   }

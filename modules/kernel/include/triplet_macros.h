@@ -280,11 +280,11 @@
 
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_TRIPLET_CONTAINER(Name)                        \
-  void apply(const TripletModifier *sm) {                             \
+  void apply(const TripletModifier *sm) const {                       \
     template_apply(sm);                                                 \
   }                                                                     \
   void apply(const TripletDerivativeModifier *sm,                     \
-             DerivativeAccumulator &da) {                               \
+             DerivativeAccumulator &da) const {                         \
     template_apply(sm, da);                                             \
   }                                                                     \
   double evaluate(const TripletScore *s,                              \
@@ -310,11 +310,11 @@
   public:                                                               \
   template <class SM>                                                   \
   void template_apply(const SM *sm,                                     \
-                      DerivativeAccumulator &da) {                      \
+                      DerivativeAccumulator &da) const {                \
     LOOP(call_apply_index(sm, item, da));                               \
   }                                                                     \
   template <class SM>                                                   \
-  void template_apply(const SM *sm) {                                   \
+  void template_apply(const SM *sm) const {                             \
     LOOP(call_apply_index(sm, item));                                   \
   }                                                                     \
   template <class SS>                                                   \

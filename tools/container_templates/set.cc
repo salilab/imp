@@ -84,14 +84,14 @@ IMP_LIST_IMPL(CLASSNAMEContainerSet,
               CLASSNAMEContainers);
 
 
-void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) {
+void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) const {
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
     get_CLASSFUNCTIONNAME_container(i)->apply(sm);
   }
 }
 
 void CLASSNAMEContainerSet::apply(const CLASSNAMEDerivativeModifier *sm,
-                               DerivativeAccumulator &da) {
+                               DerivativeAccumulator &da) const {
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
     get_CLASSFUNCTIONNAME_container(i)->apply(sm, da);
   }
