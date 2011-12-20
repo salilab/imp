@@ -43,6 +43,7 @@ protected:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
+  Float p_;
 
 public:
   RelativePositionMover(core::RigidBody d, Float max_translation,
@@ -58,6 +59,13 @@ public:
   void add_internal_transformations(core::RigidBody d,
                                     algebra::Transformation3Ds transforms);
 
+  /*!
+    \param[in] p Probability of a random move instead of a relative one.
+                 default is 0.
+  */
+  void set_random_move_probability(Float p) {
+    p_ = p;
+  }
 
 };
 
