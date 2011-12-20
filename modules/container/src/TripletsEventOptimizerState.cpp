@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/TripletsEventOptimizerState.h>
+#include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 TripletsEventOptimizerState::
 TripletsEventOptimizerState(TripletPredicate *pred,

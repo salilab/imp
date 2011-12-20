@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/CLASSNAMEContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

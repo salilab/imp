@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/CLASSNAMEsEventOptimizerState.h>
+#include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 CLASSNAMEsEventOptimizerState::
 CLASSNAMEsEventOptimizerState(CLASSNAMEPredicate *pred,

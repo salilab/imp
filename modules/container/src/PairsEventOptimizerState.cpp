@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/PairsEventOptimizerState.h>
+#include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 PairsEventOptimizerState::
 PairsEventOptimizerState(PairPredicate *pred,

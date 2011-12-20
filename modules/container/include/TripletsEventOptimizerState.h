@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/TripletPredicate.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/TripletContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/QuadPredicate.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/QuadContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
