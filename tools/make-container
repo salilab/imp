@@ -143,6 +143,15 @@ def make_one(params, test=True):
               ("modules/kernel/src/"+multi + "Predicate.cpp",
                path+"/tools/container_templates/pred.cc"),
 
+            ("modules/core/include/"+multi.lower() + "_predicates.h",
+               path+"/tools/container_templates/preds.hpp"),
+              ("modules/core/src/"+multi.lower() + "_predicates.cpp",
+               path+"/tools/container_templates/preds.cc"),
+
+            ("modules/container/include/"+multi + "sEventOptimizerState.h",
+               path+"/tools/container_templates/terminator.hpp"),
+              ("modules/container/src/"+multi + "sEventOptimizerState.cpp",
+               path+"/tools/container_templates/terminator.cc"),
 
               ("modules/container/include/"+multi + "ContainerStatistics.h",
                path+"/tools/container_templates/statistics.hpp"),
