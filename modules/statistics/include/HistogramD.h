@@ -21,15 +21,14 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     specified during construction. */
 template <int D>
 class HistogramD {
+  public:
+
   typedef typename
   algebra::grids::GridD<D,
                         typename algebra::grids::DenseGridStorageD<D,
                                                           int>,
                         int, typename algebra::grids::DefaultEmbeddingD<D> >
-  Grid;
-  Grid grid_;
-  int count_;
-  public:
+  CountGrid;
   HistogramD(): count_(-1){}
   HistogramD(double voxel_size,
              const algebra::BoundingBoxD<D> &bb
@@ -39,7 +38,7 @@ class HistogramD {
    // value that is in range for this histogram.
   void add(const algebra::VectorD<D>& x) {
     IMP_USAGE_CHECK(count_ >-1, "Using uninitialized histogram");
-    typename Grid::ExtendedIndex ei=grid_.get_nearest_extended_index(x);
+    typename CountGrid::ExtendedIndex ei=grid_.get_nearest_extended_index(x);
     if (grid_.get_has_index(ei)) {
       ++grid_[grid_.get_index(ei)];
     }
@@ -56,19 +55,22 @@ class HistogramD {
                         float,
                         typename algebra::grids::DefaultEmbeddingD<D> >
   FrequencyGrid;
-  FrequencyGrid get_frequency_grid() const {
+  FrequencyGrid get_frequencies() const {
     FrequencyGrid ret(grid_.get_unit_cell()[0],
                       algebra::get_bounding_box(grid_), 0);
-    for (typename Grid::AllIndexIterator it= grid_.all_indexes_begin();
+    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
          it != grid_.all_indexes_end(); ++it) {
       ret[*it]= static_cast<double>(grid_[*it])/count_;
     }
     return ret;
   }
+  CountGrid get_counts() const {
+    return grid_;
+  }
   algebra::VectorD<D> get_mean() const {
     algebra::VectorD<D> ret;
     std::fill(ret.coordinates_begin(), ret.coordinates_end(), 0.0);
-    for (typename Grid::AllIndexIterator it= grid_.all_indexes_begin();
+    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
          it != grid_.all_indexes_end(); ++it) {
       ret+= grid_.get_center(*it)*grid_[*it];
     }
@@ -82,7 +84,7 @@ class HistogramD {
   get_standard_deviation(const algebra::VectorD<D> &mean) const {
     algebra::VectorD<D> ret;
     std::fill(ret.coordinates_begin(), ret.coordinates_end(), 0.0);
-    for (typename Grid::AllIndexIterator it= grid_.all_indexes_begin();
+    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
          it != grid_.all_indexes_end(); ++it) {
       algebra::VectorD<D> diff= grid_.get_center(*it)-mean;
       algebra::VectorD<D> diff2;
@@ -97,8 +99,14 @@ class HistogramD {
     }
     return ret;
   }
+  algebra::BoundingBoxD<D> get_bounding_box() const {
+    return IMP::algebra::get_bounding_box(grid_);
+  }
 
   IMP_SHOWABLE_INLINE(HistogramD,out << "count: " << count_);
+private:
+  CountGrid grid_;
+  int count_;
 };
 
 IMP_OUTPUT_OPERATOR_D(HistogramD);
