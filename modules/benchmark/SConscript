@@ -1,6 +1,6 @@
 Import('env')
 
 
-module_env=env.IMPModuleBuild(version="SVN",
+module_env=env.IMPModuleBuild(version='1',
                               lib_only_required_modules=['core', 'algebra'],
                               lib_only_optional_modules=['domino', 'atom', 'em', 'cgal', 'rmf', 'multifit'])
