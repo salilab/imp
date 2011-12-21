@@ -632,7 +632,7 @@ void Profile::add_partial_profiles(const Profile& other_profile, Float weight) {
 }
 
 double Profile::radius_of_gyration_fixed_q(double end_q) const {
-  std::vector<IMP::algebra::Vector2D> data; // x=q^2, y=logI(q))
+  IMP::algebra::Vector2Ds data; // x=q^2, y=logI(q))
   for(unsigned int i=0; i<profile_.size(); i++) {
     double q = profile_[i].q_;
     double Iq = profile_[i].intensity_;
@@ -666,7 +666,7 @@ double Profile::radius_of_gyration(double end_q_rg) const {
 }
 
 void Profile::background_adjust(double start_q) {
-  std::vector<algebra::Vector2D> data; // x=q^2, y=sum(q^2xI(q))
+  algebra::Vector2Ds data; // x=q^2, y=sum(q^2xI(q))
   double sum = 0.0;
   for(unsigned int i=0; i<profile_.size(); i++) {
     double q = profile_[i].q_;
