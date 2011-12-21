@@ -1,5 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(version='SVN', required_modules=['em', 'atom', 'core'],
+env.IMPModuleBuild(version='1', required_modules=['em', 'atom', 'core'],
                    lib_only_required_modules=['saxs'],
                    python_docs=True)

@@ -18,7 +18,7 @@ if scons_tools.dependency.gcc.get_is_gcc_like(env) and scons_tools.dependency.gc
     config.append("IMP_OLD_GCC")
 
 
-env.IMPModuleBuild(version='SVN',
+env.IMPModuleBuild(version='1',
                    lib_only_required_modules=['compatibility'],
                    optional_dependencies=deplist,
                    config_macros=config)
