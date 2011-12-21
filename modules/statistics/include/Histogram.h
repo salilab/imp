@@ -11,6 +11,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
 //! Histogram
 /** Keeps a set of values within a range
     the range is arranged into some number of bins
@@ -44,6 +45,7 @@ class IMPSTATISTICSEXPORT Histogram {
 };
 
 IMP_VALUES(Histogram, Histograms);
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_HISTOGRAM_H */
