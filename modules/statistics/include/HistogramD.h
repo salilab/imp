@@ -109,6 +109,7 @@ private:
   int count_;
 };
 
+#ifndef IMP_DOXYGEN
 IMP_OUTPUT_OPERATOR_D(HistogramD);
 typedef HistogramD<1> Histogram1D;
 IMP_VALUES(Histogram1D, Histogram1Ds);
@@ -124,6 +125,7 @@ typedef HistogramD<6> Histogram6D;
 IMP_VALUES(Histogram6D, Histogram6Ds);
 typedef HistogramD<-1> HistogramKD;
 IMP_VALUES(HistogramKD, HistogramKDs);
+#endif
 
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_HISTOGRAM_D_H */
