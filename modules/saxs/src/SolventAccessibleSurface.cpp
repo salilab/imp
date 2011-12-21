@@ -17,7 +17,7 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
                                           float density)
 {
   IMP::Floats res;
-  std::vector<algebra::Vector3D> coordinates(ps.size());
+  algebra::Vector3Ds coordinates(ps.size());
   IMP::Floats radii(ps.size());
   for(unsigned int i=0; i<ps.size(); i++) {
     coordinates[i] = ps[i].get_coordinates();

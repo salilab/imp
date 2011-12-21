@@ -34,7 +34,7 @@ public:
   float calc_symm_score(int symm_axis_ind) const;
 protected:
 
-  std::vector<IMP::algebra::Vector3D> vecs_;
+  IMP::algebra::Vector3Ds vecs_;
   algebra::PrincipalComponentAnalysis pca_;
   int symm_deg_;
   bool initialized_;
