@@ -159,22 +159,22 @@ struct ModelData;
 class IMPDOMINOEXPORT SubsetData {
   const ModelData *md_;
   Ints ris_;
-  compatibility::checked_vector<Ints> indices_;
-  compatibility::checked_vector<std::pair<double, Ints> > set_ris_;
-  compatibility::checked_vector< compatibility::checked_vector<Ints> >
+  vector<Ints> indices_;
+  vector<std::pair<double, Ints> > set_ris_;
+  vector< vector<Ints> >
     set_indices_;
-  compatibility::checked_vector<Floats> set_weights_;
+  vector<Floats> set_weights_;
   Subset s_;
  public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
-             const compatibility::checked_vector<std::pair< double, Ints> >
+             const vector<std::pair< double, Ints> >
              &set_ris,
-             compatibility::checked_vector<Ints> indices,
-     const compatibility::checked_vector<compatibility::checked_vector<Ints> >&
+             vector<Ints> indices,
+     const vector<vector<Ints> >&
              set_indices,
-             const compatibility::checked_vector<Floats>& set_weights,
+             const vector<Floats>& set_weights,
              const Subset &s): md_(md), ris_(ris),
     indices_(indices),
     set_ris_(set_ris), set_indices_(set_indices), set_weights_(set_weights),
@@ -225,10 +225,10 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   bool initialized_;
   Restraints rs_;
   unsigned int max_cache_;
-  compatibility::checked_vector<RestraintData> rdata_;
-  compatibility::checked_vector<std::pair<double, Ints> > sets_;
-  compatibility::checked_vector<Floats> set_weights_;
-  compatibility::checked_vector<Subset> dependencies_;
+  vector<RestraintData> rdata_;
+  vector<std::pair<double, Ints> > sets_;
+  vector<Floats> set_weights_;
+  vector<Subset> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
 

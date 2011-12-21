@@ -294,7 +294,7 @@ public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class Traits>
 inline std::ostream &operator<<(std::ostream &out,
-                const std::vector<PointerBase<Traits> > &data) {
+                const vector<PointerBase<Traits> > &data) {
   out << "[";
   for (unsigned int i=0; i< data.size(); ++i) {
     if (i != 0) {

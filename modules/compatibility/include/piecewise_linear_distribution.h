@@ -9,7 +9,7 @@
 #define IMPCOMPATIBILITY_PIECEWISE_LINEAR_DISTRIBUTION_H
 
 #include "compatibility_config.h"
-#include "checked_vector.h"
+#include "vector.h"
 #include <boost/version.hpp>
 #include <boost/random/uniform_real.hpp>
 #include <numeric>
@@ -29,9 +29,9 @@ IMPCOMPATIBILITY_BEGIN_NAMESPACE
 */
 template <class T=double>
 class piecewise_linear_distribution {
-  checked_vector<T> dividers_;
-  checked_vector<T> accum_;
-  checked_vector<T> weights_;
+  vector<T> dividers_;
+  vector<T> accum_;
+  vector<T> weights_;
   mutable boost::uniform_real<> un_;
   double get_divider(int divider) const {
     return dividers_[divider];
@@ -120,7 +120,7 @@ class piecewise_linear_distribution {
   template <class RNG>
       double operator()(RNG& rng) const {
     double rn= un_(rng);
-    typename checked_vector<T>::const_iterator it
+    typename vector<T>::const_iterator it
         = std::upper_bound(accum_.begin()+1, accum_.end(), rn);
     if (it == accum_.end()) {
       std::cerr << "Hit end " << rn << " " << accum_.back() << std::endl;

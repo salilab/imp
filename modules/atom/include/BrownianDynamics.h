@@ -84,7 +84,7 @@ public:
                                    boost::normal_distribution<double> > RNG;
   double max_step_;
   bool srk_;
-  std::vector<algebra::Vector3D> forces_;
+  vector<algebra::Vector3D> forces_;
 };
 
 

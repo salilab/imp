@@ -16,11 +16,11 @@
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 class TrivialPartitionalClustering:
   public PartitionalClustering {
-  IMP::compatibility::checked_vector<Ints> clusters_;
+  IMP::vector<Ints> clusters_;
   Ints reps_;
 public:
   TrivialPartitionalClustering(
-    const IMP::compatibility::checked_vector<Ints> &clusters,
+    const IMP::vector<Ints> &clusters,
                                const Ints &reps=Ints()):
     PartitionalClustering("trivial"),
     clusters_(clusters), reps_(reps){

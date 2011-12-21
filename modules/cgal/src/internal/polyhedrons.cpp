@@ -117,16 +117,15 @@ namespace {
   }
 
   template <class K>
-  std::vector<algebra::Vector3Ds >
+  vector<algebra::Vector3Ds >
   get_facets(  CGAL::Nef_polyhedron_3<K> &np) {
     typename CGAL::Polyhedron_3<K> p;
     np.convert_to_polyhedron(p);
     CGAL_postcondition( p.is_valid());
-    typename std::vector<typename
-                         std::vector<typename algebra::Vector3D > > ret;
+    vector< vector<typename algebra::Vector3D > > ret;
     for (typename CGAL::Polyhedron_3<K>::Face_iterator it= p.facets_begin();
          it != p.facets_end(); ++it) {
-      ret.push_back(typename std::vector<typename algebra::Vector3D >());
+      ret.push_back( vector< algebra::Vector3D >());
       typename CGAL::Polyhedron_3<K>
         ::Facet::Halfedge_around_facet_circulator c= it->facet_begin();
       do {
@@ -225,7 +224,7 @@ CGAL::Nef_polyhedron_3<K> create_cube(const algebra::BoundingBoxD<3> &bb) {
 
 template <class K>
 CGAL::Nef_polyhedron_3<K> create_nef(const algebra::BoundingBoxD<3> &bb,
-                           const std::vector< algebra::Plane3D >&planes) {
+                           const vector< algebra::Plane3D >&planes) {
   typename CGAL::Nef_polyhedron_3<K> cur(create_cube<K>(bb));
   IMP_INTERNAL_CHECK(cur.is_simple(), "Something wrong with cube ");
   for (unsigned int i=0; i< planes.size(); ++i) {
@@ -245,10 +244,10 @@ CGAL::Nef_polyhedron_3<K> create_nef(const algebra::BoundingBoxD<3> &bb,
 }
 }
 
-std::vector<algebra::Vector3Ds >
+vector<algebra::Vector3Ds >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
-                      const std::vector< algebra::Plane3D > &outer,
-                      const std::vector< algebra::Plane3D > &hole) {
+                      const vector< algebra::Plane3D > &outer,
+                      const vector< algebra::Plane3D > &hole) {
   CGAL::Nef_polyhedron_3<EKernel> pouter= create_nef<EKernel>(bb, outer);
   CGAL::Nef_polyhedron_3<EKernel> phole= create_nef<EKernel>(bb, hole);
   CGAL::Nef_polyhedron_3<EKernel> diff= pouter-phole;
@@ -257,8 +256,8 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
 
 std::pair<algebra::Vector3Ds,Ints >
 get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
-                              const std::vector< algebra::Plane3D > &outer,
-                              const std::vector< algebra::Plane3D > &hole) {
+                              const vector< algebra::Plane3D > &outer,
+                              const vector< algebra::Plane3D > &hole) {
   CGAL::Nef_polyhedron_3<EKernel> pouter= create_nef<EKernel>(bb, outer);
   CGAL::Nef_polyhedron_3<EKernel> phole= create_nef<EKernel>(bb, hole);
   CGAL::Nef_polyhedron_3<EKernel> diff= pouter-phole;
@@ -266,9 +265,9 @@ get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
 }
 
 
-std::vector<algebra::Vector3Ds >
+vector<algebra::Vector3Ds >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
-                      const std::vector< algebra::Plane3D > &outer) {
+                      const vector< algebra::Plane3D > &outer) {
   CGAL::Nef_polyhedron_3<EKernel> pouter= create_nef<EKernel>(bb, outer);
   return get_facets(pouter);
 }
@@ -280,7 +279,7 @@ get_skin_surface(const algebra::Sphere3Ds &ss) {
   IMP_FUNCTION_LOG;
   typedef IKernel::Point_3                                     Bare_point;
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
-  std::vector<Weighted_point> l(ss.size());
+  vector<Weighted_point> l(ss.size());
   for (unsigned int i=0; i< ss.size(); ++i) {
     l[i]= Weighted_point(trp<IKernel>(ss[i].get_center()),
                          square(ss[i].get_radius()));

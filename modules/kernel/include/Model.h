@@ -93,7 +93,7 @@ class BasicAttributeTable {
 public:
   typedef typename Traits::Key Key;
 private:
-  typename compatibility::checked_vector<typename Traits::Container > data_;
+  vector<typename Traits::Container > data_;
 #if IMP_BUILD < IMP_FAST
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
@@ -231,9 +231,9 @@ public:
     }
   }
 
-  IMP::compatibility::checked_vector<Key>
+  IMP::vector<Key>
   get_attribute_keys(ParticleIndex particle) const {
-    compatibility::checked_vector<Key> ret;
+    vector<Key> ret;
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (data_[i].size() > static_cast<unsigned int>(particle)
           && Traits::get_is_valid(data_[i][particle])) {
@@ -255,8 +255,8 @@ IMP_SWAP_1(BasicAttributeTable);
 
 
 class FloatAttributeTable {
-  //std::vector<algebra::Sphere3D> spheres_;
-  //std::vector<algebra::Sphere3D> sphere_derivatives_;
+  //vector<algebra::Sphere3D> spheres_;
+  //vector<algebra::Sphere3D> sphere_derivatives_;
   algebra::Sphere3Ds spheres_;
   algebra::Sphere3Ds sphere_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
@@ -649,11 +649,11 @@ private:
   bool first_call_;
   double max_score_;
   mutable bool has_good_score_;
-  std::vector<std::pair<Object*, Object*> > extra_edges_;
+  vector<std::pair<Object*, Object*> > extra_edges_;
 
   Ints free_particles_;
   unsigned int next_particle_;
-  compatibility::checked_vector<Pointer<Particle> > particle_index_;
+  vector<Pointer<Particle> > particle_index_;
  private:
   // statistics
   bool gather_statistics_;
@@ -935,7 +935,7 @@ public:
 #endif
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const std::vector<std::pair<Object*, Object*> >&
+  const vector<std::pair<Object*, Object*> >&
     get_extra_dependency_edges() const {
     return extra_edges_;
   }
@@ -972,7 +972,7 @@ public:
   };
   typedef boost::filter_iterator<NotNull,
                                  compatibility
-                                 ::checked_vector<Pointer<Particle> >
+                                 ::vector<Pointer<Particle> >
                                  ::const_iterator> ParticleIterator;
 
 #endif

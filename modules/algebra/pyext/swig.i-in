@@ -106,7 +106,6 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 
 %include "IMP/algebra/GridD.h"
 
-IMP_SWIG_ALGEBRA_PRIVATE_TEMPLATE_D(IMP::algebra::grids, UnboundedGridStorage);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, GridIndex);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, ExtendedGridIndex);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, BoundedGridStorage);
@@ -174,7 +173,7 @@ namespace IMP {
    }
 
 
-   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
+   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<IMP::vector<IMP::algebra::VectorD<3> >, IMP::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
  }
 }

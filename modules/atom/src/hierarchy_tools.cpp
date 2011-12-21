@@ -898,7 +898,7 @@ void setup_as_approximation(Hierarchy h, double resolution) {
 
 
 void transform(Hierarchy h, const algebra::Transformation3D &tr) {
-  std::vector<Hierarchy> stack;
+  vector<Hierarchy> stack;
   stack.push_back(h);
   do {
     Hierarchy c= stack.back();
@@ -966,7 +966,7 @@ HierarchyTree get_hierarchy_tree(Hierarchy h) {
   typedef boost::property_map<HierarchyTree,
                       boost::vertex_name_t>::type VM;
   VM vm= boost::get(boost::vertex_name, ret);
-  std::vector<std::pair<int, Hierarchy> > queue;
+  vector<std::pair<int, Hierarchy> > queue;
   int v= boost::add_vertex(ret);
   vm[v]= h;
   queue.push_back(std::make_pair(v, h));

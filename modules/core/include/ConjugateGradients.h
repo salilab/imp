@@ -52,13 +52,13 @@ private:
   // Handle optimization failing badly
   void failure();
 
-  NT get_score(std::vector<FloatIndex> float_indices,
-               std::vector<NT> &x, std::vector<NT> &dscore);
-  bool line_search(std::vector<NT> &x, std::vector<NT> &dx,
-                   NT &alpha, const std::vector<FloatIndex> &float_indices,
+  NT get_score(vector<FloatIndex> float_indices,
+               vector<NT> &x, vector<NT> &dscore);
+  bool line_search(vector<NT> &x, vector<NT> &dx,
+                   NT &alpha, const vector<FloatIndex> &float_indices,
                    int &ifun, NT &f, NT &dg, NT &dg1,
-                   int max_steps, const std::vector<NT> &search,
-                   const std::vector<NT> &estimate);
+                   int max_steps, const vector<NT> &search,
+                   const vector<NT> &estimate);
   Float threshold_;
   Float max_change_;
 };

@@ -69,7 +69,7 @@ public:
 };
 
   struct cycle_detector : public boost::default_dfs_visitor {
-    compatibility::checked_vector<MDGVertex> cycle_;
+    vector<MDGVertex> cycle_;
     template <class DGVertex>
     void start_vertex(DGVertex v, const DependencyGraph&) {
       cycle_.push_back(v);
@@ -82,7 +82,7 @@ public:
     template <class ED>
     void back_edge(ED e, const DependencyGraph&g) {
       MDGVertex t= boost::target(e, g);
-      compatibility::checked_vector<MDGVertex>::iterator it
+      vector<MDGVertex>::iterator it
         = std::find(cycle_.begin(), cycle_.end(), t);
       IMP_USAGE_CHECK(it != cycle_.end(),
                       "The vertex is not there. Conceptual bug.");
@@ -94,21 +94,21 @@ public:
 
 namespace {
 
-  compatibility::checked_vector<MDGVertex> get_cycle(const DependencyGraph &g) {
+  vector<MDGVertex> get_cycle(const DependencyGraph &g) {
     cycle_detector vis;
     try {
       boost::vector_property_map<int> color(boost::num_vertices(g));
       boost::depth_first_search(g, boost::visitor(vis).color_map(color));
-    } catch (compatibility::checked_vector<MDGVertex> cycle) {
+    } catch (vector<MDGVertex> cycle) {
       return cycle;
     }
-    return compatibility::checked_vector<MDGVertex>();
+    return vector<MDGVertex>();
   }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
   void order_score_states(const DependencyGraph &dg,
                           ScoreStatesTemp &out) {
-    compatibility::checked_vector<MDGTraits::vertex_descriptor> sorted;
+    vector<MDGTraits::vertex_descriptor> sorted;
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
@@ -116,7 +116,7 @@ namespace {
     } catch (...) {
       base::TextOutput out=create_temporary_file();
       base::internal::show_as_graphviz(dg, out);
-      compatibility::checked_vector<MDGVertex> cycle= get_cycle(dg);
+      vector<MDGVertex> cycle= get_cycle(dg);
       std::ostringstream oss;
       for (unsigned int i=0; i< cycle.size(); ++i) {
         oss << om[cycle[i]]->get_name() << " -- ";

@@ -301,7 +301,7 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
-  std::vector<std::pair<Object*, Object*> > extra;
+  vector<std::pair<Object*, Object*> > extra;
   if (!ss.empty()) {
     extra=ss[0]->get_model()->get_extra_dependency_edges();
   } else if (!rs.empty()) {

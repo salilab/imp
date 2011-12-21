@@ -15,7 +15,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 namespace {
   std::string strip_quotes(std::string in) {
-    std::vector<char> v(in.begin(), in.end());
+    vector<char> v(in.begin(), in.end());
     return std::string(v.begin(),
                        std::remove(v.begin(), v.end(), '\''));
   }

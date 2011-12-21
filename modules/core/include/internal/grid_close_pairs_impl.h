@@ -120,10 +120,10 @@ struct BBPairSink {
 template <class Traits>
 struct Helper {
   typedef typename Traits::ID ID;
-  struct IDs: public std::vector<ID> {
+  struct IDs: public vector<ID> {
     int which_;
     IDs(int which): which_(which){}
-    IDs(ID id, int which): std::vector<ID>(1,id), which_(which){}
+    IDs(ID id, int which): vector<ID>(1,id), which_(which){}
     IDs(): which_(-1){}
   };
   static inline std::string do_show(const IDs&p) {
@@ -135,7 +135,7 @@ struct Helper {
   }
 
   typedef typename algebra::SparseGrid3D<IDs> Grid;
-  typedef std::vector<Grid> Grids;
+  typedef vector<Grid> Grids;
 
   template <class It>
   struct ParticleSet {
@@ -193,7 +193,7 @@ struct Helper {
   template <class It>
   static void partition_points(const ParticleSet<It> &ps,
                                const Traits &tr,
-                               typename std::vector<IDs > &bin_contents,
+                               vector<IDs > &bin_contents,
                                Floats &bin_ubs) {
     bin_contents.push_back(IDs(ps.which_));
     for (It c= ps.b_; c != ps.e_; ++c) {
@@ -390,7 +390,7 @@ struct Helper {
                                Out out) {
     if (ps.size()==0) return true;
     double maxr=get_max_radius(ps, tr);
-    std::vector<IDs > bin_contents_g;
+    vector<IDs > bin_contents_g;
     Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
@@ -407,7 +407,7 @@ struct Helper {
                 << std::endl);
       }
     }
-    std::vector<algebra::BoundingBox3D> bbs(bin_contents_g.size());
+    vector<algebra::BoundingBox3D> bbs(bin_contents_g.size());
     for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
       bbs[i]= get_bb(bin_contents_g[i], tr);
     }
@@ -516,7 +516,7 @@ struct Helper {
                                Out out) {
     if (psg.size()==0 || psq.size()==0) return true;
     double maxr=std::max(get_max_radius(psg, tr), get_max_radius(psq, tr));
-    std::vector<IDs > bin_contents_g, bin_contents_q;
+    vector<IDs > bin_contents_g, bin_contents_q;
     Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
@@ -539,11 +539,11 @@ struct Helper {
                 << std::endl);
       }
     }
-    std::vector<algebra::BoundingBox3D> bbs_g(bin_contents_g.size());
+    vector<algebra::BoundingBox3D> bbs_g(bin_contents_g.size());
     for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
       bbs_g[i]= get_bb(bin_contents_g[i], tr);
     }
-    std::vector<algebra::BoundingBox3D> bbs_q(bin_contents_q.size());
+    vector<algebra::BoundingBox3D> bbs_q(bin_contents_q.size());
     for (unsigned int i=0; i< bin_contents_q.size(); ++i) {
       bbs_q[i]= get_bb(bin_contents_q[i], tr);
     }

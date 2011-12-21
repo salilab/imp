@@ -10,7 +10,7 @@
 
 #include "../kernel_config.h"
 #include <IMP/compatibility/map.h>
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
@@ -18,7 +18,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 struct IMPEXPORT KeyData
 {
   typedef IMP::compatibility::map<std::string, int> Map;
-  typedef IMP::compatibility::checked_vector<std::string> RMap;
+  typedef IMP::vector<std::string> RMap;
 
   void show(std::ostream &out= std::cout) const;
   KeyData();

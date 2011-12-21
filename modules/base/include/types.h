@@ -10,12 +10,18 @@
 
 #include "base_config.h"
 #include "base_macros.h"
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 #include <IMP/compatibility/hash.h>
 #include <IMP/compatibility/nullptr.h>
 
 //IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
+#ifndef SWIG
+  using compatibility::vector;
+#else
+  template <class T>
+  struct vector {};
+#endif
 /** \internal \namespace IMP::internal Implementation details.
  */
 

@@ -56,7 +56,7 @@ get_intersection(const algebra::Vector3D &normal,
   std::cout << "plane " << plane << std::endl;
   algebra::Vector3Ds corners= algebra::get_vertices(bb);
   IntPairs edges= algebra::get_edges(bb);
-  std::vector<Point_2> intersections;
+  vector<Point_2> intersections;
   for (unsigned int i=0; i< edges.size(); ++i) {
     Segment_3 s(tr<Point_3>(corners[edges[i].first]),
                 tr<Point_3>(corners[edges[i].second]));
@@ -66,7 +66,7 @@ get_intersection(const algebra::Vector3D &normal,
       intersections.push_back(plane.to_2d(*ip));
     }
   }
-  std::vector<Point_2> ch;
+  vector<Point_2> ch;
   CGAL::ch_graham_andrew(intersections.begin(), intersections.end(),
                          std::back_inserter(ch));
   algebra::Vector3Ds ret;
@@ -93,7 +93,7 @@ get_convex_polygons(const Ints &indexes,
   typedef Kernel::Point_3 Point_3;
   typedef Kernel::Plane_3 Plane_3;
   typedef CGAL::Partition_traits_2<Kernel>::Polygon_2 Polygon_2;
-  std::vector<Point_3> poly_3(indexes.size());
+  vector<Point_3> poly_3(indexes.size());
   for (unsigned int i=0; i< indexes.size(); ++i) {
     poly_3[i]= Point_3(vertices.at(indexes[i])[0], vertices.at(indexes[i])[1],
                        vertices.at(indexes[i])[2]);
@@ -107,7 +107,7 @@ get_convex_polygons(const Ints &indexes,
                                        dt);
   //plane= CGAL::object_cast<Plane_3>(out);
   // project points
-  std::vector<Point_2> points_2(indexes.size());
+  vector<Point_2> points_2(indexes.size());
   std::map<Point_2, int, PointLess> index;
   for (unsigned int i=0; i< indexes.size(); ++i) {
     points_2[i]= plane.to_2d(poly_3[i]);
@@ -121,7 +121,7 @@ get_convex_polygons(const Ints &indexes,
     reverse=true;
   }
   // decompose
-  std::vector<Polygon_2 > polys2;
+  vector<Polygon_2 > polys2;
   try {
     CGAL::approx_convex_partition_2(poly2.vertices_begin(),
                                     poly2.vertices_end(),

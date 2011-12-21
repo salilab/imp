@@ -318,7 +318,7 @@ double ClusteredAssignmentContainer::get_minimum_distance() const {
 
 void ClusteredAssignmentContainer::recluster() {
   IMP_LOG(VERBOSE, "Reclustering from " << d_ << std::endl);
-  compatibility::checked_vector<Assignment> nd_;
+  vector<Assignment> nd_;
   std::swap(nd_, d_);
   for (unsigned int i=0; i< nd_.size(); ++i) {
     if (!get_in_cluster(nd_[i])) {

@@ -69,7 +69,7 @@ public:
     data_(b,e), eps_(epsilon){
     instantiate(b,e);
   }
-  NearestNeighborD(const std::vector<VectorD<D> > &vs,
+  NearestNeighborD(const vector<VectorD<D> > &vs,
                    double epsilon=0):
     Object("NearestNeighbor%1%"),
     data_(vs.begin(), vs.end()),
@@ -190,7 +190,7 @@ class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;
   Vector3Ds coords_;
-  compatibility::checked_vector<Index> indexes_;
+  vector<Index> indexes_;
   void audit() const;
   void set_coordinates_internal(int id, Vector3D nc);
  public:

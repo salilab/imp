@@ -153,7 +153,7 @@ namespace {
     Charged::setup_particle(d, atom_charge);
     // get the element from the Sybyl atom type field
     // split on '.' to get the element
-    std::vector<std::string> split_results;
+    vector<std::string> split_results;
     boost::split(split_results, type_field, boost::is_any_of("."));
     Element e= get_element_table().get_element(split_results[0]);
     d.set_element(e);
@@ -378,7 +378,7 @@ namespace {
     // get BondDecorator of the bond particles, output bond section
     // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
     Bonds bonds(get_internal_bonds(chd));
-    std::vector<Bond> bds(bonds.begin(), bonds.end());
+    vector<Bond> bds(bonds.begin(), bonds.end());
     std::sort(bds.begin(), bds.end(), Less());
     bonds= Bonds(bds.begin(), bds.end());
     mol2_file << "@<TRIPOS>BOND" << std::endl;

@@ -14,8 +14,8 @@
 IMPBASE_BEGIN_NAMESPACE
 
 namespace {
-  std::vector<std::string> contexts;
-  std::vector<bool> context_initializeds;
+  vector<std::string> contexts;
+  vector<bool> context_initializeds;
 }
 
 std::string get_context_message() {

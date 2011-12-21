@@ -17,7 +17,7 @@
 #include <vector>
 #include <iostream>
 #include "base_macros.h"
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 
 #if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
 #include <boost/math/special_functions/fpclassify.hpp>

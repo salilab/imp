@@ -29,7 +29,7 @@
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 template <int D>
 void
-refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
+refine_unit_sphere_cover_d(vector<algebra::VectorD<D> > &ret,
                             bool ALL) {
   unsigned int n= ret.size();
   typedef  ::CGAL::Cartesian_d< ::CGAL::Lazy_exact_nt<
@@ -54,7 +54,7 @@ refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
         indexes[vh]= -static_cast<int>(i)-1;
       }
     }
-    std::vector<algebra::VectorD<D> > sums(n, algebra::get_zero_vector_d<D>());
+    vector<algebra::VectorD<D> > sums(n, algebra::get_zero_vector_d<D>());
     Floats counts(n, 0);
     for (CH::Facet_iterator it= ch.facets_begin();
          it != ch.facets_end(); ++it) {
@@ -66,7 +66,7 @@ refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
         } else {
           continue;
         }
-        /*std::vector<VectorD<D> > simplex;
+        /*vector<VectorD<D> > simplex;
         for (unsigned int j=0; i< D; ++i ) {
           int vj=indexes[ch.vertex_of_facet(it, j)];
           VectorD<D> pj;
@@ -115,7 +115,7 @@ refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
 }
 
 void
-refine_unit_sphere_cover_4d(std::vector<algebra::VectorD<4> > &ret,
+refine_unit_sphere_cover_4d(vector<algebra::VectorD<4> > &ret,
                             bool ALL) {
   refine_unit_sphere_cover_d(ret, ALL);
 }

@@ -86,7 +86,7 @@ IMPATOMEXPORT float atom_temp_factor(const String& pdb_line);
 IMPATOMEXPORT String atom_element(const String& pdb_line);
 
 //! Returns the connected atoms from the CONECT record
-IMPATOMEXPORT std::vector<unsigned short>
+IMPATOMEXPORT vector<unsigned short>
 connected_atoms(const String& pdb_line);
 
 /** ATOM Record Format (from PDB)

@@ -87,7 +87,7 @@ public:
 class IMPCOREEXPORT XYZRMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  std::vector<algebra::Sphere3D> backup_;
+  vector<algebra::Sphere3D> backup_;
   Ints moved_;
   virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
@@ -109,7 +109,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
 {
   IMP::OwnerPointer<CoreListSingletonContainer> normal_;
   IMP::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
-  std::vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
+  vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
   ParticleIndexes rbs_;
   Ints rbs_moved_;
   IMP::compatibility::map<ParticleIndex, ParticleIndexes> rbs_members_;

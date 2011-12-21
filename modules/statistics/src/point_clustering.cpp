@@ -204,7 +204,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
                      == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
-  IMP::compatibility::checked_vector<algebra::VectorKD> centers(k);
+  IMP::vector<algebra::VectorKD> centers(k);
   for (unsigned int i = 0; i < k; i++) {
     internal::KMPoint *kmp = best_clusters[i];
     centers[i]=algebra::VectorKD(kmp->begin(), kmp->end());
@@ -215,7 +215,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
   const Ints &close_center = *best_clusters.get_assignments();
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
-  IMP::compatibility::checked_vector<Ints> clusters(k);
+  IMP::vector<Ints> clusters(k);
   for (unsigned int i=0;i<names.size();i++) {
     //std::cout<<"ps number i: " << i << " close center : "
     //<< (*close_center)[i] << std::endl;
@@ -285,8 +285,8 @@ create_connectivity_clustering(Embedding *embed,
   }
   std::map<int,int> cluster_map;
   Ints reps;
-  IMP::compatibility::checked_vector<Ints> clusters;
-  IMP::compatibility::checked_vector<algebra::VectorKD> centers;
+  IMP::vector<Ints> clusters;
+  IMP::vector<algebra::VectorKD> centers;
   for (unsigned int i=0; i < vs.size(); ++i) {
     int p= uf.find_set(i);
     if (cluster_map.find(p) == cluster_map.end()) {
@@ -331,8 +331,8 @@ create_bin_based_clustering(Embedding *embed,
       grid[grid.get_index(ei)].push_back(i);
     }
   }
-  IMP::compatibility::checked_vector<Ints> clusters;
-  IMP::compatibility::checked_vector<algebra::VectorKD> centers;
+  IMP::vector<Ints> clusters;
+  IMP::vector<algebra::VectorKD> centers;
   Ints reps;
   for (Grid::AllConstIterator it= grid.all_begin();
        it != grid.all_end(); ++it) {
@@ -417,7 +417,7 @@ RecursivePartitionalClusteringEmbedding
 PartitionalClustering*
  RecursivePartitionalClusteringEmbedding
 ::create_full_clustering(PartitionalClustering *center_cluster) {
-  IMP::compatibility::checked_vector<Ints>
+  IMP::vector<Ints>
     clusters(center_cluster->get_number_of_clusters());
   Ints reps(clusters.size());
   for (unsigned int i=0; i< clusters.size(); ++i) {

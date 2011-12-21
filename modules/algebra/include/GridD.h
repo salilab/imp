@@ -16,7 +16,7 @@
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/compatibility/map.h>
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 
 #include <limits>
 
@@ -217,44 +217,44 @@ namespace grids {
 #if !defined(IMP_DOXYGEN)
   typedef GridIndexD<1> GridIndex1D;
   typedef ExtendedGridIndexD<1> ExtendedGridIndex1D;
-  typedef checked_vector<GridIndex1D> GridIndex1Ds;
-  typedef checked_vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
+  typedef vector<GridIndex1D> GridIndex1Ds;
+  typedef vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
 
 
   typedef GridIndexD<2> GridIndex2D;
   typedef ExtendedGridIndexD<2> ExtendedGridIndex2D;
-  typedef checked_vector<GridIndex2D> GridIndex2Ds;
-  typedef checked_vector<ExtendedGridIndex2D>
+  typedef vector<GridIndex2D> GridIndex2Ds;
+  typedef vector<ExtendedGridIndex2D>
   ExtendedGridIndex2Ds;
 
   typedef GridIndexD<3> GridIndex3D;
   typedef ExtendedGridIndexD<3> ExtendedGridIndex3D;
-  typedef checked_vector<GridIndex3D> GridIndex3Ds;
-  typedef checked_vector<ExtendedGridIndex3D>
+  typedef vector<GridIndex3D> GridIndex3Ds;
+  typedef vector<ExtendedGridIndex3D>
   ExtendedGridIndex3Ds;
 
   typedef GridIndexD<4> GridIndex4D;
   typedef ExtendedGridIndexD<4> ExtendedGridIndex4D;
-  typedef checked_vector<GridIndex4D> GridIndex4Ds;
-  typedef checked_vector<ExtendedGridIndex4D>
+  typedef vector<GridIndex4D> GridIndex4Ds;
+  typedef vector<ExtendedGridIndex4D>
   ExtendedGridIndex4Ds;
 
   typedef GridIndexD<5> GridIndex5D;
   typedef ExtendedGridIndexD<5> ExtendedGridIndex5D;
-  typedef checked_vector<GridIndex5D> GridIndex5Ds;
-  typedef checked_vector<ExtendedGridIndex5D>
+  typedef vector<GridIndex5D> GridIndex5Ds;
+  typedef vector<ExtendedGridIndex5D>
   ExtendedGridIndex5Ds;
 
   typedef GridIndexD<6> GridIndex6D;
   typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
-  typedef checked_vector<GridIndex6D> GridIndex6Ds;
-  typedef checked_vector<ExtendedGridIndex6D>
+  typedef vector<GridIndex6D> GridIndex6Ds;
+  typedef vector<ExtendedGridIndex6D>
   ExtendedGridIndex6Ds;
 
   typedef GridIndexD<-1> GridIndexKD;
   typedef ExtendedGridIndexD<-1> ExtendedGridIndexKD;
-  typedef checked_vector<GridIndexKD> GridIndexKDs;
-  typedef checked_vector<ExtendedGridIndexKD>
+  typedef vector<GridIndexKD> GridIndexKDs;
+  typedef vector<ExtendedGridIndexKD>
   ExtendedGridIndexKDs;
 #endif
 
@@ -313,10 +313,10 @@ namespace grids {
       return ExtendedIndexIterator();
     }
 #endif
-    checked_vector<ExtendedGridIndexD<D> >
+    vector<ExtendedGridIndexD<D> >
     get_extended_indexes(const ExtendedGridIndexD<D>& lb,
                          const ExtendedGridIndexD<D>& ub) const {
-      return checked_vector<ExtendedGridIndexD<D> >
+      return vector<ExtendedGridIndexD<D> >
         (extended_indexes_begin(lb, ub),
          extended_indexes_end(lb, ub));
     }
@@ -418,8 +418,8 @@ namespace grids {
                        d_);
   }
 #endif
-  checked_vector<GridIndexD<D> > get_all_indexes() const {
-    checked_vector<GridIndexD<D> > ret(all_indexes_begin(),
+  vector<GridIndexD<D> > get_all_indexes() const {
+    vector<GridIndexD<D> > ret(all_indexes_begin(),
                                     all_indexes_end());
     return ret;
   }
@@ -490,16 +490,16 @@ namespace grids {
   }
 #endif
 
-    checked_vector<GridIndexD<D> >
+    vector<GridIndexD<D> >
     get_indexes(const ExtendedGridIndexD<D>& lb,
                                     const ExtendedGridIndexD<D>& ub) const {
-    return checked_vector<GridIndexD<D> >(indexes_begin(lb, ub),
+    return vector<GridIndexD<D> >(indexes_begin(lb, ub),
                                        indexes_end(lb, ub));
   }
-  checked_vector<ExtendedGridIndexD<D> >
+  vector<ExtendedGridIndexD<D> >
   get_extended_indexes(const ExtendedGridIndexD<D>& lb,
                        const ExtendedGridIndexD<D>& ub) const {
-    return checked_vector<ExtendedGridIndexD<D> >
+    return vector<ExtendedGridIndexD<D> >
       (extended_indexes_begin(lb, ub),
        extended_indexes_end(lb, ub));
   }
@@ -685,8 +685,8 @@ namespace grids {
       return data_.get()+get_extent();
     }
 #endif
-    checked_vector<VT> get_all_voxels() const {
-      return checked_vector<VT>(all_voxels_begin(),
+    vector<VT> get_all_voxels() const {
+      return vector<VT>(all_voxels_begin(),
                                               all_voxels_end());
     }
     /** @} */
@@ -822,8 +822,8 @@ namespace grids {
     }
 #endif
 
-    checked_vector<GridIndexD<D> > get_all_indexes() const {
-      return checked_vector<GridIndexD<D> >
+    vector<GridIndexD<D> > get_all_indexes() const {
+      return vector<GridIndexD<D> >
         (boost::make_transform_iterator(all_begin(), GetIndex()),
          boost::make_transform_iterator(all_end(), GetIndex()));
     }
@@ -874,10 +874,10 @@ namespace grids {
     }
 #endif
 
-    checked_vector<GridIndexD<D> >
+    vector<GridIndexD<D> >
     get_indexes(const ExtendedGridIndexD<D>& lb,
                 const ExtendedGridIndexD<D>& ub) const {
-      return checked_vector<GridIndexD<D> >(indexes_begin(lb, ub),
+      return vector<GridIndexD<D> >(indexes_begin(lb, ub),
                                          indexes_end(lb, ub));
     }
     /** @} */
@@ -1022,26 +1022,26 @@ namespace grids {
 IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
 #if !defined(IMP_DOXYGEN)
   typedef DefaultEmbeddingD<1> DefaultEmbedding1D;
-  typedef checked_vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
+  typedef vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
 
 
   typedef DefaultEmbeddingD<2> DefaultEmbedding2D;
-  typedef checked_vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
+  typedef vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
 
   typedef DefaultEmbeddingD<3> DefaultEmbedding3D;
-  typedef checked_vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
+  typedef vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
 
   typedef DefaultEmbeddingD<4> DefaultEmbedding4D;
-  typedef checked_vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
+  typedef vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
 
   typedef DefaultEmbeddingD<5> DefaultEmbedding5D;
-  typedef checked_vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
+  typedef vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
 
   typedef DefaultEmbeddingD<6> DefaultEmbedding6D;
-  typedef checked_vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
+  typedef vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
 
   typedef DefaultEmbeddingD<-1> DefaultEmbeddingKD;
-  typedef checked_vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
+  typedef vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
 #endif
 
 
@@ -1188,26 +1188,26 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 
 #if !defined(IMP_DOXYGEN)
   typedef LogEmbeddingD<1> LogEmbedding1D;
-  typedef checked_vector<LogEmbedding1D> LogEmbedding1Ds;
+  typedef vector<LogEmbedding1D> LogEmbedding1Ds;
 
 
   typedef LogEmbeddingD<2> LogEmbedding2D;
-  typedef checked_vector<LogEmbedding2D> LogEmbedding2Ds;
+  typedef vector<LogEmbedding2D> LogEmbedding2Ds;
 
   typedef LogEmbeddingD<3> LogEmbedding3D;
-  typedef checked_vector<LogEmbedding3D> LogEmbedding3Ds;
+  typedef vector<LogEmbedding3D> LogEmbedding3Ds;
 
   typedef LogEmbeddingD<4> LogEmbedding4D;
-  typedef checked_vector<LogEmbedding4D> LogEmbedding4Ds;
+  typedef vector<LogEmbedding4D> LogEmbedding4Ds;
 
   typedef LogEmbeddingD<5> LogEmbedding5D;
-  typedef checked_vector<LogEmbedding5D> LogEmbedding5Ds;
+  typedef vector<LogEmbedding5D> LogEmbedding5Ds;
 
   typedef LogEmbeddingD<6> LogEmbedding6D;
-  typedef checked_vector<LogEmbedding6D> LogEmbedding6Ds;
+  typedef vector<LogEmbedding6D> LogEmbedding6Ds;
 
   typedef LogEmbeddingD<-1> LogEmbeddingKD;
-  typedef checked_vector<LogEmbeddingKD> LogEmbeddingKDs;
+  typedef vector<LogEmbeddingKD> LogEmbeddingKDs;
 #endif
 
 

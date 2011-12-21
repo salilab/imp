@@ -31,7 +31,7 @@ typedef enum { // distributions
   DistributionType;
 
 typedef Floats KMPoint;
-typedef std::vector<KMPoint *> KMPointArray;
+typedef vector<KMPoint *> KMPointArray;
 //! Holds the data points to cluster
 /**
    \unstable{KMData}

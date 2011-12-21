@@ -339,9 +339,9 @@ namespace {
 
   template <class Filter, class Next>
   class  DisjointSetsSubsetFilter: public SubsetFilter {
-    compatibility::checked_vector<Ints> sets_;
+    vector<Ints> sets_;
   public:
-    DisjointSetsSubsetFilter(const compatibility::checked_vector<Ints> &sets):
+    DisjointSetsSubsetFilter(const vector<Ints> &sets):
       sets_(sets) {
       IMP_LOG(TERSE, "Created disjoint set subset filter with ");
       IMP_IF_LOG(TERSE) {
@@ -383,7 +383,7 @@ namespace {
   get_disjoint_set_filter(std::string name,
                           const Subset &s,
                           LogLevel ll,
-                          const compatibility::checked_vector<Ints> &all,
+                          const vector<Ints> &all,
                           const Ints &) {
     if (all.empty()) return nullptr;
     typedef DisjointSetsSubsetFilter<FF, Next> CF;
@@ -399,7 +399,7 @@ namespace {
   template <class SF>
   double get_disjoint_set_strength(const IMP::domino::Subset &s,
                                    const IMP::domino::Subsets &excluded,
-                        const compatibility::checked_vector<Ints> &all,
+                        const vector<Ints> &all,
                                    const Ints &){
     double r=1;
     SF str;
@@ -427,7 +427,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   if (pst_) {
     IMP::compatibility::map<ParticleStates*, int> map;
     ParticlesTemp allps= pst_->get_particles();
-    compatibility::checked_vector<ParticlesTemp> allsets;
+    vector<ParticlesTemp> allsets;
     for (unsigned int i=0; i< allps.size(); ++i) {
       ParticleStates *ps=pst_->get_particle_states(allps[i]);
       if (map.find(ps) == map.end()){
@@ -443,7 +443,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
 
-  compatibility::checked_vector<ParticlesTemp> all(elements_.size());
+  vector<ParticlesTemp> all(elements_.size());
   for (unsigned int i=0; i< elements_.size(); ++i) {
     int set= disjoint_sets_.find_set(i);
     all[set].push_back(elements_[i]);
@@ -471,7 +471,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
 void
 DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                            const Subsets &excluded,
-                             compatibility::checked_vector<Ints> &ret,
+                             vector<Ints> &ret,
                                            int lb,
                                            Ints &used) const {
   for (unsigned int i=0; i< get_number_of_sets(); ++i) {
@@ -840,10 +840,10 @@ namespace {
 
   class  PairListSubsetFilter: public SubsetFilter {
     IntPairs indexes_;
-    compatibility::checked_vector<IntPairs> allowed_;
+    vector<IntPairs> allowed_;
   public:
     PairListSubsetFilter(const IntPairs &i,
-                         const compatibility::checked_vector<IntPairs> &a):
+                         const vector<IntPairs> &a):
       SubsetFilter("Pair list score filter"),
       indexes_(i), allowed_(a) {
     }
@@ -868,7 +868,7 @@ void PairListSubsetFilterTable
 ::fill(const Subset &s,
             const Subsets &e,
             IntPairs& indexes,
-       compatibility::checked_vector<IntPairs>& allowed) const {
+       vector<IntPairs>& allowed) const {
 for (unsigned int i=0; i< s.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       ParticlePair pp(s[j], s[i]);
@@ -902,7 +902,7 @@ PairListSubsetFilterTable
                     const Subsets &e) const {
   set_was_used(true);
   IntPairs indexes;
-  compatibility::checked_vector<IntPairs> allowed;
+  vector<IntPairs> allowed;
   fill(s,e,indexes, allowed);
   if (!indexes.empty()) {
     return new PairListSubsetFilter(indexes, allowed);
@@ -914,7 +914,7 @@ PairListSubsetFilterTable
 double PairListSubsetFilterTable::get_strength(const Subset &s,
                                            const Subsets &e) const {
   IntPairs indexes;
-  compatibility::checked_vector<IntPairs> allowed;
+  vector<IntPairs> allowed;
   fill(s,e,indexes, allowed);
   return 1-std::pow(.9, static_cast<double>(indexes.size()));
 }

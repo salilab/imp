@@ -22,7 +22,7 @@
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
-  std::vector<Element> added_atom_names;
+  vector<Element> added_atom_names;
 }
 
 #define NAME_DEF(NAME, ELEMENT) const AtomType AT_##NAME\

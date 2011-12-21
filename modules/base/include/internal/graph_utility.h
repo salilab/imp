@@ -63,7 +63,7 @@ public:
     typedef typename boost::property_traits<typename boost::property_map<Graph,
                            boost::vertex_name_t>::const_type>::value_type VT;
     std::string nm=Name<VT>::get(boost::get(om_, v));
-    std::vector<char> vnm(nm.begin(), nm.end());
+    vector<char> vnm(nm.begin(), nm.end());
     out << "[label=\""
         << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(),
                                                 '\"')) << "\"]";

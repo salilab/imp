@@ -70,7 +70,7 @@ public:
   }
 
   //! Creating a bounding box from a set of points
-  BoundingBoxD(const std::vector<VectorD<D> > &points) {
+  BoundingBoxD(const vector<VectorD<D> > &points) {
     make_empty();
     for(unsigned int j=0;j<points.size();j++) {
       operator+=(points[j]);

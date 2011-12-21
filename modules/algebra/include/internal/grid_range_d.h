@@ -112,8 +112,8 @@ public:
     return iterator(data_, data_->bb.get_corner(1));
   }
 #endif
-  std::vector< VectorD<D> > get() const {
-    return std::vector< VectorD<D> >(begin(), end());
+  vector< VectorD<D> > get() const {
+    return vector< VectorD<D> >(begin(), end());
   }
 };
 
