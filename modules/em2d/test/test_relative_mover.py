@@ -96,23 +96,22 @@ class Test(IMP.test.TestCase):
         rec2_coords = [core.XYZ(l).get_coordinates()
                                         for l in atom.get_leaves(h_rec2)]
         h_ligand =  atom.read_pdb(fn_lig, m, sel)
-        # use rb_x only to get Tis and docked_ref_frames_ligand
-        rb_x = atom.create_rigid_body(h_ligand)
+        rb_lig = atom.create_rigid_body(h_ligand)
+
         Ts = get_relative_transforms(fn_tr1)
         Tis1 = []
         for i, T in enumerate(Ts):
-            V =  get_internal_transform3(T, rb_rec1, rb_x)
+            V =  get_internal_transform3(T, rb_rec1, rb_lig)
             Tis1.append(V)
-        docked_refs1 = get_docked_reference_frames(Ts, rb_x)
+        docked_refs1 = get_docked_reference_frames(Ts, rb_lig)
 
         Ts = get_relative_transforms(fn_tr2)
         Tis2 = []
         for i, T in enumerate(Ts):
-            V =  get_internal_transform3(T, rb_rec2, rb_x)
+            V =  get_internal_transform3(T, rb_rec2, rb_lig)
             Tis2.append(V)
-        docked_refs2 = get_docked_reference_frames(Ts, rb_x)
+        docked_refs2 = get_docked_reference_frames(Ts, rb_lig)
 
-        rb_lig = atom.create_rigid_body(h_ligand)
         mv = em2d.RelativePositionMover(rb_lig, 10, 20)
         mv.add_internal_transformations(rb_rec1, Tis1)
         mv.add_internal_transformations(rb_rec2, Tis2)
