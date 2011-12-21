@@ -9,9 +9,12 @@ import re
 mre=re.compile("version='(?P<version>[0123456789]*)'")
 def increment(module):
     path=os.path.join(module, "SConscript")
+    print path
     sconscript= open(path).read()
     if sconscript.find("version='SVN'") != -1:
         sconscript=sconscript.replace("version='SVN'", "version='1'")
+    elif sconscript.find("version=\"SVN\"") != -1:
+	    sconscript=sconscript.replace("version=\"SVN\"", "version='1'")
     else:
         match=re.search(mre, sconscript)
         num= int(match.groupdict()['version'])
