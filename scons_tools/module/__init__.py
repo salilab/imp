@@ -522,7 +522,6 @@ def IMPModuleBuild(env, version, required_modules=[],
                    local_module=False,python=True, data=True):
     if env.GetOption('help'):
         return
-
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
         if module=="local":

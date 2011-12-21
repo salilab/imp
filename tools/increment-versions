@@ -1,0 +1,30 @@
+#!/usr/bin/python
+
+import os
+import os.path
+import sys
+import getopt
+import shutil
+import re
+mre=re.compile("version='(?P<version>[0123456789]*)'")
+def increment(module):
+    path=os.path.join(module, "SConscript")
+    sconscript= open(path).read()
+    if sconscript.find("version='SVN'") != -1:
+        sconscript=sconscript.replace("version='SVN'", "version='1'")
+    else:
+        match=re.search(mre, sconscript)
+        num= int(match.groupdict()['version'])
+        sconscript= re.sub(mre, "version='"+str(num+1)+"'", sconscript)
+    open(path, "w").write(sconscript)
+
+def main():
+    if len(sys.argv) <2:
+        print "usage: "+sys.argv[0] + " modulename"
+        sys.exit(1)
+    for m in sys.argv[1:]:
+        increment(m)
+
+
+if __name__ == '__main__':
+    main()
