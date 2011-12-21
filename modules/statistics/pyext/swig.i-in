@@ -22,3 +22,45 @@ IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, Recurs
 %include "IMP/statistics/HistogramD.h"
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
+%define IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(DD, NN)
+namespace IMP {
+namespace statistics {
+  %template(_IntDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,int>;
+  %template(_FloatDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,float>;
+  %template(_HistogramCountsGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,int>,int,  algebra::grids::DefaultEmbeddingD<DD> >;
+  %template(_HistogramFrequencyGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,float>,float, algebra::grids::DefaultEmbeddingD<DD> >;
+}
+}
+%enddef
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(-1,K)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(1,1)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(2,2)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(3,3)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(4,4)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(5,5)
+IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(6,6)
+
+%pythoncode %{
+def show_histogram(h):
+    if h.get_dimension() != 1:
+      print "Only 1D histograms supported at the moment."
+      return
+    else:
+      import numpy as np
+      import matplotlib.pyplot as plt
+      import matplotlib.mlab as mlab
+      fig= plt.figure()
+      ax= fig.add_subplot(111)
+      data=[]
+      countsgrid= h.get_counts()
+      bins=[countsgrid.get_bounding_box(i).get_corner(0)[0] for i in countsgrid.get_all_indexes()]
+      counts= h.get_counts().get_all_voxels()
+      gbb=h.get_bounding_box()
+      #bins.append(gbb.get_corner(1)[0])
+      print counts
+      print bins
+      ax.bar(bins, counts, align='edge', width=bins[1]-bins[0])
+      ax.set_xlim(gbb.get_corner(0)[0],
+                  gbb.get_corner(1)[0])
+      plt.show()
+%}
