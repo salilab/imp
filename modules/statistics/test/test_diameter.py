@@ -1,7 +1,6 @@
 import IMP.test
 import IMP
 import IMP.statistics
-import IMP.core
 import IMP.algebra
 
 class ConnectivityClusteringTests(IMP.test.TestCase):

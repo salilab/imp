@@ -71,7 +71,7 @@ class Hierarchy;
 
 /**  A type to pass a collection of Hierarchy decorators.
 
-     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
+     It looks like a \c vector<Hierarchy> in C++ and a \c list in Python.
      See \ref tempornot "when to use Temp" for details on using this type.
 */
 class GenericHierarchies: public IMP::ParticlesTemp {};
@@ -353,7 +353,7 @@ inline F visit_breadth_first(HD d, F f)
 template <class HD, class F>
 inline F visit_depth_first(HD d,  F f)
 {
-  std::vector<HD> stack;
+  vector<HD> stack;
   stack.push_back(d);
   //d.show(std::cerr);
   do {
@@ -424,7 +424,7 @@ template <class HD, class F>
 inline F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
 {
   typedef std::pair<typename F::result_type, HD> DP;
-  std::vector<DP> stack;
+  vector<DP> stack;
   stack.push_back(DP(i, d));
   //d.show(std::cerr);
   do {
@@ -554,7 +554,7 @@ template <class HD, class F>
 inline HD find_breadth_first(HD h, F f)
 {
   if (f(h.get_particle())) return h;
-  std::vector<HD> stack;
+  vector<HD> stack;
   stack.push_back(h);
   //d.show(std::cerr);
   do {

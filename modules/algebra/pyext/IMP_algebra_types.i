@@ -14,6 +14,24 @@ IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<4>, Namebase##D, Namebase##test##4,Na
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Namebase##5Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
+
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::vector<Namespace::Namebase##D< 1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::vector<Namespace::Namebase##D< 1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::vector<Namespace::Namebase##D< 2 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::vector<Namespace::Namebase##D< 2 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::vector<Namespace::Namebase##D< 3 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::vector<Namespace::Namebase##D< 3 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::vector<Namespace::Namebase##D< 4 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::vector<Namespace::Namebase##D< 4 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::vector<Namespace::Namebase##D< 5 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::vector<Namespace::Namebase##D< 5 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::vector<Namespace::Namebase##D< 6 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::vector<Namespace::Namebase##D< 6 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::vector<Namespace::Namebase##D< -1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::vector<Namespace::Namebase##D< -1 > >,const&);
+
+
+
 IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
 %extend Namespace::Namebase##D {
   int __cmp__(const Namebase##D<D> &) const {
@@ -53,12 +71,6 @@ IMP_SWIG_OBJECT_TEMPLATE(Namespace, Namebase##D);
 %template(Namebase##5D) Namespace::Namebase##D<5>;
 %template(Namebase##6D) Namespace::Namebase##D<6>;
 %template(Namebase##KD) Namespace::Namebase##D<-1>;
-%template(_##Namebase##1Ds) ::std::vector< Namespace::Namebase##D<1> >;
-%template(_##Namebase##2Ds) ::std::vector< Namespace::Namebase##D<2> >;
-%template(_##Namebase##3Ds) ::std::vector< Namespace::Namebase##D<3> >;
-%template(_##Namebase##4Ds) ::std::vector< Namespace::Namebase##D<4> >;
-%template(_##Namebase##5Ds) ::std::vector< Namespace::Namebase##D<5> >;
-%template(_##Namebase##6Ds) ::std::vector< Namespace::Namebase##D<6> >;
 %enddef
 
 %define IMP_SWIG_ALGEBRA_PRIVATE_TEMPLATE_D(Namespace, Namebase)

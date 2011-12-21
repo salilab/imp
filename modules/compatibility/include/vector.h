@@ -1,12 +1,12 @@
 /**
- *  \file IMP/compatibility/checked_vector.h
+ *  \file IMP/compatibility/vector.h
  *  \brief Declare a bounds checked vector
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCOMPATIBILITY_CHECKED_VECTOR_H
-#define IMPCOMPATIBILITY_CHECKED_VECTOR_H
+#ifndef IMPCOMPATIBILITY_VECTOR_H
+#define IMPCOMPATIBILITY_VECTOR_H
 
 #include "compatibility_config.h"
 
@@ -22,7 +22,7 @@
 IMPCOMPATIBILITY_BEGIN_NAMESPACE
 #ifdef SWIG
 template <class T>
-class checked_vector: public std::vector<T> {};
+class vector: public std::vector<T> {};
 
 #elif defined(IMP_DOXYGEN)
 /** This class defines a std::vector-like template that, when available
@@ -31,24 +31,24 @@ class checked_vector: public std::vector<T> {};
 
     Currently, bounds checking is provided when compiling with gcc.
 */
-typedef std::vector checked_vector;
+typedef std::vector vector;
 
 #else
 
 template <class T>
-class checked_vector: public IMPCOMPATIBILITY_VECTOR_PARENT<T>
+class vector: public IMPCOMPATIBILITY_VECTOR_PARENT<T>
 {
 public:
   template <class It>
-  checked_vector(It b, It e): IMPCOMPATIBILITY_VECTOR_PARENT<T>(b,e){}
-  checked_vector(unsigned int ct, const T& t=T()):
+  vector(It b, It e): IMPCOMPATIBILITY_VECTOR_PARENT<T>(b,e){}
+  vector(unsigned int ct, const T& t=T()):
     IMPCOMPATIBILITY_VECTOR_PARENT<T>(ct, t){}
-  checked_vector(){}
+  vector(){}
 };
 
 template <class T>
-void swap(checked_vector<T> &a,
-          checked_vector<T> &b) {
+void swap(vector<T> &a,
+          vector<T> &b) {
   std::swap(static_cast<IMPCOMPATIBILITY_VECTOR_PARENT<T> &>(a),
     static_cast<IMPCOMPATIBILITY_VECTOR_PARENT<T> &>(b));
 }
@@ -56,4 +56,4 @@ void swap(checked_vector<T> &a,
 
 IMPCOMPATIBILITY_END_NAMESPACE
 
-#endif  /* IMPCOMPATIBILITY_CHECKED_VECTOR_H */
+#endif  /* IMPCOMPATIBILITY_VECTOR_H */

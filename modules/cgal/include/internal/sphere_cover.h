@@ -16,7 +16,7 @@
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 IMPCGALEXPORT
 void
-refine_unit_sphere_cover_4d(std::vector<algebra::VectorD<4> > &pts,
+refine_unit_sphere_cover_4d(vector<algebra::VectorD<4> > &pts,
                             bool ALL);
 
 

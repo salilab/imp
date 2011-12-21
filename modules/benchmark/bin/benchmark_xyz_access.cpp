@@ -353,7 +353,7 @@ void do_benchmark(std::string descr, std::string fname) {
     }*/
   // TEST 3
   {
-    std::vector<IMP::algebra::Vector3D > coordinates;
+    IMP::algebra::Vector3Ds coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(IMP::core::XYZ::decorate_particle(particles[i]).
                             get_coordinates());
@@ -370,7 +370,7 @@ void do_benchmark(std::string descr, std::string fname) {
     IMP::benchmark::report("xyz vector "+descr, runtime, dist);
   }
   {
-    std::vector<VV > coordinates;
+    IMP::vector<VV > coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VV());
       coordinates.back().x=IMP::core::XYZ(particles[i]).get_x();
@@ -390,7 +390,7 @@ void do_benchmark(std::string descr, std::string fname) {
   }
   // TEST 4
   {
-    std::vector<VectorHolder> coordinates;
+    IMP::vector<VectorHolder> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VectorHolder());
       coordinates.back().c=IMP::core::XYZ::decorate_particle(particles[i]).

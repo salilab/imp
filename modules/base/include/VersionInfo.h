@@ -12,9 +12,9 @@
 #include "utility.h"
 #include "exception.h"
 #include "base_macros.h"
+#include "types.h"
 
 #include <iostream>
-#include <vector>
 
 IMPBASE_BEGIN_NAMESPACE
 

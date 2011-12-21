@@ -94,7 +94,7 @@ protected:
   Model *m_;
   Particles ps_; //input particles
   Particles centroids_; // the k means as particles
-  std::vector<FloatKey> atts_; // the attributes k-means in minimized on
+  vector<FloatKey> atts_; // the attributes k-means in minimized on
   std::map<Particle *,unsigned int> assignment_;
   // the assignment of input data to centers
 };

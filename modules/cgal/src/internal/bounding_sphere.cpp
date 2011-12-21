@@ -23,7 +23,7 @@ get_enclosing_sphere(const algebra::Sphere3Ds &ss) {
   typedef K::Point_3                        Point;
   typedef Traits::Sphere                    Sphere;
 
-  std::vector<Sphere> spheres;
+  vector<Sphere> spheres;
   for (unsigned int i=0; i< ss.size(); ++i) {
     // need cast to resolve ambiguity
     spheres.push_back(Sphere(Point(ss[i].get_center()[0],

@@ -90,7 +90,7 @@ namespace {
                    const ParticleIndexes &pis,
                    PairScore *ps,
                    Graph &g,
-                   std::vector<Edge> &mst) {
+                   vector<Edge> &mst) {
     try {
       for (unsigned int i=0; i< pis.size(); ++i) {
         for (unsigned int j=0; j<i; ++j) {
@@ -127,7 +127,7 @@ namespace {
                               PairScore *ps) {
     ParticleIndexes pis= a->get_indexes();
     Graph g(pis.size());
-    std::vector<Edge> mst;
+    vector<Edge> mst;
     compute_mst(a->get_model(), pis, ps, g, mst);
     ParticleIndexPairs ret(mst.size());
     for (unsigned int index=0; index< mst.size(); ++index) {
@@ -148,7 +148,7 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_CHECK_OBJECT(ps_.get());
   IMP_OBJECT_LOG;
-  std::vector<Edge> mst;
+  vector<Edge> mst;
   if (!sc_) return 0;
   ParticleIndexPairs edges= get_edges(sc_, ps_);
   return ps_->evaluate_indexes(get_model(),

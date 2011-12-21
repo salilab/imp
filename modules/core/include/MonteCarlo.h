@@ -240,20 +240,20 @@ private:
   mutable Floats incremental_scores_;
   mutable Floats old_incremental_scores_;
   mutable Ints old_incremental_score_indexes_;
-  compatibility::checked_vector<Ints> incremental_used_;
+  vector<Ints> incremental_used_;
 
 
   struct NBLScore {
     OwnerPointer<PairScore> score_;
     typedef std::pair<ParticleIndex, double> ScorePair;
-    typedef compatibility::checked_vector<ScorePair> ScorePairs;
+    typedef vector<ScorePair> ScorePairs;
     // first on the particle index then list the neighbors
-    mutable compatibility::checked_vector<ScorePairs> cache_;
+    mutable vector<ScorePairs> cache_;
     double distance_;
     mutable double prior_, old_prior_;
     ParticleIndexes pis_;
     PairFilters filters_;
-    mutable compatibility::checked_vector<std::pair<ParticleIndexPair,
+    mutable vector<std::pair<ParticleIndexPair,
                                                     double> > removed_;
     mutable ParticleIndexes added_;
     NBLScore(){}

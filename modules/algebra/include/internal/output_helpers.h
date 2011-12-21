@@ -36,11 +36,11 @@ Int prec = 0);
 template <class T>
 struct IMPALGEBRAEXPORT stdVectorIO
 {
-  const std::vector<T> &v_;
-  stdVectorIO(const std::vector<T>& v): v_(v) {}
+  const vector<T> &v_;
+  stdVectorIO(const vector<T>& v): v_(v) {}
 };
 
-//! output for a std::vector
+//! output for a vector
 template <class T>
 inline std::ostream& operator<<(std::ostream& ostrm,
                          const stdVectorIO<T>& v)

@@ -13,7 +13,7 @@
 #include "base_types.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/internal/ref_counting.h>
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
@@ -54,9 +54,9 @@ struct ControllableRefCountPolicy {
 #endif
 
 //! A vector-like container for reference counted objects
-/** The interface of this class is like that of std::vector.
+/** The interface of this class is like that of vector.
 
-    Documentation for std::vector can be found as part of the SGI
+    Documentation for vector can be found as part of the SGI
     stl documentation, among other places
     (http://www.sgi.com/tech/stl/Vector.html).
 
@@ -69,7 +69,7 @@ struct ControllableRefCountPolicy {
 template <class RC, class Policy= RefCountPolicy>
 class VectorOfRefCounted {
   typedef void (*RF)(RC);
-  typedef std::vector<RC> Data;
+  typedef vector<RC> Data;
   Data data_;
   // make sure they are converted to RC
   static void ref(RC v) {
@@ -89,7 +89,7 @@ class VectorOfRefCounted {
  public:
   typedef RC const_reference;
   typedef RC value_type;
-  VectorOfRefCounted(const std::vector<RC> &o):data_(o) {
+  VectorOfRefCounted(const vector<RC> &o):data_(o) {
     ref(o.begin(), o.end());
   }
   template <class It>
@@ -120,11 +120,11 @@ class VectorOfRefCounted {
     return *this;
   }
 
-  operator const std::vector<RC>&() const {
+  operator const vector<RC>&() const {
     return data_;
   }
 #ifndef IMP_DOXYGEN
-  typedef typename std::vector<RC>::size_type size_type;
+  typedef typename vector<RC>::size_type size_type;
   // need to inherit from T to get methods right
   template <class T>
   struct Proxy: public T {
@@ -235,7 +235,7 @@ class VectorOfRefCounted {
   void swap_with(VectorOfRefCounted<RC, Policy> &a) {
     std::swap(a.data_, data_);
   }
-  void swap_with(std::vector<RC> &a) {
+  void swap_with(vector<RC> &a) {
     std::swap(a, data_);
     ref(data_.begin(), data_.end());
     unref(a.begin(), a.end());
@@ -265,7 +265,7 @@ class VectorOfRefCounted {
   }
   template <class F>
   void remove_if(const F &f) {
-    std::vector<RC> bye;
+    vector<RC> bye;
     for (iterator it= begin(); it != end(); ++it) {
       if (f(*it)) bye.push_back(*it);
     }
@@ -305,11 +305,11 @@ inline void swap(VectorOfRefCounted<RC, Policy> &a,
 
 template <class RC, class Policy>
 inline void swap(VectorOfRefCounted<RC, Policy> &a,
-          std::vector<RC> &b) {
+          vector<RC> &b) {
   a.swap_with(b);
 }
 template <class RC, class Policy>
-inline void swap(std::vector<RC> &b,
+inline void swap(vector<RC> &b,
           VectorOfRefCounted<RC, Policy> &a) {
   a.swap_with(b);
 }
@@ -324,12 +324,7 @@ namespace internal {
   }
 
   template <class T, class F>
-  inline void remove_if(std::vector<T> &t, const F &f) {
-    t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
-  }
-
-  template <class T, class F>
-  inline void remove_if(IMP::compatibility::checked_vector<T> &t, const F &f) {
+  inline void remove_if(vector<T> &t, const F &f) {
     t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
   }
 }

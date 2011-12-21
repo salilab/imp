@@ -67,7 +67,7 @@ compatibility::set<Object*> live_;
 
 Strings
 get_live_object_names() {
-  IMP::compatibility::checked_vector<std::string> ret;
+  IMP::vector<std::string> ret;
   for (compatibility::set<Object*>::const_iterator it = live_.begin();
        it != live_.end(); ++it) {
     ret.push_back((*it)->get_name());

@@ -13,6 +13,6 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 // particle validation
 typedef bool (*ParticleFunction)(Particle*);
-std::vector<std::pair<ParticleFunction, ParticleFunction> > particle_validators;
+vector<std::pair<ParticleFunction, ParticleFunction> > particle_validators;
 
 IMP_END_INTERNAL_NAMESPACE

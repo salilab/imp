@@ -12,13 +12,15 @@
 #include "../base_config.h"
 #include "../base_macros.h"
 #include "../Object.h"
-#include "IMP/compatibility/checked_vector.h"
+#include "../types.h"
+#include "IMP/compatibility/vector.h"
 #include "IMP/compatibility/nullptr.h"
 #include <boost/array.hpp>
 #include <vector>
 
 //using namespace IMP;
 using namespace IMP::base;
+using namespace IMP;
 #ifndef SWIG
   template <bool REFED>
   struct PyPointer: boost::noncopyable {
@@ -456,8 +458,8 @@ template <class T>
   };
 
   template <class T, class ConvertT>
-  struct ConvertSequence<IMP::compatibility::checked_vector<T>, ConvertT > :
-    public ConvertVectorBase< IMP::compatibility::checked_vector<T>,
+  struct ConvertSequence<vector<T>, ConvertT > :
+    public ConvertVectorBase< vector<T>,
                               ConvertT > {
     static const int converter=20;
   };

@@ -17,7 +17,7 @@
 #include "Particle.h"
 #include "Pointer.h"
 #include "OptimizerState.h"
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 #include <limits>
 #include <cmath>
 
@@ -157,8 +157,8 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   */
   //!@{
   typedef Model::FloatIndex FloatIndex;
-  typedef std::vector<FloatIndex> FloatIndexes;
-  std::vector<Model::FloatIndex> get_optimized_attributes() const {
+  typedef vector<FloatIndex> FloatIndexes;
+  vector<Model::FloatIndex> get_optimized_attributes() const {
     return get_model()->get_optimized_attributes();
   }
   void set_value(Model::FloatIndex fi, double v) const {

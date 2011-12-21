@@ -71,7 +71,7 @@ public:
   //! Another way setting the initial value (logical)
   //! for the index of the dimension. You can always use reindex()
   void set_start(const int dim,const int value) {
-    std::vector<typename boost::multi_array_types::index> idx(D);
+    vector<typename boost::multi_array_types::index> idx(D);
     for (unsigned int i = 0;i < D;i++) {
       idx[i] = this->index_bases()[i];
     }
@@ -186,7 +186,7 @@ public:
 
   //! Returns the first element
   bool first_element() const {
-    std::vector<index> idx(D);
+    vector<index> idx(D);
     for (unsigned int i = 0;i < D;i++) {
       idx[i] = this->index_bases()[i];
     }
@@ -365,7 +365,7 @@ public:
   **/
   template<typename T1>
   T compute_max(T1& max_idx) const {
-    std::vector<index> idx(D);
+    vector<index> idx(D);
     T maxval = first_element();
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) > maxval) {
@@ -393,7 +393,7 @@ public:
   **/
   template<typename T1>
   T compute_min(T1& min_idx) const {
-    std::vector<index> idx(D);
+    vector<index> idx(D);
     T minval = first_element();
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       if ((*this)(idx) < minval) {
@@ -448,7 +448,7 @@ public:
       T val = first_element();
       avg = stddev = 0;
       maxval = minval = val;
-      std::vector<index> idx(D);
+      vector<index> idx(D);
       for (unsigned long i=0;i<this->num_elements() ;i++) {
         if (this->data()[i] > maxval) { maxval = val; }
         if (this->data()[i] < minval) { minval = val; }
@@ -581,7 +581,7 @@ public:
       return 0.0;
     }
     double ccc = 0.0;
-    std::vector<index> idx(D);
+    vector<index> idx(D);
 
     // Fast version
     if(this->same_start(v)) {
@@ -704,7 +704,7 @@ inline std::ostream& operator<<(std::ostream& ostrm,
                          const MultiArray<T, D>& v)
 {
   typedef boost::multi_array_types::index index;
-  std::vector<index> idx(D);
+  vector<index> idx(D);
 
   if (v.is_void()) {
     ostrm << "NULL Array" << std::endl;

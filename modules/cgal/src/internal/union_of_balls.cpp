@@ -1867,11 +1867,11 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 
 std::pair<double, double>
 get_surface_area_and_volume(const algebra::Sphere3Ds &ss) {
-  std::vector<Wpoint> myPoints;
+  vector<Wpoint> myPoints;
   // first of all, if there are no atoms, there is no computation
   if (ss.size() == 0) return std::pair<double,double>(0,0);
   //
-  std::vector<Wpoint> pts;
+  vector<Wpoint> pts;
   for (unsigned int i=0; i< ss.size(); ++i) {
     pts.push_back(Wpoint(Point(ss[i].get_center()[0],
                                ss[i].get_center()[1],

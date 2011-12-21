@@ -20,7 +20,7 @@
 #include <boost/shared_array.hpp>
 #include <algorithm>
 #include <IMP/compatibility/hash.h>
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 
 #include <queue>
 #include <IMP/random.h>
@@ -206,7 +206,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
       return a.second < b.second;
     }
   };
-  typedef compatibility::checked_vector<AP> C;
+  typedef vector<AP> C;
   C d_;
   unsigned int k_; // max number of assignments (heap size)
   Pointer<RestraintScoreSubsetFilter> rssf_;//to score candidate assignments
@@ -232,7 +232,7 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   Subset s_;
   Pointer<ParticleStatesTable> pst_;
   double r_;
-  compatibility::checked_vector<Assignment> d_;
+  vector<Assignment> d_;
   statistics::Metrics metrics_;
   bool get_in_cluster(const Assignment &v) const;
   double get_minimum_distance() const;

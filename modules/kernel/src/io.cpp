@@ -66,18 +66,18 @@ namespace {
 }
 
 
-IMPEXPORT std::vector<char>
+IMPEXPORT vector<char>
 write_particles_to_buffer(const ParticlesTemp &particles,
                           const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {
-    return std::vector<char>();
+    return vector<char>();
   }
   unsigned int size= particles.size()*keys.size()*sizeof(double);
-  std::vector<char> ret(size);
+  vector<char> ret(size);
   write_particles_to_buffer(particles, keys, &ret.front(), size);
   return ret;
 }
-IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
+IMPEXPORT void read_particles_from_buffer( const vector<char> &buffer,
                                   const ParticlesTemp &particles,
                                   const FloatKeys &keys) {
   if (particles.empty() || keys.empty()) {

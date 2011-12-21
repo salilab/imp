@@ -321,7 +321,7 @@ void Tuples::reset()
 class Assignment
 {
 public:
-  Assignment(std::vector<Tuples> &tuples)
+  Assignment(vector<Tuples> &tuples)
     : tuples_(tuples)
   {
   }
@@ -347,7 +347,7 @@ public:
   bool next();
 
 private:
-  std::vector<Tuples> &tuples_;
+  vector<Tuples> &tuples_;
 };
 
 
@@ -464,7 +464,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
   int ncomp = boost::connected_components(ng, &components[0]);
   if ( ncomp == 1 )
     return;
-  std::vector< std::pair<size_t, size_t> > candidates;
+  vector< std::pair<size_t, size_t> > candidates;
   NNGraph::edge_iterator e, end;
   for ( boost::tie(e, end) = edges(G); e != end; ++e )
   {
@@ -588,7 +588,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
        tree_.get_node(node_handle);
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
        node->get_label();
-  std::vector<Tuples> new_tuples;
+  vector<Tuples> new_tuples;
   Ints empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
   {
@@ -659,7 +659,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
        tree_.get_node(root_handle);
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
        node->get_label();
-  std::vector<Tuples> tuples;
+  vector<Tuples> tuples;
   Ints empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
   {

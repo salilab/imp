@@ -91,7 +91,7 @@ template <class F>
 inline F graph_traverse(Particle *start, F f, const GraphData &d)
 {
   std::set<Particle*> visited;
-  std::vector<Particle*> queue;
+  vector<Particle*> queue;
   queue.push_back(start);
   visited.insert(start);
   do {

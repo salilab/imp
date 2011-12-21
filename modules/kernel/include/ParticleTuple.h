@@ -81,15 +81,15 @@ public:
 
 typedef ParticleTuple<2> ParticlePair;
 IMP_VALUES(ParticlePair, ParticlePairsTemp);
-typedef IMP::compatibility::checked_vector<RefCountedParticleTuple<2> >
+typedef IMP::vector<RefCountedParticleTuple<2> >
 ParticlePairs;
 typedef ParticleTuple<3> ParticleTriplet;
 IMP_VALUES(ParticleTriplet, ParticleTripletsTemp);
-typedef IMP::compatibility::checked_vector<RefCountedParticleTuple<3> >
+typedef IMP::vector<RefCountedParticleTuple<3> >
 ParticleTriplets;
 typedef ParticleTuple<4> ParticleQuad;
 IMP_VALUES(ParticleQuad, ParticleQuadsTemp);
-typedef IMP::compatibility::checked_vector<RefCountedParticleTuple<4> >
+typedef IMP::vector<RefCountedParticleTuple<4> >
 ParticleQuads;
 #endif
 

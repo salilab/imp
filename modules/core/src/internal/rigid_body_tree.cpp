@@ -146,7 +146,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   }
   std::sort(leaves.begin(), leaves.end());
 
-  std::vector<Node> stack;
+  vector<Node> stack;
   stack.push_back(Node(0, leaves));
 
   do {
@@ -163,7 +163,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
 
 void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
                                     const algebra::Sphere3Ds &spheres,
-                                    std::vector<Node> &stack) {
+                                    vector<Node> &stack) {
   IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
   algebra::Sphere3Ds ss(cur.second.size());
   for (unsigned int i=0; i< cur.second.size(); ++i) {
@@ -332,7 +332,7 @@ RigidBodyHierarchy::get_tree() const {
 Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
                            XYZR pt, double dist) {
   typedef std::pair<double, int> QP;
-  std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, pt.get_particle_index());
   queue.push(QP(d, 0));
   double best_d=dist;
@@ -387,7 +387,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                           double dist) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
-  std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, db, 0);
   queue.push(QP(d, IP(0,0)));
   double best_d=dist;

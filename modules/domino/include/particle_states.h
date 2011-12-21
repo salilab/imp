@@ -21,7 +21,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/internal/OwnerPointer.h>
-#include <IMP/compatibility/checked_vector.h>
+#include <IMP/compatibility/vector.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/algebra/vector_search.h>
 
@@ -233,7 +233,7 @@ class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
 */
 class IMPDOMINOEXPORT PermutationStates: public ParticleStates {
   IMP::OwnerPointer<ParticleStates> inner_;
-  IMP::compatibility::checked_vector<int> permutation_;
+  IMP::vector<int> permutation_;
  public:
   PermutationStates(ParticleStates *inner);
   /** Return the index of the ith state in the inner ParticleState

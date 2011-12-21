@@ -206,9 +206,9 @@ get_particle(Model *m, const ParticleIndexes &ps) {
 
 template <unsigned int D>
 inline
-compatibility::checked_vector<ParticleTuple<D> > get_particle(Model *m,
-        const compatibility::checked_vector<ParticleIndexTuple<D> > &ps) {
-  compatibility::checked_vector<ParticleTuple<D> > ret(ps.size());
+vector<ParticleTuple<D> > get_particle(Model *m,
+        const vector<ParticleIndexTuple<D> > &ps) {
+  vector<ParticleTuple<D> > ret(ps.size());
   for (unsigned int i=0; i< ps.size(); ++i) {
     ret[i]= get_particle(m, ps[i]);
   }
@@ -238,9 +238,9 @@ ParticleIndexes get_index(const ParticlesTemp& p) {
   return ret;
 }
 template <unsigned int D>
-compatibility::checked_vector<ParticleIndexTuple<D> >
-get_index(const compatibility::checked_vector<ParticleTuple<D> > &in) {
-  compatibility::checked_vector<ParticleIndexTuple<D> > ret(in.size());
+vector<ParticleIndexTuple<D> >
+get_index(const vector<ParticleTuple<D> > &in) {
+  vector<ParticleIndexTuple<D> > ret(in.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ParticleIndexTuple<D> c;
     for (unsigned int j=0; j< D; ++j) {

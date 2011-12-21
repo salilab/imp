@@ -74,7 +74,7 @@ private:
   Float radius_;
   ParticlesTemp moved_;
   algebra::Vector3Ds old_coords_;
-  std::vector<std::pair<Restraint*, Ints> > deps_;
+  vector<std::pair<Restraint*, Ints> > deps_;
 };
 
 

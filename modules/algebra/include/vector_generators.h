@@ -92,7 +92,7 @@ get_random_vector_on(const SphereD<D> &s) {
     \relatesalso SphereD
     */
 template <int D>
-inline std::vector<VectorD<D> >
+inline vector<VectorD<D> >
 get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),
                                         s.get_radius(), true);
@@ -112,7 +112,7 @@ get_uniform_surface_cover(const Cylinder3D &cyl,
     z coordinates are greater than those of the center of the sphere.
  */
 template <int D>
-inline std::vector<VectorD<D> >
+inline vector<VectorD<D> >
 get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),
                                         s.get_radius(), false);
@@ -151,7 +151,7 @@ get_uniform_surface_cover(const Cone3D &cone,
     list of centers of the cubes.
  */
 template <int D>
-std::vector<VectorD<D> >
+vector<VectorD<D> >
 get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
   const unsigned int dim= bb.get_dimension();
   Ints ns(dim);
@@ -170,7 +170,7 @@ get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
     }
   }
   Ints cur(D,0);
-  std::vector<VectorD<D> > ret;
+  vector<VectorD<D> > ret;
   do {
     ret.push_back(start+get_elementwise_product(cur, spacing));
     unsigned int i;

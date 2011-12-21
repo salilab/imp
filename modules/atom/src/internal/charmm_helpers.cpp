@@ -18,12 +18,12 @@ void add_dihedral_to_list(const CHARMMParameters *param, Particle *p1,
                           Particles &ps)
 {
   try {
-    std::vector<CHARMMDihedralParameters> p
+    vector<CHARMMDihedralParameters> p
           = param->get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
                                            CHARMMAtom(p2).get_charmm_type(),
                                            CHARMMAtom(p3).get_charmm_type(),
                                            CHARMMAtom(p4).get_charmm_type());
-    for (std::vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
+    for (vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
          it != p.end(); ++it) {
       Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
                                              core::XYZ(p1), core::XYZ(p2),

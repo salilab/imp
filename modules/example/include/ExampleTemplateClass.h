@@ -57,7 +57,7 @@ public:
 };
 
 typedef ExampleTemplateClassD<3> ExampleTemplateClass3D;
-typedef std::vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
+typedef vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
 
 // Make it so the C++ operator<< can be used. The _D means that it is
 // is templated on the dimension. See the docs for other, related macros.

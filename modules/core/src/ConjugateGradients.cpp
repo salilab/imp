@@ -56,9 +56,9 @@ void ConjugateGradients::do_show(std::ostream &) const {
     \return The model score.
  */
 ConjugateGradients::NT
-ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
-                              std::vector<NT> &x,
-                              std::vector<NT> &dscore)
+ConjugateGradients::get_score(vector<FloatIndex> float_indices,
+                              vector<NT> &x,
+                              vector<NT> &dscore)
 {
   int i, opt_var_cnt = float_indices.size();
   /* set model state */
@@ -119,16 +119,16 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
     \return true if the line search succeeded, false if max_steps was exceeded
             or a minimum could not be found.
  */
-bool ConjugateGradients::line_search(std::vector<NT> &x,
-                                     std::vector<NT> &dx,
+bool ConjugateGradients::line_search(vector<NT> &x,
+                                     vector<NT> &dx,
                                      NT &alpha,
-                                     const std::vector<FloatIndex>
+                                     const vector<FloatIndex>
                                      &float_indices,
                                      int &ifun, NT &f,
                                      NT &dg, NT &dg1,
                                      int max_steps,
-                                     const std::vector<NT> &search,
-                                     const std::vector<NT> &estimate)
+                                     const vector<NT> &search,
+                                     const vector<NT> &estimate)
 {
   NT ap, fp, dp, step, minf, u1, u2;
   int i, n, ncalls = ifun;
@@ -273,7 +273,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
   IMP_USAGE_CHECK(get_model(),
             "Must set the model on the optimizer before optimizing");
   clear_range_cache();
-  std::vector<NT> x, dx;
+  vector<NT> x, dx;
   int i;
   //ModelData* model_data = get_model()->get_model_data();
 
@@ -312,7 +312,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
   // destimate holds the gradient at the best current estimate
   // resy holds the restart Y vector
   // ressearch holds the restart search vector
-  std::vector<NT> search, estimate, destimate, resy, ressearch;
+  vector<NT> search, estimate, destimate, resy, ressearch;
   search.resize(n);
   estimate.resize(n);
   destimate.resize(n);

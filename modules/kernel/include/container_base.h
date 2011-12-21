@@ -21,7 +21,7 @@ class Model;
 class Particle;
 
 typedef IMP::VectorOfRefCounted<Particle*> Particles;
-typedef std::vector<Particle*> ParticlesTemp;
+typedef vector<Particle*> ParticlesTemp;
 
 
 template <unsigned int D>
