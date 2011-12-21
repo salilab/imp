@@ -45,6 +45,8 @@ IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  DefaultEmbedding);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  LogEmbedding);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  GridIndex);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  ExtendedGridIndex);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  BoundedGridStorage);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  UnboundedGridStorage);
 IMP_SWIG_VALUE(IMP::algebra, LinearFit, LinearFits);
 IMP_SWIG_VALUE(IMP::algebra, ParabolicFit, ParabolicFits);
 IMP_SWIG_VALUE(IMP::algebra, FixedZYZ, FixedZYZs);
@@ -107,6 +109,8 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 IMP_SWIG_ALGEBRA_PRIVATE_TEMPLATE_D(IMP::algebra::grids, UnboundedGridStorage);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, GridIndex);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, ExtendedGridIndex);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, BoundedGridStorage);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, UnboundedGridStorage);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, DefaultEmbedding);
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, LogEmbedding);
 
@@ -126,6 +130,8 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, LogEmbedding);
 IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
 
 %include "IMP/algebra/geometric_alignment.h"
+
+
 
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Vector, Vector);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Sphere, Sphere);
@@ -150,8 +156,6 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_interior_cover_by_spacing, Boun
 namespace IMP {
  namespace algebra {
    namespace grids {
-   %template(_BoundedGridStorage3D) BoundedGridStorageD<3>;
-   %template(_BoundedGridStorageKD) BoundedGridStorageD<-1>;
    %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorageD<3> >;
    %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
    %template(_SparseUBIntStorageK) grids::SparseGridStorageD<-1, int, UnboundedGridStorageD<-1> >;

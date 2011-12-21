@@ -282,7 +282,7 @@ namespace grids {
     bool get_has_index(const ExtendedGridIndexD<D>& ) const {
       return true;
     }
-
+   IMP_SHOWABLE_INLINE(UnboundedGridStorageD, out << "UnboundedStorageD" << D);
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
     typedef internal::GridIndexIterator<ExtendedGridIndexD<D>,
@@ -316,7 +316,22 @@ namespace grids {
 
 
 
-
+#ifndef IMP_DOXYGEN
+  typedef UnboundedGridStorageD<1> UnboundedGridStorage1D;
+  typedef UnboundedGridStorageD<2> UnboundedGridStorage2D;
+  typedef UnboundedGridStorageD<3> UnboundedGridStorage3D;
+  typedef UnboundedGridStorageD<4> UnboundedGridStorage4D;
+  typedef UnboundedGridStorageD<5> UnboundedGridStorage5D;
+  typedef UnboundedGridStorageD<6> UnboundedGridStorage6D;
+  typedef UnboundedGridStorageD<-1> UnboundedGridStorageKD;
+  typedef vector<UnboundedGridStorage1D> UnboundedGridStorage1Ds;
+  typedef vector<UnboundedGridStorage2D> UnboundedGridStorage2Ds;
+  typedef vector<UnboundedGridStorage3D> UnboundedGridStorage3Ds;
+  typedef vector<UnboundedGridStorage4D> UnboundedGridStorage4Ds;
+  typedef vector<UnboundedGridStorage5D> UnboundedGridStorage5Ds;
+  typedef vector<UnboundedGridStorage6D> UnboundedGridStorage6Ds;
+  typedef vector<UnboundedGridStorageKD> UnboundedGridStorageKDs;
+#endif
 
 
 
@@ -371,6 +386,7 @@ namespace grids {
       return d_[i];
     }
 
+    IMP_SHOWABLE_INLINE(BoundedGridStorageD, out << "BoundedStorageD" << D);
 
     /** \name All Index iterators
         The value type is a GridIndexD;
@@ -501,7 +517,22 @@ namespace grids {
 
 
 
-
+#ifndef IMP_DOXYGEN
+  typedef BoundedGridStorageD<1> BoundedGridStorage1D;
+  typedef BoundedGridStorageD<2> BoundedGridStorage2D;
+  typedef BoundedGridStorageD<3> BoundedGridStorage3D;
+  typedef BoundedGridStorageD<4> BoundedGridStorage4D;
+  typedef BoundedGridStorageD<5> BoundedGridStorage5D;
+  typedef BoundedGridStorageD<6> BoundedGridStorage6D;
+  typedef BoundedGridStorageD<-1> BoundedGridStorageKD;
+  typedef vector<BoundedGridStorage1D> BoundedGridStorage1Ds;
+  typedef vector<BoundedGridStorage2D> BoundedGridStorage2Ds;
+  typedef vector<BoundedGridStorage3D> BoundedGridStorage3Ds;
+  typedef vector<BoundedGridStorage4D> BoundedGridStorage4Ds;
+  typedef vector<BoundedGridStorage5D> BoundedGridStorage5Ds;
+  typedef vector<BoundedGridStorage6D> BoundedGridStorage6Ds;
+  typedef vector<BoundedGridStorageKD> BoundedGridStorageKDs;
+#endif
 
   /** Store a grid as a densely packed set of voxels.
       The mapping from GridIndex3D to index in the data array is:
