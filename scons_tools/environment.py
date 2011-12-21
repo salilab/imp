@@ -260,9 +260,6 @@ def get_base_environment(variables=None, *args, **kw):
         env['MODELLER_' + mod] = ''
     for mod in ('CPPPATH', 'LIBPATH', 'LIBS'):
         env['MODELLER_' + mod] = []
-    env['SVNVERSION'] = env.WhereIs('svnversion')
-    if env['svn'] and not env['SVNVERSION']:
-        print  >> sys.stderr,"Warning: Could not find 'svnversion' binary in path"
     dependency.compilation.configure_check(env)
     dependency.nullptr.configure_check(env)
     if platform == 'aix':

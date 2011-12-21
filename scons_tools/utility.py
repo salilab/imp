@@ -104,29 +104,6 @@ def get_split_into_directories(paths):
     return retdir
 
 
-def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]):
-    if env['SVNVERSION'] and env['svn']:
-        if env.get('repository'):
-            rep=env['repository']
-            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
-            pf=Dir(".").abspath[len(dp)+1:]
-            if rep.startswith('../'):
-                #print pf
-                reppath=Dir("#/"+rep).abspath
-                path=os.path.join(reppath, pf)
-            else:
-                path=os.path.join(rep, pf)
-        else:
-            path=Dir(".").abspath
-        try:
-            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
-            version= "SVN "+vr.split("\n")[0]
-        except OSError, detail:
-            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
-
-    if len(optional_dependencies+ optional_modules)>0:
-        version=version+" with "+", ".join(optional_dependencies+ optional_modules)
-    return version
 
 
 
@@ -152,9 +129,10 @@ def configure(env, name, type, version, required_modules=[],
             return (None, None, None, None)
     found_optional_modules=data.get(env).get_found_modules(optional_modules)
     found_optional_dependencies=data.get(env).get_found_dependencies(optional_dependencies)
-    version= _get_cwd_version(env, version,
-                              optional_dependencies=found_optional_dependencies,
-                              optional_modules=found_optional_modules)
+    outversion= version
+    if len(found_optional_dependencies +found_optional_modules) > 0:
+        outversion=outversion+" with "+", ".join(found_optional_dependencies +found_optional_modules)
+    version=outversion
     print "Configuring", type, name,"version", version
     #if len(required_modules+required_dependencies)>0:
     #    print "  (requires " +", ".join(required_modules+required_dependencies) +")"
