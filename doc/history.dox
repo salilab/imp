@@ -3,6 +3,7 @@
 - IMP::compatibility::checked_vector was renamed to IMP::compatibility::vector and made available to IMP as IMP::vector. Typedefs should use this type (IMP::vector).
 - Various IMP::algebra plural typedefs which had been using std::vector (since they never were updated), have now been moved to IMP::vector.
 - IMP::statistics::HistogramD now supports display with \c matplotlib.
+- IMP::statistics::HistogramD superceeds IMP::statistics::Histogram
 - Several revisions to RMF to avoid issues opening files read only. The major one is that the open/create methods now create an RMF::FileHandle/RMF::FileConstHandle which contains the functionality previously exclusive to RootHandle. You can get the start of the hierarchy from RMF::FileHandle::get_root_node(). There were a couple other minor changes with removing the word \c handle from function names (eg \c node_handle became \c node) to remove inconsistencies.
 - predicate base classes have been added: IMP::SingletonPredicate, IMP::PairPredicate etc. These take particles and return an integer. Current functionality using them includes IMP::core::PredicateSingletonScore that uses a predicate to choose which score to apply.
 - the core generic restraint and score state support was moved to the kernel to avoid breaking various scores outside of IMP svn.
