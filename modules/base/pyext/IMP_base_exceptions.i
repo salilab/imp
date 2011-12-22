@@ -87,7 +87,7 @@ CREATE_EXCEPTION_CLASS(VAR, CNAME)
    subclasses also derive from Python builtins, in Pythons older than 2.5. */
 #ifdef IMP_SWIG_KERNEL
 %pythoncode %{
-from _IMP import Exception, InternalException, ModelException
+from _IMP import Exception, InternalException, ModelException, EventException
 from _IMP import UsageException, IndexException, IOException, ValueException
 
 import sys
