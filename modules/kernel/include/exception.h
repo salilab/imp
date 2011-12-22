@@ -18,6 +18,7 @@ using base::ValueException;
 using base::IOException;
 using base::IndexException;
 using base::ModelException;
+using base::EventException;
 using base::Exception;
 using base::USAGE;
 using base::USAGE_AND_INTERNAL;

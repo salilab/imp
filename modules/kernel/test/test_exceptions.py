@@ -15,7 +15,8 @@ class ExceptionTests(IMP.test.TestCase):
         # Make sure that all exceptions derive from IMP.Exception
         for subclass in (IMP.InternalException, IMP.ModelException,
                          IMP.UsageException, IMP.IndexException,
-                         IMP.IOException, IMP.ValueException):
+                         IMP.IOException, IMP.ValueException,
+                         IMP.EventException):
             self.assertSubclass(subclass, IMP.Exception)
         # Check for exceptions that also should derive from Python types
         self.assertSubclass(IMP.IndexException, IndexError)
