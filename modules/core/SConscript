@@ -1,5 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(version='1',
+env.IMPModuleBuild(version='2',
                    required_modules=['statistics', 'algebra', 'display'],
                    lib_only_optional_modules=['cgal'])
