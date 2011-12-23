@@ -19,6 +19,35 @@ class RegressionTests(IMP.test.TestCase):
         self.assertAlmostEqual(lf.get_a(), 1.0, delta=0.01)
         self.assertAlmostEqual(lf.get_b(), 3.0, delta=0.01)
 
+    def test_weighted_linear(self):
+        """Check weighted Linear Fit"""
+        v1 = IMP.algebra.Vector3D(1.0, 4.0, 5.0)
+        v2 = IMP.algebra.Vector3D(2.0, 5.0, 1.0)
+        v3 = IMP.algebra.Vector3D(3.0, 6.0, 3.0)
+        vs= []
+        vs.append(v1)
+        vs.append(v2)
+        vs.append(v3)
+        lf = IMP.algebra.LinearFit(vs)
+        lf.show()
+        self.assertAlmostEqual(lf.get_a(), 1.0, delta=0.01)
+        self.assertAlmostEqual(lf.get_b(), 3.0, delta=0.01)
+        self.assertAlmostEqual(lf.get_fit_error(), 0.0, delta=0.01)
+
+    def test_weighted_linear_sanity(self):
+        """Check weighted Linear Fit"""
+        v1 = IMP.algebra.Vector3D(1.0, 4.0, 1.0)
+        v2 = IMP.algebra.Vector3D(2.0, 5.0, 1.0)
+        v3 = IMP.algebra.Vector3D(3.0, 6.0, 1.0)
+        vs= []
+        vs.append(v1)
+        vs.append(v2)
+        vs.append(v3)
+        lf = IMP.algebra.LinearFit(vs)
+        lf.show()
+        self.assertAlmostEqual(lf.get_a(), 1.0, delta=0.01)
+        self.assertAlmostEqual(lf.get_b(), 3.0, delta=0.01)
+
     def test_parabolic(self):
         """Check Parabolic Fit"""
         v1 = IMP.algebra.Vector2D(1.0, 9.0)

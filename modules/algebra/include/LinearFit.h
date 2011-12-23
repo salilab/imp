@@ -14,15 +14,22 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-//! Calculate line that fits best the input data points
+//! Calculate line that fits best the input data points (Linear least squares)
 class IMPALGEBRAEXPORT LinearFit {
 public:
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
-     corresponding y values
+     corresponding y values (linear least squares)
    */
   LinearFit(const Vector2Ds& data);
+
+  //! Constructor
+  /**
+     \param[in] data vector of pairs (VectorD<3>) with x,
+     corresponding y values and y errors (weighted linear least squares)
+   */
+  LinearFit(const Vector3Ds& data);
 
   //! fit error
   double get_fit_error() const { return error_; }
@@ -41,7 +48,9 @@ public:
 
  private:
   void find_regression(const Vector2Ds& data);
+  void find_regression(const Vector3Ds& data);
   void evaluate_error(const Vector2Ds& data);
+  void evaluate_error(const Vector3Ds& data);
   double a_, b_;
   double error_;
 };
