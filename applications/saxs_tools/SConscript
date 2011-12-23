@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="saxs_tools", version="SVN",
+env= env.IMPApplication(name="saxs_tools", version="2",
                         authors=["Dina Schneidman"],
                         brief="Tools for SAXS",
                         overview="",

@@ -8,7 +8,7 @@ import shutil
 import re
 mre=re.compile("version='(?P<version>[0123456789]*)'")
 def increment(module):
-    path=os.path.join(module, "SConscript")
+    path=module
     print path
     sconscript= open(path).read()
     if sconscript.find("version='SVN'") != -1:
@@ -23,7 +23,7 @@ def increment(module):
 
 def main():
     if len(sys.argv) <2:
-        print "usage: "+sys.argv[0] + " modulename"
+        print "usage: "+sys.argv[0] + " path/to/SConscript"
         sys.exit(1)
     for m in sys.argv[1:]:
         increment(m)
