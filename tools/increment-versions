@@ -17,7 +17,7 @@ def increment(module):
 	    sconscript=sconscript.replace("version=\"SVN\"", "version='1'")
     else:
         match=re.search(mre, sconscript)
-		if match:
+        if match:
           num= int(match.groupdict()['version'])
           sconscript= re.sub(mre, "version='"+str(num+1)+"'", sconscript)
     open(path, "w").write(sconscript)
