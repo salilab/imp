@@ -14,7 +14,7 @@ deplist.append('Boost.FileSystem')
 
 
 
-env.IMPModuleBuild(version='4',
+env.IMPModuleBuild(version='5',
                    module='kernel', module_libname="imp",
                    module_pylibname="_IMP", module_include_path="IMP",
                    module_preproc="IMP",
