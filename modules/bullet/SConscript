@@ -14,7 +14,7 @@ scons_tools.dependency.add_external_library(env, "Bullet",
                                             versioncpp=["BT_BULLET_VERSION"])
 
 
-env.IMPModuleBuild(version='5',
+env.IMPModuleBuild(version='6',
                    required_modules=['container', 'display'],
                    lib_only_optional_modules=['cgal'],
                    lib_only_required_modules=['atom', 'domino'],
