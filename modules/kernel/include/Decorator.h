@@ -101,19 +101,24 @@ that it is, don't do it.
 A decorator can be cast to a IMP::Particle* in C++. You have to
 use the Decorator::get_particle() function in Python.
 
+\note It is undefined behavior to use a decorator constructed on
+a particle that is no longer part of a model. Since constructing
+decorators is very cheap, you probably should not store decorators,
+and then would not have this problem.
+
 \see DecoratorWithTraits
 */
 class Decorator
 {
 private:
-  Model *model_;
+  WeakPointer<Model> model_;
   ParticleIndex pi_;
 protected:
   Decorator(Model *m, ParticleIndex pi): model_(m),
                                          pi_(pi) {}
   Decorator(Particle *p): model_(p->get_model()),
                           pi_(p->get_index()){}
-  Decorator() :model_(NULL), pi_(-1)
+  Decorator() : pi_(-1)
   {}
   int compare(Object *o) const {
     if (o < get_particle()) return -1;
@@ -195,7 +200,11 @@ public:
   /** Returns the particle decorated by this decorator.*/
   Particle *get_particle() const {
     if (!model_) return NULL;
-    else return model_->get_particle(pi_);
+    else {
+      IMP_USAGE_CHECK(model_->get_particle(pi_),
+                      "Particle " << pi_ << " is no longer part of the model.");
+      return model_->get_particle(pi_);
+    }
   }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
