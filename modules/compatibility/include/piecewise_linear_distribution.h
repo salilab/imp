@@ -81,6 +81,7 @@ class piecewise_linear_distribution {
 #if IMP_BUILD < IMP_FAST
     for (unsigned int i=1; i< dividers_.size(); ++i) {
       if (dividers_[i] <= dividers_[i-1]) {
+        std::cerr << "Found non-monotonic locations: ";
         std::copy(locations_begin, locations_end,
                   std::ostream_iterator<double>(std::cerr, ", "));
         std::cerr << std::endl;
@@ -89,13 +90,15 @@ class piecewise_linear_distribution {
     }
     // check that the total weight is ~1
     if (std::abs(total-1.0) > .05){
-      std::cerr << "Found " << total << std::endl;
+      std::cerr << "Found weight " << total << std::endl;
+      std::cerr << "Locations: [";
       std::copy(locations_begin, locations_end,
                 std::ostream_iterator<double>(std::cerr, ", "));
-      std::cerr << std::endl;
+      std::cerr << "]" << std::endl;
+      std::cerr << "Weights: [";
       std::copy(weights_.begin(), weights_.end(),
                 std::ostream_iterator<double>(std::cerr, ", "));
-      std::cerr << std::endl;
+      std::cerr << "]" << std::endl;
       throw
           std::logic_error
           ("The total weight of the distribution is not close to 1");
