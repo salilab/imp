@@ -53,6 +53,7 @@ struct Creator: public boost::intrusive_ptr_object {
   std::string name_;
   Creator(std::string name): name_(name){}
   virtual Validator *create(FileConstHandle rh)=0;
+  virtual ~Creator(){}
 };
 template <class V>
 struct CreatorImpl: public Creator {
