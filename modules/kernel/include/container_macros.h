@@ -146,7 +146,7 @@
       }                                                                 \
     }                                                                   \
     IMP_USAGE_CHECK(found, d << " not found in container: "             \
-                    << lcname##_vector_);                               \
+                    << get_as<PluralData>(lcname##_vector_));           \
     lcname##_handle_change();                                           \
   }                                                                     \
   /** \brief Remove any occurrences for which f is true */              \
