@@ -1,7 +1,7 @@
 Import('env')
 
 
-env= env.IMPApplication(name="multifit", version='nightly-4',
+env= env.IMPApplication(name="multifit", version='nightly-5',
                         authors=["Keren Lasker"],
                         brief="Compute assembly structures from EM maps and proteomics data",
                         overview="""The related web server can be found at
