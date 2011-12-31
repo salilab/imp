@@ -41,7 +41,7 @@ svn export -q -${rev} ${IMPSVNDIR} imp
 # Put version number, date and revision into relevant files
 DATE=`date +'%Y/%m/%d'`
 (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf-in > .dox && mv .dox doxygen.conf-in)
-perl -pi -e "s/version=[\"']SVN[\"']/version='SVN.${rev}'/" imp/modules/*/SConscript imp/applications/*/SConscript imp/biological_systems/*/SConscript
+perl -pi -e "s/version=[\"'][^\"']+[\"']/version='SVN.${rev}'/" imp/modules/*/SConscript imp/applications/*/SConscript imp/biological_systems/*/SConscript
 
 # Don't overwrite version at build time
 perl -pi -e 's/svn_build\s*=.*/svn_build = False/' imp/scons_tools/variables.py
