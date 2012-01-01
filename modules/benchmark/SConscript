@@ -1,6 +1,6 @@
 Import('env')
 
 
-module_env=env.IMPModuleBuild(version='nightly-10',
+module_env=env.IMPModuleBuild(version='nightly-11',
                               lib_only_required_modules=['core', 'algebra'],
                               lib_only_optional_modules=['domino', 'atom', 'em', 'cgal', 'rmf', 'multifit'])
