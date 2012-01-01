@@ -31,7 +31,7 @@ public:
     IMP_USAGE_CHECK(radius>=0, "Radius can't be negative");
   }
   double get_radius() const {
-    IMP_USAGE_CHECK(!is_nan(radius_),
+    IMP_USAGE_CHECK(!compatibility::isnan(radius_),
               "Attempt to use uninitialized sphere.");
     return radius_;
   }

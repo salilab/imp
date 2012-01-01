@@ -18,10 +18,8 @@
 #include <iostream>
 #include "base_macros.h"
 #include <IMP/compatibility/vector.h>
+#include <IMP/compatibility/math.h>
 
-#if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
-#include <boost/math/special_functions/fpclassify.hpp>
-#endif
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -32,8 +30,6 @@ template <class T>
 inline T square(T t) IMP_NO_SIDEEFFECTS;
 template <class T>
 inline T cube(T t) IMP_NO_SIDEEFFECTS;
-template <class T>
-inline bool is_nan(const T& a) IMP_NO_SIDEEFFECTS;
 
 
 //! Compute the square of a number
@@ -50,20 +46,9 @@ inline T cube(T t)
   return t*t*t;
 }
 
-//! Return true if a number is NaN
-/** With certain compiler settings the compiler can optimize
- out a!=a (and certain intel chips had issues with it too).
- */
 template <class T>
 inline bool is_nan(const T& a) {
-#if defined(_GLIBCXX_USE_C99_MATH)
-  // Not all gcc versions include C99 math
-  return (std::isnan)(a);
-#elif BOOST_VERSION >= 103500
-  return (boost::math::isnan)(a);
-#else
-  return a != a;
-#endif
+  return compatibility::isnan(a);
 }
 
 //! A version of std::for_each which works with ranges

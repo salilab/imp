@@ -13,9 +13,11 @@
 
 IMP_BEGIN_NAMESPACE
 #ifndef SWIG
+#ifndef IMP_DOXYGEN
 using IMP::base::cube;
 using IMP::base::square;
 using IMP::base::is_nan;
+#endif
 using IMP::base::get_as;
 #endif
 IMP_END_NAMESPACE
