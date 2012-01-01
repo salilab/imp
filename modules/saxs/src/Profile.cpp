@@ -632,18 +632,20 @@ void Profile::add_partial_profiles(const Profile& other_profile, Float weight) {
 }
 
 double Profile::radius_of_gyration_fixed_q(double end_q) const {
-  IMP::algebra::Vector3Ds data; // x=q^2, y=logI(q)) z=error(q)/I(q)
+  IMP::algebra::Vector2Ds data; // x=q^2, y=logI(q)) z=error(q)/I(q)
+  Floats errors;
   for(unsigned int i=0; i<profile_.size(); i++) {
     double q = profile_[i].q_;
     double Iq = profile_[i].intensity_;
     double err = profile_[i].error_/Iq;
     double logIq = log(Iq);
     if(q > end_q) break;
-    algebra::Vector3D v(q*q,logIq,err);
+    algebra::Vector2D v(q*q,logIq);
     data.push_back(v);
+    errors.push_back(err);
     //std::cout << q << " " << Iq << " " <<  q*q << " " << logIq << std::endl;
   }
-  algebra::LinearFit lf(data);
+  algebra::LinearFit lf(data, errors);
   double a = lf.get_a();
   //std::cerr  << "a = " << a <<  std::endl;
   if(a >=0) return 0.0;
