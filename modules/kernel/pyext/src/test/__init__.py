@@ -312,6 +312,12 @@ class TestCase(unittest.TestCase):
                           % (str(bad))
         self.assertEquals(len(bad), 0,
                           message)
+        for e in exceptions:
+            self.assertTrue(e not in eval(module.__name__+"._value_types")\
+                       + eval(module.__name__+"._object_types")\
+                       + eval(module.__name__+"._raii_types")\
+                       + eval(module.__name__+"._plural_types"),
+                        "Value/Object exception "+e+" is not an exception")
 
     def _check_spelling(self, word, words):
         """Check that the word is spelled correctly"""
@@ -469,6 +475,10 @@ class TestCase(unittest.TestCase):
                           % "\n".join(not_found)
         self.assertEquals(len(not_found), 0,
                           message)
+        for e in exceptions:
+            self.assertIn(e, all, "Show exception "+e+" is not a class in algebra")
+            self.assertTrue(not hasattr(getattr(modulename, e), 'show'),
+                             "Exception "+e+" is not really a show exception")
 
     def run_example(self, filename):
         """Run the named example script.
