@@ -645,7 +645,7 @@ double Profile::radius_of_gyration_fixed_q(double end_q) const {
     errors.push_back(err);
     //std::cout << q << " " << Iq << " " <<  q*q << " " << logIq << std::endl;
   }
-  algebra::LinearFit lf(data, errors);
+  algebra::LinearFit2D lf(data, errors);
   double a = lf.get_a();
   //std::cerr  << "a = " << a <<  std::endl;
   if(a >=0) return 0.0;
