@@ -15,21 +15,17 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Calculate line that fits best the input data points (Linear least squares)
-class IMPALGEBRAEXPORT LinearFit {
+class IMPALGEBRAEXPORT LinearFit2D {
 public:
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values (linear least squares)
-   */
-  LinearFit(const Vector2Ds& data);
-
-  //! Constructor
-  /**
-     \param[in] data vector of pairs (VectorD<3>) with x,
+     \param[in] error_bars vector of pairs (VectorD<3>) with x,
      corresponding y values and y errors (weighted linear least squares)
    */
-  LinearFit(const Vector3Ds& data);
+  LinearFit2D(const Vector2Ds& data,
+              const Floats &error_bars=Floats());
 
   //! fit error
   double get_fit_error() const { return error_; }
@@ -41,21 +37,24 @@ public:
   double get_b() const { return b_; }
 
   //! show equation
-  IMP_SHOWABLE_INLINE(LinearFit,
+  IMP_SHOWABLE_INLINE(LinearFit2D,
                       {out << "y = " << a_ << "x + " << b_ << std::endl;
                         out << "Error = " << error_ << std::endl;
                       });
 
  private:
-  void find_regression(const Vector2Ds& data);
-  void find_regression(const Vector3Ds& data);
-  void evaluate_error(const Vector2Ds& data);
-  void evaluate_error(const Vector3Ds& data);
+  void find_regression(const Vector2Ds& data, const Floats &errors);
+  void evaluate_error(const Vector2Ds& data, const Floats &errors);
   double a_, b_;
   double error_;
 };
 
-IMP_VALUES(LinearFit, LinearFits);
+IMP_VALUES(LinearFit2D, LinearFit2Ds);
+
+#ifndef IMP_DOXYGEN
+// backwards compat
+typedef LinearFit2D LinearFit;
+#endif
 
 IMPALGEBRA_END_NAMESPACE
 
