@@ -10,7 +10,7 @@ scons_tools.dependency.add_external_library(env,
     "ufsparse/cholmod.h")
 
 
-env.IMPModuleBuild(version='nightly-10',
+env.IMPModuleBuild(version='nightly-11',
        required_modules=['kernel', 'container', 'core', 'atom', 'em',
        'statistics', 'saxs'],
        required_dependencies=['eigen3'],
