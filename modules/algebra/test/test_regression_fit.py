@@ -37,9 +37,9 @@ class RegressionTests(IMP.test.TestCase):
 
     def test_weighted_linear_sanity(self):
         """Check weighted Linear Fit"""
-        v1 = IMP.algebra.Vector3D(1.0, 4.0)
-        v2 = IMP.algebra.Vector3D(2.0, 5.0)
-        v3 = IMP.algebra.Vector3D(3.0, 6.0)
+        v1 = IMP.algebra.Vector2D(1.0, 4.0)
+        v2 = IMP.algebra.Vector2D(2.0, 5.0)
+        v3 = IMP.algebra.Vector2D(3.0, 6.0)
         w=[1.0, 1.0, 1.0]
         vs= []
         vs.append(v1)
