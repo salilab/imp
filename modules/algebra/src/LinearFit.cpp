@@ -7,45 +7,32 @@
  */
 
 #include "IMP/algebra/LinearFit.h"
-
+#include "IMP/base/utility.h"
 IMPALGEBRA_BEGIN_NAMESPACE
 
-LinearFit::LinearFit(const algebra::Vector2Ds& data) {
+LinearFit2D::LinearFit2D(const algebra::Vector2Ds& data,
+                         const Floats &errors) {
   // check that there are at least 3 points
   IMP_USAGE_CHECK(data.size() > 1,
-                  "At least 2 points are required for LinearFit "
+                  "At least 2 points are required for LinearFit2D "
                   << data.size() << " given");
-  find_regression(data);
-  evaluate_error(data);
+  IMP_USAGE_CHECK(errors.empty() || errors.size()==data.size(),
+                  "Either there must be no error bars given or one per"
+                  << " point.");
+  find_regression(data, errors);
+  evaluate_error(data, errors);
 }
 
-LinearFit::LinearFit(const algebra::Vector3Ds& data) {
-  // check that there are at least 3 points
-  IMP_USAGE_CHECK(data.size() > 1,
-                  "At least 2 points are required for LinearFit "
-                  << data.size() << " given");
-  find_regression(data);
-  evaluate_error(data);
-}
-
-void LinearFit::find_regression(const algebra::Vector2Ds& data) {
-  double x(0.0), y(0.0), x2(0.0), xy(0.0);
-  for(unsigned int i=0; i<data.size(); i++) {
-    x+= data[i][0];
-    y+= data[i][1];
-    xy+= data[i][0]*data[i][1];
-    x2 += data[i][0]*data[i][0];
-  }
-
-  double n = (double)data.size();
-  a_ = (n*xy-x*y)/(n*x2 - x*x);
-  b_ = y/n - a_*x/n;
-}
-
-void LinearFit::find_regression(const algebra::Vector3Ds& data) {
+void LinearFit2D::find_regression(const algebra::Vector2Ds& data,
+                                  const Floats &errors) {
   double x(0.0), y(0.0), x2(0.0), xy(0.0), w(0.0);
   for(unsigned int i=0; i<data.size(); i++) {
-    double wi=1/IMP::square(data[i][2]);
+    double wi;
+    if (!errors.empty()) {
+      wi=1.0/IMP::base::square(errors[i]);
+    } else {
+      wi=1.0;
+    }
     w+=wi;
     x+= wi*data[i][0];
     y+= wi*data[i][1];
@@ -57,19 +44,15 @@ void LinearFit::find_regression(const algebra::Vector3Ds& data) {
   b_ = y/w - a_*x/w;
 }
 
-void LinearFit::evaluate_error(const algebra::Vector2Ds& data) {
-  error_ = 0.0;
-  for(unsigned int i=0; i<data.size(); i++) {
-    double diff = a_*data[i][0] + b_ - data[i][1];
-    error_ += diff*diff;
-  }
-  //std::cerr << error_ << std::endl;
-}
 
-void LinearFit::evaluate_error(const algebra::Vector3Ds& data) {
+void LinearFit2D::evaluate_error(const algebra::Vector2Ds& data,
+                                 const Floats &errors) {
   error_ = 0.0;
   for(unsigned int i=0; i<data.size(); i++) {
-    double diff = (a_*data[i][0] + b_ - data[i][1])/data[i][2];
+    double diff = (a_*data[i][0] + b_ - data[i][1]);
+    if (!errors.empty()) {
+      diff/=errors[i];
+    }
     error_ += diff*diff;
   }
   //std::cerr << error_ << std::endl;
