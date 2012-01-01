@@ -15,7 +15,7 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Calculate parabola that fits best the input data points
-class IMPALGEBRAEXPORT ParabolicFit {
+class IMPALGEBRAEXPORT ParabolicFit2D {
 public:
 
   //! Constructor
@@ -23,7 +23,7 @@ public:
      \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values
    */
-  ParabolicFit(const Vector2Ds& data);
+  ParabolicFit2D(const Vector2Ds& data);
 
   //! fit error
   double get_fit_error() const { return error_; }
@@ -37,7 +37,7 @@ public:
   //! get c value (constant)
   double get_c() const { return c_; }
 
-  IMP_SHOWABLE_INLINE(ParabolicFit,{
+  IMP_SHOWABLE_INLINE(ParabolicFit2D,{
       out << "y = " << a_ << "x^2 + " << b_ << "x + " << c_ << std::endl;
       out << "Error = " << error_ << std::endl;
     });
@@ -51,7 +51,10 @@ public:
   double error_;
 };
 
-IMP_VALUES(ParabolicFit, ParabolicFits);
+IMP_VALUES(ParabolicFit2D, ParabolicFit2Ds);
+#ifndef IMP_DOXYGEN
+typedef ParabolicFit2D ParabolicFit;
+#endif
 
 IMPALGEBRA_END_NAMESPACE
 
