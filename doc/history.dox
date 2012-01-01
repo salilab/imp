@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011
+- IMP::algebra::ParabolicFit was renamed to IMP::algebra::ParabolicFit2D
 - IMP::algebra::LinearFit was renamed to IMP::algebra::LinearFit2D. It now supports error bars on the y-values.
 \par Fall 2011
 - IMP::compatibility::checked_vector was renamed to IMP::compatibility::vector and made available to IMP as IMP::vector. Typedefs should use this type (IMP::vector).

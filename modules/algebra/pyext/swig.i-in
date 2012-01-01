@@ -48,7 +48,7 @@ IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  ExtendedGridIndex);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  BoundedGridStorage);
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  UnboundedGridStorage);
 IMP_SWIG_VALUE(IMP::algebra, LinearFit2D, LinearFit2Ds);
-IMP_SWIG_VALUE(IMP::algebra, ParabolicFit, ParabolicFits);
+IMP_SWIG_VALUE(IMP::algebra, ParabolicFit2D, ParabolicFit2Ds);
 IMP_SWIG_VALUE(IMP::algebra, FixedZYZ, FixedZYZs);
 IMP_SWIG_VALUE(IMP::algebra, FixedXYZ, FixedXYZs);
 IMP_SWIG_VALUE(IMP::algebra, FixedZXZ, FixedZXZs);
@@ -180,4 +180,5 @@ namespace IMP {
 
 %pythoncode %{
   LinearFit=LinearFit2D
+  ParabolicFit=ParabolicFit2D
 %}

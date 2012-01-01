@@ -9,16 +9,16 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-ParabolicFit::ParabolicFit(const algebra::Vector2Ds& data) {
+ParabolicFit2D::ParabolicFit2D(const algebra::Vector2Ds& data) {
   // check that there are at least 3 points
   IMP_USAGE_CHECK(data.size() > 2,
-                  "At least 3 points are required for ParabolicFit "
+                  "At least 3 points are required for ParabolicFit2D "
                   << data.size() << " given");
   find_regression(data);
   evaluate_error(data);
 }
 
-void ParabolicFit::find_regression(const algebra::Vector2Ds& data) {
+void ParabolicFit2D::find_regression(const algebra::Vector2Ds& data) {
   // http://mathforum.org/library/drmath/view/72047.html
   double S00(0.0), S10(0.0), S20(0.0), S30(0.0), S40(0.0);
   double S01(0.0), S11(0.0), S21(0.0);
@@ -49,7 +49,7 @@ void ParabolicFit::find_regression(const algebra::Vector2Ds& data) {
         + S11*S20*S30 + S21*S10*S30 - S21*S20*S20) / d;
 }
 
-void ParabolicFit::evaluate_error(const algebra::Vector2Ds& data) {
+void ParabolicFit2D::evaluate_error(const algebra::Vector2Ds& data) {
   error_ = 0.0;
   for(unsigned int i=0; i<data.size(); i++) {
     double diff = a_*data[i][0]*data[i][0] + b_*data[i][0] + c_ -data[i][1];
