@@ -35,7 +35,8 @@ public:
   /** \param[in] value Value to add to the float attribute derivative.
    */
   Float operator()(const Float value) const {
-    IMP_INTERNAL_CHECK(!is_nan(value), "Can't set derivative to NaN.");
+    IMP_INTERNAL_CHECK(!compatibility::isnan(value),
+                       "Can't set derivative to NaN.");
     return value * weight_;
   }
   IMP_SHOWABLE_INLINE(DerivativeAccumulator, out << weight_);
