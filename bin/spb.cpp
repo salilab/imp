@@ -208,7 +208,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
                 MPI_COMM_WORLD, &status);
    Floats val(fbias, fbias+nbins);
    ptr->set_bias(val);
-   delete(fbias);
+   delete [] fbias;
   }
  }
 
