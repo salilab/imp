@@ -1,3 +1,3 @@
 Import('env')
-env.IMPModuleBuild(version='nightly-12',
+env.IMPModuleBuild(version='nightly-13',
                    required_modules=['core'])
