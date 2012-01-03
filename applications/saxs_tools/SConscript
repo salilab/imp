@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="saxs_tools", version='nightly-7',
+env= env.IMPApplication(name="saxs_tools", version='nightly-8',
                         authors=["Dina Schneidman"],
                         brief="Tools for SAXS",
                         overview="",
