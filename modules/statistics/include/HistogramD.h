@@ -15,10 +15,7 @@
 #include <IMP/base_types.h>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
-//! Histogram
-/** Keeps a set of values within a range
-    the range is arranged into some number of bins
-    specified during construction. */
+/** Dynamically build a histogram embedded in D-dimensional space. */
 template <int D>
 class HistogramD {
   public:
@@ -26,8 +23,8 @@ class HistogramD {
   typedef typename
   algebra::grids::GridD<D,
                         typename algebra::grids::DenseGridStorageD<D,
-                                                          int>,
-                        int, typename algebra::grids::DefaultEmbeddingD<D> >
+                                                          double>,
+                        double, typename algebra::grids::DefaultEmbeddingD<D> >
   CountGrid;
   HistogramD(): count_(-1){}
   HistogramD(double voxel_size,
@@ -36,33 +33,26 @@ class HistogramD {
                                  count_(0){}
    //! Increase the count for the bin that holds a
    // value that is in range for this histogram.
-  void add(const algebra::VectorD<D>& x) {
+  void add(const algebra::VectorD<D>& x, double weight=1) {
     IMP_USAGE_CHECK(count_ >-1, "Using uninitialized histogram");
     typename CountGrid::ExtendedIndex ei=grid_.get_nearest_extended_index(x);
     if (grid_.get_has_index(ei)) {
-      ++grid_[grid_.get_index(ei)];
+      grid_[grid_.get_index(ei)]+=weight;
     }
-    ++count_;
+    count_+=weight;
   }
   //! Get the sum of all counts in the histogram.
-  unsigned int get_total_count() const {
+  double get_total_count() const {
     return count_;
   }
-  typedef typename
-  algebra::grids::GridD<D,
-                        typename algebra::grids::DenseGridStorageD<D,
-                                                          float>,
-                        float,
-                        typename algebra::grids::DefaultEmbeddingD<D> >
-  FrequencyGrid;
-  FrequencyGrid get_frequencies() const {
-    FrequencyGrid ret(grid_.get_unit_cell()[0],
-                      algebra::get_bounding_box(grid_), 0);
+  HistogramD<D> get_frequencies() const {
+    CountGrid grid(grid_.get_unit_cell()[0],
+                   algebra::get_bounding_box(grid_), 0);
     for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
          it != grid_.all_indexes_end(); ++it) {
-      ret[*it]= static_cast<double>(grid_[*it])/count_;
+      grid[*it]= static_cast<double>(grid_[*it])/count_;
     }
-    return ret;
+    return HistogramD<D>(grid);
   }
   CountGrid get_counts() const {
     return grid_;
@@ -105,8 +95,9 @@ class HistogramD {
 
   IMP_SHOWABLE_INLINE(HistogramD,out << "count: " << count_);
 private:
+  HistogramD(const CountGrid &g): grid_(g), count_(1){}
   CountGrid grid_;
-  int count_;
+  double count_;
 };
 
 #ifndef IMP_DOXYGEN

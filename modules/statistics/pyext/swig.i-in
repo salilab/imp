@@ -26,9 +26,8 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
 namespace IMP {
 namespace statistics {
   %template(_IntDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,int>;
-  %template(_FloatDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,float>;
-  %template(_HistogramCountsGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,int>,int,  algebra::grids::DefaultEmbeddingD<DD> >;
-  %template(_HistogramFrequencyGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,float>,float, algebra::grids::DefaultEmbeddingD<DD> >;
+  %template(_FloatDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,double>;
+  %template(_HistogramCountsGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,double>,double,  algebra::grids::DefaultEmbeddingD<DD> >;
 }
 }
 %enddef
