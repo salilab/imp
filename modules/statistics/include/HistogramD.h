@@ -8,6 +8,7 @@
 #ifndef IMPSTATISTICS_HISTOGRAM_D_H
 #define IMPSTATISTICS_HISTOGRAM_D_H
 #include "statistics_config.h"
+#include "internal/histogram.h"
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/GridD.h>
@@ -54,40 +55,40 @@ class HistogramD {
     }
     return HistogramD<D>(grid);
   }
+  /** Get a histogram that has the pdf value as the value for the bin.*/
+  HistogramD<D> get_probability_distribution_function() const {
+    CountGrid grid(grid_.get_unit_cell()[0],
+                   algebra::get_bounding_box(grid_), 0);
+    double volume
+      =algebra::get_volume(grid_.get_bounding_box(*grid_.all_indexes_begin()));
+    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
+         it != grid_.all_indexes_end(); ++it) {
+      grid[*it]= static_cast<double>(grid_[*it])/(count_*volume);
+    }
+    return HistogramD<D>(grid);
+  }
   CountGrid get_counts() const {
     return grid_;
   }
   algebra::VectorD<D> get_mean() const {
-    algebra::VectorD<D> ret;
-    std::fill(ret.coordinates_begin(), ret.coordinates_end(), 0.0);
-    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
-         it != grid_.all_indexes_end(); ++it) {
-      ret+= grid_.get_center(*it)*grid_[*it];
-    }
-    ret/=count_;
-    return ret;
+    algebra::VectorD<D> zeros(grid_.get_bounding_box().get_corner(0));
+    std::fill(zeros.coordinates_begin(), zeros.coordinates_end(), 0.0);
+    return grid_.apply(internal::Mean<D>(zeros)).mn/count_;
   }
   unsigned int get_dimension() const {
     return grid_.get_dimension();
   }
   algebra::VectorD<D>
   get_standard_deviation(const algebra::VectorD<D> &mean) const {
-    algebra::VectorD<D> ret;
-    std::fill(ret.coordinates_begin(), ret.coordinates_end(), 0.0);
-    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
-         it != grid_.all_indexes_end(); ++it) {
-      algebra::VectorD<D> diff= grid_.get_center(*it)-mean;
-      algebra::VectorD<D> diff2;
-      for (unsigned int i=0; i<get_dimension(); ++i) {
-        diff2[i]= square(diff[i]);
-      }
-      ret+= grid_[*it]*diff2;
-    }
-    ret/=count_;
+    algebra::VectorD<D> zeros(grid_.get_bounding_box().get_corner(0));
+    std::fill(zeros.coordinates_begin(), zeros.coordinates_end(), 0.0);
+    algebra::VectorD<D> s2
+      = grid_.apply(internal::Sigma2<D>(mean, zeros)).sigma2;
+    s2/=count_;
     for (unsigned int i=0; i< get_dimension(); ++i) {
-      ret[i] = std::sqrt(ret[i]);
+      s2[i] = std::sqrt(s2[i]);
     }
-    return ret;
+    return s2;
   }
   algebra::BoundingBoxD<D> get_bounding_box() const {
     return IMP::algebra::get_bounding_box(grid_);
