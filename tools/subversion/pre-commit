@@ -117,14 +117,17 @@ def is_symlink(filename, txn, repos, errors):
                       + 'this can trigger SVN bug #2344.')
     return symlink
 
-def check_logmsg_len(txn, repos, errors):
-    """Make sure a log message was supplied"""
+def check_logmsg(txn, repos, errors):
+    """Make sure a suitable log message was supplied"""
+    marker = 'DO NOT' + ' COMMIT'
     cmd = [svnlook, 'log', '-t', txn, repos]
     pipe = Popen(cmd, shell=False, stdout=PIPE).stdout
     logmsg = pipe.readline().rstrip('\r\n')
     if len(logmsg) < 8:
         errors.append("Please provide a log message to describe " \
                       + "what you changed.");
+    elif logmsg.find(marker) >= 0:
+        errors.append('Log message contains the string "%s"' % marker)
 
 def main(repos, txn):
     errors = []
@@ -135,7 +138,7 @@ def main(repos, txn):
         # the SVN transaction, so the files aren't valid C++, Python etc.
         if not is_symlink(filename, txn, repos, errors):
             check_modified_file(filename, txn, repos, errors)
-    check_logmsg_len(txn, repos, errors)
+    check_logmsg(txn, repos, errors)
 
     if len(errors) > 0:
         sys.stderr.write("Change rejected by pre-commit for the " \
