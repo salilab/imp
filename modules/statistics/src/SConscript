@@ -1,12 +1,4 @@
 Import('env')
 
-files = [
-         'Histogram.cpp',
-         'PartitionalClustering.cpp',
-         'metric_clustering.cpp',
-         'point_clustering.cpp',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
