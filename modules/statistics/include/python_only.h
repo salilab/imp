@@ -18,7 +18,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 */
 /** In python, you can use matplot lib, if installed,
     to show the contents of a histogram. At the moment,
-    only 1D histograms are supported.
+    only 1D and 2D histograms are supported.
 
     \param[in] h The histogram to show, the plot is sized to the histograms
                  bounding box.
@@ -28,7 +28,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
     curves. The functions should take one float and return a float.
     \relatesalso HistogramD
 */
-void show_histogram(Histogram1D h, std::string xscale="linear",
+void show_histogram(HistogramD h, std::string xscale="linear",
                      std::string yscale="linear",
                      Functions curves=Functions());
 /** @} */
