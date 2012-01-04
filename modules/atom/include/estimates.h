@@ -104,8 +104,8 @@ inline double get_kd(double na, double nb, double nab,
 
 /** Return the prediction diffusion coefficient in Angstrom squared per
     femtosecond given a radius in angstrom.
-    See \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory)}
-    for a reference.*/
+    See \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory),
+    wikipedia} for a reference.*/
 IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
 
 
