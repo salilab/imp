@@ -146,6 +146,15 @@ private:
   VectorD<D> b_[2];
 };
 
+template <int D>
+inline double get_volume(const BoundingBoxD<D> &bb) {
+  double v=1;
+  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
+    v*= bb.get_corner(1)[i]-bb.get_corner(0)[i];
+  }
+  return v;
+}
+
 IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box,
                               if (0) std::cout << g; IMP_NOT_IMPLEMENTED,
                               return (g.get_corner(1)[0]- g.get_corner(0)[0])
