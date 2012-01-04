@@ -119,13 +119,13 @@ def configure(env, name, type, version, required_modules=[],
     found_required_modules= data.get(env).get_found_modules(required_modules)
     for m in required_modules:
         if m not in found_required_modules:
-            print type.capitalize(), name, "disabled due to disabled module "\
-                  "IMP."+m
+            msg="%s"+type.capitalize()+" "+ name +" disabled due to disabled module IMP."+m+"%s"
+            print msg%(env['IMP_COLORS']['red'], env['IMP_COLORS']['end'])
             return (None, None, None, None)
     for m in required_dependencies:
         if not data.get(env).dependencies[m].ok:
-            print type.capitalize(), name, "disabled due to missing dependency "\
-                  +m
+            msg= "%s"+type.capitalize()+" "+ name+" disabled due to missing dependency "+m+"%s"
+            print msg%(env['IMP_COLORS']['red'], env['IMP_COLORS']['end'])
             return (None, None, None, None)
     found_optional_modules=data.get(env).get_found_modules(optional_modules)
     found_optional_dependencies=data.get(env).get_found_dependencies(optional_dependencies)
@@ -133,7 +133,8 @@ def configure(env, name, type, version, required_modules=[],
     if len(found_optional_dependencies +found_optional_modules) > 0:
         outversion=outversion+" with "+", ".join(found_optional_dependencies +found_optional_modules)
     version=outversion
-    print "Configuring", type, name,"version", version
+    msg="%sConfiguring " +type+" "+name + "%s version "+ version
+    print msg%(env['IMP_COLORS']['green'], env['IMP_COLORS']['end'])
     #if len(required_modules+required_dependencies)>0:
     #    print "  (requires " +", ".join(required_modules+required_dependencies) +")"
     return (environment.get_named_environment(env, name,

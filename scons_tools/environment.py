@@ -228,6 +228,16 @@ def get_base_environment(variables=None, *args, **kw):
     if env.get('path') is not None:
         newpath = env['path'] + os.path.pathsep + newpath
     envargs={'PATH':newpath}
+
+    colors = {}
+    colors['cyan']   = '\033[96m'
+    colors['purple'] = '\033[95m'
+    colors['blue']   = '\033[94m'
+    colors['green']  = '\033[92m'
+    colors['yellow'] = '\033[93m'
+    colors['red']    = '\033[91m'
+    colors['end']    = '\033[0m'
+#If the output is not a terminal, remove the colors
     if env['wine']:
         env = _WineEnvironment(variables=variables,
                               ENV = {'PATH':newpath},
@@ -239,6 +249,53 @@ def get_base_environment(variables=None, *args, **kw):
         #env['PYTHON'] = 'python'
     data.add(env)
     impvariables.update(env, variables)
+    env['IMP_COLORS']=colors
+    if not env['pretty'] or not sys.stdout.isatty():
+        for key, value in colors.iteritems():
+            colors[key] = ''
+    if env['pretty']:
+
+        compile_source_message = '%sCompiling %s$SOURCE%s' % \
+            (colors['blue'], colors['end'], colors['end'])
+
+        compile_shared_source_message = '%sCompiling shared %s$SOURCE%s' % \
+            (colors['blue'], colors['end'], colors['end'])
+
+        link_program_message = '%sLinking Program %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        link_library_message = '%sLinking Static Library %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        ranlib_library_message = '%sRanlib Library %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        link_shared_library_message = '%sLinking Shared Library %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        link_module_message = '%sLinking Shared Module %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        java_library_message = '%sCreating Java Archive %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        swig_message = '%sRunning swig on %s$TARGET%s' % \
+            (colors['purple'], colors['end'], colors['end'])
+
+        pretty={'CXXCOMSTR': compile_source_message,
+                'CCCOMSTR': compile_source_message,
+                'SHCCCOMSTR': compile_shared_source_message,
+                'SHCXXCOMSTR': compile_shared_source_message,
+                'ARCOMSTR': link_library_message,
+                'RANLIBCOMSTR': ranlib_library_message,
+                'SHLINKCOMSTR': link_shared_library_message,
+                'LDMODCOMSTR': link_module_message,
+                'LINKCOMSTR': link_program_message,
+                'JARCOMSTR': java_library_message,
+                'JAVACCOMSTR': compile_source_message,
+                'SWIGCOMSTR': swig_message,}
+        for p in pretty.keys():
+            env[p]=pretty[p]
     if env['IMP_USE_PLATFORM_FLAGS']:
         _fix_include_path(env)
         _add_platform_flags(env)
@@ -309,7 +366,7 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(doc.IMPStandardPublications)
     env.AddMethod(doc.IMPStandardLicense)
     env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
-    env.Append(BUILDERS={'IMPModuleSWIG': module._swig.SwigIt})
+    env.Append(BUILDERS={'IMPModuleSWIG': module._swig.get_swig_action(env)})
     env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
     env.Append(BUILDERS={'IMPModuleSWIGPreface': module._swig.SwigPreface})
     env.Append(BUILDERS = {'IMPModuleVersionH': module._version_h.VersionH,
