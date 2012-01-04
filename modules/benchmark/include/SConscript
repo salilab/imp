@@ -1,10 +1,4 @@
 Import('env')
 
-files = [
-         'benchmark_macros.h',
-         'hidden_keys.h',
-         'utility.h',
-        ]
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
