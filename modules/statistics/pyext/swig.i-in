@@ -42,10 +42,7 @@ IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(6,6)
 %pythoncode %{
 def show_histogram(h, yscale='linear', xscale='linear',
                    curves=[]):
-    if h.get_dimension() != 1:
-      print "Only 1D histograms supported at the moment."
-      return
-    else:
+    if h.get_dimension()==1:
       import numpy as np
       import matplotlib.pyplot as plt
       import matplotlib.mlab as mlab
@@ -64,4 +61,25 @@ def show_histogram(h, yscale='linear', xscale='linear',
       for c in curves:
          plt.plot(bins, [c(x) for x in bins], linewidth=1)
       plt.show()
+    elif h.get_dimension()==2:
+      import numpy as np
+      import matplotlib.cm as cm
+      import matplotlib.mlab as mlab
+      import matplotlib.pyplot as plt
+      cg= h.get_counts()
+      steps=cg.get_unit_cell()
+      x = np.arange(cg.get_bounding_box().get_corner(0)[0]+.5*steps[0],
+                    cg.get_bounding_box().get_corner(1)[0]-.5*steps[0])
+      y = np.arange(cg.get_bounding_box().get_corner(0)[1]+.5*steps[1],
+                    cg.get_bounding_box().get_corner(1)[1]-.5*steps[1])
+      X, Y = np.meshgrid(x, y)
+      Z,junk= np.meshgrid(x,y)
+      for i,xi in enumerate(x):
+          for j, yj in enumerate(y):
+              Z[i][j]=cg[cg.get_nearest_index(IMP.algebra.Vector2D(xi,yj))]
+      im = plt.pcolor(X,Y, Z, cmap=cm.jet)
+      plt.colorbar(im)
+      plt.show()
+    else:
+      raise ValueError("Dimension "+str(h.get_dimension())+ "not supported")
 %}
