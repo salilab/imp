@@ -1,6 +1,16 @@
 Import('env')
 
+import scons_tools
+
+scons_tools.dependency.add_external_library(env, "google_perftools_profile",
+                                            ["profiler"],
+                                            "google/profiler.h",
+                                            body=';')
+
 
 module_env=env.IMPModuleBuild(version='nightly-13',
                               lib_only_required_modules=['core', 'algebra'],
-                              lib_only_optional_modules=['domino', 'atom', 'em', 'cgal', 'rmf', 'multifit'])
+                              lib_only_optional_modules=['domino', 'atom', 'em',
+                                                         'cgal', 'rmf',
+                                                         'multifit'],
+                              optional_dependencies=['google_perftools_profile'])

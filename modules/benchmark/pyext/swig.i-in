@@ -1,2 +1,3 @@
 /* Wrap our own classes */
 %include "IMP/benchmark/utility.h"
+%include "IMP/benchmark/profile.h"
