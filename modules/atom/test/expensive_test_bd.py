@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import IMP.benchmark
 try:
     import sympy
     from sympy.physics.units import *
@@ -31,7 +32,7 @@ if use_sympy:
 else:
     angstrom=1.0
 
-class BDTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _setup(self):
         m= IMP.Model()
         IMP.set_log_level(IMP.SILENT)
@@ -48,7 +49,9 @@ class BDTests(IMP.test.TestCase):
         return (m, xyzr, d, bd)
     def _measure(self, m, xyzr, bd):
         ub= IMP.algebra.Vector3D(20,20,20)
-        h = IMP.statistics.Histogram3D(.1, IMP.algebra.BoundingBox3D(-ub, ub))
+        # was .1
+        h = IMP.statistics.Histogram3D(1, IMP.algebra.BoundingBox3D(-ub, ub))
+        IMP.benchmark.set_is_profiling(True)
         for i in range(0,nreps):
             xyzr.set_coordinates(IMP.algebra.Vector3D(0,0,0))
             bd.optimize(nsteps)
@@ -57,9 +60,13 @@ class BDTests(IMP.test.TestCase):
                 print i, xyzr.get_coordinates()
         print "computing"
         mn= h.get_mean()
+        print mn
         std= h.get_standard_deviation(mn)
         print mn, std
-        return (mn, std)
+        IMP.benchmark.set_is_profiling(False)
+        return (mn, std, nreps)
+    def _get_sigma_error(self, sigma, n):
+        return 2.0*sigma**4/n
     #def _measure_x(self, m, xyzr, bd):
     #    ub= IMP.algebra.Vector1D(50)
     #    h = IMP.statistics.Histogram1D(.1, IMP.algebra.BoundingBox1D(-ub, ub))
@@ -107,22 +114,22 @@ class BDTests(IMP.test.TestCase):
             return sigmass**sympy.Rational(1,2)
         else:
             return 0
-    def _check(self, (mn, std), (calc_mn, calc_std)):
+    def _check(self, (mn, std), (calc_mn, calc_std), n):
         print [(x.evalf()/angstrom).evalf() for x in calc_std]
         print "mean", mn, [float((x/angstrom).evalf()) for x in calc_mn]
         print "std", std, [float((x/angstrom).evalf()) for x in calc_std]
         for i in range(0,3):
-            self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=2)
-            self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2)
+            self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=std[i]*2)
+            self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2.0*self._get_sigma_error(std[i], n))
     def test_free(self):
         """Test brownian free diffusion"""
         #self.skipTest("too expensive")
         (m, xyzr, d, bd)= self._setup()
         sigma= self._get_sigma_1_free()
         print "free sigma is", sigma
-        (mn, std)= self._measure(m, xyzr, bd)
+        (mn, std,nreps)= self._measure(m, xyzr, bd)
         print mn, std
-        self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
+        self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]), nreps)
     def test_linear(self):
         """Test brownian linear diffusion"""
         #self.skipTest("too expensive")
@@ -140,8 +147,8 @@ class BDTests(IMP.test.TestCase):
         r= IMP.core.SingletonRestraint(dss, xyzr)
         m.add_restraint(r)
         sigma= self._get_sigma_1_free()
-        mn, std= self._measure(m, xyzr, bd)
-        self._check((mn, std), ([mean, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]))
+        mn, std, nreps= self._measure(m, xyzr, bd)
+        self._check((mn, std), ([mean, 0*angstrom, 0*angstrom], [sigma, sigma, sigma]), nreps)
     def test_harmonic(self):
         """Test a brownian harmonic"""
         #self.skipTest("too expensive")
@@ -156,7 +163,7 @@ class BDTests(IMP.test.TestCase):
         dss= IMP.core.AttributeSingletonScore(h, IMP.core.XYZ.get_xyz_keys()[0])
         r= IMP.core.SingletonRestraint(dss, xyzr)
         m.add_restraint(r)
-        mn, std= self._measure(m, xyzr, bd)
-        self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigmaf, sigmaf]))
+        mn, std, nreps= self._measure(m, xyzr, bd)
+        self._check((mn, std), ([0*angstrom, 0*angstrom, 0*angstrom], [sigma, sigmaf, sigmaf]), nreps)
 if __name__ == '__main__':
     IMP.test.main()
