@@ -7,6 +7,7 @@
 
 #include "IMP/atom/estimates.h"
 #include <IMP/internal/units.h>
+#include <IMP/constants.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -93,4 +94,63 @@ double get_volume_from_residue_type(ResidueType rt) {
                                                r));
 }
 
+typedef
+unit::Shift<unit::Multiply<unit::Pascal,
+                           unit::Second>::type,
+            -3>::type MillipascalSecond;
+
+static MillipascalSecond eta(unit::Kelvin T)
+{
+  const std::pair<unit::Kelvin, MillipascalSecond> points[]
+    ={ std::make_pair(unit::Kelvin(273+10.0),
+                      MillipascalSecond(1.308)),
+       std::make_pair(unit::Kelvin(273+20.0),
+                      MillipascalSecond(1.003)),
+       std::make_pair(unit::Kelvin(273+30.0),
+                      MillipascalSecond(0.7978)),
+       std::make_pair(unit::Kelvin(273+40.0),
+                      MillipascalSecond(0.6531)),
+       std::make_pair(unit::Kelvin(273+50.0),
+                      MillipascalSecond(0.5471)),
+       std::make_pair(unit::Kelvin(273+60.0),
+                      MillipascalSecond(0.4668)),
+       std::make_pair(unit::Kelvin(273+70.0),
+                      MillipascalSecond(0.4044)),
+       std::make_pair(unit::Kelvin(273+80.0),
+                      MillipascalSecond(0.3550)),
+       std::make_pair(unit::Kelvin(273+90.0),
+                      MillipascalSecond(0.3150)),
+       std::make_pair(unit::Kelvin(273+100.0),
+                      MillipascalSecond(0.2822)),
+       std::make_pair(unit::Kelvin(std::numeric_limits<Float>::max()),
+                      MillipascalSecond(0.2822))};
+
+  //const unsigned int npoints= sizeof(points)/sizeof(std::pair<float,float>);
+  if (T < points[0].first) {
+    return points[0].second;
+  } else {
+    unsigned int i;
+    for (i=1; points[i].first < T; ++i) {}
+    double f= ((T - points[i-1].first)
+              /(points[i].first - points[i-1].first));
+    MillipascalSecond ret=
+      (1.0-f) *points[i-1].second + f*points[i].second;
+    return ret;
+  }
+}
+
+double get_einstein_diffusion_coefficient(double r) {
+  MillipascalSecond e=eta(IMP::internal::DEFAULT_TEMPERATURE);
+    unit::SquareAngstromPerFemtosecond
+      ret(kt(IMP::internal::DEFAULT_TEMPERATURE)
+          /(6.0* PI*e*unit::Angstrom(r)));
+    return ret.get_value();
+}
+
+double get_einstein_rotational_diffusion_coefficient(double r) {
+  MillipascalSecond e=eta(IMP::internal::DEFAULT_TEMPERATURE);
+    unit::PerFemtosecond ret=kt(IMP::internal::DEFAULT_TEMPERATURE)
+      /(8*PI*e*square(unit::Angstrom(r))*unit::Angstrom(r));
+    return ret.get_value();
+}
 IMPATOM_END_NAMESPACE
