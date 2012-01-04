@@ -2,7 +2,7 @@
  *  \file internal/utility.h
  *  \brief Various useful utilities
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPKERNEL_INTERNAL_STATIC_H

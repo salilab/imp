@@ -1,6 +1,6 @@
 /** testing of the Eigen CG. tests return true when they succeed.
  *
- * Copyright 2007-2011 IMP Inventors. All rights reserved.
+ * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/isd/internal/cg_eigen.h>

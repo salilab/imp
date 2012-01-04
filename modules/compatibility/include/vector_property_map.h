@@ -6,7 +6,7 @@
  *  in the boost versions supported by \imp. This header makes sure the correct
  *  file is included.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCOMPATIBILITY_VECTOR_PROPERTY_MAP_H

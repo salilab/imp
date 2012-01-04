@@ -2,7 +2,7 @@
  *  \file truncated_harmonic.h
  *  \brief Helpers for the truncated harmonics.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

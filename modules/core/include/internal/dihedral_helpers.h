@@ -2,7 +2,7 @@
  *  \file dihedral_helpers.h
  *  \brief Helper functions to calculate dihedral angles
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DIHEDRAL_HELPERS_H

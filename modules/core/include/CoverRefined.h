@@ -2,7 +2,7 @@
  *  \file CoverRefined.h
  *  \brief Cover a bond with a sphere.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_COVER_REFINED_H

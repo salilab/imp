@@ -2,7 +2,7 @@
  *  \file metric_clustering.h
  *  \brief Cluster sets of points.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPSTATISTICS_METRIC_CLUSTERING_H

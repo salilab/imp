@@ -2,7 +2,7 @@
  *  \file coarse_molecule.h
  *  \brief coarsen molecule by clustering
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_COARSE_MOLECULE_H

@@ -2,7 +2,7 @@
  *  \file base/internal/OwnerPointer.h
  *  \brief A nullptr-initialized pointer to an IMP Object.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

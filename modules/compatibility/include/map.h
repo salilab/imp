@@ -2,7 +2,7 @@
  *  \file IMP/compatibility/map.h
  *  \brief Declare an efficient stl-compatible map
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCOMPATIBILITY_COMPATIBILITY_MAP_H

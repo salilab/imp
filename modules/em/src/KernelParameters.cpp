@@ -2,7 +2,7 @@
  *  \file KernelParameters.cpp
  *  \brief Calculates and stores gaussian kernel parameters.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

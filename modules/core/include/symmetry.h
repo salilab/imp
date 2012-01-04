@@ -1,7 +1,7 @@
 /**
  *  \file symmetry.h     \brief Implement various types of symmetry
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPCORE_SYMMETRY_H

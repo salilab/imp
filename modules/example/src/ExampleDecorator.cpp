@@ -2,7 +2,7 @@
  *  \file example/ExampleDecorator.cpp
  *  \brief Add a name to a particle.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
