@@ -8,6 +8,7 @@
 #include "IMP/atom/estimates.h"
 #include <IMP/internal/units.h>
 #include <IMP/constants.h>
+#include <IMP/internal/constants.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
