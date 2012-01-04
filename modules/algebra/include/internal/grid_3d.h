@@ -48,33 +48,19 @@ class GridIndexIterator
                        "Incrementing invalid iterator");
     IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
     IMP_INTERNAL_CHECK(cur_ < ub_, "cur out of range");
-    boost::scoped_array<int> r(new int[cur_.get_dimension()]);
-    unsigned int carry=1;
-    for (int i=cur_.get_dimension()-1; i>=0; --i) {
-      r[i]= cur_[i]+carry;
-      if ( r[i] == ub_[i]) {
-        r[i]= lb_[i];
-        carry=1;
+    for (unsigned int i=0; i< cur_.get_dimension(); ++i) {
+      //for (int i=cur_.get_dimension()-1; i>=0; --i) {
+      ++cur_.access_data().get_data()[i];
+      if ( cur_.access_data().get_data()[i] == ub_[i]) {
+        cur_.access_data().get_data()[i]= lb_[i];
       } else {
-        carry=0;
+        IMP_INTERNAL_CHECK(cur_ > lb_, "Problems advancing");
+        IMP_INTERNAL_CHECK(get_is_non_empty(cur_, ub_), "Problems advancing");
+        return;
       }
     }
-    if (carry==1) {
-      cur_= BI();
-    } else {
-      BI nc= BI(r.get(), r.get()+cur_.get_dimension());
-      IMP_INTERNAL_CHECK(nc > cur_, "Nonfunctional increment");
-      IMP_INTERNAL_CHECK(nc > lb_, "Problems advancing");
-      IMP_INTERNAL_CHECK(get_is_non_empty(nc, ub_), "Problems advancing");
-      /*std::cout << "was " << cur_ << " is " << nc
-        << " (" << lb_ << ", " << ub_ << ")" << std::endl;*/
-      cur_= nc;
-    }
-  }
-  void check_and_advance() {
-    while (cur_ != BI() && !isvi_.get_is_good(cur_)) {
-      advance();
-    }
+    cur_=BI();
+    return;
   }
 public:
   BI lb_;
@@ -89,7 +75,9 @@ public:
                                 isvi_(isvi) {
     IMP_INTERNAL_CHECK(get_is_non_empty(lb_, ub_),
                "Invalid range in GridIndexIterator");
-    check_and_advance();
+    while (cur_ != BI() && !isvi_.get_is_good(cur_)) {
+      advance();
+    }
   }
   typedef const VI reference;
   typedef const VI* pointer;
@@ -172,6 +160,85 @@ struct AllItHelp {
   R get_return(const E&v) const {
     R ret(v.begin(), v.end());
     return ret;
+  }
+};
+
+
+template <class Functor, class Grid, int D>
+struct GridApplier {
+  static void apply(const Grid &g,
+                    typename Grid::ExtendedIndex &lb,
+                    typename Grid::ExtendedIndex &ub,
+                    const typename Grid::Vector &corner,
+                    const typename Grid::Vector &cell,
+                    typename Grid::Index &index,
+                    typename Grid::Vector &center,
+                    Functor &f) {
+    int *data=index.access_data().get_data();
+    for (data[D]=lb[D];
+         data[D]<ub[D];
+         ++data[D]) {
+      center[D]=corner[D]+cell[D]*(data[D]+.5);
+      GridApplier<Functor, Grid, D-1>::apply(g, lb, ub,
+                                             corner, cell, index, center, f);
+    }
+  }
+};
+
+template <class Functor, class Grid>
+struct GridApplier<Functor, Grid, 0> {
+  static void apply(const Grid &g,
+                    typename Grid::ExtendedIndex &lb,
+                    typename Grid::ExtendedIndex &ub,
+                    const typename Grid::Vector &corner,
+                    const typename Grid::Vector &cell,
+                    typename Grid::Index &index,
+                    typename Grid::Vector &center,
+                    Functor &f) {
+    const int D=0;
+    for (index.access_data().get_data()[D]=lb[0];
+         index[0]<ub[D]; ++index.access_data().get_data()[D]) {
+      center[D]=corner[D]+cell[D]*(index[D]+.5);
+      f(g, index, center);
+    }
+  }
+};
+
+// silly and do it on D-1
+template <class Functor, class Grid>
+struct GridApplier<Functor, Grid, -2> {
+  static void apply_recursive(const Grid &g,
+                              typename Grid::ExtendedIndex &lb,
+                              typename Grid::ExtendedIndex &ub,
+                              const typename Grid::Vector &corner,
+                              unsigned int D,
+                              const typename Grid::Vector &cell,
+                              typename Grid::Index &index,
+                              typename Grid::Vector &center,
+                              Functor &f) {
+    int *data=index.access_data().get_data();
+    for (data[D]=lb[D]; data[D]<ub[D]; ++data[D]) {
+      center[D]=corner[D]+cell[D]*data[D];
+      if (D==0) {
+        f(g, index, center);
+      } else {
+        apply_recursive(g, lb, ub,
+                        corner, D-1,
+                        cell, index,
+                        center, f);
+      }
+    }
+  }
+  static void apply(const Grid &g,
+                    typename Grid::ExtendedIndex &lb,
+                    typename Grid::ExtendedIndex &ub,
+                    const typename Grid::Vector &corner,
+                    const typename Grid::Vector &cell,
+                    typename Grid::Index &index,
+                    typename Grid::Vector &center,
+                    Functor &f) {
+    apply_recursive(g, lb, ub, corner, g.get_dimension()-1,
+                    cell, index, center, f);
   }
 };
 

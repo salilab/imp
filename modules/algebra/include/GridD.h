@@ -50,6 +50,14 @@ namespace grids {
                                                o.begin(), o.end());
     }
   public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+    const internal::VectorData<int, D, true>& get_data() const {
+      return data_;
+    }
+    internal::VectorData<int, D, true>& access_data() {
+      return data_;
+    }
+#endif
     //! Create a grid cell from three arbitrary indexes
     ExtendedGridIndexD(Ints vals) {
       data_.set_coordinates(vals.begin(), vals.end());
@@ -160,6 +168,14 @@ namespace grids {
                                                o.begin(), o.end());
     }
   public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+    const internal::VectorData<int, D, true>& get_data() const {
+      return data_;
+    }
+    internal::VectorData<int, D, true>& access_data() {
+      return data_;
+    }
+#endif
     GridIndexD() {
     }
 
@@ -392,6 +408,10 @@ namespace grids {
     unsigned int get_number_of_voxels(unsigned int i) const {
       IMP_INTERNAL_CHECK(D==-1 || i < D, "Only D: "<< i);
       return d_[i];
+    }
+    //! Get the past-end voxel
+    ExtendedGridIndexD<D> get_end_index() const {
+      return d_;
     }
 
     IMP_SHOWABLE_INLINE(BoundedGridStorageD, out << "BoundedStorageD" << D);
@@ -690,6 +710,21 @@ namespace grids {
                                               all_voxels_end());
     }
     /** @} */
+    template <class Functor, class Grid>
+    Functor apply(const Grid &g, const Functor &fi) const {
+      Functor f=fi;
+      typename Grid::ExtendedIndex lb(Ints(g.get_dimension(),
+                            0));
+      typename Grid::ExtendedIndex ub(BoundedGridStorageD<D>::get_end_index());
+      typename Grid::Vector corner= g.get_bounding_box().get_corner(0);
+      typename Grid::Vector cell= g.get_unit_cell();
+      typename Grid::Index cur;
+      typename Grid::Vector center;
+      internal::GridApplier<Functor, Grid, D-1>::apply(g, lb, ub,
+                                                     corner, cell, cur,
+                                                     center,f);
+      return f;
+    }
   };
 
 
@@ -881,6 +916,16 @@ namespace grids {
                                          indexes_end(lb, ub));
     }
     /** @} */
+
+
+    template <class Functor, class Grid>
+    Functor apply(const Grid &g, Functor f) const {
+      for (typename Data::const_iterator it= data_.begin();
+           it != data_.end(); ++it) {
+        f(g, it->first, g.get_center(it->first));
+      }
+      return f;
+    }
   };
 
 
@@ -1276,7 +1321,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
     }
 #endif
   public:
-
+    typedef VectorD<D> Vector;
   //! Initialize the grid
   /** \param[in] xd The number of voxels in the x direction
       \param[in] yd The number of voxels in the y direction
@@ -1518,6 +1563,18 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
                                   ExtendedGridIndexD<3>());
     }
 #endif
+    /** @} */
+    /** \name Apply
+        In C++, iterating through all the voxels can be slow, and it
+        can be faster to use functional programming to apply a
+        function to each voxel. The passed apply function takes three
+        arguments, the grid, the Grid::Index of the voxel and the
+        Grid::Vector for the center of the voxel.
+        @{ */
+    template <class Functor>
+    Functor apply(const Functor &f) const {
+      return Storage::apply(*this, f);
+    }
     /** @} */
   };
 
