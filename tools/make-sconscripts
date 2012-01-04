@@ -27,6 +27,11 @@ class SConscriptGenerator:
 
     def open_file(self, dir):
         fname = os.path.join(dir, self.script_name)
+        old= file(fname, 'r').read()
+        if old.find("IMPModuleGetHeaders") != -1 or\
+                old.find("IMPModuleGetSources") != -1:
+            print "Cannot overwrite automatic SConscripts, please remove them and try again."
+            raise ioerror("already automatic")
         return file(fname, 'w')
 
     def exclude_file(self, filename):
@@ -47,7 +52,7 @@ class SConscriptGenerator:
         srcs = [x for x in files if self.file_has_extension(x, dir) \
                                     and not self.exclude_file(x)]
         srcs.sort()
-    
+
         subdirs = [x for x in subdirs if self.scandir(os.path.join(dir, x),
                                                       top=False)]
         #if len(subdirs) + len(srcs):
