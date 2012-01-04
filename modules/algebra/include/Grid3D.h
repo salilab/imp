@@ -182,7 +182,7 @@ IMPALGEBRA_END_NAMESPACE
 
 
 /** Iterate over each voxel in grid. The voxel index is
-    unsigned int voxel_index[3] and the coordinates of the center is
+    grids::GridIndexD<3> voxel_index and the coordinates of the center is
     Vector3D voxel_center and the index of the voxel is
     loop_voxel_index.
     \relatesalso Grid3D
@@ -191,25 +191,28 @@ IMPALGEBRA_END_NAMESPACE
   {                                                                     \
     unsigned int next_loop_voxel_index=0;                               \
     const IMP::algebra::Vector3D macro_map_unit_cell=g.get_unit_cell(); \
-    const unsigned int macro_map_nx=g.get_number_of_voxels(0);          \
-    const unsigned int macro_map_ny=g.get_number_of_voxels(1);          \
-    const unsigned int macro_map_nz=g.get_number_of_voxels(2);          \
+    const int macro_map_nx=g.get_number_of_voxels(0);                   \
+    const int macro_map_ny=g.get_number_of_voxels(1);                   \
+    const int macro_map_nz=g.get_number_of_voxels(2);                   \
     const IMP::algebra::Vector3D macro_map_origin                       \
       =g.get_origin();                                                  \
-    unsigned int voxel_index[3];                                        \
-    IMP::algebra::Vector3D voxel_center;                              \
-    for (voxel_index[0]=0; voxel_index[0]< macro_map_nx;                \
-         ++voxel_index[0]) {                                            \
+    IMP::algebra::grids::GridIndexD<3> voxel_index;                     \
+    int *voxel_index_data=voxel_index.access_data().get_data();         \
+    IMP::algebra::Vector3D voxel_center;                                \
+    for (voxel_index_data[0]=0;                                         \
+         voxel_index_data[0]< macro_map_nx;                             \
+         ++voxel_index_data[0]) {                                       \
       voxel_center[0]= macro_map_origin[0]                              \
-        +(voxel_index[0]+.5)*macro_map_unit_cell[0];                    \
-      for (voxel_index[1]=0; voxel_index[1]< macro_map_ny;              \
-           ++voxel_index[1]) {                                          \
+        +(voxel_index_data[0]+.5)                                       \
+        *macro_map_unit_cell[0];                                        \
+      for (voxel_index_data[1]=0; voxel_index_data[1]< macro_map_ny;    \
+           ++voxel_index_data[1]) {                                     \
         voxel_center[1]= macro_map_origin[1]                            \
-          +(voxel_index[1]+.5)*macro_map_unit_cell[1];                  \
-        for (voxel_index[2]=0; voxel_index[2]< macro_map_nz;            \
-             ++voxel_index[2]) {                                        \
+          +(voxel_index_data[1]+.5)*macro_map_unit_cell[1];             \
+        for (voxel_index_data[2]=0; voxel_index_data[2]< macro_map_nz;  \
+             ++voxel_index_data[2]) {                                   \
           voxel_center[2]= macro_map_origin[2]                          \
-            +(voxel_index[2]+.5)*macro_map_unit_cell[2];                \
+            +(voxel_index_data[2]+.5)*macro_map_unit_cell[2];           \
           unsigned int loop_voxel_index=next_loop_voxel_index;          \
           IMP_UNUSED(loop_voxel_index);                                 \
           ++next_loop_voxel_index;                                      \
