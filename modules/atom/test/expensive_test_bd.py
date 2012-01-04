@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.benchmark
 try:
     import sympy
     from sympy.physics.units import *
@@ -48,10 +47,10 @@ class Tests(IMP.test.TestCase):
         xyzr.set_coordinates_are_optimized(True)
         return (m, xyzr, d, bd)
     def _measure(self, m, xyzr, bd):
-        ub= IMP.algebra.Vector3D(20,20,20)
+        ub= IMP.algebra.Vector3D(40,40,40)
         # was .1
-        h = IMP.statistics.Histogram3D(1, IMP.algebra.BoundingBox3D(-ub, ub))
-        IMP.benchmark.set_is_profiling(True)
+        h = IMP.statistics.Histogram3D(.3, IMP.algebra.BoundingBox3D(-ub, ub))
+        #IMP.benchmark.set_is_profiling(True)
         for i in range(0,nreps):
             xyzr.set_coordinates(IMP.algebra.Vector3D(0,0,0))
             bd.optimize(nsteps)
@@ -63,7 +62,7 @@ class Tests(IMP.test.TestCase):
         print mn
         std= h.get_standard_deviation(mn)
         print mn, std
-        IMP.benchmark.set_is_profiling(False)
+        #IMP.benchmark.set_is_profiling(False)
         return (mn, std, nreps)
     def _get_sigma_error(self, sigma, n):
         return 2.0*sigma**4/n
@@ -119,7 +118,7 @@ class Tests(IMP.test.TestCase):
         print "mean", mn, [float((x/angstrom).evalf()) for x in calc_mn]
         print "std", std, [float((x/angstrom).evalf()) for x in calc_std]
         for i in range(0,3):
-            self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=std[i]*2)
+            self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=std[i]*2/n**.5)
             self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2.0*self._get_sigma_error(std[i], n))
     def test_free(self):
         """Test brownian free diffusion"""
