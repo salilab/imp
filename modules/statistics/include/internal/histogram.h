@@ -42,6 +42,18 @@ struct Sigma2 {
   }
 };
 
+template <int D, class Grid>
+struct Frequency {
+  Grid &g_;
+  double norm_;
+  Frequency(Grid &g, double norm): g_(g), norm_(norm){}
+  template <class G>
+  void operator()(const G &g, const typename G::Index &index,
+                  const typename G::Vector &)  {
+    g_[index]=g[index]*norm_;
+  }
+};
+
 IMPSTATISTICS_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPSTATISTICS_INTERNAL_HISTOGRAM_H */
