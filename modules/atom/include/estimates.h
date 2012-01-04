@@ -102,6 +102,17 @@ inline double get_kd(double na, double nb, double nab,
 }
 
 
+/** Return the prediction diffusion coefficient in Angstrom squared per
+    femtosecond given a radius in angstrom.
+    See \external{http://en.wikipedia.org/wiki/Einstein_relation_(kinetic_theory)}
+    for a reference.*/
+IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
+
+
+/** Return the prediction diffusion coefficient in radians squared per
+    femtosecond given a radius in angstrom.*/
+IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ESTIMATES_H */
