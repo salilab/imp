@@ -543,6 +543,18 @@ namespace grids {
       }
       return true;
     }
+    //! Return the ExtendedGridIndexD of all zeros
+    ExtendedGridIndexD<D> get_minimum_extended_index() const {
+      return ExtendedGridIndexD<D>(Ints(d_.get_dimension(), 0));
+    }
+    //! Return the index of the maximumal cell
+    ExtendedGridIndexD<D> get_maximum_extended_index() const {
+      ExtendedGridIndexD<D> ret=d_;
+      for (unsigned int i=0; i< ret.get_dimension(); ++i) {
+        --ret.access_data().get_data()[i];
+      }
+      return ret;
+    }
   };
 
 
@@ -925,6 +937,36 @@ namespace grids {
         f(g, it->first, g.get_center(it->first));
       }
       return f;
+    }
+
+
+    //! Return the index which has no lower index in each coordinate
+    ExtendedGridIndexD<D> get_minimum_extended_index() const {
+      IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
+      GridIndexD<D> reti=data_.begin()->first;
+      ExtendedGridIndexD<D> ret(reti.begin(), reti.end());
+      for (typename Data::const_iterator it= data_.begin();
+           it != data_.end(); ++it) {
+        for (unsigned int i=0; i< ret.get_dimension(); ++i) {
+          ret.access_data().get_data()[i]
+            = std::min(ret[i], it->first[i]);
+        }
+      }
+      return ret;
+    }
+    //! Return the index that has no higher index in each coordinate
+    ExtendedGridIndexD<D> get_maximum_extended_index() const {
+      IMP_USAGE_CHECK(!data_.empty(), "No voxels in grid.");
+      GridIndexD<D> reti=data_.begin()->first;
+      ExtendedGridIndexD<D> ret(reti.begin(), reti.end());
+      for (typename Data::const_iterator it= data_.begin();
+           it != data_.end(); ++it) {
+        for (unsigned int i=0; i< ret.get_dimension(); ++i) {
+          ret.access_data().get_data()[i]
+            = std::min(ret[i], it->first[i]);
+        }
+      }
+      return ret;
     }
   };
 
@@ -1452,16 +1494,9 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 #endif
 
     BoundingBoxD<D> get_bounding_box() const {
-      IMP_USAGE_CHECK(Storage::get_is_bounded(),
-                      "Get_bounding_box() with no arguments only works on "
-                      << "bounded grids.");
-      VectorD<D> top= Embedding::get_origin();
-      Ints cei(Embedding::get_dimension());
-      for (unsigned int i=0; i< Embedding::get_dimension(); ++i) {
-        cei[i]=Storage::get_number_of_voxels(i)-1;
-      }
-      ExtendedGridIndexD<D> ecei(cei);
-      return Embedding::get_bounding_box(ecei)+BoundingBoxD<D>(top);
+      ExtendedGridIndexD<D> min= Storage::get_minimum_extended_index();
+      ExtendedGridIndexD<D> max= Storage::get_maximum_extended_index();
+      return get_bounding_box(min)+get_bounding_box(max);
     }
 #ifndef SWIG
     using Embedding::get_bounding_box;
