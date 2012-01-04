@@ -17,16 +17,15 @@
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
 /** Dynamically build a histogram embedded in D-dimensional space. */
-template <int D>
+template <int D, class Grid=algebra::grids::GridD<D,
+                        typename algebra::grids::DenseGridStorageD<D,
+                                                          double>,
+                        double,
+                      typename algebra::grids::DefaultEmbeddingD<D> > >
 class HistogramD {
   public:
 
-  typedef typename
-  algebra::grids::GridD<D,
-                        typename algebra::grids::DenseGridStorageD<D,
-                                                          double>,
-                        double, typename algebra::grids::DefaultEmbeddingD<D> >
-  CountGrid;
+  typedef Grid CountGrid;
   HistogramD(): count_(-1){}
   HistogramD(double voxel_size,
              const algebra::BoundingBoxD<D> &bb
@@ -49,10 +48,7 @@ class HistogramD {
   HistogramD<D> get_frequencies() const {
     CountGrid grid(grid_.get_unit_cell()[0],
                    algebra::get_bounding_box(grid_), 0);
-    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
-         it != grid_.all_indexes_end(); ++it) {
-      grid[*it]= static_cast<double>(grid_[*it])/count_;
-    }
+    grid_.apply(internal::Frequency<D, Grid>(grid, 1.0/count_));
     return HistogramD<D>(grid);
   }
   /** Get a histogram that has the pdf value as the value for the bin.*/
@@ -61,10 +57,7 @@ class HistogramD {
                    algebra::get_bounding_box(grid_), 0);
     double volume
       =algebra::get_volume(grid_.get_bounding_box(*grid_.all_indexes_begin()));
-    for (typename CountGrid::AllIndexIterator it= grid_.all_indexes_begin();
-         it != grid_.all_indexes_end(); ++it) {
-      grid[*it]= static_cast<double>(grid_[*it])/(count_*volume);
-    }
+    grid_.apply(internal::Frequency<D, Grid>(grid, 1.0/(count_*volume)));
     return HistogramD<D>(grid);
   }
   CountGrid get_counts() const {
