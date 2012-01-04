@@ -99,6 +99,7 @@ namespace {
 
   unit::Angstrom get_sigma(Model *m, ParticleIndex p,
                            unit::Femtosecond dtfs) {
+    // 6.0 since we are picking radius rather than the coordinates
     return sqrt(6.0*unit::SquareAngstromPerFemtosecond(Diffusion(m,
                                                                  p).get_d())
                 *dtfs);
