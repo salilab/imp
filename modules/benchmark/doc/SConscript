@@ -5,13 +5,9 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="This module provides benchmarks of a variety of aspects of \\imp",
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense(),
-                 overview="""The benchmarks are run daily on
-flute.ucsf.edu.  The results are displayed normalized against the
-fastest runtime in each set (with a few exceptions, noted below).
-Each benchmark is shown first in a "fast" build and second in a
-"release" build with checks disabled to give an idea of the speed
-comparison. The benchmark source codes can be found in the bin
-directory of the benchmark module.
+                 overview="""The benchmarks modules provides support for developing and analyzing benchmarks of \imp code. In addition, it include a number of actual benchmarks of functionality from various modules (these may be moved to their respective modules later).
+
+When the Google PerfTools are found, that profiler is linked in and its functionality exposed to python. This allows profiling of \imp C++ code on non-Mac OS enviroments (Mac OS users should use the Instruments program that comes as part of the developer tools for a much simpler and friendlier solution).
 
 See the \\ref benchmarkr "Benchmark Results" page for historical
 benchmark results.
