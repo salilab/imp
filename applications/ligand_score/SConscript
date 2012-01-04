@@ -1,6 +1,7 @@
 Import('env')
 
-env= env.IMPApplication(name="ligand_score", version='nightly-8',
+
+env= env.IMPApplication(name="ligand_score", version='nightly-13',
                         authors=["Hao Fan", "Daniel Russel"],
                         brief="""Tools for scoring ligands docked to proteins""",
                         overview="""Two different scoring files are provided:
