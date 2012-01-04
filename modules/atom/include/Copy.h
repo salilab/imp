@@ -1,7 +1,7 @@
 /**
  *  \file Copy.h     \brief A particle with a user-defined type.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

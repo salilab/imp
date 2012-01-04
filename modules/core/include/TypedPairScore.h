@@ -2,7 +2,7 @@
  *  \file TypedPairScore.h
  *  \brief Delegate to another PairScore depending on particle types.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TYPED_PAIR_SCORE_H

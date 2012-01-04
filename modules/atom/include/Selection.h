@@ -2,7 +2,7 @@
  *  \file Selection.h
  *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_SELECTION_H

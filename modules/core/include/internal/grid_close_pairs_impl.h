@@ -2,7 +2,7 @@
  *  \file PMFTable.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPCORE_INTERNAL_GRID_CLOSE_PAIRS_IMPL_H

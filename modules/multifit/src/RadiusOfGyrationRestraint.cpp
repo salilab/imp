@@ -3,7 +3,7 @@
  *
  *  Restrict max distance between every pair of particle
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

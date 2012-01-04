@@ -1,7 +1,7 @@
 /**
  *  \file Histogram.cpp  \brief simple histogram class
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/statistics/Histogram.h>

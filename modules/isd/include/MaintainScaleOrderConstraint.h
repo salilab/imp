@@ -2,7 +2,7 @@
  *  \file MaintainScaleOrderConstraint.h
  *  \brief Constrain scales to be ordered and positive.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPISD_MAINTAIN_SCALE_ORDER_CONSTRAINT_H

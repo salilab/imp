@@ -2,7 +2,7 @@
  *  \file IMP/compatibility/vector.h
  *  \brief Declare a bounds checked vector
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCOMPATIBILITY_VECTOR_H

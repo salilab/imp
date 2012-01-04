@@ -2,7 +2,7 @@
  *  \file atom/RemoveTranslationOptimizerState.h
  *  \brief Remove rigid translation during optimization.
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

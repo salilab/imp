@@ -2,7 +2,7 @@
  *  \file DensityFillingRestraint.h
  *  \brief Score how well the particles fill the density
  *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPEM_DENSITY_FILLING_RESTRAINT_H
