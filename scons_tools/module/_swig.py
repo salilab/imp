@@ -245,7 +245,7 @@ def _action_simple_swig(target, source, env):
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
     ussp=env.get('swigpath', "")
-    command=command+[" -I"+env['builddir']+"/swig"]\
+    command=command+[" -I"+Dir(env['builddir']+"/swig").path]\
         + ["-I"+x for x in
            scons_tools.utility.get_env_paths(env, 'includepath')]\
         + ["-I"+Dir(env['builddir']+"/include").abspath]\
@@ -253,7 +253,8 @@ def _action_simple_swig(target, source, env):
            scons_tools.utility.get_env_paths(env, 'swigpath')]
     command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
-    ret= env.Execute(" ".join(command) %vars)
+    final_command=" ".join(command) %vars
+    ret= env.Execute(final_command)
     return ret
 
 def _print_simple_swig(target, source, env):
@@ -334,6 +335,12 @@ scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=
 # so we have to walk higher up in the tree
 inscanner= Scanner(function=inswig_scanner, skeys=['.i-in'], name="IMPINSWIG", recursive=True)
 
-SwigIt = Builder(action=Action(_action_simple_swig,
-                                _print_simple_swig),
-                 source_scanner= scanner)
+def get_swig_action(env):
+    comstr="%sRunning swig on %s$SOURCE%s"%(env['IMP_COLORS']['purple'],
+                                            env['IMP_COLORS']['end'],
+                                            env['IMP_COLORS']['end'])
+    return Builder(action=Action(_action_simple_swig,
+                                 _print_simple_swig,
+                                 comstr=comstr),
+                   source_scanner= scanner,
+                   comstr=comstr)
