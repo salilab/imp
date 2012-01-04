@@ -1,14 +1,4 @@
 Import('env')
 
-files = [
-         'Histogram.h',
-         'PartitionalClustering.h',
-         'metric_clustering.h',
-         'point_clustering.h',
-         'HistogramD.h',
-         'statistics_macros.h',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
