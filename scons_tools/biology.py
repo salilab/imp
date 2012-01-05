@@ -100,9 +100,9 @@ def IMPSystem(env, name=None, version="",
             analysis= Glob("analyze_[0123456789]*.py")
             analysis.sort(utility.file_compare)
             tt= []
-            tst=test.add_test(env, samples+analysis, "system")
-            env.Depends(tst,
-                        scons_tools.data.get(env).get_alias(name))
+            tests = test.add_tests(env, samples+analysis, "system")
+            for t in tests:
+                env.Depends(t, scons_tools.data.get(env).get_alias(name))
 
         # link files in build dir
         allfiles= []
