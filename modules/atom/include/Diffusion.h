@@ -114,7 +114,7 @@ class IMPATOMEXPORT RigidBodyDiffusion: public Diffusion {
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Particle *p) {
     return XYZ::particle_is_instance(p)
-      && p->has_attribute(get_d_key());
+      && p->has_attribute(get_d_rotation_key());
   }
 
   //! Return true if the particle is an instance of an Diffusion
