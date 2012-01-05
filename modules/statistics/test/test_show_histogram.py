@@ -55,7 +55,7 @@ class Tests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector2D(x, y))
         print hist.get_counts()
         print hist.get_frequencies()
-        show_2d(hist)
+        #show_2d(hist)
 
 if __name__ == '__main__':
     IMP.test.main()
