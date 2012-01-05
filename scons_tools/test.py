@@ -19,7 +19,7 @@ def _action_unit_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null"
     fsource=[]
     type= source[-1].get_contents()
-    for x in source[1:-1]:
+    for x in source[2:-1]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
     if source[-1] == 'example':
@@ -70,12 +70,17 @@ UnitTest = Builder(action=Action(_action_unit_test,
 
 
 def add_tests(env, source, type, expensive_source=[]):
-    test=UnitTest(env, target="fast-test.results", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
-    etest=UnitTest(env, target="test.results", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
-    env.Requires(test, env["builddir"]+"/lib/compat_python")
-    env.Requires(test, env["builddir"]+"/lib/IMP/test")
-    env.Requires(etest, env["builddir"]+"/lib/compat_python")
-    env.Requires(etest, env["builddir"]+"/lib/IMP/test")
+    # Since all of the test scripts involve "import IMP.test", ensure this
+    # is a source so that any Python dependencies of IMP.test (e.g. IMP.base)
+    # are automatically picked up by pyscanner
+    testpy = env["builddir"] + "/lib/IMP/test/__init__.py"
+    test=UnitTest(env, target="fast-test.results",
+                  source=["#/tools/imppy.sh", testpy]+source+[env.Value(type)])
+    etest=UnitTest(env, target="test.results",
+                   source=["#/tools/imppy.sh", testpy]+source \
+                          +expensive_source+[env.Value(type)])
+    for t in test, etest:
+        env.Requires(t, env["builddir"]+"/lib/compat_python")
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
