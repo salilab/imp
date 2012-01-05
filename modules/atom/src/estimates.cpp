@@ -140,6 +140,12 @@ static MillipascalSecond eta(unit::Kelvin T)
   }
 }
 
+namespace {
+unit::Femtojoule kt(unit::Kelvin t) {
+  return IMP::unit::Femtojoule(IMP::internal::KB*t);
+}
+}
+
 double get_einstein_diffusion_coefficient(double r) {
   MillipascalSecond e=eta(IMP::internal::DEFAULT_TEMPERATURE);
     unit::SquareAngstromPerFemtosecond

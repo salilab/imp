@@ -13,11 +13,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 
 
-namespace {
-unit::Femtojoule kt(unit::Kelvin t) {
-  return IMP::unit::Femtojoule(IMP::internal::KB*t);
-}
-}
+
 
 
 FloatKey Diffusion::get_d_key() {
