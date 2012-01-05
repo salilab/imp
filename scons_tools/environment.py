@@ -229,14 +229,6 @@ def get_base_environment(variables=None, *args, **kw):
         newpath = env['path'] + os.path.pathsep + newpath
     envargs={'PATH':newpath}
 
-    colors = {}
-    colors['cyan']   = '\033[96m'
-    colors['purple'] = '\033[95m'
-    colors['blue']   = '\033[94m'
-    colors['green']  = '\033[92m'
-    colors['yellow'] = '\033[93m'
-    colors['red']    = '\033[91m'
-    colors['end']    = '\033[0m'
 #If the output is not a terminal, remove the colors
     if env['wine']:
         env = _WineEnvironment(variables=variables,
@@ -249,12 +241,19 @@ def get_base_environment(variables=None, *args, **kw):
         #env['PYTHON'] = 'python'
     data.add(env)
     impvariables.update(env, variables)
+    colors = {}
+    colors['cyan']   = '\033[96m'
+    colors['purple'] = '\033[95m'
+    colors['blue']   = '\033[94m'
+    colors['green']  = '\033[92m'
+    colors['yellow'] = '\033[93m'
+    colors['red']    = '\033[91m'
+    colors['end']    = '\033[0m'
     env['IMP_COLORS']=colors
-    if not env['pretty'] or not sys.stdout.isatty():
+    if not env['color']:
         for key, value in colors.iteritems():
             colors[key] = ''
     if env['pretty']:
-
         compile_source_message = '%sCompiling %s$SOURCE%s' % \
             (colors['blue'], colors['end'], colors['end'])
 
