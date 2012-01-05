@@ -69,7 +69,7 @@ UnitTest = Builder(action=Action(_action_unit_test,
                    source_scanner=pyscanner.PythonScanner)
 
 
-def add_test(env, source, type, expensive_source=[]):
+def add_tests(env, source, type, expensive_source=[]):
     test=UnitTest(env, target="fast-test.results", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
     etest=UnitTest(env, target="test.results", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
     env.Requires(test, env["builddir"]+"/lib/compat_python")
@@ -89,7 +89,7 @@ def add_test(env, source, type, expensive_source=[]):
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
     env.Alias(env.Alias('test'), test)
     env.Alias(env.Alias('test-fast'), etest)
-    return test
+    return test, etest
 
 
 def _action_cpp_test(target, source, env):

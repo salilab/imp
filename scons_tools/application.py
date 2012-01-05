@@ -87,6 +87,6 @@ def IMPPythonExecutable(env, file):
 
 def IMPApplicationTest(env, python_tests=[]):
     files= [File(x).abspath for x in python_tests]
-    tst=test.add_test(env, source=files,
-                  type='unit test')
-    env.Requires(tst, env.Alias(environment.get_current_name(env)))
+    tests = test.add_tests(env, source=files, type='unit test')
+    for t in tests:
+        env.Requires(t, env.Alias(environment.get_current_name(env)))

@@ -200,10 +200,11 @@ def IMPModuleExamples(env, example_files, data_files):
              if str(x).endswith(".py") \
              and str(x).find("fragment")==-1]
     if len(runable)>0:
-        test= scons_tools.test.add_test(env,
-                                        source=runable,
-                                        type='example')
-        env.Requires(test, build)
+        tests = scons_tools.test.add_tests(env,
+                                           source=runable,
+                                           type='example')
+        for test in tests:
+            env.Requires(test, build)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-install", install)
     seen=[]
@@ -504,9 +505,9 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
         if found:
             files.remove(found)
         files.append(standards)
-    test = scons_tools.test.add_test(env, source=files,
-                                     expensive_source=expensive_files,
-                                     type='unit test')
+    tests = scons_tools.test.add_tests(env, source=files,
+                                       expensive_source=expensive_files,
+                                       type='unit test')
 
 def IMPModuleBuild(env, version, required_modules=[],
                    lib_only_required_modules=[],
