@@ -287,7 +287,7 @@ FitScore get_fit_scores(
   IMP_GRID3D_FOREACH_VOXEL(map1,
                            {
                              IMP_UNUSED(loop_voxel_index);
-                             Grid::Index gic(voxel_index, voxel_index+3);
+                             Grid::Index gic=voxel_index;
                              double v1 = map1[gic];
                              IMP::algebra::VectorD<3> tc = tr_map1*voxel_center;
                              double v0;
