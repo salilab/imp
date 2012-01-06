@@ -30,8 +30,15 @@ def _action_unit_test(target, source, env):
     else:
         disab = ''
     tmpdir=Dir(env["builddir"]+"/tmp").abspath
-    if type=="unit test":
+    if type.endswith("unit test"):
         cmd= File("#/scons_tools/run-all-tests.py").abspath
+        if type.startswith('module'):
+            modname = _get_name(env)
+            if modname == 'kernel':
+                modname = 'IMP'
+            else:
+                modname = 'IMP.' + modname
+            cmd += ' --module=%s' % modname
         #if len(fsource) > 0:
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
@@ -84,7 +91,7 @@ def add_tests(env, source, type, expensive_source=[]):
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
-    if type=='unit test':
+    if type.endswith('unit test'):
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test-fast", test)
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", etest)
     elif type=='example':
