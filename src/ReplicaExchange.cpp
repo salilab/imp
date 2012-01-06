@@ -86,7 +86,7 @@ Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
                MPI_COMM_WORLD,&status_);
 
  Floats fpar(fparameters,fparameters+nparam);
- delete(fparameters);
+ delete [] fparameters;
  return fpar;
 }
 

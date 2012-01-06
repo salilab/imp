@@ -17,6 +17,7 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
+
 void create_restraints(Model *m,atom::Hierarchy protein,
  core::TableRefiner *tbr,Parameters* myparam) {
 
