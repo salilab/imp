@@ -507,7 +507,7 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
         files.append(standards)
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
-                                       type='unit test')
+                                       type='module unit test')
 
 def IMPModuleBuild(env, version, required_modules=[],
                    lib_only_required_modules=[],
