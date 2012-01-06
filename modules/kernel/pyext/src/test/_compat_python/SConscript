@@ -1,5 +1,6 @@
 Import('env')
 files = env.Install('#/build/lib/compat_python', '__init__.py') + \
+        env.Install('#/build/lib/compat_python', 'coverage.py') + \
         env.SConscript('unittest2/SConscript')
 
 Return('files')

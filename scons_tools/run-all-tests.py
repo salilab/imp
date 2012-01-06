@@ -4,6 +4,9 @@ import re
 import imp
 import os.path
 import IMP.test
+import glob
+from IMP.test._compat_python import coverage
+from optparse import OptionParser
 
 # Make sure we use the same version of unittest as the IMP testcases themselves
 from IMP.test import unittest
@@ -54,8 +57,59 @@ class RegressionTest(object):
                  for o in modobjs]
         return unittest.TestSuite(tests)
 
+def parse_options():
+    parser = OptionParser()
+    parser.set_defaults(pycoverage=False)
+    parser.add_option("--module", dest="module", type="string", default=None,
+                      help="name of IMP module being tested, e.g. IMP.foo")
+    parser.add_option("--pycoverage", dest="pycoverage", type="string",
+                      default=None,
+                      help="report on Python coverage of tests to the named "
+                           "file (or stderr if '-'); use with --module")
+    return parser.parse_args()
+
+def start_coverage():
+    # Try to exclude SWIG and IMP boilerplate from coverage checks
+    coverage.exclude("def swig_import_helper\(")
+    coverage.exclude("def _swig_")
+    coverage.exclude("class (_ostream|_DirectorObjects|"
+                     "IMP_\w+_SwigPyIterator)\(")
+    coverage.exclude("^\s+import _IMP_")
+    coverage.exclude("^except (Name|Attribute)Error:")
+    coverage.exclude("^\s+weakref_proxy =")
+    coverage.exclude("^def [sg]et_check_level")
+    coverage.start()
+
+def report_coverage(opts):
+    coverage.stop()
+    coverage.the_coverage.collect()
+    coverage.use_cache(False)
+
+    # Don't show full paths to modules in coverage output
+    cwd = os.path.dirname(sys.argv[0])
+    topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'lib')) + '/'
+    coverage.the_coverage.relative_dir = topdir
+
+    if opts.module:
+        path = opts.module.replace('.', '/')
+        mods = [topdir + '%s/*.py' % path]
+        if opts.pycoverage == '-':
+            outfh = sys.stderr
+        else:
+            outfh = open(opts.pycoverage, 'w')
+        coverage.report(mods, file=outfh,
+                        omit_prefixes=['%s/_version_check' % path])
+
+    for cov in glob.glob('.coverage.*'):
+        os.unlink(cov)
 
 if __name__ == "__main__":
-    r = RegressionTest(sys.argv[1:])
-    unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
-                  argv=[sys.argv[0], "-v"])
+    opts, args = parse_options()
+    if opts.pycoverage:
+        start_coverage()
+    r = RegressionTest(args)
+    main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
+                         argv=[sys.argv[0], "-v"], exit=False)
+    if opts.pycoverage:
+        report_coverage(opts)
+    sys.exit(not main.result.wasSuccessful())
