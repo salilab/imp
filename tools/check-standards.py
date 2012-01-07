@@ -2,6 +2,7 @@
 
 import sys
 import os.path
+import glob
 from reindent import Reindenter
 import re
 import traceback
@@ -117,13 +118,7 @@ def file_matches_re(pathname, excludes):
 
 def get_all_files():
     modfiles = []
-    excludes = ['\.\/kernel\/pyext\/patched_wrap\.[h|cc]',
-                '\.\/kernel\/pyext\/wrap\.[h|cc]',
-                '\.\/kernel\/pyext\/IMP\.py',
-                '\.\/kernel\/include\/internal\/config\.h',
-                '\.\/modules\/\w+\/pyext\/patched_wrap\.[h|cc]',
-                '\.\/modules\/\w+\/pyext\/wrap\.[h|cc]',
-                '\.\/modules\/\w+\/pyext\/IMP\.\w+\.py']
+    excludes = []
     excludes = [re.compile(x) for x in excludes]
     for root, dirs, files in os.walk('.'):
         if '.sconf_temp' not in root and not root.startswith('./build/'):
@@ -140,12 +135,15 @@ def main():
         modfiles= get_all_files()
     else:
         modfiles = sys.argv[1:]
-    for filename in modfiles:
-        try:
-            check_modified_file(filename, errors)
-        except:
-            print "Exception processing file "+filename
-            traceback.print_exc()
+    for pattern in modfiles:
+        expanded= glob.glob(pattern)
+        #rint pattern, expanded
+        for filename in expanded:
+            try:
+                check_modified_file(filename, errors)
+            except:
+                print "Exception processing file "+filename
+                traceback.print_exc()
     if len(errors) > 0:
         sys.stderr.write("The following problems needed to be fixed:\n\n")
         sys.stderr.write("\n".join(errors))
