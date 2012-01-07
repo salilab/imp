@@ -17,8 +17,9 @@ namespace {
   unsigned int count=0;
 }
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
-                                                   bool no_overlaps):
-  PairContainer(ps[0]->get_model(),"ConsecutivePairContainer %1%"),
+                                                   bool no_overlaps,
+                                                   std::string name):
+  PairContainer(ps[0]->get_model(),name),
   ps_(IMP::internal::get_index(ps)){
   if (!no_overlaps) {
     std::ostringstream oss;
