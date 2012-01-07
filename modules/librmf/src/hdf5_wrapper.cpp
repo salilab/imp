@@ -21,21 +21,29 @@ HDF5File HDF5Object::get_file() const {
   return HDF5File(h.get());
 }
 
-
-bool HDF5Object::get_has_attribute(std::string nm) const {
-  return H5Aexists_by_name(get_handle(), ".", nm.c_str(), H5P_DEFAULT) > 0;
+  HDF5Group::HDF5Group(HDF5SharedHandle *h):
+    P(h) {
 }
 
-HDF5Group::HDF5Group(HDF5SharedHandle *h): HDF5Object(h) {
+HDF5ConstGroup::HDF5ConstGroup(HDF5SharedHandle *h):
+    P(h) {
 }
 
 
 HDF5Group::HDF5Group(HDF5Group parent, std::string name):
-    HDF5Object(new HDF5SharedHandle(H5Gopen2(parent.get_handle(),
+    P(new HDF5SharedHandle(H5Gopen2(parent.get_handle(),
                                              name.c_str(),
                                              H5P_DEFAULT), &H5Gclose,
                                     name)){
 }
+
+HDF5ConstGroup::HDF5ConstGroup(HDF5ConstGroup parent, std::string name):
+    P(new HDF5SharedHandle(H5Gopen2(parent.get_handle(),
+                                    name.c_str(),
+                                    H5P_DEFAULT), &H5Gclose,
+                           name)){
+}
+
 HDF5Group HDF5Group::add_child(std::string name) {
   IMP_RMF_USAGE_CHECK(!H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT),
                   "Child named " << name << " already exists");
@@ -45,12 +53,12 @@ HDF5Group HDF5Group::add_child(std::string name) {
   return HDF5Group(*this, name);
 }
 
-unsigned int HDF5Group::get_number_of_children() const {
+unsigned int HDF5ConstGroup::get_number_of_children() const {
   unsigned int n= get_number_of_links();
   // later check that they are groups
   return n;
 }
-std::string HDF5Group::get_child_name(unsigned int i) const {
+std::string HDF5ConstGroup::get_child_name(unsigned int i) const {
   static const int max_len=1000;
   char buf[max_len];
   IMP_HDF5_CALL(H5Lget_name_by_idx(get_handle(), ".",
@@ -58,17 +66,17 @@ std::string HDF5Group::get_child_name(unsigned int i) const {
                                    buf, max_len, H5P_DEFAULT));
   return std::string(buf);
 }
-bool HDF5Group::get_has_child(std::string name) const {
+bool HDF5ConstGroup::get_has_child(std::string name) const {
   return H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT);
 }
-bool HDF5Group::get_child_is_group(unsigned int i) const {
+bool HDF5ConstGroup::get_child_is_group(unsigned int i) const {
   H5O_info_t info;
   IMP_HDF5_HANDLE(c, H5Oopen(get_handle(), get_child_name(i).c_str(),
                        H5P_DEFAULT), &H5Oclose);
   IMP_HDF5_CALL(H5Oget_info(c, &info));
   return info.type== H5O_TYPE_GROUP; //H5O_TYPE_DATASET
 }
-bool HDF5Group::get_child_is_data_set(unsigned int i) const {
+bool HDF5ConstGroup::get_child_is_data_set(unsigned int i) const {
   H5O_info_t info;
   IMP_HDF5_HANDLE(c, H5Oopen(get_handle(), get_child_name(i).c_str(),
                              H5P_DEFAULT), &H5Oclose);
@@ -104,7 +112,7 @@ HDF5File open_hdf5_file(std::string name) {
   return HDF5File(h.get());
 }
 
-HDF5File open_hdf5_file_read_only(std::string name) {
+HDF5ConstFile open_hdf5_file_read_only(std::string name) {
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDONLY, plist),
@@ -114,18 +122,21 @@ HDF5File open_hdf5_file_read_only(std::string name) {
 
 
 HDF5File::HDF5File(HDF5SharedHandle *h): HDF5Group(h){}
+HDF5ConstFile::HDF5ConstFile(HDF5SharedHandle *h): HDF5ConstGroup(h) {}
+  HDF5ConstFile::HDF5ConstFile(HDF5File h):
+    HDF5ConstGroup(h.get_shared_handle()) {}
 
 void HDF5File::flush() {
   IMP_HDF5_CALL(H5Fflush(get_handle(), H5F_SCOPE_LOCAL));
 }
 
-bool HDF5File::get_is_writable() const {
+  /*bool HDF5File::get_is_writable() const {
   unsigned int intent;
   IMP_HDF5_CALL(H5Fget_intent(get_handle(), &intent));
   return intent==H5F_ACC_RDWR;
-}
+  }*/
 
-std::string HDF5File::get_name() const {
+std::string HDF5ConstFile::get_name() const {
   int sz=H5Fget_name(get_handle(), NULL, 0);
   boost::scoped_array<char> buf(new char[sz+1]);
   IMP_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz+1));
@@ -133,6 +144,8 @@ std::string HDF5File::get_name() const {
 }
 
 HDF5File::~HDF5File() {
+}
+HDF5ConstFile::~HDF5ConstFile() {
 }
 
 

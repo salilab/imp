@@ -184,7 +184,9 @@ namespace RMF {
     void set_description(std::string descr);
     /** @} */
 
-
+    HDF5Group get_hdf5_group() const {
+      return get_shared_data()->get_group();
+    }
     /** \name Key categories template methods
         Methods for managing the key categories in this RMF.
         @{
@@ -221,7 +223,7 @@ namespace RMF {
   /** Create an RMF from a file system path.*/
   inline FileHandle create_rmf_file(std::string path) {
     IMP_RMF_FILE_OPERATION(
-        return FileHandle(create_hdf5_file(path), true),
+                           return FileHandle(create_hdf5_file(path), true),
         path, "creating");
   }
 

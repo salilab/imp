@@ -11,6 +11,7 @@
 
 #include "RMF_config.h"
 #include "HDF5Group.h"
+#include "HDF5ConstFile.h"
 
 
 namespace RMF {
@@ -21,9 +22,15 @@ namespace RMF {
   public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
     HDF5File(HDF5SharedHandle *h);
+    // silliness to make RMF easier to implement
+    bool get_is_writable() const {
+      unsigned int intent;
+      IMP_HDF5_CALL(H5Fget_intent(get_handle(), &intent));
+      return intent==H5F_ACC_RDWR;
+    }
 #endif
-    bool get_is_writable() const;
-    std::string get_name() const;
+    IMP_RMF_SHOWABLE(HDF5File, "HDF5File " << get_name());
+    HDF5File(){}
     void flush();
     ~HDF5File();
   };
@@ -37,20 +44,11 @@ namespace RMF {
   */
   RMFEXPORT HDF5File open_hdf5_file(std::string name);
 
-  /** Open an existing hdf5 file read only.
-  */
-  RMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
-
   /** */
   typedef vector<HDF5Group> HDF5Groups;
   /** */
   typedef vector<HDF5File> HDF5Files;
 
-  /** */
-  inline int get_number_of_open_hdf5_handles() {
-    H5garbage_collect();
-    return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);
-  }
 
 } /* namespace RMF */
 
