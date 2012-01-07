@@ -1,0 +1,107 @@
+/**
+ *  \file RMF/HDF5MutableAttributes.h
+ *  \brief Handle read/write of Model data from/to files.
+ *
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef IMPLIBRMF_HDF_5MUTABLE_ATTRIBUTES_H
+#define IMPLIBRMF_HDF_5MUTABLE_ATTRIBUTES_H
+
+#include "RMF_config.h"
+#include "hdf5_types.h"
+#include "hdf5_handle.h"
+#include "infrastructure_macros.h"
+#include <hdf5.h>
+#include <boost/intrusive_ptr.hpp>
+
+namespace RMF {
+  /** Wrap an HDF5 Object. See
+      \external{http://www.hdfobject.org/HDF5/doc/UG/UG_frame09Objects.html,
+      the HDF5 manual} for more information.
+  */
+  template <class Base>
+  class RMFEXPORT HDF5MutableAttributes: public Base {
+    typedef Base P;
+#ifndef SWIG
+  protected:
+    HDF5MutableAttributes(){}
+    template <class A>
+    HDF5MutableAttributes(const A &h): Base(h){}
+    template <class A, class B>
+      HDF5MutableAttributes(const A &h, const B &i): Base(h, i){}
+    template <class A, class B, class C>
+      HDF5MutableAttributes(const A &h, const B &i, const C &j): Base(h, i, j){}
+#else
+ private:
+    HDF5MutableAttributes();
+#endif
+  public:
+
+
+    /** \name Template attribute methods
+        When manipulating attriutes from C++ you can use these
+        templated methods.
+        @{
+    */
+    template <class TypeTraits>
+      void set_attribute(std::string name,
+                         typename TypeTraits::Types value) {
+      if (value.empty()) {
+        if (H5Aexists(P::get_handle(), name.c_str())) {
+          IMP_HDF5_CALL(H5Adelete(P::get_handle(), name.c_str()));
+        }
+      } else {
+        bool missing=!H5Aexists(P::get_handle(), name.c_str());
+        if (!missing) {
+          hsize_t dim, maxdim;
+          {
+            IMP_HDF5_HANDLE(a,H5Aopen(P::get_handle(),
+                                      name.c_str(), H5P_DEFAULT),
+                         &H5Aclose);
+            IMP_HDF5_HANDLE(s,H5Aget_space(a), &H5Sclose);
+            IMP_HDF5_CALL(H5Sget_simple_extent_dims(s, &dim, &maxdim));
+          }
+          if (value.size() != dim) {
+            IMP_HDF5_CALL(H5Adelete(P::get_handle(), name.c_str()));
+            missing=true;
+          }
+        }
+        if (missing) {
+          IMP_HDF5_HANDLE(s, H5Screate(H5S_SIMPLE), &H5Sclose);
+          hsize_t dim=std::max(value.size(), size_t(1));
+          hsize_t max=H5S_UNLIMITED;
+          IMP_HDF5_CALL(H5Sset_extent_simple(s, 1, &dim, &max));
+          IMP_HDF5_HANDLE(a, H5Acreate2(P::get_handle(), name.c_str(),
+                                  TypeTraits::get_hdf5_disk_type(),
+                                  s, H5P_DEFAULT, H5P_DEFAULT),
+                       &H5Aclose);
+        }
+        IMP_HDF5_HANDLE( a, H5Aopen(P::get_handle(), name.c_str(), H5P_DEFAULT),
+                         &H5Aclose);
+        TypeTraits::write_values_attribute(a, value);
+      }
+    }
+
+    /** @} */
+    /** \name Nontemplated attributes
+        When using python, call the non-template versions of the
+        attribute manipulation methods.
+        @{
+    */
+#define IMP_HDF5_ATTRIBUTE(lcname, UCName, PassValue, ReturnValue,      \
+                           PassValues, ReturnValues)                    \
+    void set_##lcname##_attribute(std::string nm,                       \
+                                  PassValues value) {                   \
+      set_attribute< UCName##Traits>(nm, value);                        \
+    }                                                                   \
+
+    IMP_RMF_FOREACH_SIMPLE_TYPE(IMP_HDF5_ATTRIBUTE);
+    IMP_HDF5_ATTRIBUTE(char, Char, char, char, std::string, std::string);
+    /** @} */
+  };
+
+} /* namespace RMF */
+
+#endif /* IMPLIBRMF_HDF_5MUTABLE_ATTRIBUTES_H */

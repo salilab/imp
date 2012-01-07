@@ -13,8 +13,9 @@ namespace RMF {
 FileConstHandle::FileConstHandle(internal::SharedData *shared):
     shared_(shared) {}
 
-FileConstHandle::FileConstHandle(HDF5Group root, bool create):
-    shared_(new internal::SharedData(root, create))  {
+FileConstHandle::FileConstHandle(HDF5ConstGroup root, bool create):
+  shared_(new internal::SharedData(HDF5Group::get_from_const_group(root),
+                                   create))  {
 }
 
 NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {

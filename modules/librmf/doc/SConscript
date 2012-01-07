@@ -93,7 +93,7 @@ manually, probably a weeks work.
 
 \\subsection hdf5access 6 HDF5 wrappers
 
-The library provides a simple wrapper for the \C HDF5 library through
+The library provides a \\ref hdf5 "simple wrapper for the \C HDF5 library" through
 the HDF5Group, HDF5DataSetD, HDF5File and helper classes.
 
 \\section bins Helper programs

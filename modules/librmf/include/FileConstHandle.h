@@ -149,7 +149,7 @@ namespace RMF {
     //! Empty root handle, no open file.
     FileConstHandle(){}
 #ifndef IMP_DOXYGEN
-    FileConstHandle(HDF5Group group, bool create);
+    FileConstHandle(HDF5ConstGroup group, bool create);
 #endif
 
     //! Return the root of the hierarchy
@@ -274,7 +274,7 @@ namespace RMF {
     IMP_HDF5_ROOT_CONST_KEY_SET_METHODS(quad, Quad, 4);
 
 
-    HDF5Group get_hdf5_group() const {
+    HDF5ConstGroup get_hdf5_group() const {
       return shared_->get_group();
     }
     /** \name Descriptions
@@ -347,7 +347,8 @@ namespace RMF {
   /** Open an RMF from a file system path.*/
   inline FileConstHandle open_rmf_file_read_only(std::string path) {
     IMP_RMF_FILE_OPERATION(
-        return FileConstHandle(open_hdf5_file_read_only(path), false),
+                        return FileConstHandle(open_hdf5_file_read_only(path),
+                                               false),
         path, "opening read only");
   }
 

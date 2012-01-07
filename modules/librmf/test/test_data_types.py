@@ -11,6 +11,7 @@ class GenericTest(RMF.TestCase):
         nh= f.get_root_node().add_child("testn", RMF.REPRESENTATION)
         cat= f.add_category("mine"+str(pccc))
         g= f.get_hdf5_group()
+        print g
         ds= g.add_child_float_data_set_2d("ds"+str(pccc))
         dsi= g.add_child_index_data_set_2d("dsi"+str(pccc))
         lst=[(f.add_int_key, 4),
