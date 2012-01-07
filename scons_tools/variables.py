@@ -288,6 +288,8 @@ def add_common_variables(vars, package):
     vars.Add('datapath', "The path to the data of an ininstalled IMP you want to use.", None)
     vars.Add(BoolVariable('pretty', "Whether to write cleaner output when building.", True))
     vars.Add(BoolVariable('color', "Whether to write color output output when building.", True))
+    vars.Add(BoolVariable('coverage',
+                      "Whether to report on code coverage of tests.", False))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 
 

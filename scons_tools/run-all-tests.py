@@ -97,6 +97,9 @@ def report_coverage(opts):
             outfh = sys.stderr
         else:
             outfh = open(opts.pycoverage, 'w')
+            print >> sys.stderr, \
+                  "\nPython coverage of %s module written to %s." \
+                  % (opts.module, opts.pycoverage)
         coverage.report(mods, file=outfh,
                         omit_prefixes=['%s/_version_check' % path])
 
