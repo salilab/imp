@@ -12,19 +12,34 @@
 
 namespace RMF {
 
-HDF5Group::HDF5Group(HDF5SharedHandle *h): h_(h) {
+HDF5Object::HDF5Object(HDF5SharedHandle *h): h_(h) {
 }
 
-// create from possibly group
-HDF5Group::HDF5Group(HDF5Group parent, std::string name) {
-  IMP_HDF5_NEW_HANDLE(h, H5Gopen2(parent.h_->get_hid(), name.c_str(),
-                                    H5P_DEFAULT), &H5Gclose);
-  h_= h;
+
+HDF5File HDF5Object::get_file() const {
+  IMP_HDF5_NEW_HANDLE(h, H5Iget_file_id(get_handle()), &H5Fclose);
+  return HDF5File(h.get());
+}
+
+
+bool HDF5Object::get_has_attribute(std::string nm) const {
+  return H5Aexists_by_name(get_handle(), ".", nm.c_str(), H5P_DEFAULT) > 0;
+}
+
+HDF5Group::HDF5Group(HDF5SharedHandle *h): HDF5Object(h) {
+}
+
+
+HDF5Group::HDF5Group(HDF5Group parent, std::string name):
+    HDF5Object(new HDF5SharedHandle(H5Gopen2(parent.get_handle(),
+                                             name.c_str(),
+                                             H5P_DEFAULT), &H5Gclose,
+                                    name)){
 }
 HDF5Group HDF5Group::add_child(std::string name) {
-  IMP_RMF_USAGE_CHECK(!H5Lexists(h_->get_hid(), name.c_str(), H5P_DEFAULT),
+  IMP_RMF_USAGE_CHECK(!H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT),
                   "Child named " << name << " already exists");
-  IMP_HDF5_HANDLE(, H5Gcreate2(h_->get_hid(), name.c_str(),
+  IMP_HDF5_HANDLE(, H5Gcreate2(get_handle(), name.c_str(),
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
                   &H5Gclose);
   return HDF5Group(*this, name);
@@ -38,35 +53,29 @@ unsigned int HDF5Group::get_number_of_children() const {
 std::string HDF5Group::get_child_name(unsigned int i) const {
   static const int max_len=1000;
   char buf[max_len];
-  IMP_HDF5_CALL(H5Lget_name_by_idx(h_->get_hid(), ".",
+  IMP_HDF5_CALL(H5Lget_name_by_idx(get_handle(), ".",
                                    H5_INDEX_NAME, H5_ITER_NATIVE, (hsize_t)i,
                                    buf, max_len, H5P_DEFAULT));
   return std::string(buf);
 }
 bool HDF5Group::get_has_child(std::string name) const {
-  return H5Lexists(h_->get_hid(), name.c_str(), H5P_DEFAULT);
-}
-hid_t HDF5Group::get_handle() const {
-  return h_->get_hid();
+  return H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT);
 }
 bool HDF5Group::get_child_is_group(unsigned int i) const {
   H5O_info_t info;
-  IMP_HDF5_HANDLE(c, H5Oopen(h_->get_hid(), get_child_name(i).c_str(),
+  IMP_HDF5_HANDLE(c, H5Oopen(get_handle(), get_child_name(i).c_str(),
                        H5P_DEFAULT), &H5Oclose);
   IMP_HDF5_CALL(H5Oget_info(c, &info));
   return info.type== H5O_TYPE_GROUP; //H5O_TYPE_DATASET
 }
 bool HDF5Group::get_child_is_data_set(unsigned int i) const {
   H5O_info_t info;
-  IMP_HDF5_HANDLE(c, H5Oopen(h_->get_hid(), get_child_name(i).c_str(),
+  IMP_HDF5_HANDLE(c, H5Oopen(get_handle(), get_child_name(i).c_str(),
                              H5P_DEFAULT), &H5Oclose);
   IMP_HDF5_CALL(H5Oget_info(c, &info));
   return info.type== H5O_TYPE_DATASET; //H5O_TYPE_DATASET
 }
 
-bool HDF5Group::get_has_attribute(std::string nm) const {
-  return H5Aexists_by_name(h_->get_hid(), ".", nm.c_str(), H5P_DEFAULT) > 0;
-}
 
 
 
@@ -103,10 +112,6 @@ HDF5File open_hdf5_file_read_only(std::string name) {
   return HDF5File(h.get());
 }
 
-HDF5File HDF5Group::get_file() const {
-  IMP_HDF5_NEW_HANDLE(h, H5Iget_file_id(h_->get_hid()), &H5Fclose);
-  return HDF5File(h.get());
-}
 
 HDF5File::HDF5File(HDF5SharedHandle *h): HDF5Group(h){}
 

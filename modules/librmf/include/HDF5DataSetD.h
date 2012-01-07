@@ -11,14 +11,13 @@
 
 #include "RMF_config.h"
 #include "hdf5_types.h"
-#include "hdf5_handle.h"
+#include "HDF5Object.h"
 #include "infrastructure_macros.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <algorithm>
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
-#include <boost/intrusive_ptr.hpp>
 #include <boost/functional/hash.hpp>
 
 
@@ -132,9 +131,8 @@ namespace RMF {
   the HDF5 manual} for more information.
   */
   template <class TypeTraits, unsigned int D>
-  class HDF5DataSetD {
+  class HDF5DataSetD: public HDF5Object {
     struct Data {
-      HDF5Handle h_;
       HDF5Handle ids_;
       HDF5Handle rds_;
       HDF5Handle sel_;
@@ -163,7 +161,7 @@ namespace RMF {
       return data_->sel_;
     }
     void initialize_handles() {
-      data_->sel_.open(H5Dget_space(data_->h_.get_hid()), &H5Sclose);
+      data_->sel_.open(H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
       // must be second
       hsize_t ret[D];
       std::fill(ret, ret+D, -1);
@@ -224,11 +222,11 @@ namespace RMF {
                                    32));
       }
       //std::cout << "creating..." << name << std::endl;
-      data_->h_.open(H5Dcreate2(parent->get_hid(),
-                               name.c_str(),
-                               TypeTraits::get_hdf5_disk_type(),
-                               ds, H5P_DEFAULT, plist, H5P_DEFAULT),
-                     &H5Dclose);
+      HDF5Object::open(new HDF5SharedHandle(H5Dcreate2(parent->get_hid(),
+                                                      name.c_str(),
+                                         TypeTraits::get_hdf5_disk_type(),
+                                         ds, H5P_DEFAULT, plist, H5P_DEFAULT),
+                                            &H5Dclose, name));
       initialize();
       //std::cout << "done..." << std::endl;
     }
@@ -238,11 +236,11 @@ namespace RMF {
       IMP_RMF_USAGE_CHECK(H5Lexists(parent->get_hid(),
                                     name.c_str(), H5P_DEFAULT),
                           "Data set " << name << " does not exist");
-      data_->h_.open(H5Dopen2(parent->get_hid(),
-                             name.c_str(), H5P_DEFAULT),
-                     &H5Dclose);
+      HDF5Object::open(new HDF5SharedHandle(H5Dopen2(parent->get_hid(),
+                                                     name.c_str(), H5P_DEFAULT),
+                                            &H5Dclose, name));
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
-      IMP_HDF5_HANDLE(sel, H5Dget_space(data_->h_.get_hid()), &H5Sclose);
+      IMP_HDF5_HANDLE(sel, H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
       IMP_RMF_USAGE_CHECK(H5Sget_simple_extent_ndims(sel)==D,
                           "Dimensions don't match. Got "
                           << H5Sget_simple_extent_ndims(sel)
@@ -262,11 +260,11 @@ namespace RMF {
       IMP_RMF_USAGE_CHECK(H5Lexists(file,
                                     name.c_str(), H5P_DEFAULT),
                           "Data set " << name << " does not exist");
-      data_->h_.open(H5Dopen2(file,
-                             name.c_str(), H5P_DEFAULT),
-                     &H5Dclose);
+      HDF5Object::open(new HDF5SharedHandle(H5Dopen2(file,
+                                                     name.c_str(), H5P_DEFAULT),
+                                            &H5Dclose, name));
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
-      IMP_HDF5_HANDLE(sel, H5Dget_space(data_->h_.get_hid()), &H5Sclose);
+      IMP_HDF5_HANDLE(sel, H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
       IMP_RMF_USAGE_CHECK(H5Sget_simple_extent_ndims(sel)==D,
                           "Dimensions don't match. Got "
                           << H5Sget_simple_extent_ndims(sel)
@@ -277,12 +275,8 @@ namespace RMF {
     typedef HDF5DataSetIndexD<D> Index;
     std::string get_name() const {
       char buf[10000];
-      IMP_HDF5_CALL(H5Iget_name(data_->h_.get_hid(), buf, 10000));
+      IMP_HDF5_CALL(H5Iget_name(HDF5Object::get_handle(), buf, 10000));
       return std::string(buf);
-    }
-    void show(std::ostream &out) const {
-      using std::operator<<;
-      out << "HDF5DataSet " << get_name();
     }
     HDF5DataSetD(){}
     HDF5DataSetIndexD<D> get_size() const {
@@ -293,7 +287,7 @@ namespace RMF {
       return ret;
     }
     hid_t get_handle() const {
-      return data_->h_.get_hid();
+      return HDF5Object::get_handle();
     }
 
     void set_value(const HDF5DataSetIndexD<D> &ijk,
@@ -306,7 +300,7 @@ namespace RMF {
                                         H5S_SELECT_SET, ijk.get(),
                                         data_->ones_, data_->ones_,
                                         NULL));
-      TypeTraits::write_value_dataset(data_->h_.get_hid(),
+      TypeTraits::write_value_dataset(HDF5Object::get_handle(),
                                       data_->ids_.get_hid(),
                                       get_data_space(), value);
     }
@@ -319,7 +313,7 @@ namespace RMF {
                                         H5S_SELECT_SET, ijk.get(),
                                         data_->ones_, data_->ones_,
                                         NULL));
-      return TypeTraits::read_value_dataset(data_->h_.get_hid(),
+      return TypeTraits::read_value_dataset(HDF5Object::get_handle(),
                                             data_->ids_.get_hid(),
                                             get_data_space());
     }
@@ -340,7 +334,7 @@ namespace RMF {
                                         H5S_SELECT_SET, ijk.get(),
                                         data_->ones_, &size[0],
                                         NULL));
-      TypeTraits::write_values_dataset(data_->h_.get_hid(),
+      TypeTraits::write_values_dataset(HDF5Object::get_handle(),
                                        get_row_data_space().get_hid(),
                                        get_data_space(), value);
     }
@@ -358,7 +352,7 @@ namespace RMF {
                                         H5S_SELECT_SET, ijk.get(),
                                         data_->ones_, &size[0],
                                         NULL));
-      return TypeTraits::read_values_dataset(data_->h_.get_hid(),
+      return TypeTraits::read_values_dataset(HDF5Object::get_handle(),
                                              get_row_data_space().get_hid(),
                                              get_data_space(),
                                              size[D-1]);
@@ -389,7 +383,7 @@ namespace RMF {
       hsize_t sz= value.size();
       IMP_HDF5_HANDLE(input, H5Screate_simple(1, &sz,
                                         NULL), &H5Sclose);
-      TypeTraits::write_values_dataset(data_->h_.get_hid(),
+      TypeTraits::write_values_dataset(HDF5Object::get_handle(),
                                        input,
                                        get_data_space(), value);
     }
@@ -410,7 +404,7 @@ namespace RMF {
                                         NULL));
       IMP_HDF5_HANDLE(input, H5Screate_simple(1, &total,
                                         NULL), &H5Sclose);
-      return TypeTraits::read_values_dataset(data_->h_.get_hid(),
+      return TypeTraits::read_values_dataset(HDF5Object::get_handle(),
                                              input,
                                              get_data_space(),
                                              total);
@@ -418,19 +412,10 @@ namespace RMF {
 
     void set_size(const HDF5DataSetIndexD<D> &ijk) {
       hsize_t nd[D]; std::copy(ijk.begin(), ijk.end(), nd);;
-      IMP_HDF5_CALL(H5Dset_extent(data_->h_.get_hid(),
+      IMP_HDF5_CALL(H5Dset_extent(HDF5Object::get_handle(),
                                   &nd[0]));
       initialize_handles();
     }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-    // replace with safe bool
-    operator bool() const {
-      return data_;
-    }
-    bool operator!() const {
-      return !data_;
-    }
-#endif
     IMP_RMF_COMPARISONS(HDF5DataSetD);
   };
 

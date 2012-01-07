@@ -86,6 +86,7 @@ IMP_RMF_SWIG_VALUE_INSTANCE(RMF, PairCategory, PairCategory, PairCategories);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, TripletCategory, TripletCategory, TripletCategories);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, QuadCategory, QuadCategory, QuadCategories);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, Key);
+IMP_RMF_SWIG_VALUE(RMF, HDF5Object, HDF5Objects);
 IMP_RMF_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
 IMP_RMF_SWIG_VALUE(RMF, HDF5File, HDF5Files);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
@@ -158,6 +159,7 @@ namespace RMF {
 %include "RMF/hdf5_types.h"
 %template(_IntsTraits) RMF::ArrayTraits<RMF::IntTraits>;
 %template(_NodeIDsTraits) RMF::ArrayTraits<RMF::NodeIDTraits>;
+%include "RMF/HDF5Object.h"
 
 %include "RMF/HDF5DataSetD.h"
 %template(HDF5DataSetIndex1D) RMF::HDF5DataSetIndexD<1>;
@@ -173,7 +175,6 @@ namespace RMF {
 
 %include "RMF/Key.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
-
 %include "RMF/HDF5Group.h"
 %include "RMF/HDF5File.h"
 %include "RMF/Category.h"
