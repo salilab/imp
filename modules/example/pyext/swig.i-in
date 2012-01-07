@@ -47,6 +47,11 @@ def create_model_and_particles():
 %include "IMP/example/ExampleSubsetFilterTable.h"
 %include "IMP/example/ExampleConstraint.h"
 
+%include "IMP/example/randomizing.h"
+%include "IMP/example/optimizing.h"
+%include "IMP/example/counting.h"
+%include "IMP/example/creating_restraints.h"
+
 namespace IMP {
   namespace example {
   /* Python doesn't natively support C++ templates, so you have to manually
