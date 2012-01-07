@@ -265,6 +265,9 @@ public:
 };
 
 typedef ScopedSetAttribute<FloatKey, Float> ScopedSetFloatAttribute;
+#ifndef IMP_DOXYGEN
+typedef vector<ScopedSetFloatAttribute> ScopedSetFloatAttributes;
+#endif
 
 
 IMP_END_NAMESPACE
