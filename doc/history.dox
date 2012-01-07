@@ -1,7 +1,8 @@
 /** \page recent Change History
 \par Winter 2011
-- the command line option \c --pretty was added (defaulting to True). When it is true, build commands are mostly suppressed and a much briefer description of what is being done is printed out. Note that pretty mode and compilation in emacs don't get along too well.
-- IMP::algebra::ParabolicFit was renamed to IMP::algebra::ParabolicFit2D
+- IMP::algebra::Grid::apply was added to provide faster access to all (or, later, part of a grid). It can be an order of magnitude or more faster than using the iterators when doing simple operations.
+- the scons config options \c pretty and \c color were added (defaulting to True). When they are true, build commands are mostly suppressed and a much briefer description of what is being done is printed out (in color). Note that \c color mode and compilation in emacs don't get along too well.
+- IMP::algebra::ParabolicFit was renamed to IMP::algebra::ParabolicFit2D (a backwards compatibility typedef is currently provided)
 - IMP::algebra::LinearFit was renamed to IMP::algebra::LinearFit2D. It now supports error bars on the y-values.
 \par Fall 2011
 - IMP::compatibility::checked_vector was renamed to IMP::compatibility::vector and made available to IMP as IMP::vector. Typedefs should use this type (IMP::vector).
