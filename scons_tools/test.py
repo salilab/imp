@@ -30,6 +30,7 @@ def _action_unit_test(target, source, env):
     else:
         disab = ''
     tmpdir=Dir(env["builddir"]+"/tmp").abspath
+    tf=target[0].abspath
     if type.endswith("unit test"):
         cmd= File("#/scons_tools/run-all-tests.py").abspath
         if type.startswith('module'):
@@ -39,6 +40,8 @@ def _action_unit_test(target, source, env):
             else:
                 modname = 'IMP.' + modname
             cmd += ' --module=%s' % modname
+            if env.get('coverage', False):
+                cmd += ' --pycoverage=%s.pycoverage' % tf
         #if len(fsource) > 0:
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
@@ -53,7 +56,6 @@ def _action_unit_test(target, source, env):
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir(env["builddir"]+"/tmp").abspath
     else:
         utility.report_error(env, "Unknown test type "+type)
-    tf=target[0].abspath
     print "tempfile", tf, tmpdir, target[0].path+".result"
     app = "mkdir -p %s; cd %s; (%s %s %s%s %s >%s) > /dev/null" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
