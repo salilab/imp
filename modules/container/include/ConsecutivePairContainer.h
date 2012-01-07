@@ -37,7 +37,9 @@ public:
   /** If no overlaps is true, this CPC is assumed not to share any particles
       with another CPC.
   */
-  ConsecutivePairContainer(const ParticlesTemp &ps, bool no_overlaps=false);
+  ConsecutivePairContainer(const ParticlesTemp &ps,
+                           bool no_overlaps=false,
+                           std::string name="ConsecutivePairContainer%1%");
 
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
