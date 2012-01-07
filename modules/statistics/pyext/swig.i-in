@@ -59,7 +59,7 @@ def show_histogram(h, yscale='linear', xscale='linear',
       ax.set_xscale(xscale)
       ax.set_yscale(yscale)
       for c in curves:
-         plt.plot(bins, [c(x) for x in bins], linewidth=1)
+         plt.plot(bins, [c(x) for x in bins], "go-", linewidth=1)
       plt.show()
     elif h.get_dimension()==2:
       import numpy as np
