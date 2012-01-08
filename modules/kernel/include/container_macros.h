@@ -110,6 +110,7 @@
   unsigned int get_number_of_##lcnames() const;                         \
   bool get_has_##lcnames();                                             \
   Data get_##lcname(unsigned int i) const;                              \
+  PluralData get_##lcnames() const;                                     \
   void reserve_##lcnames(unsigned int sz)
 
 
@@ -233,6 +234,9 @@ bool get_has_##lcnames() const {                                        \
 */                                                                      \
 Data get_##lcname(unsigned int i) const {                               \
   return lcname##_vector_[i];                                           \
+}                                                                       \
+PluralData get_##lcnames() const {                                      \
+  return get_as<PluralData>(lcname##_vector_);                          \
 }                                                                       \
 void reserve_##lcnames(unsigned int sz) {                               \
   lcname##_vector_.reserve(sz);                                         \

@@ -42,12 +42,6 @@
 
 /* Add additional IMP_CONTAINER methods for scripting languages */
 %define IMP_SWIG_CONTAINER(Namespace, ContainedNamespace, type, Ucname, lcname)
-  %extend Namespace::type {
-  ContainedNamespace::Ucname##s get_##lcname##s() const {
-    ContainedNamespace::Ucname##s ret(self->lcname##s_begin(), self->lcname##s_end());
-    return ret;
-  }
- }
 %enddef
 
 
