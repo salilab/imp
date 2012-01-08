@@ -32,7 +32,7 @@ void randomize_rigid_body(RigidBody rbi,
 /** Randomize the positions of a set of particles within a bounding
     volume. Rigid bodies have their orientation randomized too.
 */
-template <class ParticlesList, class BoundingVoume>
+template <class ParticlesList, class BoundingVolume>
 void randomize_particles(const ParticlesList &ps,
                          const BoundingVolume &bv) {
   for (unsigned int i=0; i< ps.size(); ++i) {
