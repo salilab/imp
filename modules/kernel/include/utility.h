@@ -10,6 +10,7 @@
 
 #include "kernel_config.h"
 #include <IMP/base/utility.h>
+#include <IMP/base/types.h>
 IMP_BEGIN_NAMESPACE
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
@@ -19,11 +20,12 @@ using IMP::base::is_nan;
 
 template <class T>
 inline vector<T> operator+(const vector<T> &t,
-                    const vector<T> &o) {
+                           const vector<T> &o) {
   vector<T> ret=t;
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }
+
 template <class T>
 inline vector<T> operator+=( vector<T> &t,
                     const T &o) {
