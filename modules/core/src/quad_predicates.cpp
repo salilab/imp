@@ -14,6 +14,9 @@ ConstantQuadPredicate::ConstantQuadPredicate(int v,
                                                  std::string name):
     QuadPredicate(name), v_(v){}
 
+UnorderedTypeQuadPredicate::UnorderedTypeQuadPredicate(
+                                                 std::string name):
+    QuadPredicate(name){}
 
 
 IMPCORE_END_NAMESPACE

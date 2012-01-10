@@ -14,6 +14,9 @@ ConstantPairPredicate::ConstantPairPredicate(int v,
                                                  std::string name):
     PairPredicate(name), v_(v){}
 
+UnorderedTypePairPredicate::UnorderedTypePairPredicate(
+                                                 std::string name):
+    PairPredicate(name){}
 
 
 IMPCORE_END_NAMESPACE

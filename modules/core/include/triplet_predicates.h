@@ -12,6 +12,7 @@
 
 #include "core_config.h"
 #include <IMP/TripletPredicate.h>
+#include "internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,6 +26,19 @@ public:
   IMP_INDEX_TRIPLET_PREDICATE(ConstantTripletPredicate, {
       IMP_UNUSED(m); IMP_UNUSED(pi);
       return v_;
+    });
+};
+
+/** Return a unique predicate value for each unordered set of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT UnorderedTypeTripletPredicate: public TripletPredicate {
+public:
+  UnorderedTypeTripletPredicate(std::string name
+                             ="UnorderedTypeTripletPredicate%1%");
+  IMP_INDEX_TRIPLET_PREDICATE(UnorderedTypeTripletPredicate, {
+      return internal::get_type_hash(m, pi);
     });
 };
 
