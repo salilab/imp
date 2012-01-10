@@ -54,17 +54,19 @@ public:
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");
     IMP_NEW(ListPairContainer, c, (get_model()));
-    restraints_.push_back(create_restraint(score, c));
+    restraints_.push_back(container::create_restraint(score, c));
     restraints_.back()->set_model(get_model());
     containers_[predicate_value]=c;
   }
 template <class Score>
       void set_unknown_score( Score *score) {
+  // make sure it gets cleaned up if it is a temporary
+  Pointer<Score> pscore(score);
     IMP_USAGE_CHECK(get_is_part_of_model(),
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");
     IMP_NEW(ListPairContainer, c, (get_model()));
-    restraints_.push_back(create_restraint(score, c));
+    restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_model(get_model());
     unknown_container_=c;
   }
