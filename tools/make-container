@@ -158,6 +158,11 @@ def make_one(params, test=True):
               ("modules/container/src/"+multi + "ContainerStatistics.cpp",
                path+"/tools/container_templates/statistics.cpp"),
 
+            ("modules/container/include/"+multi + "sPredicateRestraint.h",
+               path+"/tools/container_templates/distribute.hpp"),
+              ("modules/container/src/"+multi + "sPredicateRestraint.cpp",
+               path+"/tools/container_templates/distribute.cc"),
+
 
               ("modules/container/include/Minimum"+multi + "Restraint.h",
                path+"/tools/container_templates/min.hpp", "Minimum", "less"),
