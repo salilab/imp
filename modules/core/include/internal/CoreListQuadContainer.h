@@ -33,6 +33,9 @@ class IMPCOREEXPORT CoreListQuadContainer:
                     "Passed Quad cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
+  void add_particle_quad(const ParticleIndexQuad& vt) {
+    add_to_list(vt);
+  }
   void add_particle_quads(const ParticleQuadsTemp &c) {
     if (c.empty()) return;
     ParticleIndexQuads cp= IMP::internal::get_index(c);
