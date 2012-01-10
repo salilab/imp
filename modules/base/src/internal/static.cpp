@@ -101,23 +101,6 @@ void check_live_objects() {
   }
 }
 
-struct LiveObjectChecker {
-  ~LiveObjectChecker() {
-#if IMP_BUILD == IMP_DEBUG
-    if (live_.size() != 0) {
-      std::cerr << live_.size()
-                << " IMP::Objects were not cleaned up properly" << std::endl;
-      for (compatibility::set<Object*>::const_iterator it= live_.begin();
-           it != live_.end(); ++it) {
-        IMP_CHECK_OBJECT((*it));
-        // the type goes through swig directors
-        std::cerr << (*it)->get_name() << std::endl;
-      }
-    }
-#endif
-  }
-};
-LiveObjectChecker loc;
 
 IMPBASE_END_INTERNAL_NAMESPACE
 #endif
