@@ -194,6 +194,13 @@ uniform_cover_sphere(unsigned int N,
                      const Vector3D &center,
                      double r, bool ALL) {
   Vector3Ds ret(N);
+
+  if (N==1) {
+    ret[0]= Vector3D(center[0]+r,
+                     center[1],
+                     center[2]);
+    return ret;
+  }
   double f=1;
   if (!ALL) {
     f=2.0;
