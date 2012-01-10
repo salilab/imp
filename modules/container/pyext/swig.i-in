@@ -44,6 +44,10 @@ IMP_SWIG_OBJECT(IMP::container, SingletonsEventOptimizerState, SingletonsEventOp
 IMP_SWIG_OBJECT(IMP::container, PairsEventOptimizerState, PairsEventOptimizerStateList);
 IMP_SWIG_OBJECT(IMP::container, TripletsEventOptimizerState, TripletsEventOptimizerStateList);
 IMP_SWIG_OBJECT(IMP::container, QuadsEventOptimizerState, QuadsEventOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, SingletonsPredicateRestraint, SingletonsPredicateRestraints);
+IMP_SWIG_OBJECT(IMP::container, PairsPredicateRestraint, PairPredicateRestraints);
+IMP_SWIG_OBJECT(IMP::container, TripletsPredicateRestraint, TripletsPredicateRestraints);
+IMP_SWIG_OBJECT(IMP::container, QuadsPredicateRestraint, QuadsPredicateRestraints);
 
 
 /* Wrap our own classes */
@@ -93,3 +97,7 @@ IMP_SWIG_OBJECT(IMP::container, QuadsEventOptimizerState, QuadsEventOptimizerSta
 %include "IMP/container/PairsEventOptimizerState.h"
 %include "IMP/container/TripletsEventOptimizerState.h"
 %include "IMP/container/QuadsEventOptimizerState.h"
+%include "IMP/container/SingletonsPredicateRestraint.h"
+%include "IMP/container/PairsPredicateRestraint.h"
+%include "IMP/container/TripletsPredicateRestraint.h"
+%include "IMP/container/QuadsPredicateRestraint.h"
