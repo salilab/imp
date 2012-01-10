@@ -5,11 +5,11 @@
  *
  */
 
-#ifndef IMPCONTAINER_GENERIC_IMPL_H
-#define IMPCONTAINER_GENERIC_IMPL_H
+#ifndef IMPCORE_INTERNAL_GENERICS_IMPL_H
+#define IMPCORE_INTERNAL_GENERICS_IMPL_H
 #include <IMP/generic.h>
 
-IMPCONTAINER_BEGIN_NAMESPACE
+IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score, class C>
 ContainerRestraint<Score, C>
@@ -92,44 +92,25 @@ void ContainerRestraint<Score, C>::do_show(std::ostream& out) const
 
 
 
-template <class Score, class C>
-inline Restraint *create_restraint(Pointer<Score> s, Pointer<C> c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s.get(), c.get(), name);
-}
-template <class Score, class C>
-inline Restraint *create_restraint(Score* s, Pointer<C> c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s, c.get(), name);
-}
-template <class Score, class C>
-inline Restraint *create_restraint(Pointer<Score> s, C* c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s.get(), c, name);
-}
 
 
 
 
 
 
-
-
-
-
-
-template <class C, class Before, class After>
-ContainerConstraint<C, Before, After>::ContainerConstraint(C *c,
+template <class Before, class After, class C>
+ContainerConstraint< Before, After, C>::ContainerConstraint(
                                          Before *before,
                                          After *after,
+                                         C *c,
                                          std::string name):
   Constraint(name), c_(c) {
   if (before) f_=before;
   if (after) af_=after;
 }
 
-template <class C, class Before, class After>
-void ContainerConstraint<C, Before, After>::do_update_attributes()
+template <class Before, class After, class C>
+void ContainerConstraint<Before, After, C>::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
@@ -137,15 +118,15 @@ void ContainerConstraint<C, Before, After>::do_update_attributes()
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
-    f_->Before::apply(c_->get_access());
+    f_->Before::apply_indexes(get_model(), c_->get_access());
   } else {
     c_->template_apply(f_.get());
   }
   IMP_LOG(TERSE, "End ContainerConstraint::update" << std::endl);
 }
 
-template <class C, class Before, class After>
-void ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+void ContainerConstraint<Before, After, C>
 ::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
@@ -154,7 +135,7 @@ void ContainerConstraint<C, Before, After>
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
-    af_->After::apply(c_->get_access(), *da);
+    af_->After::apply_indexes(get_model(), c_->get_access(), *da);
   } else {
     c_->template_apply(af_.get(), *da);
   }
@@ -164,42 +145,42 @@ void ContainerConstraint<C, Before, After>
 
 template <class Indexes, class BF, class AF>
 inline ScoreStates create_decomposition_internal(Model *m,
-                                                 const Indexes &a,
-                                                 BF *bf, AF *af) {
+                                                 BF *bf, AF *af,
+                                                 const Indexes &a) {
   ScoreStates ret(a.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= IMP::create_constraint(af, bf,
+    ret[i]= IMP::create_constraint(bf, af,
                                     IMP::internal::get_particle(m, a[i]));
   }
   return ret;
 }
 
 
-template <class C, class Before, class After>
-ScoreStates ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+ScoreStates ContainerConstraint<Before, After, C>
 ::create_decomposition() const {
   ScoreStates ret
     =create_decomposition_internal(get_model(),
-                                   c_->get_all_possible_indexess(),
                                    f_.get(),
-                                   af_.get());
+                                   af_.get(),
+                                   c_->get_all_possible_indexes());
   return ret;
 }
 
-template <class C, class Before, class After>
-ContainersTemp ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+ContainersTemp ContainerConstraint<Before, After, C>
 ::get_input_containers() const {
   return ContainersTemp(1, c_);
 }
 
-template <class C, class Before, class After>
-ContainersTemp ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+ContainersTemp ContainerConstraint<Before, After, C>
 ::get_output_containers() const {
   return ContainersTemp();
 }
 
-template <class C, class Before, class After>
-ParticlesTemp ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+ParticlesTemp ContainerConstraint<Before, After, C>
 ::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
@@ -231,8 +212,8 @@ ParticlesTemp ContainerConstraint<C, Before, After>
   return ret;
 }
 
-template <class C, class Before, class After>
-ParticlesTemp ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+ParticlesTemp ContainerConstraint<Before, After, C>
 ::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
@@ -263,8 +244,8 @@ ParticlesTemp ContainerConstraint<C, Before, After>
   return ret;
 }
 
-template <class C, class Before, class After>
-void ContainerConstraint<C, Before, After>
+template <class Before, class After, class C>
+void ContainerConstraint<Before, After, C>
 ::do_show(std::ostream &out) const {
   out << "on " << *c_ << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
@@ -272,49 +253,6 @@ void ContainerConstraint<C, Before, After>
 }
 
 
-
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
-                              Pointer<After> a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(C* c, Pointer<Before> b,
-                              Pointer<After> a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<C> c, Before* b,
-                              Pointer<After> a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(C* c, Before* b,
-                              Pointer<After> a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
-                              After* a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(C* c, Pointer<Before> b,
-                              After* a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<C> c, Before* b,
-                              After* a,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
 
 
 
@@ -343,6 +281,6 @@ void GenericInContainerPairFilter<C>
   out << "Filtering from container " << c_->get_name() << std::endl;
 }
 
-IMPCONTAINER_END_NAMESPACE
+IMPCORE_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCONTAINER_GENERIC_IMPL_H */
+#endif  /* IMPCORE_INTERNAL_GENERICS_IMPL_H */
