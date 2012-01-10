@@ -114,12 +114,17 @@ class Tests(IMP.test.TestCase):
         else:
             return 0
     def _check(self, (mn, std), (calc_mn, calc_std), n):
-        print [(x.evalf()/angstrom).evalf() for x in calc_std]
-        print "mean", mn, [float((x/angstrom).evalf()) for x in calc_mn]
-        print "std", std, [float((x/angstrom).evalf()) for x in calc_std]
+        if use_sympy:
+            print [(x.evalf()/angstrom).evalf() for x in calc_std]
+            print "mean", mn, [float((x/angstrom).evalf()) for x in calc_mn]
+            print "std", std, [float((x/angstrom).evalf()) for x in calc_std]
         for i in range(0,3):
-            self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=std[i]*2/n**.5)
-            self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2.0*self._get_sigma_error(std[i], n))
+            if use_sympy:
+                self.assertAlmostEqual(mn[i], float((calc_mn[i]/angstrom).evalf()), delta=std[i]*2/n**.5)
+                self.assertAlmostEqual(std[i], float((calc_std[i]/angstrom).evalf()), delta=2.0*self._get_sigma_error(std[i], n))
+            else:
+                self.assertAlmostEqual(mn[i], float(calc_mn[i]/angstrom), delta=std[i]*2/n**.5)
+                self.assertAlmostEqual(std[i], float(calc_std[i]/angstrom), delta=2.0*self._get_sigma_error(std[i], n))
     def test_free(self):
         """Test brownian free diffusion"""
         #self.skipTest("too expensive")
