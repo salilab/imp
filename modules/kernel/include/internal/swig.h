@@ -201,6 +201,11 @@ _pass_pair(const DerivativePair &p);
 IMPEXPORT FloatPair
 _pass_plain_pair( FloatPair p);
 
+inline ParticlesTemps
+_pass_particles_temps(const ParticlesTemps &ps) {
+  return ps;
+}
+
 
 IMPEXPORT int _test_overload(const Particles &ps);
 
