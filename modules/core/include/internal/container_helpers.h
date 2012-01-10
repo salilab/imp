@@ -13,6 +13,8 @@
 
 #include "../core_config.h"
 #include "../Typed.h"
+#include <algorithm>
+#include <IMP/particle_index.h>
 
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -25,12 +27,17 @@ inline int get_type_hash(Model *m, ParticleIndex pi) {
 
 template <unsigned int D>
 inline int get_type_hash(Model *m, const ParticleIndexTuple<D>& pi) {
-  int ret=0;
-  int pow=1;
   int max= ParticleType::get_number_unique();
+  Ints rets(D);
   for (unsigned int i=0; i< D; ++i) {
     Typed td(m, pi[i]);
-    ret+= pow*td.get_type().get_index();
+    rets[i]= td.get_type().get_index();
+  }
+  std::sort(rets.begin(), rets.end());
+  int pow=1;
+  int ret=0;
+  for (unsigned int i=0;i< D; ++i) {
+    ret+=pow*rets[i];
     pow*= max;
   }
   return ret;
