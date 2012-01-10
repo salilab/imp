@@ -527,7 +527,10 @@ class coverage:
         """ Helper function to turn a filename into an absolute normalized
             filename.
         """
-        return os.path.normcase(os.path.abspath(os.path.realpath(filename)))
+        # For IMP, we don't want to remove the symlink; we want to talk
+        # about build/lib/IMP/foo/__init__.py, not build/src/IMP.foo.py
+        return os.path.normcase(os.path.abspath(filename))
+#       return os.path.normcase(os.path.abspath(os.path.realpath(filename)))
 
     def get_zip_data(self, filename):
         """ Get data from `filename` if it is a zip file path, or return None

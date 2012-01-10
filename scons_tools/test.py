@@ -39,9 +39,9 @@ def _action_unit_test(target, source, env):
                 modname = 'IMP'
             else:
                 modname = 'IMP.' + modname
-            cmd += ' --module=%s' % modname
-            if env.get('coverage', False):
-                cmd += ' --pycoverage=%s.pycoverage' % tf
+            cmd += ' --module=%s --pycoverage=%s' % (modname, env['coverage'])
+            if env['coverage'] == 'lines':
+                cmd += ' --output=%s.pycoverage' % tf
         #if len(fsource) > 0:
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
