@@ -59,13 +59,13 @@ class RegressionTest(object):
 
 def parse_options():
     parser = OptionParser()
-    parser.set_defaults(pycoverage=False)
     parser.add_option("--module", dest="module", type="string", default=None,
                       help="name of IMP module being tested, e.g. IMP.foo")
-    parser.add_option("--pycoverage", dest="pycoverage", type="string",
-                      default=None,
-                      help="report on Python coverage of tests to the named "
-                           "file (or stderr if '-'); use with --module")
+    parser.add_option("--pycoverage", dest="pycoverage", type="choice",
+                      default="no", choices=["no", "lines", "annotate"])
+    parser.add_option("--output", dest="output", type="string", default="-",
+                      help="write coverage output into the named "
+                           "file (or stderr if '-')")
     return parser.parse_args()
 
 def start_coverage():
@@ -93,26 +93,35 @@ def report_coverage(opts):
     if opts.module:
         path = opts.module.replace('.', '/')
         mods = [topdir + '%s/*.py' % path]
-        if opts.pycoverage == '-':
-            outfh = sys.stderr
-        else:
-            outfh = open(opts.pycoverage, 'w')
+        if opts.pycoverage == 'lines':
+            if opts.output == '-':
+                outfh = sys.stderr
+            else:
+                outfh = open(opts.output, 'w')
+                print >> sys.stderr, \
+                      "\nPython coverage of %s module written to %s." \
+                      % (opts.module, opts.output)
+            coverage.report(mods, file=outfh,
+                            omit_prefixes=['%s/_version_check' % path])
+        elif opts.pycoverage == 'annotate':
+            # report() does globbing, but annotate() does not - odd!
+            mods = glob.glob(mods[0])
             print >> sys.stderr, \
-                  "\nPython coverage of %s module written to %s." \
-                  % (opts.module, opts.pycoverage)
-        coverage.report(mods, file=outfh,
-                        omit_prefixes=['%s/_version_check' % path])
+                  "\n%s Python module annotated with coverage information " \
+                  "in files with\n\",cover\" suffix under build/lib/%s/." \
+                  % (opts.module, path)
+            coverage.annotate(mods, omit_prefixes=['%s/_version_check' % path])
 
     for cov in glob.glob('.coverage.*'):
         os.unlink(cov)
 
 if __name__ == "__main__":
     opts, args = parse_options()
-    if opts.pycoverage:
+    if opts.pycoverage != 'no':
         start_coverage()
     r = RegressionTest(args)
     main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                          argv=[sys.argv[0], "-v"], exit=False)
-    if opts.pycoverage:
+    if opts.pycoverage != 'no':
         report_coverage(opts)
     sys.exit(not main.result.wasSuccessful())
