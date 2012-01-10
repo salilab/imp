@@ -187,7 +187,7 @@ void do_it(int argc, char *argv[]) {
   if (argc==1 || (argc >1 && argv[1][0]=='p')) {
     IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
     IMP_NEW(SoftSpherePairScore, ps, (1));
-    ScopedRestraint sr(create_restraint(ps.get(), cpc.get()),
+    ScopedRestraint sr(container::create_restraint(ps.get(), cpc.get()),
                        m->get_root_restraint_set());
     sr->set_maximum_score(.1);
     if (argc<3 || argv[2][0]=='b') {
