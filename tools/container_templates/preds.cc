@@ -14,6 +14,9 @@ ConstantCLASSNAMEPredicate::ConstantCLASSNAMEPredicate(int v,
                                                  std::string name):
     CLASSNAMEPredicate(name), v_(v){}
 
+UnorderedTypeCLASSNAMEPredicate::UnorderedTypeCLASSNAMEPredicate(
+                                                 std::string name):
+    CLASSNAMEPredicate(name){}
 
 
 IMPCORE_END_NAMESPACE

@@ -14,6 +14,9 @@ ConstantSingletonPredicate::ConstantSingletonPredicate(int v,
                                                  std::string name):
     SingletonPredicate(name), v_(v){}
 
+UnorderedTypeSingletonPredicate::UnorderedTypeSingletonPredicate(
+                                                 std::string name):
+    SingletonPredicate(name){}
 
 
 IMPCORE_END_NAMESPACE

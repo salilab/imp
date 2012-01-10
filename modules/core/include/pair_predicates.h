@@ -12,6 +12,7 @@
 
 #include "core_config.h"
 #include <IMP/PairPredicate.h>
+#include "internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -25,6 +26,19 @@ public:
   IMP_INDEX_PAIR_PREDICATE(ConstantPairPredicate, {
       IMP_UNUSED(m); IMP_UNUSED(pi);
       return v_;
+    });
+};
+
+/** Return a unique predicate value for each unordered set of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT UnorderedTypePairPredicate: public PairPredicate {
+public:
+  UnorderedTypePairPredicate(std::string name
+                             ="UnorderedTypePairPredicate%1%");
+  IMP_INDEX_PAIR_PREDICATE(UnorderedTypePairPredicate, {
+      return internal::get_type_hash(m, pi);
     });
 };
 

@@ -14,6 +14,9 @@ ConstantTripletPredicate::ConstantTripletPredicate(int v,
                                                  std::string name):
     TripletPredicate(name), v_(v){}
 
+UnorderedTypeTripletPredicate::UnorderedTypeTripletPredicate(
+                                                 std::string name):
+    TripletPredicate(name){}
 
 
 IMPCORE_END_NAMESPACE
