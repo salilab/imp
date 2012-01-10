@@ -136,7 +136,7 @@ namespace {
       // since they all use the same key
       if (i==0) pfs.push_back(container::create_in_container_filter(cpc.get(),
                                                                     "bonds"));
-      ret.m->add_restraint(container::create_restraint(link, cpc));
+      ret.m->add_restraint(container::create_restraint(link, cpc.get()));
     }
     ret.lsc=new ListSingletonContainer(all);
     IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, ret.sp->get_value(sk)));
@@ -305,14 +305,16 @@ int main(int argc , char **argv) {
     std::cout << "Maximum time step is " << ts;
     //it.sp.set_maximum_time_step(ts);
   } else if (argc >=2 && std::string(argv[1])=="-p") {
-    typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+    typedef core::internal::ContainerRestraint<SoftSpherePairScore,
+        ClosePairContainer> PR;
     do_benchmark<1, PR >("custom", argc-2, argv+2,
                          new HarmonicDistancePairScore(len, kk),
                          new SoftSpherePairScore(kk),
                          new AttributeSingletonScore(new HLB(0,kk),
                                                      XYZ::get_xyz_keys()[0]));
   } else if (argc >=2 && std::string(argv[1])=="-l") {
-    typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+    typedef core::internal::ContainerRestraint<SoftSpherePairScore,
+        ClosePairContainer> PR;
     do_long_run<1, PR >("long", argc-2, argv+2,
                         new HarmonicDistancePairScore(len, kk),
                         new SoftSpherePairScore(kk),
@@ -320,7 +322,8 @@ int main(int argc , char **argv) {
                                                     XYZ::get_xyz_keys()[0]));
   } else {
     {
-      typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+      typedef core::internal::ContainerRestraint<SoftSpherePairScore,
+          ClosePairContainer> PR;
       do_benchmark<1, PR >("custom", argc-1, argv+1,
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
