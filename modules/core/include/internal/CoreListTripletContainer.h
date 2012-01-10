@@ -33,6 +33,9 @@ class IMPCOREEXPORT CoreListTripletContainer:
                     "Passed Triplet cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
+  void add_particle_triplet(const ParticleIndexTriplet& vt) {
+    add_to_list(vt);
+  }
   void add_particle_triplets(const ParticleTripletsTemp &c) {
     if (c.empty()) return;
     ParticleIndexTriplets cp= IMP::internal::get_index(c);

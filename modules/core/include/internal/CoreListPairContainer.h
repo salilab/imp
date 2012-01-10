@@ -33,6 +33,9 @@ class IMPCOREEXPORT CoreListPairContainer:
                     "Passed Pair cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
+  void add_particle_pair(const ParticleIndexPair& vt) {
+    add_to_list(vt);
+  }
   void add_particle_pairs(const ParticlePairsTemp &c) {
     if (c.empty()) return;
     ParticleIndexPairs cp= IMP::internal::get_index(c);

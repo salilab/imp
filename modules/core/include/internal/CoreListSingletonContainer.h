@@ -33,6 +33,9 @@ class IMPCOREEXPORT CoreListSingletonContainer:
                     "Passed Singleton cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
+  void add_particle(ParticleIndex vt) {
+    add_to_list(vt);
+  }
   void add_particles(const ParticlesTemp &c) {
     if (c.empty()) return;
     ParticleIndexes cp= IMP::internal::get_index(c);

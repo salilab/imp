@@ -33,6 +33,9 @@ class IMPCOREEXPORT CoreListCLASSNAMEContainer:
                     "Passed CLASSNAME cannot be nullptr (or None)");
     add_to_list(IMP::internal::get_index(vt));
   }
+  void add_FUNCTIONNAME(PASSINDEXTYPE vt) {
+    add_to_list(vt);
+  }
   void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
     if (c.empty()) return;
     PLURALINDEXTYPE cp= IMP::internal::get_index(c);
