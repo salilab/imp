@@ -22,6 +22,7 @@ class Particle;
 
 typedef IMP::VectorOfRefCounted<Particle*> Particles;
 typedef vector<Particle*> ParticlesTemp;
+typedef vector<vector<Particle*> > ParticlesTemps;
 
 
 template <unsigned int D>

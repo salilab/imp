@@ -124,6 +124,10 @@ IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
 //IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
+
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps,);
+
 IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
