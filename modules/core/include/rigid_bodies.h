@@ -124,12 +124,6 @@ public:
 
   IMP_DECORATOR(RigidBody, XYZ);
 
-  /** Merge several rigid bodies into on.
-   */
-  static RigidBody setup_particle(Particle *p,
-                                  const RigidBodies &o);
-
-
   //! Create a new rigid body from a set of particles.
   /** \param[in] p The particle to make into a rigid body
       \param[in] members The particles to use as members of the rigid body
@@ -140,7 +134,20 @@ public:
       XYZ particles.
    */
   static RigidBody setup_particle(Particle *p,
+                                  const ParticlesTemp &ps,
+                                  bool create_constraints=true);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  /** Merge several rigid bodies into one.
+   */
+  static RigidBody setup_particle(Particle *p,
+                                  const RigidBodies &o);
+
+
+
+  static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
+#endif
 
   //! Create a new rigid body from a set of particles, specifying the frame
   /** \param[in] p The particle to make into a rigid body
@@ -250,6 +257,10 @@ public:
 
   RigidMember get_member(unsigned int i) const;
 
+  /** Add a member, properly handle rigid bodies and XYZ particles.
+   */
+  void add_member(Particle *p);
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Add a particle as a member
   void add_member(XYZ d);
 
@@ -258,6 +269,7 @@ public:
       the other.
   */
   void add_member(RigidBody o);
+#endif
 };
 
 IMP_OUTPUT_OPERATOR(RigidBody);
@@ -401,6 +413,19 @@ inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));
 }
 
+
+/** Create a set of rigid bodies from disjoint lists of member particles.
+    This can result in more efficient runtimes when there are large numbers
+    of small rigid bodies as it removes some virtual function call overhead.
+
+    The rigid bodies created with this cannot, at the moment, be torn down.
+    It is undefined to try to do so.
+
+    The return is the list of rigid body particles.
+*/
+IMPCOREEXPORT ParticlesTemp
+create_rigid_bodies(const ParticlesTemps &particles,
+                    std::string name="rigid bodies %1%");
 
 IMPCORE_END_NAMESPACE
 

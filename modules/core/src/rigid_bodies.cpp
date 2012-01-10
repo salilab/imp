@@ -17,6 +17,8 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
+#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/core/internal/generic.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 const RigidBodyData &rigid_body_data() {
@@ -469,24 +471,33 @@ void RigidBody::teardown_constraints(Particle *p) {
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
-                                    RigidBody,
-                                    const RigidMembers &rms) {
-  RigidBody ret=internal_setup_particle(p, rms);
-  rms[0].get_rigid_body().add_member(ret);
-  setup_constraints(p);
-  ret.on_change();
-  return ret;
-}
-
-
-RigidBody RigidBody::setup_particle(Particle *p,
-                                    const XYZs &members){
-  RigidBody d=internal_setup_particle(p, members);
+                                    const ParticlesTemp &members,
+                                    bool create_constraints) {
+  IMP_FUNCTION_LOG;
+  IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
+  IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
+  ParticlesTemp xmember;
   for (unsigned int i=0; i< members.size(); ++i) {
-    d.add_member_internal(members[i], d.get_reference_frame());
+    if (RigidBody::particle_is_instance(members[i])) {
+      RigidBody rb(members[i]);
+      RigidMembers m= rb.get_members();
+      for (unsigned int j=0; j< m.size(); ++j) {
+        xmember.push_back(m[j]);
+      }
+    } else {
+      xmember.push_back(members[i]);
+    }
+  }
+  RigidBody d=internal_setup_particle(p, get_as<XYZs>(xmember));
+
+  for (unsigned int i=0; i< members.size(); ++i) {
+    d.add_member(members[i]);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
   d.on_change();
+  if (create_constraints) {
+    setup_constraints(p);
+  }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     RigidMembers ds(members);
     for (unsigned int i=0; i< ds.size(); ++i) {
@@ -500,8 +511,24 @@ RigidBody RigidBody::setup_particle(Particle *p,
                          << nv);
     }
   }
-  setup_constraints(p);
   return d;
+}
+
+
+RigidBody RigidBody::setup_particle(Particle *p,
+                                    RigidBody,
+                                    const RigidMembers &rms) {
+  RigidBody ret=internal_setup_particle(p, rms);
+  rms[0].get_rigid_body().add_member(ret);
+  setup_constraints(p);
+  ret.on_change();
+  return ret;
+}
+
+
+RigidBody RigidBody::setup_particle(Particle *p,
+                                    const XYZs &members){
+  return setup_particle(p, get_as<ParticlesTemp>(members));
 }
 
 
@@ -536,24 +563,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const RigidBodies &members){
-  IMP_FUNCTION_LOG;
-  IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
-  IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
-  XYZs xmember;
-  for (unsigned int i=0; i< members.size(); ++i) {
-    RigidMembers m= members[i].get_members();
-    for (unsigned int j=0; j< m.size(); ++j) {
-      xmember.push_back(m[j]);
-    }
-  }
-  RigidBody d=internal_setup_particle(p, xmember);
-  for (unsigned int i=0; i< members.size(); ++i) {
-    d.add_member(members[i]);
-    //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
-  }
-  d.on_change();
-  setup_constraints(p);
-  return d;
+  return setup_particle(p, get_as<ParticlesTemp>(members));
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
@@ -676,11 +686,43 @@ RigidBody::get_members() const {
 }
 
 
-
-
-void RigidBody::add_member(XYZ d) {
-  add_member_internal(d, get_reference_frame());
+void RigidBody::add_member(Particle *p) {
+  if (RigidBody::particle_is_instance(p)) {
+    RigidBody d(p);
+    algebra::ReferenceFrame3D r= get_reference_frame();
+    internal::add_required_attributes_for_body_member(d, get_particle());
+    RigidMember cm(d);
+    if (get_model()
+        ->get_has_attribute(internal::rigid_body_data().body_members_,
+                            get_particle_index())) {
+      ParticleIndexes members
+          =get_model()->get_attribute(internal::rigid_body_data().body_members_,
+                                      get_particle_index());
+      members.push_back(d.get_particle_index());
+      get_model()->set_attribute(internal::rigid_body_data().body_members_,
+                                 get_particle_index(), members);
+    } else {
+      get_model()->add_attribute(internal::rigid_body_data().body_members_,
+                                 get_particle_index(),
+                                 ParticleIndexes(1, d.get_particle_index()));
+    }
+    // want tr*ltr= btr, so ltr= tr-1*btr
+    algebra::Transformation3D tr
+        =r.get_transformation_from()
+        *d.get_reference_frame().get_transformation_to();
+    cm.set_internal_transformation(tr);
+  } else {
+    add_member_internal(XYZ(p), get_reference_frame());
+  }
   on_change();
+}
+
+
+void RigidBody::add_member(RigidBody d) {
+  add_member(d.get_particle());
+}
+void RigidBody::add_member(XYZ d) {
+  add_member(d.get_particle());
 }
 
 void RigidBody::add_member_internal(XYZ d,
@@ -704,30 +746,7 @@ void RigidBody::add_member_internal(XYZ d,
   cm.set_internal_coordinates(lc);
 }
 
-void RigidBody::add_member(RigidBody d) {
-  algebra::ReferenceFrame3D r= get_reference_frame();
-  internal::add_required_attributes_for_body_member(d, get_particle());
-  RigidMember cm(d);
-  if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
-                                     get_particle_index())) {
-    ParticleIndexes members
-      =get_model()->get_attribute(internal::rigid_body_data().body_members_,
-                                                       get_particle_index());
-    members.push_back(d.get_particle_index());
-    get_model()->set_attribute(internal::rigid_body_data().body_members_,
-                               get_particle_index(), members);
-  } else {
-    get_model()->add_attribute(internal::rigid_body_data().body_members_,
-                               get_particle_index(),
-                               ParticleIndexes(1, d.get_particle_index()));
-  }
-  // want tr*ltr= btr, so ltr= tr-1*btr
-  algebra::Transformation3D tr
-    =r.get_transformation_from()
-    *d.get_reference_frame().get_transformation_to();
-  cm.set_internal_transformation(tr);
-  on_change();
-}
+
 
 void RigidBody::set_log_level(LogLevel l) {
   Particle *p= get_particle();
@@ -950,5 +969,44 @@ bool check_rigid_body(Particle*p) {
 }
 
 IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
+
+
+
+IMPCOREEXPORT ParticlesTemp
+create_rigid_bodies(const ParticlesTemps &particles, std::string name) {
+  IMP_USAGE_CHECK(!particles.empty() && !particles[0].empty(),
+                  "Nothing passed.");
+  Model *m= particles[0][0]->get_model();
+  ParticleIndexes all(particles.size());
+  for (unsigned int i=0; i< particles.size(); ++i) {
+    IMP_NEW(Particle, p, (m, "rigid_body%1%"));
+    all[i]=p->get_index();
+    RigidBody::setup_particle(p, particles[i], false);
+  }
+  IMP_NEW(internal::CoreListSingletonContainer, list, (m, name+ " list"));
+  list->set_particles(all);
+  Pointer<Constraint> c0
+      = internal::create_constraint(new UpdateRigidBodyMembers(name
+                                    +" UpdateMembers %1%"),
+                                    new AccumulateRigidBodyDerivatives(name
+                                    +" AccumulateDerivatives %1%"),
+                                    list.get(),
+                         name+" positions %1%");
+  m->add_score_state(c0);
+  /*p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
+    c0);*/
+  IMP_INTERNAL_CHECK(c0->get_ref_count()==3,
+                     "Wrong number of ref counts after constraint creation: "
+                     << c0->get_ref_count());
+  Pointer<Constraint> c1
+      = internal::create_constraint(new NormalizeRotation(name
+                                                +" NormalizeRotation %1%"),
+                                    new NullSDM(name+" Null %1%"),
+                                    list.get(), name+" normalize %1%");
+  m->add_score_state(c1);
+  /*p->get_model()->add_attribute(get_constraint_key_1(), p->get_index(),
+    c1);*/
+  return IMP::internal::get_particle(m, all);
+}
 
 IMPCORE_END_NAMESPACE
