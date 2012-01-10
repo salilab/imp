@@ -54,7 +54,7 @@ public:
     IMP_INTERNAL_CHECK(v[0] >=0 && v[0] < get_number_of_particle_states(),
                        "Out of range state found, this is not a default "
                        << "embedding.");
-    return v[0];
+    return static_cast<unsigned int>(v[0]);
   }
   virtual ~ParticleStates();
 };

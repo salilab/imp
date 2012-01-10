@@ -82,7 +82,7 @@
     }                                                                   \
   };                                                                    \
   struct Name##Next {                                                   \
-    double operator()(int pos, const Assignment& state,                 \
+    int operator()(int pos, const Assignment& state,                    \
                       const Ints &set) const {                          \
       next;                                                             \
     }                                                                   \
