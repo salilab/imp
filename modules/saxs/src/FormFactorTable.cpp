@@ -805,6 +805,12 @@ Float FormFactorTable::get_radius(Particle* p, FormFactorType ff_type) const {
   return std::pow(c*form_factor, one_third);
 }
 
+Float FormFactorTable::get_volume(Particle* p, FormFactorType ff_type) const {
+  // dummy_zero_form_factor = volume * rho
+  Float form_factor = get_dummy_form_factor(p, ff_type);
+  return form_factor/rho_;
+}
+
 const Floats& FormFactorTable::get_form_factors(Particle *p,
                                                 FormFactorType ff_type) const {
   // initialization by request

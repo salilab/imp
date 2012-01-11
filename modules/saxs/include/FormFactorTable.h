@@ -51,6 +51,7 @@ public:
   Float get_dummy_form_factor(Particle* p,
                               FormFactorType ff_type=HEAVY_ATOMS) const;
   Float get_radius(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
+  Float get_volume(Particle* p, FormFactorType ff_type=HEAVY_ATOMS) const;
 
   Float get_water_form_factor() const { return zero_form_factors_[OH2]; }
   Float get_vacuum_water_form_factor() const {
