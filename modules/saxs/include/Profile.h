@@ -143,12 +143,16 @@ public:
   //! return number of entries in SAXS profile
   unsigned int size() const { return profile_.size(); }
 
+  // Profile access functions
   Float get_intensity(unsigned int i) const { return profile_[i].intensity_; }
   Float get_q(unsigned int i) const { return profile_[i].q_; }
   Float get_error(unsigned int i) const { return profile_[i].error_; }
   Float get_weight(unsigned int i) const { return profile_[i].weight_; }
 
   void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
+
+  //! required for reciprocal space calculation
+  void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
 
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error=1.0) {
