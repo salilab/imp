@@ -78,7 +78,9 @@ Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
 {
  int frank=get_rank(findex);
  int nparam=parameters_[key].size();
- double* myparameters=&(parameters_[key])[0];
+ double* myparameters=new double[nparam];
+ std::copy(parameters_[key].begin(), parameters_[key].end(), myparameters);
+
  double* fparameters=new double[nparam];
 
  MPI_Sendrecv(myparameters,nparam,MPI_DOUBLE,frank,myrank_,
@@ -86,7 +88,9 @@ Floats ReplicaExchange::get_friend_parameter(std::string key, int findex)
                MPI_COMM_WORLD,&status_);
 
  Floats fpar(fparameters,fparameters+nparam);
+ delete [] myparameters;
  delete [] fparameters;
+
  return fpar;
 }
 
@@ -114,24 +118,22 @@ bool ReplicaExchange::do_exchange(double myscore0, double myscore1, int findex)
  for(int i=0;i<nproc_-1;++i) {sdel[i]=0;}
 
  if(do_accept){
- std::map<std::string,Floats>::iterator it;
- for (it = parameters_.begin(); it != parameters_.end(); it++){
-  Floats param = get_friend_parameter((*it).first,findex);
-  set_my_parameter((*it).first,param);
-    }
+  std::map<std::string,Floats>::iterator it;
+  for (it = parameters_.begin(); it != parameters_.end(); it++){
+   Floats param = get_friend_parameter((*it).first,findex);
+   set_my_parameter((*it).first,param);
+  }
   //update the increment vector only to those replicas that upgraded to
   //a higher temperature to avoid double
   // calculations (excluding the transition 0 -> nrep-1)
-
   int delindex=findex-myindex;
   if (delindex==1){
    //std::cout << myindex << " " << findex << " " << std::endl;
    sdel[myindex]=1;
-
-   }
+  }
   //update the indexes
   myindex=findex;
-  }
+ }
 
  MPI_Barrier(MPI_COMM_WORLD);
  //get the increment vector from all replicas and copy it to the
