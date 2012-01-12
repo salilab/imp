@@ -83,6 +83,10 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
     def test_histogram_1d(self):
         """Check that the histogram1D of a gaussian is OK"""
+        try:
+            import numpy
+        except ImportError:
+            self.skipTest('no numpy module present')
         hist = IMP.statistics.Histogram1D(5.0, IMP.algebra.BoundingBox1D(IMP.algebra.Vector1D(-100),
                                                                 IMP.algebra.Vector1D( 100)))
         sigma=10
