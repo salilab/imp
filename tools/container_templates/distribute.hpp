@@ -17,6 +17,7 @@
 #include <IMP/core/internal/CoreCLASSNAMEsRestraint.h>
 #include "ListCLASSNAMEContainer.h"
 #include <IMP/compatibility/map.h>
+#include <IMP/CLASSNAMEPredicate.h>
 #include "generic.h"
 
 #include <iostream>

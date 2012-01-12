@@ -17,6 +17,7 @@
 #include <IMP/core/internal/CoreSingletonsRestraint.h>
 #include "ListSingletonContainer.h"
 #include <IMP/compatibility/map.h>
+#include <IMP/SingletonPredicate.h>
 #include "generic.h"
 
 #include <iostream>

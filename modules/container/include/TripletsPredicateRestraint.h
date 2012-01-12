@@ -17,6 +17,7 @@
 #include <IMP/core/internal/CoreTripletsRestraint.h>
 #include "ListTripletContainer.h"
 #include <IMP/compatibility/map.h>
+#include <IMP/TripletPredicate.h>
 #include "generic.h"
 
 #include <iostream>
