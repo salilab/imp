@@ -17,6 +17,7 @@
 #include <IMP/core/internal/CorePairsRestraint.h>
 #include "ListPairContainer.h"
 #include <IMP/compatibility/map.h>
+#include <IMP/PairPredicate.h>
 #include "generic.h"
 
 #include <iostream>
