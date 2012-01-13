@@ -241,9 +241,6 @@ public:
   //! Normalized the quaternion
   void normalize_rotation();
 
-  //! Set the log level for the associated constraints
-  void set_log_level(base::LogLevel l);
-
   //! Update the coordinates of the members
   void update_members();
 
@@ -412,20 +409,6 @@ namespace internal {
 inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));
 }
-
-
-/** Create a set of rigid bodies from disjoint lists of member particles.
-    This can result in more efficient runtimes when there are large numbers
-    of small rigid bodies as it removes some virtual function call overhead.
-
-    The rigid bodies created with this cannot, at the moment, be torn down.
-    It is undefined to try to do so.
-
-    The return is the list of rigid body particles.
-*/
-IMPCOREEXPORT ParticlesTemp
-create_rigid_bodies(const ParticlesTemps &particles,
-                    std::string name="rigid bodies %1%");
 
 IMPCORE_END_NAMESPACE
 
