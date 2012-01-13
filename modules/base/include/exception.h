@@ -111,7 +111,7 @@ class IMPBASEEXPORT Exception
     correct. Turn these on if you suspect an \imp bug or are
     developing Restraints or other \imp classes.
 */
-enum CheckLevel {NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
+enum CheckLevel {DEFAULT_CHECK=-1, NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
 
 //! Determine the maximum check level that can be used for this build
 /** For example, 'fast' builds can't use any checks.

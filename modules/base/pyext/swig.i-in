@@ -53,6 +53,7 @@ namespace base {
 %feature("unref") IMP::base::RefCounted "IMP::base::internal::unref($this);"
 
 IMP_SWIG_RAII(IMP::base, SetLogState);
+IMP_SWIG_RAII(IMP::base, SetCheckState);
 IMP_SWIG_OBJECT(IMP::base, RefCounted, RefCounteds);
 IMP_SWIG_OBJECT(IMP::base, Object, Objects);
 IMP_SWIG_OBJECT(IMP::base, FailureHandler, FailureHandlers);
@@ -88,6 +89,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/Object.h"
 %include "IMP/base/FailureHandler.h"
 %include "IMP/base/SetLogState.h"
+%include "IMP/base/SetCheckState.h"
 %include "IMP/base/utility.h"
 %include "IMP/base/internal/swig.h"
 

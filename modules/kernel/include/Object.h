@@ -14,9 +14,10 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/SetLogState.h>
+#include <IMP/base/SetCheckState.h>
 
 IMP_BEGIN_NAMESPACE
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 using IMP::base::Object;
 //using IMP::base::Objects;
 using IMP::base::object_cast;

@@ -80,12 +80,27 @@ public:
 #endif
   }
 
+  /** Each object can be assigned a different check level too.
+   */
+  virtual void set_check_level(CheckLevel l) {
+#if IMP_BUILD < IMP_FAST
+    check_level_=l;
+#endif
+  }
+
 #ifndef IMP_DOXYGEN
   LogLevel get_log_level() const {
 #if IMP_BUILD >= IMP_FAST
       return SILENT;
 #else
       return log_level_;
+#endif
+  }
+  CheckLevel get_check_level() const {
+#if IMP_BUILD >= IMP_FAST
+      return NONE;
+#else
+      return check_level_;
 #endif
   }
 #endif // IMP_DOXYGEN
@@ -170,6 +185,7 @@ public:
   static void remove_live_object(Object*o);
 
   LogLevel log_level_;
+  CheckLevel check_level_;
   mutable bool was_owned_;
   double check_value_;
 #endif
@@ -264,8 +280,9 @@ IMPBASE_END_NAMESPACE
 #endif
 
 #if IMP_BUILD < IMP_FAST
-#define IMP_OBJECT_LOG IMP::base::SetLogState                           \
-  log_state_guard__(this->get_log_level());                             \
+#define IMP_OBJECT_LOG \
+  IMP::base::SetLogState log_state_guard__(this->get_log_level());      \
+  IMP::base::SetCheckState check_state_guard__(this->get_check_level()); \
   IMP_CHECK_OBJECT(this);                                               \
   IMP::base::CreateLogContext log_context__(Object::get_name()          \
                                  + "::" + __func__)
@@ -279,6 +296,5 @@ IMPBASE_END_NAMESPACE
 #define IMP_OBJECT_LOG
 #define IMP_FUNCTION_LOG
 #endif // fast
-
 
 #endif  /* IMPBASE_OBJECT_H */

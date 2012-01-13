@@ -11,6 +11,7 @@
 #include "VectorD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/SetCheckState.h>
 
 #include "GridD.h"
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL

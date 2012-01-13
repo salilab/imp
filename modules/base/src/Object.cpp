@@ -28,6 +28,7 @@ Object::Object(std::string name)
 {
 #if IMP_BUILD < IMP_FAST
   log_level_=DEFAULT;
+  check_level_=DEFAULT_CHECK;
   was_owned_=false;
   add_live_object(this);
 #endif
