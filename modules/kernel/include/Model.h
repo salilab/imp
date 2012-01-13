@@ -169,10 +169,12 @@ public:
   }
   void set_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
+#if IMP_BUILD < IMP_FAST
     if (caches_.find(k)==caches_.end()) {
       IMP_CHECK_MASK( write_mask_, particle,
                       "Changing the attribute values is not permitted now");
     }
+#endif
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Setting invalid attribute: " << k
                     << " of particle " << particle);
@@ -324,6 +326,15 @@ public:
   algebra::Vector3D& get_internal_coordinates(ParticleIndex particle) {
     IMP_CHECK_MASK(read_mask_, particle,
                    "Reading the attribute values is not permitted now");
+    IMP_USAGE_CHECK(internal_coordinates_[particle][0]
+                    !=internal::FloatAttributeTableTraits::get_invalid(),
+                    "No internal coordinates");
+    IMP_USAGE_CHECK(internal_coordinates_[particle][1]
+                    !=internal::FloatAttributeTableTraits::get_invalid(),
+                    "No internal coordinates");
+    IMP_USAGE_CHECK(internal_coordinates_[particle][2]
+                    !=internal::FloatAttributeTableTraits::get_invalid(),
+                    "No internal coordinates");
     return internal_coordinates_[particle];
   }
 
