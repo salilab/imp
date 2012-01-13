@@ -23,12 +23,53 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 
-const RigidBodyData &rigid_body_data() {
-  static RigidBodyData rbd;
+inline const RigidBodyData &rigid_body_data() {
+  static const RigidBodyData rbd;
   return rbd;
 }
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
+void
+RigidBody::normalize_rotation() {
+  double &q0=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[0],
+                                           get_particle_index());
+  double &q1=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[1],
+                                           get_particle_index());
+  double &q2=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[2],
+                                           get_particle_index());
+  double &q3=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[3],
+                                           get_particle_index());
+  algebra::VectorD<4> v(q0, q1, q2, q3);
+  //IMP_LOG(TERSE, "Rotation was " << v << std::endl);
+  double sm= v.get_squared_magnitude();
+  if (sm < .001) {
+    v= algebra::VectorD<4>(1,0,0,0);
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=1;
+    q1=0;
+    q2=0;
+    q3=0;
+  } else if (std::abs(sm-1.0) > .01){
+    v= v.get_unit_vector();
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=v[0];
+    q1=v[1];
+    q2=v[2];
+    q3=v[3];
+  }
+
+  // evil hack
+  get_model()->set_attribute(internal::rigid_body_data().torque_[0],
+                             get_particle_index(), 0);
+  get_model()->set_attribute(internal::rigid_body_data().torque_[1],
+                             get_particle_index(), 0);
+  get_model()->set_attribute(internal::rigid_body_data().torque_[2],
+                             get_particle_index(), 0);
+}
 
 namespace {
   ObjectKeys cache_keys;
@@ -39,6 +80,8 @@ void add_rigid_body_cache_key(ObjectKey k) {
     std::sort(cache_keys.begin(), cache_keys.end());
   }
 }
+
+
 
 namespace {
 
@@ -101,7 +144,7 @@ namespace {
     NormalizeRotation(std::string name
                       = "NormalizeRotation%1%"):
         SingletonModifier(name){}
-    IMP_SINGLETON_MODIFIER(NormalizeRotation);
+    IMP_INDEX_SINGLETON_MODIFIER(NormalizeRotation);
   };
 
 
@@ -110,7 +153,7 @@ namespace {
   public:
     NullSDM(std::string name="NullModifier%1%"):
         SingletonDerivativeModifier(name){}
-    IMP_SINGLETON_DERIVATIVE_MODIFIER(NullSDM);
+    IMP_INDEX_SINGLETON_DERIVATIVE_MODIFIER(NullSDM);
   };
 
 
@@ -255,10 +298,46 @@ namespace {
   }
 
 
-  inline void NormalizeRotation::apply(Particle *p) const {
-    RigidBody rb(p);
-    rb.normalize_rotation();
+inline void NormalizeRotation::apply_index(Model *m, ParticleIndex p) const {
+  double &q0=m->access_attribute(internal::rigid_body_data()
+                                 .quaternion_[0],
+                                 p);
+  double &q1=m->access_attribute(internal::rigid_body_data()
+                                .quaternion_[1],
+                                p);
+  double &q2=m->access_attribute(internal::rigid_body_data()
+                                 .quaternion_[2],
+                                 p);
+  double &q3=m->access_attribute(internal::rigid_body_data()
+                                 .quaternion_[3],
+                                 p);
+  algebra::VectorD<4> v(q0, q1, q2, q3);
+  //IMP_LOG(TERSE, "Rotation was " << v << std::endl);
+  double sm= v.get_squared_magnitude();
+  if (sm < .001) {
+    v= algebra::VectorD<4>(1,0,0,0);
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=1;
+    q1=0;
+    q2=0;
+    q3=0;
+  } else if (std::abs(sm-1.0) > .01){
+    v= v.get_unit_vector();
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=v[0];
+    q1=v[1];
+    q2=v[2];
+    q3=v[3];
   }
+
+  // evil hack
+  m->set_attribute(internal::rigid_body_data().torque_[0],
+                   p, 0);
+  m->set_attribute(internal::rigid_body_data().torque_[1],
+                   p, 0);
+  m->set_attribute(internal::rigid_body_data().torque_[2],
+                  p, 0);
+}
   ParticlesTemp NormalizeRotation::get_input_particles(Particle *p) const {
     return ParticlesTemp(1, p);
   }
@@ -277,7 +356,8 @@ namespace {
   void NormalizeRotation::do_show(std::ostream &) const {
   }
 
-  void NullSDM::apply(Particle *, DerivativeAccumulator &) const {
+  inline void NullSDM::apply_index(Model *, ParticleIndex,
+                                 DerivativeAccumulator &) const {
   }
   ParticlesTemp NullSDM::get_input_particles(Particle *p) const {
     return ParticlesTemp(1,p);
@@ -302,8 +382,9 @@ ObjectKey get_rb_score_state_0_key() {
   static ObjectKey key("rigid body score state 0");
   return key;
 }
-ObjectKey get_rb_score_state_1_key() {
-  static ObjectKey key("rigid body score state 1");
+
+ModelKey get_rb_list_key() {
+  static ModelKey key("rigid body list");
   return key;
 }
 
@@ -382,23 +463,30 @@ void RigidBody::on_change() {
 
 
 void RigidBody::teardown_constraints(Particle *p) {
+  IMP_FUNCTION_LOG;
+  IMP_LOG(TERSE, "Tearing down rigid body: " << p->get_name() << std::endl);
   if (p->has_attribute(get_rb_score_state_0_key())) {
+    IMP_LOG(TERSE, "Remove update coordinates" << std::endl);
     Object *o0= p->get_value(get_rb_score_state_0_key());
     p->get_model()->remove_score_state(dynamic_cast<ScoreState*>(o0));
     p->remove_attribute(get_rb_score_state_0_key());
   }
-  Object *o1= p->get_value(get_rb_score_state_1_key());
-  p->get_model()->remove_score_state(dynamic_cast<ScoreState*>(o1));
-  p->remove_attribute(get_rb_score_state_1_key());
+  ModelKey mk= get_rb_list_key();
+  if (p->get_model()->get_has_data(mk)) {
+    IMP_LOG(TERSE, "Remove from normalize list" << std::endl);
+    Object *o= p->get_model()->get_data(mk);
+    internal::CoreListSingletonContainer* list
+        = dynamic_cast<internal::CoreListSingletonContainer*>(o);
+    list->remove_particles(ParticlesTemp(1, p));
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      IMP_FOREACH_SINGLETON_INDEX(list, {
+          IMP_INTERNAL_CHECK(_1 != p->get_index(),
+                             "Index was not removed");
+        });
+    }
+  }
 }
 
-RigidBody RigidBody::setup_particle_without_constraints(Particle *p,
-                                         const algebra::ReferenceFrame3D &rf) {
-  internal::add_required_attributes_for_body(p);
-  RigidBody d(p);
-  d.set_reference_frame(rf);
-  return d;
-}
 
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const ParticlesTemp &members) {
@@ -418,16 +506,31 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const algebra::ReferenceFrame3D &rf) {
-  RigidBody ret= setup_particle_without_constraints(p, rf);
-  Model *m= p->get_model();
-  IMP_NEW(NormalizeRotation, nr, ());
-  IMP_NEW(NullSDM, null, ());
-  Pointer<Constraint> c1
-      = create_constraint(nr.get(), null.get(),
-                          p,p->get_name()+"rigid body normalize %1%");
-  m->add_score_state(c1);
-  p->add_attribute(get_rb_score_state_1_key(), c1);
-  return ret;
+  IMP_FUNCTION_LOG;
+  internal::add_required_attributes_for_body(p);
+  RigidBody d(p);
+  d.set_reference_frame(rf);
+  ModelKey mk= get_rb_list_key();
+  if (d.get_model()->get_has_data(mk)) {
+    IMP_LOG(TERSE, "Adding particle to list of rigid bodies" << std::endl);
+    Object *o= d.get_model()->get_data(mk);
+    internal::CoreListSingletonContainer* list
+        = dynamic_cast<internal::CoreListSingletonContainer*>(o);
+    list->add_particle(p);
+  } else {
+    IMP_LOG(TERSE, "Creating new list of rigid bodies" << std::endl);
+    IMP_NEW(internal::CoreListSingletonContainer, list, (d.get_model(),
+                                                         "rigid bodies list"));
+    list->set_particles(ParticlesTemp(1,p));
+    IMP_NEW(NormalizeRotation, nr, ());
+    IMP_NEW(NullSDM, null, ());
+    Pointer<Constraint> c1
+        = internal::create_constraint(nr.get(), null.get(),
+                                      list.get(),"normalize rigid bodies");
+    d.get_model()->add_score_state(c1);
+    d.get_model()->add_data(mk, list);
+  }
+  return d;
 }
 
 
@@ -454,48 +557,6 @@ void RigidBody::teardown_particle(RigidBody rb) {
   internal::remove_required_attributes_for_body(rb.get_particle());
 }
 
-void
-RigidBody::normalize_rotation() {
-  double &q0=get_model()->access_attribute(internal::rigid_body_data()
-                                           .quaternion_[0],
-                                           get_particle_index());
-  double &q1=get_model()->access_attribute(internal::rigid_body_data()
-                                           .quaternion_[1],
-                                           get_particle_index());
-  double &q2=get_model()->access_attribute(internal::rigid_body_data()
-                                           .quaternion_[2],
-                                           get_particle_index());
-  double &q3=get_model()->access_attribute(internal::rigid_body_data()
-                                           .quaternion_[3],
-                                           get_particle_index());
-  algebra::VectorD<4> v(q0, q1, q2, q3);
-  //IMP_LOG(TERSE, "Rotation was " << v << std::endl);
-  double sm= v.get_squared_magnitude();
-  if (sm < .001) {
-    v= algebra::VectorD<4>(1,0,0,0);
-    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
-    q0=1;
-    q1=0;
-    q2=0;
-    q3=0;
-  } else if (std::abs(sm-1.0) > .01){
-    v= v.get_unit_vector();
-    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
-    q0=v[0];
-    q1=v[1];
-    q2=v[2];
-    q3=v[3];
-  }
-
-  // evil hack
-  get_model()->set_attribute(internal::rigid_body_data().torque_[0],
-                             get_particle_index(), 0);
-  get_model()->set_attribute(internal::rigid_body_data().torque_[1],
-                             get_particle_index(), 0);
-  get_model()->set_attribute(internal::rigid_body_data().torque_[2],
-                             get_particle_index(), 0);
-}
-
 
 void RigidBody::update_members() {
   algebra::Transformation3D tr= get_reference_frame().get_transformation_to();
@@ -510,9 +571,11 @@ void RigidBody::update_members() {
     const ParticleIndexes&members= get_body_member_particle_indexes();
     for (unsigned int i=0; i< members.size(); ++i) {
       RigidBody rb(get_model(), members[i]);
+      algebra::Transformation3D itr
+          =RigidMember(get_model(),
+                       members[i]).get_internal_transformation();
       rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr
-                                                *RigidMember(get_model(),
-                             members[i]).get_internal_transformation()));
+                                                            *itr));
     }
   }
 }
@@ -538,8 +601,11 @@ RigidBody::get_members() const {
 
 
 void RigidBody::add_member(Particle *p) {
+  IMP_FUNCTION_LOG;
   algebra::ReferenceFrame3D r= get_reference_frame();
   if (RigidBody::particle_is_instance(p)) {
+    IMP_LOG(TERSE, "Adding rigid body " << p->get_name()
+            << " as member." << std::endl);
     RigidBody d(p);
     internal::add_required_attributes_for_body_member(d, get_particle());
     RigidMember cm(d);
@@ -549,20 +615,33 @@ void RigidBody::add_member(Particle *p) {
       ParticleIndexes members
           =get_model()->get_attribute(internal::rigid_body_data().body_members_,
                                       get_particle_index());
-      members.push_back(d.get_particle_index());
+      members.push_back(p->get_index());
       get_model()->set_attribute(internal::rigid_body_data().body_members_,
                                  get_particle_index(), members);
     } else {
       get_model()->add_attribute(internal::rigid_body_data().body_members_,
                                  get_particle_index(),
-                                 ParticleIndexes(1, d.get_particle_index()));
+                                 ParticleIndexes(1, p->get_index()));
     }
+    IMP_LOG(TERSE, "Body members are "
+            << get_model()->get_attribute(internal::rigid_body_data()
+                                          .body_members_,
+                                          get_particle_index()) << std::endl);
     // want tr*ltr= btr, so ltr= tr-1*btr
+    algebra::ReferenceFrame3D pr=d.get_reference_frame();
     algebra::Transformation3D tr
-        =r.get_transformation_from()
-        *d.get_reference_frame().get_transformation_to();
+        =r.get_transformation_from()*pr.get_transformation_to();
     cm.set_internal_transformation(tr);
+    IMP_LOG(TERSE, "Transformations are " << r << " and " << pr
+            << " (" << r.get_transformation_from() << ")"
+            << " resulting in " << cm.get_internal_transformation()
+            << " from " << tr
+            << " with check of "
+            << r.get_transformation_to()*cm.get_internal_transformation()
+            << std::endl);
   } else {
+    IMP_LOG(TERSE, "Adding XYZ " << p->get_name()
+            << " as member." << std::endl);
     internal::add_required_attributes_for_member(p, get_particle());
     RigidMember cm(p);
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
@@ -585,16 +664,19 @@ void RigidBody::add_member(Particle *p) {
   }
 
   if (!get_model()->get_has_attribute(get_rb_score_state_0_key(),
-                                      p->get_index())) {
+                                      get_particle_index())) {
+    IMP_LOG(TERSE, "Setting up constraint for rigid body "
+            << get_particle()->get_name() << std::endl);
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0
         = create_constraint(urbm.get(), arbd.get(),
                             get_particle(),
                             get_particle()->get_name()
-                            +" rigid body positions %1%");
+                            +" rigid body positions");
     get_model()->add_score_state(c0);
-    get_model()->add_attribute(get_rb_score_state_0_key(), p->get_index(), c0);
+    get_model()->add_attribute(get_rb_score_state_0_key(),
+                               get_particle_index(), c0);
   }
   on_change();
 }
@@ -909,15 +991,6 @@ ParticlesTemp create_rigid_bodies(Model *m,
     for (unsigned int i=0; i< ret.size(); ++i) {
       m->add_attribute(get_rb_score_state_0_key(), ret[i]->get_index(), c0);
     }
-  }
-  IMP_NEW(NormalizeRotation, nr, ());
-  IMP_NEW(NullSDM, null, ());
-  Pointer<Constraint> c1
-      = internal::create_constraint(nr.get(), null.get(),
-                                    list.get(),"rigid body normalize %1%");
-  m->add_score_state(c1);
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    m->add_attribute(get_rb_score_state_1_key(), ret[i]->get_index(), c1);
   }
   return ret;
 }

@@ -152,9 +152,6 @@ public:
                                   const XYZs &members) {
     return setup_particle(p, get_as<ParticlesTemp>(members));
   }
-
-  static RigidBody setup_particle_without_constraints(Particle *p,
-                                  const algebra::ReferenceFrame3D &rf);
 #endif
 
   //! Make the rigid body no longer rigid.
@@ -310,10 +307,8 @@ class IMPCOREEXPORT RigidMember: public XYZ {
      get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
      "Can only set the internal transformation if member is a "
      << "rigid body itself.");
-    algebra::Vector3D
-      tr(get_particle()->get_value(internal::rigid_body_data().child_keys_[0]),
-         get_particle()->get_value(internal::rigid_body_data().child_keys_[1]),
-         get_particle()->get_value(internal::rigid_body_data().child_keys_[2]));
+    algebra::Vector3D tr
+        =get_model()->get_internal_coordinates(get_particle_index());
     algebra::Rotation3D
       rot(get_particle()->get_value(internal::rigid_body_data()
                                     .lquaternion_[0]),
