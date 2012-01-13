@@ -188,7 +188,8 @@ inline void initialize_particles( SingletonContainer*sc,
                                   constituents_,
                                   algebra::Transformation3Ds&
                                   rbs_backup_,
-                                  algebra::Vector3Ds&xyzrs_backup_) {
+                                  algebra::Vector3Ds&xyzrs_backup_,
+                                  bool use_rigid_bodies=true) {
   IMP_IF_CHECK(USAGE) {
     ParticleIndexes pis = sc->get_indexes();
     IMP::compatibility::set<ParticleIndex> spis(pis.begin(), pis.end());
@@ -207,7 +208,7 @@ inline void initialize_particles( SingletonContainer*sc,
   IMP_FOREACH_SINGLETON(sc, {
       IMP_LOG(VERBOSE, "Processing " << _1->get_name()
               << " (" << _1->get_index() << ")" << std::endl);
-      if (RigidMember::particle_is_instance(_1)) {
+      if (use_rigid_bodies && RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
         ParticleIndex pi= rb.get_particle_index();
         rbs_.push_back(rb.get_particle_index());
