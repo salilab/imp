@@ -152,6 +152,7 @@ public:
                                   const XYZs &members) {
     return setup_particle(p, get_as<ParticlesTemp>(members));
   }
+
 #endif
 
   //! Make the rigid body no longer rigid.
