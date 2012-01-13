@@ -257,9 +257,9 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   for (unsigned int i=0; i< allr.size(); ++i) {
     curr[i]= flattened_restraints_[allr[i]];
   }
-  IMP_USAGE_CHECK(moved.empty()== curr.empty(),
+  /*IMP_USAGE_CHECK(moved.empty()== curr.empty(),
                   "Particles were moved but no restraints were found: "
-                  << IMP::internal::get_particle(get_model(), moved));
+                  << IMP::internal::get_particle(get_model(), moved));*/
   incremental_restraint_evals_+= curr.size();
   Floats scores= get_model()->evaluate(curr, false);
   old_incremental_scores_.resize(allr.size());
