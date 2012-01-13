@@ -84,9 +84,9 @@ IMPBASEEXPORT void pop_log_context() {
       +get_context_name(contexts.size()-1)+"\n";
     internal::stream.write(message.c_str(), message.size());
     internal::stream.strict_sync();
+    -- context_initializeds;
   }
   contexts.pop_back();
-  --context_initializeds;
 }
 
 
