@@ -618,14 +618,12 @@ RigidBody::normalize_rotation() {
   get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
 
   // evil hack
-  for (unsigned int i=0; i< 3; ++i) {
-    get_model()->set_attribute(internal::rigid_body_data().torque_[0],
-                               get_particle_index(), 0);
-    get_model()->set_attribute(internal::rigid_body_data().torque_[1],
-                               get_particle_index(), 0);
-    get_model()->set_attribute(internal::rigid_body_data().torque_[2],
-                               get_particle_index(), 0);
-  }
+  get_model()->set_attribute(internal::rigid_body_data().torque_[0],
+                             get_particle_index(), 0);
+  get_model()->set_attribute(internal::rigid_body_data().torque_[1],
+                             get_particle_index(), 0);
+  get_model()->set_attribute(internal::rigid_body_data().torque_[2],
+                             get_particle_index(), 0);
 }
 
 
@@ -657,12 +655,14 @@ RigidBody::get_reference_frame() const {
         get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-  if (v.get_squared_magnitude() > 0){
+  IMP_USAGE_CHECK(std::abs(v.get_squared_magnitude() -1) < .1,
+                  "Rotation is not a unit vector: " << v);
+  /*if (v.get_squared_magnitude() > 0){
       v = v.get_unit_vector();
   } else {
       v = algebra::VectorD<4>(1,0,0,0);
-  }
-  IMP::algebra::Rotation3D rot(v[0], v[1], v[2], v[3]);
+      }*/
+  IMP::algebra::Rotation3D rot(v);
   return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
                                                            get_coordinates()));
 }
