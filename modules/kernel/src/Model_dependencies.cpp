@@ -329,6 +329,7 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
                      "The number of scores doesn't match the number of"
                      << " restraints: " << ret.size()
                      << " vs " << restraints.size());
+  first_call_=false;
   return ret;
 }
 
