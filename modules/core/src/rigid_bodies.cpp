@@ -683,7 +683,6 @@ void RigidBody::add_member(Particle *p) {
 
 
 
-
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
   algebra::VectorD<4>
     v(get_particle()
