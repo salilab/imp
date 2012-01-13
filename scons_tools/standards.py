@@ -16,7 +16,7 @@ CheckStandards = Builder(action=Action(_action_check_standards,
                                        _print_check_standards))
 
 
-def setup_standards(env):
+"""def setup_standards(env):
     env.Append(BUILDERS = {'CheckStandards':CheckStandards})
     # Check code for coding standards:
     patterns=["#/modules/\*/src/\*.cpp",
@@ -48,4 +48,17 @@ def setup_standards(env):
     standards = env.CheckStandards(target='standards.passed',
                                    source=env.Value(" ".join(["cd", Dir("#").abspath,";", cmd]+patterns)))
     env.Alias('standards', standards)
-    env.AlwaysBuild(standards)
+    env.AlwaysBuild(standards)"""
+
+def add(env, files):
+    env.Append(BUILDERS = {'CheckStandards':CheckStandards})
+    cmd="#/tools/check-standards.py"
+    if env.get('repository', None):
+        #files= [x.replace("#", env['repository']) for x in files]
+        cmd=cmd.replace("#", env['repository'])
+    else:
+        #files= [x.replace("#", ".") for x in files]
+        cmd= File(cmd).abspath
+    standards = env.CheckStandards(target='standards.passed',
+                                   source=env.Value(" ".join(["cd", Dir("#").abspath,";", cmd]+files)))
+    env.Alias('standards', [standards])
