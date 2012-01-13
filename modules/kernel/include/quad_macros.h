@@ -276,6 +276,50 @@
 
 
 
+//! Declare the functions needed for a QuadModifier
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::QuadModifier::apply(IMP::Particle*)
+    - IMP::QuadModifier::get_input_particles()
+    - IMP::QuadModifier::get_output_particles()
+*/
+#define IMP_INDEX_QUAD_MODIFIER(Name)                     \
+  void apply(const ParticleQuad& a) const {                   \
+    apply_index(IMP::internal::get_model(a),                            \
+                IMP::internal::get_index(a));                           \
+  }                                                                     \
+  void apply_index(Model *m, const ParticleIndexQuad& a) const;      \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
+  IMP_OBJECT(Name)
+
+//! Declare the functions needed for a QuadModifier
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::QuadDerivativeModifier::apply()
+    - IMP::QuadDerivativeModifier::get_input_particles()
+    - IMP::QuadDerivativeModifier::get_output_particles()
+*/
+#define IMP_INDEX_QUAD_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(const ParticleQuad& a, DerivativeAccumulator&da) const {\
+    apply_index(IMP::internal::get_model(a),                            \
+                IMP::internal::get_index(a), da);                       \
+  }                                                                     \
+  void apply_index(Model *m, const ParticleIndexQuad& a,\
+                   DerivativeAccumulator&da) const;                  \
+  void apply_indexes(Model *m, const ParticleIndexQuads &ps,      \
+             DerivativeAccumulator&da) const {                          \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply_index(m, ps[i], da);                                  \
+    }                                                                   \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
+  IMP_OBJECT(Name)
+
+
 
 
 #ifndef IMP_DOXYGEN
