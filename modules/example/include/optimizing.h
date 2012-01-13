@@ -54,11 +54,14 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
                                                 0));
   }
 
+  IMP_LOG(PROGRESS, "Performing initial optimization" << std::endl);
   cg->optimize(1000);
 
   // shrink each of the particles, relax the configuration, repeat
   for (int i=0; i< 11; ++i) {
     double factor=.1*i;
+    IMP_LOG(PROGRESS, "Optimizing with radii at " << factor << " of full"
+            << std::endl);
     for (unsigned int j=0; j< attrs.size(); ++j) {
       attrs[j].set(ps[j], core::XYZR::get_radius_key(),
                    core::XYZR(ps[i]).get_radius()*factor);
@@ -66,7 +69,8 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
     for (int j=0; j< 5; ++j) {
       mc->set_kt(100.0/(3*j+1));
       mc->optimize(ps.size()*(j+1)*100);
-      cg->optimize(10);
+      double e=cg->optimize(10);
+      IMP_LOG(PROGRESS, "Energy is " << e << std::endl);
     }
   }
 }
