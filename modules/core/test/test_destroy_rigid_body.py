@@ -52,8 +52,15 @@ class RBDTests(IMP.test.TestCase):
         rb0= IMP.core.RigidBody.setup_particle(p0, [ps[0], ps[1]])
         rb1= IMP.core.RigidBody.setup_particle(p1, [ps[2], ps[3]])
         rb01= IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])
-
+        print rb0, rb1, rb01
+        print IMP.core.RigidMember(rb0).get_internal_transformation(), IMP.core.RigidMember(rb1).get_internal_transformation()
+        dg= IMP.get_dependency_graph(m.get_score_states(), m.get_restraints())
+        dg.show()
+        #IMP.show_graphviz(dg)
+        ordered= IMP.get_ordered_score_states(dg)
+        print [o.get_name() for o in ordered]
         self._perturb_all(ds+[rb0, rb1, rb01])
+        print rb0, rb1, rb01
         self._check_distance(ps[0], ps[1], 1)
         self._check_distance(ps[2], ps[3], 1)
         self._check_distance(ps[1], ps[2], 1)
