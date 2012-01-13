@@ -75,7 +75,6 @@ namespace {
 
 #define WRAP_EVALUATE_CALL(restraint, expr)                             \
   if (first_call_) {                                                    \
-    IMP_LOG_CONTEXT("Evaluate " << restraint->get_name());              \
     ResetBitset rbr(Masks::read_mask_, true);                           \
     ResetBitset rbw(Masks::write_mask_, true);                          \
     ResetBitset rbar(Masks::add_remove_mask_, true);                    \
@@ -99,7 +98,6 @@ namespace {
     expr;                                                               \
   } else {                                                              \
     IMP_CHECK_OBJECT(restraint);                                        \
-    IMP_LOG_CONTEXT("Evaluate " << restraint->get_name());              \
     expr;                                                               \
   }                                                                     \
 
@@ -127,7 +125,6 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       if (gather_statistics_) timer.restart();
       {
 #if IMP_BUILD < IMP_FAST
-        IMP_LOG_CONTEXT("Update " << states[i]->get_name());
         if (first_call_) {
           ResetBitset rbr(Masks::read_mask_, true);
           ResetBitset rbw(Masks::write_mask_, true);
@@ -172,7 +169,6 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       IMP_LOG(TERSE, "Post updating \"" << ss->get_name() << "\"" << std::endl);
       if (gather_statistics_) timer.restart();
       {
-        IMP_LOG_CONTEXT("Update " << states[i]->get_name());
 #if IMP_BUILD < IMP_FAST
         if (first_call_) {
           ResetBitset rbr(Masks::read_mask_, true);

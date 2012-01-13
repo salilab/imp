@@ -49,7 +49,6 @@ class IMPALGEBRAEXPORT Rotation3D {
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {
-    if (has_cache_) return;
     has_cache_=true;
     matrix_[0]= Vector3D(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
                            2*(v_[1]*v_[2]-v_[0]*v_[3]),
@@ -132,7 +131,7 @@ class IMPALGEBRAEXPORT Rotation3D {
   Vector3D get_rotated(const Vector3D &o) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
                     "Attempting to apply uninitialized rotation");
-    fill_cache();
+    if (!has_cache_) fill_cache();
     return Vector3D(o*matrix_[0],
                       o*matrix_[1],
                       o*matrix_[2]);
@@ -143,7 +142,7 @@ class IMPALGEBRAEXPORT Rotation3D {
                                     unsigned int coord) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
                     "Attempting to apply uninitialized rotation");
-    fill_cache();
+    if (!has_cache_) fill_cache();
     return o*matrix_[coord];
   }
 
@@ -153,7 +152,7 @@ class IMPALGEBRAEXPORT Rotation3D {
   }
   Vector3D get_rotation_matrix_row(int i) const {
     IMP_USAGE_CHECK((i>=0)&&(i<=2),"row index out of range");
-    fill_cache();
+    if (!has_cache_) fill_cache();
     return matrix_[i];
   }
   IMP_SHOWABLE_INLINE(Rotation3D, {out << v_[0] << " " << v_[1]<< " " <<v_[2]

@@ -83,7 +83,8 @@ namespace internal {
 //! Push a new log context onto the stack
 /** A log context is, eg, a function name.
  */
-IMPBASEEXPORT void push_log_context(std::string name);
+IMPBASEEXPORT void push_log_context(const char *functionname,
+                                    const void *object);
 
 //! pop the top log context
 IMPBASEEXPORT void pop_log_context();
@@ -358,16 +359,24 @@ public:
 */
 struct CreateLogContext {
 public:
-  IMP_RAII(CreateLogContext, (std::string name),,
-           push_log_context(name),
+  IMP_RAII(CreateLogContext, (const char *fname, const void* object=NULL),,
+           push_log_context(fname, object),
            pop_log_context(),);
 };
 
+
+#ifdef IMP_DOXYGEN
 //! Create a new long context from a streamed name
+#define IMP_LOG_CONTEXT(name)
+#else
+#if IMP_BUILD < IMP_FAST
 #define IMP_LOG_CONTEXT(name)                                           \
-  std::ostringstream imp_log_context_stream;                            \
-  imp_log_context_stream << name;                                       \
-  CreateLogContext imp_log_context(imp_log_context_stream.str())
+  CreateLogContext imp_log_context(name, NULL)
+#else
+#define IMP_LOG_CONTEXT(name)
+#endif
+#endif // IMP_DOXYGEN
+
 
 /** @} */
 

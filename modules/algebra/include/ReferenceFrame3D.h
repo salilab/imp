@@ -19,17 +19,24 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \geometry
 */
 class IMPALGEBRAEXPORT ReferenceFrame3D {
-  Transformation3D tr_, tri_;
+  Transformation3D tr_;
+  mutable bool has_inverse_;
+  mutable Transformation3D tri_;
   const Transformation3D& get_inverse() const {
+    if (!has_inverse_) {
+      tri_= tr_.get_inverse();
+      has_inverse_=true;
+    }
     return tri_;
   }
 public:
   //! Create the default reference frame
   /** That is, the origin with x,y,z axis as the principle axes.*/
   ReferenceFrame3D(): tr_(get_identity_transformation_3d()),
+    has_inverse_(true),
     tri_(tr_){}
   explicit ReferenceFrame3D(const Transformation3D &tr): tr_(tr),
-    tri_(tr.get_inverse()){}
+    has_inverse_(false){}
   ~ReferenceFrame3D();
   //! Get the transformation taking the global reference frame to this one.
   const Transformation3D &get_transformation_to() const {
@@ -37,7 +44,7 @@ public:
   }
   //! Get the transformation from this one to the global reference.
   const Transformation3D &get_transformation_from() const {
-    return tri_;
+    return get_inverse();
   }
   //! Assume the input vector is in local coordinates and transform
   //! it to global ones.
