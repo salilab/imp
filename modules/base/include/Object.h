@@ -284,8 +284,7 @@ IMPBASE_END_NAMESPACE
   IMP::base::SetLogState log_state_guard__(this->get_log_level());      \
   IMP::base::SetCheckState check_state_guard__(this->get_check_level()); \
   IMP_CHECK_OBJECT(this);                                               \
-  IMP::base::CreateLogContext log_context__(Object::get_name()          \
-                                 + "::" + __func__)
+  IMP::base::CreateLogContext log_context__(__func__, this)
 
 
 #define IMP_FUNCTION_LOG                                                \

@@ -270,6 +270,8 @@ class ParticleTests(IMP.test.TestCase):
                     'get_object_keys',
                     'get_particle_keys',
                     'get_string_keys'
+                    'set_check_level',
+                    'get_check_level'
                     ]
         md= dir(IMP._TrivialDecorator)
         missing=[]

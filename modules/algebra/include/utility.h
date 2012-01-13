@@ -21,7 +21,9 @@ inline bool xorT(bool x, bool y)
 }
 #endif
 
-
+inline double get_squared(double x){
+  return x*x;
+}
 
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
 template<typename T>

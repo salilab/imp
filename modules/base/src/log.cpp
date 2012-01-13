@@ -10,13 +10,28 @@
 #include "IMP/base/exception.h"
 #include "IMP/base/file.h"
 #include "IMP/base/internal/static.h"
+#include "IMP/base/Object.h"
 
 IMPBASE_BEGIN_NAMESPACE
 
 namespace {
-  vector<std::string> contexts;
-  vector<bool> context_initializeds;
+  vector<std::pair<const char*, const void*> > contexts;
+  int context_initializeds=-1;
+
+  std::string get_context_name(unsigned int i) {
+    std::ostringstream oss;
+    if (contexts[i].second) {
+      const Object *o= reinterpret_cast<const Object*>(contexts[i].second);
+      IMP_CHECK_OBJECT(o);
+      oss << o->get_name() << "::" << contexts[i].first;
+    } else {
+      oss << contexts[i].first;
+    }
+    return oss.str();
+  }
+
 }
+
 
 std::string get_context_message() {
   if (contexts.empty()) return std::string();
@@ -26,7 +41,7 @@ std::string get_context_message() {
     if (i != 0) {
       oss << "/";
     }
-    oss << contexts[i];
+    oss << get_context_name(i);
   }
   return oss.str();
 }
@@ -47,9 +62,9 @@ TextOutput get_log_target()
   return internal::stream.get_stream();
 }
 
-IMPBASEEXPORT void push_log_context(std::string name) {
-  contexts.push_back(name);
-  context_initializeds.push_back(false);
+IMPBASEEXPORT void push_log_context(const char * functionname,
+                                    const void * classname) {
+  contexts.push_back(std::make_pair(functionname, classname));
 }
 
 void set_log_timer(bool tb) {
@@ -63,30 +78,31 @@ void reset_log_timer() {
 
 
 IMPBASEEXPORT void pop_log_context() {
-  if (context_initializeds.back()) {
+  if (context_initializeds >= static_cast<int>(contexts.size()-1)) {
     internal::log_indent-=2;
     std::string message= std::string("end ")
-      +contexts.back()+"\n";
+      +get_context_name(contexts.size()-1)+"\n";
     internal::stream.write(message.c_str(), message.size());
     internal::stream.strict_sync();
   }
   contexts.pop_back();
-  context_initializeds.pop_back();
+  --context_initializeds;
 }
 
 
 void add_to_log(std::string str) {
   IMP_INTERNAL_CHECK(static_cast<int>(internal::initialized)==11111111,
                      "You connot use the log before main is called.");
-  if (!contexts.empty() && !context_initializeds.back()) {
+  if (!contexts.empty()
+      && context_initializeds != static_cast<int>(contexts.size())) {
     for (unsigned int i=0; i< contexts.size(); ++i) {
-      if (!context_initializeds[i]) {
+      if (context_initializeds < static_cast<int>(i)) {
         std::string message= std::string("begin ")
-          +contexts[i]+":\n";
+          +get_context_name(i)+":\n";
         internal::stream.write(message.c_str(), message.size());
         internal::stream.strict_sync();
         internal::log_indent+=2;
-        context_initializeds[i]=true;
+        context_initializeds=i;
       }
     }
   }
