@@ -269,4 +269,24 @@ bool Model::get_has_good_score() const {
   return has_good_score_;
 }
 
+
+void Model::add_data(ModelKey mk, Object *o) {
+  model_data_.resize(std::max<int>(mk.get_index()+1,
+                                   model_data_.size()));
+  model_data_[mk.get_index()]=o;
+}
+Object *Model::get_data(ModelKey mk) const {
+  return model_data_[mk.get_index()].get();
+}
+void Model::remove_data(ModelKey mk) {
+  model_data_[mk.get_index()]= nullptr;
+}
+bool Model::get_has_data(ModelKey mk) const {
+  if (model_data_.size() < mk.get_index()) {
+    return model_data_[mk.get_index()];
+  } else {
+    return false;
+  }
+}
+
 IMP_END_NAMESPACE

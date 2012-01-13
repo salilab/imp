@@ -40,6 +40,9 @@ IMP_DECLARE_KEY_TYPE(ParticlesKey, 6);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ObjectsKey, 7);
 
+//! The type used to identify data stored directly in the model.
+IMP_DECLARE_KEY_TYPE(ModelKey, 8);
+
 /** @} */
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
