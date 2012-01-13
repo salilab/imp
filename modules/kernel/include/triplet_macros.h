@@ -276,6 +276,50 @@
 
 
 
+//! Declare the functions needed for a TripletModifier
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::TripletModifier::apply(IMP::Particle*)
+    - IMP::TripletModifier::get_input_particles()
+    - IMP::TripletModifier::get_output_particles()
+*/
+#define IMP_INDEX_TRIPLET_MODIFIER(Name)                     \
+  void apply(const ParticleTriplet& a) const {                   \
+    apply_index(IMP::internal::get_model(a),                            \
+                IMP::internal::get_index(a));                           \
+  }                                                                     \
+  void apply_index(Model *m, const ParticleIndexTriplet& a) const;      \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
+  IMP_OBJECT(Name)
+
+//! Declare the functions needed for a TripletModifier
+/** In addition to the methods done by IMP_OBJECT, it declares
+    - IMP::TripletDerivativeModifier::apply()
+    - IMP::TripletDerivativeModifier::get_input_particles()
+    - IMP::TripletDerivativeModifier::get_output_particles()
+*/
+#define IMP_INDEX_TRIPLET_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(const ParticleTriplet& a, DerivativeAccumulator&da) const {\
+    apply_index(IMP::internal::get_model(a),                            \
+                IMP::internal::get_index(a), da);                       \
+  }                                                                     \
+  void apply_index(Model *m, const ParticleIndexTriplet& a,\
+                   DerivativeAccumulator&da) const;                  \
+  void apply_indexes(Model *m, const ParticleIndexTriplets &ps,      \
+             DerivativeAccumulator&da) const {                          \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply_index(m, ps[i], da);                                  \
+    }                                                                   \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*) const;                   \
+  ParticlesTemp get_output_particles(Particle*) const;                  \
+  ContainersTemp get_input_containers(Particle*) const;                 \
+  ContainersTemp get_output_containers(Particle*) const;                \
+  IMP_OBJECT(Name)
+
+
 
 
 #ifndef IMP_DOXYGEN
