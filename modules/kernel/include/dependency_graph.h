@@ -104,6 +104,24 @@ get_is_static_container(Container *c,
                         const ParticlesTemp &pst);
 #endif
 
+/** Return an ordering for the score states that is consistent with the
+    dependencies show in the dependency graph.
+*/
+IMPEXPORT
+ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+ typedef boost::graph_traits<DependencyGraph> MDGTraits;
+  typedef MDGTraits::vertex_descriptor MDGVertex;
+  typedef boost::property_map<DependencyGraph,
+                              boost::vertex_name_t>::type MDGVertexMap;
+  typedef boost::property_map<DependencyGraph,
+                              boost::vertex_name_t>::const_type
+  MDGConstVertexMap;
+}
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DEPENDENCY_GRAPH_H */

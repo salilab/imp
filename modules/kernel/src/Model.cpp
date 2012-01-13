@@ -282,7 +282,7 @@ void Model::remove_data(ModelKey mk) {
   model_data_[mk.get_index()]= nullptr;
 }
 bool Model::get_has_data(ModelKey mk) const {
-  if (model_data_.size() < mk.get_index()) {
+  if (model_data_.size() > mk.get_index()) {
     return model_data_[mk.get_index()];
   } else {
     return false;

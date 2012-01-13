@@ -10,11 +10,13 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
+#include <IMP/internal/graph_utility.h>
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
+#include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/compatibility/vector_property_map.h>
 
@@ -445,6 +447,85 @@ get_pruned_dependency_graph(Model *m) {
   RestraintsTemp rt
     = get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
   return get_pruned_dependency_graph(rt);
+}
+
+
+
+
+struct cycle_detector : public boost::default_dfs_visitor {
+  vector<MDGVertex> cycle_;
+  template <class DGVertex>
+  void start_vertex(DGVertex v, const DependencyGraph&) {
+    cycle_.push_back(v);
+  }
+  template <class DGVertex>
+  void finish_vertex(DGVertex v, const DependencyGraph&) {
+    IMP_USAGE_CHECK(cycle_.back()==v, "They don't match");
+    cycle_.pop_back();
+  }
+  template <class ED>
+  void back_edge(ED e, const DependencyGraph&g) {
+    MDGVertex t= boost::target(e, g);
+    vector<MDGVertex>::iterator it
+        = std::find(cycle_.begin(), cycle_.end(), t);
+    IMP_USAGE_CHECK(it != cycle_.end(),
+                    "The vertex is not there. Conceptual bug.");
+    cycle_.erase(cycle_.begin(), it);
+    cycle_.push_back(t);
+    throw cycle_;
+  }
+};
+
+namespace {
+
+  vector<MDGVertex> get_cycle(const DependencyGraph &g) {
+    cycle_detector vis;
+    try {
+      boost::vector_property_map<int> color(boost::num_vertices(g));
+      boost::depth_first_search(g, boost::visitor(vis).color_map(color));
+    } catch (vector<MDGVertex> cycle) {
+      return cycle;
+    }
+    return vector<MDGVertex>();
+  }
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+  void order_score_states(const DependencyGraph &dg,
+                          ScoreStatesTemp &out) {
+    vector<MDGTraits::vertex_descriptor> sorted;
+    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    ScoreStatesTemp ret;
+    try {
+      boost::topological_sort(dg, std::back_inserter(sorted));
+    } catch (...) {
+      base::TextOutput out=base::create_temporary_file();
+      base::internal::show_as_graphviz(dg, out);
+      vector<MDGVertex> cycle= get_cycle(dg);
+      std::ostringstream oss;
+      for (unsigned int i=0; i< cycle.size(); ++i) {
+        oss << om[cycle[i]]->get_name() << " -- ";
+      }
+      IMP_THROW("Topological sort failed, probably due to loops in "
+                << " dependency graph. See \"" << out.get_name() << "\""
+                << " The cycle is " << oss.str(),
+                ValueException);
+    }
+    for (int i=sorted.size()-1; i > -1; --i) {
+      Object *o= om[sorted[i]];
+      ScoreState *s=dynamic_cast<ScoreState*>(o);
+      if (s) {
+        out.push_back(s);
+      }
+    }
+    //out= ScoreStatesTemp(out.rbegin(), out.rend());
+  }
+}
+
+ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg) {
+  IMP_FUNCTION_LOG;
+  ScoreStatesTemp ret;
+  order_score_states(dg, ret);
+  return ret;
 }
 
 
