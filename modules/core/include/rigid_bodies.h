@@ -178,9 +178,12 @@ public:
                                   RigidBody other,
                                 const RigidMembers &members);
 
-  /** Set it up with the provided initial reference frame.*/
+  /** Set it up with the provided initial reference frame. If no_members
+   is true, the resulting rigid body is not allowed to have members, it just
+   defines a rigidly moving reference frame.*/
   static RigidBody setup_particle(Particle *p,
-                                  const algebra::ReferenceFrame3D &rf);
+                                  const algebra::ReferenceFrame3D &rf,
+                                  bool no_members=false);
 
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
@@ -205,7 +208,23 @@ public:
   }
 
   //! Get the reference frame for the local coordinates
-  IMP::algebra::ReferenceFrame3D get_reference_frame() const;
+  IMP::algebra::ReferenceFrame3D get_reference_frame() const {
+    algebra::VectorD<4>
+      v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
+        get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
+    IMP_USAGE_CHECK(std::abs(v.get_squared_magnitude() -1) < .1,
+                    "Rotation is not a unit vector: " << v);
+    /*if (v.get_squared_magnitude() > 0){
+      v = v.get_unit_vector();
+      } else {
+      v = algebra::VectorD<4>(1,0,0,0);
+      }*/
+    IMP::algebra::Rotation3D rot(v);
+    return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
+                                                           get_coordinates()));
+  }
 
   //! Set the current reference frame
   /** All members of the rigid body will have their coordinates updated
@@ -227,6 +246,12 @@ public:
    */
   void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &local_location,
+                          DerivativeAccumulator &da);
+
+  void add_to_derivatives(const algebra::Vector3D &derivative,
+                          const algebra::Vector3D &global_derivative,
+                          const algebra::Vector3D &local_location,
+                          const algebra::Rotation3D &rot,
                           DerivativeAccumulator &da);
 
   /** The units are kCal/Mol/Radian */
@@ -290,29 +315,13 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   RigidBody get_rigid_body() const;
 
   //! Return the current orientation of the body
-  algebra::Vector3D get_internal_coordinates() const {
-    return algebra::Vector3D(get_model()
-                               ->get_attribute(internal::rigid_body_data()
-                                               .child_keys_[0],
-                                               get_particle_index()),
-                               get_model()
-                               ->get_attribute(internal::rigid_body_data()
-                                               .child_keys_[1],
-                                               get_particle_index()),
-                               get_model()
-                               ->get_attribute(internal::rigid_body_data()
-                                               .child_keys_[2],
-                                               get_particle_index()));
+  const algebra::Vector3D& get_internal_coordinates() const {
+    return get_model()->get_internal_coordinates(get_particle_index());
   }
 
   //! set the internal coordinates for this member
   void set_internal_coordinates(const algebra::Vector3D &v) const {
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
-                              v[0]);
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
-                              v[1]);
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
-                              v[2]);
+    get_model()->get_internal_coordinates(get_particle_index())=v;
     get_rigid_body().get_particle()->clear_caches();
   }
   //! Member must be a rigid body
@@ -321,12 +330,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
    get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
          "Can only set the internal transformation if member is"
          << " a rigid body itself.");
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
-                              v.get_translation()[0]);
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
-                              v.get_translation()[1]);
-    get_particle()->set_value(internal::rigid_body_data().child_keys_[2],
-                              v.get_translation()[2]);
+    set_internal_coordinates(v.get_translation());
 
     get_particle()->set_value(internal::rigid_body_data().lquaternion_[0],
                               v.get_rotation().get_quaternion()[0]);
