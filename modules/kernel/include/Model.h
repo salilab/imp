@@ -654,6 +654,7 @@ private:
   Ints free_particles_;
   unsigned int next_particle_;
   vector<Pointer<Particle> > particle_index_;
+  vector<OwnerPointer<Object> > model_data_;
  private:
   // statistics
   bool gather_statistics_;
@@ -923,6 +924,16 @@ public:
   void show_restraint_score_statistics(std::ostream &out=std::cout) const;
   RestraintStatistics get_restraint_statistics(Restraint *r) const;
   void show_score_state_time_statistics(std::ostream &out=std::cout) const;
+  /** @} */
+
+  /** \name Model Data
+      Arbitrary non-particle data can be associated with the Model. This can
+      be used for Model-level caches and such.
+      @{ */
+  void add_data(ModelKey mk, Object *o);
+  Object *get_data(ModelKey mk) const;
+  void remove_data(ModelKey mk);
+  bool get_has_data(ModelKey mk) const;
   /** @} */
 
 #ifndef IMP_DOXYGEN
