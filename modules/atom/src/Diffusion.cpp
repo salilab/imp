@@ -45,7 +45,9 @@ double get_d_from_cm2_per_second(double din) {
 }
 
 RigidBodyDiffusion RigidBodyDiffusion::setup_particle(Particle *p) {
-  Diffusion::setup_particle(p);
+  if (!Diffusion::particle_is_instance(p)) {
+    Diffusion::setup_particle(p);
+  }
   core::XYZR d(p);
   p->add_attribute(get_d_rotation_key(),
                 get_einstein_rotational_diffusion_coefficient(d.get_radius()));
