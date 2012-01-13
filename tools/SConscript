@@ -1,3 +1,2 @@
 Import('env')
 import scons_tools.standards
-scons_tools.standards.setup_standards(env)

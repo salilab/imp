@@ -498,12 +498,12 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
                                  value_object_exceptions=value_object_exceptions,
                                  class_name_exceptions=class_name_exceptions,
                                  spelling_exceptions=spelling_exceptions)
-        found=False
-        for f in files:
-            if str(f).endswith("test_standards.py"):
-                found=f
-        if found:
-            files.remove(found)
+        #found=False
+        #for f in files:
+        #    if str(f).endswith("test_standards.py"):
+        #        found=f
+        #if found:
+        #    files.remove(found)
         files.append(standards)
     tests = scons_tools.test.add_tests(env, source=files,
                                        expensive_source=expensive_files,
@@ -520,7 +520,8 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], python_docs=False,
-                   local_module=False,python=True, data=True):
+                   local_module=False,python=True, data=True,
+                   standards=True):
     if env.GetOption('help'):
         return
     if module is None:
@@ -621,4 +622,17 @@ def IMPModuleBuild(env, version, required_modules=[],
                      scons_tools.data.get(env).get_alias(m+"-install"))
         env.Requires(scons_tools.data.get(env).get_alias(module),
                      scons_tools.data.get(env).get_alias(m))
+
+    if standards:
+        root=Dir(".").abspath
+        if env.get('repository', None):
+            old=Dir("#").abspath
+            #print old, root, env['repository']
+            root=root.replace(old, Dir(Dir("#").abspath+"/"+env['repository']).abspath)
+        scons_tools.standards.add(env, [root+"/"+x for x in ["include/*.h",
+                                                             "include/internal/*.h",
+                                                             "src/*.cpp",
+                                                             "src/internal/*.cpp",
+                                                             "test/*.py",
+                                                             "bin/*.cpp"]])
     return env
