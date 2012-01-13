@@ -10,6 +10,7 @@
 #define IMPBASE_EXCEPTION_H
 
 #include "base_config.h"
+#include "random.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
@@ -295,6 +296,12 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
 #if IMP_BUILD < IMP_FAST
 #define IMP_IF_CHECK(level)                     \
   if (level <= ::IMP::base::get_check_level())
+
+#define IMP_IF_CHECK_PROBABILISTIC(level, prob) \
+  if (level <= ::IMP::base::get_check_level() \
+      && boost::uniform_01<>()(IMP::base::random_number_generator) < prob)
+
+
 #define IMP_CHECK_CODE(expr) expr
 
 #define IMP_INTERNAL_CHECK(expr, message)                       \
