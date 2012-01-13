@@ -259,6 +259,8 @@ class FloatAttributeTable {
   //vector<algebra::Sphere3D> sphere_derivatives_;
   algebra::Sphere3Ds spheres_;
   algebra::Sphere3Ds sphere_derivatives_;
+  algebra::Vector3Ds internal_coordinates_;
+  algebra::Vector3Ds internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
@@ -283,6 +285,8 @@ public:
     IMP_SWAP_MEMBER(data_);
     IMP_SWAP_MEMBER(derivatives_);
     IMP_SWAP_MEMBER(optimizeds_);
+    IMP_SWAP_MEMBER(internal_coordinates_);
+    IMP_SWAP_MEMBER(internal_coordinate_derivatives_);
   }
   FloatAttributeTable()
 #if IMP_BUILD < IMP_FAST
@@ -317,6 +321,13 @@ public:
     return spheres_[particle];
   }
 
+  algebra::Vector3D& get_internal_coordinates(ParticleIndex particle) {
+    IMP_CHECK_MASK(read_mask_, particle,
+                   "Reading the attribute values is not permitted now");
+    return internal_coordinates_[particle];
+  }
+
+
   void add_to_coordinate_derivatives(ParticleIndex particle,
                                      const algebra::Vector3D &v,
                                      const DerivativeAccumulator &da) {
@@ -328,6 +339,19 @@ public:
     sphere_derivatives_[particle][1]+=da(v[1]);
     sphere_derivatives_[particle][2]+=da(v[2]);
   }
+
+  void add_to_internal_coordinate_derivatives(ParticleIndex particle,
+                                     const algebra::Vector3D &v,
+                                     const DerivativeAccumulator &da) {
+    IMP_CHECK_MASK(write_derivatives_mask_, particle,
+                   "Changing the attribute derivatives is not permitted now");
+    IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
+                    "Particle does not have coordinates");
+    internal_coordinate_derivatives_[particle][0]+=da(v[0]);
+    internal_coordinate_derivatives_[particle][1]+=da(v[1]);
+    internal_coordinate_derivatives_[particle][2]+=da(v[2]);
+  }
+
   const algebra::Vector3D&
   get_coordinate_derivatives(ParticleIndex particle) const {
     IMP_CHECK_MASK(read_derivatives_mask_, particle,
@@ -343,6 +367,9 @@ public:
     std::fill(sphere_derivatives_.begin(),
               sphere_derivatives_.end(),
               algebra::Sphere3D(algebra::Vector3D(0,0,0),0));
+    std::fill(internal_coordinate_derivatives_.begin(),
+              internal_coordinate_derivatives_.end(),
+              algebra::Vector3D(0,0,0));
     derivatives_.fill(0);
   }
   void clear_caches(ParticleIndex ) {
@@ -360,9 +387,16 @@ public:
         = internal::FloatAttributeTableTraits::get_invalid();
       sphere_derivatives_[particle][k.get_index()]
         = internal::FloatAttributeTableTraits::get_invalid();
+    } else if (k.get_index() < 7) {
+      IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Changing attributes is not permitted now");
+      internal_coordinates_[particle][k.get_index()-4]
+        = internal::FloatAttributeTableTraits::get_invalid();
+      internal_coordinate_derivatives_[particle][k.get_index()-4]
+        = internal::FloatAttributeTableTraits::get_invalid();
     } else {
-      data_.remove_attribute(FloatKey(k.get_index()-4), particle);
-      derivatives_.remove_attribute(FloatKey(k.get_index()-4), particle);
+      data_.remove_attribute(FloatKey(k.get_index()-7), particle);
+      derivatives_.remove_attribute(FloatKey(k.get_index()-7), particle);
     }
     if (optimizeds_.get_has_attribute(k, particle)) {
       optimizeds_.remove_attribute(k, particle);
@@ -390,8 +424,14 @@ public:
                        "Reading the derivatives is not permitted now");
       }
       return sphere_derivatives_[particle][k.get_index()];
+    } else if (k.get_index() < 7) {
+      if (checked) {
+        IMP_CHECK_MASK(read_derivatives_mask_, particle,
+                       "Reading the derivatives is not permitted now");
+      }
+      return internal_coordinate_derivatives_[particle][k.get_index()-4];
     } else {
-      return derivatives_.get_attribute(FloatKey(k.get_index()-4), particle,
+      return derivatives_.get_attribute(FloatKey(k.get_index()-7), particle,
                                         checked);
     }
   }
@@ -404,8 +444,12 @@ public:
       IMP_CHECK_MASK(write_derivatives_mask_, particle,
                      "Writing the derivatives is not permitted now");
       sphere_derivatives_[particle][k.get_index()]+=da(v);;
+    } else if (k.get_index() < 7) {
+      IMP_CHECK_MASK(write_derivatives_mask_, particle,
+                     "Writing the derivatives is not permitted now");
+      internal_coordinate_derivatives_[particle][k.get_index()-4]+=da(v);;
     } else {
-      FloatKey nk(k.get_index()-4);
+      FloatKey nk(k.get_index()-7);
       derivatives_.set_attribute(nk, particle,
                                  derivatives_.get_attribute(nk,
                                                             particle)+da(v));
@@ -423,8 +467,17 @@ public:
         sphere_derivatives_.resize(particle+1, get_invalid_sphere());
       }
       spheres_[particle][k.get_index()]=v;
+    } else if (k.get_index() <7) {
+      if (internal_coordinates_.size() <= static_cast<size_t>(particle)) {
+        internal_coordinates_.resize(particle+1,
+                                     get_invalid_sphere().get_center());
+        internal_coordinate_derivatives_.
+          resize(particle+1,
+                 get_invalid_sphere().get_center());
+      }
+      internal_coordinates_[particle][k.get_index()-4]=v;
     } else {
-      FloatKey nk(k.get_index()-4);
+      FloatKey nk(k.get_index()-7);
       data_.add_attribute(nk, particle, v);
       derivatives_.add_attribute(nk, particle, 0);
     }
@@ -444,8 +497,18 @@ public:
         return false;
       }
       return true;
+    } else if (k.get_index() < 7) {
+      if (internal_coordinates_.size() <= static_cast<size_t>(particle)) {
+        return false;
+      }
+      else if (!internal::FloatAttributeTableTraits
+               ::get_is_valid(internal_coordinates_[particle]
+                              [k.get_index()-4])){
+        return false;
+      }
+      return true;
     } else {
-      return data_.get_has_attribute(FloatKey(k.get_index()-4), particle);
+      return data_.get_has_attribute(FloatKey(k.get_index()-7), particle);
     }
   }
   void set_attribute(FloatKey k, ParticleIndex particle,
@@ -458,8 +521,10 @@ public:
                     "Can't set attribute that is not there");
     if (k.get_index() <4) {
       spheres_[particle][k.get_index()]=v;
+    } else if (k.get_index() <7) {
+      spheres_[particle][k.get_index()-4]=v;
     } else {
-      data_.set_attribute(FloatKey(k.get_index()-4), particle, v);
+      data_.set_attribute(FloatKey(k.get_index()-7), particle, v);
     }
   }
   double get_attribute(FloatKey k,
@@ -473,8 +538,10 @@ public:
                     "Can't get attribute that is not there");
     if (k.get_index()<4) {
       return spheres_[particle][k.get_index()];
+    } else if (k.get_index()<7) {
+      return spheres_[particle][k.get_index()-4];
     } else {
-      return data_.get_attribute(FloatKey(k.get_index()-4), particle, checked);
+      return data_.get_attribute(FloatKey(k.get_index()-7), particle, checked);
     }
   }
   double& access_attribute(FloatKey k,
@@ -485,8 +552,10 @@ public:
                     "Can't get attribute that is not there");
     if (k.get_index()<4) {
       return spheres_[particle][k.get_index()];
+    } else if (k.get_index()<7) {
+      return spheres_[particle][k.get_index()-4];
     } else {
-      return data_.access_attribute(FloatKey(k.get_index()-4), particle);
+      return data_.access_attribute(FloatKey(k.get_index()-7), particle);
     }
   }
   struct FloatIndex
@@ -536,6 +605,11 @@ public:
       spheres_[particle]= get_invalid_sphere();
       sphere_derivatives_[particle]=get_invalid_sphere();
     }
+    if (internal_coordinates_.size()> static_cast<size_t>(particle)) {
+      internal_coordinates_[particle]= get_invalid_sphere().get_center();
+      internal_coordinate_derivatives_[particle]
+        =get_invalid_sphere().get_center();
+    }
     data_.clear_attributes(particle);
     derivatives_.clear_attributes(particle);
     optimizeds_.clear_attributes(particle);
@@ -543,9 +617,9 @@ public:
   FloatKeys get_attribute_keys(ParticleIndex particle) const {
     FloatKeys ret=data_.get_attribute_keys(particle);
     for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= FloatKey(ret[i].get_index()+4);
+      ret[i]= FloatKey(ret[i].get_index()+7);
     }
-    for (unsigned int i=0; i< 4; ++i) {
+    for (unsigned int i=0; i< 7; ++i) {
       if (get_has_attribute(FloatKey(i),particle)) {
         ret.push_back(FloatKey(i));
       }

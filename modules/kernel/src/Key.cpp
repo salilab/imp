@@ -26,6 +26,9 @@ namespace {
       operator[](fk).add_key("y");
       operator[](fk).add_key("z");
       operator[](fk).add_key("radius");
+      operator[](fk).add_key("local_x");
+      operator[](fk).add_key("local_y");
+      operator[](fk).add_key("local_z");
     }
   };
 }
