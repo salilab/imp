@@ -42,16 +42,16 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.xkey= IMP.FloatKey("x")
 
     def test_c1(self):
-        """test montecarlo 1"""
+        """Test montecarlo from starting position 1"""
         (model, opt)= self._setup_opt()
         opt.set_log_level(IMP.VERBOSE)
         self._test_starting_conditions(model, opt, (-3.0, -1.0, -3.0, -1.0), 5)
     def test_c2(self):
-        """test montecarlo 2"""
+        """Test montecarlo from starting position 2"""
         (model, opt)= self._setup_opt()
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
     def test_c3(self):
-        """test montecarlo 3"""
+        """Test montecarlo from starting position 3"""
         (model, opt)= self._setup_opt()
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
 
