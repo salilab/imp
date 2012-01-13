@@ -1,0 +1,62 @@
+/* Tell swig how to treat various types when moving them to and from python. Among other
+   things, they tell swig how to convert collections of C++ objects (eg ExampleRestraints)
+   into python lists and back.
+
+   IMP_SWIG_OBJECT, IMP_SWIG_VALUE and IMP_SWIG_DECORATOR lines need to appear before any
+   %include lines as well as any inline C++ code (or at least any such code which uses
+   the types in question).
+  */
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleRestraint, ExampleRestraints);
+IMP_SWIG_DECORATOR(IMP::pepdock, ExampleDecorator, ExampleDecorators);
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleUnaryFunction, ExampleUnaryFunctions);
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleSingletonModifier, ExampleSingletonModifiers);
+IMP_SWIG_OBJECT(IMP::pepdock, ExamplePairScore, ExamplePairScores);
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleRefCounted, ExampleRefCounteds);
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::pepdock, ExampleConstraint, ExampleConstraints);
+// don't ask why the _NAME, it will be fixed at some point
+IMP_SWIG_VALUE_INSTANCE(IMP::pepdock, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
+IMP_SWIG_VALUE_TEMPLATE(IMP::pepdock, ExampleTemplateClassD)
+
+
+/* One can add python methods to your module by putting code in %pythoncode blocks
+   This function can be called as IMP.pepdocks.say_hello(). */
+%pythoncode %{
+def create_model_and_particles():
+  m= IMP.Model()
+  sc= IMP.container.ListSingletonContainer(m)
+  b= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                               IMP.algebra.Vector3D(10,10,10))
+  for i in range(0,100):
+     p= IMP.Particle(m)
+     sc.add_particle(p)
+     d=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(b), 1))
+     d.set_coordinates_are_optimized(True)
+  return (m, sc)
+%}
+
+/* Wrap our own classes. Each header in the module should be listed here with a
+   %include line.*/
+%include "IMP/pepdock/ExampleRestraint.h"
+%include "IMP/pepdock/ExampleDecorator.h"
+%include "IMP/pepdock/ExampleUnaryFunction.h"
+%include "IMP/pepdock/ExampleRefCounted.h"
+%include "IMP/pepdock/ExampleSingletonModifier.h"
+%include "IMP/pepdock/ExampleTemplateClass.h"
+%include "IMP/pepdock/ExamplePairScore.h"
+%include "IMP/pepdock/ExampleSubsetFilterTable.h"
+%include "IMP/pepdock/ExampleConstraint.h"
+
+%include "IMP/pepdock/randomizing.h"
+%include "IMP/pepdock/optimizing.h"
+%include "IMP/pepdock/counting.h"
+%include "IMP/pepdock/creating_restraints.h"
+
+namespace IMP {
+  namespace pepdock {
+  /* Python doesn't natively support C++ templates, so you have to manually
+     choose which template parameters you want to intantiate a template with.
+   */
+   %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
+  }
+}
