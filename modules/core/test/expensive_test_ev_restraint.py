@@ -14,7 +14,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
             d= IMP.core.XYZR.setup_particle(IMP.Particle(m), cs)
             ap.append(d);
         rbp= IMP.core.RigidBody.setup_particle(IMP.Particle(m), ap)
-        rbp.set_log_level(IMP.SILENT)
+        #rbp.set_log_level(IMP.SILENT)
         rbp.set_coordinates_are_optimized(True)
         return rbp
     def _create_xyzrs(self, m, n, r):

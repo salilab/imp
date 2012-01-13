@@ -50,15 +50,25 @@ class IMPALGEBRAEXPORT Rotation3D {
                                         const Rotation3D &b));
   void fill_cache() const {
     has_cache_=true;
-    matrix_[0]= Vector3D(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
-                           2*(v_[1]*v_[2]-v_[0]*v_[3]),
-                           2*(v_[1]*v_[3]+v_[0]*v_[2]));
-    matrix_[1]= Vector3D(2*(v_[1]*v_[2]+v_[0]*v_[3]),
-                           v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3],
-                           2*(v_[2]*v_[3]-v_[0]*v_[1]));
-    matrix_[2]= Vector3D(2*(v_[1]*v_[3]-v_[0]*v_[2]),
-                           2*(v_[2]*v_[3]+v_[0]*v_[1]),
-                           v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3]);
+    double v0s=get_squared(v_[0]);
+    double v1s=get_squared(v_[1]);
+    double v2s=get_squared(v_[2]);
+    double v3s=get_squared(v_[3]);
+    double v12= v_[1]*v_[2];
+    double v01=v_[0]*v_[1];
+    double v02=v_[0]*v_[2];
+    double v23=v_[2]*v_[3];
+    double v03=v_[0]*v_[3];
+    double v13=v_[1]*v_[3];
+    matrix_[0]= Vector3D(v0s+v1s-v2s-v3s,
+                           2*(v12-v03),
+                           2*(v13+v02));
+    matrix_[1]= Vector3D(2*(v12+v03),
+                           v0s-v1s+v2s-v3s,
+                           2*(v23-v01));
+    matrix_[2]= Vector3D(2*(v13-v02),
+                           2*(v23+v01),
+                           v0s-v1s-v2s+v3s);
   }
  public:
   //! Create a rotation from an unnormalized vector 4
