@@ -1,0 +1,38 @@
+/**
+ *  \file RMF.h   \brief Include all the headers
+ *
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef RMF_H
+#define RMF_H
+
+#include <RMF/Category.h>
+#include <RMF/FileConstHandle.h>
+#include <RMF/FileHandle.h>
+#include <RMF/HDF5ConstAttributes.h>
+#include <RMF/HDF5ConstDataSetD.h>
+#include <RMF/HDF5ConstFile.h>
+#include <RMF/HDF5ConstGroup.h>
+#include <RMF/HDF5DataSetD.h>
+#include <RMF/HDF5DataSetIndexD.h>
+#include <RMF/HDF5File.h>
+#include <RMF/HDF5Group.h>
+#include <RMF/HDF5MutableAttributes.h>
+#include <RMF/HDF5Object.h>
+#include <RMF/Key.h>
+#include <RMF/NodeConstHandle.h>
+#include <RMF/NodeHandle.h>
+#include <RMF/NodeID.h>
+#include <RMF/NodeSetConstHandle.h>
+#include <RMF/NodeSetHandle.h>
+#include <RMF/Validator.h>
+#include <RMF/exceptions.h>
+#include <RMF/hdf5_handle.h>
+#include <RMF/hdf5_types.h>
+#include <RMF/infrastructure_macros.h>
+#include <RMF/names.h>
+#include <RMF/RMF_config.h>
+
+#endif  /* RMF_H */

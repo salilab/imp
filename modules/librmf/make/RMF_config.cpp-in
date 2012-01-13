@@ -1,0 +1,31 @@
+/**
+ *  \file RMF/config.cpp
+ *  \brief RMF module version information.
+ *
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *
+ */
+
+#include <RMF/RMF_config.h>
+
+RMF_BEGIN_NAMESPACE
+
+
+std::string get_module_version() {
+    return std::string("1.0");
+}
+
+
+namespace internal {
+std::string rmf_data_path="/usr/share/imp";
+std::string rmf_example_path="/usr/share/doc/imp/examples";
+}
+
+
+  namespace internal {
+
+
+  }
+
+
+RMF_END_NAMESPACE
