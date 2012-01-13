@@ -43,6 +43,17 @@ class Vector3DTests(IMP.test.TestCase):
                         cg.set_name("center")
                         w.add_geometry(cg)
         self.assertAlmostEqual(bbo.get_corner(1)[0], 15, delta=.1)
+    def test_embedding(self):
+        """Test mixed log embedding"""
+        eb= IMP.algebra.LogEmbedding3D(IMP.algebra.Vector3D(0,0,0),
+                                       IMP.algebra.Vector3D(1,1,1),
+                                       IMP.algebra.Vector3D(1,2,1))
+        for i in range(0,10):
+            gi=IMP.algebra.ExtendedGridIndex3D([i,i,i])
+            center= eb.get_center(gi)
+            print center
+
+
 
 if __name__ == '__main__':
     IMP.test.main()

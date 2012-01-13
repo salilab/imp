@@ -1143,9 +1143,13 @@ IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
       VectorD<D> ret= origin_;
       for (unsigned int i=0; i< unit_cell_.get_dimension(); ++i) {
         IMP_USAGE_CHECK(index[i] >=0, "Out of range index in log graph.'");
-        if (index[i] > 0) {
+        if (base_[i] != 1) {
+          IMP_USAGE_CHECK(index[i] >= 0,
+                          "Log grid axis must have positive index.");
           ret[i]+=unit_cell_[i]*(1.0-std::pow(base_[i], index[i]))
               /(1.0-base_[i]);
+        } else {
+          ret[i]+=unit_cell_[i]*index[i];
         }
       }
       return ret;
@@ -1184,8 +1188,15 @@ IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
       VectorD<D> cell=bb.get_corner(0);
       for (unsigned int i=0; i< bases.get_dimension(); ++i) {
         // cell[i](1-base[i]^counts[i])/(1-base[i])=width[i]
-        cell[i]= (bb.get_corner(1)[i]-bb.get_corner(0)[i])*(1-bases[i])
-          /(1.0-std::pow(bases[i], counts[i]));
+        if (bases[i]!= 1) {
+          cell[i]= (bb.get_corner(1)[i]-bb.get_corner(0)[i])*(bases[i]-1)
+              /(std::pow(bases[i], counts[i])-1.0);
+        } else {
+          cell[i]= (bb.get_corner(1)[i]-bb.get_corner(0)[i])/counts[i];
+        }
+        IMP_INTERNAL_CHECK(.9*cell[i] < bb.get_corner(1)[i]-bb.get_corner(0)[i],
+                           "Too large a cell side");
+        IMP_INTERNAL_CHECK(cell[i] >0, "Non-positive cell side");
       }
       set_unit_cell(cell, bases);
     }
