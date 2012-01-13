@@ -50,64 +50,7 @@ create_in_container_filter(Container *c, std::string name=std::string()) {
   return core::internal::create_in_container_filter(c, name);
 }
 
-template <class Score, class C>
-inline Restraint *create_restraint(Pointer<Score> s, Pointer<C> c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s.get(), c.get(), name);
-}
-template <class Score, class C>
-inline Restraint *create_restraint(Score* s, Pointer<C> c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s, c.get(), name);
-}
-template <class Score, class C>
-inline Restraint *create_restraint(Pointer<Score> s, C* c,
-                            std::string name=std::string()) {
-  return create_restraint<Score,C>(s.get(), c, name);
-}
 
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<Before> b,
-                              Pointer<After> a,Pointer<C> c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<Before> b,
-                              Pointer<After> a,C* c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Before* b,
-                              Pointer<After> a,Pointer<C> c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Before* b,
-                                     Pointer<After> a,C* c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<Before> b,
-                              After* a,Pointer<C> c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Pointer<Before> b,
-                              After* a,C* c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
-template <class C, class Before, class After>
-inline Constraint *create_constraint(Before* b,
-                              After* a,Pointer<C> c,
-                              std::string name=std::string()) {
-  return create_constraint<C, Before, After>(c, b, a, name);
-}
 
 
 IMPCONTAINER_END_NAMESPACE
