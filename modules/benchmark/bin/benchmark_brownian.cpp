@@ -343,7 +343,7 @@ int main(int argc , char **argv) {
                          new SoftSpherePairScore(kk),
                          new AttributeSingletonScore(new HLB(0,kk),
                                                      XYZ::get_xyz_keys()[0]),
-                         true);
+                         true, true);
 #ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
     set_is_profiling(false);
 #endif
