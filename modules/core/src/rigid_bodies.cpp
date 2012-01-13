@@ -21,6 +21,8 @@
 #include <IMP/core/internal/generic.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
+
+
 const RigidBodyData &rigid_body_data() {
   static RigidBodyData rbd;
   return rbd;
@@ -283,6 +285,43 @@ namespace {
   }
   void NullSDM::do_show(std::ostream &) const {
   }
+
+
+
+
+  ModelKey get_rb_list_key() {
+    static ModelKey key("rigid body list");
+    return key;
+  }
+  internal::CoreListSingletonContainer *
+  get_rigid_bodies_list(Model *m) {
+    ModelKey k= get_rb_list_key();
+    internal::CoreListSingletonContainer *the_list=NULL;
+    if (!m->get_has_data(k)) {
+      IMP_NEW(internal::CoreListSingletonContainer, list, (m,
+                                                           "rigid body list"));
+      IMP_NEW(UpdateRigidBodyMembers, urbm,());
+      IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
+      Pointer<Constraint> c0
+        = internal::create_constraint(urbm.get(), arbd.get(),
+                                      list.get(),
+                                      "rigid body positions %1%");
+      m->add_score_state(c0);
+      IMP_NEW(NormalizeRotation, nr, ());
+      IMP_NEW(NullSDM, null, ());
+      Pointer<Constraint> c1
+        = internal::create_constraint(nr.get(), null.get(),
+                                      list.get(),"rigid body normalize %1%");
+      m->add_score_state(c1);
+      m->add_data(k, list);
+      the_list=list;
+    } else {
+      the_list
+        = reinterpret_cast<internal::CoreListSingletonContainer*>
+        (m->get_data(k));
+    }
+    return the_list;
+  }
 }
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
@@ -425,49 +464,15 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   return d;
 }
 
-ObjectKey RigidBody::get_constraint_key_0() {
-  static ObjectKey ret("rigid body derivatives");
-  return ret;
-}
-ObjectKey RigidBody::get_constraint_key_1() {
-  static ObjectKey ret("rigid body angle");
-  return ret;
-}
-
 void RigidBody::setup_constraints(Particle *p) {
-  Pointer<Constraint> c0
-    = create_constraint(new UpdateRigidBodyMembers(p->get_name()
-                                    +" UpdateMembers %1%"),
-                        new AccumulateRigidBodyDerivatives(p->get_name()
-                                    +" AccumulateDerivatives %1%"), p,
-                         p->get_name()+" positions %1%");
-  p->get_model()->add_score_state(c0);
-  p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
-                             c0);
-  IMP_INTERNAL_CHECK(c0->get_ref_count()==3,
-                     "Wrong number of ref counts after constraint creation: "
-                     << c0->get_ref_count());
-  Pointer<Constraint> c1
-      = create_constraint(new NormalizeRotation(p->get_name()
-                                                +" NormalizeRotation %1%"),
-                        new NullSDM(p->get_name()
-                                    +" Null %1%"),
-                        p, p->get_name()+" normalize %1%");
-  p->get_model()->add_score_state(c1);
-  p->get_model()->add_attribute(get_constraint_key_1(), p->get_index(),
-                             c1);
+  internal::CoreListSingletonContainer *list
+    = get_rigid_bodies_list(p->get_model());
+  list->add_particle(p);
 }
 void RigidBody::teardown_constraints(Particle *p) {
-  Object *oc0= p->get_model()->get_attribute(get_constraint_key_0(),
-                                             p->get_index());
-  Pointer<Constraint> c0= dynamic_cast<Constraint*>(oc0);
-  p->get_model()->remove_score_state(c0);
-  p->get_model()->remove_attribute(get_constraint_key_0(), p->get_index());
-  Object *oc1= p->get_model()->get_attribute(get_constraint_key_1(),
-                                             p->get_index());
-  Pointer<Constraint> c1= dynamic_cast<Constraint*>(oc1);
-  p->get_model()->remove_score_state(c1);
-  p->get_model()->remove_attribute(get_constraint_key_1(), p->get_index());
+  internal::CoreListSingletonContainer *list
+    = get_rigid_bodies_list(p->get_model());
+  list->remove_particles(ParticlesTemp(1,p));
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
@@ -747,18 +752,6 @@ void RigidBody::add_member_internal(XYZ d,
 }
 
 
-
-void RigidBody::set_log_level(LogLevel l) {
-  Particle *p= get_particle();
-  p->set_log_level(l);
-  Object *oc0= p->get_model()->get_attribute(get_constraint_key_0(),
-                                             p->get_index());
-  oc0->set_log_level(l);
-  Object *oc1= p->get_model()->get_attribute(get_constraint_key_1(),
-                                             p->get_index());
-  oc1->set_log_level(l);
-}
-
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
   algebra::VectorD<4>
     v(get_particle()
@@ -972,41 +965,5 @@ IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
 
 
 
-IMPCOREEXPORT ParticlesTemp
-create_rigid_bodies(const ParticlesTemps &particles, std::string name) {
-  IMP_USAGE_CHECK(!particles.empty() && !particles[0].empty(),
-                  "Nothing passed.");
-  Model *m= particles[0][0]->get_model();
-  ParticleIndexes all(particles.size());
-  for (unsigned int i=0; i< particles.size(); ++i) {
-    IMP_NEW(Particle, p, (m, "rigid_body%1%"));
-    all[i]=p->get_index();
-    RigidBody::setup_particle(p, particles[i], false);
-  }
-  IMP_NEW(internal::CoreListSingletonContainer, list, (m, name+ " list"));
-  list->set_particles(all);
-  Pointer<Constraint> c0
-      = internal::create_constraint(new UpdateRigidBodyMembers(name
-                                    +" UpdateMembers %1%"),
-                                    new AccumulateRigidBodyDerivatives(name
-                                    +" AccumulateDerivatives %1%"),
-                                    list.get(),
-                         name+" positions %1%");
-  m->add_score_state(c0);
-  /*p->get_model()->add_attribute(get_constraint_key_0(), p->get_index(),
-    c0);*/
-  IMP_INTERNAL_CHECK(c0->get_ref_count()==3,
-                     "Wrong number of ref counts after constraint creation: "
-                     << c0->get_ref_count());
-  Pointer<Constraint> c1
-      = internal::create_constraint(new NormalizeRotation(name
-                                                +" NormalizeRotation %1%"),
-                                    new NullSDM(name+" Null %1%"),
-                                    list.get(), name+" normalize %1%");
-  m->add_score_state(c1);
-  /*p->get_model()->add_attribute(get_constraint_key_1(), p->get_index(),
-    c1);*/
-  return IMP::internal::get_particle(m, all);
-}
 
 IMPCORE_END_NAMESPACE
