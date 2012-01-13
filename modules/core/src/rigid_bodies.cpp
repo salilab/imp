@@ -129,18 +129,29 @@ namespace {
 #endif
     algebra::Rotation3D rot= rb.get_reference_frame().get_transformation_from()\
       .get_rotation();
+    algebra::Rotation3D roti= rb.get_reference_frame().get_transformation_to()
+      .get_rotation();
     const ParticleIndexes &rbis= rb.get_member_particle_indexes();
     for (unsigned int i=0; i< rbis.size(); ++i) {
       RigidMember d(rb.get_model(), rbis[i]);
-      algebra::Vector3D dv= rot*d.get_derivatives();
-      rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
+      const algebra::Vector3D &deriv=d.get_derivatives();
+      if (deriv.get_squared_magnitude() > 0) {
+        algebra::Vector3D dv= rot*deriv;
+        rb.add_to_derivatives(dv, deriv, d.get_internal_coordinates(),
+                              roti, da);
+      }
     }
     const ParticleIndexes &rbbis= rb.get_body_member_particle_indexes();
     for (unsigned int i=0; i< rbbis.size(); ++i) {
       RigidMember d(rb.get_model(), rbbis[i]);
-      algebra::Vector3D dv= rot*d.get_derivatives();
-      rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
+      const algebra::Vector3D &deriv=d.get_derivatives();
+      if (deriv.get_squared_magnitude() > 0) {
+        algebra::Vector3D dv= rot*deriv;
+        rb.add_to_derivatives(dv, deriv,
+                              d.get_internal_coordinates(), roti, da);
+      }
     }
+    // ignoring torques on rigid members
     IMP_LOG(TERSE, "Rigid body derivative is "
             << p->get_derivative(internal::rigid_body_data().quaternion_[0])
             << " "
@@ -312,7 +323,7 @@ namespace {
       Pointer<Constraint> c1
         = internal::create_constraint(nr.get(), null.get(),
                                       list.get(),"rigid body normalize %1%");
-      m->add_score_state(c1);
+                                      m->add_score_state(c1);
       m->add_data(k, list);
       the_list=list;
     } else {
@@ -572,11 +583,12 @@ RigidBody RigidBody::setup_particle(Particle *p,
 }
 
 RigidBody RigidBody::setup_particle(Particle *p,
-                                    const algebra::ReferenceFrame3D &rf) {
+                                    const algebra::ReferenceFrame3D &rf,
+                                    bool no_members) {
   internal::add_required_attributes_for_body(p);
   RigidBody d(p);
   d.set_reference_frame(rf);
-  setup_constraints(p);
+  if (!no_members) setup_constraints(p);
   return d;
 }
 
@@ -652,25 +664,6 @@ void RigidBody::update_members() {
   }
 }
 
-
-IMP::algebra::ReferenceFrame3D
-RigidBody::get_reference_frame() const {
-  algebra::VectorD<4>
-      v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
-        get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-  IMP_USAGE_CHECK(std::abs(v.get_squared_magnitude() -1) < .1,
-                  "Rotation is not a unit vector: " << v);
-  /*if (v.get_squared_magnitude() > 0){
-      v = v.get_unit_vector();
-  } else {
-      v = algebra::VectorD<4>(1,0,0,0);
-      }*/
-  IMP::algebra::Rotation3D rot(v);
-  return algebra::ReferenceFrame3D(algebra::Transformation3D(rot,
-                                                           get_coordinates()));
-}
 
 RigidMembers
 RigidBody::get_members() const {
@@ -749,6 +742,8 @@ void RigidBody::add_member_internal(XYZ d,
   }
   algebra::Vector3D lc=ref.get_local_coordinates(d.get_coordinates());
   cm.set_internal_coordinates(lc);
+  IMP_USAGE_CHECK((cm.get_internal_coordinates()-lc).get_magnitude() < .1,
+                  "Bad setting of coordinates.");
 }
 
 
@@ -850,11 +845,11 @@ algebra::Vector3D RigidBody::get_torque() const {
 }
 
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &deriv_global,
                                    const algebra::Vector3D &local,
+                                   const algebra::Rotation3D &rot,
                                    DerivativeAccumulator &da) {
-  algebra::Rotation3D rot= get_reference_frame()
-    .get_transformation_to().get_rotation();
-  const algebra::Vector3D deriv_global= rot*deriv_local;
+  //const algebra::Vector3D deriv_global= rot*deriv_local;
   //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int j=0; j< 4; ++j) {
@@ -873,6 +868,15 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    get_particle_index(),
                                    torque[i], da);
   }
+}
+
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
+                                   const algebra::Vector3D &local,
+                                   DerivativeAccumulator &da) {
+  algebra::Rotation3D rot= get_reference_frame()
+    .get_transformation_to().get_rotation();
+  const algebra::Vector3D deriv_global= rot*deriv_local;
+  add_to_derivatives(deriv_local, deriv_global, local, rot, da);
 }
 
 
