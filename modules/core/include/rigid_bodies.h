@@ -82,12 +82,9 @@ class IMPCOREEXPORT RigidBody: public XYZ {
    */
   algebra::Vector3D get_coordinates(RigidMember p) const;
 
-  void add_member_internal(XYZ d,
+  void add_member_internal(Particle *p,
                            const algebra::ReferenceFrame3D &rf);
-  static RigidBody internal_setup_particle(Particle *p,
-                                           const XYZs &members);
   void on_change();
-  static void setup_constraints(Particle *p);
   static void teardown_constraints(Particle *p);
   static ObjectKey get_constraint_key_0();
   static ObjectKey get_constraint_key_1();
@@ -134,56 +131,31 @@ public:
       XYZ particles.
    */
   static RigidBody setup_particle(Particle *p,
-                                  const ParticlesTemp &ps,
-                                  bool create_constraints=true);
+                                  const ParticlesTemp &ps);
+
+
+  /** Set it up with the provided initial reference frame.*/
+  static RigidBody setup_particle(Particle *p,
+                                  const algebra::ReferenceFrame3D &rf);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   /** Merge several rigid bodies into one.
    */
   static RigidBody setup_particle(Particle *p,
-                                  const RigidBodies &o);
+                                  const RigidBodies &o) {
+    return setup_particle(p, get_as<ParticlesTemp>(o));
+  }
 
 
 
   static RigidBody setup_particle(Particle *p,
-                          const XYZs &members);
+                                  const XYZs &members) {
+    return setup_particle(p, get_as<ParticlesTemp>(members));
+  }
+
+  static RigidBody setup_particle_without_constraints(Particle *p,
+                                  const algebra::ReferenceFrame3D &rf);
 #endif
-
-  //! Create a new rigid body from a set of particles, specifying the frame
-  /** \param[in] p The particle to make into a rigid body
-      \param[in] members The particles to use as members of the rigid body
-      \param[in] reference_frame The reference frame to use
-
-      The member particles
-      do not already need to be RigidMember particles, only
-      XYZ particles.
-   */
-  static RigidBody setup_particle(Particle *p,
-                                  const XYZs &members,
-                           const algebra::ReferenceFrame3D &reference_frame);
-
-
-  //! Create a rigid body based on members of another one
-  /** This function creates a rigid body that is part of another
-      one. The member particles passed must be part of the other
-      rigid body and the created rigid body is added
-      to that one as a member. The purpose of this method
-      is to, for example, define a rigid body for part of
-      a large molecule that is also rigid.
-
-      The passed members do not become members of this rigid
-      body, as there would be no point.
-  */
-  static RigidBody setup_particle(Particle *p,
-                                  RigidBody other,
-                                const RigidMembers &members);
-
-  /** Set it up with the provided initial reference frame. If no_members
-   is true, the resulting rigid body is not allowed to have members, it just
-   defines a rigidly moving reference frame.*/
-  static RigidBody setup_particle(Particle *p,
-                                  const algebra::ReferenceFrame3D &rf,
-                                  bool no_members=false);
 
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
@@ -282,16 +254,6 @@ public:
   /** Add a member, properly handle rigid bodies and XYZ particles.
    */
   void add_member(Particle *p);
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  //! Add a particle as a member
-  void add_member(XYZ d);
-
-  //! Add another rigid body
-  /** Rigid bodies can be tied together so that one updates
-      the other.
-  */
-  void add_member(RigidBody o);
-#endif
 };
 
 IMP_OUTPUT_OPERATOR(RigidBody);
@@ -413,6 +375,20 @@ namespace internal {
 inline void transform(RigidBody a, const algebra::Transformation3D&tr) {
   a.set_reference_frame(get_transformed(a.get_reference_frame(), tr));
 }
+
+/** Compute the rigid body reference frame given a set of input particles.
+ */
+IMPCOREEXPORT algebra::ReferenceFrame3D
+get_initial_reference_frame(const ParticlesTemp &ps);
+
+/** Create a set of rigid bodies that are bound together for efficiency.
+    These rigid bodies cannot nest or have other dependencies amongst them.
+
+    All rigid bodies have the default reference frame.
+*/
+IMPCOREEXPORT ParticlesTemp create_rigid_bodies(Model *m,
+                                               unsigned int n,
+                                               bool no_members=false);
 
 IMPCORE_END_NAMESPACE
 

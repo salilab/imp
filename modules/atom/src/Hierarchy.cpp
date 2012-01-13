@@ -373,7 +373,9 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
     if (internal[i] != h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
       if (!leaves.empty()) {
-        core::RigidBody::setup_particle(internal[i], rbd, leaves);
+        algebra::ReferenceFrame3D rf
+            = core::get_initial_reference_frame(get_as<ParticlesTemp>(leaves));
+        core::RigidBody::setup_particle(internal[i], rf);
       }
     }
   }
@@ -441,8 +443,10 @@ IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
   rbp->set_name(h->get_name()+" rigid body");
   ParticlesTemp all = rb_process(h);
   core::RigidBody rbd
-    = core::RigidBody::setup_particle(rbp, core::XYZs(all),
-                                      algebra::ReferenceFrame3D(rbtr));
+    = core::RigidBody::setup_particle(rbp, algebra::ReferenceFrame3D(rbtr));
+  for (unsigned int i=0; i< all.size(); ++i) {
+    rbd.add_member(all[i]);
+  }
   rbd.set_coordinates_are_optimized(true);
   IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
   return rbd;

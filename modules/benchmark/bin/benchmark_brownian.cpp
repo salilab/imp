@@ -202,7 +202,7 @@ namespace {
       XYZR d(ps[i]);
       ReferenceFrame3D rf(Transformation3D(Rotation3D(),
                                            d.get_coordinates()));
-      RigidBody rb=RigidBody::setup_particle(ps[i], rf, no_members);
+      RigidBody rb=RigidBody::setup_particle(ps[i], rf);
       if (!no_members) {
         IMP_NEW(Particle, op, (m));
         XYZR::setup_particle(op, d.get_sphere());
