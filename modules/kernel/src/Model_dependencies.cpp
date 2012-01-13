@@ -33,16 +33,21 @@
 #include <IMP/compatibility/vector_property_map.h>
 
 IMP_BEGIN_NAMESPACE
-namespace {
- typedef boost::graph_traits<DependencyGraph> MDGTraits;
-  typedef MDGTraits::vertex_descriptor MDGVertex;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::type MDGVertexMap;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::const_type
-  MDGConstVertexMap;
-}
 
+  //#pragma GCC diagnostic warn "-Wunused-parameter"
+namespace {
+  compatibility::map<Object*, int> get_index(const DependencyGraph &dg) {
+    compatibility::map<Object*, int> ret;
+    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    for (std::pair<MDGTraits::vertex_iterator,
+           MDGTraits::vertex_iterator> be= boost::vertices(dg);
+         be.first != be.second; ++be.first) {
+      Object *o= om[*be.first];
+      ret[o]= *be.first;
+    }
+    return ret;
+  }
+}
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
   const compatibility::map<Object*, int> &ssindex_;
@@ -68,87 +73,7 @@ public:
   }
 };
 
-  struct cycle_detector : public boost::default_dfs_visitor {
-    vector<MDGVertex> cycle_;
-    template <class DGVertex>
-    void start_vertex(DGVertex v, const DependencyGraph&) {
-      cycle_.push_back(v);
-    }
-    template <class DGVertex>
-    void finish_vertex(DGVertex v, const DependencyGraph&) {
-      IMP_USAGE_CHECK(cycle_.back()==v, "They don't match");
-        cycle_.pop_back();
-    }
-    template <class ED>
-    void back_edge(ED e, const DependencyGraph&g) {
-      MDGVertex t= boost::target(e, g);
-      vector<MDGVertex>::iterator it
-        = std::find(cycle_.begin(), cycle_.end(), t);
-      IMP_USAGE_CHECK(it != cycle_.end(),
-                      "The vertex is not there. Conceptual bug.");
-      cycle_.erase(cycle_.begin(), it);
-      cycle_.push_back(t);
-      throw cycle_;
-    }
-  };
-
 namespace {
-
-  vector<MDGVertex> get_cycle(const DependencyGraph &g) {
-    cycle_detector vis;
-    try {
-      boost::vector_property_map<int> color(boost::num_vertices(g));
-      boost::depth_first_search(g, boost::visitor(vis).color_map(color));
-    } catch (vector<MDGVertex> cycle) {
-      return cycle;
-    }
-    return vector<MDGVertex>();
-  }
-
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-  void order_score_states(const DependencyGraph &dg,
-                          ScoreStatesTemp &out) {
-    vector<MDGTraits::vertex_descriptor> sorted;
-    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
-    ScoreStatesTemp ret;
-    try {
-      boost::topological_sort(dg, std::back_inserter(sorted));
-    } catch (...) {
-      base::TextOutput out=create_temporary_file();
-      base::internal::show_as_graphviz(dg, out);
-      vector<MDGVertex> cycle= get_cycle(dg);
-      std::ostringstream oss;
-      for (unsigned int i=0; i< cycle.size(); ++i) {
-        oss << om[cycle[i]]->get_name() << " -- ";
-      }
-      IMP_THROW("Topological sort failed, probably due to loops in "
-                << " dependency graph. See \"" << out.get_name() << "\""
-                << " The cycle is " << oss.str(),
-                ValueException);
-    }
-    for (int i=sorted.size()-1; i > -1; --i) {
-      Object *o= om[sorted[i]];
-      ScoreState *s=dynamic_cast<ScoreState*>(o);
-      if (s) {
-        out.push_back(s);
-      }
-    }
-  }
-  //#pragma GCC diagnostic warn "-Wunused-parameter"
-
-  compatibility::map<Object*, int> get_index(const DependencyGraph &dg) {
-    compatibility::map<Object*, int> ret;
-    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
-    for (std::pair<MDGTraits::vertex_iterator,
-           MDGTraits::vertex_iterator> be= boost::vertices(dg);
-         be.first != be.second; ++be.first) {
-      Object *o= om[*be.first];
-      ret[o]= *be.first;
-    }
-    return ret;
-  }
-
-
   void
   compute_restraint_dependencies(const DependencyGraph &dg,
                                  const RestraintsTemp &ordered_restraints,
@@ -215,7 +140,7 @@ void Model::compute_dependencies() const {
     = get_dependency_graph(get_as<ScoreStatesTemp>(score_states),
                            get_as<RestraintsTemp>(all_restraints));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
-  order_score_states(dg, ordered_score_states_);
+  ordered_score_states_= IMP::get_ordered_score_states(dg);
   compute_restraint_dependencies(dg, all_restraints,
                                  ordered_score_states_);
   IMP_LOG(VERBOSE, "Ordered score states are "
