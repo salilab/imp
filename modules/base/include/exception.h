@@ -13,7 +13,7 @@
 #include "random.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
-
+#include <boost/random/uniform_real.hpp>
 #include <cassert>
 #include <string>
 #include <iostream>
@@ -305,7 +305,7 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
 
 #define IMP_IF_CHECK_PROBABILISTIC(level, prob) \
   if (level <= ::IMP::base::get_check_level() \
-      && boost::uniform_01<>()(IMP::base::random_number_generator) < prob)
+      && boost::uniform_real<>(0,1)(IMP::base::random_number_generator) < prob)
 
 
 #define IMP_CHECK_CODE(expr) expr
