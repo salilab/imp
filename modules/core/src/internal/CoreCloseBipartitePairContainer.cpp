@@ -106,6 +106,7 @@ ContainersTemp CoreCloseBipartitePairContainer
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   core::internal::ListLikePairContainer::do_before_evaluate();
+  bool updated=false;
   if (covers_[0]==-1
       || algebra::get_distance(get_model()->get_sphere(covers_[0]),
                                get_model()->get_sphere(covers_[1]))
@@ -121,6 +122,8 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
       // all ok
     } else {
       // rebuild
+      IMP_LOG(VERBOSE, "Updating bipartite close pairs list." << std::endl);
+      updated=true;
       internal::reset_moved(get_model(),
                             xyzrs_[0], rbs_[0], constituents_,
                             rbs_backup_[0], xyzrs_backup_[0]);
