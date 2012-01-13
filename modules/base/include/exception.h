@@ -178,6 +178,12 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
 */
 #define IMP_IF_CHECK(level)
 
+/** \copydoc IMP_IF_CHECK
+
+    Do the check with a given probability.
+ */
+#define IMP_IF_CHECK_PROBABILISTIC(level, probability)
+
 //! Only compile the code if checks are enabled
 /** For example
     \code
@@ -330,6 +336,7 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
   } while (false)
 #else // IMP_BUILD < IMP_FAST
 #define IMP_IF_CHECK(level) if (0)
+#define IMP_IF_CHECK_PROBABILISTIC(level, prob) if (0)
 #define IMP_CHECK_CODE(expr)
 #define IMP_INTERNAL_CHECK(expr, message)
 #define IMP_USAGE_CHECK(expr, message)
