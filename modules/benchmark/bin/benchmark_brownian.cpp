@@ -23,11 +23,14 @@
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/AttributeSingletonScore.h>
 
+#include <IMP/benchmark/profile.h>
+
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
+using namespace IMP::benchmark;
 
 const double r=10;
 const double len=r;
@@ -93,7 +96,7 @@ namespace {
     ret.sp= new Particle(ret.m);
     ret.sp->set_name("parameters");
     ret.sp->add_attribute(sk, 4);
-    ret.sp->add_attribute(tsk, 50000);
+    ret.sp->add_attribute(tsk, 50);
     return ret;
   }
 
@@ -193,13 +196,28 @@ namespace {
   }
 
 
-  template <int I, class PR, class PS0, class PS1, class SS>
-  void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
-                    PS1 *lb, SS *bottom) ATTRIBUTES;
+  void rigidify(const ParticlesTemp &ps) {
+    Model *m=ps[0]->get_model();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_NEW(Particle, op, (m));
+      XYZR d(ps[i]);
+      XYZR::setup_particle(op, d.get_sphere());
+      ReferenceFrame3D rf(Transformation3D(Rotation3D(),
+                                           d.get_coordinates()));
+      RigidBody rb=RigidBody::setup_particle(ps[i], rf);
+      rb.add_member(op);
+      RigidBodyDiffusion::setup_particle(rb);
+    }
+  }
+
 
   template <int I, class PR, class PS0, class PS1, class SS>
   void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
-                    PS1 *lb, SS *bottom) {
+                    PS1 *lb, SS *bottom, bool rigid=false) ATTRIBUTES;
+
+  template <int I, class PR, class PS0, class PS1, class SS>
+  void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
+                    PS1 *lb, SS *bottom, bool rigid=false) {
     std::string in;
     if (argc >0) {
       in =argv[0];
@@ -208,6 +226,11 @@ namespace {
                               =IMP::benchmark::get_data_path("brownian.rmf"));
     }
     It o= create_particles(in);
+    if (rigid) {
+      for (unsigned int i=0; i< o.chains.size(); ++i) {
+        rigidify(get_as<ParticlesTemp>(get_leaves(o.chains[i])));
+      }
+    }
     It it= create_restraints<PR>(link, lb, bottom, o);
     double total=0, runtime=0;
     int ns=1000;
@@ -307,11 +330,14 @@ int main(int argc , char **argv) {
   } else if (argc >=2 && std::string(argv[1])=="-p") {
     typedef core::internal::ContainerRestraint<SoftSpherePairScore,
         ClosePairContainer> PR;
+    set_is_profiling(true);
     do_benchmark<1, PR >("custom", argc-2, argv+2,
                          new HarmonicDistancePairScore(len, kk),
                          new SoftSpherePairScore(kk),
                          new AttributeSingletonScore(new HLB(0,kk),
-                                                     XYZ::get_xyz_keys()[0]));
+                                                     XYZ::get_xyz_keys()[0]),
+                         true);
+    set_is_profiling(false);
   } else if (argc >=2 && std::string(argv[1])=="-l") {
     typedef core::internal::ContainerRestraint<SoftSpherePairScore,
         ClosePairContainer> PR;
@@ -324,6 +350,12 @@ int main(int argc , char **argv) {
     {
       typedef core::internal::ContainerRestraint<SoftSpherePairScore,
           ClosePairContainer> PR;
+      do_benchmark<1, PR >("custom rigid", argc-1, argv+1,
+                           new HarmonicDistancePairScore(len, kk),
+                           new SoftSpherePairScore(kk),
+                           new AttributeSingletonScore(new HLB(0,kk),
+                                                       XYZ::get_xyz_keys()[0]),
+                           true);
       do_benchmark<1, PR >("custom", argc-1, argv+1,
                            new HarmonicDistancePairScore(len, kk),
                            new SoftSpherePairScore(kk),
