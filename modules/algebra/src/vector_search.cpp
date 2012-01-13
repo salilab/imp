@@ -70,9 +70,9 @@ void DynamicNearestNeighbor3D::set_coordinates_internal(int id, Vector3D nc) {
 
 void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   IMP_OBJECT_LOG;
-#if IMP_BUILD < IMP_FAST
-  this->audit();
-#endif
+  IMP_IF_CHECK_PROBABILISTIC(USAGE_AND_INTERNAL, .1) {
+    this->audit();
+  }
   Grid::Index ind= indexes_[id];
   Ints &it= grid_[ind];
   IMP_INTERNAL_CHECK(std::find(it.begin(), it.end(), id) != it.end(),
