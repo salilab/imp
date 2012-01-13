@@ -255,7 +255,7 @@ namespace {
   }
 
 
-  void NormalizeRotation::apply(Particle *p) const {
+  inline void NormalizeRotation::apply(Particle *p) const {
     RigidBody rb(p);
     rb.normalize_rotation();
   }
@@ -456,22 +456,36 @@ void RigidBody::teardown_particle(RigidBody rb) {
 
 void
 RigidBody::normalize_rotation() {
-  algebra::VectorD<4>
-    v(get_particle()->get_value(internal::rigid_body_data().quaternion_[0]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
-      get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
+  double &q0=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[0],
+                                           get_particle_index());
+  double &q1=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[1],
+                                           get_particle_index());
+  double &q2=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[2],
+                                           get_particle_index());
+  double &q3=get_model()->access_attribute(internal::rigid_body_data()
+                                           .quaternion_[3],
+                                           get_particle_index());
+  algebra::VectorD<4> v(q0, q1, q2, q3);
   //IMP_LOG(TERSE, "Rotation was " << v << std::endl);
-  if (v.get_squared_magnitude() >0){
-    v= v.get_unit_vector();
-  } else {
+  double sm= v.get_squared_magnitude();
+  if (sm < .001) {
     v= algebra::VectorD<4>(1,0,0,0);
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=1;
+    q1=0;
+    q2=0;
+    q3=0;
+  } else if (std::abs(sm-1.0) > .01){
+    v= v.get_unit_vector();
+    //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
+    q0=v[0];
+    q1=v[1];
+    q2=v[2];
+    q3=v[3];
   }
-  //IMP_LOG(TERSE, "Rotation is " << v << std::endl);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[1], v[1]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[2], v[2]);
-  get_particle()->set_value(internal::rigid_body_data().quaternion_[3], v[3]);
 
   // evil hack
   get_model()->set_attribute(internal::rigid_body_data().torque_[0],
