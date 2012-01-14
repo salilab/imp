@@ -2,7 +2,7 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-env.IMPModuleBuild(version='nightly-23',
+env.IMPModuleBuild(version='nightly-24',
                    required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
                                      'statistics', 'display', "RMF"],
                    required_dependencies=[])
