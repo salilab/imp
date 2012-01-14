@@ -120,6 +120,8 @@ if __name__ == "__main__":
     if opts.pycoverage != 'no':
         start_coverage()
     r = RegressionTest(args)
+    # Hide our command line options from any module we import
+    sys.argv = [sys.argv[0]]
     main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                          argv=[sys.argv[0], "-v"], exit=False)
     if opts.pycoverage != 'no':
