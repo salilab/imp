@@ -43,7 +43,7 @@ if scons_tools.dependency.gcc.get_is_gcc_like(env):
         cxxflag=cxxflags+['-O1', '-DNDEBUG']
 else:
     cxxflags=[]
-env.IMPModuleBuild(version='nightly-24',
+env.IMPModuleBuild(version='nightly-25',
                    required_modules=["base"],
                    required_dependencies=["CGAL"],
                    cxxflags=cxxflags, python=False)
