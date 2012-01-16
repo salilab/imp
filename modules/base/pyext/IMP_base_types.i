@@ -435,9 +435,11 @@ IMP_SWIG_FORWARD_1(get_derivative, double, IMP::FloatKey);
 IMP_SWIG_FORWARD_0(get_name, std::string);
 IMP_SWIG_FORWARD_0(clear_caches, void);
 IMP_SWIG_VOID_FORWARD_1(set_name, std::string);
+IMP_SWIG_VOID_FORWARD_1(set_check_level, IMP::base::CheckLevel);
 IMP_SWIG_VOID_FORWARD_3(add_to_derivative, IMP::FloatKey, double, IMP::DerivativeAccumulator);
 IMP_SWIG_VOID_FORWARD_2(set_is_optimized, IMP::FloatKey, bool);
 IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
+IMP_SWIG_FORWARD_0(get_check_level, IMP::base::CheckLevel);
 }
 %pythonprepend Namespace::Name {
 }
