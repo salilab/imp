@@ -1,4 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-25',
+env.IMPModuleBuild(version='nightly-26',
                    required_modules=['algebra', 'kernel'])
