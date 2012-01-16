@@ -42,6 +42,19 @@ public:
     });
 };
 
+/** Return a unique predicate value for each order list of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT OrderedTypeQuadPredicate: public QuadPredicate {
+public:
+  OrderedTypeQuadPredicate(std::string name
+                             ="OrderedTypeQuadPredicate%1%");
+  IMP_INDEX_QUAD_PREDICATE(OrderedTypeQuadPredicate, {
+      return internal::get_ordered_type_hash(m, pi);
+    });
+};
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_QUAD_PREDICATES_H */

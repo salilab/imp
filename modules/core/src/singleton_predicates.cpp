@@ -18,5 +18,8 @@ UnorderedTypeSingletonPredicate::UnorderedTypeSingletonPredicate(
                                                  std::string name):
     SingletonPredicate(name){}
 
+OrderedTypeSingletonPredicate::OrderedTypeSingletonPredicate(
+                                                 std::string name):
+    SingletonPredicate(name){}
 
 IMPCORE_END_NAMESPACE

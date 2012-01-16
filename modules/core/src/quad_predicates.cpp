@@ -18,5 +18,8 @@ UnorderedTypeQuadPredicate::UnorderedTypeQuadPredicate(
                                                  std::string name):
     QuadPredicate(name){}
 
+OrderedTypeQuadPredicate::OrderedTypeQuadPredicate(
+                                                 std::string name):
+    QuadPredicate(name){}
 
 IMPCORE_END_NAMESPACE
