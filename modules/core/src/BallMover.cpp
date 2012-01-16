@@ -33,10 +33,9 @@ BallMover::BallMover(const ParticlesTemp &sc,
 void BallMover::do_move(Float scale)
 {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Generating ball moves for " <<
-          get_number_of_particles() << std::endl);
   for (unsigned int i = 0;
        i < get_number_of_particles(); ++i) {
+    IMP_LOG(TERSE, "Moving particle " << get_particle_name(i) << std::endl);
     Floats center(get_number_of_keys());
     // Note that this loop would normally run from 0 to nkeys; this slightly
     // unusual formulation works around a g++ bug:
