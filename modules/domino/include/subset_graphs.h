@@ -100,7 +100,7 @@ SubsetGraph get_restraint_graph(RestraintSet *rs,
     \note You may want to create an OptimizeRestraints object before
     calling this function.
 
-    \note This function is here to aid in debugging of optimization
+    \note These functions are here to aid in debugging of optimization
     protocols that use Domino2. As a result, its signature and
     functionality may change without notice.
     @{
@@ -108,6 +108,10 @@ SubsetGraph get_restraint_graph(RestraintSet *rs,
 IMPDOMINOEXPORT InteractionGraph
 get_interaction_graph(const RestraintsTemp &rs,
                       const ParticleStatesTable *pst);
+
+IMPDOMINOEXPORT InteractionGraph
+get_interaction_graph(const RestraintsTemp &rs,
+                      const ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
     output edges corresponding to the edges in the interaction graph.
