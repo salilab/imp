@@ -219,6 +219,8 @@ void MonteCarlo::teardown_incremental() {
   flattened_restraints_.clear();
   incremental_scores_.clear();
   incremental_used_.clear();
+  old_incremental_scores_.clear();
+  old_incremental_score_indexes_.clear();
 }
 
 void MonteCarlo::rollback_incremental() {
