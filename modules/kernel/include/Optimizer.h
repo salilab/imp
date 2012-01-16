@@ -212,7 +212,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   double get_scaled_derivative(Model::FloatIndex fi) const {
     double uv=get_derivative(fi);
     double wid= width(fi.k_);
-    return uv*wid;
+   return uv*wid;
   }
 
   //! Clear the cache of range information. Do this at the start of optimization
@@ -232,6 +232,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
+  bool has_restraints_;
   Restraints restraints_;
   Restraints flattened_restraints_;
   mutable double last_score_;

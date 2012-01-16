@@ -24,6 +24,7 @@ Optimizer::Optimizer(): Object("Optimizer%1%")
   set_was_used(true);
   min_score_= -std::numeric_limits<double>::max();
   stop_on_good_score_=false;
+  has_restraints_=false;
   last_score_= std::numeric_limits<double>::max();
 }
 
@@ -33,6 +34,7 @@ Optimizer::Optimizer(Model *m, std::string name): Object(name)
   set_was_used(true);
   min_score_= -std::numeric_limits<double>::max();
   stop_on_good_score_=false;
+  has_restraints_=false;
   last_score_= std::numeric_limits<double>::max();
 }
 
@@ -80,11 +82,12 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
   restraints_=Restraints(rs.begin(), rs.end());
+  has_restraints_=true;
 }
 
 double Optimizer::evaluate(bool compute_derivatives) const {
   IMP_FUNCTION_LOG;
-  if (restraints_.empty()) {
+  if (has_restraints_) {
     last_score_= get_model()->evaluate(compute_derivatives);
   } else {
     IMP::Floats ret
@@ -113,7 +116,7 @@ double Optimizer::evaluate_if_below(bool compute_derivatives,
 
 
 RestraintsTemp Optimizer::get_restraints() const {
-  if (restraints_.empty()) {
+  if (has_restraints_) {
     return RestraintsTemp(1, model_->get_root_restraint_set());
   } else {
     return get_as<RestraintsTemp>(restraints_);
