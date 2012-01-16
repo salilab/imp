@@ -18,5 +18,8 @@ UnorderedTypeCLASSNAMEPredicate::UnorderedTypeCLASSNAMEPredicate(
                                                  std::string name):
     CLASSNAMEPredicate(name){}
 
+OrderedTypeCLASSNAMEPredicate::OrderedTypeCLASSNAMEPredicate(
+                                                 std::string name):
+    CLASSNAMEPredicate(name){}
 
 IMPCORE_END_NAMESPACE

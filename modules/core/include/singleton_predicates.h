@@ -42,6 +42,19 @@ public:
     });
 };
 
+/** Return a unique predicate value for each order list of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT OrderedTypeSingletonPredicate: public SingletonPredicate {
+public:
+  OrderedTypeSingletonPredicate(std::string name
+                             ="OrderedTypeSingletonPredicate%1%");
+  IMP_INDEX_SINGLETON_PREDICATE(OrderedTypeSingletonPredicate, {
+      return internal::get_ordered_type_hash(m, pi);
+    });
+};
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_SINGLETON_PREDICATES_H */

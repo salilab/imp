@@ -18,5 +18,8 @@ UnorderedTypePairPredicate::UnorderedTypePairPredicate(
                                                  std::string name):
     PairPredicate(name){}
 
+OrderedTypePairPredicate::OrderedTypePairPredicate(
+                                                 std::string name):
+    PairPredicate(name){}
 
 IMPCORE_END_NAMESPACE

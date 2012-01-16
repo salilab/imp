@@ -42,6 +42,19 @@ public:
     });
 };
 
+/** Return a unique predicate value for each order list of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT OrderedTypeCLASSNAMEPredicate: public CLASSNAMEPredicate {
+public:
+  OrderedTypeCLASSNAMEPredicate(std::string name
+                             ="OrderedTypeCLASSNAMEPredicate%1%");
+  IMP_INDEX_HEADERNAME_PREDICATE(OrderedTypeCLASSNAMEPredicate, {
+      return internal::get_ordered_type_hash(m, pi);
+    });
+};
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_HEADERNAME_PREDICATES_H */

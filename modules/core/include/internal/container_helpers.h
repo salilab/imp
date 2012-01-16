@@ -19,9 +19,31 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-inline int get_type_hash(Model *m, ParticleIndex pi) {
+inline int get_ordered_type_hash(Model *m, ParticleIndex pi) {
   Typed td(m, pi);
   return td.get_type().get_index();
+}
+
+
+template <unsigned int D>
+inline int get_ordered_type_hash(Model *m, const ParticleIndexTuple<D>& pi) {
+  int max= ParticleType::get_number_unique();
+  Ints rets(D);
+  for (unsigned int i=0; i< D; ++i) {
+    Typed td(m, pi[i]);
+    rets[i]= td.get_type().get_index();
+  }
+  int pow=1;
+  int ret=0;
+  for (unsigned int i=0;i< D; ++i) {
+    ret+=pow*rets[i];
+    pow*= max;
+  }
+  return ret;
+}
+
+inline int get_type_hash(Model *m, ParticleIndex pi) {
+  return get_ordered_type_hash(m, pi);
 }
 
 
@@ -42,6 +64,9 @@ inline int get_type_hash(Model *m, const ParticleIndexTuple<D>& pi) {
   }
   return ret;
 }
+
+
+
 
 IMPCORE_END_INTERNAL_NAMESPACE
 

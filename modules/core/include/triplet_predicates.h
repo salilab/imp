@@ -42,6 +42,19 @@ public:
     });
 };
 
+/** Return a unique predicate value for each order list of ParticleTypes
+    (see Typed).
+*/
+
+class IMPCOREEXPORT OrderedTypeTripletPredicate: public TripletPredicate {
+public:
+  OrderedTypeTripletPredicate(std::string name
+                             ="OrderedTypeTripletPredicate%1%");
+  IMP_INDEX_TRIPLET_PREDICATE(OrderedTypeTripletPredicate, {
+      return internal::get_ordered_type_hash(m, pi);
+    });
+};
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_TRIPLET_PREDICATES_H */

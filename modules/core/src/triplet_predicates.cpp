@@ -18,5 +18,8 @@ UnorderedTypeTripletPredicate::UnorderedTypeTripletPredicate(
                                                  std::string name):
     TripletPredicate(name){}
 
+OrderedTypeTripletPredicate::OrderedTypeTripletPredicate(
+                                                 std::string name):
+    TripletPredicate(name){}
 
 IMPCORE_END_NAMESPACE
