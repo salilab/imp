@@ -46,6 +46,9 @@ protected:
   unsigned int get_number_of_keys() const {
     return keys_.size();
   }
+  std::string get_particle_name(unsigned int i) const {
+    return m_->get_particle(particles_[i])->get_name();
+  }
 
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
