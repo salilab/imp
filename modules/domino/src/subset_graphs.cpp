@@ -396,7 +396,7 @@ namespace {
     return false;
   }
 
-  void add_edges( const Subset &ps,
+  void add_edges( const ParticlesTemp &ps,
                   ParticlesTemp pt,
                   const IMP::compatibility::map<Particle*, int> &map,
                   Object *blame,
@@ -429,7 +429,12 @@ namespace {
 
 InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
                                        const ParticleStatesTable* pst) {
-  Subset ps = pst->get_subset();
+  ParticlesTemp ps = get_as<ParticlesTemp>(pst->get_subset());
+  return get_interaction_graph(rsi, ps);
+}
+
+InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
+                                       const ParticlesTemp& ps) {
   InteractionGraph ret(ps.size());
   RestraintsTemp rs= get_restraints(rsi);
   //Model *m= ps[0]->get_model();
