@@ -139,6 +139,7 @@ IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_basis_vector);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_zero_vector);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_ones_vector);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_bounding_box);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_cube);
 IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, Sphere, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, BoundingBox, BoundingBox);

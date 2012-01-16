@@ -178,6 +178,19 @@ inline BoundingBoxD<-1> get_unit_bounding_box_kd(unsigned int d) {
   return BoundingBoxD<-1>(-get_ones_vector_kd(d), get_ones_vector_kd(d));
 }
 
+//! Cube with radius of length \c radius
+template <unsigned int D>
+inline BoundingBoxD<D> get_cube_d(double radius) {
+  return BoundingBoxD<D>(-radius*get_ones_vector_d<D>(),
+                         radius*get_ones_vector_d<D>());
+}
+
+//! Cube with radius of length \c side
+inline BoundingBoxD<-1> get_cube_kd(unsigned int d, double radius) {
+  return BoundingBoxD<-1>(-radius*get_ones_vector_kd(d),
+                          radius*get_ones_vector_kd(d));
+}
+
 //! Return a bounding box containing the transformed box
 inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
                                        const Transformation3D &tr) {
