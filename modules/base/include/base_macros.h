@@ -668,21 +668,29 @@ public:                                                                 \
 #ifdef IMP_DOXYGEN
 //! Define a graph object in \imp
 /** The docs for the graph should appear before the macro
-    invocation.
+    invocation. Directionality should be one of
+    - \c bidirectional
+    - \c directed
+    - \c undirected
  */
-#define IMP_GRAPH(Name, type, VertexName, EdgeName)     \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)     \
   /** See \ref graphs "Graphs" for more information.*/  \
   typedef boost::graph Name
 
 #elif defined(SWIG)
-#define IMP_GRAPH(Name, type, VertexName, EdgeName)  class Name
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  class Name
 #else
-#define IMP_GRAPH(Name, type, VertexName, EdgeName)                \
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
-  boost::type##S,                                                       \
-  boost::property<boost::vertex_name_t, VertexName>,                    \
+                                boost::directionality##S,               \
+  boost::property<boost::vertex_name_t, VertexData>,                    \
   boost::property<boost::edge_name_t,                                   \
-  EdgeName> > Name
+                  EdgeData> > Name;                                     \
+  typedef boost::property_map<Name, boost::vertex_name_t>::type         \
+  Name##VertexName;                                                     \
+  typedef boost::property_map<Name, boost::vertex_name_t>::const_type   \
+  Name##ConstVertexName;                                                \
+  typedef boost::graph_traits<Name> Name##Traits
 #endif
 
 
