@@ -87,7 +87,7 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
 
 double Optimizer::evaluate(bool compute_derivatives) const {
   IMP_FUNCTION_LOG;
-  if (has_restraints_) {
+  if (!has_restraints_) {
     last_score_= get_model()->evaluate(compute_derivatives);
   } else {
     IMP::Floats ret
@@ -116,7 +116,7 @@ double Optimizer::evaluate_if_below(bool compute_derivatives,
 
 
 RestraintsTemp Optimizer::get_restraints() const {
-  if (has_restraints_) {
+  if (!has_restraints_) {
     return RestraintsTemp(1, model_->get_root_restraint_set());
   } else {
     return get_as<RestraintsTemp>(restraints_);
