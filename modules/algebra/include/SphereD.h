@@ -188,7 +188,12 @@ double get_volume(const Geometry &);
 //! Compute the area of any surface object
 template <class Geometry>
 double get_area(const Geometry &);
+
 #endif
+template <int D>
+VectorD<D> get_vector_d_geometry(const SphereD<D> &s) {
+  return s.get_center();
+}
 
 IMPALGEBRA_END_NAMESPACE
 
