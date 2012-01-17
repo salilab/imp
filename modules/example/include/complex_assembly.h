@@ -142,8 +142,8 @@ inline void optimize_assembly(Model *m, const ParticlesTemp &components,
     double e;
     for (int j=0; j< 5; ++j) {
       mc->set_kt(100.0/(3*j+1));
-      mc->optimize(cur.size()*(j+1)*100);
-      e=cg->optimize(10);
+      mc->optimize(cur.size()*(j+1)*1000);
+      e=cg->optimize(10*cur.size());
       IMP_LOG(PROGRESS, "Energy is " << e << std::endl);
     }
     if (e > cutoff) {
