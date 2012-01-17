@@ -245,7 +245,7 @@ class pair;
 namespace IMP {
 namespace compatibility {
 template <class T>
-class checked_vector;
+class vector;
 }
 }
 #include <sstream>
@@ -305,13 +305,27 @@ inline std::string get_example_path(std::string file_name)  {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 struct Showable {
   std::string str_;
+
+  template <class T>
+  const T& get_showable(const T &t) const {
+    return t;
+  }
+  template <class T, class TT>
+  std::string get_showable(const std::pair<T,TT> &t) const {
+    return Showable(t).str_;
+  }
+  template <class T>
+  std::string get_showable(const IMP::compatibility::vector<T> &t) const {
+    return Showable(t).str_;
+  }
+
   template <class T>
   void show_vector(const T &v) {
     std::ostringstream out;
     out << "[";
     for (unsigned int i=0; i< v.size(); ++i) {
       if (i >0) out << ", ";
-      out << v[i];
+      out << get_showable(v[i]);
     }
     out<< "]";
     str_= out.str();
@@ -328,7 +342,7 @@ struct Showable {
     show_vector(v);
   }
   template <class T>
-  Showable(const IMP::compatibility::checked_vector<T> &v) {
+  Showable(const IMP::compatibility::vector<T> &v) {
     show_vector(v);
   }
 };
