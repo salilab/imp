@@ -54,7 +54,7 @@ namespace RMF {
     void set_value(const HDF5DataSetIndexD<D> &ijk,
                    typename TypeTraits::Type value) {
       IMP_RMF_IF_CHECK {
-        check_index(ijk);
+        P::check_index(ijk);
       }
       //IMP_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
       IMP_HDF5_CALL(H5Sselect_hyperslab(P::get_data_space(),
@@ -75,7 +75,7 @@ namespace RMF {
       std::copy(ijkr.begin(), ijkr.end(), ijk.begin());
       ijk[D-1]=0;
       IMP_RMF_IF_CHECK {
-        check_index(ijk);
+        P::check_index(ijk);
       }
       hsize_t size[D]; std::fill(size, size+D-1, 1);
       size[D-1]= P::get_size()[D-1]; // set last to size of row
@@ -93,7 +93,7 @@ namespace RMF {
     void set_block(const Index&lb, const Index &size,
                    const typename TypeTraits::Types& value) {
       IMP_RMF_IF_CHECK {
-        check_index(lb);
+        P::check_index(lb);
          Index last=lb;
         // offset size by one and check...
         unsigned int total=1;
@@ -104,7 +104,7 @@ namespace RMF {
         IMP_RMF_USAGE_CHECK(total==value.size(),
                             "Block has size " << total << " but found "
                             << value.size() << " values");
-        check_index(last);
+        P::check_index(last);
       }
       //IMP_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);
       IMP_HDF5_CALL(H5Sselect_hyperslab(P::get_data_space(),
