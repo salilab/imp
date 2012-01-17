@@ -17,11 +17,24 @@
 #include <IMP/core/SerialMover.h>
 #include <IMP/core/BallMover.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/core/SphereDistancePairScore.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
 
 
 IMPEXAMPLE_BEGIN_NAMESPACE
+
+inline core::Mover* create_serial_mover(const ParticlesTemp &ps) {
+  core::Movers movers;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    double scale= core::XYZR(ps[i]).get_radius();
+    movers.push_back(new core::BallMover(ParticlesTemp(1, ps[i]),
+                                         scale*2));
+  }
+  IMP_NEW(core::SerialMover, sm, (get_as<core::MoversTemp>(movers)));
+  return sm.release();
+}
+
 
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints.*/
@@ -29,17 +42,10 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
                           const PairFilters &excluded=PairFilters()) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
-  double scale = core::XYZR(ps[0]).get_radius();
+  //double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::ConjugateGradients, cg, (m));
   IMP_NEW(core::MonteCarlo, mc, (m));
-  // ref count them to make sure memory is cleaned up if there is an exception
-  core::Movers movers;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    movers.push_back(new core::BallMover(ParticlesTemp(1, ps[i]),
-                                         scale*2));
-  }
-  IMP_NEW(core::SerialMover, sm, (get_as<core::MoversTemp>(movers)));
-  mc->add_mover(sm);
+  mc->add_mover(create_serial_mover(ps));
   // we are special casing the nbl term for montecarlo, but using all for CG
   mc->set_restraints(rs);
   mc->set_use_incremental_evaluate(true);

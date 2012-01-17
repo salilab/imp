@@ -49,6 +49,7 @@ def create_model_and_particles():
 
 %include "IMP/example/randomizing.h"
 %include "IMP/example/optimizing.h"
+%include "IMP/example/complex_assembly.h"
 %include "IMP/example/counting.h"
 %include "IMP/example/creating_restraints.h"
 
