@@ -161,7 +161,7 @@ ParticlePairsTemp RigidClosePairsFinder
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ppt.size(); ++i) {
       IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
-                         "Pair of one returned: " << ppt[i][0]);
+                         "Pair of one returned: " << ppt[i][0]->get_name());
     }
   }
   ParticlePairsTemp ret;
