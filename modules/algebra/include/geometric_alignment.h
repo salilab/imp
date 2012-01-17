@@ -11,6 +11,7 @@
 #include "algebra_config.h"
 
 #include "Vector3D.h"
+#include "SphereD.h"
 #include "Rotation3D.h"
 #include "Transformation3D.h"
 #include "Transformation2D.h"
