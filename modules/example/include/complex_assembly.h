@@ -101,7 +101,12 @@ class AssemblyData {
 };
 #endif
 
-
+/** Provide an example of a more involved protocol for assembly a complex. The
+    protocol adds the particles one at a time based on how well connected they
+    are to the already added particles (in the interaction graph). After each
+    addition, the assembly is optimized. The protocol seems to work at
+    assembling the residues of a protein from a truncated distance matrix.
+*/
 inline void optimize_assembly(Model *m, const ParticlesTemp &components,
                        const RestraintsTemp &interactions,
                        const RestraintsTemp &other_restraints,
