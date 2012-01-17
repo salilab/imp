@@ -220,8 +220,8 @@ namespace {
 
   template <int I, class PR, class PS0, class PS1, class SS>
   void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
-                    PS1 *lb, SS *bottom, bool rigid=false,
-                    bool no_members=false) {
+                    PS1 *lb, SS *bottom, bool rigid,
+                    bool no_members) {
     std::string in;
     if (argc >0) {
       in =argv[0];
