@@ -65,6 +65,7 @@ recommended q value is 0.2")
 
   std::string form_factor_table_file;
   bool ab_initio = false;
+  bool vacuum = false;
   po::options_description hidden("Hidden options");
   hidden.add_options()
     ("input-files", po::value< std::vector<std::string> >(),
@@ -73,6 +74,7 @@ recommended q value is 0.2")
      "ff table name")
     ("ab_initio,a", "compute profile for a bead model with \
 constant form factor (default = false)")
+    ("vacuum,v", "compute profile in vacuum (default = false)")
     // ("charge_weight,c",
     //  po::value<float>(&charge_weight)->default_value(1.0),
     //  "weight of charged residues in hydration layer, default = 1.0")
@@ -107,6 +109,7 @@ constant form factor (default = false)")
   // no water layer or fitting in ab initio mode for now
   if(vm.count("ab_initio")) { ab_initio=true; water_layer = false;
     fit = false; excluded_volume_c1 = 1.0; }
+  if(vm.count("vacuum")) { vacuum = true; }
 
   float delta_q = max_q / profile_size;
   bool interactive_gnuplot = false; // for server
@@ -196,21 +199,40 @@ constant form factor (default = false)")
     IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
     if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
     if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
+    // calculate total volume and average radius
+    IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
+    float average_radius = 0.0;
+    float volume = 0;
+    for(unsigned int k=0; k<particles_vec[i].size(); k++) {
+      average_radius += ft->get_radius(particles_vec[i][k], ff_type);
+      volume += ft->get_volume(particles_vec[i][k], ff_type);
+    }
+    average_radius /= particles_vec[i].size();
+    //std::cerr << "Average radius = " << average_radius
+    //<< " volume = " << volume << std::endl;
+
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       if(ab_initio) { // bead model, constant form factor
         partial_profile->
           calculate_profile_constant_form_factor(particles_vec[i]);
       } else {
-        bool reciprocal = false;
-        if(form_factor_table_file.length() > 0) {
-          //reciprocal space calculation, provide ff table
-          IMP::saxs::FormFactorTable* ft =
-            new IMP::saxs::FormFactorTable(form_factor_table_file,
-                                           0.0, max_q, delta_q);
-          partial_profile->set_ff_table(ft);
-          reciprocal = true;
+        if(vacuum) {
+          partial_profile->calculate_profile_partial(particles_vec[i],
+                                                     surface_area, ff_type);
+          partial_profile->sum_partial_profiles(0.0, 0.0, *partial_profile);
+        } else {
+          bool reciprocal = false;
+          if(form_factor_table_file.length() > 0) {
+            //reciprocal space calculation, provide ff table
+            IMP::saxs::FormFactorTable* ft =
+              new IMP::saxs::FormFactorTable(form_factor_table_file,
+                                             0.0, max_q, delta_q);
+            partial_profile->set_ff_table(ft);
+            reciprocal = true;
+          }
+          partial_profile->calculate_profile(particles_vec[i],
+                                             ff_type, reciprocal);
         }
-        partial_profile->calculate_profile(particles_vec[i],ff_type,reciprocal);
       }
     } else {
       partial_profile->calculate_profile_partial(particles_vec[i],
