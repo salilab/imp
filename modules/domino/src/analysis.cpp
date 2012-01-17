@@ -28,7 +28,7 @@ namespace {
     IMP_EMBEDDING(ParticleStatesEmbedding);
   };
   void ParticleStatesEmbedding::do_show(std::ostream &out) const {
-    out << "particle: " << p_ << std::endl;
+    out << "particle: " << p_->get_name() << std::endl;
   }
   algebra::VectorKD ParticleStatesEmbedding::get_point(unsigned int i) const {
     ps_->load_particle_state(allowed_[i], p_);

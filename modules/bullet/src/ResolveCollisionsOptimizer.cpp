@@ -336,7 +336,7 @@ namespace {
     ParticlePairsTemp pp;
     pp.push_back(ParticlePair(p0, p1));
     IMP_NEW(container::ListPairContainer, lpc, (pp));
-    Pointer<Restraint> r= container::create_restraint(hdps, lpc);
+    Pointer<Restraint> r= container::create_restraint(hdps.get(), lpc.get());
     r->set_was_used(true);
     PairsScoreRestraint *psr= dynamic_cast<PairsScoreRestraint*>(r.get());
     IMP_USAGE_CHECK(psr, "Not cast");

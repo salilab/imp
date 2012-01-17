@@ -814,7 +814,7 @@ public:
 #endif
 
   /** Construct an empty model */
-  Model(std::string name="The Model");
+  Model(std::string name="Model %1%");
 
 
   /** @name States

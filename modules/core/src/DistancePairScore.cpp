@@ -29,7 +29,7 @@ Float DistancePairScore::evaluate(const ParticlePair &p,
 
 void DistancePairScore::do_show(std::ostream &out) const
 {
-  out << "function " << f_;
+  out << "function " << f_->get_name();
 }
 
 HarmonicDistancePairScore::HarmonicDistancePairScore(double x0, double k):

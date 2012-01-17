@@ -36,7 +36,7 @@ void ScoreState::set_model(Model* model)
   IMP_USAGE_CHECK(!model || !model_
             || (model_ && model_ == model),
             "Model* different from already stored model "
-            << model << " " << model_);
+                  << model->get_name() << " " << model_->get_name());
   model_ = model;
   set_was_used(true);
 }

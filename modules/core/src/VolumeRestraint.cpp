@@ -186,7 +186,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
 
 void VolumeRestraint::do_show(std::ostream &out) const {
   out << "volume " << volume_ << std::endl;
-  out << "container " << sc_ << std::endl;
+  out << "container " << sc_->get_name() << std::endl;
 }
 
 ParticlesTemp VolumeRestraint::get_input_particles() const {
