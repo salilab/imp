@@ -17,8 +17,9 @@
 */
 #define IMP_PARTICLE_STATES(Name)                                       \
   public:                                                               \
- virtual unsigned int get_number_of_particle_states() const;            \
- virtual void load_particle_state(unsigned int, Particle*) const;       \
+  IMP_IMPLEMENT(virtual unsigned int get_number_of_particle_states() const); \
+  IMP_IMPLEMENT(virtual void load_particle_state(unsigned int,          \
+                                                 Particle*) const);     \
  IMP_OBJECT(Name)
 
 
@@ -27,9 +28,9 @@
 */
 #define IMP_ASSIGNMENTS_TABLE(Name)                                     \
   public:                                                               \
-  virtual void                                                          \
+  IMP_IMPLEMENT(virtual void                                            \
   load_assignments(const IMP::domino::Subset&s,                         \
-                   AssignmentContainer *ac) const;                      \
+                   AssignmentContainer *ac) const);                     \
   IMP_OBJECT(Name)
 
 
@@ -40,11 +41,11 @@
 */
 #define IMP_SUBSET_FILTER_TABLE(Name)                                   \
   public:                                                               \
-  virtual IMP::domino::SubsetFilter*                                    \
+  IMP_IMPLEMENT(virtual IMP::domino::SubsetFilter*                      \
   get_subset_filter(const IMP::domino::Subset&s,                        \
-                    const IMP::domino::Subsets &excluded) const;        \
-  virtual double get_strength(const IMP::domino::Subset&s,              \
-                              const IMP::domino::Subsets &excluded) const; \
+                    const IMP::domino::Subsets &excluded) const);       \
+  IMP_IMPLEMENT(virtual double get_strength(const IMP::domino::Subset&s, \
+                           const IMP::domino::Subsets &excluded) const); \
   IMP_OBJECT(Name)
 
 /** This macro defines a class NameSubsetFilterTable from a method
@@ -121,7 +122,8 @@
 */
 #define IMP_SUBSET_FILTER(Name)                                         \
   public:                                                               \
-  virtual bool get_is_ok(const IMP::domino::Assignment& assignment) const;  \
+  IMP_IMPLEMENT(virtual bool get_is_ok(const IMP::domino::Assignment&   \
+                                       assignment) const);              \
  IMP_OBJECT(Name)
 
 
@@ -130,8 +132,10 @@
 */
 #define IMP_DISCRETE_SAMPLER(Name)                                      \
   public:                                                               \
-  Assignments do_get_sample_assignments(const IMP::domino::Subset &known) \
-  const;                                                                \
+  IMP_IMPLEMENT(Assignments do_get_sample_assignments(const\
+                                                      IMP::domino::Subset\
+                                                      &known)           \
+                const);                                                 \
   IMP_OBJECT(Name)
 
 
@@ -141,38 +145,42 @@
  */
 #define IMP_SUBSET_GRAPH_TABLE(Name)                                    \
   public:                                                               \
-  SubsetGraph get_subset_graph(IMP::domino::ParticleStatesTable *pst) const; \
+  IMP_IMPLEMENT(SubsetGraph get_subset_graph(IMP::domino::ParticleStatesTable\
+                                             *pst) const);              \
 IMP_OBJECT(Name)
 
 
 #define IMP_ASSIGNMENT_CONTAINER_BASE(Name)                             \
   public:                                                               \
-  virtual unsigned int get_number_of_assignments() const;               \
-  virtual Assignment get_assignment(unsigned int i) const;              \
-  virtual Assignments get_assignments(IntRange r) const {               \
+  IMP_IMPLEMENT(virtual unsigned int get_number_of_assignments() const); \
+  IMP_IMPLEMENT(virtual Assignment get_assignment(unsigned int i) const); \
+  IMP_IMPLEMENT_INLINE(virtual Assignments get_assignments(IntRange r) const,\
+  {                                                                     \
     Assignments ret(r.second-r.first);                                  \
     for (unsigned int i=0; i != ret.size(); ++i) {                      \
       ret[i]= Name::get_assignment(r.first+i);                          \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  virtual Assignments get_assignments() const {                         \
+  });                                                                   \
+  IMP_IMPLEMENT_INLINE(virtual Assignments get_assignments() const, {   \
     return get_assignments(IntRange(0, get_number_of_assignments()));   \
-  }                                                                     \
-  virtual void add_assignment(const Assignment& a);                     \
-  virtual void add_assignments(const Assignments &as) {                 \
+    });                                                                 \
+  IMP_IMPLEMENT(virtual void add_assignment(const Assignment& a));      \
+  IMP_IMPLEMENT_INLINE(virtual void add_assignments(const Assignments &as), { \
   for (unsigned int i=0; i< as.size(); ++i) {                           \
     Name::add_assignment(as[i]);                                        \
   }                                                                     \
-  }                                                                     \
-  virtual Ints get_particle_assignments(unsigned int index) const {     \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(virtual Ints get_particle_assignments(unsigned\
+                                                             int index) const,\
+  {                                                                     \
     Ints ret(Name::get_number_of_assignments());                        \
     for (unsigned int i=0; i< Name::get_number_of_assignments();        \
          ++i) {                                                         \
       ret[i]= get_assignment(i)[index];                                 \
     }                                                                   \
     return ret;                                                         \
-  }
+  })
 
 
 /** This macro declares:

@@ -10,28 +10,29 @@
 #ifndef IMPKERNEL_QUAD_MACROS_H
 #define IMPKERNEL_QUAD_MACROS_H
 
-#ifndef IMP_DOXYGEN
-
 #define IMP_QUAD_SCORE_BASE(Name)                                 \
-  double evaluate(const ParticleQuadsTemp &ps,                         \
-                  DerivativeAccumulator *da) const {                    \
+  IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuadsTemp &ps,    \
+                                       DerivativeAccumulator *da) const, { \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       ret+=Name::evaluate(ps[i], da);                                   \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  double evaluate_indexes(Model *m, const ParticleIndexQuads &ps,          \
-                  DerivativeAccumulator *da) const {                    \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(double evaluate_indexes(Model *m,                \
+                                              const ParticleIndexQuads &ps, \
+                                              DerivativeAccumulator *da)\
+    const, {                                                            \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       ret+=Name::evaluate_index(m, ps[i], da);                          \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  double evaluate_if_good_indexes(Model *m, const ParticleIndexQuads &ps,  \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(double evaluate_if_good_indexes(Model *m, \
+                                     const ParticleIndexQuads &ps, \
                           DerivativeAccumulator *da,                    \
-                          double max) const {                           \
+                                                      double max) const, { \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       double cur=Name::evaluate_if_good_index(m, ps[i], da, max);       \
@@ -40,13 +41,9 @@
       if (max <0) break;                                                \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
+                      });                                               \
   IMP_OBJECT(Name)
 
-
-#else
-#define IMP_QUAD_SCORE_BASE(Name)
-#endif
 
 
 //! Declare the functions needed for a QuadScore
@@ -60,21 +57,22 @@
     implementation of that method.
 */
 #define IMP_QUAD_SCORE(Name)                                      \
-  double evaluate(const ParticleQuad& p,                              \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_index(Model *m, const ParticleIndexQuad& p,         \
-                  DerivativeAccumulator *da) const {                    \
+  IMP_IMPLEMENT(double evaluate(const ParticleQuad& p,\
+                                DerivativeAccumulator *da) const);      \
+  IMP_IMPLEMENT_INLINE(double evaluate_index(Model *m,                  \
+                                const ParticleIndexQuad& p,           \
+                                     DerivativeAccumulator *da) const, { \
     return evaluate(IMP::internal::get_particle(m,p), da);              \
-  }                                                                     \
-  double evaluate_if_good_index(Model *m,                               \
+                                    });                                 \
+  IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,          \
                           const ParticleIndexQuad& p,                       \
                           DerivativeAccumulator *da,                    \
-                          double max) const{                            \
+                                                     double max) const, { \
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*p) const ;                 \
-  ContainersTemp get_input_containers(Particle *) const ;               \
+                       });                                              \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*p) const) ;  \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *) const) ; \
   IMP_QUAD_SCORE_BASE(Name)
 
 //! Declare the functions needed for a QuadScore
@@ -86,28 +84,31 @@
     score.
 */
 #define IMP_SIMPLE_QUAD_SCORE(Name)                               \
-  double evaluate(const ParticleQuad& p,                        \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate(Model *m, const ParticleIndexQuad& p,                     \
-                  DerivativeAccumulator *da) const {                    \
+  IMP_IMPLEMENT(double evaluate(const ParticleQuad& p,    \
+                                DerivativeAccumulator *da) const);      \
+  IMP_IMPLEMENT_INLINE(double evaluate(Model *m,                        \
+                                  const ParticleIndexQuad& p,  \
+                                       DerivativeAccumulator *da) const, { \
     return evaluate(IMP::internal::get_particle(m,p), da);              \
-  }                                                                     \
-  double evaluate_if_good_index(Model *m,                               \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,          \
                           const ParticleIndexQuad& p,                       \
                           DerivativeAccumulator *da,                    \
-                          double max) const{                            \
+                                                     double max) const, { \
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*p) const {                 \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
     return ParticlesTemp(1,p);                                          \
-  }                                                                     \
-  ContainersTemp get_input_containers(Particle *) const {               \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(ContainersTemp get_input_containers(Particle *) const, \
+  {                                                                     \
     return ContainersTemp();                                            \
-  }                                                                     \
-  Restraints create_current_decomposition(const ParticleQuad& vt) const {  \
+  });                                                                   \
+  IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition\
+  (const ParticleQuad& vt) const, {                                      \
     return Restraints(1, create_restraint(this, vt));             \
-  }                                                                     \
+                       });                                        \
   IMP_QUAD_SCORE_BASE(Name)
 
 
@@ -120,19 +121,19 @@
     - IMP::QuadScore::evaluate_if_good
 */
 #define IMP_COMPOSITE_QUAD_SCORE(Name)                            \
-  ParticlesTemp get_input_particles(Particle *p) const;                 \
-  ContainersTemp get_input_containers(Particle *p) const;               \
-  double evaluate(const ParticleQuad& p,                     \
-                  DerivativeAccumulator *da) const {                    \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle *p) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *p) const); \
+  IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuad& p,     \
+                                       DerivativeAccumulator *da) const, { \
     return evaluate_index(IMP::internal::get_model(p),                  \
                   IMP::internal::get_index(p), da);                     \
-  }                                                                     \
-  double evaluate_index(Model *m, const ParticleIndexQuad& p,          \
-                  DerivativeAccumulator *da) const;                  \
-  double evaluate_if_good_index(Model *m,                               \
+                       });                                              \
+  IMP_IMPLEMENT(double evaluate_index(Model *m, const ParticleIndexQuad& p,\
+                                      DerivativeAccumulator *da) const); \
+  IMP_IMPLEMENT(double evaluate_if_good_index(Model *m,                 \
                           const ParticleIndexQuad& p,                       \
                           DerivativeAccumulator *da,                    \
-                          double max) const;                            \
+                                              double max) const);       \
   IMP_QUAD_SCORE_BASE(Name)
 
 //! Declare the functions needed for a complex QuadScore
@@ -143,23 +144,23 @@
     - IMP::QuadScore::evaluate_if_good
 */
 #define IMP_INDEX_QUAD_SCORE(Name)                                \
-  ParticlesTemp get_input_particles(Particle *p) const;                 \
-  ContainersTemp get_input_containers(Particle *p) const;               \
-  double evaluate(const ParticleQuad& p,                             \
-                  DerivativeAccumulator *da) const {                    \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle *p) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle *p) const); \
+  IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuad& p,\
+                                        DerivativeAccumulator *da) const, { \
     return evaluate_index(IMP::internal::get_model(p),                  \
                   IMP::internal::get_index(p),                          \
                   da);                                                  \
-  }                                                                     \
-  double evaluate_index(Model *m, const ParticleIndexQuad& p,               \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_if_good_index(Model *m,                               \
+                        });                                             \
+  IMP_IMPLEMENT(double evaluate_index(Model *m, const ParticleIndexQuad& p,\
+                                      DerivativeAccumulator *da) const); \
+  IMP_IMPLEMENT_INLINE(double evaluate_if_good_index(Model *m,         \
                           const ParticleIndexQuad& p,                      \
                           DerivativeAccumulator *da,                    \
-                          double max) const {                           \
+                                                      double max) const, { \
     IMP_UNUSED(max);                                                    \
     return evaluate_index(m, p, da);                                    \
-  }                                                                     \
+                        });                                             \
   IMP_QUAD_SCORE_BASE(Name)
 
 
@@ -171,27 +172,30 @@
     - IMP::QuadPredicate::get_output_particles()
 */
 #define IMP_QUAD_PREDICATE(Name)                                   \
-  int get_value(const ParticleQuad& a) const;       \
-  Ints get_value(const ParticleQuadsTemp &o) const {       \
+  IMP_IMPLEMENT(int get_value(const ParticleQuad& a) const);   \
+  IMP_IMPLEMENT_INLINE(Ints get_value(const                             \
+                              ParticleQuadsTemp &o) const, {   \
     Ints ret(o.size());                                                 \
     for (unsigned int i=0; i< o.size(); ++i) {                          \
       ret[i]+= Name::get_value(o[i]);                                   \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  int get_value_index(Model *m, const ParticleIndexQuad& vt) const { \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
+                                           const ParticleIndexQuad& vt)\
+                       const, {                                         \
     return Name::get_value(internal::get_particle(m, vt));              \
-  }                                                                     \
- Ints get_value_index(Model *m,                                         \
-                      const ParticleIndexQuads &o) const {         \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
+                                     const ParticleIndexQuads &o) const, { \
    Ints ret(o.size());                                                  \
    for (unsigned int i=0; i< o.size(); ++i) {                           \
      ret[i]+= Name::get_value_index(m, o[i]);                           \
    }                                                                    \
    return ret;                                                          \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ContainersTemp get_input_containers(Particle*) const;                 \
+                       });                                              \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
   IMP_OBJECT(Name)
 
 
@@ -202,34 +206,37 @@
     - IMP::QuadPredicate::get_output_particles()
 */
 #define IMP_INDEX_QUAD_PREDICATE(Name, gv)                        \
-  int get_value(const ParticleQuad& a) const {                        \
+  IMP_IMPLEMENT_INLINE(int get_value(const ParticleQuad& a) const, { \
     return get_value_index(IMP::internal::get_model(a),                 \
                      IMP::internal::get_index(a));                      \
-  }                                                                     \
-  Ints get_value(const ParticleQuadsTemp &o) const {           \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(Ints get_value(const                             \
+                                      ParticleQuadsTemp &o) const, {   \
     Ints ret(o.size());                                                 \
     for (unsigned int i=0; i< o.size(); ++i) {                          \
       ret[i]+= Name::get_value(o[i]);                                   \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  int get_value_index(Model *m, const ParticleIndexQuad& pi) const {        \
+                       })                                               \
+  IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
+                                           const ParticleIndexQuad& pi)\
+                       const, {                                         \
     gv;                                                                 \
-  }                                                                     \
- Ints get_value_index(Model *m,                                         \
-                      const ParticleIndexQuads &o) const {          \
+                       })                                               \
+  IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
+                                const ParticleIndexQuads &o) const, { \
    Ints ret(o.size());                                                  \
    for (unsigned int i=0; i< o.size(); ++i) {                           \
      ret[i]+= Name::get_value_index(m, o[i]);                           \
    }                                                                    \
    return ret;                                                          \
-  }                                                                     \
- ParticlesTemp get_input_particles(Particle*p) const {                  \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
    return ParticlesTemp(1, p);                                          \
- }                                                                      \
- ContainersTemp get_input_containers(Particle*) const {                 \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(ContainersTemp get_input_containers(Particle*) const, { \
    return ContainersTemp();                                             \
- }                                                                      \
+    });                                                                 \
  IMP_OBJECT_INLINE(Name,IMP_UNUSED(out),)
 
 
@@ -240,14 +247,15 @@
     - IMP::QuadModifier::get_output_particles()
 */
 #define IMP_QUAD_MODIFIER(Name)                                   \
-  void apply(const ParticleQuad& a) const;                             \
-  void apply_index(Model *m, const ParticleIndexQuad& a) const {        \
+  IMP_IMPLEMENT(void apply(const ParticleQuad& a) const); \
+  IMP_IMPLEMENT_INLINE(void apply_index(Model *m, \
+                                        const ParticleIndexQuad& a) const, {\
     return Name::apply(IMP::internal::get_particle(m,a));               \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ParticlesTemp get_output_particles(Particle*) const;                  \
-  ContainersTemp get_input_containers(Particle*) const;                 \
-  ContainersTemp get_output_containers(Particle*) const;                \
+    })                                                                  \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
+  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
   IMP_OBJECT(Name)
 
 //! Declare the functions needed for a QuadModifier
@@ -257,21 +265,24 @@
     - IMP::QuadDerivativeModifier::get_output_particles()
 */
 #define IMP_QUAD_DERIVATIVE_MODIFIER(Name)                        \
-  void apply(const ParticleQuad& a, DerivativeAccumulator&da) const;    \
-  void apply_index(Model *m, const ParticleIndexQuad& a,              \
-             DerivativeAccumulator&da) const {               \
+  IMP_IMPLEMENT(void apply(const ParticleQuad& a,\
+                           DerivativeAccumulator&da) const);            \
+  IMP_IMPLEMENT_INLINE(void apply_index(Model *m,                       \
+                                        const ParticleIndexQuad& a,  \
+                                        DerivativeAccumulator&da) const, { \
     return Name::apply(IMP::internal::get_particle(m,a), da);           \
-  }                                                                     \
-  void apply_indexes(Model *m, const ParticleIndexQuads &ps,      \
-             DerivativeAccumulator&da) const {                          \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
+                                          const ParticleIndexQuads &ps,    \
+                                          DerivativeAccumulator&da) const, { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply_index(m, ps[i], da);                                  \
     }                                                                   \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ParticlesTemp get_output_particles(Particle*) const;                  \
-  ContainersTemp get_input_containers(Particle*) const;                 \
-  ContainersTemp get_output_containers(Particle*) const;                \
+                       });                                              \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
+  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
   IMP_OBJECT(Name)
 
 
@@ -283,15 +294,16 @@
     - IMP::QuadModifier::get_output_particles()
 */
 #define IMP_INDEX_QUAD_MODIFIER(Name)                     \
-  void apply(const ParticleQuad& a) const {                   \
+  IMP_IMPLEMENT_INLINE(void apply(const ParticleQuad& a) const, {  \
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a));                           \
-  }                                                                     \
-  void apply_index(Model *m, const ParticleIndexQuad& a) const;      \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ParticlesTemp get_output_particles(Particle*) const;                  \
-  ContainersTemp get_input_containers(Particle*) const;                 \
-  ContainersTemp get_output_containers(Particle*) const;                \
+    });                                                                 \
+  IMP_IMPLEMENT(void apply_index(Model *m,\
+                                 const ParticleIndexQuad& a) const);   \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
+  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
   IMP_OBJECT(Name)
 
 //! Declare the functions needed for a QuadModifier
@@ -301,22 +313,24 @@
     - IMP::QuadDerivativeModifier::get_output_particles()
 */
 #define IMP_INDEX_QUAD_DERIVATIVE_MODIFIER(Name)                        \
-  void apply(const ParticleQuad& a, DerivativeAccumulator&da) const {\
+  IMP_IMPLEMENT_INLINE(void apply(const ParticleQuad& a,\
+                                  DerivativeAccumulator&da) const, {    \
     apply_index(IMP::internal::get_model(a),                            \
                 IMP::internal::get_index(a), da);                       \
-  }                                                                     \
-  void apply_index(Model *m, const ParticleIndexQuad& a,\
-                   DerivativeAccumulator&da) const;                  \
-  void apply_indexes(Model *m, const ParticleIndexQuads &ps,      \
-             DerivativeAccumulator&da) const {                          \
+                       });                                              \
+  IMP_IMPLEMENT(void apply_index(Model *m, const ParticleIndexQuad& a,\
+                                 DerivativeAccumulator&da) const);      \
+  IMP_IMPLEMENT_INLINE(void apply_indexes(Model *m,\
+                                          const ParticleIndexQuads &ps,    \
+                                          DerivativeAccumulator&da) const, { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply_index(m, ps[i], da);                                  \
     }                                                                   \
-  }                                                                     \
-  ParticlesTemp get_input_particles(Particle*) const;                   \
-  ParticlesTemp get_output_particles(Particle*) const;                  \
-  ContainersTemp get_input_containers(Particle*) const;                 \
-  ContainersTemp get_output_containers(Particle*) const;                \
+                       });                                              \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle*) const);    \
+  IMP_IMPLEMENT(ParticlesTemp get_output_particles(Particle*) const);   \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle*) const);  \
+  IMP_IMPLEMENT(ContainersTemp get_output_containers(Particle*) const); \
   IMP_OBJECT(Name)
 
 
@@ -352,29 +366,29 @@
  */
 #define IMP_IMPLEMENT_QUAD_CONTAINER_OPERATIONS(Name, LOOP)       \
   public:                                                               \
-  template <class SM>                                                   \
+  IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
   void template_apply(const SM *sm,                                     \
-                      DerivativeAccumulator &da) const {                \
+                      DerivativeAccumulator &da) const, {               \
     LOOP(call_apply_index(sm, item, da));                               \
-  }                                                                     \
-  template <class SM>                                                   \
-  void template_apply(const SM *sm) const {                             \
+                                });                                     \
+  IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
+    void template_apply(const SM *sm) const, {                          \
     LOOP(call_apply_index(sm, item));                                   \
-  }                                                                     \
-  template <class SS>                                                   \
+                                });                                     \
+  IMP_IMPLEMENTATION_TEMPLATE_1(class SS,                               \
   double template_evaluate(const SS *s,                                 \
-                           DerivativeAccumulator *da) const {           \
+                           DerivativeAccumulator *da) const, {          \
     double ret=0;                                                       \
     LOOP({                                                              \
         double cur=call_evaluate_index(s, item, da);                    \
       ret+=cur;                                                         \
       });                                                               \
     return ret;                                                         \
-  }                                                                     \
-  template <class SS>                                                   \
+                                });                                     \
+  IMP_IMPLEMENTATION_TEMPLATE_1(class SS,                               \
   double template_evaluate_if_good(const SS *s,                         \
                                    DerivativeAccumulator *da,           \
-                                   double max) const {                  \
+                                   double max) const, {                 \
     double ret=0;                                                       \
     LOOP({                                                              \
         double cur=call_evaluate_if_good_index(s, item, da, max);       \
@@ -383,7 +397,7 @@
       if (max < 0) return ret;                                          \
       });                                                               \
     return ret;                                                         \
-  }
+                                });
 
 
 //! Declare the needed functions for a QuadContainer
@@ -396,12 +410,13 @@
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_QUAD_CONTAINER(Name)                      \
-  bool get_contents_changed() const;                                    \
-  bool get_contains_particle_quad(const ParticleQuad& p) const;    \
-  ParticleIndexQuads get_indexes() const;                     \
-  ParticleIndexQuads get_all_possible_indexes() const;           \
-  template <class S>                                                    \
-  Restraints create_decomposition_t(S *s) const {    \
+  IMP_IMPLEMENT(bool get_contents_changed() const);                     \
+  IMP_IMPLEMENT(bool get_contains_particle_quad(const ParticleQuad& p)\
+                const);                                       \
+  IMP_IMPLEMENT(ParticleIndexQuads get_indexes() const);                   \
+  IMP_IMPLEMENT(ParticleIndexQuads get_all_possible_indexes() const);      \
+  IMP_IMPLEMENTATION_TEMPLATE_1(class S,                                \
+    Restraints create_decomposition_t(S *s) const, {                    \
     ParticleIndexQuads all= get_all_possible_indexes();            \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
@@ -411,8 +426,9 @@
                                                            all[i]));    \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
-  Restraints create_decomposition(QuadScore *s) const {            \
+                                });                                     \
+  IMP_IMPLEMENT_INLINE(Restraints                                       \
+  create_decomposition(QuadScore *s) const, {                      \
     ParticleIndexQuads all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
@@ -420,7 +436,7 @@
             IMP::internal::get_particle(get_model(), all[i]));          \
     }                                                                   \
     return ret;                                                         \
-  }                                                                     \
+                       });                                              \
   IMP_IMPLEMENT_QUAD_CONTAINER(Name)
 
 
@@ -432,23 +448,26 @@
 */
 #define IMP_QUAD_FILTER(Name)                                     \
 public:                                                                 \
- bool get_contains(const ParticleQuad& p) const;                   \
- bool get_contains(Model *m,const ParticleIndexQuad& p) const {         \
+ IMP_IMPLEMENT(bool get_contains(const ParticleQuad& p) const); \
+ IMP_IMPLEMENT_INLINE(bool get_contains(Model *m,                       \
+                                        const ParticleIndexQuad& p)\
+                      const, {                                          \
    return get_contains(IMP::internal::get_particle(m,p));               \
- }                                                                      \
- ParticlesTemp get_input_particles(Particle* t) const;                  \
- ContainersTemp get_input_containers(Particle* t) const;                \
- void filter_in_place(Model *m, ParticleIndexQuads &ps) const {            \
+                      });                                               \
+ IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
+ IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
+                                   ParticleIndexQuads &ps) const, { \
    ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
                            IMP::internal::GetContainsIndex<Name>(this,  \
                                                                  m)),   \
             ps.end());                                                  \
- }                                                                      \
- void filter_in_place(ParticleQuadsTemp &ps) const {                \
+                      });                                               \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(ParticleQuadsTemp &ps) const, { \
    ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
                            IMP::internal::GetContains<Name>(this)),   \
             ps.end());                                                  \
- }                                                                      \
+   });                                                                  \
  IMP_OBJECT(Name)
 #else
 #define IMP_QUAD_FILTER(Name)                                     \

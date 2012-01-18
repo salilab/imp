@@ -39,6 +39,38 @@
 #define IMP_SWITCH_DOXYGEN(x,y) y
 #endif
 
+
+#ifdef IMP_DOXYGEN
+/** Declare a method that implements a method that is pure virtual in the
+    base class.
+*/
+#define IMP_IMPLEMENT(signature)
+/** Define a method inline that impements a pure virtual method.
+ */
+#define IMP_IMPLEMENT_INLINE(signature, body)
+
+/** Define an implementation detail template method.
+ */
+#define IMP_IMPLEMENTATION_TEMPLATE_1(arg0, signature, body)
+#define IMP_IMPLEMENTATION_TEMPLATE_2(arg0, arg1, signature, body)
+#else
+#define IMP_IMPLEMENT(signature) signature
+#define IMP_IMPLEMENT_INLINE(signature, body)   \
+  signature {                                   \
+    body;                                       \
+  }
+
+#define IMP_IMPLEMENTATION_TEMPLATE_1(arg0, signature, body)\
+  template <arg0> signature {body}
+
+#define IMP_IMPLEMENTATION_TEMPLATE_2(arg0, arg1, signature, body)\
+  template <arg0, arg1> signature {body}
+
+
+#endif
+
+
+
 #if defined(SWIG)
 #define IMP_NO_SWIG(x)
 #else
@@ -764,6 +796,30 @@ public:                                                                 \
 
 
 
+//! Define the basic things needed by any Object
+/** This defines
+    - IMP::base::Object::get_version_info()
+    - a private destructor
+    and declares
+    - IMP::base::Object::do_show()
+*/
+#define IMP_OBJECT_INLINE(Name, show, destructor)                       \
+  public:                                                               \
+  IMP_IMPLEMENT_INLINE(virtual std::string get_type_name() const,       \
+                        return #Name);                                  \
+  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
+                        get_version_info() const,                       \
+  return ::IMP::base::VersionInfo(get_module_name(),                    \
+                                  get_module_version()));               \
+  /** \brief For python, cast a generic Object to this type. Throw a
+      ValueException of object is not the right type.*/                 \
+static Name* get_from(IMP::base::Object *o) {                           \
+  return IMP::base::object_cast<Name>(o);                               \
+}                                                                       \
+IMP_IMPLEMENT_INLINE(virtual void do_show(std::ostream &out) const,     \
+                      show);                                            \
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();      \
+                                  destructor;)
 
 
 //! Define the basic things needed by any Object
@@ -775,45 +831,22 @@ public:                                                                 \
 */
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
-  virtual std::string get_type_name() const {return #Name;}             \
-  virtual ::IMP::base::VersionInfo get_version_info() const {           \
+  IMP_IMPLEMENT_INLINE(virtual std::string get_type_name() const,       \
+                        return #Name);                                  \
+  IMP_IMPLEMENT_INLINE( virtual ::IMP::base::VersionInfo                \
+                        get_version_info() const,                       \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
-                                  get_module_version());                \
-  }                                                                     \
+                                  get_module_version()));               \
   /** \brief For Python, cast a generic Object to this type. Throw a
       ValueException if object is not the right type.*/                 \
 static Name* get_from(IMP::base::Object *o) {                           \
   return IMP::base::object_cast<Name>(o);                               \
   }                                                                     \
-IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);          \
+IMP_IMPLEMENT(virtual void do_show(std::ostream &out) const);           \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();)
 
 
 
-//! Define the basic things needed by any Object
-/** This defines
-    - IMP::base::Object::get_version_info()
-    - a private destructor
-    and declares
-    - IMP::base::Object::do_show()
-*/
-#define IMP_OBJECT_INLINE(Name, show, destructor)                       \
-  public:                                                               \
-  virtual std::string get_type_name() const {return #Name;}             \
-  virtual ::IMP::base::VersionInfo get_version_info() const {           \
-    return ::IMP::base::VersionInfo(get_module_name(),                 \
-                                     get_module_version());             \
-  }                                                                     \
-  /** \brief For python, cast a generic Object to this type. Throw a
-      ValueException of object is not the right type.*/                 \
-static Name* get_from(IMP::base::Object *o) {                           \
-  return IMP::base::object_cast<Name>(o);                               \
-  }                                                                     \
-  IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
-      show;                                                             \
-    });                                                                 \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();     \
-                                    destructor;)
 
 
 
@@ -891,5 +924,18 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
   Generic##Name<targument>* create_##lcname carguments {                \
     return new Generic##Name<targument>cparguments;                      \
   }
+
+
+//! Declare a ref counted pointer to a new object
+/** \param[in] Typename The namespace qualified type being declared
+    \param[in] varname The name for the ref counted pointer
+    \param[in] args The arguments to the constructor, or ()
+    if there are none.
+    Please read the documentation for IMP::Pointer before using.
+*/
+#define IMP_NEW(Typename, varname, args)        \
+  IMP::base::Pointer<Typename> varname(new Typename args)
+
+
 
 #endif  /* IMPBASE_BASE_MACROS_H */

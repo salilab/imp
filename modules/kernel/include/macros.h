@@ -349,9 +349,10 @@ public:                                                                 \
     - IMP::Restraint::get_input_particles()
 */
 #define IMP_RESTRAINT(Name)                                             \
-  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
-  ContainersTemp get_input_containers() const;                          \
-  ParticlesTemp get_input_particles() const;                            \
+  IMP_IMPLEMENT(virtual double\
+                unprotected_evaluate(DerivativeAccumulator *accum) const); \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_OBJECT(Name)
 
 //! Define the basic things you need for an Optimizer.
@@ -360,8 +361,8 @@ public:                                                                 \
 
     \relatesalso IMP::Optimizer
 */
-#define IMP_OPTIMIZER(Name)                             \
-  virtual Float do_optimize(unsigned int max_steps);   \
+#define IMP_OPTIMIZER(Name)                                             \
+  IMP_IMPLEMENT(virtual Float do_optimize(unsigned int max_steps));     \
   IMP_OBJECT(Name)
 
 //! Define the basic things you need for a Sampler.
@@ -373,7 +374,7 @@ public:                                                                 \
 #define IMP_SAMPLER(Name)                       \
   IMP_OBJECT(Name);                             \
 protected:                                      \
- ConfigurationSet* do_sample() const
+ IMP_IMPLEMENT(ConfigurationSet* do_sample() const)
 
 
 
@@ -577,8 +578,9 @@ protected:                                      \
     \see IMP_UNARY_FUNCTION_INLINE
 */
 #define IMP_UNARY_FUNCTION(Name)                                        \
-  virtual DerivativePair evaluate_with_derivative(double feature) const; \
-  virtual double evaluate(double feature) const;                        \
+  IMP_IMPLEMENT(virtual DerivativePair                                  \
+                evaluate_with_derivative(double feature) const);        \
+  IMP_IMPLEMENT(virtual double evaluate(double feature) const);         \
   IMP_OBJECT(Name)
 
 
@@ -596,12 +598,13 @@ protected:                                      \
 */
 #define IMP_UNARY_FUNCTION_INLINE(Name, value_expression,               \
                                   derivative_expression, show_expression) \
-  virtual DerivativePair evaluate_with_derivative(double feature) const { \
+  IMP_IMPLEMENT_INLINE(virtual DerivativePair                           \
+  evaluate_with_derivative(double feature) const, {                     \
     return DerivativePair((value_expression), (derivative_expression)); \
-  }                                                                     \
-  virtual double evaluate(double feature) const {                       \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE(virtual double evaluate(double feature) const,{  \
     return (value_expression);                                          \
-  }                                                                     \
+    });                                                                 \
   IMP_OBJECT_INLINE(Name, out << show_expression, {})
 
 
@@ -611,7 +614,7 @@ protected:                                      \
     - IMP::FailureHandler::handle_failure()
 */
 #define IMP_FAILURE_HANDLER(Name)               \
-  void handle_failure();                        \
+  IMP_IMPLEMENT(void handle_failure());         \
   IMP_OBJECT(Name)
 
 
@@ -639,7 +642,7 @@ protected:                                      \
     ::IMP::internal::Counter skip_steps_, call_number_, update_number_; \
     std::string file_name_;                                             \
     vars                                                                \
-    virtual void update() {                                             \
+    IMP_IMPLEMENT_INLINE(virtual void update(), {                       \
       if (call_number_%(skip_steps_+1) ==0) {                           \
         std::ostringstream oss;                                         \
         bool formatted=false;                                           \
@@ -656,7 +659,7 @@ protected:                                      \
         ++update_number_;                                               \
       }                                                                 \
       ++call_number_;                                                   \
-    }                                                                   \
+      });                                                               \
   public:                                                               \
 /** Write to a file generated from the passed filename every
 skip_steps steps. The file_name constructor argument should contain
@@ -677,7 +680,7 @@ void write(std::string file_name, unsigned int call=0,                  \
   save_action                                                           \
     }                                                                   \
   private:                                                              \
-    void do_update(unsigned int call_number);                           \
+IMP_IMPLEMENT(void do_update(unsigned int call_number));                \
     IMP_OBJECT_INLINE(Name##OptimizerState,                             \
                       out << "Write to " << file_name_ << std::endl;,); \
   };                                                                    \
@@ -692,12 +695,12 @@ class Name##FailureHandler: public base::FailureHandler {               \
     file_name_(file_name) {                                             \
     constr}                                                             \
   functs                                                                \
-  void handle_failure() {                                               \
+  IMP_IMPLEMENT_INLINE(void handle_failure(), {                         \
     const std::string file_name=file_name_;                             \
     bool append=false; unsigned int call=0;                             \
     IMP_UNUSED(append); IMP_UNUSED(call);                               \
     save_action                                                         \
-      }                                                                 \
+      });                                                               \
   IMP_OBJECT_INLINE(Name##FailureHandler,                               \
                     out << "Write to " << file_name_ << std::endl;,);   \
 };                                                                      \
@@ -705,17 +708,6 @@ IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
 
 
 //! @}
-
-//! Declare a ref counted pointer to a new object
-/** \param[in] Typename The namespace qualified type being declared
-    \param[in] varname The name for the ref counted pointer
-    \param[in] args The arguments to the constructor, or ()
-    if there are none.
-    Please read the documentation for IMP::Pointer before using.
-*/
-#define IMP_NEW(Typename, varname, args)        \
-  IMP::Pointer<Typename> varname(new Typename args)
-
 
 
 /** Define a new key type.
