@@ -87,7 +87,10 @@ public:
   vector<algebra::Vector3D> forces_;
 };
 
-
+/** Repeatedly run the current model with brownian dynamics at different time
+    steps to try to find the maximum time step that can be used without
+    the model exploding.
+*/
 IMPATOMEXPORT double get_maximum_time_step_estimate(BrownianDynamics *bd);
 
 #ifndef IMP_DOXYGEN
