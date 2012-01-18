@@ -20,6 +20,11 @@
       TextWriter::open();                                               \
     }                                                                   \
   }                                                                     \
+  Name(const char* name): TextWriter(std::string(name)){                \
+    if (std::string(name).find("%1%") == std::string::npos) {           \
+      TextWriter::open();                                               \
+    }                                                                   \
+  }                                                                     \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \
