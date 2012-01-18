@@ -231,15 +231,16 @@ def IMPModuleExamples(env, example_files, data_files):
         links.append(l)
     _set_module_links(env, links)
 
-def _make_programs(envi, files):
+def _make_programs(envi, dirr, files):
     env= scons_tools.environment.get_bin_environment(envi,
                                                      extra_modules=[_get_module_name(envi)])
     ret=[]
     for f in files:
         if str(f).endswith(".cpp"):
-            ret.append(env.Program(f))
+            target=dirr.abspath+"/"+str(f).replace(".cpp","")
+            ret.append(env.Program(source=f, target=target))
         elif str(f).endswith(".py") and env.get('repository', None):
-            dest='moduledir/bin'
+            dest=dirr
             #print "handling", f.abspath, dest.path
             nm=File("#/"+env['repository']+"/modules/"+_get_module_name(env)+"/bin/"+str(f))
             #print dest.path, f.path, nm
@@ -248,7 +249,7 @@ def _make_programs(envi, files):
     return ret
 
 def IMPModuleBin(env, files):
-    prgs=_make_programs(env, files)
+    prgs=_make_programs(env, Dir("."), files)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
 
@@ -477,18 +478,19 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
        all files called test_*.py in the current directory and subdirectories."""
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
+    module=_get_module_name(env)
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, cpp_tests)
+        prgs= _make_programs(env, Dir("#/build/test"), cpp_tests)
         #print [x[0].abspath for x in prgs]
-        cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
+        cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
                                        source= prgs)
         files.append(cpptest)
     if len(expensive_cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, expensive_cpp_tests)
+        prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests)
         #print [x[0].abspath for x in prgs]
-        cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
+        cpptest= env.IMPModuleCPPTest(target="5s_expensive_cpp_test_programs.py"%module,
                                        source= prgs)
         expensive_files.append(cpptest)
     if check_standards:
