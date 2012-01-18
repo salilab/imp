@@ -206,7 +206,7 @@ public:
     std::pair<typename Traits::Value,
               typename Traits::Value>  ret;
     IMP_USAGE_CHECK(data_.size() > k.get_index()
-                    || data_[k.get_index()].size()==0,
+                    && data_[k.get_index()].size()!=0,
                     "Cannot request range of an unused key.");
     bool init=false;
     for (unsigned int i=0; i< data_[k.get_index()].size(); ++i) {
@@ -604,8 +604,21 @@ public:
           }
         }
         return ret;
+      } else if (k.get_index() < 7) {
+        std::swap(ret.first, ret.second);
+        for (unsigned int i=0; i< internal_coordinates_.size(); ++i) {
+          if (internal::FloatAttributeTableTraits
+              ::get_is_valid(internal_coordinates_[i][k.get_index()-4])) {
+            ret.first= std::min(ret.first, internal_coordinates_[i]
+                    [k.get_index()-4]);
+            ret.second= std::max(ret.second,
+                    internal_coordinates_[i][k.get_index()-4]);
+          }
+        }
+        return ret;
+
       } else {
-        return data_.get_range_internal(FloatKey(k.get_index()-4));
+        return data_.get_range_internal(FloatKey(k.get_index()-7));
       }
     } else {
       return ret;
