@@ -294,7 +294,7 @@ namespace {
                                       *c));
     }
     algebra::LinearFit lf(pts);
-    if (lf.get_a() < std::sqrt(lf.get_fit_error())/square(std::distance(b,e))
+    if (lf.get_a() < std::sqrt(lf.get_fit_error())/std::sqrt(std::distance(b,e))
         +.01*lf.get_b()) {
       return true;
     } else {
@@ -304,6 +304,7 @@ namespace {
   }
 
   bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
+    std::cout << "Trying time step " << step << std::endl;
     ParticlesTemp ps(bd->particles_begin(), bd->particles_end());
     c->load_configuration();
     bd->set_maximum_time_step(step);
@@ -329,6 +330,8 @@ namespace {
                               (coords[i][j]-coords[i+1][j]).get_magnitude());
       }
     }
+    std::cout << "Distances are "  << max_dist << std::endl;
+    std::cout << "Energies are "  << es << std::endl;
     return is_constant(es.begin(), es.end())
       && is_constant(max_dist.begin(), max_dist.end());
   }
