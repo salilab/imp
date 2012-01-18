@@ -457,12 +457,17 @@ template <class T>
     static const int converter=7;
   };
 
+/* Plain 'vector' (actually IMP::compatibility::vector) is the same as
+   std::vector on MSVC (see comment in modules/base/include/types.h) so
+   don't define the same template twice. */
+#ifndef _MSC_VER
   template <class T, class ConvertT>
   struct ConvertSequence<vector<T>, ConvertT > :
     public ConvertVectorBase< vector<T>,
                               ConvertT > {
     static const int converter=20;
   };
+#endif
 
   template <>
   struct Convert<std::string> {
