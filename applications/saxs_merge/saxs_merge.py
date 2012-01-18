@@ -543,6 +543,12 @@ Merging
             "angle).", type="int", default=0)
     group.add_option('--enoextrapolate', action='store_true', default=False,
             help="Don't extrapolate at all, even at low angle (default False)")
+    group.add_option('--enpoints', type="int", default=200, metavar="NUM",
+            help="Number of points to output for the mean function. Negative "
+            "values signify to take the same q values as the first data file. "
+            "In that case extrapolation flags are ignored, and extrapolation "
+            "is performed when the data file's q values fall outside of the "
+            "range of accepted data points. Default is NUM=200 points.")
     (args, files) = parser.parse_args()
     if len(files) == 0:
         parser.error("No files specified")
@@ -1027,8 +1033,17 @@ def write_data(merge, profiles, args):
         qmin = min([i[0] for i in merge.get_flag_intervals('eextrapol')])
     else:
         qmin=0
-    merge.write_mean(merge.get_filename(), bool_to_int=True, dir=args.destdir,
-            qmin=qmin, qmax=qmax, header=args.header, flags=mflags)
+    if args.enpoints >0:
+        merge.write_mean(merge.get_filename(), bool_to_int=True,
+                dir=args.destdir, qmin=qmin, qmax=qmax, header=args.header,
+                flags=mflags, num=args.enpoints)
+    else:
+        qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
+        qvals = qvals[where(qvals >= qmin)]
+        qvals = qvals[where(qvals <= qmax)]
+        merge.write_mean(merge.get_filename(), bool_to_int=True,
+                dir=args.destdir, qvalues=qvals, header=args.header,
+                flags=mflags)
     #summary
     fl=open(os.path.join(args.destdir,args.sumname),'w')
     fl.write("#STATISTICAL MERGE: SUMMARY\n\n")
