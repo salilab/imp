@@ -11,7 +11,7 @@ if not env.GetOption('help') and\
 else:
     opercppcompilation=None
 
-env.IMPModuleBuild(version='nightly-27',
+env.IMPModuleBuild(version='nightly-28',
                    required_modules=['core', 'algebra', 'container', 'display'],
                    lib_only_optional_modules=['cgal'],
                    lib_only_required_modules=[],
