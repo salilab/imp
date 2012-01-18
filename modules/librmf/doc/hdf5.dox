@@ -8,11 +8,12 @@
     - HDF5 files through RMF::HDF5File and RMF::HDF5ConstFile
     - HDF5 groups through RMF::HDF5Group and RMF::HDF5ConstGroup
     - HDF5 data sets through RMF::HDF5DataSetD and RMF::HDF5ConstDataSetD
+
     The \c Const variants are for read only files.
 
     They allow one to create a manipulate data sets containing floating point values, integers, strings, variable length arrays of floating point values and a few other types. Attributes on data sets of groups of those types can also be manipulated.
 
-    The top level classes are, in turn, derived from RMF::HDF5Object, RMF::HDF5ConstAttrbutes and RMF::HDF5MutableAttributes which provide access to general HDF5 per-object and attribute functionality.
+    The top level classes are, in turn, derived from RMF::HDF5Object, RMF::HDF5ConstAttributes and RMF::HDF5MutableAttributes which provide access to general HDF5 per-object and attribute functionality (all objects in HDF5 can have arbitrary small pieces of data attached to them via attributes).
 
     Not all of the functionality of the HDF5 \c C library is covered in C++. You can get the corresponding native handle from most objects with methods like RMF::HDF5File::get_handle() and use that for other operations if needed. Or submit a patch to the library.
 */
