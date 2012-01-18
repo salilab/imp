@@ -55,7 +55,7 @@ public:
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");
     IMP_NEW(ListSingletonContainer, c, (get_model()));
-    restraints_.push_back(container::create_restraint(score, c));
+    restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_model(get_model());
     containers_[predicate_value]=c;
   }
