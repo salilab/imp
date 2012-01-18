@@ -28,21 +28,21 @@
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \
- virtual void do_open();                                                \
- virtual void do_close()
+ IMP_IMPLEMENT(virtual void do_open());                                 \
+ IMP_IMPLEMENT(virtual void do_close())
 
 
 #define IMP_WRITER(Name)                                                \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \
- virtual void do_open();                                                \
- virtual void do_close()
+ IMP_IMPLEMENT(virtual void do_open());                                 \
+ IMP_IMPLEMENT(virtual void do_close())
 
 
 //! Define information for an Geometry object
 #define IMP_GEOMETRY(Name)                              \
-  IMP::display::Geometries get_components() const;      \
+  IMP_IMPLEMENT(IMP::display::Geometries get_components() const);       \
   IMP_OBJECT(Name)
 
 
@@ -56,12 +56,12 @@ protected:                                                              \
       display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const Color &c, std::string n):             \
       display::Geometry(c,n), v_(v) {}                                  \
-  display::Geometries Name::get_components() const {                    \
+  IMP_IMPLEMENT_INLINE(display::Geometries Name::get_components() const, { \
     return display::Geometries(1, const_cast<Name*>(this));             \
-  }                                                                     \
-  void Name::do_show(std::ostream &out) const {                         \
+    })                                                                  \
+  IMP_IMPLEMENT_INLINE(void Name::do_show(std::ostream &out) const, {   \
     out << #Name << "Geometry: " << get_geometry();                     \
-  }                                                                     \
+    });                                                                 \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
@@ -130,15 +130,15 @@ protected:                                                              \
       display::Geometry(n), v_(v) {}                                    \
   Name::Name(const Type &v, const display::Color &c, std::string n):    \
       display::Geometry(c,n), v_(v) {}                                  \
-  void Name::do_show(std::ostream &out) const {                         \
+  IMP_IMPLEMENT_INLINE(void Name::do_show(std::ostream &out) const, {   \
     out << #Name << "Geometry: "                                        \
         << get_geometry();                                              \
-  }                                                                     \
-  display::Geometries Name::get_components() const {                    \
+    });                                                                 \
+  IMP_IMPLEMENT_INLINE(display::Geometries Name::get_components() const, { \
     display::Geometries ret;                                            \
     decomp;                                                             \
     return ret;                                                         \
-  }                                                                     \
+    });                                                                 \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \
@@ -147,12 +147,12 @@ protected:                                                              \
   public:                                                               \
   Name##Geometry(Particle* p): display::SingletonGeometry(p){}          \
   Name##Geometry(Decorator d): display::SingletonGeometry(d){}          \
-  display::Geometries get_components() const {                          \
+  IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
     Decorator d(get_particle());                                        \
     action;                                                             \
     return ret;                                                         \
-  }                                                                     \
+    });                                                                 \
   IMP_OBJECT_INLINE(Name##Geometry,                                     \
                     out <<  Decorator(get_particle())<< std::endl;,{}); \
   };                                                                    \
@@ -160,14 +160,14 @@ protected:                                                              \
   class Name##sGeometry: public display::SingletonsGeometry {           \
   public:                                                               \
   Name##sGeometry(SingletonContainer* sc): display::SingletonsGeometry(sc){} \
-  display::Geometries get_components() const {                          \
+  IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
     IMP_FOREACH_SINGLETON(get_container(), {                            \
         Decorator d(_1);                                                \
         action;                                                         \
       });                                                               \
     return ret;                                                         \
-  }                                                                     \
+    });                                                                 \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
                     out <<  get_container() << std::endl;,{});          \
   }
@@ -179,13 +179,13 @@ protected:                                                              \
   public:                                                               \
   Name##Geometry(const ParticlePair &pp):                               \
   display::PairGeometry(pp){}                                           \
-  display::Geometries get_components() const {                          \
+  IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
     Decorator d0(get_particle_pair()[0]);                               \
     Decorator d1(get_particle_pair()[1]);                               \
     action;                                                             \
     return ret;                                                         \
-  }                                                                     \
+    })                                                                  \
   IMP_OBJECT_INLINE(Name##Geometry,                                     \
                     out <<  Decorator(get_particle_pair()[0])           \
                     << " " << Decorator(get_particle_pair()[1])         \
@@ -195,7 +195,7 @@ protected:                                                              \
   class Name##sGeometry: public display::PairsGeometry {                \
   public:                                                               \
   Name##sGeometry(PairContainer* sc): display::PairsGeometry(sc){}      \
-  display::Geometries get_components() const {                          \
+  IMP_IMPLEMENT_INLINE(display::Geometries get_components() const, {    \
     display::Geometries ret;                                            \
     IMP_FOREACH_PAIR(get_container(),{                                  \
         Decorator d0(_1[0]);                                            \
@@ -203,7 +203,7 @@ protected:                                                              \
         action;                                                         \
       });                                                               \
     return ret;                                                         \
-  }                                                                     \
+    });                                                                 \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
                     out <<  get_container() << std::endl;,{});          \
   }
