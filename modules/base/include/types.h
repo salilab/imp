@@ -17,7 +17,16 @@
 //IMPBASE_BEGIN_NAMESPACE
 namespace IMP {
 #ifndef SWIG
+/* MSVC gets very confused (error C2872) between std::vector and
+   IMP::compatibility::vector if we include headers (e.g. OpenCV) that use
+   a plain 'vector' after 'using namespace std'. Since compatibility::vector
+   doesn't add anything to std::vector anyway on MSVC, use std::vector instead
+   here. */
+# ifdef _MSC_VER
+  using std::vector;
+# else
   using compatibility::vector;
+# endif
 #else
   template <class T>
   struct vector {};
