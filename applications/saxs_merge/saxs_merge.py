@@ -6,6 +6,7 @@ from numpy import *
 import copy
 from scipy.stats import t as student_t
 
+import IMP
 import IMP.isd
 import IMP.gsl
 
@@ -540,6 +541,8 @@ Merging
             "and the highest acceptable data point is at q=0.3, the mean will "
             "be estimated up to q=0.45. Default is 0 (just extrapolate at low "
             "angle).", type="int", default=0)
+    group.add_option('--enoextrapolate', action='store_true', default=False,
+            help="Don't extrapolate at all, even at low angle (default False)")
     (args, files) = parser.parse_args()
     if len(files) == 0:
         parser.error("No files specified")
@@ -920,6 +923,7 @@ def merging(profiles, args):
     """
     schedule = args.eschedule
     verbose = args.verbose
+    do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
     if verbose > 0:
         print "5. merging"
@@ -967,10 +971,11 @@ def merging(profiles, args):
     #create interval for extrapolation
     data = merge.get_data(colwise=True)['q']
     merge.set_flag_interval('eextrapol', min(data), max(data), False)
-    merge.set_flag_interval('eextrapol',0,min(data),True)
-    if args.eextrapolate > 0:
-        merge.set_flag_interval('eextrapol',
-                max(data), max(data)*extrapolate, True)
+    if do_extrapolation:
+        merge.set_flag_interval('eextrapol',0,min(data),True)
+        if args.eextrapolate > 0:
+            merge.set_flag_interval('eextrapol',
+                    max(data), max(data)*extrapolate, True)
     #set Nreps to min of all
     #its the bet we can do when fitting all points simultaneously
     merge.set_Nreps(min([p.get_Nreps() for p in profiles]))
@@ -1018,8 +1023,12 @@ def write_data(merge, profiles, args):
     merge.write_data(merge.get_filename(), bool_to_int=True, dir=args.destdir,
             header=args.header, flags=dflags)
     qmax = max([i[1] for i in merge.get_flag_intervals('eextrapol')])
+    if args.enoextrapolate:
+        qmin = min([i[0] for i in merge.get_flag_intervals('eextrapol')])
+    else:
+        qmin=0
     merge.write_mean(merge.get_filename(), bool_to_int=True, dir=args.destdir,
-            qmin=0, qmax=qmax, header=args.header, flags=mflags)
+            qmin=qmin, qmax=qmax, header=args.header, flags=mflags)
     #summary
     fl=open(os.path.join(args.destdir,args.sumname),'w')
     fl.write("#STATISTICAL MERGE: SUMMARY\n\n")
