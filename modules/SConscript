@@ -23,7 +23,8 @@ modules=['compatibility',
          'em2d',
          'bullet',
          'misc',
-         'system']
+         'system',
+         'isd']
 # always last
 modules.append('benchmark')
 modules.append('example')
