@@ -480,8 +480,8 @@ Merging
                               " of zero are discarded as well")
     parser.add_option_group(group)
 
-    group.add_option('--aalpha', help='type I error (default 0.001)',
-                     type="float", default=0.001, metavar='ALPHA')
+    group.add_option('--aalpha', help='type I error (default 1e-7)',
+                     type="float", default=1e-7, metavar='ALPHA')
     group.add_option('--acutoff', help='when a value after CUT is discarded,'
             ' the rest of the curve is discarded as well (default is 0.1)',
             type="float", default=0.1, metavar='CUT')
@@ -502,10 +502,10 @@ Merging
     group.add_option('--bsigma', help='Initial value for sigma (default 10)',
                      type="int", default=10, metavar='SIGMA')
     group.add_option('--bschedule', help='Simulation schedule. Default is '
-            '"10:10000/5:1000/1:100" which means use every 10 data points for '
-            'the first 10000 steps, then every 5 data points for 1000 steps, '
-            ' and finally all data points for the last 100 steps.',
-            default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
+            '"10:1000/5:100/1:10" which means use every 10 data points for '
+            'the first 1000 steps, then every 5 data points for 100 steps, '
+            ' and finally all data points for the last 10 steps.',
+            default = "10:1000/5:100/1:10", metavar="SCHEDULE")
     #rescaling
     group = optparse.OptionGroup(parser, title="Rescaling (Step 3)",
                 description="Find the most probable scaling factor of all "
@@ -533,8 +533,8 @@ Merging
                 "of mean function")
     parser.add_option_group(group)
     group.add_option('--eschedule', help='Simulation schedule, see fitting'
-            ' step. (default 10:10000/5:1000/1:100)',
-            default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
+            ' step. (default 10:1000/5:100/1:10)',
+            default = "10:1000/5:100/1:10", metavar="SCHEDULE")
     group.add_option('--eextrapolate', metavar="NUM", help='Extrapolate '
             "NUM percent outside of the curve's bounds. Example: if NUM=50 "
             "and the highest acceptable data point is at q=0.3, the mean will "
