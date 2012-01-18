@@ -39,7 +39,12 @@ inline core::Mover* create_serial_mover(const ParticlesTemp &ps) {
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints.*/
 inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
-                          const PairFilters &excluded=PairFilters()) {
+                           const PairFilters &excluded=PairFilters(),
+                           LogLevel ll=DEFAULT) {
+  // make sure that errors and log messages are marked as coming from this
+  // function
+  IMP_FUNCTION_LOG;
+  SetLogState sls(ll);
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
