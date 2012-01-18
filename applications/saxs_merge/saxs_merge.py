@@ -739,12 +739,14 @@ def cleanup(profiles, args):
     if verbose >0:
         print "1. cleanup"
     #loop over profiles
+    good_profiles=[]
     for p in profiles:
         if verbose > 1:
             print "   ",p.filename
         N = p.get_Nreps()
         p.new_flag('agood',bool)
         p.new_flag('apvalue',float)
+        all_points_bad = True
         #loop over individual points
         had_outlier = False
         for datum in p.get_data():
@@ -760,11 +762,18 @@ def cleanup(profiles, args):
                     had_outlier = True
             else:
                 p.set_flag(id, 'agood', True)
+                if all_points_bad:
+                    all_points_bad = False
             p.set_flag(id, 'apvalue', pval)
+        if all_points_bad:
+            print "Warning: all points in file %s have been discarded"\
+                    " on cleanup" % p.filename
+        else:
+            good_profiles.append(p)
     #need a continuous indicator of validity
-    for p in profiles:
+    for p in good_profiles:
         create_intervals_from_data(p, 'agood')
-    return profiles, args
+    return good_profiles, args
 
 def fitting(profiles, args):
     """second stage of merge: gp fitting
