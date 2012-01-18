@@ -44,9 +44,12 @@ void GaussianProcessInterpolationRestraint::set_model(Model *m)
         m->add_score_state(ss_);
     } else {
         if (ss_) {
-            Model *m = gpi_->sigma_->get_model();
-            m->remove_score_state(ss_);
-            ss_=nullptr;
+            if (ss_->get_has_model())
+            {
+                Model *m = ss_->get_model();
+                m->remove_score_state(ss_);
+                ss_=nullptr;
+            }
         }
     }
     Restraint::set_model(m);

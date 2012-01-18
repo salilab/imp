@@ -86,7 +86,7 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 class IMPISDEXPORT GaussianProcessInterpolationScoreState : public ScoreState
 {
     private:
-        IMP::Pointer<GaussianProcessInterpolationRestraint> gpir_;
+        IMP::WeakPointer<GaussianProcessInterpolationRestraint> gpir_;
 
     private:
         GaussianProcessInterpolationScoreState(
