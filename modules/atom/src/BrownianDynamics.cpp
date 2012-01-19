@@ -294,9 +294,8 @@ namespace {
                                       *c));
     }
     algebra::LinearFit lf(pts);
-    if (lf.get_a() < std::sqrt(lf.get_fit_error())/
-                     std::sqrt(static_cast<double>(std::distance(b,e)))
-                     +.01*lf.get_b()) {
+    if (lf.get_a() < std::sqrt(lf.get_fit_error())
+        +.01*lf.get_b()) {
       return true;
     } else {
       IMP_LOG(TERSE, "Rejecting " << lf << std::endl);
