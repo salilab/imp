@@ -6,30 +6,16 @@ import sys
 import getopt
 import shutil
 import re
-omre=re.compile("(?P<prefix>[, \(\)])version=['\"](?P<version>[0123456789]*)['\"]")
-mre=re.compile("(?P<prefix>[, \(\)])version=['\"]nightly-(?P<version>[0123456789]*)['\"]")
-
+import datetime
+mre=re.compile("(?P<prefix>[, \(\)])version=['\"][^'\"]*['\"]")
+version=str(datetime.date.today().day)+"/"+str(datetime.date.today().month)+"/"+str(datetime.date.today().year)
 def increment(module):
     path=module
     print path
     sconscript= open(path).read()
-    if sconscript.find("version='SVN'") != -1:
-        sconscript=sconscript.replace("version='SVN'", "version='nightly-1'")
-    elif sconscript.find("version=\"SVN\"") != -1:
-	    sconscript=sconscript.replace("version=\"SVN\"", "version='nightly-1'")
-    else:
-        match=re.search(mre, sconscript)
-        if match:
-          num= int(match.groupdict()['version'])
-          prefix= match.groupdict()['prefix']
-          sconscript= re.sub(mre, prefix+"version='nightly-"+str(num+1)+"'", sconscript)
-        else:
-          match=re.search(omre, sconscript)
-          if match:
-               num= int(match.groupdict()['version'])
-               prefix= match.groupdict()['prefix']
-               sconscript= re.sub(omre,
-                        prefix+"version='nightly-"+str(num+1)+"'", sconscript)
+    match=re.search(mre, sconscript)
+    prefix= match.groupdict()['prefix']
+    sconscript= re.sub(mre, prefix+"version='nightly-"+version+"'", sconscript)
     open(path, "w").write(sconscript)
 
 def main():
