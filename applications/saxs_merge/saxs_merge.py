@@ -10,6 +10,8 @@ import IMP
 import IMP.isd
 import IMP.gsl
 
+IMP.set_log_level(0)
+
 class SAXSProfile:
 
     def __init__(self):
@@ -353,7 +355,7 @@ class SAXSProfile:
 
     def write_data(self, filename, prefix='data_', suffix='', sep=' ',
             bool_to_int=False, dir='./', header=True, flags=None,
-            float_fmt='%15f', *args, **kwargs):
+            float_fmt='%.15G', *args, **kwargs):
         fl=open(os.path.join(dir,prefix+filename+suffix),'w')
         allflags = self.get_flag_names()
         if flags == None:
@@ -379,7 +381,7 @@ class SAXSProfile:
 
     def write_mean(self, filename, prefix='mean_', suffix='', sep=' ',
             bool_to_int=False, dir='./', header=True, flags=None,
-            float_fmt="%15f", *args, **kwargs):
+            float_fmt="%.15G", *args, **kwargs):
         fl=open(os.path.join(dir,prefix+filename+suffix),'w')
         allflags = self.get_flag_names()
         if flags == None:
