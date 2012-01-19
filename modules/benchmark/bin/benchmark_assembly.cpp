@@ -1,4 +1,5 @@
 /**
+ * \file benchmark_assembly.cpp for silly standards test
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/example.h>
@@ -7,6 +8,7 @@
 #include <IMP/display.h>
 #include <IMP/core.h>
 #include <IMP/atom.h>
+#include <IMP/container.h>
 
 using namespace IMP;
 using namespace algebra;
@@ -148,7 +150,8 @@ int main(int, char *[]) {
     XYZ(ps[i]).set_coordinates(get_zero_vector_d<3>());
   }
   try {
-    optimize_assembly(m, ps, get_as<RestraintsTemp>(rs), RestraintsTemp(),
+    example::optimize_assembly(m, ps, get_as<RestraintsTemp>(rs),
+                               RestraintsTemp(),
                       bb+20, ssps, 20000*s3.size(),
                       interactions);
   } catch (Exception e) {
