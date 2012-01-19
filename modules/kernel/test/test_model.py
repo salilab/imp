@@ -205,6 +205,16 @@ class ModelTests(IMP.test.TestCase):
         for i in range(0,n):
             ret.append(random.choice(ps))
         return ret
+    def test_ranges(self):
+        """Test float attribute ranges"""
+        m=IMP.Model()
+        ps=[IMP.Particle(m) for i in range(0,2)]
+        for k in [IMP.FloatKey(0), IMP.FloatKey(4), IMP.FloatKey(7)]:
+            ps[0].add_attribute(k, k.get_index())
+            ps[1].add_attribute(k, k.get_index()+1)
+            rg= IMP._get_range(m, k)
+            self.assertEqual(rg[0], k.get_index())
+            self.assertEqual(rg[1], k.get_index()+1)
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
         m= IMP.Model()

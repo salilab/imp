@@ -221,6 +221,10 @@ inline void bad_pass(FloatKey*) {}
 inline void bad_pass(FloatKeys*) {}
 #endif
 
+inline FloatRange _get_range(Model *m,
+                             FloatKey k) {
+  return m->get_range(k);
+}
 
 
 IMP_END_INTERNAL_NAMESPACE
