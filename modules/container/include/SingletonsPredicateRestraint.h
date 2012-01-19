@@ -78,6 +78,11 @@ template <class Score>
     error_on_unknown_=tf;
   }
 
+  ParticlesTemp get_particles(int predicate_value) const {
+    return containers_.find(predicate_value)->second
+      ->get_particles();
+  }
+
   IMP_RESTRAINT(SingletonsPredicateRestraint);
 private:
   Restraints do_create_current_decomposition() const;

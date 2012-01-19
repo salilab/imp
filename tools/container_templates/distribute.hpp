@@ -78,6 +78,11 @@ template <class Score>
     error_on_unknown_=tf;
   }
 
+  PLURALVARIABLETYPE get_FUNCTIONNAMEs(int predicate_value) const {
+    return containers_.find(predicate_value)->second
+      ->get_FUNCTIONNAMEs();
+  }
+
   IMP_RESTRAINT(CLASSNAMEsPredicateRestraint);
 private:
   Restraints do_create_current_decomposition() const;

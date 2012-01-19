@@ -78,6 +78,11 @@ template <class Score>
     error_on_unknown_=tf;
   }
 
+  ParticleTripletsTemp get_particle_triplets(int predicate_value) const {
+    return containers_.find(predicate_value)->second
+      ->get_particle_triplets();
+  }
+
   IMP_RESTRAINT(TripletsPredicateRestraint);
 private:
   Restraints do_create_current_decomposition() const;
