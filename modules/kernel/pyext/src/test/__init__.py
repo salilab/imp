@@ -476,7 +476,7 @@ class TestCase(unittest.TestCase):
         self.assertEquals(len(not_found), 0,
                           message)
         for e in exceptions:
-            self.assertIn(e, all, "Show exception "+e+" is not a class in algebra")
+            self.assertIn(e, all, "Show exception "+e+" is not a class in module")
             self.assertTrue(not hasattr(getattr(modulename, e), 'show'),
                              "Exception "+e+" is not really a show exception")
 
