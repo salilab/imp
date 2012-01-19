@@ -64,7 +64,7 @@ void CLASSNAMEsPredicateRestraint
 }
 void CLASSNAMEsPredicateRestraint
 ::update_lists_if_necessary() const {
-  if (updated_ && input_->get_is_up_to_date()) return;
+  if (updated_ && !input_->get_contents_changed()) return;
   updated_=true;
   if (unknown_container_) {
     unknown_container_->clear_FUNCTIONNAMEs();
