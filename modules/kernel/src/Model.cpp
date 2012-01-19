@@ -74,19 +74,19 @@ Model::~Model()
       IMP_CHECK_OBJECT(particle_index_[i]);
       Particle* op=particle_index_[i];
       op->m_=nullptr;
-      particle_index_[i]=NULL;
+      particle_index_[i]=nullptr;
     }
   }
   {
     Restraints rs(tracked_restraints_.begin(), tracked_restraints_.end());
     for (unsigned int i=0; i < rs.size(); ++i) {
-      rs[i]->set_model(NULL);
+      rs[i]->set_model(nullptr);
     }
   }
   {
     ScoreStates rs(score_states_begin(), score_states_end());
     for (unsigned int i=0; i < rs.size(); ++i) {
-      rs[i]->set_model(NULL);
+      rs[i]->set_model(nullptr);
     }
   }
 }
