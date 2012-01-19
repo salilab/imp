@@ -207,6 +207,8 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   p->set_name(oss.str());
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
+  d.set_occupancy(internal::atom_occupancy(pdb_line));
+  d.set_temperature_factor(internal::atom_temp_factor(pdb_line));
   d.set_element(e);
   // check if the element matches
   Element e2 = get_element_for_atom_type(atom_name);

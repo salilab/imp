@@ -42,5 +42,34 @@ class PDBReadWriteTest(IMP.test.TestCase):
             print s.getvalue()
             self.assertEqual(s.getvalue()[15+12:15+16].strip(), atom)
 
+    def test_read_atom(self):
+        """Test that all fields are read from PDB ATOM records"""
+        s = StringIO()
+        # PDB is fixed-format; we should be able to read coordinates even
+        # without spaces between them
+        s.write('ATOM      1  N   ALA A   5    3000.0001000.4002000.600'
+                '  2.00  6.40           N\n')
+        s.seek(0)
+
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(s, m)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 1)
+        a = IMP.atom.Atom(atoms[0])
+        r = IMP.atom.Residue(a.get_parent())
+        c = IMP.atom.Chain(r.get_parent())
+        self.assertEqual(a.get_input_index(), 1)
+        self.assertEqual(a.get_atom_type().get_string(), 'N')
+        # Note: currently don't read alternate location or insertion code
+        self.assertEqual(r.get_residue_type().get_string(), 'ALA')
+        self.assertEqual(c.get_id(), 'A')
+        self.assertEqual(r.get_index(), 5)
+        coord = a.get_as_xyz().get_coordinates()
+        self.assertAlmostEqual(coord[0], 3000.000, delta=0.001)
+        self.assertAlmostEqual(coord[1], 1000.400, delta=0.001)
+        self.assertAlmostEqual(coord[2], 2000.600, delta=0.001)
+        self.assertAlmostEqual(a.get_occupancy(), 2.00, delta=0.01)
+        self.assertAlmostEqual(a.get_temperature_factor(), 6.40, delta=0.01)
+
 if __name__ == '__main__':
     IMP.test.main()
