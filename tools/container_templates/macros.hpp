@@ -445,6 +445,7 @@
 /** In addition to the methods done by all the macros, it declares
     - IMP::CLASSNAMEFilter::get_contains()
     - IMP::CLASSNAMEFilter::get_input_particles()
+    - IMP::CLASSNAMEFilter::get_input_containers()
 */
 #define IMP_HEADERNAME_FILTER(Name)                                     \
 public:                                                                 \
@@ -471,6 +472,47 @@ public:                                                                 \
  IMP_OBJECT(Name)
 #else
 #define IMP_HEADERNAME_FILTER(Name)                                     \
+  bool get_contains(ARGUMENTTYPE p) const;                    \
+  bool get_contains(Model *m,PASSINDEXTYPE p) const;           \
+  ParticlesTemp get_input_particles(Particle*t) const;                  \
+  ContainersTemp get_input_containers(Particle*t) const;                \
+  IMP_OBJECT(Name)
+#endif
+
+
+#ifndef SWIG
+//! Declare the needed functions for a CLASSNAMEFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::CLASSNAMEFilter::get_contains() (model, index variant)
+    - IMP::CLASSNAMEFilter::get_input_particles()
+    - IMP::CLASSNAMEFilter::get_input_containers()
+*/
+#define IMP_INDEX_HEADERNAME_FILTER(Name)                               \
+public:                                                                 \
+IMP_IMPLEMENT_INLINE(bool get_contains(ARGUMENTTYPE p) const,{\
+    return get_contains(IMP::internal::get_model(p),                    \
+                        IMP::internal::get_index(p));                   \
+  });                                                                   \
+IMP_IMPLEMENT(bool get_contains(Model *m,                               \
+                                        PASSINDEXTYPE p)\
+              const);                                                   \
+ IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
+ IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
+                                   PLURALINDEXTYPE &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContainsIndex<Name>(this,  \
+                                                                 m)),   \
+            ps.end());                                                  \
+                      });                                               \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(PLURALVARIABLETYPE &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContains<Name>(this)),   \
+            ps.end());                                                  \
+   });                                                                  \
+ IMP_OBJECT(Name)
+#else
+#define IMP_INDEX_HEADERNAME_FILTER(Name)                     \
   bool get_contains(ARGUMENTTYPE p) const;                    \
   bool get_contains(Model *m,PASSINDEXTYPE p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \
