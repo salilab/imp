@@ -445,6 +445,7 @@
 /** In addition to the methods done by all the macros, it declares
     - IMP::SingletonFilter::get_contains()
     - IMP::SingletonFilter::get_input_particles()
+    - IMP::SingletonFilter::get_input_containers()
 */
 #define IMP_SINGLETON_FILTER(Name)                                     \
 public:                                                                 \
@@ -471,6 +472,47 @@ public:                                                                 \
  IMP_OBJECT(Name)
 #else
 #define IMP_SINGLETON_FILTER(Name)                                     \
+  bool get_contains(Particle* p) const;                    \
+  bool get_contains(Model *m,ParticleIndex p) const;           \
+  ParticlesTemp get_input_particles(Particle*t) const;                  \
+  ContainersTemp get_input_containers(Particle*t) const;                \
+  IMP_OBJECT(Name)
+#endif
+
+
+#ifndef SWIG
+//! Declare the needed functions for a SingletonFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::SingletonFilter::get_contains() (model, index variant)
+    - IMP::SingletonFilter::get_input_particles()
+    - IMP::SingletonFilter::get_input_containers()
+*/
+#define IMP_INDEX_SINGLETON_FILTER(Name)                               \
+public:                                                                 \
+IMP_IMPLEMENT_INLINE(bool get_contains(Particle* p) const,{\
+    return get_contains(IMP::internal::get_model(p),                    \
+                        IMP::internal::get_index(p));                   \
+  });                                                                   \
+IMP_IMPLEMENT(bool get_contains(Model *m,                               \
+                                        ParticleIndex p)\
+              const);                                                   \
+ IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
+ IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
+                                   ParticleIndexes &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContainsIndex<Name>(this,  \
+                                                                 m)),   \
+            ps.end());                                                  \
+                      });                                               \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(ParticlesTemp &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContains<Name>(this)),   \
+            ps.end());                                                  \
+   });                                                                  \
+ IMP_OBJECT(Name)
+#else
+#define IMP_INDEX_SINGLETON_FILTER(Name)                     \
   bool get_contains(Particle* p) const;                    \
   bool get_contains(Model *m,ParticleIndex p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \

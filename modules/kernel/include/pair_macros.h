@@ -445,6 +445,7 @@
 /** In addition to the methods done by all the macros, it declares
     - IMP::PairFilter::get_contains()
     - IMP::PairFilter::get_input_particles()
+    - IMP::PairFilter::get_input_containers()
 */
 #define IMP_PAIR_FILTER(Name)                                     \
 public:                                                                 \
@@ -471,6 +472,47 @@ public:                                                                 \
  IMP_OBJECT(Name)
 #else
 #define IMP_PAIR_FILTER(Name)                                     \
+  bool get_contains(const ParticlePair& p) const;                    \
+  bool get_contains(Model *m,const ParticleIndexPair& p) const;           \
+  ParticlesTemp get_input_particles(Particle*t) const;                  \
+  ContainersTemp get_input_containers(Particle*t) const;                \
+  IMP_OBJECT(Name)
+#endif
+
+
+#ifndef SWIG
+//! Declare the needed functions for a PairFilter
+/** In addition to the methods done by all the macros, it declares
+    - IMP::PairFilter::get_contains() (model, index variant)
+    - IMP::PairFilter::get_input_particles()
+    - IMP::PairFilter::get_input_containers()
+*/
+#define IMP_INDEX_PAIR_FILTER(Name)                               \
+public:                                                                 \
+IMP_IMPLEMENT_INLINE(bool get_contains(const ParticlePair& p) const,{\
+    return get_contains(IMP::internal::get_model(p),                    \
+                        IMP::internal::get_index(p));                   \
+  });                                                                   \
+IMP_IMPLEMENT(bool get_contains(Model *m,                               \
+                                        const ParticleIndexPair& p)\
+              const);                                                   \
+ IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
+ IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
+                                   ParticleIndexPairs &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContainsIndex<Name>(this,  \
+                                                                 m)),   \
+            ps.end());                                                  \
+                      });                                               \
+ IMP_IMPLEMENT_INLINE(void filter_in_place(ParticlePairsTemp &ps) const, { \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                           IMP::internal::GetContains<Name>(this)),   \
+            ps.end());                                                  \
+   });                                                                  \
+ IMP_OBJECT(Name)
+#else
+#define IMP_INDEX_PAIR_FILTER(Name)                     \
   bool get_contains(const ParticlePair& p) const;                    \
   bool get_contains(Model *m,const ParticleIndexPair& p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \
