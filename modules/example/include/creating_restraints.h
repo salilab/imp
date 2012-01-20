@@ -22,17 +22,15 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 /** Restraint the passed particles to be connected in a chain. The distance
     between consecutive particles is length_factor*the sum of the radii.
-    If a ClosePairContainer is passed, a filter is created to ensure that
-    these pairs don't repell one another.
 
-    Note, this assumes that all such chains will be disjoint (and assuming
-    this you should only pass the ClosePairContainer to one such call).
+    Note, this assumes that all such chains will be disjoint and so you can
+    use the container::ExclusiveConsecutivePairFilter if you want to filter
+    out all pairs of particles connected by such chain restraints.
 */
 inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
                                    double length_factor,
                                    double k,
-                                   std::string name,
-                                   container::ClosePairContainer *icpc=NULL) {
+                                   std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
@@ -41,8 +39,8 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
   // the true, says that the particles will be in no other
   // ConsecutivePairContainer
   // this accelerates certain computations
-  IMP_NEW(container::ConsecutivePairContainer, cpc,
-          (ps, true, name+" consecutive pairs"));
+  IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
+          (ps, name+" consecutive pairs"));
   Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get());
   m->add_restraint(r);
   if (icpc) {

@@ -18,9 +18,22 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! A container which contains all consecutive pairs from a list
+/** If each of your particles will only be in one such container,
+    you may want to use the ExclusiveConsecutivePairContainer instead.
+*/
 class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
+  friend class ExclusiveConsecutivePairFilter;
+  static IntKey get_exclusive_key() {
+    static IntKey k("exclusive consecutive numbering");
+    return k;
+  }
   const ParticleIndexes ps_;
+  IntKey key_;
+  void init(bool no_overlaps);
+  ConsecutivePairContainer(const ParticlesTemp &ps,
+                           bool no_overlaps,
+                           std::string name="ConsecutivePairContainer%1%");
 #define IMP_CP_LOOP(body)                       \
   for (unsigned int i=1; i< ps_.size(); ++i) {  \
     ParticleIndexPair item(ps_[i-1], ps_[i]);   \
@@ -30,15 +43,9 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
                                                IMP_CP_LOOP);
 
 #undef IMP_CP_LOOP
-
-  IntKey key_;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  /** If no overlaps is true, this CPC is assumed not to share any particles
-      with another CPC.
-  */
   ConsecutivePairContainer(const ParticlesTemp &ps,
-                           bool no_overlaps=false,
                            std::string name="ConsecutivePairContainer%1%");
 
 #ifndef IMP_DOXYGEN
@@ -51,17 +58,42 @@ public:
 
 IMP_OBJECTS(ConsecutivePairContainer,ConsecutivePairContainers);
 
+/** This is an ConsecutivePairContainer where each particle can only be on
+    one ExclusiveConsecutivePairContainer. The exclusivity makes the code
+    more efficient and allows one to use the ExclusiveConsecutivePairFilter,
+    which is way more efficient than using an InContainerPairFilter
+    with a ConsecutivePairContainer.*/
+class IMPCONTAINEREXPORT ExclusiveConsecutivePairContainer :
+public ConsecutivePairContainer
+{
+public:
+  //! Get the individual particles from the passed SingletonContainer
+  ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
+          std::string name="ExclusiveConsecutivePairContainer%1%");
 
-inline bool
-ConsecutivePairContainer
-::get_contains_particle_pair(const ParticlePair &p) const {
-  if (!p[0]->has_attribute(key_)) return false;
-  int ia= p[0]->get_value(key_);
-  if (!p[1]->has_attribute(key_)) return false;
-  int ib= p[1]->get_value(key_);
+};
+
+/** Check for whether the pair is a member of any
+    ExclusiveConsecutivePairContainer. */
+class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter: public PairFilter {
+ public:
+  ExclusiveConsecutivePairFilter():
+      PairFilter("ExclusiveConsecutivePairFilter %1% "){}
+  IMP_INDEX_PAIR_FILTER(ExclusiveConsecutivePairFilter);
+};
+
+inline bool ExclusiveConsecutivePairFilter
+::get_contains(Model *m, const ParticleIndexPair &pp) const {
+  IntKey k= ConsecutivePairContainer::get_exclusive_key();
+  if (!m->get_has_attribute(k, pp[0])) return false;
+  int ia= m->get_attribute(k, pp[0]);
+  if (!m->get_has_attribute(k, pp[1])) return false;
+  int ib= m->get_attribute(k, pp[1]);
   return std::abs(ia-ib)==1;
-
 }
+
+
+
 
 IMPCONTAINER_END_NAMESPACE
 
