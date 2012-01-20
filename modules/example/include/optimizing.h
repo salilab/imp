@@ -75,7 +75,7 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
             << std::endl);
     for (unsigned int j=0; j< attrs.size(); ++j) {
       attrs[j].set(ps[j], core::XYZR::get_radius_key(),
-                   core::XYZR(ps[i]).get_radius()*factor);
+                   core::XYZR(ps[j]).get_radius()*factor);
     }
     for (int j=0; j< 5; ++j) {
       mc->set_kt(100.0/(3*j+1));
