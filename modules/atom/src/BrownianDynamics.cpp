@@ -145,12 +145,12 @@ namespace {
   void check_delta(algebra::Vector3D &delta,
                    double max_step) {
     for (unsigned int j=0; j< 3; ++j) {
-      if (std::abs(delta[j]) > max_step) {
-        std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
-                  << std::endl;
+      //if (std::abs(delta[j]) > max_step) {
+        /*std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
+          << std::endl;*/
         delta[j]= std::min(delta[j], max_step);
         delta[j]= std::max(delta[j], -max_step);
-      }
+        //}
     }
   }
 }
