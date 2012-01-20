@@ -160,4 +160,31 @@ double get_einstein_rotational_diffusion_coefficient(double r) {
       /(8*PI*e*square(unit::Angstrom(r))*unit::Angstrom(r));
     return ret.get_value();
 }
+
+double get_diffusion_length(double D, double dtfs) {
+  unit::Angstrom d= sqrt(6.0*unit::SquareAngstromPerFemtosecond(D)
+                         *unit::Femtosecond(dtfs));
+  return strip_units(d);
+}
+
+double get_diffusion_length(double D, double force, double dtfs) {
+  unit::Divide<unit::Femtosecond,
+               unit::Femtojoule>::type dtikt
+    =unit::Femtosecond(dtfs)
+    /unit::Femtojoule(IMP::internal::KB*unit::Kelvin(273));
+  unit::Femtonewton nforce(get_force_in_femto_newtons(force));
+  //unit::Angstrom R(sampler_());
+  unit::Angstrom force_term(nforce*
+                            unit::SquareAngstromPerFemtosecond(D)
+                            *dtikt);
+  return strip_units(force_term);
+}
+
+
+double get_diffusion_angle(double D, double dtfs) {
+  double a= sqrt(6.0*unit::PerFemtosecond(D)
+                   *unit::Femtosecond(dtfs));
+  return a;
+}
+
 IMPATOM_END_NAMESPACE
