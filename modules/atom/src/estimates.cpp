@@ -6,6 +6,7 @@
     */
 
 #include "IMP/atom/estimates.h"
+#include <IMP/atom/Simulator.h>
 #include <IMP/internal/units.h>
 #include <IMP/constants.h>
 #include <IMP/internal/constants.h>
