@@ -443,7 +443,7 @@
 #ifndef SWIG
 //! Declare the needed functions for a QuadFilter
 /** In addition to the methods done by all the macros, it declares
-    - IMP::QuadFilter::get_contains_particle_LCCLASNAME()
+    - IMP::QuadFilter::get_contains()
     - IMP::QuadFilter::get_input_particles()
 */
 #define IMP_QUAD_FILTER(Name)                                     \

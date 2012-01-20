@@ -443,7 +443,7 @@
 #ifndef SWIG
 //! Declare the needed functions for a TripletFilter
 /** In addition to the methods done by all the macros, it declares
-    - IMP::TripletFilter::get_contains_particle_LCCLASNAME()
+    - IMP::TripletFilter::get_contains()
     - IMP::TripletFilter::get_input_particles()
 */
 #define IMP_TRIPLET_FILTER(Name)                                     \

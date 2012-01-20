@@ -443,7 +443,7 @@
 #ifndef SWIG
 //! Declare the needed functions for a SingletonFilter
 /** In addition to the methods done by all the macros, it declares
-    - IMP::SingletonFilter::get_contains_particle_LCCLASNAME()
+    - IMP::SingletonFilter::get_contains()
     - IMP::SingletonFilter::get_input_particles()
 */
 #define IMP_SINGLETON_FILTER(Name)                                     \

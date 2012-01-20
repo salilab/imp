@@ -443,7 +443,7 @@
 #ifndef SWIG
 //! Declare the needed functions for a PairFilter
 /** In addition to the methods done by all the macros, it declares
-    - IMP::PairFilter::get_contains_particle_LCCLASNAME()
+    - IMP::PairFilter::get_contains()
     - IMP::PairFilter::get_input_particles()
 */
 #define IMP_PAIR_FILTER(Name)                                     \

@@ -443,7 +443,7 @@
 #ifndef SWIG
 //! Declare the needed functions for a CLASSNAMEFilter
 /** In addition to the methods done by all the macros, it declares
-    - IMP::CLASSNAMEFilter::get_contains_particle_LCCLASNAME()
+    - IMP::CLASSNAMEFilter::get_contains()
     - IMP::CLASSNAMEFilter::get_input_particles()
 */
 #define IMP_HEADERNAME_FILTER(Name)                                     \
