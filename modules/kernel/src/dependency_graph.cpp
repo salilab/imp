@@ -454,9 +454,11 @@ get_pruned_dependency_graph(Model *m) {
 
 struct cycle_detector : public boost::default_dfs_visitor {
   vector<MDGVertex> cycle_;
-  template <class DGVertex>
-  void start_vertex(DGVertex v, const DependencyGraph&) {
-    cycle_.push_back(v);
+  template <class DGEdge>
+  void tree_edge(DGEdge e, const DependencyGraph&g) {
+    MDGVertex t= boost::target(e, g);
+    //MDGVertex s= boost::source(e, g);
+    cycle_.push_back(t);
   }
   template <class DGVertex>
   void finish_vertex(DGVertex v, const DependencyGraph&) {
@@ -466,13 +468,17 @@ struct cycle_detector : public boost::default_dfs_visitor {
   template <class ED>
   void back_edge(ED e, const DependencyGraph&g) {
     MDGVertex t= boost::target(e, g);
+    MDGVertex s= boost::source(e, g);
     vector<MDGVertex>::iterator it
         = std::find(cycle_.begin(), cycle_.end(), t);
-    IMP_USAGE_CHECK(it != cycle_.end(),
-                    "The vertex is not there. Conceptual bug.");
-    cycle_.erase(cycle_.begin(), it);
-    cycle_.push_back(t);
-    throw cycle_;
+    //std::cout << s << " " << cycle_.back() << std::endl;
+    if (it != cycle_.end()) {
+      cycle_.erase(cycle_.begin(), it);
+      cycle_.push_back(t);
+      throw cycle_;
+    } else {
+      //std::cout << "non-loop " << s << " " << t << std::endl;
+    }
   }
 };
 
@@ -484,8 +490,10 @@ namespace {
       boost::vector_property_map<int> color(boost::num_vertices(g));
       boost::depth_first_search(g, boost::visitor(vis).color_map(color));
     } catch (vector<MDGVertex> cycle) {
+      //std::cerr << "Caught cycle " << cycle << std::endl;
       return cycle;
     }
+    //std::cerr << "No cycle found" << std::endl;
     return vector<MDGVertex>();
   }
 
@@ -501,13 +509,14 @@ namespace {
       base::TextOutput out=base::create_temporary_file();
       base::internal::show_as_graphviz(dg, out);
       vector<MDGVertex> cycle= get_cycle(dg);
-      std::ostringstream oss;
+      //std::ostringstream oss;
+      std::cerr << "[";
       for (unsigned int i=0; i< cycle.size(); ++i) {
-        oss << om[cycle[i]]->get_name() << " -- ";
+        std::cerr << om[cycle[i]]->get_name() << " -- ";
       }
+      std::cerr << "]";
       IMP_THROW("Topological sort failed, probably due to loops in "
-                << " dependency graph. See \"" << out.get_name() << "\""
-                << " The cycle is " << oss.str(),
+                << " dependency graph. See \"" << out.get_name() << "\"",
                 ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
