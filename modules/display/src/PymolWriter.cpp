@@ -47,6 +47,7 @@ void PymolWriter::do_close() {
                << frame+1
                << ")\n";
   get_stream() << "data= {}\n";
+  get_stream().flush();
 }
 
 
