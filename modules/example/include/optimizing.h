@@ -55,7 +55,7 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
   mc->set_restraints(rs);
   mc->set_use_incremental_evaluate(true);
   // use special incremental support for the non-bonded part
-  IMP_NEW(core::SoftSpherePairScore, ssps, (1));
+  IMP_NEW(core::SoftSpherePairScore, ssps, (10));
   mc->set_close_pair_score(ssps, 0, ps, excluded);
   // make pointer vector
   boost::ptr_vector<ScopedSetFloatAttribute> attrs(ps.size());

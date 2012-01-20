@@ -114,6 +114,17 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
     femtosecond given a radius in angstrom.*/
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
 
+/** Return the standard deviation for the Brownian step given the
+    diffusion coefficient and the time step.*/
+IMPATOMEXPORT double get_diffusion_length(double D, double t);
+
+/** Return the scale for diffusion under the specified force.*/
+IMPATOMEXPORT double get_diffusion_length(double D, double force, double t);
+
+/** Get the standard deviation of the diffusion angle change given
+    the rigid body diffusion coefficient and the time step.*/
+IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ESTIMATES_H */
