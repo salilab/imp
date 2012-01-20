@@ -143,7 +143,7 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
   for (unsigned int i=0; i< moved_.size(); ++i) {
     backup_[moved_[i]]
-      =XYZR(get_singleton_container()->get_particle(moved_[i])).get_sphere();
+        =XYZR(get_singleton_container()->get_particle(moved_[i])).get_sphere();
   }
   moved_.clear();
 }
@@ -157,7 +157,7 @@ ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
         if (!algebra::get_interiors_intersect(
                algebra::Sphere3D(d.get_coordinates(),0),
                algebra::Sphere3D(backup_[_2].get_center(),
-                                 get_threshold()-dr))) {
+                                 std::max<double>(0,get_threshold()-dr)))) {
           ret.push_back(_1);
           moved_.push_back(_2);
         }
