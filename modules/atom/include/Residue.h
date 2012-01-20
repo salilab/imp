@@ -113,6 +113,8 @@ IMPATOMEXPORT extern const ResidueType DGUA;
 IMPATOMEXPORT extern const ResidueType DTHY;
 /** water molecule */
 IMPATOMEXPORT extern const ResidueType HOH;
+/** heme */
+IMPATOMEXPORT extern const ResidueType HEME;
 #endif
 /*@}*/
 
