@@ -468,7 +468,7 @@ struct cycle_detector : public boost::default_dfs_visitor {
   template <class ED>
   void back_edge(ED e, const DependencyGraph&g) {
     MDGVertex t= boost::target(e, g);
-    MDGVertex s= boost::source(e, g);
+    //MDGVertex s= boost::source(e, g);
     vector<MDGVertex>::iterator it
         = std::find(cycle_.begin(), cycle_.end(), t);
     //std::cout << s << " " << cycle_.back() << std::endl;
