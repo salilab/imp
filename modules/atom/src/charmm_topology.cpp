@@ -15,16 +15,28 @@
 #include <IMP/atom/Charged.h>
 #include <IMP/atom/angle_decorators.h>
 
+#include <boost/algorithm/string.hpp>
 #include <set>
 #include <algorithm>
 
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
+  // Convert a PDB-style atom name into CHARMM format
+  std::string make_charmm_atom_name(std::string name) {
+    std::string charmm_name = name;
+    // Strip HET: prefix if present
+    if (charmm_name.substr(0, 4) == "HET:") {
+      charmm_name.erase(0, 4);
+    }
+    boost::trim(charmm_name); // remove all spaces
+    return charmm_name;
+  }
+
   class atom_has_name {
     std::string name_;
   public:
-    atom_has_name(std::string name) : name_(name) {}
+    atom_has_name(std::string name) : name_(make_charmm_atom_name(name)) {}
     bool operator()(const CHARMMAtomTopology &at) {
       return (at.get_name() == name_);
     }
@@ -599,7 +611,7 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const
     std::set<std::string> existing_atoms;
     for (Hierarchies::iterator atit = h.begin(); atit != h.end(); ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
-      existing_atoms.insert(typ.get_string());
+      existing_atoms.insert(make_charmm_atom_name(typ.get_string()));
     }
 
     // Look at all atoms in the topology; add any that aren't in existing_atoms
