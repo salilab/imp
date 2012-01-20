@@ -312,6 +312,24 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
             self.assertTrue(IMP.atom.CHARMMAtom.particle_is_instance(a))
 
+    def test_heme(self):
+        """Test CHARMM topology handling of HEME residues"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(
+                        self.get_input_file_name('HEM_model.pdb'), m)
+        ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
+        topology = ff.create_topology(pdb)
+        topology.apply_default_patches()
+        topology.setup_hierarchy(pdb)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 43)
+        a = atoms[-1]
+        # Make sure we kept the original PDB coordinates
+        coord = a.get_as_xyz().get_coordinates()
+        self.assertAlmostEqual(coord[0], 20.149, delta=1e-3)
+        self.assertAlmostEqual(coord[1], 33.749, delta=1e-3)
+        self.assertAlmostEqual(coord[2], 3.830, delta=1e-3)
+
     def test_add_coordinates_empty_structure(self):
         """Test adding coordinates to a completely empty structure"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
