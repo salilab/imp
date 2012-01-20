@@ -1181,9 +1181,12 @@ IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
       set_origin(origin);
       set_unit_cell(cell, base);
     }
+    /** If bound_centers is true, then the bounding box tightly bounds
+        the centers of the voxels, not their extents. */
     LogEmbeddingD(const BoundingBoxD<D> &bb,
                  const VectorD<D> &bases,
-                 const Ints &counts) {
+                  const Ints &counts,
+                  bool bound_centers=false) {
       set_origin(bb.get_corner(0));
       VectorD<D> cell=bb.get_corner(0);
       for (unsigned int i=0; i< bases.get_dimension(); ++i) {
@@ -1199,6 +1202,28 @@ IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
         IMP_INTERNAL_CHECK(cell[i] >0, "Non-positive cell side");
       }
       set_unit_cell(cell, bases);
+      if (bound_centers) {
+        VectorD<D> lower_corner
+            = get_center(GridIndexD<D>(Ints(bases.get_dimension(), 0)));
+        VectorD<D> upper_corner
+            = get_coordinates(get_uniform_offset(GridIndexD<D>(counts), -.5));
+        VectorD<D> extents= upper_corner-lower_corner;
+        VectorD<D> uc= cell;
+        VectorD<D> orig=uc;
+        for (unsigned int i=0; i< uc.get_dimension(); ++i) {
+          uc[i]= (bb.get_corner(1)[i]-bb.get_corner(0)[i])/extents[i] * uc[i];
+          if (base_[i]==1) {
+            orig[i]= bb.get_corner(0)[i]-.5*uc[i];
+          } else {
+            /*orig[i]+ uc[i]*(1.0-std::pow(base_[i], index[i]))
+              /(1.0-base_[i])==bb[i]*/
+            orig[i]= bb.get_corner(0)[i]-uc[i]*(1.0-std::pow(bases[i], .5))
+                /(1.0-bases[i]);
+          }
+        }
+        set_origin(orig);
+        set_unit_cell(uc, bases);
+      }
     }
     LogEmbeddingD(const VectorD<D> &,
                  const VectorD<D> &) {
