@@ -13,8 +13,7 @@ env= env.IMPApplication(name="rmf_tools", version='nightly-19/1/2012',
                         python=False)
 if env:
     fs = Glob("*.cpp")
-
-    all=[]
     for f in fs:
-        prog= penv.Program(f.rstr())
-        all.append(prog)
+        src= f
+        targetname=f.path.replace(".cpp", "")
+        prog= env.IMPCPPExecutable(source=[src], target=targetname)
