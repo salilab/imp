@@ -197,6 +197,49 @@ void add_fret_restraint (Model *m,
  }
 }
 
+void add_NEW_fret_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ double r_value, double kappa, bool use_GFP)
+{
+ std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
+ const double R0=49.0;
+ const double Sd=0.446;
+ const double Sa=0.232;
+ const double gamma=0.3;
+ const double Ida=1.7;
+
+ atom::Selection sa=atom::Selection(ha);
+ atom::Selection sb=atom::Selection(hb);
+ if(use_GFP){
+  protein_a=protein_a+"-"+residues_a+"-GFP";
+  sa.set_molecule(protein_a);
+  sa.set_residue_index(65);
+  protein_b=protein_b+"-"+residues_b+"-GFP";
+  sb.set_molecule(protein_b);
+  sb.set_residue_index(65);
+  Particles p1=sa.get_selected_particles();
+  Particles p2=sb.get_selected_particles();
+  if(p1.size()==0 || p2.size()==0) {return;}
+  IMP_NEW(membrane::FretrRestraint,fr,
+   (p1,p2,R0,Sd,Sa,gamma,Ida,r_value,kappa,name));
+  m->add_restraint(fr);
+ } else {
+  sa.set_molecule(protein_a);
+  sb.set_molecule(protein_b);
+  if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+  if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+  if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+  Particles p1=sa.get_selected_particles();
+  Particles p2=sb.get_selected_particles();
+  if(p1.size()==0 || p2.size()==0) {return;}
+  IMP_NEW(membrane::FretrRestraint,fr,
+   (p1,p2,R0,Sd,Sa,gamma,Ida,r_value,kappa,name));
+  m->add_restraint(fr);
+ }
+}
+
 void add_y2h_restraint (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, IntRange residues_a,
        atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,

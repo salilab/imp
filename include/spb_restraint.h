@@ -54,6 +54,11 @@ IMPMEMBRANEEXPORT void add_fret_restraint(Model *m,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value,double kappa,bool use_GFP);
 
+IMPMEMBRANEEXPORT void add_NEW_fret_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ double r_value, double kappa, bool use_GFP);
+
 IMPMEMBRANEEXPORT void add_y2h_restraint(Model *m,
  const atom::Hierarchy& ha,std::string protein_a,IntRange residues_a,
  atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,

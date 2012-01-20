@@ -54,7 +54,7 @@ if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
 //
 // FRET
 //
-if(mydata.add_fret){
+if(mydata.add_fret && !mydata.use_new_fret_model){
 // intra-CP
  add_fret_restraint(m,all_mol[0], "Spc29p",   "C",
                       all_mol,     "Cmd1p",   "C", 1.69,
@@ -78,7 +78,6 @@ if(mydata.add_fret){
                       all_mol,    "Spc110p",  "C", 2.02,
                       mydata.kappa, mydata.add_GFP);
 // inter CP-IL2
-
  add_fret_restraint(m,all_mol[0],  "Spc42p",  "C",
                       all_mol,    "Spc110p",  "C", 1.07,
                       mydata.kappa, mydata.add_GFP);
@@ -100,11 +99,116 @@ if(mydata.add_fret){
  add_fret_restraint(m,all_mol[0], "Spc42p",   "C",
                       all_mol,    "Spc42p",   "N", 1.27,
                       mydata.kappa, mydata.add_GFP);
-
 // intra-IL2
  add_fret_restraint(m,all_mol[0],   "Spc42p", "C",
                       all_mol,    "Cnm67p_c", "C", 2.29,
                       mydata.kappa, mydata.add_GFP);
+}
+if(mydata.add_fret && mydata.use_new_fret_model){
+// intra-CP
+ add_NEW_fret_restraint(m,all_mol, "Spc29p", "C",
+                          all_mol, "Cmd1p",  "C", 1.7,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",  "C",
+                          all_mol, "Spc29p", "C", 1.68,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",  "C",
+                          all_mol, "Spc29p", "N", 1.75,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc29p",  "C",
+                          all_mol, "Spc110p", "C", 1.42,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc110p", "C",
+                          all_mol, "Spc29p",  "C", 1.32,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc29p", "C",
+                          all_mol, "Spc42p", "N", 2.24,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "N",
+                          all_mol, "Spc29p", "C", 1.86,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",  "C",
+                          all_mol, "Spc42p", "N", 2.04,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "N",
+                          all_mol, "Cmd1p",  "C", 2.1,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",   "C",
+                          all_mol, "Spc110p", "C", 1.94,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc110p", "C",
+                          all_mol, "Cmd1p",   "C", 2.37,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p",  "N",
+                          all_mol, "Spc110p", "C", 1.86,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc110p", "C",
+                          all_mol, "Spc42p",  "N", 2.18,
+                          mydata.kappa, mydata.add_GFP);
+
+// inter CP-IL2
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "C",
+                          all_mol, "Spc110p","C",  1.08,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc110p", "C",
+                          all_mol, "Spc42p",  "C", 1.06,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Cmd1p",    "C", 1.1,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",    "C",
+                          all_mol, "Cnm67p_c", "C", 1.09,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "C",
+                          all_mol, "Cmd1p",  "C", 1.13,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cmd1p",  "C",
+                          all_mol, "Spc42p", "C", 1.06,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Spc29p",   "C", 1.1,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc29p",   "C",
+                          all_mol, "Cnm67p_c", "C", 1.1,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Spc29p",   "N", 0.99,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Spc42p",   "N", 1.15,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p",   "N",
+                          all_mol, "Cnm67p_c", "C", 1.11,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "C",
+                          all_mol, "Spc29p", "C", 1.2,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc29p", "C",
+                          all_mol, "Spc42p", "C", 1.14,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "C",
+                          all_mol, "Spc29p", "N", 0.98,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "C",
+                          all_mol, "Spc42p", "N", 1.29,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc42p", "N",
+                          all_mol, "Spc42p", "C", 1.25,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Spc110p",  "C", 1.02,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Spc110p",  "C",
+                          all_mol, "Cnm67p_c", "C", 1.05,
+                          mydata.kappa, mydata.add_GFP);
+
+// intra-IL2
+ add_NEW_fret_restraint(m,all_mol, "Spc42p",   "C",
+                          all_mol, "Cnm67p_c", "C", 2.06,
+                          mydata.kappa, mydata.add_GFP);
+ add_NEW_fret_restraint(m,all_mol, "Cnm67p_c", "C",
+                          all_mol, "Spc42p",   "C", 2.52,
+                          mydata.kappa, mydata.add_GFP);
 }
 //
 // TWO-HYBRID SCREENING

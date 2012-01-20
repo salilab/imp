@@ -41,6 +41,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool keep_GFP_layer;
  bool GFP_exc_volume;
  bool use_connectivity;
+ bool use_new_fret_model;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -71,6 +72,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("GFP_exc_volume",value<bool>(&GFP_exc_volume),      "ciao");
  desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
+ desc.add_options()("use_new_fret_model",
+  value<bool>(&use_new_fret_model),  "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
@@ -141,6 +144,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
+ ret.use_new_fret_model=use_new_fret_model;
 
 // Postprocess parameters
  ret.trajfile=trajfile;

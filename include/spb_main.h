@@ -40,6 +40,7 @@ struct SPBParameters {
  bool         use_structure;
  bool         use_compact_Cmd1p;
  bool         use_connectivity;
+ bool         use_new_fret_model;
  std::map<std::string,bool> protein_list;
  bool         add_fret;
  bool         add_y2h;
