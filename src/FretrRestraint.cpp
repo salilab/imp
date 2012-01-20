@@ -29,40 +29,23 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
  Ida_ = Ida;
  fretr_ = fretr;
  kappa_ = kappa;
-
-// initialize list of CloseBipartitePairContainers
- for(unsigned i=0;i<pd_.size();++i){
-  IMP_NEW(container::ListSingletonContainer,lsc0,(pd_[0]->get_model()));
-  lsc0->add_particle(pd_[i]);
-  IMP_NEW(container::ListSingletonContainer,lsc1,(pa_[0]->get_model()));
-  lsc1->add_particles(pa_);
-  IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lsc0, lsc1, 2.0*R0_));
-  cbpc_.push_back(cbpc);
- }
 }
 
 double
 FretrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
 {
 // check if derivatives are requested
-  IMP_USAGE_CHECK(!da, "Derivatives not available");
+ IMP_USAGE_CHECK(!da, "Derivatives not available");
 
  double sumFi=0.0;
 
- for(unsigned i=0;i<cbpc_.size();++i){
-
+ for(unsigned i=0;i<pd_.size();++i){
   double Fi=0.0;
-  ParticlePairsTemp ppt=cbpc_[i]->get_particle_pairs();
-
-  for(unsigned j=0;j<ppt.size();++j){
-   Particle* ps0=ppt[j][0];
-   Particle* ps1=ppt[j][1];
-   double R=core::get_distance(core::XYZ(ps0),core::XYZ(ps1));
+  for(unsigned j=0;j<pa_.size();++j){
+   double R=core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
    Fi+=pow(R0_/R,6);
   }
-
   sumFi+=1.0/(1.0+Fi);
-
  }
 
  double fretr = 1.0 + gamma_ * ( (double)(pd_.size()) - sumFi ) /

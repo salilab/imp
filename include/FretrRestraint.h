@@ -25,7 +25,6 @@ class IMPMEMBRANEEXPORT FretrRestraint : public Restraint
 
 Particles pd_, pa_;
 double R0_, Sd_, Sa_, gamma_, Ida_, fretr_, kappa_;
-std::vector< base::Pointer<container::CloseBipartitePairContainer> >  cbpc_;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
