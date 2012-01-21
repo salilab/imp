@@ -229,7 +229,9 @@ public:
 class IMPCOREEXPORT SoftSpherePairScore: public PairScore {
   double k_;
 public:
-  SoftSpherePairScore(double k): k_(k){}
+  SoftSpherePairScore(double k,
+                      std::string name= "SoftSpherePairScore %1%"):
+    PairScore(name),k_(k){}
   IMP_INDEX_PAIR_SCORE(SoftSpherePairScore);
 };
 
