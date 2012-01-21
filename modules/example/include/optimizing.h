@@ -38,7 +38,8 @@ inline core::Mover* create_serial_mover(const ParticlesTemp &ps) {
 
 /** Take a set of core::XYZR particles and relax them relative to a set of
     restraints.*/
-inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
+inline void optimize_balls(const ParticlesTemp &ps,
+                           const RestraintsTemp &rs=RestraintsTemp(),
                            const PairFilters &excluded=PairFilters(),
                            LogLevel ll=DEFAULT) {
   // make sure that errors and log messages are marked as coming from this
@@ -49,7 +50,9 @@ inline void optimize_balls(const ParticlesTemp &ps, const RestraintsTemp &rs,
   Model *m= ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::ConjugateGradients, cg, (m));
+  cg->set_score_threshold(ps.size()*.1);
   IMP_NEW(core::MonteCarlo, mc, (m));
+  mc->set_score_threshold(ps.size()*.1);
   mc->add_mover(create_serial_mover(ps));
   // we are special casing the nbl term for montecarlo, but using all for CG
   mc->set_restraints(rs);
