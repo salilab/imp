@@ -43,9 +43,6 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
           (ps, name+" consecutive pairs"));
   Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get());
   m->add_restraint(r);
-  if (icpc) {
-    icpc->add_pair_filter(container::create_in_container_filter(cpc.get()));
-  }
   return r;
 }
 
