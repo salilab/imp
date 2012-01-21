@@ -243,9 +243,18 @@ public:
 
   /** Create a Hierarchy of level t by adding the needed
       attributes. */
-  static Hierarchy setup_particle(Particle *p) {
+  static Hierarchy setup_particle(Particle *p,
+                                  const ParticlesTemp &children
+                                  = ParticlesTemp()) {
     H::setup_particle(p, get_traits());
-    return Hierarchy(p);
+    Hierarchy ret(p);
+    for (unsigned int i=0; i< children.size(); ++i) {
+      if (!particle_is_instance(children[i])) {
+        setup_particle(children[i]);
+      }
+      ret.add_child(Hierarchy(children[i]));
+    }
+    return ret;
   }
 
   /** Check if the particle has the needed attributes for a
