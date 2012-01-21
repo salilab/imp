@@ -24,6 +24,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
   friend class ExclusiveConsecutivePairFilter;
+  friend class ExclusiveConsecutivePairContainer;
   static IntKey get_exclusive_key() {
     static IntKey k("exclusive consecutive numbering");
     return k;
