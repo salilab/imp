@@ -45,7 +45,6 @@ public:
 /** Return a unique predicate value for each order list of ParticleTypes
     (see Typed).
 */
-
 class IMPCOREEXPORT OrderedTypeSingletonPredicate: public SingletonPredicate {
 public:
   OrderedTypeSingletonPredicate(std::string name
@@ -53,6 +52,9 @@ public:
   IMP_INDEX_SINGLETON_PREDICATE(OrderedTypeSingletonPredicate, {
       return internal::get_ordered_type_hash(m, pi);
     });
+  int get_value(const core::ParticleTypes& types) {
+    return internal::get_ordered_type_hash(types);
+  }
 };
 
 IMPCORE_END_NAMESPACE
