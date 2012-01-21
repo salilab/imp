@@ -126,6 +126,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
       break;
     }
     do_step();
+    if (best_energy_ < get_score_threshold()) break;
   }
 
   IMP_LOG(TERSE, "MC Final energy is " << last_energy_  << std::endl);
