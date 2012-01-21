@@ -14,6 +14,7 @@
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/ConsecutivePairContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/DistancePairScore.h>
 
