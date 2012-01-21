@@ -135,12 +135,11 @@ namespace {
     for (unsigned int i=0; i< ret.chains.size(); ++i) {
       ParticlesTemp cur=ret.chains[i].get_children();
       all.insert(all.end(), cur.begin(), cur.end());
-      IMP_NEW(ConsecutivePairContainer, cpc,(cur, true));
+      IMP_NEW(ExclusiveConsecutivePairContainer, cpc,(cur));
       // since they all use the same key
-      if (i==0) pfs.push_back(container::create_in_container_filter(cpc.get(),
-                                                                    "bonds"));
       ret.m->add_restraint(container::create_restraint(link, cpc.get()));
     }
+    pfs.push_back(new container::ExclusiveConsecutivePairFilter());
     ret.lsc=new ListSingletonContainer(all);
     IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, ret.sp->get_value(sk)));
     cpc->add_pair_filters(pfs);
