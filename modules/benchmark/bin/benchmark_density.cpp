@@ -2,11 +2,11 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
-#include <IMP/em.h>
 #include <IMP/benchmark.h>
-#include <IMP/algebra.h>
 
-#ifdef IMP_HAS_IMP_EM
+#ifdef IMP_BENCHMARK_HAS_IMP_EM
+#include <IMP/em.h>
+#include <IMP/algebra.h>
 using namespace IMP;
 using namespace IMP::em;
 using namespace IMP::benchmark;
