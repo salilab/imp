@@ -42,14 +42,14 @@ IMP_SWIG_OBJECT(IMP::container, SingletonContainerStatistics, SingletonContainer
 IMP_SWIG_OBJECT(IMP::container, PairContainerStatistics, PairContainerStatisticsList);
 IMP_SWIG_OBJECT(IMP::container, TripletContainerStatistics, TripletContainerStatisticsList);
 IMP_SWIG_OBJECT(IMP::container, QuadContainerStatistics, QuadContainerStatisticsList);
-IMP_SWIG_OBJECT(IMP::container, SingletonsEventOptimizerState, SingletonsEventOptimizerStateList);
-IMP_SWIG_OBJECT(IMP::container, PairsEventOptimizerState, PairsEventOptimizerStateList);
-IMP_SWIG_OBJECT(IMP::container, TripletsEventOptimizerState, TripletsEventOptimizerStateList);
-IMP_SWIG_OBJECT(IMP::container, QuadsEventOptimizerState, QuadsEventOptimizerStateList);
-IMP_SWIG_OBJECT(IMP::container, SingletonsPredicateRestraint, SingletonsPredicateRestraints);
-IMP_SWIG_OBJECT(IMP::container, PairsPredicateRestraint, PairPredicateRestraints);
-IMP_SWIG_OBJECT(IMP::container, TripletsPredicateRestraint, TripletsPredicateRestraints);
-IMP_SWIG_OBJECT(IMP::container, QuadsPredicateRestraint, QuadsPredicateRestraints);
+IMP_SWIG_OBJECT(IMP::container, EventSingletonsOptimizerState, EventSingletonsOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, EventPairsOptimizerState, EventPairsOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, EventTripletsOptimizerState, EventTripletsOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, EventQuadsOptimizerState, EventQuadsOptimizerStateList);
+IMP_SWIG_OBJECT(IMP::container, PredicateSingletonsRestraint, PredicateSingletonsRestraints);
+IMP_SWIG_OBJECT(IMP::container, PredicatePairsRestraint, PredicatePairRestraints);
+IMP_SWIG_OBJECT(IMP::container, PredicateTripletsRestraint, PredicateTripletsRestraints);
+IMP_SWIG_OBJECT(IMP::container, PredicateQuadsRestraint, PredicateQuadsRestraints);
 
 
 /* Wrap our own classes */
@@ -95,11 +95,11 @@ IMP_SWIG_OBJECT(IMP::container, QuadsPredicateRestraint, QuadsPredicateRestraint
 %include "IMP/container/PairContainerStatistics.h"
 %include "IMP/container/TripletContainerStatistics.h"
 %include "IMP/container/QuadContainerStatistics.h"
-%include "IMP/container/SingletonsEventOptimizerState.h"
-%include "IMP/container/PairsEventOptimizerState.h"
-%include "IMP/container/TripletsEventOptimizerState.h"
-%include "IMP/container/QuadsEventOptimizerState.h"
-%include "IMP/container/SingletonsPredicateRestraint.h"
-%include "IMP/container/PairsPredicateRestraint.h"
-%include "IMP/container/TripletsPredicateRestraint.h"
-%include "IMP/container/QuadsPredicateRestraint.h"
+%include "IMP/container/EventSingletonsOptimizerState.h"
+%include "IMP/container/EventPairsOptimizerState.h"
+%include "IMP/container/EventTripletsOptimizerState.h"
+%include "IMP/container/EventQuadsOptimizerState.h"
+%include "IMP/container/PredicateSingletonsRestraint.h"
+%include "IMP/container/PredicatePairsRestraint.h"
+%include "IMP/container/PredicateTripletsRestraint.h"
+%include "IMP/container/PredicateQuadsRestraint.h"
