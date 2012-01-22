@@ -79,7 +79,7 @@ public:
 class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter: public PairFilter {
  public:
   ExclusiveConsecutivePairFilter():
-      PairFilter("ExclusiveConsecutivePairFilter %1% "){}
+      PairFilter("ExclusiveConsecutivePairFilter %1%"){}
   IMP_INDEX_PAIR_FILTER(ExclusiveConsecutivePairFilter);
 };
 
