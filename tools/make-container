@@ -148,9 +148,9 @@ def make_one(params, test=True):
               ("modules/core/src/"+multi.lower() + "_predicates.cpp",
                path+"/tools/container_templates/preds.cc"),
 
-            ("modules/container/include/"+multi + "sEventOptimizerState.h",
+            ("modules/container/include/Event"+multi + "sOptimizerState.h",
                path+"/tools/container_templates/terminator.hpp"),
-              ("modules/container/src/"+multi + "sEventOptimizerState.cpp",
+              ("modules/container/src/Event"+multi + "sOptimizerState.cpp",
                path+"/tools/container_templates/terminator.cc"),
 
               ("modules/container/include/"+multi + "ContainerStatistics.h",
@@ -158,9 +158,9 @@ def make_one(params, test=True):
               ("modules/container/src/"+multi + "ContainerStatistics.cpp",
                path+"/tools/container_templates/statistics.cpp"),
 
-            ("modules/container/include/"+multi + "sPredicateRestraint.h",
+            ("modules/container/include/Predicate"+multi + "sRestraint.h",
                path+"/tools/container_templates/distribute.hpp"),
-              ("modules/container/src/"+multi + "sPredicateRestraint.cpp",
+              ("modules/container/src/Predicate"+multi + "sRestraint.cpp",
                path+"/tools/container_templates/distribute.cc"),
 
 
