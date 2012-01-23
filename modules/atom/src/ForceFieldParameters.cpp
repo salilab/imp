@@ -145,7 +145,7 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
                     +bonds[i].type2_.get_string(),
                     "In residue " << rd << " could not find atom "
                     << bonds[i].type1_
-                    << " or " << bonds[i].type2_ << std::endl, warn_context_);
+                    << " or " << bonds[i].type2_, warn_context_);
       continue;
     }
 
