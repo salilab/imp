@@ -193,7 +193,7 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
-                       double max_translation,
+                                               double /*max_translation*/,
                        int num_fits_to_report,
                        bool cluster_fits) {
   multifit::internal::EulerAnglesList rots_all=

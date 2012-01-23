@@ -42,7 +42,7 @@ namespace {
     unsigned int get_number_of_transformations() const {
       return members_.size()+1;
     }
-    void update_score(float s) {
+    void update_score(float /*s*/) {
       //score_ += s;
     }
     Ints get_all_indexes() const {
