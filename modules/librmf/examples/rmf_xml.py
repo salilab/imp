@@ -1,7 +1,7 @@
 import RMF
 
 # don't bother with command line arguments, to keep in simple
-file_name=RMF.get_example_path("fragment.rmf")
+file_name=RMF.get_example_path("simple.rmf")
 frame=0
 verbose=True
 
