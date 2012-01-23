@@ -693,8 +693,8 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const
     return CHARMMAtom(atom).get_charmm_type();
   } else {
     IMP_WARN_ONCE(atom.get_atom_type().get_string(),
-                  "Atom " << atom << " does not have a known CHARMM type"
-                  << std::endl, warn_context_);
+                  "Atom " << atom << " does not have a known CHARMM type",
+                  warn_context_);
     return empty_atom_type;
   }
 }
@@ -720,8 +720,8 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
         // If residue type is unknown, add empty topology for this residue
         IMP_WARN_ONCE(restyp.get_string(),
                       "Residue type " << restyp << " was not found in "
-                      "topology library; using empty topology for this residue"
-                      << std::endl, warn_context_);
+                      "topology library; using empty topology for this residue",
+                      warn_context_);
         IMP_NEW(CHARMMResidueTopology, residue, (restyp));
         segment->add_residue(residue);
       }
@@ -812,7 +812,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
     ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
   } catch (const IndexException &e) {
     // If no parameters, warn only
-    IMP_WARN(e.what() << std::endl);
+    IMP_WARN(e.what());
   }
   ps.push_back(ad);
 }
