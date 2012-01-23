@@ -52,7 +52,6 @@ spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 // PREPARE OUTPUT
 //
 RMF::FileHandle rh_out = RMF::create_rmf_file("traj_minimized_0.rmf");
-
 for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // adding key for score
 RMF::Category my_kc= rh_out.add_category("my data");
@@ -74,6 +73,8 @@ unsigned int iout_name=0;
 // cycle on all iterations
 for(unsigned iter=0;iter<mydata.niter;++iter){
  std::vector<RMF::FileHandle> rhs;
+ std::vector<RMF::Category> my_kcs;
+ std::vector<RMF::FloatKey> my_keys;
  std::stringstream iter_str;
  iter_str << iter;
  for(unsigned irep=0;irep<mydata.nrep;++irep){
@@ -82,10 +83,9 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
   rhs.push_back(RMF::open_rmf_file(mydata.trajfile+irep_str.str()+
                 "_"+iter_str.str()+".rmf"));
   rmf::set_hierarchies(rhs[irep], hhs);
+  my_kcs.push_back(rhs[irep].get_category("my data"));
+  my_keys.push_back(rhs[irep].get_float_key(my_kcs[irep],"my score"));
  }
- // getting key for score
- RMF::Category my_kc= rhs[0].add_category("my data");
- RMF::FloatKey my_key=rhs[0].get_float_key(my_kc,"my score");
 // number of frames
  unsigned int nframes=rmf::get_number_of_frames(rhs[0],hhs[0]);
 
@@ -95,7 +95,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 // increment frame counter
     ++totframes;
  // retrieve score
-   double myscore = (rhs[irep].get_root_node()).get_value(my_key,imc);
+   double myscore = (rhs[irep].get_root_node()).get_value(my_keys[irep],imc);
 // if good enough...
    if(myscore<mydata.cutoff){
 // load configuration from file
@@ -126,8 +126,8 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     iout << iout_name;
     rh_out = RMF::create_rmf_file("traj_minimized_"+iout.str()+".rmf");
     for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
-    RMF::Category my_kc= rh_out.add_category("my data");
-    RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
+    my_kc= rh_out.add_category("my data");
+    my_key_out=rh_out.add_float_key(my_kc,"my score",true);
    }
   }
  }
