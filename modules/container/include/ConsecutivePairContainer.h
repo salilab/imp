@@ -11,6 +11,7 @@
 #include "container_config.h"
 #include <IMP/generic.h>
 #include <IMP/PairContainer.h>
+#include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/compatibility/map.h>
