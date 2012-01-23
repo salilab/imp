@@ -40,7 +40,7 @@ A hierarchical storage format was chose since
 
 See \internal{simple.xml, simple.rmf} for an XML dump of the %RMF generated from
 \internal{simple.pdb.txt, simple.pdb}. For a larger example, see
- \internal{3O3Y.xml, 3O3Y.rmf} from \internal{3O3Y.pdb.txt, 3O3Y.pdb}. Note,
+ \internal{3U7W.xml, 3U7W.rmf} from \internal{3U7W.pdb.txt, 3U7W.pdb}. Note,
 that viewing XML files works much better with \external{http://www.mozilla.org/firefox, Firefox}
 \external{http://chrome.google.com/, Google Chrome} than with Safari. For more
 information about the library see RMF. And for the standard data storage schemes see
@@ -143,5 +143,5 @@ have an index attribute).
 
 To get any idea of the data layout in a file, see the dump (produced by
  \c h5dump) of a tiny %RMF, \internal{simple.hdf5.txt, simple.rmf}. For a larger
-example, see \internal{3O3Y.hdf5.txt, 3O3Y.rmf}.
+example, see \internal{3U7W.hdf5.txt, 3U7W.rmf}.
 */
