@@ -5,7 +5,8 @@ applications=['foxs',
               'saxs_merge',
               'em_tools',
               'ligand_score',
-              'multifit']
+              'multifit',
+              'pdb_tools']
 
 if env.get('local', False):
     for d in Glob("*/SConscript"):
