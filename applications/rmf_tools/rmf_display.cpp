@@ -90,6 +90,27 @@ IMP::display::Geometry *create_restraint_geometry(RMF::NodeConstHandle nh,
   }
 }
 
+IMP::display::Geometries create_static_geometry(RMF::FileConstHandle rh) {
+  RMF::Category physics=rh.get_category<1>("physics");
+  RMF::FloatKey x= rh.get_key<RMF::FloatTraits>(physics, "cartesian x");
+  RMF::FloatKey y= rh.get_key<RMF::FloatTraits>(physics, "cartesian y");
+  RMF::FloatKey z= rh.get_key<RMF::FloatTraits>(physics, "cartesian z");
+  std::vector<RMF::NodeSetConstHandle<2> > sets= rh.get_node_sets<2>();
+  IMP::display::Geometries ret;
+  for (unsigned int i=0; i< sets.size(); ++i) {
+    if (sets[i].get_type()== RMF::BOND) {
+      RMF::NodeHandle r0= sets[i].get_node(0);
+      RMF::NodeHandle r1= sets[i].get_node(1);
+      IMP::Particle *p0= reinterpret_cast<IMP::Particle*>(r0.get_association());
+      IMP::Particle *p1= reinterpret_cast<IMP::Particle*>(r1.get_association());
+      IMP_NEW(IMP::core::EdgePairGeometry, g, (IMP::ParticlePair(p0, p1)));
+      g->set_name("bonds");
+      ret.push_back(g);
+    }
+  }
+  return ret;
+}
+
 void add_restraints(RMF::FileConstHandle rh,
                     int frame,
                     IMP::display::Writer *w) {
@@ -174,6 +195,7 @@ int main(int argc, char **argv) {
 
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
+    IMP::display::Geometries static_geometry=create_static_geometry(rh);
     for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
       if (cur_frame%10==0) {
         std::cout << cur_frame << " ";
@@ -206,6 +228,8 @@ int main(int argc, char **argv) {
         w->add_geometry(gs[i]);
       }
       add_restraints(rh, cur_frame, w);
+
+      w->add_geometry(static_geometry);
     }
     if (exec) {
       if (file_type=="pymol") {
