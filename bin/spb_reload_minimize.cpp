@@ -12,6 +12,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <map>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -47,7 +48,8 @@ for(unsigned int i=0;i<all_mol.size();++i){
 // CREATING RESTRAINTS
 //
 std::cout << "Creating restraints" << std::endl;
-spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
+std::map< std::string, Pointer<RestraintSet> > rst_map=
+ spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 //
 // PREPARE OUTPUT
 //
@@ -57,8 +59,8 @@ for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 RMF::Category my_kc= rh_out.add_category("my data");
 RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
 //
-std::ofstream logfile;
-logfile.open("log.emin");
+FILE *logfile;
+logfile = fopen("log.emin","w");
 //
 // OPTIMIZER
 //
@@ -103,13 +105,17 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      rmf::load_frame(rhs[irep],imc,hhs[i]);
     }
     double myscore_min = myscore;
+    double fretr_score;
+    double y2h_score;
 // do coniugate gradient
     if(mydata.cg_steps>0){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
+     fretr_score = rst_map["FRET_R"]->evaluate(false);
+     y2h_score   = rst_map["Y2H"]->evaluate(false);
     }
-    logfile << nminimized << " " << myscore <<
-      " " << myscore_min << " " << iout_name << "\n";
+    fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %10d\n",
+     nminimized,myscore,myscore_min,fretr_score,y2h_score,iout_name);
 // write to file
     (rh_out.get_root_node()).set_value(my_key_out,myscore_min,currentframe);
     for(unsigned int i=0;i<hhs.size();++i){
@@ -134,6 +140,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 }
 
 std::cout << "Number of good configurations " << nminimized << std::endl;
+fclose(logfile);
 
 return 0;
 }

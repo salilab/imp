@@ -10,6 +10,7 @@
 #include <IMP/container/CloseBipartitePairContainer.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/Particle.h>
+#include <iostream>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
