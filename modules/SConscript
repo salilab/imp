@@ -3,6 +3,7 @@ Import('env')
 # modules must be listed after modules that use them
 modules=['compatibility',
          'base',
+         'benchmark',
          'cgal',
          'algebra',
          'kernel',
@@ -26,7 +27,6 @@ modules=['compatibility',
          'system',
          'isd']
 # always last
-modules.append('benchmark')
 modules.append('example')
 
 if env.get('local', False):
