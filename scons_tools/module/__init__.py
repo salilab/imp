@@ -39,8 +39,8 @@ def _get_module_path(env):
     name=module
     if name=="kernel":
         name=""
-    else:
-        pass
+    elif name=="RMF":
+        name="librmf"
     return name
 
 def _get_module_data(env, module=None):
@@ -234,15 +234,27 @@ def IMPModuleExamples(env, example_files, data_files):
 def _make_programs(envi, dirr, files):
     env= scons_tools.environment.get_bin_environment(envi,
                                                      extra_modules=[_get_module_name(envi)])
+    benv=None
     ret=[]
     for f in files:
+        if str(f).find("benchmark_") != -1:
+            isbench=True
+            #print str(f), "is benchmark"
+        else:
+            isbench=False
         if str(f).endswith(".cpp"):
             target=dirr.abspath+"/"+str(f).replace(".cpp","")
-            ret.append(env.Program(source=f, target=target))
+            if isbench:
+                if not benv:
+                    benv= scons_tools.environment.get_benchmark_environment(envi,
+                                                                            extra_modules=[_get_module_name(envi)])
+                ret.append(benv.Program(source=f, target=target))
+            else:
+                ret.append(env.Program(source=f, target=target))
         elif str(f).endswith(".py") and env.get('repository', None):
             dest=dirr
             #print "handling", f.abspath, dest.path
-            nm=File("#/"+env['repository']+"/modules/"+_get_module_name(env)+"/bin/"+str(f))
+            nm=File("#/"+env['repository']+"/modules/"+_get_module_path(env)+"/bin/"+str(f))
             #print dest.path, f.path, nm
             #print str(f), f.abspath
             ret.append(scons_tools.install.install(env,dest, nm))
