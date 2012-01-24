@@ -1,5 +1,7 @@
 /** \page recent Change History
 \par Winter 2011
+- 24/1: \c tools/show-changes has been added that shows the changes in the history log since you last updated.
+- 24/1: \c tools/make-source has been added that adds a source/header pair to a module
 - 24/1: principal components analysis in IMP::algebra was generalized to work in any dimension. This required renaming the class to IMP::algebra::PrincipalComponentAnalysisD.
 - 24/1: the output of the IMP::algebra::PrincipalComponentAnalysisD::show() was changed to reflect the standards (values produce compact, single line output on show). The old show has been moved to IMP::multifit
 - 19/1: IMP::container::ConsecutivePairContainer had IMP::container::ExclusiveConsecutivePairContainer split off of it to make the two operating mode clearer and so that there could be a clear IMP::container::ExclusiveConsecutivePairFilter to use.
