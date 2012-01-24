@@ -6,36 +6,9 @@
  */
 
 #include "IMP/algebra/eigen_analysis.h"
-#include "IMP/algebra/internal/utility.h"
-#include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/log.h>
-#include <IMP/algebra/internal/jama_svd.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
-
-PrincipalComponentAnalysis get_principal_components(
-const Vector3Ds &ps){
-
-  Vector3D m = std::accumulate(ps.begin(), ps.end(),
-                                 get_zero_vector_d<3>())/ps.size();;
-  internal::TNT::Array2D<double> cov = internal::get_covariance_matrix(ps,m);
-  IMP_LOG(VERBOSE, "The convariance matrix is " << cov << std::endl);
-
-  internal::JAMA::SVD<double> svd(cov);
-  internal::TNT::Array2D<double> V(3, 3);
-  internal::TNT::Array1D<double> SV;
-
-  svd.getV(V);
-  IMP_LOG(VERBOSE, "V is " << V << std::endl);
-  svd.getSingularValues(SV);
-  //the principal components are the columns of V
-  //pc1(pc3) is the vector of the largest(smallest) eigenvalue
-  PrincipalComponentAnalysis ed(Vector3D(V[0][0],V[1][0],V[2][0]),
-                                Vector3D(V[0][1],V[1][1],V[2][1]),
-                                Vector3D(V[0][2],V[1][2],V[2][2]),
-                                Vector3D(SV[0],SV[1],SV[2]),m);
-  return ed;
-}
 
 Transformation3Ds get_alignments_from_first_to_second(
                            const PrincipalComponentAnalysis pca1,
@@ -77,35 +50,5 @@ Transformation3Ds get_alignments_from_first_to_second(
   }//i1
   return all_trans;
 }
-void PrincipalComponentAnalysis::show(std::ostream& out) const {
-  algebra::Vector3D v1,v2;
-  out << "<marker_set>" << std::endl;
-  out<<"<!-- PCA with eigen values: ("<<
-    std::sqrt(eigen_values_[0])<<","<<std::sqrt(eigen_values_[1])<<","
-     <<std::sqrt(eigen_values_[2])<<") and centroid ("<<centroid_[0]<<","
-     <<centroid_[1]<<","<<centroid_[2]<<") -->"<<std::endl;
-  int ind=1;
-  float radius=2.;
-  for (unsigned int i=0;i<3;i++) {
-    float val=std::sqrt(eigen_values_[i]);
-    v1=centroid_-val*eigen_vecs_[i];
-    v2=centroid_+val*eigen_vecs_[i];
-    out << "<marker id=\"" << ind++ << "\""
-        << " x=\"" << v1[0] << "\""
-        << " y=\"" << v1[1] << "\""
-        << " z=\"" << v1[2] << "\""
-        << " radius=\"" << radius << "\"/>" << std::endl;
-    out << "<marker id=\"" << ind++ << "\""
-        << " x=\"" << v2[0] << "\""
-        << " y=\"" << v2[1] << "\""
-        << " z=\"" << v2[2] << "\""
-        << " radius=\"" << radius << "\"/>" << std::endl;
-  }
-  for (unsigned int i=1;i<4;i++) {
-    out << "<link id1= \"" << i*2-1
-        << "\" id2=\""     << i*2
-        << "\" radius=\""<<radius<<"\"/>" << std::endl;
-  }
-  out << "</marker_set>" << std::endl;
-}
+
 IMPALGEBRA_END_NAMESPACE

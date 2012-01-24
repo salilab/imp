@@ -13,10 +13,35 @@
 #include <vector>
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-// defined in eigen analysis
-IMPALGEBRAEXPORT TNT::Array2D<double>
-   get_covariance_matrix( const Vector3Ds &vs,
-                          const Vector3D& mean);
+
+template <int D>
+inline TNT::Array2D<double>
+get_covariance_matrix( const vector<VectorD<D> > &vs,
+                       const VectorD<D>& mean) {
+  unsigned int dim=mean.get_dimension();
+  internal::TNT::Array2D<double> cov(dim, dim);
+  for (unsigned int i=0; i< dim; ++i) {
+    for (unsigned int j=0; j< dim; ++j) {
+      cov[i][j]=0;
+    }
+  }
+  // calculcate variance
+  for (unsigned int q=0 ; q < vs.size(); ++q) {
+    for (unsigned int i=0; i< dim; ++i) {
+      for (unsigned int j=0; j< dim; ++j) {
+        cov[i][j]+= (vs[q][i]-mean[i])*(vs[q][j]-mean[j]);
+      }
+    }
+  }
+  double isize= 1.0/(vs.size()-1);
+  for (unsigned int i=0; i< dim; ++i) {
+    for (unsigned int j=0; j< dim; ++j) {
+      cov[i][j]=cov[i][j]*isize;
+    }
+  }
+  return cov;
+}
+
 
 
 
