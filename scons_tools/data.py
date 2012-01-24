@@ -301,7 +301,12 @@ class IMPData:
                 #print "version", version
             if version:
                 print version
-                self.add_module(m, ok=True, external=True, version=version)
+                if m=="kernel":
+                    ln= "imp"
+                else:
+                    ln= "imp_"+m
+                self.add_module(m, ok=True, external=True, version=version,
+                                libname=ln)
             else:
                 print "not found"
                 self.add_module(m, ok=False)
