@@ -9,8 +9,5 @@ scons_tools.dependency.add_external_library(env, "google_perftools_profile",
 
 
 module_env=env.IMPModuleBuild(version='nightly-23/1/2012',
-                              lib_only_required_modules=['core', 'algebra'],
-                              lib_only_optional_modules=['domino', 'atom', 'em',
-                                                         'cgal', 'rmf',
-                                                         'multifit'],
+                              required_modules=['base'],
                               optional_dependencies=['google_perftools_profile'])
