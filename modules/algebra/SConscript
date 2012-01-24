@@ -4,7 +4,7 @@ import scons_tools.dependency
 scons_tools.dependency.add_external_library(env, "ANN", ["ANN"],
                                             "ANN/ANN.h")
 
-env.IMPModuleBuild(version='nightly-22/1/2012',
+env.IMPModuleBuild(version='nightly-23/1/2012',
                    required_modules=['base'],
                    lib_only_required_modules=['compatibility'],
                    lib_only_optional_modules=['cgal'],
