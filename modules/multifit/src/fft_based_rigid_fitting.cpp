@@ -414,7 +414,7 @@ void FFTFitting::fftw_translational_search(
   double curr_score;
   unsigned long pos_ind;
   //keep the best translation for logging
-  int grid_ind[3];
+  int grid_ind[3]={-1,-1,-1};
   double max_score=-INT_MAX;
   for (long i=0;i<inside_num_flipped_;i++) {
     curr_score=(*(reversed_fftw_data_+fft_scores_flipped_[i].ifft));
