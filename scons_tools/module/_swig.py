@@ -301,7 +301,16 @@ def swig_scanner(node, env, path):
         return []
     else :
         oldret=[]
-        ret= [env["builddir"]+"/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
+        ret=[]
+        for x in re.findall('\n%include\s"([^"]*.h)"', contents):
+            if x.startswith("IMP/"):
+                xc= x[4:]
+                if xc.find("/") != -1:
+                    module= xc[0:xc.find("/")]
+                else:
+                    module="kernel"
+                if not dta.modules[module].external:
+                    ret.extend([env["builddir"]+"/include/"+x])
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
             mn= x.split("_")[0]
