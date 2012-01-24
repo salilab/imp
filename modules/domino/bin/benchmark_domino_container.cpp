@@ -2,7 +2,6 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/domino.h>
-#include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
@@ -12,11 +11,9 @@
 
 using namespace IMP;
 using namespace IMP::domino;
-using namespace IMP::atom;
 using namespace IMP::algebra;
 using namespace IMP::core;
 using namespace IMP::container;
-typedef IMP::atom::Hierarchy Hierarchy;
 
 template <class Table>
 void benchmark_table(AssignmentContainer *ac, std::string name) {

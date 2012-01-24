@@ -5,17 +5,15 @@
 #include <IMP.h>
 #include <IMP/core.h>
 #include <IMP/algebra.h>
-#include <IMP/atom.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/container.h>
+#include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/internal/pdb.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
-using namespace IMP::atom;
-using namespace IMP::container;
 
 namespace {
 void test_one(std::string name,
@@ -61,19 +59,20 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
   Model *m=new Model();
   Particles atoms;
   for (int i=0; i< 5; ++i) {
-    atom::Hierarchy mhd
-      = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
-    ParticlesTemp catoms= get_by_type(mhd, atom::ATOM_TYPE);
+    std::string path=IMP::benchmark::get_data_path("small_protein.pdb");
+    ParticlesTemp catoms
+        = IMP::internal::create_particles_from_pdb(path, m);
     IMP_INTERNAL_CHECK(catoms.size() != 0, "What happened to the atoms?");
     atoms.insert(atoms.end(), catoms.begin(), catoms.end());
-    RigidBody rbd=RigidBody::setup_particle(mhd.get_particle(),
+    IMP_NEW(Particle, rbp, (m));
+    RigidBody rbd=RigidBody::setup_particle(rbp,
                                             XYZs(catoms));
     rbs.push_back(rbd);
   }
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
   }
-  IMP_NEW(ListSingletonContainer, lsc, (m));
+  IMP_NEW(core::internal::CoreListSingletonContainer, lsc, (m, "list"));
 
   PairContainer *cpc;
   if (rpcpf) {
@@ -83,12 +82,13 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
     }
     lsc->set_particles(rbsp);
     IMP_NEW(RigidClosePairsFinder, rcps,());
-    cpc= new ClosePairContainer(lsc, 0.0, rcps);
+    cpc= new core::internal::CoreClosePairContainer(lsc, 0.0, rcps);
   } else {
+    IMP_NEW(GridClosePairsFinder, cpf,());
     lsc->set_particles(get_as<ParticlesTemp>(atoms));
-    cpc = new ClosePairContainer(lsc, 0.0);
+    cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
-  IMP_NEW(PairsRestraint, pr,
+  IMP_NEW(core::internal::CorePairsRestraint, pr,
           (new DistancePairScore(new Linear(1,0)),
            cpc));
   m->add_restraint(pr);

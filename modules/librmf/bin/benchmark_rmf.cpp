@@ -2,7 +2,6 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/benchmark/benchmark_config.h>
-#ifdef IMP_BENCHMARK_USE_IMP_RMF
 #include <RMF/FileHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <boost/timer.hpp>
@@ -94,8 +93,3 @@ int main(int, char **) {
   }
   return 0;
 }
-#else
-int main(int, const char*) {
-  return 1;
-}
-#endif
