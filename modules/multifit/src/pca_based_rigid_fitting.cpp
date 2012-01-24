@@ -92,4 +92,42 @@ em::FittingSolutions pca_based_rigid_fitting(
 }
 
 
+
+void write_markers(const algebra::PrincipalComponentAnalysisD<3> &pca,
+                   std::ostream &out) {
+ algebra::Vector3D v1,v2;
+  out << "<marker_set>" << std::endl;
+  algebra::Vector3D values= pca.get_principal_values();
+  algebra::Vector3Ds vectors= pca.get_principal_components();
+  algebra::Vector3D centroid= pca.get_centroid();
+  out<<"<!-- PCA with eigen values: ("<<
+      std::sqrt(values[0])<<","
+     <<std::sqrt(values[1])<<","
+     <<std::sqrt(values[2])
+     <<") and centroid ("<<centroid <<") -->"<<std::endl;
+  int ind=1;
+  float radius=2.;
+  for (unsigned int i=0;i<3;i++) {
+    float val=std::sqrt(values[i]);
+    v1=centroid-val*vectors[i];
+    v2=centroid+val*vectors[i];
+    out << "<marker id=\"" << ind++ << "\""
+        << " x=\"" << v1[0] << "\""
+        << " y=\"" << v1[1] << "\""
+        << " z=\"" << v1[2] << "\""
+        << " radius=\"" << radius << "\"/>" << std::endl;
+    out << "<marker id=\"" << ind++ << "\""
+        << " x=\"" << v2[0] << "\""
+        << " y=\"" << v2[1] << "\""
+        << " z=\"" << v2[2] << "\""
+        << " radius=\"" << radius << "\"/>" << std::endl;
+  }
+  for (unsigned int i=1;i<4;i++) {
+    out << "<link id1= \"" << i*2-1
+        << "\" id2=\""     << i*2
+        << "\" radius=\""<<radius<<"\"/>" << std::endl;
+  }
+ out << "</marker_set>" << std::endl;
+}
+
 IMPMULTIFIT_END_NAMESPACE
