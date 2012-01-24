@@ -62,7 +62,8 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
   algebra::PrincipalComponentAnalysis dens_pca_input=
    algebra::PrincipalComponentAnalysis());
 
-
+IMPMULTIFITEXPORT
+void write_markers(const algebra::PrincipalComponentAnalysisD<3> &pca);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_PCA_BASED_RIGID_FITTING_H */
