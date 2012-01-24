@@ -3,8 +3,6 @@
  */
 #include <IMP.h>
 #include <IMP/benchmark.h>
-
-#ifdef IMP_BENCHMARK_HAS_IMP_EM
 #include <IMP/em.h>
 #include <IMP/algebra.h>
 using namespace IMP;
@@ -76,9 +74,3 @@ int main(int , char **) {
   do_benchmark();
   return IMP::benchmark::get_return_value();
 }
-#else
-int main(int, char**) {
-  return 0;
-}
-
-#endif

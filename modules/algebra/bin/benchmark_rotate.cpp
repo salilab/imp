@@ -2,17 +2,13 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP.h>
-#include <IMP/core.h>
 #include <IMP/algebra.h>
-#include <IMP/atom.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 
 using namespace IMP;
-using namespace IMP::core;
 using namespace IMP::algebra;
-using namespace IMP::atom;
 
 
 int main(int , char **) {

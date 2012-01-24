@@ -4,16 +4,13 @@
 #include <IMP.h>
 #include <IMP/core.h>
 #include <IMP/algebra.h>
-#include <IMP/atom.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-#include <IMP/benchmark/hidden_keys.h>
 
 using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
-using namespace IMP::atom;
 using namespace IMP::benchmark;
 
 
@@ -75,9 +72,9 @@ double compute_distances_particle_access(
 
 double compute_distances_particle_access(
    const IMP::ParticlesTemp& particles) {
-  FloatKey xk= hidden_keys[0];
-  FloatKey yk= hidden_keys[1];
-  FloatKey zk= hidden_keys[2];
+  FloatKey xk("my x");
+  FloatKey yk("my y");
+  FloatKey zk("my z");
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::algebra::Vector3D v1(particles[i]->get_value(xk),
@@ -255,13 +252,16 @@ double compute_distances_direct_access_space(
 }
 
 
-void do_benchmark(std::string descr, std::string fname) {
+void do_benchmark(std::string descr, unsigned int n) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
-  atom::Hierarchy mhd
-    = read_pdb(fname, model, new NonWaterNonHydrogenPDBSelector());
-  IMP::ParticlesTemp particles =
-    get_by_type(mhd, atom::ATOM_TYPE);
+  ParticlesTemp particles;
+  algebra::BoundingBox3D bb= algebra::get_cube_d<3>(100);
+  for (unsigned int i=0; i< n; ++i) {
+    particles.push_back(new Particle(model));
+    core::XYZ::setup_particle(particles.back(),
+                              algebra::get_random_vector_in(bb));
+  }
   //std::cout << "Number of particles " << particles.size() << std::endl;
   //set_check_level(IMP::NONE);
   set_log_level(SILENT);
@@ -436,25 +436,19 @@ int main(int argc, char **argv) {
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
-      do_benchmark("small",
-                   IMP::benchmark::get_data_path("small_protein.pdb"));
+      do_benchmark("small", 100);
       break;
     case 'l':
-      do_benchmark("large",
-                   IMP::benchmark::get_data_path("large_protein.pdb"));
+      do_benchmark("large", 1000);
       break;
     case 'h':
-      do_benchmark("huge",
-                   IMP::benchmark::get_data_path("huge_protein.pdb"));
+      do_benchmark("huge", 10000);
       break;
     }
   } else {
-    do_benchmark("small",
-                 IMP::benchmark::get_data_path("small_protein.pdb"));
-    do_benchmark("large",
-                 IMP::benchmark::get_data_path("large_protein.pdb"));
-    do_benchmark("huge",
-                 IMP::benchmark::get_data_path("huge_protein.pdb"));
+    do_benchmark("small", 100);
+    do_benchmark("large", 1000);
+    do_benchmark("huge", 10000);
   }
   return IMP::benchmark::get_return_value();
 }

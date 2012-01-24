@@ -2,41 +2,36 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/domino.h>
-#include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
+#include <IMP/internal/pdb.h>
 using namespace IMP;
 using namespace IMP::domino;
-using namespace IMP::atom;
 using namespace IMP::algebra;
 using namespace IMP::core;
 using namespace IMP::container;
-typedef IMP::atom::Hierarchy Hierarchy;
 
 int main(int argc, char *[]) {
   IMP_NEW(Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
-  ::Hierarchy h= read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"),m);
-  add_radii(h);
+  std::string path=IMP::benchmark::get_data_path("small_protein.pdb");
+  ParticlesTemp ps
+      = IMP::internal::create_particles_from_pdb(path,m);
   ReferenceFrame3Ds vs;
-  Hierarchies residues= get_by_type(h, RESIDUE_TYPE);
-  while (residues.size() > 80) {
-    residues.pop_back();
+  while (ps.size() > 800) {
+    ps.pop_back();
   }
-  Hierarchies leaves;
-  for (unsigned int i=0; i< residues.size(); ++i) {
-    Hierarchies l= get_leaves(residues[i]);
-    for (unsigned int j=0; j< l.size(); ++j) {
-      leaves.push_back(l[j].get_particle());
-    }
-  }
-  for (unsigned int i=0; i< residues.size(); ++i) {
-    RigidBody r= setup_as_rigid_body(residues[i]);
+  ParticlesTemp rs;
+  for (unsigned int i=0; i< 80; ++i) {
+    IMP_NEW(Particle, p, (m));
+    ParticlesTemp leaves(ps.begin()+i*10, ps.begin()+(i+1)*10);
+    RigidBody r= RigidBody::setup_particle(p, leaves);
     vs.push_back(ReferenceFrame3D(r.get_reference_frame()));
+    rs.push_back(r);
   }
-  IMP_NEW(ListSingletonContainer, lsc, (leaves));
+  IMP_NEW(ListSingletonContainer, lsc, (rs));
 #ifdef IMP_USE_CGAL
   IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
 #else
@@ -45,8 +40,6 @@ int main(int argc, char *[]) {
   cpf->set_distance(3);
   ParticlePairsTemp ppt= cpf->get_close_pairs(lsc);
   for (unsigned int i=0; i < ppt.size(); ++i) {
-    if (get_residue(Atom(ppt[i][0])) == get_residue(Atom(ppt[i][1])))
-      continue;
     double d= get_distance(XYZ(ppt[i][0]), XYZ(ppt[i][1]));
     Restraint *r=new DistanceRestraint(new Harmonic(d, 1),
                                        ppt[i][0], ppt[i][1]);
@@ -58,8 +51,8 @@ int main(int argc, char *[]) {
   }
   IMP_NEW(RigidBodyStates, pstates, (vs));
   IMP_NEW(ParticleStatesTable, pst, ());
-  for (unsigned int i=0; i< residues.size(); ++i) {
-    pst->set_particle_states(residues[i], pstates);
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    pst->set_particle_states(rs[i], pstates);
   }
   IMP_NEW(DominoSampler, ds, (m, pst));
   m->set_maximum_score(1);

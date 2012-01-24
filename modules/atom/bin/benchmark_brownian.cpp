@@ -398,7 +398,7 @@ int main(int argc , char **argv) {
 }
 
 #else
-int main(int, const char*) {
+int main(int, const char**) {
   return 1;
 }
 #endif
