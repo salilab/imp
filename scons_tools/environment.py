@@ -472,6 +472,9 @@ def get_bin_environment(envi, extra_modules=[]):
     _add_flags(env, extra_modules=extra_modules)
     return env
 
+def get_benchmark_environment(envi, extra_modules=[]):
+    return get_bin_environment(envi, extra_modules+['benchmark'])
+
 def get_test_environment(envi):
     env= bug_fixes.clone_env(envi)
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
