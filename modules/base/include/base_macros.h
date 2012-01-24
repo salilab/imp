@@ -881,12 +881,6 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #define IMP_OBJECTS_IO(Name, PluralName)
 #else
 
-#if IMP_BUILD < IMP_FAST
-#define IMP_OBJECTS_TEMP_POINTER(Name) IMP::base::WeakPointer<Name>
-#else
-#define IMP_OBJECTS_TEMP_POINTER(Name) Name*
-#endif
-
 #ifdef SWIG
 #define IMP_OBJECTS_IO(Name, PluralName)
 #else
@@ -905,9 +899,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #endif
 
 #define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
-  typedef IMP::vector<IMP::base::Pointer<Name> > \
+  typedef IMP::vector<IMP::base::Pointer<Name> >                        \
   PluralName;                                                           \
-  typedef IMP::vector<IMP_OBJECTS_TEMP_POINTER(Name) > \
+  typedef IMP::vector<IMP::base::WeakPointer<Name> >                    \
   PluralName##Temp;
 
 
