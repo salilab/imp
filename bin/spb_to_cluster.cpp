@@ -82,7 +82,7 @@ RMF::FileHandle rh=RMF::open_rmf_file(mydata.trajfile);
 rmf::set_hierarchies(rh, hhs);
 
 // getting key for score
-RMF::Category my_kc= rh.add_category("my data");
+RMF::Category my_kc= rh.get_category("my data");
 RMF::FloatKey my_key=rh.get_float_key(my_kc,"my score");
 // number of frames
 unsigned int nframes=rmf::get_number_of_frames(rh,hhs[0]);
