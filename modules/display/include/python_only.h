@@ -17,6 +17,8 @@ IMP_BEGIN_NAMESPACE
     \external{http://pivy.coin3d.org/,Pivy} window.
 
     At the moment it support SphereGeometry and CylinderGeometry.
+
+    This class is under development.
 */
 class PivyWriter:public Writer {
  public:
