@@ -197,36 +197,36 @@ for(int i=0;i<mydata.num_cells;++i){
 //
 // CNM67p-C
 //
-  if(mydata.protein_list["Cnm67p_c"]){
- //Cnm67p_c, 2 beads
+  if(mydata.protein_list["Cnm67p"]){
+ //Cnm67p, 2 beads
    if(!mydata.use_structure){
-    atom::Molecule Cnm67p_c=
-     create_protein(m,"Cnm67p_c",15,2,
+    atom::Molecule Cnm67p=
+     create_protein(m,"Cnm67p",15,2,
                       display::Color(50./255.,205./255.,50./255.),
                       i,mydata.kappa,IL2_x0,mydata.use_connectivity,429);
-    all_mol.add_child(Cnm67p_c);
+    all_mol.add_child(Cnm67p);
     if(i==0){
-     Particles ps_Cnm67p_c=atom::get_leaves(Cnm67p_c);
-     IL2_ps->add_particles(ps_Cnm67p_c);
-     add_PbcBoxedMover(ps_Cnm67p_c,mydata.MC.dx,
+     Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
+     IL2_ps->add_particles(ps_Cnm67p);
+     add_PbcBoxedMover(ps_Cnm67p,mydata.MC.dx,
       mydata.IL2_centers,mydata.trs,mvs);
     }
    } else {
-    atom::Molecule Cnm67p_c=
-     create_protein(m,"Cnm67p_c","3OA7.pdb",mydata.resolution,
+    atom::Molecule Cnm67p=
+     create_protein(m,"Cnm67p","3OA7.pdb",mydata.resolution,
                       display::Color(50./255.,205./255.,50./255.),
                       i,IL2_x0);
-    all_mol.add_child(Cnm67p_c);
+    all_mol.add_child(Cnm67p);
     if(i==0){
-     Particles ps_Cnm67p_c=atom::get_leaves(Cnm67p_c);
-     IL2_ps->add_particles(ps_Cnm67p_c);
-     add_PbcBoxedRigidBodyMover(ps_Cnm67p_c,mydata.MC.dx,
+     Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
+     IL2_ps->add_particles(ps_Cnm67p);
+     add_PbcBoxedRigidBodyMover(ps_Cnm67p,mydata.MC.dx,
       mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
     }
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_c=
-     create_GFP(m,"Cnm67p_c-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+     create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
     all_mol.add_child(gfp_c);
    }
   }

@@ -2,7 +2,7 @@
  *  \file spb_parser.cpp
  *  \brief SPB parser
  *
- *  Copyright 2011 IMP Inventors. All rights reserved.
+*  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 #include <boost/program_options.hpp>
@@ -32,7 +32,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool add_Spc29p;
  bool add_Spc110p;
  bool add_Cmd1p;
- bool add_Cnm67p_c;
+ bool add_Cnm67p;
  bool add_fret;
  bool add_y2h;
  bool add_tilt;
@@ -47,9 +47,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  std::string load_Spc29p;
  std::string load_Spc110p;
  std::string load_Cmd1p;
- std::string load_Cnm67p_c;
+ std::string load_Cnm67p;
  std::string trajfile;
  std::string label;
+ std::string fret_File;
  std::map<std::string,std::string> file_list;
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
@@ -62,7 +63,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("add_Spc29p",   value<bool>(&add_Spc29p),       "ciao");
  desc.add_options()("add_Spc110p",  value<bool>(&add_Spc110p),      "ciao");
  desc.add_options()("add_Cmd1p",    value<bool>(&add_Cmd1p),        "ciao");
- desc.add_options()("add_Cnm67p_c", value<bool>(&add_Cnm67p_c),     "ciao");
+ desc.add_options()("add_Cnm67p", value<bool>(&add_Cnm67p),     "ciao");
  desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
  desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
  desc.add_options()("add_tilt",     value<bool>(&add_tilt),         "ciao");
@@ -78,9 +79,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
  desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
- desc.add_options()("load_Cnm67p_c", value<std::string>(&load_Cnm67p_c),"ciao");
+ desc.add_options()("load_Cnm67p", value<std::string>(&load_Cnm67p),"ciao");
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
+ desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -142,6 +144,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.Fret.Sa=fret_Sa;
  ret.Fret.Gamma=fret_Gamma;
  ret.Fret.Ida=fret_Ida;
+ ret.Fret.filename=fret_File;
 
 // General Parameters
  ret.side=side;
@@ -175,7 +178,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.protein_list["Spc42p"]=add_Spc42p;
  ret.protein_list["Spc29p"]=add_Spc29p;
  ret.protein_list["Cmd1p"]=add_Cmd1p;
- ret.protein_list["Cnm67p_c"]=add_Cnm67p_c;
+ ret.protein_list["Cnm67p"]=add_Cnm67p;
  ret.protein_list["Spc110p"]=add_Spc110p;
 // GFP stuff
  ret.add_GFP=add_GFP;
@@ -205,9 +208,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
    ret.file_list["Cmd1p-C-GFP"]=load_Cmd1p+suffix+".rmf";
   }
  }
- if(load_Cnm67p_c.length()>0.0){
-  ret.file_list["Cnm67p_c"]=load_Cnm67p_c+suffix+".rmf";
-  if(add_GFP){ret.file_list["Cnm67p_c-C-GFP"]=load_Cnm67p_c+suffix+".rmf";}
+ if(load_Cnm67p.length()>0.0){
+  ret.file_list["Cnm67p"]=load_Cnm67p+suffix+".rmf";
+  if(add_GFP){ret.file_list["Cnm67p-C-GFP"]=load_Cnm67p+suffix+".rmf";}
  }
  if(load_Spc110p.length()>0.0){
   ret.file_list["Spc110p"]=load_Spc110p+suffix+".rmf";
