@@ -103,9 +103,7 @@ if(mydata.MC.do_wte && mydata.MC.wte_restart){
  double bias;
  std::ifstream biasfile;
  std::string names="BIAS"+out.str();
- char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
- strcpy(name, names.c_str());
- biasfile.open(name);
+ biasfile.open(names.c_str());
  while (biasfile >> bias){val.push_back(bias);}
  biasfile.close();
  Pointer<membrane::MonteCarloWithWte> ptr=
