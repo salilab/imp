@@ -87,7 +87,7 @@ namespace {
           bd.set_stiffness(std::sqrt(p.force_constant * 2.0));
         } catch (const IndexException &e) {
           // If no parameters, warn only
-          IMP_WARN(e.what() << std::endl);
+          IMP_WARN(e.what());
         }
         ps.push_back(bd);
       }
@@ -332,8 +332,7 @@ namespace {
         && patch->get_number_of_dihedrals() == 0
         && patch->get_number_of_impropers() == 0
         && patch->get_number_of_internal_coordinates() == 0) {
-      IMP_WARN(*patch << " appears to be empty - nothing done"
-               << std::endl);
+      IMP_WARN(*patch << " appears to be empty - nothing done");
     }
   }
 }
@@ -403,7 +402,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
       && (res1->get_type() != "CYS" || res2->get_type() != "CYS")) {
     IMP_WARN("Applying a DISU patch to two residues that are not both 'CYS' "
              "(they are " << *res1 << " and " << *res2 << "). This is "
-             "probably not what was intended." << std::endl);
+             "probably not what was intended.");
   }
 
   // Copy or update atoms
@@ -581,8 +580,8 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
           IMP_WARN_ONCE(typ.get_string()
                         +Residue(it->second).get_residue_type().get_string(),
                         "Could not determine CHARMM atom type for atom "
-                        << typ << " in residue " << Residue(it->second)
-                        << std::endl, warn_context_);
+                        << typ << " in residue " << Residue(it->second),
+                        warn_context_);
         }
       } else {
         // Override existing type if present
@@ -989,8 +988,8 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
                                 it->first->get_atom(typ).get_charge());
       } catch (ValueException &e) {
         IMP_WARN_ONCE(typ.get_string(), "Could not determine charge for atom "
-                      << typ << " in residue " << Residue(it->second)
-                      << std::endl, warn_context_);
+                      << typ << " in residue " << Residue(it->second),
+                      warn_context_);
       }
     }
   }
