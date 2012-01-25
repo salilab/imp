@@ -49,9 +49,7 @@ for(unsigned int i=0;i<all_mol.size();++i){
 std::ifstream labelfile;
 std::string label;
 std::vector<std::string> labels;
-char* name=(char*)malloc( sizeof( char ) *(mydata.label.length() +1) );
-strcpy(name, mydata.label.c_str());
-labelfile.open(name);
+labelfile.open(mydata.label.c_str());
 while (labelfile >> label){labels.push_back(label);}
 labelfile.close();
 // assigment file

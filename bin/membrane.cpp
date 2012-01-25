@@ -39,9 +39,7 @@ std::ofstream logfile;
 std::stringstream out;
 out << myrank;
 std::string names="log"+out.str();
-char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
-strcpy(name, names.c_str());
-logfile.open(name);
+logfile.open(names.c_str());
 
 // parsing input
 if(myrank==0) {std::cout << "Parsing input file" << std::endl;}
@@ -100,9 +98,7 @@ if(mydata.MC.do_wte && mydata.MC.wte_restart){
  double bias;
  std::ifstream biasfile;
  std::string names="BIAS"+out.str();
- char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
- strcpy(name, names.c_str());
- biasfile.open(name);
+ biasfile.open(names.c_str());
  while (biasfile >> bias){val.push_back(bias);}
  biasfile.close();
  Pointer<membrane::MonteCarloWithWte> ptr=
@@ -143,9 +139,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   if(mydata.MC.do_wte){
    std::ofstream biasfile;
    std::string names="BIAS"+out.str();
-   char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
-   strcpy(name, names.c_str());
-   biasfile.open(name);
+   biasfile.open(names.c_str());
    Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
    double* mybias=ptr->get_bias_buffer();
