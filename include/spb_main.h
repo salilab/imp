@@ -15,8 +15,17 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
+struct FretParameters {
+ double R0;
+ double Gamma;
+ double Sd;
+ double Sa;
+ double Ida;
+};
+
 struct SPBParameters {
  MCParameters MC;
+ FretParameters Fret;
  double       side;
  double       CP_thickness;
  double       CP_IL2_gap;

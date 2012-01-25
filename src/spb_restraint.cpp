@@ -200,20 +200,14 @@ Pointer<container::MinimumPairRestraint> fret_restraint
 }
 
 Pointer<membrane::FretrRestraint> NEW_fret_restraint
-(Model *m,
- atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
- double r_value, double kappa, bool use_GFP)
+(Model *m, atom::Hierarchies& hs,
+ std::string protein_a, std::string residues_a,
+ std::string protein_b, std::string residues_b, double r_value,
+ FretParameters Fret, double kappa, bool use_GFP)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
- const double R0=49.0;
- const double Sd=0.446;
- const double Sa=0.232;
- const double gamma=0.3;
- const double Ida=1.7;
-
- atom::Selection sa=atom::Selection(ha);
- atom::Selection sb=atom::Selection(hb);
+ atom::Selection sa=atom::Selection(hs);
+ atom::Selection sb=atom::Selection(hs);
  if(use_GFP){
   protein_a=protein_a+"-"+residues_a+"-GFP";
   sa.set_molecule(protein_a);
@@ -225,7 +219,7 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
   IMP_NEW(membrane::FretrRestraint,fr,
-   (p1,p2,R0,Sd,Sa,gamma,Ida,r_value,kappa,name));
+   (p1,p2,Fret.R0,Fret.Sd,Fret.Sa,Fret.Gamma,Fret.Ida,r_value,kappa,name));
   return fr.release();
  } else {
   sa.set_molecule(protein_a);
@@ -238,7 +232,7 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
   IMP_NEW(membrane::FretrRestraint,fr,
-   (p1,p2,R0,Sd,Sa,gamma,Ida,r_value,kappa,name));
+   (p1,p2,Fret.R0,Fret.Sd,Fret.Sa,Fret.Gamma,Fret.Ida,r_value,kappa,name));
   return fr.release();
  }
 }

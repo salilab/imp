@@ -99,6 +99,11 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
  OPTION(double, cutoff);
+ OPTION(double, fret_R0);
+ OPTION(double, fret_Sd);
+ OPTION(double, fret_Sa);
+ OPTION(double, fret_Gamma);
+ OPTION(double, fret_Ida);
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
  OPTION(int,    niter);
@@ -131,6 +136,12 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.MC.wte_emax=wte_emax;
  ret.MC.wte_restart=wte_restart;
 
+// Fret Parameters
+ ret.Fret.R0=fret_R0;
+ ret.Fret.Sd=fret_Sd;
+ ret.Fret.Sa=fret_Sa;
+ ret.Fret.Gamma=fret_Gamma;
+ ret.Fret.Ida=fret_Ida;
 
 // General Parameters
  ret.side=side;
