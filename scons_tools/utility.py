@@ -1,6 +1,7 @@
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
 import data
 import os
+import os.path
 import sys
 import environment
 import dependency
@@ -17,7 +18,7 @@ def get_matching(patterns):
     Otherwise changes in the ordering will cause scons to rebuild things."""
     ret=[]
     for x in patterns:
-        ret+=Glob(x)
+        ret+=[x for x in Glob(x) if not os.path.islink(x.abspath)]
     ret.sort(file_compare)
     return ret
 
