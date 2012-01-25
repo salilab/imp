@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a eigen analysis of some data.
  */
 template <int D>
-class IMPALGEBRAEXPORT PrincipalComponentAnalysisD {
+class PrincipalComponentAnalysisD {
  public:
   PrincipalComponentAnalysisD(){}
   PrincipalComponentAnalysisD(
@@ -106,7 +106,7 @@ inline void PrincipalComponentAnalysisD<D>::show(std::ostream& out) const {
 /** \relatesalso PrincipalComponentAnalysis
  */
 template <int D>
-IMPALGEBRAEXPORT PrincipalComponentAnalysisD<D> get_principal_components(
+PrincipalComponentAnalysisD<D> get_principal_components(
     const vector<VectorD<D> > &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Need some vectors to get components.");
   unsigned int dim=ps[0].get_dimension();
