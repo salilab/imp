@@ -94,8 +94,8 @@ namespace {
   }
 }
 
-bool PymolWriter::handle(SphereGeometry *g,
-                          Color color, std::string name) {
+bool PymolWriter::handle_sphere(SphereGeometry *g,
+                                Color color, std::string name) {
   setup(name, OTHER);
   write_color(get_stream(), color);
   get_stream() << "SPHERE, "
@@ -105,7 +105,7 @@ bool PymolWriter::handle(SphereGeometry *g,
 
   return true;
 }
-bool PymolWriter::handle(LabelGeometry *g,
+bool PymolWriter::handle_label(LabelGeometry *g,
                           Color, std::string name) {
   cleanup(lastname_, true);
   setup(name, OTHER, false);
@@ -123,7 +123,7 @@ bool PymolWriter::handle(LabelGeometry *g,
                << "\n";
   return true;
 }
-bool PymolWriter::handle(CylinderGeometry *g,
+bool PymolWriter::handle_cylinder(CylinderGeometry *g,
                             Color color, std::string name) {
   cleanup(name, OTHER);
   get_stream() << "CYLINDER,\n"
@@ -142,7 +142,7 @@ bool PymolWriter::handle(CylinderGeometry *g,
                << ",\n";
   return true;
 }
-bool PymolWriter::handle(PointGeometry *g,
+bool PymolWriter::handle_point(PointGeometry *g,
                             Color color, std::string name) {
   setup(name, OTHER);
   write_color(get_stream(),color);
@@ -151,7 +151,7 @@ bool PymolWriter::handle(PointGeometry *g,
                << .1 << ",\n";
   return true;
 }
-bool PymolWriter::handle(SegmentGeometry *g,
+bool PymolWriter::handle_segment(SegmentGeometry *g,
                             Color color, std::string name) {
   setup(name, LINES);
   /*double r= .01*(g->get_geometry().get_point(0)- g->get_geometry()
@@ -190,7 +190,7 @@ namespace {
   }
 }
 
-bool PymolWriter::handle(PolygonGeometry *g,
+bool PymolWriter::handle_polygon(PolygonGeometry *g,
                           Color color, std::string name) {
   setup(name, TRIANGLES);
   if (!open_type_) {
@@ -208,7 +208,7 @@ bool PymolWriter::handle(PolygonGeometry *g,
 
 
 
-bool PymolWriter::handle(TriangleGeometry *g,
+bool PymolWriter::handle_triangle(TriangleGeometry *g,
                             Color color, std::string name) {
   setup(name, TRIANGLES);
   if (!open_type_) {
@@ -226,7 +226,7 @@ bool PymolWriter::handle(TriangleGeometry *g,
   return true;
 }
 
-bool PymolWriter::handle(SurfaceMeshGeometry *g,
+bool PymolWriter::handle_surface(SurfaceMeshGeometry *g,
                          Color color, std::string name) {
   setup(name, TRIANGLES);
   if (!open_type_) {

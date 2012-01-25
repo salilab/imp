@@ -12,14 +12,14 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-#define GP_HANDLE(Name) {                               \
-    Name *sg= dynamic_cast<Name*>(g);                   \
-    if (sg) {                                           \
-      if (handle(sg, c, name)) {                        \
-        return;                                         \
-      }                                                 \
-    }                                                   \
-  }                                                     \
+#define GP_HANDLE(Name, nm) {                                   \
+    Name##Geometry *sg= dynamic_cast<Name##Geometry*>(g);       \
+    if (sg) {                                                   \
+      if (handle_##nm(sg, c, name)) {                           \
+        return;                                                 \
+      }                                                         \
+    }                                                           \
+  }                                                             \
 
 void GeometryProcessor::handle_geometry_internal(Geometry* g,
                                                   bool has_color,
@@ -33,17 +33,17 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   if (name.empty()) {
     name= g->get_name();
   }
-  GP_HANDLE(SphereGeometry);
-  GP_HANDLE(CylinderGeometry);
-  GP_HANDLE(EllipsoidGeometry);
-  GP_HANDLE(BoundingBoxGeometry);
-  GP_HANDLE(PointGeometry);
-  GP_HANDLE(SegmentGeometry);
-  GP_HANDLE(PolygonGeometry);
-  GP_HANDLE(TriangleGeometry);
-  GP_HANDLE(LabelGeometry);
-  GP_HANDLE(SurfaceMeshGeometry);
-  GP_HANDLE(Geometry);
+  GP_HANDLE(Sphere, sphere);
+  GP_HANDLE(Cylinder, cylinder);
+  GP_HANDLE(Ellipsoid, ellipsoid);
+  GP_HANDLE(BoundingBox, bounding_box);
+  GP_HANDLE(Point, point);
+  GP_HANDLE(Segment, segment);
+  GP_HANDLE(Polygon, polygon);
+  GP_HANDLE(Triangle, triangle);
+  GP_HANDLE(Label, label);
+  GP_HANDLE(SurfaceMesh, surface_mesh);
+  GP_HANDLE(, anything);
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
     IMP_THROW("Couldn't handle " << *g,

@@ -28,8 +28,8 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }
 }
 
-#define HANDLE(Name, test)                                      \
-  bool FilterGeometry::handle(Name##Geometry *g,                \
+#define HANDLE(Name, name, test)                                \
+  bool FilterGeometry::handle_##name(Name##Geometry *g,         \
                               Color color, std::string name) {  \
     if (test) {                                                 \
       filtered_.push_back(g);                                   \
@@ -40,11 +40,12 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }                                                             \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-HANDLE(Sphere, !p_.get_is_below(g->get_geometry().get_center()));
-HANDLE(Cylinder, !p_.get_is_below(g->get_geometry().get_segment().get_point(0))
+HANDLE(Sphere, sphere, !p_.get_is_below(g->get_geometry().get_center()));
+HANDLE(Cylinder, cylinder,
+       !p_.get_is_below(g->get_geometry().get_segment().get_point(0))
         || !p_.get_is_below(g->get_geometry().get_segment().get_point(1)));
-HANDLE(Point, !p_.get_is_below(g->get_geometry()));
-HANDLE(Segment, !p_.get_is_below(g->get_geometry().get_point(0))
+HANDLE(Point, point, !p_.get_is_below(g->get_geometry()));
+HANDLE(Segment, segment, !p_.get_is_below(g->get_geometry().get_point(0))
         || !p_.get_is_below(g->get_geometry().get_point(1)));
 
 
