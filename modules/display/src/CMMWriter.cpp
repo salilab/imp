@@ -22,7 +22,7 @@ void CMMWriter::do_close() {
 }
 
 
-bool CMMWriter::handle(SphereGeometry *g, Color color,
+bool CMMWriter::handle_sphere(SphereGeometry *g, Color color,
                         std::string name) {
   // evil, need this first to make sure that marker_index_ is
   // initialized. Otherwise marker_index_ is undefined in the
@@ -46,7 +46,7 @@ bool CMMWriter::handle(SphereGeometry *g, Color color,
   return true;
 }
 
-bool CMMWriter::handle(PointGeometry *g, Color color,
+bool CMMWriter::handle_point(PointGeometry *g, Color color,
                         std::string name) {
   IMP_INTERNAL_CHECK(marker_index_
                      < std::numeric_limits<unsigned int>::max()/10,

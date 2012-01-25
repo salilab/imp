@@ -32,9 +32,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT CMMWriter: public TextWriter
 {
   unsigned int marker_index_;
-  bool handle(SphereGeometry *g,
+  bool handle_sphere(SphereGeometry *g,
               Color color, std::string name);
-  bool handle(PointGeometry *g,
+  bool handle_point(PointGeometry *g,
               Color color, std::string name);
 public:
   IMP_TEXT_WRITER(CMMWriter);

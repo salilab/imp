@@ -27,7 +27,6 @@
   }                                                                     \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
- using Writer::handle;                                                  \
  IMP_IMPLEMENT(virtual void do_open());                                 \
  IMP_IMPLEMENT(virtual void do_close())
 
@@ -35,7 +34,6 @@ protected:                                                              \
 #define IMP_WRITER(Name)                                                \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
- using Writer::handle;                                                  \
  IMP_IMPLEMENT(virtual void do_open());                                 \
  IMP_IMPLEMENT(virtual void do_close())
 

@@ -31,13 +31,13 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
   void handle(Color color) {
     get_stream() << ".color " << SpacesIO(color) << "\n";
   }
-  bool handle(PointGeometry *g, Color color, std::string) {
+  bool handle_point(PointGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".dotat " <<  algebra::spaces_io(g->get_geometry())
                  << "\n";
     return true;
   }
-  bool handle(SegmentGeometry *g, Color color, std::string) {
+  bool handle_segment(SegmentGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".move "
                  << algebra::spaces_io(g->get_geometry().get_point(0)) << "\n";
@@ -46,7 +46,7 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
                  << "\n";
     return true;
   }
-  bool handle(PolygonGeometry *g, Color color, std::string) {
+  bool handle_polygon(PolygonGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< g->get_geometry().size(); ++i) {
@@ -55,7 +55,7 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
     get_stream() << "\n";
     return true;
   }
-  bool handle(TriangleGeometry *g, Color color, std::string) {
+  bool handle_triangle(TriangleGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< 3; ++i) {
@@ -64,14 +64,14 @@ class IMPDISPLAYEXPORT BildWriter: public TextWriter
     get_stream() << "\n";
     return true;
   }
-  bool handle(SphereGeometry *g, Color color, std::string) {
+  bool handle_sphere(SphereGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".sphere "
                  << algebra::spaces_io(g->get_geometry().get_center()) << " "
                  << g->get_geometry().get_radius() << "\n";
     return true;
   }
-  bool handle(CylinderGeometry *g, Color color, std::string) {
+  bool handle_cylinder(CylinderGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".cylinder "
                  << algebra::spaces_io(g->get_geometry()
