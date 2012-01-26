@@ -26,7 +26,7 @@ if not env.GetOption('help') and\
 else:
     opercppcompilation=None
 
-env.IMPModuleBuild(version='nightly-24/1/2012',
+env.IMPModuleBuild(version='nightly-25/1/2012',
         required_modules=['core','em','algebra','domino','atom','statistics'],
         required_dependencies=['FFTW3','Boost.ProgramOptions','Boost.FileSystem'])
 #                   required_dependencies=['Boost.FileSystem'])

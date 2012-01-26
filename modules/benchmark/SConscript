@@ -8,6 +8,6 @@ scons_tools.dependency.add_external_library(env, "google_perftools_profile",
                                             body=';')
 
 
-module_env=env.IMPModuleBuild(version='nightly-24/1/2012',
+module_env=env.IMPModuleBuild(version='nightly-25/1/2012',
                               required_modules=['base'],
                               optional_dependencies=['google_perftools_profile'])
