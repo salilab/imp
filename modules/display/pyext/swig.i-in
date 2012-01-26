@@ -72,8 +72,6 @@ namespace display {
 
 %pythoncode %{
 import sys
-import pivy.sogui
-import pivy.coin
 
 class PivyWriter(Writer):
   def __init__(self):
@@ -82,6 +80,7 @@ class PivyWriter(Writer):
   def _setup_pivy(self):
     import pivy.sogui
     import pivy.coin
+    self.pivy = pivy
     myWindow = pivy.sogui.SoGui.init(sys.argv[0])
     if myWindow == None:
         raise RuntimeError("Can't open PiVy window.")
@@ -98,17 +97,17 @@ class PivyWriter(Writer):
     self.root=scene
     self.viewer=viewer
   def handle_color(self, parent, c):
-    color= pivy.coin.SoMFColor()
+    color= self.pivy.coin.SoMFColor()
     color.setValue(c.get_red(), c.get_green(), c.get_blue())
-    myMaterial = pivy.coin.SoMaterial()
+    myMaterial = self.pivy.coin.SoMaterial()
     myMaterial.diffuseColor.setValue(color)
     parent.addChild(myMaterial)
   def handle_sphere(self, s, c, n):
-    sep = pivy.coin.SoSeparator()
+    sep = self.pivy.coin.SoSeparator()
     self.root.addChild(sep)
     s.set_was_used(True)
     self.handle_color(sep, c)
-    tr= pivy.coin.SoTransform()
+    tr= self.pivy.coin.SoTransform()
     tr.translation.setValue(s.get_geometry().get_center()[0],
                             s.get_geometry().get_center()[1],
                             s.get_geometry().get_center()[2])
@@ -116,29 +115,30 @@ class PivyWriter(Writer):
                             s.get_geometry().get_radius(),
                             s.get_geometry().get_radius())
     sep.addChild(tr)
-    sphere=pivy.coin.SoSphere()
+    sphere=self.pivy.coin.SoSphere()
     sep.addChild(sphere)
     return True
   def handle_cylinder(self, s, c, n):
     s.set_was_used(True)
-    sep = pivy.coin.SoSeparator()
+    sep = self.pivy.coin.SoSeparator()
     self.root.addChild(sep)
     self.handle_color(sep, c)
-    tr= pivy.coin.SoTransform()
+    tr= self.pivy.coin.SoTransform()
     cyl= s.get_geometry()
     seg=cyl.get_segment()
     center= seg.get_middle_point()
     #tr.translation.setValue(pivy.coin.SbVec3f(0, seg.get_length()/2, 0))
-    tr.translation.setValue(pivy.coin.SbVec3f(center[0], center[1], center[2]))
+    tr.translation.setValue(self.pivy.coin.SbVec3f(center[0], center[1],
+                                                   center[2]))
     #tr.center.setValue(pivy.coin.SbVec3f(center[0], center[1], center[2]))
     uv= seg.get_direction().get_unit_vector()
-    tr.rotation.setValue(pivy.coin.SbRotation(pivy.coin.SbVec3f(0,1,0),
-                                              pivy.coin.SbVec3f(uv[0],uv[1],uv[2])))
+    tr.rotation.setValue(self.pivy.coin.SbRotation(pivy.coin.SbVec3f(0,1,0),
+                                              self.pivy.coin.SbVec3f(uv[0],uv[1],uv[2])))
     #print "tr", tr.translation.getValue()[0], tr.translation.getValue()[1], tr.translation.getValue()[2]
     #print "scale", tr.scaleFactor.getValue()[0],  tr.scaleFactor.getValue()[1],  tr.scaleFactor.getValue()[2]
     # tr.rotation.getValue()
     sep.addChild(tr)
-    sphere=pivy.coin.SoCylinder()
+    sphere=self.pivy.coin.SoCylinder()
     sphere.radius.setValue(cyl.get_radius())
     sphere.height.setValue(cyl.get_segment().get_length())
     #sphere.addPart(pivy.coin.SoCylinder.ALL)
@@ -146,6 +146,6 @@ class PivyWriter(Writer):
     return True
   def show(self):
     self.set_was_used(True)
-    pivy.sogui.SoGui.show(self.window) # Display main window
-    pivy.sogui.SoGui.mainLoop()
+    self.pivy.sogui.SoGui.show(self.window) # Display main window
+    self.pivy.sogui.SoGui.mainLoop()
 %}
