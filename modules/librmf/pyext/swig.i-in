@@ -219,9 +219,18 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 
 
 %include "RMF/NodeSetConstHandle.h"
+%template(NodePairConstHandle) RMF::NodeSetConstHandle<2>;
+%template(NodeTripletConstHandle) RMF::NodeSetConstHandle<3>;
+%template(NodeQuadConstHandle) RMF::NodeSetConstHandle<4>;
+
 %include "RMF/NodeSetHandle.h"
+%template(NodePairHandle) RMF::NodeSetHandle<2>;
+%template(NodeTripletHandle) RMF::NodeSetHandle<3>;
+%template(NodeQuadHandle) RMF::NodeSetHandle<4>;
+
 %include "RMF/NodeConstHandle.h"
 %include "RMF/NodeHandle.h"
+
 %include "RMF/FileConstHandle.h"
 %include "RMF/FileHandle.h"
 %include "RMF/names.h"
