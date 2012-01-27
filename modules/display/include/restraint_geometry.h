@@ -38,6 +38,18 @@ public:
 };
 
 
+//! Geometry for a whole set of restraints
+class IMPDISPLAYEXPORT RestraintSetGeometry: public Geometry {
+  IMP::Pointer<RestraintSet> r_;
+public:
+  RestraintSetGeometry(RestraintSet *p);
+  RestraintSet *get_restraint_set() const {
+    return r_;
+  }
+  IMP_GEOMETRY(RestraintSetGeometry);
+};
+
+
 
 /** @} */
 IMPDISPLAY_END_NAMESPACE
