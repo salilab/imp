@@ -232,6 +232,7 @@ public:
   SoftSpherePairScore(double k,
                       std::string name= "SoftSpherePairScore %1%"):
     PairScore(name),k_(k){}
+  double get_spring_constant() const {return k_;}
   IMP_INDEX_PAIR_SCORE(SoftSpherePairScore);
 };
 

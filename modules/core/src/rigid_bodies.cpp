@@ -771,15 +771,6 @@ void RigidBody
   }
 }
 
-algebra::Vector3D RigidBody::get_torque() const {
-  algebra::Vector3D ret;
-  for (unsigned int i=0; i< 3; ++i) {
-    ret[i]
-      =get_particle()->get_derivative(internal::rigid_body_data().torque_[i]);
-  }
-  return ret;
-}
-
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &deriv_global,
                                    const algebra::Vector3D &local,

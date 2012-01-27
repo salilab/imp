@@ -16,6 +16,8 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/SerialMover.h>
 #include <IMP/core/BallMover.h>
+#include <IMP/container/generic.h>
+#include <IMP/container/ClosePairContainer.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <boost/ptr_container/ptr_vector.hpp>
@@ -37,7 +39,8 @@ inline core::Mover* create_serial_mover(const ParticlesTemp &ps) {
 
 
 /** Take a set of core::XYZR particles and relax them relative to a set of
-    restraints.*/
+    restraints. Excluded volume is handle separately, so don't include it
+in the passed list of restraints. */
 inline void optimize_balls(const ParticlesTemp &ps,
                            const RestraintsTemp &rs=RestraintsTemp(),
                            const PairFilters &excluded=PairFilters(),
@@ -49,18 +52,33 @@ inline void optimize_balls(const ParticlesTemp &ps,
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
-  IMP_NEW(core::ConjugateGradients, cg, (m));
-  cg->set_score_threshold(ps.size()*.1);
-  IMP_NEW(core::MonteCarlo, mc, (m));
-  mc->set_score_threshold(ps.size()*.1);
-  mc->add_mover(create_serial_mover(ps));
-  // we are special casing the nbl term for montecarlo, but using all for CG
-  mc->set_restraints(rs);
-  mc->set_use_incremental_evaluate(true);
-  // use special incremental support for the non-bonded part
+
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-  mc->set_close_pair_score(ssps, 0, ps, excluded);
-  // make pointer vector
+  IMP_NEW(core::ConjugateGradients, cg, (m));
+  {
+    cg->set_score_threshold(ps.size()*.1);
+    // set up restraints for cg
+    IMP_NEW(container::ListSingletonContainer, lsc, (ps));
+    IMP_NEW(container::ClosePairContainer, cpc,
+            (lsc, 0, core::XYZR(ps[0]).get_radius()));
+    cpc->add_pair_filters(excluded);
+    Pointer<Restraint> r= container::create_restraint(ssps.get(),
+                                                      cpc.get());
+    r->set_model(ps[0]->get_model());
+    cg->set_restraints(rs+RestraintsTemp(1, r.get()));
+  }
+  IMP_NEW(core::MonteCarlo, mc, (m));
+  {
+    // set up MC
+    mc->set_score_threshold(ps.size()*.1);
+    mc->add_mover(create_serial_mover(ps));
+    // we are special casing the nbl term for montecarlo, but using all for CG
+    mc->set_restraints(rs);
+    mc->set_use_incremental_evaluate(true);
+    // use special incremental support for the non-bonded part
+    mc->set_close_pair_score(ssps, 0, ps, excluded);
+    // make pointer vector
+  }
   boost::ptr_vector<ScopedSetFloatAttribute> attrs(ps.size());
   for (unsigned int i=0; i< ps.size(); ++i) {
     attrs.push_back(new ScopedSetFloatAttribute(ps[i],
