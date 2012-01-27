@@ -20,9 +20,16 @@ using namespace IMP::membrane;
 int main(int argc, char* argv[])
 {
 
+std::string inputfile="config.ini";
+int i=1;
+while(i<argc){
+ if(strcmp(argv[i],"-in")==0){++i; inputfile=argv[i];}
+ ++i;
+}
+
 // parsing input
 std::cout << "Parsing input file" << std::endl;
-SPBParameters mydata=get_SPBParameters("config.ini","0");
+SPBParameters mydata=get_SPBParameters(inputfile,"0");
 
 // create a new model
 IMP_NEW(Model,m,());

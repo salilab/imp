@@ -42,9 +42,15 @@ out << myrank;
 std::string names="log"+out.str();
 logfile.open(names.c_str());
 
+std::string inputfile="config.ini";
+int i=1;
+while(i<argc){ if(strcmp(argv[i],"-in")==0){++i; inputfile=argv[i];}
+ ++i;
+}
+
 // parsing input
 if(myrank==0) {std::cout << "Parsing input file" << std::endl;}
-SPBParameters mydata=get_SPBParameters("config.ini",out.str());
+SPBParameters mydata=get_SPBParameters(inputfile,out.str());
 
 // create temperature and index array
 double* temp=create_temperatures(mydata.MC.tmin,mydata.MC.tmax,nproc);
