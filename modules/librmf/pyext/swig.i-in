@@ -139,14 +139,7 @@ namespace RMF {
     def get_keys(self, kc, arity=1):
         ret=[]
         for t in _types_list:
-           if arity==1:
-             fn= getattr(self, "get_"+t+"_keys")
-           elif arity==2:
-             fn= getattr(self, "get_pair_"+t+"_keys")
-           elif arity==3:
-             fn= getattr(self, "get_triplet_"+t+"_keys")
-           elif arity==4:
-             fn= getattr(self, "get_quad_"+t+"_keys")
+           fn= getattr(self, "get_"+t+"_keys")
            ret.extend(fn(kc))
         return ret
   %}
@@ -217,6 +210,8 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %template(TripletCategory) RMF::CategoryD<3>;
 %template(QuadCategory) RMF::CategoryD<4>;
 
+%include "RMF/NodeConstHandle.h"
+%include "RMF/NodeHandle.h"
 
 %include "RMF/NodeSetConstHandle.h"
 %template(NodePairConstHandle) RMF::NodeSetConstHandle<2>;
@@ -227,9 +222,6 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %template(NodePairHandle) RMF::NodeSetHandle<2>;
 %template(NodeTripletHandle) RMF::NodeSetHandle<3>;
 %template(NodeQuadHandle) RMF::NodeSetHandle<4>;
-
-%include "RMF/NodeConstHandle.h"
-%include "RMF/NodeHandle.h"
 
 %include "RMF/FileConstHandle.h"
 %include "RMF/FileHandle.h"

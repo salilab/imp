@@ -53,6 +53,9 @@ bool get_has_value(Key<UCName##Traits, D> k,                            \
 
 namespace RMF {
 
+  // for swig
+  class FileConstHandle;
+  class NodeConstHandle;
   //! The types of the nodes.
   enum NodeSetType {
     //! A general bond between two or more atoms
@@ -68,8 +71,6 @@ namespace RMF {
   std::string get_set_type_name(NodeSetType t);
 
 
-
-  class FileHandle;
 
   //! A handle for a set of particles.
   /** Sets are not ordered, so  (n0, n1) is the same as (n1, n0).
