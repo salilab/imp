@@ -44,7 +44,7 @@ for i in range(0,ni):
                 d.set_coordinates_are_optimized(True)
             chain.append(p)
             aps.append(p)
-        cpc= IMP.container.ConsecutivePairContainer(chain, True)
+        cpc= IMP.container.ExclusiveConsecutivePairContainer(chain)
         r= IMP.container.PairsRestraint(lps, cpc)
         rs.append(r)
         rss.add_restraint(r)
