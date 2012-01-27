@@ -6,6 +6,7 @@ files = [
          'reload.cpp',
          'spb_reload_minimize.cpp',
          'spb_to_cluster.cpp',
+         'spb_cluster.cpp',
          'spb.cpp',
          'membrane.cpp',
         ]

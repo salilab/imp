@@ -35,6 +35,7 @@ struct SPBParameters {
  double       tilt;
  double       resolution;
  double       cutoff;
+ double       cluster_cut;
  std::string  cell_type;
  std::string  trajfile;
  std::string  label;
@@ -59,6 +60,7 @@ struct SPBParameters {
  bool         use_GFP_structure;
  bool         keep_GFP_layer;
  bool         GFP_exc_volume;
+ bool         cluster_time;
  std::map<std::string,std::string> file_list;
 };
 

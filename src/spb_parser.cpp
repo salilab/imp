@@ -42,6 +42,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool GFP_exc_volume;
  bool use_connectivity;
  bool use_new_fret_model;
+ bool cluster_time;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -75,11 +76,12 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
  desc.add_options()("use_new_fret_model",
   value<bool>(&use_new_fret_model),  "ciao");
+ desc.add_options()("cluster_time",  value<bool>(&cluster_time),        "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
  desc.add_options()("load_Cmd1p",    value<std::string>(&load_Cmd1p),   "ciao");
- desc.add_options()("load_Cnm67p", value<std::string>(&load_Cnm67p),"ciao");
+ desc.add_options()("load_Cnm67p",   value<std::string>(&load_Cnm67p),  "ciao");
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
@@ -101,6 +103,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, wte_emin);
  OPTION(double, wte_emax);
  OPTION(double, cutoff);
+ OPTION(double, cluster_cut);
  OPTION(double, fret_R0);
  OPTION(double, fret_Sd);
  OPTION(double, fret_Sa);
@@ -168,6 +171,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.nrep=nrep;
  ret.niter=niter;
  ret.chunk=chunk;
+ ret.cluster_cut=cluster_cut;
+ ret.cluster_time=cluster_time;
 
 // restraint
  ret.add_fret=add_fret;
