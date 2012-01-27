@@ -107,6 +107,37 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
   std::cout << " # CLUSTERS         :: "
     << pc->get_number_of_clusters() << std::endl;
   std::cout << std::endl;
+
+// only at the end, print center and traj files
+  if(iter==mydata.niter-1){
+// file containing the cluster population and representative config
+   FILE *centerfile;
+   centerfile = fopen("cluster_center.dat","w");
+   fprintf(centerfile,"#       Cluster     Population      Structure\n");
+   for(unsigned i=0;i<pc->get_number_of_clusters();++i){
+    fprintf(centerfile," %14d %14d %14d\n",
+            i, pc->get_cluster(i).size(), pc->get_cluster_representative(i));
+   }
+   fclose(centerfile);
+// file containing the cluster index for each configuration
+   std::vector<Ints> list_indexes;
+   for(unsigned i=0;i<pc->get_number_of_clusters();++i){
+    list_indexes.push_back(pc->get_cluster(i));
+   }
+   FILE *trajfile;
+   trajfile = fopen("cluster_traj.dat","w");
+   fprintf(trajfile,"#     Structure        Cluster\n");
+   for(unsigned i=0;i<drmsd->get_number_of_items();++i){
+    int index;
+    for(unsigned j=0;j<list_indexes.size();++j){
+     for(unsigned k=0;k<list_indexes[j].size();++k){
+      if(list_indexes[j][k]==i){index=j;}
+     }
+    }
+    fprintf(trajfile," %14d %14d\n",i,index);
+   }
+   fclose(trajfile);
+  }
  }
 }
 
