@@ -225,7 +225,15 @@ public:
                           DerivativeAccumulator &da);
 
   /** The units are kCal/Mol/Radian */
-  algebra::Vector3D get_torque() const;
+  algebra::Vector3D get_torque() const {
+    algebra::Vector3D ret;
+    for (unsigned int i=0; i< 3; ++i) {
+      ret[i]
+          =get_particle()
+          ->get_derivative(internal::rigid_body_data().torque_[i]);
+    }
+    return ret;
+  }
 #endif
 
   bool get_coordinates_are_optimized() const;
@@ -385,6 +393,8 @@ get_initial_reference_frame(const ParticlesTemp &ps);
 IMPCOREEXPORT ParticlesTemp create_rigid_bodies(Model *m,
                                                unsigned int n,
                                                bool no_members=false);
+
+
 
 IMPCORE_END_NAMESPACE
 

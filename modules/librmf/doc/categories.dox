@@ -21,6 +21,10 @@ The following are pre-defined Categories for data stored in single nodes.
     \rmfattribute{diffusion coefficient, Float,
     the diffusion coefficient for the node in angstroms per squared femtosecond,
     positive}
+    \rmfattribute{orientation r, Float, the real component or the orientation quaterion,required if there are any orientation components}
+    \rmfattribute{orientation i, Float, the i component or the orientation quaterion,required if there are any orientation components}
+    \rmfattribute{orientation j, Float, the j component or the orientation quaterion,required if there are any orientation components}
+    \rmfattribute{orientation k, Float, the k component or the orientation quaterion,required if there are any orientation components}
     \rmfattributetable_end
 
 \rmfattributetable_begin{Sequence,sequence}

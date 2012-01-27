@@ -108,7 +108,7 @@ void Particle::do_show(std::ostream& out) const
           FloatKey k =*it;
           preout << k << ": " << get_model()->get_attribute(k, id_, false);
           preout << " ("
-                 << get_model()->get_attribute(k, id_, false) << ") ";
+                 << get_model()->get_derivative(k, id_, false) << ") ";
           preout << (get_is_optimized(k)?" (optimized)":"");
           preout << std::endl;
         }
