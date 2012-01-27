@@ -74,4 +74,5 @@ namespace display {
 %pythoncode %{
 import _pivy
 PivyWriter= _pivy.get_writer(Writer)
+_object_types.append('PivyWriter')
 %}
