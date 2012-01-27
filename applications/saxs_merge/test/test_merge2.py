@@ -205,7 +205,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification and merging
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
-                dalpha=0.05, eextrapolate=0)
+                dalpha=0.05, eextrapolate=0, enoextrapolate=False)
         self.merge.classification([p1,p2,p3],args)
         self.merge.fitting_step = lambda a,b,c,d: b
         def thing(b,c,d):
