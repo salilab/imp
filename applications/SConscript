@@ -5,7 +5,7 @@ applications=['foxs',
               'saxs_merge',
               'em_tools',
               'ligand_score',
-              'multifit',
+              'multifit_tools',
               'pdb_tools']
 
 if env.get('local', False):
