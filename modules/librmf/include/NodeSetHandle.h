@@ -41,7 +41,8 @@ void set_value(Key<UCName##Traits, D> k, PassValue v,                   \
 
 namespace RMF {
 
-
+  // for swig
+  class NodeHandle;
   class FileHandle;
 
   //! A handle for a set of particles.
