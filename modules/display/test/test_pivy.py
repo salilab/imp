@@ -7,6 +7,10 @@ import StringIO
 class TestBL(IMP.test.TestCase):
     def test_5(self):
         """Testing the pivy writer and frames"""
+        try:
+            import pivy
+        except ImportError:
+            self.skipTest("pivy Python module unavailable")
         g0=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(10,10,10), 3))
         g0.set_color(IMP.display.Color(0,1,0))
         g1=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,1,1), 2))
