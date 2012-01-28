@@ -58,8 +58,8 @@ namespace {
   bool is_xlink_line(const std::string &line,
                      ProteomicsData *dp) {
     int num_allowed_violations=0;
-  std::cout<<"XLINK LINE:"<<line;
-  typedef boost::split_iterator<std::string::iterator> string_split_iterator;
+    std::cout<<"XLINK LINE:"<<line;
+    typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
@@ -106,9 +106,10 @@ void parse_xlink_line(
      ProteomicsData *dp){
   std::cout<<"parse_xlink_line:"<<line<<std::endl;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
-  IMP_USAGE_CHECK(line.size() !=5,
-                  "no data to parse. The format of the line should be:\n"<<
-                  "|0/1|prot-name|residue-number|prot-name|residue-number|\n");
+  IMP_USAGE_CHECK(line.size() !=6,
+      "no data to parse. The format of the line should be:\n"<<
+       "|0/1|prot-name|residue-number|prot-name|residue-number|"<<
+       "linker length|\n");
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -126,6 +127,7 @@ void parse_xlink_line(
   std::string name2 =  boost::lexical_cast<std::string>(line_split[3]);
   int prot2_ind = dp->find(name2);
   int res2_ind= boost::lexical_cast<int>(line_split[4]);
+  Float linker_len=boost::lexical_cast<double>(line_split[5]);
   std::cout<<"XLINK between "<<name1<<" "<<name2<<std::endl;
   IMP_USAGE_CHECK(prot1_ind != -1,
                   "The protein "<<name1<<
@@ -133,8 +135,8 @@ void parse_xlink_line(
   IMP_USAGE_CHECK(prot2_ind != -1,
                   "The protein "<<name2<<
                   " was not specified in the proteins list"<<std::endl);
-  //todo - for now the residue index is not used
-  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,use_in_jt);
+  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,use_in_jt,
+                            linker_len);
 }
 
 void parse_ev_line(
@@ -205,7 +207,7 @@ void parse_protein_line(
                   ref_filename
                  );
 }
-  //The format is: |0|prot1|prot2|...|protN|header1|header2|
+  //The format is: |0|prot1|prot2|...|protN|linker lenght|header1|header2|
   //0/1 means if the restraint should be included in junction tree
   //or used just for scoring
 void parse_interaction_line(
@@ -214,9 +216,10 @@ void parse_interaction_line(
   std::cout<<"parse_interaction_line:"<<line<<std::endl;
   Ints inter_prots;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
-  IMP_USAGE_CHECK(line.size() > 4,
-       "no data to parse. the last two tabs should contain header data\n."
-       <<" The format is: |0/1|prot1|prot2|...|protN|header1|header2| \n");
+  IMP_USAGE_CHECK(line.size() > 5,
+   "no data to parse. the last two tabs should contain header data\n."
+   <<" The format is: |0/1|prot1|prot2|...|protN|linker lenght|"<<
+   "header1|header2| \n");
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -224,10 +227,13 @@ void parse_interaction_line(
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
-  bool used_in_jt=true;
+  bool used_in_filter=true;
   if (boost::lexical_cast<int>(line_split[0])==0)
-    used_in_jt=false;
-  for(unsigned int i=1;i<line_split.size()-2;i++) {//last two are header
+    used_in_filter=false;
+  float linker_len=boost::lexical_cast<float>(line_split[line_split.size()-3]);
+  std::cout<<"linker len:"<<linker_len<<std::endl;
+  for(unsigned int i=1;i<line_split.size()-3;i++) {
+    //last three are linker and header
     std::string name =  boost::lexical_cast<std::string>(line_split[i]);
     int index = dp->find(name);
     IMP_USAGE_CHECK(index != -1,
@@ -235,8 +241,11 @@ void parse_interaction_line(
                  " was not specified in the proteins list"<<std::endl);
     inter_prots.push_back(index);
   }
-  dp->add_interaction(inter_prots,used_in_jt);
+  dp->add_interaction(inter_prots,used_in_filter,linker_len);
 }
+
+
+
 }//end namespace
 
 ProteomicsData read_proteomics_data(const char *prot_fn) {
@@ -267,7 +276,6 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
   getline(in, line);
   while ((!in.eof()) && (!is_xlink_line(line,&data))){
     parse_interaction_line(line,&data);
-    std::cout<<"==finish"<<std::endl;
     if (!getline(in, line)) break;
   }
   getline(in, line);
@@ -311,7 +319,8 @@ ProteomicsData get_partial_proteomics_data(
       for(Ints::iterator it = inds.begin(); it != inds.end();it++) {
         new_inds.push_back(index_map[*it]);
       }
-      ret.add_interaction(new_inds,pd.get_interaction_used_to_build_jt(i));
+      ret.add_interaction(new_inds,pd.get_interaction_part_of_filter(i),
+                          pd.get_interaction_linker_lenght(i));
     }
   }
   return ret;
