@@ -18,13 +18,18 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! MonteCarlo in the Well-Tempered Ensemble
 class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
 {
-  double  min_, max_, sigma_, gamma_, dx_, w0_;
+  double  min_;
+  double  max_;
+  double  sigma_;
+  double  gamma_;
+  double  dx_;
+  double  w0_;
   boost::scoped_array<double> bias_;
   int     nbin_;
-  void    update_bias(double score);
 
-private:
-  double do_evaluate(const ParticlesTemp &moved) const;
+  void    update_bias(double score);
+  double  do_evaluate(const ParticlesTemp &moved) const;
+  double  get_spline(double score) const;
 
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,

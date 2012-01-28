@@ -20,16 +20,47 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   gamma_ = gamma;
   w0_    = w0;
   dx_    = sigma / 4.0;
-  nbin_  = floor((emax-emin)/dx_)+1;
+  nbin_  = 2*(floor((emax-emin)/dx_)+1);
   bias_.reset(new double[nbin_]);
   for(unsigned int i=0;i<nbin_;++i) {bias_[i]=0.0;}
   }
 
 double MonteCarloWithWte::get_bias(double score) const
 {
+  return get_spline(score);
+}
+
+double MonteCarloWithWte::get_spline(double score) const
+{
+
+  double value=0.0;
+
   int index=floor((score-min_)/dx_);
-  index=std::max(0,std::min(nbin_-1,index));
-  return bias_[index];
+  if(index>=nbin_/2-1){return bias_[nbin_/2-1];}
+  if(index<0){
+   score=min_;
+   index=0;
+  }
+  std::vector<unsigned> neigh;
+  neigh.push_back(index);
+  neigh.push_back(index+1);
+  double xfloor=min_+((double) index)*dx_;
+
+  for(unsigned ipoint=0;ipoint<neigh.size();++ipoint){
+   double grid=bias_[neigh[ipoint]];
+   double dder=bias_[neigh[ipoint]+nbin_/2];
+
+   double X=fabs((score-xfloor)/dx_-(double)ipoint);
+   double X2=X*X;
+   double X3=X2*X;
+   double yy;
+   if(fabs(grid)<0.0000001) yy=0.0;
+     else yy=-dder/grid;
+   double C=(1.0-3.0*X2+2.0*X3) - (ipoint?-1.0:1.0)*yy*(X-2.0*X2+X3)*dx_;
+   value+=grid*C;
+  }
+
+  return value;
 }
 
 void MonteCarloWithWte::update_bias(double score)
@@ -39,10 +70,12 @@ void MonteCarloWithWte::update_bias(double score)
   double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
   int i0=floor((score-4.0*sigma_-min_)/dx_);
   int i1=floor((score+4.0*sigma_-min_)/dx_)+1;
-  for (int i=std::max(0,i0);i<=std::min(i1,nbin_-1);++i){
+  for (int i=std::max(0,i0);i<=std::min(i1,nbin_/2-1);++i){
    double xx=min_ + ((double) i)*dx_;
    double dp=(xx-score)/sigma_;
-   bias_[i] += ww*exp(-0.5*dp*dp);
+   double newbias=ww*exp(-0.5*dp*dp);
+   bias_[i] += newbias;
+   bias_[i+nbin_/2] += -newbias*dp/sigma_;
   }
 }
 
