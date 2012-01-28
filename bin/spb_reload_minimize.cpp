@@ -140,7 +140,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     ++currentframe;
    }
 // time to create a new file for output?
-   if(totframes%mydata.chunk==0){
+   if(totframes%mydata.chunk==0 && totframes<nframes*mydata.nrep){
     currentframe=0;
     std::stringstream iout;
     iout_name = totframes/mydata.chunk;
