@@ -228,6 +228,8 @@ class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable:
   /** Set the maximum number of cache entries for all restraints.
   */
   void set_maximum_number_of_cache_entries(unsigned int i);
+  int get_maximum_number_of_violated_restraints() const {
+    return max_number_of_violated_restraints_;}
   IMP_SUBSET_FILTER_TABLE(MinimumRestraintScoreSubsetFilterTable);
 };
 
