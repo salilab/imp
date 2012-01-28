@@ -60,20 +60,22 @@ std::map< std::string, Pointer<RestraintSet> > rst_map=
 //
 // PREPARE OUTPUT
 //
-RMF::FileHandle rh_out = RMF::create_rmf_file("traj_minimized_0.rmf");
+RMF::FileHandle rh_out = RMF::create_rmf_file("traj_reload_0.rmf");
 for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // adding key for score
 RMF::Category my_kc= rh_out.add_category("my data");
-RMF::FloatKey my_key_out=rh_out.add_float_key(my_kc,"my score",true);
+RMF::FloatKey my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
+RMF::IntKey   my_key_out1=rh_out.add_int_key(my_kc,"my index",true);
+RMF::FloatKey my_key_out2=rh_out.add_float_key(my_kc,"my bias",true);
 //
 FILE *logfile;
-logfile = fopen("log.emin","w");
+logfile = fopen("log.reload","w");
 //
 // OPTIMIZER
 //
 IMP_NEW(core::ConjugateGradients,cg,(m));
 
-std::cout << "Minimizing good configurations" << std::endl;
+std::cout << "Extracting good configurations" << std::endl;
 unsigned int nminimized=0;
 unsigned int totframes=0;
 unsigned int currentframe=0;
@@ -83,7 +85,8 @@ unsigned int iout_name=0;
 for(unsigned iter=0;iter<mydata.niter;++iter){
  std::vector<RMF::FileHandle> rhs;
  std::vector<RMF::Category> my_kcs;
- std::vector<RMF::FloatKey> my_keys;
+ std::vector<RMF::FloatKey> my_keys0, my_keys2;
+ std::vector<RMF::IntKey>   my_keys1;
  std::stringstream iter_str;
  iter_str << iter;
  for(unsigned irep=0;irep<mydata.nrep;++irep){
@@ -93,7 +96,9 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
                 "_"+iter_str.str()+".rmf"));
   rmf::set_hierarchies(rhs[irep], hhs);
   my_kcs.push_back(rhs[irep].get_category("my data"));
-  my_keys.push_back(rhs[irep].get_float_key(my_kcs[irep],"my score"));
+  my_keys0.push_back(rhs[irep].get_float_key(my_kcs[irep],"my score"));
+  my_keys1.push_back(rhs[irep].get_int_key(my_kcs[irep],"my index"));
+  my_keys2.push_back(rhs[irep].get_float_key(my_kcs[irep],"my bias"));
  }
 // number of frames
  unsigned int nframes=rmf::get_number_of_frames(rhs[0],hhs[0]);
@@ -103,8 +108,10 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
   for(unsigned irep=0;irep<mydata.nrep;++irep){
 // increment frame counter
     ++totframes;
- // retrieve score
-   double myscore = (rhs[irep].get_root_node()).get_value(my_keys[irep],imc);
+ // retrieve scores and index
+   double myscore = (rhs[irep].get_root_node()).get_value(my_keys0[irep],imc);
+   int    myindex = (rhs[irep].get_root_node()).get_value(my_keys1[irep],imc);
+   double mybias  = (rhs[irep].get_root_node()).get_value(my_keys2[irep],imc);
 // if good enough...
    if(myscore<mydata.cutoff){
 // load configuration from file
@@ -112,19 +119,20 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      rmf::load_frame(rhs[irep],imc,hhs[i]);
     }
     double myscore_min = myscore;
-    double fretr_score;
-    double y2h_score;
 // do coniugate gradient
     if(mydata.cg_steps>0){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
-     fretr_score = rst_map["FRET_R"]->evaluate(false);
-     y2h_score   = rst_map["Y2H"]->evaluate(false);
     }
-    fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %10d\n",
-     nminimized,myscore,myscore_min,fretr_score,y2h_score,iout_name);
+    double fretr_score = rst_map["FRET_R"]->evaluate(false);
+    double y2h_score   = rst_map["Y2H"]->evaluate(false);
+    fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %5d  %3d %12.6f\n",
+     nminimized,myscore,myscore_min,fretr_score,y2h_score,
+     iout_name,myindex,mybias);
 // write to file
-    (rh_out.get_root_node()).set_value(my_key_out,myscore_min,currentframe);
+    (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
+    (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
+    (rh_out.get_root_node()).set_value(my_key_out2,mybias,currentframe);
     for(unsigned int i=0;i<hhs.size();++i){
      rmf::save_frame(rh_out,currentframe,hhs[i]);
     }
@@ -137,10 +145,12 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     std::stringstream iout;
     iout_name = totframes/mydata.chunk;
     iout << iout_name;
-    rh_out = RMF::create_rmf_file("traj_minimized_"+iout.str()+".rmf");
+    rh_out = RMF::create_rmf_file("traj_reload_"+iout.str()+".rmf");
     for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
     my_kc= rh_out.add_category("my data");
-    my_key_out=rh_out.add_float_key(my_kc,"my score",true);
+    my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
+    my_key_out1=rh_out.add_int_key(my_kc,"my index",true);
+    my_key_out2=rh_out.add_float_key(my_kc,"my bias",true);
    }
   }
  }

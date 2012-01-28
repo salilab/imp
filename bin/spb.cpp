@@ -14,7 +14,7 @@
 #include <time.h>
 #include <fstream>
 #include <sstream>
-
+#include <stdio.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -36,11 +36,11 @@ MPI_Bcast(&iseed,1,MPI_UNSIGNED,0,MPI_COMM_WORLD);
 srand (iseed);
 
 // log file
-std::ofstream logfile;
 std::stringstream out;
 out << myrank;
 std::string names="log"+out.str();
-logfile.open(names.c_str());
+FILE *logfile;
+logfile = fopen(names.c_str(),"w");
 
 std::string inputfile="config.ini";
 int i=1;
@@ -86,20 +86,23 @@ for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
-// adding key for score
+// adding key for score and index
 RMF::Category my_kc= rh.add_category("my data");
-RMF::FloatKey my_key=rh.add_float_key(my_kc,"my score",true);
+RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
+RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
+RMF::FloatKey my_key2=rh.add_float_key(my_kc,"my bias",true);
+
 //
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
-spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
+std::map< std::string, Pointer<RestraintSet> > rst_map=
+ spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
 
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
  setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
-//mc->set_use_incremental_evaluate(true);
 
 // wte restart
 if(mydata.MC.do_wte && mydata.MC.wte_restart){
@@ -133,14 +136,30 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  mc->optimize(mydata.MC.nexc);
 
 // print statistics
- double myscore=m->evaluate(false);
- int    myindex=index[myrank];
- logfile << imc << " " << myindex << " " << myscore << " "
- << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
+ double myscore     = m->evaluate(false);
+ int    myindex     = index[myrank];
+ double fretr_score = rst_map["FRET_R"]->evaluate(false);
+ double y2h_score   = rst_map["Y2H"]->evaluate(false);
 
-// save configuration and score to file
+ fprintf(logfile,"%10d %3d  %12.6f  %12.6f %12.6f  %5d %5d\n",
+     imc,myindex,myscore,fretr_score,y2h_score,
+     mydata.MC.nexc, mc->get_number_of_forward_steps());
+
+// save configuration and additional information to file
  if(imc%mydata.MC.nwrite==0){
-  (rh.get_root_node()).set_value(my_key,myscore,imc/mydata.MC.nwrite);
+// score
+  (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
+// index
+  (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
+// bias
+  double mybias=0.0;
+  if(mydata.MC.do_wte){
+   Pointer<membrane::MonteCarloWithWte> ptr=
+     dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
+   mybias=ptr->get_bias(myscore);
+  }
+  (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
+// configuration
   for(unsigned int i=0;i<all_mol.size();++i){
    atom::Hierarchies hs=all_mol[i].get_children();
    for(unsigned int j=0;j<hs.size();++j){
@@ -226,8 +245,8 @@ MPI_Barrier(MPI_COMM_WORLD);
 rh.flush();
 rh=RMF::FileHandle();
 // flush and close logfile
-logfile.flush();
-logfile.close();
+fflush(logfile);
+fclose(logfile);
 MPI_Barrier(MPI_COMM_WORLD);
 // finalize MPI
 MPI_Finalize();
