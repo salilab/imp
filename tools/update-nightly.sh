@@ -16,7 +16,6 @@ rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
 cd ${TMPDIR}
 
-IMPSVNDIR=file:///cowbell1/svn/imp
 
 REV=`cat /salilab/diva1/home/imp/nightly/build/imp-version`
 DATE=`date +'%m/%d/%Y'`
@@ -30,6 +29,14 @@ if [ "$OLDPROP" != "$NEWPROP" ]; then
   && svn ci -q --username autobuild -m \
      "Update for nightly build ${REV}, ${DATE}."
 fi
+
+# change version of modules to have the date
+cd ${TMPDIR}
+svn co file:///cowbell1/svn/imp/trunk versions
+cd versions
+./tools/increment-versions modules/*/SConscript biological_systems/*/SConscript  applications/*/SConscript
+version="nightly module versions update on "`date`
+svn commit -m "\"$version\"" modules/*/SConscript biological_systems/*/SConscript applications/*/SConscript tools/increment-versions
 
 # Cleanup
 cd /
