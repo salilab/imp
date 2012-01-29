@@ -170,23 +170,18 @@ statistics::PartitionalClustering* create_gromos_clustering
    Ints newcluster=neighbors[icenter];
    clusters.push_back(newcluster);
 
+   std::vector<int>::iterator it;
 // remove from pool
    for(unsigned i=0;i<newcluster.size();++i){
     unsigned k=0;
     while(k<neighbors.size()){
-// either eliminate the entire list
+// eliminate the entire neighbor list
      if(neighbors[k][0]==newcluster[i]){
       neighbors.erase(neighbors.begin()+k);
      }else{
-// or eliminate the single element from the list
-      unsigned j=0;
-      while(j<neighbors[k].size()){
-       if(neighbors[k][j]==newcluster[i]){
-         neighbors[k].erase(neighbors[k].begin()+j);
-       }else{
-        j++;
-       }
-      }
+// and the element in all the other neighbor lists
+      it = find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
+      if(it!=neighbors[k].end()){neighbors[k].erase(it);}
       k++;
      }
     }
