@@ -8,8 +8,10 @@
 #include <IMP/membrane/DistanceRMSDMetric.h>
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
+#include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
+#include <IMP/compatibility/vector_property_map.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -97,7 +99,6 @@ Float DistanceRMSDMetric::get_distance
  return mindist;
 }
 
-
 double DistanceRMSDMetric::get_drmsd(Floats m0, Floats m1) const
 {
  double drmsd=0.0;
@@ -130,5 +131,69 @@ unsigned int DistanceRMSDMetric::get_number_of_items() const {
 
 void DistanceRMSDMetric::do_show(std::ostream &) const {
 }
+
+statistics::PartitionalClustering* create_gromos_clustering
+ (statistics::Metric *d, double cutoff)
+ {
+  compatibility::checked_vector<Ints> clusters;
+  unsigned nitems=d->get_number_of_items();
+
+// create vector of neighbors
+  std::vector<Ints> neighbors(nitems);
+  for(unsigned i=0;i<nitems;++i){neighbors[i].push_back((int)i);}
+  for(unsigned i=0;i<nitems-1;++i){
+   for(unsigned j=i+1;j<nitems;++j){
+    if(d->get_distance(i,j)<cutoff){
+     neighbors[i].push_back((int)j);
+     neighbors[j].push_back((int)i);
+    }
+   }
+  }
+
+// create list of available confs
+  std::vector<bool> available;
+  for(unsigned i=0;i<nitems;++i){available.push_back(true);}
+
+  unsigned maxneigh=1;
+  while(maxneigh>0)
+  {
+// find the conf with maximum number of neighbors
+   maxneigh=0;
+   unsigned icenter;
+   for(unsigned i=0;i<neighbors.size();++i){
+    if(neighbors[i].size()>maxneigh){
+     maxneigh=neighbors[i].size();
+     icenter=i;
+    }
+   }
+
+   if(maxneigh==0){break;}
+
+// create the new cluster
+   clusters.push_back(neighbors[icenter]);
+
+// eliminate confs from pool
+   for(unsigned i=0;i<neighbors[icenter].size();++i){
+    available[neighbors[icenter][i]]=false;
+   }
+   neighbors.erase(neighbors.begin()+icenter);
+
+// erase from other neighbor lists
+   for(unsigned i=0;i<neighbors.size();++i){
+    unsigned j=0;
+    while(j<neighbors[i].size()){
+     if(!available[neighbors[i][j]]){
+      neighbors[i].erase(neighbors[i].begin()+j);
+     }else{
+      j++;
+     }
+    }
+   }
+  }
+
+  IMP_NEW(statistics::internal::TrivialPartitionalClustering,ret,(clusters));
+  return ret.release();
+}
+
 
 IMPMEMBRANE_END_NAMESPACE

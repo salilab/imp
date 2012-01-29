@@ -35,6 +35,10 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
   IMP_METRIC(DistanceRMSDMetric);
 };
 
+ IMPMEMBRANEEXPORT statistics::PartitionalClustering* create_gromos_clustering
+ (statistics::Metric *d, double cutoff);
+
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_DISTANCE_RMSD_METRIC_H */

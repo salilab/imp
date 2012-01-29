@@ -105,7 +105,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
  if(mydata.cluster_time || iter==mydata.niter-1){
 // do the clustering here!
   Pointer<statistics::PartitionalClustering> pc=
-   statistics::create_diameter_clustering(drmsd,mydata.cluster_cut);
+   create_gromos_clustering(drmsd,mydata.cluster_cut);
 
   std::cout << " # CHUNK            :: "
     << iter << std::endl;
