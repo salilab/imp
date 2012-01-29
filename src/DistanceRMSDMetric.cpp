@@ -170,7 +170,6 @@ statistics::PartitionalClustering* create_gromos_clustering
    Ints newcluster=neighbors[icenter];
    clusters.push_back(newcluster);
 
-   std::vector<int>::iterator it;
 // remove from pool
    for(unsigned i=0;i<newcluster.size();++i){
     unsigned k=0;
@@ -180,7 +179,8 @@ statistics::PartitionalClustering* create_gromos_clustering
       neighbors.erase(neighbors.begin()+k);
      }else{
 // and the element in all the other neighbor lists
-      it = find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
+      std::vector<int>::iterator it=
+       find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
       if(it!=neighbors[k].end()){neighbors[k].erase(it);}
       k++;
      }
@@ -189,6 +189,7 @@ statistics::PartitionalClustering* create_gromos_clustering
   }
 
   IMP_NEW(statistics::internal::TrivialPartitionalClustering,ret,(clusters));
+  statistics::validate_partitional_clustering(ret, d->get_number_of_items());
   return ret.release();
 }
 
