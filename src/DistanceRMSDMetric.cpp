@@ -150,10 +150,6 @@ statistics::PartitionalClustering* create_gromos_clustering
    }
   }
 
-// create list of available confs
-  std::vector<bool> available;
-  for(unsigned i=0;i<nitems;++i){available.push_back(true);}
-
   unsigned maxneigh=1;
   while(maxneigh>0)
   {
@@ -167,25 +163,31 @@ statistics::PartitionalClustering* create_gromos_clustering
     }
    }
 
+// no more clusters to find
    if(maxneigh==0){break;}
 
 // create the new cluster
-   clusters.push_back(neighbors[icenter]);
+   Ints newcluster=neighbors[icenter];
+   clusters.push_back(newcluster);
 
-// eliminate confs from pool
-   for(unsigned i=0;i<neighbors[icenter].size();++i){
-    available[neighbors[icenter][i]]=false;
-   }
-   neighbors.erase(neighbors.begin()+icenter);
-
-// erase from other neighbor lists
-   for(unsigned i=0;i<neighbors.size();++i){
-    unsigned j=0;
-    while(j<neighbors[i].size()){
-     if(!available[neighbors[i][j]]){
-      neighbors[i].erase(neighbors[i].begin()+j);
+// remove from pool
+   for(unsigned i=0;i<newcluster.size();++i){
+    unsigned k=0;
+    while(k<neighbors.size()){
+// either eliminate the entire list
+     if(neighbors[k][0]==newcluster[i]){
+      neighbors.erase(neighbors.begin()+k);
      }else{
-      j++;
+// or eliminate the single element from the list
+      unsigned j=0;
+      while(j<neighbors[k].size()){
+       if(neighbors[k][j]==newcluster[i]){
+         neighbors[k].erase(neighbors[k].begin()+j);
+       }else{
+        j++;
+       }
+      }
+      k++;
      }
     }
    }
