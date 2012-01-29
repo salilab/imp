@@ -115,17 +115,39 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     << pc->get_number_of_clusters() << std::endl;
   std::cout << std::endl;
 
-// only at the end, print center and traj files
+// only at the end, print various information
   if(iter==mydata.niter-1){
-// file containing the cluster population and representative config
+// file containing the cluster population, center and diameter
    FILE *centerfile;
    centerfile = fopen("cluster_center.dat","w");
-   fprintf(centerfile,"#       Cluster     Population      Structure\n");
+   fprintf(centerfile,
+    "#       Cluster     Population      Structure       Diameter\n");
    for(unsigned i=0;i<pc->get_number_of_clusters();++i){
-    fprintf(centerfile," %14d %14d %14d\n",
-            i, pc->get_cluster(i).size(), pc->get_cluster_representative(i));
+    double diameter=0.0;
+    Ints index=pc->get_cluster(i);
+    for(unsigned j=0;j<index.size()-1;++j){
+     for(unsigned k=j+1;k<index.size();++k){
+      double dist=drmsd->get_distance(index[j],index[k]);
+      if(dist>diameter){diameter=dist;}
+     }
+    }
+    fprintf(centerfile," %14u %14u %14d %14.6f\n",
+                         i, index.size(),
+                         pc->get_cluster_representative(i), diameter);
    }
    fclose(centerfile);
+// file containing the distance between the center of two clusters
+   FILE *ccfile;
+   ccfile = fopen("cluster_distance.dat","w");
+   fprintf(centerfile,"#      ClusterA       ClusterB       Distance\n");
+   for(unsigned i=0;i<pc->get_number_of_clusters()-1;++i){
+    int cl0=pc->get_cluster_representative(i);
+    for(unsigned k=i+1;k<pc->get_number_of_clusters();++k){
+     int cl1=pc->get_cluster_representative(k);
+     fprintf(ccfile," %14u %14u %14.6f\n",i,k,drmsd->get_distance(cl0,cl1));
+    }
+   }
+   fclose(ccfile);
 // file containing the cluster index for each configuration
    std::vector<Ints> list_indexes;
    for(unsigned i=0;i<pc->get_number_of_clusters();++i){
@@ -141,7 +163,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
       if(list_indexes[j][k]==i){index=j;}
      }
     }
-    fprintf(trajfile," %14d %14d\n",i,index);
+    fprintf(trajfile," %14u %14d\n",i,index);
    }
    fclose(trajfile);
   }
