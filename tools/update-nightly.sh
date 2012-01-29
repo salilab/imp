@@ -32,7 +32,7 @@ svn co file:///cowbell1/svn/imp/trunk versions
 cd versions
 ./tools/increment-versions modules/*/SConscript biological_systems/*/SConscript  applications/*/SConscript
 version="nightly module versions update on "`date`
-svn commit -m "\"$version\"" modules/*/SConscript biological_systems/*/SConscript applications/*/SConscript tools/increment-versions
+svn ci -q --username autobuild -m "\"$version\"" modules/*/SConscript biological_systems/*/SConscript applications/*/SConscript tools/increment-versions
 
 # Cleanup
 cd /
