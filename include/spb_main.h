@@ -61,6 +61,7 @@ struct SPBParameters {
  bool         keep_GFP_layer;
  bool         GFP_exc_volume;
  bool         cluster_time;
+ bool         cluster_weight;
  std::map<std::string,std::string> file_list;
 };
 

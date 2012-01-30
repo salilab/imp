@@ -20,6 +20,7 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
 
   Particles ps_;
   algebra::Transformation3Ds tr_;
+  Floats weight_;
   std::vector<Floats> matrices_;
   std::vector< std::vector<unsigned> > matrixmap_;
 
@@ -30,13 +31,14 @@ class IMPMEMBRANEEXPORT DistanceRMSDMetric: public statistics::Metric {
 
  public:
   DistanceRMSDMetric(Particles ps, Ints align, algebra::Transformation3Ds tr);
-  void add_configuration();
+  void add_configuration(double weight=1.0);
+  Float get_weight(unsigned i);
 
   IMP_METRIC(DistanceRMSDMetric);
 };
 
  IMPMEMBRANEEXPORT statistics::PartitionalClustering* create_gromos_clustering
- (statistics::Metric *d, double cutoff);
+ (membrane::DistanceRMSDMetric *d, double cutoff);
 
 
 IMPMEMBRANE_END_NAMESPACE

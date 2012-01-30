@@ -65,8 +65,11 @@ void DistanceRMSDMetric::initialize(Ints align)
  return;
 }
 
-void DistanceRMSDMetric::add_configuration()
+void DistanceRMSDMetric::add_configuration(double weight)
 {
+// store weight
+ weight_.push_back(weight);
+// calculate distance matrix
  algebra::Vector3Ds coords;
  for(unsigned i=0;i<ps_.size();++i){
   coords.push_back(core::XYZ(ps_[i]).get_coordinates());
@@ -125,6 +128,11 @@ double DistanceRMSDMetric::get_distance
   return get_drmsd(matrices_[i],matrices_[j]);
 }
 
+Float DistanceRMSDMetric::get_weight(unsigned i)
+{
+ return weight_[i];
+}
+
 unsigned int DistanceRMSDMetric::get_number_of_items() const {
   return matrices_.size();
 }
@@ -133,38 +141,44 @@ void DistanceRMSDMetric::do_show(std::ostream &) const {
 }
 
 statistics::PartitionalClustering* create_gromos_clustering
- (statistics::Metric *d, double cutoff)
+ (membrane::DistanceRMSDMetric *d, double cutoff)
  {
   compatibility::checked_vector<Ints> clusters;
   unsigned nitems=d->get_number_of_items();
 
-// create vector of neighbors
+// create vector of neighbors and weights
   std::vector<Ints> neighbors(nitems);
-  for(unsigned i=0;i<nitems;++i){neighbors[i].push_back((int)i);}
+  Floats weights(nitems);
+  for(unsigned i=0;i<nitems;++i){
+   neighbors[i].push_back((int)i);
+   weights[i]=d->get_weight(i);
+  }
   for(unsigned i=0;i<nitems-1;++i){
    for(unsigned j=i+1;j<nitems;++j){
     if(d->get_distance(i,j)<cutoff){
      neighbors[i].push_back((int)j);
+     weights[i]+=d->get_weight(j);
      neighbors[j].push_back((int)i);
+     weights[j]+=d->get_weight(i);
     }
    }
   }
 
-  unsigned maxneigh=1;
-  while(maxneigh>0)
+  double maxweight=1.0;
+  while(maxweight>0.0)
   {
-// find the conf with maximum number of neighbors
-   maxneigh=0;
+// find the conf with maximum weight
+   maxweight=-1.0;
    unsigned icenter;
-   for(unsigned i=0;i<neighbors.size();++i){
-    if(neighbors[i].size()>maxneigh){
-     maxneigh=neighbors[i].size();
+   for(unsigned i=0;i<weights.size();++i){
+    if(weights[i]>maxweight){
+     maxweight=weights[i];
      icenter=i;
     }
    }
 
 // no more clusters to find
-   if(maxneigh==0){break;}
+   if(maxweight<0.){break;}
 
 // create the new cluster
    Ints newcluster=neighbors[icenter];
@@ -177,11 +191,15 @@ statistics::PartitionalClustering* create_gromos_clustering
 // eliminate the entire neighbor list
      if(neighbors[k][0]==newcluster[i]){
       neighbors.erase(neighbors.begin()+k);
+      weights.erase(weights.begin()+k);
      }else{
 // and the element in all the other neighbor lists
       std::vector<int>::iterator it=
        find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
-      if(it!=neighbors[k].end()){neighbors[k].erase(it);}
+      if(it!=neighbors[k].end()){
+       neighbors[k].erase(it);
+       weights[k]-=d->get_weight(newcluster[i]);
+      }
       k++;
      }
     }

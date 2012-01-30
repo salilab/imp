@@ -86,6 +86,8 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 
  RMF::FileHandle
   rh=RMF::open_rmf_file(mydata.trajfile+"_"+iter_str.str()+".rmf");
+ RMF::Category my_kc  = rh.get_category("my data");
+ RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score");
 
 // setting hierarchies
  rmf::set_hierarchies(rh, hhs);
@@ -96,7 +98,11 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
   for(unsigned int i=0;i<hhs.size();++i){
    rmf::load_frame(rh,imc,hhs[i]);
   }
-  drmsd->add_configuration();
+  double weight=1.0;
+  if(mydata.cluster_weight){
+   weight=exp(-((rh.get_root_node()).get_value(my_key,imc)/mydata.MC.tmin));
+  }
+  drmsd->add_configuration(weight);
  }
 
  // close RMF

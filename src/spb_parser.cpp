@@ -43,6 +43,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool use_connectivity;
  bool use_new_fret_model;
  bool cluster_time;
+ bool cluster_weight;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -77,6 +78,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("use_new_fret_model",
   value<bool>(&use_new_fret_model),  "ciao");
  desc.add_options()("cluster_time",  value<bool>(&cluster_time),        "ciao");
+ desc.add_options()("cluster_weight",value<bool>(&cluster_weight),      "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
  desc.add_options()("load_Spc110p",  value<std::string>(&load_Spc110p), "ciao");
@@ -173,6 +175,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.chunk=chunk;
  ret.cluster_cut=cluster_cut;
  ret.cluster_time=cluster_time;
+ ret.cluster_weight=cluster_weight;
 
 // restraint
  ret.add_fret=add_fret;
