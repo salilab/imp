@@ -113,7 +113,7 @@ double DistanceRMSDMetric::get_drmsd(Floats m0, Floats m1) const
   std::sort(dist0.begin(), dist0.end());
   std::sort(dist1.begin(), dist1.end());
   for(unsigned j=0;j<dist0.size();++j){
-   drmsd+=pow(dist0[j]-dist1[j],2);
+   drmsd+=( dist0[j] - dist1[j] ) *( dist0[j] - dist1[j] );
   }
  }
  return sqrt(drmsd/(double) (m0.size()));
