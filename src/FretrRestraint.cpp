@@ -26,6 +26,8 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
  R0_ = R0;
  Sd_ = Sd;
  Sa_ = Sa;
+ Nd_ = (double) pd_.size();
+ Na_ = (double) pa_.size();
  gamma_ = gamma;
  Ida_ = Ida;
  fretr_ = fretr;
@@ -43,18 +45,17 @@ FretrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
  for(unsigned i=0;i<pd_.size();++i){
   double Fi=0.0;
   for(unsigned j=0;j<pa_.size();++j){
-   double R=core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
-   Fi+=pow(R0_/R,6);
+   double power =R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
+   Fi+=power*power*power*power*power*power;
   }
   sumFi+=1.0/(1.0+Fi);
  }
 
- double fretr = 1.0 + gamma_ * ( (double)(pd_.size()) - sumFi ) /
-                ( Sd_ * Ida_ * sumFi + Sa_ * (double)(pa_.size()) );
+ double fretr = 1.0 + gamma_ * ( Nd_ - sumFi ) /
+                ( Sd_ * Ida_ * sumFi + Sa_ * Na_ );
 
- double score = 0.5 * kappa_ * pow( fretr - fretr_ , 2);
 
- return score;
+ return 0.5 * kappa_ * ( fretr - fretr_ ) * ( fretr - fretr_ );
 }
 
 ParticlesTemp FretrRestraint::get_input_particles() const {

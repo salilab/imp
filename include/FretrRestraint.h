@@ -23,8 +23,17 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT FretrRestraint : public Restraint
 {
 
-Particles pd_, pa_;
-double R0_, Sd_, Sa_, gamma_, Ida_, fretr_, kappa_;
+Particles pd_;
+Particles pa_;
+double R0_;
+double Sd_;
+double Sa_;
+double Nd_;
+double Na_;
+double gamma_;
+double Ida_;
+double fretr_;
+double kappa_;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
