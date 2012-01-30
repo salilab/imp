@@ -139,7 +139,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 // file containing the distance between the center of two clusters
    FILE *ccfile;
    ccfile = fopen("cluster_distance.dat","w");
-   fprintf(centerfile,"#      ClusterA       ClusterB       Distance\n");
+   fprintf(ccfile,"#      ClusterA       ClusterB       Distance\n");
    for(unsigned i=0;i<pc->get_number_of_clusters()-1;++i){
     int cl0=pc->get_cluster_representative(i);
     for(unsigned k=i+1;k<pc->get_number_of_clusters();++k){
