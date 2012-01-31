@@ -13,6 +13,19 @@
 #include <IMP/algebra/VectorD.h>
 
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
+template <int D>
+struct MinMax {
+  FloatPair minmax;
+  MinMax(): minmax(std::numeric_limits<double>::max(),
+                   -std::numeric_limits<double>::max()) {}
+  template <class G>
+  void operator()(const G &g, const typename G::Index &i,
+                  const typename G::Vector &v)  {
+    minmax.first=std::min(minmax.first, g[i]);
+    minmax.second=std::max(minmax.second, g[i]);
+  }
+};
+
 
 template <int D>
 struct Mean {

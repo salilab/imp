@@ -43,18 +43,49 @@ def _show_histogram_2d(h, yscale, xscale):
     plt.colorbar(im)
     plt.show()
 
-def _show_histogram_3d(h):
+def _get_min_dim(bb):
+    md=100000
+    for i in range(0, bb.get_dimension()):
+        l= bb.get_corner(1)[i]-bb.get_corner(0)[i]
+        if l < md:
+            md=l
+    return md
+
+def _show_histogram_3d(h, vmin, vmax):
     import IMP.display
     cg= h.get_counts()
-
+    if not vmin or not vmax:
+        minmax= h.get_minimum_and_maximum();
+        if not vmin:
+            vmin=minmax[0]
+        if not vmax:
+            vmax=minmax[1]
+    print vmin, vmax
+    w= IMP.display.PivyWriter()
+    for idx in cg.get_all_indexes():
+        v= cg[idx]
+        #print v, vmin
+        if v < vmin:
+            continue
+        coords= cg.get_center(idx)
+        r= .25*_get_min_dim(cg.get_bounding_box(idx))
+        s=IMP.algebra.Sphere3D(coords, r)
+        g= IMP.display.SphereGeometry(s, "histogram")
+        scaled= (v-vmin)/(vmax-vmin)
+        if scaled>1.0:
+            scaled=1.0
+        color= IMP.display.get_hot_color(scaled)
+        g.set_color(color)
+        w.add_geometry(g)
+    w.show()
 
 def show_histogram(h, yscale='linear', xscale='linear',
-                   curves=[]):
+                   curves=[], vmin=None, vmax=None):
     if h.get_dimension()==1:
         _show_histogram_1d(h, yscale, xscale, curves)
     elif h.get_dimension()==2:
         _show_histogram_2d(h, yscale, xscale)
     elif h.get_dimension()==3:
-        _show_histogram_3d(h)
+        _show_histogram_3d(h, vmin, vmax)
     else:
         raise ValueError("Dimension "+str(h.get_dimension())+ "not supported")

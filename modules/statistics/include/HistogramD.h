@@ -86,6 +86,9 @@ class HistogramD {
   algebra::BoundingBoxD<D> get_bounding_box() const {
     return IMP::algebra::get_bounding_box(grid_);
   }
+  FloatPair get_minimum_and_maximum() const {
+    return grid_.apply(internal::MinMax<D>()).minmax;
+  }
 
   IMP_SHOWABLE_INLINE(HistogramD,out << "count: " << count_);
 private:
