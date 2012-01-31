@@ -3,6 +3,7 @@ from IMP.test import unittest
 import sys
 import os
 import re
+from optparse import OptionParser
 
 def get_unmet_module_deps(f, disabled_modules):
     unmet_deps = []
@@ -90,12 +91,28 @@ class RegressionTest(object):
 
         return suite
 
+def parse_options():
+    parser = OptionParser()
+    parser.add_option("--results", dest="results", type="string", default="-",
+                      help="write details of the test failures to this file")
+    parser.add_option("--excluded", dest="excluded", type="string", default="-",
+                      help="list of modules to exclude")
+    return parser.parse_args()
 
 if __name__ == "__main__":
-    if len(sys.argv) <2:
-        sys.exit(0)
-    excluded_modules = sys.argv[1].split(":")
-    files = sys.argv[2:]
+    opts, args = parse_options()
+    if opts.excluded:
+        excluded_modules = opts.excluded.split(":")
+    else:
+        excluded_modules=[]
+    files = args
     sys.argv=[sys.argv[0], "-v"]
     r = RegressionTest(files, excluded_modules)
-    unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
+    main=unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
+    if opts.results:
+        out= file(opts.results, "w")
+        if len(main.result.errors) > 0:
+            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors])
+        if len(main.result.skipped) > 0:
+            print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
+    sys.exit(not main.result.wasSuccessful())
