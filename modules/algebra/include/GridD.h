@@ -409,6 +409,13 @@ namespace grids {
       IMP_INTERNAL_CHECK(D==-1 || i < D, "Only D: "<< i);
       return d_[i];
     }
+    unsigned int get_number_of_voxels() const {
+      int ret=d_[0];
+      for (unsigned int i=1; i< d_.get_dimension(); ++i) {
+        ret*=d_[i];
+      }
+      return ret;
+    }
     //! Get the past-end voxel
     ExtendedGridIndexD<D> get_end_index() const {
       return d_;
@@ -811,7 +818,11 @@ namespace grids {
     static bool get_is_dense() {
       return false;
     }
+    using Base::get_number_of_voxels;
 #endif
+    unsigned int get_number_of_voxels() const {
+      return data_.size();
+    }
     //! Return true if the voxel has been added
     bool get_has_index(const ExtendedGridIndexD<D>&i) const {
       return data_.find(GridIndexD<D>(i.begin(), i.end())) != data_.end();
