@@ -82,7 +82,5 @@ namespace IMP {
         return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }
-    %template(floats) ::std::vector<float>;
-    %template(ScorePair) ::std::pair<double,IMP::algebra::Vector3Ds>;
   }
 }
