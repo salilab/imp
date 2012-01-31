@@ -76,7 +76,7 @@ trunk. We recommend you use use this. Since this is the place that people
 commit changes to, one should consult the nightly build logs before updating
 to make sure things are working. In addition, consult the \c ChangeLog file
 to see what has changed since your last update.
-   
+
 When developing code for \imp, it is useful to be able to run it without installing
 everything. To aid this, we provide a script located at \c tools/imppy.sh which
 runs a command after setting up the environment so that dynamically linked libraries
@@ -198,38 +198,37 @@ Notes on how to work around various platform issues can be found at
 \subsection mac Getting prerequisites on a Mac
 
 Mac users must first install Xcode (previously known as Developer Tools)
-which is not installed by default with OS X, but is available on the OS X
-DVD. Newer versions of Xcode
-\external{http://developer.apple.com/technologies/xcode.html,are also available}
-from the App Store (the cost is $5).
+which is not installed by default with OS X, but is available from the App store
+(or from the Mac OS install DVD for old versions of Mac OS).
 
 Then Mac users should use one of the available collections of Unix tools,
-either \external{http://www.macports.org/, MacPorts} (recommended) or
-\external{http://www.finkproject.org/, Fink}. If you use MacPorts, you must
+either
+ - \external{http://mxcl.github.com/homebrew/, Homebrew:} (recommended) Once you installed \c homebrew by running
+\command{/usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)"}
+do
+ \command{brew install boost gmp bullet google-perftools cgal graphviz scons gsl subversion doxygen hdf5 swig eigen llvm fftw mpfr gfortran}
+to install everything \imp finds useful (or that you will want for installing various useful python libs that \imp finds useful).
+ - \external{http://www.macports.org/, MacPorts:} If you use MacPorts, you must
 add \c /opt/local/bin to your path (either by modifying your shell's
 config file or by making an \c environment.plist file-see the
 \salilab{imp/wiki/FAQ, FAQ}) and then do
 \command{sudo port install boost scons swig-python}
-to install the needed libraries and tools. Alternatively, you can build the
-packages yourself from source code.
+to install the needed libraries and tools. When installing HDF5 with MacPorts, be sure to install \c hdf5-18
+(version 1.8), rather than the older \c hdf5 (version 1.6.9).
+ - or \external{http://www.finkproject.org/, Fink}
 
 \note Mac OS X 10.5 and 10.6 include a 'swig' binary, but it is too old to use
 with IMP. If you install SWIG with MacPorts above, you will need to make sure
 SCons picks up your SWIG rather than Apple's by setting the `path` option when
-running `scons`.
-
-\note Do not install any C++ headers in `/usr/include` on your Mac as
+running `scons`. Do not install any C++ headers in `/usr/include` on your Mac as
 the compiler assumes any such headers are C headers.
 
-\note When installing HDF5 with MacPorts, be sure to install \c hdf5-18
-(version 1.8), rather than the older \c hdf5 (version 1.6.9).
 
 \subsection windows Getting prerequisites on Windows
 
 The SCons build system should work on Windows with the command line
-Microsoft Visual Studio compiler (`cl`) but it has not yet been
-tested; some of the subsidiary scripts may assume a Unix
-environment. (In the Sali lab, you can build a Windows version on
+Microsoft Visual Studio compiler (`cl`) but we have not been able to get
+it to work (but haven't tried very hard either). (In the Sali lab, you can build a Windows version on
 `synth` by running `scons` in the usual way, giving the `wine=true`
 command line option.)
 
