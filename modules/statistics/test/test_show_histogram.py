@@ -113,7 +113,7 @@ class Tests(IMP.test.TestCase):
             del sys.modules['matplotlib.mlab']
 
     def test_histogram_2d(self):
-        """Check that the histogram1D of a gaussian is OK"""
+        """Check that the histogram2D of a gaussian is OK"""
         hist = IMP.statistics.Histogram2D(5.0, IMP.algebra.BoundingBox2D(IMP.algebra.Vector2D(-100, -100),
                                                                 IMP.algebra.Vector2D( 100, 100)))
         sigma=10
@@ -126,6 +126,21 @@ class Tests(IMP.test.TestCase):
         print hist.get_counts()
         print hist.get_frequencies()
         #show_2d(hist)
+
+
+    def test_histogram_3d(self):
+        """Check that the histogram3D of a gaussian is OK"""
+        hist = IMP.statistics.Histogram3D(1.0, IMP.algebra.get_cube_3d(6))
+        for i in range(1000):
+
+            x=random.gauss(0, 1)
+            y=random.gauss(0, 1)
+            z=random.gauss(0, 1)
+            #print x
+            hist.add(IMP.algebra.Vector3D(x, y, z))
+        print hist.get_counts()
+        print hist.get_frequencies()
+        IMP.statistics.show_histogram(hist.get_frequencies(), vmin=.001, vmax=.2)
 
 if __name__ == '__main__':
     IMP.test.main()
