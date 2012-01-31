@@ -31,6 +31,7 @@ def _action_unit_test(target, source, env):
         disab = ''
     tmpdir=Dir(env["builddir"]+"/tmp").abspath
     tf=target[0].abspath
+    filename= target[0].abspath
     if type.endswith("unit test"):
         cmd= File("#/scons_tools/run-all-tests.py").abspath
         if type.startswith('module'):
@@ -42,6 +43,9 @@ def _action_unit_test(target, source, env):
             cmd += ' --module=%s --pycoverage=%s' % (modname, env['coverage'])
             if env['coverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
+            data.get(env).env.Append(IMP_TESTS=[(modname, filename)])
+
+        cmd+=" --results="+filename
         #if len(fsource) > 0:
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
@@ -51,7 +55,8 @@ def _action_unit_test(target, source, env):
         for d in data.get(env).modules.keys():
             if not data.get(env).modules[d].ok:
                 dmod.append(d)
-        cmd= cmd+ ' "'+":".join(dmod) + '"'
+        cmd= cmd+ ' --excluded='+":".join(dmod)
+        cmd+=" --results="+filename
     elif type=='system':
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir(env["builddir"]+"/tmp").abspath
     else:
@@ -63,7 +68,7 @@ def _action_unit_test(target, source, env):
                  " ".join(fsource), tf+".out")
     print app
     if env.Execute(app) == 0:
-        file(str(target[0]), 'w').write('PASSED\n')
+        #file(str(target[0]), 'w').write('PASSED\n')
         print "%s %ss succeeded" % (_get_name(env), source[-1])
     else:
         print "%s %ss FAILED" % (_get_name(env), source[-1])

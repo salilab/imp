@@ -66,6 +66,8 @@ def parse_options():
     parser.add_option("--output", dest="output", type="string", default="-",
                       help="write coverage output into the named "
                            "file (or stderr if '-')")
+    parser.add_option("--results", dest="results", type="string", default="-",
+                      help="write details of the test failures to this file")
     return parser.parse_args()
 
 def start_coverage():
@@ -124,6 +126,12 @@ if __name__ == "__main__":
     sys.argv = [sys.argv[0]]
     main = unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner,
                          argv=[sys.argv[0], "-v"], exit=False)
+    if opts.results:
+        out= file(opts.results, "w")
+        if len(main.result.errors) > 0:
+            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors])
+        if len(main.result.skipped) > 0:
+            print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
     if opts.pycoverage != 'no':
         report_coverage(opts)
     sys.exit(not main.result.wasSuccessful())
