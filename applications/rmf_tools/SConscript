@@ -28,6 +28,11 @@ env= env.IMPApplication(name="rmf_tools", version='nightly-30/1/2012',
    - \c rmf_xml converts an rmf file to an XML files that can be opened in an XML viewer
    (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
    makes it much easier to get around large hierarchies.
+
+   - \c rmf_info displays information about the attributes found in the RMF and how
+   much they are used.
+
+   - \c rmf_color adds color information to an RMF
    """,
                         license=env.IMPStandardLicense(),
                         publications=[],
@@ -41,3 +46,4 @@ if env:
     env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
     env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])
     env.IMPCPPExecutable(target="rmf_info", source=["rmf_info.cpp"])
+    env.IMPCPPExecutable(target="rmf_color", source=["rmf_color.cpp"])
