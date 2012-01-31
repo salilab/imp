@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.display
+import os
 import StringIO
 
 class TestBL(IMP.test.TestCase):
@@ -25,6 +26,8 @@ class TestBL(IMP.test.TestCase):
         gy.set_color(IMP.display.Color(0,1,0))
         gz=IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,3), 1))
         gz.set_color(IMP.display.Color(0,0,1))
+        if "DISPLAY" not in os.environ.keys():
+            self.skipTest("no DISPLAY variable")
         pw= IMP.display.PivyWriter()
         pw.add_geometry([g0, g1, g2, gx, gy, gz])
         pw.show()

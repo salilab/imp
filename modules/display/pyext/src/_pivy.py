@@ -1,5 +1,8 @@
 import sys
 
+def not_exit():
+    raise RuntimeError("runtime error in PiVy")
+
 def get_writer(parent):
     class PivyWriter(parent):
         def __init__(self):
@@ -8,11 +11,16 @@ def get_writer(parent):
         def _setup_pivy(self):
             import pivy.sogui
             import pivy.coin
+            import os
             self.pivy = pivy
+            # actually, pivy seems to call exit on failure. Bah.
+            if "DISPLAY" not in os.environ.keys():
+                raise RuntimeError("No display variable found")
             myWindow = pivy.sogui.SoGui.init(sys.argv[0])
             if myWindow == None:
                 raise RuntimeError("Can't open PiVy window.")
             self.window=myWindow
+            print "scene"
             scene = pivy.coin.SoSeparator()
 
             # Create a viewer in which to see our scene graph.
@@ -20,7 +28,9 @@ def get_writer(parent):
 
             # Put our scene into viewer, change the title
             viewer.setSceneGraph(scene)
+            print "title"
             viewer.setTitle("IMP")
+            print "show"
             viewer.show()
             self.root=scene
             self.viewer=viewer
