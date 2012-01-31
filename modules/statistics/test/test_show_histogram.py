@@ -4,6 +4,7 @@ import IMP.statistics
 import IMP.algebra
 import random
 import sys
+import os
 
 
 class MockAxes(object):
@@ -56,33 +57,12 @@ class MockFigure(object):
         self.events.append('add_subplot %s' % str(args))
         return MockAxes(self.events)
 
-
-def show_2d(h):
-    import numpy as np
-    import matplotlib.cm as cm
-    import matplotlib.mlab as mlab
-    import matplotlib.pyplot as plt
-    cg= h.get_counts()
-    steps=cg.get_unit_cell()
-    x = np.arange(cg.get_bounding_box().get_corner(0)[0]+.5*steps[0],
-                  cg.get_bounding_box().get_corner(1)[0]-.5*steps[0])
-    y = np.arange(cg.get_bounding_box().get_corner(0)[1]+.5*steps[1],
-                  cg.get_bounding_box().get_corner(1)[1]-.5*steps[1])
-    X, Y = np.meshgrid(x, y)
-    Z,junk= np.meshgrid(x,y)
-    for i,xi in enumerate(x):
-        for j, yj in enumerate(y):
-            Z[i][j]=cg[cg.get_nearest_index(IMP.algebra.Vector2D(xi,yj))]
-    im = plt.pcolor(X,Y, Z, cmap=cm.jet)
-    plt.colorbar(im)
-    plt.show()
-
 class Tests(IMP.test.TestCase):
     "Test that the histogram functionality works"
     def Setup(self):
         IMP.test.TestCase.setUp(self)
     def test_histogram_1d(self):
-        """Check that the histogram1D of a gaussian is OK"""
+        """Check showing the histogram1D of a gaussian"""
         try:
             import numpy
         except ImportError:
@@ -113,7 +93,7 @@ class Tests(IMP.test.TestCase):
             del sys.modules['matplotlib.mlab']
 
     def test_histogram_2d(self):
-        """Check that the histogram2D of a gaussian is OK"""
+        """Check showing the histogram2D of a gaussian"""
         hist = IMP.statistics.Histogram2D(5.0, IMP.algebra.BoundingBox2D(IMP.algebra.Vector2D(-100, -100),
                                                                 IMP.algebra.Vector2D( 100, 100)))
         sigma=10
@@ -125,11 +105,11 @@ class Tests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector2D(x, y))
         print hist.get_counts()
         print hist.get_frequencies()
-        #show_2d(hist)
+        self.skipTest("No x available for 2d")
 
 
     def test_histogram_3d(self):
-        """Check that the histogram3D of a gaussian is OK"""
+        """Check showing the histogram3D of a gaussian"""
         hist = IMP.statistics.Histogram3D(1.0, IMP.algebra.get_cube_3d(6))
         for i in range(1000):
 
@@ -140,6 +120,8 @@ class Tests(IMP.test.TestCase):
             hist.add(IMP.algebra.Vector3D(x, y, z))
         print hist.get_counts()
         print hist.get_frequencies()
+        if not "DISPLAY" in os.environ.keys():
+            self.skipTest("no DISPLAY variable found")
         IMP.statistics.show_histogram(hist.get_frequencies(), vmin=.001, vmax=.2)
 
 if __name__ == '__main__':
