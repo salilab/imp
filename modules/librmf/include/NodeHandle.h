@@ -50,10 +50,6 @@ class FileHandle;
 /** Use these handles to access and modify parts of the
     hierarchy.
 
-    The get_value_always() methods return the appropriate
-    value or TypeTraits::get_null_value() if the node does
-    not have that attribute.
-
     Make sure to check out the base class for the const
     methods.
 */

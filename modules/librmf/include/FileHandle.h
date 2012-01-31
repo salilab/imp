@@ -240,6 +240,76 @@ namespace RMF {
     return get_node(0).get_file();
   }
 
+/** \name Helper functions
+    These functions help make working with keys and categories easier,
+    by allowing you to assume that the key/category is always
+    there.
+    @{
+*/
+template <int D>
+CategoryD<D> get_category_always(FileHandle fh, std::string name) {
+  if (fh.get_has_category<D>(name)) {
+    return fh.get_category<D>(name);
+  } else {
+    return fh.add_category<D>(name);
+  }
+}
+
+
+inline CategoryD<1> get_singleton_category_always(FileHandle rh,
+                                                 std::string name) {
+  return get_category_always<1>(rh, name);
+}
+inline CategoryD<2> get_pair_category_always(FileHandle rh,
+                                            std::string name) {
+  return get_category_always<2>(rh, name);
+}
+inline CategoryD<3> get_triplet_category_always(FileHandle rh,
+                                               std::string name) {
+  return get_category_always<3>(rh, name);
+}
+inline CategoryD<4> get_quad_category_always(FileHandle rh,
+                                            std::string name) {
+  return get_category_always<4>(rh, name);
+}
+
+
+template <class TypeT, int D>
+Key<TypeT, D> get_key_always(FileHandle fh, CategoryD<D> cat,
+                             std::string name, bool per_frame=false) {
+  if (fh.get_has_key<TypeT, D>(cat, name)) {
+    IMP_RMF_USAGE_CHECK(per_frame
+                        == fh.get_is_per_frame(fh.get_key<TypeT, D>(cat, name)),
+                        "A per_frame value for the key requested didn't match"
+                        << " the actual per_frame value.");
+    return fh.get_key<TypeT, D>(cat, name);
+  } else {
+    return fh.add_key<TypeT, D>(cat, name, per_frame);
+  }
+}
+#define IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue,      \
+                                        ReturnValue,                    \
+                                        PassValues, ReturnValues, D)    \
+  inline Key<UCName##Traits, D> get_##lcname##_key_always(FileHandle rh, \
+                                                          CategoryD<D> cat, \
+                                                          std::string name, \
+                                                          bool per_frame \
+                                                          = false) {    \
+    return get_key_always<UCName##Traits, D>(rh, cat, name, per_frame); \
+  }
+#define IMP_RMF_GET_KEY_ALWAYS(lcname, UCName, PassValue, ReturnValue,  \
+                               PassValues, ReturnValues)                \
+  IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue, ReturnValue, \
+                                  PassValues, ReturnValues, 1);         \
+  IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue, ReturnValue, \
+                                  PassValues, ReturnValues, 2);         \
+  IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue, ReturnValue, \
+                                  PassValues, ReturnValues, 3);         \
+  IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue, ReturnValue, \
+                                  PassValues, ReturnValues, 4)
+IMP_RMF_FOREACH_TYPE(IMP_RMF_GET_KEY_ALWAYS);
+/** @} */
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_FILE_HANDLE_H */
