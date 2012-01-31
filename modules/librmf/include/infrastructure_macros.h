@@ -329,7 +329,6 @@ namespace RMF {
     Showable( std::string t): t_(t){}
     template <class T>
     Showable( const vector<T> &t ) {
-      using std::operator<<;
       std::ostringstream out;
       out << "[";
       for (unsigned int i=0; i< t.size(); ++i) {
