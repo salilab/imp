@@ -16,7 +16,8 @@ if use_rigid_bodies:
     prb= IMP.Particle(m)
     prb.set_name("rigid body")
     d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-    drb= IMP.core.RigidBody.setup_particle(prb, [p], IMP.algebra.ReferenceFrame3D())
+    drb= IMP.core.RigidBody.setup_particle(prb, IMP.algebra.ReferenceFrame3D())
+    drb.add_member(p)
     print "initial frame", drb.get_reference_frame()
     fp= prb
     drb.set_coordinates_are_optimized(True)
