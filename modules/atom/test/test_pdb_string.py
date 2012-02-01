@@ -22,6 +22,25 @@ class PDBReadWriteTest(IMP.test.TestCase):
         self.assertEqual(len(IMP.core.get_leaves(mp)),5)
         m.evaluate(False)
 
+    def test_pad(self):
+        """Make sure that atom names are padded correctly in PDB files"""
+        # Make sure non-standard atom types are defined
+        ff = IMP.atom.get_all_atom_CHARMM_parameters()
+        v = IMP.algebra.Vector3D(0,0,0)
+        t = IMP.atom.get_element_table()
+        for name, element, expected in (('C',    'C',  ' C  '),
+                                        ('C',    'Un', ' C  '),
+                                        ('CA',   'C',  ' CA '),
+                                        ('CA',   'CA', 'CA  '),
+                                        ('CAD',  'C',  ' CAD'),
+                                        ('HAD1', 'H',  'HAD1'),
+                                        ('HG',   'H',  ' HG '),
+                                        ('HG',   'HG', 'HG  ')):
+            s = IMP.atom.get_pdb_string(v, 1, IMP.atom.AtomType(name),
+                                        IMP.atom.ALA, 'A', 1, ' ', 1.0, 0.0,
+                                        t.get_element(element))
+            self.assertEqual(s[12:16], expected)
+
     def test_no_mangle(self):
         """Test that PDB atom names are not mangled"""
         # Atom names should not be changed by a read/write PDB cycle; this would

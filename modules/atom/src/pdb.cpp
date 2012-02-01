@@ -543,6 +543,8 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
                        double tempFactor,Element e) {
   std::stringstream out;
   std::string atom_name = at.get_string();
+  std::string element_name = get_element_table().get_name(e);
+
   if (atom_name.find("HET:")==0) {
     out << "HETATM";
   } else {
@@ -561,6 +563,10 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   } else {
     if (atom_name.size() >= 4) {
       out << atom_name.substr(0, 4);
+    } else if (e != UNKNOWN_ELEMENT && element_name.size() == 2) {
+      // left align atom names that have 2-character element names (e.g.
+      // this distinguishes calcium CA from C-alpha, or mercury from H-gamma)
+      out << std::left << std::setw(4) << atom_name;
     } else if (atom_name.size() ==3) {
       out << " " << atom_name;
     } else if (atom_name.size() ==2) {
@@ -612,7 +618,7 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   // 77 - 78  LString(2)      Element symbol, right-justified.
   out.width(2);
   out.setf(std::ios::right, std::ios::adjustfield);
-  out << get_element_table().get_name(e);
+  out << element_name;
   //     79 - 80        LString(2)      Charge on the atom.
   out.width(2);
   out << "" << std::endl; //TODO
