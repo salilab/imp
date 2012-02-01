@@ -257,6 +257,28 @@ namespace {
     residue->add_internal_coordinate(ic);
   }
 
+  void parse_mass_line(std::string line,
+                       std::map<std::string, Element> &elements) {
+    vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" \t"),
+                 boost::token_compress_on);
+    if (split_results.size() < 5) return; // MASS line has at least 5 fields
+
+    Element e = get_element_table().get_element(split_results[4]);
+    if (e != UNKNOWN_ELEMENT) {
+      elements[split_results[2]] = e;
+    }
+  }
+
+  Element get_element_for_type(std::string name,
+                               const std::map<std::string, Element> &elements) {
+    if (elements.find(name) == elements.end()) {
+      return UNKNOWN_ELEMENT;
+    } else {
+      return elements.find(name)->second;
+    }
+  }
+
   void parse_patch_line(std::string line, std::string &first,
                         std::string &last, bool translate_names_to_pdb) {
     const std::string FIRST = "FIRS";
@@ -328,6 +350,7 @@ void CHARMMParameters::read_topology_file(base::TextInput input_file,
                                           bool translate_names_to_pdb)
 {
   IMP_OBJECT_LOG;
+  const String MASS_LINE = "MASS";
   const String DEFA_LINE = "DEFA";
   const String PATC_LINE = "PATC";
   const String RESI_LINE = "RESI";
@@ -383,6 +406,10 @@ void CHARMMParameters::read_topology_file(base::TextInput input_file,
       }
       patch = new CHARMMPatch(get_residue_name(split_results[1],
                                                translate_names_to_pdb));
+
+    // handle MASS line
+    } else if (line.substr(0, MASS_LINE.length()) == MASS_LINE) {
+      parse_mass_line(line, atom_type_to_element_);
 
     // handle DEFA line
     } else if (line.substr(0, DEFA_LINE.length()) == DEFA_LINE) {
@@ -487,10 +514,10 @@ void CHARMMParameters::parse_atom_line(const String& line,
      imp_atom_type = AtomType(atom.get_name());
   } else {
      // assume charm is correct and this is a ATOM record
-     // and it will be parsed right for elements
-     // Note that we don't currently parse the MASS lines and so have
-     // no way to determine the element for this atom
-     imp_atom_type= add_atom_type(atom.get_name(), UNKNOWN_ELEMENT);
+     std::string name = atom.get_name();
+     imp_atom_type= add_atom_type(atom.get_name(),
+                                  get_element_for_type(split_results[2],
+                                                       atom_type_to_element_));
   }
   // save in map
   if(atom_res_type_2_force_field_atom_type_.find(curr_res_type) ==

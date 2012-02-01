@@ -67,6 +67,7 @@ class CHARMMTopology;
     used to assign atomic radii, bonds, etc.
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
+  std::map<std::string, Element> atom_type_to_element_;
   std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >
       residue_topologies_;
   std::map<std::string, Pointer<CHARMMPatch> > patches_;
