@@ -31,7 +31,8 @@ int main(int argc, char **argv)
   float excluded_volume_c1 = 0.0;
   bool use_offset = false;
   bool fit = true;
-  bool water_layer = true;
+  //bool water_layer = true;
+  float water_layer_c2=0;
   bool heavy_atoms_only = true;
   bool residue_level = false;
   po::options_description desc("Options");
@@ -46,7 +47,8 @@ Written by Dina Schneidman.")
      "maximal q value (default = 0.5)")
     ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
      "number of points in the profile (default = 500)")
-    ("water_layer,w", "compute hydration layer (default = true)")
+    ("water_layer_c2,w", po::value<float>(&water_layer_c2)->default_value(0.0),
+     "set hydration layer density (default = 0.0)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
     ("residues,r", "perform fast coarse grained profile calculation using \
@@ -102,12 +104,12 @@ constant form factor (default = false)")
     std::cout << visible << "\n";
     return 0;
   }
-  if(vm.count("water_layer")) water_layer=false;
+  //if(vm.count("water_layer")) water_layer=false;
   if(vm.count("hydrogens")) heavy_atoms_only=false;
   if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
   // no water layer or fitting in ab initio mode for now
-  if(vm.count("ab_initio")) { ab_initio=true; water_layer = false;
+  if(vm.count("ab_initio")) { ab_initio=true; water_layer_c2 = 0.0;
     fit = false; excluded_volume_c1 = 1.0; }
   if(vm.count("vacuum")) { vacuum = true; }
 
@@ -122,8 +124,7 @@ constant form factor (default = false)")
     // check if file exists
     std::ifstream in_file(files[i].c_str());
     if(!in_file) {
-      std::cerr << "Can't open file " << files[i] << std::endl;
-      exit(1);
+      std::cerr << "Can't open file " << files[i] << std::endl; return 1;
     }
     // A. try as pdb
     try {
@@ -151,15 +152,16 @@ constant form factor (default = false)")
         particles_vec.push_back(IMP::get_as<IMP::Particles>(particles));
         std::cout << particles.size() << " atoms were read from PDB file "
                   << files[i] << std::endl;
-      }
-      if(water_layer) { // add radius
-        IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
-        IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
-        if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
-        if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
-        for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
-          float radius = ft->get_radius(particles[p_index], ff_type);
-          IMP::core::XYZR::setup_particle(particles[p_index], radius);
+
+        if(water_layer_c2 != 0.0) { // add radius
+          IMP::saxs::FormFactorTable* ft=IMP::saxs::default_form_factor_table();
+          IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
+          if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
+          if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
+          for(unsigned int p_index=0; p_index<particles.size(); p_index++) {
+            float radius = ft->get_radius(particles[p_index], ff_type);
+            IMP::core::XYZR::setup_particle(particles[p_index], radius);
+          }
         }
       }
     } catch(IMP::ValueException e) { // not a pdb file
@@ -186,7 +188,7 @@ constant form factor (default = false)")
     // compute surface accessibility
     IMP::Floats surface_area;
     IMP::saxs::SolventAccessibleSurface s;
-    if(water_layer) {
+    if(water_layer_c2 != 0.0) {
       surface_area =
         s.get_solvent_accessibility(IMP::core::XYZRs(particles_vec[i]));
     }
@@ -195,7 +197,7 @@ constant form factor (default = false)")
     IMP::saxs::Profile *partial_profile = NULL;
     std::cerr << "Computing profile for " << pdb_files[i] << std::endl;
     partial_profile = new IMP::saxs::Profile(0.0, max_q, delta_q);
-    if(excluded_volume_c1 == 1.0 && !water_layer) fit = false;
+    if(excluded_volume_c1 == 1.0 && water_layer_c2 == 0.0) fit = false;
     IMP::saxs::FormFactorType ff_type = IMP::saxs::HEAVY_ATOMS;
     if(!heavy_atoms_only) ff_type = IMP::saxs::ALL_ATOMS;
     if(residue_level) ff_type = IMP::saxs::CA_ATOMS;
@@ -208,8 +210,10 @@ constant form factor (default = false)")
       volume += ft->get_volume(particles_vec[i][k], ff_type);
     }
     average_radius /= particles_vec[i].size();
-    //std::cerr << "Average radius = " << average_radius
-    //<< " volume = " << volume << std::endl;
+    // partial_profile->set_average_radius(average_radius);
+    // std::cerr << "Average radius = " << average_radius
+    //           << " volume = " << volume << " average_volume = "
+    // << volume/particles_vec[i].size() << std::endl;
 
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       if(ab_initio) { // bead model, constant form factor
@@ -257,10 +261,11 @@ constant form factor (default = false)")
 
       std::cout << pdb_files[i] << " " << dat_files[j];
 
-      float min_c1=0.95; float max_c1=1.12;
+      float min_c1=0.95; float max_c1=1.05;
       float min_c2=-4.0; float max_c2=4.0;
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
-      if(!water_layer) { min_c2 = max_c2 = 0.0; }
+      if(water_layer_c2 == 0.0) { min_c2 = max_c2 = 0.0; }
+      else { min_c2 = max_c2 = water_layer_c2; }
       IMP::saxs::FitParameters fp = saxs_score->fit_profile(*partial_profile,
                                                 min_c1, max_c1, min_c2, max_c2,
                                                 use_offset, fit_file_name2);
