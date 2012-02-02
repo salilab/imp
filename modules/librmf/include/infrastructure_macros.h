@@ -181,6 +181,12 @@
     }                                                                   \
   } while (false)
 
+#define IMP_RMF_PATH_CHECK(path, context)               \
+  if (!boost::filesystem::exists(path)) {               \
+  IMP_RMF_THROW(context << path << " does not exist.",  \
+                IOException);                           \
+  }
+
 #define IMP_RMF_IF_CHECK\
   if (true)
 
