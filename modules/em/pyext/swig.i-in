@@ -47,6 +47,15 @@ namespace IMP {
  }
 }
 
+/* Convert return value from CoarseCCatIntervals::evaluate into useful
+   Python objects */
+%typemap(out) std::pair<double,IMP::algebra::Vector3Ds> (PyObject *temp1, PyObject *temp2) {
+  $result = PyTuple_New(2);
+  temp1 = PyFloat_FromDouble($1.first);
+  temp2 = ConvertSequence<IMP::algebra::Vector3Ds, Convert< IMP::algebra::Vector3D> >::create_python_object(ValueOrObject<IMP::algebra::Vector3Ds>::get($1.second), $descriptor(IMP::algebra::Vector3D*), SWIG_POINTER_OWN);
+  PyTuple_SET_ITEM($result, 0, temp1);
+  PyTuple_SET_ITEM($result, 1, temp2);
+}
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
