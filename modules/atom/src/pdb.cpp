@@ -559,21 +559,20 @@ std::string get_pdb_string(const algebra::Vector3D& v, int index,
   out << " ";
   // 13-16: atom name
   if (atom_name.find("HET:")==0){
-    out << std::string(atom_name, 4);
+    atom_name.erase(0, 4);
+  }
+  if (atom_name.size() >= 4) {
+    out << atom_name.substr(0, 4);
+  } else if (e != UNKNOWN_ELEMENT && element_name.size() == 2) {
+    // left align atom names that have 2-character element names (e.g.
+    // this distinguishes calcium CA from C-alpha, or mercury from H-gamma)
+    out << std::left << std::setw(4) << atom_name;
+  } else if (atom_name.size() ==3) {
+    out << " " << atom_name;
+  } else if (atom_name.size() ==2) {
+    out << " " << atom_name << " ";
   } else {
-    if (atom_name.size() >= 4) {
-      out << atom_name.substr(0, 4);
-    } else if (e != UNKNOWN_ELEMENT && element_name.size() == 2) {
-      // left align atom names that have 2-character element names (e.g.
-      // this distinguishes calcium CA from C-alpha, or mercury from H-gamma)
-      out << std::left << std::setw(4) << atom_name;
-    } else if (atom_name.size() ==3) {
-      out << " " << atom_name;
-    } else if (atom_name.size() ==2) {
-      out << " " << atom_name << " ";
-    } else {
-      out << " " << atom_name << "  ";
-    }
+    out << " " << atom_name << "  ";
   }
   // 17: skip the alternate indication position
   out.width(1);
