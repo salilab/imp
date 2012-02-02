@@ -4,9 +4,9 @@ void handle_imp_exception(void) {
     try {
       throw;
     } catch (const RMF::Exception &e) {
-      PyErr_SetString(PyExc_RuntimeError, e.what());
+      PyErr_SetString(PyExc_IOError, e.what());
     } catch (...) {
-      PyErr_SetString(PyExc_RuntimeError,
+      PyErr_SetString(PyExc_IOError,
                       "Unknown error caught by Python wrapper");
     }
 }
