@@ -97,6 +97,13 @@ Information about bond angles or torsion angles could be stored
 using the same mechanism. Currently, the library API supports sets up to
 size 4, but we can add arbitrary sized sets when needed.
 
+Attributes on a parent node should be thought of as being inherited by their
+children when appropiate unless the child overrides it with a value of its own.
+For example, if a node in the hierarchy has a color stored in it, the children
+should be considered as having the same color unless they have a different color
+of their own. Similarly, atoms inherit their residue index and type from their
+residue parents and all of those get the chain identifier from their parent.
+
 \section adding 3 Adding custom data to an RMF
 
 When adding data to an %RMF file that is just to be used for
