@@ -1,4 +1,5 @@
 from IMP import *
+import IMP.core
 from IMP.algebra import *
 from IMP.core import *
 from IMP.container import *
@@ -10,6 +11,8 @@ class Volume(IMP.test.TestCase):
     """Tests for angle restraints"""
     def test_volume_1(self):
         """Testing that volume restraint can separate balls"""
+        if not hasattr(IMP.core, 'VolumeRestraint'):
+            self.skipTest('VolumeRestraint not built (no CGAL)')
         m= Model()
         ps= []
         IMP.set_log_level(IMP.VERBOSE)
