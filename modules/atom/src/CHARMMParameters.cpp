@@ -510,12 +510,15 @@ void CHARMMParameters::parse_atom_line(const String& line,
   residue->add_atom(atom);
 
   AtomType imp_atom_type;
-  if (AtomType::get_key_exists(atom.get_name())) {
-     imp_atom_type = AtomType(atom.get_name());
+  std::string imp_atom_name = atom.get_name();
+  // really need Residue.get_is_protein() and friends here
+  if (curr_res_type.get_index() >= HOH.get_index()) {
+    imp_atom_name = "HET:" + imp_atom_name;
+  }
+  if (AtomType::get_key_exists(imp_atom_name)) {
+     imp_atom_type = AtomType(imp_atom_name);
   } else {
-     // assume charm is correct and this is a ATOM record
-     std::string name = atom.get_name();
-     imp_atom_type= add_atom_type(atom.get_name(),
+     imp_atom_type= add_atom_type(imp_atom_name,
                                   get_element_for_type(split_results[2],
                                                        atom_type_to_element_));
   }

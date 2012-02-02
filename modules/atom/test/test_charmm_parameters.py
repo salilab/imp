@@ -300,11 +300,11 @@ class CHARMMParametersTests(IMP.test.TestCase):
         # None of these atom names are used in standard PDB amino acids,
         # so should have been created when we read in the CHARMM topology
         # file above
-        for charmm_name, element in (('FE', 'FE'),
-                                     ('NA', 'N'),
-                                     ('C4B', 'C'),
-                                     ('CGD', 'C'),
-                                     ('CMB', 'C')):
+        for charmm_name, element in (('HET:FE', 'FE'),
+                                     ('HET:NA', 'N'),
+                                     ('HET:C4B', 'C'),
+                                     ('HET:CGD', 'C'),
+                                     ('HET:CMB', 'C')):
             self.assertTrue(IMP.atom.AtomType.get_key_exists(charmm_name))
             p = IMP.Particle(m)
             a = IMP.atom.Atom.setup_particle(p, IMP.atom.AtomType(charmm_name))

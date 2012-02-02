@@ -224,6 +224,15 @@ namespace {
     return endpoints;
   }
 
+  Atom get_atom_by_name(Hierarchy h, const std::string atom_name) {
+    Residue r = h.get_as_residue();
+    if (r.get_is_protein() || r.get_is_rna() || r.get_is_dna()) {
+      return IMP::atom::get_atom(r, AtomType(atom_name));
+    } else {
+      return IMP::atom::get_atom(r, AtomType("HET:" + atom_name));
+    }
+  }
+
 }
 
 
@@ -241,33 +250,28 @@ Atom CHARMMBondEndpoint::get_atom(const CHARMMResidueTopology *current_residue,
                 const CHARMMResidueTopology *next_residue,
                 const std::map<const CHARMMResidueTopology *,
                                Hierarchy> &resmap) const {
-    if (residue_) {
-      CHARMMResidueTopology *res
-        =dynamic_cast<CHARMMResidueTopology*>(residue_.get());
-      return IMP::atom::get_atom(resmap.find(res)->second.get_as_residue(),
-                                 AtomType(atom_name_));
-    } else if (atom_name_[0] == '+') {
-      if (next_residue) {
-        return IMP::atom::get_atom(resmap.find(next_residue)->second.
-                                                         get_as_residue(),
-                                   AtomType(atom_name_.substr(1)));
-      } else {
-        return Atom();
-      }
-    } else if (atom_name_[0] == '-') {
-      if (previous_residue) {
-        return IMP::atom::get_atom(resmap.find(previous_residue)->second.
-                                                           get_as_residue(),
-                                   AtomType(atom_name_.substr(1)));
-      } else {
-        return Atom();
-      }
+  if (residue_) {
+    CHARMMResidueTopology *res
+      =dynamic_cast<CHARMMResidueTopology*>(residue_.get());
+    return get_atom_by_name(resmap.find(res)->second, atom_name_);
+  } else if (atom_name_[0] == '+') {
+    if (next_residue) {
+      return get_atom_by_name(resmap.find(next_residue)->second,
+                              atom_name_.substr(1));
     } else {
-      return IMP::atom::get_atom(resmap.find(current_residue)->second.
-                                                          get_as_residue(),
-                                 AtomType(atom_name_));
+      return Atom();
     }
+  } else if (atom_name_[0] == '-') {
+    if (previous_residue) {
+      return get_atom_by_name(resmap.find(previous_residue)->second,
+                              atom_name_.substr(1));
+    } else {
+      return Atom();
+    }
+  } else {
+    return get_atom_by_name(resmap.find(current_residue)->second, atom_name_);
   }
+}
 
 void CHARMMResidueTopologyBase::add_atom(const CHARMMAtomTopology &atom)
 {
@@ -613,11 +617,18 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const
       existing_atoms.insert(make_charmm_atom_name(typ.get_string()));
     }
 
+    Residue r = it->second.get_as_residue();
+    bool is_ligand = !(r.get_is_protein() || r.get_is_rna() || r.get_is_dna());
+
     // Look at all atoms in the topology; add any that aren't in existing_atoms
     for (unsigned int i = 0; i < it->first->get_number_of_atoms(); ++i) {
       const CHARMMAtomTopology &atomtop = it->first->get_atom(i);
       if (existing_atoms.find(atomtop.get_name()) == existing_atoms.end()) {
-        AtomType typ = AtomType(atomtop.get_name());
+        std::string name = atomtop.get_name();
+        if (is_ligand) {
+          name = "HET:" + name;
+        }
+        AtomType typ = AtomType(name);
         Atom atm = Atom::setup_particle(new Particle(model), typ);
         CHARMMAtom::setup_particle(atm, atomtop.get_charmm_type());
         it->second.add_child(atm);
@@ -1085,9 +1096,15 @@ Hierarchy CHARMMTopology::create_hierarchy(Model *model) const
       Residue residue = Residue::setup_particle(new Particle(model), restyp,
                                                 residue_index++);
       chain.add_child(residue);
+      bool is_ligand = !(residue.get_is_protein() || residue.get_is_rna()
+                         || residue.get_is_dna());
       for (unsigned int natm = 0; natm < res->get_number_of_atoms(); ++natm) {
         const CHARMMAtomTopology *atom = &res->get_atom(natm);
-        AtomType atmtyp = AtomType(atom->get_name());
+        std::string name = atom->get_name();
+        if (is_ligand) {
+          name = "HET:" + name;
+        }
+        AtomType atmtyp = AtomType(name);
         Atom atm = Atom::setup_particle(new Particle(model), atmtyp);
         residue.add_child(atm);
       }

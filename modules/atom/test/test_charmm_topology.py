@@ -317,18 +317,30 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         m = IMP.Model()
         pdb = IMP.atom.read_pdb(
                         self.get_input_file_name('HEM_model.pdb'), m)
+        residue = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)[0]
+        # Add some dummy atoms, to make sure they get removed
+        a = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CA)
+        residue.add_child(a)
+        a = IMP.atom.Atom.setup_particle(IMP.Particle(m), IMP.atom.AT_CB)
+        residue.add_child(a)
+        # Remove some needed atoms, to make sure they get added
+        residue.remove_child(0)
         ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
         topology.setup_hierarchy(pdb)
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 43)
-        a = atoms[-1]
+        a = atoms[-2]
         # Make sure we kept the original PDB coordinates
         coord = a.get_as_xyz().get_coordinates()
         self.assertAlmostEqual(coord[0], 20.149, delta=1e-3)
         self.assertAlmostEqual(coord[1], 33.749, delta=1e-3)
         self.assertAlmostEqual(coord[2], 3.830, delta=1e-3)
+        # Make sure all atoms are HETATM
+        for a in atoms:
+            self.assertEqual(a.get_as_atom().get_atom_type().get_string()[:4],
+                             "HET:")
 
     def test_add_coordinates_empty_structure(self):
         """Test adding coordinates to a completely empty structure"""
@@ -395,7 +407,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         # with missing parameters should be (but with no parameters)
         for atoms,num_dihed,stiff in [(['C', 'CA', 'CB', 'HB1'], 1, 0.6325),
                                       (['C', 'CA', 'N', 'O'], 1, 0.0),
-                                      (['N', 'C', 'CA', 'MG'], 0, None),
+                                      (['N', 'C', 'CA', 'SG'], 0, None),
                                       (['N', 'CA', 'C', '+N'], 0, None)]:
             m = IMP.Model()
             ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
