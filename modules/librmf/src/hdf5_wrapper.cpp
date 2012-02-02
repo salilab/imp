@@ -21,7 +21,7 @@ HDF5File HDF5Object::get_file() const {
   return HDF5File(h.get());
 }
 
-  HDF5Group::HDF5Group(HDF5SharedHandle *h):
+HDF5Group::HDF5Group(HDF5SharedHandle *h):
     P(h) {
 }
 
@@ -94,9 +94,14 @@ hid_t get_parameters() {
   IMP_HDF5_CALL(H5Pset_cache(plist, 0, 1000, 1000000, 0.0));
   return plist;
 }
+herr_t error_function(hid_t, void *) {
+  // eat hdf5 error as I check the error code explicitly
+  return 0;
+}
 }
 
 HDF5File create_hdf5_file(std::string name) {
+  IMP_HDF5_CALL(H5Eset_auto(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fcreate(name.c_str(),
                                    H5F_ACC_TRUNC, H5P_DEFAULT,
@@ -105,7 +110,7 @@ HDF5File create_hdf5_file(std::string name) {
 }
 
 HDF5File open_hdf5_file(std::string name) {
-  IMP_RMF_PATH_CHECK(name, "When opening ");
+  IMP_HDF5_CALL(H5Eset_auto(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDWR, plist),
@@ -114,7 +119,7 @@ HDF5File open_hdf5_file(std::string name) {
 }
 
 HDF5ConstFile open_hdf5_file_read_only(std::string name) {
-  IMP_RMF_PATH_CHECK(name, "When opening read only ");
+  IMP_HDF5_CALL(H5Eset_auto(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDONLY, plist),
