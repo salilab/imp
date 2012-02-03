@@ -82,7 +82,7 @@ class AngleRestraintTests(IMP.test.TestCase):
     def display(self, ps, i, cr=None):
         w= IMP.display.PymolWriter(self.get_tmp_file_name("rigcol."+str(i)+".pym"))
         for i,p in enumerate(ps):
-            g= IMP.display.XYZRGeometry(IMP.core.XYZR(p))
+            g= IMP.core.XYZRGeometry(IMP.core.XYZR(p))
             g.set_color(IMP.display.get_display_color(i))
             w.add_geometry(g)
         g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 6))
