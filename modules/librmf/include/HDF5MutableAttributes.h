@@ -22,7 +22,7 @@ namespace RMF {
       the HDF5 manual} for more information.
   */
   template <class Base>
-  class RMFEXPORT HDF5MutableAttributes: public Base {
+  class HDF5MutableAttributes: public Base {
     typedef Base P;
 #ifndef SWIG
   protected:
