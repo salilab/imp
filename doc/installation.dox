@@ -26,9 +26,36 @@ to the last one.
 \section userbuild 1. Building and installing basics
 
 Building \imp from source is straightforward if the \ref prereq "prerequisites"
-are already installed. First, obtain the source code tarball from the
-\salilab{imp/download.html,download page}.
+are already installed. We recommend you get \imp from \svn by
+\command{svn checkout http://svn.salilab.org/imp/nightly/latest imp}
+This will create directory called \c imp, containing a directory \c trunk. Go
+in to that directory and do
+ \command{scons prefix=place_to_install_imp install}
+
+If there are build errors
+-# make sure all prerequisites are installed
+-# read the scons help (\c scons \c -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
+.
+If you cannot figure things out, feel free to post on the \impusers list.
+
+\section tarball 1.1 Install IMP from a tarball
+First, obtain the source code tarball from the
+\salilab{imp/nightly/download.html,download page}.
 code there
+-# Extract the tarball
+   \command{tar -xvzf imp-version.tar.gz}
+   This will create a directory called \c imp containing all the source.
+-# change into that directory and build by doing
+   \command{scons prefix=place_to_install_imp install}
+
+
+\section release 1.2 Using the IMP 1.0 release
+
+One can, instead, use the IMP 1.0 release. We don't recommend it as it is very old
+and are likely to respond to any problems by asking you to upgrade to the current
+\svn version. But, if you still want to do this:
+ First, obtain the source code tarball from the
+\salilab{imp/download.html,download page}.
 -# Extract the tarball
    \command{tar -xvzf imp-1.0.tar.gz}
    This will create a directory called \c imp-1.0 containing all the source.
@@ -41,13 +68,45 @@ code there
 the same code from our Subversion repository at
 http://svn.salilab.org/imp/tags/release-1.0/)
 
-If there are build errors
--# make sure all prerequisites are installed
--# read the scons help (\c scons \c -h) to figure out any more arguments you need to pass to scons in order to make sure it finds needed external libraries.
-.
-If you cannot figure things out, feel free to post on the \impusers list.
+\section devbuild 3. Building and installing for developers
 
-\section config_files 2. Config files
+To get started, if you have \c curl installed, you can do:
+\command{curl -fsSLk http://svn.salilab.org/imp/trunk/tools/maintenance/make-developer-setup-read-only.sh | csh}
+or, if you have write access,
+\command{curl -fsSLk http://svn.salilab.org/imp/trunk/tools/maintenance/make-developer-setup.sh | csh}
+Otherwise, just run the script by copying, doing
+\command{cat | csh}
+and pasting it into the terminal.
+
+You can inspect the scripts before running by looking at \external{http://svn.salilab.org/imp/trunk/tools/maintenance/make-developer-setup-read-only.sh, make-developer-setup-read-only.sh} or \external{http://svn.salilab.org/imp/trunk/tools/maintenance/make-developer-setup.sh, make-developer-setup.sh}.
+
+This creates a directory structure like
+ - \c imp
+   - \c svn
+     - \c trunk: the \imp source
+   - \c debug: a directory for building \imp to use with the debugger
+   - \c release: a directory for a release build of \imp which has checks turned on, but is faster than debug. Use this for testing scripts.
+   - \c fast: a directory to build \imp with all checks disabled. Use this build for running large jobs.
+   - \c update-to-nightly: run this script to update your source to the latest nightly build
+   - \c update-to-head: run this script if you need a patch that someone just commited to the repository
+   - \c show-changes: run this script to show what has changed in \imp since you last updated.
+   - \c global_config.py: a configuration file (see next section) that is shared by the \c debug, \c fast and \c release builds.
+
+To get started using \imp go into the release directory and do
+ \command{scons -j number_of_processors_on_your_machine -k}
+
+In each build there is a script that sets up the environment to use that build eg \c debug/tools/imppy.sh. So to run a python script \c myscript.py using your debug build, do
+\command{path/to/debug/tools/imppy.sh python myscript.py}
+
+
+\note When you upgrade your system (eg get a new version of boost, or install
+a prerequisite), scons may not detect the package automatically. To force it
+to recheck, add the \c --config=force option when you run scons. In certain
+rare cases, scons may get really confused, and you may need
+to manually clear out the scons state. To do this, in the source directory do
+\command{rm -rf .scon*}
+
+\section config_files 3. Config files
 
 If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py
@@ -66,108 +125,6 @@ An example configuration for a Windows system might look like
 Finally, when building in a complicated environment, such as with the google native client, a config file might look like
 \include "example_nacl_config.py"
 
-\section devbuild 3. Building and installing for developers
-
-To get the latest development version of \imp, it is necessary to check it out
-from our \impsvn using an \svn client:
-   \command{svn co http://svn.salilab.org/imp/trunk imp}
-This will create a directory called \c imp containing all the source at the SVN
-trunk. We recommend you use use this. Since this is the place that people
-commit changes to, one should consult the nightly build logs before updating
-to make sure things are working. In addition, consult the \c ChangeLog file
-to see what has changed since your last update.
-
-When developing code for \imp, it is useful to be able to run it without installing
-everything. To aid this, we provide a script located at \c tools/imppy.sh which
-runs a command after setting up the environment so that dynamically linked libraries
-and python modules can be found. For %example, to run Python such that it can use \imp do
-\command{./tools/imppy.sh python}
-
-In addition, we recommend doing out of source builds (building \imp in a directory
-other than the one containing the source files). Doing this allows several different
-versions of \imp to be built using the same source files. For example, an optimized
-one (using \c build='fast') and a debug one (\c build='debug').
-
-You can update your copy of \imp, by typing
-\command{svn update}
-
-We recommend that you use something like the following directory structure when working
-on a module or biological system:
-\dotgraph{\dot
-    digraph example {
-    node [shape=record\, fontname= Helvetica\, fontsize=10]
-      a [label="imp_root"];
-      config [label="shared_config.py"];
-      imp [label="imp"];
-      imp_svn [label="svn"];
-      imp_debug [label="release"];
-      imp_fast [label="fast"];
-      mine [label="my source"];
-      my_svn [label="svn"];
-      my_module [label="my module"];
-      my_app [label="my system"];
-      my_debug [label="debug"];
-      my_fast [label="fast"];
-      a -> imp [arrowhead="open"];
-      a -> mine [arrowhead="open"];
-      a -> config [arrowhead="open"];
-      imp -> imp_svn [arrowhead="open"];
-      imp -> imp_fast [arrowhead="open"];
-      imp -> imp_debug [arrowhead="open"];
-      mine -> my_svn [arrowhead="open"];
-      my_svn -> my_module [arrowhead="open"];
-      my_svn -> my_app [arrowhead="open"];
-      mine -> my_debug [arrowhead="open"];
-      mine -> my_fast [arrowhead="open"];
-    }
-    \enddot
-    }
-While it takes a bit of work to set up, being able to switch back and forth between fast and
-non-fast builds and to build your module without dealing with the \imp setup each time is
-worthwhile. To set this up do
-\verbatim
-mkdir imp
-cd imp
-touch shared_imp_config.py
-echo "execfile('$PWD/shared_imp_config.py')" > /tmp/use_shared
-svn co http://svn.salilab.org/imp/trunk svn
-mkdir release
-cd release
-cat ../svn/doc/example_simple_config.py /tmp/use_shared | sed "s#debug#release#" > config.py
-ln -s ../svn/SConstruct
-ln -s ../svn/scons_tools
-cd ..
-mkdir fast
-cd fast
-cat ../svn/doc/example_simple_config.py /tmp/use_shared | sed "s#debug#fast#g" > config.py
-ln -s ../svn/SConstruct
-ln -s ../svn/scons_tools
-cd ../..
-mkdir mine
-cd mine
-svn co http://path.to.my/svn/trunk svn
-mkdir release
-cd release
-cat ../../imp/svn/doc/example_external_config.py  /tmp/use_shared | sed -e "s#path_to_imp_build#$PWD/../../imp/release/build#" -e "s#debug#release#"> config.py
-ln -s ../../imp/svn/SConstruct
-ln -s ../../imp/svn/scons_tools
-cd ..
-mkdir fast
-cd fast
-cat ../../imp/svn/doc/example_external_config.py  /tmp/use_shared | sed -e "s#path_to_imp_build#$PWD/../../imp/fast/build#" -e "s#debug#fast#"> config.py
-ln -s ../../imp/svn/SConstruct
-ln -s ../../imp/svn/scons_tools
-\endverbatim
-You can can add extra entries to all of the config.pys using the shared_config.py i the root directory.
-If you frequently run \imp in the debugger, you should use \c debug instead of \c release.
-
-
-\note When you upgrade your system (eg get a new version of boost, or install
-a prerequisite), scons may not detect the package automatically. To force it
-to recheck, add the \c --config=force option when you run scons. In certain
-rare cases, scons may get really confused, and you may need
-to manually clear out the scons state. To do this, in the source directory do
-\command{rm -rf .scon*}
 
 
 \section prereq 4. Prerequisites

@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011
+- 3/2: The installation instructions have been revamped and the developer instruction, in particular, have been greatly simplified.
 - 24/1: \c tools/show-changes has been added that shows the changes in the history log since you last updated.
 - 24/1: \c tools/make-source has been added that adds a source/header pair to a module
 - 24/1: principal components analysis in IMP::algebra was generalized to work in any dimension. This required renaming the class to IMP::algebra::PrincipalComponentAnalysisD.
