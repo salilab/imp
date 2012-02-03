@@ -28,14 +28,14 @@ class PDBReadWriteTest(IMP.test.TestCase):
         ff = IMP.atom.get_all_atom_CHARMM_parameters()
         v = IMP.algebra.Vector3D(0,0,0)
         t = IMP.atom.get_element_table()
-        for name, element, expected in (('C',    'C',  ' C  '),
-                                        ('C',    'Un', ' C  '),
-                                        ('CA',   'C',  ' CA '),
-                                        ('CA',   'CA', 'CA  '),
-                                        ('CAD',  'C',  ' CAD'),
-                                        ('HAD1', 'H',  'HAD1'),
-                                        ('HG',   'H',  ' HG '),
-                                        ('HG',   'HG', 'HG  ')):
+        for name, element, expected in (('C',        'C',  ' C  '),
+                                        ('C',        'Un', ' C  '),
+                                        ('CA',       'C',  ' CA '),
+                                        ('CA',       'CA', 'CA  '),
+                                        ('HET:CAD',  'C',  ' CAD'),
+                                        ('HET:HAD1', 'H',  'HAD1'),
+                                        ('HET:HG',   'H',  ' HG '),
+                                        ('HG',       'HG', 'HG  ')):
             s = IMP.atom.get_pdb_string(v, 1, IMP.atom.AtomType(name),
                                         IMP.atom.ALA, 'A', 1, ' ', 1.0, 0.0,
                                         t.get_element(element))
