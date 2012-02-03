@@ -4,8 +4,8 @@ echo -n "checking out imp from svn..."
 mkdir -p imp
 cd imp
 set dir=`pwd`
-svn co https://svn.salilab.org/imp/nightly/last_rw svn > /dev/null
-echo "repository='$dir/svn/trunk'" >> global_config.py
+svn co http://svn.salilab.org/imp/nightly/last svn > /dev/null
+echo "repository='../svn/trunk'" >> global_config.py
 echo "done"
 
 echo -n "setting up build directories..."
@@ -36,10 +36,10 @@ echo "done"
 cd ..
 echo -n "creating scripts..."
 echo "#\!/bin/csh" > update-to-nightly
-echo "svn update $dir/svn/" >> update-to-nightly
+echo "svn update $0:h/svn" >> update-to-nightly
 chmod a+x update-to-nightly
 echo "#\!/bin/csh" > update-to-head
-echo "svn update $dir/svn/trunk" >> update-to-head
+echo "svn update $0:h/svn/trunk" >> update-to-head
 chmod a+x update-to-head
 echo "#\!/bin/csh" > show-changes
 echo 'svn cat http://svn.salilab.org/imp/trunk/doc/history.dox | diff $0:h/svn/trunk/doc/history.dox - -U 0 | grep -v "^+++" | grep -v "^---" | grep -v "^@@" | cut -c2-' >> show-changes
