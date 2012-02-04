@@ -103,6 +103,7 @@ inline void optimize_balls(const ParticlesTemp &ps,
       mc->optimize(ps.size()*(j+1)*100);
       double e=cg->optimize(10);
       IMP_LOG(PROGRESS, "Energy is " << e << std::endl);
+      if (e < .000001) break;
     }
   }
 }
