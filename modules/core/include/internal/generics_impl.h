@@ -114,7 +114,6 @@ void ContainerConstraint<Before, After, C>::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin ContainerConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
@@ -122,7 +121,6 @@ void ContainerConstraint<Before, After, C>::do_update_attributes()
   } else {
     c_->template_apply(f_.get());
   }
-  IMP_LOG(TERSE, "End ContainerConstraint::update" << std::endl);
 }
 
 template <class Before, class After, class C>
@@ -131,7 +129,6 @@ void ContainerConstraint<Before, After, C>
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin ContainerConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
@@ -139,7 +136,6 @@ void ContainerConstraint<Before, After, C>
   } else {
     c_->template_apply(af_.get(), *da);
   }
-  IMP_LOG(TERSE, "End ContainerConstraint::after_evaluate" << std::endl);
 }
 
 
