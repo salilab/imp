@@ -37,11 +37,11 @@ public:
 
       - minumum_size: the optimization stops when the size of the
       simplex falls below this. The size is defined as the average
-      distance from the centroid to the simplex vertices.
+      distance from the centroid to the simplex vertices. (Default 0.1)
 
       - initial_length: the length of the initial sizes of the
       simplex. Make sure that this covers the optimal solution, given
-      the starting configuration.
+      the starting configuration. (Default 1)
 
       \note Both quantities are relative to rescaled attribues and so should be
       numbers between 0 and 1.
