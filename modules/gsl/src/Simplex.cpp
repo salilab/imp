@@ -19,10 +19,10 @@ Simplex::Simplex(Model *m): GSLOptimizer(m) {
 
 void Simplex::do_show(std::ostream &) const {}
 
-Float Simplex::do_optimize(unsigned int ) {
+Float Simplex::do_optimize(unsigned int nsteps) {
   // we have an old version of GSL so can't use the 2 version
   const gsl_multimin_fminimizer_type *t=gsl_multimin_fminimizer_nmsimplex;
-  return GSLOptimizer::optimize(100, t, min_length_, max_length_);
+  return GSLOptimizer::optimize(nsteps, t, min_length_, max_length_);
 }
 
 IMPGSL_END_NAMESPACE
