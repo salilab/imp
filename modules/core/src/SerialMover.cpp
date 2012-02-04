@@ -13,6 +13,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 SerialMover::SerialMover(const MoversTemp& mvs):
   mvs_(mvs.begin(), mvs.end()), imov_(-1) {
+  for (unsigned int i=0; i< mvs_.size(); ++i) {
+    mvs_[i]->set_was_used(true);
+  }
 }
 
 ParticlesTemp SerialMover::propose_move(Float f) {
