@@ -149,11 +149,8 @@ void save_assignments(AssignmentContainer *assignments,
   int cur;
   for (unsigned int i=0; i< ns; ++i) {
     cur=i;
-    Ints as(s.size());
     Assignment cas= assignments->get_assignment(i);
-    for (unsigned int j=0; j< s.size(); ++j) {
-      as[j]= cas[order[j]];
-    }
+    Ints as= get_output(cas, order);
     dataset.set_row(RMF::HDF5DataSetIndexD<1>(cur), as);
   }
 }
@@ -161,7 +158,7 @@ AssignmentContainer*
 create_assignments_container(RMF::HDF5IndexDataSet2D dataset,
                              const Subset &s,
                              const ParticlesTemp &all_particles) {
-  return new HDF5AssignmentContainer(dataset, s, all_particles,
+  return new ReadHDF5AssignmentContainer(dataset, s, all_particles,
                                      "Assignments from file %1%");
 }
 #endif

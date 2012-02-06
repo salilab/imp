@@ -8,7 +8,9 @@
 #include <IMP/domino/assignment_containers.h>
 #include <IMP/domino/Subset.h>
 #include <IMP/domino/utility.h>
-
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -67,15 +69,17 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
   }
 }
 
-#ifdef IMP_DOMINO_USE_IMP_RMF
-
 Ints get_order(const Subset &s,
                const ParticlesTemp &all_particles);
 
-HDF5AssignmentContainer::HDF5AssignmentContainer(RMF::HDF5Group parent,
-                                                 const Subset &s,
-                                           const ParticlesTemp &all_particles,
-                                                 std::string name):
+#ifdef IMP_DOMINO_USE_IMP_RMF
+
+
+WriteHDF5AssignmentContainer
+::WriteHDF5AssignmentContainer(RMF::HDF5Group parent,
+                               const Subset &s,
+                               const ParticlesTemp &all_particles,
+                               std::string name):
   AssignmentContainer(name), ds_(parent.add_child_index_data_set_2d(name)),
   order_(get_order(s, all_particles)),
   max_cache_(10000) {
@@ -85,8 +89,8 @@ HDF5AssignmentContainer::HDF5AssignmentContainer(RMF::HDF5Group parent,
 }
 
 
-HDF5AssignmentContainer
-::HDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
+WriteHDF5AssignmentContainer
+::WriteHDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name):
@@ -101,37 +105,32 @@ HDF5AssignmentContainer
 }
 
 
-unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
+unsigned int WriteHDF5AssignmentContainer::get_number_of_assignments() const {
   return ds_.get_size()[0]+cache_.size()/order_.size();
 }
 
-Assignment HDF5AssignmentContainer::get_assignment(unsigned int i) const {
-  unsigned int dsz=ds_.get_size()[0];
-  if (i < dsz) {
-    RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
-    Ints ret(is.size());
-    IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[order_[i]]=is[i];
-    }
-    return Assignment(ret);
-  } else {
-    return Assignment(cache_.begin()+(i-dsz)*order_.size(),
-                      cache_.begin()+(i+1-dsz)*order_.size());
-  }
+Assignment WriteHDF5AssignmentContainer::get_assignment(unsigned int) const {
+  IMP_NOT_IMPLEMENTED;
+  return Assignment();
 }
 
-void HDF5AssignmentContainer::flush() {
+void WriteHDF5AssignmentContainer::flush() {
   if (cache_.empty()) return;
   RMF::HDF5IndexDataSet2D::Index size= ds_.get_size();
   RMF::HDF5IndexDataSet2D::Index nsize=size;
-  nsize[0]+= cache_.size()/order_.size();
+  int num_items=cache_.size()/order_.size();
+  IMP_LOG(VERBOSE, "Flushing cache of size "
+          << num_items << " to disk"
+          << std::endl);
+  nsize[0]+= num_items;
   ds_.set_size(nsize);
   RMF::HDF5IndexDataSet2D::Index write_size;
-  write_size[0]=cache_.size()/order_.size();
+  write_size[0]=num_items;
   write_size[1]=order_.size();
   size[1]=0;
   ds_.set_block(size, write_size, cache_);
+  cache_.clear();
+  cache_.reserve(max_cache_);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     unsigned int num=cache_.size()/order_.size();
     Assignments n(num);
@@ -148,24 +147,162 @@ void HDF5AssignmentContainer::flush() {
                          << " vs " << n[i]);
     }
   }
-  cache_.clear();
 }
 
-void HDF5AssignmentContainer::set_cache_size(unsigned int words) {
+void WriteHDF5AssignmentContainer::set_cache_size(unsigned int words) {
   max_cache_=words;
   if (cache_.size()>max_cache_) flush();
 }
 
-void HDF5AssignmentContainer::add_assignment(const Assignment& a) {
+void WriteHDF5AssignmentContainer::add_assignment(const Assignment& a) {
   IMP_RMF_USAGE_CHECK(a.size()==order_.size(),
                       "Sizes don't match: " << a.size()
                       << " vs " << order_.size());
-  cache_.insert(cache_.end(), a.begin(), a.end());
+  Ints save= get_output(a, order_);
+  cache_.insert(cache_.end(), save.begin(), save.end());
   if (cache_.size() > max_cache_) flush();
 }
 
 
+
+
+ReadHDF5AssignmentContainer
+::ReadHDF5AssignmentContainer(RMF::HDF5IndexConstDataSet2D dataset,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name):
+  AssignmentContainer(name), ds_(dataset),
+  order_(get_order(s, all_particles)),
+  max_cache_(10000){
+}
+
+
+unsigned int ReadHDF5AssignmentContainer::get_number_of_assignments() const {
+  return ds_.get_size()[0]+cache_.size()/order_.size();
+}
+
+Assignment ReadHDF5AssignmentContainer::get_assignment(unsigned int i) const {
+  RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
+  Assignment ret(is.size());
+  IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret.set_item(order_[i], is[i]);
+  }
+  return ret;
+}
+
+
+void ReadHDF5AssignmentContainer::set_cache_size(unsigned int words) {
+  max_cache_=words;
+}
+
+void ReadHDF5AssignmentContainer::add_assignment(const Assignment& ) {
+  IMP_NOT_IMPLEMENTED;
+}
+
 #endif
+
+
+
+WriteAssignmentContainer
+::WriteAssignmentContainer(std::string dataset,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name):
+  AssignmentContainer(name),
+  order_(get_order(s, all_particles)),
+  max_cache_(10000) {
+  cache_.reserve(max_cache_);
+  f_=open(dataset.c_str(), O_WRONLY|O_APPEND|O_CREAT |O_TRUNC,
+          S_IRUSR|S_IWUSR);
+  number_=0;
+}
+
+
+unsigned int WriteAssignmentContainer::get_number_of_assignments() const {
+  return number_;
+}
+
+Assignment WriteAssignmentContainer::get_assignment(unsigned int) const {
+  IMP_NOT_IMPLEMENTED;
+}
+
+void WriteAssignmentContainer::flush() {
+  if (cache_.empty()) return;
+  int ret=write(f_, &cache_[0], cache_.size()*sizeof(int));
+  IMP_USAGE_CHECK(ret == static_cast<int>(cache_.size()*sizeof(int)),
+                  "Not everything written: " << ret
+                  << " of " << cache_.size()*sizeof(int));
+  cache_.clear();
+  cache_.reserve(max_cache_);
+}
+
+void WriteAssignmentContainer::set_cache_size(unsigned int words) {
+  max_cache_=words;
+  if (cache_.size()>max_cache_) flush();
+}
+
+void WriteAssignmentContainer::add_assignment(const Assignment& a) {
+  IMP_RMF_USAGE_CHECK(a.size()==order_.size(),
+                      "Sizes don't match: " << a.size()
+                      << " vs " << order_.size());
+  Ints ret= get_output(a, order_);
+  cache_.insert(cache_.end(), ret.begin(), ret.end());
+  ++number_;
+  IMP_LOG(VERBOSE, "Added " << a << " cache is now " << cache_
+          << std::endl);
+  if (cache_.size() > max_cache_) flush();
+}
+
+
+///
+
+ReadAssignmentContainer
+::ReadAssignmentContainer(std::string dataset,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name):
+  AssignmentContainer(name),
+  order_(get_order(s, all_particles)),
+  max_cache_(10000) {
+  cache_.reserve(max_cache_);
+  struct stat data;
+  stat(dataset.c_str(), &data);
+  size_=data.st_size/sizeof(int)/s.size();
+  IMP_LOG(TERSE, "Opened binary file of size " << size_ << std::endl);
+  f_=open(dataset.c_str(), O_RDONLY,0);
+  offset_=-1;
+}
+
+
+unsigned int ReadAssignmentContainer::get_number_of_assignments() const {
+  return size_;
+}
+
+Assignment ReadAssignmentContainer::get_assignment(unsigned int i) const {
+  if (i < static_cast<unsigned int>(offset_)
+      || (i+1-offset_)*order_.size() > cache_.size()) {
+    cache_.resize(max_cache_);
+    lseek(f_, i*sizeof(int)*order_.size(), SEEK_SET);
+    int rd= read(f_, &cache_[0], max_cache_*sizeof(int));
+    cache_.resize(rd/sizeof(int));
+    offset_=i;
+    IMP_LOG(VERBOSE, "Cache is " << cache_ << " at " << offset_
+            << std::endl);
+  }
+  return get_from_output(cache_.begin()+i*order_.size(),
+                  cache_.begin()+(i+1)*order_.size(),
+                  order_);
+}
+
+void ReadAssignmentContainer::set_cache_size(unsigned int words) {
+  max_cache_=words;
+}
+
+void ReadAssignmentContainer::add_assignment(const Assignment&) {
+  IMP_NOT_IMPLEMENTED;
+}
+
 
 
 

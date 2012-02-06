@@ -25,6 +25,7 @@
 #include <queue>
 #include <IMP/random.h>
 #include <boost/random.hpp>
+#include <cstdio>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -158,30 +159,98 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
 
 
 #if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
-/** Store the assignments in an HDF5DataSet
+/** Store the assignments in an HDF5DataSet. Make sure to delete this
+    container before trying to read from the same data set (unless
+    you pass the data set explicitly, in which case it may be OK).
+
+    The format on disk should
+    not, yet, be considered stable.
  */
-class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
+class IMPDOMINOEXPORT WriteHDF5AssignmentContainer: public AssignmentContainer {
   RMF::HDF5IndexDataSet2D ds_;
   Ints order_;
   Ints cache_;
   unsigned int max_cache_;
   void flush();
  public:
-  HDF5AssignmentContainer(RMF::HDF5Group parent,
+  WriteHDF5AssignmentContainer(RMF::HDF5Group parent,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
 
-  HDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
+  WriteHDF5AssignmentContainer(RMF::HDF5IndexDataSet2D dataset,
                           const Subset &s,
                           const ParticlesTemp &all_particles,
                           std::string name);
   void set_cache_size(unsigned int words);
-  IMP_ASSIGNMENT_CONTAINER_INLINE(HDF5AssignmentContainer,
+  IMP_ASSIGNMENT_CONTAINER_INLINE(WriteHDF5AssignmentContainer,
                                   IMP_UNUSED(out),flush());
+};
+
+/** Store the assignments in an HDF5DataSet. The format on disk should not,
+    yet, be considered stable.
+ */
+class IMPDOMINOEXPORT ReadHDF5AssignmentContainer: public AssignmentContainer {
+  RMF::HDF5IndexConstDataSet2D ds_;
+  Ints order_;
+  Ints cache_;
+  unsigned int max_cache_;
+  void flush();
+ public:
+
+  ReadHDF5AssignmentContainer(RMF::HDF5IndexConstDataSet2D dataset,
+                               const Subset &s,
+                               const ParticlesTemp &all_particles,
+                               std::string name);
+  void set_cache_size(unsigned int words);
+  IMP_ASSIGNMENT_CONTAINER_INLINE(ReadHDF5AssignmentContainer,
+                                  IMP_UNUSED(out),);
 };
 #endif
 
+/** Store the assignments on disk as binary data. Use a ReadAssignmentContainer
+    to read them back. The resulting file is not guaranteed to work on any
+    platform other than the one it was created on and the format may change.
+ */
+class IMPDOMINOEXPORT WriteAssignmentContainer: public AssignmentContainer {
+  int f_;
+  Ints order_;
+  Ints cache_;
+  unsigned int max_cache_;
+  int number_;
+  void flush();
+ public:
+  WriteAssignmentContainer(std::string out_file,
+                          const Subset &s,
+                           const ParticlesTemp &all_particles,
+                           std::string name);
+  void set_cache_size(unsigned int words);
+  IMP_ASSIGNMENT_CONTAINER_INLINE(WriteAssignmentContainer,
+                                  IMP_UNUSED(out),{
+                                    flush(); close(f_);
+                                  });
+};
+
+/** Read the assignments from binary data on disk. Use a
+    WriteAssignmentContainer to write them. Make sure to destroy the
+    WriteAssignmentContainer before trying to read from the file.
+ */
+class IMPDOMINOEXPORT ReadAssignmentContainer: public AssignmentContainer {
+  int f_;
+  Ints order_;
+  mutable Ints cache_;
+  unsigned int max_cache_;
+  mutable int offset_;
+  int size_;
+ public:
+  ReadAssignmentContainer(std::string out_file,
+                          const Subset &s,
+                           const ParticlesTemp &all_particles,
+                           std::string name);
+  void set_cache_size(unsigned int words);
+  IMP_ASSIGNMENT_CONTAINER_INLINE(ReadAssignmentContainer,
+                                  IMP_UNUSED(out),{close(f_);});
+};
 
 /** Expose a range [begin, end) of an inner assignement container to
     consumers. One cannot add assignments to this container.
