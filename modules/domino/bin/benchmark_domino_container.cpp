@@ -59,6 +59,12 @@ int main(int , char *[]) {
   }
 #endif
   {
+    std::string name=create_temporary_file_name("benchmark", ".assignments");
+    IMP_NEW(WriteAssignmentContainer, ac,(name, s, m->get_particles(), "c"));
+    ac->set_cache_size(1000000);
+    benchmark_table<WriteAssignmentContainer>(ac, "direct");
+  }
+  {
     IMP_NEW(PackedAssignmentContainer, ac,("hi"));
     benchmark_table<PackedAssignmentContainer>(ac, "packed container");
   }

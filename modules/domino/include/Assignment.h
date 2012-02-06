@@ -93,6 +93,9 @@ public:
     copy_from(o);
     return *this;
   }
+  Assignment(int sz) {
+    create(sz);
+  }
 #endif
   IMP_COMPARISONS(Assignment);
 #ifndef SWIG
@@ -100,6 +103,12 @@ public:
     IMP_USAGE_CHECK(i < sz_, "Out of range");
     return v_[i];
   }
+#ifndef IMP_DOXYGEN
+  void set_item(unsigned int i, int v) const {
+    IMP_USAGE_CHECK(i < sz_, "Out of range");
+    v_[i]=v;;
+  }
+#endif
 #endif
 #ifndef IMP_DOXYGEN
   int __getitem__(unsigned int i) const {

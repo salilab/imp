@@ -1,5 +1,7 @@
 /** \page recent Change History
-\par Winter 2011
+\par Winter 2011/2012
+- 3/5: The IMP::domino HDF5 container has been revamped. This involves splitting it into a write version (IMP::domino::WriteHDF5AssignmentContainer) and a read version (IMP::domino::ReadHDF5AssignmentContainer).
+- 3/5: IMP::domino::WriteAssignmentContainer and IMP::domino::ReadAssignmentContainer were added to do direct binary file writing. This is faster than the HDF5 versions.
 - 3/2: The installation instructions have been revamped and the developer instruction, in particular, have been greatly simplified.
 - 24/1: \c tools/show-changes has been added that shows the changes in the history log since you last updated.
 - 24/1: \c tools/make-source has been added that adds a source/header pair to a module
