@@ -141,25 +141,37 @@ void DistanceRMSDMetric::do_show(std::ostream &) const {
 }
 
 statistics::PartitionalClustering* create_gromos_clustering
- (membrane::DistanceRMSDMetric *d, double cutoff)
+ (statistics::Metric *d, double cutoff)
  {
   compatibility::checked_vector<Ints> clusters;
   unsigned nitems=d->get_number_of_items();
+
+// are we using the DistanceRMSDMetric ?
+  membrane::DistanceRMSDMetric* dd=
+    dynamic_cast<membrane::DistanceRMSDMetric*>(d);
 
 // create vector of neighbors and weights
   std::vector<Ints> neighbors(nitems);
   Floats weights(nitems);
   for(unsigned i=0;i<nitems;++i){
    neighbors[i].push_back((int)i);
-   weights[i]=d->get_weight(i);
+   double weight_i=1.0;
+   if(dd!=NULL){weight_i=dd->get_weight(i);}
+   weights[i]=weight_i;
   }
   for(unsigned i=0;i<nitems-1;++i){
    for(unsigned j=i+1;j<nitems;++j){
     if(d->get_distance(i,j)<cutoff){
      neighbors[i].push_back((int)j);
-     weights[i]+=d->get_weight(j);
      neighbors[j].push_back((int)i);
-     weights[j]+=d->get_weight(i);
+     double weight_i=1.0;
+     double weight_j=1.0;
+     if(dd!=NULL){
+      weight_i=dd->get_weight(j);
+      weight_j=dd->get_weight(i);
+     }
+     weights[i]+=weight_i;
+     weights[j]+=weight_j;
     }
    }
   }
@@ -198,14 +210,15 @@ statistics::PartitionalClustering* create_gromos_clustering
        find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
       if(it!=neighbors[k].end()){
        neighbors[k].erase(it);
-       weights[k]-=d->get_weight(newcluster[i]);
+       double weight=1.0;
+       if(dd!=NULL){weight=dd->get_weight(newcluster[i]);}
+       weights[k]-=weight;
       }
       k++;
      }
     }
    }
   }
-
   IMP_NEW(statistics::internal::TrivialPartitionalClustering,ret,(clusters));
   statistics::validate_partitional_clustering(ret, d->get_number_of_items());
   return ret.release();
