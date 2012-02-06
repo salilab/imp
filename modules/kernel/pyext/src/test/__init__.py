@@ -597,7 +597,6 @@ class ApplicationTestCase(TestCase):
                    stdout and stderr.
         """
         filename = self._get_application_file_name(app)
-        print "running ", filename
         if sys.platform == 'win32':
             # Cannot rely on PATH on wine builds, so use full pathname
             return _SubprocessWrapper(os.path.join(os.environ['IMP_BIN_DIR'],
@@ -632,7 +631,6 @@ class ApplicationTestCase(TestCase):
            @return a subprocess.Popen-like object containing the child stdin,
                    stdout and stderr.
         """
-        print "running ", app
         return _SubprocessWrapper(sys.executable, [app]+args)
 
     def assertApplicationExitedCleanly(self, ret, error):
