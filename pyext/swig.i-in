@@ -16,6 +16,8 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess);
 IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
 IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
 IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
+IMP_SWIG_OBJECT(IMP::membrane, DistanceRMSDMetric, DistanceRMSDMetrics);
+IMP_SWIG_OBJECT(IMP::membrane, RMSDMetric, RMSDMetrics);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -29,3 +31,5 @@ IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
 %include "IMP/membrane/MonteCarloWithWte.h"
 %include "IMP/membrane/PbcBoxedMover.h"
 %include "IMP/membrane/ReplicaExchange.h"
+%include "IMP/membrane/DistanceRMSDMetric.h"
+%include "IMP/membrane/RMSDMetric.h"
