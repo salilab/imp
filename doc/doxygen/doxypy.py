@@ -192,6 +192,12 @@ class Doxypy(object):
     def __closeComment(self):
         """Appends any open comment block and triggering block to the output."""
 
+        def match_any(regex, comments):
+            r = re.compile(regex)
+            for c in comments:
+                if r.match(c):
+                    return True
+
         if self.defclass and len(self.defclass) > 0:
             func = re.match('\s*def (\S+)\(', self.defclass[0])
 
@@ -206,9 +212,7 @@ class Doxypy(object):
                 self.comment = []
 
             # Hide SWIG autodoc of functions
-            elif func and len(self.comment) > 0 \
-                 and re.match('\s*%s\(' % func.group(1),
-                              ' '.join(self.comment)):
+            elif func and match_any('\s*%s\(' % func.group(1), self.comment):
                 self.comment = []
                 m = re.match('(\s*)def ', self.defclass[0])
                 if m:
