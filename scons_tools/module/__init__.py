@@ -231,7 +231,7 @@ def IMPModuleExamples(env, example_files, data_files):
         links.append(l)
     _set_module_links(env, links)
 
-def _make_programs(envi, dirr, files):
+def _make_programs(envi, dirr, files, prefix=""):
     env= scons_tools.environment.get_bin_environment(envi,
                                                      extra_modules=[_get_module_name(envi)])
     benv=None
@@ -243,7 +243,7 @@ def _make_programs(envi, dirr, files):
         else:
             isbench=False
         if str(f).endswith(".cpp"):
-            target=dirr.abspath+"/"+str(f).replace(".cpp","")
+            target=dirr.abspath+"/"+prefix+str(f).replace(".cpp","")
             if isbench:
                 if not benv:
                     benv= scons_tools.environment.get_benchmark_environment(envi,
@@ -493,16 +493,16 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     module=_get_module_name(env)
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, Dir("#/build/test"), cpp_tests)
+        prgs= _make_programs(env, Dir("#/build/test"), cpp_tests, prefix=module)
         #print [x[0].abspath for x in prgs]
         cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
                                        source= prgs)
         files.append(cpptest)
     if len(expensive_cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests)
+        prgs= _make_programs(env, Dir("#/build/test"), expensive_cpp_tests, prefix=module)
         #print [x[0].abspath for x in prgs]
-        cpptest= env.IMPModuleCPPTest(target="5s_expensive_cpp_test_programs.py"%module,
+        cpptest= env.IMPModuleCPPTest(target="%s_expensive_cpp_test_programs.py"%module,
                                        source= prgs)
         expensive_files.append(cpptest)
     if check_standards:
