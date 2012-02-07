@@ -18,8 +18,8 @@ def main():
     dmap=IMP.em.read_map(in_map_fn)
     if options.apix:
         dmap.update_voxel_size(float(options.apix))
-    dens_vecs = IMP.em.density2vectors(dmap,threshold);
-    dens_pca = IMP.algebra.get_principal_components(dens_vecs);
+    dens_vecs = IMP.em.density2vectors(dmap,threshold)
+    dens_pca = IMP.algebra.get_principal_components(dens_vecs)
     f=open(out_pca_fn,"w")
     IMP.em.write_pca_cmm(dens_pca, f)
     f.close()
