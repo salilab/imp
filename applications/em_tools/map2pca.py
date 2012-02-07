@@ -2,6 +2,7 @@
 
 from optparse import OptionParser
 import IMP.em
+
 def main():
     IMP.set_log_level(IMP.SILENT)
     usage = "usage: %prog [options] <in_density> <density threshold> <out_pca.cmm> \n Description: Calculates the map principle components and writes them in cmm format. The 3D points participating in the PCA calculation are the centers of voxels with density above the input threshold\n"
@@ -20,7 +21,7 @@ def main():
     dens_vecs = IMP.em.density2vectors(dmap,threshold);
     dens_pca = IMP.algebra.get_principal_components(dens_vecs);
     f=open(out_pca_fn,"w")
-    dens_pca.show(f)
+    IMP.em.write_pca_cmm(dens_pca, f)
     f.close()
 
 if __name__ == "__main__":

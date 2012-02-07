@@ -18,7 +18,7 @@ def main():
         vecs.append(xyz.get_coordinates())
     pca = IMP.algebra.get_principal_components(vecs);
     f=open(out_pca_fn,"w")
-    pca.show(f)
+    IMP.em.write_pca_cmm(pca, f)
     f.close()
 
 if __name__ == "__main__":
