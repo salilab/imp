@@ -120,7 +120,9 @@ class Doxypy(object):
                         re.compile('    _newclass = [01]$'),
                         re.compile('    weakref_proxy = \S+'),
                         re.compile('    _swig_property = property$'),
-                        re.compile('    def \S+\(.*\): return _IMP')]
+                        re.compile('    def \S+\(.*\): return _IMP'),
+                        re.compile('_\S+\s*='),
+                        re.compile('\S+List=list$')]
 
         ## Transition list format
         #  ["FROM", "TO", condition, action]
@@ -191,10 +193,27 @@ class Doxypy(object):
         """Appends any open comment block and triggering block to the output."""
 
         if self.defclass and len(self.defclass) > 0:
+            func = re.match('\s*def (\S+)\(', self.defclass[0])
+
             # Hide private Python classes
             if re.match('\s*class\s*_', self.defclass[0]) \
                and len(self.comment) > 0:
                 self.comment.insert(0, "@internal Private Python class")
+
+            # Hide SWIG autodoc of classes
+            elif len(self.comment) > 0 \
+                 and re.match('Proxy of C\+\+ .* class', self.comment[0]):
+                self.comment = []
+
+            # Hide SWIG autodoc of functions
+            elif func and len(self.comment) > 0 \
+                 and re.match('\s*%s\(' % func.group(1),
+                              ' '.join(self.comment)):
+                self.comment = []
+                m = re.match('(\s*)def ', self.defclass[0])
+                if m:
+                    self.defclass[0] = m.group(1) + 'class UNDOC_swig_method:'
+                    self.comment.append('@internal SWIG-autodoc method')
 
             # Hide wrappers of swig namespace utility classes
             elif re.match('\s*class\s*IMP.*_SwigPyIterator', self.defclass[0]) \
@@ -204,7 +223,7 @@ class Doxypy(object):
             # If the class is not documented in Python, strip any inheritance
             # information, otherwise doxygen gets confused when building the
             # class hierarchical index and includes each SWIG class twice
-            elif not self.comment:
+            if not self.comment:
                 m = re.match('class\s+(\S+)\((\S+)\):$', self.defclass[0])
                 if m:
                     self.defclass[0] = 'class ' + m.group(1) + ':'
