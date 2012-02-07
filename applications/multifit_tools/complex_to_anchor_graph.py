@@ -21,7 +21,7 @@ def main():
     centers=[]
     rbs=[]
     for chain in chains:
-        ps=IMP.core.XYZsTemp(IMP.core.get_leaves(chain))
+        ps=IMP.core.XYZs(IMP.core.get_leaves(chain))
         centers.append(IMP.core.get_centroid(ps))
         IMP.atom.setup_as_rigid_body(chain)
     #fast calculations of which chains are close
