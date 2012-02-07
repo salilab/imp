@@ -20,5 +20,5 @@ env= env.IMPApplication(name="multifit_tools", version='nightly-5/2/2012',
                         required_dependencies=[],
                         python=True)
 
-#if env:
-#    env.IMPCPPExecutable(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
+if env:
+    env.IMPPythonExecutable('complex_to_anchor_graph.py')
