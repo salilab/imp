@@ -23,3 +23,6 @@ env.IMPModuleBuild(version='nightly-6/2/2012',
                    lib_only_required_modules=['compatibility'],
                    required_dependencies=['Boost'],
                    optional_dependencies=deplist)
+
+# Document the IMP.test Python module
+env.Append(IMP_PYTHON_DOCS=['test'])
