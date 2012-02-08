@@ -14,7 +14,8 @@
 
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/isd/functions.h>
+#include <IMP/isd/univariate_functions.h>
+#include <IMP/isd/bivariate_functions.h>
 #include <Eigen/Dense>
 #define EIGEN_YES_I_KNOW_SPARSE_MODULE_IS_NOT_STABLE_YET
 #include <Eigen/Sparse>
