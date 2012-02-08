@@ -46,48 +46,50 @@ Pointer<core::SphereDistancePairScore>
 void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
+ double slack=10.0;
  std::list<std::string> names;
- IMP_NEW(container::ListSingletonContainer,lsc0,(m));
- IMP_NEW(container::ListSingletonContainer,lsc1,(m));
+ IMP_NEW(container::ListSingletonContainer,noGFP_cell0,(m));
+ IMP_NEW(container::ListSingletonContainer,noGFP_othercells,(m));
+ IMP_NEW(container::ListSingletonContainer,noGFP_allcells,(m));
+ IMP_NEW(container::ListSingletonContainer,GFP_cell0,(m));
  for(unsigned int i=0;i<hhs.size();++i){
   atom::Hierarchies hs=hhs[i].get_children();
   for(unsigned int j=0;j<hs.size();++j) {
    std::vector<std::string> strs;
    boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
    if(strs[strs.size()-1]!="GFP"){
-    if(i==0){lsc0->add_particles(atom::get_leaves(hs[j]));}
-    else{    lsc1->add_particles(atom::get_leaves(hs[j]));}
+    if(i==0){ noGFP_cell0->add_particles(atom::get_leaves(hs[j]));}
+    else{noGFP_othercells->add_particles(atom::get_leaves(hs[j]));}
+    noGFP_allcells->add_particles(atom::get_leaves(hs[j]));
    }else{
+    if(i==0){GFP_cell0->add_particles(atom::get_leaves(hs[j]));}
     names.push_back(hs[j]->get_name());
    }
   }
  }
- double slack=5.0;
-// score
+// Soft Sphere Pair Score
  IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
-// within the primitive cell
- IMP_NEW(container::ClosePairContainer,cpc,(lsc0,slack));
+// 0) between non-GFPs within the primitive cell
+ IMP_NEW(container::ClosePairContainer,cpc,(noGFP_cell0,slack));
  IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
  cpc->add_pair_filter(rbpf);
  IMP_NEW(container::PairsRestraint,evr0,(ssps,cpc));
- evr0->set_name("Excluded Volume primitive cell");
+ evr0->set_name("Excluded Volume non-GFPs primitive cell");
  m->add_restraint(evr0);
-// across cells
- IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lsc0,lsc1,slack));
+// 1) between non-GFPs across cells
+ IMP_NEW(container::CloseBipartitePairContainer,cbpc,
+  (noGFP_cell0,noGFP_othercells,slack));
  IMP_NEW(container::PairsRestraint,evr1,(ssps,cbpc));
- evr1->set_name("Excluded Volume across cells");
+ evr1->set_name("Excluded Volume non-GFPs across cells");
  m->add_restraint(evr1);
-// GFPS
+// In case you don't want transparent GFPs
  if(GFP_exc_volume){
   names.sort();
   names.unique();
   std::list<std::string>::iterator iit;
   for (iit = names.begin(); iit != names.end(); iit++){
    std::string GFP_name=*iit;
-// get the name of the protein attached to the GFP
-   std::vector<std::string> strs;
-   boost::split(strs,GFP_name,boost::is_any_of("-"));
-// GFPs in the primitive cell
+// 2) between GFPs of a specific type in the primitive cell
    IMP_NEW(container::ListSingletonContainer,lsc0,(m));
    atom::Selection s0=atom::Selection(hhs[0]);
    s0.set_molecule(GFP_name);
@@ -96,9 +98,9 @@ void add_SPBexcluded_volume
    IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
    cpc->add_pair_filter(rbpf);
    IMP_NEW(container::PairsRestraint,evr2,(ssps,cpc));
-   evr2->set_name("Excluded Volume GFPs primitive cell");
+   evr2->set_name("Excluded Volume "+GFP_name+" primitive cell");
    m->add_restraint(evr2);
-// GFPs across cells
+// 3) between GFPs of a specific type across cells
    IMP_NEW(container::ListSingletonContainer,lsc1,(m));
    for(unsigned j=1;j<hhs.size();++j){
     atom::Selection s1=atom::Selection(hhs[j]);
@@ -107,18 +109,15 @@ void add_SPBexcluded_volume
    }
    IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lsc0,lsc1,slack));
    IMP_NEW(container::PairsRestraint,evr3,(ssps,cbpc));
-   evr3->set_name("Excluded Volume GFPs across cells");
+   evr3->set_name("Excluded Volume "+GFP_name+" across cells");
    m->add_restraint(evr3);
-// GFP primitive cell vs protein all cells
-   IMP_NEW(container::ListSingletonContainer,lsc2,(m));
-   atom::Selection s2=atom::Selection(hhs);
-   s2.set_molecule(strs[0]);
-   lsc2->add_particles(s2.get_selected_particles());
-   IMP_NEW(container::CloseBipartitePairContainer,cbpc2,(lsc0,lsc2,slack));
-   IMP_NEW(container::PairsRestraint,evr4,(ssps,cbpc2));
-   evr4->set_name("Excluded Volume GFP-protein");
-   m->add_restraint(evr4);
   }
+// 4) between all the GFPs in the primitive cell and all the other proteins
+  IMP_NEW(container::CloseBipartitePairContainer,cbpc,
+   (GFP_cell0,noGFP_allcells,slack));
+  IMP_NEW(container::PairsRestraint,evr4,(ssps,cbpc));
+  evr4->set_name("Excluded Volume GFPs vs. the rest of the world");
+  m->add_restraint(evr4);
  }
 }
 
