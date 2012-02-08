@@ -44,6 +44,13 @@ def _action_unit_test(target, source, env):
             if env['coverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
             data.get(env).env.Append(IMP_TESTS=[(modname, filename)])
+        elif type.startswith('application'):
+            cmd += ' --application=%s --pycoverage=%s' % (_get_name(env),
+                                                          env['coverage'])
+            for pyexe in env.get('IMP_PYTHON_EXECUTABLES', []):
+                cmd += ' --pyexe=%s' % pyexe
+            if env['coverage'] == 'lines':
+                cmd += ' --output=%s.pycoverage' % tf
 
         cmd+=" --results="+filename
         #if len(fsource) > 0:

@@ -61,6 +61,14 @@ def parse_options():
     parser = OptionParser()
     parser.add_option("--module", dest="module", type="string", default=None,
                       help="name of IMP module being tested, e.g. IMP.foo")
+    parser.add_option("--application", dest="application", type="string",
+                      default=None,
+                      help="name of IMP application being tested, "
+                           "e.g. saxs_merge")
+    parser.add_option("--pyexe", dest="pyexe", type="string", default=[],
+                      action="append",
+                      help="Python executable installed as part of an "
+                           "application; can be used multiple times")
     parser.add_option("--pycoverage", dest="pycoverage", type="choice",
                       default="no", choices=["no", "lines", "annotate"])
     parser.add_option("--output", dest="output", type="string", default="-",
@@ -82,37 +90,43 @@ def start_coverage():
     coverage.exclude("^def [sg]et_check_level")
     coverage.start()
 
+def report_morfs(morfs, opts, modname, annotate_dir, omit_prefixes=[]):
+    if opts.pycoverage == 'lines':
+        if opts.output == '-':
+            outfh = sys.stderr
+        else:
+            outfh = open(opts.output, 'w')
+            print >> sys.stderr, \
+                  "\nPython coverage of %s written to %s." \
+                  % (modname, opts.output)
+        coverage.report(morfs, file=outfh, omit_prefixes=omit_prefixes)
+    elif opts.pycoverage == 'annotate':
+        print >> sys.stderr, \
+              "\n%s annotated with Python coverage information " \
+              "in files with\n\",cover\" suffix under %s." \
+              % (modname, annotate_dir)
+        coverage.annotate(morfs, omit_prefixes=omit_prefixes)
+
 def report_coverage(opts):
     coverage.stop()
     coverage.the_coverage.collect()
     coverage.use_cache(False)
 
-    # Don't show full paths to modules in coverage output
     cwd = os.path.dirname(sys.argv[0])
-    topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'lib')) + '/'
-    coverage.the_coverage.relative_dir = topdir
 
-    if opts.module:
+    if opts.application and opts.pyexe:
+        # Don't show full paths in coverage output
+        topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'bin')) + '/'
+        coverage.the_coverage.relative_dir = topdir
+        report_morfs([topdir + x for x in opts.pyexe], opts,
+                     "%s application" % opts.application, "build/bin")
+    elif opts.module:
         path = opts.module.replace('.', '/')
-        mods = [topdir + '%s/*.py' % path]
-        if opts.pycoverage == 'lines':
-            if opts.output == '-':
-                outfh = sys.stderr
-            else:
-                outfh = open(opts.output, 'w')
-                print >> sys.stderr, \
-                      "\nPython coverage of %s module written to %s." \
-                      % (opts.module, opts.output)
-            coverage.report(mods, file=outfh,
-                            omit_prefixes=['%s/_version_check' % path])
-        elif opts.pycoverage == 'annotate':
-            # report() does globbing, but annotate() does not - odd!
-            mods = glob.glob(mods[0])
-            print >> sys.stderr, \
-                  "\n%s Python module annotated with coverage information " \
-                  "in files with\n\",cover\" suffix under build/lib/%s/." \
-                  % (opts.module, path)
-            coverage.annotate(mods, omit_prefixes=['%s/_version_check' % path])
+        topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'lib')) + '/'
+        coverage.the_coverage.relative_dir = topdir
+        report_morfs(glob.glob(topdir + '%s/*.py' % path), opts,
+                     "%s module" % opts.module, "build/lib/%s" % path,
+                     omit_prefixes=['%s/_version_check' % path])
 
     for cov in glob.glob('.coverage.*'):
         os.unlink(cov)
