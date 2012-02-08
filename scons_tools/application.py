@@ -83,6 +83,7 @@ def IMPPythonExecutable(env, file):
     # dependencies)
     pydep = _PythonExeDependency(env, target=None, source=file)
     env.Depends(inst, pydep)
+    env.Append(IMP_PYTHON_EXECUTABLES=[file])
 
 
 def IMPApplicationTest(env, python_tests=[]):
