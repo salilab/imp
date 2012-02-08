@@ -31,6 +31,7 @@ IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScore
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
 IMP_SWIG_OBJECT(IMP::isd, UnivariateFunction, UnivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Linear1DFunction, Linear1DFunctions);
+IMP_SWIG_OBJECT(IMP::isd, GeneralizedGuinierPorodFunction, GeneralizedGuinierPorodFunctions);
 IMP_SWIG_OBJECT(IMP::isd, BivariateFunction,  BivariateFunctions);
 IMP_SWIG_OBJECT(IMP::isd, Covariance1DFunction, Covariance1DFunctions);
 IMP_SWIG_OBJECT(IMP::isd, GaussianProcessInterpolation, GaussianProcessInterpolations);
