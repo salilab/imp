@@ -16,7 +16,7 @@
 #include <IMP/base/Object.h>
 #include <Eigen/Dense>
 
-#define IMP_ISD_FUNCTIONS_MINIMUM 1e-7
+#define IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM 1e-7
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -120,8 +120,10 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
         bool has_changed() const {
             double tmpa = Nuisance(a_).get_nuisance();
             double tmpb = Nuisance(b_).get_nuisance();
-            if ((std::abs(tmpa - a_val_) > IMP_ISD_FUNCTIONS_MINIMUM)
-                    || (std::abs(tmpb - b_val_) > IMP_ISD_FUNCTIONS_MINIMUM))
+            if ((std::abs(tmpa - a_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
+                    || (std::abs(tmpb - b_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM))
             {
                 IMP_LOG(TERSE, "Linear1DFunction: has_changed():");
                 IMP_LOG(TERSE, "true" << std::endl);
@@ -318,10 +320,13 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             double tmpRg = Scale(Rg_).get_scale();
             double tmpd = Scale(d_).get_scale();
             double tmps = Scale(s_).get_scale();
-            if ((std::abs(tmpG - G_val_) > IMP_ISD_FUNCTIONS_MINIMUM)
-                    || (std::abs(tmpRg - Rg_val_) > IMP_ISD_FUNCTIONS_MINIMUM)
-                    || (std::abs(tmpd - d_val_) > IMP_ISD_FUNCTIONS_MINIMUM)
-                    || (std::abs(tmps - s_val_) > IMP_ISD_FUNCTIONS_MINIMUM))
+            if ((std::abs(tmpG - G_val_) > IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
+                    || (std::abs(tmpRg - Rg_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
+                    || (std::abs(tmpd - d_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
+                    || (std::abs(tmps - s_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM))
             {
                 IMP_LOG(TERSE,
                         "GeneralizedGuinierPorodFunction: has_changed():");
