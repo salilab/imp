@@ -12,6 +12,7 @@
 #include <IMP/membrane.h>
 #include <boost/algorithm/string.hpp>
 #include <string>
+#include <iostream>
 
 using namespace IMP;
 
@@ -44,25 +45,6 @@ Pointer<core::SphereDistancePairScore>
 void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
- IMP_NEW(container::ListSingletonContainer,lsc,(m));
- for(unsigned int i=0;i<hhs.size();++i){
-  atom::Hierarchies hs=hhs[i].get_children();
-  for(unsigned int j=0;j<hs.size();++j) {
-   std::vector<std::string> strs;
-   boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
-   if(GFP_exc_volume || strs[strs.size()-1]!="GFP"){
-    lsc->add_particles(atom::get_leaves(hs[j]));
-   }
-  }
- }
- IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa));
- evr->set_name("Excluded Volume");
- m->add_restraint(evr);
-}
-/*
-void add_SPBexcluded_volume
- (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
-{
  IMP_NEW(container::ListSingletonContainer,lsc0,(m));
  IMP_NEW(container::ListSingletonContainer,lsc1,(m));
  for(unsigned int i=0;i<hhs.size();++i){
@@ -86,7 +68,6 @@ void add_SPBexcluded_volume
  evr->set_name("Excluded Volume");
  m->add_restraint(evr);
 }
-*/
 
 void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
