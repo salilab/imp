@@ -45,10 +45,6 @@ IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_bipartite_mindist
 (Model *m,Particles p1,Particles p2,
  Pointer<core::DistancePairScore> sps,bool filter=true);
 
-IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> do_allpairs_mindist
-(Model *m,Particles ps,
- Pointer<core::SphereDistancePairScore> sps,bool filter=true);
-
 IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
 container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 

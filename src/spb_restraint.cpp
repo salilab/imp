@@ -207,24 +207,6 @@ Pointer<container::MinimumPairRestraint> do_bipartite_mindist
  return mpr.release();
 }
 
-Pointer<container::MinimumPairRestraint> do_allpairs_mindist
- (Model *m,Particles ps,
- Pointer<core::SphereDistancePairScore> dps,bool filter)
-{
- IMP_NEW(container::ListPairContainer,lpc,(m));
- for(unsigned int i=0;i<ps.size()-1;++i){
-  for(unsigned int j=i+1;j<ps.size();++j){
-   bool samep=(atom::Hierarchy(ps[i]).get_parent() ==
-               atom::Hierarchy(ps[j]).get_parent());
-   if(filter && samep){continue;}
-   else{lpc->add_particle_pair(ParticlePair(ps[i],ps[j]));}
-  }
- }
- if(lpc->get_number_of_particle_pairs()==0) {return NULL;}
- IMP_NEW(container::MinimumPairRestraint,mpr,(dps,lpc,1));
- return mpr.release();
-}
-
 Pointer<container::MinimumPairRestraint> fret_restraint
  (Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, std::string residues_a,
