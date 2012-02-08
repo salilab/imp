@@ -16,7 +16,7 @@
 #include <IMP/base/Object.h>
 #include <Eigen/Dense>
 
-#define IMP_ISD_FUNCTIONS_MINIMUM 1e-7
+#define IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM 1e-7
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -131,15 +131,18 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(lambda);}
         lambda_val_= Scale(lambda).get_nuisance();
         tau_val_= Scale(tau).get_nuisance();
-        do_jitter = (jitter>IMP_ISD_FUNCTIONS_MINIMUM);
-        alpha_square_ = (std::abs(alpha-2) < IMP_ISD_FUNCTIONS_MINIMUM);
+        do_jitter = (jitter>IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);
+        alpha_square_ = (std::abs(alpha-2) <
+                IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM);
     }
 
         bool has_changed() const {
             double tmpt = Scale(tau_).get_nuisance();
             double tmpl = Scale(lambda_).get_nuisance();
-            if ((std::abs(tmpt - tau_val_) > IMP_ISD_FUNCTIONS_MINIMUM)
-                || (std::abs(tmpl - lambda_val_) > IMP_ISD_FUNCTIONS_MINIMUM))
+            if ((std::abs(tmpt - tau_val_) >
+                        IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM)
+                || (std::abs(tmpl - lambda_val_) >
+                    IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM))
             {
                 IMP_LOG(TERSE, "Covariance1DFunction: has_changed():");
                 IMP_LOG(TERSE, "true" << std::endl);
@@ -286,7 +289,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                                 //d[w(x,x')]/dlambda
                                 //= w(x,x')
                                 //  *( alpha |x'-x|^alpha/(2 lambda^{alpha+1}))
-                                if (dist<IMP_ISD_FUNCTIONS_MINIMUM) {
+                                if (dist<IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM) {
                                     val = 0;
                                 } else {
                                     val = get_value(xlist[i][0],xlist[j][0]);
@@ -455,7 +458,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                 ret = std::pow(ret, alpha_);
             }
             ret = IMP::square(tau_val_) *std::exp(-0.5*ret);
-            if (do_jitter && dist<IMP_ISD_FUNCTIONS_MINIMUM)
+            if (do_jitter && dist<IMP_ISD_BIVARIATE_FUNCTIONS_MINIMUM)
             {
                 ret += J_;
             }
