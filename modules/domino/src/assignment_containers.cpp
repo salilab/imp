@@ -9,7 +9,9 @@
 #include <IMP/domino/Subset.h>
 #include <IMP/domino/utility.h>
 #include <fcntl.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <sys/stat.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -214,7 +216,11 @@ WriteAssignmentContainer
   max_cache_(10000) {
   cache_.reserve(max_cache_);
   f_=open(dataset.c_str(), O_WRONLY|O_APPEND|O_CREAT |O_TRUNC,
+#ifdef _MSC_VER
+          _S_IREAD|_S_IWRITE);
+#else
           S_IRUSR|S_IWUSR);
+#endif
   number_=0;
 }
 
