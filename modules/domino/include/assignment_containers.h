@@ -27,6 +27,10 @@
 #include <boost/random.hpp>
 #include <cstdio>
 
+#ifdef _MSC_VER
+#include <io.h>
+#endif
+
 IMPDOMINO_BEGIN_NAMESPACE
 
 
@@ -225,10 +229,17 @@ class IMPDOMINOEXPORT WriteAssignmentContainer: public AssignmentContainer {
                            const ParticlesTemp &all_particles,
                            std::string name);
   void set_cache_size(unsigned int words);
+#ifdef _MSC_VER
+  IMP_ASSIGNMENT_CONTAINER_INLINE(WriteAssignmentContainer,
+                                  IMP_UNUSED(out),{
+                                    flush(); _close(f_);
+                                  });
+#else
   IMP_ASSIGNMENT_CONTAINER_INLINE(WriteAssignmentContainer,
                                   IMP_UNUSED(out),{
                                     flush(); close(f_);
                                   });
+#endif
 };
 
 /** Read the assignments from binary data on disk. Use a
@@ -248,8 +259,13 @@ class IMPDOMINOEXPORT ReadAssignmentContainer: public AssignmentContainer {
                            const ParticlesTemp &all_particles,
                            std::string name);
   void set_cache_size(unsigned int words);
+#ifdef _MSC_VER
+  IMP_ASSIGNMENT_CONTAINER_INLINE(ReadAssignmentContainer,
+                                  IMP_UNUSED(out),{_close(f_);});
+#else
   IMP_ASSIGNMENT_CONTAINER_INLINE(ReadAssignmentContainer,
                                   IMP_UNUSED(out),{close(f_);});
+#endif
 };
 
 /** Expose a range [begin, end) of an inner assignement container to
