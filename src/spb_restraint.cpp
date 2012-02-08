@@ -59,6 +59,34 @@ void add_SPBexcluded_volume
  evr->set_name("Excluded Volume");
  m->add_restraint(evr);
 }
+/*
+void add_SPBexcluded_volume
+ (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
+{
+ IMP_NEW(container::ListSingletonContainer,lsc0,(m));
+ IMP_NEW(container::ListSingletonContainer,lsc1,(m));
+ for(unsigned int i=0;i<hhs.size();++i){
+  atom::Hierarchies hs=hhs[i].get_children();
+  for(unsigned int j=0;j<hs.size();++j) {
+   std::vector<std::string> strs;
+   boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
+   if(strs[strs.size()-1]!="GFP"){
+    if(i==0){lsc0->add_particles(atom::get_leaves(hs[j]));}
+    lsc1->add_particles(atom::get_leaves(hs[j]));
+   }
+  }
+ }
+ IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lsc0,lsc1,10.0));
+ IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
+ IMP_NEW(membrane::SameParticlePairFilter,ppf,());
+ cbpc->add_pair_filter(rbpf);
+ cbpc->add_pair_filter(ppf);
+ IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
+ IMP_NEW(container::PairsRestraint,evr,(ssps,cbpc));
+ evr->set_name("Excluded Volume");
+ m->add_restraint(evr);
+}
+*/
 
 void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)

@@ -9,7 +9,7 @@
 IMP_SWIG_DECORATOR(IMP::membrane, HelixDecorator, HelixDecorators);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
 IMP_SWIG_OBJECT(IMP::membrane, AttributeDistancePairScore, AttributeDistancePairScores);
-IMP_SWIG_OBJECT(IMP::membrane, SameHelixPairFilter, SameHelixPairFilters); 
+IMP_SWIG_OBJECT(IMP::membrane, SameRigidBodyPairFilter, SameRigidBodyPairFilters); 
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess); 
@@ -24,7 +24,7 @@ IMP_SWIG_OBJECT(IMP::membrane, RMSDMetric, RMSDMetrics);
 %include "IMP/membrane/HelixDecorator.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
 %include "IMP/membrane/AttributeDistancePairScore.h"
-%include "IMP/membrane/SameHelixPairFilter.h"
+%include "IMP/membrane/SameRigidBodyPairFilter.h"
 %include "IMP/membrane/TiltSingletonScore.h"
 %include "IMP/membrane/RigidBodyNewMover.h"
 %include "IMP/membrane/RigidBodyGridStates.h"

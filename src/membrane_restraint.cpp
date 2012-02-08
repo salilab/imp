@@ -101,7 +101,7 @@ atom::Selection s=atom::Selection(protein);
 s.set_atom_type(atom::AT_CA);
 lsc->add_particles(s.get_selected_particles());
 IMP_NEW(container::ClosePairContainer,cpc,(lsc, 15.0));
-IMP_NEW(SameHelixPairFilter,f,());
+IMP_NEW(membrane::SameRigidBodyPairFilter,f,());
 cpc->add_pair_filter(f);
 IMP_NEW(atom::DopePairScore,dps,(15.0,atom::get_data_path(sname)));
 IMP_NEW(container::PairsRestraint,dope,(dps,cpc));
