@@ -14,7 +14,8 @@
 
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/isd/functions.h>
+#include <IMP/isd/univariate_functions.h>
+#include <IMP/isd/bivariate_functions.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/isd/GaussianProcessInterpolationSparse.h>
 #include <IMP/isd/MultivariateFNormalSufficientSparse.h>
