@@ -30,8 +30,8 @@ public:
   {
       if (!Nuisance::particle_is_instance(p))
           Nuisance::setup_particle(p,switching);
-      Nuisance(p).set_lower(0);
-      Nuisance(p).set_upper(1);
+      Nuisance(p).set_lower(0.);
+      Nuisance(p).set_upper(1.);
       return Switching(p);
   }
 

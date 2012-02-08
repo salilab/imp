@@ -13,7 +13,7 @@ IMPISD_BEGIN_NAMESPACE
   {
       if (!Nuisance::particle_is_instance(p))
           Nuisance::setup_particle(p,scale);
-      Nuisance(p).set_lower(0);
+      Nuisance(p).set_lower(0.);
       return Scale(p);
   }
 
