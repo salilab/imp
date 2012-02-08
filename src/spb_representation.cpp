@@ -551,6 +551,7 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
   file_list.push_back((*it).second);
  }
 // eliminate duplicates from file_list
+ file_list.sort();
  file_list.unique();
 // now cycle on file list
  for (iit = file_list.begin(); iit != file_list.end(); iit++){
