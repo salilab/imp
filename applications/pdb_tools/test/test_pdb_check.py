@@ -10,7 +10,9 @@ class PDBCheckApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
         lines = out.split('\n')
-        self.assertEqual(lines[0], 'Atom not found "H"')
+        # In fast mode, warnings are not printed
+        if len(lines) > 1:
+            self.assertEqual(lines[0].rstrip('\r\n'), 'Atom not found "H"')
 
 if __name__ == '__main__':
     IMP.test.main()
