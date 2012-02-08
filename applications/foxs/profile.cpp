@@ -265,7 +265,7 @@ constant form factor (default = false)")
       float min_c2=-4.0; float max_c2=4.0;
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
       if(water_layer_c2 == 0.0) { min_c2 = max_c2 = 0.0; }
-      else { min_c2 = max_c2 = water_layer_c2; }
+      else { max_c2 = water_layer_c2; min_c2 = -max_c2; }
       IMP::saxs::FitParameters fp = saxs_score->fit_profile(*partial_profile,
                                                 min_c1, max_c1, min_c2, max_c2,
                                                 use_offset, fit_file_name2);
