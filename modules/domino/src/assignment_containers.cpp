@@ -157,9 +157,9 @@ void WriteHDF5AssignmentContainer::set_cache_size(unsigned int words) {
 }
 
 void WriteHDF5AssignmentContainer::add_assignment(const Assignment& a) {
-  IMP_RMF_USAGE_CHECK(a.size()==order_.size(),
-                      "Sizes don't match: " << a.size()
-                      << " vs " << order_.size());
+  IMP_USAGE_CHECK(a.size()==order_.size(),
+                  "Sizes don't match: " << a.size()
+                  << " vs " << order_.size());
   Ints save= get_output(a, order_);
   cache_.insert(cache_.end(), save.begin(), save.end());
   if (cache_.size() > max_cache_) flush();
