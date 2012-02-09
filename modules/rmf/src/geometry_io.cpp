@@ -463,6 +463,8 @@ namespace {
           read_basic(ch[i], curg, IMP_HDF5_PASS_GEOMETRY_KEYS);
           ret.push_back(curg);
         }
+      } else {
+        ret+=read_internal(ch[i], frame, IMP_HDF5_PASS_GEOMETRY_KEYS);
       }
     }
     return ret;
