@@ -124,4 +124,10 @@ The following are pre-defined Categories for data stored in single nodes.
     \rmfattribute{length, Float, the length in angstroms, positive}
     \rmfattribute{type, Index, the bond type (0 covalent; 1 ionic; 2 hydrogen...), }
     \rmfattributetable_end
+
+\section decorators Decorators
+
+The library provides decorators to aid using the standard types of data. Each decorator comes in a
+const and a non-const version (as does everything else) and is constructued by an associated factory.
+It is simpler than this description sounds. See the \ref rmf_decorator "RMF decorator example".
 */
