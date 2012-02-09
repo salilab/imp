@@ -12,7 +12,7 @@
 #include "../RMF_config.h"
 #include "../NodeHandle.h"
 #include "../FileHandle.h"
-#include "../hdf5_types.h"
+#include "../types.h"
 
 IMPLIBRMF_BEGIN_INTERNAL_NAMESPACE
 

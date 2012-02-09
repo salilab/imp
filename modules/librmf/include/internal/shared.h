@@ -11,7 +11,7 @@
 
 #include "../RMF_config.h"
 #include "../Key.h"
-#include "../hdf5_types.h"
+#include "../types.h"
 #include "../names.h"
 #include "../HDF5Group.h"
 #include "../HDF5File.h"

@@ -10,7 +10,7 @@
 #define IMPLIBRMF_NAMES_H
 
 #include "RMF_config.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include "Key.h"
 #include <sstream>
 
