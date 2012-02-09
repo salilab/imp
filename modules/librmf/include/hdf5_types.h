@@ -402,6 +402,7 @@ namespace RMF {
     }
   };
   typedef ArrayTraits<FloatTraits> FloatsTraits;
+  typedef ArrayTraits<StringTraits> StringsTraits;
   typedef ArrayTraits<IndexTraits> IndexesTraits;
   typedef ArrayTraits<IntTraits> IntsTraits;
   typedef ArrayTraits<NodeIDTraits> NodeIDsTraits;
