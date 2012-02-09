@@ -38,11 +38,9 @@ namespace RMF {
       if (env) {
         base=std::string(env);
         base=get_concatenated_path(base, "RMF");
-        std::cout << "found env " << base << std::endl;
       } else {
         // Default to compiled-in value
         base=def;
-        std::cout << "using default base " << base << std::endl;
       }
       std::string ret= path_cat(base, file_name);
       return ret;
