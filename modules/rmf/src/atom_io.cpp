@@ -292,6 +292,10 @@ namespace {
                               IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     RMF::NodeHandle cur= parent.add_child(get_name(hierarchy), REPRESENTATION);
     cur.set_association(hierarchy.get_particle());
+    IMP_USAGE_CHECK(cur.get_file().get_node_from_association(hierarchy)==cur,
+                    "In and out don't match: " << cur
+                    << " vs "
+                    << cur.get_file().get_node_from_association(hierarchy));
     copy_data(hierarchy, cur, 0, IMP_HDF5_PASS_MOLECULE_KEYS);
     //std::cout << "Processing " << hierarchy->get_name() << std::endl;
     unsigned int nc=hierarchy.get_number_of_children();
