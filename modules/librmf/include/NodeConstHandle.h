@@ -169,9 +169,9 @@ protected:
 /** Print out the hierarchy as an ascii tree.
  */
 RMFEXPORT void show_hierarchy(NodeConstHandle root,
-                              std::ostream &out= std::cout,
                               bool verbose=false,
-                              unsigned int frame=0);
+                              unsigned int frame=0,
+                              std::ostream &out= std::cout);
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_NODE_CONST_HANDLE_H */

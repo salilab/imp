@@ -43,8 +43,8 @@ int main(int argc, char **argv) {
     if (!descr.empty()) {
       std::cout << descr << std::endl;
     }
-    RMF::show_hierarchy(rh.get_root_node(), std::cout,
-                        vm.count("verbose"), frame);
+    RMF::show_hierarchy(rh.get_root_node(), vm.count("verbose"),
+                        frame, std::cout);
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;

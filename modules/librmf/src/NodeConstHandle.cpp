@@ -135,9 +135,9 @@ namespace {
 
 
 void show_hierarchy(NodeConstHandle root,
-                    std::ostream &out,
                     bool verbose,
-                    unsigned int frame) {
+                    unsigned int frame,
+                    std::ostream &out) {
   FloatKeys fks;
   IntKeys iks;
   IndexKeys xks;
