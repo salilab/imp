@@ -11,7 +11,7 @@
 
 #include "RMF_config.h"
 #include "Category.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include "HDF5DataSetD.h"
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace RMF {

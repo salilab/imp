@@ -12,7 +12,7 @@
 #include "../rmf_config.h"
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
-#include <RMF/hdf5_types.h>
+#include <RMF/types.h>
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 

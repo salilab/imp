@@ -10,7 +10,7 @@
 #define IMPLIBRMF_HDF_5CONST_DATA_SET_D_H
 
 #include "RMF_config.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include "HDF5ConstAttributes.h"
 #include "HDF5Object.h"
 #include "HDF5DataSetIndexD.h"

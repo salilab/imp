@@ -10,7 +10,7 @@
 #define IMPLIBRMF_HDF_5OBJECT_H
 
 #include "RMF_config.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include "hdf5_handle.h"
 #include "infrastructure_macros.h"
 #include <hdf5.h>

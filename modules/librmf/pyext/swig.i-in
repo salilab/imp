@@ -183,10 +183,8 @@ namespace RMF {
 
 
 %include "RMF/NodeID.h"
+%include "RMF/types.h"
 %include "RMF/hdf5_handle.h"
-%include "RMF/hdf5_types.h"
-%template(_IntsTraits) RMF::ArrayTraits<RMF::IntTraits>;
-%template(_NodeIDsTraits) RMF::ArrayTraits<RMF::NodeIDTraits>;
 %include "RMF/HDF5Object.h"
 %include "RMF/HDF5ConstAttributes.h"
 %template(_HDF5ConstAttributesObject) RMF::HDF5ConstAttributes<RMF::HDF5Object>;

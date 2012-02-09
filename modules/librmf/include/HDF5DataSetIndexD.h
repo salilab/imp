@@ -10,7 +10,7 @@
 #define IMPLIBRMF_HDF_5DATA_SET_INDEX_D_H
 
 #include "RMF_config.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include <boost/functional/hash.hpp>
 
 namespace RMF {

@@ -12,7 +12,7 @@
 #include "RMF_config.h"
 #include "HDF5Group.h"
 #include "internal/shared.h"
-#include "hdf5_types.h"
+#include "types.h"
 #include "NodeID.h"
 #include "NodeConstHandle.h"
 #include <boost/graph/adjacency_list.hpp>

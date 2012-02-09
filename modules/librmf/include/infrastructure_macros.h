@@ -31,7 +31,7 @@
 
 //! Implement comparison in a class using field as the variable to compare
 /** \param[in] Name the name of the class
-*/
+ */
 #define IMP_RMF_COMPARISONS(Name)
 
 /** @} */
@@ -50,27 +50,27 @@
 
 #else // not doxygen
 
-#define IMP_RMF_SWIG_COMPARISONS(Name)                                  \
-  bool __eq__(const Name &o) const {                                    \
-    return operator==(o);                                               \
-  }                                                                     \
-  bool __ne__(const Name &o) const {                                    \
-    return operator!=(o);                                               \
-  }                                                                     \
-  bool __lt__(const Name &o) const {                                    \
-    return operator<(o);                                                \
-  }                                                                     \
-  bool __gt__(const Name &o) const {                                    \
-    return operator>(o);                                                \
-  }                                                                     \
-  bool __ge__(const Name &o) const {                                    \
-    return operator>=(o);                                               \
-  }                                                                     \
-  bool __le__(const Name &o) const {                                    \
-    return operator<=(o);                                               \
-  }                                                                     \
-  int __cmp__(const Name &o) const {                                    \
-    return compare(o);                                                  \
+#define IMP_RMF_SWIG_COMPARISONS(Name)          \
+  bool __eq__(const Name &o) const {            \
+    return operator==(o);                       \
+  }                                             \
+  bool __ne__(const Name &o) const {            \
+    return operator!=(o);                       \
+  }                                             \
+  bool __lt__(const Name &o) const {            \
+    return operator<(o);                        \
+  }                                             \
+  bool __gt__(const Name &o) const {            \
+    return operator>(o);                        \
+  }                                             \
+  bool __ge__(const Name &o) const {            \
+    return operator>=(o);                       \
+  }                                             \
+  bool __le__(const Name &o) const {            \
+    return operator<=(o);                       \
+  }                                             \
+  int __cmp__(const Name &o) const {            \
+    return compare(o);                          \
   }
 
 #define IMP_RMF_COMPARISONS(Name)               \
@@ -164,12 +164,12 @@
 #define IMP_RMF_SHOWABLE(Name, streamed)
 #endif
 
-#define IMP_RMF_USAGE_CHECK(check, message)                             \
-  do {                                                                  \
-    if (!(check)) {                                                     \
-      IMP_RMF_THROW("Usage check failed: " << #check << "\n"            \
-                    << message, RMF::UsageException);                   \
-    }                                                                   \
+#define IMP_RMF_USAGE_CHECK(check, message)                     \
+  do {                                                          \
+    if (!(check)) {                                             \
+      IMP_RMF_THROW("Usage check failed: " << #check << "\n"    \
+                    << message, RMF::UsageException);           \
+    }                                                           \
   } while (false)
 
 #define IMP_RMF_INTERNAL_CHECK(check, message)                          \
@@ -181,18 +181,18 @@
     }                                                                   \
   } while (false)
 
-#define IMP_RMF_PATH_CHECK(path, context)               \
-  if (!boost::filesystem::exists(path)) {               \
-  IMP_RMF_THROW(context << path << " does not exist.",  \
-                IOException);                           \
+#define IMP_RMF_PATH_CHECK(path, context)                       \
+  if (!boost::filesystem::exists(path)) {                       \
+    IMP_RMF_THROW(context << path << " does not exist.",        \
+                  IOException);                                 \
   }
 
-#define IMP_RMF_IF_CHECK\
+#define IMP_RMF_IF_CHECK                        \
   if (true)
 
-#define IMP_RMF_NOT_IMPLEMENTED                                         \
-  IMP_RMF_THROW("Not implemented: "<< BOOST_CURRENT_FUNCTION            \
-                << " in " << __FILE__ << ":" << __LINE__,               \
+#define IMP_RMF_NOT_IMPLEMENTED                                 \
+  IMP_RMF_THROW("Not implemented: "<< BOOST_CURRENT_FUNCTION    \
+                << " in " << __FILE__ << ":" << __LINE__,       \
                 RMF::InternalException)
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
@@ -207,12 +207,12 @@
   } while (false)
 
 /** Call a function and throw an exception if the return values is bad */
-#define IMP_HDF5_CALL(v) {                              \
-    hid_t test_value=(v);                               \
-    if (test_value<0) {                                 \
-      IMP_RMF_THROW("HDF5 call failed: " << #v,         \
-                    RMF::IOException);                  \
-    }                                                   \
+#define IMP_HDF5_CALL(v) {                      \
+    hid_t test_value=(v);                       \
+    if (test_value<0) {                         \
+      IMP_RMF_THROW("HDF5 call failed: " << #v, \
+                    RMF::IOException);          \
+    }                                           \
   }
 
 /** Create new HDF5 shared handle.*/
@@ -228,12 +228,12 @@
 
     \see IMP_RMF_FOREACH_TYPE()
 */
-#define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)                          \
-  macroname(int, Int, int, int,                                         \
-            const Ints&, Ints);                                         \
-  macroname(float, Float, double, double,                               \
-            const Floats&, Floats);                                     \
-  macroname(index, Index, int, int,                                     \
+#define IMP_RMF_FOREACH_SIMPLE_TYPE(macroname)  \
+  macroname(int, Int, int, int,                 \
+            const Ints&, Ints);                 \
+  macroname(float, Float, double, double,       \
+            const Floats&, Floats);             \
+  macroname(index, Index, int, int,             \
             const Ints&, Ints)
 
 #ifndef IMP_DOXYGEN
@@ -265,8 +265,8 @@
             const IndexesList &,                                        \
             IndexesList);
 #else
-#define IMP_RMF_FOREACH_TYPE(macroname)                                 \
-  macroname(type, Type, Type, Types,                                    \
+#define IMP_RMF_FOREACH_TYPE(macroname)         \
+  macroname(type, Type, Type, Types,            \
             const Types &, Types);
 #endif
 
@@ -313,7 +313,7 @@
 
 /** Register a validator function. See Validator for more
     information.*/
-#define IMP_RMF_VALIDATOR(Type)               \
+#define IMP_RMF_VALIDATOR(Type)                 \
   RMF::Registrar<Type> Type##Reg(#Type);
 
 namespace RMF {
@@ -350,13 +350,208 @@ namespace RMF {
     }
   };
 
-inline std::ostream &
-operator<<(std::ostream &out, const Showable &t) {
-  out << t.t_;
-  return out;
-}
+  inline std::ostream &
+  operator<<(std::ostream &out, const Showable &t) {
+    out << t.t_;
+    return out;
+  }
 
 #endif
 }
 
+#ifndef SWIG
+#define IMP_RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk,\
+                           hdf5_memory,hdf5_fill, null_value,           \
+                           wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a)  \
+  struct RMFEXPORT UCName##Traits:                                      \
+    public internal::BaseTraits<UCName, UCNames, index> {               \
+    static hid_t get_hdf5_disk_type() {                                 \
+      return hdf5_disk;                                                 \
+    }                                                                   \
+    static hid_t get_hdf5_memory_type() {                               \
+      return hdf5_memory;                                               \
+    }                                                                   \
+    static void write_value_dataset(hid_t d, hid_t is,                  \
+                                    hid_t s,                            \
+                                    UCName v) {                         \
+      wv_ds;                                                            \
+    }                                                                   \
+    static UCName read_value_dataset(hid_t d, hid_t is,                 \
+                                     hid_t sp){                         \
+      UCName ret;                                                       \
+      rv_ds;                                                            \
+      return ret;                                                       \
+    }                                                                   \
+    static void write_values_dataset(hid_t d, hid_t is,                 \
+                                     hid_t s,                           \
+                                     const UCNames& v) {                \
+      if (v.empty()) return;                                            \
+      wvs_ds;                                                           \
+    }                                                                   \
+    static UCNames read_values_dataset(hid_t d, hid_t is,               \
+                                       hid_t sp,                        \
+                                       unsigned int sz) {               \
+      UCNames ret(sz, get_null_value());                                \
+      rvs_ds;                                                           \
+      return ret;                                                       \
+    }                                                                   \
+    static void write_values_attribute(hid_t a, const UCNames &v) {     \
+      if (v.empty()) return;                                            \
+      wvs_a;                                                            \
+    }                                                                   \
+    static UCNames read_values_attribute(hid_t a, unsigned int sz) {    \
+      UCNames ret(sz, get_null_value());                                \
+      rvs_a;                                                            \
+      return ret;                                                       \
+    }                                                                   \
+    static hid_t get_hdf5_fill_type() {                                 \
+      return hdf5_fill;                                                 \
+    }                                                                   \
+    static const UCName& get_fill_value() {                             \
+      return get_null_value();                                          \
+    }                                                                   \
+    static const UCName& get_null_value() {                             \
+      static const UCName ret= null_value;                              \
+      return ret;                                                       \
+    }                                                                   \
+    static bool get_is_null_value(const UCName& i) {                    \
+      return i== get_null_value();                                      \
+    }                                                                   \
+    static std::string get_name() {return #lcname;}                     \
+  }
+
+/** Declare a type traits*/
+#define IMP_RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory, \
+                       hdf5_fill, null_value,                           \
+                       wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a)      \
+  IMP_RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory, \
+                     hdf5_fill, null_value,                             \
+                     wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a);       \
+  struct UCNames##Traits:                                               \
+    public internal::BaseTraits<UCNames, vector<UCNames>, index+7> {    \
+    static hid_t get_hdf5_disk_type() {                                 \
+      static IMP_HDF5_HANDLE(ints_type, H5Tvlen_create                  \
+                             (UCName##Traits::get_hdf5_disk_type()),    \
+                             H5Tclose);                                 \
+      return ints_type;                                                 \
+    }                                                                   \
+    static hid_t get_hdf5_memory_type() {                               \
+      static IMP_HDF5_HANDLE(ints_type,  H5Tvlen_create                 \
+                             (UCName##Traits::get_hdf5_memory_type()),  \
+                             H5Tclose);                                 \
+      return ints_type;                                                 \
+    }                                                                   \
+    static void write_value_dataset(hid_t d, hid_t is,                  \
+                                    hid_t s,                            \
+                                    const UCNames& v) {                 \
+      hvl_t data;                                                       \
+      data.len=v.size();                                                \
+      data.p= const_cast< UCName*>(&v[0]);                              \
+      IMP_HDF5_CALL(H5Dwrite(d,                                         \
+                             get_hdf5_memory_type(), is, s,             \
+                             H5P_DEFAULT, &data));                      \
+    }                                                                   \
+    static UCNames read_value_dataset(hid_t d, hid_t is,                \
+                                      hid_t sp) {                       \
+      hvl_t data;                                                       \
+      H5Dread (d, get_hdf5_memory_type(), is, sp, H5P_DEFAULT, &data);  \
+      UCNames ret(data.len);                                             \
+      std::copy(static_cast<UCName*>(data.p),                           \
+                static_cast<UCName*>(data.p)+data.len,                  \
+                ret.begin());                                           \
+      free(data.p);                                                     \
+      return ret;                                                       \
+    }                                                                   \
+    static void write_values_dataset(hid_t d, hid_t is,                 \
+                                     hid_t s,                           \
+                                     const vector<UCNames>& v){         \
+      IMP_RMF_UNUSED(d); IMP_RMF_UNUSED(is); IMP_RMF_UNUSED(s);         \
+      IMP_RMF_UNUSED(v);                                                \
+      IMP_RMF_NOT_IMPLEMENTED;                                          \
+    };                                                                  \
+    static vector<UCNames> read_values_dataset(hid_t d, hid_t is,       \
+                                               hid_t sp, unsigned int sz) { \
+      IMP_RMF_UNUSED(d);                                                \
+      IMP_RMF_UNUSED(is); IMP_RMF_UNUSED(sp); IMP_RMF_UNUSED(sz);       \
+      IMP_RMF_NOT_IMPLEMENTED;                                          \
+      return vector<UCNames>();                                         \
+    }                                                                   \
+    static vector<UCNames> read_values_attribute(hid_t a,               \
+                                                 unsigned int size) {   \
+      IMP_RMF_UNUSED(a);                                                \
+      IMP_RMF_UNUSED(size);                                             \
+      IMP_RMF_NOT_IMPLEMENTED;                                          \
+    }                                                                   \
+    static void write_values_attribute(hid_t a, const vector<UCNames> &v){ \
+      IMP_RMF_UNUSED(a); IMP_RMF_UNUSED(v);                             \
+      IMP_RMF_NOT_IMPLEMENTED;                                          \
+    }                                                                   \
+    static hid_t get_hdf5_fill_type() {                                 \
+      return get_hdf5_memory_type();                                    \
+    }                                                                   \
+    static std::string get_name() {return UCName##Traits::get_name()+"s";} \
+  };                                                                    \
+
+
+/** Declare a type traits*/
+#define IMP_RMF_SIMPLE_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, \
+                              hdf5_memory, hdf5_fill, null_value)       \
+  IMP_RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk,             \
+                 hdf5_memory, hdf5_fill, null_value,                    \
+                 IMP_HDF5_CALL(H5Dwrite(d,                              \
+                                        get_hdf5_memory_type(), is, s,  \
+                                        H5P_DEFAULT, &v)),              \
+                 IMP_HDF5_CALL(H5Dread(d,                               \
+                                       get_hdf5_memory_type(),          \
+                                       is, sp, H5P_DEFAULT, &ret)),     \
+                 IMP_HDF5_CALL(H5Dwrite(d,                              \
+                                        get_hdf5_memory_type(), is, s,  \
+                                        H5P_DEFAULT,                    \
+                                        const_cast<UCName*>(&v[0]))),   \
+                 IMP_HDF5_CALL(H5Dread(d,                               \
+                                       get_hdf5_memory_type(),          \
+                                       is, sp, H5P_DEFAULT, &ret[0])),  \
+                 IMP_HDF5_CALL(H5Awrite(a, get_hdf5_memory_type(), &v[0])), \
+                 IMP_HDF5_CALL(H5Aread(a, get_hdf5_memory_type(), &ret[0])) \
+                 )
+
+
+#else
+
+#define IMP_RMF_TRAITS_ONE(UCName, UCNames, lcname, index, hdf5_disk,   \
+                           hdf5_memory,                                 \
+                           hdf5_fill, null_value,                       \
+                           wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a)  \
+  struct UCName##Traits{                                                \
+    typedef UCName Type;                                                \
+    typedef UCNames Types;                                              \
+    static Type get_null_value();                                       \
+  }
+
+#define IMP_RMF_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, hdf5_memory, \
+                       hdf5_fill, null_value,                           \
+                       wv_ds, rv_ds, wvs_ds, rvs_ds, wvs_a, rvs_a)      \
+  struct UCName##Traits{                                                \
+    typedef UCName Type;                                                \
+    typedef UCNames Types;                                              \
+    static UCName get_null_value();                                     \
+  };                                                                    \
+  struct UCNames##Traits{                                               \
+    typedef UCNames Type;                                               \
+    static UCNames get_null_value();                                    \
+  };
+
+#define IMP_RMF_SIMPLE_TRAITS(UCName, UCNames, lcname, index, hdf5_disk, \
+                              hdf5_memory, hdf5_fill, null_value)       \
+  struct UCName##Traits{                                                \
+    typedef UCName Type;                                                \
+    typedef UCNames Types;                                              \
+    static UCName get_null_value();                                     \
+  };                                                                    \
+  struct UCNames##Traits{                                               \
+    typedef UCNames Type;                                               \
+    static UCNames get_null_value();                                    \
+  };
+
+#endif
 #endif  /* IMPLIBRMF_INFRASTRUCTURE_MACROS_H */
