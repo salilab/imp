@@ -33,7 +33,7 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
  kappa_ = kappa;
  IMP_NEW(container::ListSingletonContainer,lsc_p,(pd));
  IMP_NEW(container::ListSingletonContainer,lsc_a,(pa));
- cbpc_= new container::CloseBipartitePairContainer(lsc_p,lsc_a,2.5*R0);
+ cbpc_= new container::CloseBipartitePairContainer(lsc_p,lsc_a,2.0*R0);
 }
 
 double
