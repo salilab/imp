@@ -23,14 +23,12 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-/** \brief Return all close unordered pairs of particles taken from
-    the SingletonContainer
+/** \brief Return all close ordered pairs of particles taken from the
+    two SingletonContainers.
 
     See ClosePairContainer for a more detailed description. This
     container lists all close pairs of particles where one particle is
     taken from each of the input sets.
-
-    \note Any passed ClosePairsFinder is ignored.
 
     \usesconstraint
  */
@@ -48,15 +46,17 @@ public:
                               SingletonContainer *b,
                               double distance,
                               double slack=1);
-
+#ifndef IMP_DOXYGEN
   //! Get the individual particles from the passed SingletonContainer
   CloseBipartitePairContainer(SingletonContainer *a,
                               SingletonContainer *b,
                               double distance,
                               core::ClosePairsFinder *cpf,
                               double slack=1);
+#endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
+
   /** @name Methods to control the set of filters
 
      PairContainer objects can be used as filters to prevent

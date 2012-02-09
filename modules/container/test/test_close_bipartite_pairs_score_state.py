@@ -58,7 +58,24 @@ class TestBL(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
-
+    def test_filtering(self):
+        """Testing that CloseBipartitePairContainer responds to changes in filters"""
+        m=IMP.Model()
+        ps0= self.create_particles_in_box(m, 30)
+        ps1= self.create_particles_in_box(m, 30)
+        for p in ps0+ps1:
+            IMP.core.XYZR.setup_particle(p, 1)
+        # test rebuilding under move, set input and change radius
+        pc0= IMP.container.ListSingletonContainer(ps0)
+        pc1= IMP.container.ListSingletonContainer(ps1)
+        cpss= IMP.container.CloseBipartitePairContainer(pc0, pc1,100000,3 )
+        m.evaluate(False)
+        self.assertEqual(cpss.get_number_of_particle_pairs(), len(ps0)*len(ps1))
+        abpc= IMP.container.AllBipartitePairContainer(pc0, pc1)
+        cpss.add_pair_filter(IMP.container.InContainerPairFilter(abpc))
+        print "re-evaluate"
+        m.evaluate(False)
+        self.assertEqual(cpss.get_number_of_particle_pairs(), 0)
 
 
 
