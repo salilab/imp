@@ -249,9 +249,9 @@ void WriteAssignmentContainer::set_cache_size(unsigned int words) {
 }
 
 void WriteAssignmentContainer::add_assignment(const Assignment& a) {
-  IMP_RMF_USAGE_CHECK(a.size()==order_.size(),
-                      "Sizes don't match: " << a.size()
-                      << " vs " << order_.size());
+  IMP_USAGE_CHECK(a.size()==order_.size(),
+                  "Sizes don't match: " << a.size()
+                  << " vs " << order_.size());
   Ints ret= get_output(a, order_);
   cache_.insert(cache_.end(), ret.begin(), ret.end());
   ++number_;
