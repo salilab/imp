@@ -11,6 +11,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/Particle.h>
 #include <iostream>
+#include <map>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -26,12 +27,13 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
  R0_ = R0;
  Sd_ = Sd;
  Sa_ = Sa;
- Nd_ = (double) pd_.size();
- Na_ = (double) pa_.size();
  gamma_ = gamma;
- Ida_ = Ida;
+ Ida_   = Ida;
  fretr_ = fretr;
  kappa_ = kappa;
+ IMP_NEW(container::ListSingletonContainer,lsc_p,(pd));
+ IMP_NEW(container::ListSingletonContainer,lsc_a,(pa));
+ cbpc_= new container::CloseBipartitePairContainer(lsc_p,lsc_a,2.5*R0);
 }
 
 double
@@ -40,20 +42,22 @@ FretrRestraint::unprotected_evaluate(DerivativeAccumulator *da) const
 // check if derivatives are requested
  IMP_USAGE_CHECK(!da, "Derivatives not available");
 
+// clear the Fi_ map
+ Fi_.clear();
+
+// cycle the neighbor list
+ IMP_FOREACH_PAIR_INDEX(cbpc_, {
+   ParticleIndexPair  pp=_1;
+   double power = R0_/core::get_distance(core::XYZ(get_model(), pp[0]),
+                                         core::XYZ(get_model(), pp[1]));
+   Fi_[pp[0]]+=power*power*power*power*power*power;
+ });
+
  double sumFi=0.0;
+ for(unsigned j=0;j<pd_.size();++j){sumFi+=1.0/(1.0+Fi_[pd_[j]->get_index()]);}
 
- for(unsigned i=0;i<pd_.size();++i){
-  double Fi=0.0;
-  for(unsigned j=0;j<pa_.size();++j){
-   double power =R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
-   Fi+=power*power*power*power*power*power;
-  }
-  sumFi+=1.0/(1.0+Fi);
- }
-
- double fretr = 1.0 + gamma_ * ( Nd_ - sumFi ) /
-                ( Sd_ * Ida_ * sumFi + Sa_ * Na_ );
-
+ double fretr = 1.0 + gamma_ * ( pd_.size() - sumFi ) /
+                ( Sd_ * Ida_ * sumFi + Sa_ * pa_.size() );
 
  return 0.5 * kappa_ * ( fretr - fretr_ ) * ( fretr - fretr_ );
 }

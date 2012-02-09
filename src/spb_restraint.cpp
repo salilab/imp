@@ -46,7 +46,7 @@ Pointer<core::SphereDistancePairScore>
 void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
- double slack=10.0;
+ double slack=5.0;
  std::list<std::string> names;
  IMP_NEW(container::ListSingletonContainer,noGFP_cell0,(m));
  IMP_NEW(container::ListSingletonContainer,noGFP_othercells,(m));
