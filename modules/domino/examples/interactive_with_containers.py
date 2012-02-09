@@ -48,7 +48,7 @@ def get_assignments(vertex):
     ssn= str(ss)
     dataset= root.add_child_index_data_set_2d(ssn)
     dataset.set_size([0, len(ss)])
-    mine= IMP.domino.HDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn)
+    mine= IMP.domino.WriteHDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn)
     if len(on)==0:
         # we have a leaf
         IMP.domino.load_leaf_assignments(ss, leaf_table, mine)
@@ -58,7 +58,9 @@ def get_assignments(vertex):
         (ss1, a1)= get_assignments(on[1])
         IMP.domino.load_merged_assignments(ss0, a0, ss1, a1, filters, mine)
     print ss, mine.get_number_of_assignments()
-    return (ss, mine)
+    # make sure that the cache is flushed
+    del mine
+    return (ss, IMP.domino.ReadHDF5AssignmentContainer(dataset, ss, pst.get_particles(), ssn))
 
 # the root is the last vetex
 all=get_assignments(mt.get_vertices()[-1])

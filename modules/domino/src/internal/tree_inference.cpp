@@ -23,7 +23,7 @@ void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer *second,
                              const SubsetFilterTables &filters,
                              ListSubsetFilterTable *lsft,
-                             InferenceStatistics &stats,
+                             InferenceStatistics *stats,
                              double max_error,
                              ParticleStatesTable* pst,
                              const statistics::Metrics &metrics,
@@ -36,7 +36,7 @@ void load_merged_assignments(const Subset &first_subset,
   EdgeData ed= get_edge_data(first_subset, second_subset, filters);
   load_union(first_subset, second_subset, first, second,
              ed, max_error, pst, metrics, max, out);
-  stats.add_subset(ed.union_subset, out);
+  if (stats) stats->add_subset(ed.union_subset, out);
   if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
                                             out);
   /*using namespace IMP;
@@ -46,7 +46,7 @@ void load_merged_assignments(const Subset &first_subset,
 void load_leaf_assignments(const Subset &merged_subset,
                            const AssignmentsTable *states,
                            ListSubsetFilterTable *lsft,
-                           InferenceStatistics &stats,
+                           InferenceStatistics *stats,
                            AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);
   IMP_FUNCTION_LOG;
@@ -56,7 +56,7 @@ void load_leaf_assignments(const Subset &merged_subset,
                                             out);
   //using namespace IMP;
   //IMP_LOG(VERBOSE, "Subset data is\n" << ret << std::endl);
-  stats.add_subset(merged_subset, out);
+  if (stats) stats->add_subset(merged_subset, out);
 }
 namespace {
   void
@@ -66,7 +66,7 @@ namespace {
                                   const AssignmentsTable *states,
                                   const SubsetFilterTables &filters,
                                   ListSubsetFilterTable *lsft,
-                                  InferenceStatistics &stats,
+                                  InferenceStatistics *stats,
                                   unsigned int max,
                                   boost::progress_display *progress,
                                   AssignmentContainer *out) {
@@ -118,7 +118,7 @@ void load_best_conformations(const MergeTree &mt,
                              const SubsetFilterTables &filters,
                              const AssignmentsTable *states,
                              ListSubsetFilterTable *lsft,
-                             InferenceStatistics &stats,
+                             InferenceStatistics *stats,
                              unsigned int max,
                              AssignmentContainer *out) {
   IMP::Pointer<AssignmentContainer> outp(out);

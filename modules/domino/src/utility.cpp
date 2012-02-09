@@ -210,9 +210,8 @@ void load_leaf_assignments(const Subset& subset,
                              AssignmentsTable *at,
                              AssignmentContainer *ac) {
   IMP_FUNCTION_LOG;
-  internal::InferenceStatistics stats;
   internal::load_leaf_assignments(subset,
-                                  at, nullptr, stats,
+                                  at, nullptr, NULL,
                                   ac);
 }
 
@@ -228,11 +227,10 @@ void load_merged_assignments(const Subset &first_subset,
                              const statistics::Metrics &metrics,
                              unsigned int max_states) {
   IMP_FUNCTION_LOG;
-  internal::InferenceStatistics stats;
   SubsetFilterTables ts(filters.begin(), filters.end());
   internal::load_merged_assignments(first_subset, first,
                                     second_subset, second,
-                                    ts, nullptr, stats,
+                                    ts, nullptr, NULL,
                                     max_error, pst, metrics,
                                     max_states, ret);
 }

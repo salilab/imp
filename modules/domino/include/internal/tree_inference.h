@@ -29,7 +29,7 @@ void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer *second,
                              const SubsetFilterTables &filters,
                              ListSubsetFilterTable *lsft,
-                             InferenceStatistics &stats,
+                             InferenceStatistics *stats,
                              double max_error,
                              ParticleStatesTable* pst,
                              const statistics::Metrics &metrics,
@@ -40,7 +40,7 @@ IMPDOMINOEXPORT
 void load_leaf_assignments(const Subset &merged_subset,
                            const AssignmentsTable *states,
                            ListSubsetFilterTable *lsft,
-                           InferenceStatistics &stats,
+                           InferenceStatistics *stats,
                            AssignmentContainer *out);
 
 IMPDOMINOEXPORT
@@ -50,7 +50,7 @@ void load_best_conformations(const MergeTree &jt,
                              const SubsetFilterTables &filters,
                              const AssignmentsTable *states,
                              ListSubsetFilterTable *lsft,
-                             InferenceStatistics &stats,
+                             InferenceStatistics *stats,
                              unsigned int max,
                              AssignmentContainer *out);
 
