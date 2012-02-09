@@ -124,6 +124,14 @@ IMP_RMF_SWIG_PAIR(RMF, NodeConstHandle, BondPair, BondPairs)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
+IMP_RMF_DECORATOR(RMF, Particle);
+IMP_RMF_DECORATOR(RMF, Colored);
+IMP_RMF_DECORATOR(RMF, JournalArticle);
+IMP_RMF_DECORATOR(RMF, Sphere);
+IMP_RMF_DECORATOR(RMF, Cylinder);
+IMP_RMF_DECORATOR(RMF, Score);
+IMP_RMF_DECORATOR(RMF, RigidParticle);
+IMP_RMF_DECORATOR(RMF, Residue);
 
 %implicitconv RMF::HDF5File;
 %implicitconv RMF::HDF5ConstFile;
@@ -227,6 +235,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/FileHandle.h"
 %include "RMF/names.h"
 %include "RMF/Validator.h"
+%include "RMF/decorators.h"
 
 %pythoncode %{
 

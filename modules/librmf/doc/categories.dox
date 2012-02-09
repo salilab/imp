@@ -27,6 +27,8 @@ The following are pre-defined Categories for data stored in single nodes.
     \rmfattribute{orientation k, Float, the k component or the orientation quaterion,required if there are any orientation components}
     \rmfattributetable_end
 
+    Related decorators: RMF::Particle, RMF::RigidParticle.
+
 \rmfattributetable_begin{Sequence,sequence}
     \rmfattribute{first residue index, Int,
     the first residue index included in this node,
@@ -52,6 +54,8 @@ The following are pre-defined Categories for data stored in single nodes.
     pdb files the position in the alphabet of the chain should probably
     be used (eg chain 'A' is 0), }
     \rmfattributetable_end
+
+    Related decorators: RMF::Residue.
 
 \rmfattributetable_begin{Shape,shape}
     \rmfattribute{cartesian x, Float, the x coordinate,
@@ -90,11 +94,13 @@ The following are pre-defined Categories for data stored in single nodes.
     must be divisible by 2}
     \rmfattributetable_end
 
+    Related decorators: RMF::Ball, RMF::Cylinder.
+
     \rmfattributetable_begin{Feature,feature}
     \rmfattribute{score, Float, the score, }
     \rmfattribute{representation, NodeIDs, the nodes involved in the feature, }
     \rmfattributetable_end
-
+    Related decorators: RMF::Score.
 
     \rmfattributetable_begin{Publication,publication}
     \rmfattribute{title, String, article title, }
@@ -109,6 +115,8 @@ The following are pre-defined Categories for data stored in single nodes.
     \rmfattribute{author, Strings,
     the author names as a list for "Firstname Lastname", }
     \rmfattributetable_end
+
+    Related decorators: RMF::JournalArticle.
 
     \section pair_categories Pair Categories
     The following are categories for storing data on pairs of nodes.

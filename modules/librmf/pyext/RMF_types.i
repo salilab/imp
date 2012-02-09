@@ -60,6 +60,13 @@
   BOOST_STATIC_ASSERT(Convert<IMP::internal::_TrivialDecorator>::converter ==3);
   %}*/
 
+%define IMP_RMF_DECORATOR(Namespace, Name)
+IMP_RMF_VALUE(Namespace, Name, Name##s);
+IMP_RMF_VALUE(Namespace, Name##Const, Name##Consts);
+IMP_RMF_VALUE(Namespace, Name##Factory, Name##Factories);
+IMP_RMF_VALUE(Namespace, Name##ConstFactory, Name##ConstFactories);
+%enddef
+
 
 %define IMP_RMF_SWIG_SHOWSTUFF(Name)
   std::string __str__() const {
