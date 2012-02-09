@@ -249,7 +249,9 @@
 #define IMP_RMF_FOREACH_TYPE(macroname)                                 \
   IMP_RMF_FOREACH_SIMPLE_TYPE(macroname);                               \
   macroname(string, String, String, String,                             \
-            const Strings &, Strings);                                  \
+            const StringsList &, StringsList);                          \
+  macroname(strings, Strings, Strings, Strings,                         \
+            const StringsList &, StringsList);                          \
   macroname(node_id, NodeID, NodeID, NodeID, const NodeIDs&, NodeIDs);  \
   macroname(node_ids, NodeIDs, const NodeIDs&, NodeIDs,                 \
             const NodeIDsList &, NodeIDsLst);                           \
