@@ -67,14 +67,14 @@ void add_SPBexcluded_volume
  }
 // Soft Sphere Pair Score
  IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
-// 0) between non-GFPs in the primitive cell
+// 0) non-GFPs in the primitive cell
  IMP_NEW(container::ClosePairContainer,cpc,(noGFP_cell0,slack));
  IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
  cpc->add_pair_filter(rbpf);
  IMP_NEW(container::PairsRestraint,evr0,(ssps,cpc));
  evr0->set_name("Excluded Volume non-GFPs primitive cell");
  m->add_restraint(evr0);
-// 1) between non-GFPs across cells
+// 1) non-GFPs across cells
  IMP_NEW(container::CloseBipartitePairContainer,cbpc,
   (noGFP_cell0,noGFP_othercells,slack));
  IMP_NEW(container::PairsRestraint,evr1,(ssps,cbpc));
@@ -87,7 +87,7 @@ void add_SPBexcluded_volume
   std::list<std::string>::iterator iit;
   for (iit = names.begin(); iit != names.end(); iit++){
    std::string GFP_name=*iit;
-// 2) between GFPs of a specific type in the primitive cell
+// 2) GFPs of a specific type in the primitive cell
    IMP_NEW(container::ListSingletonContainer,lsc0,(m));
    atom::Selection s0=atom::Selection(hhs[0]);
    s0.set_molecule(GFP_name);
@@ -98,7 +98,7 @@ void add_SPBexcluded_volume
    IMP_NEW(container::PairsRestraint,evr2,(ssps,cpc));
    evr2->set_name("Excluded Volume "+GFP_name+" primitive cell");
    m->add_restraint(evr2);
-// 3) between GFPs of a specific type across cells
+// 3) GFPs of a specific type across cells
    IMP_NEW(container::ListSingletonContainer,lsc1,(m));
    for(unsigned j=1;j<hhs.size();++j){
     atom::Selection s1=atom::Selection(hhs[j]);
@@ -110,7 +110,7 @@ void add_SPBexcluded_volume
    evr3->set_name("Excluded Volume "+GFP_name+" across cells");
    m->add_restraint(evr3);
   }
-// 4) between all the GFPs in the primitive cell and all the other proteins
+// 4) all the GFPs in the primitive cell against all the other proteins
   IMP_NEW(container::ListSingletonContainer,noGFP_allcells,(m));
   noGFP_allcells->add_particles(noGFP_cell0->get_particles());
   noGFP_allcells->add_particles(noGFP_othercells->get_particles());
