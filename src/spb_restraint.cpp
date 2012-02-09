@@ -46,11 +46,10 @@ Pointer<core::SphereDistancePairScore>
 void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
- double slack=5.0;
+ double slack=10.0;
  std::list<std::string> names;
  IMP_NEW(container::ListSingletonContainer,noGFP_cell0,(m));
  IMP_NEW(container::ListSingletonContainer,noGFP_othercells,(m));
- IMP_NEW(container::ListSingletonContainer,noGFP_allcells,(m));
  IMP_NEW(container::ListSingletonContainer,GFP_cell0,(m));
  for(unsigned int i=0;i<hhs.size();++i){
   atom::Hierarchies hs=hhs[i].get_children();
@@ -60,7 +59,6 @@ void add_SPBexcluded_volume
    if(strs[strs.size()-1]!="GFP"){
     if(i==0){ noGFP_cell0->add_particles(atom::get_leaves(hs[j]));}
     else{noGFP_othercells->add_particles(atom::get_leaves(hs[j]));}
-    noGFP_allcells->add_particles(atom::get_leaves(hs[j]));
    }else{
     if(i==0){GFP_cell0->add_particles(atom::get_leaves(hs[j]));}
     names.push_back(hs[j]->get_name());
@@ -69,7 +67,7 @@ void add_SPBexcluded_volume
  }
 // Soft Sphere Pair Score
  IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
-// 0) between non-GFPs within the primitive cell
+// 0) between non-GFPs in the primitive cell
  IMP_NEW(container::ClosePairContainer,cpc,(noGFP_cell0,slack));
  IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
  cpc->add_pair_filter(rbpf);
@@ -113,6 +111,9 @@ void add_SPBexcluded_volume
    m->add_restraint(evr3);
   }
 // 4) between all the GFPs in the primitive cell and all the other proteins
+  IMP_NEW(container::ListSingletonContainer,noGFP_allcells,(m));
+  noGFP_allcells->add_particles(noGFP_cell0->get_particles());
+  noGFP_allcells->add_particles(noGFP_othercells->get_particles());
   IMP_NEW(container::CloseBipartitePairContainer,cbpc,
    (GFP_cell0,noGFP_allcells,slack));
   IMP_NEW(container::PairsRestraint,evr4,(ssps,cbpc));
