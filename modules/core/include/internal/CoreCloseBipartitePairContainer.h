@@ -37,7 +37,7 @@ public IMP::core::internal::ListLikePairContainer
 {
   typedef IMP::core::internal::ListLikePairContainer P;
   IMP::OwnerPointer<SingletonContainer> sc_[2];
-  bool were_close_;
+  bool were_close_, reset_;
   ObjectKey key_;
   // moved stuff
   ParticleIndexes rbs_[2];
@@ -81,7 +81,8 @@ public:
   /**@{*/
   IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
                   pair_filters,
-                  PairFilter*, PairFilters, obj->set_was_used(true);,,);
+                  PairFilter*, PairFilters, obj->set_was_used(true);,
+                  reset(),if(container) container->reset());
    /**@}*/
   ParticlesTemp get_contained_particles() const;
   bool get_is_up_to_date() const {
@@ -93,6 +94,7 @@ public:
       return true;
     }
   }
+  void reset() {reset_=true;}
   IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
 };
 

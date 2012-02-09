@@ -65,6 +65,7 @@ void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
   sc_[0]=a;
   sc_[1]=b;
   were_close_=false;
+  reset_=false;
   covers_[0]=cover_a;
   covers_[1]=cover_b;
   for (unsigned int i=0; i< 2; ++i) {
@@ -110,8 +111,8 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
   if (covers_[0]==-1
       || algebra::get_distance(get_model()->get_sphere(covers_[0]),
                                get_model()->get_sphere(covers_[1]))
-      < distance_) {
-    if (were_close_ && !internal::get_if_moved(get_model(), slack_,
+      < distance_ || reset_) {
+    if (!reset_ && were_close_ && !internal::get_if_moved(get_model(), slack_,
                                                xyzrs_[0], rbs_[0],
                                                constituents_,
                                                rbs_backup_[0],
@@ -134,6 +135,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
       internal::fill_list(get_model(), access_pair_filters(),
                           key_, 2*slack_+distance_, xyzrs_, rbs_,
                           constituents_, pips);
+      reset_=false;
       update_list(pips);
     }
     were_close_=true;
@@ -150,7 +152,14 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
         if (dist < .9*distance_) {
           ParticleIndexPair pip(d0.get_particle_index(),
                                 d1.get_particle_index());
-          IMP_INTERNAL_CHECK(std::find(get_access().begin(),
+          bool filtered=false;
+          for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
+            if (get_pair_filter(i)->get_contains(get_model(), pip)) {
+              filtered=true;
+              break;
+            }
+          }
+          IMP_INTERNAL_CHECK(filtered|| std::find(get_access().begin(),
                                        get_access().end(), pip)
                              != get_access().end(),
                              "Pair " << pip
