@@ -138,7 +138,7 @@ Assignments DominoSampler
     as->set_was_used(true);
     internal::load_best_conformations(mt, boost::num_vertices(mt)-1,
                                          known_particles,
-                                         sfts, sst, lsft, stats_,
+                                         sfts, sst, lsft, &stats_,
                                           get_maximum_number_of_assignments(),
                                           as);
     final_solutions= as->get_assignments(IntRange(0,
@@ -257,7 +257,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
                   "Not a binary tree leaf");
   Subset curs=boost::get(subset_map, node_index);
   internal::load_leaf_assignments(curs,
-                                  sst, lsft, stats_,
+                                  sst, lsft, NULL,
                                   ac);
 }
 
@@ -313,7 +313,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   }
   internal::load_merged_assignments(firsts, first,
                                     seconds, second,
-                                    sfts, lsft, stats_,
+                                    sfts, lsft, NULL,
                                     0.0, NULL,
                                     statistics::Metrics(),
                                     max_states, ret);
