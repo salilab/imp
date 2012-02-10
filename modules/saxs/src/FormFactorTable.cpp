@@ -264,15 +264,14 @@ f_solvent(q) = rho * v_i * EXP( (- v_i^(2/3) / (4pi)) * q^2 )
 */
 void FormFactorTable::compute_form_factors_all_atoms()
 {
-  unsigned int number_of_q_entries =
-    algebra::get_rounded((max_q_ - min_q_) / delta_q_ ) + 1;
+  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
 
-  static Float two_third = 2.0 / 3;
-  static Float one_over_four_pi = 1 / 4*PI;
+  static Float two_third = 2.0/3.0;
+  static Float one_over_four_pi = 1.0/(4.0*PI);
   Floats qq(number_of_q_entries), ss(number_of_q_entries);
 
   // store qq and ss for the faster calculation
-  for (unsigned int iq=0; iq<number_of_q_entries; iq++) {
+  for (int iq=0; iq<number_of_q_entries; iq++) {
     // the scattering vector q = (4pi) * sin(theta) / lambda
     Float q = min_q_ + (Float)iq * delta_q_;
     qq[iq] = square(q);       // qq = q^2
@@ -289,7 +288,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
                                   two_third)
                            * one_over_four_pi;
 
-    for (unsigned int iq = 0; iq < number_of_q_entries; iq++) {
+    for (int iq = 0; iq < number_of_q_entries; iq++) {
       // c
       form_factors_[i][iq] = form_factors_coefficients_[i].c_;
 
@@ -316,8 +315,7 @@ void FormFactorTable::compute_form_factors_all_atoms()
 
 void FormFactorTable::compute_form_factors_heavy_atoms()
 {
-  unsigned int number_of_q_entries = algebra::get_rounded(
-                                             (max_q_ - min_q_) / delta_q_ ) + 1;
+  int number_of_q_entries = (int)std::ceil((max_q_ - min_q_) / delta_q_ );
   FormFactorAtomType element_type = UNK;
   unsigned int h_num = 0;       // bonded hydrogens number
 
@@ -359,7 +357,7 @@ void FormFactorTable::compute_form_factors_heavy_atoms()
       break;
     }
 
-    for (unsigned int iq = 0; iq < number_of_q_entries; iq++) {
+    for(int iq = 0; iq < number_of_q_entries; iq++) {
       // ff(i) = ff(element) + h_num*ff(hydrogen)
       form_factors_[i][iq] =
         form_factors_[element_type][iq] + h_num * form_factors_[H][iq];

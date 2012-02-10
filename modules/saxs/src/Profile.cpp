@@ -35,7 +35,8 @@ std::ostream & operator<<(std::ostream & s, const Profile::IntensityEntry & e)
 }
 
 Profile::Profile(Float qmin, Float qmax, Float delta):
-  min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false)
+  min_q_(qmin), max_q_(qmax), delta_q_(delta), experimental_(false),
+  average_radius_(1.58)
 {
   ff_table_ = default_form_factor_table();
 }
@@ -391,14 +392,26 @@ void Profile::calculate_profile_partial(const Particles& particles1,
 }
 
 void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
+  // implements volume fitting function G(s) as described in crysol paper eq. 13
+  Float rm = average_radius_;
+  Float coefficient = - std::pow(4.0*PI/3.0, 3.0/2.0) * (c1*c1-1.0) / (16*PI);
+  coefficient *= square(rm);
+  //std::cerr << "coefficient " << coefficient << " c1 " << c1 << std::endl;
   if(partial_profiles_.size() > 0) {
     out_profile.init();
     out_profile.add(partial_profiles_[0]);
     Profile p1, p2;
     p1.add(partial_profiles_[1]);
     p2.add(partial_profiles_[2]);
-    p1.scale(c1*c1);
-    p2.scale(-c1);
+    for(unsigned int k=0; k<p1.size(); k++) {
+      Float q = p1.get_q(k);
+      Float G_q = (c1*c1*c1)*std::exp(coefficient*square(q));
+      p1.set_intensity(k, p1.get_intensity(k)*square(G_q));
+      p2.set_intensity(k, - p2.get_intensity(k)*G_q);
+      //if(k==p1.size()-1) std::cerr << q << " " << G_q << std::endl;
+    }
+    //p1.scale(c1*c1);
+    //p2.scale(-c1);
     out_profile.add(p1);
     out_profile.add(p2);
   }
@@ -409,13 +422,17 @@ void Profile::sum_partial_profiles(Float c1, Float c2, Profile& out_profile) {
     p5.add(partial_profiles_[5]);
     p3.scale(c2*c2);
     p4.scale(c2);
-    p5.scale(-c1*c2);
+    for(unsigned int k=0; k<p5.size(); k++) {
+      Float q = p5.get_q(k);
+      Float G_q = (c1*c1*c1)*std::exp(coefficient*square(q));
+      p5.set_intensity(k, - p5.get_intensity(k)*G_q*c2);
+    }
+    //    p5.scale(-c1*c2);
     out_profile.add(p3);
     out_profile.add(p4);
     out_profile.add(p5);
   }
 }
-
 
 void Profile::calculate_profile_symmetric(const Particles& particles,
                                           unsigned int n,
