@@ -31,8 +31,8 @@ int main(int argc, char **argv)
   float excluded_volume_c1 = 0.0;
   bool use_offset = false;
   bool fit = true;
-  //bool water_layer = true;
-  float water_layer_c2=0;
+  float MAX_C2 = 4.0; float MIN_C2 = -MAX_C2;
+  float water_layer_c2 = MAX_C2;
   bool heavy_atoms_only = true;
   bool residue_level = false;
   po::options_description desc("Options");
@@ -47,8 +47,10 @@ Written by Dina Schneidman.")
      "maximal q value (default = 0.5)")
     ("profile_size,s", po::value<int>(&profile_size)->default_value(500),
      "number of points in the profile (default = 500)")
-    ("water_layer_c2,w", po::value<float>(&water_layer_c2)->default_value(0.0),
-     "set hydration layer density (default = 0.0)")
+    ("water_layer_c2,w",
+     po::value<float>(&water_layer_c2)->default_value(MAX_C2),
+     "set hydration layer density. \
+Valid range: -4.0 < c2 < 4.0 (default = 0.0)")
     ("hydrogens,h", "explicitly consider hydrogens in PDB files \
 (default = false)")
     ("residues,r", "perform fast coarse grained profile calculation using \
@@ -77,9 +79,6 @@ recommended q value is 0.2")
     ("ab_initio,a", "compute profile for a bead model with \
 constant form factor (default = false)")
     ("vacuum,v", "compute profile in vacuum (default = false)")
-    // ("charge_weight,c",
-    //  po::value<float>(&charge_weight)->default_value(1.0),
-    //  "weight of charged residues in hydration layer, default = 1.0")
     ;
 
   po::options_description cmdline_options;
@@ -104,7 +103,6 @@ constant form factor (default = false)")
     std::cout << visible << "\n";
     return 0;
   }
-  //if(vm.count("water_layer")) water_layer=false;
   if(vm.count("hydrogens")) heavy_atoms_only=false;
   if(vm.count("residues")) residue_level=true;
   if(vm.count("offset")) use_offset=true;
@@ -115,6 +113,7 @@ constant form factor (default = false)")
 
   float delta_q = max_q / profile_size;
   bool interactive_gnuplot = false; // for server
+
 
   // 1. read pdbs and profiles, prepare particles
   IMP::Model *model = new IMP::Model();
@@ -210,10 +209,10 @@ constant form factor (default = false)")
       volume += ft->get_volume(particles_vec[i][k], ff_type);
     }
     average_radius /= particles_vec[i].size();
-    // partial_profile->set_average_radius(average_radius);
-    // std::cerr << "Average radius = " << average_radius
-    //           << " volume = " << volume << " average_volume = "
-    // << volume/particles_vec[i].size() << std::endl;
+    partial_profile->set_average_radius(average_radius);
+    std::cerr << "Average radius = " << average_radius
+              << " volume = " << volume << " average_volume = "
+    << volume/particles_vec[i].size() << std::endl;
 
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       if(ab_initio) { // bead model, constant form factor
@@ -262,12 +261,11 @@ constant form factor (default = false)")
       std::cout << pdb_files[i] << " " << dat_files[j];
 
       float min_c1=0.95; float max_c1=1.05;
-      float min_c2=-4.0; float max_c2=4.0;
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
-      if(water_layer_c2 == 0.0) { min_c2 = max_c2 = 0.0; }
-      else { max_c2 = water_layer_c2; min_c2 = -max_c2; }
+      if(std::fabs(water_layer_c2 - MAX_C2) < 0.00000000001) { // enumerate
+      } else { MIN_C2 = MAX_C2 = water_layer_c2; } // set specific value
       IMP::saxs::FitParameters fp = saxs_score->fit_profile(*partial_profile,
-                                                min_c1, max_c1, min_c2, max_c2,
+                                                min_c1, max_c1, MIN_C2, MAX_C2,
                                                 use_offset, fit_file_name2);
 
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
