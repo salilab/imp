@@ -342,4 +342,12 @@ set_log_level=IMP.base.set_log_level
 set_log_timer=IMP.base.set_log_timer
 get_log_level=IMP.base.get_log_level
 add_to_log= IMP.base.add_to_log
+
+# If we're being imported from a Python application that is in turn being run
+# by a test case with coverage turned on, also turn on coverage in the Python
+# application.
+if 'IMP_COVERAGE' in os.environ:
+    from IMP.test._compat_python import coverage
+    coverage.the_coverage.parallel_mode=True
+    coverage.start()
 %}
