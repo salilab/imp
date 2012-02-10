@@ -46,79 +46,50 @@ Pointer<core::SphereDistancePairScore>
 void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies& hhs,bool GFP_exc_volume,double kappa)
 {
- double slack=10.0;
  std::list<std::string> names;
- IMP_NEW(container::ListSingletonContainer,noGFP_cell0,(m));
- IMP_NEW(container::ListSingletonContainer,noGFP_othercells,(m));
- IMP_NEW(container::ListSingletonContainer,GFP_cell0,(m));
+ IMP_NEW(container::ListSingletonContainer,noGFP,(m));
+ IMP_NEW(container::ListSingletonContainer,GFP0,(m));
  for(unsigned int i=0;i<hhs.size();++i){
   atom::Hierarchies hs=hhs[i].get_children();
-  for(unsigned int j=0;j<hs.size();++j) {
+  for(unsigned int j=0;j<hs.size();++j){
    std::vector<std::string> strs;
    boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
    if(strs[strs.size()-1]!="GFP"){
-    if(i==0){ noGFP_cell0->add_particles(atom::get_leaves(hs[j]));}
-    else{noGFP_othercells->add_particles(atom::get_leaves(hs[j]));}
+    noGFP->add_particles(atom::get_leaves(hs[j]));
    }else{
-    if(i==0){GFP_cell0->add_particles(atom::get_leaves(hs[j]));}
+    if(i==0){GFP0->add_particles(atom::get_leaves(hs[j]));}
     names.push_back(hs[j]->get_name());
    }
   }
  }
-// Soft Sphere Pair Score
- IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
-// 0) non-GFPs in the primitive cell
- IMP_NEW(container::ClosePairContainer,cpc,(noGFP_cell0,slack));
- IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
- cpc->add_pair_filter(rbpf);
- IMP_NEW(container::PairsRestraint,evr0,(ssps,cpc));
- evr0->set_name("Excluded Volume non-GFPs primitive cell");
- m->add_restraint(evr0);
-// 1) non-GFPs across cells
- IMP_NEW(container::CloseBipartitePairContainer,cbpc,
-  (noGFP_cell0,noGFP_othercells,slack));
- IMP_NEW(container::PairsRestraint,evr1,(ssps,cbpc));
- evr1->set_name("Excluded Volume non-GFPs across cells");
+// non GFPs
+ IMP_NEW(core::ExcludedVolumeRestraint,evr1,(noGFP,kappa));
+ evr1->set_name("Excluded Volume for non-GFPs");
  m->add_restraint(evr1);
 // In case you don't want transparent GFPs
  if(GFP_exc_volume){
   names.sort();
   names.unique();
+// intra GFPs of a specific type
   std::list<std::string>::iterator iit;
   for (iit = names.begin(); iit != names.end(); iit++){
    std::string GFP_name=*iit;
-// 2) GFPs of a specific type in the primitive cell
    IMP_NEW(container::ListSingletonContainer,lsc0,(m));
-   atom::Selection s0=atom::Selection(hhs[0]);
+   atom::Selection s0=atom::Selection(hhs);
    s0.set_molecule(GFP_name);
    lsc0->add_particles(s0.get_selected_particles());
-   IMP_NEW(container::ClosePairContainer,cpc,(lsc0,slack));
-   IMP_NEW(membrane::SameRigidBodyPairFilter,rbpf,());
-   cpc->add_pair_filter(rbpf);
-   IMP_NEW(container::PairsRestraint,evr2,(ssps,cpc));
-   evr2->set_name("Excluded Volume "+GFP_name+" primitive cell");
+   IMP_NEW(core::ExcludedVolumeRestraint,evr2,(lsc0,kappa));
+   evr2->set_name("Excluded Volume for "+GFP_name);
    m->add_restraint(evr2);
-// 3) GFPs of a specific type across cells
-   IMP_NEW(container::ListSingletonContainer,lsc1,(m));
-   for(unsigned j=1;j<hhs.size();++j){
-    atom::Selection s1=atom::Selection(hhs[j]);
-    s1.set_molecule(GFP_name);
-    lsc1->add_particles(s1.get_selected_particles());
-   }
-   IMP_NEW(container::CloseBipartitePairContainer,cbpc,(lsc0,lsc1,slack));
-   IMP_NEW(container::PairsRestraint,evr3,(ssps,cbpc));
-   evr3->set_name("Excluded Volume "+GFP_name+" across cells");
-   m->add_restraint(evr3);
   }
-// 4) all the GFPs in the primitive cell against all the other proteins
-  IMP_NEW(container::ListSingletonContainer,noGFP_allcells,(m));
-  noGFP_allcells->add_particles(noGFP_cell0->get_particles());
-  noGFP_allcells->add_particles(noGFP_othercells->get_particles());
-  IMP_NEW(container::CloseBipartitePairContainer,cbpc,
-   (GFP_cell0,noGFP_allcells,slack));
-  IMP_NEW(container::PairsRestraint,evr4,(ssps,cbpc));
-  evr4->set_name("Excluded Volume GFPs vs. the rest of the world");
-  m->add_restraint(evr4);
+// all the GFPs in the primitive cell against all the other proteins
+  double cut=1.0;
+  double slack=10.0;
+  IMP_NEW(container::CloseBipartitePairContainer,cbpc,(GFP0,noGFP,cut,slack));
+  IMP_NEW(core::SoftSpherePairScore,ssps,(kappa));
+  IMP_NEW(container::PairsRestraint,evr3,(ssps,cbpc));
+  evr3->set_name("Excluded Volume GFPs vs. the rest of the world");
+  m->add_restraint(evr3);
  }
 }
 
