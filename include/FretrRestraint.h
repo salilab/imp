@@ -13,6 +13,7 @@
 #include <IMP/Particle.h>
 #include <IMP/container/CloseBipartitePairContainer.h>
 
+
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //! FRET_R Restraint
@@ -27,12 +28,12 @@ Particles pa_;
 double R0_;
 double Sd_;
 double Sa_;
+double Nd_;
+double Na_;
 double gamma_;
 double Ida_;
 double fretr_;
 double kappa_;
-Pointer<container::CloseBipartitePairContainer> cbpc_;
-mutable compatibility::map<ParticleIndex,double> Fi_;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
