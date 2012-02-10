@@ -1,5 +1,5 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-7/2/2012', required_modules=['em', 'atom', 'core'],
+env.IMPModuleBuild(version='nightly-9/2/2012', required_modules=['em', 'atom', 'core'],
                    lib_only_required_modules=['saxs'],
                    python_docs=True)
