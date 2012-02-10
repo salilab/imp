@@ -149,10 +149,14 @@ public:
   Float get_error(unsigned int i) const { return profile_[i].error_; }
   Float get_weight(unsigned int i) const { return profile_[i].weight_; }
 
+  Float get_average_radius() const { return average_radius_; }
+
   void set_intensity(unsigned int i, Float iq) { profile_[i].intensity_ = iq; }
 
   //! required for reciprocal space calculation
   void set_ff_table(FormFactorTable* ff_table) { ff_table_ = ff_table; }
+
+  void set_average_radius(Float r) { average_radius_ = r; }
 
   //! add intensity entry to profile
   void add_entry(Float q, Float intensity, Float error=1.0) {
@@ -201,6 +205,7 @@ public:
   FormFactorTable* ff_table_; // pointer to form factors table
   std::vector<Profile> partial_profiles_;
   bool experimental_; // experimental profile read from file
+  Float average_radius_; // average radius of the particles
 };
 
 IMPSAXS_END_NAMESPACE
