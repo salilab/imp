@@ -9,8 +9,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         print self.get_input_file_name('6lyz.pdb')
         print self.get_input_file_name('lyzexp.dat')
         p = self.run_application('foxs',
-                                 ['--water_layer_c2', '4.0',
-                                  self.get_input_file_name('6lyz.pdb'),
+                                 [self.get_input_file_name('6lyz.pdb'),
                                   self.get_input_file_name('lyzexp.dat')])
         out, err = p.communicate()
         sys.stderr.write(err)
