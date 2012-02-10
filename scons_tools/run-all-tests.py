@@ -89,6 +89,9 @@ def start_coverage():
     coverage.exclude("^\s+weakref_proxy =")
     coverage.exclude("^def [sg]et_check_level")
     coverage.start()
+    # Ensure that any IMP Python scripts run by tests are themselves checked
+    # for Python coverage
+    os.environ['IMP_COVERAGE'] = '1'
 
 def report_morfs(morfs, opts, modname, annotate_dir, omit_prefixes=[]):
     if opts.pycoverage == 'lines':
