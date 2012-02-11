@@ -1,4 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-9/2/2012',
+env.IMPModuleBuild(version='nightly-10/2/2012',
                    required_modules=['atom', 'core'])
