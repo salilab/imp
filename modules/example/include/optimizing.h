@@ -44,6 +44,7 @@ in the passed list of restraints. */
 inline void optimize_balls(const ParticlesTemp &ps,
                            const RestraintsTemp &rs=RestraintsTemp(),
                            const PairFilters &excluded=PairFilters(),
+                           const OptimizerStates &opt_states=OptimizerStates(),
                            LogLevel ll=DEFAULT) {
   // make sure that errors and log messages are marked as coming from this
   // function
@@ -55,6 +56,7 @@ inline void optimize_balls(const ParticlesTemp &ps,
 
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
   IMP_NEW(core::ConjugateGradients, cg, (m));
+  cg->set_optimizer_states(opt_states);
   {
     cg->set_score_threshold(ps.size()*.1);
     // set up restraints for cg
@@ -68,6 +70,7 @@ inline void optimize_balls(const ParticlesTemp &ps,
     cg->set_restraints(rs+RestraintsTemp(1, r.get()));
   }
   IMP_NEW(core::MonteCarlo, mc, (m));
+  mc->set_optimizer_states(opt_states);
   {
     // set up MC
     mc->set_score_threshold(ps.size()*.1);
