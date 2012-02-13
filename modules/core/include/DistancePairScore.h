@@ -25,7 +25,8 @@ class IMPCOREEXPORT DistancePairScore : public PairScore
 {
   IMP::OwnerPointer<UnaryFunction> f_;
 public:
-  DistancePairScore(UnaryFunction *f);
+  DistancePairScore(UnaryFunction *f,
+                    std::string name="DistancePairScore %1%");
   UnaryFunction *get_unary_function() const {return f_;}
   IMP_SIMPLE_PAIR_SCORE(DistancePairScore);
 };
@@ -39,7 +40,8 @@ class IMPCOREEXPORT HarmonicDistancePairScore: public PairScore
 {
   const double x0_, k_;
 public:
-  HarmonicDistancePairScore(double x0, double k);
+  HarmonicDistancePairScore(double x0, double k,
+                            std::string name="HarmonicDistancePairScore %1%");
   double get_rest_length() const {
     return x0_;
   }

@@ -15,7 +15,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-DistancePairScore::DistancePairScore(UnaryFunction *f): f_(f){}
+DistancePairScore::DistancePairScore(UnaryFunction *f,
+                                     std::string name):
+    PairScore(name), f_(f){}
 
 
 Float DistancePairScore::evaluate(const ParticlePair &p,
@@ -32,8 +34,10 @@ void DistancePairScore::do_show(std::ostream &out) const
   out << "function " << f_->get_name();
 }
 
-HarmonicDistancePairScore::HarmonicDistancePairScore(double x0, double k):
-  x0_(x0), k_(k){}
+HarmonicDistancePairScore::HarmonicDistancePairScore(double x0, double k,
+                                                     std::string name):
+    PairScore(name),
+    x0_(x0), k_(k){}
 
 
 void HarmonicDistancePairScore::do_show(std::ostream &out) const {
