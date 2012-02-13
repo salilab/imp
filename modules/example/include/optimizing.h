@@ -68,6 +68,7 @@ inline void optimize_balls(const ParticlesTemp &ps,
                                                       cpc.get());
     r->set_model(ps[0]->get_model());
     cg->set_restraints(rs+RestraintsTemp(1, r.get()));
+    cg->set_optimizer_states(opt_states);
   }
   IMP_NEW(core::MonteCarlo, mc, (m));
   mc->set_optimizer_states(opt_states);
@@ -82,25 +83,30 @@ inline void optimize_balls(const ParticlesTemp &ps,
     mc->set_close_pair_score(ssps, 0, ps, excluded);
     // make pointer vector
   }
-  boost::ptr_vector<ScopedSetFloatAttribute> attrs(ps.size());
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    attrs.push_back(new ScopedSetFloatAttribute(ps[i],
-                                                core::XYZR::get_radius_key(),
-                                                0));
-  }
 
   IMP_LOG(PROGRESS, "Performing initial optimization" << std::endl);
-  cg->optimize(1000);
-
+  {
+    boost::ptr_vector<ScopedSetFloatAttribute> attrs;
+    for (unsigned int j=0; j< attrs.size(); ++j) {
+      attrs.push_back( new ScopedSetFloatAttribute(ps[j],
+                                                   core::XYZR::get_radius_key(),
+                                                   0));
+    }
+    cg->optimize(1000);
+  }
   // shrink each of the particles, relax the configuration, repeat
   for (int i=0; i< 11; ++i) {
+    boost::ptr_vector<ScopedSetFloatAttribute> attrs;
     double factor=.1*i;
     IMP_LOG(PROGRESS, "Optimizing with radii at " << factor << " of full"
             << std::endl);
-    for (unsigned int j=0; j< attrs.size(); ++j) {
-      attrs[j].set(ps[j], core::XYZR::get_radius_key(),
-                   core::XYZR(ps[j]).get_radius()*factor);
+    for (unsigned int j=0; j< ps.size(); ++j) {
+      attrs.push_back( new ScopedSetFloatAttribute(ps[j],
+                                                   core::XYZR::get_radius_key(),
+                                                   core::XYZR(ps[j])
+                                                   .get_radius()*factor));
     }
+    std::cout << core::XYZR(ps[0]) << std::endl;
     for (int j=0; j< 5; ++j) {
       mc->set_kt(100.0/(3*j+1));
       mc->optimize(ps.size()*(j+1)*100);
