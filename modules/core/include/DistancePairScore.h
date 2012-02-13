@@ -60,7 +60,7 @@ inline double HarmonicDistancePairScore
                  const ParticleIndexPair &p,
                  DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  IMP_LOG(VERBOSE, "Evaluating distancle between "
+  IMP_LOG(VERBOSE, "Evaluating distance between "
           << m->get_particle(p[0])->get_name()
           << " and " << m->get_particle(p[1])->get_name()
           << " at " << m->get_sphere(p[0])
