@@ -406,7 +406,8 @@ namespace grids {
     }
     //! Return the number of voxels in a certain direction
     unsigned int get_number_of_voxels(unsigned int i) const {
-      IMP_INTERNAL_CHECK(D==-1 || i < D, "Only D: "<< i);
+      IMP_INTERNAL_CHECK(D==-1 || i < static_cast<unsigned int>(D),
+                         "Only D: "<< i);
       return d_[i];
     }
     unsigned int get_number_of_voxels() const {
