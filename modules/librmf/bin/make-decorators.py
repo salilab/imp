@@ -6,7 +6,8 @@ def get_string(type, name, const, per_frame=False):
         pfs="false"
     if const:
         return """(fh.get_has_key<%(type)sTraits>(cat, \"%(name)s\")?
-                   fh.get_key<%(type)sTraits>(cat, \"%(name)s\"):%(type)sKey())"""%{ "name":name,
+                   fh.get_key<%(type)sTraits>(cat, \"%(name)s\")
+                              :%(type)sKey())"""%{ "name":name,
                                                                                      "type": type,
                                                                                      "pfs":pfs}
     else:
@@ -132,23 +133,26 @@ class Attributes:
 
 class DecoratorCategory:
     def __init__(self, category, arity,
-                 attributes):
+                 attributes, internal_attributes=[]):
         self.category=category
         self.arity=arity
         self.attributes=attributes
+        self.internal_attributes=internal_attributes
 
 class Decorator:
     def __init__(self, name, description,
                  decorator_categories,
-                 check_function):
+                 init_function="",
+                 check_function=None):
         self.name=name
         self.description=description
+        self.init_function=init_function
         self.categories= decorator_categories
         self.check_function= check_function
     def _get_key_members(self):
         ret=[]
         for cd in self.categories:
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_key_members())
         return "\n".join(ret)
     def _get_methods(self, const):
@@ -160,26 +164,28 @@ class Decorator:
     def _get_key_arguments(self):
         ret=[]
         for cd in self.categories:
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_key_arguments())
         return ",\n".join(ret)
     def _get_key_pass(self):
         ret=[]
         for cd in self.categories:
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_key_pass())
         return ",\n".join(ret)
     def _get_key_saves(self):
         ret=[]
         for cd in self.categories:
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_key_saves())
         return ",\n".join(ret)
     def _get_checks(self):
         ret=[]
         for cd in self.categories:
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_check())
+        if self.check_function:
+            ret.append(self.check_function)
         return "\n    && ".join(ret)
     def _get_initialize(self, const):
         ret=[]
@@ -194,7 +200,7 @@ class Decorator:
                 rhs="get_category_always<"+str(cd.arity)+">(fh, \""\
                     +cd.category+"\");"
             ret.append(lhs+rhs)
-            for a in cd.attributes:
+            for a in cd.attributes+cd.internal_attributes:
                 ret.append(a.get_initialize(const)+";")
             ret.append("}")
         return "\n".join(ret)
@@ -212,18 +218,19 @@ class Decorator:
     %(key_members)s
     %(name)s%(CONST)s(Node%(CONST)sHandle nh,
                   %(key_arguments)s): nh_(nh),%(key_saves)s {
-    %(check)s;
+    %(init)s;
     }
     public:
     %(methods)s
-    IMP_RMF_SHOWABLE(Const%(name)s, "%(name)s%(CONST)s " << nh_.get_name());
+    IMP_RMF_SHOWABLE(Const%(name)s,
+                     "%(name)s%(CONST)s "
+                     << nh_.get_name());
     ~%(name)s%(CONST)s() {
-    %(check)s;
     }
     };
 
     typedef vector<%(name)s%(CONST)s> %(name)s%(CONST)ss;
-    """
+"""
         ret.append(classstr%{"description":self.description,
                              "name":self.name,
                              "key_members": self._get_key_members(),
@@ -231,7 +238,7 @@ class Decorator:
                              "key_arguments": self._get_key_arguments(),
                              "key_saves": self._get_key_saves(),
                              "CONST":"Const", "NOTCONST":"",
-                             "check":self.check_function})
+                             "init":""})
         ret.append(classstr%{"description":self.description,
                              "name":self.name,
                              "key_members": self._get_key_members(),
@@ -239,7 +246,7 @@ class Decorator:
                              "key_arguments": self._get_key_arguments(),
                              "key_saves": self._get_key_saves(),
                              "CONST":"", "NOTCONST":"Const",
-                             "check":self.check_function})
+                             "init":self.init_function})
         factstr="""/** Create decorators of type %(name)s.
 
        \see %(name)s%(CONST)s
@@ -249,7 +256,8 @@ class Decorator:
     private:
     %(key_members)s
     public:
-    IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory, "Factory");
+    typedef File%(CONST)sHandle File;
+    typedef %(name)s%(CONST)s Decorator;
     %(name)s%(CONST)sFactory(File%(CONST)sHandle fh){
     %(initialize)s;
     }
@@ -259,10 +267,11 @@ class Decorator:
     bool get_is(Node%(CONST)sHandle nh) const {
       return %(checks)s;
     }
+    IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory, "%(name)s%(CONST)sFactory");
     };
 
     typedef vector<%(name)s%(CONST)sFactory> %(name)s%(CONST)sFactories;
-    """
+"""
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(),
                              "key_pass": self._get_key_pass(),
@@ -317,16 +326,26 @@ ball= Decorator("Ball", "A geometric ball.",
                    [DecoratorCategory("shape", 1, [Attributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
                                                                               "cartesian y",
-                                                                              "cartesian z"]),
-                                                   Attribute("Float", "radius", "radius")])],
-                   "")
+                                                                              "cartesian z"], True),
+                                                   Attribute("Float", "radius", "radius")],
+                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                   "nh.set_value(type_, 0);", "nh.get_value(type_)==0")
 cylinder= Decorator("Cylinder", "A geometric cylinder.",
                    [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
-                                                                              "cartesian zs"]),
-                                                   Attribute("Float", "radius", "radius")])],
-                   "")
+                                                                              "cartesian zs"], True),
+                                                   Attribute("Float", "radius", "radius")],
+                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                   "nh.set_value(type_, 1);", "nh.get_value(type_)==1")
+
+segment= Decorator("Segment", "A geometric line setgment.",
+                   [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
+                                                              "coordinates", ["cartesian xs",
+                                                                              "cartesian ys",
+                                                                              "cartesian zs"], True)],
+                                      internal_attributes=[Attribute("Index", "type", "type")])],
+                    "nh.set_value(type_, 1);", "nh.get_value(type_)==1")
 
 journal= Decorator("JournalArticle", "Information regarding a publication.",
                    [DecoratorCategory("publication", 1, [Attribute("String", "title", "title"),
@@ -342,8 +361,8 @@ residue= Decorator("Residue", "Information regarding a residue.",
                    "")
 
 print """/**
- *  \file RMF/decorators.h
- *  \brief Helper functions for manipulating RMF files.
+ *  \\file RMF/decorators.h
+ *  \\brief Helper functions for manipulating RMF files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
@@ -364,6 +383,7 @@ print pparticle.get()
 print score.get()
 print ball.get()
 print cylinder.get()
+print segment.get()
 print journal.get()
 print residue.get()
 print """} /* namespace RMF */
