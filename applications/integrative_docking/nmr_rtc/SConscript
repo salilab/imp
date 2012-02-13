@@ -1,0 +1,15 @@
+Import('env')
+
+env= env.IMPApplication(name="nmr_rtc", version="SVN",
+                        authors=["Dina Schneidman"],
+                        brief="Scoring with NMR residue type content term (NMR-RTC)",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=['Schneidman-Duhovny D et al. ...'],
+                        required_modules=['saxs'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="nmr_rtc_score", source=["ResidueContent.cpp", "nmr_rtc_score.cpp", "helpers.cpp"])
+    env.IMPCPPExecutable(target="interface_rtc", source=["ResidueContent.cpp", "interface_rtc.cpp", "helpers.cpp"])
