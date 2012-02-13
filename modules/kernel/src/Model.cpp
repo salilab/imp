@@ -29,6 +29,7 @@ Model::Model(std::string name):
   eval_count_=0;
   set_was_used(true);
   first_call_=true;
+  has_dependencies_=false;
   max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
   next_particle_=0;
