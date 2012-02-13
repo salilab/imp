@@ -83,7 +83,9 @@ inline Restraint* create_restraint(const Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
     if (name==std::string()) {
-      name= std::string("Restraint on ")+s->get_name();
+      std::ostringstream oss;
+      oss << s->get_name() << " on " << t;
+      name= oss.str();
   }
     return new TupleRestraint<Score>(const_cast<Score*>(s), t, name);
 }
@@ -128,7 +130,6 @@ inline Constraint* create_constraint(Before *b, After *a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   if (name==std::string()) {
-    name= std::string("Constraint with ");
     if (b) name+= " and  "+b->get_name();
     if (a) name+= " and " +a->get_name();
   }
