@@ -22,6 +22,11 @@ class MockGP:
     def get_posterior_covariance(self,q,r):
         return self.a*q[0] + self.b
 
+class MockFunction:
+
+    def __call__(self,q):
+        return q
+
 class SAXSProfileTest(IMP.test.ApplicationTestCase):
 
     def setUp(self):
@@ -402,7 +407,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertRaises(TypeError, p.set_interpolant, gp)
         self.assertRaises(TypeError, p.set_interpolant, gp, [])
         self.assertRaises(TypeError, p.set_interpolant, gp, {'test':1.0})
-        self.assertEqual(p.set_interpolant(gp,{'sigma':s},IMP.Model()), None)
+        self.assertEqual(p.set_interpolant(gp,{'sigma':s},
+            {'mean':None,'covariance':None},IMP.Model()), None)
 
     def test_get_params(self):
         "get_params should return a dict"
@@ -410,7 +416,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         p=self.SAXSProfile()
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         self.assertEqual(p.get_params(),{'sigma':3.0})
 
     def test_get_mean_defaults(self):
@@ -421,18 +430,25 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         test = p.get_mean()
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
         expected_err = map(lambda a:
                            numpy.sqrt(gp.get_posterior_covariance([a],[1.0])),
                 expected_q)
-        for q,I,err,v in zip(expected_q,expected_I,expected_err,test):
-            self.assertEqual(len(v),3)
+        expected_mean = numpy.array(map(lambda a:
+                         functions['mean'](a), expected_q))
+        for q,I,err,mean,v in zip(expected_q,expected_I,expected_err,
+                                    expected_mean,test):
+            self.assertEqual(len(v),4)
             self.assertAlmostEqual([q],v[0])
             self.assertAlmostEqual(I,v[1])
             self.assertAlmostEqual(err,v[2])
+            self.assertAlmostEqual(mean,v[3])
 
     def test_get_mean_colwise(self):
         """test get_mean defaults"""
@@ -442,7 +458,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         test = p.get_mean(colwise=True)
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = numpy.array(map(gp.get_posterior_mean,
@@ -450,11 +469,14 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         expected_err = numpy.array(map(lambda a:
                          numpy.sqrt(gp.get_posterior_covariance([a],[1.0])),
                          expected_q))
-        self.assertEqual(len(test), 3)
-        self.assertEqual(set(['q','I','err']), set(test.keys()))
+        expected_mean = numpy.array(map(lambda a:
+                         functions['mean'](a), expected_q))
+        self.assertEqual(len(test), 4)
+        self.assertEqual(set(['q','I','err','mean']), set(test.keys()))
         self.assertTrue((expected_q == test['q']).all())
         self.assertTrue((expected_I == test['I']).all())
         self.assertTrue((expected_err == test['err']).all())
+        self.assertTrue((expected_mean == test['mean']).all())
 
     def test_get_mean_gamma(self):
         """test get_mean defaults"""
@@ -466,7 +488,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         test = p.get_mean()
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = map(lambda a:
@@ -475,11 +500,15 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         expected_err = map(lambda a:
                         gamma*numpy.sqrt(gp.get_posterior_covariance([a],[a])),
                         expected_q)
-        for q,I,err,v in zip(expected_q,expected_I,expected_err,test):
-            self.assertEqual(len(v),3)
+        expected_mean = numpy.array(map(lambda a:
+                         functions['mean'](a), expected_q))
+        for q,I,err,mean,v in zip(expected_q,expected_I,expected_err,
+                expected_mean,test):
+            self.assertEqual(len(v),4)
             self.assertAlmostEqual([q],v[0])
             self.assertAlmostEqual(I,v[1])
             self.assertAlmostEqual(err,v[2])
+            self.assertAlmostEqual(mean,v[3])
 
     def test_get_mean_num(self):
         """test num"""
@@ -489,7 +518,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         test = p.get_mean(num=100)
         expected_q = numpy.linspace(0,0.02,num=100)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
@@ -509,7 +541,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         test = p.get_mean(num=100,qmin=1.5,qmax=1.67)
         expected_q = numpy.linspace(1.5,1.67,num=100)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
@@ -529,7 +564,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         test = p.get_mean(qvalues=expected_q)
@@ -559,7 +597,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -572,8 +613,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_mean()
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             if q < 0.01:
                 self.assertTrue(flag)
             else:
@@ -587,7 +628,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -600,8 +644,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_mean()
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             if q < 0.005:
                 self.assertTrue(flag)
             else:
@@ -615,7 +659,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -628,8 +675,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_mean()
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             if q > 0.02:
                 self.assertTrue(flag)
             else:
@@ -643,7 +690,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -657,8 +707,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_mean()
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             if q < 0.005 or q > 0.02:
                 self.assertTrue(flag)
             else:
@@ -672,7 +722,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -684,8 +737,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         test = p.get_mean()
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             self.assertFalse(flag)
 
     def test_get_data_filter(self):
@@ -753,7 +806,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -763,8 +819,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertEqual(len(test),10)
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             self.assertTrue(flag)
             self.assertTrue(0 <= q < 0.01)
 
@@ -776,7 +832,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -786,8 +845,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertEqual(len(test),10)
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             self.assertTrue(flag)
             self.assertTrue(0 <= q < 0.01)
 
@@ -799,7 +858,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -809,8 +871,8 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertEqual(len(test),20)
         nflags = len(p.get_flag_names())
         for i in test:
-            self.assertEqual(len(i), nflags)
-        for q,I,err,flag in test:
+            self.assertEqual(len(i), nflags+1)
+        for q,I,err,mean,flag in test:
             if 0 <= q < 0.01:
                 self.assertTrue(flag)
             else:
@@ -824,7 +886,10 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         gp = MockGP(1,2)
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
-        p.set_interpolant(gp,{'sigma':s}, IMP.Model())
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)

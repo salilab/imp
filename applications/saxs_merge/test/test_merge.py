@@ -37,6 +37,11 @@ class MockGP2:
     def get_posterior_covariance(self,q,r):
         return self.a*(q[0]+1)
 
+class MockFunction:
+
+    def __call__(self,q):
+        return q
+
 class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
 
     def setUp(self):
@@ -54,7 +59,10 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         m=IMP.Model()
         s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
         gp=interpolant(a,b)
-        profile.set_interpolant(gp, {'sigma':s}, m)
+        functions={}
+        functions['mean']=MockFunction()
+        functions['covariance']=MockFunction()
+        profile.set_interpolant(gp, {'sigma':s}, functions, m)
         return gp
 
     def test_cleanup_simple(self):
@@ -188,11 +196,12 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False)
         self.merge.classification([p1,p2],args)
         self.merge.fitting_step = lambda a,b,c,d: b
-        def thing(b,c,d):
+        def thing(b,c,e,d):
             m=IMP.Model()
             s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
             gp=MockGP(1,10)
-            return m,{'sigma':s},gp
+            functions={'mean':MockFunction(),'covariance':MockFunction()}
+            return m,{'sigma':s},functions,gp
         self.merge.setup_process = thing
         merge, profiles, args = self.merge.merging([p1,p2],args)
         #p1
