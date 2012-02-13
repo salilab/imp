@@ -36,7 +36,7 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
   Model *m= ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps, (length_factor*2.0*scale,
-                                                  k));
+                                                  k, "chain linker %1%"));
   // the true, says that the particles will be in no other
   // ConsecutivePairContainer
   // this accelerates certain computations
