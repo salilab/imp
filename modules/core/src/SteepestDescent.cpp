@@ -13,7 +13,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Constructor
-SteepestDescent::SteepestDescent(Model *m) : step_size_(0.01), threshold_(0.)
+SteepestDescent::SteepestDescent(Model *m) :
+    step_size_(0.01),
+    max_step_size_(std::numeric_limits<double>::max()),
+    threshold_(0.)
 {
   if (m) set_model(m);
 }
@@ -23,8 +26,7 @@ void SteepestDescent::do_show(std::ostream &) const {
 
 double SteepestDescent::do_optimize(unsigned int max_steps)
 {
-  Floats temp_vals;
-  Floats temp_derivs;
+  IMP_OBJECT_LOG;
   Float last_score, new_score = 0.0;
 
   // set up the indexes
@@ -36,25 +38,23 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
   Float current_step_size = step_size_;
 
   // ... and space for the old values
-  temp_vals.resize(opt_var_cnt);
-  temp_derivs.resize(opt_var_cnt);
+  algebra::VectorKD temp_derivs(Floats(opt_var_cnt, 0));
 
   for (unsigned int step = 0; step < max_steps; step++) {
-    IMP_LOG(VERBOSE, "=== Step " << step << " ===");
     // model.show(std::cout);
     int cnt = 0;
 
     // evaluate the last model state
     last_score = evaluate(true);
-    IMP_LOG(VERBOSE, "start score: " << last_score);
+    IMP_LOG(TERSE, "start score: " << last_score << std::endl);
 
     // store the old values
     for (int i = 0; i < opt_var_cnt; i++) {
       FloatIndex fi = float_indexes[i];
 
-      temp_vals[i] = get_value(fi);
-      temp_derivs[i] = get_derivative(fi);
+      temp_derivs[i] = get_scaled_derivative(fi);
     }
+    temp_derivs= temp_derivs.get_unit_vector();
 
     bool done = false;
     bool not_changing = false;
@@ -66,23 +66,26 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
       // try new values based on moving down the gradient at the current
       // step size
-      for (int i = 0; i < opt_var_cnt; i++) {
-        IMP_LOG(VERBOSE, i << " move: " << temp_vals[i] << " new: "
-                << temp_vals[i] - temp_derivs[i] * current_step_size << "  "
-                << temp_derivs[i]);
 
-        set_value(float_indexes[i], temp_vals[i] - temp_derivs[i]
-                                    * current_step_size);
+      IMP_LOG(VERBOSE, "step: "
+              << temp_derivs * current_step_size << std::endl);
+      for (int i = 0; i < opt_var_cnt; i++) {
+
+        set_scaled_value(float_indexes[i],
+                         get_scaled_value(float_indexes[i]) - temp_derivs[i]
+                         * current_step_size);
       }
 
       // check the new model
       new_score = evaluate(false);
-      IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
-              << new_score << "  step size: " << current_step_size);
+      IMP_LOG(TERSE, "last score: " << last_score << "  new score: "
+              << new_score << "  step size: " << current_step_size
+              << std::endl);
 
       // if the score is less than the threshold, we're done
       if (new_score <= threshold_) {
         update_states();
+        IMP_LOG(TERSE, "Below threshold, returning." << std::endl);
         return new_score;
       }
 
@@ -90,14 +93,17 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
       if (new_score < last_score) {
         done = true;
         update_states();
-        if (move_bigger)
-          current_step_size *= 1.4;
+        if (move_bigger) {
+          current_step_size= std::min(current_step_size* 1.4,
+                                      max_step_size_);
+        }
       }
 
       // if the score is the same, keep going one more time
       else if (std::abs(new_score- last_score) < .0000001) {
-        if (not_changing)
+        if (not_changing) {
           done = true;
+        }
 
         current_step_size *= 0.9;
         not_changing = true;
@@ -113,6 +119,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
       if (current_step_size <.00000001) {
         update_states();
+        IMP_LOG(TERSE, "Unable to make progress, returning." << std::endl);
         return new_score;
       }
     }

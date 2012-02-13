@@ -29,11 +29,13 @@ class IMPCOREEXPORT SteepestDescent : public Optimizer
 
   //! Set the minimum gradient threshold
   void set_threshold(Float t) {threshold_=t;}
-  //! Set the step size
+  //! The starting step size
   void set_step_size(Float t) {step_size_=t;}
-
+//! The maximum step size
+  void set_maximum_step_size(Float t) {max_step_size_=t;}
 private:
   Float step_size_;
+  Float max_step_size_;
   Float threshold_;
 };
 
