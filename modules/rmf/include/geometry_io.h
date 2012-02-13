@@ -50,8 +50,8 @@ class IMPRMFEXPORT RMFWriter: public display::Writer {
                display::Color color, std::string name);
   bool handle(display::SegmentGeometry *g,
                display::Color color, std::string name);
-  bool handle(display::SurfaceMeshGeometry *g,
-               display::Color color, std::string name);
+  /*bool handle(display::SurfaceMeshGeometry *g,
+    display::Color color, std::string name);*/
  public:
   RMFWriter(RMF::FileHandle rh);
   IMP_WRITER(RMFWriter);
