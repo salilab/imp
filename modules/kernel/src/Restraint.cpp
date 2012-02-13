@@ -119,13 +119,25 @@ namespace {
                        << " produced from " << in->get_name()
                        << " is not already part of model.");
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      /*IMP_PRINT_TREE(std::cout, Restraint*, in,
+                     (dynamic_cast<RestraintSet*>(n)?
+                      dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
+                      :0),
+                     dynamic_cast<RestraintSet*>(n)->get_restraint,
+                     std::cout << n->get_name() << ": " << n->get_weight());
+      IMP_PRINT_TREE(std::cout, Restraint*, out,
+                     (dynamic_cast<RestraintSet*>(n)?
+                      dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
+                      :0),
+                     dynamic_cast<RestraintSet*>(n)->get_restraint,
+                     std::cout << n->get_name() << ": " << n->get_weight());*/
       RestraintsTemp rin= get_restraints(RestraintsTemp(1, in));
       RestraintsTemp rout= get_restraints(RestraintsTemp(1, out));
-      IMP_LOG(TERSE, "Evaluating before" << std::endl);
       Floats sin= in->get_model()->evaluate(rin, false);
-      IMP_LOG(TERSE, "Evaluating after" << std::endl);
       Floats sout= in->get_model()->evaluate(rout, false);
-      double tin= std::accumulate(sin.begin(), sin.end(), 0.0);
+      // correct for it having a weight in the model
+      double tin= std::accumulate(sin.begin(), sin.end(), 0.0)
+          /in->model_weight_;
       double tout= std::accumulate(sout.begin(), sout.end(), 0.0);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
