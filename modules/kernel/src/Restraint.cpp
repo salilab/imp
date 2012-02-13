@@ -128,8 +128,8 @@ namespace {
       double tin= std::accumulate(sin.begin(), sin.end(), 0.0);
       double tout= std::accumulate(sout.begin(), sout.end(), 0.0);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
-        IMP_WARN("The before and after scores don't agree for: "
-                 << in->get_name() << " got "
+        IMP_WARN("The before and after scores don't agree for: \""
+                 << in->get_name() << "\" got "
                  << tin << " and " << tout << " over "
                  << sin << " vs " << sout << " with restraints "
                  << rin << " vs " << rout << std::endl);
