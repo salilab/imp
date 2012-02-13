@@ -38,7 +38,7 @@ template <class TypeT, int Arity, class Handle>
   bool show_type_data_xml(Handle nh,
                           RMF::CategoryD<Arity> kc,
                           bool opened, std::ostream &out) {
-  using RMF::operator<<;
+    using RMF::operator<<;
     RMF::FileConstHandle rh= nh.get_file();
     std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
