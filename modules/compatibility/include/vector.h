@@ -41,7 +41,7 @@ class vector: public IMPCOMPATIBILITY_VECTOR_PARENT<T>
 public:
   template <class It>
   vector(It b, It e): IMPCOMPATIBILITY_VECTOR_PARENT<T>(b,e){}
-  vector(unsigned int ct, const T& t=T()):
+  explicit vector(unsigned int ct, const T& t=T()):
     IMPCOMPATIBILITY_VECTOR_PARENT<T>(ct, t){}
   vector(){}
 };
