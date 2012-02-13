@@ -79,7 +79,7 @@ template <class Score, class Container>
 inline Restraint *create_restraint(Score *s, Container*c,
                             std::string name=std::string()) {
   if (name==std::string()) {
-    name= std::string("Restraint on ") + s->get_name()+ " and "+c->get_name();
+    name= s->get_name()+ " and "+c->get_name();
   }
   return new ContainerRestraint<Score, Container>(s, c, name);
 }
@@ -131,7 +131,6 @@ template <class Before, class After, class Container>
 inline Constraint *create_constraint(Before *b, After *a, Container *c,
                               std::string name=std::string()) {
   if (name==std::string()) {
-    name= std::string("Constraint on ") + c->get_name();
     if (b) name+= " and  "+b->get_name();
     if (a) name+= " and " +a->get_name();
   }
