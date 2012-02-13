@@ -12,6 +12,7 @@
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
+#include <boost/array.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -20,7 +21,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT Color
 {
-  float c_[3];
+  boost::array<float, 3> c_;
   int compare(float a, float b) const {
     if (a< b) return -1;
     else if (a > b) return 1;
@@ -41,6 +42,13 @@ public:
    */
   Color(float r, float g, float b);
 
+ /** Components must be between 0 and 1
+   */
+  template <class It>
+  Color(It b, It e){
+    std::copy(b,e, c_.begin());
+  }
+
   ~Color();
   /** @name Component access
    @{
@@ -55,6 +63,15 @@ public:
   float get_blue() const {
     return c_[2];
   }
+#ifndef SWIG
+  typedef const float *ComponentIterator;
+  ComponentIterator components_begin() const {
+    return c_.begin();
+  }
+  ComponentIterator components_end() const {
+    return c_.end();
+  }
+#endif
   //!@}
 
   void show(std::ostream &out, std::string delim) const {
