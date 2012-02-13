@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint(std::string name):
   Object(name), weight_(1), max_(std::numeric_limits<double>::max()),
-  model_weight_(0)
+  model_weight_(-1)
 {
 }
 
