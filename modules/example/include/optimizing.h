@@ -106,7 +106,6 @@ inline void optimize_balls(const ParticlesTemp &ps,
                                                    core::XYZR(ps[j])
                                                    .get_radius()*factor));
     }
-    std::cout << core::XYZR(ps[0]) << std::endl;
     for (int j=0; j< 5; ++j) {
       mc->set_kt(100.0/(3*j+1));
       mc->optimize(ps.size()*(j+1)*100);
