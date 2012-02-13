@@ -778,14 +778,12 @@ private:
                               bool if_good, bool if_max,
                               double max= std::numeric_limits<double>::max());
   // dependencies
+  mutable bool has_dependencies_;
   mutable RestraintsTemp scoring_restraints_;
   mutable ScoreStatesTemp ordered_score_states_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
-    return (!scoring_restraints_.empty()
-            || get_number_of_restraints() ==0)
-      && ordered_score_states_.size()
-      == get_number_of_score_states();
+    return has_dependencies_;
   }
 
   // other

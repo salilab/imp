@@ -218,6 +218,8 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
   for (unsigned int i=0; i< rsz; ++i) {
     double value=0;
     double weight=restraints[i]->model_weight_;
+    IMP_USAGE_CHECK(weight>=0, "Weight was not initialized for \""
+                    << restraints[i]->get_name() << '"');
     DerivativeAccumulator accum(weight);
     if (gather_statistics_) timer.restart();
     if (if_good) {

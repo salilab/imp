@@ -111,6 +111,7 @@ void Model::reset_dependencies() {
   scoring_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
+  has_dependencies_=false;
 }
 
 void Model::compute_dependencies() const {
@@ -145,6 +146,7 @@ void Model::compute_dependencies() const {
                                  ordered_score_states_);
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ordered_score_states_ << std::endl);
+  has_dependencies_=true;
 }
 
 
