@@ -1,13 +1,6 @@
 Import('env')
 
-applications=['foxs',
-              'integrative_docking',
-              'saxs_tools',
-              'saxs_merge',
-              'em_tools',
-              'ligand_score',
-              'multifit_tools',
-              'pdb_tools']
+applications=['foxsdock']
 
 if env.get('local', False):
     for d in Glob("*/SConscript"):
