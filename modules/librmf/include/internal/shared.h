@@ -368,9 +368,10 @@ namespace RMF {
                                                      k.get_arity(),
                                                      false);
           if (!ds) {
-            IMP_RMF_THROW("Attribute " << get_name(k)
+            return 0;
+            /*IMP_RMF_THROW("Attribute " << get_name(k)
                           << " does not have any data.",
-                          UsageException);
+                          UsageException);*/
           }
           HDF5DataSetIndexD<3> sz= ds.get_size();
           return sz[2];
