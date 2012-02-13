@@ -29,9 +29,10 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     out all pairs of particles connected by such chain restraints.
 */
 inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
-                                   double length_factor,
-                                   double k,
-                                   std::string name) {
+                                         double length_factor,
+                                         double k,
+                                         std::string name,
+                                         RestraintSet *rs=NULL) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
@@ -43,7 +44,11 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
           (ps, name+" consecutive pairs"));
   Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get());
-  m->add_restraint(r);
+  if (!rs) {
+    m->add_restraint(r);
+  } else {
+    rs->add_restraint(r);
+  }
   return r;
 }
 
