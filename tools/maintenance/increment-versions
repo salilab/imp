@@ -14,9 +14,10 @@ def increment(module):
     print path
     sconscript= open(path).read()
     match=re.search(mre, sconscript)
-    prefix= match.groupdict()['prefix']
-    sconscript= re.sub(mre, prefix+"version='nightly-"+version+"'", sconscript)
-    open(path, "w").write(sconscript)
+    if match:
+        prefix= match.groupdict()['prefix']
+        sconscript= re.sub(mre, prefix+"version='nightly-"+version+"'", sconscript)
+        open(path, "w").write(sconscript)
 
 def main():
     if len(sys.argv) <2:
