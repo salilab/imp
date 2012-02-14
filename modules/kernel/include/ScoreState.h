@@ -36,8 +36,8 @@ IMP_OBJECTS(ScoreState,ScoreStates);
     containers and the value of attributes of particles and
     - after_evaluate() which can change particle derivatives
 
-    \note The functions Interaction::get_input_particles() and
-    Interaction::get_output_particles() should return the input and
+    \note The functions ScoreState::get_input_particles() and
+    ScoreState::get_output_particles() should return the input and
     output respectively for the before_evaluate() call. The after_evaluate()
     call must have input particles chosen from among the union of the
     input and output sets for the before call and output particles chosen
