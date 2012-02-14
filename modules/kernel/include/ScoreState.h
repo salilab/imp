@@ -42,6 +42,10 @@ IMP_OBJECTS(ScoreState,ScoreStates);
     can be applied. That is, the Model will ensure that a ScoreState
     that has Particle \c A in its output list is applied before a
     ScoreState that has \c A in its input list.
+    For ScoreState::before_evaluate(), Input and output lists are
+    returned by the respective get_input_* and get_output_* calls.
+    For ScoreState::after_evaluate() they are reversed (see note below).
+
 
     \note If no acceptable order exists, an exception will be thrown
     and the set of ScoreState objects creating the loop will be
