@@ -95,7 +95,7 @@ namespace {
     c.set_radius(s.get_radius());
     RMF::FloatsList coords(3, RMF::Floats(2));
     for (unsigned int i=0; i< 2; ++i) {
-      algebra::Vector3D c= s.get_segment().get_point(1);
+      algebra::Vector3D c= s.get_segment().get_point(i);
       for (unsigned int j=0; j< 3; ++j) {
         coords[j][i]=c[j];
       }
@@ -110,7 +110,7 @@ namespace {
     RMF::Segment c= sf.get(cur);
     RMF::FloatsList coords(3, RMF::Floats(2));
     for (unsigned int i=0; i< 2; ++i) {
-      algebra::Vector3D c= s.get_point(1);
+      algebra::Vector3D c= s.get_point(i);
       for (unsigned int j=0; j< 3; ++j) {
         coords[j][i]=c[j];
       }
@@ -254,8 +254,13 @@ namespace {
      if (cf.get_is(cur)) {
       RMF::CylinderConst b=cf.get(cur);
       RMF::FloatsList cs=b.get_coordinates(frame);
-      algebra::Segment3D s(algebra::Vector3D(cs[0].begin(), cs[0].end()),
-                           algebra::Vector3D(cs[1].begin(), cs[1].end()));
+      algebra::Vector3D vs[2];
+      for (unsigned int i=0; i< 2; ++i) {
+        for (unsigned int j=0; j< 3; ++j) {
+          vs[i][j]=cs[j][i];
+        }
+      }
+      algebra::Segment3D s(vs[0], vs[1]);
       algebra::Cylinder3D c(s, b.get_radius());
       Pointer<display::Geometry> ret=new display::CylinderGeometry(c);
       IMP_HANDLE_CONST_COLOR;
@@ -265,11 +270,16 @@ namespace {
 
   display::Geometry *try_read_segment(RMF::NodeConstHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (cf.get_is(cur)) {
+    if (sf.get_is(cur)) {
       RMF::SegmentConst b=sf.get(cur);
       RMF::FloatsList cs=b.get_coordinates(frame);
-      algebra::Segment3D s(algebra::Vector3D(cs[0].begin(), cs[0].end()),
-                           algebra::Vector3D(cs[1].begin(), cs[1].end()));
+      algebra::Vector3D vs[2];
+      for (unsigned int i=0; i< 2; ++i) {
+        for (unsigned int j=0; j< 3; ++j) {
+          vs[i][j]=cs[j][i];
+        }
+      }
+      algebra::Segment3D s(vs[0], vs[1]);
       Pointer<display::Geometry> ret=new display::SegmentGeometry(s);
       IMP_HANDLE_CONST_COLOR;
       return ret.release();
@@ -326,6 +336,7 @@ namespace {
         /*else if ((curg=try_read_surface(ch[i], frame,
           IMP_HDF5_PASS_GEOMETRY_CONST_KEYS)));*/
         else {
+          //IMP_LOG(TERSE, "No geometry in " << ch[i] << std::endl);
           display::Geometries c=read_internal(ch[i], frame,
                                             IMP_HDF5_PASS_GEOMETRY_CONST_KEYS);
           if (!c.empty()) {
