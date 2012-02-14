@@ -210,9 +210,9 @@ constant form factor (default = false)")
     }
     average_radius /= particles_vec[i].size();
     partial_profile->set_average_radius(average_radius);
-    std::cerr << "Average radius = " << average_radius
-              << " volume = " << volume << " average_volume = "
-    << volume/particles_vec[i].size() << std::endl;
+    // std::cerr << "Average radius = " << average_radius
+    //           << " volume = " << volume << " average_volume = "
+    //           << volume/particles_vec[i].size() << std::endl;
 
     if(dat_files.size() == 0 || !fit) { // regular profile, no fitting
       if(ab_initio) { // bead model, constant form factor
