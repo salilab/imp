@@ -181,7 +181,7 @@ def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     (build, install)=scons_tools.install.install_hierarchy(env,  "datadir/currentdir/", "data",files)
-    data.build.append(build)
+    data.build.extend(build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
