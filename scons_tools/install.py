@@ -175,14 +175,15 @@ def install_hierarchy(env, dir, root_dir, sources):
     build=[]
     inst=[]
     for s in sources:
-        full = File(s).path
+        full = Entry(s).path
         name = full[full.rfind(root_dir+"/")+len(root_dir)+1:]
         f= name.rfind("/")
         if f==-1:
             cdir=""
         else:
             cdir=name[:f]
-        l= install(env, Dir(dir+"/"+cdir), File(s))
+        #print dir, cdir, s, name
+        l= install(env, Dir(dir+"/"+cdir), s)
         build.append(l[0])
         if len(l)>1:
             inst.append(l[1])

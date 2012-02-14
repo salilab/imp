@@ -180,9 +180,8 @@ def IMPModuleInclude(env, files):
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
-    for f in files:
-        (build, install)=scons_tools.install.install(env, "datadir/currentdir/", f)
-        data.build.append(build)
+    (build, install)=scons_tools.install.install_hierarchy(env,  "datadir/currentdir/", "data",files)
+    data.build.append(build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
@@ -426,7 +425,7 @@ def IMPModuleGetSources(env):
 def IMPModuleGetData(env):
     raw_files=scons_tools.utility.get_matching_recursive(["*"])
     files=[]
-    for f in [os.path.split(str(x))[1] for x in raw_files]:
+    for i,f in enumerate([os.path.split(str(x))[1] for x in raw_files]):
         if str(f).endswith("SConscript"):
             continue
         if str(f).endswith(".old"):
@@ -435,7 +434,7 @@ def IMPModuleGetData(env):
             continue
         if str(f).endswith("~"):
             continue
-        files.append(f)
+        files.append(raw_files[i])
     return files
 
 def IMPModuleGetBins(env):
