@@ -170,9 +170,19 @@ void MonteCarlo::setup_incremental() {
   RestraintsTemp base= get_restraints();
   for (unsigned int i=0; i< base.size(); ++i) {
     Pointer<Restraint> cur= base[i]->create_incremental_decomposition(1);
-    RestraintsTemp curf= IMP::get_restraints(RestraintsTemp(1, cur));
-    flattened_restraints_.insert(flattened_restraints_.end(),
-                                 curf.begin(), curf.end());
+    if (cur) {
+      RestraintsTemp curf= IMP::get_restraints(RestraintsTemp(1, cur));
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        for (unsigned int i=0; i< curf.size(); ++i) {
+          IMP_CHECK_OBJECT(curf[i]);
+        }
+      }
+      flattened_restraints_.insert(flattened_restraints_.end(),
+                                   curf.begin(), curf.end());
+    } else {
+      // certain restraints such as ones on consecutive pair containers
+      // with only one particle don't have any actual scoring
+    }
   }
   IMP_LOG(VERBOSE, "Restraints flattened into " << flattened_restraints_
           << std::endl);
