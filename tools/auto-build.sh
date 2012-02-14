@@ -41,7 +41,7 @@ svn export -q -${rev} ${IMPSVNDIR} imp
 # Put version number, date and revision into relevant files
 DATE=`date +'%Y/%m/%d'`
 (cd imp/doc/doxygen && sed -e "s#^PROJECT_NUMBER.*#PROJECT_NUMBER = ${VER}, ${DATE}, ${rev}#" < doxygen.conf-in > .dox && mv .dox doxygen.conf-in)
-perl -pi -e "s/version=[\"'][^\"']+[\"']/version='SVN.${rev}'/" imp/modules/*/SConscript imp/applications/*/SConscript imp/biological_systems/*/SConscript
+perl -pi -e "s/version=[\"'][^\"']+[\"']/version='SVN.${rev}'/" imp/modules/*/SConscript imp/applications/*/SConscript imp/applications/*/*/SConscript imp/biological_systems/*/SConscript
 
 # Don't overwrite version at build time
 perl -pi -e 's/svn_build\s*=.*/svn_build = False/' imp/scons_tools/variables.py
@@ -64,6 +64,17 @@ for path in ('imp/modules/', 'imp/applications/',
         lp = len(path)
         return [x[lp:] for x in glob.glob(path + pattern)]
     exec(open(path + 'SConscript').read())
+# Hack for applications in subdirs
+all_apps = applications
+for app in ('integrative_docking',):
+    all_apps.remove(app)
+    path = 'imp/applications/%s/' % app
+    def Glob(pattern):
+        lp = len(path)
+        return [x[lp:] for x in glob.glob(path + pattern)]
+    exec(open(path + 'SConscript').read())
+    all_apps.extend(applications)
+applications = all_apps
     
 f = open('$modfile', 'w')
 for m in modules:
