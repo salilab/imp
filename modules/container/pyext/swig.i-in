@@ -50,6 +50,10 @@ IMP_SWIG_OBJECT(IMP::container, PredicateSingletonsRestraint, PredicateSingleton
 IMP_SWIG_OBJECT(IMP::container, PredicatePairsRestraint, PredicatePairRestraints);
 IMP_SWIG_OBJECT(IMP::container, PredicateTripletsRestraint, PredicateTripletsRestraints);
 IMP_SWIG_OBJECT(IMP::container, PredicateQuadsRestraint, PredicateQuadsRestraints);
+IMP_SWIG_OBJECT(IMP::container, DistributeSingletonsScoreState, DistributeSingletonsScoreStates);
+IMP_SWIG_OBJECT(IMP::container, DistributePairsScoreState, DistributePairScoreStates);
+IMP_SWIG_OBJECT(IMP::container, DistributeTripletsScoreState, DistributeTripletsScoreStates);
+IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreStates);
 
 
 /* Wrap our own classes */
@@ -103,3 +107,7 @@ IMP_SWIG_OBJECT(IMP::container, PredicateQuadsRestraint, PredicateQuadsRestraint
 %include "IMP/container/PredicatePairsRestraint.h"
 %include "IMP/container/PredicateTripletsRestraint.h"
 %include "IMP/container/PredicateQuadsRestraint.h"
+%include "IMP/container/DistributeSingletonsScoreState.h"
+%include "IMP/container/DistributePairsScoreState.h"
+%include "IMP/container/DistributeTripletsScoreState.h"
+%include "IMP/container/DistributeQuadsScoreState.h"
