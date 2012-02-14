@@ -132,7 +132,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
  for(unsigned int imc=0;imc<nframes;++imc){
   for(unsigned irep=0;irep<mydata.nrep;++irep){
 // increment frame counter
-    ++totframes;
+   ++totframes;
  // retrieve scores and index
    double myscore = (rhs[irep].get_root_node()).get_value(my_keys0[irep],imc);
    int    myindex = (rhs[irep].get_root_node()).get_value(my_keys1[irep],imc);
@@ -171,7 +171,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
       fprintf(fretfile,"%20.10lf ",fretr_scores[i]);
      }
      fprintf(fretfile,"\n");
-// write to file
+// write to RMF file
      (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
      (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
      (rh_out.get_root_node()).set_value(my_key_out2,mybias,currentframe);
