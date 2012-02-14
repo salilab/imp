@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <map>
+#include <boost/algorithm/string.hpp>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -68,8 +69,19 @@ RMF::FloatKey my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
 RMF::IntKey   my_key_out1=rh_out.add_int_key(my_kc,"my index",true);
 RMF::FloatKey my_key_out2=rh_out.add_float_key(my_kc,"my bias",true);
 //
-FILE *logfile;
-logfile = fopen("log.reload","w");
+FILE *logfile, *fretfile;
+logfile  = fopen("log.reload","w");
+fretfile = fopen("log.fret","w");
+// print header of fret file
+fprintf(fretfile,"%10s  ","#");
+for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
+  std::vector<std::string> strs;
+  boost::split(strs,rst_map["FRET_R"]->get_restraint(i)->get_name(),
+               boost::is_any_of(" "));
+  std::string label=strs[strs.size()-2]+"_"+strs[strs.size()-1];
+  fprintf(fretfile,"%20s ",label.c_str());
+}
+fprintf(fretfile,"\n");
 //
 // OPTIMIZER
 //
@@ -126,9 +138,17 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     }
     double fretr_score = rst_map["FRET_R"]->evaluate(false);
     double y2h_score   = rst_map["Y2H"]->evaluate(false);
+// print main log file
     fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %5d  %3d %12.6f\n",
      nminimized,myscore,myscore_min,fretr_score,y2h_score,
      iout_name,myindex,mybias);
+// print fret log file
+    fprintf(fretfile,"%10d  ",nminimized);
+    for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
+     fprintf(fretfile,"%20.10lf ",
+      rst_map["FRET_R"]->get_restraint(i)->evaluate(false));
+    }
+    fprintf(fretfile,"\n");
 // write to file
     (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
     (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
@@ -158,6 +178,6 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 
 std::cout << "Number of good configurations " << nminimized << std::endl;
 fclose(logfile);
-
+fclose(fretfile);
 return 0;
 }
