@@ -24,8 +24,8 @@ class ScoreState;
 IMP_OBJECTS(ScoreState,ScoreStates);
 
 
-//! Shared score state.
-/** ScoreStates allow code to be injected before and after the restraint
+//! ScoreStates maintian invariants in the Model.
+/** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
     - log the optimization process
     - maintain constraints (see Constraint)
@@ -36,12 +36,22 @@ IMP_OBJECTS(ScoreState,ScoreStates);
     containers and the value of attributes of particles and
     - after_evaluate() which can change particle derivatives
 
-    \note The functions ScoreState::get_input_particles() and
-    ScoreState::get_output_particles() should return the input and
-    output respectively for the before_evaluate() call. The after_evaluate()
-    call must have input particles chosen from among the union of the
-    input and output sets for the before call and output particles chosen
-    from among the inputs of the before call.
+    The Model uses information that the ScoreState reports about
+    its input and output containers and particles to determine a safe
+    order in which all the ScoreState objects registered in the model
+    can be applied. That is, the Model will ensure that a ScoreState
+    that has Particle \c A in its output list is applied before a
+    ScoreState that has \c A in its input list.
+
+    \note If no acceptable order exists, an exception will be thrown
+    and the set of ScoreState objects creating the loop will be
+    reported.
+
+    \note The input and output sets for the ScoreState::after_evaluate()
+    functions are assumed to be the reverse of the ScoreState::before_evaluate()
+    functions. As a result, the ScoreStates are applied in opposite order
+    after evaluate. If you have a ScoreState for which this is not true,
+    consider splitting it into two parts.
 
     \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
  */
