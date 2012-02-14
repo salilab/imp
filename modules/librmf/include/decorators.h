@@ -22,18 +22,22 @@ namespace RMF {
      */
     class ColoredConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class ColoredConstFactory;
     private:
     FloatKeys rgb_color_;
     ColoredConst(NodeConstHandle nh,
-                  FloatKeys rgb_color): nh_(nh),rgb_color_(rgb_color) {
+                      unsigned int frame,
+                  FloatKeys rgb_color): nh_(nh),
+                                      frame_(frame),
+                                     rgb_color_(rgb_color) {
     ;
     }
     public:
-    Floats get_rgb_color(int frame=0) const {
+    Floats get_rgb_color() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(rgb_color_[i], frame));
+          ret.push_back(nh_.get_value(rgb_color_[i], frame_));
        }
        return ret;
     }
@@ -53,24 +57,28 @@ namespace RMF {
      */
     class Colored {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class ColoredFactory;
     private:
     FloatKeys rgb_color_;
     Colored(NodeHandle nh,
-                  FloatKeys rgb_color): nh_(nh),rgb_color_(rgb_color) {
+                      unsigned int frame,
+                  FloatKeys rgb_color): nh_(nh),
+                                      frame_(frame),
+                                     rgb_color_(rgb_color) {
     ;
     }
     public:
-    Floats get_rgb_color(int frame=0) const {
+    Floats get_rgb_color() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(rgb_color_[i], frame));
+          ret.push_back(nh_.get_value(rgb_color_[i], frame_));
        }
        return ret;
     }
-void set_rgb_color(const Floats &v, int frame=0) {
+void set_rgb_color(const Floats &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(rgb_color_[i], v[i], frame);
+            nh_.set_value(rgb_color_[i], v[i], frame_);
          }
       }
     IMP_RMF_SHOWABLE(ConstColored,
@@ -104,11 +112,12 @@ void set_rgb_color(const Floats &v, int frame=0) {
                                "rgb color blue", false));;
 };
     }
-    Colored get(NodeHandle nh) const {
-      return Colored(nh, rgb_color_);
+    Colored get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Colored(nh, frame, rgb_color_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(rgb_color_[0]);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(rgb_color_[0], frame);
     }
     IMP_RMF_SHOWABLE(ColoredFactory, "ColoredFactory");
     };
@@ -140,11 +149,12 @@ void set_rgb_color(const Floats &v, int frame=0) {
                               :FloatKey()));;
 };
     }
-    ColoredConst get(NodeConstHandle nh) const {
-      return ColoredConst(nh, rgb_color_);
+    ColoredConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return ColoredConst(nh, frame, rgb_color_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(rgb_color_[0]);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(rgb_color_[0], frame);
     }
     IMP_RMF_SHOWABLE(ColoredConstFactory, "ColoredConstFactory");
     };
@@ -158,32 +168,36 @@ void set_rgb_color(const Floats &v, int frame=0) {
      */
     class ParticleConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class ParticleConstFactory;
     private:
     FloatKeys coordinates_;
 FloatKey radius_;
 FloatKey mass_;
     ParticleConst(NodeConstHandle nh,
+                      unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),coordinates_(coordinates),
+FloatKey mass): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
     }
     public:
-    Floats get_coordinates(int frame=0) const {
+    Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-Float get_mass(int frame=0) const {
-  return nh_.get_value(mass_, frame);
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstParticle,
                      "ParticleConst "
@@ -201,43 +215,47 @@ Float get_mass(int frame=0) const {
      */
     class Particle {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class ParticleFactory;
     private:
     FloatKeys coordinates_;
 FloatKey radius_;
 FloatKey mass_;
     Particle(NodeHandle nh,
+                      unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),coordinates_(coordinates),
+FloatKey mass): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
     }
     public:
-    Floats get_coordinates(int frame=0) const {
+    Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-void set_coordinates(const Floats &v, int frame=0) {
+void set_coordinates(const Floats &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame);
+            nh_.set_value(coordinates_[i], v[i], frame_);
          }
       }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-void set_radius(Float v, int frame=0) {
-   nh_.set_value(radius_, v, frame);
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
 }
-Float get_mass(int frame=0) const {
-  return nh_.get_value(mass_, frame);
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
 }
-void set_mass(Float v, int frame=0) {
-   nh_.set_value(mass_, v, frame);
+void set_mass(Float v) {
+   nh_.set_value(mass_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstParticle,
                      "Particle "
@@ -276,15 +294,16 @@ mass_=get_key_always<FloatTraits>(fh, cat,
                                "mass", false);
 };
     }
-    Particle get(NodeHandle nh) const {
-      return Particle(nh, coordinates_,
+    Particle get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Particle(nh, frame, coordinates_,
 radius_,
 mass_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(mass_);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame);
     }
     IMP_RMF_SHOWABLE(ParticleFactory, "ParticleFactory");
     };
@@ -324,15 +343,16 @@ mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
                               :FloatKey());
 };
     }
-    ParticleConst get(NodeConstHandle nh) const {
-      return ParticleConst(nh, coordinates_,
+    ParticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return ParticleConst(nh, frame, coordinates_,
 radius_,
 mass_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(mass_);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame);
     }
     IMP_RMF_SHOWABLE(ParticleConstFactory, "ParticleConstFactory");
     };
@@ -346,6 +366,7 @@ mass_);
      */
     class RigidParticleConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class RigidParticleConstFactory;
     private:
     FloatKeys orientation_;
@@ -353,35 +374,38 @@ FloatKeys coordinates_;
 FloatKey radius_;
 FloatKey mass_;
     RigidParticleConst(NodeConstHandle nh,
+                      unsigned int frame,
                   FloatKeys orientation,
 FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),orientation_(orientation),
+FloatKey mass): nh_(nh),
+                                      frame_(frame),
+                                     orientation_(orientation),
 coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
     }
     public:
-    Floats get_orientation(int frame=0) const {
+    Floats get_orientation() const {
        Floats ret;
        for (unsigned int i=0; i< 4; ++i) {
-          ret.push_back(nh_.get_value(orientation_[i], frame));
+          ret.push_back(nh_.get_value(orientation_[i], frame_));
        }
        return ret;
     }
-Floats get_coordinates(int frame=0) const {
+Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-Float get_mass(int frame=0) const {
-  return nh_.get_value(mass_, frame);
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstRigidParticle,
                      "RigidParticleConst "
@@ -399,6 +423,7 @@ Float get_mass(int frame=0) const {
      */
     class RigidParticle {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class RigidParticleFactory;
     private:
     FloatKeys orientation_;
@@ -406,51 +431,54 @@ FloatKeys coordinates_;
 FloatKey radius_;
 FloatKey mass_;
     RigidParticle(NodeHandle nh,
+                      unsigned int frame,
                   FloatKeys orientation,
 FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),orientation_(orientation),
+FloatKey mass): nh_(nh),
+                                      frame_(frame),
+                                     orientation_(orientation),
 coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
     }
     public:
-    Floats get_orientation(int frame=0) const {
+    Floats get_orientation() const {
        Floats ret;
        for (unsigned int i=0; i< 4; ++i) {
-          ret.push_back(nh_.get_value(orientation_[i], frame));
+          ret.push_back(nh_.get_value(orientation_[i], frame_));
        }
        return ret;
     }
-void set_orientation(const Floats &v, int frame=0) {
+void set_orientation(const Floats &v) {
          for (unsigned int i=0; i< 4; ++i) {
-            nh_.set_value(orientation_[i], v[i], frame);
+            nh_.set_value(orientation_[i], v[i], frame_);
          }
       }
-Floats get_coordinates(int frame=0) const {
+Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-void set_coordinates(const Floats &v, int frame=0) {
+void set_coordinates(const Floats &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame);
+            nh_.set_value(coordinates_[i], v[i], frame_);
          }
       }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-void set_radius(Float v, int frame=0) {
-   nh_.set_value(radius_, v, frame);
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
 }
-Float get_mass(int frame=0) const {
-  return nh_.get_value(mass_, frame);
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
 }
-void set_mass(Float v, int frame=0) {
-   nh_.set_value(mass_, v, frame);
+void set_mass(Float v) {
+   nh_.set_value(mass_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstRigidParticle,
                      "RigidParticle "
@@ -498,17 +526,18 @@ mass_=get_key_always<FloatTraits>(fh, cat,
                                "mass", false);
 };
     }
-    RigidParticle get(NodeHandle nh) const {
-      return RigidParticle(nh, orientation_,
+    RigidParticle get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return RigidParticle(nh, frame, orientation_,
 coordinates_,
 radius_,
 mass_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(orientation_[0])
-    && nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(mass_);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(orientation_[0], frame)
+    && nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame);
     }
     IMP_RMF_SHOWABLE(RigidParticleFactory, "RigidParticleFactory");
     };
@@ -561,17 +590,18 @@ mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
                               :FloatKey());
 };
     }
-    RigidParticleConst get(NodeConstHandle nh) const {
-      return RigidParticleConst(nh, orientation_,
+    RigidParticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return RigidParticleConst(nh, frame, orientation_,
 coordinates_,
 radius_,
 mass_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(orientation_[0])
-    && nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(mass_);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(orientation_[0], frame)
+    && nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame);
     }
     IMP_RMF_SHOWABLE(RigidParticleConstFactory, "RigidParticleConstFactory");
     };
@@ -585,22 +615,26 @@ mass_);
      */
     class ScoreConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class ScoreConstFactory;
     private:
     NodeIDsKey representation_;
 FloatKey score_;
     ScoreConst(NodeConstHandle nh,
+                      unsigned int frame,
                   NodeIDsKey representation,
-FloatKey score): nh_(nh),representation_(representation),
+FloatKey score): nh_(nh),
+                                      frame_(frame),
+                                     representation_(representation),
 score_(score) {
     ;
     }
     public:
-    NodeIDs get_representation(int frame=0) const {
-  return nh_.get_value(representation_, frame);
+    NodeIDs get_representation() const {
+  return nh_.get_value(representation_, frame_);
 }
-Float get_score(int frame=0) const {
-  return nh_.get_value(score_, frame);
+Float get_score() const {
+  return nh_.get_value(score_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstScore,
                      "ScoreConst "
@@ -618,28 +652,32 @@ Float get_score(int frame=0) const {
      */
     class Score {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class ScoreFactory;
     private:
     NodeIDsKey representation_;
 FloatKey score_;
     Score(NodeHandle nh,
+                      unsigned int frame,
                   NodeIDsKey representation,
-FloatKey score): nh_(nh),representation_(representation),
+FloatKey score): nh_(nh),
+                                      frame_(frame),
+                                     representation_(representation),
 score_(score) {
     ;
     }
     public:
-    NodeIDs get_representation(int frame=0) const {
-  return nh_.get_value(representation_, frame);
+    NodeIDs get_representation() const {
+  return nh_.get_value(representation_, frame_);
 }
-void set_representation(NodeIDs v, int frame=0) {
-   nh_.set_value(representation_, v, frame);
+void set_representation(NodeIDs v) {
+   nh_.set_value(representation_, v, frame_);
 }
-Float get_score(int frame=0) const {
-  return nh_.get_value(score_, frame);
+Float get_score() const {
+  return nh_.get_value(score_, frame_);
 }
-void set_score(Float v, int frame=0) {
-   nh_.set_value(score_, v, frame);
+void set_score(Float v) {
+   nh_.set_value(score_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstScore,
                      "Score "
@@ -671,13 +709,14 @@ score_=get_key_always<FloatTraits>(fh, cat,
                                "score", false);
 };
     }
-    Score get(NodeHandle nh) const {
-      return Score(nh, representation_,
+    Score get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Score(nh, frame, representation_,
 score_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(representation_)
-    && nh.get_has_value(score_);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(representation_, frame)
+    && nh.get_has_value(score_, frame);
     }
     IMP_RMF_SHOWABLE(ScoreFactory, "ScoreFactory");
     };
@@ -707,13 +746,14 @@ score_=(fh.get_has_key<FloatTraits>(cat, "score")?
                               :FloatKey());
 };
     }
-    ScoreConst get(NodeConstHandle nh) const {
-      return ScoreConst(nh, representation_,
+    ScoreConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return ScoreConst(nh, frame, representation_,
 score_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(representation_)
-    && nh.get_has_value(score_);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(representation_, frame)
+    && nh.get_has_value(score_, frame);
     }
     IMP_RMF_SHOWABLE(ScoreConstFactory, "ScoreConstFactory");
     };
@@ -727,29 +767,33 @@ score_);
      */
     class BallConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class BallConstFactory;
     private:
     FloatKeys coordinates_;
 FloatKey radius_;
 IndexKey type_;
     BallConst(NodeConstHandle nh,
+                      unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     ;
     }
     public:
-    Floats get_coordinates(int frame=0) const {
+    Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstBall,
                      "BallConst "
@@ -767,37 +811,41 @@ Float get_radius(int frame=0) const {
      */
     class Ball {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class BallFactory;
     private:
     FloatKeys coordinates_;
 FloatKey radius_;
 IndexKey type_;
     Ball(NodeHandle nh,
+                      unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     nh.set_value(type_, 0);;
     }
     public:
-    Floats get_coordinates(int frame=0) const {
+    Floats get_coordinates() const {
        Floats ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-void set_coordinates(const Floats &v, int frame=0) {
+void set_coordinates(const Floats &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame);
+            nh_.set_value(coordinates_[i], v[i], frame_);
          }
       }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-void set_radius(Float v, int frame=0) {
-   nh_.set_value(radius_, v, frame);
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstBall,
                      "Ball "
@@ -836,15 +884,16 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Ball get(NodeHandle nh) const {
-      return Ball(nh, coordinates_,
+    Ball get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Ball(nh, frame, coordinates_,
 radius_,
 type_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(type_)
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==0;
     }
     IMP_RMF_SHOWABLE(BallFactory, "BallFactory");
@@ -885,15 +934,16 @@ type_=(fh.get_has_key<IndexTraits>(cat, "type")?
                               :IndexKey());
 };
     }
-    BallConst get(NodeConstHandle nh) const {
-      return BallConst(nh, coordinates_,
+    BallConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return BallConst(nh, frame, coordinates_,
 radius_,
 type_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(type_)
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==0;
     }
     IMP_RMF_SHOWABLE(BallConstFactory, "BallConstFactory");
@@ -908,29 +958,33 @@ type_);
      */
     class CylinderConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class CylinderConstFactory;
     private:
     FloatsKeys coordinates_;
 FloatKey radius_;
 IndexKey type_;
     CylinderConst(NodeConstHandle nh,
+                      unsigned int frame,
                   FloatsKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     ;
     }
     public:
-    FloatsList get_coordinates(int frame=0) const {
+    FloatsList get_coordinates() const {
        FloatsList ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstCylinder,
                      "CylinderConst "
@@ -948,37 +1002,41 @@ Float get_radius(int frame=0) const {
      */
     class Cylinder {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class CylinderFactory;
     private:
     FloatsKeys coordinates_;
 FloatKey radius_;
 IndexKey type_;
     Cylinder(NodeHandle nh,
+                      unsigned int frame,
                   FloatsKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     nh.set_value(type_, 1);;
     }
     public:
-    FloatsList get_coordinates(int frame=0) const {
+    FloatsList get_coordinates() const {
        FloatsList ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-void set_coordinates(const FloatsList &v, int frame=0) {
+void set_coordinates(const FloatsList &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame);
+            nh_.set_value(coordinates_[i], v[i], frame_);
          }
       }
-Float get_radius(int frame=0) const {
-  return nh_.get_value(radius_, frame);
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
 }
-void set_radius(Float v, int frame=0) {
-   nh_.set_value(radius_, v, frame);
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstCylinder,
                      "Cylinder "
@@ -1017,15 +1075,16 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Cylinder get(NodeHandle nh) const {
-      return Cylinder(nh, coordinates_,
+    Cylinder get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Cylinder(nh, frame, coordinates_,
 radius_,
 type_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(type_)
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(CylinderFactory, "CylinderFactory");
@@ -1066,15 +1125,16 @@ type_=(fh.get_has_key<IndexTraits>(cat, "type")?
                               :IndexKey());
 };
     }
-    CylinderConst get(NodeConstHandle nh) const {
-      return CylinderConst(nh, coordinates_,
+    CylinderConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return CylinderConst(nh, frame, coordinates_,
 radius_,
 type_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(radius_)
-    && nh.get_has_value(type_)
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(CylinderConstFactory, "CylinderConstFactory");
@@ -1089,21 +1149,25 @@ type_);
      */
     class SegmentConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class SegmentConstFactory;
     private:
     FloatsKeys coordinates_;
 IndexKey type_;
     SegmentConst(NodeConstHandle nh,
+                      unsigned int frame,
                   FloatsKeys coordinates,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 type_(type) {
     ;
     }
     public:
-    FloatsList get_coordinates(int frame=0) const {
+    FloatsList get_coordinates() const {
        FloatsList ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
@@ -1123,27 +1187,31 @@ type_(type) {
      */
     class Segment {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class SegmentFactory;
     private:
     FloatsKeys coordinates_;
 IndexKey type_;
     Segment(NodeHandle nh,
+                      unsigned int frame,
                   FloatsKeys coordinates,
-IndexKey type): nh_(nh),coordinates_(coordinates),
+IndexKey type): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
 type_(type) {
     nh.set_value(type_, 1);;
     }
     public:
-    FloatsList get_coordinates(int frame=0) const {
+    FloatsList get_coordinates() const {
        FloatsList ret;
        for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame));
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
        }
        return ret;
     }
-void set_coordinates(const FloatsList &v, int frame=0) {
+void set_coordinates(const FloatsList &v) {
          for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame);
+            nh_.set_value(coordinates_[i], v[i], frame_);
          }
       }
     IMP_RMF_SHOWABLE(ConstSegment,
@@ -1180,13 +1248,14 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Segment get(NodeHandle nh) const {
-      return Segment(nh, coordinates_,
+    Segment get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Segment(nh, frame, coordinates_,
 type_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(type_)
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(SegmentFactory, "SegmentFactory");
@@ -1223,13 +1292,14 @@ type_=(fh.get_has_key<IndexTraits>(cat, "type")?
                               :IndexKey());
 };
     }
-    SegmentConst get(NodeConstHandle nh) const {
-      return SegmentConst(nh, coordinates_,
+    SegmentConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return SegmentConst(nh, frame, coordinates_,
 type_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(coordinates_[0])
-    && nh.get_has_value(type_)
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(SegmentConstFactory, "SegmentConstFactory");
@@ -1244,6 +1314,7 @@ type_);
      */
     class JournalArticleConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class JournalArticleConstFactory;
     private:
     StringKey title_;
@@ -1252,11 +1323,14 @@ StringKey pubmed_id_;
 IntKey year_;
 StringsKey authors_;
     JournalArticleConst(NodeConstHandle nh,
+                      unsigned int frame,
                   StringKey title,
 StringKey journal,
 StringKey pubmed_id,
 IntKey year,
-StringsKey authors): nh_(nh),title_(title),
+StringsKey authors): nh_(nh),
+                                      frame_(frame),
+                                     title_(title),
 journal_(journal),
 pubmed_id_(pubmed_id),
 year_(year),
@@ -1264,20 +1338,20 @@ authors_(authors) {
     ;
     }
     public:
-    String get_title(int frame=0) const {
-  return nh_.get_value(title_, frame);
+    String get_title() const {
+  return nh_.get_value(title_, frame_);
 }
-String get_journal(int frame=0) const {
-  return nh_.get_value(journal_, frame);
+String get_journal() const {
+  return nh_.get_value(journal_, frame_);
 }
-String get_pubmed_id(int frame=0) const {
-  return nh_.get_value(pubmed_id_, frame);
+String get_pubmed_id() const {
+  return nh_.get_value(pubmed_id_, frame_);
 }
-Int get_year(int frame=0) const {
-  return nh_.get_value(year_, frame);
+Int get_year() const {
+  return nh_.get_value(year_, frame_);
 }
-Strings get_authors(int frame=0) const {
-  return nh_.get_value(authors_, frame);
+Strings get_authors() const {
+  return nh_.get_value(authors_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstJournalArticle,
                      "JournalArticleConst "
@@ -1295,6 +1369,7 @@ Strings get_authors(int frame=0) const {
      */
     class JournalArticle {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class JournalArticleFactory;
     private:
     StringKey title_;
@@ -1303,11 +1378,14 @@ StringKey pubmed_id_;
 IntKey year_;
 StringsKey authors_;
     JournalArticle(NodeHandle nh,
+                      unsigned int frame,
                   StringKey title,
 StringKey journal,
 StringKey pubmed_id,
 IntKey year,
-StringsKey authors): nh_(nh),title_(title),
+StringsKey authors): nh_(nh),
+                                      frame_(frame),
+                                     title_(title),
 journal_(journal),
 pubmed_id_(pubmed_id),
 year_(year),
@@ -1315,35 +1393,35 @@ authors_(authors) {
     ;
     }
     public:
-    String get_title(int frame=0) const {
-  return nh_.get_value(title_, frame);
+    String get_title() const {
+  return nh_.get_value(title_, frame_);
 }
-void set_title(String v, int frame=0) {
-   nh_.set_value(title_, v, frame);
+void set_title(String v) {
+   nh_.set_value(title_, v, frame_);
 }
-String get_journal(int frame=0) const {
-  return nh_.get_value(journal_, frame);
+String get_journal() const {
+  return nh_.get_value(journal_, frame_);
 }
-void set_journal(String v, int frame=0) {
-   nh_.set_value(journal_, v, frame);
+void set_journal(String v) {
+   nh_.set_value(journal_, v, frame_);
 }
-String get_pubmed_id(int frame=0) const {
-  return nh_.get_value(pubmed_id_, frame);
+String get_pubmed_id() const {
+  return nh_.get_value(pubmed_id_, frame_);
 }
-void set_pubmed_id(String v, int frame=0) {
-   nh_.set_value(pubmed_id_, v, frame);
+void set_pubmed_id(String v) {
+   nh_.set_value(pubmed_id_, v, frame_);
 }
-Int get_year(int frame=0) const {
-  return nh_.get_value(year_, frame);
+Int get_year() const {
+  return nh_.get_value(year_, frame_);
 }
-void set_year(Int v, int frame=0) {
-   nh_.set_value(year_, v, frame);
+void set_year(Int v) {
+   nh_.set_value(year_, v, frame_);
 }
-Strings get_authors(int frame=0) const {
-  return nh_.get_value(authors_, frame);
+Strings get_authors() const {
+  return nh_.get_value(authors_, frame_);
 }
-void set_authors(Strings v, int frame=0) {
-   nh_.set_value(authors_, v, frame);
+void set_authors(Strings v) {
+   nh_.set_value(authors_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstJournalArticle,
                      "JournalArticle "
@@ -1384,19 +1462,20 @@ authors_=get_key_always<StringsTraits>(fh, cat,
                                "authors", false);
 };
     }
-    JournalArticle get(NodeHandle nh) const {
-      return JournalArticle(nh, title_,
+    JournalArticle get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return JournalArticle(nh, frame, title_,
 journal_,
 pubmed_id_,
 year_,
 authors_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(title_)
-    && nh.get_has_value(journal_)
-    && nh.get_has_value(pubmed_id_)
-    && nh.get_has_value(year_)
-    && nh.get_has_value(authors_);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(title_, frame)
+    && nh.get_has_value(journal_, frame)
+    && nh.get_has_value(pubmed_id_, frame)
+    && nh.get_has_value(year_, frame)
+    && nh.get_has_value(authors_, frame);
     }
     IMP_RMF_SHOWABLE(JournalArticleFactory, "JournalArticleFactory");
     };
@@ -1438,19 +1517,20 @@ authors_=(fh.get_has_key<StringsTraits>(cat, "authors")?
                               :StringsKey());
 };
     }
-    JournalArticleConst get(NodeConstHandle nh) const {
-      return JournalArticleConst(nh, title_,
+    JournalArticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return JournalArticleConst(nh, frame, title_,
 journal_,
 pubmed_id_,
 year_,
 authors_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(title_)
-    && nh.get_has_value(journal_)
-    && nh.get_has_value(pubmed_id_)
-    && nh.get_has_value(year_)
-    && nh.get_has_value(authors_);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(title_, frame)
+    && nh.get_has_value(journal_, frame)
+    && nh.get_has_value(pubmed_id_, frame)
+    && nh.get_has_value(year_, frame)
+    && nh.get_has_value(authors_, frame);
     }
     IMP_RMF_SHOWABLE(JournalArticleConstFactory, "JournalArticleConstFactory");
     };
@@ -1464,22 +1544,26 @@ authors_);
      */
     class ResidueConst {
     NodeConstHandle nh_;
+    unsigned int frame_;
     friend class ResidueConstFactory;
     private:
     boost::array<IntKey,2> index_;
 StringKey type_;
     ResidueConst(NodeConstHandle nh,
+                      unsigned int frame,
                   boost::array<IntKey, 2> index,
-StringKey type): nh_(nh),index_(index),
+StringKey type): nh_(nh),
+                                      frame_(frame),
+                                     index_(index),
 type_(type) {
     ;
     }
     public:
-    Int get_index(int frame=0) const {
-  return nh_.get_value(index_[0], frame);
+    Int get_index() const {
+  return nh_.get_value(index_[0], frame_);
 }
-String get_type(int frame=0) const {
-  return nh_.get_value(type_, frame);
+String get_type() const {
+  return nh_.get_value(type_, frame_);
 }
     IMP_RMF_SHOWABLE(ConstResidue,
                      "ResidueConst "
@@ -1497,29 +1581,33 @@ String get_type(int frame=0) const {
      */
     class Residue {
     NodeHandle nh_;
+    unsigned int frame_;
     friend class ResidueFactory;
     private:
     boost::array<IntKey,2> index_;
 StringKey type_;
     Residue(NodeHandle nh,
+                      unsigned int frame,
                   boost::array<IntKey, 2> index,
-StringKey type): nh_(nh),index_(index),
+StringKey type): nh_(nh),
+                                      frame_(frame),
+                                     index_(index),
 type_(type) {
     ;
     }
     public:
-    Int get_index(int frame=0) const {
-  return nh_.get_value(index_[0], frame);
+    Int get_index() const {
+  return nh_.get_value(index_[0], frame_);
 }
-void set_index(Int v, int frame=0) {
-   nh_.set_value(index_[0], v, frame);
-   nh_.set_value(index_[0], v, frame);
+void set_index(Int v) {
+   nh_.set_value(index_[0], v, frame_);
+   nh_.set_value(index_[0], v, frame_);
 }
-String get_type(int frame=0) const {
-  return nh_.get_value(type_, frame);
+String get_type() const {
+  return nh_.get_value(type_, frame_);
 }
-void set_type(String v, int frame=0) {
-   nh_.set_value(type_, v, frame);
+void set_type(String v) {
+   nh_.set_value(type_, v, frame_);
 }
     IMP_RMF_SHOWABLE(ConstResidue,
                      "Residue "
@@ -1553,15 +1641,17 @@ type_=get_key_always<StringTraits>(fh, cat,
                                "residue type", false);
 };
     }
-    Residue get(NodeHandle nh) const {
-      return Residue(nh, index_,
+    Residue get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Residue(nh, frame, index_,
 type_);
     }
-    bool get_is(NodeHandle nh) const {
-      return nh.get_has_value(index_[0])
-  && nh.get_has_value(index_[1])
-  && nh.get_value(index_[0])==nh.get_value(index_[1])
-    && nh.get_has_value(type_);
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(index_[0], frame)
+  && nh.get_has_value(index_[1], frame)
+  && nh.get_value(index_[0], frame)
+   ==nh.get_value(index_[1], frame)
+    && nh.get_has_value(type_, frame);
     }
     IMP_RMF_SHOWABLE(ResidueFactory, "ResidueFactory");
     };
@@ -1594,15 +1684,17 @@ type_=(fh.get_has_key<StringTraits>(cat, "residue type")?
                               :StringKey());
 };
     }
-    ResidueConst get(NodeConstHandle nh) const {
-      return ResidueConst(nh, index_,
+    ResidueConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return ResidueConst(nh, frame, index_,
 type_);
     }
-    bool get_is(NodeConstHandle nh) const {
-      return nh.get_has_value(index_[0])
-  && nh.get_has_value(index_[1])
-  && nh.get_value(index_[0])==nh.get_value(index_[1])
-    && nh.get_has_value(type_);
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(index_[0], frame)
+  && nh.get_has_value(index_[1], frame)
+  && nh.get_value(index_[0], frame)
+   ==nh.get_value(index_[1], frame)
+    && nh.get_has_value(type_, frame);
     }
     IMP_RMF_SHOWABLE(ResidueConstFactory, "ResidueConstFactory");
     };

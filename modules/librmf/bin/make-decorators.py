@@ -25,12 +25,12 @@ class Attribute:
         return self.type+"Key "+self.nice_name+"_;"
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+" get_"+self.nice_name+"(int frame=0) const {")
-        ret.append("  return nh_.get_value("+self.nice_name+"_, frame);")
+        ret.append(self.type+" get_"+self.nice_name+"() const {")
+        ret.append("  return nh_.get_value("+self.nice_name+"_, frame_);")
         ret.append("}")
         if not const:
-            ret.append("void set_"+self.nice_name+"("+self.type+" v, int frame=0) {")
-            ret.append("   nh_.set_value("+self.nice_name+"_, v, frame);")
+            ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
+            ret.append("   nh_.set_value("+self.nice_name+"_, v, frame_);")
             ret.append("}")
         return "\n".join(ret)
     def get_key_arguments(self):
@@ -42,7 +42,7 @@ class Attribute:
     def get_initialize(self, const):
         return self.nice_name+"_="+get_string(self.type, self.attribute_name, const)
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_)"
+        return "nh.get_has_value("+self.nice_name+"_, frame)"
 
 class SingletonRangeAttribute:
     def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end):
@@ -54,13 +54,13 @@ class SingletonRangeAttribute:
         return "boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+" get_"+self.nice_name+"(int frame=0) const {")
-        ret.append("  return nh_.get_value("+self.nice_name+"_[0], frame);")
+        ret.append(self.type+" get_"+self.nice_name+"() const {")
+        ret.append("  return nh_.get_value("+self.nice_name+"_[0], frame_);")
         ret.append("}")
         if not const:
-            ret.append("void set_"+self.nice_name+"("+self.type+" v, int frame=0) {")
-            ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame);")
-            ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame);")
+            ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
+            ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame_);")
+            ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame_);")
             ret.append("}")
         return "\n".join(ret)
     def get_key_arguments(self):
@@ -73,9 +73,10 @@ class SingletonRangeAttribute:
         return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const)+\
             ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const)
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_[0])"+\
-            "\n  && nh.get_has_value("+self.nice_name+"_[1])"+\
-            "\n  && nh.get_value("+self.nice_name+"_[0])==nh.get_value("+self.nice_name+"_[1])"
+        return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
+            "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
+            "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
+            "\n   ==nh.get_value("+self.nice_name+"_[1], frame)"
 
 
 class Attributes:
@@ -89,10 +90,10 @@ class Attributes:
         return self.type+"Keys "+self.nice_name+"_;"
     def get_methods(self, const):
         ret=[]
-        ret.append("""%(ptype)s get_%(name)s(int frame=0) const {
+        ret.append("""%(ptype)s get_%(name)s() const {
        %(ptype)s ret;
        for (unsigned int i=0; i< %(len)s; ++i) {
-          ret.push_back(nh_.get_value(%(key)s[i], frame));
+          ret.push_back(nh_.get_value(%(key)s[i], frame_));
        }
        return ret;
     }"""%{"type":self.type,
@@ -101,9 +102,9 @@ class Attributes:
           "len":len(self.attribute_names),
           "key":self.nice_name+"_"})
         if not const:
-            ret.append("""void set_%(name)s(const %(ptype)s &v, int frame=0) {
+            ret.append("""void set_%(name)s(const %(ptype)s &v) {
          for (unsigned int i=0; i< %(len)s; ++i) {
-            nh_.set_value(%(key)s[i], v[i], frame);
+            nh_.set_value(%(key)s[i], v[i], frame_);
          }
       }"""%{"type":self.type,
             "ptype":self.ptype,
@@ -128,7 +129,7 @@ class Attributes:
                                                             })
         return "\n".join(ret)
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_[0])"
+        return "nh.get_has_value("+self.nice_name+"_[0], frame)"
 
 
 class DecoratorCategory:
@@ -213,11 +214,15 @@ class Decorator:
      */
     class %(name)s%(CONST)s {
     Node%(CONST)sHandle nh_;
+    unsigned int frame_;
     friend class %(name)s%(CONST)sFactory;
     private:
     %(key_members)s
     %(name)s%(CONST)s(Node%(CONST)sHandle nh,
-                  %(key_arguments)s): nh_(nh),%(key_saves)s {
+                      unsigned int frame,
+                  %(key_arguments)s): nh_(nh),
+                                      frame_(frame),
+                                     %(key_saves)s {
     %(init)s;
     }
     public:
@@ -261,10 +266,11 @@ class Decorator:
     %(name)s%(CONST)sFactory(File%(CONST)sHandle fh){
     %(initialize)s;
     }
-    %(name)s%(CONST)s get(Node%(CONST)sHandle nh) const {
-      return %(name)s%(CONST)s(nh, %(key_pass)s);
+    %(name)s%(CONST)s get(Node%(CONST)sHandle nh, unsigned int frame=0) const {
+      %(create_check)s;
+      return %(name)s%(CONST)s(nh, frame, %(key_pass)s);
     }
-    bool get_is(Node%(CONST)sHandle nh) const {
+    bool get_is(Node%(CONST)sHandle nh, unsigned int frame=0) const {
       return %(checks)s;
     }
     IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory, "%(name)s%(CONST)sFactory");
@@ -276,11 +282,13 @@ class Decorator:
                              "key_members": self._get_key_members(),
                              "key_pass": self._get_key_pass(),
                              "CONST":"", "NOTCONST":"Const",
+                            "create_check":"",
                             "initialize": self._get_initialize(False),
                             "checks":self._get_checks()});
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(),
                              "key_pass": self._get_key_pass(),
+                             "create_check":"IMP_RMF_USAGE_CHECK(get_is(nh, frame), \"Node is not\")",
                              "CONST":"Const", "NOTCONST":"",
                             "initialize": self._get_initialize(True),
                             "checks":self._get_checks()});
