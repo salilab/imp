@@ -58,10 +58,10 @@ namespace {
   IMP_UNUSED(cf);                                               \
   IMP_UNUSED(sf);                                               \
   if (sg->get_has_color()) {                                    \
-    RMF::Colored cd= colorf.get(cur);                           \
+    RMF::Colored cd= colorf.get(cur, frame);                    \
     display::Color c= sg->get_color();                          \
     cd.set_rgb_color(RMF::Floats(c.components_begin(),          \
-                                 c.components_end()), frame);   \
+                                 c.components_end()));          \
   }                                                             \
 
 #define IMP_HANDLE_CONST_COLOR                                  \
@@ -70,8 +70,8 @@ namespace {
   IMP_UNUSED(cf);                                               \
   IMP_UNUSED(sf);                                               \
   ret->set_name(cur.get_name());                                \
-  if (colorf.get_is(cur)) {                                     \
-    RMF::Floats color= colorf.get(cur).get_rgb_color();         \
+  if (colorf.get_is(cur, frame)) {                              \
+    RMF::Floats color= colorf.get(cur, frame).get_rgb_color();  \
     display::Color c(color.begin(), color.end());               \
     ret->set_color(c);                                          \
   }                                                             \
@@ -81,9 +81,9 @@ namespace {
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
     algebra::Sphere3D s= sg->get_geometry();
-    RMF::Ball b= bf.get(cur);
+    RMF::Ball b= bf.get(cur, frame);
     b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
-                                  s.get_center().coordinates_end()), frame);
+                                  s.get_center().coordinates_end()));
     b.set_radius(s.get_radius());
   }
 
@@ -91,7 +91,7 @@ namespace {
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
     algebra::Cylinder3D s= sg->get_geometry();
-    RMF::Cylinder c= cf.get(cur);
+    RMF::Cylinder c= cf.get(cur, frame);
     c.set_radius(s.get_radius());
     RMF::FloatsList coords(3, RMF::Floats(2));
     for (unsigned int i=0; i< 2; ++i) {
@@ -100,14 +100,14 @@ namespace {
         coords[j][i]=c[j];
       }
     }
-    c.set_coordinates(coords, frame);
+    c.set_coordinates(coords);
   }
 
   void process(display::SegmentGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
     algebra::Segment3D s= sg->get_geometry();
-    RMF::Segment c= sf.get(cur);
+    RMF::Segment c= sf.get(cur, frame);
     RMF::FloatsList coords(3, RMF::Floats(2));
     for (unsigned int i=0; i< 2; ++i) {
       algebra::Vector3D c= s.get_point(i);
@@ -115,7 +115,7 @@ namespace {
         coords[j][i]=c[j];
       }
     }
-    c.set_coordinates(coords, frame);
+    c.set_coordinates(coords);
   }
 
 /*
@@ -188,7 +188,7 @@ namespace {
       RMF::Colored cd= colorf.get(cur);
       display::Color c= g->get_color();
       cd.set_rgb_color(RMF::Floats(c.components_begin(),
-                                   c.components_end()), frame);
+                                   c.components_end()));
     }
   }
 }
@@ -212,11 +212,14 @@ namespace {
     // get_has_color, get_color, get_name, get_components
     RMF::NodeHandle cur= parent.get_node_from_association(tag);
     IMP_TRY(display::SphereGeometry)
+    else IMP_TRY(display::SegmentGeometry)
     else IMP_TRY(display::CylinderGeometry);
     display::Geometries gt= g->get_components();
     if (gt.size()==1) {
-      save_internal(parent, frame, tag, gt.front(),
-                    IMP_HDF5_PASS_GEOMETRY_KEYS);
+      if (gt[0]!= g) {
+        save_internal(parent, frame, tag, gt.front(),
+                      IMP_HDF5_PASS_GEOMETRY_KEYS);
+      }
     } else {
       for (unsigned int i=0; i< gt.size(); ++i) {
         save_internal(parent, frame, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -238,9 +241,9 @@ namespace {
 
   display::Geometry *try_read_sphere(RMF::NodeConstHandle cur, int frame,
                                      IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (bf.get_is(cur)) {
-      RMF::BallConst b=bf.get(cur);
-      RMF::Floats cs=b.get_coordinates(frame);
+    if (bf.get_is(cur, frame)) {
+      RMF::BallConst b=bf.get(cur, frame);
+      RMF::Floats cs=b.get_coordinates();
       algebra::Sphere3D s(algebra::Vector3D(cs.begin(), cs.end()),
                           b.get_radius());
       Pointer<display::Geometry> ret=new display::SphereGeometry(s);
@@ -251,9 +254,9 @@ namespace {
 
   display::Geometry *try_read_cylinder(RMF::NodeConstHandle cur, int frame,
                                        IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-     if (cf.get_is(cur)) {
-      RMF::CylinderConst b=cf.get(cur);
-      RMF::FloatsList cs=b.get_coordinates(frame);
+    if (cf.get_is(cur, frame)) {
+      RMF::CylinderConst b=cf.get(cur, frame);
+      RMF::FloatsList cs=b.get_coordinates();
       algebra::Vector3D vs[2];
       for (unsigned int i=0; i< 2; ++i) {
         for (unsigned int j=0; j< 3; ++j) {
@@ -270,9 +273,9 @@ namespace {
 
   display::Geometry *try_read_segment(RMF::NodeConstHandle cur, int frame,
                                       IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (sf.get_is(cur)) {
+    if (sf.get_is(cur, frame)) {
       RMF::SegmentConst b=sf.get(cur);
-      RMF::FloatsList cs=b.get_coordinates(frame);
+      RMF::FloatsList cs=b.get_coordinates();
       algebra::Vector3D vs[2];
       for (unsigned int i=0; i< 2; ++i) {
         for (unsigned int j=0; j< 3; ++j) {
@@ -340,7 +343,7 @@ namespace {
           display::Geometries c=read_internal(ch[i], frame,
                                             IMP_HDF5_PASS_GEOMETRY_CONST_KEYS);
           if (!c.empty()) {
-            curg=new display::CompoundGeometry(c);
+            curg=new display::CompoundGeometry(c, parent.get_name());
           }
         }
         if (curg) {
