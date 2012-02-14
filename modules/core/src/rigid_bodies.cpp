@@ -23,7 +23,7 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 
-inline const RigidBodyData &rigid_body_data() {
+const RigidBodyData &rigid_body_data() {
   static const RigidBodyData rbd;
   return rbd;
 }
