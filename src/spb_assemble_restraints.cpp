@@ -133,11 +133,11 @@ if(mydata.add_fret && mydata.use_new_fret_model){
 // prepare the restraint set
  IMP_NEW(RestraintSet,fret,("FRET_R"));
  std::string name_d, ter_d, name_a, ter_a;
- double fretr_exp;
+ double fretr_exp, sig_exp;
 // open fret file
  std::ifstream fretfile;
  fretfile.open(mydata.Fret.filename.c_str());
- while(fretfile >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp){
+ while(fretfile >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp >> sig_exp){
   fret->add_restraint(NEW_fret_restraint(m, all_mol,
                             name_d, ter_d, name_a, ter_a, fretr_exp,
                             mydata.Fret, mydata.kappa, mydata.add_GFP));

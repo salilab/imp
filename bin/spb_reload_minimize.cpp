@@ -83,6 +83,19 @@ for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
 }
 fprintf(fretfile,"\n");
 //
+// READ FRET ERROR
+//
+Floats sigmas;
+std::string name_d, ter_d, name_a, ter_a;
+double fretr_exp, sigma_exp;
+// open fret file
+std::ifstream fretdata;
+fretdata.open(mydata.Fret.filename.c_str());
+while(fretdata >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp >> sigma_exp){
+ sigmas.push_back(sigma_exp);
+}
+fretdata.close();
+//
 // OPTIMIZER
 //
 IMP_NEW(core::ConjugateGradients,cg,(m));
@@ -138,26 +151,36 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     }
     double fretr_score = rst_map["FRET_R"]->evaluate(false);
     double y2h_score   = rst_map["Y2H"]->evaluate(false);
-// print main log file
-    fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %5d  %3d %12.6f\n",
-     nminimized,myscore,myscore_min,fretr_score,y2h_score,
-     iout_name,myindex,mybias);
-// print fret log file
-    fprintf(fretfile,"%10d  ",nminimized);
+// get individual contribution to fret score
+    Floats fretr_scores;
+    bool fretisgood=true;
     for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
-     fprintf(fretfile,"%20.10lf ",
-      rst_map["FRET_R"]->get_restraint(i)->evaluate(false));
+      double score=rst_map["FRET_R"]->get_restraint(i)->evaluate(false);
+      if(sqrt(2.*score)>sigmas[i]*mydata.Fret.sigmamult){fretisgood=false;}
+      fretr_scores.push_back(score);
     }
-    fprintf(fretfile,"\n");
+// filter on individual score?
+    if((mydata.Fret.sigmafilter && fretisgood) || !mydata.Fret.sigmafilter){
+// print main log file
+     fprintf(logfile,"%10d  %12.6f %12.6f  %12.6f %12.6f  %5d  %3d %12.6f\n",
+      nminimized,myscore,myscore_min,fretr_score,y2h_score,
+      iout_name,myindex,mybias);
+// print fret log file
+     fprintf(fretfile,"%10d  ",nminimized);
+     for(unsigned i=0;i<fretr_scores.size();++i){
+      fprintf(fretfile,"%20.10lf ",fretr_scores[i]);
+     }
+     fprintf(fretfile,"\n");
 // write to file
-    (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
-    (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
-    (rh_out.get_root_node()).set_value(my_key_out2,mybias,currentframe);
-    for(unsigned int i=0;i<hhs.size();++i){
-     rmf::save_frame(rh_out,currentframe,hhs[i]);
+     (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
+     (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
+     (rh_out.get_root_node()).set_value(my_key_out2,mybias,currentframe);
+     for(unsigned int i=0;i<hhs.size();++i){
+      rmf::save_frame(rh_out,currentframe,hhs[i]);
+     }
+     ++nminimized;
+     ++currentframe;
     }
-    ++nminimized;
-    ++currentframe;
    }
 // time to create a new file for output?
    if(totframes%mydata.chunk==0 && totframes<nframes*mydata.nrep){

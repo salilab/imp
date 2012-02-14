@@ -54,6 +54,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  std::string label;
  std::string fret_File;
  std::map<std::string,std::string> file_list;
+ bool fret_sigmafilter;
+
+
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
  desc.add_options()("wte_restart",  value<bool>(&wte_restart),      "ciao");
@@ -87,6 +90,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("trajfile",      value<std::string>(&trajfile),     "ciao");
  desc.add_options()("label",         value<std::string>(&label),        "ciao");
  desc.add_options()("fret_File",     value<std::string>(&fret_File),    "ciao");
+ desc.add_options()("fret_sigmafilter",value<bool>(&fret_sigmafilter),  "ciao");
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -111,6 +115,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, fret_Sa);
  OPTION(double, fret_Gamma);
  OPTION(double, fret_Ida);
+ OPTION(double, fret_sigmamult);
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
  OPTION(int,    niter);
@@ -150,6 +155,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.Fret.Gamma=fret_Gamma;
  ret.Fret.Ida=fret_Ida;
  ret.Fret.filename=fret_File;
+ ret.Fret.sigmamult=fret_sigmamult;
+ ret.Fret.sigmafilter=fret_sigmafilter;
 
 // General Parameters
  ret.side=side;
