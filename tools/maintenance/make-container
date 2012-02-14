@@ -159,9 +159,9 @@ def make_one(params, test=True):
                path+"/tools/container_templates/statistics.cpp"),
 
             ("modules/container/include/Predicate"+multi + "sRestraint.h",
-               path+"/tools/container_templates/distribute.hpp"),
+               path+"/tools/container_templates/predrestraint.hpp"),
               ("modules/container/src/Predicate"+multi + "sRestraint.cpp",
-               path+"/tools/container_templates/distribute.cc"),
+               path+"/tools/container_templates/predrestraint.cc"),
 
 
               ("modules/container/include/Minimum"+multi + "Restraint.h",
