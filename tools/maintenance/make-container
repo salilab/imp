@@ -48,145 +48,149 @@ def make_one(params, test=True):
 
 
     files= [("modules/kernel/include/"+multi + "Container.h",
-               path+"tools/container_templates/container.hpp"),
+               path+"tools/maintenance/container_templates/container.hpp"),
               ("modules/kernel/src/"+multi + "Container.cpp",
-               path+"/tools/container_templates/container.cc"),
+               path+"/tools/maintenance/container_templates/container.cc"),
               ("modules/core/include/internal/"+multi.lower() + "_helpers.h",
-               path+"tools/container_templates/helper.hpp"),
+               path+"tools/maintenance/container_templates/helper.hpp"),
               ("modules/core/src/internal/"+multi.lower() + "_helpers.cpp",
-               path+"tools/container_templates/helper.cc"),
+               path+"tools/maintenance/container_templates/helper.cc"),
 
               ("modules/kernel/include/internal/"+multi.lower() + "_helpers.h",
-               path+"tools/container_templates/kernel_helper.hpp"),
+               path+"tools/maintenance/container_templates/kernel_helper.hpp"),
 
 
               ("modules/container/include/"+plural_multi + "Restraint.h",
-               path+"/tools/container_templates/restraint.hpp"),
+               path+"/tools/maintenance/container_templates/restraint.hpp"),
               ("modules/container/src/"+plural_multi + "Restraint.cpp",
-               path+"/tools/container_templates/restraint.cc"),
+               path+"/tools/maintenance/container_templates/restraint.cc"),
               ("modules/core/include/internal/Core"+plural_multi + "Restraint.h",
-               path+"/tools/container_templates/corerestraint.hpp"),
+               path+"/tools/maintenance/container_templates/corerestraint.hpp"),
               ("modules/core/src/internal/Core"+plural_multi + "Restraint.cpp",
-               path+"/tools/container_templates/corerestraint.cc"),
+               path+"/tools/maintenance/container_templates/corerestraint.cc"),
 
               ("modules/container/include/List"+multi + "Container.h",
-               path+"/tools/container_templates/list.hpp"),
+               path+"/tools/maintenance/container_templates/list.hpp"),
               ("modules/container/src/List"+multi + "Container.cpp",
-               path+"/tools/container_templates/list.cc"),
+               path+"/tools/maintenance/container_templates/list.cc"),
               ("modules/core/include/internal/CoreList"+multi + "Container.h",
-               path+"/tools/container_templates/corelist.hpp"),
+               path+"/tools/maintenance/container_templates/corelist.hpp"),
               ("modules/core/src/internal/CoreList"+multi + "Container.cpp",
-               path+"/tools/container_templates/corelist.cc"),
+               path+"/tools/maintenance/container_templates/corelist.cc"),
 
               ("modules/kernel/include/"+multi.lower() + "_macros.h",
-               path+"/tools/container_templates/macros.hpp"),
+               path+"/tools/maintenance/container_templates/macros.hpp"),
 
 
               ("modules/core/include/"+multi + "Restraint.h",
-               path+"/tools/container_templates/srestraint.hpp"),
+               path+"/tools/maintenance/container_templates/srestraint.hpp"),
               ("modules/core/src/"+multi + "Restraint.cpp",
-               path+"/tools/container_templates/srestraint.cc"),
+               path+"/tools/maintenance/container_templates/srestraint.cc"),
 
               ("modules/container/include/InContainer"+multi + "Filter.h",
-               path+"/tools/container_templates/in_container.hpp"),
+               path+"/tools/maintenance/container_templates/in_container.hpp"),
               ("modules/container/src/InContainer"+multi + "Filter.cpp",
-               path+"/tools/container_templates/in_container.cc"),
+               path+"/tools/maintenance/container_templates/in_container.cc"),
 
 
               ("modules/container/include/"+multi + "ContainerSet.h",
-               path+"/tools/container_templates/set.hpp"),
+               path+"/tools/maintenance/container_templates/set.hpp"),
               ("modules/container/src/"+multi + "ContainerSet.cpp",
-               path+"/tools/container_templates/set.cc"),
+               path+"/tools/maintenance/container_templates/set.cc"),
               ("modules/container/include/"+plural_multi + "Constraint.h",
-               path+"/tools/container_templates/state.hpp"),
+               path+"/tools/maintenance/container_templates/state.hpp"),
               ("modules/container/src/"+plural_multi + "Constraint.cpp",
-               path+"/tools/container_templates/state.cc"),
+               path+"/tools/maintenance/container_templates/state.cc"),
 
               ("modules/container/include/"+plural_multi + "OptimizerState.h",
-               path+"/tools/container_templates/ostate.hpp"),
+               path+"/tools/maintenance/container_templates/ostate.hpp"),
               ("modules/container/src/"+plural_multi + "OptimizerState.cpp",
-               path+"/tools/container_templates/ostate.cc"),
+               path+"/tools/maintenance/container_templates/ostate.cc"),
 
               #("modules/container/include/RemoveInactive"+multi + "sOptimizerState.h",
-              # path+"/tools/container_templates/inactive.hpp"),
+              # path+"/tools/maintenance/container_templates/inactive.hpp"),
               #("modules/container/src/RemoveInactive"+multi + "sOptimizerState.cpp",
-              # path+"/tools/container_templates/inactive.cc"),
+              # path+"/tools/maintenance/container_templates/inactive.cc"),
 
               ("modules/core/include/"+multi + "Constraint.h",
-               path+"/tools/container_templates/sstate.hpp"),
+               path+"/tools/maintenance/container_templates/sstate.hpp"),
               ("modules/core/src/"+multi + "Constraint.cpp",
-               path+"/tools/container_templates/sstate.cc"),
+               path+"/tools/maintenance/container_templates/sstate.cc"),
 
               ("modules/kernel/include/"+multi + "Modifier.h",
-               path+"/tools/container_templates/function.hpp"),
+               path+"/tools/maintenance/container_templates/function.hpp"),
               ("modules/kernel/src/"+multi + "Modifier.cpp",
-               path+"/tools/container_templates/function.cc"),
+               path+"/tools/maintenance/container_templates/function.cc"),
 
 
               ("modules/kernel/include/"+multi + "DerivativeModifier.h",
-               path+"/tools/container_templates/derivfunction.hpp"),
+               path+"/tools/maintenance/container_templates/derivfunction.hpp"),
               ("modules/kernel/src/"+multi + "DerivativeModifier.cpp",
-               path+"/tools/container_templates/derivfunction.cc"),
+               path+"/tools/maintenance/container_templates/derivfunction.cc"),
 
               ("modules/kernel/include/"+multi + "Filter.h",
-               path+"/tools/container_templates/filter.hpp"),
+               path+"/tools/maintenance/container_templates/filter.hpp"),
               ("modules/kernel/src/"+multi + "Filter.cpp",
-               path+"/tools/container_templates/filter.cc"),
+               path+"/tools/maintenance/container_templates/filter.cc"),
 
               ("modules/kernel/include/"+multi + "Score.h",
-               path+"/tools/container_templates/score.hpp"),
+               path+"/tools/maintenance/container_templates/score.hpp"),
               ("modules/kernel/src/"+multi + "Score.cpp",
-               path+"/tools/container_templates/score.cc"),
+               path+"/tools/maintenance/container_templates/score.cc"),
 
             ("modules/kernel/include/"+multi + "Predicate.h",
-               path+"/tools/container_templates/pred.hpp"),
+               path+"/tools/maintenance/container_templates/pred.hpp"),
               ("modules/kernel/src/"+multi + "Predicate.cpp",
-               path+"/tools/container_templates/pred.cc"),
+               path+"/tools/maintenance/container_templates/pred.cc"),
 
             ("modules/core/include/"+multi.lower() + "_predicates.h",
-               path+"/tools/container_templates/preds.hpp"),
+               path+"/tools/maintenance/container_templates/preds.hpp"),
               ("modules/core/src/"+multi.lower() + "_predicates.cpp",
-               path+"/tools/container_templates/preds.cc"),
+               path+"/tools/maintenance/container_templates/preds.cc"),
 
             ("modules/container/include/Event"+multi + "sOptimizerState.h",
-               path+"/tools/container_templates/terminator.hpp"),
+               path+"/tools/maintenance/container_templates/terminator.hpp"),
               ("modules/container/src/Event"+multi + "sOptimizerState.cpp",
-               path+"/tools/container_templates/terminator.cc"),
+               path+"/tools/maintenance/container_templates/terminator.cc"),
 
               ("modules/container/include/"+multi + "ContainerStatistics.h",
-               path+"/tools/container_templates/statistics.hpp"),
+               path+"/tools/maintenance/container_templates/statistics.hpp"),
               ("modules/container/src/"+multi + "ContainerStatistics.cpp",
-               path+"/tools/container_templates/statistics.cpp"),
+               path+"/tools/maintenance/container_templates/statistics.cpp"),
 
             ("modules/container/include/Predicate"+multi + "sRestraint.h",
-               path+"/tools/container_templates/predrestraint.hpp"),
+               path+"/tools/maintenance/container_templates/predrestraint.hpp"),
               ("modules/container/src/Predicate"+multi + "sRestraint.cpp",
-               path+"/tools/container_templates/predrestraint.cc"),
+               path+"/tools/maintenance/container_templates/predrestraint.cc"),
 
+            ("modules/container/include/Distribute"+multi + "sScoreState.h",
+               path+"/tools/maintenance/container_templates/distribute.hpp"),
+              ("modules/container/src/Distribute"+multi + "sScoreState.cpp",
+               path+"/tools/maintenance/container_templates/distribute.cc"),
 
               ("modules/container/include/Minimum"+multi + "Restraint.h",
-               path+"/tools/container_templates/min.hpp", "Minimum", "less"),
+               path+"/tools/maintenance/container_templates/min.hpp", "Minimum", "less"),
               ("modules/container/src/Minimum"+multi + "Restraint.cpp",
-               path+"/tools/container_templates/min.cc", "Minimum", "less"),
+               path+"/tools/maintenance/container_templates/min.cc", "Minimum", "less"),
               #("modules/container/include/Maximum"+multi + "Restraint.h",
-              # path+"/tools/container_templates/min.hpp", "Maximum", "greater"),
+              # path+"/tools/maintenance/container_templates/min.hpp", "Maximum", "greater"),
               #("modules/container/src/Maximum"+multi + "Restraint.cpp",
-              # path+"/tools/container_templates/min.cc", "Maximum", "greater"),
+              # path+"/tools/maintenance/container_templates/min.cc", "Maximum", "greater"),
 
 
               ("modules/container/include/Minimum"+multi + "Score.h",
-               path+"/tools/container_templates/minscore.hpp", "Minimum", "less"),
+               path+"/tools/maintenance/container_templates/minscore.hpp", "Minimum", "less"),
               ("modules/container/src/Minimum"+multi + "Score.cpp",
-               path+"/tools/container_templates/minscore.cc", "Minimum", "less")]
+               path+"/tools/maintenance/container_templates/minscore.cc", "Minimum", "less")]
               #("modules/container/include/Maximum"+multi + "Score.h",
-              # path+"/tools/container_templates/minscore.hpp", "Maximum", "greater"),
+              # path+"/tools/maintenance/container_templates/minscore.hpp", "Maximum", "greater"),
               #("modules/container/src/Maximum"+multi + "Score.cpp",
-              # path+"/tools/container_templates/minscore.cc", "Maximum", "greater")]
+              # path+"/tools/maintenance/container_templates/minscore.cc", "Maximum", "greater")]
     if test:
         files.append(("modules/container/test/test_"+cname + "_restraint.py",
-                   path+"/tools/container_templates/test.py"))
+                   path+"/tools/maintenance/container_templates/test.py"))
         files.append(("modules/container/test/test_"+cname + "_state.py",
-                      path+"/tools/container_templates/test_state.py"))
+                      path+"/tools/maintenance/container_templates/test_state.py"))
     for p in files:
         ofile= open(p[0], 'w')
         ifile= open(p[1], 'r')
