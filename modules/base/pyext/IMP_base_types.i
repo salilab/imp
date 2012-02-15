@@ -72,7 +72,7 @@
   %}*/
 
 
-%define IMP_SWIG_SHOWSTUFF(Name)
+%define IMP_SWIG_SHOW_VALUE(Name)
   std::string __str__() const {
     std::ostringstream out;
     self->show(out);
@@ -85,9 +85,28 @@
   }
 %enddef
 
-%define IMP_SWIG_SHOWABLE(Namespace, Name)
+%define IMP_SWIG_SHOW_OBJECT(Name)
+  std::string __str__() const {
+    std::ostringstream oss;
+    oss << '"' << self->get_name() << '"';
+    return oss.str();
+  }
+  std::string __repr__() const {
+    std::ostringstream oss;
+    oss << '"' << self->get_name() << '"';
+    return oss.str();
+  }
+%enddef
+
+%define IMP_SWIG_SHOWABLE_VALUE(Namespace, Name)
      %extend Namespace::Name {
-  IMP_SWIG_SHOWSTUFF(Name);
+  IMP_SWIG_SHOW_VALUE(Name);
+ }
+%enddef
+
+%define IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name)
+     %extend Namespace::Name {
+  IMP_SWIG_SHOW_OBJECT(Name);
  }
 %enddef
 
@@ -299,11 +318,11 @@ IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
 IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName);
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %enddef
 
 %define IMP_SWIG_OBJECT_TEMPLATE(Namespace, Name)
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %enddef
 
 
@@ -482,7 +501,7 @@ IMP_SWIG_FORWARD_0(get_check_level, IMP::base::CheckLevel);
   }
 }
 %feature("valuewrapper") PluralName;
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 
@@ -632,17 +651,17 @@ IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
 
 %define IMP_SWIG_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_INSTANCE(Namespace, Name, Name, PluralName)
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
  // a value that has implicit constructors
 %define IMP_SWIG_VALUE_IMPLICIT(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_IMPL(Namespace, Name, Name, PluralName, PluralName);
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 %define IMP_SWIG_VALUE_TEMPLATE(Namespace, Name)
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 
@@ -763,11 +782,11 @@ try {
 
 %define IMP_SWIG_RAII(Namespace, Name)
 IMP_SWIG_RAII_INSTANCE(Namespace, Name, Name)
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 %define IMP_SWIG_RAII_TEMPLATE(Namespace, Name)
-IMP_SWIG_SHOWABLE(Namespace, Name);
+IMP_SWIG_SHOWABLE_VALUE(Namespace, Name);
 %enddef
 
 
