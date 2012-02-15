@@ -14,5 +14,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                             'RandomNumberGenerator',
                                            'ValueException',
                                            'FailureHandlerBase',
-                                            "TextInput", "TextOutput"],
+                                            "TextInput", "TextOutput", "RefCounted"],
                   spelling_exceptions=['altgraph'])
