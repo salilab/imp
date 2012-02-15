@@ -171,10 +171,12 @@ GaussianProcessInterpolationScoreState::get_output_containers() const {
 }
 ParticlesTemp
 GaussianProcessInterpolationScoreState::get_input_particles() const {
+  //gpir needs to update internal values computed from particles
   return gpir_->get_input_particles();
 }
 ParticlesTemp
 GaussianProcessInterpolationScoreState::get_output_particles() const {
+  //gpir does not change particles' attributes.
   return ParticlesTemp();
 }
 
