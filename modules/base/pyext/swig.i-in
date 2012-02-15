@@ -29,24 +29,6 @@ namespace base {
   bool __gt__(const Object *o) const {
      return self > o;
   }
-  /*bool __eq__(const IMP::Decorator &d) const {
-     return self == d.get_particle();
-  }
-  bool __ne__(const IMP::Decorator &d) const {
-     return self != d.get_particle();
-  }
-  bool __le__(const IMP::Decorator &d) const {
-     return self <= d.get_particle();
-  }
-  bool __lt__(const IMP::Decorator &d) const {
-     return self < d.get_particle();
-  }
-  bool __ge__(const IMP::Decorator &d) const {
-     return self >= d.get_particle();
-  }
-  bool __gt__(const IMP::Decorator &d) const {
-     return self > d.get_particle();
-  }*/
 }
 
 %feature("ref")   IMP::base::RefCounted "IMP::base::internal::ref($this);"
@@ -54,7 +36,6 @@ namespace base {
 
 IMP_SWIG_RAII(IMP::base, SetLogState);
 IMP_SWIG_RAII(IMP::base, SetCheckState);
-IMP_SWIG_OBJECT(IMP::base, RefCounted, RefCounteds);
 IMP_SWIG_OBJECT(IMP::base, Object, Objects);
 IMP_SWIG_OBJECT(IMP::base, FailureHandler, FailureHandlers);
 IMP_SWIG_DIRECTOR(IMP::base, Object);
