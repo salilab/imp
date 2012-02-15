@@ -687,6 +687,9 @@ namespace grids {
   const VT* get_raw_data() const {
     return data_.get();
   }
+  VT* get_raw_data() {
+    return data_.get();
+  }
 #endif
 
 #ifndef IMP_DOXYGEN
@@ -1029,7 +1032,8 @@ namespace grids {
       set_origin(origin);
       set_unit_cell(cell);
     }
-    DefaultEmbeddingD(){}
+    DefaultEmbeddingD(){
+    }
     void set_origin(const VectorD<D> &o) {
       origin_=o;
     }
@@ -1358,11 +1362,11 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
             class Storage,
             // swig needs this for some reason
             class Value,
-            class Embedding=DefaultEmbeddingD<D> >
-  class GridD: public Storage, public Embedding
+            class EmbeddingT=DefaultEmbeddingD<D> >
+  class GridD: public Storage, public EmbeddingT
   {
   private:
-    typedef GridD<D, Storage, Value, Embedding> This;
+    typedef GridD<D, Storage, Value, EmbeddingT> This;
 #ifndef IMP_DOXYGEN
   protected:
     struct GetVoxel {
@@ -1411,6 +1415,7 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
     }
 #endif
   public:
+    typedef EmbeddingT Embedding;
     typedef VectorD<D> Vector;
   //! Initialize the grid
   /** \param[in] xd The number of voxels in the x direction
