@@ -72,16 +72,6 @@ RMF::FloatKey my_key_out2=rh_out.add_float_key(my_kc,"my bias",true);
 FILE *logfile, *fretfile;
 logfile  = fopen("log.reload","w");
 fretfile = fopen("log.fret","w");
-// print header of fret file
-fprintf(fretfile,"%10s  ","#");
-for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
-  std::vector<std::string> strs;
-  boost::split(strs,rst_map["FRET_R"]->get_restraint(i)->get_name(),
-               boost::is_any_of(" "));
-  std::string label=strs[strs.size()-2]+"_"+strs[strs.size()-1];
-  fprintf(fretfile,"%20s ",label.c_str());
-}
-fprintf(fretfile,"\n");
 //
 // READ FRET ERROR
 //
@@ -156,7 +146,8 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     bool fretisgood=true;
     for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
       double score=rst_map["FRET_R"]->get_restraint(i)->evaluate(false);
-      if(sqrt(2.*score)>sigmas[i]*mydata.Fret.sigmamult){fretisgood=false;}
+      score = sqrt(2.0*score)/sigmas[i];
+      if(score>mydata.Fret.sigmamult){fretisgood=false;}
       fretr_scores.push_back(score);
     }
 // filter on individual score?
@@ -168,7 +159,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 // print fret log file
      fprintf(fretfile,"%10d  ",nminimized);
      for(unsigned i=0;i<fretr_scores.size();++i){
-      fprintf(fretfile,"%20.10lf ",fretr_scores[i]);
+      fprintf(fretfile,"%12.6lf ",fretr_scores[i]);
      }
      fprintf(fretfile,"\n");
 // write to RMF file
