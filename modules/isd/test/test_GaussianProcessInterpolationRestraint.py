@@ -165,6 +165,21 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             p,imin,imax = particles.pop(randint(0,len(particles)-1))
             p.set_nuisance(uniform(imin, imax))
 
+    def testGetInputThings(self):
+        particles = self.gpr.get_input_particles()
+        self.assertTrue(self.lam in particles)
+        particles.remove(self.lam)
+        self.assertTrue(self.tau in particles)
+        particles.remove(self.tau)
+        self.assertTrue(self.sig in particles)
+        particles.remove(self.sig)
+        self.assertTrue(self.alpha in particles)
+        particles.remove(self.alpha)
+        self.assertTrue(self.beta in particles)
+        particles.remove(self.beta)
+        self.assertEqual(particles,[])
+        self.assertEqual(self.gpr.get_input_containers(), [])
+
     def testValueDensityAlpha(self):
         """
         test the value of the density by varying alpha
