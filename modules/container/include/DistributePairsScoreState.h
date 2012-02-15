@@ -18,7 +18,6 @@
 #include "ListPairContainer.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
-#include "generic.h"
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
@@ -26,15 +25,18 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Distribute contents of one container into several based on predicates
-/** This ScoreState takes a list of containers, predicates and values. For
+/** This ScoreState takes a list of predicates and values. For
     each tuple in the input container, it is placed in a given output container
-    if the predicate, when applied, has the passed value. */
+    if the predicate, when applied, has the passed value.
+
+    \note The output containers contents are not necessarily disjoint.
+*/
 class IMPCONTAINEREXPORT DistributePairsScoreState :
 public ScoreState
 {
   OwnerPointer<PairContainer> input_;
   typedef boost::tuple<Pointer<ListPairContainer>,
-    Pointer<PairPredicate>, int> Data;
+    OwnerPointer<PairPredicate>, int> Data;
   vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
@@ -42,12 +44,14 @@ public:
   DistributePairsScoreState(PairContainer *input,
                       std::string name="DistributePairsScoreState %1%");
 
-  /** A given tuple will go into the cointainer \c output if \c predicate
+  /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  void add_container(ListPairContainer *output,
-                     PairPredicate *predicate,
-                     int value) {
-    data_.push_back(Data(output, predicate, value));
+  ListPairContainer *add_predicate(PairPredicate *predicate,
+                                        int value) {
+    IMP_NEW(ListPairContainer, c, (get_model(),
+                                        predicate->get_name()+ " output"));
+    data_.push_back(Data(c, predicate, value));
+    return c;
   }
   IMP_SCORE_STATE(DistributePairsScoreState);
 };
