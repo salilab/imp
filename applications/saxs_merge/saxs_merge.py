@@ -507,20 +507,16 @@ Merging
                 description="Estimate the mean function and the noise level "
                 "of each SAXS curve.")
     parser.add_option_group(group)
-    group.add_option('--bG', help='Initial value for G (default 10)',
-                     type="float", default=10., metavar='G')
-    group.add_option('--bRg', help='Initial value for Rg (default 10)',
-                     type="float", default=10., metavar='RG')
     group.add_option('--bd', help='Initial value for d (default 4)',
                      type="float", default=4., metavar='D')
     group.add_option('--bs', help='Initial value for s (default 0)',
                      type="float", default=0., metavar='S')
-    group.add_option('--btau', help='Initial value for tau (default 10)',
+    group.add_option('--btau', help='DO NOT USE.',
                      type="float", default=10., metavar='TAU')
     group.add_option('--blambda', help='Initial value for lambda '
                                         '(default 0.1)',
                      type="float", default=0.1, metavar='LAMBDA')
-    group.add_option('--bsigma', help='Initial value for sigma (default 10)',
+    group.add_option('--bsigma', help='DO NOT USE.',
                      type="float", default=10., metavar='SIGMA')
     group.add_option('--boptimizes', help='Turn on optimization of the s '
             'parameter (default off)', default = False, action='store_true')
@@ -650,8 +646,6 @@ def setup_particles(initvals):
         IMP.isd.NuisanceRangeModifier(),None,d))
     model.add_score_state(IMP.core.SingletonConstraint(
         IMP.isd.NuisanceRangeModifier(),None,s))
-    model.add_restraint(IMP.isd.JeffreysRestraint(lam))
-    lam.set_lower(0.001)
     model.add_score_state(IMP.core.SingletonConstraint(
         IMP.isd.NuisanceRangeModifier(),None,lam))
     #model.add_restraint(IMP.isd.JeffreysRestraint(tau))
@@ -708,35 +702,106 @@ def setup_process(data,initvals, subs, args):
             particles['sigma'])
     return model, particles, functions, gp
 
-def fit_mean_particles(data, model, nsteps, particles, args):
+def set_defaults_mean(data, particles, args):
     #set initial value for G to be a rough estimate of I(0)
     Ivals = [data['I'][i] for i in xrange(len(data['q']))
                 if data['q'][i] < 0.1][:50]
     particles['G'].set_nuisance(mean(Ivals))
     particles['G'].set_lower(min(Ivals))
     particles['G'].set_upper(2*max(Ivals))
-    #set tau to 0 allows for faster estimate (diagonal covariance matrix)
-    tauval = particles['tau'].get_nuisance()
-    taulow = particles['tau'].get_lower()
-    particles['tau'].set_nuisance(0.)
-    particles['tau'].set_lower(0.)
-    #optimize mean particles and sigma only
+    #optimize mean particles only
     particles['G'].set_nuisance_is_optimized(True)
     particles['Rg'].set_nuisance_is_optimized(True)
     particles['d'].set_nuisance_is_optimized(True)
     particles['s'].set_nuisance_is_optimized(args.boptimizes)
     particles['tau'].set_nuisance_is_optimized(False)
     particles['lambda'].set_nuisance_is_optimized(False)
-    particles['sigma'].set_nuisance_is_optimized(True)
-    do_quasinewton(model,nsteps)
-    #reset tau to its value
-    particles['tau'].set_nuisance(tauval)
-    particles['tau'].set_lower(taulow)
+    particles['sigma'].set_nuisance_is_optimized(False)
 
-def fit_covariance_particles(data, model, nsteps, particles, args):
-    #set lambda to be bigger than the distance between points
+def find_fit_mean(data, initvals, args, verbose):
+    model, particles, functions, gp = \
+            setup_process(data, initvals, 1, args)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+    model.add_restraint(gpr)
+    set_defaults_mean(data, particles, args)
+    #set tau to 0 allows for faster estimate (diagonal covariance matrix)
+    #no need to store its value since it will be reset later on
+    taulow = None
+    if particles['tau'].has_lower():
+        taulow = particles['tau'].get_lower()
+    particles['tau'].set_nuisance(0.)
+    particles['tau'].set_lower(0.)
+    #optimize mean particles for 3x100 steps
+    #when getting initvals, calling model.evaluate() ensures constraints are met
+    for i in xrange(3):
+        model.evaluate(False)
+        #initvals = dict([(k,v.get_nuisance())
+        #                for (k,v) in particles.iteritems()])
+        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
+        do_quasinewton(model,100)
+    #reset tau bounds
+    if particles['tau'].has_lower():
+        particles['tau'].set_lower(taulow)
+    model.evaluate(False)
+    initvals = dict([(k,v.get_nuisance())
+                    for (k,v) in particles.iteritems()])
+    return initvals
+
+def set_defaults_covariance(data, particles, functions, args):
+    #set sigma to be equal to 10x the noise level, assuming mean has been fitted
+    chisquares = [functions['mean']([q])[0] for q in data['q']]
+    chisquares = [(data['I'][i]-chisquares[i])**2 + data['err'][i]**2
+                        for i in xrange(len(data['q']))]
+    noiselevel = (sum(chisquares)/len(chisquares))
+    errorlevel = (sum([data['err'][i]**2 for i in xrange(len(data['q']))])
+                    /len(data['err']))
+    sigmaval = 10*noiselevel/errorlevel
+    particles['sigma'].set_nuisance(sigmaval)
+    #set tau to be equal to this value
+    particles['tau'].set_nuisance(sigmaval)
+
+def find_fit_lambda(data, initvals, args, verbose):
+    #optimize covariance, first on lambda by subsampling the curve
+    #print "lambda opt"
     meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(2*meandist)
+    initial=True
+    for subs,nsteps in [(10,1000),(5,500)]:
+        model, particles, functions, gp = \
+                setup_process(data, initvals, subs, args)
+        if initial:
+            initial=False
+            set_defaults_covariance(data, particles, functions, args)
+        model.evaluate(False)
+        #initvals = dict([(k,v.get_nuisance())
+        #                for (k,v) in particles.iteritems()])
+        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
+        #set lambda to be bigger than the distance between points
+        particles['lambda'].set_lower(meandist)
+        particles['G'].set_nuisance_is_optimized(False)
+        particles['Rg'].set_nuisance_is_optimized(False)
+        particles['d'].set_nuisance_is_optimized(False)
+        particles['s'].set_nuisance_is_optimized(False)
+        particles['tau'].set_nuisance_is_optimized(False)
+        particles['lambda'].set_nuisance_is_optimized(True)
+        particles['sigma'].set_nuisance_is_optimized(False)
+        gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+        model.add_restraint(gpr)
+        do_quasinewton(model,nsteps)
+        model.evaluate(False)
+        initvals = dict([(k,v.get_nuisance())
+                        for (k,v) in particles.iteritems()])
+        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
+    return initvals
+
+def find_fit_covariance(data, initvals, args, verbose):
+    #then on all covariance particles
+    #print "cov opt"
+    model, particles, functions, gp = \
+            setup_process(data, initvals, 1, args)
+    set_defaults_covariance(data, particles, functions, args)
+    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
+    particles['lambda'].set_lower(meandist)
+    #optimize all covariance particles for 3x10 steps and all data points
     particles['G'].set_nuisance_is_optimized(False)
     particles['Rg'].set_nuisance_is_optimized(False)
     particles['d'].set_nuisance_is_optimized(False)
@@ -744,23 +809,46 @@ def fit_covariance_particles(data, model, nsteps, particles, args):
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
     particles['sigma'].set_nuisance_is_optimized(True)
-    do_quasinewton(model,nsteps)
-
-def fitting_step(data, initvals, subs, nsteps, args):
-    """the fitting step is divided in two: first optimize mean parameters,
-    then optimize covariance parameters
-    """
-    model, particles, functions, gp = setup_process(data, initvals, subs, args)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
-    #optimize mean
-    fit_mean_particles(data, model, nsteps, particles, args)
-    #optimize covariance
-    fit_covariance_particles(data, model, nsteps, particles, args)
-    retval = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
-    #print ""
-    #print " ".join(["%5s=%10G" % d for d in retval.items()])
-    return retval
+    for i in xrange(3):
+        do_quasinewton(model,30)
+    model.evaluate(False)
+    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
+    #print " ".join(["%5s=%10G" % d for d in initvals.items()])
+    if False:
+        #plotrange
+        minval=(model.evaluate(False),particles['lambda'].get_nuisance())
+        initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
+        particles['lambda'].set_lower(0.)
+        for l in linspace(.01,10,num=100):
+            particles['lambda'].set_nuisance(l)
+            ene = model.evaluate(True)
+            deriv = particles['lambda'].get_nuisance_derivative()
+            if minval[0] > ene:
+                minval = (ene, l)
+            print "plotrange",l,ene,deriv
+        print "minimum: ene=%f lambda=%f" % minval
+    if False:
+        #residuals
+        for k,v in particles.items():
+            v.set_nuisance(initvals[k])
+        for q,I,err in zip(data['q'],data['I'],data['err']):
+            gpval=gp.get_posterior_mean([q])
+            avg=functions['mean']([q])[0]
+            print "residuals",q,I,err,gpval,avg,(gpval-avg),(I-avg)
+    return initvals
+
+def find_fit(data, initvals, schedule, args, verbose):
+    #if verbose >2:
+    #    print " %d:%d" % (subs,nsteps),
+    #    sys.stdout.flush()
+    #
+    #optimize mean on all data points over 3x100 steps
+    initvals = find_fit_mean(data, initvals, args, verbose)
+    initvals = find_fit_lambda(data, initvals, args, verbose)
+    initvals = find_fit_covariance(data, initvals, args, verbose)
+    return initvals
 
 
 def create_intervals_from_data(profile, flag):
@@ -994,18 +1082,14 @@ def fitting(profiles, args):
         data = p.get_data(filter='agood',colwise=True)
         data['N'] = p.get_Nreps()
         initvals={}
-        initvals['G']=args.bG
-        initvals['Rg']=args.bRg
+        initvals['G']=10. #will be calculated properly
+        initvals['Rg']=10. #same here
         initvals['d']=args.bd
         initvals['s']=args.bs
         initvals['tau']=args.btau
         initvals['lambda']=args.blambda
         initvals['sigma']=args.bsigma
-        for subs,nsteps in schedule:
-            if verbose >2:
-                print " %d:%d" % (subs,nsteps),
-                sys.stdout.flush()
-            initvals = fitting_step(data,initvals,subs,nsteps,args)
+        initvals = find_fit(data, initvals, schedule, args, verbose)
         model, particles, functions, gp = setup_process(data,initvals,1, args)
         p.set_interpolant(gp, particles, functions, model)
         if verbose > 1:
@@ -1186,15 +1270,12 @@ def merging(profiles, args):
     #fit curve
     data = merge.get_data(colwise=True)
     data['N'] = merge.get_Nreps()
+    initvals = profiles[-1].get_params()
+    find_fit(data, initvals, schedule, args, verbose)
     #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
     if verbose > 2:
         print "     ",
-    for subs,nsteps in schedule:
-        if verbose >2:
-            print " %d:%d" % (subs,nsteps),
-            sys.stdout.flush()
-        initvals = fitting_step(data,initvals,subs,nsteps,args)
     model, particles, functions, gp = setup_process(data,initvals,1, args)
     merge.set_interpolant(gp, particles, functions, model)
     if verbose > 2:
