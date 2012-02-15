@@ -8,12 +8,15 @@
 /* Apply the passed macro to each type used in RMF */
 %define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
   macroname(int, Int, Ints, int);
+  macroname(ints, Ints, IntsList, RMF::Ints);
   macroname(float, Float, Floats, double);
+  macroname(floats, Floats, FloatsList, RMF::Floats);
   macroname(index, Index, Indexes, int);
+  macroname(indexes, Indexes, IndexesList, RMF::Indexes);
   macroname(string, String, Strings, std::string);
+  macroname(strings, Strings, StringsList, RMF::Strings);
   macroname(node_id, NodeID, NodeIDs, RMF::NodeID);
   macroname(node_ids, NodeIDs, NodeIDsList, RMF::NodeIDs);
-  macroname(ints, Ints, IntsList, RMF::Ints);
 %enddef
 
 %pythoncode %{
@@ -49,7 +52,6 @@ IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3DAttributes, HDF5##Ucname
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet1D, HDF5##Ucname##ConstDataSet1D, HDF5##Ucname##ConstDataSet1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet2D, HDF5##Ucname##ConstDataSet2D, HDF5##Ucname##ConstDataSet2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet3D, HDF5##Ucname##ConstDataSet3D, HDF5##Ucname##ConstDataSet3Ds);
-
 %pythoncode %{
 _types_list.append(#lcname)
 %}
