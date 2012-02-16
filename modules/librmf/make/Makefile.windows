@@ -1,7 +1,7 @@
-                                                                     
-                                                                     
-                                                                     
-                                             
+
+
+
+
 # These can be inherited from Chimera makefiles
 CHIMERA_BUILD = /d/chimera-build/build
 SHLIB_EXT = dll
@@ -52,7 +52,8 @@ HEADERS = Category.h \
 	hdf5_handle.h \
 	HDF5MutableAttributes.h \
 	HDF5Object.h \
-	hdf5_types.h \
+        decorators.h \
+	types.h \
 	infrastructure_macros.h \
 	Key.h \
 	names.h \
@@ -80,7 +81,6 @@ SRCS = src/exceptions.cpp \
 	src/FileHandle.cpp \
 	src/Key.cpp \
 	src/NodeTupleHandle.cpp \
-	src/hdf5_types.cpp \
 	src/names.cpp \
 	src/internal/errors.cpp \
 	src/internal/shared.cpp \
