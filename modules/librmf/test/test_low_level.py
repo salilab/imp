@@ -25,7 +25,7 @@ class GenericTest(RMF.TestCase):
              #(f.add_child_node_ids_data_set_1d, [nh]),
              ]
         # swig can't get the node ids array right
-        self.assertEqual(len(lst),len(RMF.get_data_types())-1)
+        self.assertEqual(len(lst),len(RMF.get_data_types())-4)
         for i,p in enumerate(lst):
             mds=p[0](str(i))
             mds.set_size([1])
