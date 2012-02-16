@@ -22,7 +22,6 @@ modules=['compatibility',
          'restrainer',
          'multifit',
          'em2d',
-         'bullet',
          'misc',
          'system',
          'isd']
