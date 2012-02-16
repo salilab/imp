@@ -85,8 +85,8 @@ def main():
             ret=os.system(command)
             if ret != 0:
                 lns= pns.getvalue().split("\n")
-                for i in range(0, len(lns)):
-                    print >>sys.stderr, i, lns[i]
+                #for i in range(0, len(lns)):
+                #    print >>sys.stderr, i, lns[i]
             else:
                 print "ok"
             cleanup(open(outfile, "r"))
