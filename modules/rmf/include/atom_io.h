@@ -82,6 +82,9 @@ class IMPRMFEXPORT SaveHierarchyConfigurationOptimizerState:
  public:
   SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
                                            RMF::FileHandle fh);
+  void set_file(RMF::FileHandle fh){
+    fh_=fh;
+  }
   IMP_PERIODIC_OPTIMIZER_STATE(SaveHierarchyConfigurationOptimizerState);
 };
 
