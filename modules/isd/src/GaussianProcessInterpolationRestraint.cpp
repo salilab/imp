@@ -122,6 +122,19 @@ void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
         << get_input_particles().size() << " particles" << std::endl;
 }
 
+double
+GaussianProcessInterpolationRestraint::get_minus_log_normalization() const
+{
+    ss_->do_before_evaluate();
+    return mvn_->get_minus_log_normalization();
+}
+
+double GaussianProcessInterpolationRestraint::get_minus_exponent() const
+{
+    ss_->do_before_evaluate();
+    return mvn_->get_minus_exponent();
+}
+
 
 
 

@@ -165,6 +165,18 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             p,imin,imax = particles.pop(randint(0,len(particles)-1))
             p.set_nuisance(uniform(imin, imax))
 
+    def testEnergyTerms(self):
+        for i in xrange(10):
+            self.shuffle_particle_values()
+            expected = self.gpr.evaluate(False)
+            U = self.gpr.get_minus_exponent()
+            V = self.gpr.get_minus_log_normalization()
+            if expected != 0:
+                self.assertAlmostEqual((U+V)/expected, 1., delta=1e-7)
+            else:
+                self.assertAlmostEqual(U+V,0.,delta=1e-7)
+
+
     def testGetInputThings(self):
         particles = self.gpr.get_input_particles()
         self.assertTrue(self.lam in particles)
