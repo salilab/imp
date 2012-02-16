@@ -7,10 +7,10 @@ PYTHONINCLUDE = /usr/include/python2.6
 BUILD_LIB = g++ -shared -I$(INCLUDEDIR) -fPIC -O3 -Wno-deprecated
 SWIG = /usr/bin/swig
 
-HEADERS = Category.h exceptions.h FileConstHandle.h FileHandle.h HDF5ConstAttributes.h HDF5ConstDataSetD.h HDF5ConstFile.h HDF5ConstGroup.h HDF5DataSetD.h HDF5DataSetIndexD.h HDF5File.h HDF5Group.h hdf5_handle.h HDF5MutableAttributes.h HDF5Object.h decorators.h types.h infrastructure_macros.h Key.h names.h NodeConstHandle.h NodeHandle.h NodeID.h NodeSetConstHandle.h NodeSetHandle.h Validator.h internal/errors.h internal/hash.h internal/imp_operations.h internal/intrusive_ptr_object.h internal/map.h internal/set.h internal/shared.h internal/swig_helpers.h
+HEADERS = $(subst include, , $(wildcard include/*.h) $(wildcard include/internal/*.h))
 
 
-SRCS = src/exceptions.cpp src/hdf5_wrapper.cpp  src/NodeConstHandle.cpp  src/Validator.cpp src/FileConstHandle.cpp src/NodeHandle.cpp src/FileHandle.cpp src/Key.cpp src/NodeTupleHandle.cpp src/names.cpp src/internal/errors.cpp src/internal/shared.cpp $(WORKDIR)/RMF_config.cpp
+SRCS = $(wildcard src/*.cpp) $(wildcard src/internal/*.cpp) $(WORKDIR)/RMF_config.cpp
 
 
 all : lib pythonlib

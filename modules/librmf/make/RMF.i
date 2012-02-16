@@ -67,12 +67,15 @@ _plural_types=[]
 /* Apply the passed macro to each type used in RMF */
 %define IMP_RMF_SWIG_FOREACH_TYPE(macroname)
   macroname(int, Int, Ints, int);
+  macroname(ints, Ints, IntsList, RMF::Ints);
   macroname(float, Float, Floats, double);
+  macroname(floats, Floats, FloatsList, RMF::Floats);
   macroname(index, Index, Indexes, int);
+  macroname(indexes, Indexes, IndexesList, RMF::Indexes);
   macroname(string, String, Strings, std::string);
+  macroname(strings, Strings, StringsList, RMF::Strings);
   macroname(node_id, NodeID, NodeIDs, RMF::NodeID);
   macroname(node_ids, NodeIDs, NodeIDsList, RMF::NodeIDs);
-  macroname(ints, Ints, IntsList, RMF::Ints);
 %enddef
 
 %pythoncode %{
@@ -108,7 +111,6 @@ IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##DataSet3DAttributes, HDF5##Ucname
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet1D, HDF5##Ucname##ConstDataSet1D, HDF5##Ucname##ConstDataSet1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet2D, HDF5##Ucname##ConstDataSet2D, HDF5##Ucname##ConstDataSet2Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5##Ucname##ConstDataSet3D, HDF5##Ucname##ConstDataSet3D, HDF5##Ucname##ConstDataSet3Ds);
-
 %pythoncode %{
 _types_list.append(#lcname)
 %}
@@ -183,6 +185,15 @@ IMP_RMF_SWIG_PAIR(RMF, NodeConstHandle, BondPair, BondPairs)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
+IMP_RMF_DECORATOR(RMF, Particle);
+IMP_RMF_DECORATOR(RMF, Colored);
+IMP_RMF_DECORATOR(RMF, JournalArticle);
+IMP_RMF_DECORATOR(RMF, Sphere);
+IMP_RMF_DECORATOR(RMF, Cylinder);
+IMP_RMF_DECORATOR(RMF, Segment);
+IMP_RMF_DECORATOR(RMF, Score);
+IMP_RMF_DECORATOR(RMF, RigidParticle);
+IMP_RMF_DECORATOR(RMF, Residue);
 
 %implicitconv RMF::HDF5File;
 %implicitconv RMF::HDF5ConstFile;
@@ -198,14 +209,7 @@ namespace RMF {
     def get_keys(self, kc, arity=1):
         ret=[]
         for t in _types_list:
-           if arity==1:
-             fn= getattr(self, "get_"+t+"_keys")
-           elif arity==2:
-             fn= getattr(self, "get_pair_"+t+"_keys")
-           elif arity==3:
-             fn= getattr(self, "get_triplet_"+t+"_keys")
-           elif arity==4:
-             fn= getattr(self, "get_quad_"+t+"_keys")
+           fn= getattr(self, "get_"+t+"_keys")
            ret.extend(fn(kc))
         return ret
   %}
@@ -241,10 +245,8 @@ namespace RMF {
 
 
 %include "RMF/NodeID.h"
+%include "RMF/types.h"
 %include "RMF/hdf5_handle.h"
-%include "RMF/hdf5_types.h"
-%template(_IntsTraits) RMF::ArrayTraits<RMF::IntTraits>;
-%template(_NodeIDsTraits) RMF::ArrayTraits<RMF::NodeIDTraits>;
 %include "RMF/HDF5Object.h"
 %include "RMF/HDF5ConstAttributes.h"
 %template(_HDF5ConstAttributesObject) RMF::HDF5ConstAttributes<RMF::HDF5Object>;
@@ -276,15 +278,24 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %template(TripletCategory) RMF::CategoryD<3>;
 %template(QuadCategory) RMF::CategoryD<4>;
 
-
-%include "RMF/NodeSetConstHandle.h"
-%include "RMF/NodeSetHandle.h"
 %include "RMF/NodeConstHandle.h"
 %include "RMF/NodeHandle.h"
+
+%include "RMF/NodeSetConstHandle.h"
+%template(NodePairConstHandle) RMF::NodeSetConstHandle<2>;
+%template(NodeTripletConstHandle) RMF::NodeSetConstHandle<3>;
+%template(NodeQuadConstHandle) RMF::NodeSetConstHandle<4>;
+
+%include "RMF/NodeSetHandle.h"
+%template(NodePairHandle) RMF::NodeSetHandle<2>;
+%template(NodeTripletHandle) RMF::NodeSetHandle<3>;
+%template(NodeQuadHandle) RMF::NodeSetHandle<4>;
+
 %include "RMF/FileConstHandle.h"
 %include "RMF/FileHandle.h"
 %include "RMF/names.h"
 %include "RMF/Validator.h"
+%include "RMF/decorators.h"
 
 %pythoncode %{
 
@@ -382,3 +393,8 @@ has_hdf5=True
 has_boost_filesystem=True
 has_boost_thread=True
 }
+
+%pythoncode %{
+import _version_check
+_version_check.check_version(get_module_version())
+%}
