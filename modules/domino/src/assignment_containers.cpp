@@ -149,6 +149,7 @@ void WriteHDF5AssignmentContainer::flush() {
                          << " vs " << n[i]);
     }
   }
+  ds_.get_file().flush();
 }
 
 void WriteHDF5AssignmentContainer::set_cache_size(unsigned int words) {
@@ -185,12 +186,9 @@ unsigned int ReadHDF5AssignmentContainer::get_number_of_assignments() const {
 
 Assignment ReadHDF5AssignmentContainer::get_assignment(unsigned int i) const {
   RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
-  Assignment ret(is.size());
+  Assignment ret(Ints(is.begin(), is.end()));
   IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret.set_item(order_[i], is[i]);
-  }
-  return ret;
+  return get_from_output(ret.begin(), ret.end(), order_);
 }
 
 

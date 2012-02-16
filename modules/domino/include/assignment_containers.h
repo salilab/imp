@@ -16,6 +16,7 @@
 #include <IMP/statistics/metric_clustering.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
 #include <RMF/HDF5Group.h>
+#include <RMF/HDF5File.h>
 #endif
 #include <boost/shared_array.hpp>
 #include <algorithm>
