@@ -195,7 +195,7 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False)
         self.merge.classification([p1,p2],args)
-        self.merge.fitting_step = lambda a,b,c,d: b
+        self.merge.find_fit = lambda a,b,c,d,e: b
         def thing(b,c,e,d):
             m=IMP.Model()
             s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
