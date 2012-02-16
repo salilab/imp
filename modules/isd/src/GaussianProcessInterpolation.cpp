@@ -176,6 +176,8 @@ IMPISD_BEGIN_NAMESPACE
         //and mark Omega as outdated
         flag_Omega_ = false;
         flag_Omega_gpir_ = false;
+        flag_Omi_ = false;
+        flag_OmiIm_ = false;
     }
     IMP_LOG(TERSE, "update_flags_covariance: ret " << ret
             << " flag_Omi_ " << flag_Omi_
