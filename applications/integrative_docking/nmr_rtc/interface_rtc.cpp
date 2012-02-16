@@ -9,7 +9,7 @@
 #include "ResidueContent.h"
 
 #include <IMP/Model.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/pdb.h>

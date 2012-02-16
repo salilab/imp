@@ -13,7 +13,7 @@
 #include "sinks.h"
 #include "../QuadraticClosePairsFinder.h"
 #include "../XYZR.h"
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/core/utility.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -310,18 +310,18 @@ struct Helper {
                                   typename Grid::Index index,
                                   const IDs &qps,
                                   bool half, const Traits &tr, Out& out) {
-    IMP::algebra::grids::ExtendedGridIndexD<3>
+    IMP::algebra::ExtendedGridIndexD<3>
       imp_min(std::max(0, index[0]-1),
               std::max(0, index[1]-1),
               std::max(0, index[2]-1));
-    IMP::algebra::grids::ExtendedGridIndexD<3>
+    IMP::algebra::ExtendedGridIndexD<3>
       imp_max(std::min(gg.get_number_of_voxels(0),
                        static_cast<unsigned int>(index[0]+1)),
               std::min(gg.get_number_of_voxels(1),
                        static_cast<unsigned int>(index[1]+1)),
               std::min(gg.get_number_of_voxels(2),
                        static_cast<unsigned int>(index[2]+1)));
-    IMP::algebra::grids::ExtendedGridIndexD<3>
+    IMP::algebra::ExtendedGridIndexD<3>
       imp_cur(0,0,0);
     if (half) {
       for (imp_cur[0]=imp_min[0];imp_cur[0] <= index[0]; ++imp_cur[0]) {
@@ -333,7 +333,7 @@ struct Helper {
             if (imp_cur[0] == index[0] && imp_cur[1] == index[1]
                 && imp_cur[2] >= index[2]) break;
             if (gg.get_has_index(imp_cur)) {
-              IMP::algebra::grids::GridIndexD<3> _1=gg.get_index(imp_cur);
+              IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
               IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
                       << ": " << do_show(gg[_1])
                       << " and " << index
@@ -355,7 +355,7 @@ struct Helper {
         for (imp_cur[1]=imp_min[1];imp_cur[1] <= imp_max[1]; ++imp_cur[1]) {
           for (imp_cur[2]=imp_min[2];imp_cur[2] <= imp_max[2]; ++imp_cur[2]) {
             if (gg.get_has_index(imp_cur)) {
-              IMP::algebra::grids::GridIndexD<3> _1=gg.get_index(imp_cur);
+              IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
               IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
                       << ": " << do_show(gg[_1])
                       << " and " << index

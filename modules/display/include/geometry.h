@@ -23,7 +23,7 @@
 #include <IMP/algebra/Plane3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/algebra/Triangle3D.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
 #endif
@@ -174,17 +174,17 @@ class IMPDISPLAYEXPORT IsosurfaceGeometry: public SurfaceMeshGeometry {
   template <int D,
             class Storage,
             class Value>
-    IsosurfaceGeometry(const algebra::grids::GridD<D, Storage, Value> &grid,
+    IsosurfaceGeometry(const algebra::GridD<D, Storage, Value> &grid,
                        double iso):
     SurfaceMeshGeometry(cgal::internal::get_iso_surface(grid, iso),
                         "IsosurfaceGeometry %1%"){}
 #ifdef SWIG
-  IsosurfaceGeometry(const algebra::grids::GridD<3,
-                     algebra::grids::DenseGridStorageD<3, double>, double >
+  IsosurfaceGeometry(const algebra::GridD<3,
+                     algebra::DenseGridStorageD<3, double>, double >
                      &grid,
                      double iso);
-  IsosurfaceGeometry(const algebra::grids::GridD<3,
-                     algebra::grids::DenseGridStorageD<3, float>, float > &grid,
+  IsosurfaceGeometry(const algebra::GridD<3,
+                     algebra::DenseGridStorageD<3, float>, float > &grid,
                      double iso);
 #endif
 };

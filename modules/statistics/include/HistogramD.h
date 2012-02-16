@@ -12,16 +12,16 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/GridD.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/base_types.h>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
 /** Dynamically build a histogram embedded in D-dimensional space. */
-template <int D, class Grid=algebra::grids::GridD<D,
-                        typename algebra::grids::DenseGridStorageD<D,
+template <int D, class Grid=algebra::GridD<D,
+                        typename algebra::DenseGridStorageD<D,
                                                           double>,
                         double,
-                      typename algebra::grids::DefaultEmbeddingD<D> > >
+                      typename algebra::DefaultEmbeddingD<D> > >
 class HistogramD {
   public:
 

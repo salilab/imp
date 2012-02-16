@@ -473,7 +473,7 @@ public:                                                                 \
   }                                                                     \
   const Value& __getitem__(Index i) const {                             \
     if (!(bounds_check_expr)) {                                         \
-      IMP_THROW("Bad index " << i, IndexException);                     \
+      IMP_THROW("Bad index " << i, IMP::base::IndexException);          \
     }                                                                   \
     expr;                                                               \
   }                                                                     \
@@ -494,7 +494,7 @@ public:                                                                 \
 #define IMP_CONST_BRACKET(Value, Index, bounds_check_expr, expr)        \
   const Value& __getitem__(Index i) const {                             \
     if (!(bounds_check_expr)) {                                         \
-      IMP_THROW("Bad index " << i, IndexException);                     \
+      IMP_THROW("Bad index " << i, IMP::base::IndexException);          \
     }                                                                   \
     expr;                                                               \
   }

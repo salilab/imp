@@ -11,7 +11,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <IMP/em/converters.h>
 #include <IMP/em/DensityMap.h>

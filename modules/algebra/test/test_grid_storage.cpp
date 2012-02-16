@@ -4,7 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
 #include <algorithm>
 
@@ -12,14 +12,14 @@ using namespace IMP::algebra;
 
 int main(int, char *[]) {
   {
-    typedef grids::UnboundedGridStorageD<4> UBGS;
+    typedef UnboundedGridRangeD<4> UBGS;
     UBGS ubgs;
     int lb[]={1,2,3,4};
     int ub[]={2,4,6,8};
-    grids::ExtendedGridIndexD<4> elb(lb, lb+4);
-    grids::ExtendedGridIndexD<4> eub(ub, ub+4);
+    ExtendedGridIndexD<4> elb(lb, lb+4);
+    ExtendedGridIndexD<4> eub(ub, ub+4);
     std::cout << "eus " << elb << " " << eub << std::endl;
-    IMP::vector<grids::ExtendedGridIndexD<4> >ids
+    IMP::vector<ExtendedGridIndexD<4> >ids
       = ubgs.get_extended_indexes(elb, eub);
     for (unsigned int i=0; i< ids.size(); ++i) {
       std::cout << ids[i] << "\n";

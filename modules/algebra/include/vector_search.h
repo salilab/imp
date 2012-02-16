@@ -13,6 +13,8 @@
 #include <IMP/base/Object.h>
 #include <IMP/base/SetCheckState.h>
 
+#include "grid_storages.h"
+#include "grid_ranges.h"
 #include "GridD.h"
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/knn.h>
@@ -184,9 +186,9 @@ typedef NearestNeighborD<-1> NearestNeighborKD;
     Later this can support balls by copying points multiple times.
 */
 class IMPALGEBRAEXPORT DynamicNearestNeighbor3D: public base::Object {
-  typedef grids::GridD<3, grids::SparseGridStorageD<3, Ints,
-      grids::UnboundedGridStorageD<3> >, Ints,
-      grids::DefaultEmbeddingD<3> > Grid;
+  typedef GridD<3, SparseGridStorageD<3, Ints,
+      UnboundedGridRangeD<3> >, Ints,
+      DefaultEmbeddingD<3> > Grid;
   Grid grid_;
   typedef Grid::Index Index;
   typedef Grid::ExtendedIndex EIndex;
