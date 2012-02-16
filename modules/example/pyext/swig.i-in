@@ -11,7 +11,6 @@ IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
 IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
-IMP_SWIG_OBJECT(IMP::example, ExampleRefCounted, ExampleRefCounteds);
 IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::example, ExampleConstraint, ExampleConstraints);
 // don't ask why the _NAME, it will be fixed at some point
