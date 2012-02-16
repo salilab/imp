@@ -21,7 +21,7 @@ class GenericTest(RMF.TestCase):
              (f.add_string_key, "there"),
              (f.add_index_key, 3),
              (f.add_ints_key, [3,4,5,6])]
-        self.assertEqual(len(lst),len(RMF.get_data_types()))
+        self.assertEqual(len(lst),len(RMF.get_data_types()-3))
         for p in lst:
             print p[0]
             k = p[0](cat, "hi", pccc)
