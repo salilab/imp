@@ -1,0 +1,148 @@
+                                                                     
+                                                                     
+                                                                     
+                                             
+# These can be inherited from Chimera makefiles
+CHIMERA_BUILD = /d/chimera-build/build
+SHLIB_EXT = dll
+LIB_EXT = lib
+PYMOD_EXT = pyd
+CC = cl /nologo /Zc:forScope /EHa /GR /GF /W2
+SWIG_VER = 2.0.4
+BOOST_VER = 1_48_0
+HDF5_VER = 1.8.4
+
+CHIMERA_INC = $(CHIMERA_BUILD)/include
+CHIMERA_LIB = $(CHIMERA_BUILD)/lib
+CHIMERA_DLL = $(CHIMERA_BUILD)/bin/DLLs
+PYTHON_INC = $(CHIMERA_BUILD)/bin/include
+PYTHON_SITE = $(CHIMERA_BUILD)/bin/Lib/site-packages
+BOOST_INC = $(CHIMERA_BUILD)/boost_$(BOOST_VER)
+HDF5_INC = $(CHIMERA_BUILD)/src/hdf5-$(HDF5_VER)/release/include
+
+MSCHIMERA_INC = `cygpath -w $(CHIMERA_INC)`
+MSCHIMERA_LIB = `cygpath -w $(CHIMERA_LIB)`
+MSCHIMERA_DLL = `cygpath -w $(CHIMERA_DLL)`
+MSPYTHON_INC = `cygpath -w $(PYTHON_INC)`
+MSBOOST_INC = `cygpath -w $(BOOST_INC)`
+MSHDF5_INC = `cygpath -w $(HDF5_INC)`
+
+WORKDIR = $(CHIMERA_BUILD)/RMF
+MSWORKDIR = `cygpath -w $(WORKDIR)`
+
+RMFDLL=libRMF.$(SHLIB_EXT)
+RMFLIB=libRMF.$(LIB_EXT)
+RMFPYD=_RMF.$(PYMOD_EXT)
+
+BUILD_LIB = $(CC) /LD /Ox /MD /Zl /bigobj /wd4251 /wd4275 /wd4355 /wd4200
+SWIG = $(CHIMERA_BUILD)/swigwin-$(SWIG_VER)/swig
+
+HEADERS = Category.h \
+	exceptions.h \
+	FileConstHandle.h \
+	FileHandle.h \
+	HDF5ConstAttributes.h \
+	HDF5ConstDataSetD.h \
+	HDF5ConstFile.h \
+	HDF5ConstGroup.h \
+	HDF5DataSetD.h \
+	HDF5DataSetIndexD.h \
+	HDF5File.h \
+	HDF5Group.h \
+	hdf5_handle.h \
+	HDF5MutableAttributes.h \
+	HDF5Object.h \
+	hdf5_types.h \
+	infrastructure_macros.h \
+	Key.h \
+	names.h \
+	NodeConstHandle.h \
+	NodeHandle.h \
+	NodeID.h \
+	NodeSetConstHandle.h \
+	NodeSetHandle.h \
+	Validator.h \
+	internal/errors.h \
+	internal/hash.h \
+	internal/imp_operations.h \
+	internal/intrusive_ptr_object.h \
+	internal/map.h \
+	internal/set.h \
+	internal/shared.h \
+	internal/swig_helpers.h
+
+SRCS = src/exceptions.cpp \
+	src/hdf5_wrapper.cpp \
+	src/NodeConstHandle.cpp \
+	src/Validator.cpp \
+	src/FileConstHandle.cpp \
+	src/NodeHandle.cpp \
+	src/FileHandle.cpp \
+	src/Key.cpp \
+	src/NodeTupleHandle.cpp \
+	src/hdf5_types.cpp \
+	src/names.cpp \
+	src/internal/errors.cpp \
+	src/internal/shared.cpp \
+	$(WORKDIR)/RMF_config.cpp
+
+
+all : lib pythonlib
+
+lib $(RMFDLL) : headers $(SRCS)
+	$(BUILD_LIB) -DRMF_EXPORTS -DNDEBUG \
+		-DBOOST_ALL_NO_LIB -D_HDF5USEDLL_ \
+		/I . /I $(MSCHIMERA_INC) /I $(MSPYTHON_INC) \
+		/I $(MSBOOST_INC) /I $(MSHDF5_INC) \
+		/Fe$(RMFDLL) \
+		`cygpath -w $(SRCS)` \
+		/link /libpath:$(MSCHIMERA_LIB) \
+		hdf5_hldll.lib hdf5dll.lib \
+		boost_filesystem-vc90-mt-1_48.lib \
+		boost_system-vc90-mt-1_48.lib \
+		boost_thread-vc90-mt-1_48.lib \
+		msvcrt.lib
+	if [ -e $(RMFDLL).manifest ]; then \
+		mt -nologo -manifest $(RMFDLL).manifest \
+				-outputresource:$(RMFDLL)\;2 ; \
+	fi
+	cp $(RMFDLL) $(CHIMERA_DLL)
+	cp $(RMFLIB) $(CHIMERA_LIB)
+
+pythonlib : swig lib
+	mkdir -p $(WORKDIR)
+	${BUILD_LIB} -DRMF_EXPORTS \
+		-DBOOST_ALL_NO_LIB -D_HDF5USEDLL_ \
+		/I $(MSWORKDIR) /I $(MSCHIMERA_INC) /I $(MSPYTHON_INC) \
+		/I $(MSBOOST_INC) /I $(MSHDF5_INC) \
+		`cygpath -w $(WORKDIR)/RMF_wrap.cpp` \
+		/Fe`cygpath -w $(PYTHON_SITE)/$(RMFPYD)` \
+		/link /libpath:$(MSCHIMERA_LIB) $(RMFLIB) \
+		hdf5_hldll.lib hdf5dll.lib \
+		boost_system-vc90-mt-1_48.lib \
+		msvcrt.lib
+	mkdir -p $(PYTHON_SITE)/RMF
+	cp $(WORKDIR)/RMF.py $(PYTHON_SITE)/RMF/__init__.py
+
+swig : headers make/RMF.i
+	mkdir -p $(WORKDIR)
+	$(SWIG) \
+		-castmode -interface _RMF \
+		-DPySwigIterator=RMF_PySwigIterator \
+		-DSwigPyIterator=RMF_SwigPyIterator \
+		-python -c++ -naturalvar -fvirtual -Wextra \
+		-o `cygpath -w $(WORKDIR)/RMF_wrap.cpp` \
+		-oh `cygpath -w $(WORKDIR)/RMF_wrap.h` \
+		-Ipyext -Iinclude -DIMP_SWIG \
+		-I$(MSCHIMERA_INC) \
+		`cygpath -w make/RMF.i`
+
+headers :
+	mkdir -p $(CHIMERA_INC)/RMF/internal
+	$(foreach h, $(HEADERS), cp include/$h $(CHIMERA_INC)/RMF/$h;)
+	cp make/RMF_config.h-in $(CHIMERA_INC)/RMF/RMF_config.h
+	cp make/RMF.h-in $(CHIMERA_INC)/RMF.h
+
+$(WORKDIR)/RMF_config.cpp: make/RMF_config.cpp-in
+	mkdir -p $(WORKDIR)
+	cp make/RMF_config.cpp-in $(WORKDIR)/RMF_config.cpp
