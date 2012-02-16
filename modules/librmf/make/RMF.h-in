@@ -28,11 +28,13 @@
 #include <RMF/NodeSetConstHandle.h>
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
+#include <RMF/decorators.h>
 #include <RMF/exceptions.h>
 #include <RMF/hdf5_handle.h>
-#include <RMF/hdf5_types.h>
 #include <RMF/infrastructure_macros.h>
 #include <RMF/names.h>
+#include <RMF/types.h>
+#include <RMF/utility.h>
 #include <RMF/RMF_config.h>
 
 #endif  /* RMF_H */
