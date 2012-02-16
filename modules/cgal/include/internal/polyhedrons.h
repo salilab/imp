@@ -12,7 +12,7 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/SphereD.h>
 #include <IMP/algebra/Plane3D.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <vector>
 
 
@@ -45,14 +45,14 @@ get_skin_surface(const algebra::Sphere3Ds &ss);
 
 IMPCGALEXPORT
 std::pair<algebra::Vector3Ds,Ints >
-get_iso_surface(const algebra::grids::GridD<3,
-                    algebra::grids::DenseGridStorageD<3,
+get_iso_surface(const algebra::GridD<3,
+                    algebra::DenseGridStorageD<3,
                                 double>, double > &grid, double iso_level);
 
 IMPCGALEXPORT
 std::pair<algebra::Vector3Ds,Ints >
-get_iso_surface(const algebra::grids::GridD<3,
-                   algebra::grids::DenseGridStorageD<3,
+get_iso_surface(const algebra::GridD<3,
+                   algebra::DenseGridStorageD<3,
                                    float>, float > &grid, double iso_level);
 
 

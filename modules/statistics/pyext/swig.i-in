@@ -24,11 +24,9 @@ IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, Recurs
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
 %define IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(DD, NN)
 namespace IMP {
-namespace statistics {
-  %template(_IntDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,int>;
-  %template(_FloatDenseGridStorage##NN##D) algebra::grids::DenseGridStorageD<DD,double>;
-  %template(_HistogramCountsGrid##NN##D) algebra::grids::GridD<DD, algebra::grids::DenseGridStorageD<DD,double>,double,  algebra::grids::DefaultEmbeddingD<DD> >;
-}
+  %template(_IntDenseGridStorage##NN##D) algebra::DenseGridStorageD<DD,int>;
+  %template(_FloatDenseGridStorage##NN##D) algebra::DenseGridStorageD<DD,double>;
+  %template(_HistogramCountsGrid##NN##D) algebra::GridD<DD, algebra::DenseGridStorageD<DD,double>,double,  algebra::DefaultEmbeddingD<DD> >;
 }
 %enddef
 IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(-1,K)

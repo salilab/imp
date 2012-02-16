@@ -1,85 +1,48 @@
 /**
- *  \file Grid3D.h   \brief A class to represent a voxel grid.
+ *  \file grid_utility.h   \brief A class to represent a voxel grid.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPALGEBRA_GRID_3D_H
-#define IMPALGEBRA_GRID_3D_H
+#ifndef IMPALGEBRA_GRID_UTILITY_H
+#define IMPALGEBRA_GRID_UTILITY_H
 
 #include "algebra_config.h"
-
-#include <IMP/base/types.h>
-#include "Vector3D.h"
 #include "GridD.h"
-#include "BoundingBoxD.h"
-#include "internal/grid_3d.h"
+#include "internal/grid_interpolation.h"
+#include "grid_indexes.h"
 #include "internal/grid_3d_impl.h"
-#include <boost/iterator/transform_iterator.hpp>
-#include <IMP/compatibility/map.h>
-
-#include <limits>
-/** \namespace IMP::algebra::grids
-
-    \brief Implementation for parameterized grids.
-
-    First some terminology:
-    - a voxel is the data stored at a given location is space
-    - an Index is a way of identifying a particular voxel. That is, given
-      an index, it is easy to get the voxel, but not vice-versa
-    - an ExtendedIndex identifies a particular region in space, but
-      it may not have a corresponding voxel (if it is outside of the
-      region the grid is built on or if that voxel has not yet been
-      added to the sparse grid).
-
-    \imp provides support for a variety of spatial grids. The grid support in
-    C++ is implemented by combining several different layers to specify
-    what capabilities are desired. These layers are:
-    - Data: any type of data can be stored in a voxel of the grid
-    - Boundedness: By using UnboundedGridStorage3D or BoundedGridStorage3D,
-      one can choose whether you want a grid over a finite region of space
-      or over the whole space.
-    - Storage: by choosing SparseGridStorage3D or DenseGridStorage3D, you can
-      choose whether you want to store all voxels or only a subset of the
-      voxels. The former is faster and more compact when most of the voxels are
-      used, the latter when only a few are used (say <1/4).
-    - Geometry: The Grid3D class itself provides a geometric layer, mapping
-      Vector3D objects into voxels in the grid.
-
-    These are implemented as mix-ins, so each layer provides a set of accessible
-    functionality as methods/types in the final class.
-
-   \par Basic operations
-   Creating a grid with a given cell size and upper and lower
-   bounds
-   \code
-   BoundingBox3D bb(Vector3D(10,10,10), Vector3D(100,100,100));
-   typedef Grid3D<Ints> Grid;
-   Grid grid(5, bb, 0.0);
-   \endcode
-
-   Iterate over the set of voxels incident on a bounding box:
-   \code
-   BoundingBoxD<3> bb(Vector3D(20.2,20.3,20.5), Vector3D(31.3,32.5,38.9));
-   for (Grid::IndexIterator it= grid.voxels_begin(bb);
-        it != grid.voxels_end(bb); ++it) {
-        it->push_back(1);
-   }
-   \endcode
- */
-
 IMPALGEBRA_BEGIN_NAMESPACE
+
+
+
+/** Get the value from the grid with linear interpolation. Values outside the
+    bounding box are snapped to the bounding box (effectively extending the
+    boundary values out to infinity).
+*/
+template <int D, class Storage, class Value, class Embedding>
+inline Value get_linearly_interpolated(const GridD<D, Storage, Value,
+                                       Embedding> &g,
+                                       const VectorD<D> &pt) {
+  vector<VectorD<D> > corners=internal::get_interpolation_corners(g, pt);
+  Floats values= internal::get_interpolation_values(g, corners);
+  VectorD<D> fraction= internal::get_interpolation_fraction(g, pt);
+  return internal::get_interpolation_value(values, fraction);
+}
+
+
 
 //! Use trilinear interpolation to compute a smoothed value at v
 /** The voxel values are assumed to be at the center of the voxel
     and the passed outside value is used for voxels outside the
     grid. The type Voxel must support get_linearly_interpolated().
-    \relatesalso Grid3D
+    \see get_linearly_interpolated()
+    \relatesalso GridD
 */
 template <class Storage, class Embedding>
 inline const typename Storage::Value
-get_trilinearly_interpolated(const grids::GridD<3, Storage,
+get_trilinearly_interpolated(const GridD<3, Storage,
                              typename Storage::Value, Embedding> &g,
                              const Vector3D &v,
                              const typename Storage::Value& outside=0) {
@@ -118,71 +81,14 @@ get_trilinearly_interpolated(const grids::GridD<3, Storage,
   return get_linearly_interpolated(1-r[0], js[0], js[1]);
 }
 
-// They are created with %template in swig to get around inclusion order issues
-#ifndef SWIG
-/** A dense grid of values. In python DenseFloatGrid3D and DenseDoubleGrid3D are
-    provided. See IMP_GRID3D_FOREACH_VOXEL() for a useful macro when operating
-    on all voxels of the grid.
-*/
-template <class VT>
-struct DenseGrid3D:
-  public grids::GridD<3, grids::DenseGridStorageD<3, VT>, VT,
-                      grids::DefaultEmbeddingD<3> > {
-  typedef grids::GridD<3, grids::DenseGridStorageD<3,  VT>, VT,
-                       grids::DefaultEmbeddingD<3> > P;
-  DenseGrid3D(double side,
-              const BoundingBoxD<3> &bb,
-              VT def=VT()): P(side, bb, def) {}
-  DenseGrid3D(int xd, int yd, int zd,
-              const BoundingBoxD<3> &bb,
-              VT def=VT()): P(xd, yd, zd, bb, def) {}
-  DenseGrid3D(){}
-
-};
-
-/** A sparse grid of values. In python SparseIntGrid3D is provided.*/
-template <class VT>
-struct SparseGrid3D:
-  public grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                   grids::BoundedGridStorageD<3> >, VT,
-                      grids::DefaultEmbeddingD<3> > {
-  typedef grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                   grids::BoundedGridStorageD<3> >, VT,
-                       grids::DefaultEmbeddingD<3> > P;
-  SparseGrid3D(double side,
-                  const BoundingBoxD<3> &bb,
-                  VT def=VT()): P(side, bb, def) {}
-  SparseGrid3D(int xd, int yd, int zd,
-                  const BoundingBoxD<3> &bb,
-                  VT def=VT()): P(xd, yd, zd, bb, def) {}
-  SparseGrid3D(){}
-};
-
-/** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
-    is provided.*/
-template <class VT>
-struct SparseUnboundedGrid3D:
-  public grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                  grids::UnboundedGridStorageD<3> >, VT,
-                      grids::DefaultEmbeddingD<3> >{
-  typedef grids::GridD<3, grids::SparseGridStorageD<3, VT,
-                                  grids::UnboundedGridStorageD<3> >, VT,
-                       grids::DefaultEmbeddingD<3> > P;
-  SparseUnboundedGrid3D(double side,
-                           const Vector3D &origin,
-                           VT def=VT()): P(side, origin, def){}
-  SparseUnboundedGrid3D(){}
-
-};
-
-#endif
 IMPALGEBRA_END_NAMESPACE
+
 
 #include "internal/grid_3d_impl.h"
 
 
 /** Iterate over each voxel in grid. The voxel index is
-    grids::GridIndexD<3> voxel_index and the coordinates of the center is
+    GridIndexD<3> voxel_index and the coordinates of the center is
     Vector3D voxel_center and the index of the voxel is
     loop_voxel_index.
     \relatesalso Grid3D
@@ -196,7 +102,7 @@ IMPALGEBRA_END_NAMESPACE
     const int macro_map_nz=g.get_number_of_voxels(2);                   \
     const IMP::algebra::Vector3D macro_map_origin                       \
       =g.get_origin();                                                  \
-    IMP::algebra::grids::GridIndexD<3> voxel_index;                     \
+    IMP::algebra::GridIndexD<3> voxel_index;                     \
     int *voxel_index_data=voxel_index.access_data().get_data();         \
     IMP::algebra::Vector3D voxel_center;                                \
     for (voxel_index_data[0]=0;                                         \
@@ -256,5 +162,4 @@ IMPALGEBRA_END_NAMESPACE
       }                                                                 \
     }                                                                   \
   }
-
-#endif  /* IMPALGEBRA_GRID_3D_H */
+#endif  /* IMPALGEBRA_GRID_UTILITY_H */

@@ -20,7 +20,7 @@
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 //#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -668,16 +668,16 @@ DensityMap* interpolate_map(DensityMap *in_map,double new_spacing);
     as well as the same bounding box.
 */
 IMPEMEXPORT
-algebra::grids::GridD<3,
-algebra::grids::DenseGridStorageD<3, float>, float >
+algebra::GridD<3,
+algebra::DenseGridStorageD<3, float>, float >
 get_grid(DensityMap *in);
 
 
 /** Return a density map with the values taken from the grid.
 */
 IMPEMEXPORT
-DensityMap* create_density_map(const algebra::grids::GridD<3,
-                     algebra::grids::DenseGridStorageD<3, float>,
+DensityMap* create_density_map(const algebra::GridD<3,
+                     algebra::DenseGridStorageD<3, float>,
                                float >& grid);
 //!Return a binaries density map with 1 for voxels that are internal
 //in the input density map

@@ -15,7 +15,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const Vector3Ds &vs,
                                                    double query_estimate):
     Object("DynamicNearestNeighbor3D%1%"),
-    grid_(query_estimate) {
+    grid_(query_estimate, get_zero_vector_d<3>()) {
   coords_=vs;
   indexes_.resize(vs.size());
   for (unsigned int i=0; i< coords_.size(); ++i) {

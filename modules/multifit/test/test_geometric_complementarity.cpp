@@ -9,7 +9,7 @@
 #include <iostream>
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/BoundingBoxD.h"
-#include "IMP/algebra/Grid3D.h"
+#include "IMP/algebra/standard_grids.h"
 #include "IMP/algebra/constants.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/Particle.h"

@@ -12,7 +12,7 @@
 #include "multifit_config.h"
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/DataObject.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 

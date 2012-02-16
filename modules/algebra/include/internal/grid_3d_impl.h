@@ -13,7 +13,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 namespace trilep_helpers {
   // trilerp helper
   template <class Storage, class Embedding>
-  void compute_voxel(const grids::GridD<3, Storage,
+  void compute_voxel(const GridD<3, Storage,
                      typename Storage::Value, Embedding> &g,
                      const Vector3D &v,
                      int *ivox,
@@ -34,7 +34,7 @@ namespace trilep_helpers {
     }
   }
   template <class Storage, class Embedding>
-  typename Storage::Value get_value(const grids::GridD<3, Storage,
+  typename Storage::Value get_value(const GridD<3, Storage,
                              typename Storage::Value, Embedding> &g,
                   const unsigned int xi,
                   const unsigned int yi, const unsigned int zi,
@@ -46,7 +46,7 @@ namespace trilep_helpers {
         || zi >= g.get_number_of_voxels(2)) return outside;
     else {
       unsigned int vals[]={xi, yi, zi};
-      return g[grids::GridIndex3D(vals, vals+3)];
+      return g[GridIndex3D(vals, vals+3)];
     }
   }
   template <class VT>

@@ -6,7 +6,8 @@
 #include "IMP/algebra/VectorD.h"
 #include <IMP/log.h>
 #include "IMP/algebra/BoundingBoxD.h"
-#include "IMP/algebra/Grid3D.h"
+#include "IMP/algebra/grid_utility.h"
+#include "IMP/algebra/standard_grids.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/multifit/internal/SurfaceMatching.h"
 

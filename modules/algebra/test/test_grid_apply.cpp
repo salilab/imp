@@ -4,7 +4,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/compatibility/set.h>
 #include <algorithm>

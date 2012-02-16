@@ -10,7 +10,7 @@
 
 #include <vector>
 #include <IMP/Particle.h>
-#include "IMP/algebra/Grid3D.h"
+#include "IMP/algebra/standard_grids.h"
 #include "../multifit_config.h"
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE

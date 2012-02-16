@@ -10,6 +10,7 @@
 #include <IMP/base_types.h>
 #include <IMP/constants.h>
 #include <IMP/multifit/internal/GeometricComplementarity.h>
+#include <IMP/algebra/grid_utility.h>
 #include <IMP/em/SampledDensityMap.h>
 
 

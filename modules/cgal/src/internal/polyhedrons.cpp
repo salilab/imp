@@ -6,6 +6,7 @@
 
 #include <IMP/cgal/internal/polyhedrons.h>
 #include <IMP/base/log.h>
+#include <IMP/algebra/grid_utility.h>
 #pragma GCC diagnostic ignored "-Wuninitialized"
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
@@ -502,8 +503,8 @@ namespace {
 
 
 std::pair<algebra::Vector3Ds,Ints >
-get_iso_surface(const algebra::grids::GridD<3,
-                                   algebra::grids::DenseGridStorageD<3,
+get_iso_surface(const algebra::GridD<3,
+                                   algebra::DenseGridStorageD<3,
                             double>, double > &grid, double iso_level) {
   IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);
@@ -511,8 +512,8 @@ get_iso_surface(const algebra::grids::GridD<3,
 
 
 std::pair<algebra::Vector3Ds,Ints >
-get_iso_surface(const algebra::grids::GridD<3,
-                               algebra::grids::DenseGridStorageD<3,
+get_iso_surface(const algebra::GridD<3,
+                               algebra::DenseGridStorageD<3,
                                     float>, float > &grid, double iso_level) {
   IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);

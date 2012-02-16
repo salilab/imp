@@ -23,13 +23,13 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 // slightly evil using the grid storage, but...
 template <bool SPARSE>
 struct StorageSelector {
-  typedef algebra::grids::DenseGridStorageD<2, RawOpenCubicSpline> Type;
+  typedef algebra::DenseGridStorageD<2, RawOpenCubicSpline> Type;
 };
 
 template <>
 struct StorageSelector<true> {
-  typedef algebra::grids::SparseGridStorageD<2, RawOpenCubicSpline,
-                     algebra::grids::UnboundedGridStorageD<2> > Type;
+  typedef algebra::SparseGridStorageD<2, RawOpenCubicSpline,
+                     algebra::UnboundedGridRangeD<2> > Type;
 };
 
 template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
@@ -99,11 +99,10 @@ public:
 
     bin_width_=bin;
     inverse_bin_width_=1.0/bin;
-    data_= Storage();
     Ints dims(2);
     dims[0]=np;
     dims[1]=nl;
-    data_.set_number_of_voxels(dims);
+    data_= Storage(dims);
     int bins_read=-1;
     unsigned int read_entries=0;
     while (true) {

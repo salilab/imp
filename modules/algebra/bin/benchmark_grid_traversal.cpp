@@ -5,7 +5,8 @@
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/algebra/GridD.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/grid_utility.h>
+#include <IMP/algebra/standard_grids.h>
 
 struct Sum {
   double sum;
@@ -59,7 +60,6 @@ void benchmark(const Grid &g,
 }
 
 int main(int, char **) {
-  using namespace IMP::algebra::grids;
   using namespace IMP::algebra;
   BoundingBox3D bb(Vector3D(0,0,0),
                    Vector3D(100, 100, 100));

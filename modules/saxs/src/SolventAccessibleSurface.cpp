@@ -7,7 +7,7 @@
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/constants.h>
-#include <IMP/algebra/Grid3D.h>
+#include <IMP/algebra/standard_grids.h>
 
 IMPSAXS_BEGIN_NAMESPACE
 

@@ -7,7 +7,7 @@
 #ifndef IMPMULTIFIT_SURFACE_MATCHING_H
 #define IMPMULTIFIT_SURFACE_MATCHING_H
 
-#include "IMP/algebra/Grid3D.h"
+#include "IMP/algebra/standard_grids.h"
 #include "IMP/algebra/Transformation3D.h"
 #include "../multifit_config.h"
 
