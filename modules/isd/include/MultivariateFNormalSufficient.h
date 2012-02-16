@@ -30,22 +30,26 @@ using Eigen::VectorXd;
 /** Probability density function and -log(p) of multivariate normal
  * distribution of N M-variate observations.
  *
- * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = \left((2\pi)^M|\Sigma|\right)^{-N/2}
- *  J(F)
- *  \exp\left(-\frac{1}{2}
+ * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) =
+ *  \left((2\pi\sigma^2)^M|\Sigma|\right)^{-N/2} J(F)
+ *  \exp\left(-\frac{1}{2\sigma^2}
  *   \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i))
  *      \right)
  *  \f]
  *  which is implemented as
- * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi)^M|\Sigma|)^{-N/2} J(F)
- *  \exp\left(-\frac{N}{2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
- *  \exp\left(-\frac{1}{2} \operatorname{tr}(W\Sigma^{-1})\right)
+ * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = ((2\pi\sigma^2)^M|\Sigma|)^{-N/2} J(F)
+ *  \exp\left(-\frac{N}{2\sigma^2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
+ *  \exp\left(-\frac{1}{2\sigma^2} \operatorname{tr}(W\Sigma^{-1})\right)
  *  \f]
  *  where
  *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad
  *  \overline{F(x)} = \frac{1}{N} \sum_{i=1}^N F(x_i)\f]
- *  \f( W = \sum_{i=1}^N (F(x_i) - \overline{F(x)}){}^t(F(x_i)
- *          - \overline{F(x)}) \f)
+ *  and
+ *  \f[W=\sum_{i=1}^N(F(x_i)-\overline{F(x)}){}^t(F(x_i)-\overline{F(x)}) \f]
+ *
+ * \f$\sigma\f$ is a multiplicative scaling factor that factors out of the
+ * \f$\Sigma\f$ covariance matrix. It is set to 1 by default and its intent is
+ * to avoid inverting the $\Sigma$ matrix unless necessary.
  *
  * Set J(F) to 1 if you want the multivariate normal distribution.
  * The distribution is normalized with respect to the matrix variable X.
@@ -61,8 +65,8 @@ using Eigen::VectorXd;
  *  though the provided matrix.
  *
  *  \note For now, F must be monotonically increasing, so that J(F) > 0. The
- *  program will not check for that. The inverse of \f$\Sigma\f$ is computed at
- *  creation time, along with the sufficient statistics and \f$\epsilon\f$.
+ *  program will not check for that. Uses a Cholesky (\f$LDL^T\f$)
+ *  decomposition of \f$\Sigma\f$, which is recomputed when needed.
  *
  *  \note All observations must be given, so if you have missing data you might
  *  want to do some imputation on it first.
@@ -91,7 +95,8 @@ private:
   MatrixXd P_,W_,Sigma_,FX_,PW_;
   int N_; //number of repetitions
   int M_; //number of variables
-  Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
+  //Eigen::LLT<MatrixXd, Eigen::Upper> ldlt_;
+  Eigen::LDLT<MatrixXd, Eigen::Upper> ldlt_;
   //flags are true if the corresponding object is up to date.
   bool flag_FM_, flag_FX_, flag_Fbar_,
        flag_W_, flag_Sigma_, flag_epsilon_,
@@ -101,6 +106,7 @@ private:
   MatrixXd precond_;
   bool use_cg_, first_PW_, first_PWP_;
   double cg_tol_;
+  double factor_;
   IMP::Pointer<internal::ConjugateGradientEigen> cg_;
 
   internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_;
@@ -112,9 +118,10 @@ private:
  *                 observation matrix X.
  * \param(in) F(M) mean vector \f$F(\mu)\f$ of size M.
  * \param(in) Sigma : MxM variance-covariance matrix \f$\Sigma\f$.
+ * \param(in) sigma : multiplicative factor (default 1)
  * */
   MultivariateFNormalSufficient(const MatrixXd& FX, double JF,
-            const VectorXd& FM, const MatrixXd& Sigma);
+            const VectorXd& FM, const MatrixXd& Sigma, double factor=1);
 
      /** Initialize with sufficient statistics
  * \param(in) Fbar : M-dimensional vector of mean observations.
@@ -124,10 +131,11 @@ private:
  * \param(in) Nobs : number of observations for each variable.
  * \param(in) W : MxM matrix of sample variance-covariances.
  * \param(in) Sigma : MxM variance-covariance matrix Sigma.
+ * \param(in) sigma : multiplicative factor (default 1)
  * */
   MultivariateFNormalSufficient(const VectorXd& Fbar, double JF,
             const VectorXd& FM, int Nobs,  const MatrixXd& W,
-            const MatrixXd& Sigma);
+            const MatrixXd& Sigma, double factor=1);
 
   /* probability density function */
   double density() const;
@@ -141,21 +149,32 @@ private:
   /* gradient of the energy wrt the variance-covariance matrix Sigma */
   MatrixXd evaluate_derivative_Sigma() const;
 
+  // derivative wrt scalar factor
+  double evaluate_derivative_factor() const;
+
   /* change of parameters */
   void set_FX(const MatrixXd& f);
   MatrixXd get_FX() const;
 
-  void set_FM(const VectorXd& f);
-  VectorXd get_FM() const;
-
   void set_Fbar(const VectorXd& f);
   VectorXd get_Fbar() const;
+
+  void set_jacobian(double f);
+  double get_jacobian() const;
+  void set_minus_log_jacobian(double f); //-log(J)
+  double get_minus_log_jacobian() const;
+
+  void set_FM(const VectorXd& f);
+  VectorXd get_FM() const;
 
   void set_W(const MatrixXd& f);
   MatrixXd get_W() const;
 
   void set_Sigma(const MatrixXd& f);
   MatrixXd get_Sigma() const;
+
+  void set_factor(double f);
+  double get_factor() const;
 
   //if you want to force a recomputation of all stored variables
   void reset_flags();
@@ -165,6 +184,18 @@ private:
 
   // print runtime statistics
   void stats() const;
+
+  //return Sigma's eigenvalues from smallest to biggest
+  VectorXd get_Sigma_eigenvalues() const;
+
+  //return Sigma's condition number
+  double get_Sigma_condition_number() const;
+
+  //Solve for Sigma*X = B, yielding X
+  MatrixXd solve(MatrixXd B) const;
+
+  /* return transpose(epsilon)*P*epsilon */
+  double get_mean_square_residuals() const;
 
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
@@ -197,8 +228,9 @@ private:
   void set_epsilon(const VectorXd& eps);
 
   // gets factorization object
-  Eigen::LLT<MatrixXd, Eigen::Upper> get_ldlt() const;
-  void set_ldlt(const Eigen::LLT<MatrixXd, Eigen::Upper>& ldlt);
+  //Eigen::LLT<MatrixXd, Eigen::Upper> get_ldlt() const;
+  Eigen::LDLT<MatrixXd, Eigen::Upper> get_ldlt() const;
+  void set_ldlt(const Eigen::LDLT<MatrixXd, Eigen::Upper>& ldlt);
 
   // compute determinant and norm
   void set_norms(double norm, double lnorm);
@@ -206,9 +238,6 @@ private:
 
   /* return trace(W.P) */
   double trace_WP() const;
-
-  /* return transpose(epsilon)*P*epsilon */
-  double mean_dist() const;
 
   /* return P*epsilon*transpose(P*epsilon) */
   MatrixXd compute_PTP() const;
