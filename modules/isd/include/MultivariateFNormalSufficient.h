@@ -197,6 +197,18 @@ private:
   /* return transpose(epsilon)*P*epsilon */
   double get_mean_square_residuals() const;
 
+  /* return minus exponent
+   *  \f[-\frac{1}{2\sigma^2}
+   *   \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i)) \f]
+   */
+  double get_minus_exponent() const;
+
+  /* return minus log normalization
+   * \f[\frac{N}{2}\left(\log(2\pi\sigma^2) + \log |\Sigma|\right)
+   * -\log J(F) \f]
+   */
+  double get_minus_log_normalization() const;
+
   /* remaining stuff */
   IMP_OBJECT_INLINE(MultivariateFNormalSufficient,
           out << "MultivariateFNormalSufficient: "

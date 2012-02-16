@@ -148,6 +148,26 @@ double MultivariateFNormalSufficient::evaluate() const
       return e;
   }
 
+double MultivariateFNormalSufficient::get_minus_exponent() const
+{
+    double e;
+    if (N_ == 1)
+    {
+        e = 0.5*get_mean_square_residuals()/IMP::square(factor_) ;
+    } else {
+        e = 0.5*( trace_WP()
+                + double(N_)*get_mean_square_residuals())/IMP::square(factor_) ;
+    }
+    return e;
+}
+
+double MultivariateFNormalSufficient::get_minus_log_normalization() const
+{
+    double e = get_norms()[1] + get_minus_log_jacobian();
+    return e;
+}
+
+
 VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
 {
       timer_.start(DFM);
