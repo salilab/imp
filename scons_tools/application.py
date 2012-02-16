@@ -68,6 +68,16 @@ def IMPCPPExecutable(envi, target, source):
     prog= env.Program(target=envi["builddir"]+"/bin/"+target, source=source)
     bindir = install.install(env,'bindir', prog[0])
 
+
+def IMPCPPExecutables(envi, lst):
+    if envi.GetOption('help'):
+        return
+    env= environment.get_bin_environment(envi)
+    for l in lst:
+        prog= env.Program(target=envi["builddir"]+"/bin/"+l[0], source=l[1])
+        bindir = install.install(env,'bindir', prog[0])
+
+
 def IMPPythonExecutable(env, file):
     def dummy(target, source, env): pass
     _PythonExeDependency = Builder(action=Action(dummy, dummy),

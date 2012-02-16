@@ -11,5 +11,6 @@ env= env.IMPApplication(name="em2d_dock", version="SVN",
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="em2d_score", source=["Projection.cpp", "em2d_score.cpp"])
-    env.IMPCPPExecutable(target="em2d_single_score", source=["Projection.cpp", "em2d_single_score.cpp"])
+    env.IMPCPPExecutables([("em2d_score", ["Projection.cpp", "em2d_score.cpp"]),
+                           ("em2d_single_score", ["Projection.cpp",
+                                                  "em2d_single_score.cpp"])])
