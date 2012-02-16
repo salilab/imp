@@ -12,6 +12,7 @@
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/base/utility.h>
+#include <IMP/compatibility/map.h>
 
 #include <boost/multi_array.hpp>
 #include <boost/random.hpp>
@@ -633,13 +634,11 @@ int Image2D<T>::get_segmentation_threshold() const
 }
 
 
-#include <ext/hash_map>
 #include <utility>
-using __gnu_cxx::hash_map;
 
 namespace {
-  typedef hash_map<int, int> HashMap;
-  typedef hash_map<int, HashMap> DoubleHashMap;
+  typedef IMP::compatibility::map<int, int> HashMap;
+  typedef IMP::compatibility::map<int, HashMap> DoubleHashMap;
   class EquivalenceTable : public DoubleHashMap {
   public:
     EquivalenceTable() { max_color_=0; }
@@ -772,7 +771,7 @@ template<class T>
 void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image) const{
   get_connected_components(out_image);
   // count the number of pixels in each cc
-  hash_map<int, int> counts;
+  IMP::compatibility::map<int, int> counts;
 
   for(unsigned int i=0; i<out_image.num_elements(); i++) {
     int color = *(out_image.data()+i);
@@ -783,7 +782,8 @@ void Image2D<T>::get_largest_connected_component(Image2D<int>& out_image) const{
   }
 
   int largest_size = 0; int largest_color=1;
-  for(hash_map<int, int>::iterator it=counts.begin(); it!=counts.end(); it++) {
+  for(IMP::compatibility::map<int, int>::iterator it=counts.begin();
+      it!=counts.end(); it++) {
     if(it->second > largest_size) {
       largest_size = it->second;
       largest_color = it->first;
@@ -802,7 +802,7 @@ void Image2D<T>::get_largest_connected_component() {
   Image2D<int> out_image;
   get_connected_components(out_image);
   // count the number of pixels in each cc
-  hash_map<int, int> counts;
+  IMP::compatibility::map<int, int> counts;
 
   for(unsigned int i=0; i<out_image.num_elements(); i++) {
     int color = *(out_image.data()+i);
@@ -813,7 +813,8 @@ void Image2D<T>::get_largest_connected_component() {
   }
 
   int largest_size = 0; int largest_color=1;
-  for(hash_map<int, int>::iterator it=counts.begin(); it!=counts.end(); it++) {
+  for(IMP::compatibility::map<int, int>::iterator it=counts.begin();
+      it!=counts.end(); it++) {
     if(it->second > largest_size) {
       largest_size = it->second;
       largest_color = it->first;
