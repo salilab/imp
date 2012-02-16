@@ -16,6 +16,7 @@ class TrivialParticleStates(IMP.domino.ParticleStates):
     def do_show(self, stream):
         pass
 
+key= IMP.IntKey("assignment")
 
 class DOMINOTests(IMP.test.TestCase):
     def _setup_round_trip(self):
@@ -23,6 +24,7 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[]
         for i in range(0,8):
             ps.append(IMP.Particle(m))
+            ps[-1].add_attribute(key, -1)
         assignments=[]
         for i in range(0,20):
             ss=[random.randint(0,30) for i in range(0,8)]
@@ -33,43 +35,59 @@ class DOMINOTests(IMP.test.TestCase):
         for a in assignments:
             container.add_assignment(a)
         self.assertEqual(container.get_number_of_assignments(),len(assignments))
-    def _test_in(self, container, assignments):
+    def _check_equal(self, a0, a1, ps0, ps1):
+        ss0= IMP.domino.Subset(ps0)
+        ss1= IMP.domino.Subset(ps1)
+        for i,p in enumerate(ss0):
+            p.set_value(key, a0[i])
+        for i,p in enumerate(ss1):
+            p.set_value(key, a1[i])
+        print a0, a1
+        for p0,p1 in zip(ps0, ps1):
+            self.assertEqual(p0.get_value(key), p1.get_value(key))
+    def _test_in(self, container, assignments, ps0, ps1):
         container.set_was_used(True)
         for i, a in enumerate(assignments):
             ac= container.get_assignment(i)
             print ac
-            self.assertEqual(ac, a)
+            self._check_equal(a, ac, ps0, ps1)
         self.assertEqual(len(assignments), container.get_number_of_assignments())
     def test_hdf5(self):
         """Testing default subset states writing to an hdf5 data set"""
-        (ps, ss, ass, m)= self._setup_round_trip()
+        (ps0, ss0, ass0, m0)= self._setup_round_trip()
+        (ps1, ss1, ass1, m1)= self._setup_round_trip()
         try:
             import RMF
         except:
             self.skipTest("no RMF found")
         name= self.get_tmp_file_name("round_trip.hdf5")
         h5= RMF.create_hdf5_file(name)
-        pss= IMP.domino.WriteHDF5AssignmentContainer(h5, ss, ps, "assignments")
+        pss= IMP.domino.WriteHDF5AssignmentContainer(h5, ss0, ps0, "assignments")
         pss.set_cache_size(16)
-        self._test_out(pss, ass)
+        self._test_out(pss, ass0)
         del pss
+        #del h5
+        #h5= RMF.open_hdf5_file(name)
         ds= h5.get_child_index_data_set_2d("assignments")
-        iss= IMP.domino.ReadHDF5AssignmentContainer(ds, ss, ps,
+        iss= IMP.domino.ReadHDF5AssignmentContainer(ds, ss1, ps1,
                                                      "in assignments")
         iss.set_cache_size(16)
-        self._test_in(iss, ass)
+        print ss0, ss1
+        self._test_in(iss, ass0, ps0, ps1)
 
     def test_binary(self):
         """Testing default subset states writing to an binary data set"""
-        (ps, ss, ass, m)= self._setup_round_trip()
+        (ps0, ss0, ass0, m0)= self._setup_round_trip()
+        (ps1, ss1, ass1, m1)= self._setup_round_trip()
+        print ps0, ps1, ss0, ss1
         name= self.get_tmp_file_name("round_trip.assignments")
-        pss= IMP.domino.WriteAssignmentContainer(name, ss, ps, "assignments")
+        pss= IMP.domino.WriteAssignmentContainer(name, ss0, ps0, "assignments")
         pss.set_cache_size(16)
-        self._test_out(pss, ass)
+        self._test_out(pss, ass0)
         del pss
-        iss= IMP.domino.ReadAssignmentContainer(name, ss, ps, "in assignments")
+        iss= IMP.domino.ReadAssignmentContainer(name, ss1, ps1, "in assignments")
         iss.set_cache_size(516)
-        self._test_in(iss, ass)
+        self._test_in(iss, ass0, ps0, ps1)
 
 
     def test_sample(self):
