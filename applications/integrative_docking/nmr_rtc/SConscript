@@ -11,5 +11,9 @@ env= env.IMPApplication(name="nmr_rtc", version="SVN",
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="nmr_rtc_score", source=["ResidueContent.cpp", "nmr_rtc_score.cpp", "helpers.cpp"])
-    env.IMPCPPExecutable(target="interface_rtc", source=["ResidueContent.cpp", "interface_rtc.cpp", "helpers.cpp"])
+    env.IMPCPPExecutables([("nmr_rtc_score", ["ResidueContent.cpp",
+                                             "nmr_rtc_score.cpp",
+                                             "helpers.cpp"]),
+                           ("interface_rtc", ["ResidueContent.cpp",
+                                              "interface_rtc.cpp",
+                                              "helpers.cpp"])])
