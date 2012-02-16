@@ -8,6 +8,7 @@
 
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
+#include <IMP/algebra/constants.h>
 
 #include <vector>
 #include <string>
@@ -97,7 +98,7 @@ void get_residue_solvent_accessibility(const IMP::Particles& atom_particles,
   for(unsigned int i=0; i<atom_particles.size(); i++) {
     // convert from 0-1 range to actual area in A^2
     float radius = IMP::core::XYZR(atom_particles[i]).get_radius();
-    float area = surface_area[i] * 4*M_PI*radius*radius;
+    float area = surface_area[i] * 4*IMP::algebra::PI*radius*radius;
     residue_solvent_accessibility[atom_2_residue_map[i]] += area;
   }
 
