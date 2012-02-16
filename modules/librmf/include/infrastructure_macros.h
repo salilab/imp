@@ -325,6 +325,10 @@ namespace RMF {
 #endif
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+class Showable;
+inline std::ostream &
+operator<<(std::ostream &out, const Showable &t);
+
   /** Produce hash values for boost hash tables.
    */
   template <class T>
