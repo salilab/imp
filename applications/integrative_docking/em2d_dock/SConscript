@@ -1,0 +1,15 @@
+Import('env')
+
+env= env.IMPApplication(name="em2d_dock", version="SVN",
+                        authors=["Dina Schneidman"],
+                        brief="Scoring with EM 2D class averages",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=['Schneidman-Duhovny D et al. ...'],
+                        required_modules=['em'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="em2d_score", source=["Projection.cpp", "em2d_score.cpp"])
+    env.IMPCPPExecutable(target="em2d_single_score", source=["Projection.cpp", "em2d_single_score.cpp"])
