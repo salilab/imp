@@ -4,6 +4,7 @@ IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##2D, Namebase##D, Namebase##2Ds);
 IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##3D, Namebase##D, Namebase##3Ds);
 IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##4D, Namebase##D, Namebase##4Ds);
 IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##5D, Namebase##D, Namebase##5Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##6D, Namebase##D, Namebase##6Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<1>, Namebase##D, Namebase##test##1,Namebase##1Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<2>, Namebase##D, Namebase##test##2,Namebase##2Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<3>, Namebase##D, Namebase##test##3,Namebase##3Ds);
