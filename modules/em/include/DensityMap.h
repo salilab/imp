@@ -191,10 +191,16 @@ public:
    */
   int get_dim_index_by_location(const algebra::Vector3D &v,int ind) const;
 
+  //! Calculate the location of a given voxel.
+  /** \param[in] index The voxel index
+      \return the location (x,y,z) (in angstroms) of a given voxel.
+  */
   algebra::Vector3D get_location_by_voxel(long index) const {
-    return algebra::Vector3D(get_location_in_dim_by_voxel(index,0),
-                             get_location_in_dim_by_voxel(index,1),
-                             get_location_in_dim_by_voxel(index,2));
+    IMP_USAGE_CHECK(index >= 0 && index < get_number_of_voxels(),
+                    "invalid map index");
+    IMP_USAGE_CHECK(loc_calculated_,
+            "locations should be calculated prior to calling this function");
+    return algebra::Vector3D(x_loc_[index], y_loc_[index], z_loc_[index]);
   }
 
   bool is_xyz_ind_part_of_volume(int ix,int iy,int iz) const;
@@ -350,6 +356,7 @@ public:
    */
   void pick_max(const DensityMap *other);
 
+  //! number of map voxels
   long get_number_of_voxels() const;
 
   //! Set the map dimension and reset all voxels to 0

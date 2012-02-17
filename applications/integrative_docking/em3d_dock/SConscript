@@ -1,0 +1,15 @@
+Import('env')
+
+env= env.IMPApplication(name="em3d_dock", version="SVN",
+                        authors=["Dina Schneidman"],
+                        brief="Scoring with EM density map",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=['Schneidman-Duhovny D et al. ...'],
+                        required_modules=['em','saxs'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutables([("em3d_score", ["MapDistanceTransform.cpp", "EnvelopeScore.cpp", "PCAAligner.cpp", "EMFit.cpp", "MapScorer.cpp", "em3d_score.cpp"]),
+                           ("em3d_single_score", ["MapDistanceTransform.cpp", "EnvelopeScore.cpp", "PCAAligner.cpp", "EMFit.cpp", "MapScorer.cpp", "em3d_single_score.cpp"])])
