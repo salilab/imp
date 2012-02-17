@@ -11,6 +11,12 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/constants.h>
 
+namespace {
+  int symm_round(double r) {
+    return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
+  }
+}
+
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
                        double scale, double resolution, int axis_size) :
   scale_(scale), t_i_(0), t_j_(0), resolution_(resolution)
@@ -96,7 +102,7 @@ void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
   const IMP::em::RadiusDependentKernelParameters& params =
     kp.get_params(radius);
 
-  int int_radius = (int)round(params.get_kdist()/scale_) + 1;
+  int int_radius = symm_round(params.get_kdist()/scale_) + 1;
   int int_radius2 = IMP::base::square(int_radius);
 
   double normalization = -scale_*scale_*params.get_inv_sigsq();
@@ -125,8 +131,8 @@ void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
 
 void Projection::add(const Projection& p) {
   // calculate translation
-  int t_i = t_i_ - p.t_i_ - (int)round((y_min_ - p.y_min_)/scale_);
-  int t_j = t_j_ - p.t_j_ - (int)round((x_min_ - p.x_min_)/scale_);
+  int t_i = t_i_ - p.t_i_ - symm_round((y_min_ - p.y_min_)/scale_);
+  int t_j = t_j_ - p.t_j_ - symm_round((x_min_ - p.x_min_)/scale_);
 
   for(int i=0; i<get_height(); i++) {
     for(int j=0; j<get_width(); j++) {
