@@ -2,7 +2,8 @@ Import('env')
 
 applications=['foxsdock',
               'nmr_rtc',
-              'em2d_dock']
+              'em2d_dock',
+              'em3d_dock']
 
 if env.get('local', False):
     for d in Glob("*/SConscript"):

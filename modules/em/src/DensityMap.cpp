@@ -745,9 +745,7 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
 namespace {
   inline algebra::Vector3D get_voxel_center(const DensityMap *map,
                                      unsigned int v) {
-    return algebra::Vector3D(map->get_location_in_dim_by_voxel(v,0),
-                             map->get_location_in_dim_by_voxel(v,1),
-                             map->get_location_in_dim_by_voxel(v,2));
+    return algebra::Vector3D(map->get_location_by_voxel(v));
   }
 
   DensityMap *create_density_map(const algebra::Vector3D &origin,
