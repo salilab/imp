@@ -26,6 +26,10 @@ class EigenAnalysisTests(IMP.test.TestCase):
         ed = IMP.algebra.get_principal_components(vs)
         self.assertAlmostEqual(ed.get_principal_value(0),1.28, delta=.1)
         self.assertAlmostEqual(ed.get_principal_value(1),0.049, delta=.1)
+        self.assertAlmostEqual(ed.get_principal_component(0)[0],0.677873, delta=.01)
+        self.assertAlmostEqual(ed.get_principal_component(0)[1],0.735179, delta=.01)
+        self.assertAlmostEqual(ed.get_principal_component(1)[0],-0.735179, delta=.01)
+        self.assertAlmostEqual(ed.get_principal_component(1)[1],0.677873, delta=.01)
         ed.show()
 
     def test_pca_from_random_points(self):
