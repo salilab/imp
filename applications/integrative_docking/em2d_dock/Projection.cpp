@@ -106,9 +106,9 @@ void Projection::calculate_sphere_mask(std::vector<MaskCell>& mask,
   i_bound = int_radius;
   // iterate circle indices
   for (int i = -i_bound; i <= i_bound; i++ ) {
-    j_bound = (int)sqrt(int_radius2 - i*i);
+    j_bound = (int)sqrt(static_cast<double>(int_radius2 - i*i));
     for (int j = -j_bound; j <= j_bound; j++) {
-      k_bound = (int)sqrt(int_radius2 - i*i - j*j);
+      k_bound = (int)sqrt(static_cast<double>(int_radius2 - i*i - j*j));
       MaskCell ms(i, j, 0.0);
       for (int k = -k_bound; k <= k_bound; k++) {
         int int_dist2 = i*i + j*j + k*k;
