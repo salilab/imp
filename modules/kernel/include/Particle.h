@@ -54,7 +54,8 @@
   }                                                                     \
   inline UCName##Keys Particle::get_##lcname##_keys() const {           \
     IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
-    return get_model()->UCName##AttributeTable::get_attribute_keys(id_); \
+    return get_model()->internal::UCName##AttributeTable                \
+        ::get_attribute_keys(id_);                                      \
   }                                                                     \
   inline void Particle::add_cache_attribute(UCName##Key name,           \
                                             Value value) {              \

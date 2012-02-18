@@ -283,9 +283,9 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
     zero_derivatives();
   }
   Floats ret= do_evaluate_restraints(restraints,
-                                                  calc_derivs,
-                                                  if_good, if_max,
-                                                  max);
+                                     calc_derivs,
+                                     if_good, if_max,
+                                     max);
 
   after_evaluate(states, calc_derivs);
 

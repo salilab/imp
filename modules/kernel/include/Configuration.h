@@ -23,14 +23,14 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Configuration: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
-  FloatAttributeTable floats_;
-  StringAttributeTable strings_;
-  IntAttributeTable objects_;
-  ObjectAttributeTable ints_lists_;
-  IntsAttributeTable objects_lists_;
-  ObjectsAttributeTable particles_;
-  ParticleAttributeTable particles_lists_;
-  ParticlesAttributeTable ints_;
+  internal::FloatAttributeTable floats_;
+  internal::StringAttributeTable strings_;
+  internal::IntAttributeTable objects_;
+  internal::ObjectAttributeTable ints_lists_;
+  internal::IntsAttributeTable objects_lists_;
+  internal::ObjectsAttributeTable particles_;
+  internal::ParticleAttributeTable particles_lists_;
+  internal::ParticlesAttributeTable ints_;
  public:
   Configuration(Model *m, std::string name="Configuration %1%");
   void load_configuration() const;

@@ -34,35 +34,37 @@ Model::Model(std::string name):
   has_good_score_=false;
   next_particle_=0;
 #if IMP_BUILD < IMP_FAST
-  FloatAttributeTable::set_masks(&this->Masks::read_mask_,
-                                 &this->Masks::write_mask_,
-                                 &this->Masks::add_remove_mask_,
-                                 &this->Masks::read_derivatives_mask_,
-                                 &this->Masks::write_derivatives_mask_);
-  StringAttributeTable::set_masks(&this->Masks::read_mask_,
-                                  &this->Masks::write_mask_,
+  internal::FloatAttributeTable::set_masks(&this->Masks::read_mask_,
+                                           &this->Masks::write_mask_,
+                                           &this->Masks::add_remove_mask_,
+                                           &this->Masks::read_derivatives_mask_,
+                                           &this->Masks::write_derivatives_mask_
+                                           );
+  internal::StringAttributeTable::set_masks(&this->Masks::read_mask_,
+                                            &this->Masks::write_mask_,
+                                            &this->Masks::add_remove_mask_);
+  internal::IntAttributeTable::set_masks(&this->Masks::read_mask_,
+                                         &this->Masks::write_mask_,
+                                         &this->Masks::add_remove_mask_);
+  internal::ObjectAttributeTable::set_masks(&this->Masks::read_mask_,
+                                  &this->internal::Masks::write_mask_,
                                   &this->Masks::add_remove_mask_);
-  IntAttributeTable::set_masks(&this->Masks::read_mask_,
-                               &this->Masks::write_mask_,
-                               &this->Masks::add_remove_mask_);
-  ObjectAttributeTable::set_masks(&this->Masks::read_mask_,
-                                  &this->Masks::write_mask_,
-                                  &this->Masks::add_remove_mask_);
-  IntsAttributeTable::set_masks(&this->Masks::read_mask_,
-                                &this->Masks::write_mask_,
-                                &this->Masks::add_remove_mask_);
-  ObjectsAttributeTable::set_masks(&this->Masks::read_mask_,
-                                   &this->Masks::write_mask_,
-                                   &this->Masks::add_remove_mask_);
-  ParticleAttributeTable::set_masks(&this->Masks::read_mask_,
-                                    &this->Masks::write_mask_,
-                                    &this->Masks::add_remove_mask_);
-  ParticlesAttributeTable::set_masks(&this->Masks::read_mask_,
-                                     &this->Masks::write_mask_,
-                                     &this->Masks::add_remove_mask_);
+  internal::IntsAttributeTable::set_masks(&this->Masks::read_mask_,
+                                          &this->Masks::write_mask_,
+                                          &this->Masks::add_remove_mask_);
+  internal::ObjectsAttributeTable::set_masks(&this->Masks::read_mask_,
+                                             &this->Masks::write_mask_,
+                                             &this->Masks::add_remove_mask_);
+  internal::ParticleAttributeTable::set_masks(&this->Masks::read_mask_,
+                                              &this->Masks::write_mask_,
+                                              &this->Masks::add_remove_mask_);
+  internal::ParticlesAttributeTable::set_masks(&this->Masks::read_mask_,
+                                               &this->Masks::write_mask_,
+                                               &this->Masks::add_remove_mask_);
 #endif
   // be careful as this calls back to model
   model_=this;
+  model_weight_=1;
 }
 
 
@@ -213,14 +215,14 @@ void Model::remove_particle(Particle *p) {
   free_particles_.push_back(pi);
   p->m_=nullptr;
   particle_index_[pi]=nullptr;
-  FloatAttributeTable::clear_attributes(pi);
-  StringAttributeTable::clear_attributes(pi);
-  IntAttributeTable::clear_attributes(pi);
-  ObjectAttributeTable::clear_attributes(pi);
-  IntsAttributeTable::clear_attributes(pi);
-  ObjectsAttributeTable::clear_attributes(pi);
-  ParticleAttributeTable::clear_attributes(pi);
-  ParticlesAttributeTable::clear_attributes(pi);
+  internal::FloatAttributeTable::clear_attributes(pi);
+  internal::StringAttributeTable::clear_attributes(pi);
+  internal::IntAttributeTable::clear_attributes(pi);
+  internal::ObjectAttributeTable::clear_attributes(pi);
+  internal::IntsAttributeTable::clear_attributes(pi);
+  internal::ObjectsAttributeTable::clear_attributes(pi);
+  internal::ParticleAttributeTable::clear_attributes(pi);
+  internal::ParticlesAttributeTable::clear_attributes(pi);
   IMP_IF_CHECK(USAGE) {
     ParticlesTemp cp= get_particles();
     for (unsigned int i=0; i< particle_index_.size(); ++i) {
@@ -228,7 +230,7 @@ void Model::remove_particle(Particle *p) {
         ParticleIndex cur=i;
         {
           ParticleKeys keys
-            = ParticleAttributeTable::get_attribute_keys(cur);
+              = internal::ParticleAttributeTable::get_attribute_keys(cur);
           for (unsigned int j=0; j< keys.size(); ++j) {
             if (get_has_attribute(keys[j], cur)) {
               IMP_USAGE_CHECK(get_attribute(keys[j], cur) != pi,
@@ -243,7 +245,7 @@ void Model::remove_particle(Particle *p) {
         }
         {
           ParticlesKeys keys
-            = ParticlesAttributeTable::get_attribute_keys(cur);
+              = internal::ParticlesAttributeTable::get_attribute_keys(cur);
           for (unsigned int j=0; j< keys.size(); ++j) {
             if (get_has_attribute(keys[j], cur)) {
               ParticleIndexes pis
@@ -289,5 +291,7 @@ bool Model::get_has_data(ModelKey mk) const {
     return false;
   }
 }
+
+
 
 IMP_END_NAMESPACE
