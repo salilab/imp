@@ -24,6 +24,12 @@
 #include <fstream>
 #include <cmath>
 
+namespace {
+  int symm_round(double r) {
+    return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
+  }
+}
+
 template<class T = double>
 class Image2D : public boost::multi_array<T, 2> {
 public:
@@ -182,7 +188,8 @@ void Image2D<T>::write_PGM(const std::string& filename) const
   }
   for(int i=0; i<get_height(); i++) {
     for(int j=0; j<get_width(); j++) {
-      outfile << round(255.0*((*this)[i][j]-min_value)/(max_value-min_value));
+      outfile << symm_round(255.0*((*this)[i][j]-min_value)
+                            /(max_value-min_value));
       outfile << " ";
       if(j>0 && j%12 == 0) outfile << std::endl;
     }
@@ -588,8 +595,8 @@ void Image2D<T>::pad(int new_width, int new_height, T pad_value) {
 template<class T>
 void Image2D<T>::center() {
   std::pair<double, double> center = weighted_average();
-  int t_x = (int)round(get_width()/2 - center.first);
-  int t_y = (int)round(get_height()/2 - center.second);
+  int t_x = symm_round(get_width()/2 - center.first);
+  int t_y = symm_round(get_height()/2 - center.second);
   translate(t_x, t_y);
 }
 
@@ -844,7 +851,7 @@ void Image2D<T>::convert_to_int(Image2D<int>& out_image) const
   for(int i=0; i<get_height(); i++) {
     for(int j=0; j<get_width(); j++) {
       out_image[i][j] =
-        (int)round(255.0*((*this)[i][j]-min_value)/(max_value-min_value));
+        symm_round(255.0*((*this)[i][j]-min_value)/(max_value-min_value));
     }
   }
 }
