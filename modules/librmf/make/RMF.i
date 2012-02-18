@@ -393,8 +393,3 @@ has_hdf5=True
 has_boost_filesystem=True
 has_boost_thread=True
 }
-
-%pythoncode %{
-import _version_check
-_version_check.check_version(get_module_version())
-%}
