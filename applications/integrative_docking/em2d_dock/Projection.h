@@ -50,11 +50,8 @@ private:
     if(x_min_ > point[0] || y_min_ > point[1] ||
        x_max_ < point[0] || y_max_ < point[1])
       return false;
-    double r;
-    r = (point[0] - x_min_)/scale_;
-    j = (int)((r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5)) + t_j_;
-    r = (point[1] - y_min_)/scale_;
-    i = (int)((r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5)) + t_i_;
+    j = symm_round((point[0] - x_min_)/scale_) + t_j_;
+    i = symm_round((point[1] - y_min_)/scale_) + t_i_;
     return true;
   }
 

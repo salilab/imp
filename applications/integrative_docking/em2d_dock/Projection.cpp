@@ -11,12 +11,6 @@
 #include <IMP/algebra/Rotation3D.h>
 #include <IMP/constants.h>
 
-namespace {
-  int symm_round(double r) {
-    return static_cast<int>(r > 0.0 ? floor(r + 0.5) : ceil(r - 0.5));
-  }
-}
-
 Projection::Projection(const IMP::algebra::Vector3Ds& points,
                        double scale, double resolution, int axis_size) :
   scale_(scale), t_i_(0), t_j_(0), resolution_(resolution)
