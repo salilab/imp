@@ -45,7 +45,7 @@ class RestraintSetTests(IMP.test.TestCase):
         """Test evaluate() of RestraintSets and their children"""
         (m, rs, r0, r1, r2)= self._make_stuff()
         self.assertEqual(rs.evaluate(False), 1)
-        self.assertEqual(r0.evaluate(False), .5)
+        self.assertEqual(r0.evaluate(False), 1)
     def test_evaluate_2(self):
         """Test restraints added multiple times"""
         (m, rs, r0, r1, r2)= self._make_stuff()

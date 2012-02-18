@@ -233,8 +233,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   double min_score_;
   bool stop_on_good_score_;
   bool has_restraints_;
-  Restraints restraints_;
-  Restraints flattened_restraints_;
+  EvaluationCache cache_;
   mutable double last_score_;
 };
 

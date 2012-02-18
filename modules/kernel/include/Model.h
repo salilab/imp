@@ -63,8 +63,32 @@ public:
     });
 };
 
+class Model;
 
+/** An evaluation cache stores information for efficient evaluation of
+    a set of restraints. Store it an reuse it when you have one or
+    more restraints you are evaluating over and over again.
+*/
+class IMPEXPORT EvaluationCache {
+  friend class Model;
+  ScoreStates ss_;
+  Restraints rs_;
+  Floats weights_;
 
+  EvaluationCache(const ScoreStatesTemp &ss,
+                  const RestraintsTemp &rs,
+                  const Floats &floats);
+ public:
+  EvaluationCache(){}
+  EvaluationCache(const RestraintsTemp &rs);
+  EvaluationCache(const RestraintsTemp &rs, double weight);
+  RestraintsTemp get_restraints() const {
+    return RestraintsTemp(rs_.begin(), rs_.end());
+  }
+  IMP_SHOWABLE_INLINE(EvaluationCache, out << rs_);
+  Model *get_model() const {return rs_[0]->get_model();}
+};
+IMP_VALUES(EvaluationCache, EvaluationCaches);
 
 IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 
@@ -131,50 +155,44 @@ private:
 
   // basic representation
   std::map<FloatKey, FloatRange> ranges_;
-  mutable internal::Stage cur_stage_;
-  unsigned int eval_count_;
   compatibility::set<Restraint*> tracked_restraints_;
-  bool first_call_;
   double max_score_;
-  mutable bool has_good_score_;
   vector<std::pair<Object*, Object*> > extra_edges_;
 
   Ints free_particles_;
   unsigned int next_particle_;
   vector<Pointer<Particle> > particle_index_;
   vector<OwnerPointer<Object> > model_data_;
- private:
-  // statistics
-  bool gather_statistics_;
-  void add_to_update_before_time(ScoreState *s, double t) const;
-  void add_to_update_after_time(ScoreState *s, double t) const;
-  void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
-
-
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // things the evaluate template functions need, can't be bothered with friends
+public:
+  bool first_call_;
   void validate_computed_derivatives() const{}
-  void before_evaluate(const ScoreStatesTemp &states) const;
-  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
-  Floats do_evaluate(const RestraintsTemp &restraints,
-                     const ScoreStatesTemp &states, bool calc_derivs,
-                     bool if_good, bool if_max,
-                     double max= std::numeric_limits<double>::max());
-  Floats do_evaluate_restraints(const RestraintsTemp &restraints,
-                                bool calc_derivs,
-                                bool if_good, bool if_max,
-                                double max= std::numeric_limits<double>::max());
-  Floats do_external_evaluate(const RestraintsTemp &restraints,
-                              bool calc_derivs,
-                              bool if_good, bool if_max,
-                              double max= std::numeric_limits<double>::max());
-  // dependencies
-  mutable bool has_dependencies_;
-  mutable RestraintsTemp scoring_restraints_;
-  mutable ScoreStatesTemp ordered_score_states_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
     return has_dependencies_;
   }
+  mutable internal::Stage cur_stage_;
+  unsigned int eval_count_;
+  mutable bool has_good_score_;
+  void before_evaluate(const ScoreStatesTemp &states) const;
+  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
+
+  bool gather_statistics_;
+
+  void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
+#endif
+ private:
+  // statistics
+  void add_to_update_before_time(ScoreState *s, double t) const;
+  void add_to_update_after_time(ScoreState *s, double t) const;
+
+
+
+  // dependencies
+  mutable bool has_dependencies_;
+  mutable RestraintsTemp scoring_restraints_;
+  mutable ScoreStatesTemp ordered_score_states_;
 
   // other
   /* Allow Model::ScoreStateDataWrapper class to call the private
@@ -342,6 +360,10 @@ public:
   */
   virtual double evaluate(bool calc_derivs);
 
+  /** Use this to simplify code.*/
+  EvaluationCache get_evaluation_cache() const;
+
+
   //! Evaluate a subset of the restraints
   /** The passed restraints must have been added to this model already
       and must not be RestraintSets.
@@ -353,7 +375,7 @@ public:
       score states are added, but not when the dependencies of
       Restraints or ScoreStates change. This can be fixed if requested.
   */
-  Floats evaluate( RestraintsTemp restraints,
+  Floats evaluate( const EvaluationCache&cache,
                    bool calc_derivs);
 
   //! Evaluate a subset of the restraints
@@ -365,13 +387,13 @@ public:
       See evaluate(RestraintsTemp,Floats,bool) for more
       information.
   */
-  Floats evaluate_if_good( RestraintsTemp restraints,
+  Floats evaluate_if_good( const EvaluationCache &cache,
                            bool calc_derivs);
   /** Evaluate, returning the score if it below the max value.
       Otherwise return a number above max. The restraint maxima
       are ignored.
   */
-  Floats evaluate_if_below( RestraintsTemp restraints,
+  Floats evaluate_if_below( const EvaluationCache &cache,
                             bool calc_derivs, double max);
 
 
