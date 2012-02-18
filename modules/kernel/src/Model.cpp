@@ -127,6 +127,16 @@ void Model::remove_tracked_restraint(Restraint *r) {
   tracked_restraints_.erase(r);
 }
 
+bool Model::get_is_tracked_restraint( Restraint *r) const {
+  return tracked_restraints_.find(const_cast<Restraint*>(r))
+      != tracked_restraints_.end();
+}
+
+RestraintsTemp Model::get_tracked_restraints() const {
+  return RestraintsTemp(tracked_restraints_.begin(),
+                        tracked_restraints_.end());
+}
+
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);

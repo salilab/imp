@@ -267,14 +267,15 @@ public:
   }
   /**@}*/
 #ifndef IMP_DOXYGEN
- /** \name Temporary Restraints
+ /** \name Tracked restraints
 
-      Temporary restraints are ones that are not part of the scoring function
-      but that well be evaluated at some point. Restraints that are part of
-      these sets cannot be part of non-temporary sets or other temporary sets.
+     All restraints are in this list, whether or not they are
+     part of the scoring function.
   */
   void add_tracked_restraint(Restraint *r);
   void remove_tracked_restraint(Restraint *r);
+  bool get_is_tracked_restraint(Restraint *r) const;
+  RestraintsTemp get_tracked_restraints() const;
   /** @} */
 #endif
  public:
