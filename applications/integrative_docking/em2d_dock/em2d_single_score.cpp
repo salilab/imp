@@ -88,7 +88,7 @@ aligned images (default = 0.4)");
   for(unsigned int i=0; i<image_files.size(); i++) {
     Image2D<> image(image_files[i]);
     image.get_largest_connected_component();
-    image.pad(image.get_width()*1.4, image.get_height()*1.4);
+    image.pad((int)(image.get_width()*1.4), (int)(image.get_height()*1.4));
     image.center();
     image.average();
     image.stddev();
