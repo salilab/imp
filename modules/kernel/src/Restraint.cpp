@@ -30,9 +30,6 @@ Restraint::~Restraint()
             << " from model." << std::endl);
     IMP_CHECK_OBJECT(model_);
     model_->remove_tracked_restraint(this);
-  } else {
-    IMP_LOG(VERBOSE, "Not removing restraint " << get_name()
-            << " from model." << std::endl);
   }
 }
 
@@ -55,14 +52,6 @@ void Restraint::set_model(Model* model)
 }
 
 namespace {
-  void fill_restraints(RestraintsTemp &restraints,
-                       const Restraint *me) {
-    restraints= get_restraints(RestraintsTemp(1, const_cast<Restraint*>(me)));
-    if (restraints.size() >1) {
-      IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
-              << " restraints in set.\n");
-    }
-  }
   double finish(const Floats &ret,
               const Restraint *me) {
     double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
@@ -78,22 +67,23 @@ namespace {
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  RestraintsTemp restraints;
-  fill_restraints(restraints, this);
   IMP_USAGE_CHECK(get_model(), "You must add the restraint to the"
                   << " model before attempting to evaluate it."
                   << " Use either Model::add_restraint() or "
                   << "Model::add_temporary_restraint().");
-  Floats ret= get_model()->evaluate(restraints, calc_derivs);
+  Floats ret= get_model()
+      ->evaluate(RestraintsTemp(1, const_cast<Restraint*>(this)),
+                 calc_derivs);
   return finish(ret, this);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  RestraintsTemp restraints;
-  fill_restraints(restraints, this);
-  Floats ret= get_model()->evaluate_if_good(restraints, calc_derivs);
+  Floats ret
+      = get_model()
+      ->evaluate_if_good(RestraintsTemp(1, const_cast<Restraint*>(this)),
+                         calc_derivs);
   return finish(ret, this);
 }
 
@@ -131,20 +121,16 @@ namespace {
                       :0),
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
-      RestraintsTemp rin= get_restraints(RestraintsTemp(1, in));
-      RestraintsTemp rout= get_restraints(RestraintsTemp(1, out));
-      Floats sin= in->get_model()->evaluate(rin, false);
-      Floats sout= in->get_model()->evaluate(rout, false);
+      Floats sin= in->get_model()->evaluate(RestraintsTemp(1, in), false);
+      Floats sout= in->get_model()->evaluate(RestraintsTemp(1, out), false);
       // correct for it having a weight in the model
-      double tin= std::accumulate(sin.begin(), sin.end(), 0.0)
-          /in->model_weight_;
+      double tin= std::accumulate(sin.begin(), sin.end(), 0.0);
       double tout= std::accumulate(sout.begin(), sout.end(), 0.0);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
                  << in->get_name() << "\" got "
                  << tin << " and " << tout << " over "
-                 << sin << " vs " << sout << " with restraints "
-                 << rin << " vs " << rout << std::endl);
+                 << sin << " vs " << sout << std::endl);
       }
     }
   }

@@ -12,6 +12,7 @@
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
+#include "IMP/internal/restraint_evaluation.h"
 #include "IMP/RestraintSet.h"
 #include "IMP/dependency_graph.h"
 #include "IMP/compatibility/set.h"
@@ -205,9 +206,9 @@ void Model::update() {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  Floats ret= do_evaluate(RestraintsTemp(),
-                          ordered_score_states_,
-                          false, true, false);
+  internal::SetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
+      reset(&cur_stage_);
+  before_evaluate(ordered_score_states_);
 }
 
 void Model::do_show(std::ostream& out) const

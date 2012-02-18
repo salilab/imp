@@ -18,6 +18,7 @@
 #include "IMP/compatibility/map.h"
 #include "IMP/dependency_graph.h"
 #include <boost/timer.hpp>
+#include <IMP/utility.h>
 #include "IMP/compatibility/set.h"
 #include <numeric>
 
@@ -33,6 +34,51 @@
 #include <IMP/compatibility/vector_property_map.h>
 
 IMP_BEGIN_NAMESPACE
+
+EvaluationCache::EvaluationCache(const RestraintsTemp &rs){
+  RestraintsTemp rrs;
+  boost::tie(rrs, weights_)= get_restraints_and_weights(rs.begin(),
+                                                        rs.end());
+  rs_=get_as<Restraints>(rrs);
+  if (!rs.empty()) {
+    Model *m= rs[0]->get_model();
+    IMP_USAGE_CHECK(m, "Restraints must be registered with the model.");
+    ss_=get_as<ScoreStates>(m->get_score_states(rrs));
+  }
+}
+
+EvaluationCache::EvaluationCache(const RestraintsTemp &rs,
+                                 double w){
+  RestraintsTemp rrs;
+  boost::tie(rrs, weights_)= get_restraints_and_weights(rs.begin(),
+                                                        rs.end(), w);
+  rs_=get_as<Restraints>(rrs);
+  if (!rs.empty()) {
+    Model *m= rs[0]->get_model();
+    IMP_USAGE_CHECK(m, "Restraints must be registered with the model.");
+    ss_=get_as<ScoreStates>(m->get_score_states(rrs));
+  }
+}
+
+EvaluationCache::EvaluationCache(const ScoreStatesTemp &ss,
+                                 const RestraintsTemp &rs,
+                                 const Floats &floats):
+    ss_(ss.begin(), ss.end()),
+    rs_(rs.begin(), rs.end()), weights_(floats) {
+}
+
+EvaluationCache Model::get_evaluation_cache() const {
+  if (!get_has_dependencies()) {
+    compute_dependencies();
+  }
+  Floats weights(scoring_restraints_.size());
+  for (unsigned int i=0; i< scoring_restraints_.size(); ++i) {
+    weights[i]=scoring_restraints_[i]->model_weight_;
+  }
+  return EvaluationCache(ordered_score_states_,
+                         scoring_restraints_,
+                         weights);
+}
 
   //#pragma GCC diagnostic warn "-Wunused-parameter"
 namespace {
@@ -204,82 +250,6 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
   return rs[0]->get_model()->get_score_states(rs);
 }
 
-
-double Model::evaluate(bool calc_derivs) {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(this);
-  has_good_score_=true;
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  Floats ret= do_evaluate(scoring_restraints_,
-                     ordered_score_states_,
-                          calc_derivs, false, false);
-  first_call_=false;
-  return std::accumulate(ret.begin(), ret.end(), 0.0);
-}
-
-Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
-                                   bool calc_derivs,
-                                   bool if_good, bool if_max, double max) {
-  IMP_CHECK_OBJECT(this);
-  IMP_OBJECT_LOG;
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< restraints.size(); ++i) {
-      IMP_CHECK_CODE(Restraint *r= restraints[i]);
-      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
-                      "Cannot pass RestraintSets to Model::evaluate().");
-    }
-  }
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< restraints.size(); ++i) {
-      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(
-                                 static_cast<Restraint*>(restraints[i])),
-                      "Cannot pass restraint sets to model to evaluate");
-    }
-  }
-  ScoreStatesTemp ss= get_score_states(restraints);
-  Floats max_scores(restraints.size());
-  /*for (unsigned int i=0; i< max_scores.size(); ++i) {
-    if (max_scores_.find(restraints[i]) == max_scores_.end()) {
-      max_scores[i]= std::numeric_limits<double>::max();
-    } else {
-      max_scores[i]= max_scores_.find(restraints[i])->second;
-    }
-    }*/
-  Floats ret= do_evaluate(restraints,
-                          ss, calc_derivs, if_good, if_max, max);
-  IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
-                     "The number of scores doesn't match the number of"
-                     << " restraints: " << ret.size()
-                     << " vs " << restraints.size());
-  first_call_=false;
-  return ret;
-}
-
-Floats Model::evaluate( RestraintsTemp restraints,
-                       bool calc_derivs)
-{
-  return do_external_evaluate(restraints, calc_derivs, false, false);
-}
-
-Floats Model::evaluate_if_below( RestraintsTemp restraints,
-                                bool calc_derivs,
-                                double max)
-{
-  return do_external_evaluate(restraints, calc_derivs, true, false,
-                              max);
-}
-
-Floats Model::evaluate_if_good( RestraintsTemp restraints,
-                                bool calc_derivs)
-{
-  return do_external_evaluate(restraints, calc_derivs, true, false,
-                              get_maximum_score());
-}
 
 
 void Model::add_dependency_edge(ScoreState *from, ScoreState *to) {

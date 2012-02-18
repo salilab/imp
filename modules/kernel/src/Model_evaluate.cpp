@@ -10,6 +10,7 @@
 #include "IMP/Particle.h"
 #include <IMP/base/log.h>
 #include "IMP/Restraint.h"
+#include "IMP/internal/restraint_evaluation.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
@@ -18,92 +19,38 @@
 #include <numeric>
 
 
-namespace {
-  template <class T, int V>
-  struct SetIt {
-    T *t_;
-    SetIt(T *t): t_(t){}
-    ~SetIt() {
-      *t_= T(V);
-    }
-  };
 
-  struct ResetBitset {
-    boost::dynamic_bitset<> &bs_;
-    bool val_;
-    ResetBitset(boost::dynamic_bitset<> &bs,
-                bool val): bs_(bs), val_(val){}
-    ~ResetBitset() {
-      if (val_) {
-        bs_.set();
-      } else {
-        bs_.reset();
-      }
-    }
-  };
-}
-
-#if IMP_BUILD < IMP_FAST
-#define SET_ONLY(mask, particles, containers)                   \
-  {                                                             \
-    ParticlesTemp cur=particles;                                \
-    ContainersTemp ccur=containers;                             \
-    for (unsigned int i=0; i<ccur.size(); ++i) {                \
-      Object *po= ccur[i];                                      \
-      Particle *p= dynamic_cast<Particle*>(po);                 \
-      if (p) cur.push_back(p);                                  \
-    }                                                           \
-    mask.reset();                                               \
-    for (unsigned int i=0; i< cur.size(); ++i) {                \
-      mask.set(cur[i]->get_index());                            \
-    }                                                           \
-  }
-
-#define SET_ONLY_2(mask, particles, containers,                         \
-                   particlestwo, containerstwo)                         \
-  {                                                                     \
-    ParticlesTemp curout=particles;                                     \
-    ContainersTemp ccurout=containers;                                  \
-    ParticlesTemp tcurout=particlestwo;                                 \
-    ContainersTemp tccurout=containerstwo;                              \
-    curout.insert(curout.end(), tcurout.begin(), tcurout.end());        \
-    ccurout.insert(ccurout.end(), tccurout.begin(), tccurout.end());    \
-    SET_ONLY(mask, curout, ccurout);                                    \
-  }
-
-
-
-#define WRAP_EVALUATE_CALL(restraint, expr)                             \
-  if (first_call_) {                                                    \
-    ResetBitset rbr(Masks::read_mask_, true);                           \
-    ResetBitset rbw(Masks::write_mask_, true);                          \
-    ResetBitset rbar(Masks::add_remove_mask_, true);                    \
-    ResetBitset rbrd(Masks::read_derivatives_mask_, true);              \
-    ResetBitset rbwd(Masks::write_derivatives_mask_, true);             \
-    Masks::write_mask_.reset();                                         \
-    Masks::add_remove_mask_.reset();                                    \
-    Masks::read_derivatives_mask_.reset();                              \
-    SET_ONLY(Masks::read_mask_, restraint->get_input_particles(),       \
-             restraint->get_input_containers()                          \
-             );                                                         \
-    SET_ONLY(Masks::write_derivatives_mask_,                            \
-            restraint->get_input_particles(),                           \
-             restraint->get_input_containers()                          \
-             );                                                         \
-    SET_ONLY(Masks::read_derivatives_mask_,                             \
-            restraint->get_input_particles(),                           \
-             restraint->get_input_containers()                          \
-             );                                                         \
-    IMP_CHECK_OBJECT(restraint);                                        \
-    expr;                                                               \
+#define IMP_CALL_EVALUATE(ss, rs, weights, max, derivs, good, usemax) \
+  if (derivs) {                                                \
+    if (gather_statistics_) {                                           \
+      ret= internal::evaluate<true, good, usemax, true>(ss,             \
+                                                        rs,             \
+                                                        weights,        \
+                                                        max,            \
+                                                        this);          \
   } else {                                                              \
-    IMP_CHECK_OBJECT(restraint);                                        \
-    expr;                                                               \
-  }                                                                     \
+      ret= internal::evaluate<true, good, usemax, false>(ss,            \
+                                                         rs,            \
+                                                         weights,       \
+                                                         max,           \
+                                                         this);         \
+    }                                                                   \
+  } else {                                                              \
+    if (gather_statistics_) {                                           \
+      ret= internal::evaluate<false, good, usemax, true>(ss,            \
+                                                        rs,             \
+                                                        weights,        \
+                                                        max,            \
+                                                        this);          \
+    } else {                                                            \
+      ret= internal::evaluate<false, good, usemax, false>(ss,            \
+                                                         rs,            \
+                                                         weights,       \
+                                                         max,           \
+                                                         this);         \
+    }                                                                   \
+  }
 
-#else
-#define WRAP_EVALUATE_CALL(restraint, expr) expr
-#endif
 
 IMP_BEGIN_NAMESPACE
 
@@ -126,20 +73,20 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       {
 #if IMP_BUILD < IMP_FAST
         if (first_call_) {
-          ResetBitset rbr(Masks::read_mask_, true);
-          ResetBitset rbw(Masks::write_mask_, true);
-          ResetBitset rbar(Masks::add_remove_mask_, true);
-          ResetBitset rbrd(Masks::read_derivatives_mask_, true);
-          ResetBitset rbwd(Masks::write_derivatives_mask_, true);
+          internal::ResetBitset rbr(Masks::read_mask_, true);
+          internal::ResetBitset rbw(Masks::write_mask_, true);
+          internal::ResetBitset rbar(Masks::add_remove_mask_, true);
+          internal::ResetBitset rbrd(Masks::read_derivatives_mask_, true);
+          internal::ResetBitset rbwd(Masks::write_derivatives_mask_, true);
           ParticlesTemp input=ss->get_input_particles();
           ParticlesTemp output=ss->get_output_particles();
           ContainersTemp cinput=ss->get_input_containers();
           ContainersTemp coutput=ss->get_output_containers();
           Masks::read_derivatives_mask_.reset();
           Masks::write_derivatives_mask_.reset();
-          SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
-          SET_ONLY(Masks::write_mask_, output, coutput);
-          SET_ONLY(Masks::add_remove_mask_, output, coutput);
+          IMP_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
+          IMP_SET_ONLY(Masks::write_mask_, output, coutput);
+          IMP_SET_ONLY(Masks::add_remove_mask_, output, coutput);
           ss->before_evaluate();
         } else {
           ss->before_evaluate();
@@ -170,20 +117,20 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       {
 #if IMP_BUILD < IMP_FAST
         if (first_call_) {
-          ResetBitset rbr(Masks::read_mask_, true);
-          ResetBitset rbw(Masks::write_mask_, true);
-          ResetBitset rbar(Masks::add_remove_mask_, true);
-          ResetBitset rbrd(Masks::read_derivatives_mask_, true);
-          ResetBitset rbwd(Masks::write_derivatives_mask_, true);
+          internal::ResetBitset rbr(Masks::read_mask_, true);
+          internal::ResetBitset rbw(Masks::write_mask_, true);
+          internal::ResetBitset rbar(Masks::add_remove_mask_, true);
+          internal::ResetBitset rbrd(Masks::read_derivatives_mask_, true);
+          internal::ResetBitset rbwd(Masks::write_derivatives_mask_, true);
           ParticlesTemp input=ss->get_input_particles();
           ParticlesTemp output=ss->get_output_particles();
           ContainersTemp cinput=ss->get_input_containers();
           ContainersTemp coutput=ss->get_output_containers();
           Masks::write_mask_.reset();
-          SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
-          SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
+          IMP_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
+          IMP_SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
                      coutput);
-          SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput, output,
+          IMP_SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput, output,
                      coutput);
           ss->after_evaluate(calc_derivs?&accum:nullptr);
         } else {
@@ -202,106 +149,57 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
 }
 
 
-Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
-                                     bool calc_derivs,
-                                     bool if_good, bool if_max,
-                                     double omax) {
-  IMP_FUNCTION_LOG;
-  IMP_INTERNAL_CHECK(!if_good || !if_max, "Can't be both max and good");
+
+double Model::evaluate(bool calc_derivs) {
+  IMP_OBJECT_LOG;
+  if (!get_has_dependencies()) {
+    compute_dependencies();
+  }
   Floats ret;
-  double remaining=omax;
-  if (!if_max) {
-    remaining=get_maximum_score();
-  }
-  boost::timer timer;
-  const unsigned int rsz=restraints.size();
-  for (unsigned int i=0; i< rsz; ++i) {
-    double value=0;
-    double weight=restraints[i]->model_weight_;
-    IMP_USAGE_CHECK(weight>=0, "Weight was not initialized for \""
-                    << restraints[i]->get_name() << '"');
-    DerivativeAccumulator accum(weight);
-    if (gather_statistics_) timer.restart();
-    if (if_good) {
-      double max=std::min(remaining,
-                          restraints[i]->get_maximum_score());
-      WRAP_EVALUATE_CALL(restraints[i],
-                         value=
-                   restraints[i]->unprotected_evaluate_if_good(calc_derivs?
-                                                              &accum:nullptr,
-                                                                   max));
-    } else if (if_max) {
-      WRAP_EVALUATE_CALL(restraints[i],
-                         value=
-                   restraints[i]->unprotected_evaluate_if_good(calc_derivs?
-                                                              &accum:nullptr,
-                                                                   remaining));
-    } else {
-      WRAP_EVALUATE_CALL(restraints[i],
-                         value=
-                         restraints[i]->unprotected_evaluate(calc_derivs?
-                                                             &accum:nullptr));
-    }
-    double wvalue= weight*value;
-    remaining-=wvalue;
-    IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
-            << wvalue << " (" << weight << ")" << std::endl);
-    if (gather_statistics_) {
-      add_to_restraint_evaluate(restraints[i], timer.elapsed(), wvalue);
-    }
-    if (value > restraints[i]->get_maximum_score()) {
-      has_good_score_=false;
-    }
-    ret.push_back(wvalue);
-  }
-  if (remaining<0) {
-    has_good_score_=false;
-  }
-  return ret;
+  IMP_CALL_EVALUATE(ordered_score_states_,
+                    scoring_restraints_,
+                    internal::ModelWeights(),
+                    std::numeric_limits<double>::max(),
+                    calc_derivs, false, false);
+  return std::accumulate(ret.begin(), ret.end(), 0.0);
 }
 
 
-
-
-
-
-Floats Model::do_evaluate(const RestraintsTemp &restraints,
-                          const ScoreStatesTemp &states,
-                          bool calc_derivs,
-                          bool if_good, bool if_max, double max) {
-  // make sure stage is restored on an exception
-  SetIt<IMP::internal::Stage, internal::NOT_EVALUATING> reset(&cur_stage_);
-  IMP_CHECK_OBJECT(this);
-  IMP_LOG(VERBOSE, "On restraints " << restraints
-          << " and score states " << states
-          << std::endl);
-
-  before_evaluate(states);
-
-  cur_stage_= internal::EVALUATING;
-  if (calc_derivs) {
-    zero_derivatives();
-  }
-  Floats ret= do_evaluate_restraints(restraints,
-                                     calc_derivs,
-                                     if_good, if_max,
-                                     max);
-
-  after_evaluate(states, calc_derivs);
-
-  // validate derivatives
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (calc_derivs) {
-      validate_computed_derivatives();
-    }
-  }
-  IMP_LOG(TERSE, "Final score: "
-          << std::accumulate(ret.begin(), ret.end(), 0.0) << std::endl);
-  cur_stage_=internal::NOT_EVALUATING;
-  ++eval_count_;
-  first_call_=false;
+Floats Model::evaluate( const EvaluationCache &cache,
+                        bool calc_derivs)
+{
+  Floats ret;
+  IMP_CALL_EVALUATE(cache.ss_,
+                    cache.rs_,
+                    internal::ExternalWeights(cache.weights_),
+                    std::numeric_limits<double>::max(),
+                    calc_derivs, false, false);
   return ret;
 }
 
+Floats Model::evaluate_if_below( const EvaluationCache &cache,
+                                 bool calc_derivs,
+                                 double max)
+{
+  Floats ret;
+  IMP_CALL_EVALUATE(cache.ss_,
+                    cache.rs_,
+                    internal::ExternalWeights(cache.weights_),
+                    max,
+                    calc_derivs, false, true);
+  return ret;
+}
+
+Floats Model::evaluate_if_good( const EvaluationCache &cache,
+                                bool calc_derivs)
+{
+  Floats ret;
+  IMP_CALL_EVALUATE(cache.ss_,
+                    cache.rs_,
+                    internal::ExternalWeights(cache.weights_),
+                    get_maximum_score(),
+                    calc_derivs, true, false);
+  return ret;
+}
 
 IMP_END_NAMESPACE

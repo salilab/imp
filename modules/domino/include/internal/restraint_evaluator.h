@@ -43,8 +43,7 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
 class RestraintData {
   typedef IMP::compatibility::map<Assignment, double> Scores;
   mutable Scores scores_;
-  Pointer<Restraint> r_;
-  double weight_;
+  EvaluationCache r_;
   double max_;
   unsigned int max_cache_;
   mutable int filter_attempts_;
@@ -54,8 +53,8 @@ class RestraintData {
                        const ParticlesTemp &ps,
                        const Assignment &state) const {
     load_particle_states(ps.begin(), ps.end(), state, pst);
-    RestraintsTemp rs(1, r_);
-    double score= r_->get_model()->evaluate_if_good(rs, false)[0];
+    double score= r_.get_model()->evaluate_if_good(r_,
+                                                    false)[0];
     if (Filter) {
       if (score >max_) {
         score=std::numeric_limits<double>::max();
@@ -78,7 +77,8 @@ class RestraintData {
     }
   }
 public:
-  RestraintData(Restraint *r): r_(r),
+  RestraintData(Restraint *r): r_(RestraintsTemp(1,r),
+                                  r->get_model()->get_weight(r)),
                                max_(std::numeric_limits<double>::max()){
     filter_attempts_=0;
     filter_passes_=0;
@@ -92,7 +92,7 @@ public:
     clean_cache();
   }
   void set_max(double max) { max_=max;}
-  Restraint *get_restraint() const {return r_;}
+  Restraint *get_restraint() const {return r_.get_restraints()[0];}
   template <bool Filter>
   double get_score(ParticleStatesTable *pst,
                    const ParticlesTemp &ps,
@@ -130,7 +130,8 @@ public:
       double score= compute_score<Filter>(pst, ps, state);
       IMP_LOG(VERBOSE, "State " << state << " of particles "
               << ps << " has score "
-              << score << " for restraint " << r_->get_name()
+              << score << " for restraint "
+              << r_.get_restraints()[0]->get_name()
               << std::endl);
       if (Filter) {
         ++filter_attempts_;
