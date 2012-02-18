@@ -20,7 +20,7 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
         self.assertAlmostEqual(float(m.group(1)), 3842, delta=1.0)
 
         os.unlink('em_fit.res')
-        os.unlink('fit.pdb')
+        #os.unlink('fit.pdb')
 
 
     def test_simple_score(self):
