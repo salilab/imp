@@ -52,7 +52,7 @@ class SteepestDescentTests(IMP.test.TestCase):
 
 
     def test_sd_optimizer1(self):
-        """Test that optimizer brings particles together"""
+        """Test that steepest descent optimizer brings particles together"""
 
         self.steepest_descent.optimize(50)
 
@@ -66,7 +66,7 @@ class SteepestDescentTests(IMP.test.TestCase):
 
 
     def test_sd_optimizer2(self):
-        """Test that optimizer spreads particles apart"""
+        """Test that steepest descent optimizer spreads particles apart"""
 
         # Start off with all particles in close proximity (but not actually
         # colocated, as the derivative of zero distance is zero):
