@@ -33,12 +33,12 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
 
   FloatIndexes float_indexes=get_optimized_attributes();
-  int opt_var_cnt = float_indexes.size();
 
   Float current_step_size = step_size_;
 
   // ... and space for the old values
-  algebra::VectorKD temp_derivs(Floats(opt_var_cnt, 0));
+  algebra::VectorKD temp_derivs(Floats(float_indexes.size(), 0));
+  algebra::VectorKD temp_values(Floats(float_indexes.size(), 0));
 
   for (unsigned int step = 0; step < max_steps; step++) {
     // model.show(std::cout);
@@ -49,31 +49,23 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
     IMP_LOG(TERSE, "start score: " << last_score << std::endl);
 
     // store the old values
-    for (int i = 0; i < opt_var_cnt; i++) {
-      FloatIndex fi = float_indexes[i];
-
-      temp_derivs[i] = get_scaled_derivative(fi);
+    for (unsigned int i = 0; i < temp_derivs.get_dimension(); i++) {
+      temp_derivs[i] = get_derivative(float_indexes[i]);
+      temp_values[i] = get_value(float_indexes[i]);
     }
-    temp_derivs= temp_derivs.get_unit_vector();
 
-    bool done = false;
-    bool not_changing = false;
-    // try to increase step_size if we are moving to slowly down gradient
-    bool move_bigger;
-    while (!done && (cnt < 200)) {
+    bool constant_score=false;
+    while (true) {
       cnt++;
-      move_bigger = true;
-
       // try new values based on moving down the gradient at the current
       // step size
 
       IMP_LOG(VERBOSE, "step: "
               << temp_derivs * current_step_size << std::endl);
-      for (int i = 0; i < opt_var_cnt; i++) {
-
-        set_scaled_value(float_indexes[i],
-                         get_scaled_value(float_indexes[i]) - temp_derivs[i]
-                         * current_step_size);
+      for (unsigned int i = 0; i < float_indexes.size(); i++) {
+        set_value(float_indexes[i],
+                  temp_values[i] - temp_derivs[i]
+                  * current_step_size);
       }
 
       // check the new model
@@ -82,48 +74,48 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
               << new_score << "  step size: " << current_step_size
               << std::endl);
 
-      // if the score is less than the threshold, we're done
-      if (new_score <= threshold_) {
-        update_states();
-        IMP_LOG(TERSE, "Below threshold, returning." << std::endl);
-        return new_score;
-      }
-
       // if the score got better, we'll take it
       if (new_score < last_score) {
-        done = true;
+        IMP_LOG(TERSE, "Accepting step of size "
+                << current_step_size);
         update_states();
-        if (move_bigger) {
-          current_step_size= std::min(current_step_size* 1.4,
-                                      max_step_size_);
+        if (new_score <= threshold_) {
+           IMP_LOG(TERSE, "Below threshold, returning." << std::endl);
+           return new_score;
         }
+        current_step_size= std::min(current_step_size* 1.4,
+                                      max_step_size_);
+        break;
       }
 
       // if the score is the same, keep going one more time
-      else if (std::abs(new_score- last_score) < .0000001) {
-        if (not_changing) {
-          done = true;
+      if (std::abs(new_score- last_score) < .0000001) {
+        if (constant_score) {
+            break;
         }
 
         current_step_size *= 0.9;
-        not_changing = true;
+        constant_score = true;
+      } else {
+        constant_score=false;
+        current_step_size*=.7;
       }
-
-      // if the score got worse, our step size was too big
-      // ... make it smaller, and try again
-      else {
-        not_changing = false;
-        move_bigger = false;
-        current_step_size *= 0.71;
+      if (cnt>200) {
+        // stuck
+        for (unsigned int i = 0; i < float_indexes.size(); i++) {
+          set_value(float_indexes[i],
+                    temp_values[i]);
+        }
+        IMP_LOG(TERSE, "Unable to find a good step. Returning" << std::endl);
+        return  last_score;
       }
-
       if (current_step_size <.00000001) {
+        // here is as good as any place we found
         update_states();
         IMP_LOG(TERSE, "Unable to make progress, returning." << std::endl);
         return new_score;
       }
     }
-    update_states();
   }
 
   return new_score;
