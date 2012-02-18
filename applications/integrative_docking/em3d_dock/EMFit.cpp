@@ -137,7 +137,7 @@ void EMFit::output(std::string out_file_name) {
       d.set_coordinates(tr * d.get_coordinates());
     }
     // output
-    IMP::atom::write_pdb(ps, "fit.pdb");
+    //    IMP::atom::write_pdb(ps, "fit.pdb");
   }
 }
 

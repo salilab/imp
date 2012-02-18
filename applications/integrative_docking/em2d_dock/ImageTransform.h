@@ -18,17 +18,19 @@
 class ImageTransform {
 public:
   // Constructors
-  ImageTransform() : angle_(0.0), x_(0), y_(0), score_(0.0) {}
-  ImageTransform(double angle) : angle_(angle), x_(0), y_(0), score_(0.0) {}
+  ImageTransform() : angle_(0.0), x_(0), y_(0), score_(0.0), area_score_(0.0) {}
+  ImageTransform(double angle) :
+    angle_(angle), x_(0), y_(0), score_(0.0), area_score_(0.0) {}
   ImageTransform(double angle, int x, int y) :
-    angle_(angle), x_(x), y_(y), score_(0.0) {}
+    angle_(angle), x_(x), y_(y), score_(0.0), area_score_(0.0) {}
   ImageTransform(double angle, int x, int y, double score) :
-    angle_(angle), x_(x), y_(y), score_(score) {}
+    angle_(angle), x_(x), y_(y), score_(score), area_score_(0.0) {}
   ImageTransform(double angle, int x, int y, double score, double area_score) :
     angle_(angle), x_(x), y_(y), score_(score), area_score_(area_score) {}
-  ImageTransform(int x, int y) : angle_(0.0), x_(x), y_(y), score_(0.0) {}
+  ImageTransform(int x, int y) :
+    angle_(0.0), x_(x), y_(y), score_(0.0), area_score_(0.0) {}
   ImageTransform(int x, int y, double score) :
-    angle_(0.0), x_(x), y_(y), score_(score) {}
+    angle_(0.0), x_(x), y_(y), score_(score), area_score_(0.0) {}
 
   // Access
   double get_angle() const { return angle_; }

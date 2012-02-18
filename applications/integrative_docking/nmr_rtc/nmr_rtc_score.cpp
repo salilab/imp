@@ -41,7 +41,7 @@ put '-' if there is no file for one of the molecules.")
      "input PDB, transformation and profile files")
     ("output_file,o",
      po::value<std::string>(&out_file_name)->default_value("nmr_rtc_score.res"),
-     "output file name, default name fm_nmr_score.res");
+     "output file name, default name nmr_rtc_score.res");
 
   po::positional_options_description p;
   p.add("input-files", -1);
