@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
   int projection_number = 40;
   float pixel_size = 2.2;
   float area_threshold = 0.4; // used 0.4 for benchmark and PCSK9
-  float min_diameter = 0.0; // not in use now
+  float min_diameter = 0.0; IMP_UNUSED(min_diameter);
   std::vector<std::string> image_files;
   std::string rpdb, lpdb, trans_file, out_file_name;
   po::options_description desc("Usage: <rpdb> <lpdb> <trans_file> <image1> \
