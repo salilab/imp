@@ -13,6 +13,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/base/utility.h>
 #include <IMP/compatibility/map.h>
+#include <IMP/constants.h>
 
 #include <boost/multi_array.hpp>
 #include <boost/random.hpp>
@@ -884,14 +885,14 @@ ImageTransform Image2D<T>::pca_align(const Image2D<T>& image) const {
   double angle = atan2(ev1[1], ev1[0]) - atan2(ev2[1], ev2[0]);
   Image2D<> transformed_image1(image), transformed_image2(image);
   transformed_image1.rotate_circular(angle);
-  transformed_image2.rotate_circular(angle+M_PI);
+  transformed_image2.rotate_circular(angle+IMP::PI);
   // no need to translate, it is centered anyway
   // transformed_image1.translate(translation[0], translation[1]);
   // transformed_image2.translate(translation[0], translation[1]);
   double score1 = ncc_score(transformed_image1);
   double score2 = ncc_score(transformed_image2);
   double score = (score1>score2)?score1:score2;
-  if(score1<=score2) angle = angle+M_PI;
+  if(score1<=score2) angle = angle+IMP::PI;
   // std::cerr << "angle = " << RAD_2_DEG(angle) << " score " << score
   //           << " p1-p2 " << points1.size() << " - " << points2.size()
   //           << " % " << area_score << std::endl;
