@@ -1,4 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-16/2/2012', required_modules=['kernel'],
+env.IMPModuleBuild(version='nightly-17/2/2012', required_modules=['kernel'],
                    python_docs=True)
