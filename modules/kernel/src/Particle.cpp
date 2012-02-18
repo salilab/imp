@@ -120,22 +120,25 @@ void Particle::do_show(std::ostream& out) const
     show_attributes(get_model(), get_string_keys(), id_, "string",
                     IdentityValue(), preout);
     show_attributes(get_model(),
-                    get_model()->ParticleAttributeTable::get_attribute_keys(id_)
+                    get_model()->internal::ParticleAttributeTable
+                    ::get_attribute_keys(id_)
                     , id_, "particle", NameValue(get_model()), preout);
     show_attributes(get_model(),
-                    get_model()->ObjectAttributeTable::get_attribute_keys(id_)
+                    get_model()->internal::ObjectAttributeTable
+                    ::get_attribute_keys(id_)
                     , id_, "object", DirectNameValue(), preout);
     show_attributes(get_model(),
-                    get_model()->ParticlesAttributeTable
+                    get_model()->internal
+                    ::ParticlesAttributeTable
                     ::get_attribute_keys(id_),
                     id_, "particles",
                     SizeValue<NameValue>(NameValue(get_model())), preout);
     show_attributes(get_model(),
-                    get_model()->ObjectsAttributeTable
+                    get_model()->internal::ObjectsAttributeTable
                     ::get_attribute_keys(id_),
                     id_, "objects", SizeValue<DirectNameValue>(), preout);
     show_attributes(get_model(),
-                    get_model()->IntsAttributeTable
+                    get_model()->internal::IntsAttributeTable
                     ::get_attribute_keys(id_),
                     id_, "ints", SizeValue<IdentityValue>(), preout);
   }
@@ -150,12 +153,14 @@ bool Particle::get_contained_particles_changed() const {
 ParticlesTemp Particle::get_contained_particles() const {
   ParticlesTemp ret;
   ParticleKeys pks
-    = get_model()->IMP::ParticleAttributeTable::get_attribute_keys(id_);
+      = get_model()->IMP::internal::ParticleAttributeTable
+      ::get_attribute_keys(id_);
   for (unsigned int i=0; i< pks.size(); ++i) {
     ret.push_back(get_value(pks[i]));
   }
   ParticlesKeys psks
-    = get_model()->IMP::ParticlesAttributeTable::get_attribute_keys(id_);
+      = get_model()->IMP::internal::ParticlesAttributeTable
+      ::get_attribute_keys(id_);
   for (unsigned int i=0; i< psks.size(); ++i) {
     Ints vs= get_model()->get_attribute(psks[i], id_);
     for (unsigned int j=0; j< vs.size(); ++j) {

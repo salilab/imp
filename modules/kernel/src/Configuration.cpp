@@ -36,14 +36,15 @@ void Configuration::load_configuration() const {
   set_was_used(true);
   // workaround for weird mac os and boost 1.48 bug
   Configuration *ncthis= const_cast<Configuration*>(this);
-  static_cast<FloatAttributeTable&>(*model_)= ncthis->floats_;
-  static_cast<StringAttributeTable&>(*model_)= ncthis->strings_;
-  static_cast<IntAttributeTable&>(*model_)= ncthis->objects_;
-  static_cast<ObjectAttributeTable&>(*model_)= ncthis->ints_lists_;
-  static_cast<IntsAttributeTable&>(*model_)= ncthis->objects_lists_;
-  static_cast<ObjectsAttributeTable&>(*model_)= ncthis->particles_;
-  static_cast<ParticleAttributeTable&>(*model_)= ncthis->particles_lists_;
-  static_cast<ParticlesAttributeTable&>(*model_)= ncthis->ints_;
+  static_cast<internal::FloatAttributeTable&>(*model_)= ncthis->floats_;
+  static_cast<internal::StringAttributeTable&>(*model_)= ncthis->strings_;
+  static_cast<internal::IntAttributeTable&>(*model_)= ncthis->objects_;
+  static_cast<internal::ObjectAttributeTable&>(*model_)= ncthis->ints_lists_;
+  static_cast<internal::IntsAttributeTable&>(*model_)= ncthis->objects_lists_;
+  static_cast<internal::ObjectsAttributeTable&>(*model_)= ncthis->particles_;
+  static_cast<internal::ParticleAttributeTable&>(*model_)
+      = ncthis->particles_lists_;
+  static_cast<internal::ParticlesAttributeTable&>(*model_)= ncthis->ints_;
 }
 
 void Configuration::swap_configuration() {
@@ -51,14 +52,15 @@ void Configuration::swap_configuration() {
   set_was_used(true);
   using IMP::swap;
   using std::swap;
-  swap(static_cast<FloatAttributeTable&>(*model_), floats_);
-  swap(static_cast<StringAttributeTable&>(*model_), strings_);
-  swap(static_cast<IntAttributeTable&>(*model_), objects_);
-  swap(static_cast<ObjectAttributeTable&>(*model_), ints_lists_);
-  swap(static_cast<IntsAttributeTable&>(*model_), objects_lists_);
-  swap(static_cast<ObjectsAttributeTable&>(*model_), particles_);
-  swap(static_cast<ParticleAttributeTable&>(*model_), particles_lists_);
-  swap(static_cast<ParticlesAttributeTable&>(*model_), ints_);
+  swap(static_cast<internal::FloatAttributeTable&>(*model_), floats_);
+  swap(static_cast<internal::StringAttributeTable&>(*model_), strings_);
+  swap(static_cast<internal::IntAttributeTable&>(*model_), objects_);
+  swap(static_cast<internal::ObjectAttributeTable&>(*model_), ints_lists_);
+  swap(static_cast<internal::IntsAttributeTable&>(*model_), objects_lists_);
+  swap(static_cast<internal::ObjectsAttributeTable&>(*model_), particles_);
+  swap(static_cast<internal::ParticleAttributeTable&>(*model_),
+       particles_lists_);
+  swap(static_cast<internal::ParticlesAttributeTable&>(*model_), ints_);
 }
 
 
