@@ -9,6 +9,7 @@
 
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Rotation3D.h>
+#include <boost/ptr_container/ptr_vector.hpp>
 
 #include "Image2D.h"
 
@@ -32,6 +33,9 @@ public:
   void add(const Projection& p);
 
 private:
+
+  // Make noncopyable
+  Projection(Projection &) : Image2D<>() {};
 
   class MaskCell {
   public:
@@ -72,13 +76,15 @@ double compute_max_distance(const std::vector<IMP::algebra::Vector3D>& coords);
 
 void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
                         unsigned int projection_number, double pixel_size,
-                        double resolution, std::vector<Projection>& projections,
+                        double resolution,
+                        boost::ptr_vector<Projection>& projections,
                         int image_size = 0);
 
 void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
                         const std::vector<IMP::algebra::Vector3D>& lig_points,
                         unsigned int projection_number, double pixel_size,
-                        double resolution, std::vector<Projection>& projections,
+                        double resolution,
+                        boost::ptr_vector<Projection>& projections,
                         int image_size = 0);
 
 #endif /* IMP_PROJECTION_H */

@@ -106,7 +106,7 @@ aligned images (default = 0.4)");
 
   // read pdbs and generate projections
   std::vector<IMP::algebra::Vector3D> points = read_points_from_pdb(pdb);
-  std::vector<Projection> projections;
+  boost::ptr_vector<Projection> projections;
   create_projections(points, projection_number, pixel_size, resolution,
                      projections, images[0].get_height());
   std::cerr << projections.size() << " projections were created" << std::endl;
