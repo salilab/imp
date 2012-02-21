@@ -12,14 +12,14 @@ BuildRequires: scons >= 0.98, boost-devel, swig, python-devel
 BuildRequires: modeller, gsl-devel, hdf5-devel, fftw-devel
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
-# doesn't have a new enough OpenCV in EPEL, or bullet or eigen packages, so
-# disable em2d, bullet and isd modules.
+# doesn't have a new enough OpenCV in EPEL, or the eigen package, so
+# disable em2d and isd modules.
 # on Fedora, all of these packages are available; add them as dependencies
 %if 0%{?fedora}
-BuildRequires: CGAL-devel, bullet-devel, opencv-devel, eigen3-devel
+BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
 %define scons_opts %{nil}
 %else
-%define scons_opts cgal=no opencv21=no opencv22=no bullet=no eigen3=no
+%define scons_opts cgal=no opencv21=no opencv22=no eigen3=no
 %endif
 
 %description
