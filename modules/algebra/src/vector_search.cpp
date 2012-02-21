@@ -98,7 +98,6 @@ void DynamicNearestNeighbor3D::audit() const {
                  it->second.end());
   }
   using base::operator<<;
-  using std::operator<<;
   for (unsigned int i=0; i< coords_.size(); ++i) {
     IMP_INTERNAL_CHECK(std::find(grid_[indexes_[i]].begin(),
                                  grid_[indexes_[i]].end(),
