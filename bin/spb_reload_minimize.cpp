@@ -127,8 +127,11 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
    double myscore = (rhs[irep].get_root_node()).get_value(my_keys0[irep],imc);
    int    myindex = (rhs[irep].get_root_node()).get_value(my_keys1[irep],imc);
    double mybias  = (rhs[irep].get_root_node()).get_value(my_keys2[irep],imc);
+// replica index filtering
+   bool   filter=true;
+   if(mydata.replica_index>-1 && mydata.replica_index!=myindex){filter=false;}
 // if good enough...
-   if(myscore<mydata.cutoff){
+   if(myscore<mydata.cutoff && filter){
 // load configuration from file
     for(unsigned int i=0;i<hhs.size();++i){
      rmf::load_frame(rhs[irep],imc,hhs[i]);
