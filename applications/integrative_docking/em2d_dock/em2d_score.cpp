@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
   max_distance*=0.9;
 
   // create receptor projections
-  std::vector<Projection> rprojections;
+  boost::ptr_vector<Projection> rprojections;
   create_projections(rpoints, projection_number, pixel_size, resolution,
                      rprojections, images[0].get_height());
   //  write_PGM(rprojections, "rprojections.pgm");
@@ -206,7 +206,7 @@ int main(int argc, char **argv) {
     //   }
     // }
 
-    std::vector<Projection> projections;
+    boost::ptr_vector<Projection> projections;
     // create ligand projections
     create_projections(points, transformed_lpoints, projection_number,
                        pixel_size, resolution, projections,

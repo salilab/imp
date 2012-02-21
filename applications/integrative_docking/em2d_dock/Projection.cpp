@@ -174,7 +174,8 @@ void quasi_evenly_spherical_distribution(unsigned long N,
 
 void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
                         unsigned int projection_number, double pixel_size,
-                        double resolution, std::vector<Projection>& projections,
+                        double resolution,
+                        boost::ptr_vector<Projection>& projections,
                         int image_size) {
 
   double max_dist = compute_max_distance(points);
@@ -200,10 +201,11 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
       rotated_points[point_index] = r*points[point_index];
     }
     // project
-    Projection p(rotated_points, pixel_size, resolution, axis_size);
-    p.set_rotation(r);
-    p.set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
-    p.set_id(i);
+    std::auto_ptr<Projection> p(new Projection(rotated_points, pixel_size,
+                                               resolution, axis_size));
+    p->set_rotation(r);
+    p->set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
+    p->set_id(i);
     // rasmol
     // std::cout << "#projection " << i+1
     //<<"\nreset\nrotate Z " << RAD_2_DEG(v[2]);
@@ -223,7 +225,8 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
 void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
                        const std::vector<IMP::algebra::Vector3D>& ligand_points,
                         unsigned int projection_number, double pixel_size,
-                        double resolution, std::vector<Projection>& projections,
+                        double resolution,
+                        boost::ptr_vector<Projection>& projections,
                         int image_size) {
 
   int axis_size = image_size;
@@ -259,11 +262,13 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
         point_index++)
       rotated_ligand_points[point_index] = r*ligand_points[point_index];
     // project
-    Projection p(rotated_points, rotated_ligand_points, pixel_size,
-                 resolution, axis_size);
-    p.set_rotation(r);
-    p.set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
-    p.set_id(i);
+    std::auto_ptr<Projection> p(new Projection(rotated_points,
+                                               rotated_ligand_points,
+                                               pixel_size, resolution,
+                                               axis_size));
+    p->set_rotation(r);
+    p->set_axis(IMP::algebra::Vector3D(v.get_cartesian_coordinates()));
+    p->set_id(i);
     // rasmol
     // std::cout << "#projection " << i+1 <<"\nreset\nrotate Z "
     //<< IMP_RAD_2_DEG(v[2]);
