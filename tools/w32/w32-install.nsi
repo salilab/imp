@@ -100,7 +100,11 @@ Section "Uninstall"
 
   DeleteRegKey /ifempty HKCU "Software\${PRODVER}"
   DeleteRegKey HKLM "${UNINST_KEY}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\2.3\PythonPath\${PRODVER}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\2.4\PythonPath\${PRODVER}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\2.5\PythonPath\${PRODVER}"
   DeleteRegKey HKLM "Software\Python\PythonCore\2.6\PythonPath\${PRODVER}"
+  DeleteRegKey HKLM "Software\Python\PythonCore\2.7\PythonPath\${PRODVER}"
  
 SectionEnd
 
