@@ -55,7 +55,12 @@ def test_example(filename, shortname, disabled_modules):
         def test_run_example(self):
             "Run example %s"
             %s
-            self.run_example("%s")
+            v = self.run_example("%s")
+            # Try to release example objects in a sensible order
+            module_type = type(IMP)
+            for x in v.keys():
+                if x != '__builtins__' and type(x) != module_type:
+                    del v[x]
             return""" % (shortname, skip, filename))
     return RunExample("test_run_example")
 
