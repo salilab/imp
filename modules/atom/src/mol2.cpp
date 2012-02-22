@@ -324,6 +324,9 @@ namespace {
 
     do{
       mol2_file.get(c);
+      if (mol2_file.eof()) {
+        break;
+      }
       if(c == '@'){
         mol2_file.putback(c);
         break;
