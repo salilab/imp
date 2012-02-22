@@ -188,6 +188,7 @@ def IMPModuleExamples(env, example_files, data_files):
     #print "Examples called with",[str(x) for x in example_files],\
     #    [str(x) for x in data_files]
     example_files= [File(x) for x in example_files]
+    test_files = Glob('test_examples.py', ondisk=True)
     #for f in example_files:
     #    print f
     #    print f.abspath
@@ -195,7 +196,7 @@ def IMPModuleExamples(env, example_files, data_files):
     (build, install)=scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir",
                                                            "examples",
                                                            example_files+data_files)
-    runable=[x for x in example_files
+    runable=[x for x in example_files + test_files
              if str(x).endswith(".py") \
              and str(x).find("fragment")==-1]
     if len(runable)>0:
