@@ -218,7 +218,7 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& points,
     // string file_name = "projection_" +
     //   string(boost::lexical_cast<string>(i+1)) + ".pgm";
     // p.write_PGM(file_name);
-    projections.push_back(p);
+    projections.push_back(p.release());
   }
 }
 
@@ -281,6 +281,6 @@ void create_projections(const std::vector<IMP::algebra::Vector3D>& all_points,
     // string file_name = "projection_" +
     //   string(boost::lexical_cast<string>(i+1)) + ".pgm";
     // p.write_PGM(file_name);
-    projections.push_back(p);
+    projections.push_back(p.release());
   }
 }
