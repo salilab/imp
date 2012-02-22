@@ -506,7 +506,33 @@ class TestCase(unittest.TestCase):
             # try/except/finally, so we need to use nested trys)
             sys.path = oldsyspath
 
-        return vars
+        return _ExecDictProxy(vars)
+
+
+class _ExecDictProxy(object):
+    """exec returns a Python dictionary, which contains IMP objects, other
+       Python objects, as well as base Python modules (such as sys and
+       __builtins__). If we just delete this dictionary, it is entirely
+       possible that base Python modules are removed from the dictionary
+       *before* some IMP objects. This will prevent the IMP objects' Python
+       destructors from running properly, so C++ objects will not be
+       cleaned up. This class proxies the base dict class, and on deletion
+       attempts to remove keys from the dictionary in an order that allows
+       IMP destructors to fire."""
+    def __init__(self, d):
+        self._d = d
+    def __del__(self):
+        # Try to release example objects in a sensible order
+        module_type = type(IMP)
+        d = self._d
+        for k in d.keys():
+            if type(d[k]) != module_type:
+                del d[k]
+
+    for meth in ['__contains__', '__getitem__', '__iter__', '__len__',
+                 'get', 'has_key', 'items', 'keys', 'values']:
+        exec("def %s(self, *args, **keys): "
+             "return self._d.%s(*args, **keys)" % (meth, meth))
 
 
 class _TestResult(unittest.TextTestResult):
