@@ -5,7 +5,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 
 
 
-env= env.IMPApplication(name="foxs", version='nightly-19/2/2012',
+env= env.IMPApplication(name="foxs", version='nightly-21/2/2012',
                         authors=["Dina Schneidman"],
                         brief="Compute the scattering profile of an assembly",
                         overview="""The related web server can be found at
