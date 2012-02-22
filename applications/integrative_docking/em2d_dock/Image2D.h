@@ -44,9 +44,7 @@ public:
 
   Image2D(const boost::multi_array<T, 2>& in):
     average_computed_(false), stddev_computed_(false) {
-    boost::array<int, 2> shape;
-    std::copy(in.shape(), in.shape() + 2, shape.begin());
-    this->resize(shape);
+    this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for(unsigned int i=0; i<in.num_elements(); i++) {
       *(this->data()+i) = *(in.data()+i);
     }
@@ -56,9 +54,7 @@ public:
     average_(in.average_), stddev_(in.stddev_),
     average_computed_(in.average_computed_),
     stddev_computed_(in.stddev_computed_), pca_(in.pca_), points_(in.points_) {
-    boost::array<int, 2> shape;
-    std::copy(in.shape(), in.shape() + 2, shape.begin());
-    this->resize(shape);
+    this->resize(boost::extents[in.shape()[0]][in.shape()[1]]);
     for(unsigned int i=0; i<in.num_elements(); i++) {
       *(this->data()+i) = *(in.data()+i);
     }
