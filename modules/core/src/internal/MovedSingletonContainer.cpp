@@ -117,9 +117,10 @@ void XYZRMovedSingletonContainer::validate() const {
                   "Backup is not the right size");
   //using IMP::core::operator<<;
   // not sure why I need "Showable" all of a sudden, but I do
-  IMP_USAGE_CHECK(moved_.size()== get_access().size(),
-                  "Moved lists don't match: " << Showable(moved_)
-                  << " vs " << Showable(get_indexes()));
+  for (unsigned int i=0; i< moved_.size(); ++i) {
+    IMP_USAGE_CHECK(get_contains(get_model()->get_particle(moved_[i])),
+                    "Particle in moved list but not in contents");
+  }
 }
 
 void XYZRMovedSingletonContainer::do_reset_all() {
@@ -145,7 +146,10 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
 
 void XYZRMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;
+  std::sort(moved_.begin(), moved_.end());
   for (unsigned int i=0; i< moved_.size(); ++i) {
+    // skip duplicates
+    if (i > 0 && moved_[i-1]== moved_[i]) continue;
     backup_[moved_[i]]
         =XYZR(get_singleton_container()->get_particle(moved_[i])).get_sphere();
   }
