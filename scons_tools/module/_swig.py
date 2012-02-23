@@ -313,6 +313,9 @@ def swig_scanner(node, env, path):
                     module="kernel"
                 if not dta.modules[module].external:
                     ret.extend([env["builddir"]+"/include/"+x])
+            if x.startswith("RMF/"):
+                ret.extend([File(env["builddir"]+"/include/"+x)])
+
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
             mn= x.split("_")[0]
@@ -327,6 +330,7 @@ def swig_scanner(node, env, path):
         retset=set(ret)
         ret=list(retset)
         ret.sort()
+    print "dependencies", ret
     return ret
 
 def inswig_scanner(node, env, path):
