@@ -54,9 +54,17 @@ public:
       ++num_misses_;
     }
     ++num_stats_;
-    IMP_INTERNAL_CHECK(internal::check_result<ORDERED>(result_),
-                       "Wrong result returned from generator");
-    return result_;
+    IMP_INTERNAL_CHECK(internal::check_result<ORDERED>(result_,
+                                                       gen_()),
+                        "Wrong result returned from generator");
+     return result_;
+  }
+  //! Update the stored result manually
+  void set(const Value &v) const {
+    IMP_INTERNAL_CHECK(internal::check_result<ORDERED>(v, gen_()),
+                       "Wrong result passed on set");
+    has_result_=true;
+    result_=v;
   }
   double get_hit_rate() const {
     return 1.0-static_cast<double>(num_misses_)/num_stats_;
