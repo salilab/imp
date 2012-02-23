@@ -931,6 +931,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
   IMP::base::Pointer<Typename> varname(new Typename args)
 
 
+#ifdef SWIG
+#define IMP_SAFE_BOOL(Name, expr)
+#else
 /** Implement the safe bool idiom in a class. The expression must
     evaluate to a boolean.
  */
@@ -943,6 +946,6 @@ public:                                                         \
  return (expr) ?                                                \
    &Name::this_type_does_not_support_comparisons : 0;           \
  }
-
+#endif
 
 #endif  /* IMPBASE_BASE_MACROS_H */
