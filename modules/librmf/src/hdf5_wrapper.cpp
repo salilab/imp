@@ -107,7 +107,7 @@ herr_t error_function(hid_t, void *) {
 }
 
 HDF5File create_hdf5_file(std::string name) {
-  //IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fcreate(name.c_str(),
                                    H5F_ACC_TRUNC, H5P_DEFAULT,
@@ -116,7 +116,7 @@ HDF5File create_hdf5_file(std::string name) {
 }
 
 HDF5File open_hdf5_file(std::string name) {
-  //IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDWR, plist),
@@ -125,7 +125,7 @@ HDF5File open_hdf5_file(std::string name) {
 }
 
 HDF5ConstFile open_hdf5_file_read_only(std::string name) {
-  //IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
+  IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
                                  H5F_ACC_RDONLY, plist),
@@ -162,4 +162,39 @@ HDF5ConstFile::~HDF5ConstFile() {
 }
 
 
+
+int get_number_of_open_hdf5_handles(HDF5ConstFile f) {
+  H5garbage_collect();
+  if (f == HDF5ConstFile()) {
+    return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);
+  } else {
+    return H5Fget_obj_count(f.get_handle(), H5F_OBJ_ALL);
+  }
+}
+Strings get_open_hdf5_handle_names(HDF5ConstFile f) {
+  Strings ret;
+  int n=get_number_of_open_hdf5_handles(f);
+  hid_t ref;
+  if (f == HDF5ConstFile()) {
+    ref= H5F_OBJ_ALL;
+  } else {
+    ref=f.get_handle();
+  }
+  boost::scoped_array<hid_t> arr(new hid_t[n]);
+  int num=H5Fget_obj_ids(ref, H5F_OBJ_ALL, n, arr.get());
+  boost::scoped_array<char> buf(new char[10000]);
+  for (int i=0; i< num; ++i) {
+    int len=H5Iget_name(arr[i], buf.get(), 10000);
+    if (len > 0) {
+      std::ostringstream oss;
+      std::string name(buf.get());
+      int flen=H5Fget_name(arr[i], buf.get(), 10000);
+      if (flen>0) {
+        oss << buf.get() << name;
+      }
+      ret.push_back(oss.str());
+    }
+  }
+  return ret;
+}
 } /* namespace RMF */
