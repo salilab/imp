@@ -40,6 +40,9 @@ def show_xml(nh, kcs):
 rh= RMF.open_rmf_file(file_name);
 print "<?xml version=\"1.0\"?>"
 print "<rmf>"
+print "<path>"
+print file_name
+print "</path>"
 print "<description>"
 print rh.get_description()
 print "</description>"
