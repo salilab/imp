@@ -16,6 +16,8 @@ namespace internal {
 
 RMFEXPORT void handle_error(std::string message);
 
+extern RMFEXPORT bool show_hdf5_errors;
+
 } // namespace internal
 } /* namespace RMF */
 

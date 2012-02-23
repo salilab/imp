@@ -94,6 +94,7 @@ public:
 
 #endif // SWIG
 
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_HDF_5_HANDLE_H */
