@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
   IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
   if (lib) {
-    ps = new IMP::atom::ProteinLigandAtomPairScore(lib);
+    ps = new IMP::atom::ProteinLigandAtomPairScore(100000, lib);
   } else {
     ps= new IMP::atom::ProteinLigandAtomPairScore();
   }
@@ -56,7 +56,6 @@ int main(int argc, char *argv[]) {
   gcpf->set_distance(d);
 
   IMP::ParticlesTemp patoms= IMP::atom::get_leaves(p);
-
   for (unsigned int i=0; i< mols.size(); ++i) {
     //IMP::SetLogState ss(i==0? TERSE: IMP::SILENT);
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
