@@ -120,6 +120,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(int,    nrep);
  OPTION(int,    niter);
  OPTION(int,    chunk);
+ OPTION(int,    replica_index);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
@@ -183,6 +184,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.cluster_cut=cluster_cut;
  ret.cluster_time=cluster_time;
  ret.cluster_weight=cluster_weight;
+ ret.replica_index=replica_index;
 
 // restraint
  ret.add_fret=add_fret;
