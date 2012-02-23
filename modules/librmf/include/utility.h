@@ -11,6 +11,7 @@
 
 #include "RMF_config.h"
 #include "internal/intrusive_ptr_object.h"
+#include "internal/errors.h"
 namespace RMF {
 
 /** Lazily construct a decorator factor when it is actually used.
@@ -47,6 +48,18 @@ class LazyFactory {
   }
 };
 
+
+
+
+
+
+/** Turn on and off printing of hdf5 error messages. They can help in
+      diagnostics, but, for the moment, can only be output to standard
+      error and so are off by default.
+*/
+inline void set_show_hdf5_errors(bool tf) {
+  internal::show_hdf5_errors=tf;
+}
 
 } /* namespace RMF */
 

@@ -237,6 +237,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/names.h"
 %include "RMF/Validator.h"
 %include "RMF/decorators.h"
+%include "RMF/utility.h"
 
 %pythoncode %{
 
