@@ -41,11 +41,14 @@ namespace RMF {
   /** */
   typedef vector<HDF5File> HDF5ConstFiles;
 
-  /** */
-  inline int get_number_of_open_hdf5_handles() {
-    H5garbage_collect();
-    return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);
-  }
+  /** For debugging, one can get the number of open hdf5 handles for either
+      one file, or the whole system.*/
+  RMFEXPORT int get_number_of_open_hdf5_handles(HDF5ConstFile f
+                                                =HDF5ConstFile());
+  /** For debugging you can get the names of open handles in either one file
+    or the whole process.*/
+  RMFEXPORT Strings get_open_hdf5_handle_names(HDF5ConstFile f
+                                             =HDF5ConstFile());
 
 } /* namespace RMF */
 
