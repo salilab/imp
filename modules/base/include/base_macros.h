@@ -931,5 +931,18 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
   IMP::base::Pointer<Typename> varname(new Typename args)
 
 
+/** Implement the safe bool idiom in a class. The expression must
+    evaluate to a boolean.
+ */
+#define IMP_SAFE_BOOL(Name, expr)                               \
+  private:                                                      \
+  typedef void (Name::*bool_type)() const;                      \
+  void this_type_does_not_support_comparisons() const {}        \
+public:                                                         \
+ operator bool_type() const {                                   \
+ return (expr) ?                                                \
+   &Name::this_type_does_not_support_comparisons : 0;           \
+ }
+
 
 #endif  /* IMPBASE_BASE_MACROS_H */

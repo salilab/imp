@@ -64,9 +64,7 @@ class IMPBASEEXPORT TextOutput
   operator std::ostream &() {
     return get_stream();
   }
-  operator bool () {
-    return out_ && out_->get_stream();
-  }
+  IMP_SAFE_BOOL(TextOutput, out_ && out_->get_stream());
   std::ostream &get_stream() {
     if (!out_) {
       IMP_THROW("Attempting to write to uninitialized text input",
@@ -113,9 +111,6 @@ class IMPBASEEXPORT TextInput
   operator std::istream &() {
     return get_stream();
   }
-  operator bool () {
-    return in_ && in_->get_stream();
-  }
   std::istream &get_stream() {
     if (!in_) {
       IMP_THROW("Attempting to read from uninitialized text input",
@@ -124,7 +119,8 @@ class IMPBASEEXPORT TextInput
     return in_->get_stream();
   }
 #endif
-  IMP_SHOWABLE_INLINE(TextOutput, out << get_name());
+  IMP_SHOWABLE_INLINE(TextInput, out << get_name());
+  IMP_SAFE_BOOL(TextInput, in_ && in_->get_stream());
   std::string get_name() const {
     return in_->get_name();
   }
