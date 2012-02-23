@@ -15,7 +15,11 @@
 namespace RMF {
   /** Store a handle to non-writeable HDF5 file. See
    \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame08TheFile.html,
-  the HDF5 manual} for more information.*/
+  the HDF5 manual} for more information.
+
+  \note At the moment, a given file can only be opened once within a
+  a process. This can be fixed if there is demand.
+  */
   class RMFEXPORT HDF5ConstFile: public HDF5ConstGroup {
   public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

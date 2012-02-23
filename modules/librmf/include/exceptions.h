@@ -10,6 +10,7 @@
 #define IMPLIBRMF_EXCEPTIONS_H
 
 #include "RMF_config.h"
+#include "internal/errors.h"
 #include <exception>
 
 namespace RMF {
@@ -61,6 +62,18 @@ class RMFEXPORT InternalException: public virtual Exception {
   const char *get_type() const;
   ~InternalException() throw();
 };
+
+
+
+
+
+/** Turn on and off printing of hdf5 error messages. They can help in
+      diagnostics, but, for the moment, can only be output to standard
+      error and so are off by default.
+*/
+inline void set_show_hdf5_errors(bool tf) {
+  internal::show_hdf5_errors=tf;
+}
 
 }
 
