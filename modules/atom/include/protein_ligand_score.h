@@ -42,6 +42,10 @@ class ProteinLigandType;
 /** add_protein_ligand_score_data() must be called on the molecules
     containing the atoms before the PairScore is used in order
     to properly initialize the particles.
+
+    The default library to use is \c protein_ligand_rank_score.lib.
+    \imp also provides \c protein_ligand_pose_score.lib which can be
+    found at IMP::atom::get_data_path("protein_ligand_pose_score.lib").
 */
 class IMPATOMEXPORT ProteinLigandAtomPairScore:
   public core::StatisticalPairScore<ProteinLigandType, true, false> {
@@ -58,6 +62,8 @@ IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
 
 /** Score a pair of molecules. See ProteinLigandAtomPairScore for
     simply scoring the atom pairs.
+
+    \see ProteinLigandAtomPairScore
 */
 class IMPATOMEXPORT ProteinLigandRestraint: public container::PairsRestraint {
   void initialize(Hierarchy protein,
