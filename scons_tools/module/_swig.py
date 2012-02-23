@@ -330,7 +330,6 @@ def swig_scanner(node, env, path):
         retset=set(ret)
         ret=list(retset)
         ret.sort()
-    print "dependencies", ret
     return ret
 
 def inswig_scanner(node, env, path):
