@@ -15,6 +15,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/base/utility.h>
 
 #include <algorithm>
 #include <sstream>
@@ -114,8 +115,11 @@ void XYZRMovedSingletonContainer::validate() const {
   ParticleIndexes pis= get_singleton_container()->get_indexes();
   IMP_USAGE_CHECK(pis.size()==backup_.size(),
                   "Backup is not the right size");
+  //using IMP::core::operator<<;
+  // not sure why I need "Showable" all of a sudden, but I do
   IMP_USAGE_CHECK(moved_.size()== get_access().size(),
-                  "Moved lists don't match.");
+                  "Moved lists don't match: " << Showable(moved_)
+                  << " vs " << Showable(get_indexes()));
 }
 
 void XYZRMovedSingletonContainer::do_reset_all() {
