@@ -138,7 +138,7 @@ public:
     if (get_model()->get_has_attribute(get_decorator_traits()
                                        .get_parent_key(),
                                        get_particle_index())) {
-      int VALUE =  get_model()->get_attribute(get_decorator_traits()
+      ParticleIndex VALUE =  get_model()->get_attribute(get_decorator_traits()
                                               .get_parent_key(),
                                               get_particle_index());
       return Hierarchy(get_model(), VALUE, get_decorator_traits());

@@ -210,7 +210,7 @@ void RigidBodyHierarchy::set_leaf(unsigned int ni,
   IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].children_.resize(ids.size());
   for (unsigned int i=0; i< ids.size(); ++i) {
-    tree_[ni].children_[i]= -ids[i]-1;
+    tree_[ni].children_[i]= -get_as_unsigned_int(ids[i])-1;
   }
 }
 unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
@@ -336,7 +336,7 @@ Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
   double d= distance_bound(m, da, 0, pt.get_particle_index());
   queue.push(QP(d, 0));
   double best_d=dist;
-  ParticleIndex bp=-1;
+  ParticleIndex bp=base::get_invalid_index<ParticleIndexTag>();
   do {
     std::pair<double, int> v= queue.top();
     queue.pop();

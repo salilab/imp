@@ -256,7 +256,7 @@ inline void initialize_particles( SingletonContainer*sc,
        IMP_USAGE_CHECK(cur.size() == scur.size(),
                        "Duplicate constituents for "
                        << sc->get_model()->get_particle(it->first)->get_name()
-                       << ": " << cur);
+                       << ": " << Showable(cur));
      }
   }
 }

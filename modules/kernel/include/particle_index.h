@@ -11,12 +11,15 @@
 
 #include "kernel_config.h"
 #include <boost/array.hpp>
+#include <IMP/base/base_macros.h>
+#include <IMP/base/Index.h>
 
 IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
-typedef int ParticleIndex;
-static const int INVALID_PARTICLE_INDEX=-1;
-IMP_BUILTIN_VALUES(ParticleIndex, ParticleIndexes);
+
+class ParticleIndexTag{};
+typedef base::Index<ParticleIndexTag> ParticleIndex;
+typedef vector<ParticleIndex> ParticleIndexes;
 
 
 
@@ -43,7 +46,9 @@ class ParticleIndexTuple
 public:
   static unsigned int get_dimension() {return D;};
   ParticleIndexTuple(){
-    for (unsigned int i=0; i< D; ++i) {P::operator[](i)=-1;}
+    for (unsigned int i=0; i< D; ++i) {
+      P::operator[](i)=base::get_invalid_index<ParticleIndexTag>();
+    }
   }
   ParticleIndexTuple(ParticleIndex x, ParticleIndex y) {
     IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
@@ -67,9 +72,9 @@ public:
     P::operator[](2) = x2;
     P::operator[](3) = x3;
   }
-  Particle *get(unsigned int i) const {
+  /*ParticleIndex *get(unsigned int i) const {
     return P::operator[](i);
-  }
+    }*/
   IMP_HASHABLE_INLINE(ParticleIndexTuple<D>, std::size_t seed = 0;
                for (unsigned int i=0; i< D; ++i) {
                  boost::hash_combine(seed,

@@ -222,7 +222,7 @@ class ScopedAddCacheAttribute {
 public:
   IMP_RAII(ScopedAddCacheAttribute, (Particle *p,
                                   Key key, const Value &value),
-           {pi_=-1;},
+           {pi_=base::get_invalid_index<ParticleIndexTag>();},
            {
              m_=p->get_model();
              pi_=p->get_index();
@@ -230,7 +230,7 @@ public:
              m_->add_cache_attribute(key_, pi_, value);
            },
            {
-             if (pi_ !=-1) {
+             if (pi_ !=base::get_invalid_index<ParticleIndexTag>()) {
                m_->remove_attribute(key_, pi_);
              }
            },);
@@ -249,7 +249,7 @@ class ScopedSetAttribute {
 public:
   IMP_RAII(ScopedSetAttribute, (Particle *p,
                                 Key key, const Value &value),
-           {pi_=-1;},
+           {pi_=base::get_invalid_index<ParticleIndexTag>();},
            {
              m_=p->get_model();
              pi_=p->get_index();
@@ -258,7 +258,7 @@ public:
              m_->set_attribute(key_, pi_, value);
            },
            {
-             if (pi_ != -1) {
+             if (pi_ != base::get_invalid_index<ParticleIndexTag>()) {
                m_->set_attribute(key_, pi_, old_);
              }
            },);

@@ -231,7 +231,7 @@ ParticleIndexTuple<D> get_index(const ParticleTuple<D> &in) {
 
 inline
 ParticleIndexes get_index(const ParticlesTemp& p) {
-  ParticleIndexes ret(p.size());
+  ParticleIndexes ret(p.size(), base::get_invalid_index<ParticleIndexTag>());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= get_index(p[i]);
   }

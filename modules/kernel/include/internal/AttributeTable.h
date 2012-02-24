@@ -12,6 +12,7 @@
 #include "../utility.h"
 #include <IMP/base/log.h>
 #include "../Pointer.h"
+#include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
 
 #include <limits>
@@ -28,7 +29,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class T, class K >
 struct DefaultTraits
 {
-  typedef vector<T> Container;
+  typedef base::IndexVector<ParticleIndexTag, T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
@@ -44,7 +45,7 @@ template <class T, class K >
 struct ArrayTraits
 {
   typedef IMP::vector<T> Value;
-  typedef IMP::vector<Value> Container;
+  typedef base::IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value& PassValue;
   typedef K Key;
   static Value get_invalid() {
@@ -84,18 +85,18 @@ struct FloatAttributeTableTraits: public DefaultTraits<double, FloatKey>
 
 
 struct ParticleAttributeTableTraits:
-  public DefaultTraits<int, ParticleKey>
+  public DefaultTraits<ParticleIndex, ParticleKey>
 {
   static Value get_invalid() {
-    return -1;
+    return base::get_invalid_index<ParticleIndexTag>();
   }
   static bool get_is_valid(const Value& f) {
-    return f >=0;
+    return f != get_invalid();
   }
 };
 
 struct ParticlesAttributeTableTraits:
-  public ArrayTraits<int, ParticlesKey>
+    public ArrayTraits<ParticleIndex, ParticlesKey>
 {
 };
 
@@ -104,7 +105,7 @@ struct ObjectAttributeTableTraits
   typedef Object* Value;
   typedef Object* PassValue;
   typedef ObjectKey Key;
-  typedef Objects Container;
+  typedef base::IndexVector<ParticleIndexTag, Pointer<Object> > Container;
   static Value get_invalid() {
     return nullptr;
   }
@@ -124,7 +125,7 @@ struct ObjectsAttributeTableTraits
   typedef Objects Value;
   typedef const Objects& PassValue;
   typedef ObjectsKey Key;
-  typedef vector<Objects> Container;
+  typedef base::IndexVector<ParticleIndexTag, Objects> Container;
   static Value get_invalid() {
     return Value();
   }
@@ -159,7 +160,15 @@ struct IntAttributeTableTraits: public DefaultTraits<Int, IntKey>
 
 struct BoolAttributeTableTraits: public DefaultTraits<bool, FloatKey>
 {
-  typedef boost::dynamic_bitset<> Container;
+  struct Container: public boost::dynamic_bitset<> {
+    typedef boost::dynamic_bitset<> P;
+    P::reference operator[](base::Index<ParticleIndexTag> i) {
+      return P::operator[](get_as_unsigned_int(i));
+    }
+    bool operator[](base::Index<ParticleIndexTag> i) const {
+      return P::operator[](get_as_unsigned_int(i));
+    }
+  };
   static bool get_invalid() {
     return false;
   }
