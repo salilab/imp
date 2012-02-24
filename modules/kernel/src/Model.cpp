@@ -74,11 +74,11 @@ Model::~Model()
 {
   IMP_CHECK_OBJECT(this);
   for (unsigned int i=0; i< particle_index_.size(); ++i) {
-    if (particle_index_[i]) {
-      IMP_CHECK_OBJECT(particle_index_[i]);
-      Particle* op=particle_index_[i];
+    if (particle_index_[ParticleIndex(i)]) {
+      IMP_CHECK_OBJECT(particle_index_[ParticleIndex(i)]);
+      Particle* op=particle_index_[ParticleIndex(i)];
       op->m_=nullptr;
-      particle_index_[i]=nullptr;
+      particle_index_[ParticleIndex(i)]=nullptr;
     }
   }
   {
@@ -169,17 +169,17 @@ void Model::add_particle_internal(Particle *p, bool set_name) {
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);
     p->set_was_used(true);
-    int id;
+    ParticleIndex id;
     if (free_particles_.empty()){
-      id= next_particle_;
+      id= ParticleIndex(next_particle_);
       ++next_particle_;
     } else {
       id= free_particles_.back();
       free_particles_.pop_back();
     }
     p->id_=id;
-    int maxp= std::max(particle_index_.size(),
-                       static_cast<size_t>(p->id_+1));
+    int maxp= std::max<unsigned int>(particle_index_.size(),
+                       get_as_unsigned_int(p->id_)+1);
     particle_index_.resize(maxp);
     particle_index_[p->id_]=p;
     if (set_name) {
@@ -222,7 +222,7 @@ void Model::do_show(std::ostream& out) const
 }
 
 void Model::remove_particle(Particle *p) {
-  int pi= p->get_index();
+  ParticleIndex pi= p->get_index();
   free_particles_.push_back(pi);
   p->m_=nullptr;
   particle_index_[pi]=nullptr;
@@ -237,8 +237,8 @@ void Model::remove_particle(Particle *p) {
   IMP_IF_CHECK(USAGE) {
     ParticlesTemp cp= get_particles();
     for (unsigned int i=0; i< particle_index_.size(); ++i) {
-      if (particle_index_[i]) {
-        ParticleIndex cur=i;
+      if (particle_index_[ParticleIndex(i)]) {
+        ParticleIndex cur(i);
         {
           ParticleKeys keys
               = internal::ParticleAttributeTable::get_attribute_keys(cur);
@@ -248,7 +248,7 @@ void Model::remove_particle(Particle *p) {
                               "There is still a reference to"
                               << " removed particle in"
                               " particle "
-                              << particle_index_[i]->get_name()
+                              << particle_index_[ParticleIndex(i)]->get_name()
                               << " attribute "
                               << keys[j]);
             }
@@ -266,7 +266,7 @@ void Model::remove_particle(Particle *p) {
                                 "There is still a reference to "
                                 << "removed particle in"
                                 << " particle "
-                                << particle_index_[i]->get_name()
+                                << particle_index_[ParticleIndex(i)]->get_name()
                                 << " attribute "
                                 << keys[j]);
               }

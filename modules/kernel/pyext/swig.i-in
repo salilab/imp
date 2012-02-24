@@ -233,6 +233,7 @@ class ParticleQuadsTemp;
 }
 %}
 
+
 %pythoncode %{
   def ParticlePair(a, b):
     return (a,b)
@@ -242,7 +243,10 @@ class ParticleQuadsTemp;
     return (a,b,c,d)
 %}
 
+%rename(_ParticleIndexTag) ParticleIndexTag;
+
 %include "IMP/particle_index.h"
+
 %include "IMP/base_types.h"
 
 %include "IMP/utility.h"

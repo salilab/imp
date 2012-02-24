@@ -36,7 +36,9 @@ CoreCloseBipartitePairContainer
   std::ostringstream oss;
   oss << "BCPC " << get_name() << " hierarchy " << this;
   ObjectKey key=ObjectKey(oss.str());
-  initialize(a,b, -1, -1, distance, slack, key);
+  initialize(a,b, base::get_invalid_index<ParticleIndexTag>(),
+             base::get_invalid_index<ParticleIndexTag>(),
+             distance, slack, key);
 }
 
 CoreCloseBipartitePairContainer
@@ -90,7 +92,7 @@ ParticlesTemp CoreCloseBipartitePairContainer
                                                     access_pair_filters(),
                                                    xyzrs_[1], rbs_[1],
                                                    constituents_);
-  if (covers_[0] != -1) {
+  if (covers_[0] != base::get_invalid_index<ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
   }
@@ -108,7 +110,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   core::internal::ListLikePairContainer::do_before_evaluate();
   bool updated=false;
-  if (covers_[0]==-1
+  if (covers_[0]==base::get_invalid_index<ParticleIndexTag>()
       || algebra::get_distance(get_model()->get_sphere(covers_[0]),
                                get_model()->get_sphere(covers_[1]))
       < distance_ || reset_) {

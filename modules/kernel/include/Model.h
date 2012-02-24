@@ -159,9 +159,9 @@ private:
   double max_score_;
   vector<std::pair<Object*, Object*> > extra_edges_;
 
-  Ints free_particles_;
+  ParticleIndexes free_particles_;
   unsigned int next_particle_;
-  vector<Pointer<Particle> > particle_index_;
+  base::IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
   vector<OwnerPointer<Object> > model_data_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
@@ -475,7 +475,7 @@ public:
   }
   ParticlesTemp get_particles() const;
   Particle* get_particle(ParticleIndex p) const  {
-    IMP_USAGE_CHECK(particle_index_.size() > static_cast<unsigned int>(p),
+    IMP_USAGE_CHECK(particle_index_.size() > get_as_unsigned_int(p),
                     "Invalid particle requested");
     IMP_USAGE_CHECK(particle_index_[p],
                     "Invalid particle requested");

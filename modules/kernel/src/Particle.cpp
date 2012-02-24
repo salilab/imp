@@ -20,13 +20,13 @@
 IMP_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m, std::string name):
-  Container(m, name)
+    Container(m, name), id_(base::get_invalid_index<ParticleIndexTag>())
 {
   m->add_particle_internal(this, false);
 }
 
 Particle::Particle(Model *m):
-  Container(m, "none")
+    Container(m, "none"), id_(base::get_invalid_index<ParticleIndexTag>())
 {
   m->add_particle_internal(this, true);
 }
@@ -162,7 +162,7 @@ ParticlesTemp Particle::get_contained_particles() const {
       = get_model()->IMP::internal::ParticlesAttributeTable
       ::get_attribute_keys(id_);
   for (unsigned int i=0; i< psks.size(); ++i) {
-    Ints vs= get_model()->get_attribute(psks[i], id_);
+    ParticleIndexes vs= get_model()->get_attribute(psks[i], id_);
     for (unsigned int j=0; j< vs.size(); ++j) {
       ret.push_back(get_model()->get_particle(vs[j]));
     }

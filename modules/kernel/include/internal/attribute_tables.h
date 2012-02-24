@@ -16,11 +16,11 @@
 #include <IMP/base/log.h>
 #include <IMP/algebra/Sphere3D.h>
 
-#define IMP_CHECK_MASK(mask, particle_index, message)           \
-  IMP_USAGE_CHECK(!mask || mask->size() >                       \
-                  static_cast<unsigned int>(particle_index),    \
-                  "For some reason the mask is too small.");    \
-  IMP_USAGE_CHECK(!mask || (*mask)[particle_index],             \
+#define IMP_CHECK_MASK(mask, particle_index, message)                   \
+  IMP_USAGE_CHECK(!mask || mask->size() >                               \
+                  get_as_unsigned_int(particle_index),                  \
+                  "For some reason the mask is too small.");            \
+  IMP_USAGE_CHECK(!mask || (*mask)[get_as_unsigned_int(particle_index)], \
                   message << " at particle " << particle_index)
 
 
@@ -49,9 +49,8 @@ private:
     if (data_.size() <= k.get_index()) {
       data_.resize(k.get_index()+1);
     }
-    if (data_[k.get_index()].size() <= static_cast<unsigned int>(particle)) {
-      data_[k.get_index()].resize(particle+1, Traits::get_invalid());
-    }
+    base::resize_to_fit(data_[k.get_index()], particle,
+                        Traits::get_invalid());
     data_[k.get_index()][particle]=value;
   }
 public:
@@ -90,10 +89,10 @@ public:
   void clear_caches(ParticleIndex particle) {
     for (typename compatibility::set<Key>::const_iterator it=caches_.begin();
          it != caches_.end(); ++it) {
-      if (data_.size() > static_cast<unsigned int>(it->get_index())
-          && data_[it->get_index()].size()
-          > static_cast<unsigned int>(particle)) {
-        data_[it->get_index()][particle]= Traits::get_invalid();
+      if (data_.size() > it->get_index()
+          && data_[it->get_index()].size() > get_as_unsigned_int(particle)) {
+        data_[it->get_index()][particle]
+            = Traits::get_invalid();
       }
     }
   }
@@ -107,8 +106,9 @@ public:
   bool get_has_attribute(Key k, ParticleIndex particle) const {
     if (data_.size() <= k.get_index()) return false;
     else if (data_[k.get_index()].size()
-             <= static_cast<unsigned int>(particle)) return false;
-    else return Traits::get_is_valid(data_[k.get_index()][particle]);
+             <= get_as_unsigned_int(particle)) return false;
+    else return Traits::get_is_valid(data_[k.get_index()]
+                                     [particle]);
   }
   void set_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
@@ -153,14 +153,16 @@ public:
                     "Cannot request range of an unused key.");
     bool init=false;
     for (unsigned int i=0; i< data_[k.get_index()].size(); ++i) {
-      if (Traits::get_is_valid(data_[k.get_index()][i])) {
+      if (Traits::get_is_valid(data_[k.get_index()][ParticleIndex(i)])) {
         if (!init) {
-          ret.first= data_[k.get_index()][i];
-          ret.second= data_[k.get_index()][i];
+          ret.first= data_[k.get_index()][ParticleIndex(i)];
+          ret.second= data_[k.get_index()][ParticleIndex(i)];
           init=true;
         } else {
-          ret.first=Traits::min(ret.first, data_[k.get_index()][i]);
-          ret.second=Traits::max(ret.second, data_[k.get_index()][i]);
+          ret.first=Traits::min(ret.first,
+                                data_[k.get_index()][ParticleIndex(i)]);
+          ret.second=Traits::max(ret.second,
+                                 data_[k.get_index()][ParticleIndex(i)]);
         }
       }
     }
@@ -170,7 +172,7 @@ public:
     IMP_CHECK_MASK(add_remove_mask_, particle,
                    "Clearing the attribute values is not permitted now");
     for (unsigned int i=0; i< data_.size(); ++i) {
-      if (data_[i].size() > static_cast<unsigned int>(particle)) {
+      if (data_[i].size() > get_as_unsigned_int(particle)) {
         data_[i][particle]= Traits::get_invalid();
       }
     }
@@ -180,7 +182,7 @@ public:
   get_attribute_keys(ParticleIndex particle) const {
     vector<Key> ret;
     for (unsigned int i=0; i< data_.size(); ++i) {
-      if (data_[i].size() > static_cast<unsigned int>(particle)
+      if (data_[i].size() > get_as_unsigned_int(particle)
           && Traits::get_is_valid(data_[i][particle])) {
         ret.push_back(Key(i));
       }
@@ -202,10 +204,11 @@ IMP_SWAP_1(BasicAttributeTable);
 class FloatAttributeTable {
   //vector<algebra::Sphere3D> spheres_;
   //vector<algebra::Sphere3D> sphere_derivatives_;
-  algebra::Sphere3Ds spheres_;
-  algebra::Sphere3Ds sphere_derivatives_;
-  algebra::Vector3Ds internal_coordinates_;
-  algebra::Vector3Ds internal_coordinate_derivatives_;
+  base::IndexVector<ParticleIndexTag, algebra::Sphere3D> spheres_;
+  base::IndexVector<ParticleIndexTag, algebra::Sphere3D> sphere_derivatives_;
+  base::IndexVector<ParticleIndexTag, algebra::Vector3D> internal_coordinates_;
+  base::IndexVector<ParticleIndexTag, algebra::Vector3D>
+  internal_coordinate_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
@@ -301,9 +304,12 @@ public:
                    "Changing the attribute derivatives is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates");
-    internal_coordinate_derivatives_[particle][0]+=da(v[0]);
-    internal_coordinate_derivatives_[particle][1]+=da(v[1]);
-    internal_coordinate_derivatives_[particle][2]+=da(v[2]);
+    internal_coordinate_derivatives_[particle][0]
+        +=da(v[0]);
+    internal_coordinate_derivatives_[particle][1]
+        +=da(v[1]);
+    internal_coordinate_derivatives_[particle][2]
+        +=da(v[2]);
   }
 
   const algebra::Vector3D&
@@ -346,7 +352,8 @@ public:
                    "Changing attributes is not permitted now");
       internal_coordinates_[particle][k.get_index()-4]
         = internal::FloatAttributeTableTraits::get_invalid();
-      internal_coordinate_derivatives_[particle][k.get_index()-4]
+      internal_coordinate_derivatives_[particle]
+          [k.get_index()-4]
         = internal::FloatAttributeTableTraits::get_invalid();
     } else {
       data_.remove_attribute(FloatKey(k.get_index()-7), particle);
@@ -383,7 +390,8 @@ public:
         IMP_CHECK_MASK(read_derivatives_mask_, particle,
                        "Reading the derivatives is not permitted now");
       }
-      return internal_coordinate_derivatives_[particle][k.get_index()-4];
+      return internal_coordinate_derivatives_[particle]
+          [k.get_index()-4];
     } else {
       return derivatives_.get_attribute(FloatKey(k.get_index()-7), particle,
                                         checked);
@@ -401,7 +409,8 @@ public:
     } else if (k.get_index() < 7) {
       IMP_CHECK_MASK(write_derivatives_mask_, particle,
                      "Writing the derivatives is not permitted now");
-      internal_coordinate_derivatives_[particle][k.get_index()-4]+=da(v);;
+      internal_coordinate_derivatives_[particle]
+          [k.get_index()-4]+=da(v);;
     } else {
       FloatKey nk(k.get_index()-7);
       derivatives_.set_attribute(nk, particle,
@@ -416,17 +425,18 @@ public:
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
                     "Can't add attribute that is there");
     if (k.get_index() <4) {
-      if (spheres_.size() <= static_cast<size_t>(particle)) {
-        spheres_.resize(particle+1, get_invalid_sphere());
-        sphere_derivatives_.resize(particle+1, get_invalid_sphere());
+      if (spheres_.size() <= get_as_unsigned_int(particle)) {
+        spheres_.resize(get_as_unsigned_int(particle)+1, get_invalid_sphere());
+        sphere_derivatives_.resize(get_as_unsigned_int(particle)+1,
+                                   get_invalid_sphere());
       }
       spheres_[particle][k.get_index()]=v;
     } else if (k.get_index() <7) {
-      if (internal_coordinates_.size() <= static_cast<size_t>(particle)) {
-        internal_coordinates_.resize(particle+1,
+      if (internal_coordinates_.size() <= get_as_unsigned_int(particle)) {
+        internal_coordinates_.resize(get_as_unsigned_int(particle)+1,
                                      get_invalid_sphere().get_center());
         internal_coordinate_derivatives_.
-          resize(particle+1,
+            resize(get_as_unsigned_int(particle)+1,
                  get_invalid_sphere().get_center());
       }
       internal_coordinates_[particle][k.get_index()-4]=v;
@@ -445,18 +455,20 @@ public:
   }
   bool get_has_attribute(FloatKey k, ParticleIndex particle) const {
     if (k.get_index() < 4) {
-      if (spheres_.size() <= static_cast<size_t>(particle)) return false;
+      if (spheres_.size() <= get_as_unsigned_int(particle)) return false;
       else if (!internal::FloatAttributeTableTraits
-               ::get_is_valid(spheres_[particle][k.get_index()])){
+               ::get_is_valid(spheres_[particle]
+                              [k.get_index()])){
         return false;
       }
       return true;
     } else if (k.get_index() < 7) {
-      if (internal_coordinates_.size() <= static_cast<size_t>(particle)) {
+      if (internal_coordinates_.size() <= get_as_unsigned_int(particle)) {
         return false;
       }
       else if (!internal::FloatAttributeTableTraits
-               ::get_is_valid(internal_coordinates_[particle]
+               ::get_is_valid(internal_coordinates_
+                              [particle]
                               [k.get_index()-4])){
         return false;
       }
@@ -517,15 +529,15 @@ public:
     ParticleIndex p_;
     FloatKey k_;
     FloatIndex(FloatKey k, ParticleIndex p): p_(p), k_(k){}
-    FloatIndex() {}
+    FloatIndex(): p_(base::get_invalid_index<ParticleIndexTag>()) {}
   };
   IMP_BUILTIN_VALUES(FloatIndex, FloatIndexes);
  FloatIndexes get_optimized_attributes() const {
     FloatIndexes ret;
     for (unsigned int i=0; i< optimizeds_.size(); ++i) {
       for (unsigned int j=0; j< optimizeds_.size(i); ++j) {
-        if (optimizeds_.get_has_attribute(FloatKey(i), j)) {
-          ret.push_back(FloatIndex(FloatKey(i), j));
+        if (optimizeds_.get_has_attribute(FloatKey(i), ParticleIndex(j))) {
+          ret.push_back(FloatIndex(FloatKey(i), ParticleIndex(j)));
         }
       }
     }
@@ -541,9 +553,11 @@ public:
         std::swap(ret.first, ret.second);
         for (unsigned int i=0; i< spheres_.size(); ++i) {
           if (internal::FloatAttributeTableTraits
-              ::get_is_valid(spheres_[i][k.get_index()])) {
-            ret.first= std::min(ret.first, spheres_[i][k.get_index()]);
-            ret.second= std::max(ret.second, spheres_[i][k.get_index()]);
+              ::get_is_valid(spheres_[ParticleIndex(i)][k.get_index()])) {
+            ret.first= std::min(ret.first, spheres_[ParticleIndex(i)]
+                                [k.get_index()]);
+            ret.second= std::max(ret.second, spheres_[ParticleIndex(i)]
+                                 [k.get_index()]);
           }
         }
         return ret;
@@ -551,11 +565,14 @@ public:
         std::swap(ret.first, ret.second);
         for (unsigned int i=0; i< internal_coordinates_.size(); ++i) {
           if (internal::FloatAttributeTableTraits
-              ::get_is_valid(internal_coordinates_[i][k.get_index()-4])) {
-            ret.first= std::min(ret.first, internal_coordinates_[i]
-                    [k.get_index()-4]);
+              ::get_is_valid(internal_coordinates_[ParticleIndex(i)]
+                             [k.get_index()-4])) {
+            ret.first= std::min(ret.first,
+                                internal_coordinates_[ParticleIndex(i)]
+                                [k.get_index()-4]);
             ret.second= std::max(ret.second,
-                    internal_coordinates_[i][k.get_index()-4]);
+                                 internal_coordinates_[ParticleIndex(i)]
+                                 [k.get_index()-4]);
           }
         }
         return ret;
@@ -568,12 +585,13 @@ public:
     }
   }
   void clear_attributes(ParticleIndex particle) {
-    if (spheres_.size()> static_cast<size_t>(particle)) {
+    if (spheres_.size()> get_as_unsigned_int(particle)) {
       spheres_[particle]= get_invalid_sphere();
       sphere_derivatives_[particle]=get_invalid_sphere();
     }
-    if (internal_coordinates_.size()> static_cast<size_t>(particle)) {
-      internal_coordinates_[particle]= get_invalid_sphere().get_center();
+    if (internal_coordinates_.size()> get_as_unsigned_int(particle)) {
+      internal_coordinates_[particle]
+          = get_invalid_sphere().get_center();
       internal_coordinate_derivatives_[particle]
         =get_invalid_sphere().get_center();
     }

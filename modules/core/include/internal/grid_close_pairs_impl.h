@@ -126,13 +126,6 @@ struct Helper {
     IDs(ID id, int which): vector<ID>(1,id), which_(which){}
     IDs(): which_(-1){}
   };
-  static inline std::string do_show(const IDs&p) {
-    std::ostringstream oss;
-    for (unsigned int i=0; i< p.size(); ++i) {
-      oss << do_show(p[i]) << " ";
-    }
-    return oss.str();
-  }
 
   typedef typename algebra::SparseGrid3D<IDs> Grid;
   typedef vector<Grid> Grids;
@@ -251,7 +244,7 @@ struct Helper {
                            "Empty voxel");
         IMP_LOG(VERBOSE, "Voxel " << it->first << " has ");
         for (unsigned int i=0; i< it->second.size(); ++i) {
-          IMP_LOG(VERBOSE, do_show(it->second[i]) << " ");
+          IMP_LOG(VERBOSE, base::Showable(it->second[i]) << " ");
         }
         IMP_LOG(VERBOSE, std::endl);
       }
@@ -268,8 +261,8 @@ struct Helper {
     for (It c= b; c != e; ++c) {
       for (It cp= b; cp != c; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
-            << do_show(*cp) << std::endl);*/
+          /*IMP_LOG(VERBOSE, "Found pair " << base::Showable(*c) << " "
+            << base::Showable(*cp) << std::endl);*/
           if (!out(*c, *cp)) {
             return false;
           }
@@ -292,8 +285,8 @@ struct Helper {
     for (ItA c= ab; c != ae; ++c) {
       for (ItB cp= bb; cp != be; ++cp) {
         if (tr.get_is_close(*c, *cp)) {
-          /*IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
-            << do_show(*cp) << std::endl);*/
+          /*IMP_LOG(VERBOSE, "Found pair " << base::Showable(*c) << " "
+            << base::Showable(*cp) << std::endl);*/
           if (!out( *c, *cp)) {
             return false;
           }
@@ -335,9 +328,9 @@ struct Helper {
             if (gg.get_has_index(imp_cur)) {
               IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
               IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
-                      << ": " << do_show(gg[_1])
+                      << ": " << base::Showable(gg[_1])
                       << " and " << index
-                      << " which is " << do_show(qps) << std::endl);
+                      << " which is " << base::Showable(qps) << std::endl);
               IMP_INTERNAL_CHECK(_1 != index,
                                  "Index returned by get nearby");
               if (!do_fill_close_pairs_from_lists(gg[_1].begin(),
@@ -357,9 +350,9 @@ struct Helper {
             if (gg.get_has_index(imp_cur)) {
               IMP::algebra::GridIndexD<3> _1=gg.get_index(imp_cur);
               IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
-                      << ": " << do_show(gg[_1])
+                      << ": " << base::Showable(gg[_1])
                       << " and " << index
-                      << " which is " << do_show(qps) << std::endl);
+                      << " which is " << base::Showable(qps) << std::endl);
               if (!do_fill_close_pairs_from_lists(gg[_1].begin(),
                                                   gg[_1].end(),
                                                   qps.begin(), qps.end(),
