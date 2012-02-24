@@ -216,41 +216,11 @@ namespace internal {
 
     # This needs to be called get_module_version_info() to make it easy
     # to call from Objects (which have their own get_version_info() method
-    if env['MODULE_HAS_DATA']:
-        print >> h, """
-#  ifndef SWIG
-#    include <IMP/base/internal/directories.h>
-
-IMPBASE_BEGIN_INTERNAL_NAMESPACE
-IMPBASEEXPORT std::string get_data_path(std::string module_name,
-                                    std::string file_name);
-IMPBASEEXPORT std::string get_example_path(std::string module_name,
-                                       std::string file_name);
-
-IMPBASE_END_INTERNAL_NAMESPACE
-#  endif // SWIG
-"""
     print >> h, """
 
 //  functions are defined explicitly for swig
+
 #ifndef SWIG
-
-#ifndef IMP_DOXYGEN
-namespace std {
-template <class T, class A>
-class vector;
-template <class A, class B>
-class pair;
-}
-namespace IMP {
-namespace compatibility {
-template <class T>
-class vector;
-}
-}
-#include <sstream>
-#endif
-
 %(EXPORT)s_BEGIN_NAMESPACE
 /** \\name Standard module methods
   All \imp modules have a set of standard methods to help get information
@@ -262,15 +232,34 @@ class vector;
 inline std::string get_module_name() {
    return "%(namespace)s";
 }
+
 """%vars
 
     for m in scons_tools.module._get_found_modules(env, scons_tools.module._get_module_modules(env)):
         _add_dep_control(m, vars['PREPROC'], h, env['build'] != 'fast', True)
     for m in scons_tools.module._get_module_unfound_modules(env):
         _add_dep_control(m, vars['PREPROC'], h, False, False)
-
+    print >> h, """
+%(EXPORT)s_END_NAMESPACE
+#endif
+"""%vars
     if env['MODULE_HAS_DATA']:
         print >> h, """
+
+#  ifndef SWIG
+#    include <IMP/base/internal/directories.h>
+
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
+IMPBASEEXPORT std::string get_data_path(std::string module_name,
+                                    std::string file_name);
+IMPBASEEXPORT std::string get_example_path(std::string module_name,
+                                       std::string file_name);
+
+IMPBASE_END_INTERNAL_NAMESPACE
+#  endif // SWIG
+
+#ifndef SWIG
+%(EXPORT)s_BEGIN_NAMESPACE
 //! Return the full path to installed data
 /** Each module has its own data directory, so be sure to use
     the version of this function in the correct module. To read
@@ -301,65 +290,23 @@ inline std::string get_example_path(std::string file_name)  {
   return IMP::base::internal::get_example_path("%(module)s", file_name);
 }
 /** @} */
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-struct Showable {
-  std::string str_;
-
-  template <class T>
-  const T& get_showable(const T &t) const {
-    return t;
-  }
-  template <class T, class TT>
-  std::string get_showable(const std::pair<T,TT> &t) const {
-    return Showable(t).str_;
-  }
-  template <class T>
-  std::string get_showable(const IMP::compatibility::vector<T> &t) const {
-    return Showable(t).str_;
-  }
-
-  template <class T>
-  void show_vector(const T &v) {
-    std::ostringstream out;
-    out << "[";
-    for (unsigned int i=0; i< v.size(); ++i) {
-      if (i >0) out << ", ";
-      out << get_showable(v[i]);
-    }
-    out<< "]";
-    str_= out.str();
-  }
-  Showable(const std::string& str): str_(str){}
-  template <class T, class TT>
-  Showable(const std::pair<T, TT> &p) {
-    std::ostringstream oss;
-    oss << "(" << p.first << ", " << p.second << ")";
-    str_=oss.str();
-  }
-  template <class T, class A>
-  Showable(const std::vector<T, A> &v) {
-    show_vector(v);
-  }
-  template <class T>
-  Showable(const IMP::compatibility::vector<T> &v) {
-    show_vector(v);
-  }
-};
-
-inline std::ostream &operator<<(std::ostream &out, const Showable &s) {
-  out << s.str_;
-  return out;
-}
-#endif
-
+%(EXPORT)s_END_NAMESPACE
+#endif // SWIG
+"""%vars
+        print >> h, """
+#include <IMP/base/Showable.h>
 """% vars
+        if vars["module"] != "base":
+            print >> h, """
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+%(EXPORT)s_BEGIN_NAMESPACE
+using ::IMP::base::Showable;
+using ::IMP::base::operator<<;
+%(EXPORT)s_END_NAMESPACE
+#endif
+"""%vars
 
     print >> h,"""
-
-%(EXPORT)s_END_NAMESPACE
-
-#endif // SWIG
 
 #endif  /* %(EXPORT)s_CONFIG_H */""" % vars
 
