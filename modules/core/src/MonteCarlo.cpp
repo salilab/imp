@@ -201,12 +201,13 @@ void MonteCarlo::setup_incremental() {
                                                 dg);
     ParticleIndex pi= ap[i]->get_index();
     incremental_used_.resize(std::max<unsigned int>(incremental_used_.size(),
-                                      pi+1));
+                                                    get_as_unsigned_int(pi)+1));
     for (unsigned int j=0; j< cur.size(); ++j) {
       IMP_INTERNAL_CHECK(index.find(cur[j]) != index.end(),
                          "Cannot find restraints " << cur[j]->get_name()
                          << " in index");
-      incremental_used_[pi].push_back(index.find(cur[j])->second);
+      incremental_used_[pi]
+          .push_back(index.find(cur[j])->second);
       IMP_LOG(VERBOSE, "Restraint " << cur[j]->get_name()
               << " depends on particle " << ap[i]->get_name() << std::endl);
     }
@@ -259,7 +260,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   ++incremental_evals_;
   Ints allr;
   for (unsigned int i=0; i< moved.size(); ++i) {
-    if (moved[i] < static_cast<int>(incremental_used_.size())) {
+    if (get_as_unsigned_int(moved[i]) < incremental_used_.size()) {
       allr.insert(allr.end(), incremental_used_[moved[i]].begin(),
                   incremental_used_[moved[i]].end());
     }
@@ -362,11 +363,11 @@ MonteCarlo::NBLScore::NBLScore(PairScore *score,
                    const PairFilters &filters) {
   score_=score;
   distance_=distance;
-  ParticleIndex mi=0;
+  unsigned int mi(0);
   pis_.resize(ps.size());
   filters_=filters;
   for (unsigned int i=0; i< ps.size(); ++i) {
-    mi=std::max(mi, ps[i]->get_index());
+    mi=std::max(mi, get_as_unsigned_int(ps[i]->get_index()));
     pis_[i]=ps[i]->get_index();
   }
   cache_.resize(mi+1);
@@ -377,9 +378,11 @@ double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     double nscore=0;
     for (unsigned int i=0; i< cache_.size(); ++i) {
-      for (unsigned int j=0; j< cache_[i].size(); ++j) {
-        if (static_cast<unsigned int>(cache_[i][j].first) < i) {
-          nscore+=cache_[i][j].second;
+      ParticleIndex pi(i);
+      for (unsigned int j=0; j< cache_[pi].size(); ++j) {
+        if (cache_[pi][j].first != base::get_invalid_index<ParticleIndexTag>()
+            && cache_[pi][j].first < pi) {
+          nscore+=cache_[pi][j].second;
         }
       }
     }
@@ -387,7 +390,7 @@ double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
                        "Cached and stored scores don't match: " << prior_
                        << " vs " << nscore);
   }
-  if (moved==-1) return prior_;
+  if (moved==base::get_invalid_index<ParticleIndexTag>()) return prior_;
   double old=0;
   removed_.clear();
 
@@ -414,7 +417,7 @@ double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
     filters_[i]->filter_in_place(m, all);
   }
   double nscore=0;
-  cache_[moved].resize(nearby.size());
+  cache_[moved].reserve(nearby.size());
   for (unsigned int i=0; i< all.size(); ++i) {
     double cur= score_->evaluate_index(m, ParticleIndexPair(moved, all[i][1]),
                                        nullptr);
@@ -432,7 +435,7 @@ double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
 }
 
 void MonteCarlo::NBLScore::roll_back(Model *, ParticleIndex moved) {
-  IMP_LOG(VERBOSE, "Rolling back nbl on " << moved << std::endl);
+  IMP_LOG(TERSE, "Rolling back nbl on " << moved << std::endl);
   prior_=old_prior_;
   cache_[moved].clear();
   for (unsigned int i=0; i< added_.size(); ++i) {
@@ -455,7 +458,7 @@ void MonteCarlo::NBLScore::initialize(Model *m,  ParticleIndexPairs all) {
     filters_[i]->filter_in_place(m, all);
   }
   for (unsigned int i=0; i< cache_.size(); ++i) {
-    cache_[i].clear();
+    cache_[ParticleIndex(i)].clear();
   }
   prior_=0;
   for (unsigned int i=0; i< all.size(); ++i) {
@@ -471,7 +474,9 @@ void MonteCarlo::NBLScore::initialize(Model *m,  ParticleIndexPairs all) {
 double MonteCarlo::evaluate_non_bonded(const ParticleIndexes &moved) const {
   if (!dnn_) return 0;
   if (moved.empty()) {
-    return nbl_.get_score(get_model(), -1, ParticleIndexes());
+    return nbl_.get_score(get_model(),
+                          base::get_invalid_index<ParticleIndexTag>(),
+                          ParticleIndexes());
   } else {
     IMP_USAGE_CHECK(moved.size()==1, "Only one at a time supported");
     Ints nearby= dnn_->get_in_ball(to_dnn_[moved[0]],
