@@ -150,6 +150,9 @@ namespace {
                              "NULL restraint returned in decomposition");
         }
       }
+      for (unsigned int i=0; i< created.size(); ++i) {
+        created[i]->set_maximum_score(me->get_maximum_score());
+      }
       rs->add_restraints(created);
       rs->set_maximum_score(me->get_maximum_score());
       rs->set_weight(me->get_weight());
