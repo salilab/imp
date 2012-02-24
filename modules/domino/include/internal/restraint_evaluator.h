@@ -56,7 +56,7 @@ class RestraintData {
     double score= r_.get_model()->evaluate_if_good(r_,
                                                     false)[0];
     if (Filter) {
-      if (score >max_) {
+      if (score >=max_) {
         score=std::numeric_limits<double>::max();
       } else {
       }
@@ -79,7 +79,7 @@ class RestraintData {
 public:
   RestraintData(Restraint *r): r_(RestraintsTemp(1,r),
                                   r->get_model()->get_weight(r)),
-                               max_(std::numeric_limits<double>::max()){
+                               max_(r->get_maximum_score()){
     filter_attempts_=0;
     filter_passes_=0;
     max_cache_=std::numeric_limits<unsigned int>::max();
@@ -135,7 +135,7 @@ public:
               << std::endl);
       if (Filter) {
         ++filter_attempts_;
-        if (score >max_) {
+        if (score >=max_) {
         } else {
           ++filter_passes_;
         }
