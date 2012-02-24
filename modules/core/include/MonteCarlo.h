@@ -240,7 +240,7 @@ private:
   mutable Floats incremental_scores_;
   mutable Floats old_incremental_scores_;
   mutable Ints old_incremental_score_indexes_;
-  vector<Ints> incremental_used_;
+  base::IndexVector<ParticleIndexTag, Ints> incremental_used_;
 
 
   struct NBLScore {
@@ -248,7 +248,7 @@ private:
     typedef std::pair<ParticleIndex, double> ScorePair;
     typedef vector<ScorePair> ScorePairs;
     // first on the particle index then list the neighbors
-    mutable vector<ScorePairs> cache_;
+    mutable base::IndexVector<ParticleIndexTag, ScorePairs> cache_;
     double distance_;
     mutable double prior_, old_prior_;
     ParticleIndexes pis_;
@@ -268,8 +268,8 @@ private:
     void initialize(Model *m,  ParticleIndexPairs all);
   };
   Ints nbl_incremental_used_;
-  Ints to_dnn_;
-  Ints from_dnn_;
+  base::IndexVector<ParticleIndexTag, int> to_dnn_;
+  ParticleIndexes from_dnn_;
   mutable ParticleIndex moved_;
   OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
   NBLScore nbl_;
