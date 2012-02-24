@@ -7,6 +7,7 @@
  */
 
 #include <IMP/base/Showable.h>
+#include <IMP/base/Object.h>
 IMPBASE_BEGIN_NAMESPACE
 Showable::Showable(Object *o): str_(o->get_name()){}
 
