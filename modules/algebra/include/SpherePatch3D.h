@@ -45,7 +45,7 @@ protected:
 };
 
 IMP_AREA_GEOMETRY_METHODS(SpherePatch3D, sphere_patch_3d,
-                          if (0) std::cout << g; IMP_NOT_IMPLEMENTED;,
+                          IMP_UNUSED(g); IMP_NOT_IMPLEMENTED;,
                           {
                             return get_bounding_box(g.get_sphere());
                           });
