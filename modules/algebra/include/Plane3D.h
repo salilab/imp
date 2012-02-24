@@ -89,10 +89,10 @@ inline Vector3D get_reflected(const Plane3D &pln, const Vector3D &p) {
 
 
 IMP_AREA_GEOMETRY_METHODS(Plane3D, plane_3d,
-                          if (0) std::cout << g;
+                          IMP_UNUSED(g);
                           return std::numeric_limits<double>::infinity(),
                           {
-                            if (0) std::cout << g;
+                            IMP_UNUSED(g);
                             Vector3D ip
                               = get_ones_vector_d<3>(
                                    std::numeric_limits<double>::infinity());
