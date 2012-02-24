@@ -55,6 +55,9 @@ void MovedSingletonContainer::do_after_evaluate() {
   }
   reset_moved_=false;
   reset_all_=false;
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    validate();
+  }
 }
 
 void MovedSingletonContainer::do_before_evaluate()
@@ -67,6 +70,7 @@ void MovedSingletonContainer::do_before_evaluate()
     first_call_=false;
   } else {
     ParticleIndexes mved= do_get_moved();
+    IMP_LOG(TERSE, "Adding to moved list: " << Showable(mved) << std::endl);
     add_to_list(mved);
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -118,7 +122,8 @@ void XYZRMovedSingletonContainer::validate() const {
   //using IMP::core::operator<<;
   // not sure why I need "Showable" all of a sudden, but I do
   for (unsigned int i=0; i< moved_.size(); ++i) {
-    IMP_USAGE_CHECK(get_contains(get_model()->get_particle(moved_[i])),
+    Particle *p=get_singleton_container()->get_particle(moved_[i]);
+    IMP_USAGE_CHECK(get_contains(p),
                     "Particle in moved list but not in contents");
   }
 }
@@ -136,12 +141,14 @@ ParticleIndexes XYZRMovedSingletonContainer::do_initialize() {
   IMP_OBJECT_LOG;
   backup_.clear();
   moved_.clear();
+  ParticleIndexes ret;
   //backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),{
       backup_.push_back(XYZR(get_model(), _1).get_sphere());
       moved_.push_back(_2);
+      ret.push_back(_1);
     });
-  return moved_;
+  return ret;
 }
 
 void XYZRMovedSingletonContainer::do_reset_moved() {
