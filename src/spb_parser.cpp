@@ -118,6 +118,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, fret_Pbleach0);
  OPTION(double, fret_Pbleach1);
  OPTION(double, fret_sigmamult);
+ OPTION(int,    frame_id);
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
  OPTION(int,    niter);
@@ -176,6 +177,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
  ret.use_new_fret_model=use_new_fret_model;
+ ret.frame_id=frame_id;
 
 // Postprocess parameters
  ret.trajfile=trajfile;

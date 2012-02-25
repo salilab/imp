@@ -50,6 +50,7 @@ struct SPBParameters {
  int          replica_index;
  int          num_cells;
  int          num_copies;
+ int          frame_id;
  algebra::Vector3Ds CP_centers;
  algebra::Vector3Ds IL2_centers;
  algebra::Transformation3Ds trs;
