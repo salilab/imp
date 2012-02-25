@@ -233,8 +233,8 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p1=sa.get_selected_particles();
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
-  IMP_NEW(membrane::FretrRestraint,fr,
-   (p1,p2,Fret.R0,Fret.Sd,Fret.Sa,Fret.Gamma,Fret.Ida,r_value,kappa,name));
+  IMP_NEW(membrane::FretrRestraint,fr,(p1,p2,Fret.R0,Fret.Gamma,
+   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name));
   return fr.release();
  } else {
   sa.set_molecule(protein_a);
@@ -246,8 +246,8 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p1=sa.get_selected_particles();
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
-  IMP_NEW(membrane::FretrRestraint,fr,
-   (p1,p2,Fret.R0,Fret.Sd,Fret.Sa,Fret.Gamma,Fret.Ida,r_value,kappa,name));
+  IMP_NEW(membrane::FretrRestraint,fr,(p1,p2,Fret.R0,Fret.Gamma,
+   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name));
   return fr.release();
  }
 }

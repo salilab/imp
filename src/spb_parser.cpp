@@ -115,6 +115,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, fret_Sa);
  OPTION(double, fret_Gamma);
  OPTION(double, fret_Ida);
+ OPTION(double, fret_Pbleach0);
+ OPTION(double, fret_Pbleach1);
  OPTION(double, fret_sigmamult);
  OPTION(int,    cg_steps);
  OPTION(int,    nrep);
@@ -155,6 +157,8 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.Fret.Sa=fret_Sa;
  ret.Fret.Gamma=fret_Gamma;
  ret.Fret.Ida=fret_Ida;
+ ret.Fret.Pbleach0=fret_Pbleach0;
+ ret.Fret.Pbleach1=fret_Pbleach1;
  ret.Fret.filename=fret_File;
  ret.Fret.sigmamult=fret_sigmamult;
  ret.Fret.sigmafilter=fret_sigmafilter;

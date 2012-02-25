@@ -21,6 +21,8 @@ struct FretParameters {
  double Sd;
  double Sa;
  double Ida;
+ double Pbleach0;
+ double Pbleach1;
  std::string filename;
  bool   sigmafilter;
  double sigmamult;
