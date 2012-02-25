@@ -83,15 +83,14 @@ double FretrRestraint::get_bleach_fretr() const
 
  for(unsigned imc=0;imc<mcsteps_;++imc){
 
-  double sumFi_0 = 0.0;
-  double sumFi_1 = 0.0;
-
 // number of acceptors alive when measuring FRET channel
   double Na      = 0.0;
   for(unsigned j = 0; j < pa_.size(); ++j){
    Na += bleach0_[ imc * pa_.size() + j ];
   }
 
+  double sumFi_0 = 0.0;
+  double sumFi_1 = 0.0;
   for(unsigned i = 0; i < pd_.size(); ++i){
    double Fi_0 = 0.0;
    double Fi_1 = 0.0;
