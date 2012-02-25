@@ -40,6 +40,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool use_GFP_structure;
  bool keep_GFP_layer;
  bool GFP_exc_volume;
+ bool fix_GFP;
  bool use_connectivity;
  bool use_new_fret_model;
  bool cluster_time;
@@ -77,6 +78,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
   value<bool>(&use_GFP_structure), "ciao");
  desc.add_options()("GFP_exc_volume",value<bool>(&GFP_exc_volume),      "ciao");
  desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
+ desc.add_options()("fix_GFP",       value<bool>(&fix_GFP),             "ciao");
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
  desc.add_options()("use_new_fret_model",
   value<bool>(&use_new_fret_model),  "ciao");
@@ -208,6 +210,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.use_GFP_structure=use_GFP_structure;
  ret.keep_GFP_layer=keep_GFP_layer;
  ret.GFP_exc_volume=GFP_exc_volume;
+ ret.fix_GFP=fix_GFP;
 
 // file map
  if(load_Spc42p.length()>0.0){

@@ -522,8 +522,8 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
   if(copy==0){
    Particles ps_gfp=atom::get_leaves(gfp);
    if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
-   add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
-      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+   if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);}
   }
   return gfp;
  } else {
@@ -534,8 +534,8 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
   if(copy==0){
    Particles ps_gfp=atom::get_leaves(gfp);
    if(mydata.keep_GFP_layer) {lsc->add_particles(ps_gfp);}
-   add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
-      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+   if(!mydata.fix_GFP){add_PbcBoxedRigidBodyMover(ps_gfp,mydata.MC.dx,
+      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);}
   }
   return gfp;
  }
