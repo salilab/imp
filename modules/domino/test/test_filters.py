@@ -90,5 +90,44 @@ class DOMINOTests(IMP.test.TestCase):
             print s, cur
             self.assertNotIn(cur, seen)
             seen.append(cur)
+
+
+    def test_min_filter(self):
+        """Test minimum filtering"""
+        m= IMP.Model()
+        ps= [IMP.Particle(m) for i in range(0,2)]
+        for i in range(0,2):
+            IMP.core.XYZR.setup_particle(ps[i],IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),2))
+        lsc1=IMP.container.ListSingletonContainer(m)
+        lsc1.add_particles([ps[0]]);
+        lsc2=IMP.container.ListSingletonContainer(m)
+        lsc2.add_particles([ps[1]])
+        nbl=IMP.container.CloseBipartitePairContainer(lsc1,lsc2,2)
+        rs=IMP.RestraintSet()
+        h=IMP.core.HarmonicLowerBound(0,1)
+        sd=IMP.core.SphereDistancePairScore(h)
+        pr=IMP.container.PairsRestraint(sd,nbl)
+        max_score=1
+        m.set_maximum_score(pr,max_score)
+        rs.add_restraint(pr)
+        m.add_restraint(rs)
+        #create particles state table
+        pst=IMP.domino.ParticleStatesTable()
+        states=IMP.domino.XYZStates([IMP.algebra.Vector3D(i,i,i) for i in range(3)])
+        for p in ps:
+            pst.set_particle_states(p,states)
+        max_violations=0
+        ft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(rs,pst,max_violations)
+        samp=IMP.domino.DominoSampler(m,pst)
+        samp.set_subset_filter_tables([ft])
+        cs=samp.get_sample()
+        #print "number of solutions",cs.get_number_of_configurations()
+        ok_combs=0
+        for i in range(cs.get_number_of_configurations()):
+            cs.load_configuration(i)
+            #print IMP.core.XYZ(ps[0]),IMP.core.XYZ(ps[1]),pr.evaluate(None)
+            if pr.evaluate(None)<=max_score:
+                ok_combs=ok_combs+1
+        self.assertEqual(cs.get_number_of_configurations(),ok_combs)
 if __name__ == '__main__':
     IMP.test.main()
