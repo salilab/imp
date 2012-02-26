@@ -1,6 +1,8 @@
 import IMP.domino
 import IMP.core
 
+
+exit(1)
 # Use faster built-in 'set' type on newer Pythons; fall back to the older
 # 'sets' module on older Pythons
 try:
