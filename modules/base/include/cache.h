@@ -17,6 +17,10 @@
 #include <boost/multi_index/member.hpp>
 #include <functional>
 
+#ifdef _MSC_VER
+#include <cstddef> // for offsetof
+#endif
+
 IMPBASE_BEGIN_NAMESPACE
 
 
@@ -162,9 +166,18 @@ private:
   mutable int num_stats_;
   mutable int num_misses_;
   typedef std::pair<Key, Value> KVP;
+#ifdef _MSC_VER
+  // MSVC (at least VS2010) has a buggy std::pair implementation; see
+  // https://svn.boost.org/trac/boost/ticket/3594 for this workaround
+  BOOST_STATIC_CONSTANT(unsigned,
+                        first_offset = offsetof(KVP, first));
+  typedef boost::multi_index::member_offset<KVP, Key,
+                                            first_offset> KeyMember;
+#else
   typedef boost::multi_index::member<KVP,
                                      Key,
                                      &KVP::first> KeyMember;
+#endif
   typedef boost::multi_index::hashed_unique<KeyMember> HashIndex;
   typedef boost::multi_index::sequenced< > Sequenced;
   typedef boost::multi_index_container<KVP,
