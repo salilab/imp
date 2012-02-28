@@ -8,6 +8,7 @@ class GenericTest(RMF.TestCase):
         rh =fh.get_root_node()
         rh.set_association(fh)
         rh2= fh.get_node_from_association(fh)
+        self.assertEqual(rh2, rh)
 
 if __name__ == '__main__':
     unittest.main()
