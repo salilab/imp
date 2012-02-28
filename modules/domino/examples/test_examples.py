@@ -11,7 +11,7 @@ class DOMINOTests(IMP.test.TestCase):
         """Test example six_particles_optimization.py"""
         vars = self.run_example(
                 IMP.domino.get_example_path("six_particles_optimization.py"))
-        self.assertEqual(vars['cs'].get_number_of_configurations(), 1)
+        self.assertEqual(vars['cs'].get_number_of_configurations(), 2)
 
     def test_global_min3(self):
         """Test example custom_filter.py"""
