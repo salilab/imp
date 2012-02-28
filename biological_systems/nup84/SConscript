@@ -1,7 +1,7 @@
 Import('env')
 import scons_tools.examples
 
-env= env.IMPSystem(version='nightly-23/2/2012',
+env= env.IMPSystem(version='nightly-28/2/2012',
                    authors=["Jeremy Phillips"],
                    brief="Compute a structure for the Nup84 complex.",
                    overview="""The nuclear pore complex (NPC) is a multiprotein assembly that serves as the sole mediator
