@@ -130,7 +130,7 @@ public:
 */
 class IMPDOMINOEXPORT XYZStates: public ParticleStates {
   algebra::Vector3Ds states_;
-  base::Pointer<algebra::NearestNeighbor3D> nn_;
+  base::OwnerPointer<algebra::NearestNeighbor3D> nn_;
 public:
   XYZStates(const algebra::Vector3Ds &states):
       ParticleStates("XYZStates %1%"), states_(states),
