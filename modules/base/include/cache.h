@@ -165,19 +165,14 @@ private:
   unsigned int max_size_;
   mutable int num_stats_;
   mutable int num_misses_;
-  typedef std::pair<Key, Value> KVP;
-#ifdef _MSC_VER
-  // MSVC (at least VS2010) has a buggy std::pair implementation; see
-  // https://svn.boost.org/trac/boost/ticket/3594 for this workaround
-  BOOST_STATIC_CONSTANT(unsigned,
-                        first_offset = offsetof(KVP, first));
-  typedef boost::multi_index::member_offset<KVP, Key,
-                                            first_offset> KeyMember;
-#else
+  struct KVP {
+    Key key;
+    Value value;
+    KVP(const Key &k, const Value &v): key(k), value(v){}
+  };
   typedef boost::multi_index::member<KVP,
                                      Key,
-                                     &KVP::first> KeyMember;
-#endif
+                                     &KVP::key > KeyMember;
   typedef boost::multi_index::hashed_unique<KeyMember> HashIndex;
   typedef boost::multi_index::sequenced< > Sequenced;
   typedef boost::multi_index_container<KVP,
@@ -212,10 +207,11 @@ public:
     ++num_stats_;
     map_.template get<1>().relocate(map_.template project<1>(it),
                                     map_.template get<1>().begin());
-    IMP_INTERNAL_CHECK(checker_(it->second,
+    IMP_INTERNAL_CHECK(checker_(it->value,
                                gen_(k)),
                        "Results don't match.");
-    return it->second;
+    return it->value;
+
   }
   double get_hit_rate() const {
     return 1.0-static_cast<double>(num_misses_)/num_stats_;
@@ -224,7 +220,7 @@ public:
     compatibility::vector<Key> ret;
     for (OrderIterator it= map_.template get<1>().begin();
          it != map_.template get<1>().end(); ++it) {
-      ret.push_back(it->first);
+      ret.push_back(it->key);
     }
     return ret;
   }
