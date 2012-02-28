@@ -31,22 +31,18 @@ void PairsConstraint::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin PairsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(f_);
-  IMP_LOG(TERSE, "End PairsConstraint::update" << std::endl);
 }
 
 void PairsConstraint::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin PairsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
   c_->apply(af_, *da);
-  IMP_LOG(TERSE, "End PairsConstraint::after_evaluate" << std::endl);
 }
 
 
