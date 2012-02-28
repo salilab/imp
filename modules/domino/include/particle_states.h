@@ -157,7 +157,7 @@ public:
 class IMPDOMINOEXPORT RigidBodyStates: public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
   double scale_;
-  base::Pointer<algebra::NearestNeighbor6D> nn_;
+  base::OwnerPointer<algebra::NearestNeighbor6D> nn_;
 public:
   RigidBodyStates(const algebra::ReferenceFrame3Ds &states,
                   double scale=1);
@@ -177,7 +177,7 @@ public:
 class IMPDOMINOEXPORT NestedRigidBodyStates: public ParticleStates {
   algebra::Transformation3Ds states_;//states of a nested rigid body
   double scale_;
-  base::Pointer<algebra::NearestNeighbor6D> nn_;
+  base::OwnerPointer<algebra::NearestNeighbor6D> nn_;
 public:
   /**
      \param[in] states states of a rigid member with respect to its parent
