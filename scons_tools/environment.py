@@ -59,7 +59,7 @@ class _WineEnvironment(Environment):
         """Ensure that MSVC auto-detection finds tools on Wine builds"""
         def _wine_read_reg(value):
             return '/usr/lib/w32comp/Program Files/' + \
-                   'Microsoft Visual Studio .NET 2003'
+                   'Microsoft Visual Studio 10.0'
         try:
             import SCons.Tool.MSCommon.common
         except ImportError:
