@@ -42,10 +42,9 @@ rmdir ${ROOT}/usr || exit 1
 # Add Windows-specific README
 cp tools/w32/README.txt ${ROOT} || exit 1
 
-# Note that default Python extensions (2.6) are installed in the 2.4 location,
-# since we cross-compile (and Python in CentOS 5 is 2.4)
-mv ${ROOT}/bin/python2.4/site-packages ${ROOT}/python || exit 1
-rmdir ${ROOT}/bin/python2.4 || exit 1
+# Move default Python extensions (2.6) to Windows location
+mv ${ROOT}/bin/python2.6/site-packages ${ROOT}/python || exit 1
+rmdir ${ROOT}/bin/python2.6 || exit 1
 
 # Patch IMP/__init__.py so it can find Python version-specific extensions
 # and the IMP DLLs
