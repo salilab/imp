@@ -518,8 +518,13 @@ Merging
                      type="float", default=0.1, metavar='LAMBDA')
     group.add_option('--bsigma', help='DO NOT USE.',
                      type="float", default=10., metavar='SIGMA')
-    group.add_option('--boptimizes', help='Turn on optimization of the s '
-            'parameter (default off)', default = False, action='store_true')
+    group.add_option('--boptimize', help='Which parameters are optimized.'
+            " One of Zero (no parameters are optimized), "
+            "Simple (default, optimizes G and Rg), "
+            "Generalized (optimizes G, Rg and d), "
+            "Full (optimizes G, Rg, d and s)",
+            type="choice", default="Simple",
+            choices=['Simple','Generalized','Full','Zero'])
     group.add_option('--bschedule', help='Simulation schedule. Default is '
             '"10:10000/5:1000/1:100" which means use every 10 data points for '
             'the first 1000 steps, then every 5 data points for 100 steps, '
@@ -710,10 +715,22 @@ def set_defaults_mean(data, particles, args):
     particles['G'].set_lower(min(Ivals))
     particles['G'].set_upper(2*max(Ivals))
     #optimize mean particles only
-    particles['G'].set_nuisance_is_optimized(True)
-    particles['Rg'].set_nuisance_is_optimized(True)
-    particles['d'].set_nuisance_is_optimized(True)
-    particles['s'].set_nuisance_is_optimized(args.boptimizes)
+    if args.boptimize == 'Zero':
+        particles['G'].set_nuisance_is_optimized(False)
+        particles['Rg'].set_nuisance_is_optimized(False)
+        particles['d'].set_nuisance_is_optimized(False)
+        particles['s'].set_nuisance_is_optimized(False)
+    else:
+        particles['G'].set_nuisance_is_optimized(True)
+        particles['Rg'].set_nuisance_is_optimized(True)
+        if args.boptimize == 'Generalized':
+            particles['d'].set_nuisance_is_optimized(True)
+        else:
+            particles['d'].set_nuisance_is_optimized(False)
+        if args.boptimize == 'Full':
+            particles['s'].set_nuisance_is_optimized(True)
+        else:
+            particles['s'].set_nuisance_is_optimized(False)
     particles['tau'].set_nuisance_is_optimized(False)
     particles['lambda'].set_nuisance_is_optimized(False)
     particles['sigma'].set_nuisance_is_optimized(False)
@@ -824,7 +841,7 @@ def find_fit_covariance(data, initvals, args, verbose):
         for l in linspace(.01,10,num=100):
             particles['lambda'].set_nuisance(l)
             ene = model.evaluate(True)
-            deriv = particles['lambda'].get_nuisance_derivative()
+            deriv = psarticles['lambda'].get_nuisance_derivative()
             if minval[0] > ene:
                 minval = (ene, l)
             print "plotrange",l,ene,deriv
@@ -839,6 +856,78 @@ def find_fit_covariance(data, initvals, args, verbose):
             print "residuals",q,I,err,gpval,avg,(gpval-avg),(I-avg)
     return initvals
 
+def find_fit_by_gridding(data, initvals, args, verbose):
+    """use the fact that sigma can be factored out of the covariance matrix and
+    drawn from a gamma distribution. Calculates a 2D grid on lambda (D1) and
+    tau**2/sigma (D2) to get the minimum value.
+    """
+    model, particles, functions, gp = \
+            setup_process(data, initvals, 1, args)
+    gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
+    model.add_restraint(gpr)
+    meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
+    particles['lambda'].set_lower(max(meandist,0.005))
+    lambdamin = particles['lambda'].get_lower()
+    lambdamax = 100
+    numpoints=25
+    gridvalues = []
+    particles['tau'].set_lower(0.)
+    particles['sigma'].set_lower(0.)
+    #fl=open('grid.txt','w')
+    particles['sigma'].set_nuisance(1.0)
+    #print "gridding"
+    for lambdaval in logspace(log(lambdamin),log(lambdamax),
+            base=exp(1),num=numpoints):
+        for rel in [0]+logspace(-2, 2, num=numpoints):
+            particles['lambda'].set_nuisance(lambdaval)
+            #set new value of tau**2/sigma
+            sigmaval = particles['sigma'].get_nuisance()
+            particles['tau'].set_nuisance((rel*sigmaval)**.5)
+            #get exponent and compute reduced exponent
+            exponent = gpr.get_minus_exponent()
+            redexp = sigmaval * exponent
+            #compute maximum posterior value for sigma assuming jeffreys prior
+            sigmaval = redexp/(len(data['q'])+2)
+            particles['sigma'].set_nuisance(sigmaval)
+            #reset tau to correct value and get minimized energy
+            tauval = (rel*sigmaval)**.5
+            particles['tau'].set_nuisance(tauval)
+            ene = model.evaluate(False)
+            gridvalues.append((lambdaval,rel,sigmaval,tauval,ene))
+            #fl.write(" ".join(["%f" % i
+            #            for i in lambdaval,rel,sigmaval,tauval,ene]))
+            #fl.write('\n')
+        #fl.write('\n')
+    #print "minimizing"
+    particles['tau'].set_lower(0.001)
+    particles['sigma'].set_lower(0.001)
+    minval = gridvalues[0][:]
+    for i in gridvalues:
+        if i[4] < minval[4]:
+            minval = i[:]
+    minval=list(minval)
+    minval[0]=minval[0]
+    minval[1]=minval[1]
+    print "minimum",minval
+    particles['lambda'].set_nuisance(minval[0])
+    particles['sigma'].set_nuisance(minval[2])
+    particles['tau'].set_nuisance(minval[3])
+    particles['lambda'].set_nuisance_is_optimized(True)
+    particles['sigma'].set_nuisance_is_optimized(True)
+    particles['tau'].set_nuisance_is_optimized(True)
+    for i in xrange(3):
+        do_quasinewton(model,5)
+    ene = model.evaluate(False)
+    newmin = [particles['lambda'].get_nuisance(),None,
+            particles['sigma'].get_nuisance(),particles['tau'].get_nuisance(),
+            ene]
+    newmin[1]=newmin[3]**2/newmin[2]
+    newmin=tuple(newmin)
+    print "minimized to",newmin,newmin[4]<=minval[4]
+    print "dof=",gp.get_degrees_of_freedom()
+    initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
+    return initvals
+
 def find_fit(data, initvals, schedule, args, verbose):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
@@ -846,8 +935,9 @@ def find_fit(data, initvals, schedule, args, verbose):
     #
     #optimize mean on all data points over 3x100 steps
     initvals = find_fit_mean(data, initvals, args, verbose)
-    initvals = find_fit_lambda(data, initvals, args, verbose)
-    initvals = find_fit_covariance(data, initvals, args, verbose)
+    #initvals = find_fit_lambda(data, initvals, args, verbose)
+    #initvals = find_fit_covariance(data, initvals, args, verbose)
+    initvals = find_fit_by_gridding(data, initvals, args, verbose)
     return initvals
 
 
@@ -881,8 +971,7 @@ def get_gamma_lognormal(refdata,data):
     s0=array(refdata['err'])
     I1=array(data['I'])
     s1=array(data['err'])
-    errors=(s0/I0 + s1/I1)
-    weights = errors**(-2)
+    weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
     lg = (weights*log(I0/I1)).sum()/weights.sum()
     return exp(lg)
 
@@ -947,8 +1036,9 @@ def write_summary_file(merge, profiles, args):
         for i in sorted(data.keys()):
             fl.write("   %s : %f\n" % (i,data[i]))
         fl.write("  Calculated Values\n")
-        fl.write("   Q1.Rg : %f\n" % \
-                        (sqrt((data['d']-data['s'])*(3-data['s'])/2)))
+        Q1Rg = sqrt((data['d']-data['s'])*(3-data['s'])/2)
+        fl.write("   Q1 : %f\n" % (Q1Rg/data['Rg']))
+        fl.write("   Q1.Rg : %f\n" % Q1Rg)
         fl.write("   I(0) : %f\n" % \
                         (merge.get_mean(qvalues=[0])[0][1]))
         fl.write("\n")
@@ -978,6 +1068,7 @@ def write_summary_file(merge, profiles, args):
             fl.write("   %s : %f\n" % (i,data[i]))
         fl.write("   Calculated Values\n")
         qrg = sqrt((data['d']-data['s'])*(3-data['s'])/2)
+        fl.write("    Q1 : %f\n" % (qrg/data['Rg']))
         fl.write("    Q1.Rg : %f\n" % qrg)
         fl.write("    I(0) : %f\n" % (p.get_mean(qvalues=[0])[0][1]))
         if args.stop == "fitting":
