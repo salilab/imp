@@ -138,6 +138,18 @@ def _add_platform_flags(env):
         env.Append(IMP_PYTHON_LINKFLAGS=
                 ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
 
+    if env.get('cppcoverage', 'no') != 'no':
+        if not dependency.gcc.get_is_gcc_like(env):
+            raise ValueError("C coverage testing currently only works with gcc")
+        env.Append(CXXFLAGS=["-fprofile-arcs", "-ftest-coverage"])
+        env.Append(LINKFLAGS=["-fprofile-arcs", "-ftest-coverage"])
+        if env['build'] == 'debug':
+            # gcc info page recommends disabling optimization for optimal
+            # coverage reporting
+            env.Append(CXXFLAGS=["-O0"])
+        else:
+            print "Warning: It is recommended to build in 'debug' mode " \
+                  "when doing C++ coverage testing"
 
     if dependency.gcc.get_is_gcc_like(env):
         # "-Werror",  "-Wno-uninitialized"
