@@ -1,5 +1,6 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
 import pyscanner
+import cpp_coverage
 import environment
 import os
 import os.path
@@ -32,8 +33,12 @@ def _action_unit_test(target, source, env):
     tmpdir=Dir(env["builddir"]+"/tmp").abspath
     tf=target[0].abspath
     filename= target[0].abspath
+    execute = env.Execute
     if type.endswith("unit test"):
         cmd= File("#/scons_tools/run-all-tests.py").abspath
+        if env['cppcoverage'] != 'no':
+            c = cpp_coverage._CoverageTester(env, env['cppcoverage'], type, tf)
+            execute = c.Execute
         if type.startswith('module'):
             modname = _get_name(env)
             if modname == 'kernel':
@@ -74,7 +79,7 @@ def _action_unit_test(target, source, env):
                  cmd, disab,
                  " ".join(fsource), tf+".out")
     print app
-    if env.Execute(app) == 0:
+    if execute(app) == 0:
         #file(str(target[0]), 'w').write('PASSED\n')
         print "%s %ss succeeded" % (_get_name(env), source[-1])
     else:
