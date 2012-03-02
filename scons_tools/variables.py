@@ -292,9 +292,9 @@ def add_common_variables(vars, package):
                       "Whether to report on C++ code coverage of tests. "
                       '"no" will do no reporting; '
                       '"lines" will list the lines of code that were missed; '
-                      '"annotate" will make annotated copies of the code.',
+                      '"annotate" will make annotated copies of the code.'
                       " It is strongly recommended to combine this with "
-                      "build='debug'. "
+                      "build='debug'. ",
                       'no', ['no', 'lines', 'annotate']))
     vars.Add(EnumVariable('pycoverage',
                       "Whether to report on Python code coverage of tests."
