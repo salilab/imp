@@ -43,20 +43,22 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         b=self.beta.get_nuisance()
         t=self.tau.get_nuisance()
         l=self.lam.get_nuisance()
-        return q*a+b+1./(exp(1./l**2)*(2+3*t**2+t**4)-t**4) \
+        s=self.sig.get_nuisance()
+        return q*a+b+1./(exp(1./l**2)*(s+t**2)*(2*s+t**2)-t**4) \
                 *(exp(-q**2/(2*l**2))*(b-1)*t**2*(exp(q/l**2)*t**2
-                                            -exp(1./l**2)*(2+t**2))
+                                            -exp(1./l**2)*(2*s+t**2))
                  -exp(-(q**2-1)/(2*l**2))*(b+a-1)*t**2*(-t**2 +
-                                            exp(q/l**2)*(1+t**2)))
+                                            exp(q/l**2)*(s+t**2)))
 
     def get_cov(self, q1, q2):
         t=self.tau.get_nuisance()
         l=self.lam.get_nuisance()
+        s=self.sig.get_nuisance()
         return t**2*exp(-(q1-q2)**2/(2.*l**2)) \
            -  t**4*exp(-(q1**2+q2**2)/(2.*l**2))\
-                    /(-t**4+exp(1./l**2)*(2.+3.*t**2+t**4)) \
-               *(exp((q1+q2)/l**2)*(1.+t**2) - t**2*(exp(q1/l**2)+exp(q2/l**2))
-                                + exp(1./l**2)*(2.+t**2))
+                    /(-t**4+exp(1./l**2)*(s+t**2)*(2*s+t**2)) \
+               *(exp((q1+q2)/l**2)*(s+t**2) - t**2*(exp(q1/l**2)+exp(q2/l**2))
+                                + exp(1./l**2)*(2*s+t**2))
 
     def testValuePosteriorMeanAlpha(self):
         """
@@ -82,6 +84,23 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         """
         for b in linspace(-10,10,num=10):
             self.beta.set_nuisance(b)
+            for q in linspace(0,1,num=10):
+                observed = self.gpi.get_posterior_mean([q])
+                expected = self.get_I(q)
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
+
+    def testValuePosteriorMeanSigma(self):
+        """
+        test the value of the posterior mean function between 0 and 1 by
+        changing sigma
+        """
+        for t in linspace(0.1,10,num=10):
+            self.sig.set_nuisance(t)
             for q in linspace(0,1,num=10):
                 observed = self.gpi.get_posterior_mean([q])
                 expected = self.get_I(q)
@@ -119,7 +138,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
             for q in linspace(0,1,num=10):
                 #calling this updates the W matrix
                 self.gpi.get_posterior_covariance([q],[q])
-                #this only works if WSIm_ is updated
+                #this only works if OmiIm_ is updated
                 observed = self.gpi.get_posterior_mean([q])
                 expected = self.get_I(q)
                 if expected != 0:
@@ -156,6 +175,57 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
                         ,delta=0.001)
         if skipnan > 10: # less than 10%
             self.fail("too much NANs")
+
+    def testValuePosteriorCovarianceSigma(self):
+        """
+        test the value of the posterior covariance function between 0 and 1 by
+        changing sigma
+        """
+        for t in linspace(0.01,10,num=10):
+            self.sig.set_nuisance(t)
+            #fl=open('out%d'%(int(t)),'w')
+            for q1 in linspace(0,1,num=10):
+                for q2 in linspace(0,1,num=10):
+                    #print "posterior mean tau=",t,"q1=",q1,"q2=",q2
+                    observed = self.gpi.get_posterior_covariance([q1],[q2])
+                    expected = self.get_cov(q1,q2)
+                    #print "PYTHON:",q1,q2,t,observed,expected
+                    #fl.write(' '.join(['%G' % i
+                    #    for i in [q1,q2,t,observed,expected]]))
+                    #fl.write('\n')
+                    #continue
+                    if expected != 0:
+                        self.assertAlmostEqual(observed/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed,expected
+                            ,delta=0.001)
+
+    def testValuePosteriorCovarianceMatrixSigma(self):
+        """
+        test the value of the posterior covariance function between 0 and 1 by
+        changing sigma. Matrix version.
+        """
+        for t in linspace(0.01,10,num=10):
+            self.sig.set_nuisance(t)
+            #fl=open('out%d'%(int(t)),'w')
+            qvals = [[i] for i in linspace(0,1,num=10)]
+            observed = self.gpi.get_posterior_covariance_matrix(qvals, False)
+            for i,[q1] in enumerate(qvals):
+                for j,[q2] in enumerate(qvals):
+                    #print "posterior mean tau=",t,"q1=",q1,"q2=",q2
+                    expected = self.get_cov(q1,q2)
+                    #print "PYTHON:",q1,q2,t,observed,expected
+                    #fl.write(' '.join(['%G' % i
+                    #    for i in [q1,q2,t,observed,expected]]))
+                    #fl.write('\n')
+                    #continue
+                    if expected != 0:
+                        self.assertAlmostEqual(observed[i][j]/expected
+                            ,1.0,delta=0.001)
+                    else:
+                        self.assertAlmostEqual(observed[i][j],expected
+                            ,delta=0.001)
 
     def testValuePosteriorCovarianceTau(self):
         """
@@ -334,6 +404,114 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         self.assertEqual(self.gpi.get_Omega_particle_is_optimized(1), True)
         self.assertEqual(self.gpi.get_Omega_particle_is_optimized(2), True)
 
+    def testHessian(self):
+        """test Hessian numerically"""
+        #the formulae are horrible so we just do a numeric comparison
+        self.alpha.set_nuisance(1)
+        self.alpha.set_nuisance_is_optimized(True)
+        self.beta.set_nuisance(1)
+        self.beta.set_nuisance_is_optimized(True)
+        self.sig.set_nuisance(1)
+        self.sig.set_nuisance_is_optimized(True)
+        self.tau.set_nuisance(1)
+        self.tau.set_nuisance_is_optimized(True)
+        self.lam.set_nuisance(1)
+        self.lam.set_nuisance_is_optimized(True)
+        H=self.gpi.get_Hessian()
+        self.assertAlmostEqual(H[1][1]/1.22687, 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][2]/0.190099, 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][3]/(-0.074721), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][2]/(-0.074721), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][4]/(0.041749), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][2]/(0.041749), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][3]/(-0.472782), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][4]/(0.296558), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][3]/(0.296558), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][4]/(-0.171435), 1.0, delta=1e-4)
+
+    def testHessian2(self):
+        """test Hessian numerically"""
+        #the formulae are horrible so we just do a numeric comparison
+        self.alpha.set_nuisance(-1)
+        self.alpha.set_nuisance_is_optimized(True)
+        self.beta.set_nuisance(1)
+        self.beta.set_nuisance_is_optimized(True)
+        self.sig.set_nuisance(2)
+        self.sig.set_nuisance_is_optimized(True)
+        self.tau.set_nuisance(13)
+        self.tau.set_nuisance_is_optimized(True)
+        self.lam.set_nuisance(.1)
+        self.lam.set_nuisance_is_optimized(True)
+        H=self.gpi.get_Hessian()
+        for i in xrange(5):
+            self.assertEqual(0,H[0][i])
+            self.assertEqual(0,H[1][i])
+            self.assertEqual(0,H[i][0])
+            self.assertEqual(0,H[i][1])
+        self.assertAlmostEqual(H[2][2]/0.0281349, 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][3]/(1.38631e-7), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][2]/(1.38631e-7), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][4]/(3.43746e-15), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][2]/(3.43746e-15), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][3]/(0.0000348899), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][4]/(3.31431e-15), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][3]/(3.31431e-15), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][4]/(-1.2485e-11), 1.0, delta=1e-4)
+
+    def testHessian3(self):
+        """test Hessian numerically"""
+        #the formulae are horrible so we just do a numeric comparison
+        self.alpha.set_nuisance(0)
+        self.alpha.set_nuisance_is_optimized(True)
+        self.beta.set_nuisance(0)
+        self.beta.set_nuisance_is_optimized(True)
+        self.sig.set_nuisance(20)
+        self.sig.set_nuisance_is_optimized(True)
+        self.tau.set_nuisance(1)
+        self.tau.set_nuisance_is_optimized(True)
+        self.lam.set_nuisance(2)
+        self.lam.set_nuisance_is_optimized(True)
+        H=self.gpi.get_Hessian()
+        for i in xrange(5):
+            self.assertEqual(0,H[0][i])
+            self.assertEqual(0,H[1][i])
+            self.assertEqual(0,H[i][0])
+            self.assertEqual(0,H[i][1])
+        self.assertAlmostEqual(H[2][2]/0.0000714051, 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][3]/(0.0000210666), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][2]/(0.0000210666), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[2][4]/(-0.000336488), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][2]/(-0.000336488), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][3]/(-0.0788198), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[3][4]/(-0.101181), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][3]/(-0.101181), 1.0, delta=1e-4)
+        self.assertAlmostEqual(H[4][4]/(0.00276617), 1.0, delta=1e-4)
+
+    @IMP.test.expectedFailure
+    def testDOFSigma(self):
+        """
+        test the value of the degrees of freedom by changing lambda
+        """
+        self.fail("Do some mathematica first")
+        skipnan =0
+        for s in linspace(0.01,10,num=10):
+            self.sig.set_nuisance(l)
+            observed = self.gpi.get_degrees_of_freedom()
+            expected = None
+            if isnan(expected):
+                skipnan += 1
+                continue
+            #print "PYTHON:",q,l,observed,expected
+            #fl.write(' '.join(['%G' % i for i in [q,l,observed,expected]]))
+            #fl.write('\n')
+            if expected != 0:
+                self.assertAlmostEqual(observed/expected
+                    ,1.0,delta=0.001)
+            else:
+                self.assertAlmostEqual(observed,expected
+                    ,delta=0.001)
+        if skipnan > 10: # less than 10%
+            self.fail("too much NANs")
 
 if __name__ == '__main__':
     IMP.test.main()
