@@ -1,26 +1,40 @@
 import sys
 import os
 import glob
+import fnmatch
 import environment
 
 class _CoverageTester(object):
     def __init__(self, env, coverage, test_type, output_file):
         self._env = env
         self._test_type = None
-        self._files = []
+        self._sources = []
+        self._headers = []
+        self._header_callcounts = {}
         self._output_file = output_file
         self._coverage = coverage
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
             self._test_type = 'module'
-            self.add('modules/%s/src' % name, '*.cpp', report=True)
-            self.add('modules/%s/src/internal' % name, '*.cpp', report=True)
+            self.add_source('modules/%s/src' % name, '*.cpp', report=True)
+            self.add_source('modules/%s/src/internal' % name, '*.cpp',
+                            report=True)
+            self.add_source('build/src', 'IMP_%s_wrap.cpp' % name, report=False)
+            if name == 'kernel':
+                h = 'IMP'
+            else:
+                h = 'IMP/' + name
+            self.add_header('build/include/%s' % h, '*.h', report=True)
+            self.add_header('build/include/%s/internal' % h, '*.h', report=True)
         elif test_type.startswith('application'):
             self._test_type = 'application'
-            self.add('applications/%s' % name, '*.cpp', report=True)
+            self.add_source('applications/%s' % name, '*.cpp', report=True)
 
-    def add(self, directory, pattern, report):
-        self._files.append([directory, pattern, report])
+    def add_source(self, directory, pattern, report):
+        self._sources.append([directory, pattern, report])
+
+    def add_header(self, directory, pattern, report):
+        self._headers.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
         self._cleanup_coverage_files()
@@ -31,7 +45,8 @@ class _CoverageTester(object):
         return ret
 
     def _cleanup_coverage_files(self):
-        for dir, pattern, report in self._files:
+        for dir, pattern, report in self._sources:
+            # todo: glob pattern to fix parallel runs
             for f in glob.glob(os.path.join(dir, '*.gcda')):
                 os.unlink(f)
 
@@ -46,26 +61,28 @@ class _CoverageTester(object):
         divider = "-" * 71
         print >> fh, divider
         total_statements = total_executed = 0
-        for dir, pattern, report in self._files:
-            if report:
-                self._run_gcov(dir, pattern)
-                covs = glob.glob("*.gcov")
-                covs.sort()
-                for cov in covs:
-                    source, statements, executed, missing \
-                                 = self._parse_gcov_file(cov)
-                    # Skip system and non-IMP headers
-                    # Note that we currently report only on cpp files
-                    # (not headers). This is because gcov coverage information
-                    # on headers is stored in the cpp file that includes them,
-                    # so for each header we need to merge coverage info from
-                    # all cpp files (todo).
-                    if not source.startswith('/') and source.endswith('.cpp'):
-                        self._report_gcov_file(fh, source, statements, executed,
-                                               missing)
-                        total_statements += statements
-                        total_executed += executed
-                    os.unlink(cov)
+        for dir, pattern, report in self._sources:
+            self._run_gcov(dir, pattern)
+            covs = glob.glob("*.gcov")
+            covs.sort()
+            for cov in covs:
+                ret = self._parse_gcov_file(cov)
+                if ret:
+                    source, statements, executed, missing = ret
+                    self._report_gcov_file(fh, source, statements, executed,
+                                           missing)
+                    total_statements += statements
+                    total_executed += executed
+                os.unlink(cov)
+        headers = self._header_callcounts.keys()
+        headers.sort()
+        for header in headers:
+            statements, executed, missing \
+               = self._summarize_header(self._header_callcounts[header])
+            self._report_gcov_file(fh, header, statements, executed,
+                                   missing)
+            total_statements += statements
+            total_executed += executed
         print >> fh, divider
         self._report_gcov_file(fh, 'TOTAL', total_statements,
                                total_executed, [])
@@ -97,19 +114,79 @@ class _CoverageTester(object):
     def _parse_gcov_file(self, cov):
         executable_statements = 0
         missing = []
+        header_callcounts = None
         for line in open(cov):
             spl = line.split(':', 2)
             calls = spl[0].strip()
             line_number = int(spl[1])
-            if calls == '#####':
-                missing.append(line_number)
             if line_number == 0:
                 if spl[2].startswith('Source:'):
                     source = os.path.normpath(spl[2][7:].strip())
-            elif calls != '-':
+                    header_callcounts = self._match_header(source)
+                    if header_callcounts is None \
+                       and not self._match_source(source):
+                        return None
+            else:
+                if header_callcounts is not None:
+                    self._update_header_callcounts(header_callcounts,
+                                                   line_number, calls)
+                if calls == '#####':
+                    missing.append(line_number)
+                if calls != '-':
+                    executable_statements += 1
+        # Ignore header info for now; we'll accumulate it and display at
+        # the end of all source (cpp) files
+        if header_callcounts is None:
+            return (source, executable_statements,
+                    executable_statements - len(missing), missing)
+
+    def _summarize_header(self, header_callcounts):
+        executable_statements = 0
+        missing = []
+        for n, line in enumerate(header_callcounts):
+            if line >= 0:
                 executable_statements += 1
-        return (source, executable_statements,
-                executable_statements - len(missing), missing)
+            if line == 0:
+                missing.append(n + 1)
+        return (executable_statements, executable_statements - len(missing),
+                missing)
+
+    def _update_header_callcounts(self, header_callcounts, line_number, calls):
+        # All new lines are marked as non-executable (-1)
+        while line_number > len(header_callcounts):
+            header_callcounts.append(-1)
+
+        # If this gcov file says the line was executable but not called
+        # (call count '#####') then override another gcov file that said it was
+        # non-executable (no effect if it was called in another gcov file)
+        if calls == '#####':
+            if header_callcounts[line_number - 1] == -1:
+                header_callcounts[line_number - 1] = 0
+
+        # Non-executable gcov lines (call count of '-') have no effect,
+        # since all lines start that way (and this shouldn't override another
+        # file that says the line is executable)
+
+        # Executable lines that were called (positive integer call count)
+        # override non-executable status, and accumulate
+        elif calls != '-':
+            count = int(calls)
+            if header_callcounts[line_number - 1] == -1:
+                header_callcounts[line_number - 1] = count
+            else:
+                header_callcounts[line_number - 1] += count
+
+    def _match_header(self, fn):
+        for dir, patt, report in self._headers:
+            if report and fnmatch.fnmatch(fn, os.path.join(dir, patt)):
+                if fn not in self._header_callcounts:
+                    self._header_callcounts[fn] = []
+                return self._header_callcounts[fn]
+
+    def _match_source(self, fn):
+        for dir, patt, report in self._sources:
+            if report and fnmatch.fnmatch(fn, os.path.join(dir, patt)):
+                return True
 
     def _report_gcov_file(self, fh, source, statements, executed, missing):
         if statements == 0:
