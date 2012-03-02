@@ -107,6 +107,32 @@ IMPISD_BEGIN_NAMESPACE
     IMP_LOG(TERSE, std::endl);
     }
 
+  FloatsList GaussianProcessInterpolation::get_data_abscissa() const
+{
+    return x_;
+}
+
+  Floats GaussianProcessInterpolation::get_data_mean() const
+{
+    Floats ret;
+    VectorXd I(get_I());
+    for (unsigned i=0; i<M_; i++) ret.push_back(I(i));
+    return ret;
+}
+
+  FloatsList GaussianProcessInterpolation::get_data_variance() const
+{
+    FloatsList ret;
+    MatrixXd S(get_S());
+    for (unsigned i=0; i<M_; i++)
+    {
+        Floats val;
+        for (unsigned j=0; j<M_; j++) val.push_back(S(i,j));
+        ret.push_back(val);
+    }
+    return ret;
+}
+
   double GaussianProcessInterpolation::get_posterior_mean(Floats x)
 {
    // std::cerr << "posterior mean at q=" << x(0) << std::endl;
@@ -139,6 +165,32 @@ IMPISD_BEGIN_NAMESPACE
     double ret = wx1.transpose()*Omi*wx2;
     return (*covariance_function_)(x1,x2)[0] - ret; //licit because Omi
                                                     //is up to date
+}
+
+  MatrixXd GaussianProcessInterpolation::get_posterior_covariance_matrix(
+          FloatsList x)
+{
+    unsigned N(x.size());
+    MatrixXd Wpri(M_,N);
+    for (unsigned i=0; i<N; i++) Wpri.col(i) = get_wx_vector(x[i]);
+    MatrixXd Omi(get_Omi()); // we can now use covariance_function_
+    MatrixXd Wpost((*covariance_function_)(x));
+    return Wpost - Wpri.transpose()*Omi*Wpri;
+}
+
+  FloatsList GaussianProcessInterpolation::get_posterior_covariance_matrix(
+          FloatsList x, bool)
+{
+      FloatsList ret;
+      MatrixXd mat(get_posterior_covariance_matrix(x));
+      unsigned N = mat.rows();
+      for (unsigned i=0; i < N; i++)
+      {
+          Floats tmp;
+          for (unsigned j=0; j < N; j++) tmp.push_back(mat(i,j));
+          ret.push_back(tmp);
+      }
+      return ret;
 }
 
   void GaussianProcessInterpolation::update_flags_mean()
@@ -487,4 +539,24 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
     out << "Interpolation via gaussian process" << std::endl;
 }
 
+  ParticlesTemp GaussianProcessInterpolation::get_input_particles() const
+{
+    ParticlesTemp ret;
+    ParticlesTemp ret1 = mean_function_->get_input_particles();
+    ret.insert(ret.end(),ret1.begin(),ret1.end());
+    ret.push_back(sigma_);
+    ParticlesTemp ret2 = covariance_function_->get_input_particles();
+    ret.insert(ret.end(),ret2.begin(),ret2.end());
+    return ret;
+}
+
+  ContainersTemp GaussianProcessInterpolation::get_input_containers() const
+{
+    ContainersTemp ret;
+    ContainersTemp ret1 = mean_function_->get_input_containers();
+    ret.insert(ret.end(),ret1.begin(),ret1.end());
+    ContainersTemp ret2 = covariance_function_->get_input_containers();
+    ret.insert(ret.end(),ret2.begin(),ret2.end());
+    return ret;
+}
 IMPISD_END_NAMESPACE
