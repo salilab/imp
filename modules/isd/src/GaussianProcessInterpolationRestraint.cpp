@@ -96,24 +96,13 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
 ParticlesTemp
 GaussianProcessInterpolationRestraint::get_input_particles() const
 {
-    ParticlesTemp ret;
-    ParticlesTemp ret1 = gpi_->mean_function_->get_input_particles();
-    ret.insert(ret.end(),ret1.begin(),ret1.end());
-    ret.push_back(gpi_->sigma_);
-    ParticlesTemp ret2 = gpi_->covariance_function_->get_input_particles();
-    ret.insert(ret.end(),ret2.begin(),ret2.end());
-    return ret;
+    return gpi_->get_input_particles();
 }
 
 ContainersTemp GaussianProcessInterpolationRestraint::get_input_containers()
     const
 {
-    ContainersTemp ret;
-    ContainersTemp ret1 = gpi_->mean_function_->get_input_containers();
-    ret.insert(ret.end(),ret1.begin(),ret1.end());
-    ContainersTemp ret2 = gpi_->covariance_function_->get_input_containers();
-    ret.insert(ret.end(),ret2.begin(),ret2.end());
-    return ret;
+    return gpi_->get_input_containers();
 }
 
 void GaussianProcessInterpolationRestraint::do_show(std::ostream& out) const
