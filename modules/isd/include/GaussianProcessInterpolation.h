@@ -86,6 +86,12 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   double get_posterior_mean(Floats x);
   double get_posterior_covariance(Floats x1,
                                   Floats x2);
+  #ifndef SWIG
+  //c++ only
+  MatrixXd get_posterior_covariance_matrix(FloatsList x);
+  #endif
+  //debug version for python
+  FloatsList get_posterior_covariance_matrix(FloatsList x, bool);
 
   /** Compute the Hessian of the -log(likelihood)
    * wrt all dependent particles that can be optimized
@@ -95,6 +101,10 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // returns the particles for which the hessian was computed, in order
   // the order is guaranteed by functions.h.
   ParticlesTemp get_Hessian_particles();
+
+  //needed for restraints using gpi
+  ParticlesTemp get_input_particles() const;
+  ContainersTemp get_input_containers() const;
 
   // call these if you called update() on the mean or covariance function.
   // it will force update any internal variables dependent on these functions.
@@ -116,6 +126,11 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   //returns true if a particle is optimized
   //public for testing purposes
   bool get_Omega_particle_is_optimized(unsigned i) const;
+
+  //returns data
+  FloatsList get_data_abscissa() const;
+  Floats get_data_mean() const;
+  FloatsList get_data_variance() const;
 
   friend class GaussianProcessInterpolationRestraint;
   friend class GaussianProcessInterpolationScoreState;
