@@ -924,7 +924,6 @@ def find_fit_by_gridding(data, initvals, args, verbose):
     newmin[1]=newmin[3]**2/newmin[2]
     newmin=tuple(newmin)
     print "minimized to",newmin,newmin[4]<=minval[4]
-    print "dof=",gp.get_degrees_of_freedom()
     initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
     return initvals
 
