@@ -1,8 +1,23 @@
 import sys
 import os
+import shutil
 import glob
 import fnmatch
+import tempfile
 import environment
+
+class _TempDir(object):
+    """Simple RAII-style class to make a temporary directory for gcov"""
+    def __init__(self):
+        self._origdir = os.getcwd()
+        self.tmpdir = tempfile.mkdtemp()
+        # Fool gcov into thinking this dir is the IMP top-level dir
+        for subdir in ('build', 'modules'):
+            os.symlink(os.path.join(self._origdir, subdir),
+                       os.path.join(self.tmpdir, subdir))
+    def __del__(self):
+        shutil.rmtree(self.tmpdir, ignore_errors=True)
+
 
 class _CoverageTester(object):
     def __init__(self, env, coverage, test_type, output_file):
@@ -55,6 +70,7 @@ class _CoverageTester(object):
             self._report_lines()
 
     def _report_lines(self):
+        t = _TempDir()
         outfile = self._output_file + '.cppcoverage'
         fh = open(outfile, 'w')
         print >> fh, "%-41s Stmts   Exec  Cover   Missing" % "Name"
@@ -62,8 +78,9 @@ class _CoverageTester(object):
         print >> fh, divider
         total_statements = total_executed = 0
         for dir, pattern, report in self._sources:
-            self._run_gcov(dir, pattern)
-            covs = glob.glob("*.gcov")
+            # Run gcov in a temporary directory so that parallel builds work
+            self._run_gcov(dir, pattern, running_dir=t.tmpdir)
+            covs = glob.glob(os.path.join(t.tmpdir, "*.gcov"))
             covs.sort()
             for cov in covs:
                 ret = self._parse_gcov_file(cov)
@@ -201,15 +218,14 @@ class _CoverageTester(object):
               % (source, statements, executed, cover,
                  self._get_missing_ranges(missing))
 
-    def _run_gcov(self, dir, pattern):
+    def _run_gcov(self, dir, pattern, running_dir=None):
         import subprocess
-        # Note that since gcov insists on dumping .gcov in the current
-        # directory and that .cpp and coverage files are in the same
-        # directory, this probably won't work with parallel builds (todo: fix)
-        # or out of tree builds.
+        # Note that gcov expects to find the .cpp file in the same directory
+        # as the coverage info, so annotated output probably won't work
+        # with out of tree builds
         cmd = 'gcov -l -p -o %s %s' % (dir, os.path.join(dir, pattern))
         p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+                             stderr=subprocess.PIPE, cwd=running_dir)
         out = p.stdout.read()
         err = p.stderr.read()
         ret = p.wait()
