@@ -44,6 +44,7 @@ class _CoverageTester(object):
         elif test_type.startswith('application'):
             self._test_type = 'application'
             self.add_source('applications/%s' % name, '*.cpp', report=True)
+            self.add_header('applications/%s' % name, '*.h', report=True)
 
     def add_source(self, directory, pattern, report):
         self._sources.append([directory, pattern, report])
