@@ -113,7 +113,7 @@ class vonMisesSufficient : public base::Object
 
   void set_N(unsigned N){
     N_=N;
-    I0N_=pow(I0_,N_);
+    I0N_=pow(I0_, static_cast<int>(N_));
     logterm_ = log(2*IMP::PI*I0N_);
   }
 
@@ -122,7 +122,7 @@ class vonMisesSufficient : public base::Object
         kappa_ = kappa;
         I0_ = internal::bessel_i0(kappa);
         I1_ = internal::bessel_i1(kappa);
-        I0N_=pow(I0_,N_);
+        I0N_=pow(I0_, static_cast<int>(N_));
         logterm_ = log(2*IMP::PI*I0N_);
     }
   }
