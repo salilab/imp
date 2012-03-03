@@ -63,7 +63,7 @@ against IMP.
 %build
 
 %install
-scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} install
+scons destdir=${RPM_BUILD_ROOT} docdir=/usr/share/doc/%{name}-%{version} %{scons_opts} disabledmodules=example:scratch install
 # Note that we currently don't include the documentation in the RPM, since
 #      a) it takes a long time to run doxygen
 #      b) doxygen isn't installed on all of our build systems
@@ -79,6 +79,10 @@ if echo ${version} | grep -q SVN; then
 else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
+# Don't distribute example application or system
+rm -f ${RPM_BUILD_ROOT}/usr/bin/example \
+      ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
+      ${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages/IMP/example_system_local
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
