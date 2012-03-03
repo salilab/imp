@@ -6,7 +6,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief='This module contains general purpose algebraic and geometric methods.',
                  overview="""This module contains general purpose algebraic and geometric methods that are expected to be used by a wide variety of \\imp modules.
 
-\\par Geometric primitives\\anchor geometricprimitives
+\\anchor geometricprimitives
+\\par Geometric primitives
 \\imp has a number of geometry primitives. They support the following namespace
 functions as appropriate
   - IMP::algebra::get_bounding_box()
