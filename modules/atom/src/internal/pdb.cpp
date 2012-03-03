@@ -99,12 +99,16 @@ float atom_zcoord(const String& pdb_line)
 
 float atom_occupancy(const String& pdb_line)
 {
-  return atof(pdb_line.substr(atom_occupancy_field_).c_str());
+  if(pdb_line.length() >= atom_occupancy_field_ + 6)
+    return atof(pdb_line.substr(atom_occupancy_field_).c_str());
+  return 0.0;
 }
 
 float atom_temp_factor(const String& pdb_line)
 {
-  return atof(pdb_line.substr(atom_temp_factor_field_).c_str());
+  if(pdb_line.length() >= atom_temp_factor_field_ + 6)
+    return atof(pdb_line.substr(atom_temp_factor_field_).c_str());
+  return 0.0;
 }
 
 String atom_element(const String& pdb_line)

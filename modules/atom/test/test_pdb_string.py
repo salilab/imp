@@ -90,5 +90,19 @@ class PDBReadWriteTest(IMP.test.TestCase):
         self.assertAlmostEqual(a.get_occupancy(), 2.00, delta=0.01)
         self.assertAlmostEqual(a.get_temperature_factor(), 6.40, delta=0.01)
 
+    def test_read_short_atom_line(self):
+        """Test that we can read PDB ATOM record with coordinates only"""
+        s = StringIO()
+        s.write('ATOM                          3000.0001000.4002000.600\n')
+        s.seek(0)
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(s, m)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 1)
+        coord = IMP.core.XYZ(atoms[0]).get_coordinates()
+        self.assertAlmostEqual(coord[0], 3000.000, delta=0.001)
+        self.assertAlmostEqual(coord[1], 1000.400, delta=0.001)
+        self.assertAlmostEqual(coord[2], 2000.600, delta=0.001)
+
 if __name__ == '__main__':
     IMP.test.main()
