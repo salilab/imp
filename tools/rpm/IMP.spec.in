@@ -92,9 +92,11 @@ else
   echo "http://salilab.org/imp/%{version}/doc/html/" >> ${README}
 fi
 # Don't distribute example application or system
-rm -f ${RPM_BUILD_ROOT}/usr/bin/example \
-      ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
-      ${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages/IMP/example_system_local
+pydir=${RPM_BUILD_ROOT}%{_libdir}/python*/site-packages
+rm -rf ${RPM_BUILD_ROOT}/usr/bin/example \
+       ${RPM_BUILD_ROOT}%{_libdir}/libimp_example_system* \
+       ${pydir}/IMP/example_system_local \
+       ${pydir}/_IMP_example_system_local.so
 
 %clean
 [ "$RPM_BUILD_ROOT" != "/" ] && rm -rf ${RPM_BUILD_ROOT}
