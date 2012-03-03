@@ -2,7 +2,7 @@ import os
 import os.path
 
 Import('env')
-env= env.IMPApplication(name="rmf_tools", version='nightly-1/3/2012',
+env= env.IMPApplication(name="rmf_tools", version='nightly-2/3/2012',
                         authors=["Daniel Russel"],
                         brief="An example set of applications.",
                         overview="An example application.""",
