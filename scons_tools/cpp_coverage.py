@@ -63,9 +63,12 @@ class _CoverageTester(object):
         """Erase any existing gcda files, so coverage we report is solely
            a result of the tests being currently run."""
         for dir, pattern, report in self._sources:
-            # todo: glob pattern to fix parallel runs
-            for f in glob.glob(os.path.join(dir, '*.gcda')):
-                os.unlink(f)
+            for f in glob.glob(os.path.join(dir, pattern)):
+                g = os.path.splitext(f)[0] + '.gcda'
+                try:
+                    os.unlink(g)
+                except IOError:
+                    pass
 
     def _report(self):
         if self._coverage == 'lines':
