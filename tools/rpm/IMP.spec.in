@@ -15,11 +15,23 @@ BuildRequires: modeller, gsl-devel, hdf5-devel, fftw-devel
 # doesn't have a new enough OpenCV in EPEL, or the eigen package, so
 # disable em2d and isd modules.
 # on Fedora, all of these packages are available; add them as dependencies
+
+# If you are using RHEL and really want the isd module, add
+# '-D "rhel_have_eigen3 1"' to your rpmbuild invocation. You will need to
+# build and install your own eigen3-devel RPM first (get the RPM spec and
+# patch files from http://svn.salilab.org/imp/trunk/tools/rpm/).
+# IMP binary RPMs are built this way, since eigen3 is header only and so
+# this adds no extra dependencies to the binary package.
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
 %define scons_opts %{nil}
 %else
+%if 0%{?rhel_have_eigen3}
+%define scons_opts cgal=no opencv21=no opencv22=no
+BuildRequires: eigen3-devel
+%else
 %define scons_opts cgal=no opencv21=no opencv22=no eigen3=no
+%endif
 %endif
 
 %description
