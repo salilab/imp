@@ -57,10 +57,11 @@ class _CoverageTester(object):
         ret = self._env.Execute(*args, **keys)
         if self._test_type:
             self._report()
-        self._cleanup_coverage_files()
         return ret
 
     def _cleanup_coverage_files(self):
+        """Erase any existing gcda files, so coverage we report is solely
+           a result of the tests being currently run."""
         for dir, pattern, report in self._sources:
             # todo: glob pattern to fix parallel runs
             for f in glob.glob(os.path.join(dir, '*.gcda')):
