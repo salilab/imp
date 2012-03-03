@@ -61,6 +61,16 @@ for PYVER in 2.3 2.4 2.5 2.7; do
 done
 rmdir ${ROOT}/pylib || exit 1
 
+# Remove example/scratch module and example application/system (if installed)
+rm -rf ${ROOT}/bin/example \
+       ${ROOT}/bin/libimp_example.* \
+       ${ROOT}/bin/libimp_example_system* \
+       ${ROOT}/bin/libimp_scratch.* \
+       ${ROOT}/python/IMP/scratch ${ROOT}/python/*/_IMP_scratch.pyd \
+       ${ROOT}/python/IMP/example ${ROOT}/python/*/_IMP_example.pyd \
+       ${ROOT}/python/IMP/example_system_local \
+       ${ROOT}/python/*/_IMP_example_system_local.pyd
+
 # Add redist MSVC runtime DLLs
 DLLSRC=/usr/lib/w32comp/windows/system
 cp ${DLLSRC}/msvc*100.dll ${ROOT}/bin || exit 1

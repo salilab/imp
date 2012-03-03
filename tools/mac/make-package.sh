@@ -59,6 +59,17 @@ if [ ! -f ${DESTDIR}/${PREFIX}/bin/foxs ]; then
   exit 1
 fi
 
+# Remove example/scratch module and example application/system (if installed)
+pydir=${DESTDIR}/${PREFIX}/lib/python${PYTHON}/site-packages/
+rm -rf ${DESTDIR}/${PREFIX}/bin/example \
+       ${DESTDIR}/${PREFIX}/lib/libimp_example.* \
+       ${DESTDIR}/${PREFIX}/lib/libimp_example_system* \
+       ${DESTDIR}/${PREFIX}/lib/libimp_scratch.* \
+       ${pydir}/IMP/scratch ${pydir}/_IMP_scratch.so \
+       ${pydir}/IMP/example ${pydir}/_IMP_example.so \
+       ${pydir}/IMP/example_system_local \
+       ${pydir}/_IMP_example_system_local.so
+
 echo "Making IMP.pth to add IMP Python modules to the Python path..."
 mkdir -p ${DESTDIR}/Library/Python/${PYTHON}/site-packages/ || exit 1
 echo "${PREFIX}/lib/python${PYTHON}/site-packages/" > ${DESTDIR}/Library/Python/${PYTHON}/site-packages/IMP.pth
