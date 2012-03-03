@@ -73,6 +73,15 @@ class _CoverageTester(object):
     def _report(self):
         if self._coverage == 'lines':
             self._report_lines()
+        elif self._coverage == 'annotate':
+            self._report_annotate()
+
+    def _report_annotate(self):
+        for dir, pattern, report in self._sources:
+            self._run_gcov(dir, pattern)
+        print >> sys.stderr, \
+                 "\nC++ coverage of %s %s written to *.gcov in " \
+                 "top-level directory." % (self._name, self._test_type)
 
     def _report_lines(self):
         t = _TempDir()
