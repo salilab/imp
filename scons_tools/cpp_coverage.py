@@ -12,7 +12,7 @@ class _TempDir(object):
         self._origdir = os.getcwd()
         self.tmpdir = tempfile.mkdtemp()
         # Fool gcov into thinking this dir is the IMP top-level dir
-        for subdir in ('build', 'modules'):
+        for subdir in ('build', 'modules', 'applications'):
             os.symlink(os.path.join(self._origdir, subdir),
                        os.path.join(self.tmpdir, subdir))
     def __del__(self):
