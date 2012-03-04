@@ -58,10 +58,6 @@ def create_model_and_particles():
   return (m, sc)
 %}
 
-%template(VectorOfFloats) ::std::vector<IMP::Floats >;
-//%template(VectorOfInts) ::std::vector<IMP::Ints >;
-
-
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
 %include "IMP/isd/ISDRestraint.h"
