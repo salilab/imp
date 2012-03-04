@@ -9,6 +9,7 @@
 #include <numeric>
 #include <IMP/core/XYZ.h>
 #include <IMP/Particle.h>
+#include <iostream>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -19,18 +20,19 @@ FretrRestraint::FretrRestraint(Particles pd, Particles pa,
                                std::string name):
   Restraint("FRET_R Restraint " + name) {
 
- pd_       = pd;
- pa_       = pa;
- R0_       = R0;
- gamma_    = gamma;
- Ida_      = Ida;
- fretr_    = fretr;
- kappa_    = kappa;
+ pd_     = pd;
+ pa_     = pa;
+ R0_     = R0;
+ gamma_  = gamma;
+ Ida_    = Ida;
+ fretr_  = fretr;
+ kappa_  = kappa;
+// photobleaching?
  if(Pbleach0 >= 1.0 && Pbleach1 >= 1.0){
   photobleach_ = false;
  }else{
   photobleach_ = true;
-  mcsteps_ = 500;
+  mcsteps_ = 100;
   set_photobleach(Pbleach0,Pbleach1);
  }
 }
@@ -74,7 +76,7 @@ double FretrRestraint::get_bleach_fretr() const
  Floats power6(pd_.size()*pa_.size());
  for(unsigned i = 0; i < pd_.size(); ++i){
   for(unsigned j = 0; j < pa_.size(); ++j){
-   double p  = R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
+   double p = R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
    power6[ i * pa_.size() + j ] = p*p*p*p*p*p;
   }
  }
@@ -84,7 +86,7 @@ double FretrRestraint::get_bleach_fretr() const
  for(unsigned imc=0;imc<mcsteps_;++imc){
 
 // number of acceptors alive when measuring FRET channel
-  double Na      = 0.0;
+  double Na = 0.0;
   for(unsigned j = 0; j < pa_.size(); ++j){
    Na += bleach0_[ imc * pa_.size() + j ];
   }
@@ -95,7 +97,7 @@ double FretrRestraint::get_bleach_fretr() const
    double Fi_0 = 0.0;
    double Fi_1 = 0.0;
    for(unsigned j = 0; j < pa_.size(); ++j){
-    double p6  = power6[ i * pa_.size() + j ];
+    double p6 = power6[ i * pa_.size() + j ];
     Fi_0 += bleach0_[ imc * pa_.size() + j ] * p6;
     Fi_1 += bleach1_[ imc * pa_.size() + j ] * p6;
    }
@@ -103,11 +105,11 @@ double FretrRestraint::get_bleach_fretr() const
    sumFi_1 += 1.0 / ( 1.0 + Fi_1 );
   }
 
-  fretr += ( Ida_*sumFi_0 + Na + gamma_*((double)pd_.size()-sumFi_0) ) /
-           ( Ida_*sumFi_1 + (double)pa_.size() ) - fretr_;
+  fretr += ( Ida_*sumFi_0 + Na/7.0 + gamma_*((double)pd_.size()-sumFi_0) ) /
+           ( Ida_*sumFi_1 + (double)pa_.size()/7.0 ) - fretr_;
  }
 
- fretr/=(double)mcsteps_;
+ fretr /= (double) mcsteps_;
 
  return fretr;
 }
@@ -119,14 +121,14 @@ double FretrRestraint::get_nobleach_fretr() const
  for(unsigned i = 0; i < pd_.size(); ++i){
   double Fi = 0.0;
   for(unsigned j = 0; j < pa_.size(); ++j){
-   double p  = R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
+   double p = R0_/core::get_distance(core::XYZ(pd_[i]),core::XYZ(pa_[j]));
    Fi += p*p*p*p*p*p;
   }
   sumFi += 1.0 / ( 1.0 + Fi );
  }
 
  double fretr = 1.0 + gamma_ * ( (double) pd_.size() - sumFi ) /
-                ( Ida_ * sumFi + (double) pa_.size() ) - fretr_;
+                ( Ida_ * sumFi + (double) pa_.size() / 7.0 ) - fretr_;
 
  return fretr;
 }

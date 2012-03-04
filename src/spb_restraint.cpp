@@ -221,7 +221,11 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
  FretParameters Fret, double kappa, bool use_GFP)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
- atom::Selection sa=atom::Selection(hs);
+ atom::Hierarchies hhs;
+ hhs.push_back(hs[0]);
+ hhs.push_back(hs[1]);
+ hhs.push_back(hs[2]);
+ atom::Selection sa=atom::Selection(hhs);
  atom::Selection sb=atom::Selection(hs);
  if(use_GFP){
   protein_a=protein_a+"-"+residues_a+"-GFP";
