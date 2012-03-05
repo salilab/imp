@@ -186,18 +186,13 @@ private:
   ::type::const_iterator LookupIterator;
   typedef typename boost::multi_index::template nth_index<Map, 1>
   ::type::const_iterator OrderIterator;
-  LookupIterator add_value(const Key &k) const {
+  Value add_value(const Key &k) const {
     Value v= gen_(k, *this);
     OrderIterator it= map_.template get<1>().push_front(KVP(k, v)).first;
-    bool popped=map_.size() > max_size_;
     while (map_.size() > max_size_) {
       map_.template get<1>().pop_back();
     }
-    if (popped) {
-      return map_.template get<0>().find(k);
-    } else {
-      return map_.template project<0>(it);
-    }
+    return v;
   }
 public:
   LRUCache(const Generator &gen, unsigned int size,
@@ -206,21 +201,23 @@ public:
                                              max_size_(size),
                                              num_stats_(0),
                                              num_misses_(0){}
-  const Value &get(const Key &k) const {
+  Value get(const Key &k) const {
     LookupIterator it=map_.template get<0>().find(k);
+    ++num_stats_;
     if (it == map_.template get<0>().end()) {
       IMP_LOG(VERBOSE, "Cache miss on " << k << std::endl);
-      it=add_value(k);
       ++num_misses_;
+      Value v=add_value(k);
+      return v;
+    } else {
+      map_.template get<1>().relocate(map_.template project<1>(it),
+                                      map_.template get<1>().begin());
+      IMP_INTERNAL_CHECK(checker_(it->value,
+                                  gen_(k, *this)),
+                         "Results don't match: " << it->value << " != "
+                         << gen_(k, *this));
+      return it->value;
     }
-    ++num_stats_;
-    map_.template get<1>().relocate(map_.template project<1>(it),
-                                    map_.template get<1>().begin());
-    IMP_INTERNAL_CHECK(checker_(it->value,
-                                gen_(k, *this)),
-                       "Results don't match: " << it->value << " != "
-                       << gen_(k, *this));
-    return it->value;
 
   }
   double get_hit_rate() const {
