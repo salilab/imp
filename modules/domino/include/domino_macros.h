@@ -38,6 +38,8 @@
 
 /** This macro declares
     - IMP::domino::SubsetFilterTable::get_subset_filter()
+    - IMP::domino::SubsetFilterTable::get_strength()
+    in addition to the IMP_OBJECT() methods.
 */
 #define IMP_SUBSET_FILTER_TABLE(Name)                                   \
   public:                                                               \
