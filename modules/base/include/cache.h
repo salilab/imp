@@ -189,10 +189,15 @@ private:
   LookupIterator add_value(const Key &k) const {
     Value v= gen_(k, *this);
     OrderIterator it= map_.template get<1>().push_front(KVP(k, v)).first;
+    bool popped=map_.size() > max_size_;
     while (map_.size() > max_size_) {
       map_.template get<1>().pop_back();
     }
-    return map_.template project<0>(it);
+    if (popped) {
+      return map_.template get<0>().find(k);
+    } else {
+      return map_.template project<0>(it);
+    }
   }
 public:
   LRUCache(const Generator &gen, unsigned int size,
@@ -204,6 +209,7 @@ public:
   const Value &get(const Key &k) const {
     LookupIterator it=map_.template get<0>().find(k);
     if (it == map_.template get<0>().end()) {
+      IMP_LOG(VERBOSE, "Cache miss on " << k << std::endl);
       it=add_value(k);
       ++num_misses_;
     }
@@ -212,7 +218,8 @@ public:
                                     map_.template get<1>().begin());
     IMP_INTERNAL_CHECK(checker_(it->value,
                                 gen_(k, *this)),
-                       "Results don't match.");
+                       "Results don't match: " << it->value << " != "
+                       << gen_(k, *this));
     return it->value;
 
   }
