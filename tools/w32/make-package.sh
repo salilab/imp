@@ -80,6 +80,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_filesystem-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_program_options-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_system-vc100-mt-1_44.dll \
+   ${DLLSRC}/boost_date_time-vc100-mt-1_44.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
    ${DLLSRC}/opencv_ffmpeg220.dll \
@@ -88,7 +89,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
 # Check all installed binaries for DLL dependencies, to make sure we
 # didn't miss any
 # We should really parse the PE files properly rather than using 'strings' here!
-strings ${ROOT}/bin/*.exe ${ROOT}/bin/*.pyd ${ROOT}/bin/*.dll \
+strings ${ROOT}/bin/*.exe ${ROOT}/bin/*.dll ${ROOT}/python/*/*.pyd \
         | grep -i '\.dll' | sort -u | tr '[:upper:]' '[:lower:]' > w32.deps
 (cd ${ROOT}/bin && ls *.dll) | tr '[:upper:]' '[:lower:]' > w32.dlls
 
