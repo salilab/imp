@@ -233,6 +233,9 @@ public:
   Generator &access_generator() {
     return gen_;
   }
+  const Generator &get_generator() const {
+    return gen_;
+  }
 };
 
 
