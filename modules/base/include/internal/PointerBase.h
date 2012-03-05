@@ -293,19 +293,6 @@ public:
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class Traits>
-inline std::ostream &operator<<(std::ostream &out,
-                const vector<PointerBase<Traits> > &data) {
-  out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i]->get_name();
-  }
-  out << "]";
-  return out;
-}
-template <class Traits>
 inline void swap(PointerBase<Traits> &a, PointerBase<Traits> &b) {
   a.swap_with(b);
 }
