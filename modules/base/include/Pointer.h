@@ -126,6 +126,19 @@ struct OwnerPointer: internal::PointerBase<internal::OwnerPointerTraits<O> > {
 
 IMP_OBJECTS(Object, Objects);
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class T>
+inline std::ostream &operator<<(std::ostream &out, Pointer<T> o) {
+  out << Showable(o.get());
+  return out;
+}
+template <class T>
+inline std::ostream &operator<<(std::ostream &out, OwnerPointer<T> o) {
+  out << Showable(o.get());
+  return out;
+}
+#endif
+
 #ifndef IMP_DOXYGEN
 #if IMP_BUILD < IMP_FAST
 

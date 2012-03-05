@@ -9,6 +9,5 @@
 #include <IMP/base/Showable.h>
 #include <IMP/base/Object.h>
 IMPBASE_BEGIN_NAMESPACE
-Showable::Showable(Object *o): str_(o?o->get_name():"NULL"){}
-
+Showable::~Showable(){}
 IMPBASE_END_NAMESPACE
