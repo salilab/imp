@@ -82,6 +82,12 @@ class IMPISDEXPORT BivariateFunction : public base::Object
              unsigned particle_a, unsigned particle_b,
              const FloatsList& xlist) const = 0;
 
+     //for testing purposes
+     virtual FloatsList get_second_derivative_matrix(
+             unsigned particle_a, unsigned particle_b,
+             const FloatsList& xlist,
+             bool stupid) const = 0;
+
      //! returns the number of input dimensions
      virtual unsigned get_ndims_x1() const = 0;
      virtual unsigned get_ndims_x2() const = 0;
@@ -415,6 +421,23 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
                         if (i!=j) ret(j,i) = ret(i,j);
                     }
                 }
+            }
+            return ret;
+        }
+
+        FloatsList get_second_derivative_matrix(
+             unsigned particle_a, unsigned particle_b,
+             const FloatsList& xlist, bool) const
+        {
+            Eigen::MatrixXd mat( get_second_derivative_matrix(
+                        particle_a, particle_b, xlist));
+            FloatsList ret;
+            for (unsigned i=0; i<mat.rows(); i++)
+            {
+                Floats line;
+                for (unsigned j=0; j<mat.cols(); j++)
+                    line.push_back(mat(i,j));
+                ret.push_back(line);
             }
             return ret;
         }
