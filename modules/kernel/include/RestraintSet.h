@@ -179,7 +179,7 @@ inline RestraintSetsTemp get_restraint_sets(It b, It e) {
 /** @} */
 
 //! Print the hierarchy of restraints
-IMPEXPORT void show_restraint_hierarchy(RestraintSet *rs,
+IMPEXPORT void show_restraint_hierarchy(Restraint *rs,
                                      std::ostream &out=std::cout);
 
 IMP_END_NAMESPACE

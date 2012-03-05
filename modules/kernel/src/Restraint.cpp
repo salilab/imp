@@ -121,6 +121,7 @@ namespace {
                       :0),
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
+      SetLogState sls(WARNING);
       Floats sin= in->get_model()->evaluate(RestraintsTemp(1, in), false);
       Floats sout= in->get_model()->evaluate(RestraintsTemp(1, out), false);
       // correct for it having a weight in the model
