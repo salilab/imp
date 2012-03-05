@@ -20,7 +20,7 @@ IMPBASE_BEGIN_NAMESPACE
 //! Store an array of values of the same type.
 /** Items must be comparable and hashable and the arrays
     cannote be changed after creation.*/
-template <class Data>
+template <class Data, class SwigData=Data>
 class ConstArray {
   boost::scoped_array<Data> v_;
   unsigned int sz_;
@@ -84,14 +84,14 @@ public:
     return v_[i];
   }
 #ifndef IMP_DOXYGEN
-  void set_item(unsigned int i, Data v) const {
+  void set_item(unsigned int i, SwigData v) const {
     IMP_USAGE_CHECK(i < sz_, "Out of range");
     v_[i]=v;;
   }
 #endif
 #endif
 #ifndef IMP_DOXYGEN
-  Data __getitem__(unsigned int i) const {
+  SwigData __getitem__(unsigned int i) const {
     if (i >= sz_) IMP_THROW("Out of bound " << i << " vs " << sz_,
                             IndexException);
     return operator[](i);
