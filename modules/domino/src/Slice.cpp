@@ -2,19 +2,13 @@
  *  \file domino/DominoSampler.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
+#include <IMP/domino/Slice.h>
 #include <IMP/domino/Subset.h>
 
 
-
 IMPDOMINO_BEGIN_NAMESPACE
-
-std::string Subset::get_name() const {
-  std::ostringstream oss;
-  show(oss);
-  return oss.str();
-}
 
 IMPDOMINO_END_NAMESPACE

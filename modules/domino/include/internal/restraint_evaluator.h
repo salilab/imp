@@ -209,12 +209,16 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
     SubsetID(const Subset &s,
              const Subsets &excluded): s_(s), excluded_(excluded){}
     bool operator<(const SubsetID &o) const {
+      if (s_.size() < o.s_.size()) return true;
+      else if (s_.size() > o.s_.size()) return false;
       if (s_ < o.s_) return true;
       else if (s_ > o.s_) return false;
       else if (excluded_.size() < o.excluded_.size()) return true;
       else if (excluded_.size() > o.excluded_.size()) return false;
       else {
         for (unsigned int i=0; i< excluded_.size(); ++i) {
+          if (excluded_[i].size() < o.excluded_[i].size()) return true;
+          else if (excluded_[i].size() > o.excluded_[i].size()) return false;
           if (excluded_[i] < o.excluded_[i]) return true;
           else if (excluded_[i] > o.excluded_[i]) return false;
         }

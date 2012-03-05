@@ -95,33 +95,6 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
                                const Subset &subset, const Subsets &excluded);
 
 
-#if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
-class AssignmentContainer;
-
-/** \name HDF5 I/O
-    \anchor hdf5io
-    Lists of assignments can be written to HDF5 data sets and read back. The
-    passed list of particles is used to figure out the order when reading things
-    back, it must match across setting and getting for the results to make
-    sense.
-
-    The dimension of the data set must be 2.
-    @{
-*/
-/** The existing data set is completely rewritten.
-    See IMP::rmf.
- */
-IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
-                                      const Subset &s,
-                                      const ParticlesTemp &all_particles,
-                                      RMF::HDF5IndexDataSet2D dataset);
-/** See \ref hdf5io "HDF5 I/O". */
-IMPDOMINOEXPORT AssignmentContainer*
-create_assignments_container(RMF::HDF5IndexDataSet2D dataset,
-                             const Subset &s,
-                             const ParticlesTemp &all_particles);
-/** @} */
-#endif
 
 /** Return the list of interactions implied by the passed balls
     given the allowed positions specified by the ParticleStatesTable.
@@ -131,49 +104,6 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
                                             double max_distance,
                                             ParticleStatesTable *pst);
 
-
-/** \name Reordering for IO
-
-    Return a list of indexes into s, representing a permutation of the
-    particles in s, so that they are ordered according to all_particles.
-    This order can be used to write s to disk, as the order in s can
-    change between domino runs.
-
-    @{
-*/
-IMPDOMINOEXPORT Ints get_order(const Subset &s,
-                               const ParticlesTemp &all_particles);
-
-template <class It>
-inline Assignment get_from_output(It b, It ,
-                                  const Ints &order) {
-  Assignment ret(order.size());
-  for (unsigned int i=0; i< order.size(); ++i) {
-    ret.set_item(i, b[order[i]]);
-  }
-  return ret;
-}
-
-inline Assignment get_from_output(const Ints &a,
-                                  const Ints &order) {
-  return get_from_output(a.begin(), a.end(), order);
-}
-
-inline Ints get_output(const Assignment &a,
-                       const Ints &order) {
-  Ints ret(a.size());
-  for (unsigned int i=0; i< a.size(); ++i) {
-    ret[order[i]]= a[i];
-  }
-  IMP_USAGE_CHECK(get_from_output(ret, order)
-                  == a, "In and out don't match: "
-                  << a << " vs " << get_from_output(ret, order));
-  return ret;
-}
-
-
-
-/** @} */
 
   //! Fill in assignments for a leaf
 IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
