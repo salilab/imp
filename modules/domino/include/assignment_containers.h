@@ -12,7 +12,7 @@
 #include "domino_config.h"
 #include "Assignment.h"
 #include "Order.h"
-#include "subset_filters.h"
+#include "subset_scores.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/statistics/metric_clustering.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
@@ -295,11 +295,14 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
   };
   typedef vector<AP> C;
   C d_;
+  Subset subset_;
+  Slices slices_;
+  Restraints rs_;
   unsigned int k_; // max number of assignments (heap size)
-  Pointer<RestraintScoreSubsetFilter> rssf_;//to score candidate assignments
+  Pointer<RestraintCache> rssf_;//to score candidate assignments
  public:
-  HeapAssignmentContainer(unsigned int k,
-                          RestraintScoreSubsetFilter *rssf,
+  HeapAssignmentContainer(Subset subset, unsigned int k,
+                          RestraintCache *rssf,
                           std::string name="HeapAssignmentsContainer %1%");
   IMP_ASSIGNMENT_CONTAINER(HeapAssignmentContainer);
 };

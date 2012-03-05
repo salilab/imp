@@ -107,8 +107,8 @@ class DOMINOTests(IMP.test.TestCase):
         h=IMP.core.HarmonicLowerBound(0,1)
         sd=IMP.core.SphereDistancePairScore(h)
         pr=IMP.container.PairsRestraint(sd,nbl)
-        max_score=1
-        m.set_maximum_score(pr,max_score)
+        max_score=.9
+        pr.set_maximum_score(max_score)
         rs.add_restraint(pr)
         m.add_restraint(rs)
         #create particles state table
@@ -117,7 +117,10 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps:
             pst.set_particle_states(p,states)
         max_violations=0
-        ft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(rs,pst,max_violations)
+        rc= IMP.domino.RestraintCache(pst)
+        rc.add_restraints([rs])
+        ft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(rs.get_restraints(),
+                                                              rc,max_violations)
         samp=IMP.domino.DominoSampler(m,pst)
         samp.set_subset_filter_tables([ft])
         cs=samp.get_sample()

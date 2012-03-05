@@ -31,7 +31,6 @@ IMP_SWIG_OBJECT(IMP::domino, SimpleAssignmentsTable, SimpleAssignmentsTables);
 IMP_SWIG_OBJECT(IMP::domino, CompoundStates, CompoundStatesList);
 IMP_SWIG_OBJECT(IMP::domino, DisjointSetsSubsetFilterTable, DisjointSetsSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, MinimumRestraintScoreSubsetFilterTable, MinimumRestraintScoreSubsetFilterTables);
-IMP_SWIG_OBJECT(IMP::domino, MinimumRestraintScoreSubsetFilter, MinimumRestraintScoreSubsetFilters);
 IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);
 IMP_SWIG_OBJECT(IMP::domino, EqualitySubsetFilterTable, EqualitySubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, EquivalenceSubsetFilterTable, EquivalenceSubsetFilterTables);
@@ -79,16 +78,17 @@ IMP_SWIG_VALUE(IMP::domino, Order, Orders);
 %include "IMP/domino/Slice.h"
 %include "IMP/domino/Order.h"
 %include "IMP/domino/particle_states.h"
+%include "IMP/domino/subset_scores.h"
 %include "IMP/domino/subset_filters.h"
 %include "IMP/domino/assignment_containers.h"
 %include "IMP/domino/assignment_tables.h"
 %include "IMP/domino/subset_graphs.h"
-%include "IMP/domino/subset_scores.h"
 %include "IMP/domino/optimize_restraints.h"
 %include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/DominoSampler.h"
 %include "IMP/domino/BranchAndBoundSampler.h"
 %include "IMP/domino/utility.h"
+%include "IMP/domino/interactive.h"
 %include "IMP/domino/analysis.h"
 %include "IMP/domino/DependencyScoreState.h"
 

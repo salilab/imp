@@ -193,80 +193,79 @@ void RestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 
 
 /***************************MINIMUM ******************************/
-bool MinimumRestraintScoreSubsetFilter::get_is_ok(const Assignment &state)
-  const{
+namespace {
+/** A minimum restraint score based SubsetFilter.
+    See MinimumRestraintScoreSubsetFilterTable.
+ */
+class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter: public SubsetFilter {
+  Pointer<RestraintCache> rc_;
+  RestraintsTemp rs_;
+  Slices slices_;
+  unsigned int max_;
+  friend class IMP::domino::MinimumRestraintScoreSubsetFilterTable;
+  MinimumRestraintScoreSubsetFilter(RestraintCache *rc,
+                                     Subset s,
+                                    const RestraintsTemp &rs,
+                                    int max):
+    SubsetFilter("Minimum restraint score filter"),
+      rc_(rc), rs_(rs),
+      max_(max){
+        for (unsigned int i=0; i< rs_.size(); ++i) {
+          slices_.push_back(rc->get_slice(rs_[i],s));
+        }
+  }
+public:
+  IMP_SUBSET_FILTER(MinimumRestraintScoreSubsetFilter);
+  double get_score(const Assignment& state) const;
+};
+
+bool MinimumRestraintScoreSubsetFilter
+::get_is_ok(const Assignment &state) const{
   IMP_OBJECT_LOG;
   set_was_used(true);
-  const bool ok=
-    data_.get_is_ok_minimal(state, max_number_of_violated_restraints_);
-  IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
-          << (ok?" accepted":" rejected")
-          << " state " << state << std::endl);
-  return ok;
-}
-
-void MinimumRestraintScoreSubsetFilter::do_show(std::ostream &out) const{
-  out << "subset: " << data_.get_subset() << std::endl;
-}
-
-int MinimumRestraintScoreSubsetFilter::get_next_state(int pos,
-                                               const Assignment& state) const {
-  Particle *p= data_.get_subset()[pos];
-  unsigned int num
-    = keepalive_->pst_->get_particle_states(p)->get_number_of_particle_states();
-  Ints cur(state.begin(), state.end());
-  for (unsigned int i=state[pos]+1; i<num; ++i) {
-    cur[pos]=i;
-    Assignment as(cur);
-    if (get_is_ok(as)) {
-      return i;
+  unsigned int bad_count=0;
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    double s= rc_->get_score(rs_[i], slices_[i].get_sliced(state));
+    if (s >= std::numeric_limits<double>::max()) {
+      ++bad_count;
+      if (bad_count==max_) break;
     }
   }
-  return num;
+  return bad_count < max_;
 }
 
-
-double MinimumRestraintScoreSubsetFilter::get_score(const Assignment& state)
-  const {
-  IMP_OBJECT_LOG;
-  set_was_used(true);
-  const double score=data_.get_score(state);
-  return score;
+void MinimumRestraintScoreSubsetFilter::do_show(std::ostream &) const{
+}
 }
 
-MinimumRestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
-  IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE,
-            "Minimum restraint filtration statistics (attempts, passes):\n");
-    for (unsigned int i=0; i< get()->rdata_.size(); ++i) {
-      std::pair<int,int> stat= get()->rdata_[i].get_statistics();
-      if (stat.first >0) {
-        IMP_LOG(TERSE, "  \""
-                << get()->rdata_[i].get_restraint()->get_name()
-                << "\" " << stat.first << " " << stat.second << std::endl);
-      }
-    }
-  }
-  IMP_LOG(TERSE, "end Resraint filtration statistics (attempts, passes):\n");
-}
 
 
 
 MinimumRestraintScoreSubsetFilterTable
-::MinimumRestraintScoreSubsetFilterTable(RestraintSet *eval,
-             ParticleStatesTable *pst,int max_number_of_violated_restraints):
+::MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
+                                         RestraintCache *rc,
+                                         int max):
   SubsetFilterTable("MinimumRestraintScoreSubsetFilterTable%1%"),
-  mset_(new internal::ModelData(RestraintsTemp(1, eval), pst)),
-  max_number_of_violated_restraints_(max_number_of_violated_restraints) {
+  rc_(rc), rs_(rs.begin(), rs.end()), max_violated_(max){
+  std::sort(rs_.begin(), rs_.end());
   }
 
-MinimumRestraintScoreSubsetFilterTable
-::MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &m,
-               ParticleStatesTable *pst,int max_number_of_violated_restraints):
-  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
-  mset_(new internal::ModelData(m, pst)),
-  max_number_of_violated_restraints_(max_number_of_violated_restraints) {
+RestraintsTemp MinimumRestraintScoreSubsetFilterTable
+::get_restraints(const Subset &s,
+                 const Subsets &excluded) const {
+  RestraintsTemp all= rc_->get_restraints(s, excluded);
+  // if there are no new ones, return nothing
+  if (all.empty()) return RestraintsTemp();
+  // otherwise, we want them all, not just new
+  all= rc_->get_restraints(s, Subsets());
+  RestraintsTemp ret;
+  for (unsigned int i=0; i< all.size(); ++i) {
+    if (std::binary_search(rs_.begin(), rs_.end(), all[i])) {
+      ret.push_back(all[i]);
+    }
   }
+  return ret;
+}
 
 SubsetFilter*
 MinimumRestraintScoreSubsetFilterTable
@@ -274,28 +273,12 @@ MinimumRestraintScoreSubsetFilterTable
                     const Subsets &excluded) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Looking for restraints acting on " << s << " minus ");
-    for (unsigned int i=0; i< excluded.size(); ++i) {
-      IMP_LOG(VERBOSE, excluded[i] << " ");
-    }
-    IMP_LOG(VERBOSE, std::endl);
-  }
-
-  // if there are no restraints just here, the total score can't change
-  if (mset_->get_subset_data(s)
-      .get_number_of_total_restraints() ==0) {
-    IMP_LOG(VERBOSE, "none found" << std::endl);
-    return NULL;
-  } else {
-    IMP_LOG(VERBOSE, mset_->get_subset_data(s)
-            .get_number_of_total_restraints() << " found" << std::endl);
-    SubsetFilter* ret
-      = new MinimumRestraintScoreSubsetFilter(mset_,
-                              mset_->get_subset_data(s),
-                              max_number_of_violated_restraints_);
-    ret->set_log_level(get_log_level());
-    return ret;
+  RestraintsTemp rs= get_restraints(s, excluded);
+  if (rs.empty()) return nullptr;
+  else {
+    return new MinimumRestraintScoreSubsetFilter(rc_, s,
+                                                 rs,
+                                                 max_violated_);
   }
 }
 
@@ -303,20 +286,11 @@ double MinimumRestraintScoreSubsetFilterTable
 ::get_strength(const Subset &s,
                const Subsets &excluded) const {
   set_was_used(true);
-  unsigned int nr= mset_->get_number_of_restraints(s, excluded);
+  unsigned int nr= get_restraints(s, excluded).size();
   return 1-std::pow(.5,
                     static_cast<int>(nr));
 }
 
-
-void MinimumRestraintScoreSubsetFilterTable
-::set_use_caching(bool tf) {
-  mset_->set_use_caching(tf);
-}
-void MinimumRestraintScoreSubsetFilterTable
-::set_maximum_number_of_cache_entries(unsigned int i) {
-  mset_->set_maximum_number_of_cache_entries(i);
-}
 
 void MinimumRestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 }
@@ -986,6 +960,106 @@ ProbabilisticSubsetFilterTable
   p_(p), leaves_only_(lo){}
 
 void ProbabilisticSubsetFilterTable::do_show(std::ostream &) const {
+}
+
+
+
+
+
+// filtetring==========================================
+
+namespace {
+class RestraintCacheSubsetFilter: public SubsetFilter {
+  OwnerPointer<RestraintCache> cache_;
+  RestraintsTemp rs_;
+  Slices slices_;
+public:
+  RestraintCacheSubsetFilter(RestraintCache *cache,
+                             const RestraintsTemp rs,
+                             const Subset&s,
+                             const Subsets &):
+      SubsetFilter("RestraintCacheSubsetFilter%1%"),
+      cache_(cache),
+      rs_(rs) {
+    for (unsigned int i=0; i < rs_.size(); ++i) {
+      slices_.push_back(cache->get_slice(rs_[i], s));
+    }
+  }
+  IMP_SUBSET_FILTER(RestraintCacheSubsetFilter);
+};
+
+
+bool RestraintCacheSubsetFilter
+::get_is_ok(const Assignment& state) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    Assignment substate=slices_[i].get_sliced(state);
+    double score=cache_->get_score(rs_[i], substate);
+    IMP_LOG(VERBOSE, "Score for restraint " << Showable(rs_[i])
+            << " with assignment " << substate << " is " << score
+            << std::endl);
+    if (score >= std::numeric_limits<double>::max()) return false;
+  }
+  return true;
+}
+
+void RestraintCacheSubsetFilter
+::do_show(std::ostream &out) const {
+  out << "restraints: " << Showable(rs_) << std::endl;
+  out << "slices: " << Showable(slices_) << std::endl;
+}
+
+}
+
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintCache *cache):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(cache){}
+
+
+
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintSet *rs,
+                                ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(new RestraintCache(pst)), rs_(1, rs) {
+}
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+                                  ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(new RestraintCache(pst)), rs_(rs.begin(), rs.end()){
+}
+
+
+SubsetFilter*
+RestraintCacheSubsetFilterTable
+::get_subset_filter(const Subset&s,
+                    const Subsets &excluded) const {
+  if (!rs_.empty()) {
+    cache_->add_restraints(get_as<RestraintsTemp>(rs_));
+    rs_.clear();
+  }
+  RestraintsTemp rs= cache_->get_restraints(s, excluded);
+  if (rs.empty()) {
+    IMP_LOG(TERSE, "No restraints on subset " << s
+            << " with excluded " << excluded << std::endl);
+    return nullptr;
+  } else {
+    return new RestraintCacheSubsetFilter(cache_, rs, s, excluded);
+  }
+}
+double RestraintCacheSubsetFilterTable
+::get_strength(const Subset&s,
+               const Subsets &excluded) const {
+  int n= cache_->get_restraints(s, excluded).size();
+  return 1.0-1.0/(n+1.0);
+}
+
+void RestraintCacheSubsetFilterTable
+::do_show(std::ostream &out) const {
+  out << "cache: " << Showable(cache_) << std::endl;
 }
 
 IMPDOMINO_END_NAMESPACE

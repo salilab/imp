@@ -2,7 +2,6 @@ import IMP.domino
 import IMP.core
 
 
-exit(1)
 # Use faster built-in 'set' type on newer Pythons; fall back to the older
 # 'sets' module on older Pythons
 try:
@@ -55,7 +54,7 @@ def setup(cover, scale):
     for r in m.get_restraints():
         r.set_maximum_score(.5*scale**2)
     lf= IMP.domino.ListSubsetFilterTable(pst)
-    fs=[IMP.domino.RestraintScoreSubsetFilterTable(m, pst),
+    fs=[IMP.domino.RestraintCacheSubsetFilterTable(m, pst),
         lf]
     sampler= IMP.domino.DominoSampler(m, pst)
     sampler.set_subset_filter_tables(fs)

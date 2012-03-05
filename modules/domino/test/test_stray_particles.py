@@ -17,7 +17,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst= IMP.domino.ParticleStatesTable()
         s= IMP.domino.XYZStates([IMP.algebra.Vector3D(0,0,0)])
         pst.set_particle_states(p, s)
-        #rft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        #rft= IMP.domino.RestraintCacheSubsetFilterTable(m, pst)
         sampler= IMP.domino.DominoSampler(m, pst)
         sample=sampler.get_sample()
         self.assertEqual(sample.get_number_of_configurations(), 1)
