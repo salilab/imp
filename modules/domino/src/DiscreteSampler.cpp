@@ -42,7 +42,7 @@ DiscreteSampler
     IMP_NEW(RestraintCache, rc, (pst));
     rc->add_restraints(rs);
     sfts
-      .push_back(new RestraintCacheSubsetFilterTable(rc));
+      .push_back(new RestraintScoreSubsetFilterTable(rc));
     sfts.back()->set_was_used(true);
     sfts.push_back(new ExclusionSubsetFilterTable
                    (get_particle_states_table()));
