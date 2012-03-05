@@ -31,7 +31,6 @@ Model::Model(std::string name):
   set_was_used(true);
   first_call_=true;
   has_dependencies_=false;
-  max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
   next_particle_=0;
 #if IMP_BUILD < IMP_FAST
@@ -96,8 +95,7 @@ Model::~Model()
 }
 
 void Model::set_maximum_score(double d) {
-  max_score_=d;
-  reset_dependencies();
+  RestraintSet::set_maximum_score(d);
 }
 
 

@@ -156,7 +156,6 @@ private:
   // basic representation
   std::map<FloatKey, FloatRange> ranges_;
   compatibility::set<Restraint*> tracked_restraints_;
-  double max_score_;
   vector<std::pair<Object*, Object*> > extra_edges_;
 
   ParticleIndexes free_particles_;
@@ -317,7 +316,7 @@ public:
 #endif
   void set_maximum_score(double s);
   double get_maximum_score() const {
-    return max_score_;
+    return RestraintSet::get_maximum_score();
   }
   //! Return true if thelast evaluate satisfied the thresholds
   /** Currently this ignores maximum scores on restraint sets. Sorry.
