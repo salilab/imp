@@ -114,7 +114,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         s= IMP.container.SingletonsConstraint(f, None, c)
         print "add"
         m.add_score_state(s)
-        m.evaluate(False)
+        m.update()
         for p in cs:
             self.assertTrue(particle_has_attribute(p, k))
         print "done"
@@ -135,7 +135,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         s= self.create_singleton_score_state(f, None, t)
         m.add_score_state(s)
         print "add"
-        m.evaluate(False)
+        m.update()
         self.assertTrue(particle_has_attribute(t, k))
         print "done"
 
