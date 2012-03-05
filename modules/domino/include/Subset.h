@@ -68,6 +68,9 @@ class IMPDOMINOEXPORT Subset: public base::ConstArray<Particle* > {
     return operator[](0)->get_model();
   }
   std::string get_name() const;
+  bool get_contains(const Subset &o) const {
+    return std::includes(begin(), end(), o.begin(), o.end());
+  }
 };
 
 IMP_VALUES(Subset, Subsets);
