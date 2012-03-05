@@ -41,9 +41,7 @@ IMP_SWIG_OBJECT(IMP::domino, ListSubsetFilterTable, ListSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, ListAssignmentsTable, ListAssignmentsTables);
 IMP_SWIG_OBJECT(IMP::domino, ParticleStatesTable, ParticleStatesTables);
 IMP_SWIG_OBJECT(IMP::domino, RecursiveStates, RecursiveStatesList);
-IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilter, RestraintScoreSubsetFilters);
 IMP_SWIG_OBJECT(IMP::domino, ProbabilisticSubsetFilterTable, ProbabilisticSubsetFilterTables);
-IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RestraintCacheSubsetFilterTable, RestraintCacheSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RigidBodyStates, RigidBodyStatess);
 IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatesList);
@@ -64,7 +62,6 @@ IMP_SWIG_OBJECT(IMP::domino, ReadHDF5AssignmentContainer, ReadHDF5AssignmentCont
 IMP_SWIG_OBJECT(IMP::domino, ReadAssignmentContainer, ReadAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, WriteAssignmentContainer, WriteAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, RestraintCache, RestraintCaches);
-IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 IMP_SWIG_VALUE(IMP::domino, Slice, Slices);
@@ -83,7 +80,6 @@ IMP_SWIG_VALUE(IMP::domino, Order, Orders);
 %include "IMP/domino/assignment_containers.h"
 %include "IMP/domino/assignment_tables.h"
 %include "IMP/domino/subset_graphs.h"
-%include "IMP/domino/optimize_restraints.h"
 %include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/DominoSampler.h"
 %include "IMP/domino/BranchAndBoundSampler.h"

@@ -13,7 +13,6 @@
 #include "particle_states.h"
 #include "Assignment.h"
 #include "particle_states.h"
-#include "internal/restraint_evaluator.h"
 #include "Subset.h"
 #include "domino_macros.h"
 #include "subset_scores.h"
@@ -98,84 +97,6 @@ class IMPDOMINOEXPORT SubsetFilterTable: public IMP::base::Object {
 };
 
 class RestraintScoreSubsetFilterTable;
-
-/** A restraint score based SubsetFilter.
-    See RestraintScoreSubsetFilterTable.
- */
-class IMPDOMINOEXPORT RestraintScoreSubsetFilter: public SubsetFilter {
-  Pointer<const internal::ModelData> keepalive_;
-  const internal::SubsetData &data_;
-  double max_;
-  friend class RestraintScoreSubsetFilterTable;
-  RestraintScoreSubsetFilter(const internal::ModelData *t,
-                             const internal::SubsetData &data,
-                             double max):
-    SubsetFilter("Restraint score filter"),
-    keepalive_(t), data_(data),
-    max_(max) {
-  }
-public:
-  IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
-  int get_next_state(int pos, const Assignment& state) const;
-  double get_score(const Assignment& state) const;
-  //! Get the restraints involved in this subset
-  /** \note this order is not persistent across runs or even different
-      RestraintScoreSubsetFilter objects produced on the same subset.
-      If you want to use these results systematically, you should
-      probably ensure that the names are unique use those to re-order
-      the results.
-  */
-  RestraintsTemp get_restraints() const;
-  //! Return the scores for the restraints
-  /** The order is the same as get_restraints().
-   */
-  Floats get_scores(const Assignment &state) const;
-};
-
-
-//! Filter a configuration of the subset using the Model thresholds
-/** This filter table creates filters using the maximum scores
-    set in the Model for various restraints.
- */
-class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
-  public SubsetFilterTable {
-  struct StatsPrinter:public Pointer<internal::ModelData>{
-  public:
-    StatsPrinter(internal::ModelData *mset):
-      Pointer<internal::ModelData>(mset){}
-    ~StatsPrinter();
-  };
-  StatsPrinter mset_;
- public:
-  RestraintScoreSubsetFilterTable(RestraintSet *rs,
-                                  ParticleStatesTable *pst);
-  RestraintScoreSubsetFilterTable(Model *rs,
-                                  ParticleStatesTable *pst);
-  RestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
-                                  ParticleStatesTable *pst);
-  /** Add a precomputed score for a restraint.*/
-  void add_score(Restraint *r, const Subset &subset,
-                 const Assignment &state, double score);
-  /** By default the filter table caches each score that it computes.
-      While this can often accelerate things, that is not always the
-      case and the memory usage can be quite high.
-  */
-  void set_use_caching(bool tf);
-
-  /** Set the maximum number of cache entries for all restraints.
-  */
-  void set_maximum_number_of_cache_entries(unsigned int i);
-
-  RestraintScoreSubsetFilter*
-  get_subset_filter(const IMP::domino::Subset&s,
-                    const IMP::domino::Subsets &excluded) const;
-  double get_strength(const IMP::domino::Subset&s,
-                      const IMP::domino::Subsets &excluded) const;
-  IMP_OBJECT(RestraintScoreSubsetFilterTable);
-};
-
-IMP_OBJECTS(RestraintScoreSubsetFilterTable,
-            RestraintScoreSubsetFilterTables);
 
 
 
