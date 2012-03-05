@@ -54,10 +54,17 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       if (it != rmap_.end()) {
         Subset s= rmap_.find(k.r)->second.s;
         load_particle_states(s, k.a, pst_);
-        double e= k.r->get_model()
-            ->evaluate_if_below(EvaluationCache(RestraintsTemp(1, k.r)),
-                                false,
-                                it->second.max)[0];
+        double e;
+        {
+          SetLogState sls(SILENT);
+          e= k.r->get_model()
+              ->evaluate_if_below(EvaluationCache(RestraintsTemp(1, k.r)),
+                                  false,
+                                  it->second.max)[0];
+          IMP_LOG(TERSE, "Restraint " << Showable(k.r)
+                  << " evaluated to " << e << " on " << k.a
+                  << " vs " << it->second.max << std::endl);
+        }
         // prob can go away with ScoreFunction change
         if (e > it->second.max) e= std::numeric_limits<double>::max();
         return e;
@@ -71,17 +78,25 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
           double score= cache.get(argument_type(it->second.members[i].r, cur));
           total+=score*k.r->get_weight();
           if (total >= it->second.max) {
-            return std::numeric_limits<double>::max();
+            break;
           }
         }
-        return total;
+        IMP_LOG(TERSE, "Restraint " << Showable(k.r)
+                  << " evaluated to " << total << " on " << k.a
+                  << " with max " << it->second.max << std::endl);
+        if (total>= it->second.max) {
+          return std::numeric_limits<double>::max();
+        } else {
+          return total;
+        }
       }
     }
     void add_to_set(RestraintSet *rs, Restraint *r,
-                    Slice slice) {
+                    Slice slice, double max) {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
                       "don't pass restraint sets here as second arg");
       sets_[rs].members.push_back(RestraintSetData(slice, r));
+      sets_[rs].max=max;
     }
     void add_restraint(Restraint *e, Subset s, double max) {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(e),
@@ -113,6 +128,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   void add_restraint_set_child_internal(Restraint *r,
                                         const Subset &cur_subset,
                                         RestraintSet *parent,
+                                        double parent_max,
                                         Subset parent_subset);
   void add_restraint_set_internal(RestraintSet *rs,
                                   const Subset &cur_subset,
@@ -146,6 +162,9 @@ public:
 
   /** Print out information about the known restraints and restraint sets.*/
   void show_restraint_information(std::ostream &out=std::cout) const;
+  double get_hit_rate() const {
+    return cache_.get_hit_rate();
+  }
   IMP_OBJECT_INLINE(RestraintCache,
                     out << "size=" << cache_.size() << std::endl;,);
 };
@@ -162,6 +181,12 @@ class IMPDOMINOEXPORT RestraintCacheSubsetFilterTable:
   OwnerPointer<RestraintCache> cache_;
  public:
   RestraintCacheSubsetFilterTable(RestraintCache *rc);
+#ifndef IMP_DOXYGEN
+  RestraintCacheSubsetFilterTable(RestraintSet *rs,
+                                  ParticleStatesTable *pst);
+  RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+                                  ParticleStatesTable *pst);
+#endif
   IMP_SUBSET_FILTER_TABLE(RestraintCacheSubsetFilterTable);
   };
 

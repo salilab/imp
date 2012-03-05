@@ -69,9 +69,9 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
 
+        m.set_maximum_score(3.1)
         sampler= IMP.domino.DominoSampler(m, pst)
         sampler.set_log_level(IMP.VERBOSE)
-        m.set_maximum_score(3.1)
         cs= sampler.get_sample()
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):

@@ -41,6 +41,7 @@ void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
 void RestraintCache::add_restraint_set_child_internal(Restraint *r,
                                                       const Subset &cur_subset,
                                                       RestraintSet *parent,
+                                                      double parent_max,
                                                       Subset parent_subset) {
   if (!parent) return;
   IMP_LOG(TERSE, "Adding restraint " << Showable(r)
@@ -48,7 +49,8 @@ void RestraintCache::add_restraint_set_child_internal(Restraint *r,
   cache_.access_generator().add_to_set(parent,
                                        r,
                                        Slice(parent_subset,
-                                             cur_subset));
+                                             cur_subset),
+                                       parent_max);
 }
 Subset RestraintCache::get_subset(Restraint *r,
                                   const DepMap &dependencies) const {
@@ -94,6 +96,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
   add_restraint_set_child_internal(r,
                                    cur_subset,
                                    parent,
+                                   parent_max,
                                    parent_subset);
   RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
   if (rs) {
@@ -119,20 +122,33 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
   DepMap dependencies;
   ParticlesTemp allps= pst->get_particles();
   for (unsigned int i=0; i< allps.size(); ++i) {
-    dependencies[allps[i]]= get_dependent_particles(allps[i], allps, dg);
+    ParticlesTemp depp= get_dependent_particles(allps[i], allps, dg);
+    for (unsigned int j=0; j< depp.size(); ++j) {
+      dependencies[depp[j]].push_back(allps[i]);
+    }
+    dependencies[allps[i]].push_back(allps[i]);
     IMP_LOG(TERSE, "Particle " << Showable(allps[i])
-            << " controlls " << dependencies[allps[i]] << std::endl);
+            << " controls " << dependencies[allps[i]] << std::endl);
   }
 
   for (unsigned int i=0; i< rs.size(); ++i) {
     Pointer<Restraint> r= rs[i]->create_decomposition();
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Before:" << std::endl);
+      IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(rs[i]));
+    }
     if (r) {
+      IMP_LOG(TERSE, "after:" << std::endl);
+      IMP_LOG_WRITE(TERSE, show_restraint_hierarchy(r));
       add_restraint_internal(r,
                              nullptr,
                              std::numeric_limits<double>::max(),
                              Subset(),
                              dependencies);
     }
+  }
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG_WRITE(TERSE, show_restraint_information(IMP_STREAM));
   }
 }
 
@@ -196,6 +212,7 @@ public:
                              const Subset&s,
                              const Subsets &):
       SubsetFilter("RestraintCacheSubsetFilter%1%"),
+      cache_(cache),
       rs_(rs) {
     for (unsigned int i=0; i < rs_.size(); ++i) {
       slices_.push_back(cache->get_slice(rs_[i], s));
@@ -203,9 +220,12 @@ public:
   }
   IMP_SUBSET_FILTER(RestraintCacheSubsetFilter);
 };
+
+
 bool RestraintCacheSubsetFilter
 ::get_is_ok(const Assignment& state) const {
   IMP_OBJECT_LOG;
+  set_was_used(true);
   for (unsigned int i=0; i< rs_.size(); ++i) {
     Assignment substate=slices_[i].get_sliced(state);
     double score=cache_->get_score(rs_[i], substate);
@@ -229,6 +249,24 @@ RestraintCacheSubsetFilterTable
 ::RestraintCacheSubsetFilterTable(RestraintCache *cache):
   SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
   cache_(cache){}
+
+
+
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintSet *rs,
+                                ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(new RestraintCache(pst)){
+  cache_->add_restraints(RestraintsTemp(1,rs));
+}
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+                                  ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(new RestraintCache(pst)){
+  cache_->add_restraints(rs);
+}
+
 
 SubsetFilter*
 RestraintCacheSubsetFilterTable
