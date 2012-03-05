@@ -373,6 +373,7 @@ namespace {
           unsigned int next= filters.back()[i]
             ->get_next_state(pos,
                              cura);
+          next =std::min<unsigned int>(next, maxs[pos]+1);
           IMP_IF_CHECK(USAGE_AND_INTERNAL) {
             for (unsigned int j=cura[pos]; j < next; ++j) {
               reordered_cur[pos]=j;
