@@ -134,7 +134,7 @@
 #define IMP_COMPARISONS_2(Name, f0, f1)         \
   IMP_SWIG_COMPARISONS(Name)
 
-#define IMP_COMPARISONS_3(Name f0, f1, f2)           \
+#define IMP_COMPARISONS_3(Name, f0, f1, f2)     \
   IMP_SWIG_COMPARISONS(Name)
 
 #else // not doxygen
@@ -947,5 +947,75 @@ public:                                                         \
    &Name::this_type_does_not_support_comparisons : 0;           \
  }
 #endif
+
+/** \name Named tuples
+    It is often useful to declare little structures to aid in the passing
+    of arguments by name or returning sets of values. One can use
+    boost::tuples, but these don't have names for their parts and so
+    don't lead to clear code. Instead we provide a macro to aid
+    declaring such classes. The resulting class is hashable and
+    comparable too.
+@{
+*/
+
+#define IMP_NAMED_TUPLE_1(Name, Names, type0, var0, invariant)          \
+  struct Name {                                                         \
+    type0 var0;                                                         \
+    Name(type0 i0=type0()): var0(i0){invariant;}                        \
+    IMP_HASHABLE_INLINE(Name, {                                         \
+        using IMP::hash_value;                                          \
+        std::size_t value= hash_value(var0);                            \
+        return value;                                                   \
+      });                                                               \
+    IMP_COMPARISONS_1(Name, var0);                                      \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0 << ")"); \
+  };                                                                    \
+  IMP_VALUES(Name, Names)
+
+
+
+#define IMP_NAMED_TUPLE_2(Name, Names, type0, var0, type1, var1,        \
+                          invariant)                                    \
+  struct Name {                                                         \
+    type0 var0;                                                         \
+    type1 var1;                                                         \
+    Name(type0 i0=type0(), type1 i1=type1()): var0(i0), var1(i1)        \
+    {invariant;}                                                        \
+    IMP_HASHABLE_INLINE(Name, {                                         \
+        using IMP::hash_value;                                          \
+        std::size_t value= hash_value(var0);                            \
+        boost::hash_combine(value, hash_value(var1));                   \
+        return value;                                                   \
+      });                                                               \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0        \
+                        << " " <<#var1 << "=" << var1 << ")");          \
+    IMP_COMPARISONS_2(Name, var0, var1);                                \
+  };                                                                    \
+  IMP_VALUES(Name, Names)
+
+
+#define IMP_NAMED_TUPLE_3(Name, Names, type0, var0, type1, var1,        \
+                          type2, var2, invariant)                       \
+  struct Name {                                                         \
+    type0 var0;                                                         \
+    type1 var1;                                                         \
+    type2 var2;                                                         \
+    Name(type0 i0=type0(), type1 i1=type1(),type2 i2=type2()            \
+         ): var0(i0), var1(i1), var2(i2){invariant;}                    \
+    IMP_HASHABLE_INLINE(Name, {                                         \
+        using IMP::hash_value;                                          \
+        std::size_t value= hash_value(var0);                            \
+        boost::hash_combine(value, hash_value(var1));                   \
+        boost::hash_combine(value, hash_value(var2));                   \
+        return value;                                                   \
+      });                                                               \
+    IMP_COMPARISONS_3(Name, var0, var1, var2);                          \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0        \
+                        << " " <<#var1 << "=" << var1                   \
+                        << " " <<#var2 << "=" << var2 << ")");          \
+  };                                                                    \
+  IMP_VALUES(Name, Names)
+
+/**@}*/
 
 #endif  /* IMPBASE_BASE_MACROS_H */

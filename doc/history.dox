@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011/2012
+- 29/2: The macros IMP_NAMED_TUPLE_1(),IMP_NAMED_TUPLE_2(),IMP_NAMED_TUPLE_3() were added for easy generation of simply struct for use in passing and returning values. The generated structs support comparison, output, hashing and have constructors. Use the macros instead of a boost::tuple or a a POD struct.
 - 16/2: The IMP::EvaluationCache is now used to all non-standard model evaluations. Since it has an implicit conversion from IMP::RestraintsTemp, it should not break any code. However, you may want to think about using it if you have a subset of restraints you repeatedly evaluate.
 - 16/2: Restraints now are evaluated with the correct weights when evaluated by themselves as opposed to always returning their weight as seen by the model as a whole.
 - 15/2: The IMP::algebra grid support was rearranged and simplified. Most of the changes should be transparent. However, the IMP::algebra::grids namespace got folded into IMP::algebra, which might break some code. And various (obscure) constructors of IMP::algebra::GridD were removed. All code in svn has been changed as needed.
