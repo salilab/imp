@@ -63,6 +63,8 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         return e;
       } else {
         SMap::const_iterator it= sets_.find(k.r);
+        IMP_USAGE_CHECK(it != sets_.end(),
+                        "Restraint set " << Showable(k.r) << " not found.");
         double total=0;
         for (unsigned int i=0; i< it->second.members.size(); ++i) {
           Assignment cur= it->second.members[i].slice.get_sliced(k.a);
@@ -92,6 +94,9 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         rmap_[e].max= std::min(rmap_[e].max, max);
       }
     }
+    ParticleStatesTable* get_particle_states_table() const {
+      return pst_;
+    }
     void show_restraint_information(std::ostream &out) const;
   };
   struct ApproximatelyEqual {
@@ -99,18 +104,29 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       return std::abs(a-b) < .1*(a+b)+.1;
     }
   };
+  typedef compatibility::map<Particle*, ParticlesTemp> DepMap;
   void add_restraint_internal(Restraint *r,
                               RestraintSet *parent,
                               double max,
-                              Subset parent_subset);
-
+                              Subset parent_subset,
+                              const DepMap &dependencies);
+  void add_restraint_set_child_internal(Restraint *r,
+                                        const Subset &cur_subset,
+                                        RestraintSet *parent,
+                                        Subset parent_subset);
+  void add_restraint_set_internal(RestraintSet *rs,
+                                  const Subset &cur_subset,
+                                  double cur_max,
+                                  const DepMap &dependencies);
+  Subset get_subset(Restraint *r,
+                    const DepMap &dependencies) const;
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
   typedef compatibility::map<Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
 public:
   RestraintCache(ParticleStatesTable *pst,
-                 unsigned int size);
+                 unsigned int size=std::numeric_limits<unsigned int>::max());
   /** Recursively process the passed restraints (and sets) so all contained
       restraints and sets that have maximum are known.*/
   void add_restraints(const RestraintsTemp &rs);
@@ -133,6 +149,27 @@ public:
   IMP_OBJECT_INLINE(RestraintCache,
                     out << "size=" << cache_.size() << std::endl;,);
 };
+
+
+
+
+//! Filter a configuration of the subset using the Model thresholds
+/** This filter table creates filters using the maximum scores
+    set in the Model for various restraints.
+ */
+class IMPDOMINOEXPORT RestraintCacheSubsetFilterTable:
+  public SubsetFilterTable {
+  OwnerPointer<RestraintCache> cache_;
+ public:
+  RestraintCacheSubsetFilterTable(RestraintCache *rc);
+  IMP_SUBSET_FILTER_TABLE(RestraintCacheSubsetFilterTable);
+  };
+
+IMP_OBJECTS(RestraintCacheSubsetFilterTable,
+            RestraintCacheSubsetFilterTables);
+
+
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_SCORES_H */

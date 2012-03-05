@@ -7,6 +7,7 @@
  */
 #include <IMP/domino/domino_config.h>
 #include <IMP/domino/subset_scores.h>
+#include <IMP/dependency_graph.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
 RestraintCache::RestraintCache(ParticleStatesTable *pst,
@@ -17,64 +18,121 @@ RestraintCache::RestraintCache(ParticleStatesTable *pst,
          ApproximatelyEqual()) {
 
 }
-void RestraintCache::add_restraint_internal(Restraint *rin,
+void RestraintCache::add_restraint_set_internal(RestraintSet *rs,
+                                                const Subset &cur_subset,
+                                                double cur_max,
+                                                const DepMap &dependencies) {
+  IMP_LOG(TERSE, "Parsing restraint set " << Showable(rs) << std::endl);
+  if (cur_max < std::numeric_limits<double>::max()) {
+    for (RestraintSet::RestraintIterator it= rs->restraints_begin();
+         it != rs->restraints_end(); ++it) {
+      add_restraint_internal(*it, rs, cur_max, cur_subset, dependencies);
+    }
+  } else {
+    for (RestraintSet::RestraintIterator it= rs->restraints_begin();
+         it != rs->restraints_end(); ++it) {
+      add_restraint_internal(*it,
+                             nullptr, std::numeric_limits<double>::max(),
+                             Subset(), dependencies);
+    }
+  }
+}
+
+void RestraintCache::add_restraint_set_child_internal(Restraint *r,
+                                                      const Subset &cur_subset,
+                                                      RestraintSet *parent,
+                                                      Subset parent_subset) {
+  if (!parent) return;
+  IMP_LOG(TERSE, "Adding restraint " << Showable(r)
+          << " to set " << Showable(parent) << std::endl);
+  cache_.access_generator().add_to_set(parent,
+                                       r,
+                                       Slice(parent_subset,
+                                             cur_subset));
+}
+Subset RestraintCache::get_subset(Restraint *r,
+                                  const DepMap &dependencies) const {
+  ParticlesTemp ups=r->get_input_particles();
+  std::sort(ups.begin(), ups.end());
+  ups.erase(std::unique(ups.begin(), ups.end()), ups.end());
+  ParticlesTemp outps;
+  for (unsigned int i=0; i< ups.size(); ++i) {
+    DepMap::const_iterator it= dependencies.find(ups[i]);
+    if (it != dependencies.end()) {
+      outps= outps+ it->second;
+    }
+  }
+  std::sort(outps.begin(), outps.end());
+  outps.erase(std::unique(outps.begin(), outps.end()), outps.end());
+  return Subset(outps);
+}
+
+
+void RestraintCache::add_restraint_internal(Restraint *r,
                                             RestraintSet *parent,
                                             double parent_max,
-                                            Subset parent_subset) {
+                                            Subset parent_subset,
+                                            const DepMap &dependencies) {
   IMP_OBJECT_LOG;
-  IMP_LOG(TERSE, "Processing " << Showable(rin) << " with "
+  IMP_LOG(TERSE, "Processing " << Showable(r) << " with "
           << parent_max << std::endl);
-  Pointer<Restraint> r= rin->create_decomposition();
   r->set_was_used(true);
-  RestraintSet *rs= dynamic_cast<RestraintSet*>(r.get());
-  Subset cur_subset(r->get_input_particles());
+  // fix using PST
+  Subset cur_subset= get_subset(r, dependencies);
   double cur_max= r->get_maximum_score();
   if (parent) {
     cur_max=std::min(parent_max/r->get_weight(),
                      cur_max);
   }
+
+  if (cur_max < std::numeric_limits<double>::max()) {
+    IMP_LOG(TERSE, "Adding restraint " << Showable(r)
+            << " with max " << cur_max << " and subset " << cur_subset
+            << std::endl);
+    known_restraints_[r]=cur_subset;
+  }
+  add_restraint_set_child_internal(r,
+                                   cur_subset,
+                                   parent,
+                                   parent_subset);
+  RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
   if (rs) {
-    IMP_LOG(TERSE, "Parsing restraint set " << Showable(rs) << std::endl);
-    if (cur_max < std::numeric_limits<double>::max()) {
-      known_restraints_[r]=cur_subset;
-      for (RestraintSet::RestraintIterator it= rs->restraints_begin();
-           it != rs->restraints_end(); ++it) {
-        add_restraint_internal(*it, rs, cur_max, cur_subset);
-      }
-    } else {
-      for (RestraintSet::RestraintIterator it= rs->restraints_begin();
-           it != rs->restraints_end(); ++it) {
-        add_restraint_internal(*it,
-                               nullptr, std::numeric_limits<double>::max(),
-                               Subset());
-      }
-    }
+    add_restraint_set_internal(rs, cur_subset, cur_max, dependencies);
   } else {
     if (cur_max < std::numeric_limits<double>::max()) {
-      IMP_LOG(TERSE, "Adding restraint " << Showable(r)
-              << " with max " << cur_max << " and subset " << cur_subset
-              << std::endl);
       cache_.access_generator().add_restraint(r, cur_subset, cur_max);
-      known_restraints_[r]=cur_subset;
-      if (parent) {
-        IMP_LOG(TERSE, "Adding restraint " << Showable(r)
-                << " to set " << Showable(parent) << std::endl);
-        cache_.access_generator().add_to_set(parent,
-                                             r,
-                                             Slice(parent_subset,
-                                                   cur_subset));
-      }
     }
   }
 }
 
 void RestraintCache::add_restraints(const RestraintsTemp &rs) {
   IMP_OBJECT_LOG;
+  if (rs.empty()) return;
+  Model *m= rs[0]->get_model();
+  DependencyGraph dg
+      = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                             m->score_states_end()),
+                             // we just care about interactions between
+                             // particles
+                             RestraintsTemp());
+  ParticleStatesTable *pst= cache_.get_generator().get_particle_states_table();
+  DepMap dependencies;
+  ParticlesTemp allps= pst->get_particles();
+  for (unsigned int i=0; i< allps.size(); ++i) {
+    dependencies[allps[i]]= get_dependent_particles(allps[i], allps, dg);
+    IMP_LOG(TERSE, "Particle " << Showable(allps[i])
+            << " controlls " << dependencies[allps[i]] << std::endl);
+  }
+
   for (unsigned int i=0; i< rs.size(); ++i) {
-    add_restraint_internal(rs[i],
-                           nullptr,
-                           std::numeric_limits<double>::max(),
-                           Subset());
+    Pointer<Restraint> r= rs[i]->create_decomposition();
+    if (r) {
+      add_restraint_internal(r,
+                             nullptr,
+                             std::numeric_limits<double>::max(),
+                             Subset(),
+                             dependencies);
+    }
   }
 }
 
@@ -118,5 +176,84 @@ void RestraintCache::Generator
 void RestraintCache::show_restraint_information(std::ostream &out) const {
   cache_.get_generator().show_restraint_information(out);
 }
+
+
+
+
+
+
+
+// filtetring==========================================
+
+namespace {
+class RestraintCacheSubsetFilter: public SubsetFilter {
+  OwnerPointer<RestraintCache> cache_;
+  RestraintsTemp rs_;
+  Slices slices_;
+public:
+  RestraintCacheSubsetFilter(RestraintCache *cache,
+                             const RestraintsTemp rs,
+                             const Subset&s,
+                             const Subsets &):
+      SubsetFilter("RestraintCacheSubsetFilter%1%"),
+      rs_(rs) {
+    for (unsigned int i=0; i < rs_.size(); ++i) {
+      slices_.push_back(cache->get_slice(rs_[i], s));
+    }
+  }
+  IMP_SUBSET_FILTER(RestraintCacheSubsetFilter);
+};
+bool RestraintCacheSubsetFilter
+::get_is_ok(const Assignment& state) const {
+  IMP_OBJECT_LOG;
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    Assignment substate=slices_[i].get_sliced(state);
+    double score=cache_->get_score(rs_[i], substate);
+    IMP_LOG(VERBOSE, "Score for restraint " << Showable(rs_[i])
+            << " with assignment " << substate << " is " << score
+            << std::endl);
+    if (score >= std::numeric_limits<double>::max()) return false;
+  }
+  return true;
+}
+
+void RestraintCacheSubsetFilter
+::do_show(std::ostream &out) const {
+  out << "restraints: " << Showable(rs_) << std::endl;
+  out << "slices: " << Showable(slices_) << std::endl;
+}
+
+}
+
+RestraintCacheSubsetFilterTable
+::RestraintCacheSubsetFilterTable(RestraintCache *cache):
+  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  cache_(cache){}
+
+SubsetFilter*
+RestraintCacheSubsetFilterTable
+::get_subset_filter(const Subset&s,
+                    const Subsets &excluded) const {
+  RestraintsTemp rs= cache_->get_restraints(s, excluded);
+  if (rs.empty()) {
+    IMP_LOG(TERSE, "No restraints on subset " << s
+            << " with excluded " << excluded << std::endl);
+    return nullptr;
+  } else {
+    return new RestraintCacheSubsetFilter(cache_, rs, s, excluded);
+  }
+}
+double RestraintCacheSubsetFilterTable
+::get_strength(const Subset&s,
+               const Subsets &excluded) const {
+  int n= cache_->get_restraints(s, excluded).size();
+  return 1.0-1.0/(n+1.0);
+}
+
+void RestraintCacheSubsetFilterTable
+::do_show(std::ostream &out) const {
+  out << "cache: " << Showable(cache_) << std::endl;
+}
+
 
 IMPDOMINO_END_NAMESPACE
