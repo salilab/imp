@@ -152,10 +152,19 @@ namespace {
   }
 }
 
-void show_restraint_hierarchy(RestraintSet *rs, std::ostream &out) {
-  IMP_PRINT_TREE(out, Restraint*, rs, num_children(n),
-                 dynamic_cast<RestraintSet*>(n)->get_restraint,
-                 out << n->get_name());
+void show_restraint_hierarchy(Restraint *r, std::ostream &out) {
+  RestraintSet *rs=dynamic_cast<RestraintSet*>(r);
+  if (!rs) {
+    IMP_PRINT_TREE(out, Restraint*, r, 0,
+                   dynamic_cast<RestraintSet*>(n)->get_restraint,
+                   out << Showable(n) << " " << n->get_maximum_score() << " "
+                   << n->get_weight() );
+  } else {
+    IMP_PRINT_TREE(out, Restraint*, rs, num_children(n),
+                   dynamic_cast<RestraintSet*>(n)->get_restraint,
+                   out << Showable(n) << " " << n->get_maximum_score() << " "
+                   << n->get_weight() );
+  }
 }
 
 
