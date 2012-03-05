@@ -505,7 +505,7 @@ void MonteCarloWithLocalOptimization::do_step() {
           << do_evaluate(moved) << std::endl);
   // non-Mover parts of the model can be moved by the local optimizer
   // make sure they are cleaned up
-  Pointer<Configuration> cs= new Configuration(get_model());
+  OwnerPointer<Configuration> cs= new Configuration(get_model());
   double ne =opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne)) {
     cs->swap_configuration();
