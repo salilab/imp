@@ -29,22 +29,26 @@ double gamma_;
 double Ida_;
 double fretr_;
 double kappa_;
-int    mcsteps_;
-Floats bleach0_;
-Floats bleach1_;
-bool   photobleach_;
-
-double get_bleach_fretr() const;
-double get_nobleach_fretr() const;
+double Pbleach0_;
+double multi_;
+std::vector< std::vector<unsigned> > states_;
+Floats weight0_;
+Floats weight1_;
+bool photobleach_;
+unsigned nclose_;
 
 void   set_photobleach(double Pbleach0, double Pbleach1);
+double get_weight(std::vector<unsigned> state, double Pbleach) const;
+std::vector<unsigned> get_state(unsigned index) const;
+double get_bleach_fretr() const;
+double get_nobleach_fretr() const;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
                  double R0, double gamma, double Ida,
                  double Pbleach0, double Pbleach1,
                  double fretr, double kappa,
-                 std::string name);
+                 std::string name, double multi=1.0);
 
   IMP_RESTRAINT(FretrRestraint);
 
