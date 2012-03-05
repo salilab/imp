@@ -62,9 +62,6 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
                            Subsets());
   }
 }
-double RestraintCache::get_score(Restraint *r, const Assignment &a) const {
-  return cache_.get(Key(r, a));
-}
 
 RestraintsTemp RestraintCache::get_restraints(const Subset&s,
                                               const Subsets&exclusions) const {
