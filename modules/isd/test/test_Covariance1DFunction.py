@@ -13,6 +13,22 @@ from IMP.isd import *
 #unit testing framework
 import IMP.test
 
+class MockFunc:
+    def __init__(self, setval, evaluate, evalargs=1, update=None):
+        self.__set = setval
+        self.__eval = evaluate
+        self.__update = update
+        self.__evalargs = evalargs
+
+    def set_evalargs(self, evalargs):
+        self.__evalargs = evalargs
+
+    def __call__(self, value):
+        self.__set(value)
+        if self.__update:
+            self.__update()
+        return self.__eval(self.__evalargs)
+
 class TestCovariance1DFunction(IMP.test.TestCase):
     """ test of tau**2 exp( -(q-q')**2/(2 lambda**2) )  """
 
@@ -78,6 +94,111 @@ class TestCovariance1DFunction(IMP.test.TestCase):
                 else:
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
+
+    def testDerivNumericTau(self):
+        """
+        test the derivatives of the function numerically for tau
+        """
+        pos = [[0.1],[0.1+random.uniform(0,2)]]
+        TauFunc = MockFunc(self.tau.set_nuisance,
+                lambda a: self.cov(*a)[0], pos,
+                            update=self.cov.update)
+        for tau in linspace(0.1,10):
+            self.tau.set_nuisance(tau)
+            self.cov.update()
+            observed = self.cov.get_derivative_matrix(0, pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(TauFunc, tau, 0.01)
+            if observed != 0:
+                self.assertAlmostEqual(expected/observed,1,delta=1e-3)
+            else:
+                self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericLam(self):
+        """
+        test the derivatives of the function numerically for lam
+        """
+        pos = [[0.1],[0.2]]
+        LamFunc = MockFunc(self.lam.set_nuisance,
+                lambda a: self.cov(*a)[0], pos,
+                            update=self.cov.update)
+        for lam in linspace(0.1,10):
+            self.lam.set_nuisance(lam)
+            self.cov.update()
+            observed = self.cov.get_derivative_matrix(1, pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(LamFunc, lam, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericTauLam(self):
+        """
+        test the hessian of the function numerically wrt tau and lam
+        """
+        pos = [[0.1],[0.2]]
+        dim1=0
+        dim2=1
+        LamFunc = MockFunc(self.lam.set_nuisance,
+                lambda a: self.cov.get_derivative_matrix(dim1, a, False)[0][1],
+                            pos, update=self.cov.update)
+        for lam in linspace(0.1,10):
+            self.lam.set_nuisance(lam)
+            self.cov.update()
+            observed = self.cov.get_second_derivative_matrix(dim1, dim2,
+                    pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(LamFunc, lam, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericLamTau(self):
+        """
+        test the hessian of the function numerically wrt lam and tau
+        """
+        pos = [[0.1],[0.2]]
+        dim1=1
+        dim2=0
+        TauFunc = MockFunc(self.tau.set_nuisance,
+                lambda a: self.cov.get_derivative_matrix(dim1, a, False)[0][1],
+                            pos, update=self.cov.update)
+        for tau in linspace(0.1,10):
+            self.tau.set_nuisance(tau)
+            self.cov.update()
+            observed = self.cov.get_second_derivative_matrix(dim1, dim2,
+                    pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(TauFunc, tau, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericTauTau(self):
+        """
+        test the hessian of the function numerically wrt tau and tau
+        """
+        pos = [[0.1],[0.2]]
+        dim1=0
+        dim2=0
+        TauFunc = MockFunc(self.tau.set_nuisance,
+                lambda a: self.cov.get_derivative_matrix(dim1, a, False)[0][1],
+                            pos, update=self.cov.update)
+        for tau in linspace(0.1,10):
+            self.tau.set_nuisance(tau)
+            self.cov.update()
+            observed = self.cov.get_second_derivative_matrix(dim1, dim2,
+                    pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(TauFunc, tau, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericLamLam(self):
+        """
+        test the hessian of the function numerically wrt lam and lam
+        """
+        pos = [[0.1],[0.2]]
+        dim1=1
+        dim2=1
+        LamFunc = MockFunc(self.lam.set_nuisance,
+                lambda a: self.cov.get_derivative_matrix(dim1, a, False)[0][1],
+                            pos, update=self.cov.update)
+        for lam in linspace(0.1,10):
+            self.lam.set_nuisance(lam)
+            self.cov.update()
+            observed = self.cov.get_second_derivative_matrix(dim1, dim2,
+                    pos, False)[0][1]
+            expected = IMP.test.numerical_derivative(LamFunc, lam, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivOne(self):
         """
