@@ -106,7 +106,7 @@ public:
   IMP_SHOWABLE_INLINE(ConstArray, {
       out << "(";
       for (unsigned int i=0; i< size(); ++i) {
-        out << v_[i];
+        out << Showable(v_[i]);
         if (i != size()-1) out << " ";
       }
       out << ")";

@@ -39,39 +39,38 @@ class Object;
 */
 class IMPBASEEXPORT Showable {
   std::string str_;
-
-  template <class T>
-  const T& get_showable(const T &t) const {
-    return t;
-  }
-  template <class T, class TT>
-  std::string get_showable(const std::pair<T,TT> &t) const {
-    return Showable(t).str_;
-  }
-  template <class T>
-  std::string get_showable(const IMP::compatibility::vector<T> &t) const {
-    return Showable(t).str_;
-  }
-
   template <class T>
   void show_vector(const T &v) {
     std::ostringstream out;
     out << "[";
     for (unsigned int i=0; i< v.size(); ++i) {
       if (i >0) out << ", ";
-      out << get_showable(v[i]);
+      out << Showable(v[i]).str_;
     }
     out<< "]";
     str_= out.str();
   }
-public:
   template <class T>
-      explicit Showable(const T &t) {
+      void show_ptr(const T*o) {
     std::ostringstream oss;
-    oss << t;
+    if (o) {
+      oss << '"' << o->get_name() << '"';
+    } else {
+      oss << "nullptr";
+    }
     str_=oss.str();
   }
-  explicit Showable(Object *o);
+public:
+  template <class T>
+  explicit Showable(const T &t) {
+    std::ostringstream oss;
+    oss << t;
+    str_= oss.str();
+  }
+  template <class T>
+      explicit Showable(T *o) {
+    show_ptr(o);
+  }
   Showable(const std::string& str): str_(str){}
   template <class T, class TT>
   Showable(const std::pair<T, TT> &p) {
@@ -90,6 +89,7 @@ public:
   std::string get_string() const {
     return str_;
   }
+  ~Showable();
 };
 
 inline std::ostream &operator<<(std::ostream &out, const Showable &s) {

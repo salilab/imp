@@ -79,6 +79,20 @@ struct WeakPointer:
   }
 };
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class T>
+inline std::ostream &operator<<(std::ostream &out, UncheckedWeakPointer<T> o) {
+  out << Showable(o.get());
+  return out;
+}
+template <class T>
+inline std::ostream &operator<<(std::ostream &out, WeakPointer<T> o) {
+  out << Showable(o.get());
+  return out;
+}
+#endif
+
+
 IMPBASE_END_NAMESPACE
 
 #endif  /* IMPBASE_WEAK_POINTER_H */
