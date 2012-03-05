@@ -968,7 +968,8 @@ public:                                                         \
         return value;                                                   \
       });                                                               \
     IMP_COMPARISONS_1(Name, var0);                                      \
-    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0 << ")"); \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "="                \
+                        << Showable(var0) << ")");                      \
   };                                                                    \
   IMP_VALUES(Name, Names)
 
@@ -987,8 +988,8 @@ public:                                                         \
         boost::hash_combine(value, hash_value(var1));                   \
         return value;                                                   \
       });                                                               \
-    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0        \
-                        << " " <<#var1 << "=" << var1 << ")");          \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << Showable(var0) \
+                        << " " <<#var1 << "=" << Showable(var1) << ")"); \
     IMP_COMPARISONS_2(Name, var0, var1);                                \
   };                                                                    \
   IMP_VALUES(Name, Names)
@@ -1010,9 +1011,9 @@ public:                                                         \
         return value;                                                   \
       });                                                               \
     IMP_COMPARISONS_3(Name, var0, var1, var2);                          \
-    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << var0        \
-                        << " " <<#var1 << "=" << var1                   \
-                        << " " <<#var2 << "=" << var2 << ")");          \
+    IMP_SHOWABLE_INLINE(Name, out << "(" << #var0 << "=" << Showable(var0) \
+                        << " " <<#var1 << "=" << Showable(var1)         \
+                        << " " <<#var2 << "=" << Showable(var2) << ")"); \
   };                                                                    \
   IMP_VALUES(Name, Names)
 
