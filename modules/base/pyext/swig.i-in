@@ -73,6 +73,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/SetCheckState.h"
 %include "IMP/base/utility.h"
 %include "IMP/base/internal/swig.h"
+%include "IMP/base/ConstArray.h"
 
 %inline %{
 namespace IMP {
