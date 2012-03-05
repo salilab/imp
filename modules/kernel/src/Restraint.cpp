@@ -140,7 +140,13 @@ namespace {
   Restraint* create_decomp_helper(const Restraint* me,
                                   const Restraints &created) {
     if (created.empty()) return NULL;
-    if (created.size()== 1 && created[0]==me) {
+    if (created.size()== 1) {
+      if (created[0] != me) {
+        created[0]->set_name(me->get_name()+" decomposed");
+        created[0]->set_maximum_score(me->get_maximum_score());
+        created[0]->set_weight(me->get_weight());
+        created[0]->set_model(me->get_model());
+      }
       return created[0];
     } else {
       IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposed"));
