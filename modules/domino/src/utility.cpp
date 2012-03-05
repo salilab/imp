@@ -116,55 +116,6 @@ Ints get_index(const ParticlesTemp &particles,
 }
 
 
-
-  Ints get_order(const Subset &s,
-                 const ParticlesTemp &all_particles) {
-    Ints ret(s.size(), -1);
-    int cur=0;
-    for (unsigned int i=0; i< all_particles.size(); ++i) {
-      for (unsigned int j=0; j< s.size(); ++j) {
-        if (all_particles[i]==s[j]) {
-          ret[j]=cur;
-          ++cur;
-        }
-      }
-    }
-    return ret;
-  }
-
-#ifdef IMP_DOMINO_USE_IMP_RMF
-
-
-void save_assignments(AssignmentContainer *assignments,
-                      const Subset &s,
-                      const ParticlesTemp &all_particles,
-                      RMF::HDF5IndexDataSet2D dataset
-                     ) {
-  IMP_FUNCTION_LOG;
-  IMP::OwnerPointer<AssignmentContainer> op(assignments);
-  Ints order= get_order(s, all_particles);
-  unsigned int ns=assignments->get_number_of_assignments();
-  dataset.set_size(RMF::HDF5DataSetIndex2D(ns,
-                                           s.size()));
-  int cur;
-  for (unsigned int i=0; i< ns; ++i) {
-    cur=i;
-    Assignment cas= assignments->get_assignment(i);
-    Ints as= get_output(cas, order);
-    dataset.set_row(RMF::HDF5DataSetIndexD<1>(cur), as);
-  }
-}
-AssignmentContainer*
-create_assignments_container(RMF::HDF5IndexDataSet2D dataset,
-                             const Subset &s,
-                             const ParticlesTemp &all_particles) {
-  return new ReadHDF5AssignmentContainer(dataset, s, all_particles,
-                                     "Assignments from file %1%");
-}
-#endif
-
-
-
 ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
                                             double max_distance,
                                             ParticleStatesTable *pst) {

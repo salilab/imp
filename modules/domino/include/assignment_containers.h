@@ -11,6 +11,7 @@
 
 #include "domino_config.h"
 #include "Assignment.h"
+#include "Order.h"
 #include "subset_filters.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/statistics/metric_clustering.h>
@@ -173,7 +174,7 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
  */
 class IMPDOMINOEXPORT WriteHDF5AssignmentContainer: public AssignmentContainer {
   RMF::HDF5IndexDataSet2D ds_;
-  Ints order_;
+  Order order_;
   Ints cache_;
   unsigned int max_cache_;
   void flush();
@@ -197,7 +198,7 @@ class IMPDOMINOEXPORT WriteHDF5AssignmentContainer: public AssignmentContainer {
  */
 class IMPDOMINOEXPORT ReadHDF5AssignmentContainer: public AssignmentContainer {
   RMF::HDF5IndexConstDataSet2D ds_;
-  Ints order_;
+  Order order_;
   Ints cache_;
   unsigned int max_cache_;
   void flush();
@@ -219,7 +220,7 @@ class IMPDOMINOEXPORT ReadHDF5AssignmentContainer: public AssignmentContainer {
  */
 class IMPDOMINOEXPORT WriteAssignmentContainer: public AssignmentContainer {
   int f_;
-  Ints order_;
+  Order order_;
   Ints cache_;
   unsigned int max_cache_;
   int number_;
@@ -249,7 +250,7 @@ class IMPDOMINOEXPORT WriteAssignmentContainer: public AssignmentContainer {
  */
 class IMPDOMINOEXPORT ReadAssignmentContainer: public AssignmentContainer {
   int f_;
-  Ints order_;
+  Order order_;
   mutable Ints cache_;
   unsigned int max_cache_;
   mutable int offset_;

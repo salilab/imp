@@ -66,8 +66,16 @@ IMP_SWIG_OBJECT(IMP::domino, WriteAssignmentContainer, WriteAssignmentContainers
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
+IMP_SWIG_VALUE(IMP::domino, Slice, Slices);
+IMP_SWIG_VALUE(IMP::domino, Order, Orders);
+%template(_IntArray) IMP::base::ConstArray<int>;
+%template(_UIntArray) IMP::base::ConstArray<unsigned int>;
+%template(_ParticleArray) IMP::base::ConstArray<Particle* >;
+
 %include "IMP/domino/Subset.h"
 %include "IMP/domino/Assignment.h"
+%include "IMP/domino/Slice.h"
+%include "IMP/domino/Order.h"
 %include "IMP/domino/particle_states.h"
 %include "IMP/domino/subset_filters.h"
 %include "IMP/domino/assignment_containers.h"

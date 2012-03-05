@@ -71,9 +71,6 @@ void SampleAssignmentContainer::add_assignment(const Assignment& a) {
   }
 }
 
-Ints get_order(const Subset &s,
-               const ParticlesTemp &all_particles);
-
 #ifdef IMP_DOMINO_USE_IMP_RMF
 
 
@@ -83,7 +80,7 @@ WriteHDF5AssignmentContainer
                                const ParticlesTemp &all_particles,
                                std::string name):
   AssignmentContainer(name), ds_(parent.add_child_index_data_set_2d(name)),
-  order_(get_order(s, all_particles)),
+  order_(s, all_particles),
   max_cache_(10000) {
   RMF::HDF5IndexDataSet2D::Index sz;
   sz[0]=0; sz[1]=s.size();
@@ -97,7 +94,7 @@ WriteHDF5AssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name), ds_(dataset),
-  order_(get_order(s, all_particles)),
+  order_(s, all_particles),
   max_cache_(10000) {
   if (ds_.get_size()[1] != s.size()) {
     RMF::HDF5IndexDataSet2D::Index sz;
@@ -161,7 +158,7 @@ void WriteHDF5AssignmentContainer::add_assignment(const Assignment& a) {
   IMP_USAGE_CHECK(a.size()==order_.size(),
                   "Sizes don't match: " << a.size()
                   << " vs " << order_.size());
-  Ints save= get_output(a, order_);
+  Ints save= order_.get_list_ordered(a);
   cache_.insert(cache_.end(), save.begin(), save.end());
   if (cache_.size() > max_cache_) flush();
 }
@@ -175,7 +172,7 @@ ReadHDF5AssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name), ds_(dataset),
-  order_(get_order(s, all_particles)),
+  order_(s, all_particles),
   max_cache_(10000){
 }
 
@@ -186,9 +183,8 @@ unsigned int ReadHDF5AssignmentContainer::get_number_of_assignments() const {
 
 Assignment ReadHDF5AssignmentContainer::get_assignment(unsigned int i) const {
   RMF::Ints is= ds_.get_row(RMF::HDF5DataSetIndexD<1>(i));
-  Assignment ret(Ints(is.begin(), is.end()));
-  IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
-  return get_from_output(ret.begin(), ret.end(), order_);
+  IMP_USAGE_CHECK(is.size()== order_.size(), "Wrong size assignment");
+  return order_.get_subset_ordered(is.begin(), is.end());
 }
 
 
@@ -210,7 +206,7 @@ WriteAssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name),
-  order_(get_order(s, all_particles)),
+  order_(s, all_particles),
   max_cache_(10000) {
   cache_.reserve(max_cache_);
   f_=open(dataset.c_str(), O_WRONLY|O_APPEND|O_CREAT |O_TRUNC,
@@ -250,7 +246,7 @@ void WriteAssignmentContainer::add_assignment(const Assignment& a) {
   IMP_USAGE_CHECK(a.size()==order_.size(),
                   "Sizes don't match: " << a.size()
                   << " vs " << order_.size());
-  Ints ret= get_output(a, order_);
+  Ints ret= order_.get_list_ordered(a);
   cache_.insert(cache_.end(), ret.begin(), ret.end());
   ++number_;
   IMP_LOG(VERBOSE, "Added " << a << " cache is now " << cache_
@@ -267,7 +263,7 @@ ReadAssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name),
-  order_(get_order(s, all_particles)),
+  order_(s, all_particles),
   max_cache_(10000) {
   cache_.reserve(max_cache_);
   struct stat data;
@@ -294,9 +290,8 @@ Assignment ReadAssignmentContainer::get_assignment(unsigned int i) const {
     IMP_LOG(VERBOSE, "Cache is " << cache_ << " at " << offset_
             << std::endl);
   }
-  return get_from_output(cache_.begin()+i*order_.size(),
-                  cache_.begin()+(i+1)*order_.size(),
-                  order_);
+  return order_.get_subset_ordered(cache_.begin()+i*order_.size(),
+                                   cache_.begin()+(i+1)*order_.size());
 }
 
 void ReadAssignmentContainer::set_cache_size(unsigned int words) {

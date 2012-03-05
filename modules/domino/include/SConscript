@@ -1,23 +1,4 @@
 Import('env')
 
-files = [
-         'Assignment.h',
-         'BranchAndBoundSampler.h',
-         'DependencyScoreState.h',
-         'DiscreteSampler.h',
-         'DominoSampler.h',
-         'Subset.h',
-         'analysis.h',
-         'assignment_containers.h',
-         'assignment_tables.h',
-         'domino_macros.h',
-         'optimize_restraints.h',
-         'particle_states.h',
-         'subset_filters.h',
-         'subset_graphs.h',
-         'utility.h',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Install the include files:
-env.IMPModuleInclude(files)
+env.IMPModuleInclude(files=env.IMPModuleGetHeaders())

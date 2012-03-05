@@ -1,22 +1,4 @@
 Import('env')
 
-files = [
-         'Assignment.cpp',
-         'BranchAndBoundSampler.cpp',
-         'DependencyScoreState.cpp',
-         'DiscreteSampler.cpp',
-         'DominoSampler.cpp',
-         'Subset.cpp',
-         'analysis.cpp',
-         'assignment_containers.cpp',
-         'assignment_tables.cpp',
-         'optimize_restraints.cpp',
-         'particle_states.cpp',
-         'subset_filters.cpp',
-         'subset_graphs.cpp',
-         'utility.cpp',
-        ] \
-        + SConscript('internal/SConscript')
-
 # Build and install the shared library:
-env.IMPModuleLib(files)
+env.IMPModuleLib(files=env.IMPModuleGetSources())
