@@ -10,12 +10,12 @@
 #define IMPDOMINO_ASSIGNMENT_H
 
 #include "domino_config.h"
-#include <IMP/base/ConstArray.h>
-#include "IMP/macros.h"
 #include "domino_macros.h"
 #include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/Pointer.h>
+#include <IMP/base/ConstArray.h>
+#include <IMP/macros.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE

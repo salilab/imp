@@ -154,38 +154,6 @@ ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
   return ret;
 }
 
-
-
-
-void load_leaf_assignments(const Subset& subset,
-                             AssignmentsTable *at,
-                             AssignmentContainer *ac) {
-  IMP_FUNCTION_LOG;
-  internal::load_leaf_assignments(subset,
-                                  at, nullptr, NULL,
-                                  ac);
-}
-
-
-void load_merged_assignments(const Subset &first_subset,
-                             AssignmentContainer* first,
-                             const Subset &second_subset,
-                             AssignmentContainer* second,
-                             const SubsetFilterTablesTemp &filters,
-                             AssignmentContainer* ret,
-                             double max_error,
-                             ParticleStatesTable *pst,
-                             const statistics::Metrics &metrics,
-                             unsigned int max_states) {
-  IMP_FUNCTION_LOG;
-  SubsetFilterTables ts(filters.begin(), filters.end());
-  internal::load_merged_assignments(first_subset, first,
-                                    second_subset, second,
-                                    ts, nullptr, NULL,
-                                    max_error, pst, metrics,
-                                    max_states, ret);
-}
-
  algebra::VectorKD get_embedding(const Subset &s,
                                  const Assignment &a,
                                  ParticleStatesTable *pst){

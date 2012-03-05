@@ -11,7 +11,7 @@
 #include "domino_config.h"
 #include "Assignment.h"
 #include "Subset.h"
-#include "subset_filters.h"
+#include "particle_states.h"
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/RestraintSet.h>
@@ -103,31 +103,6 @@ IMPDOMINOEXPORT
 ParticlePairsTemp get_possible_interactions(const ParticlesTemp &ps,
                                             double max_distance,
                                             ParticleStatesTable *pst);
-
-
-  //! Fill in assignments for a leaf
-IMPDOMINOEXPORT void load_leaf_assignments(const Subset& subset,
-                                           AssignmentsTable *at,
-                                           AssignmentContainer *ac);
-
-  //! Fill in assignments for an internal node
-  /** The passed assignments, the ordering for the children is that of
-      the node indexes for the children.
-      \unstable{load_merged_assignments}
-  */
-IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
-                                             AssignmentContainer* first,
-                                             const Subset &second_subset,
-                                             AssignmentContainer* second,
-                                             const SubsetFilterTablesTemp
-                                             &filters,
-                                             AssignmentContainer* ret,
-                                             double max_error=0,
-                                             ParticleStatesTable *pst=NULL,
-                                             const statistics::Metrics &metrics
-                                             = statistics::Metrics(),
-                                             unsigned int max_states
-                                             =std::numeric_limits<int>::max());
 
 //! Return an embedding for an assignment
 IMPDOMINOEXPORT algebra::VectorKD get_embedding(const Subset &s,

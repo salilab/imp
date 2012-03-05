@@ -9,13 +9,14 @@
 #ifndef IMPDOMINO_SUBSET_FILTERS_H
 #define IMPDOMINO_SUBSET_FILTERS_H
 
+#include "domino_config.h"
 #include "particle_states.h"
 #include "Assignment.h"
 #include "particle_states.h"
 #include "internal/restraint_evaluator.h"
 #include "Subset.h"
 #include "domino_macros.h"
-#include "domino_config.h"
+#include "subset_scores.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
 #include <IMP/compatibility/map.h>
@@ -97,7 +98,6 @@ class IMPDOMINOEXPORT SubsetFilterTable: public IMP::base::Object {
 };
 
 class RestraintScoreSubsetFilterTable;
-class MinimumRestraintScoreSubsetFilterTable;
 
 /** A restraint score based SubsetFilter.
     See RestraintScoreSubsetFilterTable.
@@ -177,59 +177,51 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
 IMP_OBJECTS(RestraintScoreSubsetFilterTable,
             RestraintScoreSubsetFilterTables);
 
-/** A minimum restraint score based SubsetFilter.
-    See MinimumRestraintScoreSubsetFilterTable.
+
+
+
+//! Filter a configuration of the subset using the Model thresholds
+/** This filter table creates filters using the maximum scores
+    set in the Model for various restraints.
  */
-class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilter: public SubsetFilter {
-  Pointer<const internal::ModelData> keepalive_;
-  const internal::SubsetData &data_;
-  int max_number_of_violated_restraints_;
-  friend class MinimumRestraintScoreSubsetFilterTable;
-  MinimumRestraintScoreSubsetFilter(const internal::ModelData *t,
-                             const internal::SubsetData &data,
-                             int max_number_of_violated_restraints):
-    SubsetFilter("Minimum restraint score filter"),
-    keepalive_(t), data_(data),
-    max_number_of_violated_restraints_(max_number_of_violated_restraints){
-  }
+class IMPDOMINOEXPORT RestraintCacheSubsetFilterTable:
+    public SubsetFilterTable {
+  OwnerPointer<RestraintCache> cache_;
+  mutable Restraints rs_;
 public:
-  IMP_SUBSET_FILTER(MinimumRestraintScoreSubsetFilter);
-  int get_next_state(int pos, const Assignment& state) const;
-  double get_score(const Assignment& state) const;
+  RestraintCacheSubsetFilterTable(RestraintCache *rc);
+#ifndef IMP_DOXYGEN
+  RestraintCacheSubsetFilterTable(RestraintSet *rs,
+                                  ParticleStatesTable *pst);
+#endif
+  /** Create the RestraintCache internally with unbounded size.*/
+  RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+                                  ParticleStatesTable *pst);
+  IMP_SUBSET_FILTER_TABLE(RestraintCacheSubsetFilterTable);
 };
+
+IMP_OBJECTS(RestraintCacheSubsetFilterTable,
+            RestraintCacheSubsetFilterTables);
+
 
 
 //! Filter a configuration of the subset using the Model thresholds
 /** Filter based on an allowed number of failures for the restraints
-    in a restraint set.
+    in a list passed.
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
-  struct StatsPrinter:public Pointer<internal::ModelData>{
-  public:
-    StatsPrinter(internal::ModelData *mset):
-      Pointer<internal::ModelData>(mset){}
-    ~StatsPrinter();
-  };
-  StatsPrinter mset_;
-  int max_number_of_violated_restraints_;
+  OwnerPointer<RestraintCache> rc_;
+  Restraints rs_;
+  int max_violated_;
+  RestraintsTemp get_restraints(const Subset &s,
+                                const Subsets &excluded) const;
  public:
-  MinimumRestraintScoreSubsetFilterTable(RestraintSet *rs,
-                                         ParticleStatesTable *pst,
-                                         int max_number_of_violated_restraints);
   MinimumRestraintScoreSubsetFilterTable(const RestraintsTemp &rs,
-                                         ParticleStatesTable *pst,
+                                         RestraintCache *rc,
                                          int max_number_of_violated_restraints);
-  /** By default the filter table caches each score that it computes.
-      While this can often accelerate things, that is not always the
-      case and the memory usage can be quite high.
-  */
-  void set_use_caching(bool tf);
-  /** Set the maximum number of cache entries for all restraints.
-  */
-  void set_maximum_number_of_cache_entries(unsigned int i);
   int get_maximum_number_of_violated_restraints() const {
-    return max_number_of_violated_restraints_;}
+    return max_violated_;}
   IMP_SUBSET_FILTER_TABLE(MinimumRestraintScoreSubsetFilterTable);
 };
 

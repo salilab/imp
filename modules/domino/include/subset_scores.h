@@ -170,31 +170,6 @@ public:
 };
 
 
-
-
-//! Filter a configuration of the subset using the Model thresholds
-/** This filter table creates filters using the maximum scores
-    set in the Model for various restraints.
- */
-class IMPDOMINOEXPORT RestraintCacheSubsetFilterTable:
-  public SubsetFilterTable {
-  OwnerPointer<RestraintCache> cache_;
- public:
-  RestraintCacheSubsetFilterTable(RestraintCache *rc);
-#ifndef IMP_DOXYGEN
-  RestraintCacheSubsetFilterTable(RestraintSet *rs,
-                                  ParticleStatesTable *pst);
-  RestraintCacheSubsetFilterTable(RestraintsTemp rs,
-                                  ParticleStatesTable *pst);
-#endif
-  IMP_SUBSET_FILTER_TABLE(RestraintCacheSubsetFilterTable);
-  };
-
-IMP_OBJECTS(RestraintCacheSubsetFilterTable,
-            RestraintCacheSubsetFilterTables);
-
-
-
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_SCORES_H */

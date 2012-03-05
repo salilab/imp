@@ -61,7 +61,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r)
         ds= IMP.domino.DominoSampler(m)
         m.set_maximum_score(.5)
-        rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        rssft= IMP.domino.RestraintCacheSubsetFilterTable(m, pst)
         rssft.set_log_level(IMP.SILENT)
         dsst= nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
@@ -83,7 +83,7 @@ class DOMINOTests(IMP.test.TestCase):
                 self.assertIn(s, found_states)
 
     def _test_minimal_filtering(self, nm):
-        """Testing MinimumRestraintScoreSubsetFilterTable"""
+        """Testing MinimumRestraintCacheSubsetFilterTable"""
         (m, pst, lsc)= self._get_stuff()
         vs= self._get_positions()
         for p in lsc:
@@ -112,7 +112,9 @@ class DOMINOTests(IMP.test.TestCase):
         r.set_log_level(IMP.VERBOSE)
         m.add_restraint(r)
         m.set_maximum_score(.5)
-        rssft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(m.get_restraints(), pst,1)
+        rc= IMP.domino.RestraintCache(pst)
+        rc.add_restraints(m.get_restraints())
+        rssft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(m.get_restraints(), rc,1)
         rssft.set_log_level(IMP.SILENT)
         dsst= nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
@@ -156,7 +158,7 @@ class DOMINOTests(IMP.test.TestCase):
         r1.set_log_level(IMP.VERBOSE)
         m.add_restraint(r1)
         m.set_maximum_score(.6)
-        rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        rssft= IMP.domino.RestraintCacheSubsetFilterTable(m, pst)
         dsst= nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"

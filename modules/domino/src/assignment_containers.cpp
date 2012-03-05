@@ -352,10 +352,16 @@ HeapAssignmentContainer::get_assignment(unsigned int i) const {
   return d_[i].first;
 }
 HeapAssignmentContainer::HeapAssignmentContainer(
-                               unsigned int k,
-                               RestraintScoreSubsetFilter *rssf,
-                               std::string name):
-  AssignmentContainer(name), k_(k), rssf_(rssf) {}
+    Subset subset,
+    unsigned int k,
+    RestraintCache *rssf,
+    std::string name):
+    AssignmentContainer(name), subset_(subset), k_(k), rssf_(rssf) {
+  rs_= get_as<Restraints>(rssf_->get_restraints(subset_, Subsets()));
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    slices_.push_back(rssf_->get_slice(rs_[i], subset_));
+  }
+}
 
 void HeapAssignmentContainer::do_show(std::ostream &out) const {
   out << "number of assignments: " << get_number_of_assignments();
@@ -372,9 +378,12 @@ void HeapAssignmentContainer::add_assignment(const Assignment& a) {
     }
   }
   //rssf_ may be null if no restraints are assigned to the particles
-  double score=INT_MAX;
+  double score=std::numeric_limits<double>::max();
   if (rssf_){
-    score=rssf_->get_score(a);
+    score=0;
+    for (unsigned int i=0; i< rs_.size(); ++i) {
+      score+=rssf_->get_score(rs_[i], slices_[i].get_sliced(a));
+    }
   }
   d_.push_back(AP(a,score));
   std::push_heap(d_.begin(), d_.end(), GreaterSecond());

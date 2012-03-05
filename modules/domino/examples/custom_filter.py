@@ -81,14 +81,14 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
 
 def create_sampler(m, ps, pst):
     s=IMP.domino.DominoSampler(m, pst)
-    s.set_log_level(IMP.VERBOSE)
+    #s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
     filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+    filters.append(IMP.domino.RestraintCacheSubsetFilterTable(m, pst))
     filters[-1].set_log_level(IMP.SILENT)
     mf=MyFilterTable(ps[1], 0)
     # try with and without this line
