@@ -114,7 +114,7 @@ class PairContainerTest(IMP.test.TestCase):
         s= IMP.container.PairsConstraint(f, None, c)
         print "add"
         m.add_score_state(s)
-        m.evaluate(False)
+        m.update()
         for p in cs:
             self.assertTrue(particle_pair_has_attribute(p, k))
         print "done"
@@ -135,7 +135,7 @@ class PairContainerTest(IMP.test.TestCase):
         s= self.create_pair_score_state(f, None, t)
         m.add_score_state(s)
         print "add"
-        m.evaluate(False)
+        m.update()
         self.assertTrue(particle_pair_has_attribute(t, k))
         print "done"
 

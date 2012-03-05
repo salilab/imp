@@ -34,8 +34,7 @@ int main(int, char *[]) {
                   << " vs " << ps.size()-1);
   double re= r->evaluate(false);
   double rde= rd->evaluate(false);
-  IMP::Floats rdaes= m->evaluate(rds, false);
-  double rdae= std::accumulate(rdaes.begin(), rdaes.end(), 0.0);
+  double rdae= m->evaluate(new IMP::ScoringFunction(rds), false);
   IMP_USAGE_CHECK(std::abs(rdae-re)< .1,
                   "Invalid decomposed score: "
                   << re << " vs " << rde << " vs " << rdae);

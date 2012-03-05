@@ -27,7 +27,7 @@ class TestREFCover(IMP.test.TestCase):
         p=IMP.Particle(m)
         ss= IMP.core.Cover.setup_particle(p,
                                           IMP.core.FixedRefiner(ps))
-        m.evaluate(True)
+        m.update()
         self.check_cover(p, ps)
 if __name__ == '__main__':
     IMP.test.main()

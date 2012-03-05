@@ -18,7 +18,7 @@ class TestBL(IMP.test.TestCase):
     def _compare_lists(self, m, pc0, pc1, out, d):
         print "comparing"
         IMP.set_log_level(IMP.VERBOSE)
-        m.evaluate(False)
+        m.update()
         print "list is " + str(out.get_number_of_particle_pairs())
         for a in pc0:
             for b in pc1:
@@ -69,12 +69,12 @@ class TestBL(IMP.test.TestCase):
         pc0= IMP.container.ListSingletonContainer(ps0)
         pc1= IMP.container.ListSingletonContainer(ps1)
         cpss= IMP.container.CloseBipartitePairContainer(pc0, pc1,100000,3 )
-        m.evaluate(False)
+        m.update()
         self.assertEqual(cpss.get_number_of_particle_pairs(), len(ps0)*len(ps1))
         abpc= IMP.container.AllBipartitePairContainer(pc0, pc1)
         cpss.add_pair_filter(IMP.container.InContainerPairFilter(abpc))
         print "re-evaluate"
-        m.evaluate(False)
+        m.update()
         self.assertEqual(cpss.get_number_of_particle_pairs(), 0)
 
 

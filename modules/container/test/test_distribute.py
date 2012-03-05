@@ -36,7 +36,7 @@ class AllPairsContainerTest(IMP.test.TestCase):
         even= dss.add_predicate(Odd(), 0)
         odd= dss.add_predicate(Odd(), 1)
         zf= dss.add_predicate(Mod5(), 0)
-        m.evaluate(False)
+        m.update()
         print even.get_particles()
         print odd.get_particles()
         print zf.get_particles()
