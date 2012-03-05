@@ -25,8 +25,10 @@ ParticlesTemp _ConstRestraint::get_input_particles() const {
 
 Restraints _ConstRestraint::do_create_decomposition() const {
   Restraints ret;
-  ret.push_back(new _ConstRestraint(v_/2.0, ps_));
-  ret.push_back(new _ConstRestraint(v_/2.0, ps_));
+  for (unsigned int i=0; i< ps_.size(); ++i) {
+    ret.push_back(new _ConstRestraint(v_/ps_.size(),
+                                      ParticlesTemp(1,ps_[i])));
+  }
   return ret;
 }
 
