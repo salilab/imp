@@ -61,6 +61,21 @@ public:
 IMP_VALUES(Slice, Slices);
 IMP_SWAP(Slice);
 
+/** Return a slice for the inner subset if it is not contained
+    in any of the excluded subsets, otherwise return the empty slice.
+*/
+inline Slice get_slice(Subset outer, Subset inner,
+                       const Subsets &excluded) {
+  IMP_USAGE_CHECK(inner.size() <= outer.size(),
+                  "Inner and outer are switched");
+  for (unsigned int i=0; i< excluded.size(); ++i) {
+    if (get_intersection(inner, excluded[i]).size() == inner.size()) {
+      return Slice();
+    }
+  }
+  return Slice(outer, inner);
+}
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SLICE_H */
