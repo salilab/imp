@@ -60,11 +60,21 @@ void RestraintSet::show_it(std::ostream &out) const {
 
 ParticlesTemp RestraintSet::get_input_particles() const
 {
-  IMP_FAILURE("RestraintSets are special cased in the Model");
+  ParticlesTemp ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    ret= ret+(*it)->get_input_particles();
+  }
+  return ret;
 }
 
 ContainersTemp RestraintSet::get_input_containers() const {
-  IMP_FAILURE("RestraintSets are special cased in the Model");
+  ContainersTemp ret;
+  for (RestraintConstIterator it= restraints_begin();
+       it != restraints_end(); ++it) {
+    ret= ret+(*it)->get_input_containers();
+  }
+  return ret;
 }
 
 
