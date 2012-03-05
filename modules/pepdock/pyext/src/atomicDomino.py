@@ -584,7 +584,7 @@ class AtomicDomino:
     def createAllSubsetAssignments(self):
 
         lat = IMP.domino.ListAssignmentsTable()
-        rssft = IMP.domino.RestraintCacheSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
 
         leafNodeIndexList = self.getLeafNodeIndexList()
 
@@ -750,7 +750,7 @@ class AtomicDomino:
             [mySubset, myAc] = self.createHdf5AssignmentContainer(nodeIndex, mtIndexToParticles[nodeIndex], 0)
             print "done creating hdf5"
             prepTime = self.logTimePoint(0)
-            rssft = IMP.domino.RestraintCacheSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
+            rssft = IMP.domino.RestraintScoreSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
             rssf = rssft.get_subset_filter(mySubset, [])
 
             #heapAc = IMP.domino.HeapAssignmentContainer(1000, rssf)
@@ -790,7 +790,7 @@ class AtomicDomino:
         #self.sampler.set_assignments_table(lat)
 
         #hdf5AssignmentContainer = IMP.domino.HDF5AssignmentContainer(dataset, subset, self.dominoPst.get_particles(), subsetName)
-        rssft = IMP.domino.RestraintCacheSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
+        rssft = IMP.domino.RestraintScoreSubsetFilterTable(self.model.get_root_restraint_set(), self.dominoPst)
         filteredAssignments = self.filterAssignments(finalAssignments, subset, nodeIndex, rssft)
         root = self.getAssignmentContainerRoot(nodeIndex, 0)
         dataset= root.add_child_index_data_set_2d(str(nodeIndex))

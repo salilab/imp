@@ -152,7 +152,7 @@ class DOMINOTests(IMP.test.TestCase):
         sampler= IMP.domino.DominoSampler(m, pst)
         rc= IMP.domino.RestraintCache(pst)
         rc.add_restraints([m])
-        rssft= IMP.domino.RestraintCacheSubsetFilterTable(rc)
+        rssft= IMP.domino.RestraintScoreSubsetFilterTable(rc)
         s=IMP.domino.Subset(pst.get_particles())
         rs=rc.get_restraints(s,[])
         slcs= [rc.get_slice(r, s) for r in rs]

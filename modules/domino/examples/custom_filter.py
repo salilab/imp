@@ -88,7 +88,7 @@ def create_sampler(m, ps, pst):
     # to have the same state index
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino.RestraintCacheSubsetFilterTable(m, pst))
+    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
     filters[-1].set_log_level(IMP.SILENT)
     mf=MyFilterTable(ps[1], 0)
     # try with and without this line

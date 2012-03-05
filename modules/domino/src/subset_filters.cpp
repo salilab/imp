@@ -799,27 +799,27 @@ void ProbabilisticSubsetFilterTable::do_show(std::ostream &) const {
 // filtetring==========================================
 
 namespace {
-class RestraintCacheSubsetFilter: public SubsetFilter {
+class RestraintScoreSubsetFilter: public SubsetFilter {
   OwnerPointer<RestraintCache> cache_;
   RestraintsTemp rs_;
   Slices slices_;
 public:
-  RestraintCacheSubsetFilter(RestraintCache *cache,
+  RestraintScoreSubsetFilter(RestraintCache *cache,
                              const RestraintsTemp rs,
                              const Subset&s,
                              const Subsets &):
-      SubsetFilter("RestraintCacheSubsetFilter%1%"),
+      SubsetFilter("RestraintScoreSubsetFilter%1%"),
       cache_(cache),
       rs_(rs) {
     for (unsigned int i=0; i < rs_.size(); ++i) {
       slices_.push_back(cache->get_slice(rs_[i], s));
     }
   }
-  IMP_SUBSET_FILTER(RestraintCacheSubsetFilter);
+  IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
 };
 
 
-bool RestraintCacheSubsetFilter
+bool RestraintScoreSubsetFilter
 ::get_is_ok(const Assignment& state) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
@@ -834,7 +834,7 @@ bool RestraintCacheSubsetFilter
   return true;
 }
 
-void RestraintCacheSubsetFilter
+void RestraintScoreSubsetFilter
 ::do_show(std::ostream &out) const {
   out << "restraints: " << Showable(rs_) << std::endl;
   out << "slices: " << Showable(slices_) << std::endl;
@@ -842,29 +842,29 @@ void RestraintCacheSubsetFilter
 
 }
 
-RestraintCacheSubsetFilterTable
-::RestraintCacheSubsetFilterTable(RestraintCache *cache):
-  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+RestraintScoreSubsetFilterTable
+::RestraintScoreSubsetFilterTable(RestraintCache *cache):
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   cache_(cache){}
 
 
 
-RestraintCacheSubsetFilterTable
-::RestraintCacheSubsetFilterTable(RestraintSet *rs,
+RestraintScoreSubsetFilterTable
+::RestraintScoreSubsetFilterTable(RestraintSet *rs,
                                 ParticleStatesTable *pst):
-  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   cache_(new RestraintCache(pst)), rs_(1, rs) {
 }
-RestraintCacheSubsetFilterTable
-::RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+RestraintScoreSubsetFilterTable
+::RestraintScoreSubsetFilterTable(RestraintsTemp rs,
                                   ParticleStatesTable *pst):
-  SubsetFilterTable("RestraintCacheSubsetFilterTable%1%"),
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   cache_(new RestraintCache(pst)), rs_(rs.begin(), rs.end()){
 }
 
 
 SubsetFilter*
-RestraintCacheSubsetFilterTable
+RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset&s,
                     const Subsets &excluded) const {
   if (!rs_.empty()) {
@@ -877,17 +877,17 @@ RestraintCacheSubsetFilterTable
             << " with excluded " << excluded << std::endl);
     return nullptr;
   } else {
-    return new RestraintCacheSubsetFilter(cache_, rs, s, excluded);
+    return new RestraintScoreSubsetFilter(cache_, rs, s, excluded);
   }
 }
-double RestraintCacheSubsetFilterTable
+double RestraintScoreSubsetFilterTable
 ::get_strength(const Subset&s,
                const Subsets &excluded) const {
   int n= cache_->get_restraints(s, excluded).size();
   return 1.0-1.0/(n+1.0);
 }
 
-void RestraintCacheSubsetFilterTable
+void RestraintScoreSubsetFilterTable
 ::do_show(std::ostream &out) const {
   out << "cache: " << Showable(cache_) << std::endl;
 }

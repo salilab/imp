@@ -105,24 +105,24 @@ class RestraintScoreSubsetFilterTable;
 /** This filter table creates filters using the maximum scores
     set in the Model for various restraints.
  */
-class IMPDOMINOEXPORT RestraintCacheSubsetFilterTable:
+class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
     public SubsetFilterTable {
   OwnerPointer<RestraintCache> cache_;
   mutable Restraints rs_;
 public:
-  RestraintCacheSubsetFilterTable(RestraintCache *rc);
+  RestraintScoreSubsetFilterTable(RestraintCache *rc);
 #ifndef IMP_DOXYGEN
-  RestraintCacheSubsetFilterTable(RestraintSet *rs,
+  RestraintScoreSubsetFilterTable(RestraintSet *rs,
                                   ParticleStatesTable *pst);
 #endif
   /** Create the RestraintCache internally with unbounded size.*/
-  RestraintCacheSubsetFilterTable(RestraintsTemp rs,
+  RestraintScoreSubsetFilterTable(RestraintsTemp rs,
                                   ParticleStatesTable *pst);
-  IMP_SUBSET_FILTER_TABLE(RestraintCacheSubsetFilterTable);
+  IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 
-IMP_OBJECTS(RestraintCacheSubsetFilterTable,
-            RestraintCacheSubsetFilterTables);
+IMP_OBJECTS(RestraintScoreSubsetFilterTable,
+            RestraintScoreSubsetFilterTables);
 
 
 
