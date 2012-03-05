@@ -9,6 +9,7 @@
 #define IMPCOMPATIBILITY_INTERNAL_HASH_H
 
 #include "compatibility_config.h"
+#include "vector.h"
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -22,16 +23,6 @@
 
 // this specializes some hash methods
 #include <boost/graph/adjacency_list.hpp>
-
-namespace IMP {
-#ifndef IMP_DOXYGEN
-template <class T>
-inline std::size_t hash_value(const T &t) {
-  return t.__hash__();
-}
-#endif
-
-}
 
 
 #endif  /* IMPCOMPATIBILITY_INTERNAL_HASH_H */

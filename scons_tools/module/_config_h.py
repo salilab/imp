@@ -295,6 +295,7 @@ inline std::string get_example_path(std::string file_name)  {
 """%vars
         print >> h, """
 #include <IMP/base/Showable.h>
+#include <IMP/base/hash.h>
 """% vars
         if vars["module"] != "base":
             print >> h, """
@@ -302,6 +303,7 @@ inline std::string get_example_path(std::string file_name)  {
 %(EXPORT)s_BEGIN_NAMESPACE
 using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
+using ::IMP::base::hash_value;
 %(EXPORT)s_END_NAMESPACE
 #endif
 """%vars
