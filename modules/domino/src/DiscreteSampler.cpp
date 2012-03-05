@@ -6,6 +6,7 @@
  */
 
 #include <IMP/domino/DiscreteSampler.h>
+#include <IMP/domino/subset_scores.h>
 #include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -38,9 +39,10 @@ DiscreteSampler
                               subset_filter_tables_end());
   } else {
     SubsetFilterTables sfts;
+    IMP_NEW(RestraintCache, rc, (pst));
+    rc->add_restraints(rs);
     sfts
-      .push_back(new RestraintScoreSubsetFilterTable(rs,
-                                                     pst));
+      .push_back(new RestraintCacheSubsetFilterTable(rc));
     sfts.back()->set_was_used(true);
     sfts.push_back(new ExclusionSubsetFilterTable
                    (get_particle_states_table()));

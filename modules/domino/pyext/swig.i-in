@@ -45,6 +45,7 @@ IMP_SWIG_OBJECT(IMP::domino, RecursiveStates, RecursiveStatesList);
 IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilter, RestraintScoreSubsetFilters);
 IMP_SWIG_OBJECT(IMP::domino, ProbabilisticSubsetFilterTable, ProbabilisticSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, RestraintCacheSubsetFilterTable, RestraintCacheSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RigidBodyStates, RigidBodyStatess);
 IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatesList);
 IMP_SWIG_OBJECT(IMP::domino, NestedRigidBodyStates, NestedRigidBodyStatesList);
