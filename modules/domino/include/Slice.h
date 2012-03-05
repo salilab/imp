@@ -22,7 +22,8 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a subset of a subset or assignment.
-/** This class stores a particular slice through a subset.
+/** This class stores a particular slice through a subset. The entire
+    inner Subset must be contained in the outer one.
 */
 class IMPDOMINOEXPORT Slice: public base::ConstArray<unsigned int> {
   typedef base::ConstArray<unsigned int> P;
@@ -41,14 +42,14 @@ public:
   Slice() {}
   Slice(Subset outer, Subset inner): P(get_slice(outer, inner)) {
   }
-  Assignment get_slice(const Assignment& a) const{
+  Assignment get_sliced(const Assignment& a) const{
     Ints ret(size(), -1);
     for (unsigned int i=0; i< size(); ++i) {
       ret[i]=a[operator[](i)];
     }
     return Assignment(ret);
   }
-  Subset get_slice(const Subset& a) const{
+  Subset get_sliced(const Subset& a) const{
     ParticlesTemp ret(size());
     for (unsigned int i=0; i< size(); ++i) {
       ret[i]=a[operator[](i)];
