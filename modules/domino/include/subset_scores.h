@@ -96,8 +96,10 @@ public:
   //! r can be a set or a restraint
   /** The returned score will be std::numeric_limits<double>::max()
       if any of the limits are violated.*/
-  double get_score(Restraint *r, const Assignment &a) const;
-
+  double get_score(Restraint *r, const Assignment &a) const {
+    set_was_used(true);
+    return cache_.get(Key(r, a));
+  }
   /** Return the restraints that should be evaluated for the subset,
       given the exclusions.*/
   RestraintsTemp get_restraints(const Subset&s,
