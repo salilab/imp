@@ -151,6 +151,9 @@ public:
 /** Implement a simple least recently used cache. As with
     the Memoizer, it is parameterized by a generator that is
     used to generate values if they are not in the cache.
+
+    The Generator should have a method:
+    - Generator::operator()(Key, Cache);
 */
 template <class Generator,
           class Checker=std::equal_to<typename Generator::result_type> >
@@ -184,9 +187,9 @@ private:
   typedef typename boost::multi_index::template nth_index<Map, 1>
   ::type::const_iterator OrderIterator;
   LookupIterator add_value(const Key &k) const {
-    Value v= gen_(k);
+    Value v= gen_(k, this);
     OrderIterator it= map_.template get<1>().push_front(KVP(k, v)).first;
-    if (map_.size() > max_size_) {
+    while (map_.size() > max_size_) {
       map_.template get<1>().pop_back();
     }
     return map_.template project<0>(it);
@@ -208,7 +211,7 @@ public:
     map_.template get<1>().relocate(map_.template project<1>(it),
                                     map_.template get<1>().begin());
     IMP_INTERNAL_CHECK(checker_(it->value,
-                               gen_(k)),
+                                gen_(k, this)),
                        "Results don't match.");
     return it->value;
 
