@@ -236,11 +236,16 @@ namespace {
     if (!sorted.empty()) {
       excluded.push_back(Subset(sorted));
     }
-    double ret=0;
+    double ret=1;
     for (unsigned int i=0; i< sft.size(); ++i) {
-      ret+= sft[i]->get_strength(sc, excluded);
+      double cur= sft[i]->get_strength(sc, excluded);
+      IMP_USAGE_CHECK(cur>=0 && cur <=1,
+                      "The strength of a filter should be between 0 and 1"
+                      << " with 1 being the strongest. It is not for "
+                      << Showable(sft[i]) << " at " << cur);
+      ret*=1.0-cur;
     }
-    return ret;
+    return 1.0-ret;
   }
 
   ParticlesTemp initialize_order(const Subset &s,
