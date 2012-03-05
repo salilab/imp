@@ -44,6 +44,12 @@ enum Element {UNKNOWN_ELEMENT=0,
 #endif
 };
 
+#ifndef IMP_DOXYGEN
+inline size_t hash_value(Element e) {
+  return e;
+}
+#endif
+
 /** Class to translate between element symbols, names and masses.*/
 class IMPATOMEXPORT ElementTable {
 public:
