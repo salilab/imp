@@ -187,7 +187,7 @@ private:
   typedef typename boost::multi_index::template nth_index<Map, 1>
   ::type::const_iterator OrderIterator;
   LookupIterator add_value(const Key &k) const {
-    Value v= gen_(k, this);
+    Value v= gen_(k, *this);
     OrderIterator it= map_.template get<1>().push_front(KVP(k, v)).first;
     while (map_.size() > max_size_) {
       map_.template get<1>().pop_back();
@@ -211,7 +211,7 @@ public:
     map_.template get<1>().relocate(map_.template project<1>(it),
                                     map_.template get<1>().begin());
     IMP_INTERNAL_CHECK(checker_(it->value,
-                                gen_(k, this)),
+                                gen_(k, *this)),
                        "Results don't match.");
     return it->value;
 
@@ -226,6 +226,12 @@ public:
       ret.push_back(it->key);
     }
     return ret;
+  }
+  unsigned int size() const {
+    return map_.size();
+  }
+  Generator &access_generator() {
+    return gen_;
   }
 };
 

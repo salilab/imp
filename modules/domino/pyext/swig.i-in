@@ -63,6 +63,7 @@ IMP_SWIG_OBJECT(IMP::domino, ReadHDF5AssignmentContainer, ReadHDF5AssignmentCont
 #endif
 IMP_SWIG_OBJECT(IMP::domino, ReadAssignmentContainer, ReadAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, WriteAssignmentContainer, WriteAssignmentContainers);
+IMP_SWIG_OBJECT(IMP::domino, RestraintCache, RestraintCaches);
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
@@ -81,6 +82,7 @@ IMP_SWIG_VALUE(IMP::domino, Order, Orders);
 %include "IMP/domino/assignment_containers.h"
 %include "IMP/domino/assignment_tables.h"
 %include "IMP/domino/subset_graphs.h"
+%include "IMP/domino/subset_scores.h"
 %include "IMP/domino/optimize_restraints.h"
 %include "IMP/domino/DiscreteSampler.h"
 %include "IMP/domino/DominoSampler.h"

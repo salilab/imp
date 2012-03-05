@@ -24,7 +24,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
                                             Floats set_weights,
                                             Subsets set_subsets) {
   Pointer<Restraint> decomp= r->create_decomposition();
-  RestraintSet *rs= dynamic_cast<RestraintSet>(decomp.get());
+  RestraintSet *rs= dynamic_cast<RestraintSet*>(decomp.get());
   Subset cur_subset(r->get_input_particles());
   if (rs) {
     if (rs->get_maximum_score() < std::numeric_limits<double>::max()) {
@@ -33,7 +33,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
       set_weights.push_back(set_weights.back()*rs->get_weight());
       set_subsets.push_back(cur_subset);
     }
-    for (RestraintSet::RestraintIterator it= rs->restraits_begin();
+    for (RestraintSet::RestraintIterator it= rs->restraints_begin();
          it != rs->restraints_end(); ++it) {
       add_restraint_internal(*it,
                              sets, set_weights, set_subsets);
@@ -41,10 +41,10 @@ void RestraintCache::add_restraint_internal(Restraint *r,
   } else {
     if (r->get_maximum_score() < std::numeric_limits<double>::max()
         || !sets.empty()) {
-      cache_.get_generator().add_restraint(r, cur_subset);
+      cache_.access_generator().add_restraint(r, cur_subset);
       known_restraints_[r]=cur_subset;
       for (unsigned int i=0; i< sets.size(); ++i) {
-        cache_.get_enerator().add_to_set(sets[i],
+        cache_.access_generator().add_to_set(sets[i],
                                          r,
                                          set_weights[i]*r->get_weight(),
                                          Slice(set_subsets[i],
@@ -58,6 +58,7 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
   for (unsigned int i=0; i< rs.size(); ++i) {
     add_restraint_internal(rs[i],
                            RestraintSets(),
+                           Floats(),
                            Subsets());
   }
 }
