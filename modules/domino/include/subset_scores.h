@@ -30,32 +30,61 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         voost::hash_combine(value, boost::hash_range(a.begin(),
                                                      a.end()));
       });
-    class Generator {
-      compatibility::map<Evaluator*, Subset> rmap_;
-      OwnerPointer<ParticleStatesTable> pst_;
-    public:
-      Generator(ParticleStatesTable *pst): pst_(pst){}
-      typedef double result_type;
-      typedef Key argument_type;
-      result_type operator()(const argument_type&k) const {
-        Subset s= rmap_.find(k.r)->second;
-        load_particle_states(s, k.a, pst_);
-        return k.r->evaluate(false);
-      }
-      void add(Evaluator *e, Subset s) {
-        rmap_[e]=s;
-      }
-    };
-    struct ApproximatelyEqual {
-      bool operator()(double a, double b) const {
-        return std::abs(a-b) < .1*(a+b)+.1;
-      }
-    };
-    typedef base::LRUCache<Generator, ApproximatelyEqual> cache_;
-  public:
-    RestraintCache(ParticleStatesTable *pst);
-
   };
+  class Generator {
+    struct RestraintData{
+      OwnerPointer<ScoringFunction> sf;
+      Subset s;
+    };
+    struct RestraintSubsetData {
+      Slice slice;
+      Restraint *r;
+      double weight;
+    };
+    struct SetData {
+      // indexes to pick entries from the assignment
+      IntsList subs;
+      RestraintsTemp restraints;
+    };
+    typedef compatibility::map<Restraint*, RestraintData> RMap;
+    RMap rmap_;
+    typedef compatibility::map<Restraint*, SetData> SMap;
+    SMap sets_;
+    OwnerPointer<ParticleStatesTable> pst_;
+   public:
+    Generator(ParticleStatesTable *pst): pst_(pst){}
+    typedef double result_type;
+    typedef Key argument_type;
+    template <class Cache>
+    result_type operator()(const argument_type&k, const Cache &cache) const {
+      RMap::const_iterator it= rmap_.find(k.r);
+      Subset s= rmap_.find(k.r)->second;
+      load_particle_states(s, k.a, pst_);
+      double e= k.r->evaluate_if_good(false);
+      return e;
+    }
+    void add_to_set(RestraintSet *rs, Restraint *, double weight, Slice slice) {
+
+    }
+    void add_restraint(Restraint *e, Subset s) {
+      RestraintData rd={new ScoringFunction(e), s};
+      rmap_[e]=rd;
+    }
+  };
+  struct ApproximatelyEqual {
+    bool operator()(double a, double b) const {
+      return std::abs(a-b) < .1*(a+b)+.1;
+    }
+  };
+  typedef base::LRUCache<Generator, ApproximatelyEqual> cache_;
+  const ParticlesTemp order_;
+public:
+  RestraintCache(const ParticlesTemp &order, ParticleStatesTable *pst);
+  Subset add_restraints(const RestraintsTemp &rs);
+  //! r can be a set or a restraint
+  /** The returned score will be std::numeric_limits<double>::max()
+      if any of the limits are violated.*/
+  double get_score(Restraint *r, const Assignment &a) const;
 };
 IMPDOMINO_END_NAMESPACE
 
