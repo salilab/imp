@@ -67,7 +67,7 @@ get_required_score_states(const RestraintsTemp &rs);
 
 
 /** Returns the subset of particles that depend on p as input. This
-    will include p. The variable all is the set of all other particles
+    will not include p. The variable all is the set of all other particles
     of interest, they will block dependency propagation.
 
     \note This function is here to aid in debugging of optimization
