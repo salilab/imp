@@ -141,23 +141,25 @@ namespace {
                                   const Restraints &created) {
     if (created.empty()) return NULL;
     if (created.size()== 1) {
-      if (created[0] != me) {
-        created[0]->set_name(me->get_name()+" decomposed");
-        created[0]->set_maximum_score(me->get_maximum_score());
-        created[0]->set_weight(me->get_weight());
+      if (created[0]!= me) {
+        /** We need to special case this here, otherwise repeatedly calling
+            decompositions causes bad things to happen (recursion) */
+        double weight=created[0]->get_weight()*me->get_weight();
+        double max= std::min(created[0]->get_maximum_score(),
+                             me->get_maximum_score()/created[0]->get_weight());
+        created[0]->set_weight(weight);
+        created[0]->set_maximum_score(max);
         created[0]->set_model(me->get_model());
       }
+      check_decomposition(const_cast<Restraint*>(me), created[0]);
       return created[0];
     } else {
-      IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposed"));
+      IMP_NEW(RestraintSet, rs, (me->get_name() + " wrapper"));
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         for (unsigned int i=0; i< created.size(); ++i) {
           IMP_INTERNAL_CHECK(created[i],
                              "NULL restraint returned in decomposition");
         }
-      }
-      for (unsigned int i=0; i< created.size(); ++i) {
-        created[i]->set_maximum_score(me->get_maximum_score());
       }
       rs->add_restraints(created);
       rs->set_maximum_score(me->get_maximum_score());
