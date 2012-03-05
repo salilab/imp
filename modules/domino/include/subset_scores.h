@@ -12,6 +12,8 @@
 #include "particle_states.h"
 #include "Assignment.h"
 #include "Subset.h"
+#include "Slice.h"
+#include "utility.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/cache.h>
 #include <IMP/Restraint.h>
@@ -19,19 +21,23 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-/** Implement a cache for restraint scores. By having a single unified cache,
-    we allow easy control of memory usage as well as of writing things to disk.
+/** Implement a cache for restraint scores as well as management of restraints
+    for domino.
+
+    The cache size passed to the constructor is the maximum number of scores
+    that will be saved. A least-recently-used eviction policy is used when
+    that number is exceeded.
 */
 class IMPDOMINOEXPORT RestraintCache: public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, r,
                     Assignment, a, );
-  IMP_NAMED_TUPLE_2(RestraintData,RestraintDatas,
+  IMP_NAMED_TUPLE_3(RestraintData,RestraintDatas,
                     OwnerPointer<Restraint>,
-                    sf, Subset, s,);
-  IMP_NAMED_TUPLE_3(RestraintSetData, RestraintSetDatas,
-                    Slice, slice, WeakPointer<Restraint>, r,
-                    double, weight,);
-  IMP_NAMED_TUPLE_1(SetData, SetDatas, RestraintSetDatas, members,);
+                    sf, Subset, s,double, max,);
+  IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas,
+                    Slice, slice, WeakPointer<Restraint>, r,);
+  IMP_NAMED_TUPLE_2(SetData, SetDatas, RestraintSetDatas, members,
+                    double, max,);
   class Generator {
     typedef compatibility::map<Restraint*, RestraintData> RMap;
     RMap rmap_;
@@ -48,7 +54,12 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       if (it != rmap_.end()) {
         Subset s= rmap_.find(k.r)->second.s;
         load_particle_states(s, k.a, pst_);
-        double e= k.r->evaluate_if_good(false);
+        double e= k.r->get_model()
+            ->evaluate_if_below(EvaluationCache(RestraintsTemp(1, k.r)),
+                                false,
+                                it->second.max)[0];
+        // prob can go away with ScoreFunction change
+        if (e > it->second.max) e= std::numeric_limits<double>::max();
         return e;
       } else {
         SMap::const_iterator it= sets_.find(k.r);
@@ -56,21 +67,32 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         for (unsigned int i=0; i< it->second.members.size(); ++i) {
           Assignment cur= it->second.members[i].slice.get_sliced(k.a);
           double score= cache.get(argument_type(it->second.members[i].r, cur));
-          total+=score;
-          if (total >= it->first->get_maximum_score()) {
+          total+=score*k.r->get_weight();
+          if (total >= it->second.max) {
             return std::numeric_limits<double>::max();
           }
         }
         return total;
       }
     }
-    void add_to_set(RestraintSet *rs, Restraint *r, double weight,
+    void add_to_set(RestraintSet *rs, Restraint *r,
                     Slice slice) {
-      sets_[rs].members.push_back(RestraintSetData(slice, r, weight));
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
+                      "don't pass restraint sets here as second arg");
+      sets_[rs].members.push_back(RestraintSetData(slice, r));
     }
-    void add_restraint(Restraint *e, Subset s) {
-      rmap_[e]=RestraintData(e, s);
+    void add_restraint(Restraint *e, Subset s, double max) {
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(e),
+                      "don't pass restraint sets here");
+      if (rmap_.find(e) == rmap_.end()) {
+        rmap_[e]=RestraintData(e, s, max);
+      } else {
+        IMP_USAGE_CHECK(rmap_.find(e)->second.s==s,
+                        "Subsets don't match on restraint update");
+        rmap_[e].max= std::min(rmap_[e].max, max);
+      }
     }
+    void show_restraint_information(std::ostream &out) const;
   };
   struct ApproximatelyEqual {
     bool operator()(double a, double b) const {
@@ -78,22 +100,21 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
     }
   };
   void add_restraint_internal(Restraint *r,
-                              RestraintSets sets,
-                              Floats set_weights,
-                              Subsets set_subsets);
+                              RestraintSet *parent,
+                              double max,
+                              Subset parent_subset);
 
   typedef base::LRUCache<Generator, ApproximatelyEqual> Cache;
   Cache cache_;
-  const ParticlesTemp order_;
   typedef compatibility::map<Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
 public:
-  RestraintCache(const ParticlesTemp &order, ParticleStatesTable *pst,
+  RestraintCache(ParticleStatesTable *pst,
                  unsigned int size);
-  /** Recursively process the passed restraints so all contained restraints
-      and sets that have maximum are known*/
+  /** Recursively process the passed restraints (and sets) so all contained
+      restraints and sets that have maximum are known.*/
   void add_restraints(const RestraintsTemp &rs);
-  //! r can be a set or a restraint
+  //! Get the score of a set or restraint
   /** The returned score will be std::numeric_limits<double>::max()
       if any of the limits are violated.*/
   double get_score(Restraint *r, const Assignment &a) const {
@@ -106,6 +127,9 @@ public:
                                 const Subsets&exclusions) const;
   /** Return the slice for that restraint given the subset. */
   Slice get_slice(Restraint *r, const Subset& s) const;
+
+  /** Print out information about the known restraints and restraint sets.*/
+  void show_restraint_information(std::ostream &out=std::cout) const;
   IMP_OBJECT_INLINE(RestraintCache,
                     out << "size=" << cache_.size() << std::endl;,);
 };
