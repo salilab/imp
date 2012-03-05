@@ -6,6 +6,8 @@
  *
  */
 #include <IMP/domino/utility.h>
+#include <IMP/domino/internal/tree_inference.h>
+#include <IMP/domino/internal/inference_utility.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
@@ -14,7 +16,6 @@
 #include <IMP/compatibility/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
-#include <IMP/domino/internal/restraint_evaluator.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/RestraintSet.h>
 #include <IMP/domino/particle_states.h>
@@ -25,12 +26,28 @@
 
 
 IMPDOMINO_BEGIN_NAMESPACE
+namespace {
 
+template <class It>
+inline void load_particle_states(It b, It e, const Assignment &ss,
+                                 const ParticleStatesTable *pst) {
+  IMP_USAGE_CHECK(std::distance(b,e)
+                  == static_cast< typename std::iterator_traits<It>
+                  ::difference_type>(ss.size()),
+                  "Sizes don't match in load particle states");
+  unsigned int i=0;
+  for (It c=b; c != e; ++c) {
+    pst->get_particle_states(*c)->load_particle_state(ss[i], *c);
+    ++i;
+  }
+}
+
+}
 
 void load_particle_states(const Subset &s,
                           const Assignment &ss,
                           const ParticleStatesTable *pst) {
-  internal::load_particle_states(s.begin(), s.end(), ss, pst);
+  load_particle_states(s.begin(), s.end(), ss, pst);
   if (s.size()!=0) {
     s[0]->get_model()->update();
   }

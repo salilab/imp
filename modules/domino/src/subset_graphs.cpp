@@ -9,7 +9,6 @@
 #include <IMP/domino/subset_graphs.h>
 #include <IMP/domino/internal/inference_utility.h>
 #include <IMP/domino/utility.h>
-#include <IMP/domino/optimize_restraints.h>
 #include <IMP/domino/particle_states.h>
 #include <IMP/internal/graph_utility.h>
 #include <boost/graph/depth_first_search.hpp>
@@ -93,8 +92,8 @@ Subsets get_subsets(const SubsetGraph &g){
 
 SubsetGraph get_restraint_graph(RestraintSet *irs,
                                 const ParticleStatesTable *pst) {
-  OptimizeRestraints ro(irs, pst);
-  RestraintsTemp rs= get_restraints(RestraintsTemp(1, irs));
+  Pointer<Restraint> dirs= irs->create_decomposition();
+  RestraintsTemp rs= get_restraints(RestraintsTemp(1, dirs));
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
@@ -696,8 +695,8 @@ bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
 
 MergeTree get_merge_tree(RestraintSet *rs,
                          const ParticleStatesTable *pst) {
-  OptimizeRestraints ors(rs, pst);
-  InteractionGraph ig= get_interaction_graph(RestraintsTemp(1, rs), pst);
+  Pointer<Restraint> drs=rs->create_decomposition();
+  InteractionGraph ig= get_interaction_graph(RestraintsTemp(1, drs), pst);
   SubsetGraph jt= get_junction_tree(ig);
   return get_merge_tree(jt);
 }
