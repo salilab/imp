@@ -200,8 +200,8 @@ public:
 
 
 //! Filter a configuration of the subset using the Model thresholds
-/** This filter table creates filters using the maximum scores
-    set in the Model for various restraints.
+/** Filter based on an allowed number of failures for the restraints
+    in a restraint set.
  */
 class IMPDOMINOEXPORT MinimumRestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
