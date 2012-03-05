@@ -24,7 +24,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
                              std::string name):
   DiscreteSampler(m, pst, name), has_sg_(false), has_mt_(false), csf_(false),
-  or_(true){
+  or_(false){
 }
 
 DominoSampler::DominoSampler(Model *m, std::string name):
