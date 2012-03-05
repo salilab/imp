@@ -13,6 +13,22 @@ from IMP.isd import *
 #unit testing framework
 import IMP.test
 
+class MockFunc:
+    def __init__(self, setval, evaluate, evalargs=1, update=None):
+        self.__set = setval
+        self.__eval = evaluate
+        self.__update = update
+        self.__evalargs = evalargs
+
+    def set_evalargs(self, evalargs):
+        self.__evalargs = evalargs
+
+    def __call__(self, value):
+        self.__set(value)
+        if self.__update:
+            self.__update()
+        return self.__eval(self.__evalargs)
+
 class TestLinear1DFunction(IMP.test.TestCase):
     """ test of a*x + b function """
 
@@ -109,6 +125,40 @@ class TestLinear1DFunction(IMP.test.TestCase):
         if skipped > 10:
             self.fail("too many NANs")
 
+    def testDerivNumericAlpha(self):
+        """
+        test the derivatives of the function numerically for alpha
+        """
+        pos = random.uniform(-10,10)
+        AlphaFunc = MockFunc(self.alpha.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for alpha in xrange(-10,10):
+            self.alpha.set_nuisance(alpha)
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],False)[0][0]
+            expected = IMP.test.numerical_derivative(AlphaFunc, alpha, 0.01)
+            if observed != 0:
+                self.assertAlmostEqual(expected/observed,1,delta=1e-3)
+            else:
+                self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericBeta(self):
+        """
+        test the derivatives of the function numerically for beta
+        """
+        pos = random.uniform(-10,10)
+        BetaFunc = MockFunc(self.beta.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for beta in xrange(-10,10):
+            self.beta.set_nuisance(beta)
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],False)[0][1]
+            expected = IMP.test.numerical_derivative(BetaFunc, beta, 0.01)
+            if observed != 0:
+                self.assertAlmostEqual(expected/observed,1,delta=1e-3)
+            else:
+                self.assertAlmostEqual(expected,observed,delta=1e-3)
+
     def testDerivMult(self):
         """
         test the derivatives of the function by shuffling all particles
@@ -156,7 +206,7 @@ class TestLinear1DFunction(IMP.test.TestCase):
     def testGetDerivativeMatrix(self):
         for rep in xrange(3):
             self.shuffle_particle_values()
-            xlist = random.uniform(-10,10,random.randint(100))
+            xlist = random.uniform(-10,10,random.randint(1,100))
             data = self.mean.get_derivative_matrix([[i] for  i in xlist], True)
             self.assertEqual(len(data), len(xlist))
             self.assertEqual(len(data[0]), 2)
