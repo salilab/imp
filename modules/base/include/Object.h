@@ -254,6 +254,13 @@ IMPBASE_END_NAMESPACE
 #endif
 
 
+/** When accepting objects as arguments, it is good practice to wrap them
+    in a reference counted pointer. This ensures that they are freed if
+    they are passed as temporaries. Put this macro call as one of the first
+    lines in the function.
+*/
+#define IMP_ACCEPT_OBJECT(obj) IMP::Pointer<Object> imp_control##obj(obj);
+
 #ifdef IMP_DOXYGEN
 //! Set the log level to the object's log level.
 /** All non-trivial Object methods should start with this. It creates a
