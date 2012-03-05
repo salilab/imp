@@ -77,8 +77,16 @@ class _CoverageTester(object):
             self._report_annotate()
 
     def _report_annotate(self):
+        t = _TempDir()
         for dir, pattern, report in self._sources:
-            self._run_gcov(dir, pattern)
+            self._run_gcov(dir, pattern, running_dir=t.tmpdir)
+            covs = glob.glob(os.path.join(t.tmpdir, "*.gcov"))
+            for cov in covs:
+                ret = self._parse_gcov_file(cov)
+                if ret:
+                    shutil.copy(cov, '.')
+        for header in self._header_callcounts.keys():
+            self._make_gcov_for_header(header, self._header_callcounts[header])
         print >> sys.stderr, \
                  "\nC++ coverage of %s %s written to *.gcov in " \
                  "top-level directory." % (self._name, self._test_type)
@@ -181,6 +189,20 @@ class _CoverageTester(object):
                 missing.append(n + 1)
         return (executable_statements, executable_statements - len(missing),
                 missing)
+
+    def _make_gcov_for_header(self, source, header_callcounts):
+        inf = open(source, 'r')
+        fh = open(source.replace('/', '#') + '.gcov', 'w')
+        print >> fh, "%9s:%5d:Source:%s" % ('-', 0, source)
+        for (n, count) in enumerate(header_callcounts):
+            if count == -1:
+                c = '-'
+            elif count == 0:
+                c = '#####'
+            else:
+                c = str(count)
+            fh.write("%9s:%5d:" % (c, n+1))
+            fh.write(inf.readline())
 
     def _update_header_callcounts(self, header_callcounts, line_number, calls):
         # All new lines are marked as non-executable (-1)
