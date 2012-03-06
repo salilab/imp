@@ -13,8 +13,24 @@ from IMP.isd import *
 #unit testing framework
 import IMP.test
 
+class MockFunc:
+    def __init__(self, setval, evaluate, evalargs=1, update=None):
+        self.__set = setval
+        self.__eval = evaluate
+        self.__update = update
+        self.__evalargs = evalargs
+
+    def set_evalargs(self, evalargs):
+        self.__evalargs = evalargs
+
+    def __call__(self, value):
+        self.__set(value)
+        if self.__update:
+            self.__update()
+        return self.__eval(self.__evalargs)
+
 class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
-    """ test of a*x + b function """
+    """ test of Generalized Guinier Porod function """
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
@@ -247,6 +263,282 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             self.d.add_to_nuisance_derivative(-self.d.get_nuisance_derivative(),self.DA)
             self.s.add_to_nuisance_derivative(-self.s.get_nuisance_derivative(),self.DA)
             self.shuffle_particle_values()
+
+    def testDerivNumericG(self):
+        """
+        test the derivatives of the function numerically for G
+        """
+        particle=0
+        self.G.set_nuisance(5)
+        pos = self.get_params()[4]
+        GFunc = MockFunc(self.G.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for G in xrange(1,10):
+            self.G.set_nuisance(G)
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],
+                    False)[0][particle]
+            expected = IMP.test.numerical_derivative(GFunc, G, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericRg(self):
+        """
+        test the derivatives of the function numerically for Rg
+        """
+        particle=1
+        self.Rg.set_nuisance(5)
+        pos = self.get_params()[4]
+        RgFunc = MockFunc(self.Rg.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for Rg in xrange(1,10):
+            self.Rg.set_nuisance(Rg)
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],
+                    False)[0][particle]
+            expected = IMP.test.numerical_derivative(RgFunc, Rg, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericd(self):
+        """
+        test the derivatives of the function numerically for d
+        """
+        particle=2
+        self.d.set_nuisance(2)
+        pos = self.get_params()[4]
+        dFunc = MockFunc(self.d.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for d in linspace(4,0.1):
+            self.d.set_nuisance(d)
+            if self.s.get_nuisance() > d:
+                self.s.set_nuisance(random.uniform(0.1,min(d-0.1,2.9)))
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],
+                    False)[0][particle]
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testDerivNumerics(self):
+        """
+        test the derivatives of the function numerically for s
+        """
+        particle=3
+        self.s.set_nuisance(1.5)
+        pos = self.get_params()[4]
+        sFunc = MockFunc(self.s.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for s in linspace(0.1,2.9,num=20): # can't compute derivative at border
+            self.s.set_nuisance(s)
+            if self.d.get_nuisance() < s:
+                self.d.set_nuisance(random.uniform(s,4))
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],
+                    False)[0][particle]
+            expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericGG(self):
+        """
+        test the Hessian of the function numerically wrt G and G
+        """
+        pa=0
+        pb=0
+        self.G.set_nuisance(5)
+        pos = self.get_params()[4]
+        GFunc = MockFunc(self.G.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for G in xrange(1,10):
+            self.G.set_nuisance(G)
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(GFunc, G, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericGRg(self):
+        """
+        test the Hessian of the function numerically wrt G and Rg
+        """
+        pa=0
+        pb=1
+        self.Rg.set_nuisance(5)
+        pos = self.get_params()[4]
+        RgFunc = MockFunc(self.Rg.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for Rg in xrange(1,10):
+            self.Rg.set_nuisance(Rg)
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(RgFunc, Rg, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericGd(self):
+        """
+        test the Hessian of the function numerically wrt G and d
+        """
+        pa=0
+        pb=2
+        self.d.set_nuisance(2)
+        pos = self.get_params()[4]
+        dFunc = MockFunc(self.d.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for d in linspace(4,0.1):
+            self.d.set_nuisance(d)
+            if self.s.get_nuisance() > d - 0.02:
+                self.s.set_nuisance(random.uniform(0.02,min(d,3)-0.02))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericGs(self):
+        """
+        test the Hessian of the function numerically wrt G and s
+        """
+        pa=0
+        pb=3
+        self.s.set_nuisance(1.5)
+        pos = self.get_params()[4]
+        sFunc = MockFunc(self.s.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for s in linspace(0.1,2.9,num=20):
+            self.s.set_nuisance(s)
+            if self.d.get_nuisance() < s:
+                self.d.set_nuisance(random.uniform(s,4))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericRgRg(self):
+        """
+        test the Hessian of the function numerically wrt Rg and Rg
+        """
+        pa=1
+        pb=1
+        self.Rg.set_nuisance(5)
+        pos = self.get_params()[4]
+        RgFunc = MockFunc(self.Rg.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for Rg in linspace(0.1,9.1):
+            self.Rg.set_nuisance(Rg)
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(RgFunc, Rg, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericRgd(self):
+        """
+        test the Hessian of the function numerically wrt Rg and d
+        """
+        pa=1
+        pb=2
+        self.d.set_nuisance(2)
+        pos = self.get_params()[4]
+        dFunc = MockFunc(self.d.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for d in linspace(4,0.1,num=20):
+            self.d.set_nuisance(d)
+            if self.s.get_nuisance() > d - 0.02:
+                self.s.set_nuisance(random.uniform(0.02,min(d,3)-0.02))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericRgs(self):
+        """
+        test the Hessian of the function numerically wrt Rg and s
+        """
+        pa=1
+        pb=3
+        self.s.set_nuisance(1.5)
+        pos = self.get_params()[4]
+        sFunc = MockFunc(self.s.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for s in linspace(0.1,2.9,num=20):
+            self.s.set_nuisance(s)
+            if self.d.get_nuisance() < s:
+                self.d.set_nuisance(random.uniform(s,4))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericdd(self):
+        """
+        test the Hessian of the function numerically wrt d and d
+        """
+        pa=2
+        pb=2
+        self.d.set_nuisance(2)
+        pos = self.get_params()[4]
+        dFunc = MockFunc(self.d.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for d in linspace(4,0.1,num=20):
+            self.d.set_nuisance(d)
+            if self.s.get_nuisance() > d - 0.02:
+                self.s.set_nuisance(random.uniform(0.02,min(d,3)-0.02))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericds(self):
+        """
+        test the Hessian of the function numerically wrt d and s
+        """
+        pa=2
+        pb=3
+        self.s.set_nuisance(1.5)
+        pos = self.get_params()[4]
+        sFunc = MockFunc(self.s.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for s in linspace(0.1,2.9,num=20):
+            self.s.set_nuisance(s)
+            if self.d.get_nuisance() < s:
+                self.d.set_nuisance(random.uniform(s,4))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianNumericss(self):
+        """
+        test the Hessian of the function numerically wrt s and s
+        """
+        pa=3
+        pb=3
+        self.s.set_nuisance(1.5)
+        pos = self.get_params()[4]
+        sFunc = MockFunc(self.s.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for s in linspace(0.1,2.9,num=20):
+            self.s.set_nuisance(s)
+            if self.d.get_nuisance() < s:
+                self.d.set_nuisance(random.uniform(s+0.1,4))
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testGetDerivativeMatrix(self):
         for rep in xrange(3):
