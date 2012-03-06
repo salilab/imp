@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPSystem(name="Groel", version='nightly-2/3/2012',
+env= env.IMPSystem(name="Groel", version='nightly-5/3/2012',
                    authors=["Keren Lasker"],
                    brief="Solve the structure of Groel using comparative models and density maps",
                    overview="""A full description of the scripts can be found in
