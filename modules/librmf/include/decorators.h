@@ -1601,7 +1601,7 @@ type_(type) {
 }
 void set_index(Int v) {
    nh_.set_value(index_[0], v, frame_);
-   nh_.set_value(index_[0], v, frame_);
+   nh_.set_value(index_[1], v, frame_);
 }
 String get_type() const {
   return nh_.get_value(type_, frame_);
@@ -1700,6 +1700,506 @@ type_);
     };
 
     typedef vector<ResidueConstFactory> ResidueConstFactories;
+
+/** Information regarding an atom.
+
+       \see Atom
+       \see AtomConstFactory
+     */
+    class AtomConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class AtomConstFactory;
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+FloatKey mass_;
+IndexKey element_;
+    AtomConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  FloatKeys coordinates,
+FloatKey radius,
+FloatKey mass,
+IndexKey element): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
+radius_(radius),
+mass_(mass),
+element_(element) {
+    ;
+    }
+    public:
+    Floats get_coordinates() const {
+       Floats ret;
+       for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
+       }
+       return ret;
+    }
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
+}
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
+}
+Index get_element() const {
+  return nh_.get_value(element_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstAtom,
+                     "AtomConst "
+                     << nh_.get_name());
+    ~AtomConst() {
+    }
+    };
+
+    typedef vector<AtomConst> AtomConsts;
+
+/** Information regarding an atom.
+
+       \see AtomConst
+       \see AtomFactory
+     */
+    class Atom {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class AtomFactory;
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+FloatKey mass_;
+IndexKey element_;
+    Atom(NodeHandle nh,
+                      unsigned int frame,
+                  FloatKeys coordinates,
+FloatKey radius,
+FloatKey mass,
+IndexKey element): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
+radius_(radius),
+mass_(mass),
+element_(element) {
+    ;
+    }
+    public:
+    Floats get_coordinates() const {
+       Floats ret;
+       for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
+       }
+       return ret;
+    }
+void set_coordinates(const Floats &v) {
+         for (unsigned int i=0; i< 3; ++i) {
+            nh_.set_value(coordinates_[i], v[i], frame_);
+         }
+      }
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
+}
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
+}
+Float get_mass() const {
+  return nh_.get_value(mass_, frame_);
+}
+void set_mass(Float v) {
+   nh_.set_value(mass_, v, frame_);
+}
+Index get_element() const {
+  return nh_.get_value(element_, frame_);
+}
+void set_element(Index v) {
+   nh_.set_value(element_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstAtom,
+                     "Atom "
+                     << nh_.get_name());
+    ~Atom() {
+    }
+    };
+
+    typedef vector<Atom> Atoms;
+
+/** Create decorators of type Atom.
+
+       \see Atom
+       \see AtomConstFactory
+    */
+    class AtomFactory {
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+FloatKey mass_;
+IndexKey element_;
+    public:
+    typedef FileHandle File;
+    typedef Atom Decorator;
+    AtomFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "physics");
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian x", true));
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian y", true));
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian z", true));;
+radius_=get_key_always<FloatTraits>(fh, cat,
+                               "radius", false);
+mass_=get_key_always<FloatTraits>(fh, cat,
+                               "mass", false);
+}
+{
+  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+element_=get_key_always<IndexTraits>(fh, cat,
+                               "element", false);
+};
+    }
+    Atom get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Atom(nh, frame, coordinates_,
+radius_,
+mass_,
+element_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame)
+    && nh.get_has_value(element_, frame);
+    }
+    IMP_RMF_SHOWABLE(AtomFactory, "AtomFactory");
+    };
+
+    typedef vector<AtomFactory> AtomFactories;
+
+/** Create decorators of type Atom.
+
+       \see AtomConst
+       \see AtomFactory
+    */
+    class AtomConstFactory {
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+FloatKey mass_;
+IndexKey element_;
+    public:
+    typedef FileConstHandle File;
+    typedef AtomConst Decorator;
+    AtomConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("physics");
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                              :FloatKey()));
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                              :FloatKey()));
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                              :FloatKey()));;
+radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+                   fh.get_key<FloatTraits>(cat, "radius")
+                              :FloatKey());
+mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
+                   fh.get_key<FloatTraits>(cat, "mass")
+                              :FloatKey());
+}
+{
+  CategoryD<1> cat=fh.get_category<1>("sequence");
+element_=(fh.get_has_key<IndexTraits>(cat, "element")?
+                   fh.get_key<IndexTraits>(cat, "element")
+                              :IndexKey());
+};
+    }
+    AtomConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return AtomConst(nh, frame, coordinates_,
+radius_,
+mass_,
+element_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame)
+    && nh.get_has_value(mass_, frame)
+    && nh.get_has_value(element_, frame);
+    }
+    IMP_RMF_SHOWABLE(AtomConstFactory, "AtomConstFactory");
+    };
+
+    typedef vector<AtomConstFactory> AtomConstFactories;
+
+/** Information regarding a chain.
+
+       \see Chain
+       \see ChainConstFactory
+     */
+    class ChainConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class ChainConstFactory;
+    private:
+    IndexKey chain_id_;
+    ChainConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  IndexKey chain_id): nh_(nh),
+                                      frame_(frame),
+                                     chain_id_(chain_id) {
+    ;
+    }
+    public:
+    Index get_chain_id() const {
+  return nh_.get_value(chain_id_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstChain,
+                     "ChainConst "
+                     << nh_.get_name());
+    ~ChainConst() {
+    }
+    };
+
+    typedef vector<ChainConst> ChainConsts;
+
+/** Information regarding a chain.
+
+       \see ChainConst
+       \see ChainFactory
+     */
+    class Chain {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class ChainFactory;
+    private:
+    IndexKey chain_id_;
+    Chain(NodeHandle nh,
+                      unsigned int frame,
+                  IndexKey chain_id): nh_(nh),
+                                      frame_(frame),
+                                     chain_id_(chain_id) {
+    ;
+    }
+    public:
+    Index get_chain_id() const {
+  return nh_.get_value(chain_id_, frame_);
+}
+void set_chain_id(Index v) {
+   nh_.set_value(chain_id_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstChain,
+                     "Chain "
+                     << nh_.get_name());
+    ~Chain() {
+    }
+    };
+
+    typedef vector<Chain> Chains;
+
+/** Create decorators of type Chain.
+
+       \see Chain
+       \see ChainConstFactory
+    */
+    class ChainFactory {
+    private:
+    IndexKey chain_id_;
+    public:
+    typedef FileHandle File;
+    typedef Chain Decorator;
+    ChainFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+chain_id_=get_key_always<IndexTraits>(fh, cat,
+                               "chain id", false);
+};
+    }
+    Chain get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Chain(nh, frame, chain_id_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(chain_id_, frame);
+    }
+    IMP_RMF_SHOWABLE(ChainFactory, "ChainFactory");
+    };
+
+    typedef vector<ChainFactory> ChainFactories;
+
+/** Create decorators of type Chain.
+
+       \see ChainConst
+       \see ChainFactory
+    */
+    class ChainConstFactory {
+    private:
+    IndexKey chain_id_;
+    public:
+    typedef FileConstHandle File;
+    typedef ChainConst Decorator;
+    ChainConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("sequence");
+chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
+                   fh.get_key<IndexTraits>(cat, "chain id")
+                              :IndexKey());
+};
+    }
+    ChainConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return ChainConst(nh, frame, chain_id_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(chain_id_, frame);
+    }
+    IMP_RMF_SHOWABLE(ChainConstFactory, "ChainConstFactory");
+    };
+
+    typedef vector<ChainConstFactory> ChainConstFactories;
+
+/** Information regarding a fragment of a molecule.
+
+       \see Fragment
+       \see FragmentConstFactory
+     */
+    class FragmentConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class FragmentConstFactory;
+    private:
+    boost::array<IntKey,2> index_;
+    FragmentConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  boost::array<IntKey, 2> index): nh_(nh),
+                                      frame_(frame),
+                                     index_(index) {
+    ;
+    }
+    public:
+    Int get_index_begin() const {
+  return nh_.get_value(index_[0], frame_);
+}
+Int get_indexend() const {
+  return nh_.get_value(index_[1], frame_);
+}
+    IMP_RMF_SHOWABLE(ConstFragment,
+                     "FragmentConst "
+                     << nh_.get_name());
+    ~FragmentConst() {
+    }
+    };
+
+    typedef vector<FragmentConst> FragmentConsts;
+
+/** Information regarding a fragment of a molecule.
+
+       \see FragmentConst
+       \see FragmentFactory
+     */
+    class Fragment {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class FragmentFactory;
+    private:
+    boost::array<IntKey,2> index_;
+    Fragment(NodeHandle nh,
+                      unsigned int frame,
+                  boost::array<IntKey, 2> index): nh_(nh),
+                                      frame_(frame),
+                                     index_(index) {
+    ;
+    }
+    public:
+    Int get_index_begin() const {
+  return nh_.get_value(index_[0], frame_);
+}
+Int get_indexend() const {
+  return nh_.get_value(index_[1], frame_);
+}
+void set_index(Int v0, Int v1) {
+   nh_.set_value(index_[0], v0, frame_);
+   nh_.set_value(index_[1], v1, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstFragment,
+                     "Fragment "
+                     << nh_.get_name());
+    ~Fragment() {
+    }
+    };
+
+    typedef vector<Fragment> Fragments;
+
+/** Create decorators of type Fragment.
+
+       \see Fragment
+       \see FragmentConstFactory
+    */
+    class FragmentFactory {
+    private:
+    boost::array<IntKey,2> index_;
+    public:
+    typedef FileHandle File;
+    typedef Fragment Decorator;
+    FragmentFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+index_[0]=get_key_always<IntTraits>(fh, cat,
+                               "first residue index", false);
+index_[1]=get_key_always<IntTraits>(fh, cat,
+                               "last residue index", false);
+};
+    }
+    Fragment get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Fragment(nh, frame, index_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(index_[0], frame)
+  && nh.get_has_value(index_[1], frame)
+  && nh.get_value(index_[0], frame)
+   <nh.get_value(index_[1], frame);
+    }
+    IMP_RMF_SHOWABLE(FragmentFactory, "FragmentFactory");
+    };
+
+    typedef vector<FragmentFactory> FragmentFactories;
+
+/** Create decorators of type Fragment.
+
+       \see FragmentConst
+       \see FragmentFactory
+    */
+    class FragmentConstFactory {
+    private:
+    boost::array<IntKey,2> index_;
+    public:
+    typedef FileConstHandle File;
+    typedef FragmentConst Decorator;
+    FragmentConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("sequence");
+index_[0]=(fh.get_has_key<IntTraits>(cat, "first residue index")?
+                   fh.get_key<IntTraits>(cat, "first residue index")
+                              :IntKey());
+index_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
+                   fh.get_key<IntTraits>(cat, "last residue index")
+                              :IntKey());
+};
+    }
+    FragmentConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return FragmentConst(nh, frame, index_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(index_[0], frame)
+  && nh.get_has_value(index_[1], frame)
+  && nh.get_value(index_[0], frame)
+   <nh.get_value(index_[1], frame);
+    }
+    IMP_RMF_SHOWABLE(FragmentConstFactory, "FragmentConstFactory");
+    };
+
+    typedef vector<FragmentConstFactory> FragmentConstFactories;
 
 } /* namespace RMF */
 

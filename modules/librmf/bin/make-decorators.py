@@ -60,7 +60,7 @@ class SingletonRangeAttribute:
         if not const:
             ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
             ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame_);")
-            ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame_);")
+            ret.append("   nh_.set_value("+self.nice_name+"_[1], v, frame_);")
             ret.append("}")
         return "\n".join(ret)
     def get_key_arguments(self):
@@ -77,6 +77,45 @@ class SingletonRangeAttribute:
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
             "\n   ==nh.get_value("+self.nice_name+"_[1], frame)"
+
+
+class RangeAttribute:
+    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end):
+        self.type=type
+        self.nice_name=nice_name
+        self.attribute_name_begin=attribute_name_begin
+        self.attribute_name_end=attribute_name_end
+    def get_key_members(self):
+        return "boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"
+    def get_methods(self, const):
+        ret=[]
+        ret.append(self.type+" get_"+self.nice_name+"_begin() const {")
+        ret.append("  return nh_.get_value("+self.nice_name+"_[0], frame_);")
+        ret.append("}")
+        ret.append(self.type+" get_"+self.nice_name+"end() const {")
+        ret.append("  return nh_.get_value("+self.nice_name+"_[1], frame_);")
+        ret.append("}")
+        if not const:
+            ret.append("void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {")
+            ret.append("   nh_.set_value("+self.nice_name+"_[0], v0, frame_);")
+            ret.append("   nh_.set_value("+self.nice_name+"_[1], v1, frame_);")
+            ret.append("}")
+
+        return "\n".join(ret)
+    def get_key_arguments(self):
+        return "boost::array<"+self.type+"Key, 2> "+self.nice_name
+    def get_key_pass(self):
+        return self.nice_name+"_"
+    def get_key_saves(self):
+        return self.nice_name+"_("+self.nice_name+")"
+    def get_initialize(self, const):
+        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const)+\
+            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const)
+    def get_check(self):
+        return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
+            "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
+            "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
+            "\n   <nh.get_value("+self.nice_name+"_[1], frame)"
 
 
 class Attributes:
@@ -363,9 +402,29 @@ journal= Decorator("JournalArticle", "Information regarding a publication.",
                                                          Attribute("Strings", "authors", "authors"),])],
                    "")
 
+atom= Decorator("Atom", "Information regarding an atom.",
+                   [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
+                                                                "coordinates", ["cartesian x",
+                                                                                "cartesian y",
+                                                                                "cartesian z"], True),
+                                                     Attribute("Float", "radius", "radius"),
+                                                     Attribute("Float", "mass", "mass"),
+                                                     ]),
+                    DecoratorCategory("sequence", 1, [Attribute("Index", "element", "element")])],
+                   "")
+
+
 residue= Decorator("Residue", "Information regarding a residue.",
                    [DecoratorCategory("sequence", 1, [SingletonRangeAttribute("Int", "index", "first residue index", "last residue index"),
                                                          Attribute("String", "type", "residue type")])],
+                   "")
+
+chain= Decorator("Chain", "Information regarding a chain.",
+                   [DecoratorCategory("sequence", 1, [Attribute("Index", "chain_id", "chain id")])],
+                   "")
+
+fragment= Decorator("Fragment", "Information regarding a fragment of a molecule.",
+                   [DecoratorCategory("sequence", 1, [RangeAttribute("Int", "index", "first residue index", "last residue index")])],
                    "")
 
 print """/**
@@ -394,6 +453,9 @@ print cylinder.get()
 print segment.get()
 print journal.get()
 print residue.get()
+print atom.get()
+print chain.get()
+print fragment.get()
 print """} /* namespace RMF */
 
 #endif /* IMPLIBRMF_DECORATORS_H */"""
