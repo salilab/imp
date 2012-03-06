@@ -30,18 +30,16 @@ double Ida_;
 double fretr_;
 double kappa_;
 double Pbleach0_;
-double multi_;
-std::vector< std::vector<unsigned> > states_;
-Floats weight0_;
-Floats weight1_;
+unsigned Na_;
+unsigned mcsteps_;
+Floats states0_;
+Floats states1_;
 bool photobleach_;
-unsigned nclose_;
 
-void   set_photobleach(double Pbleach0, double Pbleach1);
-double get_weight(std::vector<unsigned> state, double Pbleach) const;
-std::vector<unsigned> get_state(unsigned index) const;
+Floats set_photobleach(double Pbleach);
 double get_bleach_fretr() const;
 double get_nobleach_fretr() const;
+double get_sumFi(const Floats& power6, const Floats& states) const;
 
 public:
   FretrRestraint(Particles pd, Particles pa,
