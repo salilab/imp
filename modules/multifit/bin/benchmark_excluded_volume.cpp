@@ -64,13 +64,14 @@ void test_one(std::string name,
   if (argc<4 || argv[3][0]=='r'){
     double result=0;
     double runtime;
+    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, false)[0]);
+            result+=get_val(sf->evaluate_if_good(false));
           } else {
-            result+=get_val(m->evaluate(false));
+            result+=get_val(sf->evaluate(false));
           }
         }
       }, runtime);
@@ -82,14 +83,14 @@ void test_one(std::string name,
     to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
     double result=0;
     double runtime;
+    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_x(100.0*static_cast<double>(i)/nreps);
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs,
-                                                false)[0]);
+            result+=get_val(sf->evaluate_if_good(false));
           } else {
-            result+=get_val(m->evaluate(false));
+            result+=get_val(sf->evaluate(false));
           }
         }
       }, runtime);
@@ -101,13 +102,14 @@ void test_one(std::string name,
     IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 60);
     double result=0;
     double runtime;
+    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, false)[0]);
+            result+=get_val(sf->evaluate_if_good(false));
           } else {
-            result+=get_val(m->evaluate(false));
+            result+=get_val(sf->evaluate(false));
           }
         }
       }, runtime);
@@ -119,13 +121,14 @@ void test_one(std::string name,
     IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 4);
     double result=0;
     double runtime;
+    Pointer<ScoringFunction> sf=m->create_model_scoring_function();
     IMP_TIME({
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, false)[0]);
+            result+=get_val(sf->evaluate_if_good(false));
           } else {
-            result+=get_val(m->evaluate(false));
+            result+=get_val(sf->evaluate(false));
           }
         }
       }, runtime);
