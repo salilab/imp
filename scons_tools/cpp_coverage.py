@@ -67,7 +67,7 @@ class _CoverageTester(object):
                 g = os.path.splitext(f)[0] + '.gcda'
                 try:
                     os.unlink(g)
-                except IOError:
+                except OSError:
                     pass
 
     def _report(self):
