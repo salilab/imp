@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="saxs_merge", version='nightly-5/3/2012',
+env= env.IMPApplication(name="saxs_merge", version='nightly-6/3/2012',
                         authors=["Yannick Spill"],
                         brief="A bayesian SAS merging tool",
                         overview="",
