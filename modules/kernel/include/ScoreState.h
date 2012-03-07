@@ -137,6 +137,7 @@ protected:
  private:
   // all of the particle data
   WeakPointer<Model> model_;
+  int order_;
 };
 
 

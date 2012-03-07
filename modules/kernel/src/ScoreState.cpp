@@ -16,6 +16,7 @@ IMP_BEGIN_NAMESPACE
 ScoreState::ScoreState(std::string name) :
   Object(name)
 {
+  order_=-1;
 }
 
 
