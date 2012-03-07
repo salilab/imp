@@ -46,7 +46,7 @@ void GSLOptimizer::write_state(const gsl_vector*x) const {
 }
 
 
-double GSLOptimizer::evaluate(const gsl_vector *v) const {
+double GSLOptimizer::evaluate(const gsl_vector *v) {
   /* set model state */
   write_state(v);
   /* get score */
@@ -59,7 +59,7 @@ double GSLOptimizer::evaluate(const gsl_vector *v) const {
 }
 
 double GSLOptimizer::evaluate_derivative(const gsl_vector *v,
-                                         gsl_vector *df) const {
+                                         gsl_vector *df) {
    /* set model state */
   write_state(v);
 
@@ -82,7 +82,7 @@ double GSLOptimizer::evaluate_derivative(const gsl_vector *v,
 double GSLOptimizer::optimize(unsigned int iter,
                               const gsl_multimin_fdfminimizer_type*t,
                               double step, double param,
-                              double min_gradient) const {
+                              double min_gradient) {
   fis_= get_optimized_attributes();
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();
@@ -130,7 +130,7 @@ double GSLOptimizer::optimize(unsigned int iter,
 
 double GSLOptimizer::optimize(unsigned int iter,
                               const gsl_multimin_fminimizer_type*t,
-                              double ms, double mxs) const {
+                              double ms, double mxs) {
   fis_= get_optimized_attributes();
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();

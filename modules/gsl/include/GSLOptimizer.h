@@ -40,17 +40,17 @@ public:
   void update_state(gsl_vector *x) const;
   void write_state(const gsl_vector *x) const;
 
-  double evaluate(const gsl_vector *v) const;
-  double evaluate_derivative(const gsl_vector *v, gsl_vector *df) const;
+  double evaluate(const gsl_vector *v);
+  double evaluate_derivative(const gsl_vector *v, gsl_vector *df);
   unsigned int get_dimension() const {
     IMP_USAGE_CHECK(!fis_.empty(), "not initialized properly");
     return fis_.size();
   }
   double optimize(unsigned int n, const gsl_multimin_fdfminimizer_type*t,
-                  double step, double param, double min_gradient) const;
+                  double step, double param, double min_gradient);
 
   double optimize(unsigned int n, const gsl_multimin_fminimizer_type*t,
-                  double size, double max_size) const;
+                  double size, double max_size);
 #endif
 };
 IMP_OBJECTS(GSLOptimizer, GSLOptimizers);
