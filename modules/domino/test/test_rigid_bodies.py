@@ -83,7 +83,7 @@ class DOMINOTests(IMP.test.TestCase):
         allr= rc.get_restraints()
         for r in allr:
             print r.get_name()
-        self.assertEqual(len(allr), 2)
+        self.assertEqual(len(allr), 3)
     def test_global_min3(self):
         """Testing splitting restraints with rigid bodies and interestings scores"""
         m= IMP.Model()
@@ -115,7 +115,7 @@ class DOMINOTests(IMP.test.TestCase):
         allr=rc.get_restraints()
         for r in allr:
             print r.get_name()
-        self.assertEqual(len(allr), 2)
+        self.assertEqual(len(allr), 3)
 
 
 if __name__ == '__main__':

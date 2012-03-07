@@ -108,6 +108,7 @@ class DOMINOTests(IMP.test.TestCase):
         pr=IMP.container.PairsRestraint(sd,nbl)
         max_score=.9
         pr.set_maximum_score(max_score)
+        pr.set_model(m)
         prd=IMP.RestraintSet.get_from(pr.create_decomposition())
         #create particles state table
         pst=IMP.domino.ParticleStatesTable()
