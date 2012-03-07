@@ -23,7 +23,7 @@ IMPEXPORT void set_print_deprecation_messages(bool tf);
 
 IMP_END_NAMESPACE
 
-/** \brief Mark the class as deprecated. It will print out a message.
+/** \brief Mark the functionality as deprecated. It will print out a message.
 
   From time to time, \imp is updated in ways that break backward
   compatibility.  In certain cases we will leave the old functionality
@@ -47,15 +47,26 @@ IMP_END_NAMESPACE
 
   You should also use the \deprecated command in the doxygen documentation.
  */
-#define IMP_DEPRECATED(old_classname, replacement_classname)           \
-  if (::IMP::internal::get_print_deprecation_message(#old_classname)) { \
-    IMP_LOG(WARNING, "WARNING: Class " << #old_classname                \
+#define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
+  if (::IMP::internal::get_print_deprecation_message(get_type_name())) { \
+    IMP_LOG(WARNING, "WARNING: " << get_type_name()                     \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
-    ::IMP::internal::set_printed_deprecation_message(#old_classname,    \
+    ::IMP::internal::set_printed_deprecation_message(get_type_name(),   \
                                                            true);       \
   }
+
+#define IMP_DEPRECATED_FUNCTION(replacement)                            \
+  if (::IMP::internal::get_print_deprecation_message(__func__)) {       \
+    IMP_LOG(WARNING, "WARNING: " << __func__                            \
+            << " is deprecated "                                        \
+            << "and should not be used.\nUse "                          \
+            << #replacement << " instead." << std::endl);               \
+    ::IMP::internal::set_printed_deprecation_message(__func__,          \
+                                                           true);       \
+  }
+
 
 #ifdef __GNUC__
 #define IMP_DEPRECATED_WARN __attribute__ ((deprecated))
