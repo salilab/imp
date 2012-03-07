@@ -75,6 +75,9 @@ namespace RMF {
   typedef std::string Chars;
   /** @} */
 
+  typedef std::pair<Index, Index> IndexRange;
+  typedef std::pair<Int, Int> IntRange;
+
   IMP_RMF_SIMPLE_TRAITS(Int, Ints, int, 0, H5T_STD_I64LE, H5T_NATIVE_INT,
                         H5T_NATIVE_INT, std::numeric_limits<int>::max());
 
