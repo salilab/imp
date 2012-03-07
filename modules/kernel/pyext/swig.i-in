@@ -88,6 +88,7 @@ namespace IMP {
 %warnfilter(473) PairContainer;
 %warnfilter(403) Constraint;
 %warnfilter(473) Sampler;
+%warnfilter(473) Restraint;
 }
 // to avoid extend clash
 IMP_SWIG_BASE_OBJECT(IMP,Constraint, Constraints);
@@ -181,6 +182,8 @@ IMP_SWIG_RAII_TEMPLATE(IMP, ScopedSetAttribute);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
+IMP_SWIG_BASE_OBJECT(IMP, ScoringFunction, ScoringFunctions);
+IMP_SWIG_OBJECT(IMP, RestraintsScoringFunction, RestraintsScoringFunctions);
 IMP_SWIG_VALUE(IMP, EvaluationCache, EvaluationCaches);
 
 
@@ -244,6 +247,7 @@ class ParticleQuadsTemp;
 %}
 
 %rename(_ParticleIndexTag) ParticleIndexTag;
+%rename(_ScoringFunctionInput) ScoringFunctionInput;
 
 %include "IMP/particle_index.h"
 
@@ -264,6 +268,7 @@ namespace IMP {
 %include "IMP/RestraintSet.h"
 %include "IMP/ScoreState.h"
 %include "IMP_kernel_particle.i"
+%include "IMP/ScoringFunction.h"
 %include "IMP/Model.h"
 %include "IMP/Decorator.h"
 %include "IMP/UnaryFunction.h"

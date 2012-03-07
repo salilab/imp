@@ -12,6 +12,7 @@
 #include "kernel_config.h"
 #include "Object.h"
 #include "Pointer.h"
+#include "ScoringFunction.h"
 #include "Restraint.h"
 #include "RestraintSet.h"
 #include "ScoreState.h"
@@ -32,6 +33,9 @@
 
 
 IMP_BEGIN_NAMESPACE
+
+class ScoringFunction;
+
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING};
@@ -97,14 +101,23 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 /** The Model maintains a standard \imp container for each of Particle,
     ScoreState and Restraint object types.
 
-    \note Think carefully about using the iterators over the entire set
-          of Particles or Restraints. Most operations should be done using
-          a user-passed set of Particles or Restraints instead.
+    Each Float attribute has an associated range which reflects the
+    range of values that it is expected to take on during optimization.
+    The optimizer can use these ranges to make the optimization process
+    more efficient. By default, the range estimates are simply the
+    range of values for that attribute in the various particles, but
+    it can be set to another value. For example, an attribute storing
+    an angle could have the range set to (0,PI).
+
+    The ranges are not enforced; they are just guidelines. In order to
+    enforce ranges, see, for example,
+    IMP::example::ExampleSingletonModifier.
  */
 class IMPEXPORT Model:
   public RestraintSet
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   ,public base::Tracker<Restraint>,
+  public base::Tracker<ScoringFunction>,
   public internal::Masks,
   public internal::FloatAttributeTable,
   public internal::StringAttributeTable,
@@ -139,6 +152,7 @@ class IMPEXPORT Model:
   }
 private:
   typedef base::Tracker<Restraint> RestraintTracker;
+  typedef base::Tracker<ScoringFunction> ScoringFunctionTracker;
   struct Statistics {
     double total_time_;
     double total_time_after_;
@@ -171,6 +185,7 @@ public:
   void compute_dependencies();
   bool get_has_dependencies() const {
     return !RestraintTracker::get_is_dirty()
+        && !ScoringFunctionTracker::get_is_dirty()
         && !dependencies_dirty_;
   }
   internal::Stage cur_stage_;

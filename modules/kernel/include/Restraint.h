@@ -27,6 +27,7 @@ IMP_BEGIN_NAMESPACE
 
 class Model;
 class Restraint;
+class ScoringFunction;
 IMP_OBJECTS(Restraint,Restraints);
 
 //! Use this value when you want to turn off maximum for restraint evaluation
@@ -91,6 +92,9 @@ public:
 
   //! See Model::evaluate_if_good()
   double evaluate_if_good(bool calc_derivatives) const;
+
+  //! See Model::evaluate_with_maximum()
+  double evaluate_if_below(bool calc_derivatives, double max) const;
 
   /** This method is called to register a restrain with a model.
       Adding the restraint the model (Model::add_restraint()) will
@@ -211,6 +215,14 @@ public:
   static Restraint* get_from(Object *o) {
     return object_cast<Restraint>(o);
   }
+
+#ifndef IMP_DOXYGEN
+  virtual ScoringFunction *create_scoring_function(double weight=1.0,
+                                                   double max
+                                                   = NO_MAX) const;
+#endif
+
+  IMP_REF_COUNTED_DESTRUCTOR(Restraint);
  protected:
   /** A Restraint should override this if they want to decompose themselves
       for domino and other purposes. The returned restraints will be made
@@ -250,7 +262,7 @@ public:
   bool get_was_good() const {return last_score_ < max_;}
 private:
   friend class Model;
-
+  friend class ScoringFunction;
   double weight_;
   double max_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

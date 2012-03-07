@@ -61,57 +61,11 @@ public:
   }
 };
 
-
-
-
-
-
-
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all,
-                                      const DependencyGraph &dg) {
-  // find p in graph, ick
-  DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
-  std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
-    = boost::vertices(dg);
-  IMP::compatibility::set<Object*> block(all.begin(), all.end());
-  boost::vector_property_map<int> color(boost::num_vertices(dg));
-  int start=-1;
-  for (; be.first != be.second; ++be.first) {
-    IMP_INTERNAL_CHECK(color[*be.first]==
-                       boost::color_traits<int>::white(),
-                       "Vertex does not start white");
-    if (dpm[*be.first]==p) {
-      start=*be.first;
-    } else if (block.find(dpm[*be.first]) != block.end()) {
-      // block traversal though the other nodes
-      color[*be.first]= boost::color_traits<int>::black();
-    }
-  }
-  if (start == -1) {
-    IMP_LOG(TERSE, "Start particle not found in graph: " << p->get_name()
-            << std::endl);
-    return ParticlesTemp();
-  }
-  ParticlesTemp pt;
-  DirectCollectVisitor<DependencyGraph, Particle, ParticlesTemp> cv(dg, pt);
-  boost::depth_first_visit(dg, start, cv, color);
-  return cv.get_collected();
-}
-
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all) {
-  Model *m= p->get_model();
-  DependencyGraph dg
-    = get_dependency_graph(get_restraints(m->restraints_begin(),
-                                          m->restraints_end()));
-  return get_dependent_particles(p, all, dg);
-}
-
-
-RestraintsTemp get_dependent_restraints(Particle *p,
-                                      const ParticlesTemp &all,
-                                      const DependencyGraph &dg) {
+namespace {
+template <class ResultType, class Type>
+ResultType get_dependent(Particle *p,
+                         const ParticlesTemp &all,
+                         const DependencyGraph &dg) {
   IMP_FUNCTION_LOG;
   // find p in graph, ick
   DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
@@ -136,12 +90,41 @@ RestraintsTemp get_dependent_restraints(Particle *p,
   if (start == -1) {
     IMP_LOG(TERSE, "Start particle not found in graph: " << p->get_name()
             << std::endl);
-    return RestraintsTemp();
+    return ResultType();
   }
-  RestraintsTemp pt;
-  DirectCollectVisitor<DependencyGraph, Restraint, RestraintsTemp> cv(dg, pt);
+  ResultType pt;
+  DirectCollectVisitor<DependencyGraph, Type, ResultType> cv(dg, pt);
   boost::depth_first_visit(dg, start, cv, color);
   return cv.get_collected();
+}
+}
+
+
+
+
+
+
+
+ParticlesTemp get_dependent_particles(Particle *p,
+                                      const ParticlesTemp &all,
+                                      const DependencyGraph &dg) {
+  return get_dependent<ParticlesTemp, Particle>(p, all, dg);
+}
+
+ParticlesTemp get_dependent_particles(Particle *p,
+                                      const ParticlesTemp &all) {
+  Model *m= p->get_model();
+  DependencyGraph dg
+    = get_dependency_graph(get_restraints(m->restraints_begin(),
+                                          m->restraints_end()));
+  return get_dependent_particles(p, all, dg);
+}
+
+
+RestraintsTemp get_dependent_restraints(Particle *p,
+                                      const ParticlesTemp &all,
+                                      const DependencyGraph &dg) {
+  return get_dependent<RestraintsTemp, Restraint>(p,all, dg);
 }
 
 
@@ -204,37 +187,47 @@ namespace {
     }
   }
 
+template <class It>
+void add_out_edges(DGTraits::vertex_descriptor rv,
+                   It b, It e,
+                   DependencyGraph &dg,
+                   DGIndex &dgi) {
+  for (It c=b; c!= e; ++c) {
+    DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, *c);
+    if (!get_has_edge(dg, rv, cv)) {
+      add_edge(dg, cv, rv);
+    }
+  }
+}
+
   template <class It>
   void build_inputs_graph(It b, It e,
                           DependencyGraph &dg,
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      /*IMP_LOG(VERBOSE, "Processing inputs for \""
-        << (*c)->get_name() << "\" ");*/
-      {
-        ContainersTemp ct= filter((*c)->get_input_containers());
-        /*if (!ct.empty()) {
-          IMP_LOG(VERBOSE, ", containers are "
-                  << ct);
-                  }*/
-        for (unsigned int j=0; j < ct.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
-          if (!get_has_edge(dg, rv, cv)) {
-            add_edge(dg, cv, rv);
-          }
+      Object *o= *c;
+      if (dynamic_cast<RestraintSet*>(o)) {
+        RestraintSet *rs=dynamic_cast<RestraintSet*>(o);
+        add_out_edges(rv, rs->restraints_begin(),
+                      rs->restraints_end(), dg, dgi);
+      } else {
+        /*IMP_LOG(VERBOSE, "Processing inputs for \""
+          << (*c)->get_name() << "\" ");*/
+        {
+          ContainersTemp ct= filter((*c)->get_input_containers());
+          /*if (!ct.empty()) {
+            IMP_LOG(VERBOSE, ", containers are "
+            << ct);
+            }*/
+          add_out_edges(rv, ct.begin(), ct.end(), dg, dgi);
         }
-      }
-      {
-        ParticlesTemp pt= filter((*c)->get_input_particles());
-        /*if (!pt.empty()) {
-          IMP_LOG(VERBOSE, ", particles are " << pt);
-          }*/
-        for (unsigned int j=0; j < pt.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
-          if (!get_has_edge(dg, rv, cv)) {
-            add_edge(dg, cv, rv);
-          }
+        {
+          ParticlesTemp pt= filter((*c)->get_input_particles());
+          /*if (!pt.empty()) {
+            IMP_LOG(VERBOSE, ", particles are " << pt);
+            }*/
+          add_out_edges(rv, pt.begin(), pt.end(), dg, dgi);
         }
       }
       //IMP_LOG(VERBOSE, std::endl);
