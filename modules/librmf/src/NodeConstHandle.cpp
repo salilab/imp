@@ -10,6 +10,7 @@
 #include <boost/tuple/tuple.hpp>
 #include <RMF/Category.h>
 #include <RMF/FileHandle.h>
+#include <RMF/decorators.h>
 
 namespace RMF {
 
@@ -68,21 +69,24 @@ namespace {
         if (n.get_file().get_is_per_frame(ks[i])) {
           out << std::endl << prefix
               << n.get_file().get_name(ks[i]) << ": "
-              << n.get_value(ks[i], frame)
+              << Showable(n.get_value(ks[i], frame))
               << " (" << n.get_file().get_number_of_frames(ks[i])
               << ")";
         } else {
           out << std::endl << prefix
               << n.get_file().get_name(ks[i]) << ": "
-              << n.get_value(ks[i]);
+              << Showable(n.get_value(ks[i]));
         }
       }
     }
   }
 
   void show_node(NodeConstHandle n, std::ostream &out,
-                 FloatKeys fks, IntKeys iks,
-                 IndexKeys xks, StringKeys sks,
+                 FloatKeys fks, FloatsKeys fsks,
+                 IntKeys iks, IntsKeys isks,
+                 IndexKeys xks, IndexesKeys xsks,
+                 StringKeys sks, StringsKeys ssks,
+                 NodeIDKeys nks, NodeIDsKeys nsks,
                  int frame,
                  std::string prefix) {
     using std::operator<<;
@@ -92,6 +96,50 @@ namespace {
     show_data(n, out, iks, frame, prefix);
     show_data(n, out, xks, frame, prefix);
     show_data(n, out, sks, frame, prefix);
+    show_data(n, out, nks, frame, prefix);
+    show_data(n, out, fsks, frame, prefix);
+    show_data(n, out, isks, frame, prefix);
+    show_data(n, out, xsks, frame, prefix);
+    show_data(n, out, ssks, frame, prefix);
+    show_data(n, out, nsks, frame, prefix);
+  }
+
+  void show_node_decorators(NodeConstHandle n, std::ostream &out,
+                            ColoredConstFactory ccf,
+                            ParticleConstFactory pcf,
+                            IntermediateParticleConstFactory ipcf,
+                            RigidParticleConstFactory rpcf,
+                            ScoreConstFactory scf,
+                            BallConstFactory bcf,
+                            CylinderConstFactory cycf,
+                            SegmentConstFactory segcf,
+                            ResidueConstFactory rcf,
+                            AtomConstFactory acf,
+                            ChainConstFactory chaincf,
+                            DomainConstFactory fragcf,
+                            CopyConstFactory copycf,
+                            DiffuserConstFactory diffusercf,
+                            TypedConstFactory typedcf,
+                            int frame,
+                            std::string ) {
+    using std::operator<<;
+    out << get_type_name(n.get_type()) << " "
+        << n.get_id() << " " << n.get_name();
+    if (ccf.get_is(n, frame)) out <<" color" ;
+    if (pcf.get_is(n, frame)) out <<" particle" ;
+    if (ipcf.get_is(n, frame)) out <<" iparticle" ;
+    if (rpcf.get_is(n, frame)) out <<" rigid" ;
+    if (scf.get_is(n, frame)) out <<" score" ;
+    if (bcf.get_is(n, frame)) out <<" ball" ;
+    if (cycf.get_is(n, frame)) out <<" cylinder" ;
+    if (segcf.get_is(n, frame)) out <<" segment" ;
+    if (rcf.get_is(n, frame)) out <<" residue" ;
+    if (acf.get_is(n, frame)) out <<" atom" ;
+    if (chaincf.get_is(n, frame)) out <<" chain" ;
+    if (fragcf.get_is(n, frame)) out <<" domian" ;
+    if (copycf.get_is(n, frame)) out <<" copy" ;
+    if (typedcf.get_is(n, frame)) out <<" typed" ;
+    if (diffusercf.get_is(n, frame)) out <<" diffuser" ;
   }
 
   template <class TypeT>
@@ -142,16 +190,60 @@ void show_hierarchy(NodeConstHandle root,
   IntKeys iks;
   IndexKeys xks;
   StringKeys sks;
+  NodeIDKeys nks;
+  FloatsKeys fsks;
+  IntsKeys isks;
+  IndexesKeys xsks;
+  StringsKeys ssks;
+  NodeIDsKeys nsks;
   if (verbose) {
     fks=get_keys<FloatTraits>(root.get_file());
     iks=get_keys<IntTraits>(root.get_file());
     xks=get_keys<IndexTraits>(root.get_file());
     sks=get_keys<StringTraits>(root.get_file());
+    nks=get_keys<NodeIDTraits>(root.get_file());
+    fsks=get_keys<FloatsTraits>(root.get_file());
+    isks=get_keys<IntsTraits>(root.get_file());
+    xsks=get_keys<IndexesTraits>(root.get_file());
+    ssks=get_keys<StringsTraits>(root.get_file());
+    nsks=get_keys<NodeIDsTraits>(root.get_file());
   }
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children().at,
-                 show_node(n, out, fks, iks, xks, sks, frame,
+                     show_node(n, out, fks, fsks, iks, isks, xks, xsks,
+                               sks, ssks, nks, nsks, frame,
+                               prefix0+"   "));
+}
+
+
+
+void show_hierarchy_with_decorators(NodeConstHandle root,
+                                    bool ,
+                                    unsigned int frame,
+                                    std::ostream &out) {
+  ColoredConstFactory ccf(root.get_file());
+  ParticleConstFactory pcf(root.get_file());
+  IntermediateParticleConstFactory ipcf(root.get_file());
+  RigidParticleConstFactory rpcf(root.get_file());
+  ScoreConstFactory scf(root.get_file());
+  BallConstFactory bcf(root.get_file());
+  CylinderConstFactory cycf(root.get_file());
+  SegmentConstFactory segcf(root.get_file());
+  ResidueConstFactory rcf(root.get_file());
+  AtomConstFactory acf(root.get_file());
+  ChainConstFactory chaincf(root.get_file());
+  DomainConstFactory fragcf(root.get_file());
+  CopyConstFactory copycf(root.get_file());
+  DiffuserConstFactory diffusercf(root.get_file());
+  TypedConstFactory typedcf(root.get_file());
+  using std::operator<<;
+  IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
+                 n.get_children().at,
+                     show_node_decorators(n, out, ccf, pcf, ipcf, rpcf, scf,
+                                          bcf, cycf, segcf, rcf, acf,
+                                          chaincf, fragcf, copycf,
+                                          diffusercf, typedcf, frame,
                            prefix0+"   "));
 }
 
