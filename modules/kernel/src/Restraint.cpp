@@ -11,6 +11,7 @@
 #include "IMP/Model.h"
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
+#include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
 #include <numeric>
@@ -54,26 +55,22 @@ namespace {
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(get_model(), "You must add the restraint to the"
-                  << " model before attempting to evaluate it."
-                  << " Use either Model::add_restraint() or "
-                  << "Model::add_temporary_restraint().");
-  Floats ret= get_model()
-      ->evaluate(RestraintsTemp(1, const_cast<Restraint*>(this)),
-                 calc_derivs);
-  return finish(ret, this);
+  Pointer<ScoringFunction> sf= create_scoring_function();
+  return sf->evaluate(calc_derivs);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  Floats ret
-      = get_model()
-      ->evaluate_if_good(RestraintsTemp(1, const_cast<Restraint*>(this)),
-                         calc_derivs);
-  return finish(ret, this);
+  Pointer<ScoringFunction> sf= create_scoring_function();
+  return sf->evaluate_if_good(calc_derivs);
 }
 
+double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
+  IMP_OBJECT_LOG;
+  Pointer<ScoringFunction> sf= create_scoring_function(1.0, max);
+  return sf->evaluate_if_below(calc_derivs, max);
+}
 
 void Restraint::set_weight(double w) {
   weight_=w;
@@ -178,6 +175,11 @@ Restraint* Restraint::create_current_decomposition() const {
   return ret.release();
 }
 
-
+ScoringFunction *Restraint::create_scoring_function(double weight,
+                                                    double max ) const {
+  Restraint* ncthis= const_cast<Restraint*>(this);
+  return new RestraintsScoringFunction(RestraintsTemp(1, ncthis),
+                                       weight, max);
+}
 
 IMP_END_NAMESPACE

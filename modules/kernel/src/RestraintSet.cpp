@@ -10,6 +10,8 @@
 #include <IMP/Model.h>
 #include <IMP/log.h>
 #include <IMP/internal/utility.h>
+#include <IMP/generic.h>
+#include <IMP/ScoringFunction.h>
 #include <boost/tuple/tuple.hpp>
 #include <memory>
 #include <utility>
@@ -162,6 +164,13 @@ RestraintSet::do_create_incremental_decomposition(unsigned int n) const {
     }
   }
   return ret;
+}
+
+
+ScoringFunction* RestraintSet::create_scoring_function(double weight,
+                                                      double max) const {
+  return IMP::create_scoring_function(const_cast<RestraintSet*>(this), weight,
+                                      max);
 }
 
 RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,

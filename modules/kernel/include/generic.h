@@ -18,6 +18,7 @@
 #include "Constraint.h"
 #include "Restraint.h"
 #include "internal/container_helpers.h"
+#include "internal/scoring_functions.h"
 #include "internal/singleton_helpers.h"
 #include "internal/pair_helpers.h"
 #include "internal/triplet_helpers.h"
@@ -26,6 +27,36 @@
 #include <boost/type_traits/is_same.hpp>
 
 IMP_BEGIN_NAMESPACE
+
+
+
+/** Create a ScoringFunction on a single restraints.*/
+template <class RestraintType>
+inline ScoringFunction* create_scoring_function(RestraintType* rs,
+                                               double weight=1.0,
+                                                double max=NO_MAX) {
+  if (dynamic_cast<RestraintSet*>(rs)) {
+    RestraintSet *rrs=dynamic_cast<RestraintSet*>(rs);
+    if (rrs->get_number_of_restraints()==0) {
+      // ick
+      return new RestraintsScoringFunction(RestraintsTemp(1,rs), weight, max);
+    }
+    return new RestraintsScoringFunction(RestraintsTemp(rrs->restraints_begin(),
+                                                        rrs->restraints_end()),
+                                         weight*rs->get_weight(),
+                                         std::min(max,
+                                                  rs->get_maximum_score()));
+  } else {
+    if (weight==1.0 && max==NO_MAX) {
+      return new internal::RestraintScoringFunction<RestraintType>(rs);
+    } else {
+      return new internal::WrappedRestraintScoringFunction<RestraintType>(rs,
+                                                                        weight,
+                                                                          max);
+    }
+  }
+}
+
 
 
 #ifndef IMP_DOXYGEN

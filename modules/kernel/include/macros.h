@@ -349,8 +349,16 @@ public:                                                                 \
     - IMP::Restraint::get_input_particles()
 */
 #define IMP_RESTRAINT(Name)                                             \
-  IMP_IMPLEMENT(virtual double\
+  IMP_IMPLEMENT( double                                                 \
                 unprotected_evaluate(DerivativeAccumulator *accum) const); \
+  IMP_IMPLEMENT_INLINE(ScoringFunction *                                \
+                       create_scoring_function(double weight=1.0,       \
+                                               double max               \
+                                               = NO_MAX) const, {       \
+                         return IMP::create_scoring_function            \
+                             (const_cast<Name*>(this),                  \
+                              weight, max);                             \
+                       });                                              \
   IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
   IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
   IMP_OBJECT(Name)
@@ -706,7 +714,26 @@ class Name##FailureHandler: public base::FailureHandler {               \
 };                                                                      \
 IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
 
-
+/** Declare the methods needed for an IMP::ScoringFunction object. It
+    declares the following methods that you need to implement:
+    - IMP::ScoringFunction::do_evaluate_if_good()
+    - IMP::ScoringFunction::do_evaluate()
+    - IMP::ScoringFunction::do_evaluate_if_below()
+    - IMP::ScoringFunction::get_restraints()
+    in addition to the IMP_OBJECT() methods.*/
+#define IMP_SCORING_FUNCTION(Name)                                      \
+  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
+                do_evaluate_if_good(bool derivatives,\
+                                    const ScoreStatesTemp &ss));        \
+  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
+                do_evaluate(bool derivatives,                           \
+                            const ScoreStatesTemp &ss));                \
+  IMP_IMPLEMENT(ScoreIsGoodPair                                         \
+                 do_evaluate_if_below(bool derivatives,                 \
+                                      double max,                       \
+                                      const ScoreStatesTemp &ss));      \
+  IMP_IMPLEMENT(RestraintsTemp get_restraints() const);                 \
+  IMP_OBJECT(Name)
 //! @}
 
 

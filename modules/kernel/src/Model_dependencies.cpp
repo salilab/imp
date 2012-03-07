@@ -17,6 +17,7 @@
 #include "IMP/file.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/dependency_graph.h"
+#include "IMP/ScoringFunction.h"
 #include <boost/timer.hpp>
 #include <IMP/utility.h>
 #include "IMP/compatibility/set.h"
@@ -180,8 +181,18 @@ void Model::compute_dependencies() {
                                get_as<ScoreStatesTemp>(ordered_score_states_));
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ordered_score_states_ << std::endl);
+  // to prevent infinite recursion when updating ScoringFunctions
   dependencies_dirty_=false;
   RestraintTracker::set_is_dirty(false);
+  ScoringFunctionTracker::set_is_dirty(false);
+
+  for (ScoringFunctionTracker::TrackedIterator it
+           = ScoringFunctionTracker::tracked_begin();
+       it != ScoringFunctionTracker::tracked_end(); ++it) {
+    ScoringFunction *sf= *it;
+    IMP_CHECK_OBJECT(sf);
+    sf->ss_= get_score_states(sf->get_restraints());
+  }
 }
 
 

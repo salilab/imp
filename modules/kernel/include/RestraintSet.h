@@ -78,6 +78,12 @@ class IMPEXPORT RestraintSet : public Restraint
   /** Divide the list of contained restraints into sets and non-sets.*/
   std::pair<RestraintsTemp, RestraintSetsTemp> get_non_sets_and_sets() const;
  public:
+#ifndef IMP_DOXYGEN
+  ScoringFunction* create_scoring_function(double weight=1.0,
+                                           double max
+                                           = std::numeric_limits<double>::max())
+      const;
+#endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void set_model(Model *m);
  protected:
