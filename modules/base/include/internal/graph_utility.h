@@ -36,33 +36,15 @@ class ObjectNameWriter {
 
   typedef typename boost::property_map<Graph,
                           boost::vertex_name_t>::const_type VertexMap;
-  template <class T, class Enabled=void>
-  struct Name {
-    static std::string get(const T &t) {
-      std::ostringstream oss;
-      oss << t;
-      return oss.str();
-    }
-  };
-  template <class T>
-  struct Name<T*> {
-    static std::string get(const T *t) {
-      return t->get_name();
-    }
-  };
-  template <class T>
-  struct Name<Pointer<T> > {
-    static std::string get(T t) {
-      return t->get_name();
-    }
-  };
   VertexMap om_;
 public:
   ObjectNameWriter( const Graph&g): om_(boost::get(boost::vertex_name,g)){}
   void operator()(std::ostream& out, int v) const {
     typedef typename boost::property_traits<typename boost::property_map<Graph,
                            boost::vertex_name_t>::const_type>::value_type VT;
-    std::string nm=Name<VT>::get(boost::get(om_, v));
+    std::ostringstream oss;
+    oss << Showable(boost::get(om_, v));
+    std::string nm=oss.str();
     vector<char> vnm(nm.begin(), nm.end());
     out << "[label=\""
         << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(),
