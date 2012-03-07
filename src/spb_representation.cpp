@@ -54,12 +54,14 @@ for(int i=0;i<mydata.num_cells;++i){
 // SPC42P
 //
   if(mydata.protein_list["Spc42p"]){
+   algebra::Vector3D tmp_x0=
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thickness/2.0);
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecules Spc42p_n, Spc42p_c;
    for(unsigned int k=0;k<2;++k){
     Spc42p_n.push_back(create_protein(m,"Spc42p_n",7,1,
                        display::Color(175./255.,238./255.,238./255.),
-                       i,mydata.kappa,CP_x0,mydata.use_connectivity));
+                       i,mydata.kappa,tmp_x0,mydata.use_connectivity));
     if(i==0){
      Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
      CP_ps->add_particles(ps_Spc42p_n);
@@ -108,7 +110,7 @@ for(int i=0;i<mydata.num_cells;++i){
    if(mydata.add_GFP){
     for(unsigned k=0;k<2;++k){
      atom::Molecule gfp_n=
-      create_GFP(m,"Spc42p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+      create_GFP(m,"Spc42p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
      all_mol.add_child(gfp_n);
      atom::Molecule gfp_c=
       create_GFP(m,"Spc42p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
@@ -121,13 +123,15 @@ for(int i=0;i<mydata.num_cells;++i){
 //
   if(mydata.protein_list["Spc29p"]){
   //Spc29p, 2 beads for N, 2 beads for C
+   algebra::Vector3D tmp_x0=
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]+mydata.CP_thickness/2.0);
    atom::Molecules Spc29p_all;
    Spc29p_all.push_back(create_protein(m,"Spc29p_n",14.5,2,
                         display::Color(255./255.,215./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity));
+                        i,mydata.kappa,tmp_x0,mydata.use_connectivity));
    Spc29p_all.push_back(create_protein(m,"Spc29p_c",14.5,2,
                         display::Color(255./255.,140./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity,132));
+                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,132));
    atom::Molecule Spc29p=
     create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
@@ -138,10 +142,10 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
-     create_GFP(m,"Spc29p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
     all_mol.add_child(gfp_n);
     atom::Molecule gfp_c=
-     create_GFP(m,"Spc29p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+     create_GFP(m,"Spc29p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
     all_mol.add_child(gfp_c);
    }
   }
@@ -236,12 +240,14 @@ for(int i=0;i<mydata.num_cells;++i){
 //
  if(mydata.protein_list["Spc110p"]){
   for(int j=0;j<mydata.num_copies/2;++j){
+   algebra::Vector3D tmp_x0=
+    algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]-mydata.CP_thickness/2.0);
  //Spc110p_c, 4 beads for C terminus
    atom::Molecules Spc110p_c;
    for(unsigned int kk=0;kk<2;++kk){
     Spc110p_c.push_back(create_protein(m,"Spc110p_c",26,4,
                         display::Color(255./255.,0.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity,799));
+                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,799));
     if(i==0){
      Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c[kk]);
      CP_ps->add_particles(ps_Spc110p_c);
@@ -280,7 +286,7 @@ for(int i=0;i<mydata.num_cells;++i){
    if(mydata.add_GFP){
     for(unsigned k=0;k<2;++k){
      atom::Molecule gfp_c=
-      create_GFP(m,"Spc110p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
+      create_GFP(m,"Spc110p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
      all_mol.add_child(gfp_c);
     }
    }
