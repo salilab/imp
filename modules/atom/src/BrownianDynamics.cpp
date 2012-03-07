@@ -270,7 +270,7 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
     advance_ball_0(ps[i], i, dtfs, dtikt);
   }
   if (srk_) {
-    evaluate(true);
+    get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
       advance_ball_1(ps[i], i, dtfs, dtikt);
     }
