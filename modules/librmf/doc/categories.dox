@@ -53,6 +53,8 @@ The following are pre-defined Categories for data stored in single nodes.
     stores an integer for the chain identifier. When translating from
     pdb files the position in the alphabet of the chain should probably
     be used (eg chain 'A' is 0), }
+    \rmfattribute{copy index, Index,
+    stores an integer identifying which copy of a moleule this is, }
     \rmfattributetable_end
 
     Related decorators: RMF::Residue.
