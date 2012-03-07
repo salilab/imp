@@ -212,7 +212,9 @@ Atom Atom::setup_particle(Particle *p, AtomType t) {
   //p->add_attribute(get_tempFactor_key(), 0.00);
 
   Atom ret(p);
-  Mass::setup_particle(p, 0);
+  if (!Mass::particle_is_instance(p)) {
+    Mass::setup_particle(p, 0);
+  }
   ret.set_atom_type(t);
   return ret;
 }
