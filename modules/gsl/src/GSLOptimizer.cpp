@@ -50,7 +50,7 @@ double GSLOptimizer::evaluate(const gsl_vector *v) {
   /* set model state */
   write_state(v);
   /* get score */
-  double score= Optimizer::evaluate(false);
+  double score= get_scoring_function()->evaluate(false);
   best_score_=std::min(score, best_score_);
   if (score < stop_score_) {
     throw AllDone();
@@ -64,7 +64,7 @@ double GSLOptimizer::evaluate_derivative(const gsl_vector *v,
   write_state(v);
 
   /* get score */
-  double score= Optimizer::evaluate(true);
+  double score= get_scoring_function()->evaluate(true);
   best_score_=std::min(score, best_score_);
   if (score < stop_score_) {
     throw AllDone();
@@ -88,7 +88,7 @@ double GSLOptimizer::optimize(unsigned int iter,
   unsigned int n= get_dimension();
   if (n ==0) {
     IMP_LOG(TERSE, "Nothing to optimize" << std::endl);
-    return Optimizer::evaluate(false);
+    return get_scoring_function()->evaluate(false);
   }
   gsl_multimin_fdfminimizer *s=gsl_multimin_fdfminimizer_alloc (t, n);
 
@@ -136,7 +136,7 @@ double GSLOptimizer::optimize(unsigned int iter,
   unsigned int n= get_dimension();
   if (n ==0) {
     IMP_LOG(TERSE, "Nothing to optimize" << std::endl);
-    return Optimizer::evaluate(false);
+    return get_scoring_function()->evaluate(false);
   }
   gsl_multimin_fminimizer *s=gsl_multimin_fminimizer_alloc (t, n);
 
