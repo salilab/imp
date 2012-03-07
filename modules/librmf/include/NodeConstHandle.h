@@ -172,6 +172,15 @@ RMFEXPORT void show_hierarchy(NodeConstHandle root,
                               bool verbose=false,
                               unsigned int frame=0,
                               std::ostream &out= std::cout);
+
+/** Print out the hierarchy as an ascii tree marking what decorators
+    apply where.
+ */
+RMFEXPORT void show_hierarchy_with_decorators(NodeConstHandle root,
+                                              bool verbose=false,
+                                              unsigned int frame=0,
+                                              std::ostream &out= std::cout);
+
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_NODE_CONST_HANDLE_H */

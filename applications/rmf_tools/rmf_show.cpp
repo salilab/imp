@@ -22,6 +22,7 @@ int main(int argc, char **argv) {
     desc.add_options()
       ("help,h", "Print the contents of an rmf file to the terminal.")
       ("verbose,v", "Print lots of information about each node.")
+      ("decorators,d", "Show what decorators recognize each node.")
       ("frame,f", po::value< int >(&frame),
        "Frame to use")
       ("input-file,i", po::value< std::string >(&input),
@@ -43,8 +44,14 @@ int main(int argc, char **argv) {
     if (!descr.empty()) {
       std::cout << descr << std::endl;
     }
-    RMF::show_hierarchy(rh.get_root_node(), vm.count("verbose"),
-                        frame, std::cout);
+    if (vm.count("decorators")) {
+      RMF::show_hierarchy_with_decorators(rh.get_root_node(),
+                                          vm.count("verbose"),
+                                          frame, std::cout);
+    } else {
+      RMF::show_hierarchy(rh.get_root_node(), vm.count("verbose"),
+                          frame, std::cout);
+    }
   } catch (const IMP::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
