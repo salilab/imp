@@ -12,6 +12,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
+#include <IMP/generic.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
