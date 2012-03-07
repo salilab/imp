@@ -133,6 +133,9 @@ void Model::compute_dependencies() {
                            get_as<RestraintsTemp>(all_restraints));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   ordered_score_states_=IMP::get_ordered_score_states(dg);
+  for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
+    ordered_score_states_[i]->order_=i;
+  }
   compute_restraint_dependencies(dg, all_restraints,
                                get_as<ScoreStatesTemp>(ordered_score_states_));
   IMP_LOG(VERBOSE, "Ordered score states are "
@@ -147,13 +150,15 @@ void Model::compute_dependencies() {
        it != ScoringFunctionTracker::tracked_end(); ++it) {
     ScoringFunction *sf= *it;
     IMP_CHECK_OBJECT(sf);
-    sf->ss_= get_score_states(sf->get_restraints());
+    sf->ss_= get_score_states(sf->get_restraints(),
+                              sf->get_extra_score_states(dg));
   }
 }
 
 
 ScoreStatesTemp
-Model::get_score_states(const RestraintsTemp &restraints) {
+Model::get_score_states(const RestraintsTemp &restraints,
+                        const ScoreStatesTemp &extra) {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
@@ -176,10 +181,17 @@ Model::get_score_states(const RestraintsTemp &restraints) {
     bs.insert(bs.end(), restraints[i]->model_dependencies_.begin(),
               restraints[i]->model_dependencies_.end());
   }
+  if (!extra.empty()) {
+    for (unsigned int i=0; i< extra.size(); ++i) {
+      bs.push_back(extra[i]->order_);
+    }
+  }
   std::sort(bs.begin(), bs.end());
   bs.erase(std::unique(bs.begin(), bs.end()), bs.end());
   ScoreStatesTemp ss(bs.size());
   for (unsigned int i=0; i< bs.size(); ++i) {
+    IMP_INTERNAL_CHECK(ordered_score_states_[bs[i]]->order_
+                       == bs[i], "Saved and actual order don't match");
     ss[i]=ordered_score_states_[bs[i]];
   }
   return ss;
