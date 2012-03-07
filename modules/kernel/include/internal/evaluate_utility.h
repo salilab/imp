@@ -36,7 +36,7 @@
     ContainersTemp tccurout=containerstwo;                              \
     curout.insert(curout.end(), tcurout.begin(), tcurout.end());        \
     ccurout.insert(ccurout.end(), tccurout.begin(), tccurout.end());    \
-    IMP_SET_ONLY(mask, curout, ccurout);                                \
+    IMP_SF_SET_ONLY(mask, curout, ccurout);                             \
   }
 #else
 #define IMP_SF_SET_ONLY(mask, particles, containers)
