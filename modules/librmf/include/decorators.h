@@ -361,6 +361,182 @@ mass_);
 
 /** These particles has associated coordinates and radius information.
 
+       \see IntermediateParticle
+       \see IntermediateParticleConstFactory
+     */
+    class IntermediateParticleConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class IntermediateParticleConstFactory;
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+    IntermediateParticleConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  FloatKeys coordinates,
+FloatKey radius): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
+radius_(radius) {
+    ;
+    }
+    public:
+    Floats get_coordinates() const {
+       Floats ret;
+       for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
+       }
+       return ret;
+    }
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstIntermediateParticle,
+                     "IntermediateParticleConst "
+                     << nh_.get_name());
+    ~IntermediateParticleConst() {
+    }
+    };
+
+    typedef vector<IntermediateParticleConst> IntermediateParticleConsts;
+
+/** These particles has associated coordinates and radius information.
+
+       \see IntermediateParticleConst
+       \see IntermediateParticleFactory
+     */
+    class IntermediateParticle {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class IntermediateParticleFactory;
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+    IntermediateParticle(NodeHandle nh,
+                      unsigned int frame,
+                  FloatKeys coordinates,
+FloatKey radius): nh_(nh),
+                                      frame_(frame),
+                                     coordinates_(coordinates),
+radius_(radius) {
+    ;
+    }
+    public:
+    Floats get_coordinates() const {
+       Floats ret;
+       for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i], frame_));
+       }
+       return ret;
+    }
+void set_coordinates(const Floats &v) {
+         for (unsigned int i=0; i< 3; ++i) {
+            nh_.set_value(coordinates_[i], v[i], frame_);
+         }
+      }
+Float get_radius() const {
+  return nh_.get_value(radius_, frame_);
+}
+void set_radius(Float v) {
+   nh_.set_value(radius_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstIntermediateParticle,
+                     "IntermediateParticle "
+                     << nh_.get_name());
+    ~IntermediateParticle() {
+    }
+    };
+
+    typedef vector<IntermediateParticle> IntermediateParticles;
+
+/** Create decorators of type IntermediateParticle.
+
+       \see IntermediateParticle
+       \see IntermediateParticleConstFactory
+    */
+    class IntermediateParticleFactory {
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+    public:
+    typedef FileHandle File;
+    typedef IntermediateParticle Decorator;
+    IntermediateParticleFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "physics");
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian x", true));
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian y", true));
+      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                               "cartesian z", true));;
+radius_=get_key_always<FloatTraits>(fh, cat,
+                               "radius", false);
+};
+    }
+    IntermediateParticle get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return IntermediateParticle(nh, frame, coordinates_,
+radius_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame);
+    }
+    IMP_RMF_SHOWABLE(IntermediateParticleFactory,
+                     "IntermediateParticleFactory");
+    };
+
+    typedef vector<IntermediateParticleFactory> IntermediateParticleFactories;
+
+/** Create decorators of type IntermediateParticle.
+
+       \see IntermediateParticleConst
+       \see IntermediateParticleFactory
+    */
+    class IntermediateParticleConstFactory {
+    private:
+    FloatKeys coordinates_;
+FloatKey radius_;
+    public:
+    typedef FileConstHandle File;
+    typedef IntermediateParticleConst Decorator;
+    IntermediateParticleConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("physics");
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                              :FloatKey()));
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                              :FloatKey()));
+      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                              :FloatKey()));;
+radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+                   fh.get_key<FloatTraits>(cat, "radius")
+                              :FloatKey());
+};
+    }
+    IntermediateParticleConst get(NodeConstHandle nh, unsigned int frame=0)
+      const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return IntermediateParticleConst(nh, frame, coordinates_,
+radius_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(coordinates_[0], frame)
+    && nh.get_has_value(radius_, frame);
+    }
+    IMP_RMF_SHOWABLE(IntermediateParticleConstFactory,
+                     "IntermediateParticleConstFactory");
+    };
+
+    typedef vector<IntermediateParticleConstFactory>
+    IntermediateParticleConstFactories;
+
+/** These particles has associated coordinates and radius information.
+
        \see RigidParticle
        \see RigidParticleConstFactory
      */
@@ -1848,9 +2024,6 @@ radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 mass_=get_key_always<FloatTraits>(fh, cat,
                                "mass", false);
-}
-{
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
 element_=get_key_always<IndexTraits>(fh, cat,
                                "element", false);
 };
@@ -1905,9 +2078,6 @@ radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
 mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
                    fh.get_key<FloatTraits>(cat, "mass")
                               :FloatKey());
-}
-{
-  CategoryD<1> cat=fh.get_category<1>("sequence");
 element_=(fh.get_has_key<IndexTraits>(cat, "element")?
                    fh.get_key<IndexTraits>(cat, "element")
                               :IndexKey());
@@ -2059,147 +2229,522 @@ chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
 
 /** Information regarding a fragment of a molecule.
 
-       \see Fragment
-       \see FragmentConstFactory
+       \see Domain
+       \see DomainConstFactory
      */
-    class FragmentConst {
+    class DomainConst {
     NodeConstHandle nh_;
     unsigned int frame_;
-    friend class FragmentConstFactory;
+    friend class DomainConstFactory;
     private:
-    boost::array<IntKey,2> index_;
-    FragmentConst(NodeConstHandle nh,
+    boost::array<IntKey,2> indexes_;
+    DomainConst(NodeConstHandle nh,
                       unsigned int frame,
-                  boost::array<IntKey, 2> index): nh_(nh),
+                  boost::array<IntKey, 2> indexes): nh_(nh),
                                       frame_(frame),
-                                     index_(index) {
+                                     indexes_(indexes) {
     ;
     }
     public:
-    Int get_index_begin() const {
-  return nh_.get_value(index_[0], frame_);
+    IntRange get_indexes() const {
+  return std::make_pair(nh_.get_value(indexes_[0], frame_),
+                        nh_.get_value(indexes_[1], frame_));
 }
-Int get_indexend() const {
-  return nh_.get_value(index_[1], frame_);
-}
-    IMP_RMF_SHOWABLE(ConstFragment,
-                     "FragmentConst "
+    IMP_RMF_SHOWABLE(ConstDomain,
+                     "DomainConst "
                      << nh_.get_name());
-    ~FragmentConst() {
+    ~DomainConst() {
     }
     };
 
-    typedef vector<FragmentConst> FragmentConsts;
+    typedef vector<DomainConst> DomainConsts;
 
 /** Information regarding a fragment of a molecule.
 
-       \see FragmentConst
-       \see FragmentFactory
+       \see DomainConst
+       \see DomainFactory
      */
-    class Fragment {
+    class Domain {
     NodeHandle nh_;
     unsigned int frame_;
-    friend class FragmentFactory;
+    friend class DomainFactory;
     private:
-    boost::array<IntKey,2> index_;
-    Fragment(NodeHandle nh,
+    boost::array<IntKey,2> indexes_;
+    Domain(NodeHandle nh,
                       unsigned int frame,
-                  boost::array<IntKey, 2> index): nh_(nh),
+                  boost::array<IntKey, 2> indexes): nh_(nh),
                                       frame_(frame),
-                                     index_(index) {
+                                     indexes_(indexes) {
     ;
     }
     public:
-    Int get_index_begin() const {
-  return nh_.get_value(index_[0], frame_);
+    IntRange get_indexes() const {
+  return std::make_pair(nh_.get_value(indexes_[0], frame_),
+                        nh_.get_value(indexes_[1], frame_));
 }
-Int get_indexend() const {
-  return nh_.get_value(index_[1], frame_);
+void set_indexes(Int v0, Int v1) {
+   nh_.set_value(indexes_[0], v0, frame_);
+   nh_.set_value(indexes_[1], v1, frame_);
 }
-void set_index(Int v0, Int v1) {
-   nh_.set_value(index_[0], v0, frame_);
-   nh_.set_value(index_[1], v1, frame_);
-}
-    IMP_RMF_SHOWABLE(ConstFragment,
-                     "Fragment "
+    IMP_RMF_SHOWABLE(ConstDomain,
+                     "Domain "
                      << nh_.get_name());
-    ~Fragment() {
+    ~Domain() {
     }
     };
 
-    typedef vector<Fragment> Fragments;
+    typedef vector<Domain> Domains;
 
-/** Create decorators of type Fragment.
+/** Create decorators of type Domain.
 
-       \see Fragment
-       \see FragmentConstFactory
+       \see Domain
+       \see DomainConstFactory
     */
-    class FragmentFactory {
+    class DomainFactory {
     private:
-    boost::array<IntKey,2> index_;
+    boost::array<IntKey,2> indexes_;
     public:
     typedef FileHandle File;
-    typedef Fragment Decorator;
-    FragmentFactory(FileHandle fh){
+    typedef Domain Decorator;
+    DomainFactory(FileHandle fh){
     {
   CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-index_[0]=get_key_always<IntTraits>(fh, cat,
+indexes_[0]=get_key_always<IntTraits>(fh, cat,
                                "first residue index", false);
-index_[1]=get_key_always<IntTraits>(fh, cat,
+indexes_[1]=get_key_always<IntTraits>(fh, cat,
                                "last residue index", false);
 };
     }
-    Fragment get(NodeHandle nh, unsigned int frame=0) const {
+    Domain get(NodeHandle nh, unsigned int frame=0) const {
       ;
-      return Fragment(nh, frame, index_);
+      return Domain(nh, frame, indexes_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(index_[0], frame)
-  && nh.get_has_value(index_[1], frame)
-  && nh.get_value(index_[0], frame)
-   <nh.get_value(index_[1], frame);
+      return nh.get_has_value(indexes_[0], frame)
+  && nh.get_has_value(indexes_[1], frame)
+  && nh.get_value(indexes_[0], frame)
+   <nh.get_value(indexes_[1], frame);
     }
-    IMP_RMF_SHOWABLE(FragmentFactory, "FragmentFactory");
+    IMP_RMF_SHOWABLE(DomainFactory, "DomainFactory");
     };
 
-    typedef vector<FragmentFactory> FragmentFactories;
+    typedef vector<DomainFactory> DomainFactories;
 
-/** Create decorators of type Fragment.
+/** Create decorators of type Domain.
 
-       \see FragmentConst
-       \see FragmentFactory
+       \see DomainConst
+       \see DomainFactory
     */
-    class FragmentConstFactory {
+    class DomainConstFactory {
     private:
-    boost::array<IntKey,2> index_;
+    boost::array<IntKey,2> indexes_;
     public:
     typedef FileConstHandle File;
-    typedef FragmentConst Decorator;
-    FragmentConstFactory(FileConstHandle fh){
+    typedef DomainConst Decorator;
+    DomainConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-index_[0]=(fh.get_has_key<IntTraits>(cat, "first residue index")?
+indexes_[0]=(fh.get_has_key<IntTraits>(cat, "first residue index")?
                    fh.get_key<IntTraits>(cat, "first residue index")
                               :IntKey());
-index_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
+indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
                    fh.get_key<IntTraits>(cat, "last residue index")
                               :IntKey());
 };
     }
-    FragmentConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    DomainConst get(NodeConstHandle nh, unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return FragmentConst(nh, frame, index_);
+      return DomainConst(nh, frame, indexes_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(index_[0], frame)
-  && nh.get_has_value(index_[1], frame)
-  && nh.get_value(index_[0], frame)
-   <nh.get_value(index_[1], frame);
+      return nh.get_has_value(indexes_[0], frame)
+  && nh.get_has_value(indexes_[1], frame)
+  && nh.get_value(indexes_[0], frame)
+   <nh.get_value(indexes_[1], frame);
     }
-    IMP_RMF_SHOWABLE(FragmentConstFactory, "FragmentConstFactory");
+    IMP_RMF_SHOWABLE(DomainConstFactory, "DomainConstFactory");
     };
 
-    typedef vector<FragmentConstFactory> FragmentConstFactories;
+    typedef vector<DomainConstFactory> DomainConstFactories;
+
+/** Information regarding a copy of a molecule.
+
+       \see Copy
+       \see CopyConstFactory
+     */
+    class CopyConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class CopyConstFactory;
+    private:
+    IndexKey copy_index_;
+    CopyConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  IndexKey copy_index): nh_(nh),
+                                      frame_(frame),
+                                     copy_index_(copy_index) {
+    ;
+    }
+    public:
+    Index get_copy_index() const {
+  return nh_.get_value(copy_index_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstCopy,
+                     "CopyConst "
+                     << nh_.get_name());
+    ~CopyConst() {
+    }
+    };
+
+    typedef vector<CopyConst> CopyConsts;
+
+/** Information regarding a copy of a molecule.
+
+       \see CopyConst
+       \see CopyFactory
+     */
+    class Copy {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class CopyFactory;
+    private:
+    IndexKey copy_index_;
+    Copy(NodeHandle nh,
+                      unsigned int frame,
+                  IndexKey copy_index): nh_(nh),
+                                      frame_(frame),
+                                     copy_index_(copy_index) {
+    ;
+    }
+    public:
+    Index get_copy_index() const {
+  return nh_.get_value(copy_index_, frame_);
+}
+void set_copy_index(Index v) {
+   nh_.set_value(copy_index_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstCopy,
+                     "Copy "
+                     << nh_.get_name());
+    ~Copy() {
+    }
+    };
+
+    typedef vector<Copy> Copys;
+
+/** Create decorators of type Copy.
+
+       \see Copy
+       \see CopyConstFactory
+    */
+    class CopyFactory {
+    private:
+    IndexKey copy_index_;
+    public:
+    typedef FileHandle File;
+    typedef Copy Decorator;
+    CopyFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+copy_index_=get_key_always<IndexTraits>(fh, cat,
+                               "copy index", false);
+};
+    }
+    Copy get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Copy(nh, frame, copy_index_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(copy_index_, frame);
+    }
+    IMP_RMF_SHOWABLE(CopyFactory, "CopyFactory");
+    };
+
+    typedef vector<CopyFactory> CopyFactories;
+
+/** Create decorators of type Copy.
+
+       \see CopyConst
+       \see CopyFactory
+    */
+    class CopyConstFactory {
+    private:
+    IndexKey copy_index_;
+    public:
+    typedef FileConstHandle File;
+    typedef CopyConst Decorator;
+    CopyConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("sequence");
+copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
+                   fh.get_key<IndexTraits>(cat, "copy index")
+                              :IndexKey());
+};
+    }
+    CopyConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return CopyConst(nh, frame, copy_index_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(copy_index_, frame);
+    }
+    IMP_RMF_SHOWABLE(CopyConstFactory, "CopyConstFactory");
+    };
+
+    typedef vector<CopyConstFactory> CopyConstFactories;
+
+/** Information regarding diffusion coefficients.
+
+       \see Diffuser
+       \see DiffuserConstFactory
+     */
+    class DiffuserConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class DiffuserConstFactory;
+    private:
+    FloatKey diffusion_coefficient_;
+    DiffuserConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  FloatKey diffusion_coefficient): nh_(nh),
+                                      frame_(frame),
+                               diffusion_coefficient_(diffusion_coefficient) {
+    ;
+    }
+    public:
+    Float get_diffusion_coefficient() const {
+  return nh_.get_value(diffusion_coefficient_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstDiffuser,
+                     "DiffuserConst "
+                     << nh_.get_name());
+    ~DiffuserConst() {
+    }
+    };
+
+    typedef vector<DiffuserConst> DiffuserConsts;
+
+/** Information regarding diffusion coefficients.
+
+       \see DiffuserConst
+       \see DiffuserFactory
+     */
+    class Diffuser {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class DiffuserFactory;
+    private:
+    FloatKey diffusion_coefficient_;
+    Diffuser(NodeHandle nh,
+                      unsigned int frame,
+                  FloatKey diffusion_coefficient): nh_(nh),
+                                      frame_(frame),
+                               diffusion_coefficient_(diffusion_coefficient) {
+    ;
+    }
+    public:
+    Float get_diffusion_coefficient() const {
+  return nh_.get_value(diffusion_coefficient_, frame_);
+}
+void set_diffusion_coefficient(Float v) {
+   nh_.set_value(diffusion_coefficient_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstDiffuser,
+                     "Diffuser "
+                     << nh_.get_name());
+    ~Diffuser() {
+    }
+    };
+
+    typedef vector<Diffuser> Diffusers;
+
+/** Create decorators of type Diffuser.
+
+       \see Diffuser
+       \see DiffuserConstFactory
+    */
+    class DiffuserFactory {
+    private:
+    FloatKey diffusion_coefficient_;
+    public:
+    typedef FileHandle File;
+    typedef Diffuser Decorator;
+    DiffuserFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "physics");
+diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
+                               "diffusion coefficient", false);
+};
+    }
+    Diffuser get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Diffuser(nh, frame, diffusion_coefficient_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(diffusion_coefficient_, frame);
+    }
+    IMP_RMF_SHOWABLE(DiffuserFactory, "DiffuserFactory");
+    };
+
+    typedef vector<DiffuserFactory> DiffuserFactories;
+
+/** Create decorators of type Diffuser.
+
+       \see DiffuserConst
+       \see DiffuserFactory
+    */
+    class DiffuserConstFactory {
+    private:
+    FloatKey diffusion_coefficient_;
+    public:
+    typedef FileConstHandle File;
+    typedef DiffuserConst Decorator;
+    DiffuserConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("physics");
+diffusion_coefficient_=(fh.get_has_key<FloatTraits>(cat,
+                                                    "diffusion coefficient")?
+                   fh.get_key<FloatTraits>(cat, "diffusion coefficient")
+                              :FloatKey());
+};
+    }
+    DiffuserConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return DiffuserConst(nh, frame, diffusion_coefficient_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(diffusion_coefficient_, frame);
+    }
+    IMP_RMF_SHOWABLE(DiffuserConstFactory, "DiffuserConstFactory");
+    };
+
+    typedef vector<DiffuserConstFactory> DiffuserConstFactories;
+
+/** A numeric tag for keeping track of types of molecules.
+
+       \see Typed
+       \see TypedConstFactory
+     */
+    class TypedConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class TypedConstFactory;
+    private:
+    StringKey type_name_;
+    TypedConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  StringKey type_name): nh_(nh),
+                                      frame_(frame),
+                                     type_name_(type_name) {
+    ;
+    }
+    public:
+    String get_type_name() const {
+  return nh_.get_value(type_name_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstTyped,
+                     "TypedConst "
+                     << nh_.get_name());
+    ~TypedConst() {
+    }
+    };
+
+    typedef vector<TypedConst> TypedConsts;
+
+/** A numeric tag for keeping track of types of molecules.
+
+       \see TypedConst
+       \see TypedFactory
+     */
+    class Typed {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class TypedFactory;
+    private:
+    StringKey type_name_;
+    Typed(NodeHandle nh,
+                      unsigned int frame,
+                  StringKey type_name): nh_(nh),
+                                      frame_(frame),
+                                     type_name_(type_name) {
+    ;
+    }
+    public:
+    String get_type_name() const {
+  return nh_.get_value(type_name_, frame_);
+}
+void set_type_name(String v) {
+   nh_.set_value(type_name_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstTyped,
+                     "Typed "
+                     << nh_.get_name());
+    ~Typed() {
+    }
+    };
+
+    typedef vector<Typed> Typeds;
+
+/** Create decorators of type Typed.
+
+       \see Typed
+       \see TypedConstFactory
+    */
+    class TypedFactory {
+    private:
+    StringKey type_name_;
+    public:
+    typedef FileHandle File;
+    typedef Typed Decorator;
+    TypedFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+type_name_=get_key_always<StringTraits>(fh, cat,
+                               "type name", false);
+};
+    }
+    Typed get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return Typed(nh, frame, type_name_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(type_name_, frame);
+    }
+    IMP_RMF_SHOWABLE(TypedFactory, "TypedFactory");
+    };
+
+    typedef vector<TypedFactory> TypedFactories;
+
+/** Create decorators of type Typed.
+
+       \see TypedConst
+       \see TypedFactory
+    */
+    class TypedConstFactory {
+    private:
+    StringKey type_name_;
+    public:
+    typedef FileConstHandle File;
+    typedef TypedConst Decorator;
+    TypedConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("sequence");
+type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
+                   fh.get_key<StringTraits>(cat, "type name")
+                              :StringKey());
+};
+    }
+    TypedConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return TypedConst(nh, frame, type_name_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(type_name_, frame);
+    }
+    IMP_RMF_SHOWABLE(TypedConstFactory, "TypedConstFactory");
+    };
+
+    typedef vector<TypedConstFactory> TypedConstFactories;
 
 } /* namespace RMF */
 

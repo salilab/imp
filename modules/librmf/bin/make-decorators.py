@@ -89,11 +89,9 @@ class RangeAttribute:
         return "boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+" get_"+self.nice_name+"_begin() const {")
-        ret.append("  return nh_.get_value("+self.nice_name+"_[0], frame_);")
-        ret.append("}")
-        ret.append(self.type+" get_"+self.nice_name+"end() const {")
-        ret.append("  return nh_.get_value("+self.nice_name+"_[1], frame_);")
+        ret.append(self.type+"Range get_"+self.nice_name+"() const {")
+        ret.append("  return std::make_pair(nh_.get_value("+self.nice_name+"_[0], frame_),")
+        ret.append("                        nh_.get_value("+self.nice_name+"_[1], frame_));")
         ret.append("}")
         if not const:
             ret.append("void set_"+self.nice_name+"("+self.type+" v0, "+self.type+" v1) {")
@@ -348,6 +346,13 @@ particle= Decorator("Particle", "These particles has associated coordinates and 
                                                      Attribute("Float", "radius", "radius"),
                                                      Attribute("Float", "mass", "mass")])],
                    "")
+iparticle= Decorator("IntermediateParticle", "These particles has associated coordinates and radius information.",
+                   [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
+                                                                "coordinates", ["cartesian x",
+                                                                                "cartesian y",
+                                                                                "cartesian z"], True),
+                                                     Attribute("Float", "radius", "radius")])],
+                   "")
 pparticle= Decorator("RigidParticle", "These particles has associated coordinates and radius information.",
                    [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
                                                                 "orientation", ["orientation r",
@@ -409,8 +414,7 @@ atom= Decorator("Atom", "Information regarding an atom.",
                                                                                 "cartesian z"], True),
                                                      Attribute("Float", "radius", "radius"),
                                                      Attribute("Float", "mass", "mass"),
-                                                     ]),
-                    DecoratorCategory("sequence", 1, [Attribute("Index", "element", "element")])],
+                                                     Attribute("Index", "element", "element")])],
                    "")
 
 
@@ -423,9 +427,20 @@ chain= Decorator("Chain", "Information regarding a chain.",
                    [DecoratorCategory("sequence", 1, [Attribute("Index", "chain_id", "chain id")])],
                    "")
 
-fragment= Decorator("Fragment", "Information regarding a fragment of a molecule.",
-                   [DecoratorCategory("sequence", 1, [RangeAttribute("Int", "index", "first residue index", "last residue index")])],
+fragment= Decorator("Domain", "Information regarding a fragment of a molecule.",
+                   [DecoratorCategory("sequence", 1, [RangeAttribute("Int", "indexes", "first residue index", "last residue index")])],
                    "")
+
+copy= Decorator("Copy", "Information regarding a copy of a molecule.",
+                   [DecoratorCategory("sequence", 1, [Attribute("Index", "copy_index", "copy index")])],
+                   "")
+diffuser= Decorator("Diffuser", "Information regarding diffusion coefficients.",
+                   [DecoratorCategory("physics", 1, [Attribute("Float", "diffusion_coefficient", "diffusion coefficient")])],
+                   "")
+typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules.",
+                   [DecoratorCategory("sequence", 1, [Attribute("String", "type_name", "type name")])],
+                   "")
+
 
 print """/**
  *  \\file RMF/decorators.h
@@ -446,6 +461,7 @@ namespace RMF {
 """
 print colored.get()
 print particle.get()
+print iparticle.get()
 print pparticle.get()
 print score.get()
 print ball.get()
@@ -456,6 +472,9 @@ print residue.get()
 print atom.get()
 print chain.get()
 print fragment.get()
+print copy.get()
+print diffuser.get()
+print typed.get()
 print """} /* namespace RMF */
 
 #endif /* IMPLIBRMF_DECORATORS_H */"""
