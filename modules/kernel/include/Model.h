@@ -23,6 +23,7 @@
 #include "compatibility/set.h"
 #include "internal/AttributeTable.h"
 #include "internal/attribute_tables.h"
+#include <IMP/base/tracking.h>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 
@@ -103,7 +104,8 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 class IMPEXPORT Model:
   public RestraintSet
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  , public internal::Masks,
+  ,public base::Tracker<Restraint>,
+  public internal::Masks,
   public internal::FloatAttributeTable,
   public internal::StringAttributeTable,
   public internal::IntAttributeTable,
@@ -136,6 +138,7 @@ class IMPEXPORT Model:
     internal::ParticlesAttributeTable::clear_caches(pi);
   }
 private:
+  typedef base::Tracker<Restraint> RestraintTracker;
   struct Statistics {
     double total_time_;
     double total_time_after_;
@@ -155,65 +158,32 @@ private:
 
   // basic representation
   std::map<FloatKey, FloatRange> ranges_;
-  compatibility::set<Restraint*> tracked_restraints_;
-  vector<std::pair<Object*, Object*> > extra_edges_;
-
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
   vector<OwnerPointer<Object> > model_data_;
+  bool dependencies_dirty_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
 public:
   bool first_call_;
   void validate_computed_derivatives() const{}
-  void compute_dependencies() const;
+  void compute_dependencies();
   bool get_has_dependencies() const {
-    return has_dependencies_;
+    return !RestraintTracker::get_is_dirty()
+        && !dependencies_dirty_;
   }
-  mutable internal::Stage cur_stage_;
+  internal::Stage cur_stage_;
   unsigned int eval_count_;
-  mutable bool has_good_score_;
-  void before_evaluate(const ScoreStatesTemp &states) const;
-  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
+  bool has_good_score_;
+  void before_evaluate(const ScoreStatesTemp &states);
+  void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs);
 
   bool gather_statistics_;
 
   void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
-#endif
- private:
-  // statistics
-  void add_to_update_before_time(ScoreState *s, double t) const;
-  void add_to_update_after_time(ScoreState *s, double t) const;
-
-
-
-  // dependencies
-  mutable bool has_dependencies_;
-  mutable RestraintsTemp scoring_restraints_;
-  mutable ScoreStatesTemp ordered_score_states_;
-
-  // other
-  /* Allow Model::ScoreStateDataWrapper class to call the private
-     ScoreState::set_model() function (older g++ and MSVC do not support
-     member classes as friends) */
-  static void set_score_state_model(ScoreState *ss, Model *model);
-
-  void do_show(std::ostream& out) const;
-
-#if defined(SWIG)
- public:
-#else
- private:
-#ifndef IMP_DOXYGEN
-  template <class T, class E> friend struct base::internal::RefStuff;
-#endif
-#endif
-
-  virtual ~Model();
-public:
-#if !defined(IMP_DOXYGEN)
-#ifndef SWIG
+  void reset_dependencies();
+  ScoreStatesTemp get_score_states(const RestraintsTemp &rs);
   internal::Stage get_stage() const {
     return cur_stage_;
   }
@@ -222,15 +192,30 @@ public:
                     "Can only call get_evaluation() during evaluation");
     return eval_count_;
   }
-#endif
-  // It is annoying to get the friend call right for VC
-  void reset_dependencies();
-  ScoreStatesTemp get_score_states(const RestraintsTemp &rs) const;
-  ScoreStatesTemp get_ordered_score_states() const {
-    return ordered_score_states_;
-  }
+  void add_particle_internal(Particle *p, bool set_name);
+
 #endif
 
+ private:
+  void cleanup();
+  void show_it(std::ostream &out) const;
+  // statistics
+  void add_to_update_before_time(ScoreState *s, double t) const;
+  void add_to_update_after_time(ScoreState *s, double t) const;
+
+
+
+  // dependencies
+  RestraintsTemp scoring_restraints_;
+  ScoreStatesTemp ordered_score_states_;
+
+  // other
+  /* Allow Model::ScoreStateDataWrapper class to call the private
+     ScoreState::set_model() function (older g++ and MSVC do not support
+     member classes as friends) */
+  static void set_score_state_model(ScoreState *ss, Model *model);
+
+public:
   /** Construct an empty model */
   Model(std::string name="Model %1%");
 
@@ -278,23 +263,10 @@ public:
       The value type for the iterators is a Restraint*.
    */
   /**@{*/
-  double get_weight(Restraint *r) const;
   RestraintSet *get_root_restraint_set() const {
     return const_cast<Model*>(this);
   }
   /**@}*/
-#ifndef IMP_DOXYGEN
- /** \name Tracked restraints
-
-     All restraints are in this list, whether or not they are
-     part of the scoring function.
-  */
-  void add_tracked_restraint(Restraint *r);
-  void remove_tracked_restraint(Restraint *r);
-  bool get_is_tracked_restraint(Restraint *r) const;
-  RestraintsTemp get_tracked_restraints() const;
-  /** @} */
-#endif
  public:
 
   /** \name Filtering
@@ -360,7 +332,7 @@ public:
   virtual double evaluate(bool calc_derivs);
 
   /** Use this to simplify code.*/
-  EvaluationCache get_evaluation_cache() const;
+  EvaluationCache get_evaluation_cache();
 
 
   //! Evaluate a subset of the restraints
@@ -402,16 +374,7 @@ public:
   */
   void update();
 
-#ifndef IMP_DOXYGEN
-  VersionInfo get_version_info() const {
-    IMP_CHECK_OBJECT(this);
-    return IMP::VersionInfo("IMP", get_module_version());
-  }
-
-  std::string get_type_name() const {
-    return "Model";
-  }
-#endif
+  IMP_OBJECT_INLINE(Model, show_it(out), cleanup());
 
   void remove_particle(Particle *p);
 
@@ -427,6 +390,7 @@ public:
   */
   void clear_all_statistics();
   void set_gather_statistics(bool tf);
+  bool get_gather_statistics() const {return gather_statistics_;}
   void show_all_statistics(std::ostream &out=std::cout) const;
   void show_restraint_time_statistics(std::ostream &out=std::cout) const;
   void show_restraint_score_statistics(std::ostream &out=std::cout) const;
@@ -444,22 +408,6 @@ public:
   bool get_has_data(ModelKey mk) const;
   /** @} */
 
-#ifndef IMP_DOXYGEN
-  /** Sometimes there are dependencies among score states that require
-      an ordering that cannot be derived automatically. For example score
-      states that read and write the same set of particles and have to
-      do so in a certain order.
-  */
-  void add_dependency_edge(ScoreState *from, ScoreState *to);
-#endif
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const vector<std::pair<Object*, Object*> >&
-    get_extra_dependency_edges() const {
-    return extra_edges_;
-  }
-  void add_particle_internal(Particle *p, bool set_name);
-#endif
 /** @name Methods to debug particles
       It is sometimes useful to inspect the list of all particles when
       debugging. These methods allow you to do that.

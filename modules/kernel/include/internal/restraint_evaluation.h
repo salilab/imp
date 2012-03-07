@@ -106,11 +106,6 @@ struct ResetBitset {
   }
 };
 
-struct ModelWeights {
-  double operator()(const Restraint *r, unsigned int ) const {
-    return r->model_weight_;
-  }
-};
 struct ExternalWeights {
   const Floats& w_;
   ExternalWeights(const Floats &w): w_(w){}

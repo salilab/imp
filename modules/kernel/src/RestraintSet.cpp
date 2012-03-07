@@ -17,6 +17,13 @@
 
 IMP_BEGIN_NAMESPACE
 
+RestraintSet::RestraintSet(Model *m, double weight,
+                           const std::string& name)
+    : Restraint(m, name)
+{
+  set_weight(weight);
+}
+
 
 RestraintSet::RestraintSet(double weight,
                            const std::string& name)
@@ -35,11 +42,35 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints);
 
 
-double
-RestraintSet::unprotected_evaluate(DerivativeAccumulator *) const
-{
-  IMP_FAILURE("RestraintSets are special cased in the Model");
+double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
+  IMP_UNUSED(accum);
+  IMP_FAILURE("Special cased");
 }
+double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
+                                                  double max) const {
+  IMP_UNUSED(accum);
+  IMP_UNUSED(max);
+  IMP_FAILURE("Special cased");
+}
+double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *,
+                                                   double ) const {
+  IMP_FAILURE("Special cased");
+}
+
+
+std::pair<RestraintsTemp, RestraintSetsTemp>
+RestraintSet::get_non_sets_and_sets() const {
+  std::pair<RestraintsTemp, RestraintSetsTemp> ret;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    if (dynamic_cast<RestraintSet*>(get_restraint(i))) {
+      ret.second.push_back(dynamic_cast<RestraintSet*>(get_restraint(i)));
+    } else {
+      ret.first.push_back(get_restraint(i));
+    }
+  }
+  return ret;
+}
+
 
 void RestraintSet::set_model(Model *m) {
   Restraint::set_model(m);

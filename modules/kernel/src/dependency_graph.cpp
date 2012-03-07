@@ -304,11 +304,6 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
   vector<std::pair<Object*, Object*> > extra;
-  if (!ss.empty()) {
-    extra=ss[0]->get_model()->get_extra_dependency_edges();
-  } else if (!rs.empty()) {
-    extra=rs[0]->get_model()->get_extra_dependency_edges();
-  }
   for (unsigned int i=0; i< extra.size(); ++i) {
     int va= index[extra[i].first];
     int vb= index[extra[i].second];

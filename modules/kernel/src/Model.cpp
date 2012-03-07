@@ -30,9 +30,8 @@ Model::Model(std::string name):
   eval_count_=0;
   set_was_used(true);
   first_call_=true;
-  has_dependencies_=false;
-  has_good_score_=false;
   next_particle_=0;
+  dependencies_dirty_=false;
 #if IMP_BUILD < IMP_FAST
   internal::FloatAttributeTable::set_masks(&this->Masks::read_mask_,
                                            &this->Masks::write_mask_,
@@ -63,13 +62,11 @@ Model::Model(std::string name):
                                                &this->Masks::add_remove_mask_);
 #endif
   // be careful as this calls back to model
-  model_=this;
-  model_weight_=1;
+  RestraintSet::set_model(this);
 }
 
 
-//! Destructor
-Model::~Model()
+void Model::cleanup()
 {
   IMP_CHECK_OBJECT(this);
   for (unsigned int i=0; i< particle_index_.size(); ++i) {
@@ -78,12 +75,6 @@ Model::~Model()
       Particle* op=particle_index_[ParticleIndex(i)];
       op->m_=nullptr;
       particle_index_[ParticleIndex(i)]=nullptr;
-    }
-  }
-  {
-    Restraints rs(tracked_restraints_.begin(), tracked_restraints_.end());
-    for (unsigned int i=0; i < rs.size(); ++i) {
-      rs[i]->set_model(nullptr);
     }
   }
   {
@@ -99,43 +90,6 @@ void Model::set_maximum_score(double d) {
 }
 
 
-void Model::add_tracked_restraint(Restraint *r) {
-  IMP_OBJECT_LOG;
-  if (dynamic_cast<RestraintSet*>(r)) {
-    // ignore it
-    return;
-  }
-  IMP_LOG(VERBOSE, "Adding tracked restraint " << r->get_name()
-          << std::endl);
-  reset_dependencies();
-  IMP_USAGE_CHECK(tracked_restraints_.find(r)
-                  == tracked_restraints_.end(),
-                  "Tracked restraint found on add");
-  tracked_restraints_.insert(r);
-
-}
-void Model::remove_tracked_restraint(Restraint *r) {
-  if (dynamic_cast<RestraintSet*>(r)) {
-    // ignore it
-    return;
-  }
-  reset_dependencies();
-  IMP_USAGE_CHECK(tracked_restraints_.find(r)
-                  != tracked_restraints_.end(),
-                  "Tracked restraint not found on removal");
-  tracked_restraints_.erase(r);
-}
-
-bool Model::get_is_tracked_restraint( Restraint *r) const {
-  return tracked_restraints_.find(const_cast<Restraint*>(r))
-      != tracked_restraints_.end();
-}
-
-RestraintsTemp Model::get_tracked_restraints() const {
-  return RestraintsTemp(tracked_restraints_.begin(),
-                        tracked_restraints_.end());
-}
-
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);
@@ -146,14 +100,6 @@ void Model::set_score_state_model(ScoreState *ss, Model *model) {
     IMP_CHECK_OBJECT(model);
   }
   ss->set_model(model);
-}
-
-
-double Model::get_weight(Restraint *r) const {
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  return r->model_weight_;
 }
 
 
@@ -209,7 +155,7 @@ void Model::update() {
   before_evaluate(ordered_score_states_);
 }
 
-void Model::do_show(std::ostream& out) const
+void Model::show_it(std::ostream& out) const
 {
   out << get_particles().size() << " particles" << std::endl;
   out << get_number_of_restraints() << " restraints" << std::endl;
