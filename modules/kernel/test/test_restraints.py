@@ -14,6 +14,8 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(r.evaluate(False), rd.evaluate(False))
         ra= IMP.get_restraints([r])
         rda= IMP.get_restraints([rd])
-        self.assertEqual(sum(m.evaluate(ra, False), 0.0), sum(m.evaluate(rda, False), 0.0))
+        sf= IMP.RestraintsScoringFunction(ra)
+        sfda= IMP.RestraintsScoringFunction(rda)
+        self.assertEqual(sf.evaluate( False), sfda.evaluate(False))
 if __name__ == '__main__':
     IMP.test.main()
