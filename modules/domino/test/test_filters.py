@@ -103,14 +103,12 @@ class DOMINOTests(IMP.test.TestCase):
         lsc2=IMP.container.ListSingletonContainer(m)
         lsc2.add_particles([ps[1]])
         nbl=IMP.container.CloseBipartitePairContainer(lsc1,lsc2,2)
-        rs=IMP.RestraintSet()
         h=IMP.core.HarmonicLowerBound(0,1)
         sd=IMP.core.SphereDistancePairScore(h)
         pr=IMP.container.PairsRestraint(sd,nbl)
         max_score=.9
         pr.set_maximum_score(max_score)
-        rs.add_restraint(pr)
-        m.add_restraint(rs)
+        prd=IMP.RestraintSet.get_from(pr.create_decomposition())
         #create particles state table
         pst=IMP.domino.ParticleStatesTable()
         states=IMP.domino.XYZStates([IMP.algebra.Vector3D(i,i,i) for i in range(3)])
