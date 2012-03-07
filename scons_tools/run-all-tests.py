@@ -3,13 +3,13 @@ import os
 import re
 import imp
 import os.path
-import IMP.test
 import glob
-from IMP.test._compat_python import coverage
 from optparse import OptionParser
-
-# Make sure we use the same version of unittest as the IMP testcases themselves
-from IMP.test import unittest
+# Use coverage in scons_tools, not from within IMP.test, since the latter
+# pulls in base/algebra/kernel (preventing those modules from being
+# accurately reported). It is also import not to import any IMP modules at
+# this point. See also import_imp_modules() below.
+import coverage
 
 class _TestModuleImporter(object):
     """Import a Python test module. The module
@@ -134,10 +134,22 @@ def report_coverage(opts):
     for cov in glob.glob('.coverage.*'):
         os.unlink(cov)
 
+def import_imp_modules():
+    # Note that we need to import all IMP modules *after* we start Python
+    # coverage collection, otherwise large parts of kernel/base/algebra
+    # will be erroneously reported as not covered (since they were run
+    # before coverage reporting started)
+    global IMP, unittest
+    import IMP.test
+    # Make sure we use the same version of unittest as the IMP testcases
+    # themselves
+    from IMP.test import unittest
+
 if __name__ == "__main__":
     opts, args = parse_options()
     if opts.pycoverage != 'no':
         start_coverage()
+    import_imp_modules()
     r = RegressionTest(args)
     # Hide our command line options from any module we import
     sys.argv = [sys.argv[0]]
