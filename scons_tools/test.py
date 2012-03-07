@@ -106,7 +106,7 @@ def add_tests(env, source, type, expensive_source=[]):
                    source=["#/tools/imppy.sh", testpy]+source \
                           +expensive_source+[env.Value(type)])
     for t in test, etest:
-        env.Requires(t, env["builddir"]+"/lib/compat_python")
+        env.Requires(t, env["builddir"]+"/lib/imp_coverage.py")
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")

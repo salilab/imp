@@ -5,11 +5,11 @@ import imp
 import os.path
 import glob
 from optparse import OptionParser
-# Use coverage in scons_tools, not from within IMP.test, since the latter
+# Use coverage from outside of IMP.test, since the one in IMP
 # pulls in base/algebra/kernel (preventing those modules from being
 # accurately reported). It is also import not to import any IMP modules at
 # this point. See also import_imp_modules() below.
-import coverage
+import imp_coverage as coverage
 
 class _TestModuleImporter(object):
     """Import a Python test module. The module
