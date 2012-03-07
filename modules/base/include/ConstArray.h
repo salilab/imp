@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "base_macros.h"
 #include "exception.h"
+#include <IMP/compatibility/nullptr.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/compatibility/hash.h>
 
@@ -34,8 +35,11 @@ class ConstArray {
     return 0;
   }
   void create(unsigned int sz) {
-    IMP_USAGE_CHECK(sz>0, "can't create 0 size subset");
-    v_.reset(new Data[sz]);
+    if (sz==0) {
+      v_.reset(nullptr);
+    } else {
+      v_.reset(new Data[sz]);
+    }
     sz_=sz;
   }
   void copy_from(const ConstArray &o) {
@@ -53,8 +57,6 @@ public:
   ConstArray(): v_(0), sz_(0){}
   template <class It>
   ConstArray(It b, It e) {
-    IMP_USAGE_CHECK(std::distance(b,e) > 0,
-                    "Can't create ConstArray from empty list");
     create(std::distance(b,e));
     std::copy(b,e, v_.get());
   }
