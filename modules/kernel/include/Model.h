@@ -70,31 +70,6 @@ public:
 
 class Model;
 
-/** An evaluation cache stores information for efficient evaluation of
-    a set of restraints. Store it an reuse it when you have one or
-    more restraints you are evaluating over and over again.
-*/
-class IMPEXPORT EvaluationCache {
-  friend class Model;
-  ScoreStates ss_;
-  Restraints rs_;
-  Floats weights_;
-
-  EvaluationCache(const ScoreStatesTemp &ss,
-                  const RestraintsTemp &rs,
-                  const Floats &floats);
- public:
-  EvaluationCache(){}
-  EvaluationCache(const RestraintsTemp &rs);
-  EvaluationCache(const RestraintsTemp &rs, double weight);
-  RestraintsTemp get_restraints() const {
-    return RestraintsTemp(rs_.begin(), rs_.end());
-  }
-  IMP_SHOWABLE_INLINE(EvaluationCache, out << rs_);
-  Model *get_model() const {return rs_[0]->get_model();}
-};
-IMP_VALUES(EvaluationCache, EvaluationCaches);
-
 IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 
 //! Class for storing model, its restraints, constraints, and particles.
@@ -346,42 +321,8 @@ public:
   */
   virtual double evaluate(bool calc_derivs);
 
-  /** Use this to simplify code.*/
-  EvaluationCache get_evaluation_cache();
-
-
-  //! Evaluate a subset of the restraints
-  /** The passed restraints must have been added to this model already
-      and must not be RestraintSets.
-
-      \note Not all ScoreStates are updated during this call, only the
-      ones which are needed to make sure the particles read by the
-      restraints are up-to-date. The list of ScoreStates that needs to
-      be updated for each restraint is currently recomputed when new
-      score states are added, but not when the dependencies of
-      Restraints or ScoreStates change. This can be fixed if requested.
-  */
-  Floats evaluate( const EvaluationCache&cache,
-                   bool calc_derivs);
-
-  //! Evaluate a subset of the restraints
-  /** In contrast to other evaluate methods,
-      this method is free to shortcut evaluation and return a very
-      large score if the total score at any point exceeds max or if
-      any of the restraints exceed their Restraint::get_maximum().
-
-      See evaluate(RestraintsTemp,Floats,bool) for more
-      information.
-  */
-  Floats evaluate_if_good( const EvaluationCache &cache,
-                           bool calc_derivs);
-  /** Evaluate, returning the score if it below the max value.
-      Otherwise return a number above max. The restraint maxima
-      are ignored.
-  */
-  Floats evaluate_if_below( const EvaluationCache &cache,
-                            bool calc_derivs, double max);
-
+  /** Create a scoring function from the model restraints.*/
+  ScoringFunction* create_model_scoring_function();
 
   //! Sometimes it is useful to be able to make sure the model is up to date
   /** This method updates all the state but does not necessarily compute the

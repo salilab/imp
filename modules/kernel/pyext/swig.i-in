@@ -184,7 +184,6 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 IMP_SWIG_BASE_OBJECT(IMP, ScoringFunction, ScoringFunctions);
 IMP_SWIG_OBJECT(IMP, RestraintsScoringFunction, RestraintsScoringFunctions);
-IMP_SWIG_VALUE(IMP, EvaluationCache, EvaluationCaches);
 
 
 

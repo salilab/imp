@@ -36,50 +36,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-EvaluationCache::EvaluationCache(const RestraintsTemp &rs){
-  RestraintsTemp rrs;
-  boost::tie(rrs, weights_)= get_restraints_and_weights(rs.begin(),
-                                                        rs.end());
-  rs_=get_as<Restraints>(rrs);
-  if (!rs.empty()) {
-    Model *m= rs[0]->get_model();
-    IMP_USAGE_CHECK(m, "Restraints must be registered with the model.");
-    ss_=get_as<ScoreStates>(m->get_score_states(rrs));
-  }
-}
-
-EvaluationCache::EvaluationCache(const RestraintsTemp &rs,
-                                 double w){
-  RestraintsTemp rrs;
-  boost::tie(rrs, weights_)= get_restraints_and_weights(rs.begin(),
-                                                        rs.end(), w);
-  rs_=get_as<Restraints>(rrs);
-  if (!rs.empty()) {
-    Model *m= rs[0]->get_model();
-    IMP_USAGE_CHECK(m, "Restraints must be registered with the model.");
-    ss_=get_as<ScoreStates>(m->get_score_states(rrs));
-  }
-}
-
-EvaluationCache::EvaluationCache(const ScoreStatesTemp &ss,
-                                 const RestraintsTemp &rs,
-                                 const Floats &floats):
-    ss_(ss.begin(), ss.end()),
-    rs_(rs.begin(), rs.end()), weights_(floats) {
-}
-
-EvaluationCache Model::get_evaluation_cache() {
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  Floats weights;
-  RestraintsTemp restraints;
-  boost::tie(restraints, weights)
-    = get_restraints_and_weights(RestraintsTemp(1, this), 1.0);
-  return EvaluationCache(ordered_score_states_,
-                         restraints,
-                         weights);
-}
 
   //#pragma GCC diagnostic warn "-Wunused-parameter"
 namespace {
