@@ -15,6 +15,8 @@
 #include <string>
 
 IMP_BEGIN_NAMESPACE
+class RestraintSet;
+IMP_OBJECTS(RestraintSet, RestraintSets);
 
 //! Container used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
@@ -40,14 +42,23 @@ class IMPEXPORT RestraintSet : public Restraint
   static void on_remove(RestraintSet *container, Restraint *r);
   void show_it(std::ostream &out) const;
  public:
+  //! Create an empty set that is registered with the model
+  RestraintSet(Model *m, double weight,
+               const std::string& name="RestraintSet %1%");
+#ifndef IMP_DOXYGEN
   //! Create an empty set
   RestraintSet(double weight,
                const std::string& name="RestraintSet %1%");
 
   //! Create an empty set
   RestraintSet(const std::string& name="RestraintSet %1%");
+#endif
 
   double unprotected_evaluate(DerivativeAccumulator *accum) const;
+  double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
+                                      double max) const;
+  double unprotected_evaluate_if_below(DerivativeAccumulator *accum,
+                                       double max) const;
   ContainersTemp get_input_containers() const;
   ParticlesTemp get_input_particles() const;
   IMP_OBJECT_INLINE(RestraintSet,show_it(out),
@@ -63,6 +74,9 @@ class IMPEXPORT RestraintSet : public Restraint
                   on_add(obj), on_change(),
                   if (container) on_remove(container, obj));
   /**@}*/
+
+  /** Divide the list of contained restraints into sets and non-sets.*/
+  std::pair<RestraintsTemp, RestraintSetsTemp> get_non_sets_and_sets() const;
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void set_model(Model *m);
@@ -73,8 +87,6 @@ class IMPEXPORT RestraintSet : public Restraint
   friend class Model;
 #endif
 };
-
-IMP_OBJECTS(RestraintSet, RestraintSets);
 
 /** \name Gathering restraints
     It is sometimes useful to extract all the non-RestraintSet restraints

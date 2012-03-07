@@ -17,6 +17,7 @@
 #include "utility.h"
 #include "container_macros.h"
 #include "container_base.h"
+#include <IMP/base/tracking.h>
 #include <vector>
 #include <iostream>
 #include <limits>
@@ -28,6 +29,13 @@ class Model;
 class Restraint;
 IMP_OBJECTS(Restraint,Restraints);
 
+//! Use this value when you want to turn off maximum for restraint evaluation
+IMPEXPORT extern const double NO_MAX;
+/** Evaluation can return this value if limits are exceeded and
+    it is a ScoringFunction::evaluate_if_below() or
+    ScoringFunction::evaluate_if_good
+*/
+IMPEXPORT extern const double BAD_SCORE;
 
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
@@ -54,10 +62,21 @@ IMP_OBJECTS(Restraint,Restraints);
 
     \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */
-class IMPEXPORT Restraint : public base::Object
+class IMPEXPORT Restraint :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public base::Object
+#else
+public base::TrackedObject<Restraint, Model>
+#endif
 {
+  typedef base::TrackedObject<Restraint, Model> Tracked;
 public:
+  /** Create a restraint and register it with the model. The restraint is
+      not added to implicit scoring function in the Model.*/
+  Restraint(Model *m, std::string name);
+#ifndef IMP_DOXYGEN
   Restraint(std::string name="Restraint %1%");
+#endif
 
   //! Return the score for this restraint for the current state of the model.
   /** \return Current score.
@@ -83,23 +102,38 @@ public:
 
   //! Return the model containing this restraint
   Model *get_model() const {
-    IMP_INTERNAL_CHECK(model_,
-               "get_model() called before set_model()");
-    return model_;
+    return Tracked::get_tracker();
   }
 
   //! Return true if this particle is part of a model
   bool get_is_part_of_model() const {
-    return model_;
+    return Tracked::get_is_tracked();
   }
+  /** \name Evaluation implementation
+      These methods are called in order to perform the actual restraint
+      scoring. The restraints should assume that all appropriate ScoreState
+      objects have been updated and so that the input particles and containers
+      are up to date. The returned score should be the unweighted score.
 
-#ifndef IMP_DOXYGEN
+      \note These functions probably should be called \c do_evaluate, but
+      were grandfathered in.
+      @{
+  */
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
+  /** The function calling this will treat any score >= max as bad.*/
   virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                              double /*max*/) const {
+                                              double max) const {
+    IMP_UNUSED(max);
     return unprotected_evaluate(da);
   }
-#endif
+
+  /** The function calling this will treat any score >= max as bad.*/
+  virtual double unprotected_evaluate_if_below(DerivativeAccumulator *da,
+                                               double max) const {
+    IMP_UNUSED(max);
+    return unprotected_evaluate(da);
+  }
+  /** @} */
 
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in
@@ -177,8 +211,6 @@ public:
   static Restraint* get_from(Object *o) {
     return object_cast<Restraint>(o);
   }
-
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Restraint);
  protected:
   /** A Restraint should override this if they want to decompose themselves
       for domino and other purposes. The returned restraints will be made
@@ -205,20 +237,27 @@ public:
     return do_create_decomposition();
   }
 
+
+  /** Return the (unweighted) score for this restraint last time it was
+      evaluated.
+      \note If some sort of special evaluation (eg Model::evaluate_if_good())
+      was the last call, the score, if larger than the max, is not accurate.
+   */
+  double get_last_score() const {return last_score_;}
+  /** Return whether this restraint violated it maximum last time it was
+      evaluated.
+   */
+  bool get_was_good() const {return last_score_ < max_;}
 private:
   friend class Model;
-  /* This pointer should never be ref counted as Model has a
-     pointer to this object.
-   */
-  UncheckedWeakPointer<Model> model_;
 
   double weight_;
   double max_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  public:
   // data cached by the model
-  mutable Ints model_dependencies_;
-  mutable double model_weight_;
+  double last_score_;
+  Ints model_dependencies_;
 #endif
 };
 

@@ -67,16 +67,16 @@ EvaluationCache::EvaluationCache(const ScoreStatesTemp &ss,
     rs_(rs.begin(), rs.end()), weights_(floats) {
 }
 
-EvaluationCache Model::get_evaluation_cache() const {
+EvaluationCache Model::get_evaluation_cache() {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  Floats weights(scoring_restraints_.size());
-  for (unsigned int i=0; i< scoring_restraints_.size(); ++i) {
-    weights[i]=scoring_restraints_[i]->model_weight_;
-  }
+  Floats weights;
+  RestraintsTemp restraints;
+  boost::tie(restraints, weights)
+    = get_restraints_and_weights(RestraintsTemp(1, this), 1.0);
   return EvaluationCache(ordered_score_states_,
-                         scoring_restraints_,
+                         restraints,
                          weights);
 }
 
@@ -157,29 +157,17 @@ void Model::reset_dependencies() {
   scoring_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
-  has_dependencies_=false;
+  dependencies_dirty_=true;
 }
 
-void Model::compute_dependencies() const {
+void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
-  Floats weights;
-  // kind of a hack, make sure it is overwritten for ones that are part of the
-  // model
-  RestraintsTemp all_restraints(tracked_restraints_.begin(),
-                                tracked_restraints_.end());
-  for (unsigned int i=0; i< all_restraints.size(); ++i) {
-    all_restraints[i]->model_weight_= 1;
-  }
-  boost::tie(scoring_restraints_,
-             weights)
-    = get_restraints_and_weights(restraints_begin(),
-                                 restraints_end());
-  for (unsigned int i=0; i< scoring_restraints_.size(); ++i) {
-    scoring_restraints_[i]->model_weight_= weights[i];
-  }
+  RestraintsTemp all_restraints
+      = RestraintsTemp(RestraintTracker::tracked_begin(),
+                       RestraintTracker::tracked_end());
   ScoreStates score_states= access_score_states();
-  IMP_LOG(VERBOSE, "Making dependency graph on " << weights.size()
+  IMP_LOG(VERBOSE, "Making dependency graph on " << all_restraints.size()
           << " restraints " << score_states.size() << " score states "
           << " and " << get_number_of_particles()
           << " particles." << std::endl);
@@ -187,37 +175,26 @@ void Model::compute_dependencies() const {
     = get_dependency_graph(get_as<ScoreStatesTemp>(score_states),
                            get_as<RestraintsTemp>(all_restraints));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
-  ordered_score_states_= IMP::get_ordered_score_states(dg);
+  ordered_score_states_=IMP::get_ordered_score_states(dg);
   compute_restraint_dependencies(dg, all_restraints,
-                                 ordered_score_states_);
+                               get_as<ScoreStatesTemp>(ordered_score_states_));
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ordered_score_states_ << std::endl);
-  has_dependencies_=true;
+  dependencies_dirty_=false;
+  RestraintTracker::set_is_dirty(false);
 }
 
 
 ScoreStatesTemp
-Model::get_score_states(const RestraintsTemp &restraints) const {
+Model::get_score_states(const RestraintsTemp &restraints) {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i= 0; i< restraints.size(); ++i) {
-      IMP_CHECK_CODE(Restraint *r=restraints[i]);
-      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
-                      "Cannot pass restraint sets to get_score_states()");
-    }
-  }
   Ints bs;
   for (unsigned int i=0; i< restraints.size(); ++i) {
-    IMP_USAGE_CHECK(restraints[i]->get_is_part_of_model(),
-                    "Restraint must be added to model: "
+    IMP_USAGE_CHECK(restraints[i]->get_model(),
+                    "Restraint must have the model set: "
                     << restraints[i]->get_name());
-    // weight 0
-    if (restraints[i]->model_weight_==0) {
-      IMP_LOG(VERBOSE, "Restraint " << restraints[i]->get_name()
-              << " has weight 0" << std::endl);
-    }
     IMP_IF_LOG(VERBOSE) {
       IMP_LOG(VERBOSE, restraints[i]->get_name() << " depends on ");
       for (unsigned int j=0; j< restraints[i]->model_dependencies_.size();
@@ -250,10 +227,5 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
   return rs[0]->get_model()->get_score_states(rs);
 }
 
-
-
-void Model::add_dependency_edge(ScoreState *from, ScoreState *to) {
-  extra_edges_.push_back(std::pair<Object*, Object*>(from, to));
-}
 
 IMP_END_NAMESPACE

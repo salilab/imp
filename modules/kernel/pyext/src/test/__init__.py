@@ -383,6 +383,7 @@ class TestCase(unittest.TestCase):
         else:
             fullname=name
         old_exceptions=['unprotected_evaluate', "unprotected_evaluate_if_good",
+                        "unprotected_evaluate_if_below",
                         "after_evaluate", "before_evaluate", "has_attribute",
                         "decorate_particle","particle_is_instance"]
         if name in old_exceptions:
@@ -711,14 +712,21 @@ class RefCountChecker(object):
         self.__testcase = testcase
         if IMP.build != "fast":
             self.__basenum = IMP.base.RefCounted.get_number_of_live_objects()
+            self.__names= IMP.base.get_live_object_names()
 
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
         IMP._director_objects.cleanup()
         if IMP.build != "fast":
-            t.assertEqual(IMP.base.RefCounted.get_number_of_live_objects() \
-                          - self.__basenum, expected)
+            newnames=[x for x in IMP.base.get_live_object_names() if x not in self.__names]
+            newnum=IMP.base.RefCounted.get_number_of_live_objects()-self.__basenum
+            t.assertEqual(newnum, expected,
+                          "Number of objects don't match: "\
+                           +str(newnum)\
+                            +" != "+ str(expected) +" found "+\
+                            str(newnames))
+
 
 
 class DirectorObjectChecker(object):

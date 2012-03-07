@@ -7,7 +7,8 @@ class RestraintSetTests(IMP.test.TestCase):
     def test_weights(self):
         """Test that restraints decompose ok"""
         m= IMP.Model()
-        r= IMP._ConstRestraint(1)
+        p= IMP.Particle(m)
+        r= IMP._ConstRestraint(1, [p])
         m.add_restraint(r)
         rd= r.create_decomposition()
         self.assertEqual(r.evaluate(False), rd.evaluate(False))

@@ -55,7 +55,7 @@
 IMP_BEGIN_NAMESPACE
 
 
-void Model::before_evaluate(const ScoreStatesTemp &states) const {
+void Model::before_evaluate(const ScoreStatesTemp &states) {
 #if IMP_BUILD < IMP_FAST
   base::internal::check_live_objects();
 #endif
@@ -104,7 +104,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
 }
 
 void Model::after_evaluate(const ScoreStatesTemp &states,
-                           bool calc_derivs) const {
+                           bool calc_derivs) {
   CreateLogContext clc("update_derivatives");
   {
     DerivativeAccumulator accum;
@@ -151,17 +151,8 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
 
 
 double Model::evaluate(bool calc_derivs) {
-  IMP_OBJECT_LOG;
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  Floats ret;
-  IMP_CALL_EVALUATE(ordered_score_states_,
-                    scoring_restraints_,
-                    internal::ModelWeights(),
-                    std::numeric_limits<double>::max(),
-                    calc_derivs, false, false);
-  return std::accumulate(ret.begin(), ret.end(), 0.0);
+  Floats all=evaluate(get_evaluation_cache(), calc_derivs);
+  return std::accumulate(all.begin(), all.end(), 0.0);
 }
 
 

@@ -16,39 +16,26 @@
 #include <numeric>
 
 IMP_BEGIN_NAMESPACE
+const double NO_MAX=std::numeric_limits<double>::max();
+const double BAD_SCORE=NO_MAX;
+
+
+Restraint::Restraint(Model *m, std::string name):
+    Tracked(this, m, name), weight_(1), max_(NO_MAX),
+  last_score_(BAD_SCORE)
+{
+}
+
 
 Restraint::Restraint(std::string name):
-  Object(name), weight_(1), max_(std::numeric_limits<double>::max()),
-  model_weight_(-1)
+  Tracked(name), weight_(1), max_(NO_MAX),
+  last_score_(BAD_SCORE)
 {
 }
-
-Restraint::~Restraint()
-{
-  if (model_) {
-    IMP_LOG(VERBOSE, "Removing tracked restraint " << get_name()
-            << " from model." << std::endl);
-    IMP_CHECK_OBJECT(model_);
-    model_->remove_tracked_restraint(this);
-  }
-}
-
 
 void Restraint::set_model(Model* model)
 {
-  IMP_USAGE_CHECK(!model || !model_
-                  || (model_ && model_ == model),
-                  "Model* different from already stored model "
-                  << model->get_name() << " " << model_->get_name());
-  if (model==model_) return;
-  if (model_) {
-    model_->remove_tracked_restraint(this);
-  }
-  model_=model;
-  if (model_) {
-    set_was_used(true);
-    model_->add_tracked_restraint(this);
-  }
+  Tracked::set_tracker(this, model);
 }
 
 namespace {
