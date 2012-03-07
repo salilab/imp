@@ -338,6 +338,18 @@ operator<<(std::ostream &out, const Showable &t);
 
   struct Showable {
     std::string t_;
+    template <class T>
+    explicit Showable(const T &t) {
+      std::ostringstream oss;
+      oss << t;
+      t_= oss.str();
+    }
+    template <class T, class TT>
+    Showable(const std::pair<T, TT> &p) {
+      std::ostringstream oss;
+      oss << "(" << p.first << ", " << p.second << ")";
+      t_=oss.str();
+    }
     Showable( std::string t): t_(t){}
     template <class T>
     Showable( const vector<T> &t ) {
