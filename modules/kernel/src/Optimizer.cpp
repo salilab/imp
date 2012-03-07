@@ -79,18 +79,11 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  cache_= new RestraintsScoringFunction(rs);
+  set_scoring_function(new RestraintsScoringFunction(rs));
 }
 
-double Optimizer::evaluate(bool compute_derivatives) const {
-  IMP_FUNCTION_LOG;
-  return cache_->evaluate(compute_derivatives);
-}
-
-double Optimizer::evaluate_if_below(bool compute_derivatives,
-                                   double max) const {
-  IMP_FUNCTION_LOG;
-  return cache_->evaluate_if_below(compute_derivatives, max);
+void Optimizer::set_scoring_function(ScoringFunction *sf) {
+  cache_= sf;
 }
 
 

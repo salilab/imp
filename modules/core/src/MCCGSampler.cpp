@@ -319,6 +319,7 @@ MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
   }
   if (! pms.local_opt_) {
     pms.local_opt_= new ConjugateGradients(get_model());
+    pms.local_opt_->set_scoring_function(get_scoring_function());
     pms.local_opt_->set_stop_on_good_score(true);
   }
   return pms;
@@ -349,6 +350,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   Parameters pms= fill_in_parameters();
   IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_,
                                              pms.cg_steps_));
+  mc->set_scoring_function(get_scoring_function());
   //mc->set_log_level(mll);
   mc->set_stop_on_good_score(true);
   mc->add_optimizer_states(OptimizerStatesTemp(optimizer_states_begin(),

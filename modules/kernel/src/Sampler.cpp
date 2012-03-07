@@ -16,6 +16,7 @@ IMP_BEGIN_NAMESPACE
 Sampler::Sampler(Model *m,
                  std::string nm): Object(nm),
                                   model_(m){
+  sf_= m->create_model_scoring_function();
 }
 
 ConfigurationSet *Sampler::get_sample() const {
@@ -29,7 +30,9 @@ ConfigurationSet *Sampler::get_sample() const {
   return do_sample();
 }
 
-
+void Sampler::set_scoring_function(ScoringFunction *sf) {
+  sf_=sf;
+}
 
 Sampler::~Sampler(){}
 

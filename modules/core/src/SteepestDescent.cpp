@@ -45,7 +45,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
     int cnt = 0;
 
     // evaluate the last model state
-    last_score = evaluate(true);
+    last_score = get_scoring_function()->evaluate(true);
     IMP_LOG(TERSE, "start score: " << last_score << std::endl);
 
     // store the old values
@@ -69,7 +69,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
       }
 
       // check the new model
-      new_score = evaluate(false);
+      new_score = get_scoring_function()->evaluate(false);
       IMP_LOG(TERSE, "last score: " << last_score << "  new score: "
               << new_score << "  step size: " << current_step_size
               << std::endl);

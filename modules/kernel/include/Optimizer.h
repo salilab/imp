@@ -124,32 +124,22 @@ class IMPEXPORT Optimizer: public IMP::base::Object
                   {Optimizer::set_optimizer_state_optimizer(obj, nullptr);});
   /**@}*/
 
-  /** \brief The optimizer can be told to use only a subset of the
-      restraints to compute scores.
-
-      These restraints must all be part of the model. Passing
-      an empty list will revert to using the whole model.
+  /** By default, the Optimizer uses the scoring function provided by
+      the model, but you can use another scoring function instead.
   */
-  void set_restraints(const RestraintsTemp &rs);
+  virtual void set_scoring_function(ScoringFunction *sf);
 
+#ifndef IMP_DOXYGEN
+  void set_restraints(const RestraintsTemp &rs);
+#endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
  protected:
-  //! Evaluate the score of the model (or of a subset of the restraints
-  //! if desired.
-  double evaluate(bool compute_derivatives) const;
-
-  //! Evaluate the score of the model (or of a subset of the restraints
-  //! if desired.
-  double evaluate_if_below(bool compute_derivatives,
-                          double max) const;
-
   //! override this function to do actual optimization
   virtual double do_optimize(unsigned int ns) =0;
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;
-
 
 
   /** @name Methods for getting and setting optimized attributes
