@@ -95,13 +95,13 @@ class DOMINOTests(IMP.test.TestCase):
     def test_min_filter(self):
         """Test minimum filtering"""
         m= IMP.Model()
-        ps= [IMP.Particle(m) for i in range(0,2)]
-        for i in range(0,2):
+        ps= [IMP.Particle(m) for i in range(0,3)]
+        for i in range(0,3):
             IMP.core.XYZR.setup_particle(ps[i],IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),2))
         lsc1=IMP.container.ListSingletonContainer(m)
         lsc1.add_particles([ps[0]]);
         lsc2=IMP.container.ListSingletonContainer(m)
-        lsc2.add_particles([ps[1]])
+        lsc2.add_particles([ps[1], ps[2]])
         nbl=IMP.container.CloseBipartitePairContainer(lsc1,lsc2,2)
         h=IMP.core.HarmonicLowerBound(0,1)
         sd=IMP.core.SphereDistancePairScore(h)
@@ -109,7 +109,10 @@ class DOMINOTests(IMP.test.TestCase):
         max_score=.9
         pr.set_maximum_score(max_score)
         pr.set_model(m)
-        prd=IMP.RestraintSet.get_from(pr.create_decomposition())
+        prd=pr.create_decomposition()
+        IMP.show_restraint_hierarchy(prd)
+        print prd.get_input_particles()
+        rs=IMP.RestraintSet.get_from(prd)
         #create particles state table
         pst=IMP.domino.ParticleStatesTable()
         states=IMP.domino.XYZStates([IMP.algebra.Vector3D(i,i,i) for i in range(3)])
@@ -117,7 +120,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p,states)
         max_violations=0
         rc= IMP.domino.RestraintCache(pst)
-        rc.add_restraints([rs])
+        rc.add_restraints([prd])
         ft= IMP.domino.MinimumRestraintScoreSubsetFilterTable(rs.get_restraints(),
                                                               rc,max_violations)
         samp=IMP.domino.DominoSampler(m,pst)
