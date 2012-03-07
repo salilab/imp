@@ -79,7 +79,12 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   }
   //! Return the score found in the last evaluate
   double get_last_score() const {
-    return last_score_;
+    return cache_->get_last_score();
+  }
+
+  //! Return the scoring function that is being used
+  ScoringFunction *get_scoring_function() const {
+    return cache_;
   }
 
   //! Get the model being optimized
@@ -94,7 +99,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
      does not prevent the model from being deleted when all Python
      references go away.
   */
-  void set_model(Model *m) {model_=m;}
+  void set_model(Model *m);
 
   //! Print info about the optimizer state
   /** It should end in a newline */
@@ -232,9 +237,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
-  bool has_restraints_;
-  EvaluationCache cache_;
-  mutable double last_score_;
+  Pointer<ScoringFunction> cache_;
 };
 
 
