@@ -72,7 +72,7 @@ class HDF5File;
 // work around issues with the bool_type being outputable
 inline std::ostream &operator<<(std::ostream& out,
                                 const HDF5Object &o) {
-  out << static_cast<Showable>(o);
+  out << "HDF5Object " << o.get_name();
   return out;
 }
 #endif
