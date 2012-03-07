@@ -32,7 +32,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   IMP_NAMED_TUPLE_2(Key, Keys, WeakPointer<Restraint>, r,
                     Assignment, a, );
   IMP_NAMED_TUPLE_3(RestraintData,RestraintDatas,
-                    OwnerPointer<Restraint>,
+                    OwnerPointer<ScoringFunction>,
                     sf, Subset, s,double, max,);
   IMP_NAMED_TUPLE_2(RestraintSetData, RestraintSetDatas,
                     Slice, slice, WeakPointer<Restraint>, r,);
@@ -57,10 +57,8 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         double e;
         {
           SetLogState sls(SILENT);
-          e= k.r->get_model()
-              ->evaluate_if_below(EvaluationCache(RestraintsTemp(1, k.r)),
-                                  false,
-                                  it->second.max)[0];
+          e= it->second.sf->evaluate_if_below(false,
+                                              it->second.max);
           IMP_LOG(TERSE, "Restraint " << Showable(k.r)
                   << " evaluated to " << e << " on " << k.a
                   << " vs " << it->second.max << std::endl);
@@ -102,7 +100,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(e),
                       "don't pass restraint sets here");
       if (rmap_.find(e) == rmap_.end()) {
-        rmap_[e]=RestraintData(e, s, max);
+        rmap_[e]=RestraintData(e->create_scoring_function(), s, max);
       } else {
         IMP_USAGE_CHECK(rmap_.find(e)->second.s==s,
                         "Subsets don't match on restraint update");
