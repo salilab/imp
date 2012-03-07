@@ -144,7 +144,7 @@ template <bool DERIV, bool GOOD, bool MAX, bool STATS, class RS, class RSS>
     IMP_FUNCTION_LOG;
     IMP_CHECK_OBJECT(m);
     // make sure stage is restored on an exception
-    internal::SetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
+    internal::SFSetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
       reset(&m->cur_stage_);
     IMP_CHECK_OBJECT(m);
     IMP_LOG(VERBOSE, "On restraints " << restraints
