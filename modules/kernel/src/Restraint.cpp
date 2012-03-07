@@ -106,16 +106,12 @@ namespace {
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
       SetLogState sls(WARNING);
-      Floats sin= in->get_model()->evaluate(RestraintsTemp(1, in), false);
-      Floats sout= in->get_model()->evaluate(RestraintsTemp(1, out), false);
-      // correct for it having a weight in the model
-      double tin= std::accumulate(sin.begin(), sin.end(), 0.0);
-      double tout= std::accumulate(sout.begin(), sout.end(), 0.0);
+      double tin= in->evaluate(false);
+      double tout= out->evaluate(false);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
                  << in->get_name() << "\" got "
-                 << tin << " and " << tout << " over "
-                 << sin << " vs " << sout << std::endl);
+                 << tin << " and " << tout << " over " << std::endl);
       }
     }
   }
