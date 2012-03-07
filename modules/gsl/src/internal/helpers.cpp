@@ -13,19 +13,22 @@
 IMPGSL_BEGIN_INTERNAL_NAMESPACE
 namespace {
 double gsl_f(const gsl_vector *v, void *data) {
-  const GSLOptimizer *opt=reinterpret_cast<const GSLOptimizer*>(data);
+  const GSLOptimizer* copt=reinterpret_cast<const GSLOptimizer*>(data);
+  GSLOptimizer *opt=const_cast<GSLOptimizer*>(copt);
   return opt->evaluate(v);
 }
 
 void gsl_df(const gsl_vector *v, void *data,
             gsl_vector *df) {
-  const GSLOptimizer *opt=reinterpret_cast<const GSLOptimizer*>(data);
+  const GSLOptimizer* copt=reinterpret_cast<const GSLOptimizer*>(data);
+  GSLOptimizer *opt=const_cast<GSLOptimizer*>(copt);
   opt->evaluate_derivative(v, df);
 }
 
 void gsl_fdf(const gsl_vector *v, void *data,
              double *f, gsl_vector *df) {
-  const GSLOptimizer *opt=reinterpret_cast<const GSLOptimizer*>(data);
+  const GSLOptimizer* copt=reinterpret_cast<const GSLOptimizer*>(data);
+  GSLOptimizer *opt=const_cast<GSLOptimizer*>(copt);
   *f= opt->evaluate_derivative(v, df);
 }
 }
