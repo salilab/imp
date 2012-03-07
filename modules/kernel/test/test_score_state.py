@@ -58,20 +58,6 @@ class LoggingScoreState(IMP.ScoreState):
 class TestScoreState(IMP.test.TestCase):
     """Tests for ScoreState"""
 
-    def test_score_evaluate(self):
-        """Make sure that ScoreState methods are called at score evaluation"""
-        log = []
-        model = IMP.Model()
-        r = LoggingRestraint(log)
-        model.add_restraint(r)
-        ss = LoggingScoreState(log)
-        model.add_score_state(ss)
-        model.evaluate(False)
-        self.assertEqual(log, ['update', 'restraint-score', 'after_evaluate'])
-        log[:] = []
-        model.evaluate(True)
-        self.assertEqual(log, ['update', 'restraint-deriv', 'after_evaluate'])
-
     def test_score_state_show(self):
         """Test ScoreState::show()"""
         log = []
