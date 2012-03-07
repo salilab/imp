@@ -13,6 +13,7 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
+#include <IMP/generic.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
