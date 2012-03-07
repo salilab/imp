@@ -187,8 +187,10 @@ void MonteCarlo::setup_incremental() {
   IMP_LOG(VERBOSE, "Restraints flattened into " << flattened_restraints_
           << std::endl);
   RestraintsTemp restraints=get_as<RestraintsTemp>(flattened_restraints_);
-  incremental_scores_= get_model()->evaluate(restraints,
-                                             false);
+  incremental_scores_.resize(flattened_restraints_.size());
+  for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
+    incremental_scores_[i]= flattened_restraints_[i]->evaluate(false);
+  }
   DependencyGraph dg
     = get_dependency_graph(restraints);
   compatibility::map<Restraint*, int> index;
@@ -275,7 +277,10 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
                   "Particles were moved but no restraints were found: "
                   << IMP::internal::get_particle(get_model(), moved));*/
   incremental_restraint_evals_+= curr.size();
-  Floats scores= get_model()->evaluate(curr, false);
+  Floats scores(curr.size());
+  for (unsigned int i=0; i< curr.size(); ++i) {
+    scores[i]= curr[i]->evaluate(false);
+  }
   old_incremental_scores_.resize(allr.size());
   //old_incremenal_scores_indexes_.resize(incremental_scores_.size());
   for (unsigned int i=0; i< allr.size(); ++i) {
