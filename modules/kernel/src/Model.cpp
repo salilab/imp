@@ -12,9 +12,9 @@
 #include "IMP/Restraint.h"
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
-#include "IMP/internal/restraint_evaluation.h"
 #include "IMP/RestraintSet.h"
 #include "IMP/dependency_graph.h"
+#include "IMP/internal/scoring_functions.h"
 #include "IMP/compatibility/set.h"
 #include <boost/format.hpp>
 
@@ -150,7 +150,7 @@ void Model::update() {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  internal::SetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
+  internal::SFSetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
       reset(&cur_stage_);
   before_evaluate(ordered_score_states_);
 }
