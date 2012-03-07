@@ -26,3 +26,7 @@ env.IMPModuleBuild(version='nightly-6/3/2012',
 
 # Document the IMP.test Python module
 env.Append(IMP_PYTHON_DOCS=['test'])
+
+# Make sure coverage.py is available outside of the IMP package for tests
+env.InstallAs('#/build/lib/imp_coverage.py',
+              'pyext/src/test/_compat_python/coverage.py')
