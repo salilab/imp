@@ -100,7 +100,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(e),
                       "don't pass restraint sets here");
       if (rmap_.find(e) == rmap_.end()) {
-        rmap_[e]=RestraintData(e->create_scoring_function(), s, max);
+        rmap_[e]=RestraintData(e->create_scoring_function(1.0, max), s, max);
       } else {
         IMP_USAGE_CHECK(rmap_.find(e)->second.s==s,
                         "Subsets don't match on restraint update");
