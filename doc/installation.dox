@@ -215,8 +215,8 @@ using the following argument:
 
 \subsubsection HDF5 HDF5
 \anchor HDF5
-Much IO support requires \external{http://www.hdf5.org, HDF5}.
-It is available as a prebuilt package on all supported platforms.
+Much IO support requires \external{http://www.hdf5.org, HDF5}, at least version
+1.8. It is available as a prebuilt package on all supported platforms.
 
 \subsubsection CGAL CGAL
 \anchor CGAL
