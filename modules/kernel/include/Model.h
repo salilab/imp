@@ -173,7 +173,9 @@ public:
 
   void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
   void reset_dependencies();
-  ScoreStatesTemp get_score_states(const RestraintsTemp &rs);
+  ScoreStatesTemp get_score_states(const RestraintsTemp &rs,
+                                   const ScoreStatesTemp &extra
+                                   = ScoreStatesTemp());
   internal::Stage get_stage() const {
     return cur_stage_;
   }
