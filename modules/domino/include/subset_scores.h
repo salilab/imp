@@ -157,6 +157,8 @@ public:
       given the exclusions.*/
   RestraintsTemp get_restraints(const Subset&s,
                                 const Subsets&exclusions) const;
+  /** For testing */
+  RestraintsTemp get_restraints() const;
   /** Return the slice for that restraint given the subset. */
   Slice get_slice(Restraint *r, const Subset& s) const;
 

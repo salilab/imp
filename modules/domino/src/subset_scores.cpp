@@ -173,6 +173,15 @@ RestraintsTemp RestraintCache::get_restraints(const Subset&s,
   }
   return ret;
 }
+RestraintsTemp RestraintCache::get_restraints() const {
+  RestraintsTemp ret;
+  for (KnownRestraints::const_iterator it= known_restraints_.begin();
+       it != known_restraints_.end(); ++it) {
+    ret.push_back(it->first);
+  }
+  return ret;
+}
+
 
 Slice RestraintCache::get_slice(Restraint *r, const Subset& s) const {
   Subset rs= known_restraints_.find(r)->second;
