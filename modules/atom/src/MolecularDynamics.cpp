@@ -61,7 +61,7 @@ bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const {
 void MolecularDynamics::setup(const ParticleIndexes &ps)
 {
   // Get starting score and derivatives, for first dynamics step velocities
-  evaluate(true);
+  get_scoring_function()->evaluate(true);
 
   setup_degrees_of_freedom(ps);
 }
@@ -92,7 +92,7 @@ double MolecularDynamics::do_step(const ParticleIndexes &ps,
   propagate_coordinates(ps, ts);
 
   // Get derivatives at t+(delta t)
-  evaluate(true);
+  get_scoring_function()->evaluate(true);
 
   // Get velocities at t+(delta t)
   propagate_velocities(ps, ts);

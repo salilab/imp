@@ -32,7 +32,7 @@ double Simulator::simulate(double time) {
     current_time_+= last_time_step_;
     update_states();
   }
-  return Optimizer::evaluate(false);
+  return Optimizer::get_scoring_function()->evaluate(false);
 }
 
 double Simulator::get_kt() const {

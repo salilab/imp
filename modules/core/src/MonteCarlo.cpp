@@ -149,7 +149,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     if (get_use_incremental_evaluate()) {
       teardown_incremental();
     }
-    return evaluate(false);
+    return get_scoring_function()->evaluate(false);
   } else {
     // ick
     if (get_use_incremental_evaluate()) {

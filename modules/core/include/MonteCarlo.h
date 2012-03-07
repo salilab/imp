@@ -200,9 +200,10 @@ public:
     } else {
       if (get_maximum_difference()
           < std::numeric_limits<double>::max()) {
-        return evaluate_if_below(false, last_energy_+max_difference_);
+        return get_scoring_function()
+          ->evaluate_if_below(false, last_energy_+max_difference_);
       } else {
-        return evaluate(false);
+        return get_scoring_function()->evaluate(false);
       }
     }
   }

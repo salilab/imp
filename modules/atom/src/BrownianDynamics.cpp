@@ -123,7 +123,7 @@ void BrownianDynamics::setup(const ParticleIndexes& ips) {
       /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
     double ms=0;
     double mf=0;
-    evaluate(true);
+    get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
       double c= strip_units(get_sigma(get_model(),
                                       ips[i],
@@ -249,7 +249,7 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
                unit::Femtojoule>::type dtikt
     =dtfs
     /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
-  evaluate(true);
+  get_scoring_function()->evaluate(true);
   unsigned int numrb=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {

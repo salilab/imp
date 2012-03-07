@@ -28,10 +28,16 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Sampler: public IMP::base::Object
 {
   OwnerPointer<Model> model_;
+  OwnerPointer<ScoringFunction> sf_;
  public:
   Sampler(Model *m, std::string name="Sampler %1%");
 
   ConfigurationSet *get_sample() const;
+
+  ScoringFunction *get_scoring_function() const {
+    return sf_;
+  }
+  void set_scoring_function(ScoringFunction *sf);
 
   Model *get_model() const {return model_;}
 
