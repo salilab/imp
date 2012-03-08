@@ -173,12 +173,6 @@ ScoringFunction* RestraintSet::create_scoring_function(double weight,
                                       max);
 }
 
-RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,
-                                    double initial_weight) {
-  return get_restraints_and_weights(rs.begin(), rs.end(), initial_weight);
-}
-
-
 RestraintsTemp get_restraints(const RestraintsTemp &rs) {
   return get_restraints(rs.begin(), rs.end());
 }
