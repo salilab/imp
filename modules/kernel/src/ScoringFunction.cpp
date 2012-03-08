@@ -59,32 +59,6 @@ const ScoreStatesTemp& ScoringFunction::get_score_states() {
   ensure_dependencies();
   return ss_;
 }
-void ScoringFunction::ensure_dependencies() {
-  if (!get_model()->get_has_dependencies()) {
-    get_model()->compute_dependencies();
-  }
-}
-double ScoringFunction::evaluate_if_good(bool derivatives) {
-  set_was_used(true);
-  ensure_dependencies();
-  boost::tie(last_score_, last_was_good_)
-      = do_evaluate_if_good(derivatives, ss_);
-  return last_score_;
-}
-double ScoringFunction::evaluate(bool derivatives) {
-  set_was_used(true);
-  ensure_dependencies();
-  boost::tie(last_score_, last_was_good_)
-      = do_evaluate(derivatives, ss_);
-  return last_score_;
-}
-double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
-  set_was_used(true);
-  ensure_dependencies();
-  boost::tie(last_score_, last_was_good_)
-      = do_evaluate_if_below(derivatives, max, ss_);
-  return last_score_;
-}
 
 
 namespace {

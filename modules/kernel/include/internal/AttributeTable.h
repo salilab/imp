@@ -11,7 +11,8 @@
 #include "../base_types.h"
 #include "../utility.h"
 #include <IMP/base/log.h>
-#include "../Pointer.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/Pointer.h>
 #include "../particle_index.h"
 #include <boost/dynamic_bitset.hpp>
 
@@ -102,10 +103,11 @@ struct ParticlesAttributeTableTraits:
 
 struct ObjectAttributeTableTraits
 {
-  typedef Object* Value;
-  typedef Object* PassValue;
+  typedef base::Object* Value;
+  typedef base::Object* PassValue;
   typedef ObjectKey Key;
-  typedef base::IndexVector<ParticleIndexTag, Pointer<Object> > Container;
+  typedef base::IndexVector<ParticleIndexTag,
+                            base::Pointer<base::Object> > Container;
   static Value get_invalid() {
     return nullptr;
   }
@@ -122,10 +124,10 @@ struct ObjectAttributeTableTraits
 
 struct ObjectsAttributeTableTraits
 {
-  typedef Objects Value;
-  typedef const Objects& PassValue;
+  typedef base::Objects Value;
+  typedef const base::Objects& PassValue;
   typedef ObjectsKey Key;
-  typedef base::IndexVector<ParticleIndexTag, Objects> Container;
+  typedef base::IndexVector<ParticleIndexTag, base::Objects> Container;
   static Value get_invalid() {
     return Value();
   }

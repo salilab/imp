@@ -39,13 +39,13 @@ IMP_BEGIN_NAMESPACE
 
   //#pragma GCC diagnostic warn "-Wunused-parameter"
 namespace {
-  compatibility::map<Object*, int> get_index(const DependencyGraph &dg) {
-    compatibility::map<Object*, int> ret;
+  compatibility::map<base::Object*, int> get_index(const DependencyGraph &dg) {
+    compatibility::map<base::Object*, int> ret;
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (std::pair<MDGTraits::vertex_iterator,
            MDGTraits::vertex_iterator> be= boost::vertices(dg);
          be.first != be.second; ++be.first) {
-      Object *o= om[*be.first];
+      base::Object *o= om[*be.first];
       ret[o]= *be.first;
     }
     return ret;
@@ -53,19 +53,19 @@ namespace {
 }
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
-  const compatibility::map<Object*, int> &ssindex_;
+  const compatibility::map<base::Object*, int> &ssindex_;
   MDGConstVertexMap vm_;
 public:
   ScoreDependencies(Ints &bs,
-                    const compatibility::map<Object*, int> &ssindex,
+                    const compatibility::map<base::Object*, int> &ssindex,
                     MDGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
                                           vm_(vm) {}
   template <class G>
   void discover_vertex(MDGTraits::vertex_descriptor u,
                        const G&) {
-    Object *o= vm_[u];
+    base::Object *o= vm_[u];
     //std::cout << "visiting " << o->get_name() << std::endl;
-    compatibility::map<Object*, int>::const_iterator it= ssindex_.find(o);
+    compatibility::map<base::Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
       //std::cout << "setting " << it->second << std::endl;
       bs_.push_back(it->second);
@@ -81,11 +81,11 @@ namespace {
   compute_restraint_dependencies(const DependencyGraph &dg,
                                  const RestraintsTemp &ordered_restraints,
                                  const ScoreStatesTemp &ordered_score_states) {
-    compatibility::map<Object *, int> ssindex;
+    compatibility::map<base::Object *, int> ssindex;
     for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
       ssindex[ordered_score_states[i]]=i;
     }
-    compatibility::map<Object*, int> index= get_index(dg);
+    compatibility::map<base::Object*, int> index= get_index(dg);
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
       // make sure it is in the loop so it gets reset
@@ -93,9 +93,9 @@ namespace {
       /*std::cout << "Finding dependencies for "
         << ordered_restraints[i]->get_name()
         << std::endl;*/
-      IMP_USAGE_CHECK(static_cast<Object*>(ordered_restraints[i])
+      IMP_USAGE_CHECK(static_cast<base::Object*>(ordered_restraints[i])
                       ==
-     om[index.find(static_cast<Object*>(ordered_restraints[i]))->second],
+     om[index.find(static_cast<base::Object*>(ordered_restraints[i]))->second],
                       "Restraints and vertices don't match");
       Ints cur;
       boost::depth_first_visit(boost::make_reverse_graph(dg),

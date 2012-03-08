@@ -16,8 +16,8 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 struct IMPEXPORT AncestorException{
-  Object *o;
-  AncestorException(Object *oi): o(oi){};
+  base::Object *o;
+  AncestorException(base::Object *oi): o(oi){};
   virtual ~AncestorException();
 };
 
@@ -34,7 +34,7 @@ public:
                                   vm_(boost::get(boost::vertex_name, g)){}
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph& ) {
-    Object *o= vm_[u];
+    base::Object *o= vm_[u];
     //std::cout << "Visiting " << o->get_name() << std::endl;
     if (pst_.find(dynamic_cast<Particle*>(o)) != pst_.end()) {
       throw AncestorException(o);

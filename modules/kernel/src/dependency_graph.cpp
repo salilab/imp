@@ -50,7 +50,7 @@ public:
     }
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const Graph&) {
-    Object *o= vm_[u];
+    base::Object *o= vm_[u];
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
     if (p) {
@@ -72,7 +72,7 @@ ResultType get_dependent(Particle *p,
   DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
   std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
     = boost::vertices(dg);
-  IMP::compatibility::set<Object*> block(all.begin(), all.end());
+  IMP::compatibility::set<base::Object*> block(all.begin(), all.end());
   boost::vector_property_map<int> color(boost::num_vertices(dg));
   int start=-1;
   for (; be.first != be.second; ++be.first) {
@@ -129,7 +129,7 @@ RestraintsTemp get_dependent_restraints(Particle *p,
 }
 
 
-typedef compatibility::map<Object*, DGVertex> DGIndex;
+typedef compatibility::map<base::Object*, DGVertex> DGIndex;
 typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
 DGConstVertexMap;
 
@@ -174,7 +174,7 @@ namespace {
 
   DGTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
                                          DGIndex &dgi,
-                                         Object *o) {
+                                         base::Object *o) {
     DGIndex::const_iterator it=dgi.find(o);
     if (it==dgi.end()) {
       boost::property_map<DependencyGraph, boost::vertex_name_t>::type vm
@@ -207,7 +207,7 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      Object *o= *c;
+      base::Object *o= *c;
       if (dynamic_cast<RestraintSet*>(o)) {
         RestraintSet *rs=dynamic_cast<RestraintSet*>(o);
         add_out_edges(rv, rs->restraints_begin(),
@@ -297,7 +297,7 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
-  vector<std::pair<Object*, Object*> > extra;
+  vector<std::pair<base::Object*, base::Object*> > extra;
   for (unsigned int i=0; i< extra.size(); ++i) {
     int va= index[extra[i].first];
     int vb= index[extra[i].second];
@@ -328,7 +328,7 @@ get_dependency_graph(const RestraintsTemp &irs) {
     delta=false;
     IMP_LOG(TERSE, "Pruning unneeded nodes." << std::endl);
     for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
-      Object *o= vm[i];
+      base::Object *o= vm[i];
       if (get_range_is_empty(boost::out_edges(i, dg))
           && !dynamic_cast<Restraint*>(o)) {
         boost::clear_vertex(i, dg);
@@ -509,7 +509,7 @@ namespace {
                 ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
-      Object *o= om[sorted[i]];
+      base::Object *o= om[sorted[i]];
       ScoreState *s=dynamic_cast<ScoreState*>(o);
       if (s) {
         out.push_back(s);

@@ -233,7 +233,7 @@ void Model::add_data(ModelKey mk, Object *o) {
                                    model_data_.size()));
   model_data_[mk.get_index()]=o;
 }
-Object *Model::get_data(ModelKey mk) const {
+base::Object *Model::get_data(ModelKey mk) const {
   return model_data_[mk.get_index()].get();
 }
 void Model::remove_data(ModelKey mk) {
@@ -247,6 +247,14 @@ bool Model::get_has_data(ModelKey mk) const {
   }
 }
 
+Model::ParticleIterator Model::particles_begin() const {
+  return ParticleIterator(NotNull(), particle_index_.begin(),
+                          particle_index_.end());
+}
+Model::ParticleIterator Model::particles_end() const {
+  return ParticleIterator(NotNull(), particle_index_.end(),
+                          particle_index_.end());
+}
 
 
 IMP_END_NAMESPACE

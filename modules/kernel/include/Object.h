@@ -18,13 +18,6 @@
 #include <IMP/base/VectorOfRefCounted.h>
 
 IMP_BEGIN_NAMESPACE
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-using IMP::base::Object;
-//using IMP::base::Objects;
-using IMP::base::object_cast;
-using IMP::base::Objects;
-using IMP::base::ObjectsTemp;
-#endif
 
 IMP_END_NAMESPACE
 
