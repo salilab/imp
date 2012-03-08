@@ -326,11 +326,11 @@ public:                                                                 \
 
     All of the IMP_OBJECT()/IMP_RESTRAINT()-style macros define the
     following methods:
-    - IMP::Object::get_version_info()
+    - IMP::base::Object::get_version_info()
     - an empty virtual destructor
 
     In addition, they all declare:
-    - IMP::Object::do_show()
+    - IMP::base::Object::do_show()
 
     For all macros, the Name parameter is the name of the class being
     implemented and the version_info parameter is the IMP::VersionInfo
@@ -548,7 +548,7 @@ protected:                                      \
     definitions for the methods:
     - IMP::SingletonModifier::get_input_particles()
     - IMP::SingletonModifier::get_output_particles()
-    - IMP::Object::do_show()
+    - IMP::base::Object::do_show()
     for a modifier which updates the refined particles based on the one
     they are refined from.
 

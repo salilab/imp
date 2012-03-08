@@ -818,16 +818,16 @@ static Name* get_from(IMP::base::Object *o) {                           \
 }                                                                       \
 IMP_IMPLEMENT_INLINE(virtual void do_show(std::ostream &out) const,     \
                       show);                                            \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();      \
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
                                   destructor;)
 
 
 //! Define the basic things needed by any Object
 /** This defines
-    - IMP::Object::get_version_info()
+    - IMP::base::Object::get_version_info()
     - a private destructor
     and declares
-    - IMP::Object::do_show()
+    - IMP::base::Object::do_show()
 */
 #define IMP_OBJECT(Name)                                                \
   public:                                                               \
@@ -843,7 +843,7 @@ static Name* get_from(IMP::base::Object *o) {                           \
   return IMP::base::object_cast<Name>(o);                               \
   }                                                                     \
 IMP_IMPLEMENT(virtual void do_show(std::ostream &out) const);           \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();)
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 
 
 
@@ -867,7 +867,7 @@ private:                                                                \
 virtual void do_show(std::ostream & =std::cout) const {                 \
 }                                                                       \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
-                                   Object::_on_destruction();)
+                                  IMP::base::Object::_on_destruction();)
 
 
 #ifdef IMP_DOXYGEN

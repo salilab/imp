@@ -17,7 +17,7 @@
     ParticlesTemp cur=particles;                                \
     ContainersTemp ccur=containers;                             \
     for (unsigned int i=0; i<ccur.size(); ++i) {                \
-      Object *po= ccur[i];                                      \
+      base::Object *po= ccur[i];                                \
       Particle *p= dynamic_cast<Particle*>(po);                 \
       if (p) cur.push_back(p);                                  \
     }                                                           \
