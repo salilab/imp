@@ -95,17 +95,10 @@ class IMPEXPORT RestraintSet : public Restraint
 /** \name Gathering restraints
     It is sometimes useful to extract all the non-RestraintSet restraints
     from a hierarchy involving RestraintSets mixed with Restraints.
-    @{
 */
-typedef std::pair<RestraintsTemp, Floats> RestraintsAndWeights;
-
-IMPEXPORT RestraintsAndWeights
-get_restraints_and_weights(const RestraintsTemp &rs,
-                           double initial_weight=1);
 
 IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-/** @} */
 
 //! Print the hierarchy of restraints
 IMPEXPORT void show_restraint_hierarchy(Restraint *rs,
