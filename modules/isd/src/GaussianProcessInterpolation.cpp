@@ -316,6 +316,12 @@ VectorXd GaussianProcessInterpolation::get_m_derivative(unsigned particle) const
     return mean_function_->get_derivative_vector(particle, x_);
 }
 
+VectorXd GaussianProcessInterpolation::get_m_second_derivative(
+        unsigned p1, unsigned p2) const
+{
+    return mean_function_->get_second_derivative_vector(p1, p2, x_);
+}
+
 void GaussianProcessInterpolation::add_to_m_particle_derivative(
         unsigned particle, double value, DerivativeAccumulator &accum)
 {
@@ -372,6 +378,20 @@ GaussianProcessInterpolation::get_Omega_derivative(unsigned particle) const
         return MatrixXd(get_S())/n_obs_;
     } else {
         return covariance_function_->get_derivative_matrix(particle-1, x_);
+    }
+}
+
+MatrixXd GaussianProcessInterpolation::get_Omega_second_derivative(
+        unsigned p1, unsigned p2) const
+{
+    //Omega = W + sigma*S/n_obs
+    if (p1 == 0 || p2 == 0)
+    {
+        //sigma
+        return MatrixXd::Zero(M_,M_);
+    } else {
+        return covariance_function_->get_second_derivative_matrix(
+                p1-1, p2-1, x_);
     }
 }
 
@@ -471,7 +491,7 @@ void GaussianProcessInterpolation::add_to_Omega_particle_derivative(
     int n_mean = mean_function_->get_number_of_optimized_particles();
     //
     // the Hessian is assumed to be symmetric because all functions are
-    // differentiable so d2f/dp1dp2=d2f/dp2dp1
+    // differentiable almost everywhere so d2f/dp1dp2=d2f/dp2dp1
     // further simplifications arise from the fact that particles are assigned
     // to only one function so that second derivatives need to be computed only
     // when p1 and p2 belong to the same function.

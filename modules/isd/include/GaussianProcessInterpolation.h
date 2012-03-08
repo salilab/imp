@@ -144,6 +144,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   VectorXd get_m();
   //returns dm/dparticle
   VectorXd get_m_derivative(unsigned particle) const;
+  //returns d2m/(dparticle_1 dparticle_2)
+  VectorXd get_m_second_derivative(unsigned particle1, unsigned particle2)
+      const;
   // returns updated prior covariance vector
   void add_to_m_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
@@ -160,6 +163,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   MatrixXd get_Omega();
   //returns dOmega/dparticle
   MatrixXd get_Omega_derivative(unsigned particle) const;
+  //returns d2Omega/(dparticle_1 dparticle_2)
+  MatrixXd get_Omega_second_derivative(unsigned particle1, unsigned particle2)
+      const;
   // returns updated prior covariance vector
   void add_to_Omega_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
