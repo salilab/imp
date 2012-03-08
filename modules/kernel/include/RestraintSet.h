@@ -40,11 +40,6 @@ inline RestraintsTemp get_restraints(It b, It e) {
   ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
   return ret;
 }
-#endif
-
-//! Print the hierarchy of restraints
-IMPEXPORT void show_restraint_hierarchy(Restraint *rs,
-                                     std::ostream &out=std::cout);
 
 IMP_END_NAMESPACE
 
