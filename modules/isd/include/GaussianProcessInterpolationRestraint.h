@@ -79,6 +79,9 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
 
         double get_minus_exponent() const;
 
+        //get hessian of the minus log likelihood
+        Eigen::MatrixXd get_hessian() const;
+
         IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
 
         //needed to register the score state
