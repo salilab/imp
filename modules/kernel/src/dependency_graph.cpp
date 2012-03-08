@@ -8,6 +8,7 @@
 
 #include "IMP/dependency_graph.h"
 #include "IMP/Model.h"
+#include "IMP/RestraintSet.h"
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
