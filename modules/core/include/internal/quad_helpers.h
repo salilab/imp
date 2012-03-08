@@ -12,6 +12,7 @@
 #define IMPCORE_INTERNAL_QUAD_HELPERS_H
 
 #include "../core_config.h"
+#include <IMP/log.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/QuadScore.h>

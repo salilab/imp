@@ -12,6 +12,7 @@
 #define IMPCORE_INTERNAL_PAIR_HELPERS_H
 
 #include "../core_config.h"
+#include <IMP/log.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>

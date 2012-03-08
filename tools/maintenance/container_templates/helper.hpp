@@ -12,6 +12,7 @@
 #define IMPCORE_INTERNAL_HEADERNAME_HELPERS_H
 
 #include "../core_config.h"
+#include <IMP/log.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEScore.h>

@@ -12,6 +12,7 @@
 #define IMPCORE_INTERNAL_SINGLETON_HELPERS_H
 
 #include "../core_config.h"
+#include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonScore.h>
