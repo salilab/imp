@@ -14,6 +14,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/Particle.h>
 #include <IMP/ParticleTuple.h>
+#include <IMP/generic.h>
 
 IMPMODELLER_BEGIN_NAMESPACE
 
