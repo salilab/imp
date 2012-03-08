@@ -9,8 +9,8 @@
 #define IMPKERNEL_DEPENDENCY_GRAPH_H
 
 #include "kernel_config.h"
-#include "Model.h"
 #include "Restraint.h"
+#include "ScoreState.h"
 #include <boost/graph/adjacency_list.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -47,6 +47,8 @@ get_dependency_graph(const RestraintsTemp &rs);
 IMPEXPORT DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs);
+
+class Model;
 
 /** \name Pruned dependency graphs
 
