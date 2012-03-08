@@ -3,6 +3,7 @@
  */
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
+#include <IMP/log.h>
 int main(int, char*[]) {
   IMP::set_log_level(IMP::MEMORY);
   IMP_NEW(IMP::Model, m, ());
