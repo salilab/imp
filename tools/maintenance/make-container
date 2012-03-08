@@ -51,6 +51,9 @@ def make_one(params, test=True):
                path+"tools/maintenance/container_templates/container.hpp"),
               ("modules/kernel/src/"+multi + "Container.cpp",
                path+"/tools/maintenance/container_templates/container.cc"),
+               ("modules/kernel/include/declare_"+multi + "Container.h",
+               path+"tools/maintenance/container_templates/declare_container.hpp"),
+
               ("modules/core/include/internal/"+multi.lower() + "_helpers.h",
                path+"tools/maintenance/container_templates/helper.hpp"),
               ("modules/core/src/internal/"+multi.lower() + "_helpers.cpp",

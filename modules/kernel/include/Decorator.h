@@ -121,7 +121,7 @@ protected:
                           pi_(p->get_index()){}
   Decorator() : pi_(-1)
   {}
-  int compare(Object *o) const {
+  int compare(base::Object *o) const {
     if (o < get_particle()) return -1;
     else if (o > get_particle()) return 1;
     else return 0;
@@ -134,41 +134,41 @@ public:
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN
-  bool __eq__(Object* o) const {
+  bool __eq__(base::Object* o) const {
     return operator==(o);
   }
-  bool __ne__(Object* o) const {
+  bool __ne__(base::Object* o) const {
     return operator!=(o);
   }
-  bool __lt__(Object* o) const {
+  bool __lt__(base::Object* o) const {
     return operator<(o);
   }
-  bool __gt__(Object* o) const {
+  bool __gt__(base::Object* o) const {
     return operator>(o);
   }
-  bool __ge__(Object* o) const {
+  bool __ge__(base::Object* o) const {
     return operator>=(o);
   }
-  bool __le__(Object* o) const {
+  bool __le__(base::Object* o) const {
     return operator<=(o);
   }
 #ifndef SWIG
-  bool operator==(Object* o) const {
+  bool operator==(base::Object* o) const {
     return (compare(o) == 0);
   }
-  bool operator!=(Object* o) const {
+  bool operator!=(base::Object* o) const {
     return (compare(o) != 0);
   }
-  bool operator<(Object* o) const {
+  bool operator<(base::Object* o) const {
     return (compare(o) <0);
   }
-  bool operator>(Object* o) const {
+  bool operator>(base::Object* o) const {
     return (compare(o) > 0);
   }
-  bool operator>=(Object* o) const {
+  bool operator>=(base::Object* o) const {
     return !(compare(o) < 0);
   }
-  bool operator<=(Object* o) const {
+  bool operator<=(base::Object* o) const {
     return !(compare(o) > 0);
   }
 
