@@ -152,6 +152,18 @@ private:
   // derivative wrt scalar factor
   double evaluate_derivative_factor() const;
 
+  /* second derivative wrt FM and FM */
+  MatrixXd evaluate_second_derivative_FM_FM() const;
+
+  /* second derivative wrt FM(l) and Sigma
+   * row and column indices in the matrix returned are for Sigma
+   */
+  MatrixXd evaluate_second_derivative_FM_Sigma(unsigned l) const;
+
+  /* second derivative wrt Sigma and Sigma(k,l) */
+  MatrixXd evaluate_second_derivative_Sigma_Sigma(unsigned k, unsigned l) const;
+
+
   /* change of parameters */
   void set_FX(const MatrixXd& f);
   MatrixXd get_FX() const;
