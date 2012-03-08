@@ -2,14 +2,16 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#include <IMP.h>
+#include <IMP/base.h>
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 
 using namespace IMP;
+using namespace IMP::base;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
+using namespace IMP::compatibility;
 
 namespace {
 template <class KNN>
