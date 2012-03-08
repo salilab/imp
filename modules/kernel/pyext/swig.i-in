@@ -212,8 +212,6 @@ namespace IMP {
 
 %inline %{
 namespace IMP {
-template <class T, class P>
-class VectorOfRefCounted;
 template <class T, class P, class E>
 class Decorators;
 template <unsigned int D>
@@ -252,7 +250,6 @@ class ParticleQuadsTemp;
 
 %include "IMP/utility.h"
 %include "IMP/deprecation.h"
-//%include "IMP/VectorOfRefCounted.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/container_base.h"
 
