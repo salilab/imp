@@ -49,6 +49,8 @@ IMP_DECLARE_KEY_TYPE(ModelKey, 8);
 
 class Restraint;
 IMP_OBJECTS(Restraint,Restraints);
+class Model;
+IMP_OBJECTS(Model,Models);
 class RestraintSet;
 IMP_OBJECTS(RestraintSet,RestraintSets);
 class ScoreState;
@@ -68,7 +70,7 @@ IMP_OBJECTS(SingletonContainer,SingletonContainers);
 class PairContainer;
 IMP_OBJECTS(PairContainer,PairContainers);
 class TripletContainer;
-IMP_OBJECTS(TripletContainer,TripletnContainers);
+IMP_OBJECTS(TripletContainer,TripletContainers);
 class QuadContainer;
 IMP_OBJECTS(QuadContainer,QuadContainers);
 
@@ -77,7 +79,7 @@ IMP_OBJECTS(SingletonScore,SingletonScores);
 class PairScore;
 IMP_OBJECTS(PairScore,PairScores);
 class TripletScore;
-IMP_OBJECTS(TripletScore,TripletnScores);
+IMP_OBJECTS(TripletScore,TripletScores);
 class QuadScore;
 IMP_OBJECTS(QuadScore,QuadScores);
 
@@ -86,7 +88,7 @@ IMP_OBJECTS(SingletonPredicate,SingletonPredicates);
 class PairPredicate;
 IMP_OBJECTS(PairPredicate,PairPredicates);
 class TripletPredicate;
-IMP_OBJECTS(TripletPredicate,TripletnPredicates);
+IMP_OBJECTS(TripletPredicate,TripletPredicates);
 class QuadPredicate;
 IMP_OBJECTS(QuadPredicate,QuadPredicates);
 
@@ -95,7 +97,7 @@ IMP_OBJECTS(SingletonModifier,SingletonModifiers);
 class PairModifier;
 IMP_OBJECTS(PairModifier,PairModifiers);
 class TripletModifier;
-IMP_OBJECTS(TripletModifier,TripletnModifiers);
+IMP_OBJECTS(TripletModifier,TripletModifiers);
 class QuadModifier;
 IMP_OBJECTS(QuadModifier,QuadModifiers);
 

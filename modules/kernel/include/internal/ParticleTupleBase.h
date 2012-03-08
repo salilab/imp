@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_INTERNAL_PARTICLE_TUPLE_BASE_H
 #define IMPKERNEL_INTERNAL_PARTICLE_TUPLE_BASE_H
 
-#include "../Particle.h"
+#include "../declare_Particle.h"
 #include <boost/array.hpp>
 
 IMP_BEGIN_INTERNAL_NAMESPACE

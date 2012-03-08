@@ -85,11 +85,6 @@ void Model::cleanup()
   }
 }
 
-void Model::set_maximum_score(double d) {
-  RestraintSet::set_maximum_score(d);
-}
-
-
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);
@@ -100,6 +95,22 @@ void Model::set_score_state_model(ScoreState *ss, Model *model) {
     IMP_CHECK_OBJECT(model);
   }
   ss->set_model(model);
+}
+ RestraintSet *Model::get_root_restraint_set() {
+  return this;
+}
+
+ double Model::get_maximum_score(Restraint *r) const {
+  return r->get_maximum_score();
+}
+ void Model::set_maximum_score(Restraint *r, double s) {
+  r->set_maximum_score(s);
+}
+ void Model::set_maximum_score(double s) {
+  return RestraintSet::set_maximum_score(s);
+}
+ double Model::get_maximum_score() const {
+  return RestraintSet::get_maximum_score();
 }
 
 

@@ -123,7 +123,6 @@ IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
 IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
-//IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
 
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(IMP::Particle, IMP::ParticlesTemp, IMP::ParticlesTemps, const&);
@@ -258,12 +257,12 @@ namespace IMP {
   class ScoreStates;
 }
 
-%include "IMP/Restraint.h"
-%include "IMP/RestraintSet.h"
+%include "IMP/declare_Restraint.h"
+%include "IMP/declare_RestraintSet.h"
 %include "IMP/ScoreState.h"
 %include "IMP_kernel_particle.i"
-%include "IMP/ScoringFunction.h"
-%include "IMP/Model.h"
+%include "IMP/declare_ScoringFunction.h"
+%include "IMP/declare_Model.h"
 %include "IMP/Decorator.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/Constraint.h"
@@ -278,25 +277,25 @@ namespace IMP {
 %include "IMP/PairModifier.h"
 %include "IMP/PairScore.h"
 %include "IMP/PairPredicate.h"
-%include "IMP/PairContainer.h"
+%include "IMP/declare_PairContainer.h"
 %include "IMP/QuadDerivativeModifier.h"
 %include "IMP/QuadFilter.h"
 %include "IMP/QuadModifier.h"
 %include "IMP/QuadScore.h"
 %include "IMP/QuadPredicate.h"
-%include "IMP/QuadContainer.h"
+%include "IMP/declare_QuadContainer.h"
 %include "IMP/SingletonDerivativeModifier.h"
 %include "IMP/SingletonFilter.h"
 %include "IMP/SingletonModifier.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/SingletonPredicate.h"
-%include "IMP/SingletonContainer.h"
+%include "IMP/declare_SingletonContainer.h"
 %include "IMP/TripletDerivativeModifier.h"
 %include "IMP/TripletFilter.h"
 %include "IMP/TripletModifier.h"
 %include "IMP/TripletScore.h"
 %include "IMP/TripletPredicate.h"
-%include "IMP/TripletContainer.h"
+%include "IMP/declare_TripletContainer.h"
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
@@ -325,6 +324,7 @@ show_altgraph=IMP.base.show_altgraph
 show_graphviz=IMP.base.show_graphviz
 SetLogState= IMP.base.SetLogState
 SetLogTarget= IMP.base.SetLogTarget
+Object= IMP.base.Object
 NONE= IMP.base.NONE
 USAGE= IMP.base.USAGE
 USAGE_AND_INTERNAL= IMP.base.USAGE_AND_INTERNAL
@@ -334,7 +334,6 @@ VERBOSE= IMP.base.VERBOSE
 WARNING= IMP.base.WARNING
 PROGRESS= IMP.base.PROGRESS
 MEMORY= IMP.base.MEMORY
-Object= IMP.base.Object
 create_temporary_file= IMP.base.create_temporary_file
 create_temporary_file_name= IMP.base.create_temporary_file_name
 FailureHandler= IMP.base.FailureHandler

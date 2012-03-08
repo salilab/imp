@@ -15,7 +15,7 @@
 #include "VersionInfo.h"
 #include "utility.h"
 #include "container_base.h"
-
+#include "macros.h"
 #include <iostream>
 
 IMP_BEGIN_NAMESPACE
