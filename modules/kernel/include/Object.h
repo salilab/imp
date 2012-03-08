@@ -15,6 +15,7 @@
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/SetLogState.h>
 #include <IMP/base/SetCheckState.h>
+#include <IMP/base/VectorOfRefCounted.h>
 
 IMP_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -26,8 +27,5 @@ using IMP::base::ObjectsTemp;
 #endif
 
 IMP_END_NAMESPACE
-
-
-#include "VectorOfRefCounted.h"
 
 #endif  /* IMPKERNEL_OBJECT_H */
