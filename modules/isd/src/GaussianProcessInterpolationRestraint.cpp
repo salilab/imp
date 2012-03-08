@@ -125,6 +125,135 @@ double GaussianProcessInterpolationRestraint::get_minus_exponent() const
 }
 
 
+MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
+{
+    //get how many and which particles are optimized
+    unsigned mnum = gpi_->get_number_of_m_particles();
+    std::vector<bool> mopt;
+    unsigned mnum_opt = 0;
+    for (unsigned i=0; i<mnum; i++)
+    {
+        mopt.push_back(gpi_->get_m_particle_is_optimized(i));
+        if (mopt.back()) mnum_opt++;
+    }
+    unsigned Onum = gpi_->get_number_of_Omega_particles();
+    std::vector<bool> Oopt;
+    unsigned Onum_opt = 0;
+    for (unsigned i=0; i<mnum; i++)
+    {
+        Oopt.push_back(gpi_->get_Omega_particle_is_optimized(i));
+        if (Oopt.back()) Onum_opt++;
+    }
+    unsigned num_opt = mnum_opt + Onum_opt;
+    // Only upper corner of hessian will be computed
+    MatrixXd Hessian(MatrixXd::Zero(num_opt,num_opt));
+
+    //d2E/(dm_k dm_l) * dm^k/dTheta_i dm^l/dTheta_j
+    MatrixXd dmdm = mvn_->evaluate_second_derivative_FM_FM();
+    std::vector<VectorXd> funcm;
+    for (unsigned i=0; i<mnum; i++)
+        if (mopt[i])
+            funcm.push_back(gpi_->get_m_derivative(i));
+    //     dm_k/dTheta_i = 0 if i is a covariance particle
+    //     only fill upper triangle e.g. j>=i
+    for (unsigned i=0; i<mnum_opt; ++i){
+        VectorXd tmp(funcm[i].transpose()*dmdm);
+        for (unsigned j=i; j<mnum_opt; ++j)
+            Hessian(i,j) += tmp.transpose()*funcm[j];
+    }
+    dmdm.resize(0,0); // free up some space
+
+    //d2E/(dOm_kl dOm_mn) * dOm_kl/dTheta_i * dOm_mn/dTheta_j
+    std::vector<std::vector<MatrixXd> > dodo;
+    //  get values
+    for (unsigned m=0; m<M_; ++m) //row of second matrix
+    {
+        std::vector<MatrixXd> tmp;
+        for (unsigned n=m; n<M_; ++n) //column of second matrix
+            tmp.push_back(mvn_->evaluate_second_derivative_Sigma_Sigma(m,n));
+        dodo.push_back(tmp);
+    }
+    std::vector< MatrixXd > funcO;
+    for (unsigned i=0; i<Onum; ++i)
+        if (Oopt[i])
+            funcO.push_back(gpi_->get_Omega_derivative(i));
+    //  compute contribution
+    for (unsigned i=mnum_opt; i<num_opt; ++i){
+        MatrixXd tmp(M_,M_);
+        for (unsigned m=0; m<M_; ++m)
+            for (unsigned n=m; n<M_; ++n)
+                if (m==n) {
+                    tmp(m,n) =
+                        (dodo[m][n-m].transpose()*funcO[i-mnum_opt]).trace();
+                } else {
+                    tmp(m,n) =
+                        2*(dodo[m][n-m].transpose()*funcO[i-mnum_opt]).trace();
+                }
+        for (unsigned j=i; j<num_opt; ++j)
+            Hessian(i,j) +=
+                (tmp.selfadjointView<Eigen::Upper>()*funcO[j-mnum_opt]).trace();
+    }
+    for (unsigned i=0; i < dodo.size(); ++i)
+        for (unsigned j=0; j < dodo[i].size(); ++j)
+            dodo[i][j].resize(0,0);
+
+    //d2E/(dm_k dOm_lm) * (  dm^k/dTheta_j dOm^lm/dTheta_i
+    //                     + dm^k/dTheta_i dOm^lm/dTheta_j)
+    //when i<=j, simplifies to i mean particles and j covariance particles:
+    //d2E/(dm_k dOm_lm) * (  dm^k/dTheta_i dOm^lm/dTheta_j)
+    //
+    //get values
+    std::vector<MatrixXd> dmdo;
+    for (unsigned k=0; k<M_; k++)
+        dmdo.push_back(mvn_->evaluate_second_derivative_FM_Sigma(k));
+    //compute hessian
+    for (unsigned j=mnum_opt; j<num_opt; ++j)
+    {
+        VectorXd tmp(M_);
+        for (unsigned k=0; k<M_; ++k)
+                tmp(k) = (dmdo[k].transpose()*funcO[j-mnum_opt]).trace();
+        for (unsigned i=0; i<mnum_opt; ++i)
+            Hessian(i,j) += funcm[i].transpose()*tmp;
+    }
+    //deallocate both dmdo and all function derivatives
+    for (unsigned k=0; k<dmdo.size(); ++k)
+        dmdo[k].resize(0,0);
+    for (unsigned i=0; i<funcm.size(); ++i)
+        funcm[i].resize(0);
+    for (unsigned i=0; i<funcO.size(); ++i)
+            funcO[i].resize(0,0);
+
+    // dE/dm_k * d2m^k/(dTheta_i dTheta_j)
+    VectorXd dem(mvn_->evaluate_derivative_FM());
+    for (unsigned i=0; i<mnum_opt; i++)
+        for (unsigned j=i; j<mnum_opt; j++)
+            if (i==j){
+                Hessian(i,j) +=
+                    dem.transpose()*gpi_->get_m_second_derivative(i,j);
+            } else {
+                Hessian(i,j) +=
+                    2*dem.transpose()*gpi_->get_m_second_derivative(i,j);
+            }
+    dem.resize(0);
+
+    // dE/dOm_kl * d2Om^kl/(dTheta_i dTheta_j)
+    MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
+    for (unsigned i=mnum_opt; i<num_opt; i++)
+        for (unsigned j=i; j<num_opt; j++)
+            if (i==j){
+                Hessian(i,j) += (dOm.transpose()
+                 *gpi_->get_Omega_second_derivative(i-mnum_opt,j-mnum_opt)
+                 ).trace();
+            } else {
+                Hessian(i,j) += 2*(dOm.transpose()
+                 *gpi_->get_Omega_second_derivative(i-mnum_opt,j-mnum_opt)
+                 ).trace();
+            }
+    dOm.resize(0,0);
+
+    //return hessian as full matrix
+    return Hessian.selfadjointView<Eigen::Upper>();
+}
 
 
 void GaussianProcessInterpolationScoreState::do_before_evaluate()
