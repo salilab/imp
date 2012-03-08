@@ -80,9 +80,6 @@ class IMPEXPORT SingletonPredicate : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(SingletonPredicate);
 };
 
-IMP_OBJECTS(SingletonPredicate,SingletonPredicates);
-
-
 
 IMP_END_NAMESPACE
 

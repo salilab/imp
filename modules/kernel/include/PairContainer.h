@@ -25,11 +25,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-// for swig
-class PairScore;
-class PairModifier;
-
-
 //! A shared container for Pairs
 /** Stores a searchable shared collection of Pairs.
     \ingroup restraints
@@ -160,8 +155,6 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };
-
-IMP_OBJECTS(PairContainer,PairContainers);
 
 IMP_END_NAMESPACE
 

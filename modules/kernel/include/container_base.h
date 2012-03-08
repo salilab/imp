@@ -10,26 +10,17 @@
 #define IMPKERNEL_CONTAINER_BASE_H
 
 #include "kernel_config.h"
-#include "Object.h"
+#include "base_types.h"
+#include <IMP/base/Object.h>
 #include "Pointer.h"
 #include "macros.h"
 #include "WeakPointer.h"
-#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
-class Model;
-class Particle;
-
-typedef IMP::VectorOfRefCounted<Particle*> Particles;
-typedef vector<Particle*> ParticlesTemp;
-typedef vector<vector<Particle*> > ParticlesTemps;
-
 
 template <unsigned int D>
 class ParticleTuple;
-
-class Container;
-IMP_OBJECTS_TYPEDEF(Container,Containers);
+class Model;
 
 //! Abstract class for containers of particles
 /** Containers store sets of tuples of particles. The degree of the tuple
@@ -109,8 +100,6 @@ class IMPEXPORT Container : public IMP::base::Object
 
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
-
-IMP_OBJECTS_IO(Container, Containers);
 
 IMP_END_NAMESPACE
 

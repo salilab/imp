@@ -9,8 +9,6 @@
 #define IMPKERNEL_DEPENDENCY_GRAPH_H
 
 #include "kernel_config.h"
-#include "Restraint.h"
-#include "ScoreState.h"
 #include <boost/graph/adjacency_list.hpp>
 
 IMP_BEGIN_NAMESPACE

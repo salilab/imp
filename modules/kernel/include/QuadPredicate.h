@@ -80,9 +80,6 @@ class IMPEXPORT QuadPredicate : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(QuadPredicate);
 };
 
-IMP_OBJECTS(QuadPredicate,QuadPredicates);
-
-
 
 IMP_END_NAMESPACE
 

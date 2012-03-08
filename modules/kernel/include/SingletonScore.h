@@ -116,9 +116,6 @@ class IMPEXPORT SingletonScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 
-IMP_OBJECTS(SingletonScore,SingletonScores);
-
-
 /** A SingletonScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into an application
     of a SingletonScore onto a Particle*.

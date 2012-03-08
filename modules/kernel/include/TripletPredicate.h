@@ -80,9 +80,6 @@ class IMPEXPORT TripletPredicate : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(TripletPredicate);
 };
 
-IMP_OBJECTS(TripletPredicate,TripletPredicates);
-
-
 
 IMP_END_NAMESPACE
 

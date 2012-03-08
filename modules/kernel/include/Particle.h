@@ -219,9 +219,6 @@ class IMPEXPORT Particle : public Container
 #endif
 };
 
-
-IMP_OBJECTS_IO(Particle, Particles);
-
 IMP_END_NAMESPACE
 
 #include "Model.h"

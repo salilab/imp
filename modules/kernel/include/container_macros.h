@@ -10,7 +10,8 @@
 
 #include "RefCounted.h"
 #include "Object.h"
-#include "internal/Vector.h"
+#include <IMP/base/internal/Vector.h>
+#include <IMP/base/VectorOfRefCounted.h>
 #include "macros.h"
 
 
@@ -158,7 +159,7 @@
          ++it) {                                                        \
       if (f(*it)) lcname##_handle_remove(*it);                          \
     }                                                                   \
-    IMP::internal::remove_if(lcname##_vector_, f);                      \
+    IMP::base::internal::remove_if(lcname##_vector_, f);                \
     lcname##_handle_change();                                           \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
@@ -170,7 +171,7 @@
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
       lcname##_handle_remove(ds[i]);                                    \
     }                                                                   \
-    lcname##_vector_.remove_if(::IMP::internal::list_contains(ds));     \
+    lcname##_vector_.remove_if(::IMP::base::internal::list_contains(ds)); \
   }                                                                     \
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
@@ -256,7 +257,7 @@ void lcname##_handle_change() {                                         \
 struct Ucname##DataWrapper: public PluralData {                         \
   template <class F>                                                    \
   void remove_if(const F &f) {                                          \
-    IMP::internal::remove_if(*static_cast<PluralData*>(this), f);       \
+    IMP::base::internal::remove_if(*static_cast<PluralData*>(this), f); \
   }                                                                     \
   template <class TT>                                                   \
   static void do_handle_remove( Data obj, TT *container){               \

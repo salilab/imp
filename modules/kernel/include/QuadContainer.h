@@ -25,11 +25,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-// for swig
-class QuadScore;
-class QuadModifier;
-
-
 //! A shared container for Quads
 /** Stores a searchable shared collection of Quads.
     \ingroup restraints
@@ -160,8 +155,6 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);
 };
-
-IMP_OBJECTS(QuadContainer,QuadContainers);
 
 IMP_END_NAMESPACE
 

@@ -84,7 +84,6 @@ protected:
     return ScoreStatesTemp();
   }
 };
-IMP_OBJECTS(ScoringFunction, ScoringFunctions);
 
 
 

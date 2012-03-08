@@ -226,7 +226,6 @@ class FloatAttributeTable {
 
 public:
   void swap_with(FloatAttributeTable&o) {
-    using IMP::swap;
     using std::swap;
     IMP_SWAP_MEMBER(spheres_);
     IMP_SWAP_MEMBER(sphere_derivatives_);

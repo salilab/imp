@@ -80,9 +80,6 @@ class IMPEXPORT CLASSNAMEPredicate : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(CLASSNAMEPredicate);
 };
 
-IMP_OBJECTS(CLASSNAMEPredicate,CLASSNAMEPredicates);
-
-
 
 IMP_END_NAMESPACE
 
