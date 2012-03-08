@@ -14,7 +14,9 @@
 #include "../kernel_config.h"
 #include "../PairContainer.h"
 #include "../PairModifier.h"
+#include "../PairDerivativeModifier.h"
 #include "../PairScore.h"
+#include "../declare_Model.h"
 #include "container_helpers.h"
 #include <algorithm>
 
@@ -26,6 +28,52 @@ struct SimpleRestraintParentTraits<Score,
   typedef IMP::PairScoreRestraint SimpleRestraint;
   typedef IMP::PairsScoreRestraint SimplesRestraint;
 };
+
+template <class S>
+inline double call_evaluate_index(Model *m, const S *s,
+                           const ParticleIndexPair& a,
+                           DerivativeAccumulator *da) {
+  return s->S::evaluate_index(m, a, da);
+}
+inline double call_evaluate_index(Model *m, const PairScore *s,
+                           const ParticleIndexPair& a,
+                           DerivativeAccumulator *da) {
+    return s->evaluate_index(m, a, da);
+}
+template <class S>
+inline double call_evaluate_if_good_index(Model *m, const S *s,
+                                   const ParticleIndexPair& a,
+                                   DerivativeAccumulator *da,
+                                   double max) {
+  return s->S::evaluate_if_good_index(m, a, da, max);
+}
+inline double call_evaluate_if_good_index(Model *m, const PairScore *s,
+                                   const ParticleIndexPair& a,
+                                   DerivativeAccumulator *da,
+                                   double max) {
+  return s->evaluate_if_good_index(m, a, da, max);
+}
+template <class S>
+inline void call_apply_index(Model *m, const S *s,
+                      const ParticleIndexPair& a) {
+  s->S::apply_index(m, a);
+}
+inline void call_apply(Model *m, const PairModifier *s,
+                const ParticleIndexPair& a) {
+  s->apply_index(m, a);
+}
+template <class S>
+inline void call_apply_index(Model *m, const S *s,
+                      const ParticleIndexPair& a,
+                      DerivativeAccumulator *&da) {
+  s->S::apply_index(m, a, da);
+}
+inline void call_apply_index(Model *m, const PairDerivativeModifier *s,
+                      const ParticleIndexPair& a,
+                  DerivativeAccumulator &da) {
+  s->apply_index(m, a, da);
+}
+
 IMP_END_INTERNAL_NAMESPACE
 
 
