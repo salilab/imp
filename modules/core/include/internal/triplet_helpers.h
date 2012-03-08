@@ -12,6 +12,7 @@
 #define IMPCORE_INTERNAL_TRIPLET_HELPERS_H
 
 #include "../core_config.h"
+#include <IMP/log.h>
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/TripletScore.h>
