@@ -8,15 +8,16 @@
 #ifndef IMPKERNEL_DECORATOR_H
 #define IMPKERNEL_DECORATOR_H
 
+#include "kernel_config.h"
+#include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"
-#include "utility.h"
 #include "Model.h"
+#include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
-class Model;
 
 /**
 Representation of the structure in \imp is via a collection of
@@ -198,6 +199,7 @@ public:
   */
 
   /** Returns the particle decorated by this decorator.*/
+ /** Returns the particle decorated by this decorator.*/
   Particle *get_particle() const {
     if (!model_) return NULL;
     else {
