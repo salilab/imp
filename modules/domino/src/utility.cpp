@@ -52,12 +52,11 @@ void load_particle_states(const Subset &s,
     s[0]->get_model()->update();
   }
 }
-namespace {
-RestraintsAndWeights get_restraints_and_weights(const Subset &s,
+RestraintsTemp get_restraints(const Subset &s,
                               const ParticleStatesTable *pst,
                               const DependencyGraph &dg,
                               RestraintSet *rs) {
-  RestraintsAndWeights rw= get_restraints_and_weights(RestraintsTemp(1, rs));
+  RestraintsTemp rw= get_restraints(RestraintsTemp(1, rs));
   Subset other=pst->get_subset();
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(),
@@ -66,24 +65,15 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
   IMP::compatibility::map<Restraint*, int> index
     = IMP::base::internal::get_graph_index<Restraint>(dg);
   Ints to_remove;
-  for (unsigned int i=0; i< rw.first.size(); ++i) {
-    if (IMP::internal::get_has_ancestor(dg, index[rw.first[i]], oms)) {
+  for (unsigned int i=0; i< rw.size(); ++i) {
+    if (IMP::internal::get_has_ancestor(dg, index[rw[i]], oms)) {
       to_remove.push_back(i);
     }
   }
   for (int i=to_remove.size()-1; i >=0; --i) {
-    rw.first.erase(rw.first.begin()+to_remove[i]);
-    rw.second.erase(rw.second.begin()+to_remove[i]);
+    rw.erase(rw.begin()+to_remove[i]);
   }
   return rw;
-}
-}
-
-RestraintsTemp get_restraints(const Subset &s,
-                              const ParticleStatesTable *pst,
-                              const DependencyGraph &dg,
-                              RestraintSet *rs) {
-  return get_restraints_and_weights(s, pst, dg, rs).first;
 }
 
 
