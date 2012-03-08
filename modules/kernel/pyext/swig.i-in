@@ -161,8 +161,6 @@ IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFai
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
-IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
-
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
