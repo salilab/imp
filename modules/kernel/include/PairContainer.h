@@ -14,6 +14,7 @@
 #include "declare_PairContainer.h"
 #include "generic.h"
 #include "internal/pair_helpers.h"
+#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 

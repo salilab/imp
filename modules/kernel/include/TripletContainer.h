@@ -14,6 +14,7 @@
 #include "declare_TripletContainer.h"
 #include "generic.h"
 #include "internal/triplet_helpers.h"
+#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 
