@@ -173,7 +173,7 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
       timer_.start(DFM);
       // d(-log(p))/d(FM) = - N * P * epsilon
       IMP_LOG(TERSE, "MVN: evaluate_derivative_FM() = " << std::endl);
-      VectorXd tmp(-N_ * get_ldlt().solve(get_epsilon())/IMP::square(factor_));
+      VectorXd tmp(-N_ * get_Peps()/IMP::square(factor_));
       timer_.stop(DFM);
       return tmp;
 }
@@ -211,6 +211,35 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
               + double(M_*N_)/factor_;
       }
       return R;
+  }
+
+  MatrixXd MultivariateFNormalSufficient::evaluate_second_derivative_FM_FM()
+    const
+  {
+      if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
+      MatrixXd ret(-get_P()/IMP::square(factor_));
+      return ret;
+  }
+
+  MatrixXd MultivariateFNormalSufficient::evaluate_second_derivative_FM_Sigma(
+          unsigned k) const
+  {
+      if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
+      MatrixXd P(get_P());
+      VectorXd Peps(get_Peps());
+      MatrixXd ret(P.transpose().col(k)*Peps);
+      return ret/IMP::square(factor_);
+  }
+
+MatrixXd MultivariateFNormalSufficient::evaluate_second_derivative_Sigma_Sigma(
+        unsigned m, unsigned n) const
+  {
+      if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
+      MatrixXd P(get_P());
+      VectorXd Peps(get_Peps());
+      MatrixXd ret(-0.5*P.col(n)*P.row(m));
+      ret.noalias() += Peps(m)*P.col(n)*Peps.transpose();
+      return ret/IMP::square(factor_);
   }
 
   MatrixXd MultivariateFNormalSufficient::get_FX() const
