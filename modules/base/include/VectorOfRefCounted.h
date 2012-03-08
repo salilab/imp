@@ -6,17 +6,16 @@
  *
  */
 
-#ifndef IMPKERNEL_VECTOR_OF_REF_COUNTED_H
-#define IMPKERNEL_VECTOR_OF_REF_COUNTED_H
-
+#ifndef IMPBASE_VECTOR_OF_REF_COUNTED_H
+#define IMPBASE_VECTOR_OF_REF_COUNTED_H
+#include "base_config.h"
 #include "RefCounted.h"
-#include "base_types.h"
-#include <IMP/base/Object.h>
-#include <IMP/base/internal/ref_counting.h>
+#include "Object.h"
+#include "internal/ref_counting.h"
 #include <IMP/compatibility/vector.h>
 #include <vector>
 
-IMP_BEGIN_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 struct RefCountPolicy {
@@ -246,14 +245,7 @@ class VectorOfRefCounted {
     data_.clear();
   }
   void show(std::ostream &out=std::cout) const {
-    out << "[";
-    for (unsigned int i=0; i< size(); ++i) {
-      IMP::show(out, data_[i]);
-      if (i+1 != size()) {
-        out << ", ";
-      }
-    }
-    out << "]";
+    out << data_;
   }
   void erase(iterator it) {
     unref(*it);
@@ -330,6 +322,6 @@ namespace internal {
 }
 #endif
 
-IMP_END_NAMESPACE
+IMPBASE_END_NAMESPACE
 
-#endif  /* IMPKERNEL_VECTOR_OF_REF_COUNTED_H */
+#endif  /* IMPBASE_VECTOR_OF_REF_COUNTED_H */

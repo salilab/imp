@@ -8,7 +8,14 @@ namespace base {
 }
 }
 
-
+%inline %{
+namespace IMP {
+namespace base {
+template <class T, class P>
+class VectorOfRefCounted;
+}
+}
+%}
 
 %extend IMP::base::Object {
   bool __eq__(const Object *o) const {
