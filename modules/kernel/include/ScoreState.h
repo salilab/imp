@@ -20,10 +20,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-class ScoreState;
-IMP_OBJECTS(ScoreState,ScoreStates);
-
-
 //! ScoreStates maintian invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
@@ -104,12 +100,6 @@ public:
   virtual ParticlesTemp get_input_particles() const=0;
   virtual ParticlesTemp get_output_particles() const=0;
   /** @} */
-
-  /** \brief For python, cast a generic Object to this type. Throw a
-      ValueException of object is not the right type.*/
-  static ScoreState* get_from(Object *o) {
-    return object_cast<ScoreState>(o);
-  }
 
   virtual ScoreStates create_decomposition() const {
     return ScoreStates(1, const_cast<ScoreState*>(this));

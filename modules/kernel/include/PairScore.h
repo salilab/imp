@@ -116,9 +116,6 @@ class IMPEXPORT PairScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(PairScore);
 };
 
-IMP_OBJECTS(PairScore,PairScores);
-
-
 /** A PairScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into an application
     of a PairScore onto a ParticlePair.

@@ -25,11 +25,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-// for swig
-class SingletonScore;
-class SingletonModifier;
-
-
 //! A shared container for Singletons
 /** Stores a searchable shared collection of Singletons.
     \ingroup restraints
@@ -160,8 +155,6 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };
-
-IMP_OBJECTS(SingletonContainer,SingletonContainers);
 
 IMP_END_NAMESPACE
 

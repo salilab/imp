@@ -17,8 +17,6 @@
 #include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
-// to keep swig happy
-class Particle;
 
 //! A base class for modifiers of ParticleQuadsTemp
 /** The primary function of such a class is to change
@@ -121,8 +119,6 @@ create_particle_quad_modifier(const Functor& f) {
 }
 
 #endif
-
-IMP_OBJECTS(QuadModifier,QuadModifiers);
 
 //! Create a functor which can be used with build in C++ and python commands
 /** For example, you can do

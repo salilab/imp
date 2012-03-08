@@ -116,9 +116,6 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(CLASSNAMEScore);
 };
 
-IMP_OBJECTS(CLASSNAMEScore,CLASSNAMEScores);
-
-
 /** A CLASSNAMEScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into an application
     of a CLASSNAMEScore onto a VARIABLETYPE.

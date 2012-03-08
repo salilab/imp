@@ -25,11 +25,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-// for swig
-class TripletScore;
-class TripletModifier;
-
-
 //! A shared container for Triplets
 /** Stores a searchable shared collection of Triplets.
     \ingroup restraints
@@ -160,8 +155,6 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };
-
-IMP_OBJECTS(TripletContainer,TripletContainers);
 
 IMP_END_NAMESPACE
 

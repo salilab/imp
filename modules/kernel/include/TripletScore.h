@@ -116,9 +116,6 @@ class IMPEXPORT TripletScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(TripletScore);
 };
 
-IMP_OBJECTS(TripletScore,TripletScores);
-
-
 /** A TripletScoreRestraint is a restraint where the score (and
     derivative values) can be decomposed into an application
     of a TripletScore onto a ParticleTriplet.

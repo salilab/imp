@@ -24,12 +24,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-
-class Model;
-class Restraint;
-class ScoringFunction;
-IMP_OBJECTS(Restraint,Restraints);
-
 //! Use this value when you want to turn off maximum for restraint evaluation
 IMPEXPORT extern const double NO_MAX;
 /** Evaluation can return this value if limits are exceeded and

@@ -12,6 +12,7 @@
 #include "../base_types.h"
 #include "../Particle.h"
 #include "../ScoreState.h"
+#include "../Model.h"
 #include "utility.h"
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>

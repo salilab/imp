@@ -25,11 +25,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-// for swig
-class CLASSNAMEScore;
-class CLASSNAMEModifier;
-
-
 //! A shared container for CLASSNAMEs
 /** Stores a searchable shared collection of CLASSNAMEs.
     \ingroup restraints
@@ -160,8 +155,6 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CLASSNAMEContainer);
 };
-
-IMP_OBJECTS(CLASSNAMEContainer,CLASSNAMEContainers);
 
 IMP_END_NAMESPACE
 

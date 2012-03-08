@@ -15,9 +15,6 @@
 #include <string>
 
 IMP_BEGIN_NAMESPACE
-class RestraintSet;
-IMP_OBJECTS(RestraintSet, RestraintSets);
-
 //! Container used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,

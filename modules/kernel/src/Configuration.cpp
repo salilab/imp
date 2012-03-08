@@ -50,7 +50,6 @@ void Configuration::load_configuration() const {
 void Configuration::swap_configuration() {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  using IMP::swap;
   using std::swap;
   swap(static_cast<internal::FloatAttributeTable&>(*model_), floats_);
   swap(static_cast<internal::StringAttributeTable&>(*model_), strings_);

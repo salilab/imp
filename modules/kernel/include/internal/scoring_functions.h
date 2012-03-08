@@ -10,6 +10,7 @@
 
 #include "../kernel_config.h"
 #include "../ScoringFunction.h"
+#include "../Model.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
 

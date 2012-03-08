@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include "Key.h"
 #include "macros.h"
+#include <IMP/base/VectorOfRefCounted.h>
 #include <IMP/base/types.h>
 
 IMP_BEGIN_NAMESPACE
@@ -45,35 +46,58 @@ IMP_DECLARE_KEY_TYPE(ModelKey, 8);
 
 /** @} */
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-inline void show(std::ostream &out, int i) {
-  out << i;
-}
 
-inline void show(std::ostream &out, unsigned int i) {
-  out << i;
-}
+class Restraint;
+IMP_OBJECTS(Restraint,Restraints);
+class RestraintSet;
+IMP_OBJECTS(RestraintSet,RestraintSets);
+class ScoreState;
+IMP_OBJECTS(ScoreState,ScoreStates);
+class ScoringFunction;
+IMP_OBJECTS(ScoringFunction,ScoringFunctions);
+class Container;
+IMP_OBJECTS_TYPEDEF(Container,Containers);
+class Particle;
+typedef base::VectorOfRefCounted<Particle*> Particles;
+typedef vector<Particle*> ParticlesTemp;
+typedef vector<vector<Particle*> > ParticlesTemps;
+class OptimizerState;
+IMP_OBJECTS(OptimizerState,OptimizerStates);
+class SingletonContainer;
+IMP_OBJECTS(SingletonContainer,SingletonContainers);
+class PairContainer;
+IMP_OBJECTS(PairContainer,PairContainers);
+class TripletContainer;
+IMP_OBJECTS(TripletContainer,TripletnContainers);
+class QuadContainer;
+IMP_OBJECTS(QuadContainer,QuadContainers);
 
-inline void show(std::ostream &out, std::string i) {
-  out << i;
-}
+class SingletonScore;
+IMP_OBJECTS(SingletonScore,SingletonScores);
+class PairScore;
+IMP_OBJECTS(PairScore,PairScores);
+class TripletScore;
+IMP_OBJECTS(TripletScore,TripletnScores);
+class QuadScore;
+IMP_OBJECTS(QuadScore,QuadScores);
 
-inline void show(std::ostream &out, double i) {
-  out << i;
-}
-template <class T>
-inline void show(std::ostream &out, const T& i) {
-  out << i;
-}
-template <class T>
-inline void show(std::ostream &out, const T*i) {
-  out << i->get_name();
-}
-template <class T>
-inline void show(std::ostream &out, T*i) {
-  out << i->get_name();
-}
-#endif
+class SingletonPredicate;
+IMP_OBJECTS(SingletonPredicate,SingletonPredicates);
+class PairPredicate;
+IMP_OBJECTS(PairPredicate,PairPredicates);
+class TripletPredicate;
+IMP_OBJECTS(TripletPredicate,TripletnPredicates);
+class QuadPredicate;
+IMP_OBJECTS(QuadPredicate,QuadPredicates);
+
+class SingletonModifier;
+IMP_OBJECTS(SingletonModifier,SingletonModifiers);
+class PairModifier;
+IMP_OBJECTS(PairModifier,PairModifiers);
+class TripletModifier;
+IMP_OBJECTS(TripletModifier,TripletnModifiers);
+class QuadModifier;
+IMP_OBJECTS(QuadModifier,QuadModifiers);
 
 IMP_END_NAMESPACE
 
