@@ -881,23 +881,6 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #define IMP_OBJECTS_IO(Name, PluralName)
 #else
 
-#ifdef SWIG
-#define IMP_OBJECTS_IO(Name, PluralName)
-#else
-#define IMP_OBJECTS_IO(Name, PluralName)                                \
-  inline std::ostream &operator<<(std::ostream &out,                    \
-                                  const PluralName &os) {               \
-    IMP::base::show_objects(os, out);                                   \
-    return out;                                                         \
-  }                                                                     \
-  inline std::ostream& operator<<(std::ostream &out,                    \
-                                  const PluralName##Temp &os) {         \
-    IMP::base::show_objects(os, out);                                   \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-#endif
-
 #define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
   typedef IMP::vector<IMP::base::Pointer<Name> >                        \
   PluralName;                                                           \
@@ -907,8 +890,7 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 
 
 #define IMP_OBJECTS(Name, PluralName)                           \
-  IMP_OBJECTS_TYPEDEF(Name, PluralName);                        \
-  IMP_OBJECTS_IO(Name, PluralName)
+  IMP_OBJECTS_TYPEDEF(Name, PluralName)
 #endif
 
 
