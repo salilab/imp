@@ -369,18 +369,21 @@
   IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
   void template_apply(const SM *sm,                                     \
                       DerivativeAccumulator &da) const, {               \
-    LOOP(call_apply_index(sm, item, da));                               \
+                       LOOP(IMP::internal::call_apply_index(get_model(),\
+                                                        sm, item, da)); \
                                 });                                     \
   IMP_IMPLEMENTATION_TEMPLATE_1(class SM,                               \
     void template_apply(const SM *sm) const, {                          \
-    LOOP(call_apply_index(sm, item));                                   \
+                      LOOP(IMP::internal::call_apply_index(get_model(), \
+                                                        sm, item));     \
                                 });                                     \
   IMP_IMPLEMENTATION_TEMPLATE_1(class SS,                               \
   double template_evaluate(const SS *s,                                 \
                            DerivativeAccumulator *da) const, {          \
     double ret=0;                                                       \
     LOOP({                                                              \
-        double cur=call_evaluate_index(s, item, da);                    \
+        double cur=IMP::internal::call_evaluate_index(get_model(),      \
+                                                      s, item, da);     \
       ret+=cur;                                                         \
       });                                                               \
     return ret;                                                         \
@@ -391,7 +394,8 @@
                                    double max) const, {                 \
     double ret=0;                                                       \
     LOOP({                                                              \
-        double cur=call_evaluate_if_good_index(s, item, da, max);       \
+        double cur=IMP::internal::call_evaluate_if_good_index(get_model(), \
+                                               s, item, da, max);       \
       ret+=cur;                                                         \
       max-=cur;                                                         \
       if (max < 0) return ret;                                          \
