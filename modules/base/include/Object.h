@@ -219,23 +219,6 @@ inline O* object_cast(I *o) {
   return ret;
 }
 
-#ifndef IMP_DOXYGEN
-inline void show(std::ostream &out, Object *o) {
-  out << "\"" << o->get_name() << "\"";
-}
-
-template <class OS>
-inline void show_objects(const OS &os, std::ostream &out) {
-  out << "[";
-  for (unsigned int i=0; i< os.size(); ++i) {
-    if (i!= 0) out << ", ";
-    out << '"' << os[i]->get_name() << '"';
-  }
-  out << "]";
-}
-#endif
-
-
 
 IMPBASE_END_NAMESPACE
 
