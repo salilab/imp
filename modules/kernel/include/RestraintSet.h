@@ -94,13 +94,7 @@ class IMPEXPORT RestraintSet : public Restraint
 #endif
 };
 
-/** \name Gathering restraints
-    It is sometimes useful to extract all the non-RestraintSet restraints
-    from a hierarchy involving RestraintSets mixed with Restraints.
-    @{
-*/
-
-
+#ifndef IMP_DOXYGEN
 IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -130,8 +124,7 @@ inline RestraintsTemp get_restraints(It b, It e) {
   ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
   return ret;
 }
-
-/** @} */
+#endif
 
 //! Print the hierarchy of restraints
 IMPEXPORT void show_restraint_hierarchy(Restraint *rs,
