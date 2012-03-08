@@ -482,7 +482,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   static ObjectKeys keys;
   if (mykey!=ObjectKey() && rb->has_attribute(mykey)) {
     RigidBodyHierarchy*ret=
-      object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
+      base::object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
     IMP_INTERNAL_CHECK(ret, "No hierarchy found");
     IMP_LOG(VERBOSE, "Cached" << std::endl);
     return ret;
@@ -492,7 +492,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   for (unsigned int i=0; i< keys.size(); ++i) {
     if (rb->has_attribute(keys[i])) {
       Pointer<RigidBodyHierarchy> cur
-        =object_cast<RigidBodyHierarchy>(rb->get_value(keys[i]));
+        =base::object_cast<RigidBodyHierarchy>(rb->get_value(keys[i]));
       IMP_CHECK_OBJECT(cur);
       if (cur->get_constituents_match(constituents)) {
         if (mykey != ObjectKey()) {
