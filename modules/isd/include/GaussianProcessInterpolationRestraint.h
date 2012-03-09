@@ -11,8 +11,6 @@
 #include "isd_config.h"
 #include <IMP/macros.h>
 #include <boost/scoped_ptr.hpp>
-#include <IMP/isd/univariate_functions.h>
-#include <IMP/isd/bivariate_functions.h>
 #include <IMP/isd/ISDRestraint.h>
 #include <IMP/isd/GaussianProcessInterpolation.h>
 #include <IMP/isd/MultivariateFNormalSufficient.h>
@@ -74,9 +72,11 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         //use conjugate gradients when possible (default false)
         void set_use_cg(bool use, double tol) {mvn_->set_use_cg(use,tol);}
 
+        //call this one from python
+        FloatsList get_hessian(bool unused) const;
+
         //get minus log normalization and minus exponent separately
         double get_minus_log_normalization() const;
-
         double get_minus_exponent() const;
 
         //get hessian of the minus log likelihood
