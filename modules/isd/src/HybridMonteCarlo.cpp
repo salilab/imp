@@ -28,6 +28,14 @@ HybridMonteCarlo::HybridMonteCarlo(Model *m, Float kT, unsigned steps, Float
 
 void HybridMonteCarlo::do_step()
 {
+    //gibbs sampler on x and v
+    //persistence=p samples p times x and once v
+    //However because it's constant E, a rejected move
+    //will result in recalculating the same move up to p times
+    //until it is either accepted or the velocities are redrawn
+    //since p has to be independent of the outcome (markov property)
+    //we avoid recalculating the trajectory on rejection by just trying
+    //it over and over without doing the md again.
     persistence_counter_ += 1;
     if (persistence_counter_ == persistence_)
     {
@@ -39,7 +47,19 @@ void HybridMonteCarlo::do_step()
     double last = do_evaluate(get_model()->get_particles());
     ParticlesTemp moved = do_move(get_move_probability());
     double energy = do_evaluate(moved);
-    do_accept_or_reject_move(energy, last);
+    bool accepted = do_accept_or_reject_move(energy, last);
+    while ((!accepted) && (persistence_counter_ < persistence_-1))
+    {
+        persistence_counter_ += 1;
+        accepted = do_accept_or_reject_move(energy, last);
+    }
+
+    /*std::cout << "hmc"
+        << " old " << last
+        << " new " << energy
+        << " delta " << energy-last
+        << " accepted " << accepted
+        <<std::endl;*/
 }
 
   Float HybridMonteCarlo::get_kinetic_energy() const
