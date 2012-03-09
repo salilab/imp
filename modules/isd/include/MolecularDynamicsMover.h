@@ -42,7 +42,7 @@ private:
 
 private:
   IMP::internal::OwnerPointer<MolecularDynamics> md_;
-  double nsteps_;
+  unsigned nsteps_;
   std::vector<std::vector<double> > coordinates_;
   std::vector<std::vector<double> > velocities_;
 };

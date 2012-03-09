@@ -63,7 +63,7 @@ class vonMisesSufficient : public base::Object
   base::Object("von Mises sufficient %1%"), x_(chi)
     {
         Floats stats = get_sufficient_statistics(obs);
-        N_= stats[0];
+        N_= (unsigned) stats[0];
         R0_ = stats[1];
         chiexp_ = stats[2];
         set_kappa(kappa);
