@@ -255,6 +255,18 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
     return Hessian.selfadjointView<Eigen::Upper>();
 }
 
+FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const
+{
+    MatrixXd tmp(get_hessian());
+    FloatsList ret;
+    for (unsigned i=0; i<tmp.rows(); ++i){
+        Floats buf;
+        for (unsigned j=0; j< tmp.cols(); ++j)
+            buf.push_back(tmp(i,j));
+        ret.push_back(buf);
+    }
+    return ret;
+}
 
 void GaussianProcessInterpolationScoreState::do_before_evaluate()
 {
