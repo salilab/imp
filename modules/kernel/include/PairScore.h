@@ -30,6 +30,7 @@ class IMPEXPORT PairScore : public base::Object
 {
  public:
   typedef ParticlePair Argument;
+  typedef ParticleIndexPair IndexArgument;
   PairScore(std::string name="PairScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticlePair& vt,

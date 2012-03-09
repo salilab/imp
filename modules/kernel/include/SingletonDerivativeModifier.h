@@ -34,6 +34,7 @@ class IMPEXPORT SingletonDerivativeModifier : public base::Object
 {
 public:
   typedef Particle* Argument;
+  typedef ParticleIndex IndexArgument;
   SingletonDerivativeModifier(std::string name="SingletonModifier %1%");
 
   /** Apply the function to a single value*/

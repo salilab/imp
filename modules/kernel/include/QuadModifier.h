@@ -31,6 +31,7 @@ class IMPEXPORT QuadModifier : public base::Object
 {
 public:
   typedef ParticleQuad Argument;
+  typedef ParticleIndexQuad IndexArgument;
   QuadModifier(std::string name="QuadModifier %1%");
 
   /** Apply the function to a single value*/

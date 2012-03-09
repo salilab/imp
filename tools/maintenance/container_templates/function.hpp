@@ -31,6 +31,7 @@ class IMPEXPORT CLASSNAMEModifier : public base::Object
 {
 public:
   typedef VARIABLETYPE Argument;
+  typedef INDEXTYPE IndexArgument;
   CLASSNAMEModifier(std::string name="CLASSNAMEModifier %1%");
 
   /** Apply the function to a single value*/

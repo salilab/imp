@@ -204,7 +204,7 @@ void RestraintsScoringFunction::do_show(std::ostream &out) const {
 }
 
 ScoringFunctionInput::ScoringFunctionInput(Model *sf):
-  P(create_scoring_function(sf)){
+  P(IMP::internal::create_scoring_function(sf)){
 }
 
 
@@ -213,7 +213,7 @@ ScoringFunctionInput::ScoringFunctionInput(const RestraintsTemp &sf):
     P(new RestraintsScoringFunction(sf)){
   }
 ScoringFunctionInput::ScoringFunctionInput(RestraintSet *sf):
-    P(create_scoring_function(sf)){}
+  P(IMP::internal::create_scoring_function(sf)){}
 
 namespace {
   unsigned int sf_num_children(Restraint*r) {

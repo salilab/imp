@@ -31,6 +31,7 @@ class IMPEXPORT TripletModifier : public base::Object
 {
 public:
   typedef ParticleTriplet Argument;
+  typedef ParticleIndexTriplet IndexArgument;
   TripletModifier(std::string name="TripletModifier %1%");
 
   /** Apply the function to a single value*/
