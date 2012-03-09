@@ -47,7 +47,18 @@ BuildRequires: eigen3-devel
 %endif
 %endif
 
-%define scons_opts %{skipped_deps} %{skipped_hdf5}
+# Normally scons will stop at the first error. Since an RPM cannot be built
+# if the build did not complete successfully, this is the default here too.
+# Pass '-D "keep_going 1"' to your rpmbuild invocation if you want it to
+# keep going; we use this in nightly builds to see every broken module,
+# not just the first one.
+%if 0%{?keep_going}
+%define kflag -k
+%else
+%define kflag %{nil}
+%endif
+
+%define scons_opts %{skipped_deps} %{skipped_hdf5} %{kflag}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
