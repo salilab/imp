@@ -44,7 +44,7 @@ public:
      */
     void set_A(const MatrixXd& A)
     {
-        double M = A.rows();
+        unsigned M = A.rows();
         IMP_USAGE_CHECK(A.cols() == M, "must provide spd matrix!");
         M_ = M;
         A_ = A;
