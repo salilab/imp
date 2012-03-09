@@ -57,10 +57,10 @@ public:
     double ekin = md_->get_kinetic_energy();
     double epot;
     if (get_maximum_difference() < std::numeric_limits<double>::max()) {
-        epot = evaluate_if_below(false,
+        epot = get_scoring_function()->evaluate_if_below(false,
                 get_last_accepted_energy()+get_maximum_difference());
     } else {
-        epot = evaluate(false);
+        epot = get_scoring_function()->evaluate(false);
     }
     return ekin + epot;
 }

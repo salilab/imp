@@ -49,7 +49,7 @@ void HybridMonteCarlo::do_step()
 
   Float HybridMonteCarlo::get_potential_energy() const
 {
-    return evaluate(false);
+    return get_scoring_function()->evaluate(false);
 }
 
   Float HybridMonteCarlo::get_total_energy() const
