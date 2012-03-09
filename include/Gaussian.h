@@ -37,7 +37,7 @@ private:
   Float Emin_;
   Float Zmin_;
   Float sigma_;
-;
+};
 
 IMPMEMBRANE_END_NAMESPACE
 
