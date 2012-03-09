@@ -32,7 +32,7 @@ class IMPCOREEXPORT DistanceRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
 #else
-  public TupleRestraint<DistancePairScore>
+  public IMP::internal::TupleRestraint<DistancePairScore>
 #endif
 {
 public:

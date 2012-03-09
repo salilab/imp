@@ -34,6 +34,7 @@ class IMPEXPORT PairDerivativeModifier : public base::Object
 {
 public:
   typedef ParticlePair Argument;
+  typedef ParticleIndexPair IndexArgument;
   PairDerivativeModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/

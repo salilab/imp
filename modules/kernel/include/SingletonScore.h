@@ -30,6 +30,7 @@ class IMPEXPORT SingletonScore : public base::Object
 {
  public:
   typedef Particle* Argument;
+  typedef ParticleIndex IndexArgument;
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(Particle* vt,

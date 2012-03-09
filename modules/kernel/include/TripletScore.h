@@ -30,6 +30,7 @@ class IMPEXPORT TripletScore : public base::Object
 {
  public:
   typedef ParticleTriplet Argument;
+  typedef ParticleIndexTriplet IndexArgument;
   TripletScore(std::string name="TripletScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticleTriplet& vt,

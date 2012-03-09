@@ -30,6 +30,7 @@ class IMPEXPORT QuadScore : public base::Object
 {
  public:
   typedef ParticleQuad Argument;
+  typedef ParticleIndexQuad IndexArgument;
   QuadScore(std::string name="QuadScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticleQuad& vt,
