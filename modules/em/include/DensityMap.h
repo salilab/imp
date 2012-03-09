@@ -119,7 +119,7 @@ public:
   }
 
 #ifndef IMP_DOXYGEN
-#ifndef IMP_DEPRECATED
+#ifndef IMP_NO_DEPRECATED
   /** \deprecated Use read() instead.*/
   void Read(const char *filename, MapReaderWriter *reader);
   /** \deprecated Use write() instead.*/

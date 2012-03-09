@@ -294,7 +294,7 @@ void DensityMap::real2float(emreal *r_data,
   std::copy(r_data, r_data+size, f_data.get());
 }
 
-#ifndef IMP_DEPRECATED
+#ifndef IMP_NO_DEPRECATED
 
 void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
   IMP::em::write_map(this, filename, writer);
