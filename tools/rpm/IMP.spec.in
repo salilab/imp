@@ -31,18 +31,23 @@ BuildRequires: modeller
 # this adds no extra dependencies to the binary package.
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
-%define scons_opts %{nil}
+%define skipped_deps %{nil}
+%define skipped_hdf5 %{nil}
 %else
 %if 0%{?rhel_have_eigen3}
-%define scons_opts cgal=no opencv21=no opencv22=no
+%define skipped_deps cgal=no opencv21=no opencv22=no
 BuildRequires: eigen3-devel
 %else
-%define scons_opts cgal=no opencv21=no opencv22=no eigen3=no
+%define skipped_deps cgal=no opencv21=no opencv22=no eigen3=no
 %endif
 %if 0%{?rhel} < 6
-%define scons_opts %{scons_opts} hdf5=no
+%define skipped_hdf5 hdf5=no
+%else
+%define skipped_hdf5 %{nil}
 %endif
 %endif
+
+%define scons_opts %{skipped_deps} %{skipped_hdf5}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
