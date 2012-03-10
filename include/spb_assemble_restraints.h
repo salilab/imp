@@ -19,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT std::map< std::string, Pointer<RestraintSet> >
  spb_assemble_restraints
- (Model *m, membrane::SPBParameters myparam, atom::Hierarchies& all_mol,
+ (Model *m, membrane::SPBParameters& myparam, atom::Hierarchies& all_mol,
  container::ListSingletonContainer *bCP_ps,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps);

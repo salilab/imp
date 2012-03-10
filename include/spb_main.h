@@ -26,6 +26,7 @@ struct FretParameters {
  std::string filename;
  bool   sigmafilter;
  double sigmamult;
+ Floats sigmas;
 };
 
 struct SPBParameters {

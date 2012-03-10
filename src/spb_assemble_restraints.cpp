@@ -19,7 +19,7 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 std::map< std::string, Pointer<RestraintSet> > spb_assemble_restraints
-(Model *m, SPBParameters mydata, atom::Hierarchies& all_mol,
+(Model *m, SPBParameters& mydata, atom::Hierarchies& all_mol,
  container::ListSingletonContainer *bCP_ps,
  container::ListSingletonContainer *CP_ps,
  container::ListSingletonContainer *IL2_ps)
@@ -138,6 +138,9 @@ if(mydata.add_fret && mydata.use_new_fret_model){
  std::ifstream fretfile;
  fretfile.open(mydata.Fret.filename.c_str());
  while(fretfile >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp >> sig_exp){
+// store error
+  mydata.Fret.sigmas.push_back(sig_exp);
+// add restraint
   fret->add_restraint(NEW_fret_restraint(m, all_mol,
                             name_d, ter_d, name_a, ter_a, fretr_exp,
                             mydata.Fret, mydata.kappa, mydata.add_GFP));
