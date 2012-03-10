@@ -25,8 +25,10 @@ IMP_BEGIN_NAMESPACE
 template <class RestraintType>
 inline ScoringFunction* create_scoring_function(RestraintType* rs,
                                                double weight=1.0,
-                                                double max=NO_MAX) {
-  return internal::create_scoring_function(rs, weight, max);
+                                                double max=NO_MAX,
+                                                std::string name
+                                                = std::string()) {
+  return internal::create_scoring_function(rs, weight, max, name);
 }
 
 
