@@ -157,8 +157,9 @@ template <bool DERIV, bool GOOD, bool MAX, bool STATS, class RS, class RSS>
 
 RestraintsScoringFunction::RestraintsScoringFunction(const RestraintsTemp &r,
                                                      double weight,
-                                                     double max):
-    ScoringFunction(r[0]->get_model(), "RestraintsScoringFunction%1%"),
+                                                     double max,
+                                                     std::string name):
+    ScoringFunction(r[0]->get_model(), name),
     weight_(weight), max_(max){
   for (unsigned int i=0; i< r.size(); ++i) {
     RestraintSet *rs= dynamic_cast<RestraintSet*>(r[i].get());

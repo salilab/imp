@@ -247,11 +247,14 @@ inline std::pair<double, bool> exec_evaluate_one(const ScoreStatesTemp &states,
  */
 template <class RestraintType>
 class RestraintScoringFunction: public ScoringFunction {
-  OwnerPointer<Restraint> r_;
+  OwnerPointer<RestraintType> r_;
  public:
   RestraintScoringFunction(RestraintType* r):
       ScoringFunction(r->get_model(),
                       r->get_name()+"SF"), r_(r){}
+  RestraintScoringFunction(RestraintType* r,
+                           std::string name):
+    ScoringFunction(r->get_model(), name), r_(r){}
   IMP_SCORING_FUNCTION(RestraintScoringFunction);
 };
 
@@ -300,7 +303,7 @@ void RestraintScoringFunction<RestraintType>::do_show(std::ostream &out) const {
  */
 template <class RestraintType>
 class WrappedRestraintScoringFunction: public ScoringFunction {
-  OwnerPointer<Restraint> r_;
+  OwnerPointer<RestraintType> r_;
   double weight_;
   double max_;
  public:
@@ -309,6 +312,13 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
                                   double max):
       ScoringFunction(r->get_model(),
                       r->get_name()+"SF"), r_(r),
+      weight_(weight), max_(max){}
+  WrappedRestraintScoringFunction(RestraintType* r,
+                                  double weight,
+                                  double max,
+                                  std::string name):
+      ScoringFunction(r->get_model(),
+                      name), r_(r),
       weight_(weight), max_(max){}
   IMP_SCORING_FUNCTION(WrappedRestraintScoringFunction);
 };

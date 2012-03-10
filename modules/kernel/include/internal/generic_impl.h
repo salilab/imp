@@ -28,25 +28,34 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class RestraintType>
 inline ScoringFunction* create_scoring_function(RestraintType* rs,
                                                double weight=1.0,
-                                                double max=NO_MAX) {
+                                                double max=NO_MAX,
+                                                std::string name=
+                                                std::string()) {
+  if (name.empty()) {
+    name= rs->get_name()+"ScoringFunction";
+  }
   if (dynamic_cast<RestraintSet*>(rs)) {
     RestraintSet *rrs=dynamic_cast<RestraintSet*>(rs);
     if (rrs->get_number_of_restraints()==0) {
       // ick
-      return new RestraintsScoringFunction(RestraintsTemp(1,rs), weight, max);
+      return new RestraintsScoringFunction(RestraintsTemp(1,rs), weight, max,
+                                           name);
     }
     return new RestraintsScoringFunction(RestraintsTemp(rrs->restraints_begin(),
                                                         rrs->restraints_end()),
                                          weight*rs->get_weight(),
                                          std::min(max,
-                                                  rs->get_maximum_score()));
+                                                  rs->get_maximum_score()),
+                                         name);
   } else {
     if (weight==1.0 && max==NO_MAX) {
-      return new internal::RestraintScoringFunction<RestraintType>(rs);
+      return new internal::RestraintScoringFunction<RestraintType>(rs,
+                                                                   name);
     } else {
       return new internal::WrappedRestraintScoringFunction<RestraintType>(rs,
                                                                         weight,
-                                                                          max);
+                                                                          max,
+                                                                          name);
     }
   }
 }

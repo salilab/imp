@@ -90,7 +90,8 @@ class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
  public:
   RestraintsScoringFunction(const RestraintsTemp &rs,
                             double weight=1.0,
-                            double max=NO_MAX);
+                            double max=NO_MAX,
+                            std::string name= "RestraintsScoringFunction%1%");
   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
 };
 
