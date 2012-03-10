@@ -128,7 +128,9 @@ double Model::evaluate(bool calc_derivs) {
 }
 
 ScoringFunction* Model::create_model_scoring_function() {
-  return IMP::create_scoring_function(dynamic_cast<RestraintSet*>(this));
+  return IMP::create_scoring_function(dynamic_cast<RestraintSet*>(this),
+                                      1.0, NO_MAX,
+                                      "ModelScoringFunction%1%");
 }
 
 IMP_END_NAMESPACE
