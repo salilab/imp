@@ -34,7 +34,11 @@ class Tracker {
     dirty_=true;
   }
   void remove_tracked(Tracked*tr) {
+    IMP_USAGE_CHECK(tr, "Can't untrack nullptr");
     IMP_CHECK_OBJECT(tr);
+    IMP_USAGE_CHECK(tracked_.find(tr) != tracked_.end(),
+                    "Tracked object " << (tr ? tr->get_name():"nullptr")
+                    << " not found.");
     tracked_.erase(tr);
     dirty_=true;
   }
@@ -48,10 +52,10 @@ class Tracker {
     return tracked_.end();
   }
   ~Tracker() {
-    for (TrackedIterator
-             it= tracked_begin(); it != tracked_end(); ++it) {
-      IMP_CHECK_OBJECT(*it);
-      (*it)->set_tracker(*it, nullptr);
+    vector<Tracked*> tracked(tracked_begin(), tracked_end());
+    for (unsigned int i=0; i< tracked_.size(); ++i) {
+      IMP_CHECK_OBJECT(tracked[i]);
+      tracked[i]->set_no_tracker();
     }
   }
 };
@@ -60,6 +64,7 @@ class Tracker {
     maintained as long as it is alive.*/
 template <class Type, class Tracker>
 class TrackedObject: public Object {
+  friend class IMP::base::Tracker<Type>;
   UncheckedWeakPointer<Tracker> tracker_;
   UncheckedWeakPointer<Type> me_;
  public:
@@ -82,6 +87,11 @@ class TrackedObject: public Object {
           ->template IMP::base::Tracker<Type>
           ::add_tracked(me_);
     }
+  }
+  //! Used by the tracker when it is destroyed
+  void set_no_tracker() {
+    tracker_=nullptr;
+    me_=nullptr;
   }
   bool get_is_tracked() const {return tracker_;}
   Tracker *get_tracker() const {return tracker_;}
