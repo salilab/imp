@@ -9,7 +9,7 @@
 #ifndef IMPKERNEL_PARTICLE_TUPLE_H
 #define IMPKERNEL_PARTICLE_TUPLE_H
 
-#include "Particle.h"
+#include "declare_Particle.h"
 #include "Pointer.h"
 #include "WeakPointer.h"
 #include "internal/ParticleTupleBase.h"
@@ -94,5 +94,7 @@ ParticleQuads;
 #endif
 
 IMP_END_NAMESPACE
+
+#include "Particle.h"
 
 #endif  /* IMPKERNEL_PARTICLE_TUPLE_H */

@@ -21,13 +21,6 @@
 #include <algorithm>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
-template <class Score>
-struct SimpleRestraintParentTraits<Score,
-       typename boost::enable_if<
-         boost::is_base_of<QuadScore, Score> >::type> {
-  typedef IMP::QuadScoreRestraint SimpleRestraint;
-  typedef IMP::QuadsScoreRestraint SimplesRestraint;
-};
 
 template <class S>
 inline double call_evaluate_index(Model *m, const S *s,

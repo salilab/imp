@@ -16,7 +16,7 @@ ContainerRestraint<Score, C>
 ::ContainerRestraint(Score *ss,
                      C *pc,
                      std::string name):
-  IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint(name),
+  Restraint(name),
   ss_(ss), pc_(pc) {
 
 }

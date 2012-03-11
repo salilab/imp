@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see SingletonRestraint
  */
 class IMPCOREEXPORT SingletonRestraint :
-  public SingletonScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<SingletonScore> ss_;
   ParticleIndex v_;

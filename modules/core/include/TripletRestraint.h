@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see TripletRestraint
  */
 class IMPCOREEXPORT TripletRestraint :
-  public TripletScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<TripletScore> ss_;
   ParticleIndexTriplet v_;

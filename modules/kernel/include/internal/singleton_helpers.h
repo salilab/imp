@@ -21,13 +21,6 @@
 #include <algorithm>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
-template <class Score>
-struct SimpleRestraintParentTraits<Score,
-       typename boost::enable_if<
-         boost::is_base_of<SingletonScore, Score> >::type> {
-  typedef IMP::SingletonScoreRestraint SimpleRestraint;
-  typedef IMP::SingletonsScoreRestraint SimplesRestraint;
-};
 
 template <class S>
 inline double call_evaluate_index(Model *m, const S *s,

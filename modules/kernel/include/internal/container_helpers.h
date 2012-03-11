@@ -13,6 +13,7 @@
 #include "../declare_Particle.h"
 #include "../ScoreState.h"
 #include "../declare_Model.h"
+#include "../Model.h"
 #include "utility.h"
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>
@@ -20,9 +21,6 @@
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
-template <class Score, class Enabled=void>
-struct SimpleRestraintParentTraits{};
-
 
 inline bool is_valid(Particle *p) {
   return p;

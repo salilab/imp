@@ -23,7 +23,7 @@ InternalPairsRestraint
 ::InternalPairsRestraint(PairScore *ss,
                       PairContainer *pc,
                       std::string name):
-  PairsScoreRestraint(name),
+  Restraint(name),
   ss_(ss), pc_(pc) {
 
 }
