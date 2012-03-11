@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see TripletRestraint
  */
 class IMPEXPORT InternalTripletsRestraint :
-  public TripletsScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<TripletScore> ss_;
   IMP::OwnerPointer<TripletContainer> pc_, ac_, rc_;

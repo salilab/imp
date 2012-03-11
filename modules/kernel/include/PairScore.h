@@ -117,32 +117,6 @@ class IMPEXPORT PairScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(PairScore);
 };
 
-/** A PairScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into an application
-    of a PairScore onto a ParticlePair.
-*/
-class IMPEXPORT PairScoreRestraint: public Restraint {
-public:
-  PairScoreRestraint(std::string name);
-  virtual PairScore *get_score() const =0;
-  virtual ParticlePair get_argument() const=0;
-};
-
-IMP_OBJECTS(PairScoreRestraint, PairScoreRestraints);
-
-/** A PairsScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into a series of applications
-    of a PairScore onto a ParticlePair.
-*/
-class IMPEXPORT PairsScoreRestraint: public Restraint {
-public:
-  PairsScoreRestraint(std::string name);
-  virtual PairScore *get_score() const =0;
-  virtual ParticlePairsTemp get_arguments() const=0;
-};
-
-IMP_OBJECTS(PairsScoreRestraint, PairsScoreRestraints);
-
 IMP_END_NAMESPACE
 
 #include "generic.h"

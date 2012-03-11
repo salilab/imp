@@ -117,32 +117,6 @@ class IMPEXPORT CLASSNAMEScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(CLASSNAMEScore);
 };
 
-/** A CLASSNAMEScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into an application
-    of a CLASSNAMEScore onto a VARIABLETYPE.
-*/
-class IMPEXPORT CLASSNAMEScoreRestraint: public Restraint {
-public:
-  CLASSNAMEScoreRestraint(std::string name);
-  virtual CLASSNAMEScore *get_score() const =0;
-  virtual VARIABLETYPE get_argument() const=0;
-};
-
-IMP_OBJECTS(CLASSNAMEScoreRestraint, CLASSNAMEScoreRestraints);
-
-/** A CLASSNAMEsScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into a series of applications
-    of a CLASSNAMEScore onto a VARIABLETYPE.
-*/
-class IMPEXPORT CLASSNAMEsScoreRestraint: public Restraint {
-public:
-  CLASSNAMEsScoreRestraint(std::string name);
-  virtual CLASSNAMEScore *get_score() const =0;
-  virtual PLURALVARIABLETYPE get_arguments() const=0;
-};
-
-IMP_OBJECTS(CLASSNAMEsScoreRestraint, CLASSNAMEsScoreRestraints);
-
 IMP_END_NAMESPACE
 
 #include "generic.h"

@@ -9,10 +9,6 @@
 #ifndef IMPKERNEL_GENERIC_IMPL_H
 #define IMPKERNEL_GENERIC_IMPL_H
 
-#include "../SingletonScore.h"
-#include "../PairScore.h"
-#include "../TripletScore.h"
-#include "../QuadScore.h"
 #include "../Constraint.h"
 #include "../Restraint.h"
 
@@ -62,8 +58,7 @@ inline ScoringFunction* create_scoring_function(RestraintType* rs,
 
 
 template <class Score>
-class TupleRestraint :
-public SimpleRestraintParentTraits<Score>::SimpleRestraint
+class TupleRestraint : public Restraint
 {
   IMP::OwnerPointer<Score> ss_;
   typename Score::IndexArgument v_;
@@ -76,8 +71,8 @@ public:
                  const typename Score::Argument& vt,
                  std::string name="TupleRestraint %1%");
 
-  virtual Score* get_score() const {return ss_;}
-  virtual typename Score::Argument get_argument() const {
+  Score* get_score() const {return ss_;}
+  typename Score::Argument get_argument() const {
     return get_particle(Restraint::get_model(),
                                   v_);
   }
@@ -120,7 +115,7 @@ TupleRestraint<Score>
 ::TupleRestraint(Score *ss,
                  const typename Score::Argument& vt,
                  std::string name):
-  SimpleRestraintParentTraits<Score>::SimpleRestraint(name),
+  Restraint(name),
   ss_(ss),
   v_(get_index(vt))
 {

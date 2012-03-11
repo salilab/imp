@@ -27,7 +27,7 @@ class ContainerRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public DecomposableRestraint
 #else
-public IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint
+public Restraint
 #endif
 {
   IMP::OwnerPointer<Score> ss_;

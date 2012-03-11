@@ -21,7 +21,7 @@ TripletRestraint
 ::TripletRestraint(TripletScore *ss,
                      const ParticleTriplet& vt,
                      std::string name):
-  TripletScoreRestraint(name),
+  Restraint(name),
   ss_(ss),
   v_(IMP::internal::get_index(vt))
 {

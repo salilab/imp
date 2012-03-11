@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see QuadRestraint
  */
 class IMPEXPORT InternalQuadsRestraint :
-  public QuadsScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<QuadScore> ss_;
   IMP::OwnerPointer<QuadContainer> pc_, ac_, rc_;

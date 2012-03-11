@@ -117,32 +117,6 @@ class IMPEXPORT SingletonScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 
-/** A SingletonScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into an application
-    of a SingletonScore onto a Particle*.
-*/
-class IMPEXPORT SingletonScoreRestraint: public Restraint {
-public:
-  SingletonScoreRestraint(std::string name);
-  virtual SingletonScore *get_score() const =0;
-  virtual Particle* get_argument() const=0;
-};
-
-IMP_OBJECTS(SingletonScoreRestraint, SingletonScoreRestraints);
-
-/** A SingletonsScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into a series of applications
-    of a SingletonScore onto a Particle*.
-*/
-class IMPEXPORT SingletonsScoreRestraint: public Restraint {
-public:
-  SingletonsScoreRestraint(std::string name);
-  virtual SingletonScore *get_score() const =0;
-  virtual ParticlesTemp get_arguments() const=0;
-};
-
-IMP_OBJECTS(SingletonsScoreRestraint, SingletonsScoreRestraints);
-
 IMP_END_NAMESPACE
 
 #include "generic.h"

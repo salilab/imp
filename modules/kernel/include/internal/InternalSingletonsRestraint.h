@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see SingletonRestraint
  */
 class IMPEXPORT InternalSingletonsRestraint :
-  public SingletonsScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<SingletonScore> ss_;
   IMP::OwnerPointer<SingletonContainer> pc_, ac_, rc_;

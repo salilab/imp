@@ -23,7 +23,7 @@ InternalCLASSNAMEsRestraint
 ::InternalCLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainer *pc,
                       std::string name):
-  CLASSNAMEsScoreRestraint(name),
+  Restraint(name),
   ss_(ss), pc_(pc) {
 
 }

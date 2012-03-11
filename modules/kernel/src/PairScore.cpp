@@ -11,7 +11,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
 #include <IMP/macros.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/generic.h>
 IMP_BEGIN_NAMESPACE
 
 PairScore::PairScore(std::string name):
@@ -21,83 +21,14 @@ PairScore::PairScore(std::string name):
      symbols are present in the kernel DSO */
 }
 
-PairScoreRestraint::PairScoreRestraint(std::string name):
-  Restraint(name){}
-
-PairsScoreRestraint::PairsScoreRestraint(std::string name):
-  Restraint(name){}
-
-
-namespace {
-
-
-  class PairRestraint :
-    public PairScoreRestraint
-  {
-    IMP::OwnerPointer<PairScore> ss_;
-    ParticlePair v_;
-  public:
-    //! Create the restraint.
-    /** This function takes the function to apply to the
-        stored Pair and the Pair.
-    */
-    PairRestraint(PairScore *ss,
-                       const ParticlePair& vt,
-                       std::string name);
-
-    PairScore* get_score() const {
-      return ss_;
-    }
-    ParticlePair get_argument() const {
-      return v_;
-    }
-
-    IMP_RESTRAINT(PairRestraint);
-  };
-
-  PairRestraint
-  ::PairRestraint(PairScore *ss,
-                       const ParticlePair& vt,
-                       std::string name):
-    PairScoreRestraint(name),
-    ss_(ss),
-    v_(vt)
-  {
-  }
-
-  double PairRestraint
-  ::unprotected_evaluate(DerivativeAccumulator *accum) const
-  {
-    IMP_OBJECT_LOG;
-    IMP_CHECK_OBJECT(ss_);
-    return ss_->evaluate(v_, accum);
-  }
-
-  ParticlesTemp PairRestraint::get_input_particles() const
-  {
-    return IMP::internal::get_input_particles(ss_.get(), v_);
-  }
-
-  ContainersTemp PairRestraint::get_input_containers() const
-  {
-    return IMP::internal::get_input_containers(ss_.get(), v_);
-  }
-
-  void PairRestraint::do_show(std::ostream& out) const
-  {
-    out << "score " << ss_->get_name() << std::endl;
-    out << "data " << IMP::internal::streamable(v_) << std::endl;
-  }
-}
-
 
 Restraints
 PairScore
 ::create_current_decomposition(const ParticlePair& vt) const {
   return Restraints(1,
-                    new PairRestraint(const_cast<PairScore*>(this),
-                                           vt,
-                                           get_name()));
+                    create_restraint(const_cast<PairScore*>(this),
+                                     vt,
+                                     get_name()));
 }
 
 IMP_END_NAMESPACE

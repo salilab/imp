@@ -23,7 +23,7 @@ InternalQuadsRestraint
 ::InternalQuadsRestraint(QuadScore *ss,
                       QuadContainer *pc,
                       std::string name):
-  QuadsScoreRestraint(name),
+  Restraint(name),
   ss_(ss), pc_(pc) {
 
 }

@@ -117,32 +117,6 @@ class IMPEXPORT TripletScore : public base::Object
   IMP_REF_COUNTED_DESTRUCTOR(TripletScore);
 };
 
-/** A TripletScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into an application
-    of a TripletScore onto a ParticleTriplet.
-*/
-class IMPEXPORT TripletScoreRestraint: public Restraint {
-public:
-  TripletScoreRestraint(std::string name);
-  virtual TripletScore *get_score() const =0;
-  virtual ParticleTriplet get_argument() const=0;
-};
-
-IMP_OBJECTS(TripletScoreRestraint, TripletScoreRestraints);
-
-/** A TripletsScoreRestraint is a restraint where the score (and
-    derivative values) can be decomposed into a series of applications
-    of a TripletScore onto a ParticleTriplet.
-*/
-class IMPEXPORT TripletsScoreRestraint: public Restraint {
-public:
-  TripletsScoreRestraint(std::string name);
-  virtual TripletScore *get_score() const =0;
-  virtual ParticleTripletsTemp get_arguments() const=0;
-};
-
-IMP_OBJECTS(TripletsScoreRestraint, TripletsScoreRestraints);
-
 IMP_END_NAMESPACE
 
 #include "generic.h"

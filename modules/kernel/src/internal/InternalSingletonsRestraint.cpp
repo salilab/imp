@@ -23,7 +23,7 @@ InternalSingletonsRestraint
 ::InternalSingletonsRestraint(SingletonScore *ss,
                       SingletonContainer *pc,
                       std::string name):
-  SingletonsScoreRestraint(name),
+  Restraint(name),
   ss_(ss), pc_(pc) {
 
 }

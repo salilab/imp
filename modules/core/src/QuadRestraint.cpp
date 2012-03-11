@@ -21,7 +21,7 @@ QuadRestraint
 ::QuadRestraint(QuadScore *ss,
                      const ParticleQuad& vt,
                      std::string name):
-  QuadScoreRestraint(name),
+  Restraint(name),
   ss_(ss),
   v_(IMP::internal::get_index(vt))
 {

@@ -21,7 +21,7 @@ PairRestraint
 ::PairRestraint(PairScore *ss,
                      const ParticlePair& vt,
                      std::string name):
-  PairScoreRestraint(name),
+  Restraint(name),
   ss_(ss),
   v_(IMP::internal::get_index(vt))
 {

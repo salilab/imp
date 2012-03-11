@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see PairRestraint
  */
 class IMPEXPORT InternalPairsRestraint :
-  public PairsScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<PairScore> ss_;
   IMP::OwnerPointer<PairContainer> pc_, ac_, rc_;

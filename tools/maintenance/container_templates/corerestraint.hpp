@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see CLASSNAMERestraint
  */
 class IMPEXPORT InternalCLASSNAMEsRestraint :
-  public CLASSNAMEsScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<CLASSNAMEScore> ss_;
   IMP::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;

@@ -21,7 +21,7 @@ CLASSNAMERestraint
 ::CLASSNAMERestraint(CLASSNAMEScore *ss,
                      ARGUMENTTYPE vt,
                      std::string name):
-  CLASSNAMEScoreRestraint(name),
+  Restraint(name),
   ss_(ss),
   v_(IMP::internal::get_index(vt))
 {

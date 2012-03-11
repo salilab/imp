@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
     \see QuadRestraint
  */
 class IMPCOREEXPORT QuadRestraint :
-  public QuadScoreRestraint
+  public Restraint
 {
   IMP::OwnerPointer<QuadScore> ss_;
   ParticleIndexQuad v_;
