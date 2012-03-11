@@ -64,7 +64,7 @@ class Tracker {
     maintained as long as it is alive.*/
 template <class Type, class Tracker>
 class TrackedObject: public Object {
-  friend class IMP::base::Tracker<Type>;
+  typedef IMP::base::Tracker<Type> T;
   UncheckedWeakPointer<Tracker> tracker_;
   UncheckedWeakPointer<Type> me_;
  public:
@@ -77,15 +77,13 @@ class TrackedObject: public Object {
     IMP_USAGE_CHECK(!tracker || me,
                     "Can't pass a null oject with a non-null tacker.");
     if (tracker_) {
-      static_cast<IMP::base::Tracker<Type>*>(tracker_.get())
+      static_cast<T*>(tracker_.get())
           ->remove_tracked(me_);
     }
     tracker_=tracker;
     me_=me;
     if (tracker_) {
-      tracker_
-          ->template IMP::base::Tracker<Type>
-          ::add_tracked(me_);
+      static_cast<T*>(tracker_)->add_tracked(me_);
     }
   }
   //! Used by the tracker when it is destroyed
