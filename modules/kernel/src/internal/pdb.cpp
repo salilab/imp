@@ -6,7 +6,8 @@
  */
 
 #include "IMP/internal/pdb.h"
-#include "IMP/internal/AttributeTable.h"
+#include "IMP/Particle.h"
+#include "IMP/Model.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
