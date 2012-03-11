@@ -9,19 +9,18 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_TRIPLETS_RESTRAINT_H
-#define IMPCORE_INTERNAL_CORE_TRIPLETS_RESTRAINT_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_TRIPLETS_RESTRAINT_H
+#define IMPKERNEL_INTERNAL_INTERNAL_TRIPLETS_RESTRAINT_H
 
-#include "../core_config.h"
+#include "../kernel_config.h"
 
-#include <IMP/Pointer.h>
-#include <IMP/TripletScore.h>
-#include <IMP/TripletContainer.h>
-#include "triplet_helpers.h"
+#include <IMP/base/Pointer.h>
+#include "../TripletScore.h"
+#include "../TripletContainer.h"
 
 #include <iostream>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a TripletScore to each Triplet in a list.
 /** This restraint stores the used particles in a ParticleTripletsTemp.
@@ -32,12 +31,11 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see TripletRestraint
  */
-class IMPCOREEXPORT CoreTripletsRestraint :
+class IMPEXPORT InternalTripletsRestraint :
   public TripletsScoreRestraint
 {
   IMP::OwnerPointer<TripletScore> ss_;
   IMP::OwnerPointer<TripletContainer> pc_, ac_, rc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container
@@ -46,11 +44,11 @@ public:
       container is not copied.
       \param[in] name The object name
    */
-  CoreTripletsRestraint(TripletScore *ss,
+  InternalTripletsRestraint(TripletScore *ss,
                       TripletContainer *pc,
                       std::string name="TripletsRestraint %1%");
 
-  IMP_RESTRAINT(CoreTripletsRestraint);
+  IMP_RESTRAINT(InternalTripletsRestraint);
 
   ParticleTripletsTemp get_arguments() const {
     return pc_->get();
@@ -72,6 +70,6 @@ public:
                                       double max) const;
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_TRIPLETS_RESTRAINT_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_TRIPLETS_RESTRAINT_H */

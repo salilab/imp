@@ -14,7 +14,6 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreCLASSNAMEsRestraint.h>
 #include "ListCLASSNAMEContainer.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/CLASSNAMEPredicate.h>

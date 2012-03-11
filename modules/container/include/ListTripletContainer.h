@@ -11,7 +11,7 @@
 #define IMPCONTAINER_LIST_TRIPLET_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/internal/CoreListTripletContainer.h>
+#include <IMP/internal/InternalListTripletContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListTripletContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public TripletContainer
 #else
-public core::internal::CoreListTripletContainer
+public IMP::internal::InternalListTripletContainer
 #endif
 {
-  typedef core::internal::CoreListTripletContainer P;
+  typedef IMP::internal::InternalListTripletContainer P;
 public:
   ListTripletContainer(const ParticleTripletsTemp &ps);
 

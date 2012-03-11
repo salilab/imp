@@ -34,5 +34,7 @@ inline Particle* Model::get_particle(ParticleIndex p) const  {
 }
 
 IMP_END_NAMESPACE
+#include "ScoringFunction.h"
+#include "Restraint.h"
 
 #endif  /* IMPKERNEL_MODEL_H */

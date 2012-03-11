@@ -15,7 +15,7 @@
 #include <IMP/macros.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
-#include "internal/CoreListSingletonContainer.h"
+#include <IMP/internal/InternalListSingletonContainer.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -56,9 +56,10 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
 
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,
-                 internal::CoreListSingletonContainer *sc) const;
-  internal::CoreListSingletonContainer* set_up_movers(const Parameters &pms,
-                                        MonteCarlo *mc) const;
+                 IMP::internal::InternalListSingletonContainer *sc) const;
+  IMP::internal::InternalListSingletonContainer*
+    set_up_movers(const Parameters &pms,
+                  MonteCarlo *mc) const;
 public:
   MCCGSampler(Model *m, std::string name="MCCG Sampler %1%");
 

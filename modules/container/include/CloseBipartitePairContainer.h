@@ -19,7 +19,6 @@
 #include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

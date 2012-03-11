@@ -14,16 +14,17 @@
 #include "../core_config.h"
 #include "../ClosePairsFinder.h"
 #include "MovedSingletonContainer.h"
+#include "../PairRestraint.h"
 #include <IMP/PairContainer.h>
 #include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
-#include "pair_helpers.h"
+#include <IMP/internal/ListLikePairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 
 class IMPCOREEXPORT CoreClosePairContainer :
-public internal::ListLikePairContainer
+  public IMP::internal::ListLikePairContainer
 {
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP::OwnerPointer<ClosePairsFinder> cpf_;

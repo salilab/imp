@@ -11,10 +11,10 @@
 #include <IMP/internal/utility.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/PairModifier.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/PairScore.h>
-#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/internal/singleton_helpers.h>
 #include <IMP/base/utility.h>
 
 #include <algorithm>
@@ -25,7 +25,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
                                                  double threshold):
-  internal::ListLikeSingletonContainer(pc->get_model(),
+  IMP::internal::ListLikeSingletonContainer(pc->get_model(),
                                        "MovedSingletonContainer%1%"),
   threshold_(threshold),
   pc_(pc)
@@ -43,7 +43,7 @@ void MovedSingletonContainer::do_show(std::ostream &) const
 
 
 void MovedSingletonContainer::do_after_evaluate() {
-  internal::ListLikeSingletonContainer::do_after_evaluate();
+  IMP::internal::ListLikeSingletonContainer::do_after_evaluate();
   if (reset_all_) {
     do_reset_all();
     ParticleIndexes t;
@@ -314,7 +314,7 @@ RigidMovedSingletonContainer
 ::RigidMovedSingletonContainer(SingletonContainer *pc,
                                double threshold):
   MovedSingletonContainer(pc, threshold){
-  normal_= new CoreListSingletonContainer(pc->get_model(),
+  normal_= new IMP::internal::InternalListSingletonContainer(pc->get_model(),
                                           "Non-rigid particles %1%");
   normal_moved_= new XYZRMovedSingletonContainer(normal_, threshold);
 }

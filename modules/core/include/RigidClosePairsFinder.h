@@ -10,7 +10,7 @@
 
 #include "ClosePairsFinder.h"
 #include "rigid_bodies.h"
-#include "internal/CoreListSingletonContainer.h"
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE

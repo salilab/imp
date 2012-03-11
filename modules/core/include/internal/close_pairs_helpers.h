@@ -14,7 +14,7 @@
 #include "grid_close_pairs_impl.h"
 #include "rigid_body_tree.h"
 #include "../XYZR.h"
-#include "CoreListPairContainer.h"
+#include <IMP/internal/InternalListPairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -27,8 +27,8 @@ struct IsInactive {
     return !p[0]->get_is_active() || !p[1]->get_is_active();
   }
 };
-inline CoreListPairContainer *get_list(PairContainer *pc) {
-  return dynamic_cast<CoreListPairContainer *>(pc);
+inline IMP::internal::InternalListPairContainer *get_list(PairContainer *pc) {
+  return dynamic_cast<IMP::internal::InternalListPairContainer *>(pc);
 }
 
 

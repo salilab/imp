@@ -7,27 +7,23 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_LIST_QUAD_CONTAINER_H
-#define IMPCORE_INTERNAL_CORE_LIST_QUAD_CONTAINER_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H
+#define IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H
 
-#include "../core_config.h"
-#include <IMP/QuadContainer.h>
-#include <IMP/internal/container_helpers.h>
-#include "quad_helpers.h"
-#include <IMP/ScoreState.h>
-#include <IMP/scoped.h>
-#include <IMP/generic.h>
+#include "../kernel_config.h"
+#include "container_helpers.h"
+#include "ListLikeQuadContainer.h"
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPCOREEXPORT CoreListQuadContainer:
-  public internal::ListLikeQuadContainer
+class IMPEXPORT InternalListQuadContainer:
+  public ListLikeQuadContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(CoreListQuadContainer);
+  IMP_ACTIVE_CONTAINER_DECL(InternalListQuadContainer);
  public:
-  CoreListQuadContainer(Model *m, std::string name);
-  CoreListQuadContainer(Model *m, const char *name);
+  InternalListQuadContainer(Model *m, std::string name);
+  InternalListQuadContainer(Model *m, const char *name);
   void add_particle_quad(const ParticleQuad& vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Quad cannot be nullptr (or None)");
@@ -56,11 +52,11 @@ class IMPCOREEXPORT CoreListQuadContainer:
   bool get_is_up_to_date() const {
     return true;
   }
-  IMP_LISTLIKE_QUAD_CONTAINER(CoreListQuadContainer);
+  IMP_LISTLIKE_QUAD_CONTAINER(InternalListQuadContainer);
 };
 
-IMP_OBJECTS(CoreListQuadContainer, CoreListQuadContainers);
+IMP_OBJECTS(InternalListQuadContainer, InternalListQuadContainers);
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_LIST_QUAD_CONTAINER_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_QUAD_CONTAINER_H */

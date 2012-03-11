@@ -14,7 +14,6 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CorePairsRestraint.h>
 #include "ListPairContainer.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>

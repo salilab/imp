@@ -11,7 +11,7 @@
 #include "IMP/container/ListQuadContainer.h"
 #include "IMP/QuadModifier.h"
 #include "IMP/QuadScore.h"
-#include <IMP/core/internal/quad_helpers.h>
+#include <IMP/internal/InternalListQuadContainer.h>
 #include <algorithm>
 
 
@@ -20,7 +20,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 ListQuadContainer
 ::ListQuadContainer(const ParticleQuadsTemp &ps):
-  P(P::get_model(ps.begin(), ps.end()), "ListSingletonContainer%1%")
+  P(IMP::internal::get_model(ps[0]),
+    "ListSingletonContainer%1%")
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");
@@ -30,7 +31,7 @@ ListQuadContainer
 ListQuadContainer
 ::ListQuadContainer(const ParticleQuadsTemp &ps,
                          std::string name):
-  P(P::get_model(ps.begin(), ps.end()), name)
+  P(IMP::internal::get_model(ps[0]), name)
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");

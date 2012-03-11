@@ -11,10 +11,7 @@
 #include "IMP/core/internal/CoreClosePairContainer.h"
 #include <IMP/core/BoxSweepClosePairsFinder.h>
 #include <IMP/core/GridClosePairsFinder.h>
-#include <IMP/core/internal/CoreListPairContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
-#include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/PairModifier.h>
 #include <IMP/utility.h>
 #include <algorithm>
@@ -39,7 +36,8 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
                                                  double distance,
                                                  ClosePairsFinder *cpf,
                                        double slack):
-  internal::ListLikePairContainer(c->get_model(), "ClosePairContainer") {
+  IMP::internal::ListLikePairContainer(c->get_model(),
+                                       "ClosePairContainer") {
  initialize(c, distance, slack,
              cpf);
 }
@@ -299,7 +297,7 @@ void CoreClosePairContainer::do_before_evaluate() {
 
 
 void CoreClosePairContainer::do_after_evaluate() {
-  internal::ListLikePairContainer::do_after_evaluate();
+  IMP::internal::ListLikePairContainer::do_after_evaluate();
 }
 
 

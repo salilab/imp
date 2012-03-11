@@ -17,5 +17,6 @@ IMP_BEGIN_NAMESPACE
 
 
 IMP_END_NAMESPACE
+#include "ScoringFunction.h"
 
 #endif  /* IMPKERNEL_RESTRAINT_H */

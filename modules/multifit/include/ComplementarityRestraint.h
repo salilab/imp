@@ -93,6 +93,10 @@ public:
   }
 
   IMP_RESTRAINT(ComplementarityRestraint);
+#ifndef IMP_DOXYGEN
+  double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
+                                      double max) const;
+#endif
  private:
   typedef std::pair<algebra::Transformation3D,
                     algebra::DenseGrid3D<float> > GridPair;
@@ -110,9 +114,6 @@ public:
              double value,
              double interior_thickness,
              double voxel) const;
-  double unprotected_evaluate_if_good(DerivativeAccumulator *accum,
-                                      double max) const;
-
   void update_voxel();
   ParticlesTemp a_, b_;
   core::RigidBody rba_, rbb_;

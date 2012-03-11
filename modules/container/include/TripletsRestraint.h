@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreTripletsRestraint.h>
+#include <IMP/internal/InternalTripletsRestraint.h>
 
 #include <iostream>
 
@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT TripletsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public core::internal::CoreTripletsRestraint
+public IMP::internal::InternalTripletsRestraint
 #endif
 {
-  typedef core::internal::CoreTripletsRestraint P;
+  typedef IMP::internal::InternalTripletsRestraint P;
 public:
 
  //! Create the restraint with a shared container

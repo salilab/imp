@@ -10,6 +10,7 @@
 
 #include "IMP/TripletContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/internal/InternalListTripletContainer.h"
 #include "IMP/TripletModifier.h"
 
 IMP_BEGIN_NAMESPACE
@@ -22,5 +23,14 @@ TripletContainer::TripletContainer(Model *m, std::string name):
 // here for gcc
 TripletContainer::~TripletContainer(){
 }
+/*
+TripletContainerInput::TripletContainerInput(const ParticleTripletsTemp &in) {
+  Model *m=internal::get_model(in.begin(),
+                               in.end());
+  IMP_NEW(internal::CoreListTripletContainer, c,
+          (m, "temporary container"));
+  c->set_particle_triplets(in);
+  P::operator=(c);
+  }*/
 
 IMP_END_NAMESPACE

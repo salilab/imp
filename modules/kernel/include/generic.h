@@ -31,7 +31,6 @@ inline ScoringFunction* create_scoring_function(RestraintType* rs,
   return internal::create_scoring_function(rs, weight, max, name);
 }
 
-
 /** When programming in C++, you can use generic restraint instead
     of a SingletonRestraint, PairRestraint, etc. The result is
     somewhat faster (20% or so). See

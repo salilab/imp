@@ -9,19 +9,18 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_PAIRS_RESTRAINT_H
-#define IMPCORE_INTERNAL_CORE_PAIRS_RESTRAINT_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H
+#define IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H
 
-#include "../core_config.h"
+#include "../kernel_config.h"
 
-#include <IMP/Pointer.h>
-#include <IMP/PairScore.h>
-#include <IMP/PairContainer.h>
-#include "pair_helpers.h"
+#include <IMP/base/Pointer.h>
+#include "../PairScore.h"
+#include "../PairContainer.h"
 
 #include <iostream>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a PairScore to each Pair in a list.
 /** This restraint stores the used particles in a ParticlePairsTemp.
@@ -32,12 +31,11 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see PairRestraint
  */
-class IMPCOREEXPORT CorePairsRestraint :
+class IMPEXPORT InternalPairsRestraint :
   public PairsScoreRestraint
 {
   IMP::OwnerPointer<PairScore> ss_;
   IMP::OwnerPointer<PairContainer> pc_, ac_, rc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container
@@ -46,11 +44,11 @@ public:
       container is not copied.
       \param[in] name The object name
    */
-  CorePairsRestraint(PairScore *ss,
+  InternalPairsRestraint(PairScore *ss,
                       PairContainer *pc,
                       std::string name="PairsRestraint %1%");
 
-  IMP_RESTRAINT(CorePairsRestraint);
+  IMP_RESTRAINT(InternalPairsRestraint);
 
   ParticlePairsTemp get_arguments() const {
     return pc_->get();
@@ -72,6 +70,6 @@ public:
                                       double max) const;
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_PAIRS_RESTRAINT_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_PAIRS_RESTRAINT_H */

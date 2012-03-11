@@ -10,7 +10,6 @@
 
 #include "IMP/container/ConnectingPairContainer.h"
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/PairModifier.h>
 #include <IMP/algebra/vector_search.h>
@@ -78,8 +77,8 @@ namespace {
 
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
                                                  double error):
-  IMP::core::internal::ListLikePairContainer(c->get_model(),
-                                             "ConnectingPairContainer"),
+    IMP::internal::ListLikePairContainer(c->get_model(),
+                                         "ConnectingPairContainer"),
   error_(error),
   mst_(true) {
   initialize(c);
@@ -133,7 +132,7 @@ void ConnectingPairContainer::do_before_evaluate() {
 
 
 void ConnectingPairContainer::do_after_evaluate() {
-  IMP::core::internal::ListLikePairContainer::do_after_evaluate();
+  IMP::internal::ListLikePairContainer::do_after_evaluate();
 }
 
 

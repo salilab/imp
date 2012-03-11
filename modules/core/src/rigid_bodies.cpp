@@ -17,7 +17,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/core/internal/generic.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -475,8 +475,8 @@ void RigidBody::teardown_constraints(Particle *p) {
   if (p->get_model()->get_has_data(mk)) {
     IMP_LOG(TERSE, "Remove from normalize list" << std::endl);
     Object *o= p->get_model()->get_data(mk);
-    internal::CoreListSingletonContainer* list
-        = dynamic_cast<internal::CoreListSingletonContainer*>(o);
+    IMP::internal::InternalListSingletonContainer* list
+      = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(o);
     list->remove_particles(ParticlesTemp(1, p));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       IMP_FOREACH_SINGLETON_INDEX(list, {
@@ -514,12 +514,12 @@ RigidBody RigidBody::setup_particle(Particle *p,
   if (d.get_model()->get_has_data(mk)) {
     IMP_LOG(TERSE, "Adding particle to list of rigid bodies" << std::endl);
     Object *o= d.get_model()->get_data(mk);
-    internal::CoreListSingletonContainer* list
-        = dynamic_cast<internal::CoreListSingletonContainer*>(o);
+    IMP::internal::InternalListSingletonContainer* list
+      = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(o);
     list->add_particle(p);
   } else {
     IMP_LOG(TERSE, "Creating new list of rigid bodies" << std::endl);
-    IMP_NEW(internal::CoreListSingletonContainer, list, (d.get_model(),
+    IMP_NEW(IMP::internal::InternalListSingletonContainer, list, (d.get_model(),
                                                          "rigid bodies list"));
     list->set_particles(ParticlesTemp(1,p));
     IMP_NEW(NormalizeRotation, nr, ());
@@ -967,7 +967,7 @@ ParticlesTemp create_rigid_bodies(Model *m,
     ret[i]=p;
     RigidBody::setup_particle(p, algebra::ReferenceFrame3D());
   }
-  IMP_NEW(internal::CoreListSingletonContainer, list, (m,
+  IMP_NEW(IMP::internal::InternalListSingletonContainer, list, (m,
                                                        "rigid body list"));
   list->set_particles(ret);
   if (!no_members) {

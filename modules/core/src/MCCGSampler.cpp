@@ -13,7 +13,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
 #include <IMP/dependency_graph.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
@@ -252,7 +252,7 @@ void MCCGSampler::set_is_refining(bool tf) {
   is_refining_=tf;
 }
 
-internal::CoreListSingletonContainer*
+IMP::internal::InternalListSingletonContainer*
 MCCGSampler::set_up_movers(const Parameters &pms,
                            MonteCarlo *mc) const {
   if (pms.opt_keys_[0] != XK
@@ -269,7 +269,7 @@ MCCGSampler::set_up_movers(const Parameters &pms,
       ps.push_back(*pit);
     }
   }
-  IMP_NEW(internal::CoreListSingletonContainer, sc, (mc->get_model(),
+  IMP_NEW(IMP::internal::InternalListSingletonContainer, sc, (mc->get_model(),
                                                      "mccg particles"));
   sc->set_was_used(true);
   sc->set_particles(ps);
@@ -279,8 +279,9 @@ MCCGSampler::set_up_movers(const Parameters &pms,
   return sc.release();
 }
 
-void MCCGSampler::randomize(const Parameters &pms,
-                            internal::CoreListSingletonContainer *sc) const {
+void MCCGSampler
+::randomize(const Parameters &pms,
+            IMP::internal::InternalListSingletonContainer *sc) const {
   algebra::BoundingBox3D
     bb(algebra::Vector3D(pms.bounds_.find(XK)->second.first,
                          pms.bounds_.find(YK)->second.first,
@@ -357,7 +358,8 @@ ConfigurationSet *MCCGSampler::do_sample() const {
                                                optimizer_states_end()));
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
-  Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
+  Pointer<IMP::internal::InternalListSingletonContainer> sc
+    =set_up_movers(pms, mc);
   IMP_IF_CHECK(USAGE) {
     if (sc->get_indexes().size()==0) {
       IMP_WARN("There are no particles with optimized cartesian coordinates."

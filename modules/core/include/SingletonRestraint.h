@@ -17,7 +17,6 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
-#include "internal/singleton_helpers.h"
 #include <IMP/internal/container_helpers.h>
 
 #include <iostream>

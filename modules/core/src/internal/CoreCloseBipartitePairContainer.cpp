@@ -12,7 +12,6 @@
 #include <IMP/core/BoxSweepClosePairsFinder.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/PairModifier.h>
 #include <algorithm>
@@ -108,7 +107,7 @@ ContainersTemp CoreCloseBipartitePairContainer
 
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
-  core::internal::ListLikePairContainer::do_before_evaluate();
+  IMP::internal::ListLikePairContainer::do_before_evaluate();
   bool updated=false;
   if (covers_[0]==base::get_invalid_index<ParticleIndexTag>()
       || algebra::get_distance(get_model()->get_sphere(covers_[0]),
@@ -176,7 +175,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
 
 
 void CoreCloseBipartitePairContainer::do_after_evaluate() {
-  core::internal::ListLikePairContainer::do_after_evaluate();
+  IMP::internal::ListLikePairContainer::do_after_evaluate();
 }
 
 

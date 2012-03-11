@@ -9,8 +9,7 @@
  *
  */
 
-#include "IMP/core/internal/CoreCLASSNAMEsRestraint.h"
-#include "IMP/core/CLASSNAMERestraint.h"
+#include "IMP/internal/InternalCLASSNAMEsRestraint.h"
 #include <IMP/internal/container_helpers.h>
 
 #include <IMP/CLASSNAMEScore.h>
@@ -18,10 +17,10 @@
 #include <sstream>
 
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
-CoreCLASSNAMEsRestraint
-::CoreCLASSNAMEsRestraint(CLASSNAMEScore *ss,
+InternalCLASSNAMEsRestraint
+::InternalCLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainer *pc,
                       std::string name):
   CLASSNAMEsScoreRestraint(name),
@@ -29,7 +28,7 @@ CoreCLASSNAMEsRestraint
 
 }
 
-double CoreCLASSNAMEsRestraint
+double InternalCLASSNAMEsRestraint
 ::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
@@ -39,7 +38,7 @@ double CoreCLASSNAMEsRestraint
   return pc_->evaluate(ss_, accum);
 }
 
-double CoreCLASSNAMEsRestraint
+double InternalCLASSNAMEsRestraint
 ::unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
@@ -50,7 +49,7 @@ double CoreCLASSNAMEsRestraint
 
 
 
-ParticlesTemp CoreCLASSNAMEsRestraint::get_input_particles() const
+ParticlesTemp InternalCLASSNAMEsRestraint::get_input_particles() const
 {
   IMP_OBJECT_LOG;
   ParticlesTemp ret= IMP::internal::get_input_particles(ss_.get(),
@@ -58,7 +57,7 @@ ParticlesTemp CoreCLASSNAMEsRestraint::get_input_particles() const
   return ret;
 }
 
-ContainersTemp CoreCLASSNAMEsRestraint::get_input_containers() const
+ContainersTemp InternalCLASSNAMEsRestraint::get_input_containers() const
 {
   ContainersTemp ret= IMP::internal::get_input_containers(ss_.get(),
                                           pc_->get_contained_particles());
@@ -67,7 +66,7 @@ ContainersTemp CoreCLASSNAMEsRestraint::get_input_containers() const
 }
 
 
-Restraints CoreCLASSNAMEsRestraint::do_create_decomposition() const {
+Restraints InternalCLASSNAMEsRestraint::do_create_decomposition() const {
   Restraints cur= pc_->create_decomposition(ss_);
   for (unsigned int i=0; i< cur.size(); ++i) {
     std::ostringstream oss;
@@ -77,7 +76,8 @@ Restraints CoreCLASSNAMEsRestraint::do_create_decomposition() const {
   return cur;
 }
 
-Restraints CoreCLASSNAMEsRestraint::do_create_current_decomposition() const {
+Restraints
+InternalCLASSNAMEsRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< pc_->get_number(); ++i) {
     Restraints cur=ss_->create_current_decomposition(pc_->get(i));
@@ -91,10 +91,10 @@ Restraints CoreCLASSNAMEsRestraint::do_create_current_decomposition() const {
   return ret;
 }
 
-void CoreCLASSNAMEsRestraint::do_show(std::ostream& out) const
+void InternalCLASSNAMEsRestraint::do_show(std::ostream& out) const
 {
   out << "score " << ss_->get_name() << std::endl;
   out << "container " << pc_->get_name() << std::endl;
 }
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE

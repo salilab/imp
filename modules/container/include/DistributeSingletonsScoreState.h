@@ -14,7 +14,6 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreSingletonsRestraint.h>
 #include "ListSingletonContainer.h"
 #include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>

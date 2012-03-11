@@ -10,7 +10,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
-#include <IMP/core/internal/CorePairsRestraint.h>
+#include <IMP/internal/InternalPairsRestraint.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/RigidClosePairsFinder.h>
@@ -490,12 +490,13 @@ ExcludedVolumeRestraint
     IMP_INTERNAL_CHECK(all.size()== sc_->get_number_of_particles(),
                        "Sizes don't match in division");
   }
-  internal::CoreListSingletonContainers bincs;
+  IMP::internal::InternalListSingletonContainers bincs;
   for (unsigned int i=0; i< bins.size(); ++i) {
     std::ostringstream oss;
     oss << "C"<< i;
-    bincs.push_back(new internal::CoreListSingletonContainer(get_model(),
-                                                             oss.str()));
+    bincs.push_back(new IMP::internal
+                    ::InternalListSingletonContainer(get_model(),
+                                                     oss.str()));
     bincs.back()->set_particles(bins[i]);
     using IMP::operator<<;
     //using IMP::compatibility::operator<<;
@@ -526,7 +527,7 @@ ExcludedVolumeRestraint
                                                                  slack_));
       /*mscs[i]= ccbpc->get_moved_singleton_container(0);
         mscs[j]= ccbpc->get_moved_singleton_container(1);*/
-      IMP_NEW(internal::CorePairsRestraint, ev, (ssps_, ccbpc));
+      IMP_NEW(IMP::internal::InternalPairsRestraint, ev, (ssps_, ccbpc));
       ccbpc->set_pair_filters(pfs);
       ev->set_name(std::string("R")+oss.str());
       ret.push_back(ev);

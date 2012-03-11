@@ -10,6 +10,7 @@
 
 #include "IMP/SingletonContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/internal/InternalListSingletonContainer.h"
 #include "IMP/SingletonModifier.h"
 
 IMP_BEGIN_NAMESPACE
@@ -22,5 +23,14 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 // here for gcc
 SingletonContainer::~SingletonContainer(){
 }
+/*
+SingletonContainerInput::SingletonContainerInput(const ParticlesTemp &in) {
+  Model *m=internal::get_model(in.begin(),
+                               in.end());
+  IMP_NEW(internal::CoreListSingletonContainer, c,
+          (m, "temporary container"));
+  c->set_particles(in);
+  P::operator=(c);
+  }*/
 
 IMP_END_NAMESPACE

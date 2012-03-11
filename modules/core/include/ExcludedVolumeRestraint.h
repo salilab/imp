@@ -11,7 +11,7 @@
 #include "core_config.h"
 
 #include "internal/remove_pointers.h"
-#include "internal/CorePairsRestraint.h"
+#include <IMP/internal/InternalPairsRestraint.h>
 #include "internal/CoreClosePairContainer.h"
 #include "rigid_bodies.h"
 #include <IMP/PairContainer.h>

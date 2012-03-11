@@ -7,27 +7,23 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_LIST_TRIPLET_CONTAINER_H
-#define IMPCORE_INTERNAL_CORE_LIST_TRIPLET_CONTAINER_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_TRIPLET_CONTAINER_H
+#define IMPKERNEL_INTERNAL_INTERNAL_LIST_TRIPLET_CONTAINER_H
 
-#include "../core_config.h"
-#include <IMP/TripletContainer.h>
-#include <IMP/internal/container_helpers.h>
-#include "triplet_helpers.h"
-#include <IMP/ScoreState.h>
-#include <IMP/scoped.h>
-#include <IMP/generic.h>
+#include "../kernel_config.h"
+#include "container_helpers.h"
+#include "ListLikeTripletContainer.h"
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPCOREEXPORT CoreListTripletContainer:
-  public internal::ListLikeTripletContainer
+class IMPEXPORT InternalListTripletContainer:
+  public ListLikeTripletContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(CoreListTripletContainer);
+  IMP_ACTIVE_CONTAINER_DECL(InternalListTripletContainer);
  public:
-  CoreListTripletContainer(Model *m, std::string name);
-  CoreListTripletContainer(Model *m, const char *name);
+  InternalListTripletContainer(Model *m, std::string name);
+  InternalListTripletContainer(Model *m, const char *name);
   void add_particle_triplet(const ParticleTriplet& vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Triplet cannot be nullptr (or None)");
@@ -56,11 +52,11 @@ class IMPCOREEXPORT CoreListTripletContainer:
   bool get_is_up_to_date() const {
     return true;
   }
-  IMP_LISTLIKE_TRIPLET_CONTAINER(CoreListTripletContainer);
+  IMP_LISTLIKE_TRIPLET_CONTAINER(InternalListTripletContainer);
 };
 
-IMP_OBJECTS(CoreListTripletContainer, CoreListTripletContainers);
+IMP_OBJECTS(InternalListTripletContainer, InternalListTripletContainers);
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_LIST_TRIPLET_CONTAINER_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_TRIPLET_CONTAINER_H */

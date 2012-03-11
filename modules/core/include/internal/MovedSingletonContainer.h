@@ -14,17 +14,17 @@
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
-#include "CoreListSingletonContainer.h"
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/algebra/Sphere3D.h>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
-#include "singleton_helpers.h"
 #include <IMP/internal/container_helpers.h>
 #include <vector>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
+class IMPCOREEXPORT MovedSingletonContainer:
+  public IMP::internal::ListLikeSingletonContainer
 {
  private:
   double threshold_;
@@ -38,7 +38,7 @@ class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
   virtual void do_reset_moved()=0;
   virtual ParticleIndexes do_initialize()=0;
   virtual double do_get_distance_moved(unsigned int i) const=0;
-  using ListLikeSingletonContainer::update_list;
+  using IMP::internal::ListLikeSingletonContainer::update_list;
 public:
   void initialize();
   virtual void validate() const=0;
@@ -107,7 +107,7 @@ public:
 class IMPCOREEXPORT RigidMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  IMP::OwnerPointer<CoreListSingletonContainer> normal_;
+  IMP::OwnerPointer<IMP::internal::InternalListSingletonContainer> normal_;
   IMP::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
   vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
   ParticleIndexes rbs_;

@@ -17,7 +17,7 @@
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 
 #include <climits>
 
@@ -812,9 +812,10 @@ EdgeSet MSConnectivityScore::get_connected_pairs() const
 
 
 namespace {
-  internal::CoreListSingletonContainer* ms_get_list(SingletonContainer *sc) {
-    internal::CoreListSingletonContainer *ret
-      = dynamic_cast<internal::CoreListSingletonContainer*>(sc);
+  IMP::internal::InternalListSingletonContainer*
+  ms_get_list(SingletonContainer *sc) {
+    IMP::internal::InternalListSingletonContainer *ret
+      = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(sc);
     if (!ret) {
       IMP_THROW("Can only use the set and add methods when no container"
                 << " was passed on construction of MSConnectivityRestraint.",
@@ -827,7 +828,7 @@ namespace {
 size_t MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
 {
   if (!sc_&& !ps.empty()) {
-    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
+    sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "msconnectivity list");
   }
   ms_get_list(sc_)->add_particles(ps);

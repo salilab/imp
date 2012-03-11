@@ -11,7 +11,7 @@
 #define IMPCONTAINER_LIST_QUAD_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/internal/CoreListQuadContainer.h>
+#include <IMP/internal/InternalListQuadContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListQuadContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public QuadContainer
 #else
-public core::internal::CoreListQuadContainer
+public IMP::internal::InternalListQuadContainer
 #endif
 {
-  typedef core::internal::CoreListQuadContainer P;
+  typedef IMP::internal::InternalListQuadContainer P;
 public:
   ListQuadContainer(const ParticleQuadsTemp &ps);
 

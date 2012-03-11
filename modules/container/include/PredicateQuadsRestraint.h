@@ -14,7 +14,6 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreQuadsRestraint.h>
 #include "ListQuadContainer.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/QuadPredicate.h>
