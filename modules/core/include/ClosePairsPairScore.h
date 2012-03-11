@@ -11,7 +11,6 @@
 #include "core_config.h"
 #include "XYZR.h"
 #include "RigidClosePairsFinder.h"
-#include "internal/CoreListSingletonContainer.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>

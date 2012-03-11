@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreQuadsRestraint.h>
+#include <IMP/internal/InternalQuadsRestraint.h>
 
 #include <iostream>
 
@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT QuadsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public core::internal::CoreQuadsRestraint
+public IMP::internal::InternalQuadsRestraint
 #endif
 {
-  typedef core::internal::CoreQuadsRestraint P;
+  typedef IMP::internal::InternalQuadsRestraint P;
 public:
 
  //! Create the restraint with a shared container

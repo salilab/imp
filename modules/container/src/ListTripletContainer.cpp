@@ -11,7 +11,7 @@
 #include "IMP/container/ListTripletContainer.h"
 #include "IMP/TripletModifier.h"
 #include "IMP/TripletScore.h"
-#include <IMP/core/internal/triplet_helpers.h>
+#include <IMP/internal/InternalListTripletContainer.h>
 #include <algorithm>
 
 
@@ -20,7 +20,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 ListTripletContainer
 ::ListTripletContainer(const ParticleTripletsTemp &ps):
-  P(P::get_model(ps.begin(), ps.end()), "ListSingletonContainer%1%")
+  P(IMP::internal::get_model(ps[0]),
+    "ListSingletonContainer%1%")
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");
@@ -30,7 +31,7 @@ ListTripletContainer
 ListTripletContainer
 ::ListTripletContainer(const ParticleTripletsTemp &ps,
                          std::string name):
-  P(P::get_model(ps.begin(), ps.end()), name)
+  P(IMP::internal::get_model(ps[0]), name)
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");

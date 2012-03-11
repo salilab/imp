@@ -11,7 +11,7 @@
 #include "IMP/container/ListSingletonContainer.h"
 #include "IMP/SingletonModifier.h"
 #include "IMP/SingletonScore.h"
-#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 #include <algorithm>
 
 
@@ -20,7 +20,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 ListSingletonContainer
 ::ListSingletonContainer(const ParticlesTemp &ps):
-  P(P::get_model(ps.begin(), ps.end()), "ListSingletonContainer%1%")
+  P(IMP::internal::get_model(ps[0]),
+    "ListSingletonContainer%1%")
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");
@@ -30,7 +31,7 @@ ListSingletonContainer
 ListSingletonContainer
 ::ListSingletonContainer(const ParticlesTemp &ps,
                          std::string name):
-  P(P::get_model(ps.begin(), ps.end()), name)
+  P(IMP::internal::get_model(ps[0]), name)
 {
   IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
                   "All particles must belong to the same model.");

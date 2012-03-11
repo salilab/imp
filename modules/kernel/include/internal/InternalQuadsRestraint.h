@@ -9,19 +9,18 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_QUADS_RESTRAINT_H
-#define IMPCORE_INTERNAL_CORE_QUADS_RESTRAINT_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_QUADS_RESTRAINT_H
+#define IMPKERNEL_INTERNAL_INTERNAL_QUADS_RESTRAINT_H
 
-#include "../core_config.h"
+#include "../kernel_config.h"
 
-#include <IMP/Pointer.h>
-#include <IMP/QuadScore.h>
-#include <IMP/QuadContainer.h>
-#include "quad_helpers.h"
+#include <IMP/base/Pointer.h>
+#include "../QuadScore.h"
+#include "../QuadContainer.h"
 
 #include <iostream>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a QuadScore to each Quad in a list.
 /** This restraint stores the used particles in a ParticleQuadsTemp.
@@ -32,12 +31,11 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see QuadRestraint
  */
-class IMPCOREEXPORT CoreQuadsRestraint :
+class IMPEXPORT InternalQuadsRestraint :
   public QuadsScoreRestraint
 {
   IMP::OwnerPointer<QuadScore> ss_;
   IMP::OwnerPointer<QuadContainer> pc_, ac_, rc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container
@@ -46,11 +44,11 @@ public:
       container is not copied.
       \param[in] name The object name
    */
-  CoreQuadsRestraint(QuadScore *ss,
+  InternalQuadsRestraint(QuadScore *ss,
                       QuadContainer *pc,
                       std::string name="QuadsRestraint %1%");
 
-  IMP_RESTRAINT(CoreQuadsRestraint);
+  IMP_RESTRAINT(InternalQuadsRestraint);
 
   ParticleQuadsTemp get_arguments() const {
     return pc_->get();
@@ -72,6 +70,6 @@ public:
                                       double max) const;
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_QUADS_RESTRAINT_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_QUADS_RESTRAINT_H */

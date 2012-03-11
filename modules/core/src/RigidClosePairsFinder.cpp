@@ -13,7 +13,6 @@
 #include "IMP/core/XYZ.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
 #include <IMP/macros.h>
 #include <IMP/algebra/eigen_analysis.h>
 #include <cmath>

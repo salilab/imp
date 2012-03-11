@@ -55,10 +55,6 @@ ScoringFunction::ScoringFunction(Model *m,
                                                     last_score_(-1),
                                                     last_was_good_(false){
 }
-const ScoreStatesTemp& ScoringFunction::get_score_states() {
-  ensure_dependencies();
-  return ss_;
-}
 
 
 namespace {

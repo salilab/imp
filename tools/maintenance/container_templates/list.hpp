@@ -11,7 +11,7 @@
 #define IMPCONTAINER_LIST_HEADERNAME_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/internal/CoreListCLASSNAMEContainer.h>
+#include <IMP/internal/InternalListCLASSNAMEContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListCLASSNAMEContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public CLASSNAMEContainer
 #else
-public core::internal::CoreListCLASSNAMEContainer
+public IMP::internal::InternalListCLASSNAMEContainer
 #endif
 {
-  typedef core::internal::CoreListCLASSNAMEContainer P;
+  typedef IMP::internal::InternalListCLASSNAMEContainer P;
 public:
   ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps);
 

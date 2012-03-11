@@ -11,7 +11,7 @@
 #define IMPCONTAINER_LIST_PAIR_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/internal/CoreListPairContainer.h>
+#include <IMP/internal/InternalListPairContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else
-public core::internal::CoreListPairContainer
+public IMP::internal::InternalListPairContainer
 #endif
 {
-  typedef core::internal::CoreListPairContainer P;
+  typedef IMP::internal::InternalListPairContainer P;
 public:
   ListPairContainer(const ParticlePairsTemp &ps);
 

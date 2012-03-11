@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreSingletonsRestraint.h>
+#include <IMP/internal/InternalSingletonsRestraint.h>
 
 #include <iostream>
 
@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT SingletonsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public core::internal::CoreSingletonsRestraint
+public IMP::internal::InternalSingletonsRestraint
 #endif
 {
-  typedef core::internal::CoreSingletonsRestraint P;
+  typedef IMP::internal::InternalSingletonsRestraint P;
 public:
 
  //! Create the restraint with a shared container

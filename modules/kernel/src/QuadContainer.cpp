@@ -10,6 +10,7 @@
 
 #include "IMP/QuadContainer.h"
 #include "IMP/internal/utility.h"
+#include "IMP/internal/InternalListQuadContainer.h"
 #include "IMP/QuadModifier.h"
 
 IMP_BEGIN_NAMESPACE
@@ -22,5 +23,14 @@ QuadContainer::QuadContainer(Model *m, std::string name):
 // here for gcc
 QuadContainer::~QuadContainer(){
 }
+/*
+QuadContainerInput::QuadContainerInput(const ParticleQuadsTemp &in) {
+  Model *m=internal::get_model(in.begin(),
+                               in.end());
+  IMP_NEW(internal::CoreListQuadContainer, c,
+          (m, "temporary container"));
+  c->set_particle_quads(in);
+  P::operator=(c);
+  }*/
 
 IMP_END_NAMESPACE

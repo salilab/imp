@@ -8,11 +8,11 @@
  *
  */
 
-#include <IMP/core/internal/singleton_helpers.h>
+#include <IMP/internal/ListLikeSingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonScore.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikeSingletonContainer
 ::do_show(std::ostream &out) const {
@@ -21,4 +21,4 @@ void ListLikeSingletonContainer
 
 
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE

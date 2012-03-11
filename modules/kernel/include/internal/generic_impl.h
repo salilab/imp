@@ -65,10 +65,6 @@ template <class Score>
 class TupleRestraint :
 public SimpleRestraintParentTraits<Score>::SimpleRestraint
 {
-  BOOST_STATIC_ASSERT(!(boost::is_same<Score, SingletonScore>::value));
-  BOOST_STATIC_ASSERT(!(boost::is_same<Score, PairScore>::value));
-  BOOST_STATIC_ASSERT(!(boost::is_same<Score, TripletScore>::value));
-  BOOST_STATIC_ASSERT(!(boost::is_same<Score, QuadScore>::value));
   IMP::OwnerPointer<Score> ss_;
   typename Score::IndexArgument v_;
 public:
@@ -160,14 +156,12 @@ void TupleRestraint<Score>::do_show(std::ostream& out) const
   out << "score " << *ss_ << std::endl;
   out << "data " << Showable(get_argument()) << std::endl;
 }
-#ifndef IMP_DOXYGEN
 template <class Score>
 inline Restraint* create_restraint(Pointer<Score> s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
   return create_restraint<Score>(s.get(), t, name);
 }
-#endif
 
 
 

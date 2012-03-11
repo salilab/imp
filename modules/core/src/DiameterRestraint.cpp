@@ -10,7 +10,6 @@
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/FixedRefiner.h>
-#include <IMP/core/internal/CorePairsRestraint.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/core/CoverRefined.h>
 #include <IMP/core/DistancePairScore.h>

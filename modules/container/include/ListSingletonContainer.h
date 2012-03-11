@@ -11,7 +11,7 @@
 #define IMPCONTAINER_LIST_SINGLETON_CONTAINER_H
 
 #include "container_config.h"
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -23,10 +23,10 @@ class IMPCONTAINEREXPORT ListSingletonContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public SingletonContainer
 #else
-public core::internal::CoreListSingletonContainer
+public IMP::internal::InternalListSingletonContainer
 #endif
 {
-  typedef core::internal::CoreListSingletonContainer P;
+  typedef IMP::internal::InternalListSingletonContainer P;
 public:
   ListSingletonContainer(const ParticlesTemp &ps);
 

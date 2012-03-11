@@ -17,7 +17,6 @@
 #include <IMP/Restraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
-#include "internal/pair_helpers.h"
 #include <IMP/internal/container_helpers.h>
 
 #include <iostream>

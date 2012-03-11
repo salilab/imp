@@ -7,27 +7,23 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_LIST_SINGLETON_CONTAINER_H
-#define IMPCORE_INTERNAL_CORE_LIST_SINGLETON_CONTAINER_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H
+#define IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H
 
-#include "../core_config.h"
-#include <IMP/SingletonContainer.h>
-#include <IMP/internal/container_helpers.h>
-#include "singleton_helpers.h"
-#include <IMP/ScoreState.h>
-#include <IMP/scoped.h>
-#include <IMP/generic.h>
+#include "../kernel_config.h"
+#include "container_helpers.h"
+#include "ListLikeSingletonContainer.h"
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 
-class IMPCOREEXPORT CoreListSingletonContainer:
-  public internal::ListLikeSingletonContainer
+class IMPEXPORT InternalListSingletonContainer:
+  public ListLikeSingletonContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(CoreListSingletonContainer);
+  IMP_ACTIVE_CONTAINER_DECL(InternalListSingletonContainer);
  public:
-  CoreListSingletonContainer(Model *m, std::string name);
-  CoreListSingletonContainer(Model *m, const char *name);
+  InternalListSingletonContainer(Model *m, std::string name);
+  InternalListSingletonContainer(Model *m, const char *name);
   void add_particle(Particle* vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Singleton cannot be nullptr (or None)");
@@ -56,11 +52,11 @@ class IMPCOREEXPORT CoreListSingletonContainer:
   bool get_is_up_to_date() const {
     return true;
   }
-  IMP_LISTLIKE_SINGLETON_CONTAINER(CoreListSingletonContainer);
+  IMP_LISTLIKE_SINGLETON_CONTAINER(InternalListSingletonContainer);
 };
 
-IMP_OBJECTS(CoreListSingletonContainer, CoreListSingletonContainers);
+IMP_OBJECTS(InternalListSingletonContainer, InternalListSingletonContainers);
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_LIST_SINGLETON_CONTAINER_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_LIST_SINGLETON_CONTAINER_H */

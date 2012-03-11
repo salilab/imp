@@ -9,6 +9,7 @@
 #include <IMP/core/NormalMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/random.h>
+#include <IMP/macros.h>
 
 #include <boost/random/normal_distribution.hpp>
 

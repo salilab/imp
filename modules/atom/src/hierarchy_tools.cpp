@@ -705,7 +705,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       Pointer<PairScore> ps;
       IMP_LOG(TERSE, "Using closest pair score." << std::endl);
       ps=new core::KClosePairsPairScore(hdps, tr);
-      IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
+      IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
               (rps[0]->get_model(), "Connectivity particles"));
       lsc->set_particles(rps);
       IMP_NEW(core::ConnectivityRestraint, cr, (ps, lsc));
@@ -758,7 +758,7 @@ Restraint* create_excluded_volume_restraint(Selections ss) {
     }
     ps.insert(ps.end(), cps.begin(), cps.end());
   }
-  IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
+  IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc,
           (ps[0]->get_model(), "Hierarchy EV particles"));
   lsc->set_particles(ps);
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));

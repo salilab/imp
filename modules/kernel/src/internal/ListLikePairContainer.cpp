@@ -8,11 +8,11 @@
  *
  */
 
-#include <IMP/core/internal/pair_helpers.h>
+#include <IMP/internal/ListLikePairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikePairContainer
 ::do_show(std::ostream &out) const {
@@ -21,4 +21,4 @@ void ListLikePairContainer
 
 
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE

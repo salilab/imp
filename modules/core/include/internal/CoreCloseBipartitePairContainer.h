@@ -17,7 +17,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairFilter.h>
 #include <IMP/SingletonContainer.h>
-#include "pair_helpers.h"
+#include <IMP/internal/ListLikePairContainer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -33,9 +33,9 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     \usesconstraint
  */
 class IMPCOREEXPORT CoreCloseBipartitePairContainer:
-public IMP::core::internal::ListLikePairContainer
+public IMP::internal::ListLikePairContainer
 {
-  typedef IMP::core::internal::ListLikePairContainer P;
+  typedef IMP::internal::ListLikePairContainer P;
   IMP::OwnerPointer<SingletonContainer> sc_[2];
   bool were_close_, reset_;
   ObjectKey key_;

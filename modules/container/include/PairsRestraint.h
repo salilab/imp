@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CorePairsRestraint.h>
+#include <IMP/internal/InternalPairsRestraint.h>
 
 #include <iostream>
 
@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT PairsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public core::internal::CorePairsRestraint
+public IMP::internal::InternalPairsRestraint
 #endif
 {
-  typedef core::internal::CorePairsRestraint P;
+  typedef IMP::internal::InternalPairsRestraint P;
 public:
 
  //! Create the restraint with a shared container

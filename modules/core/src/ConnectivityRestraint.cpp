@@ -15,7 +15,7 @@
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
 #include <IMP/core/PairRestraint.h>
-#include <IMP/core/internal/CoreListSingletonContainer.h>
+#include <IMP/internal/InternalListSingletonContainer.h>
 
 #include <climits>
 
@@ -40,9 +40,10 @@ ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
 }
 
 namespace {
-  internal::CoreListSingletonContainer* get_list(SingletonContainer *sc) {
-    internal::CoreListSingletonContainer *ret
-      = dynamic_cast<internal::CoreListSingletonContainer*>(sc);
+  IMP::internal::InternalListSingletonContainer*
+  get_list(SingletonContainer *sc) {
+    IMP::internal::InternalListSingletonContainer *ret
+      = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(sc);
     if (!ret) {
       IMP_THROW("Can only use the set and add methods when no container"
                 << " was passed on construction of ConnectivityRestraint.",
@@ -54,7 +55,7 @@ namespace {
 
 void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
   if (!sc_ && !ps.empty()) {
-    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
+    sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
   }
   get_list(sc_)->set_particles(ps);
@@ -62,7 +63,7 @@ void ConnectivityRestraint::set_particles(const ParticlesTemp &ps) {
 
 void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
   if (!sc_&& !ps.empty()) {
-    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
+    sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
                                                   "connectivity list");
   }
   get_list(sc_)->add_particles(ps);
@@ -70,7 +71,7 @@ void ConnectivityRestraint::add_particles(const ParticlesTemp &ps) {
 
 void ConnectivityRestraint::add_particle(Particle *ps) {
   if (!sc_) {
-    sc_= new internal::CoreListSingletonContainer(ps->get_model(),
+    sc_= new IMP::internal::InternalListSingletonContainer(ps->get_model(),
                                                   "connectivity list");
   }
   get_list(sc_)->add_particle(ps);

@@ -9,19 +9,18 @@
  *
  */
 
-#ifndef IMPCORE_INTERNAL_CORE_HEADERNAMES_RESTRAINT_H
-#define IMPCORE_INTERNAL_CORE_HEADERNAMES_RESTRAINT_H
+#ifndef IMPKERNEL_INTERNAL_INTERNAL_HEADERNAMES_RESTRAINT_H
+#define IMPKERNEL_INTERNAL_INTERNAL_HEADERNAMES_RESTRAINT_H
 
-#include "../core_config.h"
+#include "../kernel_config.h"
 
-#include <IMP/Pointer.h>
-#include <IMP/CLASSNAMEScore.h>
-#include <IMP/CLASSNAMEContainer.h>
-#include "HELPERNAME_helpers.h"
+#include <IMP/base/Pointer.h>
+#include "../CLASSNAMEScore.h"
+#include "../CLASSNAMEContainer.h"
 
 #include <iostream>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 //! Applies a CLASSNAMEScore to each CLASSNAME in a list.
 /** This restraint stores the used particles in a PLURALVARIABLETYPE.
@@ -32,12 +31,11 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     \see CLASSNAMERestraint
  */
-class IMPCOREEXPORT CoreCLASSNAMEsRestraint :
+class IMPEXPORT InternalCLASSNAMEsRestraint :
   public CLASSNAMEsScoreRestraint
 {
   IMP::OwnerPointer<CLASSNAMEScore> ss_;
   IMP::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container
@@ -46,11 +44,11 @@ public:
       container is not copied.
       \param[in] name The object name
    */
-  CoreCLASSNAMEsRestraint(CLASSNAMEScore *ss,
+  InternalCLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainer *pc,
                       std::string name="CLASSNAMEsRestraint %1%");
 
-  IMP_RESTRAINT(CoreCLASSNAMEsRestraint);
+  IMP_RESTRAINT(InternalCLASSNAMEsRestraint);
 
   PLURALVARIABLETYPE get_arguments() const {
     return pc_->get();
@@ -72,6 +70,6 @@ public:
                                       double max) const;
 };
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE
 
-#endif  /* IMPCORE_INTERNAL_CORE_HEADERNAMES_RESTRAINT_H */
+#endif  /* IMPKERNEL_INTERNAL_INTERNAL_HEADERNAMES_RESTRAINT_H */

@@ -10,10 +10,6 @@
 #define IMPCORE_INTERNAL_GENERIC_H
 
 #include "../core_config.h"
-#include <IMP/core/internal/singleton_helpers.h>
-#include <IMP/core/internal/pair_helpers.h>
-#include <IMP/core/internal/triplet_helpers.h>
-#include <IMP/core/internal/quad_helpers.h>
 #include <IMP/generic.h>
 #include <IMP/base_types.h>
 #include <IMP/Object.h>

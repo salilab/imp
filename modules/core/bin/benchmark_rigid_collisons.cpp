@@ -72,7 +72,7 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
   for (unsigned int i=0; i< atoms.size(); ++i) {
     XYZR::setup_particle(atoms[i], 1);
   }
-  IMP_NEW(core::internal::CoreListSingletonContainer, lsc, (m, "list"));
+  IMP_NEW(IMP::internal::InternalListSingletonContainer, lsc, (m, "list"));
 
   PairContainer *cpc;
   if (rpcpf) {
@@ -88,7 +88,7 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
     lsc->set_particles(get_as<ParticlesTemp>(atoms));
     cpc = new core::internal::CoreClosePairContainer(lsc, 0.0, cpf, 1.0);
   }
-  IMP_NEW(core::internal::CorePairsRestraint, pr,
+  IMP_NEW(IMP::internal::InternalPairsRestraint, pr,
           (new DistancePairScore(new Linear(1,0)),
            cpc));
   m->add_restraint(pr);

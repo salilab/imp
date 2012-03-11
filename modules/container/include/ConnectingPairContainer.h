@@ -10,7 +10,7 @@
 
 #include "container_config.h"
 #include <IMP/core/internal/MovedSingletonContainer.h>
-#include <IMP/core/internal/pair_helpers.h>
+#include <IMP/internal/ListLikePairContainer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/macros.h>
@@ -41,7 +41,7 @@ class IMPCONTAINEREXPORT ConnectingPairContainer:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public PairContainer
 #else
-public IMP::core::internal::ListLikePairContainer
+public IMP::internal::ListLikePairContainer
 #endif
 {
   IMP::OwnerPointer<SingletonContainer> sc_;

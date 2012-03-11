@@ -10,9 +10,9 @@
 #define IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H
 
 #include "../base_types.h"
-#include "../Particle.h"
+#include "../declare_Particle.h"
 #include "../ScoreState.h"
-#include "../Model.h"
+#include "../declare_Model.h"
 #include "utility.h"
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>

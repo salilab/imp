@@ -8,11 +8,11 @@
  *
  */
 
-#include <IMP/core/internal/HELPERNAME_helpers.h>
+#include <IMP/internal/ListLikeCLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEScore.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMP_BEGIN_INTERNAL_NAMESPACE
 
 void ListLikeCLASSNAMEContainer
 ::do_show(std::ostream &out) const {
@@ -21,4 +21,4 @@ void ListLikeCLASSNAMEContainer
 
 
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMP_END_INTERNAL_NAMESPACE

@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include <IMP/core/internal/CoreCLASSNAMEsRestraint.h>
+#include <IMP/internal/InternalCLASSNAMEsRestraint.h>
 
 #include <iostream>
 
@@ -37,10 +37,10 @@ class IMPCONTAINEREXPORT CLASSNAMEsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
 public Restraint
 #else
-public core::internal::CoreCLASSNAMEsRestraint
+public IMP::internal::InternalCLASSNAMEsRestraint
 #endif
 {
-  typedef core::internal::CoreCLASSNAMEsRestraint P;
+  typedef IMP::internal::InternalCLASSNAMEsRestraint P;
 public:
 
  //! Create the restraint with a shared container

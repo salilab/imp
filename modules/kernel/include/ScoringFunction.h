@@ -19,18 +19,6 @@ IMP_BEGIN_NAMESPACE
 inline Model *ScoringFunction::get_model() const {
   return Tracked::get_tracker();
 }
-inline bool ScoringFunction::get_had_good_score() const {
-  return last_was_good_;
-}
-inline double ScoringFunction::get_last_score() const {
-  return last_score_;
-}
-inline const ScoreStatesTemp
-ScoringFunction::get_extra_score_states(const DependencyGraph &) const {
-  return ScoreStatesTemp();
-}
-
-
 inline void ScoringFunction::ensure_dependencies() {
   if (!get_model()->get_has_dependencies()) {
     get_model()->compute_dependencies();
