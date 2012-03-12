@@ -19,18 +19,21 @@ rt= RMF.create_hdf5_file(file_name)
 data_set= rt.add_child_index_data_set_2d("node_1_assignments")
 
 # create a list of assignments
-wcn=IMP.get_temporary_file_name("assignments", ".asn")
+wcn=IMP.create_temporary_file_name("assignments", ".asn")
 asl=IMP.domino.WriteAssignmentContainer(wcn, ss, ps, "writer")
+written=[]
 for i in range(0,5):
     for j in range(0,5):
         for k in range(0,5):
-            asl.add_assignment(IMP.domino.Assignment([i,j,k]))
+            a=IMP.domino.Assignment([i,j,k])
+            written.append(a)
+            asl.add_assignment(a)
 
 # to check, we can read it back immediately
 back_asl= IMP.domino.ReadAssignmentContainer(wcn, ss, ps, "reader")
 
 
-if back_asl.get_assignments()==asl.get_assignments():
+if back_asl.get_assignments()==written:
     print "They match!"
 else:
     print "They don't match :-("
@@ -45,7 +48,7 @@ ssp= IMP.domino.Subset([psp[3], psp[5], psp[7]])
 
 print "Note the subsets are differently ordered (most of the time): ", ss, ssp
 
-back_aslp= IMP.domino.ReadAssignmentContainer(wcn, ssp, psp, "reader2").get_assignments()
+back_aslp= IMP.domino.ReadAssignmentContainer(wcn, ssp, psp, "reader2")
 
 # however, the states are demuxed so they match
 print [str(a) for a in back_aslp.get_assignments()]
