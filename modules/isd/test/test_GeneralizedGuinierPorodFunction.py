@@ -315,6 +315,8 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             observed = self.mean.get_derivative_matrix([[pos]],
                     False)[0][particle]
             expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
+            if expected == 0:
+                continue
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivNumerics(self):
@@ -496,7 +498,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
                     False)[0][0]
             expected = IMP.test.numerical_derivative(dFunc, d, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianNumericds(self):
         """
