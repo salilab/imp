@@ -12,6 +12,7 @@
 
 #include "../kernel_config.h"
 #include "container_helpers.h"
+#include "active_container.h"
 #include "ListLikeSingletonContainer.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE

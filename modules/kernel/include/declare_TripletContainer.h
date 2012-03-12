@@ -14,15 +14,16 @@
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
+#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "TripletScore.h"
-#include "TripletModifier.h"
-#include "TripletDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
+class TripletModifier;
+class TripletDerivativeModifier;
+class TripletScore;
 
 //! A shared container for Triplets
 /** Stores a searchable shared collection of Triplets.

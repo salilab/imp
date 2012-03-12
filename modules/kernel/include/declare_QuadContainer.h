@@ -14,15 +14,16 @@
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
+#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "QuadScore.h"
-#include "QuadModifier.h"
-#include "QuadDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
+class QuadModifier;
+class QuadDerivativeModifier;
+class QuadScore;
 
 //! A shared container for Quads
 /** Stores a searchable shared collection of Quads.

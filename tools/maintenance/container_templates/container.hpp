@@ -12,6 +12,9 @@
 
 #include "kernel_config.h"
 #include "declare_CLASSNAMEContainer.h"
+#include "CLASSNAMEScore.h"
+#include "CLASSNAMEModifier.h"
+#include "CLASSNAMEDerivativeModifier.h"
 #include "generic.h"
 #include "internal/HELPERNAME_helpers.h"
 #include "macros.h"

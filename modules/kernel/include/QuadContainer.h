@@ -12,6 +12,9 @@
 
 #include "kernel_config.h"
 #include "declare_QuadContainer.h"
+#include "QuadScore.h"
+#include "QuadModifier.h"
+#include "QuadDerivativeModifier.h"
 #include "generic.h"
 #include "internal/quad_helpers.h"
 #include "macros.h"

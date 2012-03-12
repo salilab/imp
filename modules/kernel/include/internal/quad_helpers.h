@@ -16,9 +16,12 @@
 #include "../QuadModifier.h"
 #include "../QuadDerivativeModifier.h"
 #include "../QuadScore.h"
-#include "../declare_Model.h"
 #include "container_helpers.h"
 #include <algorithm>
+
+IMP_BEGIN_NAMESPACE
+class Model;
+IMP_END_NAMESPACE
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 

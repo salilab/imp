@@ -83,6 +83,4 @@ inline ParticleKeys Particle::get_particle_keys() const {
 
 IMP_END_NAMESPACE
 
-#include "Model.h"
-
 #endif  /* IMPKERNEL_PARTICLE_H */

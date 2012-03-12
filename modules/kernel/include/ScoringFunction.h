@@ -24,6 +24,10 @@ inline void ScoringFunction::ensure_dependencies() {
     get_model()->compute_dependencies();
   }
 }
+inline const ScoreStatesTemp& ScoringFunction::get_score_states() {
+  ensure_dependencies();
+  return ss_;
+}
 inline double ScoringFunction::evaluate_if_good(bool derivatives) {
   set_was_used(true);
   ensure_dependencies();
