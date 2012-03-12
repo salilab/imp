@@ -31,7 +31,6 @@ try:
 except:
     print "Unable to display graph using 'dot'"
 
-ors= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
 filters=[IMP.domino.RestraintScoreSubsetFilterTable(m, pst),
          IMP.domino.ExclusionSubsetFilterTable(pst)]
 leaf_table=IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
