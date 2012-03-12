@@ -17,6 +17,7 @@
 #include <IMP/base/Pointer.h>
 #include "../TripletScore.h"
 #include "../TripletContainer.h"
+#include "../Restraint.h"
 
 #include <iostream>
 

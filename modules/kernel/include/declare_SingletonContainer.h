@@ -14,15 +14,16 @@
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
+#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "SingletonScore.h"
-#include "SingletonModifier.h"
-#include "SingletonDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
+class SingletonModifier;
+class SingletonDerivativeModifier;
+class SingletonScore;
 
 //! A shared container for Singletons
 /** Stores a searchable shared collection of Singletons.

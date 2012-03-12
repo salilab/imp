@@ -17,6 +17,7 @@
 #include <IMP/base/Pointer.h>
 #include "../CLASSNAMEScore.h"
 #include "../CLASSNAMEContainer.h"
+#include "../Restraint.h"
 
 #include <iostream>
 

@@ -17,6 +17,7 @@
 #include <IMP/base/Pointer.h>
 #include "../QuadScore.h"
 #include "../QuadContainer.h"
+#include "../Restraint.h"
 
 #include <iostream>
 

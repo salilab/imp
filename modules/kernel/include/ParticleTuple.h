@@ -95,6 +95,4 @@ ParticleQuads;
 
 IMP_END_NAMESPACE
 
-#include "Particle.h"
-
 #endif  /* IMPKERNEL_PARTICLE_TUPLE_H */

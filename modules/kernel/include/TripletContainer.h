@@ -12,6 +12,9 @@
 
 #include "kernel_config.h"
 #include "declare_TripletContainer.h"
+#include "TripletScore.h"
+#include "TripletModifier.h"
+#include "TripletDerivativeModifier.h"
 #include "generic.h"
 #include "internal/triplet_helpers.h"
 #include "macros.h"

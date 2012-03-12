@@ -9,12 +9,10 @@
 #define IMPKERNEL_SCORE_STATE_H
 
 #include "kernel_config.h"
-#include "RefCounted.h"
-#include "Pointer.h"
+#include "WeakPointer.h"
 #include "DerivativeAccumulator.h"
 #include "VersionInfo.h"
 #include "utility.h"
-#include "container_base.h"
 #include "macros.h"
 #include <iostream>
 

@@ -12,6 +12,9 @@
 
 #include "kernel_config.h"
 #include "declare_PairContainer.h"
+#include "PairScore.h"
+#include "PairModifier.h"
+#include "PairDerivativeModifier.h"
 #include "generic.h"
 #include "internal/pair_helpers.h"
 #include "macros.h"

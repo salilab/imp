@@ -14,15 +14,16 @@
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
+#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "CLASSNAMEScore.h"
-#include "CLASSNAMEModifier.h"
-#include "CLASSNAMEDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
+class CLASSNAMEModifier;
+class CLASSNAMEDerivativeModifier;
+class CLASSNAMEScore;
 
 //! A shared container for CLASSNAMEs
 /** Stores a searchable shared collection of CLASSNAMEs.

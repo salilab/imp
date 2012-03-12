@@ -14,15 +14,16 @@
 #include "internal/IndexingIterator.h"
 #include "declare_Particle.h"
 #include "container_base.h"
+#include "internal/container_helpers.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "PairScore.h"
-#include "PairModifier.h"
-#include "PairDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
+class PairModifier;
+class PairDerivativeModifier;
+class PairScore;
 
 //! A shared container for Pairs
 /** Stores a searchable shared collection of Pairs.

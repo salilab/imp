@@ -17,6 +17,7 @@
 #include <IMP/base/Pointer.h>
 #include "../PairScore.h"
 #include "../PairContainer.h"
+#include "../Restraint.h"
 
 #include <iostream>
 
