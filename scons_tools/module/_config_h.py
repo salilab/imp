@@ -35,7 +35,7 @@ def _add_use_or_no(env, h, name):
     #print >> h, "#  if defined("+nd+") || defined("+name+")"
     #print >> h, '#    error "Do not define macro '+name+' directly."'
     #print >> h, "#  endif"
-    print >> h, "#  define "+name
+    print >> h, "#define "+name
 
 def _add_use(env, h, nm):
     vars= scons_tools.module._get_module_variables(env)
@@ -58,10 +58,10 @@ def _add_version(env, h, nm, version, versionheader, versioncpp):
         test = " && ".join([x[0]+" != " + x[1] for x in zip(versioncpp, version)])
     else:
         test=versioncpp +" != "+version
-    print >> h, "#  if "+test
+    print >> h, "#if "+test
     print >> h, '#    error "'+nm+ 'versions does not match expected version. Please rerun"\\'\
     '"configuration tests by running scons with --config=force."'
-    print >> h, "#  endif"
+    print >> h, "#endif"
     print >> h, "#endif"
 
 
@@ -110,57 +110,57 @@ def _action_config_h(target, source, env):
 #include <string>
 
 
-#  ifdef _MSC_VER
+#ifdef _MSC_VER
 
-#    ifdef %(EXPORT)s_EXPORTS
-#      define %(EXPORT)sEXPORT __declspec(dllexport)
-#    else // EXPORTS
-#      define %(EXPORT)sEXPORT __declspec(dllimport)
-#    endif // EXPORTS
+#ifdef %(EXPORT)s_EXPORTS
+#define %(EXPORT)sEXPORT __declspec(dllexport)
+#else // EXPORTS
+#define %(EXPORT)sEXPORT __declspec(dllimport)
+#endif // EXPORTS
 
-#  else // _MSC_VER
+#else // _MSC_VER
 
-#    ifdef GCC_VISIBILITY
-#      define %(EXPORT)sEXPORT __attribute__ ((visibility("default")))
-#    else // GCC_VISIBILITY
-#      define %(EXPORT)sEXPORT
-#    endif // GCC_VISIBILITY
-#  endif // _MSC_VER
+#ifdef GCC_VISIBILITY
+#define %(EXPORT)sEXPORT __attribute__ ((visibility("default")))
+#else // GCC_VISIBILITY
+#define %(EXPORT)sEXPORT
+#endif // GCC_VISIBILITY
+#endif // _MSC_VER
 
-#  if defined(_MSC_VER) && !defined(SWIG)
-#    ifdef %(EXPORT)s_EXPORTS
+#if defined(_MSC_VER) && !defined(SWIG)
+#ifdef %(EXPORT)s_EXPORTS
 
-#      define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
+#define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
           template class __declspec(dllexport) name
 
-#    else //EXPORTS
+#else //EXPORTS
 
-#      define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
+#define %(EXPORT)s_EXPORT_TEMPLATE(name)       \
           template class __declspec(dllimport) name
 
-#    endif // EXPORTS
+#endif // EXPORTS
 
-#  else // MSC and SWIG
-#    define %(EXPORT)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+#else // MSC and SWIG
+#define %(EXPORT)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#  endif // MSC and SWIG
+#endif // MSC and SWIG
 
 
 """ % vars
-    print >> h, "#  define %(EXPORT)s_BEGIN_NAMESPACE \\"%vars
+    print >> h, "#define %(EXPORT)s_BEGIN_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "namespace %s {\\" %comp
     print >> h
-    print >> h, "#  define %(EXPORT)s_END_NAMESPACE \\"%vars
+    print >> h, "#define %(EXPORT)s_END_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "} /* namespace %s */ \\" %comp
     print >> h
-    print >> h, """#  define %(EXPORT)s_BEGIN_INTERNAL_NAMESPACE \\
+    print >> h, """#define %(EXPORT)s_BEGIN_INTERNAL_NAMESPACE \\
 %(EXPORT)s_BEGIN_NAMESPACE \\
 namespace internal {
 """ %vars
     print >> h
-    print >> h, """#  define %(EXPORT)s_END_INTERNAL_NAMESPACE \\
+    print >> h, """#define %(EXPORT)s_END_INTERNAL_NAMESPACE \\
 } /* namespace internal */ \\
 %(EXPORT)s_END_NAMESPACE
 """ %vars
@@ -246,8 +246,8 @@ inline std::string get_module_name() {
     if env['MODULE_HAS_DATA']:
         print >> h, """
 
-#  ifndef SWIG
-#    include <IMP/base/internal/directories.h>
+#ifndef SWIG
+#include <IMP/base/internal/directories.h>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 IMPBASEEXPORT std::string get_data_path(std::string module_name,
@@ -256,7 +256,7 @@ IMPBASEEXPORT std::string get_example_path(std::string module_name,
                                        std::string file_name);
 
 IMPBASE_END_INTERNAL_NAMESPACE
-#  endif // SWIG
+#endif // SWIG
 
 #ifndef SWIG
 %(EXPORT)s_BEGIN_NAMESPACE

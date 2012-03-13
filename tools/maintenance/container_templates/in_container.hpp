@@ -34,10 +34,12 @@ public:
   IMP_HEADERNAME_FILTER(InContainerCLASSNAMEFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool InContainerCLASSNAMEFilter
 ::get_contains(ARGUMENTTYPE p) const {
   return c_->get_contains_FUNCTIONNAME(p);
 }
+#endif
 
 IMP_OBJECTS(InContainerCLASSNAMEFilter, InContainerCLASSNAMEFilters);
 

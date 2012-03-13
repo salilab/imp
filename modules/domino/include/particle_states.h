@@ -249,7 +249,7 @@ class IMPDOMINOEXPORT PermutationStates: public ParticleStates {
   IMP_PARTICLE_STATES(PermutationStates);
 };
 
-
+#ifndef IMP_DOXYGEN
 inline unsigned int
 PermutationStates::get_number_of_particle_states() const {
   return inner_->get_number_of_particle_states();
@@ -258,6 +258,7 @@ inline void
 PermutationStates::load_particle_state(unsigned int i, Particle *p) const {
   return inner_->load_particle_state(get_inner_state(i), p);
 }
+#endif
 
 IMPDOMINO_END_NAMESPACE
 

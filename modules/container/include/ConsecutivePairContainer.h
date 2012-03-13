@@ -84,6 +84,7 @@ class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter: public PairFilter {
   IMP_INDEX_PAIR_FILTER(ExclusiveConsecutivePairFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool ExclusiveConsecutivePairFilter
 ::get_contains(Model *m, const ParticleIndexPair &pp) const {
   IntKey k= ConsecutivePairContainer::get_exclusive_key();
@@ -93,7 +94,7 @@ inline bool ExclusiveConsecutivePairFilter
   int ib= m->get_attribute(k, pp[1]);
   return std::abs(ia-ib)==1;
 }
-
+#endif
 
 
 

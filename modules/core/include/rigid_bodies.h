@@ -123,7 +123,7 @@ public:
 
   //! Create a new rigid body from a set of particles.
   /** \param[in] p The particle to make into a rigid body
-      \param[in] members The particles to use as members of the rigid body
+      \param[in] ps The particles to use as members of the rigid body
 
       The initial position and orientation of p is computed, as are the
       relative positions of the member particles. The member particles

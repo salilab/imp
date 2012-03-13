@@ -34,10 +34,12 @@ public:
   IMP_SINGLETON_FILTER(InContainerSingletonFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool InContainerSingletonFilter
 ::get_contains(Particle* p) const {
   return c_->get_contains_particle(p);
 }
+#endif
 
 IMP_OBJECTS(InContainerSingletonFilter, InContainerSingletonFilters);
 

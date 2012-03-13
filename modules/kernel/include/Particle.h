@@ -15,6 +15,7 @@
 
 
 IMP_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
 
 inline bool Particle::get_is_active() const {
   IMP_CHECK_OBJECT(this);
@@ -79,6 +80,7 @@ inline ParticleKeys Particle::get_particle_keys() const {
   IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
   return get_model()->internal::ParticleAttributeTable::get_attribute_keys(id_);
 }
+#endif
 
 IMP_END_NAMESPACE
 

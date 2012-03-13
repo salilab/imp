@@ -39,7 +39,6 @@ IMP_END_NAMESPACE
 
   The warnings can be turned off using the
   IMP::core::set_print_deprecation_messages function.
-  \param[in] old_classname The class which is deprecated.
   \param[in] replacement_classname The class which replaces it.
 
   Further, \imp can be built without deprecated code by defining
@@ -56,7 +55,8 @@ IMP_END_NAMESPACE
     ::IMP::internal::set_printed_deprecation_message(get_type_name(),   \
                                                            true);       \
   }
-
+/** \see IMP_DEPRECATED_OBJECT()
+ */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
   if (::IMP::internal::get_print_deprecation_message(__func__)) {       \
     IMP_LOG(WARNING, "WARNING: " << __func__                            \
