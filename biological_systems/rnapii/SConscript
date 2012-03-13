@@ -1,7 +1,7 @@
 Import('env')
 import scons_tools.examples
 
-env= env.IMPSystem(version='nightly-11/3/2012',
+env= env.IMPSystem(version='nightly-12/3/2012',
                    authors=["Keren Lasker"],
                    brief="Compute a structure for the human RNAPII complex.",
                    overview="""

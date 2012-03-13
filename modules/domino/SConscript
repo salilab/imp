@@ -1,6 +1,6 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-11/3/2012',
+env.IMPModuleBuild(version='nightly-12/3/2012',
                    required_modules=['display', 'algebra'],
                    optional_modules=['RMF'],
                    lib_only_required_modules=['statistics', 'core', 'container'])
