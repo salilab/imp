@@ -349,6 +349,7 @@ public:                                                                 \
     - IMP::Restraint::get_input_particles()
 */
 #define IMP_RESTRAINT(Name)                                             \
+  public:                                                               \
   IMP_IMPLEMENT( double                                                 \
                 unprotected_evaluate(DerivativeAccumulator *accum) const); \
   IMP_IMPLEMENT_INLINE(ScoringFunction *                                \
