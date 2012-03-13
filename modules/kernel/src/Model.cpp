@@ -8,15 +8,8 @@
 
 #include "IMP/Model.h"
 #include "IMP/Particle.h"
-#include "IMP/log.h"
-#include "IMP/Restraint.h"
-#include "IMP/DerivativeAccumulator.h"
-#include "IMP/ScoreState.h"
-#include "IMP/RestraintSet.h"
-#include "IMP/dependency_graph.h"
 #include "IMP/internal/scoring_functions.h"
 #include "IMP/compatibility/set.h"
-#include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
 

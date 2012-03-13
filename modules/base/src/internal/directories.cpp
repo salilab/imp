@@ -10,12 +10,12 @@
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/exception.h>
 #include <fstream>
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/iterator/iterator_facade.hpp>
 
 #ifdef IMP_BASE_USE_BOOST_FILESYSTEM
 #define BOOST_FILESYSTEM_VERSION 2
 #include <boost/filesystem/path.hpp>
-#include <boost/filesystem/exception.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
 #endif

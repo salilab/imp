@@ -13,14 +13,9 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <utility>
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace std {
-template <class T, class A>
-class vector;
-template <class A, class B>
-class pair;
-}
 namespace IMP {
 namespace compatibility {
 template <class T>

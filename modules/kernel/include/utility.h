@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include <IMP/base/utility.h>
 #include <IMP/base/types.h>
+#include <IMP/compatibility/vector.h>
 IMP_BEGIN_NAMESPACE
 #ifndef SWIG
 #ifndef IMP_DOXYGEN

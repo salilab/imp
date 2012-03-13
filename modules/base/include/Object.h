@@ -15,13 +15,11 @@
 #include "VersionInfo.h"
 #include "base_macros.h"
 #include "log.h"
-#include "types.h"
 #include <IMP/compatibility/hash.h>
 #include <boost/functional/hash.hpp>
 
 
 IMPBASE_BEGIN_NAMESPACE
-class RefCounted;
 
 //! Common base class for heavy weight \imp objects.
 /** The base class for non value-type objects in \imp.

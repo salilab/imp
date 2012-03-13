@@ -9,7 +9,7 @@
 #ifndef IMPBASE_INTERNAL_DIRECTORIES_H
 #define IMPBASE_INTERNAL_DIRECTORIES_H
 
-#include <IMP/base/base_config.h>
+#include "../base_config.h"
 #include <string>
 
 IMPBASE_BEGIN_INTERNAL_NAMESPACE

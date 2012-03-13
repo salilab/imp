@@ -11,16 +11,12 @@
 
 #include "base_config.h"
 #include "base_macros.h"
-#include "utility.h"
 #include <boost/timer.hpp>
 
 #include <iostream>
-#include <fstream>
 #include <cstdlib>
-#include <cassert>
 #include <string>
 #include <sstream>
-#include <map>
 
 IMPBASE_BEGIN_NAMESPACE
 

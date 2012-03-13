@@ -6,7 +6,6 @@
  */
 
 #include "IMP/utility.h"
-#include "IMP/base/log.h"
 IMP_BEGIN_NAMESPACE
 
 

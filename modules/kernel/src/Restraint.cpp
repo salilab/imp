@@ -13,7 +13,6 @@
 #include "IMP/Restraint.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
-#include <boost/tuple/tuple.hpp>
 #include <numeric>
 
 IMP_BEGIN_NAMESPACE

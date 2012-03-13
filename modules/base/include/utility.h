@@ -9,13 +9,8 @@
 #define IMPBASE_UTILITY_H
 
 #include "base_config.h"
-#include <boost/version.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/utility.hpp>
-#include <algorithm>
 #include <cmath>
-#include <vector>
-#include <iostream>
 #include "base_macros.h"
 #include <IMP/compatibility/vector.h>
 #include <IMP/compatibility/math.h>
