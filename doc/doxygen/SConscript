@@ -15,12 +15,6 @@ def print_generate_doxygen(target, source, env):
 def print_generate_doxygen_header(target, source, env):
     print "generating doxygen header ", target[0].path
 
-def make_defs(target, source, env):
-    os.environ['PATH']=env['ENV']['PATH']
-    env.Execute("grep -v \"#include\" "+source[0].abspath+"| "+env['CPP'] +" -C -DIMP_DOXYGEN -dM - | grep -v \"define __\" > "+target[0].abspath)
-def print_make_defs(target, source, env):
-    print "running cpp ", str(target), str(source)
-
 
 def make_output(nodes):
     return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
@@ -74,8 +68,6 @@ def generate_doxygen(target, source, env):
             elif ss.endswith(".dot"):
                 dots.append(s)
                 put = True
-            elif ss.endswith(".def"):
-                put = True
             elif ss.endswith("header.txt"):
                 put = True
             if not put:
@@ -113,9 +105,6 @@ if not env.get('DOXYGEN', None) or not env.get('CPP', None) or not env.get('DOT'
 
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
                                                                print_doxygen))})
-env.Append(BUILDERS = {'MakeDefs': Builder(action=env.Action(make_defs,
-                                                               make_defs))})
-
 docdir = scons_tools.install.get_install_directory(env, 'docdir', 'html')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
@@ -152,12 +141,7 @@ for h in rawheaders:
         headers.append(h)
 
 headers= config+macros+headers
-macrodef=[]
-for m in macros:
-    nm='generated/' + m.abspath[m.abspath.rfind("/")+1:]+".def"
-    #print nm
-    macrodef.append(env.MakeDefs(source=m, target=nm))
-sources = headers + macrodef
+sources = headers
 for d in ["#/kernel/doc/",
           "#/modules/*/doc/",
           "#/kernel/examples/",
