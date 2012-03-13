@@ -28,36 +28,18 @@ def _action_version_h(target, source, env):
 """ % vars
 
     vers= source[0].get_contents()
-    if vers.startswith("SVN"):
+    if vers.startswith("nightly-"):
         svn=True
-        vers=vers[4:]
+        vers=vers[8:]
+        version=vers.split("/")
+        print >> h, "#define %(PREPROC)s_IS_NIGHTLY 1"%vars
+        print >> h, "#define %(PREPROC)s_VERSION_DAY "%vars + version[0]
+        print >> h, "#define %(PREPROC)s_VERSION_MONTH "%vars + version[1]
+        print >> h, "#define %(PREPROC)s_VERSION_YEAR "%vars + version[1]
     else:
-        svn=False
-    version=vers.split(" ")[0]
-    if version.find(":") != -1:
-        min_version=version.split(":")[0]
-        max_version=version.split(":")[1]
-    else:
-        min_version=version
-        max_version=version
-    local=False
-    if min_version.endswith("M"):
-        min_version=min_version[:-1]
-        local=True
-    if max_version.endswith("M"):
-        max_version=max_version[:-1]
-        local=True
-    #print vers, version
-    print >> h, "#define %(PREPROC)s_MIN_VERSION "%vars + min_version
-    print >> h, "#define %(PREPROC)s_VERSION "%vars + max_version
-    if svn:
-        print >> h, "#define %(PREPROC)s_IS_SVN 1"%vars
-    if local:
-        print >> h, "#define %(PREPROC)s_HAS_LOCAL_CHANGES 1"%vars
-    # test that it is numeric
-    print >> h, """#if %(PREPROC)s_VERSION <0
-#endif"""%vars
-
+        version=vers.split(".")
+        print >> h, "#define %(PREPROC)s_MAJOR_VERSION 1"%vars+version[0]
+        print >> h, "#define %(PREPROC)s_MINOR_VERSION 1"%vars+version[0]
     print >> h, """
 #endif  /* %(EXPORT)s_CONFIG_H */""" % vars
 
