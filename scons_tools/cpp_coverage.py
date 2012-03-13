@@ -1,4 +1,5 @@
 import sys
+import re
 import os
 import shutil
 import glob
@@ -60,8 +61,12 @@ class _CoverageTester(object):
             self.add_header('build/include/%s/internal' % h, '*.h', report=True)
         elif test_type.startswith('application'):
             self._test_type = 'application'
-            self.add_source('applications/%s' % name, '*.cpp', report=True)
-            self.add_header('applications/%s' % name, '*.h', report=True)
+            m = re.search('(applications/(.+?/)?%s)' % name, output_file)
+            if m:
+                self.add_source(m.group(1), '*.cpp', report=True)
+                self.add_header(m.group(1), '*.h', report=True)
+            else:
+                raise ValueError("Cannot determine path for %s" % name)
 
     def add_source(self, directory, pattern, report):
         self._sources.append([directory, pattern, report])
