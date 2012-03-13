@@ -8,6 +8,8 @@
 
 #include "IMP/base/Object.h"
 #include "IMP/base/RefCounted.h"
+#include "IMP/base/log.h"
+#include "IMP/base/exception.h"
 #include "IMP/compatibility/map.h"
 #include <boost/format.hpp>
 #include "IMP/base/internal/static.h"

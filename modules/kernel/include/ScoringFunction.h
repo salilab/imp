@@ -12,7 +12,7 @@
 #include "kernel_config.h"
 #include "declare_ScoringFunction.h"
 #include "declare_Model.h"
-#include <limits>
+#include <boost/tuple/tuple.hpp>
 
 
 IMP_BEGIN_NAMESPACE

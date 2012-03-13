@@ -10,7 +10,16 @@
 #include "IMP/base/RefCounted.h"
 #include "IMP/base/Object.h"
 #include <IMP/compatibility/set.h>
-
+#include "IMP/base/Showable.h"
+#include "IMP/base//Pointer.h"
+#include "IMP/base/RefCounted.h"
+#include "IMP/base/base_macros.h"
+#include "IMP/base/types.h"
+#include "IMP/compatibility/map.h"
+#include "IMP/compatibility/vector.h"
+#include <cmath>
+#include <boost/timer.hpp>
+#include <ostream>
 IMPBASE_BEGIN_INTERNAL_NAMESPACE
 /*
   With all the static data in a single file, we needn't

@@ -12,11 +12,6 @@
 #include "IMP/internal/PrefixStream.h"
 
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/depth_first_search.hpp>
-#include <IMP/compatibility/vector_property_map.h>
-
-
 IMP_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m, std::string name):

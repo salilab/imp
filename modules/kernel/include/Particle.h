@@ -12,7 +12,6 @@
 #include "kernel_config.h"
 #include "declare_Particle.h"
 #include "declare_Model.h"
-#include <utility>
 
 
 IMP_BEGIN_NAMESPACE

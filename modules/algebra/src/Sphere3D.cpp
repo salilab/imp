@@ -5,8 +5,9 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/base_types.h>
-#include <IMP/algebra/Sphere3D.h>
-#include <cmath>
+#include "IMP/algebra/Sphere3D.h"
+#include <IMP/base/exception.h>
+#include <utility>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/bounding_sphere.h>
 #include <IMP/cgal/internal/union_of_balls.h>

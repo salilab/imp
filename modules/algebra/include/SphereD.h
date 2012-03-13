@@ -10,7 +10,7 @@
 #include "algebra_macros.h"
 #include "constants.h"
 #include "BoundingBoxD.h"
-#include "Vector3D.h"
+#include "VectorD.h"
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
