@@ -10,11 +10,28 @@ class _TempDir(object):
     """Simple RAII-style class to make a temporary directory for gcov"""
     def __init__(self):
         self._origdir = os.getcwd()
+        self.prefix_strip = len(self._origdir.split(os.path.sep)) - 1
         self.tmpdir = tempfile.mkdtemp()
         # Fool gcov into thinking this dir is the IMP top-level dir
-        for subdir in ('build', 'modules', 'applications'):
-            os.symlink(os.path.join(self._origdir, subdir),
-                       os.path.join(self.tmpdir, subdir))
+        self._link_tree('modules')
+        self._link_tree('applications')
+        os.mkdir(os.path.join(self.tmpdir, 'build'))
+        self._link_tree('build/src')
+    def _link_tree(self, subdir):
+        lenorig = len(self._origdir)
+        for root, dirs, files in os.walk(self._origdir + '/' + subdir):
+            # Reproduce each directory under the temporary directory
+            tmpdir = os.path.join(self.tmpdir, root[lenorig+1:])
+            os.mkdir(tmpdir)
+            # Link any *.cpp or *.gcno files into the new directory
+            for f in files:
+                if f.endswith('.cpp') or f.endswith('.gcno'):
+                    os.symlink(os.path.join(root, f), os.path.join(tmpdir, f))
+            # Prune uninteresting subdirectories
+            for prune in ('bin', 'data', 'doc', 'examples', 'include',
+                          'pyext', 'test', 'generated', '.svn'):
+                if prune in dirs:
+                    dirs.remove(prune)
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
@@ -53,22 +70,13 @@ class _CoverageTester(object):
         self._headers.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
-        self._cleanup_coverage_files()
+        self._tmpdir = _TempDir()
+        self._env['ENV']['GCOV_PREFIX'] = self._tmpdir.tmpdir
+        self._env['ENV']['GCOV_PREFIX_STRIP'] = self._tmpdir.prefix_strip
         ret = self._env.Execute(*args, **keys)
         if self._test_type:
             self._report()
         return ret
-
-    def _cleanup_coverage_files(self):
-        """Erase any existing gcda files, so coverage we report is solely
-           a result of the tests being currently run."""
-        for dir, pattern, report in self._sources:
-            for f in glob.glob(os.path.join(dir, pattern)):
-                g = os.path.splitext(f)[0] + '.gcda'
-                try:
-                    os.unlink(g)
-                except OSError:
-                    pass
 
     def _report(self):
         if self._coverage == 'lines':
@@ -77,7 +85,7 @@ class _CoverageTester(object):
             self._report_annotate()
 
     def _report_annotate(self):
-        t = _TempDir()
+        t = self._tmpdir
         for dir, pattern, report in self._sources:
             self._run_gcov(dir, pattern, running_dir=t.tmpdir)
             covs = glob.glob(os.path.join(t.tmpdir, "*.gcov"))
@@ -92,7 +100,7 @@ class _CoverageTester(object):
                  "top-level directory." % (self._name, self._test_type)
 
     def _report_lines(self):
-        t = _TempDir()
+        t = self._tmpdir
         outfile = self._output_file + '.cppcoverage'
         fh = open(outfile, 'w')
         print >> fh, "%-41s Stmts   Exec  Cover   Missing" % "Name"
