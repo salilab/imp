@@ -34,10 +34,12 @@ public:
   IMP_TRIPLET_FILTER(InContainerTripletFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool InContainerTripletFilter
 ::get_contains(const ParticleTriplet& p) const {
   return c_->get_contains_particle_triplet(p);
 }
+#endif
 
 IMP_OBJECTS(InContainerTripletFilter, InContainerTripletFilters);
 

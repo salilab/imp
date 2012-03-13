@@ -14,7 +14,7 @@
 #include "log.h"
 
 IMP_BEGIN_NAMESPACE
-
+#ifndef IMP_DOXYGEN
 inline bool Model::get_has_dependencies() const {
   return !RestraintTracker::get_is_dirty()
     && !ScoringFunctionTracker::get_is_dirty()
@@ -32,6 +32,7 @@ inline Particle* Model::get_particle(ParticleIndex p) const  {
                   "Invalid particle requested");
   return particle_index_[p];
 }
+#endif
 
 IMP_END_NAMESPACE
 #include "ScoringFunction.h"

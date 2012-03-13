@@ -1,5 +1,5 @@
 /**
- *  \file grid_granges.h   \brief A class to represent a voxel grid.
+ *  \file grid_ranges.h   \brief A class to represent a voxel grid.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

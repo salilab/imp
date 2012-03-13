@@ -34,10 +34,12 @@ public:
   IMP_PAIR_FILTER(InContainerPairFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool InContainerPairFilter
 ::get_contains(const ParticlePair& p) const {
   return c_->get_contains_particle_pair(p);
 }
+#endif
 
 IMP_OBJECTS(InContainerPairFilter, InContainerPairFilters);
 

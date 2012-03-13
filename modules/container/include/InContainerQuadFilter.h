@@ -34,10 +34,12 @@ public:
   IMP_QUAD_FILTER(InContainerQuadFilter);
 };
 
+#ifndef IMP_DOXYGEN
 inline bool InContainerQuadFilter
 ::get_contains(const ParticleQuad& p) const {
   return c_->get_contains_particle_quad(p);
 }
+#endif
 
 IMP_OBJECTS(InContainerQuadFilter, InContainerQuadFilters);
 

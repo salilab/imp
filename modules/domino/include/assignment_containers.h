@@ -70,6 +70,7 @@ class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
   IMP_ASSIGNMENT_CONTAINER(PackedAssignmentContainer);
 };
 
+#ifndef IMP_DOXYGEN
 
 inline unsigned int
 PackedAssignmentContainer::get_number_of_assignments() const {
@@ -101,6 +102,7 @@ inline void PackedAssignmentContainer::add_assignment(const Assignment& a) {
   }
   d_.insert(d_.end(), a.begin(), a.end());
 }
+#endif
 
 /** Simple storage of a set of Assignments. Prefer PackedAssignmentContainer,
     I think.
@@ -113,6 +115,7 @@ class IMPDOMINOEXPORT ListAssignmentContainer: public AssignmentContainer {
   IMP_ASSIGNMENT_CONTAINER(ListAssignmentContainer);
 };
 
+#ifndef IMP_DOXYGEN
 inline unsigned int ListAssignmentContainer::get_number_of_assignments() const {
   return d_.size();
 }
@@ -125,7 +128,7 @@ ListAssignmentContainer::get_assignment(unsigned int i) const {
 inline void ListAssignmentContainer::add_assignment(const Assignment& a) {
   d_.push_back(a);
 }
-
+#endif
 
 
 
@@ -148,7 +151,7 @@ class IMPDOMINOEXPORT SampleAssignmentContainer: public AssignmentContainer {
   IMP_ASSIGNMENT_CONTAINER(SampleAssignmentContainer);
 };
 
-
+#ifndef IMP_DOXYGEN
 inline unsigned int
 SampleAssignmentContainer::get_number_of_assignments() const {
   return d_.size()/width_;
@@ -159,6 +162,7 @@ SampleAssignmentContainer::get_assignment(unsigned int i) const {
   return Assignment(d_.begin()+i*width_,
                     d_.begin()+(i+1)*width_);
 }
+#endif
 
 
 

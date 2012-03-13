@@ -54,21 +54,17 @@ constructor. Such classes mimic POD types (int, float etc) in C++ and
 are optimized for efficiency.  All operations on a default initialized
 instance other than assigning to it from a non-default initialized
 instance should be assumed to be invalid.
-\\code
-IMP::algebra::VectorD<3> v0, v1;
-v0 != v1;
-// only legal operations initialize v0, eg
-v0= IMP::algebra::VectorD<3>(1,2,3);
-\\endcode
 
 
-\\par CGAL\\anchor cgal
+\\par CGAL
+\\anchor cgal
 Certain functionality provided in \\imp requires or benefits from using CGAL.
 \\external{http://www.cgal.org,CGAL} is a library of geometry-related
 algorithms and data structures written in C++. The relevant parts of
 CGAL are licensed under LGPL and QPL and commercial licenses are
 available if needed. More information can be found on the
 \\external{http://www.cgal.org/license.html, CGAL license page}.
+
 """,
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())
