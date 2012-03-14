@@ -237,7 +237,11 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
     dOm.resize(0,0);
 
     //return hessian as full matrix
-    return Hessian.selfadjointView<Eigen::Upper>();
+    for (unsigned i=0; i<num_opt; ++i)
+        for (unsigned j=i+1; j<num_opt; ++j)
+            Hessian(j,i) = Hessian(i,j);
+    //return Hessian.selfadjointView<Eigen::Upper>();
+    return Hessian;
 }
 
 FloatsList GaussianProcessInterpolationRestraint::get_hessian(bool) const
