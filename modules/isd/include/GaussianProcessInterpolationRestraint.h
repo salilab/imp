@@ -72,15 +72,15 @@ class IMPISDEXPORT GaussianProcessInterpolationRestraint : public ISDRestraint
         //use conjugate gradients when possible (default false)
         void set_use_cg(bool use, double tol) {mvn_->set_use_cg(use,tol);}
 
-        //call this one from python
-        FloatsList get_hessian(bool unused) const;
-
         //get minus log normalization and minus exponent separately
         double get_minus_log_normalization() const;
         double get_minus_exponent() const;
 
         //get hessian of the minus log likelihood
         Eigen::MatrixXd get_hessian() const;
+
+        //call this one from python
+        FloatsList get_hessian(bool unused) const;
 
         IMP_RESTRAINT(GaussianProcessInterpolationRestraint);
 

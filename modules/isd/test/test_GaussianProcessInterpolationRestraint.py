@@ -14,6 +14,22 @@ from IMP.isd import *
 #unit testing framework
 import IMP.test
 
+class MockFunc:
+    def __init__(self, setval, evaluate, evalargs=1, update=None):
+        self.__set = setval
+        self.__eval = evaluate
+        self.__update = update
+        self.__evalargs = evalargs
+
+    def set_evalargs(self, evalargs):
+        self.__evalargs = evalargs
+
+    def __call__(self, value):
+        self.__set(value)
+        if self.__update:
+            self.__update()
+        return self.__eval(self.__evalargs)
+
 class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
     """test of the GPI restraint with two data points, linear prior mean and
     gaussian prior covariances
@@ -21,6 +37,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
+        #IMP.set_log_level(IMP.TERSE)
         IMP.set_log_level(0)
         self.m = IMP.Model()
         self.q=[[0],[1]]
@@ -43,6 +60,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                 self.err, self.N, self.mean, self.cov, self.sig)
         self.gpr = IMP.isd.GaussianProcessInterpolationRestraint(self.gpi)
         self.m.add_restraint(self.gpr)
+        self.particles=[self.alpha,self.beta,self.sig,self.tau,self.lam]
 
     def get_Omega(self):
         N=self.N
@@ -165,6 +183,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
             p,imin,imax = particles.pop(randint(0,len(particles)-1))
             p.set_nuisance(uniform(imin, imax))
 
+
     def testEnergyTerms(self):
         for i in xrange(10):
             self.shuffle_particle_values()
@@ -175,7 +194,6 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
                 self.assertAlmostEqual((U+V)/expected, 1., delta=1e-7)
             else:
                 self.assertAlmostEqual(U+V,0.,delta=1e-7)
-
 
     def testGetInputThings(self):
         particles = self.gpr.get_input_particles()
@@ -285,7 +303,7 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         test the value of the energy by varying alpha
         """
         skipped = 0
-        for a in linspace(-10,10,num=100):
+        for a in linspace(-10,10,num=20):
             self.alpha.set_nuisance(a)
             observed = self.m.evaluate(False)
             expected = self.get_energy()
@@ -691,11 +709,93 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
         if skipped > 10:
             self.fail("too many NANs")
 
-#class TestGaussianProcessInterpolationRestraintCG2Points(
-#        TestGaussianProcessInterpolationRestraint2Points):
-#    def setUp(self):
-#        TestGaussianProcessInterpolationRestraint2Points.setUp(self)
-#        self.gpr.set_use_cg(True,1e-7)
+    def testDerivNumericAlpha(self):
+        """
+        test the derivatives of the gpi numerically for Alpha
+        """
+        pnum=0
+        values=range(1,10)
+        particle=self.particles[pnum]
+        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
+                False, update=self.mean.update)
+        for val in values:
+            particle.set_nuisance(val)
+            ene=self.m.evaluate(True)
+            observed = particle.get_nuisance_derivative()
+            expected = IMP.test.numerical_derivative(PFunc, val, 1.)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericBeta(self):
+        """
+        test the derivatives of the gpi numerically for Beta
+        """
+        pnum=1
+        values=range(1,10)
+        particle=self.particles[pnum]
+        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
+                False, update=self.mean.update)
+        for val in values:
+            particle.set_nuisance(val)
+            ene=self.m.evaluate(True)
+            observed = particle.get_nuisance_derivative()
+            expected = IMP.test.numerical_derivative(PFunc, val, 1.)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testDerivNumericTau(self):
+        """
+        test the derivatives of the gpi numerically for Tau
+        """
+        #IMP.set_log_level(IMP.TERSE)
+        pnum=3
+        values=linspace(.1,.9)
+        particle=self.particles[pnum]
+        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        #PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
+        #        False, update=self.cov.update)
+        for val in values:
+            particle.set_nuisance(val)
+            ene=self.m.evaluate(True)
+            observed = particle.get_nuisance_derivative()
+            expected = IMP.test.numerical_derivative(PFunc, val, .01)
+            #print val,observed,expected,ene
+            #continue
+            self.assertAlmostEqual(expected,observed,delta=5e-2)
+
+    def testDerivNumericLambda(self):
+        """
+        test the derivatives of the gpi numerically for Lambda
+        """
+        pnum=4
+        values=linspace(.3,2)
+        particle=self.particles[pnum]
+        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
+                False, update=self.cov.update)
+        for val in values:
+            particle.set_nuisance(val)
+            ene=self.m.evaluate(True)
+            observed = particle.get_nuisance_derivative()
+            expected = IMP.test.numerical_derivative(PFunc, val, .2)
+            self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testDerivNumericSigma(self):
+        """
+        test the derivatives of the gpi numerically for Sigma
+        """
+        pnum=2
+        values=range(1,10)
+        particle=self.particles[pnum]
+        #PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
+        PFunc = MockFunc(particle.set_nuisance, lambda a:self.get_energy(),
+                False, update=self.cov.update)
+        for val in values:
+            particle.set_nuisance(val)
+            ene=self.m.evaluate(True)
+            observed = particle.get_nuisance_derivative()
+            expected = IMP.test.numerical_derivative(PFunc, val, 1.)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
 
 if __name__ == '__main__':
     IMP.test.main()

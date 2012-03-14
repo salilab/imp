@@ -217,7 +217,7 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
     const
   {
       if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
-      MatrixXd ret(-get_P()/IMP::square(factor_));
+      MatrixXd ret(get_P()/IMP::square(factor_));
       return ret;
   }
 
@@ -227,7 +227,7 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
       if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
       MatrixXd P(get_P());
       VectorXd Peps(get_Peps());
-      MatrixXd ret(P.transpose().col(k)*Peps);
+      MatrixXd ret(P.transpose().col(k)*Peps.transpose());
       return ret/IMP::square(factor_);
   }
 
@@ -237,8 +237,9 @@ MatrixXd MultivariateFNormalSufficient::evaluate_second_derivative_Sigma_Sigma(
       if (N_!=1) IMP_THROW("not implemented when N>1", ModelException);
       MatrixXd P(get_P());
       VectorXd Peps(get_Peps());
-      MatrixXd ret(-0.5*P.col(n)*P.row(m));
-      ret.noalias() += Peps(m)*P.col(n)*Peps.transpose();
+      MatrixXd tmp(P.col(m)*Peps.transpose());
+      MatrixXd ret(0.5*(-P.col(n)*P.row(m)
+                        +Peps(n)*(tmp+tmp.transpose())));
       return ret/IMP::square(factor_);
   }
 
