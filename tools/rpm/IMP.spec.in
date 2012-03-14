@@ -12,16 +12,20 @@ BuildRoot:     %{_tmppath}/%{name}-%{version}-root
 # use RHEL 5 (we recommend RHEL 6) you will need to build a newer SWIG package
 # before building IMP.
 BuildRequires: scons >= 0.98, boost-devel >= 1.33, swig >= 1.3.40
-BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel
+BuildRequires: python-devel >= 2.3, gsl-devel, fftw-devel, hdf5-devel >= 1.8
 # You can safely comment out this line if you don't have Modeller;
 # IMP will simply build without the IMP.modeller module.
 BuildRequires: modeller
 
 # RHEL doesn't have a CGAL package, so build without CGAL on RHEL. It also
 # doesn't have a new enough OpenCV in EPEL, or the eigen package, so
-# disable em2d and isd modules. RHEL 5 also doesn't have a new enough HDF5
-# package (RHEL 6 does).
-# on Fedora, all of these packages are available; add them as dependencies
+# disable em2d and isd modules.
+# RHEL 5 also doesn't have a new enough HDF5 package (RHEL 6 does) so this
+# must be upgraded in order to build RMF (to simply install the binary RPM,
+# you can install the libdhf5-187 package from the Sali lab website to
+# provide a new enough HDF5 without having to mess with the system
+# copy of HDF5).
+# On Fedora, all of these packages are available; add them as dependencies
 
 # If you are using RHEL and really want the isd module, add
 # '-D "rhel_have_eigen3 1"' to your rpmbuild invocation. You will need to
@@ -32,18 +36,12 @@ BuildRequires: modeller
 %if 0%{?fedora}
 BuildRequires: CGAL-devel, opencv-devel, eigen3-devel
 %define skipped_deps %{nil}
-%define skipped_hdf5 %{nil}
 %else
 %if 0%{?rhel_have_eigen3}
 %define skipped_deps cgal=no opencv21=no opencv22=no
 BuildRequires: eigen3-devel
 %else
 %define skipped_deps cgal=no opencv21=no opencv22=no eigen3=no
-%endif
-%if 0%{?rhel} < 6
-%define skipped_hdf5 hdf5=no
-%else
-%define skipped_hdf5 %{nil}
 %endif
 %endif
 
@@ -58,7 +56,7 @@ BuildRequires: eigen3-devel
 %define kflag %{nil}
 %endif
 
-%define scons_opts %{skipped_deps} %{skipped_hdf5} %{kflag}
+%define scons_opts %{skipped_deps} %{kflag}
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
