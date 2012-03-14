@@ -376,6 +376,25 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(RgFunc, Rg, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
+    def testHessianNumericRgG(self):
+        """
+        test the Hessian of the function numerically wrt Rg and G
+        """
+        pa=1
+        pb=0
+        self.Rg.set_nuisance(5)
+        pos = self.get_params()[4]
+        GFunc = MockFunc(self.G.set_nuisance,
+                lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
+                        pos, update=self.mean.update)
+        for G in xrange(1,10):
+            self.G.set_nuisance(G)
+            self.mean.update()
+            observed = self.mean.get_second_derivative_vector(pa, pb, [[pos]],
+                    False)[0][0]
+            expected = IMP.test.numerical_derivative(GFunc, G, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
     def testHessianNumericGd(self):
         """
         test the Hessian of the function numerically wrt G and d
