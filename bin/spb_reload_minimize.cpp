@@ -73,19 +73,6 @@ FILE *logfile, *fretfile;
 logfile  = fopen("log.reload","w");
 fretfile = fopen("log.fret","w");
 //
-// READ FRET ERROR
-//
-Floats sigmas;
-std::string name_d, ter_d, name_a, ter_a;
-double fretr_exp, sigma_exp;
-// open fret file
-std::ifstream fretdata;
-fretdata.open(mydata.Fret.filename.c_str());
-while(fretdata >> name_d >> ter_d >> name_a >> ter_a >> fretr_exp >> sigma_exp){
- sigmas.push_back(sigma_exp);
-}
-fretdata.close();
-//
 // OPTIMIZER
 //
 IMP_NEW(core::ConjugateGradients,cg,(m));
@@ -149,7 +136,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     bool fretisgood=true;
     for(unsigned i=0;i<rst_map["FRET_R"]->get_number_of_restraints();++i){
       double score=rst_map["FRET_R"]->get_restraint(i)->evaluate(false);
-      score = sqrt(2.0*score)/sigmas[i];
+      score = sqrt(2.0*score) / mydata.Fret.sigmas[i];
       if(score>mydata.Fret.sigmamult){fretisgood=false;}
       fretr_scores.push_back(score);
     }

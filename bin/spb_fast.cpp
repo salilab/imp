@@ -93,14 +93,12 @@ for(unsigned int i=0;i<all_mol.size();++i){
 RMF::Category my_kc= rh.add_category("my data");
 RMF::FloatKey my_key0=rh.add_float_key(my_kc,"my score",true);
 RMF::IntKey   my_key1=rh.add_int_key(my_kc,"my index",true);
-
 //
 // CREATING RESTRAINTS
 //
 if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
 std::map< std::string, Pointer<RestraintSet> > rst_map=
  spb_assemble_restraints(m,mydata,all_mol,bCP_ps,CP_ps,IL2_ps);
-
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 Pointer<core::MonteCarlo> mc=
