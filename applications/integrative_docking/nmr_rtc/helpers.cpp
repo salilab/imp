@@ -9,7 +9,7 @@
 #include <IMP/saxs/SolventAccessibleSurface.h>
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/algebra/constants.h>
-
+#include <fstream>
 #include <vector>
 #include <string>
 

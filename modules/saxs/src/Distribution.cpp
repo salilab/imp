@@ -12,6 +12,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZ.h>
 #include <iostream>
+#include <fstream>
 
 #include <boost/algorithm/string.hpp>
 
