@@ -104,7 +104,7 @@ class IMPEXPORT Model:
 #endif
 {
  public:
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   IMP_MODEL_IMPORT(internal::FloatAttributeTable);
   IMP_MODEL_IMPORT(internal::StringAttributeTable);
   IMP_MODEL_IMPORT(internal::IntAttributeTable);
