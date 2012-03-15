@@ -9,11 +9,9 @@
 #define IMPBASE_VERSION_INFO_H
 
 #include "base_config.h"
-#include "utility.h"
 #include "exception.h"
 #include "base_macros.h"
 #include "types.h"
-
 #include <iostream>
 
 IMPBASE_BEGIN_NAMESPACE
