@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include "WeakPointer.h"
 #include "DerivativeAccumulator.h"
+#include <IMP/base/Object.h>
 #include "VersionInfo.h"
 #include "utility.h"
 #include "macros.h"
