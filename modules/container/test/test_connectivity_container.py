@@ -92,10 +92,10 @@ class TunnelTest(IMP.test.TestCase):
                     d1= IMP.core.XYZR(p1.get_particle())
                     print d0
                     print d1
-                    print IMP.ParticlePair(p0.get_particle(), p1.get_particle())
+                    print (p0.get_particle(), p1.get_particle())
                     self.assertLessEqual(IMP.core.get_distance(d0, d1), 0.1)
-                    #self.assert_(cpc.get_contains_particle_pair(IMP.ParticlePair(p0.get_particle(), p1.get_particle()))
-                                 #or cpc.get_contains_particle_pair(IMP.ParticlePair(p1.get_particle(), p0.get_particle())))
+                    #self.assert_(cpc.get_contains_particle_pair((p0.get_particle(), p1.get_particle()))
+                                 #or cpc.get_contains_particle_pair((p1.get_particle(), p0.get_particle())))
 
 
 

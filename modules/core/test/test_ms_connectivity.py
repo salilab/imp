@@ -158,7 +158,7 @@ class MSConnectivityTests(IMP.test.TestCase):
         pps= self.r.get_connected_pairs()
         lscore = 0
         for p in pps:
-            lscore = lscore+self.ss.evaluate(IMP.ParticlePair(p[0], p[1]), None)
+            lscore = lscore+self.ss.evaluate((p[0], p[1]), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 #        self.assertGreaterEqual(sum, 4, "Wrong number of close pairs")
 

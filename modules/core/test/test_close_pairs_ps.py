@@ -51,10 +51,10 @@ class Test(IMP.test.TestCase):
                 if (IMP.core.get_distance(d0, d1) < .95*threshold):
                     print "looking for", l0.get_particle().get_name() + " " \
                         + l1.get_particle().get_name(), IMP.core.get_distance(d0, d1)
-                    self.assertTrue(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                    self.assertTrue(lps.get_contains((l0.get_particle(),
                                                                    l1.get_particle())))
                 else:
-                    self.assertFalse(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                    self.assertFalse(lps.get_contains((l0.get_particle(),
                                                                        l1.get_particle())))
     def test_rops2(self):
         """Checking k-close pairs pair score"""

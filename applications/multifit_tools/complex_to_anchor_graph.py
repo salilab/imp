@@ -31,7 +31,7 @@ def main():
     for id1,chain1 in enumerate(chains):
         for id2,chain2 in enumerate(chains[id1+1:]):
             #check if the bounding boxes are intersecting
-            if rdps.evaluate(IMP.ParticlePair(chain1.get_particle(), chain2), None)<0.5:
+            if rdps.evaluate((chain1.get_particle(), chain2), None)<0.5:
                 links.append([id1,id1+id2+1])
     #write the cmm file
     output=open(cmm_fn,"w")

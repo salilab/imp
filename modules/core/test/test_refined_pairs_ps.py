@@ -23,7 +23,7 @@ class Test(IMP.test.TestCase):
         pr= IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
         cps= IMP._ConstPairScore(1)
         rps= IMP.core.RefinedPairsPairScore(pr, cps)
-        ppp=IMP.ParticlePair(pp, pp)
+        ppp=(pp, pp)
         print type(rps)
         print type(rps.evaluate)
         da=IMP.DerivativeAccumulator()

@@ -37,24 +37,24 @@ class StereoPairFilterTests(IMP.test.TestCase):
         m, pf, ps, bonds, angles, dihedrals = setup_filter()
 
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[0], ps[1])), False)
+                              (ps[0], ps[1])), False)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[1], ps[3])), False)
+                              (ps[1], ps[3])), False)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[4], ps[7])), False)
+                              (ps[4], ps[7])), False)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[0], ps[9])), False)
+                              (ps[0], ps[9])), False)
         pf.set_bonds(bonds)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[0], ps[1])), True)
+                              (ps[0], ps[1])), True)
         pf.set_angles(angles)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[1], ps[3])), True)
+                              (ps[1], ps[3])), True)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[1], ps[2])), False)
+                              (ps[1], ps[2])), False)
         pf.set_dihedrals(dihedrals)
         self.assertEquals(pf.get_contains(
-                              IMP.ParticlePair(ps[4], ps[7])), True)
+                              (ps[4], ps[7])), True)
 
     def test_input_particles(self):
         """Check StereochemistryPairFilter input particles"""

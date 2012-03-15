@@ -89,11 +89,11 @@ class TestTALOSRestraint(IMP.test.TestCase):
         uf=IMP.core.Harmonic(1,100)
         df = IMP.core.DistancePairScore(uf)
         self.m.add_restraint(
-                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p0,self.p1)))
+                IMP.core.PairRestraint(df, (self.p0,self.p1)))
         self.m.add_restraint(
-                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p1,self.p2)))
+                IMP.core.PairRestraint(df, (self.p1,self.p2)))
         self.m.add_restraint(
-                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p2,self.p3)))
+                IMP.core.PairRestraint(df, (self.p2,self.p3)))
         self.p3.set_coordinates_are_optimized(True)
         self.p2.set_coordinates_are_optimized(False)
         self.p1.set_coordinates_are_optimized(False)

@@ -24,14 +24,14 @@ class TestBL(IMP.test.TestCase):
             for j in range(0, i):
                 a= pc.get_particle(i)
                 b= pc.get_particle(j)
-                pp= IMP.ParticlePair(a,b)
+                pp= (a,b)
                 if self._are_close(a,b, d):
                     print "expecting "+str(pp)
                     print IMP.core.XYZR(a)
                     print IMP.core.XYZR(b)
                     print IMP.core.get_distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
-                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(a,b))
-                                 or out.get_contains_particle_pair(IMP.ParticlePair(b,a)))
+                    self.assertTrue(out.get_contains_particle_pair((a,b))
+                                 or out.get_contains_particle_pair((b,a)))
     def test_it(self):
         """Test ClosePairContainer"""
         m=IMP.Model()

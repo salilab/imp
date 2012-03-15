@@ -65,15 +65,15 @@ class TestCPFL(IMP.test.TestCase):
         print "testing results with "
         print " ".join([str((x[0].get_name(), x[1].get_name())) for x in found])
         for f in found:
-            self.assertNotIn(IMP.ParticlePair(f[1], f[0]), found)
+            self.assertNotIn((f[1], f[0]), found)
             self.assertNotEqual(f[0], f[1])
         for i in range(0, len(ps)):
             for j in range(0,i):
                 d= self.get_distance(ps[i], ps[j])
                 #d=1000
                 if d <= .99*dist:
-                    cond0=IMP.ParticlePair(ps[i],ps[j]) in found
-                    cond1=IMP.ParticlePair(ps[j],ps[i]) in found
+                    cond0=(ps[i],ps[j]) in found
+                    cond1=(ps[j],ps[i]) in found
                     self.assertTrue(cond0 or cond1)
 
     def _check_biclose_pairs(self, ps, ps2, dist, out):
@@ -84,7 +84,7 @@ class TestCPFL(IMP.test.TestCase):
                 d= self.get_distance(ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assertTrue(IMP.ParticlePair(ps[i],
+                    self.assertTrue((ps[i],
                                                      ps2[j]) in out,
                                     "Pair " +str(ps[i]) + " " +str(ps2[j])
                                     + " not found " + str(d) + " " + str(dist))
@@ -100,9 +100,9 @@ class TestCPFL(IMP.test.TestCase):
                 d= self.get_distance(ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assertTrue((IMP.ParticlePair(ps[i],
+                    self.assertTrue(((ps[i],
                                                       ps2[j]) in out)
-                                    or (IMP.ParticlePair(ps2[j],
+                                    or ((ps2[j],
                                                          ps[i]) in out),
                                     "Pair " +str(ps[i].get_name()) + " " +ps2[j].get_name()
                                     + " not found " + str(d) + " " + str(dist))
