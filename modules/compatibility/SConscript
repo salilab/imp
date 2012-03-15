@@ -32,5 +32,5 @@ if not env.GetOption('help'):
     elif env['build'] == 'debug' or env['build']=='compile':
         config.append(["IMP_BUILD", "IMP_DEBUG"])
 
-env.IMPModuleBuild(version='nightly-13/3/2012', config_macros=config,
+env.IMPModuleBuild(version='nightly-14/3/2012', config_macros=config,
                    required_modules=[], python=False, data=False)
