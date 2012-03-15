@@ -122,7 +122,8 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   IMP_LOG(TERSE, "MC Initial energy is " << last_energy_ << std::endl);
 
   for (unsigned int i=0; i< max_steps; ++i) {
-    if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
+    if (get_stop_on_good_score()
+        && get_scoring_function()->get_had_good_score()) {
       break;
     }
     do_step();

@@ -227,11 +227,6 @@ void Model::remove_particle(Particle *p) {
 }
 
 
-bool Model::get_has_good_score() const {
-  return has_good_score_;
-}
-
-
 void Model::add_data(ModelKey mk, Object *o) {
   model_data_.resize(std::max<int>(mk.get_index()+1,
                                    model_data_.size()));
