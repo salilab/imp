@@ -77,6 +77,7 @@ MinimumRestraintScoreSubsetFilterTable
                                          int max):
   SubsetFilterTable("MinimumRestraintScoreSubsetFilterTable%1%"),
   rc_(rc), rs_(rs.begin(), rs.end()), max_violated_(max){
+  IMP_USAGE_CHECK(rc_, "Must pass a restriant cache");
   std::sort(rs_.begin(), rs_.end());
   }
 
