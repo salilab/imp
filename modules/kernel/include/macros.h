@@ -232,7 +232,7 @@ public:                                                                 \
 #define IMP_DECORATORS(Name, PluralName, Parent)
 #else
 #define IMP_DECORATORS(Name, PluralName, Parent)                \
-  typedef IMP::Decorators<Name, Parent> PluralName
+  typedef IMP::base::ConvertibleVector<Name> PluralName
 #endif
 
 #ifdef IMP_DOXYGEN
@@ -243,7 +243,7 @@ public:                                                                 \
 
 #else
 #define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)  \
-  typedef IMP::Decorators<Name, Parent> PluralName
+  typedef IMP::base::ConvertibleVector<Name> PluralName
 
 #endif
 

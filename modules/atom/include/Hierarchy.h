@@ -91,11 +91,8 @@ class Mass;
 class Hierarchy;
 
 
-#ifdef IMP_DOXYGEN
-
-#else
-typedef IMP::Decorators< Hierarchy,
-                         IMP::core::GenericHierarchies> Hierarchies;
+#ifndef IMP_DOXYGEN
+typedef IMP::base::ConvertibleVector< Hierarchy> Hierarchies;
 #endif
 
 //! The standard decorator for manipulating molecular structures.

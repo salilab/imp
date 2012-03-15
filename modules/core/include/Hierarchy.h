@@ -67,17 +67,8 @@ IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 
 class Hierarchy;
 
-#ifdef IMP_DOXYGEN
-
-/**  A type to pass a collection of Hierarchy decorators.
-
-     It looks like a \c vector<Hierarchy> in C++ and a \c list in Python.
-     See \ref tempornot "when to use Temp" for details on using this type.
-*/
-class GenericHierarchies: public IMP::ParticlesTemp {};
-
-#else
-typedef Decorators<Hierarchy, ParticlesTemp> GenericHierarchies;
+#ifndef IMP_DOXYGEN
+typedef IMP::base::ConvertibleVector<Hierarchy> GenericHierarchies;
 #endif
 
 //! A decorator for helping deal with a hierarchy.
