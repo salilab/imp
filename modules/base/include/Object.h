@@ -242,47 +242,4 @@ IMPBASE_END_NAMESPACE
 */
 #define IMP_ACCEPT_OBJECT(obj) IMP::Pointer<Object> imp_control##obj(obj);
 
-#ifdef IMP_DOXYGEN
-//! Set the log level to the object's log level.
-/** All non-trivial Object methods should start with this. It creates a
-    RAII-style object which sets the log level to the local one,
-    if appropriate, until it goes out of scope.
- */
-#define IMP_OBJECT_LOG
-
-//! Beginning logging for a non-member function
-/**
- */
-#define IMP_FUNCTION_LOG
-
-#endif
-
-// recommended by http://gcc.gnu.org/gcc/Function-Names.html
-#if defined(_MSC_VER)
-#  define __func__ __FUNCTION__
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ < 199901L
-# if __GNUC__ >= 2
-#  define __func__ __FUNCTION__
-# else
-#  define __func__ "<unknown>"
-# endif
-#endif
-
-#if IMP_BUILD < IMP_FAST
-#define IMP_OBJECT_LOG \
-  IMP::base::SetLogState log_state_guard__(this->get_log_level());      \
-  IMP::base::SetCheckState check_state_guard__(this->get_check_level()); \
-  IMP_CHECK_OBJECT(this);                                               \
-  IMP::base::CreateLogContext log_context__(__func__, this)
-
-
-#define IMP_FUNCTION_LOG                                                \
-  IMP::base::CreateLogContext log_context__(__func__)
-
-
-#else // fast
-#define IMP_OBJECT_LOG
-#define IMP_FUNCTION_LOG
-#endif // fast
-
 #endif  /* IMPBASE_OBJECT_H */
