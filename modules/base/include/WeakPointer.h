@@ -8,6 +8,7 @@
 
 #ifndef IMPBASE_WEAK_POINTER_H
 #define IMPBASE_WEAK_POINTER_H
+#include "base_config.h"
 #include "internal/PointerBase.h"
 
 
