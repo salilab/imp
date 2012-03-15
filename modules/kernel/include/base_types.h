@@ -11,7 +11,7 @@
 #include "kernel_config.h"
 #include "Key.h"
 #include "macros.h"
-#include <IMP/base/VectorOfRefCounted.h>
+#include <IMP/base/ConvertibleVector.h>
 #include <IMP/base/types.h>
 
 IMP_BEGIN_NAMESPACE
@@ -60,9 +60,9 @@ IMP_OBJECTS(ScoringFunction,ScoringFunctions);
 class Container;
 IMP_OBJECTS_TYPEDEF(Container,Containers);
 class Particle;
-typedef base::VectorOfRefCounted<Particle*> Particles;
-typedef vector<Particle*> ParticlesTemp;
-typedef vector<vector<Particle*> > ParticlesTemps;
+typedef base::ConvertibleVector<base::Pointer<Particle> > Particles;
+typedef vector<base::WeakPointer<Particle> > ParticlesTemp;
+typedef vector<vector<base::WeakPointer<Particle> > > ParticlesTemps;
 class OptimizerState;
 IMP_OBJECTS(OptimizerState,OptimizerStates);
 class SingletonContainer;

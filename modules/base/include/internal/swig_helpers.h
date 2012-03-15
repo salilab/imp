@@ -13,6 +13,7 @@
 #include "../base_macros.h"
 #include "../Object.h"
 #include "../types.h"
+#include "../ConvertibleVector.h"
 #include "IMP/compatibility/vector.h"
 #include "IMP/compatibility/nullptr.h"
 #include <boost/array.hpp>
@@ -449,6 +450,11 @@ template <class T>
     }
   };
 
+  template <class T, class ConvertT>
+  struct ConvertSequence<ConvertibleVector<T>, ConvertT> :
+    public ConvertVectorBase< ConvertibleVector<T>, ConvertT > {
+    static const int converter=8;
+  };
 
 
   template <class T, class ConvertT>

@@ -89,8 +89,7 @@ The following are pre-defined Categories for data stored in single nodes.
     indexes must be less than the coordinates length;
     triangles vertex 1 and triangles vertex 2 must be there}
     \rmfattribute{type, Index, 0 for sphere(s); 1 for cylinder(s);
-    2 for surface,
-    appropriate attributes must be there;
+    2 for surface, appropriate attributes must be there;
     if cylinders or spheres there must be a radius;
     if cylinder and the coordinates fields are used the size
     must be divisible by 2}

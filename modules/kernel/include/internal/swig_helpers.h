@@ -28,13 +28,6 @@ using namespace IMP;
   };
 
 
-  template <class T, class P, class ConvertT>
-  struct ConvertSequence<VectorOfRefCounted<T, P>, ConvertT> :
-    public ConvertVectorBase< VectorOfRefCounted<T, P>, ConvertT > {
-    static const int converter=8;
-  };
-
-
   template<>
   struct Convert<Particle >:
     public ConvertObjectBase<Particle> {

@@ -11,8 +11,8 @@ namespace base {
 %inline %{
 namespace IMP {
 namespace base {
-template <class T, class P>
-class VectorOfRefCounted;
+template <class T>
+class ConvertibleVector;
 }
 }
 %}
