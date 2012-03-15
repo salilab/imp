@@ -70,12 +70,12 @@ class TestSlidingPriorRestraint(IMP.test.TestCase):
     def testNonzeroE(self):
         "raise ValueError if out of bounds"
         self.q0.set_scale(self.qmin-1)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
+        self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNonzeroP(self):
         "raise ValueError if out of bounds"
         self.q0.set_scale(self.qmin-1)
-        self.assertRaises(IMP.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
         "test if score is -log(prob)"
