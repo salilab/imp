@@ -11,7 +11,7 @@
 
 #include "base_config.h"
 #include "base_macros.h"
-
+#include "types.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -37,34 +37,6 @@ IMPBASE_BEGIN_NAMESPACE
     All logging is disabled when \imp is built using \c build='fast'.
     @{
  */
-
-//! The log levels supported by \imp
-/**
-    DEFAULT is only local logging (like in IMP::Object); it means to use
-    the global log level.
-
-    VERBOSE prints very large amounts of information. It should be enough
-    to allow the computational flow to be understood.
-
-    TERSE prints a few lines per restraint or per state each time
-    the score is evaluated.
-
-    PROGRESS show how large calculations are progressing (eg samplers)
-    but otherwise just show warnings
-
-    WARNING prints only warnings.
-
-    MEMORY prints information about allocations and deallocations to debug
-    memory issues.
- */
-enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, PROGRESS=2,
-               TERSE=3, VERBOSE=4,
-               MEMORY=5
-#ifndef IMP_DOXYGEN
-               , ALL_LOG
-#endif
-};
-
 
 #if !defined SWIG && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -420,5 +392,6 @@ public:
 /** @} */
 
 IMPBASE_END_NAMESPACE
+
 
 #endif  /* IMPBASE_LOG_H */

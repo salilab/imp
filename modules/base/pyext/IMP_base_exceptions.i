@@ -4,7 +4,6 @@
 namespace IMP
 {
   namespace base {
-    enum CheckLevel {NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
     void set_check_level(CheckLevel tf);
     CheckLevel get_check_level();
     void set_print_exceptions(bool tf);

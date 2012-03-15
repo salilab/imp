@@ -8,6 +8,7 @@
 #ifndef IMPBASE_FAILURE_HANDLER_H
 #define IMPBASE_FAILURE_HANDLER_H
 
+#include "base_config.h"
 #include "Object.h"
 #include "Pointer.h"
 #include "exception.h"

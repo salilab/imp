@@ -11,6 +11,7 @@
 
 #include "base_config.h"
 #include "random.h"
+#include "types.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -102,17 +103,6 @@ class IMPBASEEXPORT Exception
   Exception(const char *message);
   ~Exception() throw();
 };
-
-//! Determine the level of runtime checks performed
-/** - NONE means that minimial checks are
-    used.
-    - USAGE means that checks of input values to functions
-    and classes are verified.
-    - USAGE_AND_INTERNAL adds checks that \imp itself is
-    correct. Turn these on if you suspect an \imp bug or are
-    developing Restraints or other \imp classes.
-*/
-enum CheckLevel {DEFAULT_CHECK=-1, NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
 
 //! Determine the maximum check level that can be used for this build
 /** For example, 'fast' builds can't use any checks.

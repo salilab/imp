@@ -81,6 +81,23 @@ Object::~Object()
 #endif
 }
 
+void Object::_on_destruction() {
+#if IMP_BUILD < IMP_FAST
+  LogLevel old=IMP::base::get_log_level();
+  if (log_level_!= DEFAULT) {
+    IMP::base::set_log_level(log_level_);
+  }
+  log_level_=old;
+#endif
+}
+
+void Object::set_log_level(LogLevel l) {
+  IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
+                  << l);
+#if IMP_BUILD < IMP_FAST
+  log_level_=l;
+#endif
+}
 
 
 IMPBASE_END_NAMESPACE

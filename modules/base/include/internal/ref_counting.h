@@ -10,7 +10,7 @@
 #define IMPBASE_REF_COUNTING_H
 
 #include "../RefCounted.h"
-#include "../Object.h"
+#include "../declare_Object.h"
 #include "../log.h"
 
 #include <boost/static_assert.hpp>
