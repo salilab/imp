@@ -326,7 +326,8 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
      iteration is a restart iteration. */
 g20:
   f = get_score(float_indices, x, dx);
-  if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
+  if (get_stop_on_good_score()
+      && get_scoring_function()->get_had_good_score()) {
     estimate=x;
     goto end;
   }

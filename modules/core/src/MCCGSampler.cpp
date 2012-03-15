@@ -386,7 +386,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       ++failures;
       continue;
     }
-    if (get_model()->get_has_good_score()) {
+    if (mc->get_scoring_function()->get_had_good_score()) {
       IMP_LOG(TERSE, "Found configuration with score "
               << get_model()->evaluate(false) << std::endl);
       ret->save_configuration();

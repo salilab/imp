@@ -120,13 +120,6 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
   }
 }
 
-
-
-double Model::evaluate(bool calc_derivs) {
-  Pointer<ScoringFunction> sf= create_model_scoring_function();
-  return sf->evaluate(calc_derivs);
-}
-
 ScoringFunction* Model::create_model_scoring_function() {
   return IMP::create_scoring_function(dynamic_cast<RestraintSet*>(this),
                                       1.0, NO_MAX,
