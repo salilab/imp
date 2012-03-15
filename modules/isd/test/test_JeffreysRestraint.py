@@ -60,22 +60,22 @@ class TestJeffreysRestraint(IMP.test.TestCase):
     def testNonzeroE(self):
         "raise ValueError if zero"
         self.sigma.set_scale(0.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
+        self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNegativeE(self):
         "raise ValueError if negative"
         self.sigma.set_scale(-1.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
+        self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNonzeroP(self):
         "raise ValueError if zero"
         self.sigma.set_scale(0.0)
-        self.assertRaises(IMP.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testNegativeP(self):
         "raise ValueError if negative"
         self.sigma.set_scale(-1.0)
-        self.assertRaises(IMP.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
         "test if score is -log(prob)"

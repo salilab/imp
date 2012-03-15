@@ -38,7 +38,7 @@ done=False
 while not done:
     try:
         o.optimize(1000)
-    except IMP.ModelException:
+    except IMP.base.ModelException:
         for d in [rbss0, rbss1]:
             d.set_transformation(IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                                               IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),

@@ -174,7 +174,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(0.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
+        self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNegativeE(self):
         "raise ModelException if negative"
@@ -183,27 +183,27 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(-1.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
+        self.assertRaises(IMP.base.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testR0(self):
         "raise ModelException if R0 < 0"
         c=10
         R0=-1
-        self.assertRaises(IMP.ModelException,
+        self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testR0c(self):
         "raise ModelException if R0 > c"
         c=10
         R0=20
-        self.assertRaises(IMP.ModelException,
+        self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testc(self):
         "raise ModelException if c < 0"
         c=-1
         R0=c
-        self.assertRaises(IMP.ModelException,
+        self.assertRaises(IMP.base.ModelException,
                 IMP.isd.vonMisesKappaConjugateRestraint, self.kappa,c,R0)
 
     def testNonzeroP(self):
@@ -213,7 +213,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(0.0)
-        self.assertRaises(IMP.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testNegativeP(self):
         "raise ValueError if negative"
@@ -222,7 +222,7 @@ class TestvonMisesKappaConjugateRestraint(IMP.test.TestCase):
         self.J = IMP.isd.vonMisesKappaConjugateRestraint(self.kappa,c,R0)
         self.m.add_restraint(self.J)
         self.kappa.set_scale(-1.0)
-        self.assertRaises(IMP.ModelException, self.J.get_probability)
+        self.assertRaises(IMP.base.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
         "test if score is -log(prob)"
