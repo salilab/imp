@@ -1876,7 +1876,7 @@ get_surface_area_and_volume(const algebra::Sphere3Ds &ss) {
     pts.push_back(Wpoint(Point(ss[i].get_center()[0],
                                ss[i].get_center()[1],
                                ss[i].get_center()[2]),
-                         square(ss[i].get_radius())));
+                         algebra::get_squared(ss[i].get_radius())));
   }
   Triangulation T(pts.begin(), pts.end());
 
