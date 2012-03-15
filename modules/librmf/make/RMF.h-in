@@ -35,6 +35,7 @@
 #include <RMF/names.h>
 #include <RMF/types.h>
 #include <RMF/utility.h>
+#include <RMF/decorator_utility.h>
 #include <RMF/RMF_config.h>
 
 #endif  /* RMF_H */
