@@ -16,6 +16,7 @@
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
+#include <IMP/base/ConvertibleVector.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -392,7 +393,5 @@ inline void ref(Decorator d) {
 IMP_END_INTERNAL_NAMESPACE
 
 #endif
-
-#include "Decorators.h"
 
 #endif  /* IMPKERNEL_DECORATOR_H */
