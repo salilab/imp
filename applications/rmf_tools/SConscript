@@ -4,7 +4,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
                                                extra_boost_libs=["system"])
 
 
-env= env.IMPApplication(name="rmf_tools", version='nightly-13/3/2012',
+env= env.IMPApplication(name="rmf_tools", version='nightly-14/3/2012',
                         authors=["Daniel Russel"],
                         brief="Various tools for handling rmf files",
                         overview="""
