@@ -7,6 +7,7 @@
  */
 
 #include <IMP/em/masking.h>
+#include <IMP/algebra/utility.h>
 #include <IMP/em/exp.h>
 IMPEM_BEGIN_NAMESPACE
   RadiusDependentDistanceMask::RadiusDependentDistanceMask(
