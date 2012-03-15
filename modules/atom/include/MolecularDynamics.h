@@ -23,6 +23,8 @@ IMPATOM_BEGIN_NAMESPACE
     to be energy in kcal/mol, the xyz coordinates to be in angstroms, and
     the mass to be in AMU (g/mol).
 
+    \note RigidBody particles are not handled properly.
+
     Particles without optimized x,y,z and nonoptimized mass are skipped.
     \see VelocityScalingOptimizerState
     \see LangevinThermostatOptimizerState
