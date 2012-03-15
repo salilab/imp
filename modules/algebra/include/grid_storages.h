@@ -50,7 +50,7 @@ class DenseGridStorageD: public BoundedGridRangeD<D> {
       }
       ii+=cur;
     }
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       if (D==3) {
         unsigned int check= i[2]
             *BoundedGridRangeD<D>::get_number_of_voxels(0)
