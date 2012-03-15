@@ -15,13 +15,13 @@
 #include "dependency_graph.h"
 #include "declare_Restraint.h"
 #include <IMP/base/tracking.h>
+#include <IMP/base/Pointer.h>
 
 #include <limits>
 
 
 IMP_BEGIN_NAMESPACE
 class Model;
-
 
 /** A ScoringFunction represents a scoring function on the model.
     The Model has a default scoring function
@@ -121,10 +121,10 @@ create_incremental_decomposition(ScoringFunction *sf);
     RestraintsTemp or a RestraintSet. */
 class IMPEXPORT ScoringFunctionInput
 #ifndef SWIG
-: public OwnerPointer<ScoringFunction>
+    : public base::OwnerPointer<ScoringFunction>
 #endif
 {
-  typedef OwnerPointer<ScoringFunction> P;
+  typedef base::OwnerPointer<ScoringFunction> P;
  public:
   ScoringFunctionInput(ScoringFunction *sf): P(sf){}
   ScoringFunctionInput(Model *sf);

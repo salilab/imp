@@ -163,17 +163,17 @@ inline ParticlesTemp get_input_particles(S *s,
 
 template <class S>
 inline ParticlesTemp get_output_particles(S *s,
-                                   Pointer<Particle> p) {
+                                          base::Pointer<Particle> p) {
   return s->get_output_particles(p);
 }
 template <class S>
 inline ParticlesTemp get_input_particles(S *s,
-                                  Pointer<Particle> p) {
+                                         base::Pointer<Particle> p) {
   return s->get_input_particles(p);
 }
 template <class S>
 inline ContainersTemp get_input_containers(S *s,
-                                   Pointer<Particle> p) {
+                                           base::Pointer<Particle> p) {
   return s->get_input_containers(p);
 }
 
