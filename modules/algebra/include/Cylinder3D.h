@@ -39,8 +39,8 @@ class IMPALGEBRAEXPORT Cylinder3D {
 IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D, cylinder_3d,
                             return 2.0*PI*g.get_radius()
                             * g.get_segment().get_length()
-                            + 2.0*PI *square(g.get_radius()),
-                            return PI *square(g.get_radius())
+                            + 2.0*PI *get_squared(g.get_radius()),
+                            return PI *get_squared(g.get_radius())
                             * g.get_segment().get_length(),
                             if (0) std::cout << g; IMP_NOT_IMPLEMENTED);
 

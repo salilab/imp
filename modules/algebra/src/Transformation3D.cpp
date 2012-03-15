@@ -5,6 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Transformation3D.h"
+#include "IMP/algebra/Transformation2D.h"
 #include "IMP/algebra/Sphere3D.h"
 #include "IMP/algebra/vector_generators.h"
 

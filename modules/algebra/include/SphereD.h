@@ -11,6 +11,7 @@
 #include "constants.h"
 #include "BoundingBoxD.h"
 #include "VectorD.h"
+#include "utility.h"
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -46,7 +47,7 @@ public:
   /**
    */
   bool get_contains(const VectorD<D> &p) const {
-    return ((p-center_).get_squared_magnitude() <= square(radius_));
+    return ((p-center_).get_squared_magnitude() <= get_squared(radius_));
   }
   IMP_SHOWABLE_INLINE(SphereD, {
       out << "(" << spaces_io(center_) << ": " << get_radius()
@@ -89,7 +90,7 @@ private:
 
 IMP_VOLUME_GEOMETRY_METHODS_D(Sphere, sphere,
                               {
-                                return PI * 4.0 * square(g.get_radius());
+                                return PI * 4.0 * get_squared(g.get_radius());
                               },
                               {
                                 return PI * (4.0 / 3.0)
@@ -141,7 +142,7 @@ inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
     if (delta >= sr) return false;
   }
   return get_squared_distance(a.get_center(), b.get_center())
-    < square(sr);
+    < get_squared(sr);
 }
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
