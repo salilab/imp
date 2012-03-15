@@ -147,24 +147,22 @@ def _make_example_links(target, source, env):
     for m in dta.modules.keys():
         print m
         if len(methods[m])+ len(classes[m]) > 0:
-            print >> out, "namespace IMP {"
             if m != "kernel":
-                print >> out, "namespace", m, "{"
+                ns= "IMP::"+m+"::"
+            else:
+                ns="IMP::"
             print >> out, "/**"
             for c in classes[m].keys():
-                print >> out, "\\class", c
+                print >> out, "\\class", ns+c
                 print >> out, "Examples:"
                 lst= [dta.examples[e].link for e in classes[m][c]]
                 print >> out, ", ".join(lst)
             for c in methods[m].keys():
-                print >> out, "\\fn", c
+                print >> out, "\\fn", ns+c
                 print >> out, "Examples:"
                 lst= [dta.examples[e].link for e in methods[m][c]]
                 print >> out, ", ".join(lst)
             print >> out, "*/"
-            if m != "kernel":
-                print >> out, "}"
-            print >> out, "}"
 def _print_example_links(target, source, env):
     print "Making example links"
 _ExamplesLinks = Builder(action=Action(_make_example_links,
