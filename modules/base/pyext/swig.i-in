@@ -74,6 +74,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/RefCounted.h"
 %include "IMP/base/file.h"
 %include "IMP/base/log.h"
+%include "IMP/base/declare_Object.h"
 %include "IMP/base/Object.h"
 %include "IMP/base/FailureHandler.h"
 %include "IMP/base/SetLogState.h"

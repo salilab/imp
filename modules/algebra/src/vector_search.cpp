@@ -8,7 +8,9 @@
 
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/utility.h>
+#include <IMP/algebra/utility.h>
 #include <IMP/base/log.h>
+#include <IMP/base/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -26,14 +28,14 @@ DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const Vector3Ds &vs,
 
 Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   IMP_OBJECT_LOG;
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     audit();
   }
   //Index i= indexes_[id];
   BoundingBox3D bb(coords_[id]);
   bb+= distance;
   Ints ret;
-  double distance2= square(distance);
+  double distance2= get_squared(distance);
   IMP_LOG(VERBOSE, "Searching from " << bb << " which is "
           << grid_.get_extended_index(bb.get_corner(0))
           << " to " << grid_.get_extended_index(bb.get_corner(1)) << std::endl);

@@ -10,7 +10,7 @@
 #define IMPBASE_INTERNAL_POINTER_BASE_H
 
 
-#include "../Object.h"
+#include "../declare_Object.h"
 #include "ref_counting.h"
 #include "IMP/compatibility/hash.h"
 #include "IMP/compatibility/nullptr.h"

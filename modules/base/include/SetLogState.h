@@ -11,6 +11,7 @@
 #include "base_config.h"
 #include "log.h"
 #include "Pointer.h"
+#include "declare_Object.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
