@@ -78,7 +78,7 @@ class CGOptimizerTests(IMP.test.TestCase):
             #w= IMP.display.ChimeraWriter(nm)
             #for p in lsc.get_particles():
             #    d= IMP.core.XYZR(p)
-            #    g= IMP.display.XYZRGeometry(d)
+            #    g= IMP.core.XYZRGeometry(d)
             #    w.add_geometry(g)
             self.check_model(m, lsc, lpc)
 

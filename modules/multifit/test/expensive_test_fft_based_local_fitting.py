@@ -62,7 +62,7 @@ class FFTFittingTest(IMP.test.TestCase):
             rmsd=IMP.atom.get_rmsd(self.xyz,self.xyz_copy)
             w= IMP.display.BildWriter("test.%d.bild"%i)
             for p in self.ps_copy:
-                g= IMP.display.XYZRGeometry(p)
+                g= IMP.core.XYZRGeometry(p)
                 w.add_geometry(g)
             w=None
             print "rmsd:",rmsd
