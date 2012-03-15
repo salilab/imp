@@ -84,7 +84,7 @@ Ints
 get_convex_polygons(const Ints &indexes,
                     const algebra::Vector3Ds &vertices) {
   if (indexes.size() <3) {
-    IMP_THROW("Polygon must at least be a triangle", ValueException);
+    IMP_THROW("Polygon must at least be a triangle", base::ValueException);
   }
   //std::cout << "Splitting polygon " << poly.size() << std::endl;
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
@@ -127,7 +127,7 @@ get_convex_polygons(const Ints &indexes,
                                     poly2.vertices_end(),
                                     std::back_inserter(polys2));
   } catch(...) {
-    IMP_THROW("Polygon is not simple", ValueException);
+    IMP_THROW("Polygon is not simple", base::ValueException);
   }
   //std::cout << "Got " << polys2.size() << std::endl;
   // unproject decomposition
