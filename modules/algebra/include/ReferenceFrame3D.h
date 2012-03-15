@@ -8,6 +8,7 @@
 #ifndef IMPALGEBRA_REFERENCE_FRAME_3D_H
 #define IMPALGEBRA_REFERENCE_FRAME_3D_H
 
+#include "algebra_config.h"
 #include "Transformation3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
