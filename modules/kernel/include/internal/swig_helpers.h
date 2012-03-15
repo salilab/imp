@@ -21,13 +21,6 @@ using namespace IMP;
 
 #ifndef SWIG
 
-  template <class T, class P, class ConvertT>
-  struct ConvertSequence<Decorators<T, P>, ConvertT > :
-    public ConvertVectorBase< Decorators<T, P>, ConvertT > {
-    static const int converter=9;
-  };
-
-
   template<>
   struct Convert<Particle >:
     public ConvertObjectBase<Particle> {
