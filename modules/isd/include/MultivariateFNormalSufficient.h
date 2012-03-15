@@ -85,7 +85,7 @@ using Eigen::VectorXd;
  *
  */
 
-class IMPISDEXPORT MultivariateFNormalSufficient : public Object
+class IMPISDEXPORT MultivariateFNormalSufficient : public base::Object
 {
 
 private:

@@ -19,7 +19,7 @@ enum func_names { EVAL, TRWP, MD, DFM, DSIGMA, PTP, PWP, CHOLESKY, SOLVE,
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(
         const MatrixXd& FX, double JF, const VectorXd& FM,
         const MatrixXd& Sigma, double factor) :
-    Object("Multivariate Normal distribution %1%")
+  base::Object("Multivariate Normal distribution %1%")
 {
         reset_flags();
         internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_();
@@ -42,7 +42,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(
         const VectorXd& Fbar, double JF, const VectorXd& FM, int Nobs,
         const MatrixXd& W, const MatrixXd& Sigma, double factor)
-: Object("Multivariate Normal distribution %1%")
+  : base::Object("Multivariate Normal distribution %1%")
 {
         reset_flags();
         internal::CallTimer<9> timer_();
