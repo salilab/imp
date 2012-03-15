@@ -9,6 +9,7 @@
 
 #include <IMP/exception.h>
 #include <IMP/utility.h>
+#include <fstream>
 
 #include <boost/algorithm/string.hpp>
 
