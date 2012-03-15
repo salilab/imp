@@ -82,7 +82,7 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         pps= r.get_connected_pairs()
         lscore=0
         for p in pps:
-            lscore= lscore+sdps.evaluate(IMP.ParticlePair(p[0], p[1]), None)
+            lscore= lscore+sdps.evaluate((p[0], p[1]), None)
         self.assertAlmostEqual(score, lscore, delta=.1)
 
     def test_methods(self):

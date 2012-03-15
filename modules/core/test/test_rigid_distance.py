@@ -28,7 +28,7 @@ class Test(IMP.test.TestCase):
         bp=None
         for l0 in IMP.core.get_leaves(p0):
             for l1 in IMP.core.get_leaves(p1):
-                d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), l1.get_particle()), None)
+                d= sdps.evaluate((l0.get_particle(), l1.get_particle()), None)
                 if d< dm:
                     print "found ", l0.get_name(), l1.get_name(), d
                     dm=d
@@ -51,7 +51,7 @@ class Test(IMP.test.TestCase):
         dm= 1000000
         bp=None
         for l0 in IMP.core.get_leaves(p0):
-            d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), p1), None)
+            d= sdps.evaluate((l0.get_particle(), p1), None)
             if d< dm:
                 dm=d
         self.assertAlmostEqual(v, dm, delta=.1)

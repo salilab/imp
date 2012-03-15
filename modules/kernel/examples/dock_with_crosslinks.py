@@ -192,7 +192,7 @@ def add_restraints():
         k=strength
         hub= IMP.core.HarmonicUpperBound(d,k)
         df= IMP.core.DistancePairScore(hub)
-        dr= IMP.core.PairRestraint(df, IMP.ParticlePair(p1, p2))
+        dr= IMP.core.PairRestraint(df, (p1, p2))
         rs.add_restraint(dr)
         a='cross_link-'+`r1`+'.'+c1+'-'+`r2`+'.'+c2+'.lower'
         restraints_map

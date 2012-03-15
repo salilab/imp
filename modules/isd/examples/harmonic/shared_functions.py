@@ -36,7 +36,7 @@ class sfo(sfo_common):
         p2.set_is_optimized(IMP.FloatKey("z"),False)
         ha = IMP.core.Harmonic(0,1) #gaussian with Cv = kB
         df = IMP.core.DistancePairScore(ha)
-        si = IMP.core.PairRestraint(df, IMP.ParticlePair(p1,p2))
+        si = IMP.core.PairRestraint(df, (p1,p2))
         m.add_restraint(si)
         self._m = m
         self._p2 = p2

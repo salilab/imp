@@ -108,9 +108,9 @@ class ParticleTests(IMP.test.TestCase):
     def test_pairs(self):
         """Check pairs"""
         m= IMP.Model()
-        ps= IMP.ParticlePairs()
+        ps= []
         for i in range(10):
-            pp = IMP.ParticlePair(IMP.Particle(m), IMP.Particle(m));
+            pp = (IMP.Particle(m), IMP.Particle(m));
         pso=IMP._pass_particle_pairs(ps)
         self._equal_lists(ps, pso)
     def test_failure(self):

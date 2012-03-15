@@ -20,8 +20,8 @@ class DistanceTests(IMP.test.TestCase):
         tps.set_was_used(True)
         d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
         d1.set_coordinates(IMP.algebra.Vector3D(2,2,4))
-        self.assertEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0)
-        self.assertNotEqual(tps.evaluate(IMP.ParticlePair(p1, p0), None), 0)
+        self.assertEqual(tps.evaluate((p0, p1), None), 0)
+        self.assertNotEqual(tps.evaluate((p1, p0), None), 0)
 
         print "test rotation"
         rot= IMP.algebra.get_rotation_from_matrix(0, 0,-1,
@@ -30,8 +30,8 @@ class DistanceTests(IMP.test.TestCase):
         tr= IMP.algebra.Transformation3D(rot, t)
         tps.set_transformation(tr)
         d1.set_coordinates(IMP.algebra.Vector3D(4, 2, -2))
-        self.assertAlmostEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, delta=.01)
-        self.assertNotEqual(tps.evaluate(IMP.ParticlePair(p1, p0), None), 0)
+        self.assertAlmostEqual(tps.evaluate((p0, p1), None), 0, delta=.01)
+        self.assertNotEqual(tps.evaluate((p1, p0), None), 0)
         t=IMP.algebra.Vector3D(0,0,0)
         rot= IMP.algebra.get_rotation_from_matrix(0,-1, 0,
                                                   1, 0, 0,
@@ -42,7 +42,7 @@ class DistanceTests(IMP.test.TestCase):
         # clear derivs
         print "test derivs"
         m.evaluate(True)
-        tps.evaluate(IMP.ParticlePair(p0, p1), IMP.DerivativeAccumulator(1))
+        tps.evaluate((p0, p1), IMP.DerivativeAccumulator(1))
         print d0.get_derivative(0)
         print d0.get_derivative(1)
         print d0.get_derivative(2)
@@ -75,7 +75,7 @@ class DistanceTests(IMP.test.TestCase):
                                            IMP.algebra.Transformation3D(r,t))
         pl= IMP.container.ListPairContainer(m)
         pr= IMP.container.PairsRestraint(tps, pl)
-        pl.add_particle_pair(IMP.ParticlePair(p0, p1))
+        pl.add_particle_pair((p0, p1))
         m.add_restraint(pr)
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)

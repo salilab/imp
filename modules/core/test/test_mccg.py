@@ -19,8 +19,8 @@ class CGOptimizerTests(IMP.test.TestCase):
                     d0= IMP.core.XYZR(p0)
                     d1= IMP.core.XYZR(p1)
                     d= IMP.core.get_distance(d0,d1)
-                    if lpc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)) \
-                            or lpc.get_contains_particle_pair(IMP.ParticlePair(p1,p0)) :
+                    if lpc.get_contains_particle_pair((p0,p1)) \
+                            or lpc.get_contains_particle_pair((p1,p0)) :
                         self.assertAlmostEqual(d, 0, delta=.2)
                     else:
                         self.assertGreaterEqual(d, -.2)
@@ -48,7 +48,7 @@ class CGOptimizerTests(IMP.test.TestCase):
             qp=lsc.get_particle(2*i)
             print qp.get_name()
             print qp
-            pp=IMP.ParticlePair(lsc.get_particle(2*i),
+            pp=(lsc.get_particle(2*i),
                                 lsc.get_particle(2*i+1))
             print pp
             pp2=(lsc.get_particle(2*i),

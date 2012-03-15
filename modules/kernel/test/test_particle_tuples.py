@@ -9,7 +9,7 @@ class ParticleTupleTests(IMP.test.TestCase):
         m = IMP.Model()
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
-        p = IMP.ParticlePair(p1, p2)
+        p = (p1, p2)
         #self.assertEqual(p.get_dimension(), 2)
         self.assertEqual(p[0], p1)
         self.assertEqual(p[1], p2)
