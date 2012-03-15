@@ -72,7 +72,7 @@ void DynamicNearestNeighbor3D::set_coordinates_internal(int id, Vector3D nc) {
 
 void DynamicNearestNeighbor3D::set_coordinates(int id, Vector3D nc) {
   IMP_OBJECT_LOG;
-  IMP_IF_CHECK_PROBABILISTIC(USAGE_AND_INTERNAL, .1) {
+  IMP_IF_CHECK_PROBABILISTIC(base::USAGE_AND_INTERNAL, .1) {
     this->audit();
   }
   Grid::Index ind= indexes_[id];
