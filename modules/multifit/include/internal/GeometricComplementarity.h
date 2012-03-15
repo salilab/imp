@@ -12,6 +12,7 @@
 #include <IMP/Particle.h>
 #include "IMP/algebra/standard_grids.h"
 #include "../multifit_config.h"
+#include <IMP/algebra/Transformation3D.h>
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
