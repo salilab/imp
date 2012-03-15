@@ -23,7 +23,7 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-
+#ifndef SWIG
 /**
     \name Error checking and reporting
     \anchor assert
@@ -103,6 +103,8 @@ class IMPBASEEXPORT Exception
   Exception(const char *message);
   ~Exception() throw();
 };
+
+#endif
 
 //! Determine the maximum check level that can be used for this build
 /** For example, 'fast' builds can't use any checks.
@@ -348,7 +350,7 @@ IMPBASEEXPORT void handle_error(const char *msg);
 
 /** @} */
 
-
+#ifndef SWIG
 
 //! A general exception for an intenal error in IMP.
 /** This exception is thrown by the IMP_INTERNAL_CHECK() and
@@ -453,7 +455,7 @@ class IMPBASEEXPORT EventException: public Exception
   EventException(const char *t=""): Exception(t){}
   ~EventException() throw();
 };
-
+#endif
 
 IMPBASE_END_NAMESPACE
 

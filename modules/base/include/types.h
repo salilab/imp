@@ -85,6 +85,9 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, PROGRESS=2,
 #endif
 };
 
+// duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
+// is processed without seeing this definition yet.
+#ifndef SWIG
 //! Determine the level of runtime checks performed
 /** - NONE means that minimial checks are
     used.
@@ -95,6 +98,7 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, PROGRESS=2,
     developing Restraints or other \imp classes.
 */
 enum CheckLevel {DEFAULT_CHECK=-1, NONE=0, USAGE=1, USAGE_AND_INTERNAL=2};
+#endif
 }
 }
   //IMPBASE_END_NAMESPACE
