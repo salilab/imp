@@ -12,9 +12,8 @@
 #include "kernel_config.h"
 #include "base_types.h"
 #include <IMP/base/Object.h>
-#include "Pointer.h"
 #include "macros.h"
-#include "WeakPointer.h"
+#include <IMP/base/WeakPointer.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -50,7 +49,7 @@ class IMPEXPORT Container : public IMP::base::Object
 {
   friend class Model;
   friend class Particle;
-  UncheckedWeakPointer<Model> m_;
+  base::UncheckedWeakPointer<Model> m_;
 
  protected:
   bool is_ok(Particle *p);
