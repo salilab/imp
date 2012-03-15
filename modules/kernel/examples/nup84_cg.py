@@ -141,7 +141,7 @@ create_restraints(m, all)
 
 # in order to display the results, we need something that maps the particles onto
 # geometric objets. The IMP.display.Geometry objects do this mapping.
-# IMP.display.XYZRGeometry map an IMP.core.XYZR particle onto a sphere
+# IMP.core.XYZRGeometry map an IMP.core.XYZR particle onto a sphere
 gs=[]
 for i in range(all.get_number_of_children()):
     color= IMP.display.get_display_color(i)

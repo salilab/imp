@@ -31,7 +31,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         w= IMP.display.ChimeraWriter(self.get_tmp_file_name("proteinconf.py"))
         for c in p.get_children():
             d= IMP.core.XYZR(c.get_particle())
-            w.add_geometry(IMP.display.XYZRGeometry(d))
+            w.add_geometry(IMP.core.XYZRGeometry(d))
         self.assertLess(score, 1)
 
 if __name__ == '__main__':
