@@ -8,6 +8,7 @@
 #ifndef IMPALGEBRA_BOUNDING_BOX_D_H
 #define IMPALGEBRA_BOUNDING_BOX_D_H
 
+#include "algebra_config.h"
 #include "VectorD.h"
 #include "algebra_macros.h"
 #include <IMP/base/exception.h>
