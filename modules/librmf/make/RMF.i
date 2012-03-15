@@ -182,6 +182,8 @@ IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodePairHandle, NodePairHandle, NodePairHandles
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeTripletHandle, NodeTripletHandle, NodeTripletHandles);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, NodeQuadHandle, NodeQuadHandle, NodeQuadHandles);
 IMP_RMF_SWIG_PAIR(RMF, NodeConstHandle, BondPair, BondPairs)
+IMP_RMF_SWIG_PAIR(RMF, Index, IndexRange, IndexRanges)
+IMP_RMF_SWIG_PAIR(RMF, Int, IntRange, IntRanges)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
@@ -194,6 +196,12 @@ IMP_RMF_DECORATOR(RMF, Segment);
 IMP_RMF_DECORATOR(RMF, Score);
 IMP_RMF_DECORATOR(RMF, RigidParticle);
 IMP_RMF_DECORATOR(RMF, Residue);
+IMP_RMF_DECORATOR(RMF, Atom);
+IMP_RMF_DECORATOR(RMF, Chain);
+IMP_RMF_DECORATOR(RMF, Domain);
+IMP_RMF_DECORATOR(RMF, Copy);
+IMP_RMF_DECORATOR(RMF, Diffuser);
+IMP_RMF_DECORATOR(RMF, Typed);
 
 %implicitconv RMF::HDF5File;
 %implicitconv RMF::HDF5ConstFile;
@@ -296,6 +304,7 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/names.h"
 %include "RMF/Validator.h"
 %include "RMF/decorators.h"
+%include "RMF/decorator_utility.h"
 %include "RMF/utility.h"
 
 %pythoncode %{
@@ -394,3 +403,8 @@ has_hdf5=True
 has_boost_filesystem=True
 has_boost_thread=True
 }
+
+%pythoncode %{
+import _version_check
+_version_check.check_version(get_module_version())
+%}
