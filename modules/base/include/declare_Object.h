@@ -146,7 +146,9 @@ public:
       code is the one using it, call set_was_used(true) on the object.
   */
   void set_was_used(bool tf) const {
+#if IMP_BUILD < IMP_FAST
     was_owned_=tf;
+#endif
   }
 
 #ifndef IMP_DOXYGEN
