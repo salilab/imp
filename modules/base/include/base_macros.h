@@ -8,7 +8,7 @@
 #ifndef IMPBASE_BASE_MACROS_H
 #define IMPBASE_BASE_MACROS_H
 #include "base_config.h"
-#include <IMP/compatibility/vector.h>
+#include <IMP/base/types.h>
 
 #ifdef IMP_DOXYGEN
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)
@@ -522,7 +522,7 @@ public:                                                                 \
 #define IMP_VALUES(Name, PluralName)
 #else
 #define IMP_VALUES(Name, PluralName)                            \
-  typedef IMP::vector<Name> PluralName
+  typedef IMP::base::vector<Name> PluralName
 #endif
 
 
@@ -533,7 +533,7 @@ public:                                                                 \
 #define IMP_BUILTIN_VALUES(Name, PluralName)
 #else
 #define IMP_BUILTIN_VALUES(Name, PluralName)                     \
-  typedef IMP::vector<Name> PluralName
+  typedef IMP::base::vector<Name> PluralName
 #endif
 
 
@@ -882,9 +882,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #else
 
 #define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
-  typedef IMP::vector<IMP::base::Pointer<Name> >                        \
+  typedef IMP::base::vector<IMP::base::Pointer<Name> >                  \
   PluralName;                                                           \
-  typedef IMP::vector<IMP::base::WeakPointer<Name> >                    \
+  typedef IMP::base::vector<IMP::base::WeakPointer<Name> >              \
   PluralName##Temp;
 
 

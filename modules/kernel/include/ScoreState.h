@@ -14,10 +14,11 @@
 #include "VersionInfo.h"
 #include "utility.h"
 #include "macros.h"
+#include "base_types.h"
 #include <iostream>
 
 IMP_BEGIN_NAMESPACE
-
+class Model;
 //! ScoreStates maintian invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:

@@ -29,7 +29,7 @@ Vector3Ds read_pts(base::TextInput oin) {
     IMP::Float x,y,z;
     iss >> x >> y >> z;
     if (!iss) {
-      throw IMP::ValueException((std::string("Unable to parse line ")
+      throw IMP::base::ValueException((std::string("Unable to parse line ")
                                  + buf).c_str());
     }
     Vector3D v(x,y,z);
@@ -57,7 +57,7 @@ Sphere3Ds read_spheres(base::TextInput oin) {
     IMP::Float x,y,z, r;
     iss >> x >> y >> z >> r;
     if (!iss) {
-      throw IMP::ValueException((std::string("Unable to parse line ")
+      throw IMP::base::ValueException((std::string("Unable to parse line ")
                                  + buf).c_str());
     }
     Sphere3D v(Vector3D(x,y,z), r);
