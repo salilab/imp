@@ -11,6 +11,7 @@
 #include <IMP/saxs/FormFactorTable.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/core/XYZ.h>
+#include <iostream>
 
 #include <boost/algorithm/string.hpp>
 
