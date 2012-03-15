@@ -15,7 +15,6 @@
 #include <IMP/base/WeakPointer.h>
 #include <IMP/base/SetLogState.h>
 #include <IMP/base/SetCheckState.h>
-#include <IMP/base/VectorOfRefCounted.h>
 
 IMP_BEGIN_NAMESPACE
 #ifndef SWIG
