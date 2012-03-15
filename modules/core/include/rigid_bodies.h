@@ -138,23 +138,6 @@ public:
   static RigidBody setup_particle(Particle *p,
                                   const algebra::ReferenceFrame3D &rf);
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  /** Merge several rigid bodies into one.
-   */
-  static RigidBody setup_particle(Particle *p,
-                                  const RigidBodies &o) {
-    return setup_particle(p, get_as<ParticlesTemp>(o));
-  }
-
-
-
-  static RigidBody setup_particle(Particle *p,
-                                  const XYZs &members) {
-    return setup_particle(p, get_as<ParticlesTemp>(members));
-  }
-
-#endif
-
   //! Make the rigid body no longer rigid.
   static void teardown_particle(RigidBody rb);
 
