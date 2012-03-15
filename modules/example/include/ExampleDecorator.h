@@ -81,7 +81,7 @@ IMP_OUTPUT_OPERATOR(ExampleDecorator);
 
 
 /** Define a collection of them. Also look at example.i*/
-typedef Decorators<ExampleDecorator, Particles> ExampleDecorators;
+IMP_DECORATORS(ExampleDecorator, ExampleDecorators, Particles);
 
 IMPEXAMPLE_END_NAMESPACE
 
