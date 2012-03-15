@@ -265,7 +265,7 @@ template <class T>
 inline Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)
 {
   if (A.dim2() != B.dim1()) {
-    IMP_THROW("Bad dimensions", ValueException);
+    IMP_THROW("Bad dimensions", base::ValueException);
   }
     int M = A.dim1();
     int N = A.dim2();
