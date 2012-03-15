@@ -189,7 +189,7 @@ private:
   ::type::const_iterator OrderIterator;
   Value add_value(const Key &k) const {
     Value v= gen_(k, *this);
-    OrderIterator it= map_.template get<1>().push_front(KVP(k, v)).first;
+    map_.template get<1>().push_front(KVP(k, v)).first;
     while (map_.size() > max_size_) {
       map_.template get<1>().pop_back();
     }
