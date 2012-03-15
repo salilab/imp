@@ -10,10 +10,7 @@
 #define IMPKERNEL_DERIVATIVE_ACCUMULATOR_H
 
 #include "kernel_config.h"
-#include "base_types.h"
-#include "utility.h"
 #include "macros.h"
-#include <vector>
 
 IMP_BEGIN_NAMESPACE
 
@@ -24,17 +21,17 @@ class IMPEXPORT DerivativeAccumulator
 {
 public:
   //! the weight is one by default
-  DerivativeAccumulator(Float weight=1.0)
+  DerivativeAccumulator(double weight=1.0)
       : weight_(weight) {}
 
   //! The weight is multiplied by the new weight
-  DerivativeAccumulator(const DerivativeAccumulator &copy, Float weight=1.0)
+  DerivativeAccumulator(const DerivativeAccumulator &copy, double weight=1.0)
       : weight_(copy.weight_ * weight) {}
 
   //! Scale a value appropriately.
   /** \param[in] value Value to add to the float attribute derivative.
    */
-  Float operator()(const Float value) const {
+  double operator()(const double value) const {
     IMP_INTERNAL_CHECK(!compatibility::isnan(value),
                        "Can't set derivative to NaN.");
     return value * weight_;
@@ -42,7 +39,7 @@ public:
   IMP_SHOWABLE_INLINE(DerivativeAccumulator, out << weight_);
 
 private:
-  Float weight_;
+  double weight_;
 };
 
 IMP_VALUES(DerivativeAccumulator, DerivativeAccumulators);
