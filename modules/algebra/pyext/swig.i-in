@@ -75,10 +75,10 @@ namespace multi_array_types {
 %include "IMP/algebra/Vector3D.h"
 // to transform bbs
 %include "IMP/algebra/Rotation3D.h"
+%include "IMP/algebra/BoundingBoxD.h"
 %include "IMP/algebra/Transformation3D.h"
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/Transformation2D.h"
-%include "IMP/algebra/BoundingBoxD.h"
 %include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
 

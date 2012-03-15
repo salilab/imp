@@ -11,7 +11,7 @@
 #include "algebra_config.h"
 #include "Vector3D.h"
 #include "Rotation3D.h"
-#include "Transformation2D.h"
+#include "BoundingBoxD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -141,6 +141,25 @@ IMPALGEBRAEXPORT Transformation3D get_random_local_transformation(
    float max_translation=5.,
    float max_angle_in_rad=0.26);
 
+
+
+
+//! Return a bounding box containing the transformed box
+inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
+                                       const Transformation3D &tr) {
+  BoundingBoxD<3> nbb;
+  for (unsigned int i=0; i< 2; ++i) {
+    for (unsigned int j=0; j< 2; ++j) {
+      for (unsigned int k=0; k< 2; ++k) {
+        algebra::Vector3D v(bb.get_corner(i)[0],
+                            bb.get_corner(j)[1],
+                            bb.get_corner(k)[2]);
+        nbb+= tr.get_transformed(v);
+      }
+    }
+  }
+  return nbb;
+}
 
 IMPALGEBRA_END_NAMESPACE
 

@@ -9,8 +9,8 @@
 #define IMPALGEBRA_BOUNDING_BOX_D_H
 
 #include "VectorD.h"
-#include "Transformation3D.h"
 #include "algebra_macros.h"
+#include <IMP/base/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -57,7 +57,7 @@ public:
                const VectorD<D> &ub){
     b_[0]=lb;
     b_[1]=ub;
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(IMP::base::USAGE) {
       for (unsigned int i=0; i< lb.get_dimension(); ++i) {
         IMP_USAGE_CHECK(lb[i] <= ub[i],
                         "Invalid bounding box");
@@ -189,23 +189,6 @@ inline BoundingBoxD<D> get_cube_d(double radius) {
 inline BoundingBoxD<-1> get_cube_kd(unsigned int d, double radius) {
   return BoundingBoxD<-1>(-radius*get_ones_vector_kd(d),
                           radius*get_ones_vector_kd(d));
-}
-
-//! Return a bounding box containing the transformed box
-inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
-                                       const Transformation3D &tr) {
-  BoundingBoxD<3> nbb;
-  for (unsigned int i=0; i< 2; ++i) {
-    for (unsigned int j=0; j< 2; ++j) {
-      for (unsigned int k=0; k< 2; ++k) {
-        algebra::Vector3D v(bb.get_corner(i)[0],
-                            bb.get_corner(j)[1],
-                            bb.get_corner(k)[2]);
-        nbb+= tr.get_transformed(v);
-      }
-    }
-  }
-  return nbb;
 }
 
 
