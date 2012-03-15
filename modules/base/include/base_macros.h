@@ -8,7 +8,26 @@
 #ifndef IMPBASE_BASE_MACROS_H
 #define IMPBASE_BASE_MACROS_H
 #include "base_config.h"
-#include <IMP/base/types.h>
+#include <IMP/compatibility/vector.h>
+
+namespace IMP {
+#ifndef SWIG
+/* MSVC gets very confused (error C2872) between std::vector and
+   IMP::compatibility::vector if we include headers (e.g. OpenCV) that use
+   a plain 'vector' after 'using namespace std'. Since compatibility::vector
+   doesn't add anything to std::vector anyway on MSVC, use std::vector instead
+   here. */
+# ifdef _MSC_VER
+  using std::vector;
+# else
+  using compatibility::vector;
+# endif
+#else
+  template <class T>
+  struct vector {};
+#endif
+}
+
 
 #ifdef IMP_DOXYGEN
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)
@@ -522,7 +541,7 @@ public:                                                                 \
 #define IMP_VALUES(Name, PluralName)
 #else
 #define IMP_VALUES(Name, PluralName)                            \
-  typedef IMP::base::vector<Name> PluralName
+  typedef IMP::vector<Name> PluralName
 #endif
 
 
@@ -533,7 +552,7 @@ public:                                                                 \
 #define IMP_BUILTIN_VALUES(Name, PluralName)
 #else
 #define IMP_BUILTIN_VALUES(Name, PluralName)                     \
-  typedef IMP::base::vector<Name> PluralName
+  typedef IMP::vector<Name> PluralName
 #endif
 
 
@@ -882,9 +901,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #else
 
 #define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
-  typedef IMP::base::vector<IMP::base::Pointer<Name> >                  \
+  typedef IMP::vector<IMP::base::Pointer<Name> >                        \
   PluralName;                                                           \
-  typedef IMP::base::vector<IMP::base::WeakPointer<Name> >              \
+  typedef IMP::vector<IMP::base::WeakPointer<Name> >                    \
   PluralName##Temp;
 
 
@@ -1000,5 +1019,7 @@ public:                                                         \
   IMP_VALUES(Name, Names)
 
 /**@}*/
+
+#include "types.h"
 
 #endif  /* IMPBASE_BASE_MACROS_H */
