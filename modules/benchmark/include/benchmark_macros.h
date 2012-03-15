@@ -10,6 +10,7 @@
 #define IMPBENCHMARK_MACROS_H
 
 #include <boost/timer.hpp>
+#include <IMP/base/exception.h>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/date_time/posix_time/posix_time_types.hpp>
 #include <boost/date_time/posix_time/posix_time_duration.hpp>
@@ -26,7 +27,7 @@
         block;                                  \
         ++imp_reps;                             \
       } while (imp_timer.elapsed() < 2.5);      \
-    } catch (const IMP::Exception &e) {         \
+    } catch (const IMP::base::Exception &e) {   \
       std::cerr<< "Caught exception "           \
                << e.what() << std::endl;        \
     }                                           \
@@ -45,7 +46,7 @@
         block;                                                          \
         ++imp_reps;                                                     \
       } while (microsec_clock::local_time()-start < seconds(2.5));      \
-    } catch (const IMP::Exception &e) {                                 \
+    } catch (const IMP::base::Exception &e) {                           \
       std::cerr<< "Caught exception "                                   \
                << e.what() << std::endl;                                \
     }                                                                   \
@@ -63,7 +64,7 @@
     for (unsigned int i=0; i< (N); ++i) {       \
       try {                                     \
         block;                                  \
-      } catch (const IMP::Exception &e) {       \
+      } catch (const IMP::base::Exception &e) { \
         std::cerr<< "Caught exception "         \
                << e.what() << std::endl;        \
         break;                                  \
