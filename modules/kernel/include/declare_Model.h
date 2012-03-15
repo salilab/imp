@@ -148,8 +148,8 @@ private:
   std::map<FloatKey, FloatRange> ranges_;
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
-  base::IndexVector<ParticleIndexTag, Pointer<Particle> > particle_index_;
-  vector<OwnerPointer<base::Object> > model_data_;
+  base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
+  vector<base::OwnerPointer<base::Object> > model_data_;
   bool dependencies_dirty_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends
@@ -266,14 +266,9 @@ public:
 #if !defined(IMP_DOXYGEN)
   double get_maximum_score(Restraint *r) const;
   void set_maximum_score(Restraint *r, double s);
-#endif
   void set_maximum_score(double s);
   double get_maximum_score() const;
-  //! Return true if thelast evaluate satisfied the thresholds
-  /** Currently this ignores maximum scores on restraint sets. Sorry.
-   */
-  bool get_has_good_score() const;
-  /** @} */
+#endif
 
   /** @name Float Attribute Ranges
       Each Float attribute has an associated range which reflects the
@@ -291,36 +286,21 @@ public:
   */
   /** @} */
 
-  /** \name Evaluation
-
-      Evaluation proceeds as follows:
-      - ScoreState::before_evaluate() is called on all ScoreStates
-      - Restraint::evaluate() is called on all Restraints
-      - ScoreState::after_evaluate() is called on all ScoreStates
-      The sum of the Restraint::evaluate() return values is returned.
-
-      All evaluate calls throw a ModelException if a Particle attribute
-      value becomes invalid (NaN, infinite etc.)
-
-      @{
-  */
-  //! Evaluate all of the restraints in the model and return the score.
-  /** \param[in] calc_derivs If true, also evaluate the first derivatives.
-      \return The score.
-  */
-  virtual double evaluate(bool calc_derivs);
-
   /** Create a scoring function from the model restraints.*/
   ScoringFunction* create_model_scoring_function();
 
   //! Sometimes it is useful to be able to make sure the model is up to date
   /** This method updates all the state but does not necessarily compute the
-      score.
+      score. Use this to make sure that your containers and rigid bodies are
+      up to date.
   */
   void update();
 
   IMP_OBJECT_INLINE(Model, show_it(out), cleanup());
 
+  /** Remove a particle from the Model. The particle will then be inactive and
+      cannot be used for anything and all data stored in the particle is lost.
+  */
   void remove_particle(Particle *p);
 
   /** \name Statistics
@@ -370,14 +350,14 @@ public:
   class ParticleIterator;
 #else
   struct NotNull{
-    bool operator()(const Pointer<Particle>& p) {
+    bool operator()(const base::Pointer<Particle>& p) {
       return p;
     }
   };
   typedef boost::filter_iterator<NotNull,
-                                 compatibility
-                                 ::vector<Pointer<Particle> >
-                                 ::const_iterator> ParticleIterator;
+      compatibility
+      ::vector<base::Pointer<Particle> >
+      ::const_iterator> ParticleIterator;
 
 #endif
   ParticleIterator particles_begin() const;
