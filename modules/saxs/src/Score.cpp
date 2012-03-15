@@ -7,7 +7,7 @@
 #include <IMP/saxs/Score.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/saxs/utility.h>
-
+#include <fstream>
 #include <map>
 
 IMPSAXS_BEGIN_NAMESPACE
