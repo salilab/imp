@@ -145,7 +145,9 @@ public:
       IMP::Model. If an object is not properly marked as used, or your
       code is the one using it, call set_was_used(true) on the object.
   */
-  void set_was_used(bool tf) const;
+  void set_was_used(bool tf) const {
+    was_owned_=tf;
+  }
 
 #ifndef IMP_DOXYGEN
   // swig needs to know to wrap this function
