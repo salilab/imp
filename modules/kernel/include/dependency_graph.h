@@ -95,17 +95,6 @@ get_dependent_restraints(Particle *p,
                         const DependencyGraph &dg);
 
 
-#ifndef IMP_DOXYGEN
-class Container;
-/** Return true if the contents of the container doesn't depend on any
-    of the passed particles.
-*/
-IMPEXPORT bool
-get_is_static_container(Container *c,
-                        const DependencyGraph &dg,
-                        const ParticlesTemp &pst);
-#endif
-
 /** Return an ordering for the score states that is consistent with the
     dependencies show in the dependency graph.
 */
