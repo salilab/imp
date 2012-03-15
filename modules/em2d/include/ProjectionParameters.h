@@ -116,7 +116,7 @@ private:
 
 IMP_OUTPUT_OPERATOR(ProjectionParameters);
 
-typedef Decorators<ProjectionParameters, Particles> ProjectionParametersList;
+IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
 
 
 
