@@ -647,6 +647,7 @@ IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
 IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
+IMP_SWIG_VALUE_IMPL(Namespace, PluralName, TemplateName, PluralName##s, PluralName##s);
 %enddef
 
 %define IMP_SWIG_VALUE(Namespace, Name, PluralName)
