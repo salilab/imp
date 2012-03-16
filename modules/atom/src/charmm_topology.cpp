@@ -202,13 +202,13 @@ namespace {
   }
 
   template <unsigned int D>
-  vector<CHARMMBondEndpoint>
+  base::Vector<CHARMMBondEndpoint>
           handle_two_patch_bond(const CHARMMConnection<D> &bond,
                                 CHARMMResidueTopology *res1,
                                 CHARMMResidueTopology *res2,
                                 CHARMMResidueTopology *first_res)
   {
-    vector<CHARMMBondEndpoint> endpoints;
+    base::Vector<CHARMMBondEndpoint> endpoints;
     for (unsigned int i = 0; i < D; ++i) {
       std::string name = bond.get_endpoint(i).get_atom_name();
       CHARMMResidueTopology *res = get_two_patch_residue(name, res1, res2);
@@ -282,7 +282,7 @@ CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(std::string name)
 {
   // A map would be more elegant here (avoid linear lookup time) but
   // a) atoms need to be ordered and b) residues rarely have more than ~30 atoms
-  vector<CHARMMAtomTopology>::iterator it
+  base::Vector<CHARMMAtomTopology>::iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -295,7 +295,7 @@ CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(std::string name)
 const CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(
                                                       std::string name) const
 {
-  vector<CHARMMAtomTopology>::const_iterator it
+  base::Vector<CHARMMAtomTopology>::const_iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     return *it;
@@ -307,7 +307,7 @@ const CHARMMAtomTopology & CHARMMResidueTopologyBase::get_atom(
 
 void CHARMMIdealResidueTopology::remove_atom(std::string name)
 {
-  vector<CHARMMAtomTopology>::iterator it
+  base::Vector<CHARMMAtomTopology>::iterator it
          = std::find_if(atoms_.begin(), atoms_.end(), atom_has_name(name));
   if (it != atoms_.end()) {
     atoms_.erase(it);
@@ -349,7 +349,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const
   check_empty_patch(this);
 
   // Copy or update atoms
-  for (vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
+  for (base::Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     try {
       res->get_atom(it->get_name()) = *it;
@@ -359,7 +359,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const
   }
 
   // Delete atoms
-  for (vector<std::string>::const_iterator it = deleted_atoms_.begin();
+  for (base::Vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     try {
       res->remove_atom(*it);
@@ -410,7 +410,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   }
 
   // Copy or update atoms
-  for (vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
+  for (base::Vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     std::pair<CHARMMResidueTopology *, CHARMMAtomTopology> resatom =
                                 handle_two_patch_atom(*it, res1, res2);
@@ -422,7 +422,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   }
 
   // Delete atoms
-  for (vector<std::string>::const_iterator it = deleted_atoms_.begin();
+  for (base::Vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     std::pair<CHARMMResidueTopology *, CHARMMAtomTopology> resatom =
                                 handle_two_patch_atom(*it, res1, res2);
@@ -689,7 +689,7 @@ namespace {
   void build_internal_coordinates(const CHARMMSegmentTopology *seg,
                              const std::map<const CHARMMResidueTopology *,
                                             Hierarchy> &resmap,
-                             vector<ModelInternalCoordinate> &ics) {
+                             base::Vector<ModelInternalCoordinate> &ics) {
     const CHARMMResidueTopology *prev = nullptr;
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *cur = seg->get_residue(nres);
@@ -738,9 +738,9 @@ namespace {
   // CHARMM format allows for distances or angles (but not dihedrals) to
   // be zero; fill in these missing values using atom types and
   // parameter file information if available.
-  void fill_internal_coordinates(vector<ModelInternalCoordinate> &ics,
+  void fill_internal_coordinates(base::Vector<ModelInternalCoordinate> &ics,
                                  const CHARMMParameters *ff) {
-    for (vector<ModelInternalCoordinate>::iterator it = ics.begin();
+    for (base::Vector<ModelInternalCoordinate>::iterator it = ics.begin();
          it != ics.end(); ++it) {
       if (it->first_distance == 0.) {
         if (it->improper) {
@@ -841,8 +841,8 @@ namespace {
   }
 
   unsigned build_cartesians_from_internal(
-                             vector<ModelInternalCoordinate> &ics) {
-    vector<ModelInternalCoordinate>::iterator newend =
+                             base::Vector<ModelInternalCoordinate> &ics) {
+    base::Vector<ModelInternalCoordinate>::iterator newend =
          std::remove_if(ics.begin(), ics.end(), build_cartesian_from_internal);
     unsigned numbuilt = ics.end() - newend;
     // Any internal coordinate used to build Cartesian coordinates must
@@ -853,10 +853,10 @@ namespace {
   }
 
   bool seed_triplet(Atom i, Atom j, Atom k,
-                    const vector<ModelInternalCoordinate> &ics,
+                    const base::Vector<ModelInternalCoordinate> &ics,
                     const algebra::Vector3D &seed) {
     double rij = 0., rjk = 0., tijk = 0.;
-    for (vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+    for (base::Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
          it != ics.end() && (rij == 0. || rjk == 0. || tijk == 0.); ++it) {
       if (rij == 0.) {
         rij = it->get_distance(i, j);
@@ -887,9 +887,9 @@ namespace {
   // The first atom is placed at the seed, the second Rij along the x axis,
   // and the third at an angle Tijk on the xy plane, Rjk from the second.
   // Returns true only if a triplet was found.
-  bool seed_coordinates(const vector<ModelInternalCoordinate> &ics,
+  bool seed_coordinates(const base::Vector<ModelInternalCoordinate> &ics,
                         const algebra::Vector3D &seed) {
-    for (vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+    for (base::Vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
          it != ics.end(); ++it) {
       if (!it->improper) {
         if (seed_triplet(it->atoms[0], it->atoms[1], it->atoms[2], ics, seed)
@@ -955,7 +955,7 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
   algebra::Vector3D seed(0., 0., 0.);
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
-    vector<ModelInternalCoordinate> ics;
+    base::Vector<ModelInternalCoordinate> ics;
     build_internal_coordinates(*segit, resmap, ics);
 
     fill_internal_coordinates(ics, force_field_);

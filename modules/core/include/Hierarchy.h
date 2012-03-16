@@ -68,7 +68,7 @@ IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 class Hierarchy;
 
 #ifndef IMP_DOXYGEN
-typedef IMP::base::ConvertibleVector<Hierarchy> GenericHierarchies;
+typedef IMP::base::Vector<Hierarchy> GenericHierarchies;
 #endif
 
 //! A decorator for helping deal with a hierarchy.
@@ -344,7 +344,7 @@ inline F visit_breadth_first(HD d, F f)
 template <class HD, class F>
 inline F visit_depth_first(HD d,  F f)
 {
-  vector<HD> stack;
+  base::Vector<HD> stack;
   stack.push_back(d);
   //d.show(std::cerr);
   do {
@@ -415,7 +415,7 @@ template <class HD, class F>
 inline F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
 {
   typedef std::pair<typename F::result_type, HD> DP;
-  vector<DP> stack;
+  base::Vector<DP> stack;
   stack.push_back(DP(i, d));
   //d.show(std::cerr);
   do {
@@ -545,7 +545,7 @@ template <class HD, class F>
 inline HD find_breadth_first(HD h, F f)
 {
   if (f(h.get_particle())) return h;
-  vector<HD> stack;
+  base::Vector<HD> stack;
   stack.push_back(h);
   //d.show(std::cerr);
   do {

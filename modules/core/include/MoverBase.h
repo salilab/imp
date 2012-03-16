@@ -28,8 +28,8 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MoverBase: public Mover
 {
-  vector<Floats > values_;
-  vector<FloatKey> keys_;
+  base::Vector<Floats > values_;
+  base::Vector<FloatKey> keys_;
   Model *m_;
   ParticleIndexes particles_;
 public:

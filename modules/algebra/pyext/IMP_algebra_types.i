@@ -12,18 +12,18 @@ IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<4>, Namebase##D, Namebase##test##4,Na
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Namebase##5Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
 
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::vector<Namespace::Namebase##D< 1 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::vector<Namespace::Namebase##D< 1 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::vector<Namespace::Namebase##D< 2 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::vector<Namespace::Namebase##D< 2 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::vector<Namespace::Namebase##D< 3 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::vector<Namespace::Namebase##D< 3 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::vector<Namespace::Namebase##D< 4 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::vector<Namespace::Namebase##D< 4 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::vector<Namespace::Namebase##D< 5 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::vector<Namespace::Namebase##D< 5 > >,const&);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::vector<Namespace::Namebase##D< 6 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::vector<Namespace::Namebase##D< 6 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::base::Vector<Namespace::Namebase##D< 1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<1>, IMP::base::Vector<Namespace::Namebase##D< 1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::base::Vector<Namespace::Namebase##D< 2 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<2>, IMP::base::Vector<Namespace::Namebase##D< 2 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::base::Vector<Namespace::Namebase##D< 3 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<3>, IMP::base::Vector<Namespace::Namebase##D< 3 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::base::Vector<Namespace::Namebase##D< 4 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<4>, IMP::base::Vector<Namespace::Namebase##D< 4 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::base::Vector<Namespace::Namebase##D< 5 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<5>, IMP::base::Vector<Namespace::Namebase##D< 5 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::base::Vector<Namespace::Namebase##D< 6 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<6>, IMP::base::Vector<Namespace::Namebase##D< 6 > >,const&);
 IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
 %extend Namespace::Namebase##D {
   int __cmp__(const Namebase##D<D> &) const {
@@ -39,8 +39,8 @@ IMP_SWIG_ALGEBRA_VALUE_D_NOKD(Namespace, Namebase);
 IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##KD, Namebase##D, Namebase##KDs);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
 
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::vector<Namespace::Namebase##D< -1 > >,);
-IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::vector<Namespace::Namebase##D< -1 > >,const&);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::base::Vector<Namespace::Namebase##D< -1 > >,);
+IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Namespace::Namebase##D<-1>, IMP::base::Vector<Namespace::Namebase##D< -1 > >,const&);
 %enddef
 
 %define IMP_SWIG_ALGEBRA_VALUE(Namespace, Name, PluralName)
@@ -135,25 +135,25 @@ ReturnType##KD function_name(const Argument0##KD& a) {
 %inline %{
   namespace IMP {
     namespace algebra {
-  ReturnType##1D function_name(const vector<Argument0##1D >& a) {
+  ReturnType##1D function_name(const IMP::base::Vector<Argument0##1D >& a) {
   return function_name<1>(a);
 }
-  ReturnType##2D function_name(const vector<Argument0##2D >& a) {
+  ReturnType##2D function_name(const IMP::base::Vector<Argument0##2D >& a) {
   return function_name<2>(a);
 }
-ReturnType##3D function_name(const vector<Argument0##3D >& a) {
+ReturnType##3D function_name(const IMP::base::Vector<Argument0##3D >& a) {
   return function_name<3>(a);
 }
-ReturnType##4D function_name(const vector<Argument0##4D >& a) {
+ReturnType##4D function_name(const IMP::base::Vector<Argument0##4D >& a) {
   return function_name<4>(a);
 }
-ReturnType##5D function_name(const vector<Argument0##5D >& a) {
+ReturnType##5D function_name(const IMP::base::Vector<Argument0##5D >& a) {
   return function_name<5>(a);
 }
-ReturnType##6D function_name(const vector<Argument0##6D >& a) {
+ReturnType##6D function_name(const IMP::base::Vector<Argument0##6D >& a) {
   return function_name<6>(a);
 }
-ReturnType##KD function_name(const vector<Argument0##KD >& a) {
+ReturnType##KD function_name(const IMP::base::Vector<Argument0##KD >& a) {
   return function_name<-1>(a);
 }
     }

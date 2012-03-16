@@ -169,7 +169,7 @@ namespace {
 
   void parse_dele_line(std::string line, CHARMMPatch *patch,
                        bool translate_names_to_pdb) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     if (split_results.size() < 3) return;
@@ -189,7 +189,7 @@ namespace {
 
   void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
                         bool translate_names_to_pdb) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
@@ -204,7 +204,7 @@ namespace {
   void parse_dihedral_line(std::string line,
                            CHARMMResidueTopologyBase *residue,
                            bool translate_names_to_pdb) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
@@ -219,7 +219,7 @@ namespace {
   void parse_improper_line(std::string line,
                            CHARMMResidueTopologyBase *residue,
                            bool translate_names_to_pdb) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
@@ -234,7 +234,7 @@ namespace {
   void parse_internal_coordinate_line(std::string line,
                                       CHARMMResidueTopologyBase *residue,
                                       bool translate_names_to_pdb) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     if (split_results.size() < 10) return; // IC line has at least 10 fields
@@ -259,7 +259,7 @@ namespace {
 
   void parse_mass_line(std::string line,
                        std::map<std::string, Element> &elements) {
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     if (split_results.size() < 5) return; // MASS line has at least 5 fields
@@ -284,7 +284,7 @@ namespace {
     const std::string FIRST = "FIRS";
     const std::string LAST = "LAST";
 
-    vector<std::string> split_results;
+    base::Vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     for (unsigned int i = 1; i < split_results.size(); i += 2) {
@@ -307,7 +307,7 @@ namespace {
     }
   }
 
-  typedef std::map<Particle *, vector<IMP::atom::Bond> > BondMap;
+  typedef std::map<Particle *, base::Vector<IMP::atom::Bond> > BondMap;
 
   // Build a simple mapping from Particles to bonds that connect them. Note
   // that we cannot use the existing such mapping (the bond graph) in the
@@ -543,7 +543,7 @@ void CHARMMParameters::parse_bond_line(const String& line,
                boost::token_compress_on);
   if(split_results.size() < 3) return; // BOND line has at least 3 fields
 
-  vector<Bond> bonds;
+  base::Vector<Bond> bonds;
   for(unsigned int i=1; i<split_results.size(); i+=2) {
     if(split_results[i][0] == '!') return;  // comments start
     Strings atom_names = get_atom_names(split_results.begin()+i,
@@ -768,7 +768,7 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
   return topology.release();
 }
 
-vector<std::pair<internal::CHARMMDihedralNames,
+base::Vector<std::pair<internal::CHARMMDihedralNames,
                       CHARMMDihedralParameters> >::const_iterator
 CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
                                 DihedralParameters::const_iterator end,
@@ -804,7 +804,7 @@ Particles CHARMMParameters::create_angles(Particles bonds) const
     Particle *p3 = bd.get_bonded(1).get_particle();
 
     // Extend along each adjoining p2 bond to get candidate p1-p2-p3 angles
-    for (vector<IMP::atom::Bond>::const_iterator bit2
+    for (base::Vector<IMP::atom::Bond>::const_iterator bit2
          = particle_bonds[p2].begin();
          bit2 != particle_bonds[p2].end(); ++bit2) {
       Particle *p1 = get_other_end_of_bond(p2, *bit2);
@@ -814,7 +814,7 @@ Particles CHARMMParameters::create_angles(Particles bonds) const
       }
     }
     // Do the same for p2-p3-p4 angles
-    for (vector<IMP::atom::Bond>::const_iterator bit2
+    for (base::Vector<IMP::atom::Bond>::const_iterator bit2
          = particle_bonds[p3].begin();
          bit2 != particle_bonds[p3].end(); ++bit2) {
       Particle *p4 = get_other_end_of_bond(p3, *bit2);
@@ -863,13 +863,13 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const
 
     // Extend along each bond from p2 and p3 to get candidate
     // p1-p2-p3-p4 dihedrals
-    for (vector<IMP::atom::Bond>::const_iterator bit2
+    for (base::Vector<IMP::atom::Bond>::const_iterator bit2
          = particle_bonds[p2].begin();
          bit2 != particle_bonds[p2].end(); ++bit2) {
       Particle *p1 = get_other_end_of_bond(p2, *bit2);
 
       if (p1 != p3) {
-        for (vector<IMP::atom::Bond>::const_iterator bit3
+        for (base::Vector<IMP::atom::Bond>::const_iterator bit3
              = particle_bonds[p3].begin();
              bit3 != particle_bonds[p3].end(); ++bit3) {
           Particle *p4 = get_other_end_of_bond(p3, *bit3);

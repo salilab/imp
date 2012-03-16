@@ -530,7 +530,7 @@ std::pair<Vector3D,double> get_axis_and_angle(const Rotation3D &rot);
 
 typedef std::pair<Vector3D,double> AxisAnglePair;
 #ifndef IMP_DOXYGEN
-typedef vector<AxisAnglePair> AxisAnglePairs;
+typedef base::Vector<AxisAnglePair> AxisAnglePairs;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

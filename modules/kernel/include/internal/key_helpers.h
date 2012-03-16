@@ -18,7 +18,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 struct IMPEXPORT KeyData
 {
   typedef IMP::compatibility::map<std::string, int> Map;
-  typedef IMP::vector<std::string> RMap;
+  typedef IMP::base::Vector<std::string> RMap;
 
   void show(std::ostream &out= std::cout) const;
   KeyData();

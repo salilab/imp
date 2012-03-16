@@ -15,7 +15,7 @@
 IMPBASE_BEGIN_NAMESPACE
 
 namespace {
-  vector<std::pair<const char*, const void*> > contexts;
+  base::Vector<std::pair<const char*, const void*> > contexts;
   int context_initializeds=-1;
 
   std::string get_context_name(unsigned int i) {

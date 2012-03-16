@@ -140,7 +140,7 @@ public:
 
   }
   //! Get all values involving a
-  vector<std::pair<Key, Value> > get(const Key &a) const;
+  base::Vector<std::pair<Key, Value> > get(const Key &a) const;
   void reset();
   //! Reset all pairs involving a
   void reset(const Key &a);

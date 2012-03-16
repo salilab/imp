@@ -268,10 +268,10 @@ namespace IMP {
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
-   %template(_get_rmsd_cpp) get_rmsd<IMP::vector<algebra::VectorD<3> >, IMP::vector<algebra::VectorD<3> > >;
-   %template(_get_native_overlap_cpp) get_native_overlap<IMP::vector<algebra::VectorD<3> >, IMP::vector<algebra::VectorD<3> > >;
-   %template(_get_drms_cpp) get_drms<IMP::vector<algebra::VectorD<3> >, IMP::vector<algebra::VectorD<3> > >;
-   %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::vector<algebra::VectorD<3> >, IMP::vector<algebra::VectorD<3> > >;
+   %template(_get_rmsd_cpp) get_rmsd<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
+   %template(_get_native_overlap_cpp) get_native_overlap<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
+   %template(_get_drms_cpp) get_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
+   %template(_get_rigid_bodies_drms_cpp) get_rigid_bodies_drms<IMP::base::Vector<algebra::VectorD<3> >, IMP::base::Vector<algebra::VectorD<3> > >;
 
   }
 }

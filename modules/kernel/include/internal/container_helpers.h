@@ -203,9 +203,9 @@ get_particle(Model *m, const ParticleIndexes &ps) {
 
 template <unsigned int D>
 inline
-vector<ParticleTuple<D> > get_particle(Model *m,
-        const vector<ParticleIndexTuple<D> > &ps) {
-  vector<ParticleTuple<D> > ret(ps.size());
+base::Vector<ParticleTuple<D> > get_particle(Model *m,
+        const base::Vector<ParticleIndexTuple<D> > &ps) {
+  base::Vector<ParticleTuple<D> > ret(ps.size());
   for (unsigned int i=0; i< ps.size(); ++i) {
     ret[i]= get_particle(m, ps[i]);
   }
@@ -235,9 +235,9 @@ ParticleIndexes get_index(const ParticlesTemp& p) {
   return ret;
 }
 template <unsigned int D>
-vector<ParticleIndexTuple<D> >
-get_index(const vector<ParticleTuple<D> > &in) {
-  vector<ParticleIndexTuple<D> > ret(in.size());
+base::Vector<ParticleIndexTuple<D> >
+get_index(const base::Vector<ParticleTuple<D> > &in) {
+  base::Vector<ParticleIndexTuple<D> > ret(in.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ParticleIndexTuple<D> c;
     for (unsigned int j=0; j< D; ++j) {

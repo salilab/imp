@@ -74,7 +74,7 @@ class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
-  typedef vector<std::pair<internal::CHARMMDihedralNames,
+  typedef base::Vector<std::pair<internal::CHARMMDihedralNames,
                                 CHARMMDihedralParameters> > DihedralParameters;
   DihedralParameters dihedral_parameters_;
   DihedralParameters improper_parameters_;

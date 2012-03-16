@@ -45,7 +45,7 @@ public:
     std::ostringstream oss;
     oss << Showable(boost::get(om_, v));
     std::string nm=oss.str();
-    vector<char> vnm(nm.begin(), nm.end());
+    base::Vector<char> vnm(nm.begin(), nm.end());
     out << "[label=\""
         << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(),
                                                 '\"')) << "\"]";

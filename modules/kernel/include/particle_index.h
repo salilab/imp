@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 
 class ParticleIndexTag{};
 typedef base::Index<ParticleIndexTag> ParticleIndex;
-typedef vector<ParticleIndex> ParticleIndexes;
+typedef base::Vector<ParticleIndex> ParticleIndexes;
 
 
 

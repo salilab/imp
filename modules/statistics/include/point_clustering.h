@@ -72,7 +72,7 @@ class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
   Particles ps_;
   FloatKeys ks_;
   bool rescale_;
-  vector<FloatRange> ranges_;
+  base::Vector<FloatRange> ranges_;
 public:
   ParticleEmbedding(const ParticlesTemp &ps,
                     const FloatKeys& ks
@@ -90,7 +90,7 @@ public:
 
 //! Simply return the coordinates of a VectorD
 class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
-  vector<algebra::VectorKD > vectors_;
+  base::Vector<algebra::VectorKD > vectors_;
 public:
   template <class C>
     VectorDEmbedding(const C &vs):
@@ -127,15 +127,15 @@ public:
 */
 class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter:
   public PartitionalClustering {
-  IMP::vector<Ints> clusters_;
+  IMP::base::Vector<Ints> clusters_;
   Ints reps_;
   algebra::VectorKDs centers_;
 public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <int D>
     PartitionalClusteringWithCenter(const
-              IMP::vector<Ints> &clusters,
- const IMP::vector<algebra::VectorD<D> > &centers,
+              IMP::base::Vector<Ints> &clusters,
+ const IMP::base::Vector<algebra::VectorD<D> > &centers,
                      const Ints &reps):
     PartitionalClustering("k-means"),
     clusters_(clusters),

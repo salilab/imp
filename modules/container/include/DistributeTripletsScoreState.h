@@ -36,7 +36,7 @@ public ScoreState
   OwnerPointer<TripletContainer> input_;
   typedef boost::tuple<Pointer<ListTripletContainer>,
     OwnerPointer<TripletPredicate>, int> Data;
-  vector<Data> data_;
+  base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:

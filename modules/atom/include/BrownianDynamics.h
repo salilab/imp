@@ -82,7 +82,7 @@ public:
                                    boost::normal_distribution<double> > RNG;
   double max_step_;
   bool srk_;
-  vector<algebra::Vector3D> forces_;
+  base::Vector<algebra::Vector3D> forces_;
 };
 
 /** Repeatedly run the current model with brownian dynamics at different time

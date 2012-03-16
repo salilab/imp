@@ -298,7 +298,7 @@ get_dependency_graph(const ScoreStatesTemp &ss,
   build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
-  vector<std::pair<base::Object*, base::Object*> > extra;
+  base::Vector<std::pair<base::Object*, base::Object*> > extra;
   for (unsigned int i=0; i< extra.size(); ++i) {
     int va= index[extra[i].first];
     int vb= index[extra[i].second];
@@ -443,7 +443,7 @@ get_pruned_dependency_graph(Model *m) {
 
 
 struct cycle_detector : public boost::default_dfs_visitor {
-  vector<MDGVertex> cycle_;
+  base::Vector<MDGVertex> cycle_;
   template <class DGEdge>
   void tree_edge(DGEdge e, const DependencyGraph&g) {
     MDGVertex t= boost::target(e, g);
@@ -459,7 +459,7 @@ struct cycle_detector : public boost::default_dfs_visitor {
   void back_edge(ED e, const DependencyGraph&g) {
     MDGVertex t= boost::target(e, g);
     //MDGVertex s= boost::source(e, g);
-    vector<MDGVertex>::iterator it
+    base::Vector<MDGVertex>::iterator it
         = std::find(cycle_.begin(), cycle_.end(), t);
     //std::cout << s << " " << cycle_.back() << std::endl;
     if (it != cycle_.end()) {
@@ -474,23 +474,23 @@ struct cycle_detector : public boost::default_dfs_visitor {
 
 namespace {
 
-  vector<MDGVertex> get_cycle(const DependencyGraph &g) {
+  base::Vector<MDGVertex> get_cycle(const DependencyGraph &g) {
     cycle_detector vis;
     try {
       boost::vector_property_map<int> color(boost::num_vertices(g));
       boost::depth_first_search(g, boost::visitor(vis).color_map(color));
-    } catch (vector<MDGVertex> cycle) {
+    } catch (base::Vector<MDGVertex> cycle) {
       //std::cerr << "Caught cycle " << cycle << std::endl;
       return cycle;
     }
     //std::cerr << "No cycle found" << std::endl;
-    return vector<MDGVertex>();
+    return base::Vector<MDGVertex>();
   }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
   void order_score_states(const DependencyGraph &dg,
                           ScoreStatesTemp &out) {
-    vector<MDGTraits::vertex_descriptor> sorted;
+    base::Vector<MDGTraits::vertex_descriptor> sorted;
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
@@ -498,7 +498,7 @@ namespace {
     } catch (...) {
       base::TextOutput out=base::create_temporary_file();
       base::internal::show_as_graphviz(dg, out);
-      vector<MDGVertex> cycle= get_cycle(dg);
+      base::Vector<MDGVertex> cycle= get_cycle(dg);
       //std::ostringstream oss;
       std::cerr << "[";
       for (unsigned int i=0; i< cycle.size(); ++i) {

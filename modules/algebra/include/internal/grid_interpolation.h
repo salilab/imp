@@ -15,11 +15,11 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 // combine with get_values?
 template <int D, class Storage, class Value, class Embedding>
-vector<VectorD<D> >
+base::Vector<VectorD<D> >
 get_interpolation_corners(const GridD<D, Storage, Value,
             Embedding> &g,
             const VectorD<D> &pt) {
-    vector<VectorD<D> > ret;
+    base::Vector<VectorD<D> > ret;
     VectorD<D> offset=.5*g.get_unit_cell();
     // special case first
     ret.push_back(pt);
@@ -40,7 +40,7 @@ template <int D, class Storage, class Value, class Embedding>
   Floats
   get_interpolation_values(const GridD<D, Storage, Value,
              Embedding> &g,
-             const vector<VectorD<D> > &pt) {
+             const base::Vector<VectorD<D> > &pt) {
     Floats ret(pt.size());
     for (unsigned int i=0; i< pt.size(); ++i) {
       GridIndexD<D> index= g.get_nearest_index(pt[i]);

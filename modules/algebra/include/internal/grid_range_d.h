@@ -112,8 +112,8 @@ public:
     return iterator(data_, data_->bb.get_corner(1));
   }
 #endif
-  vector< VectorD<D> > get() const {
-    return vector< VectorD<D> >(begin(), end());
+  base::Vector< VectorD<D> > get() const {
+    return base::Vector< VectorD<D> >(begin(), end());
   }
 };
 

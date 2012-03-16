@@ -226,44 +226,44 @@ IMP_OUTPUT_OPERATOR_D(GridIndexD);
 #if !defined(IMP_DOXYGEN)
 typedef GridIndexD<1> GridIndex1D;
 typedef ExtendedGridIndexD<1> ExtendedGridIndex1D;
-typedef vector<GridIndex1D> GridIndex1Ds;
-typedef vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
+typedef base::Vector<GridIndex1D> GridIndex1Ds;
+typedef base::Vector<ExtendedGridIndex1D> ExtendedGridIndex1Ds;
 
 
 typedef GridIndexD<2> GridIndex2D;
 typedef ExtendedGridIndexD<2> ExtendedGridIndex2D;
-typedef vector<GridIndex2D> GridIndex2Ds;
-typedef vector<ExtendedGridIndex2D>
+typedef base::Vector<GridIndex2D> GridIndex2Ds;
+typedef base::Vector<ExtendedGridIndex2D>
 ExtendedGridIndex2Ds;
 
 typedef GridIndexD<3> GridIndex3D;
 typedef ExtendedGridIndexD<3> ExtendedGridIndex3D;
-typedef vector<GridIndex3D> GridIndex3Ds;
-typedef vector<ExtendedGridIndex3D>
+typedef base::Vector<GridIndex3D> GridIndex3Ds;
+typedef base::Vector<ExtendedGridIndex3D>
 ExtendedGridIndex3Ds;
 
 typedef GridIndexD<4> GridIndex4D;
 typedef ExtendedGridIndexD<4> ExtendedGridIndex4D;
-typedef vector<GridIndex4D> GridIndex4Ds;
-typedef vector<ExtendedGridIndex4D>
+typedef base::Vector<GridIndex4D> GridIndex4Ds;
+typedef base::Vector<ExtendedGridIndex4D>
 ExtendedGridIndex4Ds;
 
 typedef GridIndexD<5> GridIndex5D;
 typedef ExtendedGridIndexD<5> ExtendedGridIndex5D;
-typedef vector<GridIndex5D> GridIndex5Ds;
-typedef vector<ExtendedGridIndex5D>
+typedef base::Vector<GridIndex5D> GridIndex5Ds;
+typedef base::Vector<ExtendedGridIndex5D>
 ExtendedGridIndex5Ds;
 
 typedef GridIndexD<6> GridIndex6D;
 typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
-typedef vector<GridIndex6D> GridIndex6Ds;
-typedef vector<ExtendedGridIndex6D>
+typedef base::Vector<GridIndex6D> GridIndex6Ds;
+typedef base::Vector<ExtendedGridIndex6D>
 ExtendedGridIndex6Ds;
 
 typedef GridIndexD<-1> GridIndexKD;
 typedef ExtendedGridIndexD<-1> ExtendedGridIndexKD;
-typedef vector<GridIndexKD> GridIndexKDs;
-typedef vector<ExtendedGridIndexKD>
+typedef base::Vector<GridIndexKD> GridIndexKDs;
+typedef base::Vector<ExtendedGridIndexKD>
 ExtendedGridIndexKDs;
 #endif
 

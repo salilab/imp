@@ -33,11 +33,11 @@ IMP_BEGIN_NAMESPACE
     @{
 */
 //! return a binary buffer with the data
-IMPEXPORT vector<char>
+IMPEXPORT base::Vector<char>
 write_particles_to_buffer(const ParticlesTemp &particles,
                           const FloatKeys &keys);
 //! load found attributes into the particles
-IMPEXPORT void read_particles_from_buffer( const vector<char> &buffer,
+IMPEXPORT void read_particles_from_buffer( const base::Vector<char> &buffer,
                                        const ParticlesTemp &particles,
                                        const FloatKeys &keys);
 

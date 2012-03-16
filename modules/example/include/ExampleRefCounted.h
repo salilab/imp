@@ -51,8 +51,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(ExampleRefCounted);
 
-typedef vector<Pointer<ExampleRefCounted> > ExampleRefCounteds;
-typedef vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
+typedef base::Vector<Pointer<ExampleRefCounted> > ExampleRefCounteds;
+typedef base::Vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

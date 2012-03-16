@@ -52,7 +52,7 @@ class Tracker {
     return tracked_.end();
   }
   ~Tracker() {
-    vector<Tracked*> tracked(tracked_begin(), tracked_end());
+    base::Vector<Tracked*> tracked(tracked_begin(), tracked_end());
     for (unsigned int i=0; i< tracked_.size(); ++i) {
       IMP_CHECK_OBJECT(tracked[i]);
       tracked[i]->set_no_tracker();

@@ -25,7 +25,7 @@ template <int D, class Storage, class Value, class Embedding>
 inline Value get_linearly_interpolated(const GridD<D, Storage, Value,
                                        Embedding> &g,
                                        const VectorD<D> &pt) {
-  vector<VectorD<D> > corners=internal::get_interpolation_corners(g, pt);
+  base::Vector<VectorD<D> > corners=internal::get_interpolation_corners(g, pt);
   Floats values= internal::get_interpolation_values(g, corners);
   VectorD<D> fraction= internal::get_interpolation_fraction(g, pt);
   return internal::get_interpolation_value(values, fraction);

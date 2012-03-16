@@ -35,7 +35,7 @@ class BasicAttributeTable {
 public:
   typedef typename Traits::Key Key;
 private:
-  vector<typename Traits::Container > data_;
+  base::Vector<typename Traits::Container > data_;
 #if IMP_BUILD < IMP_FAST
   Mask *read_mask_, *write_mask_, *add_remove_mask_;
 #endif
@@ -178,9 +178,9 @@ public:
     }
   }
 
-  IMP::vector<Key>
+  IMP::base::Vector<Key>
   get_attribute_keys(ParticleIndex particle) const {
-    vector<Key> ret;
+    base::Vector<Key> ret;
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (data_[i].size() > get_as_unsigned_int(particle)
           && Traits::get_is_valid(data_[i][particle])) {

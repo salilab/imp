@@ -33,7 +33,7 @@ class IMPEXPORT ConfigurationSet: public IMP::base::Object
 {
   mutable Pointer<Model> model_;
   Pointer<Configuration> base_;
-  vector<Pointer<Configuration> > configurations_;
+  base::Vector<Pointer<Configuration> > configurations_;
  public:
   ConfigurationSet(Model *m, std::string name="ConfigurationSet %1%");
   //! Save the current configuration of the Model

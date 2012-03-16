@@ -26,7 +26,7 @@ int main(int, char *[]) {
   typedef IKernel::Point_3                                     Bare_point;
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
   unsigned int size=sizeof(pts)/(3*sizeof(double));
-  vector<Weighted_point> l;
+  base::Vector<Weighted_point> l;
   for (unsigned int i=0; i< size; ++i) {
     l.push_back( Weighted_point(Bare_point(pts[i][0], pts[i][1], pts[i][2]),
                                 .9*.9));

@@ -119,9 +119,9 @@ String atom_element(const String& pdb_line)
   return element_name;
 }
 
-vector<unsigned short> connected_atoms(const String& pdb_line)
+base::Vector<unsigned short> connected_atoms(const String& pdb_line)
 {
-  vector <unsigned short> conn_atoms;
+  base::Vector<unsigned short> conn_atoms;
   if (is_CONECT_rec(pdb_line)) {
     // (1-6) - "CONECT"
     // (7-11), (12-16), ...,(57-61) - serial numbers of connected atoms

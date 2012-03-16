@@ -36,8 +36,8 @@ Int prec = 0);
 template <class T>
 struct IMPALGEBRAEXPORT stdVectorIO
 {
-  const vector<T> &v_;
-  stdVectorIO(const vector<T>& v): v_(v) {}
+  const base::Vector<T> &v_;
+  stdVectorIO(const base::Vector<T>& v): v_(v) {}
 };
 
 //! output for a vector

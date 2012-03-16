@@ -21,22 +21,22 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
     the various planes
  */
 IMPCGALEXPORT
-vector<algebra::Vector3Ds >
+base::Vector<algebra::Vector3Ds >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
-                      const vector< algebra::Plane3D > &outer,
-                      const vector< algebra::Plane3D > &hole);
+                      const base::Vector< algebra::Plane3D > &outer,
+                      const base::Vector< algebra::Plane3D > &hole);
 
 
 IMPCGALEXPORT
-vector<algebra::Vector3Ds >
+base::Vector<algebra::Vector3Ds >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
-                      const vector< algebra::Plane3D > &outer);
+                      const base::Vector< algebra::Plane3D > &outer);
 
 IMPCGALEXPORT
 std::pair<algebra::Vector3Ds,Ints >
 get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
-                              const vector< algebra::Plane3D > &outer,
-                              const vector< algebra::Plane3D > &hole);
+                              const base::Vector< algebra::Plane3D > &outer,
+                              const base::Vector< algebra::Plane3D > &hole);
 
 
 IMPCGALEXPORT

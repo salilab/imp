@@ -161,7 +161,7 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
    For example:
     \code
     IMP_CHECK_CODE(CHECK_USAGE) {
-        vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");
@@ -180,7 +180,7 @@ IMPBASEEXPORT void set_print_exceptions(bool tf);
 /** For example
     \code
     IMP_CHECK_CODE({
-        vector<Particle*> testp(input.begin(), input.end());
+        base::Vector<Particle*> testp(input.begin(), input.end());
         std::sort(testp.begin(), testp.end());
         IMP_USAGE_CHECK(std::unique(testp.begin(), testp.end()) == testp.end(),
                         "Duplicate particles found in the input list.");

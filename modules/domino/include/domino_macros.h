@@ -97,7 +97,7 @@
                     const IMP::domino::Subsets &excluded) const{        \
     IMP_OBJECT_LOG;                                                     \
     set_was_used(true);                                                 \
-    vector<Ints> all;                            \
+    base::Vector<Ints> all;                            \
     Ints used;                                                          \
     get_indexes(s, excluded, all, 1, used);                             \
     return get_disjoint_set_filter<Name##Filter, Name##Next>(#Name, s,  \
@@ -109,7 +109,7 @@
                         const IMP::domino::Subsets &excluded) const{    \
     IMP_OBJECT_LOG;                                                     \
     set_was_used(true);                                                 \
-    vector<Ints> all;                            \
+    base::Vector<Ints> all;                            \
     Ints used;                                                          \
     get_indexes(s, excluded, all, 0, used);                             \
     return get_disjoint_set_strength<Name##Strength>(s,                 \

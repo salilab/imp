@@ -532,20 +532,20 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 #endif  //swig
 
 typedef VectorD<1> Vector1D;
-typedef vector<VectorD<1> > Vector1Ds;
+typedef base::Vector<VectorD<1> > Vector1Ds;
 typedef VectorD<2> Vector2D;
-typedef vector<VectorD<2> > Vector2Ds;
+typedef base::Vector<VectorD<2> > Vector2Ds;
 typedef VectorD<3> Vector3D;
-typedef vector<VectorD<3> > Vector3Ds;
+typedef base::Vector<VectorD<3> > Vector3Ds;
 typedef VectorD<4> Vector4D;
-typedef vector<VectorD<4> > Vector4Ds;
+typedef base::Vector<VectorD<4> > Vector4Ds;
 typedef VectorD<5> Vector5D;
-typedef vector<VectorD<5> > Vector5Ds;
+typedef base::Vector<VectorD<5> > Vector5Ds;
 typedef VectorD<6> Vector6D;
-typedef vector<VectorD<6> > Vector6Ds;
+typedef base::Vector<VectorD<6> > Vector6Ds;
 
 typedef VectorD<-1> VectorKD;
-typedef vector<VectorD<-1> > VectorKDs;
+typedef base::Vector<VectorD<-1> > VectorKDs;
 
 template <int D>
 inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}

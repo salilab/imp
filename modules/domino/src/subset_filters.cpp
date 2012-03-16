@@ -144,9 +144,9 @@ namespace {
 
   template <class Filter, class Next>
   class  DisjointSetsSubsetFilter: public SubsetFilter {
-    vector<Ints> sets_;
+    base::Vector<Ints> sets_;
   public:
-    DisjointSetsSubsetFilter(const vector<Ints> &sets):
+    DisjointSetsSubsetFilter(const base::Vector<Ints> &sets):
       sets_(sets) {
       IMP_LOG(TERSE, "Created disjoint set subset filter with ");
       IMP_IF_LOG(TERSE) {
@@ -188,7 +188,7 @@ namespace {
   get_disjoint_set_filter(std::string name,
                           const Subset &s,
                           LogLevel ll,
-                          const vector<Ints> &all,
+                          const base::Vector<Ints> &all,
                           const Ints &) {
     if (all.empty()) return nullptr;
     typedef DisjointSetsSubsetFilter<FF, Next> CF;
@@ -204,7 +204,7 @@ namespace {
   template <class SF>
   double get_disjoint_set_strength(const IMP::domino::Subset &s,
                                    const IMP::domino::Subsets &excluded,
-                        const vector<Ints> &all,
+                        const base::Vector<Ints> &all,
                                    const Ints &){
     double r=1;
     SF str;
@@ -232,7 +232,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
   if (pst_) {
     IMP::compatibility::map<ParticleStates*, int> map;
     ParticlesTemp allps= pst_->get_particles();
-    vector<ParticlesTemp> allsets;
+    base::Vector<ParticlesTemp> allsets;
     for (unsigned int i=0; i< allps.size(); ++i) {
       ParticleStates *ps=pst_->get_particle_states(allps[i]);
       if (map.find(ps) == map.end()){
@@ -248,7 +248,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
     }
   }
 
-  vector<ParticlesTemp> all(elements_.size());
+  base::Vector<ParticlesTemp> all(elements_.size());
   for (unsigned int i=0; i< elements_.size(); ++i) {
     int set= disjoint_sets_.find_set(i);
     all[set].push_back(elements_[i]);
@@ -276,7 +276,7 @@ void DisjointSetsSubsetFilterTable::build_sets() const {
 void
 DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                            const Subsets &excluded,
-                             vector<Ints> &ret,
+                             base::Vector<Ints> &ret,
                                            int lb,
                                            Ints &used) const {
   for (unsigned int i=0; i< get_number_of_sets(); ++i) {
@@ -645,10 +645,10 @@ namespace {
 
   class  PairListSubsetFilter: public SubsetFilter {
     IntPairs indexes_;
-    vector<IntPairs> allowed_;
+    base::Vector<IntPairs> allowed_;
   public:
     PairListSubsetFilter(const IntPairs &i,
-                         const vector<IntPairs> &a):
+                         const base::Vector<IntPairs> &a):
       SubsetFilter("Pair list score filter"),
       indexes_(i), allowed_(a) {
     }
@@ -673,7 +673,7 @@ void PairListSubsetFilterTable
 ::fill(const Subset &s,
             const Subsets &e,
             IntPairs& indexes,
-       vector<IntPairs>& allowed) const {
+       base::Vector<IntPairs>& allowed) const {
 for (unsigned int i=0; i< s.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       ParticlePair pp(s[j], s[i]);
@@ -707,7 +707,7 @@ PairListSubsetFilterTable
                     const Subsets &e) const {
   set_was_used(true);
   IntPairs indexes;
-  vector<IntPairs> allowed;
+  base::Vector<IntPairs> allowed;
   fill(s,e,indexes, allowed);
   if (!indexes.empty()) {
     return new PairListSubsetFilter(indexes, allowed);
@@ -719,7 +719,7 @@ PairListSubsetFilterTable
 double PairListSubsetFilterTable::get_strength(const Subset &s,
                                            const Subsets &e) const {
   IntPairs indexes;
-  vector<IntPairs> allowed;
+  base::Vector<IntPairs> allowed;
   fill(s,e,indexes, allowed);
   return 1-std::pow(.9, static_cast<double>(indexes.size()));
 }

@@ -24,11 +24,11 @@ class PrincipalComponentAnalysisD {
  public:
   PrincipalComponentAnalysisD(){}
   PrincipalComponentAnalysisD(
-      const vector< VectorD<D> > &pcs,VectorD<D> values,
+      const base::Vector< VectorD<D> > &pcs,VectorD<D> values,
       VectorD<D> centroid) : eigen_vecs_(pcs),
       eigen_values_(values), centroid_(centroid){
   }
-  vector<VectorD<D> > get_principal_components() const {
+  base::Vector<VectorD<D> > get_principal_components() const {
     IMP_USAGE_CHECK(!eigen_vecs_.empty(),
                     "The PCA was not initialized");
     return eigen_vecs_;
@@ -69,7 +69,7 @@ protected:
       return -1;
     }
   }
-  vector<VectorD<D> > eigen_vecs_;
+  base::Vector<VectorD<D> > eigen_vecs_;
   VectorD<D> eigen_values_;
   VectorD<D> centroid_;
 };
@@ -82,13 +82,20 @@ typedef PrincipalComponentAnalysisD<4> PrincipalComponentAnalysis4D;
 typedef PrincipalComponentAnalysisD<5> PrincipalComponentAnalysis5D;
 typedef PrincipalComponentAnalysisD<6> PrincipalComponentAnalysis6D;
 typedef PrincipalComponentAnalysisD<-1> PrincipalComponentAnalysisKD;
-typedef vector<PrincipalComponentAnalysisD<1> > PrincipalComponentAnalysis1Ds;
-typedef vector<PrincipalComponentAnalysisD<2> > PrincipalComponentAnalysis2Ds;
-typedef vector<PrincipalComponentAnalysisD<3> > PrincipalComponentAnalysis3Ds;
-typedef vector<PrincipalComponentAnalysisD<4> > PrincipalComponentAnalysis4Ds;
-typedef vector<PrincipalComponentAnalysisD<5> > PrincipalComponentAnalysis5Ds;
-typedef vector<PrincipalComponentAnalysisD<6> > PrincipalComponentAnalysis6Ds;
-typedef vector<PrincipalComponentAnalysisD<-1> > PrincipalComponentAnalysisKDs;
+typedef base::Vector<PrincipalComponentAnalysisD<1> >
+PrincipalComponentAnalysis1Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<2> >
+PrincipalComponentAnalysis2Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<3> >
+PrincipalComponentAnalysis3Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<4> >
+PrincipalComponentAnalysis4Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<5> >
+PrincipalComponentAnalysis5Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<6> >
+PrincipalComponentAnalysis6Ds;
+typedef base::Vector<PrincipalComponentAnalysisD<-1> >
+PrincipalComponentAnalysisKDs;
 
 template <int D>
 inline void PrincipalComponentAnalysisD<D>::show(std::ostream& out) const {
@@ -107,7 +114,7 @@ inline void PrincipalComponentAnalysisD<D>::show(std::ostream& out) const {
  */
 template <int D>
 PrincipalComponentAnalysisD<D> get_principal_components(
-    const vector<VectorD<D> > &ps) {
+    const base::Vector<VectorD<D> > &ps) {
   IMP_USAGE_CHECK(!ps.empty(), "Need some vectors to get components.");
   unsigned int dim=ps[0].get_dimension();
   VectorD<D> m = std::accumulate(ps.begin(), ps.end(),
@@ -122,7 +129,7 @@ PrincipalComponentAnalysisD<D> get_principal_components(
   IMP_LOG(VERBOSE, "V is " << V << std::endl);
   svd.getSingularValues(SV);
   VectorD<D> values= ps[0];
-  vector<VectorD<D> > vectors(dim, values);
+  base::Vector<VectorD<D> > vectors(dim, values);
   for (unsigned int i=0; i< dim; ++i) {
     values[i]= SV[i];
     for (unsigned int j=0; j< dim; ++j) {

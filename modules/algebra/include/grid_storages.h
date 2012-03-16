@@ -165,8 +165,8 @@ class DenseGridStorageD: public BoundedGridRangeD<D> {
     return data_.get()+get_extent();
   }
 #endif
-  vector<VT> get_all_voxels() const {
-    return vector<VT>(all_voxels_begin(),
+  base::Vector<VT> get_all_voxels() const {
+    return base::Vector<VT>(all_voxels_begin(),
                       all_voxels_end());
   }
   /** @} */
@@ -321,8 +321,8 @@ class SparseGridStorageD: public Base {
   }
 #endif
 
-  vector<GridIndexD<D> > get_all_indexes() const {
-    return vector<GridIndexD<D> >
+  base::Vector<GridIndexD<D> > get_all_indexes() const {
+    return base::Vector<GridIndexD<D> >
         (boost::make_transform_iterator(all_begin(), GetIndex()),
          boost::make_transform_iterator(all_end(), GetIndex()));
   }
@@ -373,10 +373,10 @@ IndexIterator indexes_end(const ExtendedGridIndexD<D>&,
 }
 #endif
 
-vector<GridIndexD<D> >
+base::Vector<GridIndexD<D> >
 get_indexes(const ExtendedGridIndexD<D>& lb,
             const ExtendedGridIndexD<D>& ub) const {
-  return vector<GridIndexD<D> >(indexes_begin(lb, ub),
+  return base::Vector<GridIndexD<D> >(indexes_begin(lb, ub),
                                 indexes_end(lb, ub));
 }
 /** @} */

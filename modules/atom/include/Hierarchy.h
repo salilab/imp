@@ -92,7 +92,7 @@ class Hierarchy;
 
 
 #ifndef IMP_DOXYGEN
-typedef IMP::base::ConvertibleVector< Hierarchy> Hierarchies;
+typedef IMP::base::Vector< Hierarchy> Hierarchies;
 #endif
 
 //! The standard decorator for manipulating molecular structures.

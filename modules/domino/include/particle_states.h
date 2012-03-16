@@ -233,7 +233,7 @@ class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
 */
 class IMPDOMINOEXPORT PermutationStates: public ParticleStates {
   IMP::OwnerPointer<ParticleStates> inner_;
-  IMP::vector<int> permutation_;
+  IMP::base::Vector<int> permutation_;
  public:
   PermutationStates(ParticleStates *inner);
   /** Return the index of the ith state in the inner ParticleState

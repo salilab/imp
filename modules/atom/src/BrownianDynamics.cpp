@@ -315,7 +315,7 @@ namespace {
                     "In and out don't match " << bd->get_maximum_time_step());
     Floats es;
     unsigned int ns=100;
-    vector<algebra::Vector3Ds>
+    base::Vector<algebra::Vector3Ds>
       coords(ns, algebra::Vector3Ds(ps.size()));
     for (unsigned int i=0; i< ns; ++i) {
       es.push_back(bd->optimize(1));
