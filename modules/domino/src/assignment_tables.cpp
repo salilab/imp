@@ -373,7 +373,7 @@ namespace {
           unsigned int next= filters.back()[i]
             ->get_next_state(pos,
                              cura);
-          next =std::min<unsigned int>(next, maxs[pos]+1);
+          increment= std::max<unsigned int>(next-cur.back(), 1);
           IMP_IF_CHECK(USAGE_AND_INTERNAL) {
             for (unsigned int j=cura[pos]; j < next; ++j) {
               reordered_cur[pos]=j;
@@ -382,17 +382,16 @@ namespace {
                                  "The filter " << filters.back()[i]->get_name()
                                  << " said to skip, but also said it was OK at "
                                  << "position " << pos << " of " << curat
-                                 << " skipping until " << next);
+                                 << " skipping until " << cur.back()+increment);
             }
           }
           IMP_INTERNAL_CHECK(cur.back()==cura[pos],
                              "Assignments don't match");
-          increment= next- cur.back();
           ok=false;
           IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
                              << " it was not"
                              << " for \"" << filters.back()[i] << "\""
-                             << " got " << next << " from " << cur.back());
+                             << " got " << increment << " from " << cur.back());
           break;
         }
       }
