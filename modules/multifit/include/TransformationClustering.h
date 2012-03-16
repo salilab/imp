@@ -37,12 +37,12 @@ class IMPMULTIFITEXPORT TransformationClustering {
          \param[in] min_cluster_size
          clusters of size smaller than min_rot_cluster_size are ignored
   */
-  domino::IntsList cluster_by_rotation(
+  IntsList cluster_by_rotation(
                 const algebra::Transformation3Ds &trans,
                 float max_angle_diff_in_rad,int min_cluster_size);
 
   // fast clustering: rotational&translational parameters
-  domino::IntsList cluster_by_transformation(
+  IntsList cluster_by_transformation(
                const algebra::Transformation3Ds &trans,
                float max_angle_diff,float max_translation_diff,
                int min_cluster_size);
@@ -54,7 +54,7 @@ between transformations to be considered in the same cluster
 \param[in] min_cluster_size clusters of a smaller size will be ignored.
 If the value is -1, the member variable min_cluster_size_ will be used
    */
-  domino::IntsList cluster_by_rmsd(
+  IntsList cluster_by_rmsd(
                  const algebra::Transformation3Ds &trans,
                  float max_rmsd_between_transformations,
                  int min_cluster_size);
@@ -80,7 +80,7 @@ a cluster
 For flexibility use internal clustering functions directly.
  */
 IMPMULTIFITEXPORT
-domino::IntsList get_clustered(Particles ps,
+IntsList get_clustered(Particles ps,
                        const algebra::Transformation3Ds &trans,
                        float max_rmsd,
                        float  max_angle_diff_in_rad,

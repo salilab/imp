@@ -83,10 +83,10 @@ namespace {
     }
     return ret;
   }
-  domino::IntsList unwrap_transformations(
+  IntsList unwrap_transformations(
                     const TransformationWrappers &tw,
                     int min_cluster_size) {
-    domino::IntsList ret;
+    IntsList ret;
     for(int i=0;i<(int)tw.size();i++) {
       IMP_LOG(VERBOSE,"Unwrapping cluster of "<<
               tw[i].get_number_of_transformations()<<std::endl);
@@ -103,7 +103,7 @@ TransformationClustering::TransformationClustering(Particles ps,
   max_rmsd_(max_rmsd) {
   ps_=ps;
   }
-domino::IntsList TransformationClustering::cluster_by_rmsd(
+IntsList TransformationClustering::cluster_by_rmsd(
                const algebra::Transformation3Ds &trans,
                float max_rmsd,
                int min_cluster_size) {
@@ -118,11 +118,11 @@ domino::IntsList TransformationClustering::cluster_by_rmsd(
     return unwrap_transformations(twc,min_cluster_size);
   }
 
-domino::IntsList TransformationClustering::cluster_by_transformation(
+IntsList TransformationClustering::cluster_by_transformation(
                const algebra::Transformation3Ds &trans,
                float max_angle_diff_in_rad,float max_translation_diff,
                int min_cluster_size) {
-  domino::IntsList ret;
+  IntsList ret;
   algebra::VectorD<7> rad_vec;
   for(int i=0;i<4;i++){
     rad_vec[i]=max_angle_diff_in_rad;}
@@ -157,11 +157,11 @@ domino::IntsList TransformationClustering::cluster_by_transformation(
           ind_map[j]=trans_ind.i_;
         }
         //TODO - is this max_rmsd_ ok?
-        domino::IntsList clustered_trans_in_bucket=
+        IntsList clustered_trans_in_bucket=
           cluster_by_rmsd(all_trans_in_bucket,max_rmsd_,
                           min_cluster_size);
         //retrieve original indexes
-        for(domino::IntsList::const_iterator it =
+        for(IntsList::const_iterator it =
               clustered_trans_in_bucket.begin();
             it != clustered_trans_in_bucket.end();it++) {
           Ints correct_inds(it->size());
@@ -183,7 +183,7 @@ domino::IntsList TransformationClustering::cluster_by_transformation(
   IMP_LOG(VERBOSE,"return ret size:"<<ret.size()<<std::endl);
   return ret;
 }
-domino::IntsList
+IntsList
   TransformationClustering::cluster_by_rotation(
                   const algebra::Transformation3Ds &trans,
                   float max_angle_diff_in_rad,
@@ -199,7 +199,7 @@ domino::IntsList
                  trans[i].get_rotation().get_quaternion(),
                  RotationInd(trans[i].get_rotation(),i));
   }
-  domino::IntsList ret;
+  IntsList ret;
   // try to reduce ignore_clusters_smaller in case no
   //transformations pass the clustering stage
   const HashRot::GeomMap &rot_map = rot_hash.Map();
@@ -220,11 +220,11 @@ domino::IntsList
         }
         IMP_LOG(VERBOSE,
            "RMSD of bucket of size:"<<all_trans_in_bucket.size()<<std::endl);
-        domino::IntsList clustered_trans_in_bucket=
+        IntsList clustered_trans_in_bucket=
           cluster_by_rmsd(all_trans_in_bucket,max_rmsd_,
                           min_cluster_size);
         //retrieve orig inds
-        for(domino::IntsList::const_iterator it =
+        for(IntsList::const_iterator it =
               clustered_trans_in_bucket.begin();
             it != clustered_trans_in_bucket.end();it++) {
           Ints inds(it->size());
@@ -245,7 +245,7 @@ domino::IntsList
 
   return ret;
 }
-domino::IntsList get_clustered(Particles ps,
+IntsList get_clustered(Particles ps,
                        const algebra::Transformation3Ds &trans,
                        float max_rmsd,
                        float  max_angle_diff_in_rad,
@@ -258,11 +258,11 @@ domino::IntsList get_clustered(Particles ps,
           "running ... Clustering of "<<trans.size()<< std::endl);
 
   if (trans.size()==0) {
-    domino::IntsList ret;
+    IntsList ret;
     return ret;
   }
   TransformationClustering fast_clust(ps, max_rmsd);
-  domino::IntsList clust_trans_by_rot_inds =
+  IntsList clust_trans_by_rot_inds =
     fast_clust.cluster_by_rotation(trans,max_angle_diff_in_rad,
                                    min_cluster_size);
   algebra::Transformation3Ds clust_trans_by_rot(clust_trans_by_rot_inds.size());
@@ -276,7 +276,7 @@ domino::IntsList get_clustered(Particles ps,
   IMP_LOG(TERSE,"done clustering by rotation from:"<<trans.size()
           <<" to "<<clust_trans_by_rot.size()<<std::endl);
 
-  domino::IntsList clust_trans_by_trans_inds =
+  IntsList clust_trans_by_trans_inds =
     fast_clust.cluster_by_transformation(clust_trans_by_rot,
                                          max_angle_diff_in_rad,
                                          max_displace,
@@ -296,11 +296,11 @@ domino::IntsList get_clustered(Particles ps,
           <<clust_trans_by_rot.size()<<" to "
           << clust_trans_by_trans.size()<<std::endl);
 
-  domino::IntsList clust_trans_inds=
+  IntsList clust_trans_inds=
     fast_clust.cluster_by_rmsd(clust_trans_by_trans,max_rmsd,
                                min_cluster_size);
 
-  domino::IntsList ret(clust_trans_inds.size());
+  IntsList ret(clust_trans_inds.size());
   for(int i=0;i<(int)clust_trans_inds.size();i++) {
     Ints orig_inds(clust_trans_inds[i].size());
     for(int j=0;j<(int)clust_trans_inds[i].size();j++) {
