@@ -147,7 +147,7 @@ class clustering_threshold : public boost::bc_clustering_threshold<double>
   unsigned int iter;
 };
 
-domino::IntsList
+IntsList
   DensitySegmentationByCommunities::calculate_communities(int num_clusters) {
   //calculate the connected components
   std::vector<int> component(num_vertices(g_));
@@ -203,7 +203,7 @@ domino::IntsList
     int s= ds.find_set(i);
     sets[s].push_back(node2voxel_ind_[node_index_[i]]);
   }
-  domino::IntsList clusters;
+  IntsList clusters;
   for (compatibility::map<int, Ints>::const_iterator it
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
@@ -212,13 +212,13 @@ domino::IntsList
 }
 
 
-domino::IntsList
+IntsList
   DensitySegmentationByCommunities::calculate_connected_components() {
 
   Ints component(num_vertices(g_));
   int num = boost::connected_components(g_, &component[0]);
   Ints::size_type i;
-  domino::IntsList cc_inds;
+  IntsList cc_inds;
   cc_inds.insert(cc_inds.end(),num,Ints());
   for (i = 0; i != component.size(); ++i) {
     cc_inds[component[i]].push_back(node2voxel_ind_[node_index_[i]]);
@@ -244,7 +244,7 @@ em::DensityMaps density_segmentation(em::DensityMap *dmap,
                                      int num_clusters) {
   DensitySegmentationByCommunities ds(dmap,dens_t);
   ds.build_density_graph(edge_threshold);
-  domino::IntsList cc_inds=ds.calculate_communities(num_clusters);
+  IntsList cc_inds=ds.calculate_communities(num_clusters);
   em::DensityMaps ret;
   for(int i=0;i<num_clusters;i++) {
     ret.push_back(get_segment_by_indexes(dmap,cc_inds[i]));
@@ -256,7 +256,7 @@ em::DensityMap* remove_background(em::DensityMap *dmap,
                                   float threshold,float edge_threshold) {
   DensitySegmentationByCommunities ds(dmap,threshold);
   ds.build_density_graph(edge_threshold);
-  domino::IntsList cc_inds=ds.calculate_connected_components();
+  IntsList cc_inds=ds.calculate_connected_components();
   //get the largest cc:
   Ints sizes;
   int max_ind=0;
@@ -267,13 +267,13 @@ em::DensityMap* remove_background(em::DensityMap *dmap,
   return get_segment_by_indexes(dmap,cc_inds[max_ind]);
 }
 
-domino::IntsList get_connected_components(
+IntsList get_connected_components(
                                           em::DensityMap *dmap,
                                           float threshold,float edge_threshold)
 {
   DensitySegmentationByCommunities ds(dmap,threshold);
   ds.build_density_graph(edge_threshold);
-  domino::IntsList cc_inds=ds.calculate_connected_components();
+  IntsList cc_inds=ds.calculate_connected_components();
   return cc_inds;
 }
 

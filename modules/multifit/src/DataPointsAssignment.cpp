@@ -76,7 +76,7 @@ algebra::Vector3Ds
                        full_map->get_voxel_by_location(v)]=v;
   }
   full_map->set_was_used(true);
-  domino::IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
+  IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
   IMP_LOG(TERSE,"Number of connected components:"<<conn_comp.size()<<std::endl);
   unsigned int num_elements=0;
   for(unsigned int i=0;i<conn_comp.size();i++) {

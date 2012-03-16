@@ -11,7 +11,6 @@
 #include <IMP/statistics/Histogram.h>
 #include <IMP/em/DensityMap.h>
 #include "multifit_config.h"
-#include <IMP/domino/DiscreteSampler.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/incremental_components.hpp>
@@ -52,7 +51,7 @@ public:
   //! It is an iterative algorithm, where in each step it computes
   //! the edge betweenness centrality (via brandes_betweenness_centrality)
   //! and removes the edge with the maximum betweenness centrality.
-  domino::IntsList calculate_communities(int num_clusters);
+  IntsList calculate_communities(int num_clusters);
   algebra::Vector3Ds get_centers() {
     algebra::Vector3Ds centers;
     DGVertex v;
@@ -66,7 +65,7 @@ public:
     }
     return centers;
   }
-  domino::IntsList calculate_connected_components();
+  IntsList calculate_connected_components();
  protected:
   Pointer<em::DensityMap> dmap_;
   DensityGraph g_;
@@ -144,7 +143,7 @@ IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
    \return List of indexes for each connected component
 */
 IMPMULTIFITEXPORT
-domino::IntsList get_connected_components(
+IntsList get_connected_components(
                                           em::DensityMap *dmap,
                                           float threshold,float edge_threshold);
 
