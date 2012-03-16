@@ -533,7 +533,8 @@ public:                                                                 \
 #define IMP_BUILTIN_VALUES(Name, PluralName)
 #else
 #define IMP_BUILTIN_VALUES(Name, PluralName)                     \
-  typedef IMP::base::Vector<Name> PluralName
+  typedef IMP::base::Vector<Name> PluralName;                    \
+  typedef IMP::base::Vector<PluralName> PluralName##s
 #endif
 
 

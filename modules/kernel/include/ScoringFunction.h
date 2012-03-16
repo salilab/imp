@@ -16,6 +16,7 @@
 
 
 IMP_BEGIN_NAMESPACE
+
 inline Model *ScoringFunction::get_model() const {
   return Tracked::get_tracker();
 }
