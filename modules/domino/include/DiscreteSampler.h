@@ -19,10 +19,11 @@
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
+// hack for Keren
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 typedef IMP::Ints Ints;
 typedef IMP::IntsList IntsList;
-typedef std::vector<IntsList> IntsLists;
+typedef IMP::base::Vector<IntsList> IntsLists;
 #endif
 
 
