@@ -8,9 +8,6 @@ namespace domino {
 }
 
 
-IMP_SWIG_VALUE_BUILTIN(IMP::domino, Ints, IntsList, IMP::Ints);
-
-
 /* Tell swig how to treat various types when moving them to and from pyton */
 
 
