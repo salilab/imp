@@ -26,15 +26,6 @@ Geometry::Geometry(Color c, std::string name): Object(name){
   }*/
 
 
-inline std::ostream &operator<<(std::ostream &out,
-                         const algebra::Vector3Ds &pts) {
-  for (unsigned int i=0; i< pts.size(); ++i) {
-    out << pts[i] << ": ";
-  }
-  return out;
-}
-
-
 IMP_DISPLAY_GEOMETRY_DEF(SphereGeometry, algebra::Sphere3D);
 IMP_DISPLAY_GEOMETRY_DEF(CylinderGeometry, algebra::Cylinder3D);
 IMP_DISPLAY_GEOMETRY_DEF(EllipsoidGeometry, algebra::Ellipsoid3D);
