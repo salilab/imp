@@ -147,6 +147,7 @@ namespace {
     base::Vector<Ints> sets_;
   public:
     DisjointSetsSubsetFilter(const base::Vector<Ints> &sets):
+      SubsetFilter("DisjointSetsSubsetFilter%1%"),
       sets_(sets) {
       IMP_LOG(TERSE, "Created disjoint set subset filter with ");
       IMP_IF_LOG(TERSE) {
