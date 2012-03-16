@@ -23,7 +23,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 typedef IMP::Ints Ints;
 typedef IMP::IntsList IntsList;
-typedef IMP::base::Vector<IntsList> IntsLists;
+typedef IMP::IntsList IntsLists;
 #endif
 
 
