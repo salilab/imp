@@ -44,7 +44,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 */
 class IMPDOMINOEXPORT SubsetFilter: public IMP::base::Object {
 public:
-  SubsetFilter(std::string name);
+  SubsetFilter(std::string name="SubsetFilter%1%");
   //! Return true if the given state passes this filter for the Subset
   //! it was created with
   virtual bool get_is_ok(const Assignment& state) const=0;
