@@ -12,6 +12,7 @@
 #include "internal/cache.h"
 #include "exception.h"
 #include "log.h"
+#include "ConvertibleVector.h"
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>
@@ -224,8 +225,8 @@ public:
   double get_hit_rate() const {
     return 1.0-static_cast<double>(num_misses_)/num_stats_;
   }
-  compatibility::vector<Key> get_keys() const {
-    compatibility::vector<Key> ret;
+  Vector<Key> get_keys() const {
+    Vector<Key> ret;
     for (OrderIterator it= map_.template get<1>().begin();
          it != map_.template get<1>().end(); ++it) {
       ret.push_back(it->key);
