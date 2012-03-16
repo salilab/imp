@@ -14,16 +14,7 @@
 #include <sstream>
 #include <iostream>
 #include <utility>
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace IMP {
-namespace compatibility {
-template <class T>
-class vector;
-}
-}
 #include <sstream>
-#endif
 
 IMPBASE_BEGIN_NAMESPACE
 

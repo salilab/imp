@@ -10,7 +10,8 @@
 #define IMPBASE_CONVERTIBLE_VECTOR_H
 #include "base_config.h"
 #include <IMP/compatibility/vector.h>
-
+#include "Showable.h"
+#include <IMP/compatibility/hash.h>
 namespace IMP {
 #ifndef SWIG
 /* MSVC gets very confused (error C2872) between std::vector and
@@ -32,6 +33,13 @@ namespace IMP {
 
 IMPBASE_BEGIN_NAMESPACE
 
+/** This class provides a more \imp-like version of the \c std::vector.
+    Specifically it adds functionality from \c Python arrays such as
+    - hashing
+    - output to streams
+    - use of \c +=es
+    - implicit conversion when the contents are implicitly convertible
+*/
 template <class T>
 class ConvertibleVector: public IMP::vector<T> {
   typedef IMP::vector<T> V;
@@ -47,7 +55,41 @@ class ConvertibleVector: public IMP::vector<T> {
   operator IMP::vector<O>() const {
     return IMP::vector<O>(V::begin(), V::end());
   }
+  template <class OV>
+  ConvertibleVector<T> operator+=(const OV &o) {
+    V::insert(V::end(), o.begin(), o.end());
+    return *this;
+  }
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  void show(std::ostream &out=std::cout) const{
+    out << Showable(*this);
+  }
+  operator Showable() const {
+    return Showable(static_cast<V>(*this));
+  }
+  std::size_t __hash__() const {
+    return boost::hash_range(V::begin(),
+                             V::end());
+  }
+#endif
 };
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+template <class T>
+void swap(vector<T> &a,
+          vector<T> &b) {
+  std::swap(static_cast<IMP::vector<T> &>(a),
+            static_cast<IMP::vector<T> &>(b));
+}
+template <class T>
+inline ConvertibleVector<T> operator+( ConvertibleVector<T> ret,
+                                      const ConvertibleVector<T> &o) {
+  ret.insert(ret.end(), o.begin(), o.end());
+  return ret;
+}
+
+#endif
+
 IMPBASE_END_NAMESPACE
 
 #endif  /* IMPBASE_CONVERTIBLE_VECTOR_H */

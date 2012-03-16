@@ -35,23 +35,7 @@ typedef std::vector vector;
 
 #else
 
-template <class T>
-class vector: public IMPCOMPATIBILITY_VECTOR_PARENT<T>
-{
-public:
-  template <class It>
-  vector(It b, It e): IMPCOMPATIBILITY_VECTOR_PARENT<T>(b,e){}
-  explicit vector(unsigned int ct, const T& t=T()):
-    IMPCOMPATIBILITY_VECTOR_PARENT<T>(ct, t){}
-  vector(){}
-};
-
-template <class T>
-void swap(vector<T> &a,
-          vector<T> &b) {
-  std::swap(static_cast<IMPCOMPATIBILITY_VECTOR_PARENT<T> &>(a),
-    static_cast<IMPCOMPATIBILITY_VECTOR_PARENT<T> &>(b));
-}
+using IMPCOMPATIBILITY_VECTOR_PARENT;
 #endif
 
 IMPCOMPATIBILITY_END_NAMESPACE

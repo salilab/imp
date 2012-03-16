@@ -522,7 +522,7 @@ public:                                                                 \
 #define IMP_VALUES(Name, PluralName)
 #else
 #define IMP_VALUES(Name, PluralName)                            \
-  typedef IMP::vector<Name> PluralName
+  typedef IMP::base::ConvertibleVector<Name> PluralName
 #endif
 
 
@@ -533,7 +533,7 @@ public:                                                                 \
 #define IMP_BUILTIN_VALUES(Name, PluralName)
 #else
 #define IMP_BUILTIN_VALUES(Name, PluralName)                     \
-  typedef IMP::vector<Name> PluralName
+  typedef IMP::base::ConvertibleVector<Name> PluralName
 #endif
 
 
@@ -882,9 +882,9 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                                 \
 #else
 
 #define IMP_OBJECTS_TYPEDEF(Name, PluralName)                           \
-  typedef IMP::vector<IMP::base::Pointer<Name> >                        \
+  typedef IMP::base::ConvertibleVector<IMP::base::Pointer<Name> >       \
   PluralName;                                                           \
-  typedef IMP::vector<IMP::base::WeakPointer<Name> >                    \
+  typedef IMP::base::ConvertibleVector<IMP::base::WeakPointer<Name> >   \
   PluralName##Temp;
 
 
