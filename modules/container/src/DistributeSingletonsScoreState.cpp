@@ -55,7 +55,7 @@ void DistributeSingletonsScoreState
   if (updated_ && !input_->get_contents_changed()) return;
   updated_=true;
 
-  vector<ParticleIndexes> output(data_.size());
+  base::Vector<ParticleIndexes> output(data_.size());
   IMP_FOREACH_SINGLETON_INDEX(input_, {
       for (unsigned int i=0; i< data_.size(); ++i) {
         if (data_[i].get<1>()->get_value_index(get_model(), _1)

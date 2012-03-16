@@ -23,7 +23,7 @@ template <class Score, class Data, class Less=std::less<Score> >
 class MinimalSet {
   unsigned int n_;
   typedef std::pair<Score, Data> MP;
-  typedef vector<MP> Vector;
+  typedef base::Vector<MP> Vector;
   Vector data_;
 
   struct CompareFirst {

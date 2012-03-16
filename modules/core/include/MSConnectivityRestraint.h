@@ -210,10 +210,10 @@ public:
       size_t source_;
     };
 
-    vector<ParticleData> particles_;
+    base::Vector<ParticleData> particles_;
     Floats dist_matrix_;
-    vector< Ints > order_;
-    vector< Ints > protein_by_class_;
+    base::Vector< Ints > order_;
+    base::Vector< Ints > protein_by_class_;
     double min_distance_;
     double max_distance_;
     size_t current_id_;
@@ -262,15 +262,15 @@ public:
         {
           return children_[idx];
         }
-        typedef vector< std::pair<size_t, int> > Label;
+        typedef base::Vector< std::pair<size_t, int> > Label;
         const Label &get_label() const
         {
           return label_;
         }
 
 
-        vector<size_t> parents_;
-        vector<size_t> children_;
+        base::Vector<size_t> parents_;
+        base::Vector<size_t> children_;
         Label label_;
         bool visited_;
     };
@@ -293,7 +293,7 @@ public:
     void desc_to_label(const Ints &components,
                        Node::Label &label);
 
-    vector<Node> nodes_;
+    base::Vector<Node> nodes_;
     size_t root_;
     bool finalized_;
   };

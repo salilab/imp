@@ -152,8 +152,8 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   */
   //!@{
   typedef Model::FloatIndex FloatIndex;
-  typedef vector<FloatIndex> FloatIndexes;
-  vector<Model::FloatIndex> get_optimized_attributes() const {
+  typedef base::Vector<FloatIndex> FloatIndexes;
+  base::Vector<Model::FloatIndex> get_optimized_attributes() const {
     return get_model()->get_optimized_attributes();
   }
   void set_value(Model::FloatIndex fi, double v) const {

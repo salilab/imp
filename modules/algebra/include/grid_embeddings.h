@@ -160,26 +160,26 @@ class DefaultEmbeddingD {
 IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
 #if !defined(IMP_DOXYGEN)
 typedef DefaultEmbeddingD<1> DefaultEmbedding1D;
-typedef vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
+typedef base::Vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
 
 
 typedef DefaultEmbeddingD<2> DefaultEmbedding2D;
-typedef vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
+typedef base::Vector<DefaultEmbedding2D> DefaultEmbedding2Ds;
 
 typedef DefaultEmbeddingD<3> DefaultEmbedding3D;
-typedef vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
+typedef base::Vector<DefaultEmbedding3D> DefaultEmbedding3Ds;
 
 typedef DefaultEmbeddingD<4> DefaultEmbedding4D;
-typedef vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
+typedef base::Vector<DefaultEmbedding4D> DefaultEmbedding4Ds;
 
 typedef DefaultEmbeddingD<5> DefaultEmbedding5D;
-typedef vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
+typedef base::Vector<DefaultEmbedding5D> DefaultEmbedding5Ds;
 
 typedef DefaultEmbeddingD<6> DefaultEmbedding6D;
-typedef vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
+typedef base::Vector<DefaultEmbedding6D> DefaultEmbedding6Ds;
 
 typedef DefaultEmbeddingD<-1> DefaultEmbeddingKD;
-typedef vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
+typedef base::Vector<DefaultEmbeddingKD> DefaultEmbeddingKDs;
 #endif
 
 
@@ -362,26 +362,26 @@ IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 
 #if !defined(IMP_DOXYGEN)
 typedef LogEmbeddingD<1> LogEmbedding1D;
-typedef vector<LogEmbedding1D> LogEmbedding1Ds;
+typedef base::Vector<LogEmbedding1D> LogEmbedding1Ds;
 
 
 typedef LogEmbeddingD<2> LogEmbedding2D;
-typedef vector<LogEmbedding2D> LogEmbedding2Ds;
+typedef base::Vector<LogEmbedding2D> LogEmbedding2Ds;
 
 typedef LogEmbeddingD<3> LogEmbedding3D;
-typedef vector<LogEmbedding3D> LogEmbedding3Ds;
+typedef base::Vector<LogEmbedding3D> LogEmbedding3Ds;
 
 typedef LogEmbeddingD<4> LogEmbedding4D;
-typedef vector<LogEmbedding4D> LogEmbedding4Ds;
+typedef base::Vector<LogEmbedding4D> LogEmbedding4Ds;
 
 typedef LogEmbeddingD<5> LogEmbedding5D;
-typedef vector<LogEmbedding5D> LogEmbedding5Ds;
+typedef base::Vector<LogEmbedding5D> LogEmbedding5Ds;
 
 typedef LogEmbeddingD<6> LogEmbedding6D;
-typedef vector<LogEmbedding6D> LogEmbedding6Ds;
+typedef base::Vector<LogEmbedding6D> LogEmbedding6Ds;
 
 typedef LogEmbeddingD<-1> LogEmbeddingKD;
-typedef vector<LogEmbeddingKD> LogEmbeddingKDs;
+typedef base::Vector<LogEmbeddingKD> LogEmbeddingKDs;
 #endif
 
 

@@ -12,24 +12,6 @@
 #include <IMP/compatibility/vector.h>
 #include "Showable.h"
 #include <IMP/compatibility/hash.h>
-namespace IMP {
-#ifndef SWIG
-/* MSVC gets very confused (error C2872) between std::vector and
-   IMP::compatibility::vector if we include headers (e.g. OpenCV) that use
-   a plain 'vector' after 'using namespace std'. Since compatibility::vector
-   doesn't add anything to std::vector anyway on MSVC, use std::vector instead
-   here. */
-# ifdef _MSC_VER
-  using std::vector;
-# else
-  using compatibility::vector;
-# endif
-#else
-  template <class T>
-  struct vector {};
-#endif
-}
-
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -39,24 +21,25 @@ IMPBASE_BEGIN_NAMESPACE
     - output to streams
     - use of \c +=es
     - implicit conversion when the contents are implicitly convertible
+    - bounds checking in debug mode
 */
 template <class T>
-class ConvertibleVector: public IMP::vector<T> {
-  typedef IMP::vector<T> V;
+class Vector: public compatibility::vector<T> {
+  typedef compatibility::vector<T> V;
  public:
-  ConvertibleVector(){}
-  ConvertibleVector(unsigned int sz, const T&t=T()): V(sz, t){}
+  Vector(){}
+  Vector(unsigned int sz, const T&t=T()): V(sz, t){}
   template <class It>
-  ConvertibleVector(It b, It e): V(b,e){}
+  Vector(It b, It e): V(b,e){}
   template <class O>
-  ConvertibleVector(const IMP::vector<O> &o): V(o.begin(),
+  Vector(const compatibility::vector<O> &o): V(o.begin(),
                                                       o.end()){}
    template <class O>
-  operator IMP::vector<O>() const {
-    return IMP::vector<O>(V::begin(), V::end());
+  operator Vector<O>() const {
+    return Vector<O>(V::begin(), V::end());
   }
   template <class OV>
-  ConvertibleVector<T> operator+=(const OV &o) {
+  base::Vector<T> operator+=(const OV &o) {
     V::insert(V::end(), o.begin(), o.end());
     return *this;
   }
@@ -76,14 +59,14 @@ class ConvertibleVector: public IMP::vector<T> {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class T>
-void swap(vector<T> &a,
-          vector<T> &b) {
-  std::swap(static_cast<IMP::vector<T> &>(a),
-            static_cast<IMP::vector<T> &>(b));
+void swap(base::Vector<T> &a,
+          base::Vector<T> &b) {
+  std::swap(static_cast<IMP::base::Vector<T> &>(a),
+            static_cast<IMP::base::Vector<T> &>(b));
 }
 template <class T>
-inline ConvertibleVector<T> operator+( ConvertibleVector<T> ret,
-                                      const ConvertibleVector<T> &o) {
+inline base::Vector<T> operator+( base::Vector<T> ret,
+                                  const base::Vector<T> &o) {
   ret.insert(ret.end(), o.begin(), o.end());
   return ret;
 }

@@ -370,7 +370,7 @@ void do_benchmark(std::string descr, unsigned int n) {
     IMP::benchmark::report("xyz vector "+descr, runtime, dist);
   }
   {
-    IMP::vector<VV > coordinates;
+    IMP::base::Vector<VV > coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VV());
       coordinates.back().x=IMP::core::XYZ(particles[i]).get_x();
@@ -390,7 +390,7 @@ void do_benchmark(std::string descr, unsigned int n) {
   }
   // TEST 4
   {
-    IMP::vector<VectorHolder> coordinates;
+    IMP::base::Vector<VectorHolder> coordinates;
     for (unsigned int i = 0; i < particles.size(); i++) {
       coordinates.push_back(VectorHolder());
       coordinates.back().c=IMP::core::XYZ::decorate_particle(particles[i]).

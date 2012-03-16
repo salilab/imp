@@ -39,7 +39,6 @@ IMP_BUILTIN_VALUES(IntRange, IntRanges);
 typedef std::pair<Int, Int> IntPair;
 IMP_BUILTIN_VALUES(IntPair, IntPairs);
 
-
 //! Basic string value
 typedef std::string String;
 

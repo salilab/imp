@@ -123,11 +123,11 @@ inline VectorD<3> get_random_vector_on(const SphereD<3> &s) {
   }*/
 
 template <int D>
-inline vector<VectorD<D> >
+inline base::Vector<VectorD<D> >
 native_uniform_cover_unit_sphere(unsigned int d,
                                  unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
-  vector<VectorD<D> > ret(n);
+  base::Vector<VectorD<D> > ret(n);
   for (unsigned int i=0; i< std::min(d, n/(ALL?2:1)); ++i) {
     VectorD<D> v= get_basis_vector_kd(d, i);
     if(ALL) {
@@ -148,11 +148,11 @@ native_uniform_cover_unit_sphere(unsigned int d,
 /*If all is true, cover the whole sphere.
  */
 template <int D>
-inline vector<VectorD<D> >
+inline base::Vector<VectorD<D> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<D> &center,
                      double radius, bool ALL) {
-  vector<VectorD<D> > ret
+  base::Vector<VectorD<D> > ret
     = native_uniform_cover_unit_sphere<D>(center.get_dimension(),
                                           n, ALL);
   for (unsigned int i=0; i< ret.size(); ++i) {
@@ -167,11 +167,11 @@ uniform_cover_sphere(unsigned int n,
 
 /*If all is true, cover the whole sphere.
  */
-inline vector<VectorD<4> >
+inline base::Vector<VectorD<4> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<4> &center,
                      double radius, bool ALL) {
-  vector<VectorD<4> > ret
+  base::Vector<VectorD<4> > ret
     = native_uniform_cover_unit_sphere<4>(center.get_dimension(),
                                           n, ALL);
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL

@@ -29,8 +29,8 @@ struct VectorWithIndex: public algebra::VectorKD {
 };
 
 template <class It>
-vector<VectorWithIndex > create_vectors_with_index(It b, It e) {
-  vector<VectorWithIndex > v(std::distance(b,e));
+base::Vector<VectorWithIndex > create_vectors_with_index(It b, It e) {
+  base::Vector<VectorWithIndex > v(std::distance(b,e));
   It c=b;
   for (unsigned int i=0; i< v.size(); ++i) {
     v[i]= VectorWithIndex(i, get_vector_d_geometry(*c));
@@ -46,12 +46,12 @@ struct IMPCGALEXPORT RCTree: public base::RefCounted {
 
 struct IMPCGALEXPORT KNNData {
   mutable base::Pointer<RCTree> tree_;
-  vector<VectorWithIndex > vsi_;
+  base::Vector<VectorWithIndex > vsi_;
   template <class It>
   KNNData(It b, It e) {
     initialize(create_vectors_with_index(b,e));
   }
-  void initialize(const vector<VectorWithIndex > &v);
+  void initialize(const base::Vector<VectorWithIndex > &v);
   void fill_nearest_neighbors_v(const algebra::VectorKD &g,
                                 unsigned int k,
                                 double eps, Ints &ret) const;

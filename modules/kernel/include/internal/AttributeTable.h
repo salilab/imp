@@ -45,7 +45,7 @@ struct DefaultTraits
 template <class T, class K >
 struct ArrayTraits
 {
-  typedef IMP::vector<T> Value;
+  typedef IMP::base::Vector<T> Value;
   typedef base::IndexVector<ParticleIndexTag, Value> Container;
   typedef const Value& PassValue;
   typedef K Key;

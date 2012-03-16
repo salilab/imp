@@ -79,7 +79,7 @@ struct RealRCTree: public RCTree {
   RealRCTree(It b, It e): tree(b,e){}
 };
 
-void KNNData::initialize(const vector<VectorWithIndex > &v) {
+void KNNData::initialize(const base::Vector<VectorWithIndex > &v) {
   vsi_=v;
   tree_= new RealRCTree(v.begin(), v.end());
 }

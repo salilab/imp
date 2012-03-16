@@ -29,7 +29,7 @@ struct LinearKNNData {
     }
   }
 
-  vector<VectorD<D> > data_;
+  base::Vector<VectorD<D> > data_;
   template <class It>
   LinearKNNData(It b, It e) {
     data_.reserve(std::distance(b,e));

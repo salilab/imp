@@ -69,7 +69,7 @@ namespace {
 
   Assignments filter_states(const Subset &,
                              const Assignments &in,
-                const vector<Ints> &clustering) {
+                const base::Vector<Ints> &clustering) {
     Assignments ret;
     for (unsigned int i=0; i< in.size(); ++i) {
       Ints cur(in[i].size(), -1);
@@ -90,7 +90,7 @@ Assignments get_state_clusters(const Subset &subset,
                                 const Assignments &states,
                                 ParticleStatesTable *pst,
                                 double resolution) {
-  vector<Ints> rotated(subset.size(),
+  base::Vector<Ints> rotated(subset.size(),
                                               Ints(states.size(), -1));
   for (unsigned int i=0; i< states.size(); ++i) {
     for (unsigned int j=0; j< states[i].size(); ++j) {
@@ -102,7 +102,7 @@ Assignments get_state_clusters(const Subset &subset,
     rotated[i].erase(std::unique(rotated[i].begin(), rotated[i].end()),
                      rotated[i].end());
   }
-  vector<Ints> clustering(states.size());
+  base::Vector<Ints> clustering(states.size());
   for (unsigned int i=0; i< subset.size(); ++i) {
     IMP::OwnerPointer<ParticleStates> ps
       =pst->get_particle_states(subset[i]);

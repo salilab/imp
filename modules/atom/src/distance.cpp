@@ -156,7 +156,7 @@ RMSDCalculator::RMSDCalculator(const ParticlesTemp &ps){
 
 namespace {
 void set_rotation_matrix(const algebra::Rotation3D &r,
-                         vector<Floats > &m){
+                         base::Vector<Floats > &m){
   algebra::Vector4D q = r.get_quaternion();
   double a = q[0];double b = q[1];double c = q[2];double d = q[3];
   for(int i=0;i<3;i++)
@@ -179,7 +179,7 @@ float RMSDCalculator::get_squared_rmsd(const algebra::Transformation3D &t1,
   algebra::Transformation3D composed_t=t1.get_inverse()*t2;
   algebra::Rotation3D rot = composed_t.get_rotation();
   //set the rotation matrix
-  vector<Floats > m,m1,m2;
+  base::Vector<Floats > m,m1,m2;
   set_rotation_matrix(rot,m);
   set_rotation_matrix(r1,m1);
   set_rotation_matrix(r2,m2);

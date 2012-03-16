@@ -169,7 +169,7 @@ public:
     padded.resize(2*this->get_size(0),2*this->get_size(1));
     // Copy values
     padded.fill_with_value(val);
-    vector<index> idx(2),idx_for_padded(2);
+    base::Vector<index> idx(2),idx_for_padded(2);
     while (internal::roll_inds(idx, this->shape(),this->index_bases())) {
       for(int i=0;i<2;i++) {
         idx_for_padded[i]=idx[i]+(int)this->get_size(i)/2;

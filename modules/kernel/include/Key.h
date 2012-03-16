@@ -152,7 +152,7 @@ public:
   /**
      This can be used to check for typos and similar keys.
    */
-  static vector<std::string> get_all_strings();
+  static base::Vector<std::string> get_all_strings();
 
   //! Get the total number of keys of this type
   /**
@@ -204,9 +204,9 @@ inline void Key<ID, LA>::show_all(std::ostream &out)
 }
 
 template <unsigned int ID, bool LA>
-vector<std::string> Key<ID, LA>::get_all_strings()
+base::Vector<std::string> Key<ID, LA>::get_all_strings()
 {
-  vector<std::string> str;
+  base::Vector<std::string> str;
   for (internal::KeyData::Map::const_iterator it= get_map().begin();
        it != get_map().end(); ++it) {
     str.push_back(it->first);

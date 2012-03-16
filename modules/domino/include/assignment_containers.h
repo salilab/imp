@@ -297,7 +297,7 @@ class IMPDOMINOEXPORT HeapAssignmentContainer: public AssignmentContainer {
       return a.second < b.second;
     }
   };
-  typedef vector<AP> C;
+  typedef base::Vector<AP> C;
   C d_;
   Subset subset_;
   Slices slices_;
@@ -326,7 +326,7 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   Subset s_;
   Pointer<ParticleStatesTable> pst_;
   double r_;
-  vector<Assignment> d_;
+  base::Vector<Assignment> d_;
   statistics::Metrics metrics_;
   bool get_in_cluster(const Assignment &v) const;
   double get_minimum_distance() const;

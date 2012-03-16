@@ -82,7 +82,7 @@ inline void maximal_cliques( const Graph& graph, CliqueOutputIterator out)
   typedef boost::graph_traits< Graph>               graph_traits;
   typedef typename graph_traits::vertex_descriptor  vertex_descriptor;
   typedef typename graph_traits::vertex_iterator    vertex_iterator;
-  typedef vector< vertex_descriptor>           Vector;
+  typedef base::Vector< vertex_descriptor>           Vector;
   // Empty graphs are out
   if( boost::num_vertices( graph) == 0) return;
 

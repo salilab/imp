@@ -247,14 +247,14 @@ private:
   struct NBLScore {
     OwnerPointer<PairScore> score_;
     typedef std::pair<ParticleIndex, double> ScorePair;
-    typedef vector<ScorePair> ScorePairs;
+    typedef base::Vector<ScorePair> ScorePairs;
     // first on the particle index then list the neighbors
     mutable base::IndexVector<ParticleIndexTag, ScorePairs> cache_;
     double distance_;
     mutable double prior_, old_prior_;
     ParticleIndexes pis_;
     PairFilters filters_;
-    mutable vector<std::pair<ParticleIndexPair,
+    mutable base::Vector<std::pair<ParticleIndexPair,
                                                     double> > removed_;
     mutable ParticleIndexes added_;
     NBLScore(){}

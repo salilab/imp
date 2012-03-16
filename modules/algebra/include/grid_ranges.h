@@ -75,10 +75,10 @@ class UnboundedGridRangeD {
     return ExtendedIndexIterator();
   }
 #endif
-  vector<ExtendedGridIndexD<D> >
+  base::Vector<ExtendedGridIndexD<D> >
   get_extended_indexes(const ExtendedGridIndexD<D>& lb,
                        const ExtendedGridIndexD<D>& ub) const {
-    return vector<ExtendedGridIndexD<D> >
+    return base::Vector<ExtendedGridIndexD<D> >
         (extended_indexes_begin(lb, ub),
          extended_indexes_end(lb, ub));
   }
@@ -94,13 +94,13 @@ typedef UnboundedGridRangeD<4> UnboundedGridRange4D;
 typedef UnboundedGridRangeD<5> UnboundedGridRange5D;
 typedef UnboundedGridRangeD<6> UnboundedGridRange6D;
 typedef UnboundedGridRangeD<-1> UnboundedGridRangeKD;
-typedef vector<UnboundedGridRange1D> UnboundedGridRange1Ds;
-typedef vector<UnboundedGridRange2D> UnboundedGridRange2Ds;
-typedef vector<UnboundedGridRange3D> UnboundedGridRange3Ds;
-typedef vector<UnboundedGridRange4D> UnboundedGridRange4Ds;
-typedef vector<UnboundedGridRange5D> UnboundedGridRange5Ds;
-typedef vector<UnboundedGridRange6D> UnboundedGridRange6Ds;
-typedef vector<UnboundedGridRangeKD> UnboundedGridRangeKDs;
+typedef base::Vector<UnboundedGridRange1D> UnboundedGridRange1Ds;
+typedef base::Vector<UnboundedGridRange2D> UnboundedGridRange2Ds;
+typedef base::Vector<UnboundedGridRange3D> UnboundedGridRange3Ds;
+typedef base::Vector<UnboundedGridRange4D> UnboundedGridRange4Ds;
+typedef base::Vector<UnboundedGridRange5D> UnboundedGridRange5Ds;
+typedef base::Vector<UnboundedGridRange6D> UnboundedGridRange6Ds;
+typedef base::Vector<UnboundedGridRangeKD> UnboundedGridRangeKDs;
 #endif
 
 
@@ -178,8 +178,8 @@ class BoundedGridRangeD {
                        d_);
   }
 #endif
-  vector<GridIndexD<D> > get_all_indexes() const {
-    vector<GridIndexD<D> > ret(all_indexes_begin(),
+  base::Vector<GridIndexD<D> > get_all_indexes() const {
+    base::Vector<GridIndexD<D> > ret(all_indexes_begin(),
                                all_indexes_end());
     return ret;
   }
@@ -251,16 +251,16 @@ class BoundedGridRangeD {
   }
 #endif
 
-  vector<GridIndexD<D> >
+  base::Vector<GridIndexD<D> >
   get_indexes(const ExtendedGridIndexD<D>& lb,
               const ExtendedGridIndexD<D>& ub) const {
-    return vector<GridIndexD<D> >(indexes_begin(lb, ub),
+    return base::Vector<GridIndexD<D> >(indexes_begin(lb, ub),
                                   indexes_end(lb, ub));
   }
-  vector<ExtendedGridIndexD<D> >
+  base::Vector<ExtendedGridIndexD<D> >
   get_extended_indexes(const ExtendedGridIndexD<D>& lb,
                        const ExtendedGridIndexD<D>& ub) const {
-    return vector<ExtendedGridIndexD<D> >
+    return base::Vector<ExtendedGridIndexD<D> >
         (extended_indexes_begin(lb, ub),
          extended_indexes_end(lb, ub));
   }
@@ -308,13 +308,13 @@ typedef BoundedGridRangeD<4> BoundedGridRange4D;
 typedef BoundedGridRangeD<5> BoundedGridRange5D;
 typedef BoundedGridRangeD<6> BoundedGridRange6D;
 typedef BoundedGridRangeD<-1> BoundedGridRangeKD;
-typedef vector<BoundedGridRange1D> BoundedGridRange1Ds;
-typedef vector<BoundedGridRange2D> BoundedGridRange2Ds;
-typedef vector<BoundedGridRange3D> BoundedGridRange3Ds;
-typedef vector<BoundedGridRange4D> BoundedGridRange4Ds;
-typedef vector<BoundedGridRange5D> BoundedGridRange5Ds;
-typedef vector<BoundedGridRange6D> BoundedGridRange6Ds;
-typedef vector<BoundedGridRangeKD> BoundedGridRangeKDs;
+typedef base::Vector<BoundedGridRange1D> BoundedGridRange1Ds;
+typedef base::Vector<BoundedGridRange2D> BoundedGridRange2Ds;
+typedef base::Vector<BoundedGridRange3D> BoundedGridRange3Ds;
+typedef base::Vector<BoundedGridRange4D> BoundedGridRange4Ds;
+typedef base::Vector<BoundedGridRange5D> BoundedGridRange5Ds;
+typedef base::Vector<BoundedGridRange6D> BoundedGridRange6Ds;
+typedef base::Vector<BoundedGridRangeKD> BoundedGridRangeKDs;
 #endif
 
 IMPALGEBRA_END_NAMESPACE

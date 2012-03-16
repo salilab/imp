@@ -174,8 +174,8 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
 
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
   IGVertexConstMap pm= boost::get(boost::vertex_name, cig);
-  typedef vector<IGVertex> Clique;
-  vector<Clique> cliques;
+  typedef base::Vector<IGVertex> Clique;
+  base::Vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
   for (unsigned int i=0; i< cliques.size(); ++i) {
     /*std::cout << "Clique is ";
@@ -258,7 +258,7 @@ namespace {
         std::cout << boost::num_vertices(mig)
         << " remaining" << std::endl;*/
       AdjacencyRange be  = boost::adjacent_vertices(maxv, mig);
-      const vector<unsigned int>
+      const base::Vector<unsigned int>
         neighbors(be.first, be.second);
       /*std::cout << "Neighbors are ";
         for (unsigned int i=0; i < neighbors.size(); ++i) {
@@ -321,7 +321,7 @@ InteractionGraph get_triangulated(const InteractionGraph& ig) {
 
 
 SubsetGraph get_minimum_spanning_tree(const CliqueGraph& cg) {
-  vector<CGEdge> mst;
+  base::Vector<CGEdge> mst;
   boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
   SubsetGraph jt(boost::num_vertices(cg));
   SGVertexMap cm= boost::get(boost::vertex_name, jt);
@@ -711,13 +711,13 @@ namespace {
                                                 int> > StableSubsetGraph;
   typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
   typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;
-  vector<SSGED>
+  base::Vector<SSGED>
   get_independent_edge_set(const StableSubsetGraph &sg) {
-    vector<SSGED> ret;
+    base::Vector<SSGED> ret;
     compatibility::set<SSGVD> seen;
     typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
     std::pair<EIt, EIt> ep= boost::edges(sg);
-    vector<SSGED> edges(ep.first, ep.second);
+    base::Vector<SSGED> edges(ep.first, ep.second);
     std::reverse(edges.begin(), edges.end());
     for (unsigned int i=0; i< edges.size(); ++i) {
       SSGVD source= boost::source(edges[i], sg);
@@ -741,7 +741,7 @@ namespace {
       = boost::get(boost::vertex_name, jt);
     typedef boost::graph_traits<StableSubsetGraph>::adjacency_iterator AIt;
     std::pair<AIt, AIt> be  = boost::adjacent_vertices(target, jt);
-    const vector< SSGVD> neighbors(be.first, be.second);
+    const base::Vector< SSGVD> neighbors(be.first, be.second);
     for (unsigned int i=0; i< neighbors.size(); ++i) {
       if (neighbors[i] != source) {
         if (!boost::edge(source, neighbors[i], jt).second) {
@@ -775,7 +775,7 @@ MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
     vertex_map[vd]=i;
   }
   while (boost::num_vertices(junction_tree) >1) {
-    vector<SSGED> is
+    base::Vector<SSGED> is
       = get_independent_edge_set(junction_tree);
     IMP_INTERNAL_CHECK(is.size()>0, "No edges found");
     for (unsigned int i=0; i< is.size(); ++i) {

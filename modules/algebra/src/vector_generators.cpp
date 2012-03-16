@@ -116,7 +116,7 @@ Vector3Ds get_random_chain(unsigned int n, double r,
             "If r is too small, it won't succeed in placing the spheres");
   unsigned int max_failures=30;
   Vector3Ds ret;
-  vector<unsigned int> failures;
+  base::Vector<unsigned int> failures;
   ret.push_back(start);
   failures.push_back(0);
   while (ret.size() != n) {

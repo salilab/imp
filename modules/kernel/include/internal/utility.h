@@ -49,7 +49,7 @@ struct Counter {
 #define IMP_PRINT_TREE(stream, NodeType, start, num_children,           \
                        get_child, show)                                 \
   {                                                                     \
-    vector<boost::tuple<std::string, std::string, NodeType> >      \
+    base::Vector<boost::tuple<std::string, std::string, NodeType> >      \
       queue;                                                            \
     queue.push_back(boost::make_tuple(std::string(),                    \
                                       std::string(), start));           \

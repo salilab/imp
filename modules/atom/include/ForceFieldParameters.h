@@ -63,7 +63,7 @@ protected:
   std::map<ResidueType, AtomTypeMap> atom_res_type_2_force_field_atom_type_;
 
   // a list of residue bonds
-  std::map<ResidueType, vector<Bond> > residue_bonds_;
+  std::map<ResidueType, base::Vector<Bond> > residue_bonds_;
 
   // map that holds force_field parameters according to force_field atom types
   // key=force_field_atom_type, value=(epsilon,radius)

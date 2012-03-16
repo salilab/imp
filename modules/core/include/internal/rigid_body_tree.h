@@ -23,11 +23,11 @@ class IMPCOREEXPORT RigidBodyHierarchy: public IMP::base::Object {
     Ints children_;
     algebra::Sphere3D s_;
   };
-  vector<Data> tree_;
+  base::Vector<Data> tree_;
   ParticleIndexes constituents_;
 
-  typedef vector<unsigned int> SphereIndexes;
-  typedef vector<SphereIndexes> SpheresSplit;
+  typedef base::Vector<unsigned int> SphereIndexes;
+  typedef base::Vector<SphereIndexes> SpheresSplit;
   SpheresSplit divide_spheres(const algebra::Sphere3Ds &ss,
                               const SphereIndexes &s);
   void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
@@ -38,7 +38,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public IMP::base::Object {
   typedef std::pair<unsigned int, SphereIndexes> Node;
   void build_tree(Model *m, const Node &n,
                   const algebra::Sphere3Ds &spheres,
-                  vector<Node> &stack);
+                  base::Vector<Node> &stack);
  public:
   algebra::Sphere3D get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
@@ -176,7 +176,7 @@ inline void fill_close_pairs(Model *m,
   }
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
-  std::priority_queue<QP, vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, db, 0);
   if (d < dist) {
     queue.push(QP(d, IP(0,0)));
@@ -268,7 +268,7 @@ inline void fill_close_particles(Model *m,
                                  ParticleIndex pt, double dist,
                                  Sink sink) {
   typedef std::pair<double, int> QP;
-  std::priority_queue<QP, vector<QP>, LessFirst> queue;
+  std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, pt);
   queue.push(QP(d, 0));
   do {

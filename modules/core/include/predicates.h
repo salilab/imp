@@ -43,7 +43,7 @@ class AttributeSingletonPredicate: public SingletonPredicate {
 template <class Predicate, class Score=SingletonScore>
 class PredicateSingletonScore: public SingletonScore {
   OwnerPointer<Predicate> pred_;
-  vector<OwnerPointer<Score> > scores_;
+  base::Vector<OwnerPointer<Score> > scores_;
   int offset_;
   Score *get_score(int val) const {
     if (val < offset_ || val > scores_.size()+offset_) {

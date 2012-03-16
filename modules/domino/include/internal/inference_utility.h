@@ -101,7 +101,7 @@ struct EdgeData {
   Subset union_subset;
   SubsetFilters filters;
 };
-typedef vector<EdgeData> EdgeDatas;
+typedef base::Vector<EdgeData> EdgeDatas;
 
 inline std::ostream &operator<<(std::ostream &out, const EdgeData &nd) {
   out << nd.intersection_subset << " " << nd.union_subset << std::endl;

@@ -390,7 +390,7 @@ namespace {
                 const IMP::compatibility::map<ParticleIndex, ParticleIndexes>
                 &constituents,
                 unsigned int chunk,
-                IMP::vector<ParticleIndexes> &bins) {
+                IMP::base::Vector<ParticleIndexes> &bins) {
     IMP_INTERNAL_CHECK(!s.empty(), "Empty list");
     bins.push_back(ParticleIndexes());
     for (unsigned int i=0; i< s.size(); ++i) {
@@ -412,7 +412,7 @@ namespace {
                         ParticleIndexes>
                         &constituents,
                         unsigned int chunk,
-                        IMP::vector<ParticleIndexes>
+                        IMP::base::Vector<ParticleIndexes>
                         &bins) {
     if (s.size() <chunk) {
       deposite(m, s, constituents, chunk, bins);
@@ -473,7 +473,7 @@ ExcludedVolumeRestraint
                        std::sqrt(static_cast<float>(sc_->get_number())) /10);
   //std::cout << "Chunks of size " << chunk << std::endl;
   // change chunk here
-  IMP::vector<ParticleIndexes>
+  IMP::base::Vector<ParticleIndexes>
     bins;
   ParticleIndexes all=xyzrs_;
   all.insert(all.end(), rbs_.begin(), rbs_.end());

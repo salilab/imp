@@ -26,7 +26,7 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 namespace {
   void load_node_data(const SubsetGraph &sg,
                       const AssignmentsTable *sst,
-                      vector<Assignments> &data) {
+                      base::Vector<Assignments> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
     data.resize(boost::num_vertices(sg));
@@ -36,7 +36,7 @@ namespace {
   }
   void load_edge_data(const SubsetGraph &sg,
                       const SubsetFilterTables &sft,
-                      vector<EdgeDatas> &data) {
+                      base::Vector<EdgeDatas> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
     data.resize(boost::num_vertices(sg));
@@ -101,8 +101,8 @@ namespace {
   }
 
   bool filter_pass(const SubsetGraph &sg,
-                   const vector<EdgeDatas> &eds,
-                   vector<Assignments> &data) {
+                   const base::Vector<EdgeDatas> &eds,
+                   base::Vector<Assignments> &data) {
     bool changed=false;
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
@@ -132,7 +132,7 @@ namespace {
 
   void write(boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
              subset_map,
-             const vector<Assignments> &nds,
+             const base::Vector<Assignments> &nds,
              std::string name ) {
     IMP_LOG(TERSE, name << " states are:\n");
     for (unsigned int i=0; i< nds.size(); ++i) {
@@ -151,9 +151,9 @@ Assignments loopy_get_best_conformations(const SubsetGraph &sg,
                                           const AssignmentsTable *sst,
                                           unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
-  vector<Assignments> nds;
+  base::Vector<Assignments> nds;
   load_node_data(sg, sst, nds);
-  vector<EdgeDatas> eds;
+  base::Vector<EdgeDatas> eds;
   load_edge_data(sg, filters, eds);
   boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
     subset_map= boost::get(boost::vertex_name, sg);
@@ -193,13 +193,13 @@ namespace {
   };
 
   struct FastEdgeData {
-    vector<Ints> support;
+    base::Vector<Ints> support;
   };
-  typedef vector<FastEdgeData> FastEdgeDatas;
+  typedef base::Vector<FastEdgeData> FastEdgeDatas;
 
   void fast_load_node_data(const SubsetGraph &sg,
                            const AssignmentsTable *sst,
-               vector<FastAssignments> &data) {
+               base::Vector<FastAssignments> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
     data.resize(boost::num_vertices(sg));
@@ -209,8 +209,8 @@ namespace {
   }
   void fast_load_edge_data(const SubsetGraph &sg,
                            const SubsetFilterTables &sft,
-                 const vector<FastAssignments> &nds,
-                           vector<FastEdgeDatas> &data) {
+                 const base::Vector<FastAssignments> &nds,
+                           base::Vector<FastEdgeDatas> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
     data.resize(boost::num_vertices(sg));
@@ -277,8 +277,8 @@ namespace {
   }
 
   bool fast_filter_pass(const SubsetGraph &sg,
-                        const vector<FastEdgeDatas> &eds,
-                        vector<FastAssignments> &data) {
+                        const base::Vector<FastEdgeDatas> &eds,
+                        base::Vector<FastAssignments> &data) {
     bool changed=false;
     for (unsigned int i=0; i< data.size(); ++i) {
       int j=0;
@@ -305,7 +305,7 @@ namespace {
   void fast_write(boost::property_map< SubsetGraph,
                                        boost::vertex_name_t>::const_type
                   subset_map,
-                  const vector<FastAssignments> &nds,
+                  const base::Vector<FastAssignments> &nds,
                   std::string name) {
     IMP_LOG(TERSE, name << " states are \n");
     for (unsigned int i=0; i< nds.size(); ++i) {
@@ -327,9 +327,9 @@ Assignments fast_loopy_get_best_conformations(const SubsetGraph &sg,
                                                const AssignmentsTable *sst,
                                                unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
-  vector<FastAssignments> nds;
+  base::Vector<FastAssignments> nds;
   fast_load_node_data(sg, sst, nds);
-  vector<FastEdgeDatas > eds;
+  base::Vector<FastEdgeDatas > eds;
   fast_load_edge_data(sg, filters, nds, eds);
   boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
     subset_map= boost::get(boost::vertex_name, sg);

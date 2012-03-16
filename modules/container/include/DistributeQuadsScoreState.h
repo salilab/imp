@@ -36,7 +36,7 @@ public ScoreState
   OwnerPointer<QuadContainer> input_;
   typedef boost::tuple<Pointer<ListQuadContainer>,
     OwnerPointer<QuadPredicate>, int> Data;
-  vector<Data> data_;
+  base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:

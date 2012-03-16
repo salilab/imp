@@ -167,7 +167,7 @@
   template <class List>                                                 \
   void remove_##lcnames(List d) {                                       \
     IMP_OBJECT_LOG;                                                     \
-    vector<Data> ds(d.begin(), d.end());                                \
+    base::Vector<Data> ds(d.begin(), d.end());                                \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
       lcname##_handle_remove(ds[i]);                                    \

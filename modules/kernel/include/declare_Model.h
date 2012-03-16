@@ -149,7 +149,7 @@ private:
   ParticleIndexes free_particles_;
   unsigned int next_particle_;
   base::IndexVector<ParticleIndexTag, base::Pointer<Particle> > particle_index_;
-  vector<base::OwnerPointer<base::Object> > model_data_;
+  base::Vector<base::OwnerPointer<base::Object> > model_data_;
   bool dependencies_dirty_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // things the evaluate template functions need, can't be bothered with friends

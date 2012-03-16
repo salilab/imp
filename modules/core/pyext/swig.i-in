@@ -214,7 +214,7 @@ void visit_breadth_first(Hierarchy d, HierarchyVisitor *f)
 
 void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 {
-  IMP::vector<Hierarchy> stack;
+  IMP::base::Vector<Hierarchy> stack;
   stack.push_back(d);
   do {
     Hierarchy cur= stack.back();
@@ -281,10 +281,10 @@ namespace core {
 algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const ParticlesTemp &b) {
 return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a),XYZs(b));
 }
-algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const IMP::vector<algebra::VectorD<3> > &b) {
+algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const IMP::base::Vector<algebra::VectorD<3> > &b) {
 return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a), b);
 }
-algebra::Transformation3D get_transformation_aligning_first_to_second(const IMP::vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
+algebra::Transformation3D get_transformation_aligning_first_to_second(const IMP::base::Vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
 return algebra::get_transformation_aligning_first_to_second(a, XYZs(b));
 }
 }

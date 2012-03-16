@@ -73,7 +73,7 @@ private:
                                  std::string);
 };
 #ifndef IMP_DOXYGEN
-typedef vector<GeometryProcessor> GeometryProcessors;
+typedef base::Vector<GeometryProcessor> GeometryProcessors;
 #endif
 IMPDISPLAY_END_NAMESPACE
 

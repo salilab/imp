@@ -36,9 +36,9 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     }
 \enddot
 }
- 
+
 \imp provides a large number of functionality to facilitate this process. Links to representative classes are given for future reference.
--# \anchor dataacq <em> Data acquisition: </em> 
+-# \anchor dataacq <em> Data acquisition: </em>
    we can't be much help here as we are computer people and don't know what to do with test tubes.
 -# \anchor repsel <em> Representation selection: </em> representation in \imp is via a collection of
   entities called particles (IMP::Particle objects). Each particle can contain one or
@@ -113,7 +113,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
     }
 \enddot
 }
--# \anchor analysis <em> Analysis of good conformations: </em> 
+-# \anchor analysis <em> Analysis of good conformations: </em>
   Finally, one needs to analyze the set of conformations produced by
   sampling. \imp provides a variety of tools to help display the conformations,
   in IMP::display, and to cluster them, in IMP::statistics. Display capabilities
@@ -126,7 +126,7 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
   - configurations of the model using IMP::statistics::ConfigurationSetXYZEmbedding
   - arbitrary points using IMP::statistics::VectorDEmbedding
   - density maps using IMP::statistics::HighDensityEmbedding
-  
+
 
 Knowledge about the system being modeled enters the process at all
 stages, but a few need extra note:
@@ -306,7 +306,7 @@ on shared functionality (IMP::core or IMP::container).
 - use Python to put \imp classes together to handle your data and resulting structures
 - write new \imp classes in C++
 
-If you are new to programming you should check out a general python 
+If you are new to programming you should check out a general python
 introduction such as
 \external{http://docs.python.org/tutorial/introduction.html, the official introduction to Python} and
 \external{http://www.rexx.com/~dkuhlman/python_101/python_101.html, Python
@@ -321,10 +321,9 @@ differences in the languages and limitations of the program used to
 generate the connection between the two languages. Key differences are
 
 - Python does not support templates and so template classes (eg
-  IMP::algebra::BoundingBoxD, IMP::VectorOfRefCounted) cannot be
+  IMP::algebra::BoundingBoxD) cannot be
   directly exposed in python. Instead, specific versions of the
-  classes are exported (IMP::algebra::BoundingBoxD<3> and
-  IMP::Particles, respectively). New versions can be easily added, so
+  classes are exported (IMP::algebra::BoundingBoxD<3>). New versions can be easily added, so
   feel free to request them when desired.
 - Iterators on C++ containers do not translate easily into Python. As a
   result, for every iterator generating pair \c foos_begin(),
@@ -445,7 +444,8 @@ generate the connection between the two languages. Key differences are
     - Class names are in \c CamelCase, for %example \c class \c SpecialVector'
     - For each type of object in \imp, \c Name, there is a type \c Names
       which is used to pass a list of objects of type \c Name. \c Names
-      look like an \c std::vector in C++ or a \c list in Python. Sometimes,
+      look like an \c std::vector (namely an IMP::base::ConvertibleVector)
+      in C++ or a \c list in Python. Sometimes,
       for efficiency, a \c NamesTemp is passed instead
       (see \ref tempornot "when to use Temp values" for the reason). \c Names
       will be converted into \c NamesTemp without cost, so the distinction
@@ -510,7 +510,7 @@ generate the connection between the two languages. Key differences are
     count on general cleanup code to excute.
 
 \section incremental 7. Incremental Scoring
-    Scoring in \imp can be performed in two different ways, 
+    Scoring in \imp can be performed in two different ways,
     - whole model, where each restraint is evaluated each time the model is changed
     - or incremental, where restraints are given the opportunity to update their scores after only a few of the particles change.
 
@@ -579,7 +579,7 @@ There are a few areas of core functionality that have already been mentioned.
 - \ref assert "Error Reporting Facilities"
 
 Then look through the examples which can be found linked from the page of each module.
- 
+
 There are a variety of useful base classes which are used to provide
 most functionality. They are:
     - IMP::Model

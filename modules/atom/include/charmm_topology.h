@@ -91,7 +91,7 @@ template <unsigned int D>
 class CHARMMConnection
 {
 protected:
-  vector<CHARMMBondEndpoint> endpoints_;
+  base::Vector<CHARMMBondEndpoint> endpoints_;
 public:
   CHARMMConnection(const IMP::Strings &atoms) {
     IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
@@ -102,7 +102,7 @@ public:
   }
 
 #ifndef SWIG
-  CHARMMConnection(vector<CHARMMBondEndpoint> endpoints)
+  CHARMMConnection(base::Vector<CHARMMBondEndpoint> endpoints)
      : endpoints_(endpoints) {
     IMP_INTERNAL_CHECK(endpoints.size() == D, "wrong number of bond endpoints");
   }
@@ -114,7 +114,7 @@ public:
 
   //! \return true if the bond contains the named atom.
   bool get_contains_atom(std::string name) const {
-    for (vector<CHARMMBondEndpoint>::const_iterator
+    for (base::Vector<CHARMMBondEndpoint>::const_iterator
          it = endpoints_.begin(); it != endpoints_.end(); ++it) {
       if (it->get_atom_name() == name) {
         return true;
@@ -131,7 +131,7 @@ public:
                   const std::map<const CHARMMResidueTopology *,
                                  Hierarchy> &resmap) const {
     Atoms as;
-    for (vector<CHARMMBondEndpoint>::const_iterator
+    for (base::Vector<CHARMMBondEndpoint>::const_iterator
          it = endpoints_.begin(); it != endpoints_.end(); ++it) {
       Atom a = it->get_atom(current_residue, previous_residue,
                             next_residue, resmap);
@@ -145,7 +145,7 @@ public:
   }
 #endif
   IMP_SHOWABLE_INLINE(CHARMMConnection,
-     { for (vector<CHARMMBondEndpoint>::const_iterator
+     { for (base::Vector<CHARMMBondEndpoint>::const_iterator
             it = endpoints_.begin(); it != endpoints_.end(); ++it) {
          if (it != endpoints_.begin()) {
            out << "-";
@@ -200,7 +200,7 @@ public:
                second_distance_(second_distance), first_angle_(first_angle),
                second_angle_(second_angle), dihedral_(dihedral),
                improper_(improper) {}
-  CHARMMInternalCoordinate(const vector<CHARMMBondEndpoint> endpoints,
+  CHARMMInternalCoordinate(const base::Vector<CHARMMBondEndpoint> endpoints,
                            float first_distance, float first_angle,
                            float dihedral, float second_angle,
                            float second_distance, bool improper)
@@ -234,7 +234,7 @@ class IMPATOMEXPORT CHARMMResidueTopologyBase : public IMP::base::Object
 {
   std::string type_;
 protected:
-  vector<CHARMMAtomTopology> atoms_;
+  base::Vector<CHARMMAtomTopology> atoms_;
   CHARMMBonds bonds_;
   CHARMMAngles angles_;
   CHARMMDihedrals dihedrals_;
@@ -370,7 +370,7 @@ class CHARMMResidueTopology;
     first residue.
  */
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
-  vector<std::string> deleted_atoms_;
+  base::Vector<std::string> deleted_atoms_;
 public:
   //! Construct a new, empty patch residue.
   /** To get an existing patch, use CHARMMParameters::get_patch() instead.

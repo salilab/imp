@@ -10,7 +10,7 @@
 #include "IMP/Decorator.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
-extern vector<std::pair<ParticleFunction, ParticleFunction> >
+extern base::Vector<std::pair<ParticleFunction, ParticleFunction> >
 particle_validators;
 
 void add_particle_check(ParticleFunction instance, ParticleFunction check) {
