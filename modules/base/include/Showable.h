@@ -9,8 +9,6 @@
 #define IMPBASE_SHOWABLE_H
 
 #include "base_config.h"
-#include <IMP/compatibility/vector.h>
-#include <vector>
 #include <sstream>
 #include <iostream>
 #include <utility>
@@ -25,17 +23,6 @@ class Object;
 */
 class IMPBASEEXPORT Showable {
   std::string str_;
-  template <class T>
-  void show_vector(const T &v) {
-    std::ostringstream out;
-    out << "[";
-    for (unsigned int i=0; i< v.size(); ++i) {
-      if (i >0) out << ", ";
-      out << Showable(v[i]).str_;
-    }
-    out<< "]";
-    str_= out.str();
-  }
   template <class T>
       void show_ptr(const T*o) {
     std::ostringstream oss;
@@ -63,14 +50,6 @@ public:
     std::ostringstream oss;
     oss << "(" << p.first << ", " << p.second << ")";
     str_=oss.str();
-  }
-  template <class T, class A>
-  Showable(const std::vector<T, A> &v) {
-    show_vector(v);
-  }
-  template <class T>
-  Showable(const IMP::compatibility::vector<T> &v) {
-    show_vector(v);
   }
   std::string get_string() const {
     return str_;

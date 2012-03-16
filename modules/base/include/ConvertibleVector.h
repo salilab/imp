@@ -11,6 +11,7 @@
 #include "base_config.h"
 #include <IMP/compatibility/vector.h>
 #include "Showable.h"
+#include <sstream>
 #include <IMP/compatibility/hash.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -45,10 +46,17 @@ class Vector: public compatibility::vector<T> {
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void show(std::ostream &out=std::cout) const{
-    out << Showable(*this);
+    out << "[";
+    for (unsigned int i=0; i< V::size(); ++i) {
+      if (i >0) out << ", ";
+      out << Showable(V::operator[](i));
+    }
+    out<< "]";
   }
   operator Showable() const {
-    return Showable(static_cast<V>(*this));
+    std::ostringstream oss;
+    show(oss);
+    return Showable(oss.str());
   }
   std::size_t __hash__() const {
     return boost::hash_range(V::begin(),
