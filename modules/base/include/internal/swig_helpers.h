@@ -451,19 +451,6 @@ template <class T>
   };
 
   template <class T, class ConvertT>
-  struct ConvertSequence<compatibility::vector<T>, ConvertT> :
-    public ConvertVectorBase< compatibility::vector<T>, ConvertT > {
-    static const int converter=8;
-  };
-
-
-  template <class T, class ConvertT>
-  struct ConvertSequence<std::vector<T>, ConvertT > :
-    public ConvertVectorBase<std::vector<T>, ConvertT> {
-    static const int converter=7;
-  };
-
-  template <class T, class ConvertT>
   struct ConvertSequence<base::Vector<T>, ConvertT > :
     public ConvertVectorBase<base::Vector<T>, ConvertT> {
     static const int converter=7;
