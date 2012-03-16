@@ -19,13 +19,6 @@
 #include <IMP/base_types.h>
 IMPDOMINO_BEGIN_NAMESPACE
 
-// hack for Keren
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-typedef IMP::Ints Ints;
-typedef IMP::IntsList IntsList;
-typedef IMP::IntsList IntsLists;
-#endif
-
 
 //! A base class for discrete samplers in Domino2
 /** All the samplers derived from it share some common properties:
