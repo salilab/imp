@@ -391,7 +391,8 @@ namespace {
           ok=false;
           IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive,"
                              << " it was not"
-                             << " for \"" << filters.back()[i] << "\"");
+                             << " for \"" << filters.back()[i] << "\""
+                             << " got " << next << " from " << cur.back());
           break;
         }
       }
