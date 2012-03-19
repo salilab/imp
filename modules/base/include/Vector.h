@@ -9,8 +9,9 @@
 #ifndef IMPBASE_CONVERTIBLE_VECTOR_H
 #define IMPBASE_CONVERTIBLE_VECTOR_H
 #include "base_config.h"
-#include <IMP/compatibility/vector.h>
+// do not include anything more from base
 #include "Showable.h"
+#include <IMP/compatibility/vector.h>
 #include <sstream>
 #include <IMP/compatibility/hash.h>
 
