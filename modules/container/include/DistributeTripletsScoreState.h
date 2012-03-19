@@ -17,6 +17,7 @@
 #include "ListTripletContainer.h"
 #include <IMP/TripletPredicate.h>
 #include <IMP/TripletContainer.h>
+#include <IMP/base/Vector.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
