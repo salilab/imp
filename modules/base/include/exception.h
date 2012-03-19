@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "random.h"
 #include "types.h"
+#include "enums.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/random/uniform_real.hpp>
