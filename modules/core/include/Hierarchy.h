@@ -236,9 +236,6 @@ public:
 };
 
 
-IMP_OUTPUT_OPERATOR(Hierarchy);
-
-
 
 //! A visitor for traversal of a hierarchy
 /** This works from both C++ and Python

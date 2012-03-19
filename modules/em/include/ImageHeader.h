@@ -377,7 +377,6 @@ private:
   em::SpiderHeader spider_header_;
   bool reversed_;
 }; // ImageHeader
-IMP_OUTPUT_OPERATOR(ImageHeader);
 
 IMPEM_END_NAMESPACE
 

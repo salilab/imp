@@ -327,8 +327,6 @@ public:
   //! @}
 };
 
-IMP_OUTPUT_OPERATOR(Atom);
-
 IMP_DECORATORS(Atom,Atoms, Hierarchies);
 
 

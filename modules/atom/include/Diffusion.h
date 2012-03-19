@@ -85,9 +85,6 @@ class IMPATOMEXPORT Diffusion:
 
 IMPATOMEXPORT double get_d_from_cm2_per_second(double din);
 
-IMP_OUTPUT_OPERATOR(Diffusion);
-
-
 IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 
 
@@ -125,8 +122,6 @@ class IMPATOMEXPORT RigidBodyDiffusion: public Diffusion {
   //! Get the D key
   static FloatKey get_d_rotation_key();
 };
-
-IMP_OUTPUT_OPERATOR(RigidBodyDiffusion);
 
 
 IMP_DECORATORS(RigidBodyDiffusion, RigidBodyDiffusions, Diffusions);

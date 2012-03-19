@@ -46,8 +46,6 @@ public:
   static StringKey get_charmm_type_key();
 };
 
-IMP_OUTPUT_OPERATOR(CHARMMAtom);
-
 //! Get all atoms in the Hierarchy that do not have CHARMM types.
 /** \return a list of every Atom in the given Hierarchy that is not also
             a CHARMMAtom.

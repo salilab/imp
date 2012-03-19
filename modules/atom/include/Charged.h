@@ -63,8 +63,6 @@ public:
   static FloatKey get_charge_key();
 };
 
-IMP_OUTPUT_OPERATOR(Charged);
-
 IMP_DECORATORS(Charged, Chargeds, core::XYZs);
 
 IMPATOM_END_NAMESPACE

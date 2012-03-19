@@ -105,8 +105,6 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(CustomXYZR);
-
 IMP_DECORATORS(CustomXYZR,CustomXYZRs, core::XYZs);
 
 //! Compute the distance between a pair of particles

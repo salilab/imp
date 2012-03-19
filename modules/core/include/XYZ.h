@@ -138,8 +138,6 @@ class IMPCOREEXPORT XYZ: public Decorator
   static const FloatKeys& get_xyz_keys();
 };
 
-IMP_OUTPUT_OPERATOR(XYZ);
-
 //! Compute the distance between a pair of particles
 /** \ingroup helper
     \relatesalso XYZ

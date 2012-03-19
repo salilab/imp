@@ -63,8 +63,6 @@ public:
 };
 
 
-IMP_OUTPUT_OPERATOR(Scale);
-
 IMP_DECORATORS(Scale, Scales, Nuisances);
 
 IMPISD_END_NAMESPACE

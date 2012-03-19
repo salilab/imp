@@ -70,8 +70,6 @@ public:
 
 };
 
-IMP_OUTPUT_OPERATOR(Switching);
-
 IMP_DECORATORS(Switching, Switchings, Nuisances);
 
 IMPISD_END_NAMESPACE

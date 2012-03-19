@@ -83,8 +83,6 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(Bond);
-
 
 
 //! A decorator for a particle which has bonds.
@@ -196,8 +194,6 @@ public:
 #endif
   /** @} */
 };
-
-IMP_OUTPUT_OPERATOR(Bonded);
 
 IMP_DECORATORS(Bonded,Bondeds, ParticlesTemp);
 IMP_DECORATORS(Bond,Bonds, ParticlesTemp);

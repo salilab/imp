@@ -92,8 +92,6 @@ public:
 
 IMP_DECORATORS(Domain,Domains, Hierarchies);
 
-IMP_OUTPUT_OPERATOR(Domain);
-
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_DOMAIN_H */

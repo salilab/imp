@@ -49,8 +49,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(ExampleRefCounted);
 };
 
-IMP_OUTPUT_OPERATOR(ExampleRefCounted);
-
 typedef base::Vector<Pointer<ExampleRefCounted> > ExampleRefCounteds;
 typedef base::Vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
 

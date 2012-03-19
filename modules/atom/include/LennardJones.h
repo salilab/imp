@@ -56,8 +56,6 @@ public:
   static FloatKey get_well_depth_key();
 };
 
-IMP_OUTPUT_OPERATOR(LennardJones);
-
 IMP_DECORATORS(LennardJones, LennardJonesList, core::XYZRs);
 
 IMPATOM_END_NAMESPACE

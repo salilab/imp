@@ -140,8 +140,6 @@ protected:
 //! A vector of reference counted pointers to EM images of type double
 IMP_OBJECTS(Image,Images);
 
-IMP_OUTPUT_OPERATOR(Image);
-
 
 
 

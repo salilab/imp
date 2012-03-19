@@ -71,8 +71,6 @@ public:
 
 IMP_DECORATORS(Fragment,Fragments, Hierarchies);
 
-IMP_OUTPUT_OPERATOR(Fragment);
-
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_FRAGMENT_H */

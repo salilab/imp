@@ -112,8 +112,6 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
 #endif
 };
 
-IMP_OUTPUT_OPERATOR(ClosePairsFinder);
-
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_CLOSE_PAIRS_FINDER_H */

@@ -203,8 +203,6 @@ public:
   static IntKey get_insertion_code_key();
 };
 
-IMP_OUTPUT_OPERATOR(Residue);
-
 IMP_DECORATORS(Residue,Residues, Hierarchies);
 
 /** Return the chain containing the residue.

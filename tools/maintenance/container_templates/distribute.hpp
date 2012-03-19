@@ -17,6 +17,7 @@
 #include "ListCLASSNAMEContainer.h"
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
+#include <IMP/base/Vector.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
@@ -36,7 +37,7 @@ public ScoreState
   OwnerPointer<CLASSNAMEContainer> input_;
   typedef boost::tuple<Pointer<ListCLASSNAMEContainer>,
     OwnerPointer<CLASSNAMEPredicate>, int> Data;
-  vector<Data> data_;
+  base::Vector<Data> data_;
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:

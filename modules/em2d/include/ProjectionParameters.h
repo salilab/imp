@@ -114,8 +114,6 @@ private:
 
 };
 
-IMP_OUTPUT_OPERATOR(ProjectionParameters);
-
 IMP_DECORATORS(ProjectionParameters, ProjectionParametersList, Particles);
 
 

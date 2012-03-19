@@ -242,7 +242,6 @@ protected:
 };
 
 IMP_OBJECTS(ProjectionFinder, ProjectionFinders);
-IMP_OUTPUT_OPERATOR(ProjectionFinder);
 
 IMPEM2D_END_NAMESPACE
 
