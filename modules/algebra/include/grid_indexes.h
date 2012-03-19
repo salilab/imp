@@ -122,8 +122,6 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D> &ind) {
 }
 #endif
 
-IMP_OUTPUT_OPERATOR_D(ExtendedGridIndexD);
-
 
 
 
@@ -215,7 +213,6 @@ inline std::size_t hash_value(const GridIndexD<D> &ind) {
   return ind.__hash__();
 }
 #endif
-IMP_OUTPUT_OPERATOR_D(GridIndexD);
 
 
 

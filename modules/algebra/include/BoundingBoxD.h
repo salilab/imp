@@ -157,7 +157,7 @@ inline double get_volume(const BoundingBoxD<D> &bb) {
 }
 
 IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box,
-                              if (0) std::cout << g; IMP_NOT_IMPLEMENTED,
+                              IMP_UNUSED(g); IMP_NOT_IMPLEMENTED,
                               return (g.get_corner(1)[0]- g.get_corner(0)[0])
                               *(g.get_corner(1)[1]- g.get_corner(0)[1])
                               *(g.get_corner(1)[2]- g.get_corner(0)[2]),
