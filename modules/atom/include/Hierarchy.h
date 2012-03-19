@@ -91,10 +91,6 @@ class Mass;
 class Hierarchy;
 
 
-#ifndef IMP_DOXYGEN
-typedef IMP::base::Vector< Hierarchy> Hierarchies;
-#endif
-
 //! The standard decorator for manipulating molecular structures.
 /** \imp represents molecular structures using the Hierachy decorator.
     Molecules and collections of molecules each are stored as a
@@ -281,8 +277,8 @@ public:
     return Hierarchy(hd);
   }
   //! Return the children in the order they were added
-  Hierarchies get_children() const {
-    Hierarchies ret(get_number_of_children());
+  ParticlesTemp get_children() const {
+    ParticlesTemp ret(get_number_of_children());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
       ret[i]= get_child(i);
     }
@@ -328,6 +324,8 @@ public:
   IMP_SHOWABLE(Hierarchy);
 };
 
+
+IMP_DECORATORS(Hierarchy, Hierarchies, Particles);
 
 
 #ifdef IMP_DOXYGEN
