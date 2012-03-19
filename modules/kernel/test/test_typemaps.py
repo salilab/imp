@@ -65,6 +65,11 @@ class ParticleTests(IMP.test.TestCase):
         vs=[[1,2,3,4],[5,6,7,8]]
         vso= IMP._pass_ints_list(vs)
         self._equal_lists(vs, vso)
+    def test_bls(self):
+        """Check ints lists typemaps"""
+        vs=[[[1,2],[3,4]],[[5,6],[7,8]]]
+        vso= IMP._pass_ints_lists(vs)
+        self._equal_lists(vs, vso)
     def test_intpairs(self):
         """Check int pairs typemap"""
         ips=[(1,2),(3,4)]

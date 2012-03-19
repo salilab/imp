@@ -205,49 +205,34 @@ Ints _pass_ints( Ints in) {
   return in;
 }
 const Strings& _pass_strings(const Strings& in) {
-  for (unsigned int i=0; i< in.size(); ++i) {
-    std::cout << in[i] << " ";
-  }
+  std::cout << in << std::endl;
   return in;
 }
 
 const Particles &_pass(const Particles &p) {
-  for (unsigned int i=0; i< p.size(); ++i) {
-    std::cout << p[i]->get_name() << " ";
-  }
+  std::cout << p << std::endl;
   return p;
 }
 const Restraints &_pass(const Restraints &p) {
-  for (unsigned int i=0; i< p.size(); ++i) {
-    std::cout << p[i]->get_name() << " ";
-  }
+  std::cout << p << std::endl;
   return p;
 }
 
 const _TrivialDecorators &
 _pass_decorators(const internal::_TrivialDecorators &p) {
-  for (unsigned int i=0; i< p.size(); ++i) {
-    std::cout << p[i] << " ";
-  }
-  std::cout << std::endl;
+  std::cout << p << std::endl;
   return p;
 }
 
 const _TrivialTraitsDecorators &
 _pass_decorator_traits(const _TrivialTraitsDecorators &p) {
-  for (unsigned int i=0; i< p.size(); ++i) {
-    std::cout << p[i] << " ";
-  }
-  std::cout << std::endl;
+  std::cout << p << std::endl;
   return p;
 }
 
 ParticlePairsTemp
 _pass_particle_pairs(const ParticlePairs &p) {
-  for (unsigned int i=0; i< p.size(); ++i) {
-    std::cout << p[i] << " ";
-  }
-  std::cout << std::endl;
+  std::cout << p << std::endl;
   return get_as<ParticlePairsTemp>(p);
 }
 
@@ -259,6 +244,10 @@ _pass_pair(const DerivativePair &p) {
 }
 IntsList _pass_ints_list(const IntsList &in) {
   std::cout << "IntsList of length " << in.size();
+  return in;
+}
+IntsLists _pass_ints_lists(const IntsLists &in) {
+  std::cout << "IntsLists of length " << in.size();
   return in;
 }
 std::pair<double, double>
