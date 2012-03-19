@@ -45,6 +45,7 @@ public:
     show_ptr(o);
   }
   Showable(const std::string& str): str_(str){}
+  Showable(const char *str): str_(str){}
   template <class T, class TT>
   Showable(const std::pair<T, TT> &p) {
     std::ostringstream oss;
