@@ -17,6 +17,7 @@
 #include "ListPairContainer.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
+#include <IMP/base/Vector.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
