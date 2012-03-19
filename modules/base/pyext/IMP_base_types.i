@@ -647,7 +647,6 @@ IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
   values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
 }
 IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
-IMP_SWIG_VALUE_IMPL(Namespace, PluralName, TemplateName, PluralName##s, PluralName##s);
 %enddef
 
 %define IMP_SWIG_VALUE(Namespace, Name, PluralName)
@@ -812,6 +811,7 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PairName, Namespace::PluralNam
 IMP_SWIG_VALUE_CHECKS(Namespace, PluralListName, SWIGTYPE);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName,);
+IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralListName, Namespace::PluralListName##s,);
 %enddef
 
 %define IMP_SWIG_SEQUENCE_PAIR(Namespace, Name0, Name1, PairName)
