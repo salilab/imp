@@ -61,8 +61,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(SingletonFilter);
 };
 
-IMP_OUTPUT_OPERATOR(SingletonFilter);
-
 IMP_OBJECTS(SingletonFilter,SingletonFilters);
 
 IMP_END_NAMESPACE

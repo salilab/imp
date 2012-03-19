@@ -65,8 +65,6 @@ public:
     get_output_containers(Particle *p) const =0;
 };
 
-IMP_OUTPUT_OPERATOR(PairModifier);
-
 #ifdef IMP_DOXYGEN
 /** Create a modifier from a functor. C++ only. The function should take
     a Pair as an argument.

@@ -61,8 +61,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(PairFilter);
 };
 
-IMP_OUTPUT_OPERATOR(PairFilter);
-
 IMP_OBJECTS(PairFilter,PairFilters);
 
 IMP_END_NAMESPACE
