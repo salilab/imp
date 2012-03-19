@@ -113,9 +113,6 @@ public:
 
 IMP_DECORATORS_WITH_TRAITS(_TrivialTraitsDecorator,
                            _TrivialTraitsDecorators, Particles);
-IMP_OUTPUT_OPERATOR(_TrivialDecorator);
-IMP_OUTPUT_OPERATOR(_TrivialDerivedDecorator);
-IMP_OUTPUT_OPERATOR(_TrivialTraitsDecorator);
 
 
 
@@ -181,6 +178,7 @@ IMPEXPORT FloatKeys _pass_float_keys(const FloatKeys& in);
 IMPEXPORT Floats _pass_floats(const Floats& in);
 IMPEXPORT Ints _pass_ints( Ints in);
 IMPEXPORT IntsList _pass_ints_list(const IntsList &in);
+IMPEXPORT IntsLists _pass_ints_lists(const IntsLists &in);
 IMPEXPORT const Strings& _pass_strings(const Strings& in);
 
 IMPEXPORT const Particles &_pass(const Particles &p);
