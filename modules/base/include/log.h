@@ -12,6 +12,8 @@
 #include "base_config.h"
 #include "base_macros.h"
 #include "types.h"
+#include "WarningContext.h"
+#include "internal/log.h"
 #include <iostream>
 #include <cstdlib>
 #include <string>
@@ -37,14 +39,6 @@ IMPBASE_BEGIN_NAMESPACE
     All logging is disabled when \imp is built using \c build='fast'.
     @{
  */
-
-#if !defined SWIG && !defined(IMP_DOXYGEN)
-namespace internal {
-  IMPBASEEXPORT extern LogLevel log_level;
-  IMPBASEEXPORT extern unsigned int log_indent;
-  IMPBASEEXPORT extern bool print_time;
-}
-#endif
 
 //! Push a new log context onto the stack
 /** A log context is, eg, a function name.
@@ -216,15 +210,6 @@ inline bool get_is_log_output(LogLevel l)
 #define IMP_WARN(expr)
 
 
-struct WarningContext {
-public:
-  void add_warning(std::string, std::string ) const {}
-  void clear_warnings() const {}
-  void dump_warnings() const {}
-  void show(std::ostream &) const {}
-};
-
-
 #define IMP_WARN_ONCE(key, expr, context)
 
 
@@ -242,36 +227,6 @@ public:
       oss << "WARNING  " << expr << std::flush;              \
       IMP::base::add_to_log(oss.str());                      \
     };
-
-
-struct WarningContext {
-  mutable std::map<std::string, std::string> data_;
-public:
-  void add_warning(std::string key, std::string warning) const {
-    if (warning.empty()) return;
-    if (IMP::base::get_is_log_output(IMP::base::WARNING)) {
-      if (data_.find(key) == data_.end()) {
-        data_[key]=warning;
-      }
-    }
-  }
-  void clear_warnings() const {
-    data_.clear();
-  }
-  void dump_warnings() const {
-    for (std::map<std::string, std::string>::iterator it= data_.begin();
-         it != data_.end(); ++it) {
-      if (!it->second.empty()) {
-        IMP_WARN(it->second << std::endl);
-        it->second=std::string();
-      }
-    }
-  }
-  ~WarningContext() {
-    dump_warnings();
-  }
-  IMP_SHOWABLE_INLINE(WarningContext, out << data_.size() << " warnings");
-};
 
 
 #define IMP_WARN_ONCE(key, expr, context) {                  \
