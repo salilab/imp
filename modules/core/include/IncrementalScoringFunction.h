@@ -14,6 +14,11 @@
 #include <IMP/PairFilter.h>
 #include <IMP/ScoringFunction.h>
 #include <IMP/compatibility/map.h>
+#include <IMP/algebra/vector_search.h>
+#include <boost/multi_index_container.hpp>
+#include <boost/multi_index/sequenced_index.hpp>
+#include <boost/multi_index/hashed_index.hpp>
+#include <boost/multi_index/member.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -47,35 +52,57 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   Ints old_incremental_score_indexes_;
 
   // nbl
-  /*  class NBLScore {
+  class NBLScore {
     Pointer<Model> m_;
     OwnerPointer<PairScore> score_;
-    typedef std::pair<ParticleIndex, int> ScorePair;
-    typedef base::Vector<ScorePair> ScorePairs;
-    base::IndexVector<ParticleIndexTag, ScorePairs> structure_cache_;
-    Floats cache_;
     double distance_;
     ParticleIndexes pis_;
     PairFilters filters_;
-    base::Vector<std::pair<ParticleIndexPair,
-                           double> > removed_;
-    ParticleIndexPairs added_;
+
+    // cache
+    struct Score {
+      ParticleIndex i0, i1;
+      double score;
+      operator double() const {return score;}
+      Score(ParticleIndex ii0, ParticleIndex ii1,
+            double iscore): i0(ii0), i1(ii1), score(iscore){}
+    };
+    typedef boost::multi_index::member<Score,
+                                     ParticleIndex,
+                                       &Score::i0 > P0Member;
+    typedef boost::multi_index::member<Score,
+                                     ParticleIndex,
+                                       &Score::i1 > P1Member;
+    typedef boost::multi_index::hashed_non_unique<P0Member> Hash0Index;
+    typedef boost::multi_index::hashed_non_unique<P1Member> Hash1Index;
+    typedef boost::multi_index::indexed_by<Hash0Index,
+                                           Hash1Index > IndexBy;
+    typedef boost::multi_index_container<Score,
+                                         IndexBy> Cache;
+    typedef boost::multi_index::nth_index<Cache, 0>
+    ::type::const_iterator Hash0Iterator;
+    typedef boost::multi_index::nth_index<Cache, 1>
+    ::type::const_iterator Hash1Iterator;
+    Cache cache_;
+    // changes to cache for rollback
+    base::Vector<Score > removed_, added_;
+    // nearest neighbor findings
+    compatibility::map<ParticleIndex, int> to_dnn_;
+    OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
+    void remove_score(Score pr);
+    void cleanup_score(ParticleIndex pi);
+    void fill_scores(ParticleIndex pi);
   public:
     NBLScore(){}
     NBLScore(PairScore *ps,
              double distance,
              const ParticlesTemp &particles,
              const PairFilters &filters);
-    void add_pair(ParticleIndex a, ParticleIndex b, double s) const;
-    double get_score(ParticleIndex moved,
-                     const ParticleIndexes& nearby) const;
-    void roll_back();
-    void initialize(ParticleIndexPairs all);
+    double get_score(ParticleIndex moved);
+    void initialize();
+    void rollback();
   };
-  base::IndexVector<ParticleIndexTag, int> to_dnn_;
-  ParticleIndexes from_dnn_;
-  OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
-  NBLScore nbl_;*/
+  base::Vector<NBLScore> nbl_;
   void rollback();
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
@@ -88,6 +115,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   void add_close_pair_score(PairScore *ps, double distance,
                             const ParticlesTemp &particles,
                             const PairFilters &filters=PairFilters());
+  void reset();
   IMP_SCORING_FUNCTION(IncrementalScoringFunction);
 };
 
