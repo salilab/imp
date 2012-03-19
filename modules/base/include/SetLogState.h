@@ -9,9 +9,8 @@
 #define IMPBASE_SET_LOG_STATE_H
 
 #include "base_config.h"
-#include "log.h"
-#include "Pointer.h"
-#include "declare_Object.h"
+#include "enums.h"
+#include "base_macros.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -26,7 +25,7 @@ class Object;
 class IMPBASEEXPORT SetLogState
 {
   LogLevel level_;
-  Pointer<Object> obj_;
+  Object* obj_;
   void do_set(Object *o, LogLevel l);
   void do_reset();
   void do_show(std::ostream &out) const;
@@ -41,20 +40,8 @@ public:
            }, do_show(out););
 
   //! Construct it with the desired level and target
-  SetLogState(LogLevel l){
-    obj_=nullptr;
-    level_= DEFAULT;
-    set(l);
-  }
-  void set(LogLevel l) {
-    reset();
-    if (l != DEFAULT) {
-      level_= base::get_log_level();
-      base::set_log_level(l);
-    } else {
-      level_=DEFAULT;
-    }
-  }
+  SetLogState(LogLevel l);
+  void set(LogLevel l);
 };
 
 
