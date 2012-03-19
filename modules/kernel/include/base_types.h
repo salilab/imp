@@ -12,6 +12,8 @@
 #include "Key.h"
 #include "macros.h"
 #include <IMP/base/Vector.h>
+#include <IMP/base/Pointer.h>
+#include <IMP/base/WeakPointer.h>
 #include <IMP/base/types.h>
 
 IMP_BEGIN_NAMESPACE
