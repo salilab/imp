@@ -128,6 +128,11 @@ RestraintsTemp get_dependent_restraints(Particle *p,
                                       const DependencyGraph &dg) {
   return get_dependent<RestraintsTemp, Restraint>(p,all, dg);
 }
+ScoreStatesTemp get_dependent_score_states(Particle *p,
+                                           const ParticlesTemp &all,
+                                           const DependencyGraph &dg) {
+  return get_dependent<ScoreStatesTemp, ScoreState>(p,all, dg);
+}
 
 
 typedef compatibility::map<base::Object*, DGVertex> DGIndex;
@@ -396,9 +401,17 @@ namespace {
 }
 
 DependencyGraph
-get_pruned_dependency_graph(const RestraintsTemp &irs) {
+get_dependency_graph(Model *m) {
+  return get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
+                                              m->score_states_end()),
+                              m->get_known_restraints());
+}
+
+
+DependencyGraph
+get_pruned_dependency_graph(Model *m) {
   IMP_FUNCTION_LOG;
-  DependencyGraph full= get_dependency_graph(irs);
+  DependencyGraph full= get_dependency_graph(m);
   typedef boost::graph_traits<DependencyGraph> T;
   bool changed=true;
   while (changed) {
@@ -428,15 +441,6 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
     }
   }
   return full;
-}
-
-
-
-DependencyGraph
-get_pruned_dependency_graph(Model *m) {
-  RestraintsTemp rt
-    = get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
-  return get_pruned_dependency_graph(rt);
 }
 
 

@@ -31,6 +31,17 @@ IMP_BEGIN_NAMESPACE
 */
 IMP_GRAPH(DependencyGraph, bidirectional, base::Object*, int);
 
+#ifndef IMP_DOXYGEN
+IMPEXPORT DependencyGraph
+get_dependency_graph(const RestraintsTemp &rs);
+
+/** \copydoc get_dependency_graph(const RestraintsTemp&)*/
+IMPEXPORT DependencyGraph
+get_dependency_graph(const ScoreStatesTemp &ss,
+                     const RestraintsTemp &rs);
+#endif
+class Model;
+
 /** The dependency graph captures the interactions between Restraint,
     ScoreState and Particle objects. The graph has an edge if the source
     of the edge is an input for the target of the edge. eg, there
@@ -41,27 +52,14 @@ IMP_GRAPH(DependencyGraph, bidirectional, base::Object*, int);
     \see get_pruned_dependency_graph()
 */
 IMPEXPORT DependencyGraph
-get_dependency_graph(const RestraintsTemp &rs);
+get_dependency_graph(Model *m);
 
-/** \copydoc get_dependency_graph(const RestraintsTemp&)*/
-IMPEXPORT DependencyGraph
-get_dependency_graph(const ScoreStatesTemp &ss,
-                     const RestraintsTemp &rs);
 
-class Model;
-
-/** \name Pruned dependency graphs
-
-    The pruned dependency graph merges all particles which have the
+/** The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
-@{
 */
 IMPEXPORT DependencyGraph
 get_pruned_dependency_graph(Model *m);
-
-IMPEXPORT DependencyGraph
-get_pruned_dependency_graph(const RestraintsTemp &rs);
-/** @} */
 
 /** Get the score states required by the passed restraints.*/
 IMPEXPORT ScoreStatesTemp
@@ -91,6 +89,13 @@ get_dependent_particles(Particle *p,
  */
 IMPEXPORT RestraintsTemp
 get_dependent_restraints(Particle *p,
+                        const ParticlesTemp &all,
+                        const DependencyGraph &dg);
+
+/** Return all the score states that depend on p as an input, even indirectly.
+ */
+IMPEXPORT ScoreStatesTemp
+get_dependent_score_states(Particle *p,
                         const ParticlesTemp &all,
                         const DependencyGraph &dg);
 
