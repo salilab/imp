@@ -61,8 +61,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(TripletFilter);
 };
 
-IMP_OUTPUT_OPERATOR(TripletFilter);
-
 IMP_OBJECTS(TripletFilter,TripletFilters);
 
 IMP_END_NAMESPACE
