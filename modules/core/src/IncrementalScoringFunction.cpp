@@ -10,6 +10,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/dependency_graph.h>
 #include <IMP/compatibility/set.h>
+#include <IMP/core/XYZ.h>
 #include <numeric>
 IMPCORE_BEGIN_NAMESPACE
 /** to handle good/max evaluate, add dummy restraints for each
@@ -75,6 +76,9 @@ void IncrementalScoringFunction::initialize_scores() {
     flattened_restraints_scores_[i]
       = flattened_restraints_[i]->get_last_score();
   }
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    nbl_[i].initialize();
+  }
 }
 void IncrementalScoringFunction
 ::create_flattened_restraints(const RestraintsTemp &rs) {
@@ -88,6 +92,9 @@ void IncrementalScoringFunction
   flattened_restraints_=IMP::get_restraints(decomposed.begin(),
                                                     decomposed.end());
 
+}
+void IncrementalScoringFunction::reset() {
+  initialize_scores();
 }
 
 void IncrementalScoringFunction::set_moved_particles(unsigned int move_index,
@@ -112,7 +119,9 @@ void IncrementalScoringFunction::rollback() {
     flattened_restraints_scores_[old_incremental_score_indexes_[i]]
       = old_incremental_scores_[i];
   }
-  // rollback nbl
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    nbl_[i].rollback();
+  }
 }
 unsigned int IncrementalScoringFunction::get_move_index() const {
   return move_index_;
@@ -123,9 +132,104 @@ void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       &particles,
                                                       const PairFilters &
                                                       filters) {
-  IMP_NOT_IMPLEMENTED;
+  nbl_.push_back(NBLScore(ps, distance, particles, filters));
 }
 
+
+IncrementalScoringFunction::NBLScore::NBLScore(PairScore *ps,
+                                               double distance,
+                                               const ParticlesTemp &particles,
+                                               const PairFilters &filters) {
+  m_= IMP::internal::get_model(particles);
+  distance_=distance;
+  score_=ps;
+  pis_= IMP::internal::get_index(particles);
+  filters_=filters;
+
+  algebra::Vector3Ds vs(pis_.size());
+  for (unsigned int i=0; i< pis_.size(); ++i) {
+    vs[i]= XYZ(m_, pis_[i]).get_coordinates();
+  }
+  dnn_= new algebra::DynamicNearestNeighbor3D(vs, distance_);
+}
+
+void IncrementalScoringFunction::NBLScore::initialize() {
+  for (unsigned  int i=0; i< pis_.size(); ++i) {
+    Ints n= dnn_->get_in_ball(i, distance_);
+    for (unsigned int j=0; j< n.size(); ++j) {
+      if (n[j] < static_cast<int>(i)) {
+        ParticleIndex o= pis_[n[j]];
+        ParticleIndexPair pp(pis_[i], o);
+        double score= score_->evaluate_index(m_, pp, nullptr);
+        cache_.insert(Score(pis_[i], o, score));
+      }
+    }
+  }
+}
+
+void IncrementalScoringFunction::NBLScore::remove_score(Score pr) {
+  Hash0Iterator b,e;
+  boost::tie(b,e)=cache_.get<0>().equal_range(pr.i0);
+  for (Hash0Iterator c=b; c!= e; ++c){
+    if (c->i1==pr.i1) {
+      cache_.erase(c);
+      break;
+    }
+  }
+}
+
+
+
+void IncrementalScoringFunction::NBLScore::rollback() {
+  for (unsigned int i=0; i< added_.size(); ++i) {
+    remove_score(added_[i]);
+  }
+  for (unsigned int i=0; i < removed_.size(); ++i) {
+    cache_.insert(Score(removed_[i]));
+  }
+  added_.clear();
+  removed_.clear();
+}
+
+void IncrementalScoringFunction::NBLScore::cleanup_score(ParticleIndex moved) {
+  {
+    Hash0Iterator b,e;
+    boost::tie(b,e)=cache_.get<0>().equal_range(moved);
+    removed_.insert(removed_.end(), b,e);
+    cache_.get<0>().erase(b,e);
+  }
+  {
+    Hash1Iterator b,e;
+    boost::tie(b,e)=cache_.get<1>().equal_range(moved);
+    removed_.insert(removed_.end(), b,e);
+    cache_.get<1>().erase(b,e);
+  }
+}
+
+void IncrementalScoringFunction::NBLScore::fill_scores(ParticleIndex moved) {
+  XYZ d(m_, moved);
+  int id=to_dnn_.find(moved)->second;
+  dnn_->set_coordinates(id, d.get_coordinates());
+  Ints n= dnn_->get_in_ball(id, distance_);
+  for (unsigned int i=0; i< n.size(); ++i) {
+    ParticleIndex o= pis_[n[i]];
+    ParticleIndexPair pp(moved, o);
+    double score= score_->evaluate_index(m_, pp, nullptr);
+    Score s(moved, o, score);
+    cache_.insert(s);
+    added_.push_back(s);
+  }
+}
+
+double IncrementalScoringFunction::NBLScore::get_score(ParticleIndex moved) {
+  added_.clear();
+  removed_.clear();
+  if (moved!=base::get_invalid_index<ParticleIndexTag>()) {
+    cleanup_score(moved);
+    fill_scores(moved);
+  }
+  return std::accumulate(cache_.begin(), cache_.end(), 0.0);
+}
 
 
 ScoringFunction::ScoreIsGoodPair
@@ -151,10 +255,14 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
       }
     }
   }
+  double score=std::accumulate(flattened_restraints_scores_.begin(),
+                               flattened_restraints_scores_.end(),
+                               0.0);
   // do nbl stuff
-  return std::make_pair(std::accumulate(flattened_restraints_scores_.begin(),
-                                        flattened_restraints_scores_.end(),
-                                        0.0), true);
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    score+= nbl_[i].get_score(moved_);
+  }
+  return std::make_pair(score, true);
 }
 ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate_if_below(bool ,
