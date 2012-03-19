@@ -17,7 +17,7 @@
 #include "ListQuadContainer.h"
 #include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
-#include <IMP/base/Vector.h>
+#include <IMP/base/ConvertibleVector.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>

@@ -17,7 +17,7 @@
 #include "ListSingletonContainer.h"
 #include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>
-#include <IMP/base/Vector.h>
+#include <IMP/base/ConvertibleVector.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
