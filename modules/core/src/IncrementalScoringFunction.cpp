@@ -167,4 +167,7 @@ RestraintsTemp IncrementalScoringFunction::get_restraints() const {
 }
 
 
+void IncrementalScoringFunction::do_show(std::ostrema &) const {
+}
+
 IMPCORE_END_NAMESPACE
