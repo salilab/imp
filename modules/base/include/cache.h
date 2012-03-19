@@ -12,7 +12,7 @@
 #include "internal/cache.h"
 #include "exception.h"
 #include "log.h"
-#include "ConvertibleVector.h"
+#include "Vector.h"
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/hashed_index.hpp>

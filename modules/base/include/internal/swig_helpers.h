@@ -13,7 +13,7 @@
 #include "../base_macros.h"
 #include "../Object.h"
 #include "../types.h"
-#include "../ConvertibleVector.h"
+#include "../Vector.h"
 #include "IMP/compatibility/vector.h"
 #include "IMP/compatibility/nullptr.h"
 #include <boost/array.hpp>
