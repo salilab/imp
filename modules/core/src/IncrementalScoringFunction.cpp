@@ -11,6 +11,7 @@
 #include <IMP/dependency_graph.h>
 #include <IMP/compatibility/set.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/XYZR.h>
 #include <numeric>
 IMPCORE_BEGIN_NAMESPACE
 /** to handle good/max evaluate, add dummy restraints for each
@@ -37,9 +38,13 @@ IncrementalScoringFunction
 ::IncrementalScoringFunction(const RestraintsTemp &rs):
   ScoringFunction(rs[0]->get_model(),
                   "IncrementalScoringFunction%1%") {
+  Pointer<ScoringFunction> avoid(this);
   create_flattened_restraints(rs);
   create_scoring_functions();
+  // suppress check error
   initialize_scores();
+  avoid.release();
+  moved_=base::get_invalid_index<ParticleIndexTag>();
 }
 void IncrementalScoringFunction::create_scoring_functions() {
   if (flattened_restraints_.empty()) return;
@@ -96,35 +101,32 @@ void IncrementalScoringFunction
 void IncrementalScoringFunction::reset() {
   initialize_scores();
 }
-
-void IncrementalScoringFunction::set_moved_particles(unsigned int move_index,
-                                                     const ParticlesTemp &p) {
+void IncrementalScoringFunction::reset_moved_particles() {
+  moved_=base::get_invalid_index<ParticleIndexTag>();
+  rollback();
+}
+void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
   IMP_USAGE_CHECK(p.size()<=1, "Can only move one particle at a time");
-  IMP_USAGE_CHECK(std::abs<int>(move_index-move_index_)==1,
-                  "can only change move index by 1");
-  if (move_index> move_index_) {
-    if (p.empty()) {
-      moved_=base::get_invalid_index<ParticleIndexTag>();
-    }
-    else moved_=p[0]->get_index();
-  } else {
+  if (p.empty()) {
     moved_=base::get_invalid_index<ParticleIndexTag>();
-    rollback();
-  }
-  move_index_=move_index;
+  } else moved_=p[0]->get_index();
 }
 // make sure to reset last scores
 void IncrementalScoringFunction::rollback() {
+  IMP_OBJECT_LOG;
   for (unsigned int i=0; i< old_incremental_score_indexes_.size(); ++i) {
-    flattened_restraints_scores_[old_incremental_score_indexes_[i]]
+    int index=old_incremental_score_indexes_[i];
+    IMP_LOG(TERSE, "Rolling back score for "
+            << Showable(flattened_restraints_[index]) << " from "
+                << flattened_restraints_scores_[index]
+                << " to " << old_incremental_scores_[i] << std::endl);
+
+    flattened_restraints_scores_[index]
       = old_incremental_scores_[i];
   }
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     nbl_[i].rollback();
   }
-}
-unsigned int IncrementalScoringFunction::get_move_index() const {
-  return move_index_;
 }
 void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       double distance,
@@ -141,8 +143,12 @@ IncrementalScoringFunction::NBLScore::NBLScore(PairScore *ps,
                                                const ParticlesTemp &particles,
                                                const PairFilters &filters) {
   m_= IMP::internal::get_model(particles);
-  distance_=distance;
   score_=ps;
+  double maxr=0;
+  for (unsigned int i=0; i< particles.size(); ++i) {
+    maxr=std::max(maxr, core::XYZR(particles[i]).get_radius());
+  }
+  distance_=distance+2*maxr;
   pis_= IMP::internal::get_index(particles);
   filters_=filters;
 
@@ -240,21 +246,30 @@ IncrementalScoringFunction::do_evaluate_if_good(bool ,
 ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate(bool derivatives,
                                          const ScoreStatesTemp &ss) {
+  IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
   old_incremental_scores_.clear();
   old_incremental_score_indexes_.clear();
+  IMP_LOG(TERSE, "Evaluate with " << moved_ << std::endl);
   if (moved_ != base::get_invalid_index<ParticleIndexTag>()) {
     ScoringFunctionsMap::const_iterator it=scoring_functions_.find(moved_);
     if (it != scoring_functions_.end()) {
       it->second->evaluate(derivatives);
       old_incremental_score_indexes_=it->second->get_restraint_indexes();
+      old_incremental_scores_.resize(old_incremental_score_indexes_.size());
       for (unsigned int i=0; i< old_incremental_score_indexes_.size(); ++i) {
-        double score=flattened_restraints_[old_incremental_score_indexes_[i]]
-          ->get_last_score();
-        old_incremental_scores_.push_back(score);
+        int index=old_incremental_score_indexes_[i];
+        old_incremental_scores_[i]=flattened_restraints_scores_[index];
+        double score=flattened_restraints_[index]->get_last_score();
+        IMP_LOG(TERSE, "Updating score for "
+                << Showable(flattened_restraints_[index]) << " from "
+                << old_incremental_scores_[i]
+                << " to " << score << std::endl);
+        flattened_restraints_scores_[index]=score;
       }
     }
   }
+  IMP_LOG(VERBOSE, "Scores are " << flattened_restraints_scores_ << std::endl);
   double score=std::accumulate(flattened_restraints_scores_.begin(),
                                flattened_restraints_scores_.end(),
                                0.0);

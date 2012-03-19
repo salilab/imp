@@ -23,9 +23,12 @@
 IMPCORE_BEGIN_NAMESPACE
 
 /** This is a scoring function that computes the score efficiently when a small
-    number of particles are changed. At the moment only one particle can be
-    moved at a time and only one non-bonded PairScore is supported, but these
-    can change.
+    number of particles are changed.
+    \note At the moment only one particle can be
+    moved at a time but this maybe can be changed.
+    \note Only full evaluation is supported and information about restraint
+    sets and such are lost (and so one can't count on information about
+    whether the score is good).
 */
 class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   class SingleParticleScoringFunction: public RestraintsScoringFunction {
@@ -44,7 +47,6 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
     OwnerPointer<SingleParticleScoringFunction> > ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
   ParticleIndex moved_;
-  unsigned int move_index_;
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   // for rollback
@@ -109,9 +111,8 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   void initialize_scores();
  public:
   IncrementalScoringFunction(const RestraintsTemp &rs);
-  void set_moved_particles(unsigned int move_index,
-                           const ParticlesTemp &p);
-  unsigned int get_move_index() const;
+  void reset_moved_particles();
+  void set_moved_particles(const ParticlesTemp &p);
   void add_close_pair_score(PairScore *ps, double distance,
                             const ParticlesTemp &particles,
                             const PairFilters &filters=PairFilters());
