@@ -206,6 +206,17 @@ public:
                                                    = NO_MAX) const;
 #endif
 
+  /** Return the (unweighted) score for this restraint last time it was
+      evaluated.
+      \note If some sort of special evaluation (eg Model::evaluate_if_good())
+      was the last call, the score, if larger than the max, is not accurate.
+   */
+  double get_last_score() const {return last_score_;}
+  /** Return whether this restraint violated it maximum last time it was
+      evaluated.
+   */
+  bool get_was_good() const {return last_score_ < max_;}
+
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
  protected:
   /** A Restraint should override this if they want to decompose themselves
@@ -232,18 +243,6 @@ public:
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
   }
-
-
-  /** Return the (unweighted) score for this restraint last time it was
-      evaluated.
-      \note If some sort of special evaluation (eg Model::evaluate_if_good())
-      was the last call, the score, if larger than the max, is not accurate.
-   */
-  double get_last_score() const {return last_score_;}
-  /** Return whether this restraint violated it maximum last time it was
-      evaluated.
-   */
-  bool get_was_good() const {return last_score_ < max_;}
 private:
   friend class Model;
   friend class ScoringFunction;
