@@ -81,7 +81,6 @@ private:
 
 };
 IMP_OBJECTS(ScoreFunction,ScoreFunctions);
-IMP_OUTPUT_OPERATOR(ScoreFunction);
 
 //! Score based on Chi^2 = ((pixels_iamge - pixels_projection)/stddev_image)^2
 class IMPEM2DEXPORT ChiSquaredScore: public ScoreFunction {
@@ -94,7 +93,6 @@ private:
   void set_variance_imag_private(Image *var) {variance_ = var;}
 };
 IMP_OBJECTS(ChiSquaredScore,ChiSquaredScores);
-IMP_OUTPUT_OPERATOR(ChiSquaredScore);
 
 
 //! EM2DScore, based on squared differences
@@ -109,8 +107,6 @@ private:
   }
 };
 IMP_OBJECTS(EM2DScore,EM2DScores);
-IMP_OUTPUT_OPERATOR(EM2DScore);
-
 
 class IMPEM2DEXPORT MeanAbsoluteDifference: public ScoreFunction {
 public:
@@ -119,8 +115,6 @@ private:
   double get_private_score(Image *image, Image *projection) const;
 };
 IMP_OBJECTS(MeanAbsoluteDifference, MeanAbsoluteDifferences);
-IMP_OUTPUT_OPERATOR(MeanAbsoluteDifference);
-
 
 
 //! Comparison by value of the ccc

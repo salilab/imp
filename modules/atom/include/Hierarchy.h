@@ -271,8 +271,7 @@ public:
       Type enum list.
    */
   void add_child(Hierarchy o) {
-    IMP_USAGE_CHECK(o != *this, "Can't add something as its own child: "
-                    << o);
+    IMP_USAGE_CHECK(o != *this, "Can't add something as its own child");
     H::add_child(o);
   }
 
@@ -328,8 +327,6 @@ public:
   // swig overwrites __repr__ if it is inherited
   IMP_SHOWABLE(Hierarchy);
 };
-
-IMP_OUTPUT_OPERATOR(Hierarchy);
 
 
 

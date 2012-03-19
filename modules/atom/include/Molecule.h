@@ -46,8 +46,6 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR(Molecule);
-
 IMP_DECORATORS(Molecule,Molecules, Hierarchies);
 
 IMPATOM_END_NAMESPACE

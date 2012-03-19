@@ -52,8 +52,6 @@ class IMPCOREEXPORT Typed: public Decorator
   }
 };
 
-IMP_OUTPUT_OPERATOR(Typed);
-
 IMP_DECORATORS(Typed,Typeds, ParticlesTemp);
 
 

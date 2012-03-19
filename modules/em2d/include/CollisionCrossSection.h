@@ -73,7 +73,6 @@ protected:
   double collision_cross_section_;
 };
 IMP_OBJECTS(CollisionCrossSection, CollisionCrossSections);
-IMP_OUTPUT_OPERATOR(CollisionCrossSection);
 
 IMPEM2D_END_NAMESPACE
 

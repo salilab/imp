@@ -51,8 +51,6 @@ class IMPEMEXPORT Voxel: public Decorator
   }
 };
 
-IMP_OUTPUT_OPERATOR(Voxel);
-
 IMP_DECORATORS(Voxel, Voxels, Particles);
 
 IMPEM_END_NAMESPACE

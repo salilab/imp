@@ -86,8 +86,6 @@ public:
 
 };
 
-IMP_OUTPUT_OPERATOR(Nuisance);
-
 IMP_DECORATORS(Nuisance, Nuisances, ParticlesTemp);
 
 IMPISD_END_NAMESPACE

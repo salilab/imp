@@ -59,10 +59,6 @@ public:
 typedef ExampleTemplateClassD<3> ExampleTemplateClass3D;
 typedef base::Vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
 
-// Make it so the C++ operator<< can be used. The _D means that it is
-// is templated on the dimension. See the docs for other, related macros.
-IMP_OUTPUT_OPERATOR_D(ExampleTemplateClassD);
-
 IMPEXAMPLE_END_NAMESPACE
 
 #endif  /* IMPEXAMPLE_EXAMPLE_TEMPLATE_CLASS_H */

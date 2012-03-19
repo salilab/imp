@@ -76,9 +76,6 @@ public:
   IMP_DECORATOR(ExampleDecorator, Decorator);
 };
 
-// Make it so the C++ operator<< can be used.
-IMP_OUTPUT_OPERATOR(ExampleDecorator);
-
 
 /** Define a collection of them. Also look at example.i*/
 IMP_DECORATORS(ExampleDecorator, ExampleDecorators, Particles);

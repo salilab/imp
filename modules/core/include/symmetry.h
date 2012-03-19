@@ -41,8 +41,6 @@ class IMPCOREEXPORT Reference: public Decorator
   static ParticleKey get_reference_key();
 };
 
-IMP_OUTPUT_OPERATOR(Reference);
-
 IMP_DECORATORS(Reference,References, ParticlesTemp);
 
 

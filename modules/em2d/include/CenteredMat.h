@@ -100,10 +100,6 @@ protected:
   int start_[2],end_[2];
 };
 
-IMP_OUTPUT_OPERATOR(CenteredMat);
-// IMP_VALUES(CenteredMat,CenteredMats);
-
-
 IMPEM2D_END_NAMESPACE
 
 #endif  /* IMPEM2D_CENTERED_MAT_H */

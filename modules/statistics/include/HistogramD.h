@@ -98,7 +98,6 @@ private:
 };
 
 #ifndef IMP_DOXYGEN
-IMP_OUTPUT_OPERATOR_D(HistogramD);
 typedef HistogramD<1> Histogram1D;
 IMP_VALUES(Histogram1D, Histogram1Ds);
 typedef HistogramD<2> Histogram2D;

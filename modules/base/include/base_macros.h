@@ -542,8 +542,7 @@ public:                                                                 \
 /** \name Showable
     Declare the methods needed by an object that can be printed,
     both from C++ and Python. Each value-type class should have an
-    IMP_SHOWABLE() call internal to it and an IMP_OUTPUT_OPERATOR()
-    call external to it.
+    IMP_SHOWABLE() call internal to it.
 
     The suffixs are the number of template arguments that the
     object has (eg _1 means one template argument). _D means
@@ -577,27 +576,6 @@ public:                                                                 \
 */
 #define IMP_SHOWABLE_INLINE(Name, how_to_show)
 
-
-//! Implement operator<< on class name, assuming it has one template argument
-/** \copydetails IMP_OUTPUT_OPERATOR
- */
-#define IMP_OUTPUT_OPERATOR_1(name)
-//! Implement operator<< on class name, assuming it has two template arguments
-/** \copydetails IMP_OUTPUT_OPERATOR
- */
-#define IMP_OUTPUT_OPERATOR_2(name)
-//! Implement operator<< on class name
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-*/
-#define IMP_OUTPUT_OPERATOR(name)
-
-//! Implement operator<< on class name templated by the dimension
-/** The class named should define the method
-    \c void \c show(std::ostream&).
-*/
-#define IMP_OUTPUT_OPERATOR_D(name)
-
 //! Implement a hash function for the class
 #define IMP_HASHABLE_INLINE(name, hashret)
 /** @} */
@@ -612,51 +590,7 @@ public:                                                                 \
   }
 
 #if !defined(SWIG)
-#define IMP_OUTPUT_OPERATOR_1(name)                                     \
-  template <class L>                                                    \
-  inline std::ostream& operator<<(std::ostream &out, const name<L> &i)  \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#define IMP_OUTPUT_OPERATOR_2(name)                                     \
-  template <class L, class M>                                           \
-  inline std::ostream& operator<<(std::ostream &out, const name<L, M> &i) \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-
-#define IMP_OUTPUT_OPERATOR(name)                                       \
-  inline std::ostream &operator<<(std::ostream &out, const name &i)     \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-
-#define IMP_OUTPUT_OPERATOR_D(name)                                     \
-  template < int D>                                                     \
-  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
-
-#define IMP_OUTPUT_OPERATOR_UD(name)                                     \
-  template <unsigned int D>                                             \
-  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
-  {                                                                     \
-    i.show(out);                                                        \
-    return out;                                                         \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_SHOWABLE(Name)                              \
   void show(std::ostream &out=std::cout) const;         \
@@ -679,11 +613,6 @@ public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
 #else
-#define IMP_OUTPUT_OPERATOR_1(name)
-#define IMP_OUTPUT_OPERATOR_2(name)
-#define IMP_OUTPUT_OPERATOR(name)
-#define IMP_OUTPUT_OPERATOR_D(name)
-#define IMP_OUTPUT_OPERATOR_UD(name)
 
 #define IMP_SHOWABLE(Name)                              \
   void show(std::ostream &out=std::cout) const

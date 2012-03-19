@@ -48,8 +48,6 @@ class IMPATOMEXPORT Copy: public Molecule
   }
 };
 
-IMP_OUTPUT_OPERATOR(Copy);
-
 IMP_DECORATORS(Copy,Copies, ParticlesTemp);
 
 

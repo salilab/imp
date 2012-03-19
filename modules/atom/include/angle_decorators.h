@@ -59,7 +59,6 @@ public:
   static FloatKey get_stiffness_key();
 };
 
-IMP_OUTPUT_OPERATOR(Angle);
 
 IMP_DECORATORS(Angle,Angles, ParticlesTemp);
 
@@ -118,8 +117,6 @@ public:
   static IntKey get_multiplicity_key();
   static FloatKey get_stiffness_key();
 };
-
-IMP_OUTPUT_OPERATOR(Dihedral);
 
 IMP_DECORATORS(Dihedral,Dihedrals, ParticlesTemp);
 

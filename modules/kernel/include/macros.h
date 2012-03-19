@@ -232,6 +232,11 @@ public:                                                                 \
 #define IMP_DECORATORS(Name, PluralName, Parent)
 #else
 #define IMP_DECORATORS(Name, PluralName, Parent)                \
+  /* needed so there is no ambiguity with operator->*/          \
+  inline std::ostream &operator<<(std::ostream &out, Name n) {  \
+    out << Showable(n);                                         \
+    return out;                                                 \
+  }                                                             \
   typedef IMP::base::Vector<Name> PluralName
 #endif
 
@@ -242,7 +247,12 @@ public:                                                                 \
 #define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)
 
 #else
-#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)  \
+#define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)    \
+  /* needed so there is no ambiguity with operator->*/          \
+  inline std::ostream &operator<<(std::ostream &out, Name n) {  \
+    out << Showable(n);                                         \
+    return out;                                                 \
+  }                                                             \
   typedef IMP::base::Vector<Name> PluralName
 
 #endif
