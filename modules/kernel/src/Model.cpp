@@ -255,5 +255,9 @@ Model::ParticleIterator Model::particles_end() const {
                           particle_index_.end());
 }
 
+RestraintsTemp Model::get_known_restraints() const {
+  return RestraintsTemp(RestraintTracker::tracked_begin(),
+                        RestraintTracker::tracked_end());
+}
 
 IMP_END_NAMESPACE

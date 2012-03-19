@@ -181,6 +181,7 @@ public:
   }
   void add_particle_internal(Particle *p, bool set_name);
 
+  RestraintsTemp get_known_restraints() const;
 #endif
 
  private:
