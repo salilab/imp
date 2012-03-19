@@ -8,7 +8,7 @@
 #ifndef IMPBASE_BASE_MACROS_H
 #define IMPBASE_BASE_MACROS_H
 #include "base_config.h"
-#include "ConvertibleVector.h"
+#include "Vector.h"
 
 #ifdef IMP_DOXYGEN
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)

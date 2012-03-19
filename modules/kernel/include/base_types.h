@@ -11,7 +11,7 @@
 #include "kernel_config.h"
 #include "Key.h"
 #include "macros.h"
-#include <IMP/base/ConvertibleVector.h>
+#include <IMP/base/Vector.h>
 #include <IMP/base/types.h>
 
 IMP_BEGIN_NAMESPACE

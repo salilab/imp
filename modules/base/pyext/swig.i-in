@@ -69,7 +69,7 @@ IMP_SWIG_NATIVE_VALUE(double);
 IMP_SWIG_NATIVE_VALUE(int);
 IMP_SWIG_NATIVE_VALUE(std::string);
 
-%include "IMP/base/ConvertibleVector.h"
+%include "IMP/base/Vector.h"
 %include "IMP/base/types.h"
 %include "IMP/base/VersionInfo.h"
 %include "IMP/base/RefCounted.h"

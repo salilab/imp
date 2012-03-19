@@ -16,7 +16,7 @@
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
-#include <IMP/base/ConvertibleVector.h>
+#include <IMP/base/Vector.h>
 
 IMP_BEGIN_NAMESPACE
 
