@@ -85,7 +85,6 @@
   IMP_NO_SWIG(inline void set_##name##_geometry(Name &g, const Name &v) {g=v;})
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, name, area, volume, bounding_box) \
-  IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
   inline double get_surface_area(const Name##D<3> &g) {                 \
     area;                                                               \
   }                                                                     \
@@ -143,7 +142,6 @@
   IMP_NO_SWIG(inline void set_##name##_geometry(Name &g, const Name &v) {g=v;})\
 
 #define IMP_AREA_GEOMETRY_METHODS_D(Name, name, area, bounding_box)     \
-  IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
   template <int D>                                                      \
   inline double get_area(const Name##D<D> &g) {                         \
     area;                                                               \

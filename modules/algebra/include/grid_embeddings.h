@@ -157,7 +157,6 @@ class DefaultEmbeddingD {
                       << "  unit cell: " << unit_cell_);
 };
 
-IMP_OUTPUT_OPERATOR_D(DefaultEmbeddingD);
 #if !defined(IMP_DOXYGEN)
 typedef DefaultEmbeddingD<1> DefaultEmbedding1D;
 typedef base::Vector<DefaultEmbedding1D> DefaultEmbedding1Ds;
@@ -358,7 +357,6 @@ class LogEmbeddingD {
 
 
 
-IMP_OUTPUT_OPERATOR_D(LogEmbeddingD);
 
 #if !defined(IMP_DOXYGEN)
 typedef LogEmbeddingD<1> LogEmbedding1D;

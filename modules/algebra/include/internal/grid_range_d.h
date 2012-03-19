@@ -83,8 +83,6 @@ public:
   }
 };
 
-IMP_OUTPUT_OPERATOR_D(GridIteratorD);
-
 //! A Boost.Range over the vertices of a grid
 /** This range range the VectorD objects whose coordinates
     are
