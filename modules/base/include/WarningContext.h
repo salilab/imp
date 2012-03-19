@@ -10,6 +10,7 @@
 #define IMPBASE_CREATE_WARNING_CONTEXT_H
 
 #include "base_config.h"
+#include "base_macros.h"
 #include <IMP/compatibility/map.h>
 
 IMPBASE_BEGIN_NAMESPACE

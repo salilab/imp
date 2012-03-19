@@ -21,16 +21,16 @@ void WarningContext::clear_warnings() const {
     data_.clear();
   }
 void WarningContext::dump_warnings() const {
-    for (std::map<std::string, std::string>::iterator it= data_.begin();
-         it != data_.end(); ++it) {
-      if (!it->second.empty()) {
-        IMP_WARN(it->second << std::endl);
-        it->second=std::string();
-      }
+  for (compatibility::map<std::string, std::string>::iterator it= data_.begin();
+       it != data_.end(); ++it) {
+    if (!it->second.empty()) {
+      IMP_WARN(it->second << std::endl);
+      it->second=std::string();
     }
   }
+}
 
-~WarningContext::WarningContext() {
+WarningContext::~WarningContext() {
   dump_warnings();
 }
 IMPBASE_END_NAMESPACE
