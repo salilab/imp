@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include <IMP/base/exception.h>
 #include <IMP/base/SetLogState.h>
+#include <IMP/base/WarningContext.h>
 
 IMP_BEGIN_NAMESPACE
 
