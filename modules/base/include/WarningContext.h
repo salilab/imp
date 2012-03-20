@@ -29,6 +29,7 @@ public:
 #else
 struct WarningContext {
 public:
+  WarningContext();
   void add_warning(std::string, std::string ) const {}
   void clear_warnings() const {}
   void dump_warnings() const {}
