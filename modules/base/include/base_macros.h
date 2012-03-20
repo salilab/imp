@@ -8,6 +8,7 @@
 #ifndef IMPBASE_BASE_MACROS_H
 #define IMPBASE_BASE_MACROS_H
 #include "base_config.h"
+#include "internal/eat.h"
 #include "Vector.h"
 
 #ifdef IMP_DOXYGEN
@@ -659,7 +660,7 @@ public:                                                                 \
 
 /** Disable unused variable warning for a variable.
  */
-#define IMP_UNUSED(variable) if (0) std::cout << variable;
+#define IMP_UNUSED(variable) IMP::base::internal::eat(variable);
 
 #ifndef IMP_DOXYGEN
 #ifdef __GNUC__
