@@ -88,7 +88,7 @@ class Chain;
 class Molecule;
 class Mass;
 
-class Hierarchy;
+IMP_DECORATORS_DECL(Hierarchy, Hierarchies);
 
 
 //! The standard decorator for manipulating molecular structures.
@@ -324,8 +324,7 @@ public:
   IMP_SHOWABLE(Hierarchy);
 };
 
-
-IMP_DECORATORS(Hierarchy, Hierarchies, Particles);
+IMP_DECORATORS_DEF(Hierarchy, Hierarchies);
 
 
 #ifdef IMP_DOXYGEN
