@@ -9,7 +9,7 @@
 #define IMPALGEBRA_GRID_STORAGES_H
 
 #include "algebra_config.h"
-
+#include <IMP/base/bracket_macros.h>
 #include <IMP/base/types.h>
 #include "internal/grid_apply.h"
 #include "grid_indexes.h"

@@ -6,7 +6,7 @@
  */
 
 #include "IMP/base/WarningContext.h"
-#include "IMP/base/log.h"
+#include "IMP/base/log_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 void WarningContext::add_warning(std::string key, std::string warning) const {

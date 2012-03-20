@@ -10,9 +10,8 @@
 
 #include "base_config.h"
 #include "Object.h"
-#include "Pointer.h"
-#include "exception.h"
 #include "VersionInfo.h"
+#include "object_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 

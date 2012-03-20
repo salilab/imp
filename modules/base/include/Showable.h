@@ -42,6 +42,10 @@ public:
     str_= oss.str();
   }
   template <class T>
+      explicit Showable(const T *o) {
+    show_ptr(o);
+  }
+  template <class T>
       explicit Showable(T *o) {
     show_ptr(o);
   }

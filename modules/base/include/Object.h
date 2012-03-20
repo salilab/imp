@@ -15,13 +15,13 @@
 
 IMPBASE_BEGIN_NAMESPACE
 
-#if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
+/*#if !defined(IMP_DOXYGEN) && !defined(IMP_SWIG)
 inline std::ostream &operator<<(std::ostream &out, const Object& o) {
   o.show(out);
   return out;
 }
 #endif
-
+*/
 
 
 /** Up (or down) cast an \imp Object-derived class. If the cast

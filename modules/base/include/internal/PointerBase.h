@@ -9,9 +9,8 @@
 #ifndef IMPBASE_INTERNAL_POINTER_BASE_H
 #define IMPBASE_INTERNAL_POINTER_BASE_H
 
-
-#include "../declare_Object.h"
 #include "ref_counting.h"
+#include "../check_macros.h"
 #include "IMP/compatibility/hash.h"
 #include "IMP/compatibility/nullptr.h"
 

@@ -57,6 +57,8 @@ public:
   IMP_DECORATOR(Colored, Decorator);
 };
 
+IMP_DECORATORS(Colored, Coloreds, Particles);
+
 
 IMPDISPLAY_END_NAMESPACE
 

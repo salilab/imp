@@ -71,6 +71,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 
 %include "IMP/base/Vector.h"
 %include "IMP/base/types.h"
+%include "IMP/base/enums.h"
 %include "IMP/base/VersionInfo.h"
 %include "IMP/base/RefCounted.h"
 %include "IMP/base/file.h"
@@ -80,6 +81,7 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/FailureHandler.h"
 %include "IMP/base/SetLogState.h"
 %include "IMP/base/WarningContext.h"
+%include "IMP/base/CreateLogContext.h"
 %include "IMP/base/SetCheckState.h"
 %include "IMP/base/utility.h"
 %include "IMP/base/internal/swig.h"

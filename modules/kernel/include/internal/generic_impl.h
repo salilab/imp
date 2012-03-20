@@ -148,7 +148,7 @@ ContainersTemp TupleRestraint<Score>::get_input_containers() const
 template <class Score>
 void TupleRestraint<Score>::do_show(std::ostream& out) const
 {
-  out << "score " << *ss_ << std::endl;
+  out << "score " << Showable(ss_) << std::endl;
   out << "data " << Showable(get_argument()) << std::endl;
 }
 template <class Score>

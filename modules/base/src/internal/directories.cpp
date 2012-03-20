@@ -9,6 +9,7 @@
 
 #include <IMP/base/internal/directories.h>
 #include <IMP/base/exception.h>
+#include <IMP/base/check_macros.h>
 #include <fstream>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/iterator/iterator_facade.hpp>

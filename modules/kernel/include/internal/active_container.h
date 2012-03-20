@@ -10,7 +10,7 @@
 #define IMPKERNEL_INTERNAL_ACTIVE_CONTAINER_H
 
 #include "../ScoreState.h"
-
+#include <IMP/base/check_macros.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -72,7 +72,7 @@ public:                                                         \
     return ParticlesTemp();                                             \
   }                                                                     \
   void Name::Ticker::do_show(std::ostream &out) const {                 \
-    out << "back is " << *back_ << std::endl;                           \
+    out << "back is " << Showable(back_) << std::endl;                  \
   }                                                                     \
   void Name::initialize_active_container(Model *m) {                    \
     IMP_INTERNAL_CHECK(!get_has_model(),                                \

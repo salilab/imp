@@ -2,5 +2,21 @@
 #define IMPLOCAL
 
 #include "IMP/base_config.h"
-%include "IMP/base/base_macros.h"
-
+%include "IMP/compatibility/compiler.h"
+%include "IMP/base/hash_macros.h"
+%include "IMP/base/showable_macros.h"
+%include "IMP/base/bracket_macros.h"
+%include "IMP/base/log_macros.h"
+%include "IMP/base/swap_macros.h"
+%include "IMP/base/check_macros.h"
+%include "IMP/base/object_macros.h"
+%include "IMP/base/tuple_macros.h"
+%include "IMP/base/comparison_macros.h"
+%include "IMP/base/raii_macros.h"
+%include "IMP/base/value_macros.h"
+%include "IMP/base/graph_macros.h"
+%include "IMP/base/ref_counted_macros.h"
+%include "IMP/base/warning_macros.h"
+%include "IMP/base/doxygen_macros.h"
+%include "IMP/base/swig_macros.h"
+%include "IMP/base/utility_macros.h"

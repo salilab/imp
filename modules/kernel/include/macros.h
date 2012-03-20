@@ -56,13 +56,13 @@ Name(Model *m, ParticleIndex id): Parent(m, id) {                       \
   IMP_INTERNAL_CHECK(particle_is_instance(m->get_particle(id)),         \
                      "Particle " << m->get_particle(id)->get_name()     \
                      << " missing required attributes for decorator "   \
-                     << #Name << "\n" << *m->get_particle(id));         \
+                     << #Name << "\n" << Showable(m->get_particle(id))); \
 }                                                                       \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
                      "Particle " << p->get_name()                       \
                      << " missing required attributes for decorator "   \
-                     << #Name << "\n" << *p);                           \
+                     << #Name << "\n" << Showable(p));                  \
 }                                                                       \
 static Name decorate_particle(::IMP::Particle *p) {                     \
   IMP_CHECK_OBJECT(p);                                                  \
@@ -96,7 +96,7 @@ public:                                                                 \
    IMP_INTERNAL_CHECK(particle_is_instance(m->get_particle(id), tr),    \
                      "Particle " << m->get_particle(id)->get_name()     \
                      << " missing required attributes for decorator "   \
-                     << #Name << "\n" << *m->get_particle(id));         \
+                      << #Name << "\n" << Showable(m->get_particle(id))); \
 }                                                                       \
  Name(const TraitsType &tr):                                            \
    traits_(tr) {}                                                       \
@@ -107,7 +107,7 @@ public:                                                                 \
                       "Particle " << p->get_name()                      \
                       << " missing required attributes "                \
                       << " for decorator "                              \
-                      << #Name << "\n" << *p);                          \
+                      << #Name << "\n" << Showable(p));                 \
  }                                                                      \
  static Name decorate_particle(::IMP::Particle *p,                      \
                                const TraitsType &tr=default_traits) {   \
@@ -234,7 +234,7 @@ public:                                                                 \
 #define IMP_DECORATORS(Name, PluralName, Parent)                \
   /* needed so there is no ambiguity with operator->*/          \
   inline std::ostream &operator<<(std::ostream &out, Name n) {  \
-    out << Showable(n);                                         \
+    n.show(out);                                                \
     return out;                                                 \
   }                                                             \
   typedef IMP::base::Vector<Name> PluralName
@@ -250,7 +250,7 @@ public:                                                                 \
 #define IMP_DECORATORS_WITH_TRAITS(Name, PluralName, Parent)    \
   /* needed so there is no ambiguity with operator->*/          \
   inline std::ostream &operator<<(std::ostream &out, Name n) {  \
-    out << Showable(n);                                         \
+    n.show(out);                                                \
     return out;                                                 \
   }                                                             \
   typedef IMP::base::Vector<Name> PluralName

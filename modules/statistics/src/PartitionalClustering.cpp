@@ -5,6 +5,7 @@
  *
  */
 #include <IMP/statistics/PartitionalClustering.h>
+#include <IMP/base/check_macros.h>
 #include <IMP/compatibility/set.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
@@ -21,13 +22,13 @@ void validate_partitional_clustering(PartitionalClustering*pc,
         int e= cluster[j];
         IMP_USAGE_CHECK(used.find(e)== used.end(),
                         "Element " << e << " has been used twice: "
-                        << *pc);
+                        << Showable(pc));
         used.insert(e);
       }
     }
     IMP_USAGE_CHECK(used.size()==n, "Not all elements are clustered: "
                     << used.size() << " of " << n << " found: "
-                    << *pc);
+                    << Showable(pc));
   }
 }
 IMPSTATISTICS_END_NAMESPACE

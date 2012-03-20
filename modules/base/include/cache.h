@@ -10,8 +10,8 @@
 
 #include "base_config.h"
 #include "internal/cache.h"
-#include "exception.h"
-#include "log.h"
+#include "check_macros.h"
+#include "log_macros.h"
 #include "Vector.h"
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/sequenced_index.hpp>

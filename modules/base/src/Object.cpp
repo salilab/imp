@@ -100,4 +100,11 @@ void Object::set_log_level(LogLevel l) {
 }
 
 
+void Object::show(std::ostream &out) const {
+  out << get_name()
+      << "(" << get_type_name() << ")\n";
+  do_show(out);
+}
+
+
 IMPBASE_END_NAMESPACE
