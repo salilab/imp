@@ -23,8 +23,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-class RigidMember;
-class RigidBody;
+IMP_DECORATORS_DECL(RigidMember, RigidMembers);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
@@ -87,7 +86,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   static ObjectKey get_constraint_key_1();
 public:
 
-  ParticlesTemp get_members() const;
+  RigidMembers get_members() const;
 
   //! Return the members as particle pointers
   /** This member function is here
@@ -371,7 +370,7 @@ IMPCOREEXPORT ParticlesTemp create_rigid_bodies(Model *m,
                                                bool no_members=false);
 
 
-IMP_DECORATORS(RigidMember,RigidMembers, XYZs);
+IMP_DECORATORS_DEF(RigidMember,RigidMembers);
 IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
 
 IMPCORE_END_NAMESPACE

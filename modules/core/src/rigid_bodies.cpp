@@ -581,9 +581,9 @@ void RigidBody::update_members() {
 }
 
 
-ParticlesTemp
+RigidMembers
 RigidBody::get_members() const {
-  ParticlesTemp ret;
+  RigidMembers ret;
   {
     ParticleIndexes pis= get_member_particle_indexes();
     for (unsigned int i=0; i< pis.size(); ++i) {

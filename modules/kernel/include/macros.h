@@ -226,18 +226,32 @@ public:                                                                 \
 
 
 #ifdef IMP_DOXYGEN
+#define IMP_DECORATORS_DECL(Name, PluralName, Parent)
+#define IMP_DECORATORS_DEF(Name, PluralName, Parent)
+
+
 //! Define the types for storing sets of decorators
 /** The macro defines the types PluralName and PluralNameTemp.
  */
 #define IMP_DECORATORS(Name, PluralName, Parent)
+
 #else
-#define IMP_DECORATORS(Name, PluralName, Parent)                \
+#define IMP_DECORATORS_DECL(Name, PluralName)        \
+  class Name;                                        \
+  typedef IMP::base::Vector<Name> PluralName
+
+#define IMP_DECORATORS_DEF(Name, PluralName)                    \
   /* needed so there is no ambiguity with operator->*/          \
   inline std::ostream &operator<<(std::ostream &out, Name n) {  \
     n.show(out);                                                \
     return out;                                                 \
   }                                                             \
-  typedef IMP::base::Vector<Name> PluralName
+
+
+#define IMP_DECORATORS(Name, PluralName, Parent)                \
+  IMP_DECORATORS_DECL(Name, PluralName);                        \
+  IMP_DECORATORS_DEF(Name, PluralName)
+
 #endif
 
 #ifdef IMP_DOXYGEN
