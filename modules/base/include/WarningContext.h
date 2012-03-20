@@ -27,7 +27,7 @@ public:
   IMP_SHOWABLE_INLINE(WarningContext, out << data_.size() << " warnings");
 };
 #else
-struct WarningContext {
+struct IMPBASEEXPORT WarningContext {
 public:
   WarningContext();
   void add_warning(std::string, std::string ) const {}
