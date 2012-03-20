@@ -9,7 +9,8 @@
 #define IMPBASE_TYPES_H
 
 #include "base_config.h"
-#include "base_macros.h"
+#include "value_macros.h"
+#include "object_macros.h"
 #include <IMP/compatibility/hash.h>
 #include <IMP/compatibility/nullptr.h>
 
@@ -55,6 +56,12 @@ IMP_BUILTIN_VALUES(Floats, FloatsList);
 IMP_BUILTIN_VALUES(Ints, IntsList);
 //! Standard way to pass a bunch of Strings values
 IMP_BUILTIN_VALUES(Strings, StringsList);
+
+  namespace base {
+class Object;
+//! A list of objects
+IMP_OBJECTS(Object, Objects);
+  }
 }
   //IMPBASE_END_NAMESPACE
 

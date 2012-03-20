@@ -10,7 +10,8 @@
 
 #include "base_config.h"
 #include "enums.h"
-#include "base_macros.h"
+#include "raii_macros.h"
+#include "value_macros.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE

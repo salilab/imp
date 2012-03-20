@@ -5,6 +5,7 @@
 
 #include <IMP/benchmark/utility.h>
 #include <IMP/base/exception.h>
+#include <IMP/base/log_macros.h>
 #include <iostream>
 #include <boost/format.hpp>
 #include <algorithm>

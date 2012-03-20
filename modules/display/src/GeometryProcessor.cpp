@@ -46,7 +46,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   GP_HANDLE(, anything);
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
-    IMP_THROW("Couldn't handle " << *g,
+    IMP_THROW("Couldn't handle " << Showable(g),
               ValueException);
   } else {
     for (unsigned int i=0; i< comp.size(); ++i) {

@@ -11,7 +11,8 @@
 
 #include "../RefCounted.h"
 #include "../declare_Object.h"
-#include "../log.h"
+#include "../log_macros.h"
+#include "../check_macros.h"
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>

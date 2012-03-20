@@ -11,6 +11,7 @@
 #include "algebra_config.h"
 
 #include <IMP/base/types.h>
+#include <IMP/base/bracket_macros.h>
 #include "grid_indexes.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"

@@ -305,6 +305,11 @@ using ::IMP::base::Showable;
 using ::IMP::base::operator<<;
 using ::IMP::base::hash_value;
 %(EXPORT)s_END_NAMESPACE
+%(EXPORT)s_BEGIN_INTERNAL_NAMESPACE
+using ::IMP::base::Showable;
+using ::IMP::base::operator<<;
+using ::IMP::base::hash_value;
+%(EXPORT)s_END_INTERNAL_NAMESPACE
 #endif
 """%vars
 

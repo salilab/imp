@@ -10,8 +10,10 @@
 
 #include "base_config.h"
 #include "exception.h"
-#include "base_macros.h"
-#include "types.h"
+#include "comparison_macros.h"
+#include "check_macros.h"
+#include "showable_macros.h"
+#include "value_macros.h"
 #include <iostream>
 
 IMPBASE_BEGIN_NAMESPACE

@@ -15,6 +15,7 @@
 #include "IMP/base/RefCounted.h"
 #include "IMP/base/base_macros.h"
 #include "IMP/base/types.h"
+#include "IMP/base/live_objects.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/compatibility/vector.h"
 #include <cmath>

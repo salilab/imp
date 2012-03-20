@@ -13,6 +13,7 @@
 #include "../Key.h"
 #include "../utility.h"
 #include <IMP/base/exception.h>
+#include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
 #include <IMP/algebra/Sphere3D.h>
 

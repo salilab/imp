@@ -9,7 +9,6 @@
 #define IMPALGEBRA_GEOMETRIC_ALIGNMENT_H
 
 #include "algebra_config.h"
-
 #include "Vector3D.h"
 #include "SphereD.h"
 #include "Rotation3D.h"

@@ -60,7 +60,7 @@ IMP_OBJECTS(ScoreState,ScoreStates);
 class ScoringFunction;
 IMP_OBJECTS(ScoringFunction,ScoringFunctions);
 class Container;
-IMP_OBJECTS_TYPEDEF(Container,Containers);
+IMP_OBJECTS(Container,Containers);
 class Particle;
 typedef base::Vector<base::Pointer<Particle> > Particles;
 typedef base::Vector<base::WeakPointer<Particle> > ParticlesTemp;

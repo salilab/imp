@@ -11,8 +11,11 @@
 
 #include "base_config.h"
 #include "RefCounted.h"
+#include "ref_counted_macros.h"
+#include "enums.h"
+#include "hash_macros.h"
+#include "showable_macros.h"
 #include "VersionInfo.h"
-#include "base_macros.h"
 #include <IMP/compatibility/hash.h>
 #include <boost/functional/hash.hpp>
 
@@ -98,14 +101,6 @@ public:
   //! Return a string identifying the type of the object
   virtual std::string get_type_name() const=0;
 
-  //! Print out one or more lines of text describing the object
-  void show(std::ostream &out=std::cout) const {
-    out << get_name()
-        << "(" << get_type_name() << ")\n";
-    do_show(out);
-  }
-
-
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
 #ifndef IMP_DOXYGEN
@@ -151,6 +146,8 @@ public:
 #endif
   }
 
+  IMP_SHOWABLE(Object);
+
 #ifndef IMP_DOXYGEN
   // swig needs to know to wrap this function
   virtual void do_show(std::ostream &out) const =0;
@@ -175,27 +172,5 @@ public:
 
 
 IMPBASE_END_NAMESPACE
-
-#ifdef IMP_DOXYGEN
-//! Perform some basic validity checks on the object for memory debugging
-#define IMP_CHECK_OBJECT(obj)
-#elif IMP_BUILD < IMP_FAST
-#define IMP_CHECK_OBJECT(obj) do {                                      \
-    IMP_INTERNAL_CHECK((obj), "NULL object");                           \
-    IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object "           \
-                       << static_cast<const void*>(obj)                 \
-                       << " was previously freed");                     \
-} while (false)
-#else
-#define IMP_CHECK_OBJECT(obj)
-#endif
-
-
-/** When accepting objects as arguments, it is good practice to wrap them
-    in a reference counted pointer. This ensures that they are freed if
-    they are passed as temporaries. Put this macro call as one of the first
-    lines in the function.
-*/
-#define IMP_ACCEPT_OBJECT(obj) IMP::Pointer<Object> imp_control##obj(obj);
 
 #endif  /* IMPBASE_DECLARE_OBJECT_H */

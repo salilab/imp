@@ -10,14 +10,14 @@
 #define IMPBASE_CREATE_WARNING_CONTEXT_H
 
 #include "base_config.h"
-#include "base_macros.h"
+#include "showable_macros.h"
 #include <IMP/compatibility/map.h>
 
 IMPBASE_BEGIN_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 /** Create a a warning context where duplicate errors are suppressed
     and all the warnings are output when the object is destroyed.*/
-struct WarningContext {
+struct IMPBASEEXPORT WarningContext {
   mutable compatibility::map<std::string, std::string> data_;
 public:
   void add_warning(std::string key, std::string warning) const;

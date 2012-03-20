@@ -10,6 +10,7 @@
 
 #include "kernel_config.h"
 #include <IMP/base/log.h>
+#include <IMP/base/log_macros.h>
 
 IMP_BEGIN_NAMESPACE
 
