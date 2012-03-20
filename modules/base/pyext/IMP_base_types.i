@@ -161,6 +161,47 @@ IMP_SWIG_SEQUENCE_TYPEMAP_IMPL(Name, Namespace::PluralName, CONSTREF)
 %enddef
 
 
+%define IMP_SWIG_DOUBLY_NESTED_SEQUENCE_TYPEMAP(Name, FirstList, SecondList, ThirdList, CONSTREF)
+  %typemap(in) ThirdList CONSTREF {
+  try {
+    // hack to get around swig's value wrapper being randomly used
+    assign($1, ConvertSequence<ThirdList, ConvertSequence< SecondList, ConvertSequence<FirstList, Convert< Name > > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  } catch (const IMP::base::Exception &e) {
+    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
+ }
+%typemap(freearg) ThirdList CONSTREF {
+  delete_if_pointer($1);
+ }
+%typecheck(SWIG_TYPECHECK_POINTER) ThirdList CONSTREF {
+  $1= ConvertSequence<ThirdList, ConvertSequence< SecondList, ConvertSequence< FirstList, Convert< Name > > > >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+ }
+%typemap(out) ThirdList CONSTREF {
+  $result = ConvertSequence<ThirdList, ConvertSequence<SecondList, ConvertSequence< FirstList, Convert< Name > > > >::create_python_object(ValueOrObject<ThirdList >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+%typemap(directorout) ThirdList CONSTREF {
+  // hack to get around swig's evil value wrapper being randomly used
+  assign($result, ConvertSequence<ThirdList, ConvertSequence< SecondList, ConvertSequence< FirstList, Convert< Name > > > >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+ }
+%typemap(directorin) ThirdList CONSTREF {
+  $input = ConvertSequence<ThirdList, ConvertSequence< SecondList, ConvertSequence<FirstList, Convert< Name > > > >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+%typemap(in) ThirdList* {
+  collections_like_##ThirdList##_must_be_passed_by_value_or_const_ref;
+ }
+%typemap(out) ThirdList* {
+  collections_like_##ThirdList##_must_be_returned_by_value_or_const_ref;
+ }
+%typemap(in) ThirdList& {
+  collections_like_##ThirdList##_must_be_passed_by_value_or_const_ref;
+ }
+%typemap(out) ThirdList& {
+  collections_like_##ThirdList##_must_be_returned_by_value_or_const_ref;
+ }
+%enddef
+
 
 
 
@@ -811,8 +852,8 @@ IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PairName, Namespace::PluralNam
 IMP_SWIG_VALUE_CHECKS(Namespace, PluralListName, SWIGTYPE);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName, const&);
 IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName,);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Namespace::PluralName, Namespace::PluralListName, Namespace::PluralListName##s, const&);
-IMP_SWIG_NESTED_SEQUENCE_TYPEMAP(Namespace::PluralName, Namespace::PluralListName, Namespace::PluralListName##s,);
+IMP_SWIG_DOUBLY_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName, Namespace::PluralListName##s, const&);
+IMP_SWIG_DOUBLY_NESTED_SEQUENCE_TYPEMAP(Name, Namespace::PluralName, Namespace::PluralListName, Namespace::PluralListName##s,);
 %enddef
 
 %define IMP_SWIG_SEQUENCE_PAIR(Namespace, Name0, Name1, PairName)
