@@ -10,6 +10,7 @@
 
 #include "IMP/internal/InternalListSingletonContainer.h"
 #include "IMP/SingletonModifier.h"
+#include <IMP/base/check_macros.h>
 #include <algorithm>
 
 
@@ -46,7 +47,7 @@ void InternalListSingletonContainer
   if (c.empty()) return;
   ParticleIndexes cp= IMP::internal::get_index(c);
   remove_from_list(cp);
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {
       IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
                     "Passed Singleton cannot be nullptr (or None)");
