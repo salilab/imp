@@ -40,8 +40,10 @@ void handle_error(const char *msg)
                << internal::handlers[i]->get_name() << "\": "
                << e.what() << std::endl);
     }
-    }
-  if (internal::print_exceptions) IMP_ERROR(msg);
+  }
+  if (internal::print_exceptions) {
+    IMP_ERROR(msg);
+  }
   is_handling=false;
 }
 
