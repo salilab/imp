@@ -14,6 +14,7 @@
 #include "IMP/Decorator.h"
 #include "IMP/decorator_macros.h"
 #include "IMP/ScoreState.h"
+#include "IMP/score_state_macros.h"
 
 
 
