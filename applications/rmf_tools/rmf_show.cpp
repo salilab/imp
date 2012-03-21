@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
       RMF::show_hierarchy(rh.get_root_node(), vm.count("verbose"),
                           frame, std::cout);
     }
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {
