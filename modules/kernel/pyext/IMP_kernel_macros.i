@@ -14,3 +14,7 @@
 %include "IMP/restraint_macros.h"
 %include "IMP/scoring_function_macros.h"
 %include "IMP/optimizer_state_macros.h"
+%include "IMP/optimizer_macros.h"
+%include "IMP/unary_function_macros.h"
+%include "IMP/sampler_macros.h"
+%include "IMP/score_state_macros.h"
