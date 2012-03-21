@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** Create a scoring function on a list of restraints.
 */
-class IMPEXPORT RestraintsScoringFunction:
+class IMPCOREEXPORT RestraintsScoringFunction:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public ScoringFunction
 #else
