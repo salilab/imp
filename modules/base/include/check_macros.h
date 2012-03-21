@@ -136,8 +136,10 @@
   }
 
 #define IMP_THROW(message, exception_name)do {                          \
-  std::ostringstream oss;                                               \
-  oss << message << std::endl;                                          \
+    /* to bring in exceptions for backward compat */                    \
+    using namespace IMP::base;                                          \
+    std::ostringstream oss;                                             \
+    oss << message << std::endl;                                        \
   BOOST_STATIC_ASSERT((!(boost::is_base_of<IMP::base::UsageException,   \
                           exception_name>::value)                       \
                        && !(boost::is_base_of<IMP::base::InternalException, \
@@ -159,7 +161,10 @@
   } while(true)
 
 #if IMP_BUILD < IMP_FAST
-#define IMP_IF_CHECK(level)                     \
+#define IMP_IF_CHECK(level)                      \
+  using IMP::base::NONE;                         \
+  using IMP::base::USAGE;                        \
+  using IMP::base::USAGE_AND_INTERNAL;           \
   if (level <= ::IMP::base::get_check_level())
 
 #define IMP_IF_CHECK_PROBABILISTIC(level, prob) \
