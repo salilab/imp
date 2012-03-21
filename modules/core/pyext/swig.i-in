@@ -61,6 +61,8 @@ IMP_SWIG_OBJECT( IMP::core, QuadConstraint, QuadConstraints);
 IMP_SWIG_OBJECT( IMP::core, QuadRestraint, QuadRestraints);
 IMP_SWIG_OBJECT( IMP::core, QuadraticClosePairsFinder, QuadraticClosePairsFinders);
 IMP_SWIG_OBJECT( IMP::core, RefinedPairsPairScore, RefinedPairsPairScores);
+IMP_SWIG_OBJECT(IMP::core, RestraintsScoringFunction, RestraintsScoringFunctions);
+
 IMP_SWIG_OBJECT( IMP::core, RigidBodyDistancePairScore, RigidBodyDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, RigidBodyMover, RigidBodyMovers);
 IMP_SWIG_OBJECT( IMP::core, RigidClosePairsFinder, RigidClosePairsFinders);
@@ -242,6 +244,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/rigid_bodies.h"
 %include "IMP/core/rigid_body_geometries.h"
 %include "IMP/core/NearestNeighborsClosePairsFinder.h"
+%include "IMP/core/RestraintsScoringFunction.h"
 %include "IMP/core/RigidClosePairsFinder.h"
 %include "IMP/core/SphereDistancePairScore.h"
 %include "IMP/core/SteepestDescent.h"
