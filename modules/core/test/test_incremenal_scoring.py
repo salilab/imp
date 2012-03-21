@@ -31,7 +31,7 @@ class Tests(IMP.test.TestCase):
         nbps= IMP.core.SoftSpherePairScore(1)
         rnb= IMP.container.PairsRestraint(nbps, nbl)
         rnb.set_model(m)
-        sf= IMP.RestraintsScoringFunction([r, rnb])
+        sf= IMP.core.RestraintsScoringFunction([r, rnb])
         isf= IMP.core.IncrementalScoringFunction([r])
         isf.add_close_pair_score(nbps, 0, ps, [f])
         self.assertAlmostEqual(isf.evaluate(False),
@@ -69,8 +69,8 @@ class Tests(IMP.test.TestCase):
         #hps.set_log_level(IMP.VERBOSE)
         r= IMP.container.PairsRestraint(hps, cpc)
         r.set_model(m)
-        dsf=IMP.RestraintsScoringFunction([r.create_decomposition()])
-        sf= IMP.RestraintsScoringFunction([r])
+        dsf=IMP.core.RestraintsScoringFunction([r.create_decomposition()])
+        sf= IMP.core.RestraintsScoringFunction([r])
         isf= IMP.core.IncrementalScoringFunction([r])
         isf.set_log_level(IMP.VERBOSE)
         print 'initial test'
