@@ -12,6 +12,7 @@
 #include "example_system_local_config.h"
 #include <IMP/SingletonModifier.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/singleton_macros.h>
 
 IMPEXAMPLESYSTEMLOCAL_BEGIN_NAMESPACE
 
