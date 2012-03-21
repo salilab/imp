@@ -11,6 +11,7 @@
 
 #include "base_config.h"
 #include "exception.h"
+#include <iostream>
 
 #ifdef IMP_DOXYGEN
 /** Catch any IMP exception thrown by expr and terminate with an
@@ -128,7 +129,7 @@
 #define IMP_CATCH_AND_TERMINATE(expr)                   \
   try {                                                 \
     expr;                                               \
-  } catch (const IMP::Exception &e) {                   \
+  } catch (const IMP::base::Exception &e) {             \
     std::cerr << "Application terminated with error :"  \
               << e.what() << std::endl;                 \
     exit(1);                                            \
