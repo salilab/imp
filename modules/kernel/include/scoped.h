@@ -13,6 +13,7 @@
 #include "ScoreState.h"
 #include "FailureHandler.h"
 #include "Model.h"
+#include <IMP/base/Pointer.h>
 #include <IMP/base/raii_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log_macros.h>
@@ -25,7 +26,7 @@ IMP_BEGIN_NAMESPACE
     to the score state.
 */template <class SS>
 class GenericScopedScoreState {
-  Pointer<SS> ss_;
+  base::Pointer<SS> ss_;
 public:
   IMP_RAII(GenericScopedScoreState, (SS *ss, Model *m),{}, {
       ss_=ss;
