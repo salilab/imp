@@ -34,6 +34,9 @@ public IMP::internal::RestraintsScoringFunction
       IMP::internal::RestraintsScoringFunction(rs, weight, max, name)
    {
    }
+#if defined(SWIG)
+   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
+#endif
 };
 
 
