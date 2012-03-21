@@ -103,7 +103,7 @@ void Em2DRestraint::do_show(std::ostream& out) const
 
 
 double
-DummyRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const {
+DummyRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
   return 0;
 }
 
@@ -131,7 +131,7 @@ ContainersTemp DummyRestraint::get_input_containers() const
 
 double
 ParticlesDummyRestraint::unprotected_evaluate(
-                                      DerivativeAccumulator *accum) const {
+                                      DerivativeAccumulator *) const {
   return 0;
 }
 
