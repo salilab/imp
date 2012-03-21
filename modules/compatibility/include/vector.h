@@ -12,10 +12,8 @@
 
 #if IMP_BUILD < IMP_RELEASE && defined(__GNUC__)
 #include <debug/vector>
-#define IMPCOMPATIBILITY_VECTOR_PARENT __gnu_debug::vector
 #else
 #include <vector>
-#define IMPCOMPATIBILITY_VECTOR_PARENT std::vector
 #endif
 
 
@@ -35,7 +33,12 @@ typedef std::vector vector;
 
 #else
 
-using IMPCOMPATIBILITY_VECTOR_PARENT;
+#if IMP_BUILD < IMP_RELEASE && defined(__GNUC__)
+using __gnu_debug::vector;
+#else
+using std::vector;
+#endif
+
 #endif
 
 IMPCOMPATIBILITY_END_NAMESPACE
