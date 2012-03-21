@@ -277,8 +277,8 @@ public:
     return Hierarchy(hd);
   }
   //! Return the children in the order they were added
-  ParticlesTemp get_children() const {
-    ParticlesTemp ret(get_number_of_children());
+  Hierarchies get_children() const {
+    Hierarchies ret(get_number_of_children());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
       ret[i]= get_child(i);
     }
