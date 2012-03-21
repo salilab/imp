@@ -12,6 +12,7 @@
 
 #include "container_config.h"
 #include <IMP/PairScore.h>
+#include <IMP/pair_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

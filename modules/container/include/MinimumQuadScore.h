@@ -12,6 +12,7 @@
 
 #include "container_config.h"
 #include <IMP/QuadScore.h>
+#include <IMP/quad_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

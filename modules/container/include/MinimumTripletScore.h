@@ -12,6 +12,7 @@
 
 #include "container_config.h"
 #include <IMP/TripletScore.h>
+#include <IMP/triplet_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
