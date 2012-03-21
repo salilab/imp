@@ -174,7 +174,7 @@ public:
 
 
   void show(std::ostream &out = std::cout) const {
-    std::cout << "Particles Restraint" << std::endl;
+    out << "Particles Restraint" << std::endl;
   }
 
   IMP_RESTRAINT(ParticlesDummyRestraint);
