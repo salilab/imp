@@ -10,7 +10,7 @@
 #include <IMP/CLASSNAMEScore.h>
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
-#include <IMP/macros.h>
+#include <IMP/LCCLASSNAME_macros.h>
 #include <IMP/internal/TupleRestraint.h>
 IMP_BEGIN_NAMESPACE
 

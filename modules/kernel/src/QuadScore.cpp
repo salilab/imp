@@ -10,7 +10,7 @@
 #include <IMP/QuadScore.h>
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
-#include <IMP/macros.h>
+#include <IMP/quad_macros.h>
 #include <IMP/internal/TupleRestraint.h>
 IMP_BEGIN_NAMESPACE
 
