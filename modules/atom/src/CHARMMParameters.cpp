@@ -11,7 +11,7 @@
 #include <IMP/atom/angle_decorators.h>
 #include <IMP/constants.h>
 #include <IMP/atom/internal/charmm_helpers.h>
-
+#include <IMP/base/log_macros.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
 
@@ -758,9 +758,13 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
     }
     topology->add_segment(segment);
   }
+  // keep clang happy
+  bool dumped=false;
   IMP_IF_LOG(VERBOSE) {
+    dumped=true;
     warn_context_.dump_warnings();
-  } else {
+  }
+  if (!dumped) {
     warn_context_.clear_warnings();
   }
   // Topology objects are not designed to be added into other containers
