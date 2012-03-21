@@ -9,9 +9,9 @@
 #define IMPKERNEL_CONTAINER_MACROS_H
 
 #include "kernel_config.h"
+#include <IMP/base/check_macros.h>
 #include <IMP/base/internal/Vector.h>
 #include <IMP/base/SetCheckState.h>
-#include <IMP/base/check_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/doxygen_macros.h>
 #include <algorithm>
@@ -263,12 +263,6 @@ void lcname##_handle_change() {                                         \
   OnChanged;                                                            \
 }                                                                       \
 struct Ucname##DataWrapper: public PluralData {                         \
-  template <class F>                                                    \
-  void remove_if(const F &f) {                                          \
-    lcname##_vector_.erase(std::remove_if(PluralData::begin(),          \
-                                          PluralData::end(), f),        \
-                           lcname##_vector_.end());                     \
-  }                                                                     \
   template <class TT>                                                   \
   static void do_handle_remove( Data obj, TT *container){               \
     IMP_UNUSED(container);                                              \
