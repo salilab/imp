@@ -83,7 +83,7 @@ void Model::show_restraint_score_statistics(std::ostream &out) const {
 
 RestraintStatistics Model::get_restraint_statistics(Restraint *r) const {
   if (stats_data_.find(r) == stats_data_.end()) {
-    IMP_THROW("Invalid restraint", ValueException);
+    IMP_THROW("Invalid restraint", base::ValueException);
   }
   RestraintStatistics ret;
   compatibility::map<Object*, Statistics>::const_iterator

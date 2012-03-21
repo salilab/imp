@@ -182,7 +182,7 @@ void Model::remove_particle(Particle *p) {
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     ParticlesTemp cp= get_particles();
     for (unsigned int i=0; i< particle_index_.size(); ++i) {
       if (particle_index_[ParticleIndex(i)]) {

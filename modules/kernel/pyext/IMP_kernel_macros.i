@@ -9,3 +9,8 @@
 %include "IMP/triplet_macros.h"
 %include "IMP/quad_macros.h"
 %include "IMP/container_macros.h"
+%include "IMP/decorator_macros.h"
+%include "IMP/key_macros.h"
+%include "IMP/restraint_macros.h"
+%include "IMP/scoring_function_macros.h"
+%include "IMP/optimizer_state_macros.h"

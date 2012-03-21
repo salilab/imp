@@ -12,6 +12,7 @@
 #include "kernel_config.h"
 #include <IMP/base/showable_macros.h>
 #include <IMP/base/check_macros.h>
+#include <IMP/base/value_macros.h>
 #include <IMP/compatibility/math.h>
 #include <IMP/base/exception.h>
 

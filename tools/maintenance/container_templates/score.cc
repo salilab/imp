@@ -11,7 +11,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
 #include <IMP/macros.h>
-#include <IMP/generic.h>
+#include <IMP/internal/TupleRestraint.h>
 IMP_BEGIN_NAMESPACE
 
 CLASSNAMEScore::CLASSNAMEScore(std::string name):
@@ -26,7 +26,7 @@ Restraints
 CLASSNAMEScore
 ::create_current_decomposition(ARGUMENTTYPE vt) const {
   return Restraints(1,
-                    create_restraint(const_cast<CLASSNAMEScore*>(this),
+     internal::create_restraint(const_cast<CLASSNAMEScore*>(this),
                                      vt,
                                      get_name()));
 }

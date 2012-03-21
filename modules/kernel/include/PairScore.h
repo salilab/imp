@@ -119,6 +119,4 @@ class IMPEXPORT PairScore : public base::Object
 
 IMP_END_NAMESPACE
 
-#include "generic.h"
-
 #endif  /* IMPKERNEL_PAIR_SCORE_H */

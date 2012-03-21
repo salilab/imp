@@ -119,6 +119,4 @@ class IMPEXPORT TripletScore : public base::Object
 
 IMP_END_NAMESPACE
 
-#include "generic.h"
-
 #endif  /* IMPKERNEL_TRIPLET_SCORE_H */

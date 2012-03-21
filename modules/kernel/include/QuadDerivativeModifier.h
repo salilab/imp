@@ -75,38 +75,6 @@ public:
 IMP_OBJECTS(QuadDerivativeModifier,QuadDerivativeModifiers);
 
 
-//! Create a functor which can be used with build in C++ and python commands
-/** For example, you can do
-    \code
-    std::for_each(particles.begin(), particles.end(),
-                  IMP::SingletonFunctor(new IMP::core::Transform(tr)));
-    IMP::for_each(particles,
-                  IMP::SingletonFunctor(new IMP::core::Transform(tr)));
-    \endcode
-    in C++ (the second can be used with when \c particles is a temporary
-    value) or
-    \verbatim
-    map(SingletonFunctor(Transform(tr)), particles)
-    \endverbatim
-    in python.
-
-    \see IMP::QuadModifier
- */
-class QuadDerivativeFunctor {
-  Pointer<const QuadDerivativeModifier> f_;
-  DerivativeAccumulator *da_;
-public:
-  //! Store the QuadModifier and the optional DerivativeAccumulator
-  QuadDerivativeFunctor(const QuadDerivativeModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
-  void operator()( ParticleQuad p) const {
-    f_->apply(p, *da_);
-  }
-};
-
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_DERIVATIVE_MODIFIER_H */

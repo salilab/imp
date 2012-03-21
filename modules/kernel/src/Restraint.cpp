@@ -13,6 +13,9 @@
 #include "IMP/Restraint.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
+#include "IMP/internal/RestraintsScoringFunction.h"
+#include "IMP/base/Pointer.h"
+#include <IMP/base/check_macros.h>
 #include <numeric>
 
 IMP_BEGIN_NAMESPACE
@@ -54,20 +57,20 @@ namespace {
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf= create_scoring_function();
+  base::Pointer<ScoringFunction> sf= create_scoring_function();
   return sf->evaluate(calc_derivs);
 }
 
 
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf= create_scoring_function();
+  base::Pointer<ScoringFunction> sf= create_scoring_function();
   return sf->evaluate_if_good(calc_derivs);
 }
 
 double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
   IMP_OBJECT_LOG;
-  Pointer<ScoringFunction> sf= create_scoring_function(1.0, max);
+  base::Pointer<ScoringFunction> sf= create_scoring_function(1.0, max);
   return sf->evaluate_if_below(calc_derivs, max);
 }
 
@@ -91,7 +94,7 @@ namespace {
                        "Restraint " << out->get_name()
                        << " produced from " << in->get_name()
                        << " is not already part of model.");
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       /*IMP_PRINT_TREE(std::cout, Restraint*, in,
                      (dynamic_cast<RestraintSet*>(n)?
                       dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
@@ -104,7 +107,7 @@ namespace {
                       :0),
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
-      SetLogState sls(WARNING);
+      base::SetLogState sls(WARNING);
       double tin= in->evaluate(false);
       double tout= out->evaluate(false);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
@@ -135,7 +138,7 @@ namespace {
       return created[0];
     } else {
       IMP_NEW(RestraintSet, rs, (me->get_name() + " wrapper"));
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int i=0; i< created.size(); ++i) {
           IMP_INTERNAL_CHECK(created[i],
                              "NULL restraint returned in decomposition");
@@ -152,20 +155,21 @@ namespace {
 }
 
 Restraint* Restraint::create_decomposition() const {
-  Pointer<Restraint> ret= create_decomp_helper(this, do_create_decomposition());
+  base::Pointer<Restraint> ret= create_decomp_helper(this,
+                                                     do_create_decomposition());
   return ret.release();
 }
 
 
 Restraint* Restraint::create_incremental_decomposition(unsigned int n) const {
-  Pointer<Restraint> ret
+  base::Pointer<Restraint> ret
     = create_decomp_helper(this, do_create_incremental_decomposition(n));
   return ret.release();
 }
 
 
 Restraint* Restraint::create_current_decomposition() const {
-  Pointer<Restraint> ret= create_decomp_helper(this,
+  base::Pointer<Restraint> ret= create_decomp_helper(this,
                                      do_create_current_decomposition());
   return ret.release();
 }
@@ -173,7 +177,7 @@ Restraint* Restraint::create_current_decomposition() const {
 ScoringFunction *Restraint::create_scoring_function(double weight,
                                                     double max ) const {
   Restraint* ncthis= const_cast<Restraint*>(this);
-  return new RestraintsScoringFunction(RestraintsTemp(1, ncthis),
+  return new internal::RestraintsScoringFunction(RestraintsTemp(1, ncthis),
                                        weight, max);
 }
 

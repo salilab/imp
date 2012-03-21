@@ -10,6 +10,8 @@
 #ifndef IMPKERNEL_TRIPLET_MACROS_H
 #define IMPKERNEL_TRIPLET_MACROS_H
 
+#include "internal/TupleRestraint.h"
+
 #define IMP_TRIPLET_SCORE_BASE(Name)                                 \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleTripletsTemp &ps,    \
                                        DerivativeAccumulator *da) const, { \
@@ -107,7 +109,7 @@
   });                                                                   \
   IMP_IMPLEMENT_INLINE(Restraints create_current_decomposition\
   (const ParticleTriplet& vt) const, {                                      \
-    return Restraints(1, create_restraint(this, vt));             \
+   return Restraints(1, IMP::internal::create_restraint(this, vt)); \
                        });                                        \
   IMP_TRIPLET_SCORE_BASE(Name)
 
@@ -424,7 +426,7 @@
     ParticleIndexTriplets all= get_all_possible_indexes();            \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]=  IMP::create_restraint(s,                           \
+      ret[i]=  IMP::internal::create_restraint(s,                           \
                                               IMP::internal::           \
                                               get_particle(get_model(), \
                                                            all[i]));    \
@@ -436,7 +438,7 @@
     ParticleIndexTriplets all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::create_restraint(s,                                  \
+      ret[i]= IMP::internal::create_restraint(s,                        \
             IMP::internal::get_particle(get_model(), all[i]));          \
     }                                                                   \
     return ret;                                                         \

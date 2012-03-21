@@ -12,6 +12,7 @@
 #include "IMP/generic.h"
 #include "IMP/dependency_graph.h"
 #include "IMP/internal/graph_utility.h"
+#include "IMP/internal/RestraintsScoringFunction.h"
 #include "IMP/internal/container_helpers.h"
 #include "IMP/internal/utility.h"
 #include <boost/tuple/tuple.hpp>
@@ -61,7 +62,7 @@ double Optimizer::optimize(unsigned int max_steps) {
   IMP_FUNCTION_LOG;
   if (!model_) {
     IMP_THROW("Must give the optimizer a model to optimize",
-              ValueException);
+              base::ValueException);
   }
   set_was_used(true);
 
@@ -79,7 +80,7 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  set_scoring_function(new RestraintsScoringFunction(rs));
+  set_scoring_function(new internal::RestraintsScoringFunction(rs));
 }
 
 void Optimizer::set_scoring_function(ScoringFunction *sf) {

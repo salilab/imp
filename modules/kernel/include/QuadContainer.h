@@ -15,9 +15,7 @@
 #include "QuadScore.h"
 #include "QuadModifier.h"
 #include "QuadDerivativeModifier.h"
-#include "generic.h"
 #include "internal/quad_helpers.h"
-#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 

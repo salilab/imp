@@ -11,12 +11,12 @@
 
 #include "kernel_config.h"
 #include "base_types.h"
+#include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/Object.h>
-#include "macros.h"
 #include <IMP/base/WeakPointer.h>
 
 IMP_BEGIN_NAMESPACE
-
+class Particle;
 template <unsigned int D>
 class ParticleTuple;
 class Model;

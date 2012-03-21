@@ -14,8 +14,9 @@
 #include <IMP/base/Object.h>
 #include "VersionInfo.h"
 #include "utility.h"
-#include "macros.h"
 #include "base_types.h"
+#include <IMP/base/check_macros.h>
+#include <IMP/base/ref_counted_macros.h>
 #include <iostream>
 
 IMP_BEGIN_NAMESPACE

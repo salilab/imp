@@ -8,12 +8,14 @@
 #ifndef IMPKERNEL_SCOPED_H
 #define IMPKERNEL_SCOPED_H
 
-#include "macros.h"
 #include "kernel_config.h"
 #include "RestraintSet.h"
 #include "ScoreState.h"
 #include "FailureHandler.h"
 #include "Model.h"
+#include <IMP/base/raii_macros.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/log_macros.h>
 
 IMP_BEGIN_NAMESPACE
 

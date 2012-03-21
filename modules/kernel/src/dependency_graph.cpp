@@ -511,7 +511,7 @@ namespace {
       std::cerr << "]";
       IMP_THROW("Topological sort failed, probably due to loops in "
                 << " dependency graph. See \"" << out.get_name() << "\"",
-                ValueException);
+                base::ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
       base::Object *o= om[sorted[i]];

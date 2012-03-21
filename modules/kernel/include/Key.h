@@ -8,11 +8,11 @@
 #ifndef IMPKERNEL_KEY_H
 #define IMPKERNEL_KEY_H
 
-#include "macros.h"
-#include "exception.h"
 #include "utility.h"
 #include "internal/key_helpers.h"
-
+#include <IMP/base/check_macros.h>
+#include <IMP/base/comparison_macros.h>
+#include <IMP/base/hash_macros.h>
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
@@ -79,7 +79,7 @@ public:
     } else {
       IMP_THROW("Corrupted Key Table asking for key " << i
                 << " with a table of size " << get_rmap().size(),
-                ValueException);
+                base::ValueException);
     }
   }
 
