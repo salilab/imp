@@ -24,7 +24,8 @@ IMP_BEGIN_NAMESPACE
 //! Removes the ScoreState when the RAII object is destroyed
 /** It is templated so it can act as a general pointer
     to the score state.
-*/template <class SS>
+*/
+template <class SS>
 class GenericScopedScoreState {
   base::Pointer<SS> ss_;
 public:
