@@ -37,7 +37,7 @@ template <class KNN>
 void test_uniform(std::string name,
                   unsigned int n, double eps, double) {
   set_log_level(SILENT);
-  set_check_level(IMP::NONE);
+  set_check_level(NONE);
   BoundingBox3D bb(Vector3D(0,0,0),
                    Vector3D(10,10,10));
   Vector3Ds pts;
