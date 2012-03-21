@@ -12,6 +12,7 @@
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/Decorator.h"
+#include "IMP/decorator_macros.h"
 #include "IMP/ScoreState.h"
 
 
