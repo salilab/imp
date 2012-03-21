@@ -375,7 +375,9 @@ namespace {
                              cura);
           increment= std::max<unsigned int>(next-cur.back(), 1);
           IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-            for (unsigned int j=cura[pos]; j < next; ++j) {
+            unsigned int maxnext
+              =std::min<unsigned int>(next, maxs[orders.back()[pos]]);
+            for (unsigned int j=cura[pos]; j < maxnext; ++j) {
               reordered_cur[pos]=j;
               Assignment curat(reordered_cur);
               IMP_INTERNAL_CHECK(!filters.back()[i]->get_is_ok(curat),
