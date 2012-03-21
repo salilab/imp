@@ -13,6 +13,7 @@
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
+#include <IMP/base/showable_macros.h>
 #include <cstdio>
 #include <iostream>
 #include <fstream>
@@ -69,7 +70,7 @@ public:
     spider_header_.fIform=im;
   }
 
-  void show(std::ostream& out) const {
+  void do_show(std::ostream& out) const {
     out << "Image type   : ";
     switch ((int) spider_header_.fIform) {
     case IMG_BYTE:
@@ -127,6 +128,7 @@ public:
     out << "Weight  : " << get_Weight() << std::endl;
   }
 
+  IMP_SHOWABLE_INLINE(ImageHeader, do_show(out));
   //! Prints a reduced set of information (debugging purposes)
   void print_hard(std::ostream& out) const;
 
