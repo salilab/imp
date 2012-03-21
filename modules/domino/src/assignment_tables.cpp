@@ -377,6 +377,7 @@ namespace {
           IMP_IF_CHECK(USAGE_AND_INTERNAL) {
             unsigned int maxnext
               =std::min<unsigned int>(next, maxs[orders.back()[pos]]);
+            IMP_INTERNAL_CHECK(maxnext >=cur.back(), "Confused ordering");
             for (unsigned int j=cura[pos]; j < maxnext; ++j) {
               reordered_cur[pos]=j;
               Assignment curat(reordered_cur);
