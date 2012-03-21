@@ -11,6 +11,8 @@
 #include "../kernel_config.h"
 #include "../ScoringFunction.h"
 #include "../Model.h"
+#include "../scoring_function_macros.h"
+#include "RestraintsScoringFunction.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/timer.hpp>
 
@@ -223,7 +225,7 @@ inline std::pair<double, bool> exec_evaluate_one(const ScoreStatesTemp &states,
   m->after_evaluate(states, DERIV);
 
   // validate derivatives
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     if (DERIV) {
       m->validate_computed_derivatives();
     }
@@ -360,6 +362,44 @@ void
 WrappedRestraintScoringFunction<RestraintType>::do_show(std::ostream &out)
     const {
   IMP_UNUSED(out);
+}
+
+
+
+/** Create a ScoringFunction on a single restraints.*/
+template <class RestraintType>
+inline ScoringFunction* create_scoring_function(RestraintType* rs,
+                                               double weight=1.0,
+                                                double max=NO_MAX,
+                                                std::string name=
+                                                std::string()) {
+  if (name.empty()) {
+    name= rs->get_name()+"ScoringFunction";
+  }
+  if (dynamic_cast<RestraintSet*>(rs)) {
+    RestraintSet *rrs=dynamic_cast<RestraintSet*>(rs);
+    if (rrs->get_number_of_restraints()==0) {
+      // ick
+      return new RestraintsScoringFunction(RestraintsTemp(1,rs), weight, max,
+                                           name);
+    }
+    return new RestraintsScoringFunction(RestraintsTemp(rrs->restraints_begin(),
+                                                        rrs->restraints_end()),
+                                         weight*rs->get_weight(),
+                                         std::min(max,
+                                                  rs->get_maximum_score()),
+                                         name);
+  } else {
+    if (weight==1.0 && max==NO_MAX) {
+      return new internal::RestraintScoringFunction<RestraintType>(rs,
+                                                                   name);
+    } else {
+      return new internal::WrappedRestraintScoringFunction<RestraintType>(rs,
+                                                                        weight,
+                                                                          max,
+                                                                          name);
+    }
+  }
 }
 
 
