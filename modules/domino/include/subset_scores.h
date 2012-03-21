@@ -56,7 +56,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
         load_particle_states(s, k.a, pst_);
         double e;
         {
-          SetLogState sls(SILENT);
+          base::SetLogState sls(SILENT);
           e= it->second.sf->evaluate_if_below(false,
                                               it->second.max);
           IMP_LOG(TERSE, "Restraint " << Showable(k.r)
