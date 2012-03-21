@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 /** Create a scoring function on a list of restraints.
 */
-class IMPCOREEXPORT RestraintsScoringFunction:
+class RestraintsScoringFunction:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
 public ScoringFunction
 #else
@@ -30,8 +30,10 @@ public IMP::internal::RestraintsScoringFunction
   RestraintsScoringFunction(const RestraintsTemp &rs,
                             double weight=1.0,
                             double max=NO_MAX,
-                            std::string name= "RestraintsScoringFunction%1%");
-  IMP_SCORING_FUNCTION(RestraintsScoringFunction);
+                            std::string name= "RestraintsScoringFunction%1%"):
+      IMP::internal::RestraintsScoringFunction(rs, weight, max, name)
+   {
+   }
 };
 
 
