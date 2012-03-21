@@ -10,6 +10,7 @@
 
 #include "core_config.h"
 #include <IMP/PairScore.h>
+#include <IMP/pair_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

@@ -12,7 +12,7 @@
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairFilter.h>
-#include <IMP/ScoringFunction.h>
+#include "RestraintsScoringFunction.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/algebra/vector_search.h>
 #include <boost/multi_index_container.hpp>

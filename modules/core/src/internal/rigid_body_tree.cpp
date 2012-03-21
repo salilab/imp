@@ -97,7 +97,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                                        const ParticleIndexes &constituents):
     Object(d->get_name()+ " RigidBodyHierarchy %1%"), rb_(d),
   constituents_(constituents){
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     ParticleIndexes uc=constituents;
     std::sort(uc.begin(), uc.end());
     uc.erase(std::unique(uc.begin(), uc.end()), uc.end());
@@ -113,7 +113,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   // they had better be up to date
   //d.update_members();
   std::sort(constituents_.begin(), constituents_.end());
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     for (unsigned int i=0; i< constituents_.size(); ++i) {
       for (unsigned int j=0; j< 4; ++j) {
         IMP_USAGE_CHECK(m->get_has_attribute(FloatKey(j), constituents_[i]),
@@ -155,7 +155,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     stack.pop_back();
     build_tree(m, cur, spheres, stack);
   } while (!stack.empty());
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     validate(m);
   }
 }
@@ -174,7 +174,7 @@ void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
                                          ec.get_radius()*EXPANSION
                                          +.1);
   set_sphere(cur.first, bs);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< cur.second.size(); ++i) {
       algebra::Sphere3D bd(bs.get_center(), 1.1*bs.get_radius());
       IMP_INTERNAL_CHECK(bd.get_contains(spheres[cur.second[i]]),
@@ -188,7 +188,7 @@ void RigidBodyHierarchy::build_tree(Model *m, const Node &cur,
       particles[i]= constituents_[cur.second[i]];
     }
     set_leaf(cur.first, particles);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         validate_internal(m, cur.first, algebra::Sphere3Ds());
     }
   } else {
@@ -501,7 +501,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                               cur.get());
         }
         IMP_CHECK_OBJECT(cur);
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           cur->validate(rb.get_model());
         }
         if (mykey != ObjectKey()) {
@@ -532,7 +532,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                         h.get());
   }
   IMP_CHECK_OBJECT(h);
-  IMP_IF_CHECK( USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK( base::USAGE_AND_INTERNAL) {
     h->validate(rb.get_model());
   }
   return h;
@@ -576,7 +576,7 @@ ParticlesTemp close_particles(Model *m,
   ParticlesTemp ret;
   fill_close_particles(m, da, pt.get_particle_index(),
                        dist, ParticleSink(m, ret));
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());
     ParticleIndexes ps= da->get_constituents();
     for (unsigned int i=0; i< ps.size(); ++i) {

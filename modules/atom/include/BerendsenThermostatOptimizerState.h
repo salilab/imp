@@ -14,6 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/base_types.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

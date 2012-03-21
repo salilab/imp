@@ -55,7 +55,7 @@ void MovedSingletonContainer::do_after_evaluate() {
   }
   reset_moved_=false;
   reset_all_=false;
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     validate();
   }
 }
@@ -73,7 +73,7 @@ void MovedSingletonContainer::do_before_evaluate()
     IMP_LOG(TERSE, "Adding to moved list: " << Showable(mved) << std::endl);
     add_to_list(mved);
   }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     validate();
   }
 }

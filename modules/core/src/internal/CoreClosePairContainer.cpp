@@ -107,7 +107,7 @@ void CoreClosePairContainer::check_duplicates_input() const {
 }
 
 void CoreClosePairContainer::check_list(bool check_slack) const {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     ParticleIndexPairs cur= get_access();
     IMP_INTERNAL_CHECK(c_->get_indexes().size()*(c_->get_indexes().size()-1)/2
                        >= cur.size(),
@@ -212,7 +212,7 @@ namespace {
 
 void CoreClosePairContainer::do_first_call() {
   IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     check_duplicates_input();
   }
   do_rebuild();

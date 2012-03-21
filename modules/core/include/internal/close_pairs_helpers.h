@@ -190,13 +190,13 @@ inline void initialize_particles( SingletonContainer*sc,
                                   rbs_backup_,
                                   algebra::Vector3Ds&xyzrs_backup_,
                                   bool use_rigid_bodies=true) {
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     ParticleIndexes pis = sc->get_indexes();
     IMP::compatibility::set<ParticleIndex> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(),
                     "Duplicate particle indexes in input");
   }
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     ParticlesTemp pis = sc->get();
     IMP::compatibility::set<Particle*> spis(pis.begin(), pis.end());
     IMP_USAGE_CHECK(pis.size() == spis.size(), "Duplicate particles in input");
@@ -218,7 +218,7 @@ inline void initialize_particles( SingletonContainer*sc,
         } else {
           constituents_[pi].push_back(_1->get_index());
         }
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           ParticleIndexes cur= constituents_[pi];
           IMP_USAGE_CHECK(std::find(cur.begin(), cur.end(), pi) == cur.end(),
                           "A rigid body cann't be its own constituent.");
@@ -243,7 +243,7 @@ inline void initialize_particles( SingletonContainer*sc,
               xyzrs_, rbs_, constituents_, rbs_backup_, xyzrs_backup_);
   xyzrs_backup_.clear();
   rbs_backup_.clear();
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
      for (IMP::compatibility::map<ParticleIndex,
                                   ParticleIndexes>::const_iterator it
          = constituents_.begin();

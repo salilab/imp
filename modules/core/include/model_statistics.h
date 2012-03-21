@@ -11,6 +11,7 @@
 #include "core_config.h"
 #include <IMP/Model.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/optimizer_state_macros.h>
 #include <IMP/io.h>
 
 IMPCORE_BEGIN_NAMESPACE

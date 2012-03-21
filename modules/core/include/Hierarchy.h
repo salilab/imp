@@ -16,6 +16,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
+#include <IMP/decorator_macros.h>
 #include <IMP/internal/utility.h>
 
 #include <boost/tuple/tuple.hpp>

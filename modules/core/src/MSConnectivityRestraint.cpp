@@ -85,7 +85,8 @@ void MSConnectivityRestraint::ExperimentalTree::connect(
   size_t parent, size_t child)
 {
   if ( finalized_ )
-    IMP_THROW("Cannot add new edges to finalized tree", IMP::ValueException);
+    IMP_THROW("Cannot add new edges to finalized tree",
+              IMP::base::ValueException);
   nodes_[parent].children_.push_back(child);
   nodes_[child].parents_.push_back(parent);
 }
@@ -102,16 +103,19 @@ void MSConnectivityRestraint::ExperimentalTree::finalize()
       if ( root_ == size_t(-1) )
         root_ = i;
       else
-        IMP_THROW("Experimental tree has multiple roots", IMP::ValueException);
+        IMP_THROW("Experimental tree has multiple roots",
+                  IMP::base::ValueException);
     }
   }
   if ( find_cycle(root_) )
-    IMP_THROW("Experimental tree has a cycle", IMP::ValueException);
+    IMP_THROW("Experimental tree has a cycle",
+              IMP::base::ValueException);
   for ( size_t i = 0; i < nodes_.size(); ++i )
     if ( !is_consistent(i) )
     {
       IMP_THROW("Experimental tree is inconsistent: a child has to "
-        "have fewer proteins than its parent", IMP::ValueException);
+                "have fewer proteins than its parent",
+                IMP::base::ValueException);
     }
   finalized_ = true;
 }
@@ -139,7 +143,8 @@ size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
   const Ints &components)
 {
   if ( finalized_ )
-    IMP_THROW("Cannot add new nodes to finalized tree", IMP::ValueException);
+    IMP_THROW("Cannot add new nodes to finalized tree",
+              IMP::base::ValueException);
   Node node;
   desc_to_label(components, node.label_);
   size_t idx = nodes_.size();
@@ -604,13 +609,15 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
           assignment[id].get_tuple();
         if ( prot_count > int(configuration.size()) )
         {
-          IMP_THROW("Experimental tree is inconsistent", IMP::ValueException);
+          IMP_THROW("Experimental tree is inconsistent",
+                    IMP::base::ValueException);
         }
         new_tuples.push_back(Tuples(configuration, prot_count));
       }
       else
       {
-        IMP_THROW("Experimental tree is inconsistent", IMP::ValueException);
+        IMP_THROW("Experimental tree is inconsistent",
+                  IMP::base::ValueException);
       }
     }
     else
@@ -759,7 +766,8 @@ NNGraph MSConnectivityScore::find_threshold() const
     g = create_nn_graph(max_dist);
     if ( !perform_search(g, picked) )
     {
-      IMP_THROW("Cannot build a nearest neighbor graph", IMP::ValueException);
+      IMP_THROW("Cannot build a nearest neighbor graph",
+                IMP::base::ValueException);
     }
   }
   EdgeSet picked;

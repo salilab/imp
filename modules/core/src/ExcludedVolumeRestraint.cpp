@@ -156,7 +156,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
   if (!initialized_) {
     initialize();
   } else {
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       IMP_FOREACH_SINGLETON(sc_, {
           if (RigidMember::particle_is_instance(_1)) {
             RigidBody rb= RigidMember(_1).get_rigid_body();
@@ -191,7 +191,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
     ret+=ssps_->evaluate_index(get_model(), ParticleIndexPair(cur_list_[i][0],
                                                         cur_list_[i][1]), da);
   }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     ParticlesTemp all= sc_->get_particles();
     if (all.size() < 3000) {
       double check=0;
@@ -248,7 +248,7 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   IMP_USAGE_CHECK(!da, "Can't do derivatives");
   IMP_CHECK_CODE(double check=0);
   IMP_CHECK_CODE(ParticlesTemp all= sc_->get_particles());
-  IMP_CHECK_CODE(IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_CHECK_CODE(IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     if (all.size() < 3000) {
       for (unsigned int i=0; i< all.size(); ++i) {
         for (unsigned int j=0; j< i; ++j) {
@@ -278,7 +278,7 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   }
   if (was_bad_ || get_if_moved()>0) {
     double ret= fill_list_if_good(max);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       if (ret > max) {
         IMP_INTERNAL_CHECK(all.size() >=3000 || check > max,
                        "I think it is bad, but it isn't 2: "
@@ -319,7 +319,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      ret.push_back(create_restraint(ssps_.get(),
+      ret.push_back(IMP::create_restraint(ssps_.get(),
                     ParticlePair(IMP::internal::get_particle(get_model(),
                                                              xyzrs_[i]),
                                  IMP::internal::get_particle(get_model(),
@@ -341,7 +341,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   IMP_NEW(ClosePairsPairScore, cpps, (ssps_, tr, 0));
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     for (unsigned int j=0; j< rbs_.size(); ++j) {
-      ret.push_back(create_restraint(cpps,
+      ret.push_back(IMP::create_restraint(cpps.get(),
                       ParticlePair(IMP::internal::get_particle(get_model(),
                                                                xyzrs_[i]),
                                    IMP::internal::get_particle(get_model(),
@@ -354,7 +354,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
   }
   for (unsigned int i=0; i< rbs_.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      ret.push_back(create_restraint(cpps,
+      ret.push_back(IMP::create_restraint(cpps.get(),
                    ParticlePair(IMP::internal::get_particle(get_model(),
                                                             rbs_[i]),
                        IMP::internal::get_particle(get_model(),rbs_[j]))));
@@ -373,7 +373,7 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    ret.push_back(create_restraint(ssps_.get(),
+    ret.push_back(IMP::create_restraint(ssps_.get(),
                                    IMP::internal::get_particle(get_model(),
                                                                cur_list_[i])));
     ret.back()->set_maximum_score(get_maximum_score());
@@ -479,7 +479,7 @@ ExcludedVolumeRestraint
   all.insert(all.end(), rbs_.begin(), rbs_.end());
   divide_particles(get_model(),
                    all, constituents_, chunk, bins);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     ParticleIndexes all;
     for (unsigned int i=0; i< bins.size(); ++i) {
       all.insert(all.end(), bins[i].begin(), bins[i].end());

@@ -10,6 +10,7 @@
 
 #include "atom_config.h"
 #include <IMP/SingletonScore.h>
+#include <IMP/singleton_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

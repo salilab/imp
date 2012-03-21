@@ -13,6 +13,7 @@
 
 #include "multifit_config.h"
 #include <IMP/Restraint.h>
+#include <IMP/restraint_macros.h>
 #include <IMP/core/HarmonicUpperBound.h>
 #include <IMP/Particle.h>
 IMPMULTIFIT_BEGIN_NAMESPACE

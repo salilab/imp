@@ -170,7 +170,7 @@ namespace {
     double s=r->evaluate(false);
     cur.set_value(sk, s, 0);
 
-    Pointer<Restraint> rd= r->create_current_decomposition();
+    base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
     if (rs) {
@@ -207,7 +207,7 @@ namespace {
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
     rn.set_value(sk, s, frame);
-    Pointer<Restraint> rd= r->create_current_decomposition();
+    base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
     if (!rs) return;

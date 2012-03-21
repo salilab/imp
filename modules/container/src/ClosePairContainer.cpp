@@ -63,7 +63,7 @@ get_slack_estimate(const ParticlesTemp& ps,
     {
       boost::timer imp_timer;
       int count=0;
-      SetLogState sl(opt->get_model(), SILENT);
+      base::SetLogState sl(opt->get_model(), SILENT);
       do {
         cpc->set_slack(slack);
         cpc->update();
@@ -77,7 +77,7 @@ get_slack_estimate(const ParticlesTemp& ps,
       boost::timer imp_timer;
       double score=0;
       int count=0;
-      SetLogState sl(opt->get_model(), SILENT);
+      base::SetLogState sl(opt->get_model(), SILENT);
       do {
         for (unsigned int i=0; i< restraints.size(); ++i) {
           score+=restraints[i]->evaluate(derivatives);
@@ -106,7 +106,7 @@ get_slack_estimate(const ParticlesTemp& ps,
       dists[i].resize(ns, 0.0);
     }
     pos.resize(ns,  std::vector<algebra::Vector3D>(ps.size()));
-    SetLogState sl(opt->get_model(), SILENT);
+    base::SetLogState sl(opt->get_model(), SILENT);
     for ( int i=last_ns; i< ns; ++i) {
       opt->optimize(1);
       for (unsigned int j=0; j< ps.size(); ++j) {

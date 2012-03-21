@@ -17,6 +17,7 @@
 #include <IMP/QuadDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
+#include <IMP/score_state_macros.h>
 
 namespace IMP {
 // for swig

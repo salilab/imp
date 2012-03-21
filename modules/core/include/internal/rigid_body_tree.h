@@ -170,7 +170,7 @@ inline void fill_close_pairs(Model *m,
                              const RigidBodyHierarchy *db,
                              double dist,
                              Sink sink) {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     da->validate(m);
     db->validate(m);
   }
@@ -240,7 +240,7 @@ inline void fill_close_pairs(Model *m,
   }
 
 
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
       XYZR ca(m, da->get_constituents()[i]);
       for (unsigned int j=0; j< db->get_constituents().size(); ++j) {
@@ -299,7 +299,7 @@ inline void fill_close_particles(Model *m,
     }
   } while (!queue.empty());
 
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
       XYZR c(m, da->get_constituents()[i]);
       if (get_distance(c, XYZR(m, pt)) < .9*dist) {

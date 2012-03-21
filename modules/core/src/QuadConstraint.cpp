@@ -61,7 +61,7 @@ ParticlesTemp QuadConstraint::get_input_particles() const {
     ret= IMP::internal::get_input_particles(f_.get(), vi);
     ParticlesTemp o= IMP::internal::get_output_particles(f_.get(), vi);
     ret.insert(ret.end(), o.begin(), o.end());
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       if (af_) {
         ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), vi);
         std::sort(ret.begin(), ret.end());
@@ -88,7 +88,7 @@ ParticlesTemp QuadConstraint::get_output_particles() const {
   ParticleQuad vi= IMP::internal::get_particle(get_model(), v_);
   if (f_) {
     ret= IMP::internal::get_output_particles(f_.get(), vi);
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       if (af_) {
         ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), vi);
         ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(), vi);

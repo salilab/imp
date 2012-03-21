@@ -30,7 +30,7 @@ double OpenCubicSpline::evaluate(double feature) const
       if (feature < minrange_) return spline_.get_first();
       else return spline_.get_last();
     } else {
-      throw ValueException("Value out of range for open cubic spline");
+      IMP_THROW("Value out of range for open cubic spline",ValueException);
     }
   }
   return spline_.evaluate(feature-minrange_, spacing_, inverse_spacing_);
@@ -44,7 +44,7 @@ DerivativePair OpenCubicSpline::evaluate_with_derivative(double feature) const
       if (feature < minrange_) return std::make_pair(spline_.get_first(), 0.0);
       else return std::make_pair(spline_.get_last(), 0.0);
     } else {
-      throw ValueException("Value out of range for open cubic spline");
+      IMP_THROW("Value out of range for open cubic spline", ValueException);
     }
   }
   return spline_.evaluate_with_derivative(feature-minrange_, spacing_,

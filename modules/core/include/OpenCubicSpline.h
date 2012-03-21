@@ -9,6 +9,7 @@
 
 #include "core_config.h"
 #include <IMP/UnaryFunction.h>
+#include <IMP/unary_function_macros.h>
 #include "internal/evaluate_distance_pair_score.h"
 
 IMPCORE_BEGIN_NAMESPACE

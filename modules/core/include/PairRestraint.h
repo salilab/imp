@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/PairScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/restraint_macros.h>
 
 #include <iostream>
 

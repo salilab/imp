@@ -14,6 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
+#include <IMP/decorator_macros.h>
 #include <IMP/exception.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE

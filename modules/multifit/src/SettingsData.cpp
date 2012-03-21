@@ -59,7 +59,7 @@ ComponentHeader *parse_component_line(
   comp->set_reference_fn(join_path(path, line_split[8]));
   return comp.release();
   }
-  catch (IMP::Exception &e) {
+  catch (IMP::base::Exception &e) {
     IMP_THROW("can not parse line:"<<line,IOException);
   }
 }

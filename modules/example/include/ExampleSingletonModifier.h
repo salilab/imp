@@ -12,6 +12,7 @@
 #include "example_config.h"
 #include <IMP/SingletonModifier.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/singleton_macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 

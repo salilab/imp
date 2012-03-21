@@ -14,30 +14,31 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
+#include <IMP/base/Pointer.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-#define IMP_MANAGER(UCName, lcname)             \
-  class Manage##UCName: boost::noncopyable {    \
-    typedef IMP::OwnerPointer<UCName> P;                  \
-    P r_;                                       \
-  public:                                       \
-  Manage##UCName(){}                            \
-  ~Manage##UCName() {                           \
+#define IMP_MANAGER(UCName, lcname)                   \
+  class Manage##UCName: boost::noncopyable {          \
+    typedef IMP::base::OwnerPointer<UCName> P;        \
+    P r_;                                             \
+   public:                                            \
+  Manage##UCName(){}                                  \
+  ~Manage##UCName() {                                 \
     set(nullptr, nullptr);                            \
-  }                                             \
-  void set(UCName *r, Model *m) {               \
-    if (r_) {                                   \
-      r_->get_model()->remove_##lcname(r_);     \
-    }                                           \
-    if (r) {                                    \
-      r_=r;                                     \
-      if (m) {                                  \
-        m->add_##lcname(r);                     \
-      }                                         \
-    }                                           \
-  }                                             \
-  operator UCName*() const {return r_;}         \
+  }                                                   \
+  void set(UCName *r, Model *m) {                     \
+    if (r_) {                                         \
+      r_->get_model()->remove_##lcname(r_);           \
+    }                                                 \
+    if (r) {                                          \
+      r_=r;                                           \
+      if (m) {                                        \
+        m->add_##lcname(r);                           \
+      }                                               \
+    }                                                 \
+  }                                                   \
+  operator UCName*() const {return r_;}               \
   };
 
 IMP_MANAGER(ScoreState, score_state)

@@ -9,7 +9,7 @@
 #include "core_config.h"
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonModifier.h>
-
+#include <IMP/singleton_macros.h>
 IMPCORE_BEGIN_NAMESPACE
 
 
