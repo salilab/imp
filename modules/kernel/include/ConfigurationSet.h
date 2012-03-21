@@ -16,10 +16,9 @@
 #include "Configuration.h"
 #include "internal/OwnerPointer.h"
 #include "OptimizerState.h"
+#include "optimizer_state_macros.h"
 #include "FailureHandler.h"
 #include "internal/utility.h"
-#include "compatibility/map.h"
-#include <set>
 
 IMP_BEGIN_NAMESPACE
 

@@ -10,7 +10,8 @@
 
 #include "kernel_config.h"
 #include "Key.h"
-#include "macros.h"
+#include "key_macros.h"
+#include <IMP/base/object_macros.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/WeakPointer.h>

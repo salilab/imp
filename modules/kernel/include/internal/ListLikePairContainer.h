@@ -16,6 +16,7 @@
 #include "../PairModifier.h"
 #include "../PairScore.h"
 #include "../scoped.h"
+#include "TupleRestraint.h"
 #include "container_helpers.h"
 #include "pair_helpers.h"
 #include <algorithm>
@@ -174,7 +175,7 @@ IMP_END_INTERNAL_NAMESPACE
     ParticleIndexPairs all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::create_restraint(s,                                  \
+      ret[i]= IMP::internal::create_restraint(s,                        \
                             IMP::internal::get_particle(get_model(), \
                                           all[i]));                     \
     }                                                                   \
@@ -185,7 +186,7 @@ IMP_END_INTERNAL_NAMESPACE
     ParticleIndexPairs all= get_all_possible_indexes();                    \
     Restraints ret(all.size());                                         \
     for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::create_restraint(s,                            \
+      ret[i]= IMP::internal::create_restraint(s,                        \
                             IMP::internal::get_particle(get_model(), \
                                           all[i]));                     \
     }                                                                   \

@@ -11,7 +11,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
 #include <IMP/macros.h>
-#include <IMP/generic.h>
+#include <IMP/internal/TupleRestraint.h>
 IMP_BEGIN_NAMESPACE
 
 SingletonScore::SingletonScore(std::string name):
@@ -26,7 +26,7 @@ Restraints
 SingletonScore
 ::create_current_decomposition(Particle* vt) const {
   return Restraints(1,
-                    create_restraint(const_cast<SingletonScore*>(this),
+     internal::create_restraint(const_cast<SingletonScore*>(this),
                                      vt,
                                      get_name()));
 }

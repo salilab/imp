@@ -84,23 +84,6 @@ protected:
 };
 
 
-
-/** Create a scoring function on a list of restraints.
-*/
-class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
-  friend class Model;
-  Restraints rs_;
-  RestraintSets rss_;
-  double weight_;
-  double max_;
- public:
-  RestraintsScoringFunction(const RestraintsTemp &rs,
-                            double weight=1.0,
-                            double max=NO_MAX,
-                            std::string name= "RestraintsScoringFunction%1%");
-  IMP_SCORING_FUNCTION(RestraintsScoringFunction);
-};
-
 /** Return a list of ScoringFunction objects where each is as simple
     as possible and evaluating the sum (and anding the good score bits)
     is exactly like evaluating the one ScoringFunction.*/

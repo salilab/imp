@@ -11,7 +11,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/Restraint.h>
 #include <IMP/macros.h>
-#include <IMP/generic.h>
+#include <IMP/internal/TupleRestraint.h>
 IMP_BEGIN_NAMESPACE
 
 QuadScore::QuadScore(std::string name):
@@ -26,7 +26,7 @@ Restraints
 QuadScore
 ::create_current_decomposition(const ParticleQuad& vt) const {
   return Restraints(1,
-                    create_restraint(const_cast<QuadScore*>(this),
+     internal::create_restraint(const_cast<QuadScore*>(this),
                                      vt,
                                      get_name()));
 }

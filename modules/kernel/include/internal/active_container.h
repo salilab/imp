@@ -52,7 +52,7 @@ public:                                                         \
     back_->do_after_evaluate();                                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_input_containers() const {           \
-    IMP_IF_CHECK(USAGE) {                                               \
+    IMP_IF_CHECK(base::USAGE) {                                         \
       std::string name= back_->get_name();                              \
       {Pointer<Name> rc(back_);}                                        \
       IMP_INTERNAL_CHECK((back_)->get_is_valid(),                       \

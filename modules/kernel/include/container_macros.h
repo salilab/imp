@@ -8,9 +8,12 @@
 #ifndef IMPKERNEL_CONTAINER_MACROS_H
 #define IMPKERNEL_CONTAINER_MACROS_H
 
-#include "macros.h"
+#include "kernel_config.h"
 #include <IMP/base/internal/Vector.h>
 #include <IMP/base/SetCheckState.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/log_macros.h>
+#include <IMP/base/doxygen_macros.h>
 #include <algorithm>
 
 

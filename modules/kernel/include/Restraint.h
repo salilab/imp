@@ -10,13 +10,10 @@
 
 #include "kernel_config.h"
 #include "declare_Restraint.h"
-#include "generic.h"
-#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 
 
 IMP_END_NAMESPACE
-#include "ScoringFunction.h"
 
 #endif  /* IMPKERNEL_RESTRAINT_H */

@@ -38,7 +38,7 @@ namespace {
         }
         in.write(reinterpret_cast<char*>(&value), sizeof(double));
         if (!in) {
-          IMP_THROW("Error reading writing to buffer", IOException);
+          IMP_THROW("Error reading writing to buffer", base::IOException);
         }
       }
     }
@@ -55,7 +55,7 @@ namespace {
         double value;
         in.read(reinterpret_cast<char*>(&value), sizeof(double));
         if (!in) {
-          IMP_THROW("Error reading from buffer", IOException);
+          IMP_THROW("Error reading from buffer", base::IOException);
         }
         if (particles[i]->has_attribute(keys[j])) {
           particles[i]->set_value(keys[j], value);

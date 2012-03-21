@@ -15,9 +15,7 @@
 #include "SingletonScore.h"
 #include "SingletonModifier.h"
 #include "SingletonDerivativeModifier.h"
-#include "generic.h"
 #include "internal/singleton_helpers.h"
-#include "macros.h"
 
 IMP_BEGIN_NAMESPACE
 

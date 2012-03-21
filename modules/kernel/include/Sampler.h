@@ -10,9 +10,9 @@
 
 #include "kernel_config.h"
 #include "Model.h"
-#include "macros.h"
 #include "Pointer.h"
 #include "ConfigurationSet.h"
+#include <IMP/base/ref_counted_macros.h>
 
 IMP_BEGIN_NAMESPACE
 

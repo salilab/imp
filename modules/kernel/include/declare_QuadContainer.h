@@ -18,7 +18,9 @@
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
-#include "macros.h"
+#include <IMP/base/ref_counted_macros.h>
+#include <IMP/base/check_macros.h>
+
 
 IMP_BEGIN_NAMESPACE
 class QuadModifier;
@@ -102,7 +104,7 @@ public:
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
   virtual const ParticleIndexQuads& get_access() const {
-    IMP_THROW("Object not implemented properly.", IndexException);
+    IMP_THROW("Object not implemented properly.", base::IndexException);
   }
 #endif
 #endif
