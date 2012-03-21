@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011/2012
+- 22/3: Over the last week or so, which \imp headers include which other heads have been substantially simplified. This may result in compilation errors for code outside of \c svn that depended on \imp headers including other headers. In general, you want to explicitly include the header defining each thing you use.
 - 15/3: The vector used throughout \imp is now exposed at IMP::base::Vector and what it does it documented.
 - 10/3: IMP::domino::RestraintCache was introduced to provide a documented centeralized place to handle restraint evaluation and caching in DOMINO. In the switch various bugs involving maximum scores and IMP::RestraintSet objects were fixed.
 - 10/3: Scoring functions in \imp are now implemented in IMP::ScoringFunction objects. All restraint evaluation is handled by them and they can cache various useful information to aid in accelerating restraint evaluation. Backward compatibility interfaces have mostly been provided, please complain if some important interface went away. This has greatly simplified the code as well as fixed various bugs in various types of restraint evaluation (particularly in the handling of maximum scores on IMP::Restraint and IMP::RestraintSet objects.
