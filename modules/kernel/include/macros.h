@@ -14,6 +14,10 @@
 #include "restraint_macros.h"
 #include "scoring_function_macros.h"
 #include "optimizer_state_macros.h"
+#include "optimizer_macros.h"
+#include "unary_function_macros.h"
+#include "sampler_macros.h"
+#include "score_state_macros.h"
 
 
 
@@ -53,67 +57,7 @@
 
 
 
-//! Define the basic things you need for an Optimizer.
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Optimizer::do_optimize()
 
-    \relatesalso IMP::Optimizer
-*/
-#define IMP_OPTIMIZER(Name)                                             \
-  IMP_IMPLEMENT(virtual Float do_optimize(unsigned int max_steps));     \
-  IMP_OBJECT(Name)
-
-//! Define the basic things you need for a Sampler.
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Sampler::do_sample()
-
-    \relatesalso IMP::Sampler
-*/
-#define IMP_SAMPLER(Name)                       \
-  IMP_OBJECT(Name);                             \
-protected:                                      \
- IMP_IMPLEMENT(ConfigurationSet* do_sample() const)
-
-
-
-
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::ScoreState::do_before_evaluate()
-    - IMP::ScoreState::do_after_evaluate()
-    - IMP::ScoreState::get_input_containers()
-    - IMP::ScoreState::get_output_containers()
-    - IMP::ScoreState::get_input_particles()
-    - IMP::ScoreState::get_output_particles()
-*/
-#define IMP_SCORE_STATE(Name)                                   \
-  protected:                                                    \
-  virtual void do_before_evaluate();                            \
-  virtual void do_after_evaluate(DerivativeAccumulator *da);    \
-  virtual ContainersTemp get_input_containers() const;          \
-  virtual ContainersTemp get_output_containers() const;         \
-  virtual ParticlesTemp get_input_particles() const;            \
-  virtual ParticlesTemp get_output_particles() const;           \
-  IMP_OBJECT(Name)
-
-
-//! Define the basics needed for a ScoreState
-/** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Constraint::do_update_attributes()
-    - IMP::Constraint::do_update_derivatives()
-*/
-#define IMP_CONSTRAINT(Name)                                            \
-  protected:                                                            \
-  void do_update_attributes();                                          \
-  void do_update_derivatives(DerivativeAccumulator *da);                \
-  IMP_NO_DOXYGEN(void do_before_evaluate() { Name::do_update_attributes();}) \
-  IMP_NO_DOXYGEN(void do_after_evaluate(DerivativeAccumulator*da) {     \
-      if (da) Name::do_update_derivatives(da);})                        \
-  virtual ContainersTemp get_input_containers() const;                  \
-  virtual ContainersTemp get_output_containers() const;                 \
-  virtual ParticlesTemp get_input_particles() const;                    \
-  virtual ParticlesTemp get_output_particles() const;                   \
-  IMP_OBJECT(Name)
 
 
 //! Define the basics needed for a particle refiner
