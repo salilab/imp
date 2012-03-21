@@ -58,7 +58,7 @@ namespace {
   void divvy_up_particles(const ParticlesTemp &ps,
                           ParticlesTemp &out,
                           RBM &members) {
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       compatibility::set<Particle*> ups(ps.begin(), ps.end());
       IMP_USAGE_CHECK(ups.size()==ps.size(),
                       "Duplicate particles in input: "
@@ -75,7 +75,7 @@ namespace {
         out.push_back(ps[i]);
       }
     }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       ParticlesTemp check_out=out;
       std::sort(check_out.begin(), check_out.end());
       check_out.erase(std::unique(check_out.begin(), check_out.end()),
@@ -90,7 +90,7 @@ namespace {
   }
 
   void check_particles(const ParticlesTemp &ps) {
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       for (ParticlesTemp::const_iterator it= ps.begin();
            it != ps.end(); ++it) {
         if (RigidBody::particle_is_instance(*it)
@@ -157,7 +157,7 @@ ParticlePairsTemp RigidClosePairsFinder
   ParticlesTemp fa;
   divvy_up_particles(pa, fa, m);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ppt.size(); ++i) {
       IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
                          "Pair of one returned: " << ppt[i][0]->get_name());
@@ -228,7 +228,7 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
       out[i]= ParticlePair(a, pt[i]);
     }
   }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< out.size(); ++i) {
       if (RigidMember::particle_is_instance(out[i][0])
           && RigidMember::particle_is_instance(out[i][1])) {

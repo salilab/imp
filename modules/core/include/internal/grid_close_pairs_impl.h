@@ -207,7 +207,7 @@ struct Helper {
         }
       }
     }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       int total=0;
       for (unsigned int i=0; i< bin_contents.size(); ++i) {
         total+= bin_contents[i].size();
@@ -428,7 +428,7 @@ struct Helper {
         }
       }
 
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
           for (unsigned int j=0; j< k; ++j) {
             if (tr.check_close(bin_contents_g[i][k], bin_contents_g[i][j])) {
@@ -471,7 +471,7 @@ struct Helper {
           }
         }
 
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
             for (unsigned int l=0; l< k; ++l) {
               if (tr.check_close(bin_contents_g[i][k],
@@ -484,7 +484,7 @@ struct Helper {
         }
       }
     }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       for (It it0= ps.b_; it0 != ps.e_; ++it0) {
         for (It it1= ps.b_; it1 != it0; ++it1) {
           if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {
@@ -562,7 +562,7 @@ struct Helper {
           Grid gq= gg;
           fill_grid(bin_contents_g[i], tr, gg);
           fill_grid(bin_contents_q[j], tr, gq);
-          IMP_IF_CHECK(USAGE) {
+          IMP_IF_CHECK(base::USAGE) {
             for (unsigned int i=0; i< 3; ++i) {
               IMP_USAGE_CHECK(gg.get_number_of_voxels(i)
                               == gq.get_number_of_voxels(i),
@@ -581,7 +581,7 @@ struct Helper {
           }
         }
 
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
             for (unsigned int l=0; l< bin_contents_q[j].size(); ++l) {
               if (tr.check_close(bin_contents_g[i][k],
@@ -594,7 +594,7 @@ struct Helper {
         }
       }
     }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
        for (ItG it0= psg.b_; it0 != psg.e_; ++it0) {
          for (ItQ it1= psq.b_; it1 != psq.e_; ++it1) {
            if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {

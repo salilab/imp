@@ -142,7 +142,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
     ParticleIndexPairs none;
     update_list(none);
   }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< sc_[0]->get_number_of_particles(); ++i) {
       XYZR d0(sc_[0]->get_particle(i));
       for (unsigned int j=0; j< sc_[1]->get_number_of_particles(); ++j) {

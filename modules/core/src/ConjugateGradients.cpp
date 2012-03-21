@@ -14,11 +14,11 @@
 #include <limits>
 #include <cmath>
 
-#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(USAGE) {        \
-    if (!is_good_value(n)) {                         \
-      IMP_LOG(TERSE, #n << " is " << n << std::endl);   \
-      failure();                                        \
-    }                                                   \
+#define IMP_CHECK_VALUE(n) IMP_IF_CHECK(IMP::base::USAGE) {      \
+    if (!is_good_value(n)) {                                     \
+      IMP_LOG(TERSE, #n << " is " << n << std::endl);            \
+      failure();                                                 \
+    }                                                            \
   }
 
 #define IMP_CG_SCALE
@@ -41,7 +41,7 @@ bool is_good_value(const NT &f) {
 }
 
 void ConjugateGradients::failure() {
-  IMP_THROW("Failure in ConjugateGradients", ModelException);
+  IMP_THROW("Failure in ConjugateGradients", base::ModelException);
 }
 
 
@@ -88,7 +88,7 @@ ConjugateGradients::get_score(base::Vector<FloatIndex> float_indices,
   /* get score */
   try {
     score = get_scoring_function()->evaluate(true);
-  } catch (ModelException) {
+  } catch (base::ModelException) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();
   }

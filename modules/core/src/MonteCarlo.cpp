@@ -136,7 +136,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     //<< std::endl;
     best_->swap_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
-    IMP_IF_CHECK(USAGE) {
+    IMP_IF_CHECK(base::USAGE) {
       IMP_CHECK_CODE(double e= do_evaluate(get_model()->get_particles()));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
@@ -173,7 +173,7 @@ void MonteCarlo::setup_incremental() {
     Pointer<Restraint> cur= base[i]->create_incremental_decomposition(1);
     if (cur) {
       RestraintsTemp curf= IMP::get_restraints(RestraintsTemp(1, cur));
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int i=0; i< curf.size(); ++i) {
           IMP_CHECK_OBJECT(curf[i]);
         }
@@ -297,7 +297,7 @@ double MonteCarlo::evaluate_incremental(const ParticleIndexes &moved) const {
   swap(old_incremental_score_indexes_, allr);
   double ret= std::accumulate(incremental_scores_.begin(),
                               incremental_scores_.end(), 0.0);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     base::SetLogState sls(SILENT);
     for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
       double cur= flattened_restraints_[i]->evaluate(false);
@@ -381,7 +381,7 @@ MonteCarlo::NBLScore::NBLScore(PairScore *score,
 double MonteCarlo::NBLScore::get_score(Model *m, ParticleIndex moved,
                                        const ParticleIndexes& nearby) const {
   IMP_LOG(VERBOSE, "Moving " << moved << std::endl);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     double nscore=0;
     for (unsigned int i=0; i< cache_.size(); ++i) {
       ParticleIndex pi(i);

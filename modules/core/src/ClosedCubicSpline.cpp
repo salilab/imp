@@ -58,7 +58,7 @@ double ClosedCubicSpline::evaluate(double feature) const
 {
   // check for feature in range
   if (feature < minrange_ || feature > maxrange_) {
-    throw ValueException("Value out of range for closed cubic spline");
+    throw base::ValueException("Value out of range for closed cubic spline");
   }
 
   // determine bin index and thus the cubic fragment to use:

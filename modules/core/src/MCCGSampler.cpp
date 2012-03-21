@@ -360,7 +360,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   mc->set_return_best(true);
   Pointer<IMP::internal::InternalListSingletonContainer> sc
     =set_up_movers(pms, mc);
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     if (sc->get_indexes().size()==0) {
       IMP_WARN("There are no particles with optimized cartesian coordinates."
                << std::endl);
@@ -381,7 +381,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     }
     try {
       mc->optimize(pms.mc_steps_);
-    } catch (ModelException) {
+    } catch (base::ModelException) {
       IMP_LOG(TERSE, "Optimization ended by exception" << std::endl);
       ++failures;
       continue;
@@ -390,7 +390,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       IMP_LOG(TERSE, "Found configuration with score "
               << get_model()->evaluate(false) << std::endl);
       ret->save_configuration();
-      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         double oe= get_model()->evaluate(false);
         ret->load_configuration(-1);
         ret->load_configuration(ret->get_number_of_configurations()-1);

@@ -12,7 +12,8 @@
 #include "core_config.h"
 
 #include <IMP/Sampler.h>
-#include <IMP/macros.h>
+#include <IMP/sampler_macros.h>
+#include <IMP/container_macros.h>
 #include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/internal/InternalListSingletonContainer.h>

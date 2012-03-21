@@ -12,6 +12,7 @@
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/score_state_macros.h>
 #include <IMP/io.h>
 
 IMPCORE_BEGIN_NAMESPACE

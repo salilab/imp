@@ -11,6 +11,7 @@
 #include "gsl_config.h"
 
 #include <IMP/Optimizer.h>
+#include <IMP/optimizer_macros.h>
 #include <gsl/gsl_multimin.h>
 
 IMPGSL_BEGIN_NAMESPACE

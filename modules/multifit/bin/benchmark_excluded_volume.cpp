@@ -162,7 +162,7 @@ void do_it(int argc, char *argv[]) {
     tr->add_particle(rb0, get_leaves(h0));
     tr->add_particle(rb1, get_leaves(h1));
     IMP_NEW(KClosePairsPairScore, cpps, (ps, tr, 1));
-    ScopedRestraint sr(create_restraint(cpps.get(),
+    ScopedRestraint sr(IMP::create_restraint(cpps.get(),
                                         ParticlePair(rb0, rb1)),
                        m->get_root_restraint_set());
     sr->set_maximum_score(.1);

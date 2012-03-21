@@ -630,8 +630,8 @@ namespace {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << p0[0]->get_name() << " and "
               << p1[0]->get_name() << std::endl);
-      ret= create_restraint(ps,
-                                  ParticlePair(p0[0], p1[0]),
+      ret= IMP::create_restraint(ps,
+                                 ParticlePair(p0[0], p1[0]),
                                   "Atom distance restraint %1%");
     } else {
       IMP_LOG(TERSE, "Creating distance restraint between "
@@ -647,9 +647,9 @@ namespace {
       r->add_particle(p1[0], p1);
       IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
       r, 1));
-      ret= create_restraint(nps, ParticlePair(p0[0],
-      p1[0]),
-      "Atom k distance restraint %1%");
+      ret= IMP::create_restraint(nps.get(), ParticlePair(p0[0],
+                                                   p1[0]),
+                                 "Atom k distance restraint %1%");
       //}
     }
     return ret.release();

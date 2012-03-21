@@ -101,7 +101,7 @@ Restraints DiameterRestraint::do_create_decomposition() const {
           (diameter_, .25));
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      ret.push_back(create_restraint(sps.get(),
+      ret.push_back(IMP::create_restraint(sps.get(),
                                      ParticlePair(ps[i], ps[j])));
       ret.back()->set_maximum_score(get_maximum_score());
       std::ostringstream oss;
@@ -121,7 +121,7 @@ Restraints DiameterRestraint::do_create_current_decomposition() const {
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       if (sps->evaluate(ParticlePair(ps[i], ps[j]), nullptr) > 0) {
-        ret.push_back(create_restraint(sps.get(),
+        ret.push_back(IMP::create_restraint(sps.get(),
                                        ParticlePair(ps[i], ps[j])));
         ret.back()->set_maximum_score(get_maximum_score());
         std::ostringstream oss;
