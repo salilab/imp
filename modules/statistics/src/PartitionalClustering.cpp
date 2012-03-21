@@ -14,7 +14,7 @@ PartitionalClustering::~PartitionalClustering(){}
 
 void validate_partitional_clustering(PartitionalClustering*pc,
                                      unsigned int n) {
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     IMP::compatibility::set<int> used;
     for (unsigned int i=0; i< pc->get_number_of_clusters(); ++i) {
       Ints cluster= pc->get_cluster(i);

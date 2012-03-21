@@ -177,7 +177,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
                   << " The former should be (much) smaller than the latter.");
   if (names.size() < k) {
     IMP_THROW("Too few points to make into " << k << " clusters.",
-              ValueException);
+              base::ValueException);
   }
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
@@ -252,7 +252,7 @@ PartitionalClusteringWithCenter* create_lloyds_kmeans(Embedding *metric,
     names[i]=i;
   }
   if (names.empty()) {
-    IMP_THROW("No points to cluster", ValueException);
+    IMP_THROW("No points to cluster", base::ValueException);
   }
   return create_lloyds_kmeans(names, metric, k, iterations);
 }
