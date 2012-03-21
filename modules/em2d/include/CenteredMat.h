@@ -11,6 +11,7 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/exception.h"
 #include "IMP/macros.h"
+#include "IMP/base/showable_macros.h"
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -77,12 +78,14 @@ public:
     return centered_.at<double>(center_row_+i,center_col_+j);
   }
 
-  void show(std::ostream &out) const {
+  void do_show(std::ostream &out) const {
     out << "Matrix of size: (" << centered_.rows <<","<< centered_.cols
     <<") centered mat at: (" << center_row_ <<","<< center_col_ <<") start ("
         << start_[0] <<","<< start_[1] << ") end (" << end_[0] <<","<< end_[1]
         << ")" << std::endl;
   }
+
+  IMP_SHOWABLE_INLINE(CenteredMat, do_show(out));
 
 protected:
 
