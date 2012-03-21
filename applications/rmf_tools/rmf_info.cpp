@@ -122,7 +122,7 @@ int main(int argc, char **argv) {
     show_info<3>(rh, std::cout);
     show_info<4>(rh, std::cout);
     return 0;
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {

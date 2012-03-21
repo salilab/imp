@@ -218,7 +218,7 @@ int main(int argc, char **argv) {
     show_sets<4>(rh, rh.get_categories<4>(), *out);
     *out << "</rmf>\n";
     return 0;
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {

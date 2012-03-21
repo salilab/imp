@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
     RMF::FloatKey blue
         = RMF::get_key_always<RMF::FloatTraits>(rh, cat, "rgb color blue");
     recolor(rh.get_root_node(), level, count, 0, method, red, green, blue);
-  } catch (const IMP::Exception &e) {
+  } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
     return 1;
   } catch (const std::exception &e) {
