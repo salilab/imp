@@ -69,7 +69,7 @@ namespace {
 #else
       IMP_UNUSED(face.size());
       IMP_THROW("Non-triangular face found. Processing those requires CGAL.",
-                ValueException);
+                base::ValueException);
 #endif
     }
   }

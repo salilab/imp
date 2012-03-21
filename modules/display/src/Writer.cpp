@@ -77,7 +77,7 @@ Writer *create_writer(std::string name) {
     }
   }
   IMP_THROW("No writer found for file " << name,
-            ValueException);
+            base::ValueException);
 }
 
 WriterOutput::~WriterOutput(){}
