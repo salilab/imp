@@ -22,7 +22,7 @@ namespace IMP {
 
 %extend IMP::algebra::BoundingBoxD {
   IMP::algebra::VectorD<D> __getitem__(unsigned int index) const {
-    if (index >= 2) throw IMP::IndexException("");
+    if (index >= 2) throw IMP::base::IndexException("");
     return self->get_corner(index);
   }
   /*void __setitem__(unsigned int index, double val) {
@@ -36,4 +36,3 @@ namespace IMP {
   void __add__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+(o); }
     unsigned int __len__() {return 2;}
 };
-

@@ -4,7 +4,7 @@
 
 %extend IMP::algebra::SphericalVector3D {
   double __getitem__(unsigned int index) const {
-    if (index >= 3) throw IMP::IndexException("");
+    if (index >= 3) throw IMP::base::IndexException("");
     return self->operator[](index);
   }
   void __setitem__(unsigned int index, double val) {
@@ -13,4 +13,3 @@
 };
 
 %include "IMP/algebra/SphericalVector3D.h"
-

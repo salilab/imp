@@ -9,6 +9,8 @@
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/vector_generators.h"
 #include "IMP/algebra/utility.h"
+#include <IMP/base/check_macros.h>
+#include <IMP/base/log_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -19,7 +21,7 @@ Rotation3D::~Rotation3D() {
 Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
                                     double m21,double m22,double m23,
                                     double m31,double m32,double m33) {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     Vector3D v0(m11, m12, m13);
     Vector3D v1(m21, m22, m23);
     Vector3D v2(m31, m32, m33);
@@ -165,7 +167,8 @@ const Vector3D Rotation3D::get_derivative(const Vector3D &o,
                         t11 - 2*t47*v_[3],
                         t73 - 2*t65*v_[3]);
     default:
-      throw IndexException("Invalid derivative component");
+      IMP_THROW("Invalid derivative component",
+                base::IndexException);
     };
     return Vector3D(0,0,0);
   }
@@ -299,7 +302,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
     IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
               << " bug Daniel about getting a more stable implementation"
               << " or restructure your code to stay with quaternions.",
-              ValueException);
+              base::ValueException);
   }
   double sin_tilt= sin_tilt_sin_psi/std::sin(psi);
   double tilt= std::atan2(sin_tilt, cos_tilt);
@@ -307,7 +310,7 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
     IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
               << " bug Daniel about getting a more stable implementation"
               << " or restructure your code to stay with quaternions.",
-              ValueException);
+              base::ValueException);
   }
   double cos_rot= cos_rot_sin_tilt/sin_tilt;
   double sin_rot= sin_rot_sin_tilt/sin_tilt;
@@ -317,9 +320,9 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
           << cos_psi_sin_tilt/sin_tilt << "\n"
           << sin_rot << " " << sin_tilt << " "
           << sin_tilt_sin_psi/sin_tilt << std::endl);*/
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     Rotation3D rrot= get_rotation_from_fixed_zyz(rot, tilt, psi);
-    IMP_LOG(VERBOSE,
+    IMP_LOG(base::VERBOSE,
             "Input is " << r << " output results in " << rrot << std::endl);
     IMP_INTERNAL_CHECK(get_distance(r, rrot) < .1,
                "The input and output rotations are far apart " << r
