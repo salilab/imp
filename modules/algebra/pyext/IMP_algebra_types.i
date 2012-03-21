@@ -28,7 +28,7 @@ IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
 %extend Namespace::Namebase##D {
   int __cmp__(const Namebase##D<D> &) const {
     IMP_THROW("Geometric primitives cannot be compared",
-              IMP::ValueException);
+              IMP::base::ValueException);
   }
 }
 %enddef

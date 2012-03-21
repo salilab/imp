@@ -35,7 +35,7 @@ namespace IMP {
 
 %extend IMP::algebra::VectorD {
   double __getitem__(unsigned int index) const {
-    if (index >= D) throw IMP::IndexException("");
+    if (index >= D) throw IMP::base::IndexException("");
     return self->operator[](index);
   }
   void __setitem__(unsigned int index, double val) {

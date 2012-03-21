@@ -16,6 +16,7 @@
 #include "Transformation2D.h"
 #include "internal/tnt_array2d.h"
 #include "internal/jama_svd.h"
+#include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
 
 
@@ -102,7 +103,7 @@ const Vector3DsOrXYZs1 &to
   internal::TNT::Array1D<double> SV;
   svd.getSingularValues(SV);
   double det= SV[0]*SV[1]*SV[2];
-  IMP_IF_CHECK(USAGE) {
+  IMP_IF_CHECK(base::USAGE) {
     if (det < .00001) {
       IMP_LOG(TERSE, "FROM:\n");
       for (unsigned int i=0; i< from.size(); ++i) {
