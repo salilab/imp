@@ -12,6 +12,7 @@
 
 #include "container_config.h"
 #include <IMP/SingletonScore.h>
+#include <IMP/singleton_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

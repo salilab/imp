@@ -12,6 +12,7 @@
 
 #include "container_config.h"
 #include <IMP/CLASSNAMEScore.h>
+#include <IMP/LCCLASSNAME_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
