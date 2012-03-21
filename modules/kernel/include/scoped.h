@@ -57,8 +57,8 @@ public:
 */
 template <class SS>
 class GenericScopedRestraint {
-  Pointer<SS> ss_;
-  Pointer<RestraintSet> rs_;
+  base::Pointer<SS> ss_;
+  base::Pointer<RestraintSet> rs_;
 public:
   IMP_RAII(GenericScopedRestraint, (SS *ss, RestraintSet *rs),{}, {
       ss_=ss;
@@ -91,8 +91,8 @@ public:
 */
 template <class SS>
 class GenericScopedRemoveRestraint {
-  Pointer<SS> ss_;
-  Pointer<RestraintSet> rs_;
+  base::Pointer<SS> ss_;
+  base::Pointer<RestraintSet> rs_;
   void cleanup() {
     if (rs_ && rs_->get_is_part_of_model()) {
         IMP_LOG(VERBOSE, "Restoring restraint "
@@ -141,8 +141,8 @@ public:
 */
 template <class SS>
 class GenericScopedRemoveScoreState {
-  Pointer<SS> ss_;
-  Pointer<Model> rs_;
+  base::Pointer<SS> ss_;
+  base::Pointer<Model> rs_;
   void cleanup() {
     if (rs_) {
         IMP_LOG(VERBOSE, "Restoring restraint "
@@ -219,7 +219,7 @@ public:
 */
 template <class Key, class Value>
 class ScopedAddCacheAttribute {
-  Pointer<Model> m_;
+  base::Pointer<Model> m_;
   ParticleIndex pi_;
   Key key_;
 public:
@@ -245,7 +245,7 @@ public:
 */
 template <class Key, class Value>
 class ScopedSetAttribute {
-  Pointer<Model> m_;
+  base::Pointer<Model> m_;
   ParticleIndex pi_;
   Key key_;
   Value old_;
