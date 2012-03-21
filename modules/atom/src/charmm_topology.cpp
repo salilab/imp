@@ -14,6 +14,8 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/Charged.h>
 #include <IMP/atom/angle_decorators.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/log_macros.h>
 
 #include <boost/algorithm/string.hpp>
 #include <set>
@@ -594,9 +596,12 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
       }
     }
   }
+  bool dumped=false;
   IMP_IF_LOG(VERBOSE) {
+    dumped=true;
     warn_context_.dump_warnings();
-  } else {
+  }
+  if (!dumped) {
     warn_context_.clear_warnings();
   }
 }
@@ -1004,9 +1009,13 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
       }
     }
   }
+  // keep clang happy
+  bool dumped=false;
   IMP_IF_LOG(VERBOSE) {
+    dumped=true;
     warn_context_.dump_warnings();
-  } else {
+  }
+  if (!dumped) {
     warn_context_.clear_warnings();
   }
 }
