@@ -56,8 +56,11 @@
 
 #else // IMP_DOXYGEN
 
-#define IMP_IF_LOG(level)                       \
-  if (IMP::base::level <= ::IMP::base::get_log_level())
+#define IMP_IF_LOG(level)                               \
+  using IMP::base::VERBOSE;                             \
+  using IMP::base::TERSE;                               \
+  using IMP::base::SILENT;                              \
+  if (level <= ::IMP::base::get_log_level())
 
 #define IMP_LOG(level, expr)                                            \
   {                                                                     \
