@@ -261,6 +261,7 @@ class IMPISDEXPORT Covariance1DFunction : public BivariateFunction
         {
             // Strategy: fill in the main diagonal, then fill with zeros
             // if the value of the function falls below cutoff.
+            // assumes data points are ordered!
             unsigned N=xlist.size();
             Eigen::MatrixXd ret(N,N);
             double diag;
