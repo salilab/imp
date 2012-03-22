@@ -83,24 +83,37 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
    * since the last call, and will recompute
    * \f$(\mathbf{W} + \mathbf{S})^{-1}\f$ if necessary.
    */
-  double get_posterior_mean(Floats x);
+  double get_posterior_mean(Floats x) const;
   double get_posterior_covariance(Floats x1,
-                                  Floats x2);
+                                  Floats x2) const;
   #ifndef SWIG
   //c++ only
-  MatrixXd get_posterior_covariance_matrix(FloatsList x);
+  MatrixXd get_posterior_covariance_matrix(FloatsList x) const;
   #endif
-  //debug version for python
-  FloatsList get_posterior_covariance_matrix(FloatsList x, bool);
+  //for python
+  FloatsList get_posterior_covariance_matrix(FloatsList x, bool) const;
 
-  /** Compute the Hessian of the -log(likelihood)
-   * wrt all dependent particles that can be optimized
-   */
-  FloatsList get_Hessian();
+  #ifndef SWIG
+  //derivative: d(mean(q))/(dparticle_i)
+  VectorXd get_posterior_mean_derivative(Floats x) const;
+  #endif
 
-  // returns the particles for which the hessian was computed, in order
-  // the order is guaranteed by functions.h.
-  ParticlesTemp get_Hessian_particles();
+  #ifndef SWIG
+  //derivative: d(cov(q,q))/(dparticle_i)
+  VectorXd get_posterior_covariance_derivative(Floats x) const;
+  #endif
+  //for python
+  Floats get_posterior_covariance_derivative(Floats x, bool) const;
+
+  #ifndef SWIG
+  //hessian: d(mean(q))/(dparticle_i dparticle_j)
+  //MatrixXd get_posterior_mean_hessian(Floats x) const;
+  #endif
+
+  #ifndef SWIG
+  //hessian: d(cov(q,q))/(dparticle_i dparticle_j)
+  //MatrixXd get_posterior_covariance_hessian(Floats x) const;
+  #endif
 
   //needed for restraints using gpi
   ParticlesTemp get_input_particles() const;
@@ -141,7 +154,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   //returns updated data vector
   VectorXd get_I() const {return I_;}
   //returns updated prior mean vector
-  VectorXd get_m();
+  VectorXd get_m() const;
   //returns dm/dparticle
   VectorXd get_m_derivative(unsigned particle) const;
   //returns d2m/(dparticle_1 dparticle_2)
@@ -151,16 +164,16 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void add_to_m_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
   // returns updated prior covariance vector
-  VectorXd get_wx_vector(Floats xval);
+  VectorXd get_wx_vector(Floats xval) const;
   //returns updated data covariance matrix
   Eigen::DiagonalMatrix<double, Eigen::Dynamic> get_S() const
   {
       return S_;
   }
   //returns updated prior covariance matrix
-  MatrixXd get_W();
+  MatrixXd get_W() const;
   //returns Omega=(W+S/N)
-  MatrixXd get_Omega();
+  MatrixXd get_Omega() const;
   //returns dOmega/dparticle
   MatrixXd get_Omega_derivative(unsigned particle) const;
   //returns d2Omega/(dparticle_1 dparticle_2)
@@ -170,9 +183,9 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   void add_to_Omega_particle_derivative(unsigned particle, double value,
           DerivativeAccumulator &accum);
   //returns updated Omega^{-1}
-  MatrixXd get_Omi();
+  MatrixXd get_Omi() const;
   //returns updated Omega^{-1}(I-m)
-  VectorXd get_OmiIm();
+  VectorXd get_OmiIm() const;
 
  private:
 
@@ -191,6 +204,23 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
   // compute (W+sigma*S/N)^{-1} (I-m)
   void compute_OmiIm();
 
+  //compute dw(q)/dparticle_i
+  VectorXd get_wx_vector_derivative(Floats q, unsigned i) const;
+  //compute dw(q)/(dparticle_m * dparticle_n)
+  MatrixXd get_wx_vector_second_derivative(Floats q, unsigned m, unsigned n)
+      const;
+
+  //compute dcov(q,q)/dw(q)
+  VectorXd get_dcov_dwq(Floats q) const;
+  //compute dcov(q,q)/dOmega
+  MatrixXd get_dcov_dOm(Floats q) const;
+  //compute d2cov(q,q)/(dw(q) dw(q)) (independent of q !)
+  MatrixXd get_d2cov_dwq_dwq() const;
+  //compute d2cov(q,q)/(dw(q)_m dOmega)
+  MatrixXd get_d2cov_dwq_dOm(Floats q, unsigned m) const;
+  //compute d2cov(q,q)/(dOmega dOmega_mn)
+  MatrixXd get_d2cov_dOm_dOm(Floats q, unsigned m, unsigned n) const;
+
   // compute mean observations
   void compute_I(Floats mean);
   // compute diagonal covariance matrix of observations
@@ -207,7 +237,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
     IMP::internal::OwnerPointer<UnivariateFunction> mean_function_;
     // pointer to the prior covariance function
     IMP::internal::OwnerPointer<BivariateFunction> covariance_function_;
-    VectorXd I_,m_,wx_;
+    VectorXd I_,m_;
     MatrixXd W_,Omega_,Omi_; // Omi = Omega^{-1}
     Eigen::DiagonalMatrix<double, Eigen::Dynamic> S_;
     VectorXd OmiIm_; // Omi * (I - m)
