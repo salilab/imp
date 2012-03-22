@@ -1,0 +1,16 @@
+Import('env')
+
+env= env.IMPApplication(name="combine_scores", version="SVN",
+                        authors=["Dina Schneidman"],
+                        brief="Combine scores for different data types (part of integrative docking protocol)",
+                        overview="""Usage: combine_scores <file1> <weight1> <file2> <weight2> <file3> <weight3>...
+combines files with same docking transformations in the following format:
+# | score | filtered (+/-) | z-score | ... | Transformation
+The programs for scoring of docking transformations (saxs_score, em2d_score, em3d_score, nmr_rtc_score) output results in this format.
+Only filtered values of + are combined. The output score is the weighted sum of Z-Scores""",
+                        license=env.IMPStandardLicense(),
+                        publications=['Schneidman-Duhovny D et al. ...'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="combine_scores", source=["combine_scores.cpp"])
