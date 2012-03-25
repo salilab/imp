@@ -117,7 +117,8 @@ class GridD: public Storage, public EmbeddingT
               const BoundingBoxD<D> &bb) const {
     Ints dd(ds.size());
     for (unsigned int i=0; i< ds.size(); ++i ) {
-      IMP_USAGE_CHECK(ds[i]>0, "Side cannot be 0");
+      IMP_USAGE_CHECK(ds[i]>0, "Number of voxels cannot be 0 on dimension: "
+                      << i);
       double bside= bb.get_corner(1)[i]- bb.get_corner(0)[i];
       double d= bside/ds[i];
       double cd= std::ceil(d);
