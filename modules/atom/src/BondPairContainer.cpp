@@ -15,7 +15,9 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer
-::BondPairContainer(SingletonContainer *sc): sc_(sc){
+::BondPairContainer(SingletonContainer *sc):
+  PairContainer(sc->get_model(),
+                "BondPairContainer%1%"), sc_(sc){
 }
 
 
