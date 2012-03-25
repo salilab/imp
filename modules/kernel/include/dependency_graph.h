@@ -43,12 +43,11 @@ get_dependency_graph(const ScoreStatesTemp &ss,
 class Model;
 
 /** The dependency graph captures the interactions between Restraint,
-    ScoreState and Particle objects. The graph has an edge if the source
-    of the edge is an input for the target of the edge. eg, there
+    ScoreState and Particle objects. The graph has a directed edge if the source
+    of the edge is an input for the target of the edge or the target
+    of the edge is an output for the source. eg, there
     is an edge connecting a Container to the Restraint which gets
-    its particles from the Container. In order for a given
-    Restraint to be evaluated properly, all of the Particles connected
-    by a path to the Restraint must be up to date.
+    its particles from the Container.
     \see get_pruned_dependency_graph()
 */
 IMPEXPORT DependencyGraph
@@ -66,38 +65,35 @@ IMPEXPORT ScoreStatesTemp
 get_required_score_states(const RestraintsTemp &rs);
 
 
-/** Returns the subset of particles that depend on p as input. This
-    will not include p. The variable all is the set of all other particles
-    of interest, they will block dependency propagation.
+/** \name Getting dependent values
 
-    \note This function is here to aid in debugging of optimization
-    protocols that use Domino. As a result, its signature and
-    functionality may change without notice.
- */
-IMPEXPORT ParticlesTemp get_dependent_particles(Particle *p,
-                                                const ParticlesTemp &all);
+    These functions use the dependency graph to determine all the objects
+    of a given type that depend on a particular object. An object is said
+    to depend on another if there is a path from the object to the dependent
+    object through the reversed dependency graph (see get_dependency_graph()).
 
-/** \copydoc get_dependent_particles(Particle*,const ParticlesTemp&)
+    @{
  */
 IMPEXPORT ParticlesTemp
-get_dependent_particles(Particle *p,
-                        const ParticlesTemp &all,
+get_dependent_particles(base::Object *p,
+                        const base::ObjectsTemp &all,
                         const DependencyGraph &dg);
 
 
 /** Return all the restraints that depend on p as an input, even indirectly.
  */
 IMPEXPORT RestraintsTemp
-get_dependent_restraints(Particle *p,
-                        const ParticlesTemp &all,
+get_dependent_restraints(base::Object *p,
+                         const base::ObjectsTemp &all,
                         const DependencyGraph &dg);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
 IMPEXPORT ScoreStatesTemp
-get_dependent_score_states(Particle *p,
-                        const ParticlesTemp &all,
-                        const DependencyGraph &dg);
+get_dependent_score_states(base::Object *p,
+                           const base::ObjectsTemp &all,
+                           const DependencyGraph &dg);
+/** @} */
 
 
 /** Return an ordering for the score states that is consistent with the
