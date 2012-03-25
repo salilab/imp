@@ -205,24 +205,20 @@ inline std::pair<double, bool> exec_evaluate_one(const ScoreStatesTemp &states,
                                                Model *m) {
   IMP_FUNCTION_LOG;
   IMP_CHECK_OBJECT(m);
-  // make sure stage is restored on an exception
-  internal::SFSetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
-      reset(&m->cur_stage_);
-  IMP_CHECK_OBJECT(m);
   IMP_LOG(VERBOSE, "On restraints " << Showable(restraint)
           << " and score states " << states
           << std::endl);
   m->before_evaluate(states);
-
-  m->cur_stage_= internal::EVALUATING;
+  internal::SFSetIt<IMP::internal::Stage>
+      reset(&m->cur_stage_, internal::EVALUATING);
+  // make sure stage is restored on an exception
   if (DERIV) {
     m->zero_derivatives();
   }
   std::pair<double, bool> ret
-                     = exec_evaluate_one< DERIV, GOOD, MAX, STATS>(restraint,
+    = exec_evaluate_one< DERIV, GOOD, MAX, STATS>(restraint,
                                                   omax, 1.0,
                                                   m);
-
   m->after_evaluate(states, DERIV);
 
   // validate derivatives
@@ -288,8 +284,8 @@ RestraintScoringFunction<RestraintType>
                         false, true);
 }
 template <class RestraintType>
-RestraintsTemp RestraintScoringFunction<RestraintType>::get_restraints() const {
-  return RestraintsTemp(1, r_);
+Restraints RestraintScoringFunction<RestraintType>::create_restraints() const {
+  return Restraints(1, r_);
 }
 
 template <class RestraintType>
@@ -323,6 +319,8 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
       ScoringFunction(r->get_model(),
                       name), r_(r),
       weight_(weight), max_(max){}
+  ScoreStatesTemp
+  get_required_score_states(const DependencyGraph &) const;
   IMP_SCORING_FUNCTION(WrappedRestraintScoringFunction);
 };
 
@@ -353,9 +351,21 @@ WrappedRestraintScoringFunction<RestraintType>
                                 false, true);
 }
 template <class RestraintType>
-RestraintsTemp
-WrappedRestraintScoringFunction<RestraintType>::get_restraints() const {
-  return RestraintsTemp(1, r_);
+Restraints
+WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
+  IMP_NEW(RestraintSet, rs, (get_name()+" weights"));
+  rs->add_restraint(r_);
+  rs->set_model(get_model());
+  rs->set_maximum_score(max_);
+  rs->set_weight(weight_);
+  return Restraints(1, rs);
+}
+
+template <class RestraintType>
+ScoreStatesTemp
+WrappedRestraintScoringFunction<RestraintType>
+::get_required_score_states(const DependencyGraph &) const {
+  return get_model()->get_score_states(RestraintsTemp(1,r_));
 }
 
 template <class RestraintType>

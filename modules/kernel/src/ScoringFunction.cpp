@@ -30,7 +30,21 @@ ScoringFunctionInput::ScoringFunctionInput(Model *sf):
   P(IMP::internal::create_scoring_function(sf)){
 }
 
+void
+ScoringFunction::update_score_states(const DependencyGraph &dg) {
+  // can't check here as create_restraints can cause a loop
+  ss_= get_required_score_states(dg);
+}
 
+ScoreStatesTemp
+ScoringFunction::get_required_score_states(const DependencyGraph &) const {
+  Restraints rs= create_restraints();
+  IMP_INTERNAL_CHECK(get_model()->get_has_dependencies(),
+                     "ScoringFunctions where create_restraints() creates "
+                     << "new restraints must implement their own"
+                     << " get_required_score_states()");
+  return get_model()->get_score_states(rs);
+}
 
 ScoringFunctionInput::ScoringFunctionInput(const RestraintsTemp &sf):
   P(new internal::RestraintsScoringFunction(sf)){
@@ -48,7 +62,7 @@ namespace {
 
 
 void show_restraint_hierarchy(ScoringFunctionInput r, std::ostream &out) {
-  RestraintsTemp cur= r->get_restraints();
+  RestraintsTemp cur= r->create_restraints();
   for (unsigned int i=0; i< cur.size(); ++i) {
       Restraint*r= cur[i];
       RestraintSet *rs=dynamic_cast<RestraintSet*>(r);
@@ -106,13 +120,13 @@ ScoringFunctions create_incremental_decomposition(const RestraintsTemp &sf) {
 
 ScoringFunctions create_decomposition(ScoringFunction *sf) {
   ScoringFunctions ret;
-  ret= create_decomposition(sf->get_restraints());
+  ret= create_decomposition(sf->create_restraints());
   return ret;
 }
 
 ScoringFunctions create_incremental_decomposition(ScoringFunction *sf) {
   ScoringFunctions ret;
-  ret= create_incremental_decomposition(sf->get_restraints());
+  ret= create_incremental_decomposition(sf->create_restraints());
   return ret;
 }
 IMP_END_NAMESPACE

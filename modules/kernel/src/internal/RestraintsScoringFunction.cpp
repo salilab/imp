@@ -101,17 +101,13 @@ template <bool DERIV, bool GOOD, bool MAX, bool STATS, class RS, class RSS>
                                              Model *m) {
     IMP_FUNCTION_LOG;
     IMP_CHECK_OBJECT(m);
-    // make sure stage is restored on an exception
-    internal::SFSetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
-      reset(&m->cur_stage_);
-    IMP_CHECK_OBJECT(m);
     IMP_LOG(VERBOSE, "On restraints " << restraints
             << " restraint sets " << restraint_sets
             << " and score states " << states
             << std::endl);
     m->before_evaluate(get_as<ScoreStatesTemp>(states));
-
-    m->cur_stage_= internal::EVALUATING;
+    internal::SFSetIt<IMP::internal::Stage>
+      reset(&m->cur_stage_, internal::EVALUATING);
     if (DERIV) {
       m->zero_derivatives();
     }
@@ -177,10 +173,21 @@ RestraintsScoringFunction::do_evaluate_if_below(bool derivatives,
 }
 
 
-RestraintsTemp RestraintsScoringFunction::get_restraints() const {
-  RestraintsTemp ret= get_as<RestraintsTemp>(rs_)
-      + get_as<RestraintsTemp>(rss_);
-  return ret;
+Restraints RestraintsScoringFunction::create_restraints() const {
+  IMP_NEW(RestraintSet, rs, (get_name()+" wrapper"));
+  rs->set_model(get_model());
+  rs->set_maximum_score(max_);
+  rs->set_weight(weight_);
+  rs->add_restraints(rs_);
+  rs->add_restraints(rss_);
+  return Restraints(1, rs);
+}
+
+ScoreStatesTemp
+RestraintsScoringFunction::get_required_score_states(const DependencyGraph &)
+  const {
+  return get_model()->get_score_states(static_cast<RestraintsTemp>(rs_)
+                                       +static_cast<RestraintsTemp>(rss_));
 }
 
 

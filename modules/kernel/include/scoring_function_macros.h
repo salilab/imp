@@ -32,7 +32,7 @@
                  do_evaluate_if_below(bool derivatives,                 \
                                       double max,                       \
                                       const ScoreStatesTemp &ss));      \
-  IMP_IMPLEMENT(RestraintsTemp get_restraints() const);                 \
+  IMP_IMPLEMENT(Restraints create_restraints() const);                  \
   IMP_OBJECT(Name)
 //! @}
 

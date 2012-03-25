@@ -29,6 +29,8 @@ class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
                             double weight=1.0,
                             double max=NO_MAX,
                             std::string name= "RestraintsScoringFunction%1%");
+  ScoreStatesTemp get_required_score_states(const DependencyGraph &) const;
+
   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
 };
 IMP_END_INTERNAL_NAMESPACE

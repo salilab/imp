@@ -60,14 +60,18 @@ struct SFResetBitset {
   }
 };
 
-template <class T, int V>
+template <class T>
 struct SFSetIt {
   T *t_;
-  SFSetIt(T *t): t_(t){}
+  T old_;
+  SFSetIt(T *t, T nv): t_(t), old_(*t){
+    *t_=nv;
+  }
   ~SFSetIt() {
-    *t_= T(V);
+    *t_= old_;
   }
 };
+
 
 
 IMP_END_INTERNAL_NAMESPACE

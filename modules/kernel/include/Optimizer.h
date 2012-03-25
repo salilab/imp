@@ -219,7 +219,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   //! Return the restraint sets used in evaluation.
   /** Use IMP::get_restraints() to get the actual restraints used.
    */
-  RestraintsTemp get_restraints() const;
+  Restraints get_restraints() const;
 
  private:
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
