@@ -17,6 +17,7 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
+#include <IMP/PairFilter.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
