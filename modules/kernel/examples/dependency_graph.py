@@ -93,11 +93,11 @@ create_restraints(m, all)
 
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
-dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
+dg= IMP.get_dependency_graph(m)
 IMP.show_graphviz(dg);
 
 # better thing to do is to get the "pruned" graph
-pdg= IMP.get_pruned_dependency_graph([m.get_root_restraint_set()])
+pdg= IMP.get_pruned_dependency_graph(m)
 try:
     # these all open new windows which must be closed to continue
     # also, the graph is no where near as nice as displayed by
