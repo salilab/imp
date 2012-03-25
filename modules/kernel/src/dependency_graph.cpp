@@ -277,9 +277,6 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
 DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs) {
-  IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-          << " restraints and " << ss.size() << " score states."
-          << std::endl);
   DGIndex index;
   DependencyGraph ret(ss.size()+rs.size());
   boost::property_map<DependencyGraph, boost::vertex_name_t>::type
