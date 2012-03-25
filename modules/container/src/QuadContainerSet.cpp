@@ -112,17 +112,8 @@ double QuadContainerSet::evaluate_if_good(const QuadScore *s,
 ParticlesTemp QuadContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    ParticlesTemp cur= get_quad_container(i)->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
-
-Restraints
-QuadContainerSet::create_decomposition(QuadScore *ss) const {
-  Restraints ret;
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    Restraints cur=get_quad_container(i)->create_decomposition(ss);
+    ParticlesTemp cur= get_quad_container(i)
+        ->get_contained_particles();
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;

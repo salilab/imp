@@ -11,6 +11,7 @@
 
 #include "IMP/internal/InternalQuadsRestraint.h"
 #include <IMP/internal/container_helpers.h>
+#include <IMP/internal/create_decomposition.h>
 
 #include <IMP/QuadScore.h>
 #include <IMP/log.h>
@@ -67,28 +68,17 @@ ContainersTemp InternalQuadsRestraint::get_input_containers() const
 
 
 Restraints InternalQuadsRestraint::do_create_decomposition() const {
-  Restraints cur= pc_->create_decomposition(ss_);
-  for (unsigned int i=0; i< cur.size(); ++i) {
-    std::ostringstream oss;
-    oss << get_name() << " " << i;
-    cur[i]->set_name(oss.str());
-  }
-  return cur;
+  return IMP::internal::create_decomposition(get_model(),
+                                             ss_.get(),
+                                             pc_->get_all_possible_indexes(),
+                                             get_name());
 }
 
 Restraints
 InternalQuadsRestraint::do_create_current_decomposition() const {
-  Restraints ret;
-  for (unsigned int i=0; i< pc_->get_number(); ++i) {
-    Restraints cur=ss_->create_current_decomposition(pc_->get(i));
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    std::ostringstream oss;
-    oss << get_name() << " " << i;
-    ret[i]->set_name(oss.str());
-  }
-  return ret;
+  return IMP::internal::create_decomposition(get_model(),
+                                             ss_.get(),
+                                             pc_->get_indexes(), get_name());
 }
 
 void InternalQuadsRestraint::do_show(std::ostream& out) const

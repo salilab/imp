@@ -112,17 +112,8 @@ double SingletonContainerSet::evaluate_if_good(const SingletonScore *s,
 ParticlesTemp SingletonContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    ParticlesTemp cur= get_singleton_container(i)->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
-
-Restraints
-SingletonContainerSet::create_decomposition(SingletonScore *ss) const {
-  Restraints ret;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    Restraints cur=get_singleton_container(i)->create_decomposition(ss);
+    ParticlesTemp cur= get_singleton_container(i)
+        ->get_contained_particles();
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;

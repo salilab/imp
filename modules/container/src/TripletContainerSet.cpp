@@ -112,17 +112,8 @@ double TripletContainerSet::evaluate_if_good(const TripletScore *s,
 ParticlesTemp TripletContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    ParticlesTemp cur= get_triplet_container(i)->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
-
-Restraints
-TripletContainerSet::create_decomposition(TripletScore *ss) const {
-  Restraints ret;
-  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    Restraints cur=get_triplet_container(i)->create_decomposition(ss);
+    ParticlesTemp cur= get_triplet_container(i)
+        ->get_contained_particles();
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;

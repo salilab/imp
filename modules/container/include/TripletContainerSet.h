@@ -112,7 +112,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
                   },{},
                   );
   /**@}*/
-  Restraints create_decomposition(TripletScore *ss) const;
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;
