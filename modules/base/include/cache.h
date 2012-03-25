@@ -89,7 +89,7 @@ public:
 template <class Generator, class Checker>
 class SparseSymmetricPairMemoizer {
 public:
-  typedef typename Generator::first_argument_type::value_type Key;
+  typedef typename Generator::argument_type::value_type Key;
   typedef typename Generator::result_type::value_type Entry;
 private:
   Generator gen_;
@@ -113,7 +113,6 @@ private:
   ::type::const_iterator Hash1Iterator;
   Cache cache_;
   Vector<Key> cleared_;
-  Vector<Key> domain_;
 
   struct EntryCompare: std::pair<Key, Key>{
     typedef std::pair<Key, Key> P;
@@ -137,9 +136,8 @@ private:
 
   void check_it() const {
 #if IMP_BUILD < IMP_FAST
-    Vector<Entry> all= gen_(domain_, domain_, *this);
     Vector<Entry> cur(cache_.begin(), cache_.end());
-    IMP_INTERNAL_CHECK(checker_(all, cur),
+    IMP_INTERNAL_CHECK(checker_(cur),
                        "Cached and newly computed don't match");
     for (Hash0Iterator c= cache_.template get<0>().begin();
          c != cache_.template get<0>().end(); ++c) {
@@ -168,7 +166,7 @@ private:
         }
       }
     }
-    Vector<Entry> nv= gen_(cleared_, domain_, *this);
+    Vector<Entry> nv= gen_(cleared_,  *this);
     IMP_LOG(VERBOSE, "Inserting " << nv << " into pair memoizer" << std::endl);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< nv.size(); ++i) {
@@ -196,7 +194,6 @@ public:
                               const Generator &gen= Generator(),
                               const Checker &check= Checker()): gen_(gen),
                                                      checker_(check){
-    domain_=domain;
     cleared_=domain;
   }
   template <class F>
