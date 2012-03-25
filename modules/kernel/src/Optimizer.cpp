@@ -88,8 +88,8 @@ void Optimizer::set_scoring_function(ScoringFunction *sf) {
 }
 
 
-RestraintsTemp Optimizer::get_restraints() const {
-  return cache_->get_restraints();
+Restraints Optimizer::get_restraints() const {
+  return cache_->create_restraints();
 }
 
 IMP_END_NAMESPACE
