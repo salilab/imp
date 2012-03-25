@@ -45,7 +45,7 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 
 
 double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  double ret;
+  double ret=0;
   for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
     ret+= get_restraint(i)->unprotected_evaluate(accum);
   }
@@ -53,7 +53,7 @@ double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
 }
 double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
                                                   double max) const {
-  double ret;
+  double ret=0;
   for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
     ret+= get_restraint(i)->unprotected_evaluate(accum);
     if (ret > max || ret > get_maximum_score()) {
@@ -64,7 +64,7 @@ double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
 }
 double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *accum,
                                                    double max) const {
-  double ret;
+  double ret=0;
   for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
     ret+= get_restraint(i)->unprotected_evaluate(accum);
     if (ret > max ) {
