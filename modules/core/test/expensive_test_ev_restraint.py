@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.core
-import IMP.atom
 import IMP.container
 
 class ExcludedVolumeRestraintTests(IMP.test.TestCase):
