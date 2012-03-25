@@ -1,8 +1,8 @@
-import IMP.domino
+import IMP
 
 m= IMP.Model()
 # An undirected graph with an IMP::Object for each node
-g= IMP.domino.InteractionGraph()
+g= IMP.DependencyGraph()
 vs=[]
 ps=[]
 for i in range(0,10):
@@ -12,11 +12,11 @@ g.add_edge(vs[0], vs[1])
 g.add_edge(vs[1], vs[2])
 
 #try to use the altgraph package to visualize
+IMP.show_graphviz(g)
 try:
-    IMP.show_altgraph(g)
+    IMP.show_graphviz(g)
 except:
     print "Oh well, no altgraph"
-
 
 try:
     import matplotlib
