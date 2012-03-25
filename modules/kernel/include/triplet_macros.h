@@ -421,28 +421,6 @@
                 const);                                       \
   IMP_IMPLEMENT(ParticleIndexTriplets get_indexes() const);                   \
   IMP_IMPLEMENT(ParticleIndexTriplets get_all_possible_indexes() const);      \
-  IMP_IMPLEMENTATION_TEMPLATE_1(class S,                                \
-    Restraints create_decomposition_t(S *s) const, {                    \
-    ParticleIndexTriplets all= get_all_possible_indexes();            \
-    Restraints ret(all.size());                                         \
-    for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]=  IMP::internal::create_restraint(s,                           \
-                                              IMP::internal::           \
-                                              get_particle(get_model(), \
-                                                           all[i]));    \
-    }                                                                   \
-    return ret;                                                         \
-                                });                                     \
-  IMP_IMPLEMENT_INLINE(Restraints                                       \
-  create_decomposition(TripletScore *s) const, {                      \
-    ParticleIndexTriplets all= get_all_possible_indexes();                    \
-    Restraints ret(all.size());                                         \
-    for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::internal::create_restraint(s,                        \
-            IMP::internal::get_particle(get_model(), all[i]));          \
-    }                                                                   \
-    return ret;                                                         \
-                       });                                              \
   IMP_IMPLEMENT_TRIPLET_CONTAINER(Name)
 
 

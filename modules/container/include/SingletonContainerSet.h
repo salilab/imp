@@ -112,7 +112,6 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                   },{},
                   );
   /**@}*/
-  Restraints create_decomposition(SingletonScore *ss) const;
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;

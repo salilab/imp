@@ -112,17 +112,8 @@ double CLASSNAMEContainerSet::evaluate_if_good(const CLASSNAMEScore *s,
 ParticlesTemp CLASSNAMEContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
-    ParticlesTemp cur= get_CLASSFUNCTIONNAME_container(i)->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
-
-Restraints
-CLASSNAMEContainerSet::create_decomposition(CLASSNAMEScore *ss) const {
-  Restraints ret;
-  for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
-    Restraints cur=get_CLASSFUNCTIONNAME_container(i)->create_decomposition(ss);
+    ParticlesTemp cur= get_CLASSFUNCTIONNAME_container(i)
+        ->get_contained_particles();
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;

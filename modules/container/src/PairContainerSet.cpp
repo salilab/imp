@@ -112,17 +112,8 @@ double PairContainerSet::evaluate_if_good(const PairScore *s,
 ParticlesTemp PairContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    ParticlesTemp cur= get_pair_container(i)->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  return ret;
-}
-
-Restraints
-PairContainerSet::create_decomposition(PairScore *ss) const {
-  Restraints ret;
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    Restraints cur=get_pair_container(i)->create_decomposition(ss);
+    ParticlesTemp cur= get_pair_container(i)
+        ->get_contained_particles();
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
   return ret;
