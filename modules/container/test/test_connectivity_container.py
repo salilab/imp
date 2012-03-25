@@ -1,6 +1,5 @@
 import IMP
 import IMP.test
-import IMP.atom
 import IMP.container
 import IMP.display
 import math
