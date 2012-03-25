@@ -12,6 +12,7 @@
 
 #include "example_config.h"
 #include <IMP/base_types.h>
+#include <IMP/algebra/BoundingBoxD.h>
 
 
 IMPEXAMPLE_BEGIN_NAMESPACE
