@@ -65,8 +65,8 @@ public:
 
 namespace {
 template <class ResultType, class Type>
-ResultType get_dependent(Particle *p,
-                         const ParticlesTemp &all,
+ResultType get_dependent(base::Object *p,
+                         const base::ObjectsTemp &all,
                          const DependencyGraph &dg) {
   IMP_FUNCTION_LOG;
   // find p in graph, ick
@@ -107,29 +107,21 @@ ResultType get_dependent(Particle *p,
 
 
 
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all,
+ParticlesTemp get_dependent_particles(base::Object *p,
+                                      const base::ObjectsTemp &all,
                                       const DependencyGraph &dg) {
   return get_dependent<ParticlesTemp, Particle>(p, all, dg);
 }
 
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all) {
-  Model *m= p->get_model();
-  DependencyGraph dg
-    = get_dependency_graph(get_restraints(m->restraints_begin(),
-                                          m->restraints_end()));
-  return get_dependent_particles(p, all, dg);
-}
 
 
-RestraintsTemp get_dependent_restraints(Particle *p,
-                                      const ParticlesTemp &all,
-                                      const DependencyGraph &dg) {
+RestraintsTemp get_dependent_restraints(base::Object *p,
+                                        const base::ObjectsTemp &all,
+                                        const DependencyGraph &dg) {
   return get_dependent<RestraintsTemp, Restraint>(p,all, dg);
 }
-ScoreStatesTemp get_dependent_score_states(Particle *p,
-                                           const ParticlesTemp &all,
+ScoreStatesTemp get_dependent_score_states(base::Object *p,
+                                           const base::ObjectsTemp &all,
                                            const DependencyGraph &dg) {
   return get_dependent<ScoreStatesTemp, ScoreState>(p,all, dg);
 }
