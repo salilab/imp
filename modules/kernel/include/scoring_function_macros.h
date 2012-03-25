@@ -23,7 +23,7 @@
     in addition to the IMP_OBJECT() methods.*/
 #define IMP_SCORING_FUNCTION(Name)                                      \
   IMP_IMPLEMENT(ScoreIsGoodPair                                         \
-                do_evaluate_if_good(bool derivatives,\
+                do_evaluate_if_good(bool derivatives,                   \
                                     const ScoreStatesTemp &ss));        \
   IMP_IMPLEMENT(ScoreIsGoodPair                                         \
                 do_evaluate(bool derivatives,                           \
@@ -33,6 +33,8 @@
                                       double max,                       \
                                       const ScoreStatesTemp &ss));      \
   IMP_IMPLEMENT(Restraints create_restraints() const);                  \
+  IMP_IMPLEMENT(ScoreStatesTemp                                         \
+                get_required_score_states(const DependencyGraph &dg) const); \
   IMP_OBJECT(Name)
 //! @}
 

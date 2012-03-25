@@ -294,6 +294,12 @@ void RestraintScoringFunction<RestraintType>::do_show(std::ostream &out) const {
 }
 
 
+template <class RestraintType>
+ScoreStatesTemp
+RestraintScoringFunction<RestraintType>
+::get_required_score_states(const DependencyGraph &) const {
+  return get_model()->get_score_states(RestraintsTemp(1,r_));
+}
 
 
 
@@ -319,8 +325,6 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
       ScoringFunction(r->get_model(),
                       name), r_(r),
       weight_(weight), max_(max){}
-  ScoreStatesTemp
-  get_required_score_states(const DependencyGraph &) const;
   IMP_SCORING_FUNCTION(WrappedRestraintScoringFunction);
 };
 
@@ -332,6 +336,7 @@ WrappedRestraintScoringFunction<RestraintType>
   IMP_CALL_EVALUATE_ONE_WRAPPED(NO_MAX,
                                 false, false);
 }
+
 template <class RestraintType>
 std::pair<double, bool>
 WrappedRestraintScoringFunction<RestraintType>
