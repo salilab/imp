@@ -191,7 +191,6 @@ private:
   template <class F, class It>
   F do_apply( It b, It e, F f) const {
     for (It c=b; c!= e; ++c) {
-      IMP_LOG(VERBOSE, "Applying to " << *c << std::endl);
       f(*c);
     }
     return f;

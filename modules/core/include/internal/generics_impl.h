@@ -8,7 +8,7 @@
 #ifndef IMPCORE_INTERNAL_GENERICS_IMPL_H
 #define IMPCORE_INTERNAL_GENERICS_IMPL_H
 #include <IMP/generic.h>
-
+#include <IMP/internal/create_decomposition.h>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 template <class Score, class C>
@@ -56,29 +56,19 @@ ContainersTemp ContainerRestraint<Score, C>
 
 template <class Score, class C>
 Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
-  Restraints cur= pc_->template create_decomposition_t<Score>(ss_);
-  for (unsigned int i=0; i< cur.size(); ++i) {
-    std::ostringstream oss;
-    oss << this->get_name() << " " << i;
-    cur[i]->set_name(oss.str());
-  }
-  return cur;
+  return IMP::internal::create_decomposition(get_model(),
+                                             ss_.get(),
+                                             pc_->get_all_possible_indexes(),
+                                             get_name());
 }
 
 template <class Score, class C>
 Restraints
 ContainerRestraint<Score, C>::do_create_current_decomposition() const {
-  Restraints ret;
-  for (unsigned int i=0; i< pc_->get_number(); ++i) {
-    Restraints cur=ss_->create_current_decomposition(pc_->get(i));
-    ret.insert(ret.end(), cur.begin(), cur.end());
-  }
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    std::ostringstream oss;
-    oss << this->get_name() << " " << i;
-    ret[i]->set_name(oss.str());
-  }
-  return ret;
+  return IMP::internal::create_decomposition(get_model(),
+                                             ss_.get(),
+                                             pc_->get_indexes(),
+                                             get_name());
 }
 
 
