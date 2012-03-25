@@ -260,7 +260,7 @@ operator()(const NBGenerator::result_type &vals) const {
   }
   for (unsigned int i=0; i< vals.size(); ++i) {
     ParticleIndexPair pip(vals[i].first, vals[i].second);
-    double nscore= score_->evaluate_index(m_, pip, false);
+    double nscore= score_->evaluate_index(m_, pip, nullptr);
     if (std::abs(nscore-vals[i].score) > .1) {
       IMP_LOG(SILENT, "Scores don't match for " << pip << " had "
               << vals[i].score << " and got " << nscore << std::endl);
