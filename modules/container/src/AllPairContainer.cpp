@@ -18,11 +18,6 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 AllPairContainer::AllPairContainer(SingletonContainer *c,
-                                             bool):
-  c_(c){
-}
-
-AllPairContainer::AllPairContainer(SingletonContainer *c,
                                    std::string name):
   PairContainer(c->get_model(), name),
   c_(c),

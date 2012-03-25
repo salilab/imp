@@ -36,7 +36,6 @@ class QuadScore;
 class IMPEXPORT QuadContainer : public Container
 {
  protected:
-  QuadContainer(){}
   QuadContainer(Model *m,
                      std::string name="QuadContainer %1%");
 public:

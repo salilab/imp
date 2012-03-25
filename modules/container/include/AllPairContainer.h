@@ -35,8 +35,6 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
   IMP::OwnerPointer<SingletonContainer> c_;
   IMP_CONTAINER_DEPENDENCIES(AllPairContainer, ret.push_back(back_->c_););
   friend class AllBipartitePairContainer;
-  AllPairContainer(SingletonContainer *c, bool);
-
 #define IMP_AP_LOOP(body)                       \
   ParticleIndexes pis= c_->get_indexes();       \
   for (unsigned int i=0; i< pis.size(); ++i) {  \

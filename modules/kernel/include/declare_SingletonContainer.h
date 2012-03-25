@@ -36,7 +36,6 @@ class SingletonScore;
 class IMPEXPORT SingletonContainer : public Container
 {
  protected:
-  SingletonContainer(){}
   SingletonContainer(Model *m,
                      std::string name="SingletonContainer %1%");
 public:

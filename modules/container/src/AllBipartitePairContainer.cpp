@@ -21,13 +21,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 AllBipartitePairContainer
 ::AllBipartitePairContainer( SingletonContainer *a,
                              SingletonContainer *b,
-                             bool):
-  a_(a), b_(b){
-}
-
-AllBipartitePairContainer
-::AllBipartitePairContainer( SingletonContainer *a,
-                             SingletonContainer *b,
                              std::string name):
   PairContainer(a->get_model(), name),
   a_(a), b_(b),

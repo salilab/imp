@@ -36,7 +36,6 @@ class CLASSNAMEScore;
 class IMPEXPORT CLASSNAMEContainer : public Container
 {
  protected:
-  CLASSNAMEContainer(){}
   CLASSNAMEContainer(Model *m,
                      std::string name="CLASSNAMEContainer %1%");
 public:

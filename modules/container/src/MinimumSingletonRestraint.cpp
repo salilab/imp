@@ -21,7 +21,7 @@ MinimumSingletonRestraint
                            SingletonContainer *c,
                            unsigned int n,
                            std::string name):
-  Restraint(name),
+  Restraint(c->get_model(), name),
   f_(f), c_(c), n_(n){
 }
 

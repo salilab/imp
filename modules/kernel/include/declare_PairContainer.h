@@ -36,7 +36,6 @@ class PairScore;
 class IMPEXPORT PairContainer : public Container
 {
  protected:
-  PairContainer(){}
   PairContainer(Model *m,
                      std::string name="PairContainer %1%");
 public:

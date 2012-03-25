@@ -48,7 +48,7 @@ TupleRestraint<Score>
 ::TupleRestraint(Score *ss,
                  const typename Score::Argument& vt,
                  std::string name):
-  Restraint(name),
+  Restraint(IMP::internal::get_model(vt), name),
   ss_(ss),
   v_(get_index(vt))
 {

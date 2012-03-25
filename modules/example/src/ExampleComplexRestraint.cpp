@@ -20,8 +20,10 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
-                                     Float diameter):diameter_(diameter),
-                                                     sc_(sc), f_(f){
+                                     Float diameter):
+  Restraint(sc->get_model(), "ExampleComplexRestraint%1%"),
+  diameter_(diameter),
+  sc_(sc), f_(f){
   IMP_USAGE_CHECK(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");

@@ -29,14 +29,18 @@
 IMPCORE_BEGIN_NAMESPACE
 
 ConnectivityRestraint::ConnectivityRestraint(PairScore *ps,
-                                             SingletonContainer *sc):
+                                             SingletonContainer*sc):
+  Restraint(sc->get_model(), "ConnectivityRestraint %1%"),
+  ps_(ps)
+{
+  sc_= sc;
+}
+
+
+ConnectivityRestraint::ConnectivityRestraint(PairScore *ps):
   Restraint("ConnectivityRestraint %1%"),
   ps_(ps)
 {
-  if (sc) {
-    sc_= sc;
-  } else {
-  }
 }
 
 namespace {

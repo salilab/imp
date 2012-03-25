@@ -36,7 +36,6 @@ class TripletScore;
 class IMPEXPORT TripletContainer : public Container
 {
  protected:
-  TripletContainer(){}
   TripletContainer(Model *m,
                      std::string name="TripletContainer %1%");
 public:

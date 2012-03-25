@@ -12,8 +12,9 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 ExampleRestraint::ExampleRestraint(Particle *p,
-                                   double k) : p_(p),
-                                          k_(k) {
+                                   double k) :
+  Restraint(p->get_model(), "ExampleRestraint%1%"), p_(p),
+  k_(k) {
 }
 
 

@@ -24,9 +24,8 @@ InternalQuadsRestraint
 ::InternalQuadsRestraint(QuadScore *ss,
                       QuadContainer *pc,
                       std::string name):
-  Restraint(name),
+  Restraint(pc->get_model(), name),
   ss_(ss), pc_(pc) {
-
 }
 
 double InternalQuadsRestraint

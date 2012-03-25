@@ -24,9 +24,8 @@ InternalCLASSNAMEsRestraint
 ::InternalCLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainer *pc,
                       std::string name):
-  Restraint(name),
+  Restraint(pc->get_model(), name),
   ss_(ss), pc_(pc) {
-
 }
 
 double InternalCLASSNAMEsRestraint
