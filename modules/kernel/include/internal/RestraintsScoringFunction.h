@@ -30,6 +30,9 @@ class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
                             double max=NO_MAX,
                             std::string name= "RestraintsScoringFunction%1%");
 
+  RestraintsTemp get_restraints() const {
+    return static_cast<RestraintsTemp>(rs_)+static_cast<RestraintsTemp>(rss_);
+  }
   IMP_SCORING_FUNCTION(RestraintsScoringFunction);
 };
 IMP_END_INTERNAL_NAMESPACE
