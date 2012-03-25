@@ -45,18 +45,33 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 
 
 double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  IMP_UNUSED(accum);
-  IMP_FAILURE("Special cased");
+  double ret;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+= get_restraint(i)->unprotected_evaluate(accum);
+  }
+  return ret;
 }
 double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
                                                   double max) const {
-  IMP_UNUSED(accum);
-  IMP_UNUSED(max);
-  IMP_FAILURE("Special cased");
+  double ret;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+= get_restraint(i)->unprotected_evaluate(accum);
+    if (ret > max || ret > get_maximum_score()) {
+      return NO_MAX;
+    }
+  }
+  return ret;
 }
-double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *,
-                                                   double ) const {
-  IMP_FAILURE("Special cased");
+double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *accum,
+                                                   double max) const {
+  double ret;
+  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
+    ret+= get_restraint(i)->unprotected_evaluate(accum);
+    if (ret > max ) {
+      return NO_MAX;
+    }
+  }
+  return ret;
 }
 
 
