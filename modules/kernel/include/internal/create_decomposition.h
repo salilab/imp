@@ -20,6 +20,8 @@ template <class List, class Score>
 Restraints create_decomposition(Model *m,Score *score,
                                 const List &indexes,
                                 std::string name) {
+  IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
+  IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
   Restraints ret(indexes.size());
   for (unsigned int i=0; i< indexes.size(); ++i) {
     std::ostringstream oss;

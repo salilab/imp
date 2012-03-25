@@ -18,6 +18,7 @@ Container::Container(Model *m, std::string name):
   Object(name),
   m_(m)
 {
+  IMP_USAGE_CHECK(m, "Must pass model to container constructor.");
 }
 
 bool Container::is_ok(Particle *p) {
