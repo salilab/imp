@@ -5,7 +5,7 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/internal/swig.h>
-
+#include <IMP/internal/pdb.h>
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 
@@ -283,5 +283,9 @@ namespace {
 void _test_log() {
   IMP_FUNCTION_LOG;
   test_log_0();
+}
+
+IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m) {
+  return create_particles_from_pdb(name, m);
 }
 IMP_END_INTERNAL_NAMESPACE

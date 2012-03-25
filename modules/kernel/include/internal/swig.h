@@ -225,6 +225,8 @@ inline FloatRange _get_range(Model *m,
 }
 
 
+IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m);
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPKERNEL_INTERNAL_SWIG_H */
