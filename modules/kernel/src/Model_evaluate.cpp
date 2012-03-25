@@ -25,8 +25,21 @@
 
 IMP_BEGIN_NAMESPACE
 
+namespace {
+void check_order(const ScoreStatesTemp &ss) {
+  for (unsigned int i=1; i< ss.size(); ++i) {
+    IMP_USAGE_CHECK(ss[i-1]->order_ < ss[i]->order_,
+                    "Score states " << Showable(ss[i-1])
+                    << " and " << Showable(ss[i])
+                    << " are out of order.");
+  }
+}
+}
+
 
 void Model::before_evaluate(const ScoreStatesTemp &states) {
+  IMP_OBJECT_LOG;
+  check_order(states);
 #if IMP_BUILD < IMP_FAST
   base::internal::check_live_objects();
 #endif
@@ -78,6 +91,8 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 
 void Model::after_evaluate(const ScoreStatesTemp &states,
                            bool calc_derivs) {
+  IMP_OBJECT_LOG;
+  check_order(states);
   CreateLogContext clc("update_derivatives");
   DerivativeAccumulator accum;
   internal::SFSetIt<IMP::internal::Stage>
