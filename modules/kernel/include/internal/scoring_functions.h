@@ -150,6 +150,7 @@ inline std::pair<double, bool> do_evaluate_restraint(RS *r,
                                                    &accum:nullptr),
                            m);
   }
+  r->set_was_used(true);
   r->last_score_=value;
   if (m->gather_statistics_) {
     m->add_to_restraint_evaluate(r, timer->elapsed(), value);
