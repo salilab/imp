@@ -491,7 +491,7 @@ void RigidBody::teardown_constraints(Particle *p) {
 RigidBody RigidBody::setup_particle(Particle *p,
                                     const ParticlesTemp &members) {
   IMP_FUNCTION_LOG;
-  IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
+  //IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
   IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
   algebra::ReferenceFrame3D rf= get_initial_reference_frame(members);
   RigidBody rb= setup_particle(p, rf);
@@ -512,13 +512,13 @@ RigidBody RigidBody::setup_particle(Particle *p,
   d.set_reference_frame(rf);
   ModelKey mk= get_rb_list_key();
   if (d.get_model()->get_has_data(mk)) {
-    IMP_LOG(TERSE, "Adding particle to list of rigid bodies" << std::endl);
+    //IMP_LOG(TERSE, "Adding particle to list of rigid bodies" << std::endl);
     Object *o= d.get_model()->get_data(mk);
     IMP::internal::InternalListSingletonContainer* list
       = dynamic_cast<IMP::internal::InternalListSingletonContainer*>(o);
     list->add_particle(p);
   } else {
-    IMP_LOG(TERSE, "Creating new list of rigid bodies" << std::endl);
+    //IMP_LOG(TERSE, "Creating new list of rigid bodies" << std::endl);
     IMP_NEW(IMP::internal::InternalListSingletonContainer, list, (d.get_model(),
                                                          "rigid bodies list"));
     list->set_particles(ParticlesTemp(1,p));
@@ -604,8 +604,8 @@ void RigidBody::add_member(Particle *p) {
   IMP_FUNCTION_LOG;
   algebra::ReferenceFrame3D r= get_reference_frame();
   if (RigidBody::particle_is_instance(p)) {
-    IMP_LOG(TERSE, "Adding rigid body " << p->get_name()
-            << " as member." << std::endl);
+    /*IMP_LOG(TERSE, "Adding rigid body " << p->get_name()
+      << " as member." << std::endl);*/
     RigidBody d(p);
     internal::add_required_attributes_for_body_member(d, get_particle());
     RigidMember cm(d);
@@ -623,25 +623,25 @@ void RigidBody::add_member(Particle *p) {
                                  get_particle_index(),
                                  ParticleIndexes(1, p->get_index()));
     }
-    IMP_LOG(TERSE, "Body members are "
+    /*IMP_LOG(TERSE, "Body members are "
             << get_model()->get_attribute(internal::rigid_body_data()
                                           .body_members_,
-                                          get_particle_index()) << std::endl);
+                                          get_particle_index()) << std::endl);*/
     // want tr*ltr= btr, so ltr= tr-1*btr
     algebra::ReferenceFrame3D pr=d.get_reference_frame();
     algebra::Transformation3D tr
         =r.get_transformation_from()*pr.get_transformation_to();
     cm.set_internal_transformation(tr);
-    IMP_LOG(TERSE, "Transformations are " << r << " and " << pr
+    /*IMP_LOG(TERSE, "Transformations are " << r << " and " << pr
             << " (" << r.get_transformation_from() << ")"
             << " resulting in " << cm.get_internal_transformation()
             << " from " << tr
             << " with check of "
             << r.get_transformation_to()*cm.get_internal_transformation()
-            << std::endl);
+            << std::endl);*/
   } else {
-    IMP_LOG(TERSE, "Adding XYZ " << p->get_name()
-            << " as member." << std::endl);
+    /*IMP_LOG(TERSE, "Adding XYZ " << p->get_name()
+      << " as member." << std::endl);*/
     internal::add_required_attributes_for_member(p, get_particle());
     RigidMember cm(p);
     if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
@@ -665,8 +665,8 @@ void RigidBody::add_member(Particle *p) {
 
   if (!get_model()->get_has_attribute(get_rb_score_state_0_key(),
                                       get_particle_index())) {
-    IMP_LOG(TERSE, "Setting up constraint for rigid body "
-            << get_particle()->get_name() << std::endl);
+    /*IMP_LOG(TERSE, "Setting up constraint for rigid body "
+      << get_particle()->get_name() << std::endl);*/
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0
@@ -923,7 +923,7 @@ get_initial_reference_frame(const ParticlesTemp &ps) {
   }
   IMP_USAGE_CHECK(mass >0, "Zero mass when computing axis.");
   v/= mass;
-  IMP_LOG(VERBOSE, "Center of mass is " << v << std::endl);
+  //IMP_LOG(VERBOSE, "Center of mass is " << v << std::endl);
   // for a sphere 2/5 m r^2 (diagopnal)
   // parallel axis theorem
   // I'ij= Iij+M(v^2delta_ij-vi*vj)
@@ -948,7 +948,7 @@ get_initial_reference_frame(const ParticlesTemp &ps) {
     = IMP::algebra::get_rotation_from_matrix(rm[0][0], rm[0][1], rm[0][2],
                                          rm[1][0], rm[1][1], rm[1][2],
                                          rm[2][0], rm[2][1], rm[2][2]);
-  IMP_LOG(VERBOSE, "Initial rotation is " << rot << std::endl);
+  //IMP_LOG(VERBOSE, "Initial rotation is " << rot << std::endl);
   return algebra::ReferenceFrame3D(
       algebra::Transformation3D(rot, v));
 }
