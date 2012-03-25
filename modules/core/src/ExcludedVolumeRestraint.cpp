@@ -31,7 +31,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
                                                  double k, double s):
-  Restraint("ExcludedVolumeRestraint %1%"), sc_(sc),
+  Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"), sc_(sc),
   initialized_(false),
   ssps_(new SoftSpherePairScore(k))
 {

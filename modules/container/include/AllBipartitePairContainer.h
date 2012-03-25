@@ -34,8 +34,6 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
                                ret.push_back(back_->a_);
                                ret.push_back(back_->b_);
                              });
-  AllBipartitePairContainer(SingletonContainer *a,
-                                 SingletonContainer *b, bool);
 #define IMP_ABP_LOOP(body)                              \
   ParticleIndexes ib= b_->get_indexes();                \
   IMP_FOREACH_SINGLETON_INDEX(a_, {                     \

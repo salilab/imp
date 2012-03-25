@@ -14,7 +14,7 @@ IMPCORE_BEGIN_NAMESPACE
 MinimumRestraint::MinimumRestraint(unsigned int num,
                                    const Restraints& rs,
                                    std::string name) :
-  Restraint(name), k_(num)
+  Restraint(rs[0]->get_model(), name), k_(num)
 {
   set_restraints(rs);
 }

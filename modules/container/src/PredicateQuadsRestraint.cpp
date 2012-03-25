@@ -16,8 +16,9 @@ PredicateQuadsRestraint
 ::PredicateQuadsRestraint(QuadPredicate *pred,
                                QuadContainer *input,
                                std::string name):
-    Restraint(name), predicate_(pred), input_(input), updated_(false),
-    error_on_unknown_(true){}
+  Restraint(input->get_model(), name),
+  predicate_(pred), input_(input), updated_(false),
+  error_on_unknown_(true){}
 
 double
 PredicateQuadsRestraint

@@ -82,8 +82,6 @@ class IMPEXPORT Container : public IMP::base::Object
     return m_;
   }
   Container(Model *m, std::string name="Container %1%");
-  // added or removed containers
-  Container(std::string name="added or removed container %1%"): Object(name) {};
  public:
   //! Get contained particles
   /** Get a list of all particles contained in this one,

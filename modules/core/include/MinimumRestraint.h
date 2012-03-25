@@ -23,7 +23,10 @@ class IMPCOREEXPORT MinimumRestraint :  public Restraint
 {
   unsigned int k_;
 public:
-  /** Score based on the num minimum restraints from rs.
+  /** Score based on the num minimum restraints from rs. The restraints
+      must already be registered with the model (either by being added
+      to the model scoring function, upon constructior or having
+      Restraint::set_model() called on them.
    */
   MinimumRestraint(unsigned int num,
                    const Restraints& rs=Restraints(),

@@ -41,9 +41,10 @@ class IMPCOREEXPORT ConnectivityRestraint : public Restraint
   IMP::OwnerPointer<SingletonContainer> sc_;
 public:
   //! Use the given PairScore
-  /** If sc is nullptr, a ListSingletonContainer is created internally.
-   */
-  ConnectivityRestraint(PairScore* ps, SingletonContainer *sc=nullptr);
+  ConnectivityRestraint(PairScore* ps, SingletonContainer *sc);
+#ifndef IMP_DOXYGEN
+  //! create a list internally
+  ConnectivityRestraint(PairScore* ps);
   /** @name Particles to be connected
 
        The following methods are used to manipulate the list of particles
@@ -58,6 +59,7 @@ public:
   void add_particles(const ParticlesTemp &ps);
   void set_particles(const ParticlesTemp &ps);
   /*@}*/
+#endif
 
   //! Return the set of pairs which are connected by the restraint
   /** This set of pairs reflects the current configuration at the time of
