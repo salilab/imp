@@ -180,6 +180,7 @@ inline ContainersTemp get_input_containers(S *s,
 
 inline
 Particle* get_particle(Model *m, ParticleIndex pi) {
+  IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   return m->get_particle(pi);
 }
 template <unsigned int D>
