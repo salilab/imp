@@ -58,10 +58,10 @@
 
 #define IMP_SHOWABLE(Name)                              \
   void show(std::ostream &out=std::cout) const;         \
-  operator Showable() const {                           \
+  operator IMP::base::Showable() const {                \
     std::ostringstream oss;                             \
     show(oss);                                          \
-    return Showable(oss.str());                         \
+    return IMP::base::Showable(oss.str());              \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
@@ -69,10 +69,10 @@
   void show(std::ostream &out=std::cout) const{         \
     how_to_show;                                        \
   }                                                     \
-  operator Showable() const {                           \
+  operator IMP::base::Showable() const {                \
     std::ostringstream oss;                             \
     show(oss);                                          \
-    return Showable(oss.str());                         \
+    return IMP::base::Showable(oss.str());              \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
