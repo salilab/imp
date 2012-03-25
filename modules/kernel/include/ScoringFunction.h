@@ -30,6 +30,7 @@ inline const ScoreStatesTemp& ScoringFunction::get_score_states() {
   return ss_;
 }
 inline double ScoringFunction::evaluate_if_good(bool derivatives) {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   ensure_dependencies();
   boost::tie(last_score_, last_was_good_)
@@ -37,6 +38,7 @@ inline double ScoringFunction::evaluate_if_good(bool derivatives) {
   return last_score_;
 }
 inline double ScoringFunction::evaluate(bool derivatives) {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   ensure_dependencies();
   boost::tie(last_score_, last_was_good_)
@@ -44,6 +46,7 @@ inline double ScoringFunction::evaluate(bool derivatives) {
   return last_score_;
 }
 inline double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   ensure_dependencies();
   boost::tie(last_score_, last_was_good_)
