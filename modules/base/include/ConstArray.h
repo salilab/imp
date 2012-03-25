@@ -15,6 +15,7 @@
 #include <IMP/compatibility/nullptr.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/compatibility/hash.h>
+#include <iterator>
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -62,16 +63,19 @@ public:
   }
   template <class Vector>
   explicit ConstArray(const Vector &i) {
-    IMP_USAGE_CHECK(!i.empty(),
+    IMP_USAGE_CHECK(std::distance(i.begin(), i.end()) > 0,
                     "Can't create ConstArray from empty list");
     create(i.size());
     std::copy(i.begin(), i.end(), v_.get());
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  ConstArray(const ConstArray &o): sz_(0) {
+  /* Add the arguments to attempt to make VC happy as it tries to
+     use the templated version instead.
+   */
+  ConstArray(const ConstArray<Data, SwigData> &o): sz_(0) {
     copy_from(o);
   }
-  ConstArray& operator=(const ConstArray &o) {
+  ConstArray<Data, SwigData>& operator=(const ConstArray<Data, SwigData> &o) {
     copy_from(o);
     return *this;
   }
