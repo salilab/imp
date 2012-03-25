@@ -54,10 +54,6 @@ public:
   AllPairContainer(SingletonContainer *c,
                    std::string name="AllPairContainer%1%");
 
-  static AllPairContainer *create_untracked_container(SingletonContainer *c) {
-    AllPairContainer *lsc = new AllPairContainer(c, false);
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     return c_->get_is_up_to_date();

@@ -51,13 +51,6 @@ public:
                             SingletonContainer *b,
                             std::string name="AllBipartitePairContainer%1%");
 
-  static AllBipartitePairContainer *
-    create_untracked_container(SingletonContainer *a,
-                               SingletonContainer *b) {
-    AllBipartitePairContainer *lsc
-      = new AllBipartitePairContainer(a,b, false);
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     return a_->get_is_up_to_date()

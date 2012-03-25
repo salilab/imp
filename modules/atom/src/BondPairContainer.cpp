@@ -15,10 +15,6 @@
 IMPATOM_BEGIN_NAMESPACE
 
 BondPairContainer
-::BondPairContainer(SingletonContainer *sc, bool): sc_(sc){
-}
-
-BondPairContainer
 ::BondPairContainer(SingletonContainer *sc): sc_(sc){
 }
 
