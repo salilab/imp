@@ -24,9 +24,9 @@ class Tests(IMP.test.TestCase):
         hps= IMP.core.HarmonicDistancePairScore(1,100)
         #hps.set_log_level(IMP.VERBOSE)
         r= IMP.container.PairsRestraint(hps, cpc)
-        #r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
-        mc.set_use_incremental_evaluate(True)
+        r.set_model(m)
+        isf= IMP.core.IncrementalScoringFunction(ps, [r])
+        mc.set_incremental_scoring_function(isf)
         ms= [IMP.core.BallMover([x], .1) for x in ps]
         mv= IMP.core.SerialMover(ms)
         mc.add_mover(mv)
@@ -48,7 +48,7 @@ class Tests(IMP.test.TestCase):
         m= IMP.Model()
         m.set_log_level(IMP.SILENT)
         mc= IMP.core.MonteCarlo(m)
-        #mc.set_log_level(IMP.VERBOSE)
+        mc.set_log_level(IMP.VERBOSE)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
@@ -63,13 +63,14 @@ class Tests(IMP.test.TestCase):
         #hps.set_log_level(IMP.VERBOSE)
         r= IMP.container.PairsRestraint(hps, cpc)
         #r.set_log_level(IMP.VERBOSE)
-        m.add_restraint(r)
-        mc.set_use_incremental_evaluate(True)
+        r.set_model(m)
+        isf= IMP.core.IncrementalScoringFunction(ps, [r])
+        mc.set_incremental_scoring_function(isf)
         ms= [IMP.core.BallMover([x], 2) for x in ps]
         mv= IMP.core.SerialMover(ms)
         mc.add_mover(mv)
         icpf= IMP.container.InContainerPairFilter(cpc)
-        mc.set_close_pair_score(IMP.core.SoftSpherePairScore(100), .2, ps, [icpf])
+        isf.add_close_pair_score(IMP.core.SoftSpherePairScore(100), .2, ps, [icpf])
         w= IMP.display.PymolWriter(self.get_tmp_file_name("incr_nbl.pym"))
         w.set_frame(0)
         for p in ps:

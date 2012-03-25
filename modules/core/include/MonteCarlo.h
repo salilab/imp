@@ -11,6 +11,7 @@
 #include "core_config.h"
 #include "Mover.h"
 #include "core_macros.h"
+#include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>
@@ -132,13 +133,6 @@ public:
   /** @} */
 
 
-  //! Return the average number of restraints per evaluate
-  double get_average_number_of_incremental_restraints() const {
-    return static_cast<double>(incremental_restraint_evals_)
-      / incremental_evals_;
-  }
-
-
   /** \name Incremental
       Efficient evaluation of non-bonded list based restraints is
       a bit tricky with incremental evaluation. To aid this, we
@@ -151,17 +145,13 @@ public:
   /** Set whether to use incremental evaluate or evaluate all restraints
       each time. This cannot be changed during optimization.
   */
-  void set_use_incremental_evaluate(bool tf) {
-    eval_incremental_=tf;
+  void set_incremental_scoring_function(IncrementalScoringFunction *isf);
+  bool get_use_incremental_scoring_function() const {
+    return isf_;
   }
-  bool get_use_incremental_evaluate() const {
-    return eval_incremental_;
+  IncrementalScoringFunction* get_incremental_scoring_function() const {
+    return isf_;
   }
-  //! This is experimental and unstable
-  void set_close_pair_score(PairScore *ps,
-                            double distance,
-                            const ParticlesTemp &particles,
-                            const PairFilters &filters);
   /** @} */
  protected:
   /** Note that if return best is true, this will save the current
@@ -187,42 +177,22 @@ public:
    */
   virtual double do_evaluate(const ParticlesTemp &moved) const {
     IMP_UNUSED(moved);
-    if (get_use_incremental_evaluate() ) {
-      if (get_maximum_difference()
-          < std::numeric_limits<double>::max()) {
-        return evaluate_incremental_if_below(IMP::internal::get_index(moved),
-                                             last_energy_+max_difference_);
+    if (isf_ ) {
+      if (moved.size()==1) {
+        isf_->set_moved_particles(moved);
       } else {
-        ParticleIndexes pis=IMP::internal::get_index(moved);
-        IMP_INTERNAL_CHECK(pis.size()==moved.size(), "Sizes don't match");
-        return evaluate_incremental(pis);
-      }
-    } else {
-      if (get_maximum_difference()
-          < std::numeric_limits<double>::max()) {
-        return get_scoring_function()
-          ->evaluate_if_below(false, last_energy_+max_difference_);
-      } else {
-        return get_scoring_function()->evaluate(false);
+        isf_->reset();
       }
     }
+    if (get_maximum_difference() < NO_MAX) {
+      return get_scoring_function()
+        ->evaluate_if_below(false, last_energy_+max_difference_);
+    } else {
+      return get_scoring_function()
+        ->evaluate(false);
+    }
   }
-  //! Only for incremental evaluation
-  double evaluate_non_bonded(const ParticleIndexes &moved) const;
 private:
-  //! Evaluate the score of the model (or of a subset of the restraints
-  //! if desired.
-  double evaluate_incremental(const ParticleIndexes &moved) const;
-
-  //! Evaluate the score of the model (or of a subset of the restraints
-  //! if desired.
-  double evaluate_incremental_if_below(const ParticleIndexes &moved,
-                           double max) const;
-
-  void setup_incremental();
-  void teardown_incremental();
-  void rollback_incremental();
-
   double temp_;
   double last_energy_;
   double best_energy_;
@@ -235,48 +205,7 @@ private:
   IMP::OwnerPointer<Configuration> best_;
   ::boost::uniform_real<> rand_;
 
-  // incremental
-  Restraints flattened_restraints_;
-  bool eval_incremental_;
-  mutable Floats incremental_scores_;
-  mutable Floats old_incremental_scores_;
-  mutable Ints old_incremental_score_indexes_;
-  base::IndexVector<ParticleIndexTag, Ints> incremental_used_;
-
-
-  struct NBLScore {
-    OwnerPointer<PairScore> score_;
-    typedef std::pair<ParticleIndex, double> ScorePair;
-    typedef base::Vector<ScorePair> ScorePairs;
-    // first on the particle index then list the neighbors
-    mutable base::IndexVector<ParticleIndexTag, ScorePairs> cache_;
-    double distance_;
-    mutable double prior_, old_prior_;
-    ParticleIndexes pis_;
-    PairFilters filters_;
-    mutable base::Vector<std::pair<ParticleIndexPair,
-                                                    double> > removed_;
-    mutable ParticleIndexes added_;
-    NBLScore(){}
-    NBLScore(PairScore *ps,
-             double distance,
-             const ParticlesTemp &particles,
-             const PairFilters &filters);
-    void add_pair(ParticleIndex a, ParticleIndex b, double s) const;
-    double get_score(Model *m, ParticleIndex moved,
-                     const ParticleIndexes& nearby) const;
-    void roll_back(Model *m, ParticleIndex moved);
-    void initialize(Model *m,  ParticleIndexPairs all);
-  };
-  Ints nbl_incremental_used_;
-  base::IndexVector<ParticleIndexTag, int> to_dnn_;
-  ParticleIndexes from_dnn_;
-  mutable ParticleIndex moved_;
-  OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
-  NBLScore nbl_;
-
-  mutable unsigned int incremental_restraint_evals_;
-  mutable unsigned int incremental_evals_;
+  Pointer<IncrementalScoringFunction> isf_;
 };
 
 

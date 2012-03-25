@@ -9,18 +9,21 @@
 #define IMPCORE_INCREMENTAL_SCORING_FUNCTION_H
 
 #include "core_config.h"
+#include "internal/SingleParticleScoringFunction.h"
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairFilter.h>
 #include "RestraintsScoringFunction.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/algebra/vector_search.h>
-#include <boost/multi_index_container.hpp>
-#include <boost/multi_index/sequenced_index.hpp>
-#include <boost/multi_index/hashed_index.hpp>
-#include <boost/multi_index/member.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace internal {
+  class NBLScoring;
+}
+#endif
 
 /** This is a scoring function that computes the score efficiently when a small
     number of particles are changed.
@@ -29,93 +32,49 @@ IMPCORE_BEGIN_NAMESPACE
     \note Only full evaluation is supported and information about restraint
     sets and such are lost (and so one can't count on information about
     whether the score is good).
+
+    The ensure proper evaluation, the ScoringFunction is divided into a number
+    of sub scoring functions, one per possibly moved particles. Each of
 */
 class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
-  class SingleParticleScoringFunction: public RestraintsScoringFunction {
-    Ints indexes_;
-    ParticleIndex pi_;
-  public:
-    SingleParticleScoringFunction(ParticleIndex pi, const RestraintsTemp &rs,
-                                  const Ints &indexes);
-    const ScoreStatesTemp
-    get_extra_score_states(const DependencyGraph &) const;
-    const Ints &get_restraint_indexes() const {
-      return indexes_;
-    }
-  };
   typedef compatibility::map<ParticleIndex,
-    OwnerPointer<SingleParticleScoringFunction> > ScoringFunctionsMap;
+    OwnerPointer<internal::SingleParticleScoringFunction> > ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
+  ParticleIndexes all_;
   ParticleIndex moved_;
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   // for rollback
   Floats old_incremental_scores_;
   Ints old_incremental_score_indexes_;
-
-  // nbl
-  class NBLScore {
-    Pointer<Model> m_;
-    OwnerPointer<PairScore> score_;
-    double distance_;
-    ParticleIndexes pis_;
-    PairFilters filters_;
-
-    // cache
-    struct Score {
-      ParticleIndex i0, i1;
-      double score;
-      operator double() const {return score;}
-      Score(ParticleIndex ii0, ParticleIndex ii1,
-            double iscore): i0(ii0), i1(ii1), score(iscore){}
-    };
-    typedef boost::multi_index::member<Score,
-                                     ParticleIndex,
-                                       &Score::i0 > P0Member;
-    typedef boost::multi_index::member<Score,
-                                     ParticleIndex,
-                                       &Score::i1 > P1Member;
-    typedef boost::multi_index::hashed_non_unique<P0Member> Hash0Index;
-    typedef boost::multi_index::hashed_non_unique<P1Member> Hash1Index;
-    typedef boost::multi_index::indexed_by<Hash0Index,
-                                           Hash1Index > IndexBy;
-    typedef boost::multi_index_container<Score,
-                                         IndexBy> Cache;
-    typedef boost::multi_index::nth_index<Cache, 0>
-    ::type::const_iterator Hash0Iterator;
-    typedef boost::multi_index::nth_index<Cache, 1>
-    ::type::const_iterator Hash1Iterator;
-    Cache cache_;
-    // changes to cache for rollback
-    base::Vector<Score > removed_, added_;
-    // nearest neighbor findings
-    compatibility::map<ParticleIndex, int> to_dnn_;
-    OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
-    void remove_score(Score pr);
-    void cleanup_score(ParticleIndex pi);
-    void fill_scores(ParticleIndex pi);
-  public:
-    NBLScore(){}
-    NBLScore(PairScore *ps,
-             double distance,
-             const ParticlesTemp &particles,
-             const PairFilters &filters);
-    double get_score(ParticleIndex moved);
-    void initialize();
-    void rollback();
+  double weight_, max_;
+  bool initialized_;
+  // move the destructor out of the header
+  struct Wrapper: public
+    base::Vector<internal::NBLScoring*> {
+    ~Wrapper();
   };
-  base::Vector<NBLScore> nbl_;
+  Wrapper nbl_;
   void rollback();
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
   void initialize_scores();
+  void initialize();
  public:
-  IncrementalScoringFunction(const RestraintsTemp &rs);
+  /** Pass the particles that will be individuall mode, and the list of
+      restraints to evaluate on them.*/
+  IncrementalScoringFunction(const ParticlesTemp &to_move,
+                             const RestraintsTemp &rs,
+                             double weight=1.0, double max= NO_MAX,
+                             std::string name="IncrementalScoringFunction%1%");
   void reset_moved_particles();
   void set_moved_particles(const ParticlesTemp &p);
+  /** Close pairs scores can be handled separately for efficiency, to do that,
+      add a pair score here to act on the list of particles.*/
   void add_close_pair_score(PairScore *ps, double distance,
                             const ParticlesTemp &particles,
                             const PairFilters &filters=PairFilters());
+  void clear_close_pair_scores();
   void reset();
   IMP_SCORING_FUNCTION(IncrementalScoringFunction);
 };
