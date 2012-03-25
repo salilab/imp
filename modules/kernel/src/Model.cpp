@@ -154,8 +154,6 @@ void Model::update() {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  internal::SFSetIt<IMP::internal::Stage, internal::NOT_EVALUATING>
-      reset(&cur_stage_);
   before_evaluate(ordered_score_states_);
 }
 

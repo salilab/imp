@@ -111,6 +111,9 @@ namespace {
 
 
 void Model::reset_dependencies() {
+  IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
+                  "The dependencies cannot be reset during evaluation or"
+                  << " dependency computation.");
   scoring_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
@@ -119,6 +122,8 @@ void Model::reset_dependencies() {
 
 void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
+  internal::SFSetIt<IMP::internal::Stage>
+    reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
   RestraintsTemp all_restraints
       = RestraintsTemp(RestraintTracker::tracked_begin(),
@@ -150,8 +155,7 @@ void Model::compute_dependencies() {
        it != ScoringFunctionTracker::tracked_end(); ++it) {
     ScoringFunction *sf= *it;
     IMP_CHECK_OBJECT(sf);
-    sf->ss_= get_score_states(sf->get_restraints(),
-                              sf->get_extra_score_states(dg));
+    sf->update_score_states(dg);
   }
 }
 

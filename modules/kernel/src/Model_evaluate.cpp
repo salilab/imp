@@ -34,7 +34,9 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
                   "Can only call Model::before_evaluate() when not evaluating");
   CreateLogContext clc("update_score_states");
   {
-    cur_stage_= internal::BEFORE_EVALUATING;
+
+    internal::SFSetIt<IMP::internal::Stage>
+      reset(&cur_stage_, internal::BEFORE_EVALUATING);
     boost::timer timer;
     for (unsigned int i=0; i< states.size(); ++i) {
       ScoreState *ss= states[i];
@@ -77,46 +79,45 @@ void Model::before_evaluate(const ScoreStatesTemp &states) {
 void Model::after_evaluate(const ScoreStatesTemp &states,
                            bool calc_derivs) {
   CreateLogContext clc("update_derivatives");
-  {
-    DerivativeAccumulator accum;
-    cur_stage_= internal::AFTER_EVALUATING;
-    boost::timer timer;
-    for (int i=states.size()-1; i>=0; --i) {
-      ScoreState *ss= states[i];
-      IMP_CHECK_OBJECT(ss);
-      if (gather_statistics_) timer.restart();
-      {
+  DerivativeAccumulator accum;
+  internal::SFSetIt<IMP::internal::Stage>
+    reset(&cur_stage_, internal::AFTER_EVALUATING);
+  boost::timer timer;
+  for (int i=states.size()-1; i>=0; --i) {
+    ScoreState *ss= states[i];
+    IMP_CHECK_OBJECT(ss);
+    if (gather_statistics_) timer.restart();
+    {
 #if IMP_BUILD < IMP_FAST
-        if (first_call_) {
-          internal::SFResetBitset rbr(Masks::read_mask_, true);
-          internal::SFResetBitset rbw(Masks::write_mask_, true);
-          internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
-          internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
-          internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
-          ParticlesTemp input=ss->get_input_particles();
-          ParticlesTemp output=ss->get_output_particles();
-          ContainersTemp cinput=ss->get_input_containers();
-          ContainersTemp coutput=ss->get_output_containers();
-          Masks::write_mask_.reset();
-          IMP_SF_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
-          IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
-                     coutput);
-          IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput,
-                            output,
-                            coutput);
-          ss->after_evaluate(calc_derivs?&accum:nullptr);
-        } else {
-          ss->after_evaluate(calc_derivs?&accum:nullptr);
-        }
-#else
+      if (first_call_) {
+        internal::SFResetBitset rbr(Masks::read_mask_, true);
+        internal::SFResetBitset rbw(Masks::write_mask_, true);
+        internal::SFResetBitset rbar(Masks::add_remove_mask_, true);
+        internal::SFResetBitset rbrd(Masks::read_derivatives_mask_, true);
+        internal::SFResetBitset rbwd(Masks::write_derivatives_mask_, true);
+        ParticlesTemp input=ss->get_input_particles();
+        ParticlesTemp output=ss->get_output_particles();
+        ContainersTemp cinput=ss->get_input_containers();
+        ContainersTemp coutput=ss->get_output_containers();
+        Masks::write_mask_.reset();
+        IMP_SF_SET_ONLY_2(Masks::read_mask_, input, cinput, output, coutput);
+        IMP_SF_SET_ONLY_2(Masks::read_derivatives_mask_,input, cinput, output,
+                          coutput);
+        IMP_SF_SET_ONLY_2(Masks::write_derivatives_mask_,input, cinput,
+                          output,
+                          coutput);
         ss->after_evaluate(calc_derivs?&accum:nullptr);
+      } else {
+        ss->after_evaluate(calc_derivs?&accum:nullptr);
+      }
+#else
+      ss->after_evaluate(calc_derivs?&accum:nullptr);
 #endif
-      }
-      if (gather_statistics_) {
-        add_to_update_after_time(ss, timer.elapsed());
-      }
-      //IMP_LOG(VERBOSE, "." << std::flush);
     }
+    if (gather_statistics_) {
+      add_to_update_after_time(ss, timer.elapsed());
+    }
+    //IMP_LOG(VERBOSE, "." << std::flush);
   }
 }
 
