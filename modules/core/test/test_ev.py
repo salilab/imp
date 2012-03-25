@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import sys
-import IMP.atom
 import IMP.core
 import IMP.container
 import os
@@ -15,16 +14,16 @@ class Tests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         #init IMP model ( the environment)
         m = IMP.Model()
-        h0=IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
-                              m)
-        h1=IMP.atom.read_pdb(self.get_input_file_name("input.pdb"),
-                              m)
-        rb0 = IMP.atom.create_rigid_body(h0)
-        rb1 = IMP.atom.create_rigid_body(h1)
+        h0s=IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"),
+                                           m)
+        h1s=IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"),
+                                           m)
+        rb0 = IMP.core.RigidBody.setup_particle(IMP.Particle(m),h0s)
+        rb1 = IMP.core.RigidBody.setup_particle(IMP.Particle(m),h1s)
         rb0.set_reference_frame(IMP.algebra.ReferenceFrame3D())
         rb1.set_reference_frame(IMP.algebra.ReferenceFrame3D())
-        l0= IMP.atom.get_leaves(h0)
-        l1= IMP.atom.get_leaves(h1)
+        l0= h0s
+        l1= h1s
         #set the restraint
         lsc=IMP.container.ListSingletonContainer(l0+l1)
         r=IMP.core.ExcludedVolumeRestraint(lsc, 1)
@@ -34,9 +33,9 @@ class Tests(IMP.test.TestCase):
         """Test filters on excluded volume"""
         m = IMP.Model()
         m.set_log_level(IMP.SILENT)
-        h0=IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
-                              m)
-        l0= IMP.atom.get_leaves(h0)[0:200]
+        h0s=IMP._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
+                                           m)
+        l0= h0s[0:200]
         #set the restraint
         lsc=IMP.container.ListSingletonContainer(l0)
         r=IMP.core.ExcludedVolumeRestraint(lsc, 1, 0)
@@ -44,9 +43,6 @@ class Tests(IMP.test.TestCase):
         cpc= IMP.container.ClosePairContainer(lsc, 0, 0)
         cr= IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
         m.add_restraint(cr)
-        f= IMP.atom.BondedPairFilter()
-        r.add_pair_filter(f)
-        cpc.add_pair_filter(f)
         print r.evaluate(False)
         print cr.evaluate(False)
         self.assertAlmostEqual(r.evaluate(False), cr.evaluate(False),

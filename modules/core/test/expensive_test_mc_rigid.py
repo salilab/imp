@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.core
-import IMP.atom
 
 class MCOptimizerTest(IMP.test.TestCase):
     def setUp(self):
@@ -9,20 +8,19 @@ class MCOptimizerTest(IMP.test.TestCase):
         #IMP.set_log_level(IMP.TERSE)
         self.m = IMP.Model()
         #read molecules
-        self.m1 = IMP.atom.read_pdb(self.get_input_file_name("1z5s_A.pdb"),
-                                    self.m,IMP.atom.NonWaterPDBSelector())
-        self.m2 = IMP.atom.read_pdb(self.get_input_file_name("1z5s_C.pdb"),
-                                    self.m,IMP.atom.NonWaterPDBSelector())
+        self.m1 = IMP._create_particles_from_pdb(self.get_input_file_name("1z5s_A.pdb"),
+                                                self.m)
+        self.m2 = IMP._create_particles_from_pdb(self.get_input_file_name("1z5s_C.pdb"),
+                                                self.m)
         #create rigid bodies
-        IMP.core.RigidBody.setup_particle(self.m1.get_particle(),
-                                          IMP.core.XYZs(IMP.core.get_leaves(self.m1))).set_coordinates_are_optimized(True)
-        IMP.core.RigidBody.setup_particle(self.m2.get_particle(),
-                                          IMP.core.XYZs(IMP.core.get_leaves(self.m2))).set_coordinates_are_optimized(True)
+        self.rb0=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m1)
+        self.rb0.set_coordinates_are_optimized(True)
+        self.rb1=IMP.core.RigidBody.setup_particle(IMP.Particle(self.m), self.m2)
+        self.rb1.set_coordinates_are_optimized(True)
         #add restraints
         self.h = IMP.core.HarmonicUpperBound(0,3.)
 
-        self.dr = IMP.core.DistanceRestraint(self.h,self.m1,
-                                             self.m2)
+        self.dr = IMP.core.DistanceRestraint(self.h,self.rb0, self.rb1)
         self.m.add_restraint(self.dr)
 
     def randomize(self, mh):
@@ -35,27 +33,27 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_c1(self):
         """test monte carlo with rigid bodies"""
         #rigid transformation of the two molecules
-        mhs = IMP.atom.Hierarchies()
+        mhs = []
         mhs.append(self.m1)
         mhs.append(self.m2)
         for i in range(0,1000):
             print "randomizing"
-            print IMP.core.XYZ(self.m1).get_coordinates()
-            print IMP.core.XYZ(self.m2).get_coordinates()
-            self.randomize(self.m1)
-            self.randomize(self.m2)
-            print IMP.core.XYZ(self.m1).get_coordinates()
-            print IMP.core.XYZ(self.m2).get_coordinates()
-            score= self.m.evaluate(False) #to transform the children
+            print IMP.core.XYZ(self.rb0).get_coordinates()
+            print IMP.core.XYZ(self.rb1).get_coordinates()
+            self.randomize(self.rb0)
+            self.randomize(self.rb1)
+            print IMP.core.XYZ(self.rb0).get_coordinates()
+            print IMP.core.XYZ(self.rb1).get_coordinates()
+            score= self.m.evaluate(False)
             print score
             if score >0:
                 break
         #optimize
         lopt= IMP.core.ConjugateGradients(self.m)
         opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 100)
-        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m1),5.,15.)
+        mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb0),5.,15.)
         opt.add_mover(mover1)
-        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m2),5.,15.)
+        mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.rb1),5.,15.)
         opt.add_mover(mover2)
         opt.set_score_threshold(.001)
         for i in range(0,5):

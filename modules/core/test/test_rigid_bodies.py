@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
-import IMP.atom
 
 
 class RBDTests(IMP.test.TestCase):
@@ -66,21 +65,21 @@ class RBDTests(IMP.test.TestCase):
     def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
         m= IMP.Model()
-        h= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
+        hs= IMP._create_particles_from_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
-        rb= IMP.atom.create_rigid_body(h)
+        rb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), hs)
         rb.set_coordinates_are_optimized(True)
         print "done setting up"
-        ls= IMP.core.get_leaves(h)
+        ls= hs
         keypts= [ls[0], ls[-1], ls[len(ls)/3], ls[len(ls)/3*2]]
         tr= IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(500, 500, 500))))
         for p in keypts:
-            mp= IMP.core.RigidMember(p.get_particle())
+            mp= IMP.core.RigidMember(p)
             ic= mp.get_internal_coordinates()
             nic= tr.get_transformed(ic)
             dt= IMP.core.DistanceToSingletonScore(IMP.core.Harmonic(0,1), nic)
-            r= IMP.core.SingletonRestraint(dt, p.get_particle())
+            r= IMP.core.SingletonRestraint(dt, rb)
             m.add_restraint(r)
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)

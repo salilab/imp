@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
-import IMP.atom
 
 class RBDTests(IMP.test.TestCase):
     """Tests for RigidBody function"""
