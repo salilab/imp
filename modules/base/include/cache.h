@@ -209,6 +209,12 @@ public:
     check_it();
     return do_apply(cache_.begin(), cache_.end(), f);
   }
+  /** Apply a function to the current (unfilled) state of the memoizer.*/
+  template <class F>
+  F apply_to_current_contents(F f) {
+    IMP_FUNCTION_LOG;
+    return do_apply(cache_.begin(), cache_.end(), f);
+  }
   //! Clear all entries involve the Key
   /** The removed entries are returned */
   void remove(const Key &a) {
