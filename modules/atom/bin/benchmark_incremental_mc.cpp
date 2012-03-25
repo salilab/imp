@@ -42,36 +42,34 @@ RigidBody create_rb(atom::Hierarchy hr) {
 }
 
 
-void add_excluded_volume(Model *m, core::MonteCarlo *mc,
-                         atom::Hierarchy h, RigidBodies rbs,
-                         double k, bool nbl) {
-  if (!nbl) {
+Restraint* create_excluded_volume(atom::Hierarchy h, RigidBodies,
+                                  double k) {
     IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
     IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k, 10));
     evr->set_name("excluded volume");
     evr->set_log_level(VERBOSE);
-    m->add_restraint(evr);
-  } else {
-    IMP_NEW(core::SoftSpherePairScore, ssps, (10));
-    IMP_NEW(core::TableRefiner, ref, ());
-    for (unsigned int i=0; i< rbs.size(); ++i) {
-      ref->add_particle(rbs[i], rbs[i].get_members());
-    }
-    IMP_NEW(core::ClosePairsPairScore, cpps, (ssps, ref, 0));
-    mc->set_close_pair_score(cpps, 2*XYZR(rbs[0]).get_radius(), rbs,
-                             PairFilters());
+    return evr.release();
+}
+PairScore *create_pair_score(atom::Hierarchy , RigidBodies rbs,
+                             double k) {
+  IMP_NEW(core::SoftSpherePairScore, ssps, (k));
+  IMP_NEW(core::TableRefiner, ref, ());
+  for (unsigned int i=0; i< rbs.size(); ++i) {
+    ref->add_particle(rbs[i], rbs[i].get_members());
   }
+  IMP_NEW(core::ClosePairsPairScore, cpps, (ssps, ref, 0));
+  return cpps.release();
 }
 
-void add_diameter_restraint(Model *m, RigidBodies rbs, double d) {
+Restraint* create_diameter_restraint(Model *, RigidBodies rbs, double d) {
   IMP_NEW(ListSingletonContainer, lsc, (rbs));
   IMP_NEW(HarmonicUpperBound, hub, (0,1.0));
   IMP_NEW(DiameterRestraint, dr, (hub, lsc, d));
   dr->set_name("diameter");
-  m->add_restraint(dr);
+  return dr.release();
 }
 
-void add_DOPE(Model *m, atom::Hierarchy h) {
+Restraint* add_DOPE(Model *, atom::Hierarchy h) {
   add_dope_score_data(h);
   IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
   IMP_NEW(ClosePairContainer, cpc, (lsc, 15.0));
@@ -79,7 +77,7 @@ void add_DOPE(Model *m, atom::Hierarchy h) {
   //dps->set_log_level(VERBOSE);
   IMP_NEW(PairsRestraint, dope, (dps, cpc));
   dope->set_name("DOPE");
-  m->add_restraint(dope);
+  return dope.release();
 }
 
 void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
@@ -94,12 +92,25 @@ void benchmark_it(std::string name, bool incr, bool nbl, bool longr) {
     rbs.back().set_coordinates(algebra::Vector3D(0,1000*i,0));
   }
   IMP_NEW(MonteCarlo, mc, (m));
-  add_excluded_volume(m, mc, h, rbs, 1.0, nbl);
-  add_diameter_restraint(m, rbs, 50.0);
+  Restraints rs;
+  if (!incr && nbl) {
+    rs.push_back(create_excluded_volume(h, rbs, 1.0));
+  }
+  rs.push_back(create_diameter_restraint(m, rbs, 50.0));
+  if (incr) {
+    IMP_NEW(core::IncrementalScoringFunction, sf, (rbs, rs));
+    if (nbl) {
+      sf->add_close_pair_score(create_pair_score(h, rbs, 1.0), 0,
+                               rbs);
+    }
+    mc->set_incremental_scoring_function(sf);
+  } else {
+    IMP_NEW(core::RestraintsScoringFunction, sf, (rs));
+    mc->set_scoring_function(sf);
+  }
   //add_DOPE(m, h);
   //mc->set_log_level(VERBOSE);
   mc->set_return_best(false);
-  mc->set_use_incremental_evaluate(incr);
   mc->set_kt(1.0);
   Movers mvs;
   for (unsigned int i=0; i< rbs.size(); ++i) {
