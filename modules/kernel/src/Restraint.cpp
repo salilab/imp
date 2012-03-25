@@ -109,8 +109,8 @@ namespace {
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
       base::SetLogState sls(WARNING);
-      double tin= in->unprotected_evaluate(false);
-      double tout= out->unprotected_evaluate(false);
+      double tin= in->unprotected_evaluate(nullptr);
+      double tout= out->unprotected_evaluate(nullptr);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
                  << in->get_name() << "\" got "
