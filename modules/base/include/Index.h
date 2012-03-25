@@ -9,7 +9,8 @@
 #define IMPBASE_INDEX_H
 
 #include "base_config.h"
-#include "base_macros.h"
+#include "bracket_macros.h"
+#include "showable_macros.h"
 #include <IMP/compatibility/vector.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -57,12 +58,8 @@ class IndexVector: public compatibility::vector<T> {
   IndexVector(unsigned int sz, const T&t=T()):
       P(sz, t){}
   IndexVector(){}
-  const T&operator[](Index<Tag> i) const {
-    return P::operator[](get_as_unsigned_int(i));
-  }
-  T&operator[](Index<Tag> i) {
-    return P::operator[](get_as_unsigned_int(i));
-  }
+  IMP_BRACKET(T, Index<Tag>, get_as_unsigned_int(i) < P::size(),
+              return P::operator[](get_as_unsigned_int(i)));
 };
 
 template <class Tag, class Container, class T>
