@@ -76,6 +76,7 @@ class TrackedObject: public Object {
   void set_tracker(Type *me, Tracker *tracker) {
     IMP_USAGE_CHECK(!tracker || me,
                     "Can't pass a null oject with a non-null tacker.");
+    if (tracker == tracker_) return;
     if (tracker_) {
       static_cast<T*>(tracker_.get())
           ->remove_tracked(me_);
