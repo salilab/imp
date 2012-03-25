@@ -168,11 +168,7 @@ int main(int, char *[]) {
     int nv=  ui(IMP::base::random_number_generator);
     std::cout << "Update item " << c << " from " << values[c]
               << " to " << nv << std::endl;
-    SortedPairs::result_type ret
-      = table.get(pointers[c]);
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      table.remove(ret[i]);
-    }
+    table.remove(pointers[c]);
     values[c]=nv;
     check(table, values);
   }
