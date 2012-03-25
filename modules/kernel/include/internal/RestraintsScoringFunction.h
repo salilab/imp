@@ -14,6 +14,10 @@
 #include "../ScoringFunction.h"
 #include "../scoring_function_macros.h"
 
+IMP_BEGIN_NAMESPACE
+class Model;
+IMP_END_NAMESPACE
+
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 /** Create a scoring function on a list of restraints.
