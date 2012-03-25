@@ -22,6 +22,9 @@ ParticlesTemp create_particles_from_pdb(base::TextInput in,
     char buf[1000];
     in.get_stream().getline(buf, 1000);
     if (!in) break;
+    if (!(buf[0]=='A' && buf[1]=='T' && buf[2]=='O' && buf[3]=='M')) {
+      continue;
+    }
     std::istringstream iss(buf+31);
     double x,y,z;
     iss >> x >> y >> z;
