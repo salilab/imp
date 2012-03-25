@@ -95,6 +95,7 @@ namespace {
                        << " produced from " << in->get_name()
                        << " is not already part of model.");
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
+      in->get_model()->update();
       /*IMP_PRINT_TREE(std::cout, Restraint*, in,
                      (dynamic_cast<RestraintSet*>(n)?
                       dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
@@ -108,8 +109,8 @@ namespace {
                      dynamic_cast<RestraintSet*>(n)->get_restraint,
                      std::cout << n->get_name() << ": " << n->get_weight());*/
       base::SetLogState sls(WARNING);
-      double tin= in->evaluate(false);
-      double tout= out->evaluate(false);
+      double tin= in->unprotected_evaluate(false);
+      double tout= out->unprotected_evaluate(false);
       if (std::abs(tin-tout) > .01*std::abs(tin+tout)+.1) {
         IMP_WARN("The before and after scores don't agree for: \""
                  << in->get_name() << "\" got "
@@ -117,9 +118,8 @@ namespace {
       }
     }
   }
-}
 
-namespace {
+
   Restraint* create_decomp_helper(const Restraint* me,
                                   const Restraints &created) {
     if (created.empty()) return NULL;
