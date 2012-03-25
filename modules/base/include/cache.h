@@ -82,73 +82,161 @@ public:
   }
 };
 
-#if 0
+
 /** Implement a cache on sparse pairs of values. The cache
     is infinite (or at least n^2).
 */
 template <class Generator, class Checker>
-class SparseSymmetricPairCache {
+class SparseSymmetricPairMemoizer {
 public:
-  typedef typename Generator::first_argument_type Key;
-  typedef typename Generator::result_type Value;
+  typedef typename Generator::first_argument_type::value_type Key;
+  typedef typename Generator::result_type::value_type Entry;
 private:
   Generator gen_;
   Checker checker_;
-  unsigned long count_;
-  mutable int num_stats_;
-  mutable int num_misses_;
 
-  struct Data {
-    Key k0, k1;
-    Value v;
-    Data(Key ik0, Key ik1, const Value &iv) {
-      k0=ik0;
-      k1=ik1;
-      v=iv;
+  typedef boost::multi_index::member<Entry,
+                                     Key,
+                                     &Entry::first > P0Member;
+  typedef boost::multi_index::member<Entry,
+                                     Key,
+                                     &Entry::second > P1Member;
+  typedef boost::multi_index::hashed_non_unique<P0Member> Hash0Index;
+  typedef boost::multi_index::hashed_non_unique<P1Member> Hash1Index;
+  typedef boost::multi_index::indexed_by<Hash0Index,
+                                         Hash1Index > IndexBy;
+  typedef boost::multi_index_container<Entry,
+                                       IndexBy> Cache;
+  typedef typename boost::multi_index::nth_index<Cache, 0>
+  ::type::const_iterator Hash0Iterator;
+  typedef typename boost::multi_index::nth_index<Cache, 1>
+  ::type::const_iterator Hash1Iterator;
+  Cache cache_;
+  Vector<Key> cleared_;
+  Vector<Key> domain_;
+
+  struct EntryCompare: std::pair<Key, Key>{
+    typedef std::pair<Key, Key> P;
+    EntryCompare(Key t0, Key t1):
+      P(t0, t1){}
+    bool operator==(const Entry &o) const {
+      return P::first==o.first && P::second == o.second;
     }
   };
-  typedef boost::multi_index::member<Data,
-                                     Key,
-                                     &KVP::k0> Key0Member;
-  typedef boost::multi_index::member<Data,
-                                     Key,
-                                     &KVP::k1> Key1Member;
-  typedef boost::multi_index::hashed_non_unique<Key0Member> Hash0Index;
-  typedef boost::multi_index::hashed_non_unique<Key1Member> Hash1Index;
-  typedef boost::multi_index_container<Data,
-                             boost::multi_index::indexed_by<Hash0Index,
-                                                         Hash1Index > > Map;
-  mutable Map map_;
-  typedef typename boost::multi_index::template nth_index<Map, 0>
-  ::type::const_iterator LookupIterator;
-  typedef typename boost::multi_index::template nth_index<Map, 1>
-  ::type::const_iterator OrderIterator;
 
-  template <class Index, class It>
-  static void erase(Index &index, std::pair<It,It> range) {
-    index.erase(range.first, range.second);
+  Hash0Iterator get(Key t0, Key t1) const {
+    Hash0Iterator b,e;
+    boost::tie(b,e)=cache_.template get<0>().equal_range(t0);
+    IMP_LOG(VERBOSE, "Found first matches "
+            << Vector<Entry>(b,e) << " for " << t0 << std::endl);
+    Hash0Iterator f= std::find(b,e, EntryCompare(t0, t1));
+    // otherwise it returns something not equal end()
+    if (f==e) return cache_.template get<0>().end();
+    else return f;
   }
 
-  void remove(Key k) const {
-    erase(map_.get<0>(), map_.get<0>().equal_range(k));
-    erase(map_.get<1>(), map_.get<1>().equal_range(k));
+  void check_it() const {
+#if IMP_BUILD < IMP_FAST
+    Vector<Entry> all= gen_(domain_, domain_, *this);
+    Vector<Entry> cur(cache_.begin(), cache_.end());
+    IMP_INTERNAL_CHECK(checker_(all, cur),
+                       "Cached and newly computed don't match");
+    for (Hash0Iterator c= cache_.template get<0>().begin();
+         c != cache_.template get<0>().end(); ++c) {
+      IMP_INTERNAL_CHECK(get(c->second, c->first)
+                         == cache_.template get<0>().end(),
+                         "Both an entry and its flip are in the table: "
+                         << c->first << " and " << c->second
+                         << ": " << cur);
+    }
+#endif
+  }
+  void fill_it() {
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< cleared_.size(); ++i) {
+        {
+          Hash0Iterator b,e;
+          boost::tie(b,e)=cache_.template get<0>().equal_range(cleared_[i]);
+          IMP_INTERNAL_CHECK(b==e, "Cleared entry " << cleared_[i]
+                             << " was not cleared.");
+        }
+        {
+          Hash1Iterator b,e;
+          boost::tie(b,e)=cache_.template get<1>().equal_range(cleared_[i]);
+          IMP_INTERNAL_CHECK(b==e, "Cleared entry " << cleared_[i]
+                             << " was not cleared.");
+        }
+      }
+    }
+    Vector<Entry> nv= gen_(cleared_, domain_, *this);
+    IMP_LOG(VERBOSE, "Inserting " << nv << " into pair memoizer" << std::endl);
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< nv.size(); ++i) {
+        IMP_INTERNAL_CHECK(std::find(nv.begin(), nv.end(),
+                                     EntryCompare(nv[i].second,
+                                                  nv[i].first))
+                           == nv.end(),
+                           "An entry and its flip are already in list: "
+                           << nv);
+
+      }
+    }
+    cache_.insert(nv.begin(), nv.end());
+    cleared_.clear();
+  }
+  template <class F, class It>
+  F do_apply( It b, It e, F f) const {
+    for (It c=b; c!= e; ++c) {
+      f(*c);
+    }
+    return f;
   }
 public:
-  SparsePairCache(const Generator &gen,
-                  const Checker &check): gen_(gen), checker_(check){}
-  const Value &get(const Key &a,
-                   const Key &b) const {
-
+  SparseSymmetricPairMemoizer(const Vector<Key> &domain,
+                              const Generator &gen= Generator(),
+                              const Checker &check= Checker()): gen_(gen),
+                                                     checker_(check){
+    domain_=domain;
+    cleared_=domain;
   }
-  //! Get all values involving a
-  base::Vector<std::pair<Key, Value> > get(const Key &a) const;
-  void reset();
-  //! Reset all pairs involving a
-  void reset(const Key &a);
-  double get_hit_rate() const;
+  template <class F>
+  F apply(F f) {
+    if (!cleared_.empty()) fill_it();
+    check_it();
+    return do_apply(cache_.begin(), cache_.end(), f);
+  }
+  //! Clear all entries involve the Key
+  /** The removed entries are returned */
+  Vector<Entry> get(const Key &a) {
+    if (std::find(cleared_.begin(), cleared_.end(), a) != cleared_.end()) {
+      return Vector<Entry>();
+    }
+    Vector<Entry> ret;
+    cleared_.push_back(a);
+    {
+      Hash0Iterator b,e;
+      boost::tie(b,e)=cache_.template get<0>().equal_range(a);
+      ret.insert(ret.end(), b,e);
+    }
+    {
+      Hash1Iterator b,e;
+      boost::tie(b,e)=cache_.template get<1>().equal_range(a);
+      ret.insert(ret.end(), b,e);
+    }
+    return ret;
+  }
+  void remove(const Entry &to_remove) {
+    Hash0Iterator it=get(to_remove.first,
+                         to_remove.second);
+    IMP_USAGE_CHECK(it != cache_.template get<0>().end(),
+                    "Entry not found in remove");
+    cache_.template get<0>().erase(it);
+  }
+  void insert(const Entry &e) {
+    cache_.insert(e);
+  }
 };
 
-#endif
 
 /** Implement a simple least recently used cache. As with
     the Memoizer, it is parameterized by a generator that is
