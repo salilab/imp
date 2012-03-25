@@ -114,21 +114,22 @@ private:
   Cache cache_;
   Vector<Key> cleared_;
 
-  struct EntryCompare: std::pair<Key, Key>{
-    typedef std::pair<Key, Key> P;
-    EntryCompare(Key t0, Key t1):
-      P(t0, t1){}
-    bool operator==(const Entry &o) const {
-      return P::first==o.first && P::second == o.second;
+  struct EntryEqual {
+    std::pair<Key, Key> v;
+    EntryEqual(Key t0, Key t1):
+      v(t0, t1){}
+    template <class O>
+    bool operator()(const O &o) const {
+      return v.first==o.first && v.second == o.second;
     }
   };
 
   Hash0Iterator get(Key t0, Key t1) const {
     Hash0Iterator b,e;
     boost::tie(b,e)=cache_.template get<0>().equal_range(t0);
-    IMP_LOG(VERBOSE, "Found first matches "
-            << Vector<Entry>(b,e) << " for " << t0 << std::endl);
-    Hash0Iterator f= std::find(b,e, EntryCompare(t0, t1));
+    /*IMP_LOG(VERBOSE, "Found first matches "
+      << Vector<Entry>(b,e) << " for " << t0 << std::endl);*/
+    Hash0Iterator f= std::find_if(b,e, EntryEqual(t0, t1));
     // otherwise it returns something not equal end()
     if (f==e) return cache_.template get<0>().end();
     else return f;
@@ -166,12 +167,13 @@ private:
         }
       }
     }
+    IMP_LOG(VERBOSE, "Filling from " << cleared_ << std::endl);
     Vector<Entry> nv= gen_(cleared_,  *this);
     IMP_LOG(VERBOSE, "Inserting " << nv << " into pair memoizer" << std::endl);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< nv.size(); ++i) {
-        IMP_INTERNAL_CHECK(std::find(nv.begin(), nv.end(),
-                                     EntryCompare(nv[i].second,
+        IMP_INTERNAL_CHECK(std::find_if(nv.begin(), nv.end(),
+                                     EntryEqual(nv[i].second,
                                                   nv[i].first))
                            == nv.end(),
                            "An entry and its flip are already in list: "
@@ -180,11 +182,16 @@ private:
       }
     }
     cache_.insert(nv.begin(), nv.end());
+    IMP_LOG(VERBOSE, "To get "
+            << typename Generator::result_type(cache_.begin(),
+                                               cache_.end())
+            << std::endl);
     cleared_.clear();
   }
   template <class F, class It>
   F do_apply( It b, It e, F f) const {
     for (It c=b; c!= e; ++c) {
+      IMP_LOG(VERBOSE, "Applying to " << *c << std::endl);
       f(*c);
     }
     return f;
@@ -198,40 +205,35 @@ public:
   }
   template <class F>
   F apply(F f) {
+    IMP_FUNCTION_LOG;
     if (!cleared_.empty()) fill_it();
     check_it();
     return do_apply(cache_.begin(), cache_.end(), f);
   }
   //! Clear all entries involve the Key
   /** The removed entries are returned */
-  Vector<Entry> get(const Key &a) {
+  void remove(const Key &a) {
     if (std::find(cleared_.begin(), cleared_.end(), a) != cleared_.end()) {
-      return Vector<Entry>();
+      return;
     }
     Vector<Entry> ret;
     cleared_.push_back(a);
     {
       Hash0Iterator b,e;
       boost::tie(b,e)=cache_.template get<0>().equal_range(a);
-      ret.insert(ret.end(), b,e);
+      cache_.template get<0>().erase(b,e);
     }
     {
       Hash1Iterator b,e;
       boost::tie(b,e)=cache_.template get<1>().equal_range(a);
-      ret.insert(ret.end(), b,e);
+      cache_.template get<1>().erase(b,e);
     }
-    return ret;
-  }
-  void remove(const Entry &to_remove) {
-    Hash0Iterator it=get(to_remove.first,
-                         to_remove.second);
-    IMP_USAGE_CHECK(it != cache_.template get<0>().end(),
-                    "Entry not found in remove");
-    cache_.template get<0>().erase(it);
   }
   void insert(const Entry &e) {
     cache_.insert(e);
   }
+  const Generator &get_generator() const {return gen_;}
+  Generator &access_generator() const {return gen_;}
 };
 
 
