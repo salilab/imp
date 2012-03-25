@@ -288,4 +288,27 @@ void _test_log() {
 IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m) {
   return create_particles_from_pdb(name, m);
 }
+
+
+void _LogPairScore::do_show(std::ostream &) const {
+}
+
+Float _LogPairScore::evaluate(const ParticlePair &pp,
+                                    DerivativeAccumulator *) const {
+  if (map_.find(pp) == map_.end()) {
+    map_[pp]=0;
+  }
+  ++map_[pp];
+  return 0.;
+}
+
+ //! Get a list of all pairs (without multiplicity)
+ParticlePairs _LogPairScore::get_particle_pairs() const {
+  ParticlePairs ret;
+  for (compatibility::map<ParticlePair, unsigned int>::const_iterator
+           it = map_.begin(); it != map_.end(); ++it) {
+    ret.push_back(it->first);
+  }
+  return ret;
+}
 IMP_END_INTERNAL_NAMESPACE
