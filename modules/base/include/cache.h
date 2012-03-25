@@ -112,7 +112,7 @@ private:
   typedef typename boost::multi_index::nth_index<Cache, 1>
   ::type::const_iterator Hash1Iterator;
   Cache cache_;
-  Vector<Key> cleared_;
+  Vector<Key> cleared_, domain_;
 
   struct EntryEqual {
     std::pair<Key, Key> v;
@@ -200,7 +200,9 @@ public:
                               const Generator &gen= Generator(),
                               const Checker &check= Checker()): gen_(gen),
                                                      checker_(check){
+    IMP_LOG(TERSE, "Domain for memoizer is " << domain << std::endl);
     cleared_=domain;
+    domain_=domain;
   }
   template <class F>
   F apply(F f) {
@@ -236,6 +238,10 @@ public:
   }
   void insert(const Entry &e) {
     cache_.insert(e);
+  }
+  void clear() {
+    cache_.clear();
+    cleared_=domain_;
   }
   const Generator &get_generator() const {return gen_;}
   Generator &access_generator() const {return gen_;}
