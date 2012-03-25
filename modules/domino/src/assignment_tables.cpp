@@ -375,10 +375,11 @@ namespace {
                              cura);
           increment= std::max<unsigned int>(next-cur.back(), 1);
           IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-            unsigned int maxnext
+            int maxnext
               =std::min<unsigned int>(next, maxs[orders.back()[pos]]);
             IMP_INTERNAL_CHECK(maxnext >=cur.back(), "Confused ordering");
-            for (unsigned int j=cura[pos]; j < maxnext; ++j) {
+            for (unsigned int j=cura[pos];
+                 j < static_cast<unsigned int>(maxnext); ++j) {
               reordered_cur[pos]=j;
               Assignment curat(reordered_cur);
               IMP_INTERNAL_CHECK(!filters.back()[i]->get_is_ok(curat),
