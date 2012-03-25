@@ -37,7 +37,8 @@ class ScoringFunction;
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-  enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING};
+  enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING,
+              COMPUTING_DEPENDENCIES};
 }
 #endif
 
