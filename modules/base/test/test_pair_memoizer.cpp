@@ -35,8 +35,12 @@ IMP::base::Vector<int> values;
 IMP::base::Vector<IP> pointers;
 
 
-
-typedef std::pair<IP, IP> Entry;
+// Can't use std::pair since VC gets confused between std::pair
+// and std::pair_base
+struct Entry {
+  IP first, second;
+  Entry(IP f, IP s): firest(f), second(s){}
+};
 typedef IP KeyPart;
 
 IMP::base::Vector<Entry> get_list(IP pi,
@@ -142,14 +146,14 @@ typedef IMP::base::SparseSymmetricPairMemoizer<SortedPairs, SetEquals> Table;
 struct Sum {
   int value;
   Sum(): value(0){}
-  void operator()(std::pair<int*,int*> a) {
+  void operator()(Entry a) {
     value+=*a.first+*a.second;
   }
 };
 
 
 struct Show {
-  void operator()(std::pair<int*,int*> a) {
+  void operator()(Entry a) {
     std::cout << *a.first << "-" << *a.second << ", ";
   }
 };
