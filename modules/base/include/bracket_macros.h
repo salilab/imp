@@ -28,8 +28,7 @@
     in C++ or and IndexException if called from python.
 */
 #define IMP_CONST_BRACKET(Value, Index, bounds_check_expr, expr)   \
-  const Value operator[](Index) const;                             \
-  Value& operator[](Index);
+  const Value operator[](Index) const;
 
 
 
