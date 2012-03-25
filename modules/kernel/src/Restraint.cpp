@@ -137,7 +137,7 @@ namespace {
       check_decomposition(const_cast<Restraint*>(me), created[0]);
       return created[0];
     } else {
-      IMP_NEW(RestraintSet, rs, (me->get_name() + " wrapper"));
+      IMP_NEW(RestraintSet, rs, (me->get_name() + " decomposition"));
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int i=0; i< created.size(); ++i) {
           IMP_INTERNAL_CHECK(created[i],
