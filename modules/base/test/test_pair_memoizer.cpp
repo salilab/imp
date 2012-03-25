@@ -6,19 +6,41 @@
  *
  */
 #include <IMP/base/cache.h>
+#include <IMP/base/showable_macros.h>
+#include <IMP/base/comparison_macros.h>
+#include <IMP/base/hash_macros.h>
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <numeric>
 
 const int threshold=2;
+struct IP {
+  int *p_;
+  IP(): p_(NULL){}
+  IP(int*p): p_(p){}
+  operator int*() const {return p_;}
+  //operator int*(){return p_;}
+  int operator*()const {return *p_;}
+  IMP_SHOWABLE_INLINE(IP, out << p_ << "("<< *p_ << ")");
+  IMP_HASHABLE_INLINE(IP, return boost::hash_value(p_););
+  IMP_COMPARISONS_1(IP, p_);
+};
+
+inline std::ostream &operator<<(std::ostream &out, const IP &ip) {
+  out << static_cast<const int*>(ip) << "(" << *ip << ")";
+  return out;
+}
+
 IMP::base::Vector<int> values;
-IMP::base::Vector<int*> pointers;
+IMP::base::Vector<IP> pointers;
 
-typedef std::pair<int*, int*> Entry;
-typedef int *KeyPart;
 
-IMP::base::Vector<Entry> get_list(int *pi,
-                                  IMP::base::Vector<int*> excluded) {
+
+typedef std::pair<IP, IP> Entry;
+typedef IP KeyPart;
+
+IMP::base::Vector<Entry> get_list(IP pi,
+                                  IMP::base::Vector<IP> excluded) {
   IMP::base::Vector<Entry> ret;
   for (unsigned int j=0; j< pointers.size(); ++j) {
     if (std::abs(*pi-*pointers[j]) < threshold) {
@@ -33,7 +55,7 @@ IMP::base::Vector<Entry> get_list(int *pi,
 
 IMP::base::Vector<Entry> get_list() {
   IMP::base::Vector<Entry> ret;
-  IMP::base::Vector<int*> excluded;
+  IMP::base::Vector<IP> excluded;
   for (unsigned int i=0; i < pointers.size(); ++i) {
     excluded.push_back(pointers[i]);
     ret+= get_list(pointers[i], excluded);
@@ -43,7 +65,7 @@ IMP::base::Vector<Entry> get_list() {
 
 struct SortedPairs {
   struct StarLess {
-    bool operator()(int *a, int *b) const {
+    bool operator()(IP a, IP b) const {
       return *a < *b;
     }
   };
@@ -63,7 +85,7 @@ struct SortedPairs {
     }
     std::cout << std::endl;
     result_type ret;
-    IMP::base::Vector<int*> excluded;
+    IMP::base::Vector<IP> excluded;
     for (unsigned int i=0; i< t.size(); ++i) {
       excluded.push_back(t[i]);
       ret+=get_list(t[i], excluded);
