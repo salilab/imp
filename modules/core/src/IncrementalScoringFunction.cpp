@@ -12,6 +12,7 @@
 #include <IMP/compatibility/set.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>
+#include <IMP/core/internal/incremental_scoring_function.h>
 #include <numeric>
 IMPCORE_BEGIN_NAMESPACE
 /** to handle good/max evaluate, add dummy restraints for each
@@ -19,34 +20,37 @@ IMPCORE_BEGIN_NAMESPACE
     set are bad.*/
 
 
-IncrementalScoringFunction::SingleParticleScoringFunction
-::SingleParticleScoringFunction(ParticleIndex pi,
-                                const RestraintsTemp &rs,
-                                const Ints &indexes):
-  RestraintsScoringFunction(rs),
-  indexes_(indexes), pi_(pi) {}
-
-const ScoreStatesTemp
-IncrementalScoringFunction::SingleParticleScoringFunction
-::get_extra_score_states(const DependencyGraph &dg) const {
-  return IMP::get_dependent_score_states(get_model()->get_particle(pi_),
-                                         ParticlesTemp(),
-                                         dg);
+IncrementalScoringFunction
+::IncrementalScoringFunction(const ParticlesTemp &ps,
+                             const RestraintsTemp &rs,
+                             double weight, double max,
+                             std::string name):
+  ScoringFunction(rs[0]->get_model(),
+                  name), weight_(weight), max_(max) {
+  IMP_OBJECT_LOG;
+  initialized_=false;
+  all_= IMP::internal::get_index(ps);
+  Pointer<ScoringFunction> suppress_error(this);
+  create_flattened_restraints(rs);
+  suppress_error.release();
 }
 
-IncrementalScoringFunction
-::IncrementalScoringFunction(const RestraintsTemp &rs):
-  ScoringFunction(rs[0]->get_model(),
-                  "IncrementalScoringFunction%1%") {
-  Pointer<ScoringFunction> avoid(this);
-  create_flattened_restraints(rs);
+void IncrementalScoringFunction
+::initialize() {
+  IMP_OBJECT_LOG;
   create_scoring_functions();
   // suppress check error
   initialize_scores();
-  avoid.release();
   moved_=base::get_invalid_index<ParticleIndexTag>();
+  initialized_=true;
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    nbl_[i]->initialize();
+  }
 }
+
+
 void IncrementalScoringFunction::create_scoring_functions() {
+  IMP_OBJECT_LOG;
   if (flattened_restraints_.empty()) return;
   compatibility::map<Restraint*,int> all_set;
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
@@ -54,26 +58,42 @@ void IncrementalScoringFunction::create_scoring_functions() {
   }
   DependencyGraph dg
     = get_dependency_graph(flattened_restraints_[0]->get_model());
-  for (Model::ParticleIterator it=get_model()->particles_begin();
-       it != get_model()->particles_end(); ++it) {
-    RestraintsTemp cr= get_dependent_restraints(*it, ParticlesTemp(),
+
+  for (unsigned int i=0; i< all_.size(); ++i) {
+    Particle *p= get_model()->get_particle(all_[i]);
+    RestraintsTemp cr= get_dependent_restraints(p, ParticlesTemp(),
                                                 dg);
     RestraintsTemp mr;
     Ints mi;
-    for (unsigned int i=0; i < cr.size(); ++i) {
-      if (all_set.find(cr[i]) != all_set.end()) {
-        mr.push_back(all_set.find(cr[i])->first);
-        mi.push_back(all_set.find(cr[i])->second);
+    for (unsigned int j=0; j < cr.size(); ++j) {
+      if (all_set.find(cr[j]) != all_set.end()) {
+        mr.push_back(cr[j]);
+        mi.push_back(all_set.find(cr[j])->second);
       }
     }
+    IMP_LOG(TERSE, "Particle " << Showable(p) << " has restraints "
+            << mr << std::endl);
     if (!mr.empty()) {
-      scoring_functions_[(*it)->get_index()]
-        = new SingleParticleScoringFunction((*it)->get_index(),
-                                            mr, mi);
+      scoring_functions_[all_[i]]
+        = new internal::SingleParticleScoringFunction(all_[i],
+                                                      mr, mi);
+      scoring_functions_[all_[i]]->set_name(p->get_name()
+                                            + " restraints");
+    }
+  }
+
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    Pointer<Restraint> pr=nbl_[i]->get_dummy_restraint();
+    // avoid any complex restraints
+    Pointer<Restraint> pdr= pr->create_decomposition();
+    for (ScoringFunctionsMap::iterator it= scoring_functions_.begin();
+         it != scoring_functions_.end(); ++it) {
+      it->second->add_dummy_restraint(pdr);
     }
   }
 }
 void IncrementalScoringFunction::initialize_scores() {
+  IMP_OBJECT_LOG;
   IMP_NEW(RestraintsScoringFunction, sf, (flattened_restraints_));
   sf->evaluate(false);
   flattened_restraints_scores_.resize(flattened_restraints_.size());
@@ -82,7 +102,7 @@ void IncrementalScoringFunction::initialize_scores() {
       = flattened_restraints_[i]->get_last_score();
   }
   for (unsigned int i=0; i< nbl_.size(); ++i) {
-    nbl_[i].initialize();
+    nbl_[i]->initialize();
   }
 }
 void IncrementalScoringFunction
@@ -94,6 +114,7 @@ void IncrementalScoringFunction
       decomposed.push_back(cur);
     }
   }
+  // restraint sets get lost and cause warnings. Not sure how to handle them.
   flattened_restraints_=IMP::get_restraints(decomposed.begin(),
                                                     decomposed.end());
 
@@ -106,10 +127,26 @@ void IncrementalScoringFunction::reset_moved_particles() {
   rollback();
 }
 void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
+  IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(p.size()<=1, "Can only move one particle at a time");
+  IMP_USAGE_CHECK(p.empty() || scoring_functions_.find(p[0]->get_index())
+                  != scoring_functions_.end(),
+                  "Particle " << Showable(p[0]) << " was not in the list of "
+                  << "particles passed to the constructor.");
+  if (! initialized_) {
+    initialize();
+  }
   if (p.empty()) {
     moved_=base::get_invalid_index<ParticleIndexTag>();
-  } else moved_=p[0]->get_index();
+    for (unsigned int i=0; i< nbl_.size(); ++i) {
+      nbl_[i]->set_moved(ParticleIndexes());
+    }
+  } else {
+    moved_=p[0]->get_index();
+    for (unsigned int i=0; i< nbl_.size(); ++i) {
+      nbl_[i]->set_moved(ParticleIndexes(1, p[0]->get_index()));
+    }
+  }
 }
 // make sure to reset last scores
 void IncrementalScoringFunction::rollback() {
@@ -125,7 +162,7 @@ void IncrementalScoringFunction::rollback() {
       = old_incremental_scores_[i];
   }
   for (unsigned int i=0; i< nbl_.size(); ++i) {
-    nbl_[i].rollback();
+    nbl_[i]->rollback();
   }
 }
 void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
@@ -134,107 +171,28 @@ void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       &particles,
                                                       const PairFilters &
                                                       filters) {
-  nbl_.push_back(NBLScore(ps, distance, particles, filters));
+  IMP_OBJECT_LOG;
+  nbl_.push_back(new internal::NBLScoring(ps, distance,all_, particles,
+                                        filters, weight_, max_));
+  // This ensures that the score states needed for the non-bonded terms
+  // are updated.
+  Pointer<Restraint> pr=nbl_.back()->get_dummy_restraint();
+  // avoid any complex restraints
+  Pointer<Restraint> pdr= pr->create_decomposition();
+  for (ScoringFunctionsMap::iterator it= scoring_functions_.begin();
+       it != scoring_functions_.end(); ++it) {
+    it->second->add_dummy_restraint(pdr);
+  }
+  // so that the score states for the ScoringFunctions are recomputed
+  get_model()->reset_dependencies();
 }
 
-
-IncrementalScoringFunction::NBLScore::NBLScore(PairScore *ps,
-                                               double distance,
-                                               const ParticlesTemp &particles,
-                                               const PairFilters &filters) {
-  m_= IMP::internal::get_model(particles);
-  score_=ps;
-  double maxr=0;
-  for (unsigned int i=0; i< particles.size(); ++i) {
-    maxr=std::max(maxr, core::XYZR(particles[i]).get_radius());
+void IncrementalScoringFunction::clear_close_pair_scores() {
+  for (ScoringFunctionsMap::iterator it= scoring_functions_.begin();
+       it != scoring_functions_.end(); ++it) {
+    it->second->clear_dummy_restraints();
   }
-  distance_=distance+2*maxr;
-  pis_= IMP::internal::get_index(particles);
-  filters_=filters;
-
-  algebra::Vector3Ds vs(pis_.size());
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    vs[i]= XYZ(m_, pis_[i]).get_coordinates();
-  }
-  dnn_= new algebra::DynamicNearestNeighbor3D(vs, distance_);
-}
-
-void IncrementalScoringFunction::NBLScore::initialize() {
-  for (unsigned  int i=0; i< pis_.size(); ++i) {
-    Ints n= dnn_->get_in_ball(i, distance_);
-    for (unsigned int j=0; j< n.size(); ++j) {
-      if (n[j] < static_cast<int>(i)) {
-        ParticleIndex o= pis_[n[j]];
-        ParticleIndexPair pp(pis_[i], o);
-        double score= score_->evaluate_index(m_, pp, nullptr);
-        cache_.insert(Score(pis_[i], o, score));
-      }
-    }
-  }
-}
-
-void IncrementalScoringFunction::NBLScore::remove_score(Score pr) {
-  Hash0Iterator b,e;
-  boost::tie(b,e)=cache_.get<0>().equal_range(pr.i0);
-  for (Hash0Iterator c=b; c!= e; ++c){
-    if (c->i1==pr.i1) {
-      cache_.erase(c);
-      break;
-    }
-  }
-}
-
-
-
-void IncrementalScoringFunction::NBLScore::rollback() {
-  for (unsigned int i=0; i< added_.size(); ++i) {
-    remove_score(added_[i]);
-  }
-  for (unsigned int i=0; i < removed_.size(); ++i) {
-    cache_.insert(Score(removed_[i]));
-  }
-  added_.clear();
-  removed_.clear();
-}
-
-void IncrementalScoringFunction::NBLScore::cleanup_score(ParticleIndex moved) {
-  {
-    Hash0Iterator b,e;
-    boost::tie(b,e)=cache_.get<0>().equal_range(moved);
-    removed_.insert(removed_.end(), b,e);
-    cache_.get<0>().erase(b,e);
-  }
-  {
-    Hash1Iterator b,e;
-    boost::tie(b,e)=cache_.get<1>().equal_range(moved);
-    removed_.insert(removed_.end(), b,e);
-    cache_.get<1>().erase(b,e);
-  }
-}
-
-void IncrementalScoringFunction::NBLScore::fill_scores(ParticleIndex moved) {
-  XYZ d(m_, moved);
-  int id=to_dnn_.find(moved)->second;
-  dnn_->set_coordinates(id, d.get_coordinates());
-  Ints n= dnn_->get_in_ball(id, distance_);
-  for (unsigned int i=0; i< n.size(); ++i) {
-    ParticleIndex o= pis_[n[i]];
-    ParticleIndexPair pp(moved, o);
-    double score= score_->evaluate_index(m_, pp, nullptr);
-    Score s(moved, o, score);
-    cache_.insert(s);
-    added_.push_back(s);
-  }
-}
-
-double IncrementalScoringFunction::NBLScore::get_score(ParticleIndex moved) {
-  added_.clear();
-  removed_.clear();
-  if (moved!=base::get_invalid_index<ParticleIndexTag>()) {
-    cleanup_score(moved);
-    fill_scores(moved);
-  }
-  return std::accumulate(cache_.begin(), cache_.end(), 0.0);
+  nbl_.clear();
 }
 
 
@@ -247,10 +205,13 @@ ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate(bool derivatives,
                                          const ScoreStatesTemp &ss) {
   IMP_OBJECT_LOG;
+  if (! initialized_) {
+    initialize();
+  }
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
   old_incremental_scores_.clear();
   old_incremental_score_indexes_.clear();
-  IMP_LOG(TERSE, "Evaluate with " << moved_ << std::endl);
+  //IMP_LOG(TERSE, "Evaluate with " << moved_ << std::endl);
   if (moved_ != base::get_invalid_index<ParticleIndexTag>()) {
     ScoringFunctionsMap::const_iterator it=scoring_functions_.find(moved_);
     if (it != scoring_functions_.end()) {
@@ -269,13 +230,15 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
       }
     }
   }
-  IMP_LOG(VERBOSE, "Scores are " << flattened_restraints_scores_ << std::endl);
+  IMP_LOG(TERSE, "Scores are " << flattened_restraints_scores_ << std::endl);
   double score=std::accumulate(flattened_restraints_scores_.begin(),
                                flattened_restraints_scores_.end(),
-                               0.0);
+                               0.0)*weight_;
   // do nbl stuff
   for (unsigned int i=0; i< nbl_.size(); ++i) {
-    score+= nbl_[i].get_score(moved_);
+    double cscore= nbl_[i]->get_score();
+    IMP_LOG(TERSE, "NBL score is " << cscore << std::endl);
+    score+=cscore;
   }
   return std::make_pair(score, true);
 }
@@ -285,12 +248,31 @@ IncrementalScoringFunction::do_evaluate_if_below(bool ,
                                                  const ScoreStatesTemp &) {
   IMP_NOT_IMPLEMENTED;
 }
-RestraintsTemp IncrementalScoringFunction::get_restraints() const {
-  return RestraintsTemp();
+Restraints IncrementalScoringFunction::create_restraints() const {
+  Restraints ret;
+  for (ScoringFunctionsMap::const_iterator it= scoring_functions_.begin();
+       it != scoring_functions_.end(); ++it) {
+    ret+= it->second->create_restraints();
+  }
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    ret.push_back(nbl_[i]->create_restraint());
+  }
+  return ret;
 }
 
 
 void IncrementalScoringFunction::do_show(std::ostream &) const {
 }
+IncrementalScoringFunction::Wrapper::~Wrapper(){
+  for (unsigned int i=0; i< size(); ++i) {
+    delete operator[](i);
+  }
+}
 
+
+//! all real work is passed off to other ScoringFunctions
+ScoreStatesTemp IncrementalScoringFunction
+::get_required_score_states(const DependencyGraph &) const {
+    return ScoreStatesTemp();
+  }
 IMPCORE_END_NAMESPACE

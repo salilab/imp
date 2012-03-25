@@ -16,7 +16,7 @@ ContainerRestraint<Score, C>
 ::ContainerRestraint(Score *ss,
                      C *pc,
                      std::string name):
-  Restraint(name),
+  Restraint(pc->get_model(), name),
   ss_(ss), pc_(pc) {
 
 }
