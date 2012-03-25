@@ -17,6 +17,7 @@
 #include "IMP/file.h"
 #include "IMP/compatibility/map.h"
 #include "IMP/dependency_graph.h"
+#include "IMP/internal/evaluate_utility.h"
 #include "IMP/ScoringFunction.h"
 #include <boost/timer.hpp>
 #include <IMP/utility.h>

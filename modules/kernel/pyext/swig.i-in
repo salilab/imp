@@ -154,6 +154,7 @@ IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSe
 
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
+IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndex, base::Index, ParticleIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
@@ -197,6 +198,7 @@ namespace IMP {
   %template(StringKey) ::IMP::Key<2, true>;
   %template(ParticleKey) ::IMP::Key<3, true>;
   %template(ObjectKey) ::IMP::Key<4, true>;
+  %template(ParticleIndex) ::IMP::base::Index<IMP::ParticleIndexTag>;
 }
 
 %inline %{
@@ -205,7 +207,6 @@ template <class T, class P, class E>
 class Decorators;
 template <unsigned int D>
 class ParticleTuple;
-// just let swig know which namespace they are in
 #ifdef SWIG
 class ParticlePair;
 class ParticleTriplet;
@@ -251,6 +252,7 @@ namespace IMP {
 %include "IMP/declare_RestraintSet.h"
 %include "IMP/ScoreState.h"
 %include "IMP_kernel_particle.i"
+%include "IMP/dependency_graph.h"
 %include "IMP/declare_ScoringFunction.h"
 %include "IMP/declare_Model.h"
 %include "IMP/Decorator.h"
@@ -289,7 +291,6 @@ namespace IMP {
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
-%include "IMP/dependency_graph.h"
 
 
 namespace IMP {
