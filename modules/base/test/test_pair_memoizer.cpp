@@ -9,42 +9,64 @@
 #include <IMP/base/random.h>
 #include <boost/random/uniform_int.hpp>
 #include <numeric>
+
+const int threshold=2;
+IMP::base::Vector<int> values;
+IMP::base::Vector<int*> pointers;
+
+typedef std::pair<int*, int*> Entry;
+typedef int *KeyPart;
+
+IMP::base::Vector<Entry> get_list(int *pi,
+                                  IMP::base::Vector<int*> excluded) {
+  IMP::base::Vector<Entry> ret;
+  for (unsigned int j=0; j< pointers.size(); ++j) {
+    if (std::abs(*pi-*pointers[j]) < threshold) {
+      if (std::find(excluded.begin(), excluded.end(), pointers[j])
+          == excluded.end()) {
+        ret.push_back(Entry(pi, pointers[j]));
+      }
+    }
+  }
+  return ret;
+}
+
+IMP::base::Vector<Entry> get_list() {
+  IMP::base::Vector<Entry> ret;
+  IMP::base::Vector<int*> excluded;
+  for (unsigned int i=0; i < pointers.size(); ++i) {
+    excluded.push_back(pointers[i]);
+    ret+= get_list(pointers[i], excluded);
+  }
+  return ret;
+}
+
 struct SortedPairs {
   struct StarLess {
     bool operator()(int *a, int *b) const {
       return *a < *b;
     }
   };
-  typedef std::pair<int*, int*> Entry;
+  SortedPairs(){}
   typedef IMP::base::Vector<Entry> result_type;
-  typedef int *KeyPart;
-  typedef IMP::base::Vector<KeyPart> first_argument_type;
-  typedef first_argument_type second_argument_type;
+  typedef IMP::base::Vector<KeyPart> argument_type;
   template <class Table>
-  result_type operator()(first_argument_type t,
-                         second_argument_type domain,
+  result_type operator()(argument_type t,
                          const Table &) const {
     std::cout << "Generating pairs from ";
     for (unsigned int i=0; i< t.size(); ++i) {
       std::cout << *t[i] << " ";
     }
     std::cout << " over ";
-    for (unsigned int i=0; i< domain.size(); ++i) {
-      std::cout << *domain[i] << " ";
+    for (unsigned int i=0; i< pointers.size(); ++i) {
+      std::cout << *pointers[i] << " ";
     }
     std::cout << std::endl;
     result_type ret;
+    IMP::base::Vector<int*> excluded;
     for (unsigned int i=0; i< t.size(); ++i) {
-      for (unsigned int j=0; j< domain.size(); ++j) {
-        bool found=false;
-        for (unsigned int k=0; k < i; ++k) {
-          if (domain[j]== t[k]) found=true;
-        }
-        if (t[i] != domain[j] && std::abs(*t[i] - *domain[j]) < 2
-            && !found) {
-          ret.push_back(std::make_pair(t[i], domain[j]));
-        }
-      }
+      excluded.push_back(t[i]);
+      ret+=get_list(t[i], excluded);
     }
     std::cout << "Returning ";
     for (unsigned int i=0; i< ret.size(); ++i) {
@@ -57,8 +79,8 @@ struct SortedPairs {
 
 struct SetEquals {
   struct LessPair {
-    bool operator()(SortedPairs::Entry a,
-                    SortedPairs::Entry b) const {
+    bool operator()(Entry a,
+                    Entry b) const {
       if (a.first > a.second) std::swap(a.first, a.second);
       if (b.first > b.second) std::swap(b.first, b.second);
       if (a.first < b.first) return true;
@@ -68,8 +90,8 @@ struct SetEquals {
       else return false;
     }
   };
-  bool operator()(SortedPairs::result_type t0,
-                  SortedPairs::result_type t1) const {
+  bool operator()(SortedPairs::result_type t0) const {
+    SortedPairs::result_type t1= get_list();
     std::sort(t0.begin(), t0.end(), LessPair());
     std::sort(t1.begin(), t1.end(), LessPair());
     std::cout << "Comparing " << t0 << " and " << t1
@@ -129,15 +151,13 @@ void check(Table &t, IMP::base::Vector<int> values) {
 int main(int, char *[]) {
   IMP::base::set_log_level(IMP::base::VERBOSE);
   const int n=5;
-  IMP::base::Vector<int> values;
   boost::uniform_int<> ui(0,n*2);
   boost::uniform_int<> pi(0,n-1);
 
   for ( int i=0; i <n; ++i) {
     values.push_back(ui(IMP::base::random_number_generator));
   }
-
-  IMP::base::Vector<int*> pointers(values.size());
+  pointers.resize(values.size());
   for (unsigned int i=0; i <values.size(); ++i) {
     pointers[i]= &values[i];
   }
