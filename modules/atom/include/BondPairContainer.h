@@ -32,7 +32,6 @@ class IMPATOMEXPORT BondPairContainer :
 {
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
-  BondPairContainer(SingletonContainer *sc, bool);
 
 #define IMP_BP_LOOP(body)                                               \
   IMP_FOREACH_SINGLETON_INDEX(sc_, {                                    \
@@ -49,11 +48,6 @@ class IMPATOMEXPORT BondPairContainer :
 public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);
-
-  static BondPairContainer *create_untracked_container(SingletonContainer *c) {
-    BondPairContainer *lsc = new BondPairContainer(c, false);
-    return lsc;
-  }
 
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
