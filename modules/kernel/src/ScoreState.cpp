@@ -8,6 +8,7 @@
 #include "IMP/base/log.h"
 #include "IMP/ScoreState.h"
 #include "IMP/internal/utility.h"
+#include <algorithm>
 #include <cmath>
 #include <limits>
 
@@ -40,6 +41,26 @@ void ScoreState::set_model(Model* model)
                   << model->get_name() << " " << model_->get_name());
   model_ = model;
   set_was_used(true);
+}
+
+namespace {
+struct CompOrder {
+  bool operator()(const ScoreState*a,
+                  const ScoreState*b) const {
+    return a->order_ < b->order_;
+  }
+};
+}
+
+
+ScoreStatesTemp get_ordered_score_states( ScoreStatesTemp in) {
+  if (in.empty()) return in;
+  // make sure the order_ entries are up to date
+  if (!in[0]->get_model()->get_has_dependencies()) {
+    in[0]->get_model()->compute_dependencies();
+  }
+  std::sort(in.begin(), in.end(), CompOrder());
+  return in;
 }
 
 IMP_END_NAMESPACE

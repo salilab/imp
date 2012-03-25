@@ -58,16 +58,6 @@ class Model;
  */
 class IMPEXPORT ScoreState : public IMP::base::Object
 {
-  friend class Model;
-#ifndef _MSC_VER
- protected:
-#else
- public:
-#endif
-  /** Override this method to take action when the score stated is added to
-      a model. */
-  virtual void set_model(Model* model);
-
 public:
   ScoreState(std::string name="ScoreState %1%");
 
@@ -128,8 +118,19 @@ protected:
  private:
   // all of the particle data
   WeakPointer<Model> model_;
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+public:
+#endif
   int order_;
+ /** Override this method to take action when the score stated is added to
+      a model. */
+  virtual void set_model(Model* model);
+
 };
+
+/** Return the passed list of score states ordered based on how they need to
+    be ordered during evaluation.*/
+IMPEXPORT ScoreStatesTemp get_ordered_score_states( ScoreStatesTemp in);
 
 
 IMP_END_NAMESPACE
