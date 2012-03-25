@@ -55,10 +55,10 @@ public:
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
     if (p) {
-      IMP_LOG(VERBOSE, "Found vertex " << o->get_name() << std::endl);
+      //IMP_LOG(VERBOSE, "Found vertex " << o->get_name() << std::endl);
       vals_.push_back(p);
     } else {
-      IMP_LOG(VERBOSE, "Visited vertex " << o->get_name() << std::endl);
+      //IMP_LOG(VERBOSE, "Visited vertex " << o->get_name() << std::endl);
     }
   }
 };
@@ -84,8 +84,9 @@ ResultType get_dependent(base::Object *p,
       start=*be.first;
     } else if (block.find(dpm[*be.first]) != block.end()) {
       // block traversal though the other nodes
-      IMP_LOG(VERBOSE, "Blocking transit through " << dpm[*be.first]->get_name()
-              << std::endl);
+      /*IMP_LOG(VERBOSE, "Blocking transit through "
+        << dpm[*be.first]->get_name()
+        << std::endl);*/
       color[*be.first]= boost::color_traits<int>::black();
     }
   }
