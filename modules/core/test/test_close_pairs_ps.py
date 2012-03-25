@@ -1,6 +1,5 @@
 import IMP
 import IMP.test
-import IMP.misc
 import IMP.core
 
 rk = IMP.FloatKey("radius")
@@ -38,7 +37,7 @@ class Test(IMP.test.TestCase):
         print ls0
         print ls1
         cpr= IMP.core.LeavesRefiner(r0.get_traits())
-        lps= IMP.misc.LogPairScore()
+        lps= IMP._LogPairScore()
         cpps= IMP.core.ClosePairsPairScore(lps, cpr, threshold)
         cpps.evaluate((r0, r1), None)
         print str(len(lps.get_particle_pairs())) +" pairs", "in", threshold
@@ -68,7 +67,7 @@ class Test(IMP.test.TestCase):
         print ls0
         print ls1
         cpr= IMP.core.LeavesRefiner(r0.get_traits())
-        lps= IMP.misc.LogPairScore()
+        lps= IMP._LogPairScore()
         k=1
         cpps= IMP.core.KClosePairsPairScore(lps, cpr, k)
         cpps.evaluate((r0, r1), None)

@@ -19,6 +19,7 @@
 #include "../file.h"
 #include "../Optimizer.h"
 #include "container_helpers.h"
+#include <IMP/compatibility/map.h>
 #include <IMP/base/internal/swig.h>
 
 
@@ -226,6 +227,32 @@ inline FloatRange _get_range(Model *m,
 
 
 IMPEXPORT ParticlesTemp _create_particles_from_pdb(std::string name, Model*m);
+
+
+
+
+//! Track the pairs of particles passed.
+/** Primarily for testing.
+ */
+class IMPEXPORT _LogPairScore : public PairScore
+{
+  mutable compatibility::map<ParticlePair, unsigned int> map_;
+ public:
+  //! create with an empty map
+  _LogPairScore(){}
+  IMP_SIMPLE_PAIR_SCORE(_LogPairScore);
+
+  //! Get a list of all pairs (without multiplicity)
+  ParticlePairs get_particle_pairs() const ;
+  //! Clear the lst of pairs
+  void clear() {
+    map_.clear();
+  }
+  //! Return true if the pair is in the list
+  bool get_contains(const ParticlePair &pp) const {
+    return map_.find(pp) != map_.end();
+  }
+};
 
 IMP_END_INTERNAL_NAMESPACE
 
