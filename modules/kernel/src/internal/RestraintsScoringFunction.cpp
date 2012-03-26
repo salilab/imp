@@ -139,7 +139,7 @@ RestraintsScoringFunction::RestraintsScoringFunction(const RestraintsTemp &r,
                                                      double weight,
                                                      double max,
                                                      std::string name):
-    ScoringFunction(r[0]->get_model(), name),
+  ScoringFunction(IMP::internal::get_model(r), name),
     weight_(weight), max_(max){
   for (unsigned int i=0; i< r.size(); ++i) {
     RestraintSet *rs= dynamic_cast<RestraintSet*>(r[i].get());
