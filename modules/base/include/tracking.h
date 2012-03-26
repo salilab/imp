@@ -70,6 +70,8 @@ class TrackedObject: public Object {
  public:
   TrackedObject(Type *me, Tracker *tracker,
                 std::string name): Object(name) {
+    IMP_USAGE_CHECK(tracker, "Must pass non-null tracker in constructor.");
+    IMP_INTERNAL_CHECK(me, "The passed this pointer is null, bad.");
     set_tracker(me, tracker);
   }
   TrackedObject(std::string name): Object(name) {}
