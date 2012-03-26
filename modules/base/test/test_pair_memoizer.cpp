@@ -39,7 +39,8 @@ IMP::base::Vector<IP> pointers;
 // and std::pair_base
 struct Entry {
   IP first, second;
-  Entry(IP f, IP s): firest(f), second(s){}
+  Entry(IP f, IP s): first(f), second(s){}
+  IMP_SHOWABLE_INLINE(Entry, out << first << " " << second);
 };
 typedef IP KeyPart;
 
