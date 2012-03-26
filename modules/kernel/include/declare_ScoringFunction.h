@@ -27,9 +27,6 @@ class Model;
     The Model has a default scoring function
     (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
-
-    \note This may eventually become an abstract base class to support
-    certain optimizations.
 */
 class IMPEXPORT ScoringFunction:
 #if defined(IMP_DOXYGEN) || defined(SWIG)
