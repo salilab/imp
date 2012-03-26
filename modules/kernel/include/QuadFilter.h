@@ -61,8 +61,6 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(QuadFilter);
 };
 
-IMP_OBJECTS(QuadFilter,QuadFilters);
-
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_QUAD_FILTER_H */
