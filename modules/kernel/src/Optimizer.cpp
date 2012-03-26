@@ -80,7 +80,14 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 
 
 void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  set_scoring_function(new internal::RestraintsScoringFunction(rs));
+  if (rs.empty()) {
+    // otherwise the SF can't figure out the model
+    IMP_NEW(RestraintSet, rss, (get_model(), 1.0, "dummy restraint set"));
+    RestraintsTemp rt(1, rss);
+    set_scoring_function(new internal::RestraintsScoringFunction(rt));
+  } else {
+    set_scoring_function(new internal::RestraintsScoringFunction(rs));
+  }
 }
 
 void Optimizer::set_scoring_function(ScoringFunction *sf) {
