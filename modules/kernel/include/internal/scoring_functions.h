@@ -236,7 +236,28 @@ inline std::pair<double, bool> exec_evaluate_one(const ScoreStatesTemp &states,
 
 
 
+inline Model *get_model(const RestraintsTemp &rs) {
+  IMP_USAGE_CHECK(!rs.empty(),
+                  "Can't pass empty list of restraints as we"
+                  << " need to find the model.");
+  Model *m= rs[0]->get_model();
+  IMP_USAGE_CHECK(m, "Model was not set on restraint "
+                  << Showable(rs[0]) << " please set it before"
+                  << " creating ScoringFunction.");
+  return m;
+}
 
+
+inline Model *get_model( Restraint* rs) {
+  IMP_USAGE_CHECK(rs,
+                  "Can't null restraint as we"
+                  << " need to find the model.");
+  Model *m= rs->get_model();
+  IMP_USAGE_CHECK(m, "Model was not set on restraint "
+                  << Showable(rs) << " please set it before"
+                  << " creating ScoringFunction.");
+  return m;
+}
 
 
 
@@ -249,11 +270,11 @@ class RestraintScoringFunction: public ScoringFunction {
   base::OwnerPointer<RestraintType> r_;
  public:
   RestraintScoringFunction(RestraintType* r):
-      ScoringFunction(r->get_model(),
-                      r->get_name()+"SF"), r_(r){}
+    ScoringFunction(IMP::internal::get_model(r),
+                    r->get_name()+"SF"), r_(r){}
   RestraintScoringFunction(RestraintType* r,
                            std::string name):
-    ScoringFunction(r->get_model(), name), r_(r){}
+    ScoringFunction(IMP::internal::get_model(r), name), r_(r){}
   IMP_SCORING_FUNCTION(RestraintScoringFunction);
 };
 
@@ -315,14 +336,14 @@ class WrappedRestraintScoringFunction: public ScoringFunction {
   WrappedRestraintScoringFunction(RestraintType* r,
                                   double weight,
                                   double max):
-      ScoringFunction(r->get_model(),
-                      r->get_name()+"SF"), r_(r),
+    ScoringFunction(IMP::internal::get_model(r),
+                    r->get_name()+"SF"), r_(r),
       weight_(weight), max_(max){}
   WrappedRestraintScoringFunction(RestraintType* r,
                                   double weight,
                                   double max,
                                   std::string name):
-      ScoringFunction(r->get_model(),
+    ScoringFunction(IMP::internal::get_model(r),
                       name), r_(r),
       weight_(weight), max_(max){}
   IMP_SCORING_FUNCTION(WrappedRestraintScoringFunction);
