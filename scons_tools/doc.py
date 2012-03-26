@@ -1,4 +1,4 @@
-from SCons.Script import Builder, Action, File
+\from SCons.Script import Builder, Action, File
 import bug_fixes
 import data
 import install
@@ -153,9 +153,11 @@ def _make_example_links(target, source, env):
                 ns="IMP::"
             print >> out, "/**"
             for c in classes[m].keys():
-                print >> out, "\\class", ns+c
-                print >> out, "Examples:"
-                lst= [dta.examples[e].link for e in classes[m][c]]
+                # don't want those to show up in the class list
+                if c != "USAGE" and c != "VERBOSE" and c[0] != '_':
+                    print >> out, "\\class", ns+c
+                    print >> out, "Examples:"
+                    lst= [dta.examples[e].link for e in classes[m][c]]
                 print >> out, ", ".join(lst)
             for c in methods[m].keys():
                 print >> out, "\\fn", ns+c
