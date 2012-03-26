@@ -29,7 +29,7 @@ core::Mover* create_serial_mover(const ParticlesTemp &ps) {
     movers.push_back(new core::BallMover(ParticlesTemp(1, ps[i]),
                                          scale*2));
   }
-  IMP_NEW(core::SerialMover,\ sm, (get_as<core::MoversTemp>(movers)));
+  IMP_NEW(core::SerialMover, sm, (get_as<core::MoversTemp>(movers)));
   return sm.release();
 }
 
