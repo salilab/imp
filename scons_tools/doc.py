@@ -1,4 +1,4 @@
-\from SCons.Script import Builder, Action, File
+from SCons.Script import Builder, Action, File
 import bug_fixes
 import data
 import install
