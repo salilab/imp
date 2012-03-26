@@ -146,6 +146,11 @@ void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
                   != scoring_functions_.end(),
                   "Particle " << Showable(p[0]) << " was not in the list of "
                   << "particles passed to the constructor.");
+  if (moved_ != base::get_invalid_index<ParticleIndexTag>()) {
+    // to get the scores updated
+    evaluate(false);
+    moved_ = base::get_invalid_index<ParticleIndexTag>();
+  }
   if (p.empty()) {
     moved_=base::get_invalid_index<ParticleIndexTag>();
     for (unsigned int i=0; i< nbl_.size(); ++i) {
