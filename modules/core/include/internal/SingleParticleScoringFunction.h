@@ -28,7 +28,9 @@ class IMPCOREEXPORT SingleParticleScoringFunction:
   Restraints dummy_restraints_;
 public:
   SingleParticleScoringFunction(ParticleIndex pi, const RestraintsTemp &rs,
-                                const Ints &indexes);
+                                const Ints &indexes,
+                                std::string name
+                                = "SingleParticleScoringFunction%1%");
   ScoreStatesTemp
   get_required_score_states(const DependencyGraph &dg) const;
   const Ints &get_restraint_indexes() const {

@@ -14,11 +14,14 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     set are bad.*/
 
 
+
+
 SingleParticleScoringFunction
 ::SingleParticleScoringFunction(ParticleIndex pi,
                                 const RestraintsTemp &rs,
-                                const Ints &indexes):
-  RestraintsScoringFunction(rs),
+                                const Ints &indexes,
+                                std::string name):
+  RestraintsScoringFunction(rs, 1.0, NO_MAX, name),
   indexes_(indexes), pi_(pi) {}
 
 ScoreStatesTemp

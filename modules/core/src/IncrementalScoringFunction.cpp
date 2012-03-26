@@ -28,6 +28,8 @@ IncrementalScoringFunction
   ScoringFunction(rs[0]->get_model(),
                   name), weight_(weight), max_(max) {
   IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Creating IncrementalScoringFunction with particles "
+          << ps << " and restraints " << rs << std::endl);
   initialized_=false;
   all_= IMP::internal::get_index(ps);
   Pointer<ScoringFunction> suppress_error(this);
@@ -59,11 +61,22 @@ void IncrementalScoringFunction::create_scoring_functions() {
   DependencyGraph dg
     = get_dependency_graph(flattened_restraints_[0]->get_model());
 
+
+  Restraints dr;
+  for (unsigned int i=0; i< nbl_.size(); ++i) {
+    Pointer<Restraint> pr=nbl_[i]->get_dummy_restraint();
+    // avoid any complex restraints
+    Pointer<Restraint> pdr= pr->create_decomposition();
+    if (pdr) {
+      dr.push_back(pdr);
+    }
+  }
+
   for (unsigned int i=0; i< all_.size(); ++i) {
     Particle *p= get_model()->get_particle(all_[i]);
     RestraintsTemp cr= get_dependent_restraints(p, ParticlesTemp(),
                                                 dg);
-    RestraintsTemp mr;
+    Restraints mr;
     Ints mi;
     for (unsigned int j=0; j < cr.size(); ++j) {
       if (all_set.find(cr[j]) != all_set.end()) {
@@ -73,24 +86,21 @@ void IncrementalScoringFunction::create_scoring_functions() {
     }
     IMP_LOG(TERSE, "Particle " << Showable(p) << " has restraints "
             << mr << std::endl);
-    if (!mr.empty()) {
-      scoring_functions_[all_[i]]
-        = new internal::SingleParticleScoringFunction(all_[i],
-                                                      mr, mi);
-      scoring_functions_[all_[i]]->set_name(p->get_name()
-                                            + " restraints");
+    if (mr.empty()) {
+      // make sure the ScoringFunction can figure out the model
+      IMP_NEW(RestraintSet, rs, (get_model(), 1.0, "dummy restraint set"));
+      mr.push_back(rs);
+    }
+    scoring_functions_[all_[i]]
+      = new internal::SingleParticleScoringFunction(all_[i],
+                                                    mr, mi,
+                                                    p->get_name()
+                                                    + " restraints");
+    for (unsigned int i=0; i< dr.size(); ++i) {
+      scoring_functions_[all_[i]]->add_dummy_restraint(dr[i]);
     }
   }
 
-  for (unsigned int i=0; i< nbl_.size(); ++i) {
-    Pointer<Restraint> pr=nbl_[i]->get_dummy_restraint();
-    // avoid any complex restraints
-    Pointer<Restraint> pdr= pr->create_decomposition();
-    for (ScoringFunctionsMap::iterator it= scoring_functions_.begin();
-         it != scoring_functions_.end(); ++it) {
-      it->second->add_dummy_restraint(pdr);
-    }
-  }
 }
 void IncrementalScoringFunction::initialize_scores() {
   IMP_OBJECT_LOG;
@@ -128,14 +138,14 @@ void IncrementalScoringFunction::reset_moved_particles() {
 }
 void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
   IMP_OBJECT_LOG;
+  if (! initialized_) {
+    initialize();
+  }
   IMP_USAGE_CHECK(p.size()<=1, "Can only move one particle at a time");
   IMP_USAGE_CHECK(p.empty() || scoring_functions_.find(p[0]->get_index())
                   != scoring_functions_.end(),
                   "Particle " << Showable(p[0]) << " was not in the list of "
                   << "particles passed to the constructor.");
-  if (! initialized_) {
-    initialize();
-  }
   if (p.empty()) {
     moved_=base::get_invalid_index<ParticleIndexTag>();
     for (unsigned int i=0; i< nbl_.size(); ++i) {
