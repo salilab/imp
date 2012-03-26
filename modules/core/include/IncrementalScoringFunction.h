@@ -67,7 +67,12 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
                              const RestraintsTemp &rs,
                              double weight=1.0, double max= NO_MAX,
                              std::string name="IncrementalScoringFunction%1%");
+  /** Undo the last moved particles. This is similar in effect to, but perhaps
+      more efficient than, calling set_moved_particles() a second time with
+      the same list.
+  */
   void reset_moved_particles();
+  /** Set which particles have moved since the last evaluate. */
   void set_moved_particles(const ParticlesTemp &p);
   /** Close pairs scores can be handled separately for efficiency, to do that,
       add a pair score here to act on the list of particles.*/
