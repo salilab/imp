@@ -15,6 +15,7 @@
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/base/log_macros.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
 #include <IMP/PairFilter.h>
@@ -28,7 +29,7 @@ core::Mover* create_serial_mover(const ParticlesTemp &ps) {
     movers.push_back(new core::BallMover(ParticlesTemp(1, ps[i]),
                                          scale*2));
   }
-  IMP_NEW(core::SerialMover, sm, (get_as<core::MoversTemp>(movers)));
+  IMP_NEW(core::SerialMover,\ sm, (get_as<core::MoversTemp>(movers)));
   return sm.release();
 }
 
@@ -44,7 +45,7 @@ void optimize_balls(const ParticlesTemp &ps,
   // make sure that errors and log messages are marked as coming from this
   // function
   IMP_FUNCTION_LOG;
-  SetLogState sls(ll);
+  base::SetLogState sls(ll);
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
   Model *m= ps[0]->get_model();
   //double scale = core::XYZR(ps[0]).get_radius();
