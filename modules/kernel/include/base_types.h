@@ -104,6 +104,15 @@ IMP_OBJECTS(TripletModifier,TripletModifiers);
 class QuadModifier;
 IMP_OBJECTS(QuadModifier,QuadModifiers);
 
+class SingletonFilter;
+IMP_OBJECTS(SingletonFilter,SingletonFilters);
+class PairFilter;
+IMP_OBJECTS(PairFilter,PairFilters);
+class TripletFilter;
+IMP_OBJECTS(TripletFilter,TripletFilters);
+class QuadFilter;
+IMP_OBJECTS(QuadFilter,QuadFilters);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_BASE_TYPES_H */
