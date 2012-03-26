@@ -19,6 +19,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/generic.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/base/log_macros.h>
 #include <IMP/domino/subset_graphs.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
@@ -37,7 +38,6 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-#ifndef SWIG
 class AssemblyData {
   ParticlesTemp ps_;
   compatibility::map<Particle*, int> index_;
@@ -105,7 +105,6 @@ class AssemblyData {
     return vm[mi];
   }
 };
-#endif
 
 /** Provide an example of a more involved protocol for assembly a complex. The
     protocol adds the particles one at a time based on how well connected they
@@ -122,7 +121,7 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
                        const PairFilters &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
   IMP_NEW(core::MonteCarlo, mc, (m));
-  mc->set_log_level(IMP::SILENT);
+  mc->set_log_level(IMP::base::SILENT);
   IMP_NEW(core::IncrementalScoringFunction, isf, (components,
                                                   m->get_restraints()));
   mc->set_incremental_scoring_function(isf);
