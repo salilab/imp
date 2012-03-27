@@ -222,18 +222,31 @@ MatrixXd GaussianProcessInterpolationRestraint::get_hessian() const
 
     // dE/dm_k * d2m^k/(dTheta_i dTheta_j)
     VectorXd dem(mvn_->evaluate_derivative_FM());
-    for (unsigned i=0; i<mnum_opt; i++)
-        for (unsigned j=i; j<mnum_opt; j++)
-            Hessian(i,j) += dem.transpose()*gpi_->get_m_second_derivative(i,j);
+    for (unsigned i=0, iopt=0; i<mnum; i++){
+        if (!mopt[i]) continue;
+        for (unsigned j=i, jopt=iopt; j<mnum; j++){
+            if (!mopt[j]) continue;
+            Hessian(iopt,jopt) +=
+                dem.transpose()*gpi_->get_m_second_derivative(i,j);
+            jopt++;
+        }
+        iopt++;
+    }
+
     dem.resize(0);
 
     // dE/dOm_kl * d2Om^kl/(dTheta_i dTheta_j)
     MatrixXd dOm(mvn_->evaluate_derivative_Sigma());
-    for (unsigned i=mnum_opt; i<num_opt; i++)
-        for (unsigned j=i; j<num_opt; j++)
-                Hessian(i,j) += (dOm.transpose()
-                 *gpi_->get_Omega_second_derivative(i-mnum_opt,j-mnum_opt)
-                 ).trace();
+    for (unsigned i=mnum, iopt=mnum_opt; i<mnum+Onum; i++){
+        if (!Oopt[i-mnum]) continue;
+        for (unsigned j=i, jopt=iopt; j<mnum+Onum; j++){
+            if (!Oopt[j-mnum]) continue;
+            Hessian(iopt,jopt) += (dOm.transpose()
+                    *gpi_->get_Omega_second_derivative(i-mnum,j-mnum)).trace();
+            jopt++;
+        }
+        iopt++;
+    }
     dOm.resize(0,0);
 
     //return hessian as full matrix
