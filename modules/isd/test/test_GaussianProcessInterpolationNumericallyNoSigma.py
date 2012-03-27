@@ -30,9 +30,10 @@ class MockFunc:
             self.__update()
         return self.__eval(*self.__evalargs)
 
-class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
+class TestGaussianProcessInterpolationNumericallyNoSigma(IMP.test.TestCase):
     """test of the GPI with more data points, using numerical derivative
-    estimation.
+    estimation. Sigma is not optimized (uses different internal loop
+    structures).
     """
 
     def setUp(self):
@@ -62,7 +63,7 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.)
         self.lam.set_nuisance_is_optimized(True)
         self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig.set_nuisance_is_optimized(True)
+        self.sig.set_nuisance_is_optimized(False)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)
@@ -121,26 +122,7 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
             particle.set_nuisance(val)
             ene=self.gpi.get_posterior_covariance([pos],[pos])
             observed = self.gpi.get_posterior_covariance_derivative([pos],
-                    False)[pnum-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
-
-    def testCovDerivNumericSigma(self):
-        """
-        test the derivatives of the gpi numerically for Sigma
-        """
-        pnum=4
-        values=linspace(1,10)
-        pos=0.1
-        particle=self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance,
-                self.gpi.get_posterior_covariance,
-                ([pos],[pos]))
-        for val in values:
-            particle.set_nuisance(val)
-            ene=self.gpi.get_posterior_covariance([pos],[pos])
-            observed = self.gpi.get_posterior_covariance_derivative([pos],
-                    False)[pnum-2]
+                    False)[pnum-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
@@ -159,7 +141,7 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
             particle.set_nuisance(val)
             ene=self.gpi.get_posterior_covariance([pos],[pos])
             observed = self.gpi.get_posterior_covariance_derivative([pos],
-                    False)[pnum-2]
+                    False)[pnum-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
@@ -204,26 +186,6 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
-    def testCovHessianNumericGSigma(self):
-        """
-        test the hessian of the gpi numerically for G and Sigma
-        """
-        pn1=0
-        pn2=4
-        values=linspace(1,10)
-        pos=0.1
-        p1=self.particles[pn1]
-        p2=self.particles[pn2]
-        PFunc = MockFunc(p1.set_nuisance,
-                lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
-        for val in values:
-            p1.set_nuisance(val)
-            observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
-
     def testCovHessianNumericGTau(self):
         """
         test the hessian of the gpi numerically for G and Tau
@@ -236,11 +198,11 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
+                    False)[pn1][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
@@ -256,11 +218,11 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
+                    False)[pn1][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
@@ -285,26 +247,6 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
-    def testCovHessianNumericRgSigma(self):
-        """
-        test the hessian of the gpi numerically for Rg and Sigma
-        """
-        pn1=1
-        pn2=4
-        values=linspace(1,10)
-        pos=0.1
-        p1=self.particles[pn1]
-        p2=self.particles[pn2]
-        PFunc = MockFunc(p1.set_nuisance,
-                lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
-        for val in values:
-            p1.set_nuisance(val)
-            observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-3)
-
     def testCovHessianNumericRgTau(self):
         """
         test the hessian of the gpi numerically for Rg and Tau
@@ -317,11 +259,11 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
+                    False)[pn1][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
@@ -337,74 +279,13 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1][pn2-2]
+                    False)[pn1][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
-
-
-    def testCovHessianNumericSigmaSigma(self):
-        """
-        test the hessian of the gpi numerically for Sigma and Sigma
-        """
-        pn1=4
-        pn2=4
-        values=linspace(1,10)
-        pos=0.1
-        p1=self.particles[pn1]
-        p2=self.particles[pn2]
-        PFunc = MockFunc(p1.set_nuisance,
-                lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
-        for val in values:
-            p1.set_nuisance(val)
-            observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(observed/expected,1,delta=1e-2)
-
-    def testCovHessianNumericSigmaTau(self):
-        """
-        test the hessian of the gpi numerically for Sigma and Tau
-        """
-        pn1=4
-        pn2=5
-        values=linspace(1,10)
-        pos=0.1
-        p1=self.particles[pn1]
-        p2=self.particles[pn2]
-        PFunc = MockFunc(p1.set_nuisance,
-                lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
-        for val in values:
-            p1.set_nuisance(val)
-            observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(observed/expected,1,delta=1e-2)
-
-    def testCovHessianNumericSigmaLambda(self):
-        """
-        test the hessian of the gpi numerically for Sigma and Lambda
-        """
-        pn1=4
-        pn2=6
-        values=linspace(1,10)
-        pos=0.1
-        p1=self.particles[pn1]
-        p2=self.particles[pn2]
-        PFunc = MockFunc(p1.set_nuisance,
-                lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
-        for val in values:
-            p1.set_nuisance(val)
-            observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(observed/expected,1,delta=1e-2)
 
 
     def testCovHessianNumericTauTau(self):
@@ -419,11 +300,11 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
+                    False)[pn1-3][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(observed,expected,delta=1e-3)
 
@@ -439,11 +320,11 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
+                    False)[pn1-3][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(observed/expected,1,delta=1e-2)
 
@@ -453,18 +334,18 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         test the hessian of the gpi numerically for Lambda and Lambda
         """
         pn1=6
-        pn2=5
+        pn2=6
         values=linspace(1,10)
         pos=0.1
         p1=self.particles[pn1]
         p2=self.particles[pn2]
         PFunc = MockFunc(p1.set_nuisance,
                 lambda a:self.gpi.get_posterior_covariance_derivative(a,
-                    False)[pn2-2], ([pos],))
+                    False)[pn2-3], ([pos],))
         for val in values:
             p1.set_nuisance(val)
             observed = self.gpi.get_posterior_covariance_hessian([pos],
-                    False)[pn1-2][pn2-2]
+                    False)[pn1-3][pn2-3]
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(observed/expected,1,delta=1e-2)
 
