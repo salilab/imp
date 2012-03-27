@@ -98,7 +98,9 @@ ScoringFunctions create_decomposition(Restraint *r, double w, double max) {
     return ScoringFunctions(1, r->create_scoring_function(w, max));
   }
 }
-ScoringFunctions create_decomposition(const RestraintsTemp &sf) {
+
+ScoringFunctions
+create_decomposition_into_scoring_functions(const RestraintsTemp &sf) {
   ScoringFunctions ret;
   for (unsigned int i=0; i< sf.size(); ++i) {
     Pointer<Restraint> r= sf[i]->create_decomposition();
@@ -106,6 +108,7 @@ ScoringFunctions create_decomposition(const RestraintsTemp &sf) {
   }
   return ret;
 }
+
 
 ScoringFunctions create_incremental_decomposition(const RestraintsTemp &sf) {
   ScoringFunctions ret;
@@ -120,7 +123,7 @@ ScoringFunctions create_incremental_decomposition(const RestraintsTemp &sf) {
 
 ScoringFunctions create_decomposition(ScoringFunction *sf) {
   ScoringFunctions ret;
-  ret= create_decomposition(sf->create_restraints());
+  ret= create_decomposition_into_scoring_functions(sf->create_restraints());
   return ret;
 }
 
