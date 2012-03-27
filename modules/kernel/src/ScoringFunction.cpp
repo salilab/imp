@@ -21,7 +21,7 @@
 IMP_BEGIN_NAMESPACE
 
 ScoringFunction::ScoringFunction(Model *m,
-                                 std::string name): Tracked(this, m, name),
+                                 std::string name): ModelObject(m, name),
                                                     last_score_(-1),
                                                     last_was_good_(false){
 }
@@ -31,7 +31,7 @@ ScoringFunctionInput::ScoringFunctionInput(Model *sf):
 }
 
 void
-ScoringFunction::update_score_states(const DependencyGraph &dg) {
+ScoringFunction::do_update_dependencies(const DependencyGraph &dg) {
   // can't check here as create_restraints can cause a loop
   ss_= get_required_score_states(dg);
 }

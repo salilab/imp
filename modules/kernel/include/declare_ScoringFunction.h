@@ -14,6 +14,7 @@
 #include "base_types.h"
 #include "dependency_graph.h"
 #include "declare_Restraint.h"
+#include "ModelObject.h"
 #include <IMP/base/tracking.h>
 #include <IMP/base/Pointer.h>
 
@@ -28,22 +29,14 @@ class Model;
     (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
 */
-class IMPEXPORT ScoringFunction:
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-    public base::Object
-#else
-    public base::TrackedObject<ScoringFunction, Model>
-#endif
+class IMPEXPORT ScoringFunction: public ModelObject
  {
-   typedef  base::TrackedObject<ScoringFunction, Model> Tracked;
-
-  friend class Model;
   // kept alive in model
   ScoreStatesTemp ss_;
   double last_score_;
   bool last_was_good_;
   inline void ensure_dependencies();
-  void update_score_states(const DependencyGraph &dg);
+  void do_update_dependencies(const DependencyGraph &dg);
 public:
   typedef std::pair<double, bool> ScoreIsGoodPair;
 protected:
@@ -60,11 +53,9 @@ protected:
   virtual ScoreStatesTemp
       get_required_score_states(const DependencyGraph &dg) const=0;
 
-
  public:
   ScoringFunction(Model *m, std::string name);
   IMP_OBJECT_INLINE(ScoringFunction, out << create_restraints(),);
-  inline Model *get_model() const;
   inline double evaluate_if_good(bool derivatives);
   inline double evaluate(bool derivatives);
   inline double evaluate_if_below(bool derivatives, double max);

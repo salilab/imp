@@ -52,6 +52,8 @@ IMP_DECLARE_KEY_TYPE(ModelKey, 8);
 
 class Restraint;
 IMP_OBJECTS(Restraint,Restraints);
+class ModelObject;
+IMP_OBJECTS(ModelObject,ModelObjects);
 class Model;
 IMP_OBJECTS(Model,Models);
 class RestraintSet;

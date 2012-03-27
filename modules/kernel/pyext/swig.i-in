@@ -173,6 +173,7 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedSetFloatAttribute, ScopedSetAttribute);
 
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 IMP_SWIG_BASE_OBJECT(IMP, ScoringFunction, ScoringFunctions);
+IMP_SWIG_BASE_OBJECT(IMP, ModelObject, ModelObjects);
 
 
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
@@ -253,6 +254,7 @@ namespace IMP {
 %include "IMP/ScoreState.h"
 %include "IMP_kernel_particle.i"
 %include "IMP/dependency_graph.h"
+%include "IMP/ModelObject.h"
 %include "IMP/declare_ScoringFunction.h"
 %include "IMP/declare_Model.h"
 %include "IMP/Decorator.h"
