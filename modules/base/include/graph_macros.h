@@ -10,6 +10,7 @@
 #define IMPBASE_GRAPH_MACROS_H
 #include "base_config.h"
 #include <boost/graph/adjacency_list.hpp>
+#include <IMP/compatibility/map.h>
 
 #ifdef IMP_DOXYGEN
 //! Define a graph object in \imp
@@ -32,11 +33,23 @@
   boost::property<boost::vertex_name_t, VertexData>,                    \
   boost::property<boost::edge_name_t,                                   \
                   EdgeData> > Name;                                     \
-  typedef boost::property_map<Name, boost::vertex_name_t>::type         \
-  Name##VertexName;                                                     \
   typedef boost::property_map<Name, boost::vertex_name_t>::const_type   \
   Name##ConstVertexName;                                                \
-  typedef boost::graph_traits<Name> Name##Traits
+  typedef boost::graph_traits<Name> Name##Traits;                       \
+  typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
+  typedef compatibility::map<VertexData, Name##Vertex> Name##VertexIndex; \
+  inline Name##VertexIndex get_vertex_index(const Name &g) {            \
+    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
+    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
+      be= boost::vertices(g);                                           \
+    Name##VertexIndex ret;                                              \
+    for (; be.first != be.second; ++be.first) {                         \
+      ret[vm[*be.first]]= *be.first;                                    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  typedef boost::property_map<Name, boost::vertex_name_t>::type         \
+  Name##VertexName
 #endif
 
 
