@@ -112,12 +112,7 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
   IMP_OBJECT_LOG;
   if (rs.empty()) return;
   Model *m= rs[0]->get_model();
-  DependencyGraph dg
-      = get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                             m->score_states_end()),
-                             // we just care about interactions between
-                             // particles
-                             RestraintsTemp());
+  DependencyGraph dg = get_dependency_graph(m);
   ParticleStatesTable *pst= cache_.get_generator().get_particle_states_table();
   DepMap dependencies;
   ParticlesTemp allps= pst->get_particles();

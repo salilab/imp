@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
-import IMP.atom
+import IMP.container
 import IMP.display
 
 class NullStates(IMP.domino.ParticleStates):
@@ -14,18 +14,21 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min2(self):
         """Test that more involved graphs are fine"""
         m= IMP.Model()
-        ps=[]
+        aps=[]
+        rbs=[]
         for i in range(3):
-            p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
+            ps= IMP._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
+            p= IMP.Particle(m)
             p.set_name("protein"+str(i))
-            ps.append(p.get_particle())
-            IMP.atom.create_rigid_body(p)
-        cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1, 0)
+            aps.extend(ps)
+            rb=IMP.core.RigidBody.setup_particle(p, ps)
+            rbs.append(rb)
+        cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(aps), 1, 0)
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp)
         m.add_restraint(r)
         print "computing graph"
         pst= IMP.domino.ParticleStatesTable()
-        for p in ps:
+        for p in rbs:
             pst.set_particle_states(p, NullStates())
         g= IMP.domino.get_interaction_graph([m.get_root_restraint_set()],
                                              pst)
@@ -40,23 +43,21 @@ class DOMINOTests(IMP.test.TestCase):
             print v
             l= g.get_vertex_name(v)
             print l.get_name()
-            self.assertIn(l, ps)
+            self.assertIn(l, rbs)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
         g.show()
     def test_global_min3(self):
         """Test that showing interaction graphs is fine"""
         m= IMP.Model()
         IMP.set_log_level(IMP.SILENT)
-        p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
-        p.show()
-        ps= IMP.core.get_leaves(p)
+        ps= IMP._create_particles_from_pdb(self.get_input_file_name("small_protein.pdb"), m)
         #print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
         #exit(1)
         #sp= IMP.atom.get_simplified_by_residue(p, 1)
         cpf= IMP.core.QuadraticClosePairsFinder()
         cpf.set_distance(0.0)
-        print len(IMP.atom.get_leaves(p)), "leaves"
-        cp= cpf.get_close_pairs(IMP.atom.get_leaves(p))
+        print len(ps), "leaves"
+        cp= cpf.get_close_pairs(ps)
         for pr in cp:
             r=IMP.core.PairRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), pr)
             m.add_restraint(r)

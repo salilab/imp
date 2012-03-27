@@ -29,7 +29,7 @@ IMP_GRAPH(SubsetGraph, undirected, Subset, int);
 
     See \ref graphs "Graphs in IMP" for more information.
  */
-IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
+IMP_GRAPH(InteractionGraph, undirected, Particle*, Pointer<Object>);
 
 
 //! Gets all of the Subsets of a SubsetGraph
@@ -56,15 +56,9 @@ get_junction_tree(const InteractionGraph &ig);
     @{ */
 IMPDOMINOEXPORT InteractionGraph get_triangulated(const InteractionGraph& in);
 
-#if defined(SWIG) || defined(IMP_DOXYGEN)
-IMP_GRAPH(CliqueGraph, undirected, Subset, double);
-#else
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                boost::undirectedS,
-                                boost::property<boost::vertex_name_t, Subset>,
-                                boost::property<boost::edge_weight_t,
-                                                double> > CliqueGraph;
-#endif
+
+IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset);
+
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& in);
 
 IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& in);
@@ -83,9 +77,14 @@ IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& in);
     returned.
 */
 IMPDOMINOEXPORT
-SubsetGraph get_restraint_graph(RestraintSet *rs,
+SubsetGraph get_restraint_graph(const RestraintsTemp &rs,
                                 const ParticleStatesTable *pst);
 
+#ifndef IMP_DOXYGEN
+IMPDOMINOEXPORT
+SubsetGraph get_restraint_graph(RestraintSet *rs,
+                                const ParticleStatesTable *pst);
+#endif
 
 
 

@@ -24,58 +24,8 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-
-namespace {
-  typedef boost::graph_traits<InteractionGraph> IGTraits;
-  typedef IGTraits::edge_descriptor IGEdge;
-  typedef IGTraits::vertex_descriptor IGVertex;
-
-  typedef boost::property_map<InteractionGraph,
-                              boost::vertex_name_t>::type IGVertexMap;
-  typedef boost::property_map<InteractionGraph,
-                              boost::edge_name_t>::type IGEdgeMap;
-  typedef boost::property_map<InteractionGraph,
-                              boost::vertex_name_t>::const_type
-  IGVertexConstMap;
-  typedef boost::property_map<InteractionGraph,
-                              boost::edge_name_t>::const_type IGEdgeConstMap;
-
-
-  typedef boost::graph_traits<DependencyGraph> DGTraits;
-  typedef DGTraits::vertex_descriptor DGVertex;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::type DGVertexMap;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::const_type
-  DGConstVertexMap;
-
-
-
-  /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
-    boost::undirectedS,
-    boost::property<boost::vertex_name_t,
-    std::string>,
-    boost::property<boost::edge_weight_t,
-    double> > CliqueGraph;*/
-  typedef boost::graph_traits<CliqueGraph> CGTraits;
-  typedef CGTraits::vertex_descriptor CGVertex;
-  typedef CGTraits::edge_descriptor CGEdge;
-  typedef boost::property_map<CliqueGraph,
-                              boost::vertex_name_t>::type CGVertexMap;
-  typedef boost::property_map<CliqueGraph,
-             boost::vertex_name_t>::const_type CGVertexConstMap;
-
-
-  typedef boost::property_map<SubsetGraph,
-                              boost::vertex_name_t>::type SGVertexMap;
-  typedef boost::property_map<SubsetGraph,
-                    boost::vertex_name_t>::const_type SGConstVertexMap;
-  typedef boost::graph_traits<SubsetGraph> SGTraits;
-
-}
-
 Subsets get_subsets(const SubsetGraph &g){
-  boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
+  SubsetGraphConstVertexName
     subset_map= boost::get(boost::vertex_name, g);
   Subsets output;
   for (unsigned int vi = 0;vi < boost::num_vertices(g);vi++) {
@@ -86,21 +36,29 @@ Subsets get_subsets(const SubsetGraph &g){
 
 
 
-
-
-
-
 SubsetGraph get_restraint_graph(RestraintSet *irs,
                                 const ParticleStatesTable *pst) {
-  Pointer<Restraint> dirs= irs->create_decomposition();
-  RestraintsTemp rs= get_restraints(RestraintsTemp(1, dirs));
+  return get_restraint_graph(RestraintsTemp(1, irs), pst);
+}
+
+
+SubsetGraph get_restraint_graph(const RestraintsTemp &irs,
+                                const ParticleStatesTable *pst) {
+  RestraintsTemp rs;
+  for (unsigned int i=0; i< irs.size(); ++i) {
+    Pointer<Restraint> dirs= irs[i]->create_decomposition();
+    if (dirs) {
+      RestraintsTemp rrs= get_restraints(RestraintsTemp(1, dirs));
+      rs+=rrs;
+    }
+  }
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
           << rs.size() << " restraints." << std::endl);
   IMP::compatibility::map<Particle*, int> map;
-  SGVertexMap pm= boost::get(boost::vertex_name, ret);
-  DependencyGraph dg = get_dependency_graph(rs);
+  SubsetGraphVertexName pm= boost::get(boost::vertex_name, ret);
+  DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
   /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
@@ -173,8 +131,8 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
 
 
 IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
-  IGVertexConstMap pm= boost::get(boost::vertex_name, cig);
-  typedef base::Vector<IGVertex> Clique;
+  InteractionGraphConstVertexName pm= boost::get(boost::vertex_name, cig);
+  typedef base::Vector<InteractionGraphVertex> Clique;
   base::Vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
   for (unsigned int i=0; i< cliques.size(); ++i) {
@@ -185,7 +143,7 @@ IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
     std::sort(cliques[i].begin(), cliques[i].end());
   }
   CliqueGraph cg(cliques.size());
-  CGVertexMap cm
+  CliqueGraphVertexName cm
     = boost::get(boost::vertex_name, cg);
   for (unsigned int i=0; i< cliques.size(); ++i) {
     ParticlesTemp cur;
@@ -222,17 +180,19 @@ namespace {
     }
   };
   void triangulate(InteractionGraph &ig) {
-    typedef std::pair<IGTraits::adjacency_iterator,
-                      IGTraits::adjacency_iterator>
+    typedef std::pair<InteractionGraphTraits::adjacency_iterator,
+                      InteractionGraphTraits::adjacency_iterator>
       AdjacencyRange;
-    typedef std::pair<IGTraits::vertex_iterator, IGTraits::vertex_iterator>
+    typedef std::pair<InteractionGraphTraits::vertex_iterator,
+      InteractionGraphTraits::vertex_iterator>
       VertexRange;
-    typedef std::pair<IGTraits::out_edge_iterator, IGTraits::out_edge_iterator>
+    typedef std::pair<InteractionGraphTraits::out_edge_iterator,
+      InteractionGraphTraits::out_edge_iterator>
       EdgeRange;
     InteractionGraph mig;
     boost::copy_graph(ig, mig);
     IMP::compatibility::map<Particle*, int> vmap;
-    IGVertexMap mpm= boost::get(boost::vertex_name, mig);
+    InteractionGraphVertexName mpm= boost::get(boost::vertex_name, mig);
     for(VertexRange be = boost::vertices(ig);
         be.first != be.second; ++be.first) {
       /*std::cout << "Vertex " << *be.first
@@ -268,11 +228,13 @@ namespace {
       for (unsigned int i=1; i< neighbors.size(); ++i) {
         //std::cout << "neighbor 0 is "
         // << boost::get(mpm, neighbors[i])->get_name() << std::endl;
-        IGVertex o0 =  vmap.find(boost::get(mpm, neighbors[i]))->second;
+        InteractionGraphVertex o0
+          =  vmap.find(boost::get(mpm, neighbors[i]))->second;
         for (unsigned int j=0; j<i; ++j) {
           /*std::cout << "neighbor 1 is "
             << boost::get(mpm, neighbors[j])->get_name() << std::endl;*/
-          IGVertex o1 = vmap.find(boost::get(mpm, neighbors[j]))->second;
+          InteractionGraphVertex o1
+            = vmap.find(boost::get(mpm, neighbors[j]))->second;
           // check for adjacency in ig, ick. painful
           AdjacencyRange be01 = boost::adjacent_vertices(o0, ig);
           for (;be01.first != be01.second; ++be01.first) {
@@ -321,11 +283,11 @@ InteractionGraph get_triangulated(const InteractionGraph& ig) {
 
 
 SubsetGraph get_minimum_spanning_tree(const CliqueGraph& cg) {
-  base::Vector<CGEdge> mst;
+  base::Vector<CliqueGraphEdge> mst;
   boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
   SubsetGraph jt(boost::num_vertices(cg));
-  SGVertexMap cm= boost::get(boost::vertex_name, jt);
-  CGVertexConstMap cgm= boost::get(boost::vertex_name, cg);
+  SubsetGraphVertexName cm= boost::get(boost::vertex_name, jt);
+  CliqueGraphConstVertexName cgm= boost::get(boost::vertex_name, cg);
   for (unsigned int i=0; i< boost::num_vertices(cg); ++i) {
     cm[i]= cgm[i];
   }
@@ -344,8 +306,8 @@ SubsetGraph get_minimum_spanning_tree(const CliqueGraph& cg) {
     for (unsigned int i=0; i< boost::num_vertices(cg); ++i) {
       uf.make_set(i);
     }
-    for (std::pair<SGTraits::edge_iterator,
-                   SGTraits::edge_iterator> be= boost::edges(jt);
+    for (std::pair<SubsetGraphTraits::edge_iterator,
+                   SubsetGraphTraits::edge_iterator> be= boost::edges(jt);
          be.first != be.second; ++be.first) {
       uf.union_set(boost::source(*be.first, jt),
                    boost::target(*be.first, jt));
@@ -385,10 +347,11 @@ namespace {
 
 
   bool get_has_edge(InteractionGraph &graph,
-                    IGVertex va,
-                    IGVertex vb) {
-    std::pair<IGTraits::out_edge_iterator,
-              IGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
+                    InteractionGraphVertex va,
+                    InteractionGraphVertex vb) {
+    std::pair<InteractionGraphTraits::out_edge_iterator,
+              InteractionGraphTraits::out_edge_iterator> edges=
+      boost::out_edges(va, graph);
     for (; edges.first != edges.second;++edges.first) {
       if (boost::target(*edges.first, graph) == vb) return true;
     }
@@ -400,7 +363,7 @@ namespace {
                   const IMP::compatibility::map<Particle*, int> &map,
                   Object *blame,
                   InteractionGraph &g) {
-    IGEdgeMap om= boost::get(boost::edge_name, g);
+    InteractionGraphEdgeName om= boost::get(boost::edge_name, g);
     std::sort(pt.begin(), pt.end());
     pt.erase(std::unique(pt.begin(), pt.end()), pt.end());
     for (unsigned int i=0; i< pt.size(); ++i) {
@@ -413,7 +376,7 @@ namespace {
           IMP_LOG(VERBOSE, "Adding edge between \"" << ps[vj]->get_name()
                   << "\" and \"" << ps[vk]->get_name()
                   << "\" due to \"" << blame->get_name() << "\"" << std::endl);
-          IGEdge e;
+          InteractionGraphEdge e;
           bool inserted;
           boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
           if (inserted) {
@@ -434,12 +397,13 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
 
 InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
                                        const ParticlesTemp& ps) {
+  if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  RestraintsTemp rs= get_restraints(rsi);
+  Restraints rs= IMP::create_decomposition(rsi);
   //Model *m= ps[0]->get_model();
   IMP::compatibility::map<Particle*, int> map;
-  IGVertexMap pm= boost::get(boost::vertex_name, ret);
-  DependencyGraph dg = get_dependency_graph(rs);
+  InteractionGraphVertexName pm= boost::get(boost::vertex_name, ret);
+  DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
   /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
@@ -469,7 +433,7 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
     }
     pm[i]= ps[i];
   }
-  for (RestraintsTemp::const_iterator it= rs.begin();
+  for (Restraints::const_iterator it= rs.begin();
        it != rs.end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
@@ -493,16 +457,17 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
 display::Geometries
 get_interaction_graph_geometry(const InteractionGraph &ig) {
   display::Geometries ret;
-  IGVertexConstMap vm= boost::get(boost::vertex_name, ig);
-  IGEdgeConstMap em= boost::get(boost::edge_name, ig);
+  InteractionGraphConstVertexName vm= boost::get(boost::vertex_name, ig);
+  InteractionGraphConstEdgeName em= boost::get(boost::edge_name, ig);
   IMP::compatibility::map<std::string, display::Color> colors;
-  for (std::pair<IGTraits::vertex_iterator,
-         IGTraits::vertex_iterator> be= boost::vertices(ig);
+  for (std::pair<InteractionGraphTraits::vertex_iterator,
+         InteractionGraphTraits::vertex_iterator> be= boost::vertices(ig);
        be.first != be.second; ++be.first) {
     Particle *p= dynamic_cast<Particle*>(vm[*be.first]);
     core::XYZ pd(p);
-    for (std::pair<IGTraits::out_edge_iterator,
-           IGTraits::out_edge_iterator> ebe= boost::out_edges(*be.first, ig);
+    for (std::pair<InteractionGraphTraits::out_edge_iterator,
+           InteractionGraphTraits::out_edge_iterator> ebe=
+           boost::out_edges(*be.first, ig);
          ebe.first != ebe.second; ++ebe.first) {
       unsigned int target= boost::target(*ebe.first, ig);
       if (target > *be.first) continue;
@@ -528,9 +493,9 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
 display::Geometries
 get_subset_graph_geometry(const SubsetGraph &ig) {
   display::Geometries ret;
-  SGConstVertexMap vm= boost::get(boost::vertex_name, ig);
-  for (std::pair<IGTraits::vertex_iterator,
-         IGTraits::vertex_iterator> be= boost::vertices(ig);
+  SubsetGraphConstVertexName vm= boost::get(boost::vertex_name, ig);
+  for (std::pair<InteractionGraphTraits::vertex_iterator,
+         InteractionGraphTraits::vertex_iterator> be= boost::vertices(ig);
        be.first != be.second; ++be.first) {
     Subset s= vm[*be.first];
     display::Color c= display::get_display_color(*be.first);
@@ -559,14 +524,6 @@ get_subset_graph_geometry(const SubsetGraph &ig) {
 
 
 namespace {
-  typedef boost::graph_traits<MergeTree> MTTraits;
-  typedef CGTraits::vertex_descriptor MTVertex;
-  typedef CGTraits::edge_descriptor MTEdge;
-  typedef boost::property_map<MergeTree,
-                              boost::vertex_name_t>::type MTVertexMap;
-
-
-
   int create_set_node(const Subset &s,
                       MergeTree& merge_tree,
                       boost::property_map<MergeTree,
@@ -585,8 +542,8 @@ namespace {
                                  boost::vertex_name_t>::type &mt_sets) {
     Subset cur_subset=jt_sets[cur_jt];
     int cur_merge= create_set_node(cur_subset, merge_tree, mt_sets);
-    for (std::pair<SGTraits::out_edge_iterator,
-           SGTraits::out_edge_iterator> ebe= boost::out_edges(cur_jt,
+    for (std::pair<SubsetGraphTraits::out_edge_iterator,
+           SubsetGraphTraits::out_edge_iterator> ebe= boost::out_edges(cur_jt,
                                                               junction_tree);
          ebe.first != ebe.second; ++ebe.first) {
       int target= boost::target(*ebe.first, junction_tree);
@@ -647,8 +604,8 @@ namespace {
     int nc=0;
     bool ret=true;
     bool has_children=false;
-    for (std::pair<MTTraits::out_edge_iterator,
-           MTTraits::out_edge_iterator> ebe= boost::out_edges(cur, tree);
+    for (std::pair<MergeTreeTraits::out_edge_iterator,
+           MergeTreeTraits::out_edge_iterator> ebe= boost::out_edges(cur, tree);
          ebe.first != ebe.second; ++ebe.first) {
       int target= boost::target(*ebe.first, tree);
       has_children=true;
