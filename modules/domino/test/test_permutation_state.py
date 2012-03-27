@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
-import IMP.atom
 import IMP.algebra
 
 
