@@ -32,7 +32,7 @@ class MockFunc:
 
 class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
     """test of the GPI restraint with two data points, linear prior mean and
-    gaussian prior covariances
+    gaussian prior covariances. Sigma is not optimzed.
     """
 
     def setUp(self):
@@ -62,7 +62,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.lam.set_nuisance_is_optimized(True)
         self.sig = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.sig.set_nuisance_is_optimized(True)
+        self.sig.set_nuisance_is_optimized(False)
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)
@@ -112,21 +112,6 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
             observed = particle.get_nuisance_derivative()
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-1)
-
-    def testDerivNumericSigma(self):
-        """
-        test the derivatives of the gpi numerically for Sigma
-        """
-        pnum=4
-        values=range(1,10)
-        particle=self.particles[pnum]
-        PFunc = MockFunc(particle.set_nuisance, self.m.evaluate, False)
-        for val in values:
-            particle.set_nuisance(val)
-            ene=self.m.evaluate(True)
-            observed = particle.get_nuisance_derivative()
-            expected = IMP.test.numerical_derivative(PFunc, val, .1)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testDerivNumericTau(self):
         """
@@ -240,66 +225,6 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
 
-    def testHessianNumericSigmaSigma(self):
-        """
-        test the Hessian of the function numerically wrt Sigma and Sigma
-        """
-        pa=4
-        pb=4
-        values=range(1,3)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
-        PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
-        for val in values:
-            ppb.set_nuisance(val)
-            #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
-            #IMP.set_log_level(0)
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
-
-    def testHessianNumericSigmaTau(self):
-        """
-        test the Hessian of the function numerically wrt Sigma and Tau
-        """
-        pa=4
-        pb=5
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
-        PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
-        for val in values:
-            ppb.set_nuisance(val)
-            #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
-            #IMP.set_log_level(0)
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
-
-    def testHessianNumericSigmaLambda(self):
-        """
-        test the Hessian of the function numerically wrt Sigma and Lambda
-        """
-        pa=4
-        pb=6
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
-        PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
-        for val in values:
-            ppb.set_nuisance(val)
-            #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
-            #IMP.set_log_level(0)
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
-
     def testHessianNumericTauTau(self):
         """
         test the Hessian of the function numerically wrt Tau and Tau
@@ -315,7 +240,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
@@ -335,7 +260,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
@@ -355,51 +280,11 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa-3][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-3)
 
-
-    def testHessianNumericGSigma(self):
-        """
-        test the Hessian of the function numerically wrt G and Sigma
-        """
-        pa=0
-        pb=4
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
-        PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
-        for val in values:
-            ppb.set_nuisance(val)
-            #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
-            #IMP.set_log_level(0)
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
-
-    def testHessianNumericRgSigma(self):
-        """
-        test the Hessian of the function numerically wrt Rg and Sigma
-        """
-        pa=1
-        pb=4
-        values=linspace(.1,.9)
-        ppa=self.particles[pa]
-        ppb=self.particles[pb]
-        PFunc = MockFunc(ppb.set_nuisance,
-                lambda a:ppa.get_nuisance_derivative(), None,
-                update=lambda: self.m.evaluate(True))
-        for val in values:
-            ppb.set_nuisance(val)
-            #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
-            #IMP.set_log_level(0)
-            expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianNumericGTau(self):
         """
@@ -416,7 +301,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
@@ -436,9 +321,10 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
+            print val,observed,expected
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianNumericGLambda(self):
@@ -456,7 +342,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
@@ -476,7 +362,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa][pb-2] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
@@ -496,7 +382,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         for val in values:
             ppb.set_nuisance(val)
             #IMP.set_log_level(IMP.TERSE)
-            observed = self.gpr.get_hessian(False)[pa-2][pb] #s and d not opt
+            observed = self.gpr.get_hessian(False)[pa-3][pb] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
