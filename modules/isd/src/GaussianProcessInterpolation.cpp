@@ -215,24 +215,24 @@ VectorXd GaussianProcessInterpolation::get_posterior_covariance_derivative(
         if (Oopt.back()) Onum_opt++;
     }
     unsigned num_opt = mnum_opt + Onum_opt;
+    unsigned sigma_opt = Oopt[0] ? 1 : 0;
 
     VectorXd ret(num_opt);
-    ret.head(mnum_opt+1).setZero();
+    ret.head(mnum_opt+sigma_opt).setZero();
     // build vector of dcov(q,q)/dparticles
     FloatsList xv;
     xv.push_back(x);
     for (unsigned i=0, j=0; i<Onum-1; i++) // skip sigma
-        if (Oopt[i])
-            ret(mnum_opt+1 + j++) =
+        if (Oopt[i+1])
+            ret(mnum_opt + sigma_opt + j++) =
                 covariance_function_->get_derivative_matrix(i, xv)(0,0);
 
     //add dcov/dw(q) * dw(q)/dparticles
     MatrixXd dwqdp(M_,num_opt);
     for (unsigned i=0, j=0; i<mnum+Onum; i++)
-        if ( ((i < mnum) && mopt[i]) | (i >= mnum && Oopt[i-mnum]) )
+        if ( ((i < mnum) && mopt[i]) || (i >= mnum && Oopt[i-mnum]) )
             dwqdp.col(j++) = get_wx_vector_derivative(x, i);
-    ret +=
-        dwqdp.transpose()*get_dcov_dwq(x);
+    ret += dwqdp.transpose()*get_dcov_dwq(x);
 
     // add dcov/dOm * dOm/dparticles
     MatrixXd dcovdOm(get_dcov_dOm(x));
@@ -251,6 +251,159 @@ VectorXd GaussianProcessInterpolation::get_posterior_covariance_derivative(
       Floats tmp;
       for (unsigned j=0; j < mat.rows(); j++) tmp.push_back(mat(j));
       return tmp;
+}
+
+MatrixXd GaussianProcessInterpolation::get_posterior_covariance_hessian(
+        Floats x) const
+{
+    const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
+    //get how many and which particles are optimized
+    unsigned mnum = get_number_of_m_particles();
+    std::vector<bool> mopt;
+    unsigned mnum_opt = 0;
+    for (unsigned i=0; i<mnum; i++)
+    {
+        mopt.push_back(get_m_particle_is_optimized(i));
+        if (mopt.back()) mnum_opt++;
+    }
+    unsigned Onum = get_number_of_Omega_particles();
+    std::vector<bool> Oopt;
+    unsigned Onum_opt = 0;
+    for (unsigned i=0; i<Onum; i++)
+    {
+        Oopt.push_back(get_Omega_particle_is_optimized(i));
+        if (Oopt.back()) Onum_opt++;
+    }
+    //total number of optimized particles
+    unsigned num_opt = mnum_opt + Onum_opt;
+    //whether sigma is optimized
+    unsigned sigma_opt = Oopt[0] ? 1 : 0;
+    //cov_opt: number of optimized covariance particles without counting sigma
+    unsigned cov_opt = Onum_opt - sigma_opt;
+
+    //init matrix and fill with zeros at mean particle's indices
+    //dprior_cov(q,q)/(dsigma d.) is also zero
+    MatrixXd ret(MatrixXd::Zero(num_opt,num_opt));
+    // build vector of dcov(q,q)/dp1dp2 with p1 and p2 covariance particles
+    FloatsList xv;
+    xv.push_back(x);
+    FloatsList tmplist;
+    for (unsigned pa=0; pa<Onum; ++pa){
+        if (!Oopt[pa]) continue; //skip not optimized particles
+        if (pa==0) continue; // skip sigma even when it is optimized
+        Floats tmp;
+        for (unsigned pb=pa; pb<Onum; ++pb){
+            if (!Oopt[pb]) continue; //skip not optimized particles
+            //sigma has already been skipped
+            tmp.push_back(
+                covariance_function_->get_second_derivative_matrix(
+                        pa-1, pb-1, xv)(0,0) );
+        }
+        tmplist.push_back(tmp);
+    }
+    for (unsigned pa_opt=0; pa_opt<cov_opt; pa_opt++)
+        for (unsigned pb_opt=pa_opt; pb_opt<cov_opt; pb_opt++)
+            ret.bottomRightCorner(cov_opt, cov_opt)(pa_opt,pb_opt)
+                = tmplist[pa_opt][pb_opt-pa_opt];
+
+    //compute and store w(q) derivatives (skip mean particles)
+    MatrixXd dwqdp(M_,Onum_opt);
+    for (unsigned i=0, j=0; i<Onum; i++)
+        if (Oopt[i]) dwqdp.col(j++) = get_wx_vector_derivative(x, i+mnum);
+    //add d2cov/(dw(q)_k * dw(q)_l) * dw(q)^k/dp_i * dw(q)^l/dp_j
+    ret.bottomRightCorner(cov_opt, cov_opt).noalias()
+        += dwqdp.rightCols(cov_opt).transpose()
+            *get_d2cov_dwq_dwq()
+            *dwqdp.rightCols(cov_opt);
+
+    //compute and store Omega derivatives (skip mean particles)
+    std::vector<MatrixXd> dOmdp;
+    for (unsigned i=0; i<Onum; i++){
+        if (Oopt[i]) dOmdp.push_back(get_Omega_derivative(i));
+    }
+    //add d2cov/(dOm_kl * dOm_mn) * dOm^kl/dp_i * dOm^mn/dp_j
+    std::vector< std::vector<MatrixXd> > d2covdo;
+    for (unsigned m=0; m<M_; m++){
+        std::vector<MatrixXd> tmp;
+        for (unsigned n=0; n<M_; n++)
+            tmp.push_back(get_d2cov_dOm_dOm(x, m, n));
+        d2covdo.push_back(tmp);
+    }
+
+    for (unsigned i=0; i<Onum_opt; i++){
+        MatrixXd tmp(M_,M_);
+        for (unsigned m=0; m<M_; ++m)
+            for (unsigned n=0; n<M_; ++n)
+                tmp(m,n) = (d2covdo[m][n].transpose()*dOmdp[i]).trace();
+        for (unsigned j=i; j<Onum_opt; j++)
+            ret.bottomRightCorner(Onum_opt, Onum_opt)(i,j)
+                += (dOmdp[j].transpose()*tmp).trace();
+    }
+    for (unsigned i=0; i<d2covdo.size(); i++)
+        for (unsigned j=0; j<d2covdo[i].size(); j++)
+            d2covdo[i][j].resize(0,0);
+
+    //compute cross-term
+    std::vector<MatrixXd> d2covdwdo;
+    for (unsigned k=0; k<M_; k++)
+        d2covdwdo.push_back(get_d2cov_dwq_dOm(x, k));
+    //compute derivative contribution into temporary
+    MatrixXd tmpH(Onum_opt, Onum_opt);
+
+    for (unsigned i=0; i<Onum_opt; i++){
+        VectorXd tmp(M_);
+        for (unsigned k=0; k<M_; k++)
+            tmp(k) = (d2covdwdo[k].transpose()*dOmdp[i]).trace();
+        for (unsigned j=0; j<Onum_opt; j++)
+                tmpH(i,j) = dwqdp.col(j).transpose()*tmp;
+    }
+    ret.bottomRightCorner(Onum_opt,Onum_opt) += tmpH+tmpH.transpose();
+
+    //deallocate unused stuff
+    tmpH.resize(0,0);
+    for (unsigned i=0; i<d2covdwdo.size(); i++)
+        d2covdwdo[i].resize(0,0);
+    for (unsigned i=0; i<dOmdp.size(); i++)
+        dOmdp[i].resize(0,0);
+    dwqdp.resize(0,0);
+
+    //dcov/dw_k * d2w^k/(dp_i dp_j)
+    VectorXd dcwq(get_dcov_dwq(x));
+    for (unsigned i=0; i<cov_opt; i++)
+        for (unsigned j=i; j<cov_opt; j++)
+            ret.bottomRightCorner(cov_opt,cov_opt)(i,j)
+                += dcwq.transpose()*get_wx_vector_second_derivative(
+                        x, mnum+1+i, mnum+1+j);
+    dcwq.resize(0,0);
+
+    //dcov/dOm_kl * d2Om^kl/(dp_i dp_j), zero when p_i or p_j is sigma or mean
+    MatrixXd dcOm(get_dcov_dOm(x));
+    for (unsigned i=0; i<cov_opt; i++)
+        for (unsigned j=i; j<cov_opt; j++)
+            ret.bottomRightCorner(cov_opt,cov_opt)(i,j)
+                += (dcOm.transpose()*get_Omega_second_derivative(
+                            i+1,j+1)).trace();
+    dcOm.resize(0,0);
+
+    //return as symmetric matrix
+    for (unsigned i=mnum_opt; i<num_opt; ++i)
+        for (unsigned j=mnum_opt+1; j<num_opt; ++j)
+            ret(j,i) = ret(i,j);
+
+    return ret;
+}
+
+  FloatsList GaussianProcessInterpolation::get_posterior_covariance_hessian(
+          Floats x, bool) const
+{
+      MatrixXd mat(get_posterior_covariance_hessian(x));
+      FloatsList ret;
+      for (unsigned j=0; j < mat.rows(); j++){
+          Floats tmp;
+          for (unsigned i=0; i < mat.cols(); i++) tmp.push_back(mat(i,j));
+          ret.push_back(tmp);
+      }
+      return ret;
 }
 
 
@@ -328,6 +481,24 @@ VectorXd GaussianProcessInterpolation::get_posterior_covariance_derivative(
         xv.push_back(xval);
         xv.push_back(x_[i]);
         ret(i) = covariance_function_->get_derivative_matrix(p-(nm+1),xv)(0,1);
+    }
+    return ret;
+}
+
+  VectorXd GaussianProcessInterpolation::get_wx_vector_second_derivative(
+                                    Floats xval, unsigned i, unsigned j) const
+{
+    const_cast<GaussianProcessInterpolation *>(this)->update_flags_covariance();
+    unsigned nm = get_number_of_m_particles();
+    //derivative wrt mean particles and/or sigma is zero
+    if (i <= nm || j <= nm) return VectorXd::Zero(M_);
+    VectorXd ret(M_);
+    for (unsigned q=0; q<M_; q++){
+        FloatsList xv;
+        xv.push_back(xval);
+        xv.push_back(x_[q]);
+        ret(q) = covariance_function_->get_second_derivative_matrix(
+                    i-(nm+1), j-(nm+1), xv)(0,1);
     }
     return ret;
 }
@@ -565,7 +736,7 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dwq_dOm(Floats q, unsigned m)
     MatrixXd Omi(get_Omi());
     VectorXd wq(get_wx_vector(q));
     VectorXd L(Omi*wq);
-    MatrixXd ret(L*Omi.row(m));
+    MatrixXd ret(L*Omi.col(m).transpose());
     return ret + ret.transpose();
 }
 
@@ -575,8 +746,8 @@ MatrixXd GaussianProcessInterpolation::get_d2cov_dOm_dOm(Floats q,
     MatrixXd Omi(get_Omi());
     VectorXd wq(get_wx_vector(q));
     VectorXd L(Omi*wq);
-    MatrixXd ret(Omi.row(n).transpose()*L);
-    return -L(m)*(ret + ret.transpose());
+    MatrixXd tmp(Omi.col(m)*L.transpose());
+    return -L(n)*(tmp + tmp.transpose());
 }
 
 /*

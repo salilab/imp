@@ -95,7 +95,7 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
 
   #ifndef SWIG
   //derivative: d(mean(q))/(dparticle_i)
-  VectorXd get_posterior_mean_derivative(Floats x) const;
+  //VectorXd get_posterior_mean_derivative(Floats x) const;
   #endif
 
   #ifndef SWIG
@@ -112,8 +112,10 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
 
   #ifndef SWIG
   //hessian: d(cov(q,q))/(dparticle_i dparticle_j)
-  //MatrixXd get_posterior_covariance_hessian(Floats x) const;
+  MatrixXd get_posterior_covariance_hessian(Floats x) const;
   #endif
+  //for python
+  FloatsList get_posterior_covariance_hessian(Floats x, bool) const;
 
   //needed for restraints using gpi
   ParticlesTemp get_input_particles() const;
@@ -206,8 +208,8 @@ class IMPISDEXPORT GaussianProcessInterpolation : public base::Object
 
   //compute dw(q)/dparticle_i
   VectorXd get_wx_vector_derivative(Floats q, unsigned i) const;
-  //compute dw(q)/(dparticle_m * dparticle_n)
-  MatrixXd get_wx_vector_second_derivative(Floats q, unsigned m, unsigned n)
+  //compute dw(q)/(dparticle_i * dparticle_j)
+  VectorXd get_wx_vector_second_derivative(Floats q, unsigned i, unsigned j)
       const;
 
   //compute dcov(q,q)/dw(q)
