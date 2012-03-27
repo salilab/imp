@@ -13,6 +13,8 @@
 
 IMP_BEGIN_NAMESPACE
 
+/** Return the decomposition of a list of restraints. */
+IMPEXPORT Restraints create_decomposition(const RestraintsTemp &rs);
 
 IMP_END_NAMESPACE
 
