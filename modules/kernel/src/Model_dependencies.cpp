@@ -149,14 +149,14 @@ void Model::compute_dependencies() {
   // to prevent infinite recursion when updating ScoringFunctions
   dependencies_dirty_=false;
   RestraintTracker::set_is_dirty(false);
-  ScoringFunctionTracker::set_is_dirty(false);
+  ModelObjectTracker::set_is_dirty(false);
 
-  for (ScoringFunctionTracker::TrackedIterator it
-           = ScoringFunctionTracker::tracked_begin();
-       it != ScoringFunctionTracker::tracked_end(); ++it) {
-    ScoringFunction *sf= *it;
+  for (ModelObjectTracker::TrackedIterator it
+           = ModelObjectTracker::tracked_begin();
+       it != ModelObjectTracker::tracked_end(); ++it) {
+    ModelObject *sf= *it;
     IMP_CHECK_OBJECT(sf);
-    sf->update_score_states(dg);
+    sf->update_dependencies(dg);
   }
 }
 

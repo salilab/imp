@@ -17,7 +17,7 @@ IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 inline bool Model::get_has_dependencies() const {
   return !RestraintTracker::get_is_dirty()
-    && !ScoringFunctionTracker::get_is_dirty()
+    && !ModelObjectTracker::get_is_dirty()
     && !dependencies_dirty_;
 }
 

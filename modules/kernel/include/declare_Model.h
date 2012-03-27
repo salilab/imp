@@ -10,6 +10,7 @@
 #define IMPKERNEL_DECLARE_MODEL_H
 
 #include "kernel_config.h"
+#include "ModelObject.h"
 #include "declare_ScoringFunction.h"
 #include "declare_Restraint.h"
 #include "declare_RestraintSet.h"
@@ -33,7 +34,7 @@
 
 IMP_BEGIN_NAMESPACE
 
-class ScoringFunction;
+class ModelObject;
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -92,7 +93,7 @@ class IMPEXPORT Model:
   public RestraintSet
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   ,public base::Tracker<Restraint>,
-  public base::Tracker<ScoringFunction>,
+  public base::Tracker<ModelObject>,
   public internal::Masks,
   public internal::FloatAttributeTable,
   public internal::StringAttributeTable,
@@ -127,7 +128,7 @@ class IMPEXPORT Model:
   }
 private:
   typedef base::Tracker<Restraint> RestraintTracker;
-  typedef base::Tracker<ScoringFunction> ScoringFunctionTracker;
+  typedef base::Tracker<ModelObject> ModelObjectTracker;
   struct Statistics {
     double total_time_;
     double total_time_after_;

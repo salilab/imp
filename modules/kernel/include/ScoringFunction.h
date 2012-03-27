@@ -17,9 +17,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-inline Model *ScoringFunction::get_model() const {
-  return Tracked::get_tracker();
-}
 inline void ScoringFunction::ensure_dependencies() {
   if (!get_model()->get_has_dependencies()) {
     get_model()->compute_dependencies();
