@@ -31,15 +31,6 @@ IMP_BEGIN_NAMESPACE
 */
 IMP_GRAPH(DependencyGraph, bidirectional, base::Object*, int);
 
-#ifndef IMP_DOXYGEN
-IMPEXPORT DependencyGraph
-get_dependency_graph(const RestraintsTemp &rs);
-
-/** \copydoc get_dependency_graph(const RestraintsTemp&)*/
-IMPEXPORT DependencyGraph
-get_dependency_graph(const ScoreStatesTemp &ss,
-                     const RestraintsTemp &rs);
-#endif
 class Model;
 
 /** The dependency graph captures the interactions between Restraint,
@@ -60,10 +51,29 @@ get_dependency_graph(Model *m);
 IMPEXPORT DependencyGraph
 get_pruned_dependency_graph(Model *m);
 
-/** Get the score states required by the passed restraints.*/
-IMPEXPORT ScoreStatesTemp
-get_required_score_states(const RestraintsTemp &rs);
+#if 0
+/** \name Getting required values
 
+    These functions use the dependency graph to determine all the objects
+    of a given type that are needed by a particular object. An object is said
+    to be needed by another if there is a path from the object to the dependent
+    object through the dependency graph (see get_dependency_graph()).
+
+    @{
+ */
+IMPEXPORT ParticlesTemp
+get_required_particles(base::Object *p,
+                        const base::ObjectsTemp &all,
+                        const DependencyGraph &dg);
+
+/** Return all the score states that depend on p as an input, even indirectly.
+ */
+IMPEXPORT ScoreStatesTemp
+get_required_score_states(base::Object *p,
+                          const base::ObjectsTemp &all,
+                          const DependencyGraph &dg);
+/** @} */
+#endif
 
 /** \name Getting dependent values
 
@@ -102,17 +112,8 @@ get_dependent_score_states(base::Object *p,
 IMPEXPORT
 ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg);
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace {
- typedef boost::graph_traits<DependencyGraph> MDGTraits;
-  typedef MDGTraits::vertex_descriptor MDGVertex;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::type MDGVertexMap;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::const_type
-  MDGConstVertexMap;
-}
-#endif
+IMPEXPORT
+ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs);
 
 IMP_END_NAMESPACE
 

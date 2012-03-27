@@ -23,16 +23,6 @@
 #include <IMP/compatibility/vector_property_map.h>
 
 IMP_BEGIN_NAMESPACE
-namespace {
- typedef boost::graph_traits<DependencyGraph> DGTraits;
-  typedef DGTraits::vertex_descriptor DGVertex;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::type DGVertexMap;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::const_type
-  DGConstVertexMap;
-}
-
 
 template <class Graph, class Type, class Types>
 class DirectCollectVisitor: public boost::default_dfs_visitor {
@@ -70,8 +60,9 @@ ResultType get_dependent(base::Object *p,
                          const DependencyGraph &dg) {
   IMP_FUNCTION_LOG;
   // find p in graph, ick
-  DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
-  std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
+  DependencyGraphConstVertexName dpm= boost::get(boost::vertex_name, dg);
+  std::pair<DependencyGraphTraits::vertex_iterator,
+    DependencyGraphTraits::vertex_iterator> be
     = boost::vertices(dg);
   IMP::compatibility::set<base::Object*> block(all.begin(), all.end());
   boost::vector_property_map<int> color(boost::num_vertices(dg));
@@ -128,10 +119,6 @@ ScoreStatesTemp get_dependent_score_states(base::Object *p,
 }
 
 
-typedef compatibility::map<base::Object*, DGVertex> DGIndex;
-typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
-DGConstVertexMap;
-
 
 
 namespace {
@@ -147,10 +134,11 @@ namespace {
   }
 
   bool get_has_edge(const DependencyGraph &graph,
-                    DGTraits::vertex_descriptor va,
-                    DGTraits::vertex_descriptor vb) {
-    /*std::pair<MDGTraits::out_edge_iterator,
-      MDGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
+                    DependencyGraphTraits::vertex_descriptor va,
+                    DependencyGraphTraits::vertex_descriptor vb) {
+    /*std::pair<MDependencyGraphTraits::out_edge_iterator,
+      MDependencyGraphTraits::out_edge_iterator> edges
+      = boost::out_edges(va, graph);
     for (; edges.first != edges.second;++edges.first) {
       if (boost::target(*edges.first, graph) == vb) return true;
     }
@@ -159,8 +147,8 @@ namespace {
   }
 
   void add_edge(DependencyGraph &graph,
-                DGTraits::vertex_descriptor va,
-                DGTraits::vertex_descriptor vb) {
+                DependencyGraphTraits::vertex_descriptor va,
+                DependencyGraphTraits::vertex_descriptor vb) {
     if (get_has_edge(graph, va, vb)) return;
     IMP_INTERNAL_CHECK(va != vb, "Can't dependend on itself " << va);
     IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
@@ -171,14 +159,14 @@ namespace {
 
   }
 
-  DGTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
-                                         DGIndex &dgi,
+  DependencyGraphTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
+                                         DependencyGraphVertexIndex &dgi,
                                          base::Object *o) {
-    DGIndex::const_iterator it=dgi.find(o);
+    DependencyGraphVertexIndex::const_iterator it=dgi.find(o);
     if (it==dgi.end()) {
       boost::property_map<DependencyGraph, boost::vertex_name_t>::type vm
         = boost::get(boost::vertex_name, dg);
-      DGTraits::vertex_descriptor v= boost::add_vertex(dg);
+      DependencyGraphTraits::vertex_descriptor v= boost::add_vertex(dg);
       vm[v]=o;
       dgi[o]=v;
       return v;
@@ -188,12 +176,12 @@ namespace {
   }
 
 template <class It>
-void add_out_edges(DGTraits::vertex_descriptor rv,
+void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
                    It b, It e,
                    DependencyGraph &dg,
-                   DGIndex &dgi) {
+                   DependencyGraphVertexIndex &dgi) {
   for (It c=b; c!= e; ++c) {
-    DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, *c);
+    DependencyGraphTraits::vertex_descriptor cv= get_vertex(dg, dgi, *c);
     if (!get_has_edge(dg, rv, cv)) {
       add_edge(dg, cv, rv);
     }
@@ -203,9 +191,9 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
   template <class It>
   void build_inputs_graph(It b, It e,
                           DependencyGraph &dg,
-                          DGIndex &dgi) {
+                          DependencyGraphVertexIndex &dgi) {
     for (It c= b; c != e; ++c) {
-      DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
+      DependencyGraphTraits::vertex_descriptor rv= dgi.find(*c)->second;
       base::Object *o= *c;
       if (dynamic_cast<RestraintSet*>(o)) {
         RestraintSet *rs=dynamic_cast<RestraintSet*>(o);
@@ -237,9 +225,9 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
   template <class It>
   void build_outputs_graph(It b, It e,
                            DependencyGraph &dg,
-                           DGIndex &dgi) {
+                           DependencyGraphVertexIndex &dgi) {
     for (It c= b; c != e; ++c) {
-      DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
+      DependencyGraphTraits::vertex_descriptor rv= dgi.find(*c)->second;
       /*IMP_LOG(VERBOSE, "Processing outputs for \""
         << (*c)->get_name()  << "\"");*/
       {
@@ -251,7 +239,8 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
           }
           }*/
         for (unsigned int j=0; j < ct.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
+          DependencyGraphTraits::vertex_descriptor cv
+            = get_vertex(dg, dgi, ct[j]);
           if (!get_has_edge(dg, cv, rv)) {
             add_edge(dg, rv, cv);
           }
@@ -264,7 +253,8 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
                   << pt);
                   }*/
         for (unsigned int j=0; j < pt.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
+          DependencyGraphTraits::vertex_descriptor cv
+            = get_vertex(dg, dgi, pt[j]);
           if (!get_has_edge(dg, cv, rv)) {
             add_edge(dg, rv, cv);
           }
@@ -275,11 +265,13 @@ void add_out_edges(DGTraits::vertex_descriptor rv,
   }
 }
 DependencyGraph
-get_dependency_graph(const ScoreStatesTemp &ss,
-                     const RestraintsTemp &rs) {
-  DGIndex index;
+get_dependency_graph(Model *m) {
+  ScoreStatesTemp ss(m->score_states_begin(),
+                     m->score_states_end());
+  RestraintsTemp rs=m->get_known_restraints();
+  DependencyGraphVertexIndex index;
   DependencyGraph ret(ss.size()+rs.size());
-  boost::property_map<DependencyGraph, boost::vertex_name_t>::type
+  DependencyGraphVertexName
     vm = boost::get(boost::vertex_name, ret);
   for (unsigned int i=0; i< ss.size(); ++i) {
     vm[i]= ss[i];
@@ -308,34 +300,6 @@ namespace {
     return p.first==p.second;
   }
 }
-
-DependencyGraph
-get_dependency_graph(const RestraintsTemp &irs) {
-  IMP_FUNCTION_LOG;
-  if (irs.empty()) return DependencyGraph();
-  RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
-  ScoreStatesTemp ss( irs[0]->get_model()->score_states_begin(),
-                      irs[0]->get_model()->score_states_end());
-  DependencyGraph dg= get_dependency_graph(ss, rs);
-   boost::property_map<DependencyGraph, boost::vertex_name_t>::type
-    vm = boost::get(boost::vertex_name, dg);
-  bool delta=false;
-  do {
-    delta=false;
-    IMP_LOG(TERSE, "Pruning unneeded nodes." << std::endl);
-    for (unsigned int i=0; i< boost::num_vertices(dg); ++i) {
-      base::Object *o= vm[i];
-      if (get_range_is_empty(boost::out_edges(i, dg))
-          && !dynamic_cast<Restraint*>(o)) {
-        boost::clear_vertex(i, dg);
-        boost::remove_vertex(i, dg);
-        delta=true;
-      }
-    }
-  } while (delta);
-  return dg;
-}
-
 
 namespace {
   struct Connections {
@@ -390,12 +354,7 @@ namespace {
   }
 }
 
-DependencyGraph
-get_dependency_graph(Model *m) {
-  return get_dependency_graph(ScoreStatesTemp(m->score_states_begin(),
-                                              m->score_states_end()),
-                              m->get_known_restraints());
-}
+
 
 
 DependencyGraph
@@ -437,23 +396,23 @@ get_pruned_dependency_graph(Model *m) {
 
 
 struct cycle_detector : public boost::default_dfs_visitor {
-  base::Vector<MDGVertex> cycle_;
+  base::Vector<DependencyGraphVertex> cycle_;
   template <class DGEdge>
   void tree_edge(DGEdge e, const DependencyGraph&g) {
-    MDGVertex t= boost::target(e, g);
+    DependencyGraphVertex t= boost::target(e, g);
     //MDGVertex s= boost::source(e, g);
     cycle_.push_back(t);
   }
-  template <class DGVertex>
-  void finish_vertex(DGVertex v, const DependencyGraph&) {
+  template <class DependencyGraphVertex>
+  void finish_vertex(DependencyGraphVertex v, const DependencyGraph&) {
     IMP_USAGE_CHECK(cycle_.back()==v, "They don't match");
     cycle_.pop_back();
   }
   template <class ED>
   void back_edge(ED e, const DependencyGraph&g) {
-    MDGVertex t= boost::target(e, g);
+    DependencyGraphVertex t= boost::target(e, g);
     //MDGVertex s= boost::source(e, g);
-    base::Vector<MDGVertex>::iterator it
+    base::Vector<DependencyGraphVertex>::iterator it
         = std::find(cycle_.begin(), cycle_.end(), t);
     //std::cout << s << " " << cycle_.back() << std::endl;
     if (it != cycle_.end()) {
@@ -468,31 +427,31 @@ struct cycle_detector : public boost::default_dfs_visitor {
 
 namespace {
 
-  base::Vector<MDGVertex> get_cycle(const DependencyGraph &g) {
+  base::Vector<DependencyGraphVertex> get_cycle(const DependencyGraph &g) {
     cycle_detector vis;
     try {
       boost::vector_property_map<int> color(boost::num_vertices(g));
       boost::depth_first_search(g, boost::visitor(vis).color_map(color));
-    } catch (base::Vector<MDGVertex> cycle) {
+    } catch (base::Vector<DependencyGraphVertex> cycle) {
       //std::cerr << "Caught cycle " << cycle << std::endl;
       return cycle;
     }
     //std::cerr << "No cycle found" << std::endl;
-    return base::Vector<MDGVertex>();
+    return base::Vector<DependencyGraphVertex>();
   }
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
   void order_score_states(const DependencyGraph &dg,
                           ScoreStatesTemp &out) {
-    base::Vector<MDGTraits::vertex_descriptor> sorted;
-    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    base::Vector<DependencyGraphVertex> sorted;
+    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
       boost::topological_sort(dg, std::back_inserter(sorted));
     } catch (...) {
       base::TextOutput out=base::create_temporary_file();
       base::internal::show_as_graphviz(dg, out);
-      base::Vector<MDGVertex> cycle= get_cycle(dg);
+      base::Vector<DependencyGraphVertex> cycle= get_cycle(dg);
       //std::ostringstream oss;
       std::cerr << "[";
       for (unsigned int i=0; i< cycle.size(); ++i) {

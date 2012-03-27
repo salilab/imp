@@ -42,9 +42,9 @@ IMP_BEGIN_NAMESPACE
 namespace {
   compatibility::map<base::Object*, int> get_index(const DependencyGraph &dg) {
     compatibility::map<base::Object*, int> ret;
-    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
-    for (std::pair<MDGTraits::vertex_iterator,
-           MDGTraits::vertex_iterator> be= boost::vertices(dg);
+    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
+    for (std::pair<DependencyGraphTraits::vertex_iterator,
+           DependencyGraphTraits::vertex_iterator> be= boost::vertices(dg);
          be.first != be.second; ++be.first) {
       base::Object *o= om[*be.first];
       ret[o]= *be.first;
@@ -55,14 +55,15 @@ namespace {
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
   const compatibility::map<base::Object*, int> &ssindex_;
-  MDGConstVertexMap vm_;
+  DependencyGraphConstVertexName vm_;
 public:
   ScoreDependencies(Ints &bs,
                     const compatibility::map<base::Object*, int> &ssindex,
-                    MDGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
-                                          vm_(vm) {}
+                    DependencyGraphConstVertexName vm): bs_(bs),
+                                                        ssindex_(ssindex),
+                                                        vm_(vm) {}
   template <class G>
-  void discover_vertex(MDGTraits::vertex_descriptor u,
+  void discover_vertex(DependencyGraphTraits::vertex_descriptor u,
                        const G&) {
     base::Object *o= vm_[u];
     //std::cout << "visiting " << o->get_name() << std::endl;
@@ -87,7 +88,7 @@ namespace {
       ssindex[ordered_score_states[i]]=i;
     }
     compatibility::map<base::Object*, int> index= get_index(dg);
-    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
     for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
       // make sure it is in the loop so it gets reset
       boost::vector_property_map<int> color(boost::num_vertices(dg));
@@ -135,8 +136,7 @@ void Model::compute_dependencies() {
           << " and " << get_number_of_particles()
           << " particles." << std::endl);
   DependencyGraph dg
-    = get_dependency_graph(get_as<ScoreStatesTemp>(score_states),
-                           get_as<RestraintsTemp>(all_restraints));
+    = get_dependency_graph(this);
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   ordered_score_states_=IMP::get_ordered_score_states(dg);
   for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
