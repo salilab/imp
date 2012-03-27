@@ -1,6 +1,5 @@
 import IMP
 import IMP.test
-import IMP.atom
 import IMP.domino
 
 
@@ -14,12 +13,17 @@ class PointAlignmentTests(IMP.test.TestCase):
         mdl=IMP.Model()
         mhs=[]
         rbs=[]
+        aps=[]
         for i in range(4):
             fn ="small_protein.pdb"
-            mhs.append(IMP.atom.read_pdb(self.get_input_file_name(fn),
-                                         mdl,IMP.atom.CAlphaPDBSelector()))
+            ps= IMP._create_particles_from_pdb(self.get_input_file_name(fn),
+                                               mdl)
+            aps.extend(ps)
+            p= IMP.Particle(mdl)
+            rb= IMP.core.RigidBody.setup_particle(p, ps)
+            mhs.append(rb)
             mhs[-1].set_name("molecule"+str(i))
-            rbs.append(IMP.atom.create_rigid_body(mhs[-1]))
+            rbs.append(rb)
         ts=[]
         bb= IMP.algebra.BoundingBox3D(
             IMP.algebra.Vector3D(-10.,-10.,-10.),
@@ -33,9 +37,8 @@ class PointAlignmentTests(IMP.test.TestCase):
             rbs[0].add_member(rbs[i+1])
         #set ev
         IMP.set_log_level(IMP.VERBOSE)
-        for h in mhs:
-            IMP.atom.show_molecular_hierarchy(h)
-        sev=IMP.atom.create_excluded_volume_restraint(mhs, 1)
+        ls= IMP.container.ListSingletonContainer(aps)
+        sev=IMP.core.ExcludedVolumeRestraint(ls)
         mdl.add_restraint(sev)
         mdl.evaluate(False)
         #set states
