@@ -228,12 +228,12 @@ class ModelTests(IMP.test.TestCase):
             for i in range(5)]
         for r in rs:
             m.add_restraint(r)
-        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
+        dg= IMP.get_dependency_graph(m)
         #IMP.show_graphviz(dg)
         for r in rs:
             print "now restraint",r
             rcsl=IMP.get_required_score_states([r])
-            rdg= IMP.get_dependency_graph([r])
+            rdg= IMP.get_dependency_graph(m)
             #IMP.show_graphviz(rdg)
             ccsl=[]
             for n in rdg.get_vertices():

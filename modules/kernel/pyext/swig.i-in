@@ -87,6 +87,7 @@ namespace IMP {
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
 %warnfilter(403) Constraint;
+%warnfilter(403) ModelObject;
 %warnfilter(473) Sampler;
 %warnfilter(473) Restraint;
 }
