@@ -178,11 +178,7 @@ public:
   virtual double do_evaluate(const ParticlesTemp &moved) const {
     IMP_UNUSED(moved);
     if (isf_ ) {
-      if (moved.size()==1) {
-        isf_->set_moved_particles(moved);
-      } else {
-        isf_->reset();
-      }
+      isf_->set_moved_particles(moved);
     }
     if (get_maximum_difference() < NO_MAX) {
       return get_scoring_function()

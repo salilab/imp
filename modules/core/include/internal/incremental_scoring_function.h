@@ -64,7 +64,6 @@ struct IMPCOREEXPORT NBChecker {
 };
 
 class IMPCOREEXPORT NBLScoring {
-  ParticleIndexes moved_;
   ParticleIndexes to_move_;
   OwnerPointer<Restraint> dummy_restraint_;
   typedef base::SparseSymmetricPairMemoizer<NBGenerator, NBChecker> Cache;
@@ -82,8 +81,6 @@ public:
              double weight, double max);
   void set_moved(const ParticleIndexes& moved);
   double get_score();
-  void initialize();
-  void rollback();
   Restraint* create_restraint() const;
   Restraint* get_dummy_restraint() const {
     return dummy_restraint_;

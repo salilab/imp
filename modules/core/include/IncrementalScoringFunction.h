@@ -27,8 +27,8 @@ namespace internal {
 
 /** This is a scoring function that computes the score efficiently when a small
     number of particles are changed.
-    \note At the moment only one particle can be
-    moved at a time but this maybe can be changed.
+    \note At the moment moves of one particle at a time are handled most
+    efficiently.
     \note Only full evaluation is supported and information about restraint
     sets and such are lost (and so one can't count on information about
     whether the score is good).
@@ -41,25 +41,19 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
     OwnerPointer<internal::SingleParticleScoringFunction> > ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
   ParticleIndexes all_;
-  ParticleIndex moved_;
+  ParticleIndexes last_move_;
+  ParticleIndexes dirty_;
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
-  // for rollback
-  Floats old_incremental_scores_;
-  Ints old_incremental_score_indexes_;
   double weight_, max_;
-  bool initialized_;
   // move the destructor out of the header
   struct Wrapper: public
     base::Vector<internal::NBLScoring*> {
     ~Wrapper();
   };
   Wrapper nbl_;
-  void rollback();
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
-  void initialize_scores();
-  void initialize();
  public:
   /** Pass the particles that will be individuall mode, and the list of
       restraints to evaluate on them.*/
@@ -80,7 +74,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
                             const ParticlesTemp &particles,
                             const PairFilters &filters=PairFilters());
   void clear_close_pair_scores();
-  void reset();
+  ParticlesTemp get_movable_particles() const;
   IMP_SCORING_FUNCTION(IncrementalScoringFunction);
 };
 
