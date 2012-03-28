@@ -105,7 +105,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
               ValueException);
   }
   if (isf_) {
-    isf_->reset();
+    isf_->set_moved_particles(isf_->get_movable_particles());
   }
   // provide a way of feeding in this value
   last_energy_ =do_evaluate(get_model()->get_particles());

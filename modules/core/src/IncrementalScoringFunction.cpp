@@ -11,6 +11,7 @@
 #include <IMP/dependency_graph.h>
 #include <IMP/compatibility/set.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/internal/container_helpers.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/core/internal/incremental_scoring_function.h>
 #include <numeric>
@@ -30,25 +31,15 @@ IncrementalScoringFunction
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Creating IncrementalScoringFunction with particles "
           << ps << " and restraints " << rs << std::endl);
-  initialized_=false;
   all_= IMP::internal::get_index(ps);
   Pointer<ScoringFunction> suppress_error(this);
   create_flattened_restraints(rs);
+  create_scoring_functions();
+  dirty_=all_;
+  flattened_restraints_scores_.resize(flattened_restraints_.size());
   suppress_error.release();
 }
 
-void IncrementalScoringFunction
-::initialize() {
-  IMP_OBJECT_LOG;
-  create_scoring_functions();
-  // suppress check error
-  initialize_scores();
-  moved_=base::get_invalid_index<ParticleIndexTag>();
-  initialized_=true;
-  for (unsigned int i=0; i< nbl_.size(); ++i) {
-    nbl_[i]->initialize();
-  }
-}
 
 
 void IncrementalScoringFunction::create_scoring_functions() {
@@ -102,19 +93,7 @@ void IncrementalScoringFunction::create_scoring_functions() {
   }
 
 }
-void IncrementalScoringFunction::initialize_scores() {
-  IMP_OBJECT_LOG;
-  IMP_NEW(RestraintsScoringFunction, sf, (flattened_restraints_));
-  sf->evaluate(false);
-  flattened_restraints_scores_.resize(flattened_restraints_.size());
-  for (unsigned int i=0; i < flattened_restraints_.size(); ++i) {
-    flattened_restraints_scores_[i]
-      = flattened_restraints_[i]->get_last_score();
-  }
-  for (unsigned int i=0; i< nbl_.size(); ++i) {
-    nbl_[i]->initialize();
-  }
-}
+
 void IncrementalScoringFunction
 ::create_flattened_restraints(const RestraintsTemp &rs) {
   Restraints decomposed;
@@ -129,57 +108,23 @@ void IncrementalScoringFunction
                                                     decomposed.end());
 
 }
-void IncrementalScoringFunction::reset() {
-  initialize_scores();
-}
 void IncrementalScoringFunction::reset_moved_particles() {
-  moved_=base::get_invalid_index<ParticleIndexTag>();
-  rollback();
+  set_moved_particles(IMP::internal::get_particle(get_model(), last_move_));
+  last_move_.clear();
 }
 void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
   IMP_OBJECT_LOG;
-  if (! initialized_) {
-    initialize();
-  }
-  IMP_USAGE_CHECK(p.size()<=1, "Can only move one particle at a time");
   IMP_USAGE_CHECK(p.empty() || scoring_functions_.find(p[0]->get_index())
                   != scoring_functions_.end(),
                   "Particle " << Showable(p[0]) << " was not in the list of "
                   << "particles passed to the constructor.");
-  if (moved_ != base::get_invalid_index<ParticleIndexTag>()) {
-    // to get the scores updated
-    evaluate(false);
-    moved_ = base::get_invalid_index<ParticleIndexTag>();
-  }
-  if (p.empty()) {
-    moved_=base::get_invalid_index<ParticleIndexTag>();
-    for (unsigned int i=0; i< nbl_.size(); ++i) {
-      nbl_[i]->set_moved(ParticleIndexes());
-    }
-  } else {
-    moved_=p[0]->get_index();
-    for (unsigned int i=0; i< nbl_.size(); ++i) {
-      nbl_[i]->set_moved(ParticleIndexes(1, p[0]->get_index()));
-    }
-  }
-}
-// make sure to reset last scores
-void IncrementalScoringFunction::rollback() {
-  IMP_OBJECT_LOG;
-  for (unsigned int i=0; i< old_incremental_score_indexes_.size(); ++i) {
-    int index=old_incremental_score_indexes_[i];
-    IMP_LOG(TERSE, "Rolling back score for "
-            << Showable(flattened_restraints_[index]) << " from "
-                << flattened_restraints_scores_[index]
-                << " to " << old_incremental_scores_[i] << std::endl);
-
-    flattened_restraints_scores_[index]
-      = old_incremental_scores_[i];
-  }
+  last_move_= IMP::internal::get_index(p);
   for (unsigned int i=0; i< nbl_.size(); ++i) {
-    nbl_[i]->rollback();
+    nbl_[i]->set_moved(last_move_);
   }
+  dirty_+=last_move_;
 }
+
 void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       double distance,
                                                       const ParticlesTemp
@@ -209,7 +154,9 @@ void IncrementalScoringFunction::clear_close_pair_scores() {
   }
   nbl_.clear();
 }
-
+ParticlesTemp IncrementalScoringFunction::get_movable_particles() const {
+  return IMP::internal::get_particle(get_model(), all_);
+}
 
 ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate_if_good(bool ,
@@ -220,26 +167,19 @@ ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate(bool derivatives,
                                          const ScoreStatesTemp &ss) {
   IMP_OBJECT_LOG;
-  if (! initialized_) {
-    initialize();
-  }
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
-  old_incremental_scores_.clear();
-  old_incremental_score_indexes_.clear();
-  //IMP_LOG(TERSE, "Evaluate with " << moved_ << std::endl);
-  if (moved_ != base::get_invalid_index<ParticleIndexTag>()) {
-    ScoringFunctionsMap::const_iterator it=scoring_functions_.find(moved_);
+  while (!dirty_.empty()) {
+    ScoringFunctionsMap::const_iterator it
+        =scoring_functions_.find(dirty_.back());
+    dirty_.pop_back();
     if (it != scoring_functions_.end()) {
       it->second->evaluate(derivatives);
-      old_incremental_score_indexes_=it->second->get_restraint_indexes();
-      old_incremental_scores_.resize(old_incremental_score_indexes_.size());
-      for (unsigned int i=0; i< old_incremental_score_indexes_.size(); ++i) {
-        int index=old_incremental_score_indexes_[i];
-        old_incremental_scores_[i]=flattened_restraints_scores_[index];
+      Ints ris=it->second->get_restraint_indexes();
+      for (unsigned int i=0; i< ris.size(); ++i) {
+        int index=ris[i];
         double score=flattened_restraints_[index]->get_last_score();
         IMP_LOG(TERSE, "Updating score for "
-                << Showable(flattened_restraints_[index]) << " from "
-                << old_incremental_scores_[i]
+                << Showable(flattened_restraints_[index])
                 << " to " << score << std::endl);
         flattened_restraints_scores_[index]=score;
       }

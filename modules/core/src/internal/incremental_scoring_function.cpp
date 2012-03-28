@@ -44,23 +44,6 @@ NBLScoring::NBLScoring(PairScore *ps,
   dummy_restraint_= create_restraint();
 }
 
-
-void NBLScoring::initialize() {
-  IMP_LOG(TERSE, "Clearing incremental non-bonded cache" << std::endl);
-  cache_.clear();
-}
-
-
-
-void NBLScoring::rollback() {
-  if (!moved_.empty()) {
-    for (unsigned int i=0; i< moved_.size(); ++i) {
-      cache_.remove(moved_[i]);
-    }
-  }
-  moved_.clear();
-}
-
 void
 NBLScoring::update_dependencies( const DependencyGraph& dg) {
   for (unsigned int i=0; i< to_move_.size(); ++i) {
@@ -101,14 +84,14 @@ struct NBShow {
 
 void NBLScoring::set_moved(const ParticleIndexes& moved) {
   IMP_FUNCTION_LOG;
-  moved_.clear();
+
   for (unsigned int i=0; i< moved.size(); ++i) {
-    moved_+=controlled_.find(moved[i])->second;
-  }
-  IMP_LOG(TERSE, "Got input particles " << moved << " that control "
-          << moved_ << std::endl);
-  for (unsigned int i=0; i< moved_.size(); ++i) {
-    cache_.remove(moved_[i]);
+    ParticleIndexes c=controlled_.find(moved[i])->second;
+      IMP_LOG(TERSE, "Got input particle " << moved[i] << " that controls "
+              << c << std::endl);
+      for (unsigned int i=0; i< c.size(); ++i) {
+        cache_.remove(c[i]);
+      }
   }
   IMP_LOG(TERSE, "Cleared state is ");
   // must not do apply so we don't fill it up again

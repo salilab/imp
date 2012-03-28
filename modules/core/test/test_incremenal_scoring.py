@@ -134,7 +134,7 @@ class Tests(IMP.test.TestCase):
             oc= d.get_coordinates()
             nc= oc+ IMP.algebra.get_random_vector_in(s)
             d.set_coordinates(nc)
-        isf.reset();
+        isf.set_moved_particles(isf.get_movable_particles());
         iscore=isf.evaluate(False)
         dscore=dsf.evaluate(False)
         rscore=sf.evaluate(False)
