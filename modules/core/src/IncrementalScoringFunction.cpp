@@ -157,6 +157,16 @@ ParticlesTemp IncrementalScoringFunction::get_movable_particles() const {
   return IMP::internal::get_particle(get_model(), all_);
 }
 
+void
+IncrementalScoringFunction::do_non_incremental_evaluate() {
+  IMP_NEW(RestraintsScoringFunction, rsf, (flattened_restraints_));
+  rsf->evaluate(false);
+  for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
+    flattened_restraints_scores_[i]= flattened_restraints_[i]->get_last_score();
+  }
+  dirty_.clear();
+}
+
 ScoringFunction::ScoreIsGoodPair
 IncrementalScoringFunction::do_evaluate_if_good(bool ,
                                     const ScoreStatesTemp &) {
@@ -167,20 +177,24 @@ IncrementalScoringFunction::do_evaluate(bool derivatives,
                                          const ScoreStatesTemp &ss) {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(ss.empty(), "Where did the score states come from?");
-  while (!dirty_.empty()) {
-    ScoringFunctionsMap::const_iterator it
-        =scoring_functions_.find(dirty_.back());
-    dirty_.pop_back();
-    if (it != scoring_functions_.end()) {
-      it->second->evaluate(derivatives);
-      Ints ris=it->second->get_restraint_indexes();
-      for (unsigned int i=0; i< ris.size(); ++i) {
-        int index=ris[i];
-        double score=flattened_restraints_[index]->get_last_score();
-        IMP_LOG(TERSE, "Updating score for "
-                << Showable(flattened_restraints_[index])
-                << " to " << score << std::endl);
-        flattened_restraints_scores_[index]=score;
+  if (dirty_.size() > all_.size()*.1) {
+    do_non_incremental_evaluate();
+  } else {
+    while (!dirty_.empty()) {
+      ScoringFunctionsMap::const_iterator it
+          =scoring_functions_.find(dirty_.back());
+      dirty_.pop_back();
+      if (it != scoring_functions_.end()) {
+        it->second->evaluate(derivatives);
+        Ints ris=it->second->get_restraint_indexes();
+        for (unsigned int i=0; i< ris.size(); ++i) {
+          int index=ris[i];
+          double score=flattened_restraints_[index]->get_last_score();
+          IMP_LOG(TERSE, "Updating score for "
+                  << Showable(flattened_restraints_[index])
+                  << " to " << score << std::endl);
+          flattened_restraints_scores_[index]=score;
+        }
       }
     }
   }
