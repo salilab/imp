@@ -12,6 +12,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SerialMover::SerialMover(const MoversTemp& mvs):
+  Mover(IMP::internal::get_model(mvs), "SerialMover%1%"),
   mvs_(mvs.begin(), mvs.end()), imov_(-1) {
   for (unsigned int i=0; i< mvs_.size(); ++i) {
     mvs_[i]->set_was_used(true);
@@ -35,6 +36,14 @@ void SerialMover::reset_move() {
 
 void SerialMover::do_show(std::ostream &out) const {
   out << "number of movers: " << mvs_.size() << "\n";
+}
+
+ParticlesTemp SerialMover::get_output_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< mvs_.size(); ++i) {
+    ret+= mvs_[i]->get_output_particles();
+  }
+  return ret;
 }
 
 IMPCORE_END_NAMESPACE

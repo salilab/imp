@@ -13,7 +13,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 RigidBodyMover::RigidBodyMover(RigidBody d,
                                Float max_translation, Float max_angle):
-  Mover(d->get_name()+" mover"){
+  Mover(d->get_model(), d->get_name()+" mover"){
   IMP_LOG(VERBOSE,"start RigidBodyMover constructor");
   max_translation_=max_translation;
   max_angle_ =max_angle;
@@ -56,7 +56,9 @@ void RigidBodyMover::reset_move() {
   last_transformation_= algebra::Transformation3D();
 }
 
-
+ParticlesTemp RigidBodyMover::get_output_particles() const {
+  return ParticlesTemp(1, d_);
+}
 void RigidBodyMover::do_show(std::ostream &out) const {
   out << "max translation: " << max_translation_ << "\n";
   out << "max angle: " << max_angle_ << "\n";
