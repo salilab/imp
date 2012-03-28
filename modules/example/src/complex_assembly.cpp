@@ -120,6 +120,7 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
                        double cutoff,
                        const PairFilters &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
+  cg->set_log_level(IMP::base::SILENT);
   IMP_NEW(core::MonteCarlo, mc, (m));
   mc->set_log_level(IMP::base::SILENT);
   IMP_NEW(core::IncrementalScoringFunction, isf, (components,
