@@ -52,8 +52,9 @@ void IncrementalScoringFunction::create_scoring_functions() {
   DependencyGraph dg
     = get_dependency_graph(flattened_restraints_[0]->get_model());
 
+  IMP_USAGE_CHECK(nbl_.empty(), "Can't be close pair restraints yet");
 
-  Restraints dr;
+  /*Restraints dr;
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     Pointer<Restraint> pr=nbl_[i]->get_dummy_restraint();
     // avoid any complex restraints
@@ -61,7 +62,7 @@ void IncrementalScoringFunction::create_scoring_functions() {
     if (pdr) {
       dr.push_back(pdr);
     }
-  }
+    }*/
 
   for (unsigned int i=0; i< all_.size(); ++i) {
     Particle *p= get_model()->get_particle(all_[i]);
@@ -87,9 +88,9 @@ void IncrementalScoringFunction::create_scoring_functions() {
                                                     mr, mi,
                                                     p->get_name()
                                                     + " restraints");
-    for (unsigned int i=0; i< dr.size(); ++i) {
+    /*for (unsigned int i=0; i< dr.size(); ++i) {
       scoring_functions_[all_[i]]->add_dummy_restraint(dr[i]);
-    }
+      }*/
   }
 
 }
@@ -136,9 +137,7 @@ void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                         filters, weight_, max_));
   // This ensures that the score states needed for the non-bonded terms
   // are updated.
-  Pointer<Restraint> pr=nbl_.back()->get_dummy_restraint();
-  // avoid any complex restraints
-  Pointer<Restraint> pdr= pr->create_decomposition();
+  Pointer<Restraint> pdr=nbl_.back()->get_dummy_restraint();
   for (ScoringFunctionsMap::iterator it= scoring_functions_.begin();
        it != scoring_functions_.end(); ++it) {
     it->second->add_dummy_restraint(pdr);
