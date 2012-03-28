@@ -30,7 +30,6 @@ class IMPCOREEXPORT MoverBase: public Mover
 {
   base::Vector<Floats > values_;
   base::Vector<FloatKey> keys_;
-  Model *m_;
   ParticleIndexes particles_;
 public:
   virtual void reset_move();
@@ -38,6 +37,10 @@ public:
   /** This sets everything up and then calls the generate_move method.
    */
   virtual ParticlesTemp propose_move(Float f);
+
+  ParticlesTemp get_output_particles() const {
+    return IMP::internal::get_particle(get_model(), particles_);
+  }
 
 protected:
   unsigned int get_number_of_particles() const {
@@ -47,7 +50,7 @@ protected:
     return keys_.size();
   }
   std::string get_particle_name(unsigned int i) const {
-    return m_->get_particle(particles_[i])->get_name();
+    return get_model()->get_particle(particles_[i])->get_name();
   }
 
   //! implement this method to propose a move
@@ -62,7 +65,7 @@ protected:
   Float get_value(unsigned int i, unsigned int j) const {
     IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
     IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
-    return m_->get_attribute(keys_[j], particles_[i]);
+    return get_model()->get_attribute(keys_[j], particles_[i]);
   }
 
   //! Propose a value
@@ -73,16 +76,15 @@ protected:
   void propose_value(unsigned int i, unsigned int j, Float t) {
     IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
     IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
-    if (m_->get_is_optimized(keys_[j], particles_[i])) {
-      m_->set_attribute(keys_[j], particles_[i], t);
+    if (get_model()->get_is_optimized(keys_[j], particles_[i])) {
+      get_model()->set_attribute(keys_[j], particles_[i], t);
     }
   }
 
   MoverBase(const ParticlesTemp &ps,
             const FloatKeys &keys,
-            std::string name): Mover(name),
-    keys_(keys), m_(IMP::internal::get_model(ps)),
-    particles_(IMP::internal::get_index(ps)) {}
+            std::string name);
+
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(MoverBase);
 };
 
@@ -97,7 +99,7 @@ inline ParticlesTemp MoverBase::propose_move(Float f)
     }
   }
   do_move(f);
-  return IMP::internal::get_particle(m_, particles_);
+  return IMP::internal::get_particle(get_model(), particles_);
 }
 
 
@@ -105,7 +107,7 @@ inline void MoverBase::reset_move()
 {
   for (unsigned int i=0; i< particles_.size(); ++i) {
     for (unsigned int j=0; j< keys_.size(); ++j) {
-      m_->set_attribute(keys_[j], particles_[i], values_[i][j]);
+      get_model()->set_attribute(keys_[j], particles_[i], values_[i][j]);
     }
   }
 }

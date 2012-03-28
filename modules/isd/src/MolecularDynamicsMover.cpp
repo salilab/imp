@@ -16,8 +16,10 @@
 IMPISD_BEGIN_NAMESPACE
 
 MolecularDynamicsMover::MolecularDynamicsMover(Model *m,
-      unsigned nsteps, Float timestep) : Mover("MolecularDynamicsMover%1%"),
-    nsteps_(nsteps)
+                                               unsigned nsteps,
+                                               Float timestep) :
+  Mover(m, "MolecularDynamicsMover%1%"),
+  nsteps_(nsteps)
 {
     md_ = new MolecularDynamics(m);
     md_->set_maximum_time_step(timestep);
@@ -129,5 +131,7 @@ void MolecularDynamicsMover::reset_coordinates()
         }
     }
 }
-
+ParticlesTemp MolecularDynamicsMover::get_output_particles() const {
+  return md_->get_simulation_particles();
+}
 IMPISD_END_NAMESPACE

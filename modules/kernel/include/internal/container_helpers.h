@@ -12,6 +12,7 @@
 #include "../base_types.h"
 #include "../declare_Particle.h"
 #include "../declare_Model.h"
+#include "../ModelObject.h"
 #include "utility.h"
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>
@@ -253,6 +254,9 @@ get_index(const base::Vector<ParticleTuple<D> > &in) {
 inline Model *get_model(Particle*p) {
   return p->get_model();
 }
+inline Model *get_model(ModelObject*p) {
+  return p->get_model();
+}
 
 inline Model *get_model(const ParticlesTemp&p) {
   IMP_USAGE_CHECK(p.size() >0, "Empty particles list");
@@ -264,8 +268,8 @@ inline Model *get_model(const ParticleTuple<D>& p) {
   return p[0]->get_model();
 }
 
-template <unsigned int D>
-inline Model *get_model(const base::Vector<ParticleTuple<D> >& p) {
+template <class C>
+inline Model *get_model(const base::Vector<C>& p) {
   IMP_USAGE_CHECK(p.size() > 0,
     "There must be some particle tuples passed");
 return get_model(p[0]);

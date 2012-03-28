@@ -13,6 +13,7 @@
 #include <IMP/base_types.h>
 #include <IMP/RefCounted.h>
 #include <IMP/WeakPointer.h>
+#include <IMP/ModelObject.h>
 #include <IMP/Optimizer.h>
 
 #include <vector>
@@ -27,7 +28,7 @@ class MonteCarlo;
     if you are implementing a Mover.
     \see MonteCarlo
  */
-class IMPCOREEXPORT Mover: public IMP::base::Object
+class IMPCOREEXPORT Mover: public IMP::ModelObject
 {
   friend class MonteCarlo;
   UncheckedWeakPointer<Optimizer> opt_;
@@ -42,7 +43,7 @@ public:
     opt_=c;
   }
 public:
-  Mover(std::string name=std::string("Mover %1%"));
+  Mover(Model *m, std::string name);
 
   //! propose a modification
   /** \param[in] size A number between 0 and 1 used to scale the proposed
@@ -56,6 +57,9 @@ public:
 
   //! Roll back any changes made to the Particles
   virtual void reset_move()=0;
+
+  //! Return the set of particles over which moves can be proposed
+  virtual ParticlesTemp get_output_particles() const=0;
 
   //! Get a pointer to the optimizer which has this mover.
   Optimizer *get_optimizer() const {
