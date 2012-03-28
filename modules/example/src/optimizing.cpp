@@ -69,12 +69,12 @@ void optimize_balls(const ParticlesTemp &ps,
   }
   IMP_NEW(core::MonteCarlo, mc, (m));
   mc->set_optimizer_states(opt_states);
+  IMP_NEW(core::IncrementalScoringFunction, isf, (ps, rs));
   {
     // set up MC
     mc->set_score_threshold(ps.size()*.1);
     mc->add_mover(create_serial_mover(ps));
     // we are special casing the nbl term for montecarlo, but using all for CG
-    IMP_NEW(core::IncrementalScoringFunction, isf, (ps, rs));
     mc->set_incremental_scoring_function(isf);
     // use special incremental support for the non-bonded part
     isf->add_close_pair_score(ssps, 0, ps, excluded);
