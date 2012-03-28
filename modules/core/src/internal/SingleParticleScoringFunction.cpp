@@ -33,8 +33,7 @@ SingleParticleScoringFunction
   IMP_LOG(TERSE, "Score states from restraints are " << from_restraints
           << "(" << RestraintsScoringFunction::get_restraints()
           << ")" << std::endl);
-  ScoreStatesTemp from_dummy
-      = get_model()->get_score_states(dummy_restraints_);
+  ScoreStatesTemp from_dummy = get_model()->get_score_states(dummy_restraints_);
   IMP_LOG(TERSE, "Score states from dummy are " << from_dummy
           << "(" << dummy_restraints_ << ")" << std::endl);
   ScoreStatesTemp deps
@@ -58,6 +57,7 @@ SingleParticleScoringFunction
 void
 SingleParticleScoringFunction
 ::add_dummy_restraint(Restraint *r) {
+  IMP_USAGE_CHECK(r, "NULL dummy restraint.");
   get_model()->reset_dependencies();
   dummy_restraints_.push_back(r);
 }
