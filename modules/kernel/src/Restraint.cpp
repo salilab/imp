@@ -184,7 +184,7 @@ ScoringFunction *Restraint::create_scoring_function(double weight,
 Restraints create_decomposition(const RestraintsTemp &rs) {
   Restraints ret;
   for (unsigned int i=0; i< rs.size(); ++i) {
-    Pointer<Restraint> r= rs[i]->create_decomposition();
+    base::Pointer<Restraint> r= rs[i]->create_decomposition();
     if (r) {
       ret.push_back(r);
     }

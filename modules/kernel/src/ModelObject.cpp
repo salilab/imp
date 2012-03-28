@@ -5,6 +5,7 @@
  */
 
 #include <IMP/ModelObject.h>
+#include <IMP/Model.h>
 
 IMP_BEGIN_NAMESPACE
 void ModelObject::update_dependencies(const DependencyGraph &dg) {
