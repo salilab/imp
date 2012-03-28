@@ -27,7 +27,7 @@ class MonteCarlo;
     and conjugate gradient steps to search for good solutions. Each
     Monte Carlo move is followed by the specified number of
     conjugate gradient steps before it is decided whether to accept
-    or reject the move. When tjhe sampler encounters a solution that
+    or reject the move. When the sampler encounters a solution that
     passes all of the restraint score cutoffs, it will accept the solution
     and move on to generating another one.
 
