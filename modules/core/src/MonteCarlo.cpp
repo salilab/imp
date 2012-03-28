@@ -19,7 +19,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-Mover::Mover(std::string name):Object(name) {}
+Mover::Mover(Model *m, std::string name):ModelObject(m, name) {}
 
 IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers);
 
@@ -104,11 +104,12 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
               << " movers isn't very useful.",
               ValueException);
   }
-  if (isf_) {
-    isf_->set_moved_particles(isf_->get_movable_particles());
+  ParticlesTemp movable;
+  for (unsigned int i=0; i< get_number_of_movers(); ++i) {
+    movable+= get_mover(i)->get_output_particles();
   }
   // provide a way of feeding in this value
-  last_energy_ =do_evaluate(get_model()->get_particles());
+  last_energy_ =do_evaluate(movable);
   if (return_best_) {
     best_= new Configuration(get_model());
     best_energy_= last_energy_;
