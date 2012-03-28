@@ -81,10 +81,12 @@ private:
 ScoreWeightedIncrementalBallMover
 ::ScoreWeightedIncrementalBallMover(const ParticlesTemp& sc,
                                     unsigned int n,
-                                    Float radius): ps_(sc),
-                                                   n_(n),
-                                                   radius_(radius),
-                                                   moved_(n_)
+                                    Float radius):
+  Mover(sc[0]->get_model(), "IncrementalBallMover%1%"),
+  ps_(sc),
+  n_(n),
+  radius_(radius),
+  moved_(n_)
 {
   Model *m= sc[0]->get_model();
   const DependencyGraph dg
@@ -194,6 +196,10 @@ void ScoreWeightedIncrementalBallMover::reset_move() {
     XYZ cd(moved_[i]);
     cd.set_coordinates(old_coords_[i]);
   }
+}
+
+ParticlesTemp ScoreWeightedIncrementalBallMover::get_output_particles() const {
+  return ps_;
 }
 
 
