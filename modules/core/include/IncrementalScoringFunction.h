@@ -54,6 +54,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   Wrapper nbl_;
   void create_flattened_restraints(const RestraintsTemp &rs);
   void create_scoring_functions();
+  void do_non_incremental_evaluate();
  public:
   /** Pass the particles that will be individuall mode, and the list of
       restraints to evaluate on them.*/
