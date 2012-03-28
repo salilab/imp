@@ -53,7 +53,7 @@ class RBDTests(IMP.test.TestCase):
         rb01= IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])
         print rb0, rb1, rb01
         print IMP.core.RigidMember(rb0).get_internal_transformation(), IMP.core.RigidMember(rb1).get_internal_transformation()
-        dg= IMP.get_dependency_graph(m.get_score_states(), m.get_restraints())
+        dg= IMP.get_dependency_graph(m)
         dg.show()
         #IMP.show_graphviz(dg)
         ordered= IMP.get_ordered_score_states(dg)
