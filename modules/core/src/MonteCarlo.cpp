@@ -136,7 +136,11 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
     best_->swap_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(base::USAGE) {
-      IMP_CHECK_CODE(double e= do_evaluate(get_model()->get_particles()));
+      ParticlesTemp movable;
+      for (unsigned int i=0; i< get_number_of_movers(); ++i) {
+        movable+= get_mover(i)->get_output_particles();
+      }
+      IMP_CHECK_CODE(double e= do_evaluate(movable));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       /*IMP_INTERNAL_CHECK((e >= std::numeric_limits<double>::max()
                           && best_energy_ >= std::numeric_limits<double>::max())
