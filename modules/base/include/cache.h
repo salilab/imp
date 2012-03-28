@@ -139,7 +139,9 @@ private:
 #if IMP_BUILD < IMP_FAST
     Vector<Entry> cur(cache_.begin(), cache_.end());
     IMP_INTERNAL_CHECK(checker_(cur),
-                       "Cached and newly computed don't match");
+                       "Cached and newly computed don't match: "
+                       << cur << " vs " << gen_(domain_, this)
+                       << " and cleared is " << cleared_);
     for (Hash0Iterator c= cache_.template get<0>().begin();
          c != cache_.template get<0>().end(); ++c) {
       IMP_INTERNAL_CHECK(get(c->second, c->first)
@@ -182,6 +184,7 @@ private:
       }
     }
     cache_.insert(nv.begin(), nv.end());
+    check_it();
     IMP_LOG(VERBOSE, "To get "
             << typename Generator::result_type(cache_.begin(),
                                                cache_.end())
