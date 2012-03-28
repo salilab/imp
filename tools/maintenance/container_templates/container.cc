@@ -12,6 +12,7 @@
 #include "IMP/internal/utility.h"
 #include "IMP/internal/InternalListCLASSNAMEContainer.h"
 #include "IMP/CLASSNAMEModifier.h"
+#include "IMP/internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -23,14 +24,16 @@ CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
 // here for gcc
 CLASSNAMEContainer::~CLASSNAMEContainer(){
 }
-/*
-CLASSNAMEContainerInput::CLASSNAMEContainerInput(const PLURALVARIABLETYPE &in) {
-  Model *m=internal::get_model(in.begin(),
-                               in.end());
-  IMP_NEW(internal::CoreListCLASSNAMEContainer, c,
-          (m, "temporary container"));
-  c->set_FUNCTIONNAMEs(in);
+
+CLASSNAMEContainerInput::CLASSNAMEContainerInput(CLASSNAMEContainer *c): P(c){}
+CLASSNAMEContainerInput::CLASSNAMEContainerInput(const PLURALVARIABLETYPE &t,
+                                                 std::string name) {
+  Model *m=internal::get_model(t);
+  IMP_NEW(internal::InternalListCLASSNAMEContainer, c,
+          (m, name));
+  c->set_FUNCTIONNAMEs(t);
   P::operator=(c);
-  }*/
+}
+
 
 IMP_END_NAMESPACE

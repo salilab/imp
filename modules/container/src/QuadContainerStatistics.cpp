@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 QuadContainerStatistics
-::QuadContainerStatistics(QuadContainer *c):
+::QuadContainerStatistics(QuadContainerInput c):
   ScoreState(c->get_name()+" statistics"){
   container_=c;
   total_=0;

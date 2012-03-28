@@ -43,7 +43,7 @@ public Restraint
   void assign_pair(const ParticleIndexTriplet& index) const;
 public:
   PredicateTripletsRestraint(TripletPredicate *pred,
-                      TripletContainer *input,
+                      TripletContainerInput input,
                       std::string name="PredicateTripletsRestraint %1%");
 
   /** This version uses the container::create_restraint() function and so

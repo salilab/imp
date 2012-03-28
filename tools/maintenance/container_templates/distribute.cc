@@ -12,7 +12,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributeCLASSNAMEsScoreState::
-DistributeCLASSNAMEsScoreState(CLASSNAMEContainer *input,
+DistributeCLASSNAMEsScoreState(CLASSNAMEContainerInput input,
                                std::string name): ScoreState(name) {
   input_=input;
   updated_=false;

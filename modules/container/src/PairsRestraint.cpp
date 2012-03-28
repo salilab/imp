@@ -16,7 +16,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PairsRestraint
 ::PairsRestraint(PairScore *ss,
-                      PairContainer *pc,
+                      PairContainerInput pc,
                       std::string name): P(ss, pc, name) {
 
 }

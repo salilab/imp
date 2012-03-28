@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011/2012
+- 26/3: IMP::SingletonContainerInput etc were added. Methods that take these as their arguments can be passed either containers or lists of particles (or tuples), as convenient. All methods that take IMP::SingletonContainer objects should eventually move over to taking this (changing just requires changing the argument from a pointer to an Input).
 - 22/3: Over the last week or so, which \imp headers include which other heads have been substantially simplified. This may result in compilation errors for code outside of \c svn that depended on \imp headers including other headers. In general, you want to explicitly include the header defining each thing you use.
 - 15/3: The vector used throughout \imp is now exposed at IMP::base::Vector and what it does it documented.
 - 10/3: IMP::domino::RestraintCache was introduced to provide a documented centeralized place to handle restraint evaluation and caching in DOMINO. In the switch various bugs involving maximum scores and IMP::RestraintSet objects were fixed.

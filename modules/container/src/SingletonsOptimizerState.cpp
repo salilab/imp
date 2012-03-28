@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 SingletonsOptimizerState
-::SingletonsOptimizerState(SingletonContainer *c,
+::SingletonsOptimizerState(SingletonContainerInput c,
                            SingletonModifier *gm,
                            std::string name):
   OptimizerState(name),

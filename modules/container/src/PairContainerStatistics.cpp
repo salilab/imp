@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 PairContainerStatistics
-::PairContainerStatistics(PairContainer *c):
+::PairContainerStatistics(PairContainerInput c):
   ScoreState(c->get_name()+" statistics"){
   container_=c;
   total_=0;

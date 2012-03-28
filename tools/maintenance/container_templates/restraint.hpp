@@ -50,7 +50,7 @@ public:
       \param[in] name The object name
    */
   CLASSNAMEsRestraint(CLASSNAMEScore *ss,
-                      CLASSNAMEContainer *pc,
+                      CLASSNAMEContainerInput pc,
                       std::string name="CLASSNAMEsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

@@ -12,7 +12,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributeTripletsScoreState::
-DistributeTripletsScoreState(TripletContainer *input,
+DistributeTripletsScoreState(TripletContainerInput input,
                                std::string name): ScoreState(name) {
   input_=input;
   updated_=false;

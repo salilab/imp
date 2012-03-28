@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
+#include <IMP/base/Pointer.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -109,6 +110,26 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };
+
+
+/** This class allows either a list or a container to be
+    accepted as input.
+*/
+class IMPEXPORT SingletonContainerInput
+#ifndef SWIG
+: public base::Pointer<SingletonContainer>
+#endif
+{
+  typedef base::Pointer<SingletonContainer> P;
+ public:
+  SingletonContainerInput(){}
+  SingletonContainerInput(SingletonContainer *c);
+  template <class C>
+  SingletonContainerInput(base::internal::PointerBase<C> c): P(c){}
+  SingletonContainerInput(const ParticlesTemp &t,
+                          std::string name="SingletonContainerInput%1%");
+};
+
 
 IMP_END_NAMESPACE
 

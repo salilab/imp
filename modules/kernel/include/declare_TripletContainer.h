@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
+#include <IMP/base/Pointer.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -109,6 +110,26 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };
+
+
+/** This class allows either a list or a container to be
+    accepted as input.
+*/
+class IMPEXPORT TripletContainerInput
+#ifndef SWIG
+: public base::Pointer<TripletContainer>
+#endif
+{
+  typedef base::Pointer<TripletContainer> P;
+ public:
+  TripletContainerInput(){}
+  TripletContainerInput(TripletContainer *c);
+  template <class C>
+  TripletContainerInput(base::internal::PointerBase<C> c): P(c){}
+  TripletContainerInput(const ParticleTripletsTemp &t,
+                          std::string name="TripletContainerInput%1%");
+};
+
 
 IMP_END_NAMESPACE
 

@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 PairsOptimizerState
-::PairsOptimizerState(PairContainer *c,
+::PairsOptimizerState(PairContainerInput c,
                            PairModifier *gm,
                            std::string name):
   OptimizerState(name),

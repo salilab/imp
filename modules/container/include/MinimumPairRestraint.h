@@ -34,7 +34,7 @@ public:
   /** n is the number of LCMinimum scores to use.
    */
   MinimumPairRestraint(PairScore *f,
-                                 PairContainer *c,
+                                 PairContainerInput c,
                                  unsigned int n=1,
                                  std::string name
                                  ="MinimumPairRestraint %1%");

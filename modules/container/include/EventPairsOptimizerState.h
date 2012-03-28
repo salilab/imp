@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT EventPairsOptimizerState:
   int min_, max_;
 public:
   EventPairsOptimizerState(PairPredicate *pred,
-                                PairContainer *container,
+                                PairContainerInput container,
                                 int value, int min_count, int max_count,
                                 std::string name="ConstPairPredicate%1%");
   IMP_OPTIMIZER_STATE(EventPairsOptimizerState);

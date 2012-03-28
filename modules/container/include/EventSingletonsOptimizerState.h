@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT EventSingletonsOptimizerState:
   int min_, max_;
 public:
   EventSingletonsOptimizerState(SingletonPredicate *pred,
-                                SingletonContainer *container,
+                                SingletonContainerInput container,
                                 int value, int min_count, int max_count,
                                 std::string name="ConstSingletonPredicate%1%");
   IMP_OPTIMIZER_STATE(EventSingletonsOptimizerState);

@@ -18,7 +18,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 MinimumTripletRestraint
 ::MinimumTripletRestraint(TripletScore *f,
-                           TripletContainer *c,
+                           TripletContainerInput c,
                            unsigned int n,
                            std::string name):
   Restraint(c->get_model(), name),

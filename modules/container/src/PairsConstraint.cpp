@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PairsConstraint::PairsConstraint(PairModifier *before,
                                   PairDerivativeModifier *after,
-                                           PairContainer *c,
+                                           PairContainerInput c,
                                            std::string name):
   Constraint(name), c_(c) {
   if (before) f_=before;

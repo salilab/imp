@@ -14,17 +14,19 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 
-CloseBipartitePairContainer::CloseBipartitePairContainer(SingletonContainer *a,
-                                                         SingletonContainer *b,
-                                                         double distance,
-                                                         double slack):
+CloseBipartitePairContainer
+::CloseBipartitePairContainer(SingletonContainerInput a,
+                              SingletonContainerInput b,
+                              double distance,
+                              double slack):
   P(a,b,distance,slack){}
 
-CloseBipartitePairContainer::CloseBipartitePairContainer(SingletonContainer *a,
-                                                         SingletonContainer *b,
-                                                         double distance,
-                                                  core::ClosePairsFinder *,
-                                                         double slack):
+CloseBipartitePairContainer
+::CloseBipartitePairContainer(SingletonContainerInput a,
+                              SingletonContainerInput b,
+                              double distance,
+                              core::ClosePairsFinder *,
+                              double slack):
   P(a,b,distance, slack) {
 }
 IMPCONTAINER_END_NAMESPACE

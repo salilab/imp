@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 TripletContainerStatistics
-::TripletContainerStatistics(TripletContainer *c):
+::TripletContainerStatistics(TripletContainerInput c):
   ScoreState(c->get_name()+" statistics"){
   container_=c;
   total_=0;

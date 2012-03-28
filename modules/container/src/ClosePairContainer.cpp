@@ -20,14 +20,14 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 
-ClosePairContainer::ClosePairContainer(SingletonContainer *c,
+ClosePairContainer::ClosePairContainer(SingletonContainerInput c,
                                        double distance,
                                        double slack):
   P(c, distance,
     core::internal::default_cpf(c->get_number_of_particles()), slack){
 }
 
-ClosePairContainer::ClosePairContainer(SingletonContainer *c,
+ClosePairContainer::ClosePairContainer(SingletonContainerInput c,
                                        double distance,
                                        core::ClosePairsFinder *cpf,
                                        double slack):

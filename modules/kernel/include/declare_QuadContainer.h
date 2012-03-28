@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
+#include <IMP/base/Pointer.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -109,6 +110,26 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);
 };
+
+
+/** This class allows either a list or a container to be
+    accepted as input.
+*/
+class IMPEXPORT QuadContainerInput
+#ifndef SWIG
+: public base::Pointer<QuadContainer>
+#endif
+{
+  typedef base::Pointer<QuadContainer> P;
+ public:
+  QuadContainerInput(){}
+  QuadContainerInput(QuadContainer *c);
+  template <class C>
+  QuadContainerInput(base::internal::PointerBase<C> c): P(c){}
+  QuadContainerInput(const ParticleQuadsTemp &t,
+                          std::string name="QuadContainerInput%1%");
+};
+
 
 IMP_END_NAMESPACE
 

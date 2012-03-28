@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT TripletContainerStatistics : public ScoreState
   bool track_unique_;
   IMP::compatibility::set<ParticleTriplet> unique_;
 public:
-  TripletContainerStatistics(TripletContainer *c);
+  TripletContainerStatistics(TripletContainerInput c);
   void show_statistics(std::ostream &out) const;
   /** Keeping track of the number of unique entries seen is
       expensive, so it is not done by default.

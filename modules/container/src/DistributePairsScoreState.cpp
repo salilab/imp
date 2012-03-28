@@ -12,7 +12,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributePairsScoreState::
-DistributePairsScoreState(PairContainer *input,
+DistributePairsScoreState(PairContainerInput input,
                                std::string name): ScoreState(name) {
   input_=input;
   updated_=false;

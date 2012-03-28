@@ -43,7 +43,7 @@ public Restraint
   void assign_pair(const ParticleIndexQuad& index) const;
 public:
   PredicateQuadsRestraint(QuadPredicate *pred,
-                      QuadContainer *input,
+                      QuadContainerInput input,
                       std::string name="PredicateQuadsRestraint %1%");
 
   /** This version uses the container::create_restraint() function and so

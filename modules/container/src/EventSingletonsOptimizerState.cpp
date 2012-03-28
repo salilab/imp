@@ -12,7 +12,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 EventSingletonsOptimizerState::
 EventSingletonsOptimizerState(SingletonPredicate *pred,
-                              SingletonContainer *container,
+                              SingletonContainerInput container,
                               int value, int min_count, int max_count,
                               std::string name):
     OptimizerState(name), pred_(pred), container_(container),
