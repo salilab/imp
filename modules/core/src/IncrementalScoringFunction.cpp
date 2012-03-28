@@ -115,10 +115,15 @@ void IncrementalScoringFunction::reset_moved_particles() {
 }
 void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
   IMP_OBJECT_LOG;
-  IMP_USAGE_CHECK(p.empty() || scoring_functions_.find(p[0]->get_index())
-                  != scoring_functions_.end(),
-                  "Particle " << Showable(p[0]) << " was not in the list of "
-                  << "particles passed to the constructor.");
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< p.size(); ++i) {
+      IMP_USAGE_CHECK(scoring_functions_.find(p[i]->get_index())
+                      != scoring_functions_.end(),
+                      "Particle " << Showable(p[i])
+                      << " was not in the list of "
+                      << "particles passed to the constructor.");
+    }
+  }
   last_move_= IMP::internal::get_index(p);
   for (unsigned int i=0; i< nbl_.size(); ++i) {
     nbl_[i]->set_moved(last_move_);
