@@ -34,7 +34,7 @@ public:
   /** n is the number of LCMINORMAX scores to use.
    */
   MINORMAXCLASSNAMERestraint(CLASSNAMEScore *f,
-                                 CLASSNAMEContainer *c,
+                                 CLASSNAMEContainerInput c,
                                  unsigned int n=1,
                                  std::string name
                                  ="MINORMAXCLASSNAMERestraint %1%");

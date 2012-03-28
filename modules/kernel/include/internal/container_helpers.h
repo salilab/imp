@@ -264,6 +264,13 @@ inline Model *get_model(const ParticleTuple<D>& p) {
   return p[0]->get_model();
 }
 
+template <unsigned int D>
+inline Model *get_model(const base::Vector<ParticleTuple<D> >& p) {
+  IMP_USAGE_CHECK(p.size() > 0,
+    "There must be some particle tuples passed");
+return get_model(p[0]);
+}
+
 inline std::string get_name(Particle*p) {
   return p->get_name();
 }

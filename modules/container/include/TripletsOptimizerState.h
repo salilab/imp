@@ -37,7 +37,7 @@ public:
       \param[in] gf The TripletModifier to apply to all elements.
       \param[in] name The name to use for this Object
    */
-  TripletsOptimizerState(TripletContainer *c, TripletModifier *gf,
+  TripletsOptimizerState(TripletContainerInput c, TripletModifier *gf,
                            std::string name="TripletsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(TripletsOptimizerState);

@@ -41,7 +41,7 @@ public ScoreState
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:
-  DistributePairsScoreState(PairContainer *input,
+  DistributePairsScoreState(PairContainerInput input,
                       std::string name="DistributePairsScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate

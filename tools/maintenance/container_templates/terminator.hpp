@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT EventCLASSNAMEsOptimizerState:
   int min_, max_;
 public:
   EventCLASSNAMEsOptimizerState(CLASSNAMEPredicate *pred,
-                                CLASSNAMEContainer *container,
+                                CLASSNAMEContainerInput container,
                                 int value, int min_count, int max_count,
                                 std::string name="ConstCLASSNAMEPredicate%1%");
   IMP_OPTIMIZER_STATE(EventCLASSNAMEsOptimizerState);

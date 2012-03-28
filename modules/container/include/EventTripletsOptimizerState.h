@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT EventTripletsOptimizerState:
   int min_, max_;
 public:
   EventTripletsOptimizerState(TripletPredicate *pred,
-                                TripletContainer *container,
+                                TripletContainerInput container,
                                 int value, int min_count, int max_count,
                                 std::string name="ConstTripletPredicate%1%");
   IMP_OPTIMIZER_STATE(EventTripletsOptimizerState);

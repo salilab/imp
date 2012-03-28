@@ -41,7 +41,7 @@ public ScoreState
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:
-  DistributeCLASSNAMEsScoreState(CLASSNAMEContainer *input,
+  DistributeCLASSNAMEsScoreState(CLASSNAMEContainerInput input,
                       std::string name="DistributeCLASSNAMEsScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate

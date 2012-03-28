@@ -50,7 +50,7 @@ public:
       \param[in] name The object name
    */
   TripletsRestraint(TripletScore *ss,
-                      TripletContainer *pc,
+                      TripletContainerInput pc,
                       std::string name="TripletsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

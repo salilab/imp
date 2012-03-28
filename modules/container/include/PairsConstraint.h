@@ -52,7 +52,7 @@ public:
    */
   PairsConstraint(PairModifier *before,
                        PairDerivativeModifier *after,
-                       PairContainer *c,
+                       PairContainerInput c,
                        std::string name="PairConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

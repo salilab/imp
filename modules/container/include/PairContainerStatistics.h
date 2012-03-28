@@ -31,7 +31,7 @@ class IMPCONTAINEREXPORT PairContainerStatistics : public ScoreState
   bool track_unique_;
   IMP::compatibility::set<ParticlePair> unique_;
 public:
-  PairContainerStatistics(PairContainer *c);
+  PairContainerStatistics(PairContainerInput c);
   void show_statistics(std::ostream &out) const;
   /** Keeping track of the number of unique entries seen is
       expensive, so it is not done by default.

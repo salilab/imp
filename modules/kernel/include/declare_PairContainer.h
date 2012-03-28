@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
+#include <IMP/base/Pointer.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -109,6 +110,26 @@ public:
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };
+
+
+/** This class allows either a list or a container to be
+    accepted as input.
+*/
+class IMPEXPORT PairContainerInput
+#ifndef SWIG
+: public base::Pointer<PairContainer>
+#endif
+{
+  typedef base::Pointer<PairContainer> P;
+ public:
+  PairContainerInput(){}
+  PairContainerInput(PairContainer *c);
+  template <class C>
+  PairContainerInput(base::internal::PointerBase<C> c): P(c){}
+  PairContainerInput(const ParticlePairsTemp &t,
+                          std::string name="PairContainerInput%1%");
+};
+
 
 IMP_END_NAMESPACE
 

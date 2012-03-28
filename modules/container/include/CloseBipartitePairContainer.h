@@ -41,14 +41,14 @@ public IMP::core::internal::CoreCloseBipartitePairContainer
   typedef IMP::core::internal::CoreCloseBipartitePairContainer P;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
+  CloseBipartitePairContainer(SingletonContainerInput a,
+                              SingletonContainerInput b,
                               double distance,
                               double slack=1);
 #ifndef IMP_DOXYGEN
   //! Get the individual particles from the passed SingletonContainer
-  CloseBipartitePairContainer(SingletonContainer *a,
-                              SingletonContainer *b,
+  CloseBipartitePairContainer(SingletonContainerInput a,
+                              SingletonContainerInput b,
                               double distance,
                               core::ClosePairsFinder *cpf,
                               double slack=1);

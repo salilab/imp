@@ -52,7 +52,7 @@ public:
    */
   CLASSNAMEsConstraint(CLASSNAMEModifier *before,
                        CLASSNAMEDerivativeModifier *after,
-                       CLASSNAMEContainer *c,
+                       CLASSNAMEContainerInput c,
                        std::string name="CLASSNAMEConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

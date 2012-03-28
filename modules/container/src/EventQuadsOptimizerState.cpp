@@ -12,7 +12,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 EventQuadsOptimizerState::
 EventQuadsOptimizerState(QuadPredicate *pred,
-                              QuadContainer *container,
+                              QuadContainerInput container,
                               int value, int min_count, int max_count,
                               std::string name):
     OptimizerState(name), pred_(pred), container_(container),

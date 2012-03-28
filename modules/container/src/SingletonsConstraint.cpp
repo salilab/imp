@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 SingletonsConstraint::SingletonsConstraint(SingletonModifier *before,
                                   SingletonDerivativeModifier *after,
-                                           SingletonContainer *c,
+                                           SingletonContainerInput c,
                                            std::string name):
   Constraint(name), c_(c) {
   if (before) f_=before;

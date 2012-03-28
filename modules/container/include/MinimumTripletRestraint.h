@@ -34,7 +34,7 @@ public:
   /** n is the number of LCMinimum scores to use.
    */
   MinimumTripletRestraint(TripletScore *f,
-                                 TripletContainer *c,
+                                 TripletContainerInput c,
                                  unsigned int n=1,
                                  std::string name
                                  ="MinimumTripletRestraint %1%");

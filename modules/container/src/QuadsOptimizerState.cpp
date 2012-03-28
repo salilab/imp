@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 QuadsOptimizerState
-::QuadsOptimizerState(QuadContainer *c,
+::QuadsOptimizerState(QuadContainerInput c,
                            QuadModifier *gm,
                            std::string name):
   OptimizerState(name),

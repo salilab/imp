@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 SingletonContainerStatistics
-::SingletonContainerStatistics(SingletonContainer *c):
+::SingletonContainerStatistics(SingletonContainerInput c):
   ScoreState(c->get_name()+" statistics"){
   container_=c;
   total_=0;
