@@ -11,7 +11,7 @@
 #include "membrane_config.h"
 #include "IMP/Restraint.h"
 #include <IMP/Particle.h>
-
+#include <boost/random/uniform_real.hpp>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -30,15 +30,17 @@ double Ida_;
 double fretr_;
 double kappa_;
 double Pbleach0_;
-unsigned Na_;
-unsigned mcsteps_;
+double Pbleach1_;
 Floats states0_;
 Floats states1_;
+unsigned Na_;
+unsigned mcsteps_;
 bool photobleach_;
+mutable Floats power6_;
 
-Floats set_photobleach(double Pbleach);
 double get_bleach_fretr() const;
 double get_nobleach_fretr() const;
+Floats get_states(double Pb);
 double get_sumFi(const Floats& power6, const Floats& states) const;
 
 public:
