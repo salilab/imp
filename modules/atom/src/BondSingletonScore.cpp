@@ -48,8 +48,8 @@ double BondSingletonScore::evaluate(Particle *b,
                                  s*(boost::lambda::_1-l), s);
 }
 
-ContainersTemp BondSingletonScore::get_input_containers(Particle *p) const {
-  return ContainersTemp(1,p);
+ContainersTemp BondSingletonScore::get_input_containers(Particle *) const {
+  return ContainersTemp();
 }
 
 ParticlesTemp BondSingletonScore::get_input_particles(Particle *p) const {

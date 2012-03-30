@@ -51,8 +51,8 @@ double ImproperSingletonScore::evaluate(Particle *b,
 }
 
 
-ContainersTemp ImproperSingletonScore::get_input_containers(Particle *p) const {
-  return ContainersTemp(1,p);
+ContainersTemp ImproperSingletonScore::get_input_containers(Particle *) const {
+  return ContainersTemp();
 }
 
 ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {

@@ -56,7 +56,7 @@ ParticlesTemp SoftCylinderPairScore::get_input_particles(Particle *p) const {
   return ret;
 }
 ContainersTemp SoftCylinderPairScore::get_input_containers(Particle *p) const {
-  return ContainersTemp(1, p);
+  return ContainersTemp();
 }
 
 void SoftCylinderPairScore::do_show(std::ostream &out) const
