@@ -59,7 +59,7 @@ void _ConstPairScore::do_show(std::ostream &out) const {
   out << "value: " << v_ << std::endl;
 }
 ContainersTemp
-_ConstPairScore::get_input_containers(Particle*p) const {
+_ConstPairScore::get_input_containers(Particle*) const {
   return ContainersTemp();
 }
 ParticlesTemp _ConstPairScore::get_input_particles(Particle *p) const {
