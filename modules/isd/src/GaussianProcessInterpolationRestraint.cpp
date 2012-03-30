@@ -44,7 +44,7 @@ void GaussianProcessInterpolationRestraint::set_model(Model *m)
         m->add_score_state(ss_);
     } else {
         if (ss_) {
-            if (ss_->get_has_model())
+            if (ss_->get_is_part_of_model())
             {
                 Model *m = ss_->get_model();
                 m->remove_score_state(ss_);
