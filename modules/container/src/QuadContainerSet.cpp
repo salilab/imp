@@ -10,6 +10,7 @@
  */
 
 #include "IMP/container/QuadContainerSet.h"
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
@@ -21,21 +22,12 @@ QuadContainerSet
   deps_(new DependenciesScoreState(this), m){
 }
 
-namespace {
-  Model *my_get_model(const QuadContainersTemp &in) {
-    if (in.empty()) {
-      IMP_THROW("Cannot initialize from empty list of containers.",
-                IndexException);
-    }
-    return in[0]->get_model();
-  }
-}
 
 QuadContainerSet
 ::QuadContainerSet(const QuadContainersTemp& in,
                         std::string name):
-  QuadContainer(my_get_model(in), name),
-  deps_(new DependenciesScoreState(this), my_get_model(in)){
+    QuadContainer(IMP::internal::get_model(in), name),
+    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
   set_quad_containers(in);
 }
 
@@ -109,15 +101,29 @@ double QuadContainerSet::evaluate_if_good(const QuadScore *s,
 }
 
 
-ParticlesTemp QuadContainerSet::get_contained_particles() const {
+ParticlesTemp QuadContainerSet::get_all_possible_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
     ParticlesTemp cur= get_quad_container(i)
-        ->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+        ->get_all_possible_particles();
+    ret+=cur;
   }
   return ret;
 }
 
+bool QuadContainerSet::get_is_changed() const {
+  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+    if (get_quad_container(i)->get_is_changed()) return true;
+  }
+  return Container::get_is_changed();
+}
+
+
+ContainersTemp QuadContainerSet::get_input_containers() const {
+  return ContainersTemp(quad_containers_begin(),
+                        quad_containers_end());
+}
+void QuadContainerSet::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

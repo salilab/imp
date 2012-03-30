@@ -69,7 +69,6 @@ public:
                   PairFilter*, PairFilters, obj->set_was_used(true);,,);
    /**@}*/
   IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
-  bool get_is_up_to_date() const;
 #endif
 };
 

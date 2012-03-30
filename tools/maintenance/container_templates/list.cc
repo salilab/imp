@@ -23,8 +23,6 @@ ListCLASSNAMEContainer
   P(IMP::internal::get_model(ps[0]),
     "ListSingletonContainer%1%")
 {
-  IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
-                  "All particles must belong to the same model.");
   set_FUNCTIONNAMEs(ps);
 }
 
@@ -33,8 +31,6 @@ ListCLASSNAMEContainer
                          std::string name):
   P(IMP::internal::get_model(ps[0]), name)
 {
-  IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
-                  "All particles must belong to the same model.");
   set_FUNCTIONNAMEs(ps);
 }
 

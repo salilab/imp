@@ -38,7 +38,7 @@ ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const
   IMP_OBJECT_LOG;
   ParticlesTemp ret
     = IMP::internal::get_input_particles(ss_.get(),
-                                         pc_->get_contained_particles());
+                                         pc_->get_all_possible_particles());
   return ret;
 }
 
@@ -48,7 +48,7 @@ ContainersTemp ContainerRestraint<Score, C>
 {
   ContainersTemp ret
     = IMP::internal::get_input_containers(ss_.get(),
-                                          pc_->get_contained_particles());
+                                          pc_->get_all_possible_particles());
   ret.push_back(pc_);
   return ret;
 }
@@ -171,14 +171,15 @@ ParticlesTemp ContainerConstraint<Before, After, C>
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_input_particles(f_.get(),
-                                            c_->get_contained_particles());
+                                            c_->get_all_possible_particles());
     ParticlesTemp o= IMP::internal::get_output_particles(f_.get(),
-                                            c_->get_contained_particles());
+                                            c_->get_all_possible_particles());
     ret.insert(ret.end(), o.begin(), o.end());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_output_particles(af_.get(),
-                                               c_->get_contained_particles());
+        ParticlesTemp oret
+            = IMP::internal::get_output_particles(af_.get(),
+                                            c_->get_all_possible_particles());
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -193,7 +194,7 @@ ParticlesTemp ContainerConstraint<Before, After, C>
     }
   } else {
     ret= IMP::internal::get_output_particles(af_.get(),
-                                          c_->get_contained_particles());
+                                          c_->get_all_possible_particles());
   }
   return ret;
 }
@@ -204,13 +205,15 @@ ParticlesTemp ContainerConstraint<Before, After, C>
   ParticlesTemp ret;
   if (f_) {
     ret= IMP::internal::get_output_particles(f_.get(),
-                                       c_->get_contained_particles());
+                                       c_->get_all_possible_particles());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(),
-                                               c_->get_contained_particles());
-        ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(),
-                                               c_->get_contained_particles());
+        ParticlesTemp oret
+            = IMP::internal::get_input_particles(af_.get(),
+                                           c_->get_all_possible_particles());
+        ParticlesTemp iret
+            =IMP::internal::get_input_particles(f_.get(),
+                                          c_->get_all_possible_particles());
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -225,7 +228,7 @@ ParticlesTemp ContainerConstraint<Before, After, C>
     }
   } else {
     ret= IMP::internal::get_input_particles(af_.get(),
-                                           c_->get_contained_particles());
+                                           c_->get_all_possible_particles());
   }
   return ret;
 }

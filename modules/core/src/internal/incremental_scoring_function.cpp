@@ -40,16 +40,18 @@ NBLScoring::NBLScoring(PairScore *ps,
   max_=max;
   to_move_= to_move;
   DependencyGraph dg= get_dependency_graph(particles[0]->get_model());
-  update_dependencies(dg);
+  DependencyGraphVertexIndex dgi= get_vertex_index(dg);
+  update_dependencies(dg, dgi);
   dummy_restraint_= create_restraint();
 }
 
 void
-NBLScoring::update_dependencies( const DependencyGraph& dg) {
+NBLScoring::update_dependencies( const DependencyGraph& dg,
+                                 const DependencyGraphVertexIndex &index) {
   for (unsigned int i=0; i< to_move_.size(); ++i) {
     Particle *p= cache_.get_generator().m_->get_particle(to_move_[i]);
     ParticlesTemp ps= get_dependent_particles(p, ParticlesTemp(),
-                                              dg);
+                                              dg, index);
     // intersect that with the ones I care about
     ParticleIndexes pis= IMP::internal::get_index(ps);
     std::sort(pis.begin(), pis.end());

@@ -88,14 +88,8 @@ class IMPCONTAINEREXPORT PairContainerSet
     }
     return ret;
   }
-
-  ParticlesTemp get_contained_particles() const;
-  bool get_contents_changed() const {
-    for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-      if (get_pair_container(i)->get_contents_changed()) return true;
-    }
-    return false;
-  }
+  bool get_is_changed() const;
+  ParticlesTemp get_all_possible_particles() const;
   IMP_OBJECT(PairContainerSet);
 
   /** @name Methods to control the nested container
@@ -109,19 +103,16 @@ class IMPCONTAINEREXPORT PairContainerSet
                   PairContainer*, PairContainers,
                   {
                     obj->set_was_used(true);
+                    set_is_changed(true);
+                    get_model()->reset_dependencies();
                   },{},
                   );
   /**@}*/
 #ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    for (unsigned int i=0;
-         i< get_number_of_pair_containers(); ++i) {
-      if (!get_pair_container(i)->get_is_up_to_date()) return false;
-    }
-    return true;
-  }
   ParticleIndexPairs get_indexes() const;
   ParticleIndexPairs get_all_possible_indexes() const;
+  ContainersTemp get_input_containers() const;
+  void do_before_evaluate();
 #endif
 };
 

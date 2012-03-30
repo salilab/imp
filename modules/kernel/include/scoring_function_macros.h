@@ -34,7 +34,9 @@
                                       const ScoreStatesTemp &ss));      \
   IMP_IMPLEMENT(Restraints create_restraints() const);                  \
   IMP_IMPLEMENT(ScoreStatesTemp                                         \
-                get_required_score_states(const DependencyGraph &dg) const); \
+                get_required_score_states(const DependencyGraph &dg,    \
+                                          const DependencyGraphVertexIndex&i) \
+                const);                                                 \
   IMP_OBJECT(Name)
 //! @}
 

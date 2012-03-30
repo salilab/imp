@@ -50,11 +50,6 @@ public:
   ConsecutivePairContainer(const ParticlesTemp &ps,
                            std::string name="ConsecutivePairContainer%1%");
 
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    return true;
-  }
-#endif
   IMP_PAIR_CONTAINER(ConsecutivePairContainer);
 };
 

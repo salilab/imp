@@ -16,21 +16,15 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-
-IMP_ACTIVE_CONTAINER_DEF(InternalListQuadContainer,);
-
-
 InternalListQuadContainer
 ::InternalListQuadContainer(Model *m, std::string name):
-  internal::ListLikeQuadContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
 InternalListQuadContainer
 ::InternalListQuadContainer(Model *m, const char *name):
-  internal::ListLikeQuadContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
@@ -45,6 +39,7 @@ void InternalListQuadContainer::do_show(std::ostream &out) const {
 void InternalListQuadContainer
 ::remove_particle_quads(const ParticleQuadsTemp &c) {
   if (c.empty()) return;
+  get_model()->reset_dependencies();
   ParticleIndexQuads cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {
@@ -55,26 +50,27 @@ void InternalListQuadContainer
   }
 }
 
+ParticlesTemp
+InternalListQuadContainer::get_all_possible_particles() const {
+  return IMP::internal::flatten(get());
+}
+
 ParticleIndexQuads
 InternalListQuadContainer::get_all_possible_indexes() const {
-    return get_indexes();
-  }
+  return get_indexes();
+}
 
 void InternalListQuadContainer::do_before_evaluate() {
-  internal::ListLikeQuadContainer::do_before_evaluate();
 }
 
-void InternalListQuadContainer::do_after_evaluate() {
-  internal::ListLikeQuadContainer::do_after_evaluate();
-}
 
 ParticlesTemp
-InternalListQuadContainer::get_state_input_particles() const {
+InternalListQuadContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 
 ContainersTemp
-InternalListQuadContainer::get_state_input_containers() const {
+InternalListQuadContainer::get_input_containers() const {
   return ContainersTemp();
 }
 

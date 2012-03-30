@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListCLASSNAMEContainer.h"
+#include "DynamicListCLASSNAMEContainer.h"
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/base/Vector.h>
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT DistributeCLASSNAMEsScoreState :
 public ScoreState
 {
   OwnerPointer<CLASSNAMEContainer> input_;
-  typedef boost::tuple<Pointer<ListCLASSNAMEContainer>,
+  typedef boost::tuple<Pointer<DynamicListCLASSNAMEContainer>,
     OwnerPointer<CLASSNAMEPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
@@ -46,9 +46,9 @@ public:
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  ListCLASSNAMEContainer *add_predicate(CLASSNAMEPredicate *predicate,
+  DynamicListCLASSNAMEContainer *add_predicate(CLASSNAMEPredicate *predicate,
                                         int value) {
-    IMP_NEW(ListCLASSNAMEContainer, c, (get_model(),
+    IMP_NEW(DynamicListCLASSNAMEContainer, c, (input_,
                                         predicate->get_name()+ " output"));
     data_.push_back(Data(c, predicate, value));
     return c;

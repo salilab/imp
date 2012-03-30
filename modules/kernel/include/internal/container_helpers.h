@@ -257,6 +257,10 @@ inline Model *get_model(Particle*p) {
 inline Model *get_model(ModelObject*p) {
   return p->get_model();
 }
+inline Model *get_model(ScoreState*p) {
+  return p->get_model();
+}
+
 
 inline Model *get_model(const ParticlesTemp&p) {
   IMP_USAGE_CHECK(p.size() >0, "Empty particles list");

@@ -36,10 +36,12 @@ class IMPEXPORT ModelObject :
       and model evaluate is called (or Model::ensure_dependencies()).
       The object can use this to update anything
       that is needed for efficient computation.*/
-  virtual void do_update_dependencies(const DependencyGraph &) {}
+  virtual void do_update_dependencies(const DependencyGraph &,
+                                      const DependencyGraphVertexIndex &) {}
   /** The model calls this method when dependencies have changed. It in
       turn calls do_update_dependencies().*/
-  void update_dependencies(const DependencyGraph &dg);
+  void update_dependencies(const DependencyGraph &dg,
+                           const DependencyGraphVertexIndex &index);
 public:
   ModelObject(Model *m, std::string name);
 #ifndef IMP_DOXYGEN

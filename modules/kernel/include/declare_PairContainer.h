@@ -80,11 +80,6 @@ public:
                                   DerivativeAccumulator *da,
                                   double max) const=0;
 
-  /** Return true if the contents of the container changed since the last
-      evaluate.
-  */
-  virtual bool get_contents_changed() const=0;
-
 #ifndef IMP_DOXYGEN
   typedef ParticlePair value_type;
   ParticlePair get(unsigned int i) const {

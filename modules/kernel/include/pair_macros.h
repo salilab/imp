@@ -355,7 +355,7 @@
                           DerivativeAccumulator *da, double max) const { \
     return template_evaluate_if_good(s, da, max);                       \
   }                                                                     \
-  ParticlesTemp get_contained_particles() const;                        \
+  ParticlesTemp get_all_possible_particles() const;                     \
   IMP_OBJECT(Name)
 #endif
 
@@ -415,14 +415,26 @@
     - IMP::PairContainer::evaluate()
     - IMP::Interaction::get_input_objects()
 */
-#define IMP_PAIR_CONTAINER(Name)                      \
-  IMP_IMPLEMENT(bool get_contents_changed() const);                     \
-  IMP_IMPLEMENT(bool get_contains_particle_pair(const ParticlePair& p)\
-                const);                                       \
+#define IMP_PAIR_CONTAINER(Name)                                  \
+  IMP_IMPLEMENT(bool get_is_changed() const);                           \
+  IMP_IMPLEMENT(bool get_contains_particle_pair(const ParticlePair& p)   \
+                const);                                                 \
   IMP_IMPLEMENT(ParticleIndexPairs get_indexes() const);                   \
   IMP_IMPLEMENT(ParticleIndexPairs get_all_possible_indexes() const);      \
+  IMP_IMPLEMENT(void do_before_evaluate());                             \
+  IMP_IMPLEMENT(ParticlesTemp get_input_particles() const);             \
+  IMP_IMPLEMENT(ContainersTemp get_input_containers() const);           \
   IMP_IMPLEMENT_PAIR_CONTAINER(Name)
 
+
+//! Declare the needed functions for an active PairContainer
+/** In addition to the methods of IMP_PAIR_CONTAINER(), it declares
+    - IMP::ScoreState::get_input_particles()
+    - IMP::ScoreState::get_input_containers()
+    - IMP::ScoreState::do_before_evaluate()
+*/
+#define IMP_ACTIVE_PAIR_CONTAINER(Name)                           \
+  IMP_PAIR_CONTAINER(name)
 
 #ifndef SWIG
 //! Declare the needed functions for a PairFilter

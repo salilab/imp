@@ -50,7 +50,6 @@ public:
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
   /**@}*/
-  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_TRIPLET_CONTAINER(ListTripletContainer);
 #else
   IMP_OBJECT(ListTripletContainer);

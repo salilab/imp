@@ -21,6 +21,7 @@
 #include <IMP/base/file.h>
 //#include <boost/graph/lookup_edge.hpp>
 #include <IMP/compatibility/vector_property_map.h>
+#include <boost/graph/reverse_graph.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -39,8 +40,9 @@ public:
     {
       vm_=boost::get(boost::vertex_name, g);
     }
+  template <class TG>
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph&) {
+                       const TG&) {
     base::Object *o= vm_[u];
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
@@ -54,43 +56,43 @@ public:
 };
 
 namespace {
-template <class ResultType, class Type>
-ResultType get_dependent(base::Object *p,
+  template <class ResultType, class Type, bool REVERSE>
+  ResultType get_dependent(const base::ObjectsTemp &p,
                          const base::ObjectsTemp &all,
-                         const DependencyGraph &dg) {
+                         const DependencyGraph &dg,
+                         const DependencyGraphVertexIndex &index) {
   IMP_FUNCTION_LOG;
   // find p in graph, ick
   DependencyGraphConstVertexName dpm= boost::get(boost::vertex_name, dg);
   std::pair<DependencyGraphTraits::vertex_iterator,
     DependencyGraphTraits::vertex_iterator> be
     = boost::vertices(dg);
-  IMP::compatibility::set<base::Object*> block(all.begin(), all.end());
   boost::vector_property_map<int> color(boost::num_vertices(dg));
-  int start=-1;
-  for (; be.first != be.second; ++be.first) {
-     IMP_INTERNAL_CHECK(color[*be.first]==
-                         boost::color_traits<int>::white(),
-                        "Vertex does not start white");
-    if (dpm[*be.first]==p) {
-      start=*be.first;
-    } else if (block.find(dpm[*be.first]) != block.end()) {
-      // block traversal though the other nodes
-      /*IMP_LOG(VERBOSE, "Blocking transit through "
-        << dpm[*be.first]->get_name()
-        << std::endl);*/
-      color[*be.first]= boost::color_traits<int>::black();
-    }
-  }
-  if (start == -1) {
-    IMP_LOG(TERSE, "Start particle not found in graph: " << p->get_name()
-            << std::endl);
-    return ResultType();
+  for (unsigned int i=0; i< all.size(); ++i) {
+    IMP_USAGE_CHECK(index.find(all[i]) != index.end(),
+                    "Blocker node not found in index");
+    DependencyGraphVertex blocked=
+      index.find(all[i])->second;
+    IMP_INTERNAL_CHECK(color[blocked]==boost::color_traits<int>::white(),
+                       "Vertex does not start white");
+    color[blocked]= boost::color_traits<int>::black();
   }
   ResultType pt;
   DirectCollectVisitor<DependencyGraph, Type, ResultType> cv(dg, pt);
-  boost::depth_first_visit(dg, start, cv, color);
+  for (unsigned int i=0; i< p.size(); ++i) {
+    IMP_USAGE_CHECK(index.find(p[i]) != index.end(),
+                    "Object " << p[i] << " not found in dependency graph");
+    DependencyGraphVertex start= index.find(p[i])->second;
+    if (REVERSE) {
+      boost::depth_first_visit(boost::make_reverse_graph(dg), start, cv, color);
+    } else {
+      boost::depth_first_visit(dg, start, cv, color);
+    }
+  }
   return cv.get_collected();
 }
+
+
 }
 
 
@@ -101,21 +103,48 @@ ResultType get_dependent(base::Object *p,
 
 ParticlesTemp get_dependent_particles(base::Object *p,
                                       const base::ObjectsTemp &all,
-                                      const DependencyGraph &dg) {
-  return get_dependent<ParticlesTemp, Particle>(p, all, dg);
+                                      const DependencyGraph &dg,
+                       const DependencyGraphVertexIndex &index) {
+  return get_dependent<ParticlesTemp, Particle, false>(base::ObjectsTemp(1,p),
+                                                       all, dg,index);
 }
 
 
 
 RestraintsTemp get_dependent_restraints(base::Object *p,
                                         const base::ObjectsTemp &all,
-                                        const DependencyGraph &dg) {
-  return get_dependent<RestraintsTemp, Restraint>(p,all, dg);
+                                        const DependencyGraph &dg,
+                       const DependencyGraphVertexIndex &index) {
+  return get_dependent<RestraintsTemp, Restraint, false>(base::ObjectsTemp(1,p),
+                                                         all, dg, index);
 }
 ScoreStatesTemp get_dependent_score_states(base::Object *p,
                                            const base::ObjectsTemp &all,
-                                           const DependencyGraph &dg) {
-  return get_dependent<ScoreStatesTemp, ScoreState>(p,all, dg);
+                                           const DependencyGraph &dg,
+                       const DependencyGraphVertexIndex &index) {
+  return get_dependent<ScoreStatesTemp,
+      ScoreState, false>(base::ObjectsTemp(1,p),all, dg, index);
+}
+
+
+
+
+
+ParticlesTemp get_required_particles(base::Object *p,
+                                     const base::ObjectsTemp &all,
+                                     const DependencyGraph &dg,
+                       const DependencyGraphVertexIndex &index) {
+  return get_dependent<ParticlesTemp, Particle, true>(base::ObjectsTemp(1,p),
+                                                      all, dg, index);
+}
+
+
+ScoreStatesTemp get_required_score_states(base::Object *p,
+                                          const base::ObjectsTemp &all,
+                                          const DependencyGraph &dg,
+                                 const DependencyGraphVertexIndex &index ) {
+  return get_dependent<ScoreStatesTemp, ScoreState,
+      true>(base::ObjectsTemp(1,p),all, dg,index);
 }
 
 
@@ -480,5 +509,22 @@ ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg) {
   return ret;
 }
 
+namespace {
+struct LessOrder {
+  bool operator()(const ScoreState*a, const ScoreState*b) const {
+    return a->order_ < b->order_;
+  }
+};
+}
+
+IMPEXPORT
+ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
+                                          const DependencyGraph &dg,
+                             const DependencyGraphVertexIndex &index) {
+  ScoreStatesTemp sst
+      =  get_dependent<ScoreStatesTemp, ScoreState, true>(irs,
+                                                      ObjectsTemp(), dg, index);
+  return get_ordered_score_states(sst);
+}
 
 IMP_END_NAMESPACE

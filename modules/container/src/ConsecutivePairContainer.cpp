@@ -48,8 +48,18 @@ void ConsecutivePairContainer::init(bool no_overlaps){
   }
 }
 
+void ConsecutivePairContainer::do_before_evaluate() {}
+
+ParticlesTemp ConsecutivePairContainer::get_input_particles() const {
+  return ParticlesTemp();
+}
+ContainersTemp ConsecutivePairContainer::get_input_containers() const {
+  return ContainersTemp();
+}
+
+
 bool
-ConsecutivePairContainer::get_contents_changed() const {
+ConsecutivePairContainer::get_is_changed() const {
   return false;
 }
 
@@ -71,7 +81,7 @@ void ConsecutivePairContainer::do_show(std::ostream &out) const {
   out << "num particles: " << ps_.size() << std::endl;
 }
 
-ParticlesTemp ConsecutivePairContainer::get_contained_particles() const {
+ParticlesTemp ConsecutivePairContainer::get_all_possible_particles() const {
   return IMP::internal::get_particle(get_model(), ps_);
 }
 

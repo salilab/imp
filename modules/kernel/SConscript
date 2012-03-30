@@ -7,7 +7,7 @@ deplist=[]
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
-                                               body="boost::filesystem::path p;",
+                                               body="boost::filesystem::path p; boost::system::get_system_category();",
                                                extra_boost_libs=["system"])
 deplist.append('Boost.FileSystem')
 

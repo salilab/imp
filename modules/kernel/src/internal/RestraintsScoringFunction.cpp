@@ -141,6 +141,20 @@ RestraintsScoringFunction::RestraintsScoringFunction(const RestraintsTemp &r,
                                                      std::string name):
   ScoringFunction(IMP::internal::get_model(r), name),
     weight_(weight), max_(max){
+  set_restraints(r);
+}
+
+
+RestraintsScoringFunction::RestraintsScoringFunction(Model *m,
+                                                     double weight,
+                                                     double max,
+                                                     std::string name):
+  ScoringFunction(m, name),
+  weight_(weight), max_(max){
+}
+
+
+void RestraintsScoringFunction::set_restraints(const RestraintsTemp &r) {
   for (unsigned int i=0; i< r.size(); ++i) {
     RestraintSet *rs= dynamic_cast<RestraintSet*>(r[i].get());
     if (rs) {
@@ -150,7 +164,6 @@ RestraintsScoringFunction::RestraintsScoringFunction(const RestraintsTemp &r,
     }
   }
 }
-
 
 std::pair<double, bool> RestraintsScoringFunction::do_evaluate(bool derivatives,
                                              const ScoreStatesTemp &ss) {
@@ -184,10 +197,12 @@ Restraints RestraintsScoringFunction::create_restraints() const {
 }
 
 ScoreStatesTemp
-RestraintsScoringFunction::get_required_score_states(const DependencyGraph &)
+RestraintsScoringFunction::get_required_score_states(const DependencyGraph &g,
+                                            const DependencyGraphVertexIndex&i)
   const {
-  return get_model()->get_score_states(static_cast<RestraintsTemp>(rs_)
-                                       +static_cast<RestraintsTemp>(rss_));
+  return IMP::get_required_score_states(static_cast<RestraintsTemp>(rs_)
+                                        +static_cast<RestraintsTemp>(rss_),
+                                        g, i);
 }
 
 

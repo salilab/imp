@@ -16,21 +16,15 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-
-IMP_ACTIVE_CONTAINER_DEF(InternalListTripletContainer,);
-
-
 InternalListTripletContainer
 ::InternalListTripletContainer(Model *m, std::string name):
-  internal::ListLikeTripletContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
 InternalListTripletContainer
 ::InternalListTripletContainer(Model *m, const char *name):
-  internal::ListLikeTripletContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
@@ -45,6 +39,7 @@ void InternalListTripletContainer::do_show(std::ostream &out) const {
 void InternalListTripletContainer
 ::remove_particle_triplets(const ParticleTripletsTemp &c) {
   if (c.empty()) return;
+  get_model()->reset_dependencies();
   ParticleIndexTriplets cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {
@@ -55,26 +50,27 @@ void InternalListTripletContainer
   }
 }
 
+ParticlesTemp
+InternalListTripletContainer::get_all_possible_particles() const {
+  return IMP::internal::flatten(get());
+}
+
 ParticleIndexTriplets
 InternalListTripletContainer::get_all_possible_indexes() const {
-    return get_indexes();
-  }
+  return get_indexes();
+}
 
 void InternalListTripletContainer::do_before_evaluate() {
-  internal::ListLikeTripletContainer::do_before_evaluate();
 }
 
-void InternalListTripletContainer::do_after_evaluate() {
-  internal::ListLikeTripletContainer::do_after_evaluate();
-}
 
 ParticlesTemp
-InternalListTripletContainer::get_state_input_particles() const {
+InternalListTripletContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 
 ContainersTemp
-InternalListTripletContainer::get_state_input_containers() const {
+InternalListTripletContainer::get_input_containers() const {
   return ContainersTemp();
 }
 

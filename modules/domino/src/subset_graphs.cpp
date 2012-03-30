@@ -59,6 +59,7 @@ SubsetGraph get_restraint_graph(const RestraintsTemp &irs,
   IMP::compatibility::map<Particle*, int> map;
   SubsetGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs[0]->get_model());
+  DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
   /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
@@ -68,7 +69,7 @@ SubsetGraph get_restraint_graph(const RestraintsTemp &irs,
     ParticlesTemp t= get_dependent_particles(ps[i],
                                              ParticlesTemp(ps.begin(),
                                                            ps.end()),
-                                             dg);
+                                             dg, index);
     for (unsigned int j=0; j< t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "
@@ -404,6 +405,7 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
   IMP::compatibility::map<Particle*, int> map;
   InteractionGraphVertexName pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(ps[0]->get_model());
+  DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
   /*IMP_IF_LOG(VERBOSE) {
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
@@ -412,7 +414,7 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
     ParticlesTemp t= get_dependent_particles(ps[i],
                                              ParticlesTemp(ps.begin(),
                                                            ps.end()),
-                                             dg);
+                                             dg, index);
     for (unsigned int j=0; j< t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "
@@ -438,7 +440,7 @@ InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
     ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
   }
-  ScoreStatesTemp ss= get_required_score_states(rs);
+  ScoreStatesTemp ss= get_required_score_states(rs, dg, index);
   for (ScoreStatesTemp::const_iterator it= ss.begin();
        it != ss.end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();

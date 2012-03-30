@@ -21,7 +21,6 @@ class AllPairsContainerTest(IMP.test.TestCase):
         for i in range(0,50):
             p= IMP.Particle(m)
         lp= IMP.container.ListSingletonContainer(m.get_particles())
-        self.assertEqual(lp.get_ref_count(), 1)
         apc= IMP.container.AllPairContainer(lp)
         #self.assertEqual(lp.get_ref_count(), 2)
         # use that names are unique

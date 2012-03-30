@@ -89,19 +89,16 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   ParticleIndexPairs new_list;
   compute_mst(sc_, new_list);
   update_list(new_list);
-  Model *m=sc->get_particle(0)->get_model();
   mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_);
-  initialize_active_container(m);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(ConnectingPairContainer,);
 
-ParticlesTemp ConnectingPairContainer::get_state_input_particles() const {
+ParticlesTemp ConnectingPairContainer::get_input_particles() const {
   return sc_->get_particles();
 }
 
 
-ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
+ContainersTemp ConnectingPairContainer::get_input_containers() const {
   ContainersTemp ret(2);
   ret[0]=sc_;
   ret[1]=mv_;
@@ -121,6 +118,11 @@ ConnectingPairContainer::get_all_possible_indexes() const {
   return ret;
 }
 
+ParticlesTemp
+ConnectingPairContainer::get_all_possible_particles() const {
+  return sc_->get_all_possible_particles();
+}
+
 void ConnectingPairContainer::do_before_evaluate() {
   if (mv_->get_number_of_particles() != 0) {
     ParticleIndexPairs new_list;
@@ -130,10 +132,6 @@ void ConnectingPairContainer::do_before_evaluate() {
   }
 }
 
-
-void ConnectingPairContainer::do_after_evaluate() {
-  IMP::internal::ListLikePairContainer::do_after_evaluate();
-}
 
 
 void ConnectingPairContainer::do_show(std::ostream &out) const {

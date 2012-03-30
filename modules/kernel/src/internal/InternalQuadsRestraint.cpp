@@ -53,14 +53,14 @@ ParticlesTemp InternalQuadsRestraint::get_input_particles() const
 {
   IMP_OBJECT_LOG;
   ParticlesTemp ret= IMP::internal::get_input_particles(ss_.get(),
-                                      pc_->get_contained_particles());
+                                      pc_->get_all_possible_particles());
   return ret;
 }
 
 ContainersTemp InternalQuadsRestraint::get_input_containers() const
 {
   ContainersTemp ret= IMP::internal::get_input_containers(ss_.get(),
-                                          pc_->get_contained_particles());
+                                          pc_->get_all_possible_particles());
   ret.push_back(pc_);
   return ret;
 }

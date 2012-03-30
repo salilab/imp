@@ -55,7 +55,7 @@ ParticlesTemp SoftCylinderPairScore::get_input_particles(Particle *p) const {
   ret.push_back(atom::Bond(p).get_bonded(1));
   return ret;
 }
-ContainersTemp SoftCylinderPairScore::get_input_containers(Particle *p) const {
+ContainersTemp SoftCylinderPairScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 

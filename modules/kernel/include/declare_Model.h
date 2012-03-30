@@ -170,9 +170,6 @@ public:
 
   void add_to_restraint_evaluate(Restraint *r, double t, double score) const;
   void reset_dependencies();
-  ScoreStatesTemp get_score_states(const RestraintsTemp &rs,
-                                   const ScoreStatesTemp &extra
-                                   = ScoreStatesTemp());
   internal::Stage get_stage() const {
     return cur_stage_;
   }
@@ -187,17 +184,12 @@ public:
 #endif
 
  private:
+  ScoreStatesTemp ordered_score_states_;
   void cleanup();
   void show_it(std::ostream &out) const;
   // statistics
   void add_to_update_before_time(ScoreState *s, double t) const;
   void add_to_update_after_time(ScoreState *s, double t) const;
-
-
-
-  // dependencies
-  RestraintsTemp scoring_restraints_;
-  ScoreStatesTemp ordered_score_states_;
 
   // other
   /* Allow Model::ScoreStateDataWrapper class to call the private

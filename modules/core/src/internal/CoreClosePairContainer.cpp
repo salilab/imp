@@ -42,14 +42,9 @@ CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
              cpf);
 }
 
-CoreClosePairContainer::~CoreClosePairContainer()
-{
-}
-
 void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
                                          double slack,
                                          ClosePairsFinder *cpf) {
-  initialize_active_container(get_model());
   moved_count_=0;
   slack_=slack;
   distance_=distance;
@@ -59,13 +54,6 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
   first_call_=true;
   moved_=cpf_->get_moved_singleton_container(c_, slack_);
 }
-
-IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer,
-                         {
-                           IMP_CHECK_OBJECT(moved_);
-                           IMP_CHECK_OBJECT(this);
-                           moved_->set_log_level(l);
-                         });
 
 
 void CoreClosePairContainer::set_slack(double s) {
@@ -78,7 +66,7 @@ void CoreClosePairContainer::set_slack(double s) {
 
 
 ContainersTemp CoreClosePairContainer
-::get_state_input_containers() const {
+::get_input_containers() const {
   ContainersTemp ret= cpf_->get_input_containers(c_->get_particles());
   ret.push_back(c_);
   ret.push_back(moved_);
@@ -86,7 +74,7 @@ ContainersTemp CoreClosePairContainer
 }
 
 
-ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
+ParticlesTemp CoreClosePairContainer::get_input_particles() const {
   ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
   ParticlesTemp all;
   for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
@@ -268,10 +256,6 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(c_);
   IMP_CHECK_OBJECT(cpf_);
   set_was_used(true);
-  IMP_INTERNAL_CHECK(c_->get_is_up_to_date(),
-                     "Input container is not up to date.");
-  IMP_INTERNAL_CHECK(moved_->get_is_up_to_date(),
-                     "Moved container is not up to date.");
   try {
     if (first_call_) {
       do_first_call();
@@ -296,11 +280,6 @@ void CoreClosePairContainer::do_before_evaluate() {
 }
 
 
-void CoreClosePairContainer::do_after_evaluate() {
-  IMP::internal::ListLikePairContainer::do_after_evaluate();
-}
-
-
 void CoreClosePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
   out << "container " << *c_ << std::endl;
@@ -319,8 +298,8 @@ ParticleIndexPairs CoreClosePairContainer::get_all_possible_indexes() const {
   return ret;
 }
 
-ParticlesTemp CoreClosePairContainer::get_contained_particles() const {
-  ParticlesTemp ret= c_->get_contained_particles();
+ParticlesTemp CoreClosePairContainer::get_all_possible_particles() const {
+  ParticlesTemp ret= c_->get_all_possible_particles();
   ParticlesTemp nret =cpf_->get_input_particles(c_->get_particles());
   ret.insert(ret.end(), nret.begin(), nret.end());
   return ret;

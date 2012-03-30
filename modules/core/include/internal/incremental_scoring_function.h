@@ -85,7 +85,8 @@ public:
   Restraint* get_dummy_restraint() const {
     return dummy_restraint_;
   }
-  void update_dependencies(const DependencyGraph &dg);
+  void update_dependencies(const DependencyGraph &dg,
+                           const DependencyGraphVertexIndex &index);
 
 };
 

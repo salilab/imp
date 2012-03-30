@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListSingletonContainer.h"
+#include "DynamicListSingletonContainer.h"
 #include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/base/Vector.h>
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT DistributeSingletonsScoreState :
 public ScoreState
 {
   OwnerPointer<SingletonContainer> input_;
-  typedef boost::tuple<Pointer<ListSingletonContainer>,
+  typedef boost::tuple<Pointer<DynamicListSingletonContainer>,
     OwnerPointer<SingletonPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
@@ -46,9 +46,9 @@ public:
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  ListSingletonContainer *add_predicate(SingletonPredicate *predicate,
+  DynamicListSingletonContainer *add_predicate(SingletonPredicate *predicate,
                                         int value) {
-    IMP_NEW(ListSingletonContainer, c, (get_model(),
+    IMP_NEW(DynamicListSingletonContainer, c, (input_,
                                         predicate->get_name()+ " output"));
     data_.push_back(Data(c, predicate, value));
     return c;

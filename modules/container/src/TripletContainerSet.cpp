@@ -10,6 +10,7 @@
  */
 
 #include "IMP/container/TripletContainerSet.h"
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
@@ -21,21 +22,12 @@ TripletContainerSet
   deps_(new DependenciesScoreState(this), m){
 }
 
-namespace {
-  Model *my_get_model(const TripletContainersTemp &in) {
-    if (in.empty()) {
-      IMP_THROW("Cannot initialize from empty list of containers.",
-                IndexException);
-    }
-    return in[0]->get_model();
-  }
-}
 
 TripletContainerSet
 ::TripletContainerSet(const TripletContainersTemp& in,
                         std::string name):
-  TripletContainer(my_get_model(in), name),
-  deps_(new DependenciesScoreState(this), my_get_model(in)){
+    TripletContainer(IMP::internal::get_model(in), name),
+    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
   set_triplet_containers(in);
 }
 
@@ -109,15 +101,29 @@ double TripletContainerSet::evaluate_if_good(const TripletScore *s,
 }
 
 
-ParticlesTemp TripletContainerSet::get_contained_particles() const {
+ParticlesTemp TripletContainerSet::get_all_possible_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
     ParticlesTemp cur= get_triplet_container(i)
-        ->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+        ->get_all_possible_particles();
+    ret+=cur;
   }
   return ret;
 }
 
+bool TripletContainerSet::get_is_changed() const {
+  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+    if (get_triplet_container(i)->get_is_changed()) return true;
+  }
+  return Container::get_is_changed();
+}
+
+
+ContainersTemp TripletContainerSet::get_input_containers() const {
+  return ContainersTemp(triplet_containers_begin(),
+                        triplet_containers_end());
+}
+void TripletContainerSet::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

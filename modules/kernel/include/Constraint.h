@@ -50,8 +50,10 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Constraint : public ScoreState
 {
 public:
+#ifndef IMP_DOXYGEN
   Constraint(std::string name="Constraint %1%");
-
+#endif
+  Constraint(Model *m, std::string name="Constraint %1%");
   IMP_REF_COUNTED_DESTRUCTOR(Constraint);
 };
 

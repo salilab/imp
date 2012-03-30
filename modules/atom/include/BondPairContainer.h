@@ -49,11 +49,6 @@ public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);
 
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    return sc_->get_is_up_to_date();
-  }
-#endif
   IMP_PAIR_CONTAINER(BondPairContainer);
 };
 

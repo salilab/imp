@@ -12,8 +12,8 @@
 
 #include "../kernel_config.h"
 #include "container_helpers.h"
-#include "active_container.h"
 #include "ListLikePairContainer.h"
+#include <IMP/base/Pointer.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,42 +21,44 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 class IMPEXPORT InternalListPairContainer:
   public ListLikePairContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(InternalListPairContainer);
+  typedef ListLikePairContainer P;
  public:
   InternalListPairContainer(Model *m, std::string name);
   InternalListPairContainer(Model *m, const char *name);
   void add_particle_pair(const ParticlePair& vt) {
+    get_model()->reset_dependencies();
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Pair cannot be nullptr (or None)");
+
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle_pair(const ParticleIndexPair& vt) {
+    get_model()->reset_dependencies();
     add_to_list(vt);
   }
   void add_particle_pairs(const ParticlePairsTemp &c) {
     if (c.empty()) return;
+    get_model()->reset_dependencies();
     ParticleIndexPairs cp= IMP::internal::get_index(c);
     add_to_list(cp);
   }
   void remove_particle_pairs(const ParticlePairsTemp &c);
   void set_particle_pairs(ParticlePairsTemp c) {
+    get_model()->reset_dependencies();
     ParticleIndexPairs cp= IMP::internal::get_index(c);
     update_list(cp);
   }
   void set_particle_pairs(ParticleIndexPairs cp) {
+    get_model()->reset_dependencies();
     update_list(cp);
   }
   void clear_particle_pairs() {
+    get_model()->reset_dependencies();
     ParticleIndexPairs t;
     update_list(t);
   }
-  bool get_is_up_to_date() const {
-    return true;
-  }
   IMP_LISTLIKE_PAIR_CONTAINER(InternalListPairContainer);
 };
-
-IMP_OBJECTS(InternalListPairContainer, InternalListPairContainers);
 
 IMP_END_INTERNAL_NAMESPACE
 

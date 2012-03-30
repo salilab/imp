@@ -51,12 +51,6 @@ public:
                             SingletonContainer *b,
                             std::string name="AllBipartitePairContainer%1%");
 
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    return a_->get_is_up_to_date()
-      && b_->get_is_up_to_date();
-  }
-#endif
   IMP_PAIR_CONTAINER(AllBipartitePairContainer);
 };
 

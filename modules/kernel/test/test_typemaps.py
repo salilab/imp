@@ -277,7 +277,7 @@ class ParticleTests(IMP.test.TestCase):
                     'get_string_keys',
                     'do_update_dependencies',
                     'get_has_model',
-                    'set_model'
+                    'set_model',
                     ]
         md= dir(IMP._TrivialDecorator)
         missing=[]

@@ -76,10 +76,22 @@ def make_one(params, test=True):
                path+"/tools/maintenance/container_templates/list.hpp"),
               ("modules/container/src/List"+multi + "Container.cpp",
                path+"/tools/maintenance/container_templates/list.cc"),
+
+              ("modules/container/include/DynamicList"+multi + "Container.h",
+               path+"/tools/maintenance/container_templates/dynamiclist.hpp"),
+              ("modules/container/src/DynamicList"+multi + "Container.cpp",
+               path+"/tools/maintenance/container_templates/dynamiclist.cc"),
+
+
               ("modules/kernel/include/internal/InternalList"+multi + "Container.h",
                path+"/tools/maintenance/container_templates/corelist.hpp"),
               ("modules/kernel/src/internal/InternalList"+multi + "Container.cpp",
                path+"/tools/maintenance/container_templates/corelist.cc"),
+
+              ("modules/kernel/include/internal/InternalDynamicList"+multi + "Container.h",
+               path+"/tools/maintenance/container_templates/coredynamiclist.hpp"),
+              ("modules/kernel/src/internal/InternalDynamicList"+multi + "Container.cpp",
+               path+"/tools/maintenance/container_templates/coredynamiclist.cc"),
 
               ("modules/kernel/include/"+multi.lower() + "_macros.h",
                path+"/tools/maintenance/container_templates/macros.hpp"),

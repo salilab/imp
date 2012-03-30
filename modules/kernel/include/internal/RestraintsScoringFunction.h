@@ -28,6 +28,13 @@ class IMPEXPORT RestraintsScoringFunction: public ScoringFunction {
   RestraintSets rss_;
   double weight_;
   double max_;
+protected:
+  // Does not reset dependencies
+  void set_restraints(const RestraintsTemp &rs);
+  RestraintsScoringFunction(Model *m,
+                            double weight=1.0,
+                            double max=NO_MAX,
+                            std::string name= "RestraintsScoringFunction%1%");
  public:
   RestraintsScoringFunction(const RestraintsTemp &rs,
                             double weight=1.0,

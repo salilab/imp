@@ -27,8 +27,8 @@ AllPairContainer::AllPairContainer(SingletonContainer *c,
 
 
 bool
-AllPairContainer::get_contents_changed() const {
-  return c_->get_contents_changed();
+AllPairContainer::get_is_changed() const {
+  return c_->get_is_changed();
 }
 
 ParticleIndexPairs
@@ -67,10 +67,16 @@ void AllPairContainer::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;
 }
 
-ParticlesTemp AllPairContainer::get_contained_particles() const {
-  return c_->get_contained_particles();
+ParticlesTemp AllPairContainer::get_all_possible_particles() const {
+  return c_->get_all_possible_particles();
 }
 
-
-
+ParticlesTemp AllPairContainer::get_input_particles() const {
+  return ParticlesTemp();
+}
+ContainersTemp AllPairContainer::get_input_containers() const {
+  return ContainersTemp();
+}
+void AllPairContainer::do_before_evaluate() {
+}
 IMPCONTAINER_END_NAMESPACE

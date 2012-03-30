@@ -47,7 +47,6 @@ public IMP::internal::ListLikePairContainer
   algebra::Transformation3Ds rbs_backup_[2];
   algebra::Vector3Ds xyzrs_backup_[2];
   ParticleIndex covers_[2];
-  IMP_ACTIVE_CONTAINER_DECL(CoreCloseBipartitePairContainer);
   void initialize(SingletonContainer *a,
                   SingletonContainer *b,
                   ParticleIndex cover_a,
@@ -84,16 +83,6 @@ public:
                   PairFilter*, PairFilters, obj->set_was_used(true);,
                   reset(),if(container) container->reset());
    /**@}*/
-  ParticlesTemp get_contained_particles() const;
-  bool get_is_up_to_date() const {
-    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
-      return get_last_update_evaluation() == get_model()->get_evaluation();
-    } else {
-      if (!sc_[0]->get_is_up_to_date()
-          || !sc_[1]->get_is_up_to_date()) return false;
-      return true;
-    }
-  }
   void reset() {reset_=true;}
   IMP_LISTLIKE_PAIR_CONTAINER(CoreCloseBipartitePairContainer);
 };

@@ -14,7 +14,6 @@ class AllPairsContainerTest(IMP.test.TestCase):
             p= IMP.Particle(m)
             IMP.core.XYZR.setup_particle(p)
         lp= IMP.container.ListSingletonContainer(m.get_particles())
-        self.assertEqual(lp.get_ref_count(), 1)
         apc= IMP.container.AllPairContainer(lp)
         dps= IMP.core.SoftSpherePairScore(1)
         r= IMP.container.PairsRestraint(dps, apc)

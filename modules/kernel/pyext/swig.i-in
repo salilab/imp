@@ -247,6 +247,8 @@ class ParticleQuadsTemp;
 %include "IMP/utility.h"
 %include "IMP/deprecation.h"
 %include "IMP/DerivativeAccumulator.h"
+%include "IMP/ScoreState.h"
+%include "IMP/Constraint.h"
 %include "IMP/container_base.h"
 
 namespace IMP {
@@ -256,7 +258,6 @@ namespace IMP {
 
 %include "IMP/declare_Restraint.h"
 %include "IMP/declare_RestraintSet.h"
-%include "IMP/ScoreState.h"
 %include "IMP/ModelObject.h"
 %include "IMP_kernel_particle.i"
 %include "IMP/dependency_graph.h"
@@ -264,7 +265,6 @@ namespace IMP {
 %include "IMP/declare_Model.h"
 %include "IMP/Decorator.h"
 %include "IMP/UnaryFunction.h"
-%include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Refiner.h"
 %include "IMP/Optimizer.h"
