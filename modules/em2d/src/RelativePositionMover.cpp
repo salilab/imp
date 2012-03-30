@@ -80,7 +80,9 @@ void RelativePositionMover::reset_move() {
   rbA_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }
-
+ParticlesTemp RelativePositionMover::get_output_particles() const {
+  return core::RigidBodyMover::get_output_particles();
+}
 void RelativePositionMover::do_show(std::ostream &out) const {
   out << "Number of reference rigid bodies "
                                 << reference_rbs_.size() << std::endl;
