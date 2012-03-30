@@ -30,8 +30,8 @@ ParticlesTemp SameResiduePairFilter::get_input_particles( Particle* t) const {
 
 
 ContainersTemp
-SameResiduePairFilter::get_input_containers(Particle*p) const {
-  return ContainersTemp(1, Hierarchy(p).get_parent());
+SameResiduePairFilter::get_input_containers(Particle*) const {
+  return ContainersTemp();
 }
 void SameResiduePairFilter::do_show(std::ostream &) const {
 }

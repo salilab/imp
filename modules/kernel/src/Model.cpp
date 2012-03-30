@@ -62,14 +62,6 @@ Model::Model(std::string name):
 void Model::cleanup()
 {
   IMP_CHECK_OBJECT(this);
-  for (unsigned int i=0; i< particle_index_.size(); ++i) {
-    if (particle_index_[ParticleIndex(i)]) {
-      IMP_CHECK_OBJECT(particle_index_[ParticleIndex(i)]);
-      Particle* op=particle_index_[ParticleIndex(i)];
-      op->m_=nullptr;
-      particle_index_[ParticleIndex(i)]=nullptr;
-    }
-  }
   {
     ScoreStates rs(score_states_begin(), score_states_end());
     for (unsigned int i=0; i < rs.size(); ++i) {
@@ -170,7 +162,7 @@ void Model::show_it(std::ostream& out) const
 void Model::remove_particle(Particle *p) {
   ParticleIndex pi= p->get_index();
   free_particles_.push_back(pi);
-  p->m_=nullptr;
+  p->set_tracker(p, nullptr);
   particle_index_[pi]=nullptr;
   internal::FloatAttributeTable::clear_attributes(pi);
   internal::StringAttributeTable::clear_attributes(pi);

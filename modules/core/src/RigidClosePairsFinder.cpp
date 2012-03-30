@@ -306,10 +306,8 @@ RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
 
 
 ContainersTemp
-RigidClosePairsFinder::get_input_containers(const ParticlesTemp &pa) const {
-  ParticlesTemp rbs= get_rigid_bodies(pa);
-  ContainersTemp ret(rbs.begin(), rbs.end());
-  return ret;
+RigidClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE

@@ -17,7 +17,7 @@
 #include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
 #include <IMP/base/Pointer.h>
-#include "container_base.h"
+#include "ModelObject.h"
 #include "particle_index.h"
 #include <utility>
 
@@ -116,7 +116,7 @@ class SaveOptimizeds;
    an inactive particle is also undefined (and will throw an exception if
    checks are enabled).
 */
-class IMPEXPORT Particle : public Container
+class IMPEXPORT Particle : public ModelObject
 {
  private:
   // doxygen produces funny docs for these things

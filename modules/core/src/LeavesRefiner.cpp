@@ -42,13 +42,13 @@ const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   return core::get_leaves(Hierarchy(p, traits_));
 }
 
-ParticlesTemp LeavesRefiner::get_input_particles(Particle *) const {
-  return ParticlesTemp();
+ParticlesTemp LeavesRefiner::get_input_particles(Particle *p) const {
+  GenericHierarchies t=get_all_descendants(Hierarchy(p, traits_));
+  return ParticlesTemp(t.begin(), t.end());
 }
 
-ContainersTemp LeavesRefiner::get_input_containers(Particle *p) const {
-  GenericHierarchies t=get_all_descendants(Hierarchy(p, traits_));
-  return ContainersTemp(t.begin(), t.end());
+ContainersTemp LeavesRefiner::get_input_containers(Particle *) const {
+  return ContainersTemp();
 }
 
 
