@@ -317,7 +317,7 @@ RigidMovedSingletonContainer
 ::RigidMovedSingletonContainer(SingletonContainer *pc,
                                double threshold):
   MovedSingletonContainer(pc, threshold){
-  normal_= new IMP::internal::InternalListSingletonContainer(pc->get_model(),
+  normal_= new IMP::internal::InternalDynamicListSingletonContainer(pc,
                                           "Non-rigid particles %1%");
   normal_moved_= new XYZRMovedSingletonContainer(normal_, threshold);
 }

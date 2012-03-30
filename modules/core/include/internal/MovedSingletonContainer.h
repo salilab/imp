@@ -14,7 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
-#include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/internal/InternalDynamicListSingletonContainer.h>
 #include <IMP/algebra/Sphere3D.h>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
@@ -99,7 +99,8 @@ public:
 class IMPCOREEXPORT RigidMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  IMP::OwnerPointer<IMP::internal::InternalListSingletonContainer> normal_;
+  IMP::OwnerPointer<IMP::internal::InternalDynamicListSingletonContainer>
+      normal_;
   IMP::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
   base::Vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
   ParticleIndexes rbs_;
