@@ -27,7 +27,7 @@ ModelObjectsTemp Mover::do_get_inputs() const {
   return ModelObjectsTemp();
 }
 ModelObjectsTemp Mover::do_get_outputs() const {
-  return ModelObjectsTemp();
+  return get_output_particles();
 }
 void Mover::do_update_dependencies(const DependencyGraph &,
                                        const DependencyGraphVertexIndex &) {
