@@ -40,6 +40,7 @@ public:
                        "Can't set derivative to NaN.");
     return value * weight_;
   }
+  double get_weight() const {return weight_;}
   IMP_SHOWABLE_INLINE(DerivativeAccumulator, out << weight_);
 
 private:

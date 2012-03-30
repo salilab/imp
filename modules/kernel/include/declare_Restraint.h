@@ -111,10 +111,14 @@ public:
 
       \note These functions probably should be called \c do_evaluate, but
       were grandfathered in.
+      \note Although the returned score is unweighted, the DerivativeAccumulator
+      passed in had better be properly weighted.
       @{
   */
+  /** Return the unweighted score for the restraint.*/
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
-  /** The function calling this will treat any score >= max as bad.*/
+  /** The function calling this will treat any score >= get_maximum_score
+      as bad and so can return early as soon as such a situation is found.*/
   virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                               double max) const {
     IMP_UNUSED(max);
@@ -183,8 +187,9 @@ public:
       etc are free to ignore configurations they encounter which
       go outside these bounds.
 
-      \note The maximum score for for the unweighted restraint
-      (eg the score that is returned with weight 1).
+      \note The maximum score is for the unweighted restraint.
+       That is, the restraint evaluation is bad if the value
+       is greater than the maximum score divided by the weight.
       @{
   */
   double get_maximum_score() const {
