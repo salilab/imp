@@ -14,6 +14,7 @@
 #include <IMP/RefCounted.h>
 #include <IMP/WeakPointer.h>
 #include <IMP/ModelObject.h>
+#include <IMP/model_object_macros.h>
 #include <IMP/Optimizer.h>
 
 #include <vector>
@@ -67,6 +68,7 @@ public:
     return opt_;
   }
 
+  IMP_MODEL_OBJECT(Mover);
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };
 

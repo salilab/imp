@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011/2012
+- 29/3: IMP::Particle::get_has_model() has been changed to IMP::ModelObject::get_is_part_of_model() to be consistent with other classes.
 - 28/3: IMP::core::Mover changed slightly, adding an extra method IMP::core::Mover::get_output_particles() and requiring the IMP::Model be passed to the constructor. All movers in IMP SVN were updated without any difficulty. This allows movers to use information contained in the dependency graph amongst particles so they can, for example, weight moves based on scores.
 - 26/3: IMP::SingletonContainerInput etc were added. Methods that take these as their arguments can be passed either containers or lists of particles (or tuples), as convenient. All methods that take IMP::SingletonContainer objects should eventually move over to taking this (changing just requires changing the argument from a pointer to an Input).
 - 22/3: Over the last week or so, which \imp headers include which other heads have been substantially simplified. This may result in compilation errors for code outside of \c svn that depended on \imp headers including other headers. In general, you want to explicitly include the header defining each thing you use.

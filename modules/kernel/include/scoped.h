@@ -33,7 +33,7 @@ public:
       ss_=ss;
       m->add_score_state(ss);
     }, {
-      if (ss_ && ss_->get_has_model()) {
+      if (ss_ && ss_->get_is_part_of_model()) {
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(ss_->get_model());
         ss_->get_model()->remove_score_state(ss_);

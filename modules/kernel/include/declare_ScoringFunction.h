@@ -37,7 +37,7 @@ class IMPEXPORT ScoringFunction: public ModelObject
   double last_score_;
   bool last_was_good_;
   inline void ensure_dependencies();
-  IMP_MODEL_OBJECT_DEPENDENCIES(ScoringFunction);
+  // later make things implement inputs and return restraints
 public:
   typedef std::pair<double, bool> ScoreIsGoodPair;
 protected:
@@ -58,7 +58,7 @@ protected:
 
  public:
   ScoringFunction(Model *m, std::string name);
-  IMP_OBJECT_INLINE(ScoringFunction, out << create_restraints(),);
+  IMP_MODEL_OBJECT(ScoringFunction);
   inline double evaluate_if_good(bool derivatives);
   inline double evaluate(bool derivatives);
   inline double evaluate_if_below(bool derivatives, double max);

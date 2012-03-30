@@ -92,14 +92,6 @@ void Model::compute_dependencies() {
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
-  RestraintsTemp all_restraints
-      = RestraintsTemp(RestraintTracker::tracked_begin(),
-                       RestraintTracker::tracked_end());
-  ScoreStates score_states= access_score_states();
-  IMP_LOG(VERBOSE, "Making dependency graph on " << all_restraints.size()
-          << " restraints " << score_states.size() << " score states "
-          << " and " << get_number_of_particles()
-          << " particles." << std::endl);
   DependencyGraph dg
     = get_dependency_graph(this);
   DependencyGraphVertexIndex index= get_vertex_index(dg);
@@ -108,11 +100,10 @@ void Model::compute_dependencies() {
   for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
     ordered_score_states_[i]->order_=i;
   }
-  IMP_LOG(VERBOSE, "Ordered score states are "
+  IMP_LOG(TERSE, "Ordered score states are "
           << ordered_score_states_ << std::endl);
   // to prevent infinite recursion when updating ScoringFunctions
   dependencies_dirty_=false;
-  RestraintTracker::set_is_dirty(false);
   ModelObjectTracker::set_is_dirty(false);
 
   for (ModelObjectTracker::TrackedIterator it

@@ -37,6 +37,15 @@ ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
   ss_= get_required_score_states(dg, index);
 }
 
+ModelObjectsTemp ScoringFunction::do_get_outputs() const {
+  return ModelObjectsTemp();
+}
+
+ModelObjectsTemp ScoringFunction::do_get_inputs() const {
+  return ModelObjectsTemp();
+}
+
+
 ScoreStatesTemp
 ScoringFunction::get_required_score_states(const DependencyGraph &dg,
                                            const DependencyGraphVertexIndex &i)

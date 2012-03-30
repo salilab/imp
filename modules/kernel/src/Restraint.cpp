@@ -24,21 +24,26 @@ const double BAD_SCORE=NO_MAX;
 
 
 Restraint::Restraint(Model *m, std::string name):
-    Tracked(this, m, name), weight_(1), max_(NO_MAX),
+    ModelObject(m, name), weight_(1), max_(NO_MAX),
   last_score_(BAD_SCORE)
 {
 }
 
 
 Restraint::Restraint(std::string name):
-  Tracked(name), weight_(1), max_(NO_MAX),
+  ModelObject(name), weight_(1), max_(NO_MAX),
   last_score_(BAD_SCORE)
 {
 }
-
-void Restraint::set_model(Model* model)
-{
-  Tracked::set_tracker(this, model);
+ModelObjectsTemp Restraint::do_get_inputs() const {
+  return ModelObjectsTemp(get_input_particles())
+    + ModelObjectsTemp(get_input_containers());
+}
+ModelObjectsTemp Restraint::do_get_outputs() const {
+  return ModelObjectsTemp();
+}
+void Restraint::do_update_dependencies(const DependencyGraph &,
+                                       const DependencyGraphVertexIndex &) {
 }
 
 namespace {

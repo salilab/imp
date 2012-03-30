@@ -77,6 +77,7 @@ class IMPEXPORT RestraintSet : public Restraint
   std::pair<RestraintsTemp, RestraintSetsTemp> get_non_sets_and_sets() const;
  public:
 #ifndef IMP_DOXYGEN
+  ModelObjectsTemp do_get_inputs() const;
   ScoringFunction* create_scoring_function(double weight=1.0,
                                            double max
                                            = std::numeric_limits<double>::max())

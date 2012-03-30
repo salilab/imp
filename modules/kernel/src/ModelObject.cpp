@@ -22,6 +22,11 @@ ModelObject::ModelObject(std::string name): Tracked(name) {
 void ModelObject::set_model(Model *m) {
   Tracked::set_tracker(this, m);
 }
-
+ModelObjectsTemp ModelObject::get_inputs() const {
+  return do_get_inputs();
+}
+ModelObjectsTemp ModelObject::get_outputs() const {
+  return do_get_outputs();
+}
 
 IMP_END_NAMESPACE
