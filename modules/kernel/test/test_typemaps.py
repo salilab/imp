@@ -241,6 +241,13 @@ class ParticleTests(IMP.test.TestCase):
         #print rb.get_value()
         rc= IMP._ConstRestraint.get_from(rb)
         print rc.get_value()
+    def test_model_objects(self):
+        """Test that model objects can get passed from python"""
+        m= IMP.Model()
+        r= IMP._ConstRestraint(1)
+        p= IMP.Particle(m)
+        self.assertEqual([p],IMP._pass_model_objects([p]))
+        self.assertEqual([r,p],IMP._pass_model_objects([r, p]))
     def test_particle_methods(self):
         """Test that decorators provide particle methods"""
         exclusions=["do_show",
@@ -276,8 +283,10 @@ class ParticleTests(IMP.test.TestCase):
                     'get_particle_keys',
                     'get_string_keys',
                     'do_update_dependencies',
-                    'get_has_model',
+                    'get_is_part_of_model',
                     'set_model',
+                    'get_inputs',
+                    'get_outputs'
                     ]
         md= dir(IMP._TrivialDecorator)
         missing=[]

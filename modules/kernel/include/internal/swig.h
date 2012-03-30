@@ -193,6 +193,9 @@ _pass_decorator_traits(const _TrivialTraitsDecorators &p);
 IMPEXPORT ParticlePairsTemp
 _pass_particle_pairs(const ParticlePairs &p);
 
+IMPEXPORT ModelObjectsTemp
+_pass_model_objects(const ModelObjectsTemp &p);
+
 
 IMPEXPORT DerivativePair
 _pass_pair(const DerivativePair &p);
