@@ -214,7 +214,7 @@ class ParticleTests(IMP.test.TestCase):
         def get_input_particles(self):
             return [self.ps[0], self.ps[1]]
         def get_input_containers(self):
-            return [self.ps[0], self.ps[1]]
+            return []
         def get_interacting_particles(self):
             return [[self.ps[0], self.ps[1]]]
     def test_dir_tms_0(self):
@@ -274,7 +274,10 @@ class ParticleTests(IMP.test.TestCase):
                     'get_int_keys',
                     'get_object_keys',
                     'get_particle_keys',
-                    'get_string_keys'
+                    'get_string_keys',
+                    'do_update_dependencies',
+                    'get_has_model',
+                    'set_model'
                     ]
         md= dir(IMP._TrivialDecorator)
         missing=[]

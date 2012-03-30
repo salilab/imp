@@ -287,8 +287,8 @@ namespace {
     return ret;
   }
   ContainersTemp
-  UpdateRigidBodyMembers::get_input_containers(Particle *p) const {
-    return ContainersTemp(1,p);
+  UpdateRigidBodyMembers::get_input_containers(Particle *) const {
+    return ContainersTemp();
   }
   ContainersTemp
   UpdateRigidBodyMembers::get_output_containers(Particle *) const {
@@ -670,7 +670,7 @@ void RigidBody::add_member(Particle *p) {
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0
-        = create_constraint(urbm.get(), arbd.get(),
+        = IMP::create_constraint(urbm.get(), arbd.get(),
                             get_particle(),
                             get_particle()->get_name()
                             +" rigid body positions");
@@ -856,12 +856,12 @@ Particle* RigidMembersRefiner::get_refined(Particle *p, unsigned int i) const {
   return RigidBody(p).get_member(i);
 }
 
-ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *) const {
-  return ParticlesTemp();
+ParticlesTemp RigidMembersRefiner::get_input_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
 }
 
-ContainersTemp RigidMembersRefiner::get_input_containers(Particle *p) const {
-  return ContainersTemp(1, p);
+ContainersTemp RigidMembersRefiner::get_input_containers(Particle *) const {
+  return ContainersTemp();
 }
 
 void RigidMembersRefiner::do_show(std::ostream &) const {

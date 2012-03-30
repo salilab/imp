@@ -15,13 +15,13 @@
 IMP_BEGIN_NAMESPACE
 
 Particle::Particle(Model *m, std::string name):
-    Container(m, name), id_(base::get_invalid_index<ParticleIndexTag>())
+    ModelObject(m, name), id_(base::get_invalid_index<ParticleIndexTag>())
 {
   m->add_particle_internal(this, false);
 }
 
 Particle::Particle(Model *m):
-    Container(m, "none"), id_(base::get_invalid_index<ParticleIndexTag>())
+    ModelObject(m, "none"), id_(base::get_invalid_index<ParticleIndexTag>())
 {
   m->add_particle_internal(this, true);
 }

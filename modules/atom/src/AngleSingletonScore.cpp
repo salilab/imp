@@ -53,8 +53,8 @@ double AngleSingletonScore::evaluate(Particle *b,
 }
 
 
-ContainersTemp AngleSingletonScore::get_input_containers(Particle *p) const {
-  return ContainersTemp(1,p);
+ContainersTemp AngleSingletonScore::get_input_containers(Particle *) const {
+  return ContainersTemp();
 }
 
 ParticlesTemp AngleSingletonScore::get_input_particles(Particle *p) const {
