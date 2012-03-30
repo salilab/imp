@@ -161,13 +161,6 @@ Restraint* Restraint::create_decomposition() const {
 }
 
 
-Restraint* Restraint::create_incremental_decomposition(unsigned int n) const {
-  base::Pointer<Restraint> ret
-    = create_decomp_helper(this, do_create_incremental_decomposition(n));
-  return ret.release();
-}
-
-
 Restraint* Restraint::create_current_decomposition() const {
   base::Pointer<Restraint> ret= create_decomp_helper(this,
                                      do_create_current_decomposition());

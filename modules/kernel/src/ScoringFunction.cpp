@@ -110,26 +110,11 @@ create_decomposition_into_scoring_functions(const RestraintsTemp &sf) {
 }
 
 
-ScoringFunctions create_incremental_decomposition(const RestraintsTemp &sf) {
-  ScoringFunctions ret;
-  for (unsigned int i=0; i< sf.size(); ++i) {
-    Pointer<Restraint> r= sf[i]->create_incremental_decomposition(1);
-    ret= ret+ create_decomposition(r, 1.0, NO_MAX);
-  }
-  return ret;
-}
-
 }
 
 ScoringFunctions create_decomposition(ScoringFunction *sf) {
   ScoringFunctions ret;
   ret= create_decomposition_into_scoring_functions(sf->create_restraints());
-  return ret;
-}
-
-ScoringFunctions create_incremental_decomposition(ScoringFunction *sf) {
-  ScoringFunctions ret;
-  ret= create_incremental_decomposition(sf->create_restraints());
   return ret;
 }
 IMP_END_NAMESPACE

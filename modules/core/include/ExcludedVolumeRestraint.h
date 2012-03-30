@@ -75,7 +75,6 @@ public:
 #endif
   IMP_RESTRAINT(ExcludedVolumeRestraint);
   Restraints do_create_decomposition() const;
-  Restraints do_create_incremental_decomposition(unsigned int) const;
   Restraints do_create_current_decomposition() const;
   IMP_LIST(public, PairFilter, pair_filter,
            PairFilter*, PairFilters);
