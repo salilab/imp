@@ -22,10 +22,8 @@ m= IMP.Model()
 IMP.set_log_level(IMP.SILENT)
 aps=[]
 filters=[]
-rs=[]
 movers=[]
-rss= IMP.RestraintSet("bonds")
-m.add_restraint(rss)
+rss= IMP.RestraintSet(m, "bonds")\
 for i in range(0,ni):
     for j in range(0,nj):
         base=IMP.algebra.Vector3D(i,j,0)
@@ -46,7 +44,6 @@ for i in range(0,ni):
             aps.append(p)
         cpc= IMP.container.ExclusiveConsecutivePairContainer(chain)
         r= IMP.container.PairsRestraint(lps, cpc)
-        rs.append(r)
         rss.add_restraint(r)
 # cheat
 filters.append(IMP.container.InContainerPairFilter(cpc))
@@ -54,12 +51,12 @@ filters[-1].set_was_used(True)
 laps=IMP.container.ListSingletonContainer(aps)
 nbl= IMP.core.ExcludedVolumeRestraint(laps,
                                       k, 1)
+nbl.set_model(m)
 nbl.set_pair_filters(filters)
-m.add_restraint(nbl)
+#m.add_restraint(nbl)
 ibss= IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,k), bb)
 bbr= IMP.container.SingletonsRestraint(ibss, laps)
-rs.append(bbr)
-m.add_restraint(bbr)
+rss.add_restraint(bbr)
 
 cg= IMP.core.ConjugateGradients(m)
 mc=IMP.core.MonteCarlo(m)
@@ -67,16 +64,19 @@ sm= IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
 mc.set_restraints(rs)
-mc.set_use_incremental_evaluate(True)
+isf= IMP.core.IncrementalScoringFunction(aps, [rss])
 # use special incremental support for the non-bonded part
-mc.set_close_pair_score(sps, 0, aps, filters)
+isf.add_close_pair_score(sps, 0, aps, filters)
+mc.set_incremental_scoring_function(isf)
 
+sf= IMP.core.RestraintsScoringFunction([rss, nbl])
 
 # first relax the bonds a bit
 rs=[]
 for p in aps:
     rs.append(IMP.ScopedSetFloatAttribute(p, IMP.core.XYZR.get_radius_key(),
                                           0))
+cg.set_scoring_function(sf)
 cg.optimize(1000)
 print "collisions", nbl.evaluate(False), "bonds", rss.evaluate(False), bbr.evaluate(False)
 
