@@ -80,16 +80,6 @@ protected:
     is exactly like evaluating the one ScoringFunction.*/
 IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 
-
-/** Return a list of ScoringFunction objects where each is as simple
-    as possible and evaluating the sum (and anding the good score bits)
-    is exactly like evaluating the one ScoringFunction.
-
-    These scoring functions are optimized for incremental evaluation.
-*/
-IMPEXPORT ScoringFunctions
-create_incremental_decomposition(ScoringFunction *sf);
-
 /** This class is to provide a backward compatible interface for things
     that take ScoringFunctions as arguments, but used to take
     RestraintsTemp or a RestraintSet. */
