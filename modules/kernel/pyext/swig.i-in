@@ -183,7 +183,7 @@ IMP_SWIG_DECORATOR_WITH_TRAITS(IMP::internal, _TrivialTraitsDecorator, _TrivialT
 IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
 IMP_SWIG_OBJECT(IMP::internal, _ConstOptimizer, _ConstOptimizers);
 IMP_SWIG_VALUE(IMP::internal, _Value, _Values);
-IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::base::Object*);
+IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::ModelObject*);
 
 
 IMP_SWIG_CONTAINER(IMP, IMP, RestraintSet, Restraint, restraint)
@@ -243,7 +243,7 @@ class ParticleQuadsTemp;
 %include "IMP/particle_index.h"
 
 %include "IMP/base_types.h"
-
+%include "IMP/ModelObject.h"
 %include "IMP/utility.h"
 %include "IMP/deprecation.h"
 %include "IMP/DerivativeAccumulator.h"
@@ -258,7 +258,6 @@ namespace IMP {
 
 %include "IMP/declare_Restraint.h"
 %include "IMP/declare_RestraintSet.h"
-%include "IMP/ModelObject.h"
 %include "IMP_kernel_particle.i"
 %include "IMP/dependency_graph.h"
 %include "IMP/declare_ScoringFunction.h"

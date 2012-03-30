@@ -19,7 +19,7 @@ IMP_BEGIN_NAMESPACE
 
 inline bool Particle::get_is_active() const {
   IMP_CHECK_OBJECT(this);
-  return get_has_model();
+  return get_is_part_of_model();
 }
 
 inline ParticleIndex Particle::get_index() const {

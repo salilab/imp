@@ -43,7 +43,7 @@ public:
   template <class TG>
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
                        const TG&) {
-    base::Object *o= vm_[u];
+    ModelObject *o= vm_[u];
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Type *p=dynamic_cast<Type*>(o);
     if (p) {
@@ -57,8 +57,8 @@ public:
 
 namespace {
   template <class ResultType, class Type, bool REVERSE>
-  ResultType get_dependent(const base::ObjectsTemp &p,
-                         const base::ObjectsTemp &all,
+  ResultType get_dependent(const ModelObjectsTemp &p,
+                         const ModelObjectsTemp &all,
                          const DependencyGraph &dg,
                          const DependencyGraphVertexIndex &index) {
   IMP_FUNCTION_LOG;
@@ -101,50 +101,50 @@ namespace {
 
 
 
-ParticlesTemp get_dependent_particles(base::Object *p,
-                                      const base::ObjectsTemp &all,
+ParticlesTemp get_dependent_particles(ModelObject *p,
+                                      const ModelObjectsTemp &all,
                                       const DependencyGraph &dg,
                        const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, false>(base::ObjectsTemp(1,p),
+  return get_dependent<ParticlesTemp, Particle, false>(ModelObjectsTemp(1,p),
                                                        all, dg,index);
 }
 
 
 
-RestraintsTemp get_dependent_restraints(base::Object *p,
-                                        const base::ObjectsTemp &all,
+RestraintsTemp get_dependent_restraints(ModelObject *p,
+                                        const ModelObjectsTemp &all,
                                         const DependencyGraph &dg,
                        const DependencyGraphVertexIndex &index) {
-  return get_dependent<RestraintsTemp, Restraint, false>(base::ObjectsTemp(1,p),
+  return get_dependent<RestraintsTemp, Restraint, false>(ModelObjectsTemp(1,p),
                                                          all, dg, index);
 }
-ScoreStatesTemp get_dependent_score_states(base::Object *p,
-                                           const base::ObjectsTemp &all,
+ScoreStatesTemp get_dependent_score_states(ModelObject *p,
+                                           const ModelObjectsTemp &all,
                                            const DependencyGraph &dg,
                        const DependencyGraphVertexIndex &index) {
   return get_dependent<ScoreStatesTemp,
-      ScoreState, false>(base::ObjectsTemp(1,p),all, dg, index);
+      ScoreState, false>(ModelObjectsTemp(1,p),all, dg, index);
 }
 
 
 
 
 
-ParticlesTemp get_required_particles(base::Object *p,
-                                     const base::ObjectsTemp &all,
+ParticlesTemp get_required_particles(ModelObject *p,
+                                     const ModelObjectsTemp &all,
                                      const DependencyGraph &dg,
                        const DependencyGraphVertexIndex &index) {
-  return get_dependent<ParticlesTemp, Particle, true>(base::ObjectsTemp(1,p),
+  return get_dependent<ParticlesTemp, Particle, true>(ModelObjectsTemp(1,p),
                                                       all, dg, index);
 }
 
 
-ScoreStatesTemp get_required_score_states(base::Object *p,
-                                          const base::ObjectsTemp &all,
+ScoreStatesTemp get_required_score_states(ModelObject *p,
+                                          const ModelObjectsTemp &all,
                                           const DependencyGraph &dg,
                                  const DependencyGraphVertexIndex &index ) {
   return get_dependent<ScoreStatesTemp, ScoreState,
-      true>(base::ObjectsTemp(1,p),all, dg,index);
+      true>(ModelObjectsTemp(1,p),all, dg,index);
 }
 
 
@@ -189,26 +189,19 @@ namespace {
   }
 
   DependencyGraphTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
-                                         DependencyGraphVertexIndex &dgi,
-                                         base::Object *o) {
+                                          const DependencyGraphVertexIndex &dgi,
+                                                      ModelObject *o) {
     DependencyGraphVertexIndex::const_iterator it=dgi.find(o);
-    if (it==dgi.end()) {
-      boost::property_map<DependencyGraph, boost::vertex_name_t>::type vm
-        = boost::get(boost::vertex_name, dg);
-      DependencyGraphTraits::vertex_descriptor v= boost::add_vertex(dg);
-      vm[v]=o;
-      dgi[o]=v;
-      return v;
-    } else {
-      return it->second;
-    }
+    IMP_USAGE_CHECK(it != dgi.end(),
+                    "Found unregistered ModelObject " << Showable(o));
+    return it->second;
   }
 
 template <class It>
 void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
                    It b, It e,
                    DependencyGraph &dg,
-                   DependencyGraphVertexIndex &dgi) {
+                   const DependencyGraphVertexIndex &dgi) {
   for (It c=b; c!= e; ++c) {
     DependencyGraphTraits::vertex_descriptor cv= get_vertex(dg, dgi, *c);
     if (!get_has_edge(dg, rv, cv)) {
@@ -217,56 +210,24 @@ void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
   }
 }
 
-  template <class It>
-  void build_inputs_graph(It b, It e,
+  void build_inputs_graph(const ModelObjectsTemp &mos,
                           DependencyGraph &dg,
-                          DependencyGraphVertexIndex &dgi) {
-    for (It c= b; c != e; ++c) {
-      DependencyGraphTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      base::Object *o= *c;
-      if (dynamic_cast<RestraintSet*>(o)) {
-        RestraintSet *rs=dynamic_cast<RestraintSet*>(o);
-        add_out_edges(rv, rs->restraints_begin(),
-                      rs->restraints_end(), dg, dgi);
-      } else {
-        /*IMP_LOG(VERBOSE, "Processing inputs for \""
-          << (*c)->get_name() << "\" ");*/
-        {
-          ContainersTemp ct= filter((*c)->get_input_containers());
-          /*if (!ct.empty()) {
-            IMP_LOG(VERBOSE, ", containers are "
-            << ct);
-            }*/
-          add_out_edges(rv, ct.begin(), ct.end(), dg, dgi);
-        }
-        {
-          ParticlesTemp pt= filter((*c)->get_input_particles());
-          /*if (!pt.empty()) {
-            IMP_LOG(VERBOSE, ", particles are " << pt);
-            }*/
-          add_out_edges(rv, pt.begin(), pt.end(), dg, dgi);
-        }
-      }
-      //IMP_LOG(VERBOSE, std::endl);
+                          const DependencyGraphVertexIndex &dgi) {
+    for (unsigned int i=0; i< mos.size(); ++i) {
+      DependencyGraphTraits::vertex_descriptor rv= dgi.find(mos[i])->second;
+      ModelObject *o= mos[i];
+      ModelObjectsTemp ct= filter(o->get_inputs());
+      add_out_edges(rv, ct.begin(), ct.end(), dg, dgi);
     }
   }
 
-  template <class It>
-  void build_outputs_graph(It b, It e,
+  void build_outputs_graph(const ModelObjectsTemp mos,
                            DependencyGraph &dg,
-                           DependencyGraphVertexIndex &dgi) {
-    for (It c= b; c != e; ++c) {
-      DependencyGraphTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      /*IMP_LOG(VERBOSE, "Processing outputs for \""
-        << (*c)->get_name()  << "\"");*/
+                           const DependencyGraphVertexIndex &dgi) {
+    for (unsigned int i=0; i< mos.size(); ++i) {
+      DependencyGraphTraits::vertex_descriptor rv= dgi.find(mos[i])->second;
       {
-        ContainersTemp ct= filter((*c)->get_output_containers());
-        /*IMP_IF_LOG(VERBOSE) {
-          if (!ct.empty()) {
-            IMP_LOG(VERBOSE, ", containers are "
-                    << ct);
-          }
-          }*/
+        ModelObjectsTemp ct= filter(mos[i]->get_outputs());
         for (unsigned int j=0; j < ct.size(); ++j) {
           DependencyGraphTraits::vertex_descriptor cv
             = get_vertex(dg, dgi, ct[j]);
@@ -275,46 +236,23 @@ void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
           }
         }
       }
-      {
-        ParticlesTemp pt= filter((*c)->get_output_particles());
-        /*if (!pt.empty()) {
-          IMP_LOG(VERBOSE, ", particles are "
-                  << pt);
-                  }*/
-        for (unsigned int j=0; j < pt.size(); ++j) {
-          DependencyGraphTraits::vertex_descriptor cv
-            = get_vertex(dg, dgi, pt[j]);
-          if (!get_has_edge(dg, cv, rv)) {
-            add_edge(dg, rv, cv);
-          }
-        }
-      }
-      //IMP_LOG(VERBOSE, std::endl);
     }
   }
 }
 DependencyGraph
 get_dependency_graph(Model *m) {
-  ScoreStatesTemp ss(m->score_states_begin(),
-                     m->score_states_end());
-  RestraintsTemp rs=m->get_known_restraints();
+  ModelObjectsTemp mos= m->get_model_objects();
   DependencyGraphVertexIndex index;
-  DependencyGraph ret(ss.size()+rs.size());
+  DependencyGraph ret(mos.size());
   DependencyGraphVertexName
     vm = boost::get(boost::vertex_name, ret);
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    vm[i]= ss[i];
-    index[ss[i]]=i;
+  for (unsigned int i=0; i< mos.size(); ++i) {
+    vm[i]= mos[i];
+    index[mos[i]]=i;
   }
-  for (unsigned int i=0; i< rs.size(); ++i) {
-    vm[i+ss.size()]= rs[i];
-    index[rs[i]]=i+ss.size();
-  }
-  // Very important to do outputs first
-  build_outputs_graph(ss.begin(), ss.end(), ret, index);
-  build_inputs_graph(ss.begin(), ss.end(), ret, index);
-  build_inputs_graph(rs.begin(), rs.end(), ret, index);
-  base::Vector<std::pair<base::Object*, base::Object*> > extra;
+  build_outputs_graph(mos, ret, index);
+  build_inputs_graph(mos, ret, index);
+  base::Vector<std::pair<ModelObject*, ModelObject*> > extra;
   for (unsigned int i=0; i< extra.size(); ++i) {
     int va= index[extra[i].first];
     int vb= index[extra[i].second];
@@ -492,7 +430,7 @@ namespace {
                 base::ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
-      base::Object *o= om[sorted[i]];
+      ModelObject *o= om[sorted[i]];
       ScoreState *s=dynamic_cast<ScoreState*>(o);
       if (s) {
         out.push_back(s);
@@ -523,7 +461,8 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
                              const DependencyGraphVertexIndex &index) {
   ScoreStatesTemp sst
       =  get_dependent<ScoreStatesTemp, ScoreState, true>(irs,
-                                                      ObjectsTemp(), dg, index);
+                                                          ModelObjectsTemp(),
+                                                          dg, index);
   return get_ordered_score_states(sst);
 }
 

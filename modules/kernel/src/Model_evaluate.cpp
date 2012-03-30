@@ -39,6 +39,9 @@ void check_order(const ScoreStatesTemp &ss) {
 
 void Model::before_evaluate(const ScoreStatesTemp &states) {
   IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(get_has_dependencies(),
+                  "Model must have dependencies before calling "
+                  << "before_evaluate()");
   check_order(states);
 #if IMP_BUILD < IMP_FAST
   base::internal::check_live_objects();

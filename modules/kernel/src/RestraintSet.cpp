@@ -12,6 +12,7 @@
 #include <IMP/internal/utility.h>
 #include <IMP/generic.h>
 #include <IMP/ScoringFunction.h>
+#include <IMP/internal/restraint_evaluation.h>
 #include <boost/tuple/tuple.hpp>
 #include <memory>
 #include <utility>
@@ -156,6 +157,10 @@ void RestraintSet::on_change() {
   if (get_is_part_of_model()) {
     get_model()->reset_dependencies();
   }
+}
+
+ModelObjectsTemp RestraintSet::do_get_inputs() const {
+  return ModelObjectsTemp(restraints_begin(), restraints_end());
 }
 void RestraintSet::on_remove(RestraintSet *container, Restraint* obj) {
   if (container) obj->get_model()->reset_dependencies();

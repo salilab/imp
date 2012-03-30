@@ -11,10 +11,10 @@
 #include "kernel_config.h"
 #include "WeakPointer.h"
 #include "DerivativeAccumulator.h"
-#include <IMP/base/Object.h>
-#include "VersionInfo.h"
 #include "utility.h"
+#include "ModelObject.h"
 #include "base_types.h"
+#include "model_object_macros.h"
 #include <IMP/base/check_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 #include <iostream>
@@ -56,11 +56,12 @@ class Model;
 
     \implementationwithoutexample{ScoreState, IMP_SCORE_STATE}
  */
-class IMPEXPORT ScoreState : public IMP::base::Object
+class IMPEXPORT ScoreState : public ModelObject
 {
 public:
 #ifndef IMP_DOXYGEN
   ScoreState(std::string name="ScoreState %1%");
+  IMP_MODEL_OBJECT(ScoreState);
 #endif
   ScoreState(Model *m, std::string name="ScoreState %1%");
   // Force update of the structure.
@@ -68,17 +69,6 @@ public:
 
   // Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
-
-  //! \return the stored model data
-  Model *get_model() const {
-    IMP_INTERNAL_CHECK(model_,
-               "Must call set_model before get_model on state");
-    return model_.get();
-  }
-
-  bool get_has_model() const {
-    return model_;
-  }
 
   /** \name Interactions
       Certain sorts of operations, such as evaluation of restraints in
@@ -114,16 +104,10 @@ protected:
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 
  private:
-  // all of the particle data
-  WeakPointer<Model> model_;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 public:
 #endif
   int order_;
- /** Override this method to take action when the score stated is added to
-      a model. */
-  virtual void set_model(Model* model);
-
 };
 
 /** Return the passed list of score states ordered based on how they need to

@@ -13,8 +13,9 @@
 #include "DerivativeAccumulator.h"
 #include "container_macros.h"
 #include "container_base.h"
+#include "ModelObject.h"
+#include "model_object_macros.h"
 #include <IMP/base/tracking.h>
-#include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/utility.h>
 
@@ -53,14 +54,8 @@ IMPEXPORT extern const double BAD_SCORE;
 
     \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */
-class IMPEXPORT Restraint :
-#if defined(IMP_DOXYGEN) || defined(SWIG)
-public base::Object
-#else
-public base::TrackedObject<Restraint, Model>
-#endif
+class IMPEXPORT Restraint : public ModelObject
 {
-  typedef base::TrackedObject<Restraint, Model> Tracked;
 public:
   /** Create a restraint and register it with the model. The restraint is
       not added to implicit scoring function in the Model.*/
@@ -86,23 +81,6 @@ public:
   //! See Model::evaluate_with_maximum()
   double evaluate_if_below(bool calc_derivatives, double max) const;
 
-  /** This method is called to register a restrain with a model.
-      Adding the restraint the model (Model::add_restraint()) will
-      call this method but it can be called directly if one
-      wants to use the restraint, just not as part of the normal
-      scoring function.
-   */
-  virtual void set_model(Model* model);
-
-  //! Return the model containing this restraint
-  Model *get_model() const {
-    return Tracked::get_tracker();
-  }
-
-  //! Return true if this particle is part of a model
-  bool get_is_part_of_model() const {
-    return Tracked::get_is_tracked();
-  }
   /** \name Evaluation implementation
       These methods are called in order to perform the actual restraint
       scoring. The restraints should assume that all appropriate ScoreState
@@ -202,6 +180,7 @@ public:
   virtual ScoringFunction *create_scoring_function(double weight=1.0,
                                                    double max
                                                    = NO_MAX) const;
+  IMP_MODEL_OBJECT(Restraint);
 #endif
 
   /** Return the (unweighted) score for this restraint last time it was

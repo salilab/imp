@@ -29,7 +29,7 @@ IMP_BEGIN_NAMESPACE
 
     See \ref graphs "Graphs in IMP" for more information.
 */
-IMP_GRAPH(DependencyGraph, bidirectional, base::Object*, int);
+IMP_GRAPH(DependencyGraph, bidirectional, ModelObject*, int);
 
 class Model;
 
@@ -62,16 +62,16 @@ get_pruned_dependency_graph(Model *m);
     @{
  */
 IMPEXPORT ParticlesTemp
-get_required_particles(base::Object *p,
-                       const base::ObjectsTemp &all,
+get_required_particles(ModelObject *p,
+                       const ModelObjectsTemp &all,
                        const DependencyGraph &dg,
                        const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
 IMPEXPORT ScoreStatesTemp
-get_required_score_states(base::Object *p,
-                          const base::ObjectsTemp &all,
+get_required_score_states(ModelObject *p,
+                          const ModelObjectsTemp &all,
                           const DependencyGraph &dg,
                           const DependencyGraphVertexIndex &index);
 /** @} */
@@ -86,8 +86,8 @@ get_required_score_states(base::Object *p,
     @{
  */
 IMPEXPORT ParticlesTemp
-get_dependent_particles(base::Object *p,
-                        const base::ObjectsTemp &all,
+get_dependent_particles(ModelObject *p,
+                        const ModelObjectsTemp &all,
                         const DependencyGraph &dg,
                         const DependencyGraphVertexIndex &index);
 
@@ -95,16 +95,16 @@ get_dependent_particles(base::Object *p,
 /** Return all the restraints that depend on p as an input, even indirectly.
  */
 IMPEXPORT RestraintsTemp
-get_dependent_restraints(base::Object *p,
-                         const base::ObjectsTemp &all,
+get_dependent_restraints(ModelObject *p,
+                         const ModelObjectsTemp &all,
                          const DependencyGraph &dg,
                         const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
 IMPEXPORT ScoreStatesTemp
-get_dependent_score_states(base::Object *p,
-                           const base::ObjectsTemp &all,
+get_dependent_score_states(ModelObject *p,
+                           const ModelObjectsTemp &all,
                            const DependencyGraph &dg,
                            const DependencyGraphVertexIndex &index);
 /** @} */

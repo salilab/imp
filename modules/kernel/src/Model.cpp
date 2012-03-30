@@ -74,14 +74,7 @@ IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);
 
-void Model::set_score_state_model(ScoreState *ss, Model *model) {
-  IMP_CHECK_OBJECT(ss);
-  if (model) {
-    IMP_CHECK_OBJECT(model);
-  }
-  ss->set_model(model);
-}
- RestraintSet *Model::get_root_restraint_set() {
+RestraintSet *Model::get_root_restraint_set() {
   return this;
 }
 
@@ -245,9 +238,10 @@ Model::ParticleIterator Model::particles_end() const {
                           particle_index_.end());
 }
 
-RestraintsTemp Model::get_known_restraints() const {
-  return RestraintsTemp(RestraintTracker::tracked_begin(),
-                        RestraintTracker::tracked_end());
+
+ModelObjectsTemp Model::get_model_objects() const {
+  return ModelObjectsTemp(ModelObjectTracker::tracked_begin(),
+                          ModelObjectTracker::tracked_end());
 }
 
 IMP_END_NAMESPACE

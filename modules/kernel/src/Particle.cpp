@@ -93,7 +93,7 @@ void Particle::do_show(std::ostream& out) const
          << (get_is_active()? " (active)":" (dead)");
   preout << std::endl;
 
-  if (get_has_model()) {
+  if (get_is_part_of_model()) {
     {
       FloatKeys fks= get_float_keys();
       if (!fks.empty()) {
@@ -140,36 +140,19 @@ void Particle::do_show(std::ostream& out) const
 }
 
 
-
-ContainersTemp Particle::get_input_containers() const {return ContainersTemp();}
-bool Particle::get_all_possible_particles_changed() const {
-  return false;
-}
-ParticlesTemp Particle::get_all_possible_particles() const {
-  ParticlesTemp ret;
-  ParticleKeys pks
-      = get_model()->IMP::internal::ParticleAttributeTable
-      ::get_attribute_keys(id_);
-  for (unsigned int i=0; i< pks.size(); ++i) {
-    ret.push_back(get_value(pks[i]));
-  }
-  ParticlesKeys psks
-      = get_model()->IMP::internal::ParticlesAttributeTable
-      ::get_attribute_keys(id_);
-  for (unsigned int i=0; i< psks.size(); ++i) {
-    ParticleIndexes vs= get_model()->get_attribute(psks[i], id_);
-    for (unsigned int j=0; j< vs.size(); ++j) {
-      ret.push_back(get_model()->get_particle(vs[j]));
-    }
-  }
-  return ret;
-}
-
 void Particle::clear_caches() {
   get_model()->clear_particle_caches(id_);
 }
 
-
+ModelObjectsTemp Particle::do_get_inputs() const {
+  return ModelObjectsTemp();
+}
+ModelObjectsTemp Particle::do_get_outputs() const {
+  return ModelObjectsTemp();
+}
+void Particle::do_update_dependencies(const DependencyGraph &,
+                                       const DependencyGraphVertexIndex &) {
+}
 
 
 IMP_END_NAMESPACE

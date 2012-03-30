@@ -85,7 +85,7 @@ SingleParticleScoringFunction
           << "(" << dummy_restraints_ << ")" << std::endl);
   ScoreStatesTemp deps
       = IMP::get_dependent_score_states(get_model()->get_particle(pi_),
-                                        base::ObjectsTemp(), dg, index);
+                                        ModelObjectsTemp(), dg, index);
   IMP_LOG(TERSE, "Dependent score states are " << deps << std::endl);
   std::sort(deps.begin(), deps.end());
   ScoreStatesTemp allin= from_restraints+from_dummy;

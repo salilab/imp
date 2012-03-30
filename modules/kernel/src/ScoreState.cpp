@@ -16,13 +16,13 @@
 IMP_BEGIN_NAMESPACE
 
 ScoreState::ScoreState(std::string name) :
-  Object(name)
+  ModelObject(name)
 {
   order_=-1;
 }
 
 ScoreState::ScoreState(Model *m, std::string name) :
-  Object(name)
+  ModelObject(m, name)
 {
   order_=-1;
   // later change to just registering with ModelObject
@@ -34,23 +34,21 @@ void ScoreState::before_evaluate() {
   do_before_evaluate();
 }
 
+ModelObjectsTemp ScoreState::do_get_inputs() const {
+  return ModelObjectsTemp(get_input_particles())
+    + ModelObjectsTemp(get_input_containers());
+}
+ModelObjectsTemp ScoreState::do_get_outputs() const {
+  return  ModelObjectsTemp(get_output_particles())
+    + ModelObjectsTemp(get_output_containers());
+}
+void ScoreState::do_update_dependencies(const DependencyGraph &,
+                                        const DependencyGraphVertexIndex &) {}
 
 void ScoreState::after_evaluate(DerivativeAccumulator *da) {
   do_after_evaluate(da);
 }
 
-//! Give accesss to model particle data.
-/** \param[in] model_data All particle data in the model.
- */
-void ScoreState::set_model(Model* model)
-{
-  IMP_USAGE_CHECK(!model || !model_
-            || (model_ && model_ == model),
-            "Model* different from already stored model "
-                  << model->get_name() << " " << model_->get_name());
-  model_ = model;
-  set_was_used(true);
-}
 
 namespace {
 struct CompOrder {

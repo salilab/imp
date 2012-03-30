@@ -92,8 +92,7 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 class IMPEXPORT Model:
   public RestraintSet
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  ,public base::Tracker<Restraint>,
-  public base::Tracker<ModelObject>,
+  ,public base::Tracker<ModelObject>,
   public internal::Masks,
   public internal::FloatAttributeTable,
   public internal::StringAttributeTable,
@@ -127,7 +126,6 @@ class IMPEXPORT Model:
     internal::ParticlesAttributeTable::clear_caches(pi);
   }
 private:
-  typedef base::Tracker<Restraint> RestraintTracker;
   typedef base::Tracker<ModelObject> ModelObjectTracker;
   struct Statistics {
     double total_time_;
@@ -179,23 +177,19 @@ public:
     return eval_count_;
   }
   void add_particle_internal(Particle *p, bool set_name);
-
-  RestraintsTemp get_known_restraints() const;
 #endif
 
  private:
-  ScoreStatesTemp ordered_score_states_;
   void cleanup();
   void show_it(std::ostream &out) const;
   // statistics
   void add_to_update_before_time(ScoreState *s, double t) const;
   void add_to_update_after_time(ScoreState *s, double t) const;
 
-  // other
-  /* Allow Model::ScoreStateDataWrapper class to call the private
-     ScoreState::set_model() function (older g++ and MSVC do not support
-     member classes as friends) */
-  static void set_score_state_model(ScoreState *ss, Model *model);
+
+  // dependencies
+  RestraintsTemp scoring_restraints_;
+  ScoreStatesTemp ordered_score_states_;
 
 public:
   /** Construct an empty model */
@@ -221,7 +215,7 @@ public:
               {IMP_INTERNAL_CHECK(cur_stage_== internal::NOT_EVALUATING,
                      "The set of score states cannot be changed during"
                                   << "evaluation.");
-                Model::set_score_state_model(obj, this);
+                obj->set_model(this);
                 obj->set_was_used(true);
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
@@ -233,8 +227,8 @@ public:
                                   << obj->get_name());
                 }
               },{reset_dependencies();},
-              {Model::set_score_state_model(obj, nullptr);
-               if(container) container->reset_dependencies(); });
+              {obj->set_model(nullptr);
+                if(container) container->reset_dependencies(); });
   /**@}*/
 
   /** @name Restraints
@@ -359,6 +353,9 @@ public:
   ParticleIterator particles_end() const;
 #endif
   /** @} */
+  /** Get all the ModelObjects associated with this Model.
+   */
+  ModelObjectsTemp get_model_objects() const;
 };
 
 IMP_END_NAMESPACE
