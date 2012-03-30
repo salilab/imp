@@ -333,7 +333,7 @@ public:
    */
   unsigned int get_number_of_particles() const;
   ParticlesTemp get_particles() const;
-  Particle* get_particle(ParticleIndex p) const;
+  inline Particle* get_particle(ParticleIndex p) const ;
 #ifndef SWIG
 #ifdef IMP_DOXYGEN
   class ParticleIterator;
