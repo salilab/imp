@@ -36,9 +36,10 @@ std::pair<Ints, Restraints> get_my_restraints(Particle *p,
   for (unsigned int j=0; j < cr.size(); ++j) {
     if (all.find(cr[j]) != all.end()) {
       mi.push_back(all.find(cr[j])->second);
+      IMP_INTERNAL_CHECK(std::find(mr.begin(), mr.end(), cr[j]) == mr.end(),
+                         "Found duplicate restraint " << Showable(cr[j])
+                         << " in list " << cr);
       mr.push_back(cr[j]);
-    } else {
-      IMP_LOG(TERSE, "Filtered restraint " << Showable(cr[j]) << std::endl);
     }
   }
   IMP_LOG(TERSE, "Particle " << Showable(p) << " has restraints "

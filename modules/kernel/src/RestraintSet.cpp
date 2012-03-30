@@ -45,33 +45,50 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
 
 
 double RestraintSet::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  double ret=0;
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ret+= get_restraint(i)->unprotected_evaluate(accum);
+  // weights need to be handle externally
+  RestraintsTemp rs;
+  RestraintSetsTemp rss;
+  boost::tie(rs, rss)= get_non_sets_and_sets();
+  double weight= 1.0;
+  if (accum) {
+    weight=accum->get_weight();
   }
-  return ret;
+  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
+                                   unprotected_evaluate(rs, rss, NO_MAX,
+                                                        weight,
+                                                        get_model()));
+  return ret.first;
 }
 double RestraintSet::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
                                                   double max) const {
-  double ret=0;
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ret+= get_restraint(i)->unprotected_evaluate(accum);
-    if (ret > max || ret > get_maximum_score()) {
-      return NO_MAX;
-    }
+  RestraintsTemp rs;
+  RestraintSetsTemp rss;
+  boost::tie(rs, rss)= get_non_sets_and_sets();
+  double weight= 1.0;
+  max= std::min(max, get_maximum_score());
+  if (accum) {
+    weight=accum->get_weight();
   }
-  return ret;
+  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
+                                   unprotected_evaluate(rs, rss, max,
+                                                        weight,
+                                                        get_model()));
+  return ret.first;
 }
 double RestraintSet::unprotected_evaluate_if_below(DerivativeAccumulator *accum,
                                                    double max) const {
-  double ret=0;
-  for (unsigned int i=0; i< get_number_of_restraints(); ++i) {
-    ret+= get_restraint(i)->unprotected_evaluate(accum);
-    if (ret > max ) {
-      return NO_MAX;
-    }
+  RestraintsTemp rs;
+  RestraintSetsTemp rss;
+  boost::tie(rs, rss)= get_non_sets_and_sets();
+  double weight=1.0;
+  if (accum) {
+    weight=accum->get_weight();
   }
-  return ret;
+  IMP_SF_CALL_UNPROTECTED_EVALUATE(false, false, accum,
+                                   unprotected_evaluate(rs, rss, max,
+                                                        weight,
+                                                        get_model()));
+  return ret.first;
 }
 
 
