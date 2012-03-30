@@ -10,6 +10,10 @@ IMP_SWIG_OBJECT(IMP::container, ListPairContainer, ListPairContainers);
 IMP_SWIG_OBJECT(IMP::container, ListQuadContainer, ListQuadContainers);
 IMP_SWIG_OBJECT(IMP::container, ListSingletonContainer, ListSingletonContainers);
 IMP_SWIG_OBJECT(IMP::container, ListTripletContainer, ListTripletContainers);
+IMP_SWIG_OBJECT(IMP::container, DynamicListPairContainer, DynamicListPairContainers);
+IMP_SWIG_OBJECT(IMP::container, DynamicListQuadContainer, DynamicListQuadContainers);
+IMP_SWIG_OBJECT(IMP::container, DynamicListSingletonContainer, DynamicListSingletonContainers);
+IMP_SWIG_OBJECT(IMP::container, DynamicListTripletContainer, DynamicListTripletContainers);
 IMP_SWIG_OBJECT(IMP::container, MinimumPairRestraint, MinimumPairRestraints);
 IMP_SWIG_OBJECT(IMP::container, MinimumPairScore, MinimumPairScores);
 IMP_SWIG_OBJECT(IMP::container, MinimumQuadRestraint, MinimumQuadRestraints);
@@ -67,6 +71,10 @@ IMP_SWIG_OBJECT(IMP::container, DistributeQuadsScoreState, DistributeQuadsScoreS
 %include "IMP/container/ListQuadContainer.h"
 %include "IMP/container/ListSingletonContainer.h"
 %include "IMP/container/ListTripletContainer.h"
+%include "IMP/container/DynamicListPairContainer.h"
+%include "IMP/container/DynamicListQuadContainer.h"
+%include "IMP/container/DynamicListSingletonContainer.h"
+%include "IMP/container/DynamicListTripletContainer.h"
 %include "IMP/container/MinimumPairRestraint.h"
 %include "IMP/container/MinimumPairScore.h"
 %include "IMP/container/MinimumQuadRestraint.h"

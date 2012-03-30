@@ -15,4 +15,9 @@ Constraint::Constraint(std::string name) :
 {
 }
 
+Constraint::Constraint(Model *m, std::string name) :
+  ScoreState(m, name)
+{
+}
+
 IMP_END_NAMESPACE

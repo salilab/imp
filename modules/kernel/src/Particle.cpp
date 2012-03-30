@@ -142,10 +142,10 @@ void Particle::do_show(std::ostream& out) const
 
 
 ContainersTemp Particle::get_input_containers() const {return ContainersTemp();}
-bool Particle::get_contained_particles_changed() const {
+bool Particle::get_all_possible_particles_changed() const {
   return false;
 }
-ParticlesTemp Particle::get_contained_particles() const {
+ParticlesTemp Particle::get_all_possible_particles() const {
   ParticlesTemp ret;
   ParticleKeys pks
       = get_model()->IMP::internal::ParticleAttributeTable

@@ -30,8 +30,8 @@ AllBipartitePairContainer
 
 
 bool
-AllBipartitePairContainer::get_contents_changed() const {
-  return a_->get_contents_changed() || b_->get_contents_changed();
+AllBipartitePairContainer::get_is_changed() const {
+  return a_->get_is_changed() || b_->get_is_changed();
 }
 
 ParticleIndexPairs
@@ -73,12 +73,19 @@ void AllBipartitePairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp AllBipartitePairContainer::get_contained_particles() const {
-  ParticlesTemp ret= a_->get_contained_particles();
-  ParticlesTemp b= b_->get_contained_particles();
+ParticlesTemp AllBipartitePairContainer::get_all_possible_particles() const {
+  ParticlesTemp ret= a_->get_all_possible_particles();
+  ParticlesTemp b= b_->get_all_possible_particles();
   ret.insert(ret.end(), b.begin(), b.end());
   return ret;
 }
-
+ParticlesTemp AllBipartitePairContainer::get_input_particles() const {
+  return ParticlesTemp();
+}
+ContainersTemp AllBipartitePairContainer::get_input_containers() const {
+  return ContainersTemp();
+}
+void AllBipartitePairContainer::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

@@ -208,9 +208,8 @@ class IMPEXPORT Particle : public ModelObject
 
 #if !defined(IMP_DOXYGEN)
   ContainersTemp get_input_containers() const;
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
-  bool get_is_up_to_date() const { return true;}
+  bool get_all_possible_particles_changed() const;
+  ParticlesTemp get_all_possible_particles() const;
   void clear_caches();
 #endif
 };

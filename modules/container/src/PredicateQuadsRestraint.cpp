@@ -34,7 +34,7 @@ PredicateQuadsRestraint
 ParticlesTemp PredicateQuadsRestraint
 ::get_input_particles() const {
   // not correct, but correct is complicated
-  return input_->get_contained_particles();
+  return input_->get_all_possible_particles();
 }
 ContainersTemp PredicateQuadsRestraint
 ::get_input_containers() const {
@@ -65,7 +65,7 @@ void PredicateQuadsRestraint
 }
 void PredicateQuadsRestraint
 ::update_lists_if_necessary() const {
-  if (updated_ && !input_->get_contents_changed()) return;
+  if (updated_ && !input_->get_is_changed()) return;
   updated_=true;
   if (unknown_container_) {
     unknown_container_->clear_particle_quads();

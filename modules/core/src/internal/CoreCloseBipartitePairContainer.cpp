@@ -59,7 +59,6 @@ void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
                                                  double distance,
                                                  double slack,
                                                  ObjectKey key) {
-  initialize_active_container(get_model());
   slack_=slack;
   distance_=distance;
   key_=key;
@@ -77,11 +76,8 @@ void CoreCloseBipartitePairContainer::initialize(SingletonContainer *a,
   }
 }
 
-IMP_ACTIVE_CONTAINER_DEF(CoreCloseBipartitePairContainer, {
-  });
-
 ParticlesTemp CoreCloseBipartitePairContainer
-::get_state_input_particles() const {
+::get_input_particles() const {
   ParticlesTemp ret= internal::get_input_particles(get_model(),
                                                    sc_[0],
                                                    access_pair_filters(),
@@ -100,14 +96,13 @@ ParticlesTemp CoreCloseBipartitePairContainer
 }
 
 ContainersTemp CoreCloseBipartitePairContainer
-::get_state_input_containers() const {
+::get_input_containers() const {
   ContainersTemp ret(sc_, sc_+2);
   return ret;
 }
 
 void CoreCloseBipartitePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
-  IMP::internal::ListLikePairContainer::do_before_evaluate();
   if (covers_[0]==base::get_invalid_index<ParticleIndexTag>()
       || algebra::get_distance(get_model()->get_sphere(covers_[0]),
                                get_model()->get_sphere(covers_[1]))
@@ -172,10 +167,6 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
 }
 
 
-void CoreCloseBipartitePairContainer::do_after_evaluate() {
-  IMP::internal::ListLikePairContainer::do_after_evaluate();
-}
-
 
 void CoreCloseBipartitePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
@@ -184,7 +175,8 @@ void CoreCloseBipartitePairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp CoreCloseBipartitePairContainer::get_contained_particles() const {
+ParticlesTemp
+CoreCloseBipartitePairContainer::get_all_possible_particles() const {
   ParticlesTemp ret = sc_[0]->get_particles();
   ParticlesTemp ret1= sc_[1]->get_particles();
   ret.insert(ret.end(), ret1.begin(), ret1.end());

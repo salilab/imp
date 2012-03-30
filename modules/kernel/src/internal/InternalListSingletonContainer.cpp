@@ -16,21 +16,15 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-
-IMP_ACTIVE_CONTAINER_DEF(InternalListSingletonContainer,);
-
-
 InternalListSingletonContainer
 ::InternalListSingletonContainer(Model *m, std::string name):
-  internal::ListLikeSingletonContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
 InternalListSingletonContainer
 ::InternalListSingletonContainer(Model *m, const char *name):
-  internal::ListLikeSingletonContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
@@ -45,6 +39,7 @@ void InternalListSingletonContainer::do_show(std::ostream &out) const {
 void InternalListSingletonContainer
 ::remove_particles(const ParticlesTemp &c) {
   if (c.empty()) return;
+  get_model()->reset_dependencies();
   ParticleIndexes cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {
@@ -55,26 +50,27 @@ void InternalListSingletonContainer
   }
 }
 
+ParticlesTemp
+InternalListSingletonContainer::get_all_possible_particles() const {
+  return IMP::internal::flatten(get());
+}
+
 ParticleIndexes
 InternalListSingletonContainer::get_all_possible_indexes() const {
-    return get_indexes();
-  }
+  return get_indexes();
+}
 
 void InternalListSingletonContainer::do_before_evaluate() {
-  internal::ListLikeSingletonContainer::do_before_evaluate();
 }
 
-void InternalListSingletonContainer::do_after_evaluate() {
-  internal::ListLikeSingletonContainer::do_after_evaluate();
-}
 
 ParticlesTemp
-InternalListSingletonContainer::get_state_input_particles() const {
+InternalListSingletonContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 
 ContainersTemp
-InternalListSingletonContainer::get_state_input_containers() const {
+InternalListSingletonContainer::get_input_containers() const {
   return ContainersTemp();
 }
 

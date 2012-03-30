@@ -22,8 +22,8 @@ BondPairContainer
 
 
 bool
-BondPairContainer::get_contents_changed() const {
-  return sc_->get_contents_changed();
+BondPairContainer::get_is_changed() const {
+  return sc_->get_is_changed();
 }
 
 
@@ -58,12 +58,13 @@ void BondPairContainer::do_show(std::ostream &out) const {
 }
 
 
-ParticlesTemp BondPairContainer::get_contained_particles() const {
+ParticlesTemp BondPairContainer::get_all_possible_particles() const {
   ParticlesTemp ret(3*sc_->get_number_of_particles());
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    ret[i*3]= sc_->get_particle(i);
-    ret[i*3+1]= Bond(sc_->get_particle(i)).get_bonded(0);
-    ret[i*3+2]= Bond(sc_->get_particle(i)).get_bonded(1);
+  ParticlesTemp scapp= sc_->get_all_possible_particles();
+  for (unsigned int i=0; i< scapp.size(); ++i) {
+    ret[i*3]= scapp[i];
+    ret[i*3+1]= Bond(scapp[i]).get_bonded(0);
+    ret[i*3+2]= Bond(scapp[i]).get_bonded(1);
   }
   return ret;
 }
@@ -77,6 +78,16 @@ ParticleIndexPairs BondPairContainer::get_all_possible_indexes() const {
                                     b.get_bonded(1).get_particle_index()));
   }
   return ret;
+}
+
+
+ParticlesTemp BondPairContainer::get_input_particles() const {
+  return ParticlesTemp();
+}
+ContainersTemp BondPairContainer::get_input_containers() const {
+  return ContainersTemp(1, sc_);
+}
+void BondPairContainer::do_before_evaluate() {
 }
 
 

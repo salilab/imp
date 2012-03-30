@@ -8,8 +8,9 @@
 #include <IMP/Model.h>
 
 IMP_BEGIN_NAMESPACE
-void ModelObject::update_dependencies(const DependencyGraph &dg) {
-  return do_update_dependencies(dg);
+void ModelObject::update_dependencies(const DependencyGraph &dg,
+                                      const DependencyGraphVertexIndex &index) {
+  return do_update_dependencies(dg, index);
 }
 ModelObject::ModelObject(Model *m, std::string name):
   Tracked(this, m, name) {

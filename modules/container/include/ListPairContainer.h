@@ -50,7 +50,6 @@ public:
   void set_particle_pairs(ParticlePairsTemp c);
   void clear_particle_pairs();
   /**@}*/
-  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_PAIR_CONTAINER(ListPairContainer);
 #else
   IMP_OBJECT(ListPairContainer);

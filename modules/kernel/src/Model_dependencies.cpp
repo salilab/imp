@@ -78,45 +78,10 @@ public:
   }
 };
 
-namespace {
-  void
-  compute_restraint_dependencies(const DependencyGraph &dg,
-                                 const RestraintsTemp &ordered_restraints,
-                                 const ScoreStatesTemp &ordered_score_states) {
-    compatibility::map<base::Object *, int> ssindex;
-    for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
-      ssindex[ordered_score_states[i]]=i;
-    }
-    compatibility::map<base::Object*, int> index= get_index(dg);
-    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
-    for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
-      // make sure it is in the loop so it gets reset
-      boost::vector_property_map<int> color(boost::num_vertices(dg));
-      /*std::cout << "Finding dependencies for "
-        << ordered_restraints[i]->get_name()
-        << std::endl;*/
-      IMP_USAGE_CHECK(static_cast<base::Object*>(ordered_restraints[i])
-                      ==
-     om[index.find(static_cast<base::Object*>(ordered_restraints[i]))->second],
-                      "Restraints and vertices don't match");
-      Ints cur;
-      boost::depth_first_visit(boost::make_reverse_graph(dg),
-                               index.find(ordered_restraints[i])->second,
-                               ScoreDependencies(cur, ssindex, om),
-                               color);
-      std::sort(cur.begin(), cur.end());
-      cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
-      ordered_restraints[i]->model_dependencies_=cur;
-    }
-  }
-}
-
-
 void Model::reset_dependencies() {
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "The dependencies cannot be reset during evaluation or"
                   << " dependency computation.");
-  scoring_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
   dependencies_dirty_=true;
@@ -137,13 +102,12 @@ void Model::compute_dependencies() {
           << " particles." << std::endl);
   DependencyGraph dg
     = get_dependency_graph(this);
+  DependencyGraphVertexIndex index= get_vertex_index(dg);
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   ordered_score_states_=IMP::get_ordered_score_states(dg);
   for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
     ordered_score_states_[i]->order_=i;
   }
-  compute_restraint_dependencies(dg, all_restraints,
-                               get_as<ScoreStatesTemp>(ordered_score_states_));
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ordered_score_states_ << std::endl);
   // to prevent infinite recursion when updating ScoringFunctions
@@ -156,60 +120,12 @@ void Model::compute_dependencies() {
        it != ModelObjectTracker::tracked_end(); ++it) {
     ModelObject *sf= *it;
     IMP_CHECK_OBJECT(sf);
-    sf->update_dependencies(dg);
+    sf->update_dependencies(dg, index);
   }
 }
 
 
-ScoreStatesTemp
-Model::get_score_states(const RestraintsTemp &restraints,
-                        const ScoreStatesTemp &extra) {
-  if (!get_has_dependencies()) {
-    compute_dependencies();
-  }
-  Ints bs;
-  for (unsigned int i=0; i< restraints.size(); ++i) {
-    IMP_USAGE_CHECK(restraints[i]->get_model(),
-                    "Restraint must have the model set: "
-                    << restraints[i]->get_name());
-    IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, restraints[i]->get_name() << " depends on ");
-      for (unsigned int j=0; j< restraints[i]->model_dependencies_.size();
-           ++j) {
-        IMP_LOG(VERBOSE,
-                ordered_score_states_[restraints[i]->model_dependencies_[j]]
-                ->get_name()
-                << " ");
-      }
-      IMP_LOG(VERBOSE, std::endl);
-    }
-    bs.insert(bs.end(), restraints[i]->model_dependencies_.begin(),
-              restraints[i]->model_dependencies_.end());
-  }
-  if (!extra.empty()) {
-    for (unsigned int i=0; i< extra.size(); ++i) {
-      bs.push_back(extra[i]->order_);
-    }
-  }
-  std::sort(bs.begin(), bs.end());
-  bs.erase(std::unique(bs.begin(), bs.end()), bs.end());
-  ScoreStatesTemp ss(bs.size());
-  for (unsigned int i=0; i< bs.size(); ++i) {
-    IMP_INTERNAL_CHECK(ordered_score_states_[bs[i]]->order_
-                       == bs[i], "Saved and actual order don't match");
-    ss[i]=ordered_score_states_[bs[i]];
-  }
-  return ss;
-}
 
-
-ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
-  if (irs.empty()) return ScoreStatesTemp();
-  RestraintsTemp rs= get_restraints(irs.begin(),
-                                    irs.end());
-  if (rs.empty()) return ScoreStatesTemp();
-  return rs[0]->get_model()->get_score_states(rs);
-}
 
 
 IMP_END_NAMESPACE

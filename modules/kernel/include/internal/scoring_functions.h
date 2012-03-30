@@ -318,8 +318,9 @@ void RestraintScoringFunction<RestraintType>::do_show(std::ostream &out) const {
 template <class RestraintType>
 ScoreStatesTemp
 RestraintScoringFunction<RestraintType>
-::get_required_score_states(const DependencyGraph &) const {
-  return get_model()->get_score_states(RestraintsTemp(1,r_));
+::get_required_score_states(const DependencyGraph &dg,
+                            const DependencyGraphVertexIndex &index) const {
+  return IMP::get_required_score_states(RestraintsTemp(1,r_), dg, index);
 }
 
 
@@ -390,8 +391,9 @@ WrappedRestraintScoringFunction<RestraintType>::create_restraints() const {
 template <class RestraintType>
 ScoreStatesTemp
 WrappedRestraintScoringFunction<RestraintType>
-::get_required_score_states(const DependencyGraph &) const {
-  return get_model()->get_score_states(RestraintsTemp(1,r_));
+::get_required_score_states(const DependencyGraph &dg,
+                            const DependencyGraphVertexIndex &index) const {
+  return IMP::get_required_score_states(RestraintsTemp(1,r_), dg, index);
 }
 
 template <class RestraintType>

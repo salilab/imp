@@ -28,7 +28,6 @@ class IMPEXPORT ListLikeQuadContainer: public QuadContainer {
 private:
   ParticleIndexQuads data_;
   bool sorted_;
-  bool dirty_;
   void sort() const {
     std::sort(const_cast<ParticleIndexQuads&>(data_).begin(),
               const_cast<ParticleIndexQuads&>(data_).end());
@@ -36,7 +35,7 @@ private:
   }
 protected:
   void update_list(ParticleIndexQuads &cur) {
-    dirty_=true;
+    Container::set_is_changed(true);
     swap(data_, cur);
     sorted_=false;
   }
@@ -50,7 +49,7 @@ protected:
                         data_.begin(), data_.end(),
                         std::back_inserter(newlist));
     swap(data_, newlist);
-    dirty_=true;
+    Container::set_is_changed(true);
   }
 
   void remove_from_list(ParticleIndexQuads &cur) {
@@ -61,7 +60,7 @@ protected:
                         cur.begin(), cur.end(),
                         std::back_inserter(newlist));
     swap(data_, newlist);
-    dirty_=true;
+    Container::set_is_changed(true);
   }
   template <class F>
     struct AccIf {
@@ -79,18 +78,18 @@ protected:
   template <class F>
   void remove_from_list_if(F f) {
     data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
-    dirty_=true;
+    Container::set_is_changed(true);
   }
   void add_to_list(const ParticleIndexQuad& cur) {
     if (!sorted_) sort();
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
       data_.insert(std::lower_bound(data_.begin(), data_.end(),
                                    cur), cur);
-      dirty_=true;
+      Container::set_is_changed(true);
     }
   }
   ListLikeQuadContainer(Model *m, std::string name):
-    QuadContainer(m,name), sorted_(false), dirty_(false){
+    QuadContainer(m,name), sorted_(false){
   }
  public:
   template <class SM>
@@ -129,7 +128,7 @@ protected:
                           double max) const {
     return s->evaluate_if_good_indexes(get_model(), data_, da, max);
   }
-  ParticlesTemp get_contained_particles() const {
+  ParticlesTemp get_all_possible_particles() const {
     return IMP::internal::flatten(IMP::internal::get_particle(get_model(),
                                                               data_));
   }
@@ -138,16 +137,7 @@ protected:
     ParticleIndexQuad it= IMP::internal::get_index(p);
     return std::binary_search(data_.begin(), data_.end(), it);
   }
-  bool get_contents_changed() const {
-    return dirty_;
-  }
   IMP_OBJECT(ListLikeQuadContainer);
-  void do_after_evaluate() {
-    dirty_=false;
-  }
-  void do_before_evaluate() {
-  }
-  bool get_is_up_to_date() const {return true;}
 
   ParticleIndexQuads get_indexes() const {
     return data_;
@@ -170,28 +160,12 @@ protected:
 IMP_END_INTERNAL_NAMESPACE
 
 #define IMP_LISTLIKE_QUAD_CONTAINER(Name)                         \
+  public:                                                               \
+  ParticlesTemp get_all_possible_particles() const;                     \
+  ParticlesTemp get_input_particles() const;                            \
+  ContainersTemp get_input_containers() const;                          \
+  void do_before_evaluate();                                            \
   ParticleIndexQuads get_all_possible_indexes() const;                     \
-  Restraints create_decomposition(QuadScore *s) const {            \
-    ParticleIndexQuads all= get_all_possible_indexes();                    \
-    Restraints ret(all.size());                                         \
-    for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::internal::create_restraint(s,                        \
-                            IMP::internal::get_particle(get_model(), \
-                                          all[i]));                     \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  template <class S>                                                    \
-  Restraints create_decomposition_t(S *s) const {                       \
-    ParticleIndexQuads all= get_all_possible_indexes();                    \
-    Restraints ret(all.size());                                         \
-    for (unsigned int i=0; i< all.size(); ++i) {                        \
-      ret[i]= IMP::internal::create_restraint(s,                        \
-                            IMP::internal::get_particle(get_model(), \
-                                          all[i]));                     \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   IMP_OBJECT(Name)
 
 

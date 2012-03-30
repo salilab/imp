@@ -32,7 +32,7 @@ class IMPCOREEXPORT MovedSingletonContainer:
   bool first_call_;
   bool reset_all_;
   bool reset_moved_;
-  IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
+  IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer);
   virtual ParticleIndexes do_get_moved()=0;
   virtual void do_reset_all()=0;
   virtual void do_reset_moved()=0;
@@ -40,6 +40,7 @@ class IMPCOREEXPORT MovedSingletonContainer:
   virtual double do_get_distance_moved(unsigned int i) const=0;
   using IMP::internal::ListLikeSingletonContainer::update_list;
 public:
+  void do_after_evaluate(DerivativeAccumulator *);
   void initialize();
   virtual void validate() const=0;
   //! Track the changes with the specified keys.
@@ -69,19 +70,10 @@ public:
     return -1;
   }
 #ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
-      return get_last_update_evaluation() == get_model()->get_evaluation();
-    } else {
-      return true;
-    }
-  }
   Restraints create_decomposition(SingletonScore *) const {
     IMP_NOT_IMPLEMENTED;
   }
 #endif
-
-  IMP_OBJECT(MovedSingletonContainer);
 };
 
 class IMPCOREEXPORT XYZRMovedSingletonContainer:
@@ -142,8 +134,8 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
         core::RigidBody(get_model(), p).get_reference_frame()
                           .get_transformation_to().get_rotation());
   }
-  ContainersTemp get_state_input_containers() const;
-  ParticlesTemp get_state_input_particles() const;
+  ContainersTemp get_input_containers() const;
+  ParticlesTemp get_input_particles() const;
 public:
   //! Track the changes with the specified keys.
   RigidMovedSingletonContainer(SingletonContainer *pc,

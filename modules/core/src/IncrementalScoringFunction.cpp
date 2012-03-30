@@ -49,9 +49,6 @@ void IncrementalScoringFunction::create_scoring_functions() {
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     all_set[flattened_restraints_[i]]=i;
   }
-  DependencyGraph dg
-    = get_dependency_graph(flattened_restraints_[0]->get_model());
-
   IMP_USAGE_CHECK(nbl_.empty(), "Can't be close pair restraints yet");
 
   /*Restraints dr;
@@ -66,33 +63,12 @@ void IncrementalScoringFunction::create_scoring_functions() {
 
   for (unsigned int i=0; i< all_.size(); ++i) {
     Particle *p= get_model()->get_particle(all_[i]);
-    RestraintsTemp cr= get_dependent_restraints(p, ParticlesTemp(),
-                                                dg);
-    Restraints mr;
-    Ints mi;
-    for (unsigned int j=0; j < cr.size(); ++j) {
-      if (all_set.find(cr[j]) != all_set.end()) {
-        mr.push_back(cr[j]);
-        mi.push_back(all_set.find(cr[j])->second);
-      }
-    }
-    IMP_LOG(TERSE, "Particle " << Showable(p) << " has restraints "
-            << mr << std::endl);
-    if (mr.empty()) {
-      // make sure the ScoringFunction can figure out the model
-      IMP_NEW(RestraintSet, rs, (get_model(), 1.0, "dummy restraint set"));
-      mr.push_back(rs);
-    }
     scoring_functions_[all_[i]]
-      = new internal::SingleParticleScoringFunction(all_[i],
-                                                    mr, mi,
-                                                    p->get_name()
-                                                    + " restraints");
-    /*for (unsigned int i=0; i< dr.size(); ++i) {
-      scoring_functions_[all_[i]]->add_dummy_restraint(dr[i]);
-      }*/
+        = new internal::SingleParticleScoringFunction(p->get_index(),
+                                                      flattened_restraints_,
+                                                      p->get_name()
+                                                      + " restraints");
   }
-
 }
 
 void IncrementalScoringFunction
@@ -107,6 +83,8 @@ void IncrementalScoringFunction
   // restraint sets get lost and cause warnings. Not sure how to handle them.
   flattened_restraints_=IMP::get_restraints(decomposed.begin(),
                                                     decomposed.end());
+  IMP_LOG(TERSE, "Flattened restraints are " << flattened_restraints_
+          << std::endl);
 
 }
 void IncrementalScoringFunction::reset_moved_particles() {
@@ -245,7 +223,8 @@ IncrementalScoringFunction::Wrapper::~Wrapper(){
 
 //! all real work is passed off to other ScoringFunctions
 ScoreStatesTemp IncrementalScoringFunction
-::get_required_score_states(const DependencyGraph &) const {
+::get_required_score_states(const DependencyGraph &,
+                            const DependencyGraphVertexIndex&) const {
     return ScoreStatesTemp();
   }
 IMPCORE_END_NAMESPACE

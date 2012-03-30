@@ -30,7 +30,6 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
   threshold_(threshold),
   pc_(pc)
 {
-  initialize_active_container(pc->get_model());
   first_call_=true;
   reset_all_=false;
   reset_moved_=false;
@@ -42,8 +41,8 @@ void MovedSingletonContainer::do_show(std::ostream &) const
 }
 
 
-void MovedSingletonContainer::do_after_evaluate() {
-  IMP::internal::ListLikeSingletonContainer::do_after_evaluate();
+void MovedSingletonContainer::do_after_evaluate(DerivativeAccumulator*da) {
+  IMP::internal::ListLikeSingletonContainer::do_after_evaluate(da);
   if (reset_all_) {
     do_reset_all();
     ParticleIndexes t;
@@ -64,7 +63,7 @@ void MovedSingletonContainer::do_before_evaluate()
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
-  if (first_call_ || pc_->get_contents_changed()) {
+  if (first_call_ || pc_->get_is_changed()) {
     IMP_LOG(TERSE, "First call" << std::endl);
     initialize();
     first_call_=false;
@@ -78,12 +77,18 @@ void MovedSingletonContainer::do_before_evaluate()
   }
 }
 
+ParticlesTemp MovedSingletonContainer::get_all_possible_particles() const {
+  return pc_->get_all_possible_particles();
+}
+ParticleIndexes MovedSingletonContainer::get_all_possible_indexes() const {
+  return pc_->get_all_possible_indexes();
+}
 
-ParticlesTemp MovedSingletonContainer::get_state_input_particles() const {
+ParticlesTemp MovedSingletonContainer::get_input_particles() const {
   return pc_->get_particles();
 }
 
-ContainersTemp MovedSingletonContainer::get_state_input_containers() const {
+ContainersTemp MovedSingletonContainer::get_input_containers() const {
   return ContainersTemp(1, pc_);
 }
 
@@ -109,8 +114,6 @@ void MovedSingletonContainer::set_threshold(double d) {
   // could be more efficient, but why bother
   reset();
 }
-
-IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer,);
 
 
 
@@ -322,7 +325,7 @@ RigidMovedSingletonContainer
 
 
 ParticlesTemp RigidMovedSingletonContainer
-::get_state_input_particles() const {
+::get_input_particles() const {
   ParticlesTemp ret
     = MovedSingletonContainer::get_singleton_container()
     ->get_particles();
@@ -336,7 +339,7 @@ ParticlesTemp RigidMovedSingletonContainer
 }
 
 ContainersTemp RigidMovedSingletonContainer
-::get_state_input_containers() const {
+::get_input_containers() const {
   ContainersTemp ret;
   ret.push_back(get_singleton_container());
   ret.push_back(normal_);

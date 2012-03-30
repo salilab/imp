@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListQuadContainer.h"
+#include "DynamicListQuadContainer.h"
 #include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/base/Vector.h>
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT DistributeQuadsScoreState :
 public ScoreState
 {
   OwnerPointer<QuadContainer> input_;
-  typedef boost::tuple<Pointer<ListQuadContainer>,
+  typedef boost::tuple<Pointer<DynamicListQuadContainer>,
     OwnerPointer<QuadPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
@@ -46,9 +46,9 @@ public:
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  ListQuadContainer *add_predicate(QuadPredicate *predicate,
+  DynamicListQuadContainer *add_predicate(QuadPredicate *predicate,
                                         int value) {
-    IMP_NEW(ListQuadContainer, c, (get_model(),
+    IMP_NEW(DynamicListQuadContainer, c, (input_,
                                         predicate->get_name()+ " output"));
     data_.push_back(Data(c, predicate, value));
     return c;

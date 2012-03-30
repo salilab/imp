@@ -10,6 +10,7 @@
  */
 
 #include "IMP/container/SingletonContainerSet.h"
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
@@ -21,21 +22,12 @@ SingletonContainerSet
   deps_(new DependenciesScoreState(this), m){
 }
 
-namespace {
-  Model *my_get_model(const SingletonContainersTemp &in) {
-    if (in.empty()) {
-      IMP_THROW("Cannot initialize from empty list of containers.",
-                IndexException);
-    }
-    return in[0]->get_model();
-  }
-}
 
 SingletonContainerSet
 ::SingletonContainerSet(const SingletonContainersTemp& in,
                         std::string name):
-  SingletonContainer(my_get_model(in), name),
-  deps_(new DependenciesScoreState(this), my_get_model(in)){
+    SingletonContainer(IMP::internal::get_model(in), name),
+    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
   set_singleton_containers(in);
 }
 
@@ -109,15 +101,29 @@ double SingletonContainerSet::evaluate_if_good(const SingletonScore *s,
 }
 
 
-ParticlesTemp SingletonContainerSet::get_contained_particles() const {
+ParticlesTemp SingletonContainerSet::get_all_possible_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     ParticlesTemp cur= get_singleton_container(i)
-        ->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+        ->get_all_possible_particles();
+    ret+=cur;
   }
   return ret;
 }
 
+bool SingletonContainerSet::get_is_changed() const {
+  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+    if (get_singleton_container(i)->get_is_changed()) return true;
+  }
+  return Container::get_is_changed();
+}
+
+
+ContainersTemp SingletonContainerSet::get_input_containers() const {
+  return ContainersTemp(singleton_containers_begin(),
+                        singleton_containers_end());
+}
+void SingletonContainerSet::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

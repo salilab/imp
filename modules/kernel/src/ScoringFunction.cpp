@@ -31,19 +31,22 @@ ScoringFunctionInput::ScoringFunctionInput(Model *sf):
 }
 
 void
-ScoringFunction::do_update_dependencies(const DependencyGraph &dg) {
+ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
+                                     const DependencyGraphVertexIndex &index) {
   // can't check here as create_restraints can cause a loop
-  ss_= get_required_score_states(dg);
+  ss_= get_required_score_states(dg, index);
 }
 
 ScoreStatesTemp
-ScoringFunction::get_required_score_states(const DependencyGraph &) const {
+ScoringFunction::get_required_score_states(const DependencyGraph &dg,
+                                           const DependencyGraphVertexIndex &i)
+    const {
   Restraints rs= create_restraints();
   IMP_INTERNAL_CHECK(get_model()->get_has_dependencies(),
                      "ScoringFunctions where create_restraints() creates "
                      << "new restraints must implement their own"
                      << " get_required_score_states()");
-  return get_model()->get_score_states(rs);
+  return IMP::get_required_score_states(rs, dg, i);
 }
 
 ScoringFunctionInput::ScoringFunctionInput(const RestraintsTemp &sf):

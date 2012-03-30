@@ -232,7 +232,8 @@ class ModelTests(IMP.test.TestCase):
         #IMP.show_graphviz(dg)
         for r in rs:
             print "now restraint",r
-            rcsl=IMP.get_required_score_states([r])
+            rcsl=IMP.get_required_score_states([r], dg,
+                                               IMP.get_vertex_index(dg))
             rdg= IMP.get_dependency_graph(m)
             #IMP.show_graphviz(rdg)
             ccsl=[]

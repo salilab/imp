@@ -59,8 +59,10 @@ class Model;
 class IMPEXPORT ScoreState : public IMP::base::Object
 {
 public:
+#ifndef IMP_DOXYGEN
   ScoreState(std::string name="ScoreState %1%");
-
+#endif
+  ScoreState(Model *m, std::string name="ScoreState %1%");
   // Force update of the structure.
   void before_evaluate();
 
@@ -91,10 +93,6 @@ public:
   virtual ParticlesTemp get_input_particles() const=0;
   virtual ParticlesTemp get_output_particles() const=0;
   /** @} */
-
-  virtual ScoreStates create_decomposition() const {
-    return ScoreStates(1, const_cast<ScoreState*>(this));
-  }
 
 protected:
   // Update the state given the current state of the model.

@@ -22,7 +22,7 @@ ContainersTemp DependencyScoreState::get_output_containers() const {
 ParticlesTemp DependencyScoreState::get_input_particles() const {
   ParticlesTemp ret=inputp_;
   for (unsigned int i=0; i< inputc_.size(); ++i) {
-    ParticlesTemp cp= inputc_[i]->get_contained_particles();
+    ParticlesTemp cp= inputc_[i]->get_all_possible_particles();
     ret.insert(ret.end(), cp.begin(), cp.end());
   }
   return ret;
@@ -30,7 +30,7 @@ ParticlesTemp DependencyScoreState::get_input_particles() const {
 ParticlesTemp DependencyScoreState::get_output_particles() const {
   ParticlesTemp ret=outputp_;
   for (unsigned int i=0; i< outputc_.size(); ++i) {
-    ParticlesTemp cp= outputc_[i]->get_contained_particles();
+    ParticlesTemp cp= outputc_[i]->get_all_possible_particles();
     ret.insert(ret.end(), cp.begin(), cp.end());
   }
   return ret;

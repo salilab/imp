@@ -116,8 +116,9 @@ void RestraintCache::add_restraints(const RestraintsTemp &rs) {
   ParticleStatesTable *pst= cache_.get_generator().get_particle_states_table();
   DepMap dependencies;
   ParticlesTemp allps= pst->get_particles();
+  DependencyGraphVertexIndex index= IMP::get_vertex_index(dg);
   for (unsigned int i=0; i< allps.size(); ++i) {
-    ParticlesTemp depp= get_dependent_particles(allps[i], allps, dg);
+    ParticlesTemp depp= get_dependent_particles(allps[i], allps, dg, index);
     for (unsigned int j=0; j< depp.size(); ++j) {
       dependencies[depp[j]].push_back(allps[i]);
     }

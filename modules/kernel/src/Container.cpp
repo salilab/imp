@@ -15,18 +15,26 @@
 IMP_BEGIN_NAMESPACE
 
 Container::Container(Model *m, std::string name):
-  Object(name),
-  m_(m)
-{
+  Constraint(m, name) {
   IMP_USAGE_CHECK(m, "Must pass model to container constructor.");
+  changed_=false;
 }
 
-bool Container::is_ok(Particle *p) {
-  return p && p->get_model()==m_;
+void Container::set_is_changed(bool tr) {
+  changed_=tr;
 }
 
-
-Model *Container::get_model(Particle *p) {return p->get_model();}
-
+ContainersTemp Container::get_output_containers() const {
+  return ContainersTemp();
+}
+ParticlesTemp Container::get_input_particles() const {
+  return get_all_possible_particles();
+}
+ParticlesTemp Container::get_output_particles() const {
+  return ParticlesTemp();
+}
+void Container::do_after_evaluate(DerivativeAccumulator *) {
+  changed_=false;
+}
 
 IMP_END_NAMESPACE

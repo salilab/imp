@@ -49,25 +49,12 @@ public IMP::internal::ListLikePairContainer
   ParticlePairsTemp data_;
   double error_;
   bool mst_;
-  IMP_ACTIVE_CONTAINER_DECL(ConnectingPairContainer);
   void initialize(SingletonContainer *sc);
 public:
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before
    the set of edges is updated.*/
   ConnectingPairContainer(SingletonContainer *sc, double error);
-
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
-      return get_last_update_evaluation() == get_model()->get_evaluation();
-    } else {
-      if (!sc_->get_is_up_to_date()) return false;
-      bool ret=true;
-      return ret;
-    }
-  }
-#endif
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_PAIR_CONTAINER(ConnectingPairContainer);

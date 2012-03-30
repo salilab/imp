@@ -10,6 +10,7 @@
  */
 
 #include "IMP/container/CLASSNAMEContainerSet.h"
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
@@ -21,21 +22,12 @@ CLASSNAMEContainerSet
   deps_(new DependenciesScoreState(this), m){
 }
 
-namespace {
-  Model *my_get_model(const CLASSNAMEContainersTemp &in) {
-    if (in.empty()) {
-      IMP_THROW("Cannot initialize from empty list of containers.",
-                IndexException);
-    }
-    return in[0]->get_model();
-  }
-}
 
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet(const CLASSNAMEContainersTemp& in,
                         std::string name):
-  CLASSNAMEContainer(my_get_model(in), name),
-  deps_(new DependenciesScoreState(this), my_get_model(in)){
+    CLASSNAMEContainer(IMP::internal::get_model(in), name),
+    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
   set_CLASSFUNCTIONNAME_containers(in);
 }
 
@@ -109,15 +101,29 @@ double CLASSNAMEContainerSet::evaluate_if_good(const CLASSNAMEScore *s,
 }
 
 
-ParticlesTemp CLASSNAMEContainerSet::get_contained_particles() const {
+ParticlesTemp CLASSNAMEContainerSet::get_all_possible_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
     ParticlesTemp cur= get_CLASSFUNCTIONNAME_container(i)
-        ->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+        ->get_all_possible_particles();
+    ret+=cur;
   }
   return ret;
 }
 
+bool CLASSNAMEContainerSet::get_is_changed() const {
+  for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
+    if (get_CLASSFUNCTIONNAME_container(i)->get_is_changed()) return true;
+  }
+  return Container::get_is_changed();
+}
+
+
+ContainersTemp CLASSNAMEContainerSet::get_input_containers() const {
+  return ContainersTemp(CLASSFUNCTIONNAME_containers_begin(),
+                        CLASSFUNCTIONNAME_containers_end());
+}
+void CLASSNAMEContainerSet::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

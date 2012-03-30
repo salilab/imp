@@ -438,7 +438,7 @@ get_input_particles(Model *m, SingletonContainer *sc_,
                     const IMP::compatibility::map<ParticleIndex,
                                             ParticleIndexes>&
                     /*constituents_*/) {
-  ParticlesTemp ret= sc_->get_contained_particles();
+  ParticlesTemp ret= sc_->get_all_possible_particles();
   ParticlesTemp all;
   for (unsigned int i=0; i< filters_.size(); ++i) {
     for (unsigned int j=0; j< ret.size(); ++j) {

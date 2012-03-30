@@ -16,21 +16,15 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-
-IMP_ACTIVE_CONTAINER_DEF(InternalListCLASSNAMEContainer,);
-
-
 InternalListCLASSNAMEContainer
 ::InternalListCLASSNAMEContainer(Model *m, std::string name):
-  internal::ListLikeCLASSNAMEContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
 InternalListCLASSNAMEContainer
 ::InternalListCLASSNAMEContainer(Model *m, const char *name):
-  internal::ListLikeCLASSNAMEContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
@@ -45,6 +39,7 @@ void InternalListCLASSNAMEContainer::do_show(std::ostream &out) const {
 void InternalListCLASSNAMEContainer
 ::remove_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
   if (c.empty()) return;
+  get_model()->reset_dependencies();
   PLURALINDEXTYPE cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {
@@ -55,26 +50,27 @@ void InternalListCLASSNAMEContainer
   }
 }
 
+ParticlesTemp
+InternalListCLASSNAMEContainer::get_all_possible_particles() const {
+  return IMP::internal::flatten(get());
+}
+
 PLURALINDEXTYPE
 InternalListCLASSNAMEContainer::get_all_possible_indexes() const {
-    return get_indexes();
-  }
+  return get_indexes();
+}
 
 void InternalListCLASSNAMEContainer::do_before_evaluate() {
-  internal::ListLikeCLASSNAMEContainer::do_before_evaluate();
 }
 
-void InternalListCLASSNAMEContainer::do_after_evaluate() {
-  internal::ListLikeCLASSNAMEContainer::do_after_evaluate();
-}
 
 ParticlesTemp
-InternalListCLASSNAMEContainer::get_state_input_particles() const {
+InternalListCLASSNAMEContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 
 ContainersTemp
-InternalListCLASSNAMEContainer::get_state_input_containers() const {
+InternalListCLASSNAMEContainer::get_input_containers() const {
   return ContainersTemp();
 }
 

@@ -50,7 +50,6 @@ public:
   void set_particles(ParticlesTemp c);
   void clear_particles();
   /**@}*/
-  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_SINGLETON_CONTAINER(ListSingletonContainer);
 #else
   IMP_OBJECT(ListSingletonContainer);

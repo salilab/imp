@@ -21,6 +21,14 @@ ScoreState::ScoreState(std::string name) :
   order_=-1;
 }
 
+ScoreState::ScoreState(Model *m, std::string name) :
+  Object(name)
+{
+  order_=-1;
+  // later change to just registering with ModelObject
+  m->add_score_state(this);
+}
+
 
 void ScoreState::before_evaluate() {
   do_before_evaluate();

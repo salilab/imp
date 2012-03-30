@@ -33,7 +33,7 @@ class IMPCOREEXPORT CoreClosePairContainer :
   unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
-  IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
+  IMP_LISTLIKE_PAIR_CONTAINER(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
 
@@ -53,32 +53,15 @@ public:
                   obj->set_was_used(true);first_call_=true;,
                   {first_call_=true;},
                   {if (container) container->first_call_=true;});
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
-      return get_last_update_evaluation() == get_model()->get_evaluation();
-    } else {
-      if (!c_->get_is_up_to_date()) return false;
-      return true;
-    }
-  }
-#endif
 public:
   double get_slack() const {return slack_;}
   double get_distance() const {return distance_;}
-  virtual std::string get_type_name() const {return "CoreClosePairContainer";}
-  virtual ::IMP::base::VersionInfo get_version_info() const {
-    return VersionInfo("core", get_module_version());
-  }
   void update() {
     do_before_evaluate();
   }
   SingletonContainer*get_singleton_container() const {return c_;}
-  ParticlesTemp get_contained_particles() const;
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   void set_slack(double d);
-  IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
-  ParticleIndexPairs get_all_possible_indexes() const;
   Restraints create_decomposition(PairScore *ps) const {
     ParticleIndexPairs all= get_all_possible_indexes();
     Restraints ret(all.size());
@@ -99,7 +82,6 @@ public:
     }
     return ret;
   }
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
 };
 
 IMP_OBJECTS(CoreClosePairContainer, CoreClosePairContainers);

@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListPairContainer.h"
+#include "DynamicListPairContainer.h"
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
 #include <IMP/base/Vector.h>
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT DistributePairsScoreState :
 public ScoreState
 {
   OwnerPointer<PairContainer> input_;
-  typedef boost::tuple<Pointer<ListPairContainer>,
+  typedef boost::tuple<Pointer<DynamicListPairContainer>,
     OwnerPointer<PairPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
@@ -46,9 +46,9 @@ public:
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  ListPairContainer *add_predicate(PairPredicate *predicate,
+  DynamicListPairContainer *add_predicate(PairPredicate *predicate,
                                         int value) {
-    IMP_NEW(ListPairContainer, c, (get_model(),
+    IMP_NEW(DynamicListPairContainer, c, (input_,
                                         predicate->get_name()+ " output"));
     data_.push_back(Data(c, predicate, value));
     return c;

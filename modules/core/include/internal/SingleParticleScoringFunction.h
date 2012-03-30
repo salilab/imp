@@ -9,7 +9,7 @@
 #define IMPCORE_INTERNAL_SINGLE_PARTICLE_SCORING_FUNCTION_H
 
 #include "../core_config.h"
-#include "../RestraintsScoringFunction.h"
+#include <IMP/internal/RestraintsScoringFunction.h>
 #include <IMP/particle_index.h>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -22,17 +22,19 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     to get the scores out. It is not clear if derivatives make sense at all.
 */
 class IMPCOREEXPORT SingleParticleScoringFunction:
-  public RestraintsScoringFunction {
+    public IMP::internal::RestraintsScoringFunction {
   Ints indexes_;
   ParticleIndex pi_;
+  Restraints all_restraints_;
   Restraints dummy_restraints_;
 public:
-  SingleParticleScoringFunction(ParticleIndex pi, const RestraintsTemp &rs,
-                                const Ints &indexes,
+  SingleParticleScoringFunction(ParticleIndex pi,
+                                const RestraintsTemp &all_restraints,
                                 std::string name
                                 = "SingleParticleScoringFunction%1%");
   ScoreStatesTemp
-  get_required_score_states(const DependencyGraph &dg) const;
+      get_required_score_states(const DependencyGraph &dg,
+                                const DependencyGraphVertexIndex &index) const;
   const Ints &get_restraint_indexes() const {
     return indexes_;
   }
@@ -40,6 +42,9 @@ public:
   //! done through restraints. EG, special cased non-bonded.
   void add_dummy_restraint(Restraint *r);
   void clear_dummy_restraints();
+  // to update the set of restraints used
+  void do_update_dependencies(const DependencyGraph &dg,
+                              const DependencyGraphVertexIndex &index);
 };
 IMPCORE_END_INTERNAL_NAMESPACE
 

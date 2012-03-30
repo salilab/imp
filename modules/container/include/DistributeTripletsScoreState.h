@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListTripletContainer.h"
+#include "DynamicListTripletContainer.h"
 #include <IMP/TripletPredicate.h>
 #include <IMP/TripletContainer.h>
 #include <IMP/base/Vector.h>
@@ -35,7 +35,7 @@ class IMPCONTAINEREXPORT DistributeTripletsScoreState :
 public ScoreState
 {
   OwnerPointer<TripletContainer> input_;
-  typedef boost::tuple<Pointer<ListTripletContainer>,
+  typedef boost::tuple<Pointer<DynamicListTripletContainer>,
     OwnerPointer<TripletPredicate>, int> Data;
   base::Vector<Data> data_;
   mutable bool updated_;
@@ -46,9 +46,9 @@ public:
 
   /** A given tuple will go into the returned container if \c predicate
       returns \c value when applied to it.*/
-  ListTripletContainer *add_predicate(TripletPredicate *predicate,
+  DynamicListTripletContainer *add_predicate(TripletPredicate *predicate,
                                         int value) {
-    IMP_NEW(ListTripletContainer, c, (get_model(),
+    IMP_NEW(DynamicListTripletContainer, c, (input_,
                                         predicate->get_name()+ " output"));
     data_.push_back(Data(c, predicate, value));
     return c;

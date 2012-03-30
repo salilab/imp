@@ -50,7 +50,6 @@ public:
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
   /**@}*/
-  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_QUAD_CONTAINER(ListQuadContainer);
 #else
   IMP_OBJECT(ListQuadContainer);

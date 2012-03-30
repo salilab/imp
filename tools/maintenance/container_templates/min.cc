@@ -105,7 +105,7 @@ void MINORMAXCLASSNAMERestraint::do_show(std::ostream &out) const {
 ParticlesTemp MINORMAXCLASSNAMERestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(f_.get(),
-                                            c_->get_contained_particles());
+                                            c_->get_all_possible_particles());
 }
 
 ContainersTemp MINORMAXCLASSNAMERestraint::get_input_containers() const

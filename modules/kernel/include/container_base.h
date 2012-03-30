@@ -11,6 +11,7 @@
 
 #include "kernel_config.h"
 #include "base_types.h"
+#include "Constraint.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/Object.h>
 #include <IMP/base/WeakPointer.h>
@@ -45,55 +46,30 @@ class Model;
 
     \note Containers store \em sets and so are fundamentally unordered.
  */
-class IMPEXPORT Container : public IMP::base::Object
+class IMPEXPORT Container : public Constraint
 {
-  friend class Model;
-  friend class Particle;
-  base::UncheckedWeakPointer<Model> m_;
-
+  bool changed_;
  protected:
-  bool is_ok(Particle *p);
-  template <unsigned int D>
-    bool is_ok(const ParticleTuple<D> &p) {
-    for (unsigned int i=0; i< D; ++i) {
-      if (!is_ok(p[i])) return false;
-    }
-    return true;
-  }
-  template <class It>
-    bool is_ok(It b, It e) {
-    for (; b!= e; ++b) {
-      if (!is_ok(*b)) return false;
-    }
-    return true;
-  }
-  static Model *get_model(Particle *p);
-  template <unsigned int D>
-   static  Model *get_model(const ParticleTuple<D> &p) {
-    return p[0]->get_model();
-  }
-  template <class It>
-  static Model *get_model(It b, It e) {
-    IMP_USAGE_CHECK(b != e,
-                    "Cannot pass empty range to container constructor.");
-    return get_model(*b);
-  }
-  bool get_has_model() const {
-    return m_;
-  }
+  //! This will be reset at the end of evaluate
+  void set_is_changed(bool tf);
   Container(Model *m, std::string name="Container %1%");
  public:
   //! Get contained particles
   /** Get a list of all particles contained in this one,
       given that the input containers are up to date.
   */
-  virtual ParticlesTemp get_contained_particles() const=0;
+  virtual ParticlesTemp get_all_possible_particles() const=0;
 
-  Model *get_model() const {return m_;}
-
-#ifndef IMP_DOXYGEN
-  virtual bool get_is_up_to_date() const=0;
-#endif
+  /** Return true if the container changed since the last evaluate.*/
+  virtual bool get_is_changed() const {return changed_;}
+  //! Return get_all_possible_particles()
+  virtual ParticlesTemp get_input_particles() const;
+  //! Containers don't have output
+  virtual ParticlesTemp get_output_particles() const;
+  //! Containers don't have output
+  virtual ContainersTemp get_output_containers() const;
+  //! Reset changed status
+  virtual void do_after_evaluate(DerivativeAccumulator *accpt);
 
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };

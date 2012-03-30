@@ -54,11 +54,6 @@ public:
   AllPairContainer(SingletonContainer *c,
                    std::string name="AllPairContainer%1%");
 
-#ifndef IMP_DOXYGEN
-  bool get_is_up_to_date() const {
-    return c_->get_is_up_to_date();
-  }
-#endif
   IMP_PAIR_CONTAINER(AllPairContainer);
 };
 

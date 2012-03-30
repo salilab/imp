@@ -12,8 +12,8 @@
 
 #include "../kernel_config.h"
 #include "container_helpers.h"
-#include "active_container.h"
 #include "ListLikeQuadContainer.h"
+#include <IMP/base/Pointer.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,42 +21,44 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 class IMPEXPORT InternalListQuadContainer:
   public ListLikeQuadContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(InternalListQuadContainer);
+  typedef ListLikeQuadContainer P;
  public:
   InternalListQuadContainer(Model *m, std::string name);
   InternalListQuadContainer(Model *m, const char *name);
   void add_particle_quad(const ParticleQuad& vt) {
+    get_model()->reset_dependencies();
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Quad cannot be nullptr (or None)");
+
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle_quad(const ParticleIndexQuad& vt) {
+    get_model()->reset_dependencies();
     add_to_list(vt);
   }
   void add_particle_quads(const ParticleQuadsTemp &c) {
     if (c.empty()) return;
+    get_model()->reset_dependencies();
     ParticleIndexQuads cp= IMP::internal::get_index(c);
     add_to_list(cp);
   }
   void remove_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c) {
+    get_model()->reset_dependencies();
     ParticleIndexQuads cp= IMP::internal::get_index(c);
     update_list(cp);
   }
   void set_particle_quads(ParticleIndexQuads cp) {
+    get_model()->reset_dependencies();
     update_list(cp);
   }
   void clear_particle_quads() {
+    get_model()->reset_dependencies();
     ParticleIndexQuads t;
     update_list(t);
   }
-  bool get_is_up_to_date() const {
-    return true;
-  }
   IMP_LISTLIKE_QUAD_CONTAINER(InternalListQuadContainer);
 };
-
-IMP_OBJECTS(InternalListQuadContainer, InternalListQuadContainers);
 
 IMP_END_INTERNAL_NAMESPACE
 

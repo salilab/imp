@@ -10,6 +10,7 @@
  */
 
 #include "IMP/container/PairContainerSet.h"
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
@@ -21,21 +22,12 @@ PairContainerSet
   deps_(new DependenciesScoreState(this), m){
 }
 
-namespace {
-  Model *my_get_model(const PairContainersTemp &in) {
-    if (in.empty()) {
-      IMP_THROW("Cannot initialize from empty list of containers.",
-                IndexException);
-    }
-    return in[0]->get_model();
-  }
-}
 
 PairContainerSet
 ::PairContainerSet(const PairContainersTemp& in,
                         std::string name):
-  PairContainer(my_get_model(in), name),
-  deps_(new DependenciesScoreState(this), my_get_model(in)){
+    PairContainer(IMP::internal::get_model(in), name),
+    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
   set_pair_containers(in);
 }
 
@@ -109,15 +101,29 @@ double PairContainerSet::evaluate_if_good(const PairScore *s,
 }
 
 
-ParticlesTemp PairContainerSet::get_contained_particles() const {
+ParticlesTemp PairContainerSet::get_all_possible_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
     ParticlesTemp cur= get_pair_container(i)
-        ->get_contained_particles();
-    ret.insert(ret.end(), cur.begin(), cur.end());
+        ->get_all_possible_particles();
+    ret+=cur;
   }
   return ret;
 }
 
+bool PairContainerSet::get_is_changed() const {
+  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+    if (get_pair_container(i)->get_is_changed()) return true;
+  }
+  return Container::get_is_changed();
+}
+
+
+ContainersTemp PairContainerSet::get_input_containers() const {
+  return ContainersTemp(pair_containers_begin(),
+                        pair_containers_end());
+}
+void PairContainerSet::do_before_evaluate() {
+}
 
 IMPCONTAINER_END_NAMESPACE

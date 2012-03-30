@@ -916,4 +916,5 @@ class BoostDigraph;
 %pythoncode %{
 _value_types.append(#Name)
 %}
+%rename(_##Type##VertexIndex) Type##VertexIndex;
 %enddef

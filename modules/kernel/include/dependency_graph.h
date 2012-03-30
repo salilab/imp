@@ -51,7 +51,7 @@ get_dependency_graph(Model *m);
 IMPEXPORT DependencyGraph
 get_pruned_dependency_graph(Model *m);
 
-#if 0
+
 /** \name Getting required values
 
     These functions use the dependency graph to determine all the objects
@@ -63,17 +63,18 @@ get_pruned_dependency_graph(Model *m);
  */
 IMPEXPORT ParticlesTemp
 get_required_particles(base::Object *p,
-                        const base::ObjectsTemp &all,
-                        const DependencyGraph &dg);
+                       const base::ObjectsTemp &all,
+                       const DependencyGraph &dg,
+                       const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
 IMPEXPORT ScoreStatesTemp
 get_required_score_states(base::Object *p,
                           const base::ObjectsTemp &all,
-                          const DependencyGraph &dg);
+                          const DependencyGraph &dg,
+                          const DependencyGraphVertexIndex &index);
 /** @} */
-#endif
 
 /** \name Getting dependent values
 
@@ -87,7 +88,8 @@ get_required_score_states(base::Object *p,
 IMPEXPORT ParticlesTemp
 get_dependent_particles(base::Object *p,
                         const base::ObjectsTemp &all,
-                        const DependencyGraph &dg);
+                        const DependencyGraph &dg,
+                        const DependencyGraphVertexIndex &index);
 
 
 /** Return all the restraints that depend on p as an input, even indirectly.
@@ -95,14 +97,16 @@ get_dependent_particles(base::Object *p,
 IMPEXPORT RestraintsTemp
 get_dependent_restraints(base::Object *p,
                          const base::ObjectsTemp &all,
-                        const DependencyGraph &dg);
+                         const DependencyGraph &dg,
+                        const DependencyGraphVertexIndex &index);
 
 /** Return all the score states that depend on p as an input, even indirectly.
  */
 IMPEXPORT ScoreStatesTemp
 get_dependent_score_states(base::Object *p,
                            const base::ObjectsTemp &all,
-                           const DependencyGraph &dg);
+                           const DependencyGraph &dg,
+                           const DependencyGraphVertexIndex &index);
 /** @} */
 
 
@@ -113,7 +117,9 @@ IMPEXPORT
 ScoreStatesTemp get_ordered_score_states(const DependencyGraph &dg);
 
 IMPEXPORT
-ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs);
+ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs,
+                                          const DependencyGraph &dg,
+                                  const DependencyGraphVertexIndex &index);
 
 IMP_END_NAMESPACE
 

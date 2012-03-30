@@ -34,7 +34,7 @@ ContainersTemp DistributeCLASSNAMEsScoreState
 ParticlesTemp DistributeCLASSNAMEsScoreState
 ::get_input_particles() const {
   // not correct, but correct is complicated
-  return input_->get_contained_particles();
+  return input_->get_all_possible_particles();
 }
 ContainersTemp DistributeCLASSNAMEsScoreState
 ::get_input_containers() const {
@@ -52,7 +52,7 @@ void DistributeCLASSNAMEsScoreState
 
 void DistributeCLASSNAMEsScoreState
 ::update_lists_if_necessary() const {
-  if (updated_ && !input_->get_contents_changed()) return;
+  if (updated_ && !input_->get_is_changed()) return;
   updated_=true;
 
   base::Vector<PLURALINDEXTYPE> output(data_.size());

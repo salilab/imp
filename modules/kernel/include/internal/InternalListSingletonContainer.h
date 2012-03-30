@@ -12,8 +12,8 @@
 
 #include "../kernel_config.h"
 #include "container_helpers.h"
-#include "active_container.h"
 #include "ListLikeSingletonContainer.h"
+#include <IMP/base/Pointer.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -21,42 +21,44 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 class IMPEXPORT InternalListSingletonContainer:
   public ListLikeSingletonContainer
 {
-  IMP_ACTIVE_CONTAINER_DECL(InternalListSingletonContainer);
+  typedef ListLikeSingletonContainer P;
  public:
   InternalListSingletonContainer(Model *m, std::string name);
   InternalListSingletonContainer(Model *m, const char *name);
   void add_particle(Particle* vt) {
+    get_model()->reset_dependencies();
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Singleton cannot be nullptr (or None)");
+
     add_to_list(IMP::internal::get_index(vt));
   }
   void add_particle(ParticleIndex vt) {
+    get_model()->reset_dependencies();
     add_to_list(vt);
   }
   void add_particles(const ParticlesTemp &c) {
     if (c.empty()) return;
+    get_model()->reset_dependencies();
     ParticleIndexes cp= IMP::internal::get_index(c);
     add_to_list(cp);
   }
   void remove_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c) {
+    get_model()->reset_dependencies();
     ParticleIndexes cp= IMP::internal::get_index(c);
     update_list(cp);
   }
   void set_particles(ParticleIndexes cp) {
+    get_model()->reset_dependencies();
     update_list(cp);
   }
   void clear_particles() {
+    get_model()->reset_dependencies();
     ParticleIndexes t;
     update_list(t);
   }
-  bool get_is_up_to_date() const {
-    return true;
-  }
   IMP_LISTLIKE_SINGLETON_CONTAINER(InternalListSingletonContainer);
 };
-
-IMP_OBJECTS(InternalListSingletonContainer, InternalListSingletonContainers);
 
 IMP_END_INTERNAL_NAMESPACE
 

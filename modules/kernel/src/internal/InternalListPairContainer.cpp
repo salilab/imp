@@ -16,21 +16,15 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-
-IMP_ACTIVE_CONTAINER_DEF(InternalListPairContainer,);
-
-
 InternalListPairContainer
 ::InternalListPairContainer(Model *m, std::string name):
-  internal::ListLikePairContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
 InternalListPairContainer
 ::InternalListPairContainer(Model *m, const char *name):
-  internal::ListLikePairContainer(m, name){
-  initialize_active_container(m);
+  P(m, name){
 }
 
 
@@ -45,6 +39,7 @@ void InternalListPairContainer::do_show(std::ostream &out) const {
 void InternalListPairContainer
 ::remove_particle_pairs(const ParticlePairsTemp &c) {
   if (c.empty()) return;
+  get_model()->reset_dependencies();
   ParticleIndexPairs cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(base::USAGE) {
@@ -55,26 +50,27 @@ void InternalListPairContainer
   }
 }
 
+ParticlesTemp
+InternalListPairContainer::get_all_possible_particles() const {
+  return IMP::internal::flatten(get());
+}
+
 ParticleIndexPairs
 InternalListPairContainer::get_all_possible_indexes() const {
-    return get_indexes();
-  }
+  return get_indexes();
+}
 
 void InternalListPairContainer::do_before_evaluate() {
-  internal::ListLikePairContainer::do_before_evaluate();
 }
 
-void InternalListPairContainer::do_after_evaluate() {
-  internal::ListLikePairContainer::do_after_evaluate();
-}
 
 ParticlesTemp
-InternalListPairContainer::get_state_input_particles() const {
+InternalListPairContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 
 ContainersTemp
-InternalListPairContainer::get_state_input_containers() const {
+InternalListPairContainer::get_input_containers() const {
   return ContainersTemp();
 }
 

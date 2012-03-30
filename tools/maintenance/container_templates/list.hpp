@@ -50,7 +50,6 @@ public:
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
   /**@}*/
-  IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);
 #else
   IMP_OBJECT(ListCLASSNAMEContainer);

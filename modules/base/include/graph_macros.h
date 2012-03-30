@@ -25,7 +25,10 @@
   typedef boost::graph Name
 
 #elif defined(SWIG)
-#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  class Name
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  \
+  class Name;                                                  \
+  class Name##VertexIndex {};                                  \
+  inline Name##VertexIndex get_vertex_index(const Name &g)
 #else
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
