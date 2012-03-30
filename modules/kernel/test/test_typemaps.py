@@ -286,7 +286,7 @@ class ParticleTests(IMP.test.TestCase):
                     'get_is_part_of_model',
                     'set_model',
                     'get_inputs',
-                    'get_outputs'
+                    'get_outputs',
                     'do_get_inputs',
                     'do_get_outputs'
                     ]
