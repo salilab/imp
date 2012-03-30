@@ -20,7 +20,6 @@
 #include <iostream>
 
 IMP_BEGIN_NAMESPACE
-class Model;
 //! ScoreStates maintian invariants in the Model.
 /** ScoreStates allow actions to be taken before and after the restraint
     evaluation process. Such code can be used to, for example:
