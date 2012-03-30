@@ -33,6 +33,7 @@ Restraints _ConstRestraint::do_create_decomposition() const {
 }
 
 
+
 double _ConstSingletonScore::evaluate(Particle *,
                                       IMP::DerivativeAccumulator *) const {
   return v_;
@@ -130,6 +131,11 @@ std::string _test_ifile_overloaded(base::TextInput a, int) {
 }
 std::string _test_ofile_overloaded(base::TextOutput a, int) {
   return _test_ofile(a);
+}
+
+IMPEXPORT ModelObjectsTemp
+_pass_model_objects(const ModelObjectsTemp &p) {
+  return p;
 }
 
 
