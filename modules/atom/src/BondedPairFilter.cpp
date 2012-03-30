@@ -30,8 +30,8 @@ ParticlesTemp BondedPairFilter
 
 
 ContainersTemp
-BondedPairFilter::get_input_containers(Particle*p) const {
-  return ContainersTemp(1, p);
+BondedPairFilter::get_input_containers(Particle*) const {
+  return ContainersTemp(1);
 }
 void BondedPairFilter::do_show(std::ostream &) const {
 }
