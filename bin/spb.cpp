@@ -138,8 +138,11 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // print statistics
  double myscore     = m->evaluate(false);
  int    myindex     = index[myrank];
- double fretr_score = rst_map["FRET_R"]->evaluate(false);
- double y2h_score   = rst_map["Y2H"]->evaluate(false);
+ double fretr_score;
+ double y2h_score;
+
+ if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
+ if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
  fprintf(logfile,"%10d %3d  %12.6f  %12.6f %12.6f  %5d %5d\n",
      imc,myindex,myscore,fretr_score,y2h_score,
