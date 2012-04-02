@@ -62,11 +62,6 @@ namespace {
                          const DependencyGraph &dg,
                          const DependencyGraphVertexIndex &index) {
   IMP_FUNCTION_LOG;
-  // find p in graph, ick
-  DependencyGraphConstVertexName dpm= boost::get(boost::vertex_name, dg);
-  std::pair<DependencyGraphTraits::vertex_iterator,
-    DependencyGraphTraits::vertex_iterator> be
-    = boost::vertices(dg);
   boost::vector_property_map<int> color(boost::num_vertices(dg));
   for (unsigned int i=0; i< all.size(); ++i) {
     IMP_USAGE_CHECK(index.find(all[i]) != index.end(),
