@@ -51,7 +51,7 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 
 public:
   //! Get the individual particles from the passed SingletonContainer
-  AllPairContainer(SingletonContainer *c,
+  AllPairContainer(SingletonContainerInput c,
                    std::string name="AllPairContainer%1%");
 
   IMP_PAIR_CONTAINER(AllPairContainer);
