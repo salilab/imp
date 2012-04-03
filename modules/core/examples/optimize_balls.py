@@ -23,7 +23,7 @@ IMP.set_log_level(IMP.SILENT)
 aps=[]
 filters=[]
 movers=[]
-rss= IMP.RestraintSet(m, "bonds")
+rss= IMP.RestraintSet(m, 1.0, "bonds")
 for i in range(0,ni):
     for j in range(0,nj):
         base=IMP.algebra.Vector3D(i,j,0)
@@ -63,7 +63,7 @@ mc=IMP.core.MonteCarlo(m)
 sm= IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
-mc.set_restraints(rs)
+mc.set_restraints([rss])
 isf= IMP.core.IncrementalScoringFunction(aps, [rss])
 # use special incremental support for the non-bonded part
 isf.add_close_pair_score(sps, 0, aps, filters)
