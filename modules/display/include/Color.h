@@ -165,6 +165,15 @@ inline Color get_interpolated_rgb(const Color &a,
                (1-f)*a.get_blue()+f*b.get_blue());
 }
 
+/** Return a number suitable for being passed to a color
+    map that is gotten by linearly scaling between the
+    passed min and max (and truncating values that are out
+    of range).
+*/
+IMPDISPLAYEXPORT double get_linear_color_map_value(double min,
+                                                   double max,
+                                                   double value);
+
 /** \name Colormaps
     These functions map a number in the interval [0,1]
     to a color using some color map.
