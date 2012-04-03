@@ -103,5 +103,15 @@ Color get_gnuplot_color(double f) {
   return get_color_map_color(f, colors, sizeof(colors)/sizeof(Color));
 }
 
+double get_linear_color_map_value(double min,
+                                  double max,
+                                  double value) {
+  IMP_USAGE_CHECK(min < max, "The min value is not less than the max value"
+                  << min << " !< " << max);
+  double sv= (value-min)/(max-min);
+  if (sv < 0) return 0.0;
+  else if (sv >1.0) return 1.0;
+  else return sv;
+}
 
 IMPDISPLAY_END_NAMESPACE
