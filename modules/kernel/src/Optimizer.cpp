@@ -42,6 +42,7 @@ Optimizer::~Optimizer()
 
 void Optimizer::set_model(Model *m) {
   cache_= m->create_model_scoring_function();
+  cache_->set_was_used(true);
   model_=m;
 }
 
