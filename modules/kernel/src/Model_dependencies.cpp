@@ -91,7 +91,7 @@ void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
+  IMP_LOG(TERSE, "Computing restraint dependencies");
   DependencyGraph dg
     = get_dependency_graph(this);
   DependencyGraphVertexIndex index= get_vertex_index(dg);
