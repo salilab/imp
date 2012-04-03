@@ -23,7 +23,7 @@ IMP.set_log_level(IMP.SILENT)
 aps=[]
 filters=[]
 movers=[]
-rss= IMP.RestraintSet(m, "bonds")\
+rss= IMP.RestraintSet(m, "bonds")
 for i in range(0,ni):
     for j in range(0,nj):
         base=IMP.algebra.Vector3D(i,j,0)
