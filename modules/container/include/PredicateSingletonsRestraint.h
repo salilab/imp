@@ -14,7 +14,7 @@
 
 #include "container_config.h"
 
-#include "ListSingletonContainer.h"
+#include <IMP/internal/InternalDynamicListSingletonContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/SingletonPredicate.h>
 #include "generic.h"
@@ -32,10 +32,11 @@ public Restraint
 {
   OwnerPointer<SingletonPredicate> predicate_;
   OwnerPointer<SingletonContainer> input_;
-  typedef compatibility::map<unsigned int, Pointer<ListSingletonContainer> >
+  typedef IMP::internal::InternalDynamicListSingletonContainer List;
+  typedef compatibility::map<unsigned int, Pointer<List> >
       Map;
   Map containers_;
-  Pointer<ListSingletonContainer> unknown_container_;
+  Pointer<List> unknown_container_;
   Restraints restraints_;
   mutable bool updated_;
   bool error_on_unknown_;
@@ -49,23 +50,25 @@ public:
   /** This version uses the container::create_restraint() function and so
       is more efficient than the non-template version.*/
   template <class Score>
-      void set_score(int predicate_value, Score *score) {
+  void set_score(int predicate_value, Score *score) {
     IMP_USAGE_CHECK(get_is_part_of_model(),
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");
-    IMP_NEW(ListSingletonContainer, c, (get_model()));
+    IMP_NEW(List, c, (input_,
+                      score->get_name()+" input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_model(get_model());
     containers_[predicate_value]=c;
   }
-template <class Score>
-      void set_unknown_score( Score *score) {
+  template <class Score>
+  void set_unknown_score( Score *score) {
   // make sure it gets cleaned up if it is a temporary
-  Pointer<Score> pscore(score);
+    Pointer<Score> pscore(score);
     IMP_USAGE_CHECK(get_is_part_of_model(),
                     "You must add this restraint to the model"
                     << " first, sorry, this can be fixed.");
-    IMP_NEW(ListSingletonContainer, c, (get_model()));
+    IMP_NEW(List, c, (input_,
+                      score->get_name()+" input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_model(get_model());
     unknown_container_=c;
