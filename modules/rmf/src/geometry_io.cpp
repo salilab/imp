@@ -80,6 +80,7 @@ namespace {
   void process(display::SphereGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
+    sg->set_was_used(true);
     algebra::Sphere3D s= sg->get_geometry();
     RMF::Ball b= bf.get(cur, frame);
     b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
@@ -90,6 +91,7 @@ namespace {
   void process(display::CylinderGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
+    sg->set_was_used(true);
     algebra::Cylinder3D s= sg->get_geometry();
     RMF::Cylinder c= cf.get(cur, frame);
     c.set_radius(s.get_radius());
@@ -106,6 +108,7 @@ namespace {
   void process(display::SegmentGeometry *sg, RMF::NodeHandle cur, int frame,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP_HANDLE_COLOR;
+    sg->set_was_used(true);
     algebra::Segment3D s= sg->get_geometry();
     RMF::Segment c= sf.get(cur, frame);
     RMF::FloatsList coords(3, RMF::Floats(2));
