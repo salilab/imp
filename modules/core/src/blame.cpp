@@ -17,7 +17,6 @@ namespace {
 typedef compatibility::map<Particle*, Particle*> ControlledBy;
 void distribute_blame(Restraint *r, const ControlledBy &cb,
                   FloatKey fk, double weight) {
-  IMP_LOG(TERSE, "Distributing blame for " << Showable(r) << std::endl);
   RestraintSet *rs= dynamic_cast<RestraintSet*>(r);
   if (rs) {
     weight*= rs->get_weight();
