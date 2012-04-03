@@ -167,10 +167,10 @@ namespace {
     cur.set_association(r);
     //
     ParticlesTemp ip= r->get_input_particles();
-    double s=r->evaluate(false);
-    cur.set_value(sk, s, 0);
+    //double s=r->unprotected_evaluate(NULL);
+    //cur.set_value(sk, s, -1);
 
-    base::Pointer<Restraint> rd= r->create_current_decomposition();
+    /*base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
     if (rs) {
@@ -183,7 +183,7 @@ namespace {
         double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
         rc.set_value(sk, score, 0);
       }
-    }
+      }*/
     set_particles(cur, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
   }
 }
@@ -205,7 +205,7 @@ namespace {
     RMF::NodeHandle rn= f.get_node_from_association(r);
     Index index;
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
-    double s=r->evaluate(false);
+    double s=r->unprotected_evaluate(false);
     rn.set_value(sk, s, frame);
     base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
@@ -225,6 +225,7 @@ namespace {
 void save_frame(RMF::FileHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  r->get_model()->update();
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
   f.flush();
 }
