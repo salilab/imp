@@ -26,7 +26,7 @@ IMPRMF_BEGIN_NAMESPACE
     is not found.
     @{
 */
-/** Add a restraint to the file.*/
+/** Add a restraint to the file. This does not save the score.*/
 IMPRMFEXPORT void add_restraint(RMF::FileHandle parent, Restraint *r);
 /** Add the current score of the restraint to the given frame.*/
 IMPRMFEXPORT void save_frame(RMF::FileHandle parent, int frame, Restraint *r);
