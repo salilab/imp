@@ -218,13 +218,17 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double r_value,
- FretParameters Fret, double kappa, bool use_GFP)
+ FretParameters Fret, std::string cell_type, double kappa, bool use_GFP)
 {
  std::string name=protein_a+"-"+residues_a+" "+protein_b+"-"+residues_b;
+ double multi=1.0;
  atom::Hierarchies hhs;
  hhs.push_back(hs[0]);
- hhs.push_back(hs[1]);
- hhs.push_back(hs[2]);
+ if(cell_type=="rhombus"){
+  hhs.push_back(hs[1]);
+  hhs.push_back(hs[2]);
+  multi=7.0;
+ }
  atom::Selection sa=atom::Selection(hhs);
  atom::Selection sb=atom::Selection(hs);
  if(use_GFP){
@@ -238,7 +242,7 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
   IMP_NEW(membrane::FretrRestraint,fr,(p1,p2,Fret.R0,Fret.Gamma,
-   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name,7.0));
+   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name,multi));
   return fr.release();
  } else {
   sa.set_molecule(protein_a);
@@ -251,7 +255,7 @@ Pointer<membrane::FretrRestraint> NEW_fret_restraint
   Particles p2=sb.get_selected_particles();
   if(p1.size()==0 || p2.size()==0) {return NULL;}
   IMP_NEW(membrane::FretrRestraint,fr,(p1,p2,Fret.R0,Fret.Gamma,
-   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name,7.0));
+   Fret.Ida,Fret.Pbleach0,Fret.Pbleach1,r_value,kappa,name,multi));
   return fr.release();
  }
 }

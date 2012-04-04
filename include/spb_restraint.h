@@ -58,7 +58,7 @@ IMPMEMBRANEEXPORT Pointer<membrane::FretrRestraint> NEW_fret_restraint
 (Model *m, atom::Hierarchies& hs,
  std::string protein_a, std::string residues_a,
  std::string protein_b, std::string residues_b, double r_value,
- FretParameters Fret, double kappa, bool use_GFP);
+ FretParameters Fret, std::string cell_type, double kappa, bool use_GFP);
 
 IMPMEMBRANEEXPORT Pointer<container::MinimumPairRestraint> y2h_restraint
 (Model *m,

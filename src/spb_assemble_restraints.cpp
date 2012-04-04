@@ -143,7 +143,8 @@ if(mydata.add_fret && mydata.use_new_fret_model){
 // add restraint
   fret->add_restraint(NEW_fret_restraint(m, all_mol,
                             name_d, ter_d, name_a, ter_a, fretr_exp,
-                            mydata.Fret, mydata.kappa, mydata.add_GFP));
+                            mydata.Fret,  mydata.cell_type,
+                            mydata.kappa, mydata.add_GFP));
  }
 // close file
  fretfile.close();
