@@ -408,7 +408,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         self.assertRaises(TypeError, p.set_interpolant, gp, [])
         self.assertRaises(TypeError, p.set_interpolant, gp, {'test':1.0})
         self.assertEqual(p.set_interpolant(gp,{'sigma':s},
-            {'mean':None,'covariance':None},IMP.Model()), None)
+            {'mean':None,'covariance':None},'test',IMP.Model(), None), None)
 
     def test_get_params(self):
         "get_params should return a dict"
@@ -419,7 +419,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         self.assertEqual(p.get_params(),{'sigma':3.0})
 
     def test_get_mean_defaults(self):
@@ -433,7 +433,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         test = p.get_mean()
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
@@ -461,7 +461,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         test = p.get_mean(colwise=True)
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = numpy.array(map(gp.get_posterior_mean,
@@ -491,7 +491,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         test = p.get_mean()
         expected_q = numpy.linspace(0,0.02,num=200)
         expected_I = map(lambda a:
@@ -521,7 +521,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         test = p.get_mean(num=100)
         expected_q = numpy.linspace(0,0.02,num=100)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
@@ -544,7 +544,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         test = p.get_mean(num=100,qmin=1.5,qmax=1.67)
         expected_q = numpy.linspace(1.5,1.67,num=100)
         expected_I = map(gp.get_posterior_mean,[[i] for i in expected_q])
@@ -567,7 +567,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         test = p.get_mean(qvalues=expected_q)
@@ -600,7 +600,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -631,7 +631,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -662,7 +662,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -693,7 +693,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -725,7 +725,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -809,7 +809,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -835,7 +835,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -861,7 +861,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)
@@ -889,7 +889,7 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        p.set_interpolant(gp,{'sigma':s}, functions, IMP.Model())
+        p.set_interpolant(gp,{'sigma':s}, functions, 'test', IMP.Model(), None)
         expected_q=numpy.random.uniform(0,[1]*10)
         expected_q.sort()
         p.new_flag("test",bool)

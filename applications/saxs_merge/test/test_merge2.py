@@ -62,7 +62,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         functions={}
         functions['mean']=MockFunction()
         functions['covariance']=MockFunction()
-        profile.set_interpolant(gp, {'sigma':s}, functions, m)
+        profile.set_interpolant(gp, {'sigma':s}, functions, 'test', m, None)
         return gp
 
     def test_rescaling_normal(self):
@@ -81,7 +81,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last')
+        args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last',
+                baverage=None)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -112,7 +113,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=False, cnpoints=100, creference='last')
+        args=MockArgs(verbose=0, cnormal=False, cnpoints=100,
+                creference='last',baverage=None)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -154,7 +156,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         gp3=self.set_interpolant(p3,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification
-        args=MockArgs(verbose=0, dalpha=0.05)
+        args=MockArgs(verbose=0, dalpha=0.05, baverage=None)
         self.merge.classification([p1,p2,p3],args)
         #p1
         self.assertTrue(
@@ -213,16 +215,19 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification and merging
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
-                dalpha=0.05, eextrapolate=0, enoextrapolate=False)
+                dalpha=0.05, eextrapolate=0, enoextrapolate=False,
+                baverage=False, ecomp=False, eoptimize='Zero')
         self.merge.classification([p1,p2,p3],args)
-        self.merge.find_fit = lambda a,b,c,d,e: b
-        def thing(b,c,e,d):
+        def find_fit(a,b,c,model_comp=None, mean_function=None):
+            return 'test',b,None
+        self.merge.find_fit = find_fit
+        def setup_process(b,c,e):
             m=IMP.Model()
             s=IMP.isd.Scale.setup_particle(IMP.Particle(m),3.0)
             gp=MockGP(1,10)
             functions={'mean':MockFunction(),'covariance':MockFunction()}
             return m,{'sigma':s},functions,gp
-        self.merge.setup_process = thing
+        self.merge.setup_process = setup_process
         merge, profiles, args = self.merge.merging([p1,p2,p3],args)
         #test
         test=merge.get_data(colwise=True)
