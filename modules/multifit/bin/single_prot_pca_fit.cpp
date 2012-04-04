@@ -197,8 +197,6 @@ int main(int argc, char **argv) {
 
 
   Model *mdl = new Model();
-  FloatKey r_key = core::XYZR::get_radius_key();
-  FloatKey w_key = atom::Mass::get_mass_key();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());
   core::RigidBody rb=atom::setup_as_rigid_body(mh);
