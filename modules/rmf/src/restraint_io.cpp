@@ -205,7 +205,7 @@ namespace {
     RMF::NodeHandle rn= f.get_node_from_association(r);
     Index index;
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
-    double s=r->unprotected_evaluate(false);
+    double s=r->unprotected_evaluate(nullptr);
     rn.set_value(sk, s, frame);
     base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
@@ -216,7 +216,7 @@ namespace {
       rs->get_restraint(i)->set_was_used(true);
       RMF::NodeHandle rc=get_child(rn, rs->get_restraint(i), index,
                               IMP_HDF5_PASS_RESTRAINT_KEYS);
-      double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
+      double score = rs->get_restraint(i)->unprotected_evaluate(nullptr);
       rc.set_value(sk, score, frame);
     }
   }
