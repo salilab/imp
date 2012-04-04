@@ -5,6 +5,7 @@ import optparse
 from numpy import *
 import copy
 from scipy.stats import t as student_t
+import glob
 
 import IMP
 import IMP.isd
@@ -671,10 +672,16 @@ def parse_filenames(fnames, defaultvalue=10):
     for fname in fnames:
         if '=' in fname:
             tokens = fname.split()
-            files.append(tokens[0])
+            paths = glob.glob(tokens[0])
+            if len(paths) == 0:
+                sys.exit("File %s not found!" % fname)
+            files.extend(paths)
             Nreps.append(int(tokens[1]))
         else:
-            files.append(fname)
+            paths = glob.glob(fname)
+            if len(paths) == 0:
+                sys.exit("File %s not found!" % fname)
+            files.extend(paths)
             Nreps.append(defaultvalue)
     return files, Nreps
 
