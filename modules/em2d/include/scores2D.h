@@ -13,6 +13,7 @@
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/Object.h"
 #include "IMP/VersionInfo.h"
+#include <IMP/base/warning_macros.h>
 #include <functional>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -76,7 +77,7 @@ protected:
 
 private:
   virtual double get_private_score(Image *image, Image *projection) const = 0;
-  virtual void set_variance_image_private(Image *image) {};
+  virtual void set_variance_image_private(Image *image) {IMP_UNUSED(image);};
 
 
 };
