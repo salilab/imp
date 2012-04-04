@@ -38,7 +38,6 @@ Particles density2particles(DensityMap *dmap, Float threshold,
   Float x,y,z,val;
   Float voxel_size=dmap->get_header()->get_spacing();
   Float r=sqrt(3.*voxel_size*voxel_size);
-  FloatKey dens_key = Voxel::get_density_key();
   long ind;
   const DensityHeader *dhed = dmap->get_header();
   for(int i=0;i<dhed->get_nx();i=i+1*step){

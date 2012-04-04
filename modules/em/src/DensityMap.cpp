@@ -641,13 +641,9 @@ void DensityMap::add(const DensityMap *other) {
 
 
   int ox_orig_ind,oy_orig_ind,oz_orig_ind;
-  int ox_top_ind, oy_top_ind, oz_top_ind;
   ox_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[0],0);
   oy_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[1],1);
   oz_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[2],2);
-  ox_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[0],0);
-  oy_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[1],1);
-  oz_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[2],2);
 
   long my_znxny,other_znxny,my_znxny_ynx,other_znxny_ynx;
   long my_nxny=header_.get_nx()*header_.get_ny();
@@ -1127,7 +1123,7 @@ DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   //now fill the density
   const DensityHeader *c_header = cropped_dmap->get_header();
   long z_temp,zy_temp,c_z_temp,c_zy_temp;
-  int c_nx,c_ny,c_nz;
+  int c_nx,c_ny;
   //the bounding box in the original map
   int z_start,y_start,x_start;
   int z_end,y_end,x_end;
@@ -1137,7 +1133,7 @@ DensityMap* DensityMap::get_cropped(const algebra::BoundingBox3D &bb) {
   x_end=get_dim_index_by_location(snapped_bb.get_corner(1),0);
   y_end=get_dim_index_by_location(snapped_bb.get_corner(1),1);
   z_end=get_dim_index_by_location(snapped_bb.get_corner(1),2);
-  c_nx=c_header->get_nx();c_ny=c_header->get_ny();c_nz=c_header->get_nz();
+  c_nx=c_header->get_nx();c_ny=c_header->get_ny();
   for(int iz=z_start;iz<z_end;iz++){ //z slowest
     z_temp = iz*header_.get_nx()*header_.get_ny();
     c_z_temp = (iz-z_start)*c_nx*c_ny;
