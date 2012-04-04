@@ -64,7 +64,6 @@ void FFTFitting::pad_resolution_map() {
 void FFTFitting::prepare_kernels() {
   double sigma1d = resolution_ / (2.0*spacing_*sqrt(3.0));
   unsigned ext_ga_save;
-  unsigned long nvox_ga_save;
   double *phi_ga_save, *phi_fx_save;
   double sigma_factor=0;
   //create Gaussian kernels, modify sigma factor arguments as necessary
@@ -82,7 +81,6 @@ void FFTFitting::prepare_kernels() {
   for(int i=0;i<g2.get_size();i++) {
     phi_ga_save[i]=g2.get_data()[i];
   }
-  nvox_ga_save=g2.get_size();
   ext_ga_save=g2.get_extent();
 
   // create filter kernel (e.g. Laplacian) and indicate sigma factor
