@@ -44,6 +44,11 @@ public:
   }
 #endif
 
+  Floats get_bias_asfloats() const {
+    Floats  buffer(bias_.get(), bias_.get()+nbin_);
+   return buffer;
+  }
+
   int get_nbin() const {
    return nbin_;
   }
