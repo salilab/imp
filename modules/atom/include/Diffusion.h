@@ -40,7 +40,7 @@ class IMPATOMEXPORT Diffusion:
                           const algebra::Vector3D &v,
                           Float D) {
     XYZ::setup_particle(p, v);
-    p->add_attribute(get_d_key(), D);
+    p->add_attribute(get_diffusion_coefficient_key(), D);
     return Diffusion(p);
   }
 
@@ -52,7 +52,7 @@ class IMPATOMEXPORT Diffusion:
                           Float D) {
     IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
               "Particle must already be an XYZ particle");
-    p->add_attribute(get_d_key(), D);
+    p->add_attribute(get_diffusion_coefficient_key(), D);
     return Diffusion(p);
   }
 
@@ -64,26 +64,33 @@ class IMPATOMEXPORT Diffusion:
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Particle *p) {
     return XYZ::particle_is_instance(p)
-      && p->has_attribute(get_d_key());
+      && p->has_attribute(get_diffusion_coefficient_key());
   }
 
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Model *m, ParticleIndex p) {
-    return m->get_has_attribute(get_d_key(), p);
+    return m->get_has_attribute(get_diffusion_coefficient_key(), p);
   }
-
+#ifndef IMP_DOXYGEN
   void set_d(double d) {
-    get_particle()->set_value(get_d_key(), d);
+    set_diffusion_coefficient(d);
   }
   double get_d() const {
-    return get_particle()->get_value(get_d_key());
+    return get_diffusion_coefficient();
   }
-
+#endif
+  void set_diffusion_coefficient(double d) {
+    get_particle()->set_value(get_diffusion_coefficient_key(), d);
+  }
+  double get_diffusion_coefficient() const {
+    return get_particle()->get_value(get_diffusion_coefficient_key());
+  }
   //! Get the D key
-  static FloatKey get_d_key();
+  static FloatKey get_diffusion_coefficient_key();
+
 };
 
-IMPATOMEXPORT double get_d_from_cm2_per_second(double din);
+IMPATOMEXPORT double get_diffusion_coefficient_from_cm2_per_second(double din);
 
 IMP_DECORATORS(Diffusion, Diffusions, core::XYZs);
 
@@ -101,26 +108,28 @@ class IMPATOMEXPORT RigidBodyDiffusion: public Diffusion {
   /** All diffusion coefficients are determined from the radius */
   static RigidBodyDiffusion setup_particle(Particle *p);
 
-  double get_d_rotation() const {
-    return get_particle()->get_value(get_d_rotation_key());
+  double get_rotational_diffusion_coefficient() const {
+    return get_particle()
+        ->get_value(get_rotational_diffusion_coefficient_key());
   }
-  void set_d_rotation(double d) const {
-    return get_particle()->set_value(get_d_rotation_key(), d);
+  void set_rotational_diffusion_coefficient(double d) const {
+    return get_particle()
+        ->set_value(get_rotational_diffusion_coefficient_key(), d);
   }
 
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Particle *p) {
     return XYZ::particle_is_instance(p)
-      && p->has_attribute(get_d_rotation_key());
+      && p->has_attribute(get_rotational_diffusion_coefficient_key());
   }
 
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Model *m, ParticleIndex p) {
-    return m->get_has_attribute(get_d_rotation_key(), p);
+    return m->get_has_attribute(get_rotational_diffusion_coefficient_key(), p);
   }
 
   //! Get the D key
-  static FloatKey get_d_rotation_key();
+  static FloatKey get_rotational_diffusion_coefficient_key();
 };
 
 

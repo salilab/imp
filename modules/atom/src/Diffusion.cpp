@@ -16,7 +16,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 
 
-FloatKey Diffusion::get_d_key() {
+FloatKey Diffusion::get_diffusion_coefficient_key() {
   static FloatKey k("D");
   return k;
 }
@@ -26,7 +26,8 @@ Diffusion Diffusion::setup_particle(Particle *p) {
   IMP_USAGE_CHECK(core::XYZR::particle_is_instance(p),
                   "Particle must already be an XYZR particle");
   double r= core::XYZR(p).get_radius();
-  p->add_attribute(get_d_key(), get_einstein_diffusion_coefficient(r));
+  p->add_attribute(get_diffusion_coefficient_key(),
+                   get_einstein_diffusion_coefficient(r));
   return Diffusion(p);
 }
 
@@ -34,11 +35,11 @@ Diffusion Diffusion::setup_particle(Particle *p) {
 void Diffusion::show(std::ostream &out) const
 {
   XYZ::show(out);
-  out << "D= " << get_d() << "A^2/fs";
+  out << "D= " << get_diffusion_coefficient() << "A^2/fs";
 
 }
 
-double get_d_from_cm2_per_second(double din) {
+double get_diffusion_coefficient_from_cm2_per_second(double din) {
   unit::SquareCentimeterPerSecond dinv(din);
   unit::SquareAngstromPerFemtosecond ret=dinv;
   return ret.get_value();
@@ -49,11 +50,11 @@ RigidBodyDiffusion RigidBodyDiffusion::setup_particle(Particle *p) {
     Diffusion::setup_particle(p);
   }
   core::XYZR d(p);
-  p->add_attribute(get_d_rotation_key(),
+  p->add_attribute(get_rotational_diffusion_coefficient_key(),
                 get_einstein_rotational_diffusion_coefficient(d.get_radius()));
   return RigidBodyDiffusion(p);
 }
-FloatKey RigidBodyDiffusion::get_d_rotation_key() {
+FloatKey RigidBodyDiffusion::get_rotational_diffusion_coefficient_key() {
   static FloatKey k("D rotation");
   return k;
 }
@@ -62,7 +63,8 @@ FloatKey RigidBodyDiffusion::get_d_rotation_key() {
 void RigidBodyDiffusion::show(std::ostream &out) const
 {
   Diffusion::show(out);
-  out << "D rotation= " << get_d() << "cm^2/sec";
+  out << "D rotation= " << get_rotational_diffusion_coefficient()
+      << "1/sec";
 
 }
 

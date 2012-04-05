@@ -65,8 +65,9 @@ namespace {
     Diffusion d(m, p);
     unit::Femtonewton nforce(get_force_in_femto_newtons(-d.get_derivative(i)));
     //unit::Angstrom R(sampler_());
+    double dd=d.get_diffusion_coefficient();
     unit::Angstrom force_term(nforce*
-                              unit::SquareAngstromPerFemtosecond(d.get_d())
+                              unit::SquareAngstromPerFemtosecond(dd)
                               *dtikt);
     /*if (force_term > unit::Angstrom(.5)) {
       std::cout << "Forces on " << _1->get_name() << " are "
@@ -87,7 +88,8 @@ namespace {
     unit::Joule nforce
       = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
     //unit::Angstrom R(sampler_());
-    double force_term=unit::strip_units(d.get_d_rotation()*(nforce*dtikt));
+    double dr=d.get_rotational_diffusion_coefficient();
+    double force_term=unit::strip_units(dr*(nforce*dtikt));
     /*if (force_term > unit::Angstrom(.5)) {
       std::cout << "Forces on " << _1->get_name() << " are "
       << force << " and " << nforce
@@ -100,16 +102,16 @@ namespace {
   unit::Angstrom get_sigma(Model *m, ParticleIndex p,
                            unit::Femtosecond dtfs) {
     // 6.0 since we are picking radius rather than the coordinates
-    return sqrt(6.0*unit::SquareAngstromPerFemtosecond(Diffusion(m,
-                                                                 p).get_d())
+    double dd=Diffusion(m,
+                        p).get_diffusion_coefficient();
+    return sqrt(6.0*unit::SquareAngstromPerFemtosecond(dd)
                 *dtfs);
   }
   double get_rotational_sigma(Model *m, ParticleIndex p,
                               unit::Femtosecond dtfs) {
-    return sqrt(6.0*unit::PerFemtosecond(RigidBodyDiffusion(m,
-                                                             p)
-                                         .get_d_rotation())
-                *dtfs);
+    double dr=RigidBodyDiffusion(m, p)
+        .get_rotational_diffusion_coefficient();
+    return sqrt(6.0*unit::PerFemtosecond(dr)*dtfs);
   }
 }
 
