@@ -188,4 +188,53 @@ double get_diffusion_angle(double D, double dtfs) {
   return a;
 }
 
+namespace {
+  template <class It>
+  double get_diffusion_coefficient(It b, It e,
+                                   int index,
+                                   double dt) {
+    double sum=0;
+    for (It c= b; c != e; ++c) {
+      sum+=(*c)[index];
+    }
+    double average= sum/std::distance(b,e);
+    double stdsum=0;
+    for (It c= b; c != e; ++c) {
+      stdsum+=algebra::get_squared((*c)[index]-average);
+    }
+    double std= stdsum/std::distance(b,e);
+    // unit::Angstrom d= sqrt(6.0*unit::SquareAngstromPerFemtosecond(D)
+    //                        *unit::Femtosecond(dtfs));
+    // d^2= 6*D*dtfs
+    // D= d^2/6dt
+    return std/(2.0*dt);
+  }
+}
+
+double
+get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
+                          double dt) {
+  algebra::Vector3D Ds;
+  for (unsigned int i=0; i< 3; ++i) {
+    Ds[i]= get_diffusion_coefficient(displacements.begin(),
+                                     displacements.end(), i,  dt);
+  }
+  IMP_LOG(TERSE, "Diffusion coefficients are " << Ds << std::endl);
+  int len=displacements.size()/2;
+  algebra::Vector3D Ds0;
+  for (unsigned int i=0; i< 3; ++i) {
+    Ds0[i]= get_diffusion_coefficient(displacements.begin(),
+                                      displacements.begin()+len, i, dt);
+  }
+  algebra::Vector3D Ds1;
+  for (unsigned int i=0; i< 3; ++i) {
+    Ds1[i]= get_diffusion_coefficient(displacements.begin()+len,
+                                      displacements.end(), i, dt);
+  }
+  IMP_LOG(TERSE, "Partial coefficients are " << Ds0 << " and "
+          << Ds1 << std::endl);
+  return std::accumulate(Ds1.coordinates_begin(),
+                         Ds1.coordinates_end(), 0.0)/3.0;
+}
+
 IMPATOM_END_NAMESPACE
