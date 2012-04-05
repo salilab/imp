@@ -255,6 +255,39 @@ void WriteAssignmentContainer::add_assignment(const Assignment& a) {
 }
 
 
+/// Capped writer
+CappedAssignmentContainer
+::CappedAssignmentContainer(AssignmentContainer *c,
+                                 int max,
+                          std::string name):
+  P(name),
+  contained_(c),
+  max_(max){
+}
+
+void CappedAssignmentContainer::check_number() const {
+  if (get_number_of_assignments() > max_) {
+    IMP_THROW("Too many assignments", ValueException);
+  }
+}
+
+
+
+unsigned int CappedAssignmentContainer::get_number_of_assignments() const {
+  return contained_->get_number_of_assignments();
+}
+
+Assignment CappedAssignmentContainer::get_assignment(unsigned int i) const {
+  return contained_->get_assignment(i);
+}
+
+
+void CappedAssignmentContainer::add_assignment(const Assignment& a) {
+  contained_->add_assignment(a);
+  check_number();
+}
+
+
 ///
 
 ReadAssignmentContainer

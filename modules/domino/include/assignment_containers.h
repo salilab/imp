@@ -67,6 +67,8 @@ class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
   int width_;
  public:
   PackedAssignmentContainer(std::string name="PackedAssignmentsContainer %1%");
+  PackedAssignmentContainer(int max,
+                            std::string name="PackedAssignmentsContainer %1%");
   IMP_ASSIGNMENT_CONTAINER(PackedAssignmentContainer);
 };
 
@@ -349,6 +351,27 @@ class IMPDOMINOEXPORT ClusteredAssignmentContainer:
   }
   IMP_ASSIGNMENT_CONTAINER(ClusteredAssignmentContainer);
 };
+
+
+
+
+/** This is a wrapper for an AssignmentContainer that throws a ValueException
+    if more than a certain number of states are added.*/
+class IMPDOMINOEXPORT CappedAssignmentContainer:
+  public AssignmentContainer {
+  typedef AssignmentContainer P;
+  Pointer<AssignmentContainer> contained_;
+  unsigned int max_;
+  void check_number() const;
+ public:
+  CappedAssignmentContainer(AssignmentContainer *contained,
+                           int max_states,
+                           std::string name);
+  IMP_ASSIGNMENT_CONTAINER_INLINE(CappedAssignmentContainer,
+                                  IMP_UNUSED(out),{
+                                  });
+};
+
 
 
 IMPDOMINO_END_NAMESPACE
