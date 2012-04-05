@@ -18,6 +18,8 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+//#define IMP_GRID_CPF_CHECKS
+
 inline bool get_interiors_intersect(const algebra::Vector3D &v,
                                     double ra, double rb) {
   double sr= ra+rb;
@@ -427,7 +429,7 @@ struct Helper {
           }
         }
       }
-
+#ifdef IMP_GRID_CPF_CHECKS
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
           for (unsigned int j=0; j< k; ++j) {
@@ -439,7 +441,7 @@ struct Helper {
           }
         }
       }
-
+#endif
       for (unsigned int j=0; j< i; ++j) {
         if (bin_contents_g[j].empty()) continue;
         if (bin_contents_g[i].size() < 100
@@ -470,7 +472,7 @@ struct Helper {
             }
           }
         }
-
+#ifdef IMP_GRID_CPF_CHECKS
         IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
             for (unsigned int l=0; l< k; ++l) {
@@ -482,8 +484,10 @@ struct Helper {
             }
           }
         }
+#endif
       }
     }
+#ifdef IMP_GRID_CPF_CHECKS
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
       for (It it0= ps.b_; it0 != ps.e_; ++it0) {
         for (It it1= ps.b_; it1 != it0; ++it1) {
@@ -494,6 +498,7 @@ struct Helper {
         }
       }
     }
+#endif
     return true;
   }
 
@@ -580,7 +585,7 @@ struct Helper {
             }
           }
         }
-
+#ifdef IMP_GRID_CPF_CHECKS
         IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
           for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
             for (unsigned int l=0; l< bin_contents_q[j].size(); ++l) {
@@ -592,8 +597,10 @@ struct Helper {
             }
           }
         }
+#endif
       }
     }
+#ifdef IMP_GRID_CPF_CHECKS
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
        for (ItG it0= psg.b_; it0 != psg.e_; ++it0) {
          for (ItQ it1= psq.b_; it1 != psq.e_; ++it1) {
@@ -604,6 +611,7 @@ struct Helper {
         }
       }
     }
+#endif
     return true;
   }
 };
