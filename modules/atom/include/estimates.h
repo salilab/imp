@@ -125,6 +125,13 @@ IMPATOMEXPORT double get_diffusion_length(double D, double force, double t);
     the rigid body diffusion coefficient and the time step.*/
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
+/** Estimate the diffusion coeffient of a particle from a list of
+    displacements each taken after the given time step.
+*/
+IMPATOMEXPORT double
+get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
+                          double dt);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ESTIMATES_H */

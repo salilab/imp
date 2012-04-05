@@ -17,6 +17,27 @@ class MCOptimizerTest(IMP.test.TestCase):
         print r
         print rc
         self.assertAlmostEqual(r, rc, delta=.1*r)
+    def test_d(self):
+        """Testing the diffusion coeff estimate"""
+        m= IMP.Model()
+        p= IMP.Particle(m)
+        d= IMP.core.XYZR.setup_particle(p)
+        d.set_coordinates_are_optimized(True)
+        d.set_radius(10)
+        dd= IMP.atom.Diffusion.setup_particle(p)
+        bd= IMP.atom.BrownianDynamics(m)
+        dt=10000
+        bd.set_maximum_time_step(dt)
+        bd.set_log_level(IMP.SILENT)
+        m.set_log_level(IMP.SILENT)
+        diffs=[]
+        for i in range(0,1000):
+            d.set_coordinates(IMP.algebra.get_zero_vector_3d())
+            bd.optimize(1)
+            diffs.append(d.get_coordinates())
+        nd= IMP.atom.get_diffusion_coefficient(diffs, dt)
+        print nd, dd.get_diffusion_coefficient()
+        self.assertAlmostEqual(nd, dd.get_diffusion_coefficient(), delta= .1*nd)
 
 if __name__ == '__main__':
     IMP.test.main()
