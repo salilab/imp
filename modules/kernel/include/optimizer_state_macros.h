@@ -40,6 +40,13 @@
     }                                                                   \
   }                                                                     \
   void do_update(unsigned int call_number);                             \
+  void set_is_optimizing(bool tf) {                                     \
+    if (!tf) {                                                          \
+      do_update(update_number_);                                        \
+      ++update_number_;                                                 \
+    }                                                                   \
+    else call_number_=0;                                                \
+  }                                                                     \
   IMP_NO_DOXYGEN(void set_skip_steps(unsigned int k) {set_period(k+1);}); \
   void set_period(unsigned int p) {                                     \
     IMP_USAGE_CHECK(p>0, "Period must be positive.");                   \

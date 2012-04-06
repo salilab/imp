@@ -45,6 +45,10 @@ public:
   //! Called when the Optimizer accepts a new conformation
   virtual void update() = 0;
 
+  /** Called with true at the beginning of an optimizing run and with
+      false at the end.*/
+  virtual void set_is_optimizing(bool) {}
+
   Optimizer *get_optimizer() const {
     IMP_INTERNAL_CHECK(optimizer_,
                "Must call set_optimizer before get_optimizer on state");
