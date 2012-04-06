@@ -225,6 +225,8 @@ namespace {
 void save_frame(RMF::FileHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  IMP_USAGE_CHECK(r->get_is_part_of_model(), "Must register restraints with "
+                  " model before adding them to rmf file");
   r->get_model()->update();
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
   f.flush();
