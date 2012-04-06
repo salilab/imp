@@ -65,9 +65,6 @@ void get_residue_solvent_accessibility(const IMP::Particles& residue_particles,
   IMP::saxs::FormFactorTable* ft = IMP::saxs::default_form_factor_table();
   IMP::saxs::FormFactorType ff_type = IMP::saxs::CA_ATOMS;
   for(unsigned int p_index=0; p_index<residue_particles.size(); p_index++) {
-    IMP::atom::ResidueType residue_type =
-      IMP::atom::get_residue(
-              IMP::atom::Atom(residue_particles[p_index])).get_residue_type();
     float radius = ft->get_radius(residue_particles[p_index], ff_type);
     IMP::core::XYZR::setup_particle(residue_particles[p_index], radius);
   }

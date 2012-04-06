@@ -264,9 +264,10 @@ constant form factor (default = false)")
       if(excluded_volume_c1 > 0.0) { min_c1 = max_c1 = excluded_volume_c1; }
       if(std::fabs(water_layer_c2 - MAX_C2) < 0.00000000001) { // enumerate
       } else { MIN_C2 = MAX_C2 = water_layer_c2; } // set specific value
-      IMP::saxs::FitParameters fp = saxs_score->fit_profile(*partial_profile,
-                                                min_c1, max_c1, MIN_C2, MAX_C2,
-                                                use_offset, fit_file_name2);
+      /*IMP::saxs::FitParameters fp =*/
+      saxs_score->fit_profile(*partial_profile,
+                              min_c1, max_c1, MIN_C2, MAX_C2,
+                              use_offset, fit_file_name2);
 
       Gnuplot::print_fit_script(pdb_files[i], dat_files[j],interactive_gnuplot);
     }

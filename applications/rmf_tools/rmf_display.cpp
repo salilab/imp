@@ -91,10 +91,6 @@ IMP::display::Geometry *create_restraint_geometry(RMF::NodeConstHandle nh,
 }
 
 IMP::display::Geometries create_static_geometry(RMF::FileConstHandle rh) {
-  RMF::Category physics=rh.get_category<1>("physics");
-  RMF::FloatKey x= rh.get_key<RMF::FloatTraits>(physics, "cartesian x");
-  RMF::FloatKey y= rh.get_key<RMF::FloatTraits>(physics, "cartesian y");
-  RMF::FloatKey z= rh.get_key<RMF::FloatTraits>(physics, "cartesian z");
   std::vector<RMF::NodeSetConstHandle<2> > sets= rh.get_node_sets<2>();
   IMP::display::Geometries ret;
   for (unsigned int i=0; i< sets.size(); ++i) {
