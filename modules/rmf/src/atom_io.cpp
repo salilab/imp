@@ -501,28 +501,6 @@ unsigned int get_number_of_frames(RMF::FileConstHandle fh,
 }
 
 
-SaveHierarchyConfigurationOptimizerState::
-SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
-                                         RMF::FileHandle fh):
-  OptimizerState("SaveHierarchyConfigurationOptimizerState %1%"),
-  hs_(hs),
-  fh_(fh){}
-
-
-void SaveHierarchyConfigurationOptimizerState::do_update(unsigned int k) {
-  for (unsigned int i=0;i< hs_.size(); ++i) {
-    save_frame(fh_, k, hs_[i]);
-  }
-}
-
-void SaveHierarchyConfigurationOptimizerState
-::do_show(std::ostream &out) const {
-  out << "  file: " << fh_ << std::endl;
-  for (unsigned int i=0; i< hs_.size(); ++i) {
-    out << "  hierarchy: " << hs_[i]->get_name() << std::endl;
-  }
-}
-
 namespace {
   void associate_internal(RMF::NodeConstHandle nh, atom::Hierarchy h,
                           bool overwrite) {
