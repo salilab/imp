@@ -138,7 +138,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
  protected:
   //! override this function to do actual optimization
   virtual double do_optimize(unsigned int ns) =0;
-  //! Update optimizer state, should be called at each successful step
+  //! Update optimizer states, should be called at each successful step
   void update_states() const ;
 
 
@@ -222,6 +222,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   Restraints get_restraints() const;
 
  private:
+  void set_is_optimizing_states(bool tf) const;
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
   mutable Floats widths_;
   Pointer<Model> model_;

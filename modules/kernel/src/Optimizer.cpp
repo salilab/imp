@@ -59,6 +59,19 @@ void Optimizer::update_states() const
   IMP_LOG(VERBOSE, "done." << std::endl);
 }
 
+void Optimizer::set_is_optimizing_states(bool tf) const
+{
+  IMP_LOG(VERBOSE,
+          "Reseting OptimizerStates " << std::flush);
+  for (OptimizerStateConstIterator it = optimizer_states_begin();
+       it != optimizer_states_end(); ++it) {
+    IMP_CHECK_OBJECT(*it);
+    (*it)->set_is_optimizing(tf);
+    IMP_LOG(VERBOSE, "." << std::flush);
+  }
+  IMP_LOG(VERBOSE, "done." << std::endl);
+}
+
 double Optimizer::optimize(unsigned int max_steps) {
   IMP_FUNCTION_LOG;
   if (!model_) {
@@ -66,8 +79,9 @@ double Optimizer::optimize(unsigned int max_steps) {
               base::ValueException);
   }
   set_was_used(true);
-
+  set_is_optimizing_states(true);
   double ret= do_optimize(max_steps);
+  set_is_optimizing_states(false);
   return ret;
 }
 
