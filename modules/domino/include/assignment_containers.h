@@ -67,8 +67,6 @@ class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
   int width_;
  public:
   PackedAssignmentContainer(std::string name="PackedAssignmentsContainer %1%");
-  PackedAssignmentContainer(int max,
-                            std::string name="PackedAssignmentsContainer %1%");
   IMP_ASSIGNMENT_CONTAINER(PackedAssignmentContainer);
 };
 
