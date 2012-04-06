@@ -72,22 +72,6 @@ IMPRMFEXPORT unsigned int get_number_of_frames(RMF::FileConstHandle fh,
 /** @} */
 
 
-/** Periodically call the save_frame() method to save the hierarchy
-    to the given file.
-*/
-class IMPRMFEXPORT SaveHierarchyConfigurationOptimizerState:
-  public OptimizerState {
-  atom::Hierarchies hs_;
-  RMF::FileHandle fh_;
- public:
-  SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
-                                           RMF::FileHandle fh);
-  void set_file(RMF::FileHandle fh){
-    fh_=fh;
-  }
-  IMP_PERIODIC_OPTIMIZER_STATE(SaveHierarchyConfigurationOptimizerState);
-};
-
 
 IMPRMF_END_NAMESPACE
 
