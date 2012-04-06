@@ -6,7 +6,7 @@
  */
 #ifndef IMPSAXS_FIT_PARAMETERS_H
 #define IMPSAXS_FIT_PARAMETERS_H
-
+#include "saxs_config.h"
 #include <iostream>
 
 IMPSAXS_BEGIN_NAMESPACE
