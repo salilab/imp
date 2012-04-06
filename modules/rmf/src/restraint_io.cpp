@@ -113,8 +113,6 @@ namespace {
           pt.push_back(p);
         }
       }
-      IMP_USAGE_CHECK(!pt.empty(), "No used particles found. Not so good: "
-                      << children[i].get_name());
       Subset s(pt);
       /*std::cout << "Adding index entry for " << s << " to "
         << parent.get_name()
