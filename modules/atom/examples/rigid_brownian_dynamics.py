@@ -20,7 +20,7 @@ def create_rigid_body(m, name):
                 prb.add_member(d)
                 d.set_name(name+str(i)+str(j)+str(k))
     d= IMP.atom.RigidBodyDiffusion.setup_particle(prb)
-    d.set_d_rotation(d.get_d_rotation()*100)
+    d.set_rotational_diffusion_coefficient(d.get_rotational_diffusion_coefficient()*100)
     return prb, ph
 
 def display(i, w, hs):
