@@ -14,7 +14,7 @@ scons_tools.dependency.add_external_library(env, "OpenCV21",
                                             ["cv","cxcore","highgui"],
                                             ["opencv/cv.h", "opencv/cvver.h",
                                              "boost/static_assert.hpp"],
-                                            """BOOST_STATIC_ASSERT( CV_MAJOR_VERSION<=2 && CV_MINOR_VERSION<=1); new cv::Mat();""",
+                                            """BOOST_STATIC_ASSERT( CV_MAJOR_VERSION==2 && CV_MINOR_VERSION==1); new cv::Mat();""",
                                             extra_libs=[])
 
 
