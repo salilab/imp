@@ -39,9 +39,11 @@ inline Constraint *create_constraint(Before *b, After *a, Container *c,
 
 
 /** Create a filter that returns whether the pair, or its flip is
-    contained in the passed container.*/
+    contained in the passed container.
+
+    \note This is different than the InContainerPairFilter.*/
 template <class Container>
-inline PairFilter*
+inline PairPredicate*
 create_in_container_filter(Container *c, std::string name=std::string()) {
   return core::internal::create_in_container_filter(c, name);
 }

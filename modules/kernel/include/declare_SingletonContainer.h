@@ -87,10 +87,16 @@ public:
                                        get_indexes()[i]);
   }
   ParticlesTemp get() const {
-    return IMP::internal::get_particle(get_model(), get_indexes());
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes());
   }
   bool get_contains(Particle* v) const {
     return get_contains_particle(v);
+  }
+  virtual bool get_contains_index(ParticleIndex v) const {
+    return get_contains_particle(IMP::internal
+                                     ::get_particle(get_model(),
+                                                    v));
   }
   unsigned int get_number() const {return get_indexes().size();}
   virtual ParticleIndexes get_indexes() const=0;

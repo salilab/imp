@@ -8,6 +8,7 @@
  */
 
 #include <IMP/PairPredicate.h>
+#include <IMP/functor.h>
 IMP_BEGIN_NAMESPACE
 
 PairPredicate::PairPredicate(std::string name):
@@ -17,6 +18,22 @@ PairPredicate::PairPredicate(std::string name):
      symbols are present in the kernel DSO */
 }
 
+void PairPredicate::remove_if_equal(Model *m,
+                                         ParticleIndexPairs& ps,
+                                         int value) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          make_predicate_equal(this, m, value)),
+           ps.end());
 
+}
+
+void PairPredicate::remove_if_not_equal(Model *m,
+                                             ParticleIndexPairs& ps,
+                                             int value) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          make_predicate_not_equal(this, m, value)),
+           ps.end());
+
+}
 
 IMP_END_NAMESPACE

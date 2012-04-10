@@ -11,7 +11,7 @@
 #define IMPCONTAINER_IN_CONTAINER_PAIR_FILTER_H
 
 #include "container_config.h"
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -19,27 +19,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! A filter which returns true if a container containers the Pair
-/** Stores a searchable shared collection of Pairs.
-    \ingroup restraints
+/** This predicate returns 1 if the passed tuple is in the container.
+    \note Only the exact tuple, not permutations of it are searched for.
 
-    Implementors should see IMP_PAIR_FILTER().
  */
-class IMPCONTAINEREXPORT InContainerPairFilter : public PairFilter
+class IMPCONTAINEREXPORT InContainerPairFilter :
+    public PairPredicate
 {
   IMP::OwnerPointer<PairContainer> c_;
 public:
   InContainerPairFilter(PairContainer *c,
                              std::string name="PairFilter %1%");
 
-  IMP_PAIR_FILTER(InContainerPairFilter);
+  IMP_INDEX_PAIR_PREDICATE(InContainerPairFilter,{
+      IMP_UNUSED(m);
+      return c_->get_contains_index(pi);
+    });
 };
 
-#ifndef IMP_DOXYGEN
-inline bool InContainerPairFilter
-::get_contains(const ParticlePair& p) const {
-  return c_->get_contains_particle_pair(p);
-}
-#endif
 
 IMP_OBJECTS(InContainerPairFilter, InContainerPairFilters);
 

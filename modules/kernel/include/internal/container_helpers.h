@@ -288,35 +288,6 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   return p.get_name();
 }
 
-
-template <class Filter>
-class GetContains {
-  const Filter* back_;
-public:
-  GetContains(const Filter *n): back_(n){}
-  template <class T>
-  bool operator()(const T &p) const {
-    return back_->get_contains(get_model(p),
-                               IMP::internal::get_index(p));
-  }
-};
-
-template <class Filter>
-class GetContainsIndex {
-  const Filter* back_;
-  Model *m_;
-public:
-  GetContainsIndex(const Filter *n,
-              Model *m): back_(n), m_(m){}
-  template <class T>
-  bool operator()(const T &p) const {
-    return back_->get_contains(m_, p);
-  }
-};
-
-
-
-
 IMP_END_INTERNAL_NAMESPACE
 
 #endif /* IMPKERNEL_INTERNAL_CONTAINER_HELPERS_H */

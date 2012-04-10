@@ -87,10 +87,16 @@ public:
                                        get_indexes()[i]);
   }
   ParticleTripletsTemp get() const {
-    return IMP::internal::get_particle(get_model(), get_indexes());
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes());
   }
   bool get_contains(const ParticleTriplet& v) const {
     return get_contains_particle_triplet(v);
+  }
+  virtual bool get_contains_index(ParticleIndexTriplet v) const {
+    return get_contains_particle_triplet(IMP::internal
+                                     ::get_particle(get_model(),
+                                                    v));
   }
   unsigned int get_number() const {return get_indexes().size();}
   virtual ParticleIndexTriplets get_indexes() const=0;

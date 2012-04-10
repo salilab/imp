@@ -11,7 +11,7 @@
 #include "core_config.h"
 #include "XYZR.h"
 #include "internal/MovedSingletonContainer.h"
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 
 #include <IMP/RefCounted.h>
 #include <IMP/SingletonContainer.h>
@@ -93,14 +93,14 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
   /** @} */
   /** @name Methods to control the set of filters
 
-     PairContainer objects can be used as filters to prevent
+     PairPredicates objects can be used as filters to prevent
      the addition of pairs to the containeroutput list. Pairs
-     which are contained in any container added to this list
-     will be excluded from the close pairs list.
+     for which the predicate evaluates to a non-zero value are
+     excluded.
   */
   /**@{*/
   IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+           PairPredicate*, PairPredicates);
    /**@}*/
 #ifndef SWIG
   /** \brief Return a container which lists all particles which moved more

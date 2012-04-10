@@ -16,7 +16,7 @@
 #include <IMP/core/internal/CoreCloseBipartitePairContainer.h>
 #include <IMP/core/internal/MovedSingletonContainer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
 
@@ -58,15 +58,15 @@ public:
 
   /** @name Methods to control the set of filters
 
-     PairContainer objects can be used as filters to prevent
+      PairPredicate objects can be used as filters to prevent
      the addition of pairs to the containeroutput list. Pairs
-     which are contained in any container added to this list
-     will be excluded from the close pairs list.
+     for which the predicates evaluate to a non-zero value are
+     excluded from the list.
   */
   /**@{*/
-  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
+  IMP_LIST_ACTION(public, PairPredicate, PairPredicates, pair_filter,
                   pair_filters,
-                  PairFilter*, PairFilters, obj->set_was_used(true);,,);
+                  PairPredicate*, PairPredicates, obj->set_was_used(true);,,);
    /**@}*/
   IMP_PAIR_CONTAINER(CloseBipartitePairContainer);
 #endif

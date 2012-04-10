@@ -15,20 +15,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerTripletFilter
 ::InContainerTripletFilter(TripletContainer *c,
-                             std::string name): TripletFilter(name), c_(c){}
+                             std::string name): TripletPredicate(name),
+                                                c_(c){}
 
-ParticlesTemp InContainerTripletFilter
-::get_input_particles(Particle*) const {
-  // not quite right, but...
-  return ParticlesTemp();
-}
-ContainersTemp InContainerTripletFilter
-::get_input_containers(Particle*) const {
-  return ContainersTemp(1,c_);
-}
-
-void InContainerTripletFilter::do_show(std::ostream &out) const {
-  out << "InContainerTripletFilter on " << *c_ << std::endl;
-}
 
 IMPCONTAINER_END_NAMESPACE

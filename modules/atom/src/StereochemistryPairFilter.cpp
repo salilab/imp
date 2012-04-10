@@ -16,8 +16,8 @@ IMPATOM_BEGIN_NAMESPACE
 StereochemistryPairFilter::StereochemistryPairFilter() {
 }
 
-bool StereochemistryPairFilter
-::get_contains(const ParticlePair& pp) const {
+int StereochemistryPairFilter
+::get_value(const ParticlePair& pp) const {
   return excluded_map_.find(internal::ExcludedPair(pp[0], pp[1]))
          != excluded_map_.end();
 }

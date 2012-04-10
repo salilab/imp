@@ -109,13 +109,13 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     if(0) std::cout << num;
     for (unsigned int j=0; j< num; ++j) {
       for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
-        IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains(get_model(),
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_value_index(get_model(),
                                                              cur[j]),
                            "Pair " << cur[j]
                            << " should have been filtered by filter "
                            << get_pair_filter(i)->get_name());
         IMP_INTERNAL_CHECK(!get_pair_filter(i)
-                           ->get_contains(get_model(),
+                           ->get_value_index(get_model(),
                                           ParticleIndexPair((cur[j])[0],
                                                             (cur[j])[1])),
                            "Filter is not symmetric on pair " << cur[j]

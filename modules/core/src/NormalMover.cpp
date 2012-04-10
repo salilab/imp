@@ -10,7 +10,7 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/random.h>
 #include <IMP/macros.h>
-
+#include <IMP/base/warning_macros.h>
 #include <boost/random/normal_distribution.hpp>
 
 IMPCORE_BEGIN_NAMESPACE

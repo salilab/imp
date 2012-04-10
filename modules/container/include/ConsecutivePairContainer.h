@@ -11,7 +11,7 @@
 #include "container_config.h"
 #include <IMP/generic.h>
 #include <IMP/PairContainer.h>
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/compatibility/map.h>
@@ -72,24 +72,23 @@ public:
 
 /** Check for whether the pair is a member of any
     ExclusiveConsecutivePairContainer. */
-class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter: public PairFilter {
+class IMPCONTAINEREXPORT ExclusiveConsecutivePairFilter:
+    public PairPredicate {
+  bool get_contains(Model *m, const ParticleIndexPair &pp) const {
+    IntKey k= ConsecutivePairContainer::get_exclusive_key();
+    if (!m->get_has_attribute(k, pp[0])) return false;
+    int ia= m->get_attribute(k, pp[0]);
+    if (!m->get_has_attribute(k, pp[1])) return false;
+    int ib= m->get_attribute(k, pp[1]);
+    return std::abs(ia-ib)==1;
+  }
  public:
   ExclusiveConsecutivePairFilter():
-      PairFilter("ExclusiveConsecutivePairFilter %1%"){}
-  IMP_INDEX_PAIR_FILTER(ExclusiveConsecutivePairFilter);
+      PairPredicate("ExclusiveConsecutivePairFilter %1%"){}
+  IMP_INDEX_PAIR_PREDICATE(ExclusiveConsecutivePairFilter,{
+                           return get_contains(m, pi);
+                           });
 };
-
-#ifndef IMP_DOXYGEN
-inline bool ExclusiveConsecutivePairFilter
-::get_contains(Model *m, const ParticleIndexPair &pp) const {
-  IntKey k= ConsecutivePairContainer::get_exclusive_key();
-  if (!m->get_has_attribute(k, pp[0])) return false;
-  int ia= m->get_attribute(k, pp[0]);
-  if (!m->get_has_attribute(k, pp[1])) return false;
-  int ib= m->get_attribute(k, pp[1]);
-  return std::abs(ia-ib)==1;
-}
-#endif
 
 
 

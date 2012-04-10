@@ -30,6 +30,7 @@ class IMPEXPORT TripletPredicate : public base::Object
 {
  public:
   typedef ParticleTriplet Argument;
+  typedef ParticleIndexTriplet IndexArgument;
   TripletPredicate(std::string name="TripletPredicate %1%");
   //! Compute the predicate.
   virtual int get_value(const ParticleTriplet& vt) const =0;
@@ -46,7 +47,12 @@ class IMPEXPORT TripletPredicate : public base::Object
     return ret;
   }
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void remove_if_equal(Model *m,
+                               ParticleIndexTriplets& ps, int v) const;
+  virtual void remove_if_not_equal(Model *m,
+                                   ParticleIndexTriplets& ps, int v) const;
+#endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, const ParticleIndexTriplet& vt) const {

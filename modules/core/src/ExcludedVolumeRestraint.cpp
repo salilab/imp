@@ -203,7 +203,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
               || RigidMember(all[i]).get_rigid_body()
               != RigidMember(all[j]).get_rigid_body()) {
             if( internal::get_filters_contains(get_model(),
-                                      PairFilters(pair_filters_begin(),
+                                      PairPredicates(pair_filters_begin(),
                                                   pair_filters_end()),
                                       ParticleIndexPair(all[i]->get_index(),
                                                         all[j]->get_index())))
@@ -387,7 +387,7 @@ Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
 
 IMP_LIST_IMPL(ExcludedVolumeRestraint, PairFilter,
               pair_filter,
-              PairFilter*, PairFilters);
+              PairPredicate*, PairPredicates);
 
 
 IMPCORE_END_NAMESPACE

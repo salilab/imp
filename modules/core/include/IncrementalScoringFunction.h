@@ -10,9 +10,8 @@
 
 #include "core_config.h"
 #include "internal/SingleParticleScoringFunction.h"
+#include <IMP/base/Pointer.h>
 #include <IMP/base_types.h>
-#include <IMP/PairScore.h>
-#include <IMP/PairFilter.h>
 #include "RestraintsScoringFunction.h"
 #include <IMP/compatibility/map.h>
 #include <IMP/algebra/vector_search.h>
@@ -38,7 +37,9 @@ namespace internal {
 */
 class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   typedef compatibility::map<ParticleIndex,
-    OwnerPointer<internal::SingleParticleScoringFunction> > ScoringFunctionsMap;
+      base::
+      OwnerPointer<internal::SingleParticleScoringFunction> >
+      ScoringFunctionsMap;
   ScoringFunctionsMap scoring_functions_;
   ParticleIndexes all_;
   ParticleIndexes last_move_;
@@ -73,7 +74,9 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
       add a pair score here to act on the list of particles.*/
   void add_close_pair_score(PairScore *ps, double distance,
                             const ParticlesTemp &particles,
-                            const PairFilters &filters=PairFilters());
+                            const PairPredicates &filters);
+  void add_close_pair_score(PairScore *ps, double distance,
+                            const ParticlesTemp &particles);
   void clear_close_pair_scores();
   ParticlesTemp get_movable_particles() const;
   IMP_SCORING_FUNCTION(IncrementalScoringFunction);

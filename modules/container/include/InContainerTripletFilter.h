@@ -11,7 +11,7 @@
 #define IMPCONTAINER_IN_CONTAINER_TRIPLET_FILTER_H
 
 #include "container_config.h"
-#include <IMP/TripletFilter.h>
+#include <IMP/TripletPredicate.h>
 #include <IMP/TripletContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -19,27 +19,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! A filter which returns true if a container containers the Triplet
-/** Stores a searchable shared collection of Triplets.
-    \ingroup restraints
+/** This predicate returns 1 if the passed tuple is in the container.
+    \note Only the exact tuple, not permutations of it are searched for.
 
-    Implementors should see IMP_TRIPLET_FILTER().
  */
-class IMPCONTAINEREXPORT InContainerTripletFilter : public TripletFilter
+class IMPCONTAINEREXPORT InContainerTripletFilter :
+    public TripletPredicate
 {
   IMP::OwnerPointer<TripletContainer> c_;
 public:
   InContainerTripletFilter(TripletContainer *c,
                              std::string name="TripletFilter %1%");
 
-  IMP_TRIPLET_FILTER(InContainerTripletFilter);
+  IMP_INDEX_TRIPLET_PREDICATE(InContainerTripletFilter,{
+      IMP_UNUSED(m);
+      return c_->get_contains_index(pi);
+    });
 };
 
-#ifndef IMP_DOXYGEN
-inline bool InContainerTripletFilter
-::get_contains(const ParticleTriplet& p) const {
-  return c_->get_contains_particle_triplet(p);
-}
-#endif
 
 IMP_OBJECTS(InContainerTripletFilter, InContainerTripletFilters);
 

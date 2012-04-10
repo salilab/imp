@@ -30,6 +30,7 @@ class IMPEXPORT PairPredicate : public base::Object
 {
  public:
   typedef ParticlePair Argument;
+  typedef ParticleIndexPair IndexArgument;
   PairPredicate(std::string name="PairPredicate %1%");
   //! Compute the predicate.
   virtual int get_value(const ParticlePair& vt) const =0;
@@ -46,7 +47,12 @@ class IMPEXPORT PairPredicate : public base::Object
     return ret;
   }
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void remove_if_equal(Model *m,
+                               ParticleIndexPairs& ps, int v) const;
+  virtual void remove_if_not_equal(Model *m,
+                                   ParticleIndexPairs& ps, int v) const;
+#endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, const ParticleIndexPair& vt) const {

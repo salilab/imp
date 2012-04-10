@@ -19,7 +19,7 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <IMP/scoped.h>
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -40,7 +40,7 @@ core::Mover* create_serial_mover(const ParticlesTemp &ps) {
 in the passed list of restraints. */
 void optimize_balls(const ParticlesTemp &ps,
                     const RestraintsTemp &rs,
-                    const PairFilters &excluded,
+                    const PairPredicates &excluded,
                     const OptimizerStates &opt_states,
                     base::LogLevel ll) {
   // make sure that errors and log messages are marked as coming from this

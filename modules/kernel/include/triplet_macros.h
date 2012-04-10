@@ -11,7 +11,7 @@
 #define IMPKERNEL_TRIPLET_MACROS_H
 
 #include "internal/TupleRestraint.h"
-
+#include "internal/functors.h"
 #define IMP_TRIPLET_SCORE_BASE(Name)                                 \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleTripletsTemp &ps,    \
                                        DerivativeAccumulator *da) const, { \
@@ -186,7 +186,7 @@
   IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
                                            const ParticleIndexTriplet& vt)\
                        const, {                                         \
-    return Name::get_value(internal::get_particle(m, vt));              \
+        return Name::get_value(IMP::internal::get_particle(m, vt)); \
                        });                                              \
   IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
                                      const ParticleIndexTriplets &o) const, { \
@@ -232,6 +232,22 @@
      ret[i]+= Name::get_value_index(m, o[i]);                           \
    }                                                                    \
    return ret;                                                          \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_equal(Model *m,           \
+                                            ParticleIndexTriplets& ps,        \
+                                            int value) const, {         \
+      ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
+                              IMP::internal::PredicateEquals<Name, true>(this, \
+                                                              m, value)), \
+               ps.end());                                               \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_not_equal(Model *m,       \
+                                            ParticleIndexTriplets& ps,        \
+                                            int value) const, {         \
+      ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
+                          IMP::internal::PredicateEquals<Name, false>(this, \
+                                                                 m, value)), \
+               ps.end());                                               \
                        });                                              \
   IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
    return ParticlesTemp(1, p);                                          \
@@ -435,87 +451,6 @@
 */
 #define IMP_ACTIVE_TRIPLET_CONTAINER(Name)                           \
   IMP_TRIPLET_CONTAINER(name)
-
-#ifndef SWIG
-//! Declare the needed functions for a TripletFilter
-/** In addition to the methods done by all the macros, it declares
-    - IMP::TripletFilter::get_contains()
-    - IMP::TripletFilter::get_input_particles()
-    - IMP::TripletFilter::get_input_containers()
-*/
-#define IMP_TRIPLET_FILTER(Name)                                     \
-public:                                                                 \
- IMP_IMPLEMENT(bool get_contains(const ParticleTriplet& p) const); \
- IMP_IMPLEMENT_INLINE(bool get_contains(Model *m,                       \
-                                        const ParticleIndexTriplet& p)\
-                      const, {                                          \
-   return get_contains(IMP::internal::get_particle(m,p));               \
-                      });                                               \
- IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
- IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
- IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
-                                   ParticleIndexTriplets &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContainsIndex<Name>(this,  \
-                                                                 m)),   \
-            ps.end());                                                  \
-                      });                                               \
- IMP_IMPLEMENT_INLINE(void filter_in_place(ParticleTripletsTemp &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContains<Name>(this)),   \
-            ps.end());                                                  \
-   });                                                                  \
- IMP_OBJECT(Name)
-#else
-#define IMP_TRIPLET_FILTER(Name)                                     \
-  bool get_contains(const ParticleTriplet& p) const;                    \
-  bool get_contains(Model *m,const ParticleIndexTriplet& p) const;           \
-  ParticlesTemp get_input_particles(Particle*t) const;                  \
-  ContainersTemp get_input_containers(Particle*t) const;                \
-  IMP_OBJECT(Name)
-#endif
-
-
-#ifndef SWIG
-//! Declare the needed functions for a TripletFilter
-/** In addition to the methods done by all the macros, it declares
-    - IMP::TripletFilter::get_contains() (model, index variant)
-    - IMP::TripletFilter::get_input_particles()
-    - IMP::TripletFilter::get_input_containers()
-*/
-#define IMP_INDEX_TRIPLET_FILTER(Name)                               \
-public:                                                                 \
-IMP_IMPLEMENT_INLINE(bool get_contains(const ParticleTriplet& p) const,{\
-    return get_contains(IMP::internal::get_model(p),                    \
-                        IMP::internal::get_index(p));                   \
-  });                                                                   \
-IMP_IMPLEMENT(bool get_contains(Model *m,                               \
-                                        const ParticleIndexTriplet& p)\
-              const);                                                   \
- IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
- IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
- IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
-                                   ParticleIndexTriplets &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContainsIndex<Name>(this,  \
-                                                                 m)),   \
-            ps.end());                                                  \
-                      });                                               \
- IMP_IMPLEMENT_INLINE(void filter_in_place(ParticleTripletsTemp &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContains<Name>(this)),   \
-            ps.end());                                                  \
-   });                                                                  \
- IMP_OBJECT(Name)
-#else
-#define IMP_INDEX_TRIPLET_FILTER(Name)                     \
-  bool get_contains(const ParticleTriplet& p) const;                    \
-  bool get_contains(Model *m,const ParticleIndexTriplet& p) const;           \
-  ParticlesTemp get_input_particles(Particle*t) const;                  \
-  ContainersTemp get_input_containers(Particle*t) const;                \
-  IMP_OBJECT(Name)
-#endif
-
 
 /** These macros avoid various inefficiencies.
 

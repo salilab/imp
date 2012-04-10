@@ -64,14 +64,14 @@ public:
 #if defined(SWIG) || defined(IMP_DOXYGEN)
   /** @name Methods to control the set of filters
 
-     PairContainer objects can be used as filters to prevent
+     PairPredicate objects can be used as filters to prevent
      the addition of pairs to the containeroutput list. Pairs
-     which are contained in any container added to this list
-     will be excluded from the close pairs list.
+     for which the predicates evaluate to a non-zero value are
+     excluded from the list.
   */
   /**@{*/
-  IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+  IMP_LIST(public, PairPredicate, pair_filter,
+           PairPredicate*, PairPredicates);
    /**@}*/
   void set_slack(double s);
   double get_slack() const;

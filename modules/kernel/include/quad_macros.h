@@ -11,7 +11,7 @@
 #define IMPKERNEL_QUAD_MACROS_H
 
 #include "internal/TupleRestraint.h"
-
+#include "internal/functors.h"
 #define IMP_QUAD_SCORE_BASE(Name)                                 \
   IMP_IMPLEMENT_INLINE(double evaluate(const ParticleQuadsTemp &ps,    \
                                        DerivativeAccumulator *da) const, { \
@@ -186,7 +186,7 @@
   IMP_IMPLEMENT_INLINE(int get_value_index(Model *m,                    \
                                            const ParticleIndexQuad& vt)\
                        const, {                                         \
-    return Name::get_value(internal::get_particle(m, vt));              \
+        return Name::get_value(IMP::internal::get_particle(m, vt)); \
                        });                                              \
   IMP_IMPLEMENT_INLINE(Ints get_value_index(Model *m,                   \
                                      const ParticleIndexQuads &o) const, { \
@@ -232,6 +232,22 @@
      ret[i]+= Name::get_value_index(m, o[i]);                           \
    }                                                                    \
    return ret;                                                          \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_equal(Model *m,           \
+                                            ParticleIndexQuads& ps,        \
+                                            int value) const, {         \
+      ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
+                              IMP::internal::PredicateEquals<Name, true>(this, \
+                                                              m, value)), \
+               ps.end());                                               \
+                       });                                              \
+  IMP_IMPLEMENT_INLINE_NO_SWIG(void remove_if_not_equal(Model *m,       \
+                                            ParticleIndexQuads& ps,        \
+                                            int value) const, {         \
+      ps.erase(std::remove_if(ps.begin(), ps.end(),                     \
+                          IMP::internal::PredicateEquals<Name, false>(this, \
+                                                                 m, value)), \
+               ps.end());                                               \
                        });                                              \
   IMP_IMPLEMENT_INLINE(ParticlesTemp get_input_particles(Particle*p) const, { \
    return ParticlesTemp(1, p);                                          \
@@ -435,87 +451,6 @@
 */
 #define IMP_ACTIVE_QUAD_CONTAINER(Name)                           \
   IMP_QUAD_CONTAINER(name)
-
-#ifndef SWIG
-//! Declare the needed functions for a QuadFilter
-/** In addition to the methods done by all the macros, it declares
-    - IMP::QuadFilter::get_contains()
-    - IMP::QuadFilter::get_input_particles()
-    - IMP::QuadFilter::get_input_containers()
-*/
-#define IMP_QUAD_FILTER(Name)                                     \
-public:                                                                 \
- IMP_IMPLEMENT(bool get_contains(const ParticleQuad& p) const); \
- IMP_IMPLEMENT_INLINE(bool get_contains(Model *m,                       \
-                                        const ParticleIndexQuad& p)\
-                      const, {                                          \
-   return get_contains(IMP::internal::get_particle(m,p));               \
-                      });                                               \
- IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
- IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
- IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
-                                   ParticleIndexQuads &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContainsIndex<Name>(this,  \
-                                                                 m)),   \
-            ps.end());                                                  \
-                      });                                               \
- IMP_IMPLEMENT_INLINE(void filter_in_place(ParticleQuadsTemp &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContains<Name>(this)),   \
-            ps.end());                                                  \
-   });                                                                  \
- IMP_OBJECT(Name)
-#else
-#define IMP_QUAD_FILTER(Name)                                     \
-  bool get_contains(const ParticleQuad& p) const;                    \
-  bool get_contains(Model *m,const ParticleIndexQuad& p) const;           \
-  ParticlesTemp get_input_particles(Particle*t) const;                  \
-  ContainersTemp get_input_containers(Particle*t) const;                \
-  IMP_OBJECT(Name)
-#endif
-
-
-#ifndef SWIG
-//! Declare the needed functions for a QuadFilter
-/** In addition to the methods done by all the macros, it declares
-    - IMP::QuadFilter::get_contains() (model, index variant)
-    - IMP::QuadFilter::get_input_particles()
-    - IMP::QuadFilter::get_input_containers()
-*/
-#define IMP_INDEX_QUAD_FILTER(Name)                               \
-public:                                                                 \
-IMP_IMPLEMENT_INLINE(bool get_contains(const ParticleQuad& p) const,{\
-    return get_contains(IMP::internal::get_model(p),                    \
-                        IMP::internal::get_index(p));                   \
-  });                                                                   \
-IMP_IMPLEMENT(bool get_contains(Model *m,                               \
-                                        const ParticleIndexQuad& p)\
-              const);                                                   \
- IMP_IMPLEMENT(ParticlesTemp get_input_particles(Particle* t) const);   \
- IMP_IMPLEMENT(ContainersTemp get_input_containers(Particle* t) const); \
- IMP_IMPLEMENT_INLINE(void filter_in_place(Model *m,\
-                                   ParticleIndexQuads &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContainsIndex<Name>(this,  \
-                                                                 m)),   \
-            ps.end());                                                  \
-                      });                                               \
- IMP_IMPLEMENT_INLINE(void filter_in_place(ParticleQuadsTemp &ps) const, { \
-   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContains<Name>(this)),   \
-            ps.end());                                                  \
-   });                                                                  \
- IMP_OBJECT(Name)
-#else
-#define IMP_INDEX_QUAD_FILTER(Name)                     \
-  bool get_contains(const ParticleQuad& p) const;                    \
-  bool get_contains(Model *m,const ParticleIndexQuad& p) const;           \
-  ParticlesTemp get_input_particles(Particle*t) const;                  \
-  ContainersTemp get_input_containers(Particle*t) const;                \
-  IMP_OBJECT(Name)
-#endif
-
 
 /** These macros avoid various inefficiencies.
 

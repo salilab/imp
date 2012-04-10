@@ -12,7 +12,7 @@
 #include "../RestraintsScoringFunction.h"
 #include <IMP/base_types.h>
 #include <IMP/PairScore.h>
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/base/cache.h>
@@ -24,14 +24,14 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
    OwnerPointer<PairScore> score_;
    double distance_;
    ParticleIndexes pis_;
-   PairFilters filters_;
+   PairPredicates filters_;
    compatibility::map<ParticleIndex, int> to_dnn_;
    OwnerPointer<algebra::DynamicNearestNeighbor3D> dnn_;
 
    NBGenerator(Model*m, const ParticleIndexes& pis,
                PairScore* ps,
                double distance,
-               const PairFilters &pfs);
+               const PairPredicates &pfs);
    struct single_result_type {
      ParticleIndex first, second;
      double score;
@@ -55,11 +55,11 @@ struct IMPCOREEXPORT NBChecker {
   ParticleIndexes pis_;
   Pointer<PairScore> score_;
   double distance_;
-  PairFilters filt_;
+  PairPredicates filt_;
   NBChecker(Model *m,
             const ParticleIndexes &pis,
             PairScore *score, double d,
-            const PairFilters &filt);
+            const PairPredicates &filt);
   bool operator()(const NBGenerator::result_type &vals) const;
 };
 
@@ -77,7 +77,7 @@ public:
              double distance,
              const ParticleIndexes &to_move,
              const ParticlesTemp &particles,
-             const PairFilters &filters,
+             const PairPredicates &filters,
              double weight, double max);
   void set_moved(const ParticleIndexes& moved);
   double get_score();

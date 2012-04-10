@@ -15,20 +15,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerCLASSNAMEFilter
 ::InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
-                             std::string name): CLASSNAMEFilter(name), c_(c){}
+                             std::string name): CLASSNAMEPredicate(name),
+                                                c_(c){}
 
-ParticlesTemp InContainerCLASSNAMEFilter
-::get_input_particles(Particle*) const {
-  // not quite right, but...
-  return ParticlesTemp();
-}
-ContainersTemp InContainerCLASSNAMEFilter
-::get_input_containers(Particle*) const {
-  return ContainersTemp(1,c_);
-}
-
-void InContainerCLASSNAMEFilter::do_show(std::ostream &out) const {
-  out << "InContainerCLASSNAMEFilter on " << *c_ << std::endl;
-}
 
 IMPCONTAINER_END_NAMESPACE

@@ -16,7 +16,7 @@
 #include "MovedSingletonContainer.h"
 #include "../PairRestraint.h"
 #include <IMP/PairContainer.h>
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/generic.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/ListLikePairContainer.h>
@@ -49,7 +49,7 @@ public:
 
   IMP_LIST_ACTION(public, PairFilter, PairFilters,
                   pair_filter, pair_filters,
-                  PairFilter*, PairFilters,
+                  PairPredicate*, PairPredicates,
                   obj->set_was_used(true);first_call_=true;,
                   {first_call_=true;},
                   {if (container) container->first_call_=true;});
