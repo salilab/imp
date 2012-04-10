@@ -9,19 +9,19 @@
 #define IMPATOM_SAME_RESIDUE_PAIR_FILTER_H
 
 #include "atom_config.h"
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 //!
-/** Filter atoms that belong to the same residue. The is designed
+/** Predicate atoms that belong to the same residue. The is designed
     for use with the DopePairScore.
 */
-class IMPATOMEXPORT SameResiduePairFilter : public PairFilter
+class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate
 {
 public:
   SameResiduePairFilter();
-  IMP_PAIR_FILTER(SameResiduePairFilter);
+  IMP_PAIR_PREDICATE(SameResiduePairFilter);
 };
 
 

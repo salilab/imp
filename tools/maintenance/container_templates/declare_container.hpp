@@ -87,10 +87,16 @@ public:
                                        get_indexes()[i]);
   }
   PLURALVARIABLETYPE get() const {
-    return IMP::internal::get_particle(get_model(), get_indexes());
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes());
   }
   bool get_contains(ARGUMENTTYPE v) const {
     return get_contains_FUNCTIONNAME(v);
+  }
+  virtual bool get_contains_index(INDEXTYPE v) const {
+    return get_contains_FUNCTIONNAME(IMP::internal
+                                     ::get_particle(get_model(),
+                                                    v));
   }
   unsigned int get_number() const {return get_indexes().size();}
   virtual PLURALINDEXTYPE get_indexes() const=0;

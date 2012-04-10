@@ -30,6 +30,7 @@ class IMPEXPORT CLASSNAMEPredicate : public base::Object
 {
  public:
   typedef VARIABLETYPE Argument;
+  typedef INDEXTYPE IndexArgument;
   CLASSNAMEPredicate(std::string name="CLASSNAMEPredicate %1%");
   //! Compute the predicate.
   virtual int get_value(ARGUMENTTYPE vt) const =0;
@@ -46,7 +47,12 @@ class IMPEXPORT CLASSNAMEPredicate : public base::Object
     return ret;
   }
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void remove_if_equal(Model *m,
+                               PLURALINDEXTYPE& ps, int v) const;
+  virtual void remove_if_not_equal(Model *m,
+                                   PLURALINDEXTYPE& ps, int v) const;
+#endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, PASSINDEXTYPE vt) const {

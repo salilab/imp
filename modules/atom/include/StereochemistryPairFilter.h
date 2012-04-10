@@ -9,7 +9,7 @@
 #define IMPATOM_STEREOCHEMISTRY_PAIR_FILTER_H
 
 #include "atom_config.h"
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/atom/internal/ExcludedPair.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
     to exclude angles (1-3 interactions) and set_dihedrals() to exclude
     dihedrals (1-4 interactions).
  */
-class IMPATOMEXPORT StereochemistryPairFilter : public PairFilter
+class IMPATOMEXPORT StereochemistryPairFilter : public PairPredicate
 {
   typedef std::map<internal::ExcludedPair, Particle *> ExcludedMap;
   ExcludedMap excluded_map_;
@@ -40,7 +40,7 @@ public:
     dihedrals_ = dihedrals; rebuild_map();
   }
 
-  IMP_PAIR_FILTER(StereochemistryPairFilter);
+  IMP_PAIR_PREDICATE(StereochemistryPairFilter);
 };
 
 

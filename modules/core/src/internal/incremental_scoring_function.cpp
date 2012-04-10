@@ -25,7 +25,7 @@ NBLScoring::NBLScoring(PairScore *ps,
                        double distance,
                        const ParticleIndexes &to_move,
                        const ParticlesTemp &particles,
-                       const PairFilters &filters,
+                       const PairPredicates &filters,
                        double weight, double max):
   cache_(IMP::internal::get_index(particles),
          NBGenerator(IMP::internal::get_model(particles),
@@ -126,7 +126,7 @@ Restraint* NBLScoring::create_restraint() const {
 NBGenerator::NBGenerator(Model*m, const ParticleIndexes& pis,
                          PairScore *ps,
                          double distance,
-                         const PairFilters &pfs) {
+                         const PairPredicates &pfs) {
   m_=m;
   score_=ps;
   pis_=pis;
@@ -174,7 +174,7 @@ NBGenerator::operator()( argument_type a) const {
         ParticleIndexPair pp(a[i], ppi);
         bool filtered=false;
         for (unsigned int k=0; k< filters_.size(); ++k) {
-          if (filters_[k]->get_contains(m_, pp)) {
+          if (filters_[k]->get_value_index(m_, pp)) {
             filtered=true;
             break;
           }
@@ -202,7 +202,8 @@ NBGenerator::operator()( argument_type a) const {
 
 NBChecker::NBChecker(Model *m, const ParticleIndexes &pis,
                      PairScore *score, double d,
-                     const PairFilters &filt): m_(m), pis_(pis), score_(score),
+                     const PairPredicates &filt): m_(m),
+                                                  pis_(pis), score_(score),
                                                distance_(d),
                                     filt_(filt) {}
 bool NBChecker::
@@ -215,8 +216,8 @@ operator()(const NBGenerator::result_type &vals) const {
       if (get_distance(di, dj) < .9*distance_) {
         bool filtered=false;
         for (unsigned int k=0; k < filt_.size(); ++k) {
-          if (filt_[k]->get_contains(m_,
-                                     pip)) {
+          if (filt_[k]->get_value_index(m_,
+                                        pip)) {
             filtered=true;
             break;
           }

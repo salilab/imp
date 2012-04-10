@@ -77,7 +77,7 @@ public:
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
   IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+           PairPredicate*, PairPredicates);
 };
 
 

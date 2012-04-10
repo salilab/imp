@@ -247,8 +247,8 @@ void ContainerConstraint<Before, After, C>
 
 
 template <class C>
-bool GenericInContainerPairFilter<C>
-::get_contains(const ParticlePair& p) const {
+int GenericInContainerPairFilter<C>
+::get_value(const ParticlePair& p) const {
   return c_->C::get_contains_particle_pair(p)
     || c_->C::get_contains_particle_pair(ParticlePair(p[1], p[0]));
 }

@@ -30,6 +30,7 @@ class IMPEXPORT QuadPredicate : public base::Object
 {
  public:
   typedef ParticleQuad Argument;
+  typedef ParticleIndexQuad IndexArgument;
   QuadPredicate(std::string name="QuadPredicate %1%");
   //! Compute the predicate.
   virtual int get_value(const ParticleQuad& vt) const =0;
@@ -46,7 +47,12 @@ class IMPEXPORT QuadPredicate : public base::Object
     return ret;
   }
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void remove_if_equal(Model *m,
+                               ParticleIndexQuads& ps, int v) const;
+  virtual void remove_if_not_equal(Model *m,
+                                   ParticleIndexQuads& ps, int v) const;
+#endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, const ParticleIndexQuad& vt) const {

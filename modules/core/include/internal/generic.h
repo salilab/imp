@@ -13,9 +13,9 @@
 #include <IMP/generic.h>
 #include <IMP/base_types.h>
 #include <IMP/Object.h>
+#include <IMP/PairPredicate.h>
 #include <IMP/Constraint.h>
 #include <IMP/Restraint.h>
-#include <IMP/PairFilter.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 /** When programming in C++, you can use CoreRestraint instead
@@ -139,14 +139,14 @@ inline Constraint *create_constraint(Before *b, After *a, Container *c,
 /** A templated version of InContainerPairFilter.
  */
 template <class Container>
-class GenericInContainerPairFilter: public PairFilter {
+class GenericInContainerPairFilter: public PairPredicate {
   Pointer<Container> c_;
 public:
   GenericInContainerPairFilter( Container* c,
                                 std::string name):
-      PairFilter(name),
+      PairPredicate(name),
       c_(c){}
-  IMP_PAIR_FILTER(GenericInContainerPairFilter);
+  IMP_PAIR_PREDICATE(GenericInContainerPairFilter);
 };
 
 template <class Container>

@@ -545,7 +545,7 @@ ParticlePairsTemp close_pairs(Model *m,
                               double dist) {
   ParticlePairsTemp ret;
   fill_close_pairs(m, da, db, dist, ParticlePairSink(m,
-                                                     PairFilters(),
+                                                     PairPredicates(),
                                                      ret));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());

@@ -10,9 +10,8 @@
 
 #include "atom_config.h"
 #include "bond_decorators.h"
-#include <IMP/PairFilter.h>
-#include <IMP/internal/container_helpers.h>
-
+#include <IMP/PairPredicate.h>
+#include <IMP/pair_macros.h>
 IMPATOM_BEGIN_NAMESPACE
 
 //! A filter for bonds.
@@ -21,28 +20,25 @@ IMPATOM_BEGIN_NAMESPACE
     \ingroup bond
     \see Bonded
  */
-class IMPATOMEXPORT BondedPairFilter : public PairFilter
+class IMPATOMEXPORT BondedPairFilter : public PairPredicate
 {
 public:
   //! no arguments
   BondedPairFilter();
 
-  IMP_PAIR_FILTER(BondedPairFilter);
+  IMP_INDEX_PAIR_PREDICATE(BondedPairFilter, {
+      Particle *pa= m->get_particle(pi[0]);
+      Particle *pb= m->get_particle(pi[1]);
+      if (!Bonded::particle_is_instance(pa)
+          || ! Bonded::particle_is_instance(pb)) {
+        return false;
+      }
+      Bonded ba(m, pi[0]);
+      Bonded bb(m, pi[1]);
+      Bond bd=get_bond(ba, bb);
+      return bd != Bond();
+    });
 };
-
-#ifndef IMP_DOXYGEN
-inline bool BondedPairFilter
-::get_contains(const ParticlePair& pp) const {
-  if (!Bonded::particle_is_instance(pp[0])
-      || ! Bonded::particle_is_instance(pp[1])) {
-    return false;
-  }
-  Bonded ba(pp[0]);
-  Bonded bb(pp[1]);
-  Bond bd=get_bond(ba, bb);
-  return bd != Bond();
-}
-#endif
 
 IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
 

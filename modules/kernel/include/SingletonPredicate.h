@@ -30,6 +30,7 @@ class IMPEXPORT SingletonPredicate : public base::Object
 {
  public:
   typedef Particle* Argument;
+  typedef ParticleIndex IndexArgument;
   SingletonPredicate(std::string name="SingletonPredicate %1%");
   //! Compute the predicate.
   virtual int get_value(Particle* vt) const =0;
@@ -46,7 +47,12 @@ class IMPEXPORT SingletonPredicate : public base::Object
     return ret;
   }
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void remove_if_equal(Model *m,
+                               ParticleIndexes& ps, int v) const;
+  virtual void remove_if_not_equal(Model *m,
+                                   ParticleIndexes& ps, int v) const;
+#endif
 
   //! Compute the predicate and the derivative if needed.
   virtual int get_value_index(Model *m, ParticleIndex vt) const {

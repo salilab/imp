@@ -11,7 +11,7 @@
 #define IMPCONTAINER_IN_CONTAINER_SINGLETON_FILTER_H
 
 #include "container_config.h"
-#include <IMP/SingletonFilter.h>
+#include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -19,27 +19,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! A filter which returns true if a container containers the Singleton
-/** Stores a searchable shared collection of Singletons.
-    \ingroup restraints
+/** This predicate returns 1 if the passed tuple is in the container.
+    \note Only the exact tuple, not permutations of it are searched for.
 
-    Implementors should see IMP_SINGLETON_FILTER().
  */
-class IMPCONTAINEREXPORT InContainerSingletonFilter : public SingletonFilter
+class IMPCONTAINEREXPORT InContainerSingletonFilter :
+    public SingletonPredicate
 {
   IMP::OwnerPointer<SingletonContainer> c_;
 public:
   InContainerSingletonFilter(SingletonContainer *c,
                              std::string name="SingletonFilter %1%");
 
-  IMP_SINGLETON_FILTER(InContainerSingletonFilter);
+  IMP_INDEX_SINGLETON_PREDICATE(InContainerSingletonFilter,{
+      IMP_UNUSED(m);
+      return c_->get_contains_index(pi);
+    });
 };
 
-#ifndef IMP_DOXYGEN
-inline bool InContainerSingletonFilter
-::get_contains(Particle* p) const {
-  return c_->get_contains_particle(p);
-}
-#endif
 
 IMP_OBJECTS(InContainerSingletonFilter, InContainerSingletonFilters);
 

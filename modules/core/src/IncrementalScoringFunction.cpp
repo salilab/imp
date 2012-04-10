@@ -112,8 +112,15 @@ void IncrementalScoringFunction::set_moved_particles(const ParticlesTemp &p) {
 void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
                                                       double distance,
                                                       const ParticlesTemp
+                                                      &particles) {
+  add_close_pair_score(ps, distance, particles, PairPredicates());
+}
+
+void IncrementalScoringFunction::add_close_pair_score(PairScore *ps,
+                                                      double distance,
+                                                      const ParticlesTemp
                                                       &particles,
-                                                      const PairFilters &
+                                                      const PairPredicates &
                                                       filters) {
   IMP_OBJECT_LOG;
   nbl_.push_back(new internal::NBLScoring(ps, distance,all_, particles,

@@ -28,7 +28,7 @@ ClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
 IMP_LIST_IMPL(ClosePairsFinder,
               PairFilter,
               pair_filter,
-              PairFilter*,
-              PairFilters);
+              PairPredicate*,
+              PairPredicates);
 
 IMPCORE_END_NAMESPACE

@@ -102,11 +102,6 @@ def make_one(params, test=True):
               ("modules/core/src/"+multi + "Restraint.cpp",
                path+"/tools/maintenance/container_templates/srestraint.cc"),
 
-              ("modules/container/include/InContainer"+multi + "Filter.h",
-               path+"/tools/maintenance/container_templates/in_container.hpp"),
-              ("modules/container/src/InContainer"+multi + "Filter.cpp",
-               path+"/tools/maintenance/container_templates/in_container.cc"),
-
 
               ("modules/container/include/"+multi + "ContainerSet.h",
                path+"/tools/maintenance/container_templates/set.hpp"),
@@ -137,16 +132,16 @@ def make_one(params, test=True):
               ("modules/kernel/src/"+multi + "Modifier.cpp",
                path+"/tools/maintenance/container_templates/function.cc"),
 
+            ("modules/container/include/InContainer"+multi + "Filter.h",
+             path+"/tools/maintenance/container_templates/in_container.hpp"),
+            ("modules/container/src/InContainer"+multi + "Filter.cpp",
+             path+"/tools/maintenance/container_templates/in_container.cc"),
+
 
               ("modules/kernel/include/"+multi + "DerivativeModifier.h",
                path+"/tools/maintenance/container_templates/derivfunction.hpp"),
               ("modules/kernel/src/"+multi + "DerivativeModifier.cpp",
                path+"/tools/maintenance/container_templates/derivfunction.cc"),
-
-              ("modules/kernel/include/"+multi + "Filter.h",
-               path+"/tools/maintenance/container_templates/filter.hpp"),
-              ("modules/kernel/src/"+multi + "Filter.cpp",
-               path+"/tools/maintenance/container_templates/filter.cc"),
 
               ("modules/kernel/include/"+multi + "Score.h",
                path+"/tools/maintenance/container_templates/score.hpp"),

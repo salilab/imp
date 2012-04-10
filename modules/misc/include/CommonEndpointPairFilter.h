@@ -10,19 +10,20 @@
 
 #include "misc_config.h"
 
-#include <IMP/PairFilter.h>
-
+#include <IMP/PairPredicate.h>
+#include <IMP/pair_macros.h>
 IMPMISC_BEGIN_NAMESPACE
 
 //! Return true for any pair of bonds sharing an endpoint
 /** XXXXXX.
  */
-class IMPMISCEXPORT CommonEndpointPairFilter: public PairFilter
+class IMPMISCEXPORT CommonEndpointPairFilter: public PairPredicate
 {
+  bool get_contains(Model *m, ParticleIndexPair pp) const;
 public:
   CommonEndpointPairFilter();
 
-  IMP_PAIR_FILTER(CommonEndpointPairFilter);
+  IMP_PAIR_PREDICATE(CommonEndpointPairFilter);
 };
 
 

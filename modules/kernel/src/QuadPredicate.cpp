@@ -8,6 +8,7 @@
  */
 
 #include <IMP/QuadPredicate.h>
+#include <IMP/functor.h>
 IMP_BEGIN_NAMESPACE
 
 QuadPredicate::QuadPredicate(std::string name):
@@ -17,6 +18,22 @@ QuadPredicate::QuadPredicate(std::string name):
      symbols are present in the kernel DSO */
 }
 
+void QuadPredicate::remove_if_equal(Model *m,
+                                         ParticleIndexQuads& ps,
+                                         int value) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          make_predicate_equal(this, m, value)),
+           ps.end());
 
+}
+
+void QuadPredicate::remove_if_not_equal(Model *m,
+                                             ParticleIndexQuads& ps,
+                                             int value) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          make_predicate_not_equal(this, m, value)),
+           ps.end());
+
+}
 
 IMP_END_NAMESPACE

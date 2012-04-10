@@ -36,7 +36,7 @@ template <class C>
 inline void filter_close_pairs(C *c, ParticleIndexPairs &ps) {
   for (typename C::PairFilterConstIterator it=c->pair_filters_begin();
        it != c->pair_filters_end(); ++it) {
-    (*it)->filter_in_place(c->get_model(), ps);
+    (*it)->remove_if_not_equal(c->get_model(), ps, 0);
   }
 }
 
@@ -95,7 +95,7 @@ inline void filter_same(ParticleIndexPairs &c) {
 }
 
 
-inline bool get_are_close(Model *m, const PairFilters &filters,
+inline bool get_are_close(Model *m, const PairPredicates &filters,
                           ParticleIndex a, ParticleIndex b,
                           double distance) {
   XYZ da(m, a);
@@ -121,7 +121,7 @@ struct FarParticle {
   FarParticle( Model *m,
                double d): d_(d), m_(m){}
   bool operator()(const ParticleIndexPair& pp) const {
-    return !get_are_close(m_, PairFilters(), pp[0], pp[1], d_);
+    return !get_are_close(m_, PairPredicates(), pp[0], pp[1], d_);
   }
 };
 
@@ -312,7 +312,7 @@ get_if_moved(Model *m, double slack_,
 
 
 
-inline void fill_list(Model *m, const PairFilters &filters,
+inline void fill_list(Model *m, const PairPredicates &filters,
                       ObjectKey key_,
                       double slack_,
                       ParticleIndexes &xyzrs_,
@@ -361,7 +361,7 @@ inline void fill_list(Model *m, const PairFilters &filters,
 }
 
 
-inline void fill_list(Model *m, const PairFilters &filters,
+inline void fill_list(Model *m, const PairPredicates &filters,
                       ObjectKey key_,
                       double slack_,
                       ParticleIndexes xyzrs_[],
@@ -432,7 +432,7 @@ inline void fill_list(Model *m, const PairFilters &filters,
 
 inline ParticlesTemp
 get_input_particles(Model *m, SingletonContainer *sc_,
-                    const PairFilters &filters_,
+                    const PairPredicates &filters_,
                     const ParticleIndexes &/*xyzrs_*/,
                     const ParticleIndexes &rbs_,
                     const IMP::compatibility::map<ParticleIndex,

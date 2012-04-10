@@ -11,7 +11,7 @@
 #define IMPCONTAINER_IN_CONTAINER_QUAD_FILTER_H
 
 #include "container_config.h"
-#include <IMP/QuadFilter.h>
+#include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -19,27 +19,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! A filter which returns true if a container containers the Quad
-/** Stores a searchable shared collection of Quads.
-    \ingroup restraints
+/** This predicate returns 1 if the passed tuple is in the container.
+    \note Only the exact tuple, not permutations of it are searched for.
 
-    Implementors should see IMP_QUAD_FILTER().
  */
-class IMPCONTAINEREXPORT InContainerQuadFilter : public QuadFilter
+class IMPCONTAINEREXPORT InContainerQuadFilter :
+    public QuadPredicate
 {
   IMP::OwnerPointer<QuadContainer> c_;
 public:
   InContainerQuadFilter(QuadContainer *c,
                              std::string name="QuadFilter %1%");
 
-  IMP_QUAD_FILTER(InContainerQuadFilter);
+  IMP_INDEX_QUAD_PREDICATE(InContainerQuadFilter,{
+      IMP_UNUSED(m);
+      return c_->get_contains_index(pi);
+    });
 };
 
-#ifndef IMP_DOXYGEN
-inline bool InContainerQuadFilter
-::get_contains(const ParticleQuad& p) const {
-  return c_->get_contains_particle_quad(p);
-}
-#endif
 
 IMP_OBJECTS(InContainerQuadFilter, InContainerQuadFilters);
 

@@ -148,7 +148,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
                                 d1.get_particle_index());
           bool filtered=false;
           for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
-            if (get_pair_filter(i)->get_contains(get_model(), pip)) {
+            if (get_pair_filter(i)->get_value_index(get_model(), pip)) {
               filtered=true;
               break;
             }

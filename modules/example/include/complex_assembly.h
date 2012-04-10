@@ -30,7 +30,8 @@ IMPEXAMPLEEXPORT void optimize_assembly(Model *m,
                        const algebra::BoundingBox3D &bb,
                        PairScore *ev,
                        double cutoff,
-                              const PairFilters &excluded=PairFilters());
+                                        const PairPredicates &excluded
+                                        =PairPredicates());
 
 IMPEXAMPLE_END_NAMESPACE
 

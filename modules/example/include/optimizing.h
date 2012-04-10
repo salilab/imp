@@ -26,7 +26,7 @@ IMPEXAMPLEEXPORT core::Mover* create_serial_mover(const ParticlesTemp &ps);
 in the passed list of restraints. */
 IMPEXAMPLEEXPORT void optimize_balls(const ParticlesTemp &ps,
                            const RestraintsTemp &rs=RestraintsTemp(),
-                           const PairFilters &excluded=PairFilters(),
+                           const PairPredicates &excluded=PairPredicates(),
                            const OptimizerStates &opt_states=OptimizerStates(),
                                      base::LogLevel ll=DEFAULT);
 

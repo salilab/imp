@@ -11,7 +11,7 @@
 #define IMPCONTAINER_IN_CONTAINER_HEADERNAME_FILTER_H
 
 #include "container_config.h"
-#include <IMP/CLASSNAMEFilter.h>
+#include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/internal/container_helpers.h>
 
@@ -19,27 +19,24 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 //! A filter which returns true if a container containers the CLASSNAME
-/** Stores a searchable shared collection of CLASSNAMEs.
-    \ingroup restraints
+/** This predicate returns 1 if the passed tuple is in the container.
+    \note Only the exact tuple, not permutations of it are searched for.
 
-    Implementors should see IMP_HEADERNAME_FILTER().
  */
-class IMPCONTAINEREXPORT InContainerCLASSNAMEFilter : public CLASSNAMEFilter
+class IMPCONTAINEREXPORT InContainerCLASSNAMEFilter :
+    public CLASSNAMEPredicate
 {
   IMP::OwnerPointer<CLASSNAMEContainer> c_;
 public:
   InContainerCLASSNAMEFilter(CLASSNAMEContainer *c,
                              std::string name="CLASSNAMEFilter %1%");
 
-  IMP_HEADERNAME_FILTER(InContainerCLASSNAMEFilter);
+  IMP_INDEX_HEADERNAME_PREDICATE(InContainerCLASSNAMEFilter,{
+      IMP_UNUSED(m);
+      return c_->get_contains_index(pi);
+    });
 };
 
-#ifndef IMP_DOXYGEN
-inline bool InContainerCLASSNAMEFilter
-::get_contains(ARGUMENTTYPE p) const {
-  return c_->get_contains_FUNCTIONNAME(p);
-}
-#endif
 
 IMP_OBJECTS(InContainerCLASSNAMEFilter, InContainerCLASSNAMEFilters);
 

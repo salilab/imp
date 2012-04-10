@@ -118,7 +118,7 @@ void optimize_assembly(Model *m, const ParticlesTemp &components,
                        const algebra::BoundingBox3D &bb,
                        PairScore *ev,
                        double cutoff,
-                       const PairFilters &excluded) {
+                       const PairPredicates &excluded) {
   IMP_NEW(core::ConjugateGradients, cg, (m));
   cg->set_log_level(IMP::base::SILENT);
   IMP_NEW(core::MonteCarlo, mc, (m));

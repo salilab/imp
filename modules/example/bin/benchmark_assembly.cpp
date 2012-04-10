@@ -35,7 +35,7 @@ Sphere3Ds get_residues(std::string fname) {
 }
 
 
-std::pair<Restraints, PairFilters>
+std::pair<Restraints, PairPredicates>
 create_restraints(Model *m,
                        const ParticlesTemp &ps,
                        double threshold) {
@@ -53,8 +53,9 @@ create_restraints(Model *m,
     ret.push_back(r);
   }
   IMP_NEW(ListPairContainer, lpc, (close));
-  Pointer<PairFilter> filter=container::create_in_container_filter(lpc.get());
-  return std::make_pair(ret, PairFilters(1, filter));
+  Pointer<PairPredicate> filter
+      =container::create_in_container_filter(lpc.get());
+  return std::make_pair(ret, PairPredicates(1, filter));
 }
 
 ParticlesTemp create_particles(Model *m, const Sphere3Ds &input) {
@@ -122,7 +123,7 @@ int main(int, char *[]) {
   IMP_NEW(Model, m, ());
   ParticlesTemp ps= create_particles(m, s3);
   Restraints rs;
-  PairFilters interactions;
+  PairPredicates interactions;
   boost::tie(rs, interactions)= create_restraints(m, ps, threshold);
   display_model(s3, ps, rs, "in.pym");
 
@@ -137,7 +138,7 @@ int main(int, char *[]) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       for (unsigned int j=0; j < i; ++j) {
         ParticlePair pp(ps[i], ps[j]);
-        if (!interactions[0]->get_contains(pp)) {
+        if (!interactions[0]->get_value(pp)) {
           double cur= ssps->evaluate(pp, NULL);
           IMP_USAGE_CHECK(cur < .01, "Hug? " << cur);
           tot+=cur;
@@ -171,7 +172,7 @@ int main(int, char *[]) {
   for (unsigned int i=0; i< ps.size(); ++i) {
     for (unsigned int j=0; j < i; ++j) {
       ParticlePair pp(ps[i], ps[j]);
-      if (!interactions[0]->get_contains(pp)) {
+      if (!interactions[0]->get_value(pp)) {
         double cur= ssps->evaluate(pp, NULL);
         tot1+=cur;
       }

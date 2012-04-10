@@ -100,17 +100,4 @@ ExclusiveConsecutivePairContainer
                                     std::string name):
     ConsecutivePairContainer(ps, true, name){}
 
-
-ParticlesTemp ExclusiveConsecutivePairFilter
-::get_input_particles(Particle*p) const {
-  return ParticlesTemp(1,p);
-}
-ContainersTemp ExclusiveConsecutivePairFilter
-::get_input_containers(Particle*) const {
-  return ContainersTemp();
-}
-
-void ExclusiveConsecutivePairFilter
-::do_show(std::ostream &) const {
-}
 IMPCONTAINER_END_NAMESPACE

@@ -15,20 +15,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 InContainerPairFilter
 ::InContainerPairFilter(PairContainer *c,
-                             std::string name): PairFilter(name), c_(c){}
+                             std::string name): PairPredicate(name),
+                                                c_(c){}
 
-ParticlesTemp InContainerPairFilter
-::get_input_particles(Particle*) const {
-  // not quite right, but...
-  return ParticlesTemp();
-}
-ContainersTemp InContainerPairFilter
-::get_input_containers(Particle*) const {
-  return ContainersTemp(1,c_);
-}
-
-void InContainerPairFilter::do_show(std::ostream &out) const {
-  out << "InContainerPairFilter on " << *c_ << std::endl;
-}
 
 IMPCONTAINER_END_NAMESPACE
