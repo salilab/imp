@@ -13,12 +13,11 @@
 #include "core_macros.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
+#include <IMP/optimizer_macros.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/Configuration.h>
-#include <IMP/PairFilter.h>
-#include <IMP/PairScore.h>
 
 #include <boost/random/uniform_real.hpp>
 
@@ -135,11 +134,7 @@ public:
 
   /** \name Incremental
       Efficient evaluation of non-bonded list based restraints is
-      a bit tricky with incremental evaluation. To aid this, we
-      offer a temporary solution where by you give a PairScore
-      and a display upper bound (on the centers for the time being)
-      to the MC object. It will then make sure this is applied
-      properly.
+      a bit tricky with incremental evaluation.
       @{
   */
   /** Set whether to use incremental evaluate or evaluate all restraints
