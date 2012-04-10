@@ -1,5 +1,5 @@
 /**
- *  \file IMP/RestraintsScoringFunction.h
+ *  \file IMP/core/RestraintsScoringFunction.h
  *  \brief Storage of a model, its restraints,
  *                         constraints and particles.
  *
