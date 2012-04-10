@@ -217,7 +217,7 @@ the optimization steps to files so that the process can be observed
 (eg IMP::atom::WritePDBOptimizerState). The set of attributes which
 are manipulated by the optimizers are controlled by setting the
 optimized flag using IMP::Particle::set_is_optimized() or a decorator
-method such as IMP::core::XZYR::set_coordinates_are_optimized(). Certain
+method such as IMP::core::XZY::set_coordinates_are_optimized(). Certain
 attributes which are computed as functions of other attributes should
 never be set as optimized. Examples include the x,y,z coordinates of
 members of a rigid body.
