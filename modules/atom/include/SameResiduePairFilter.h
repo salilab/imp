@@ -10,6 +10,7 @@
 
 #include "atom_config.h"
 #include <IMP/PairPredicate.h>
+#include <IMP/pair_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
