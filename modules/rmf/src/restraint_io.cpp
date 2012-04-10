@@ -207,6 +207,7 @@ namespace {
     rn.set_value(sk, s, frame);
     base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
+    rd->set_was_used(true);
     RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
     if (!rs) return;
     for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
