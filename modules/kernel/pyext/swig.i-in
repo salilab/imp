@@ -341,7 +341,11 @@ get_check_level= IMP.base.get_check_level
 # by a test case with coverage turned on, also turn on coverage in the Python
 # application.
 if 'IMP_COVERAGE' in os.environ:
-    from IMP.test._compat_python import coverage
-    coverage.the_coverage.parallel_mode=True
-    coverage.start()
+    import coverage
+    _cov = coverage.coverage(branch=True, data_suffix=True)
+    # See run-all-tests.py for further explanation
+    def _our_abs_file(filename):
+        return os.path.normcase(os.path.abspath(filename))
+    _cov.file_locator.abs_file = _our_abs_file
+    _cov.start()
 %}

@@ -300,7 +300,9 @@ def add_common_variables(vars, package):
                       "Whether to report on Python code coverage of tests."
                       '"no" will do no reporting; '
                       '"lines" will list the lines of code that were missed; '
-                      '"annotate" will make annotated copies of the code.',
+                      '"annotate" will make annotated copies of the code. '
+                      'This requires a recent version of the Python coverage '
+                      'module installed on your system.',
                       'no', ['no', 'lines', 'annotate']))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 

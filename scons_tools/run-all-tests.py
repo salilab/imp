@@ -5,11 +5,14 @@ import imp
 import os.path
 import glob
 from optparse import OptionParser
-# Use coverage from outside of IMP.test, since the one in IMP
-# pulls in base/algebra/kernel (preventing those modules from being
-# accurately reported). It is also import not to import any IMP modules at
-# this point. See also import_imp_modules() below.
-import imp_coverage as coverage
+
+# Only use coverage if it's new enough
+try:
+    import coverage
+    if not hasattr(coverage.coverage, 'combine'):
+        coverage = None
+except ImportError:
+    coverage = None
 
 class _TestModuleImporter(object):
     """Import a Python test module. The module
@@ -78,63 +81,86 @@ def parse_options():
                       help="write details of the test failures to this file")
     return parser.parse_args()
 
-def start_coverage():
-    # Try to exclude SWIG and IMP boilerplate from coverage checks
-    coverage.exclude("def swig_import_helper\(")
-    coverage.exclude("def _swig_")
-    coverage.exclude("class (_ostream|_DirectorObjects|"
-                     "IMP_\w+_SwigPyIterator)\(")
-    coverage.exclude("^\s+import _IMP_")
-    coverage.exclude("^except (Name|Attribute)Error:")
-    coverage.exclude("^\s+weakref_proxy =")
-    coverage.exclude("^def [sg]et_check_level")
-    coverage.start()
-    # Ensure that any IMP Python scripts run by tests are themselves checked
-    # for Python coverage
-    os.environ['IMP_COVERAGE'] = '1'
+class CoverageTester(object):
+    """Display a final coverage report"""
+    def __init__(self, opts):
+        self.opts = opts
+        self.start()
 
-def report_morfs(morfs, opts, modname, annotate_dir, omit_prefixes=[]):
-    if opts.pycoverage == 'lines':
-        if opts.output == '-':
-            outfh = sys.stderr
-        else:
-            outfh = open(opts.output, 'w')
-            print >> sys.stderr, \
-                  "\nPython coverage of %s written to %s." \
-                  % (modname, opts.output)
-        coverage.report(morfs, file=outfh, omit_prefixes=omit_prefixes)
-    elif opts.pycoverage == 'annotate':
-        print >> sys.stderr, \
-              "\n%s annotated with Python coverage information " \
-              "in files with\n\",cover\" suffix under %s." \
-              % (modname, annotate_dir)
-        coverage.annotate(morfs, omit_prefixes=omit_prefixes)
+    def start(self):
+        self.cov = coverage.coverage(branch=True)
 
-def report_coverage(opts):
-    coverage.stop()
-    coverage.the_coverage.collect()
-    coverage.use_cache(False)
-
-    cwd = os.path.dirname(sys.argv[0])
-
-    if opts.application and opts.pyexe:
+        cwd = os.path.dirname(sys.argv[0])
         # Don't show full paths in coverage output
-        topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'bin')) + '/'
-        coverage.the_coverage.relative_dir = topdir
-        report_morfs([topdir + x for x in opts.pyexe], opts,
-                     "%s application" % opts.application, "build/bin")
-    elif opts.module:
-        path = opts.module.replace('.', '/')
-        topdir = os.path.abspath(os.path.join(cwd, '..', 'build', 'lib')) + '/'
-        coverage.the_coverage.relative_dir = topdir
-        report_morfs(glob.glob(topdir + '%s/*.py' % path), opts,
-                     "%s module" % opts.module, "build/lib/%s" % path,
-                     omit_prefixes=['%s/_version_check' % path])
+        if self.opts.application and self.opts.pyexe:
+            self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
+                                                       'bin'))
+            self.mods = [self.topdir + '/' + x for x in self.opts.pyexe]
+        elif self.opts.module:
+            path = self.opts.module.replace('.', '/')
+            self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
+                                                       'lib'))
+            self.mods = glob.glob(self.topdir + '/%s/*.py' % path)
+            self.mods = [x for x in self.mods \
+                         if not x.endswith('_version_check.py')]
 
-    for cov in glob.glob('.coverage.*'):
-        os.unlink(cov)
+        # Try to exclude SWIG and IMP boilerplate from coverage checks
+        self.cov.exclude("def swig_import_helper\(")
+        self.cov.exclude("def _swig_")
+        self.cov.exclude("class (_ostream|_DirectorObjects|"
+                    "IMP_\w+_SwigPyIterator)\(")
+        self.cov.exclude("^\s+import _IMP_")
+        self.cov.exclude("^except (Name|Attribute)Error:")
+        self.cov.exclude("^\s+weakref_proxy =")
+        self.cov.exclude("^def [sg]et_check_level")
 
-def import_imp_modules():
+        # Override default filename normalization; by default coverage passes
+        # filename through os.path.realpath(), which removes the symlink.
+        # We don't want this behavior, since we want to talk
+        # about build/lib/IMP/foo/__init__.py, not build/src/IMP.foo.py
+        def our_abs_file(filename):
+            return os.path.normcase(os.path.abspath(filename))
+        self.cov.file_locator.abs_file = our_abs_file
+
+        self.cov.start()
+
+    def report_morfs(self, morfs, modname, annotate_dir):
+        if self.opts.pycoverage == 'lines':
+            if self.opts.output == '-':
+                outfh = sys.stderr
+            else:
+                outfh = open(self.opts.output, 'w')
+                print >> sys.stderr, \
+                      "\nPython coverage of %s written to %s." \
+                      % (modname, self.opts.output)
+            self.cov.report(morfs, file=outfh)
+        elif self.opts.pycoverage == 'annotate':
+            print >> sys.stderr, \
+                  "\n%s annotated with Python coverage information " \
+                  "in files with\n\",cover\" suffix under %s." \
+                  % (modname, annotate_dir)
+            self.cov.annotate(morfs)
+
+    def report(self):
+        self.cov.stop()
+        self.cov.combine()
+        self.cov.use_cache(False)
+
+        self.cov.file_locator.relative_dir = self.topdir + '/'
+
+        if self.opts.application and self.opts.pyexe:
+            self.report_morfs(self.mods,
+                              "%s application" % self.opts.application,
+                              "build/bin")
+        elif self.opts.module:
+            path = self.opts.module.replace('.', '/')
+            self.report_morfs(self.mods, "%s module" % self.opts.module,
+                              "build/lib/%s" % path)
+
+        for cov in glob.glob('.coverage.*'):
+            os.unlink(cov)
+
+def import_imp_modules(covtest):
     # Note that we need to import all IMP modules *after* we start Python
     # coverage collection, otherwise large parts of kernel/base/algebra
     # will be erroneously reported as not covered (since they were run
@@ -145,11 +171,23 @@ def import_imp_modules():
     # themselves
     from IMP.test import unittest
 
+    # Ensure that any IMP Python scripts run by tests are themselves checked
+    # for Python coverage (must be after we import IMP, since we are
+    # already covering this process)
+    if covtest:
+        os.environ['IMP_COVERAGE'] = '1'
+
 if __name__ == "__main__":
     opts, args = parse_options()
+    covtest = None
     if opts.pycoverage != 'no':
-        start_coverage()
-    import_imp_modules()
+        if coverage:
+            covtest = CoverageTester(opts)
+        else:
+            print >> sys.stderr, "Python coverage was requested but a " \
+                                 + "new enough 'coverage' module could not " \
+                                 + "be found on your system"
+    import_imp_modules(covtest)
     r = RegressionTest(args)
     # Hide our command line options from any module we import
     sys.argv = [sys.argv[0]]
@@ -161,6 +199,6 @@ if __name__ == "__main__":
             print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors])
         if len(main.result.skipped) > 0:
             print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
-    if opts.pycoverage != 'no':
-        report_coverage(opts)
+    if covtest:
+        covtest.report()
     sys.exit(not main.result.wasSuccessful())
