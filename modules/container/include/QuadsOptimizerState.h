@@ -16,6 +16,7 @@
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/OptimizerState.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig

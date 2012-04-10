@@ -15,6 +15,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
 #include <IMP/PairContainer.h>
+#include <IMP/restraint_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -49,8 +50,6 @@ public:
                                       double max) const;
 #endif
 };
-
-IMP_OBJECTS(MinimumPairRestraint,MinimumPairRestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

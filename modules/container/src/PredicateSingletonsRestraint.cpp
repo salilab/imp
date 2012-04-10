@@ -9,6 +9,7 @@
  */
 
 #include "IMP/container/PredicateSingletonsRestraint.h"
+#include <IMP/singleton_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

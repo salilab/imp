@@ -18,6 +18,7 @@
 #include "../QuadScore.h"
 #include "../QuadContainer.h"
 #include "../Restraint.h"
+#include "../restraint_macros.h"
 
 #include <iostream>
 

@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/ScoreState.h>
+#include <IMP/score_state_macros.h>
 #include <IMP/compatibility/set.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE

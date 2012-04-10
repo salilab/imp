@@ -18,6 +18,8 @@
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/base/Vector.h>
+#include <IMP/LCCLASSNAME_macros.h>
+#include <IMP/score_state_macros.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>

@@ -16,6 +16,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/Constraint.h>
+#include <IMP/score_state_macros.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig

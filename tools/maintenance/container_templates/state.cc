@@ -13,6 +13,7 @@
 #include "IMP/container/CLASSNAMEsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <IMP/core/CLASSNAMEConstraint.h>
+#include <IMP/LCCLASSNAME_macros.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE

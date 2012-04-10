@@ -13,6 +13,7 @@
 #include <IMP/TripletScore.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
+#include <IMP/triplet_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

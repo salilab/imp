@@ -13,6 +13,7 @@
 #include <IMP/SingletonScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
+#include <IMP/singleton_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

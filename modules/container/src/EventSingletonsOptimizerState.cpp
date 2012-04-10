@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/EventSingletonsOptimizerState.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 EventSingletonsOptimizerState::

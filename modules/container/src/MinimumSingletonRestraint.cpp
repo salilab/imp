@@ -13,6 +13,7 @@
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/SingletonRestraint.h>
+#include <IMP/singleton_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

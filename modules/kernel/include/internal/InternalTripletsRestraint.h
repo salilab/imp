@@ -18,6 +18,7 @@
 #include "../TripletScore.h"
 #include "../TripletContainer.h"
 #include "../Restraint.h"
+#include "../restraint_macros.h"
 
 #include <iostream>
 

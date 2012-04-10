@@ -16,6 +16,7 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/Constraint.h>
 #include <IMP/Restraint.h>
+#include <IMP/pair_macros.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 /** When programming in C++, you can use CoreRestraint instead

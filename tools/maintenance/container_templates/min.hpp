@@ -15,6 +15,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/CLASSNAMEScore.h>
 #include <IMP/CLASSNAMEContainer.h>
+#include <IMP/restraint_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -49,8 +50,6 @@ public:
                                       double max) const;
 #endif
 };
-
-IMP_OBJECTS(MINORMAXCLASSNAMERestraint,MINORMAXCLASSNAMERestraints);
 
 
 IMPCONTAINER_END_NAMESPACE

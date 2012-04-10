@@ -8,10 +8,8 @@
 #ifndef IMPKERNEL_INDEXING_ITERATOR_H
 #define IMPKERNEL_INDEXING_ITERATOR_H
 
-#include "../macros.h"
-
 #include <IMP/RefCounted.h>
-
+#include <IMP/base/check_macros.h>
 #include <iterator>
 #include <limits>
 

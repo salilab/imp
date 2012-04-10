@@ -13,6 +13,7 @@
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/TripletRestraint.h>
+#include <IMP/triplet_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

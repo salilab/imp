@@ -9,6 +9,7 @@
  */
 
 #include "IMP/container/PredicateCLASSNAMEsRestraint.h"
+#include <IMP/LCCLASSNAME_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

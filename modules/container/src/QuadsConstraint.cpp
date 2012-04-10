@@ -13,6 +13,7 @@
 #include "IMP/container/QuadsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <IMP/core/QuadConstraint.h>
+#include <IMP/quad_macros.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE

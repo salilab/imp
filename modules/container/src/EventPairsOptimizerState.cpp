@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/EventPairsOptimizerState.h>
+#include <IMP/pair_macros.h>
 #include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 EventPairsOptimizerState::

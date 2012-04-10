@@ -14,6 +14,8 @@
 #include <IMP/PairPredicate.h>
 #include <IMP/PairContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/pair_macros.h>
+#include <IMP/base/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

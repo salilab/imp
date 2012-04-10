@@ -13,6 +13,7 @@
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/CLASSNAMERestraint.h>
+#include <IMP/LCCLASSNAME_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

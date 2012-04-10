@@ -17,6 +17,7 @@
 #include <IMP/internal/InternalDynamicListCLASSNAMEContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/CLASSNAMEPredicate.h>
+#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

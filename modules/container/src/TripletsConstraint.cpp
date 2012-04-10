@@ -13,6 +13,7 @@
 #include "IMP/container/TripletsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <IMP/core/TripletConstraint.h>
+#include <IMP/triplet_macros.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE

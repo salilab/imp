@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/EventCLASSNAMEsOptimizerState.h>
+#include <IMP/LCCLASSNAME_macros.h>
 #include <IMP/Optimizer.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 EventCLASSNAMEsOptimizerState::

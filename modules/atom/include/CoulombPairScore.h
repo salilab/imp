@@ -13,6 +13,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/atom/smoothing_functions.h>
+#include <IMP/pair_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

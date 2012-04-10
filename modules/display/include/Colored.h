@@ -12,6 +12,7 @@
 
 #include "Color.h"
 #include <IMP/Decorator.h>
+#include <IMP/decorator_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

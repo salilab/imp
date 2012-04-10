@@ -18,6 +18,7 @@
 #include "../CLASSNAMEScore.h"
 #include "../CLASSNAMEContainer.h"
 #include "../Restraint.h"
+#include "../restraint_macros.h"
 
 #include <iostream>
 

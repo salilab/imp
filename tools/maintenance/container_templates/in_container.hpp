@@ -14,6 +14,8 @@
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/LCCLASSNAME_macros.h>
+#include <IMP/base/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
