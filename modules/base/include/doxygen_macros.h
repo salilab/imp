@@ -35,16 +35,32 @@
  */
 #define IMP_IMPLEMENT_INLINE(signature, body)
 
+/** Define a method inline that impements a pure virtual method that
+    is hidden from swig.
+ */
+#define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body)
+
 /** Define an implementation detail template method.
  */
 #define IMP_IMPLEMENTATION_TEMPLATE_1(arg0, signature, body)
 #define IMP_IMPLEMENTATION_TEMPLATE_2(arg0, arg1, signature, body)
 #else
 #define IMP_IMPLEMENT(signature) signature
+
 #define IMP_IMPLEMENT_INLINE(signature, body)   \
   signature {                                   \
     body;                                       \
   }
+
+#ifndef SWIG
+#define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body)   \
+  signature {                                           \
+    body;                                               \
+  }
+#else
+#define IMP_IMPLEMENT_INLINE_NO_SWIG(signature, body)
+
+#endif
 
 #define IMP_IMPLEMENTATION_TEMPLATE_1(arg0, signature, body)\
   template <arg0> signature {body}
