@@ -26,18 +26,7 @@ public:
   //! no arguments
   BondedPairFilter();
 
-  IMP_INDEX_PAIR_PREDICATE(BondedPairFilter, {
-      Particle *pa= m->get_particle(pi[0]);
-      Particle *pb= m->get_particle(pi[1]);
-      if (!Bonded::particle_is_instance(pa)
-          || ! Bonded::particle_is_instance(pb)) {
-        return false;
-      }
-      Bonded ba(m, pi[0]);
-      Bonded bb(m, pi[1]);
-      Bond bd=get_bond(ba, bb);
-      return bd != Bond();
-    });
+  IMP_PAIR_PREDICATE(BondedPairFilter);
 };
 
 IMP_OBJECTS(BondedPairFilter,BondedPairFilters);
