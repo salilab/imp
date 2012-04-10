@@ -28,9 +28,10 @@ class SAXSProfile:
         self.intervals = {}
         self.filename = None
 
-    def add_data(self, input, offset=0):
+    def add_data(self, input, offset=0, positive=False):
         """add experimental data to saxs profile.
         offset=i means discard first i columns
+        positive=True means only keep intensities that are >0
         """
         if isinstance(input, str):
             #read all lines
@@ -55,6 +56,9 @@ class SAXSProfile:
                     entry.append(None)
                 else:
                     entry.append(f(z))
+            #keep positive data
+            if positive and entry[1] <= 0:
+                continue
             data.append(entry)
         self.data += copy.deepcopy(data)
         self.data.sort(key=lambda a:a[0])
@@ -89,6 +93,7 @@ class SAXSProfile:
             Data is returned only if all of the provided flags are True.
             colwise : instead of returning a list of tuples for each data point,
                       return a dictionnary with flag names as keys.
+            subsample : only return every nth point.
         """
         if 'filter' in kwargs:
             filt = kwargs.pop('filter')
@@ -101,6 +106,9 @@ class SAXSProfile:
                 flagnos = [self.flag_dict[name] for name in filt]
         else:
             flagnos = []
+        subsample=1
+        if 'subsample' in kwargs:
+            subsample=kwargs.pop('subsample')
         if 'colwise' in kwargs:
             colwise = kwargs.pop('colwise')
         else:
@@ -130,7 +138,7 @@ class SAXSProfile:
                 retval[i] = []
         else:
             retval = []
-        for i,d in enumerate(self.data):
+        for i,d in enumerate(self.data[::subsample]):
             if d[0] < qmin:
                 continue
             if d[0] > qmax:
@@ -564,6 +572,8 @@ Merging
             "one of cleanup, fitting, rescaling, classification, merging "
             "(default: merging)", choices=["cleanup","fitting","rescaling",
                 "classification", "merging"], default="merging")
+    group.add_option('--postpone_cleanup', action='store_true', default=False,
+            help="Cleanup step comes after rescaling step (default is False)")
     #cleanup
     group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -603,6 +613,9 @@ Merging
             'instead of just taking the most probable set of parameters. '
             'Default is not to perform the averaging.',
             action='store_true', default=False)
+    group.add_option('--bsubsample', metavar='NUM', default=1, type='int',
+            help='To speed up the fitting step, use only every NUM point in '
+            'the calculation. Default is 1.')
     #group.add_option('--bschedule', help='Simulation schedule. Default is '
     #        '"10:10000/5:1000/1:100" which means use every 10 data points for '
     #        'the first 1000 steps, then every 5 data points for 100 steps, '
@@ -661,6 +674,9 @@ Merging
             "instead of just taking the most probable set of parameters. "
             "Default is not to perform the averaging.",
             action='store_true', default=False)
+    group.add_option('--esubsample', metavar='NUM', default=1, type='int',
+            help='To speed up the merging step, use only every NUM point in '
+            'the calculation. Default is 1.')
     (args, files) = parser.parse_args()
     if len(files) == 0:
         parser.error("No files specified")
@@ -687,7 +703,7 @@ def parse_filenames(fnames, defaultvalue=10):
 
 def create_profile(file, nreps):
     p=SAXSProfile()
-    p.add_data(file)
+    p.add_data(file, positive=True)
     p.set_Nreps(nreps)
     p.set_filename(file)
     return p
@@ -751,7 +767,7 @@ def setup_particles(initvals):
     #model.add_restraint(IMP.isd.JeffreysRestraint(tau))
     model.add_score_state(IMP.core.SingletonConstraint(
         IMP.isd.NuisanceRangeModifier(),None,tau))
-    #model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
+    model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
     model.add_score_state(IMP.core.SingletonConstraint(
         IMP.isd.NuisanceRangeModifier(),None,sigma))
     #set lower and upper bounds for Rg, d and s
@@ -853,7 +869,7 @@ def find_fit_mean(data, initvals, verbose, mean_function):
         #print " ".join(["%5s=%10G" % d for d in initvals.items()])
         do_quasinewton(model,100)
     #reset tau bounds
-    if particles['tau'].has_lower():
+    if taulow:
         particles['tau'].set_lower(taulow)
     model.evaluate(False)
     initvals = dict([(k,v.get_nuisance())
@@ -974,13 +990,17 @@ def find_fit_by_gridding(data, initvals, verbose):
     #print "gridding"
     for lambdaval in logspace(log(lambdamin),log(lambdamax),
             base=exp(1),num=numpoints):
-        for rel in [0]+logspace(-2, 2, num=numpoints):
+        for rel in logspace(-2, 2, num=numpoints):
             particles['lambda'].set_nuisance(lambdaval)
             #set new value of tau**2/sigma
             sigmaval = particles['sigma'].get_nuisance()
             particles['tau'].set_nuisance((rel*sigmaval)**.5)
             #get exponent and compute reduced exponent
             exponent = gpr.get_minus_exponent()
+            if isnan(exponent) or exponent <=0:
+                print "got invalid exponent at grid point "\
+                      "lambda=%f rel=%f exp=%s" % (lambdaval,rel, exponent)
+                continue
             redexp = sigmaval * exponent
             #compute maximum posterior value for sigma assuming jeffreys prior
             sigmaval = redexp/(len(data['q'])+2)
@@ -1094,6 +1114,13 @@ def find_fit(data, initvals, verbose, model_comp=False,
         param_vals[mean_func] = \
                 find_fit_mean(data, initvals, verbose, mean_func)
         if verbose > 2:
+            if mean_function in ["Simple","Generalized","Full"]:
+                sys.stdout.write("G=%1.2f " % param_vals[mean_func]['G'])
+                sys.stdout.write("Rg=%1.2f " % param_vals[mean_func]['Rg'])
+            if mean_function in ["Generalized","Full"]:
+                sys.stdout.write("d=%1.2f " % param_vals[mean_func]['d'])
+            if mean_function == "Full":
+                sys.stdout.write("s=%1.2f " % param_vals[mean_func]['s'])
             sys.stdout.write("covariance ")
             sys.stdout.flush()
         #initvals = find_fit_lambda(data, initvals, args, verbose)
@@ -1101,7 +1128,7 @@ def find_fit(data, initvals, verbose, model_comp=False,
         param_vals[mean_func] = \
                 find_fit_by_gridding(data, param_vals[mean_func], verbose)
         if verbose > 2:
-            for i in ['G','Rg','d','s','tau','lambda','sigma']:
+            for i in ['tau','lambda','sigma']:
                 sys.stdout.write("%s=%1.2f " % (i,param_vals[mean_func][i]))
             print ""
             sys.stdout.flush()
@@ -1195,7 +1222,7 @@ def write_merge_profile(merge,args,qvals):
             print " mean ",
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                 dir=args.destdir, qmin=qmin, qmax=qmax, header=args.header,
-                flags=mflags, num=args.enpoints, average=True,
+                flags=mflags, num=args.enpoints, average=args.eaverage,
                 verbose=(args.verbose > 2))
     else:
         if args.verbose > 2:
@@ -1204,7 +1231,7 @@ def write_merge_profile(merge,args,qvals):
         qvals = qvals[where(qvals <= qmax)]
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                 dir=args.destdir, qvalues=qvals, header=args.header,
-                flags=mflags, average=True, verbose=(args.verbose > 2))
+                flags=mflags, average=args.eaverage, verbose=(args.verbose > 2))
 
 def write_summary_file(merge, profiles, args):
     fl=open(os.path.join(args.destdir,args.sumname),'w')
@@ -1269,13 +1296,16 @@ def write_summary_file(merge, profiles, args):
         fl.write("   Number of points: %d \n" % len(data) +
                  "   Data range: %.5f %.5f \n" % (data[0][0],data[-1][0]))
         #cleanup
-        data = p.get_data(filter='agood',colwise=True)
-        fl.write("  1. Cleanup\n" +
-                 "   Number of significant points: %d \n" % len(data['q']) +
-                 "   Data range: %.5f %.5f \n" % (data['q'][0],data['q'][-1]))
-        if args.stop == "cleanup":
-            fl.write("  Skipped further steps\n\n")
-            continue
+        if not args.postpone_cleanup:
+            data = p.get_data(filter='agood',colwise=True)
+            fl.write("  1. Cleanup\n" +
+                     "   Number of significant points: %d \n" % \
+                             len(data['q']) +
+                     "   Data range: %.5f %.5f \n" % \
+                             (data['q'][0],data['q'][-1]))
+            if args.stop == "cleanup":
+                fl.write("  Skipped further steps\n\n")
+                continue
         #fitting
         data = p.get_params()
         fl.write("  2. GP parameters (values for non-rescaled curve)\n")
@@ -1293,11 +1323,26 @@ def write_summary_file(merge, profiles, args):
         #rescaling
         data = p.get_gamma()
         fl.write("  3. Rescaling\n")
+        if args.cnormal:
+            fl.write("  normal model\n")
+        else:
+            fl.write("  normal model\n")
         fl.write("   gamma : %f\n" % data)
         if args.stop == "rescaling":
             fl.write("  Skipped further steps\n\n")
             continue
         data = p.get_data(filter='dgood',colwise=True)
+        #cleanup (if it has been postponed)
+        if args.postpone_cleanup:
+            data = p.get_data(filter='agood',colwise=True)
+            fl.write("  1. Cleanup (postponed)\n" +
+                     "   Number of significant points: %d \n" % \
+                             len(data['q']) +
+                     "   Data range: %.5f %.5f \n" % \
+                             (data['q'][0],data['q'][-1]))
+            if args.stop == "cleanup":
+                fl.write("  Skipped further steps\n\n")
+                continue
         #classification
         fl.write("  4. Classification\n" +
                  "   Number of valid points: %d \n" % len(data['q']) +
@@ -1387,12 +1432,16 @@ def fitting(profiles, args):
     """
     #schedule = args.bschedule
     verbose = args.verbose
+    subs = args.bsubsample
     if verbose >0:
         print "2. fitting"
     for p in profiles:
         if verbose > 1:
             print "   ",p.filename,
-        data = p.get_data(filter='agood',colwise=True)
+        try:
+            data = p.get_data(filter='agood',colwise=True, subsample=subs)
+        except KeyError:
+            data = p.get_data(colwise=True, subsample=subs)
         data['N'] = p.get_Nreps()
         initvals={}
         initvals['G']=1. #will be calculated properly
@@ -1423,7 +1472,11 @@ def rescaling(profiles, args):
     reference = args.creference
     average = args.baverage
     if verbose >0:
-        print "3. rescaling"
+        print "3. rescaling",
+        if use_normal:
+            print "(normal model)"
+        else:
+            print "(lognormal model)"
     #take last as internal reference as there's usually good overlap
     pref = profiles[-1]
     gammas = []
@@ -1431,9 +1484,15 @@ def rescaling(profiles, args):
         #find intervals where both functions are valid
         p.new_flag('cgood',bool)
         pdata = p.get_data(colwise=True)
-        for id,q,flag in zip(pdata['id'],pdata['q'],pdata['agood']):
-            refflag = pref.get_flag(q,'agood')
-            p.set_flag(id, 'cgood', flag and refflag)
+        if 'agood' in pdata: #assumed true for pref also
+            for id,q,flag in zip(pdata['id'],pdata['q'],pdata['agood']):
+                refflag = pref.get_flag(q,'agood')
+                p.set_flag(id, 'cgood', flag and refflag)
+        else: #assumed false for pref also
+            refq = pref.get_data(colwise=True)['q']
+            for id,q in zip(pdata['id'],pdata['q']):
+                refflag = (refq[0] <= q <= refq[-1])
+                p.set_flag(id, 'cgood', refflag)
         create_intervals_from_data(p, 'cgood')
         #generate points in these intervals to compute gamma
         goodip = [i for i in p.get_flag_intervals('cgood') if i[2]]
@@ -1530,6 +1589,7 @@ def merging(profiles, args):
     """
     #schedule = args.eschedule
     verbose = args.verbose
+    subs=args.esubsample
     do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
     if verbose > 0:
@@ -1549,7 +1609,7 @@ def merging(profiles, args):
         if verbose >1:
             print "    ",p.filename
         #get data and keep only relevant flags
-        data = p.get_data(filter='dgood',colwise=True)
+        data = p.get_data(filter='dgood',colwise=True, subsample=subs)
         #flag_numbers = [p.flag_dict[k]+1 for k in flags_to_keep]
         #print len(flag_numbers)
         #cleaned = [[d for j,d in enumerate(dat) if j in flag_numbers]
@@ -1636,18 +1696,24 @@ def write_data(merge, profiles, args):
         print "Done."
 
 def main():
+    #get arguments and create profiles
     profiles, args = initialize()
-    profiles, args = cleanup(profiles, args)
-    if args.stop in ["fitting","rescaling","classification","merging"]:
-        profiles, args = fitting(profiles, args)
-    if args.stop in ["rescaling","classification","merging"]:
-        profiles, args = rescaling(profiles, args)
-    if args.stop in ["classification","merging"]:
-        profiles, args = classification(profiles, args)
-    if args.stop == "merging":
-        merge, profiles, args = merging(profiles, args)
+    #create list of steps to do, in order
+    if args.postpone_cleanup:
+        steps_to_go = ["fitting","rescaling","cleanup",
+                        "classification","merging"]
     else:
-        merge = None
+        steps_to_go = ["cleanup","fitting","rescaling",
+                        "classification","merging"]
+    steps_to_go = steps_to_go[:steps_to_go.index(args.stop)+1]
+    #call steps in turn
+    merge = None
+    for step in steps_to_go:
+        if step != 'merging':
+            profiles, args = globals()[step](profiles, args)
+        else:
+            merge, profiles, args = merging(profiles, args)
+    #write output
     write_data(merge, profiles, args)
 
 if __name__ == "__main__":
