@@ -17,6 +17,7 @@
 #include <IMP/internal/InternalDynamicListQuadContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/QuadPredicate.h>
+#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

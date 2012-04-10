@@ -13,6 +13,7 @@
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
 #include <IMP/core/PairRestraint.h>
+#include <IMP/pair_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

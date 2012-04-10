@@ -17,6 +17,7 @@
 #include <IMP/internal/InternalDynamicListSingletonContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/SingletonPredicate.h>
+#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

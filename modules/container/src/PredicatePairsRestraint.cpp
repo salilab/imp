@@ -9,6 +9,7 @@
  */
 
 #include "IMP/container/PredicatePairsRestraint.h"
+#include <IMP/pair_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

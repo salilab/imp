@@ -9,6 +9,7 @@
  */
 
 #include "IMP/container/PredicateQuadsRestraint.h"
+#include <IMP/quad_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

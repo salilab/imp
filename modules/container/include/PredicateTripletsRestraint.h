@@ -17,6 +17,7 @@
 #include <IMP/internal/InternalDynamicListTripletContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/TripletPredicate.h>
+#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

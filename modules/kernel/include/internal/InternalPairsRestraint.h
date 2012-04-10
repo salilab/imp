@@ -18,6 +18,7 @@
 #include "../PairScore.h"
 #include "../PairContainer.h"
 #include "../Restraint.h"
+#include "../restraint_macros.h"
 
 #include <iostream>
 

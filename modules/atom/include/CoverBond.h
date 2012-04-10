@@ -13,6 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
+#include <IMP/singleton_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

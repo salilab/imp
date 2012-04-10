@@ -15,6 +15,7 @@
 #include <IMP/CLASSNAMEPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/CLASSNAMEContainer.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

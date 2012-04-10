@@ -16,7 +16,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-
+#include <IMP/pair_macros.h>
 IMPCONTAINER_BEGIN_NAMESPACE
 
 //! Return all unordered pairs of particles taken from the SingletonContainer

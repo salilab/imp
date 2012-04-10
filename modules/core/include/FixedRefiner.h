@@ -13,7 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Refiner.h>
-#include <IMP/container_macros.h>
+#include <IMP/refiner_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

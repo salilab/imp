@@ -15,6 +15,7 @@
 #include <IMP/QuadPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/QuadContainer.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

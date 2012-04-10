@@ -13,6 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/Decorator.h>
+#include <IMP/decorator_macros.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

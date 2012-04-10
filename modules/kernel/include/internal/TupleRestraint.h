@@ -16,6 +16,7 @@
 #include "pair_helpers.h"
 #include "triplet_helpers.h"
 #include "quad_helpers.h"
+#include "../restraint_macros.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 

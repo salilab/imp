@@ -15,6 +15,7 @@
 #include <IMP/SingletonPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

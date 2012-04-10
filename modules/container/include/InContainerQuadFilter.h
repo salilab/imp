@@ -14,6 +14,8 @@
 #include <IMP/QuadPredicate.h>
 #include <IMP/QuadContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/quad_macros.h>
+#include <IMP/base/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

@@ -14,6 +14,8 @@
 #include <IMP/SingletonPredicate.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/singleton_macros.h>
+#include <IMP/base/warning_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

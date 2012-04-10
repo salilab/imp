@@ -13,6 +13,7 @@
 #include "IMP/container/SingletonsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <IMP/core/SingletonConstraint.h>
+#include <IMP/singleton_macros.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE

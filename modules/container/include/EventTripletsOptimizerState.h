@@ -15,6 +15,7 @@
 #include <IMP/TripletPredicate.h>
 #include <IMP/OptimizerState.h>
 #include <IMP/TripletContainer.h>
+#include <IMP/optimizer_state_macros.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

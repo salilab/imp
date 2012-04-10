@@ -13,6 +13,7 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/Refiner.h>
+#include <IMP/pair_macros.h>
 
 IMPMISC_BEGIN_NAMESPACE
 

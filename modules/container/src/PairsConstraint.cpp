@@ -13,6 +13,7 @@
 #include "IMP/container/PairsConstraint.h"
 #include "IMP/internal/container_helpers.h"
 #include <IMP/core/PairConstraint.h>
+#include <IMP/pair_macros.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE

@@ -18,6 +18,7 @@
 #include "../SingletonScore.h"
 #include "../SingletonContainer.h"
 #include "../Restraint.h"
+#include "../restraint_macros.h"
 
 #include <iostream>
 

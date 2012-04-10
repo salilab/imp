@@ -17,6 +17,7 @@
 #include <IMP/internal/InternalDynamicListPairContainer.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/PairPredicate.h>
+#include <IMP/restraint_macros.h>
 #include "generic.h"
 
 #include <iostream>

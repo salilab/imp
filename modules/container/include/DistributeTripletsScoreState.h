@@ -18,6 +18,8 @@
 #include <IMP/TripletPredicate.h>
 #include <IMP/TripletContainer.h>
 #include <IMP/base/Vector.h>
+#include <IMP/triplet_macros.h>
+#include <IMP/score_state_macros.h>
 #include <boost/tuple/tuple.hpp>
 
 #include <iostream>
