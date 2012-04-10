@@ -10,6 +10,7 @@
 
 #include "atom_config.h"
 #include <IMP/PairPredicate.h>
+#include <IMP/pair_macros.h>
 #include <IMP/atom/internal/ExcludedPair.h>
 #include <IMP/internal/container_helpers.h>
 
