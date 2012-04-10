@@ -230,8 +230,8 @@ public:                                                                 \
 
 
 #ifdef IMP_DOXYGEN
-#define IMP_DECORATORS_DECL(Name, PluralName, Parent)
-#define IMP_DECORATORS_DEF(Name, PluralName, Parent)
+#define IMP_DECORATORS_DECL(Name, PluralName)
+#define IMP_DECORATORS_DEF(Name, PluralName)
 
 
 //! Define the types for storing sets of decorators
