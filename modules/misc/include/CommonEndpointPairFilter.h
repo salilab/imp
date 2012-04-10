@@ -19,7 +19,6 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class IMPMISCEXPORT CommonEndpointPairFilter: public PairPredicate
 {
-  bool get_contains(Model *m, ParticleIndexPair pp) const;
 public:
   CommonEndpointPairFilter();
 
