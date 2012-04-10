@@ -21,11 +21,11 @@ class TunnelTest(IMP.test.TestCase):
             lbp= bp
             ps.append(p)
         cepc= IMP.misc.CommonEndpointPairFilter()
-        self.assertTrue(cepc.get_contains((bonds[0].get_particle(),
+        self.assertTrue(cepc.get_value((bonds[0].get_particle(),
                                                               bonds[1].get_particle())))
-        self.assertTrue(cepc.get_contains((bonds[2].get_particle(),
+        self.assertTrue(cepc.get_value((bonds[2].get_particle(),
                                                               bonds[1].get_particle())))
-        self.assertFalse(cepc.get_contains((bonds[0].get_particle(),
+        self.assertFalse(cepc.get_value((bonds[0].get_particle(),
                                                                   bonds[2].get_particle())))
 
 if __name__ == '__main__':
