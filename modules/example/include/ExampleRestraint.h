@@ -14,6 +14,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
+#include <IMP/restraint_macros.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
