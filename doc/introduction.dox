@@ -13,7 +13,6 @@ understand the overall structure of \imp.
  -# \ref i125 "Modules"
  -# \ref i13 "C++ and Python"
  -# \ref conventions "Conventions"
- -# \ref incremental "Incremental scoring"
  -# \ref fixbug "Reporting bugs"
  -# \ref next "Where to go next"
 
@@ -67,10 +66,10 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
   more below and on the IMP::Decorator page.\n\n
   Representations can loaded from a number of standard file types, for %example see
   IMP::atom::read_pdb() and IMP::atom::read_mol2().
--# \anchor dataenc <em>Encoding the data as a scoring function: </em>
+-# \anchor dataenc <em>Encoding the data as an IMP::ScoringFunction: </em>
   Proposed models are scored based on how well they match the
   data, with a low score meaning a closer fit than a high score. In
-  \imp the scoring function is the sum terms, each of which is
+  \imp a IMP::ScoringFunction is the sum terms, each of which is
   computed by an IMP::Restraint object. The scoring function terms can be
   based on things like
     - \inlineimage{distance.png, 50} how close a distance is to the measured value (IMP::core::DistanceRestraint, IMP::core::DistancePairScore, IMP::core::RigidBodyDistancePairScore, IMP::core::SphereDistancePairScore)
@@ -199,10 +198,10 @@ particles and restraints, it allows one to enforce invariant between particles (
 allowable scores for restraints and ranges for attributes. Invariants are enforced using  IMP::Constraint objects stored in the IMP::Model. They maintain
 some hard invariant of the representation. Examples include, keeping a rigid body
 rigid, or ensuring that the IMP::container::ClosePairContainer really contains all
-close pairs. Constraints are updated as part of the IMP::Model::evaluate().
+close pairs. Constraints are updated as part of the model scoring.
 <em> This means that the constraint does not necessarily hold except during
 score evaluation.</em> In order to ensure that all constraints hold, call
-IMP::Model::evaluate() before inspecting the particles.
+IMP::Model::update() before inspecting the particles.
 
 Once the representation and scoring are set up, one needs to find good
 conformations of the model. This is done via IMP::Optimizer and
@@ -509,23 +508,15 @@ generate the connection between the two languages. Key differences are
     As pretty much any operation can throw an exception any time, one can never
     count on general cleanup code to excute.
 
-\section incremental 7. Incremental Scoring
-    Scoring in \imp can be performed in two different ways,
-    - whole model, where each restraint is evaluated each time the model is changed
-    - or incremental, where restraints are given the opportunity to update their scores after only a few of the particles change.
 
-    Whole model scoring is faster when more than approximately half of the particles change each time the Model::evaluate() is called. Either one will produce the correct (and same) answer in all instances.
-
-    To set up incremental scoring call IMP::Model::set_is_incremental() with the value \c true. See \ref scoring "Scoring" for implementation information.
-
-\section graphs 8. Graphs
+\section graphs 7. Graphs
 
 Graphs in \imp are represented using the \external{http://www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are \external{http://www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph.
 
-\section fasterfaster 9. Making IMP run faster
+\section fasterfaster 8. Making IMP run faster
 
 Sampling can often be very computationally expensive. If you computation is taking longer than you would like, the first thing you should do is to profile it. We find \external{http://developer.apple.com/tools/sharkoptimize.html,Shark} and \external{http://developer.apple.com/library/mac/#documentation/Performance/Conceptual/PerformanceOverview/InitialEvaluation/InitialEvaluation.html#//apple_ref/doc/uid/TP40001410-CH206-SW7, Instruments} which are part of the Macintosh developer tools to be the best free Mac/Linux options. \external{http://www.cs.utah.edu/dept/old/texinfo/as/gprof.html, gprof} is a free alternative on linux, but it requires a static build (and hence can't work with python) and is not so friendly to use.
 
@@ -559,7 +550,7 @@ m->add_restraint(new IMP::core::PairRestraint(new IMP::core::HarmonicDistancePai
                                               IMP::ParticlePair(p0, p1)));
 \endcode
 
-\section fixbug 10. Reporting bugs
+\section fixbug 9. Reporting bugs
 
 While we strive for perfection, we, lamentably, slip up from time to
 time. If you find a bug in \imp, please report it on the
@@ -569,7 +560,7 @@ that demonstrates the problem.
 
 
 
-\section next 11. Where to go next
+\section next 10. Where to go next
 Instructions on how to build and install \imp can be found in
 the \ref installation "installation instructions".
 
