@@ -22,4 +22,10 @@ OrderedTypePairPredicate::OrderedTypePairPredicate(
                                                  std::string name):
     PairPredicate(name){}
 
+
+AllSamePairPredicate::AllSamePairPredicate(
+    std::string name):
+    PairPredicate(name){}
+
+
 IMPCORE_END_NAMESPACE

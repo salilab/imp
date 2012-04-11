@@ -22,4 +22,10 @@ OrderedTypeCLASSNAMEPredicate::OrderedTypeCLASSNAMEPredicate(
                                                  std::string name):
     CLASSNAMEPredicate(name){}
 
+
+AllSameCLASSNAMEPredicate::AllSameCLASSNAMEPredicate(
+    std::string name):
+    CLASSNAMEPredicate(name){}
+
+
 IMPCORE_END_NAMESPACE

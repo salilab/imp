@@ -22,4 +22,10 @@ OrderedTypeTripletPredicate::OrderedTypeTripletPredicate(
                                                  std::string name):
     TripletPredicate(name){}
 
+
+AllSameTripletPredicate::AllSameTripletPredicate(
+    std::string name):
+    TripletPredicate(name){}
+
+
 IMPCORE_END_NAMESPACE

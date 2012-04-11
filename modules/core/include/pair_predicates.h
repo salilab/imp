@@ -57,6 +57,17 @@ public:
   }
 };
 
+/** Return true if all members of the tuple are the same. */
+class IMPCOREEXPORT AllSamePairPredicate: public PairPredicate {
+public:
+  AllSamePairPredicate(std::string name
+                             ="AllSamePairPredicate%1%");
+  IMP_INDEX_PAIR_PREDICATE(AllSamePairPredicate, {
+      return internal::get_all_same(m, pi);
+    });
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_PAIR_PREDICATES_H */

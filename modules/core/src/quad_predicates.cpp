@@ -22,4 +22,10 @@ OrderedTypeQuadPredicate::OrderedTypeQuadPredicate(
                                                  std::string name):
     QuadPredicate(name){}
 
+
+AllSameQuadPredicate::AllSameQuadPredicate(
+    std::string name):
+    QuadPredicate(name){}
+
+
 IMPCORE_END_NAMESPACE
