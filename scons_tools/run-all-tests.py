@@ -88,8 +88,6 @@ class CoverageTester(object):
         self.start()
 
     def start(self):
-        self.cov = coverage.coverage(branch=True)
-
         cwd = os.path.dirname(sys.argv[0])
         # Don't show full paths in coverage output
         if self.opts.application and self.opts.pyexe:
@@ -104,6 +102,16 @@ class CoverageTester(object):
             self.mods = [x for x in self.mods \
                          if not x.endswith('_version_check.py')]
 
+        # Override default filename normalization; by default coverage passes
+        # filename through os.path.realpath(), which removes the symlink.
+        # We don't want this behavior, since we want to talk
+        # about build/lib/IMP/foo/__init__.py, not build/src/IMP.foo.py
+        def our_abs_file(self, filename):
+            return os.path.normcase(os.path.abspath(filename))
+        coverage.files.FileLocator.abs_file = our_abs_file
+
+        self.cov = coverage.coverage(branch=True, include=self.mods)
+
         # Try to exclude SWIG and IMP boilerplate from coverage checks
         self.cov.exclude("def swig_import_helper\(")
         self.cov.exclude("def _swig_")
@@ -113,14 +121,6 @@ class CoverageTester(object):
         self.cov.exclude("^except (Name|Attribute)Error:")
         self.cov.exclude("^\s+weakref_proxy =")
         self.cov.exclude("^def [sg]et_check_level")
-
-        # Override default filename normalization; by default coverage passes
-        # filename through os.path.realpath(), which removes the symlink.
-        # We don't want this behavior, since we want to talk
-        # about build/lib/IMP/foo/__init__.py, not build/src/IMP.foo.py
-        def our_abs_file(filename):
-            return os.path.normcase(os.path.abspath(filename))
-        self.cov.file_locator.abs_file = our_abs_file
 
         self.cov.start()
 
