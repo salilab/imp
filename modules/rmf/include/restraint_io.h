@@ -28,7 +28,11 @@ IMPRMF_BEGIN_NAMESPACE
 */
 /** Add a restraint to the file. This does not save the score.*/
 IMPRMFEXPORT void add_restraint(RMF::FileHandle parent, Restraint *r);
-/** Add the current score of the restraint to the given frame.*/
+/** Add the last score of the restraint to the given frame.
+
+ \note The model is not updated within this call. If the model might
+  be out of date (eg, you changed particles since the last evaluate call,
+  call Model::update() manually.*/
 IMPRMFEXPORT void save_frame(RMF::FileHandle parent, int frame, Restraint *r);
 
 /** Return the list of particles for a restraint node. This is not
