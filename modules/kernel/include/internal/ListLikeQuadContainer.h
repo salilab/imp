@@ -33,6 +33,11 @@ private:
               const_cast<ParticleIndexQuads&>(data_).end());
     const_cast<bool&>(sorted_)=true;
   }
+  void sort() {
+    std::sort(data_.begin(),
+              data_.end());
+    sorted_=true;
+  }
 protected:
   void update_list(ParticleIndexQuads &cur) {
     Container::set_is_changed(true);
@@ -62,19 +67,6 @@ protected:
     swap(data_, newlist);
     Container::set_is_changed(true);
   }
-  template <class F>
-    struct AccIf {
-    F f_;
-    mutable ParticleIndexQuads rem_;
-    AccIf(F f, ParticleIndexQuads &rem): f_(f), rem_(rem){}
-    bool operator()(const ParticleIndexQuad& cur) const {
-      if (f_(cur)) {
-        rem_.push_back(cur);
-        return true;
-      }
-      return false;
-    }
-  };
   template <class F>
   void remove_from_list_if(F f) {
     data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
