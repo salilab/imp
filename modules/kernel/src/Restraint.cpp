@@ -100,19 +100,9 @@ namespace {
                        << " produced from " << in->get_name()
                        << " is not already part of model.");
     IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
-      in->get_model()->update();
-      /*IMP_PRINT_TREE(std::cout, Restraint*, in,
-                     (dynamic_cast<RestraintSet*>(n)?
-                      dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
-                      :0),
-                     dynamic_cast<RestraintSet*>(n)->get_restraint,
-                     std::cout << n->get_name() << ": " << n->get_weight());
-      IMP_PRINT_TREE(std::cout, Restraint*, out,
-                     (dynamic_cast<RestraintSet*>(n)?
-                      dynamic_cast<RestraintSet*>(n)->get_number_of_restraints()
-                      :0),
-                     dynamic_cast<RestraintSet*>(n)->get_restraint,
-                     std::cout << n->get_name() << ": " << n->get_weight());*/
+      // be lazy and hope that they behave the same on un updated states
+      // otherwise it can be bery, bery slow
+      //in->get_model()->update();
       base::SetLogState sls(WARNING);
       double tin= in->unprotected_evaluate(nullptr);
       double tout= out->unprotected_evaluate(nullptr);
