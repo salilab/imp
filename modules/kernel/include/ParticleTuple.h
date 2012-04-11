@@ -21,9 +21,7 @@ template <unsigned int D>
 class RefCountedParticleTuple;
 
 //! A class to store a tuple of particles.
-/** \note These do not ref counting currently. SWIG prevents
-    use of OwnerPointer<Particle> as the storage type without some
-    gymnastics.
+/** \note These do not ref counting.
 
     Only the constructor with the correct number of arguments for the
     dimensionality can be used.
