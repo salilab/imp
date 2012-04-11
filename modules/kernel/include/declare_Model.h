@@ -257,6 +257,8 @@ public:
   void set_maximum_score(Restraint *r, double s);
   void set_maximum_score(double s);
   double get_maximum_score() const;
+  // make sure the whole model is updated for backwards compat
+  double evaluate(bool tf, bool warn=true);
 #endif
 
   /** @name Float Attribute Ranges
