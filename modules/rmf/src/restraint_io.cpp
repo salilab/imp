@@ -203,7 +203,7 @@ namespace {
     RMF::NodeHandle rn= f.get_node_from_association(r);
     Index index;
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
-    double s=r->unprotected_evaluate(nullptr);
+    double s=r->get_last_score();
     rn.set_value(sk, s, frame);
     base::Pointer<Restraint> rd= r->create_current_decomposition();
     if (!rd) return;
@@ -226,7 +226,6 @@ void save_frame(RMF::FileHandle f, int frame, Restraint *r) {
   IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   IMP_USAGE_CHECK(r->get_is_part_of_model(), "Must register restraints with "
                   " model before adding them to rmf file");
-  r->get_model()->update();
   save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
   f.flush();
 }
