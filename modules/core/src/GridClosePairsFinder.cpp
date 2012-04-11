@@ -20,6 +20,8 @@ ParticlePairsTemp GridClosePairsFinder
                   const ParticlesTemp &cb) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
+  if (ca.empty() || cb.empty()) return ParticlePairsTemp();
+  Model *m= IMP::internal::get_model(ca);
   ParticlePairsTemp out;
   internal::ParticleHelper
     ::fill_close_pairs( internal::ParticleHelper
@@ -28,10 +30,10 @@ ParticlePairsTemp GridClosePairsFinder
                         internal::ParticleHelper
                         ::get_particle_set(cb.begin(),
                                            cb.end(), 1),
-                        internal::ParticleTraits(ca[0]->get_model(),
+                        internal::ParticleTraits(m,
                                                  get_distance()),
-                        internal::ParticlePairSink(ca[0]->get_model(),
-                                                   access_pair_filters(),
+                        internal::ParticlePairSink(m,
+                                                   get_pair_filters(),
                                                    out));
   return out;
 }
@@ -42,14 +44,16 @@ ParticlePairsTemp GridClosePairsFinder
   set_was_used(true);
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
+  if (c.empty()) return ParticlePairsTemp();
+  Model *m= IMP::internal::get_model(c);
   ParticlePairsTemp out;
   internal::ParticleHelper
     ::fill_close_pairs(internal::ParticleHelper::get_particle_set(c.begin(),
                                                                   c.end(),0),
-                       internal::ParticleTraits(c[0]->get_model(),
+                       internal::ParticleTraits(m,
                                                 get_distance()),
-                       internal::ParticlePairSink(c[0]->get_model(),
-                                                  access_pair_filters(),
+                       internal::ParticlePairSink(m,
+                                                  get_pair_filters(),
                                                   out));
   return out;
 }
