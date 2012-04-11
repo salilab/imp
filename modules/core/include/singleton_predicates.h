@@ -57,6 +57,17 @@ public:
   }
 };
 
+/** Return true if all members of the tuple are the same. */
+class IMPCOREEXPORT AllSameSingletonPredicate: public SingletonPredicate {
+public:
+  AllSameSingletonPredicate(std::string name
+                             ="AllSameSingletonPredicate%1%");
+  IMP_INDEX_SINGLETON_PREDICATE(AllSameSingletonPredicate, {
+      return internal::get_all_same(m, pi);
+    });
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_SINGLETON_PREDICATES_H */

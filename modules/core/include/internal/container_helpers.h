@@ -48,6 +48,22 @@ inline int get_ordered_type_hash(Model *m, const ParticleIndexTuple<D>& pi) {
   return get_ordered_type_hash(rets);
 }
 
+
+
+inline int get_all_same(Model *, ParticleIndex) {
+  return true;
+}
+
+
+template <unsigned int D>
+inline int get_all_same(Model *, const ParticleIndexTuple<D>& pi) {
+  for (unsigned int i=1; i<D; ++i) {
+    if (pi[i-1] != pi[i]) return false;
+  }
+  return true;
+}
+
+
 inline int get_type_hash(Model *m, ParticleIndex pi) {
   return get_ordered_type_hash(m, pi);
 }

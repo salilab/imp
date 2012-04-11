@@ -57,6 +57,17 @@ public:
   }
 };
 
+/** Return true if all members of the tuple are the same. */
+class IMPCOREEXPORT AllSameTripletPredicate: public TripletPredicate {
+public:
+  AllSameTripletPredicate(std::string name
+                             ="AllSameTripletPredicate%1%");
+  IMP_INDEX_TRIPLET_PREDICATE(AllSameTripletPredicate, {
+      return internal::get_all_same(m, pi);
+    });
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_TRIPLET_PREDICATES_H */

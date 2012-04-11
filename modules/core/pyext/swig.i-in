@@ -104,6 +104,11 @@ IMP_SWIG_OBJECT( IMP::core, OrderedTypePairPredicate, OrderedTypePairPredicates)
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeTripletPredicate, OrderedTypeTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, OrderedTypeQuadPredicate, OrderedTypeQuadPredicates);
 
+IMP_SWIG_OBJECT( IMP::core, AllSameSingletonPredicate, AllSameSingletonPredicates);
+IMP_SWIG_OBJECT( IMP::core, AllSamePairPredicate, AllSamePairPredicates);
+IMP_SWIG_OBJECT( IMP::core, AllSameTripletPredicate, AllSameTripletPredicates);
+IMP_SWIG_OBJECT( IMP::core, AllSameQuadPredicate, AllSameQuadPredicates);
+
 IMP_SWIG_OBJECT( IMP::core, Mover, Movers);
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
 IMP_SWIG_DECORATOR( IMP::core, XYZR, XYZRs);

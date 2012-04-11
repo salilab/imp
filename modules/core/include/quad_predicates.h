@@ -57,6 +57,17 @@ public:
   }
 };
 
+/** Return true if all members of the tuple are the same. */
+class IMPCOREEXPORT AllSameQuadPredicate: public QuadPredicate {
+public:
+  AllSameQuadPredicate(std::string name
+                             ="AllSameQuadPredicate%1%");
+  IMP_INDEX_QUAD_PREDICATE(AllSameQuadPredicate, {
+      return internal::get_all_same(m, pi);
+    });
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_QUAD_PREDICATES_H */

@@ -57,6 +57,17 @@ public:
   }
 };
 
+/** Return true if all members of the tuple are the same. */
+class IMPCOREEXPORT AllSameCLASSNAMEPredicate: public CLASSNAMEPredicate {
+public:
+  AllSameCLASSNAMEPredicate(std::string name
+                             ="AllSameCLASSNAMEPredicate%1%");
+  IMP_INDEX_HEADERNAME_PREDICATE(AllSameCLASSNAMEPredicate, {
+      return internal::get_all_same(m, pi);
+    });
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_HEADERNAME_PREDICATES_H */

@@ -22,4 +22,10 @@ OrderedTypeSingletonPredicate::OrderedTypeSingletonPredicate(
                                                  std::string name):
     SingletonPredicate(name){}
 
+
+AllSameSingletonPredicate::AllSameSingletonPredicate(
+    std::string name):
+    SingletonPredicate(name){}
+
+
 IMPCORE_END_NAMESPACE
