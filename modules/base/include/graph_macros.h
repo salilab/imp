@@ -11,6 +11,7 @@
 #include "base_config.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <IMP/compatibility/map.h>
+#include <boost/version.hpp>
 
 #ifdef IMP_DOXYGEN
 //! Define a graph object in \imp
@@ -30,6 +31,26 @@
   class Name##VertexIndex {};                                  \
   inline Name##VertexIndex get_vertex_index(const Name &g)
 #else
+
+#if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
+  && BOOST_VERSION <= 104800
+// deal with broken gcc 4.2.1 on Mac OS
+#define IMP_GRAPH_INDEX(Name)
+#else
+#define IMP_GRAPH_INDEX(Name)\
+  inline Name##VertexIndex get_vertex_index(const Name &g) {            \
+    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
+    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
+      be= boost::vertices(g);                                           \
+    Name##VertexIndex ret;                                              \
+    for (; be.first != be.second; ++be.first) {                         \
+      ret[vm[*be.first]]= *be.first;                                    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+
+#endif
+
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
                                 boost::directionality##S,               \
@@ -44,16 +65,7 @@
   typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
   typedef compatibility::map<VertexData, Name##Vertex> Name##VertexIndex; \
-  inline Name##VertexIndex get_vertex_index(const Name &g) {            \
-    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
-    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
-      be= boost::vertices(g);                                           \
-    Name##VertexIndex ret;                                              \
-    for (; be.first != be.second; ++be.first) {                         \
-      ret[vm[*be.first]]= *be.first;                                    \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
+  IMP_GRAPH_INDEX(Name);                                                \
   typedef boost::property_map<Name, boost::edge_name_t>::type           \
   Name##EdgeName;                                                       \
   typedef boost::property_map<Name, boost::vertex_name_t>::type         \
