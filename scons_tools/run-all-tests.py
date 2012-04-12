@@ -5,14 +5,8 @@ import imp
 import os.path
 import glob
 from optparse import OptionParser
-
-# Only use coverage if it's new enough
-try:
-    import coverage
-    if not hasattr(coverage.coverage, 'combine'):
-        coverage = None
-except ImportError:
-    coverage = None
+import python_coverage
+from python_coverage import coverage
 
 class _TestModuleImporter(object):
     """Import a Python test module. The module
@@ -74,6 +68,9 @@ def parse_options():
                            "application; can be used multiple times")
     parser.add_option("--pycoverage", dest="pycoverage", type="choice",
                       default="no", choices=["no", "lines", "annotate"])
+    parser.add_option("--html_coverage", dest="html_coverage", type="string",
+                      default=None,
+                      help="directory to write HTML coverage info into")
     parser.add_option("--output", dest="output", type="string", default="-",
                       help="write coverage output into the named "
                            "file (or stderr if '-')")
@@ -102,29 +99,11 @@ class CoverageTester(object):
             self.mods = [x for x in self.mods \
                          if not x.endswith('_version_check.py')]
 
-        # Override default filename normalization; by default coverage passes
-        # filename through os.path.realpath(), which removes the symlink.
-        # We don't want this behavior, since we want to talk
-        # about build/lib/IMP/foo/__init__.py, not build/src/IMP.foo.py
-        def our_abs_file(self, filename):
-            return os.path.normcase(os.path.abspath(filename))
-        coverage.files.FileLocator.abs_file = our_abs_file
-
         self.cov = coverage.coverage(branch=True, include=self.mods)
-
-        # Try to exclude SWIG and IMP boilerplate from coverage checks
-        self.cov.exclude("def swig_import_helper\(")
-        self.cov.exclude("def _swig_")
-        self.cov.exclude("class (_ostream|_DirectorObjects|"
-                    "IMP_\w+_SwigPyIterator)\(")
-        self.cov.exclude("^\s+import _IMP_")
-        self.cov.exclude("^except (Name|Attribute)Error:")
-        self.cov.exclude("^\s+weakref_proxy =")
-        self.cov.exclude("^def [sg]et_check_level")
-
+        python_coverage.setup_excludes(self.cov)
         self.cov.start()
 
-    def report_morfs(self, morfs, modname, annotate_dir):
+    def report_morfs(self, morfs, modname, annotate_dir, cov_suffix):
         if self.opts.pycoverage == 'lines':
             if self.opts.output == '-':
                 outfh = sys.stderr
@@ -141,21 +120,26 @@ class CoverageTester(object):
                   % (modname, annotate_dir)
             self.cov.annotate(morfs)
 
+        if self.opts.html_coverage:
+            # Save coverage info to be consolidated at the end of the build
+            self.cov.data.write_file(os.path.join(self.opts.html_coverage,
+                                                  '.coverage.' + cov_suffix))
+
     def report(self):
         self.cov.stop()
         self.cov.combine()
-        self.cov.use_cache(False)
+        self.cov.use_cache(True)
 
         self.cov.file_locator.relative_dir = self.topdir + '/'
 
         if self.opts.application and self.opts.pyexe:
             self.report_morfs(self.mods,
                               "%s application" % self.opts.application,
-                              "build/bin")
+                              "build/bin", 'app.' + self.opts.application)
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
             self.report_morfs(self.mods, "%s module" % self.opts.module,
-                              "build/lib/%s" % path)
+                              "build/lib/%s" % path, 'mod.' + self.opts.module)
 
         for cov in glob.glob('.coverage.*'):
             os.unlink(cov)

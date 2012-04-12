@@ -304,6 +304,12 @@ def add_common_variables(vars, package):
                       'This requires a recent version of the Python coverage '
                       'module installed on your system.',
                       'no', ['no', 'lines', 'annotate']))
+    vars.Add(BoolVariable('html_coverage',
+                          'Whether to output a consolidated coverage report '
+                          'in HTML format requires cppcoverage set and the '
+                          'lcov package for C output, and pycoverage set '
+                          'for Python output).',
+                          False))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 
 

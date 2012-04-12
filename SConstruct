@@ -13,6 +13,7 @@ import scons_tools.config_py
 import scons_tools.build_summary
 import scons_tools.variables
 import scons_tools.imppy
+import scons_tools.html_coverage
 import sys
 import atexit
 from SCons import Script
@@ -50,6 +51,9 @@ the passed compiler options (cxxflags, linkflags) are correct.
                                                 versioncpp=["BOOST_VERSION"])
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
+        if env.get('html_coverage', None):
+            scons_tools.html_coverage.register(env)
+
         if not scons_tools.data.get(env).dependencies['Boost'].ok or scons_tools.data.get(env).dependencies['Boost'].version < 103300:
             scons_tools.utility.report_error(env, """
 Boost version is required to build IMP, but it could not be found on your system.
