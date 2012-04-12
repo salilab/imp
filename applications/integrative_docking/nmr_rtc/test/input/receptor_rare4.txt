@@ -1,4 +1,0 @@
-MET 0 
-ARG 0 
-HIS 2 
-PHE 1 

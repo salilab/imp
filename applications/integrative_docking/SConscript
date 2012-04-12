@@ -1,15 +1,57 @@
 Import('env')
 
-applications=['foxsdock',
-              'nmr_rtc',
-              'em2d_dock',
-              'em3d_dock']
+env= env.IMPApplication(name="integrative_docking", version="SVN",
+                        authors=["Dina Schneidman"],
+                        brief="Integrative docking protocol""",
 
-if env.get('local', False):
-    for d in Glob("*/SConscript"):
-        p= str(d).split("/")[0]
-        if not p in applications:
-            applications.append(p)
+                        overview="""The protocol includes a number of tools:
 
-for p in applications:
-    SConscript(p+"/SConscript")
+\par em2d_dock: Scoring with EM 2D class averages
+
+\par em3d_dock: Scoring with EM density map
+
+\par saxs_score: Scoring with SAXS term
+
+\par nmr_rtc: Scoring with NMR residue type content term (NMR-RTC)
+
+\par combine_scores: Combine scores for different data types
+Usage: combine_scores <file1> <weight1> <file2> <weight2> <file3> <weight3>...
+combines files with same docking transformations in the following format:
+# | score | filtered (+/-) | z-score | ... | Transformation
+The programs for scoring of docking transformations (saxs_score, em2d_score, em3d_score, nmr_rtc_score) output results in this format.
+Only filtered values of + are combined. The output score is the weighted sum of Z-Scores""",
+                        license=env.IMPStandardLicense(),
+                        publications=['Schneidman-Duhovny D, Hammel M, Sali A. Macromolecular docking restrained by a small angle X-ray scattering profile. J Struct Biol. 2010'],
+                        required_modules=['em','saxs'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="combine_scores",
+                         source=["combine_scores/combine_scores.cpp"])
+    env.IMPCPPExecutables([("em2d_score", ["em2d_dock/Projection.cpp",
+                                           "em2d_dock/em2d_score.cpp"]),
+                           ("em2d_single_score",
+                               ["em2d_dock/Projection.cpp",
+                                "em2d_dock/em2d_single_score.cpp"])])
+    env.IMPCPPExecutables([("em3d_score",
+                            ["em3d_dock/MapDistanceTransform.cpp",
+                             "em3d_dock/EnvelopeScore.cpp",
+                             "em3d_dock/PCAAligner.cpp", "em3d_dock/EMFit.cpp",
+                             "em3d_dock/MapScorer.cpp",
+                             "em3d_dock/em3d_score.cpp"]),
+                           ("em3d_single_score",
+                            ["em3d_dock/MapDistanceTransform.cpp",
+                             "em3d_dock/EnvelopeScore.cpp",
+                             "em3d_dock/PCAAligner.cpp", "em3d_dock/EMFit.cpp",
+                             "em3d_dock/MapScorer.cpp",
+                             "em3d_dock/em3d_single_score.cpp"])])
+    env.IMPCPPExecutable(target="saxs_score",
+                         source=["foxsdock/saxs_score.cpp",
+                                 "foxsdock/helpers.cpp"])
+    env.IMPCPPExecutables([("nmr_rtc_score", ["nmr_rtc/ResidueContent.cpp",
+                                             "nmr_rtc/nmr_rtc_score.cpp",
+                                             "nmr_rtc/helpers.cpp"]),
+                           ("interface_rtc", ["nmr_rtc/ResidueContent.cpp",
+                                              "nmr_rtc/interface_rtc.cpp",
+                                              "nmr_rtc/helpers.cpp"])])
