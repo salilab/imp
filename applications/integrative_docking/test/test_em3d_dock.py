@@ -6,10 +6,8 @@ import re
 class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple(self):
         """Simple test of EM3D single PDB score application"""
-        print self.get_input_file_name('complex.pdb')
-        print self.get_input_file_name('complex.mrc')
         p = self.run_application('em3d_single_score',
-                                 [self.get_input_file_name('complex.pdb'),
+                                 [self.get_input_file_name('complex-3d.pdb'),
                                   self.get_input_file_name('complex.mrc')])
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -25,10 +23,6 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_score(self):
         """Simple test of EM3D score application"""
-        print self.get_input_file_name('2p4e.pdb')
-        print self.get_input_file_name('fab.pdb')
-        print self.get_input_file_name('transforms10')
-        print self.get_input_file_name('complex.mrc')
         p = self.run_application('em3d_score',
                                  [self.get_input_file_name('2p4e.pdb'),
                                   self.get_input_file_name('fab.pdb'),

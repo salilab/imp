@@ -6,12 +6,8 @@ import re
 class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
     def test_simple(self):
         """Simple test of EM2D single PDB score application"""
-        print self.get_input_file_name('complex.pdb')
-        print self.get_input_file_name('image1.pgm')
-        print self.get_input_file_name('image2.pgm')
-        print self.get_input_file_name('image3.pgm')
         p = self.run_application('em2d_single_score',
-                                 [self.get_input_file_name('complex.pdb'),
+                                 [self.get_input_file_name('complex-2d.pdb'),
                                   self.get_input_file_name('image_1.pgm'),
                                   self.get_input_file_name('image_2.pgm'),
                                   self.get_input_file_name('image_3.pgm'),

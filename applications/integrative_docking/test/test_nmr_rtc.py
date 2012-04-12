@@ -30,14 +30,10 @@ class NMR_RTCApplicationTest(IMP.test.ApplicationTestCase):
 
     def test_simple_score(self):
         """Simple test of nmr_rtc application"""
-        print self.get_input_file_name('static.pdb')
-        print self.get_input_file_name('transformed.pdb')
-        print self.get_input_file_name('transforms10')
-
         p = self.run_application('nmr_rtc_score',
                                  [self.get_input_file_name('static.pdb'),
                                   self.get_input_file_name('transformed.pdb'),
-                                  self.get_input_file_name('transforms10'),
+                                  self.get_input_file_name('transforms-foxs10'),
                                   self.get_input_file_name('receptor_rare4.txt'), '-'])
         out, err = p.communicate()
         sys.stderr.write(err)
