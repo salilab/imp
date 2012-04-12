@@ -26,3 +26,21 @@ def setup_excludes(cov):
     cov.exclude("^except (Name|Attribute)Error:")
     cov.exclude("^\s+weakref_proxy =")
     cov.exclude("^def [sg]et_check_level")
+
+def setup():
+    """Make sure that coverage works for subprocesses"""
+    f = open('build/lib/sitecustomize.py', 'w')
+    f.write("""
+import os
+# If we're being imported from a Python application that is in turn being run
+# by a test case with coverage turned on, also turn on coverage in the Python
+# application.
+if 'IMP_COVERAGE' in os.environ:
+    import coverage
+    # See scons_tools/python_coverage.py for further explanation
+    def _our_abs_file(self, filename):
+        return os.path.normcase(os.path.abspath(filename))
+    coverage.files.FileLocator.abs_file = _our_abs_file
+    _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True)
+    _cov.start()
+""")

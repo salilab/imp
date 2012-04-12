@@ -14,6 +14,7 @@ import scons_tools.build_summary
 import scons_tools.variables
 import scons_tools.imppy
 import scons_tools.html_coverage
+import scons_tools.python_coverage
 import sys
 import atexit
 from SCons import Script
@@ -51,6 +52,7 @@ the passed compiler options (cxxflags, linkflags) are correct.
                                                 versioncpp=["BOOST_VERSION"])
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
+        scons_tools.python_coverage.setup()
         if env.get('html_coverage', None):
             scons_tools.html_coverage.register(env)
 
