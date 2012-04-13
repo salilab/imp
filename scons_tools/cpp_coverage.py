@@ -311,10 +311,16 @@ class _CoverageTester(object):
                   '-d', '%s/build/src/IMP_%s_wrap.gcda' % (tmpdir, self._name),
                   '-d', '%s/modules/%s/src/' % (tmpdir, self._name),
                   '-o', all_info])
+            ext_info = os.path.join(tmpdir, 'ext.info')
             # Extract just the info we want (module source and headers)
             call(['lcov', '-e', all_info,
                   '%s/modules/%s/*' % (topdir, self._name),
                   '%s/build/include/IMP/%s/*' % (topdir, self._name),
+                  '-o', ext_info])
+            # Remove auto-generated files
+            call(['lcov', '-r', ext_info,
+                  '%s/build/include/IMP/%s/%s_config.h*' \
+                            % (topdir, self._name, self._name),
                   '-o', want_info])
         else:
             # Get all coverage info (includes all dependencies,
@@ -330,8 +336,7 @@ class _CoverageTester(object):
         fin = open(want_info)
         fout = open(out_info, 'w')
         for line in fin:
-            line = line.replace(tmpdir + '/', '')
-            line = line.replace(topdir + '/', '')
+            line = line.replace(tmpdir + '/', topdir + '/')
             line = line.replace('build/include/IMP/%s/'% self._name,
                                 'modules/%s/include/' % self._name)
             fout.write(line)
