@@ -94,6 +94,8 @@ class CoverageTester(object):
             # Ensure that applications started as subprocesses are
             # themselves covered
             os.environ['IMP_COVERAGE_APPS'] = os.pathsep.join(self.opts.pyexe)
+
+            self.cov_suffix = 'app.' + self.opts.application
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
             self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
@@ -101,12 +103,20 @@ class CoverageTester(object):
             self.mods = glob.glob(self.topdir + '/%s/*.py' % path)
             self.mods = [x for x in self.mods \
                          if not x.endswith('_version_check.py')]
+            self.cov_suffix = 'mod.' + self.opts.module
 
-        self.cov = coverage.coverage(branch=True, include=self.mods)
+
+        data_file = '.' + self.cov_suffix + '.coverage'
+        os.environ['IMP_COVERAGE_DATA_FILE'] = data_file
+        for cov in glob.glob(data_file + '*'):
+            os.unlink(cov)
+
+        self.cov = coverage.coverage(branch=True, include=self.mods,
+                                     data_file=data_file)
         python_coverage.setup_excludes(self.cov)
         self.cov.start()
 
-    def report_morfs(self, morfs, modname, annotate_dir, cov_suffix):
+    def report_morfs(self, morfs, modname, annotate_dir):
         if self.opts.pycoverage == 'lines':
             if self.opts.output == '-':
                 outfh = sys.stderr
@@ -126,7 +136,7 @@ class CoverageTester(object):
         if self.opts.html_coverage:
             # Save coverage info to be consolidated at the end of the build
             self.cov.data.write_file(os.path.join(self.opts.html_coverage,
-                                                  '.coverage.' + cov_suffix))
+                                             '.coverage.' + self.cov_suffix))
 
     def report(self):
         self.cov.stop()
@@ -138,14 +148,11 @@ class CoverageTester(object):
         if self.opts.application and self.opts.pyexe:
             self.report_morfs(self.mods,
                               "%s application" % self.opts.application,
-                              "build/bin", 'app.' + self.opts.application)
+                              "build/bin")
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
             self.report_morfs(self.mods, "%s module" % self.opts.module,
-                              "build/lib/%s" % path, 'mod.' + self.opts.module)
-
-        for cov in glob.glob('.coverage.*'):
-            os.unlink(cov)
+                              "build/lib/%s" % path)
 
 def import_imp_modules(covtest):
     # Note that we need to import all IMP modules *after* we start Python

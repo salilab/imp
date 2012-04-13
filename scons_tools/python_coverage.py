@@ -43,6 +43,7 @@ if 'IMP_COVERAGE_APPS' in os.environ:
         return os.path.normcase(os.path.abspath(filename))
     coverage.files.FileLocator.abs_file = _our_abs_file
     _cov = coverage.coverage(branch=True, data_suffix=True, auto_data=True,
+                             data_file=os.environ['IMP_COVERAGE_DATA_FILE'],
                              source=[os.path.join(
                                       os.environ['IMP_BIN_DIR'], x) \\
                                      for x in apps])
