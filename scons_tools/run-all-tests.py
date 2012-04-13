@@ -91,6 +91,9 @@ class CoverageTester(object):
             self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
                                                        'bin'))
             self.mods = [self.topdir + '/' + x for x in self.opts.pyexe]
+            # Ensure that applications started as subprocesses are
+            # themselves covered
+            os.environ['IMP_COVERAGE_APPS'] = os.pathsep.join(self.opts.pyexe)
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
             self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
@@ -154,12 +157,6 @@ def import_imp_modules(covtest):
     # Make sure we use the same version of unittest as the IMP testcases
     # themselves
     from IMP.test import unittest
-
-    # Ensure that any IMP Python scripts run by tests are themselves checked
-    # for Python coverage (must be after we import IMP, since we are
-    # already covering this process)
-    if covtest:
-        os.environ['IMP_COVERAGE'] = '1'
 
 if __name__ == "__main__":
     opts, args = parse_options()

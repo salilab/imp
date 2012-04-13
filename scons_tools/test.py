@@ -48,9 +48,6 @@ def _action_unit_test(target, source, env):
             cmd += ' --module=%s --pycoverage=%s' % (modname, env['pycoverage'])
             if env['pycoverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
-            if env.get('html_coverage', False):
-                cmd += ' --html_coverage=%s' \
-                       % Dir(env["builddir"]+"/coverage").abspath
             data.get(env).env.Append(IMP_TESTS=[(modname, filename)])
         elif type.startswith('application'):
             cmd += ' --application=%s --pycoverage=%s' % (_get_name(env),
@@ -59,6 +56,9 @@ def _action_unit_test(target, source, env):
                 cmd += ' --pyexe=%s' % pyexe
             if env['pycoverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
+        if env.get('html_coverage', False):
+            cmd += ' --html_coverage=%s' \
+                   % Dir(env["builddir"]+"/coverage").abspath
 
         cmd+=" --results="+filename
         #if len(fsource) > 0:
