@@ -5,6 +5,7 @@ import shutil
 import glob
 import fnmatch
 import tempfile
+from SCons.Script import Dir
 import environment
 
 class _TempDir(object):
@@ -50,6 +51,8 @@ class _CoverageTester(object):
         self._header_callcounts = {}
         self._output_file = output_file
         self._coverage = coverage
+        self._html_coverage = env.get('html_coverage', False)
+        self._coverage_dir = Dir(env["builddir"]+"/coverage").abspath
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
             self._test_type = 'module'
@@ -92,6 +95,8 @@ class _CoverageTester(object):
             self._report_lines()
         elif self._coverage == 'annotate':
             self._report_annotate()
+        if self._html_coverage:
+            self._make_lcov_info_file()
 
     def _report_annotate(self):
         t = self._tmpdir
@@ -285,3 +290,38 @@ class _CoverageTester(object):
         if ret != 0:
             raise OSError("'%s' failed with code %d, error %s" \
                           % (cmd, ret, err))
+
+    def _make_lcov_info_file(self):
+        import subprocess
+        def call(args):
+            r = subprocess.call(args)
+            if r != 0:
+                raise OSError("%s failed with exit code %d" % (args[0], r))
+        tmpdir = self._tmpdir.tmpdir
+
+        out_info = os.path.join(self._coverage_dir,
+                                '%s.%s.info' % (self._test_type, self._name))
+        if self._test_type == 'module':
+            # Get all coverage info (includes all dependencies,
+            # e.g. boost headers)
+            all_info = os.path.join(tmpdir, 'all.info')
+            call(['lcov', '-c', '-b', tmpdir,
+                  '-d', 'build/src/IMP_%s_wrap.gcda' % self._name,
+                  '-d', 'modules/%s/src/' % self._name,
+                  '-o', all_info])
+            # Extract just the info we want (module source and headers)
+            want_info = os.path.join(tmpdir, 'want.info')
+            call(['lcov', '-e', all_info,
+                  '%s/modules/%s/*' % (tmpdir, self._name),
+                  '%s/build/include/IMP/%s/*' % (tmpdir, self._name),
+                  '-o', want_info])
+            # Fix path names
+            fin = open(want_info)
+            fout = open(out_info, 'w')
+            for line in fin:
+                line = line.replace(tmpdir + '/', '')
+                line = line.replace('build/include/IMP/%s/'% self._name,
+                                    'modules/%s/include/' % self._name)
+                fout.write(line)
+            fin.close()
+            fout.close()
