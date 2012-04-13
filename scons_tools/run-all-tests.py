@@ -87,14 +87,17 @@ class CoverageTester(object):
     def start(self):
         cwd = os.path.dirname(sys.argv[0])
         # Don't show full paths in coverage output
-        if self.opts.application and self.opts.pyexe:
+        if self.opts.application:
+            if not self.opts.pyexe:
+                # No Python coverage to report for C++-only apps
+                self.cov = None
+                return
             self.topdir = os.path.abspath(os.path.join(cwd, '..', 'build',
                                                        'bin'))
             self.mods = [self.topdir + '/' + x for x in self.opts.pyexe]
             # Ensure that applications started as subprocesses are
             # themselves covered
             os.environ['IMP_COVERAGE_APPS'] = os.pathsep.join(self.opts.pyexe)
-
             self.cov_suffix = 'app.' + self.opts.application
         elif self.opts.module:
             path = self.opts.module.replace('.', '/')
@@ -139,6 +142,8 @@ class CoverageTester(object):
                                              '.coverage.' + self.cov_suffix))
 
     def report(self):
+        if self.cov is None:
+            return
         self.cov.stop()
         self.cov.combine()
         self.cov.use_cache(True)
