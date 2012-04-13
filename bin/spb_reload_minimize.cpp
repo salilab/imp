@@ -129,8 +129,11 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
     }
-    double fretr_score = rst_map["FRET_R"]->evaluate(false);
-    double y2h_score   = rst_map["Y2H"]->evaluate(false);
+    double fretr_score;
+    double y2h_score;
+    if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
+    if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
+
 // get individual contribution to fret score
     Floats fretr_scores;
     bool fretisgood=true;
