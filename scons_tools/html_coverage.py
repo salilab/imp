@@ -24,9 +24,30 @@ def _build_python_coverage(env):
     cov.html_report(morfs, directory=os.path.join(covdir, 'python'))
     print >> sys.stderr, "Done"
 
+def _build_cpp_coverage(env):
+    import subprocess
+    def call(args):
+        r = subprocess.call(args)
+        if r != 0:
+            raise OSError("%s failed with exit code %d" % (args[0], r))
+
+    covdir = Dir(env["builddir"]+"/coverage").abspath
+    # Return if no coverage to report (i.e. no tests were run)
+    info_files = glob.glob('%s/*.info' % covdir)
+    if len(info_files) == 0:
+        return
+
+    cwd = os.getcwd()
+    call(['genhtml', '--demangle-cpp', '--legend', '-p', cwd,
+          '-o', os.path.join(covdir, 'cpp')] + info_files)
+
+    print >> sys.stderr, "Generated C++ HTML coverage report."
+
 def _build_html_coverage(env):
     if env.get('pycoverage', None):
         _build_python_coverage(env)
+    if env.get('cppcoverage', None):
+        _build_cpp_coverage(env)
 
 def register(env):
     """Set up HTML coverage"""
