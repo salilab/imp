@@ -1,4 +1,5 @@
 import atexit
+import glob
 import shutil
 import os
 import sys
@@ -7,8 +8,11 @@ import python_coverage
 from python_coverage import coverage
 
 def _build_python_coverage(env):
-    print >> sys.stderr, "Generating Python HTML coverage report... ",
     covdir = Dir(env["builddir"]+"/coverage").abspath
+    # Return if no coverage to report (i.e. no tests were run)
+    if len(glob.glob('%s/.coverage*' % covdir)) == 0:
+        return
+    print >> sys.stderr, "Generating Python HTML coverage report... ",
 
     cov = coverage.coverage(branch=True,
                             data_file=os.path.join(covdir, '.coverage'))
