@@ -119,8 +119,8 @@ def add_tests(env, source, type, expensive_source=[]):
                                                test)
     elif type=="system":
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
-    env.Alias(env.Alias('test'), test)
-    env.Alias(env.Alias('test-fast'), etest)
+    env.Alias(env.Alias('test'), etest)
+    env.Alias(env.Alias('test-fast'), test)
     return test, etest
 
 
