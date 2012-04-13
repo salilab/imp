@@ -91,10 +91,10 @@ for(int i=0;i<mydata.num_cells;++i){
      ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n.begin(),ps_Spc42p_n.end());
      ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c.begin(),ps_Spc42p_c.end());
     }
-    core::RigidBody prb=
+    core::RigidBody rb=
      core::RigidMember(atom::get_leaves(Spc42p_CC[0])[0]).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (prb,ps_Spc42p,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+     (rb,ps_Spc42p,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
     mvs.push_back(rbmv);
    }
 // now create the merge
@@ -150,83 +150,19 @@ for(int i=0;i<mydata.num_cells;++i){
    }
   }
 //
-// CMD1P
-//
-  if(mydata.protein_list["Cmd1p"]){
- //Cmd1p, 1 bead for N, 1 bead for C
-   if(!mydata.use_structure){
-    atom::Molecules Cmd1p_all;
-    Cmd1p_all.push_back(create_protein(m,"Cmd1p_n",8,1,
-                        display::Color(255./255.,255./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity));
-    Cmd1p_all.push_back(create_protein(m,"Cmd1p_c",8,1,
-                        display::Color(255./255.,215./255.,0.),
-                        i,mydata.kappa,CP_x0,mydata.use_connectivity,80));
-    atom::Molecule Cmd1p=
-     create_merged_protein(m,"Cmd1p",Cmd1p_all,i,mydata.kappa,0.0);
-    all_mol.add_child(Cmd1p);
-    if(i==0){
-     Particles ps_Cmd1p=atom::get_leaves(Cmd1p);
-     CP_ps->add_particles(ps_Cmd1p);
-     add_PbcBoxedMover(ps_Cmd1p,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs);
-    }
-   }else{
-    std::string filename;
-    if(mydata.use_compact_Cmd1p){
-     filename="1PRW.pdb";
-    } else {
-     filename="3CLN.pdb";
-    }
-    atom::Molecule Cmd1p=
-     create_protein(m,"Cmd1p",filename,mydata.resolution,
-                     display::Color(255./255.,255./255.,0.),
-                     i,CP_x0);
-    all_mol.add_child(Cmd1p);
-    if(i==0){
-     Particles ps_Cmd1p=atom::get_leaves(Cmd1p);
-     CP_ps->add_particles(ps_Cmd1p);
-     add_PbcBoxedRigidBodyMover(ps_Cmd1p,mydata.MC.dx,
-      mydata.MC.dang,mydata.CP_centers,mydata.trs,mvs);
-    }
-   }
-   if(mydata.add_GFP){
-    atom::Molecule gfp_n=
-     create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,CP_x0,mvs,mydata);
-    all_mol.add_child(gfp_n);
-    atom::Molecule gfp_c=
-     create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,CP_x0,mvs,mydata);
-    all_mol.add_child(gfp_c);
-   }
-  }
-//
 // CNM67p-C
 //
   if(mydata.protein_list["Cnm67p"]){
- //Cnm67p, 2 beads
-   if(!mydata.use_structure){
-    atom::Molecule Cnm67p=
-     create_protein(m,"Cnm67p",15,2,
-                      display::Color(50./255.,205./255.,50./255.),
-                      i,mydata.kappa,IL2_x0,mydata.use_connectivity,429);
-    all_mol.add_child(Cnm67p);
-    if(i==0){
-     Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
-     IL2_ps->add_particles(ps_Cnm67p);
-     add_PbcBoxedMover(ps_Cnm67p,mydata.MC.dx,
-      mydata.IL2_centers,mydata.trs,mvs);
-    }
-   } else {
-    atom::Molecule Cnm67p=
+   atom::Molecule Cnm67p=
      create_protein(m,"Cnm67p","3OA7.pdb",mydata.resolution,
-                      display::Color(50./255.,205./255.,50./255.),
-                      i,IL2_x0);
-    all_mol.add_child(Cnm67p);
-    if(i==0){
-     Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
-     IL2_ps->add_particles(ps_Cnm67p);
-     add_PbcBoxedRigidBodyMover(ps_Cnm67p,mydata.MC.dx,
-      mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
-    }
+                    display::Color(50./255.,205./255.,50./255.),
+                    i,IL2_x0);
+   all_mol.add_child(Cnm67p);
+   if(i==0){
+    Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
+    IL2_ps->add_particles(ps_Cnm67p);
+    add_PbcBoxedRigidBodyMover(ps_Cnm67p,mydata.MC.dx,
+    mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_c=
@@ -238,57 +174,102 @@ for(int i=0;i<mydata.num_cells;++i){
 //
 // SPC110p
 //
- if(mydata.protein_list["Spc110p"]){
+ if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
   for(int j=0;j<mydata.num_copies/2;++j){
    algebra::Vector3D tmp_x0=
     algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]-mydata.CP_thickness/2.0);
- //Spc110p_c, 4 beads for C terminus
-   atom::Molecules Spc110p_c;
-   for(unsigned int kk=0;kk<2;++kk){
-    Spc110p_c.push_back(create_protein(m,"Spc110p_c",26,4,
-                        display::Color(255./255.,0.,0.),
-                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,799));
-    if(i==0){
-     Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c[kk]);
-     CP_ps->add_particles(ps_Spc110p_c);
-     add_BallMover(ps_Spc110p_c,mydata.MC.dx,mvs);
-    }
-   }
-   // Coiled-Coil
+/*
+   // A) Coiled-Coil
    atom::Molecules Spc110p_CC=
     create_coiled_coil(m,"Spc110_CC","CC_120_A.pdb","CC_120_B.pdb",
                        mydata.resolution,
                        display::Color(255./255.,0.,0.),
                        i, CC2_x0,678);
-   if(i==0){
-    Particles ps_Spc110p;
-    for(unsigned int k=0;k<2;++k){
-     bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[k]));
-     Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c[k]);
-     ps_Spc110p.insert(ps_Spc110p.end(),
-     ps_Spc110p_c.begin(),ps_Spc110p_c.end());
+*/
+   // B) from residue 799 to 897 no structure
+   atom::Molecules Spc110p_799_897;
+   for(unsigned kk=0;kk<2;++kk){
+    Spc110p_799_897.push_back(create_protein(m,"Spc110p_799_897",11.0,2,
+                        display::Color(255./255.,0.,0.),
+                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,799,99));
+    if(i==0){
+     Particles ps=atom::get_leaves(Spc110p_799_897[kk]);
+     add_BallMover(ps,mydata.MC.dx,mvs);
     }
-    core::RigidBody prb=
-     core::RigidMember(atom::get_leaves(Spc110p_CC[0])[0]).get_rigid_body();
-    IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (prb,ps_Spc110p,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
-    mvs.push_back(rbmv);
    }
-// now create the merge
-   for(unsigned int k=0;k<2;++k){
-    atom::Molecules Spc110p_all;
-    Spc110p_all.push_back(Spc110p_CC[k]);
-    Spc110p_all.push_back(Spc110p_c[k]);
-    atom::Molecule Spc110p=
-      create_merged_protein(m,"Spc110p",Spc110p_all,i,mydata.kappa,0.0);
-    all_mol.add_child(Spc110p);
-   }
+   // C) C-terminal part (with structure)
+   atom::Molecules Spc110p_898_935;
+   Spc110p_898_935.push_back(create_protein(m,"Spc110p_898_935",
+                      "4DS7_Spc110_A.pdb", mydata.resolution,
+                      display::Color(255./255.,0.,0.),
+                      i,tmp_x0,0,false));
+   Spc110p_898_935.push_back(create_protein(m,"Spc110p_898_935",
+                      "4DS7_Spc110_B.pdb", mydata.resolution,
+                      display::Color(255./255.,0.,0.),
+                      i,tmp_x0,0,false));
+ // GFPs?
    if(mydata.add_GFP){
-    for(unsigned k=0;k<2;++k){
+    for(unsigned kk=0;kk<2;++kk){
      atom::Molecule gfp_c=
       create_GFP(m,"Spc110p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
      all_mol.add_child(gfp_c);
     }
+   }
+// Calmodulin
+   atom::Molecules Cmd1p;
+   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_A.pdb",mydata.resolution,
+                     display::Color(255./255.,255./255.,0.),
+                     i,tmp_x0,0,false));
+   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_B.pdb",mydata.resolution,
+                     display::Color(255./255.,255./255.,0.),
+                     i,tmp_x0,0,false));
+   for(unsigned kk=0;kk<2;++kk){
+    all_mol.add_child(Cmd1p[kk]);
+    if(i==0){CP_ps->add_particles(atom::get_leaves(Cmd1p[kk]));}
+   }
+ //GFPs?
+   if(mydata.add_GFP){
+    for(unsigned kk=0;kk<2;++kk){
+     atom::Molecule gfp_n=
+      create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+     all_mol.add_child(gfp_n);
+     atom::Molecule gfp_c=
+      create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+     all_mol.add_child(gfp_c);
+    }
+   }
+// Create the rigid body
+   core::XYZRs rbps;
+   for(unsigned kk=0;kk<2;++kk){
+    Particles ps0=atom::get_leaves(Spc110p_898_935[kk]);
+    for(unsigned jj=0;jj<ps0.size();++jj){rbps.push_back(core::XYZR(ps0[jj]));}
+    Particles ps1=atom::get_leaves(Cmd1p[kk]);
+    for(unsigned jj=0;jj<ps1.size();++jj){rbps.push_back(core::XYZR(ps1[jj]));}
+   }
+   IMP_NEW(Particle,prb,(m));
+   core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+   recenter_rb(rb,rbps,tmp_x0);
+// now I need a mover for the Cmd1p-Spc110p rb + balls
+   if(i==0){
+    Particles ps_Spc110p_799_897;
+    for(unsigned int kk=0;kk<2;++kk){
+     Particles ps=atom::get_leaves(Spc110p_799_897[kk]);
+     ps_Spc110p_799_897.insert(ps_Spc110p_799_897.end(),ps.begin(),ps.end());
+    }
+    IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
+     (rb,ps_Spc110p_799_897,mydata.MC.dx,mydata.MC.dang,
+      mydata.CP_centers,mydata.trs));
+    mvs.push_back(rbmv);
+   }
+ // only at this point I can create the merged Spc110
+   for(unsigned int kk=0;kk<2;++kk){
+    atom::Molecules Spc110p_c_all;
+    Spc110p_c_all.push_back(Spc110p_799_897[kk]);
+    Spc110p_c_all.push_back(Spc110p_898_935[kk]);
+    atom::Molecule Spc110p=
+     create_merged_protein(m,"Spc110p",Spc110p_c_all,i,mydata.kappa,0.0);
+    all_mol.add_child(Spc110p);
+    if(i==0){CP_ps->add_particles(atom::get_leaves(Spc110p));}
    }
   }
  }
@@ -356,7 +337,7 @@ int nbeads, display::Color colore,int copy,double kappa,
 
 atom::Molecule create_protein(Model *m,std::string name,
  std::string filename,int nres_per_bead,display::Color colore,
- int copy,algebra::Vector3D x0,int offset,bool recenter)
+ int copy, algebra::Vector3D x0, int offset, bool makerigid)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
@@ -406,10 +387,12 @@ atom::Molecule create_protein(Model *m,std::string name,
   rbps.push_back(d);
  }
  atom::destroy(hpdb);
- IMP_NEW(Particle,prb,(m));
- core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
- rb->set_name(name);
- if(recenter){recenter_rb(rb,rbps,x0);}
+ if(makerigid){
+  IMP_NEW(Particle,prb,(m));
+  core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+  rb->set_name(name);
+  recenter_rb(rb,rbps,x0);
+ }
  return protein;
 }
 
@@ -472,11 +455,9 @@ atom::Molecules create_coiled_coil (Model *m,
  coils.push_back(create_protein(m,name,filename_B,
   nbeads,colore,copy,x0,offset,false));
 
-// now I need to destroy the two rigid bodies
  core::XYZRs rbps;
  for(unsigned int i=0;i<2;++i){
   Particles ps=atom::get_leaves(coils[i]);
-  core::RigidBody::teardown_particle(core::RigidMember(ps[0]).get_rigid_body());
   for(unsigned int j=0;j<ps.size();++j){rbps.push_back(core::XYZR(ps[j]));}
  }
  IMP_NEW(Particle,prb,(m));
@@ -484,7 +465,6 @@ atom::Molecules create_coiled_coil (Model *m,
  rb->set_name(name);
  // Check orientation of x-axis and topology
  recenter_rb(rb,rbps,x0);
-
  return coils;
 }
 

@@ -63,8 +63,8 @@ void add_PbcBoxedRigidBodyMover
  algebra::Transformation3Ds trs, core::Movers& mvs)
 {
  Particles fake;
- core::RigidBody prb=core::RigidMember(ps[0]).get_rigid_body();
- IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,(prb,fake,dx,dang,centers,trs));
+ core::RigidBody rb=core::RigidMember(ps[0]).get_rigid_body();
+ IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,(rb,fake,dx,dang,centers,trs));
  mvs.push_back(rbmv);
 }
 

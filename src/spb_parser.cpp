@@ -26,8 +26,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  options_description desc;
  bool do_wte;
  bool wte_restart;
- bool use_structure;
- bool use_compact_Cmd1p;
  bool add_Spc42p;
  bool add_Spc29p;
  bool add_Spc110p;
@@ -61,9 +59,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
 
  desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
  desc.add_options()("wte_restart",  value<bool>(&wte_restart),      "ciao");
- desc.add_options()("use_structure",value<bool>(&use_structure),    "ciao");
- desc.add_options()("use_compact_Cmd1p",
-  value<bool>(&use_compact_Cmd1p), "ciao");
  desc.add_options()("cell_type",    value<std::string >(&cell_type), "ciao");
  desc.add_options()("add_Spc42p",   value<bool>(&add_Spc42p),       "ciao");
  desc.add_options()("add_Spc29p",   value<bool>(&add_Spc29p),       "ciao");
@@ -174,8 +169,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.kappa=kappa;
  ret.tilt=radians(tilt);
  ret.cell_type=cell_type;
- ret.use_structure=use_structure;
- ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
  ret.use_connectivity=use_connectivity;
  ret.use_new_fret_model=use_new_fret_model;

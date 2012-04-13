@@ -30,7 +30,7 @@ bool use_connectivity,int start_residue=1,int length=-1);
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,std::string filename,int nbeads,
  display::Color colore,int copy,algebra::Vector3D x0,
- int offset=0,bool recenter=true);
+ int offset=0, bool makerigid=true);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecules proteins,

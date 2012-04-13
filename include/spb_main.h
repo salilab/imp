@@ -55,8 +55,6 @@ struct SPBParameters {
  algebra::Vector3Ds CP_centers;
  algebra::Vector3Ds IL2_centers;
  algebra::Transformation3Ds trs;
- bool         use_structure;
- bool         use_compact_Cmd1p;
  bool         use_connectivity;
  bool         use_new_fret_model;
  std::map<std::string,bool> protein_list;
