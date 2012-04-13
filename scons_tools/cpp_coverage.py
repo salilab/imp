@@ -297,31 +297,43 @@ class _CoverageTester(object):
             r = subprocess.call(args)
             if r != 0:
                 raise OSError("%s failed with exit code %d" % (args[0], r))
+        topdir = os.getcwd()
         tmpdir = self._tmpdir.tmpdir
 
+        all_info = os.path.join(tmpdir, 'all.info')
+        want_info = os.path.join(tmpdir, 'want.info')
         out_info = os.path.join(self._coverage_dir,
                                 '%s.%s.info' % (self._test_type, self._name))
         if self._test_type == 'module':
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
-            all_info = os.path.join(tmpdir, 'all.info')
-            call(['lcov', '-c', '-b', tmpdir,
-                  '-d', 'build/src/IMP_%s_wrap.gcda' % self._name,
-                  '-d', 'modules/%s/src/' % self._name,
+            call(['lcov', '-c', '-b', '.',
+                  '-d', '%s/build/src/IMP_%s_wrap.gcda' % (tmpdir, self._name),
+                  '-d', '%s/modules/%s/src/' % (tmpdir, self._name),
                   '-o', all_info])
             # Extract just the info we want (module source and headers)
-            want_info = os.path.join(tmpdir, 'want.info')
             call(['lcov', '-e', all_info,
-                  '%s/modules/%s/*' % (tmpdir, self._name),
-                  '%s/build/include/IMP/%s/*' % (tmpdir, self._name),
+                  '%s/modules/%s/*' % (topdir, self._name),
+                  '%s/build/include/IMP/%s/*' % (topdir, self._name),
                   '-o', want_info])
-            # Fix path names
-            fin = open(want_info)
-            fout = open(out_info, 'w')
-            for line in fin:
-                line = line.replace(tmpdir + '/', '')
-                line = line.replace('build/include/IMP/%s/'% self._name,
-                                    'modules/%s/include/' % self._name)
-                fout.write(line)
-            fin.close()
-            fout.close()
+        else:
+            # Get all coverage info (includes all dependencies,
+            # e.g. boost headers)
+            call(['lcov', '-c', '-b', tmpdir,
+                  '-d', '%s/applications/%s/' % (tmpdir, self._name),
+                  '-o', all_info])
+            # Extract just the info we want (application source and headers)
+            call(['lcov', '-e', all_info,
+                  '%s/applications/%s/*' % (tmpdir, self._name),
+                  '-o', want_info])
+        # Fix path names
+        fin = open(want_info)
+        fout = open(out_info, 'w')
+        for line in fin:
+            line = line.replace(tmpdir + '/', '')
+            line = line.replace(topdir + '/', '')
+            line = line.replace('build/include/IMP/%s/'% self._name,
+                                'modules/%s/include/' % self._name)
+            fout.write(line)
+        fin.close()
+        fout.close()
