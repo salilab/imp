@@ -64,18 +64,7 @@ for path in ('imp/modules/', 'imp/applications/',
         lp = len(path)
         return [x[lp:] for x in glob.glob(path + pattern)]
     exec(open(path + 'SConscript').read())
-# Hack for applications in subdirs
-all_apps = applications
-for app in ('integrative_docking',):
-    all_apps.remove(app)
-    path = 'imp/applications/%s/' % app
-    def Glob(pattern):
-        lp = len(path)
-        return [x[lp:] for x in glob.glob(path + pattern)]
-    exec(open(path + 'SConscript').read())
-    all_apps.extend(applications)
-applications = all_apps
-    
+
 f = open('$modfile', 'w')
 for m in modules:
     # Hack for librmf->RMF renaming
