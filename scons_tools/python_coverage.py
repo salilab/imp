@@ -29,6 +29,10 @@ def setup_excludes(cov):
 
 def setup():
     """Make sure that coverage works for subprocesses"""
+    try:
+        os.makedirs('build/lib')
+    except OSError:
+        pass
     f = open('build/lib/sitecustomize.py', 'w')
     f.write("""
 import os
