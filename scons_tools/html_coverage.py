@@ -13,7 +13,7 @@ def _build_python_coverage(env):
     cov = coverage.coverage(branch=True,
                             data_file=os.path.join(covdir, '.coverage'))
     python_coverage.setup_excludes(cov)
-    cov.file_locator.relative_dir = Dir(env["builddir"] + "/lib").abspath + '/'
+    cov.file_locator.relative_dir = Dir(env["builddir"]).abspath + '/'
     cov.combine()
     morfs = cov.data.lines.keys()
     morfs.sort()
