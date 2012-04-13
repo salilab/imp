@@ -52,7 +52,6 @@ the passed compiler options (cxxflags, linkflags) are correct.
                                                 versioncpp=["BOOST_VERSION"])
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
-        scons_tools.python_coverage.setup()
         if env.get('html_coverage', None):
             scons_tools.html_coverage.register(env)
 
@@ -102,6 +101,8 @@ if not env.GetOption('help'):
     # This must be after the other SConscipt calls so that it knows about all the generated files
     scons_tools.doc.add_overview_pages(env)
     imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
+    sitecust = scons_tools.python_coverage.setup(env)
+    env.Depends(imppy, sitecust)
     env.Alias(env.Alias('all'), imppy)
 
     env.Alias(env.Alias('test'), [env.Alias('examples-test')])
