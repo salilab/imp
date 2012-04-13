@@ -18,15 +18,19 @@ class _TempDir(object):
         self._link_tree('applications')
         os.mkdir(os.path.join(self.tmpdir, 'build'))
         self._link_tree('build/src')
+        os.symlink(os.path.join(self._origdir, 'build', 'include'),
+                   os.path.join(self.tmpdir, 'build', 'include'))
+
     def _link_tree(self, subdir):
         lenorig = len(self._origdir)
         for root, dirs, files in os.walk(self._origdir + '/' + subdir):
             # Reproduce each directory under the temporary directory
             tmpdir = os.path.join(self.tmpdir, root[lenorig+1:])
             os.mkdir(tmpdir)
-            # Link any *.cpp or *.gcno files into the new directory
+            # Link any cpp or *.gcno files into the new directory
             for f in files:
-                if f.endswith('.cpp') or f.endswith('.gcno'):
+                if f.endswith('.cpp') or f.endswith('.gcno') \
+                   or f.endswith('.h'):
                     os.symlink(os.path.join(root, f), os.path.join(tmpdir, f))
             # Prune uninteresting subdirectories
             for prune in ('bin', 'data', 'doc', 'examples', 'include',
