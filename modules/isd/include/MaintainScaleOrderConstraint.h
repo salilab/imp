@@ -10,6 +10,7 @@
 
 #include "isd_config.h"
 #include <IMP/Constraint.h>
+#include <IMP/score_state_macros.h>
 #include <IMP/Particle.h>
 #include <IMP/isd/Scale.h>
 
