@@ -44,8 +44,7 @@ class ConstArray {
     sz_=sz;
   }
   void copy_from(const ConstArray &o) {
-    sz_=o.sz_;
-    v_.reset(new Data[sz_]);
+    create(o.sz_);
     std::copy(o.v_.get(), o.v_.get()+sz_, v_.get());
   }
 public:
