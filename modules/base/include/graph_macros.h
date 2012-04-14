@@ -32,7 +32,7 @@
   inline Name##VertexIndex get_vertex_index(const Name &g)
 #else
 
-#if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
+#if defined(SWIG) && defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
   && BOOST_VERSION <= 104800
 // deal with broken gcc 4.2.1 on Mac OS
 #define IMP_GRAPH_INDEX(Name)
