@@ -52,84 +52,13 @@ add_layer_restraint(m, IL2_ps,
 //
 // TILT restraint
 //
-//if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
-// add_tilt(m,all_mol[0],"Spc110p",mydata.tilt,mydata.kappa);
-//}
+if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
+ add_tilt(m,all_mol[0],"Spc110p",mydata.tilt,mydata.kappa);
+}
 //
 // FRET
 //
-if(mydata.add_fret && !mydata.use_new_fret_model){
-// prepare the restraint set
- IMP_NEW(RestraintSet,fret,("FRET_R"));
-// intra-CP
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc29p",   "C",
-                      all_mol,     "Cmd1p",   "C", 1.69,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc29p",   "N",
-                      all_mol,     "Cmd1p",   "C", 1.75,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0],  "Spc29p",  "C",
-                      all_mol,    "Spc110p",  "C", 1.37,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc29p",   "C",
-                      all_mol,    "Spc42p",   "N", 2.05,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0],  "Cmd1p",   "C",
-                      all_mol,    "Spc42p",   "N", 2.07,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0],   "Cmd1p",  "C",
-                      all_mol,    "Spc110p",  "C", 2.15,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0],  "Spc42p",  "N",
-                      all_mol,    "Spc110p",  "C", 2.02,
-                      mydata.kappa, mydata.add_GFP));
-// inter CP-IL2
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0],  "Spc42p",  "C",
-                      all_mol,    "Spc110p",  "C", 1.07,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Cnm67p", "C",
-                      all_mol,     "Cmd1p", "C", 1.09,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc42p",   "C",
-                      all_mol,     "Cmd1p",   "C", 1.1,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Cnm67p", "C",
-                      all_mol,    "Spc29p", "C", 1.1,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Cnm67p", "C",
-                      all_mol,    "Spc42p", "N", 1.13,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc42p",   "C",
-                      all_mol,    "Spc29p",   "C", 1.17,
-                      mydata.kappa, mydata.add_GFP));
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc42p",   "C",
-                      all_mol,    "Spc42p",   "N", 1.27,
-                      mydata.kappa, mydata.add_GFP));
-// intra-IL2
- fret->add_restraint(fret_restraint(m,
-                      all_mol[0], "Spc42p", "C",
-                      all_mol,    "Cnm67p", "C", 2.29,
-                      mydata.kappa, mydata.add_GFP));
-// add the FRET_R restraints
- m->add_restraint(fret);
-// add the RestraintSet FRET_R to map
- rst_map["FRET_R"]=fret;
-}
-if(mydata.add_fret && mydata.use_new_fret_model){
+if(mydata.add_fret){
 // prepare the restraint set
  IMP_NEW(RestraintSet,fret,("FRET_R"));
  std::string name_d, ter_d, name_a, ter_a;
@@ -141,10 +70,17 @@ if(mydata.add_fret && mydata.use_new_fret_model){
 // store error
   mydata.Fret.sigmas.push_back(sig_exp);
 // add restraint
-  fret->add_restraint(NEW_fret_restraint(m, all_mol,
-                            name_d, ter_d, name_a, ter_a, fretr_exp,
-                            mydata.Fret,  mydata.cell_type,
-                            mydata.kappa, mydata.add_GFP));
+  if(mydata.use_new_fret_model){
+   fret->add_restraint(NEW_fret_restraint(m, all_mol,
+                       name_d, ter_d, name_a, ter_a, fretr_exp,
+                       mydata.Fret,  mydata.cell_type,
+                       mydata.kappa, mydata.add_GFP));
+  }else{
+   fret->add_restraint(fret_restraint(m,
+                       all_mol[0], name_d, ter_d,
+                       all_mol,    name_a, ter_a, fretr_exp,
+                       mydata.kappa, mydata.add_GFP));
+  }
  }
 // close file
  fretfile.close();
