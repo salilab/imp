@@ -457,7 +457,9 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
 {
  atom::Selection s=atom::Selection(h);
  s.set_molecule(name);
- s.set_residue_indexes(range);
+ Ints indices;
+ for(int i=range.first;i<=range.second;++i){indices.push_back(i);}
+ s.set_residue_indexes(indices);
  Particles ps=s.get_selected_particles();
  core::RigidBodies rbs=get_rigid_bodies(ps);
  for(unsigned int i=0;i<rbs.size();++i){
