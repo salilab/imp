@@ -8,6 +8,7 @@
 #include <IMP/membrane/PbcBoxedRigidBodyMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
+
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,

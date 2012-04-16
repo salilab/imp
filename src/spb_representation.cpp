@@ -273,7 +273,11 @@ for(int i=0;i<mydata.num_cells;++i){
    }
   }
  }
-
+// set all particles as not optimized
+ Particles ps=atom::get_leaves(all_mol);
+ for(unsigned i=0;i<ps.size();++i){
+  core::XYZR(ps[i]).set_coordinates_are_optimized(true);
+ }
 // add the hierarchy of the current unit cell to hs
  hs.push_back(all_mol);
 } // cycle on cells
