@@ -37,6 +37,7 @@ struct SPBParameters {
  double       CP_IL2_gap;
  double       IL2_thickness;
  double       kappa;
+ double       kappa_vol;
  double       tilt;
  double       resolution;
  double       cutoff;

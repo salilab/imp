@@ -94,6 +94,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  OPTION(double, mc_dx);
  OPTION(double, mc_dang);
  OPTION(double, kappa);
+ OPTION(double, kappa_vol);
  OPTION(double, tilt);
  OPTION(double, side);
  OPTION(double, CP_thickness);
@@ -167,6 +168,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.CP_IL2_gap=CP_IL2_gap;
  ret.IL2_thickness=IL2_thickness;
  ret.kappa=kappa;
+ ret.kappa_vol=kappa_vol;
  ret.tilt=radians(tilt);
  ret.cell_type=cell_type;
  ret.resolution=resolution;

@@ -29,7 +29,7 @@ std::map< std::string, Pointer<RestraintSet> > rst_map;
 //
 // Excluded volume
 //
-add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa);
+add_SPBexcluded_volume(m,all_mol,mydata.GFP_exc_volume,mydata.kappa_vol);
 //
 // Symmetry
 //
