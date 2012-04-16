@@ -453,10 +453,11 @@ core::RigidBodies get_rigid_bodies(Particles ps)
 }
 
 void add_tilt (Model *m, const atom::Hierarchy& h,
- std::string name, double tilt, double kappa)
+ std::string name, IntRange range, double tilt, double kappa)
 {
  atom::Selection s=atom::Selection(h);
  s.set_molecule(name);
+ s.set_residue_indexes(range);
  Particles ps=s.get_selected_particles();
  core::RigidBodies rbs=get_rigid_bodies(ps);
  for(unsigned int i=0;i<rbs.size();++i){

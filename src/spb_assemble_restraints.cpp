@@ -53,7 +53,7 @@ add_layer_restraint(m, IL2_ps,
 // TILT restraint
 //
 if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
- add_tilt(m,all_mol[0],"Spc110p",mydata.tilt,mydata.kappa);
+ add_tilt(m,all_mol[0],"Spc110p",IntRange(700,705),mydata.tilt,mydata.kappa);
 }
 //
 // FRET
