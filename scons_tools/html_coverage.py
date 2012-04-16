@@ -53,5 +53,5 @@ def register(env):
     """Set up HTML coverage"""
     covdir = Dir(env["builddir"]+"/coverage").abspath
     shutil.rmtree(covdir, ignore_errors=True)
-    os.mkdir(covdir)
+    os.makedirs(covdir)
     atexit.register(_build_html_coverage, env)
