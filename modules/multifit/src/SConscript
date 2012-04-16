@@ -32,6 +32,11 @@ files = [
         'coarse_molecule.cpp',
         'fitting_utils.cpp',
         'RadiusOfGyrationRestraint.cpp',
+        'symmetry_utils.cpp',
+        'SymmetricFit.cpp',
+        'AlignSymmetric.cpp',
+        'CnSymmAxisDetector.cpp',
+        'density_utils.cpp',
 #        'RigidBodiesRMSDClustering.cpp',
         ]\
         + SConscript('internal/SConscript')
