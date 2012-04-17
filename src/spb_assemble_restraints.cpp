@@ -147,8 +147,8 @@ if(mydata.add_GFP){
              all_mol,    "Spc29p-N-GFP", "C", mydata.kappa);
   add_link(m,all_mol[0],       "Spc29p", "C",
              all_mol,    "Spc29p-C-GFP", "N", mydata.kappa);
-  add_link(m,all_mol[0],     "Cnm67p", "C",
-             all_mol,  "Cnm67p-C-GFP", "N", mydata.kappa);
+  add_link(m,all_mol[0],       "Cnm67p", "C",
+             all_mol,    "Cnm67p-C-GFP", "N", mydata.kappa);
 }
 
 return rst_map;
