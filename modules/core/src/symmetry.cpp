@@ -29,6 +29,7 @@ TransformationSymmetry::TransformationSymmetry(
 
 void TransformationSymmetry::apply(Particle *p) const
 {
+  set_was_used(true);
   if (RigidBody::particle_is_instance(p)) {
     RigidBody rrb(Reference(p).get_reference_particle());
     RigidBody rb(p);
@@ -94,6 +95,7 @@ void TransformationAndReflectionSymmetry::apply(Particle *p) const
 {
   IMP_USAGE_CHECK(!RigidBody::particle_is_instance(p),
                   "Particle must not be a rigid body particle");
+  set_was_used(true);
   XYZ rd(Reference(p).get_reference_particle());
   XYZ d(p);
   d.set_coordinates(t_.get_transformed(r_.get_reflected(rd.get_coordinates())));
