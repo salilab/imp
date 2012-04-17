@@ -32,6 +32,7 @@ IMPISD_BEGIN_NAMESPACE
         sigma_(sigma),
         cutoff_(sparse_cutoff)
 {
+    //O(M)
     //store dimensions
     M_ = x.size();
     N_ = x[0].size();

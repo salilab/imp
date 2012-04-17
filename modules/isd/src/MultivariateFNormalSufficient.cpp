@@ -21,6 +21,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(
         const MatrixXd& Sigma, double factor) :
   base::Object("Multivariate Normal distribution %1%")
 {
+        //O(1)
         reset_flags();
         internal::CallTimer<IMP_MVN_TIMER_NFUNCS> timer_();
         N_=FX.rows();
@@ -122,7 +123,9 @@ double MultivariateFNormalSufficient::density() const
       return d;
   }
 
-  /* energy (score) functions, aka -log(p) */
+  /* energy (score) functions, aka -log(p).
+   * O(M) if Sigma is up to date
+   * O(M^3) if Sigma has changed (Cholesky decomp.) */
 double MultivariateFNormalSufficient::evaluate() const
   {
       timer_.start(EVAL);
@@ -168,6 +171,7 @@ double MultivariateFNormalSufficient::get_minus_log_normalization() const
 }
 
 
+  // O(1) if up to date, O(M^2) if epsilon new, O(M^3) if Sigma new
 VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
 {
       timer_.start(DFM);
@@ -184,10 +188,10 @@ VectorXd MultivariateFNormalSufficient::evaluate_derivative_FM() const
       //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - PWP)
       IMP_LOG(TERSE, "MVN: evaluate_derivative_Sigma() = " << std::endl);
       MatrixXd R;
-      if (N_==1)
+      if (N_==1) // O(M) if up to date, O(M^3) if Sigma new
       {
           R = 0.5*(get_P()-compute_PTP()/IMP::square(factor_));
-      } else {
+      } else { // O(M^2) if up to date, O(M^3) if Sigma new
           double f2=IMP::square(factor_);
           R = 0.5*(N_*(get_P()-compute_PTP()/f2)-compute_PWP()/f2);
       }

@@ -18,6 +18,7 @@ IMPISD_BEGIN_NAMESPACE
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
         GaussianProcessInterpolation *gpi) : gpi_(gpi)
 {
+    //O(M^2)
     //number of observation points
     IMP_LOG(TERSE, "GPIR: init" << std::endl);
     M_ = gpi_->M_;
@@ -61,7 +62,7 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
     //the functions are all up-to-date since
     //the ScoreState has taken care of this
 
-    if (accum)
+    if (accum) // O(M) if unchanged, O(M^2) if mean changed, else O(M^3)
     {
         //derivatives for mean particles
         VectorXd dmv = mvn_->evaluate_derivative_FM();
@@ -88,7 +89,7 @@ double GaussianProcessInterpolationRestraint::unprotected_evaluate(
         }
         //std::cout << std::endl;
     }
-    double ene = mvn_->evaluate();
+    double ene = mvn_->evaluate(); //O(M^3) if Omega has changed else O(M)
 
     return ene;
 }
@@ -278,17 +279,17 @@ void GaussianProcessInterpolationScoreState::do_before_evaluate()
     MultivariateFNormalSufficient *mvn_;
     mvn_ = gpir_->mvn_;
     //
-    gpi_->update_flags_covariance();
-    gpi_->update_flags_mean();
+    gpi_->update_flags_covariance(); //O(1)
+    gpi_->update_flags_mean(); //O(1)
     if (!(gpi_->flag_m_gpir_))  // gpi says that our m is not up to date
     {
-        mvn_->set_FM(gpi_->get_m());
+        mvn_->set_FM(gpi_->get_m()); // O(M_)
         gpi_->flag_m_gpir_ = true;
         IMP_LOG(TERSE, " updated mean");
     }
     if (!(gpi_->flag_Omega_gpir_))
     {
-        mvn_->set_Sigma(gpi_->get_Omega());
+        mvn_->set_Sigma(gpi_->get_Omega()); // O(M^2)
         gpi_->flag_Omega_gpir_ = true;
         IMP_LOG(TERSE, " updated covariance");
     }
