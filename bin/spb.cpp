@@ -135,26 +135,27 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // run optimizer
  mc->optimize(mydata.MC.nexc);
 
-// print statistics
+// get score and index
  double myscore     = m->evaluate(false);
  int    myindex     = index[myrank];
- double fretr_score;
- double y2h_score;
 
- if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
- if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
-
- fprintf(logfile,"%10d %3d  %12.6f  %12.6f %12.6f  %5d %5d\n",
-     imc,myindex,myscore,fretr_score,y2h_score,
-     mydata.MC.nexc, mc->get_number_of_forward_steps());
-
-// save configuration and additional information to file
+// print log file, save configuration and additional information to file
  if(imc%mydata.MC.nwrite==0){
-// score
+
+// print statistics
+  double fretr_score, y2h_score;
+  if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
+  if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
+
+  fprintf(logfile,"%10d %3d  %12.6f  %12.6f %12.6f  %5d %5d\n",
+          imc,myindex,myscore,fretr_score,y2h_score,
+          mydata.MC.nexc, mc->get_number_of_forward_steps());
+
+// save score to rmf
   (rh.get_root_node()).set_value(my_key0,myscore,imc/mydata.MC.nwrite);
 // index
   (rh.get_root_node()).set_value(my_key1,myindex,imc/mydata.MC.nwrite);
-// bias
+// save bias to rmf
   double mybias=0.0;
   if(mydata.MC.do_wte){
    Pointer<membrane::MonteCarloWithWte> ptr=
@@ -162,7 +163,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    mybias=ptr->get_bias(myscore);
   }
   (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
-// configuration
+// save configuration to rmf
   for(unsigned int i=0;i<all_mol.size();++i){
    atom::Hierarchies hs=all_mol[i].get_children();
    for(unsigned int j=0;j<hs.size();++j){
@@ -182,7 +183,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    }
    biasfile.close();
   }
- }
+ } // end printout
 
 // now it's time to try an exchange
  int    frank=get_friend(index,myrank,imc,nproc);
