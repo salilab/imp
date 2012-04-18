@@ -301,7 +301,6 @@ class _CoverageTester(object):
         tmpdir = self._tmpdir.tmpdir
 
         all_info = os.path.join(tmpdir, 'all.info')
-        want_info = os.path.join(tmpdir, 'want.info')
         out_info = os.path.join(self._coverage_dir,
                                 '%s.%s.info' % (self._test_type, self._name))
         if self._test_type == 'module':
@@ -311,34 +310,51 @@ class _CoverageTester(object):
                   '-d', '%s/build/src/IMP_%s_wrap.gcda' % (tmpdir, self._name),
                   '-d', '%s/modules/%s/src/' % (tmpdir, self._name),
                   '-o', all_info])
-            ext_info = os.path.join(tmpdir, 'ext.info')
-            # Extract just the info we want (module source and headers)
-            call(['lcov', '-e', all_info,
-                  '%s/modules/%s/*' % (topdir, self._name),
-                  '%s/build/include/IMP/%s/*' % (topdir, self._name),
-                  '-o', ext_info])
-            # Remove auto-generated files
-            call(['lcov', '-r', ext_info,
-                  '%s/build/include/IMP/%s/%s_config.h*' \
-                            % (topdir, self._name, self._name),
-                  '-o', want_info])
         else:
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
             call(['lcov', '-c', '-b', tmpdir,
                   '-d', '%s/applications/%s/' % (tmpdir, self._name),
                   '-o', all_info])
-            # Extract just the info we want (application source and headers)
-            call(['lcov', '-e', all_info,
-                  '%s/applications/%s/*' % (tmpdir, self._name),
-                  '-o', want_info])
-        # Fix path names
-        fin = open(want_info)
+        self._extract_lcov_info(all_info, out_info)
+
+    def _extract_lcov_info(self, all_info, out_info):
+        """Extract only the information on the current module or application
+           from the lcov info file (lcov -e and lcov -r can be extremely slow).
+           We also take the opportunity to map file names back to their
+           source here."""
+        topdir = os.getcwd()
+        tmpdir = self._tmpdir.tmpdir
+        want_files = {}
+        for directory, pattern, report in self._sources + self._headers:
+            if report:
+                for x in glob.glob(os.path.join(topdir, directory, pattern)):
+                    want_files[x] = None
+        def filter_filename(fname):
+            return fname in want_files
+
+        fin = open(all_info)
         fout = open(out_info, 'w')
+        record = []
+        write_record = False
         for line in fin:
             line = line.replace(tmpdir + '/', topdir + '/')
-            line = line.replace('build/include/IMP/%s/'% self._name,
-                                'modules/%s/include/' % self._name)
-            fout.write(line)
+            if line.startswith('SF:'):
+                write_record = filter_filename(line.rstrip('\r\n')[3:])
+                if self._test_type == 'module' and write_record:
+                    if self._name == 'kernel':
+                        line = line.replace('build/include/IMP/',
+                                            'modules/%s/include/' % self._name)
+                    else:
+                        line = line.replace('build/include/IMP/%s/'% self._name,
+                                            'modules/%s/include/' % self._name)
+                    # Exclude auto-generated files that *only* live
+                    # in build/include
+                    write_record = os.path.exists(line.rstrip('\r\n')[3:])
+            record.append(line)
+            if line.startswith('end_of_record'):
+                if write_record:
+                    fout.writelines(record)
+                record = []
         fin.close()
         fout.close()
