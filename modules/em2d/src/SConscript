@@ -7,7 +7,6 @@ files = [
   "model_interaction.cpp" ,
   "project.cpp" ,
   "image_processing.cpp" ,
-  "pca_features_extraction.cpp" ,
   "RegistrationResult.cpp" ,
   "FFToperations.cpp" ,
   "ProjectionMask.cpp" ,
@@ -21,7 +20,6 @@ files = [
   "domino_particle_states.cpp",
   "domino_filters.cpp",
   "domino_filter_tables.cpp",
-#  "TemplateFinder.cpp",
    "RigidBodiesImageFitRestraint.cpp",
    "RelativePositionMover.cpp",
           ]\

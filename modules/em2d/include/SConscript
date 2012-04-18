@@ -8,7 +8,6 @@ files = [
     "Fine2DRegistrationRestraint.h" ,
     "image_processing.h" ,
     "model_interaction.h" ,
-    "pca_features_extraction.h" ,
     "project.h" ,
     "ProjectionFinder.h" ,
     "ProjectionMask.h" ,
@@ -28,8 +27,7 @@ files = [
     "domino_particle_states.h",
     "domino_filters.h",
     "domino_filter_tables.h",
-#    "TemplateFinder.h",
-   "RigidBodiesImageFitRestraint.h",
+    "RigidBodiesImageFitRestraint.h",
     "RelativePositionMover.h",
 
 

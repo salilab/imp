@@ -12,46 +12,22 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-/*
-void ProjectionOverlapFilter::show(std::ostream &out) const {
-  out << "ProjectionOverlapFilter" << std::endl;
-}
-
-
-bool ProjectionOverlapFilter::get_is_ok(
-                      const domino::Assignment &assignment) const {
-  IMP_USAGE_CHECK(assignment.size() == 1, "The filter is applied only to one"
-                                        "particle");
-  unsigned int index = assignment[0];
-  Pointer<Image> projection = states_->get_projection(index);
-
-  // Get the pixel of the image that corresponds to the position
-  // specified by the assignment
-  algebra::Vector3D v = states_->get_position(index);
-  IntPair center = get_position_in_image( v );
-  double overlap = get_overlap_percentage(image_->get_data(),
-                                          projection->get_data(),
-                                          center);
-  if(overlap >= minimum_overlap_) return true;
-  return false;
-};
-*/
-
-bool DistanceFilter::get_is_ok(const domino::Assignment& assignment)const {
-
+bool DistanceFilter::get_is_ok(const domino::Assignment& assignment) const {
+  core::XYZs coords;
   for (unsigned int i=0; i < assignment.size(); ++i) {
-    unsigned int  j = assignment[i]; // Particle state index
-    Pointer<domino::ParticleStates> st =
-                            ps_table_->get_particle_states(my_subset_[i]);
-    st->load_particle_state(j, my_subset_[i]);
+    Pointer <Particle> p = subset_acting_on_[i];
+    if(p == subset_restrained_[0] || p == subset_restrained_[1] ) {
+      Pointer<domino::ParticleStates> st =
+                       ps_table_->get_particle_states(subset_acting_on_[i]);
+      st->load_particle_state(assignment[i], subset_acting_on_[i]);
+      core::XYZ xyz(subset_acting_on_[i]);
+      coords.push_back(xyz);
+    }
   }
-  core::XYZ xyz0(my_subset_[0]);
-  core::XYZ xyz1(my_subset_[1]);
-
-  IMP_LOG(VERBOSE, "xyz0 " << xyz0.get_coordinates()
-          << " xyz1 " << xyz1.get_coordinates() << " Checking distance: "
-          << core::get_distance( xyz0, xyz1) << std::endl);
-  if( core::get_distance( xyz0, xyz1) <= max_distance_) return true;
+  IMP_LOG(VERBOSE, "coords[0] " << coords[0].get_coordinates()
+     << " coords[1] " << coords[1].get_coordinates() << " Checking distance: "
+     << core::get_distance( coords[0], coords[1]) << std::endl);
+  if( core::get_distance( coords[0], coords[1]) <= max_distance_) return true;
   return false;
 }
 
