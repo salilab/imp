@@ -71,8 +71,9 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,self.lam]
 
     def shuffle_particle_values(self):
-        particles = [(self.alpha, -10, 10),
-                     (self.beta, -10, 10),
+        particles = [(self.G, 0, 100),
+                     (self.Rg, 0, 30),
+                     (self.d, 0, 4),
                      (self.tau, 0.001, 10),
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
@@ -500,6 +501,28 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
+
+    def testHessianSymmetry(self):
+        #gen list of all possible combinations
+        combinations=[[]]
+        for np in xrange(len(self.particles)):
+            tmp = [i[:]+[True] for i in combinations]
+            tmp += [i[:]+[False] for i in combinations]
+            combinations = [i[:] for i in tmp]
+        #do each combinations 3 times
+        for comb in combinations:
+            np=0
+            for c,p in zip(comb,self.particles):
+                p.set_nuisance_is_optimized(comb)
+                np += 1
+            for rep in xrange(3):
+                self.shuffle_particle_values()
+                Hessian = array(self.gpr.get_hessian(False))
+                self.assertEqual(Hessian.shape, (np,np))
+                for i in xrange(np):
+                    for j in xrange(i,np):
+                        self.assertAlmostEqual(Hessian[i,j],Hessian[j,i],
+                                                delta=1e-7)
 
 
 if __name__ == '__main__':
