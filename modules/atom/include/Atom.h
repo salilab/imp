@@ -202,6 +202,7 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H62;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_O6;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_N2;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_NT;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H21;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H22;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_H6;
