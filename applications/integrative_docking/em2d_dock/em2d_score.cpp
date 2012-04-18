@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
   float min_diameter = 0.0; IMP_UNUSED(min_diameter);
   std::vector<std::string> image_files;
   std::string rpdb, lpdb, trans_file, out_file_name;
-  po::options_description desc("Usage: <rpdb> <lpdb> <trans_file> <image1> \
+  po::options_description desc("Usage: <pdb1> <pdb2> <trans file> <image1> \
 <image2>...");
   desc.add_options()
     ("help", "produce help message")

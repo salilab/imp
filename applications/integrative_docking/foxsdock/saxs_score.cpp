@@ -45,11 +45,10 @@ int main(int argc, char **argv) {
   bool fit = true;
   bool water_layer = true;
 
-  po::options_description desc("Usage: <static mol> <transformed mol> \
+  po::options_description desc("Usage: <pdb1> <pdb2> \
 <trans file> <exp profile file> ");
   desc.add_options()
-    ("help", "static and transformed molecules from docking with \
-transformation file. Each docked complex will be compared against the profile.")
+    ("help", "Program for scoring of docking models with SAXS profile.")
     ("input-files", po::value< std::vector<std::string> >(),
      "input PDB, transformation and profile files")
     ("rg_only,g", "only compute rg, no chi scoring (default = false)")

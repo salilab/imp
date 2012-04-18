@@ -27,9 +27,9 @@ int main(int argc, char **argv) {
   bool cc_score = false;
   std::string rec_file_name, lig_file_name, map_file_name, trans_file_name;
   std::string out_file_name  = "em3d_score.res";
-  po::options_description desc("Usage: <pdb1> <pdb2> <em_map> <trans_file>");
+  po::options_description desc("Usage: <pdb1> <pdb2> <trans file> <em map>");
    desc.add_options()
-     ("help", "Program for scoring of docking models with EM density maps")
+     ("help", "Program for scoring of docking models with EM density map")
      ("input-files", po::value< std::vector<std::string> >(),
      "input PDB, feature points and density map files")
      ("resolution,r", po::value<float>(&resolution)->default_value(20.0),
@@ -59,8 +59,8 @@ otherwise use cross correlation")
 
   rec_file_name = files[0];
   lig_file_name = files[1];
-  map_file_name = files[2];
-  trans_file_name = files[3];
+  map_file_name = files[3];
+  trans_file_name = files[2];
 
   dist_thr = resolution/2.0;
   EMFit em_fit(rec_file_name, lig_file_name, map_file_name,resolution,dist_thr);
