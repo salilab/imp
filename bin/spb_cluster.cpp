@@ -163,11 +163,13 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
    trajfile = fopen("cluster_traj.dat","w");
    fprintf(trajfile,"#     Structure        Cluster\n");
    for(unsigned i=0;i<drmsd->get_number_of_items();++i){
-    int index;
+    int index=-1;
     for(unsigned j=0;j<list_indexes.size();++j){
      for(unsigned k=0;k<list_indexes[j].size();++k){
       if(list_indexes[j][k]==i){index=j;}
+      if(index>-1){break;}
      }
+     if(index>-1){break;}
     }
     fprintf(trajfile," %14u %14d\n",i,index);
    }
