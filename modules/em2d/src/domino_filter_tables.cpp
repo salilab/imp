@@ -12,38 +12,11 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-/*
-void ProjectionOverlapFilterTable::do_show(std::ostream &out) const {
-  out << "ProjectionOverlapFilterTable" << std::endl;
-}
 
-domino::SubsetFilter*
-ProjectionOverlapFilterTable::get_subset_filter(const domino::Subset &subset,
-                           const domino::Subsets &prior_subsets) const {
-   // Check if the subset is the same as the one that this table is filter
-   // applies to
-  if(subset.size() > 1) {
-    return NULL;
-  }
-  domino::Subset intersection;// = domino::get_intersection(subset, my_subset_);
-  if(intersection.size() != 0) {
-    domino::SubsetFilter *p = new ProjectionOverlapFilter(image_,
-                                                        projection_states_);
-    return p;
-  }
-  return NULL;
-}
-
-double ProjectionOverlapFilterTable::get_strength(
-                              const domino::Subset  &susbset,
-                              const domino::Subsets &prior_subsets) const {
-  return 1;
-}
-
-*/
 void DistanceFilterTable::do_show(std::ostream &out) const {
   this->show(out);
 }
+
 
 domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
                             const domino::Subset &subset,
@@ -51,21 +24,30 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
   IMP_UNUSED(prior_subsets.size());
   IMP_LOG(VERBOSE, " get_subset_filter " << std::endl);
   subset.show();
-
-  // Check that the subset only has 2 particles
-  if(subset.size() != 2) return NULL;
-
-  // Check if the subset contains the particles of my_subset
-  for(domino::Subset::const_iterator it = subset.begin();
-                                     it != subset.end();
+  // The subset must contain the particles of my_subset_
+  for(domino::Subset::const_iterator it = my_subset_.begin();
+                                     it != my_subset_.end();
                                      ++it) {
-    if (! std::binary_search(my_subset_.begin(), my_subset_.end(), *it)) {
+    if (! std::binary_search(subset.begin(), subset.end(), *it)) {
       return NULL;
     }
   }
-
-  IMP_LOG(TERSE, "creating DistanceFilter" << std::endl);
-  domino::SubsetFilter *p = new DistanceFilter(my_subset_,
+  domino::Subset second = my_subset_;
+  std::sort(second.begin(), second.end());
+  // If the particles are in any of the prior subsets, a filter for them has
+  // been created already. Do not create it again
+  for(domino::Subsets::const_iterator it = prior_subsets.begin();
+      it != prior_subsets.end();
+      ++it ) {
+    domino::Subset first = (*it);
+    std::sort(first.begin(), first.end());
+    if( std::includes(first.begin(), first.end(),
+      second.begin(), second.end()) ) {
+      return NULL;
+    }
+  }
+  domino::SubsetFilter *p = new DistanceFilter(subset,
+                                               my_subset_,
                                                ps_table_,
                                                max_distance_);
   return p;

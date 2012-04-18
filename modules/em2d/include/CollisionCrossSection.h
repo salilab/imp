@@ -40,7 +40,7 @@ public:
                         );
 
 
-  /*! Feed the particles to the class so the CCS can be computed
+  /*! Feed the particles to the class
     \param[in] ps
   */
   void set_model_particles(const ParticlesTemp &ps);
@@ -53,13 +53,14 @@ public:
   void show(std::ostream &out) const {
     out << "Collision Cross section." << std::endl;
   }
-
   IMP_OBJECT_INLINE( CollisionCrossSection, show(out), {} );
 
 protected:
 
-  // This function gets a matrix and computes the "projected area". That is,
-  // The sum of the areas of all the pixels with value > 0
+  /*! Gets the sum of the values in the pixels with value > 0
+    \param[in] m The projected area is computed for this matrix
+    \param[out] Values of the area
+  */
   double get_projected_area(const cv::Mat &m) const;
 
   unsigned int n_projections_;

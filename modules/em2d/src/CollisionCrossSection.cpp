@@ -19,13 +19,12 @@ CollisionCrossSection::CollisionCrossSection(unsigned int  n_projections,
                         double pixel_size,
                         double projection_image_size
                                              ):
-  Object("CollisionCrossSection%1%"),
-  n_projections_(n_projections),
-  resolution_(resolution),
-  pixel_size_(pixel_size),
-  img_size_(projection_image_size),
-  particles_set_(false) {
-
+                        Object("CollisionCrossSection%1%"),
+                        n_projections_(n_projections),
+                        resolution_(resolution),
+                        pixel_size_(pixel_size),
+                        img_size_(projection_image_size),
+                        particles_set_(false) {
   regs_ = em2d::get_evenly_distributed_registration_results(n_projections_);
   average_projection_.create(img_size_, img_size_, CV_64FC1);
   masks_manager_ = MasksManagerPtr(new MasksManager);
@@ -67,21 +66,10 @@ void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
                          pixel_size_*regs_[i].get_shift_3d(),
                          options,
                          masks_manager_);
-
     collision_cross_section_ += get_projected_area(average_projection_);
-
-//    img->set_data(average_projection_);
-//    std::ostringstream oss;
-//    oss << "proj-" << i << ".spi";
-//    img->write(oss.str(), srw);
   }
   collision_cross_section_ /= static_cast<double>(n_projections_);
   particles_set_ = true;
-
-
-//  img->set_data(average_projection_);
-//  img->write("avg-projection.spi", srw);
-
 }
 
  double CollisionCrossSection::get_projected_area(const cv::Mat &m) const {
