@@ -18,6 +18,7 @@ IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
 IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
 IMP_SWIG_OBJECT(IMP::membrane, DistanceRMSDMetric, DistanceRMSDMetrics);
 IMP_SWIG_OBJECT(IMP::membrane, RMSDMetric, RMSDMetrics);
+IMP_SWIG_OBJECT(IMP::membrane, ContactMapMetric, ContactMapMetrics);
 IMP_SWIG_OBJECT(IMP::membrane, EzRestraint, EzRestraints);
 IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
 
@@ -34,6 +35,7 @@ IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
 %include "IMP/membrane/PbcBoxedMover.h"
 %include "IMP/membrane/ReplicaExchange.h"
 %include "IMP/membrane/DistanceRMSDMetric.h"
+%include "IMP/membrane/ContactMapMetric.h"
 %include "IMP/membrane/RMSDMetric.h"
 %include "IMP/membrane/EzRestraint.h"
 %include "IMP/membrane/KinkPairScore.h"
