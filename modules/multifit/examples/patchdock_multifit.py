@@ -26,7 +26,7 @@ parser.add_option('--verbose', '-v', action='store_true',
 opts, args = parser.parse_args()
 if not opts.patchdock_binary:
     print >> sys.stderr, '--patchdock_binary is required'
-    sys.exit(1)
+    sys.exit(0)
 if not opts.pdb_file:
     print >> sys.stderr, '--pdb_file is required'
     sys.exit(1)
