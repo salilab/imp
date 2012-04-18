@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
 
   // input parsing
   std::string out_file_name;
-  po::options_description desc("Usage: <static mol> <transformed mol> \
+  po::options_description desc("Usage: <pdb1> <pdb2> \
 <trans file> <residue content file1> <residue content file2>");
   desc.add_options()
     ("help", "static and transformed molecules from docking with \

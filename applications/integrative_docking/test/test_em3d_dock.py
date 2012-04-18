@@ -26,8 +26,8 @@ class EM3DDockApplicationTest(IMP.test.ApplicationTestCase):
         p = self.run_application('em3d_score',
                                  [self.get_input_file_name('2p4e.pdb'),
                                   self.get_input_file_name('fab.pdb'),
-                                  self.get_input_file_name('complex.mrc'),
-                                  self.get_input_file_name('transforms10')])
+                                  self.get_input_file_name('transforms10'),
+                                  self.get_input_file_name('complex.mrc')])
 
         out, err = p.communicate()
         sys.stderr.write(err)
