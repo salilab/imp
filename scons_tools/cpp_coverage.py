@@ -351,7 +351,14 @@ class _CoverageTester(object):
                     # Exclude auto-generated files that *only* live
                     # in build/include
                     write_record = os.path.exists(line.rstrip('\r\n')[3:])
-            record.append(line)
+            # Exclude branch coverage information for now. IMP uses macros
+            # rather extensively, which yields a lot (~5000 in some cases)
+            # of branches for what looks to lcov like a single line. Since
+            # lcov looks up branches using a simple linear search, lcov
+            # and genhtml become unusably slow (5+ hours vs. 0.3 seconds
+            # without branch coverage).
+            if not line.startswith('BRDA:'):
+                record.append(line)
             if line.startswith('end_of_record'):
                 if write_record:
                     fout.writelines(record)
