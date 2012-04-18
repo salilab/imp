@@ -50,8 +50,7 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.G.set_nuisance_is_optimized(True)
         self.Rg = Scale.setup_particle(IMP.Particle(self.m),  10.0)
         self.Rg.set_nuisance_is_optimized(True)
-        #put d=15 so we don't use the porod region
-        self.d = Scale.setup_particle(IMP.Particle(self.m),  15.0)
+        self.d = Scale.setup_particle(IMP.Particle(self.m),  4.0)
         self.d.set_nuisance_is_optimized(False)
         self.s = Scale.setup_particle(IMP.Particle(self.m),  0.0)
         self.s.set_nuisance_is_optimized(False)
@@ -71,9 +70,9 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,self.lam]
 
     def shuffle_particle_values(self):
-        particles = [(self.G, 0, 100),
-                     (self.Rg, 0, 30),
-                     (self.d, 0, 4),
+        particles = [(self.G, 3, 10),
+                     (self.Rg, 10, 30),
+                     (self.d, 1, 4),
                      (self.tau, 0.001, 10),
                      (self.lam, 0.1, 10),
                      (self.sig, 0.1, 10)]
@@ -503,15 +502,17 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianSymmetry(self):
+        #self.shuffle_particle_values()
         #gen list of all possible combinations
         combinations=[[]]
         for np in xrange(len(self.particles)):
-            tmp = [i[:]+[True] for i in combinations]
-            tmp += [i[:]+[False] for i in combinations]
+            tmp = [[True]+i[:] for i in combinations]
+            tmp += [[False]+i[:] for i in combinations]
             combinations = [i[:] for i in tmp]
         #do each combinations 3 times
         for comb in combinations:
             np=0
+            #print comb
             for c,p in zip(comb,self.particles):
                 p.set_nuisance_is_optimized(comb)
                 np += 1
@@ -519,6 +520,23 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
                 self.shuffle_particle_values()
                 Hessian = array(self.gpr.get_hessian(False))
                 self.assertEqual(Hessian.shape, (np,np))
+                self.assertEqual(linalg.matrix_rank(Hessian), np)
+                #try:
+                #    self.assertEqual(linalg.matrix_rank(Hessian), np)
+                #except:
+                #    print Hessian
+                #    numrow=[(Hessian[i] == zeros(np)).all() for i in
+                #            xrange(np)].index(True)
+                #    particlenum = 0
+                #    nopt=0
+                #    for c in zip(comb):
+                #        if c:
+                #            if numrow == nopt:
+                #               break
+                #            nopt+=1
+                #        particlenum += 1
+                #    print numrow,particlenum,self.particles[particlenum].get_nuisance()
+                #    raise
                 for i in xrange(np):
                     for j in xrange(i,np):
                         self.assertAlmostEqual(Hessian[i,j],Hessian[j,i],
