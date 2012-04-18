@@ -39,6 +39,7 @@ def _build_cpp_coverage(env):
 
     cwd = os.getcwd()
     call(['genhtml', '--demangle-cpp', '--legend', '-p', cwd,
+          '--no-branch-coverage',
           '-o', os.path.join(covdir, 'cpp')] + info_files)
 
     print >> sys.stderr, "Generated C++ HTML coverage report."
