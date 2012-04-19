@@ -43,7 +43,7 @@ def _action_unit_test(target, source, env):
             modname = _get_name(env)
             if modname == 'kernel':
                 modname = 'IMP'
-            else:
+            elif modname != 'RMF':
                 modname = 'IMP.' + modname
             cmd += ' --module=%s --pycoverage=%s' % (modname, env['pycoverage'])
             if env['pycoverage'] == 'lines':
