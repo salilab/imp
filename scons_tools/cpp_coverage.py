@@ -70,16 +70,27 @@ class _CoverageTester(object):
             self._test_type = 'application'
             m = re.search('(applications/(.+?/)?%s)' % name, output_file)
             if m:
-                self.add_source(m.group(1), '*.cpp', report=True)
-                self.add_header(m.group(1), '*.h', report=True)
+                self.add_source(m.group(1), '*.cpp', report=True, recurse=True)
+                self.add_header(m.group(1), '*.h', report=True, recurse=True)
             else:
                 raise ValueError("Cannot determine path for %s" % name)
 
-    def add_source(self, directory, pattern, report):
-        self._sources.append([directory, pattern, report])
+    def add_source(self, directory, pattern, report, recurse=False):
+        self._add_source_or_header(self._sources, directory, pattern,
+                                   report, recurse)
 
-    def add_header(self, directory, pattern, report):
-        self._headers.append([directory, pattern, report])
+    def add_header(self, directory, pattern, report, recurse=False):
+        self._add_source_or_header(self._headers, directory, pattern,
+                                   report, recurse)
+
+    def _add_source_or_header(self, sources, directory, pattern,
+                              report, recurse):
+        if recurse:
+            for dirpath, dirnames, filenames in os.walk(directory):
+                if len(glob.glob(os.path.join(dirpath, pattern))) > 0:
+                    _sources.append([dirpath, pattern, report])
+        else:
+            _sources.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
         self._tmpdir = _TempDir()
