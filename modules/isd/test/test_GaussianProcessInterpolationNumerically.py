@@ -50,13 +50,15 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         self.G.set_nuisance_is_optimized(True)
         self.Rg = Scale.setup_particle(IMP.Particle(self.m),  10.0)
         self.Rg.set_nuisance_is_optimized(True)
-        #put d=15 so we don't use the porod region
-        self.d = Scale.setup_particle(IMP.Particle(self.m),  15.0)
+        self.d = Scale.setup_particle(IMP.Particle(self.m),  4.0)
         self.d.set_nuisance_is_optimized(False)
         self.s = Scale.setup_particle(IMP.Particle(self.m),  0.0)
         self.s.set_nuisance_is_optimized(False)
+        #don't add A to self.particles cause there's enough particles to test
+        self.A = Scale.setup_particle(IMP.Particle(self.m),  1.0)
+        self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
-                self.G,self.Rg,self.d,self.s)
+                self.G,self.Rg,self.d,self.s,self.A)
         self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.)
@@ -66,7 +68,8 @@ class TestGaussianProcessInterpolationNumerically(IMP.test.TestCase):
         self.cov = Covariance1DFunction(self.tau, self.lam, 2.0)
         self.gpi = IMP.isd.GaussianProcessInterpolation(self.q, self.I,
                 self.err, self.N, self.mean, self.cov, self.sig)
-        self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,self.lam]
+        self.particles=[self.G,self.Rg,self.d,self.s,self.sig,self.tau,
+                self.lam]
 
     def testCovDerivNumericG(self):
         """

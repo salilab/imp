@@ -312,21 +312,22 @@ class IMPISDEXPORT Linear1DFunction : public UnivariateFunction
 
 //! 1D mean function for SAS data
 /*  Generalized Guinier-Porod model (Hammouda, J. Appl. Cryst., 2010, eq 3 & 4
- *  I(q) = G/q^s exp(-(q.Rg)^2/(3-s)) for q <= q1
- *  I(q) = D/q^d for q > q1
+ *  to which a constant offset is added)
+ *  I(q) = A + G/q^s exp(-(q.Rg)^2/(3-s)) for q <= q1
+ *  I(q) = A + D/q^d for q > q1
  *  q1 = 1/Rg * ((d-s)(3-s)/2)^(1/2)
  *  D = G exp(-(q1.Rg)^2/(3-s)) q1^(d-s)
  *  only valid for q>0 Rg>0  0<s<d s<3 G>0
  *  s=0 in the globular case.
- *  G, Rg, d and s are particles (ISD Scales).
+ *  G, Rg, d, s and A are particles (ISD Scales).
  */
 class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
 {
     public:
         GeneralizedGuinierPorodFunction(Particle * G, Particle * Rg,
-                Particle * d, Particle * s)
+                Particle * d, Particle * s, Particle * A)
             : UnivariateFunction("GeneralizedGuinierPorodFunction %1%"),
-            G_(G), Rg_(Rg), d_(d), s_(s)
+            G_(G), Rg_(Rg), d_(d), s_(s), A_(A)
         {
             IMP_LOG(TERSE, "GeneralizedGuinierPorodFunction: constructor"
                             << std::endl);
@@ -334,6 +335,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(Rg); }
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(d); }
             IMP_IF_CHECK(USAGE_AND_INTERNAL) { Scale::decorate_particle(s); }
+            IMP_IF_CHECK(USAGE_AND_INTERNAL) { Nuisance::decorate_particle(A); }
             update();
         }
 
@@ -342,12 +344,15 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             double tmpRg = Scale(Rg_).get_scale();
             double tmpd = Scale(d_).get_scale();
             double tmps = Scale(s_).get_scale();
+            double tmpA = Nuisance(A_).get_nuisance();
             if ((std::abs(tmpG - G_val_) > IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
                     || (std::abs(tmpRg - Rg_val_) >
                         IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
                     || (std::abs(tmpd - d_val_) >
                         IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
                     || (std::abs(tmps - s_val_) >
+                        IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM)
+                    || (std::abs(tmpA - A_val_) >
                         IMP_ISD_UNIVARIATE_FUNCTIONS_MINIMUM))
             {
                 IMP_LOG(TERSE,
@@ -364,6 +369,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             Rg_val_ = Scale(Rg_).get_scale();
             d_val_ = Scale(d_).get_scale();
             s_val_ = Scale(s_).get_scale();
+            A_val_ = Nuisance(A_).get_nuisance();
             q1_param_ = std::sqrt((d_val_-s_val_)*(3-s_val_)/2.);
             D_param_ = G_val_ *std::exp(-IMP::square(q1_param_)/(3-s_val_));
             q1_param_ = q1_param_ / Rg_val_;
@@ -373,6 +379,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                     << " Rg:=" << Rg_val_
                     << " d:=" << d_val_
                     << " s:=" << s_val_
+                    << " A:=" << A_val_
                     << " Q1.Rg =" << q1_param_*Rg_val_
                     << " D =" << D_param_
                     << std::endl);
@@ -419,9 +426,9 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                 DerivativeAccumulator &accum) const
         {
             double qval = x[0];
-            double value = get_value(qval);
+            double value = get_value(qval) - A_val_;
             double deriv;
-            //d[f(x)]/dG = f(x)/G
+            //d[f(x)+A]/dG = f(x)/G
             deriv = value/G_val_;
             IMP_INTERNAL_CHECK(!compatibility::isnan(deriv),
                         "derivative for G is nan.");
@@ -459,6 +466,9 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                         "derivative for d is nan.");
                 Scale(s_).add_to_nuisance_derivative(deriv, accum);
             }
+            //d[f(x)+A]/dA = 1
+            deriv = 1;
+            Nuisance(A_).add_to_nuisance_derivative(deriv, accum);
         }
 
         void add_to_particle_derivative(unsigned particle_no,
@@ -486,6 +496,11 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                         "derivative for s is nan.");
                     Scale(s_).add_to_scale_derivative(value, accum);
                     break;
+                case 4:
+                    IMP_INTERNAL_CHECK(!compatibility::isnan(value),
+                        "derivative for A is nan.");
+                    Nuisance(A_).add_to_nuisance_derivative(value, accum);
+                    break;
                 default:
                     IMP_THROW("Invalid particle number", ModelException);
             }
@@ -500,7 +515,8 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             {
                 case 0: // G
                     //d[f(x)]/dG = f(x)/G
-                    ret = (*this)(xlist)/G_val_;
+                    ret = ((*this)(xlist)
+                            -Eigen::VectorXd::Constant(N,A_val_))/G_val_;
                     break;
                 case 1: // Rg
                     for (unsigned i=0; i<N; i++)
@@ -509,11 +525,12 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                         if (qval <= q1_param_)
                         {
                             //d[f(x)]/dRg = - f(x) * 2 q^2 Rg / (3-s)
-                            ret(i) = - get_value(qval)
+                            ret(i) = - (get_value(qval) - A_val_)
                                 * 2*IMP::square(qval)*Rg_val_/(3-s_val_);
                         } else {
                             //d[f(x)]/dRg = f(x) * (s-d)/Rg
-                            ret(i) = get_value(qval) * (s_val_-d_val_)/Rg_val_;
+                            ret(i) = (get_value(qval)-A_val_)
+                                        * (s_val_-d_val_)/Rg_val_;
                         }
                     }
                     break;
@@ -527,7 +544,8 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                             ret(i) = 0;
                         } else {
                             //d[f(x)]/dd = f(x) * log(q1/q)
-                            ret(i) = get_value(qval) * std::log(q1_param_/qval);
+                            ret(i) = (get_value(qval)-A_val_)
+                                    * std::log(q1_param_/qval);
                         }
                     }
                     break;
@@ -539,17 +557,20 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                         {
                             //d[f(x)]/ds = - f(x)
                             //    * (q^2 Rg^2 + (3-s)^2 log(q)) / (3-s)^2
-                            ret(i) = - get_value(qval)
+                            ret(i) = - (get_value(qval) - A_val_)
                                         * (IMP::square((qval*Rg_val_)
                                                         /(3-s_val_))
                                             + std::log(qval));
                         } else {
                             //d[f(x)]/ds = - f(x) * ( (d-s)/(2(3-s)) + log(q1) )
-                            ret(i) = - get_value(qval)
+                            ret(i) = - (get_value(qval) - A_val_)
                                         * ( (d_val_-s_val_)/(2*(3-s_val_))
                                             + std::log(q1_param_) );
                         }
                     }
+                    break;
+                case 4: // A
+                    ret = Eigen::VectorXd::Constant(N,1);
                     break;
                 default:
                     IMP_THROW("Invalid particle number", ModelException);
@@ -560,11 +581,12 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
         FloatsList get_derivative_matrix(
              const FloatsList& xlist, bool) const
         {
-            Eigen::MatrixXd mat(xlist.size(),4);
+            Eigen::MatrixXd mat(xlist.size(),5);
             mat.col(0) = get_derivative_vector(0, xlist);
             mat.col(1) = get_derivative_vector(1, xlist);
             mat.col(2) = get_derivative_vector(2, xlist);
             mat.col(3) = get_derivative_vector(3, xlist);
+            mat.col(4) = get_derivative_vector(4, xlist);
             FloatsList ret;
             for (unsigned i=0; i<mat.rows(); i++)
             {
@@ -580,11 +602,14 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                 unsigned particle_a, unsigned particle_b,
                 const FloatsList& xlist) const
         {
-            if (particle_a >=4)
+            if (particle_a >=5)
                     IMP_THROW("Invalid particle 1 number", ModelException);
-            if (particle_b >= 4)
+            if (particle_b >= 5)
                     IMP_THROW("Invalid particle 2 number", ModelException);
             unsigned N=xlist.size();
+            //hessian involving A is always 0
+            if (particle_a == 4 || particle_b == 4)
+                return Eigen::VectorXd::Zero(N);
             unsigned pa = std::min(particle_a,particle_b);
             unsigned pb = std::max(particle_a,particle_b);
             Eigen::VectorXd ret(N);
@@ -635,12 +660,12 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                                     //d2[f(x)]/dRg2 =
                                     //f(x) * (2 q^2 / (3-s))
                                     //  * (2 q^2 Rg^2 / (3-s) - 1)
-                                    ret(i) = get_value(qval)
+                                    ret(i) = (get_value(qval) - A_val_)
                                 * 2*IMP::square(qval)/(3-s_val_)
                                 * (2*IMP::square(qval*Rg_val_)/(3-s_val_) -1);
                                 } else {
                                     //d2[f(x)]/dRg2=f(x) * (d-s)/Rg^2 * (d-s+1)
-                                    ret(i) = get_value(qval)
+                                    ret(i) = (get_value(qval) - A_val_)
                                 * (d_val_-s_val_)/IMP::square(Rg_val_)
                                 * (d_val_-s_val_+1);
                                 }
@@ -658,7 +683,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                                 } else {
                                     //d2[f(x)]/dddRg = -f(x)/Rg
                                     //           - (d-s)/Rg *df(x)/dd
-                                    double val=get_value(qval);
+                                    double val=(get_value(qval)-A_val_);
                                     ret(i) = -val/Rg_val_
                                         - (val*std::log(q1_param_/qval)
                                 * (d_val_-s_val_)/Rg_val_);
@@ -670,7 +695,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                             for (unsigned i=0; i<N; i++)
                             {
                                 double qval = xlist[i][0];
-                                double val=get_value(qval);
+                                double val=(get_value(qval)-A_val_);
                                 if (qval <= q1_param_)
                                 {
                                     //d2[f(x)]/dsdRg = -2q^2Rg/(3-s)
@@ -715,7 +740,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                                 } else {
                                     //d2[f(x)]/dddd =
                                     //         f(x)*(log(q1/q)^2 + 1/(2*(d-s)))
-                                    double val=get_value(qval);
+                                    double val=(get_value(qval)-A_val_);
                                     ret(i) = val * (
                                         IMP::square(std::log(q1_param_/qval))
                                         +1/(2*(d_val_-s_val_)));
@@ -739,7 +764,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                                     //d2[f(x)]/ddds = log(q1/q)*df(x)/ds
                                     //      - (1/(3-s) + 1/(d-s))*f(x)/2
                                     //
-                                    double val=get_value(qval);
+                                    double val=(get_value(qval)-A_val_);
                                     ret(i) = - val * (
                                         std::log(q1_param_/qval)*lterm + rterm);
                                 }
@@ -767,7 +792,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                             for (unsigned i=0; i<N; i++)
                             {
                                 double qval = xlist[i][0];
-                                double val=get_value(qval);
+                                double val=(get_value(qval)-A_val_);
                                 if (qval <= q1_param_)
                                 {
                                     //d2[f(x)]/dsds = f(x) *
@@ -824,7 +849,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
         unsigned get_ndims_x() const {return 1;}
         unsigned get_ndims_y() const {return 1;}
 
-        unsigned get_number_of_particles() const { return 4; }
+        unsigned get_number_of_particles() const { return 5; }
 
         bool get_particle_is_optimized(unsigned particle_no) const
         {
@@ -838,6 +863,8 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                     return Scale(d_).get_scale_is_optimized();
                 case 3: //s
                     return Scale(s_).get_scale_is_optimized();
+                case 4: //A
+                    return Nuisance(A_).get_nuisance_is_optimized();
                 default:
                     IMP_THROW("Invalid particle number", ModelException);
             }
@@ -850,6 +877,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             if (Scale(Rg_).get_scale_is_optimized()) count++;
             if (Scale(d_).get_scale_is_optimized()) count++;
             if (Scale(s_).get_scale_is_optimized()) count++;
+            if (Nuisance(A_).get_nuisance_is_optimized()) count++;
             return count;
         }
 
@@ -860,6 +888,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             ret.push_back(Rg_);
             ret.push_back(d_);
             ret.push_back(s_);
+            ret.push_back(A_);
             return ret;
         }
 
@@ -874,6 +903,7 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
                 << " Rg = " << Rg_val_
                 << " d = " << d_val_
                 << " s = " << s_val_
+                << " A = " << A_val_
                 << " Q1.Rg = " << q1_param_*Rg_val_
                 << std::endl, {});
 
@@ -884,16 +914,16 @@ class IMPISDEXPORT GeneralizedGuinierPorodFunction : public UnivariateFunction
             double value;
             if (q <= q1_param_)
             {
-                value = G_val_/std::pow(q,s_val_)
+                value = A_val_ + G_val_/std::pow(q,s_val_)
                     * std::exp(- IMP::square(q*Rg_val_)/(3-s_val_));
             } else {
-                value = D_param_/std::pow(q,d_val_);
+                value = A_val_ + D_param_/std::pow(q,d_val_);
             }
             return value;
         }
 
-        Pointer<Particle> G_,Rg_,d_,s_;
-        double G_val_,Rg_val_,d_val_,s_val_,q1_param_,D_param_;
+        Pointer<Particle> G_,Rg_,d_,s_,A_;
+        double G_val_,Rg_val_,d_val_,s_val_,A_val_,q1_param_,D_param_;
 
 };
 
