@@ -315,10 +315,11 @@ public:
     } else {
       map_.template get<1>().relocate(map_.template project<1>(it),
                                       map_.template get<1>().begin());
-      IMP_INTERNAL_CHECK(checker_(it->value,
+      // not good with floating point values
+      /*IMP_INTERNAL_CHECK(checker_(it->value,
                                   gen_(k, *this)),
                          "Results don't match: " << it->value << " != "
-                         << gen_(k, *this));
+                         << gen_(k, *this));*/
       return it->value;
     }
 
