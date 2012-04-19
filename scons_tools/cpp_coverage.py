@@ -65,12 +65,17 @@ class _CoverageTester(object):
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
             self._test_type = 'module'
-            self.add_source('modules/%s/src' % name, '*.cpp', report=True)
-            self.add_source('modules/%s/src/internal' % name, '*.cpp',
+            moddir = self.get_module_dir(name)
+            self.add_source('modules/%s/src' % moddir, '*.cpp', report=True)
+            self.add_source('modules/%s/src/internal' % moddir, '*.cpp',
                             report=True)
-            self.add_source('build/src', 'IMP_%s_wrap.cpp' % name, report=False)
+            self.add_source('build/src', self.get_wrap(name) + '.cpp',
+                            report=False)
+
             if name == 'kernel':
                 h = 'IMP'
+            elif name == 'RMF':
+                h = name
             else:
                 h = 'IMP/' + name
             self.add_header('build/include/%s' % h, '*.h', report=True)
@@ -83,6 +88,18 @@ class _CoverageTester(object):
                 self.add_header(m.group(1), '*.h', report=True, recurse=True)
             else:
                 raise ValueError("Cannot determine path for %s" % name)
+
+    def get_wrap(self, name):
+        if name == 'RMF':
+            return 'RMF_wrap'
+        else:
+            return 'IMP_%s_wrap' % name
+
+    def get_module_dir(self, name):
+        if name == 'RMF':
+            return 'librmf'
+        else:
+            return name
 
     def add_source(self, directory, pattern, report, recurse=False):
         self._add_source_or_header(self._sources, directory, pattern,
@@ -327,8 +344,10 @@ class _CoverageTester(object):
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
             call(['lcov', '-c', '-b', '.',
-                  '-d', '%s/build/src/IMP_%s_wrap.gcda' % (tmpdir, self._name),
-                  '-d', '%s/modules/%s/src/' % (tmpdir, self._name),
+                  '-d', '%s/build/src/%s.gcda' % (tmpdir,
+                                                  self.get_wrap(self._name)),
+                  '-d', '%s/modules/%s/src/' % (tmpdir,
+                                              self.get_module_dir(self._name)),
                   '-o', all_info])
         else:
             # Get all coverage info (includes all dependencies,
@@ -365,6 +384,9 @@ class _CoverageTester(object):
                     if self._name == 'kernel':
                         line = line.replace('build/include/IMP/',
                                             'modules/%s/include/' % self._name)
+                    elif self._name == 'RMF':
+                        line = line.replace('build/include/RMF/',
+                                            'modules/librmf/include/')
                     else:
                         line = line.replace('build/include/IMP/%s/'% self._name,
                                             'modules/%s/include/' % self._name)
