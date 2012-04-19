@@ -43,7 +43,7 @@ protected:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
   Float max_angle_;
-  Float p_;
+  Float probabily_of_random_move_;
 
 public:
   RelativePositionMover(core::RigidBody d, Float max_translation,
@@ -64,7 +64,7 @@ public:
                  default is 0.
   */
   void set_random_move_probability(Float p) {
-    p_ = p;
+    probabily_of_random_move_ = p;
   }
 
 };
