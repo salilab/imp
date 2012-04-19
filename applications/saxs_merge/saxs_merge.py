@@ -2,6 +2,8 @@
 
 import sys,os
 import optparse
+import fractions
+from random import sample
 from numpy import *
 import copy
 from scipy.stats import t as student_t
@@ -12,6 +14,26 @@ import IMP.isd
 import IMP.gsl
 
 IMP.set_log_level(0)
+
+def subsample(data,npoints):
+    #defined here because it's used in the class
+    Ntot = len(data)
+    if npoints >= Ntot:
+        return data
+    if Ntot % npoints == 0:
+        return data[::(Ntot/npoints)]
+    frac = fractions.Fraction(Ntot,npoints)
+    window=frac.numerator
+    valid=frac.denominator
+    newdata = []
+    for rep in xrange(Ntot/window):
+        indata = data[rep*window:(rep+1)*window]
+        indata = zip(range(len(indata)),indata)
+        outdata = sorted(sample(indata, valid),
+                key = lambda a:a[0])
+        outdata = [a[1] for a in outdata]
+        newdata.extend(outdata)
+    return newdata
 
 class SAXSProfile:
 
@@ -210,6 +232,7 @@ class SAXSProfile:
         """store a class that gives interpolated values,
         usually an instance of the GaussianProcessInterpolation
         """
+        self.recompute_hessian = True #internal flag for memoizing Hessian
         if not hasattr(gp, "get_posterior_mean"):
             raise TypeError, "interpolant.get_posterior_mean does not exist"
         if not hasattr(gp, "get_posterior_covariance"):
@@ -278,6 +301,64 @@ class SAXSProfile:
         """returns a list of [qmin, qmax, flag_value] lists"""
         return self.intervals[flag]
 
+    def _subsample(self, data, npoints):
+        return subsample(data, npoints)
+
+    def _setup_gp(self, npoints):
+        if npoints <0:
+            return self.gp
+        q = self.gp.get_data_abscissa()
+        I = self.gp.get_data_mean()
+        S = self.gp.get_data_variance()
+        err = [S[i][i] for i in xrange(len(S))]
+        q,I,err = zip(*self._subsample(zip(q,I,err),npoints))
+        gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
+            self.get_Nreps(), self.functions['mean'],
+            self.functions['covariance'], self.particles['sigma'])
+        return gp
+
+    def _get_hessian(self, gp):
+        if self.recompute_hessian is False:
+            return self._memoized_Hessian
+        gpr=IMP.isd.GaussianProcessInterpolationRestraint(gp)
+        self.model.add_restraint(gpr)
+        self.particles['A'].set_nuisance_is_optimized(True)
+        if self.mean == 'Flat':
+            self.particles['G'].set_lower(0)
+            self.particles['G'].set_nuisance(0)
+            self.particles['G'].set_upper(0)
+            self.particles['G'].set_nuisance_is_optimized(False)
+            self.particles['Rg'].set_nuisance_is_optimized(False)
+            self.particles['d'].set_nuisance_is_optimized(False)
+            self.particles['s'].set_nuisance_is_optimized(False)
+        else:
+            self.particles['G'].set_nuisance_is_optimized(True)
+            self.particles['Rg'].set_nuisance_is_optimized(True)
+            if self.mean == 'Generalized':
+                self.particles['d'].set_nuisance_is_optimized(True)
+            else:
+                self.particles['d'].set_nuisance_is_optimized(False)
+            if self.mean == 'Full':
+                self.particles['s'].set_nuisance_is_optimized(True)
+            else:
+                self.particles['s'].set_nuisance_is_optimized(False)
+        self.particles['tau'].set_nuisance_is_optimized(True)
+        self.particles['lambda'].set_nuisance_is_optimized(True)
+        self.particles['sigma'].set_nuisance_is_optimized(True)
+        Hessian = matrix(gpr.get_hessian(False))
+        if linalg.det(Hessian) == 0:
+            print Hessian,[(i,j.get_nuisance())
+                    for i,j in self.particles.items()
+                if j.get_nuisance_is_optimized()]
+        self.model.remove_restraint(gpr)
+        #fl=open('avcov','w')
+        #fl.write("#q I err err*lapl lapl det (Hessian= %f )\n"
+        #        % linalg.det(Hessian))
+        #fl.close()
+        self._memoized_Hessian = Hessian
+        self.recompute_hessian = False
+        return Hessian
+
     def get_mean(self, **kwargs):
         """returns (q,I,err,mean,...) tuples for num points (default 200)
         ranging from qmin to qmax (whole data range by default)
@@ -289,8 +370,9 @@ class SAXSProfile:
         You can also give specific values via the qvalues keyword argument.
         see get_data for details on the filter argument. If num is used with
         filter, the function returns at most num elements and possibly none.
-        average : if True, compute hessians and average out parameter vector.
-                    if False, just output maximum posterior estimate (faster).
+        average : if 0, just output maximum posterior estimate (faster).
+                  if <0, compute hessians and average out parameter vector.
+                  if >0, same as <0 but only take N data points instead of all
         verbose : if True, display progress meter in %
         """
         rem = set(kwargs.keys()) \
@@ -299,38 +381,13 @@ class SAXSProfile:
         if len(rem) > 0:
             raise TypeError, "Unknown keyword(s): %s" % list(rem)
         #
-        average=False
-        if 'average' in kwargs and kwargs['average']:
-            average=True
+        average=0
+        if 'average' in kwargs and kwargs['average'] != 0:
+            average=kwargs['average']
             #compute hessian, which doesn't depend on q
-            gpr=IMP.isd.GaussianProcessInterpolationRestraint(self.gp)
-            self.model.add_restraint(gpr)
-            if self.mean == 'Zero':
-                self.particles['G'].set_nuisance(0)
-                self.particles['G'].set_nuisance_is_optimized(False)
-                self.particles['Rg'].set_nuisance_is_optimized(False)
-                self.particles['d'].set_nuisance_is_optimized(False)
-                self.particles['s'].set_nuisance_is_optimized(False)
-            else:
-                self.particles['G'].set_nuisance_is_optimized(True)
-                self.particles['Rg'].set_nuisance_is_optimized(True)
-                if self.mean == 'Generalized':
-                    self.particles['d'].set_nuisance_is_optimized(True)
-                else:
-                    self.particles['d'].set_nuisance_is_optimized(False)
-                if self.mean == 'Full':
-                    self.particles['s'].set_nuisance_is_optimized(True)
-                else:
-                    self.particles['s'].set_nuisance_is_optimized(False)
-            self.particles['tau'].set_nuisance_is_optimized(True)
-            self.particles['lambda'].set_nuisance_is_optimized(True)
-            self.particles['sigma'].set_nuisance_is_optimized(True)
-            Hessian = matrix(gpr.get_hessian(False))
-            self.model.remove_restraint(gpr)
-            #fl=open('avcov','w')
-            #fl.write("#q I err err*lapl lapl det (Hessian= %f )\n"
-            #        % linalg.det(Hessian))
-            #fl.close()
+            gp = self._setup_gp(average)
+            Hessian = self._get_hessian(gp)
+        #
         if 'qvalues' in kwargs:
             qvals = kwargs['qvalues']
         else:
@@ -397,12 +454,12 @@ class SAXSProfile:
             thing = [q,gamma*self.gp.get_posterior_mean([q]),
                     gamma*sqrt(self.gp.get_posterior_covariance([q],[q])),
                     gamma*self.functions['mean']([q])[0]]
-            if average:
+            if average != 0:
                 #compute hessian of -log(cov)
                 cov = thing[2]**2
-                Hder = matrix(self.gp.get_posterior_covariance_derivative(
+                Hder = matrix(gp.get_posterior_covariance_derivative(
                     [q],False)).T
-                Hcov = matrix(self.gp.get_posterior_covariance_hessian(
+                Hcov = matrix(gp.get_posterior_covariance_hessian(
                     [q],False))
                 Hlcov = 1/cov*(-Hcov + 1/cov * Hder*Hder.T)
                 #fl=open('avcov','a')
@@ -598,12 +655,12 @@ Merging
     group.add_option('--bs', help='Initial value for s (default 0)',
                      type="float", default=0., metavar='S')
     group.add_option('--boptimize', help='Which mean parameters are optimized.'
-            " One of Zero (no parameters are optimized), "
-            "Simple (default, optimizes G and Rg), "
+            " One of Flat (the offset parameter A is optimized), "
+            "Simple (default, optimizes A, G and Rg), "
             "Generalized (optimizes G, Rg and d), "
             "Full (optimizes G, Rg, d and s)",
             type="choice", default="Simple",
-            choices=['Simple','Generalized','Full','Zero'])
+            choices=['Flat','Simple','Generalized','Full'])
     group.add_option('--bcomp', help='Perform model comparison, which allows to'
             ' choose a mean function that does not overfit the data. If --bcomp'
             ' is given, --boptimize is taken to be the most complex model. '
@@ -615,7 +672,12 @@ Merging
             action='store_true', default=False)
     group.add_option('--bsubsample', metavar='NUM', default=1, type='int',
             help='To speed up the fitting step, use only every NUM point in '
-            'the calculation. Default is 1.')
+            'the fitting calculation. Default is 1.')
+    group.add_option('--blimit', metavar='NUM', default=-1, type='int',
+            help='To save RAM, set the maximum number of points used in the '
+            'Hessian calculation (options --baverage and --bcomp). '
+            'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
+            '(default), all points will be used.')
     #group.add_option('--bschedule', help='Simulation schedule. Default is '
     #        '"10:10000/5:1000/1:100" which means use every 10 data points for '
     #        'the first 1000 steps, then every 5 data points for 100 steps, '
@@ -666,7 +728,7 @@ Merging
     group.add_option('--eoptimize', help='Which mean parameters are optimized.'
             ' See --boptimize. Default is Generalized', type="choice",
             default="Generalized",
-            choices=['Simple','Generalized','Full','Zero'])
+            choices=['Simple','Generalized','Full','Flat'])
     group.add_option('--ecomp', help='Perform model comparison, see --bcomp.'
             ' Default is not to perform it.', action='store_true',
             default=False)
@@ -676,7 +738,12 @@ Merging
             action='store_true', default=False)
     group.add_option('--esubsample', metavar='NUM', default=1, type='int',
             help='To speed up the merging step, use only every NUM point in '
-            'the calculation. Default is 1.')
+            'the fitting calculation. Default is 1.')
+    group.add_option('--elimit', metavar='NUM', default=-1, type='int',
+            help='To save RAM, set the maximum number of points used in the '
+            'Hessian calculation (options --eaverage and --ecomp). '
+            'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
+            '(default), all points will be used.')
     (args, files) = parser.parse_args()
     if len(files) == 0:
         parser.error("No files specified")
@@ -687,7 +754,7 @@ def parse_filenames(fnames, defaultvalue=10):
     Nreps = []
     for fname in fnames:
         if '=' in fname:
-            tokens = fname.split()
+            tokens = fname.split('=')
             paths = glob.glob(tokens[0])
             if len(paths) == 0:
                 sys.exit("File %s not found!" % fname)
@@ -736,40 +803,45 @@ def ttest_two(mu1,s1,n1,mu2,s2,n2):
 
 def setup_particles(initvals):
     """ initvals : dict of initial values for the parameters
-    returns: model, dict(a, b, sigma, lambda, tau), dict(mean, covariance)
+    returns: model, dict(*particles), dict(mean, covariance)
     """
 
     model = IMP.Model()
     #mean function
-    G=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['G'])
+    G=IMP.isd.Scale.setup_particle(IMP.Particle(model,"G"),initvals['G'])
     #model.add_restraint(IMP.isd.JeffreysRestraint(G))
-    Rg=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['Rg'])
-    d=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['d'])
-    s=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['s'])
-    m = IMP.isd.GeneralizedGuinierPorodFunction(G,Rg,d,s)
+    Rg=IMP.isd.Scale.setup_particle(IMP.Particle(model,"Rg"),initvals['Rg'])
+    d=IMP.isd.Scale.setup_particle(IMP.Particle(model,"d"),initvals['d'])
+    s=IMP.isd.Scale.setup_particle(IMP.Particle(model,"s"),initvals['s'])
+    A=IMP.isd.Nuisance.setup_particle(IMP.Particle(model,"A"),initvals['A'])
+    m = IMP.isd.GeneralizedGuinierPorodFunction(G,Rg,d,s,A)
     #covariance function
-    tau=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['tau'])
-    lam=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['lambda'])
+    tau=IMP.isd.Scale.setup_particle(IMP.Particle(model,"tau"),initvals['tau'])
+    lam=IMP.isd.Scale.setup_particle(IMP.Particle(model,"lambda"),
+                                        initvals['lambda'])
     w = IMP.isd.Covariance1DFunction(tau,lam,2.0)
     #sigma
-    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model),initvals['sigma'])
+    sigma=IMP.isd.Scale.setup_particle(IMP.Particle(model,"sigma"),
+                                    initvals['sigma'])
     #prior on scales
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,G))
+        IMP.isd.NuisanceRangeModifier(),None,G,"Constrain_G"))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,Rg))
+        IMP.isd.NuisanceRangeModifier(),None,Rg,"Constrain_Rg"))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,d))
+        IMP.isd.NuisanceRangeModifier(),None,d,"Constrain_d"))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,s))
+        IMP.isd.NuisanceRangeModifier(),None,A,"Constrain_A"))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,lam))
+        IMP.isd.NuisanceRangeModifier(),None,s,"Constrain_s"))
+    model.add_score_state(IMP.core.SingletonConstraint(
+        IMP.isd.NuisanceRangeModifier(),None,lam,"Constrain_lambda"))
     #model.add_restraint(IMP.isd.JeffreysRestraint(tau))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,tau))
+        IMP.isd.NuisanceRangeModifier(),None,tau,"Constrain_tau"))
     model.add_restraint(IMP.isd.JeffreysRestraint(sigma))
     model.add_score_state(IMP.core.SingletonConstraint(
-        IMP.isd.NuisanceRangeModifier(),None,sigma))
+        IMP.isd.NuisanceRangeModifier(),None,sigma,"Constrain_sigma"))
     #set lower and upper bounds for Rg, d and s
     Rg.set_lower(0.1)
     d.set_lower(0.1)
@@ -785,6 +857,7 @@ def setup_particles(initvals):
     particles['Rg'] = Rg
     particles['d'] = d
     particles['s'] = s
+    particles['A'] = A
     particles['tau'] = tau
     particles['lambda'] = lam
     particles['sigma'] = sigma
@@ -792,6 +865,10 @@ def setup_particles(initvals):
     functions['mean'] = m
     functions['covariance'] = w
     return model, particles, functions
+
+def do_conjugategradients(model,nsteps):
+    cg=IMP.gsl.ConjugateGradients(model)
+    cg.optimize(nsteps)
 
 def do_quasinewton(model,nsteps):
     qn=IMP.gsl.QuasiNewton(model)
@@ -808,11 +885,13 @@ def do_quasinewton(model,nsteps):
     #    write_params(fl,model,a,b,tau,lam,sigma)
     qn.optimize(nsteps)
 
-def setup_process(data,initvals, subs):
+def setup_process(data,initvals, subs, maxpoints=-1):
     model,particles,functions = setup_particles(initvals)
     q = [ [i] for i in data['q'][::subs]]
     I = data['I'][::subs]
     err = data['err'][::subs]
+    if maxpoints >0:
+        q,I,err = zip(*subsample(zip(q,I,err),maxpoints))
     gp = IMP.isd.GaussianProcessInterpolation(q, I, err,
             data['N'], functions['mean'], functions['covariance'],
             particles['sigma'])
@@ -826,8 +905,11 @@ def set_defaults_mean(data, particles, mean_function):
     particles['G'].set_lower(min(Ivals))
     particles['G'].set_upper(2*max(Ivals))
     #optimize mean particles only
-    if mean_function == 'Zero':
+    particles['A'].set_nuisance_is_optimized(True)
+    if mean_function == 'Flat':
+        particles['G'].set_lower(0)
         particles['G'].set_nuisance(0)
+        particles['G'].set_upper(0)
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
@@ -850,6 +932,7 @@ def set_defaults_mean(data, particles, mean_function):
 def find_fit_mean(data, initvals, verbose, mean_function):
     model, particles, functions, gp = \
             setup_process(data, initvals, 1)
+    IMP.set_log_level(IMP.TERSE)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     set_defaults_mean(data, particles, mean_function)
@@ -860,21 +943,37 @@ def find_fit_mean(data, initvals, verbose, mean_function):
         taulow = particles['tau'].get_lower()
     particles['tau'].set_nuisance(0.)
     particles['tau'].set_lower(0.)
+    """IMP.set_log_level(IMP.TERSE)
+    for A in linspace(-20,20):
+        particles['A'].set_nuisance(A)
+        print "pyy",A,gpr.evaluate(False)
+    for q in linspace(0.001,0.3):
+        print "cmp",q,gp.get_posterior_mean([q])
+    sys.exit()"""
     #optimize mean particles for 3x100 steps
     #when getting initvals, calling model.evaluate() ensures constraints are met
     for i in xrange(3):
+        #print particles['A'].get_nuisance()
         model.evaluate(False)
-        #initvals = dict([(k,v.get_nuisance())
-        #                for (k,v) in particles.iteritems()])
-        #print " ".join(["%5s=%10G" % d for d in initvals.items()])
+        do_conjugategradients(model,100)
+    for i in xrange(3):
+        #print particles['A'].get_nuisance()
+        model.evaluate(False)
         do_quasinewton(model,100)
+    """print particles['A'].get_nuisance()
+    print [(a,b.get_nuisance()) for a,b in particles.items()]
+    dg=IMP.get_dependency_graph(model)
+    IMP.base.show_graphviz(dg)
+    print IMP.get_required_score_states(gpr, [], dg,
+            IMP.get_dependency_graph_vertex_index(dg))
+    sys.exit()"""
     #reset tau bounds
     if taulow:
         particles['tau'].set_lower(taulow)
     model.evaluate(False)
-    initvals = dict([(k,v.get_nuisance())
+    newvals = dict([(k,v.get_nuisance())
                     for (k,v) in particles.iteritems()])
-    return initvals
+    return newvals
 
 def set_defaults_covariance(data, particles, functions, args):
     #set sigma to be equal to 10x the noise level, assuming mean has been fitted
@@ -910,6 +1009,7 @@ def find_fit_lambda(data, initvals, args, verbose):
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
         particles['s'].set_nuisance_is_optimized(False)
+        particles['A'].set_nuisance_is_optimized(False)
         particles['tau'].set_nuisance_is_optimized(False)
         particles['lambda'].set_nuisance_is_optimized(True)
         particles['sigma'].set_nuisance_is_optimized(False)
@@ -935,6 +1035,7 @@ def find_fit_covariance(data, initvals, args, verbose):
     particles['Rg'].set_nuisance_is_optimized(False)
     particles['d'].set_nuisance_is_optimized(False)
     particles['s'].set_nuisance_is_optimized(False)
+    particles['A'].set_nuisance_is_optimized(False)
     particles['tau'].set_nuisance_is_optimized(True)
     particles['lambda'].set_nuisance_is_optimized(True)
     particles['sigma'].set_nuisance_is_optimized(True)
@@ -1043,7 +1144,7 @@ def find_fit_by_gridding(data, initvals, verbose):
     initvals = dict([(k,v.get_nuisance()) for (k,v) in particles.iteritems()])
     return initvals
 
-def bayes_factor(data, initvals, verbose, mean_func):
+def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
     """given optimized values for the parameters (in initvals), the data, and
     the model specification (in mean_func), return
     0 the number of parameters (Np) that have been optimized
@@ -1056,10 +1157,12 @@ def bayes_factor(data, initvals, verbose, mean_func):
     7 exp(-MP)*sqrt(2Pi)^Np*det(H)^(-1/2) (bayes factor)
     8 MP - Np/2*log(2Pi) + 1/2*log(det(H)) (minus log bayes factor)
     """
-    model, particles, functions, gp = setup_process(data, initvals, 1)
+    model, particles, functions, gp = setup_process(data, initvals, 1,
+                                                        maxpoints=maxpoints)
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
-    if mean_func == 'Zero':
+    particles['A'].set_nuisance_is_optimized(True)
+    if mean_func == 'Flat':
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
@@ -1083,12 +1186,17 @@ def bayes_factor(data, initvals, verbose, mean_func):
     Np = H.shape[0]
     MP = model.evaluate(False)
     ML = gpr.unprotected_evaluate(None)
-    logdet = linalg.slogdet(H)[1]/2.
+    retval = linalg.slogdet(H)
+    if retval[0] == 0 and retval[1] == -inf:
+        print "Warning: skipping model %s" % mean_func
+        logdet = inf
+    else:
+        logdet = retval[1]/2.
     return (Np, (2*pi)**(Np/2.), H, logdet, MP, ML, MP-ML,
             exp(-MP)*(2*pi)**(Np/2.)*exp(-logdet),
             MP - Np/2.*log(2*pi) + logdet)
 
-def find_fit(data, initvals, verbose, model_comp=False,
+def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
         mean_function='Simple'):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
@@ -1097,7 +1205,7 @@ def find_fit(data, initvals, verbose, model_comp=False,
     #compile a list of functions to fit, ordered by number of params
     functions=[]
     if model_comp:
-        for i in ['Zero','Simple','Generalized','Full']:
+        for i in ['Flat','Simple','Generalized','Full']:
             functions.append(i)
             if i==mean_function:
                 break
@@ -1114,12 +1222,13 @@ def find_fit(data, initvals, verbose, model_comp=False,
         param_vals[mean_func] = \
                 find_fit_mean(data, initvals, verbose, mean_func)
         if verbose > 2:
-            if mean_function in ["Simple","Generalized","Full"]:
+            sys.stdout.write("A=%1.2f " % param_vals[mean_func]['A'])
+            if mean_func in ["Simple","Generalized","Full"]:
                 sys.stdout.write("G=%1.2f " % param_vals[mean_func]['G'])
                 sys.stdout.write("Rg=%1.2f " % param_vals[mean_func]['Rg'])
-            if mean_function in ["Generalized","Full"]:
+            if mean_func in ["Generalized","Full"]:
                 sys.stdout.write("d=%1.2f " % param_vals[mean_func]['d'])
-            if mean_function == "Full":
+            if mean_func == "Full":
                 sys.stdout.write("s=%1.2f " % param_vals[mean_func]['s'])
             sys.stdout.write("covariance ")
             sys.stdout.flush()
@@ -1138,14 +1247,19 @@ def find_fit(data, initvals, verbose, model_comp=False,
     free_energies={}
     oldf=functions[0]
     if verbose > 2:
-        print "     -log(Bayes Factors):",
-    free_energies[oldf]=bayes_factor(data, param_vals[oldf], verbose, oldf)
+        print "     -log(Bayes Factor): "+oldf+" =",
+    free_energies[oldf]=bayes_factor(data, param_vals[oldf], verbose, oldf,
+                                        model_comp_maxpoints)
+    if verbose > 2:
+        print "%.1f" % free_energies[oldf][8],
+        sys.stdout.flush()
     for f in functions[1:]:
         if verbose > 2:
             print " "+f+" =",
-        free_energies[f]=bayes_factor(data, param_vals[f], verbose, f)
+        free_energies[f]=bayes_factor(data, param_vals[f], verbose, f,
+                                        model_comp_maxpoints)
         if verbose > 2:
-            print free_energies[f][8],
+            print "%.1f" % free_energies[f][8],
             sys.stdout.flush()
         if free_energies[f][8] > free_energies[oldf][8]:
             print ""
@@ -1153,6 +1267,8 @@ def find_fit(data, initvals, verbose, model_comp=False,
         oldf=f
     if verbose > 2:
         print ""
+    #minf = sorted([(free_energies[i][8],i) for i in functions])[0][1]
+    #return minf,param_vals[minf],free_energies
     return functions[-1],param_vals[functions[-1]],free_energies
 
 def create_intervals_from_data(profile, flag):
@@ -1433,6 +1549,7 @@ def fitting(profiles, args):
     #schedule = args.bschedule
     verbose = args.verbose
     subs = args.bsubsample
+    maxpoints = args.blimit
     if verbose >0:
         print "2. fitting"
     for p in profiles:
@@ -1448,11 +1565,13 @@ def fitting(profiles, args):
         initvals['Rg']=args.bRg
         initvals['d']=args.bd
         initvals['s']=args.bs
+        initvals['A']=0.
         initvals['tau']=1.
         initvals['lambda']=1.
         initvals['sigma']=1.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
-                verbose, model_comp=args.bcomp, mean_function=args.boptimize)
+                verbose, model_comp=args.bcomp, model_comp_maxpoints=maxpoints,
+                mean_function=args.boptimize)
         model, particles, functions, gp = setup_process(data,initvals,1)
         p.set_interpolant(gp, particles, functions, mean, model, bayes)
         if verbose > 1:
@@ -1507,10 +1626,9 @@ def rescaling(profiles, args):
                 continue
             for i in xrange(numint):
                 qvalues.append((float(i)/(numint-1))*dist + qmin)
-        #average is commented out because avg for the mean is not implemented
-        pvalues = p.get_mean(qvalues=qvalues, colwise=True)#, average=average)
-        prefvalues = pref.get_mean(qvalues=qvalues, colwise=True)
-                #,average=average)
+        pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
+        prefvalues = pref.get_mean(qvalues=qvalues, colwise=True,
+                        average=average)
         if use_normal:
             gamma = get_gamma_normal(prefvalues, pvalues)
         else:
@@ -1590,6 +1708,7 @@ def merging(profiles, args):
     #schedule = args.eschedule
     verbose = args.verbose
     subs=args.esubsample
+    maxpoints = args.elimit
     do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
     if verbose > 0:
@@ -1652,7 +1771,10 @@ def merging(profiles, args):
     initvals = profiles[-1].get_params()
     mean, initvals, bayes = find_fit(data, initvals, #schedule,
                     verbose, model_comp=args.ecomp,
+                    model_comp_maxpoints=maxpoints,
                     mean_function=args.eoptimize)
+    if verbose > 1:
+        print "    => "+mean
     #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
     model, particles, functions, gp = setup_process(data,initvals,1)
