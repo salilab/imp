@@ -51,9 +51,10 @@ namespace {
     Done(int k, int n): k_(k), rank_(n), parent_(n){}
     template <class B>
     bool operator()(centrality_type c, const B & e, const Graph &g) {
-      std::cout << "Done called on " << boost::source(e, g)
+/*      std::cout << "Done called on " << boost::source(e, g)
                 << "--" << boost::target(e, g)
                 << ": " << c << std::endl;
+*/
       DS ds(&rank_[0], &parent_[0]);
       boost::initialize_incremental_components(g, ds);
       boost::incremental_components(g, ds);
