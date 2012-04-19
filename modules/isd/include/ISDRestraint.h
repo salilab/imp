@@ -16,6 +16,7 @@
 #include <IMP/Restraint.h>
 #include <IMP/PairContainer.h>
 #include <IMP/PairScore.h>
+#include <string>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -25,11 +26,13 @@ IMPISD_BEGIN_NAMESPACE
 
     The source code is as follows:
     \include ISDRestraint.h
-    \include ISDRestraint.cpp
 */
 class IMPISDEXPORT ISDRestraint : public Restraint
 {
 public:
+
+  ISDRestraint() : Restraint() {}
+  ISDRestraint(std::string name) : Restraint(name) {}
 
   /* call for probability, pure method */
   virtual double get_probability() const = 0;

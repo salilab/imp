@@ -12,7 +12,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-JeffreysRestraint::JeffreysRestraint(Particle *p): p_(p) {
+JeffreysRestraint::JeffreysRestraint(Particle *p):
+    ISDRestraint("JeffreysRestraint_"+p->get_name()), p_(p) {
 }
 
 

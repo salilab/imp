@@ -16,7 +16,8 @@
 IMPISD_BEGIN_NAMESPACE
 
 GaussianProcessInterpolationRestraint::GaussianProcessInterpolationRestraint(
-        GaussianProcessInterpolation *gpi) : gpi_(gpi)
+        GaussianProcessInterpolation *gpi) :
+    ISDRestraint("GaussianProcessInterpolationRestraint %1%"), gpi_(gpi)
 {
     //O(M^2)
     //number of observation points
