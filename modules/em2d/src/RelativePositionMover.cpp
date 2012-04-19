@@ -25,7 +25,7 @@ IMPEM2D_BEGIN_NAMESPACE
   max_angle_ = max_rotation;
   max_translation_ = max_translation;
   srand( time(NULL));
-  p_ = 0.0;
+  probabily_of_random_move_ = 0.0;
 }
 
 
@@ -36,10 +36,11 @@ void RelativePositionMover::add_internal_transformations(
 }
 
 ParticlesTemp RelativePositionMover::propose_move(Float prob) {
-  // p_ is the probability of returning a random transformation
+  IMP_UNUSED(out);
+
   last_transformation_= rbA_.get_reference_frame().get_transformation_to();
   double p = static_cast<double>(rand()) / RAND_MAX;
-  if(p < p_) {
+  if(p < probabily_of_random_move_) {
     algebra::Vector3D translation = algebra::get_random_vector_in(
               algebra::Sphere3D(rbA_.get_coordinates(), max_translation_));
     algebra::Vector3D axis = algebra::get_random_vector_on(
