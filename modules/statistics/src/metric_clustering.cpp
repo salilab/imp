@@ -67,7 +67,7 @@ double ConfigurationSetRMSDMetric::get_distance(unsigned int i,
   } else {
     tr=algebra::get_identity_transformation_3d();
   }
-  return atom::get_rmsd(vi, vj, tr);
+  return atom::get_rmsd(vj, vi, tr);
 }
 
 unsigned int ConfigurationSetRMSDMetric::get_number_of_items() const {
