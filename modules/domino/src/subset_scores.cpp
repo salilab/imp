@@ -199,7 +199,13 @@ void RestraintCache::show_restraint_information(std::ostream &out) const {
 }
 
 
-
+double RestraintCache::get_score(Restraint *r, const Subset &s,
+                                 const Assignment &a) const {
+  set_was_used(true);
+  Slice slice= get_slice(r, s);
+  Assignment ra=slice.get_sliced(a);
+  return get_score(r, ra);
+}
 
 
 
