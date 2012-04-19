@@ -41,7 +41,8 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         self.Rg = Scale.setup_particle(IMP.Particle(self.m), 10.0)
         self.d = Scale.setup_particle(IMP.Particle(self.m), 4.0)
         self.s = Scale.setup_particle(IMP.Particle(self.m), 1.0)
-        self.particles = [self.G, self.Rg, self.d, self.s]
+        self.A = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.particles = [self.G, self.Rg, self.d, self.s, self.A]
         self.mean = GeneralizedGuinierPorodFunction(*self.particles)
         self.DA=IMP.DerivativeAccumulator()
 
@@ -70,40 +71,42 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         Rg = self.Rg.get_nuisance()
         d = self.d.get_nuisance()
         s = self.s.get_nuisance()
+        A = self.A.get_nuisance()
         Q1 = ((d-s)*(3-s)/2)**.5/Rg
         D = G*exp(-(d-s)/2)*Q1**(d-s)
-        return G,Rg,d,s,Q1,D
+        return G,Rg,d,s,A,Q1,D
 
     def get_value(self, q):
-        G,Rg,d,s,Q1,D = self.get_params()
+        G,Rg,d,s,A,Q1,D = self.get_params()
         if q <= Q1:
-            return (G/(q**s))*exp(-(q*Rg)**2/(3.-s))
+            return A+(G/(q**s))*exp(-(q*Rg)**2/(3.-s))
         else:
-            return D/(q**d)
+            return A+D/(q**d)
 
     def get_deriv_G(self, q):
-        return self.get_value(q)/self.G.get_nuisance();
+        A = self.A.get_nuisance()
+        return (self.get_value(q)-A)/self.G.get_nuisance();
 
     def get_deriv_Rg(self, q):
-        G,Rg,d,s,Q1,D = self.get_params()
+        G,Rg,d,s,A,Q1,D = self.get_params()
         if q <= Q1:
-            return self.get_value(q)*(- (2*q**2 * Rg)/(3-s))
+            return (self.get_value(q)-A)*(- (2*q**2 * Rg)/(3-s))
         else:
-            return self.get_value(q)*(s-d)/Rg
+            return (self.get_value(q)-A)*(s-d)/Rg
 
     def get_deriv_d(self, q):
-        G,Rg,d,s,Q1,D = self.get_params()
+        G,Rg,d,s,A,Q1,D = self.get_params()
         if q <= Q1:
             return 0
         else:
-            return self.get_value(q)*log(Q1/q)
+            return (self.get_value(q)-A)*log(Q1/q)
 
     def get_deriv_s(self, q):
-        G,Rg,d,s,Q1,D = self.get_params()
+        G,Rg,d,s,A,Q1,D = self.get_params()
         if q <= Q1:
-            return -self.get_value(q)*( (q*Rg)**2/(s-3)**2 + log(q))
+            return -(self.get_value(q)-A)*( (q*Rg)**2/(s-3)**2 + log(q))
         else:
-            return self.get_value(q)*((d-s)/(2*(s-3)) - log(Q1))
+            return (self.get_value(q)-A)*((d-s)/(2*(s-3)) - log(Q1))
 
     def testValue(self):
         """
@@ -197,6 +200,18 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
                 else:
                     self.assertAlmostEqual(observed,expected
                         ,delta=0.001)
+                #A
+                observed = self.A.get_nuisance_derivative()
+                expected = 1
+                if isnan(expected):
+                    skipped += 1
+                    continue
+                if expected != 0:
+                    self.assertAlmostEqual(observed/expected
+                        ,1.0,delta=0.001)
+                else:
+                    self.assertAlmostEqual(observed,expected
+                        ,delta=0.001)
                 self.G.add_to_nuisance_derivative(
                         -self.G.get_nuisance_derivative(),self.DA)
                 self.Rg.add_to_nuisance_derivative(
@@ -205,6 +220,8 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
                         -self.d.get_nuisance_derivative(),self.DA)
                 self.s.add_to_nuisance_derivative(
                         -self.s.get_nuisance_derivative(),self.DA)
+                self.A.add_to_nuisance_derivative(
+                        -self.A.get_nuisance_derivative(),self.DA)
             self.shuffle_particle_values()
         if skipped > 10:
             self.fail("too many NANs")
@@ -270,7 +287,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         """
         particle=0
         self.G.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         GFunc = MockFunc(self.G.set_nuisance,
                 lambda a: self.mean([a])[0], pos, update=self.mean.update)
         for G in xrange(1,10):
@@ -287,7 +304,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         """
         particle=1
         self.Rg.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         RgFunc = MockFunc(self.Rg.set_nuisance,
                 lambda a: self.mean([a])[0], pos, update=self.mean.update)
         for Rg in xrange(1,10):
@@ -304,7 +321,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         """
         particle=2
         self.d.set_nuisance(2)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         dFunc = MockFunc(self.d.set_nuisance,
                 lambda a: self.mean([a])[0], pos, update=self.mean.update)
         for d in linspace(4,0.1):
@@ -325,7 +342,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         """
         particle=3
         self.s.set_nuisance(1.5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         sFunc = MockFunc(self.s.set_nuisance,
                 lambda a: self.mean([a])[0], pos, update=self.mean.update)
         for s in linspace(0.1,2.9,num=20): # can't compute derivative at border
@@ -338,6 +355,43 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             expected = IMP.test.numerical_derivative(sFunc, s, 0.01)
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
+    def testDerivNumericA(self):
+        """
+        test the derivatives of the function numerically for A
+        """
+        particle=4
+        self.A.set_nuisance(5)
+        pos = self.get_params()[4]
+        AFunc = MockFunc(self.A.set_nuisance,
+                lambda a: self.mean([a])[0], pos, update=self.mean.update)
+        for A in xrange(1,10):
+            self.A.set_nuisance(A)
+            self.mean.update()
+            observed = self.mean.get_derivative_matrix([[pos]],
+                    False)[0][particle]
+            expected = IMP.test.numerical_derivative(AFunc, A, 0.01)
+            self.assertAlmostEqual(expected,observed,delta=1e-3)
+
+    def testHessianNumericA(self):
+        """
+        test the Hessian of the function numerically wrt A and any other
+        particle
+        """
+        pa=4
+        for pb in xrange(4):
+            self.G.set_nuisance(5)
+            pos = self.get_params()[5]
+            GFunc = MockFunc(self.particles[pb].set_nuisance,
+                    lambda a: self.mean.get_derivative_matrix([[a]],
+                            False)[0][pa], pos, update=self.mean.update)
+            for part in xrange(1,10):
+                self.particles[pb].set_nuisance(part)
+                self.mean.update()
+                observed = self.mean.get_second_derivative_vector(pa,
+                        pb, [[pos]], False)[0][0]
+                expected = IMP.test.numerical_derivative(GFunc, part, 0.01)
+                self.assertAlmostEqual(expected,observed,delta=1e-3)
+
     def testHessianNumericGG(self):
         """
         test the Hessian of the function numerically wrt G and G
@@ -345,7 +399,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=0
         pb=0
         self.G.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         GFunc = MockFunc(self.G.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -364,7 +418,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=0
         pb=1
         self.Rg.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         RgFunc = MockFunc(self.Rg.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -383,7 +437,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=1
         pb=0
         self.Rg.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         GFunc = MockFunc(self.G.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -402,7 +456,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=0
         pb=2
         self.d.set_nuisance(2)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         dFunc = MockFunc(self.d.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -423,7 +477,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=0
         pb=3
         self.s.set_nuisance(1.5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         sFunc = MockFunc(self.s.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -444,7 +498,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=1
         pb=1
         self.Rg.set_nuisance(5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         RgFunc = MockFunc(self.Rg.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -463,7 +517,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=1
         pb=2
         self.d.set_nuisance(2)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         dFunc = MockFunc(self.d.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -484,7 +538,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=1
         pb=3
         self.s.set_nuisance(1.5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         sFunc = MockFunc(self.s.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -505,7 +559,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=2
         pb=2
         self.d.set_nuisance(2)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         dFunc = MockFunc(self.d.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -526,7 +580,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=2
         pb=3
         self.s.set_nuisance(1.5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         sFunc = MockFunc(self.s.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -547,7 +601,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
         pa=3
         pb=3
         self.s.set_nuisance(1.5)
-        pos = self.get_params()[4]
+        pos = self.get_params()[5]
         sFunc = MockFunc(self.s.set_nuisance,
                 lambda a: self.mean.get_derivative_matrix([[a]], False)[0][pa],
                         pos, update=self.mean.update)
@@ -566,7 +620,7 @@ class TestGeneralizedGuinierPorodFunction(IMP.test.TestCase):
             xlist = random.uniform(0,1, random.randint(1,100))
             data = self.mean.get_derivative_matrix([[i] for  i in xlist], True)
             self.assertEqual(len(data), len(xlist))
-            self.assertEqual(len(data[0]), 4)
+            self.assertEqual(len(data[0]), 5)
             for i,j in zip(data,xlist):
                 if i[0] != 0:
                     self.assertAlmostEqual(self.get_deriv_G(j)/i[0],1,

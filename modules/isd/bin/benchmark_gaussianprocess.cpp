@@ -54,6 +54,8 @@ Scales setup_particles(IMP::Model *m)
     Scale d = Scale(Scale::setup_particle(pd, 4.));
     IMP_NEW(Particle, ps, (m));
     Scale s = Scale(Scale::setup_particle(ps, 0.));
+    IMP_NEW(Particle, pA, (m));
+    Scale A = Scale(Scale::setup_particle(pA, 0.));
     IMP_NEW(Particle, ptau, (m));
     Scale tau = Scale(Scale::setup_particle(ptau, 10.));
     IMP_NEW(Particle, plambda, (m));
@@ -72,6 +74,9 @@ Scales setup_particles(IMP::Model *m)
     IMP_NEW(NuisanceRangeModifier, nrs, ());
     IMP_NEW(core::SingletonConstraint, sss, (nrs, NULL, s.get_particle()));
     m->add_score_state(sss);
+    IMP_NEW(NuisanceRangeModifier, nrA, ());
+    IMP_NEW(core::SingletonConstraint, ssA, (nrA, NULL, A.get_particle()));
+    m->add_score_state(ssA);
     IMP_NEW(NuisanceRangeModifier, nrtau, ());
     IMP_NEW(core::SingletonConstraint, sstau, (nrtau, NULL,
                 tau.get_particle()));
@@ -96,6 +101,7 @@ Scales setup_particles(IMP::Model *m)
     Rg.set_scale_is_optimized(true);
     d.set_scale_is_optimized(true);
     s.set_scale_is_optimized(true);
+    A.set_scale_is_optimized(false);
     tau.set_scale_is_optimized(true);
     lambda.set_scale_is_optimized(true);
     sigma.set_scale_is_optimized(true);
@@ -104,6 +110,7 @@ Scales setup_particles(IMP::Model *m)
     scales.push_back(Rg);
     scales.push_back(d);
     scales.push_back(s);
+    scales.push_back(A);
     scales.push_back(tau);
     scales.push_back(lambda);
     scales.push_back(sigma);
@@ -137,11 +144,11 @@ int main(int argc, char **argv) {
   Scales particles(setup_particles(m));
   IMP_NEW(GeneralizedGuinierPorodFunction, mean, (particles[0].get_particle(),
               particles[1].get_particle(), particles[2].get_particle() ,
-              particles[3].get_particle()));
+              particles[3].get_particle(), particles[4].get_particle()));
   IMP_NEW(Covariance1DFunction, covariance,
-          (particles[4].get_particle(),particles[5].get_particle(),2.0));
+          (particles[5].get_particle(),particles[6].get_particle(),2.0));
   IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
-          data[1], data[2], 10, mean, covariance, particles[6]));
+          data[1], data[2], 10, mean, covariance, particles[7]));
   IMP_NEW(GaussianProcessInterpolationRestraint, gpr, (gpi));
   m->add_restraint(gpr);
   //gpi->get_posterior_covariance(qvals[0],qvals[0]); //precompute matrices
@@ -156,15 +163,15 @@ int main(int argc, char **argv) {
 
       /*
       IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
-          data[1], data[2], 10, mean, covariance, particles[6]));
+          data[1], data[2], 10, mean, covariance, particles[7]));
       */
       /*
       IMP_NEW(GaussianProcessInterpolation, gpi, (qvals,
-              data[1], data[2], 10, mean, covariance, particles[6]));
+              data[1], data[2], 10, mean, covariance, particles[7]));
       IMP_NEW(GaussianProcessInterpolationRestraint, gpr, (gpi));
       m->add_restraint(gpr);
       */
-      //particles[5].set_scale(0.07+0.01*i);
+      //particles[6].set_scale(0.07+0.01*i);
       m->evaluate(true);
       //gpr->get_hessian();
       /*
