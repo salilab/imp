@@ -43,9 +43,10 @@ class ConstArray {
     }
     sz_=sz;
   }
-  void copy_from(const ConstArray &o) {
-    create(o.sz_);
-    std::copy(o.v_.get(), o.v_.get()+sz_, v_.get());
+  template <class It>
+  void copy_from(It b, It e) {
+    create(std::distance(b,e));
+    std::copy(b,e, v_.get());
   }
 public:
   ~ConstArray() {
@@ -57,25 +58,21 @@ public:
   ConstArray(): v_(0), sz_(0){}
   template <class It>
   ConstArray(It b, It e) {
-    create(std::distance(b,e));
-    std::copy(b,e, v_.get());
+    copy_from(b,e);
   }
   template <class Vector>
   explicit ConstArray(const Vector &i) {
-    IMP_USAGE_CHECK(std::distance(i.begin(), i.end()) > 0,
-                    "Can't create ConstArray from empty list");
-    create(i.size());
-    std::copy(i.begin(), i.end(), v_.get());
+    copy_from(i.begin(), i.end());
   }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   /* Add the arguments to attempt to make VC happy as it tries to
      use the templated version instead.
    */
   ConstArray(const ConstArray<Data, SwigData> &o): sz_(0) {
-    copy_from(o);
+    copy_from(o.begin(), o.end());
   }
   ConstArray<Data, SwigData>& operator=(const ConstArray<Data, SwigData> &o) {
-    copy_from(o);
+    copy_from(o.begin(), o.end());
     return *this;
   }
   ConstArray(int sz) {
