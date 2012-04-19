@@ -13,6 +13,7 @@
 #include <IMP/multifit/symmetry_utils.h>
 #include <IMP/multifit/CnSymmAxisDetector.h>
 #include <IMP/multifit/FittingSolutionRecord.h>
+#include <IMP/base/file.h>
 //boost
 #include <boost/program_options.hpp>
 #include <boost/format.hpp>
@@ -25,8 +26,6 @@
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/SampledDensityMap.h>
-#include <cstdlib>
-#include <unistd.h>
 
 #include <IMP/multifit/SymmetricFit.h>
 
@@ -261,18 +260,6 @@ struct sort_by_cc
 };
 
 
-std::string temp_name()
-{
-  char template_name[] = "/tmp/patchdockXXXXXX";
-  int fd = mkstemp(template_name);
-  if ( fd < 0 )
-  {
-    IMP_FAILURE("Cannot create a temporary file");
-  }
-  close(fd);
-  return std::string(template_name);
-}
-
 }
 
 
@@ -344,7 +331,7 @@ void SymmetricFit::run(std::string const &output_filename,
   }
   else
   {
-    std::string patchdock_conf = temp_name();
+    std::string patchdock_conf = base::create_temporary_file_name("patchdock");
     IMP_LOG(VERBOSE, "Writing Patch Dock config to " <<
                  patchdock_conf << std::endl);
     {
@@ -355,7 +342,8 @@ void SymmetricFit::run(std::string const &output_filename,
       }
       write_config(conf_os);
     }
-    std::string patchdock_output = temp_name();
+    std::string patchdock_output
+                            = base::create_temporary_file_name("patchdock");
     recs = multifit::patch_build_symmetric_assemblies(patchdock_executable_,
         patchdock_conf, patchdock_output);
   }
