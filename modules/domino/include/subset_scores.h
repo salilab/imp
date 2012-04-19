@@ -146,11 +146,21 @@ public:
   void add_restraints(const RestraintsTemp &rs);
   //! Get the score of a set or restraint
   /** The returned score will be std::numeric_limits<double>::max()
-      if any of the limits are violated.*/
+      if any of the limits are violated.
+
+      The assignment passed is the assignment for the particles used by the
+      restraint, not that for some whole subset. See the other get_score()
+      function for a perhaps more useful one.
+  */
   double get_score(Restraint *r, const Assignment &a) const {
     set_was_used(true);
     return cache_.get(Key(r, a));
   }
+  /** The the score for a restraint given a subset and assignment on
+      that subset.
+   */
+  double get_score(Restraint *r, const Subset &s,
+                   const Assignment &a) const;
   /** Return the restraints that should be evaluated for the subset,
       given the exclusions.*/
   RestraintsTemp get_restraints(const Subset&s,
