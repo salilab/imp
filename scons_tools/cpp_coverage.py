@@ -88,9 +88,9 @@ class _CoverageTester(object):
         if recurse:
             for dirpath, dirnames, filenames in os.walk(directory):
                 if len(glob.glob(os.path.join(dirpath, pattern))) > 0:
-                    _sources.append([dirpath, pattern, report])
+                    sources.append([dirpath, pattern, report])
         else:
-            _sources.append([directory, pattern, report])
+            sources.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
         self._tmpdir = _TempDir()
