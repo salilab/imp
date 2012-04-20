@@ -271,7 +271,6 @@ namespace {
   void save_conformation_internal(RMF::FileHandle parent,
                                   atom::Hierarchy hierarchy,
                                   unsigned int frame,
-                                  boost::progress_display* pd,
                                   IMP_HDF5_ACCEPT_MOLECULE_FACTORIES()) {
     RMF::NodeHandle cur;
     try {
@@ -284,11 +283,8 @@ namespace {
     copy_data(hierarchy, cur, frame, IMP_HDF5_PASS_MOLECULE_FACTORIES);
     //std::cout << "Processing " << hierarchy->get_name() << std::endl;
     unsigned int nc=hierarchy.get_number_of_children();
-    if (nc==0 && pd) {
-      ++(*pd);
-    }
     for (unsigned int i=0; i< nc; ++i) {
-      save_conformation_internal(parent, hierarchy.get_child(i), frame, pd,
+      save_conformation_internal(parent, hierarchy.get_child(i), frame,
                                  IMP_HDF5_PASS_MOLECULE_FACTORIES);
     }
   }
@@ -298,12 +294,7 @@ void save_frame(RMF::FileHandle fh,
                 unsigned int frame, atom::Hierarchy hs) {
   IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_FACTORIES(fh,);
-  boost::scoped_ptr<boost::progress_display> pd;
-  if (get_log_level()== PROGRESS) {
-    pd.reset(new boost::progress_display(atom::get_leaves(hs).size(),
-                                         std::cout));
-  }
-  save_conformation_internal(fh, hs, frame, pd.get(),
+  save_conformation_internal(fh, hs, frame,
                              IMP_HDF5_PASS_MOLECULE_FACTORIES);
   fh.flush();
 }
