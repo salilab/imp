@@ -19,7 +19,7 @@ const char *Exception::what() const throw() {
     using std::operator<<;
     std::ostringstream oss;
     oss << "A " << get_type() << " error occurred: ";
-    oss << message_;
+    oss << '"' << message_ << '"';
     if (!operation_.empty()) {
       oss << " on " << operation_;
     }
