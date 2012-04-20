@@ -85,36 +85,42 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Geometry {
 
 /** \brief Display a sphere.
 */
-IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::Sphere3D);
+IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, SphereGeometries, algebra::Sphere3D);
 /** \brief Display a cylinder.
 */
-IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, algebra::Cylinder3D);
+IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, CylinderGeometries,
+                          algebra::Cylinder3D);
 /** \brief Display a ellipsoid.
 */
-IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, algebra::Ellipsoid3D);
+IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, EllipsoidGeometries,
+                          algebra::Ellipsoid3D);
 /** \brief Display a point.
 */
-IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::Vector3D);
+IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, PointGeometries,
+                          algebra::Vector3D);
 /** \brief Display a segment.
 */
-IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
+IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, SegmentGeometries,
+                          algebra::Segment3D);
 /** If CGAL is available, then any simple, planar polygon can be
     used. Otherwise, the polygons should be simple, planar and convex.
 */
-IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
+IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,PolygonGeometries,
                           algebra::Vector3Ds);
 /** \brief Display a triangule.
 */
-IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
+IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,TriangleGeometries,
                           algebra::Triangle3D);
 /** \brief Display a bounding box.
 */
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
+                                       BoundingBoxGeometries,
                                        algebra::BoundingBoxD<3>);
 
 /** \brief Display a reference frame.
 */
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(ReferenceFrameGeometry,
+                                       ReferenceFrameGeometries,
                                        algebra::ReferenceFrame3D);
 
 //! A text label for a ball in space
