@@ -136,7 +136,18 @@ protected:
   NodeConstHandles  get_children() const;
 
 #ifndef SWIG
-  /** Either the association must not have been set before
+  /** Each node can be associated at runtime with an
+      arbitrary piece of data to aid in maintaining the
+      relationship with application data structures. This
+      data type must be convertible to a void* pointer.
+      If direct casting does not work, you can implement
+      a function called \c get_void_pointer() that takes
+      the passed type and returns a \c void* pointer in
+      the namespace where the type is declared (so it is
+      found via Koenig lookup). Support has already been
+      added for boost::shared_ptr.
+
+      Either the association must not have been set before
       or overwrite must be true. If overwrite is true,
       the type must be the same as the old type.
   */

@@ -232,7 +232,7 @@ namespace RMF {
 #endif
 #ifndef SWIG
     /** Each node in the hierarchy can be associated with some arbitrary bit
-        of external data using a void* pointer. Nodes can be extracted using
+        of external data. Nodes can be extracted using
         these bits of data.
     */
     template <class T>

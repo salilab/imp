@@ -24,8 +24,18 @@
 #include <hdf5.h>
 #include <algorithm>
 
+#include <boost/shared_ptr.hpp>
 
 namespace RMF {
+  template <class P>
+  inline void *get_void_pointer(P*p) {
+    return p;
+  }
+  template <class P>
+  inline void *get_void_pointer(boost::shared_ptr<P> p) {
+    return p.get();
+  }
+
   namespace internal {
 
 #define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname, PassValue, ReturnValue, \
@@ -322,12 +332,12 @@ namespace RMF {
                             "Associations can only be set once");
         if (overwrite && !association_[id].empty()) {
           boost::any old=association_[id];
-          void* v= boost::any_cast<T>(old);
+          void* v= get_void_pointer(boost::any_cast<T>(old));
           if (back_association_[v]==id) {
             back_association_.erase(v);
           }
         }
-        void *v= d;
+        void *v= get_void_pointer(d);
         association_[id]=boost::any(d);
         back_association_[v]=id;
       }
