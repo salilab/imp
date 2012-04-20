@@ -17,7 +17,8 @@
 IMPRMF_BEGIN_NAMESPACE
 
 /** Periodically call the save_frame() method to save the hierarchy
-    to the given file.
+    to the given file. All of the passed things will be added to
+    the file internal to the SaveOptimizerState.
 */
 class IMPRMFEXPORT SaveOptimizerState:
   public OptimizerState {
