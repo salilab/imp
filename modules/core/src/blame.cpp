@@ -65,7 +65,8 @@ void assign_blame(const RestraintsTemp &rs, const ParticlesTemp &ps,
   IMP_NEW(RestraintsScoringFunction, rsf, (drs));
   rsf->evaluate(false);
   DependencyGraph dg= get_dependency_graph(IMP::internal::get_model(rs));
-  DependencyGraphVertexIndex dgi= get_vertex_index(dg);
+  // attempt to get around boost/gcc bug and the most vexing parse
+  DependencyGraphVertexIndex dgi((IMP::get_vertex_index(dg)));
   ControlledBy controlled_by;
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp cps= get_dependent_particles(ps[i], ps, dg, dgi);
