@@ -34,9 +34,6 @@ IMPATOMEXPORT bool is_CONECT_rec(const String& pdb_line);
 //! Returns an the index for a MODEL record.
 IMPATOMEXPORT int model_index(const String& pdb_line);
 
-//! Returns an ATOM record's atom number.
-IMPATOMEXPORT int atom_number(const String& pdb_line);
-
 /** Returns a string with an atom type string.
     The atom type is a 4 charachter long field.
     the first character is space in many cases, but not always. */
@@ -50,6 +47,9 @@ IMPATOMEXPORT String atom_residue_name(const String& pdb_line);
 
 //! Returns an ATOM record's chain id.
 IMPATOMEXPORT char  atom_chain_id(const String& pdb_line);
+
+//! Returns an ATOM record's chain id.
+IMPATOMEXPORT int  atom_number(const String& pdb_line);
 
 //! Returns an ATOM record's residue index.
 IMPATOMEXPORT short atom_residue_number(const String& pdb_line);

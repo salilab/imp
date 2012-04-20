@@ -307,6 +307,23 @@ public:
 IMPATOMEXPORT Hierarchy read_pdb(base::TextInput in,
                                  Model* model);
 
+/** Rewrite the coordinates of the passed hierarchy based
+    on the contents of the first model in the pdb file.
+
+    The hierarchy must have been created by reading from a pdb
+    file and the atom numbers must correspond between the files.
+    These are not really checked.
+
+    A ValueException is thrown if there are insufficient models
+    in the file.
+
+    \relatesalso Hierarchy
+ */
+IMPATOMEXPORT void read_pdb(base::TextInput in,
+                            int model,
+                            Hierarchy h);
+
+
 /** \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
