@@ -16,9 +16,10 @@ import IMP.gsl
 IMP.set_log_level(0)
 
 def subsample(data,npoints):
+    """keep min(npoints,len(data)) out of data if npoints>0"""
     #defined here because it's used in the class
     Ntot = len(data)
-    if npoints >= Ntot:
+    if npoints >= Ntot or npoints <= 0:
         return data
     if Ntot % npoints == 0:
         return data[::(Ntot/npoints)]
@@ -115,7 +116,7 @@ class SAXSProfile:
             Data is returned only if all of the provided flags are True.
             colwise : instead of returning a list of tuples for each data point,
                       return a dictionnary with flag names as keys.
-            subsample : only return every nth point.
+            maxpoints : only return at most N points, subsampling if necessary.
         """
         if 'filter' in kwargs:
             filt = kwargs.pop('filter')
@@ -128,9 +129,9 @@ class SAXSProfile:
                 flagnos = [self.flag_dict[name] for name in filt]
         else:
             flagnos = []
-        subsample=1
-        if 'subsample' in kwargs:
-            subsample=kwargs.pop('subsample')
+        maxpoints=-1
+        if 'maxpoints' in kwargs:
+            maxpoints=kwargs.pop('maxpoints')
         if 'colwise' in kwargs:
             colwise = kwargs.pop('colwise')
         else:
@@ -160,7 +161,7 @@ class SAXSProfile:
                 retval[i] = []
         else:
             retval = []
-        for i,d in enumerate(self.data[::subsample]):
+        for i,d in enumerate(self.data):
             if d[0] < qmin:
                 continue
             if d[0] > qmax:
@@ -176,7 +177,12 @@ class SAXSProfile:
                     retval[k].append(cd[self.flag_dict[k]])
             else:
                 retval.append(tuple([i,]+cd))
-        return retval
+        if colwise:
+            keys,values = zip(*retval.items())
+            values = zip(*self._subsample(zip(*values), maxpoints))
+            return dict(zip(keys,values))
+        else:
+            return self._subsample(retval,maxpoints)
 
     def get_gamma(self):
         return self.gamma
@@ -670,12 +676,13 @@ Merging
             'instead of just taking the most probable set of parameters. '
             'Default is not to perform the averaging.',
             action='store_true', default=False)
-    group.add_option('--bsubsample', metavar='NUM', default=1, type='int',
-            help='To speed up the fitting step, use only every NUM point in '
-            'the fitting calculation. Default is 1.')
-    group.add_option('--blimit', metavar='NUM', default=-1, type='int',
-            help='To save RAM, set the maximum number of points used in the '
-            'Hessian calculation (options --baverage and --bcomp). '
+    group.add_option('--blimit_fitting', metavar='NUM', default=-1, type='int',
+            help='To save resources, set the maximum number of points used in'
+            'the fitting step. Dataset will be subsampled if it is bigger than'
+            ' NUM. If NUM=-1 (default), all points will be used.')
+    group.add_option('--blimit_hessian', metavar='NUM', default=-1, type='int',
+            help='To save resources, set the maximum number of points used in'
+            ' the Hessian calculation (options --baverage and --bcomp). '
             'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
             '(default), all points will be used.')
     #group.add_option('--bschedule', help='Simulation schedule. Default is '
@@ -689,7 +696,7 @@ Merging
                 "curves wrt the first curve.")
     parser.add_option_group(group)
     group.add_option('--creference', default='last', help="Define which "
-            "input curve the other curves will be recaled to. Options are "
+            "input curve the other curves will be rescaled to. Options are "
             "first or last (default is last)", type="choice",
             choices=['first','last'])
     group.add_option('--cnormal', action='store_true', default=False,
@@ -736,12 +743,13 @@ Merging
             "instead of just taking the most probable set of parameters. "
             "Default is not to perform the averaging.",
             action='store_true', default=False)
-    group.add_option('--esubsample', metavar='NUM', default=1, type='int',
-            help='To speed up the merging step, use only every NUM point in '
-            'the fitting calculation. Default is 1.')
-    group.add_option('--elimit', metavar='NUM', default=-1, type='int',
-            help='To save RAM, set the maximum number of points used in the '
-            'Hessian calculation (options --eaverage and --ecomp). '
+    group.add_option('--elimit_fitting', metavar='NUM', default=-1, type='int',
+            help='To save resources, set the maximum number of points used in'
+            'the fitting step. Dataset will be subsampled if it is bigger than'
+            ' NUM. If NUM=-1 (default), all points will be used.')
+    group.add_option('--elimit_hessian', metavar='NUM', default=-1, type='int',
+            help='To save resources, set the maximum number of points used in'
+            ' the Hessian calculation (options --eaverage and --ecomp). '
             'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
             '(default), all points will be used.')
     (args, files) = parser.parse_args()
@@ -774,10 +782,6 @@ def create_profile(file, nreps):
     p.set_Nreps(nreps)
     p.set_filename(file)
     return p
-
-def parse_schedule(schedstr):
-    #list of tuples (subsampling, nsteps)
-    return [map(int, i.split(':')) for i in schedstr.split('/')]
 
 def ttest_one(mu,s,n):
     """one-sample right-tailed t-test against 0
@@ -899,7 +903,13 @@ def setup_process(data,initvals, subs, maxpoints=-1):
 
 def set_defaults_mean(data, particles, mean_function):
     #set initial value for G to be a rough estimate of I(0)
-    Ivals = [data['I'][i] for i in xrange(len(data['q']))
+    if max(data['q']) > 1:
+        #units are nm
+        Ivals = [data['I'][i] for i in xrange(len(data['q']))
+                if data['q'][i] < 1][:50]
+    else:
+        #units are angstrom
+        Ivals = [data['I'][i] for i in xrange(len(data['q']))
                 if data['q'][i] < 0.1][:50]
     particles['G'].set_nuisance(mean(Ivals))
     particles['G'].set_lower(min(Ivals))
@@ -1004,7 +1014,7 @@ def find_fit_lambda(data, initvals, args, verbose):
         #                for (k,v) in particles.iteritems()])
         #print " ".join(["%5s=%10G" % d for d in initvals.items()])
         #set lambda to be bigger than the distance between points
-        particles['lambda'].set_lower(meandist)
+        particles['lambda'].set_lower(2*meandist)
         particles['G'].set_nuisance_is_optimized(False)
         particles['Rg'].set_nuisance_is_optimized(False)
         particles['d'].set_nuisance_is_optimized(False)
@@ -1548,17 +1558,24 @@ def fitting(profiles, args):
     """
     #schedule = args.bschedule
     verbose = args.verbose
-    subs = args.bsubsample
-    maxpoints = args.blimit
+    maxpointsF = args.blimit_fitting
+    maxpointsH = args.blimit_hessian
+    mean_function = args.boptimize
+    model_comp=args.bcomp
     if verbose >0:
         print "2. fitting"
     for p in profiles:
         if verbose > 1:
             print "   ",p.filename,
         try:
-            data = p.get_data(filter='agood',colwise=True, subsample=subs)
+            data = p.get_data(filter='agood',colwise=True, maxpoints=maxpointsF)
         except KeyError:
-            data = p.get_data(colwise=True, subsample=subs)
+            data = p.get_data(colwise=True, maxpoints=maxpointsF)
+        if verbose > 1:
+            if len(data['q']) == maxpointsF:
+                print " (subsampled fitting: %d points) " % maxpointsF,
+            if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
+                print " (subsampled hessian: %d points) " % maxpointsH,
         data['N'] = p.get_Nreps()
         initvals={}
         initvals['G']=1. #will be calculated properly
@@ -1570,11 +1587,11 @@ def fitting(profiles, args):
         initvals['lambda']=1.
         initvals['sigma']=1.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
-                verbose, model_comp=args.bcomp, model_comp_maxpoints=maxpoints,
-                mean_function=args.boptimize)
+                verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
+                mean_function=mean_function)
         model, particles, functions, gp = setup_process(data,initvals,1)
         p.set_interpolant(gp, particles, functions, mean, model, bayes)
-        if verbose > 1:
+        if verbose > 1 and model_comp:
             print "    => "+mean
     return profiles, args
 
@@ -1707,10 +1724,12 @@ def merging(profiles, args):
     """
     #schedule = args.eschedule
     verbose = args.verbose
-    subs=args.esubsample
-    maxpoints = args.elimit
+    maxpointsF = args.elimit_fitting
+    maxpointsH = args.elimit_hessian
     do_extrapolation = not args.enoextrapolate
     extrapolate = 1+args.eextrapolate/float(100)
+    mean_function = args.eoptimize
+    model_comp=args.ecomp
     if verbose > 0:
         print "5. merging"
         print "   gathering data"
@@ -1728,7 +1747,7 @@ def merging(profiles, args):
         if verbose >1:
             print "    ",p.filename
         #get data and keep only relevant flags
-        data = p.get_data(filter='dgood',colwise=True, subsample=subs)
+        data = p.get_data(filter='dgood',colwise=True)
         #flag_numbers = [p.flag_dict[k]+1 for k in flags_to_keep]
         #print len(flag_numbers)
         #cleaned = [[d for j,d in enumerate(dat) if j in flag_numbers]
@@ -1766,14 +1785,19 @@ def merging(profiles, args):
     #it's the bet we can do when fitting all points simultaneously
     merge.set_Nreps(min([p.get_Nreps() for p in profiles]))
     #fit curve
-    data = merge.get_data(colwise=True)
+    data = merge.get_data(colwise=True, maxpoints=maxpointsF)
+    if verbose > 1:
+        if len(data['q']) == maxpointsF:
+            print " (subsampled fitting: %d points) " % maxpointsF,
+        if model_comp and maxpointsH > 0 and maxpointsH < len(data['q']):
+            print " (subsampled hessian: %d points) " % maxpointsH,
     data['N'] = merge.get_Nreps()
     initvals = profiles[-1].get_params()
     mean, initvals, bayes = find_fit(data, initvals, #schedule,
-                    verbose, model_comp=args.ecomp,
-                    model_comp_maxpoints=maxpoints,
-                    mean_function=args.eoptimize)
-    if verbose > 1:
+                    verbose, model_comp=model_comp,
+                    model_comp_maxpoints=maxpointsH,
+                    mean_function=mean_function)
+    if verbose > 1 and model_comp:
         print "    => "+mean
     #take initial values from the curve which has gamma == 1
     initvals = profiles[-1].get_params()
