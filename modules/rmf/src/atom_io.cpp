@@ -306,10 +306,12 @@ namespace {
                               IMP_HDF5_ACCEPT_MOLECULE_FACTORIES()) {
     RMF::NodeHandle cur= parent.add_child(get_name(hierarchy), REPRESENTATION);
     cur.set_association(hierarchy.get_particle());
-    IMP_USAGE_CHECK(cur.get_file().get_node_from_association(hierarchy)==cur,
+    IMP_USAGE_CHECK(cur.get_file()
+                    .get_node_from_association(hierarchy.get_particle())==cur,
                     "In and out don't match: " << cur
                     << " vs "
-                    << cur.get_file().get_node_from_association(hierarchy));
+                    << cur.get_file()
+                    .get_node_from_association(hierarchy.get_particle()));
     copy_data(hierarchy, cur, 0, IMP_HDF5_PASS_MOLECULE_FACTORIES);
     //std::cout << "Processing " << hierarchy->get_name() << std::endl;
     unsigned int nc=hierarchy.get_number_of_children();
@@ -399,8 +401,8 @@ atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh, Model *model) {
 
   for (unsigned int i=0; i< fh.get_number_of_bonds(); ++i) {
     std::pair<RMF::NodeConstHandle, RMF::NodeConstHandle> p= fh.get_bond(i);
-    void *aa= p.first.get_association();
-    void *ab= p.second.get_association();
+    void *aa= p.first.get_association<Particle*>();
+    void *ab= p.second.get_association<Particle*>();
     if (aa && ab) {
       Particle *pa= static_cast<Particle*>(aa);
       Particle *pb= static_cast<Particle*>(ab);
