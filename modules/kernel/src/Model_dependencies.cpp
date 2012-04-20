@@ -94,7 +94,8 @@ void Model::compute_dependencies() {
   IMP_LOG(TERSE, "Computing restraint dependencies");
   DependencyGraph dg
     = get_dependency_graph(this);
-  DependencyGraphVertexIndex index= get_vertex_index(dg);
+  // attempt to get around boost/gcc bug and the most vexing parse
+  DependencyGraphVertexIndex index((IMP::get_vertex_index(dg)));
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   ordered_score_states_=IMP::get_ordered_score_states(dg);
   for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
