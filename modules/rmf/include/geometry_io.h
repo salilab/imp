@@ -10,10 +10,9 @@
 #define IMPRMF_GEOMETRY_IO_H
 
 #include "rmf_config.h"
+#include <IMP/display/geometry.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
-#include <IMP/display/Writer.h>
-#include <IMP/display/display_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -31,31 +30,14 @@ IMPRMF_BEGIN_NAMESPACE
     @{
  */
 /** Add the geometry to the file */
+IMPRMFEXPORT void add_geometries(RMF::FileHandle parent,
+                                 const display::GeometriesTemp &r);
+#ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);
-/** Save the geometry for the specified frame. */
-IMPRMFEXPORT void save_frame(RMF::FileHandle parent, int frame,
-                              display::Geometry *r);
+#endif
 
-
-IMPRMFEXPORT display::Geometries create_geometries(RMF::FileConstHandle parent,
-                                                   int frame);
+IMPRMFEXPORT display::Geometries create_geometries(RMF::FileConstHandle parent);
 /** @} */
-
-class IMPRMFEXPORT RMFWriter: public display::Writer {
-  RMF::FileHandle rh_;
-  void on_set_frame();
-  bool handle(display::SphereGeometry *g,
-               display::Color color, std::string name);
-  bool handle(display::CylinderGeometry *g,
-               display::Color color, std::string name);
-  bool handle(display::SegmentGeometry *g,
-               display::Color color, std::string name);
-  /*bool handle(display::SurfaceMeshGeometry *g,
-    display::Color color, std::string name);*/
- public:
-  RMFWriter(RMF::FileHandle rh);
-  IMP_WRITER(RMFWriter);
-};
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_GEOMETRY_IO_H */

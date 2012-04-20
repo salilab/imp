@@ -12,12 +12,15 @@ class GenericTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h1)))
     def test_round_trip(self):
         """Test reading and writing geometry"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("geometry.hdf5"))
+        nm=self.get_tmp_file_name("geometry.hdf5")
+        f= RMF.create_rmf_file(nm)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10, 10, 10))
         g= IMP.display.BoundingBoxGeometry(bb)
         IMP.rmf.add_geometry(f, g)
-        gs= IMP.rmf.create_geometries(f, 0)
+        del f
+        f= RMF.open_rmf_file_read_only(nm)
+        gs= IMP.rmf.create_geometries(f)
         self.assertEqual(len(gs), 1)
         gs[0].set_was_used(True)
         cg= gs[0].get_components()
@@ -41,7 +44,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_geometry(rmf, gg)
         del rmf
         rmf= RMF.open_rmf_file(self.get_tmp_file_name("iso.rmf"))
-        gs= IMP.rmf.create_geometries(rmf,0)
+        gs= IMP.rmf.create_geometries(rmf)
         w=IMP.display.PymolWriter(self.get_tmp_file_name("iso.pym"))
         w.add_geometry(gg)
         gs[0].set_name("after")

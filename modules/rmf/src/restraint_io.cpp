@@ -17,6 +17,21 @@
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
+double RMFRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
+  return score_;
+}
+ParticlesTemp RMFRestraint::get_input_particles() const {
+  return ps_;
+}
+ContainersTemp RMFRestraint::get_input_containers() const {
+  return ContainersTemp();
+}
+void RMFRestraint::do_show(std::ostream &) const {
+}
+Restraints RMFRestraint::do_create_current_decomposition() const {
+    return decomp_;
+  }
+RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
 namespace {
   class Subset: public base::ConstArray<base::WeakPointer<Particle>,
                                         Particle*> {
@@ -91,6 +106,7 @@ namespace {
   class RestraintLoadLink: public SimpleLoadLink<RMFRestraint> {
     typedef SimpleLoadLink<RMFRestraint> P;
     RMF::ScoreConstFactory sf_;
+    Model *m_;
 
     void do_load_one( RMF::NodeConstHandle nh,
                       RMFRestraint *o,
@@ -104,7 +120,7 @@ namespace {
       for (unsigned int i=0; i< ch.size(); ++i) {
         if (sf_.get_is(ch[i], frame)) {
           RMF::ScoreConst sd= sf_.get(ch[i], frame);
-          IMP_NEW(RMFRestraint, s, (ch[i].get_name()));
+          IMP_NEW(RMFRestraint, s, (m_, ch[i].get_name()));
           subs.push_back(s);
           s->set_score(sd.get_score());
           s->set_particles(get_particles(nh.get_file(),
@@ -117,11 +133,11 @@ namespace {
       return nh.get_type()==RMF::FEATURE;
     }
     RMFRestraint* do_create(RMF::NodeConstHandle name) {
-      return new RMFRestraint(name.get_name());
+      return new RMFRestraint(m_, name.get_name());
     }
   public:
-    RestraintLoadLink(RMF::FileConstHandle fh):
-      P("RestraintLoadLink%1%"), sf_(fh) {
+    RestraintLoadLink(RMF::FileConstHandle fh, Model *m):
+        P("RestraintLoadLink%1%"), sf_(fh), m_(m) {
     }
     IMP_OBJECT_INLINE(RestraintLoadLink,IMP_UNUSED(out),);
   };
@@ -168,7 +184,7 @@ namespace {
 
 
   IMP_DEFINE_LINKERS(Restraint, restraint, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh), (fh), (fh));
+                     (RMF::FileConstHandle fh, Model *m), (fh), (fh, m));
 
 }
 
@@ -180,8 +196,8 @@ void add_restraints(RMF::FileHandle parent,
   rsl->save(parent, 0);
 }
 
-RMFRestraints create_restraints(RMF::FileHandle fh) {
-  RestraintLoadLink* rsl= get_restraint_load_link(fh);
+RMFRestraints create_restraints(RMF::FileConstHandle fh, Model *m) {
+  RestraintLoadLink* rsl= get_restraint_load_link(fh, m);
   RMFRestraints ret= rsl->create(fh.get_root_node());
   rsl->load(fh, 0);
   return ret;

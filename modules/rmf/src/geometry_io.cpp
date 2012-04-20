@@ -7,8 +7,11 @@
  */
 
 #include <IMP/rmf/geometry_io.h>
+#include <IMP/rmf/links.h>
+#include <IMP/rmf/link_macros.h>
 #include "IMP/display/internal/utility.h"
 #include <IMP/display/geometry.h>
+#include <IMP/base/check_macros.h>
 #include <RMF/Key.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
@@ -17,248 +20,121 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-using namespace RMF;
 
 namespace {
-#define  IMP_HDF5_CREATE_GEOMETRY_KEYS(f)                               \
-  RMF::LazyFactory<RMF::BallFactory> bf(f);                             \
-  RMF::LazyFactory<RMF::CylinderFactory> cf(f);                         \
-  RMF::LazyFactory<RMF::SegmentFactory> sf(f);                          \
-  RMF::LazyFactory<RMF::ColoredFactory> colorf(f)
 
-
-#define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                                   \
-  RMF::LazyFactory<RMF::BallFactory> bf,                                \
-    RMF::LazyFactory<RMF::CylinderFactory> cf,                          \
-    RMF::LazyFactory<RMF::SegmentFactory> sf,                           \
-    RMF::LazyFactory<RMF::ColoredFactory> colorf
-
-#define IMP_HDF5_PASS_GEOMETRY_KEYS             \
-  bf, cf, sf, colorf
-
-#define  IMP_HDF5_CREATE_GEOMETRY_CONST_KEYS(f)                    \
-  RMF::BallConstFactory bf(f);                                     \
-  RMF::CylinderConstFactory cf(f);                                 \
-  RMF::SegmentConstFactory sf(f);                                  \
-  RMF::ColoredConstFactory colorf(f)
-
-
-#define IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS                           \
-  RMF::BallConstFactory bf,                                           \
-  RMF::CylinderConstFactory cf,                                       \
-    RMF::SegmentConstFactory sf,                                      \
-  RMF::ColoredConstFactory colorf
-
-#define IMP_HDF5_PASS_GEOMETRY_CONST_KEYS       \
-  bf, cf, sf, colorf
-
-#define IMP_HANDLE_COLOR                                        \
-  using RMF::operator<<;                                        \
-  IMP_UNUSED(bf);                                               \
-  IMP_UNUSED(cf);                                               \
-  IMP_UNUSED(sf);                                               \
-  if (sg->get_has_color()) {                                    \
-    RMF::Colored cd= colorf.get(cur, frame);                    \
-    display::Color c= sg->get_color();                          \
-    cd.set_rgb_color(RMF::Floats(c.components_begin(),          \
-                                 c.components_end()));          \
-  }                                                             \
-
-#define IMP_HANDLE_CONST_COLOR                                  \
-  using RMF::operator<<;                                        \
-  IMP_UNUSED(bf);                                               \
-  IMP_UNUSED(cf);                                               \
-  IMP_UNUSED(sf);                                               \
-  ret->set_name(cur.get_name());                                \
-  if (colorf.get_is(cur, frame)) {                              \
-    RMF::Floats color= colorf.get(cur, frame).get_rgb_color();  \
-    display::Color c(color.begin(), color.end());               \
-    ret->set_color(c);                                          \
-  }                                                             \
-
-
-  void process(display::SphereGeometry *sg, RMF::NodeHandle cur, int frame,
-               IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_HANDLE_COLOR;
-    sg->set_was_used(true);
-    algebra::Sphere3D s= sg->get_geometry();
-    RMF::Ball b= bf.get(cur, frame);
-    b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
-                                  s.get_center().coordinates_end()));
-    b.set_radius(s.get_radius());
-  }
-
-  void process(display::CylinderGeometry *sg, RMF::NodeHandle cur, int frame,
-               IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_HANDLE_COLOR;
-    sg->set_was_used(true);
-    algebra::Cylinder3D s= sg->get_geometry();
-    RMF::Cylinder c= cf.get(cur, frame);
-    c.set_radius(s.get_radius());
-    RMF::FloatsList coords(3, RMF::Floats(2));
-    for (unsigned int i=0; i< 2; ++i) {
-      algebra::Vector3D c= s.get_segment().get_point(i);
-      for (unsigned int j=0; j< 3; ++j) {
-        coords[j][i]=c[j];
-      }
+  template <class G, class F>
+ class GeometryLoadLink: public SimpleLoadLink<G> {
+    typedef SimpleLoadLink<G> P;
+    F factory_;
+    RMF::ColoredConstFactory colored_factory_;
+    bool get_is(RMF::NodeConstHandle nh) const {
+      return nh.get_type()==RMF::GEOMETRY
+        && factory_.get_is(nh);
     }
-    c.set_coordinates(coords);
-  }
-
-  void process(display::SegmentGeometry *sg, RMF::NodeHandle cur, int frame,
-               IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_HANDLE_COLOR;
-    sg->set_was_used(true);
-    algebra::Segment3D s= sg->get_geometry();
-    RMF::Segment c= sf.get(cur, frame);
-    RMF::FloatsList coords(3, RMF::Floats(2));
-    for (unsigned int i=0; i< 2; ++i) {
-      algebra::Vector3D c= s.get_point(i);
-      for (unsigned int j=0; j< 3; ++j) {
-        coords[j][i]=c[j];
-      }
+    G* do_create(RMF::NodeConstHandle name) {
+      return new G(name.get_name());
     }
-    c.set_coordinates(coords);
-  }
-
-/*
-  void process(display::SurfaceMeshGeometry *sg, RMF::NodeHandle cur, int frame,
-               IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP_UNUSED(x);
-    IMP_UNUSED(y);
-    IMP_UNUSED(z);
-    IMP_UNUSED(r);
-    IMP_UNUSED(tk);
-    IMP_UNUSED(cr);
-    IMP_UNUSED(cg);
-    IMP_UNUSED(cb);
-    Ints tris
-      = display::internal::get_triangles(sg);
-    algebra::Vector3Ds vs= sg->get_vertexes();
-    RMF::Floats xcs(vs.size()), ycs(vs.size()), zcs(vs.size());
-    for (unsigned int i=0; i < vs.size(); ++i) {
-      xcs[i]=vs[i][0];
-      ycs[i]=vs[i][1];
-      zcs[i]=vs[i][2];
+  public:
+    GeometryLoadLink(RMF::FileConstHandle fh):
+      P("SphereLoadLink%1%"),
+      factory_(fh),
+      colored_factory_(fh) {
     }
-    cur.set_value(xs, xcs, frame);
-    cur.set_value(ys, ycs, frame);
-    cur.set_value(zs, zcs, frame);
-    Ints v0(tris.size()/3), v1(tris.size()/3), v2(tris.size()/3);
-    for (unsigned int i=0; i< tris.size(); i+=3) {
-      v0[i/3]=tris[i];
-      v1[i/3]=tris[i+1];
-      v2[i/3]=tris[i+2];
-    }
-    cur.set_value(vn0, v0, frame);
-    cur.set_value(vn1, v1, frame);
-    cur.set_value(vn2, v2, frame);
-    }*/
-
-#define IMP_TRY(type) if (dynamic_cast<type*>(g)) {     \
-    process(dynamic_cast<type*>(g), cur, frame,         \
-            IMP_HDF5_PASS_GEOMETRY_KEYS);               \
-  }
-
-  void add_internal(RMF::NodeHandle parent,  display::Geometry *tag,
+    void load_color(RMF::NodeConstHandle nh,
                     display::Geometry *g,
-                    IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    int frame=0;
-    IMP::Pointer<display::Geometry> gp(g);
-    gp->set_was_used(true);
-    // get_has_color, get_color, get_name, get_components
-    RMF::NodeHandle cur= parent.add_child(g->get_name(), GEOMETRY);
-    cur.set_association(tag);
-    IMP_TRY(display::SphereGeometry)
-    else IMP_TRY(display::CylinderGeometry)
-      else IMP_TRY(display::SegmentGeometry)
-               //else IMP_TRY(display::SurfaceMeshGeometry)
-          else {
-            display::Geometries gt= g->get_components();
-            if (gt.size()==1 && gt[0]== g) {
-              IMP_THROW("Unable to process geometry of type "
-                        << g->get_type_name(), IOException);
-            }
-            if (gt.size()==1) {
-              add_internal(cur, tag, gt.front(), IMP_HDF5_PASS_GEOMETRY_KEYS);
-            } else {
-              for (unsigned int i=0; i< gt.size(); ++i) {
-                add_internal(cur, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
-              }
-            }
-          }
-    if (g->get_has_color()) {
-      RMF::Colored cd= colorf.get(cur);
-      display::Color c= g->get_color();
-      cd.set_rgb_color(RMF::Floats(c.components_begin(),
-                                   c.components_end()));
-    }
-  }
-}
-
-//IMP_REGISTER_WRITER(HDF5Writer, ".pym")
-
-
-void add_geometry(RMF::FileHandle parent, display::Geometry *g) {
-  IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
-  add_internal(parent.get_root_node(), g, g,
-               IMP_HDF5_PASS_GEOMETRY_KEYS);
-  parent.flush();
-}
-
-namespace {
-  void save_internal(RMF::FileHandle parent,int frame, display::Geometry *tag,
-                     display::Geometry *g,
-                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
-    IMP::Pointer<display::Geometry> gp(g);
-    gp->set_was_used(true);
-    // get_has_color, get_color, get_name, get_components
-    RMF::NodeHandle cur= parent.get_node_from_association(tag);
-    IMP_TRY(display::SphereGeometry)
-    else IMP_TRY(display::SegmentGeometry)
-    else IMP_TRY(display::CylinderGeometry);
-    display::Geometries gt= g->get_components();
-    if (gt.size()==1) {
-      if (gt[0]!= g) {
-        save_internal(parent, frame, tag, gt.front(),
-                      IMP_HDF5_PASS_GEOMETRY_KEYS);
-      }
-    } else {
-      for (unsigned int i=0; i< gt.size(); ++i) {
-        save_internal(parent, frame, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+                    unsigned int frame) {
+      if (colored_factory_.get_is(nh, frame)) {
+        RMF::Floats color= colored_factory_.get(nh, frame).get_rgb_color();
+        display::Color c(color.begin(), color.end());
+        g->set_color(c);
       }
     }
-  }
-}
+    const F &get_factory() const {return factory_;}
+    IMP_OBJECT_INLINE(GeometryLoadLink,IMP_UNUSED(out),);
+  };
 
-void save_frame(RMF::FileHandle parent, int frame, display::Geometry *g) {
-  IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
-  save_internal(parent, frame, g, g,
-                IMP_HDF5_PASS_GEOMETRY_KEYS);
+  template <class G, class F>
+  class GeometrySaveLink: public SimpleSaveLink<G> {
+    typedef SimpleSaveLink<G> P;
+    F factory_;
+    RMF::ColoredFactory colored_factory_;
+    RMF::NodeType get_type(G*) const {
+      return RMF::GEOMETRY;
+    }
+  public:
+    const F &get_factory() const {return factory_;}
+    GeometrySaveLink(RMF::FileHandle fh):
+      P("GeometrySaveLink%1%"),
+      factory_(fh),
+      colored_factory_(fh) {
+    }
+    void save_color(display::Geometry *g,
+                    RMF::NodeHandle nh,
+                    unsigned int frame) {
+      if (g->get_has_color()) {
+        RMF::Colored cd= colored_factory_.get(nh, frame);
+        display::Color c= g->get_color();
+        cd.set_rgb_color(RMF::Floats(c.components_begin(),
+                                     c.components_end()));
+      }
+    }
+    IMP_OBJECT_INLINE(GeometrySaveLink,IMP_UNUSED(out),);
+  };
 
-  parent.flush();
-}
 
 
-namespace {
-
-  display::Geometry *try_read_sphere(RMF::NodeConstHandle cur, int frame,
-                                     IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (bf.get_is(cur, frame)) {
-      RMF::BallConst b=bf.get(cur, frame);
+  class SphereLoadLink: public GeometryLoadLink<display::SphereGeometry,
+                                                RMF::BallConstFactory> {
+    typedef GeometryLoadLink<display::SphereGeometry,
+                             RMF::BallConstFactory>  P;
+    void do_load_one( RMF::NodeConstHandle nh,
+                      display::SphereGeometry *o,
+                      unsigned int frame) {
+      RMF::BallConst b=get_factory().get(nh, frame);
       RMF::Floats cs=b.get_coordinates();
       algebra::Sphere3D s(algebra::Vector3D(cs.begin(), cs.end()),
                           b.get_radius());
-      Pointer<display::Geometry> ret=new display::SphereGeometry(s);
-      IMP_HANDLE_CONST_COLOR;
-      return ret.release();
-    } else return NULL;
-  }
+      o->set_geometry(s);
+      P::load_color(nh, o, frame);
+    }
+  public:
+    SphereLoadLink(RMF::FileConstHandle fh):
+      P(fh) {
+    }
+  };
 
-  display::Geometry *try_read_cylinder(RMF::NodeConstHandle cur, int frame,
-                                       IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (cf.get_is(cur, frame)) {
-      RMF::CylinderConst b=cf.get(cur, frame);
+  class SphereSaveLink: public GeometrySaveLink<display::SphereGeometry,
+                                                RMF::BallFactory> {
+    typedef GeometrySaveLink<display::SphereGeometry,
+                             RMF::BallFactory> P;
+    void do_save_one(display::SphereGeometry *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      algebra::Sphere3D s= o->get_geometry();
+      RMF::Ball b= P::get_factory().get(nh, frame);
+      b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
+                                    s.get_center().coordinates_end()));
+      b.set_radius(s.get_radius());
+      P::save_color(o, nh, frame);
+    }
+  public:
+    SphereSaveLink(RMF::FileHandle fh):
+      P(fh) {
+    }
+  };
+
+
+
+
+  class CylinderLoadLink: public GeometryLoadLink<display::CylinderGeometry,
+                                                RMF::CylinderConstFactory> {
+    typedef GeometryLoadLink<display::CylinderGeometry,
+                             RMF::CylinderConstFactory>  P;
+    void do_load_one( RMF::NodeConstHandle nh,
+                      display::CylinderGeometry *o,
+                      unsigned int frame) {
+      RMF::CylinderConst b=get_factory().get(nh, frame);
       RMF::FloatsList cs=b.get_coordinates();
       algebra::Vector3D vs[2];
       for (unsigned int i=0; i< 2; ++i) {
@@ -268,160 +144,241 @@ namespace {
       }
       algebra::Segment3D s(vs[0], vs[1]);
       algebra::Cylinder3D c(s, b.get_radius());
-      Pointer<display::Geometry> ret=new display::CylinderGeometry(c);
-      IMP_HANDLE_CONST_COLOR;
-      return ret.release();
-    } else return NULL;
-  }
+      o->set_geometry(c);
+      P::load_color(nh, o, frame);
+    }
+  public:
+    CylinderLoadLink(RMF::FileConstHandle fh):
+      P(fh) {
+    }
+  };
 
-  display::Geometry *try_read_segment(RMF::NodeConstHandle cur, int frame,
-                                      IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    if (sf.get_is(cur, frame)) {
-      RMF::SegmentConst b=sf.get(cur);
-      RMF::FloatsList cs=b.get_coordinates();
-      algebra::Vector3D vs[2];
+  class CylinderSaveLink: public GeometrySaveLink<display::CylinderGeometry,
+                                                RMF::CylinderFactory> {
+    typedef GeometrySaveLink<display::CylinderGeometry,
+                             RMF::CylinderFactory> P;
+    void do_save_one(display::CylinderGeometry *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      algebra::Cylinder3D s= o->get_geometry();
+      RMF::Cylinder c= P::get_factory().get(nh, frame);
+      c.set_radius(s.get_radius());
+      RMF::FloatsList coords(3, RMF::Floats(2));
       for (unsigned int i=0; i< 2; ++i) {
+        algebra::Vector3D c= s.get_segment().get_point(i);
         for (unsigned int j=0; j< 3; ++j) {
-          vs[i][j]=cs[j][i];
+          coords[j][i]=c[j];
         }
       }
-      algebra::Segment3D s(vs[0], vs[1]);
-      Pointer<display::Geometry> ret=new display::SegmentGeometry(s);
-      IMP_HANDLE_CONST_COLOR;
-      return ret.release();
-    } else return NULL;
-
-  }
-
-/*
-  display::Geometry *try_read_surface(RMF::NodeConstHandle cur, int frame,
-                                      IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    IMP_UNUSED(x);
-    IMP_UNUSED(y);
-    IMP_UNUSED(z);
-    IMP_UNUSED(r);
-    IMP_UNUSED(cr);
-    IMP_UNUSED(cg);
-    IMP_UNUSED(cb);
-    IMP_UNUSED(tk);
-    if (cur.get_has_value(xs) && cur.get_has_value(vn0)) {
-      RMF::Floats cxs= cur.get_value(xs, frame);
-      RMF::Floats cys= cur.get_value(ys, frame);
-      RMF::Floats czs= cur.get_value(zs, frame);
-      algebra::Vector3Ds vs(cxs.size());
-      for (unsigned int i=0; i< cxs.size(); ++i) {
-        vs[i]= algebra::Vector3D(cxs[i], cys[i], czs[i]);
-      }
-      RMF::Ints t0= cur.get_value(vn0, frame);
-      RMF::Ints t1= cur.get_value(vn1, frame);
-      RMF::Ints t2= cur.get_value(vn2, frame);
-      Ints tris(t0.size()*3);
-      for (unsigned int i=0; i< t0.size(); ++i) {
-        tris[3*i]= t0[i];
-        tris[3*i+1]=t1[i];
-        tris[3*i+2]=t2[i];
-      }
-      return new display::SurfaceMeshGeometry(vs, tris);
+      c.set_coordinates(coords);
+      P::save_color(o, nh, frame);
     }
-    else return NULL;
-    }*/
-
-  display::Geometries read_internal(RMF::NodeConstHandle parent,int frame,
-                                    IMP_HDF5_ACCEPT_GEOMETRY_CONST_KEYS) {
-    NodeConstHandles ch= parent.get_children();
-    display::Geometries ret;
-    for (unsigned int i=0; i< ch.size(); ++i) {
-      if (ch[i].get_type()== GEOMETRY) {
-        Pointer<display::Geometry> curg;
-        if ((curg=try_read_cylinder(ch[i], frame,
-                                    IMP_HDF5_PASS_GEOMETRY_CONST_KEYS)));
-        else if ((curg=try_read_segment(ch[i], frame,
-                                        IMP_HDF5_PASS_GEOMETRY_CONST_KEYS)));
-        else if ((curg=try_read_sphere(ch[i], frame,
-                                       IMP_HDF5_PASS_GEOMETRY_CONST_KEYS)));
-        /*else if ((curg=try_read_surface(ch[i], frame,
-          IMP_HDF5_PASS_GEOMETRY_CONST_KEYS)));*/
-        else {
-          //IMP_LOG(TERSE, "No geometry in " << ch[i] << std::endl);
-          display::Geometries c=read_internal(ch[i], frame,
-                                            IMP_HDF5_PASS_GEOMETRY_CONST_KEYS);
-          if (!c.empty()) {
-            curg=new display::CompoundGeometry(c, parent.get_name());
-          }
-        }
-        if (curg) {
-          ret.push_back(curg);
-        }
-      } else {
-        ret+=read_internal(ch[i], frame, IMP_HDF5_PASS_GEOMETRY_CONST_KEYS);
-      }
+  public:
+    CylinderSaveLink(RMF::FileHandle fh):
+      P(fh) {
     }
-    return ret;
-  }
+  };
+
+algebra::Segment3D get_segment(RMF::SegmentConst sc) {
+   RMF::FloatsList cs=sc.get_coordinates();
+   algebra::Vector3D vs[2];
+   for (unsigned int i=0; i< 2; ++i) {
+     for (unsigned int j=0; j< 3; ++j) {
+       vs[i][j]=cs[j][i];
+     }
+   }
+   algebra::Segment3D s(vs[0], vs[1]);
+   return s;
 }
 
-display::Geometries create_geometries(RMF::FileConstHandle parent,
-                                      int frame) {
-  IMP_HDF5_CREATE_GEOMETRY_CONST_KEYS(parent);
-  display::Geometries ret=
-      read_internal(parent.get_root_node(), frame,
-                  IMP_HDF5_PASS_GEOMETRY_CONST_KEYS);
+void set_segment(algebra::Segment3D s,
+                 RMF::Segment c) {
+  RMF::FloatsList coords(3, RMF::Floats(2));
+  for (unsigned int i=0; i< 2; ++i) {
+    algebra::Vector3D c= s.get_point(i);
+    for (unsigned int j=0; j< 3; ++j) {
+      coords[j][i]=c[j];
+    }
+  }
+  c.set_coordinates(coords);
+}
+
+  class SegmentLoadLink: public GeometryLoadLink<display::SegmentGeometry,
+                                                RMF::SegmentConstFactory> {
+    typedef GeometryLoadLink<display::SegmentGeometry,
+                             RMF::SegmentConstFactory>  P;
+    void do_load_one( RMF::NodeConstHandle nh,
+                      display::SegmentGeometry *o,
+                      unsigned int frame) {
+      RMF::SegmentConst b=get_factory().get(nh, frame);
+      o->set_geometry(get_segment(b));
+      P::load_color(nh, o, frame);
+    }
+  public:
+    SegmentLoadLink(RMF::FileConstHandle fh):
+      P(fh) {
+    }
+  };
+
+  class SegmentSaveLink: public GeometrySaveLink<display::SegmentGeometry,
+                                                RMF::SegmentFactory> {
+    typedef GeometrySaveLink<display::SegmentGeometry,
+                             RMF::SegmentFactory> P;
+    void do_save_one(display::SegmentGeometry *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      algebra::Segment3D s= o->get_geometry();
+      RMF::Segment c= P::get_factory().get(nh, frame);
+      set_segment(s, c);
+      P::save_color(o, nh, frame);
+    }
+  public:
+    SegmentSaveLink(RMF::FileHandle fh):
+      P(fh) {
+    }
+  };
+
+
+
+
+ class BoxLoadLink: public GeometryLoadLink<display::BoundingBoxGeometry,
+                                                RMF::SegmentConstFactory> {
+   typedef GeometryLoadLink<display::BoundingBoxGeometry,
+                            RMF::SegmentConstFactory> P;
+    void do_load_one( RMF::NodeConstHandle nh,
+                      display::BoundingBoxGeometry *o,
+                      unsigned int frame) {
+      algebra::BoundingBox3D b;
+      RMF::NodeConstHandles nhs= nh.get_children();
+      for (unsigned int i=0; i< 12; ++i) {
+        algebra::Segment3D s= get_segment(get_factory().get(nhs[i], frame));
+        b+=s.get_point(0);
+        b+=s.get_point(1);
+      }
+      o->set_geometry(b);
+      P::load_color(nh, o, frame);
+    }
+   bool get_is(RMF::NodeConstHandle nh) const {
+     if( nh.get_type()!=RMF::GEOMETRY) return false;
+     RMF::NodeConstHandles ch= nh.get_children();
+     if (ch.size() != 12) return false;
+     // could check more
+     return true;
+   }
+
+  public:
+    BoxLoadLink(RMF::FileConstHandle fh):
+      P(fh) {
+    }
+  };
+
+  class BoxSaveLink: public GeometrySaveLink<display::BoundingBoxGeometry,
+                                             RMF::SegmentFactory> {
+    typedef GeometrySaveLink<display::BoundingBoxGeometry,
+                             RMF::SegmentFactory> P;
+    void do_save_one(display::BoundingBoxGeometry *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      algebra::BoundingBox3D bb= o->get_geometry();
+      IntPairs edges= algebra::get_edges(bb);
+      algebra::Vector3Ds vs= algebra::get_vertices(bb);
+      RMF::NodeHandles ch= nh.get_children();
+      for (unsigned int i=0; i< 12; ++i) {
+        set_segment(algebra::Segment3D(vs[edges[i].first],
+                                       vs[edges[i].second]),
+                    get_factory().get(ch[i], frame));
+      }
+      P::save_color(o, nh, frame);
+    }
+    void do_add(display::BoundingBoxGeometry *, RMF::NodeHandle nh) {
+      for (unsigned int i=0; i< 12; ++i) {
+        nh.add_child("edge", RMF::GEOMETRY);
+      }
+    }
+
+  public:
+    BoxSaveLink(RMF::FileHandle fh):
+      P(fh) {
+    }
+  };
+
+
+
+
+  void divide(const display::GeometriesTemp &r,
+              display::SphereGeometries &sgs,
+              display::CylinderGeometries &cgs,
+              display::SegmentGeometries &ssgs,
+              display::BoundingBoxGeometries &bgs) {
+    for (unsigned int i=0; i< r.size(); ++i) {
+      display::Geometry *g= r[i];
+      if (dynamic_cast<display::SphereGeometry*>(g)) {
+        sgs.push_back(dynamic_cast<display::SphereGeometry*>(g));
+      } else if (dynamic_cast<display::CylinderGeometry*>(g)) {
+        cgs.push_back(dynamic_cast<display::CylinderGeometry*>(g));
+      } else  if (dynamic_cast<display::SegmentGeometry*>(g)) {
+        ssgs.push_back(dynamic_cast<display::SegmentGeometry*>(g));
+      } else  if (dynamic_cast<display::BoundingBoxGeometry*>(g)) {
+        bgs.push_back(dynamic_cast<display::BoundingBoxGeometry*>(g));
+      } else {
+        IMP_FAILURE("Geometry type " << g->get_type_name()
+                    << " not supported");
+      }
+    }
+  }
+
+
+  IMP_DEFINE_LINKERS(Sphere, sphere, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_LINKERS(Cylinder, cylinder, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_LINKERS(Segment, segment, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_LINKERS(Box, box, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+}
+
+void add_geometries(RMF::FileHandle fh,
+                    const display::GeometriesTemp &r) {
+  display::SphereGeometries sgs;
+  display::CylinderGeometries cgs;
+  display::SegmentGeometries ssgs;
+  display::BoundingBoxGeometries bgs;
+  divide(r, sgs, cgs, ssgs, bgs);
+  Pointer<SphereSaveLink> sll= get_sphere_save_link(fh);
+  Pointer<CylinderSaveLink> cll= get_cylinder_save_link(fh);
+  Pointer<SegmentSaveLink> sgll= get_segment_save_link(fh);
+  Pointer<BoxSaveLink> bll= get_box_save_link(fh);
+
+  sll->add(fh.get_root_node(), sgs);
+  sll->save(fh, 0);
+  cll->add(fh.get_root_node(), cgs);
+  cll->save(fh, 0);
+  sgll->add(fh.get_root_node(), ssgs);
+  sgll->save(fh, 0);
+  bll->add(fh.get_root_node(), bgs);
+  bll->save(fh, 0);
+}
+void add_geometry(RMF::FileHandle parent, display::Geometry *r) {
+  add_geometries(parent, display::GeometriesTemp(1, r));
+}
+
+display::Geometries create_geometries(RMF::FileConstHandle fh) {
+  Pointer<SphereLoadLink> sll= get_sphere_load_link(fh);
+  Pointer<CylinderLoadLink> cll= get_cylinder_load_link(fh);
+  Pointer<SegmentLoadLink> sgll= get_segment_load_link(fh);
+  Pointer<BoxLoadLink> bll= get_box_load_link(fh);
+
+  display::GeometriesTemp ret;
+  ret+= sll->create(fh.get_root_node());
+  ret+= cll->create(fh.get_root_node());
+  ret+= sgll->create(fh.get_root_node());
+  ret+= bll->create(fh.get_root_node());
+  sll->load(fh, 0);
+  cll->load(fh, 0);
+  sgll->load(fh, 0);
+  bll->load(fh, 0);
   return ret;
 }
-
-
-RMFWriter::RMFWriter(RMF::FileHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
-
-void RMFWriter::on_set_frame() {
-}
-bool RMFWriter::handle(display::SphereGeometry *g,
-                       display::Color color, std::string name) {
-  // kind of evil, but
-  g->set_name(name);
-  g->set_color(color);
-  if (get_frame()==0) {
-    IMP::rmf::add_geometry(rh_, g);
-  }
-  save_frame(rh_, get_frame(), g);
-  return true;
-}
-bool RMFWriter::handle(display::CylinderGeometry *g,
-                       display::Color color, std::string name) {
-  // kind of evil, but
-  g->set_name(name);
-  g->set_color(color);
-  if (get_frame()==0) {
-    IMP::rmf::add_geometry(rh_, g);
-  }
-  save_frame(rh_, get_frame(), g);
-  return true;
-}
-bool RMFWriter::handle(display::SegmentGeometry *g,
-                       display::Color color, std::string name) {
-  // kind of evil, but
-  g->set_name(name);
-  g->set_color(color);
-  if (get_frame()==0) {
-    IMP::rmf::add_geometry(rh_, g);
-  }
-  save_frame(rh_, get_frame(), g);
-  return true;
-}
-/*bool RMFWriter::handle(display::SurfaceMeshGeometry *g,
-                       display::Color color, std::string name) {
-  // kind of evil, but
-  g->set_name(name);
-  g->set_color(color);
-  if (get_frame()==0) {
-    IMP::rmf::add_geometry(rh_, g);
-  }
-  save_frame(rh_, get_frame(), g);
-  return true;
-  }*/
-
-
-void RMFWriter::do_open(){}
-void RMFWriter::do_close(){}
-
 
 IMPRMF_END_NAMESPACE
