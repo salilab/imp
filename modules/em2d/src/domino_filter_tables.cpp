@@ -32,17 +32,13 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
       return NULL;
     }
   }
-  domino::Subset second = my_subset_;
-  std::sort(second.begin(), second.end());
   // If the particles are in any of the prior subsets, a filter for them has
   // been created already. Do not create it again
   for(domino::Subsets::const_iterator it = prior_subsets.begin();
       it != prior_subsets.end();
       ++it ) {
-    domino::Subset first = (*it);
-    std::sort(first.begin(), first.end());
-    if( std::includes(first.begin(), first.end(),
-      second.begin(), second.end()) ) {
+    if( std::includes(it->begin(), it->end(),
+      my_subset_.begin(), my_subset_.end()) ) {
       return NULL;
     }
   }
