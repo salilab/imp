@@ -28,7 +28,7 @@
 
 namespace RMF {
   template <class P>
-  inline void *get_void_pointer(P*p) {
+  inline void *get_void_pointer(const P &p) {
     return p;
   }
   template <class P>
@@ -329,8 +329,11 @@ namespace RMF {
         void set_user_data(int i, const T&d) {
         user_data_[i]=boost::any(d);
       }
+      bool get_has_user_data(int i) const {
+        return user_data_.find(i) != user_data_.end();
+      }
       template <class T>
-        const T&get_user_data(int i) const {
+        T get_user_data(int i) const {
         IMP_RMF_USAGE_CHECK(user_data_.find(i)
                             != user_data_.end(),
                             "No such data found");

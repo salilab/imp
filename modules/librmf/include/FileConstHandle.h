@@ -252,13 +252,18 @@ namespace RMF {
         be associated with the file in memory to aid in processing.
     */
     template <class T>
-      void add_associated_data(int index, const T *t) {
+      void add_associated_data(int index, const T &t) {
       shared_->set_user_data(index, t);
     }
     /** To get back the ith user data.*/
     template <class T>
-      const T& get_associated_data(int index) {
-      shared_->get_user_data<T>(index);
+      T get_associated_data(int index) {
+      return shared_->get_user_data<T>(index);
+    }
+
+   /** To get back the ith user data.*/
+    bool get_has_associated_data(int index) {
+      return shared_->get_has_user_data(index);
     }
 
 #ifndef IMP_DOXYGEN
