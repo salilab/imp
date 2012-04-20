@@ -14,32 +14,30 @@
 #include <IMP/base/object_macros.h>
 #include <RMF/NodeHandle.h>
 #include <IMP/Restraint.h>
+#include <IMP/restraint_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
 
 class RMFRestraint;
 IMP_OBJECTS(RMFRestraint, RMFRestraints);
-/** This class holds restraint info loaded from an RMF file.*/
-class RMFRestraint: public base::Object {
+/** A dummy restraint object to represent restraints loaded from
+    an RMF file.*/
+class IMPRMFEXPORT RMFRestraint: public Restraint {
   double score_;
   ParticlesTemp ps_;
   RMFRestraints decomp_;
 public:
 #ifndef IMP_DOXYGEN
-  RMFRestraint(std::string name): Object(name){}
-  IMP_OBJECT_INLINE(RMFRestraint,IMP_UNUSED(out),);
+  RMFRestraint(Model *m, std::string name);
   void set_score(double s) {score_=s;}
   void set_particles(const ParticlesTemp &ps) {ps_=ps;}
   void set_decomposition(const RMFRestraints &d) {
     decomp_=d;
   }
 #endif
-  const ParticlesTemp& get_input_particles() const {return ps_;}
-  double get_score() const {return score_;}
-  const RMFRestraints& get_current_decomposition() const {
-    return decomp_;
-  }
+  IMP_RESTRAINT(RMFRestraint);
+  Restraints do_create_current_decomposition() const;
 };
 
 
@@ -65,7 +63,7 @@ IMPRMFEXPORT void add_restraint(RMF::FileHandle parent, Restraint *r);
 #endif
 
 IMPRMFEXPORT
-RMFRestraints create_restraints(RMF::FileHandle fh);
+RMFRestraints create_restraints(RMF::FileConstHandle fh, Model *m);
 
 /** @} */
 
