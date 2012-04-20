@@ -13,6 +13,7 @@
 #include "enums.h"
 #include "log.h"
 #include "CreateLogContext.h"
+#include "SetCheckState.h"
 #include <IMP/compatibility/compiler.h>
 
 #if defined(IMP_DOXYGEN) || IMP_BUILD == IMP_FAST
