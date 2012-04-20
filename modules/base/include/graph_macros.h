@@ -13,7 +13,7 @@
 #include <IMP/compatibility/map.h>
 #include <boost/version.hpp>
 
-#ifdef IMP_DOXYGEN
+#if defined(IMP_DOXYGEN)
 //! Define a graph object in \imp
 /** The docs for the graph should appear before the macro
     invocation. Directionality should be one of
@@ -23,33 +23,30 @@
  */
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)     \
   /** See \ref graphs "Graphs" for more information.*/  \
-  typedef boost::graph Name
+  typedef boost::graph Name;                                            \
+  typedef Name::VertexNameMap Name##ConstVertexName;                    \
+  typedef Name::EdgeNameMap  Name##ConstEdgeName;                       \
+  typedef boost::graph_traits<Name> Name##Traits;                       \
+  typedef Name::vertex_descriptor Name##Vertex;                         \
+  typedef Name::edge_descriptor Name##Edge;                             \
+  class Name##VertexIndex{};                                            \
+  Name##VertexIndex get_vertex_index(const Name &g)
 
 #elif defined(SWIG)
+#if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
+  && BOOST_VERSION <= 104800
+#define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  \
+  class Name;                                                  \
+  class Name##VertexIndex {}
+
+#else // GCC VERSION
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)  \
   class Name;                                                  \
   class Name##VertexIndex {};                                  \
   inline Name##VertexIndex get_vertex_index(const Name &g)
-#else
+  #endif // GCC VERSION
 
-#if defined(SWIG) && defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ == 2 \
-  && BOOST_VERSION <= 104800
-// deal with broken gcc 4.2.1 on Mac OS
-#define IMP_GRAPH_INDEX(Name)
-#else
-#define IMP_GRAPH_INDEX(Name)\
-  inline Name##VertexIndex get_vertex_index(const Name &g) {            \
-    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
-    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
-      be= boost::vertices(g);                                           \
-    Name##VertexIndex ret;                                              \
-    for (; be.first != be.second; ++be.first) {                         \
-      ret[vm[*be.first]]= *be.first;                                    \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-
-#endif
+#else // swig and doxygen
 
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
@@ -65,12 +62,21 @@
   typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
   typedef compatibility::map<VertexData, Name##Vertex> Name##VertexIndex; \
-  IMP_GRAPH_INDEX(Name);                                                \
+  inline Name##VertexIndex get_vertex_index(const Name &g) {            \
+    Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
+    std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
+      be= boost::vertices(g);                                           \
+    Name##VertexIndex ret;                                              \
+    for (; be.first != be.second; ++be.first) {                         \
+      ret[vm[*be.first]]= *be.first;                                    \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
   typedef boost::property_map<Name, boost::edge_name_t>::type           \
   Name##EdgeName;                                                       \
   typedef boost::property_map<Name, boost::vertex_name_t>::type         \
   Name##VertexName
-#endif
+#endif // swig and doxygen
 
 
 #ifdef IMP_DOXYGEN
