@@ -21,6 +21,11 @@ class Object;
 /**
    To use, create an instance of this class with the log level you
    want. When it goes out of scope, it will restore the old level.
+
+
+   \note This will not keep objects alive, make sure there is also some
+   other ref-counted pointer to them.
+
    \ingroup logging
  */
 class IMPBASEEXPORT SetLogState

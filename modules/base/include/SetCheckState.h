@@ -9,7 +9,9 @@
 #define IMPBASE_SET_CHECK_STATE_H
 
 #include "base_config.h"
+#include "enums.h"
 #include "raii_macros.h"
+#include "value_macros.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -48,15 +50,7 @@ public:
     level_= DEFAULT_CHECK;
     set(l);
   }
-  void set(CheckLevel l) {
-    reset();
-    if (l != DEFAULT_CHECK) {
-      level_= base::get_check_level();
-      base::set_check_level(l);
-    } else {
-      level_=DEFAULT_CHECK;
-    }
-  }
+  void set(CheckLevel l);
 };
 
 
