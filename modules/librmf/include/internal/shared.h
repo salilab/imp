@@ -79,6 +79,8 @@ namespace RMF {
       map<void*, int> back_association_;
       unsigned int frames_hint_;
 
+      map<int, boost::any> user_data_;
+
       // caches
       template <class TypeTraits, unsigned int D>
         class DataDataSetCache {
@@ -322,6 +324,17 @@ namespace RMF {
       }
       void flush() const {
         IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
+      }
+      template <class T>
+        void set_user_data(int i, const T&d) {
+        user_data_[i]=boost::any(d);
+      }
+      template <class T>
+        const T&get_user_data(int i) const {
+        IMP_RMF_USAGE_CHECK(user_data_.find(i)
+                            != user_data_.end(),
+                            "No such data found");
+        return boost::any_cast<T>(user_data_.find(i)->second);
       }
       template <class T>
       void set_association(int id, const T& d, bool overwrite) {

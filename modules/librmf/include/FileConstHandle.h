@@ -247,6 +247,20 @@ namespace RMF {
     NodeConstHandle get_node_from_association(void* v) const;
 #endif
     NodeConstHandle get_node_from_id(NodeID id) const;
+
+    /** Along with the associations for nodes, arbitrary data can
+        be associated with the file in memory to aid in processing.
+    */
+    template <class T>
+      void add_associated_data(int index, const T *t) {
+      shared_->set_user_data(index, t);
+    }
+    /** To get back the ith user data.*/
+    template <class T>
+      const T& get_associated_data(int index) {
+      shared_->get_user_data<T>(index);
+    }
+
 #ifndef IMP_DOXYGEN
     /** \name Bonds
         The hierarchy also contains information about bonds connecting
