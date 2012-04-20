@@ -169,6 +169,11 @@ Element get_element_from_pdb_line(const std::string& pdb_line) {
   return UNKNOWN_ELEMENT;
 }
 
+IntKey get_pdb_index_key() {
+  static IntKey pdb_index_key("pdb index");
+  return pdb_index_key;
+}
+
 Particle* atom_particle(Model *m, const std::string& pdb_line)
 {
   AtomType atom_name;
@@ -195,6 +200,8 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   }
   // new particle
   Particle* p = new Particle(m);
+  int index = internal::atom_number(pdb_line);
+  p->add_attribute(get_pdb_index_key(), index);
   algebra::Vector3D v(internal::atom_xcoord(pdb_line),
                       internal::atom_ycoord(pdb_line),
                       internal::atom_zcoord(pdb_line));
@@ -412,6 +419,46 @@ Hierarchy read_pdb(base::TextInput in, Model *model) {
               ValueException);
   }
   return ret[0];
+}
+
+void read_pdb(base::TextInput in, int model, Hierarchy h) {
+  compatibility::map<int, Particle*> atoms_map;
+  atom::Hierarchies atoms= get_by_type(h, ATOM_TYPE);
+  for (unsigned int i=0; i< atoms.size(); ++i) {
+    atoms_map[atoms[i]->get_value(get_pdb_index_key())]= atoms[i];
+  }
+  std::string line;
+  bool reading=(model==0);
+  while (!in.get_stream().eof()) {
+    getline(in.get_stream(), line);
+    if (in.get_stream().eof()) break;
+    if (in.get_stream().bad() || in.get_stream().fail()) {
+      IMP_THROW("Error reading from PDB file", IOException);
+    }
+    // handle MODEL reading
+    if (internal::is_MODEL_rec(line)) {
+      int index=internal::model_index(line);
+      if (index==model) {
+        reading=true;
+      } else {
+        break;
+      }
+    }
+    if (reading &&
+        (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line))) {
+      int index = internal::atom_number(line);
+      if (atoms_map.find(index) != atoms_map.end()) {
+        algebra::Vector3D v(internal::atom_xcoord(line),
+                            internal::atom_ycoord(line),
+                            internal::atom_zcoord(line));
+        core::XYZ(atoms_map.find(index)->second).set_coordinates(v);
+      }
+    }
+  }
+  if (!reading) {
+    IMP_THROW("No model " << model << " found in file",
+              ValueException);
+  }
 }
 
 

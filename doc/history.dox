@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Winter 2011/2012
+- 20/4: A method, IMP::atom::read_pdb(IMP::base::TextInput, int, IMP::atom::Hierarchy), was added to load coordinates from a pdb file into an existing IMP::atom::Hierarchy.
 - 4/4: the filter types were superceeded by the predicate types. You will only see a difference if you develop a filter class (eg IMP::PairFilter -derived class) or directly call methods on filters (specifically IMP::PairFilter::get_contains()).
 - 29/3: IMP::Particle::get_has_model() has been changed to IMP::ModelObject::get_is_part_of_model() to be consistent with other classes.
 - 28/3: IMP::core::Mover changed slightly, adding an extra method IMP::core::Mover::get_output_particles() and requiring the IMP::Model be passed to the constructor. All movers in IMP SVN were updated without any difficulty. This allows movers to use information contained in the dependency graph amongst particles so they can, for example, weight moves based on scores.
