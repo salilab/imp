@@ -162,12 +162,11 @@ namespace RMF {
     IMP_HDF5_ROOT_KEY_SET_METHODS(quad, Quad, 4);
 #ifndef SWIG
     /** Each node in the hierarchy can be associated with some arbitrary bit
-        of external data using a void* pointer. Nodes can be extracted using
-        these bits of data.
+        of external data. Nodes can be extracted using these bits of data.
     */
     template <class T>
       NodeHandle get_node_from_association(const T&d) const {
-      void *any=d;
+      void *any=get_void_pointer(d);
       if (! get_shared_data()->get_has_association(any)) {
         return NodeHandle();
       } else {
