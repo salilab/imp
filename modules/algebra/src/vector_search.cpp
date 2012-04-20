@@ -28,6 +28,7 @@ DynamicNearestNeighbor3D::DynamicNearestNeighbor3D(const Vector3Ds &vs,
 
 Ints DynamicNearestNeighbor3D::get_in_ball(int id, double distance) const {
   IMP_OBJECT_LOG;
+  set_was_used(true);
   IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
     audit();
   }
