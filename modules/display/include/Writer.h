@@ -9,7 +9,7 @@
 #define IMPDISPLAY_WRITER_H
 
 #include "display_config.h"
-#include "geometry.h"
+#include "declare_Geometry.h"
 #include "internal/writers.h"
 #include "GeometryProcessor.h"
 
@@ -156,13 +156,6 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 /** Create an appropriate writer based on the file suffix. */
 IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-#define IMP_REGISTER_WRITER(Name, suffix)                               \
-  namespace {                                                           \
-    internal::WriterFactoryRegistrar Name##registrar(suffix,            \
-                            new internal::WriterFactoryHelper<Name>()); \
-  }
-#endif
 
 IMP_OBJECTS(Writer, Writers);
 IMP_OBJECTS(TextWriter, TextWriters);

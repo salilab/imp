@@ -12,7 +12,7 @@
 #include <IMP/core/internal/graph_base.h>
 #include "internal/bond_helpers.h"
 #include <IMP/display/particle_geometry.h>
-
+#include <IMP/display/primitive_geometries.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>

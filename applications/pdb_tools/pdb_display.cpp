@@ -1,7 +1,7 @@
 /**
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
-#include <IMP/display/geometry.h>
+#include <IMP/display/declare_Geometry.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>

@@ -13,7 +13,7 @@
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
-#include <IMP/display/geometry.h>
+#include <IMP/display/declare_Geometry.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 

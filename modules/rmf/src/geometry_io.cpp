@@ -10,7 +10,7 @@
 #include <IMP/rmf/links.h>
 #include <IMP/rmf/link_macros.h>
 #include "IMP/display/internal/utility.h"
-#include <IMP/display/geometry.h>
+#include <IMP/display/primitive_geometries.h>
 #include <IMP/base/check_macros.h>
 #include <RMF/Key.h>
 #include <RMF/NodeHandle.h>

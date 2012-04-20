@@ -11,7 +11,7 @@
 
 #include "particle_states.h"
 #include "Subset.h"
-#include <IMP/display/geometry.h>
+#include <IMP/display/declare_Geometry.h>
 #include <boost/graph/adjacency_list.hpp>
 
 

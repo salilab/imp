@@ -9,7 +9,8 @@
 #define IMPDISPLAY_GEOMETRY_PROCESSOR_H
 
 #include "display_config.h"
-#include "geometry.h"
+#include "declare_Geometry.h"
+#include "primitive_geometries.h"
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

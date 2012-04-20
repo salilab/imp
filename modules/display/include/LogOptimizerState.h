@@ -9,6 +9,7 @@
 #define IMPDISPLAY_LOG_OPTIMIZER_STATE_H
 
 #include "display_config.h"
+#include "declare_Geometry.h"
 #include "Writer.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/SingletonContainer.h>

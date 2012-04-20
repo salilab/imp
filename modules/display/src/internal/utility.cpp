@@ -7,7 +7,8 @@
  */
 
 #include <IMP/display/internal/utility.h>
-#include <IMP/display/geometry.h>
+#include <IMP/display/declare_Geometry.h>
+#include <IMP/display/primitive_geometries.h>
 #include <algorithm>
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polygons.h>

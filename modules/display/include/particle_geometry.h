@@ -9,11 +9,11 @@
 #define IMPDISPLAY_PARTICLE_GEOMETRY_H
 
 #include "display_config.h"
-#include "display_macros.h"
+#include "geometry_macros.h"
+#include "declare_Geometry.h"
 #include "Colored.h"
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/display/geometry.h>
 #include <IMP/SingletonScore.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE

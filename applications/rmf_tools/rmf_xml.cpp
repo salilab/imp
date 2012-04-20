@@ -3,6 +3,7 @@
  */
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileConstHandle.h>
+#include <RMF/utility.h>
 #include <IMP/internal/graph_utility.h>
 #include <sstream>
 
@@ -189,6 +190,7 @@ int main(int argc, char **argv) {
       print_help();
       return 1;
     }
+    RMF:: set_show_hdf5_errors(true);
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::ostream *out;
     std::ofstream fout;
