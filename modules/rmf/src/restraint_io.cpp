@@ -109,7 +109,8 @@ namespace {
         for (unsigned int j=0; j< ids.size(); ++j) {
           RMF::NodeHandle nh
             = parent.get_file().get_node_from_id(ids[j]);
-          Particle *p= reinterpret_cast<Particle*>(nh.get_association());
+          Particle *p
+            = nh.get_association<Particle*>();
           pt.push_back(p);
         }
       }
@@ -128,7 +129,8 @@ namespace {
     NodeIDs ids(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       NodeID id
-        =nh.get_file().get_node_from_association(ps[i]).get_id();
+        =nh.get_file()
+        .get_node_from_association(static_cast<Particle*>(ps[i])).get_id();
       ids[i]=id;
     }
     if (!ids.empty()) {
@@ -244,7 +246,7 @@ ParticlesTemp get_restraint_particles(RMF::NodeConstHandle f,
     ParticlesTemp ret(ids.size());
     for (unsigned int i=0; i< ids.size(); ++i) {
       RMF::NodeConstHandle nh= rh.get_node_from_id(ids[i]);
-      Particle *p= reinterpret_cast<Particle*>(nh.get_association());
+      Particle *p= nh.get_association<Particle*>();
       ret[i]=p;
     }
     return ret;
