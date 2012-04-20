@@ -23,14 +23,6 @@ NodeHandle FileHandle::get_node_from_id(NodeID id) const {
 }
 
 
-NodeHandle FileHandle::get_node_from_association(void*d) const {
-  if (! get_shared_data()->get_has_association(d)) {
-    return NodeHandle();
-  } else {
-    return NodeHandle(get_shared_data()->get_association(d), get_shared_data());
-  }
-}
-
 void FileHandle::set_description(std::string descr) {
   IMP_RMF_USAGE_CHECK(descr.empty()
                       || descr[descr.size()-1]=='\n',

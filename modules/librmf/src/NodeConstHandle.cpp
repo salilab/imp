@@ -18,14 +18,6 @@ NodeConstHandle::NodeConstHandle(int node, internal::SharedData *shared):
   node_(node), shared_(shared) {
 }
 
-
-void NodeConstHandle::set_association(void *d, bool overwrite) {
-  shared_->set_association(node_, d, overwrite);
-}
-void* NodeConstHandle::get_association() const {
-  return shared_->get_association(node_);
-}
-
 FileConstHandle NodeConstHandle::get_file() const {
   return FileConstHandle(shared_.get());
 }

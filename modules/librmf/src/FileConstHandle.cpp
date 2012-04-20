@@ -23,15 +23,6 @@ NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
 }
 
 
-NodeConstHandle
-FileConstHandle::get_node_from_association(void*d) const {
-  if (! shared_->get_has_association(d)) {
-    return NodeConstHandle();
-  } else {
-    return NodeConstHandle(shared_->get_association(d), shared_.get());
-  }
-}
-
 std::string FileConstHandle::get_description() const {
   return shared_->get_group().get_char_attribute("description");
 }

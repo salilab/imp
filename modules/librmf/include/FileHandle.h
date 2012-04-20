@@ -160,12 +160,24 @@ namespace RMF {
     IMP_HDF5_ROOT_KEY_SET_METHODS(pair, Pair, 2);
     IMP_HDF5_ROOT_KEY_SET_METHODS(triplet, Triplet, 3);
     IMP_HDF5_ROOT_KEY_SET_METHODS(quad, Quad, 4);
-
+#ifndef SWIG
     /** Each node in the hierarchy can be associated with some arbitrary bit
         of external data using a void* pointer. Nodes can be extracted using
         these bits of data.
     */
-    NodeHandle get_node_from_association(void*d) const;
+    template <class T>
+      NodeHandle get_node_from_association(const T&d) const {
+      void *any=d;
+      if (! get_shared_data()->get_has_association(any)) {
+        return NodeHandle();
+      } else {
+        return NodeHandle(get_shared_data()->get_association(any),
+                          get_shared_data());
+      }
+    }
+#else
+    NodeHandle get_node_from_association(void*d) const ;
+#endif
     NodeHandle get_node_from_id(NodeID id) const;
     /** Suggest how many frames the file is likely to have. This can
         make writing more efficient as space will be preallocated.

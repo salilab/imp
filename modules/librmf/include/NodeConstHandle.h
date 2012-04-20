@@ -135,12 +135,24 @@ protected:
   }
   NodeConstHandles  get_children() const;
 
+#ifndef SWIG
   /** Either the association must not have been set before
-      or overwrite must be true.
+      or overwrite must be true. If overwrite is true,
+      the type must be the same as the old type.
   */
-  void set_association(void *d, bool overwrite=false);
-  //! Return the associated pointer for this node, or NULL
-  void* get_association() const;
+  template <class T>
+  void set_association(const T& v, bool overwrite=false) {
+    shared_->set_association(node_, v, overwrite);
+  }
+#else
+  void set_association(void* v, bool overwrite=false);
+#endif
+  //! Return the associated pointer for this node
+  /** An exception will be thrown if it doesn't have one.*/
+  template <class T>
+  T get_association() const {
+    return boost::any_cast<T>(shared_->get_association(node_));
+  }
 
   //! get the type of this node
   NodeType get_type() const {

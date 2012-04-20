@@ -230,11 +230,22 @@ namespace RMF {
     PythonList get_node_sets(int arity) const;
     /** @} */
 #endif
+#ifndef SWIG
     /** Each node in the hierarchy can be associated with some arbitrary bit
         of external data using a void* pointer. Nodes can be extracted using
         these bits of data.
     */
-    NodeConstHandle get_node_from_association(void*d) const;
+    template <class T>
+      NodeConstHandle get_node_from_association(const T &d) const {
+      if (! shared_->get_has_association(d)) {
+        return NodeConstHandle();
+      } else {
+        return NodeConstHandle(shared_->get_association(d), shared_.get());
+      }
+    }
+#else
+    NodeConstHandle get_node_from_association(void* v) const;
+#endif
     NodeConstHandle get_node_from_id(NodeID id) const;
 #ifndef IMP_DOXYGEN
     /** \name Bonds

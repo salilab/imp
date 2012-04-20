@@ -20,6 +20,7 @@
 #include "set.h"
 #include <boost/tuple/tuple.hpp>
 #include <boost/array.hpp>
+#include <boost/any.hpp>
 #include <hdf5.h>
 #include <algorithm>
 
@@ -64,7 +65,7 @@ namespace RMF {
       boost::array<Strings, 4> category_names_cache_;
       boost::array<HDF5DataSetD<IndexTraits, 2>, 4> node_data_;
       boost::array<Ints,4> free_ids_;
-      vector<void*> association_;
+      vector<boost::any> association_;
       map<void*, int> back_association_;
       unsigned int frames_hint_;
 
@@ -312,26 +313,28 @@ namespace RMF {
       void flush() const {
         IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
       }
-      void set_association(int id, void *d, bool overwrite) {
-        IMP_RMF_USAGE_CHECK(d, "NULL association");
+      template <class T>
+      void set_association(int id, const T& d, bool overwrite) {
         if (association_.size() <= static_cast<unsigned int>(id)) {
-          association_.resize(id+1, NULL);
+          association_.resize(id+1, boost::any());
         }
-        IMP_RMF_USAGE_CHECK(overwrite || !association_[id],
+        IMP_RMF_USAGE_CHECK(overwrite || association_[id].empty(),
                             "Associations can only be set once");
-        if (overwrite && association_[id]) {
-          void *old=association_[id];
-          if (back_association_[old]==id) {
-            back_association_.erase(old);
+        if (overwrite && !association_[id].empty()) {
+          boost::any old=association_[id];
+          void* v= boost::any_cast<T>(old);
+          if (back_association_[v]==id) {
+            back_association_.erase(v);
           }
         }
-        association_[id]=d;
-        back_association_[d]=id;
+        void *v= d;
+        association_[id]=boost::any(d);
+        back_association_[v]=id;
       }
-      bool get_has_association(void* d) const {
-        return back_association_.find(d) != back_association_.end();
+      bool get_has_association(void* v) const {
+        return back_association_.find(v) != back_association_.end();
       }
-      void* get_association(int id) const {
+      boost::any get_association(int id) const {
         IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
                             "Unassociated id");
         return association_[id];
@@ -340,19 +343,6 @@ namespace RMF {
         return file_.get_file().get_name();
       }
       int get_association(void* d) const {
-        if (back_association_.find(d) == back_association_.end()) {
-          IMP_RMF_IF_CHECK {
-            for (unsigned int i=0; i< association_.size(); ++i) {
-              IMP_RMF_INTERNAL_CHECK(association_[i] != d,
-                                     "Association not in map, but found: "
-                                     << d << " at " << i);
-            }
-          }
-          IMP_RMF_USAGE_CHECK(back_association_.find(d)
-                              != back_association_.end(),
-                              "Unassociated id from "
-                              << back_association_.size());
-        }
         return back_association_.find(d)->second;
       }
       template <class TypeTraits, int Arity>
