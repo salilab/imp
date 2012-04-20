@@ -11,6 +11,7 @@
 
 #include "isd_config.h"
 #include <IMP/SingletonModifier.h>
+#include <IMP/singleton_macros.h>
 #include <IMP/isd/Nuisance.h>
 #include <IMP/singleton_macros.h>
 
