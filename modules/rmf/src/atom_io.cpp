@@ -8,526 +8,440 @@
 
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/internal/imp_operations.h>
+#include <IMP/rmf/links.h>
+#include <IMP/rmf/link_macros.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/atom/Copy.h>
+#include <IMP/base/tuple_macros.h>
 #include <RMF/decorators.h>
-#include <IMP/log.h>
+#include <RMF/NodeSetHandle.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/compatibility/map.h>
 #include <IMP/core/rigid_bodies.h>
-#include <IMP/algebra/geometric_alignment.h>
-#include <boost/progress.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
-using namespace RMF;
-
-#define IMP_HDF5_CREATE_MOLECULE_FACTORIES(f, CNST)             \
-  RMF::Particle##CNST##Factory particle_factory(f);             \
-  RMF::IntermediateParticle##CNST##Factory iparticle_factory(f);        \
-  RMF::RigidParticle##CNST##Factory rigid_particle_factory(f);  \
-  RMF::Atom##CNST##Factory atom_factory(f);                     \
-  RMF::Residue##CNST##Factory residue_factory(f);               \
-  RMF::Chain##CNST##Factory chain_factory(f);                   \
-  RMF::Colored##CNST##Factory colored_factory(f);               \
-  RMF::Copy##CNST##Factory copy_factory(f);                     \
-  RMF::Diffuser##CNST##Factory diffuser_factory(f);             \
-  RMF::Typed##CNST##Factory typed_factory(f);                   \
-  RMF::Domain##CNST##Factory domain_factory(f)
-
-
-
-
-
-#define IMP_HDF5_ACCEPT_MOLECULE_FACTORIES(CNST)                 \
-  RMF::Particle##CNST##Factory particle_factory,                 \
-    RMF::IntermediateParticle##CNST##Factory iparticle_factory,  \
-    RMF::RigidParticle##CNST##Factory rigid_particle_factory,    \
-    RMF::Atom##CNST##Factory atom_factory,                       \
-    RMF::Residue##CNST##Factory residue_factory,                 \
-    RMF::Chain##CNST##Factory chain_factory,                     \
-    RMF::Colored##CNST##Factory colored_factory,                 \
-    RMF::Copy##CNST##Factory copy_factory,                       \
-    RMF::Diffuser##CNST##Factory diffuser_factory,               \
-    RMF::Typed##CNST##Factory typed_factory,                     \
-    RMF::Domain##CNST##Factory domain_factory
-
-
-
-#define IMP_HDF5_PASS_MOLECULE_FACTORIES                        \
-  particle_factory,                                             \
-    iparticle_factory,                                          \
-    rigid_particle_factory,                                     \
-    atom_factory,                                               \
-    residue_factory,                                            \
-    chain_factory,                                              \
-    colored_factory,                                            \
-    copy_factory,                                               \
-    diffuser_factory,                                           \
-    typed_factory,                                              \
-    domain_factory
-
 namespace {
-  RMF::Floats get_rmf_floats(double v0, double v1) {
-    RMF::Floats ret(2); ret[0]=v0; ret[1]=v1;
-    return ret;
-  }
-  RMF::Floats get_rmf_floats(double v0, double v1, double v2) {
-    RMF::Floats ret(3); ret[0]=v0; ret[1]=v1; ret[2]=v2;
-    return ret;
-  }
-  std::string get_name(atom::Hierarchy h) {
-    if (atom::Atom::particle_is_instance(h)) {
-      return atom::Atom(h).get_atom_type().get_string();
-    } else if (atom::Residue::particle_is_instance(h)) {
-      std::ostringstream oss;
-      oss << atom::Residue(h).get_index();
-      return oss.str();
-    } else if (atom::Chain::particle_is_instance(h)) {
-      return std::string(1, atom::Chain(h).get_id());
+  atom::Bonded get_bonded(Particle *p) {
+    if (atom::Bonded::particle_is_instance(p)) {
+      return atom::Bonded(p);
     } else {
-      return h->get_name();
+      return atom::Bonded::setup_particle(p);
     }
   }
-
-  template <class TypeTag, class T>
-  void set_one(RMF::NodeHandle n, RMF::Key<TypeTag, 1> k,
-               T v, unsigned int frame) {
-    n.set_value(k, v, frame);
-  }
-
-  void copy_data(atom::Hierarchy h, RMF::NodeHandle n,
-                 unsigned int frame,
-                 IMP_HDF5_ACCEPT_MOLECULE_FACTORIES()) {
-    if (core::XYZ::particle_is_instance(h)) {
-      core::XYZ d(h);
-      RMF::IntermediateParticle p= iparticle_factory.get(n, frame);
-      algebra::Vector3D v= d.get_coordinates();
-      p.set_coordinates(RMF::Floats(v.coordinates_begin(),
-                                    v.coordinates_end()));
+  void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
+                    const ParticlesTemp &ps) {
+    compatibility::map<RMF::NodeConstHandle, Particle*> map;
+    for (unsigned int i=0; i< nhs.size(); ++i) {
+      map[fhc.get_node_from_id(nhs[i])]= ps[i];
     }
-    if (core::RigidBody::particle_is_instance(h)) {
-      core::RigidBody bd(h);
-      RMF::RigidParticle p= rigid_particle_factory.get(n, frame);
-      algebra::Vector4D q= bd.get_reference_frame().
-        get_transformation_to().get_rotation().get_quaternion();
-      p.set_orientation(RMF::Floats(q.coordinates_begin(),
-                                    q.coordinates_end()));
-    }
-    if (core::XYZR::particle_is_instance(h)) {
-      core::XYZR d(h);
-      particle_factory.get(n, frame).set_radius(d.get_radius());
-    }
-    if (atom::Mass::particle_is_instance(h)) {
-      atom::Mass d(h);
-      particle_factory.get(n, frame).set_mass(d.get_mass());
-    }
-    if (atom::Atom::particle_is_instance(h)) {
-      atom::Atom d(h);
-      atom_factory.get(n, frame).set_element(d.get_element());
-    }
-    if (atom::Residue::particle_is_instance(h)) {
-      atom::Residue d(h);
-      RMF::Residue r= residue_factory.get(n, frame);
-      r.set_index(d.get_index());
-      r.set_type(d.get_residue_type().get_string());
-    }
-    if (atom::Domain::particle_is_instance(h)) {
-      atom::Domain d(h);
-      domain_factory.get(n, frame).set_indexes( d.get_index_range().first,
-                                                  d.get_index_range().second);
-    }
-    if (display::Colored::particle_is_instance(h)) {
-      display::Colored d(h);
-      RMF::Floats color(3);
-      colored_factory.get(n, frame)
-        .set_rgb_color(get_rmf_floats(d.get_color().get_red(),
-                                      d.get_color().get_green(),
-                                      d.get_color().get_blue()));
-    }
-    if (core::Typed::particle_is_instance(h)) {
-      core::Typed d(h);
-      typed_factory.get(n, frame).set_type_name(d.get_type().get_string());
-    }
-    if (atom::Chain::particle_is_instance(h)) {
-      atom::Chain d(h);
-      chain_factory.get(n, frame).set_chain_id(d.get_id()-'A');
-    }
-    if (atom::Diffusion::particle_is_instance(h)) {
-      atom::Diffusion d(h);
-      diffuser_factory.get(n, frame).set_diffusion_coefficient(d.get_d());
-    }
-    if (atom::Copy::particle_is_instance(h)) {
-      atom::Copy d(h);
-      copy_factory.get(n, frame).set_copy_index(d.get_copy_index());
-    }
-  }
-
-
-
-#define GET_DECORATOR(type)                     \
-  type d;                                       \
-  if (type::particle_is_instance(cur)) {        \
-    d=type(cur);                                \
-  } else {                                      \
-    d= type::setup_particle(cur);               \
-  }
-
-#define GET_DECORATOR_VALUE(type, value)        \
-  type d;                                       \
-  if (type::particle_is_instance(cur)) {        \
-    d=type(cur);                                \
-  } else {                                      \
-    d= type::setup_particle(cur, value);        \
-  }
-  void copy_data(RMF::NodeConstHandle ncur, atom::Hierarchy cur, int frame,
-                 IMP_HDF5_ACCEPT_MOLECULE_FACTORIES(Const)) {
-    int real_frame=std::max(frame, 0);
-    if (iparticle_factory.get_is(ncur, real_frame)) {
-      GET_DECORATOR(core::XYZR);
-      RMF::IntermediateParticleConst p=iparticle_factory.get(ncur, real_frame);
-      d.set_x(p.get_coordinates()[0]);
-      d.set_y(p.get_coordinates()[1]);
-      d.set_z(p.get_coordinates()[2]);
-      d.set_radius(p.get_radius());
-    }
-    if (particle_factory.get_is(ncur, real_frame)) {
-      RMF::ParticleConst p=particle_factory.get(ncur, real_frame);
-        GET_DECORATOR_VALUE(atom::Mass, p.get_mass());
-        d.set_mass(p.get_mass());
-    }
-    if (rigid_particle_factory.get_is(ncur, real_frame)) {
-      RMF::RigidParticleConst p=rigid_particle_factory.get(ncur, real_frame);
-      RMF::Floats orient= p.get_orientation();
-      algebra::Transformation3D
-        tr(algebra::Rotation3D(algebra
-                               ::Vector4D(orient.begin(),
-                                          orient.end())),
-           core::XYZ(cur).get_coordinates());
-      algebra::ReferenceFrame3D rf(tr);
-      GET_DECORATOR_VALUE(core::RigidBody, rf);
-      d.set_reference_frame(rf);
-    }
-    // evil hack
-    if (frame >= 0) return;
-    if (atom_factory.get_is(ncur, real_frame)) {
-      if (!atom::get_atom_type_exists(ncur.get_name())) {
-        atom::add_atom_type(ncur.get_name(),
-                            atom::Element(atom_factory.get(ncur,
-                                                           real_frame)
-                                          .get_element()));
+    RMF::NodePairConstHandles hs= fhc.get_node_sets<2>();
+    for (unsigned int i=0; i< hs.size(); ++i) {
+      if (hs[i].get_type()== RMF::BOND) {
+        RMF::NodeConstHandle h0= hs[i].get_node(0);
+        RMF::NodeConstHandle h1= hs[i].get_node(1);
+        if (map.find(h0) != map.end()
+            && map.find(h1) != map.end()) {
+          // ignore type and things
+          atom::create_bond(get_bonded(map.find(h0)->second),
+                            get_bonded(map.find(h1)->second),
+                            atom::Bond::SINGLE);
+        }
       }
-      atom::Atom::setup_particle(cur, atom::AtomType(ncur.get_name()));
+    }
+  }
+
+  IMP_NAMED_TUPLE_2(ConstData, ConstDatas, RMF::NodeIDs, nodes,
+                    ParticlesTemp, particles,);
+  IMP_NAMED_TUPLE_2(Data, Datas, RMF::NodeIDs, nodes,
+                    ParticlesTemp, particles,);
+
+  class HierarchyLoadLink: public SimpleLoadLink<Particle> {
+    typedef SimpleLoadLink<Particle> P;
+    Pointer<Model> m_;
+    RMF::ParticleConstFactory particle_factory_;
+    RMF::IntermediateParticleConstFactory intermediate_particle_factory_;
+    RMF::RigidParticleConstFactory rigid_factory_;
+    RMF::AtomConstFactory atom_factory_;
+    RMF::ResidueConstFactory residue_factory_;
+    RMF::ChainConstFactory chain_factory_;
+    RMF::ColoredConstFactory colored_factory_;
+    RMF::CopyConstFactory copy_factory_;
+    RMF::DiffuserConstFactory diffuser_factory_;
+    RMF::TypedConstFactory typed_factory_;
+    RMF::DomainConstFactory domain_factory_;
+
+    compatibility::map<Particle*, ConstData> contents_;
+    virtual void do_load_one_particle(RMF::NodeConstHandle nh,
+                                      Particle *o,
+                                      unsigned int frame) {
+      if (intermediate_particle_factory_.get_is(nh, frame)) {
+        RMF::Floats cs= intermediate_particle_factory_.get(nh, frame)
+          .get_coordinates();
+        core::XYZR(o).set_coordinates(algebra::Vector3D(cs.begin(),
+                                                        cs.end()));
+      }
+      if (rigid_factory_.get_is(nh, frame)) {
+        RMF::RigidParticleConst p=rigid_factory_.get(nh, frame);
+        RMF::Floats orient= p.get_orientation();
+        algebra::Transformation3D
+          tr(algebra::Rotation3D(algebra
+                                 ::Vector4D(orient.begin(),
+                                            orient.end())),
+             core::XYZ(o).get_coordinates());
+        algebra::ReferenceFrame3D rf(tr);
+        core::RigidBody(o).set_reference_frame(rf);
+      }
+      if (colored_factory_.get_is(nh, frame)) {
+        RMF::Floats c= colored_factory_.get(nh, frame).get_rgb_color();
+        display::Colored(o).set_color(display::Color(c[0], c[1], c[2]));
+      }
     }
 
-    if (residue_factory.get_is(ncur, real_frame)) {
-      RMF::ResidueConst residue=residue_factory.get(ncur, real_frame);
-      int b= residue.get_index();
-      atom::Residue::setup_particle(cur,
-                                    atom::ResidueType(residue.get_type()))
-        .set_index(b);
+    void do_load_one( RMF::NodeConstHandle nh,
+                      Particle *o,
+                      unsigned int frame) {
+      RMF::FileConstHandle fh= nh.get_file();
+      const ConstData&d= contents_.find(o)->second;
+      IMP_LOG(VERBOSE, "Loading hierarchy " << atom::Hierarchy(o)
+              << " with contents " << atom::Hierarchies(d.particles)
+              << std::endl);
+      for (unsigned int i=0; i< d.nodes.size(); ++i) {
+        do_load_one_particle(fh.get_node_from_id(d.nodes[i]),
+                             d.particles[i], frame);
+      }
     }
-    if (domain_factory.get_is(ncur, real_frame)) {
-      int b,e;
-      boost::tie(b,e)= domain_factory.get(ncur, real_frame).get_indexes();
-      if (e==b+1) {
+    bool get_is(RMF::NodeConstHandle nh) const {
+      return nh.get_type()==RMF::REPRESENTATION;
+    }
+    virtual void setup_particle(Particle *root,
+                                RMF::NodeConstHandle nh,
+                                Particle *p) {
+      contents_[root].particles.push_back(p);
+      contents_[root].nodes.push_back(nh.get_id());
+      atom::Hierarchy hp=atom::Hierarchy::setup_particle(p);
+      IMP_LOG(VERBOSE, "Particle " << hp << " is ");
+      if (intermediate_particle_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "xyzr ");
+        double r= intermediate_particle_factory_.get(nh).get_radius();
+        core::XYZR::setup_particle(p).set_radius(r);
+      }
+      if (particle_factory_.get_is(nh)) {
+        RMF::ParticleConst m= particle_factory_.get(nh);
+        IMP_LOG(VERBOSE, "massive ");
+        atom::Mass::setup_particle(p, m.get_mass());
+      }
+      if (rigid_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "rigid ");
+        core::RigidBody::setup_particle(p, algebra::ReferenceFrame3D());
+      }
+      if (atom_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "atomic ");
+        if (!atom::get_atom_type_exists(nh.get_name())) {
+          atom::add_atom_type(nh.get_name(),
+                              atom::Element(atom_factory_.get(nh)
+                                            .get_element()));
+        }
+        atom::Atom::setup_particle(p, atom::AtomType(nh.get_name()));
+      }
+      if (residue_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "residue ");
+        RMF::ResidueConst residue=residue_factory_.get(nh);
+        int b= residue.get_index();
+        atom::Residue::setup_particle(p,
+                                      atom::ResidueType(residue.get_type()))
+          .set_index(b);
+      }
+      if (domain_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "domian ");
+        int b,e;
+        boost::tie(b,e)= domain_factory_.get(nh).get_indexes();
+        if (e==b+1) {
+        } else {
+          atom::Domain::setup_particle(p, b, e);
+        }
+      }
+      if (colored_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "colored ");
+        RMF::Floats c= colored_factory_.get(nh).get_rgb_color();
+        display::Colored::setup_particle(p, display::Color(c[0], c[1], c[2]));
+      }
+      if (chain_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "chain ");
+        int cci= chain_factory_.get(nh).get_chain_id();
+        atom::Chain::setup_particle(p, cci+'A');
+      }
+      if (typed_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "typed ");
+        std::string t= typed_factory_.get(nh).get_type_name();
+        core::ParticleType pt(t);
+        core::Typed::setup_particle(p, pt);
+      }
+      if (diffuser_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "diffuser ");
+        double dv= diffuser_factory_.get(nh)
+          .get_diffusion_coefficient();
+        atom::Diffusion::setup_particle(p, dv);
+      }
+      if (copy_factory_.get_is(nh)) {
+        IMP_LOG(VERBOSE, "copy ");
+        int dv= copy_factory_.get(nh).get_copy_index();
+        atom::Copy::setup_particle(p, dv);
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
+
+    virtual Particle* do_create_recursive(Particle *root,
+                                          RMF::NodeConstHandle name) {
+      IMP_NEW(Particle, p, (m_, name.get_name()));
+      if (!root) {
+        root=p;
       } else {
-        atom::Domain::setup_particle(cur, b, e);
+        set_association(name, p);
+      }
+      setup_particle(root, name, p);
+      RMF::NodeConstHandles ch= name.get_children();
+      for (unsigned int i=0; i< ch.size(); ++i) {
+        if (ch[i].get_type()== RMF::REPRESENTATION) {
+          Particle*c= do_create_recursive(root, ch[i]);
+          atom::Hierarchy(p).add_child(atom::Hierarchy(c));
+        }
+      }
+      return p.release();
+    }
+
+    Particle* do_create(RMF::NodeConstHandle name) {
+      Particle *ret= do_create_recursive(nullptr, name);
+      create_bonds(name.get_file(),contents_[ret].nodes,
+                   contents_[ret].particles);
+      return ret;
+    }
+
+    void do_add_link_recursive(Particle *root,
+                               Particle *o, RMF::NodeConstHandle node) {
+      contents_[root].particles.push_back(o);
+      contents_[root].nodes.push_back(node.get_id());
+      set_association(node, o);
+      RMF::NodeConstHandles ch= node.get_children();
+      int cur=0;
+      for (unsigned int i=0; i< ch.size(); ++i) {
+        if (ch[i].get_type()== RMF::REPRESENTATION) {
+          do_add_link_recursive(root,
+                                atom::Hierarchy(o).get_child(cur),
+                                ch[i]);
+          ++cur;
+        }
       }
     }
-    if (colored_factory.get_is(ncur, real_frame)) {
-      RMF::Floats c= colored_factory.get(ncur, real_frame).get_rgb_color();
-      display::Colored::setup_particle(cur, display::Color(c[0], c[1], c[2]));
+
+    void do_add_link(Particle *o, RMF::NodeConstHandle node) {
+      do_add_link_recursive(o, o, node);
     }
-    if (chain_factory.get_is(ncur, real_frame)) {
-      int cci= chain_factory.get(ncur, real_frame).get_chain_id();
-      atom::Chain::setup_particle(cur, cci+'A');
+  public:
+    HierarchyLoadLink(RMF::FileConstHandle fh, Model *m):
+      P("HierarchyLoadLink%1%"), m_(m),
+      particle_factory_(fh),
+      intermediate_particle_factory_(fh),
+      rigid_factory_(fh),
+      atom_factory_(fh),
+      residue_factory_(fh),
+      chain_factory_(fh),
+      colored_factory_(fh),
+      copy_factory_(fh),
+      diffuser_factory_(fh),
+      typed_factory_(fh),
+      domain_factory_(fh)
+    {
     }
-    if (typed_factory.get_is(ncur, real_frame)) {
-      std::string t= typed_factory.get(ncur, real_frame).get_type_name();
-      core::ParticleType pt(t);
-      core::Typed::setup_particle(cur, pt);
-    }
-    if (diffuser_factory.get_is(ncur, real_frame)) {
-      double dv= diffuser_factory.get(ncur, real_frame)
-        .get_diffusion_coefficient();
-      atom::Diffusion::setup_particle(cur, dv);
-    }
-    if (copy_factory.get_is(ncur, real_frame)) {
-      int dv= copy_factory.get(ncur, real_frame).get_copy_index();
-      atom::Copy::setup_particle(cur, dv);
+    IMP_OBJECT_INLINE(HierarchyLoadLink,IMP_UNUSED(out),);
+  };
+
+
+  void copy_bonds(Particle *root,
+                  RMF::FileHandle fhc) {
+    IMP_FUNCTION_LOG;
+    atom::Bonds bds= atom::get_internal_bonds(atom::Hierarchy(root));
+    for (unsigned int i=0; i< bds.size(); ++i) {
+      Particle *p0= bds[i].get_bonded(0);
+      Particle *p1= bds[i].get_bonded(1);
+      IMP_LOG(VERBOSE, "Adding bond for pair " << Showable(p0)
+              << " and " << Showable(p1) << std::endl);
+      RMF::NodeHandle n0= get_node_from_association(fhc, p0);
+      RMF::NodeHandle n1= get_node_from_association(fhc, p1);
+      RMF::NodeHandles nphs(2);
+      nphs[0]=n0;
+      nphs[1]=n1;
+      RMF::NodePairHandle np=fhc.add_node_set<2>(nphs, RMF::BOND);
     }
   }
+
+
+  class HierarchySaveLink: public SimpleSaveLink<Particle> {
+    typedef SimpleSaveLink<Particle> P;
+    RMF::ParticleFactory particle_factory_;
+    RMF::IntermediateParticleFactory intermediate_particle_factory_;
+    RMF::RigidParticleFactory rigid_factory_;
+    RMF::AtomFactory atom_factory_;
+    RMF::ResidueFactory residue_factory_;
+    RMF::ChainFactory chain_factory_;
+    RMF::ColoredFactory colored_factory_;
+    RMF::CopyFactory copy_factory_;
+    RMF::DiffuserFactory diffuser_factory_;
+    RMF::TypedFactory typed_factory_;
+    RMF::DomainFactory domain_factory_;
+    compatibility::map<Particle*, Data> contents_;
+    virtual void setup_node(Particle *p, RMF::NodeHandle n) {
+      if (core::XYZR::particle_is_instance(p)) {
+        core::XYZR d(p);
+        intermediate_particle_factory_.get(n).set_radius(d.get_radius());
+      }
+      if (atom::Mass::particle_is_instance(p)) {
+        atom::Mass d(p);
+        particle_factory_.get(n).set_mass(d.get_mass());
+      }
+      if (atom::Atom::particle_is_instance(p)) {
+        atom::Atom d(p);
+        atom_factory_.get(n).set_element(d.get_element());
+      }
+      if (atom::Residue::particle_is_instance(p)) {
+        atom::Residue d(p);
+        RMF::Residue r= residue_factory_.get(n);
+        r.set_index(d.get_index());
+        r.set_type(d.get_residue_type().get_string());
+      }
+      if (atom::Domain::particle_is_instance(p)) {
+        atom::Domain d(p);
+        domain_factory_.get(n).set_indexes( d.get_index_range().first,
+                                                  d.get_index_range().second);
+      }
+      if (display::Colored::particle_is_instance(p)) {
+        display::Colored d(p);
+        RMF::Floats color(3);
+        color[0]=d.get_color().get_red();
+        color[1]=d.get_color().get_green();
+        color[2]=d.get_color().get_blue();
+        colored_factory_.get(n).set_rgb_color(color);
+      }
+      if (core::Typed::particle_is_instance(p)) {
+        core::Typed d(p);
+        typed_factory_.get(n).set_type_name(d.get_type().get_string());
+      }
+      if (atom::Chain::particle_is_instance(p)) {
+        atom::Chain d(p);
+        chain_factory_.get(n).set_chain_id(d.get_id()-'A');
+      }
+      if (atom::Diffusion::particle_is_instance(p)) {
+        atom::Diffusion d(p);
+        diffuser_factory_.get(n).set_diffusion_coefficient(d.get_d());
+      }
+      if (atom::Copy::particle_is_instance(p)) {
+        atom::Copy d(p);
+        copy_factory_.get(n).set_copy_index(d.get_copy_index());
+      }
+    }
+    void do_add_recursive(Particle *root, Particle *p, RMF::NodeHandle cur) {
+      IMP_LOG(VERBOSE, "Adding " << atom::Hierarchy(p) << std::endl);
+      contents_[root].particles.push_back(p);
+      contents_[root].nodes.push_back(cur.get_id());
+      // make sure not to double add
+      if (p != root) set_association(cur, p);
+      setup_node(p, cur);
+      for (unsigned int i=0;
+           i < atom::Hierarchy(p).get_number_of_children();++i) {
+        Particle *pc=atom::Hierarchy(p).get_child(i);
+        RMF::NodeHandle curc=cur.add_child(pc->get_name(), RMF::REPRESENTATION);
+        do_add_recursive(root, pc, curc);
+      }
+    }
+    void do_add(Particle *p, RMF::NodeHandle cur) {
+      do_add_recursive(p,p, cur);
+      copy_bonds(p, cur.get_file());
+    }
+    virtual void do_save_node(Particle *p,
+                              RMF::NodeHandle n,
+                              unsigned int frame) {
+      if (core::XYZ::particle_is_instance(p)) {
+        core::XYZ d(p);
+        RMF::IntermediateParticle p
+          = intermediate_particle_factory_.get(n, frame);
+        algebra::Vector3D v= d.get_coordinates();
+        p.set_coordinates(RMF::Floats(v.coordinates_begin(),
+                                      v.coordinates_end()));
+      }
+      if (core::RigidBody::particle_is_instance(p)) {
+        core::RigidBody bd(p);
+        RMF::RigidParticle p= rigid_factory_.get(n, frame);
+        algebra::Vector4D q= bd.get_reference_frame().
+          get_transformation_to().get_rotation().get_quaternion();
+        p.set_orientation(RMF::Floats(q.coordinates_begin(),
+                                      q.coordinates_end()));
+      }
+    }
+    void do_save_one(Particle *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      RMF::FileHandle fh= nh.get_file();
+      const Data &d= contents_.find(o)->second;
+      for (unsigned int i=0; i< d.nodes.size(); ++i) {
+        do_save_node(d.particles[i], fh.get_node_from_id(d.nodes[i]), frame);
+      }
+    }
+   RMF::NodeType get_type(Particle*) const {
+      return RMF::REPRESENTATION;
+    }
+  public:
+    HierarchySaveLink(RMF::FileHandle fh): P("HierarchySaveLink%1%"),
+                                           particle_factory_(fh),
+                                           intermediate_particle_factory_(fh),
+                                           rigid_factory_(fh),
+                                           atom_factory_(fh),
+                                           residue_factory_(fh),
+                                           chain_factory_(fh),
+                                           colored_factory_(fh),
+                                           copy_factory_(fh),
+                                           diffuser_factory_(fh),
+                                           typed_factory_(fh),
+                                           domain_factory_(fh) {
+    }
+    IMP_OBJECT_INLINE(HierarchySaveLink,IMP_UNUSED(out),);
+  };
+
+
+  IMP_DEFINE_LINKERS(Hierarchy, hierarchy, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh,
+                      Model *m), (fh), (fh, m));
+
 }
-
-
-
-
-namespace {
-  void save_conformation_internal(RMF::FileHandle parent,
-                                  atom::Hierarchy hierarchy,
-                                  unsigned int frame,
-                                  IMP_HDF5_ACCEPT_MOLECULE_FACTORIES()) {
-    RMF::NodeHandle cur;
-    try {
-      cur= parent.get_node_from_association(hierarchy.get_particle());
-    } catch (ValueException) {
-      IMP_THROW("Unable to find association for " << hierarchy
-                << " which is " << static_cast<void*>(hierarchy),
-                ValueException);
-    }
-    copy_data(hierarchy, cur, frame, IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    //std::cout << "Processing " << hierarchy->get_name() << std::endl;
-    unsigned int nc=hierarchy.get_number_of_children();
-    for (unsigned int i=0; i< nc; ++i) {
-      save_conformation_internal(parent, hierarchy.get_child(i), frame,
-                                 IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    }
-  }
-}
-
-void save_frame(RMF::FileHandle fh,
-                unsigned int frame, atom::Hierarchy hs) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_MOLECULE_FACTORIES(fh,);
-  save_conformation_internal(fh, hs, frame,
-                             IMP_HDF5_PASS_MOLECULE_FACTORIES);
-  fh.flush();
-}
-
-
-namespace {
-  void add_hierarchy_internal(RMF::NodeHandle parent, atom::Hierarchy hierarchy,
-                              boost::progress_display* pd,
-                              IMP_HDF5_ACCEPT_MOLECULE_FACTORIES()) {
-    RMF::NodeHandle cur= parent.add_child(get_name(hierarchy), REPRESENTATION);
-    cur.set_association(hierarchy.get_particle());
-    IMP_USAGE_CHECK(cur.get_file()
-                    .get_node_from_association(hierarchy.get_particle())==cur,
-                    "In and out don't match: " << cur
-                    << " vs "
-                    << cur.get_file()
-                    .get_node_from_association(hierarchy.get_particle()));
-    copy_data(hierarchy, cur, 0, IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    //std::cout << "Processing " << hierarchy->get_name() << std::endl;
-    unsigned int nc=hierarchy.get_number_of_children();
-    if (nc==0 && pd) {
-      ++(*pd);
-    }
-    for (unsigned int i=0; i< nc; ++i) {
-      add_hierarchy_internal(cur, hierarchy.get_child(i), pd,
-                             IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    }
-  }
-
-
-void create_bond(atom::Bond bd, RMF::FileHandle fh, RMF::PairIndexKey bt) {
-    RMF::NodeHandle na
-      = fh.get_node_from_association(bd.get_bonded(0).get_particle());
-    RMF::NodeHandle nb
-      = fh.get_node_from_association(bd.get_bonded(1).get_particle());
-    RMF::NodeHandles nhs(2); nhs[0]=na; nhs[1]=nb;
-    RMF::NodePairHandle obd= fh.add_node_set<2>(nhs, RMF::BOND);
-    obd.set_value(bt, 0);
-  }
-
+void add_hierarchies(RMF::FileHandle fh,
+                     const atom::Hierarchies& hs) {
+  HierarchySaveLink* hsl= get_hierarchy_save_link(fh);
+  hsl->add(fh.get_root_node(), hs);
+  hsl->save(fh, 0);
 }
 void add_hierarchy(RMF::FileHandle fh, atom::Hierarchy hs) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_MOLECULE_FACTORIES(fh,);
-  boost::scoped_ptr<boost::progress_display> pd;
-  if (get_log_level()== PROGRESS) {
-    pd.reset(new boost::progress_display(atom::get_leaves(hs).size(),
-                                         std::cout));
-  }
-  add_hierarchy_internal(fh.get_root_node(), hs, pd.get(),
-                         IMP_HDF5_PASS_MOLECULE_FACTORIES);
-  atom::Bonds bds= atom::get_internal_bonds(hs);
-  if (get_log_level()==PROGRESS) {
-    pd.reset(new boost::progress_display(bds.size(),
-                                         std::cout));
-  }
-  RMF::PairIndexKey bk;
-  RMF::CategoryD<2> bond= internal::get_or_add_category<2>(fh,"bond");
-  if (fh.get_has_key<RMF::IndexTraits, 2>(bond, "type")) {
-    bk= fh.get_key<RMF::IndexTraits, 2>(bond, "type");
-  } else {
-    bk= fh.add_key<RMF::IndexTraits, 2>(bond, "type", false);
-  }
-  for (unsigned int i=0; i< bds.size(); ++i) {
-    create_bond(bds[i], fh, bk);
-    if (pd) ++(*pd);
-  }
-  fh.flush();
+  add_hierarchies(fh, atom::Hierarchies(1, hs));
 }
 
-
-
-namespace {
-  atom::Hierarchy read_internal(RMF::NodeConstHandle ncur, Model *model,
-                                IMP_HDF5_ACCEPT_MOLECULE_FACTORIES(Const)) {
-    if (ncur.get_type() != REPRESENTATION) return atom::Hierarchy();
-    atom::Hierarchy cur= atom::Hierarchy::setup_particle(new Particle(model));
-    cur->set_name(ncur.get_name());
-    ncur.set_association(cur);
-    copy_data(ncur, cur, -1, IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    NodeConstHandles children= ncur.get_children();
-    for (unsigned int i=0; i < children.size(); ++i) {
-      atom::Hierarchy h= read_internal(children[i], model,
-                                       IMP_HDF5_PASS_MOLECULE_FACTORIES);
-      if (h) cur.add_child(h);
-    }
-    return cur;
-  }
-}
-
-atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh, Model *model) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_MOLECULE_FACTORIES(fh,Const);
-  RMF::NodeConstHandle root= fh.get_root_node();
-  atom::Hierarchies ret;
-  NodeConstHandles children= root.get_children();
-  for (unsigned int i=0; i< children.size(); ++i) {
-    if (children[i].get_type()== REPRESENTATION) {
-      atom::Hierarchy c=read_internal(children[i], model,
-                                      IMP_HDF5_PASS_MOLECULE_FACTORIES);
-      if (c) ret.push_back(c);
-    }
-  }
-
-  for (unsigned int i=0; i< fh.get_number_of_bonds(); ++i) {
-    std::pair<RMF::NodeConstHandle, RMF::NodeConstHandle> p= fh.get_bond(i);
-    void *aa= p.first.get_association<Particle*>();
-    void *ab= p.second.get_association<Particle*>();
-    if (aa && ab) {
-      Particle *pa= static_cast<Particle*>(aa);
-      Particle *pb= static_cast<Particle*>(ab);
-      if (!atom::Bonded::particle_is_instance(pa)) {
-        atom::Bonded::setup_particle(pa);
-      }
-      if (!atom::Bonded::particle_is_instance(pb)) {
-        atom::Bonded::setup_particle(pb);
-      }
-      atom::create_bond(atom::Bonded(pa),
-                        atom::Bonded(pb), 0);
-    }
-  }
+atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh,
+                                     Model *m) {
+  HierarchyLoadLink* rsl= get_hierarchy_load_link(fh, m);
+  atom::Hierarchies ret= rsl->create(fh.get_root_node());
+  rsl->load(fh, 0);
   return ret;
 }
 
-
-namespace {
-  typedef IMP::compatibility::map<Particle*, ParticlesTemp> RBM;
-  void load_internal(RMF::FileConstHandle file, atom::Hierarchy h,
-                     unsigned int frame, RBM &rigid_bodies,
-                     IMP_HDF5_ACCEPT_MOLECULE_FACTORIES(Const)) {
-    RMF::NodeConstHandle ncur
-                  = file.get_node_from_association(h.get_particle());
-    if (ncur != RMF::NodeConstHandle()) {
-      copy_data(ncur, h, frame, IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    }
-    if (core::RigidMember::particle_is_instance(h)) {
-      Particle *rb= core::RigidMember(h).get_rigid_body();
-      rigid_bodies[rb].push_back(h);
-    }
-    atom::Hierarchies children= h.get_children();
-    for (unsigned int i=0; i < children.size(); ++i) {
-      load_internal(file, children[i], frame, rigid_bodies,
-                    IMP_HDF5_PASS_MOLECULE_FACTORIES);
-    }
-  }
-  void fix_rigid_body(core::RigidBody rb, core::RigidMembers rms) {
-    algebra::Vector3Ds local(rms.size());
-    algebra::Vector3Ds global(rms.size());
-    for (unsigned int i=0; i< rms.size(); ++i) {
-      local[i]= rms[i].get_internal_coordinates();
-      global[i]= rms[i].get_coordinates();
-    }
-    algebra::Transformation3D t3
-      = algebra::get_transformation_aligning_first_to_second(local, global);
-    rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
-    core::RigidBody cur= rb;
-    while (core::RigidMember::particle_is_instance(cur)) {
-      core::RigidMember rm(cur);
-      core::RigidBody parent= rm.get_rigid_body();
-      // t0= tp*tl -> tp= t0*tl-1
-      algebra::Transformation3D t3
-        = cur.get_reference_frame().get_transformation_to()
-        *rm.get_internal_transformation().get_inverse();
-      cur=parent;
-    }
-  }
+void link_hierarchies(RMF::FileConstHandle fh,
+                      atom::Hierarchies hs,
+                      bool overwrite) {
+  Pointer<HierarchyLoadLink> pll
+    = get_hierarchy_load_link(fh,
+                             IMP::internal::get_model(hs));
+  pll->link(fh.get_root_node(), hs);
+  pll->load(fh, 0);
 }
-
-void load_frame(RMF::FileConstHandle fh,
-                unsigned int frame,
-                atom::Hierarchy hs) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_MOLECULE_FACTORIES(fh,Const);
-  RBM rigid_bodies;
-  load_internal(fh, hs, frame, rigid_bodies,
-                IMP_HDF5_PASS_MOLECULE_FACTORIES);
-  for (RBM::const_iterator it= rigid_bodies.begin();
-       it != rigid_bodies.end(); ++it) {
-    if (it->second.size()<3) {
-      IMP_WARN("Too few particles to update rigid body: "
-               << it->first->get_name());
-    } else {
-      fix_rigid_body(core::RigidBody(it->first),
-                     core::RigidMembers(it->second));
-    }
-  }
-}
-
-
-unsigned int get_number_of_frames(RMF::FileConstHandle fh,
-                                  atom::Hierarchy) {
-  RMF::Category physics= fh.get_category<1>("physics");
-  RMF::FloatKey x
-    = internal::get_or_add_key<FloatTraits>(fh, physics, "cartesian x",
-                                            true);
-  return fh.get_number_of_frames(x);
-}
-
-
-namespace {
-  void associate_internal(RMF::NodeConstHandle nh, atom::Hierarchy h,
-                          bool overwrite) {
-    nh.set_association(h, overwrite);
-    NodeConstHandles children= nh.get_children();
-    if (h.get_number_of_children() != children.size()) {
-      IMP_THROW("Mismatched sizes at " << h, ValueException);
-    }
-    for (unsigned int i=0; i< children.size(); ++i) {
-      associate_internal(children[i], h.get_child(i), overwrite);
-    }
-  }
-}
-
-void set_hierarchies(RMF::FileConstHandle rh, atom::Hierarchies hs,
-                     bool overwrite) {
-  IMP_FUNCTION_LOG;
-  RMF::NodeConstHandle root= rh.get_root_node();
-  NodeConstHandles children= root.get_children();
-  unsigned int hsi=0;
-  for (unsigned int i=0; i< children.size(); ++i) {
-    if (children[i].get_type()== REPRESENTATION) {
-      if (hs.size() <= hsi) {
-        IMP_THROW("Too few hierarchies for file", ValueException);
-      }
-      associate_internal(children[i], hs[hsi], overwrite);
-      ++hsi;
-    }
-  }
-  if (hsi != hs.size()) {
-    IMP_THROW("Mismatched sizes", ValueException);
-  }
-  rh.flush();
-}
-
 
 IMPRMF_END_NAMESPACE

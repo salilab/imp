@@ -70,7 +70,7 @@ class GenericTest(IMP.test.TestCase):
                              IMP.atom.NonAlternativePDBSelector())
         IMP.set_log_level(IMP.SILENT)
         IMP.atom.add_bonds(h)
-        name=self.get_tmp_file_name("test_large.rmf")
+        name=self.get_tmp_file_name("test_large_nav.rmf")
         f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h)
         del f

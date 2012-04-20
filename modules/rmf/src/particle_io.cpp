@@ -9,129 +9,143 @@
 #include <IMP/rmf/particle_io.h>
 #include <RMF/FileHandle.h>
 #include <RMF/NodeHandle.h>
-#include <IMP/rmf/internal/imp_operations.h>
+#include <IMP/rmf/links.h>
+#include <IMP/rmf/link_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
-using namespace RMF;
 
-void add_particle(RMF::FileHandle fh, Particle* ps) {
-  RMF::NodeHandle n= fh.get_root_node().add_child(ps->get_name(), CUSTOM);
-  Category IMP= internal::get_or_add_category<1>(fh, "IMP");
-  n.set_association(ps);
-  {
-    IMP::FloatKeys fks= ps->get_float_keys();
-    for (unsigned int i=0; i< fks.size(); ++i) {
-      bool mf=false;
-      if (fks[i]== IMP::core::XYZ::get_xyz_keys()[0]
-          || fks[i]== IMP::core::XYZ::get_xyz_keys()[1]
-          || fks[i]== IMP::core::XYZ::get_xyz_keys()[2]) {
-        mf=true;
+namespace {
+  class ParticleLoadLink: public SimpleLoadLink<Particle> {
+    typedef SimpleLoadLink<Particle> P;
+    RMF::Category cat_;
+    Pointer<Model> m_;
+    compatibility::map<RMF::FloatKey, FloatKey> float_;
+    compatibility::map<RMF::IntKey, IntKey> int_;
+    compatibility::map<RMF::StringKey, StringKey> string_;
+
+    template <class IK, class RK>
+    void load_keys(RMF::FileConstHandle fh,
+                   RMF::Category cat,
+                   compatibility::map<RK, IK> &map) {
+      typedef typename RK::TypeTraits Traits;
+      RMF::vector<RK> ks= fh.get_keys<Traits, 1>(cat);
+      for (unsigned int i=0; i< ks.size(); ++i) {
+        map[ks[i]]= IK(fh.get_name(ks[i]));
       }
-      RMF::FloatKey fk= internal::get_or_add_key<FloatTraits>(fh, IMP,
-                                               fks[i].get_string(), mf);
-      n.set_value(fk, ps->get_value(fks[i]));
     }
-  }
-  {
-    IMP::IntKeys fks= ps->get_int_keys();
-    for (unsigned int i=0; i< fks.size(); ++i) {
-      RMF::IntKey fk
-        = internal::get_or_add_key<IntTraits>(fh, IMP, fks[i].get_string(),
-                                              false);
-      n.set_value(fk, ps->get_value(fks[i]));
-    }
-  }
-  {
-    IMP::StringKeys fks= ps->get_string_keys();
-    for (unsigned int i=0; i< fks.size(); ++i) {
-      RMF::StringKey fk
-        = internal::get_or_add_key<StringTraits>(fh, IMP,
-                                                 fks[i].get_string(),
-                                                 false);
-      n.set_value(fk, ps->get_value(fks[i]));
-    }
-  }
-  {
-    IMP::ParticleKeys fks= ps->get_particle_keys();
-    for (unsigned int i=0; i< fks.size(); ++i) {
-      RMF::IndexKey fk
-        = internal::get_or_add_key<IndexTraits>(fh, IMP, fks[i].get_string(),
-                                                false);
-      RMF::NodeHandle nh
-        = fh.get_node_from_association(ps->get_value(fks[i]));
-      if (nh== RMF::NodeHandle()) {
-        IMP_THROW("Particle " << ps->get_name()
-                  << " references particle "
-                  << ps->get_value(fks[i])->get_name()
-                  << " which is not already part of the file.",
-                  IOException);
+    template <class IK, class RK>
+    void load_one(Particle *o,
+                  RMF::NodeConstHandle nh,
+                  const compatibility::map<RK, IK> &map,
+                  unsigned int frame) {
+      for (typename compatibility::map<RK, IK>::const_iterator
+             it= map.begin(); it != map.end(); ++it) {
+        if (nh.get_has_value(it->first, frame)) {
+          IK ik= it->second;
+          if (o->has_attribute(ik)) {
+            o->set_value(ik,
+                         nh.get_value(it->first, frame));
+          } else {
+            o->add_attribute(ik,
+                             nh.get_value(it->first, frame));
+          }
+        }
       }
-      n.set_value(fk, nh.get_id().get_index());
     }
-  }
+    void do_load_one( RMF::NodeConstHandle nh,
+                      Particle *o,
+                      unsigned int frame) {
+      load_one(o, nh, float_, frame);
+      load_one(o, nh, int_, frame);
+      load_one(o, nh, string_, frame);
+    }
+    bool get_is(RMF::NodeConstHandle nh) const {
+      return nh.get_type()==RMF::CUSTOM;
+    }
+    Particle* do_create(RMF::NodeConstHandle name) {
+      return new Particle(m_, name.get_name());
+    }
+  public:
+    ParticleLoadLink(RMF::FileConstHandle fh, Model *m):
+      P("ParticleLoadLink%1%") {
+      cat_=fh.get_category<1>("IMP");
+      m_=m;
+      if (cat_ != RMF::Category()) {
+        load_keys(fh, cat_, float_);
+        load_keys(fh, cat_, int_);
+        load_keys(fh, cat_, string_);
+      }
+    }
+    IMP_OBJECT_INLINE(ParticleLoadLink,IMP_UNUSED(out),);
+  };
+
+  class ParticleSaveLink: public SimpleSaveLink<Particle> {
+    typedef SimpleSaveLink<Particle> P;
+    RMF::Category cat_;
+    compatibility::map<FloatKey, RMF::FloatKey> float_;
+    compatibility::map<IntKey, RMF::IntKey> int_;
+    compatibility::map<StringKey, RMF::StringKey> string_;
+    template <class IK, class RK>
+    void save_one(Particle *o,
+                  const base::Vector<IK> &ks,
+                  RMF::NodeHandle nh,
+                  compatibility::map<IK, RK> &map,
+                  unsigned int frame) {
+      for (unsigned int i=0; i< ks.size(); ++i) {
+        if (map.find(ks[i]) == map.end()) {
+          map[ks[i]]
+            = RMF::get_key_always<typename RK::TypeTraits>(nh.get_file(),
+                                                           cat_,
+                                                           ks[i].get_string(),
+                                                           true);
+        }
+        nh.set_value(map.find(ks[i])->second, o->get_value(ks[i]), frame);
+      }
+    }
+
+    void do_save_one(Particle *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      save_one(o, o->get_float_keys(), nh, float_, frame);
+      save_one(o, o->get_int_keys(), nh, int_, frame);
+      save_one(o, o->get_string_keys(), nh, string_, frame);
+    }
+    RMF::NodeType get_type(Particle*) const {
+      return RMF::CUSTOM;
+    }
+  public:
+    ParticleSaveLink(RMF::FileHandle fh): P("ParticleSaveLink%1%"){
+      cat_=RMF::get_category_always<1>(fh, "IMP");
+    }
+    IMP_OBJECT_INLINE(ParticleSaveLink,IMP_UNUSED(out),);
+  };
+
+  IMP_DEFINE_LINKERS(Particle, particle, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh,
+                      Model *m), (fh), (fh, m));
 }
 
+
+
+void add_particles(RMF::FileHandle fh, const ParticlesTemp &ps) {
+  Pointer<ParticleSaveLink> pll= get_particle_save_link(fh);
+  pll->add(fh.get_root_node(), ps);
+  pll->save(fh, 0);
+}
+
+
 ParticlesTemp create_particles(RMF::FileConstHandle fh, Model *m) {
-  NodeConstHandles ch= fh.get_root_node().get_children();
-  Category IMP= internal::get_or_add_category<1>(fh, "IMP");
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< ch.size(); ++i) {
-    RMF::NodeConstHandle cur= ch[i];
-    if (ch[i].get_type()==CUSTOM) {
-      bool has_data=false;
-      IMP_NEW(Particle, p, (m));
-      ch[i].set_association(p);
-      {
-        RMF::FloatKeys fks= fh.get_keys<FloatTraits, 1>(IMP);
-        for (unsigned int i=0; i< fks.size(); ++i) {
-          if (cur.get_has_value(fks[i])) {
-            has_data=true;
-            p->add_attribute(IMP::FloatKey(fh.get_name(fks[i])),
-                             cur.get_value(fks[i]), false);
-          }
-        }
-      }
-      {
-        RMF::IntKeys fks= fh.get_keys<IntTraits, 1>(IMP);
-        for (unsigned int i=0; i< fks.size(); ++i) {
-          if (cur.get_has_value(fks[i])) {
-            has_data=true;
-            p->add_attribute(IMP::IntKey(fh.get_name(fks[i])),
-                         cur.get_value(fks[i]));
-          }
-        }
-      }
-      {
-        RMF::StringKeys fks= fh.get_keys<StringTraits, 1>(IMP);
-        for (unsigned int i=0; i< fks.size(); ++i) {
-          if (cur.get_has_value(fks[i])) {
-            has_data=true;
-            p->add_attribute(IMP::StringKey(fh.get_name(fks[i])),
-                             cur.get_value(fks[i]));
-          }
-        }
-      }
-      {
-        RMF::IndexKeys fks= fh.get_keys<IndexTraits, 1>(IMP);
-        for (unsigned int i=0; i< fks.size(); ++i) {
-          if (cur.get_has_value(fks[i])) {
-            has_data=true;
-            RMF::NodeConstHandle nh
-              = fh.get_node_from_id(NodeID(cur.get_value(fks[i])));
-            Particle *op= reinterpret_cast<Particle*>(nh.get_association());
-            IMP_CHECK_OBJECT(op);
-            p->add_attribute(IMP::ParticleKey(fh.get_name(fks[i])),
-                             op);
-          }
-        }
-      }
-      if (has_data) {
-        ret.push_back(p.release());
-      } else {
-        m->remove_particle(p);
-      }
-    }
-  }
+  Pointer<ParticleLoadLink> pll= get_particle_load_link(fh, m);
+  ParticlesTemp ret= pll->create(fh.get_root_node());
+  pll->load(fh, 0);
   return ret;
+}
+
+void link_particles(RMF::FileConstHandle fh, const ParticlesTemp &ps) {
+  Pointer<ParticleLoadLink> pll
+    = get_particle_load_link(fh,
+                             IMP::internal::get_model(ps));
+  pll->link(fh.get_root_node(), ps);
+  pll->load(fh, 0);
 }
 IMPRMF_END_NAMESPACE

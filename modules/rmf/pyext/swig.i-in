@@ -1,6 +1,10 @@
 IMP_SWIG_OBJECT(IMP::rmf, SaveOptimizerState, SaveptimizerStates);
 IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
+IMP_SWIG_OBJECT(IMP::rmf, RMFRestraint, RMFRestraints);
+IMP_SWIG_BASE_OBJECT(IMP::rmf, LoadLink, LoadLinks);
+IMP_SWIG_BASE_OBJECT(IMP::rmf, SaveLink, SaveLinks);
 
+%include "IMP/rmf/links.h"
 %include "IMP/rmf/atom_io.h"
 %include "IMP/rmf/restraint_io.h"
 %include "IMP/rmf/particle_io.h"

@@ -8,268 +8,187 @@
 
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/internal/imp_operations.h>
+#include <IMP/rmf/links.h>
+#include <IMP/rmf/link_macros.h>
+#include <RMF/decorators.h>
 #include <IMP/scoped.h>
+#include <IMP/base/ConstArray.h>
+#include <IMP/base/WeakPointer.h>
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
-using namespace RMF;
-
-#define  IMP_HDF5_CREATE_RESTRAINT_KEYS(imp_f)                          \
-  RMF::Category Feature= internal::get_or_add_category<1>(imp_f, "feature"); \
-  RMF::FloatKey sk                                                      \
-  = internal::get_or_add_key<FloatTraits>(imp_f, Feature, "score",      \
-                                          true);                        \
-  RMF::NodeIDsKey nk                                                    \
-  = internal::get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
-
-#define IMP_HDF5_ACCEPT_RESTRAINT_KEYS\
-  RMF::FloatKey sk, RMF::NodeIDsKey nk
-
-#define IMP_HDF5_PASS_RESTRAINT_KEYS\
-  sk, nk
 
 namespace {
-
-  class  Subset {
-    boost::shared_array<Particle*> ps_;
-    unsigned int sz_;
-    int compare(const Subset &o) const {
-      if (sz_ < o.sz_) return -1;
-      else if (sz_ > o.sz_) return 1;
-      for (unsigned int i=0; i< size(); ++i) {
-        if (ps_[i] < o[i]) return -1;
-        else if (ps_[i] > o[i]) return 1;
-      }
-      return 0;
+  class Subset: public base::ConstArray<base::WeakPointer<Particle>,
+                                        Particle*> {
+    typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
+    static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
+      std::sort(ps.begin(), ps.end());
+      return ps;
     }
   public:
-    Subset(): sz_(0){}
-    Subset(ParticlesTemp ps) {
-      std::sort(ps.begin(), ps.end());
-      ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
-      sz_= ps.size();
-      ps_.reset(new Particle*[ps.size()]);
-      std::copy(ps.begin(), ps.end(), ps_.get());
-      IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
-                      "Duplicate particles in set");
+    Subset(){}
+    /** Construct a subset from a non-empty list of particles.
+     */
+    explicit Subset(ParticlesTemp ps): P(get_sorted(ps)) {
+      IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
       IMP_IF_CHECK(USAGE) {
+        std::sort(ps.begin(), ps.end());
+        IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
+                        "Duplicate particles in set");
         for (unsigned int i=0; i< ps.size(); ++i) {
           IMP_CHECK_OBJECT(ps[i]);
         }
       }
     }
-    unsigned int size() const {
-      return sz_;
+    Model *get_model() const {
+      return operator[](0)->get_model();
     }
-    Particle *operator[](unsigned int i) const {
-      IMP_USAGE_CHECK( i < sz_, "Out of range");
-      return ps_[i];
-    }
-    typedef Particle** const_iterator;
-    const_iterator begin() const {
-      return ps_.get();
-    }
-    const_iterator end() const {
-      return ps_.get()+sz_;
-    }
-    IMP_SHOWABLE(Subset);
     std::string get_name() const;
-    IMP_HASHABLE_INLINE(Subset, return boost::hash_range(begin(),
-                                                         end()););
-    IMP_COMPARISONS(Subset);
+    bool get_contains(const Subset &o) const {
+      return std::includes(begin(), end(), o.begin(), o.end());
+    }
   };
 
-  void Subset::show(std::ostream &out) const {
-    out << "[";
-    for (unsigned int i=0; i< size(); ++i) {
-      out << "\"" <<  ps_[i]->get_name() << "\" ";
+  IMP_VALUES(Subset, Subsets);
+  IMP_SWAP(Subset);
+
+
+  ParticlesTemp get_particles(RMF::FileConstHandle fh,
+                              const RMF::NodeIDs &ids) {
+    ParticlesTemp ret;
+    for (unsigned int i=0; i< ids.size(); ++i) {
+      RMF::NodeConstHandle nh= fh.get_node_from_id(ids[i]);
+      ret.push_back(get_association<Particle>(nh));
     }
-    out << "]";
+    return ret;
   }
 
-  std::string Subset::get_name() const {
-    std::ostringstream oss;
-    show(oss);
-    return oss.str();
-  }
-  inline std::size_t hash_value(const Subset &t) {
-    return t.__hash__();
+  template <class C>
+  RMF::NodeIDs get_node_ids(RMF::FileConstHandle fh,
+                            const C &ps) {
+    RMF::NodeIDs ret;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      ret.push_back(get_node_from_association(fh, ps[i]).get_id());
+    }
+    return ret;
   }
 
+  struct RestraintSaveData {
+    compatibility::map<Subset, RMF::NodeID> map_;
+  };
 
-  typedef IMP::compatibility::map<Subset, RMF::NodeHandle> Index;
-  void build_index(RMF::NodeHandle parent,
-                   Index &nodes,
-                   IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    IMP_UNUSED(sk);
-    NodeHandles children= parent.get_children();
-    for (unsigned int i=0; i< children.size(); ++i) {
-      ParticlesTemp pt;
-      if (children[i].get_has_value(nk)) {
-        NodeIDs ids= children[i].get_value(nk);
-        for (unsigned int j=0; j< ids.size(); ++j) {
-          RMF::NodeHandle nh
-            = parent.get_file().get_node_from_id(ids[j]);
-          Particle *p
-            = nh.get_association<Particle*>();
-          pt.push_back(p);
+  RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
+                           RMF::NodeHandle parent) {
+    if (d.map_.find(s) == d.map_.end()) {
+      RMF::NodeHandle n= parent.add_child("subset", RMF::FEATURE);
+      d.map_[s]=n.get_id();
+    }
+    return parent.get_file().get_node_from_id(d.map_.find(s)->second);
+  }
+
+  // get_particles
+  //
+  class RestraintLoadLink: public SimpleLoadLink<RMFRestraint> {
+    typedef SimpleLoadLink<RMFRestraint> P;
+    RMF::ScoreConstFactory sf_;
+
+    void do_load_one( RMF::NodeConstHandle nh,
+                      RMFRestraint *o,
+                      unsigned int frame) {
+      RMF::ScoreConst d= sf_.get(nh, frame);
+      o->set_score(d.get_score());
+      o->set_particles(get_particles(nh.get_file(),
+                                     d.get_representation()));
+      RMF::NodeConstHandles ch= nh.get_children();
+      RMFRestraints subs;
+      for (unsigned int i=0; i< ch.size(); ++i) {
+        if (sf_.get_is(ch[i], frame)) {
+          RMF::ScoreConst sd= sf_.get(ch[i], frame);
+          IMP_NEW(RMFRestraint, s, (ch[i].get_name()));
+          subs.push_back(s);
+          s->set_score(sd.get_score());
+          s->set_particles(get_particles(nh.get_file(),
+                                         sd.get_representation()));
         }
       }
-      Subset s(pt);
-      /*std::cout << "Adding index entry for " << s << " to "
-        << parent.get_name()
-        << std::endl;*/
-      nodes[s]=children[i];
+      o->set_decomposition(subs);
+   }
+    bool get_is(RMF::NodeConstHandle nh) const {
+      return nh.get_type()==RMF::FEATURE;
     }
-  }
-
-  void set_particles(RMF::NodeHandle nh,
-                     const ParticlesTemp& ps,
-                     IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    IMP_UNUSED(sk);
-    NodeIDs ids(ps.size());
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      NodeID id
-        =nh.get_file()
-        .get_node_from_association(static_cast<Particle*>(ps[i])).get_id();
-      ids[i]=id;
+    RMFRestraint* do_create(RMF::NodeConstHandle name) {
+      return new RMFRestraint(name.get_name());
     }
-    if (!ids.empty()) {
-      nh.set_value(nk, ids);
+  public:
+    RestraintLoadLink(RMF::FileConstHandle fh):
+      P("RestraintLoadLink%1%"), sf_(fh) {
     }
-  }
-
-  RMF::NodeHandle get_child(RMF::NodeHandle parent,
-                       Restraint *r,
-                       Index &nodes,
-                       IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    ParticlesTemp ip= r->get_input_particles();
-    Subset s(ip);
-    if (nodes.find(s) == nodes.end()) {
-      std::ostringstream oss;
-      oss << "Feature " << nodes.size();
-      RMF::NodeHandle c= parent.add_child(oss.str(), FEATURE);
-      /*std::cout << "Created node for " << s
-        << " under " << parent.get_name() << std::endl;*/
-      nodes[s]=c;
-      c.set_association(r);
-      set_particles(c, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
-      return c;
-    } else {
-      return nodes[s];
-    }
-  }
+    IMP_OBJECT_INLINE(RestraintLoadLink,IMP_UNUSED(out),);
+  };
 
 
-  void add_restraint_internal(Restraint *r,
-                              RMF::NodeHandle parent,
-                              IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    RMF::NodeHandle cur= parent.add_child(r->get_name(), FEATURE);
-    cur.set_association(r);
-    //
-    ParticlesTemp ip= r->get_input_particles();
-    //double s=r->unprotected_evaluate(NULL);
-    //cur.set_value(sk, s, -1);
+  class RestraintSaveLink: public SimpleSaveLink<Restraint> {
+    typedef SimpleSaveLink<Restraint> P;
+    RMF::ScoreFactory sf_;
+    compatibility::map<Restraint*, RestraintSaveData> data_;
 
-    /*base::Pointer<Restraint> rd= r->create_current_decomposition();
-    if (!rd) return;
-    RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
-    if (rs) {
-      Index index;
-      for (unsigned int i=0; i<rs->get_number_of_restraints(); ++i) {
-        //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
-        rs->get_restraint(i)->set_was_used(true);
-        RMF::NodeHandle rc=get_child(cur,rs->get_restraint(i), index,
-                                IMP_HDF5_PASS_RESTRAINT_KEYS);
-        double score = rs->get_restraint(i)->unprotected_evaluate(NULL);
-        rc.set_value(sk, score, 0);
+
+    void do_save_one(Restraint *o,
+                     RMF::NodeHandle nh,
+                     unsigned int frame) {
+      RestraintSaveData &d= data_[o];
+      RMF::Score sd= sf_.get(nh, frame);
+      sd.set_score(o->get_last_score());
+      sd.set_representation(get_node_ids(nh.get_file(),
+                                         o->get_input_particles()));
+      base::Pointer<Restraint> rd= o->create_current_decomposition();
+      if (rd && rd != o) {
+        rd->set_was_used(true);
+        rd->unprotected_evaluate(nullptr);
+        RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
+        for (unsigned int i=0; i< rs.size(); ++i) {
+          Subset s(rs[i]->get_input_particles());
+          double score= rs[i]->get_last_score();
+          RMF::NodeHandle nnh= get_node(s, d, nh);
+          RMF::Score csd= sf_.get(nnh, frame);
+          csd.set_score(score);
+          csd.set_representation(get_node_ids(nh.get_file(), s));
+        }
       }
-      }*/
-    set_particles(cur, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
-  }
+    }
+    RMF::NodeType get_type(Restraint*) const {
+      return RMF::FEATURE;
+    }
+  public:
+    RestraintSaveLink(RMF::FileHandle fh): P("RestraintSaveLink%1%"),
+                                           sf_(fh) {
+    }
+    IMP_OBJECT_INLINE(RestraintSaveLink,IMP_UNUSED(out),);
+  };
+
+
+  IMP_DEFINE_LINKERS(Restraint, restraint, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+
+}
+
+
+void add_restraints(RMF::FileHandle parent,
+                    const RestraintsTemp&r) {
+  RestraintSaveLink* rsl= get_restraint_save_link(parent);
+  rsl->add(parent.get_root_node(), r);
+  rsl->save(parent, 0);
+}
+
+RMFRestraints create_restraints(RMF::FileHandle fh) {
+  RestraintLoadLink* rsl= get_restraint_load_link(fh);
+  RMFRestraints ret= rsl->create(fh.get_root_node());
+  rsl->load(fh, 0);
+  return ret;
 }
 
 void add_restraint(RMF::FileHandle parent, Restraint *r) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(parent);
-  add_restraint_internal(r, parent.get_root_node(),
-                         IMP_HDF5_PASS_RESTRAINT_KEYS);
-  parent.flush();
+  add_restraints(parent, RestraintsTemp(1,r));
 }
-
-namespace {
-
-  void save_restraint_internal(Restraint *r,
-                               RMF::FileHandle f,
-                               int frame,
-                               IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
-    RMF::NodeHandle rn= f.get_node_from_association(r);
-    Index index;
-    build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
-    double s=r->get_last_score();
-    rn.set_value(sk, s, frame);
-    base::Pointer<Restraint> rd= r->create_current_decomposition();
-    if (!rd) return;
-    rd->set_was_used(true);
-    RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
-    if (!rs) return;
-    for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
-      //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
-      rs->get_restraint(i)->set_was_used(true);
-      RMF::NodeHandle rc=get_child(rn, rs->get_restraint(i), index,
-                              IMP_HDF5_PASS_RESTRAINT_KEYS);
-      double score = rs->get_restraint(i)->unprotected_evaluate(nullptr);
-      rc.set_value(sk, score, frame);
-    }
-  }
-}
-
-void save_frame(RMF::FileHandle f, int frame, Restraint *r) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
-  IMP_USAGE_CHECK(r->get_is_part_of_model(), "Must register restraints with "
-                  " model before adding them to rmf file");
-  save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
-  f.flush();
-}
-
-ParticlesTemp get_restraint_particles(RMF::NodeConstHandle f,
-                                      int frame) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(f.get_file());
-  IMP_UNUSED(sk);
-  IMP_USAGE_CHECK(f.get_type()== FEATURE,
-                  "Get restraint particles called on non-restraint node "
-                  << f.get_name());
-  RMF::FileConstHandle rh=f.get_file();
-  if (f.get_has_value(nk, frame)) {
-    NodeIDs ids= f.get_value(nk, frame);
-    ParticlesTemp ret(ids.size());
-    for (unsigned int i=0; i< ids.size(); ++i) {
-      RMF::NodeConstHandle nh= rh.get_node_from_id(ids[i]);
-      Particle *p= nh.get_association<Particle*>();
-      ret[i]=p;
-    }
-    return ret;
-  } else {
-    return ParticlesTemp();
-  }
-}
-
-
-
-double get_restraint_score(RMF::NodeConstHandle f,
-                           int frame) {
-  IMP_FUNCTION_LOG;
-  IMP_HDF5_CREATE_RESTRAINT_KEYS(f.get_file());
-  IMP_UNUSED(nk);
-  if (f.get_has_value(sk, frame)) {
-    return f.get_value(sk, frame);
-  } else {
-    return -std::numeric_limits<double>::infinity();
-  }
-}
-
-
-
 
 IMPRMF_END_NAMESPACE
