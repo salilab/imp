@@ -123,6 +123,7 @@ namespace RMF {
       add_ref();
       validate();
       release();
+      flush();
       H5garbage_collect();
     }
 
