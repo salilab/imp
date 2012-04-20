@@ -34,7 +34,8 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
   IMP_USAGE_CHECK(std::distance(b,e)
                   == static_cast< typename std::iterator_traits<It>
                   ::difference_type>(ss.size()),
-                  "Sizes don't match in load particle states");
+                  "Sizes don't match in load particle states: "
+                  << Subset(b,e) << " vs " << ss);
   unsigned int i=0;
   for (It c=b; c != e; ++c) {
     pst->get_particle_states(*c)->load_particle_state(ss[i], *c);
