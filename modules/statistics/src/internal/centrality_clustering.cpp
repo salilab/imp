@@ -55,6 +55,8 @@ namespace {
                 << "--" << boost::target(e, g)
                 << ": " << c << std::endl;
 */
+      IMP_UNUSED(c);
+      IMP_UNUSED(e);
       DS ds(&rank_[0], &parent_[0]);
       boost::initialize_incremental_components(g, ds);
       boost::incremental_components(g, ds);
