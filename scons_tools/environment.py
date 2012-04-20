@@ -486,7 +486,12 @@ def get_bin_environment(envi, extra_modules=[]):
     return env
 
 def get_benchmark_environment(envi, extra_modules=[]):
-    return get_bin_environment(envi, extra_modules+['benchmark'])
+    extra=[]
+    d= data.get(envi)
+    if d.modules['benchmark'].ok:
+        return get_bin_environment(envi, extra_modules+['benchmark'])
+    else:
+        return None
 
 def get_test_environment(envi):
     env= bug_fixes.clone_env(envi)
