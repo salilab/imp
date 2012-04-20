@@ -8,7 +8,7 @@
 
 #include <IMP/multifit/AlignSymmetric.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
 // sort eigen values such that the symm axis appears first
 void sort_helper(const algebra::PrincipalComponentAnalysis &pca,
                  int symm_mol_axis_ind,
@@ -26,6 +26,7 @@ void sort_helper(const algebra::PrincipalComponentAnalysis &pca,
   for(int i=0;i<3;i++) {
     ev_sorted[i]=std::sqrt(pca.get_principal_value(sorted_ind[i]));
   }
+}
 }
 
 algebra::Transformation3Ds AlignSymmetric::

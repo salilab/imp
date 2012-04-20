@@ -29,6 +29,7 @@
 #include <iostream>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
+namespace {
 int is_valid_transformation(const algebra::Transformation3D &t) {
   algebra::VectorD<4> v = t.get_rotation().get_quaternion();
   return (std::abs(v.get_squared_magnitude() - 1.0) < .1);
@@ -36,6 +37,7 @@ int is_valid_transformation(const algebra::Transformation3D &t) {
 //return x%y
 int my_mod(int x,int y){
   return (x%y+y)%y;
+}
 }
 //The axis is defined by points a and b
 algebra::Transformation3D calc_transformation_around_axis(
@@ -66,7 +68,7 @@ algebra::Transformation3Ds generate_translations_along_symm_axis(
   return all_trans;
 }
 
-
+namespace {
 algebra::Transformation3Ds generate_d2_translations_along_symm_axis(
                   atom::Hierarchies mhs,int symm_deg) {
   multifit::MolCnSymmAxisDetector symm_dec(symm_deg);
@@ -83,7 +85,7 @@ algebra::Transformation3Ds generate_d2_translations_along_symm_axis(
     all_trans.push_back(translation);
   return all_trans;
 }
-
+}
 
 
 algebra::Transformation3Ds generate_cn_transformations(
@@ -300,7 +302,7 @@ void transform_cn_assembly(atom::Hierarchies mhs,
     }
 
   curr_t=monomer_t.get_inverse();
-  for (unsigned int i=(int)mhs.size()-1;i>half;i--) {
+  for (int i=(int)mhs.size()-1;i>half;i--) {
     core::transform(core::RigidBody(mhs[i]),curr_t);
     curr_t=curr_t*monomer_t.get_inverse();
   }
@@ -389,6 +391,7 @@ em::FittingSolutions fit_cn_assembly(
   return r_coarse_sols;
 }
 
+namespace {
 em::FittingSolutions fast_cc(em::DensityMap *dmap1,
                              em::DensityMap *dmap2,
                              algebra::Transformation3Ds trans_on_dmap2) {
@@ -425,7 +428,7 @@ em::FittingSolutions fast_cc_translation(em::DensityMap *dmap1,
   dmap2->set_origin(orig);
   return fits;
 }
-
+}
 
 em::FittingSolutions fit_cn_assembly(
             em::DensityMap *asmb_map,
