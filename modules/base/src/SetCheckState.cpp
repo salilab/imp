@@ -7,6 +7,7 @@
 
 #include <IMP/base/SetCheckState.h>
 #include <IMP/base/Object.h>
+#include <IMP/base/exception.h>
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -38,6 +39,15 @@ void SetCheckState::do_show(std::ostream &out) const{
                       << " to "
      << (obj_? obj_->get_check_level() : IMP::base::get_check_level())
      << std::endl;
+}
+void SetCheckState::set(CheckLevel l) {
+  reset();
+  if (l != DEFAULT_CHECK) {
+    level_= base::get_check_level();
+    base::set_check_level(l);
+  } else {
+    level_=DEFAULT_CHECK;
+  }
 }
 
 IMPBASE_END_NAMESPACE
