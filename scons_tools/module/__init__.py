@@ -248,7 +248,11 @@ def _make_programs(envi, dirr, files, prefix=""):
                 if not benv:
                     benv= scons_tools.environment.get_benchmark_environment(envi,
                                                                             extra_modules=[_get_module_name(envi)])
-                ret.append(benv.Program(source=f, target=target))
+                if benv:
+                    ret.append(benv.Program(source=f, target=target))
+                else:
+                    msg="%sBenchmark "+str(target)+" disabled as the benchmark module is missing%s"
+                    print msg%(envi['IMP_COLORS']['red'], envi['IMP_COLORS']['end'])
             else:
                 ret.append(env.Program(source=f, target=target))
         elif str(f).endswith(".py") and env.get('repository', None):
