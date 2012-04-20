@@ -10,43 +10,58 @@ import environment
 
 class _TempDir(object):
     """Simple RAII-style class to make a temporary directory for gcov"""
-    def __init__(self, copy_graph_files):
+    def __init__(self):
         self._origdir = os.getcwd()
         self.prefix_strip = len(self._origdir.split(os.path.sep)) - 1
         self.tmpdir = tempfile.mkdtemp()
         # Fool gcov into thinking this dir is the IMP top-level dir
-        self._link_tree('modules', copy_graph_files)
-        self._link_tree('applications', copy_graph_files)
+        self._link_tree('modules')
+        self._link_tree('applications')
         os.mkdir(os.path.join(self.tmpdir, 'build'))
-        self._link_tree('build/src', copy_graph_files)
+        self._link_tree('build/src')
         os.symlink(os.path.join(self._origdir, 'build', 'include'),
                    os.path.join(self.tmpdir, 'build', 'include'))
 
-    def _link_tree(self, subdir, copy_graph_files):
+    def _link_tree(self, subdir):
         lenorig = len(self._origdir)
         for root, dirs, files in os.walk(self._origdir + '/' + subdir):
             # Reproduce each directory under the temporary directory
             tmpdir = os.path.join(self.tmpdir, root[lenorig+1:])
             os.mkdir(tmpdir)
             for f in files:
-                # Link any cpp files into the new directory
-                if f.endswith('.cpp') or f.endswith('.h'):
+                # Link any cpp or graph files into the new directory
+                if f.endswith('.cpp') or f.endswith('.gcno') \
+                   or f.endswith('.h'):
                     os.symlink(os.path.join(root, f), os.path.join(tmpdir, f))
-                # Link or copy any graph files into the new directory (links
-                # are fine to fool gcov, but lcov resolves symlinks so we
-                # need actual copies if we want HTML coverage reports)
-                elif f.endswith('.gcno'):
-                    orig = os.path.join(root, f)
-                    dest = os.path.join(tmpdir, f)
-                    if copy_graph_files:
-                        shutil.copy(orig, dest)
-                    else:
-                        os.symlink(orig, dest)
             # Prune uninteresting subdirectories
             for prune in ('bin', 'data', 'doc', 'examples', 'include',
                           'pyext', 'test', 'generated', '.svn'):
                 if prune in dirs:
                     dirs.remove(prune)
+
+    def _get_lcov_path(self):
+        """Find the lcov executable in the system PATH"""
+        for path in os.environ['PATH'].split(os.pathsep):
+            if os.path.isfile(os.path.join(path, 'lcov')):
+                return path
+        raise OSError("Cannot find lcov executable in PATH")
+
+    def make_lcov_binary(self):
+        """Make a patched version of lcov in the temporary directory.
+           Since lcov's geninfo tool follows symlinks to get the original
+           location of the graph file, it isn't fooled by our temporary
+           directories. Disable this behavior so that it *is* fooled."""
+        path = self._get_lcov_path()
+        shutil.copy(os.path.join(path, 'lcov'), self.tmpdir)
+        fin = open(os.path.join(path, 'geninfo'))
+        fout = open(os.path.join(self.tmpdir, 'geninfo'), 'w')
+        for line in fin:
+            fout.write(line.replace('readlink($bb_filename)', '0'))
+        fin.close()
+        fout.close()
+        os.chmod(os.path.join(self.tmpdir, 'geninfo'), 0755)
+        return os.path.join(self.tmpdir, 'lcov')
+
     def __del__(self):
         shutil.rmtree(self.tmpdir, ignore_errors=True)
 
@@ -119,7 +134,7 @@ class _CoverageTester(object):
             sources.append([directory, pattern, report])
 
     def Execute(self, *args, **keys):
-        self._tmpdir = _TempDir(self._html_coverage)
+        self._tmpdir = _TempDir()
         self._env['ENV']['GCOV_PREFIX'] = self._tmpdir.tmpdir
         self._env['ENV']['GCOV_PREFIX_STRIP'] = self._tmpdir.prefix_strip
         ret = self._env.Execute(*args, **keys)
@@ -335,6 +350,7 @@ class _CoverageTester(object):
             if r != 0:
                 raise OSError("%s failed with exit code %d" % (args[0], r))
         topdir = os.getcwd()
+        lcov = self._tmpdir.make_lcov_binary()
         tmpdir = self._tmpdir.tmpdir
 
         all_info = os.path.join(tmpdir, 'all.info')
@@ -343,7 +359,7 @@ class _CoverageTester(object):
         if self._test_type == 'module':
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
-            call(['lcov', '-c', '-b', '.',
+            call([lcov, '-c', '-b', '.',
                   '-d', '%s/build/src/%s.gcda' % (tmpdir,
                                                   self.get_wrap(self._name)),
                   '-d', '%s/modules/%s/src/' % (tmpdir,
@@ -352,7 +368,7 @@ class _CoverageTester(object):
         else:
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
-            call(['lcov', '-c', '-b', tmpdir,
+            call([lcov, '-c', '-b', tmpdir,
                   '-d', '%s/applications/%s/' % (tmpdir, self._name),
                   '-o', all_info])
         self._extract_lcov_info(all_info, out_info)
