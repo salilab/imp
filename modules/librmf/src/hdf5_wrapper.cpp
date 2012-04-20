@@ -155,6 +155,12 @@ std::string HDF5ConstFile::get_name() const {
   IMP_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz+1));
   return std::string(buf.get());
 }
+std::string HDF5File::get_name() const {
+  int sz=H5Fget_name(get_handle(), NULL, 0);
+  boost::scoped_array<char> buf(new char[sz+1]);
+  IMP_HDF5_CALL(H5Fget_name(get_handle(), buf.get(), sz+1));
+  return std::string(buf.get());
+}
 
 HDF5File::~HDF5File() {
 }
