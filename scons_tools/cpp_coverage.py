@@ -359,7 +359,7 @@ class _CoverageTester(object):
         if self._test_type == 'module':
             # Get all coverage info (includes all dependencies,
             # e.g. boost headers)
-            call([lcov, '-c', '-b', '.',
+            call([lcov, '-c', '-b', tmpdir,
                   '-d', '%s/build/src/%s.gcda' % (tmpdir,
                                                   self.get_wrap(self._name)),
                   '-d', '%s/modules/%s/src/' % (tmpdir,
