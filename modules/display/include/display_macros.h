@@ -47,6 +47,7 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
+  Name::Name(std::string name): display::Geometry(name) {}              \
   Name::Name(const Type &v): display::Geometry(#Name), v_(v){}          \
   Name::Name(const Type &v, const Color &c):                            \
       display::Geometry(c, #Name), v_(v) {}                             \
@@ -96,11 +97,13 @@ protected:                                                              \
   class IMPDISPLAYEXPORT Name: public display::Geometry {               \
     Type v_;                                                            \
   public:                                                               \
+    Name(std::string name);                                             \
     Name(const Type &v);                                                \
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const display::Color &c, std::string n);        \
     const Type& get_geometry() const {return v_;}                       \
+    void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   }                                                                     \
 
@@ -110,6 +113,7 @@ protected:                                                              \
   class IMPDISPLAYEXPORT Name: public display::Geometry {               \
     Type v_;                                                            \
   public:                                                               \
+    Name(std::string name);                                             \
     Name(const Type &v);                                                \
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
@@ -121,6 +125,7 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
+  Name::Name(std::string name): display::Geometry(name) {}              \
   Name::Name(const Type &v): display::Geometry(#Name), v_(v){}          \
   Name::Name(const Type &v, const display::Color &c):                   \
       display::Geometry(c, #Name), v_(v) {}                             \

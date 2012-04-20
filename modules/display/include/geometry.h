@@ -53,7 +53,9 @@ public:
   virtual bool get_has_color() const {
     return has_color_;
   }
-
+  void set_has_color(bool tf) {
+    has_color_=tf;
+  }
   void set_color(Color c) {
     has_color_=true;
       color_=c;
