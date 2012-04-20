@@ -20,17 +20,17 @@ class GenericTest(IMP.test.TestCase):
         d.set_y(0)
         d.set_z(0)
         nf=10
-        IMP.set_log_level(IMP.PROGRESS)
+        IMP.set_log_level(IMP.VERBOSE)
         f=RMF.create_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
         IMP.rmf.add_hierarchy(f, h)
         for i in range(0,nf):
             d.set_x(i)
-            IMP.rmf.save_frame(f, i, h)
+            IMP.rmf.save_frame(f, i)
         del f
         f= RMF.open_rmf_file(self.get_tmp_file_name("test_mf.rmf"))
         [h]= IMP.rmf.create_hierarchies(f, m)
         for i in range(0,nf):
-            IMP.rmf.load_frame( f, i, h)
+            IMP.rmf.load_frame( f, i)
             d= IMP.core.XYZR(h)
             self.assertEqual(d.get_x(), i)
 

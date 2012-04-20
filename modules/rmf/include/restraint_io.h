@@ -10,10 +10,40 @@
 #define IMPRMF_RESTRAINT_IO_H
 
 #include "rmf_config.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/object_macros.h>
 #include <RMF/NodeHandle.h>
 #include <IMP/Restraint.h>
 
 IMPRMF_BEGIN_NAMESPACE
+
+
+class RMFRestraint;
+IMP_OBJECTS(RMFRestraint, RMFRestraints);
+/** This class holds restraint info loaded from an RMF file.*/
+class RMFRestraint: public base::Object {
+  double score_;
+  ParticlesTemp ps_;
+  RMFRestraints decomp_;
+public:
+#ifndef IMP_DOXYGEN
+  RMFRestraint(std::string name): Object(name){}
+  IMP_OBJECT_INLINE(RMFRestraint,IMP_UNUSED(out),);
+  void set_score(double s) {score_=s;}
+  void set_particles(const ParticlesTemp &ps) {ps_=ps;}
+  void set_decomposition(const RMFRestraints &d) {
+    decomp_=d;
+  }
+#endif
+  const ParticlesTemp& get_input_particles() const {return ps_;}
+  double get_score() const {return score_;}
+  const RMFRestraints& get_current_decomposition() const {
+    return decomp_;
+  }
+};
+
+
+
 /** \name Restraint I/O
     Restraint I/O is quite limited as it is not practical to write enough
     information to the file to recreate actual IMP::Restraint objects
@@ -27,28 +57,19 @@ IMPRMF_BEGIN_NAMESPACE
     @{
 */
 /** Add a restraint to the file. This does not save the score.*/
+IMPRMFEXPORT void add_restraints(RMF::FileHandle parent,
+                                 const RestraintsTemp&r);
+
+#ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_restraint(RMF::FileHandle parent, Restraint *r);
-/** Add the last score of the restraint to the given frame.
+#endif
 
- \note The model is not updated within this call. If the model might
-  be out of date (eg, you changed particles since the last evaluate call,
-  call Model::update() manually.*/
-IMPRMFEXPORT void save_frame(RMF::FileHandle parent, int frame, Restraint *r);
-
-/** Return the list of particles for a restraint node. This is not
-    such a nice interface, but I can't think of a better one at the
-    moment.*/
-IMPRMFEXPORT ParticlesTemp get_restraint_particles(RMF::NodeConstHandle f,
-                                                    int frame);
-
-/** Return the restraint score, if available (or -inf if it is not).
-    This is not
-    such a nice interface, but I can't think of a better one at the
-    moment.*/
-IMPRMFEXPORT double get_restraint_score(RMF::NodeConstHandle f,
-                                         int frame);
+IMPRMFEXPORT
+RMFRestraints create_restraints(RMF::FileHandle fh);
 
 /** @} */
+
+
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_RESTRAINT_IO_H */

@@ -8,6 +8,7 @@
 
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/SaveOptimizerState.h>
+#include <IMP/rmf/links.h>
 IMPRMF_BEGIN_NAMESPACE
 
 
@@ -18,17 +19,7 @@ SaveOptimizerState(RMF::FileHandle fh):
 
 
 void SaveOptimizerState::do_update(unsigned int k) {
-  for (unsigned int i=0;i< get_number_of_hierarchies(); ++i) {
-    save_frame(fh_, k, get_hierarchy(i));
-  }
-  for (unsigned int i=0;i< get_number_of_restraints(); ++i) {
-    save_frame(fh_, k, get_restraint(i));
-  }
-  IMP_USAGE_CHECK(get_number_of_particles()==0,
-                  "Sorry, particles not supported yet.");
-  /*for (unsigned int i=0;i< get_number_of_particles(); ++i) {
-    save_frame(fh_, k, get_particle(i));
-    }*/
+  save_frame(fh_, k);
 }
 
 void SaveOptimizerState

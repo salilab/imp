@@ -25,14 +25,23 @@ IMPRMF_BEGIN_NAMESPACE
     The data is stored in a category named IMP.
     @{
 */
-/** Write the attributes of an arbitrary particle to the file.
+/** Add the passed particles to the RMF file. You can use the
+    save_frame() function to write these and other linked objects
+    to particular frames of the file.
  */
-IMPRMFEXPORT void add_particle(RMF::FileHandle fh, Particle* ps);
+IMPRMFEXPORT void add_particles(RMF::FileHandle fh, const ParticlesTemp &ps);
 
-/** Read all particles (as opposed to molecular hierarchy nodes)
+/** Read all particles (as opposed to molecular hierarchy nodes).
  */
 IMPRMFEXPORT ParticlesTemp create_particles(RMF::FileConstHandle fh, Model *m);
+
+/** Link a set of particles with the particles that had been written to
+    the file.
+*/
+IMPRMFEXPORT void link_particles(RMF::FileConstHandle fh,
+                                 const ParticlesTemp &ps);
 /** @} */
+
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_PARTICLE_IO_H */

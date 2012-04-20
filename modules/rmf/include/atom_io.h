@@ -32,15 +32,11 @@ IMPRMF_BEGIN_NAMESPACE
     - IMP::atom::Copy
     @{
  */
-
-/** Write the hierarchies as a file with data store in the frame. The
-    hierarchies must have been previously read from the file if you are
-    adding a frame.*/
-IMPRMFEXPORT void save_frame(RMF::FileHandle fh,
-                             unsigned int frame, atom::Hierarchy hs);
-
+IMPRMFEXPORT void add_hierarchies(RMF::FileHandle fh,
+                                  const atom::Hierarchies& hs);
+#ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_hierarchy(RMF::FileHandle fh, atom::Hierarchy hs);
-
+#endif
 
 /** Create a hierarchy from part of the file.
  */
@@ -54,21 +50,9 @@ IMPRMFEXPORT atom::Hierarchies create_hierarchies(RMF::FileConstHandle fh,
     If overwrite is false, then it is an error if the file already is
     associated with something.
 */
-IMPRMFEXPORT void set_hierarchies(RMF::FileConstHandle rh,
+IMPRMFEXPORT void link_hierarchies(RMF::FileConstHandle rh,
                                   atom::Hierarchies hs,
                                   bool overwrite=false);
-
-/** Read the ith frame from a file as a new hierarchy. If there are
-    particles involved in a core::RigidBody, the core::RigidBody
-    will have its orientation updated based on the loaded coordinates
-    of the core::RigidMember particles.
- */
-IMPRMFEXPORT void load_frame(RMF::FileConstHandle fh,
-                             unsigned int frame,
-                             atom::Hierarchy hs);
-
-IMPRMFEXPORT unsigned int get_number_of_frames(RMF::FileConstHandle fh,
-                                               atom::Hierarchy h);
 /** @} */
 
 

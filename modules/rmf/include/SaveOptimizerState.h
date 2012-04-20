@@ -36,14 +36,14 @@ class IMPRMFEXPORT SaveOptimizerState:
                   restraint, restraints, Restraint*,
                   Restraints,
                   {
-                    rmf::add_restraint(fh_, obj);
+                    rmf::add_restraints(fh_, RestraintsTemp(1,obj));
                   },{},
                   {});
   IMP_LIST_ACTION(public, Particle, Particles,
                   particle, particles, Particle*,
                   Particles,
                   {
-                    rmf::add_particle(fh_, obj);
+                    rmf::add_particles(fh_, ParticlesTemp(1,obj));
                   },{},
                   {});
   IMP_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
