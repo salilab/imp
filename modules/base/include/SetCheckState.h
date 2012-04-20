@@ -9,9 +9,7 @@
 #define IMPBASE_SET_CHECK_STATE_H
 
 #include "base_config.h"
-#include "exception.h"
-#include "Pointer.h"
-#include "Object.h"
+#include "raii_macros.h"
 #include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -21,12 +19,16 @@ class Object;
 /**
    To use, create an instance of this class with the check level you
    want. When it goes out of scope, it will restore the old level.
-   \ingroup checkging
+
+   \note This will not keep objects alive, make sure there is also some
+   other ref-counted pointer to them.
+
+   \ingroup checking
  */
 class IMPBASEEXPORT SetCheckState
 {
   CheckLevel level_;
-  Pointer<Object> obj_;
+  Object* obj_;
   void do_set(Object *o, CheckLevel l);
   void do_reset();
   void do_show(std::ostream &out) const;
