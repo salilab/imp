@@ -10,7 +10,7 @@
 #define IMPRMF_GEOMETRY_IO_H
 
 #include "rmf_config.h"
-#include <IMP/display/geometry.h>
+#include <IMP/display/declare_Geometry.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/FileHandle.h>
 

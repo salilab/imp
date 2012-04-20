@@ -12,7 +12,7 @@
 #include "XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/display/particle_geometry.h>
-
+#include <IMP/display/primitive_geometries.h>
 #include <limits>
 
 IMPCORE_BEGIN_NAMESPACE

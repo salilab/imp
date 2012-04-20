@@ -4,12 +4,13 @@
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/particle_io.h>
-#include <IMP/display/geometry.h>
-#include <IMP/display/particle_geometry.h>
+#include <IMP/display/declare_Geometry.h>
 #include <IMP/display/Writer.h>
+#include <IMP/display/restraint_geometry.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
+#include <IMP/rmf/links.h>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -24,103 +25,6 @@ void print_help() {
   std::cerr << desc << std::endl;
 }
 
-IMP::core::XYZRs get_xyzr_particles(RMF::NodeConstHandle nh,
-                                    int frame) {
-  IMP::ParticlesTemp ps= IMP::rmf::get_restraint_particles(nh, frame);
-  IMP::core::XYZRs ret;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (IMP::core::XYZR::particle_is_instance(ps[i])) {
-      ret.push_back(IMP::core::XYZR(ps[i]));
-    }
-  }
-  return ret;
-}
-
-void set_color(RMF::NodeConstHandle nh,
-               int frame, IMP::display::Geometry *g) {
-  if (restraint_max==-1) {
-    return;
-  } else {
-    double score= IMP::rmf::get_restraint_score(nh, frame);
-    if (score <= -std::numeric_limits<double>::max()) return;
-    double nscore= score/restraint_max;
-    if (nscore<0) nscore=0;
-    if (nscore>1) nscore=1;
-    g->set_color( IMP::display::get_jet_color(nscore));
-  }
-}
-
-IMP::display::Geometry *create_restraint_geometry(RMF::NodeConstHandle nh,
-                                                  int frame) {
-  double score=IMP::rmf::get_restraint_score(nh, frame);
-  if (score < -std::numeric_limits<double>::max()) return NULL;
-  RMF::NodeConstHandles children=nh.get_children();
-  IMP::display::Geometries gs;
-  for (unsigned int i=0; i< children.size(); ++i) {
-    IMP::display::Geometry* g
-      = create_restraint_geometry(children[i], frame);
-    if (g) {
-      IMP::Pointer<IMP::display::Geometry> gp(g);
-      gs.push_back(g);
-    }
-  }
-  IMP::core::XYZRs ds= get_xyzr_particles(nh, frame);
-  if (ds.size()==2) {
-    IMP::algebra::Segment3D s(ds[0].get_coordinates(), ds[1].get_coordinates());
-    gs.push_back(new IMP::display::SegmentGeometry(s));
-    gs.back()->set_name(nh.get_name());
-  } else {
-    for (unsigned int i=0; i< ds.size(); ++i) {
-      gs.push_back(new IMP::display::SphereGeometry(ds[i].get_sphere()));
-      gs.back()->set_name(nh.get_name());
-    }
-  }
-  if (gs.empty()) {
-    return NULL;
-  } else if (gs.size()==1) {
-    set_color(nh, frame, gs[0]);
-    IMP::Pointer<IMP::display::Geometry>
-      ret(static_cast<IMP::display::Geometry*>(gs[0]));
-    gs.clear();
-    return ret.release();
-  } else {
-    IMP_NEW(IMP::display::CompoundGeometry, ret, (gs, nh.get_name()));
-    set_color(nh, frame, ret);
-    return ret.release();
-  }
-}
-
-IMP::display::Geometries create_static_geometry(RMF::FileConstHandle rh) {
-  std::vector<RMF::NodeSetConstHandle<2> > sets= rh.get_node_sets<2>();
-  IMP::display::Geometries ret;
-  for (unsigned int i=0; i< sets.size(); ++i) {
-    if (sets[i].get_type()== RMF::BOND) {
-      RMF::NodeHandle r0= sets[i].get_node(0);
-      RMF::NodeHandle r1= sets[i].get_node(1);
-      IMP::Particle *p0= reinterpret_cast<IMP::Particle*>(r0.get_association());
-      IMP::Particle *p1= reinterpret_cast<IMP::Particle*>(r1.get_association());
-      IMP_NEW(IMP::core::EdgePairGeometry, g, (IMP::ParticlePair(p0, p1)));
-      g->set_name("bonds");
-      ret.push_back(g);
-    }
-  }
-  return ret;
-}
-
-void add_restraints(RMF::FileConstHandle rh,
-                    int frame,
-                    IMP::display::Writer *w) {
-  RMF::NodeConstHandles children = rh.get_root_node().get_children();
-  for (unsigned int i=0; i< children.size(); ++i) {
-    IMP::display::Geometry* g= create_restraint_geometry(children[i],
-                                                         frame);
-    if (g) {
-      IMP::Pointer<IMP::display::Geometry> gp(g);
-      g->set_color(IMP::display::get_display_color(i));
-      w->add_geometry(g);
-    }
-  }
-}
 
 int main(int argc, char **argv) {
   try {
@@ -172,17 +76,15 @@ int main(int argc, char **argv) {
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
+    IMP::rmf::RMFRestraints rs= IMP::rmf::create_restraints(rh, m);
+    IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
     int minframe, maxframe;
     if (frame>=0) {
       minframe=frame;
       maxframe=minframe+1;
     } else {
       minframe=0;
-      RMF::Category physics= rh.get_category<1>("physics");
-      RMF::FloatKey xk
-          =rh.get_key<RMF::FloatTraits, 1>(physics, "cartesian x");
-      std::cout << xk << std::endl;
-      maxframe= rh.get_number_of_frames(xk)+1;
+      maxframe= rh.get_number_of_frames()+1;
     }
     int step=1;
     if (frame<0) step=std::abs(frame);
@@ -191,14 +93,13 @@ int main(int argc, char **argv) {
 
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
-    IMP::display::Geometries static_geometry=create_static_geometry(rh);
     for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
       if (cur_frame%10==0) {
         std::cout << cur_frame << " ";
       }
       w->set_frame((cur_frame-minframe)/step);
+      IMP::rmf::load_frame(rh, cur_frame);
       for (unsigned int i=0; i< hs.size(); ++i) {
-        IMP::rmf::load_frame(rh, cur_frame, hs[i]);
         IMP_NEW(IMP::atom::HierarchyGeometry, g, (hs[i]));
         if (vm.count("recolor")) {
           g->set_color(IMP::display::get_display_color(i));
@@ -218,14 +119,11 @@ int main(int argc, char **argv) {
           w->add_geometry(g);
         }
       }
-      IMP::display::Geometries gs=
-        IMP::rmf::create_geometries(rh, cur_frame);
-      for (unsigned int i=0; i< gs.size(); ++i) {
-        w->add_geometry(gs[i]);
+      w->add_geometry(gs);
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        IMP_NEW(IMP::display::RestraintGeometry, g, (rs[i]));
+        w->add_geometry(g);
       }
-      add_restraints(rh, cur_frame, w);
-
-      w->add_geometry(static_geometry);
     }
     if (exec) {
       if (file_type=="pymol") {

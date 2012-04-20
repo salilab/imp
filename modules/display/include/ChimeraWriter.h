@@ -11,6 +11,7 @@
 #include "display_config.h"
 
 #include <IMP/display/Writer.h>
+#include <IMP/display/writer_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

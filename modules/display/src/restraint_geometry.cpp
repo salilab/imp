@@ -7,6 +7,7 @@
  */
 
 #include "IMP/display/restraint_geometry.h"
+#include "IMP/display/primitive_geometries.h"
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/container/SingletonsRestraint.h>

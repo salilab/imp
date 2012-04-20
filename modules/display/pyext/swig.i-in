@@ -22,7 +22,7 @@ IMP_SWIG_OBJECT(IMP::display, BoundingBoxGeometry, BoundingBoxGeometries);
 IMP_SWIG_OBJECT(IMP::display, LabelGeometry, LabelGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintGeometry, RestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, RestraintSetGeometry, RestraintSetGeometries);
-IMP_SWIG_OBJECT(IMP::display, CompoundGeometry, CompoundGeometries);
+IMP_SWIG_OBJECT(IMP::display, GeometrySet, GeometrySets);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
 IMP_SWIG_VALUE(IMP::display, WriterOutput, WriterOutputs);
@@ -55,9 +55,12 @@ namespace display {
 
 
 /* Wrap our own classes */
-%include "IMP/display/display_macros.h"
+%include "IMP/display/geometry_macros.h"
+%include "IMP/display/writer_macros.h"
 %include "IMP/display/Color.h"
-%include "IMP/display/geometry.h"
+%include "IMP/display/declare_Geometry.h"
+%include "IMP/display/GeometrySet.h"
+%include "IMP/display/primitive_geometries.h"
 %include "IMP/display/GeometryProcessor.h"
 %include "IMP/display/Writer.h"
 

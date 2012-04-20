@@ -9,7 +9,7 @@
 #define IMPDISPLAY_CMM_WRITER_H
 
 #include "display_config.h"
-#include "display_macros.h"
+#include "writer_macros.h"
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

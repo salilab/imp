@@ -6,7 +6,9 @@
  *
  */
 
-#include "IMP/display/geometry.h"
+#include "IMP/display/declare_Geometry.h"
+#include "IMP/display/primitive_geometries.h"
+#include "IMP/display/GeometrySet.h"
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include "IMP/cgal/internal/polygons.h"
 #include "IMP/cgal/internal/polyhedrons.h"
@@ -70,19 +72,19 @@ namespace {
     }
   }
 }
-CompoundGeometry::CompoundGeometry(const Geometries &v):
-  Geometry("CompoundGeometry %1%"), v_(v){own(v_);}
-CompoundGeometry::CompoundGeometry(const Geometries &v, const Color &c):
-  Geometry(c, "CompoundGeometry %1%"), v_(v) {own(v_);}
-CompoundGeometry::CompoundGeometry(const Geometries &v, const std::string n):
+GeometrySet::GeometrySet(const Geometries &v):
+  Geometry("GeometrySet %1%"), v_(v){own(v_);}
+GeometrySet::GeometrySet(const Geometries &v, const Color &c):
+  Geometry(c, "GeometrySet %1%"), v_(v) {own(v_);}
+GeometrySet::GeometrySet(const Geometries &v, const std::string n):
   Geometry(n), v_(v) {own(v_);}
-CompoundGeometry::CompoundGeometry(const Geometries &v, const Color &c,
+GeometrySet::GeometrySet(const Geometries &v, const Color &c,
                                    std::string n):
   Geometry(c,n), v_(v) {own(v_);}
-void CompoundGeometry::do_show(std::ostream &out) const {
+void GeometrySet::do_show(std::ostream &out) const {
   out << get_geometry();
 }
-Geometries CompoundGeometry::get_components() const {
+Geometries GeometrySet::get_components() const {
   return get_geometry();
 }
 

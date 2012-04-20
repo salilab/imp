@@ -9,9 +9,9 @@
 #define IMPDISPLAY_RESTRAINT_GEOMETRY_H
 
 #include "display_config.h"
-#include "display_macros.h"
+#include "geometry_macros.h"
 #include "Colored.h"
-#include "geometry.h"
+#include "declare_Geometry.h"
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairContainer.h>

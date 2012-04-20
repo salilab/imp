@@ -16,9 +16,22 @@ g= IMP.display.BoundingBoxGeometry(bb)
 # add the geometry to the file
 IMP.rmf.add_geometry(f, g)
 
+bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(1,1,1),
+                              IMP.algebra.Vector3D(10, 10, 10))
+g.set_geometry(bb)
+# save a second frame with the bounding box
+IMP.rmf.save_frame(f, 1)
+
+
+del f
+f= RMF.open_rmf_file_read_only(tfn)
 # recreate the geometries from the file. The geometry will be the same
 # but it will not be a IMP.display.BoundingBoxGeometry, it will be
 # a set of cylinders instead.
-gs= IMP.rmf.create_geometries(f, 0)
+gs= IMP.rmf.create_geometries(f)
 print gs[0].get_name()
-print "Try running hdf5_display  on", tfn
+print "Try running rmf_display  on", tfn
+
+# load another frame
+IMP.rmf.load_frame(f, 1)
+print gs[0].get_geometry()

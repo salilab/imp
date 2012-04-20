@@ -4,6 +4,7 @@
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
+#include <IMP/rmf/links.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
 #include <IMP/exception.h>
@@ -61,23 +62,22 @@ int main(int argc, char **argv) {
       return 1;
     }
     IMP_NEW(IMP::Model, m, ());
-    IMP::atom::Hierarchies inhs;
+    IMP::atom::Hierarchy h;
     RMF::FileHandle rh;
     int nframes=-1;
     if (get_suffix(input) == ".pdb") {
-      IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
-      nframes=inhs.size();
-      for (unsigned int i=0; i< inhs.size(); ++i) {
-        IMP::atom::add_bonds(inhs[i]);
-      }
+      IMP_CATCH_AND_TERMINATE(h= IMP::atom::read_pdb(input, m));
+      IMP::atom::add_bonds(h);
+      nframes= std::numeric_limits<int>::max();
     } else {
       IMP_CATCH_AND_TERMINATE(rh= RMF::open_rmf_file(input));
-      inhs= IMP::rmf::create_hierarchies(rh, m);
-      RMF::Category physics= rh.get_category<1>("physics");
-      RMF::FloatKey xk
-          =rh.get_key<RMF::FloatTraits, 1>(physics, "cartesian x");
+      IMP::atom::Hierarchies inhs= IMP::rmf::create_hierarchies(rh, m);
+      h= IMP::atom::Hierarchy::setup_particle(new IMP::Particle(m, "root"));
+      for (unsigned int i=0; i< inhs.size(); ++i) {
+        h.add_child(inhs[i]);
+      }
       //std::cout << xk << std::endl;
-      nframes= rh.get_number_of_frames(xk)+1;
+      nframes= rh.get_number_of_frames();
     }
     int minframe, maxframe, step;
     if (frame>=0) {
@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
       step =1;
     } else {
       minframe=0;
-      maxframe=nframes;
+      maxframe=nframes+1;
       step=-frame;
     }
     RMF::FileHandle rho;
@@ -95,29 +95,25 @@ int main(int argc, char **argv) {
       if (outframe%10==0) {
         std::cout << outframe << std::endl;
       }
-      IMP::atom::Hierarchies cur;
       if (get_suffix(input) == ".pdb") {
-        cur= IMP::atom::Hierarchies(1, inhs[cur_frame]);
-      } else {
-        for (unsigned int i=0; i< inhs.size(); ++i) {
-          IMP::rmf::load_frame(rh, cur_frame, inhs[i]);
+        try {
+          IMP::atom::read_pdb(input, cur_frame, h);
+        } catch (IMP::base::ValueException) {
+          // out of frames;
+          break;
         }
-        cur= inhs;
+      } else {
+        IMP::rmf::load_frame(rh, cur_frame);
       }
       if (get_suffix(output) == ".pdb") {
         IMP::base::TextOutput out(output, outframe!=0);
-        IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, out, outframe));
+        IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(h, out, outframe));
       } else {
         if (outframe==0) {
           rho= RMF::create_rmf_file(output);
-          for (unsigned int i=0; i< cur.size(); ++i) {
-            IMP::rmf::add_hierarchy(rho, cur[i]);
-          }
+          IMP::rmf::add_hierarchies(rho, h.get_children());
         } else {
-          IMP::rmf::set_hierarchies(rh, cur);
-          for (unsigned int i=0; i< cur.size(); ++i) {
-            IMP::rmf::save_frame(rho, outframe, cur[i]);
-          }
+          IMP::rmf::save_frame(rho, outframe);
         }
       }
       ++outframe;

@@ -15,13 +15,13 @@ print "File name is", tfn
 rh = RMF.create_rmf_file(tfn)
 
 # add the hierarchy to the file
-IMP.rmf.add_hierarchy(rh, h)
+IMP.rmf.add_hierarchies(rh, [h])
 
 # change a coordinate
 IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 
 # add the new configuration to the file as frame 1
-IMP.rmf.save_frame(rh, 1, h)
+IMP.rmf.save_frame(rh, 1)
 
 # close the file
 del rh
@@ -33,6 +33,6 @@ rh= RMF.open_rmf_file(tfn)
 hps= IMP.rmf.create_hierarchies(rh, m)
 
 # load the second configuration into hps
-IMP.rmf.load_frame(rh, 1, hps[0])
+IMP.rmf.load_frame(rh, 1)
 
 print "Try running hdf5_display or hdf5_show on", tfn

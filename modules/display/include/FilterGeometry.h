@@ -1,5 +1,5 @@
 /**
- *  \file FilterGeometry.h
+ *  \file Filterdeclare_Geometry.h
  *  \brief Implement FilterGeometry
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -9,7 +9,7 @@
 #define IMPDISPLAY_FILTER_GEOMETRY_H
 
 #include "display_config.h"
-#include "geometry.h"
+#include "declare_Geometry.h"
 #include "GeometryProcessor.h"
 
 #include <IMP/PairContainer.h>
