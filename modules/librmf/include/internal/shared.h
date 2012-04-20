@@ -643,7 +643,7 @@ namespace RMF {
     };
 
 
-
+  RMFEXPORT bool get_is_open(std::string path);
 
   } // namespace internal
 } /* namespace RMF */

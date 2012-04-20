@@ -10,9 +10,13 @@
 #include <RMF/NodeHandle.h>
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
-
+#include <RMF/internal/set.h>
 namespace RMF {
   namespace internal {
+
+  namespace {
+  set<std::string> opened;
+  }
 
   void SharedData::initialize_categories(int i, bool create) {
     std::string nm=get_category_name_data_set_name(i+1);
@@ -70,6 +74,13 @@ namespace RMF {
   {
     IMP_RMF_BEGIN_FILE;
     IMP_RMF_BEGIN_OPERATION;
+
+    std::string name= file_.get_file().get_name();
+    IMP_RMF_USAGE_CHECK(!get_is_open(name),
+                        "RMF files can only be opened once at a time"
+                        << " at the moment: "
+                        << Strings(opened.begin(), opened.end()));
+    opened.insert(name);
     if (create) {
       IMP_RMF_OPERATION(
           file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
@@ -119,6 +130,7 @@ namespace RMF {
     }
 
     SharedData::~SharedData() {
+      opened.erase(get_file_name());
       // kind of nasty, needed to avoid recursion
       add_ref();
       validate();
@@ -445,6 +457,11 @@ namespace RMF {
           ptr(cs[i]->create(FileHandle(const_cast<SharedData*>(this))));
       ptr->write_errors(std::cerr);
     }
+  }
+
+
+  bool get_is_open(std::string path) {
+    return opened.find(path) != opened.end();
   }
 
   } // namespace internal

@@ -9,7 +9,7 @@ class GenericTest(RMF.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test creating a simple hierarchy file"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.mh"))
         r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")
@@ -19,7 +19,7 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(r.get_value(ik), 1)
     def test_frames(self):
         """Test creating a simple hierarchy file with frames"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_frames.mh"))
         r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")
@@ -56,7 +56,7 @@ class GenericTest(RMF.TestCase):
         pks= f.get_keys(pc)
         self.assert_(len(pks)> 3)
         print pks
-        tfn= self.get_tmp_file_name("test_file.mh")
+        tfn= self.get_tmp_file_name("test_fileold.mh")
         shutil.copy(ifn, tfn)
         fw= RMF.open_rmf_file(tfn)
         pc= f.get_category("physics")
