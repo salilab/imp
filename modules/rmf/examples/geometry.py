@@ -34,4 +34,5 @@ print "Try running rmf_display  on", tfn
 
 # load another frame
 IMP.rmf.load_frame(f, 1)
-print gs[0].get_geometry()
+# cast it to a BoundingBoxGeometry and print out the geometry
+print IMP.display.BoundingBoxGeometry.get_from(gs[0]).get_geometry()
