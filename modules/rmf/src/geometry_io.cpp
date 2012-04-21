@@ -7,7 +7,7 @@
  */
 
 #include <IMP/rmf/geometry_io.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include "IMP/display/internal/utility.h"
 #include <IMP/display/primitive_geometries.h>
@@ -328,15 +328,15 @@ void set_segment(algebra::Segment3D s,
   }
 
 
-  IMP_DEFINE_LINKERS(Sphere, sphere, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh), (fh), (fh));
-  IMP_DEFINE_LINKERS(Cylinder, cylinder, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh), (fh), (fh));
-  IMP_DEFINE_LINKERS(Segment, segment, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh), (fh), (fh));
-  IMP_DEFINE_LINKERS(Box, box, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh), (fh), (fh));
 }
+  IMP_DEFINE_INTERNAL_LINKERS(Sphere, sphere, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_INTERNAL_LINKERS(Cylinder, cylinder, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_INTERNAL_LINKERS(Segment, segment, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
+  IMP_DEFINE_INTERNAL_LINKERS(Box, box, (RMF::FileHandle fh),
+                     (RMF::FileConstHandle fh), (fh), (fh));
 
 void add_geometries(RMF::FileHandle fh,
                     const display::GeometriesTemp &r) {

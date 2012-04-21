@@ -4,7 +4,7 @@
 #include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/frames.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/atom/force_fields.h>
 #include <IMP/exception.h>

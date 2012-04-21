@@ -10,9 +10,8 @@
 #define IMPRMF_RESTRAINT_IO_H
 
 #include "rmf_config.h"
-#include <IMP/base/Object.h>
+#include "link_macros.h"
 #include <IMP/base/object_macros.h>
-#include <RMF/NodeHandle.h>
 #include <IMP/Restraint.h>
 #include <IMP/restraint_macros.h>
 
@@ -54,16 +53,12 @@ public:
     is not found.
     @{
 */
-/** Add a restraint to the file. This does not save the score.*/
-IMPRMFEXPORT void add_restraints(RMF::FileHandle parent,
-                                 const RestraintsTemp&r);
-
-#ifndef IMP_DOXYGEN
-IMPRMFEXPORT void add_restraint(RMF::FileHandle parent, Restraint *r);
-#endif
-
-IMPRMFEXPORT
-RMFRestraints create_restraints(RMF::FileConstHandle fh, Model *m);
+IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
+                   RMFRestraint*, RMFRestraints,
+                   Restraint*, RestraintsTemp,
+                   (RMF::FileHandle fh),
+                   (RMF::FileConstHandle fh,
+                    Model *m));
 
 /** @} */
 

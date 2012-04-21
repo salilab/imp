@@ -10,7 +10,7 @@
 #define IMPRMF_PARTICLE_IO_H
 
 #include "rmf_config.h"
-#include <RMF/NodeHandle.h>
+#include "link_macros.h"
 #include <IMP/atom/Hierarchy.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -25,21 +25,14 @@ IMPRMF_BEGIN_NAMESPACE
     The data is stored in a category named IMP.
     @{
 */
-/** Add the passed particles to the RMF file. You can use the
-    save_frame() function to write these and other linked objects
-    to particular frames of the file.
- */
-IMPRMFEXPORT void add_particles(RMF::FileHandle fh, const ParticlesTemp &ps);
 
-/** Read all particles (as opposed to molecular hierarchy nodes).
- */
-IMPRMFEXPORT ParticlesTemp create_particles(RMF::FileConstHandle fh, Model *m);
+IMP_DECLARE_LINKERS(Particle, particle, particles,
+                   Particle*, ParticlesTemp,
+                   Particle*, ParticlesTemp,
+                   (RMF::FileHandle fh),
+                   (RMF::FileConstHandle fh,
+                    Model *m));
 
-/** Link a set of particles with the particles that had been written to
-    the file.
-*/
-IMPRMFEXPORT void link_particles(RMF::FileConstHandle fh,
-                                 const ParticlesTemp &ps);
 /** @} */
 
 IMPRMF_END_NAMESPACE

@@ -10,7 +10,7 @@
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/frames.h>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
