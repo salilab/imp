@@ -30,7 +30,7 @@ IMP.rmf.add_hierarchy(rh, h)
 IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 
 # add the new configuration to the file as frame 1
-IMP.rmf.save_frame(rh, 1, h)
+IMP.rmf.save_frame(rh, 1)
 
 # create my key
 my_key= get_key(rh, "my score", True, my_kc)
