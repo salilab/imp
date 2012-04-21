@@ -29,8 +29,10 @@ public:
 
   Fine2DRegistrationRestraint(): calls_(0) {
     projection_ = new Image();
+    projection_->set_was_used(true);
     projection_->set_name("projection-in-fine2d");
     subject_ = new Image();
+    subject_->set_was_used(true);
     subject_->set_name("subject-in-fine2d");
   };
 
@@ -81,7 +83,6 @@ private:
   // Projection masks for the particles
   MasksManagerPtr  masks_;
   double resolution_,pixelsize_;
-//  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;
   ProjectingParameters params_;
 

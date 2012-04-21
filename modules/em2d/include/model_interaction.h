@@ -27,31 +27,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-/** OBSOLETE
-//! Generates a density map from a Molecular Hierarchy by downsampling
-IMPEM2DEXPORT Pointer<em::SampledDensityMap>
-                            get_map_from_model(const Particles &ps,
-                            double resolution,
-                            double voxelsize);
-**/
-
-
-/** OBSOLETE
-//! Generates a density map from a PDB file by downsampling.
-
-  \param[in] fn_model name of the PDB file
-  \param[out] fn_map name of the output map
-  \param[in] resolution in Angstroms.
-  \param[in] voxelsize in Angstroms/pixel
-  \param[in] mrw Reader/Writer for the desired format
-
-IMPEM2DEXPORT void get_map_from_model(String fn_model,
-                             String fn_map,
-                            double resolution,
-                            double voxelsize,
-                            em::MapReaderWriter &mrw);
-**/
-
 
 //! Generate a PDB file from a set of Vector2D (all the points are C-alpha) and
 //! the Z coordinate is set to 0.

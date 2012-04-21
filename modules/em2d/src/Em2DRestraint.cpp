@@ -6,10 +6,8 @@
  *
  */
 
-#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/Em2DRestraint.h"
 #include "IMP/em2d/project.h"
-#include "IMP/em/SpiderReaderWriter.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -56,7 +54,6 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                                   params_.n_projections);
   unsigned int rows =  em_images_[0]->get_header().get_number_of_rows();
   unsigned int cols =  em_images_[0]->get_header().get_number_of_columns();
-  IMP_NEW(SpiderImageReaderWriter, srw, ());
 
   ProjectingOptions options( params_.pixel_size, params_.resolution);
   Images projections=get_projections(

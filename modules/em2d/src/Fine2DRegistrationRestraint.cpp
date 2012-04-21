@@ -6,7 +6,6 @@
 
 
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
-#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/opencv_interface.h"

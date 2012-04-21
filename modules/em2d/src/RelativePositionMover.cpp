@@ -37,7 +37,6 @@ void RelativePositionMover::add_internal_transformations(
 
 ParticlesTemp RelativePositionMover::propose_move(Float prob) {
   IMP_UNUSED(prob);
-
   last_transformation_= rbA_.get_reference_frame().get_transformation_to();
   double p = static_cast<double>(rand()) / RAND_MAX;
   if(p < probabily_of_random_move_) {

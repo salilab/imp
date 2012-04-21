@@ -15,18 +15,6 @@ bool ProjectionParameters::particle_is_instance(Particle *p) {
   return p->has_attribute(get_keys()[0]);
 }
 
-/*
-ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
-  p->add_attribute(get_keys()[0],0.0);
-  p->add_attribute(get_keys()[1],0.0);
-  p->add_attribute(get_keys()[2],0.0);
-  p->add_attribute(get_keys()[3],0.0);
-  p->add_attribute(get_keys()[4],0.0);
-  p->add_attribute(get_keys()[5],0.0);
-  return ProjectionParameters(p);
-}
-*/
-
 ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
   p->add_attribute(get_keys()[0],0.0);
   p->add_attribute(get_keys()[1],0.0);

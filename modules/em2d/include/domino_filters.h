@@ -2,13 +2,12 @@
  *  \file ProjectionOverlapFilter.h
  *  \brief SubsetFilter for checking overlap between projections and images
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPEM2D_DOMINO_FILTERS_H
 #define IMPEM2D_DOMINO_FILTERS_H
 
-#include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/domino_particle_states.h"
 #include "IMP/algebra/Vector3D.h"
