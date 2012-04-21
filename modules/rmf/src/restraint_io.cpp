@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/internal/imp_operations.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include <RMF/decorators.h>
 #include <IMP/scoped.h>
@@ -183,28 +183,16 @@ namespace {
   };
 
 
-  IMP_DEFINE_LINKERS(Restraint, restraint, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh, Model *m), (fh), (fh, m));
-
 }
 
+IMP_DEFINE_LINKERS(Restraint, restraint, restraints,
+                   RMFRestraint*, RMFRestraints,
+                   Restraint*, RestraintsTemp,
+                   (RMF::FileHandle fh),
+                   (RMF::FileConstHandle fh,
+                    Model *m), (fh), (fh, m),
+                   (fh, IMP::internal::get_model(hs)));
 
-void add_restraints(RMF::FileHandle parent,
-                    const RestraintsTemp&r) {
-  RestraintSaveLink* rsl= get_restraint_save_link(parent);
-  rsl->add(parent.get_root_node(), r);
-  rsl->save(parent, 0);
-}
 
-RMFRestraints create_restraints(RMF::FileConstHandle fh, Model *m) {
-  RestraintLoadLink* rsl= get_restraint_load_link(fh, m);
-  RMFRestraints ret= rsl->create(fh.get_root_node());
-  rsl->load(fh, 0);
-  return ret;
-}
-
-void add_restraint(RMF::FileHandle parent, Restraint *r) {
-  add_restraints(parent, RestraintsTemp(1,r));
-}
 
 IMPRMF_END_NAMESPACE

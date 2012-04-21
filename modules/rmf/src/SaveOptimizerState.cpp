@@ -8,7 +8,7 @@
 
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/SaveOptimizerState.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/frames.h>
 IMPRMF_BEGIN_NAMESPACE
 
 

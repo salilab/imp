@@ -9,7 +9,7 @@
 #include <IMP/rmf/particle_io.h>
 #include <RMF/FileHandle.h>
 #include <RMF/NodeHandle.h>
-#include <IMP/rmf/links.h>
+#include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -119,33 +119,15 @@ namespace {
     }
     IMP_OBJECT_INLINE(ParticleSaveLink,IMP_UNUSED(out),);
   };
-
-  IMP_DEFINE_LINKERS(Particle, particle, (RMF::FileHandle fh),
-                     (RMF::FileConstHandle fh,
-                      Model *m), (fh), (fh, m));
 }
 
 
+IMP_DEFINE_LINKERS(Particle, particle, particles,
+                   Particle*, ParticlesTemp,
+                   Particle*, ParticlesTemp,
+                   (RMF::FileHandle fh),
+                   (RMF::FileConstHandle fh,
+                    Model *m), (fh), (fh, m),
+                   (fh, IMP::internal::get_model(hs)));
 
-void add_particles(RMF::FileHandle fh, const ParticlesTemp &ps) {
-  Pointer<ParticleSaveLink> pll= get_particle_save_link(fh);
-  pll->add(fh.get_root_node(), ps);
-  pll->save(fh, 0);
-}
-
-
-ParticlesTemp create_particles(RMF::FileConstHandle fh, Model *m) {
-  Pointer<ParticleLoadLink> pll= get_particle_load_link(fh, m);
-  ParticlesTemp ret= pll->create(fh.get_root_node());
-  pll->load(fh, 0);
-  return ret;
-}
-
-void link_particles(RMF::FileConstHandle fh, const ParticlesTemp &ps) {
-  Pointer<ParticleLoadLink> pll
-    = get_particle_load_link(fh,
-                             IMP::internal::get_model(ps));
-  pll->link(fh.get_root_node(), ps);
-  pll->load(fh, 0);
-}
 IMPRMF_END_NAMESPACE
