@@ -9,7 +9,6 @@
 #include "IMP/Pointer.h"
 
 
-
 IMPEM2D_BEGIN_NAMESPACE
 
 Image::Image(): Object("Image%1%") {
@@ -80,7 +79,8 @@ Images read_images(const Strings &names,
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
-    v[i]=new Image(names[i],rw);
+    v[i] = new Image(names[i],rw);
+    v[i]->set_was_used(true);
   }
   return v;
 }

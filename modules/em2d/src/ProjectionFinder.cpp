@@ -54,10 +54,11 @@ IMPEM2D_BEGIN_NAMESPACE
   SUBJECTS_POLAR_AUTOC_.resize(n_subjects);
   subjects_cog_.resize(n_subjects);
   for (unsigned int i=0;i<n_subjects;++i) {
-    subjects_[i]=subjects[i]; // doest not copy
+    subjects_[i]=subjects[i]; // doest not deep copy
     std::ostringstream oss;
     oss << "Image subject " << i;
     subjects_[i]->set_name(oss.str());
+    subjects_[i]->set_was_used(true);
     do_preprocess_subject(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
@@ -68,10 +69,12 @@ void ProjectionFinder::set_variance_images(const em2d::Images &variances) {
   variances_.resize(variances.size());
   unsigned int n_variances = variances_.size();
   for (unsigned int i=0;i<n_variances;++i) {
-    variances_[i] = variances[i]; // doest not copy
+    variances_[i] = variances[i]; // doest not deep copy
+
     std::ostringstream oss;
     oss << "Variance subject " << i;
     variances_[i]->set_name(oss.str());
+    variances_[i]->set_was_used(true);
   }
 
 }
@@ -232,8 +235,9 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
 
     // The coarse registration is based on maximizing the
     // cross-correlation-coefficient, but any other score can be calculated
-    // at this point. It will not be optimal, though.
-    IMP_NEW(em2d::Image,aux,());
+    // at this point.
+    IMP_NEW(Image,aux,());
+    aux->set_was_used(true);
     get_transformed(projections_[j]->get_data(), aux->get_data(), RA.first);
 
     if(variances_.size() > 0) {
@@ -277,6 +281,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     strm << "coarse_match-" << i << ".spi";
     IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
     match->set_name(strm.str()); ////
+    match->set_was_used(true);
     match->write(strm.str(),srw);
   }
 
@@ -332,11 +337,10 @@ void ProjectionFinder::get_complete_registration() {
               "Model particles have not been set",ValueException);
   }
 
-  IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
   unsigned int rows= subjects_[0]->get_header().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_header().get_number_of_columns();
   IMP_NEW(em2d::Image, match, ());
-
+  match->set_was_used(true);
   match->set_size(rows,cols);
   match->set_name("match image");
 
@@ -416,6 +420,8 @@ void ProjectionFinder::get_complete_registration() {
                               << registration_results_[i] << std::endl);
     // save if requested
     if(params_.save_match_images) {
+      IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
+      srw->set_was_used(true);
       ProjectingOptions options(params_.pixel_size, params_.resolution);
       options.normalize = true;
       get_projection(match,model_particles_,registration_results_[i],

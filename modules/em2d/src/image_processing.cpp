@@ -21,68 +21,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-
-
-//void do_histogram_stretching(algebra::Matrix2D_d &m,
-//                          int boxes,int offset) {
-//  // Number of possible values for the histogram and maximum value for
-//  // the stretched image
-//  double max_val = m.compute_max();
-//  double min_val = m.compute_min();
-//  double maxmin = max_val-min_val;
-//  // Histogram of boxes posible values
-//  std::vector<int> hist(boxes);
-//  for (unsigned i=0;i<hist.size() ;++i ) { hist[i]=0;}
-//  for (unsigned i=0;i<m.num_elements() ;++i ) {
-//    double xx = m.data()[i];
-//    int j = algebra::get_rounded(((double)boxes-1)*(xx-min_val)/(maxmin));
-////    int j = (boxes-1)*algebra::round((m.data()[i]-min_val)/(maxmin));
-//    hist[j]++;
-//  }
-//  // histogram mode value and index
-//  std::vector<int>::iterator it;
-//  it = std::max_element(hist.begin(),hist.end());
-//  double h_mode_val = (double)*it;
-//  // cut value
-//  double h_cut = 0.01*h_mode_val;
-//  // indexes of the histogram for the cut value
-//  int i_min=0,i_max=0;
-//  for (unsigned i=0;i<hist.size() ;++i ) {
-//    if(hist[i] > h_cut) {
-//      i_min=i;
-//      break;
-//    }
-//  }
-//  // must be int so it can go negative
-//  // and, unfortunately, unsigned - unsigned is still unsigned.
-//  for (int i=static_cast<int>(hist.size())-1;i>=0;--i ) {
-//    if(hist[i] > h_cut) {
-//      i_max=i;
-//      break;
-//    }
-//  }
-//  // Allow for some offset
-//  i_min -= offset; if(i_min <0) { i_min=0;}
-//  i_max += offset; if(i_max > (boxes-1)) { i_max=boxes-1; }
-//  // Min and max values for the new image
-//  max_val=min_val+(maxmin/(boxes-1))*((double)i_max);
-//  min_val=min_val+(maxmin/(boxes-1))*((double)i_min);
-//  maxmin = max_val-min_val;
-//  // Stretch
-//  for (unsigned i=0;i<m.num_elements() ;++i ) {
-////    m.data()[i] = ((double)boxes-1)*(m.data()[i]-min_val)/maxmin;
-//    double val = (m.data()[i]-min_val)/maxmin;
-//    if(val < 0) { val = 0; }
-//    if(val > 1) { val = 1; }
-//    m.data()[i] = ((double)boxes-1)*val;
-//  }
-//}
-//
-
-/***************************/
-
-
 void do_remove_small_objects(cvIntMat &m,
                           double percentage,
                           int background,

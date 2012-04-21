@@ -2,14 +2,13 @@
  *  \file ProjectionOverlapFilterTable
  *  \brief Managing of projection overlap filter
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
 #ifndef IMPEM2D_DOMINO_FILTER_TABLES_H
 #define IMPEM2D_DOMINO_FILTER_TABLES_H
 
-#include "IMP/em2d/Image.h"
 #include "IMP/em2d/domino_particle_states.h"
 #include "IMP/domino/Subset.h"
 #include "IMP/domino/subset_filters.h"

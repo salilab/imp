@@ -69,6 +69,7 @@ public:
              const Em2DRestraintParameters &params) {
   params_ = params;
   finder_ = new ProjectionFinder;
+  finder_->set_was_used(true);
   finder_->setup(score_function, params);
   fast_optimization_mode_ = false;
   only_coarse_registration_ = false;

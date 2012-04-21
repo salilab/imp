@@ -2,7 +2,7 @@
  *  \file CollisionCrossSection
  *  \brief Routines for Ion Mobility Mass Spectrometry
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
@@ -10,6 +10,7 @@
 #include "IMP/em2d/CollisionCrossSection.h"
 #include "IMP/exception.h"
 #include "IMP/atom/Mass.h"
+
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -52,10 +53,6 @@ void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
        << " does not have the required attributes" << std::endl);
   }
   masks_manager_->create_masks(ps);
-
-  IMP_NEW(Image, img, ());
-  IMP_NEW(SpiderImageReaderWriter, srw, ());
-
   // Compute projections
   collision_cross_section_ = 0.0;
   for (unsigned int i=0; i < n_projections_; ++i) {

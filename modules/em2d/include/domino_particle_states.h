@@ -2,7 +2,7 @@
  *  \file ProjectionStates.h
  *  \brief Particles states for a rigid body that is going to be projected
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 

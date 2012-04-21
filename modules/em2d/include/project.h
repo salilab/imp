@@ -13,10 +13,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/FFToperations.h"
-#include "IMP/em2d/SpiderImageReaderWriter.h"
-#include "IMP/em/DensityMap.h"
-#include "IMP/em/MRCReaderWriter.h"
-#include "IMP/em/SpiderReaderWriter.h"
+#include "IMP/em2d/ImageReaderWriter.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/SphericalVector3D.h"
@@ -24,7 +21,7 @@
 #include "IMP/Pointer.h"
 #include "IMP.h"
 #include <complex>
-#include <algorithm> // max,min
+#include <algorithm>
 #include <fstream>
 
 
@@ -49,7 +46,6 @@ IMP_VALUES(ProjectingParameters,ProjectingParametersList);
 class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
 
   void init_defaults() {
-    srw = new SpiderImageReaderWriter();
     save_images = false;
     normalize = true;
     clear_matrix_before_projecting = true;
@@ -58,12 +54,6 @@ public:
 #ifndef SWIG
   IMP::Pointer<ImageReaderWriter> srw; // Writer used to save the images
 #endif
-  void set_writer(ImageReaderWriter*w) {
-    srw=w;
-  }
-  ImageReaderWriter* get_writer() const {
-    return srw;
-  }
   bool save_images; // Save images after projeting
   bool normalize; // Normalize the projection after generating it
   bool clear_matrix_before_projecting; // Set the matrix to zeros
@@ -190,47 +180,6 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
 IMPEM2DEXPORT unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
                                                     double pixel_size,
                                                     unsigned int slack);
-
-
-//! Generates projectios of a density map using ray casting (real space).
-/*!
-  \param[in] map Map to project
-  \param[in] vs set of vectors indicating the directions of projection in
-              spherical coordinates
-  \param[in] srw a Reader/Writer for the images to produce
-  \param[in] rows size of the projection images desired (rows)
-  \param[in] cols size of the projection images desired (columns)
-  \param[in] project_and_save if true, the images are saved to files instead
-             of keeping them in memory. Useful when memory is an issue
-  \param[in] project_and_save if true, the images are saved to files instead
-             of keeping them in memory. Useful when memory is an issue
-  \param[in] names of the projections if saved to disk
-*/
-// IMPEM2DEXPORT em::Images get_projections(em::DensityMap *map,
-//        const algebra::SphericalVector3Ds &vs,
-//        int rows, int cols,
-//        const em::ImageReaderWriter *srw,
-//        bool project_and_save=false,
-//        Strings names=Strings());
-
-
-
-
-//! Projects a given DensityMap into a 2D matrix given the rotation and shift
-//! stored in RegistrationResults
-/*!
- * \param[in] map A DensityMap of values to project.
- * \param[out] m2  A Matrix2D to store the projection.
- * \param[in] rows number of rows desired for the Matrix2D
- * \param[in] cols number of  columns for the Matrix2D
- * \param[in] reg RegistrationResult containing a rotation and a shift
- * \param[in] equality_tolerance tolerance allowed to consider a value in the
- *            direction as zero.
-*/
-// IMPEMEXPORT void do_project_map(em::DensityMap *map,
-//  algebra::Matrix2D_d &m2,int rows,int cols,
-//    const RegistrationResult &reg,double equality_tolerance);
-
 
 
 

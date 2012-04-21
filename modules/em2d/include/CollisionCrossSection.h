@@ -2,7 +2,7 @@
  *  \file CollisionCrossSection.h
  *  \brief
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
@@ -11,11 +11,9 @@
 
 
 
-#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/project.h"
-#include "IMP/em2d/Image.h"
 #include "IMP/macros.h"
 #include "IMP/Particle.h"
 

@@ -59,6 +59,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
   for (unsigned long i=0;i<n_projs;++i) {
     IMP_NEW(em2d::Image,img,());
     img->set_size(rows,cols);
+    img->set_was_used(true);
     String name="";
     if(options.save_images) name = names[i];
     get_projection(img,ps,registration_values[i], options, masks, name);

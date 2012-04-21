@@ -103,6 +103,7 @@ public:
              const Em2DRestraintParameters &params) {
 
     score_function_= score_function;
+    score_function_->set_was_used(true);
     params_ = params;
     masks_manager_ = MasksManagerPtr(new MasksManager);
     masks_manager_->setup_kernel(params.resolution,params.pixel_size);
@@ -214,8 +215,6 @@ protected:
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
   Ints n_members_;
-
-//  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;
 
   bool particles_set_,

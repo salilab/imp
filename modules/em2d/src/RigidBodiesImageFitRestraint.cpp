@@ -2,7 +2,7 @@
  *  \file RigidBodiesImageFitRestraint
  *  \brief
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
@@ -35,9 +35,11 @@ RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
                           image_(img),
                           params_set_(false) {
   maps_.resize(rbs.size());
+  image_->set_was_used(true);
   rigid_bodies_masks_.resize(rbs.size());
   projection_ = new Image();
   projection_->set_size(img);
+  projection_->set_was_used(true);
   IMP_LOG(TERSE, "RigidBodiesImageFitRestraint: Image for projection "
           "created. Size: " << projection_->get_data().rows << "x"
           << projection_->get_data().cols << std::endl);
@@ -72,7 +74,7 @@ RigidBodiesImageFitRestraint::unprotected_evaluate(
   }
 
   /***************************
-  IMP_NEW(SpiderImageReaderWriter,srw,());
+  IMP_NEW(SpiderReaderWriter,srw,());
   projection_->write("composed_projection.spi",srw);
   ***************************/
   do_normalize(projection_->get_data());
@@ -106,20 +108,7 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
   Images masks(rots.size());
   RegistrationResults regs;
   KeyIndexMap kmap;
-//  for (unsigned int i=0; i < rots.size(); ++i) {
-//    algebra::Transformation3D T =
-//                        rb.get_reference_frame().get_transformation_to();
-//    algebra::Rotation3D R = algebra::compose(rots[i], T.get_rotation());
-//    Ints ints = get_unique_index(R);
-//    algebra::Vector2D v(0., 0.);
-//    RegistrationResult reg(rots[i], v);
-//    regs.push_back(reg);
-//    kmap.insert ( KeyIndexPair(ints, i) );
-//  }
-
-    /***************************/
-  algebra::Transformation3D T =
-                      rb.get_reference_frame().get_transformation_to();
+  algebra::Transformation3D T =rb.get_reference_frame().get_transformation_to();
   // R0 is the initial rotation of the rigid body in its reference frame
   algebra::Rotation3D R0 = T.get_rotation();
   algebra::Rotation3D R0i = R0.get_inverse();

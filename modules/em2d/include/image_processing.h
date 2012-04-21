@@ -18,27 +18,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-
-////! (U. Adiga, 2005)
-///*!
-//  \param[in] m binary matrix to dilate and shrink
-//  \param[in] greyscale greyscale matrix that controls the shrinking
-//  \param[in] kernel dilation kernel
-//  \note Only tested with binary matrices (background =0 and foreground = 1)
-//*/
-// IMPEM2DEXPORT void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
-//                            const algebra::Matrix2D_d &greyscale,
-//                            algebra::Matrix2D_d &kernel);
-
-
-// IMPEM2DEXPORT void do_histogram_stretching(algebra::Matrix2D_d &m,
-//                          int boxes,int offset);
-
-
-/***************************/
-
-
 //! Class to provide all the parameters to the segmentation function
 class IMPEM2DEXPORT SegmentationParameters {
 public:

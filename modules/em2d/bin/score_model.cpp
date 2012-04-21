@@ -9,7 +9,6 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/Em2DRestraint.h"
-#include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
@@ -253,6 +252,7 @@ int main(int argc, char **argv) {
 
   IMP_NEW(em2d::EM2DScore,score_function,());
   IMP_NEW(em2d::ProjectionFinder, finder,());
+  finder->set_was_used(true);
   em2d::Em2DRestraintParameters params(apix, resolution, n_projections);
   params.save_match_images = save_images;
   params.optimization_steps = optimization_steps;
