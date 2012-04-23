@@ -154,13 +154,21 @@ public:
   */
   double get_score(Restraint *r, const Assignment &a) const {
     set_was_used(true);
-    return cache_.get(Key(r, a));
+    double s= cache_.get(Key(r, a));
+    return s;
   }
   /** The the score for a restraint given a subset and assignment on
       that subset.
    */
   double get_score(Restraint *r, const Subset &s,
                    const Assignment &a) const;
+
+  //! make it so Restraint::get_last_score() returns the score
+  /** This is useful when writing the restraints to disk, as that
+      code often goes off the last score to avoid recomputing the
+      restraints.*/
+  void load_last_score(Restraint *r, const Subset &s,
+                       const Assignment &a);
   /** Return the restraints that should be evaluated for the subset,
       given the exclusions.*/
   RestraintsTemp get_restraints(const Subset&s,
@@ -169,6 +177,7 @@ public:
   RestraintsTemp get_restraints() const;
   /** Return the slice for that restraint given the subset. */
   Slice get_slice(Restraint *r, const Subset& s) const;
+
 
   /** Print out information about the known restraints and restraint sets.*/
   void show_restraint_information(std::ostream &out=std::cout) const;
