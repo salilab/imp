@@ -112,6 +112,7 @@ protected:
 #endif
   }
   void show(std::ostream &)const {};
+  std::string get_name() const {return "RefCounted";}
 #endif
   unsigned int get_ref_count() const {
     return count_;
