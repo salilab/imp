@@ -88,6 +88,7 @@ PackedAssignmentContainer::get_assignment(unsigned int i) const {
 }
 
 inline void PackedAssignmentContainer::add_assignment(const Assignment& a) {
+  IMP_OBJECT_LOG;
   if (width_==-1) {
     width_=a.size();
   }
