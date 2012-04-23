@@ -314,6 +314,8 @@ void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
   }
 }
 void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
+  IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
+                  "Invalid hierarchy passed.");
   do_add_recursive(p,p, cur);
   copy_bonds(p, cur.get_file());
 }
