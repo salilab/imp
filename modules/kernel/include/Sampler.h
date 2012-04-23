@@ -37,7 +37,7 @@ class IMPEXPORT Sampler: public IMP::base::Object
   ScoringFunction *get_scoring_function() const {
     return sf_;
   }
-  void set_scoring_function(ScoringFunction *sf);
+  void set_scoring_function(ScoringFunctionInput sf);
 
   Model *get_model() const {return model_;}
 
