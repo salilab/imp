@@ -91,7 +91,7 @@ inline Restraint* create_restraint(Score *s,
                             std::string name= std::string()) {
   if (name==std::string()) {
     std::ostringstream oss;
-    oss << s->get_name() << " on " << t;
+    oss << s->get_name() << " on " << Showable(t);
       name= oss.str();
   }
   return new internal::TupleRestraint<Score>(s, t, name);
