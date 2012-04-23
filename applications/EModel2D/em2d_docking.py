@@ -2,15 +2,16 @@
 import IMP
 import IMP.algebra as alg
 import IMP.atom as atom
-import imp_general.representation as representation
-import imp_general.io as io
-import csv_related
+import IMP.em2d
+import IMP.em2d.imp_general.representation as representation
+import IMP.em2d.imp_general.io as io
+import IMP.em2d.csv_related as csv_related
 import csv
 import sys
 import logging
 import subprocess
 import errno
-log = logging.getLogger("docking_related")
+log = logging.getLogger("em2d_docking")
 
 
 """
