@@ -42,15 +42,11 @@ public:
 
 
 /** \name Restraint I/O
-    Restraint I/O is quite limited as it is not practical to write enough
-    information to the file to recreate actual IMP::Restraint objects
-    at the moment. Instead, all that is written is the name, the particles
-    used and the score. Restraints that can be decomposed are then
-    decomposed and their the decomposed restraints are written as children.
-    When the decomposition changes from frame to frame (eg restraints on
-    IMP::container::ClosePairContainer containers), the list of particles
-    will be empty for frames where that bit of the decomposed restraint
-    is not found.
+    Restraints are written as am RMF::FEATURE node with subnodes for
+    the decomposed restraints (Restraint::create_current_decompositon()).
+    The Restraints::get_last_score() value is what is saved to the file,
+    so make sure that the restraints have been evaluated before saving
+    a frame.
     @{
 */
 IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
