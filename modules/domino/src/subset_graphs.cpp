@@ -36,22 +36,9 @@ Subsets get_subsets(const SubsetGraph &g){
 
 
 
-SubsetGraph get_restraint_graph(RestraintSet *irs,
+SubsetGraph get_restraint_graph(ScoringFunctionInput in,
                                 const ParticleStatesTable *pst) {
-  return get_restraint_graph(RestraintsTemp(1, irs), pst);
-}
-
-
-SubsetGraph get_restraint_graph(const RestraintsTemp &irs,
-                                const ParticleStatesTable *pst) {
-  RestraintsTemp rs;
-  for (unsigned int i=0; i< irs.size(); ++i) {
-    Pointer<Restraint> dirs= irs[i]->create_decomposition();
-    if (dirs) {
-      RestraintsTemp rrs= get_restraints(RestraintsTemp(1, dirs));
-      rs+=rrs;
-    }
-  }
+  RestraintsTemp rs=IMP::create_decomposition(in->create_restraints());
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
@@ -390,17 +377,17 @@ namespace {
 
 }
 
-InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
+InteractionGraph get_interaction_graph(ScoringFunctionInput rsi,
                                        const ParticleStatesTable* pst) {
   ParticlesTemp ps = get_as<ParticlesTemp>(pst->get_subset());
   return get_interaction_graph(rsi, ps);
 }
 
-InteractionGraph get_interaction_graph(const RestraintsTemp &rsi,
+InteractionGraph get_interaction_graph(ScoringFunctionInput rsi,
                                        const ParticlesTemp& ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
-  Restraints rs= IMP::create_decomposition(rsi);
+  Restraints rs= IMP::create_decomposition(rsi->create_restraints());
   //Model *m= ps[0]->get_model();
   IMP::compatibility::map<Particle*, int> map;
   InteractionGraphVertexName pm= boost::get(boost::vertex_name, ret);
@@ -652,10 +639,9 @@ bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
 
 
 
-MergeTree get_merge_tree(RestraintSet *rs,
+MergeTree get_merge_tree(ScoringFunctionInput rs,
                          const ParticleStatesTable *pst) {
-  Pointer<Restraint> drs=rs->create_decomposition();
-  InteractionGraph ig= get_interaction_graph(RestraintsTemp(1, drs), pst);
+  InteractionGraph ig= get_interaction_graph(rs, pst);
   SubsetGraph jt= get_junction_tree(ig);
   return get_merge_tree(jt);
 }
