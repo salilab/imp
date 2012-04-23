@@ -67,7 +67,8 @@ public:
 
       The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainerInput sc,
-                          double k=1, double slack=10);
+                          double k=1, double slack=10,
+                          std::string name="ExcludedVolumeRestraint%1%");
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
