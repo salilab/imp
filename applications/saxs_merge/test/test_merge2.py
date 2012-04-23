@@ -82,7 +82,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
         args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last',
-                baverage=None)
+                baverage=False, eaverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -114,7 +114,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
         args=MockArgs(verbose=0, cnormal=False, cnpoints=100,
-                creference='last',baverage=None)
+                creference='last',baverage=False, eaverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -156,7 +156,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         gp3=self.set_interpolant(p3,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p3,'agood')
         #run classification
-        args=MockArgs(verbose=0, dalpha=0.05, baverage=None)
+        args=MockArgs(verbose=0, dalpha=0.05, baverage=False, eaverage=False)
         self.merge.classification([p1,p2,p3],args)
         #p1
         self.assertTrue(
@@ -216,9 +216,11 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         #run classification and merging
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
-                baverage=False, ecomp=False, eoptimize='Zero')
+                baverage=False, ecomp=False, eoptimize='Flat',
+                elimit_fitting=-1, elimit_hessian=-1, eaverage=False)
         self.merge.classification([p1,p2,p3],args)
-        def find_fit(a,b,c,model_comp=None, mean_function=None):
+        def find_fit(a,b,c,model_comp=None, mean_function=None,
+                        model_comp_maxpoints=None):
             return 'test',b,None
         self.merge.find_fit = find_fit
         def setup_process(b,c,e):

@@ -180,6 +180,7 @@ class SAXSProfile:
         if colwise:
             keys,values = zip(*retval.items())
             values = zip(*self._subsample(zip(*values), maxpoints))
+            values = map(list, values)
             return dict(zip(keys,values))
         else:
             return self._subsample(retval,maxpoints)

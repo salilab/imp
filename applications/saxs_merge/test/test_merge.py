@@ -194,11 +194,13 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         gp2=self.set_interpolant(p2,2.5,10,MockGP2)
         self.merge.create_intervals_from_data(p2,'agood')
         #run classification and merging
-        args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
+        args=MockArgs(verbose=0, mergename="merge",
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
-                baverage=False, ecomp=False, eoptimize='Zero')
+                baverage=False, ecomp=False, eoptimize='Flat',
+                elimit_fitting=-1, elimit_hessian=-1)
         self.merge.classification([p1,p2],args)
-        def find_fit(a,b,c,model_comp=None, mean_function=None):
+        def find_fit(a,b,c,model_comp=None, mean_function=None,
+                        model_comp_maxpoints=None):
             return 'test',b,None
         self.merge.find_fit = find_fit
         def setup_process(b,c,e):
