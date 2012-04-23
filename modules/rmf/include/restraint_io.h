@@ -31,9 +31,7 @@ public:
   RMFRestraint(Model *m, std::string name);
   void set_score(double s) {score_=s;}
   void set_particles(const ParticlesTemp &ps) {ps_=ps;}
-  void set_decomposition(const RMFRestraints &d) {
-    decomp_=d;
-  }
+  void set_decomposition(const RMFRestraints &d);
 #endif
   IMP_RESTRAINT(RMFRestraint);
   Restraints do_create_current_decomposition() const;
