@@ -25,7 +25,7 @@ Restraints create_decomposition(Model *m,Score *score,
   Restraints ret(indexes.size());
   for (unsigned int i=0; i< indexes.size(); ++i) {
     std::ostringstream oss;
-    oss << name << " " << IMP::internal::get_particle(m, indexes[i]);
+    oss << name << " " << Showable(IMP::internal::get_particle(m, indexes[i]));
     ret[i]= IMP::internal::create_restraint(score,
                                             IMP::internal::get_particle(m,
                                                                  indexes[i]),
