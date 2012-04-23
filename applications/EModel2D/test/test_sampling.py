@@ -4,11 +4,10 @@ import IMP.algebra as alg
 import sys
 import os
 import itertools
-import add_parent
-add_parent.add_parent_to_python_path()
-import sampling
-import Database
-import imp_general.io as io
+
+import IMP.em2d.sampling as sampling
+import IMP.em2d.Database as Database
+import IMP.em2d.imp_general.io as io
 
 class TestSampling(IMP.test.TestCase):
 

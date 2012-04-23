@@ -1,12 +1,11 @@
 import IMP
 import IMP.test
+import IMP.em2d
+import IMP.em2d.csv_related as csv_related
 import sys
 import os
 import random
-import add_parent
-add_parent.add_parent_to_python_path()
 
-import csv_related
 
 
 class TestCSVrelated(IMP.test.TestCase):
