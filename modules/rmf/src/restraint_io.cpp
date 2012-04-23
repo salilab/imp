@@ -18,6 +18,7 @@
 IMPRMF_BEGIN_NAMESPACE
 
 double RMFRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
+  set_was_used(true);
   return score_;
 }
 ParticlesTemp RMFRestraint::get_input_particles() const {

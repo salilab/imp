@@ -15,6 +15,7 @@
 #include <IMP/base/Pointer.h>
 #include <IMP/base/object_macros.h>
 #include <IMP/base/log_macros.h>
+#include <RMF/names.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -136,7 +137,8 @@ public:
            const base::Vector<base::Pointer<O> > &os) {
     IMP_OBJECT_LOG;
     for (unsigned int i=0; i< os.size(); ++i) {
-      RMF::NodeHandle c= parent.add_child(os[i]->get_name(),
+      std::string nicename= RMF::get_as_node_name(os[i]->get_name());
+      RMF::NodeHandle c= parent.add_child(nicename,
                                           get_type(os[i]));
       do_add(os[i], c);
       os_.push_back(os[i]);
