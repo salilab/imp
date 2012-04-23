@@ -12,7 +12,7 @@ s= IMP.core.HarmonicDistancePairScore(1, 1)
 lpc= IMP.container.ListPairContainer([(ps[i[0]], ps[i[1]]) for i in [(0,1), (1,2)]])
 print [(p[0].get_name(), p[1].get_name()) for p in lpc.get_particle_pairs()]
 r= IMP.container.PairsRestraint(s, lpc)
-m.add_restraint(r)
+r.set_model(m)
 r.set_maximum_score(.1)
 
 space= IMP.domino.XYZStates([IMP.algebra.Vector3D(i, 0, 0) for i in range(0,6)])
@@ -24,13 +24,15 @@ for p in ps:
 m.set_log_level(IMP.SILENT)
 
 # make sure to break up the
-mt= IMP.domino.get_merge_tree(m.get_root_restraint_set(), pst)
+mt= IMP.domino.get_merge_tree([r], pst)
 try:
     IMP.show_graphviz(mt)
 except:
     print "Unable to display graph using 'dot'"
 
 ds= IMP.domino.DominoSampler(m, pst)
+# use the default setup for filters
+ds.set_scoring_function([r])
 ds.set_merge_tree(mt)
 ds.set_log_level(IMP.SILENT)
 

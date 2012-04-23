@@ -13,18 +13,18 @@ def create_scoring(m, ps):
     pc= IMP.container.ListPairContainer([(ps[p[0]], ps[p[1]]) for p in pairs],
                                          "Restrained pairs")
     pr= IMP.container.PairsRestraint(score, pc)
-    m.set_maximum_score(pr, .01)
-    m.add_restraint(pr)
+    pr.set_maximum_score(.01)
+    pr.set_model(m)
     d= IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2,1),
                                          IMP.algebra.Vector3D(2,0,0))
     # force ps[1] to be on the positive side to remove flip degree of freedom
     dr= IMP.core.SingletonRestraint(d, ps[1])
-    m.add_restraint(dr)
+    dr.set_model(m)
     # we are not interested in conformations which don't fit the distances
     # exactly, but using 0 is tricky
-    m.set_maximum_score(dr, .01)
+    dr.set_maximum_score(.01)
     print m.get_root_restraint_set()
-    return m.get_restraints()
+    return [pr, dr]
 
 def create_representation(m):
     ps=[]
@@ -51,16 +51,20 @@ def create_discrete_states(ps):
         pst.set_particle_states(p, states)
     return pst
 
-def create_sampler(m, pst):
+def create_sampler(m, r, pst):
     # create the sampler and pass it the states for each patricle
     s=IMP.domino.DominoSampler(m, pst)
     # the following lines recreate the defaults and so are optional
     filters=[]
+    # create a restraint cache to avoid re-evaluating restraints
+    rc= IMP.domino.RestraintCache(pst)
+    # add the list of restraints we want to use
+    rc.add_restraints(r)
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(rc))
     filters[-1].set_log_level(IMP.SILENT)
     # try to be intelligent about enumerating the states in each subset
     states= IMP.domino.BranchAndBoundAssignmentsTable(pst, filters);
@@ -82,7 +86,7 @@ pst=create_discrete_states(ps)
 print "creating score function"
 rs=create_scoring(m, ps)
 print "creating sampler"
-s=create_sampler(m, pst)
+s=create_sampler(m, rs, pst)
 
 print "sampling"
 # get an IMP.ConfigurationSet with the sampled states. If there are very

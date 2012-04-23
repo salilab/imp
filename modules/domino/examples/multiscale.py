@@ -22,18 +22,20 @@ k=1
 h= IMP.core.Harmonic(0,k)
 r0= IMP.core.SingletonRestraint(IMP.core.DistanceToSingletonScore(h, IMP.algebra.Vector3D(0,0,0)),
                                 ds[0], "0 at origin")
-m.add_restraint(r0)
+r0.set_model(m)
 
 r1= IMP.core.SingletonRestraint(IMP.core.AttributeSingletonScore(h,
                                                                  IMP.core.XYZ.get_xyz_keys()[0]),
                                 ds[1], "1 on axis")
-m.add_restraint(r1)
+r1.set_model(m)
 
+rs=[r0, r1]
 for pr in [(0,1), (1,2), (0,2)]:
     r= IMP.core.PairRestraint(IMP.core.HarmonicSphereDistancePairScore(0,k),
                               (ds[pr[0]], ds[pr[1]]),
                               "R for "+str(pr))
-    m.add_restraint(r)
+    r.set_model(m)
+    rs.append(r)
 
 
 bb= IMP.algebra.BoundingBox2D(IMP.algebra.Vector2D(0,0),
@@ -51,10 +53,12 @@ def setup(cover, scale):
     st= IMP.domino.XYZStates(cover)
     for p in ds:
         pst.set_particle_states(p, st)
-    for r in m.get_restraints():
+    for r in rs:
         r.set_maximum_score(.5*scale**2)
     lf= IMP.domino.ListSubsetFilterTable(pst)
-    fs=[IMP.domino.RestraintScoreSubsetFilterTable(m, pst),
+    rc= IMP.domino.RestraintCache(pst)
+    rc.add_restraints(rs);
+    fs=[IMP.domino.RestraintScoreSubsetFilterTable(rc),
         lf]
     sampler= IMP.domino.DominoSampler(m, pst)
     sampler.set_subset_filter_tables(fs)

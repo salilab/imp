@@ -11,11 +11,11 @@ def create_scoring(m, ps):
     pc= IMP.container.ListPairContainer([(ps[p[0]], ps[p[1]]) for p in pairs],
                                          "Restrained pairs")
     pr= IMP.container.PairsRestraint(score, pc)
-    m.set_maximum_score(pr, .01)
-    m.add_restraint(pr)
+    pr.set_maximum_score(.01)
+    pr.set_model(m)
     d= IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(2,1),
                                          IMP.algebra.Vector3D(2,0,0))
-    return m.get_restraints()
+    return [pr]
 
 def create_representation(m):
     ps=[]
@@ -79,7 +79,7 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
             return None
 
 
-def create_sampler(m, ps, pst):
+def create_sampler(m, ps, rs, pst):
     s=IMP.domino.DominoSampler(m, pst)
     #s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
@@ -87,8 +87,10 @@ def create_sampler(m, ps, pst):
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
+    rc= IMP.domino.RestraintCache(pst)
+    rc.add_restraints(rs)
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(rc))
     filters[-1].set_log_level(IMP.SILENT)
     mf=MyFilterTable(ps[1], 0)
     # try with and without this line
@@ -109,10 +111,9 @@ print "creating discrete states"
 pst=create_discrete_states(ps)
 print "creating score function"
 rs=create_scoring(m, ps)
+
 print "creating sampler"
-s=create_sampler(m, ps, pst)
-print "creating score function"
-rs=create_scoring(m, ps)
+s=create_sampler(m, ps, rs, pst)
 
 #s.set_log_level(IMP.SILENT)
 print "sampling"
