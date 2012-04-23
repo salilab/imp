@@ -209,6 +209,10 @@ double RestraintCache::get_score(Restraint *r, const Subset &s,
 
 
 
-
+void RestraintCache::load_last_score(Restraint *r, const Subset &s,
+                                     const Assignment &a) {
+  double ss= get_score(r, s, a);
+  r->set_last_score(ss);
+}
 
 IMPDOMINO_END_NAMESPACE
