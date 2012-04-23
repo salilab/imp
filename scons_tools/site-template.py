@@ -14,3 +14,4 @@ if 'IMP_COVERAGE_APPS' in os.environ:
                              source=[os.path.join(
                                       os.environ['IMP_BIN_DIR'], x) \
                                      for x in apps])
+    _cov.start()
