@@ -22,8 +22,9 @@ def create_excluded_volume(m, helices):
         all.extend(IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE))
     lsc= IMP.container.ListSingletonContainer(all)
     evr= IMP.core.ExcludedVolumeRestraint(lsc, 1)
-    m.add_restraint(evr)
-    m.set_maximum_score(evr, .01)
+    evr.set_model(m)
+    evr.set_maximum_score(.01)
+    return [evr]
 
 
 # creating the discrete states for domino
@@ -42,14 +43,16 @@ def  create_discrete_states(m,helices):
     return pst
 
 # setting up domino (and filters)
-def create_sampler(m, pst):
+def create_sampler(m, rs, pst):
     s=IMP.domino.DominoSampler(m, pst)
     filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
+    rc= IMP.domino.RestraintCache(pst)
+    rc.add_restraints(rs)
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(rc))
     states= IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
     s.set_assignments_table(states)
     s.set_subset_filter_tables(filters)
@@ -68,13 +71,13 @@ print "creating representation"
 (m,helices)=create_representation()
 
 print "creating score function"
-create_excluded_volume(m,helices)
+rs=create_excluded_volume(m,helices)
 
 print "creating discrete states"
 pst=create_discrete_states(m,helices)
 
 print "creating sampler"
-s=create_sampler(m, pst)
+s=create_sampler(m, rs, pst)
 m.set_log_level(IMP.SILENT)
 IMP.set_log_level(IMP.VERBOSE)
 print "sampling"
