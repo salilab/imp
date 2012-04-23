@@ -83,8 +83,8 @@ protected:
     is exactly like evaluating the one ScoringFunction.*/
 IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 
-/** This class is to provide a backward compatible interface for things
-    that take ScoringFunctions as arguments, but used to take
+/** This class is to provide a consisted things
+    that take ScoringFunctions as arguments, could also take a
     RestraintsTemp or a RestraintSet. */
 class IMPEXPORT ScoringFunctionInput
 #ifndef SWIG
