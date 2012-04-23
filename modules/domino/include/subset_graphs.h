@@ -11,6 +11,7 @@
 
 #include "particle_states.h"
 #include "Subset.h"
+#include <IMP/ScoringFunction.h>
 #include <IMP/display/declare_Geometry.h>
 #include <boost/graph/adjacency_list.hpp>
 
@@ -77,14 +78,9 @@ IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& in);
     returned.
 */
 IMPDOMINOEXPORT
-SubsetGraph get_restraint_graph(const RestraintsTemp &rs,
+SubsetGraph get_restraint_graph(ScoringFunctionInput rs,
                                 const ParticleStatesTable *pst);
 
-#ifndef IMP_DOXYGEN
-IMPDOMINOEXPORT
-SubsetGraph get_restraint_graph(RestraintSet *rs,
-                                const ParticleStatesTable *pst);
-#endif
 
 
 
@@ -105,11 +101,11 @@ SubsetGraph get_restraint_graph(RestraintSet *rs,
     @{
  */
 IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph(const RestraintsTemp &rs,
+get_interaction_graph( ScoringFunctionInput rs,
                       const ParticleStatesTable *pst);
 
 IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph(const RestraintsTemp &rs,
+get_interaction_graph(ScoringFunctionInput rs,
                       const ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
@@ -139,7 +135,7 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int);
     created to improve the InteractionGraph used internally.
  */
 IMPDOMINOEXPORT
-MergeTree get_merge_tree(RestraintSet *rs,
+MergeTree get_merge_tree(ScoringFunctionInput in,
                          const ParticleStatesTable *pst);
 
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
