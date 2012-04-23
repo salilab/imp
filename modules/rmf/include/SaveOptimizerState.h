@@ -13,6 +13,7 @@
 #include "atom_io.h"
 #include "restraint_io.h"
 #include "particle_io.h"
+#include "geometry_io.h"
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -44,6 +45,13 @@ class IMPRMFEXPORT SaveOptimizerState:
                   Particles,
                   {
                     rmf::add_particles(fh_, ParticlesTemp(1,obj));
+                  },{},
+                  {});
+  IMP_LIST_ACTION(public, Geometry, Geometries,
+                  geometry, geometries, display::Geometry*,
+                  display::Geometries,
+                  {
+                    rmf::add_geometries(fh_, display::GeometriesTemp(1,obj));
                   },{},
                   {});
   IMP_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
