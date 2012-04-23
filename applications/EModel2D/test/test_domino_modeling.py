@@ -8,18 +8,18 @@ log = logging.getLogger("test_mc_modeling")
 logging.basicConfig(stream=sys.stdout)
 logging.root.setLevel(logging.DEBUG)
 
-import add_parent
-add_parent.add_parent_to_python_path()
+import IMP.em2d
+import IMP.em2d.utility as utility
 
-import utility
-import domino_model
-import solutions_io
+import IMP.em2d.solutions_io as solutions_io
 
-class TestDominoModeling(IMP.test.TestCase):
+class TestDominoModeling(IMP.test.ApplicationTestCase):
 
 
     def test_generate_model(self):
-        """ Test that the DOMINO modeling runs and gives correct results """
+        """ Test that the DOMINO modeling runs """
+
+        domino_model = self.import_python_application('em2d_domino_model.py')
         IMP.set_log_level(IMP.SILENT)
         fn = self.get_input_file_name("config.py")
         directory = self.get_input_file_name("")

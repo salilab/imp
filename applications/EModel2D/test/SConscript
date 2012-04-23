@@ -1,0 +1,12 @@
+Import('env')
+env.IMPApplicationTest(python_tests=[
+                        'test_argminmax.py',
+                        'test_buildxlinks.py',
+                        'test_cluster_solutions.py',
+                        'test_csv_related.py',
+                        'test_database.py',
+                        'test_dock_related.py',
+                        'test_domino_modeling.py',
+                        'test_mc_modeling.py',
+                        'test_sampling.py',
+                            ])

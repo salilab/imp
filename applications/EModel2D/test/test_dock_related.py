@@ -3,12 +3,8 @@ import IMP.test
 import IMP.atom as atom
 import sys
 import os
-import add_parent
-add_parent.add_parent_to_python_path()
 
-import docking_related as dock
-
-class TestDockRelated(IMP.test.TestCase):
+class TestDockRelated(IMP.test.ApplicationTestCase):
 
     def test_filter_transformations(self):
         """
@@ -16,7 +12,7 @@ class TestDockRelated(IMP.test.TestCase):
             computed before
         """
 
-        # read PDBS
+        dock = self.import_python_application('em2d_docking.py')
         sel = atom.NonWaterNonHydrogenPDBSelector()
         ligand = IMP.Model()
         fn_ligand = self.get_input_file_name("3sfdB-3sfdA_initial_docking.pdb")

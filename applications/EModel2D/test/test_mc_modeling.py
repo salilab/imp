@@ -10,14 +10,15 @@ logging.root.setLevel(logging.WARNING)
 import add_parent
 add_parent.add_parent_to_python_path()
 
-import utility
-import domino_model
-import solutions_io
+import IMP.em2d.utility as utility
+import IMP.em2d.solutions_io as solutions_io
 
-class TestMonteCarloModeling(IMP.test.TestCase):
+
+class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
 
     def test_generate_model(self):
         """ Test that Monte Carlo modeling runs """
+        domino_model = self.import_python_application('em2d_domino_model.py')
         fn = self.get_input_file_name("config.py")
         directory = self.get_input_file_name("")
         os.chdir(directory)

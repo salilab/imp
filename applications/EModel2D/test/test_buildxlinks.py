@@ -3,12 +3,9 @@ import IMP.test
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
+import IMP.em2d.buildxlinks as bx
 import sys
 import os
-import add_parent
-add_parent.add_parent_to_python_path()
-
-import buildxlinks as bx
 import itertools
 
 

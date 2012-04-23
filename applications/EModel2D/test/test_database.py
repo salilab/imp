@@ -13,7 +13,7 @@ except ImportError:
 import add_parent
 add_parent.add_parent_to_python_path()
 
-import Database
+import IMP.em2d.Database as Database
 
 
 
