@@ -24,14 +24,21 @@ double RMFRestraint::unprotected_evaluate(DerivativeAccumulator *) const {
 ParticlesTemp RMFRestraint::get_input_particles() const {
   return ps_;
 }
+void RMFRestraint::set_decomposition(const RMFRestraints &d) {
+  decomp_=d;
+  for (unsigned int i=0; i< decomp_.size(); ++i) {
+    decomp_[i]->set_was_used(true);
+  }
+}
 ContainersTemp RMFRestraint::get_input_containers() const {
   return ContainersTemp();
 }
 void RMFRestraint::do_show(std::ostream &) const {
 }
 Restraints RMFRestraint::do_create_current_decomposition() const {
-    return decomp_;
-  }
+  set_was_used(true);
+  return decomp_;
+}
 RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
 namespace {
   class Subset: public base::ConstArray<base::WeakPointer<Particle>,
