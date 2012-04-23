@@ -7,6 +7,7 @@
  */
 
 #include <RMF/names.h>
+#include <boost/algorithm/string.hpp>
 #include <cstdlib>
 #include <fstream>
 
@@ -59,5 +60,10 @@ namespace RMF {
                     std::runtime_error);
     }
     return path;
+  }
+
+  std::string get_as_node_name(std::string in) {
+    boost::erase_all(in, "\"");
+    return in;
   }
 } /* namespace RMF */
