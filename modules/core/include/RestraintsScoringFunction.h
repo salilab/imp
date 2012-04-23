@@ -34,6 +34,11 @@ public IMP::internal::RestraintsScoringFunction
       IMP::internal::RestraintsScoringFunction(rs, weight, max, name)
    {
    }
+  RestraintsScoringFunction(const RestraintsTemp &rs,
+                            std::string name):
+    IMP::internal::RestraintsScoringFunction(rs, 1.0, NO_MAX, name)
+   {
+   }
 #if defined(SWIG)
    IMP_SCORING_FUNCTION(RestraintsScoringFunction);
 #endif
