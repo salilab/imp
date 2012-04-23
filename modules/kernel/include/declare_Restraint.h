@@ -180,6 +180,7 @@ public:
   virtual ScoringFunction *create_scoring_function(double weight=1.0,
                                                    double max
                                                    = NO_MAX) const;
+  void set_last_score(double s) { last_score_=s;}
   IMP_MODEL_OBJECT(Restraint);
 #endif
 
