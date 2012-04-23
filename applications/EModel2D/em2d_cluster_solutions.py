@@ -3,20 +3,19 @@
 
 #!/usr/bin/python
 
-
-import utility
-import imp_general.io as io
-import imp_general.representation as representation
-import solutions_io
-#from RMSDMetric import RMSDMetric
 import IMP
+import IMP.statistics as em2d
+import IMP.em2d.utility as utility
+import IMP.em2d.imp_general.io as io
+import IMP.em2d.imp_general.representation as representation
+import IMP.em2d.solutions_io
+import IMP.em2d.Database
+
 import IMP.statistics as stats
 import IMP.container as container
 import IMP.atom as atom
 import IMP.core as core
 import IMP.algebra as alg
-
-import  Database
 
 import sys
 import os
