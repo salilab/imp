@@ -13,7 +13,7 @@
 #include "Colored.h"
 #include "declare_Geometry.h"
 #include <IMP/core/ConnectivityRestraint.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/PairContainer.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/container/PairsRestraint.h>
@@ -25,8 +25,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     the particles involved in the constituent terms if they are XYZ particles.
 */
 class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
-  IMP::Pointer<Restraint> r_;
-  IMP::Pointer<Model> m_;
+  IMP::base::OwnerPointer<Restraint> r_;
+  IMP::base::Pointer<Model> m_;
   //! Use this if the restraint is not part of the model
   RestraintGeometry(Restraint *p, Model *m);
 public:
