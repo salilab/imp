@@ -29,7 +29,7 @@ void SaveOptimizerState
 
 
 IMP_LIST_IMPL(SaveOptimizerState, Hierarchy, hierarchy,
-              atom::Hierarchy, atom::Hierachies);
+              Particle*, Particles);
 IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint,
               Restraint*, Restraints);
 IMP_LIST_IMPL(SaveOptimizerState, Particle, particle,

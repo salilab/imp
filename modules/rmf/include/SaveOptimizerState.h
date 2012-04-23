@@ -27,10 +27,10 @@ class IMPRMFEXPORT SaveOptimizerState:
  public:
   SaveOptimizerState(RMF::FileHandle fh);
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies,
-                  hierarchy, hierarchies, atom::Hierarchy,
-                  atom::Hierarchies,
+                  hierarchy, hierarchies, Particle*,
+                  Particles,
                   {
-                    rmf::add_hierarchy(fh_, obj);
+                    rmf::add_hierarchy(fh_, atom::Hierarchy(obj));
                   },{},
                   {});
   IMP_LIST_ACTION(public, Restraint, Restraints,
