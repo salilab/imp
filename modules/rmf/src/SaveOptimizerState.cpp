@@ -14,7 +14,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 SaveOptimizerState::
 SaveOptimizerState(RMF::FileHandle fh):
-  OptimizerState("SaveHierarchyConfigurationOptimizerState %1%"),
+  OptimizerState(std::string("Save to ")+fh.get_name()),
   fh_(fh){}
 
 
@@ -34,6 +34,8 @@ IMP_LIST_IMPL(SaveOptimizerState, Restraint, restraint,
               Restraint*, Restraints);
 IMP_LIST_IMPL(SaveOptimizerState, Particle, particle,
               Particle*, Particles);
+IMP_LIST_IMPL(SaveOptimizerState, Geometry, geometry,
+              display::Geometry*, display::Geometries);
 
 
 IMPRMF_END_NAMESPACE
