@@ -33,6 +33,7 @@
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
   virtual void update() {                                               \
+    IMP_OBJECT_LOG;                                                     \
     ++call_number_;                                                     \
     if (call_number_%(skip_+1) ==0) {                                   \
       do_update(update_number_);                                        \
