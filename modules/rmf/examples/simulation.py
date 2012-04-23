@@ -4,7 +4,7 @@ import RMF
 import IMP.container
 import IMP.display
 
-k=1.0
+k=10.0
 np=10
 frames=1000
 
