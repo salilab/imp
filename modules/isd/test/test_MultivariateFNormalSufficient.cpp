@@ -93,6 +93,14 @@ bool test_sanity(){
     //mv->set_was_used(true);
 
     {
+    //exponent
+    double observed=mv->evaluate();
+    double expected= mv->get_minus_exponent()
+                   + mv->get_minus_log_normalization();
+    if (naeq(observed,expected)) FAIL("evaluate = exponent + normalization");
+    }
+
+    {
     //evaluate
     double observed=exp(-mv->evaluate());
     double expected=mv->density();
