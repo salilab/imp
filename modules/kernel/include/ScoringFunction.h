@@ -21,6 +21,8 @@ inline void ScoringFunction::ensure_dependencies() {
   if (!get_model()->get_has_dependencies()) {
     get_model()->compute_dependencies();
   }
+  IMP_INTERNAL_CHECK(get_model()->get_has_dependencies(),
+                     "Dependencies are still bad...");
 }
 inline const ScoreStatesTemp& ScoringFunction::get_score_states() {
   ensure_dependencies();
