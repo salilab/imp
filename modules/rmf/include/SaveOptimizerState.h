@@ -17,15 +17,15 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-/** Periodically call the save_frame() method to save the hierarchy
-    to the given file. All of the passed things will be added to
-    the file internal to the SaveOptimizerState.
+/** Periodically call the save_frame() method to save the everything
+    associated with the RMF file to file.
 */
 class IMPRMFEXPORT SaveOptimizerState:
   public OptimizerState {
   RMF::FileHandle fh_;
  public:
   SaveOptimizerState(RMF::FileHandle fh);
+#ifndef IMP_DOXYGEN
   IMP_LIST_ACTION(public, Hierarchy, Hierarchies,
                   hierarchy, hierarchies, Particle*,
                   Particles,
@@ -54,6 +54,7 @@ class IMPRMFEXPORT SaveOptimizerState:
                     rmf::add_geometries(fh_, display::GeometriesTemp(1,obj));
                   },{},
                   {});
+#endif
   IMP_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
 };
 
