@@ -82,6 +82,9 @@ void Model::reset_dependencies() {
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "The dependencies cannot be reset during evaluation or"
                   << " dependency computation.");
+  if (!dependencies_dirty_) {
+    IMP_LOG(WARNING, "Reseting dependencies" << std::endl);
+  }
   ordered_score_states_.clear();
   first_call_=true;
   dependencies_dirty_=true;
@@ -89,9 +92,14 @@ void Model::reset_dependencies() {
 
 void Model::compute_dependencies() {
   IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(!get_has_dependencies(),
+                  "Already has dependencies when asked to compute them.");
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  IMP_LOG(TERSE, "Computing restraint dependencies");
+  IMP_LOG(WARNING, "Computing restraint dependencies because "
+          << dependencies_dirty_ << " "
+          << ModelObjectTracker::get_changed_description()
+          << std::endl);
   DependencyGraph dg
     = get_dependency_graph(this);
   // attempt to get around boost/gcc bug and the most vexing parse
