@@ -157,7 +157,6 @@ public:
   bool first_call_;
   void validate_computed_derivatives() const{}
   void compute_dependencies();
-  bool get_has_dependencies() const;
   internal::Stage cur_stage_;
   unsigned int eval_count_;
   bool has_good_score_;
@@ -243,16 +242,8 @@ public:
   /**@}*/
  public:
 
-  /** \name Filtering
-      We are typically only interested in "good" conformations of
-      the model. These are described by specifying maximum scores
-      per restraint (Restraint::set_maximum_score())
-      and for the whole model. Samplers, optimizers
-      etc are free to ignore configurations they encounter which
-      go outside these bounds.
-      @{
-  */
 #if !defined(IMP_DOXYGEN)
+  bool get_has_dependencies() const;
   double get_maximum_score(Restraint *r) const;
   void set_maximum_score(Restraint *r, double s);
   void set_maximum_score(double s);
