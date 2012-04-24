@@ -43,7 +43,8 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
   // this accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
           (ps, name+" consecutive pairs"));
-  Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get());
+  Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get(),
+                                                    "chain restraint %1%");
   if (!rs) {
     m->add_restraint(r);
   } else {
