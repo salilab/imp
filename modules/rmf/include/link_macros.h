@@ -7,6 +7,7 @@
 
 #ifndef IMPRMF_LINK_MACROS_H
 #define IMPRMF_LINK_MACROS_H
+#include "links.h"
 #include <IMP/base/Pointer.h>
 #include <RMF/FileHandle.h>
 
@@ -15,23 +16,25 @@
                                     )                                   \
   namespace {                                                           \
   Name##SaveLink *get_##name##_save_link args {                         \
-    int index=get_save_linker_index(#name);                             \
+    int index=IMP::rmf::get_save_linker_index(#name);                   \
     if (!fh.get_has_associated_data(index)) {                           \
-      SaveLinkAssociationType psl= new Name##SaveLink create_args;      \
+      IMP::rmf::SaveLinkAssociationType psl                             \
+        = new Name##SaveLink create_args;                               \
       fh.add_associated_data(index, psl);                               \
     }                                                                   \
-    SaveLinkAssociationType ln                                          \
-      = fh.get_associated_data<SaveLinkAssociationType>(index);         \
+    IMP::rmf::SaveLinkAssociationType ln                                \
+      = fh.get_associated_data<IMP::rmf::SaveLinkAssociationType>(index); \
     return dynamic_cast<Name##SaveLink*>(ln.get());                     \
   }                                                                     \
   Name##LoadLink *get_##name##_load_link cargs {                        \
-    int index=get_load_linker_index(#name);                             \
+    int index=IMP::rmf::get_load_linker_index(#name);                   \
     if (!fh.get_has_associated_data(index)) {                           \
-      LoadLinkAssociationType psl= new Name##LoadLink create_cargs;     \
+      IMP::rmf::LoadLinkAssociationType psl                             \
+        = new Name##LoadLink create_cargs;                              \
       fh.add_associated_data(index, psl);                               \
     }                                                                   \
-    LoadLinkAssociationType pt                                          \
-        = fh.get_associated_data<LoadLinkAssociationType>(index);       \
+    IMP::rmf::LoadLinkAssociationType pt                                \
+      = fh.get_associated_data<IMP::rmf::LoadLinkAssociationType>(index); \
     return dynamic_cast<Name##LoadLink*>(pt.get());                     \
   }                                                                     \
   }                                                                     \
