@@ -15,7 +15,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         dock = self.import_python_application('em2d_docking.py')
         sel = atom.NonWaterNonHydrogenPDBSelector()
         ligand = IMP.Model()
-        fn_ligand = self.get_input_file_name("3sfdA.pdb")
+        fn_ligand = self.get_input_file_name("3sfdB-3sfdA_initial_docking.pdb")
         h_ligand = atom.read_pdb(fn_ligand, ligand, sel)
         rb_ligand = atom.create_rigid_body(h_ligand)
         receptor = IMP.Model()
