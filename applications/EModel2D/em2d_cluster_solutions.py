@@ -8,8 +8,8 @@ import IMP.statistics as em2d
 import IMP.em2d.utility as utility
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
-import IMP.em2d.solutions_io
-import IMP.em2d.Database
+import IMP.em2d.solutions_io as solutions_io
+import IMP.em2d.Database as Database
 
 import IMP.statistics as stats
 import IMP.container as container
@@ -31,8 +31,11 @@ class AlignmentClustering:
           parameter orderby
         - The models are aligned and clustered by RMSD
     """
-    def __init__(self, fn_experiment):
-        self.fn_experiment = fn_experiment
+    def __init__(self, exp):
+        """
+            @param exp an Experiment class containing the names of the pdb files
+        """
+        self.exp = exp
 
     def cluster(self, fn_database, n_solutions, orderby, max_rmsd):
         """
@@ -67,9 +70,8 @@ class AlignmentClustering:
                 of one component of the assembly
             @param max_rmsd Maximum RMSD tolerated when clustering
         """
-        exp = utility.get_experiment_params(self.fn_experiment)
         model = IMP.Model()
-        assembly = representation.create_assembly(model, exp.fn_pdbs)
+        assembly = representation.create_assembly(model, self.exp.fn_pdbs)
         rbs = representation.create_rigid_bodies(assembly)
         configuration_set = IMP.ConfigurationSet(model)
         for RFs in confs_RFs:
@@ -191,7 +193,8 @@ if __name__ == "__main__":
     if(args.fn_database):
         if(not args.n_solutions or not args.orderby):
             raise ValueError("parameters --n and --orderby required")
-        tc = AlignmentClustering(args.experiment)
+        exp = utility.get_experiment_params(args.experiment)
+        tc = AlignmentClustering(exp)
         tc.cluster(args.fn_database, args.n_solutions, args.orderby,
                                                                 args.max_rmsd)
         tc.store_clusters(args.fn_output_db, "clusters")
