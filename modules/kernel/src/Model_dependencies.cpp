@@ -106,6 +106,8 @@ void Model::compute_dependencies() {
   // to prevent infinite recursion when updating ScoringFunctions
   dependencies_dirty_=false;
   ModelObjectTracker::set_is_dirty(false);
+  IMP_INTERNAL_CHECK(!ModelObjectTracker::get_is_dirty(),
+                     "Cleaning the tracked list did not make it clean");
 
   for (ModelObjectTracker::TrackedIterator it
            = ModelObjectTracker::tracked_begin();
@@ -114,6 +116,9 @@ void Model::compute_dependencies() {
     IMP_CHECK_OBJECT(sf);
     sf->update_dependencies(dg, index);
   }
+  IMP_INTERNAL_CHECK(get_has_dependencies(),
+                     "Computing the dependencies did not result in the "
+                     << "model having them");
 }
 
 
