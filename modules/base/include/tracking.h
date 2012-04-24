@@ -12,6 +12,7 @@
 #include "Object.h"
 #include <IMP/compatibility/set.h>
 #include <IMP/compatibility/vector.h>
+#include <sstream>
 IMPBASE_BEGIN_NAMESPACE
 
 /** By inheriting from this, an Object can keep track of a list
@@ -21,7 +22,7 @@ template <class Tracked>
 class Tracker {
   compatibility::set<Tracked*> tracked_;
   compatibility::set<Tracked*> added_;
-  compatibility::set<Tracked*> removed_;
+  compatibility::map<Tracked*, std::string > removed_;
  public:
   Tracker(){}
   compatibility::vector<Tracked*> get_tracked() {
@@ -48,7 +49,7 @@ class Tracker {
     if (added_.find(tr) != added_.end()) {
       added_.erase(tr);
     } else {
-      removed_.insert(tr);
+      removed_.insert(std::make_pair(tr, tr->get_name()));
     }
   }
   bool get_is_dirty() const {return !added_.empty() || !removed_.empty();}
@@ -57,6 +58,21 @@ class Tracker {
       added_.clear();
       removed_.clear();
     }
+  }
+  std::string get_changed_description() const {
+    std::ostringstream oss;
+    if (!added_.empty()) {
+      oss << " Added: " << ObjectsTemp(added_.begin(), added_.end());
+    }
+    if (!removed_.empty()) {
+      oss << " Removed: [";
+      for (typename compatibility::map<Tracked*, std::string >::const_iterator
+             it= removed_.begin(); it != removed_.end(); ++it) {
+        oss  << it->second << ", ";
+      }
+      oss << "]";
+    }
+    return oss.str();
   }
   typedef typename compatibility::set<Tracked*>::const_iterator TrackedIterator;
   TrackedIterator tracked_begin() const {
