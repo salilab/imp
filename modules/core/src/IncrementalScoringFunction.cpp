@@ -149,8 +149,11 @@ ParticlesTemp IncrementalScoringFunction::get_movable_particles() const {
 
 void
 IncrementalScoringFunction::do_non_incremental_evaluate() {
-  IMP_NEW(RestraintsScoringFunction, rsf, (flattened_restraints_));
-  rsf->evaluate(false);
+  if (!non_incremental_) {
+    non_incremental_=new RestraintsScoringFunction(flattened_restraints_,
+                                                   "Nonincremental");
+  }
+  non_incremental_->evaluate(false);
   for (unsigned int i=0; i< flattened_restraints_.size(); ++i) {
     flattened_restraints_scores_[i]= flattened_restraints_[i]->get_last_score();
   }
