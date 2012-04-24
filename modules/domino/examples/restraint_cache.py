@@ -25,9 +25,12 @@ for p in eps:
 order=[eps[0]]+ps+[eps[1]]
 # create a hierarchy with the particles to aid writing them to RMF
 h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
-for p in order:
+for i,p in enumerate(order):
     IMP.atom.Mass.setup_particle(p,1)
     h.add_child(IMP.atom.Hierarchy.setup_particle(p))
+    color= IMP.display.get_jet_color(float(i)/len(order-1))
+    IMP.display.Colored.setup_particle(p, color)
+
 
 r= IMP.container.PairsRestraint(IMP.core.HarmonicUpperBoundSphereDistancePairScore(0,1),
                                 IMP.container.ConsecutivePairContainer(order))
