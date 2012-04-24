@@ -7,6 +7,7 @@ from random import *
 
 #imp general
 import IMP
+import IMP.gsl
 
 #our project
 from IMP.isd import *
@@ -544,6 +545,20 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
                         self.assertAlmostEqual(Hessian[i,j],Hessian[j,i],
                                                 delta=1e-7)
 
+    def testScoreState(self):
+        """test if the scorestate works """
+        self.G.set_nuisance(0.)
+        self.A.set_nuisance(0.)
+        target = mean(self.I)
+        #energy should lower if I move A closer to its minimum
+        ene = self.m.evaluate(False)
+        self.A.set_nuisance(target/2.)
+        newene = self.m.evaluate(False)
+        self.assertTrue(newene < ene)
+        # an optimizer should be able to find the minimum
+        cg = IMP.gsl.ConjugateGradients(self.m)
+        cg.optimize(100)
+        self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-2)
 
 if __name__ == '__main__':
     IMP.test.main()
