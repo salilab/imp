@@ -96,8 +96,8 @@ void Model::compute_dependencies() {
                   "Already has dependencies when asked to compute them.");
   internal::SFSetIt<IMP::internal::Stage>
     reset(&cur_stage_, internal::COMPUTING_DEPENDENCIES);
-  IMP_LOG(WARNING, "Computing restraint dependencies because "
-          << dependencies_dirty_ << " "
+  IMP_LOG(TERSE, "Computing restraint dependencies" << std::endl);
+  IMP_LOG(VERBOSE, "Reason is " << dependencies_dirty_ << " "
           << ModelObjectTracker::get_changed_description()
           << std::endl);
   DependencyGraph dg
