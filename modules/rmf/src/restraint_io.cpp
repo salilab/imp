@@ -46,6 +46,7 @@ namespace {
     typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
     static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
       std::sort(ps.begin(), ps.end());
+      ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
       return ps;
     }
   public:
@@ -53,15 +54,6 @@ namespace {
     /** Construct a subset from a non-empty list of particles.
      */
     explicit Subset(ParticlesTemp ps): P(get_sorted(ps)) {
-      IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
-      IMP_IF_CHECK(USAGE) {
-        std::sort(ps.begin(), ps.end());
-        IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
-                        "Duplicate particles in set");
-        for (unsigned int i=0; i< ps.size(); ++i) {
-          IMP_CHECK_OBJECT(ps[i]);
-        }
-      }
     }
     Model *get_model() const {
       return operator[](0)->get_model();
