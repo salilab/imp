@@ -43,7 +43,7 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
         elements = map(int, cl_record.elements.split("|"))
         for i,j in zip(solutions_stored, elements):
             self.assertEqual(i,j)
-#         os.remove(fn_db_clusters)
+        os.remove(fn_db_clusters)
 
 if __name__ == '__main__':
     IMP.test.main()
