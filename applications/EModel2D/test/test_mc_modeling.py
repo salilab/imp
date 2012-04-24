@@ -20,6 +20,8 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
         """ Test that Monte Carlo modeling runs """
         domino_model = self.import_python_application('em2d_domino_model.py')
         fn = self.get_input_file_name("config.py")
+        for i in range(len(exp.fn_pdbs)):
+            exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
         directory = self.get_input_file_name("")
         os.chdir(directory)
         exp = utility.get_experiment_params(fn)
