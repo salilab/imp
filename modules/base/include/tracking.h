@@ -20,9 +20,10 @@ IMPBASE_BEGIN_NAMESPACE
 template <class Tracked>
 class Tracker {
   compatibility::set<Tracked*> tracked_;
-  bool dirty_;
+  compatibility::set<Tracked*> added_;
+  compatibility::set<Tracked*> removed_;
  public:
-  Tracker(): dirty_(0){}
+  Tracker(){}
   compatibility::vector<Tracked*> get_tracked() {
     return compatibility::vector<Tracked*>(tracked_.begin(),
                                            tracked_.end());
@@ -31,7 +32,11 @@ class Tracker {
     IMP_USAGE_CHECK(tr, "Can't track nullptr object");
     IMP_CHECK_OBJECT(tr);
     tracked_.insert(tr);
-    dirty_=true;
+    if (removed_.find(tr) != removed_.end()) {
+      removed_.erase(tr);
+    } else {
+      added_.insert(tr);
+    }
   }
   void remove_tracked(Tracked*tr) {
     IMP_USAGE_CHECK(tr, "Can't untrack nullptr");
@@ -40,10 +45,19 @@ class Tracker {
                     "Tracked object " << (tr ? tr->get_name():"nullptr")
                     << " not found.");
     tracked_.erase(tr);
-    dirty_=true;
+    if (added_.find(tr) != added_.end()) {
+      added_.erase(tr);
+    } else {
+      removed_.insert(tr);
+    }
   }
-  bool get_is_dirty() const {return dirty_;}
-  void set_is_dirty(bool tf) {dirty_=tf;}
+  bool get_is_dirty() const {return !added_.empty() || !removed_.empty();}
+  void set_is_dirty(bool tf) {
+    if (!tf) {
+      added_.clear();
+      removed_.clear();
+    }
+  }
   typedef typename compatibility::set<Tracked*>::const_iterator TrackedIterator;
   TrackedIterator tracked_begin() const {
     return tracked_.begin();
