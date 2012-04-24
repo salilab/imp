@@ -47,6 +47,7 @@ class IMPCOREEXPORT IncrementalScoringFunction: public ScoringFunction {
   Restraints flattened_restraints_;
   Floats flattened_restraints_scores_;
   double weight_, max_;
+  OwnerPointer<RestraintsScoringFunction> non_incremental_;
   // move the destructor out of the header
   struct Wrapper: public
     base::Vector<internal::NBLScoring*> {
