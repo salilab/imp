@@ -8,6 +8,7 @@ from random import *
 #imp general
 import IMP
 import IMP.gsl
+import IMP.core
 
 #our project
 from IMP.isd import *
@@ -551,12 +552,21 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.A.set_nuisance(0.)
         target = mean(self.I)
         #energy should lower if I move A closer to its minimum
+        #model.evaluate()
         ene = self.m.evaluate(False)
         self.A.set_nuisance(target/2.)
         newene = self.m.evaluate(False)
         self.assertTrue(newene < ene)
+        #gpr.evaluate()
+        self.A.set_nuisance(0.)
+        ene = self.gpr.evaluate(False)
+        self.A.set_nuisance(target/2.)
+        newene = self.gpr.evaluate(False)
+        self.assertTrue(newene < ene)
         # an optimizer should be able to find the minimum
-        cg = IMP.gsl.ConjugateGradients(self.m)
+        #cg = IMP.gsl.ConjugateGradients(self.m)
+        #cg = IMP.core.ConjugateGradients(self.m)
+        cg = IMP.gsl.QuasiNewton(self.m)
         cg.optimize(100)
         self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-2)
 
