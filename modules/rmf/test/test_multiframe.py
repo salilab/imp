@@ -15,6 +15,7 @@ class GenericTest(IMP.test.TestCase):
         p =IMP.Particle(m)
         h= IMP.atom.Hierarchy.setup_particle(p)
         d= IMP.core.XYZR.setup_particle(p)
+        md= IMP.atom.Mass.setup_particle(p, 1)
         d.set_radius(1)
         d.set_x(0)
         d.set_y(0)
