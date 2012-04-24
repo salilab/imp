@@ -19,14 +19,14 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
     def test_generate_model(self):
         """ Test that Monte Carlo modeling runs """
         domino_model = self.import_python_application('em2d_domino_model.py')
-        fn = self.get_input_file_name("config.py")
+        fn_config = self.get_input_file_name("config.py")
+        exp = utility.get_experiment_params(fn_config)
         for i in range(len(exp.fn_pdbs)):
             exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
         directory = self.get_input_file_name("")
         os.chdir(directory)
-        exp = utility.get_experiment_params(fn)
         fn_database = self.get_input_file_name("monte_carlo_output_database.db")
-        domino_model.generate_monte_carlo_model(fn, fn_database, seed=-1,
+        domino_model.generate_monte_carlo_model(fn_config, fn_database, seed=-1,
                                                         write_solution=True)
         # test that the database and pdb files are generated and that they
         # are not empty
