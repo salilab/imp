@@ -57,7 +57,7 @@ os= IMP.rmf.SaveOptimizerState(rmf)
 os.set_log_level(IMP.SILENT)
 IMP.rmf.add_hierarchy(rmf, h)
 IMP.rmf.add_restraints(rmf, rs)
-IMP.rfm.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))
+IMP.rmf.add_geometry(rmf, IMP.display.BoundingBoxGeometry(bb))
 bd.add_optimizer_state(os)
 
 bd.optimize(frames)

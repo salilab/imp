@@ -28,7 +28,7 @@ h= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 for i,p in enumerate(order):
     IMP.atom.Mass.setup_particle(p,1)
     h.add_child(IMP.atom.Hierarchy.setup_particle(p))
-    color= IMP.display.get_jet_color(float(i)/len(order-1))
+    color= IMP.display.get_jet_color(float(i)/(len(order)-1))
     IMP.display.Colored.setup_particle(p, color)
 
 
