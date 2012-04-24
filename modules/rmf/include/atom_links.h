@@ -88,17 +88,19 @@ class IMPRMFEXPORT HierarchySaveLink: public SimpleSaveLink<Particle> {
   RMF::DomainFactory domain_factory_;
   compatibility::map<Particle*, Data> contents_;
   void setup_node(Particle *p, RMF::NodeHandle n) ;
-  void do_add_recursive(Particle *root, Particle *p, RMF::NodeHandle cur);
   void do_add(Particle *p, RMF::NodeHandle cur);
-  virtual void do_save_node(Particle *p,
-                            RMF::NodeHandle n,
-                            unsigned int frame);
   void do_save_one(Particle *o,
                    RMF::NodeHandle nh,
                    unsigned int frame);
   RMF::NodeType get_type(Particle*) const {
     return RMF::REPRESENTATION;
   }
+ protected:
+  virtual void do_add_recursive(Particle *root, Particle *p,
+                                RMF::NodeHandle cur);
+  virtual void do_save_node(Particle *p,
+                            RMF::NodeHandle n,
+                            unsigned int frame);
 public:
   HierarchySaveLink(RMF::FileHandle fh);
   IMP_OBJECT_INLINE(HierarchySaveLink,IMP_UNUSED(out),);
