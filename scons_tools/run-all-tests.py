@@ -188,8 +188,8 @@ if __name__ == "__main__":
                          argv=[sys.argv[0], "-v"], exit=False)
     if opts.results:
         out= file(opts.results, "w")
-        if len(main.result.errors) > 0:
-            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors])
+        if len(main.result.errors + main.result.failures) > 0:
+            print >> out, "Errors:",", ".join([main.result.getDescription(r[0]) for r in main.result.errors+main.result.failures])
         if len(main.result.skipped) > 0:
             print >> out, "Skips:",", ".join([main.result.getDescription(r[0]) for r in main.result.skipped])
     if covtest:
