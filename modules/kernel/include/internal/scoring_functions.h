@@ -237,7 +237,7 @@ inline ScoringFunction* create_scoring_function(RestraintType* rs,
                                                 std::string name=
                                                 std::string()) {
   if (name.empty()) {
-    name= rs->get_name()+"ScoringFunction";
+    name= rs->get_name()+" SF";
   }
   if (weight==1.0 && max==NO_MAX) {
     return new internal::RestraintScoringFunction<RestraintType>(rs,
