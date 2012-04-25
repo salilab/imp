@@ -57,9 +57,9 @@ void GaussianProcessInterpolationRestraint::set_model(Model *m)
     Restraint::set_model(m);
 }
 
-ModelObjectsTemp GaussianProcessInterpolationRestraint::get_inputs() const {
+ModelObjectsTemp GaussianProcessInterpolationRestraint::do_get_inputs() const {
   // call the existing implementation
-  ModelObjectsTemp ret= Restraint::get_inputs();
+  ModelObjectsTemp ret= Restraint::do_get_inputs();
   // add the score state
   ret.push_back(ss_);
   return ret;
