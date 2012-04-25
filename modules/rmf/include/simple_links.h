@@ -67,12 +67,11 @@ class SimpleLoadLink: public LoadLink {
       do_load_one(fh.get_node_from_id(nhs_[i]), os_[i], frame);
     }
   }
-  void do_add_link(O *, RMF::NodeConstHandle) {}
+  virtual void do_add_link(O *, RMF::NodeConstHandle) {}
   void add_link(O *o, RMF::NodeConstHandle nh) {
-    //do_add_link(o, nh);
     os_.push_back(o);
     nhs_.push_back(nh.get_id());
-    set_association(nh, o);
+    set_association(nh, o, true);
   }
   virtual bool get_is(RMF::NodeConstHandle nh) const=0;
   virtual O* do_create(RMF::NodeConstHandle nh) =0;
@@ -110,6 +109,9 @@ public:
     }
     IMP_USAGE_CHECK(os_.size()==nhs_.size(),
                     "Didn't find enough matching things.");
+    IMP_USAGE_CHECK(links==static_cast<int>(ps.size()),
+                    "Didn't find enough matching things. Found "
+                    << links << " wanted " << ps.size());
   }
 
 };
