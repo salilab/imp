@@ -27,14 +27,14 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     Note, this assumes that all such chains will be disjoint and so you can
     use the container::ExclusiveConsecutivePairFilter if you want to filter
     out all pairs of particles connected by such chain restraints.
+
+    The restraint is not added to the model.
 */
 inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
                                          double length_factor,
                                          double k,
-                                         std::string name,
-                                         RestraintSet *rs=NULL) {
+                                         std::string name) {
   IMP_USAGE_CHECK(!ps.empty(), "No Particles passed.");
-  Model *m= ps[0]->get_model();
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps, (length_factor*2.0*scale,
                                                   k, "chain linker %1%"));
@@ -45,12 +45,8 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
           (ps, name+" consecutive pairs"));
   Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get(),
                                                     "chain restraint %1%");
-  if (!rs) {
-    m->add_restraint(r);
-  } else {
-    rs->add_restraint(r);
-  }
-  return r;
+  // make sure it is not freed
+  return r.release();
 }
 
 
@@ -71,7 +67,7 @@ create_excluded_volume(const ParticlesTemp &ps,
   IMP_NEW(core::SoftSpherePairScore, hlb, (k));
   Pointer<Restraint> r= container::create_restraint(hlb.get(), cpc.get());
   m->add_restraint(r);
-  return cpc;
+  return cpc.release();
 }
 
 IMPEXAMPLE_END_NAMESPACE
