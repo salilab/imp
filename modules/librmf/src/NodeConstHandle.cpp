@@ -41,6 +41,8 @@ std::string get_type_name(NodeType t) {
     return "geom";
   case FEATURE:
     return "feat";
+  case ALIAS:
+    return "alias";
   default:
     return "unknown";
   }
@@ -238,5 +240,19 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
                                           diffusercf, typedcf, frame,
                            prefix0+"   "));
 }
+
+
+
+NodeConstHandles get_children_resolving_aliases(NodeConstHandle nh) {
+  StaticAliasConstFactory saf(nh.get_file());
+  NodeConstHandles ret= nh.get_children();
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    if (ret[i].get_type()== ALIAS && saf.get_is(ret[i])) {
+      ret[i]= nh.get_file().get_node_from_id(saf.get(ret[i]).get_alias());
+    }
+  }
+  return ret;
+}
+
 
 } /* namespace RMF */

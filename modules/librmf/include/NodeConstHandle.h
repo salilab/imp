@@ -72,6 +72,11 @@ GEOMETRY,
     nodes.
 */
 FEATURE,
+/** Store a reference to another node. This node should
+    be an alias decorator node and have no other data,
+    at least for now.
+*/
+ALIAS,
 //! Arbitrary data that is not standardized
 /** Programs can use these keys to store any extra data
     they want to put into the file.
@@ -207,6 +212,11 @@ RMFEXPORT void show_hierarchy_with_decorators(NodeConstHandle root,
                                               bool verbose=false,
                                               unsigned int frame=0,
                                               std::ostream &out= std::cout);
+
+
+/** Aliases are nodes that refer to other nodes. Resolving them can
+      result in a graph that is no longer a tree or even a DAG.*/
+RMFEXPORT NodeConstHandles get_children_resolving_aliases(NodeConstHandle nh);
 
 } /* namespace RMF */
 
