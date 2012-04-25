@@ -57,7 +57,7 @@ TextWriter::~TextWriter(){
 
 void TextWriter::do_set_frame() {
   if (file_name_.empty()/* || file_name_.find("%1%")== std::string::npos*/) {
-    IMP_FAILURE("Cannot set frame on writer without file name pattern.");
+    IMP_FAILURE("Cannot set frame on writer without %1% being in the name.");
   }
   if (out_!= base::TextOutput()) {
     do_close();
