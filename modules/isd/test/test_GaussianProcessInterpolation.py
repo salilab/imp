@@ -154,7 +154,7 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         changing lambda
         """
         skipnan =0
-        for l in linspace(0.01,10,num=10):
+        for l in linspace(0.05,10,num=10):
             self.lam.set_nuisance(l)
             #fl=open('out%d'%(int(l)),'w')
             for q in linspace(0,1,num=10):
@@ -258,14 +258,15 @@ class TestGaussianProcessInterpolation2Points(IMP.test.TestCase):
         changing lambda
         """
         skipnan = 0
-        for l in linspace(0.01,10,num=10):
+        for l in linspace(0.1,10,num=10):
             self.lam.set_nuisance(l)
             #fl=open('out%d'%(int(l)),'w')
             for q1 in linspace(0,1,num=10):
                 for q2 in linspace(0,1,num=10):
-                    #print "posterior mean lambda=",l,"q1=",q1,"q2=",q2
+                    #print "posterior mean lambda=",l,"q1=",q1,"q2=",q2,
                     observed = self.gpi.get_posterior_covariance([q1],[q2])
                     expected = self.get_cov(q1,q2)
+                    #print observed,expected
                     #print "PYTHON:",q1,q2,t,observed,expected
                     #fl.write(' '.join(['%G' % i
                     #    for i in [q1,q2,l,observed,expected]]))
