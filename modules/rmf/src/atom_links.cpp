@@ -195,9 +195,10 @@ Particle* HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
 void HierarchyLoadLink::do_add_link_recursive(Particle *root,
                                               Particle *o,
                                               RMF::NodeConstHandle node) {
+  IMP_LOG(VERBOSE, "Linking " << Showable(o) << " and " << node << std::endl);
   contents_[root].particles.push_back(o);
   contents_[root].nodes.push_back(node.get_id());
-  set_association(node, o);
+  set_association(node, o, true);
   RMF::NodeConstHandles ch= node.get_children();
   int cur=0;
   for (unsigned int i=0; i< ch.size(); ++i) {
