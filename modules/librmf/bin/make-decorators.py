@@ -17,8 +17,9 @@ def get_string(type, name, const, per_frame=False):
                                                   "pfs":pfs}
 
 class Attribute:
-    def __init__(self, type, nice_name, attribute_name):
+    def __init__(self, type, nice_name, attribute_name, per_frame=False):
         self.type=type
+        self.per_frame=per_frame
         self.nice_name=nice_name
         self.attribute_name=attribute_name
     def get_key_members(self):
@@ -40,14 +41,16 @@ class Attribute:
     def get_key_saves(self):
         return self.nice_name+"_("+self.nice_name+")"
     def get_initialize(self, const):
-        return self.nice_name+"_="+get_string(self.type, self.attribute_name, const)
+        return self.nice_name+"_="+get_string(self.type, self.attribute_name, const, self.per_frame)
     def get_check(self):
         return "nh.get_has_value("+self.nice_name+"_, frame)"
 
 class SingletonRangeAttribute:
-    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end):
+    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end,
+                 per_frame=False):
         self.type=type
         self.nice_name=nice_name
+        self.per_frame=per_frame
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
     def get_key_members(self):
@@ -70,8 +73,8 @@ class SingletonRangeAttribute:
     def get_key_saves(self):
         return self.nice_name+"_("+self.nice_name+")"
     def get_initialize(self, const):
-        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const)+\
-            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const)
+        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
+            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)
     def get_check(self):
         return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
@@ -80,9 +83,11 @@ class SingletonRangeAttribute:
 
 
 class RangeAttribute:
-    def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end):
+    def __init__(self, type, nice_name, attribute_name_begin,
+                 attribute_name_end, per_frame=False):
         self.type=type
         self.nice_name=nice_name
+        self.per_frame=per_frame
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
     def get_key_members(self):
@@ -107,8 +112,8 @@ class RangeAttribute:
     def get_key_saves(self):
         return self.nice_name+"_("+self.nice_name+")"
     def get_initialize(self, const):
-        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const)+\
-            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const)
+        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
+            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)
     def get_check(self):
         return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
@@ -117,12 +122,12 @@ class RangeAttribute:
 
 
 class Attributes:
-    def __init__(self, type, ptype, nice_name, attribute_names, pf=False):
+    def __init__(self, type, ptype, nice_name, attribute_names, per_frame=False):
         self.type=type
         self.nice_name=nice_name
         self.ptype=ptype
         self.attribute_names=attribute_names
-        self.per_frame=pf
+        self.per_frame=per_frame
     def get_key_members(self):
         return self.type+"Keys "+self.nice_name+"_;"
     def get_methods(self, const):
@@ -441,6 +446,13 @@ typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules
                    [DecoratorCategory("sequence", 1, [Attribute("String", "type_name", "type name")])],
                    "")
 
+salias= Decorator("StaticAlias", "Store a static reference to another node.",
+                   [DecoratorCategory("alias", 1, [Attribute("NodeID", "alias", "alias")])],
+                   "")
+dalias= Decorator("DynamicAlias", "Store a dynamic reference to another node.",
+                   [DecoratorCategory("alias", 1, [Attribute("NodeID", "alias", "dynamic alias", True)])],
+                   "")
+
 
 print """/**
  *  \\file RMF/decorators.h
@@ -475,6 +487,8 @@ print fragment.get()
 print copy.get()
 print diffuser.get()
 print typed.get()
+print salias.get()
+print dalias.get()
 print """} /* namespace RMF */
 
 #endif /* IMPLIBRMF_DECORATORS_H */"""

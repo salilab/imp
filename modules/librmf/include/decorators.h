@@ -518,8 +518,8 @@ radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
                               :FloatKey());
 };
     }
-    IntermediateParticleConst get(NodeConstHandle nh, unsigned int frame=0)
-      const {
+    IntermediateParticleConst get(NodeConstHandle nh,
+                                  unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return IntermediateParticleConst(nh, frame, coordinates_,
 radius_);
@@ -2508,7 +2508,8 @@ copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
                       unsigned int frame,
                   FloatKey diffusion_coefficient): nh_(nh),
                                       frame_(frame),
-                               diffusion_coefficient_(diffusion_coefficient) {
+
+                            diffusion_coefficient_(diffusion_coefficient) {
     ;
     }
     public:
@@ -2539,7 +2540,7 @@ copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
                       unsigned int frame,
                   FloatKey diffusion_coefficient): nh_(nh),
                                       frame_(frame),
-                               diffusion_coefficient_(diffusion_coefficient) {
+                     diffusion_coefficient_(diffusion_coefficient) {
     ;
     }
     public:
@@ -2602,8 +2603,8 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     DiffuserConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-diffusion_coefficient_=(fh.get_has_key<FloatTraits>(cat,
-                                                    "diffusion coefficient")?
+  diffusion_coefficient_
+  =(fh.get_has_key<FloatTraits>(cat, "diffusion coefficient")?
                    fh.get_key<FloatTraits>(cat, "diffusion coefficient")
                               :FloatKey());
 };
@@ -2745,6 +2746,258 @@ type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
     };
 
     typedef vector<TypedConstFactory> TypedConstFactories;
+
+/** Store a static reference to another node.
+
+       \see StaticAlias
+       \see StaticAliasConstFactory
+     */
+    class StaticAliasConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class StaticAliasConstFactory;
+    private:
+    NodeIDKey alias_;
+    StaticAliasConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  NodeIDKey alias): nh_(nh),
+                                      frame_(frame),
+                                     alias_(alias) {
+    ;
+    }
+    public:
+    NodeID get_alias() const {
+  return nh_.get_value(alias_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstStaticAlias,
+                     "StaticAliasConst "
+                     << nh_.get_name());
+    ~StaticAliasConst() {
+    }
+    };
+
+    typedef vector<StaticAliasConst> StaticAliasConsts;
+
+/** Store a static reference to another node.
+
+       \see StaticAliasConst
+       \see StaticAliasFactory
+     */
+    class StaticAlias {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class StaticAliasFactory;
+    private:
+    NodeIDKey alias_;
+    StaticAlias(NodeHandle nh,
+                      unsigned int frame,
+                  NodeIDKey alias): nh_(nh),
+                                      frame_(frame),
+                                     alias_(alias) {
+    ;
+    }
+    public:
+    NodeID get_alias() const {
+  return nh_.get_value(alias_, frame_);
+}
+void set_alias(NodeID v) {
+   nh_.set_value(alias_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstStaticAlias,
+                     "StaticAlias "
+                     << nh_.get_name());
+    ~StaticAlias() {
+    }
+    };
+
+    typedef vector<StaticAlias> StaticAliass;
+
+/** Create decorators of type StaticAlias.
+
+       \see StaticAlias
+       \see StaticAliasConstFactory
+    */
+    class StaticAliasFactory {
+    private:
+    NodeIDKey alias_;
+    public:
+    typedef FileHandle File;
+    typedef StaticAlias Decorator;
+    StaticAliasFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "alias");
+alias_=get_key_always<NodeIDTraits>(fh, cat,
+                               "alias", false);
+};
+    }
+    StaticAlias get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return StaticAlias(nh, frame, alias_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(alias_, frame);
+    }
+    IMP_RMF_SHOWABLE(StaticAliasFactory, "StaticAliasFactory");
+    };
+
+    typedef vector<StaticAliasFactory> StaticAliasFactories;
+
+/** Create decorators of type StaticAlias.
+
+       \see StaticAliasConst
+       \see StaticAliasFactory
+    */
+    class StaticAliasConstFactory {
+    private:
+    NodeIDKey alias_;
+    public:
+    typedef FileConstHandle File;
+    typedef StaticAliasConst Decorator;
+    StaticAliasConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("alias");
+alias_=(fh.get_has_key<NodeIDTraits>(cat, "alias")?
+                   fh.get_key<NodeIDTraits>(cat, "alias")
+                              :NodeIDKey());
+};
+    }
+    StaticAliasConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return StaticAliasConst(nh, frame, alias_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(alias_, frame);
+    }
+    IMP_RMF_SHOWABLE(StaticAliasConstFactory, "StaticAliasConstFactory");
+    };
+
+    typedef vector<StaticAliasConstFactory> StaticAliasConstFactories;
+
+/** Store a dynamic reference to another node.
+
+       \see DynamicAlias
+       \see DynamicAliasConstFactory
+     */
+    class DynamicAliasConst {
+    NodeConstHandle nh_;
+    unsigned int frame_;
+    friend class DynamicAliasConstFactory;
+    private:
+    NodeIDKey alias_;
+    DynamicAliasConst(NodeConstHandle nh,
+                      unsigned int frame,
+                  NodeIDKey alias): nh_(nh),
+                                      frame_(frame),
+                                     alias_(alias) {
+    ;
+    }
+    public:
+    NodeID get_alias() const {
+  return nh_.get_value(alias_, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstDynamicAlias,
+                     "DynamicAliasConst "
+                     << nh_.get_name());
+    ~DynamicAliasConst() {
+    }
+    };
+
+    typedef vector<DynamicAliasConst> DynamicAliasConsts;
+
+/** Store a dynamic reference to another node.
+
+       \see DynamicAliasConst
+       \see DynamicAliasFactory
+     */
+    class DynamicAlias {
+    NodeHandle nh_;
+    unsigned int frame_;
+    friend class DynamicAliasFactory;
+    private:
+    NodeIDKey alias_;
+    DynamicAlias(NodeHandle nh,
+                      unsigned int frame,
+                  NodeIDKey alias): nh_(nh),
+                                      frame_(frame),
+                                     alias_(alias) {
+    ;
+    }
+    public:
+    NodeID get_alias() const {
+  return nh_.get_value(alias_, frame_);
+}
+void set_alias(NodeID v) {
+   nh_.set_value(alias_, v, frame_);
+}
+    IMP_RMF_SHOWABLE(ConstDynamicAlias,
+                     "DynamicAlias "
+                     << nh_.get_name());
+    ~DynamicAlias() {
+    }
+    };
+
+    typedef vector<DynamicAlias> DynamicAliass;
+
+/** Create decorators of type DynamicAlias.
+
+       \see DynamicAlias
+       \see DynamicAliasConstFactory
+    */
+    class DynamicAliasFactory {
+    private:
+    NodeIDKey alias_;
+    public:
+    typedef FileHandle File;
+    typedef DynamicAlias Decorator;
+    DynamicAliasFactory(FileHandle fh){
+    {
+  CategoryD<1> cat=get_category_always<1>(fh, "alias");
+alias_=get_key_always<NodeIDTraits>(fh, cat,
+                               "dynamic alias", true);
+};
+    }
+    DynamicAlias get(NodeHandle nh, unsigned int frame=0) const {
+      ;
+      return DynamicAlias(nh, frame, alias_);
+    }
+    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(alias_, frame);
+    }
+    IMP_RMF_SHOWABLE(DynamicAliasFactory, "DynamicAliasFactory");
+    };
+
+    typedef vector<DynamicAliasFactory> DynamicAliasFactories;
+
+/** Create decorators of type DynamicAlias.
+
+       \see DynamicAliasConst
+       \see DynamicAliasFactory
+    */
+    class DynamicAliasConstFactory {
+    private:
+    NodeIDKey alias_;
+    public:
+    typedef FileConstHandle File;
+    typedef DynamicAliasConst Decorator;
+    DynamicAliasConstFactory(FileConstHandle fh){
+    {
+  CategoryD<1> cat=fh.get_category<1>("alias");
+alias_=(fh.get_has_key<NodeIDTraits>(cat, "dynamic alias")?
+                   fh.get_key<NodeIDTraits>(cat, "dynamic alias")
+                              :NodeIDKey());
+};
+    }
+    DynamicAliasConst get(NodeConstHandle nh, unsigned int frame=0) const {
+      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
+      return DynamicAliasConst(nh, frame, alias_);
+    }
+    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+      return nh.get_has_value(alias_, frame);
+    }
+    IMP_RMF_SHOWABLE(DynamicAliasConstFactory, "DynamicAliasConstFactory");
+    };
+
+    typedef vector<DynamicAliasConstFactory> DynamicAliasConstFactories;
 
 } /* namespace RMF */
 
