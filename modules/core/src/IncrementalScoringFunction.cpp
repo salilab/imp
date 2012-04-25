@@ -78,11 +78,12 @@ void IncrementalScoringFunction
     Pointer<Restraint> cur= rs[i]->create_decomposition();
     if (cur) {
       decomposed.push_back(cur);
+      cur->set_was_used(true); // suppress message about the score states
     }
   }
   // restraint sets get lost and cause warnings. Not sure how to handle them.
   flattened_restraints_=IMP::get_restraints(decomposed.begin(),
-                                                    decomposed.end());
+                                            decomposed.end());
   IMP_LOG(TERSE, "Flattened restraints are " << flattened_restraints_
           << std::endl);
 
