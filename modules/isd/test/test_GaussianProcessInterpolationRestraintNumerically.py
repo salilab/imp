@@ -572,12 +572,11 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         newene = self.gpr.evaluate(False)
         self.assertTrue(newene < ene)
         # an optimizer should be able to find the minimum
-        #cg = IMP.gsl.ConjugateGradients(self.m)
         cg = IMP.core.ConjugateGradients(self.m)
-        #cg = IMP.gsl.QuasiNewton(self.m)
-        #for i in linspace(0,20):
-        #    self.A.set_nuisance(i)
-        #    print "pyy",self.A.get_nuisance(),self.m.evaluate(False)
+        cg.optimize(100)
+        self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-1)
+        # an optimizer should be able to find the minimum
+        cg = IMP.gsl.ConjugateGradients(self.m)
         cg.optimize(100)
         self.assertAlmostEqual(self.A.get_nuisance(), target, delta=1e-1)
 
