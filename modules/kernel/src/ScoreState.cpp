@@ -25,8 +25,6 @@ ScoreState::ScoreState(Model *m, std::string name) :
   ModelObject(m, name)
 {
   order_=-1;
-  // later change to just registering with ModelObject
-  m->add_score_state(this);
 }
 
 
