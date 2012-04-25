@@ -32,6 +32,10 @@ env= env.IMPApplication(name="rmf_tools", version='nightly-24/4/2012',
    - \c rmf_info displays information about the attributes found in the RMF and how
    much they are used.
 
+   - \c rmf_slice creates a new rmf from frames selected from an existing one.
+
+   - \c rmf_cat creates a new rmf concatenating several with the same structure.
+
    - \c rmf_color adds color information to an RMF
    """,
                         license=env.IMPStandardLicense(),
@@ -47,3 +51,5 @@ if env:
     env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])
     env.IMPCPPExecutable(target="rmf_info", source=["rmf_info.cpp"])
     env.IMPCPPExecutable(target="rmf_color", source=["rmf_color.cpp"])
+    env.IMPCPPExecutable(target="rmf_slice", source=["rmf_slice.cpp"])
+    env.IMPCPPExecutable(target="rmf_cat", source=["rmf_cat.cpp"])
