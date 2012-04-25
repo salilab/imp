@@ -57,6 +57,7 @@
                               create_args, create_cargs);               \
   void add_##names(RMF::FileHandle fh,                                  \
                    const OutTypes& hs) {                                \
+    if (hs.empty()) return;                                             \
     Name##SaveLink* hsl= get_##name##_save_link(fh);                    \
     hsl->add(fh.get_root_node(), hs);                                   \
     hsl->save(fh, 0);                                                   \
@@ -72,10 +73,10 @@
   }                                                                     \
   void link_##names(RMF::FileConstHandle fh,                            \
                         const InTypes &hs) {                            \
+    if(hs.empty()) return;                                              \
     base::Pointer<Name##LoadLink> pll                                   \
         = get_##name##_load_link create_cargs_from;                     \
     pll->link(fh.get_root_node(), hs);                                  \
-    pll->load(fh, 0);                                                   \
   }
 
 #endif /* IMPRMF_LINK_MACROS_H */
