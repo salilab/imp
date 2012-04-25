@@ -28,6 +28,7 @@
     of the call to do_update.
     It also defines
     - void set_periodicity(unsigned int)
+    - void reset() which resets all state (like the current frame number)
 
     If you use this macro, you should also include IMP/internal/utility.h.
 */
@@ -52,6 +53,9 @@
   void set_period(unsigned int p) {                                     \
     IMP_USAGE_CHECK(p>0, "Period must be positive.");                   \
     skip_=p-1; call_number_=0;                                          \
+  }                                                                     \
+  void reset() {                                                        \
+    call_number_=0;                                                     \
   }                                                                     \
   IMP_OBJECT(Name);                                                     \
   private:                                                              \
