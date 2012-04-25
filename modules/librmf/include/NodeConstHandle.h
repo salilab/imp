@@ -165,6 +165,10 @@ protected:
     return boost::any_cast<T>(shared_->get_association(node_));
   }
 
+  bool get_has_association() const {
+    return shared_->get_has_association(node_);
+  }
+
   //! get the type of this node
   NodeType get_type() const {
     return NodeType(shared_->get_type(node_));

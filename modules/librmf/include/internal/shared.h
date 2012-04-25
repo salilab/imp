@@ -365,6 +365,10 @@ namespace RMF {
                             "Unassociated id");
         return association_[id];
       }
+      bool get_has_association(int id) const {
+        if (id >= static_cast<int>(association_.size())) return false;
+        return !association_[id].empty();
+      }
       std::string get_file_name() const {
         return file_.get_file().get_name();
       }
