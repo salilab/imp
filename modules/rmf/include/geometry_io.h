@@ -37,6 +37,9 @@ IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);
 #endif
 
 IMPRMFEXPORT display::Geometries create_geometries(RMF::FileConstHandle parent);
+
+IMPRMFEXPORT void link_geometries(RMF::FileConstHandle parent,
+                                  const display::GeometriesTemp &r);
 /** @} */
 IMPRMF_END_NAMESPACE
 

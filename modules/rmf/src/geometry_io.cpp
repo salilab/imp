@@ -381,4 +381,21 @@ display::Geometries create_geometries(RMF::FileConstHandle fh) {
   return ret;
 }
 
+void link_geometries(RMF::FileConstHandle fh,
+                     const display::GeometriesTemp &gt) {
+  Pointer<SphereLoadLink> sll= get_sphere_load_link(fh);
+  Pointer<CylinderLoadLink> cll= get_cylinder_load_link(fh);
+  Pointer<SegmentLoadLink> sgll= get_segment_load_link(fh);
+  Pointer<BoxLoadLink> bll= get_box_load_link(fh);
+  display::SphereGeometries sgs;
+  display::CylinderGeometries cgs;
+  display::SegmentGeometries ssgs;
+  display::BoundingBoxGeometries bgs;
+  divide(gt, sgs, cgs, ssgs, bgs);
+  sll->link(fh.get_root_node(), sgs);
+  cll->link(fh.get_root_node(), cgs);
+  sgll->link(fh.get_root_node(), ssgs);
+  bll->link(fh.get_root_node(), bgs);
+}
+
 IMPRMF_END_NAMESPACE
