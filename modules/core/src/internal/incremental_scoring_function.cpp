@@ -9,6 +9,7 @@
 #include <IMP/core/internal/SingleParticleScoringFunction.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
+#include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/internal/InternalPairsRestraint.h>
 #include <IMP/core/internal/generic.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
@@ -208,40 +209,33 @@ NBChecker::NBChecker(Model *m, const ParticleIndexes &pis,
                                     filt_(filt) {}
 bool NBChecker::
 operator()(const NBGenerator::result_type &vals) const {
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    XYZR di(m_, pis_[i]);
-    for (unsigned int j=0; j<i; ++j) {
-      XYZR dj(m_, pis_[j]);
-      ParticleIndexPair pip(pis_[i], pis_[j]);
-      if (get_distance(di, dj) < .9*distance_) {
-        bool filtered=false;
-        for (unsigned int k=0; k < filt_.size(); ++k) {
-          if (filt_[k]->get_value_index(m_,
-                                        pip)) {
-            filtered=true;
-            break;
-          }
-        }
-        if (!filtered) {
-          bool found=false;
-          for (unsigned int k=0; k < vals.size(); ++k) {
-            if ((vals[k].first == pis_[i] && vals[k].second == pis_[j])
-                || (vals[k].second == pis_[i] && vals[k].first == pis_[j])) {
-              found=true;
-              break;
-            }
-          }
-          double score= score_->evaluate_index(m_, pip, nullptr);
-          if (!found && score != 0.0) {
-            IMP_LOG(SILENT, "Can't find pair " << pis_[i] << " " << pis_[j]
-                    << " in list " << vals
-                    << " at distance " << get_distance(di, dj)
-                    << " with threshold " << distance_
-                    << std::endl);
-            return false;
-          }
-        }
-      }
+  IMP_NEW(GridClosePairsFinder, gcpf, ());
+  gcpf->set_distance(.9*distance_);
+  ParticleIndexPairs found= gcpf->get_close_pairs(m_,
+                                                  pis_);
+  for (unsigned int i=0; i< filt_.size(); ++i) {
+    filt_[i]->remove_if_equal(m_,
+                              found, 1);
+  }
+  compatibility::set<ParticleIndexPair> vals_index;
+  for (unsigned int i=0; i< vals.size(); ++i) {
+    vals_index.insert(ParticleIndexPair(vals[i].first,
+                                        vals[i].second));
+  }
+  for (unsigned int i=0; i< found.size(); ++i) {
+    double score= score_->evaluate_index(m_, found[i], nullptr);
+    if (score ==0) continue;
+    bool has= vals_index.find(found[i])!= vals_index.end()
+      || vals_index.find(ParticleIndexPair(found[i][1], found[i][0]))
+      != vals_index.end();
+    if (!has) {
+      IMP_LOG(SILENT, "Can't find pair " << found[i]
+              << " in list " << vals
+              << " at distance " << get_distance(XYZR(m_, found[i][0]),
+                                                 XYZR(m_, found[i][1]))
+              << " with threshold " << distance_
+              << std::endl);
+      return false;
     }
   }
   for (unsigned int i=0; i< vals.size(); ++i) {
