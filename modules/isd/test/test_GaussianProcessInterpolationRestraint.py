@@ -186,7 +186,6 @@ class TestGaussianProcessInterpolationRestraint2Points(IMP.test.TestCase):
 
     def testEnergyTerms(self):
         for i in xrange(10):
-            IMP.set_log_level(IMP.TERSE)
             self.shuffle_particle_values()
             expected = self.m.evaluate(False)
             U = self.gpr.get_minus_exponent()
