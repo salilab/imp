@@ -23,13 +23,14 @@ IMP_OBJECTS(RMFRestraint, RMFRestraints);
 /** A dummy restraint object to represent restraints loaded from
     an RMF file.*/
 class IMPRMFEXPORT RMFRestraint: public Restraint {
-  double score_;
   ParticlesTemp ps_;
   RMFRestraints decomp_;
 public:
 #ifndef IMP_DOXYGEN
   RMFRestraint(Model *m, std::string name);
-  void set_score(double s) {score_=s;}
+  void set_score(double s) {
+    set_last_score(s);
+  }
   void set_particles(const ParticlesTemp &ps) {ps_=ps;}
   void set_decomposition(const RMFRestraints &d);
 #endif
