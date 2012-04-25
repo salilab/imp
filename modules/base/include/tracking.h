@@ -33,11 +33,9 @@ class Tracker {
     IMP_USAGE_CHECK(tr, "Can't track nullptr object");
     IMP_CHECK_OBJECT(tr);
     tracked_.insert(tr);
-    if (removed_.find(tr) != removed_.end()) {
-      removed_.erase(tr);
-    } else {
-      added_.insert(tr);
-    }
+    added_.insert(tr);
+    //can't remove it from removed as it might be a new one
+    // with the same address
   }
   void remove_tracked(Tracked*tr) {
     IMP_USAGE_CHECK(tr, "Can't untrack nullptr");
