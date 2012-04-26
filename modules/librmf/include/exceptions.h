@@ -10,7 +10,6 @@
 #define IMPLIBRMF_EXCEPTIONS_H
 
 #include "RMF_config.h"
-#include "internal/errors.h"
 #include <exception>
 
 namespace RMF {
@@ -37,7 +36,7 @@ class RMFEXPORT Exception: public virtual std::exception {
 */
 class RMFEXPORT UsageException: public virtual Exception {
  public:
-  UsageException(const char *msg): Exception(msg){}
+  UsageException(const char *msg);
   const char *get_type() const;
   ~UsageException() throw();
 };
@@ -47,7 +46,7 @@ class RMFEXPORT UsageException: public virtual Exception {
 */
 class RMFEXPORT IOException: public virtual Exception {
  public:
-  IOException(const char *msg): Exception(msg){}
+  IOException(const char *msg);
   const char *get_type() const;
   ~IOException() throw();
 };
@@ -58,7 +57,7 @@ class RMFEXPORT IOException: public virtual Exception {
 */
 class RMFEXPORT InternalException: public virtual Exception {
  public:
-  InternalException(const char *msg): Exception(msg){}
+  InternalException(const char *msg);
   const char *get_type() const;
   ~InternalException() throw();
 };

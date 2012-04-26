@@ -82,7 +82,8 @@ namespace RMF {
       //std::cout << "Creating data set " << name << std::endl;
       IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
                                      name.c_str(), H5P_DEFAULT),
-                          "Data set " << name << " already exists");
+                          internal::get_error_message("Data set ",name,
+                                                      " already exists"));
       hsize_t dims[D]={0};
       hsize_t cdims[D]={64};
       if (D >2) {
@@ -122,16 +123,19 @@ namespace RMF {
                       std::string name, bool): data_(new Data()) {
       IMP_RMF_USAGE_CHECK(H5Lexists(parent->get_hid(),
                                     name.c_str(), H5P_DEFAULT),
-                          "Data set " << name << " does not exist");
+                          internal::get_error_message("Data set ",
+                                                      name,
+                                                      " does not exist"));
       P::open(new HDF5SharedHandle(H5Dopen2(parent->get_hid(),
                                                      name.c_str(), H5P_DEFAULT),
                                             &H5Dclose, name));
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
       IMP_HDF5_HANDLE(sel, H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
       IMP_RMF_USAGE_CHECK(H5Sget_simple_extent_ndims(sel)==D,
-                          "Dimensions don't match. Got "
-                          << H5Sget_simple_extent_ndims(sel)
-                          << " but expected " << D);
+                  internal::get_error_message(
+                                              "Dimensions don't match. Got ",
+                                              H5Sget_simple_extent_ndims(sel),
+                                              " but expected ", D));
       initialize();
     }
    hsize_t* get_ones() const {
@@ -149,8 +153,9 @@ namespace RMF {
     void check_index(const HDF5DataSetIndexD<D> &ijk) const {
       HDF5DataSetIndexD<D> sz= get_size();
       for (unsigned int i=0; i< D; ++i) {
-        IMP_RMF_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
-                            << ijk[i] << " >= " << sz[i]);
+        IMP_RMF_USAGE_CHECK(ijk[i] < sz[i],
+               internal::get_error_message("Index is out of range: "
+                                           , ijk[i], " >= ", sz[i]));
       }
     }
     void initialize_handles() {
@@ -178,16 +183,17 @@ namespace RMF {
     HDF5ConstDataSetD(hid_t file, std::string name): data_(new Data()) {
       IMP_RMF_USAGE_CHECK(H5Lexists(file,
                                     name.c_str(), H5P_DEFAULT),
-                          "Data set " << name << " does not exist");
+                          internal::get_error_message("Data set ", name,
+                                                      " does not exist"));
       P::open(new HDF5SharedHandle(H5Dopen2(file,
                                                      name.c_str(), H5P_DEFAULT),
                                             &H5Dclose, name));
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
       IMP_HDF5_HANDLE(sel, H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
       IMP_RMF_USAGE_CHECK(H5Sget_simple_extent_ndims(sel)==D,
-                          "Dimensions don't match. Got "
-                          << H5Sget_simple_extent_ndims(sel)
-                          << " but expected " << D);
+                  internal::get_error_message("Dimensions don't match. Got ",
+                                              H5Sget_simple_extent_ndims(sel),
+                                              " but expected ", D));
       initialize();
     }
 #endif

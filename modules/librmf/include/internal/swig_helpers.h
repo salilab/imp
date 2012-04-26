@@ -50,8 +50,9 @@
 
 #define IMP_RMF_PYTHON_CALL(call) {int rc=call;                 \
     if (rc != 0) {                                              \
-      IMP_RMF_INTERNAL_CHECK(0, "Python call failed: "<< #call  \
-                         << " with "  << rc);                   \
+      IMP_RMF_INTERNAL_CHECK(0, RMF::internal::get_error_message\
+                             ("Python call failed: ", #call,    \
+                              " with ", rc));                   \
     }                                                           \
   }
 

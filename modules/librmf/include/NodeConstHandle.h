@@ -29,10 +29,12 @@
   */                                                                    \
 ReturnValue get_value(UCName##Key k,                                    \
                       unsigned int frame=0) const {                     \
-  IMP_RMF_USAGE_CHECK(get_has_value(k, frame), "Node " << get_name()    \
-                      << " does not have a value for key "              \
-                      << shared_->get_name(k) << " on frame "           \
-                      << frame);                                        \
+  IMP_RMF_USAGE_CHECK(get_has_value(k, frame),                          \
+                      internal::get_error_message("Node ", get_name(),  \
+                                     " does not have a value for key ", \
+                                                  shared_->get_name(k), \
+                                                  " on frame ",         \
+                                                  frame));              \
   return shared_->get_value<UCName##Traits>(node_, k, frame);           \
 }                                                                       \
 /** Return the attribute value or TypeTraits::get_null_value() if the

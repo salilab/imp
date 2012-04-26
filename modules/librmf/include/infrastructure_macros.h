@@ -9,7 +9,6 @@
 #ifndef IMPLIBRMF_INFRASTRUCTURE_MACROS_H
 #define IMPLIBRMF_INFRASTRUCTURE_MACROS_H
 
-#include "internal/errors.h"
 #include <sstream>
 #include <iostream>
 #include <string>
@@ -164,56 +163,59 @@
 #define IMP_RMF_SHOWABLE(Name, streamed)
 #endif
 
-#define IMP_RMF_USAGE_CHECK(check, message)                     \
-  do {                                                          \
-    if (!(check)) {                                             \
-      IMP_RMF_THROW("Usage check failed: " << #check << "\n"    \
-                    << message, RMF::UsageException);           \
-    }                                                           \
+#define IMP_RMF_USAGE_CHECK(check, message)                             \
+  do {                                                                  \
+    if (!(check)) {                                                     \
+      IMP_RMF_THROW(RMF::internal::get_error_message("Usage check failed: ", \
+                                                #check, "\n",           \
+                                                message),               \
+                    RMF::UsageException);                               \
+    }                                                                   \
   } while (false)
 
 #define IMP_RMF_INTERNAL_CHECK(check, message)                          \
   do {                                                                  \
     if (!(check)) {                                                     \
-      IMP_RMF_THROW("Internal check failed: \"" << #check << "\""       \
-                    << " at " << __FILE__ << ":" << __LINE__ << "\n"    \
-                    << message, RMF::InternalException);                \
+      IMP_RMF_THROW(RMF::internal                                       \
+                    ::get_error_message("Internal check failed: \"",    \
+                                                #check, "\"",           \
+                                                " at ", __FILE__, ":",  \
+                                                __LINE__, "\n",         \
+                                                message),               \
+                    RMF::InternalException);                            \
     }                                                                   \
   } while (false)
 
-#define IMP_RMF_PATH_CHECK(path, context)                       \
-  if (!boost::filesystem::exists(path)) {                       \
-    IMP_RMF_THROW(context << path << " does not exist.",        \
-                  IOException);                                 \
+#define IMP_RMF_PATH_CHECK(path, context)                               \
+  if (!boost::filesystem::exists(path)) {                               \
+    IMP_RMF_THROW(RMF::internal::get_error_message(context, path,       \
+                                              " does not exist."),      \
+                  IOException);                                         \
   }
 
 #define IMP_RMF_IF_CHECK                        \
   if (true)
 
 #define IMP_RMF_NOT_IMPLEMENTED                                 \
-  IMP_RMF_THROW("Not implemented: "<< BOOST_CURRENT_FUNCTION    \
-                << " in " << __FILE__ << ":" << __LINE__,       \
+  IMP_RMF_THROW(RMF::internal::get_error_message("Not implemented: ",   \
+                                            BOOST_CURRENT_FUNCTION,     \
+                                            " in ", __FILE__, ":",      \
+                                            __LINE__),                  \
                 RMF::InternalException)
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
 
 
-#define IMP_RMF_THROW(m,e) do {                 \
-    std::ostringstream oss;                     \
-    using RMF::operator<<;                      \
-    oss << m;                                   \
-    RMF::internal::handle_error(oss.str());     \
-    throw e(oss.str().c_str());                 \
-  } while (false)
+#define IMP_RMF_THROW(m,e)\
+    RMF::internal::handle_error<e>(m)
 
 /** Call a function and throw an exception if the return values is bad */
-#define IMP_HDF5_CALL(v) {                      \
-    hid_t test_value=(v);                       \
-    if (test_value<0) {                         \
-      IMP_RMF_THROW("HDF5 call failed: " << #v, \
-                    RMF::IOException);          \
-    }                                           \
-  }
+#define IMP_HDF5_CALL(v)                                                \
+    if ((v)<0) {                                                        \
+      IMP_RMF_THROW(internal::get_error_message("HDF5 call failed: ",   \
+                                                #v),                    \
+                    RMF::IOException);                                  \
+    }
 
 /** Create new HDF5 shared handle.*/
 #define IMP_HDF5_NEW_HANDLE(name, cmd, cleanup)         \
@@ -570,4 +572,8 @@ operator<<(std::ostream &out, const Showable &t);
   };
 
 #endif
+
+
+#include "internal/errors.h"
+
 #endif  /* IMPLIBRMF_INFRASTRUCTURE_MACROS_H */

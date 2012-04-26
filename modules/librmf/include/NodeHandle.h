@@ -32,9 +32,10 @@ void set_value(UCName##Key k, PassValue v,                              \
   IMP_RMF_INTERNAL_CHECK(!get_shared_data()->get_is_per_frame(k)        \
                          || get_shared_data()->get_number_of_frames(k)  \
                          >= frame,                                      \
-                         "Frame not set right: "                        \
-                         << get_shared_data()->get_number_of_frames(k)  \
-                         << " " << frame);                              \
+                         internal::get_error_message("Frame not set right: ", \
+                                                     get_shared_data()\
+                                                     ->get_number_of_frames(k),\
+                                                     " ", frame));      \
 }                                                                       \
 
 

@@ -45,7 +45,8 @@ public:
   HDF5Handle(hid_t h, HDF5CloseFunction f, std::string operation):
     h_(h), f_(f) {
     if (h_<0) {
-      IMP_RMF_THROW("Invalid handle returned from " << operation, IOException);
+      IMP_RMF_THROW(internal::get_error_message("Invalid handle returned from ",
+                                                operation), IOException);
     }
   }
   HDF5Handle(): h_(-1){}
@@ -74,7 +75,9 @@ public:
     h_=-1;
   }
   ~HDF5Handle() {
-    close();
+    if (h_ != -1) {
+      IMP_HDF5_CALL(f_(h_));
+    }
   }
 };
 
