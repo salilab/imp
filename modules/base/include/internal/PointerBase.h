@@ -26,6 +26,7 @@ template <class TT>
 struct RefCountedPointerTraits {
   typedef TT Type;
   static void handle_set(TT* t) {
+    IMP_CHECK_OBJECT_IF_NOT_NULL(t);
     internal::ref(t);
   }
   static void handle_unset(TT* t) {
@@ -59,7 +60,8 @@ struct WeakPointerTraits {
 template <class TT>
 struct CheckedWeakPointerTraits {
   typedef TT Type;
-  static void handle_set(TT* ) {
+  static void handle_set(TT*o) {
+    IMP_CHECK_OBJECT_IF_NOT_NULL(o);
   }
   static void handle_unset(TT* ) {
   }
@@ -193,10 +195,8 @@ private:
   }
 
   void set_pointer(O* p) {
-    if (p == o_) return;
-    if (o_) Traits::handle_unset(o_);
     if (p) Traits::handle_set(p);
-    check(p);
+    if (o_) Traits::handle_unset(o_);
     o_=p;
   }
 
@@ -206,7 +206,7 @@ public:
   PointerBase(): o_(NULL) {}
   /** drop control of the object */
   ~PointerBase(){
-    set_pointer(NULL);
+    if (o_) Traits::handle_unset(o_);
   }
   //! Return true if the pointer is not NULL
   bool operator!() const {

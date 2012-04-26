@@ -213,7 +213,7 @@
 #if defined(IMP_DOXYGEN) || IMP_BUILD == IMP_FAST
 //! Perform some basic validity checks on the object for memory debugging
 #define IMP_CHECK_OBJECT(obj)
-
+#define IMP_CHECK_OBJECT_IF_NOT_NULL(obj)
 #else
 #define IMP_CHECK_OBJECT(obj) do {                                      \
     IMP_INTERNAL_CHECK((obj), "NULL object");                           \
@@ -221,6 +221,14 @@
                        << static_cast<const void*>(obj)                 \
                        << " was previously freed");                     \
 } while (false)
+
+#define IMP_CHECK_OBJECT_IF_NOT_NULL(obj) do {                          \
+    if (obj) {                                                          \
+      IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object "         \
+                         << static_cast<const void*>(obj)               \
+                         << " was previously freed");                   \
+    }                                                                   \
+  } while (false)
 #endif
 
 
