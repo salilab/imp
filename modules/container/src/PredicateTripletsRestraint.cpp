@@ -45,7 +45,6 @@ ContainersTemp PredicateTripletsRestraint
 
 Restraints PredicateTripletsRestraint
 ::do_create_current_decomposition() const {
-  update_lists_if_necessary();
   return restraints_;
 }
 

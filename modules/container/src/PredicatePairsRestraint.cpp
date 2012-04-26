@@ -45,7 +45,6 @@ ContainersTemp PredicatePairsRestraint
 
 Restraints PredicatePairsRestraint
 ::do_create_current_decomposition() const {
-  update_lists_if_necessary();
   return restraints_;
 }
 
