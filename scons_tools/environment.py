@@ -183,7 +183,9 @@ def _add_platform_flags(env):
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-fno-float-store', '-Wno-unused',
-                                 '-funsafe-loop-optimizations'])
+                                 '-funsafe-loop-optimizations',
+                                 '--param','inline-unit-growth=200',
+                                 '-fearly-inlining',])
             if dependency.gcc.get_version(env)>= 4.3:
                 env.Append(CXXFLAGS=['-fno-signed-zeros',
                                      '-freciprocal-math',
