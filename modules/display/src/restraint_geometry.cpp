@@ -33,7 +33,6 @@ namespace {
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
-  m_->update();
   Pointer<Restraint> rd= r_->create_current_decomposition();
   if (!rd) return IMP::display::Geometries();
   RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
