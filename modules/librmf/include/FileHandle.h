@@ -291,8 +291,9 @@ Key<TypeT, D> get_key_always(FileHandle fh, CategoryD<D> cat,
   if (fh.get_has_key<TypeT, D>(cat, name)) {
     IMP_RMF_USAGE_CHECK(per_frame
                         == fh.get_is_per_frame(fh.get_key<TypeT, D>(cat, name)),
-                        "A per_frame value for the key requested didn't match"
-                        << " the actual per_frame value.");
+                        internal::get_error_message(
+                       "A per_frame value for the key requested didn't match",
+                       " the actual per_frame value."));
     return fh.get_key<TypeT, D>(cat, name);
   } else {
     return fh.add_key<TypeT, D>(cat, name, per_frame);

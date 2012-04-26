@@ -77,9 +77,11 @@ namespace RMF {
 
     std::string name= file_.get_file().get_name();
     IMP_RMF_USAGE_CHECK(!get_is_open(name),
-                        "RMF files can only be opened once at a time"
-                        << " at the moment: "
-                        << Strings(opened.begin(), opened.end()));
+                        get_error_message("RMF files can only be opened ",
+                                          "once at a time",
+                                          " at the moment: ",
+                                          Strings(opened.begin(),
+                                                  opened.end())));
     opened.insert(name);
     if (create) {
       IMP_RMF_OPERATION(
@@ -100,8 +102,10 @@ namespace RMF {
           version=file_.get_attribute<CharTraits>("version"),
           "reading version string from file.");
       IMP_RMF_USAGE_CHECK(version== "rmf 1",
-                          "Unsupported rmf version string found: \""
-                          << version << "\" expected \"" << "rmf 1" << "\"");
+                          get_error_message("Unsupported rmf version ",
+                                            "string found: \"",
+                                            version , "\" expected \"" ,
+                                            "rmf 1" , "\""));
       IMP_RMF_OPERATION(
           node_names_=(file_.get_child_data_set<StringTraits, 1>)
           (get_node_name_data_set_name());,
@@ -147,7 +151,8 @@ namespace RMF {
       const char *cur=illegal;
       while (*cur != '\0') {
         if (name.find(*cur) != std::string::npos) {
-          IMP_RMF_THROW("Key names can't contain "<< *cur, UsageException);
+          IMP_RMF_THROW(get_error_message("Key names can't contain ",
+                                          *cur), UsageException);
         }
         ++cur;
       }
@@ -165,8 +170,9 @@ namespace RMF {
       const char *cur=illegal;
       while (*cur != '\0') {
         if (name.find(*cur) != std::string::npos) {
-          IMP_RMF_THROW("Node names names can't contain \""<< *cur
-                        << "\", but \"" << name << "\" does.",
+          IMP_RMF_THROW(get_error_message("Node names names can't contain \"",
+                                          *cur,
+                                          "\", but \"", name, "\" does."),
                         UsageException);
         }
         ++cur;
@@ -175,8 +181,8 @@ namespace RMF {
 
     void SharedData::check_node(unsigned int node) const {
       IMP_RMF_USAGE_CHECK(node_names_.get_size()[0] > node,
-                          "Invalid node specified: "
-                          << node);
+                          get_error_message("Invalid node specified: ",
+                                            node));
     }
     int SharedData::add_node(std::string name, unsigned int type) {
       IMP_RMF_BEGIN_FILE;
@@ -244,7 +250,8 @@ namespace RMF {
       bond=add_category(2, "bond");
     }
     IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0,
-                        "Invalid bond " << ida << " " << idb);
+                        get_error_message("Invalid bond ",
+                                          ida, " ", idb));
     RMF::Indexes tp(2);
     tp[0]=ida;
     tp[1]=idb;
@@ -259,7 +266,8 @@ namespace RMF {
         /*boost::tuple<int,int,int> bd=*/ get_bond(i);
       }
     }
-    IMP_RMF_USAGE_CHECK(type != -1, "Invalid type passed: " << type);
+    IMP_RMF_USAGE_CHECK(type != -1, get_error_message("Invalid type passed: ",
+                                                      type));
     set_value<IndexTraits, 2>(ind, pik, type, -1);
     IMP_RMF_IF_CHECK{
       flush();
@@ -303,13 +311,15 @@ namespace RMF {
 
   void SharedData::check_set(int arity, unsigned int index) const {
     IMP_RMF_USAGE_CHECK(node_data_[arity-1] != HDF5IndexDataSet2D(),
-                        "Invalid set arity requested: " << arity);
+                        get_error_message("Invalid set arity requested: ",
+                                          arity));
     IMP_RMF_USAGE_CHECK(node_data_[arity-1]
                         .get_value(HDF5DataSetIndexD<2>(index,
                                                         0))
                         >=0,
-                        "Invalid type for set: " << arity << " and "
-                        << index);
+                        get_error_message("Invalid type for set: ",
+                                          arity, " and ",
+                                          index));
     for ( int i=0; i< arity; ++i) {
       int cur=node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
                                                                 i+1));
@@ -394,12 +404,15 @@ namespace RMF {
                             && category_names_cache_[Arity-1].empty())
                            || ( category_names_cache_[Arity-1].size()
                                 == category_names_[Arity-1].get_size()[0]),
-                           "Cache and data set sizes don't match: "
-                           << category_names_cache_[Arity-1].size() << " vs "
-                           << category_names_[Arity-1].get_size()[0]);
+                           get_error_message("Cache and data set sizes",
+                                             " don't match: ",
+                                             category_names_cache_[Arity-1]
+                                             .size(), " vs ",
+                                             category_names_[Arity-1]
+                                             .get_size()[0]));
     IMP_RMF_USAGE_CHECK(get_category(Arity, name)==-1,
-                        "File already has category " << name
-                        << " with arity " << Arity);
+                        get_error_message("File already has category ", name,
+                                          " with arity ", Arity));
     if (category_names_[Arity-1]
         == HDF5DataSetD<StringTraits, 1>()) {
       IMP_RMF_BEGIN_OPERATION;

@@ -102,8 +102,10 @@ namespace RMF {
           last[i]+=size[i]-1;
         }
         IMP_RMF_USAGE_CHECK(total==value.size(),
-                            "Block has size " << total << " but found "
-                            << value.size() << " values");
+                            internal::get_error_message("Block has size ",
+                                                        total, " but found ",
+                                                        value.size(),
+                                                        " values"));
         P::check_index(last);
       }
       //IMP_HDF5_HANDLE(sel, H5Dget_space(h_->get_hid()), &H5Sclose);

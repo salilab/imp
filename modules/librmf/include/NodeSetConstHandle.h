@@ -29,10 +29,12 @@
   */                                                                    \
 ReturnValue get_value(Key<UCName##Traits, D> k,                         \
                       unsigned int frame=0) const {                     \
-  IMP_RMF_USAGE_CHECK(get_has_value(k, frame), "NodeSet "               \
-                      << " does not have a value for key "              \
-                      << shared_->get_name(k) << " on frame "           \
-                      << frame);                                        \
+  IMP_RMF_USAGE_CHECK(get_has_value(k, frame), \
+                      internal::get_error_message("NodeSet ",           \
+                       " does not have a value for key ",              \
+                                                  shared_->get_name(k),\
+                                                  " on frame ",         \
+                                                  frame));              \
   return shared_->get_value<UCName##Traits>(node_,                      \
                                             k, frame);                  \
 }                                                                       \
@@ -109,7 +111,9 @@ protected:
       return D;
     }
     NodeHandle get_node(unsigned int i) const {
-      IMP_RMF_USAGE_CHECK( i< D, "Out of range index: " << i);
+      IMP_RMF_USAGE_CHECK( i< D,
+                           internal::get_error_message("Out of range index: ",
+                                                       i));
       //return NodeHandle(share_->get_node(node_, i), shared_);
       return NodeHandle(shared_->get_set_member(D, node_, i),
                         shared_.get());

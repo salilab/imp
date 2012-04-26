@@ -49,7 +49,8 @@ HDF5ConstGroup::HDF5ConstGroup(HDF5ConstGroup parent, std::string name):
 
 HDF5Group HDF5Group::add_child(std::string name) {
   IMP_RMF_USAGE_CHECK(!H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT),
-                  "Child named " << name << " already exists");
+                      internal::get_error_message("Child named ",
+                                                  name, " already exists"));
   IMP_HDF5_HANDLE(, H5Gcreate2(get_handle(), name.c_str(),
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
                   &H5Gclose);

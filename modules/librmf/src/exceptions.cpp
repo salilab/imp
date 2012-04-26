@@ -45,18 +45,20 @@ const char *Exception::what() const throw() {
       file_name_=name;
     } catch (...){}
   }
-
+UsageException::UsageException(const char *msg): Exception(msg){}
 UsageException::~UsageException() throw() {}
 const char *UsageException::get_type() const {
   static const char *name="usage";
   return name;
 }
 
+IOException::IOException(const char *msg): Exception(msg){}
 IOException::~IOException() throw() {}
 const char *IOException::get_type() const {
   static const char *name="IO";
   return name;
 }
+InternalException::InternalException(const char *msg): Exception(msg){}
 
 InternalException::~InternalException() throw() {}
 const char *InternalException::get_type() const {

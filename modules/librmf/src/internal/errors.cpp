@@ -10,8 +10,5 @@
 #include <stdexcept>
 namespace RMF {
   namespace internal {
-    void handle_error(std::string) {
-      //throw UsageException(message.c_str());
-    }
   } // namespace internal
 } /* namespace RMF */

@@ -34,9 +34,10 @@ void set_value(Key<UCName##Traits, D> k, PassValue v,                   \
   IMP_RMF_INTERNAL_CHECK(!P::get_shared_data()->get_is_per_frame(k)     \
                          || P::get_shared_data()->get_number_of_frames(k)\
                          >= frame,                                      \
-                         "Frame not set right: "                        \
-                         << P::get_shared_data()->get_number_of_frames(k) \
-                         << " " << frame);                              \
+                         internal::get_error_message("Frame not set right: ", \
+                                                     P::get_shared_data()\
+                                                     ->get_number_of_frames(k),\
+                                                     " ", frame));      \
 }                                                                       \
 
 namespace RMF {
@@ -59,7 +60,9 @@ namespace RMF {
     NodeSetHandle(){
     }
     NodeHandle get_node(unsigned int i) const {
-      IMP_RMF_USAGE_CHECK( i< D, "Out of range index: " << i);
+      IMP_RMF_USAGE_CHECK( i< D,
+                           internal::get_error_message("Out of range index: ",
+                                                       i));
       //return NodeHandle(share_->get_node(P::get_node_id(), i),
       //P::get_shared_data());
       return NodeHandle(P::get_shared_data()->get_set_member(D,

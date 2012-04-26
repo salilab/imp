@@ -379,8 +379,8 @@ namespace RMF {
         unsigned int get_number_of_frames(Key<TypeTraits, Arity> k) const {
         unsigned int kc= k.get_category().get_index();
         if (!get_is_per_frame(k)) {
-          IMP_RMF_THROW("Attribue " << get_name(k)
-                        << " does not have frames.",
+          IMP_RMF_THROW(get_error_message("Attribue ", get_name(k),
+                                          " does not have frames."),
                         UsageException);
         } else {
           HDF5DataSetD<TypeTraits, 3> &ds
@@ -525,8 +525,8 @@ namespace RMF {
           for (unsigned int i=0; i< sz; ++i) {
             index[0]=i;
             IMP_RMF_USAGE_CHECK(nameds.get_value(index) != name,
-                                "Attribute name " << name
-                                << " already taken for that type.");
+                         get_error_message("Attribute name ", name,
+                                           " already taken for that type."));
           }
         }
         IMP_RMF_END_OPERATION("checking that key is unique");
@@ -634,9 +634,11 @@ namespace RMF {
       std::string get_category_name(int Arity, unsigned int kc) const  {
         IMP_RMF_USAGE_CHECK(category_names_cache_.size()
                             > static_cast<unsigned int>(Arity),
-                            "No categories with arity " << Arity);
+                            get_error_message("No categories with arity ",
+                                              Arity));
         IMP_RMF_USAGE_CHECK(category_names_cache_[Arity-1].size() > kc,
-                            "No such category with arity " << Arity);
+                            get_error_message("No such category with arity ",
+                                              Arity));
         return category_names_cache_[Arity-1][kc];
       }
 
