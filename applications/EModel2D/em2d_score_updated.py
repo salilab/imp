@@ -1,0 +1,121 @@
+
+import IMP
+import IMP.core
+import IMP.atom
+import IMP.em2d as em2d
+import os
+import sys
+import time
+import logging
+log = logging.getLogger("score_model")
+
+def score_model(complete_fn_model,
+                images_sel_file,
+                pixel_size,
+                n_projections=20,
+                resolution=1,
+                images_per_batch=250):
+    """ Score a model
+
+    Scores a model against the images in the selection file.
+    Reads the images in batchs to avoid memory problems
+    resolution and pixel_size are used for generating projections of the model
+    The finder is an em2d.ProjectionFinder used for projection matching and optimizations
+    """
+    print "SCORING MODEL:",complete_fn_model
+    cwd = os.getcwd()
+
+    images_dir, nil  =  os.path.split(images_sel_file)
+    images_names = em2d.read_selection_file(images_sel_file)
+    n_images = len(images_names)
+    if(n_images == 0):
+        raise ValueError(" Scoring with a empty set of images")
+
+    # TYPICAL OPTIMIZER PARAMETERS
+    params = em2d.Em2DRestraintParameters(pixel_size, resolution)
+    params.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
+    params.optimization_steps = 4
+    params.simplex_initial_length = 0.1
+    params.simplex_minimum_size=0.02
+    params.save_match_images = True
+    score_function = em2d.EM2DScore()
+    finder = em2d.ProjectionFinder()
+    finder.setup(score_function, params)
+
+    # Get the number of rows and cols from the 1st image
+    srw = em2d.SpiderImageReaderWriter()
+    test_imgs = em2d.read_images([os.path.join(images_dir, images_names[0])], srw)
+    rows = test_imgs[0].get_header().get_number_of_columns()
+    cols = test_imgs[0].get_header().get_number_of_rows()
+
+    model = IMP.Model()
+    ssel = IMP.atom.ATOMPDBSelector()
+    prot =  IMP.atom.read_pdb(complete_fn_model, model, ssel)
+
+    particles = IMP.core.get_leaves(prot)
+    # generate projections
+    proj_params = em2d.get_evenly_distributed_registration_results(n_projections)
+    opts = em2d.ProjectingOptions(pixel_size, resolution)
+    projections = em2d.get_projections(particles, proj_params, rows, cols, opts)
+
+    finder.set_model_particles(particles)
+    finder.set_projections(projections)
+    optimized_solutions= 2
+    finder.set_fast_mode(optimized_solutions)
+    if(images_dir != ""):
+        os.chdir(images_dir)
+
+    # read the images in blocks to avoid memory problems
+    all_registration_results = []
+    init_set = 0
+    init_time = time.time()
+    while(init_set < n_images):
+        end_set = min( init_set + images_per_batch, n_images )
+        subjects = em2d.read_images(images_names[init_set:end_set], srw)
+        # register
+        finder.set_subjects(subjects)
+        finder.get_complete_registration()
+        # Recover the registration results:
+        registration_results = finder.get_registration_results()
+        for reg in registration_results:
+            all_registration_results.append(reg)
+        init_set += images_per_batch
+    em2d.write_registration_results("registration.params", all_registration_results)
+    print "score_model: time complete registration",time.time()-init_time
+    print "coarse registration time",finder.get_coarse_registration_time()
+    print "fine registration time",finder.get_fine_registration_time()
+
+    os.chdir(cwd)
+    # If interested in providing the final score,  use:
+    # em2d_score = em2d.get_global_score(all_registration_results)
+    return all_registration_results
+
+
+if __name__ == "__main__":
+    import sys
+    if(len(sys.argv) != 7 ):
+        print "Parameters"
+        print "[1] - PDB name"
+        print "[2] - images selection file"
+        print "[3] - pixel size"
+        print "[4] - number of projections used for registering"
+        print "[5] - resolution to generate the projections"
+        print "[6] - images per batch used when scoring (avoid memory problems)"
+        sys.exit()
+
+    complete_fn_model  = sys.argv[1]
+    images_sel_file = sys.argv[2]
+    pixel_size = float(sys.argv[3] )
+    n_projections= int(sys.argv[4])
+    resolution= float(sys.argv[5])
+    images_per_batch= int(sys.argv[6])
+
+    all_regs =  score_model(complete_fn_model,
+                images_sel_file,
+                pixel_size,
+                n_projections,
+                resolution,
+                images_per_batch)
+    for reg in all_regs:
+        print reg.get_score()
+    print em2d.get_global_score(all_regs)

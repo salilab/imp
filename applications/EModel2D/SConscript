@@ -1,0 +1,17 @@
+Import('env')
+
+env= env.IMPApplication(name="EModel2D", version='nightly-17/4/2012',
+                        authors=["Javier Velazquez-Muriel"],
+                        brief="Modeling of macromolecular assemblies base on EM images",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=[],
+                        required_modules=["container","core","atom","algebra",
+                                              "em","display","gsl","domino"],
+                        required_dependencies=[])
+if env:
+    env.IMPPythonExecutable('em2d_domino_model.py')
+    env.IMPPythonExecutable('em2d_cluster_solutions.py')
+    env.IMPPythonExecutable('em2d_score_updated.py')
+    env.IMPPythonExecutable('em2d_docking.py')
+    env.IMPPythonExecutable('convert_spider_to_jpg.py')
