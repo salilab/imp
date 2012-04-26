@@ -186,25 +186,25 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(255./255.,0.,0.),
                        i, CC2_x0,678);
 */
-   // B) from residue 799 to 897 no structure
-   atom::Molecules Spc110p_799_897;
+   // B) from residue 799 to 895 no structure
+   atom::Molecules Spc110p_799_895;
    for(unsigned kk=0;kk<2;++kk){
-    Spc110p_799_897.push_back(create_protein(m,"Spc110p_799_897",11.0,2,
+    Spc110p_799_895.push_back(create_protein(m,"Spc110p_799_895",11.0,2,
                         display::Color(255./255.,0.,0.),
-                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,799,99));
+                        i,mydata.kappa,tmp_x0,mydata.use_connectivity,799,97));
     if(i==0){
-     Particles ps=atom::get_leaves(Spc110p_799_897[kk]);
+     Particles ps=atom::get_leaves(Spc110p_799_895[kk]);
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
    }
    // C) C-terminal part (with structure)
-   atom::Molecules Spc110p_898_935;
-   Spc110p_898_935.push_back(create_protein(m,"Spc110p_898_935",
-                      "4DS7_Spc110_A.pdb", mydata.resolution,
+   atom::Molecules Spc110p_896_944;
+   Spc110p_896_944.push_back(create_protein(m,"Spc110p_896_944",
+                      "4DS7_Spc110_A_new.pdb", mydata.resolution,
                       display::Color(255./255.,0.,0.),
                       i,tmp_x0,0,false));
-   Spc110p_898_935.push_back(create_protein(m,"Spc110p_898_935",
-                      "4DS7_Spc110_B.pdb", mydata.resolution,
+   Spc110p_896_944.push_back(create_protein(m,"Spc110p_896_944",
+                      "4DS7_Spc110_B_new.pdb", mydata.resolution,
                       display::Color(255./255.,0.,0.),
                       i,tmp_x0,0,false));
  // GFPs?
@@ -217,10 +217,12 @@ for(int i=0;i<mydata.num_cells;++i){
    }
 // Calmodulin
    atom::Molecules Cmd1p;
-   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_A.pdb",mydata.resolution,
+   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_A_new.pdb",
+                     mydata.resolution,
                      display::Color(255./255.,255./255.,0.),
                      i,tmp_x0,0,false));
-   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_B.pdb",mydata.resolution,
+   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_B_new.pdb",
+                     mydata.resolution,
                      display::Color(255./255.,255./255.,0.),
                      i,tmp_x0,0,false));
    for(unsigned kk=0;kk<2;++kk){
@@ -241,7 +243,7 @@ for(int i=0;i<mydata.num_cells;++i){
 // Create the rigid body
    core::XYZRs rbps;
    for(unsigned kk=0;kk<2;++kk){
-    Particles ps0=atom::get_leaves(Spc110p_898_935[kk]);
+    Particles ps0=atom::get_leaves(Spc110p_896_944[kk]);
     for(unsigned jj=0;jj<ps0.size();++jj){rbps.push_back(core::XYZR(ps0[jj]));}
     Particles ps1=atom::get_leaves(Cmd1p[kk]);
     for(unsigned jj=0;jj<ps1.size();++jj){rbps.push_back(core::XYZR(ps1[jj]));}
@@ -251,21 +253,21 @@ for(int i=0;i<mydata.num_cells;++i){
    recenter_rb(rb,rbps,tmp_x0);
 // now I need a mover for the Cmd1p-Spc110p rb + balls
    if(i==0){
-    Particles ps_Spc110p_799_897;
+    Particles ps_Spc110p_799_895;
     for(unsigned int kk=0;kk<2;++kk){
-     Particles ps=atom::get_leaves(Spc110p_799_897[kk]);
-     ps_Spc110p_799_897.insert(ps_Spc110p_799_897.end(),ps.begin(),ps.end());
+     Particles ps=atom::get_leaves(Spc110p_799_895[kk]);
+     ps_Spc110p_799_895.insert(ps_Spc110p_799_895.end(),ps.begin(),ps.end());
     }
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (rb,ps_Spc110p_799_897,mydata.MC.dx,mydata.MC.dang,
+     (rb,ps_Spc110p_799_895,mydata.MC.dx,mydata.MC.dang,
       mydata.CP_centers,mydata.trs));
     mvs.push_back(rbmv);
    }
  // only at this point I can create the merged Spc110
    for(unsigned int kk=0;kk<2;++kk){
     atom::Molecules Spc110p_c_all;
-    Spc110p_c_all.push_back(Spc110p_799_897[kk]);
-    Spc110p_c_all.push_back(Spc110p_898_935[kk]);
+    Spc110p_c_all.push_back(Spc110p_799_895[kk]);
+    Spc110p_c_all.push_back(Spc110p_896_944[kk]);
     atom::Molecule Spc110p=
      create_merged_protein(m,"Spc110p",Spc110p_c_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc110p);
