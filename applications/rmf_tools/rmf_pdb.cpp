@@ -9,63 +9,37 @@
 #include <IMP/atom/force_fields.h>
 #include <IMP/exception.h>
 
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+#include "common.h"
 
-std::string input, output;
-po::options_description desc("Usage: input.[rmf/pdb] output.[rmf/pdb].\n The"\
-         " RMF file's contents must be an atomic structure of a molecule.");
-bool help=false;
+std::string description("Convert between rmf files and pdbs.");
 int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
 
-std::string get_suffix(std::string name) {
+std::string get_suffix(char *argv[], std::string name) {
   int pos= name.rfind(".");
   if (pos ==-1) {
     std::cerr << "Bad file name: " << name <<std::endl;
-    print_help();
-    exit(1);
+    print_help_and_exit(argv);
   }
   std::string ret(name, pos);
   if (ret != ".pdb" && ret != ".rmf") {
     std::cerr << "The file names must end in .rmf or .pdb: "
               << name << std::endl;
-    print_help();
-    exit(1);
+    print_help_and_exit(argv);
   }
   return ret;
 }
 
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-    ("help,h", "Translate and hdf5 file to pdb.")
-    ("frame,f", po::value< int >(&frame),
-     "Frame to use")
-    ("input-file,i", po::value< std::string >(&input),
-     "input hdf5 file")
-    ("output-file,o", po::value< std::string >(&output),
-     "output pdb file");;
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    p.add("output-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    if (vm.count("help") || input.empty() || output.empty()) {
-      print_help();
-      return 1;
-    }
+    IMP_ADD_INPUT_FILE("rmf or pdb");
+    IMP_ADD_OUTPUT_FILE("rmf or pdb");
+    IMP_ADD_FRAMES;
+    process_options(argc, argv);
     IMP_NEW(IMP::Model, m, ());
     IMP::atom::Hierarchy h;
     RMF::FileHandle rh;
     int nframes=-1;
-    if (get_suffix(input) == ".pdb") {
+    if (get_suffix(argv, input) == ".pdb") {
       IMP_CATCH_AND_TERMINATE(h= IMP::atom::read_pdb(input, m));
       IMP::atom::add_bonds(h);
       nframes= std::numeric_limits<int>::max();
@@ -79,44 +53,29 @@ int main(int argc, char **argv) {
       //std::cout << xk << std::endl;
       nframes= rh.get_number_of_frames();
     }
-    int minframe, maxframe, step;
-    if (frame>=0) {
-      minframe=frame;
-      maxframe=frame+1;
-      step =1;
-    } else {
-      minframe=0;
-      maxframe=nframes+1;
-      step=-frame;
-    }
     RMF::FileHandle rho;
-    int outframe=0;
-    for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
-      if (outframe%10==0) {
-        std::cout << outframe << std::endl;
-      }
-      if (get_suffix(input) == ".pdb") {
+    IMP_FOR_EACH_FRAME(nframes) {
+      if (get_suffix(argv,input) == ".pdb") {
         try {
-          IMP::atom::read_pdb(input, cur_frame, h);
+          IMP::atom::read_pdb(input, current_frame, h);
         } catch (IMP::base::ValueException) {
           // out of frames;
           break;
         }
       } else {
-        IMP::rmf::load_frame(rh, cur_frame);
+        IMP::rmf::load_frame(rh, current_frame);
       }
-      if (get_suffix(output) == ".pdb") {
-        IMP::base::TextOutput out(output, outframe!=0);
-        IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(h, out, outframe));
+      if (get_suffix(argv,output) == ".pdb") {
+        IMP::base::TextOutput out(output, frame_iteration!=0);
+        IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(h, out, frame_iteration));
       } else {
-        if (outframe==0) {
+        if (frame_iteration==0) {
           rho= RMF::create_rmf_file(output);
           IMP::rmf::add_hierarchies(rho, h.get_children());
         } else {
-          IMP::rmf::save_frame(rho, outframe);
+          IMP::rmf::save_frame(rho, frame_iteration);
         }
       }
-      ++outframe;
     }
     return 0;
   } catch (const IMP::Exception &e) {

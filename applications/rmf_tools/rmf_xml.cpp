@@ -5,20 +5,12 @@
 #include <RMF/FileConstHandle.h>
 #include <RMF/utility.h>
 #include <IMP/internal/graph_utility.h>
+#include "common.h"
 #include <sstream>
 
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
-
-std::string input, output;
-po::options_description desc("Usage: input.rmf output.xml");
-bool help=false;
-bool verbose=false;
+std::string description
+="Convert an rmf file into an xml file suitable for opening in a web browser.";
 int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
-
 namespace {
 
   std::string get_as_attribute_name(std::string name) {
@@ -167,30 +159,13 @@ void show_sets(RMF::FileConstHandle rh,
 
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Print the contents of an rmf file to the terminal as xml.")
-      ("verbose,v", "Include lots of information about each node.")
-      ("frame,f", po::value< int >(&frame),
-       "Frame to use")
-      ("input-file,i", po::value< std::string >(&input),
-       "input hdf5 file")
-      ("output-file,o", po::value< std::string >(&output),
-       "output xml file");
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    p.add("output-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    verbose= vm.count("verbose");
-    if (vm.count("help") || input.empty()) {
-      print_help();
-      return 1;
-    }
-    RMF:: set_show_hdf5_errors(true);
+    IMP_ADD_INPUT_FILE("rmf");
+    IMP_ADD_OUTPUT_FILE("xml");
+    IMP_ADD_FRAMES;
+    process_options(argc, argv);
+
+    frame= frame_option;
+
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::ostream *out;
     std::ofstream fout;

@@ -5,9 +5,7 @@
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
 #include <IMP/display/Color.h>
-
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+#include "common.h"
 
 int get_count(RMF::NodeHandle nh, int level) {
   int ret=0;
@@ -49,38 +47,21 @@ int recolor(RMF::NodeHandle nh, int level, int total,
   return so_far;
 }
 
-std::string input, method;
-po::options_description desc("Usage: input.rmf");
-bool help=false;
-bool verbose=false;
+std::string method;
+std::string description("Recolor the molecules in an rmf file.");
 int level=1;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
+
 
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Print the contents of an rmf file to the terminal.")
+    options.add_options()
       ("verbose,v", "Print lots of information about each node.")
-      ("level,l", po::value< int >(&level),
+      ("level,l", boost::program_options::value< int >(&level),
        "What level to apply the color to in the RMF (from the top.")
-      ("method,m", po::value< std::string >(&method),
-       "how to choose the colors: display, jet")
-      ("input-file,i", po::value< std::string >(&input),
-       "input hdf5 file");
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    if (vm.count("help") || input.empty()) {
-      print_help();
-      return 1;
-    }
+      ("method,m", boost::program_options::value< std::string >(&method),
+       "how to choose the colors: display, jet");
+    IMP_ADD_INPUT_FILE("rmf");
+    process_options(argc, argv);
     RMF::FileHandle rh= RMF::open_rmf_file(input);
     int count= get_count(rh.get_root_node(), level);
     RMF::Category cat= RMF::get_category_always<1>(rh, "shape");
