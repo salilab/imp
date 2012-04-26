@@ -1,6 +1,7 @@
 Import('env')
 
-applications=['foxs',
+applications=[ 'EModel2D',
+                'foxs',
               'integrative_docking',
               'saxs_tools',
               'saxs_merge',
