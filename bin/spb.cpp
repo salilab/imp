@@ -111,11 +111,13 @@ if(mydata.MC.do_wte && mydata.MC.wte_restart){
  std::ifstream biasfile;
  std::string names="BIAS"+out.str();
  biasfile.open(names.c_str());
- while (biasfile >> bias){val.push_back(bias);}
- biasfile.close();
- Pointer<membrane::MonteCarloWithWte> ptr=
+ if(biasfile.is_open()){
+  while (biasfile >> bias){val.push_back(bias);}
+  Pointer<membrane::MonteCarloWithWte> ptr=
      dynamic_cast<membrane::MonteCarloWithWte*>(mc.get());
- ptr->set_bias(val);
+  ptr->set_bias(val);
+  biasfile.close();
+ }
 }
 
 // hot steps
