@@ -54,18 +54,19 @@ void InternalDynamicListCLASSNAMEContainer
   }
 }
 
-void InternalDynamicListCLASSNAMEContainer::
-check_list() const {
-  ParticlesTemp app= scope_->get_all_possible_particles();
+bool InternalDynamicListCLASSNAMEContainer::
+check_list(const ParticleIndexes& cp) const {
+  ParticleIndexes app
+    = IMP::internal::get_index(scope_->get_all_possible_particles());
 
-  compatibility::set<Particle*> all(app.begin(),
+  compatibility::set<ParticleIndex> all(app.begin(),
                                     app.end());
-  ParticlesTemp flat= IMP::internal::flatten(get());
-  for (unsigned int i=0; i< flat.size(); ++i) {
-    IMP_USAGE_CHECK(all.find(flat[i]) != all.end(),
-                    "Particle " << Showable(flat[i])
+  for (unsigned int i=0; i< cp.size(); ++i) {
+    IMP_USAGE_CHECK(all.find(cp[i]) != all.end(),
+                    "Particle " << cp[i]
                     << " is not in the list of all possible particles");
   }
+  return true;
 }
 
 ParticlesTemp

@@ -25,7 +25,7 @@ class IMPEXPORT InternalDynamicListCLASSNAMEContainer:
   typedef ListLikeCLASSNAMEContainer P;
   // use this to define the set of all possible particles when it is dynamic
   base::Pointer<Container> scope_;
-  void check_list() const;
+  bool check_list(const ParticleIndexes& cp) const;
  public:
   InternalDynamicListCLASSNAMEContainer(Container *m, std::string name);
   InternalDynamicListCLASSNAMEContainer(Container *m, const char *name);
@@ -34,37 +34,35 @@ class IMPEXPORT InternalDynamicListCLASSNAMEContainer:
                     "Passed CLASSNAME cannot be nullptr (or None)");
 
     add_to_list(IMP::internal::get_index(vt));
-    IMP_IF_CHECK(USAGE) {
-      check_list();
-    }
+    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
+                               (IMP::internal::get_index(vt))),
+                    "Invalid entries added to list " << vt);
   }
   void add_FUNCTIONNAME(PASSINDEXTYPE vt) {
     add_to_list(vt);
-    IMP_IF_CHECK(USAGE) {
-      check_list();
-    }
+    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(vt)),
+                    "Invalid entries added to list " << vt);
   }
   void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
     if (c.empty()) return;
     PLURALINDEXTYPE cp= IMP::internal::get_index(c);
     add_to_list(cp);
-    IMP_IF_CHECK(USAGE) {
-      check_list();
-    }
+    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
+                               (cp)),
+                    "Invalid entries added to list " << cp);
   }
   void remove_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
   void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c) {
     PLURALINDEXTYPE cp= IMP::internal::get_index(c);
     update_list(cp);
-    IMP_IF_CHECK(USAGE) {
-      check_list();
-    }
+    IMP_USAGE_CHECK(check_list(IMP::internal::flatten
+                               (cp)),
+                    "Invalid entries added to list " << c);
   }
   void set_FUNCTIONNAMEs(PLURALINDEXTYPE cp) {
     update_list(cp);
-    IMP_IF_CHECK(USAGE) {
-      check_list();
-    }
+    IMP_USAGE_CHECK(check_list(IMP::internal::flatten(cp)),
+                    "Invalid entries added to list " << cp);
   }
   void clear_FUNCTIONNAMEs() {
     PLURALINDEXTYPE t;
