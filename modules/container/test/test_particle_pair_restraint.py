@@ -79,7 +79,7 @@ class PairContainerTest(IMP.test.TestCase):
         """Test the MinimumPairRestraint"""
         m= IMP.Model()
         c= IMP.container.ListPairContainer(m)
-        self.assertEqual(c.get_ref_count(), 2)
+        self.assertEqual(c.get_ref_count(), 1)
         for i in range(0,10):
             c.add_particle_pair(self.create_particle_pair(m))
         print c.get_number_of_particle_pairs()
@@ -87,7 +87,7 @@ class PairContainerTest(IMP.test.TestCase):
         self.assertEqual(d.get_ref_count(), 1)
         r= IMP.container.MinimumPairRestraint(d, c)
         self.assertEqual(d.get_ref_count(), 2)
-        self.assertEqual(c.get_ref_count(), 3)
+        self.assertEqual(c.get_ref_count(), 2)
         r.set_n(4)
         m.add_restraint(r)
         f= m.evaluate(False)
