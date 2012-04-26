@@ -51,13 +51,23 @@ struct IsInactive {
   }
 };
 
-template <class VT>
-inline ParticlesTemp flatten(const VT &in) {
-  typedef typename VT::value_type T;
-  ParticlesTemp ret(in.size()*T::get_dimension());
+template <unsigned int D>
+inline ParticlesTemp flatten(const base::Vector<ParticleTuple<D> > &in) {
+  ParticlesTemp ret(in.size()*D);
   for (unsigned int i=0; i< in.size(); ++i) {
-    for (unsigned int j=0; j< T::get_dimension(); ++j) {
-      ret[i*T::get_dimension()+j]= in[i][j];
+    for (unsigned int j=0; j< D; ++j) {
+      ret[i*D+j]= in[i][j];
+    }
+  }
+  return ret;
+}
+
+template <unsigned int D>
+inline ParticleIndexes flatten(const base::Vector<ParticleIndexTuple<D> > &in) {
+  ParticleIndexes ret(in.size()*D);
+  for (unsigned int i=0; i< in.size(); ++i) {
+    for (unsigned int j=0; j< D; ++j) {
+      ret[i*D+j]= in[i][j];
     }
   }
   return ret;
@@ -66,11 +76,25 @@ inline ParticlesTemp flatten(const VT &in) {
 inline const ParticlesTemp& flatten(const ParticlesTemp &in) {
   return in;
 }
+inline const ParticleIndexes& flatten(const ParticleIndexes &in) {
+  return in;
+}
 
 inline ParticlesTemp flatten(const Particles &in) {
   return get_as<ParticlesTemp>(in);
 }
 
+inline ParticlesTemp flatten(Particle *p) {return ParticlesTemp(1,p);}
+inline ParticleIndexes flatten(ParticleIndex p) {return ParticleIndexes(1,p);}
+
+template <unsigned int D>
+inline ParticlesTemp flatten(const ParticleTuple<D> pt) {
+  return ParticlesTemp(pt.begin(), pt.end());
+}
+template <unsigned int D>
+inline ParticleIndexes flatten(const ParticleIndexTuple<D> pt) {
+  return ParticleIndexes(pt.begin(), pt.end());
+}
 
 
 inline std::string streamable(Particle *p) {

@@ -53,6 +53,7 @@ void optimize_balls(const ParticlesTemp &ps,
 
   IMP_NEW(core::SoftSpherePairScore, ssps, (10));
   IMP_NEW(core::ConjugateGradients, cg, (m));
+  cg->set_score_threshold(.1);
   cg->set_optimizer_states(opt_states);
   {
     cg->set_score_threshold(ps.size()*.1);
@@ -68,6 +69,7 @@ void optimize_balls(const ParticlesTemp &ps,
     cg->set_optimizer_states(opt_states);
   }
   IMP_NEW(core::MonteCarlo, mc, (m));
+  mc->set_score_threshold(.1);
   mc->set_optimizer_states(opt_states);
   IMP_NEW(core::IncrementalScoringFunction, isf, (ps, rs));
   {
