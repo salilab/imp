@@ -11,55 +11,34 @@
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/frames.h>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+#include "common.h"
 
-std::string input, output;
-po::options_description desc("Usage: input_hdf5 output_graphics");
+std::string description("Display an rmf file in pymol.");
 double restraint_max=-1;
 std::string file_type="auto";
 
 int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
-
 
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Translate an hdf5 file to graphics.")
+    options.add_options()
       ("recolor,c", "Recolor the hierarchies using the display colors.")
-      ("frame,f", po::value< int >(&frame),
+      ("frame,f", boost::program_options::value< int >(&frame),
        "Frame to use. Do '-#' for every #th frame (eg -1 is every frame).")
-      ("score,s", po::value< double >(&restraint_max),
+      ("score,s", boost::program_options::value< double >(&restraint_max),
        "The upper bound for the restraints scores to color the "\
        "restraints by score.")
-      ("type,T", po::value< std::string >(&file_type),
-       "The program to display with (one of pymol or chimera or auto).")
-      ("input-file,i", po::value< std::string >(&input),
-       "input hdf5 file")
-      ("output-file,o", po::value< std::string >(&output),
-       "output graphics file");
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    p.add("output-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    if (vm.count("help") || input.empty()) {
-      print_help();
-      return 1;
-    }
+      ("type,T", boost::program_options::value< std::string >(&file_type),
+       "The program to display with (one of pymol or chimera or auto).");
+    IMP_ADD_INPUT_FILE("rmf");
+    IMP_ADD_OUTPUT_FILE("graphics");
+    IMP_ADD_FRAMES;
+    boost::program_options::variables_map vm(process_options(argc, argv));
     bool exec=false;
     if (output.empty()) {
       exec=true;
       if (file_type=="auto") {
-        print_help();
+        print_help_and_exit(argv);
         return 1;
       }
       if (file_type=="pymol") {
@@ -67,7 +46,7 @@ int main(int argc, char **argv) {
       } else if (file_type=="chimera") {
         output= IMP::create_temporary_file_name("display", ".py");
       } else {
-        print_help();
+        print_help_and_exit(argv);
         return 1;
       }
     }
@@ -78,27 +57,12 @@ int main(int argc, char **argv) {
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
     IMP::rmf::RMFRestraints rs= IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
-    int minframe, maxframe;
-    if (frame>=0) {
-      minframe=frame;
-      maxframe=minframe+1;
-    } else {
-      minframe=0;
-      maxframe= rh.get_number_of_frames()+1;
-    }
-    int step=1;
-    if (frame<0) step=std::abs(frame);
-    std::cout << "Reading frames [" << minframe << ", "
-              << maxframe << ": " << step << ")" <<std::endl;
 
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(output);
-    for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
-      if (cur_frame%10==0) {
-        std::cout << cur_frame << " ";
-      }
-      w->set_frame((cur_frame-minframe)/step);
-      IMP::rmf::load_frame(rh, cur_frame);
+    IMP_FOR_EACH_FRAME(rh.get_number_of_frames()) {
+      w->set_frame(frame_iteration);
+      IMP::rmf::load_frame(rh, current_frame);
       for (unsigned int i=0; i< hs.size(); ++i) {
         IMP_NEW(IMP::atom::HierarchyGeometry, g, (hs[i]));
         if (vm.count("recolor")) {

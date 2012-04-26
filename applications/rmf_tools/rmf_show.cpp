@@ -5,40 +5,18 @@
 #include <RMF/FileHandle.h>
 #include <IMP/rmf/geometry_io.h>
 
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+#include "common.h"
 
-std::string input, output;
-po::options_description desc("Usage: input.rmf");
-bool help=false;
-bool verbose=false;
+std::string description("Show an rmf file as text.");
 int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
-
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Print the contents of an rmf file to the terminal.")
-      ("verbose,v", "Print lots of information about each node.")
+    options.add_options()
       ("decorators,d", "Show what decorators recognize each node.")
-      ("frame,f", po::value< int >(&frame),
-       "Frame to use")
-      ("input-file,i", po::value< std::string >(&input),
-       "input hdf5 file");
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    if (vm.count("help") || input.empty()) {
-      print_help();
-      return 1;
-    }
+      ("frame,f", boost::program_options::value< int >(&frame),
+       "Frame to use");
+    IMP_ADD_INPUT_FILE("rmf");
+    boost::program_options::variables_map vm(process_options(argc, argv));
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::string descr= rh.get_description();
     if (!descr.empty()) {

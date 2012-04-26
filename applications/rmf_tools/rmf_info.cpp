@@ -5,18 +5,9 @@
 #include <RMF/FileHandle.h>
 #include <IMP/internal/graph_utility.h>
 #include <sstream>
+#include "common.h"
 
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
-
-std::string input;
-po::options_description desc("Usage: input.rmf");
-bool help=false;
-bool verbose=false;
-int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
+std::string description("Print out information about categories and keys.");
 
 template <int Arity, class Traits>
 struct GetCount {
@@ -94,28 +85,17 @@ void show_info(RMF::FileConstHandle rh, std::ostream &out) {
   }
 }
 
+int frame=0;
+
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Print the contents of an rmf file to the terminal as xml.")
-      ("verbose,v", "Include lots of information about each node.")
-      ("frame,f", po::value< int >(&frame),
-       "Frame to use")
-      ("input-file,i", po::value< std::string >(&input),
-       "input hdf5 file");
-    po::positional_options_description p;
-    p.add("input-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    verbose= vm.count("verbose");
-    if (vm.count("help") || input.empty()) {
-      print_help();
-      return 1;
-    }
+    options.add_options()
+      ("frame,f", boost::program_options::value< int >(&frame),
+       "Frame to use");
+    IMP_ADD_INPUT_FILE("rmf");
+    process_options(argc, argv);
+
+
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     show_info<1>(rh, std::cout);
     show_info<2>(rh, std::cout);

@@ -11,43 +11,26 @@
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/frames.h>
-#include <boost/format.hpp>
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
+
+#include "common.h"
 
 std::vector<std::string> inputs;
 std::string output;
-po::options_description desc("Usage: input0.rmf input1.rmf ... output.rmf");
-double restraint_max=-1;
-std::string file_type="auto";
-
-int frame=0;
-void print_help() {
-  std::cerr << desc << std::endl;
-}
-
+std::string description("Combine two or more rmf files.");
 
 int main(int argc, char **argv) {
   try {
-    desc.add_options()
-      ("help,h", "Concatenate rmf files.")
-      ("input-files,i", po::value< std::vector<std::string> >(&inputs),
-       "input rmf file")
-      ("output-file,o", po::value< std::string >(&output),
-       "output rmf file");
-    po::positional_options_description p;
-    p.add("input-files", -1);
-    //p.add("output-file", 1);
-    po::variables_map vm;
-    po::store(
-              po::command_line_parser(argc,
-                                      argv).options(desc).positional(p).run(),
-              vm);
-    po::notify(vm);
-    if (vm.count("help") || inputs.size() < 3) {
-      print_help();
-      return 1;
+    positional_options.add_options()
+      ("input-files,i",
+       boost::program_options::value< std::vector<std::string> >(&inputs),
+       "input rmf file");
+    positional_names.push_back("input_1.rmf input_2.rmf ... output.rmf");
+    positional_options_description.add("input-files", -1);
+    process_options(argc, argv);
+    if (inputs.size() < 3) {
+      print_help_and_exit(argv);
     }
+
     output= inputs.back();
     inputs.pop_back();
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(inputs[0]);
