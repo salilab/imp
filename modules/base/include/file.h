@@ -66,10 +66,7 @@ class IMPBASEEXPORT TextOutput
   }
   IMP_SAFE_BOOL(TextOutput, out_ && out_->get_stream());
   std::ostream &get_stream() {
-    if (!out_) {
-      IMP_THROW("Attempting to write to uninitialized text input",
-                IOException);
-    }
+    IMP_USAGE_CHECK(out_, "Attempting to write to uninitialized text input");
     return out_->get_stream();
   }
 #endif
