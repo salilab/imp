@@ -23,6 +23,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Try to draw some stuff for a generic restraint
 /** Mostly it just breaks the restraint down as much as possible and shows
     the particles involved in the constituent terms if they are XYZ particles.
+
+    Note, make sure the model is up to date before calling this, for reasons of
+    efficiency, it does not update the model.
 */
 class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
   IMP::base::OwnerPointer<Restraint> r_;
