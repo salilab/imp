@@ -5,7 +5,6 @@ import IMP.test
 import sys
 import os
 import random
-import add_parent
 
 
 class TestsArgminmax(IMP.test.TestCase):
