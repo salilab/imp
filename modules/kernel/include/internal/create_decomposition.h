@@ -28,7 +28,7 @@ Restraints create_current_decomposition(Model *m,Score *score,
     Pointer<Restraint> r= IMP::internal::create_restraint(score,
                                                           c->get(i),
                              oss.str());
-    double score= r->unprotected_evaluate(false);
+    double score= r->unprotected_evaluate(nullptr);
     if (score != 0) {
       r->set_last_score(score);
       ret.push_back(r);
