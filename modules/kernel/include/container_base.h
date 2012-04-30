@@ -71,6 +71,11 @@ class IMPEXPORT Container : public Constraint
   //! Reset changed status
   virtual void do_after_evaluate(DerivativeAccumulator *accpt);
 
+  /** True if the container's contents are not independent from one
+      another, and so it cannot be decomposed into a sum of terms.
+      Examples include connectivity.*/
+  virtual bool get_is_decomposable() const {return true;}
+
   IMP_REF_COUNTED_DESTRUCTOR(Container);
 };
 
