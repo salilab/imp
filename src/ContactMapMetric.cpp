@@ -52,7 +52,8 @@ Floats ContactMapMetric::get_contact_map
  for(unsigned i=0;i<coords.size()-1;++i){
   for(unsigned j=i+1;j<coords.size();++j){
    double dist=algebra::get_distance(coords[i],coords[j]);
-   matrix.push_back((1.0-pow(dist/r0_,nn_))/(1.0-pow(dist/r0_,mm_)));
+   if(fabs(dist-r0_)<0.001){matrix.push_back((double)nn_/(double)mm_);}
+   else{matrix.push_back((1.0-pow(dist/r0_,nn_))/(1.0-pow(dist/r0_,mm_)));}
   }
  }
  return matrix;
