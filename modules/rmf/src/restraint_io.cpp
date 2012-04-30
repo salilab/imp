@@ -164,11 +164,13 @@ namespace {
         RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
         for (unsigned int i=0; i< rs.size(); ++i) {
           Subset s(rs[i]->get_input_particles());
-          double score= rs[i]->get_last_score();
-          RMF::NodeHandle nnh= get_node(s, d, nh);
-          RMF::Score csd= sf_.get(nnh, frame);
-          csd.set_score(score);
-          csd.set_representation(get_node_ids(nh.get_file(), s));
+          double score= rs[i]->unprotected_evaluate(false);
+          if (score != 0) {
+            RMF::NodeHandle nnh= get_node(s, d, nh);
+            RMF::Score csd= sf_.get(nnh, frame);
+            csd.set_score(score);
+            csd.set_representation(get_node_ids(nh.get_file(), s));
+          }
         }
       }
     }

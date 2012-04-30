@@ -28,9 +28,10 @@ namespace RMF {
     FloatKeys rgb_color_;
     ColoredConst(NodeConstHandle nh,
                       unsigned int frame,
-                  FloatKeys rgb_color): nh_(nh),
-                                      frame_(frame),
-                                     rgb_color_(rgb_color) {
+                  FloatKeys rgb_color):
+       nh_(nh),
+       frame_(frame),
+       rgb_color_(rgb_color) {
     ;
     }
     public:
@@ -48,7 +49,8 @@ namespace RMF {
     }
     };
 
-    typedef vector<ColoredConst> ColoredConsts;
+    typedef vector<ColoredConst>
+            ColoredConsts;
 
 /** These particles has associated color information.
 
@@ -63,9 +65,10 @@ namespace RMF {
     FloatKeys rgb_color_;
     Colored(NodeHandle nh,
                       unsigned int frame,
-                  FloatKeys rgb_color): nh_(nh),
-                                      frame_(frame),
-                                     rgb_color_(rgb_color) {
+                  FloatKeys rgb_color):
+       nh_(nh),
+       frame_(frame),
+       rgb_color_(rgb_color) {
     ;
     }
     public:
@@ -88,7 +91,8 @@ void set_rgb_color(const Floats &v) {
     }
     };
 
-    typedef vector<Colored> Coloreds;
+    typedef vector<Colored>
+            Coloreds;
 
 /** Create decorators of type Colored.
 
@@ -112,17 +116,20 @@ void set_rgb_color(const Floats &v) {
                                "rgb color blue", false));;
 };
     }
-    Colored get(NodeHandle nh, unsigned int frame=0) const {
+    Colored get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Colored(nh, frame, rgb_color_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(rgb_color_[0], frame);
     }
-    IMP_RMF_SHOWABLE(ColoredFactory, "ColoredFactory");
+    IMP_RMF_SHOWABLE(ColoredFactory,
+                     "ColoredFactory");
     };
 
-    typedef vector<ColoredFactory> ColoredFactories;
+    typedef vector<ColoredFactory>
+            ColoredFactories;
 
 /** Create decorators of type Colored.
 
@@ -138,28 +145,34 @@ void set_rgb_color(const Floats &v) {
     ColoredConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>(cat, "rgb color red")?
+      rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "rgb color red")?
                    fh.get_key<FloatTraits>(cat, "rgb color red")
                               :FloatKey()));
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>(cat, "rgb color green")?
+      rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "rgb color green")?
                    fh.get_key<FloatTraits>(cat, "rgb color green")
                               :FloatKey()));
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>(cat, "rgb color blue")?
+      rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "rgb color blue")?
                    fh.get_key<FloatTraits>(cat, "rgb color blue")
                               :FloatKey()));;
 };
     }
-    ColoredConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    ColoredConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ColoredConst(nh, frame, rgb_color_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(rgb_color_[0], frame);
     }
-    IMP_RMF_SHOWABLE(ColoredConstFactory, "ColoredConstFactory");
+    IMP_RMF_SHOWABLE(ColoredConstFactory,
+                     "ColoredConstFactory");
     };
 
-    typedef vector<ColoredConstFactory> ColoredConstFactories;
+    typedef vector<ColoredConstFactory>
+            ColoredConstFactories;
 
 /** These particles has associated coordinates and radius information.
 
@@ -178,9 +191,10 @@ FloatKey mass_;
                       unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+FloatKey mass):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
@@ -206,7 +220,8 @@ Float get_mass() const {
     }
     };
 
-    typedef vector<ParticleConst> ParticleConsts;
+    typedef vector<ParticleConst>
+            ParticleConsts;
 
 /** These particles has associated coordinates and radius information.
 
@@ -225,9 +240,10 @@ FloatKey mass_;
                       unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+FloatKey mass):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
     ;
@@ -264,7 +280,8 @@ void set_mass(Float v) {
     }
     };
 
-    typedef vector<Particle> Particles;
+    typedef vector<Particle>
+            Particles;
 
 /** Create decorators of type Particle.
 
@@ -294,7 +311,8 @@ mass_=get_key_always<FloatTraits>(fh, cat,
                                "mass", false);
 };
     }
-    Particle get(NodeHandle nh, unsigned int frame=0) const {
+    Particle get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Particle(nh, frame, coordinates_,
 radius_,
@@ -305,10 +323,12 @@ mass_);
     && nh.get_has_value(radius_, frame)
     && nh.get_has_value(mass_, frame);
     }
-    IMP_RMF_SHOWABLE(ParticleFactory, "ParticleFactory");
+    IMP_RMF_SHOWABLE(ParticleFactory,
+                     "ParticleFactory");
     };
 
-    typedef vector<ParticleFactory> ParticleFactories;
+    typedef vector<ParticleFactory>
+            ParticleFactories;
 
 /** Create decorators of type Particle.
 
@@ -326,24 +346,30 @@ FloatKey mass_;
     ParticleConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian y")?
                    fh.get_key<FloatTraits>(cat, "cartesian y")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
                               :FloatKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
-mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
+mass_=(fh.get_has_key<FloatTraits>
+                   (cat, "mass")?
                    fh.get_key<FloatTraits>(cat, "mass")
                               :FloatKey());
 };
     }
-    ParticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    ParticleConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ParticleConst(nh, frame, coordinates_,
 radius_,
@@ -354,10 +380,12 @@ mass_);
     && nh.get_has_value(radius_, frame)
     && nh.get_has_value(mass_, frame);
     }
-    IMP_RMF_SHOWABLE(ParticleConstFactory, "ParticleConstFactory");
+    IMP_RMF_SHOWABLE(ParticleConstFactory,
+                     "ParticleConstFactory");
     };
 
-    typedef vector<ParticleConstFactory> ParticleConstFactories;
+    typedef vector<ParticleConstFactory>
+            ParticleConstFactories;
 
 /** These particles has associated coordinates and radius information.
 
@@ -374,9 +402,10 @@ FloatKey radius_;
     IntermediateParticleConst(NodeConstHandle nh,
                       unsigned int frame,
                   FloatKeys coordinates,
-FloatKey radius): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+FloatKey radius):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius) {
     ;
     }
@@ -398,7 +427,8 @@ Float get_radius() const {
     }
     };
 
-    typedef vector<IntermediateParticleConst> IntermediateParticleConsts;
+    typedef vector<IntermediateParticleConst>
+            IntermediateParticleConsts;
 
 /** These particles has associated coordinates and radius information.
 
@@ -415,9 +445,10 @@ FloatKey radius_;
     IntermediateParticle(NodeHandle nh,
                       unsigned int frame,
                   FloatKeys coordinates,
-FloatKey radius): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+FloatKey radius):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius) {
     ;
     }
@@ -447,7 +478,8 @@ void set_radius(Float v) {
     }
     };
 
-    typedef vector<IntermediateParticle> IntermediateParticles;
+    typedef vector<IntermediateParticle>
+            IntermediateParticles;
 
 /** Create decorators of type IntermediateParticle.
 
@@ -474,7 +506,8 @@ radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 };
     }
-    IntermediateParticle get(NodeHandle nh, unsigned int frame=0) const {
+    IntermediateParticle get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return IntermediateParticle(nh, frame, coordinates_,
 radius_);
@@ -487,7 +520,8 @@ radius_);
                      "IntermediateParticleFactory");
     };
 
-    typedef vector<IntermediateParticleFactory> IntermediateParticleFactories;
+    typedef vector<IntermediateParticleFactory>
+            IntermediateParticleFactories;
 
 /** Create decorators of type IntermediateParticle.
 
@@ -504,22 +538,26 @@ FloatKey radius_;
     IntermediateParticleConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian y")?
                    fh.get_key<FloatTraits>(cat, "cartesian y")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
                               :FloatKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
 };
     }
     IntermediateParticleConst get(NodeConstHandle nh,
-                                  unsigned int frame=0) const {
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return IntermediateParticleConst(nh, frame, coordinates_,
 radius_);
@@ -533,7 +571,7 @@ radius_);
     };
 
     typedef vector<IntermediateParticleConstFactory>
-    IntermediateParticleConstFactories;
+            IntermediateParticleConstFactories;
 
 /** These particles has associated coordinates and radius information.
 
@@ -554,9 +592,10 @@ FloatKey mass_;
                   FloatKeys orientation,
 FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),
-                                      frame_(frame),
-                                     orientation_(orientation),
+FloatKey mass):
+       nh_(nh),
+       frame_(frame),
+       orientation_(orientation),
 coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
@@ -590,7 +629,8 @@ Float get_mass() const {
     }
     };
 
-    typedef vector<RigidParticleConst> RigidParticleConsts;
+    typedef vector<RigidParticleConst>
+            RigidParticleConsts;
 
 /** These particles has associated coordinates and radius information.
 
@@ -611,9 +651,10 @@ FloatKey mass_;
                   FloatKeys orientation,
 FloatKeys coordinates,
 FloatKey radius,
-FloatKey mass): nh_(nh),
-                                      frame_(frame),
-                                     orientation_(orientation),
+FloatKey mass):
+       nh_(nh),
+       frame_(frame),
+       orientation_(orientation),
 coordinates_(coordinates),
 radius_(radius),
 mass_(mass) {
@@ -663,7 +704,8 @@ void set_mass(Float v) {
     }
     };
 
-    typedef vector<RigidParticle> RigidParticles;
+    typedef vector<RigidParticle>
+            RigidParticles;
 
 /** Create decorators of type RigidParticle.
 
@@ -702,7 +744,8 @@ mass_=get_key_always<FloatTraits>(fh, cat,
                                "mass", false);
 };
     }
-    RigidParticle get(NodeHandle nh, unsigned int frame=0) const {
+    RigidParticle get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return RigidParticle(nh, frame, orientation_,
 coordinates_,
@@ -715,10 +758,12 @@ mass_);
     && nh.get_has_value(radius_, frame)
     && nh.get_has_value(mass_, frame);
     }
-    IMP_RMF_SHOWABLE(RigidParticleFactory, "RigidParticleFactory");
+    IMP_RMF_SHOWABLE(RigidParticleFactory,
+                     "RigidParticleFactory");
     };
 
-    typedef vector<RigidParticleFactory> RigidParticleFactories;
+    typedef vector<RigidParticleFactory>
+            RigidParticleFactories;
 
 /** Create decorators of type RigidParticle.
 
@@ -737,36 +782,46 @@ FloatKey mass_;
     RigidParticleConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-      orientation_.push_back((fh.get_has_key<FloatTraits>(cat, "orientation r")?
+      orientation_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "orientation r")?
                    fh.get_key<FloatTraits>(cat, "orientation r")
                               :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>(cat, "orientation i")?
+      orientation_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "orientation i")?
                    fh.get_key<FloatTraits>(cat, "orientation i")
                               :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>(cat, "orientation j")?
+      orientation_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "orientation j")?
                    fh.get_key<FloatTraits>(cat, "orientation j")
                               :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>(cat, "orientation k")?
+      orientation_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "orientation k")?
                    fh.get_key<FloatTraits>(cat, "orientation k")
                               :FloatKey()));;
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian y")?
                    fh.get_key<FloatTraits>(cat, "cartesian y")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
                               :FloatKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
-mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
+mass_=(fh.get_has_key<FloatTraits>
+                   (cat, "mass")?
                    fh.get_key<FloatTraits>(cat, "mass")
                               :FloatKey());
 };
     }
-    RigidParticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    RigidParticleConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return RigidParticleConst(nh, frame, orientation_,
 coordinates_,
@@ -779,10 +834,12 @@ mass_);
     && nh.get_has_value(radius_, frame)
     && nh.get_has_value(mass_, frame);
     }
-    IMP_RMF_SHOWABLE(RigidParticleConstFactory, "RigidParticleConstFactory");
+    IMP_RMF_SHOWABLE(RigidParticleConstFactory,
+                     "RigidParticleConstFactory");
     };
 
-    typedef vector<RigidParticleConstFactory> RigidParticleConstFactories;
+    typedef vector<RigidParticleConstFactory>
+            RigidParticleConstFactories;
 
 /** Associate a score with some set of particles.
 
@@ -799,9 +856,10 @@ FloatKey score_;
     ScoreConst(NodeConstHandle nh,
                       unsigned int frame,
                   NodeIDsKey representation,
-FloatKey score): nh_(nh),
-                                      frame_(frame),
-                                     representation_(representation),
+FloatKey score):
+       nh_(nh),
+       frame_(frame),
+       representation_(representation),
 score_(score) {
     ;
     }
@@ -819,7 +877,8 @@ Float get_score() const {
     }
     };
 
-    typedef vector<ScoreConst> ScoreConsts;
+    typedef vector<ScoreConst>
+            ScoreConsts;
 
 /** Associate a score with some set of particles.
 
@@ -836,9 +895,10 @@ FloatKey score_;
     Score(NodeHandle nh,
                       unsigned int frame,
                   NodeIDsKey representation,
-FloatKey score): nh_(nh),
-                                      frame_(frame),
-                                     representation_(representation),
+FloatKey score):
+       nh_(nh),
+       frame_(frame),
+       representation_(representation),
 score_(score) {
     ;
     }
@@ -862,7 +922,8 @@ void set_score(Float v) {
     }
     };
 
-    typedef vector<Score> Scores;
+    typedef vector<Score>
+            Scores;
 
 /** Create decorators of type Score.
 
@@ -882,10 +943,11 @@ FloatKey score_;
 representation_=get_key_always<NodeIDsTraits>(fh, cat,
                                "representation", false);
 score_=get_key_always<FloatTraits>(fh, cat,
-                               "score", false);
+                               "score", true);
 };
     }
-    Score get(NodeHandle nh, unsigned int frame=0) const {
+    Score get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Score(nh, frame, representation_,
 score_);
@@ -894,10 +956,12 @@ score_);
       return nh.get_has_value(representation_, frame)
     && nh.get_has_value(score_, frame);
     }
-    IMP_RMF_SHOWABLE(ScoreFactory, "ScoreFactory");
+    IMP_RMF_SHOWABLE(ScoreFactory,
+                     "ScoreFactory");
     };
 
-    typedef vector<ScoreFactory> ScoreFactories;
+    typedef vector<ScoreFactory>
+            ScoreFactories;
 
 /** Create decorators of type Score.
 
@@ -914,15 +978,18 @@ FloatKey score_;
     ScoreConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("feature");
-representation_=(fh.get_has_key<NodeIDsTraits>(cat, "representation")?
+representation_=(fh.get_has_key<NodeIDsTraits>
+                   (cat, "representation")?
                    fh.get_key<NodeIDsTraits>(cat, "representation")
                               :NodeIDsKey());
-score_=(fh.get_has_key<FloatTraits>(cat, "score")?
+score_=(fh.get_has_key<FloatTraits>
+                   (cat, "score")?
                    fh.get_key<FloatTraits>(cat, "score")
                               :FloatKey());
 };
     }
-    ScoreConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    ScoreConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ScoreConst(nh, frame, representation_,
 score_);
@@ -931,10 +998,12 @@ score_);
       return nh.get_has_value(representation_, frame)
     && nh.get_has_value(score_, frame);
     }
-    IMP_RMF_SHOWABLE(ScoreConstFactory, "ScoreConstFactory");
+    IMP_RMF_SHOWABLE(ScoreConstFactory,
+                     "ScoreConstFactory");
     };
 
-    typedef vector<ScoreConstFactory> ScoreConstFactories;
+    typedef vector<ScoreConstFactory>
+            ScoreConstFactories;
 
 /** A geometric ball.
 
@@ -953,9 +1022,10 @@ IndexKey type_;
                       unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     ;
@@ -978,7 +1048,8 @@ Float get_radius() const {
     }
     };
 
-    typedef vector<BallConst> BallConsts;
+    typedef vector<BallConst>
+            BallConsts;
 
 /** A geometric ball.
 
@@ -997,9 +1068,10 @@ IndexKey type_;
                       unsigned int frame,
                   FloatKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     nh.set_value(type_, 0);;
@@ -1030,7 +1102,8 @@ void set_radius(Float v) {
     }
     };
 
-    typedef vector<Ball> Balls;
+    typedef vector<Ball>
+            Balls;
 
 /** Create decorators of type Ball.
 
@@ -1060,7 +1133,8 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Ball get(NodeHandle nh, unsigned int frame=0) const {
+    Ball get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Ball(nh, frame, coordinates_,
 radius_,
@@ -1072,10 +1146,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==0;
     }
-    IMP_RMF_SHOWABLE(BallFactory, "BallFactory");
+    IMP_RMF_SHOWABLE(BallFactory,
+                     "BallFactory");
     };
 
-    typedef vector<BallFactory> BallFactories;
+    typedef vector<BallFactory>
+            BallFactories;
 
 /** Create decorators of type Ball.
 
@@ -1093,24 +1169,30 @@ IndexKey type_;
     BallConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian y")?
                    fh.get_key<FloatTraits>(cat, "cartesian y")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
                               :FloatKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
-type_=(fh.get_has_key<IndexTraits>(cat, "type")?
+type_=(fh.get_has_key<IndexTraits>
+                   (cat, "type")?
                    fh.get_key<IndexTraits>(cat, "type")
                               :IndexKey());
 };
     }
-    BallConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    BallConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return BallConst(nh, frame, coordinates_,
 radius_,
@@ -1122,10 +1204,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==0;
     }
-    IMP_RMF_SHOWABLE(BallConstFactory, "BallConstFactory");
+    IMP_RMF_SHOWABLE(BallConstFactory,
+                     "BallConstFactory");
     };
 
-    typedef vector<BallConstFactory> BallConstFactories;
+    typedef vector<BallConstFactory>
+            BallConstFactories;
 
 /** A geometric cylinder.
 
@@ -1144,9 +1228,10 @@ IndexKey type_;
                       unsigned int frame,
                   FloatsKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     ;
@@ -1169,7 +1254,8 @@ Float get_radius() const {
     }
     };
 
-    typedef vector<CylinderConst> CylinderConsts;
+    typedef vector<CylinderConst>
+            CylinderConsts;
 
 /** A geometric cylinder.
 
@@ -1188,9 +1274,10 @@ IndexKey type_;
                       unsigned int frame,
                   FloatsKeys coordinates,
 FloatKey radius,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 type_(type) {
     nh.set_value(type_, 1);;
@@ -1221,7 +1308,8 @@ void set_radius(Float v) {
     }
     };
 
-    typedef vector<Cylinder> Cylinders;
+    typedef vector<Cylinder>
+            Cylinders;
 
 /** Create decorators of type Cylinder.
 
@@ -1251,7 +1339,8 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Cylinder get(NodeHandle nh, unsigned int frame=0) const {
+    Cylinder get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Cylinder(nh, frame, coordinates_,
 radius_,
@@ -1263,10 +1352,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
-    IMP_RMF_SHOWABLE(CylinderFactory, "CylinderFactory");
+    IMP_RMF_SHOWABLE(CylinderFactory,
+                     "CylinderFactory");
     };
 
-    typedef vector<CylinderFactory> CylinderFactories;
+    typedef vector<CylinderFactory>
+            CylinderFactories;
 
 /** Create decorators of type Cylinder.
 
@@ -1284,24 +1375,30 @@ IndexKey type_;
     CylinderConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian xs")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian xs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian xs")
                               :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian ys")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian ys")?
                    fh.get_key<FloatsTraits>(cat, "cartesian ys")
                               :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian zs")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian zs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian zs")
                               :FloatsKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
-type_=(fh.get_has_key<IndexTraits>(cat, "type")?
+type_=(fh.get_has_key<IndexTraits>
+                   (cat, "type")?
                    fh.get_key<IndexTraits>(cat, "type")
                               :IndexKey());
 };
     }
-    CylinderConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    CylinderConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return CylinderConst(nh, frame, coordinates_,
 radius_,
@@ -1313,10 +1410,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
-    IMP_RMF_SHOWABLE(CylinderConstFactory, "CylinderConstFactory");
+    IMP_RMF_SHOWABLE(CylinderConstFactory,
+                     "CylinderConstFactory");
     };
 
-    typedef vector<CylinderConstFactory> CylinderConstFactories;
+    typedef vector<CylinderConstFactory>
+            CylinderConstFactories;
 
 /** A geometric line setgment.
 
@@ -1333,9 +1432,10 @@ IndexKey type_;
     SegmentConst(NodeConstHandle nh,
                       unsigned int frame,
                   FloatsKeys coordinates,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 type_(type) {
     ;
     }
@@ -1354,7 +1454,8 @@ type_(type) {
     }
     };
 
-    typedef vector<SegmentConst> SegmentConsts;
+    typedef vector<SegmentConst>
+            SegmentConsts;
 
 /** A geometric line setgment.
 
@@ -1371,9 +1472,10 @@ IndexKey type_;
     Segment(NodeHandle nh,
                       unsigned int frame,
                   FloatsKeys coordinates,
-IndexKey type): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey type):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 type_(type) {
     nh.set_value(type_, 1);;
     }
@@ -1397,7 +1499,8 @@ void set_coordinates(const FloatsList &v) {
     }
     };
 
-    typedef vector<Segment> Segments;
+    typedef vector<Segment>
+            Segments;
 
 /** Create decorators of type Segment.
 
@@ -1424,7 +1527,8 @@ type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
     }
-    Segment get(NodeHandle nh, unsigned int frame=0) const {
+    Segment get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Segment(nh, frame, coordinates_,
 type_);
@@ -1434,10 +1538,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
-    IMP_RMF_SHOWABLE(SegmentFactory, "SegmentFactory");
+    IMP_RMF_SHOWABLE(SegmentFactory,
+                     "SegmentFactory");
     };
 
-    typedef vector<SegmentFactory> SegmentFactories;
+    typedef vector<SegmentFactory>
+            SegmentFactories;
 
 /** Create decorators of type Segment.
 
@@ -1454,21 +1560,26 @@ IndexKey type_;
     SegmentConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian xs")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian xs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian xs")
                               :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian ys")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian ys")?
                    fh.get_key<FloatsTraits>(cat, "cartesian ys")
                               :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>(cat, "cartesian zs")?
+      coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                   (cat, "cartesian zs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian zs")
                               :FloatsKey()));;
-type_=(fh.get_has_key<IndexTraits>(cat, "type")?
+type_=(fh.get_has_key<IndexTraits>
+                   (cat, "type")?
                    fh.get_key<IndexTraits>(cat, "type")
                               :IndexKey());
 };
     }
-    SegmentConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    SegmentConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return SegmentConst(nh, frame, coordinates_,
 type_);
@@ -1478,10 +1589,12 @@ type_);
     && nh.get_has_value(type_, frame)
     && nh.get_value(type_)==1;
     }
-    IMP_RMF_SHOWABLE(SegmentConstFactory, "SegmentConstFactory");
+    IMP_RMF_SHOWABLE(SegmentConstFactory,
+                     "SegmentConstFactory");
     };
 
-    typedef vector<SegmentConstFactory> SegmentConstFactories;
+    typedef vector<SegmentConstFactory>
+            SegmentConstFactories;
 
 /** Information regarding a publication.
 
@@ -1504,9 +1617,10 @@ StringsKey authors_;
 StringKey journal,
 StringKey pubmed_id,
 IntKey year,
-StringsKey authors): nh_(nh),
-                                      frame_(frame),
-                                     title_(title),
+StringsKey authors):
+       nh_(nh),
+       frame_(frame),
+       title_(title),
 journal_(journal),
 pubmed_id_(pubmed_id),
 year_(year),
@@ -1536,7 +1650,8 @@ Strings get_authors() const {
     }
     };
 
-    typedef vector<JournalArticleConst> JournalArticleConsts;
+    typedef vector<JournalArticleConst>
+            JournalArticleConsts;
 
 /** Information regarding a publication.
 
@@ -1559,9 +1674,10 @@ StringsKey authors_;
 StringKey journal,
 StringKey pubmed_id,
 IntKey year,
-StringsKey authors): nh_(nh),
-                                      frame_(frame),
-                                     title_(title),
+StringsKey authors):
+       nh_(nh),
+       frame_(frame),
+       title_(title),
 journal_(journal),
 pubmed_id_(pubmed_id),
 year_(year),
@@ -1606,7 +1722,8 @@ void set_authors(Strings v) {
     }
     };
 
-    typedef vector<JournalArticle> JournalArticles;
+    typedef vector<JournalArticle>
+            JournalArticles;
 
 /** Create decorators of type JournalArticle.
 
@@ -1638,7 +1755,8 @@ authors_=get_key_always<StringsTraits>(fh, cat,
                                "authors", false);
 };
     }
-    JournalArticle get(NodeHandle nh, unsigned int frame=0) const {
+    JournalArticle get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return JournalArticle(nh, frame, title_,
 journal_,
@@ -1653,10 +1771,12 @@ authors_);
     && nh.get_has_value(year_, frame)
     && nh.get_has_value(authors_, frame);
     }
-    IMP_RMF_SHOWABLE(JournalArticleFactory, "JournalArticleFactory");
+    IMP_RMF_SHOWABLE(JournalArticleFactory,
+                     "JournalArticleFactory");
     };
 
-    typedef vector<JournalArticleFactory> JournalArticleFactories;
+    typedef vector<JournalArticleFactory>
+            JournalArticleFactories;
 
 /** Create decorators of type JournalArticle.
 
@@ -1676,24 +1796,30 @@ StringsKey authors_;
     JournalArticleConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("publication");
-title_=(fh.get_has_key<StringTraits>(cat, "title")?
+title_=(fh.get_has_key<StringTraits>
+                   (cat, "title")?
                    fh.get_key<StringTraits>(cat, "title")
                               :StringKey());
-journal_=(fh.get_has_key<StringTraits>(cat, "journal")?
+journal_=(fh.get_has_key<StringTraits>
+                   (cat, "journal")?
                    fh.get_key<StringTraits>(cat, "journal")
                               :StringKey());
-pubmed_id_=(fh.get_has_key<StringTraits>(cat, "pubmed id")?
+pubmed_id_=(fh.get_has_key<StringTraits>
+                   (cat, "pubmed id")?
                    fh.get_key<StringTraits>(cat, "pubmed id")
                               :StringKey());
-year_=(fh.get_has_key<IntTraits>(cat, "year")?
+year_=(fh.get_has_key<IntTraits>
+                   (cat, "year")?
                    fh.get_key<IntTraits>(cat, "year")
                               :IntKey());
-authors_=(fh.get_has_key<StringsTraits>(cat, "authors")?
+authors_=(fh.get_has_key<StringsTraits>
+                   (cat, "authors")?
                    fh.get_key<StringsTraits>(cat, "authors")
                               :StringsKey());
 };
     }
-    JournalArticleConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    JournalArticleConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return JournalArticleConst(nh, frame, title_,
 journal_,
@@ -1708,10 +1834,12 @@ authors_);
     && nh.get_has_value(year_, frame)
     && nh.get_has_value(authors_, frame);
     }
-    IMP_RMF_SHOWABLE(JournalArticleConstFactory, "JournalArticleConstFactory");
+    IMP_RMF_SHOWABLE(JournalArticleConstFactory,
+                     "JournalArticleConstFactory");
     };
 
-    typedef vector<JournalArticleConstFactory> JournalArticleConstFactories;
+    typedef vector<JournalArticleConstFactory>
+            JournalArticleConstFactories;
 
 /** Information regarding a residue.
 
@@ -1728,9 +1856,10 @@ StringKey type_;
     ResidueConst(NodeConstHandle nh,
                       unsigned int frame,
                   boost::array<IntKey, 2> index,
-StringKey type): nh_(nh),
-                                      frame_(frame),
-                                     index_(index),
+StringKey type):
+       nh_(nh),
+       frame_(frame),
+       index_(index),
 type_(type) {
     ;
     }
@@ -1748,7 +1877,8 @@ String get_type() const {
     }
     };
 
-    typedef vector<ResidueConst> ResidueConsts;
+    typedef vector<ResidueConst>
+            ResidueConsts;
 
 /** Information regarding a residue.
 
@@ -1765,9 +1895,10 @@ StringKey type_;
     Residue(NodeHandle nh,
                       unsigned int frame,
                   boost::array<IntKey, 2> index,
-StringKey type): nh_(nh),
-                                      frame_(frame),
-                                     index_(index),
+StringKey type):
+       nh_(nh),
+       frame_(frame),
+       index_(index),
 type_(type) {
     ;
     }
@@ -1792,7 +1923,8 @@ void set_type(String v) {
     }
     };
 
-    typedef vector<Residue> Residues;
+    typedef vector<Residue>
+            Residues;
 
 /** Create decorators of type Residue.
 
@@ -1817,7 +1949,8 @@ type_=get_key_always<StringTraits>(fh, cat,
                                "residue type", false);
 };
     }
-    Residue get(NodeHandle nh, unsigned int frame=0) const {
+    Residue get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Residue(nh, frame, index_,
 type_);
@@ -1829,10 +1962,12 @@ type_);
    ==nh.get_value(index_[1], frame)
     && nh.get_has_value(type_, frame);
     }
-    IMP_RMF_SHOWABLE(ResidueFactory, "ResidueFactory");
+    IMP_RMF_SHOWABLE(ResidueFactory,
+                     "ResidueFactory");
     };
 
-    typedef vector<ResidueFactory> ResidueFactories;
+    typedef vector<ResidueFactory>
+            ResidueFactories;
 
 /** Create decorators of type Residue.
 
@@ -1849,18 +1984,22 @@ StringKey type_;
     ResidueConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-index_[0]=(fh.get_has_key<IntTraits>(cat, "first residue index")?
+index_[0]=(fh.get_has_key<IntTraits>
+                   (cat, "first residue index")?
                    fh.get_key<IntTraits>(cat, "first residue index")
                               :IntKey());
-index_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
+index_[1]=(fh.get_has_key<IntTraits>
+                   (cat, "last residue index")?
                    fh.get_key<IntTraits>(cat, "last residue index")
                               :IntKey());
-type_=(fh.get_has_key<StringTraits>(cat, "residue type")?
+type_=(fh.get_has_key<StringTraits>
+                   (cat, "residue type")?
                    fh.get_key<StringTraits>(cat, "residue type")
                               :StringKey());
 };
     }
-    ResidueConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    ResidueConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ResidueConst(nh, frame, index_,
 type_);
@@ -1872,10 +2011,12 @@ type_);
    ==nh.get_value(index_[1], frame)
     && nh.get_has_value(type_, frame);
     }
-    IMP_RMF_SHOWABLE(ResidueConstFactory, "ResidueConstFactory");
+    IMP_RMF_SHOWABLE(ResidueConstFactory,
+                     "ResidueConstFactory");
     };
 
-    typedef vector<ResidueConstFactory> ResidueConstFactories;
+    typedef vector<ResidueConstFactory>
+            ResidueConstFactories;
 
 /** Information regarding an atom.
 
@@ -1896,9 +2037,10 @@ IndexKey element_;
                   FloatKeys coordinates,
 FloatKey radius,
 FloatKey mass,
-IndexKey element): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey element):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 mass_(mass),
 element_(element) {
@@ -1928,7 +2070,8 @@ Index get_element() const {
     }
     };
 
-    typedef vector<AtomConst> AtomConsts;
+    typedef vector<AtomConst>
+            AtomConsts;
 
 /** Information regarding an atom.
 
@@ -1949,9 +2092,10 @@ IndexKey element_;
                   FloatKeys coordinates,
 FloatKey radius,
 FloatKey mass,
-IndexKey element): nh_(nh),
-                                      frame_(frame),
-                                     coordinates_(coordinates),
+IndexKey element):
+       nh_(nh),
+       frame_(frame),
+       coordinates_(coordinates),
 radius_(radius),
 mass_(mass),
 element_(element) {
@@ -1995,7 +2139,8 @@ void set_element(Index v) {
     }
     };
 
-    typedef vector<Atom> Atoms;
+    typedef vector<Atom>
+            Atoms;
 
 /** Create decorators of type Atom.
 
@@ -2028,7 +2173,8 @@ element_=get_key_always<IndexTraits>(fh, cat,
                                "element", false);
 };
     }
-    Atom get(NodeHandle nh, unsigned int frame=0) const {
+    Atom get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Atom(nh, frame, coordinates_,
 radius_,
@@ -2041,10 +2187,12 @@ element_);
     && nh.get_has_value(mass_, frame)
     && nh.get_has_value(element_, frame);
     }
-    IMP_RMF_SHOWABLE(AtomFactory, "AtomFactory");
+    IMP_RMF_SHOWABLE(AtomFactory,
+                     "AtomFactory");
     };
 
-    typedef vector<AtomFactory> AtomFactories;
+    typedef vector<AtomFactory>
+            AtomFactories;
 
 /** Create decorators of type Atom.
 
@@ -2063,27 +2211,34 @@ IndexKey element_;
     AtomConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian x")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian y")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian y")?
                    fh.get_key<FloatTraits>(cat, "cartesian y")
                               :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>(cat, "cartesian z")?
+      coordinates_.push_back((fh.get_has_key<FloatTraits>
+                   (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
                               :FloatKey()));;
-radius_=(fh.get_has_key<FloatTraits>(cat, "radius")?
+radius_=(fh.get_has_key<FloatTraits>
+                   (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
                               :FloatKey());
-mass_=(fh.get_has_key<FloatTraits>(cat, "mass")?
+mass_=(fh.get_has_key<FloatTraits>
+                   (cat, "mass")?
                    fh.get_key<FloatTraits>(cat, "mass")
                               :FloatKey());
-element_=(fh.get_has_key<IndexTraits>(cat, "element")?
+element_=(fh.get_has_key<IndexTraits>
+                   (cat, "element")?
                    fh.get_key<IndexTraits>(cat, "element")
                               :IndexKey());
 };
     }
-    AtomConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    AtomConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return AtomConst(nh, frame, coordinates_,
 radius_,
@@ -2096,10 +2251,12 @@ element_);
     && nh.get_has_value(mass_, frame)
     && nh.get_has_value(element_, frame);
     }
-    IMP_RMF_SHOWABLE(AtomConstFactory, "AtomConstFactory");
+    IMP_RMF_SHOWABLE(AtomConstFactory,
+                     "AtomConstFactory");
     };
 
-    typedef vector<AtomConstFactory> AtomConstFactories;
+    typedef vector<AtomConstFactory>
+            AtomConstFactories;
 
 /** Information regarding a chain.
 
@@ -2114,9 +2271,10 @@ element_);
     IndexKey chain_id_;
     ChainConst(NodeConstHandle nh,
                       unsigned int frame,
-                  IndexKey chain_id): nh_(nh),
-                                      frame_(frame),
-                                     chain_id_(chain_id) {
+                  IndexKey chain_id):
+       nh_(nh),
+       frame_(frame),
+       chain_id_(chain_id) {
     ;
     }
     public:
@@ -2130,7 +2288,8 @@ element_);
     }
     };
 
-    typedef vector<ChainConst> ChainConsts;
+    typedef vector<ChainConst>
+            ChainConsts;
 
 /** Information regarding a chain.
 
@@ -2145,9 +2304,10 @@ element_);
     IndexKey chain_id_;
     Chain(NodeHandle nh,
                       unsigned int frame,
-                  IndexKey chain_id): nh_(nh),
-                                      frame_(frame),
-                                     chain_id_(chain_id) {
+                  IndexKey chain_id):
+       nh_(nh),
+       frame_(frame),
+       chain_id_(chain_id) {
     ;
     }
     public:
@@ -2164,7 +2324,8 @@ void set_chain_id(Index v) {
     }
     };
 
-    typedef vector<Chain> Chains;
+    typedef vector<Chain>
+            Chains;
 
 /** Create decorators of type Chain.
 
@@ -2184,17 +2345,20 @@ chain_id_=get_key_always<IndexTraits>(fh, cat,
                                "chain id", false);
 };
     }
-    Chain get(NodeHandle nh, unsigned int frame=0) const {
+    Chain get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Chain(nh, frame, chain_id_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(chain_id_, frame);
     }
-    IMP_RMF_SHOWABLE(ChainFactory, "ChainFactory");
+    IMP_RMF_SHOWABLE(ChainFactory,
+                     "ChainFactory");
     };
 
-    typedef vector<ChainFactory> ChainFactories;
+    typedef vector<ChainFactory>
+            ChainFactories;
 
 /** Create decorators of type Chain.
 
@@ -2210,22 +2374,26 @@ chain_id_=get_key_always<IndexTraits>(fh, cat,
     ChainConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
+chain_id_=(fh.get_has_key<IndexTraits>
+                   (cat, "chain id")?
                    fh.get_key<IndexTraits>(cat, "chain id")
                               :IndexKey());
 };
     }
-    ChainConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    ChainConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ChainConst(nh, frame, chain_id_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(chain_id_, frame);
     }
-    IMP_RMF_SHOWABLE(ChainConstFactory, "ChainConstFactory");
+    IMP_RMF_SHOWABLE(ChainConstFactory,
+                     "ChainConstFactory");
     };
 
-    typedef vector<ChainConstFactory> ChainConstFactories;
+    typedef vector<ChainConstFactory>
+            ChainConstFactories;
 
 /** Information regarding a fragment of a molecule.
 
@@ -2240,9 +2408,10 @@ chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
     boost::array<IntKey,2> indexes_;
     DomainConst(NodeConstHandle nh,
                       unsigned int frame,
-                  boost::array<IntKey, 2> indexes): nh_(nh),
-                                      frame_(frame),
-                                     indexes_(indexes) {
+                  boost::array<IntKey, 2> indexes):
+       nh_(nh),
+       frame_(frame),
+       indexes_(indexes) {
     ;
     }
     public:
@@ -2257,7 +2426,8 @@ chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
     }
     };
 
-    typedef vector<DomainConst> DomainConsts;
+    typedef vector<DomainConst>
+            DomainConsts;
 
 /** Information regarding a fragment of a molecule.
 
@@ -2272,9 +2442,10 @@ chain_id_=(fh.get_has_key<IndexTraits>(cat, "chain id")?
     boost::array<IntKey,2> indexes_;
     Domain(NodeHandle nh,
                       unsigned int frame,
-                  boost::array<IntKey, 2> indexes): nh_(nh),
-                                      frame_(frame),
-                                     indexes_(indexes) {
+                  boost::array<IntKey, 2> indexes):
+       nh_(nh),
+       frame_(frame),
+       indexes_(indexes) {
     ;
     }
     public:
@@ -2293,7 +2464,8 @@ void set_indexes(Int v0, Int v1) {
     }
     };
 
-    typedef vector<Domain> Domains;
+    typedef vector<Domain>
+            Domains;
 
 /** Create decorators of type Domain.
 
@@ -2315,7 +2487,8 @@ indexes_[1]=get_key_always<IntTraits>(fh, cat,
                                "last residue index", false);
 };
     }
-    Domain get(NodeHandle nh, unsigned int frame=0) const {
+    Domain get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Domain(nh, frame, indexes_);
     }
@@ -2325,10 +2498,12 @@ indexes_[1]=get_key_always<IntTraits>(fh, cat,
   && nh.get_value(indexes_[0], frame)
    <nh.get_value(indexes_[1], frame);
     }
-    IMP_RMF_SHOWABLE(DomainFactory, "DomainFactory");
+    IMP_RMF_SHOWABLE(DomainFactory,
+                     "DomainFactory");
     };
 
-    typedef vector<DomainFactory> DomainFactories;
+    typedef vector<DomainFactory>
+            DomainFactories;
 
 /** Create decorators of type Domain.
 
@@ -2344,15 +2519,18 @@ indexes_[1]=get_key_always<IntTraits>(fh, cat,
     DomainConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-indexes_[0]=(fh.get_has_key<IntTraits>(cat, "first residue index")?
+indexes_[0]=(fh.get_has_key<IntTraits>
+                   (cat, "first residue index")?
                    fh.get_key<IntTraits>(cat, "first residue index")
                               :IntKey());
-indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
+indexes_[1]=(fh.get_has_key<IntTraits>
+                   (cat, "last residue index")?
                    fh.get_key<IntTraits>(cat, "last residue index")
                               :IntKey());
 };
     }
-    DomainConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    DomainConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DomainConst(nh, frame, indexes_);
     }
@@ -2362,10 +2540,12 @@ indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
   && nh.get_value(indexes_[0], frame)
    <nh.get_value(indexes_[1], frame);
     }
-    IMP_RMF_SHOWABLE(DomainConstFactory, "DomainConstFactory");
+    IMP_RMF_SHOWABLE(DomainConstFactory,
+                     "DomainConstFactory");
     };
 
-    typedef vector<DomainConstFactory> DomainConstFactories;
+    typedef vector<DomainConstFactory>
+            DomainConstFactories;
 
 /** Information regarding a copy of a molecule.
 
@@ -2380,9 +2560,10 @@ indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
     IndexKey copy_index_;
     CopyConst(NodeConstHandle nh,
                       unsigned int frame,
-                  IndexKey copy_index): nh_(nh),
-                                      frame_(frame),
-                                     copy_index_(copy_index) {
+                  IndexKey copy_index):
+       nh_(nh),
+       frame_(frame),
+       copy_index_(copy_index) {
     ;
     }
     public:
@@ -2396,7 +2577,8 @@ indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
     }
     };
 
-    typedef vector<CopyConst> CopyConsts;
+    typedef vector<CopyConst>
+            CopyConsts;
 
 /** Information regarding a copy of a molecule.
 
@@ -2411,9 +2593,10 @@ indexes_[1]=(fh.get_has_key<IntTraits>(cat, "last residue index")?
     IndexKey copy_index_;
     Copy(NodeHandle nh,
                       unsigned int frame,
-                  IndexKey copy_index): nh_(nh),
-                                      frame_(frame),
-                                     copy_index_(copy_index) {
+                  IndexKey copy_index):
+       nh_(nh),
+       frame_(frame),
+       copy_index_(copy_index) {
     ;
     }
     public:
@@ -2430,7 +2613,8 @@ void set_copy_index(Index v) {
     }
     };
 
-    typedef vector<Copy> Copys;
+    typedef vector<Copy>
+            Copys;
 
 /** Create decorators of type Copy.
 
@@ -2450,17 +2634,20 @@ copy_index_=get_key_always<IndexTraits>(fh, cat,
                                "copy index", false);
 };
     }
-    Copy get(NodeHandle nh, unsigned int frame=0) const {
+    Copy get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Copy(nh, frame, copy_index_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(copy_index_, frame);
     }
-    IMP_RMF_SHOWABLE(CopyFactory, "CopyFactory");
+    IMP_RMF_SHOWABLE(CopyFactory,
+                     "CopyFactory");
     };
 
-    typedef vector<CopyFactory> CopyFactories;
+    typedef vector<CopyFactory>
+            CopyFactories;
 
 /** Create decorators of type Copy.
 
@@ -2476,22 +2663,26 @@ copy_index_=get_key_always<IndexTraits>(fh, cat,
     CopyConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
+copy_index_=(fh.get_has_key<IndexTraits>
+                   (cat, "copy index")?
                    fh.get_key<IndexTraits>(cat, "copy index")
                               :IndexKey());
 };
     }
-    CopyConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    CopyConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return CopyConst(nh, frame, copy_index_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(copy_index_, frame);
     }
-    IMP_RMF_SHOWABLE(CopyConstFactory, "CopyConstFactory");
+    IMP_RMF_SHOWABLE(CopyConstFactory,
+                     "CopyConstFactory");
     };
 
-    typedef vector<CopyConstFactory> CopyConstFactories;
+    typedef vector<CopyConstFactory>
+            CopyConstFactories;
 
 /** Information regarding diffusion coefficients.
 
@@ -2506,10 +2697,10 @@ copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
     FloatKey diffusion_coefficient_;
     DiffuserConst(NodeConstHandle nh,
                       unsigned int frame,
-                  FloatKey diffusion_coefficient): nh_(nh),
-                                      frame_(frame),
-
-                            diffusion_coefficient_(diffusion_coefficient) {
+                  FloatKey diffusion_coefficient):
+       nh_(nh),
+       frame_(frame),
+       diffusion_coefficient_(diffusion_coefficient) {
     ;
     }
     public:
@@ -2523,7 +2714,8 @@ copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
     }
     };
 
-    typedef vector<DiffuserConst> DiffuserConsts;
+    typedef vector<DiffuserConst>
+            DiffuserConsts;
 
 /** Information regarding diffusion coefficients.
 
@@ -2538,9 +2730,10 @@ copy_index_=(fh.get_has_key<IndexTraits>(cat, "copy index")?
     FloatKey diffusion_coefficient_;
     Diffuser(NodeHandle nh,
                       unsigned int frame,
-                  FloatKey diffusion_coefficient): nh_(nh),
-                                      frame_(frame),
-                     diffusion_coefficient_(diffusion_coefficient) {
+                  FloatKey diffusion_coefficient):
+       nh_(nh),
+       frame_(frame),
+       diffusion_coefficient_(diffusion_coefficient) {
     ;
     }
     public:
@@ -2557,7 +2750,8 @@ void set_diffusion_coefficient(Float v) {
     }
     };
 
-    typedef vector<Diffuser> Diffusers;
+    typedef vector<Diffuser>
+            Diffusers;
 
 /** Create decorators of type Diffuser.
 
@@ -2577,17 +2771,20 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
                                "diffusion coefficient", false);
 };
     }
-    Diffuser get(NodeHandle nh, unsigned int frame=0) const {
+    Diffuser get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Diffuser(nh, frame, diffusion_coefficient_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(diffusion_coefficient_, frame);
     }
-    IMP_RMF_SHOWABLE(DiffuserFactory, "DiffuserFactory");
+    IMP_RMF_SHOWABLE(DiffuserFactory,
+                     "DiffuserFactory");
     };
 
-    typedef vector<DiffuserFactory> DiffuserFactories;
+    typedef vector<DiffuserFactory>
+            DiffuserFactories;
 
 /** Create decorators of type Diffuser.
 
@@ -2603,23 +2800,26 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     DiffuserConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
-  diffusion_coefficient_
-  =(fh.get_has_key<FloatTraits>(cat, "diffusion coefficient")?
+diffusion_coefficient_=(fh.get_has_key<FloatTraits>
+                   (cat, "diffusion coefficient")?
                    fh.get_key<FloatTraits>(cat, "diffusion coefficient")
                               :FloatKey());
 };
     }
-    DiffuserConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    DiffuserConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DiffuserConst(nh, frame, diffusion_coefficient_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(diffusion_coefficient_, frame);
     }
-    IMP_RMF_SHOWABLE(DiffuserConstFactory, "DiffuserConstFactory");
+    IMP_RMF_SHOWABLE(DiffuserConstFactory,
+                     "DiffuserConstFactory");
     };
 
-    typedef vector<DiffuserConstFactory> DiffuserConstFactories;
+    typedef vector<DiffuserConstFactory>
+            DiffuserConstFactories;
 
 /** A numeric tag for keeping track of types of molecules.
 
@@ -2634,9 +2834,10 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     StringKey type_name_;
     TypedConst(NodeConstHandle nh,
                       unsigned int frame,
-                  StringKey type_name): nh_(nh),
-                                      frame_(frame),
-                                     type_name_(type_name) {
+                  StringKey type_name):
+       nh_(nh),
+       frame_(frame),
+       type_name_(type_name) {
     ;
     }
     public:
@@ -2650,7 +2851,8 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     }
     };
 
-    typedef vector<TypedConst> TypedConsts;
+    typedef vector<TypedConst>
+            TypedConsts;
 
 /** A numeric tag for keeping track of types of molecules.
 
@@ -2665,9 +2867,10 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     StringKey type_name_;
     Typed(NodeHandle nh,
                       unsigned int frame,
-                  StringKey type_name): nh_(nh),
-                                      frame_(frame),
-                                     type_name_(type_name) {
+                  StringKey type_name):
+       nh_(nh),
+       frame_(frame),
+       type_name_(type_name) {
     ;
     }
     public:
@@ -2684,7 +2887,8 @@ void set_type_name(String v) {
     }
     };
 
-    typedef vector<Typed> Typeds;
+    typedef vector<Typed>
+            Typeds;
 
 /** Create decorators of type Typed.
 
@@ -2704,17 +2908,20 @@ type_name_=get_key_always<StringTraits>(fh, cat,
                                "type name", false);
 };
     }
-    Typed get(NodeHandle nh, unsigned int frame=0) const {
+    Typed get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return Typed(nh, frame, type_name_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(type_name_, frame);
     }
-    IMP_RMF_SHOWABLE(TypedFactory, "TypedFactory");
+    IMP_RMF_SHOWABLE(TypedFactory,
+                     "TypedFactory");
     };
 
-    typedef vector<TypedFactory> TypedFactories;
+    typedef vector<TypedFactory>
+            TypedFactories;
 
 /** Create decorators of type Typed.
 
@@ -2730,22 +2937,26 @@ type_name_=get_key_always<StringTraits>(fh, cat,
     TypedConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
-type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
+type_name_=(fh.get_has_key<StringTraits>
+                   (cat, "type name")?
                    fh.get_key<StringTraits>(cat, "type name")
                               :StringKey());
 };
     }
-    TypedConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    TypedConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return TypedConst(nh, frame, type_name_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(type_name_, frame);
     }
-    IMP_RMF_SHOWABLE(TypedConstFactory, "TypedConstFactory");
+    IMP_RMF_SHOWABLE(TypedConstFactory,
+                     "TypedConstFactory");
     };
 
-    typedef vector<TypedConstFactory> TypedConstFactories;
+    typedef vector<TypedConstFactory>
+            TypedConstFactories;
 
 /** Store a static reference to another node.
 
@@ -2760,9 +2971,10 @@ type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
     NodeIDKey alias_;
     StaticAliasConst(NodeConstHandle nh,
                       unsigned int frame,
-                  NodeIDKey alias): nh_(nh),
-                                      frame_(frame),
-                                     alias_(alias) {
+                  NodeIDKey alias):
+       nh_(nh),
+       frame_(frame),
+       alias_(alias) {
     ;
     }
     public:
@@ -2776,7 +2988,8 @@ type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
     }
     };
 
-    typedef vector<StaticAliasConst> StaticAliasConsts;
+    typedef vector<StaticAliasConst>
+            StaticAliasConsts;
 
 /** Store a static reference to another node.
 
@@ -2791,9 +3004,10 @@ type_name_=(fh.get_has_key<StringTraits>(cat, "type name")?
     NodeIDKey alias_;
     StaticAlias(NodeHandle nh,
                       unsigned int frame,
-                  NodeIDKey alias): nh_(nh),
-                                      frame_(frame),
-                                     alias_(alias) {
+                  NodeIDKey alias):
+       nh_(nh),
+       frame_(frame),
+       alias_(alias) {
     ;
     }
     public:
@@ -2810,7 +3024,8 @@ void set_alias(NodeID v) {
     }
     };
 
-    typedef vector<StaticAlias> StaticAliass;
+    typedef vector<StaticAlias>
+            StaticAliass;
 
 /** Create decorators of type StaticAlias.
 
@@ -2830,17 +3045,20 @@ alias_=get_key_always<NodeIDTraits>(fh, cat,
                                "alias", false);
 };
     }
-    StaticAlias get(NodeHandle nh, unsigned int frame=0) const {
+    StaticAlias get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return StaticAlias(nh, frame, alias_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(alias_, frame);
     }
-    IMP_RMF_SHOWABLE(StaticAliasFactory, "StaticAliasFactory");
+    IMP_RMF_SHOWABLE(StaticAliasFactory,
+                     "StaticAliasFactory");
     };
 
-    typedef vector<StaticAliasFactory> StaticAliasFactories;
+    typedef vector<StaticAliasFactory>
+            StaticAliasFactories;
 
 /** Create decorators of type StaticAlias.
 
@@ -2856,22 +3074,26 @@ alias_=get_key_always<NodeIDTraits>(fh, cat,
     StaticAliasConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("alias");
-alias_=(fh.get_has_key<NodeIDTraits>(cat, "alias")?
+alias_=(fh.get_has_key<NodeIDTraits>
+                   (cat, "alias")?
                    fh.get_key<NodeIDTraits>(cat, "alias")
                               :NodeIDKey());
 };
     }
-    StaticAliasConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    StaticAliasConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return StaticAliasConst(nh, frame, alias_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(alias_, frame);
     }
-    IMP_RMF_SHOWABLE(StaticAliasConstFactory, "StaticAliasConstFactory");
+    IMP_RMF_SHOWABLE(StaticAliasConstFactory,
+                     "StaticAliasConstFactory");
     };
 
-    typedef vector<StaticAliasConstFactory> StaticAliasConstFactories;
+    typedef vector<StaticAliasConstFactory>
+            StaticAliasConstFactories;
 
 /** Store a dynamic reference to another node.
 
@@ -2886,9 +3108,10 @@ alias_=(fh.get_has_key<NodeIDTraits>(cat, "alias")?
     NodeIDKey alias_;
     DynamicAliasConst(NodeConstHandle nh,
                       unsigned int frame,
-                  NodeIDKey alias): nh_(nh),
-                                      frame_(frame),
-                                     alias_(alias) {
+                  NodeIDKey alias):
+       nh_(nh),
+       frame_(frame),
+       alias_(alias) {
     ;
     }
     public:
@@ -2902,7 +3125,8 @@ alias_=(fh.get_has_key<NodeIDTraits>(cat, "alias")?
     }
     };
 
-    typedef vector<DynamicAliasConst> DynamicAliasConsts;
+    typedef vector<DynamicAliasConst>
+            DynamicAliasConsts;
 
 /** Store a dynamic reference to another node.
 
@@ -2917,9 +3141,10 @@ alias_=(fh.get_has_key<NodeIDTraits>(cat, "alias")?
     NodeIDKey alias_;
     DynamicAlias(NodeHandle nh,
                       unsigned int frame,
-                  NodeIDKey alias): nh_(nh),
-                                      frame_(frame),
-                                     alias_(alias) {
+                  NodeIDKey alias):
+       nh_(nh),
+       frame_(frame),
+       alias_(alias) {
     ;
     }
     public:
@@ -2936,7 +3161,8 @@ void set_alias(NodeID v) {
     }
     };
 
-    typedef vector<DynamicAlias> DynamicAliass;
+    typedef vector<DynamicAlias>
+            DynamicAliass;
 
 /** Create decorators of type DynamicAlias.
 
@@ -2956,17 +3182,20 @@ alias_=get_key_always<NodeIDTraits>(fh, cat,
                                "dynamic alias", true);
 };
     }
-    DynamicAlias get(NodeHandle nh, unsigned int frame=0) const {
+    DynamicAlias get(NodeHandle nh,
+                          unsigned int frame=0) const {
       ;
       return DynamicAlias(nh, frame, alias_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(alias_, frame);
     }
-    IMP_RMF_SHOWABLE(DynamicAliasFactory, "DynamicAliasFactory");
+    IMP_RMF_SHOWABLE(DynamicAliasFactory,
+                     "DynamicAliasFactory");
     };
 
-    typedef vector<DynamicAliasFactory> DynamicAliasFactories;
+    typedef vector<DynamicAliasFactory>
+            DynamicAliasFactories;
 
 /** Create decorators of type DynamicAlias.
 
@@ -2982,22 +3211,26 @@ alias_=get_key_always<NodeIDTraits>(fh, cat,
     DynamicAliasConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("alias");
-alias_=(fh.get_has_key<NodeIDTraits>(cat, "dynamic alias")?
+alias_=(fh.get_has_key<NodeIDTraits>
+                   (cat, "dynamic alias")?
                    fh.get_key<NodeIDTraits>(cat, "dynamic alias")
                               :NodeIDKey());
 };
     }
-    DynamicAliasConst get(NodeConstHandle nh, unsigned int frame=0) const {
+    DynamicAliasConst get(NodeConstHandle nh,
+                          unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DynamicAliasConst(nh, frame, alias_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
       return nh.get_has_value(alias_, frame);
     }
-    IMP_RMF_SHOWABLE(DynamicAliasConstFactory, "DynamicAliasConstFactory");
+    IMP_RMF_SHOWABLE(DynamicAliasConstFactory,
+                     "DynamicAliasConstFactory");
     };
 
-    typedef vector<DynamicAliasConstFactory> DynamicAliasConstFactories;
+    typedef vector<DynamicAliasConstFactory>
+            DynamicAliasConstFactories;
 
 } /* namespace RMF */
 
