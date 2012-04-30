@@ -42,6 +42,8 @@ class IMPEXPORT CLASSNAMEContainer : public Container
 public:
   typedef VARIABLETYPE ContainedType;
   typedef PLURALVARIABLETYPE ContainedTypes;
+  typedef PLURALINDEXTYPE ContainedIndexTypes;
+  typedef INDEXTYPE ContainedIndexType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -81,7 +83,6 @@ public:
                                   double max) const=0;
 
 #ifndef IMP_DOXYGEN
-  typedef VARIABLETYPE value_type;
   VARIABLETYPE get(unsigned int i) const {
     return IMP::internal::get_particle(get_model(),
                                        get_indexes()[i]);

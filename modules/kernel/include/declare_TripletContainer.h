@@ -42,6 +42,8 @@ class IMPEXPORT TripletContainer : public Container
 public:
   typedef ParticleTriplet ContainedType;
   typedef ParticleTripletsTemp ContainedTypes;
+  typedef ParticleIndexTriplets ContainedIndexTypes;
+  typedef ParticleIndexTriplet ContainedIndexType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -81,7 +83,6 @@ public:
                                   double max) const=0;
 
 #ifndef IMP_DOXYGEN
-  typedef ParticleTriplet value_type;
   ParticleTriplet get(unsigned int i) const {
     return IMP::internal::get_particle(get_model(),
                                        get_indexes()[i]);

@@ -42,6 +42,8 @@ class IMPEXPORT QuadContainer : public Container
 public:
   typedef ParticleQuad ContainedType;
   typedef ParticleQuadsTemp ContainedTypes;
+  typedef ParticleIndexQuads ContainedIndexTypes;
+  typedef ParticleIndexQuad ContainedIndexType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -81,7 +83,6 @@ public:
                                   double max) const=0;
 
 #ifndef IMP_DOXYGEN
-  typedef ParticleQuad value_type;
   ParticleQuad get(unsigned int i) const {
     return IMP::internal::get_particle(get_model(),
                                        get_indexes()[i]);
