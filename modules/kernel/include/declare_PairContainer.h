@@ -42,6 +42,8 @@ class IMPEXPORT PairContainer : public Container
 public:
   typedef ParticlePair ContainedType;
   typedef ParticlePairsTemp ContainedTypes;
+  typedef ParticleIndexPairs ContainedIndexTypes;
+  typedef ParticleIndexPair ContainedIndexType;
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular container.
    */
@@ -81,7 +83,6 @@ public:
                                   double max) const=0;
 
 #ifndef IMP_DOXYGEN
-  typedef ParticlePair value_type;
   ParticlePair get(unsigned int i) const {
     return IMP::internal::get_particle(get_model(),
                                        get_indexes()[i]);
