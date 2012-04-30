@@ -209,6 +209,9 @@ public:
       for display and other purposes. The returned restraints will be made
       in to a RestraintSet, if needed and the weight and maximum score
       set for the restraint set.
+
+      The returned restraints should be only the non-zero terms and should
+      have their last scores set appropriately;
    */
   virtual Restraints do_create_current_decomposition() const {
     return do_create_decomposition();
