@@ -165,6 +165,7 @@ namespace {
         for (unsigned int i=0; i< rs.size(); ++i) {
           Subset s(rs[i]->get_input_particles());
           double score= rs[i]->unprotected_evaluate(false);
+          rs[i]->set_was_used(true);
           if (score != 0) {
             RMF::NodeHandle nnh= get_node(s, d, nh);
             RMF::Score csd= sf_.get(nnh, frame);

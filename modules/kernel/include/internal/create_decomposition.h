@@ -32,6 +32,8 @@ Restraints create_current_decomposition(Model *m,Score *score,
     if (score != 0) {
       r->set_last_score(score);
       ret.push_back(r);
+    } else {
+      r->set_was_used(true);
     }
   };
   return ret;
