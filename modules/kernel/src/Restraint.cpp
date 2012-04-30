@@ -89,9 +89,11 @@ void Restraint::set_weight(double w) {
 }
 
 void Restraint::set_maximum_score(double w) {
-  max_=w;
-  if (get_is_part_of_model()) {
-    get_model()->reset_dependencies();
+  if (w != max_) {
+    if (get_is_part_of_model()) {
+      get_model()->reset_dependencies();
+    }
+    max_=w;
   }
 }
 
