@@ -5,7 +5,8 @@ def get_string(type, name, const, per_frame=False):
     else:
         pfs="false"
     if const:
-        return """(fh.get_has_key<%(type)sTraits>(cat, \"%(name)s\")?
+        return """(fh.get_has_key<%(type)sTraits>
+                   (cat, \"%(name)s\")?
                    fh.get_key<%(type)sTraits>(cat, \"%(name)s\")
                               :%(type)sKey())"""%{ "name":name,
                                                                                      "type": type,
@@ -262,9 +263,10 @@ class Decorator:
     %(key_members)s
     %(name)s%(CONST)s(Node%(CONST)sHandle nh,
                       unsigned int frame,
-                  %(key_arguments)s): nh_(nh),
-                                      frame_(frame),
-                                     %(key_saves)s {
+                  %(key_arguments)s):
+       nh_(nh),
+       frame_(frame),
+       %(key_saves)s {
     %(init)s;
     }
     public:
@@ -276,7 +278,8 @@ class Decorator:
     }
     };
 
-    typedef vector<%(name)s%(CONST)s> %(name)s%(CONST)ss;
+    typedef vector<%(name)s%(CONST)s>
+            %(name)s%(CONST)ss;
 """
         ret.append(classstr%{"description":self.description,
                              "name":self.name,
@@ -308,17 +311,20 @@ class Decorator:
     %(name)s%(CONST)sFactory(File%(CONST)sHandle fh){
     %(initialize)s;
     }
-    %(name)s%(CONST)s get(Node%(CONST)sHandle nh, unsigned int frame=0) const {
+    %(name)s%(CONST)s get(Node%(CONST)sHandle nh,
+                          unsigned int frame=0) const {
       %(create_check)s;
       return %(name)s%(CONST)s(nh, frame, %(key_pass)s);
     }
     bool get_is(Node%(CONST)sHandle nh, unsigned int frame=0) const {
       return %(checks)s;
     }
-    IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory, "%(name)s%(CONST)sFactory");
+    IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory,
+                     "%(name)s%(CONST)sFactory");
     };
 
-    typedef vector<%(name)s%(CONST)sFactory> %(name)s%(CONST)sFactories;
+    typedef vector<%(name)s%(CONST)sFactory>
+            %(name)s%(CONST)sFactories;
 """
         ret.append(factstr%{"name":self.name,
                              "key_members": self._get_key_members(),
@@ -376,7 +382,7 @@ score= Decorator("Score", "Associate a score with some set of particles.",
                    [DecoratorCategory("feature", 1, [Attribute("NodeIDs",
                                                                "representation",
                                                                "representation"),
-                                                     Attribute("Float", "score", "score")])],
+                                                     Attribute("Float", "score", "score", True)])],
                    "")
 
 ball= Decorator("Ball", "A geometric ball.",
