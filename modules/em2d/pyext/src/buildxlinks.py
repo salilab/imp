@@ -3,6 +3,7 @@ import IMP
 import IMP.atom as atom
 import IMP.algebra as alg
 import IMP.core as core
+import sys
 import logging
 from IMP.em2d.argminmax import keymax
 log = logging.getLogger("buildxlinks")
