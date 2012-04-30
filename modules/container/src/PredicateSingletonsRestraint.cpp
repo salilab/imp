@@ -47,7 +47,10 @@ Restraints PredicateSingletonsRestraint
 ::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< restraints_.size(); ++i) {
-    ret.push_back(restraints_[i]->create_current_decomposition());
+    Pointer<Restraint> r=restraints_[i]->create_current_decomposition();
+    if (r) {
+      ret.push_back(r);
+    }
   }
   return ret;
 }
