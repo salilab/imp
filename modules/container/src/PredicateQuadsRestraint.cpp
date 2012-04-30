@@ -45,7 +45,11 @@ ContainersTemp PredicateQuadsRestraint
 
 Restraints PredicateQuadsRestraint
 ::do_create_current_decomposition() const {
-  return restraints_;
+  Restraints ret;
+  for (unsigned int i=0; i< restraints_.size(); ++i) {
+    ret.push_back(restraints_[i]->create_current_decomposition());
+  }
+  return ret;
 }
 
 void PredicateQuadsRestraint
