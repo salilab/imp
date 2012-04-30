@@ -60,6 +60,7 @@ public:
   IMP_PAIR_CONTAINER(ConnectingPairContainer);
 #else
   IMP_LISTLIKE_PAIR_CONTAINER(ConnectingPairContainer);
+  bool get_is_decomposable() const {return false;}
 #endif
 };
 
