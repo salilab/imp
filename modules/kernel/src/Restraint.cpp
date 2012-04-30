@@ -80,9 +80,11 @@ double Restraint::evaluate_if_below(bool calc_derivs, double max) const {
 }
 
 void Restraint::set_weight(double w) {
-  weight_=w;
-  if (get_is_part_of_model()) {
-    get_model()->reset_dependencies();
+  if (w != weight_) {
+    if (get_is_part_of_model()) {
+      get_model()->reset_dependencies();
+    }
+    weight_=w;
   }
 }
 
