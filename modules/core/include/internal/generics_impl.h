@@ -58,17 +58,17 @@ template <class Score, class C>
 Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
   return IMP::internal::create_decomposition(get_model(),
                                              ss_.get(),
-                                             pc_->get_all_possible_indexes(),
+                                             pc_.get(),
                                              get_name());
 }
 
 template <class Score, class C>
 Restraints
 ContainerRestraint<Score, C>::do_create_current_decomposition() const {
-  return IMP::internal::create_decomposition(get_model(),
-                                             ss_.get(),
-                                             pc_->get_indexes(),
-                                             get_name());
+  return IMP::internal::create_current_decomposition(get_model(),
+                                                     ss_.get(),
+                                                     pc_.get(),
+                                                     get_name());
 }
 
 
@@ -128,30 +128,6 @@ void ContainerConstraint<Before, After, C>
   }
 }
 
-
-template <class Indexes, class BF, class AF>
-inline ScoreStates create_decomposition_internal(Model *m,
-                                                 BF *bf, AF *af,
-                                                 const Indexes &a) {
-  ScoreStates ret(a.size());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= IMP::create_constraint(bf, af,
-                                    IMP::internal::get_particle(m, a[i]));
-  }
-  return ret;
-}
-
-
-template <class Before, class After, class C>
-ScoreStates ContainerConstraint<Before, After, C>
-::create_decomposition() const {
-  ScoreStates ret
-    =create_decomposition_internal(get_model(),
-                                   f_.get(),
-                                   af_.get(),
-                                   c_->get_all_possible_indexes());
-  return ret;
-}
 
 template <class Before, class After, class C>
 ContainersTemp ContainerConstraint<Before, After, C>
