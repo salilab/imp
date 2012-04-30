@@ -114,8 +114,6 @@ public:
     f_=f;
   }
 
-  ScoreStates create_decomposition() const;
-
   IMP_CONSTRAINT(ContainerConstraint);
 };
 

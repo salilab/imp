@@ -15,21 +15,43 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
+template <class Container, class Score>
+Restraints create_current_decomposition(Model *m,Score *score,
+                                        Container *c,
+                                        std::string name) {
+  IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
+  IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
+  Restraints ret;
+  for (unsigned int i=0; i< c->get_number(); ++i) {
+    std::ostringstream oss;
+    oss << name << " " << Showable(c->get(i));
+    Pointer<Restraint> r= IMP::internal::create_restraint(score,
+                                                          c->get(i),
+                             oss.str());
+    double score= r->unprotected_evaluate(false);
+    if (score != 0) {
+      r->set_last_score(score);
+      ret.push_back(r);
+    }
+  };
+  return ret;
+}
 
-template <class List, class Score>
+template <class Container, class Score>
 Restraints create_decomposition(Model *m,Score *score,
-                                const List &indexes,
+                                Container *c,
                                 std::string name) {
   IMP_USAGE_CHECK(m, "nullptr passed for the Model.");
   IMP_USAGE_CHECK(score, "nullptr passed for the Score.");
-  Restraints ret(indexes.size());
-  for (unsigned int i=0; i< indexes.size(); ++i) {
+  typename Container::ContainedIndexTypes all=c->get_all_possible_indexes();
+  Restraints ret(all.size());
+  for (unsigned int i=0; i< all.size(); ++i) {
     std::ostringstream oss;
-    oss << name << " " << Showable(IMP::internal::get_particle(m, indexes[i]));
+    oss << name << " " << Showable(all[i]);
     ret[i]= IMP::internal::create_restraint(score,
-                                            IMP::internal::get_particle(m,
-                                                                 indexes[i]),
-                             oss.str());
+                                             IMP::internal::get_particle(m,
+                                                                       all[i]),
+                                             oss.str());
   }
   return ret;
 }

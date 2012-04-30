@@ -67,17 +67,23 @@ ContainersTemp InternalQuadsRestraint::get_input_containers() const
 
 
 Restraints InternalQuadsRestraint::do_create_decomposition() const {
-  return IMP::internal::create_decomposition(get_model(),
-                                             ss_.get(),
-                                             pc_->get_all_possible_indexes(),
-                                             get_name());
+  if (pc_->get_is_decomposable()) {
+    return IMP::internal::create_decomposition(get_model(),
+                                               ss_.get(),
+                                               pc_.get(),
+                                               get_name());
+  } else {
+    const Restraint *r=this;
+    return Restraints(1, const_cast<Restraint*>(r));
+  }
 }
 
 Restraints
 InternalQuadsRestraint::do_create_current_decomposition() const {
-  return IMP::internal::create_decomposition(get_model(),
-                                             ss_.get(),
-                                             pc_->get_indexes(), get_name());
+  return IMP::internal::create_current_decomposition(get_model(),
+                                                     ss_.get(),
+                                                     pc_.get(),
+                                                     get_name());
 }
 
 void InternalQuadsRestraint::do_show(std::ostream& out) const
