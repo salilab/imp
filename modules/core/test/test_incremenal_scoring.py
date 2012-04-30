@@ -8,8 +8,7 @@ class Tests(IMP.test.TestCase):
     def test_incr(self):
         """Testing incremental scoring with non-bonded"""
         m= IMP.Model()
-        #m.set_log_level(IMP.SILENT)
-        #mc.set_log_level(IMP.TERSE)
+        m.set_log_level(IMP.SILENT)
         ps=[]
         bb= IMP.algebra.get_unit_bounding_box_3d()
         for i in range(0,10):
