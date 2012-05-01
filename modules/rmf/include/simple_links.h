@@ -19,42 +19,6 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-
-typedef base::Object* AssociationType;
-class SaveLink;
-typedef base::Pointer<SaveLink> SaveLinkAssociationType;
-class LoadLink;
-typedef base::Pointer<LoadLink> LoadLinkAssociationType;
-
-inline
-void set_association(RMF::NodeConstHandle nh,
-                     base::Object *o, bool overwrite=false) {
-  nh.set_association(AssociationType(o), overwrite);
-}
-
-template <class T>
-inline T* get_association(RMF::NodeConstHandle nh) {
-  AssociationType o
-    = nh.get_association<AssociationType >();
-  base::Object *op= o;
-  return dynamic_cast<T*>(op);
-}
-
-
-inline RMF::NodeConstHandle get_node_from_association(RMF::FileConstHandle nh,
-                                                      base::Object *oi) {
-  AssociationType o(oi);
-  return nh.get_node_from_association(o);
-}
-
-inline RMF::NodeHandle get_node_from_association(RMF::FileHandle nh,
-                                                 base::Object *oi) {
-  AssociationType o(oi);
-  return nh.get_node_from_association(o);
-}
-
-
-
 template <class O>
 class SimpleLoadLink: public LoadLink {
   base::Vector<base::Pointer<O> > os_;
