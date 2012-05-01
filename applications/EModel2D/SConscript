@@ -7,7 +7,7 @@ env= env.IMPApplication(name="EModel2D", version='nightly-30/4/2012',
                         license=env.IMPStandardLicense(),
                         publications=[],
                         required_modules=["container","core","atom","algebra",
-                                              "em","display","gsl","domino"],
+                                      "em","display","gsl","domino","em2d"],
                         required_dependencies=[])
 if env:
     env.IMPPythonExecutable('em2d_domino_model.py')

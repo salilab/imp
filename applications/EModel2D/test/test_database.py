@@ -10,8 +10,6 @@ try:
     import sqlite3 as sqlite
 except ImportError:
     raise ImportError("The Python module SQlite is not present")
-import add_parent
-add_parent.add_parent_to_python_path()
 
 import IMP.em2d.Database as Database
 
