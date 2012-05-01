@@ -7,9 +7,6 @@ import logging
 log = logging.getLogger("test_mc_modeling")
 logging.basicConfig(stream=sys.stdout)
 logging.root.setLevel(logging.WARNING)
-import add_parent
-add_parent.add_parent_to_python_path()
-
 import IMP.em2d.utility as utility
 import IMP.em2d.solutions_io as solutions_io
 
