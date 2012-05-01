@@ -8,6 +8,7 @@
 #ifndef IMPRMF_LINK_MACROS_H
 #define IMPRMF_LINK_MACROS_H
 #include "links.h"
+#include "associations.h"
 #include <IMP/base/Pointer.h>
 #include <RMF/FileHandle.h>
 
@@ -20,10 +21,10 @@
     if (!fh.get_has_associated_data(index)) {                           \
       IMP::rmf::SaveLinkAssociationType psl                             \
         = new Name##SaveLink create_args;                               \
-      fh.add_associated_data(index, psl);                               \
+      IMP::rmf::set_linker(fh, index, psl);                             \
     }                                                                   \
     IMP::rmf::SaveLinkAssociationType ln                                \
-      = fh.get_associated_data<IMP::rmf::SaveLinkAssociationType>(index); \
+      = IMP::rmf::get_save_linker(fh, index);                           \
     return dynamic_cast<Name##SaveLink*>(ln.get());                     \
   }                                                                     \
   Name##LoadLink *get_##name##_load_link cargs {                        \
@@ -31,10 +32,10 @@
     if (!fh.get_has_associated_data(index)) {                           \
       IMP::rmf::LoadLinkAssociationType psl                             \
         = new Name##LoadLink create_cargs;                              \
-      fh.add_associated_data(index, psl);                               \
+      IMP::rmf::set_linker(fh, index, psl);                             \
     }                                                                   \
     IMP::rmf::LoadLinkAssociationType pt                                \
-      = fh.get_associated_data<IMP::rmf::LoadLinkAssociationType>(index); \
+      = IMP::rmf::get_load_linker(fh, index);                           \
     return dynamic_cast<Name##LoadLink*>(pt.get());                     \
   }                                                                     \
   }                                                                     \

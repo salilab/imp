@@ -34,7 +34,7 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i)) {
       base::Pointer<LoadLink> ll
-        = file.get_associated_data<base::Pointer<LoadLink> >(2*i);
+        = get_load_linker(file, 2*i);
       ll->load(file, frame);
     }
   }
@@ -44,7 +44,7 @@ void save_frame(RMF::FileHandle file, unsigned int frame) {
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll
-        = file.get_associated_data<base::Pointer<SaveLink> >(2*i+1);
+        = get_save_linker(file, 2*i+1);
       ll->save(file, frame);
     }
   }
