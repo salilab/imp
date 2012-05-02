@@ -8,6 +8,7 @@
 
 #include <IMP/rmf/frames.h>
 #include <IMP/rmf/links.h>
+#include <IMP/rmf/associations.h>
 #include <IMP/compatibility/set.h>
 IMPRMF_BEGIN_NAMESPACE
 namespace {
