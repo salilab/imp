@@ -18,11 +18,13 @@ EMFit::EMFit(std::string rec_file_name, std::string lig_file_name,
              std::string map_file_name, float resolution, float dist_thr) :
   resolution_(resolution), dist_thr_(dist_thr) {
 
+  model_ = new IMP::Model();
+
   rec_file_name_ = rec_file_name;
   lig_file_name_ = lig_file_name;
 
-  read_pdb_atoms(rec_file_name, rec_particles_);
-  read_pdb_atoms(lig_file_name, lig_particles_);
+  read_pdb_atoms(model_, rec_file_name, rec_particles_);
+  read_pdb_atoms(model_, lig_file_name, lig_particles_);
   float volume = compute_volume(rec_particles_) +
     compute_volume(lig_particles_);
 
@@ -43,8 +45,10 @@ EMFit::EMFit(std::string pdb_file_name, std::string map_file_name,
              float resolution, float dist_thr) :
   resolution_(resolution), dist_thr_(dist_thr) {
 
+  model_ = new IMP::Model();
+
   // read pdb
-  read_pdb_atoms(pdb_file_name, rec_particles_);
+  read_pdb_atoms(model_, pdb_file_name, rec_particles_);
   float volume = compute_volume(rec_particles_);
 
   // read complex map
@@ -295,9 +299,9 @@ void EMFit::read_trans_file(const std::string file_name,
             << file_name << std::endl;
 }
 
-void EMFit::read_pdb_atoms(const std::string file_name,
+void EMFit::read_pdb_atoms(IMP::Model *model,
+                           const std::string file_name,
                            IMP::Particles& particles) {
-  IMP::Model *model = new IMP::Model();
   IMP::atom::Hierarchy mhd =
     IMP::atom::read_pdb(file_name, model,
                         new IMP::atom::NonWaterNonHydrogenPDBSelector(),
