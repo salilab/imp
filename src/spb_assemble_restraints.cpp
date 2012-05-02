@@ -100,23 +100,23 @@ if(mydata.add_y2h){
  //y2h->add_restraint(y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
  //                    all_mol, "Spc110p",    IntRange(900,927), mydata.kappa));
  y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0],  "Spc42p",   IntRange(1,141),
-                     all_mol,    "Spc110p",   IntRange(781,944), mydata.kappa));
+                     all_mol[0],  "Spc42p", IntRange(1,141),
+                     all_mol,    "Spc110p", IntRange(781,944), mydata.kappa));
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0],  "Spc29p",             "ALL",
                      all_mol,    "Spc110p", IntRange(811,898), mydata.kappa));
  y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0], "Spc110p",  IntRange(823,944),
-                     all_mol,    "Spc110p",  IntRange(823,944), mydata.kappa));
+                     all_mol[0], "Spc110p", IntRange(823,944),
+                     all_mol,    "Spc110p", IntRange(823,944), mydata.kappa));
  y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0],  "Spc42p",   IntRange(1,138),
-                     all_mol,     "Spc29p",             "ALL", mydata.kappa));
+                     all_mol[0],  "Spc42p", IntRange(1,138),
+                     all_mol,     "Spc29p",           "ALL", mydata.kappa));
 // Having a rigid coiled-coil, this is always satisfied
 // y2h->add_restraint(y2h_restraint(m,all_mol[0], "Spc42p",     IntRange(1,138),
 //                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa));
 // IL2
  y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0], "Cnm67p", IntRange(442,581),
+                     all_mol[0], "Cnm67p", IntRange(442,573),
                      all_mol,    "Spc42p",  IntRange(49,363), mydata.kappa));
  // add the FRET_R restraints
  m->add_restraint(y2h);
