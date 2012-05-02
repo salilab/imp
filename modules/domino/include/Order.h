@@ -34,7 +34,7 @@ public:
   Order(Subset outer, const ParticlesTemp& order);
   template <class It>
       Ints get_list_ordered(It b, It e) const {
-    IMP_USAGE_CHECK(std::distance(b,e)==size(),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b,e))==size(),
                     "Sizes don't match in permutation");
     Ints ret(std::distance(b,e));
     for (unsigned int i=0; i< ret.size(); ++i) {
@@ -47,7 +47,7 @@ public:
   }
   template <class It>
       Assignment get_subset_ordered(It b, It e) const {
-    IMP_USAGE_CHECK(std::distance(b,e)==size(),
+    IMP_USAGE_CHECK(static_cast<unsigned int>(std::distance(b,e))==size(),
                   "Sizes don't match in permutation");
   Assignment ret(size());
   for (unsigned int i=0; i< size(); ++i) {
