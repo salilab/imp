@@ -91,11 +91,13 @@ float EMFit::estimate_density_threshold(float object_volume) const {
   //std::cerr << "min = " << min_value << " max = " << max_value << std::endl;
 
   float bins_number = 1000;
-  float delta = (max_value - min_value)/bins_number;
+  // Ensure that value=max_value ends up in histogram[bins_number-1],
+  // not histogram[bins_number]
+  float delta = (max_value - min_value)/(bins_number - 1);
   std::vector<int> histogram(bins_number, 0);
   for(long l=0; l<map_->get_number_of_voxels(); l++) {
     float value = map_->get_value(l);
-    int index = IMP::algebra::get_rounded((value - min_value)/delta);
+    int index = static_cast<int>((value - min_value)/delta);
     histogram[index]++;
   }
   // print histogram
