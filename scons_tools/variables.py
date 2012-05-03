@@ -15,6 +15,7 @@ import SCons
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
+    env['builddir']="#/build"
     env['IMP_BUILD_STATIC']= env['static']
     env['IMP_BUILD_DYNAMIC']= env['dynamic']
     if env['python'] != "no" and not env.get('PYTHON', None):
@@ -172,8 +173,6 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('docdir', 'Documentation installation directory',
                           '${prefix}/share/doc/%s' % package,
                           PathVariable.PathAccept))
-    vars.Add(PathVariable('builddir', 'The directory when things are build. The default is almost always fine.',
-                          "#/build", PathVariable.PathAccept))
     # Note that destdir should not affect any compiled-in paths; see
     # http://www.gnu.org/prep/standards/html_node/DESTDIR.html
     vars.Add(PathVariable('destdir',
