@@ -61,7 +61,8 @@ for(int i=0;i<mydata.num_cells;++i){
    for(unsigned int k=0;k<2;++k){
     Spc42p_n.push_back(create_protein(m,"Spc42p_n",7,1,
                        display::Color(175./255.,238./255.,238./255.),
-                       i,mydata.kappa,tmp_x0,mydata.use_connectivity));
+                       i,mydata.kappa,tmp_x0,
+                       mydata.use_connectivity,1,59));
     if(i==0){
      Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
      CP_ps->add_particles(ps_Spc42p_n);
@@ -70,7 +71,7 @@ for(int i=0;i<mydata.num_cells;++i){
   //Spc42p_c, 2 copies, 2 beads
     Spc42p_c.push_back(create_protein(m,"Spc42p_c",13,2,
                        display::Color(175./255.,218./255.,238./255.),
-                       i,mydata.kappa,IL2_x0,mydata.use_connectivity,139));
+                       i,mydata.kappa,IL2_x0,mydata.use_connectivity,138));
     if(i==0){
      Particles ps_Spc42p_c=atom::get_leaves(Spc42p_c[k]);
      IL2_ps->add_particles(ps_Spc42p_c);
@@ -79,10 +80,10 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    // Coiled-Coil
    atom::Molecules Spc42p_CC=
-    create_coiled_coil(m,"Spc42_CC","2Q6Q_A.pdb", "2Q6Q_B.pdb",
+    create_coiled_coil(m,"Spc42_CC","CC_78_A.pdb", "CC_78_B.pdb",
                        mydata.resolution,
                        display::Color(175./255.,208./255.,238./255.),
-                       i, CC_x0);
+                       i, CC_x0, 59);
    if(i==0){
     Particles ps_Spc42p;
     for(unsigned int k=0;k<2;++k){
