@@ -11,6 +11,7 @@
 
 #include "rmf_config.h"
 #include "links.h"
+#include "associations.h"
 #include <IMP/base/Object.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/object_macros.h>
