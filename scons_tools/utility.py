@@ -138,6 +138,10 @@ def configure(env, name, type, version, required_modules=[],
     print msg%(env['IMP_COLORS']['green'], env['IMP_COLORS']['end'])
     #if len(required_modules+required_dependencies)>0:
     #    print "  (requires " +", ".join(required_modules+required_dependencies) +")"
+    found_optional_modules.sort()
+    found_optional_dependencies.sort()
+    required_modules.sort()
+    required_dependencies.sort()
     return (environment.get_named_environment(env, name,
                                   required_modules+found_optional_modules,
                                   required_dependencies+found_optional_dependencies),
