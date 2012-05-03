@@ -64,18 +64,18 @@ for(int i=0;i<mydata.num_cells;++i){
                        i,mydata.kappa,tmp_x0,
                        mydata.use_connectivity,1,59));
     if(i==0){
-     Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
-     CP_ps->add_particles(ps_Spc42p_n);
-     add_BallMover(ps_Spc42p_n,mydata.MC.dx,mvs);
+     Particles ps=atom::get_leaves(Spc42p_n[k]);
+     CP_ps->add_particles(ps);
+     add_BallMover(ps,mydata.MC.dx,mvs);
     }
   //Spc42p_c, 2 copies, 2 beads
     Spc42p_c.push_back(create_protein(m,"Spc42p_c",13,2,
                        display::Color(175./255.,218./255.,238./255.),
                        i,mydata.kappa,IL2_x0,mydata.use_connectivity,138));
     if(i==0){
-     Particles ps_Spc42p_c=atom::get_leaves(Spc42p_c[k]);
-     IL2_ps->add_particles(ps_Spc42p_c);
-     add_BallMover(ps_Spc42p_c,mydata.MC.dx,mvs);
+     Particles ps=atom::get_leaves(Spc42p_c[k]);
+     IL2_ps->add_particles(ps);
+     add_BallMover(ps,mydata.MC.dx,mvs);
     }
    }
    // Coiled-Coil
@@ -137,9 +137,9 @@ for(int i=0;i<mydata.num_cells;++i){
     create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
    if(i==0){
-    Particles ps_Spc29p=atom::get_leaves(Spc29p);
-    CP_ps->add_particles(ps_Spc29p);
-    add_PbcBoxedMover(ps_Spc29p,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs);
+    Particles ps=atom::get_leaves(Spc29p);
+    CP_ps->add_particles(ps);
+    add_PbcBoxedMover(ps,mydata.MC.dx,mydata.CP_centers,mydata.trs,mvs);
    }
    if(mydata.add_GFP){
     atom::Molecule gfp_n=
@@ -150,28 +150,58 @@ for(int i=0;i<mydata.num_cells;++i){
     all_mol.add_child(gfp_c);
    }
   }
+ } // cycle on copies
 //
 // CNM67p-C
 //
-  if(mydata.protein_list["Cnm67p"]){
-   atom::Molecule Cnm67p=
-     create_protein(m,"Cnm67p","3OA7.pdb",mydata.resolution,
-                    display::Color(50./255.,205./255.,50./255.),
-                    i,IL2_x0);
-   all_mol.add_child(Cnm67p);
-   if(i==0){
-    Particles ps_Cnm67p=atom::get_leaves(Cnm67p);
-    IL2_ps->add_particles(ps_Cnm67p);
-    add_PbcBoxedRigidBodyMover(ps_Cnm67p,mydata.MC.dx,
-    mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
+ if(mydata.protein_list["Cnm67p"]){
+  for(int j=0;j<mydata.num_copies/2;++j){
+   atom::Molecules Cnm67p;
+   Cnm67p.push_back(create_protein(m,"Cnm67p","3OA7_A.pdb",
+                     mydata.resolution,
+                     display::Color(50./255.,205./255.,50./255.),
+                     i,IL2_x0,0,false));
+   Cnm67p.push_back(create_protein(m,"Cnm67p","3OA7_B.pdb",
+                     mydata.resolution,
+                     display::Color(50./255.,205./255.,50./255.),
+                     i,IL2_x0,0,false));
+
+   for(unsigned kk=0;kk<2;++kk){
+    all_mol.add_child(Cnm67p[kk]);
+    if(i==0){
+     atom::Selection sel=atom::Selection(Cnm67p[kk]);
+     Ints indexes;
+     for(int i=429;i<=573;++i) {indexes.push_back(i)};
+     sel.set_residue_indexes(indexes);
+     Particles ps=sel.get_selected_particles();
+     IL2_ps->add_particles(ps);
+    }
    }
+ //GFPs?
    if(mydata.add_GFP){
-    atom::Molecule gfp_c=
-     create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
-    all_mol.add_child(gfp_c);
+    for(unsigned kk=0;kk<2;++kk){
+     atom::Molecule gfp_c=
+      create_GFP(m,"Cnm67p-C-GFP",i,IL2_ps,IL2_x0,mvs,mydata);
+     all_mol.add_child(gfp_c);
+    }
+   }
+// Create the rigid body
+   core::XYZRs rbps;
+   for(unsigned kk=0;kk<2;++kk){
+    Particles ps=atom::get_leaves(Cnm67p[kk]);
+    for(unsigned jj=0;jj<ps.size();++jj){rbps.push_back(core::XYZR(ps[jj]));}
+   }
+   IMP_NEW(Particle,prb,(m));
+   core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+   recenter_rb(rb,rbps,IL2_x0);
+// Mover
+   if(i==0){
+    Particles ps=atom::get_leaves(Cnm67p[0]);
+    add_PbcBoxedRigidBodyMover(ps,mydata.MC.dx,
+     mydata.MC.dang,mydata.IL2_centers,mydata.trs,mvs);
    }
   }
- } // cycle on copies
+ }
 //
 // SPC110p
 //
