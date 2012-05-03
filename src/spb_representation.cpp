@@ -171,7 +171,7 @@ for(int i=0;i<mydata.num_cells;++i){
     if(i==0){
      atom::Selection sel=atom::Selection(Cnm67p[kk]);
      Ints indexes;
-     for(int i=429;i<=573;++i) {indexes.push_back(i)};
+     for(int i=429;i<=573;++i){indexes.push_back(i);}
      sel.set_residue_indexes(indexes);
      Particles ps=sel.get_selected_particles();
      IL2_ps->add_particles(ps);
