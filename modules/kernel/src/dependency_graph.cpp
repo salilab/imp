@@ -148,12 +148,13 @@ ScoreStatesTemp get_required_score_states(ModelObject *p,
 namespace {
 
 
-  template <class C>
-  C filter(C c) {
+  template <class C, class O>
+  C filter(C c, O*o) {
     std::sort(c.begin(), c.end());
     c.erase(std::unique(c.begin(), c.end()), c.end());
     IMP_INTERNAL_CHECK(c.empty() || c[0],
-                       "nullptr returned for dependencies.");
+                       "nullptr returned for dependencies of "
+                       << o->get_name() << " of type " << o->get_type_name());
     return c;
   }
 
@@ -211,7 +212,7 @@ void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
     for (unsigned int i=0; i< mos.size(); ++i) {
       DependencyGraphTraits::vertex_descriptor rv= dgi.find(mos[i])->second;
       ModelObject *o= mos[i];
-      ModelObjectsTemp ct= filter(o->get_inputs());
+      ModelObjectsTemp ct= filter(o->get_inputs(), o);
       add_out_edges(rv, ct.begin(), ct.end(), dg, dgi);
     }
   }
@@ -222,7 +223,8 @@ void add_out_edges(DependencyGraphTraits::vertex_descriptor rv,
     for (unsigned int i=0; i< mos.size(); ++i) {
       DependencyGraphTraits::vertex_descriptor rv= dgi.find(mos[i])->second;
       {
-        ModelObjectsTemp ct= filter(mos[i]->get_outputs());
+        ModelObjectsTemp ct= filter(mos[i]->get_outputs(),
+                                    static_cast<Object*>(mos[i]));
         for (unsigned int j=0; j < ct.size(); ++j) {
           DependencyGraphTraits::vertex_descriptor cv
             = get_vertex(dg, dgi, ct[j]);
