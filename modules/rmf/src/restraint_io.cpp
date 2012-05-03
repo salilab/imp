@@ -164,7 +164,7 @@ namespace {
         RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
         for (unsigned int i=0; i< rs.size(); ++i) {
           Subset s(rs[i]->get_input_particles());
-          double score= rs[i]->unprotected_evaluate(false);
+          double score= rs[i]->unprotected_evaluate(nullptr);
           rs[i]->set_was_used(true);
           if (score != 0) {
             RMF::NodeHandle nnh= get_node(s, d, nh);
