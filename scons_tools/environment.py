@@ -318,7 +318,7 @@ def get_base_environment(variables=None, *args, **kw):
     if env.get('pythonpath', None):
         env['PYTHONPATH'] = os.path.pathsep.join([env['builddir']+'/lib']+[env['PYTHONPATH']])
     env['all_modules']=[]
-    env.Decider('MD5-timestamp')
+    #env.Decider('MD5-timestamp')
 
     dependency.boost.configure_env_for_auto_link(env)
 
