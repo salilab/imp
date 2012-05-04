@@ -119,7 +119,14 @@ BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
               /opt/local/lib/libfftw3.3.dylib \
               /opt/local/lib/libgsl.0.dylib \
               /opt/local/lib/libgslcblas.0.dylib \
-              /opt/local/lib/libhdf5.7.dylib"
+              /opt/local/lib/libhdf5.7.dylib \
+              /opt/local/lib/libopencv_highgui.2.3.dylib \
+              /opt/local/lib/libopencv_core.2.3.dylib \
+              /opt/local/lib/libopencv_imgproc.2.3.dylib \
+              /opt/local/lib/libz.1.dylib \
+              /opt/local/lib/libjpeg.8.dylib \
+              /opt/local/lib/libtiff.3.dylib \
+              /opt/local/lib/libbz2.1.0.dylib"
 BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
 mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
 
