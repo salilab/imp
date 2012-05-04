@@ -139,7 +139,7 @@ int main(int, char *[]) {
       for (unsigned int j=0; j < i; ++j) {
         ParticlePair pp(ps[i], ps[j]);
         if (!interactions[0]->get_value(pp)) {
-          double cur= ssps->evaluate(pp, NULL);
+          double cur= ssps->evaluate(pp, nullptr);
           IMP_USAGE_CHECK(cur < .01, "Hug? " << cur);
           tot+=cur;
         }
@@ -173,7 +173,7 @@ int main(int, char *[]) {
     for (unsigned int j=0; j < i; ++j) {
       ParticlePair pp(ps[i], ps[j]);
       if (!interactions[0]->get_value(pp)) {
-        double cur= ssps->evaluate(pp, NULL);
+        double cur= ssps->evaluate(pp, nullptr);
         tot1+=cur;
       }
     }

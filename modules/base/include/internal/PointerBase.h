@@ -26,7 +26,7 @@ template <class TT>
 struct RefCountedPointerTraits {
   typedef TT Type;
   static void handle_set(TT* t) {
-    IMP_CHECK_OBJECT_IF_NOT_NULL(t);
+    IMP_CHECK_OBJECT_IF_NOT_nullptr(t);
     internal::ref(t);
   }
   static void handle_unset(TT* t) {
@@ -61,7 +61,7 @@ template <class TT>
 struct CheckedWeakPointerTraits {
   typedef TT Type;
   static void handle_set(TT*o) {
-    IMP_CHECK_OBJECT_IF_NOT_NULL(o);
+    IMP_CHECK_OBJECT_IF_NOT_nullptr(o);
   }
   static void handle_unset(TT* ) {
   }
@@ -105,20 +105,20 @@ struct GetPointer<O, OO,
                                               >::type> {
     static O* get_pointer(const OO& o) {
     IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
-      return static_cast<O*>(NULL);
+      return static_cast<O*>(nullptr);
     }
     static const O* get_const_pointer(const OO& o) {
   IMP_INTERNAL_CHECK(o==0, "Non-zero pointer constant found.");
-      return static_cast<O*>(NULL);
+      return static_cast<O*>(nullptr);
     }
   };
   template <class O>
   struct GetPointer<O, nullptr_t> {
     static O* get_pointer(const nullptr_t& ) {
-      return static_cast<O*>(NULL);
+      return static_cast<O*>(nullptr);
     }
     static const O* get_const_pointer(const nullptr_t& ) {
-      return static_cast<O*>(NULL);
+      return static_cast<O*>(nullptr);
     }
   };
 
@@ -155,7 +155,7 @@ struct GetPointer<O, OO,
     else return 0;                                                      \
   }                                                                     \
   templ                                                                 \
-  explicit PointerBase(arg o): o_(NULL) {                               \
+  explicit PointerBase(arg o): o_(nullptr) {                               \
     if (get_const_pointer(o)) {                                         \
       set_pointer(get_pointer(o));                                      \
     }                                                                   \
@@ -175,13 +175,13 @@ private:
     }
   }
   static void check_non_null(const O*  t) {
-    IMP_INTERNAL_CHECK(t, "Pointer is NULL");
+    IMP_INTERNAL_CHECK(t, "Pointer is nullptr");
     check(t);
   }
   //static O* get_pointer(O*o) {return o;}
   /*static O* get_pointer(size_t t) {
-    IMP_INTERNAL_CHECK(t==0, "Only can compare with NULL ints");
-    return NULL;
+    IMP_INTERNAL_CHECK(t==0, "Only can compare with nullptr ints");
+    return nullptr;
     }*/
 
 
@@ -202,13 +202,13 @@ private:
 
   struct UnusedClass{};
 public:
-  //! initialize to NULL
-  PointerBase(): o_(NULL) {}
+  //! initialize to nullptr
+  PointerBase(): o_(nullptr) {}
   /** drop control of the object */
   ~PointerBase(){
     if (o_) Traits::handle_unset(o_);
   }
-  //! Return true if the pointer is not NULL
+  //! Return true if the pointer is not nullptr
   bool operator!() const {
     return !o_;
   }
@@ -246,7 +246,7 @@ public:
     if (get_const_pointer(o)) {
       set_pointer(get_pointer(o));
     } else {
-      set_pointer(NULL);
+      set_pointer(nullptr);
     }
     return *this;
   }
@@ -255,12 +255,12 @@ public:
     if (get_const_pointer(o)) {
       set_pointer(get_pointer(o));
     } else {
-      set_pointer(NULL);
+      set_pointer(nullptr);
     }
     return *this;
   }
   PointerBase<Traits>& operator=(nullptr_t) {
-    set_pointer(NULL);
+    set_pointer(nullptr);
     return *this;
   }
   PointerBase<Traits>& operator=(const PointerBase<Traits> &o) {
@@ -269,7 +269,7 @@ public:
   }
   /*IMP_POINTER_MEMBERS(template <class OO>,
     OO*);*/
-  PointerBase(const PointerBase &o): o_(NULL) {
+  PointerBase(const PointerBase &o): o_(nullptr) {
     set_pointer(o.o_);
   }
 
@@ -282,7 +282,7 @@ public:
   O* release() {
     internal::release(o_);
     O* ret=o_;
-    o_= NULL;
+    o_= nullptr;
     return ret;
   }
   void swap_with(PointerBase<Traits> &o) {

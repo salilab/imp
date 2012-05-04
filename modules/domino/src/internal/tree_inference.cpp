@@ -102,7 +102,7 @@ namespace {
                               cpd0,
                               boost::get(subset_map, secondi),
                               cpd1,
-                              filters, lsft, stats,0.0, NULL,
+                              filters, lsft, stats,0.0, nullptr,
                               statistics::Metrics(), max,
                               out);
       if (progress) {

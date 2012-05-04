@@ -26,14 +26,14 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
 
 /** Up (or down) cast an \imp Object-derived class. If the cast
     does not succeed a ValueException will be thrown. Use a
-    \c dynamic_cast if you prefer to have a NULL returned.
+    \c dynamic_cast if you prefer to have a nullptr returned.
  */
 template <class O, class I>
 inline O* object_cast(I *o) {
   O *ret= dynamic_cast<O*>(o);
   if (!ret) {
     if (!o) {
-      IMP_THROW("Cannot cast NULL pointer to desired type.", ValueException);
+      IMP_THROW("Cannot cast nullptr pointer to desired type.", ValueException);
     } else {
       IMP_THROW("Object " << o->get_name() << " cannot be cast to "
                 << "desired type.", ValueException);

@@ -202,7 +202,7 @@ public:
   /** Returns the particle decorated by this decorator.*/
  /** Returns the particle decorated by this decorator.*/
   Particle *get_particle() const {
-    if (!model_) return NULL;
+    if (!model_) return nullptr;
     else {
       IMP_USAGE_CHECK(model_->get_particle(pi_),
                       "Particle " << pi_ << " is no longer part of the model.");
@@ -275,8 +275,8 @@ public:
       necessarily checked.
   */
   Decorator(Particle *p);
-  /** The default constructor must be defined and create a NULL decorator,
-      analogous to a \c NULL pointer in C++ or a \c None object in Python.
+  /** The default constructor must be defined and create a nullptr decorator,
+      analogous to a \c nullptr pointer in C++ or a \c None object in Python.
   */
   Decorator();
   //! @}

@@ -22,12 +22,12 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
     Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
-        W_=NULL;
-        Sigma_=NULL;
-        P_=NULL;
-        PW_=NULL;
-        epsilon_=NULL;
-        L_=NULL;
+        W_=nullptr;
+        Sigma_=nullptr;
+        P_=nullptr;
+        PW_=nullptr;
+        epsilon_=nullptr;
+        L_=nullptr;
         N_=FX.rows();
         M_=FX.cols();
         IMP_LOG(TERSE, "MVNsparse: direct init with N=" << N_
@@ -49,12 +49,12 @@ MultivariateFNormalSufficientSparse::MultivariateFNormalSufficientSparse(
         : Object("Multivariate Normal distribution %1%")
 {
         c_ = c;
-        W_=NULL;
-        Sigma_=NULL;
-        P_=NULL;
-        PW_=NULL;
-        epsilon_=NULL;
-        L_=NULL;
+        W_=nullptr;
+        Sigma_=nullptr;
+        P_=nullptr;
+        PW_=nullptr;
+        epsilon_=nullptr;
+        L_=nullptr;
         N_=Nobs;
         M_=Fbar.rows();
         IMP_LOG(TERSE, "MVNsparse: sufficient statistics init with N=" << N_
@@ -294,7 +294,7 @@ MultivariateFNormalSufficientSparse::evaluate_derivative_FM() const
   IMP_LOG(TERSE, "MVNsparse:   computing PTP" << std::endl);
   cholmod_sparse *eps = cholmod_dense_to_sparse(epsilon_, true, c_);
   cholmod_sparse *tmp = cholmod_spsolve(CHOLMOD_A, L_, eps, c_);
-  cholmod_sparse *ptp = cholmod_aat(tmp, NULL, 0, 1, c_);
+  cholmod_sparse *ptp = cholmod_aat(tmp, nullptr, 0, 1, c_);
   cholmod_free_sparse(&eps, c_);
   cholmod_free_sparse(&tmp, c_);
   return ptp;
@@ -341,7 +341,7 @@ MultivariateFNormalSufficientSparse::evaluate_derivative_FM() const
     Wsp.finalize();
     cholmod_sparse Wtmp = Eigen::viewAsCholmod(
             Wsp.selfadjointView<Eigen::Upper>());
-    if (Wtmp.x == NULL)
+    if (Wtmp.x == nullptr)
     {
         W_ = cholmod_spzeros(M_,M_,0,CHOLMOD_REAL, c_);
     } else {

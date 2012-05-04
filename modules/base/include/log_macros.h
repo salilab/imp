@@ -182,7 +182,7 @@
   IMP::base::CreateLogContext log_context__(__func__)
 
 #define IMP_LOG_CONTEXT(name)                                           \
-  CreateLogContext imp_log_context(name, NULL)
+  CreateLogContext imp_log_context(name, nullptr)
 
 #endif // fast
 

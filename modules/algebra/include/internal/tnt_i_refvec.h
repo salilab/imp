@@ -44,7 +44,7 @@ using namespace std;
   an assignment is made, the left-hand-side reference
   is decreased by one, and the right-hand-side refernce
   count is increased by one.  If the array block was
-  external to TNT, the refernce count is a NULL pointer
+  external to TNT, the refernce count is a nullptr pointer
   regardless of how many references are made, since the
   memory is not freed by TNT.
 
@@ -89,13 +89,13 @@ void i_refvec<T>::copy_(T* p, const T* q, const T* e)
 }
 
 template <class T>
-i_refvec<T>::i_refvec() : data_(NULL), ref_count_(NULL) {}
+i_refvec<T>::i_refvec() : data_(nullptr), ref_count_(nullptr) {}
 
 /**
   In case n is 0 or negative, it does NOT call new.
 */
 template <class T>
-i_refvec<T>::i_refvec(int n) : data_(NULL), ref_count_(NULL)
+i_refvec<T>::i_refvec(int n) : data_(nullptr), ref_count_(nullptr)
 {
   if (n >= 1)
   {
@@ -112,13 +112,13 @@ template <class T>
 inline   i_refvec<T>::i_refvec(const i_refvec<T> &V): data_(V.data_),
   ref_count_(V.ref_count_)
 {
-  if (V.ref_count_ != NULL)
+  if (V.ref_count_ != nullptr)
       (*(V.ref_count_))++;
 }
 
 
 template <class T>
-i_refvec<T>::i_refvec(T* data) : data_(data), ref_count_(NULL) {}
+i_refvec<T>::i_refvec(T* data) : data_(data), ref_count_(nullptr) {}
 
 template <class T>
 inline T* i_refvec<T>::begin()
@@ -154,7 +154,7 @@ i_refvec<T> & i_refvec<T>::operator=(const i_refvec<T> &V)
     return *this;
 
 
-  if (ref_count_ != NULL)
+  if (ref_count_ != nullptr)
   {
     (*ref_count_) --;
     if ((*ref_count_) == 0)
@@ -164,7 +164,7 @@ i_refvec<T> & i_refvec<T>::operator=(const i_refvec<T> &V)
   data_ = V.data_;
   ref_count_ = V.ref_count_;
 
-  if (V.ref_count_ != NULL)
+  if (V.ref_count_ != nullptr)
       (*(V.ref_count_))++;
 
   return *this;
@@ -173,7 +173,7 @@ i_refvec<T> & i_refvec<T>::operator=(const i_refvec<T> &V)
 template <class T>
 void i_refvec<T>::destroy()
 {
-  if (ref_count_ != NULL)
+  if (ref_count_ != nullptr)
   {
 #ifdef TNT_DEBUG
     std::cout << "destorying data... \n";
@@ -183,12 +183,12 @@ void i_refvec<T>::destroy()
 #ifdef TNT_DEBUG
     std::cout << "deleted ref_count_ ...\n";
 #endif
-    if (data_ != NULL)
+    if (data_ != nullptr)
       delete []data_;
 #ifdef TNT_DEBUG
     std::cout << "deleted data_[] ...\n";
 #endif
-    data_ = NULL;
+    data_ = nullptr;
   }
 }
 
@@ -201,28 +201,28 @@ void i_refvec<T>::destroy()
 template<class T>
 int i_refvec<T>::is_null() const
 {
-  return (data_ == NULL ? 1 : 0);
+  return (data_ == nullptr ? 1 : 0);
 }
 
 /*
 *  returns -1 if data is external,
-*  returns 0 if a is NULL array,
+*  returns 0 if a is nullptr array,
 *  otherwise returns the positive number of vectors sharing
 *      this data space.
 */
 template <class T>
 int i_refvec<T>::ref_count() const
 {
-  if (data_ == NULL)
+  if (data_ == nullptr)
     return 0;
   else
-    return (ref_count_ != NULL ? *ref_count_ : -1) ;
+    return (ref_count_ != nullptr ? *ref_count_ : -1) ;
 }
 
 template <class T>
 i_refvec<T>::~i_refvec()
 {
-  if (ref_count_ != NULL)
+  if (ref_count_ != nullptr)
   {
     (*ref_count_)--;
 

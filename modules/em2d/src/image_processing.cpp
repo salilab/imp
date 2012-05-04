@@ -445,7 +445,7 @@ void apply_circular_mask(const cv::Mat &mat,
 Floats get_histogram(const cv::Mat &m, int bins) {
   Floats histogram(bins);
   double min,max;
-  cv::minMaxLoc(m, &min,&max,NULL,NULL);
+  cv::minMaxLoc(m, &min,&max,nullptr,nullptr);
   // Step
   double step = (max - min) / static_cast<double>(bins);
   long n_points= m.rows * m.cols;
@@ -499,7 +499,7 @@ void add_noise(cv::Mat &v,
   // Generator
   typedef boost::mt19937 base_generator_type;
   base_generator_type generator;
-  generator.seed(static_cast<unsigned long>(time(NULL)));
+  generator.seed(static_cast<unsigned long>(time(nullptr)));
   // Distribution types
   typedef boost::uniform_real<> unif_distribution;
   typedef boost::normal_distribution<> norm_distribution;

@@ -96,7 +96,8 @@ protected:
 
   // Do any necessary updates after the model score is calculated.
   /* \param[in] accpt The object used to scale derivatives in the score
-                       calculation, or NULL if derivatives were not requested.
+                       calculation, or nullptr if derivatives were not
+                       requested.
    */
   virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
 

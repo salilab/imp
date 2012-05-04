@@ -59,7 +59,7 @@ void CnSymmAxisDetector::init_from_protein(const atom::Hierarchies &mhs) {
                        pca_.get_principal_component(0),
                        pca_.get_principal_component(1));
   to_native_ = from_native_.get_inverse();
-  sampled_dmap=NULL;
+  sampled_dmap=nullptr;
 }
 CnSymmAxisDetector::CnSymmAxisDetector(int symm_deg) {
   initialized_=false;
@@ -67,7 +67,7 @@ CnSymmAxisDetector::CnSymmAxisDetector(int symm_deg) {
 }
 
 CnSymmAxisDetector::~CnSymmAxisDetector(){
-  dmap_=NULL;
+  dmap_=nullptr;
 }
 
 int CnSymmAxisDetector::get_symmetry_axis_index() const {

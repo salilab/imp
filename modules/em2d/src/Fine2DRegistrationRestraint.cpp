@@ -93,7 +93,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
 double Fine2DRegistrationRestraint::unprotected_evaluate(
                                        DerivativeAccumulator *accum) const {
   calls_++;
-  IMP_USAGE_CHECK(accum==NULL,
+  IMP_USAGE_CHECK(accum==nullptr,
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");
 
@@ -143,7 +143,7 @@ RegistrationResult
   algebra::Vector3D translation= PP_.get_translation();
   double s = params_.pixel_size;
   algebra::Vector2D shift(translation[0]/s, translation[1]/s);
-  double score = unprotected_evaluate(NULL);
+  double score = unprotected_evaluate(nullptr);
   RegistrationResult rr(PP_.get_rotation(),shift);
   rr.set_score(score);
   return rr;

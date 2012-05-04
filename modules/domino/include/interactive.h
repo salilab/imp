@@ -48,7 +48,7 @@ IMPDOMINOEXPORT void load_merged_assignments(const Subset &first_subset,
                                              &filters,
                                              AssignmentContainer* ret,
                                              double max_error=0,
-                                             ParticleStatesTable *pst=NULL,
+                                             ParticleStatesTable *pst=nullptr,
                                              const statistics::Metrics &metrics
                                              = statistics::Metrics(),
                                              unsigned int max_states

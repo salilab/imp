@@ -56,7 +56,7 @@ public:
   /* call for probability */
   double get_probability() const
   {
-    return exp(-unprotected_evaluate(NULL));
+    return exp(-unprotected_evaluate(nullptr));
   }
 
   double get_chi() const

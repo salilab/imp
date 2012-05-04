@@ -121,7 +121,7 @@ namespace {
 
   Restraint* create_decomp_helper(const Restraint* me,
                                   const Restraints &created) {
-    if (created.empty()) return NULL;
+    if (created.empty()) return nullptr;
     if (created.size()== 1) {
       if (created[0]!= me) {
         /** We need to special case this here, otherwise repeatedly calling
@@ -140,7 +140,7 @@ namespace {
       IMP_IF_CHECK(base::USAGE_AND_INTERNAL) {
         for (unsigned int i=0; i< created.size(); ++i) {
           IMP_INTERNAL_CHECK(created[i],
-                             "NULL restraint returned in decomposition");
+                             "nullptr restraint returned in decomposition");
         }
       }
       rs->add_restraints(created);

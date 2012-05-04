@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "random.h"
 #include "enums.h"
+#include <IMP/compatibility/nullptr.h>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/random/uniform_real.hpp>
@@ -59,7 +60,7 @@ class IMPBASEEXPORT ExceptionBase
   refstring *str_;
  public:
   const char *what() const throw() {
-    return str_? str_->message_: NULL;
+    return str_? str_->message_: nullptr;
   }
   ExceptionBase(const char *message);
   /* \note By making the destructor virtual and providing an implementation in
@@ -76,14 +77,14 @@ class IMPBASEEXPORT ExceptionBase
   }
  private:
   void destroy() {
-    if (str_ != NULL) {
+    if (str_ != nullptr) {
       --str_->ct_;
       if (str_->ct_==0) delete str_;
     }
   }
   void copy(const ExceptionBase &o) {
     str_=o.str_;
-    if (str_!= NULL) ++str_->ct_;
+    if (str_!= nullptr) ++str_->ct_;
   }
 };
 #endif

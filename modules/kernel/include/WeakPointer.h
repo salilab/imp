@@ -1,6 +1,6 @@
 /**
  *  \file IMP/WeakPointer.h
- *  \brief A NULL-initialized pointer to an Object.
+ *  \brief A nullptr-initialized pointer to an Object.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

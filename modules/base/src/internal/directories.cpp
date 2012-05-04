@@ -68,11 +68,11 @@ bool get_install_location(std::string &dir) {
   if (RegOpenKeyEx(HKEY_CURRENT_USER, regkey.c_str(), 0, KEY_READ,
                    &key) == ERROR_SUCCESS) {
     DWORD keylen, keytype;
-    if (RegQueryValueEx(key, "", NULL,
-        &keytype, NULL, &keylen) == ERROR_SUCCESS && keytype == REG_SZ) {
+    if (RegQueryValueEx(key, "", nullptr,
+        &keytype, nullptr, &keylen) == ERROR_SUCCESS && keytype == REG_SZ) {
       char *keyval = new char[keylen];
 
-      if (RegQueryValueEx(key, "", NULL,
+      if (RegQueryValueEx(key, "", nullptr,
           &keytype, (LPBYTE)keyval, &keylen) == ERROR_SUCCESS) {
         dir.assign(keyval);
         cached_dir.assign(keyval);

@@ -104,7 +104,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
   \param[in] reg Registration value with the parameters of the projection
   \param[in] masks Precomputed masks for projecting the particles. Very useful
              for speeding the projection procedure if they are given.
-             If NULL, they are computed
+             If nullptr, they are computed
   \param[out] img the projection will be stored here
   \note See the function get_projections() for the rest of the parameters
 */

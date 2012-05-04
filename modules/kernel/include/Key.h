@@ -112,7 +112,7 @@ public:
 
   //! Turn a key into a pretty string
   const std::string get_string() const {
-    if (is_default()) return std::string("NULL");
+    if (is_default()) return std::string("nullptr");
     return get_string(str_);
     //return str_;
   }

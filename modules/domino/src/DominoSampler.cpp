@@ -250,7 +250,7 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
                   "Not a binary tree leaf");
   Subset curs=boost::get(subset_map, node_index);
   internal::load_leaf_assignments(curs,
-                                  sst, lsft, NULL,
+                                  sst, lsft, nullptr,
                                   ac);
 }
 
@@ -305,8 +305,8 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
   }
   internal::load_merged_assignments(firsts, first,
                                     seconds, second,
-                                    sfts, lsft, NULL,
-                                    0.0, NULL,
+                                    sfts, lsft, nullptr,
+                                    0.0, nullptr,
                                     statistics::Metrics(),
                                     max_states, ret);
 }

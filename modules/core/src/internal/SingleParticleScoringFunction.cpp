@@ -104,7 +104,7 @@ SingleParticleScoringFunction
 void
 SingleParticleScoringFunction
 ::add_dummy_restraint(Restraint *r) {
-  IMP_USAGE_CHECK(r, "NULL dummy restraint.");
+  IMP_USAGE_CHECK(r, "nullptr dummy restraint.");
   get_model()->reset_dependencies();
   dummy_restraints_.push_back(r);
 }
