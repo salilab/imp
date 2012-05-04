@@ -404,7 +404,7 @@ em::FittingSolutions fast_cc(em::DensityMap *dmap1,
     score= em::CoarseCC::cross_correlation_coefficient(
                    dmap1,dmap2,threshold);
     fits.add_solution(*it,score);
-    trans_map=NULL;
+    trans_map=nullptr;
   }
   fits.sort();
   return fits;
@@ -488,7 +488,7 @@ em::FittingSolutions fit_cn_assembly(
           rot_fit_sols.get_score(0));
     asmb_map_pca_aligned->set_origin(orig);
   }
-  asmb_map_pca_aligned=NULL;
+  asmb_map_pca_aligned=nullptr;
   return return_fit_sols;
 }
 
@@ -548,7 +548,7 @@ multifit::FittingSolutionRecords prune_by_pca(
     //   std::cout<<"For solution: "<<i<<" count is:"<<count<<std::endl;
     transform_cn_assembly(mhs,sols[i].get_fit_transformation().get_inverse());
   }
-  mdl=NULL;
+  mdl=nullptr;
   return pruned_sols;
 }
 
