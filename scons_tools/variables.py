@@ -303,12 +303,16 @@ def add_common_variables(vars, package):
                       'This requires a recent version of the Python coverage '
                       'module installed on your system.',
                       'no', ['no', 'lines', 'annotate']))
-    vars.Add(BoolVariable('html_coverage',
-                          'Whether to output a consolidated coverage report '
-                          'in HTML format requires cppcoverage set and the '
+    vars.Add(EnumVariable('html_coverage',
+                          'Whether to output a coverage report '
+                          'in HTML format. Requires cppcoverage set and the '
                           'lcov package for C output, and pycoverage set '
-                          'for Python output).',
-                          False))
+                          'for Python output). "single" will output '
+                          'a single report that covers all modules or '
+                          'applications that were tested with this scons '
+                          'invocation; "separate" will generate a separate '
+                          'report for each module or application.',
+                          'no', ['no', 'single', 'separate']))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 
 

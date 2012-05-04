@@ -56,7 +56,7 @@ def _action_unit_test(target, source, env):
                 cmd += ' --pyexe=%s' % pyexe
             if env['pycoverage'] == 'lines':
                 cmd += ' --output=%s.pycoverage' % tf
-        if env.get('html_coverage', False):
+        if env.get('html_coverage', 'no') != 'no':
             cmd += ' --html_coverage=%s' \
                    % Dir(env["builddir"]+"/coverage").abspath
 

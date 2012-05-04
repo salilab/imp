@@ -75,7 +75,7 @@ class _CoverageTester(object):
         self._header_callcounts = {}
         self._output_file = output_file
         self._coverage = coverage
-        self._html_coverage = env.get('html_coverage', False)
+        self._html_coverage = env.get('html_coverage', 'no')
         self._coverage_dir = Dir(env["builddir"]+"/coverage").abspath
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
@@ -147,7 +147,7 @@ class _CoverageTester(object):
             self._report_lines()
         elif self._coverage == 'annotate':
             self._report_annotate()
-        if self._html_coverage:
+        if self._html_coverage != 'no':
             self._make_lcov_info_file()
 
     def _report_annotate(self):
