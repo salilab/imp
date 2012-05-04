@@ -9,6 +9,8 @@
 #include <IMP/internal/constants.h>
 #include <IMP/internal/container_helpers.h>
 #include <IMP/internal/units.h>
+#include <boost/progress.hpp>
+#include <boost/scoped_ptr.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 Simulator::Simulator(Model *m,
@@ -27,10 +29,17 @@ double Simulator::simulate(double time) {
 
   setup(ps);
   double target= current_time_+time;
+  boost::scoped_ptr<boost::progress_display> pgs;
+  if (get_log_level()== PROGRESS) {
+    pgs.reset(new boost::progress_display(time/max_time_step_));
+  }
   while (current_time_ < target) {
     last_time_step_= do_step(ps, max_time_step_);
     current_time_+= last_time_step_;
     update_states();
+    if (get_log_level()== PROGRESS) {
+      ++(*pgs);
+    }
   }
   return Optimizer::get_scoring_function()->evaluate(false);
 }
