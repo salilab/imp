@@ -60,6 +60,9 @@ if(mydata.add_tilt){
  if(mydata.protein_list["Cnm67p"]){
    add_tilt(m,all_mol[0],"Cnm67p",IntRange(1,573),mydata.tilt,kappa_tilt);
  }
+ if(mydata.protein_list["Spc42p"]){
+   add_tilt(m,all_mol[0],"Spc42p",IntRange(60,130),mydata.tilt,kappa_tilt);
+ }
 }
 //
 // FRET
