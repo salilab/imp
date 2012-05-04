@@ -85,17 +85,17 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(175./255.,208./255.,238./255.),
                        i, CC_x0, 59);
    if(i==0){
-    Particles ps_Spc42p;
+    Particles ps;
     for(unsigned int k=0;k<2;++k){
-     Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
-     Particles ps_Spc42p_c=atom::get_leaves(Spc42p_c[k]);
-     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n.begin(),ps_Spc42p_n.end());
-     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c.begin(),ps_Spc42p_c.end());
+     Particles ps_n=atom::get_leaves(Spc42p_n[k]);
+     Particles ps_c=atom::get_leaves(Spc42p_c[k]);
+     ps.insert(ps.end(),ps_n.begin(),ps_n.end());
+     ps.insert(ps.end(),ps_c.begin(),ps_c.end());
     }
     core::RigidBody rb=
      core::RigidMember(atom::get_leaves(Spc42p_CC[0])[0]).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (rb,ps_Spc42p,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
     mvs.push_back(rbmv);
    }
 // now create the merge
