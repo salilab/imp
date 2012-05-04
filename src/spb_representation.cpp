@@ -193,7 +193,7 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    IMP_NEW(Particle,prb,(m));
    core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
-   recenter_rb(rb,rbps,IL2_x0);
+   recenter_rb(rb,rbps,IL2_x0,-1.0);
 // Mover
    if(i==0){
     Particles ps=atom::get_leaves(Cnm67p[0]);
@@ -433,12 +433,13 @@ atom::Molecule create_protein(Model *m,std::string name,
  return protein;
 }
 
-void recenter_rb(core::RigidBody& rb,core::XYZRs& rbps,algebra::Vector3D x0)
+void recenter_rb(core::RigidBody& rb, core::XYZRs& rbps,
+ algebra::Vector3D x0, double flip)
 {
   int size=rbps.size();
   double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
   double ee = (core::RigidMember(rbps[size-1]).get_internal_coordinates())[0];
-  if (ee-bb<0.0){
+  if (flip*(ee-bb)<0.0){
    for(unsigned int k=0;k<size;++k){
     algebra::Vector3D coord=
     core::RigidMember(rbps[k]).get_internal_coordinates();

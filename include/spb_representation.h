@@ -36,8 +36,8 @@ IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecules proteins,
  int copy,double kappa,double dist=-1.0);
 
-IMPMEMBRANEEXPORT void recenter_rb
-(core::RigidBody& rb,core::XYZRs& rbps,algebra::Vector3D x0);
+IMPMEMBRANEEXPORT void recenter_rb(core::RigidBody& rb,core::XYZRs& rbps,
+ algebra::Vector3D x0, double flip=1.0);
 
 IMPMEMBRANEEXPORT atom::Molecules create_coiled_coil
 (Model *m,std::string name,std::string filename_A,std::string filename_B,

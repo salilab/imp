@@ -52,8 +52,14 @@ add_layer_restraint(m, IL2_ps,
 //
 // TILT restraint
 //
-if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
- add_tilt(m,all_mol[0],"Spc110p",IntRange(700,705),mydata.tilt,mydata.kappa);
+if(mydata.add_tilt){
+ double kappa_tilt=1000.0*mydata.kappa;
+ if(mydata.protein_list["Spc110p"]){
+   add_tilt(m,all_mol[0],"Spc110p",IntRange(700,705),mydata.tilt,kappa_tilt);
+ }
+ if(mydata.protein_list["Cnm67p"]){
+   add_tilt(m,all_mol[0],"Cnm67p",IntRange(1,573),mydata.tilt,kappa_tilt);
+ }
 }
 //
 // FRET
@@ -117,11 +123,6 @@ if(mydata.add_y2h){
  // add the RestraintSet Y2H to map
  rst_map["Y2H"]=y2h;
 }
-//
-// Add link between Spc110p_C and Cmd1p
-//
-//add_link(m,all_mol[0],   "Cmd1p",             "ALL",
-//             all_mol,    "Spc110p", IntRange(900,927),mydata.kappa);
 //
 // Add link with GFPs
 //
