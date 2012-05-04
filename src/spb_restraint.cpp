@@ -461,9 +461,11 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
  for(int i=range.first;i<=range.second;++i){indices.push_back(i);}
  s.set_residue_indexes(indices);
  Particles ps=s.get_selected_particles();
- core::RigidBodies rbs=get_rigid_bodies(ps);
- for(unsigned int i=0;i<rbs.size();++i){
-  add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
+ if(ps.size()>0){
+  core::RigidBodies rbs=get_rigid_bodies(ps);
+  for(unsigned int i=0;i<rbs.size();++i){
+   add_tilt_restraint(m,rbs[i],FloatRange(0.0,tilt),kappa);
+  }
  }
 }
 
