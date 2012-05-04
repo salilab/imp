@@ -1,5 +1,4 @@
 IMP_SWIG_OBJECT(IMP::rmf, SaveOptimizerState, SaveptimizerStates);
-IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
 IMP_SWIG_OBJECT(IMP::rmf, RMFRestraint, RMFRestraints);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, LoadLink, LoadLinks);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, SaveLink, SaveLinks);
@@ -14,7 +13,6 @@ IMP_SWIG_OBJECT(IMP::rmf, HierarchyLoadLink, HierarchyLoadLinks);
 %include "IMP/rmf/geometry_io.h"
 %include "IMP/rmf/associations.h"
 %include "IMP/rmf/SaveOptimizerState.h"
-%include "IMP/rmf/RMFWriter.h"
 %include "IMP/rmf/frames.h"
 %template(_ParticleSaveLink) IMP::rmf::SimpleSaveLink<IMP::Particle>;
 %template(_ParticleLoadLink) IMP::rmf::SimpleLoadLink<IMP::Particle>;
