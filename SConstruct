@@ -52,7 +52,7 @@ the passed compiler options (cxxflags, linkflags) are correct.
                                                 versioncpp=["BOOST_VERSION"])
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
-        if env.get('html_coverage', None):
+        if env.get('html_coverage', 'no') != 'no':
             scons_tools.html_coverage.register(env)
 
         if not scons_tools.data.get(env).dependencies['Boost'].ok or scons_tools.data.get(env).dependencies['Boost'].version < 103300:
