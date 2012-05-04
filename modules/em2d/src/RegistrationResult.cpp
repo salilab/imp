@@ -17,7 +17,7 @@ RegistrationResult::~RegistrationResult() {};
 
 RegistrationResults get_random_registration_results(unsigned int n,
                                 double maximum_shift) {
-  srand (time(NULL));
+  srand (time(nullptr));
   RegistrationResults results;
   for (unsigned int i=0;i<n;++i) {
     RegistrationResult rr;

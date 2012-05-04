@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "raii_macros.h"
 #include "log.h"
+#include <IMP/compatibility/nullptr.h>
 
 IMPBASE_BEGIN_NAMESPACE
 
@@ -41,7 +42,7 @@ IMPBASE_BEGIN_NAMESPACE
 */
 struct CreateLogContext {
 public:
-  IMP_RAII(CreateLogContext, (const char *fname, const void* object=NULL),,
+  IMP_RAII(CreateLogContext, (const char *fname, const void* object=nullptr),,
            push_log_context(fname, object),
            pop_log_context(),);
 };

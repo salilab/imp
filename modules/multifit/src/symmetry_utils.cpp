@@ -329,7 +329,7 @@ em::DensityMap* build_cn_dens_assembly(
            subunit_dens,curr_t);
     ret->add(subunit_dens);
     curr_t=curr_t*monomer_t;
-    trans_subunit=NULL;
+    trans_subunit=nullptr;
   }
   return ret.release();
 }

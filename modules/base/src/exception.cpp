@@ -65,7 +65,7 @@ ExceptionBase::~ExceptionBase() throw()
 
 ExceptionBase::ExceptionBase(const char *message) {
   str_= new (std::nothrow) refstring();
-  if (str_ != NULL) {
+  if (str_ != nullptr) {
     str_->ct_=1;
     std::strncpy(str_->message_, message, 4095);
     str_->message_[4095]='\0';

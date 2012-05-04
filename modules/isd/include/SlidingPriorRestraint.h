@@ -36,7 +36,7 @@ public:
   //! Call for probability
   virtual double get_probability() const
   {
-    return exp(-unprotected_evaluate(NULL));
+    return exp(-unprotected_evaluate(nullptr));
   }
 
 };

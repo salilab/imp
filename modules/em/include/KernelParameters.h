@@ -149,7 +149,7 @@ public:
   Kernel3D(int size,int ext) {
     size_=size;dim_ext_=ext;
     data_.reset(new double[size_]);
-    IMP_INTERNAL_CHECK(data_!=NULL,"Can not allocate vector\n");
+    IMP_INTERNAL_CHECK(data_,"Can not allocate vector\n");
     for(int i=0;i<size_;i++) data_[i]=0.;
   }
   double *get_data() const {return data_.get();}

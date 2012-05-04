@@ -35,7 +35,7 @@ namespace {
     ParticlePair lowest;
     for (unsigned int i=0; i< ps[0].size(); ++i) {
       for (unsigned int j=0; j< ps[1].size(); ++j) {
-        Float v= f->evaluate(ParticlePair(ps[0][i], ps[1][j]), NULL);
+        Float v= f->evaluate(ParticlePair(ps[0][i], ps[1][j]), nullptr);
         if (v < ret) {
           ret=v;
           lowest= ParticlePair(ps[0][i], ps[1][j]);

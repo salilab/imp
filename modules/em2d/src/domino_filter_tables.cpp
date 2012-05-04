@@ -29,7 +29,7 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
                                      it != my_subset_.end();
                                      ++it) {
     if (! std::binary_search(subset.begin(), subset.end(), *it)) {
-      return NULL;
+      return nullptr;
     }
   }
   // If the particles are in any of the prior subsets, a filter for them has
@@ -39,7 +39,7 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
       ++it ) {
     if( std::includes(it->begin(), it->end(),
       my_subset_.begin(), my_subset_.end()) ) {
-      return NULL;
+      return nullptr;
     }
   }
   domino::SubsetFilter *p = new DistanceFilter(subset,

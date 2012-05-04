@@ -229,7 +229,7 @@ class SparseGridStorageD: public Base {
     ReturnType get_return(const ExtendedGridIndexD<D> &ei) const {
       return stor_->get_index(ei);
     }
-    ItHelper(): stor_(NULL){}
+    ItHelper(): stor_(nullptr){}
   };
 
   Data data_;

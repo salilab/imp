@@ -16,7 +16,7 @@
 const int threshold=2;
 struct IP {
   int *p_;
-  IP(): p_(NULL){}
+  IP(): p_(nullptr){}
   IP(int*p): p_(p){}
   operator int*() const {return p_;}
   //operator int*(){return p_;}

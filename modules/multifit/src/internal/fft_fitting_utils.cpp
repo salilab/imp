@@ -129,7 +129,7 @@ void relax_laplacian (em::DensityMap *dmap,
   unsigned long nvox = extx * exty * extz;
   char *mask = (char *) malloc(nvox * sizeof(char));
   em::emreal *data=dmap->get_data();
-  IMP_INTERNAL_CHECK(mask != NULL,"bad vector allocation\n");
+  IMP_INTERNAL_CHECK(mask != nullptr,"bad vector allocation\n");
   unsigned long indv;
   for (indv=0;indv<nvox;indv++) *(mask+indv)=1;
   // assign phi mask value based on distance to thresholded map
@@ -232,7 +232,7 @@ void relax_laplacian (em::DensityMap *dmap,
 
   void create_vector(double **vec, unsigned long len) {
     *vec = (double *) malloc(len*sizeof(double));
-    IMP_INTERNAL_CHECK(vec!=NULL,"Can not allocate vector");
+    IMP_INTERNAL_CHECK(vec!=nullptr,"Can not allocate vector");
   }
 
 

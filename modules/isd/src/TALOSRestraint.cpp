@@ -82,8 +82,9 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3,
 }
 
 //! Calculate the score for this dihedral restraint.
-/** \param[in] accum If not NULL, use this object to accumulate partial first
-                     derivatives.
+/** \param[in] accum If not nullptr, use this object to accumulate
+    partial first
+    derivatives.
     \return Current score.
  */
 double
@@ -103,7 +104,8 @@ TALOSRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     angle = core::internal::dihedral(d0, d1, d2, d3, &derv0, &derv1,
                                       &derv2, &derv3);
   } else {
-    angle = core::internal::dihedral(d0, d1, d2, d3, NULL, NULL, NULL, NULL);
+    angle = core::internal::dihedral(d0, d1, d2, d3, nullptr,
+                                     nullptr, nullptr, nullptr);
   }
 
   // score current angle

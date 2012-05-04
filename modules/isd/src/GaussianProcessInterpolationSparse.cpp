@@ -34,9 +34,9 @@ IMPISD_BEGIN_NAMESPACE
         cutoff_(cutoff)
 {
     c_=&Common_;
-    WS_=NULL;
-    WSIm_=NULL;
-    L_=NULL;
+    WS_=nullptr;
+    WSIm_=nullptr;
+    L_=nullptr;
     cholmod_start(c_);
     //store dimensions
     M_ = x.size();

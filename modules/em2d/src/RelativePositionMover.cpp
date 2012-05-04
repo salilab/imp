@@ -24,7 +24,7 @@ IMPEM2D_BEGIN_NAMESPACE
   rbA_ = d;
   max_angle_ = max_rotation;
   max_translation_ = max_translation;
-  srand( time(NULL));
+  srand( time(nullptr));
   probabily_of_random_move_ = 0.0;
 }
 

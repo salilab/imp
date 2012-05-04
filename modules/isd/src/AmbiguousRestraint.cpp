@@ -29,7 +29,7 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     std::vector<double> enes;
     double ene=0;
     for (unsigned int i=0; i < rs_.size(); ++i) {
-        enes.push_back(rs_[i]->unprotected_evaluate(NULL));
+        enes.push_back(rs_[i]->unprotected_evaluate(nullptr));
         ene += pow(enes[i], d_);
     }
     ene = pow(ene, 1.0/d_);

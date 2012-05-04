@@ -1,6 +1,6 @@
 /**
  *  \file OwnerPointer.h
- *  \brief A NULL-initialized pointer to an IMP Object.
+ *  \brief A nullptr-initialized pointer to an IMP Object.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

@@ -20,7 +20,7 @@ void load_leaf_assignments(const Subset& subset,
                              AssignmentContainer *ac) {
   IMP_FUNCTION_LOG;
   internal::load_leaf_assignments(subset,
-                                  at, nullptr, NULL,
+                                  at, nullptr, nullptr,
                                   ac);
 }
 
@@ -39,7 +39,7 @@ void load_merged_assignments(const Subset &first_subset,
   SubsetFilterTables ts(filters.begin(), filters.end());
   internal::load_merged_assignments(first_subset, first,
                                     second_subset, second,
-                                    ts, nullptr, NULL,
+                                    ts, nullptr, nullptr,
                                     max_error, pst, metrics,
                                     max_states, ret);
 }

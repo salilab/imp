@@ -707,7 +707,7 @@ inline std::ostream& operator<<(std::ostream& ostrm,
   base::Vector<index> idx(D);
 
   if (v.is_void()) {
-    ostrm << "NULL Array" << std::endl;
+    ostrm << "nullptr Array" << std::endl;
     return ostrm;
   } else {
     ostrm << std::endl;

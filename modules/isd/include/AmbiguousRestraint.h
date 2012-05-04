@@ -39,7 +39,7 @@ public:
 
   double get_probability() const
   {
-      return exp(-unprotected_evaluate(NULL));
+      return exp(-unprotected_evaluate(nullptr));
   }
 
   /** This macro declares the basic needed methods: evaluate and show
