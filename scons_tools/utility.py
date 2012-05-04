@@ -294,6 +294,8 @@ def get_python_result(env, setup, cmd):
     #print ret[:-1]
     if olddylib:
         os.environ[varname]=olddylib
+    else:
+        del os.environ[varname]
     #print "done"
     #print "found", ret, "done", ret[:-1], "end"
     return ret[:-1]
