@@ -43,7 +43,13 @@ IMPKMEANS_BEGIN_NAMESPACE
 //  Main program
 //----------------------------------------------------------------------
 
+/** Class that wraps and provides an interface to the K-means
+    library by David Mount (GPL license), downloaded and adapted
+    to IMP from http://www.cs.umd.edu/~mount/Projects/KMeans/
 
+    \untested{KMeans_wrapper}
+    \unstable{KMeans_wrapper}
+ */
 class IMPKMEANSEXPORT KMeans_wrapper {
  public:
   KMeans_wrapper(const std::string& fname_data, int dim, int max_nPts);
