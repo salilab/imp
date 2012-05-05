@@ -1,5 +1,5 @@
 /**
- *  \file KMeans_interface.h
+ *  \file KMeans_wrapper.h
  *  \brief an interface to k-means open source library (stored internally)
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -12,6 +12,7 @@
 #include "IMP/kmeans/internal/KMlocal.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
+#include "IMP/Pointer.h"
 #include <cstdlib>      // C standard includes
 #include <iostream>     // C++ I/O
 #include <string>     // C++ strings
@@ -19,29 +20,18 @@
 
 IMPKMEANS_BEGIN_NAMESPACE
 
+/** different k-means algorithm variants that are
+    implemented in the library, see also
+    http://www.cs.umd.edu/~mount/Projects/KMeans/
+*/
+enum KM_ALG_TYPE
+{
+  KM_LLOYDS = 1,
+  KM_LOCAL_SWAP = 2,
+  KM_LOCAL_EZ_HYBRID = 3,
+  KM_HYBRID = 4
+};
 
-//----------------------------------------------------------------------
-// kmlsample
-//
-// This is a simple sample program for the kmeans local search on each
-// of the four methods.  After compiling, it can be run as follows.
-//
-//   kmlsample [-d dim] [-k nctrs] [-max mpts] [-df data] [-s stages]
-//
-// where
-//  dim   Dimension of the space (default = 2)
-//  nctrs   The number of centers (default = 4)
-//  mpts    Maximum number of data points (default = 1000)
-//  data    File containing data points
-//      (If omitted mpts points are randomly generated.)
-//  stages    Number of stages to run (default = 100)
-//
-// Results are sent to the standard output.
-//----------------------------------------------------------------------
-
-//----------------------------------------------------------------------
-//  Main program
-//----------------------------------------------------------------------
 
 /** Class that wraps and provides an interface to the K-means
     library by David Mount (GPL license), downloaded and adapted
@@ -52,14 +42,32 @@ IMPKMEANS_BEGIN_NAMESPACE
  */
 class IMPKMEANSEXPORT KMeans_wrapper {
  public:
+  /**
+     Initialize the KMeans_wrapper object with data from fname_data,
+     assuming input data of dimension dim
+
+     @param[in] fname_data Input filename. Input is assumed to be textual,
+                whitespace separated
+     @param[in] dim Dimension of points
+     @param[in] max_nPts Maximal number of points to be read from file
+   */
   KMeans_wrapper(const std::string& fname_data, int dim, int max_nPts);
 
-  void execute(int k, int stages);
+  /**
+     Execute a kmeans algorithm variant on the data points stored.
+
+     @param[in] k number of clusters
+     @param[in] alg_type The k-means algorithm variant to use
+     @param[in] stages Number of k-means iterations
+   */
+  void execute(int k, KM_ALG_TYPE alg_type = KM_LLOYDS, int stages = 100);
 
  private:
 
   // print a point
-  void printPt(std::ostream& out, const internal::KMpoint&  p);   // the point
+  // out - stream for printing the point
+  // p - the point
+  void printPt(std::ostream& out, const internal::KMpoint&  p);
 
   // read a point (using dimension from dataPts_)
   bool readPt(std::istream& in, internal::KMpoint& p);
@@ -68,17 +76,22 @@ class IMPKMEANSEXPORT KMeans_wrapper {
   // returns true if successful
   bool readDataPts(std::istream &in, int max_nPts);
 
-  // print final summary for a set of centers and algorithm
-  void printSummary(
-                    const internal::KMlocal&  theAlg,   // the algorithm
-                    internal::KMfilterCenters&  centers);
+  // print final summary using stored data and centers after execution
+  void printSummary(const internal::KMlocal&  theAlg);   // the algorithm
 
-  bool good() { return good_; }
+  /** was the object initialized succesfuly */
+  bool is_initialized() { return is_initialized_; }
+
+  /** was k-means executed succesfuly */
+  bool is_executed() { return is_executed_; }
 
  private:
 
-  //is everything ok with the state of the object
-  bool good_;
+  // was the object initialized succesfuly
+  bool is_initialized_;
+
+  // was k-means executed succesfully
+  bool is_executed_;
 
   //----------------------------------------------------------------------
   //  Termination conditions
@@ -87,9 +100,14 @@ class IMPKMEANSEXPORT KMeans_wrapper {
   //----------------------------------------------------------------------
   internal::KMterm term_;
 
-  internal::KMdata dataPts_; // data points
+  // data points
+  internal::KMdata dataPts_;
 
-  int nPts_; // actual number of valid points
+  // actual number of valid data points
+  int nPts_;
+
+  // the center points from a clustering execition
+  IMP::Pointer<internal::KMfilterCenters> pCenters_;
 
 };
 

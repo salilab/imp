@@ -12,7 +12,10 @@ IMPKMEANS_BEGIN_NAMESPACE
 
 
 KMeans_wrapper::KMeans_wrapper(const std::string& fname, int dim, int max_nPts)
-  : term_(100, 0, 0, 0,    // run for 100 stages
+  :
+    is_initialized_(false),
+    is_executed_(false),
+    term_(100, 0, 0, 0,    // run for 100 stages
           0.10,     // min consec RDL
           0.10,     // min accum RDL
           3,      // max run stages
@@ -20,20 +23,20 @@ KMeans_wrapper::KMeans_wrapper(const std::string& fname, int dim, int max_nPts)
           10,     // temp. run length
           0.95),      // temp. reduction factor
     dataPts_(dim, max_nPts),
-    nPts_(0)
+    nPts_(0),
+    pCenters_()
 {
   using namespace std;
 
   // read / generate points
-  good_ = false; // until succesful
   ifstream infile;
   infile.open (fname.c_str(), ifstream::in);
   if(infile.good())
     {
-      good_ = readDataPts(infile, max_nPts);
+      is_initialized_ = readDataPts(infile, max_nPts);
       infile.close();
     }
-  if(!good_)
+  if(!is_initialized_)
     {
       // generate points randomly
       // TODO remove this, throw exception if !ok,
@@ -42,47 +45,69 @@ KMeans_wrapper::KMeans_wrapper(const std::string& fname, int dim, int max_nPts)
       int k = 4; // generates random data in k clusters
       internal::kmClusGaussPts
         (dataPts_.getPts(), nPts_, dataPts_.getDim(), k);
-      good_ = true;
+      is_initialized_ = true;
     }
 }
 
 
 
+  // executed the selected algorithms:
 void
-KMeans_wrapper::execute(int k, int stages)
+KMeans_wrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
 {
   using namespace std;
 
-  term_.setAbsMaxTotStage(stages);   // set number of stages
-
+  // TODO: don't output anything ;
   std::cout << "Data Points:\n";     // echo data points
   for(int i = 0; i < nPts_; i++)
     printPt(std::cout, dataPts_[i]);
 
+  bool is_exectued = false; // till proven otherwise
+  term_.setAbsMaxTotStage(stages);   // set number of stages
   dataPts_.buildKcTree();      // build filtering structure
-
-  internal::KMfilterCenters centers(k, dataPts_);   // allocate centers
-
-  // run each of the algorithms
-  std::cout << "\nExecuting Clustering Algorithm: Lloyd's\n";
-  internal::KMlocalLloyds kmLloyds(centers, term_);   // repeated Lloyd's
-  centers = kmLloyds.execute();      // execute
-  printSummary(kmLloyds, centers);  // print summary
-
-  std::cout << "\nExecuting Clustering Algorithm: Swap\n";
-  internal::KMlocalSwap kmSwap(centers, term_);   // Swap heuristic
-  centers = kmSwap.execute();
-  printSummary(kmSwap, centers);
-
-  std::cout << "\nExecuting Clustering Algorithm: EZ-Hybrid\n";
-  internal::KMlocalEZ_Hybrid kmEZ_Hybrid(centers, term_); // EZ-Hybrid heuristic
-  centers = kmEZ_Hybrid.execute();
-  printSummary(kmEZ_Hybrid, centers);
-
-  std::cout << "\nExecuting Clustering Algorithm: Hybrid\n";
-  internal::KMlocalHybrid kmHybrid(centers, term_);   // Hybrid heuristic
-  centers = kmHybrid.execute();
-  printSummary(kmHybrid, centers);
+  pCenters_ =
+    new internal::KMfilterCenters( k, dataPts_ );
+  switch(alg_type)
+    // TODO: don't output anything ;
+    {
+    case KM_LLOYDS:
+      {
+        // repeated Lloyd's
+        std::cout << "\nExecuting Clustering Algorithm: Lloyd's\n";
+        internal::KMlocalLloyds kmLloyds(*pCenters_, term_);
+        *pCenters_ = kmLloyds.execute();
+        printSummary(kmLloyds);
+        break;
+      }
+    case KM_LOCAL_SWAP:
+      {
+        // Swap heuristic
+        std::cout << "\nExecuting Clustering Algorithm: Swap\n";
+        internal::KMlocalSwap kmSwap(*pCenters_, term_);
+        *pCenters_ = kmSwap.execute();
+        printSummary(kmSwap);
+        break;
+      }
+    case KM_LOCAL_EZ_HYBRID:
+      {
+        // EZ-Hybrid heuristic
+        std::cout << "\nExecuting Clustering Algorithm: EZ-Hybrid\n";
+        internal::KMlocalEZ_Hybrid kmEZ_Hybrid(*pCenters_, term_);
+        *pCenters_ = kmEZ_Hybrid.execute();
+        printSummary(kmEZ_Hybrid);
+        break;
+      }
+    case KM_HYBRID:
+      {
+        // Hybrid heuristic
+        std::cout << "\nExecuting Clustering Algorithm: Hybrid\n";
+        internal::KMlocalHybrid kmHybrid(*pCenters_, term_);
+        *pCenters_ = kmHybrid.execute();
+        printSummary(kmHybrid);
+        break;
+      }
+    }
+  is_executed_ = true;
 }
 
 
@@ -141,23 +166,22 @@ KMeans_wrapper::readDataPts(std::istream &in, int max_nPts)
 //------------------------------------------------------------------------
 void
 KMeans_wrapper::printSummary
-(const internal::KMlocal&    theAlg,   // the algorithm
- internal::KMfilterCenters&    centers)   // the centers
+(const internal::KMlocal&    theAlg)   // the algorithm
 {
   using namespace std;
 
   cout << "Number of stages: " << theAlg.getTotalStages() << endl;
   cout << "Average distortion: " <<
-    centers.getDist(false) / double(centers.getNPts()) << endl;
+    pCenters_->getDist(false) / double(pCenters_->getNPts()) << endl;
   // print final center points
   cout << "(Final Center Points:\n";
-  centers.print();
+  pCenters_->print();
   cout << ")\n";
   // get/print final cluster assignments
   internal::KMctrIdxArray closeCtr =
     new internal::KMctrIdx[dataPts_.getNPts()];
   double* sqDist = new double[dataPts_.getNPts()];
-  centers.getAssignments(closeCtr, sqDist);
+  pCenters_->getAssignments(closeCtr, sqDist);
 
   cout  << "(Cluster assignments:" << endl
         << "    Point  Center  Squared Dist" << endl
