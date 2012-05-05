@@ -1,1 +1,2 @@
 * add access to KMeans_wrapper::pCenters_ object (or add a centers wrapper object?)
+* add tests
