@@ -275,6 +275,15 @@ int _test_intranges(const IntRanges &ips) {
   return ips.size();
 }
 
+
+IntRange _test_intrange(const IntRange &ips) {
+  return ips;
+}
+
+IntRange _test_intrange() {
+  return IntRange(-1,-1);
+}
+
 namespace {
   void test_log_1() {
     IMP_FUNCTION_LOG;

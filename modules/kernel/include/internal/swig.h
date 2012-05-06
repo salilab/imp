@@ -215,6 +215,12 @@ IMPEXPORT int _test_overload(const Restraints &ps);
 
 IMPEXPORT int _test_intranges(const IntRanges &ips);
 
+IMPEXPORT IntRange _test_intrange(const IntRange &ips);
+
+// for overload
+IMPEXPORT IntRange _test_intrange();
+
+
 IMPEXPORT void _test_log();
 
 
