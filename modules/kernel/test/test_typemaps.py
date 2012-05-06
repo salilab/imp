@@ -153,6 +153,13 @@ class ParticleTests(IMP.test.TestCase):
         print op
         self.assertAlmostEqual(p[0], op[0], delta=.01)
         self.assertAlmostEqual(p[1], op[1], delta=.01)
+    def test_pair_overload(self):
+        """Checking that conversion from IntRange is OK with overload"""
+        ir=(1,5)
+        r= IMP._test_intrange(ir)
+        self.assertEqual(r, ir)
+        rr= IMP._test_intrange()
+        self.assertEqual(rr, (-1,-1))
     def test_overload(self):
         """Checking that overloading works"""
         m= IMP.Model()
