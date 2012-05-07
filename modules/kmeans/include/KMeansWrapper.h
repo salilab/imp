@@ -1,5 +1,5 @@
 /**
- *  \file KMeans_wrapper.h
+ *  \file KMeansWrapper.h
  *  \brief an interface to k-means open source library (stored internally)
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -37,13 +37,13 @@ enum KM_ALG_TYPE
     library by David Mount (GPL license), downloaded and adapted
     to IMP from http://www.cs.umd.edu/~mount/Projects/KMeans/
 
-    \untested{KMeans_wrapper}
-    \unstable{KMeans_wrapper}
+    \untested{KMeansWrapper}
+    \unstable{KMeansWrapper}
  */
-class IMPKMEANSEXPORT KMeans_wrapper {
+class IMPKMEANSEXPORT KMeansWrapper {
  public:
   /**
-     Initialize the KMeans_wrapper object with data from fname_data,
+     Initialize the KMeansWrapper object with data from fname_data,
      assuming input data of dimension dim
 
      @param[in] fname_data Input filename. Input is assumed to be textual,
@@ -51,7 +51,7 @@ class IMPKMEANSEXPORT KMeans_wrapper {
      @param[in] dim Dimension of points
      @param[in] max_nPts Maximal number of points to be read from file
    */
-  KMeans_wrapper(const std::string& fname_data, int dim, int max_nPts);
+  KMeansWrapper(const std::string& fname_data, int dim, int max_nPts);
 
   /**
      Execute a kmeans algorithm variant on the data points stored.
@@ -61,6 +61,14 @@ class IMPKMEANSEXPORT KMeans_wrapper {
      @param[in] stages Number of k-means iterations
    */
   void execute(int k, KM_ALG_TYPE alg_type = KM_LLOYDS, int stages = 100);
+
+  /** Returns the i'th center
+      Must be called only following a succesful execute() invokation
+
+      @param[in] i Center number in range (1,...,k)
+   */
+  std::vector<double> getCenter(int i) const;
+
 
  private:
 

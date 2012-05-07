@@ -14,20 +14,31 @@
 %}
 */
 
+/*
+   Support for STL vectors as lists + STL strings
+*/
+%include "typemaps.i"
+%include "std_string.i"
+%include "std_vector.i"
+namespace std
+{
+  %template(IntVector) vector<int>;
+  %template(DoubleVector) vector<double>;
+}
+
 
 /* Wrap Our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include "std_string.i"
-%include    IMP/kmeans/KMeans_wrapper.h
+%include    IMP/kmeans/KMeansWrapper.h
 /*
 %include 	IMP/kmeans/KM_ANN.h
 %include    IMP/kmeans/KMterm.h
 %include 	IMP/kmeans/KMeans.h
 %include 	IMP/kmeans/KCtree.h
-%include 	IMP/kmeans/KCutil.h 
-%include 	IMP/kmeans/KMdata.h 
+%include 	IMP/kmeans/KCutil.h
+%include 	IMP/kmeans/KMdata.h
 %include 	IMP/kmeans/KMlocal.h
-%include 	IMP/kmeans/KMrand.h 
+%include 	IMP/kmeans/KMrand.h
 %include 	IMP/kmeans/KMcenters.h
 %include 	IMP/kmeans/KMfilterCenters.h
 */

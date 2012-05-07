@@ -1,17 +1,17 @@
 /**
- *  \file KMeans_wrapper.cpp
+ *  \file KMeansWrapper.cpp
  *  \brief
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/kmeans/KMeans_wrapper.h"
+#include "IMP/kmeans/KMeansWrapper.h"
 #include <iostream>     // C++ I/O
 
 IMPKMEANS_BEGIN_NAMESPACE
 
 
-KMeans_wrapper::KMeans_wrapper(const std::string& fname, int dim, int max_nPts)
+KMeansWrapper::KMeansWrapper(const std::string& fname, int dim, int max_nPts)
   :
     is_initialized_(false),
     is_executed_(false),
@@ -53,7 +53,7 @@ KMeans_wrapper::KMeans_wrapper(const std::string& fname, int dim, int max_nPts)
 
   // executed the selected algorithms:
 void
-KMeans_wrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
+KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
 {
   using namespace std;
 
@@ -111,6 +111,27 @@ KMeans_wrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
 }
 
 
+  /** Returns the i'th center
+      Must be called only following a succesful execute() invokation
+
+      @param[in] i center number in range (1..k)
+   */
+std::vector<double>
+KMeansWrapper::getCenter(int i) const
+{
+  // TODO: verify is_executed and 1 <= i <= k
+  i--; // convert from (1..k) to [0..(k-1)]
+
+  // Convert from KMcenter (aka double*)
+  // to std::vector<double>
+  int dim = pCenters_->getDim();
+  const internal::KMcenter iCenter = (*pCenters_)[i];
+  std::vector<double> retValue( dim );
+  for(int j = 0; j < dim; j++)
+    retValue[j] = iCenter[j];
+  return retValue;
+}
+
 
 //----------------------------------------------------------------------
 //  Reading/Printing utilities
@@ -119,7 +140,7 @@ KMeans_wrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
 //  printPt - prints a points to output file
 //----------------------------------------------------------------------
 bool
-KMeans_wrapper::readPt(std::istream& in, internal::KMpoint& p)
+KMeansWrapper::readPt(std::istream& in, internal::KMpoint& p)
 {
   const int dim = dataPts_.getDim();
   for(int d = 0; d < dim; d++) {
@@ -129,7 +150,7 @@ KMeans_wrapper::readPt(std::istream& in, internal::KMpoint& p)
 }
 
 void
-KMeans_wrapper::printPt(std::ostream& out, const internal::KMpoint& p)
+KMeansWrapper::printPt(std::ostream& out, const internal::KMpoint& p)
 {
   const int dim = dataPts_.getDim();
   out << "(" << p[0];
@@ -142,7 +163,7 @@ KMeans_wrapper::printPt(std::ostream& out, const internal::KMpoint& p)
 // reads points from a file
 // returns true if successful
 bool
-KMeans_wrapper::readDataPts(std::istream &in, int max_nPts)
+KMeansWrapper::readDataPts(std::istream &in, int max_nPts)
 {
   int dim = dataPts_.getDim();
   if(!in.good())
@@ -165,7 +186,7 @@ KMeans_wrapper::readDataPts(std::istream &in, int max_nPts)
 //  Print summary of execution
 //------------------------------------------------------------------------
 void
-KMeans_wrapper::printSummary
+KMeansWrapper::printSummary
 (const internal::KMlocal&    theAlg)   // the algorithm
 {
   using namespace std;
