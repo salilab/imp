@@ -15,7 +15,7 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
         m = re.search('Chi\s+=\s+([\d\.]+)\r?', out)
-        self.assertNotEqual(m, None, msg="Chi output not found in " + str(out))
+        self.assertIsNotNone(m, msg="Chi output not found in " + str(out))
         self.assertAlmostEqual(float(m.group(1)), 0.44, delta=0.01)
         for out in ('6lyz.pdb.dat', '6lyz_lyzexp.dat', '6lyz_lyzexp.plt', '6lyz.plt'):
             os.unlink(self.get_input_file_name(out))

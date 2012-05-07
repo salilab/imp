@@ -17,7 +17,7 @@ class EM2DDockApplicationTest(IMP.test.ApplicationTestCase):
         self.assertApplicationExitedCleanly(p.returncode, err)
 
         m = re.search('Total\s+score\s+=\s+([\d\.]+)\r?', err)
-        self.assertNotEqual(m, None, msg="Score output not found in " + str(err))
+        self.assertIsNotNone(m, msg="Score output not found in " + str(err))
         self.assertAlmostEqual(float(m.group(1)), 2.84, delta=0.01)
 
         os.unlink('images.pgm')
