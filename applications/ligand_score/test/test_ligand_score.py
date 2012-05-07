@@ -16,8 +16,7 @@ class LigandScoreApplicationTest(IMP.test.ApplicationTestCase):
                                      (out[-2], '002', 6.54)]:
             m = re.match('Score for 1d3d\-ligand\.1d3d\.(\d+) is ([\d\.]+)',
                          line)
-            self.assertNotEqual(m, None,
-                                msg="Score output not found in " + str(out))
+            self.assertIsNotNone(m, msg="Score output not found in " + str(out))
             self.assertEqual(m.group(1), nligand)
             self.assertAlmostEqual(float(m.group(2)), score, delta=0.01)
 
