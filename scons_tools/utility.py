@@ -241,7 +241,13 @@ def get_dylib_name(env):
 
 def get_ld_path(env):
     ret=[]
-    if not env['IMP_USE_RPATH'] and env.get('libpath', None):
+    # Setting DYLD_LIBRARY_PATH on Mac OS X (Darwin) is usually a bad idea
+    # (e.g. can cause conflicts when different versions of libraries are
+    # provided by MacPorts/Fink/HomeBrew and the OS, since it overrides the
+    # rpath) and shouldn't be necessary anyway (paths to libraries are
+    # stored in the binary)
+    if not env['IMP_USE_RPATH'] and env.get('libpath', None) \
+       and env['PLATFORM'] != 'darwin':
         ret=get_env_paths(env, 'libpath')
     ret.extend(get_env_paths(env, 'ldlibpath'))
     #print get_env_paths(env, 'ldlibpath')
