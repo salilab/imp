@@ -13,6 +13,7 @@
 #include "infrastructure_macros.h"
 #include "NodeHandle.h"
 #include "FileHandle.h"
+#include "internal/utility.h"
 namespace RMF {
 
 /** These particles has associated color information.
@@ -113,7 +114,7 @@ void set_rgb_color(const Floats &v) {
       rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "rgb color green", false));
       rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "rgb color blue", false));;
+                               "rgb color blue", false));
 };
     }
     Colored get(NodeHandle nh,
@@ -156,7 +157,7 @@ void set_rgb_color(const Floats &v) {
       rgb_color_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "rgb color blue")?
                    fh.get_key<FloatTraits>(cat, "rgb color blue")
-                              :FloatKey()));;
+                              :FloatKey()));
 };
     }
     ColoredConst get(NodeConstHandle nh,
@@ -304,7 +305,7 @@ FloatKey mass_;
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian y", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z", true));;
+                               "cartesian z", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 mass_=get_key_always<FloatTraits>(fh, cat,
@@ -357,7 +358,7 @@ FloatKey mass_;
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
-                              :FloatKey()));;
+                              :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
@@ -501,7 +502,7 @@ FloatKey radius_;
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian y", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z", true));;
+                               "cartesian z", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 };
@@ -549,7 +550,7 @@ FloatKey radius_;
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
-                              :FloatKey()));;
+                              :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
@@ -731,13 +732,13 @@ FloatKey mass_;
       orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "orientation j", true));
       orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "orientation k", true));;
+                               "orientation k", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian x", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian y", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z", true));;
+                               "cartesian z", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 mass_=get_key_always<FloatTraits>(fh, cat,
@@ -797,7 +798,7 @@ FloatKey mass_;
       orientation_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "orientation k")?
                    fh.get_key<FloatTraits>(cat, "orientation k")
-                              :FloatKey()));;
+                              :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian x")?
                    fh.get_key<FloatTraits>(cat, "cartesian x")
@@ -809,7 +810,7 @@ FloatKey mass_;
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
-                              :FloatKey()));;
+                              :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
@@ -851,21 +852,21 @@ mass_);
     unsigned int frame_;
     friend class ScoreConstFactory;
     private:
-    NodeIDsKey representation_;
-FloatKey score_;
+    FloatKey score_;
     ScoreConst(NodeConstHandle nh,
                       unsigned int frame,
-                  NodeIDsKey representation,
-FloatKey score):
+                  FloatKey score):
        nh_(nh),
        frame_(frame),
-       representation_(representation),
-score_(score) {
+       score_(score) {
     ;
     }
     public:
-    NodeIDs get_representation() const {
-  return nh_.get_value(representation_, frame_);
+    NodeConstHandles get_representation() const {
+  NodeConstHandles ret;
+  internal::copy_vector(nh_.get_children(),
+         ret);
+  return ret;
 }
 Float get_score() const {
   return nh_.get_value(score_, frame_);
@@ -890,24 +891,31 @@ Float get_score() const {
     unsigned int frame_;
     friend class ScoreFactory;
     private:
-    NodeIDsKey representation_;
-FloatKey score_;
+    FloatKey score_;
     Score(NodeHandle nh,
                       unsigned int frame,
-                  NodeIDsKey representation,
-FloatKey score):
+                  FloatKey score):
        nh_(nh),
        frame_(frame),
-       representation_(representation),
-score_(score) {
+       score_(score) {
     ;
     }
     public:
-    NodeIDs get_representation() const {
-  return nh_.get_value(representation_, frame_);
+    NodeConstHandles get_representation() const {
+  NodeConstHandles ret;
+  internal::copy_vector(nh_.get_children(),
+         ret);
+  return ret;
 }
-void set_representation(NodeIDs v) {
-   nh_.set_value(representation_, v, frame_);
+void set_representation(NodeConstHandles v) {
+   for (unsigned int i=0; i< v.size(); ++i) {
+       add_child_alias(nh_, v[i]);
+   }
+}
+void set_representation(NodeHandles v) {
+   for (unsigned int i=0; i< v.size(); ++i) {
+       add_child_alias(nh_, v[i]);
+   }
 }
 Float get_score() const {
   return nh_.get_value(score_, frame_);
@@ -932,16 +940,13 @@ void set_score(Float v) {
     */
     class ScoreFactory {
     private:
-    NodeIDsKey representation_;
-FloatKey score_;
+    FloatKey score_;
     public:
     typedef FileHandle File;
     typedef Score Decorator;
     ScoreFactory(FileHandle fh){
     {
   CategoryD<1> cat=get_category_always<1>(fh, "feature");
-representation_=get_key_always<NodeIDsTraits>(fh, cat,
-                               "representation", false);
 score_=get_key_always<FloatTraits>(fh, cat,
                                "score", true);
 };
@@ -949,12 +954,10 @@ score_=get_key_always<FloatTraits>(fh, cat,
     Score get(NodeHandle nh,
                           unsigned int frame=0) const {
       ;
-      return Score(nh, frame, representation_,
-score_);
+      return Score(nh, frame, score_);
     }
     bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(representation_, frame)
-    && nh.get_has_value(score_, frame);
+      return nh.get_has_value(score_, frame);
     }
     IMP_RMF_SHOWABLE(ScoreFactory,
                      "ScoreFactory");
@@ -970,18 +973,13 @@ score_);
     */
     class ScoreConstFactory {
     private:
-    NodeIDsKey representation_;
-FloatKey score_;
+    FloatKey score_;
     public:
     typedef FileConstHandle File;
     typedef ScoreConst Decorator;
     ScoreConstFactory(FileConstHandle fh){
     {
   CategoryD<1> cat=fh.get_category<1>("feature");
-representation_=(fh.get_has_key<NodeIDsTraits>
-                   (cat, "representation")?
-                   fh.get_key<NodeIDsTraits>(cat, "representation")
-                              :NodeIDsKey());
 score_=(fh.get_has_key<FloatTraits>
                    (cat, "score")?
                    fh.get_key<FloatTraits>(cat, "score")
@@ -991,12 +989,10 @@ score_=(fh.get_has_key<FloatTraits>
     ScoreConst get(NodeConstHandle nh,
                           unsigned int frame=0) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return ScoreConst(nh, frame, representation_,
-score_);
+      return ScoreConst(nh, frame, score_);
     }
     bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(representation_, frame)
-    && nh.get_has_value(score_, frame);
+      return nh.get_has_value(score_, frame);
     }
     IMP_RMF_SHOWABLE(ScoreConstFactory,
                      "ScoreConstFactory");
@@ -1126,7 +1122,7 @@ IndexKey type_;
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian y", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z", true));;
+                               "cartesian z", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 type_=get_key_always<IndexTraits>(fh, cat,
@@ -1180,7 +1176,7 @@ IndexKey type_;
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
-                              :FloatKey()));;
+                              :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
@@ -1332,7 +1328,7 @@ IndexKey type_;
       coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
                                "cartesian ys", true));
       coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian zs", true));;
+                               "cartesian zs", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 type_=get_key_always<IndexTraits>(fh, cat,
@@ -1386,7 +1382,7 @@ IndexKey type_;
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
                    (cat, "cartesian zs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian zs")
-                              :FloatsKey()));;
+                              :FloatsKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
@@ -1522,7 +1518,7 @@ IndexKey type_;
       coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
                                "cartesian ys", true));
       coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian zs", true));;
+                               "cartesian zs", true));
 type_=get_key_always<IndexTraits>(fh, cat,
                                "type", false);
 };
@@ -1571,7 +1567,7 @@ IndexKey type_;
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
                    (cat, "cartesian zs")?
                    fh.get_key<FloatsTraits>(cat, "cartesian zs")
-                              :FloatsKey()));;
+                              :FloatsKey()));
 type_=(fh.get_has_key<IndexTraits>
                    (cat, "type")?
                    fh.get_key<IndexTraits>(cat, "type")
@@ -2164,7 +2160,7 @@ IndexKey element_;
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
                                "cartesian y", true));
       coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z", true));;
+                               "cartesian z", true));
 radius_=get_key_always<FloatTraits>(fh, cat,
                                "radius", false);
 mass_=get_key_always<FloatTraits>(fh, cat,
@@ -2222,7 +2218,7 @@ IndexKey element_;
       coordinates_.push_back((fh.get_has_key<FloatTraits>
                    (cat, "cartesian z")?
                    fh.get_key<FloatTraits>(cat, "cartesian z")
-                              :FloatKey()));;
+                              :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
                    (cat, "radius")?
                    fh.get_key<FloatTraits>(cat, "radius")
