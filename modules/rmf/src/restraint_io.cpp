@@ -68,22 +68,21 @@ namespace {
   IMP_SWAP(Subset);
 
 
-  ParticlesTemp get_particles(RMF::FileConstHandle fh,
-                              const RMF::NodeIDs &ids) {
+  ParticlesTemp get_particles(RMF::FileConstHandle ,
+                              const RMF::NodeConstHandles &ids) {
     ParticlesTemp ret;
     for (unsigned int i=0; i< ids.size(); ++i) {
-      RMF::NodeConstHandle nh= fh.get_node_from_id(ids[i]);
-      ret.push_back(get_association<Particle>(nh));
+      ret.push_back(get_association<Particle>(ids[i]));
     }
     return ret;
   }
 
   template <class C>
-  RMF::NodeIDs get_node_ids(RMF::FileConstHandle fh,
-                            const C &ps) {
-    RMF::NodeIDs ret;
+  RMF::NodeConstHandles get_node_ids(RMF::FileConstHandle fh,
+                                     const C &ps) {
+    RMF::NodeConstHandles ret;
     for (unsigned int i=0; i< ps.size(); ++i) {
-      ret.push_back(get_node_from_association(fh, ps[i]).get_id());
+      ret.push_back(get_node_from_association(fh, ps[i]));
     }
     return ret;
   }
