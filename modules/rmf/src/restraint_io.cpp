@@ -72,7 +72,9 @@ namespace {
                               const RMF::NodeConstHandles &ids) {
     ParticlesTemp ret;
     for (unsigned int i=0; i< ids.size(); ++i) {
-      ret.push_back(get_association<Particle>(ids[i]));
+      Particle *p= get_association<Particle>(ids[i]);
+      IMP_USAGE_CHECK(p, "Must associate particles first");
+      ret.push_back(p);
     }
     return ret;
   }

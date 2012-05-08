@@ -47,15 +47,23 @@ class GenericTest(IMP.test.TestCase):
         r.set_model(m)
         r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
+        scores=[]
         for i in range(0,10):
             for d in ds:
                 d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
-            m.update()
+            scores.append(r.evaluate(False))
             IMP.rmf.save_frame(f, i)
         for i,d in enumerate(ds):
             d.set_x(i*10)
-        m.update()
+        scores.append(r.evaluate(False))
         IMP.rmf.save_frame(f, 10)
+
+        bps= IMP.rmf.create_particles(f, m)
+        rr= IMP.rmf.create_restraints(f, m)
+        print scores
+        for i in range(0,11):
+            IMP.rmf.load_frame(f, i)
+            self.assertEqual(scores[i], rr[0].evaluate(False))
 
 if __name__ == '__main__':
     unittest.main()
