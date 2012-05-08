@@ -620,7 +620,7 @@ namespace RMF {
       Ints get_categories(int Arity) const;
       std::string get_category_name(int Arity, unsigned int kc) const  {
         IMP_RMF_USAGE_CHECK(category_names_cache_.size()
-                            > static_cast<unsigned int>(Arity),
+                            >= static_cast<unsigned int>(Arity),
                             get_error_message("No categories with arity ",
                                               Arity));
         IMP_RMF_USAGE_CHECK(category_names_cache_[Arity-1].size() > kc,
