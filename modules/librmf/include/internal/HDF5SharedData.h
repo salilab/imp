@@ -62,9 +62,6 @@ namespace RMF {
     unsigned int get_number_of_frames(Key<Ucname##Traits, Arity> k) const { \
       return get_number_of_frames_impl(k);                              \
     }                                                                   \
-    bool get_is_per_frame(Key<Ucname##Traits, Arity> k) const {         \
-      return get_is_per_frame_impl(k);                                  \
-    }                                                                   \
     Ucname##Traits::Type get_value(unsigned int node,                   \
                                         Key<Ucname##Traits, Arity> k,   \
                                         unsigned int frame) const {     \
@@ -380,11 +377,6 @@ namespace RMF {
           HDF5DataSetIndexD<3> sz= ds.get_size();
           return sz[2];
         }
-      }
-
-      template <class TypeTraits, int Arity>
-        bool get_is_per_frame_impl(Key<TypeTraits, Arity> k) const {
-        return k.get_is_per_frame();
       }
 
       template <class TypeTraits, int Arity>
