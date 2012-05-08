@@ -206,9 +206,6 @@ namespace RMF {
                                               ret.begin(), NULL));
       return ret;
     }
-    hid_t get_handle() const {
-      return HDF5Object::get_handle();
-    }
     typename TypeTraits::Type get_value(const HDF5DataSetIndexD<D> &ijk) const {
       IMP_RMF_IF_CHECK {
         check_index(ijk);
