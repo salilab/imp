@@ -156,8 +156,9 @@ namespace {
                      unsigned int frame) {
       RestraintSaveData &d= data_[o];
       RMF::Score sd= sf_.get(nh, frame);
-      sd.set_score(o->get_last_score());
-      if (frame==0) {
+      double score=o->get_last_score();
+      sd.set_score(score);
+      if (sd.get_representation().empty()) {
         sd.set_representation(get_node_ids(nh.get_file(),
                                            o->get_input_particles()));
       }
