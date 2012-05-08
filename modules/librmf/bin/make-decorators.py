@@ -17,6 +17,44 @@ def get_string(type, name, const, per_frame=False):
                                                   "type": type,
                                                   "pfs":pfs}
 
+
+class Children:
+    def __init__(self, nice_name):
+        self.nice_name=nice_name
+    def get_key_members(self):
+        return []
+    def get_methods(self, const):
+        ret=[]
+        ret.append("NodeConstHandles get_"+self.nice_name+"() const {")
+        ret.append("  NodeConstHandles ret;")
+        ret.append("  internal::copy_vector(nh_.get_children(),")
+        ret.append("         ret);")
+        ret.append("  return ret;")
+        ret.append("}")
+        if not const:
+            ret.append("void set_"+self.nice_name+"(NodeConstHandles v) {")
+            ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
+            ret.append("       add_child_alias(nh_, v[i]);")
+            ret.append("   }")
+            ret.append("}")
+            ret.append("void set_"+self.nice_name+"(NodeHandles v) {")
+            ret.append("   for (unsigned int i=0; i< v.size(); ++i) {")
+            ret.append("       add_child_alias(nh_, v[i]);")
+            ret.append("   }")
+            ret.append("}")
+        return ret
+    def get_key_arguments(self):
+        return []
+    def get_key_pass(self):
+        return []
+    def get_key_saves(self):
+        return []
+    def get_initialize(self, const):
+        return []
+    def get_check(self):
+        return []
+
+
 class Attribute:
     def __init__(self, type, nice_name, attribute_name, per_frame=False):
         self.type=type
@@ -24,7 +62,7 @@ class Attribute:
         self.nice_name=nice_name
         self.attribute_name=attribute_name
     def get_key_members(self):
-        return self.type+"Key "+self.nice_name+"_;"
+        return [self.type+"Key "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
         ret.append(self.type+" get_"+self.nice_name+"() const {")
@@ -34,17 +72,17 @@ class Attribute:
             ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
             ret.append("   nh_.set_value("+self.nice_name+"_, v, frame_);")
             ret.append("}")
-        return "\n".join(ret)
+        return ret
     def get_key_arguments(self):
-        return self.type+"Key "+self.nice_name
+        return [self.type+"Key "+self.nice_name]
     def get_key_pass(self):
-        return self.nice_name+"_"
+        return [self.nice_name+"_"]
     def get_key_saves(self):
-        return self.nice_name+"_("+self.nice_name+")"
+        return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
-        return self.nice_name+"_="+get_string(self.type, self.attribute_name, const, self.per_frame)
+        return [self.nice_name+"_="+get_string(self.type, self.attribute_name, const, self.per_frame)+";"]
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_, frame)"
+        return ["nh.get_has_value("+self.nice_name+"_, frame)"]
 
 class SingletonRangeAttribute:
     def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end,
@@ -55,7 +93,7 @@ class SingletonRangeAttribute:
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
     def get_key_members(self):
-        return "boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"
+        return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
         ret.append(self.type+" get_"+self.nice_name+"() const {")
@@ -66,21 +104,21 @@ class SingletonRangeAttribute:
             ret.append("   nh_.set_value("+self.nice_name+"_[0], v, frame_);")
             ret.append("   nh_.set_value("+self.nice_name+"_[1], v, frame_);")
             ret.append("}")
-        return "\n".join(ret)
+        return ret
     def get_key_arguments(self):
-        return "boost::array<"+self.type+"Key, 2> "+self.nice_name
+        return ["boost::array<"+self.type+"Key, 2> "+self.nice_name]
     def get_key_pass(self):
-        return self.nice_name+"_"
+        return [self.nice_name+"_"]
     def get_key_saves(self):
-        return self.nice_name+"_("+self.nice_name+")"
+        return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
-        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
-            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)
+        return [self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
+            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)+";"]
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
+        return ["nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
-            "\n   ==nh.get_value("+self.nice_name+"_[1], frame)"
+            "\n   ==nh.get_value("+self.nice_name+"_[1], frame)"]
 
 
 class RangeAttribute:
@@ -92,7 +130,7 @@ class RangeAttribute:
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
     def get_key_members(self):
-        return "boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"
+        return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
         ret.append(self.type+"Range get_"+self.nice_name+"() const {")
@@ -105,21 +143,21 @@ class RangeAttribute:
             ret.append("   nh_.set_value("+self.nice_name+"_[1], v1, frame_);")
             ret.append("}")
 
-        return "\n".join(ret)
+        return ret
     def get_key_arguments(self):
-        return "boost::array<"+self.type+"Key, 2> "+self.nice_name
+        return ["boost::array<"+self.type+"Key, 2> "+self.nice_name]
     def get_key_pass(self):
-        return self.nice_name+"_"
+        return [self.nice_name+"_"]
     def get_key_saves(self):
-        return self.nice_name+"_("+self.nice_name+")"
+        return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
-        return self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
-            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)
+        return [self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
+            ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)+";"]
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_[0], frame)"+\
+        return ["nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
-            "\n   <nh.get_value("+self.nice_name+"_[1], frame)"
+            "\n   <nh.get_value("+self.nice_name+"_[1], frame)"]
 
 
 class Attributes:
@@ -130,7 +168,7 @@ class Attributes:
         self.attribute_names=attribute_names
         self.per_frame=per_frame
     def get_key_members(self):
-        return self.type+"Keys "+self.nice_name+"_;"
+        return [self.type+"Keys "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
         ret.append("""%(ptype)s get_%(name)s() const {
@@ -154,13 +192,13 @@ class Attributes:
             "name":self.nice_name,
             "len":len(self.attribute_names),
             "key":self.nice_name+"_"})
-        return "\n".join(ret)
+        return ret
     def get_key_arguments(self):
-        return self.type+"Keys "+self.nice_name
+        return [self.type+"Keys "+self.nice_name]
     def get_key_pass(self):
-        return self.nice_name+"_"
+        return [self.nice_name+"_"]
     def get_key_saves(self):
-        return self.nice_name+"_("+self.nice_name+")"
+        return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
         ret=[]
         for n in self.attribute_names:
@@ -170,9 +208,9 @@ class Attributes:
                                                             "key":self.nice_name+"_",
                                                             "get":get_string(self.type, n, const, self.per_frame)
                                                             })
-        return "\n".join(ret)
+        return ret
     def get_check(self):
-        return "nh.get_has_value("+self.nice_name+"_[0], frame)"
+        return ["nh.get_has_value("+self.nice_name+"_[0], frame)"]
 
 
 class DecoratorCategory:
@@ -186,8 +224,8 @@ class DecoratorCategory:
 class Decorator:
     def __init__(self, name, description,
                  decorator_categories,
-                 init_function="",
-                 check_function=None):
+                 init_function=[],
+                 check_function=[]):
         self.name=name
         self.description=description
         self.init_function=init_function
@@ -197,39 +235,38 @@ class Decorator:
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_key_members())
+                ret.extend(a.get_key_members())
         return "\n".join(ret)
     def _get_methods(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes:
-                ret.append(a.get_methods(const))
+                ret.extend(a.get_methods(const))
         return "\n".join(ret)
     def _get_key_arguments(self):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_key_arguments())
+                ret.extend(a.get_key_arguments())
         return ",\n".join(ret)
     def _get_key_pass(self):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_key_pass())
+                ret.extend(a.get_key_pass())
         return ",\n".join(ret)
     def _get_key_saves(self):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_key_saves())
+                ret.extend(a.get_key_saves())
         return ",\n".join(ret)
     def _get_checks(self):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_check())
-        if self.check_function:
-            ret.append(self.check_function)
+                ret.extend(a.get_check())
+        ret.extend(self.check_function)
         return "\n    && ".join(ret)
     def _get_initialize(self, const):
         ret=[]
@@ -245,7 +282,7 @@ class Decorator:
                     +cd.category+"\");"
             ret.append(lhs+rhs)
             for a in cd.attributes+cd.internal_attributes:
-                ret.append(a.get_initialize(const)+";")
+                ret.extend(a.get_initialize(const))
             ret.append("}")
         return "\n".join(ret)
     def get(self):
@@ -296,7 +333,7 @@ class Decorator:
                              "key_arguments": self._get_key_arguments(),
                              "key_saves": self._get_key_saves(),
                              "CONST":"", "NOTCONST":"Const",
-                             "init":self.init_function})
+                             "init":"\n".join(self.init_function)})
         factstr="""/** Create decorators of type %(name)s.
 
        \see %(name)s%(CONST)s
@@ -379,9 +416,7 @@ pparticle= Decorator("RigidParticle", "These particles has associated coordinate
                    "")
 
 score= Decorator("Score", "Associate a score with some set of particles.",
-                   [DecoratorCategory("feature", 1, [Attribute("NodeIDs",
-                                                               "representation",
-                                                               "representation"),
+                   [DecoratorCategory("feature", 1, [Children("representation"),
                                                      Attribute("Float", "score", "score", True)])],
                    "")
 
@@ -392,7 +427,7 @@ ball= Decorator("Ball", "A geometric ball.",
                                                                               "cartesian z"], True),
                                                    Attribute("Float", "radius", "radius")],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
-                   "nh.set_value(type_, 0);", "nh.get_value(type_)==0")
+                   ["nh.set_value(type_, 0);"], ["nh.get_value(type_)==0"])
 cylinder= Decorator("Cylinder", "A geometric cylinder.",
                    [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
@@ -400,7 +435,7 @@ cylinder= Decorator("Cylinder", "A geometric cylinder.",
                                                                               "cartesian zs"], True),
                                                    Attribute("Float", "radius", "radius")],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
-                   "nh.set_value(type_, 1);", "nh.get_value(type_)==1")
+                   ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
 segment= Decorator("Segment", "A geometric line setgment.",
                    [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
@@ -408,7 +443,7 @@ segment= Decorator("Segment", "A geometric line setgment.",
                                                                               "cartesian ys",
                                                                               "cartesian zs"], True)],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
-                    "nh.set_value(type_, 1);", "nh.get_value(type_)==1")
+                    ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
 journal= Decorator("JournalArticle", "Information regarding a publication.",
                    [DecoratorCategory("publication", 1, [Attribute("String", "title", "title"),
@@ -475,6 +510,7 @@ print """/**
 #include "infrastructure_macros.h"
 #include "NodeHandle.h"
 #include "FileHandle.h"
+#include "internal/utility.h"
 namespace RMF {
 """
 print colored.get()
