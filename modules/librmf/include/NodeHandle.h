@@ -89,7 +89,7 @@ RMFEXPORT NodeHandles get_children_resolving_aliases(NodeHandle nh);
 
 /** Add a child to the node that is an alias to another node.*/
 RMFEXPORT NodeHandle add_child_alias(NodeHandle parent,
-                                     NodeHandle alias);
+                                     NodeConstHandle alias);
 } /* namespace RMF */
 
 #endif /* IMPLIBRMF_NODE_HANDLE_H */
