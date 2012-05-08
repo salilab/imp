@@ -460,7 +460,7 @@ iparticle= Decorator("IntermediateParticle", "These particles has associated coo
                                                                                 "cartesian z"], True),
                                                      Attribute("Float", "radius", "radius")])],
                    "")
-pparticle= Decorator("RigidParticle", "These particles has associated coordinates and radius information.",
+pparticle= Decorator("RigidParticle", "These particles has associated coordinates and orientation information.",
                    [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
                                                                 "orientation", ["orientation r",
                                                                                 "orientation i",
@@ -469,9 +469,7 @@ pparticle= Decorator("RigidParticle", "These particles has associated coordinate
                                                      Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"], True),
-                                                     Attribute("Float", "radius", "radius"),
-                                                     Attribute("Float", "mass", "mass")])],
+                                                                                "cartesian z"], True)])],
                    "")
 
 score= Decorator("Score", "Associate a score with some set of particles.",
