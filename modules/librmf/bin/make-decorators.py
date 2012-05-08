@@ -27,7 +27,7 @@ class Children:
         ret=[]
         ret.append("NodeConstHandles get_"+self.nice_name+"() const {")
         ret.append("  NodeConstHandles ret;")
-        ret.append("  internal::copy_vector(nh_.get_children(),")
+        ret.append("  internal::copy_vector(get_children_resolving_aliases(nh_),")
         ret.append("         ret);")
         ret.append("  return ret;")
         ret.append("}")
