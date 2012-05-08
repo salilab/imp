@@ -1,18 +1,16 @@
 /**
- *  \file RMF/internal/shared.h
+ *  \file RMF/internal/SharedData.h
  *  \brief Handle read/write of Model data from/to files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPLIBRMF_INTERNAL_SHARED_H
-#define IMPLIBRMF_INTERNAL_SHARED_H
+#ifndef IMPLIBRMF_INTERNAL_HDF_5SHARED_DATA_H
+#define IMPLIBRMF_INTERNAL_HDF_5SHARED_DATA_H
 
 #include "../RMF_config.h"
-#include "../Key.h"
-#include "../types.h"
-#include "../names.h"
+#include "SharedData.h"
 #include "../HDF5Group.h"
 #include "../HDF5File.h"
 #include "../infrastructure_macros.h"
@@ -20,25 +18,17 @@
 #include "set.h"
 #include <boost/tuple/tuple.hpp>
 #include <boost/array.hpp>
-#include <boost/any.hpp>
 #include <hdf5.h>
 #include <algorithm>
 
 #include <boost/shared_ptr.hpp>
 
 namespace RMF {
-  template <class P>
-  inline void *get_void_pointer(const P &p) {
-    return p;
-  }
-  template <class P>
-  inline void *get_void_pointer(boost::shared_ptr<P> p) {
-    return p.get();
-  }
+
 
   namespace internal {
 
-#define IMP_RMF_SHARED_DATA_TYPE(lcname, Ucname, PassValue, ReturnValue, \
+#define IMP_RMF_HDF5_SHARED_DATA_TYPE(lcname, Ucname, PassValue, ReturnValue, \
                                  PassValues, ReturnValues)              \
     DataDataSetCache<Ucname##Traits, 2> lcname##_data_sets_;            \
     DataDataSetCache<Ucname##Traits, 3> per_frame_##lcname##_data_sets_; \
@@ -62,7 +52,7 @@ namespace RMF {
 
 
 
-#define IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
+#define IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                                   PassValues, ReturnValues, Arity)      \
     Ucname##Traits::Type get_value_always(unsigned int node,            \
                                           Key<Ucname##Traits,Arity> k,  \
@@ -109,19 +99,19 @@ namespace RMF {
       return get_key_impl<Ucname##Traits, Arity>(category_id, name);    \
     }
 
-#define IMP_RMF_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue, \
+#define IMP_RMF_HDF5_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue, \
                             PassValues, ReturnValues)               \
-    IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
+    IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                               PassValues, ReturnValues, 1);           \
-    IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
+    IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                               PassValues, ReturnValues, 2);           \
-    IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
+    IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                               PassValues, ReturnValues, 3);           \
-    IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
+    IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                               PassValues, ReturnValues, 4)
 
 
-    class RMFEXPORT SharedData: public boost::intrusive_ptr_object {
+    class RMFEXPORT HDF5SharedData: public SharedData {
       // indexed first by per frame, then by
       // TypeInfo::get_index() then by ID
       // then by key.get_index()
@@ -131,11 +121,7 @@ namespace RMF {
       boost::array<Strings, 4> category_names_cache_;
       boost::array<HDF5DataSetD<IndexTraits, 2>, 4> node_data_;
       boost::array<Ints,4> free_ids_;
-      vector<boost::any> association_;
-      map<void*, int> back_association_;
       unsigned int frames_hint_;
-
-      map<int, boost::any> user_data_;
 
       // caches
       template <class TypeTraits, unsigned int D>
@@ -242,7 +228,7 @@ namespace RMF {
       mutable boost::array<int,4> last_category_;
       mutable boost::array<int,4> last_vi_;
       boost::array<KeyNameDataSetCache,4> key_name_data_sets_;
-      IMP_RMF_FOREACH_TYPE(IMP_RMF_SHARED_DATA_TYPE);
+      IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_DATA_TYPE);
 
       template <class TypeTraits>
         HDF5DataSetD<StringTraits, 1>&
@@ -283,8 +269,6 @@ namespace RMF {
         }
       }
       void check_node(unsigned int node) const;
-      void audit_key_name(std::string name) const;
-      void audit_node_name(std::string name) const;
       template <int Arity>
         unsigned int get_column_maximum(unsigned int kc) const {
         if (max_cache_.size() > kc
@@ -596,9 +580,16 @@ namespace RMF {
         return Key<TypeTraits, Arity>();
       }
 
+      void initialize_categories(int i, bool create);
+      void initialize_keys(int i);
+      void initialize_free_nodes();
 
+      int get_first_child(unsigned int node) const;
+      int get_sibling(unsigned int node) const;
+      void set_first_child(unsigned int node, int child);
+      void set_sibling(unsigned int node, int sibling);
     public:
-      IMP_RMF_FOREACH_TYPE(IMP_RMF_SHARED_TYPE);
+      IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_TYPE);
 
       HDF5Group get_group() const {
         return file_;
@@ -606,68 +597,13 @@ namespace RMF {
       void flush() const {
         IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
       }
-      template <class T>
-        void set_user_data(int i, const T&d) {
-        user_data_[i]=boost::any(d);
-      }
-      bool get_has_user_data(int i) const {
-        return user_data_.find(i) != user_data_.end();
-      }
-      template <class T>
-        T get_user_data(int i) const {
-        IMP_RMF_USAGE_CHECK(user_data_.find(i)
-                            != user_data_.end(),
-                            "No such data found");
-        return boost::any_cast<T>(user_data_.find(i)->second);
-      }
-      template <class T>
-      void set_association(int id, const T& d, bool overwrite) {
-        if (association_.size() <= static_cast<unsigned int>(id)) {
-          association_.resize(id+1, boost::any());
-        }
-        IMP_RMF_USAGE_CHECK(overwrite || association_[id].empty(),
-                            "Associations can only be set once");
-        if (overwrite && !association_[id].empty()) {
-          boost::any old=association_[id];
-          void* v= get_void_pointer(boost::any_cast<T>(old));
-          if (back_association_[v]==id) {
-            back_association_.erase(v);
-          }
-        }
-        void *v= get_void_pointer(d);
-        association_[id]=boost::any(d);
-        back_association_[v]=id;
-      }
-      bool get_has_association(void* v) const {
-        return back_association_.find(v) != back_association_.end();
-      }
-      boost::any get_association(int id) const {
-        IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
-                            "Unassociated id");
-        return association_[id];
-      }
-      bool get_has_association(int id) const {
-        if (id >= static_cast<int>(association_.size())) return false;
-        return !association_[id].empty();
-      }
       std::string get_file_name() const {
         return file_.get_file().get_name();
       }
-      int get_association(void* d) const {
-        return back_association_.find(d)->second;
-      }
-      void add_bond( int ida,  int idb,  int type);
-      unsigned int get_number_of_bonds() const;
-      boost::tuple<int,int,int> get_bond(unsigned int i) const;
 
-
-      SharedData(HDF5Group g, bool create);
-      ~SharedData();
+      HDF5SharedData(HDF5Group g, bool create);
+      ~HDF5SharedData();
       int add_node(std::string name, unsigned int type);
-      int get_first_child(unsigned int node) const;
-      int get_sibling(unsigned int node) const;
-      void set_first_child(unsigned int node, int child);
-      void set_sibling(unsigned int node, int sibling);
       std::string get_name(unsigned int node) const;
       void set_name(unsigned int node, std::string name);
       unsigned int get_type(unsigned int node) const;
@@ -702,67 +638,15 @@ namespace RMF {
         return category_names_cache_[Arity-1][kc];
       }
 
-      void initialize_categories(int i, bool create);
-      void initialize_keys(int i);
-      void initialize_free_nodes();
-      void validate() const;
+      std::string get_description() const;
+      void set_description(std::string str);
     };
 
 
   RMFEXPORT bool get_is_open(std::string path);
 
-
-    template <class Traits, int Arity>
-    class GenericSharedData {
-    };
-    template <class Traits, int Arity>
-    class ConstGenericSharedData {
-    };
-
-#define IMP_RMF_GENERIC_SHARED_ARITY(lcname, Ucname, PassValue, ReturnValue, \
-                               PassValues, ReturnValues, Arity)        \
-    template <>                                                        \
-    class ConstGenericSharedData<Ucname##Traits, Arity> {              \
-    public:                                                            \
-    typedef Key<Ucname##Traits, Arity> K;                              \
-    typedef vector<K > Ks;                                             \
-    static K get_key( const SharedData *p, int category_id,            \
-                      std::string name) {                              \
-      return p->get_##lcname##_key_##Arity(category_id, name);         \
-    }                                                                  \
-    static bool get_has_key( const SharedData *p, int category_id,     \
-                          std::string name) {                          \
-      return p->get_##lcname##_key_##Arity(category_id, name)          \
-        != K();                                                        \
-    }                                                                  \
-    static Ks get_keys( const SharedData *p, int category_id) {        \
-      return p->get_##lcname##_keys_##Arity(category_id);              \
-    }                                                                  \
-    };                                                                 \
-    template <>                                                        \
-    class GenericSharedData<Ucname##Traits, Arity> {                   \
-    public:                                                            \
-    typedef Key<Ucname##Traits, Arity> K;                              \
-    typedef vector<K > Ks;                                             \
-    static K add_key(SharedData *p_, int category_id,                  \
-                     std::string name, bool mf) {                      \
-      return p_->add_##lcname##_key_##Arity(category_id, name, mf);    \
-    }                                                                  \
-    };
-#define IMP_RMF_GENERIC_SHARED(lcname, Ucname, PassValue, ReturnValue, \
-                               PassValues, ReturnValues)               \
-    IMP_RMF_GENERIC_SHARED_ARITY(lcname, Ucname, PassValue, ReturnValue, \
-                                 PassValues, ReturnValues, 1);          \
-    IMP_RMF_GENERIC_SHARED_ARITY(lcname, Ucname, PassValue, ReturnValue, \
-                                 PassValues, ReturnValues, 2);          \
-    IMP_RMF_GENERIC_SHARED_ARITY(lcname, Ucname, PassValue, ReturnValue, \
-                                 PassValues, ReturnValues, 3);          \
-    IMP_RMF_GENERIC_SHARED_ARITY(lcname, Ucname, PassValue, ReturnValue, \
-                                 PassValues, ReturnValues, 4)
-
-    IMP_RMF_FOREACH_TYPE(IMP_RMF_GENERIC_SHARED);
   } // namespace internal
 } /* namespace RMF */
 
 
-#endif /* IMPLIBRMF_INTERNAL_SHARED_H */
+#endif /* IMPLIBRMF_INTERNAL_HDF_5SHARED_DATA_H */

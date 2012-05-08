@@ -217,7 +217,7 @@
                     RMF::IOException);                                  \
     }
 
-/** Create new HDF5 shared handle.*/
+/** Create new HDF5 SharedData.handle.*/
 #define IMP_HDF5_NEW_HANDLE(name, cmd, cleanup)         \
   boost::intrusive_ptr<RMF::HDF5SharedHandle> name      \
   = new RMF::HDF5SharedHandle(cmd, cleanup, #cmd)

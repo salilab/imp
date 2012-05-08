@@ -6,7 +6,7 @@
  *
  */
 
-#include <RMF/internal/shared.h>
+#include <RMF/internal/HDF5SharedData.h>
 #include <RMF/NodeHandle.h>
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
@@ -18,7 +18,7 @@ namespace RMF {
   set<std::string> opened;
   }
 
-  void SharedData::initialize_categories(int i, bool create) {
+  void HDF5SharedData::initialize_categories(int i, bool create) {
     std::string nm=get_category_name_data_set_name(i+1);
     if (file_.get_has_child(nm)) {
       category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
@@ -45,7 +45,7 @@ namespace RMF {
     }
   }
 
-  void SharedData::initialize_keys(int i) {
+  void HDF5SharedData::initialize_keys(int i) {
     std::string nm=get_set_data_data_set_name(i+2);
     if (file_.get_has_child(nm)) {
       node_data_[i+1]
@@ -58,7 +58,7 @@ namespace RMF {
     }
   }
 
-  void SharedData::initialize_free_nodes() {
+  void HDF5SharedData::initialize_free_nodes() {
     HDF5DataSetIndexD<2> dim= node_data_[0].get_size();
     for (unsigned int i=0; i< dim[0]; ++i) {
       if (IndexTraits::
@@ -69,7 +69,7 @@ namespace RMF {
     }
   }
 
-  SharedData::SharedData(HDF5Group g, bool create):
+  HDF5SharedData::HDF5SharedData(HDF5Group g, bool create):
       file_(g), frames_hint_(0)
   {
     IMP_RMF_BEGIN_FILE;
@@ -133,58 +133,21 @@ namespace RMF {
       IMP_RMF_END_FILE(get_file_name());
     }
 
-    SharedData::~SharedData() {
-      opened.erase(get_file_name());
-      // kind of nasty, needed to avoid recursion
-      add_ref();
-      validate();
-      release();
+    HDF5SharedData::~HDF5SharedData() {
       flush();
+      opened.erase(get_file_name());
+      add_ref();
+      SharedData::validate();
+      release();
       H5garbage_collect();
     }
 
-    void SharedData::audit_key_name(std::string name) const {
-      if (name.empty()) {
-        IMP_RMF_THROW("Empty key name", UsageException);
-      }
-      static const char *illegal="\\:=()[]{}\"'";
-      const char *cur=illegal;
-      while (*cur != '\0') {
-        if (name.find(*cur) != std::string::npos) {
-          IMP_RMF_THROW(get_error_message("Key names can't contain ",
-                                          *cur), UsageException);
-        }
-        ++cur;
-      }
-      if (name.find("  ") != std::string::npos) {
-        IMP_RMF_THROW("Key names can't contain two consecutive spaces",
-                      UsageException);
-      }
-    }
-
-    void SharedData::audit_node_name(std::string name) const {
-      if (name.empty()) {
-        IMP_RMF_THROW("Empty key name", UsageException);
-      }
-      static const char *illegal="\"";
-      const char *cur=illegal;
-      while (*cur != '\0') {
-        if (name.find(*cur) != std::string::npos) {
-          IMP_RMF_THROW(get_error_message("Node names names can't contain \"",
-                                          *cur,
-                                          "\", but \"", name, "\" does."),
-                        UsageException);
-        }
-        ++cur;
-      }
-    }
-
-    void SharedData::check_node(unsigned int node) const {
+    void HDF5SharedData::check_node(unsigned int node) const {
       IMP_RMF_USAGE_CHECK(node_names_.get_size()[0] > node,
                           get_error_message("Invalid node specified: ",
                                             node));
     }
-    int SharedData::add_node(std::string name, unsigned int type) {
+    int HDF5SharedData::add_node(std::string name, unsigned int type) {
       IMP_RMF_BEGIN_FILE;
       int ret;
       IMP_RMF_BEGIN_OPERATION;
@@ -214,84 +177,37 @@ namespace RMF {
       IMP_RMF_END_OPERATION("adding node data");
       IMP_RMF_END_FILE(get_file_name());
     }
-    void SharedData::set_name(unsigned int node, std::string name) {
+    void HDF5SharedData::set_name(unsigned int node, std::string name) {
       audit_node_name(name);
       node_names_.set_value(HDF5DataSetIndexD<1>(node), name);
     }
-    int SharedData::get_first_child(unsigned int node) const {
+    int HDF5SharedData::get_first_child(unsigned int node) const {
       check_node(node);
       return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, CHILD));
     }
-    int SharedData::get_sibling(unsigned int node) const {
+    int HDF5SharedData::get_sibling(unsigned int node) const {
       check_node(node);
       return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, SIBLING));
     }
-    void SharedData::set_first_child(unsigned int node, int c) {
+    void HDF5SharedData::set_first_child(unsigned int node, int c) {
       check_node(node);
       return node_data_[0].set_value(HDF5DataSetIndexD<2>(node, CHILD), c);
     }
-    void SharedData::set_sibling(unsigned int node, int c) {
+    void HDF5SharedData::set_sibling(unsigned int node, int c) {
       check_node(node);
       return node_data_[0].set_value(HDF5DataSetIndexD<2>(node, SIBLING), c);
     }
-    std::string SharedData::get_name(unsigned int node) const {
+    std::string HDF5SharedData::get_name(unsigned int node) const {
       check_node(node);
       return node_names_.get_value(HDF5DataSetIndexD<1>(node));
     }
-    unsigned int SharedData::get_type(unsigned int node) const {
+    unsigned int HDF5SharedData::get_type(unsigned int node) const {
       check_node(node);
       return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, TYPE));
     }
 
 
-  void SharedData::add_bond( int ida,  int idb, int type) {
-    int bond=get_category(2, "bond");
-    if (bond==-1) {
-      bond=add_category(2, "bond");
-    }
-    IMP_RMF_USAGE_CHECK(ida>=0 && idb>=0,
-                        get_error_message("Invalid bond ",
-                                          ida, " ", idb));
-    RMF::Indexes tp(2);
-    tp[0]=ida;
-    tp[1]=idb;
-    int ind=add_set(tp, BOND);
-    PairIndexKey pik=get_index_key_2(bond, "type");
-    if (pik==PairIndexKey()) {
-      pik= add_index_key_2(bond, "type", false);
-    }
-    IMP_RMF_IF_CHECK{
-      flush();
-      for ( int i=0; i< ind; ++i) {
-        /*boost::tuple<int,int,int> bd=*/ get_bond(i);
-      }
-    }
-    IMP_RMF_USAGE_CHECK(type != -1, get_error_message("Invalid type passed: ",
-                                                      type));
-    set_value(ind, pik, type, -1);
-    IMP_RMF_IF_CHECK{
-      flush();
-      for ( int i=0; i< ind+1; ++i) {
-        /*boost::tuple<int,int,int> bd=*/ get_bond(i);
-      }
-    }
-  }
-
-    unsigned int SharedData::get_number_of_bonds() const {
-      // not really right
-      return get_number_of_sets(2);
-    }
-    boost::tuple<int,int,int> SharedData::get_bond(unsigned int i) const {
-      int bond=get_category(2, "bond");
-      int na= get_set_member(2, i, 0);
-      int nb= get_set_member(2, i, 1);
-      PairIndexKey pik=get_index_key_2(bond, "type");
-      int t= get_value(i, pik, -1);
-      return boost::tuple<int,int,int>(na, nb, t);
-    }
-
-
-    int SharedData::add_child(int node, std::string name, int t) {
+    int HDF5SharedData::add_child(int node, std::string name, int t) {
       int old_child=get_first_child(node);
       int nn= add_node(name, t);
       set_first_child(node, nn);
@@ -299,7 +215,7 @@ namespace RMF {
       return nn;
     }
 
-    Ints SharedData::get_children(int node) const {
+    Ints HDF5SharedData::get_children(int node) const {
       int cur= get_first_child(node);
       Ints ret;
       while (!IndexTraits::get_is_null_value(cur)) {
@@ -309,7 +225,7 @@ namespace RMF {
       return ret;
     }
 
-  void SharedData::check_set(int arity, unsigned int index) const {
+  void HDF5SharedData::check_set(int arity, unsigned int index) const {
     IMP_RMF_USAGE_CHECK(node_data_[arity-1] != HDF5IndexDataSet2D(),
                         get_error_message("Invalid set arity requested: ",
                                           arity));
@@ -327,7 +243,7 @@ namespace RMF {
     }
   }
 
-  unsigned int SharedData::get_number_of_sets(int arity) const {
+  unsigned int HDF5SharedData::get_number_of_sets(int arity) const {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       return 0;
     }
@@ -340,7 +256,7 @@ namespace RMF {
     }
     return ct;
   }
-  RMF::Indexes SharedData::get_set_indexes(int arity) const {
+  RMF::Indexes HDF5SharedData::get_set_indexes(int arity) const {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       return RMF::Indexes();
     }
@@ -353,7 +269,7 @@ namespace RMF {
     }
     return ret;
   }
-  unsigned int SharedData::add_set( RMF::Indexes nis, int t) {
+  unsigned int HDF5SharedData::add_set( RMF::Indexes nis, int t) {
     IMP_RMF_BEGIN_FILE;
     std::sort(nis.begin(), nis.end());
     const int arity=nis.size();
@@ -386,19 +302,20 @@ namespace RMF {
     return slot;
     IMP_RMF_END_FILE(get_file_name());
   }
-  unsigned int SharedData::get_set_member(int arity, unsigned int index,
+  unsigned int HDF5SharedData::get_set_member(int arity, unsigned int index,
                                             int member_index) const {
     check_set(arity, index);
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
                                                              member_index+1));
   }
-  unsigned int SharedData::get_set_type(int arity, unsigned int index) const {
+  unsigned int HDF5SharedData::get_set_type(int arity,
+                                            unsigned int index) const {
     check_set(arity, index);
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
   }
 
 
-  int SharedData::add_category(int Arity, std::string name) {
+  int HDF5SharedData::add_category(int Arity, std::string name) {
     IMP_RMF_BEGIN_FILE;
     IMP_RMF_INTERNAL_CHECK((!category_names_[Arity-1]
                             && category_names_cache_[Arity-1].empty())
@@ -434,17 +351,7 @@ namespace RMF {
     IMP_RMF_END_OPERATION("adding category to list");
     IMP_RMF_END_FILE(get_file_name());
   }
-  int SharedData::get_category(int Arity, std::string name) const {
-    if (category_names_cache_[Arity-1].empty()) {
-      return -1;
-    } else {
-      for (unsigned int i=0; i< category_names_cache_[Arity-1].size(); ++i) {
-        if (category_names_cache_[Arity-1][i]==name) return i;
-      }
-    }
-    return -1;
-  }
-    Strings SharedData::get_category_names(int Arity) const {
+    Strings HDF5SharedData::get_category_names(int Arity) const {
       Ints cats= get_categories(Arity);
       Strings ret(cats.size());
       for (unsigned int i=0; i< ret.size(); ++i) {
@@ -452,30 +359,39 @@ namespace RMF {
       }
       return ret;
     }
-  Ints SharedData::get_categories(int Arity) const {
-    unsigned int sz= category_names_cache_[Arity-1].size();
-    Ints ret;
-    for (unsigned int i=0; i< sz; ++i) {
-      if (!category_names_cache_[Arity-1][i].empty()) {
-        ret.push_back(i);
+    Ints HDF5SharedData::get_categories(int Arity) const {
+      unsigned int sz= category_names_cache_[Arity-1].size();
+      Ints ret;
+      for (unsigned int i=0; i< sz; ++i) {
+        if (!category_names_cache_[Arity-1][i].empty()) {
+          ret.push_back(i);
+        }
       }
+      return ret;
     }
-    return ret;
-  }
-
-  void SharedData::validate() const {
-    Creators cs= get_validators();
-    for (unsigned int i=0; i< cs.size(); ++i) {
-      boost::scoped_ptr<Validator>
-          ptr(cs[i]->create(FileHandle(const_cast<SharedData*>(this))));
-      ptr->write_errors(std::cerr);
+    int HDF5SharedData::get_category(int Arity, std::string name) const {
+      if (category_names_cache_[Arity-1].empty()) {
+        return -1;
+      } else {
+        for (unsigned int i=0; i< category_names_cache_[Arity-1].size(); ++i) {
+          if (category_names_cache_[Arity-1][i]==name) return i;
+      }
+      }
+      return -1;
     }
-  }
 
 
-  bool get_is_open(std::string path) {
-    return opened.find(path) != opened.end();
-  }
-
+    std::string HDF5SharedData::get_description() const {
+      return get_group().get_char_attribute("description");
+    }
+    void HDF5SharedData::set_description(std::string str) {
+      IMP_RMF_USAGE_CHECK(str.empty()
+                          || str[str.size()-1]=='\n',
+                          "Description should end in a newline.");
+      get_group().set_char_attribute("description", str);
+    }
+    bool get_is_open(std::string path) {
+      return opened.find(path) != opened.end();
+    }
   } // namespace internal
 } /* namespace RMF */

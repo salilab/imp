@@ -16,8 +16,8 @@
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace RMF {
   namespace internal {
-class SharedData;
-
+    class SharedData;
+    class HDF5SharedData;
   } // namespace internal
 } // namespace RMF
 #endif
@@ -31,6 +31,7 @@ class Key {
   friend class FileConstHandle;
   friend class NodeConstHandle;
   friend class internal::SharedData;
+    friend class internal::HDF5SharedData;
   int i_;
   CategoryD<Arity> ci_;
   bool pf_;

@@ -12,7 +12,7 @@
 #include "RMF_config.h"
 #include "HDF5Group.h"
 #include "HDF5File.h"
-#include "internal/shared.h"
+#include "internal/SharedData.h"
 #include "Key.h"
 #include "FileConstHandle.h"
 
@@ -198,9 +198,9 @@ namespace RMF {
     void set_description(std::string descr);
     /** @} */
 
-    HDF5Group get_hdf5_group() const {
+    /*HDF5Group get_hdf5_group() const {
       return get_shared_data()->get_group();
-    }
+      }*/
     /** \name Key categories template methods
         Methods for managing the key categories in this RMF.
         @{

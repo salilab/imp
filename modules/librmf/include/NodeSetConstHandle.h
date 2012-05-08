@@ -11,7 +11,7 @@
 
 #include "RMF_config.h"
 #include "HDF5Group.h"
-#include "internal/shared.h"
+#include "internal/SharedData.h"
 #include "types.h"
 #include "NodeID.h"
 #include "NodeHandle.h"

@@ -7,6 +7,7 @@
  */
 
 #include <RMF/FileConstHandle.h>
+#include <RMF/internal/HDF5SharedData.h>
 
 namespace RMF {
 
@@ -14,8 +15,8 @@ FileConstHandle::FileConstHandle(internal::SharedData *shared):
     shared_(shared) {}
 
 FileConstHandle::FileConstHandle(HDF5ConstGroup root, bool create):
-  shared_(new internal::SharedData(HDF5Group::get_from_const_group(root),
-                                   create))  {
+  shared_(new internal::HDF5SharedData(HDF5Group::get_from_const_group(root),
+                                       create))  {
 }
 
 NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
@@ -24,7 +25,7 @@ NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
 
 
 std::string FileConstHandle::get_description() const {
-  return shared_->get_group().get_char_attribute("description");
+  return shared_->get_description();
 }
 
 vector<std::pair<NodeConstHandle, NodeConstHandle> >
