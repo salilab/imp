@@ -382,7 +382,9 @@ namespace RMF {
 
 
     std::string HDF5SharedData::get_description() const {
-      return get_group().get_char_attribute("description");
+      if (!get_group().get_has_attribute("description")) {
+        return std::string();
+      } else return get_group().get_char_attribute("description");
     }
     void HDF5SharedData::set_description(std::string str) {
       IMP_RMF_USAGE_CHECK(str.empty()
