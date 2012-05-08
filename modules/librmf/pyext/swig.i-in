@@ -190,6 +190,36 @@ namespace RMF {
   %}
 }
 
+%extend RMF::FileHandle {
+   %pythoncode %{
+    def add_node_set(self, set, tp):
+        ret=[]
+        if len(set)==2:
+          return self.add_node_pair(set, tp)
+        elif len(set)==3:
+          return self.add_node_triplet(set, tp)
+        elif len(set)==4:
+          return self.add_node_quad(set, tp)
+        else:
+          return []
+  %}
+  %pythoncode %{
+    def add_category(self, name, arity=1):
+        ret=[]
+        def call_it(self, *args):
+          return _RMF.FileHandle_add_category(self, *args)
+        if arity==1:
+          return call_it(self, name)
+        if arity==2:
+          return self.add_pair_category(name)
+        elif arity==3:
+          return self.add_triplet_category(name)
+        elif arity==4:
+          return self.add_quad_category(name)
+        else:
+          return []
+  %}
+}
 
 
 
