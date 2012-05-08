@@ -27,7 +27,7 @@
 
 IMPCOMPATIBILITY_BEGIN_NAMESPACE
 
-/** This class chooses the best of STL compatible non-orderedf
+/** This class chooses the best of STL compatible non-ordered
     map available. This will, in general, be a hash map if it
     is available or std::map if it is not.
 */
