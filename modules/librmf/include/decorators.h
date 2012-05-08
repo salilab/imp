@@ -864,7 +864,7 @@ mass_);
     public:
     NodeConstHandles get_representation() const {
   NodeConstHandles ret;
-  internal::copy_vector(nh_.get_children(),
+  internal::copy_vector(get_children_resolving_aliases(nh_),
          ret);
   return ret;
 }
@@ -903,7 +903,7 @@ Float get_score() const {
     public:
     NodeConstHandles get_representation() const {
   NodeConstHandles ret;
-  internal::copy_vector(nh_.get_children(),
+  internal::copy_vector(get_children_resolving_aliases(nh_),
          ret);
   return ret;
 }
