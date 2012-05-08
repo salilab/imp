@@ -580,6 +580,7 @@ namespace RMF {
       int get_sibling(unsigned int node) const;
       void set_first_child(unsigned int node, int child);
       void set_sibling(unsigned int node, int sibling);
+      int add_node(std::string name, unsigned int type);
     public:
       IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_TYPE);
 
@@ -595,7 +596,6 @@ namespace RMF {
 
       HDF5SharedData(HDF5Group g, bool create);
       ~HDF5SharedData();
-      int add_node(std::string name, unsigned int type);
       std::string get_name(unsigned int node) const;
       void set_name(unsigned int node, std::string name);
       unsigned int get_type(unsigned int node) const;
