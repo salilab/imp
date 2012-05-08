@@ -27,11 +27,13 @@
                                              Arity)                     \
     ArityName##UCName##Key get_##lcname##_key(ArityName##Category category_id, \
                                               std::string nm) const {   \
-      return get_key<UCName##Traits, Arity>(category_id, nm);           \
+      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
+        ::get_key(shared_.get(), category_id.get_index(), nm);          \
     }                                                                   \
     bool get_has_##lcname##_key(ArityName##Category category_id,        \
                                 std::string nm) const {                 \
-      return get_has_key<UCName##Traits, Arity>(category_id, nm);       \
+      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
+        ::get_has_key(shared_.get(), category_id.get_index(), nm);      \
     }                                                                   \
     std::string get_name(ArityName##UCName##Key k) const {              \
       return shared_->get_name(k);                                      \
@@ -41,7 +43,8 @@
     }                                                                   \
     ArityName##UCName##Key##s                                           \
       get_##lcname##_keys(ArityName##Category category_id) const {      \
-      return get_keys<UCName##Traits, Arity>(category_id);              \
+      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
+        ::get_keys(shared_.get(), category_id.get_index());             \
     }                                                                   \
     unsigned int get_number_of_frames(ArityName##UCName##Key k) const { \
       if (k== ArityName##UCName##Key()) return 0;                       \
@@ -177,22 +180,24 @@ namespace RMF {
           || !get_has_key<TypeT>(category_id, name)) {
         return Key<TypeT, Arity>();
       } else {
-        return shared_->get_key<TypeT, Arity>(category_id.get_index(), name);
+        return internal::ConstGenericSharedData<TypeT, Arity>
+        ::get_key(shared_.get(), category_id.get_index(), name);
       }
     }
     template <class TypeT, int Arity>
       bool get_has_key(CategoryD<Arity> category_id,
                        std::string name) const {
       if (category_id == CategoryD<Arity>()) return false;
-      return shared_->get_key<TypeT, Arity>(category_id.get_index(), name)
-        != Key<TypeT, Arity>();
+      return internal::ConstGenericSharedData<TypeT, Arity>
+        ::get_has_key(shared_.get(), category_id.get_index(), name);
     }
     /** Get a list of all keys of the given type,
      */
     template <class TypeT, int Arity>
       vector<Key<TypeT, Arity> > get_keys(CategoryD<Arity> category_id) const {
       if (category_id==CategoryD<Arity>()) return vector<Key<TypeT, Arity> >();
-      return shared_->get_keys<TypeT, Arity>(category_id.get_index());
+      return internal::ConstGenericSharedData<TypeT, Arity>
+      ::get_keys(shared_.get(), category_id.get_index());
     }
     /** @} */
 
@@ -213,7 +218,7 @@ namespace RMF {
         @{
     */
 
-    IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_CONST_KEY_TYPE_METHODS);
+   IMP_RMF_FOREACH_TYPE(IMP_HDF5_ROOT_CONST_KEY_TYPE_METHODS);
 
     /** @} */
 #ifdef IMP_DOXYGEN

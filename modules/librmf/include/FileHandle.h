@@ -26,7 +26,8 @@
     ArityName##UCName##Key add_##lcname##_key(ArityName##Category category_id, \
                                               std::string nm,           \
                                               bool per_frame) const {   \
-      return add_key<UCName##Traits, Arity>(category_id, nm, per_frame); \
+      return internal::GenericSharedData<UCName##Traits, Arity>         \
+        ::add_key(get_shared_data(), category_id.get_index(), nm, per_frame); \
     }
 
 #ifndef IMP_DOXYGEN
@@ -109,8 +110,10 @@ namespace RMF {
     template <class TypeT, int Arity>
       Key<TypeT, Arity> add_key(CategoryD<Arity> category_id,
                                 std::string name, bool per_frame) const {
-      return get_shared_data()->add_key<TypeT, Arity>(category_id.get_index(),
-                                            name, per_frame);
+      return internal::GenericSharedData<TypeT, Arity>::
+        add_key(get_shared_data(),
+                category_id.get_index(),
+                name, per_frame);
     }
     /** @} */
 

@@ -256,9 +256,9 @@ namespace RMF {
     tp[0]=ida;
     tp[1]=idb;
     int ind=add_set(tp, BOND);
-    PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
+    PairIndexKey pik=get_index_key_2(bond, "type");
     if (pik==PairIndexKey()) {
-      pik= add_key<IndexTraits, 2>(bond, "type", false);
+      pik= add_index_key_2(bond, "type", false);
     }
     IMP_RMF_IF_CHECK{
       flush();
@@ -268,7 +268,7 @@ namespace RMF {
     }
     IMP_RMF_USAGE_CHECK(type != -1, get_error_message("Invalid type passed: ",
                                                       type));
-    set_value<IndexTraits, 2>(ind, pik, type, -1);
+    set_value(ind, pik, type, -1);
     IMP_RMF_IF_CHECK{
       flush();
       for ( int i=0; i< ind+1; ++i) {
@@ -285,8 +285,8 @@ namespace RMF {
       int bond=get_category(2, "bond");
       int na= get_set_member(2, i, 0);
       int nb= get_set_member(2, i, 1);
-      PairIndexKey pik=get_key<IndexTraits, 2>(bond, "type");
-      int t= get_value<IndexTraits, 2>(i, pik, -1);
+      PairIndexKey pik=get_index_key_2(bond, "type");
+      int t= get_value(i, pik, -1);
       return boost::tuple<int,int,int>(na, nb, t);
     }
 
