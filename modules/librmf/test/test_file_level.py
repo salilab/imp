@@ -48,6 +48,8 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(fka, 1)
         fkna= r.get_value_always(fk, 1)
         self.assertEqual(fkna, RMF.NullFloat)
+        RMF.show_hierarchy(r)
+        RMF.show_hierarchy_with_decorators(r)
     def test_backwards_0(self):
         """Test opening pre-category change files"""
         ifn=self.get_input_file_name("backwards.rmf")
