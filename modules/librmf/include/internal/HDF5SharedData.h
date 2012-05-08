@@ -398,6 +398,8 @@ namespace RMF {
       template <class TypeTraits, int Arity>
         void set_value_impl(unsigned int node, Key<TypeTraits, Arity> k,
                        typename TypeTraits::Type v, unsigned int frame) {
+        IMP_RMF_USAGE_CHECK(!TypeTraits::get_is_null_value(v),
+                            "Cannot write sentry value to an RMF file.");
         unsigned int kc= k.get_category().get_index();
         bool per_frame= get_is_per_frame(k);
         int vi=IndexTraits::get_null_value();
