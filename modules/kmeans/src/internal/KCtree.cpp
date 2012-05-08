@@ -414,6 +414,8 @@ void KCleaf::sampleCtr(                        // sample from leaf node
   KMpoint            c,                  // the sampled point (returned)
   KMorthRect            &bnd_box)            // bounding box for current node
 {
+  // TODO: make sure it really samples - why is bnd_box not used
+  // (Barak, 5/7/12)
   int ri = kmRanInt(n_data);                  // generate random index
   kmCopyPt(kcDim, kcPoints[bkt[ri]], c);      // copy to destination
 }
@@ -821,6 +823,7 @@ static bool pruneTest(
 
 static void postNeigh(
   KCptr            p,                  // the node posting
+  // TODO: p used only for tracing - remove it? (Barak 5/7/12)
   KMpoint            sum,                  // the sum of coordinates
   double            sumSq,                  // the sum of squares
   int                  n_data,                  // number of points

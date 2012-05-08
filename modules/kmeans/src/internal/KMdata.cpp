@@ -43,6 +43,21 @@ KMdata::~KMdata()                    // destructor
   delete kcTree;                        // deallocate kc-tree
 }
 
+// copy-constructor (not implemented)
+KMdata::KMdata(const KMdata& p)
+  : RefCounted()
+{
+  assert(false);
+}
+
+// assignment operator (not implemented)
+KMdata& KMdata::operator=(const KMdata& p)
+{
+  assert(false);
+  return *this;
+}
+
+
 void KMdata::buildKcTree()              // build kc-tree for points
 {
   if(kcTree != NULL) delete kcTree;             // destroy existing tree

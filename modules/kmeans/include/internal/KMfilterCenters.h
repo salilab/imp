@@ -190,8 +190,13 @@ public:                              // public accessors
   void swap1Stage() {                  // one stage of swap heuristic
     swapOneCenter();
   }
-  virtual void print(                  // print centers
-    bool fancy = true);
+
+  /**
+     print centers
+     @param[in] fancy Dummy variable to support fancy printing in child
+                      classes
+  */
+  virtual void print(bool fancy = true);
 };
 
 IMPKMEANS_END_INTERNAL_NAMESPACE
