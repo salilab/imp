@@ -14,6 +14,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_particles(f, [p]);
         r= IMP._ConstRestraint(1, [p])
         r.set_model(m)
+        r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, 0)
     def test_1(self):
@@ -22,9 +23,14 @@ class GenericTest(IMP.test.TestCase):
         m= IMP.Model()
         p= IMP.Particle(m)
         r= IMP._ConstRestraint(1)
+        r.set_name("R")
         r.set_model(m)
+        r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.rmf.save_frame(f, 0)
+        rr= IMP.rmf.create_restraints(f, m)
+        IMP.rmf.load_frame(f, 0)
+        self.assertEqual(rr[0].evaluate(False), r.evaluate(False))
     def test_2(self):
         """Test writing dynamic restraints"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("restrnp2.rmf"))
@@ -38,6 +44,8 @@ class GenericTest(IMP.test.TestCase):
         r= IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
+        r.set_model(m)
+        r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         for i in range(0,10):
             for d in ds:
