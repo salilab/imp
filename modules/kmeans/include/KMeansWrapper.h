@@ -13,6 +13,7 @@
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
 #include "IMP/Pointer.h"
+#include "IMP/base/types.h"
 #include <cstdlib>      // C standard includes
 #include <iostream>     // C++ I/O
 #include <string>     // C++ strings
@@ -33,8 +34,6 @@ enum KM_ALG_TYPE
   KM_LOCAL_EZ_HYBRID = 3,
   KM_HYBRID = 4
 };
-
-typedef std::vector< std::vector<double> > VectorVectorDouble;
 
 /***********************  Class Definition  **************************/
 
@@ -86,7 +85,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
 
      @param[in] p point to be added
   */
-  void addDataPt(const std::vector<double>& p);
+  void addDataPt(const IMP::Floats& p);
 
   /**
      Clears all data in object.
@@ -97,7 +96,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
 
       @param[in] i Center number in range (0,...,nPts-1)
    */
-  const std::vector<double>& getDataPoint(unsigned int i) const;
+  const IMP::Floats& getDataPoint(unsigned int i) const;
 
   /** @return The number of data points */
   unsigned int getNDataPoints() const
@@ -115,7 +114,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
 
       @param[in] i Center number in range (0,...,k-1)
    */
-  std::vector<double> getCenter(unsigned int i) const;
+  IMP::Floats getCenter(unsigned int i) const;
 
 
   /** @return The number of centers after a succeful execution */
@@ -129,7 +128,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
  private:
 
   /** Updates the wrapped data pts structure from the internal 2D STL vector
-      array.
+      array (IMP::Float).
       This method invalidates any prior information about clustering results,
       unless the data was already synced (in which case no sync was needed)
    */
@@ -146,7 +145,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
   */
   bool readPtFromStream
     (std::istream& in,
-     std::vector<double>& p,
+     IMP::Floats& p,
      unsigned int dim);
 
   /**
@@ -169,7 +168,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
   */
   void printPtToStream
     (std::ostream& out,
-     const std::vector<double>& p);
+     const IMP::Floats& p);
 
   // print final summary using stored data and centers after execution
   void printSummary(const internal::KMlocal&  theAlg);   // the algorithm
@@ -181,7 +180,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
   bool is_executed_;
 
   // The data points in STL format
-  VectorVectorDouble STLDataPts_;
+  IMP::FloatsList STLDataPts_;
 
   // data points in wrapped internal::KMdata strcture
   // (should be synced from STLDataPts_ before usage)
