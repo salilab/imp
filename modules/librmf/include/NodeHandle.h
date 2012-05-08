@@ -27,8 +27,8 @@
 */                                                                      \
 void set_value(UCName##Key k, PassValue v,                              \
                unsigned int frame =0) {                                 \
-  get_shared_data()->set_value<UCName##Traits>(get_node_id(),           \
-                                               k, v, frame);            \
+  get_shared_data()->set_value(get_node_id(),                           \
+                               k, v, frame);                            \
   IMP_RMF_INTERNAL_CHECK(!get_shared_data()->get_is_per_frame(k)        \
                          || get_shared_data()->get_number_of_frames(k)  \
                          >= frame,                                      \

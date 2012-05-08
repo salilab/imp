@@ -35,8 +35,8 @@ ReturnValue get_value(Key<UCName##Traits, D> k,                         \
                                                   shared_->get_name(k),\
                                                   " on frame ",         \
                                                   frame));              \
-  return shared_->get_value<UCName##Traits>(node_,                      \
-                                            k, frame);                  \
+  return shared_->get_value(node_,                                      \
+                            k, frame);                                  \
 }                                                                       \
 /** Return the attribute value or TypeTraits::get_null_value() if the
     node does not have the attribute. In python the method a value equal to
@@ -49,7 +49,7 @@ ReturnValue get_value_always(Key<UCName##Traits, D> k,                  \
 bool get_has_value(Key<UCName##Traits, D> k,                            \
                    unsigned int frame=0) const {                        \
   if (k==Key<UCName##Traits, D>()) return false;                        \
-  return shared_->get_has_value<UCName##Traits>(node_, k, frame);       \
+  return shared_->get_has_value(node_, k, frame);                       \
 }
 
 

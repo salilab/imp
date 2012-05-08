@@ -28,9 +28,9 @@
 */                                                                      \
 void set_value(Key<UCName##Traits, D> k, PassValue v,                   \
                unsigned int frame =0) {                                 \
-  P::get_shared_data()->template set_value<UCName##Traits>(P::get_node_id(),\
-                                                           k,           \
-                                                           v, frame);   \
+  P::get_shared_data()->set_value(P::get_node_id(),                     \
+                                  k,                                    \
+                                  v, frame);                            \
   IMP_RMF_INTERNAL_CHECK(!P::get_shared_data()->get_is_per_frame(k)     \
                          || P::get_shared_data()->get_number_of_frames(k)\
                          >= frame,                                      \
