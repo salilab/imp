@@ -18,6 +18,8 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_particles(f, ds)
         cpc= IMP.container.ConsecutivePairContainer(ps)
         r= IMP.container.PairsRestraint(IMP.core.SoftSpherePairScore(1), cpc)
+        r.set_model(m)
+        r.evaluate(False)
         IMP.rmf.add_restraint(f, r)
         IMP.set_log_level(IMP.MEMORY)
         sf= IMP.core.RestraintsScoringFunction([r])
