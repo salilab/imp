@@ -154,7 +154,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
    Add a data point for the next clustering.
 */
 void
-KMeansWrapper::addDataPt(const std::vector<double>& p)
+KMeansWrapper::addDataPt(const IMP::Floats& p)
 {
   is_executed_ = false;
   is_KM_data_synced_ = false;
@@ -182,7 +182,7 @@ KMeansWrapper::clearData()
 
     @param[in] i Center number in range (0,...,nPts-1)
 */
-const std::vector<double>&
+const IMP::Floats&
 KMeansWrapper::getDataPoint(unsigned int i) const
 {
   assert(i < STLDataPts_.size()); // TODO: exception?
@@ -195,17 +195,17 @@ KMeansWrapper::getDataPoint(unsigned int i) const
 
       @param[in] i center number in range (0,...,k-1)
    */
-std::vector<double>
+IMP::Floats
 KMeansWrapper::getCenter(unsigned int i) const
 {
   // TODO: exception instead of assertion?
   assert(is_executed_ && i < pCenters_->getNPts());
 
   // Convert from KMCenter (aka double*)
-  // to std::vector<double>
+  // to IMP::Floats
   int dim = pCenters_->getDim();
   const internal::KMcenter& iCenter = (*pCenters_)[i];
-  std::vector<double> retValue( dim );
+  IMP::Floats retValue( dim );
   for(int j = 0; j < dim; j++)
     retValue[j] = iCenter[j];
   return retValue;
@@ -216,7 +216,7 @@ KMeansWrapper::getCenter(unsigned int i) const
 
 
 /** Updates the wrapped data pts structure from the internal 2D STL vector
-    array.
+    array (IMP::Floats).
     This method invalidates any prior information about clustering results
 */
 void
@@ -251,7 +251,7 @@ KMeansWrapper::syncKMDataPtsFromSTL()
 bool
 KMeansWrapper::readPtFromStream
 (std::istream& in,
- std::vector<double>& p,
+ IMP::Floats& p,
  unsigned int dim)
 {
   for(int d = 0; d < dim; d++) {
@@ -274,7 +274,7 @@ KMeansWrapper::readDataPtsFromStream
   STLDataPts_.clear();
   for(unsigned int i = 0; i < max_nPts; i++)
     {
-      std::vector<double> newPoint(dim);
+      IMP::Floats newPoint(dim);
       bool ok = readPtFromStream(in, newPoint, dim);
       if(ok)
         STLDataPts_.push_back(newPoint);
@@ -291,7 +291,7 @@ KMeansWrapper::readDataPtsFromStream
    @param[in] p   the point
 */
 void
-KMeansWrapper::printPtToStream(std::ostream& out, const std::vector<double>& p)
+KMeansWrapper::printPtToStream(std::ostream& out, const IMP::Floats& p)
 {
   const int dim = p.size();
   if(dim == 0){
