@@ -15,6 +15,7 @@
 #include <IMP/atom/Copy.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
+#include <IMP/algebra/geometric_alignment.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -26,6 +27,27 @@ atom::Bonded get_bonded(Particle *p) {
     return atom::Bonded::setup_particle(p);
   }
 }
+  void fix_rigid_body(core::RigidBody rb, core::RigidMembers rms) {
+    algebra::Vector3Ds local(rms.size());
+    algebra::Vector3Ds global(rms.size());
+    for (unsigned int i=0; i< rms.size(); ++i) {
+      local[i]= rms[i].get_internal_coordinates();
+      global[i]= rms[i].get_coordinates();
+    }
+    algebra::Transformation3D t3
+      = algebra::get_transformation_aligning_first_to_second(local, global);
+    rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
+    core::RigidBody cur= rb;
+    while (core::RigidMember::particle_is_instance(cur)) {
+      core::RigidMember rm(cur);
+      core::RigidBody parent= rm.get_rigid_body();
+      // t0= tp*tl -> tp= t0*tl-1
+      algebra::Transformation3D t3
+        = cur.get_reference_frame().get_transformation_to()
+        *rm.get_internal_transformation().get_inverse();
+      cur=parent;
+    }
+  }
 
 void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
                   const ParticlesTemp &ps) {
@@ -68,6 +90,15 @@ void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
            core::XYZ(o).get_coordinates());
     algebra::ReferenceFrame3D rf(tr);
     core::RigidBody(o).set_reference_frame(rf);
+  } else if (core::RigidBody::particle_is_instance(o)) {
+    core::RigidBody rb(o);
+    core::RigidMembers rbs=rb.get_members();
+    if (rbs.size()<3) {
+      IMP_WARN("Too few particles to update rigid body: "
+               << Showable(o));
+    } else {
+      fix_rigid_body(rb, rbs);
+    }
   }
   if (colored_factory_.get_is(nh, frame)) {
     RMF::Floats c= colored_factory_.get(nh, frame).get_rgb_color();
