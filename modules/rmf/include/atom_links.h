@@ -51,12 +51,14 @@ class IMPRMFEXPORT HierarchyLoadLink: public SimpleLoadLink<Particle> {
   bool get_is(RMF::NodeConstHandle nh) const {
     return nh.get_type()==RMF::REPRESENTATION;
   }
-  void setup_particle(Particle *root,
+  bool setup_particle(Particle *root,
                       RMF::NodeConstHandle nh,
-                      Particle *p);
+                      Particle *p,
+                      Particle *rbp);
 
   Particle* do_create_recursive(Particle *root,
-                                RMF::NodeConstHandle name);
+                                RMF::NodeConstHandle name,
+                                Particle *rbp=nullptr);
 
   Particle* do_create(RMF::NodeConstHandle name);
   void do_add_link_recursive(Particle *root,
