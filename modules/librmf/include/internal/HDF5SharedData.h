@@ -597,7 +597,6 @@ namespace RMF {
       HDF5SharedData(HDF5Group g, bool create);
       ~HDF5SharedData();
       std::string get_name(unsigned int node) const;
-      void set_name(unsigned int node, std::string name);
       unsigned int get_type(unsigned int node) const;
 
 

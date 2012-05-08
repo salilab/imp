@@ -67,9 +67,6 @@ class RMFEXPORT NodeHandle: public NodeConstHandle {
    */
   NodeHandle add_child(std::string name, NodeType t);
 
-  void set_name(std::string name) {
-    get_shared_data()->set_name(get_node_id(), name);
-  }
   NodeHandles get_children() const;
 
   /** \name Functions to access attributes
