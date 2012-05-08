@@ -43,8 +43,7 @@
     }                                                                   \
     ArityName##UCName##Key##s                                           \
       get_##lcname##_keys(ArityName##Category category_id) const {      \
-      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
-        ::get_keys(shared_.get(), category_id.get_index());             \
+      return get_keys<UCName##Traits, Arity>(category_id);              \
     }                                                                   \
     unsigned int get_number_of_frames(ArityName##UCName##Key k) const { \
       if (k== ArityName##UCName##Key()) return 0;                       \
