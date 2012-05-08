@@ -13,7 +13,8 @@ def get_string(type, name, const, per_frame=False):
                                                                                      "pfs":pfs}
     else:
         return """get_key_always<%(type)sTraits>(fh, cat,
-                               \"%(name)s\", %(pfs)s)"""%{ "name":name,
+                               \"%(name)s\",
+                               %(pfs)s)"""%{ "name":name,
                                                   "type": type,
                                                   "pfs":pfs}
 
@@ -21,14 +22,25 @@ def get_string(type, name, const, per_frame=False):
 class Children:
     def __init__(self, nice_name):
         self.nice_name=nice_name
-    def get_key_members(self):
-        return []
+    def get_key_members(self, const):
+        if (const):
+            return ["StaticAliasConstFactory "+self.nice_name+"_;"]
+        else:
+            return ["StaticAliasFactory "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
-        ret.append("NodeConstHandles get_"+self.nice_name+"() const {")
-        ret.append("  NodeConstHandles ret;")
-        ret.append("  internal::copy_vector(get_children_resolving_aliases(nh_),")
-        ret.append("         ret);")
+        if const:
+            nht="NodeConstHandle"
+        else:
+            nht="NodeHandle"
+        ret.append(nht+"s get_"+self.nice_name+"() const {")
+        ret.append("  "+nht+"s typed=nh_.get_children();")
+        ret.append("  "+nht+"s ret;")
+        ret.append("  for (unsigned int i=0; i< typed.size(); ++i) {")
+        ret.append("     if ("+self.nice_name+"_.get_is(typed[i])) {")
+        ret.append("        "+self.nice_name+"_.get(typed[i]).get_aliased();")
+        ret.append("     }");
+        ret.append("  }");
         ret.append("  return ret;")
         ret.append("}")
         if not const:
@@ -43,15 +55,23 @@ class Children:
             ret.append("   }")
             ret.append("}")
         return ret
-    def get_key_arguments(self):
-        return []
-    def get_key_pass(self):
-        return []
-    def get_key_saves(self):
-        return []
+    def get_key_arguments(self, const):
+        if (const):
+            return ["StaticAliasConstFactory "+self.nice_name+""]
+        else:
+            return ["StaticAliasFactory "+self.nice_name+""]
+    def get_key_pass(self, const):
+        return [self.nice_name+"_"]
+    def get_key_saves(self, const):
+        return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
+        if (const):
+            return [self.nice_name+"_(fh)"]
+        else:
+            return [self.nice_name+"_(fh)"]
+    def get_construct(self, const):
         return []
-    def get_check(self):
+    def get_check(self, const):
         return []
 
 
@@ -61,7 +81,7 @@ class Attribute:
         self.per_frame=per_frame
         self.nice_name=nice_name
         self.attribute_name=attribute_name
-    def get_key_members(self):
+    def get_key_members(self, const):
         return [self.type+"Key "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
@@ -73,16 +93,38 @@ class Attribute:
             ret.append("   nh_.set_value("+self.nice_name+"_, v, frame_);")
             ret.append("}")
         return ret
-    def get_key_arguments(self):
+    def get_key_arguments(self, const):
         return [self.type+"Key "+self.nice_name]
-    def get_key_pass(self):
+    def get_key_pass(self, const):
         return [self.nice_name+"_"]
-    def get_key_saves(self):
+    def get_key_saves(self, const):
         return [self.nice_name+"_("+self.nice_name+")"]
-    def get_initialize(self, const):
+    def get_construct(self, const):
         return [self.nice_name+"_="+get_string(self.type, self.attribute_name, const, self.per_frame)+";"]
-    def get_check(self):
+    def get_initialize(self, const):
+        return []
+    def get_check(self, const):
         return ["nh.get_has_value("+self.nice_name+"_, frame)"]
+
+
+class NodeAttribute(Attribute):
+    def __init__(self, *args):
+        Attribute.__init__(self, *args)
+    def get_methods(self, const):
+        ret=[]
+        if const:
+            nht= "NodeConstHandle"
+        else:
+            nht= "NodeHandle"
+        ret.append(nht+" get_"+self.nice_name+"() const {")
+        ret.append("  NodeID ni= nh_.get_value("+self.nice_name+"_, frame_);")
+        ret.append("  return nh_.get_file().get_node_from_id(ni);")
+        ret.append("}")
+        if not const:
+            ret.append("void set_"+self.nice_name+"(NodeConstHandle v) {")
+            ret.append("   nh_.set_value("+self.nice_name+"_, v.get_id(), frame_);")
+            ret.append("}")
+        return ret
 
 class SingletonRangeAttribute:
     def __init__(self, type, nice_name, attribute_name_begin, attribute_name_end,
@@ -92,7 +134,7 @@ class SingletonRangeAttribute:
         self.per_frame=per_frame
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
-    def get_key_members(self):
+    def get_key_members(self, const):
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
@@ -105,16 +147,18 @@ class SingletonRangeAttribute:
             ret.append("   nh_.set_value("+self.nice_name+"_[1], v, frame_);")
             ret.append("}")
         return ret
-    def get_key_arguments(self):
+    def get_key_arguments(self, const):
         return ["boost::array<"+self.type+"Key, 2> "+self.nice_name]
-    def get_key_pass(self):
+    def get_key_pass(self, const):
         return [self.nice_name+"_"]
-    def get_key_saves(self):
+    def get_key_saves(self, const):
         return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
+        return []
+    def get_construct(self, const):
         return [self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
             ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)+";"]
-    def get_check(self):
+    def get_check(self, const):
         return ["nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
@@ -129,7 +173,7 @@ class RangeAttribute:
         self.per_frame=per_frame
         self.attribute_name_begin=attribute_name_begin
         self.attribute_name_end=attribute_name_end
-    def get_key_members(self):
+    def get_key_members(self, const):
         return ["boost::array<"+self.type+"Key,2> "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
@@ -144,16 +188,18 @@ class RangeAttribute:
             ret.append("}")
 
         return ret
-    def get_key_arguments(self):
+    def get_key_arguments(self, const):
         return ["boost::array<"+self.type+"Key, 2> "+self.nice_name]
-    def get_key_pass(self):
+    def get_key_pass(self, const):
         return [self.nice_name+"_"]
-    def get_key_saves(self):
+    def get_key_saves(self, const):
         return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
+        return []
+    def get_construct(self, const):
         return [self.nice_name+"_[0]="+get_string(self.type, self.attribute_name_begin, const, self.per_frame)+\
             ";\n"+self.nice_name+"_[1]="+get_string(self.type, self.attribute_name_end, const, self.per_frame)+";"]
-    def get_check(self):
+    def get_check(self, const):
         return ["nh.get_has_value("+self.nice_name+"_[0], frame)"+\
             "\n  && nh.get_has_value("+self.nice_name+"_[1], frame)"+\
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
@@ -167,7 +213,7 @@ class Attributes:
         self.ptype=ptype
         self.attribute_names=attribute_names
         self.per_frame=per_frame
-    def get_key_members(self):
+    def get_key_members(self, const):
         return [self.type+"Keys "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
@@ -193,13 +239,15 @@ class Attributes:
             "len":len(self.attribute_names),
             "key":self.nice_name+"_"})
         return ret
-    def get_key_arguments(self):
+    def get_key_arguments(self, const):
         return [self.type+"Keys "+self.nice_name]
-    def get_key_pass(self):
+    def get_key_pass(self, const):
         return [self.nice_name+"_"]
-    def get_key_saves(self):
+    def get_key_saves(self, const):
         return [self.nice_name+"_("+self.nice_name+")"]
     def get_initialize(self, const):
+        return []
+    def get_construct(self, const):
         ret=[]
         for n in self.attribute_names:
             ret.append("""      %(name)s_.push_back(%(get)s);"""%{"type":self.type,
@@ -209,7 +257,7 @@ class Attributes:
                                                             "get":get_string(self.type, n, const, self.per_frame)
                                                             })
         return ret
-    def get_check(self):
+    def get_check(self, const):
         return ["nh.get_has_value("+self.nice_name+"_[0], frame)"]
 
 
@@ -231,11 +279,11 @@ class Decorator:
         self.init_function=init_function
         self.categories= decorator_categories
         self.check_function= check_function
-    def _get_key_members(self):
+    def _get_key_members(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_key_members())
+                ret.extend(a.get_key_members(const))
         return "\n".join(ret)
     def _get_methods(self, const):
         ret=[]
@@ -243,32 +291,32 @@ class Decorator:
             for a in cd.attributes:
                 ret.extend(a.get_methods(const))
         return "\n".join(ret)
-    def _get_key_arguments(self):
+    def _get_key_arguments(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_key_arguments())
+                ret.extend(a.get_key_arguments(const))
         return ",\n".join(ret)
-    def _get_key_pass(self):
+    def _get_key_pass(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_key_pass())
+                ret.extend(a.get_key_pass(const))
         return ",\n".join(ret)
-    def _get_key_saves(self):
+    def _get_key_saves(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_key_saves())
+                ret.extend(a.get_key_saves(const))
         return ",\n".join(ret)
-    def _get_checks(self):
+    def _get_checks(self, const):
         ret=[]
         for cd in self.categories:
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_check())
+                ret.extend(a.get_check(const))
         ret.extend(self.check_function)
         return "\n    && ".join(ret)
-    def _get_initialize(self, const):
+    def _get_construct(self, const):
         ret=[]
         for cd in self.categories:
             # make handle missing later
@@ -282,9 +330,18 @@ class Decorator:
                     +cd.category+"\");"
             ret.append(lhs+rhs)
             for a in cd.attributes+cd.internal_attributes:
-                ret.extend(a.get_initialize(const))
+                ret.extend(a.get_construct(const))
             ret.append("}")
         return "\n".join(ret)
+    def _get_initialize(self, const):
+        ret=[]
+        for cd in self.categories:
+            for a in cd.attributes+cd.internal_attributes:
+                ret.extend(a.get_initialize(const))
+        if ret==[]:
+            return ""
+        else:
+            return ": " + ", ".join(ret)
     def get(self):
         ret=[]
         classstr="""/** %(description)s
@@ -320,18 +377,18 @@ class Decorator:
 """
         ret.append(classstr%{"description":self.description,
                              "name":self.name,
-                             "key_members": self._get_key_members(),
+                             "key_members": self._get_key_members(True),
                              "methods": self._get_methods(True),
-                             "key_arguments": self._get_key_arguments(),
-                             "key_saves": self._get_key_saves(),
+                             "key_arguments": self._get_key_arguments(True),
+                             "key_saves": self._get_key_saves(True),
                              "CONST":"Const", "NOTCONST":"",
                              "init":""})
         ret.append(classstr%{"description":self.description,
                              "name":self.name,
-                             "key_members": self._get_key_members(),
+                             "key_members": self._get_key_members(False),
                              "methods": self._get_methods(False),
-                             "key_arguments": self._get_key_arguments(),
-                             "key_saves": self._get_key_saves(),
+                             "key_arguments": self._get_key_arguments(False),
+                             "key_saves": self._get_key_saves(False),
                              "CONST":"", "NOTCONST":"Const",
                              "init":"\n".join(self.init_function)})
         factstr="""/** Create decorators of type %(name)s.
@@ -345,8 +402,8 @@ class Decorator:
     public:
     typedef File%(CONST)sHandle File;
     typedef %(name)s%(CONST)s Decorator;
-    %(name)s%(CONST)sFactory(File%(CONST)sHandle fh){
-    %(initialize)s;
+    %(name)s%(CONST)sFactory(File%(CONST)sHandle fh) %(initialize)s{
+    %(construct)s;
     }
     %(name)s%(CONST)s get(Node%(CONST)sHandle nh,
                           unsigned int frame=0) const {
@@ -364,19 +421,21 @@ class Decorator:
             %(name)s%(CONST)sFactories;
 """
         ret.append(factstr%{"name":self.name,
-                             "key_members": self._get_key_members(),
-                             "key_pass": self._get_key_pass(),
+                             "key_members": self._get_key_members(False),
+                             "key_pass": self._get_key_pass(False),
                              "CONST":"", "NOTCONST":"Const",
                             "create_check":"",
+                            "construct": self._get_construct(False),
                             "initialize": self._get_initialize(False),
-                            "checks":self._get_checks()});
+                            "checks":self._get_checks(False)});
         ret.append(factstr%{"name":self.name,
-                             "key_members": self._get_key_members(),
-                             "key_pass": self._get_key_pass(),
+                             "key_members": self._get_key_members(True),
+                             "key_pass": self._get_key_pass(True),
                              "create_check":"IMP_RMF_USAGE_CHECK(get_is(nh, frame), \"Node is not\")",
                              "CONST":"Const", "NOTCONST":"",
+                            "construct": self._get_construct(True),
                             "initialize": self._get_initialize(True),
-                            "checks":self._get_checks()});
+                            "checks":self._get_checks(True)});
         return "\n".join(ret)
 
 
@@ -488,7 +547,7 @@ typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules
                    "")
 
 salias= Decorator("StaticAlias", "Store a static reference to another node.",
-                   [DecoratorCategory("alias", 1, [Attribute("NodeID", "alias", "alias")])],
+                   [DecoratorCategory("alias", 1, [NodeAttribute("NodeID", "aliased", "aliased")])],
                    "")
 dalias= Decorator("DynamicAlias", "Store a dynamic reference to another node.",
                    [DecoratorCategory("alias", 1, [Attribute("NodeID", "alias", "dynamic alias", True)])],
@@ -517,7 +576,6 @@ print colored.get()
 print particle.get()
 print iparticle.get()
 print pparticle.get()
-print score.get()
 print ball.get()
 print cylinder.get()
 print segment.get()
@@ -531,6 +589,7 @@ print diffuser.get()
 print typed.get()
 print salias.get()
 print dalias.get()
+print score.get()
 print """} /* namespace RMF */
 
 #endif /* IMPLIBRMF_DECORATORS_H */"""

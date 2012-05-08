@@ -248,7 +248,7 @@ NodeConstHandles get_children_resolving_aliases(NodeConstHandle nh) {
   NodeConstHandles ret= nh.get_children();
   for (unsigned int i=0; i< ret.size(); ++i) {
     if (ret[i].get_type()== ALIAS && saf.get_is(ret[i])) {
-      ret[i]= nh.get_file().get_node_from_id(saf.get(ret[i]).get_alias());
+      ret[i]= saf.get(ret[i]).get_aliased();
     }
   }
   return ret;
