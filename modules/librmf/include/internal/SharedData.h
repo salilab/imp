@@ -151,7 +151,6 @@ namespace RMF {
 
       //SharedData(HDF5Group g, bool create);
       virtual ~SharedData();
-      virtual int add_node(std::string name, unsigned int type)=0;
       virtual std::string get_name(unsigned int node) const=0;
       virtual void set_name(unsigned int node, std::string name)=0;
       virtual unsigned int get_type(unsigned int node) const=0;
