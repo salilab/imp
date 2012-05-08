@@ -12,7 +12,7 @@
 #include "RMF_config.h"
 #include "HDF5Group.h"
 #include "HDF5File.h"
-#include "internal/shared.h"
+#include "internal/SharedData.h"
 #include "Key.h"
 #include "NodeHandle.h"
 #include "NodeSetHandle.h"
@@ -309,9 +309,9 @@ namespace RMF {
     IMP_HDF5_ROOT_CONST_KEY_SET_METHODS(quad, Quad, 4);
 
 
-    HDF5ConstGroup get_hdf5_group() const {
+    /*HDF5ConstGroup get_hdf5_group() const {
       return shared_->get_group();
-    }
+      }*/
     /** \name Descriptions
         Each RMF structure has an associated description. This should
         consist of unstructured text describing the contents of the RMF

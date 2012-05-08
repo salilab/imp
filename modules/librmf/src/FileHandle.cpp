@@ -7,13 +7,14 @@
  */
 
 #include <RMF/FileHandle.h>
+#include <RMF/internal/HDF5SharedData.h>
 
 namespace RMF {
 
 FileHandle::FileHandle(internal::SharedData *shared): FileConstHandle(shared) {}
 
 FileHandle::FileHandle(HDF5Group root, bool create):
-    FileConstHandle(new internal::SharedData(root, create))  {
+    FileConstHandle(new internal::HDF5SharedData(root, create))  {
 }
 
 
@@ -24,10 +25,7 @@ NodeHandle FileHandle::get_node_from_id(NodeID id) const {
 
 
 void FileHandle::set_description(std::string descr) {
-  IMP_RMF_USAGE_CHECK(descr.empty()
-                      || descr[descr.size()-1]=='\n',
-                      "Description should end in a newline.");
-  get_shared_data()->get_group().set_char_attribute("description", descr);
+  get_shared_data()->set_description(descr);
 }
 
 
