@@ -177,10 +177,6 @@ namespace RMF {
       IMP_RMF_END_OPERATION("adding node data");
       IMP_RMF_END_FILE(get_file_name());
     }
-    void HDF5SharedData::set_name(unsigned int node, std::string name) {
-      audit_node_name(name);
-      node_names_.set_value(HDF5DataSetIndexD<1>(node), name);
-    }
     int HDF5SharedData::get_first_child(unsigned int node) const {
       check_node(node);
       return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, CHILD));
