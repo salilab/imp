@@ -49,7 +49,7 @@ NodeHandles get_children_resolving_aliases(NodeHandle nh) {
 }
 
 NodeHandle add_child_alias(NodeHandle parent,
-               NodeHandle alias) {
+               NodeConstHandle alias) {
   NodeHandle nh=parent.add_child(alias.get_name() + " alias",
                                  ALIAS);
   StaticAliasFactory saf(parent.get_file());
