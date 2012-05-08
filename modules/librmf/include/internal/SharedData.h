@@ -44,10 +44,6 @@ namespace RMF {
                                                   unsigned int frame) const=0; \
     virtual unsigned int get_number_of_frames(Key<Ucname##Traits,       \
                                               Arity> k) const =0;       \
-    bool get_is_per_frame(Key<Ucname##Traits,                           \
-                          Arity> k) const {                             \
-      return get_is_per_frame_impl(k);                                  \
-    }                                                                   \
     virtual Ucname##Traits::Type get_value(unsigned int node,           \
                                            Key<Ucname##Traits, Arity> k, \
                                            unsigned int frame) const =0; \
@@ -86,13 +82,13 @@ namespace RMF {
       map<int, boost::any> user_data_;
       int valid_;
 
-      template <class TypeTraits, int Arity>
-        bool get_is_per_frame_impl(Key<TypeTraits, Arity> k) const {
-        return k.get_is_per_frame();
-      }
     protected:
       SharedData(): valid_(11111) {};
     public:
+      template <class TypeTraits, int Arity>
+      bool get_is_per_frame(Key<TypeTraits, Arity> k) const {
+        return k.get_is_per_frame();
+      }
       IMP_RMF_FOREACH_TYPE(IMP_RMF_SHARED_TYPE);
       void audit_key_name(std::string name) const;
       void audit_node_name(std::string name) const;
