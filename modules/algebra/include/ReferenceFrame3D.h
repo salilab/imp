@@ -57,6 +57,16 @@ public:
   Vector3D get_local_coordinates(const Vector3D &v) const {
     return get_inverse().get_transformed(v);
   }
+  //! Assume the input vector is in local coordinates and transform
+  //! it to global ones.
+  ReferenceFrame3D get_global_reference_frame(const ReferenceFrame3D &v) const {
+    return ReferenceFrame3D(tr_*v.tr_);
+  }
+  //! Assume the input vector is in global coordinates and get the local
+  //! coordinates.
+  ReferenceFrame3D get_local_reference_frame(const ReferenceFrame3D &v) const {
+    return ReferenceFrame3D(get_inverse() *v.tr_);
+  }
   IMP_SHOWABLE_INLINE(ReferenceFrame3D, {out << tr_;});
 };
 
