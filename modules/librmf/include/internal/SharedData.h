@@ -129,7 +129,7 @@ namespace RMF {
       }
       boost::any get_association(int id) const {
         IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
-                            "Unassociated id");
+                            std::string("Unassociated id ")+get_name(id));
         return association_[id];
       }
       bool get_has_association(int id) const {
