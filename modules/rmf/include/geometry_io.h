@@ -22,7 +22,6 @@ IMPRMF_BEGIN_NAMESPACE
     - IMP::display::SegmentGeometry
     - IMP::display::CylinderGeometry
     - IMP::display::SphereGeometry
-    - IMP::display::SurfaceMeshGeometry
 
     Other types can be supported when requested. Be aware, many
     more complex geometry types are automatically decomposed into
