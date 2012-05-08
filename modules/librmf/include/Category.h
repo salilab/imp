@@ -47,10 +47,6 @@ public:
     IMP_RMF_USAGE_CHECK(i_ >=0, "Invalid Category used");
     return i_;
   }
-  unsigned int get_offset() {
-    // int, string, float
-    return 3*i_;
-  }
   IMP_RMF_HASHABLE(CategoryD, return i_);
   IMP_RMF_COMPARISONS(CategoryD);
   IMP_RMF_SHOWABLE(CategoryD, i_);
