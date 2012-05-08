@@ -92,10 +92,13 @@ namespace {
   };
 
   RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
+                           RMF::ScoreFactory sf,
                            RMF::NodeHandle parent) {
     if (d.map_.find(s) == d.map_.end()) {
       RMF::NodeHandle n= parent.add_child("subset", RMF::FEATURE);
       d.map_[s]=n.get_id();
+      RMF::Score csd= sf.get(n, 0);
+      csd.set_representation(get_node_ids(parent.get_file(), s));
     }
     return parent.get_file().get_node_from_id(d.map_.find(s)->second);
   }
@@ -154,8 +157,10 @@ namespace {
       RestraintSaveData &d= data_[o];
       RMF::Score sd= sf_.get(nh, frame);
       sd.set_score(o->get_last_score());
-      sd.set_representation(get_node_ids(nh.get_file(),
-                                         o->get_input_particles()));
+      if (frame==0) {
+        sd.set_representation(get_node_ids(nh.get_file(),
+                                           o->get_input_particles()));
+      }
       base::Pointer<Restraint> rd= o->create_current_decomposition();
       if (rd && rd != o) {
         rd->set_was_used(true);
@@ -166,10 +171,10 @@ namespace {
           double score= rs[i]->unprotected_evaluate(nullptr);
           rs[i]->set_was_used(true);
           if (score != 0) {
-            RMF::NodeHandle nnh= get_node(s, d, nh);
+            RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
             RMF::Score csd= sf_.get(nnh, frame);
             csd.set_score(score);
-            csd.set_representation(get_node_ids(nh.get_file(), s));
+            //csd.set_representation(get_node_ids(nh.get_file(), s));
           }
         }
       }
