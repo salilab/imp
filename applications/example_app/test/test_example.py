@@ -8,7 +8,6 @@ class ExampleApplicationTest(IMP.test.ApplicationTestCase):
         out, err = p.communicate()
         sys.stderr.write(err)
         self.assertApplicationExitedCleanly(p.returncode, err)
-        self.assertIn('Hello world', out)
 
 if __name__ == '__main__':
     IMP.test.main()
