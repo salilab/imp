@@ -6,7 +6,10 @@ import IMP.display
 
 k=10.0
 np=10
-frames=1000
+if IMP.build=="debug":
+    frames=100
+else:
+    frames=1000
 
 m= IMP.Model()
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
