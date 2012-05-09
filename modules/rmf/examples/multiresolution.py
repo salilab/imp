@@ -23,6 +23,9 @@ def recursive_approximation(res):
     p= IMP.Particle(m)
     hc=IMP.atom.Hierarchy.setup_particle(p)
     IMP.atom.setup_as_approximation(p, res)
+    nm= str(IMP.atom.Residue(res[0]).get_index())+"-"\
+        + str(IMP.atom.Residue(res[-1]).get_index())
+    p.set_name(nm)
     for mm in me:
         hc.add_child(mm)
     return [hc]
