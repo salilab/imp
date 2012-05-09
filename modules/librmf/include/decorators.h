@@ -3100,7 +3100,7 @@ score_(score) {
   NodeConstHandles ret;
   for (unsigned int i=0; i< typed.size(); ++i) {
      if (representation_.get_is(typed[i])) {
-        representation_.get(typed[i]).get_aliased();
+        ret.push_back(representation_.get(typed[i]).get_aliased());
      }
   }
   return ret;
@@ -3146,7 +3146,7 @@ score_(score) {
   NodeHandles ret;
   for (unsigned int i=0; i< typed.size(); ++i) {
      if (representation_.get_is(typed[i])) {
-        representation_.get(typed[i]).get_aliased();
+        ret.push_back(representation_.get(typed[i]).get_aliased());
      }
   }
   return ret;

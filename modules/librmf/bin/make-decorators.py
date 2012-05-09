@@ -38,7 +38,7 @@ class Children:
         ret.append("  "+nht+"s ret;")
         ret.append("  for (unsigned int i=0; i< typed.size(); ++i) {")
         ret.append("     if ("+self.nice_name+"_.get_is(typed[i])) {")
-        ret.append("        "+self.nice_name+"_.get(typed[i]).get_aliased();")
+        ret.append("        ret.push_back("+self.nice_name+"_.get(typed[i]).get_aliased());")
         ret.append("     }");
         ret.append("  }");
         ret.append("  return ret;")
