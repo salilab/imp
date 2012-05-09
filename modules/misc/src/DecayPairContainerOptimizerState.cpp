@@ -33,8 +33,9 @@ void DecayPairContainerOptimizerState::do_update(unsigned int) {
   if (!to_remove.empty()) {
     IMP_LOG(TERSE, "Removing " << to_remove << std::endl);
     output_->remove_particle_pairs(to_remove);
-    IMP_LOG(TERSE, "Remaining "
-            << output_->get_particle_pairs() << std::endl);
+    IMP_LOG(VERBOSE, "Remaining "
+            << output_->get_particle_pairs() << " ");
+    IMP_LOG(TERSE, output_->get_number_of_particle_pairs() << std::endl);
   }
 }
 
