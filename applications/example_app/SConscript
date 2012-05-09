@@ -2,7 +2,7 @@ import os
 import os.path
 
 Import('env')
-env= env.IMPApplication(name="example_app", version='nightly-7/5/2012',
+env= env.IMPApplication(name="example_app", version='nightly-8/5/2012',
                         authors=["Daniel Russel"],
                         brief="An example application.",
                         overview="An example application.""",
