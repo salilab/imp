@@ -290,7 +290,8 @@ void set_segment(algebra::Segment3D s,
       }
       P::save_color(o, nh, frame);
     }
-    void do_add(display::BoundingBoxGeometry *, RMF::NodeHandle nh) {
+    void do_add(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
+      o->set_was_used(true);
       for (unsigned int i=0; i< 12; ++i) {
         nh.add_child("edge", RMF::GEOMETRY);
       }
