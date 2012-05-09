@@ -99,11 +99,6 @@ class IMPEXPORT RestraintSet : public Restraint
 
 IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-
-//! Print the hierarchy of restraints
-IMPEXPORT void show_restraint_hierarchy(Restraint *rs,
-                                     std::ostream &out=std::cout);
-
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_DECLARE_RESTRAINT_SET_H */
