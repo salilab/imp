@@ -8,14 +8,14 @@ import RMF
 import random
 
 if IMP.build=="debug":
-    np=5
-    nb=5
+    np=8
+    nb=8
     prob=.5
     period=10
     steps=10
 else:
-    np=50
-    nb=150
+    np=15
+    nb=20
     prob=.1
     period=10
     steps=10000
@@ -46,6 +46,7 @@ for i in range(0,nb):
 cf= IMP.core.CoinFlipPairPredicate(prob)
 dos= IMP.misc.DecayPairContainerOptimizerState(cf, bds, "decay")
 dos.set_period(period)
+dos.set_log_level(IMP.VERBOSE)
 
 # create restraints
 rs=[]
