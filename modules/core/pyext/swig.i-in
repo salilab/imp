@@ -94,6 +94,11 @@ IMP_SWIG_OBJECT( IMP::core, ConstantPairPredicate, ConstantPairPredicates);
 IMP_SWIG_OBJECT( IMP::core, ConstantTripletPredicate, ConstantTripletPredicates);
 IMP_SWIG_OBJECT( IMP::core, ConstantQuadPredicate, ConstantQuadPredicates);
 
+IMP_SWIG_OBJECT( IMP::core, CoinFlipSingletonPredicate, CoinFlipSingletonPredicates);
+IMP_SWIG_OBJECT( IMP::core, CoinFlipPairPredicate, CoinFlipPairPredicates);
+IMP_SWIG_OBJECT( IMP::core, CoinFlipTripletPredicate, CoinFlipTripletPredicates);
+IMP_SWIG_OBJECT( IMP::core, CoinFlipQuadPredicate, CoinFlipQuadPredicates);
+
 IMP_SWIG_OBJECT( IMP::core, UnorderedTypeSingletonPredicate, UnorderedTypeSingletonPredicates);
 IMP_SWIG_OBJECT( IMP::core, UnorderedTypePairPredicate, UnorderedTypePairPredicates);
 IMP_SWIG_OBJECT( IMP::core, UnorderedTypeTripletPredicate, UnorderedTypeTripletPredicates);

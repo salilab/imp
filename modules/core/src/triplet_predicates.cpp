@@ -8,6 +8,8 @@
  */
 
 #include <IMP/core/triplet_predicates.h>
+#include <IMP/base/random.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantTripletPredicate::ConstantTripletPredicate(int v,
@@ -26,6 +28,10 @@ OrderedTypeTripletPredicate::OrderedTypeTripletPredicate(
 AllSameTripletPredicate::AllSameTripletPredicate(
     std::string name):
     TripletPredicate(name){}
+
+CoinFlipTripletPredicate::CoinFlipTripletPredicate( double p,
+    std::string name):
+  TripletPredicate(name), p_(p){}
 
 
 IMPCORE_END_NAMESPACE
