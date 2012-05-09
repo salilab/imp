@@ -44,7 +44,7 @@ namespace {
   class Subset: public base::ConstArray<base::WeakPointer<Particle>,
                                         Particle*> {
     typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
-    static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
+    static ParticlesTemp get_sorted(ParticlesTemp ps) {
       std::sort(ps.begin(), ps.end());
       ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
       return ps;
@@ -53,7 +53,7 @@ namespace {
     Subset(){}
     /** Construct a subset from a non-empty list of particles.
      */
-    explicit Subset(ParticlesTemp ps): P(get_sorted(ps)) {
+    explicit Subset(const ParticlesTemp &ps): P(get_sorted(ps)) {
     }
     Model *get_model() const {
       return operator[](0)->get_model();
@@ -96,19 +96,28 @@ namespace {
   }
 
   struct RestraintSaveData {
-    compatibility::map<Subset, RMF::NodeID> map_;
+    compatibility::map<Subset, RMF::NodeHandle> map_;
   };
 
   RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
                            RMF::ScoreFactory sf,
                            RMF::NodeHandle parent) {
     if (d.map_.find(s) == d.map_.end()) {
-      RMF::NodeHandle n= parent.add_child("subset", RMF::FEATURE);
-      d.map_[s]=n.get_id();
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        for (compatibility::map<Subset, RMF::NodeHandle>::const_iterator it
+               = d.map_.begin(); it != d.map_.end(); ++it) {
+          IMP_INTERNAL_CHECK(it->first != s,
+                             "Found!!!!");
+        }
+      }
+      RMF::NodeHandle n= parent.add_child("term", RMF::FEATURE);
+      d.map_[s]=n;
+      IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(),
+                         "Not found");
       RMF::Score csd= sf.get(n, 0);
       csd.set_representation(get_node_ids(parent.get_file(), s));
     }
-    return parent.get_file().get_node_from_id(d.map_.find(s)->second);
+    return d.map_.find(s)->second;
   }
 
   // get_particles
@@ -165,9 +174,12 @@ namespace {
       RestraintSaveData &d= data_[o];
       RMF::Score sd= sf_.get(nh, frame);
       double score=o->get_last_score();
-     if (sd.get_representation().empty()) {
-       sd.set_representation(get_node_ids(nh.get_file(),
-                                           o->get_input_particles()));
+      RMF::NodeHandles orep=sd.get_representation();
+      if (orep.empty()) {
+        RMF::NodeConstHandles nhs=get_node_ids(nh.get_file(),
+                                          o->get_input_particles());
+        sd.set_representation(nhs);
+        RMF::NodeHandles nrep=sd.get_representation();
       }
       // only set score if it is valid
       if (score < std::numeric_limits<double>::max()) {
