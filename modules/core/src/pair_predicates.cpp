@@ -8,6 +8,8 @@
  */
 
 #include <IMP/core/pair_predicates.h>
+#include <IMP/base/random.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantPairPredicate::ConstantPairPredicate(int v,
@@ -26,6 +28,10 @@ OrderedTypePairPredicate::OrderedTypePairPredicate(
 AllSamePairPredicate::AllSamePairPredicate(
     std::string name):
     PairPredicate(name){}
+
+CoinFlipPairPredicate::CoinFlipPairPredicate( double p,
+    std::string name):
+  PairPredicate(name), p_(p){}
 
 
 IMPCORE_END_NAMESPACE

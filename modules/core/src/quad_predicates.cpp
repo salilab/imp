@@ -8,6 +8,8 @@
  */
 
 #include <IMP/core/quad_predicates.h>
+#include <IMP/base/random.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantQuadPredicate::ConstantQuadPredicate(int v,
@@ -26,6 +28,10 @@ OrderedTypeQuadPredicate::OrderedTypeQuadPredicate(
 AllSameQuadPredicate::AllSameQuadPredicate(
     std::string name):
     QuadPredicate(name){}
+
+CoinFlipQuadPredicate::CoinFlipQuadPredicate( double p,
+    std::string name):
+  QuadPredicate(name), p_(p){}
 
 
 IMPCORE_END_NAMESPACE

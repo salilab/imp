@@ -12,6 +12,7 @@
 
 #include "core_config.h"
 #include <IMP/PairPredicate.h>
+#include <boost/random/uniform_01.hpp>
 #include "internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -64,6 +65,21 @@ public:
                              ="AllSamePairPredicate%1%");
   IMP_INDEX_PAIR_PREDICATE(AllSamePairPredicate, {
       return internal::get_all_same(m, pi);
+    });
+};
+
+/** Return true with a fixed probability. */
+class IMPCOREEXPORT CoinFlipPairPredicate: public PairPredicate {
+  double p_;
+  mutable boost::uniform_01<> rng_;
+public:
+  CoinFlipPairPredicate(double p, std::string name
+                             ="CoinFlipPairPredicate%1%");
+  IMP_INDEX_PAIR_PREDICATE(CoinFlipPairPredicate, {
+      IMP_UNUSED(m);
+      IMP_UNUSED(pi);
+      if (rng_(base::random_number_generator)<p_) return 1;
+      else return 0;
     });
 };
 

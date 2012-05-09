@@ -8,6 +8,8 @@
  */
 
 #include <IMP/core/HELPERNAME_predicates.h>
+#include <IMP/base/random.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantCLASSNAMEPredicate::ConstantCLASSNAMEPredicate(int v,
@@ -26,6 +28,10 @@ OrderedTypeCLASSNAMEPredicate::OrderedTypeCLASSNAMEPredicate(
 AllSameCLASSNAMEPredicate::AllSameCLASSNAMEPredicate(
     std::string name):
     CLASSNAMEPredicate(name){}
+
+CoinFlipCLASSNAMEPredicate::CoinFlipCLASSNAMEPredicate( double p,
+    std::string name):
+  CLASSNAMEPredicate(name), p_(p){}
 
 
 IMPCORE_END_NAMESPACE

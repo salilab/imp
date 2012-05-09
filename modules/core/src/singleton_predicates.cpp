@@ -8,6 +8,8 @@
  */
 
 #include <IMP/core/singleton_predicates.h>
+#include <IMP/base/random.h>
+
 IMPCORE_BEGIN_NAMESPACE
 
 ConstantSingletonPredicate::ConstantSingletonPredicate(int v,
@@ -26,6 +28,10 @@ OrderedTypeSingletonPredicate::OrderedTypeSingletonPredicate(
 AllSameSingletonPredicate::AllSameSingletonPredicate(
     std::string name):
     SingletonPredicate(name){}
+
+CoinFlipSingletonPredicate::CoinFlipSingletonPredicate( double p,
+    std::string name):
+  SingletonPredicate(name), p_(p){}
 
 
 IMPCORE_END_NAMESPACE

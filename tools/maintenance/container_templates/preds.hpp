@@ -12,6 +12,7 @@
 
 #include "core_config.h"
 #include <IMP/CLASSNAMEPredicate.h>
+#include <boost/random/uniform_01.hpp>
 #include "internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -64,6 +65,21 @@ public:
                              ="AllSameCLASSNAMEPredicate%1%");
   IMP_INDEX_HEADERNAME_PREDICATE(AllSameCLASSNAMEPredicate, {
       return internal::get_all_same(m, pi);
+    });
+};
+
+/** Return true with a fixed probability. */
+class IMPCOREEXPORT CoinFlipCLASSNAMEPredicate: public CLASSNAMEPredicate {
+  double p_;
+  mutable boost::uniform_01<> rng_;
+public:
+  CoinFlipCLASSNAMEPredicate(double p, std::string name
+                             ="CoinFlipCLASSNAMEPredicate%1%");
+  IMP_INDEX_HEADERNAME_PREDICATE(CoinFlipCLASSNAMEPredicate, {
+      IMP_UNUSED(m);
+      IMP_UNUSED(pi);
+      if (rng_(base::random_number_generator)<p_) return 1;
+      else return 0;
     });
 };
 
