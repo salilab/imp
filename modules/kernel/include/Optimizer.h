@@ -127,7 +127,7 @@ class IMPEXPORT Optimizer: public IMP::base::Object
   /** By default, the Optimizer uses the scoring function provided by
       the model, but you can use another scoring function instead.
   */
-  virtual void set_scoring_function(ScoringFunction *sf);
+  virtual void set_scoring_function(ScoringFunctionInput sf);
 
 #ifndef IMP_DOXYGEN
   void set_restraints(const RestraintsTemp &rs);
