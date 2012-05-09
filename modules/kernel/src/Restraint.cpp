@@ -132,6 +132,8 @@ namespace {
         created[0]->set_weight(weight);
         created[0]->set_maximum_score(max);
         created[0]->set_model(me->get_model());
+        created[0]->set_log_level(me->get_log_level());
+        created[0]->set_check_level(me->get_check_level());
       }
       check_decomposition(const_cast<Restraint*>(me), created[0]);
       return created[0];
@@ -143,6 +145,12 @@ namespace {
                              "nullptr restraint returned in decomposition");
         }
       }
+      for (unsigned int i=0; i < created.size(); ++i) {
+        created[i]->set_log_level(me->get_log_level());
+        created[i]->set_check_level(me->get_check_level());
+      }
+      rs->set_log_level(me->get_log_level());
+      rs->set_check_level(me->get_check_level());
       rs->add_restraints(created);
       rs->set_maximum_score(me->get_maximum_score());
       rs->set_weight(me->get_weight());
