@@ -4,6 +4,7 @@ IMP_SWIG_OBJECT(IMP::misc, CommonEndpointPairFilter, CommonEndpointPairFilters);
 IMP_SWIG_OBJECT(IMP::misc, LogPairScore, LogPairScores);
 IMP_SWIG_OBJECT(IMP::misc, LowestRefinedPairScore, LowestRefinedPairScores);
 IMP_SWIG_OBJECT(IMP::misc, SoftCylinderPairScore, SoftCylinderPairScores);
+IMP_SWIG_OBJECT(IMP::misc, DecayPairContainerOptimizerState, DecayPairContainerOptimizerStates);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::misc, CustomXYZR, CustomXYZRs);
 
 /* Wrap our own classes */
@@ -14,3 +15,4 @@ IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::misc, CustomXYZR, CustomXYZRs);
 %include "IMP/misc/CommonEndpointPairFilter.h"
 %include "IMP/misc/CustomXYZR.h"
 %include "IMP/misc/SoftCylinderPairScore.h"
+%include "IMP/misc/DecayPairContainerOptimizerState.h"
