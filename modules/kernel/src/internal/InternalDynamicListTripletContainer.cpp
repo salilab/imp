@@ -91,8 +91,7 @@ InternalDynamicListTripletContainer::get_input_containers() const {
 
 ParticleIndexTriplets
 InternalDynamicListTripletContainer::get_all_possible_indexes() const {
-  IMP_NOT_IMPLEMENTED;
-  return ParticleIndexTriplets();
+  return get_indexes();
 }
 
 

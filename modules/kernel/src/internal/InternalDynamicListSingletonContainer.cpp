@@ -91,8 +91,7 @@ InternalDynamicListSingletonContainer::get_input_containers() const {
 
 ParticleIndexes
 InternalDynamicListSingletonContainer::get_all_possible_indexes() const {
-  IMP_NOT_IMPLEMENTED;
-  return ParticleIndexes();
+  return get_indexes();
 }
 
 

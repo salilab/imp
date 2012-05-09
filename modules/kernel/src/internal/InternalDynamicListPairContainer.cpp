@@ -91,8 +91,7 @@ InternalDynamicListPairContainer::get_input_containers() const {
 
 ParticleIndexPairs
 InternalDynamicListPairContainer::get_all_possible_indexes() const {
-  IMP_NOT_IMPLEMENTED;
-  return ParticleIndexPairs();
+  return get_indexes();
 }
 
 
