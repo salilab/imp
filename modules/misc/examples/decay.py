@@ -4,6 +4,7 @@ import IMP.misc
 import IMP.display
 import IMP.example
 import IMP.rmf
+#import IMP.benchmark
 import RMF
 import random
 
@@ -12,11 +13,11 @@ if IMP.build=="debug":
     nb=8
     prob=.5
     period=10
-    steps=10
+    steps=100
 else:
-    np=15
-    nb=20
-    prob=.1
+    np=20
+    nb=40
+    prob=.9
     period=10
     steps=10000
 
@@ -60,6 +61,8 @@ ev= IMP.core.ExcludedVolumeRestraint(ps, 10,10)
 # equilibrate
 print "equilibrating"
 IMP.set_log_level(IMP.PROGRESS)
+
+#IMP.benchmark.set_is_profiling(True)
 IMP.example.optimize_balls(ps, rs)
 
 # set up simulator
@@ -72,7 +75,7 @@ bd.add_optimizer_state(dos)
 fn=IMP.base.create_temporary_file_name("decay", ".rmf")
 rmf= RMF.create_rmf_file(fn)
 # silliness that will go away
-bd.get_scoring_function().evaluate(False)
+print "setting up file"
 IMP.rmf.add_hierarchies(rmf, ps)
 IMP.rmf.add_restraints(rmf, rs+[ev])
 g= IMP.display.BoundingBoxGeometry(bb)
