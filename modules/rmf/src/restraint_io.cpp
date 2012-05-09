@@ -84,7 +84,13 @@ namespace {
                                      const C &ps) {
     RMF::NodeConstHandles ret;
     for (unsigned int i=0; i< ps.size(); ++i) {
-      ret.push_back(get_node_from_association(fh, ps[i]));
+      RMF::NodeConstHandle nh=get_node_from_association(fh, ps[i]);
+      if (nh != RMF::NodeConstHandle()) {
+        ret.push_back(nh);
+      } else {
+        IMP_WARN("Particle " << Showable(ps[i])
+                 << " is not in the RMF." << std::endl);
+      }
     }
     return ret;
   }
@@ -159,25 +165,29 @@ namespace {
       RestraintSaveData &d= data_[o];
       RMF::Score sd= sf_.get(nh, frame);
       double score=o->get_last_score();
-      sd.set_score(score);
-      if (sd.get_representation().empty()) {
-        sd.set_representation(get_node_ids(nh.get_file(),
+     if (sd.get_representation().empty()) {
+       sd.set_representation(get_node_ids(nh.get_file(),
                                            o->get_input_particles()));
       }
-      base::Pointer<Restraint> rd= o->create_current_decomposition();
-      if (rd && rd != o) {
-        rd->set_was_used(true);
-        rd->unprotected_evaluate(nullptr);
-        RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
-        for (unsigned int i=0; i< rs.size(); ++i) {
-          Subset s(rs[i]->get_input_particles());
-          double score= rs[i]->unprotected_evaluate(nullptr);
-          rs[i]->set_was_used(true);
-          if (score != 0) {
-            RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
-            RMF::Score csd= sf_.get(nnh, frame);
-            csd.set_score(score);
-            //csd.set_representation(get_node_ids(nh.get_file(), s));
+      // only set score if it is valid
+      if (score < std::numeric_limits<double>::max()) {
+        sd.set_score(score);
+
+        base::Pointer<Restraint> rd= o->create_current_decomposition();
+        if (rd && rd != o) {
+          rd->set_was_used(true);
+          rd->unprotected_evaluate(nullptr);
+          RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
+          for (unsigned int i=0; i< rs.size(); ++i) {
+            Subset s(rs[i]->get_input_particles());
+            double score= rs[i]->unprotected_evaluate(nullptr);
+            rs[i]->set_was_used(true);
+            if (score != 0) {
+              RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
+              RMF::Score csd= sf_.get(nnh, frame);
+              csd.set_score(score);
+              //csd.set_representation(get_node_ids(nh.get_file(), s));
+            }
           }
         }
       }
