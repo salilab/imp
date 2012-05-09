@@ -26,10 +26,6 @@ ScoringFunction::ScoringFunction(Model *m,
                                                     last_was_good_(false){
 }
 
-ScoringFunctionInput::ScoringFunctionInput(Model *sf):
-  P(IMP::internal::create_scoring_function(sf)){
-}
-
 void
 ScoringFunction::do_update_dependencies(const DependencyGraph &dg,
                                      const DependencyGraphVertexIndex &index) {
@@ -58,11 +54,17 @@ ScoringFunction::get_required_score_states(const DependencyGraph &dg,
   return IMP::get_required_score_states(rs, dg, i);
 }
 
-ScoringFunctionInput::ScoringFunctionInput(const RestraintsTemp &sf):
-  P(new internal::RestraintsScoringFunction(sf)){
-  }
-ScoringFunctionInput::ScoringFunctionInput(RestraintSet *sf):
-  P(IMP::internal::create_scoring_function(sf)){}
+ScoringFunction*
+ScoringFunctionInput::get(const RestraintsTemp &sf) {
+  return new internal::RestraintsScoringFunction(sf);
+}
+
+ScoringFunction* ScoringFunctionInput::get(Model *sf) {
+  return sf->create_scoring_function();
+}
+ScoringFunction* ScoringFunctionInput::get(Restraint *sf) {
+  return sf->create_scoring_function();
+}
 
 namespace {
   unsigned int sf_num_children(Restraint*r) {

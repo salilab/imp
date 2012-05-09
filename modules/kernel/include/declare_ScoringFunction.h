@@ -92,11 +92,23 @@ class IMPEXPORT ScoringFunctionInput
 #endif
 {
   typedef base::OwnerPointer<ScoringFunction> P;
+  static ScoringFunction* get(ScoringFunction *sf) {
+    return sf;
+  }
+  static ScoringFunction* get(const RestraintsTemp &sf);
+  static ScoringFunction* get(Model *sf);
+  static ScoringFunction* get(Restraint *sf);
  public:
+  ScoringFunctionInput(){}
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  template <class T>
+    ScoringFunctionInput(base::internal::PointerBase<T> t):
+    P(get(t)){}
+#endif
   ScoringFunctionInput(ScoringFunction *sf): P(sf){}
-  ScoringFunctionInput(Model *sf);
-  ScoringFunctionInput(const RestraintsTemp &sf);
-  ScoringFunctionInput(RestraintSet *sf);
+  ScoringFunctionInput(const RestraintsTemp &sf): P(get(sf)){}
+  ScoringFunctionInput(Model *sf): P(get(sf)){}
+  ScoringFunctionInput(Restraint *sf): P(get(sf)){}
 };
 
 //! Print the hierarchy of restraints
