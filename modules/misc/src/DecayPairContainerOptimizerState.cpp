@@ -22,14 +22,20 @@ DecayPairContainerOptimizerState(PairPredicate *pred,
   output_->set_particle_pairs(input_->get_particle_pairs());
 }
 void DecayPairContainerOptimizerState::do_update(unsigned int) {
+  IMP_OBJECT_LOG;
   ParticlePairsTemp to_remove;
   IMP_FOREACH_PAIR_INDEX(output_, {
       if (pred_->get_value_index(input_->get_model(),
-                           _1)) {
+                           _1)==0) {
         to_remove.push_back(get_particle(input_->get_model(), _1));
       }
     });
-  output_->remove_particle_pairs(to_remove);
+  if (!to_remove.empty()) {
+    IMP_LOG(TERSE, "Removing " << to_remove << std::endl);
+    output_->remove_particle_pairs(to_remove);
+    IMP_LOG(TERSE, "Remaining "
+            << output_->get_particle_pairs() << std::endl);
+  }
 }
 
 void DecayPairContainerOptimizerState::do_show(std::ostream &) const {
