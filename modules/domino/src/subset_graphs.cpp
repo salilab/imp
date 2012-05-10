@@ -19,7 +19,7 @@
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
-
+#include <boost/graph/graphviz.hpp>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -750,6 +750,84 @@ MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
                                        true),
                      "Result is not merge tree");
   return ret;
+}
+
+namespace {
+  struct NameWriter {
+    const compatibility::map<Particle*, int> & index_;
+    MergeTreeConstVertexName vm_;
+    NameWriter(const compatibility::map<Particle*, int> &index,
+               const MergeTreeConstVertexName &vm):
+      index_(index), vm_(vm){}
+     void operator()(std::ostream& out, int v) const {
+       Subset s= boost::get(vm_, v);
+       //std::cout << "Writing name for subset " << s << std::endl;
+       out << " [label=\"";
+       for (unsigned int i=0; i< s.size(); ++i) {
+         if (i != 0) out << " ";
+         out << index_.find(s[i])->second;
+       }
+       out << "\"]";
+     }
+  };
+}
+
+void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
+                      std::ostream &out) {
+  compatibility::map<Particle*, int> index;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    index[ps[i]]=i;
+  }
+  NameWriter nw(index, boost::get(boost::vertex_name, tree));
+  boost::write_graphviz(out, tree, nw);
+}
+
+MergeTree read_merge_tree(std::istream &in,
+                          const ParticlesTemp &ps) {
+
+  boost::dynamic_properties dp;
+  MergeTree graph;
+  /*boost::property_map<MergeTree, boost::vertex_name_t>::type name =
+    get(boost::vertex_name, graph);*/
+  boost::vector_property_map<std::string> name;
+  dp.property("label",name);
+
+  boost::vector_property_map<int> id;
+  dp.property("node_id",id);
+
+  /*boost::property_map<MergeTree, boost::vertex_color_t>::type mass =
+    get(boost::vertex_color, graph);
+    dp.property("mass",mass);*/
+
+  /*property_map<graph_t, boost::edge_weight_t>::type weight =
+    get(boost::edge_weight, graph);
+    dp.property("weight",weight);*/
+
+  // Use ref_property_map to turn a graph property into a property map
+  /*boost::ref_property_map<MergeTree*,std::string>
+    gname(get_property(graph,boost::graph_name));*/
+  //dp.property("name",gname);
+
+  bool status = read_graphviz(in,graph,dp,"node_id");
+  if (!status) {
+    IMP_THROW("Error reading graph", IOException);
+  }
+  MergeTreeVertexName nm=boost::get(boost::vertex_name, graph);
+  for (unsigned int i=0; i< boost::num_vertices(graph); ++i) {
+    std::string cnm=name[i];
+    std::istringstream iss(cnm);
+    std::cout << i << " has " << cnm << " and " << id[i] << std::endl;
+    ParticlesTemp cur;
+    do {
+      int c;
+      iss >> c;
+      if (!iss) break;
+      cur.push_back(ps[c]);
+    } while (true);
+    Subset s(cur);
+    nm[i]=s;
+  }
+  return graph;
 }
 
 IMPDOMINO_END_NAMESPACE
