@@ -71,7 +71,7 @@ public:
       level to the local one for this object and increase
       the current indent.
    */
-  virtual void set_log_level(LogLevel l);
+  void set_log_level(LogLevel l);
 
   /** Each object can be assigned a different check level too.
    */
