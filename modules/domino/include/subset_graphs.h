@@ -166,6 +166,21 @@ IMPDOMINOEXPORT
 bool get_is_merge_tree(const MergeTree &tree, Subset all, bool verbose=true);
 
 
+/** \name Read and write merge trees
+    Merge trees can be written to an read from a text stream. As always,
+    this requires a canonical particles list whose order is the same
+    for the reading and writing.
+    @{
+*/
+
+IMPDOMINOEXPORT
+void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
+                      std::ostream &out);
+IMPDOMINOEXPORT
+MergeTree read_merge_tree(std::istream &in,
+                          const ParticlesTemp &ps);
+/** @} */
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_GRAPHS_H */
