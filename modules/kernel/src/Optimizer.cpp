@@ -73,7 +73,7 @@ void Optimizer::set_is_optimizing_states(bool tf) const
 }
 
 double Optimizer::optimize(unsigned int max_steps) {
-  IMP_FUNCTION_LOG;
+  IMP_OBJECT_LOG;
   if (!model_) {
     IMP_THROW("Must give the optimizer a model to optimize",
               base::ValueException);
