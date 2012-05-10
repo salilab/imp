@@ -92,6 +92,7 @@ class SimpleSaveLink: public SaveLink {
                            unsigned int frame)=0;
   void do_save(RMF::FileHandle fh, unsigned int frame) {
     for (unsigned int i=0; i< os_.size();  ++i) {
+      os_[i]->set_was_used(true);
       IMP_LOG(VERBOSE, "Saving " << Showable(os_[i]) << std::endl);
       do_save_one(os_[i], fh.get_node_from_id(nhs_[i]), frame);
     }
