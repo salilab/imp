@@ -9,9 +9,14 @@ class GenericTest(RMF.TestCase):
     """Test the python code"""
     def _test_set(self, f, Arity):
         ch= f.get_root_node().get_children()
+        added=[]
         for i in range(0,5):
             tpl= random.sample(ch, Arity)
-            t= f.add_node_set(tpl, RMF.CUSTOM_SET)
+            tpl.sort()
+            if tpl not in added:
+                added.append(tpl)
+                print tpl
+                t= f.add_node_set(tpl, RMF.CUSTOM_SET)
         ts= f.get_node_sets(Arity)
         cat= f.add_category("hi", Arity)
         k= f.add_float_key(cat, "v", False)
