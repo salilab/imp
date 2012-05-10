@@ -33,7 +33,8 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(rr[0].evaluate(False), r.evaluate(False))
     def test_2(self):
         """Test writing dynamic restraints"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("restrnp2.rmf"))
+        RMF.set_show_hdf5_errors(True)
+        f= RMF.create_rmf_file(self.get_tmp_file_name("dynamic_restraints.rmf"))
         m= IMP.Model()
         ps= [IMP.Particle(m) for i in range(0,10)]
         ds= [IMP.core.XYZR.setup_particle(p) for p in ps]
