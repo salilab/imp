@@ -75,7 +75,7 @@ public:
 
   /** Each object can be assigned a different check level too.
    */
-  virtual void set_check_level(CheckLevel l) {
+  void set_check_level(CheckLevel l) {
 #if IMP_BUILD < IMP_FAST
     check_level_=l;
 #endif
