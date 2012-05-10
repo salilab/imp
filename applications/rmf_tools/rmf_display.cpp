@@ -23,8 +23,6 @@ int main(int argc, char **argv) {
   try {
     options.add_options()
       ("recolor,c", "Recolor the hierarchies using the display colors.")
-      ("frame,f", boost::program_options::value< int >(&frame),
-       "Frame to use. Do '-#' for every #th frame (eg -1 is every frame).")
       ("score,s", boost::program_options::value< double >(&restraint_max),
        "The upper bound for the restraints scores to color the "\
        "restraints by score.")
