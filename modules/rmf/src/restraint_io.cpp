@@ -96,7 +96,8 @@ namespace {
   }
 
   struct RestraintSaveData {
-    compatibility::map<Subset, RMF::NodeHandle> map_;
+    // must not be a handle so as not to keep things alive
+    compatibility::map<Subset, RMF::NodeID> map_;
   };
 
   RMF::NodeHandle get_node(Subset s, RestraintSaveData &d,
@@ -104,20 +105,20 @@ namespace {
                            RMF::NodeHandle parent) {
     if (d.map_.find(s) == d.map_.end()) {
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        for (compatibility::map<Subset, RMF::NodeHandle>::const_iterator it
+        for (compatibility::map<Subset, RMF::NodeID>::const_iterator it
                = d.map_.begin(); it != d.map_.end(); ++it) {
           IMP_INTERNAL_CHECK(it->first != s,
                              "Found!!!!");
         }
       }
       RMF::NodeHandle n= parent.add_child("term", RMF::FEATURE);
-      d.map_[s]=n;
+      d.map_[s]=n.get_id();
       IMP_INTERNAL_CHECK(d.map_.find(s) != d.map_.end(),
                          "Not found");
       RMF::Score csd= sf.get(n, 0);
       csd.set_representation(get_node_ids(parent.get_file(), s));
     }
-    return d.map_.find(s)->second;
+    return parent.get_file().get_node_from_id(d.map_.find(s)->second);
   }
 
   // get_particles
