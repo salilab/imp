@@ -30,6 +30,7 @@ namespace RMF {
 class Key {
   friend class FileConstHandle;
   friend class NodeConstHandle;
+  friend class NodeHandle;
   friend class internal::SharedData;
     friend class internal::HDF5SharedData;
   int i_;
