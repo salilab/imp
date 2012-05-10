@@ -12,6 +12,7 @@ class GenericTest(IMP.test.TestCase):
         """Test round trip"""
         m= IMP.Model()
         print "reading pdb"
+        name=self.get_tmp_file_name("test_rt.rmf")
         h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                              IMP.atom.NonAlternativePDBSelector())
         IMP.set_log_level(IMP.SILENT)
@@ -19,13 +20,13 @@ class GenericTest(IMP.test.TestCase):
         print "done"
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_rt.rmf"))
+        f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h)
         print "reopening"
         del f
         print "after closing"
         print RMF.get_open_hdf5_handle_names()
-        f= RMF.open_rmf_file_read_only(self.get_tmp_file_name("test_rt.rmf"))
+        f= RMF.open_rmf_file_read_only(name)
         print "reading"
         print f, type(f)
         h2=IMP.rmf.create_hierarchies(f, m)
@@ -64,11 +65,11 @@ class GenericTest(IMP.test.TestCase):
         print f, type(f)
         h2=IMP.rmf.create_hierarchies(f, m)
         self.assertEqual(len(h2), 1)
-    def test_part2(self):
-        """Test round trip 2"""
+        del f
+
         m= IMP.Model()
         print "reopening"
-        f= RMF.open_rmf_file_read_only(self.get_tmp_file_name("test_rt_parts.rmf"))
+        f= RMF.open_rmf_file_read_only(name)
         print "reading"
         h2=IMP.rmf.create_hierarchies(f, m)
 
