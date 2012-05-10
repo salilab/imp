@@ -5,31 +5,11 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/multifit/DataPoints.h>
+#include <IMP/multifit/DensityDataPoints.h>
 #include <IMP/em/converters.h>
 #include <IMP/em/Voxel.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
-void XYZDataPoints::populate_data_points(const algebra::Vector3Ds &vecs) {
-  vecs_ = vecs;
-  int dim = atts_.size();
-  for(unsigned int i=0;i<vecs_.size();i++) {
-    data_.push_back(Array1DD(dim));
-    for(int d=0;d<dim;d++) {
-      data_[i][d] = double(vecs_[i][d]);
-    }
-  }
-}
-void ParticlesDataPoints::populate_data_points(ParticlesTemp ps) {
-  ps_ = get_as<Particles>(ps);
-  int dim = atts_.size();
-  for(unsigned int i=0;i<ps.size();i++) {
-    data_.push_back(Array1DD(dim));
-    for(int d=0;d<dim;d++) {
-      data_[i][d] = double(ps[i]->get_value(atts_[d]));
-    }
-    vecs_.push_back(core::XYZ(ps[i]).get_coordinates());
-  }
-}
+
 void DensityDataPoints::set_density(em::DensityMap *dmap) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
   dens_.reset(new DensGrid(dmap->get_spacing(),bb));
@@ -111,7 +91,7 @@ DensityDataPoints::DensityDataPoints(const DensGrid &dens,
 }
 
 
-Array1DD DensityDataPoints::sample() const {
+IMP::statistics::Array1DD DensityDataPoints::sample() const {
     bool found = false;
     int num_trails=0;
     int p_ind=0;

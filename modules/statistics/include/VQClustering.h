@@ -6,17 +6,17 @@
  *
  */
 
-#ifndef IMPMULTIFIT_VQ_CLUSTERING_H
-#define IMPMULTIFIT_VQ_CLUSTERING_H
+#ifndef IMPSTATISTICS_VQ_CLUSTERING_H
+#define IMPSTATISTICS_VQ_CLUSTERING_H
 
 #include <IMP/base_types.h>
 #include "DataPoints.h"
 #include "ClusteringEngine.h"
-#include "multifit_config.h"
-IMPMULTIFIT_BEGIN_NAMESPACE
+#include "statistics_config.h"
+IMPSTATISTICS_BEGIN_NAMESPACE
 
 
-class IMPMULTIFITEXPORT VQClusteringParameters {
+class IMPSTATISTICSEXPORT VQClusteringParameters {
  public:
   int dim_;
   bool show_status_bar_;
@@ -56,7 +56,7 @@ class IMPMULTIFITEXPORT VQClusteringParameters {
 };
 
 
-class IMPMULTIFITEXPORT VQClustering : public ClusteringEngine {
+class IMPSTATISTICSEXPORT VQClustering : public ClusteringEngine {
 public:
   VQClustering();
   VQClustering(DataPoints *data, int k);
@@ -136,5 +136,5 @@ protected:
   Array1DD_VEC centers_;
   std::vector<int> assignment_;//the assignment of data points to clusters
 };
-IMPMULTIFIT_END_NAMESPACE
-#endif /* IMPMULTIFIT_VQ_CLUSTERING_H */
+IMPSTATISTICS_END_NAMESPACE
+#endif /* IMPSTATISTICS_VQ_CLUSTERING_H */

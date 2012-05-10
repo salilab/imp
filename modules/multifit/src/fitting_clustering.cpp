@@ -68,7 +68,7 @@ void fitting_clustering (
   IMP_LOG(TERSE,"going to cluster : " << f_ts.size()
           << " transformations for protein : " << std::endl);
   //do the clustering
-  RMSDClustering<FittingTransformation> clusterer;
+  multifit::RMSDClustering<FittingTransformation> clusterer;
   clusterer.prepare(core::get_leaves(mh));
   clusterer.set_bin_size(2.0*spacing);
   clusterer.cluster(rmsd,f_ts,clustered_ts_temp);

@@ -110,7 +110,7 @@ IntsList TransformationClustering::cluster_by_rmsd(
     //create records
     TransformationWrappers tw = wrap_transformations(trans);
     TransformationWrappers twc;//transformations after clustering
-    RMSDClustering<TransformationWrapper> engine;
+    IMP::multifit::RMSDClustering<TransformationWrapper> engine;
     engine.set_bin_size(1);
     engine.prepare(get_as<ParticlesTemp>(ps_));
     engine.cluster(max_rmsd,tw,twc);
