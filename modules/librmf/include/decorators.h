@@ -150,16 +150,16 @@ void set_rgb_color(const Floats &v) {
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
       rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color red")?
-                   fh.get_key<FloatTraits>(cat, "rgb color red")
+                   (cat, "rgb color red", false)?
+                   fh.get_key<FloatTraits>(cat, "rgb color red", false)
                               :FloatKey()));
       rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color green")?
-                   fh.get_key<FloatTraits>(cat, "rgb color green")
+                   (cat, "rgb color green", false)?
+                   fh.get_key<FloatTraits>(cat, "rgb color green", false)
                               :FloatKey()));
       rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color blue")?
-                   fh.get_key<FloatTraits>(cat, "rgb color blue")
+                   (cat, "rgb color blue", false)?
+                   fh.get_key<FloatTraits>(cat, "rgb color blue", false)
                               :FloatKey()));
 };
     }
@@ -356,24 +356,24 @@ FloatKey mass_;
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x")?
-                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                   (cat, "cartesian x", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y")?
-                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                   (cat, "cartesian y", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z")?
-                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                   (cat, "cartesian z", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
                               :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius")?
-                   fh.get_key<FloatTraits>(cat, "radius")
+                   (cat, "radius", false)?
+                   fh.get_key<FloatTraits>(cat, "radius", false)
                               :FloatKey());
 mass_=(fh.get_has_key<FloatTraits>
-                   (cat, "mass")?
-                   fh.get_key<FloatTraits>(cat, "mass")
+                   (cat, "mass", false)?
+                   fh.get_key<FloatTraits>(cat, "mass", false)
                               :FloatKey());
 };
     }
@@ -552,20 +552,20 @@ FloatKey radius_;
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x")?
-                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                   (cat, "cartesian x", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y")?
-                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                   (cat, "cartesian y", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z")?
-                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                   (cat, "cartesian z", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
                               :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius")?
-                   fh.get_key<FloatTraits>(cat, "radius")
+                   (cat, "radius", false)?
+                   fh.get_key<FloatTraits>(cat, "radius", false)
                               :FloatKey());
 };
     }
@@ -761,32 +761,32 @@ FloatKeys coordinates_;
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
       orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation r")?
-                   fh.get_key<FloatTraits>(cat, "orientation r")
+                   (cat, "orientation r", true)?
+                   fh.get_key<FloatTraits>(cat, "orientation r", true)
                               :FloatKey()));
       orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation i")?
-                   fh.get_key<FloatTraits>(cat, "orientation i")
+                   (cat, "orientation i", true)?
+                   fh.get_key<FloatTraits>(cat, "orientation i", true)
                               :FloatKey()));
       orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation j")?
-                   fh.get_key<FloatTraits>(cat, "orientation j")
+                   (cat, "orientation j", true)?
+                   fh.get_key<FloatTraits>(cat, "orientation j", true)
                               :FloatKey()));
       orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation k")?
-                   fh.get_key<FloatTraits>(cat, "orientation k")
+                   (cat, "orientation k", true)?
+                   fh.get_key<FloatTraits>(cat, "orientation k", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x")?
-                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                   (cat, "cartesian x", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y")?
-                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                   (cat, "cartesian y", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z")?
-                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                   (cat, "cartesian z", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
                               :FloatKey()));
 };
     }
@@ -977,24 +977,24 @@ IndexKey type_;
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x")?
-                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                   (cat, "cartesian x", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y")?
-                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                   (cat, "cartesian y", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z")?
-                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                   (cat, "cartesian z", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
                               :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius")?
-                   fh.get_key<FloatTraits>(cat, "radius")
+                   (cat, "radius", false)?
+                   fh.get_key<FloatTraits>(cat, "radius", false)
                               :FloatKey());
 type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type")?
-                   fh.get_key<IndexTraits>(cat, "type")
+                   (cat, "type", false)?
+                   fh.get_key<IndexTraits>(cat, "type", false)
                               :IndexKey());
 };
     }
@@ -1188,24 +1188,24 @@ IndexKey type_;
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian xs")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian xs")
+                   (cat, "cartesian xs", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian xs", true)
                               :FloatsKey()));
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian ys")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian ys")
+                   (cat, "cartesian ys", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian ys", true)
                               :FloatsKey()));
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian zs")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian zs")
+                   (cat, "cartesian zs", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian zs", true)
                               :FloatsKey()));
 radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius")?
-                   fh.get_key<FloatTraits>(cat, "radius")
+                   (cat, "radius", false)?
+                   fh.get_key<FloatTraits>(cat, "radius", false)
                               :FloatKey());
 type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type")?
-                   fh.get_key<IndexTraits>(cat, "type")
+                   (cat, "type", false)?
+                   fh.get_key<IndexTraits>(cat, "type", false)
                               :IndexKey());
 };
     }
@@ -1377,20 +1377,20 @@ IndexKey type_;
     {
   CategoryD<1> cat=fh.get_category<1>("shape");
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian xs")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian xs")
+                   (cat, "cartesian xs", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian xs", true)
                               :FloatsKey()));
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian ys")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian ys")
+                   (cat, "cartesian ys", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian ys", true)
                               :FloatsKey()));
       coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian zs")?
-                   fh.get_key<FloatsTraits>(cat, "cartesian zs")
+                   (cat, "cartesian zs", true)?
+                   fh.get_key<FloatsTraits>(cat, "cartesian zs", true)
                               :FloatsKey()));
 type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type")?
-                   fh.get_key<IndexTraits>(cat, "type")
+                   (cat, "type", false)?
+                   fh.get_key<IndexTraits>(cat, "type", false)
                               :IndexKey());
 };
     }
@@ -1618,24 +1618,24 @@ StringsKey authors_;
     {
   CategoryD<1> cat=fh.get_category<1>("publication");
 title_=(fh.get_has_key<StringTraits>
-                   (cat, "title")?
-                   fh.get_key<StringTraits>(cat, "title")
+                   (cat, "title", false)?
+                   fh.get_key<StringTraits>(cat, "title", false)
                               :StringKey());
 journal_=(fh.get_has_key<StringTraits>
-                   (cat, "journal")?
-                   fh.get_key<StringTraits>(cat, "journal")
+                   (cat, "journal", false)?
+                   fh.get_key<StringTraits>(cat, "journal", false)
                               :StringKey());
 pubmed_id_=(fh.get_has_key<StringTraits>
-                   (cat, "pubmed id")?
-                   fh.get_key<StringTraits>(cat, "pubmed id")
+                   (cat, "pubmed id", false)?
+                   fh.get_key<StringTraits>(cat, "pubmed id", false)
                               :StringKey());
 year_=(fh.get_has_key<IntTraits>
-                   (cat, "year")?
-                   fh.get_key<IntTraits>(cat, "year")
+                   (cat, "year", false)?
+                   fh.get_key<IntTraits>(cat, "year", false)
                               :IntKey());
 authors_=(fh.get_has_key<StringsTraits>
-                   (cat, "authors")?
-                   fh.get_key<StringsTraits>(cat, "authors")
+                   (cat, "authors", false)?
+                   fh.get_key<StringsTraits>(cat, "authors", false)
                               :StringsKey());
 };
     }
@@ -1809,16 +1809,16 @@ StringKey type_;
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
 index_[0]=(fh.get_has_key<IntTraits>
-                   (cat, "first residue index")?
-                   fh.get_key<IntTraits>(cat, "first residue index")
+                   (cat, "first residue index", false)?
+                   fh.get_key<IntTraits>(cat, "first residue index", false)
                               :IntKey());
 index_[1]=(fh.get_has_key<IntTraits>
-                   (cat, "last residue index")?
-                   fh.get_key<IntTraits>(cat, "last residue index")
+                   (cat, "last residue index", false)?
+                   fh.get_key<IntTraits>(cat, "last residue index", false)
                               :IntKey());
 type_=(fh.get_has_key<StringTraits>
-                   (cat, "residue type")?
-                   fh.get_key<StringTraits>(cat, "residue type")
+                   (cat, "residue type", false)?
+                   fh.get_key<StringTraits>(cat, "residue type", false)
                               :StringKey());
 };
     }
@@ -2042,28 +2042,28 @@ IndexKey element_;
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x")?
-                   fh.get_key<FloatTraits>(cat, "cartesian x")
+                   (cat, "cartesian x", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y")?
-                   fh.get_key<FloatTraits>(cat, "cartesian y")
+                   (cat, "cartesian y", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
                               :FloatKey()));
       coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z")?
-                   fh.get_key<FloatTraits>(cat, "cartesian z")
+                   (cat, "cartesian z", true)?
+                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
                               :FloatKey()));
 radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius")?
-                   fh.get_key<FloatTraits>(cat, "radius")
+                   (cat, "radius", false)?
+                   fh.get_key<FloatTraits>(cat, "radius", false)
                               :FloatKey());
 mass_=(fh.get_has_key<FloatTraits>
-                   (cat, "mass")?
-                   fh.get_key<FloatTraits>(cat, "mass")
+                   (cat, "mass", false)?
+                   fh.get_key<FloatTraits>(cat, "mass", false)
                               :FloatKey());
 element_=(fh.get_has_key<IndexTraits>
-                   (cat, "element")?
-                   fh.get_key<IndexTraits>(cat, "element")
+                   (cat, "element", false)?
+                   fh.get_key<IndexTraits>(cat, "element", false)
                               :IndexKey());
 };
     }
@@ -2206,8 +2206,8 @@ chain_id_=get_key_always<IndexTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
 chain_id_=(fh.get_has_key<IndexTraits>
-                   (cat, "chain id")?
-                   fh.get_key<IndexTraits>(cat, "chain id")
+                   (cat, "chain id", false)?
+                   fh.get_key<IndexTraits>(cat, "chain id", false)
                               :IndexKey());
 };
     }
@@ -2353,12 +2353,12 @@ indexes_[1]=get_key_always<IntTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
 indexes_[0]=(fh.get_has_key<IntTraits>
-                   (cat, "first residue index")?
-                   fh.get_key<IntTraits>(cat, "first residue index")
+                   (cat, "first residue index", false)?
+                   fh.get_key<IntTraits>(cat, "first residue index", false)
                               :IntKey());
 indexes_[1]=(fh.get_has_key<IntTraits>
-                   (cat, "last residue index")?
-                   fh.get_key<IntTraits>(cat, "last residue index")
+                   (cat, "last residue index", false)?
+                   fh.get_key<IntTraits>(cat, "last residue index", false)
                               :IntKey());
 };
     }
@@ -2498,8 +2498,8 @@ copy_index_=get_key_always<IndexTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
 copy_index_=(fh.get_has_key<IndexTraits>
-                   (cat, "copy index")?
-                   fh.get_key<IndexTraits>(cat, "copy index")
+                   (cat, "copy index", false)?
+                   fh.get_key<IndexTraits>(cat, "copy index", false)
                               :IndexKey());
 };
     }
@@ -2636,8 +2636,8 @@ diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("physics");
 diffusion_coefficient_=(fh.get_has_key<FloatTraits>
-                   (cat, "diffusion coefficient")?
-                   fh.get_key<FloatTraits>(cat, "diffusion coefficient")
+                   (cat, "diffusion coefficient", false)?
+                   fh.get_key<FloatTraits>(cat, "diffusion coefficient", false)
                               :FloatKey());
 };
     }
@@ -2774,8 +2774,8 @@ type_name_=get_key_always<StringTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("sequence");
 type_name_=(fh.get_has_key<StringTraits>
-                   (cat, "type name")?
-                   fh.get_key<StringTraits>(cat, "type name")
+                   (cat, "type name", false)?
+                   fh.get_key<StringTraits>(cat, "type name", false)
                               :StringKey());
 };
     }
@@ -2914,8 +2914,8 @@ aliased_=get_key_always<NodeIDTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("alias");
 aliased_=(fh.get_has_key<NodeIDTraits>
-                   (cat, "aliased")?
-                   fh.get_key<NodeIDTraits>(cat, "aliased")
+                   (cat, "aliased", false)?
+                   fh.get_key<NodeIDTraits>(cat, "aliased", false)
                               :NodeIDKey());
 };
     }
@@ -3052,8 +3052,8 @@ alias_=get_key_always<NodeIDTraits>(fh, cat,
     {
   CategoryD<1> cat=fh.get_category<1>("alias");
 alias_=(fh.get_has_key<NodeIDTraits>
-                   (cat, "dynamic alias")?
-                   fh.get_key<NodeIDTraits>(cat, "dynamic alias")
+                   (cat, "dynamic alias", true)?
+                   fh.get_key<NodeIDTraits>(cat, "dynamic alias", true)
                               :NodeIDKey());
 };
     }
@@ -3229,8 +3229,8 @@ FloatKey score_;
     {
   CategoryD<1> cat=fh.get_category<1>("feature");
 score_=(fh.get_has_key<FloatTraits>
-                   (cat, "score")?
-                   fh.get_key<FloatTraits>(cat, "score")
+                   (cat, "score", true)?
+                   fh.get_key<FloatTraits>(cat, "score", true)
                               :FloatKey());
 };
     }

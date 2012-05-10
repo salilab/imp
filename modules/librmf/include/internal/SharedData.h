@@ -62,7 +62,7 @@ namespace RMF {
     virtual std::string get_name(Key<Ucname##Traits, Arity> k) const =0; \
     virtual Key<Ucname##Traits, Arity>                                  \
     get_##lcname##_key_##Arity(int category_id,                         \
-                               std::string name) const=0
+                               std::string name, bool per_frame) const=0
 
 #define IMP_RMF_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue,     \
                             PassValues, ReturnValues)                   \
@@ -143,6 +143,8 @@ namespace RMF {
       virtual void flush() const=0;
       virtual std::string get_file_name() const=0;
 
+      virtual unsigned int get_number_of_frames() const=0;
+
       // backwards compat
       void add_bond( int ida,  int idb,  int type);
       unsigned int get_number_of_bonds() const;
@@ -191,12 +193,12 @@ namespace RMF {
     typedef Key<Ucname##Traits, Arity> K;                               \
     typedef vector<K > Ks;                                              \
     static K get_key( const SharedData *p, int category_id,             \
-                      std::string name) {                               \
-      return p->get_##lcname##_key_##Arity(category_id, name);          \
+                      std::string name, bool per_frame) {               \
+      return p->get_##lcname##_key_##Arity(category_id, name, per_frame); \
     }                                                                   \
     static bool get_has_key( const SharedData *p, int category_id,      \
-                             std::string name) {                        \
-      return p->get_##lcname##_key_##Arity(category_id, name)           \
+                             std::string name, bool per_frame) {        \
+      return p->get_##lcname##_key_##Arity(category_id, name, per_frame) \
         != K();                                                         \
     }                                                                   \
     static Ks get_keys( const SharedData *p, int category_id) {         \

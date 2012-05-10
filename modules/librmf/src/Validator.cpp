@@ -61,7 +61,8 @@ class UniquenessValidator: public Validator {
                     std::ostream &out) const {
     vector<NodeSetConstHandle<Arity> > all= rh.get_node_sets<Arity>();
     if (all.empty()) return;
-    vector<NodeConstHandles> seen(all.size());
+    typedef vector<NodeConstHandles> Seen;
+    Seen seen(all.size());
     for (unsigned int i=0; i< all.size(); ++i) {
       NodeConstHandles cur(Arity);
       for (unsigned int j=0; j< Arity; ++j) {
@@ -75,12 +76,16 @@ class UniquenessValidator: public Validator {
       seen[i]=cur;
     }
     std::sort(seen.begin(), seen.end(), NodeIDsLess());
-    seen.erase(std::unique(seen.begin(), seen.end(), NodeIDsEqual()),
-               seen.end());
-    if (all.size() != seen.size()) {
+    Seen::const_iterator dup=std::adjacent_find(seen.begin(),
+                                                seen.end(),
+                                                NodeIDsEqual());
+    if (dup != seen.end()) {
+      std::sort(all.begin(), all.end());
       out << "Not all sets of size " << Arity << " are unique. "
           << " Of " << all.size() << " there were "
-          << all.size() - seen.size() << " redundant." << std::endl;
+          << all.size() - seen.size() << " redundant eg: "
+          << *dup << " in " << Showable(all)
+          << std::endl;
     }
   }
  public:
@@ -97,16 +102,19 @@ IMP_RMF_VALIDATOR(UniquenessValidator);
 
 
 struct NonNegativeChecker {
-  FloatKey k_;
+  FloatKey k_, pfk_;
   std::string catname_;
   std::string keyname_;
   NonNegativeChecker(){}
   NonNegativeChecker(FileConstHandle rh, Category c, std::string name) {
     if (c != Category()) {
-      if (rh.get_has_key<FloatTraits>(c, name)) {
-        k_=rh.get_key<FloatTraits>(c, name);
-        catname_= rh.get_category_name(c);
-        keyname_=name;
+      catname_= rh.get_category_name(c);
+      keyname_=name;
+      if (rh.get_has_key<FloatTraits>(c, name, false)) {
+        k_=rh.get_key<FloatTraits>(c, name, false);
+      }
+      if (rh.get_has_key<FloatTraits>(c, name, true)) {
+        pfk_=rh.get_key<FloatTraits>(c, name, true);
       }
     }
   }
@@ -120,21 +128,34 @@ struct NonNegativeChecker {
             << " must be positive, but it is " << v << std::endl;
       }
     }
+    if (pfk_ != FloatKey()) {
+      for (unsigned int i=0; i< node.get_file().get_number_of_frames(pfk_);
+           ++i) {
+        if (node.get_has_value(pfk_, i)) {
+          double v= node.get_value(pfk_, i);
+          if (v <=0) {
+            out << node.get_name() << ": Value " << keyname_ << " in category "
+                << catname_
+                << " must be positive, but it is " << v << std::endl;
+          }
+        }
+      }
+    }
   }
 };
 
 
 struct TieChecker {
   FloatKeys ks_;
+  FloatKeys pfks_;
   std::string catname_;
   std::string keynames_;
   TieChecker(){}
   TieChecker(FileConstHandle rh, Category c, std::string name, Strings names) {
     if (c != Category()) {
       for (unsigned int i=0; i< names.size(); ++i) {
-        if (rh.get_has_key<FloatTraits>(c, names[i])) {
-          ks_.push_back(rh.get_key<FloatTraits>(c, names[i]));
-        }
+        ks_.push_back(rh.get_key<FloatTraits>(c, names[i], false));
+        pfks_.push_back(rh.get_key<FloatTraits>(c, names[i], true));
       }
       catname_= rh.get_category_name(c);
     }
@@ -142,20 +163,17 @@ struct TieChecker {
   }
   void write_errors(NodeConstHandle node,
                     std::ostream &out) const {
-    if (ks_.empty()) return;
-    if ( ks_[0] != FloatKey() && node.get_has_value(ks_[0])) {
-      for (unsigned int i=1; i< ks_.size(); ++i) {
-        if (!node.get_has_value(ks_[i])) {
+    bool found=false;
+    unsigned int nf=node.get_file().get_number_of_frames();
+    for (unsigned int f=0; f< nf; ++f) {
+      for (unsigned int i=0; i< ks_.size(); ++i) {
+        bool cfound= node.get_has_value(ks_[i])
+          || node.get_has_value(pfks_[i], f);
+        if (i > 0 && cfound != found) {
           out << node.get_name() << "A node must either have none or all of "
               << keynames_ << " in category " << catname_ << std::endl;
         }
-      }
-    } else {
-      for (unsigned int i=1; i< ks_.size(); ++i) {
-        if (node.get_has_value(ks_[i])) {
-          out << node.get_name() << "A node must either have none or all of "
-              << keynames_ << " in category " << catname_ << std::endl;
-        }
+        found=cfound;
       }
     }
   }
@@ -191,5 +209,65 @@ class PhysicsValidator: public NodeValidator {
 };
 
 IMP_RMF_VALIDATOR(PhysicsValidator);
+
+
+#define IMP_RMF_DECLARE_KEYS(lcname, UCName, PassValue, ReturnValue, \
+                             PassValues, ReturnValues)\
+  vector<std::pair<Key<UCName##Traits, 1>, Key<UCName##Traits, 1> > >   \
+  lcname##_pairs_;
+
+#define IMP_RMF_INIT_KEYS(lcname, UCName, PassValue, ReturnValue,       \
+                          PassValues, ReturnValues)                     \
+  {                                                                     \
+    vector<Key<UCName##Traits, 1> > keys                                \
+      = rh.get_keys<UCName##Traits>(categories[i]);                     \
+    for (unsigned int j=0; j< keys.size(); ++j) {                       \
+      for (unsigned int k=0; k < j; ++k) {                              \
+        if (rh.get_name(keys[j]) == rh.get_name(keys[k])) {             \
+          Key<UCName##Traits, 1> ka= keys[j];                           \
+          Key<UCName##Traits, 1> kb= keys[k];                           \
+          if (rh.get_is_per_frame(kb)) std::swap(ka, kb);               \
+          lcname##_pairs_.push_back(std::make_pair(keys[j], keys[k]));  \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
+  }
+
+#define IMP_RMF_CHECK_KEYS(lcname, UCName, PassValue, ReturnValue,       \
+                           PassValues, ReturnValues)                    \
+  {                                                                     \
+    for (unsigned int i=0; i< lcname##_pairs_.size(); ++i) {            \
+      if (!node.get_has_value(lcname##_pairs_[i].second)) continue;     \
+      unsigned int fn                                                   \
+        =node.get_file().get_number_of_frames(lcname##_pairs_[i].first); \
+      for (unsigned int j=0; j< fn; ++j) {                              \
+        if (node.get_has_value(lcname##_pairs_[i].first, j)) {          \
+          out << "Node " << node                                        \
+              << " has non-per frame and per frame for "                \
+              << node.get_file().get_name(lcname##_pairs_[i].second)    \
+              << " at frame " << j << std::endl;                        \
+        }                                                               \
+      }                                                                 \
+    }                                                                   \
+  }
+
+class KeyValidator: public NodeValidator {
+  IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEYS);
+ public:
+  KeyValidator(FileConstHandle rh, std::string name):
+      NodeValidator(rh, name){
+    Categories categories= rh.get_categories<1>();
+    for (unsigned int i=0; i< categories.size(); ++i) {
+      IMP_RMF_FOREACH_TYPE(IMP_RMF_INIT_KEYS);
+    }
+  }
+  void write_errors_node(NodeConstHandle node,
+                         const NodeConstHandles &,
+                         std::ostream &out) const {
+    IMP_RMF_FOREACH_TYPE(IMP_RMF_CHECK_KEYS);
+  }
+};
+IMP_RMF_VALIDATOR(KeyValidator);
+
 
 } /* namespace RMF */

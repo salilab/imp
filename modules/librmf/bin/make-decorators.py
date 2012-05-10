@@ -6,8 +6,8 @@ def get_string(type, name, const, per_frame=False):
         pfs="false"
     if const:
         return """(fh.get_has_key<%(type)sTraits>
-                   (cat, \"%(name)s\")?
-                   fh.get_key<%(type)sTraits>(cat, \"%(name)s\")
+                   (cat, \"%(name)s\", %(pfs)s)?
+                   fh.get_key<%(type)sTraits>(cat, \"%(name)s\", %(pfs)s)
                               :%(type)sKey())"""%{ "name":name,
                                                                                      "type": type,
                                                                                      "pfs":pfs}

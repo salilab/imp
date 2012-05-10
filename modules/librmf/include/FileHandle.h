@@ -291,13 +291,15 @@ inline CategoryD<4> get_quad_category_always(FileHandle rh,
 template <class TypeT, int D>
 Key<TypeT, D> get_key_always(FileHandle fh, CategoryD<D> cat,
                              std::string name, bool per_frame=false) {
-  if (fh.get_has_key<TypeT, D>(cat, name)) {
+  if (fh.get_has_key<TypeT, D>(cat, name, per_frame)) {
     IMP_RMF_USAGE_CHECK(per_frame
-                        == fh.get_is_per_frame(fh.get_key<TypeT, D>(cat, name)),
+                        == fh.get_is_per_frame(fh.get_key<TypeT, D>(cat,
+                                                                    name,
+                                                                    per_frame)),
                         internal::get_error_message(
                        "A per_frame value for the key requested didn't match",
                        " the actual per_frame value."));
-    return fh.get_key<TypeT, D>(cat, name);
+    return fh.get_key<TypeT, D>(cat, name, per_frame);
   } else {
     return fh.add_key<TypeT, D>(cat, name, per_frame);
   }
