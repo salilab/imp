@@ -76,7 +76,7 @@ namespace {
 
 
 void show_restraint_hierarchy(ScoringFunctionInput r, std::ostream &out) {
-  RestraintsTemp cur= r->create_restraints();
+  Restraints cur= r->create_restraints();
   for (unsigned int i=0; i< cur.size(); ++i) {
       Restraint*r= cur[i];
       RestraintSet *rs=dynamic_cast<RestraintSet*>(r);
