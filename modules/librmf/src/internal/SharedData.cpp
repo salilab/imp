@@ -69,7 +69,7 @@ namespace RMF {
     tp[0]=ida;
     tp[1]=idb;
     int ind=add_set(tp, BOND);
-    PairIndexKey pik=get_index_key_2(bond, "type");
+    PairIndexKey pik=get_index_key_2(bond, "type", false);
     if (pik==PairIndexKey()) {
       pik= add_index_key_2(bond, "type", false);
     }
@@ -98,7 +98,7 @@ namespace RMF {
       int bond=get_category(2, "bond");
       int na= get_set_member(2, i, 0);
       int nb= get_set_member(2, i, 1);
-      PairIndexKey pik=get_index_key_2(bond, "type");
+      PairIndexKey pik=get_index_key_2(bond, "type", false);
       int t= get_value(i, pik, -1);
       return boost::tuple<int,int,int>(na, nb, t);
     }

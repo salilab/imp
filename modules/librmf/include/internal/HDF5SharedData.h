@@ -92,8 +92,10 @@ namespace RMF {
     }                                                                   \
     Key<Ucname##Traits, Arity>                                          \
     get_##lcname##_key_##Arity(int category_id,                         \
-                               std::string name) const {                \
-      return get_key_impl<Ucname##Traits, Arity>(category_id, name);    \
+                               std::string name,                        \
+                               bool per_frame) const {                  \
+      return get_key_impl<Ucname##Traits, Arity>(category_id, name,     \
+                                                 per_frame);            \
     }
 
 #define IMP_RMF_HDF5_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue, \
@@ -490,8 +492,7 @@ namespace RMF {
         audit_key_name(name);
         // check that it is unique
         IMP_RMF_BEGIN_OPERATION;
-        for (unsigned int i=0; i< 2; ++i) {
-          bool per_frame=(i==0);
+        {
           HDF5DataSetD<StringTraits, 1> &nameds
             = get_key_list_data_set<TypeTraits>(category_id, Arity,
                                                 per_frame, true);
@@ -500,8 +501,8 @@ namespace RMF {
           for (unsigned int i=0; i< sz; ++i) {
             index[0]=i;
             IMP_RMF_USAGE_CHECK(nameds.get_value(index) != name,
-                         get_error_message("Attribute name ", name,
-                                           " already taken for that type."));
+                                get_error_message("Attribute name ", name,
+                                             " already taken for that type."));
           }
         }
         IMP_RMF_END_OPERATION("checking that key is unique");
@@ -552,23 +553,21 @@ namespace RMF {
       }
       template <class TypeTraits, int Arity>
         Key<TypeTraits, Arity> get_key_impl(int category_id,
-                                       std::string name) const {
-        for (unsigned int i=0; i< 2; ++i) {
-          bool per_frame=(i==0);
-          HDF5DataSetD<StringTraits, 1>& nameds
-            = get_key_list_data_set<TypeTraits>(category_id, Arity,
-                                                per_frame,
-                                                false);
-          if (!nameds) {
-            return Key<TypeTraits, Arity>();
-          }
-          HDF5DataSetIndexD<1> size= nameds.get_size();
-          for (unsigned int j=0; j< size[0]; ++j) {
-            HDF5DataSetIndexD<1> index(j);
-            std::string cur=nameds.get_value(index);
-            if (cur== name) {
-              return Key<TypeTraits, Arity>(category_id, j, per_frame);
-            }
+                                            std::string name,
+                                            bool per_frame) const {
+        HDF5DataSetD<StringTraits, 1>& nameds
+          = get_key_list_data_set<TypeTraits>(category_id, Arity,
+                                              per_frame,
+                                              false);
+        if (!nameds) {
+          return Key<TypeTraits, Arity>();
+        }
+        HDF5DataSetIndexD<1> size= nameds.get_size();
+        for (unsigned int j=0; j< size[0]; ++j) {
+          HDF5DataSetIndexD<1> index(j);
+          std::string cur=nameds.get_value(index);
+          if (cur== name) {
+            return Key<TypeTraits, Arity>(category_id, j, per_frame);
           }
         }
         return Key<TypeTraits, Arity>();
@@ -591,6 +590,7 @@ namespace RMF {
       }
       void flush() const {
         IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
+        SharedData::validate();
       }
       std::string get_file_name() const {
         return file_.get_file().get_name();
@@ -607,6 +607,8 @@ namespace RMF {
       void save_frames_hint(int i) {
         frames_hint_=i;
       }
+
+      unsigned int get_number_of_frames() const;
 
       void check_set(int arity, unsigned int index) const;
       unsigned int get_number_of_sets(int arity) const;

@@ -26,16 +26,11 @@
     If it is a per-frame attribute, frame must be specified.
 */                                                                      \
 void set_value(UCName##Key k, PassValue v,                              \
-               unsigned int frame =0) {                                 \
+               int frame =-1) {                                         \
+  IMP_RMF_USAGE_CHECK(frame >=0 || !k.get_is_per_frame(),               \
+                      "No frame specified for per-frame data.");        \
   get_shared_data()->set_value(get_node_id(),                           \
                                k, v, frame);                            \
-  IMP_RMF_INTERNAL_CHECK(!get_shared_data()->get_is_per_frame(k)        \
-                         || get_shared_data()->get_number_of_frames(k)  \
-                         >= frame,                                      \
-                         internal::get_error_message("Frame not set right: ", \
-                                                     get_shared_data()\
-                                                     ->get_number_of_frames(k),\
-                                                     " ", frame));      \
 }                                                                       \
 
 

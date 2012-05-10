@@ -28,7 +28,9 @@
       used.
   */                                                                    \
 ReturnValue get_value(UCName##Key k,                                    \
-                      unsigned int frame=0) const {                     \
+                      int frame=-1) const {                             \
+  IMP_RMF_USAGE_CHECK(frame >=0 || !k.get_is_per_frame(),               \
+                      "No frame specified for per-frame data.");        \
   IMP_RMF_USAGE_CHECK(get_has_value(k, frame),                          \
                       internal::get_error_message("Node ", get_name(),  \
                                      " does not have a value for key ", \
@@ -198,7 +200,6 @@ protected:
 
   FileConstHandle get_file() const;
 };
-
 
 /** Print out the hierarchy as an ascii tree.
  */

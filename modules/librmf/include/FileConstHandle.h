@@ -26,14 +26,16 @@
                                              PassValues, ReturnValues,  \
                                              Arity)                     \
     ArityName##UCName##Key get_##lcname##_key(ArityName##Category category_id, \
-                                              std::string nm) const {   \
+                                              std::string nm,           \
+                                              bool per_frame) const {   \
       return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
-        ::get_key(shared_.get(), category_id.get_index(), nm);          \
+        ::get_key(shared_.get(), category_id.get_index(), nm, per_frame); \
     }                                                                   \
     bool get_has_##lcname##_key(ArityName##Category category_id,        \
-                                std::string nm) const {                 \
+                                std::string nm, bool per_frame) const { \
       return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
-        ::get_has_key(shared_.get(), category_id.get_index(), nm);      \
+        ::get_has_key(shared_.get(), category_id.get_index(), nm,       \
+                      per_frame);                                       \
     }                                                                   \
     std::string get_name(ArityName##UCName##Key k) const {              \
       return shared_->get_name(k);                                      \
@@ -174,21 +176,21 @@ namespace RMF {
     */
     template <class TypeT, int Arity>
       Key<TypeT, Arity> get_key(CategoryD<Arity> category_id,
-                                std::string name) const {
+                                std::string name, bool per_frame) const {
       if (category_id == CategoryD<Arity>()
-          || !get_has_key<TypeT>(category_id, name)) {
+          || !get_has_key<TypeT>(category_id, name, per_frame)) {
         return Key<TypeT, Arity>();
       } else {
         return internal::ConstGenericSharedData<TypeT, Arity>
-        ::get_key(shared_.get(), category_id.get_index(), name);
+          ::get_key(shared_.get(), category_id.get_index(), name, per_frame);
       }
     }
     template <class TypeT, int Arity>
       bool get_has_key(CategoryD<Arity> category_id,
-                       std::string name) const {
+                       std::string name, bool per_frame) const {
       if (category_id == CategoryD<Arity>()) return false;
       return internal::ConstGenericSharedData<TypeT, Arity>
-        ::get_has_key(shared_.get(), category_id.get_index(), name);
+        ::get_has_key(shared_.get(), category_id.get_index(), name, per_frame);
     }
     /** Get a list of all keys of the given type,
      */
@@ -204,9 +206,7 @@ namespace RMF {
         of frames that the x-coordinate has, but it should be made more general.
     */
     unsigned int get_number_of_frames() const {
-      return shared_->get_number_of_frames(get_key<FloatTraits,
-                                           1>(CategoryD<1>(0),
-                                              "cartesian x"));
+      return shared_->get_number_of_frames();
     }
 
     /** \name Non-template versions for python
