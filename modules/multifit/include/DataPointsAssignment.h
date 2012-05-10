@@ -14,7 +14,9 @@
 #include <IMP/atom/Chain.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
-#include "ClusteringEngine.h"
+#include <IMP/statistics/ClusteringEngine.h>
+#include <IMP/statistics/DataPoints.h>
+#include <IMP/multifit/DensityDataPoints.h>
 #include "multifit_config.h"
 
 
@@ -25,8 +27,9 @@ typedef std::map<IntPair, int> CEdges;
 //! to the clustering engine.
 class IMPMULTIFITEXPORT DataPointsAssignment {
 public:
-  DataPointsAssignment(const XYZDataPoints *data,
-                       const ClusteringEngine *cluster_engine);
+  DataPointsAssignment
+    (const IMP::statistics::XYZDataPoints *data,
+     const IMP::statistics::ClusteringEngine *cluster_engine);
 
   ~DataPointsAssignment() {}
   int get_number_of_clusters() const {return cluster_sets_.size();}
@@ -36,12 +39,12 @@ public:
   algebra::Vector3Ds get_centers() const {
     algebra::Vector3Ds vecs;
     for(int i=0;i<get_number_of_clusters();i++) {
-      Array1DD xyz =cluster_engine_->get_center(i);
+      IMP::statistics::Array1DD xyz =cluster_engine_->get_center(i);
       vecs.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
     }
     return vecs;
   }
-  const ClusteringEngine *get_cluster_engine()
+  const IMP::statistics::ClusteringEngine *get_cluster_engine()
     const {return cluster_engine_;};
   IMP::algebra::Vector3Ds get_cluster_xyz(int cluster_ind) const;
 protected:
@@ -51,9 +54,9 @@ protected:
   void set_edges(double voxel_size=3.);
   /*  bool are_particles_close(core::RigidBody rb1,
       core::RigidBody rb2);*/
-  Pointer<const XYZDataPoints> data_;
+  Pointer<const IMP::statistics::XYZDataPoints> data_;
   std::vector<algebra::Vector3Ds> cluster_sets_;
-  const ClusteringEngine *cluster_engine_;
+  const IMP::statistics::ClusteringEngine *cluster_engine_;
   IntPairs edges_;
   CEdges edges_map_;
 };

@@ -12,8 +12,8 @@
 #include "IMP/atom/Hierarchy.h"
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/force_fields.h"
-#include <IMP/multifit/VQClustering.h>
-#include <IMP/multifit/DataPoints.h>
+#include <IMP/statistics/VQClustering.h>
+#include <IMP/statistics/DataPoints.h>
 #include <IMP/multifit/DataPointsAssignment.h>
 #include <IMP/multifit/anchors_reader.h>
 //others
@@ -94,8 +94,8 @@ int main(int argc, char *argv[]) {
   Model *m = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(pdb_filename,m);
-  IMP_NEW(multifit::ParticlesDataPoints,ddp,(core::get_leaves(mh)));
-  multifit::VQClustering vq(ddp,num_means);
+  IMP_NEW(IMP::statistics::ParticlesDataPoints,ddp,(core::get_leaves(mh)));
+  IMP::statistics::VQClustering vq(ddp,num_means);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp,&vq);
   multifit::AnchorsData ad(

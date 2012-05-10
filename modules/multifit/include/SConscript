@@ -1,9 +1,7 @@
 Import('env')
 files = [
-         'DataPoints.h',
+         'DensityDataPoints.h',
          'DataPointsAssignment.h',
-         'ClusteringEngine.h',
-         'VQClustering.h',
          'density_analysis.h',
          'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',

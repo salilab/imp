@@ -2,9 +2,8 @@ Import('env')
 files = [
 #'random_rotation.cpp',
 #'learn_fftw.cpp',
-         'DataPoints.cpp',
+         'DensityDataPoints.cpp',
          'DataPointsAssignment.cpp',
-         'VQClustering.cpp',
 #         'HVQClustering.cpp',
          'density_analysis.cpp',
          'fft_based_rigid_fitting.cpp',

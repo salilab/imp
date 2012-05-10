@@ -5,8 +5,9 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/multifit/VQClustering.h>
-#include <IMP/multifit/DataPoints.h>
+#include <IMP/statistics/VQClustering.h>
+#include <IMP/statistics/DataPoints.h>
+#include <IMP/multifit/DensityDataPoints.h>
 #include <IMP/multifit/DataPointsAssignment.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/multifit/coarse_molecule.h>
@@ -39,14 +40,15 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
                Model *mdl,
                float bead_radius,
                bool add_conn_restraint) {
-  IMP_NEW(ParticlesDataPoints, ddp, (core::get_leaves(mh)));
-  multifit::VQClustering vq(ddp,num_beads);
+  IMP_NEW(IMP::statistics::ParticlesDataPoints, ddp, (core::get_leaves(mh)));
+  IMP::statistics::VQClustering vq(ddp,num_beads);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp,&vq);
   atom::Selections sel;
   algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
-    Array1DD xyz = assignment.get_cluster_engine()->get_center(i);
+    IMP::statistics::Array1DD xyz =
+      assignment.get_cluster_engine()->get_center(i);
     vecs.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
   }
   //todo - mass should be a parameter
@@ -89,12 +91,13 @@ atom::Hierarchy create_coarse_molecule_from_density(
 
   IMP_NEW(DensityDataPoints, ddp, (dmap,dens_threshold));
   IMP_LOG(VERBOSE,"initialize calculation of initial centers"<<std::endl);
-  multifit::VQClustering vq(ddp,num_beads);
+  IMP::statistics::VQClustering vq(ddp,num_beads);
   vq.run();
   multifit::DataPointsAssignment assignment(ddp,&vq);
   algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
-    Array1DD xyz = assignment.get_cluster_engine()->get_center(i);
+    IMP::statistics::Array1DD xyz =
+      assignment.get_cluster_engine()->get_center(i);
     vecs.push_back(algebra::Vector3D(xyz[0],
                                      xyz[1],
                                      xyz[2]));
