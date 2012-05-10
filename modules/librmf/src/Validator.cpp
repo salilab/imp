@@ -218,41 +218,59 @@ IMP_RMF_VALIDATOR(PhysicsValidator);
 
 #define IMP_RMF_INIT_KEYS(lcname, UCName, PassValue, ReturnValue,       \
                           PassValues, ReturnValues)                     \
-  {                                                                     \
-    vector<Key<UCName##Traits, 1> > keys                                \
-      = rh.get_keys<UCName##Traits>(categories[i]);                     \
-    for (unsigned int j=0; j< keys.size(); ++j) {                       \
-      for (unsigned int k=0; k < j; ++k) {                              \
-        if (rh.get_name(keys[j]) == rh.get_name(keys[k])) {             \
-          Key<UCName##Traits, 1> ka= keys[j];                           \
-          Key<UCName##Traits, 1> kb= keys[k];                           \
-          if (rh.get_is_per_frame(kb)) std::swap(ka, kb);               \
-          lcname##_pairs_.push_back(std::make_pair(keys[j], keys[k]));  \
-        }                                                               \
-      }                                                                 \
-    }                                                                   \
-  }
+  init(rh, categories[i], lcname##_pairs_)
 
 #define IMP_RMF_CHECK_KEYS(lcname, UCName, PassValue, ReturnValue,       \
                            PassValues, ReturnValues)                    \
-  {                                                                     \
-    for (unsigned int i=0; i< lcname##_pairs_.size(); ++i) {            \
-      if (!node.get_has_value(lcname##_pairs_[i].second)) continue;     \
-      unsigned int fn                                                   \
-        =node.get_file().get_number_of_frames(lcname##_pairs_[i].first); \
-      for (unsigned int j=0; j< fn; ++j) {                              \
-        if (node.get_has_value(lcname##_pairs_[i].first, j)) {          \
-          out << "Node " << node                                        \
-              << " has non-per frame and per frame for "                \
-              << node.get_file().get_name(lcname##_pairs_[i].second)    \
-              << " at frame " << j << std::endl;                        \
-        }                                                               \
-      }                                                                 \
-    }                                                                   \
-  }
+  check(node, out, lcname##_pairs_)
 
 class KeyValidator: public NodeValidator {
   IMP_RMF_FOREACH_TYPE(IMP_RMF_DECLARE_KEYS);
+
+  template <class Traits>
+  void check(NodeConstHandle node,
+             std::ostream &out,
+             const vector<std::pair<Key<Traits, 1>,
+             Key<Traits, 1> > >  &keys) const {
+    for (unsigned int i=0; i< keys.size(); ++i) {
+      if (!node.get_has_value(keys[i].second)) continue;
+      unsigned int fn
+        =node.get_file().get_number_of_frames(keys[i].first);
+      for (unsigned int j=0; j< fn; ++j) {
+        if (node.get_has_value(keys[i].first, j)) {
+          out << "Node " << node
+              << " has non-per frame and per frame for "
+              << node.get_file().get_name(keys[i].second)
+              << " at frame " << j << std::endl;
+        }
+      }
+    }
+  }
+
+  template <class Traits>
+  void init(FileConstHandle rh,
+            CategoryD<1> cat,
+            vector<std::pair<Key<Traits, 1>,
+            Key<Traits, 1> > >  &keys) {
+    vector<Key<Traits, 1> > allkeys
+      = rh.get_keys<Traits>(cat);
+    for (unsigned int j=0; j< allkeys.size(); ++j) {
+      for (unsigned int k=0; k < j; ++k) {
+        if (rh.get_name(allkeys[j]) == rh.get_name(allkeys[k])) {
+          Key<Traits, 1> ka= allkeys[j];
+          Key<Traits, 1> kb= allkeys[k];
+          if (rh.get_is_per_frame(kb)) std::swap(ka, kb);
+          IMP_RMF_INTERNAL_CHECK(rh.get_is_per_frame(ka),
+                                 "Not");
+          IMP_RMF_INTERNAL_CHECK(!rh.get_is_per_frame(kb),
+                                 "Is");
+          keys.push_back(std::make_pair(ka, kb));
+          break;
+        }
+      }
+    }
+  }
+
  public:
   KeyValidator(FileConstHandle rh, std::string name):
       NodeValidator(rh, name){
