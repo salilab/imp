@@ -78,28 +78,31 @@ class IMPKMEANSEXPORT KMeansWrapper {
      @param[in] alg_type The k-means algorithm variant to use
      @param[in] stages Number of k-means iterations
    */
-  void execute(int k, KM_ALG_TYPE alg_type = KM_LLOYDS, int stages = 100);
+  void execute
+    (unsigned int k,
+     KM_ALG_TYPE alg_type = KM_LLOYDS,
+     int stages = 100);
 
   /**
      Add a data point for clustering.
 
      @param[in] p point to be added
   */
-  void addDataPt(const IMP::Floats& p);
+  void add_data_pt(const IMP::Floats& p);
 
   /**
      Clears all data in object.
   */
-  void clearData();
+  void clear_data();
 
   /** Returns the i'th point in the dataset
 
       @param[in] i Center number in range (0,...,nPts-1)
    */
-  const IMP::Floats& getDataPoint(unsigned int i) const;
+  const IMP::Floats& get_data_point(unsigned int i) const;
 
   /** @return The number of data points */
-  unsigned int getNDataPoints() const
+  unsigned int get_n_data_points() const
   {
     return STLDataPts_.size();
   }
@@ -107,18 +110,18 @@ class IMPKMEANSEXPORT KMeansWrapper {
   /**
       Print the centers (assuming exectute() was applied)
    */
-  void printCenters() const;
+  void print_centers() const;
 
   /** Returns the i'th center
       Must be called only following a succesful execute() invokation
 
       @param[in] i Center number in range (0,...,k-1)
    */
-  IMP::Floats getCenter(unsigned int i) const;
+  IMP::Floats get_center(unsigned int i) const;
 
 
   /** @return The number of centers after a succeful execution */
-  unsigned int getNCenters() const
+  unsigned int get_n_centers() const
   {
     assert( is_executed_ ); // TODO: exception?
     return pCenters_->getK();
@@ -132,7 +135,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
       This method invalidates any prior information about clustering results,
       unless the data was already synced (in which case no sync was needed)
    */
-  void syncKMDataPtsFromSTL();
+  void sync_KMdata_pts_from_STL();
 
   /**
      Read a point from a stream into p
@@ -143,7 +146,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
 
      @return false on error or EOF.
   */
-  bool readPtFromStream
+  bool read_pt_from_stream
     (std::istream& in,
      IMP::Floats& p,
      unsigned int dim);
@@ -155,7 +158,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
      @param[in] dim      dimension of each data point
      @param[in] max_nPts maximal number of points to read from stream
   */
-  void readDataPtsFromStream
+  void read_data_pts_from_stream
     (std::istream &in,
      unsigned int dim,
      unsigned int max_nPts);
@@ -166,12 +169,12 @@ class IMPKMEANSEXPORT KMeansWrapper {
    @param[in] out stream for printing the point
    @param[in] p   the point
   */
-  void printPtToStream
+  void print_pt_to_stream
     (std::ostream& out,
      const IMP::Floats& p);
 
   // print final summary using stored data and centers after execution
-  void printSummary(const internal::KMlocal&  theAlg);   // the algorithm
+  void print_summary(const internal::KMlocal&  theAlg);   // the algorithm
 
   /*********************** Private Variables **************************/
  private:

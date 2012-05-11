@@ -45,7 +45,7 @@ KMeansWrapper::KMeansWrapper
   infile.open(fname.c_str(), ifstream::in);
   if(infile.good())
     {
-      readDataPtsFromStream(infile, dim, max_nPts);
+      read_data_pts_from_stream(infile, dim, max_nPts);
       infile.close();
     }
   // TODO: Warn if no data was read or throw error if bad file?
@@ -80,7 +80,7 @@ KMeansWrapper::KMeansWrapper()
 
 // execute the selected algorithms:
 void
-KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
+KMeansWrapper::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
 {
   using namespace std;
 
@@ -89,11 +89,11 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
   // TODO: remove debug outputting
   std::cout << "Data Points:\n";     // echo data points
   for(unsigned int i = 0; i < STLDataPts_.size(); i++)
-    printPtToStream(std::cout, STLDataPts_[i]);
+    print_pt_to_stream(std::cout, STLDataPts_[i]);
 
   // synchronize STL points to wrapped internal::KMdata points
   // allocate points array
-  this->syncKMDataPtsFromSTL();
+  this->sync_KMdata_pts_from_STL();
   terminationConditions_.setAbsMaxTotStage(stages);   // set number of stages
   // TODO: annoying that we must remember to call buildKcTree explicitly
   //       - sounds like bug-prone voodoo
@@ -111,7 +111,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmLloyds.execute();
         is_executed_ = true;
-        printSummary(kmLloyds);
+        print_summary(kmLloyds);
         break;
       }
     case KM_LOCAL_SWAP:
@@ -122,7 +122,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmSwap.execute();
         is_executed_ = true;
-        printSummary(kmSwap);
+        print_summary(kmSwap);
         break;
       }
     case KM_LOCAL_EZ_HYBRID:
@@ -133,7 +133,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmEZ_Hybrid.execute();
         is_executed_ = true;
-        printSummary(kmEZ_Hybrid);
+        print_summary(kmEZ_Hybrid);
         break;
       }
     case KM_HYBRID:
@@ -144,7 +144,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
           (*pCenters_, terminationConditions_);
         *pCenters_ = kmHybrid.execute();
           is_executed_ = true;
-        printSummary(kmHybrid);
+        print_summary(kmHybrid);
         break;
       }
     }
@@ -154,7 +154,7 @@ KMeansWrapper::execute(int k, KM_ALG_TYPE alg_type, int stages)
    Add a data point for the next clustering.
 */
 void
-KMeansWrapper::addDataPt(const IMP::Floats& p)
+KMeansWrapper::add_data_pt(const IMP::Floats& p)
 {
   is_executed_ = false;
   is_KM_data_synced_ = false;
@@ -169,7 +169,7 @@ KMeansWrapper::addDataPt(const IMP::Floats& p)
    Clears all data in object
 */
 void
-KMeansWrapper::clearData()
+KMeansWrapper::clear_data()
 {
   is_executed_ = false;
   is_KM_data_synced_ = false;
@@ -183,7 +183,7 @@ KMeansWrapper::clearData()
     @param[in] i Center number in range (0,...,nPts-1)
 */
 const IMP::Floats&
-KMeansWrapper::getDataPoint(unsigned int i) const
+KMeansWrapper::get_data_point(unsigned int i) const
 {
   assert(i < STLDataPts_.size()); // TODO: exception?
   return STLDataPts_[i];
@@ -196,7 +196,7 @@ KMeansWrapper::getDataPoint(unsigned int i) const
       @param[in] i center number in range (0,...,k-1)
    */
 IMP::Floats
-KMeansWrapper::getCenter(unsigned int i) const
+KMeansWrapper::get_center(unsigned int i) const
 {
   // TODO: exception instead of assertion?
   assert(is_executed_ && i < pCenters_->getNPts());
@@ -220,7 +220,7 @@ KMeansWrapper::getCenter(unsigned int i) const
     This method invalidates any prior information about clustering results
 */
 void
-KMeansWrapper::syncKMDataPtsFromSTL()
+KMeansWrapper::sync_KMdata_pts_from_STL()
 {
   assert(STLDataPts_.size() > 0); // exception?
   if(is_KM_data_synced_)
@@ -249,12 +249,12 @@ KMeansWrapper::syncKMDataPtsFromSTL()
    @return false on error or EOF.
 */
 bool
-KMeansWrapper::readPtFromStream
+KMeansWrapper::read_pt_from_stream
 (std::istream& in,
  IMP::Floats& p,
  unsigned int dim)
 {
-  for(int d = 0; d < dim; d++) {
+  for(unsigned int d = 0; d < dim; d++) {
     if(!(in >> p[d])) return false;
   }
   return true;
@@ -263,7 +263,7 @@ KMeansWrapper::readPtFromStream
 
 // reads points from a stream
 void
-KMeansWrapper::readDataPtsFromStream
+KMeansWrapper::read_data_pts_from_stream
 (std::istream &in,
  unsigned int dim,
  unsigned int max_nPts)
@@ -275,7 +275,7 @@ KMeansWrapper::readDataPtsFromStream
   for(unsigned int i = 0; i < max_nPts; i++)
     {
       IMP::Floats newPoint(dim);
-      bool ok = readPtFromStream(in, newPoint, dim);
+      bool ok = read_pt_from_stream(in, newPoint, dim);
       if(ok)
         STLDataPts_.push_back(newPoint);
       else
@@ -291,7 +291,7 @@ KMeansWrapper::readDataPtsFromStream
    @param[in] p   the point
 */
 void
-KMeansWrapper::printPtToStream(std::ostream& out, const IMP::Floats& p)
+KMeansWrapper::print_pt_to_stream(std::ostream& out, const IMP::Floats& p)
 {
   const int dim = p.size();
   if(dim == 0){
@@ -310,7 +310,7 @@ KMeansWrapper::printPtToStream(std::ostream& out, const IMP::Floats& p)
 //  Print summary of execution
 //------------------------------------------------------------------------
 void
-KMeansWrapper::printSummary
+KMeansWrapper::print_summary
 (const internal::KMlocal&    theAlg)   // the algorithm
 {
   using namespace std;
@@ -345,7 +345,7 @@ KMeansWrapper::printSummary
 
 // print the centers (assuming exectute() was applied)
 void
-KMeansWrapper::printCenters() const
+KMeansWrapper::print_centers() const
 {
   assert( is_executed_ ); // TODO: exception?
   if(pCenters_ && is_executed_)
