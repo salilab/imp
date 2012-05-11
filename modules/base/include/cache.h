@@ -335,6 +335,22 @@ public:
     }
     return ret;
   }
+  typedef OrderIterator ContentIterator;
+  ContentIterator contents_begin() const {
+    return map_.template get<1>().begin();
+  }
+  ContentIterator contents_end() const {
+    return map_.template get<1>().end();
+  }
+  void insert(Key k, Value v) {
+    LookupIterator it=map_.template get<0>().find(k);
+    if (it == map_.template get<0>().end()) {
+      map_.template get<1>().push_front(KVP(k, v)).first;
+      while (map_.size() > max_size_) {
+        map_.template get<1>().pop_back();
+      }
+    }
+  }
   unsigned int size() const {
     return map_.size();
   }
