@@ -16,3239 +16,4606 @@
 #include "internal/utility.h"
 namespace RMF {
 
-/** These particles has associated color information.
+  /** These particles has associated color information.
 
-       \see Colored
-       \see ColoredConstFactory
-     */
-    class ColoredConst {
+      \see Colored
+      \see ColoredConstFactory
+  */
+  class ColoredConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ColoredConstFactory;
-    private:
+  private:
     FloatKeys rgb_color_;
+    FloatKeys rgb_color_pf_;
     ColoredConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKeys rgb_color):
-       nh_(nh),
-       frame_(frame),
-       rgb_color_(rgb_color) {
-    ;
+                 int frame,
+                 FloatKeys rgb_color,
+                 FloatKeys rgb_color_pf):
+      nh_(nh),
+      frame_(frame),
+      rgb_color_(rgb_color),
+      rgb_color_pf_(rgb_color_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_rgb_color() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(rgb_color_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(rgb_color_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(rgb_color_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(rgb_color_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
     IMP_RMF_SHOWABLE(ConstColored,
                      "ColoredConst "
                      << nh_.get_name());
     ~ColoredConst() {
     }
-    };
+  };
 
-    typedef vector<ColoredConst>
-            ColoredConsts;
+  typedef vector<ColoredConst>
+  ColoredConsts;
 
-/** These particles has associated color information.
+  /** These particles has associated color information.
 
-       \see ColoredConst
-       \see ColoredFactory
-     */
-    class Colored {
+      \see ColoredConst
+      \see ColoredFactory
+  */
+  class Colored {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ColoredFactory;
-    private:
+  private:
     FloatKeys rgb_color_;
+    FloatKeys rgb_color_pf_;
     Colored(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKeys rgb_color):
-       nh_(nh),
-       frame_(frame),
-       rgb_color_(rgb_color) {
-    ;
+            int frame,
+            FloatKeys rgb_color,
+            FloatKeys rgb_color_pf):
+      nh_(nh),
+      frame_(frame),
+      rgb_color_(rgb_color),
+      rgb_color_pf_(rgb_color_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_rgb_color() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(rgb_color_[i], frame_));
-       }
-       return ret;
-    }
-void set_rgb_color(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(rgb_color_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(rgb_color_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(rgb_color_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(rgb_color_pf_[i], frame_));
+        }
       }
+      return ret;
+    }
+    void set_rgb_color(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(rgb_color_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(rgb_color_[i], v[i]);
+        }
+      }
+    }
     IMP_RMF_SHOWABLE(ConstColored,
                      "Colored "
                      << nh_.get_name());
     ~Colored() {
     }
-    };
+  };
 
-    typedef vector<Colored>
-            Coloreds;
+  typedef vector<Colored>
+  Coloreds;
 
-/** Create decorators of type Colored.
+  /** Create decorators of type Colored.
 
-       \see Colored
-       \see ColoredConstFactory
-    */
-    class ColoredFactory {
-    private:
+      \see Colored
+      \see ColoredConstFactory
+  */
+  class ColoredFactory {
+  private:
     FloatKeys rgb_color_;
-    public:
+    FloatKeys rgb_color_pf_;
+  public:
     typedef FileHandle File;
     typedef Colored Decorator;
     ColoredFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "shape");
-      rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "rgb color red",
-                               false));
-      rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "rgb color green",
-                               false));
-      rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "rgb color blue",
-                               false));
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "shape");
+        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                         "rgb color red",
+                                                         false));
+        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                            "rgb color red",
+                                                            true));
+        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                         "rgb color green",
+                                                         false));
+        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                            "rgb color green",
+                                                            true));
+        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                         "rgb color blue",
+                                                         false));
+        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                            "rgb color blue",
+                                                            true));
+      };
     }
     Colored get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                int frame=-1) const {
       ;
-      return Colored(nh, frame, rgb_color_);
+      return Colored(nh, frame, rgb_color_,
+                     rgb_color_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(rgb_color_[0], frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(rgb_color_pf_[0], frame)
+                             || nh.get_has_value(rgb_color_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(rgb_color_[0])
+                       || nh.get_has_value(rgb_color_pf_[0], 0))));
     }
     IMP_RMF_SHOWABLE(ColoredFactory,
                      "ColoredFactory");
-    };
+  };
 
-    typedef vector<ColoredFactory>
-            ColoredFactories;
+  typedef vector<ColoredFactory>
+  ColoredFactories;
 
-/** Create decorators of type Colored.
+  /** Create decorators of type Colored.
 
-       \see ColoredConst
-       \see ColoredFactory
-    */
-    class ColoredConstFactory {
-    private:
+      \see ColoredConst
+      \see ColoredFactory
+  */
+  class ColoredConstFactory {
+  private:
     FloatKeys rgb_color_;
-    public:
+    FloatKeys rgb_color_pf_;
+  public:
     typedef FileConstHandle File;
     typedef ColoredConst Decorator;
     ColoredConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("shape");
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color red", false)?
-                   fh.get_key<FloatTraits>(cat, "rgb color red", false)
+      {
+        CategoryD<1> cat=fh.get_category<1>("shape");
+        rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                              (cat, "rgb color red", false)?
+                              fh.get_key<FloatTraits>(cat,
+                                                      "rgb color red",
+                                                      false)
                               :FloatKey()));
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color green", false)?
-                   fh.get_key<FloatTraits>(cat, "rgb color green", false)
+        rgb_color_pf_.push_back((fh.get_has_key<FloatTraits>
+                                 (cat, "rgb color red", true)?
+                                 fh.get_key<FloatTraits>(cat,
+                                                         "rgb color red",
+                                                         true)
+                                 :FloatKey()));
+        rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                              (cat, "rgb color green", false)?
+                              fh.get_key<FloatTraits>(cat,
+                                                      "rgb color green",
+                                                      false)
                               :FloatKey()));
-      rgb_color_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "rgb color blue", false)?
-                   fh.get_key<FloatTraits>(cat, "rgb color blue", false)
+        rgb_color_pf_.push_back((fh.get_has_key<FloatTraits>
+                                 (cat, "rgb color green", true)?
+                                 fh.get_key<FloatTraits>(cat,
+                                                         "rgb color green",
+                                                         true)
+                                 :FloatKey()));
+        rgb_color_.push_back((fh.get_has_key<FloatTraits>
+                              (cat, "rgb color blue", false)?
+                              fh.get_key<FloatTraits>(cat,
+                                                      "rgb color blue",
+                                                      false)
                               :FloatKey()));
-};
+        rgb_color_pf_.push_back((fh.get_has_key<FloatTraits>
+                                 (cat, "rgb color blue", true)?
+                                 fh.get_key<FloatTraits>(cat,
+                                                         "rgb color blue",
+                                                         true)
+                                 :FloatKey()));
+      };
     }
     ColoredConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                     int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return ColoredConst(nh, frame, rgb_color_);
+      return ColoredConst(nh, frame, rgb_color_,
+                          rgb_color_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(rgb_color_[0], frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(rgb_color_pf_[0], frame)
+                             || nh.get_has_value(rgb_color_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(rgb_color_[0])
+                       || nh.get_has_value(rgb_color_pf_[0], 0))));
     }
     IMP_RMF_SHOWABLE(ColoredConstFactory,
                      "ColoredConstFactory");
-    };
+  };
 
-    typedef vector<ColoredConstFactory>
-            ColoredConstFactories;
+  typedef vector<ColoredConstFactory>
+  ColoredConstFactories;
 
-/** These particles has associated coordinates and radius information.
+  /** These particles has associated coordinates and radius information.
 
-       \see Particle
-       \see ParticleConstFactory
-     */
-    class ParticleConst {
+      \see Particle
+      \see ParticleConstFactory
+  */
+  class ParticleConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ParticleConstFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
     ParticleConst(NodeConstHandle nh,
-                      unsigned int frame,
+                  int frame,
                   FloatKeys coordinates,
-FloatKey radius,
-FloatKey mass):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-mass_(mass) {
-    ;
+                  FloatKeys coordinates_pf,
+                  FloatKey radius,
+                  FloatKey radius_pf,
+                  FloatKey mass,
+                  FloatKey mass_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      mass_(mass),
+      mass_pf_(mass_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-Float get_mass() const {
-  return nh_.get_value(mass_, frame_);
-}
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    Float get_mass() const {
+      if (nh_.get_has_value(mass_)) {
+        return nh_.get_value(mass_);
+      } else {
+        return nh_.get_value(mass_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstParticle,
                      "ParticleConst "
                      << nh_.get_name());
     ~ParticleConst() {
     }
-    };
+  };
 
-    typedef vector<ParticleConst>
-            ParticleConsts;
+  typedef vector<ParticleConst>
+  ParticleConsts;
 
-/** These particles has associated coordinates and radius information.
+  /** These particles has associated coordinates and radius information.
 
-       \see ParticleConst
-       \see ParticleFactory
-     */
-    class Particle {
+      \see ParticleConst
+      \see ParticleFactory
+  */
+  class Particle {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ParticleFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
     Particle(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius,
-FloatKey mass):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-mass_(mass) {
-    ;
+             int frame,
+             FloatKeys coordinates,
+             FloatKeys coordinates_pf,
+             FloatKey radius,
+             FloatKey radius_pf,
+             FloatKey mass,
+             FloatKey mass_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      mass_(mass),
+      mass_pf_(mass_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-void set_radius(Float v) {
-   nh_.set_value(radius_, v, frame_);
-}
-Float get_mass() const {
-  return nh_.get_value(mass_, frame_);
-}
-void set_mass(Float v) {
-   nh_.set_value(mass_, v, frame_);
-}
+      return ret;
+    }
+    void set_coordinates(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    void set_radius(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(radius_pf_, v, frame_);
+      } else {
+        return nh_.set_value(radius_, v);
+      }
+    }
+    Float get_mass() const {
+      if (nh_.get_has_value(mass_)) {
+        return nh_.get_value(mass_);
+      } else {
+        return nh_.get_value(mass_pf_, frame_);
+      }
+    }
+    void set_mass(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(mass_pf_, v, frame_);
+      } else {
+        return nh_.set_value(mass_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstParticle,
                      "Particle "
                      << nh_.get_name());
     ~Particle() {
     }
-    };
+  };
 
-    typedef vector<Particle>
-            Particles;
+  typedef vector<Particle>
+  Particles;
 
-/** Create decorators of type Particle.
+  /** Create decorators of type Particle.
 
-       \see Particle
-       \see ParticleConstFactory
-    */
-    class ParticleFactory {
-    private:
+      \see Particle
+      \see ParticleConstFactory
+  */
+  class ParticleFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+  public:
     typedef FileHandle File;
     typedef Particle Decorator;
     ParticleFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "physics");
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian x",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian y",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z",
-                               true));
-radius_=get_key_always<FloatTraits>(fh, cat,
-                               "radius",
-                               false);
-mass_=get_key_always<FloatTraits>(fh, cat,
-                               "mass",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "physics");
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian x",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian x",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian y",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian y",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian z",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian z",
+                                                              true));
+        radius_=get_key_always<FloatTraits>(fh, cat,
+                                            "radius",
+                                            false);
+        radius_pf_=get_key_always<FloatTraits>(fh, cat,
+                                               "radius",
+                                               true);
+        mass_=get_key_always<FloatTraits>(fh, cat,
+                                          "mass",
+                                          false);
+        mass_pf_=get_key_always<FloatTraits>(fh, cat,
+                                             "mass",
+                                             true);
+      };
     }
     Particle get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                 int frame=-1) const {
       ;
       return Particle(nh, frame, coordinates_,
-radius_,
-mass_);
+                      coordinates_pf_,
+                      radius_,
+                      radius_pf_,
+                      mass_,
+                      mass_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(mass_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(mass_pf_, frame)
+                           || nh.get_has_value(mass_)))
+            || ( frame <0 && (nh.get_has_value(mass_)
+                              || nh.get_has_value(mass_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ParticleFactory,
                      "ParticleFactory");
-    };
+  };
 
-    typedef vector<ParticleFactory>
-            ParticleFactories;
+  typedef vector<ParticleFactory>
+  ParticleFactories;
 
-/** Create decorators of type Particle.
+  /** Create decorators of type Particle.
 
-       \see ParticleConst
-       \see ParticleFactory
-    */
-    class ParticleConstFactory {
-    private:
+      \see ParticleConst
+      \see ParticleFactory
+  */
+  class ParticleConstFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+  public:
     typedef FileConstHandle File;
     typedef ParticleConst Decorator;
     ParticleConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
-                              :FloatKey()));
-radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius", false)?
-                   fh.get_key<FloatTraits>(cat, "radius", false)
-                              :FloatKey());
-mass_=(fh.get_has_key<FloatTraits>
-                   (cat, "mass", false)?
-                   fh.get_key<FloatTraits>(cat, "mass", false)
-                              :FloatKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("physics");
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian x", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian x",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian x", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian x",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian y", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian y",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian y", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian y",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian z", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian z",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian z", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian z",
+                                                           true)
+                                   :FloatKey()));
+        radius_=(fh.get_has_key<FloatTraits>
+                 (cat, "radius", false)?
+                 fh.get_key<FloatTraits>(cat,
+                                         "radius",
+                                         false)
+                 :FloatKey());
+        radius_pf_=(fh.get_has_key<FloatTraits>
+                    (cat, "radius", true)?
+                    fh.get_key<FloatTraits>(cat,
+                                            "radius",
+                                            true)
+                    :FloatKey());
+        mass_=(fh.get_has_key<FloatTraits>
+               (cat, "mass", false)?
+               fh.get_key<FloatTraits>(cat,
+                                       "mass",
+                                       false)
+               :FloatKey());
+        mass_pf_=(fh.get_has_key<FloatTraits>
+                  (cat, "mass", true)?
+                  fh.get_key<FloatTraits>(cat,
+                                          "mass",
+                                          true)
+                  :FloatKey());
+      };
     }
     ParticleConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                      int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ParticleConst(nh, frame, coordinates_,
-radius_,
-mass_);
+                           coordinates_pf_,
+                           radius_,
+                           radius_pf_,
+                           mass_,
+                           mass_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(mass_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(mass_pf_, frame)
+                           || nh.get_has_value(mass_)))
+            || ( frame <0 && (nh.get_has_value(mass_)
+                              || nh.get_has_value(mass_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ParticleConstFactory,
                      "ParticleConstFactory");
-    };
+  };
 
-    typedef vector<ParticleConstFactory>
-            ParticleConstFactories;
+  typedef vector<ParticleConstFactory>
+  ParticleConstFactories;
 
-/** These particles has associated coordinates and radius information.
+  /** These particles has associated coordinates and radius information.
 
-       \see IntermediateParticle
-       \see IntermediateParticleConstFactory
-     */
-    class IntermediateParticleConst {
+      \see IntermediateParticle
+      \see IntermediateParticleConstFactory
+  */
+  class IntermediateParticleConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class IntermediateParticleConstFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
     IntermediateParticleConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius) {
-    ;
+                              int frame,
+                              FloatKeys coordinates,
+                              FloatKeys coordinates_pf,
+                              FloatKey radius,
+                              FloatKey radius_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstIntermediateParticle,
                      "IntermediateParticleConst "
                      << nh_.get_name());
     ~IntermediateParticleConst() {
     }
-    };
+  };
 
-    typedef vector<IntermediateParticleConst>
-            IntermediateParticleConsts;
+  typedef vector<IntermediateParticleConst>
+  IntermediateParticleConsts;
 
-/** These particles has associated coordinates and radius information.
+  /** These particles has associated coordinates and radius information.
 
-       \see IntermediateParticleConst
-       \see IntermediateParticleFactory
-     */
-    class IntermediateParticle {
+      \see IntermediateParticleConst
+      \see IntermediateParticleFactory
+  */
+  class IntermediateParticle {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class IntermediateParticleFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
     IntermediateParticle(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius) {
-    ;
+                         int frame,
+                         FloatKeys coordinates,
+                         FloatKeys coordinates_pf,
+                         FloatKey radius,
+                         FloatKey radius_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-void set_radius(Float v) {
-   nh_.set_value(radius_, v, frame_);
-}
+      return ret;
+    }
+    void set_coordinates(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    void set_radius(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(radius_pf_, v, frame_);
+      } else {
+        return nh_.set_value(radius_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstIntermediateParticle,
                      "IntermediateParticle "
                      << nh_.get_name());
     ~IntermediateParticle() {
     }
-    };
+  };
 
-    typedef vector<IntermediateParticle>
-            IntermediateParticles;
+  typedef vector<IntermediateParticle>
+  IntermediateParticles;
 
-/** Create decorators of type IntermediateParticle.
+  /** Create decorators of type IntermediateParticle.
 
-       \see IntermediateParticle
-       \see IntermediateParticleConstFactory
-    */
-    class IntermediateParticleFactory {
-    private:
+      \see IntermediateParticle
+      \see IntermediateParticleConstFactory
+  */
+  class IntermediateParticleFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+  public:
     typedef FileHandle File;
     typedef IntermediateParticle Decorator;
     IntermediateParticleFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "physics");
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian x",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian y",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z",
-                               true));
-radius_=get_key_always<FloatTraits>(fh, cat,
-                               "radius",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "physics");
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian x",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian x",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian y",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian y",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian z",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian z",
+                                                              true));
+        radius_=get_key_always<FloatTraits>(fh, cat,
+                                            "radius",
+                                            false);
+        radius_pf_=get_key_always<FloatTraits>(fh, cat,
+                                               "radius",
+                                               true);
+      };
     }
     IntermediateParticle get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                             int frame=-1) const {
       ;
       return IntermediateParticle(nh, frame, coordinates_,
-radius_);
+                                  coordinates_pf_,
+                                  radius_,
+                                  radius_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(IntermediateParticleFactory,
                      "IntermediateParticleFactory");
-    };
+  };
 
-    typedef vector<IntermediateParticleFactory>
-            IntermediateParticleFactories;
+  typedef vector<IntermediateParticleFactory>
+  IntermediateParticleFactories;
 
-/** Create decorators of type IntermediateParticle.
+  /** Create decorators of type IntermediateParticle.
 
-       \see IntermediateParticleConst
-       \see IntermediateParticleFactory
-    */
-    class IntermediateParticleConstFactory {
-    private:
+      \see IntermediateParticleConst
+      \see IntermediateParticleFactory
+  */
+  class IntermediateParticleConstFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+  public:
     typedef FileConstHandle File;
     typedef IntermediateParticleConst Decorator;
     IntermediateParticleConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
-                              :FloatKey()));
-radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius", false)?
-                   fh.get_key<FloatTraits>(cat, "radius", false)
-                              :FloatKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("physics");
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian x", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian x",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian x", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian x",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian y", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian y",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian y", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian y",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian z", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian z",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian z", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian z",
+                                                           true)
+                                   :FloatKey()));
+        radius_=(fh.get_has_key<FloatTraits>
+                 (cat, "radius", false)?
+                 fh.get_key<FloatTraits>(cat,
+                                         "radius",
+                                         false)
+                 :FloatKey());
+        radius_pf_=(fh.get_has_key<FloatTraits>
+                    (cat, "radius", true)?
+                    fh.get_key<FloatTraits>(cat,
+                                            "radius",
+                                            true)
+                    :FloatKey());
+      };
     }
     IntermediateParticleConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                                  int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return IntermediateParticleConst(nh, frame, coordinates_,
-radius_);
+                                       coordinates_pf_,
+                                       radius_,
+                                       radius_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(IntermediateParticleConstFactory,
                      "IntermediateParticleConstFactory");
-    };
+  };
 
-    typedef vector<IntermediateParticleConstFactory>
-            IntermediateParticleConstFactories;
+  typedef vector<IntermediateParticleConstFactory>
+  IntermediateParticleConstFactories;
 
-/** These particles has associated coordinates and orientation information.
+  /** These particles has associated coordinates and orientation information.
 
-       \see RigidParticle
-       \see RigidParticleConstFactory
-     */
-    class RigidParticleConst {
+      \see RigidParticle
+      \see RigidParticleConstFactory
+  */
+  class RigidParticleConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class RigidParticleConstFactory;
-    private:
+  private:
     FloatKeys orientation_;
-FloatKeys coordinates_;
+    FloatKeys orientation_pf_;
+    FloatKeys coordinates_;
+    FloatKeys coordinates_pf_;
     RigidParticleConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKeys orientation,
-FloatKeys coordinates):
-       nh_(nh),
-       frame_(frame),
-       orientation_(orientation),
-coordinates_(coordinates) {
-    ;
+                       int frame,
+                       FloatKeys orientation,
+                       FloatKeys orientation_pf,
+                       FloatKeys coordinates,
+                       FloatKeys coordinates_pf):
+      nh_(nh),
+      frame_(frame),
+      orientation_(orientation),
+      orientation_pf_(orientation_pf),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_orientation() const {
-       Floats ret;
-       for (unsigned int i=0; i< 4; ++i) {
-          ret.push_back(nh_.get_value(orientation_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(orientation_[0])) {
+        for (unsigned int i=0; i< 4; ++i) {
+          ret.push_back(nh_.get_value(orientation_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 4; ++i) {
+          ret.push_back(nh_.get_value(orientation_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+    Floats get_coordinates() const {
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
     IMP_RMF_SHOWABLE(ConstRigidParticle,
                      "RigidParticleConst "
                      << nh_.get_name());
     ~RigidParticleConst() {
     }
-    };
+  };
 
-    typedef vector<RigidParticleConst>
-            RigidParticleConsts;
+  typedef vector<RigidParticleConst>
+  RigidParticleConsts;
 
-/** These particles has associated coordinates and orientation information.
+  /** These particles has associated coordinates and orientation information.
 
-       \see RigidParticleConst
-       \see RigidParticleFactory
-     */
-    class RigidParticle {
+      \see RigidParticleConst
+      \see RigidParticleFactory
+  */
+  class RigidParticle {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class RigidParticleFactory;
-    private:
+  private:
     FloatKeys orientation_;
-FloatKeys coordinates_;
+    FloatKeys orientation_pf_;
+    FloatKeys coordinates_;
+    FloatKeys coordinates_pf_;
     RigidParticle(NodeHandle nh,
-                      unsigned int frame,
+                  int frame,
                   FloatKeys orientation,
-FloatKeys coordinates):
-       nh_(nh),
-       frame_(frame),
-       orientation_(orientation),
-coordinates_(coordinates) {
-    ;
+                  FloatKeys orientation_pf,
+                  FloatKeys coordinates,
+                  FloatKeys coordinates_pf):
+      nh_(nh),
+      frame_(frame),
+      orientation_(orientation),
+      orientation_pf_(orientation_pf),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_orientation() const {
-       Floats ret;
-       for (unsigned int i=0; i< 4; ++i) {
-          ret.push_back(nh_.get_value(orientation_[i], frame_));
-       }
-       return ret;
-    }
-void set_orientation(const Floats &v) {
-         for (unsigned int i=0; i< 4; ++i) {
-            nh_.set_value(orientation_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(orientation_[0])) {
+        for (unsigned int i=0; i< 4; ++i) {
+          ret.push_back(nh_.get_value(orientation_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 4; ++i) {
+          ret.push_back(nh_.get_value(orientation_pf_[i], frame_));
+        }
       }
-Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      return ret;
     }
-void set_coordinates(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+    void set_orientation(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 4; ++i) {
+          nh_.set_value(orientation_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 4; ++i) {
+          nh_.set_value(orientation_[i], v[i]);
+        }
       }
+    }
+    Floats get_coordinates() const {
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
+    }
+    void set_coordinates(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
     IMP_RMF_SHOWABLE(ConstRigidParticle,
                      "RigidParticle "
                      << nh_.get_name());
     ~RigidParticle() {
     }
-    };
+  };
 
-    typedef vector<RigidParticle>
-            RigidParticles;
+  typedef vector<RigidParticle>
+  RigidParticles;
 
-/** Create decorators of type RigidParticle.
+  /** Create decorators of type RigidParticle.
 
-       \see RigidParticle
-       \see RigidParticleConstFactory
-    */
-    class RigidParticleFactory {
-    private:
+      \see RigidParticle
+      \see RigidParticleConstFactory
+  */
+  class RigidParticleFactory {
+  private:
     FloatKeys orientation_;
-FloatKeys coordinates_;
-    public:
+    FloatKeys orientation_pf_;
+    FloatKeys coordinates_;
+    FloatKeys coordinates_pf_;
+  public:
     typedef FileHandle File;
     typedef RigidParticle Decorator;
     RigidParticleFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "physics");
-      orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "orientation r",
-                               true));
-      orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "orientation i",
-                               true));
-      orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "orientation j",
-                               true));
-      orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "orientation k",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian x",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian y",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z",
-                               true));
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "physics");
+        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "orientation r",
+                                                           false));
+        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "orientation r",
+                                                              true));
+        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "orientation i",
+                                                           false));
+        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "orientation i",
+                                                              true));
+        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "orientation j",
+                                                           false));
+        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "orientation j",
+                                                              true));
+        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "orientation k",
+                                                           false));
+        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "orientation k",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian x",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian x",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian y",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian y",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian z",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian z",
+                                                              true));
+      };
     }
     RigidParticle get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                      int frame=-1) const {
       ;
       return RigidParticle(nh, frame, orientation_,
-coordinates_);
+                           orientation_pf_,
+                           coordinates_,
+                           coordinates_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(orientation_[0], frame)
-    && nh.get_has_value(coordinates_[0], frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(orientation_pf_[0], frame)
+                             || nh.get_has_value(orientation_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(orientation_[0])
+                       || nh.get_has_value(orientation_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                           || nh.get_has_value(coordinates_[0])))
+            || (frame <0
+                &&  (nh.get_has_value(coordinates_[0])
+                     || nh.get_has_value(coordinates_pf_[0], 0))));
     }
     IMP_RMF_SHOWABLE(RigidParticleFactory,
                      "RigidParticleFactory");
-    };
+  };
 
-    typedef vector<RigidParticleFactory>
-            RigidParticleFactories;
+  typedef vector<RigidParticleFactory>
+  RigidParticleFactories;
 
-/** Create decorators of type RigidParticle.
+  /** Create decorators of type RigidParticle.
 
-       \see RigidParticleConst
-       \see RigidParticleFactory
-    */
-    class RigidParticleConstFactory {
-    private:
+      \see RigidParticleConst
+      \see RigidParticleFactory
+  */
+  class RigidParticleConstFactory {
+  private:
     FloatKeys orientation_;
-FloatKeys coordinates_;
-    public:
+    FloatKeys orientation_pf_;
+    FloatKeys coordinates_;
+    FloatKeys coordinates_pf_;
+  public:
     typedef FileConstHandle File;
     typedef RigidParticleConst Decorator;
     RigidParticleConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("physics");
-      orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation r", true)?
-                   fh.get_key<FloatTraits>(cat, "orientation r", true)
-                              :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation i", true)?
-                   fh.get_key<FloatTraits>(cat, "orientation i", true)
-                              :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation j", true)?
-                   fh.get_key<FloatTraits>(cat, "orientation j", true)
-                              :FloatKey()));
-      orientation_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "orientation k", true)?
-                   fh.get_key<FloatTraits>(cat, "orientation k", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
-                              :FloatKey()));
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("physics");
+        orientation_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "orientation r", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "orientation r",
+                                                        false)
+                                :FloatKey()));
+        orientation_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "orientation r", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "orientation r",
+                                                           true)
+                                   :FloatKey()));
+        orientation_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "orientation i", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "orientation i",
+                                                        false)
+                                :FloatKey()));
+        orientation_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "orientation i", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "orientation i",
+                                                           true)
+                                   :FloatKey()));
+        orientation_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "orientation j", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "orientation j",
+                                                        false)
+                                :FloatKey()));
+        orientation_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "orientation j", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "orientation j",
+                                                           true)
+                                   :FloatKey()));
+        orientation_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "orientation k", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "orientation k",
+                                                        false)
+                                :FloatKey()));
+        orientation_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "orientation k", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "orientation k",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian x", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian x",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian x", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian x",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian y", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian y",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian y", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian y",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian z", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian z",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian z", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian z",
+                                                           true)
+                                   :FloatKey()));
+      };
     }
     RigidParticleConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                           int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return RigidParticleConst(nh, frame, orientation_,
-coordinates_);
+                                orientation_pf_,
+                                coordinates_,
+                                coordinates_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(orientation_[0], frame)
-    && nh.get_has_value(coordinates_[0], frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(orientation_pf_[0], frame)
+                             || nh.get_has_value(orientation_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(orientation_[0])
+                       || nh.get_has_value(orientation_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                           || nh.get_has_value(coordinates_[0])))
+            || (frame <0
+                &&  (nh.get_has_value(coordinates_[0])
+                     || nh.get_has_value(coordinates_pf_[0], 0))));
     }
     IMP_RMF_SHOWABLE(RigidParticleConstFactory,
                      "RigidParticleConstFactory");
-    };
+  };
 
-    typedef vector<RigidParticleConstFactory>
-            RigidParticleConstFactories;
+  typedef vector<RigidParticleConstFactory>
+  RigidParticleConstFactories;
 
-/** A geometric ball.
+  /** A geometric ball.
 
-       \see Ball
-       \see BallConstFactory
-     */
-    class BallConst {
+      \see Ball
+      \see BallConstFactory
+  */
+  class BallConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class BallConstFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     BallConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-type_(type) {
-    ;
+              int frame,
+              FloatKeys coordinates,
+              FloatKeys coordinates_pf,
+              FloatKey radius,
+              FloatKey radius_pf,
+              IndexKey type,
+              IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstBall,
                      "BallConst "
                      << nh_.get_name());
     ~BallConst() {
     }
-    };
+  };
 
-    typedef vector<BallConst>
-            BallConsts;
+  typedef vector<BallConst>
+  BallConsts;
 
-/** A geometric ball.
+  /** A geometric ball.
 
-       \see BallConst
-       \see BallFactory
-     */
-    class Ball {
+      \see BallConst
+      \see BallFactory
+  */
+  class Ball {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class BallFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     Ball(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-type_(type) {
-    nh.set_value(type_, 0);;
+         int frame,
+         FloatKeys coordinates,
+         FloatKeys coordinates_pf,
+         FloatKey radius,
+         FloatKey radius_pf,
+         IndexKey type,
+         IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      nh.set_value(type_, 0);;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-void set_radius(Float v) {
-   nh_.set_value(radius_, v, frame_);
-}
+      return ret;
+    }
+    void set_coordinates(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    void set_radius(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(radius_pf_, v, frame_);
+      } else {
+        return nh_.set_value(radius_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstBall,
                      "Ball "
                      << nh_.get_name());
     ~Ball() {
     }
-    };
+  };
 
-    typedef vector<Ball>
-            Balls;
+  typedef vector<Ball>
+  Balls;
 
-/** Create decorators of type Ball.
+  /** Create decorators of type Ball.
 
-       \see Ball
-       \see BallConstFactory
-    */
-    class BallFactory {
-    private:
+      \see Ball
+      \see BallConstFactory
+  */
+  class BallFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileHandle File;
     typedef Ball Decorator;
     BallFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "shape");
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian x",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian y",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z",
-                               true));
-radius_=get_key_always<FloatTraits>(fh, cat,
-                               "radius",
-                               false);
-type_=get_key_always<IndexTraits>(fh, cat,
-                               "type",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "shape");
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian x",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian x",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian y",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian y",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian z",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian z",
+                                                              true));
+        radius_=get_key_always<FloatTraits>(fh, cat,
+                                            "radius",
+                                            false);
+        radius_pf_=get_key_always<FloatTraits>(fh, cat,
+                                               "radius",
+                                               true);
+        type_=get_key_always<IndexTraits>(fh, cat,
+                                          "type",
+                                          false);
+        type_pf_=get_key_always<IndexTraits>(fh, cat,
+                                             "type",
+                                             true);
+      };
     }
     Ball get(NodeHandle nh,
-                          unsigned int frame=0) const {
+             int frame=-1) const {
       ;
       return Ball(nh, frame, coordinates_,
-radius_,
-type_);
+                  coordinates_pf_,
+                  radius_,
+                  radius_pf_,
+                  type_,
+                  type_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==0;
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==0;
     }
     IMP_RMF_SHOWABLE(BallFactory,
                      "BallFactory");
-    };
+  };
 
-    typedef vector<BallFactory>
-            BallFactories;
+  typedef vector<BallFactory>
+  BallFactories;
 
-/** Create decorators of type Ball.
+  /** Create decorators of type Ball.
 
-       \see BallConst
-       \see BallFactory
-    */
-    class BallConstFactory {
-    private:
+      \see BallConst
+      \see BallFactory
+  */
+  class BallConstFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileConstHandle File;
     typedef BallConst Decorator;
     BallConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
-                              :FloatKey()));
-radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius", false)?
-                   fh.get_key<FloatTraits>(cat, "radius", false)
-                              :FloatKey());
-type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type", false)?
-                   fh.get_key<IndexTraits>(cat, "type", false)
-                              :IndexKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("shape");
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian x", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian x",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian x", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian x",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian y", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian y",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian y", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian y",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian z", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian z",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian z", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian z",
+                                                           true)
+                                   :FloatKey()));
+        radius_=(fh.get_has_key<FloatTraits>
+                 (cat, "radius", false)?
+                 fh.get_key<FloatTraits>(cat,
+                                         "radius",
+                                         false)
+                 :FloatKey());
+        radius_pf_=(fh.get_has_key<FloatTraits>
+                    (cat, "radius", true)?
+                    fh.get_key<FloatTraits>(cat,
+                                            "radius",
+                                            true)
+                    :FloatKey());
+        type_=(fh.get_has_key<IndexTraits>
+               (cat, "type", false)?
+               fh.get_key<IndexTraits>(cat,
+                                       "type",
+                                       false)
+               :IndexKey());
+        type_pf_=(fh.get_has_key<IndexTraits>
+                  (cat, "type", true)?
+                  fh.get_key<IndexTraits>(cat,
+                                          "type",
+                                          true)
+                  :IndexKey());
+      };
     }
     BallConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                  int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return BallConst(nh, frame, coordinates_,
-radius_,
-type_);
+                       coordinates_pf_,
+                       radius_,
+                       radius_pf_,
+                       type_,
+                       type_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==0;
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==0;
     }
     IMP_RMF_SHOWABLE(BallConstFactory,
                      "BallConstFactory");
-    };
+  };
 
-    typedef vector<BallConstFactory>
-            BallConstFactories;
+  typedef vector<BallConstFactory>
+  BallConstFactories;
 
-/** A geometric cylinder.
+  /** A geometric cylinder.
 
-       \see Cylinder
-       \see CylinderConstFactory
-     */
-    class CylinderConst {
+      \see Cylinder
+      \see CylinderConstFactory
+  */
+  class CylinderConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class CylinderConstFactory;
-    private:
+  private:
     FloatsKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
+    FloatsKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     CylinderConst(NodeConstHandle nh,
-                      unsigned int frame,
+                  int frame,
                   FloatsKeys coordinates,
-FloatKey radius,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-type_(type) {
-    ;
+                  FloatsKeys coordinates_pf,
+                  FloatKey radius,
+                  FloatKey radius_pf,
+                  IndexKey type,
+                  IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      ;
     }
-    public:
+  public:
     FloatsList get_coordinates() const {
-       FloatsList ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      FloatsList ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstCylinder,
                      "CylinderConst "
                      << nh_.get_name());
     ~CylinderConst() {
     }
-    };
+  };
 
-    typedef vector<CylinderConst>
-            CylinderConsts;
+  typedef vector<CylinderConst>
+  CylinderConsts;
 
-/** A geometric cylinder.
+  /** A geometric cylinder.
 
-       \see CylinderConst
-       \see CylinderFactory
-     */
-    class Cylinder {
+      \see CylinderConst
+      \see CylinderFactory
+  */
+  class Cylinder {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class CylinderFactory;
-    private:
+  private:
     FloatsKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
+    FloatsKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     Cylinder(NodeHandle nh,
-                      unsigned int frame,
-                  FloatsKeys coordinates,
-FloatKey radius,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-type_(type) {
-    nh.set_value(type_, 1);;
+             int frame,
+             FloatsKeys coordinates,
+             FloatsKeys coordinates_pf,
+             FloatKey radius,
+             FloatKey radius_pf,
+             IndexKey type,
+             IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      nh.set_value(type_, 1);;
     }
-    public:
+  public:
     FloatsList get_coordinates() const {
-       FloatsList ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const FloatsList &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      FloatsList ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-void set_radius(Float v) {
-   nh_.set_value(radius_, v, frame_);
-}
+      return ret;
+    }
+    void set_coordinates(const FloatsList &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    void set_radius(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(radius_pf_, v, frame_);
+      } else {
+        return nh_.set_value(radius_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstCylinder,
                      "Cylinder "
                      << nh_.get_name());
     ~Cylinder() {
     }
-    };
+  };
 
-    typedef vector<Cylinder>
-            Cylinders;
+  typedef vector<Cylinder>
+  Cylinders;
 
-/** Create decorators of type Cylinder.
+  /** Create decorators of type Cylinder.
 
-       \see Cylinder
-       \see CylinderConstFactory
-    */
-    class CylinderFactory {
-    private:
+      \see Cylinder
+      \see CylinderConstFactory
+  */
+  class CylinderFactory {
+  private:
     FloatsKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
-    public:
+    FloatsKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileHandle File;
     typedef Cylinder Decorator;
     CylinderFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "shape");
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian xs",
-                               true));
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian ys",
-                               true));
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian zs",
-                               true));
-radius_=get_key_always<FloatTraits>(fh, cat,
-                               "radius",
-                               false);
-type_=get_key_always<IndexTraits>(fh, cat,
-                               "type",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "shape");
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian xs",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian xs",
+                                                               true));
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian ys",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian ys",
+                                                               true));
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian zs",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian zs",
+                                                               true));
+        radius_=get_key_always<FloatTraits>(fh, cat,
+                                            "radius",
+                                            false);
+        radius_pf_=get_key_always<FloatTraits>(fh, cat,
+                                               "radius",
+                                               true);
+        type_=get_key_always<IndexTraits>(fh, cat,
+                                          "type",
+                                          false);
+        type_pf_=get_key_always<IndexTraits>(fh, cat,
+                                             "type",
+                                             true);
+      };
     }
     Cylinder get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                 int frame=-1) const {
       ;
       return Cylinder(nh, frame, coordinates_,
-radius_,
-type_);
+                      coordinates_pf_,
+                      radius_,
+                      radius_pf_,
+                      type_,
+                      type_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==1;
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(CylinderFactory,
                      "CylinderFactory");
-    };
+  };
 
-    typedef vector<CylinderFactory>
-            CylinderFactories;
+  typedef vector<CylinderFactory>
+  CylinderFactories;
 
-/** Create decorators of type Cylinder.
+  /** Create decorators of type Cylinder.
 
-       \see CylinderConst
-       \see CylinderFactory
-    */
-    class CylinderConstFactory {
-    private:
+      \see CylinderConst
+      \see CylinderFactory
+  */
+  class CylinderConstFactory {
+  private:
     FloatsKeys coordinates_;
-FloatKey radius_;
-IndexKey type_;
-    public:
+    FloatsKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileConstHandle File;
     typedef CylinderConst Decorator;
     CylinderConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian xs", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian xs", true)
-                              :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian ys", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian ys", true)
-                              :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian zs", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian zs", true)
-                              :FloatsKey()));
-radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius", false)?
-                   fh.get_key<FloatTraits>(cat, "radius", false)
-                              :FloatKey());
-type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type", false)?
-                   fh.get_key<IndexTraits>(cat, "type", false)
-                              :IndexKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("shape");
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian xs", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian xs",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian xs", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian xs",
+                                                            true)
+                                   :FloatsKey()));
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian ys", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian ys",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian ys", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian ys",
+                                                            true)
+                                   :FloatsKey()));
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian zs", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian zs",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian zs", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian zs",
+                                                            true)
+                                   :FloatsKey()));
+        radius_=(fh.get_has_key<FloatTraits>
+                 (cat, "radius", false)?
+                 fh.get_key<FloatTraits>(cat,
+                                         "radius",
+                                         false)
+                 :FloatKey());
+        radius_pf_=(fh.get_has_key<FloatTraits>
+                    (cat, "radius", true)?
+                    fh.get_key<FloatTraits>(cat,
+                                            "radius",
+                                            true)
+                    :FloatKey());
+        type_=(fh.get_has_key<IndexTraits>
+               (cat, "type", false)?
+               fh.get_key<IndexTraits>(cat,
+                                       "type",
+                                       false)
+               :IndexKey());
+        type_pf_=(fh.get_has_key<IndexTraits>
+                  (cat, "type", true)?
+                  fh.get_key<IndexTraits>(cat,
+                                          "type",
+                                          true)
+                  :IndexKey());
+      };
     }
     CylinderConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                      int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return CylinderConst(nh, frame, coordinates_,
-radius_,
-type_);
+                           coordinates_pf_,
+                           radius_,
+                           radius_pf_,
+                           type_,
+                           type_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==1;
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(CylinderConstFactory,
                      "CylinderConstFactory");
-    };
+  };
 
-    typedef vector<CylinderConstFactory>
-            CylinderConstFactories;
+  typedef vector<CylinderConstFactory>
+  CylinderConstFactories;
 
-/** A geometric line setgment.
+  /** A geometric line setgment.
 
-       \see Segment
-       \see SegmentConstFactory
-     */
-    class SegmentConst {
+      \see Segment
+      \see SegmentConstFactory
+  */
+  class SegmentConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class SegmentConstFactory;
-    private:
+  private:
     FloatsKeys coordinates_;
-IndexKey type_;
+    FloatsKeys coordinates_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     SegmentConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatsKeys coordinates,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-type_(type) {
-    ;
+                 int frame,
+                 FloatsKeys coordinates,
+                 FloatsKeys coordinates_pf,
+                 IndexKey type,
+                 IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      ;
     }
-    public:
+  public:
     FloatsList get_coordinates() const {
-       FloatsList ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      FloatsList ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
     IMP_RMF_SHOWABLE(ConstSegment,
                      "SegmentConst "
                      << nh_.get_name());
     ~SegmentConst() {
     }
-    };
+  };
 
-    typedef vector<SegmentConst>
-            SegmentConsts;
+  typedef vector<SegmentConst>
+  SegmentConsts;
 
-/** A geometric line setgment.
+  /** A geometric line setgment.
 
-       \see SegmentConst
-       \see SegmentFactory
-     */
-    class Segment {
+      \see SegmentConst
+      \see SegmentFactory
+  */
+  class Segment {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class SegmentFactory;
-    private:
+  private:
     FloatsKeys coordinates_;
-IndexKey type_;
+    FloatsKeys coordinates_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
     Segment(NodeHandle nh,
-                      unsigned int frame,
-                  FloatsKeys coordinates,
-IndexKey type):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-type_(type) {
-    nh.set_value(type_, 1);;
+            int frame,
+            FloatsKeys coordinates,
+            FloatsKeys coordinates_pf,
+            IndexKey type,
+            IndexKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      type_(type),
+      type_pf_(type_pf) {
+      nh.set_value(type_, 1);;
     }
-    public:
+  public:
     FloatsList get_coordinates() const {
-       FloatsList ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const FloatsList &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      FloatsList ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
+      return ret;
+    }
+    void set_coordinates(const FloatsList &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
     IMP_RMF_SHOWABLE(ConstSegment,
                      "Segment "
                      << nh_.get_name());
     ~Segment() {
     }
-    };
+  };
 
-    typedef vector<Segment>
-            Segments;
+  typedef vector<Segment>
+  Segments;
 
-/** Create decorators of type Segment.
+  /** Create decorators of type Segment.
 
-       \see Segment
-       \see SegmentConstFactory
-    */
-    class SegmentFactory {
-    private:
+      \see Segment
+      \see SegmentConstFactory
+  */
+  class SegmentFactory {
+  private:
     FloatsKeys coordinates_;
-IndexKey type_;
-    public:
+    FloatsKeys coordinates_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileHandle File;
     typedef Segment Decorator;
     SegmentFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "shape");
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian xs",
-                               true));
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian ys",
-                               true));
-      coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                               "cartesian zs",
-                               true));
-type_=get_key_always<IndexTraits>(fh, cat,
-                               "type",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "shape");
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian xs",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian xs",
+                                                               true));
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian ys",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian ys",
+                                                               true));
+        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                            "cartesian zs",
+                                                            false));
+        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
+                                                               "cartesian zs",
+                                                               true));
+        type_=get_key_always<IndexTraits>(fh, cat,
+                                          "type",
+                                          false);
+        type_pf_=get_key_always<IndexTraits>(fh, cat,
+                                             "type",
+                                             true);
+      };
     }
     Segment get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                int frame=-1) const {
       ;
       return Segment(nh, frame, coordinates_,
-type_);
+                     coordinates_pf_,
+                     type_,
+                     type_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==1;
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(SegmentFactory,
                      "SegmentFactory");
-    };
+  };
 
-    typedef vector<SegmentFactory>
-            SegmentFactories;
+  typedef vector<SegmentFactory>
+  SegmentFactories;
 
-/** Create decorators of type Segment.
+  /** Create decorators of type Segment.
 
-       \see SegmentConst
-       \see SegmentFactory
-    */
-    class SegmentConstFactory {
-    private:
+      \see SegmentConst
+      \see SegmentFactory
+  */
+  class SegmentConstFactory {
+  private:
     FloatsKeys coordinates_;
-IndexKey type_;
-    public:
+    FloatsKeys coordinates_pf_;
+    IndexKey type_;
+    IndexKey type_pf_;
+  public:
     typedef FileConstHandle File;
     typedef SegmentConst Decorator;
     SegmentConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("shape");
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian xs", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian xs", true)
-                              :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian ys", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian ys", true)
-                              :FloatsKey()));
-      coordinates_.push_back((fh.get_has_key<FloatsTraits>
-                   (cat, "cartesian zs", true)?
-                   fh.get_key<FloatsTraits>(cat, "cartesian zs", true)
-                              :FloatsKey()));
-type_=(fh.get_has_key<IndexTraits>
-                   (cat, "type", false)?
-                   fh.get_key<IndexTraits>(cat, "type", false)
-                              :IndexKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("shape");
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian xs", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian xs",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian xs", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian xs",
+                                                            true)
+                                   :FloatsKey()));
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian ys", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian ys",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian ys", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian ys",
+                                                            true)
+                                   :FloatsKey()));
+        coordinates_.push_back((fh.get_has_key<FloatsTraits>
+                                (cat, "cartesian zs", false)?
+                                fh.get_key<FloatsTraits>(cat,
+                                                         "cartesian zs",
+                                                         false)
+                                :FloatsKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatsTraits>
+                                   (cat, "cartesian zs", true)?
+                                   fh.get_key<FloatsTraits>(cat,
+                                                            "cartesian zs",
+                                                            true)
+                                   :FloatsKey()));
+        type_=(fh.get_has_key<IndexTraits>
+               (cat, "type", false)?
+               fh.get_key<IndexTraits>(cat,
+                                       "type",
+                                       false)
+               :IndexKey());
+        type_pf_=(fh.get_has_key<IndexTraits>
+                  (cat, "type", true)?
+                  fh.get_key<IndexTraits>(cat,
+                                          "type",
+                                          true)
+                  :IndexKey());
+      };
     }
     SegmentConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                     int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return SegmentConst(nh, frame, coordinates_,
-type_);
+                          coordinates_pf_,
+                          type_,
+                          type_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(type_, frame)
-    && nh.get_value(type_)==1;
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))))
+        && nh.get_value(type_)==1;
     }
     IMP_RMF_SHOWABLE(SegmentConstFactory,
                      "SegmentConstFactory");
-    };
+  };
 
-    typedef vector<SegmentConstFactory>
-            SegmentConstFactories;
+  typedef vector<SegmentConstFactory>
+  SegmentConstFactories;
 
-/** Information regarding a publication.
+  /** Information regarding a publication.
 
-       \see JournalArticle
-       \see JournalArticleConstFactory
-     */
-    class JournalArticleConst {
+      \see JournalArticle
+      \see JournalArticleConstFactory
+  */
+  class JournalArticleConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class JournalArticleConstFactory;
-    private:
+  private:
     StringKey title_;
-StringKey journal_;
-StringKey pubmed_id_;
-IntKey year_;
-StringsKey authors_;
+    StringKey title_pf_;
+    StringKey journal_;
+    StringKey journal_pf_;
+    StringKey pubmed_id_;
+    StringKey pubmed_id_pf_;
+    IntKey year_;
+    IntKey year_pf_;
+    StringsKey authors_;
+    StringsKey authors_pf_;
     JournalArticleConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  StringKey title,
-StringKey journal,
-StringKey pubmed_id,
-IntKey year,
-StringsKey authors):
-       nh_(nh),
-       frame_(frame),
-       title_(title),
-journal_(journal),
-pubmed_id_(pubmed_id),
-year_(year),
-authors_(authors) {
-    ;
+                        int frame,
+                        StringKey title,
+                        StringKey title_pf,
+                        StringKey journal,
+                        StringKey journal_pf,
+                        StringKey pubmed_id,
+                        StringKey pubmed_id_pf,
+                        IntKey year,
+                        IntKey year_pf,
+                        StringsKey authors,
+                        StringsKey authors_pf):
+      nh_(nh),
+      frame_(frame),
+      title_(title),
+      title_pf_(title_pf),
+      journal_(journal),
+      journal_pf_(journal_pf),
+      pubmed_id_(pubmed_id),
+      pubmed_id_pf_(pubmed_id_pf),
+      year_(year),
+      year_pf_(year_pf),
+      authors_(authors),
+      authors_pf_(authors_pf) {
+      ;
     }
-    public:
+  public:
     String get_title() const {
-  return nh_.get_value(title_, frame_);
-}
-String get_journal() const {
-  return nh_.get_value(journal_, frame_);
-}
-String get_pubmed_id() const {
-  return nh_.get_value(pubmed_id_, frame_);
-}
-Int get_year() const {
-  return nh_.get_value(year_, frame_);
-}
-Strings get_authors() const {
-  return nh_.get_value(authors_, frame_);
-}
+      if (nh_.get_has_value(title_)) {
+        return nh_.get_value(title_);
+      } else {
+        return nh_.get_value(title_pf_, frame_);
+      }
+    }
+    String get_journal() const {
+      if (nh_.get_has_value(journal_)) {
+        return nh_.get_value(journal_);
+      } else {
+        return nh_.get_value(journal_pf_, frame_);
+      }
+    }
+    String get_pubmed_id() const {
+      if (nh_.get_has_value(pubmed_id_)) {
+        return nh_.get_value(pubmed_id_);
+      } else {
+        return nh_.get_value(pubmed_id_pf_, frame_);
+      }
+    }
+    Int get_year() const {
+      if (nh_.get_has_value(year_)) {
+        return nh_.get_value(year_);
+      } else {
+        return nh_.get_value(year_pf_, frame_);
+      }
+    }
+    Strings get_authors() const {
+      if (nh_.get_has_value(authors_)) {
+        return nh_.get_value(authors_);
+      } else {
+        return nh_.get_value(authors_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstJournalArticle,
                      "JournalArticleConst "
                      << nh_.get_name());
     ~JournalArticleConst() {
     }
-    };
+  };
 
-    typedef vector<JournalArticleConst>
-            JournalArticleConsts;
+  typedef vector<JournalArticleConst>
+  JournalArticleConsts;
 
-/** Information regarding a publication.
+  /** Information regarding a publication.
 
-       \see JournalArticleConst
-       \see JournalArticleFactory
-     */
-    class JournalArticle {
+      \see JournalArticleConst
+      \see JournalArticleFactory
+  */
+  class JournalArticle {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class JournalArticleFactory;
-    private:
+  private:
     StringKey title_;
-StringKey journal_;
-StringKey pubmed_id_;
-IntKey year_;
-StringsKey authors_;
+    StringKey title_pf_;
+    StringKey journal_;
+    StringKey journal_pf_;
+    StringKey pubmed_id_;
+    StringKey pubmed_id_pf_;
+    IntKey year_;
+    IntKey year_pf_;
+    StringsKey authors_;
+    StringsKey authors_pf_;
     JournalArticle(NodeHandle nh,
-                      unsigned int frame,
-                  StringKey title,
-StringKey journal,
-StringKey pubmed_id,
-IntKey year,
-StringsKey authors):
-       nh_(nh),
-       frame_(frame),
-       title_(title),
-journal_(journal),
-pubmed_id_(pubmed_id),
-year_(year),
-authors_(authors) {
-    ;
+                   int frame,
+                   StringKey title,
+                   StringKey title_pf,
+                   StringKey journal,
+                   StringKey journal_pf,
+                   StringKey pubmed_id,
+                   StringKey pubmed_id_pf,
+                   IntKey year,
+                   IntKey year_pf,
+                   StringsKey authors,
+                   StringsKey authors_pf):
+      nh_(nh),
+      frame_(frame),
+      title_(title),
+      title_pf_(title_pf),
+      journal_(journal),
+      journal_pf_(journal_pf),
+      pubmed_id_(pubmed_id),
+      pubmed_id_pf_(pubmed_id_pf),
+      year_(year),
+      year_pf_(year_pf),
+      authors_(authors),
+      authors_pf_(authors_pf) {
+      ;
     }
-    public:
+  public:
     String get_title() const {
-  return nh_.get_value(title_, frame_);
-}
-void set_title(String v) {
-   nh_.set_value(title_, v, frame_);
-}
-String get_journal() const {
-  return nh_.get_value(journal_, frame_);
-}
-void set_journal(String v) {
-   nh_.set_value(journal_, v, frame_);
-}
-String get_pubmed_id() const {
-  return nh_.get_value(pubmed_id_, frame_);
-}
-void set_pubmed_id(String v) {
-   nh_.set_value(pubmed_id_, v, frame_);
-}
-Int get_year() const {
-  return nh_.get_value(year_, frame_);
-}
-void set_year(Int v) {
-   nh_.set_value(year_, v, frame_);
-}
-Strings get_authors() const {
-  return nh_.get_value(authors_, frame_);
-}
-void set_authors(Strings v) {
-   nh_.set_value(authors_, v, frame_);
-}
+      if (nh_.get_has_value(title_)) {
+        return nh_.get_value(title_);
+      } else {
+        return nh_.get_value(title_pf_, frame_);
+      }
+    }
+    void set_title(String v) {
+      if (frame_ >=0) {
+        nh_.set_value(title_pf_, v, frame_);
+      } else {
+        return nh_.set_value(title_, v);
+      }
+    }
+    String get_journal() const {
+      if (nh_.get_has_value(journal_)) {
+        return nh_.get_value(journal_);
+      } else {
+        return nh_.get_value(journal_pf_, frame_);
+      }
+    }
+    void set_journal(String v) {
+      if (frame_ >=0) {
+        nh_.set_value(journal_pf_, v, frame_);
+      } else {
+        return nh_.set_value(journal_, v);
+      }
+    }
+    String get_pubmed_id() const {
+      if (nh_.get_has_value(pubmed_id_)) {
+        return nh_.get_value(pubmed_id_);
+      } else {
+        return nh_.get_value(pubmed_id_pf_, frame_);
+      }
+    }
+    void set_pubmed_id(String v) {
+      if (frame_ >=0) {
+        nh_.set_value(pubmed_id_pf_, v, frame_);
+      } else {
+        return nh_.set_value(pubmed_id_, v);
+      }
+    }
+    Int get_year() const {
+      if (nh_.get_has_value(year_)) {
+        return nh_.get_value(year_);
+      } else {
+        return nh_.get_value(year_pf_, frame_);
+      }
+    }
+    void set_year(Int v) {
+      if (frame_ >=0) {
+        nh_.set_value(year_pf_, v, frame_);
+      } else {
+        return nh_.set_value(year_, v);
+      }
+    }
+    Strings get_authors() const {
+      if (nh_.get_has_value(authors_)) {
+        return nh_.get_value(authors_);
+      } else {
+        return nh_.get_value(authors_pf_, frame_);
+      }
+    }
+    void set_authors(Strings v) {
+      if (frame_ >=0) {
+        nh_.set_value(authors_pf_, v, frame_);
+      } else {
+        return nh_.set_value(authors_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstJournalArticle,
                      "JournalArticle "
                      << nh_.get_name());
     ~JournalArticle() {
     }
-    };
+  };
 
-    typedef vector<JournalArticle>
-            JournalArticles;
+  typedef vector<JournalArticle>
+  JournalArticles;
 
-/** Create decorators of type JournalArticle.
+  /** Create decorators of type JournalArticle.
 
-       \see JournalArticle
-       \see JournalArticleConstFactory
-    */
-    class JournalArticleFactory {
-    private:
+      \see JournalArticle
+      \see JournalArticleConstFactory
+  */
+  class JournalArticleFactory {
+  private:
     StringKey title_;
-StringKey journal_;
-StringKey pubmed_id_;
-IntKey year_;
-StringsKey authors_;
-    public:
+    StringKey title_pf_;
+    StringKey journal_;
+    StringKey journal_pf_;
+    StringKey pubmed_id_;
+    StringKey pubmed_id_pf_;
+    IntKey year_;
+    IntKey year_pf_;
+    StringsKey authors_;
+    StringsKey authors_pf_;
+  public:
     typedef FileHandle File;
     typedef JournalArticle Decorator;
     JournalArticleFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "publication");
-title_=get_key_always<StringTraits>(fh, cat,
-                               "title",
-                               false);
-journal_=get_key_always<StringTraits>(fh, cat,
-                               "journal",
-                               false);
-pubmed_id_=get_key_always<StringTraits>(fh, cat,
-                               "pubmed id",
-                               false);
-year_=get_key_always<IntTraits>(fh, cat,
-                               "year",
-                               false);
-authors_=get_key_always<StringsTraits>(fh, cat,
-                               "authors",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "publication");
+        title_=get_key_always<StringTraits>(fh, cat,
+                                            "title",
+                                            false);
+        title_pf_=get_key_always<StringTraits>(fh, cat,
+                                               "title",
+                                               true);
+        journal_=get_key_always<StringTraits>(fh, cat,
+                                              "journal",
+                                              false);
+        journal_pf_=get_key_always<StringTraits>(fh, cat,
+                                                 "journal",
+                                                 true);
+        pubmed_id_=get_key_always<StringTraits>(fh, cat,
+                                                "pubmed id",
+                                                false);
+        pubmed_id_pf_=get_key_always<StringTraits>(fh, cat,
+                                                   "pubmed id",
+                                                   true);
+        year_=get_key_always<IntTraits>(fh, cat,
+                                        "year",
+                                        false);
+        year_pf_=get_key_always<IntTraits>(fh, cat,
+                                           "year",
+                                           true);
+        authors_=get_key_always<StringsTraits>(fh, cat,
+                                               "authors",
+                                               false);
+        authors_pf_=get_key_always<StringsTraits>(fh, cat,
+                                                  "authors",
+                                                  true);
+      };
     }
     JournalArticle get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                       int frame=-1) const {
       ;
       return JournalArticle(nh, frame, title_,
-journal_,
-pubmed_id_,
-year_,
-authors_);
+                            title_pf_,
+                            journal_,
+                            journal_pf_,
+                            pubmed_id_,
+                            pubmed_id_pf_,
+                            year_,
+                            year_pf_,
+                            authors_,
+                            authors_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(title_, frame)
-    && nh.get_has_value(journal_, frame)
-    && nh.get_has_value(pubmed_id_, frame)
-    && nh.get_has_value(year_, frame)
-    && nh.get_has_value(authors_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(title_pf_, frame)
+                             || nh.get_has_value(title_)))
+              || ( frame <0 && (nh.get_has_value(title_)
+                                || nh.get_has_value(title_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(journal_pf_, frame)
+                           || nh.get_has_value(journal_)))
+            || ( frame <0 && (nh.get_has_value(journal_)
+                              || nh.get_has_value(journal_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(pubmed_id_pf_, frame)
+                           || nh.get_has_value(pubmed_id_)))
+            || ( frame <0 && (nh.get_has_value(pubmed_id_)
+                              || nh.get_has_value(pubmed_id_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(year_pf_, frame)
+                           || nh.get_has_value(year_)))
+            || ( frame <0 && (nh.get_has_value(year_)
+                              || nh.get_has_value(year_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(authors_pf_, frame)
+                           || nh.get_has_value(authors_)))
+            || ( frame <0 && (nh.get_has_value(authors_)
+                              || nh.get_has_value(authors_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(JournalArticleFactory,
                      "JournalArticleFactory");
-    };
+  };
 
-    typedef vector<JournalArticleFactory>
-            JournalArticleFactories;
+  typedef vector<JournalArticleFactory>
+  JournalArticleFactories;
 
-/** Create decorators of type JournalArticle.
+  /** Create decorators of type JournalArticle.
 
-       \see JournalArticleConst
-       \see JournalArticleFactory
-    */
-    class JournalArticleConstFactory {
-    private:
+      \see JournalArticleConst
+      \see JournalArticleFactory
+  */
+  class JournalArticleConstFactory {
+  private:
     StringKey title_;
-StringKey journal_;
-StringKey pubmed_id_;
-IntKey year_;
-StringsKey authors_;
-    public:
+    StringKey title_pf_;
+    StringKey journal_;
+    StringKey journal_pf_;
+    StringKey pubmed_id_;
+    StringKey pubmed_id_pf_;
+    IntKey year_;
+    IntKey year_pf_;
+    StringsKey authors_;
+    StringsKey authors_pf_;
+  public:
     typedef FileConstHandle File;
     typedef JournalArticleConst Decorator;
     JournalArticleConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("publication");
-title_=(fh.get_has_key<StringTraits>
-                   (cat, "title", false)?
-                   fh.get_key<StringTraits>(cat, "title", false)
-                              :StringKey());
-journal_=(fh.get_has_key<StringTraits>
-                   (cat, "journal", false)?
-                   fh.get_key<StringTraits>(cat, "journal", false)
-                              :StringKey());
-pubmed_id_=(fh.get_has_key<StringTraits>
-                   (cat, "pubmed id", false)?
-                   fh.get_key<StringTraits>(cat, "pubmed id", false)
-                              :StringKey());
-year_=(fh.get_has_key<IntTraits>
-                   (cat, "year", false)?
-                   fh.get_key<IntTraits>(cat, "year", false)
-                              :IntKey());
-authors_=(fh.get_has_key<StringsTraits>
-                   (cat, "authors", false)?
-                   fh.get_key<StringsTraits>(cat, "authors", false)
-                              :StringsKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("publication");
+        title_=(fh.get_has_key<StringTraits>
+                (cat, "title", false)?
+                fh.get_key<StringTraits>(cat,
+                                         "title",
+                                         false)
+                :StringKey());
+        title_pf_=(fh.get_has_key<StringTraits>
+                   (cat, "title", true)?
+                   fh.get_key<StringTraits>(cat,
+                                            "title",
+                                            true)
+                   :StringKey());
+        journal_=(fh.get_has_key<StringTraits>
+                  (cat, "journal", false)?
+                  fh.get_key<StringTraits>(cat,
+                                           "journal",
+                                           false)
+                  :StringKey());
+        journal_pf_=(fh.get_has_key<StringTraits>
+                     (cat, "journal", true)?
+                     fh.get_key<StringTraits>(cat,
+                                              "journal",
+                                              true)
+                     :StringKey());
+        pubmed_id_=(fh.get_has_key<StringTraits>
+                    (cat, "pubmed id", false)?
+                    fh.get_key<StringTraits>(cat,
+                                             "pubmed id",
+                                             false)
+                    :StringKey());
+        pubmed_id_pf_=(fh.get_has_key<StringTraits>
+                       (cat, "pubmed id", true)?
+                       fh.get_key<StringTraits>(cat,
+                                                "pubmed id",
+                                                true)
+                       :StringKey());
+        year_=(fh.get_has_key<IntTraits>
+               (cat, "year", false)?
+               fh.get_key<IntTraits>(cat,
+                                     "year",
+                                     false)
+               :IntKey());
+        year_pf_=(fh.get_has_key<IntTraits>
+                  (cat, "year", true)?
+                  fh.get_key<IntTraits>(cat,
+                                        "year",
+                                        true)
+                  :IntKey());
+        authors_=(fh.get_has_key<StringsTraits>
+                  (cat, "authors", false)?
+                  fh.get_key<StringsTraits>(cat,
+                                            "authors",
+                                            false)
+                  :StringsKey());
+        authors_pf_=(fh.get_has_key<StringsTraits>
+                     (cat, "authors", true)?
+                     fh.get_key<StringsTraits>(cat,
+                                               "authors",
+                                               true)
+                     :StringsKey());
+      };
     }
     JournalArticleConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                            int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return JournalArticleConst(nh, frame, title_,
-journal_,
-pubmed_id_,
-year_,
-authors_);
+                                 title_pf_,
+                                 journal_,
+                                 journal_pf_,
+                                 pubmed_id_,
+                                 pubmed_id_pf_,
+                                 year_,
+                                 year_pf_,
+                                 authors_,
+                                 authors_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(title_, frame)
-    && nh.get_has_value(journal_, frame)
-    && nh.get_has_value(pubmed_id_, frame)
-    && nh.get_has_value(year_, frame)
-    && nh.get_has_value(authors_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(title_pf_, frame)
+                             || nh.get_has_value(title_)))
+              || ( frame <0 && (nh.get_has_value(title_)
+                                || nh.get_has_value(title_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(journal_pf_, frame)
+                           || nh.get_has_value(journal_)))
+            || ( frame <0 && (nh.get_has_value(journal_)
+                              || nh.get_has_value(journal_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(pubmed_id_pf_, frame)
+                           || nh.get_has_value(pubmed_id_)))
+            || ( frame <0 && (nh.get_has_value(pubmed_id_)
+                              || nh.get_has_value(pubmed_id_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(year_pf_, frame)
+                           || nh.get_has_value(year_)))
+            || ( frame <0 && (nh.get_has_value(year_)
+                              || nh.get_has_value(year_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(authors_pf_, frame)
+                           || nh.get_has_value(authors_)))
+            || ( frame <0 && (nh.get_has_value(authors_)
+                              || nh.get_has_value(authors_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(JournalArticleConstFactory,
                      "JournalArticleConstFactory");
-    };
+  };
 
-    typedef vector<JournalArticleConstFactory>
-            JournalArticleConstFactories;
+  typedef vector<JournalArticleConstFactory>
+  JournalArticleConstFactories;
 
-/** Information regarding a residue.
+  /** Information regarding a residue.
 
-       \see Residue
-       \see ResidueConstFactory
-     */
-    class ResidueConst {
+      \see Residue
+      \see ResidueConstFactory
+  */
+  class ResidueConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ResidueConstFactory;
-    private:
+  private:
     boost::array<IntKey,2> index_;
-StringKey type_;
+    StringKey type_;
+    StringKey type_pf_;
     ResidueConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  boost::array<IntKey, 2> index,
-StringKey type):
-       nh_(nh),
-       frame_(frame),
-       index_(index),
-type_(type) {
-    ;
+                 int frame,
+                 boost::array<IntKey, 2> index,
+                 StringKey type,
+                 StringKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      index_(index),
+      type_(type),
+      type_pf_(type_pf) {
+      ;
     }
-    public:
+  public:
     Int get_index() const {
-  return nh_.get_value(index_[0], frame_);
-}
-String get_type() const {
-  return nh_.get_value(type_, frame_);
-}
+      return nh_.get_value(index_[0], frame_);
+    }
+    String get_type() const {
+      if (nh_.get_has_value(type_)) {
+        return nh_.get_value(type_);
+      } else {
+        return nh_.get_value(type_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstResidue,
                      "ResidueConst "
                      << nh_.get_name());
     ~ResidueConst() {
     }
-    };
+  };
 
-    typedef vector<ResidueConst>
-            ResidueConsts;
+  typedef vector<ResidueConst>
+  ResidueConsts;
 
-/** Information regarding a residue.
+  /** Information regarding a residue.
 
-       \see ResidueConst
-       \see ResidueFactory
-     */
-    class Residue {
+      \see ResidueConst
+      \see ResidueFactory
+  */
+  class Residue {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ResidueFactory;
-    private:
+  private:
     boost::array<IntKey,2> index_;
-StringKey type_;
+    StringKey type_;
+    StringKey type_pf_;
     Residue(NodeHandle nh,
-                      unsigned int frame,
-                  boost::array<IntKey, 2> index,
-StringKey type):
-       nh_(nh),
-       frame_(frame),
-       index_(index),
-type_(type) {
-    ;
+            int frame,
+            boost::array<IntKey, 2> index,
+            StringKey type,
+            StringKey type_pf):
+      nh_(nh),
+      frame_(frame),
+      index_(index),
+      type_(type),
+      type_pf_(type_pf) {
+      ;
     }
-    public:
+  public:
     Int get_index() const {
-  return nh_.get_value(index_[0], frame_);
-}
-void set_index(Int v) {
-   nh_.set_value(index_[0], v, frame_);
-   nh_.set_value(index_[1], v, frame_);
-}
-String get_type() const {
-  return nh_.get_value(type_, frame_);
-}
-void set_type(String v) {
-   nh_.set_value(type_, v, frame_);
-}
+      return nh_.get_value(index_[0], frame_);
+    }
+    void set_index(Int v) {
+      nh_.set_value(index_[0], v, frame_);
+      nh_.set_value(index_[1], v, frame_);
+    }
+    String get_type() const {
+      if (nh_.get_has_value(type_)) {
+        return nh_.get_value(type_);
+      } else {
+        return nh_.get_value(type_pf_, frame_);
+      }
+    }
+    void set_type(String v) {
+      if (frame_ >=0) {
+        nh_.set_value(type_pf_, v, frame_);
+      } else {
+        return nh_.set_value(type_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstResidue,
                      "Residue "
                      << nh_.get_name());
     ~Residue() {
     }
-    };
+  };
 
-    typedef vector<Residue>
-            Residues;
+  typedef vector<Residue>
+  Residues;
 
-/** Create decorators of type Residue.
+  /** Create decorators of type Residue.
 
-       \see Residue
-       \see ResidueConstFactory
-    */
-    class ResidueFactory {
-    private:
+      \see Residue
+      \see ResidueConstFactory
+  */
+  class ResidueFactory {
+  private:
     boost::array<IntKey,2> index_;
-StringKey type_;
-    public:
+    StringKey type_;
+    StringKey type_pf_;
+  public:
     typedef FileHandle File;
     typedef Residue Decorator;
     ResidueFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-index_[0]=get_key_always<IntTraits>(fh, cat,
-                               "first residue index",
-                               false);
-index_[1]=get_key_always<IntTraits>(fh, cat,
-                               "last residue index",
-                               false);
-type_=get_key_always<StringTraits>(fh, cat,
-                               "residue type",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+        index_[0]=get_key_always<IntTraits>(fh, cat,
+                                            "first residue index",
+                                            false);
+        index_[1]=get_key_always<IntTraits>(fh, cat,
+                                            "last residue index",
+                                            false);
+        type_=get_key_always<StringTraits>(fh, cat,
+                                           "residue type",
+                                           false);
+        type_pf_=get_key_always<StringTraits>(fh, cat,
+                                              "residue type",
+                                              true);
+      };
     }
     Residue get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                int frame=-1) const {
       ;
       return Residue(nh, frame, index_,
-type_);
+                     type_,
+                     type_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+    bool get_is(NodeHandle nh, int frame=-1) const {
       return nh.get_has_value(index_[0], frame)
-  && nh.get_has_value(index_[1], frame)
-  && nh.get_value(index_[0], frame)
-   ==nh.get_value(index_[1], frame)
-    && nh.get_has_value(type_, frame);
+        && nh.get_has_value(index_[1], frame)
+        && nh.get_value(index_[0], frame)
+        ==nh.get_value(index_[1], frame)
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ResidueFactory,
                      "ResidueFactory");
-    };
+  };
 
-    typedef vector<ResidueFactory>
-            ResidueFactories;
+  typedef vector<ResidueFactory>
+  ResidueFactories;
 
-/** Create decorators of type Residue.
+  /** Create decorators of type Residue.
 
-       \see ResidueConst
-       \see ResidueFactory
-    */
-    class ResidueConstFactory {
-    private:
+      \see ResidueConst
+      \see ResidueFactory
+  */
+  class ResidueConstFactory {
+  private:
     boost::array<IntKey,2> index_;
-StringKey type_;
-    public:
+    StringKey type_;
+    StringKey type_pf_;
+  public:
     typedef FileConstHandle File;
     typedef ResidueConst Decorator;
     ResidueConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("sequence");
-index_[0]=(fh.get_has_key<IntTraits>
+      {
+        CategoryD<1> cat=fh.get_category<1>("sequence");
+        index_[0]=(fh.get_has_key<IntTraits>
                    (cat, "first residue index", false)?
-                   fh.get_key<IntTraits>(cat, "first residue index", false)
-                              :IntKey());
-index_[1]=(fh.get_has_key<IntTraits>
+                   fh.get_key<IntTraits>(cat,
+                                         "first residue index",
+                                         false)
+                   :IntKey());
+        index_[1]=(fh.get_has_key<IntTraits>
                    (cat, "last residue index", false)?
-                   fh.get_key<IntTraits>(cat, "last residue index", false)
-                              :IntKey());
-type_=(fh.get_has_key<StringTraits>
-                   (cat, "residue type", false)?
-                   fh.get_key<StringTraits>(cat, "residue type", false)
-                              :StringKey());
-};
+                   fh.get_key<IntTraits>(cat,
+                                         "last residue index",
+                                         false)
+                   :IntKey());
+        type_=(fh.get_has_key<StringTraits>
+               (cat, "residue type", false)?
+               fh.get_key<StringTraits>(cat,
+                                        "residue type",
+                                        false)
+               :StringKey());
+        type_pf_=(fh.get_has_key<StringTraits>
+                  (cat, "residue type", true)?
+                  fh.get_key<StringTraits>(cat,
+                                           "residue type",
+                                           true)
+                  :StringKey());
+      };
     }
     ResidueConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                     int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ResidueConst(nh, frame, index_,
-type_);
+                          type_,
+                          type_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
       return nh.get_has_value(index_[0], frame)
-  && nh.get_has_value(index_[1], frame)
-  && nh.get_value(index_[0], frame)
-   ==nh.get_value(index_[1], frame)
-    && nh.get_has_value(type_, frame);
+        && nh.get_has_value(index_[1], frame)
+        && nh.get_value(index_[0], frame)
+        ==nh.get_value(index_[1], frame)
+        && ((frame >=0 && (nh.get_has_value(type_pf_, frame)
+                           || nh.get_has_value(type_)))
+            || ( frame <0 && (nh.get_has_value(type_)
+                              || nh.get_has_value(type_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ResidueConstFactory,
                      "ResidueConstFactory");
-    };
+  };
 
-    typedef vector<ResidueConstFactory>
-            ResidueConstFactories;
+  typedef vector<ResidueConstFactory>
+  ResidueConstFactories;
 
-/** Information regarding an atom.
+  /** Information regarding an atom.
 
-       \see Atom
-       \see AtomConstFactory
-     */
-    class AtomConst {
+      \see Atom
+      \see AtomConstFactory
+  */
+  class AtomConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class AtomConstFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-IndexKey element_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+    IndexKey element_;
+    IndexKey element_pf_;
     AtomConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius,
-FloatKey mass,
-IndexKey element):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-mass_(mass),
-element_(element) {
-    ;
+              int frame,
+              FloatKeys coordinates,
+              FloatKeys coordinates_pf,
+              FloatKey radius,
+              FloatKey radius_pf,
+              FloatKey mass,
+              FloatKey mass_pf,
+              IndexKey element,
+              IndexKey element_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      mass_(mass),
+      mass_pf_(mass_pf),
+      element_(element),
+      element_pf_(element_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
+      }
+      return ret;
     }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-Float get_mass() const {
-  return nh_.get_value(mass_, frame_);
-}
-Index get_element() const {
-  return nh_.get_value(element_, frame_);
-}
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    Float get_mass() const {
+      if (nh_.get_has_value(mass_)) {
+        return nh_.get_value(mass_);
+      } else {
+        return nh_.get_value(mass_pf_, frame_);
+      }
+    }
+    Index get_element() const {
+      if (nh_.get_has_value(element_)) {
+        return nh_.get_value(element_);
+      } else {
+        return nh_.get_value(element_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstAtom,
                      "AtomConst "
                      << nh_.get_name());
     ~AtomConst() {
     }
-    };
+  };
 
-    typedef vector<AtomConst>
-            AtomConsts;
+  typedef vector<AtomConst>
+  AtomConsts;
 
-/** Information regarding an atom.
+  /** Information regarding an atom.
 
-       \see AtomConst
-       \see AtomFactory
-     */
-    class Atom {
+      \see AtomConst
+      \see AtomFactory
+  */
+  class Atom {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class AtomFactory;
-    private:
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-IndexKey element_;
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+    IndexKey element_;
+    IndexKey element_pf_;
     Atom(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKeys coordinates,
-FloatKey radius,
-FloatKey mass,
-IndexKey element):
-       nh_(nh),
-       frame_(frame),
-       coordinates_(coordinates),
-radius_(radius),
-mass_(mass),
-element_(element) {
-    ;
+         int frame,
+         FloatKeys coordinates,
+         FloatKeys coordinates_pf,
+         FloatKey radius,
+         FloatKey radius_pf,
+         FloatKey mass,
+         FloatKey mass_pf,
+         IndexKey element,
+         IndexKey element_pf):
+      nh_(nh),
+      frame_(frame),
+      coordinates_(coordinates),
+      coordinates_pf_(coordinates_pf),
+      radius_(radius),
+      radius_pf_(radius_pf),
+      mass_(mass),
+      mass_pf_(mass_pf),
+      element_(element),
+      element_pf_(element_pf) {
+      ;
     }
-    public:
+  public:
     Floats get_coordinates() const {
-       Floats ret;
-       for (unsigned int i=0; i< 3; ++i) {
-          ret.push_back(nh_.get_value(coordinates_[i], frame_));
-       }
-       return ret;
-    }
-void set_coordinates(const Floats &v) {
-         for (unsigned int i=0; i< 3; ++i) {
-            nh_.set_value(coordinates_[i], v[i], frame_);
-         }
+      Floats ret;
+      if (nh_.get_has_value(coordinates_[0])) {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_[i]));
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          ret.push_back(nh_.get_value(coordinates_pf_[i], frame_));
+        }
       }
-Float get_radius() const {
-  return nh_.get_value(radius_, frame_);
-}
-void set_radius(Float v) {
-   nh_.set_value(radius_, v, frame_);
-}
-Float get_mass() const {
-  return nh_.get_value(mass_, frame_);
-}
-void set_mass(Float v) {
-   nh_.set_value(mass_, v, frame_);
-}
-Index get_element() const {
-  return nh_.get_value(element_, frame_);
-}
-void set_element(Index v) {
-   nh_.set_value(element_, v, frame_);
-}
+      return ret;
+    }
+    void set_coordinates(const Floats &v) {
+      if (frame_>=0) {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_pf_[i], v[i], frame_);
+        }
+      } else {
+        for (unsigned int i=0; i< 3; ++i) {
+          nh_.set_value(coordinates_[i], v[i]);
+        }
+      }
+    }
+    Float get_radius() const {
+      if (nh_.get_has_value(radius_)) {
+        return nh_.get_value(radius_);
+      } else {
+        return nh_.get_value(radius_pf_, frame_);
+      }
+    }
+    void set_radius(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(radius_pf_, v, frame_);
+      } else {
+        return nh_.set_value(radius_, v);
+      }
+    }
+    Float get_mass() const {
+      if (nh_.get_has_value(mass_)) {
+        return nh_.get_value(mass_);
+      } else {
+        return nh_.get_value(mass_pf_, frame_);
+      }
+    }
+    void set_mass(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(mass_pf_, v, frame_);
+      } else {
+        return nh_.set_value(mass_, v);
+      }
+    }
+    Index get_element() const {
+      if (nh_.get_has_value(element_)) {
+        return nh_.get_value(element_);
+      } else {
+        return nh_.get_value(element_pf_, frame_);
+      }
+    }
+    void set_element(Index v) {
+      if (frame_ >=0) {
+        nh_.set_value(element_pf_, v, frame_);
+      } else {
+        return nh_.set_value(element_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstAtom,
                      "Atom "
                      << nh_.get_name());
     ~Atom() {
     }
-    };
+  };
 
-    typedef vector<Atom>
-            Atoms;
+  typedef vector<Atom>
+  Atoms;
 
-/** Create decorators of type Atom.
+  /** Create decorators of type Atom.
 
-       \see Atom
-       \see AtomConstFactory
-    */
-    class AtomFactory {
-    private:
+      \see Atom
+      \see AtomConstFactory
+  */
+  class AtomFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-IndexKey element_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+    IndexKey element_;
+    IndexKey element_pf_;
+  public:
     typedef FileHandle File;
     typedef Atom Decorator;
     AtomFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "physics");
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian x",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian y",
-                               true));
-      coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                               "cartesian z",
-                               true));
-radius_=get_key_always<FloatTraits>(fh, cat,
-                               "radius",
-                               false);
-mass_=get_key_always<FloatTraits>(fh, cat,
-                               "mass",
-                               false);
-element_=get_key_always<IndexTraits>(fh, cat,
-                               "element",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "physics");
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian x",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian x",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian y",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian y",
+                                                              true));
+        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                           "cartesian z",
+                                                           false));
+        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
+                                                              "cartesian z",
+                                                              true));
+        radius_=get_key_always<FloatTraits>(fh, cat,
+                                            "radius",
+                                            false);
+        radius_pf_=get_key_always<FloatTraits>(fh, cat,
+                                               "radius",
+                                               true);
+        mass_=get_key_always<FloatTraits>(fh, cat,
+                                          "mass",
+                                          false);
+        mass_pf_=get_key_always<FloatTraits>(fh, cat,
+                                             "mass",
+                                             true);
+        element_=get_key_always<IndexTraits>(fh, cat,
+                                             "element",
+                                             false);
+        element_pf_=get_key_always<IndexTraits>(fh, cat,
+                                                "element",
+                                                true);
+      };
     }
     Atom get(NodeHandle nh,
-                          unsigned int frame=0) const {
+             int frame=-1) const {
       ;
       return Atom(nh, frame, coordinates_,
-radius_,
-mass_,
-element_);
+                  coordinates_pf_,
+                  radius_,
+                  radius_pf_,
+                  mass_,
+                  mass_pf_,
+                  element_,
+                  element_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(mass_, frame)
-    && nh.get_has_value(element_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(mass_pf_, frame)
+                           || nh.get_has_value(mass_)))
+            || ( frame <0 && (nh.get_has_value(mass_)
+                              || nh.get_has_value(mass_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(element_pf_, frame)
+                           || nh.get_has_value(element_)))
+            || ( frame <0 && (nh.get_has_value(element_)
+                              || nh.get_has_value(element_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(AtomFactory,
                      "AtomFactory");
-    };
+  };
 
-    typedef vector<AtomFactory>
-            AtomFactories;
+  typedef vector<AtomFactory>
+  AtomFactories;
 
-/** Create decorators of type Atom.
+  /** Create decorators of type Atom.
 
-       \see AtomConst
-       \see AtomFactory
-    */
-    class AtomConstFactory {
-    private:
+      \see AtomConst
+      \see AtomFactory
+  */
+  class AtomConstFactory {
+  private:
     FloatKeys coordinates_;
-FloatKey radius_;
-FloatKey mass_;
-IndexKey element_;
-    public:
+    FloatKeys coordinates_pf_;
+    FloatKey radius_;
+    FloatKey radius_pf_;
+    FloatKey mass_;
+    FloatKey mass_pf_;
+    IndexKey element_;
+    IndexKey element_pf_;
+  public:
     typedef FileConstHandle File;
     typedef AtomConst Decorator;
     AtomConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("physics");
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian x", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian x", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian y", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian y", true)
-                              :FloatKey()));
-      coordinates_.push_back((fh.get_has_key<FloatTraits>
-                   (cat, "cartesian z", true)?
-                   fh.get_key<FloatTraits>(cat, "cartesian z", true)
-                              :FloatKey()));
-radius_=(fh.get_has_key<FloatTraits>
-                   (cat, "radius", false)?
-                   fh.get_key<FloatTraits>(cat, "radius", false)
-                              :FloatKey());
-mass_=(fh.get_has_key<FloatTraits>
-                   (cat, "mass", false)?
-                   fh.get_key<FloatTraits>(cat, "mass", false)
-                              :FloatKey());
-element_=(fh.get_has_key<IndexTraits>
-                   (cat, "element", false)?
-                   fh.get_key<IndexTraits>(cat, "element", false)
-                              :IndexKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("physics");
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian x", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian x",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian x", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian x",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian y", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian y",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian y", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian y",
+                                                           true)
+                                   :FloatKey()));
+        coordinates_.push_back((fh.get_has_key<FloatTraits>
+                                (cat, "cartesian z", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "cartesian z",
+                                                        false)
+                                :FloatKey()));
+        coordinates_pf_.push_back((fh.get_has_key<FloatTraits>
+                                   (cat, "cartesian z", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                           "cartesian z",
+                                                           true)
+                                   :FloatKey()));
+        radius_=(fh.get_has_key<FloatTraits>
+                 (cat, "radius", false)?
+                 fh.get_key<FloatTraits>(cat,
+                                         "radius",
+                                         false)
+                 :FloatKey());
+        radius_pf_=(fh.get_has_key<FloatTraits>
+                    (cat, "radius", true)?
+                    fh.get_key<FloatTraits>(cat,
+                                            "radius",
+                                            true)
+                    :FloatKey());
+        mass_=(fh.get_has_key<FloatTraits>
+               (cat, "mass", false)?
+               fh.get_key<FloatTraits>(cat,
+                                       "mass",
+                                       false)
+               :FloatKey());
+        mass_pf_=(fh.get_has_key<FloatTraits>
+                  (cat, "mass", true)?
+                  fh.get_key<FloatTraits>(cat,
+                                          "mass",
+                                          true)
+                  :FloatKey());
+        element_=(fh.get_has_key<IndexTraits>
+                  (cat, "element", false)?
+                  fh.get_key<IndexTraits>(cat,
+                                          "element",
+                                          false)
+                  :IndexKey());
+        element_pf_=(fh.get_has_key<IndexTraits>
+                     (cat, "element", true)?
+                     fh.get_key<IndexTraits>(cat,
+                                             "element",
+                                             true)
+                     :IndexKey());
+      };
     }
     AtomConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                  int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return AtomConst(nh, frame, coordinates_,
-radius_,
-mass_,
-element_);
+                       coordinates_pf_,
+                       radius_,
+                       radius_pf_,
+                       mass_,
+                       mass_pf_,
+                       element_,
+                       element_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(coordinates_[0], frame)
-    && nh.get_has_value(radius_, frame)
-    && nh.get_has_value(mass_, frame)
-    && nh.get_has_value(element_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(coordinates_pf_[0], frame)
+                             || nh.get_has_value(coordinates_[0])))
+              || (frame <0
+                  &&  (nh.get_has_value(coordinates_[0])
+                       || nh.get_has_value(coordinates_pf_[0], 0))))
+        && ((frame >=0 && (nh.get_has_value(radius_pf_, frame)
+                           || nh.get_has_value(radius_)))
+            || ( frame <0 && (nh.get_has_value(radius_)
+                              || nh.get_has_value(radius_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(mass_pf_, frame)
+                           || nh.get_has_value(mass_)))
+            || ( frame <0 && (nh.get_has_value(mass_)
+                              || nh.get_has_value(mass_pf_, 0))))
+        && ((frame >=0 && (nh.get_has_value(element_pf_, frame)
+                           || nh.get_has_value(element_)))
+            || ( frame <0 && (nh.get_has_value(element_)
+                              || nh.get_has_value(element_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(AtomConstFactory,
                      "AtomConstFactory");
-    };
+  };
 
-    typedef vector<AtomConstFactory>
-            AtomConstFactories;
+  typedef vector<AtomConstFactory>
+  AtomConstFactories;
 
-/** Information regarding a chain.
+  /** Information regarding a chain.
 
-       \see Chain
-       \see ChainConstFactory
-     */
-    class ChainConst {
+      \see Chain
+      \see ChainConstFactory
+  */
+  class ChainConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ChainConstFactory;
-    private:
+  private:
     IndexKey chain_id_;
+    IndexKey chain_id_pf_;
     ChainConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  IndexKey chain_id):
-       nh_(nh),
-       frame_(frame),
-       chain_id_(chain_id) {
-    ;
+               int frame,
+               IndexKey chain_id,
+               IndexKey chain_id_pf):
+      nh_(nh),
+      frame_(frame),
+      chain_id_(chain_id),
+      chain_id_pf_(chain_id_pf) {
+      ;
     }
-    public:
+  public:
     Index get_chain_id() const {
-  return nh_.get_value(chain_id_, frame_);
-}
+      if (nh_.get_has_value(chain_id_)) {
+        return nh_.get_value(chain_id_);
+      } else {
+        return nh_.get_value(chain_id_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstChain,
                      "ChainConst "
                      << nh_.get_name());
     ~ChainConst() {
     }
-    };
+  };
 
-    typedef vector<ChainConst>
-            ChainConsts;
+  typedef vector<ChainConst>
+  ChainConsts;
 
-/** Information regarding a chain.
+  /** Information regarding a chain.
 
-       \see ChainConst
-       \see ChainFactory
-     */
-    class Chain {
+      \see ChainConst
+      \see ChainFactory
+  */
+  class Chain {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ChainFactory;
-    private:
+  private:
     IndexKey chain_id_;
+    IndexKey chain_id_pf_;
     Chain(NodeHandle nh,
-                      unsigned int frame,
-                  IndexKey chain_id):
-       nh_(nh),
-       frame_(frame),
-       chain_id_(chain_id) {
-    ;
+          int frame,
+          IndexKey chain_id,
+          IndexKey chain_id_pf):
+      nh_(nh),
+      frame_(frame),
+      chain_id_(chain_id),
+      chain_id_pf_(chain_id_pf) {
+      ;
     }
-    public:
+  public:
     Index get_chain_id() const {
-  return nh_.get_value(chain_id_, frame_);
-}
-void set_chain_id(Index v) {
-   nh_.set_value(chain_id_, v, frame_);
-}
+      if (nh_.get_has_value(chain_id_)) {
+        return nh_.get_value(chain_id_);
+      } else {
+        return nh_.get_value(chain_id_pf_, frame_);
+      }
+    }
+    void set_chain_id(Index v) {
+      if (frame_ >=0) {
+        nh_.set_value(chain_id_pf_, v, frame_);
+      } else {
+        return nh_.set_value(chain_id_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstChain,
                      "Chain "
                      << nh_.get_name());
     ~Chain() {
     }
-    };
+  };
 
-    typedef vector<Chain>
-            Chains;
+  typedef vector<Chain>
+  Chains;
 
-/** Create decorators of type Chain.
+  /** Create decorators of type Chain.
 
-       \see Chain
-       \see ChainConstFactory
-    */
-    class ChainFactory {
-    private:
+      \see Chain
+      \see ChainConstFactory
+  */
+  class ChainFactory {
+  private:
     IndexKey chain_id_;
-    public:
+    IndexKey chain_id_pf_;
+  public:
     typedef FileHandle File;
     typedef Chain Decorator;
     ChainFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-chain_id_=get_key_always<IndexTraits>(fh, cat,
-                               "chain id",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+        chain_id_=get_key_always<IndexTraits>(fh, cat,
+                                              "chain id",
+                                              false);
+        chain_id_pf_=get_key_always<IndexTraits>(fh, cat,
+                                                 "chain id",
+                                                 true);
+      };
     }
     Chain get(NodeHandle nh,
-                          unsigned int frame=0) const {
+              int frame=-1) const {
       ;
-      return Chain(nh, frame, chain_id_);
+      return Chain(nh, frame, chain_id_,
+                   chain_id_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(chain_id_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(chain_id_pf_, frame)
+                             || nh.get_has_value(chain_id_)))
+              || ( frame <0 && (nh.get_has_value(chain_id_)
+                                || nh.get_has_value(chain_id_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ChainFactory,
                      "ChainFactory");
-    };
+  };
 
-    typedef vector<ChainFactory>
-            ChainFactories;
+  typedef vector<ChainFactory>
+  ChainFactories;
 
-/** Create decorators of type Chain.
+  /** Create decorators of type Chain.
 
-       \see ChainConst
-       \see ChainFactory
-    */
-    class ChainConstFactory {
-    private:
+      \see ChainConst
+      \see ChainFactory
+  */
+  class ChainConstFactory {
+  private:
     IndexKey chain_id_;
-    public:
+    IndexKey chain_id_pf_;
+  public:
     typedef FileConstHandle File;
     typedef ChainConst Decorator;
     ChainConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("sequence");
-chain_id_=(fh.get_has_key<IndexTraits>
+      {
+        CategoryD<1> cat=fh.get_category<1>("sequence");
+        chain_id_=(fh.get_has_key<IndexTraits>
                    (cat, "chain id", false)?
-                   fh.get_key<IndexTraits>(cat, "chain id", false)
-                              :IndexKey());
-};
+                   fh.get_key<IndexTraits>(cat,
+                                           "chain id",
+                                           false)
+                   :IndexKey());
+        chain_id_pf_=(fh.get_has_key<IndexTraits>
+                      (cat, "chain id", true)?
+                      fh.get_key<IndexTraits>(cat,
+                                              "chain id",
+                                              true)
+                      :IndexKey());
+      };
     }
     ChainConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                   int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return ChainConst(nh, frame, chain_id_);
+      return ChainConst(nh, frame, chain_id_,
+                        chain_id_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(chain_id_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(chain_id_pf_, frame)
+                             || nh.get_has_value(chain_id_)))
+              || ( frame <0 && (nh.get_has_value(chain_id_)
+                                || nh.get_has_value(chain_id_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ChainConstFactory,
                      "ChainConstFactory");
-    };
+  };
 
-    typedef vector<ChainConstFactory>
-            ChainConstFactories;
+  typedef vector<ChainConstFactory>
+  ChainConstFactories;
 
-/** Information regarding a fragment of a molecule.
+  /** Information regarding a fragment of a molecule.
 
-       \see Domain
-       \see DomainConstFactory
-     */
-    class DomainConst {
+      \see Domain
+      \see DomainConstFactory
+  */
+  class DomainConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class DomainConstFactory;
-    private:
+  private:
     boost::array<IntKey,2> indexes_;
     DomainConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  boost::array<IntKey, 2> indexes):
-       nh_(nh),
-       frame_(frame),
-       indexes_(indexes) {
-    ;
+                int frame,
+                boost::array<IntKey, 2> indexes):
+      nh_(nh),
+      frame_(frame),
+      indexes_(indexes) {
+      ;
     }
-    public:
+  public:
     IntRange get_indexes() const {
-  return std::make_pair(nh_.get_value(indexes_[0], frame_),
-                        nh_.get_value(indexes_[1], frame_));
-}
+      return std::make_pair(nh_.get_value(indexes_[0], frame_),
+                            nh_.get_value(indexes_[1], frame_));
+    }
     IMP_RMF_SHOWABLE(ConstDomain,
                      "DomainConst "
                      << nh_.get_name());
     ~DomainConst() {
     }
-    };
+  };
 
-    typedef vector<DomainConst>
-            DomainConsts;
+  typedef vector<DomainConst>
+  DomainConsts;
 
-/** Information regarding a fragment of a molecule.
+  /** Information regarding a fragment of a molecule.
 
-       \see DomainConst
-       \see DomainFactory
-     */
-    class Domain {
+      \see DomainConst
+      \see DomainFactory
+  */
+  class Domain {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class DomainFactory;
-    private:
+  private:
     boost::array<IntKey,2> indexes_;
     Domain(NodeHandle nh,
-                      unsigned int frame,
-                  boost::array<IntKey, 2> indexes):
-       nh_(nh),
-       frame_(frame),
-       indexes_(indexes) {
-    ;
+           int frame,
+           boost::array<IntKey, 2> indexes):
+      nh_(nh),
+      frame_(frame),
+      indexes_(indexes) {
+      ;
     }
-    public:
+  public:
     IntRange get_indexes() const {
-  return std::make_pair(nh_.get_value(indexes_[0], frame_),
-                        nh_.get_value(indexes_[1], frame_));
-}
-void set_indexes(Int v0, Int v1) {
-   nh_.set_value(indexes_[0], v0, frame_);
-   nh_.set_value(indexes_[1], v1, frame_);
-}
+      return std::make_pair(nh_.get_value(indexes_[0], frame_),
+                            nh_.get_value(indexes_[1], frame_));
+    }
+    void set_indexes(Int v0, Int v1) {
+      nh_.set_value(indexes_[0], v0, frame_);
+      nh_.set_value(indexes_[1], v1, frame_);
+    }
     IMP_RMF_SHOWABLE(ConstDomain,
                      "Domain "
                      << nh_.get_name());
     ~Domain() {
     }
-    };
+  };
 
-    typedef vector<Domain>
-            Domains;
+  typedef vector<Domain>
+  Domains;
 
-/** Create decorators of type Domain.
+  /** Create decorators of type Domain.
 
-       \see Domain
-       \see DomainConstFactory
-    */
-    class DomainFactory {
-    private:
+      \see Domain
+      \see DomainConstFactory
+  */
+  class DomainFactory {
+  private:
     boost::array<IntKey,2> indexes_;
-    public:
+  public:
     typedef FileHandle File;
     typedef Domain Decorator;
     DomainFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-indexes_[0]=get_key_always<IntTraits>(fh, cat,
-                               "first residue index",
-                               false);
-indexes_[1]=get_key_always<IntTraits>(fh, cat,
-                               "last residue index",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+        indexes_[0]=get_key_always<IntTraits>(fh, cat,
+                                              "first residue index",
+                                              false);
+        indexes_[1]=get_key_always<IntTraits>(fh, cat,
+                                              "last residue index",
+                                              false);
+      };
     }
     Domain get(NodeHandle nh,
-                          unsigned int frame=0) const {
+               int frame=-1) const {
       ;
       return Domain(nh, frame, indexes_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
+    bool get_is(NodeHandle nh, int frame=-1) const {
       return nh.get_has_value(indexes_[0], frame)
-  && nh.get_has_value(indexes_[1], frame)
-  && nh.get_value(indexes_[0], frame)
-   <nh.get_value(indexes_[1], frame);
+        && nh.get_has_value(indexes_[1], frame)
+        && nh.get_value(indexes_[0], frame)
+        <nh.get_value(indexes_[1], frame);
     }
     IMP_RMF_SHOWABLE(DomainFactory,
                      "DomainFactory");
-    };
+  };
 
-    typedef vector<DomainFactory>
-            DomainFactories;
+  typedef vector<DomainFactory>
+  DomainFactories;
 
-/** Create decorators of type Domain.
+  /** Create decorators of type Domain.
 
-       \see DomainConst
-       \see DomainFactory
-    */
-    class DomainConstFactory {
-    private:
+      \see DomainConst
+      \see DomainFactory
+  */
+  class DomainConstFactory {
+  private:
     boost::array<IntKey,2> indexes_;
-    public:
+  public:
     typedef FileConstHandle File;
     typedef DomainConst Decorator;
     DomainConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("sequence");
-indexes_[0]=(fh.get_has_key<IntTraits>
-                   (cat, "first residue index", false)?
-                   fh.get_key<IntTraits>(cat, "first residue index", false)
-                              :IntKey());
-indexes_[1]=(fh.get_has_key<IntTraits>
-                   (cat, "last residue index", false)?
-                   fh.get_key<IntTraits>(cat, "last residue index", false)
-                              :IntKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("sequence");
+        indexes_[0]=(fh.get_has_key<IntTraits>
+                     (cat, "first residue index", false)?
+                     fh.get_key<IntTraits>(cat,
+                                           "first residue index",
+                                           false)
+                     :IntKey());
+        indexes_[1]=(fh.get_has_key<IntTraits>
+                     (cat, "last residue index", false)?
+                     fh.get_key<IntTraits>(cat,
+                                           "last residue index",
+                                           false)
+                     :IntKey());
+      };
     }
     DomainConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                    int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DomainConst(nh, frame, indexes_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
       return nh.get_has_value(indexes_[0], frame)
-  && nh.get_has_value(indexes_[1], frame)
-  && nh.get_value(indexes_[0], frame)
-   <nh.get_value(indexes_[1], frame);
+        && nh.get_has_value(indexes_[1], frame)
+        && nh.get_value(indexes_[0], frame)
+        <nh.get_value(indexes_[1], frame);
     }
     IMP_RMF_SHOWABLE(DomainConstFactory,
                      "DomainConstFactory");
-    };
+  };
 
-    typedef vector<DomainConstFactory>
-            DomainConstFactories;
+  typedef vector<DomainConstFactory>
+  DomainConstFactories;
 
-/** Information regarding a copy of a molecule.
+  /** Information regarding a copy of a molecule.
 
-       \see Copy
-       \see CopyConstFactory
-     */
-    class CopyConst {
+      \see Copy
+      \see CopyConstFactory
+  */
+  class CopyConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class CopyConstFactory;
-    private:
+  private:
     IndexKey copy_index_;
+    IndexKey copy_index_pf_;
     CopyConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  IndexKey copy_index):
-       nh_(nh),
-       frame_(frame),
-       copy_index_(copy_index) {
-    ;
+              int frame,
+              IndexKey copy_index,
+              IndexKey copy_index_pf):
+      nh_(nh),
+      frame_(frame),
+      copy_index_(copy_index),
+      copy_index_pf_(copy_index_pf) {
+      ;
     }
-    public:
+  public:
     Index get_copy_index() const {
-  return nh_.get_value(copy_index_, frame_);
-}
+      if (nh_.get_has_value(copy_index_)) {
+        return nh_.get_value(copy_index_);
+      } else {
+        return nh_.get_value(copy_index_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstCopy,
                      "CopyConst "
                      << nh_.get_name());
     ~CopyConst() {
     }
-    };
+  };
 
-    typedef vector<CopyConst>
-            CopyConsts;
+  typedef vector<CopyConst>
+  CopyConsts;
 
-/** Information regarding a copy of a molecule.
+  /** Information regarding a copy of a molecule.
 
-       \see CopyConst
-       \see CopyFactory
-     */
-    class Copy {
+      \see CopyConst
+      \see CopyFactory
+  */
+  class Copy {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class CopyFactory;
-    private:
+  private:
     IndexKey copy_index_;
+    IndexKey copy_index_pf_;
     Copy(NodeHandle nh,
-                      unsigned int frame,
-                  IndexKey copy_index):
-       nh_(nh),
-       frame_(frame),
-       copy_index_(copy_index) {
-    ;
+         int frame,
+         IndexKey copy_index,
+         IndexKey copy_index_pf):
+      nh_(nh),
+      frame_(frame),
+      copy_index_(copy_index),
+      copy_index_pf_(copy_index_pf) {
+      ;
     }
-    public:
+  public:
     Index get_copy_index() const {
-  return nh_.get_value(copy_index_, frame_);
-}
-void set_copy_index(Index v) {
-   nh_.set_value(copy_index_, v, frame_);
-}
+      if (nh_.get_has_value(copy_index_)) {
+        return nh_.get_value(copy_index_);
+      } else {
+        return nh_.get_value(copy_index_pf_, frame_);
+      }
+    }
+    void set_copy_index(Index v) {
+      if (frame_ >=0) {
+        nh_.set_value(copy_index_pf_, v, frame_);
+      } else {
+        return nh_.set_value(copy_index_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstCopy,
                      "Copy "
                      << nh_.get_name());
     ~Copy() {
     }
-    };
+  };
 
-    typedef vector<Copy>
-            Copys;
+  typedef vector<Copy>
+  Copys;
 
-/** Create decorators of type Copy.
+  /** Create decorators of type Copy.
 
-       \see Copy
-       \see CopyConstFactory
-    */
-    class CopyFactory {
-    private:
+      \see Copy
+      \see CopyConstFactory
+  */
+  class CopyFactory {
+  private:
     IndexKey copy_index_;
-    public:
+    IndexKey copy_index_pf_;
+  public:
     typedef FileHandle File;
     typedef Copy Decorator;
     CopyFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-copy_index_=get_key_always<IndexTraits>(fh, cat,
-                               "copy index",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+        copy_index_=get_key_always<IndexTraits>(fh, cat,
+                                                "copy index",
+                                                false);
+        copy_index_pf_=get_key_always<IndexTraits>(fh, cat,
+                                                   "copy index",
+                                                   true);
+      };
     }
     Copy get(NodeHandle nh,
-                          unsigned int frame=0) const {
+             int frame=-1) const {
       ;
-      return Copy(nh, frame, copy_index_);
+      return Copy(nh, frame, copy_index_,
+                  copy_index_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(copy_index_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(copy_index_pf_, frame)
+                             || nh.get_has_value(copy_index_)))
+              || ( frame <0 && (nh.get_has_value(copy_index_)
+                                || nh.get_has_value(copy_index_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(CopyFactory,
                      "CopyFactory");
-    };
+  };
 
-    typedef vector<CopyFactory>
-            CopyFactories;
+  typedef vector<CopyFactory>
+  CopyFactories;
 
-/** Create decorators of type Copy.
+  /** Create decorators of type Copy.
 
-       \see CopyConst
-       \see CopyFactory
-    */
-    class CopyConstFactory {
-    private:
+      \see CopyConst
+      \see CopyFactory
+  */
+  class CopyConstFactory {
+  private:
     IndexKey copy_index_;
-    public:
+    IndexKey copy_index_pf_;
+  public:
     typedef FileConstHandle File;
     typedef CopyConst Decorator;
     CopyConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("sequence");
-copy_index_=(fh.get_has_key<IndexTraits>
-                   (cat, "copy index", false)?
-                   fh.get_key<IndexTraits>(cat, "copy index", false)
-                              :IndexKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("sequence");
+        copy_index_=(fh.get_has_key<IndexTraits>
+                     (cat, "copy index", false)?
+                     fh.get_key<IndexTraits>(cat,
+                                             "copy index",
+                                             false)
+                     :IndexKey());
+        copy_index_pf_=(fh.get_has_key<IndexTraits>
+                        (cat, "copy index", true)?
+                        fh.get_key<IndexTraits>(cat,
+                                                "copy index",
+                                                true)
+                        :IndexKey());
+      };
     }
     CopyConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                  int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return CopyConst(nh, frame, copy_index_);
+      return CopyConst(nh, frame, copy_index_,
+                       copy_index_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(copy_index_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(copy_index_pf_, frame)
+                             || nh.get_has_value(copy_index_)))
+              || ( frame <0 && (nh.get_has_value(copy_index_)
+                                || nh.get_has_value(copy_index_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(CopyConstFactory,
                      "CopyConstFactory");
-    };
+  };
 
-    typedef vector<CopyConstFactory>
-            CopyConstFactories;
+  typedef vector<CopyConstFactory>
+  CopyConstFactories;
 
-/** Information regarding diffusion coefficients.
+  /** Information regarding diffusion coefficients.
 
-       \see Diffuser
-       \see DiffuserConstFactory
-     */
-    class DiffuserConst {
+      \see Diffuser
+      \see DiffuserConstFactory
+  */
+  class DiffuserConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class DiffuserConstFactory;
-    private:
+  private:
     FloatKey diffusion_coefficient_;
+    FloatKey diffusion_coefficient_pf_;
     DiffuserConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  FloatKey diffusion_coefficient):
-       nh_(nh),
-       frame_(frame),
-       diffusion_coefficient_(diffusion_coefficient) {
-    ;
+                  int frame,
+                  FloatKey diffusion_coefficient,
+                  FloatKey diffusion_coefficient_pf):
+      nh_(nh),
+      frame_(frame),
+      diffusion_coefficient_(diffusion_coefficient),
+      diffusion_coefficient_pf_(diffusion_coefficient_pf) {
+      ;
     }
-    public:
+  public:
     Float get_diffusion_coefficient() const {
-  return nh_.get_value(diffusion_coefficient_, frame_);
-}
+      if (nh_.get_has_value(diffusion_coefficient_)) {
+        return nh_.get_value(diffusion_coefficient_);
+      } else {
+        return nh_.get_value(diffusion_coefficient_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstDiffuser,
                      "DiffuserConst "
                      << nh_.get_name());
     ~DiffuserConst() {
     }
-    };
+  };
 
-    typedef vector<DiffuserConst>
-            DiffuserConsts;
+  typedef vector<DiffuserConst>
+  DiffuserConsts;
 
-/** Information regarding diffusion coefficients.
+  /** Information regarding diffusion coefficients.
 
-       \see DiffuserConst
-       \see DiffuserFactory
-     */
-    class Diffuser {
+      \see DiffuserConst
+      \see DiffuserFactory
+  */
+  class Diffuser {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class DiffuserFactory;
-    private:
+  private:
     FloatKey diffusion_coefficient_;
+    FloatKey diffusion_coefficient_pf_;
     Diffuser(NodeHandle nh,
-                      unsigned int frame,
-                  FloatKey diffusion_coefficient):
-       nh_(nh),
-       frame_(frame),
-       diffusion_coefficient_(diffusion_coefficient) {
-    ;
+             int frame,
+             FloatKey diffusion_coefficient,
+             FloatKey diffusion_coefficient_pf):
+      nh_(nh),
+      frame_(frame),
+      diffusion_coefficient_(diffusion_coefficient),
+      diffusion_coefficient_pf_(diffusion_coefficient_pf) {
+      ;
     }
-    public:
+  public:
     Float get_diffusion_coefficient() const {
-  return nh_.get_value(diffusion_coefficient_, frame_);
-}
-void set_diffusion_coefficient(Float v) {
-   nh_.set_value(diffusion_coefficient_, v, frame_);
-}
+      if (nh_.get_has_value(diffusion_coefficient_)) {
+        return nh_.get_value(diffusion_coefficient_);
+      } else {
+        return nh_.get_value(diffusion_coefficient_pf_, frame_);
+      }
+    }
+    void set_diffusion_coefficient(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(diffusion_coefficient_pf_, v, frame_);
+      } else {
+        return nh_.set_value(diffusion_coefficient_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstDiffuser,
                      "Diffuser "
                      << nh_.get_name());
     ~Diffuser() {
     }
-    };
+  };
 
-    typedef vector<Diffuser>
-            Diffusers;
+  typedef vector<Diffuser>
+  Diffusers;
 
-/** Create decorators of type Diffuser.
+  /** Create decorators of type Diffuser.
 
-       \see Diffuser
-       \see DiffuserConstFactory
-    */
-    class DiffuserFactory {
-    private:
+      \see Diffuser
+      \see DiffuserConstFactory
+  */
+  class DiffuserFactory {
+  private:
     FloatKey diffusion_coefficient_;
-    public:
+    FloatKey diffusion_coefficient_pf_;
+  public:
     typedef FileHandle File;
     typedef Diffuser Decorator;
     DiffuserFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "physics");
-diffusion_coefficient_=get_key_always<FloatTraits>(fh, cat,
-                               "diffusion coefficient",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "physics");
+        diffusion_coefficient_
+          =get_key_always<FloatTraits>(fh, cat,
+                                       "diffusion coefficient",
+                                       false);
+        diffusion_coefficient_pf_
+          =get_key_always<FloatTraits>(fh, cat,
+                                       "diffusion coefficient",
+                                       true);
+      };
     }
     Diffuser get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                 int frame=-1) const {
       ;
-      return Diffuser(nh, frame, diffusion_coefficient_);
+      return Diffuser(nh, frame, diffusion_coefficient_,
+                      diffusion_coefficient_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(diffusion_coefficient_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(diffusion_coefficient_pf_, frame)
+                             || nh.get_has_value(diffusion_coefficient_)))
+              || ( frame <0 && (nh.get_has_value(diffusion_coefficient_)
+                       || nh.get_has_value(diffusion_coefficient_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(DiffuserFactory,
                      "DiffuserFactory");
-    };
+  };
 
-    typedef vector<DiffuserFactory>
-            DiffuserFactories;
+  typedef vector<DiffuserFactory>
+  DiffuserFactories;
 
-/** Create decorators of type Diffuser.
+  /** Create decorators of type Diffuser.
 
-       \see DiffuserConst
-       \see DiffuserFactory
-    */
-    class DiffuserConstFactory {
-    private:
+      \see DiffuserConst
+      \see DiffuserFactory
+  */
+  class DiffuserConstFactory {
+  private:
     FloatKey diffusion_coefficient_;
-    public:
+    FloatKey diffusion_coefficient_pf_;
+  public:
     typedef FileConstHandle File;
     typedef DiffuserConst Decorator;
     DiffuserConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("physics");
-diffusion_coefficient_=(fh.get_has_key<FloatTraits>
-                   (cat, "diffusion coefficient", false)?
-                   fh.get_key<FloatTraits>(cat, "diffusion coefficient", false)
-                              :FloatKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("physics");
+        diffusion_coefficient_=(fh.get_has_key<FloatTraits>
+                                (cat, "diffusion coefficient", false)?
+                                fh.get_key<FloatTraits>(cat,
+                                                        "diffusion coefficient",
+                                                        false)
+                                :FloatKey());
+        diffusion_coefficient_pf_=(fh.get_has_key<FloatTraits>
+                                   (cat, "diffusion coefficient", true)?
+                                   fh.get_key<FloatTraits>(cat,
+                                                   "diffusion coefficient",
+                                                           true)
+                                   :FloatKey());
+      };
     }
     DiffuserConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                      int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return DiffuserConst(nh, frame, diffusion_coefficient_);
+      return DiffuserConst(nh, frame, diffusion_coefficient_,
+                           diffusion_coefficient_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(diffusion_coefficient_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(diffusion_coefficient_pf_, frame)
+                             || nh.get_has_value(diffusion_coefficient_)))
+              || ( frame <0 && (nh.get_has_value(diffusion_coefficient_)
+                    || nh.get_has_value(diffusion_coefficient_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(DiffuserConstFactory,
                      "DiffuserConstFactory");
-    };
+  };
 
-    typedef vector<DiffuserConstFactory>
-            DiffuserConstFactories;
+  typedef vector<DiffuserConstFactory>
+  DiffuserConstFactories;
 
-/** A numeric tag for keeping track of types of molecules.
+  /** A numeric tag for keeping track of types of molecules.
 
-       \see Typed
-       \see TypedConstFactory
-     */
-    class TypedConst {
+      \see Typed
+      \see TypedConstFactory
+  */
+  class TypedConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class TypedConstFactory;
-    private:
+  private:
     StringKey type_name_;
+    StringKey type_name_pf_;
     TypedConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  StringKey type_name):
-       nh_(nh),
-       frame_(frame),
-       type_name_(type_name) {
-    ;
+               int frame,
+               StringKey type_name,
+               StringKey type_name_pf):
+      nh_(nh),
+      frame_(frame),
+      type_name_(type_name),
+      type_name_pf_(type_name_pf) {
+      ;
     }
-    public:
+  public:
     String get_type_name() const {
-  return nh_.get_value(type_name_, frame_);
-}
+      if (nh_.get_has_value(type_name_)) {
+        return nh_.get_value(type_name_);
+      } else {
+        return nh_.get_value(type_name_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstTyped,
                      "TypedConst "
                      << nh_.get_name());
     ~TypedConst() {
     }
-    };
+  };
 
-    typedef vector<TypedConst>
-            TypedConsts;
+  typedef vector<TypedConst>
+  TypedConsts;
 
-/** A numeric tag for keeping track of types of molecules.
+  /** A numeric tag for keeping track of types of molecules.
 
-       \see TypedConst
-       \see TypedFactory
-     */
-    class Typed {
+      \see TypedConst
+      \see TypedFactory
+  */
+  class Typed {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class TypedFactory;
-    private:
+  private:
     StringKey type_name_;
+    StringKey type_name_pf_;
     Typed(NodeHandle nh,
-                      unsigned int frame,
-                  StringKey type_name):
-       nh_(nh),
-       frame_(frame),
-       type_name_(type_name) {
-    ;
+          int frame,
+          StringKey type_name,
+          StringKey type_name_pf):
+      nh_(nh),
+      frame_(frame),
+      type_name_(type_name),
+      type_name_pf_(type_name_pf) {
+      ;
     }
-    public:
+  public:
     String get_type_name() const {
-  return nh_.get_value(type_name_, frame_);
-}
-void set_type_name(String v) {
-   nh_.set_value(type_name_, v, frame_);
-}
+      if (nh_.get_has_value(type_name_)) {
+        return nh_.get_value(type_name_);
+      } else {
+        return nh_.get_value(type_name_pf_, frame_);
+      }
+    }
+    void set_type_name(String v) {
+      if (frame_ >=0) {
+        nh_.set_value(type_name_pf_, v, frame_);
+      } else {
+        return nh_.set_value(type_name_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstTyped,
                      "Typed "
                      << nh_.get_name());
     ~Typed() {
     }
-    };
+  };
 
-    typedef vector<Typed>
-            Typeds;
+  typedef vector<Typed>
+  Typeds;
 
-/** Create decorators of type Typed.
+  /** Create decorators of type Typed.
 
-       \see Typed
-       \see TypedConstFactory
-    */
-    class TypedFactory {
-    private:
+      \see Typed
+      \see TypedConstFactory
+  */
+  class TypedFactory {
+  private:
     StringKey type_name_;
-    public:
+    StringKey type_name_pf_;
+  public:
     typedef FileHandle File;
     typedef Typed Decorator;
     TypedFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-type_name_=get_key_always<StringTraits>(fh, cat,
-                               "type name",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "sequence");
+        type_name_=get_key_always<StringTraits>(fh, cat,
+                                                "type name",
+                                                false);
+        type_name_pf_=get_key_always<StringTraits>(fh, cat,
+                                                   "type name",
+                                                   true);
+      };
     }
     Typed get(NodeHandle nh,
-                          unsigned int frame=0) const {
+              int frame=-1) const {
       ;
-      return Typed(nh, frame, type_name_);
+      return Typed(nh, frame, type_name_,
+                   type_name_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(type_name_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(type_name_pf_, frame)
+                             || nh.get_has_value(type_name_)))
+              || ( frame <0 && (nh.get_has_value(type_name_)
+                                || nh.get_has_value(type_name_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(TypedFactory,
                      "TypedFactory");
-    };
+  };
 
-    typedef vector<TypedFactory>
-            TypedFactories;
+  typedef vector<TypedFactory>
+  TypedFactories;
 
-/** Create decorators of type Typed.
+  /** Create decorators of type Typed.
 
-       \see TypedConst
-       \see TypedFactory
-    */
-    class TypedConstFactory {
-    private:
+      \see TypedConst
+      \see TypedFactory
+  */
+  class TypedConstFactory {
+  private:
     StringKey type_name_;
-    public:
+    StringKey type_name_pf_;
+  public:
     typedef FileConstHandle File;
     typedef TypedConst Decorator;
     TypedConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("sequence");
-type_name_=(fh.get_has_key<StringTraits>
-                   (cat, "type name", false)?
-                   fh.get_key<StringTraits>(cat, "type name", false)
-                              :StringKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("sequence");
+        type_name_=(fh.get_has_key<StringTraits>
+                    (cat, "type name", false)?
+                    fh.get_key<StringTraits>(cat,
+                                             "type name",
+                                             false)
+                    :StringKey());
+        type_name_pf_=(fh.get_has_key<StringTraits>
+                       (cat, "type name", true)?
+                       fh.get_key<StringTraits>(cat,
+                                                "type name",
+                                                true)
+                       :StringKey());
+      };
     }
     TypedConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                   int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return TypedConst(nh, frame, type_name_);
+      return TypedConst(nh, frame, type_name_,
+                        type_name_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(type_name_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(type_name_pf_, frame)
+                             || nh.get_has_value(type_name_)))
+              || ( frame <0 && (nh.get_has_value(type_name_)
+                                || nh.get_has_value(type_name_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(TypedConstFactory,
                      "TypedConstFactory");
-    };
+  };
 
-    typedef vector<TypedConstFactory>
-            TypedConstFactories;
+  typedef vector<TypedConstFactory>
+  TypedConstFactories;
 
-/** Store a static reference to another node.
+  /** Store a static reference to another node.
 
-       \see StaticAlias
-       \see StaticAliasConstFactory
-     */
-    class StaticAliasConst {
+      \see StaticAlias
+      \see StaticAliasConstFactory
+  */
+  class StaticAliasConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class StaticAliasConstFactory;
-    private:
+  private:
     NodeIDKey aliased_;
+    NodeIDKey aliased_pf_;
     StaticAliasConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  NodeIDKey aliased):
-       nh_(nh),
-       frame_(frame),
-       aliased_(aliased) {
-    ;
+                     int frame,
+                     NodeIDKey aliased,
+                     NodeIDKey aliased_pf):
+      nh_(nh),
+      frame_(frame),
+      aliased_(aliased),
+      aliased_pf_(aliased_pf) {
+      ;
     }
-    public:
+  public:
     NodeConstHandle get_aliased() const {
-  NodeID ni= nh_.get_value(aliased_, frame_);
-  return nh_.get_file().get_node_from_id(ni);
-}
+      NodeID id;
+      if (nh_.get_has_value(aliased_)) {
+        id= nh_.get_value(aliased_);
+      } else {
+        id= nh_.get_value(aliased_pf_, frame_);
+      }
+      return nh_.get_file().get_node_from_id(id);
+    }
     IMP_RMF_SHOWABLE(ConstStaticAlias,
                      "StaticAliasConst "
                      << nh_.get_name());
     ~StaticAliasConst() {
     }
-    };
+  };
 
-    typedef vector<StaticAliasConst>
-            StaticAliasConsts;
+  typedef vector<StaticAliasConst>
+  StaticAliasConsts;
 
-/** Store a static reference to another node.
+  /** Store a static reference to another node.
 
-       \see StaticAliasConst
-       \see StaticAliasFactory
-     */
-    class StaticAlias {
+      \see StaticAliasConst
+      \see StaticAliasFactory
+  */
+  class StaticAlias {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class StaticAliasFactory;
-    private:
+  private:
     NodeIDKey aliased_;
+    NodeIDKey aliased_pf_;
     StaticAlias(NodeHandle nh,
-                      unsigned int frame,
-                  NodeIDKey aliased):
-       nh_(nh),
-       frame_(frame),
-       aliased_(aliased) {
-    ;
+                int frame,
+                NodeIDKey aliased,
+                NodeIDKey aliased_pf):
+      nh_(nh),
+      frame_(frame),
+      aliased_(aliased),
+      aliased_pf_(aliased_pf) {
+      ;
     }
-    public:
+  public:
     NodeHandle get_aliased() const {
-  NodeID ni= nh_.get_value(aliased_, frame_);
-  return nh_.get_file().get_node_from_id(ni);
-}
-void set_aliased(NodeConstHandle v) {
-   nh_.set_value(aliased_, v.get_id(), frame_);
-}
+      NodeID id;
+      if (nh_.get_has_value(aliased_)) {
+        id= nh_.get_value(aliased_);
+      } else {
+        id= nh_.get_value(aliased_pf_, frame_);
+      }
+      return nh_.get_file().get_node_from_id(id);
+    }
+    void set_aliased(NodeConstHandle v) {
+      if (frame_ >=0) {
+        nh_.set_value(aliased_pf_, v.get_id(), frame_);
+      } else {
+        return nh_.set_value(aliased_, v.get_id());
+      }
+    }
     IMP_RMF_SHOWABLE(ConstStaticAlias,
                      "StaticAlias "
                      << nh_.get_name());
     ~StaticAlias() {
     }
-    };
+  };
 
-    typedef vector<StaticAlias>
-            StaticAliass;
+  typedef vector<StaticAlias>
+  StaticAliass;
 
-/** Create decorators of type StaticAlias.
+  /** Create decorators of type StaticAlias.
 
-       \see StaticAlias
-       \see StaticAliasConstFactory
-    */
-    class StaticAliasFactory {
-    private:
+      \see StaticAlias
+      \see StaticAliasConstFactory
+  */
+  class StaticAliasFactory {
+  private:
     NodeIDKey aliased_;
-    public:
+    NodeIDKey aliased_pf_;
+  public:
     typedef FileHandle File;
     typedef StaticAlias Decorator;
     StaticAliasFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "alias");
-aliased_=get_key_always<NodeIDTraits>(fh, cat,
-                               "aliased",
-                               false);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "alias");
+        aliased_=get_key_always<NodeIDTraits>(fh, cat,
+                                              "aliased",
+                                              false);
+        aliased_pf_=get_key_always<NodeIDTraits>(fh, cat,
+                                                 "aliased",
+                                                 true);
+      };
     }
     StaticAlias get(NodeHandle nh,
-                          unsigned int frame=0) const {
+                    int frame=-1) const {
       ;
-      return StaticAlias(nh, frame, aliased_);
+      return StaticAlias(nh, frame, aliased_,
+                         aliased_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(aliased_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(aliased_pf_, frame)
+                             || nh.get_has_value(aliased_)))
+              || ( frame <0 && (nh.get_has_value(aliased_)
+                                || nh.get_has_value(aliased_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(StaticAliasFactory,
                      "StaticAliasFactory");
-    };
+  };
 
-    typedef vector<StaticAliasFactory>
-            StaticAliasFactories;
+  typedef vector<StaticAliasFactory>
+  StaticAliasFactories;
 
-/** Create decorators of type StaticAlias.
+  /** Create decorators of type StaticAlias.
 
-       \see StaticAliasConst
-       \see StaticAliasFactory
-    */
-    class StaticAliasConstFactory {
-    private:
+      \see StaticAliasConst
+      \see StaticAliasFactory
+  */
+  class StaticAliasConstFactory {
+  private:
     NodeIDKey aliased_;
-    public:
+    NodeIDKey aliased_pf_;
+  public:
     typedef FileConstHandle File;
     typedef StaticAliasConst Decorator;
     StaticAliasConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("alias");
-aliased_=(fh.get_has_key<NodeIDTraits>
-                   (cat, "aliased", false)?
-                   fh.get_key<NodeIDTraits>(cat, "aliased", false)
-                              :NodeIDKey());
-};
+      {
+        CategoryD<1> cat=fh.get_category<1>("alias");
+        aliased_=(fh.get_has_key<NodeIDTraits>
+                  (cat, "aliased", false)?
+                  fh.get_key<NodeIDTraits>(cat,
+                                           "aliased",
+                                           false)
+                  :NodeIDKey());
+        aliased_pf_=(fh.get_has_key<NodeIDTraits>
+                     (cat, "aliased", true)?
+                     fh.get_key<NodeIDTraits>(cat,
+                                              "aliased",
+                                              true)
+                     :NodeIDKey());
+      };
     }
     StaticAliasConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                         int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return StaticAliasConst(nh, frame, aliased_);
+      return StaticAliasConst(nh, frame, aliased_,
+                              aliased_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(aliased_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(aliased_pf_, frame)
+                             || nh.get_has_value(aliased_)))
+              || ( frame <0 && (nh.get_has_value(aliased_)
+                                || nh.get_has_value(aliased_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(StaticAliasConstFactory,
                      "StaticAliasConstFactory");
-    };
+  };
 
-    typedef vector<StaticAliasConstFactory>
-            StaticAliasConstFactories;
+  typedef vector<StaticAliasConstFactory>
+  StaticAliasConstFactories;
 
-/** Store a dynamic reference to another node.
+  /** Associate a score with some set of particles.
 
-       \see DynamicAlias
-       \see DynamicAliasConstFactory
-     */
-    class DynamicAliasConst {
+      \see Score
+      \see ScoreConstFactory
+  */
+  class ScoreConst {
     NodeConstHandle nh_;
-    unsigned int frame_;
-    friend class DynamicAliasConstFactory;
-    private:
-    NodeIDKey alias_;
-    DynamicAliasConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  NodeIDKey alias):
-       nh_(nh),
-       frame_(frame),
-       alias_(alias) {
-    ;
-    }
-    public:
-    NodeID get_alias() const {
-  return nh_.get_value(alias_, frame_);
-}
-    IMP_RMF_SHOWABLE(ConstDynamicAlias,
-                     "DynamicAliasConst "
-                     << nh_.get_name());
-    ~DynamicAliasConst() {
-    }
-    };
-
-    typedef vector<DynamicAliasConst>
-            DynamicAliasConsts;
-
-/** Store a dynamic reference to another node.
-
-       \see DynamicAliasConst
-       \see DynamicAliasFactory
-     */
-    class DynamicAlias {
-    NodeHandle nh_;
-    unsigned int frame_;
-    friend class DynamicAliasFactory;
-    private:
-    NodeIDKey alias_;
-    DynamicAlias(NodeHandle nh,
-                      unsigned int frame,
-                  NodeIDKey alias):
-       nh_(nh),
-       frame_(frame),
-       alias_(alias) {
-    ;
-    }
-    public:
-    NodeID get_alias() const {
-  return nh_.get_value(alias_, frame_);
-}
-void set_alias(NodeID v) {
-   nh_.set_value(alias_, v, frame_);
-}
-    IMP_RMF_SHOWABLE(ConstDynamicAlias,
-                     "DynamicAlias "
-                     << nh_.get_name());
-    ~DynamicAlias() {
-    }
-    };
-
-    typedef vector<DynamicAlias>
-            DynamicAliass;
-
-/** Create decorators of type DynamicAlias.
-
-       \see DynamicAlias
-       \see DynamicAliasConstFactory
-    */
-    class DynamicAliasFactory {
-    private:
-    NodeIDKey alias_;
-    public:
-    typedef FileHandle File;
-    typedef DynamicAlias Decorator;
-    DynamicAliasFactory(FileHandle fh) {
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "alias");
-alias_=get_key_always<NodeIDTraits>(fh, cat,
-                               "dynamic alias",
-                               true);
-};
-    }
-    DynamicAlias get(NodeHandle nh,
-                          unsigned int frame=0) const {
-      ;
-      return DynamicAlias(nh, frame, alias_);
-    }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(alias_, frame);
-    }
-    IMP_RMF_SHOWABLE(DynamicAliasFactory,
-                     "DynamicAliasFactory");
-    };
-
-    typedef vector<DynamicAliasFactory>
-            DynamicAliasFactories;
-
-/** Create decorators of type DynamicAlias.
-
-       \see DynamicAliasConst
-       \see DynamicAliasFactory
-    */
-    class DynamicAliasConstFactory {
-    private:
-    NodeIDKey alias_;
-    public:
-    typedef FileConstHandle File;
-    typedef DynamicAliasConst Decorator;
-    DynamicAliasConstFactory(FileConstHandle fh) {
-    {
-  CategoryD<1> cat=fh.get_category<1>("alias");
-alias_=(fh.get_has_key<NodeIDTraits>
-                   (cat, "dynamic alias", true)?
-                   fh.get_key<NodeIDTraits>(cat, "dynamic alias", true)
-                              :NodeIDKey());
-};
-    }
-    DynamicAliasConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
-      IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-      return DynamicAliasConst(nh, frame, alias_);
-    }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(alias_, frame);
-    }
-    IMP_RMF_SHOWABLE(DynamicAliasConstFactory,
-                     "DynamicAliasConstFactory");
-    };
-
-    typedef vector<DynamicAliasConstFactory>
-            DynamicAliasConstFactories;
-
-/** Associate a score with some set of particles.
-
-       \see Score
-       \see ScoreConstFactory
-     */
-    class ScoreConst {
-    NodeConstHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ScoreConstFactory;
-    private:
+  private:
     StaticAliasConstFactory representation_;
-FloatKey score_;
+    FloatKey score_;
+    FloatKey score_pf_;
     ScoreConst(NodeConstHandle nh,
-                      unsigned int frame,
-                  StaticAliasConstFactory representation,
-FloatKey score):
-       nh_(nh),
-       frame_(frame),
-       representation_(representation),
-score_(score) {
-    ;
+               int frame,
+               StaticAliasConstFactory representation,
+               FloatKey score,
+               FloatKey score_pf):
+      nh_(nh),
+      frame_(frame),
+      representation_(representation),
+      score_(score),
+      score_pf_(score_pf) {
+      ;
     }
-    public:
+  public:
     NodeConstHandles get_representation() const {
-  NodeConstHandles typed=nh_.get_children();
-  NodeConstHandles ret;
-  for (unsigned int i=0; i< typed.size(); ++i) {
-     if (representation_.get_is(typed[i])) {
-        ret.push_back(representation_.get(typed[i]).get_aliased());
-     }
-  }
-  return ret;
-}
-Float get_score() const {
-  return nh_.get_value(score_, frame_);
-}
+      NodeConstHandles typed=nh_.get_children();
+      NodeConstHandles ret;
+      for (unsigned int i=0; i< typed.size(); ++i) {
+        if (representation_.get_is(typed[i])) {
+          ret.push_back(representation_.get(typed[i]).get_aliased());
+        }
+      }
+      return ret;
+    }
+    Float get_score() const {
+      if (nh_.get_has_value(score_)) {
+        return nh_.get_value(score_);
+      } else {
+        return nh_.get_value(score_pf_, frame_);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstScore,
                      "ScoreConst "
                      << nh_.get_name());
     ~ScoreConst() {
     }
-    };
+  };
 
-    typedef vector<ScoreConst>
-            ScoreConsts;
+  typedef vector<ScoreConst>
+  ScoreConsts;
 
-/** Associate a score with some set of particles.
+  /** Associate a score with some set of particles.
 
-       \see ScoreConst
-       \see ScoreFactory
-     */
-    class Score {
+      \see ScoreConst
+      \see ScoreFactory
+  */
+  class Score {
     NodeHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class ScoreFactory;
-    private:
+  private:
     StaticAliasFactory representation_;
-FloatKey score_;
+    FloatKey score_;
+    FloatKey score_pf_;
     Score(NodeHandle nh,
-                      unsigned int frame,
-                  StaticAliasFactory representation,
-FloatKey score):
-       nh_(nh),
-       frame_(frame),
-       representation_(representation),
-score_(score) {
-    ;
+          int frame,
+          StaticAliasFactory representation,
+          FloatKey score,
+          FloatKey score_pf):
+      nh_(nh),
+      frame_(frame),
+      representation_(representation),
+      score_(score),
+      score_pf_(score_pf) {
+      ;
     }
-    public:
+  public:
     NodeHandles get_representation() const {
-  NodeHandles typed=nh_.get_children();
-  NodeHandles ret;
-  for (unsigned int i=0; i< typed.size(); ++i) {
-     if (representation_.get_is(typed[i])) {
-        ret.push_back(representation_.get(typed[i]).get_aliased());
-     }
-  }
-  return ret;
-}
-void set_representation(NodeConstHandles v) {
-   for (unsigned int i=0; i< v.size(); ++i) {
-       add_child_alias(nh_, v[i]);
-   }
-}
-void set_representation(NodeHandles v) {
-   for (unsigned int i=0; i< v.size(); ++i) {
-       add_child_alias(nh_, v[i]);
-   }
-}
-Float get_score() const {
-  return nh_.get_value(score_, frame_);
-}
-void set_score(Float v) {
-   nh_.set_value(score_, v, frame_);
-}
+      NodeHandles typed=nh_.get_children();
+      NodeHandles ret;
+      for (unsigned int i=0; i< typed.size(); ++i) {
+        if (representation_.get_is(typed[i])) {
+          ret.push_back(representation_.get(typed[i]).get_aliased());
+        }
+      }
+      return ret;
+    }
+    void set_representation(NodeConstHandles v) {
+      for (unsigned int i=0; i< v.size(); ++i) {
+        add_child_alias(nh_, v[i]);
+      }
+    }
+    void set_representation(NodeHandles v) {
+      for (unsigned int i=0; i< v.size(); ++i) {
+        add_child_alias(nh_, v[i]);
+      }
+    }
+    Float get_score() const {
+      if (nh_.get_has_value(score_)) {
+        return nh_.get_value(score_);
+      } else {
+        return nh_.get_value(score_pf_, frame_);
+      }
+    }
+    void set_score(Float v) {
+      if (frame_ >=0) {
+        nh_.set_value(score_pf_, v, frame_);
+      } else {
+        return nh_.set_value(score_, v);
+      }
+    }
     IMP_RMF_SHOWABLE(ConstScore,
                      "Score "
                      << nh_.get_name());
     ~Score() {
     }
-    };
+  };
 
-    typedef vector<Score>
-            Scores;
+  typedef vector<Score>
+  Scores;
 
-/** Create decorators of type Score.
+  /** Create decorators of type Score.
 
-       \see Score
-       \see ScoreConstFactory
-    */
-    class ScoreFactory {
-    private:
+      \see Score
+      \see ScoreConstFactory
+  */
+  class ScoreFactory {
+  private:
     StaticAliasFactory representation_;
-FloatKey score_;
-    public:
+    FloatKey score_;
+    FloatKey score_pf_;
+  public:
     typedef FileHandle File;
     typedef Score Decorator;
     ScoreFactory(FileHandle fh) : representation_(fh){
-    {
-  CategoryD<1> cat=get_category_always<1>(fh, "feature");
-score_=get_key_always<FloatTraits>(fh, cat,
-                               "score",
-                               true);
-};
+      {
+        CategoryD<1> cat=get_category_always<1>(fh, "feature");
+        score_=get_key_always<FloatTraits>(fh, cat,
+                                           "score",
+                                           false);
+        score_pf_=get_key_always<FloatTraits>(fh, cat,
+                                              "score",
+                                              true);
+      };
     }
     Score get(NodeHandle nh,
-                          unsigned int frame=0) const {
+              int frame=-1) const {
       ;
       return Score(nh, frame, representation_,
-score_);
+                   score_,
+                   score_pf_);
     }
-    bool get_is(NodeHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(score_, frame);
+    bool get_is(NodeHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(score_pf_, frame)
+                             || nh.get_has_value(score_)))
+              || ( frame <0 && (nh.get_has_value(score_)
+                                || nh.get_has_value(score_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ScoreFactory,
                      "ScoreFactory");
-    };
+  };
 
-    typedef vector<ScoreFactory>
-            ScoreFactories;
+  typedef vector<ScoreFactory>
+  ScoreFactories;
 
-/** Create decorators of type Score.
+  /** Create decorators of type Score.
 
-       \see ScoreConst
-       \see ScoreFactory
-    */
-    class ScoreConstFactory {
-    private:
+      \see ScoreConst
+      \see ScoreFactory
+  */
+  class ScoreConstFactory {
+  private:
     StaticAliasConstFactory representation_;
-FloatKey score_;
-    public:
+    FloatKey score_;
+    FloatKey score_pf_;
+  public:
     typedef FileConstHandle File;
     typedef ScoreConst Decorator;
     ScoreConstFactory(FileConstHandle fh) : representation_(fh){
-    {
-  CategoryD<1> cat=fh.get_category<1>("feature");
-score_=(fh.get_has_key<FloatTraits>
+      {
+        CategoryD<1> cat=fh.get_category<1>("feature");
+        score_=(fh.get_has_key<FloatTraits>
+                (cat, "score", false)?
+                fh.get_key<FloatTraits>(cat,
+                                        "score",
+                                        false)
+                :FloatKey());
+        score_pf_=(fh.get_has_key<FloatTraits>
                    (cat, "score", true)?
-                   fh.get_key<FloatTraits>(cat, "score", true)
-                              :FloatKey());
-};
+                   fh.get_key<FloatTraits>(cat,
+                                           "score",
+                                           true)
+                   :FloatKey());
+      };
     }
     ScoreConst get(NodeConstHandle nh,
-                          unsigned int frame=0) const {
+                   int frame=-1) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ScoreConst(nh, frame, representation_,
-score_);
+                        score_,
+                        score_pf_);
     }
-    bool get_is(NodeConstHandle nh, unsigned int frame=0) const {
-      return nh.get_has_value(score_, frame);
+    bool get_is(NodeConstHandle nh, int frame=-1) const {
+      return ((frame >=0 && (nh.get_has_value(score_pf_, frame)
+                             || nh.get_has_value(score_)))
+              || ( frame <0 && (nh.get_has_value(score_)
+                                || nh.get_has_value(score_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(ScoreConstFactory,
                      "ScoreConstFactory");
-    };
+  };
 
-    typedef vector<ScoreConstFactory>
-            ScoreConstFactories;
+  typedef vector<ScoreConstFactory>
+  ScoreConstFactories;
 
 } /* namespace RMF */
 
