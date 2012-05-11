@@ -404,6 +404,7 @@ void add_geometries(RMF::FileHandle fh,
 
 namespace {
   RMF::NodeHandle add_static(RMF::FileHandle fh, display::Geometry *g) {
+    g->set_was_used(true);
     std::string nicename= RMF::get_as_node_name(g->get_name());
     RMF::NodeHandle c= fh.get_root_node().add_child(nicename,
                                                     RMF::GEOMETRY);
