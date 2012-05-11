@@ -7,7 +7,9 @@ def get_string(type, name, const, per_frame=False):
     if const:
         return """(fh.get_has_key<%(type)sTraits>
                    (cat, \"%(name)s\", %(pfs)s)?
-                   fh.get_key<%(type)sTraits>(cat, \"%(name)s\", %(pfs)s)
+                   fh.get_key<%(type)sTraits>(cat,
+                                     \"%(name)s\",
+                                      %(pfs)s)
                               :%(type)sKey())"""%{ "name":name,
                                                                                      "type": type,
                                                                                      "pfs":pfs}
@@ -76,35 +78,50 @@ class Children:
 
 
 class Attribute:
-    def __init__(self, type, nice_name, attribute_name, per_frame=False):
+    def __init__(self, type, nice_name, attribute_name):
         self.type=type
-        self.per_frame=per_frame
         self.nice_name=nice_name
         self.attribute_name=attribute_name
     def get_key_members(self, const):
-        return [self.type+"Key "+self.nice_name+"_;"]
+        return [self.type+"Key "+self.nice_name+"_;",
+                self.type+"Key "+self.nice_name+"_pf_;"]
     def get_methods(self, const):
         ret=[]
-        ret.append(self.type+" get_"+self.nice_name+"() const {")
-        ret.append("  return nh_.get_value("+self.nice_name+"_, frame_);")
-        ret.append("}")
+        ret.extend([self.type+" get_"+self.nice_name+"() const {",
+                   "  if (nh_.get_has_value("+self.nice_name+"_)) {",
+                   "   return nh_.get_value("+self.nice_name+"_);",
+                   "  } else {",
+                   "   return nh_.get_value("+self.nice_name+"_pf_, frame_);",
+                   "  }",
+                   "}"])
         if not const:
-            ret.append("void set_"+self.nice_name+"("+self.type+" v) {")
-            ret.append("   nh_.set_value("+self.nice_name+"_, v, frame_);")
-            ret.append("}")
+            ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
+                        "  if (frame_ >=0) {",
+                        "    nh_.set_value("+self.nice_name+"_pf_, v, frame_);",
+                        "  } else {",
+                        "    return nh_.set_value("+self.nice_name+"_, v);",
+                        "  }",
+                        "}"])
         return ret
     def get_key_arguments(self, const):
-        return [self.type+"Key "+self.nice_name]
+        return [self.type+"Key "+self.nice_name,
+                self.type+"Key "+self.nice_name+"_pf"]
     def get_key_pass(self, const):
-        return [self.nice_name+"_"]
+        return [self.nice_name+"_",
+                self.nice_name+"_pf_"]
     def get_key_saves(self, const):
-        return [self.nice_name+"_("+self.nice_name+")"]
+        return [self.nice_name+"_("+self.nice_name+")",
+                self.nice_name+"_pf_("+self.nice_name+"_pf)"]
     def get_construct(self, const):
-        return [self.nice_name+"_="+get_string(self.type, self.attribute_name, const, self.per_frame)+";"]
+        return [self.nice_name+"_="+get_string(self.type, self.attribute_name, const, False)+";",
+                self.nice_name+"_pf_="+get_string(self.type, self.attribute_name, const, True)+";"]
     def get_initialize(self, const):
         return []
     def get_check(self, const):
-        return ["nh.get_has_value("+self.nice_name+"_, frame)"]
+        return ["""((frame >=0 && (nh.get_has_value(%(nn)s_pf_, frame)
+                          || nh.get_has_value(%(nn)s_)))
+                || ( frame <0 && (nh.get_has_value(%(nn)s_)
+                || nh.get_has_value(%(nn)s_pf_, 0))))"""%{"nn":self.nice_name}]
 
 
 class NodeAttribute(Attribute):
@@ -116,14 +133,23 @@ class NodeAttribute(Attribute):
             nht= "NodeConstHandle"
         else:
             nht= "NodeHandle"
-        ret.append(nht+" get_"+self.nice_name+"() const {")
-        ret.append("  NodeID ni= nh_.get_value("+self.nice_name+"_, frame_);")
-        ret.append("  return nh_.get_file().get_node_from_id(ni);")
-        ret.append("}")
+        ret.extend([nht+" get_"+self.nice_name+"() const {",
+                    "  NodeID id;",
+                    "  if (nh_.get_has_value("+self.nice_name+"_)) {",
+                    "   id= nh_.get_value("+self.nice_name+"_);",
+                    "  } else {",
+                    "   id= nh_.get_value("+self.nice_name+"_pf_, frame_);",
+                    "  }",
+                    "  return nh_.get_file().get_node_from_id(id);",
+                    "}"])
         if not const:
-            ret.append("void set_"+self.nice_name+"(NodeConstHandle v) {")
-            ret.append("   nh_.set_value("+self.nice_name+"_, v.get_id(), frame_);")
-            ret.append("}")
+            ret.extend(["void set_"+self.nice_name+"(NodeConstHandle v) {",
+                        "  if (frame_ >=0) {",
+                        "    nh_.set_value("+self.nice_name+"_pf_, v.get_id(), frame_);",
+                        "  } else {",
+                        "    return nh_.set_value("+self.nice_name+"_, v.get_id());",
+                        "  }",
+                        "}"])
         return ret
 
 class SingletonRangeAttribute:
@@ -205,22 +231,42 @@ class RangeAttribute:
             "\n  && nh.get_value("+self.nice_name+"_[0], frame)"\
             "\n   <nh.get_value("+self.nice_name+"_[1], frame)"]
 
-
+        ret.extend([self.type+" get_"+self.nice_name+"() const {",
+                   "  if (nh_.get_has_value("+self.nice_name+"_)) {",
+                   "   return nh_.get_value("+self.nice_name+"_);",
+                   "  } else {",
+                   "   return nh_.get_value("+self.nice_name+"_pf_, frame_)",
+                   "  }",
+                   "}"])
+        if not const:
+            ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
+                        "  if (frame_ >=0) {",
+                        "    nh_.set_value("+self.nice_name+"_pf_, v, frame);",
+                        "  } else {",
+                        "    return nh_.set_value("+self.nice_name+"_, v);",
+                        "  }",
+                        "}"])
 class Attributes:
-    def __init__(self, type, ptype, nice_name, attribute_names, per_frame=False):
+    def __init__(self, type, ptype, nice_name, attribute_names):
         self.type=type
         self.nice_name=nice_name
         self.ptype=ptype
         self.attribute_names=attribute_names
-        self.per_frame=per_frame
     def get_key_members(self, const):
-        return [self.type+"Keys "+self.nice_name+"_;"]
+        return [self.type+"Keys "+self.nice_name+"_;",
+                self.type+"Keys "+self.nice_name+"_pf_;"]
     def get_methods(self, const):
         ret=[]
         ret.append("""%(ptype)s get_%(name)s() const {
        %(ptype)s ret;
-       for (unsigned int i=0; i< %(len)s; ++i) {
-          ret.push_back(nh_.get_value(%(key)s[i], frame_));
+       if (nh_.get_has_value(%(key)s[0])) {
+         for (unsigned int i=0; i< %(len)s; ++i) {
+          ret.push_back(nh_.get_value(%(key)s[i]));
+         }
+       } else {
+         for (unsigned int i=0; i< %(len)s; ++i) {
+          ret.push_back(nh_.get_value(%(key)spf_[i], frame_));
+         }
        }
        return ret;
     }"""%{"type":self.type,
@@ -230,8 +276,14 @@ class Attributes:
           "key":self.nice_name+"_"})
         if not const:
             ret.append("""void set_%(name)s(const %(ptype)s &v) {
-         for (unsigned int i=0; i< %(len)s; ++i) {
-            nh_.set_value(%(key)s[i], v[i], frame_);
+         if (frame_>=0) {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+              nh_.set_value(%(key)spf_[i], v[i], frame_);
+           }
+         } else {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+              nh_.set_value(%(key)s[i], v[i]);
+           }
          }
       }"""%{"type":self.type,
             "ptype":self.ptype,
@@ -240,11 +292,13 @@ class Attributes:
             "key":self.nice_name+"_"})
         return ret
     def get_key_arguments(self, const):
-        return [self.type+"Keys "+self.nice_name]
+        return [self.type+"Keys "+self.nice_name,
+                self.type+"Keys "+self.nice_name+"_pf"]
     def get_key_pass(self, const):
-        return [self.nice_name+"_"]
+        return [self.nice_name+"_", self.nice_name+"_pf_"]
     def get_key_saves(self, const):
-        return [self.nice_name+"_("+self.nice_name+")"]
+        return [self.nice_name+"_("+self.nice_name+")",
+                self.nice_name+"_pf_("+self.nice_name+"_pf)"]
     def get_initialize(self, const):
         return []
     def get_construct(self, const):
@@ -254,11 +308,21 @@ class Attributes:
                                                             "name":self.nice_name,
                                                             "len":len(self.attribute_names),
                                                             "key":self.nice_name+"_",
-                                                            "get":get_string(self.type, n, const, self.per_frame)
+                                                            "get":get_string(self.type, n, const, False)
+                                                            })
+            ret.append("""      %(name)s_pf_.push_back(%(get)s);"""%{"type":self.type,
+                                                                     "name":self.nice_name,
+                                                                     "len":len(self.attribute_names),
+                                                                     "key":self.nice_name+"_",
+                                                                     "get":get_string(self.type, n, const, True)
                                                             })
         return ret
     def get_check(self, const):
-        return ["nh.get_has_value("+self.nice_name+"_[0], frame)"]
+        return ["""((frame >=0 && (nh.get_has_value(%(nn)s_pf_[0], frame)
+                          || nh.get_has_value(%(nn)s_[0])))
+                 || (frame <0
+               &&  (nh.get_has_value(%(nn)s_[0])
+              || nh.get_has_value(%(nn)s_pf_[0], 0))))"""%{"nn":self.nice_name}]
 
 
 class DecoratorCategory:
@@ -351,12 +415,12 @@ class Decorator:
      */
     class %(name)s%(CONST)s {
     Node%(CONST)sHandle nh_;
-    unsigned int frame_;
+    int frame_;
     friend class %(name)s%(CONST)sFactory;
     private:
     %(key_members)s
     %(name)s%(CONST)s(Node%(CONST)sHandle nh,
-                      unsigned int frame,
+                       int frame,
                   %(key_arguments)s):
        nh_(nh),
        frame_(frame),
@@ -406,11 +470,11 @@ class Decorator:
     %(construct)s;
     }
     %(name)s%(CONST)s get(Node%(CONST)sHandle nh,
-                          unsigned int frame=0) const {
+                           int frame=-1) const {
       %(create_check)s;
       return %(name)s%(CONST)s(nh, frame, %(key_pass)s);
     }
-    bool get_is(Node%(CONST)sHandle nh, unsigned int frame=0) const {
+    bool get_is(Node%(CONST)sHandle nh, int frame=-1) const {
       return %(checks)s;
     }
     IMP_RMF_SHOWABLE(%(name)s%(CONST)sFactory,
@@ -449,7 +513,7 @@ particle= Decorator("Particle", "These particles has associated coordinates and 
                    [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"], True),
+                                                                                "cartesian z"]),
                                                      Attribute("Float", "radius", "radius"),
                                                      Attribute("Float", "mass", "mass")])],
                    "")
@@ -457,7 +521,7 @@ iparticle= Decorator("IntermediateParticle", "These particles has associated coo
                    [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"], True),
+                                                                                "cartesian z"]),
                                                      Attribute("Float", "radius", "radius")])],
                    "")
 pparticle= Decorator("RigidParticle", "These particles has associated coordinates and orientation information.",
@@ -465,23 +529,23 @@ pparticle= Decorator("RigidParticle", "These particles has associated coordinate
                                                                 "orientation", ["orientation r",
                                                                                 "orientation i",
                                                                                 "orientation j",
-                                                                                "orientation k"], True),
+                                                                                "orientation k"]),
                                                      Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"], True)])],
+                                                                                "cartesian z"])])],
                    "")
 
 score= Decorator("Score", "Associate a score with some set of particles.",
                    [DecoratorCategory("feature", 1, [Children("representation"),
-                                                     Attribute("Float", "score", "score", True)])],
+                                                     Attribute("Float", "score", "score")])],
                    "")
 
 ball= Decorator("Ball", "A geometric ball.",
                    [DecoratorCategory("shape", 1, [Attributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
                                                                               "cartesian y",
-                                                                              "cartesian z"], True),
+                                                                              "cartesian z"]),
                                                    Attribute("Float", "radius", "radius")],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
                    ["nh.set_value(type_, 0);"], ["nh.get_value(type_)==0"])
@@ -489,7 +553,7 @@ cylinder= Decorator("Cylinder", "A geometric cylinder.",
                    [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
-                                                                              "cartesian zs"], True),
+                                                                              "cartesian zs"]),
                                                    Attribute("Float", "radius", "radius")],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
                    ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
@@ -498,7 +562,7 @@ segment= Decorator("Segment", "A geometric line setgment.",
                    [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
-                                                                              "cartesian zs"], True)],
+                                                                              "cartesian zs"])],
                                       internal_attributes=[Attribute("Index", "type", "type")])],
                     ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
@@ -514,7 +578,7 @@ atom= Decorator("Atom", "Information regarding an atom.",
                    [DecoratorCategory("physics", 1, [Attributes("Float", "Floats",
                                                                 "coordinates", ["cartesian x",
                                                                                 "cartesian y",
-                                                                                "cartesian z"], True),
+                                                                                "cartesian z"]),
                                                      Attribute("Float", "radius", "radius"),
                                                      Attribute("Float", "mass", "mass"),
                                                      Attribute("Index", "element", "element")])],
@@ -546,9 +610,6 @@ typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules
 
 salias= Decorator("StaticAlias", "Store a static reference to another node.",
                    [DecoratorCategory("alias", 1, [NodeAttribute("NodeID", "aliased", "aliased")])],
-                   "")
-dalias= Decorator("DynamicAlias", "Store a dynamic reference to another node.",
-                   [DecoratorCategory("alias", 1, [Attribute("NodeID", "alias", "dynamic alias", True)])],
                    "")
 
 
@@ -586,7 +647,6 @@ print copy.get()
 print diffuser.get()
 print typed.get()
 print salias.get()
-print dalias.get()
 print score.get()
 print """} /* namespace RMF */
 

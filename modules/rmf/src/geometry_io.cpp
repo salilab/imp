@@ -54,6 +54,19 @@ namespace {
     IMP_OBJECT_INLINE(GeometryLoadLink,IMP_UNUSED(out),);
   };
 
+  void save_colored(display::Geometry *g,
+                  RMF::NodeHandle nh,
+                  RMF::ColoredFactory f,
+                  int frame) {
+    if (g->get_has_color()) {
+        RMF::Colored cd= f.get(nh, frame);
+        display::Color c= g->get_color();
+        cd.set_rgb_color(RMF::Floats(c.components_begin(),
+                                     c.components_end()));
+      }
+  }
+
+
   template <class G, class F>
   class GeometrySaveLink: public SimpleSaveLink<G> {
     typedef SimpleSaveLink<G> P;
@@ -72,12 +85,7 @@ namespace {
     void save_color(display::Geometry *g,
                     RMF::NodeHandle nh,
                     unsigned int frame) {
-      if (g->get_has_color()) {
-        RMF::Colored cd= colored_factory_.get(nh, frame);
-        display::Color c= g->get_color();
-        cd.set_rgb_color(RMF::Floats(c.components_begin(),
-                                     c.components_end()));
-      }
+      save_colored(g, nh, colored_factory_, frame);
     }
     IMP_OBJECT_INLINE(GeometrySaveLink,IMP_UNUSED(out),);
   };
@@ -104,6 +112,18 @@ namespace {
     }
   };
 
+
+  void save_sphere(display::SphereGeometry *o,
+                   RMF::NodeHandle nh,
+                   RMF::BallFactory f,
+                   int frame) {
+    algebra::Sphere3D s= o->get_geometry();
+    RMF::Ball b= f.get(nh, frame);
+    b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
+                                  s.get_center().coordinates_end()));
+    b.set_radius(s.get_radius());
+  }
+
   class SphereSaveLink: public GeometrySaveLink<display::SphereGeometry,
                                                 RMF::BallFactory> {
     typedef GeometrySaveLink<display::SphereGeometry,
@@ -111,11 +131,7 @@ namespace {
     void do_save_one(display::SphereGeometry *o,
                      RMF::NodeHandle nh,
                      unsigned int frame) {
-      algebra::Sphere3D s= o->get_geometry();
-      RMF::Ball b= P::get_factory().get(nh, frame);
-      b.set_coordinates(RMF::Floats(s.get_center().coordinates_begin(),
-                                    s.get_center().coordinates_end()));
-      b.set_radius(s.get_radius());
+      save_sphere(o, nh, P::get_factory(), frame);
       P::save_color(o, nh, frame);
     }
   public:
@@ -153,6 +169,23 @@ namespace {
     }
   };
 
+  void save_cylinder(display::CylinderGeometry *o,
+                     RMF::NodeHandle nh,
+                     RMF::CylinderFactory f,
+                     int frame) {
+    algebra::Cylinder3D s= o->get_geometry();
+    RMF::Cylinder c= f.get(nh, frame);
+    c.set_radius(s.get_radius());
+    RMF::FloatsList coords(3, RMF::Floats(2));
+    for (unsigned int i=0; i< 2; ++i) {
+      algebra::Vector3D c= s.get_segment().get_point(i);
+      for (unsigned int j=0; j< 3; ++j) {
+        coords[j][i]=c[j];
+      }
+    }
+    c.set_coordinates(coords);
+  }
+
   class CylinderSaveLink: public GeometrySaveLink<display::CylinderGeometry,
                                                 RMF::CylinderFactory> {
     typedef GeometrySaveLink<display::CylinderGeometry,
@@ -160,17 +193,7 @@ namespace {
     void do_save_one(display::CylinderGeometry *o,
                      RMF::NodeHandle nh,
                      unsigned int frame) {
-      algebra::Cylinder3D s= o->get_geometry();
-      RMF::Cylinder c= P::get_factory().get(nh, frame);
-      c.set_radius(s.get_radius());
-      RMF::FloatsList coords(3, RMF::Floats(2));
-      for (unsigned int i=0; i< 2; ++i) {
-        algebra::Vector3D c= s.get_segment().get_point(i);
-        for (unsigned int j=0; j< 3; ++j) {
-          coords[j][i]=c[j];
-        }
-      }
-      c.set_coordinates(coords);
+
       P::save_color(o, nh, frame);
     }
   public:
@@ -220,6 +243,15 @@ void set_segment(algebra::Segment3D s,
     }
   };
 
+  void save_segment(display::SegmentGeometry *o,
+                     RMF::NodeHandle nh,
+                    RMF::SegmentFactory f,
+                    int frame) {
+    algebra::Segment3D s= o->get_geometry();
+    RMF::Segment c= f.get(nh, frame);
+    set_segment(s, c);
+  }
+
   class SegmentSaveLink: public GeometrySaveLink<display::SegmentGeometry,
                                                 RMF::SegmentFactory> {
     typedef GeometrySaveLink<display::SegmentGeometry,
@@ -227,9 +259,7 @@ void set_segment(algebra::Segment3D s,
     void do_save_one(display::SegmentGeometry *o,
                      RMF::NodeHandle nh,
                      unsigned int frame) {
-      algebra::Segment3D s= o->get_geometry();
-      RMF::Segment c= P::get_factory().get(nh, frame);
-      set_segment(s, c);
+      save_segment(o, nh, P::get_factory(), frame);
       P::save_color(o, nh, frame);
     }
   public:
@@ -272,6 +302,28 @@ void set_segment(algebra::Segment3D s,
     }
   };
 
+  void save_box(display::BoundingBoxGeometry *o,
+                RMF::NodeHandle nh,
+                RMF::SegmentFactory f,
+                int frame) {
+    algebra::BoundingBox3D bb= o->get_geometry();
+    IntPairs edges= algebra::get_edges(bb);
+    algebra::Vector3Ds vs= algebra::get_vertices(bb);
+    RMF::NodeHandles ch= nh.get_children();
+    for (unsigned int i=0; i< 12; ++i) {
+      set_segment(algebra::Segment3D(vs[edges[i].first],
+                                     vs[edges[i].second]),
+                  f.get(ch[i], frame));
+    }
+  }
+
+  void add_box(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
+    o->set_was_used(true);
+      for (unsigned int i=0; i< 12; ++i) {
+        nh.add_child("edge", RMF::GEOMETRY);
+      }
+  }
+
   class BoxSaveLink: public GeometrySaveLink<display::BoundingBoxGeometry,
                                              RMF::SegmentFactory> {
     typedef GeometrySaveLink<display::BoundingBoxGeometry,
@@ -279,22 +331,11 @@ void set_segment(algebra::Segment3D s,
     void do_save_one(display::BoundingBoxGeometry *o,
                      RMF::NodeHandle nh,
                      unsigned int frame) {
-      algebra::BoundingBox3D bb= o->get_geometry();
-      IntPairs edges= algebra::get_edges(bb);
-      algebra::Vector3Ds vs= algebra::get_vertices(bb);
-      RMF::NodeHandles ch= nh.get_children();
-      for (unsigned int i=0; i< 12; ++i) {
-        set_segment(algebra::Segment3D(vs[edges[i].first],
-                                       vs[edges[i].second]),
-                    get_factory().get(ch[i], frame));
-      }
+      save_box(o, nh, P::get_factory(), frame);
       P::save_color(o, nh, frame);
     }
     void do_add(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
-      o->set_was_used(true);
-      for (unsigned int i=0; i< 12; ++i) {
-        nh.add_child("edge", RMF::GEOMETRY);
-      }
+      add_box(o, nh);
     }
 
   public:
@@ -360,6 +401,59 @@ void add_geometries(RMF::FileHandle fh,
   bll->add(fh.get_root_node(), bgs);
   bll->save(fh, 0);
 }
+
+namespace {
+  RMF::NodeHandle add_static(RMF::FileHandle fh, display::Geometry *g) {
+    std::string nicename= RMF::get_as_node_name(g->get_name());
+    RMF::NodeHandle c= fh.get_root_node().add_child(nicename,
+                                                    RMF::GEOMETRY);
+    return c;
+  }
+}
+
+void add_static_geometries(RMF::FileHandle fh,
+                    const display::GeometriesTemp &r) {
+  display::SphereGeometries sgs;
+  display::CylinderGeometries cgs;
+  display::SegmentGeometries ssgs;
+  display::BoundingBoxGeometries bgs;
+  divide(r, sgs, cgs, ssgs, bgs);
+  RMF::ColoredFactory cf(fh);
+  {
+    RMF::BallFactory bf(fh);
+    for (unsigned int i=0; i< sgs.size(); ++i) {
+      RMF::NodeHandle h= add_static(fh, sgs[i]);
+      save_sphere(sgs[i], h, bf, -1);
+      save_colored(sgs[i], h, cf, -1);
+    }
+  }
+  {
+    RMF::CylinderFactory bf(fh);
+    for (unsigned int i=0; i< cgs.size(); ++i) {
+      RMF::NodeHandle h= add_static(fh, cgs[i]);
+      save_cylinder(cgs[i], h, bf, -1);
+      save_colored(cgs[i], h, cf, -1);
+    }
+  }
+  {
+    RMF::SegmentFactory bf(fh);
+    for (unsigned int i=0; i< ssgs.size(); ++i) {
+      RMF::NodeHandle h= add_static(fh, ssgs[i]);
+      save_segment(ssgs[i], h, bf, -1);
+      save_colored(ssgs[i], h, cf, -1);
+    }
+  }
+  {
+    RMF::SegmentFactory bf(fh);
+    for (unsigned int i=0; i< bgs.size(); ++i) {
+      RMF::NodeHandle h= add_static(fh,bgs[i]);
+      add_box(bgs[i], h);
+      save_box(bgs[i], h, bf, -1);
+      save_colored(bgs[i], h, cf, -1);
+    }
+  }
+}
+
 void add_geometry(RMF::FileHandle parent, display::Geometry *r) {
   add_geometries(parent, display::GeometriesTemp(1, r));
 }

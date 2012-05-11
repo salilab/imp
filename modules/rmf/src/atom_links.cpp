@@ -117,7 +117,7 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
   atom::Hierarchy hp=atom::Hierarchy::setup_particle(p);
   IMP_LOG(VERBOSE, "Particle " << hp << " is ");
   bool crbp=false;
-  if (rigid_factory_.get_is(nh)) {
+  if (rigid_factory_.get_is(nh, 0)) {
     IMP_LOG(VERBOSE, "rigid ");
     crbp=true;
     core::RigidBody::setup_particle(p, algebra::ReferenceFrame3D());
@@ -125,16 +125,16 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
       core::RigidBody(rbp).add_member(p);
     }
   }
-  if (intermediate_particle_factory_.get_is(nh)) {
+  if (intermediate_particle_factory_.get_is(nh, 0)) {
     IMP_LOG(VERBOSE, "xyzr ");
-    double r= intermediate_particle_factory_.get(nh).get_radius();
+    double r= intermediate_particle_factory_.get(nh, 0).get_radius();
     core::XYZR::setup_particle(p).set_radius(r);
     if (rbp) {
       core::RigidBody(rbp).add_member(p);
     }
   }
-  if (particle_factory_.get_is(nh)) {
-    RMF::ParticleConst m= particle_factory_.get(nh);
+  if (particle_factory_.get_is(nh, 0)) {
+    RMF::ParticleConst m= particle_factory_.get(nh, 0);
     IMP_LOG(VERBOSE, "massive ");
     atom::Mass::setup_particle(p, m.get_mass());
   }

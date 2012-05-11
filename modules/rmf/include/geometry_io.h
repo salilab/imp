@@ -31,6 +31,13 @@ IMPRMF_BEGIN_NAMESPACE
 /** Add the geometry to the file */
 IMPRMFEXPORT void add_geometries(RMF::FileHandle parent,
                                  const display::GeometriesTemp &r);
+
+/** Add the following geometry, assuming they do not move
+    between frames. This can be space saving compared to resaving
+    the constant position each frame.*/
+IMPRMFEXPORT void add_static_geometries(RMF::FileHandle parent,
+                                 const display::GeometriesTemp &r);
+
 #ifndef IMP_DOXYGEN
 IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);
 #endif
