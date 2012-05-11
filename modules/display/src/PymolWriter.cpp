@@ -125,7 +125,7 @@ bool PymolWriter::handle_label(LabelGeometry *g,
 }
 bool PymolWriter::handle_cylinder(CylinderGeometry *g,
                             Color color, std::string name) {
-  cleanup(name, OTHER);
+  cleanup(name, false);
   get_stream() << "CYLINDER,\n"
                << algebra::commas_io(g->get_geometry()
                                      .get_segment().get_point(0)) << ",\n"
