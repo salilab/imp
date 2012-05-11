@@ -3,13 +3,6 @@ import RMF
 import IMP.rmf
 m= IMP.Model()
 
-# get the key with a given name from an rmf file, adding it if needed
-def get_key(root, name, per_frame, category):
-    if root.get_has_float_key(category, name):
-        return root.get_float_key(category, name)
-    else:
-        return root.add_float_key(category, name, per_frame)
-
 # Create a new IMP.atom.Hierarchy from the contents of the pdb file
 h= IMP.atom.read_pdb(RMF.get_example_path("simple.pdb"), m)
 
@@ -33,7 +26,7 @@ IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 IMP.rmf.save_frame(rh, 1)
 
 # create my key
-my_key= get_key(rh, "my score", True, my_kc)
+my_key= RMF.get_float_key_always(rh, my_kc, "my score", True)
 
 # make up scores
 rh.get_root_node().set_value(my_key, 3, 0)
