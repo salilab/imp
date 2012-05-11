@@ -49,6 +49,24 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
     }
   }
 }
+
+
+  void fix_rigid_body(core::RigidBody rb) {
+    core::RigidMembers rms(rb.get_members());
+    algebra::Vector3Ds local(rms.size());
+    algebra::Vector3Ds global(rms.size());
+    if (rms.size() < 3) return;
+    for (unsigned int i=0; i< rms.size(); ++i) {
+      local[i]= rms[i].get_internal_coordinates();
+      global[i]= rms[i].get_coordinates();
+    }
+    algebra::Transformation3D t3
+      = algebra::get_transformation_aligning_first_to_second(local, global);
+    rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
+    // later patch members to make coordinates exact.
+    // must reset collision detection tree when we do that
+  }
+
 }
 void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
                                              Particle *o,
@@ -66,27 +84,12 @@ void HierarchyLoadLink::do_load_one_particle(RMF::NodeConstHandle nh,
            v);
     algebra::ReferenceFrame3D rf(tr);
     core::RigidBody(o).set_reference_frame(rf);
-    if (core::RigidMember::particle_is_instance(o)) {
-      // reset local frame
-      core::RigidMember d(o);
-      core::RigidBody bd= d.get_rigid_body();
-      algebra::ReferenceFrame3D brf= bd.get_reference_frame();
-      d.set_internal_transformation(brf.get_local_reference_frame(rf).
-                                 get_transformation_to());
-    }
   } else if (intermediate_particle_factory_.get_is(nh, frame)) {
     RMF::Floats cs= intermediate_particle_factory_.get(nh, frame)
         .get_coordinates();
     algebra::Vector3D v(cs.begin(),
                         cs.end());
     core::XYZR(o).set_coordinates(v);
-    if (core::RigidMember::particle_is_instance(o)) {
-      // reset local coordinates
-      core::RigidMember d(o);
-      core::RigidBody bd= d.get_rigid_body();
-      algebra::ReferenceFrame3D brf= bd.get_reference_frame();
-      d.set_internal_coordinates(brf.get_local_coordinates(v));
-    }
   }
   if (colored_factory_.get_is(nh, frame)) {
     RMF::Floats c= colored_factory_.get(nh, frame).get_rgb_color();
@@ -105,6 +108,11 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
   for (unsigned int i=0; i< d.nodes.size(); ++i) {
     do_load_one_particle(fh.get_node_from_id(d.nodes[i]),
                          d.particles[i], frame);
+  }
+  // patch rigid bodies
+  if (core::RigidBody::particle_is_instance(o)
+      && !rigid_factory_.get_is(nh, frame)) {
+    fix_rigid_body(core::RigidBody(o));
   }
 }
 
