@@ -33,7 +33,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 {
   IMP::OwnerPointer<SingletonContainer> c_;
-  IMP_CONTAINER_DEPENDENCIES(AllPairContainer, ret.push_back(back_->c_););
   friend class AllBipartitePairContainer;
 #define IMP_AP_LOOP(body)                       \
   ParticleIndexes pis= c_->get_indexes();       \

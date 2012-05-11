@@ -28,12 +28,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT QuadContainerSet
   : public QuadContainer
 {
-  IMP_CONTAINER_DEPENDENCIES(QuadContainerSet,
-                             {
-                               ret.insert(ret.end(),
-                                          back_->quad_containers_begin(),
-                                          back_->quad_containers_end());
-                             });
   static QuadContainerSet* get_set(QuadContainer* c) {
     return dynamic_cast<QuadContainerSet*>(c);
   }

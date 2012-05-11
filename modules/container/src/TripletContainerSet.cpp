@@ -18,16 +18,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 TripletContainerSet
 ::TripletContainerSet(Model *m, std::string name):
-  TripletContainer(m, name),
-  deps_(new DependenciesScoreState(this), m){
+  TripletContainer(m, name) {
 }
 
 
 TripletContainerSet
 ::TripletContainerSet(const TripletContainersTemp& in,
                         std::string name):
-    TripletContainer(IMP::internal::get_model(in), name),
-    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
+    TripletContainer(IMP::internal::get_model(in), name){
   set_triplet_containers(in);
 }
 

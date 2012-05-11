@@ -18,16 +18,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PairContainerSet
 ::PairContainerSet(Model *m, std::string name):
-  PairContainer(m, name),
-  deps_(new DependenciesScoreState(this), m){
+  PairContainer(m, name) {
 }
 
 
 PairContainerSet
 ::PairContainerSet(const PairContainersTemp& in,
                         std::string name):
-    PairContainer(IMP::internal::get_model(in), name),
-    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
+    PairContainer(IMP::internal::get_model(in), name){
   set_pair_containers(in);
 }
 

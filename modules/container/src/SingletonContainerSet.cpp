@@ -18,16 +18,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 SingletonContainerSet
 ::SingletonContainerSet(Model *m, std::string name):
-  SingletonContainer(m, name),
-  deps_(new DependenciesScoreState(this), m){
+  SingletonContainer(m, name) {
 }
 
 
 SingletonContainerSet
 ::SingletonContainerSet(const SingletonContainersTemp& in,
                         std::string name):
-    SingletonContainer(IMP::internal::get_model(in), name),
-    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
+    SingletonContainer(IMP::internal::get_model(in), name){
   set_singleton_containers(in);
 }
 

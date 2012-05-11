@@ -28,12 +28,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT SingletonContainerSet
   : public SingletonContainer
 {
-  IMP_CONTAINER_DEPENDENCIES(SingletonContainerSet,
-                             {
-                               ret.insert(ret.end(),
-                                          back_->singleton_containers_begin(),
-                                          back_->singleton_containers_end());
-                             });
   static SingletonContainerSet* get_set(SingletonContainer* c) {
     return dynamic_cast<SingletonContainerSet*>(c);
   }

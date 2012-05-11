@@ -31,11 +31,6 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
 {
   IMP::OwnerPointer<SingletonContainer> a_, b_;
   friend class AllPairContainer;
-  IMP_CONTAINER_DEPENDENCIES(AllBipartitePairContainer,
-                             {
-                               ret.push_back(back_->a_);
-                               ret.push_back(back_->b_);
-                             });
 #define IMP_ABP_LOOP(body)                              \
   ParticleIndexes ib= b_->get_indexes();                \
   IMP_FOREACH_SINGLETON_INDEX(a_, {                     \
