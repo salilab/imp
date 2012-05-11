@@ -8,6 +8,10 @@
 #include <IMP/domino/domino_config.h>
 #include <IMP/domino/subset_scores.h>
 #include <IMP/dependency_graph.h>
+#include <IMP/domino/Order.h>
+#ifdef IMP_DOMINO_USE_IMP_RMF
+#include <RMF/HDF5DataSetD.h>
+#endif
 
 IMPDOMINO_BEGIN_NAMESPACE
 RestraintCache::RestraintCache(ParticleStatesTable *pst,
@@ -92,6 +96,7 @@ void RestraintCache::add_restraint_internal(Restraint *r,
             << " with max " << cur_max << " and subset " << cur_subset
             << std::endl);
     known_restraints_[r]=cur_subset;
+    ordered_restraints_.push_back(r);
   }
   add_restraint_set_child_internal(r,
                                    cur_subset,
@@ -214,5 +219,82 @@ void RestraintCache::load_last_score(Restraint *r, const Subset &s,
   double ss= get_score(r, s, a);
   r->set_last_score(ss);
 }
+/* Structure is one child group per restraints with two data sets,
+   one for all the scores and one for the assignments.
 
+ */
+#ifdef IMP_DOMINO_USE_IMP_RMF
+void RestraintCache::save_cache(const ParticlesTemp &ps,
+                                RMF::HDF5Group group,
+                                double fraction) {
+  RMF::HDF5FloatDataSet1Ds scores;
+  RMF::HDF5IntDataSet2Ds assignments;
+  Orders orders;
+  compatibility::set<std::string> names;
+  compatibility::map<Restraint*, int> index;
+  for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
+    RMF::HDF5Group g= group.add_child(ordered_restraints_[i]->get_name());
+    scores.push_back(g.add_child_data_set<RMF::FloatTraits, 1>("scores"));
+    assignments.push_back(g.add_child_data_set
+                          <RMF::IntTraits, 2>("assignments"));
+    index[ordered_restraints_[i]]=i;
+    orders.push_back(Order(known_restraints_
+                           .find(ordered_restraints_[i])->second,
+                           ps));
+    std::string name= ordered_restraints_[i]->get_name();
+    IMP_USAGE_CHECK(names.find(name) == names.end(),
+                    "Duplicate restraint names are not currently supported:"
+                    << name);
+  }
+  int sz= cache_.size()*fraction;
+  int count=0;
+  for (Cache::ContentIterator it= cache_.contents_begin();
+       it != cache_.contents_end(); ++it) {
+
+    int ri= index.find(it->key.r)->second;
+    Ints ord= orders[ri].get_list_ordered(it->key.a);
+    double score= it->value;
+    RMF::HDF5DataSetIndexD<2> asz= assignments[ri].get_size();
+    RMF::HDF5DataSetIndexD<1> row(asz[0]);
+    asz[1]=ord.size();
+    ++asz[0];
+    assignments[ri].set_size(asz);
+    assignments[ri].set_row(row, RMF::Ints(ord.begin(), ord.end()));
+    RMF::HDF5DataSetIndexD<1> ssz= scores[ri].get_size();
+    RMF::HDF5DataSetIndexD<1> nsz=ssz;
+    ++nsz[0];
+    scores[ri].set_size(nsz);
+    scores[ri].set_value(ssz, score);
+    ++count;
+    if (count > sz) break;
+  }
+}
+void RestraintCache::load_cache(const ParticlesTemp &ps,
+                                RMF::HDF5ConstGroup group) {
+  for (unsigned int i=0; i< group.get_number_of_children(); ++i) {
+    Restraint *r=nullptr;
+    for (unsigned int j=0; j< ordered_restraints_.size(); ++j) {
+      if (ordered_restraints_[j]->get_name()==group.get_child_name(i)) {
+        r= ordered_restraints_[j];
+        break;
+      }
+    }
+    IMP_USAGE_CHECK(r, "Restraint with name " << group.get_child_name(i)
+                    << " not found.");
+    Order order(known_restraints_.find(r)->second, ps);
+    RMF::HDF5ConstGroup tgroup(group, r->get_name());
+    RMF::HDF5FloatConstDataSet1D scores
+      = tgroup.get_child_float_data_set_1d("scores");
+    RMF::HDF5IntConstDataSet2D assignments
+      = tgroup.get_child_int_data_set_2d("scores");
+    for (unsigned int j=0; j< scores.get_size()[0]; ++j) {
+      double s= scores.get_value(RMF::HDF5DataSetIndex1D(j));
+      RMF::Ints rw= assignments.get_row(RMF::HDF5DataSetIndex1D(j));
+      Ints psit(rw.begin(), rw.end());
+      Assignment ass= order.get_subset_ordered(psit);
+      cache_.insert(Key(r, ass), s);
+    }
+  }
+}
+#endif
 IMPDOMINO_END_NAMESPACE

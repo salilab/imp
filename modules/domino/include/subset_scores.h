@@ -18,6 +18,10 @@
 #include <IMP/base/cache.h>
 #include <IMP/Restraint.h>
 
+#ifdef IMP_DOMINO_USE_IMP_RMF
+#include <RMF/HDF5Group.h>
+#endif
+
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -138,6 +142,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   Cache cache_;
   typedef compatibility::map<Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
+  Restraints ordered_restraints_;
 public:
   RestraintCache(ParticleStatesTable *pst,
                  unsigned int size=std::numeric_limits<unsigned int>::max());
@@ -173,8 +178,19 @@ public:
       given the exclusions.*/
   RestraintsTemp get_restraints(const Subset&s,
                                 const Subsets&exclusions) const;
-  /** For testing */
+
   RestraintsTemp get_restraints() const;
+
+#if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
+  /** This assumes that restraints are always added to the cache
+      in the same order.*/
+  void save_cache(const ParticlesTemp &ps,
+                  RMF::HDF5Group group,
+                  double fraction);
+  void load_cache(const ParticlesTemp &ps,
+                  RMF::HDF5ConstGroup group);
+#endif
+
   /** Return the slice for that restraint given the subset. */
   Slice get_slice(Restraint *r, const Subset& s) const;
 
