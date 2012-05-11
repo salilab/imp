@@ -23,8 +23,7 @@ AllBipartitePairContainer
                              SingletonContainerInput b,
                              std::string name):
   PairContainer(a->get_model(), name),
-  a_(a), b_(b),
-  deps_(new DependenciesScoreState(this), a->get_model()){
+  a_(a), b_(b) {
 }
 
 
@@ -83,7 +82,10 @@ ParticlesTemp AllBipartitePairContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 ContainersTemp AllBipartitePairContainer::get_input_containers() const {
-  return ContainersTemp();
+  ContainersTemp ret;
+  ret.push_back(a_);
+  ret.push_back(b_);
+  return ret;
 }
 void AllBipartitePairContainer::do_before_evaluate() {
 }

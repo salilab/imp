@@ -28,12 +28,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT TripletContainerSet
   : public TripletContainer
 {
-  IMP_CONTAINER_DEPENDENCIES(TripletContainerSet,
-                             {
-                               ret.insert(ret.end(),
-                                          back_->triplet_containers_begin(),
-                                          back_->triplet_containers_end());
-                             });
   static TripletContainerSet* get_set(TripletContainer* c) {
     return dynamic_cast<TripletContainerSet*>(c);
   }

@@ -18,16 +18,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet(Model *m, std::string name):
-  CLASSNAMEContainer(m, name),
-  deps_(new DependenciesScoreState(this), m){
+  CLASSNAMEContainer(m, name) {
 }
 
 
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet(const CLASSNAMEContainersTemp& in,
                         std::string name):
-    CLASSNAMEContainer(IMP::internal::get_model(in), name),
-    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
+    CLASSNAMEContainer(IMP::internal::get_model(in), name){
   set_CLASSFUNCTIONNAME_containers(in);
 }
 

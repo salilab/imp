@@ -28,12 +28,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PairContainerSet
   : public PairContainer
 {
-  IMP_CONTAINER_DEPENDENCIES(PairContainerSet,
-                             {
-                               ret.insert(ret.end(),
-                                          back_->pair_containers_begin(),
-                                          back_->pair_containers_end());
-                             });
   static PairContainerSet* get_set(PairContainer* c) {
     return dynamic_cast<PairContainerSet*>(c);
   }

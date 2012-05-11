@@ -18,16 +18,14 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 QuadContainerSet
 ::QuadContainerSet(Model *m, std::string name):
-  QuadContainer(m, name),
-  deps_(new DependenciesScoreState(this), m){
+  QuadContainer(m, name) {
 }
 
 
 QuadContainerSet
 ::QuadContainerSet(const QuadContainersTemp& in,
                         std::string name):
-    QuadContainer(IMP::internal::get_model(in), name),
-    deps_(new DependenciesScoreState(this), IMP::internal::get_model(in)){
+    QuadContainer(IMP::internal::get_model(in), name){
   set_quad_containers(in);
 }
 

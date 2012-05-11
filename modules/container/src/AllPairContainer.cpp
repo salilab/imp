@@ -20,8 +20,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 AllPairContainer::AllPairContainer(SingletonContainerInput c,
                                    std::string name):
   PairContainer(c->get_model(), name),
-  c_(c),
-  deps_(new DependenciesScoreState(this), c->get_model()){
+  c_(c){
 }
 
 
@@ -75,7 +74,7 @@ ParticlesTemp AllPairContainer::get_input_particles() const {
   return ParticlesTemp();
 }
 ContainersTemp AllPairContainer::get_input_containers() const {
-  return ContainersTemp();
+  return ContainersTemp(1, c_);
 }
 void AllPairContainer::do_before_evaluate() {
 }

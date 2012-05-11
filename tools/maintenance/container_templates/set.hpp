@@ -28,12 +28,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT CLASSNAMEContainerSet
   : public CLASSNAMEContainer
 {
-  IMP_CONTAINER_DEPENDENCIES(CLASSNAMEContainerSet,
-                             {
-                               ret.insert(ret.end(),
-                                          back_->CLASSFUNCTIONNAME_containers_begin(),
-                                          back_->CLASSFUNCTIONNAME_containers_end());
-                             });
   static CLASSNAMEContainerSet* get_set(CLASSNAMEContainer* c) {
     return dynamic_cast<CLASSNAMEContainerSet*>(c);
   }
