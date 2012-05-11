@@ -87,22 +87,8 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %include "IMP/base/internal/swig.h"
 %include "IMP/base/ConstArray.h"
 %include "IMP/base/Index.h"
+%include "IMP/base/live_objects.h"
 
-%inline %{
-namespace IMP {
-namespace base {
-#if IMP_BUILD < IMP_FAST
-#ifndef IMP_OLD_GCC
-#ifdef SWIG
-class Objects;
-#endif
-Objects get_live_objects();
-#endif
-Strings get_live_object_names();
-#endif
-}
-}
-%}
 
 %pythoncode %{
 import IMP
