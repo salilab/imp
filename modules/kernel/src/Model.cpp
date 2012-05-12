@@ -165,6 +165,7 @@ void Model::remove_particle(Particle *p) {
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);
+#if 0
   IMP_IF_CHECK(base::USAGE) {
     for (unsigned int i=0; i< internal::ParticleAttributeTable::size();
          ++i) {
@@ -208,6 +209,7 @@ void Model::remove_particle(Particle *p) {
       }
     }
   }
+#endif
 }
 
 
