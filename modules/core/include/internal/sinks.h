@@ -318,7 +318,7 @@ struct RigidBodyParticleParticleIndexPairSink:
     IMP_LOG(VERBOSE, "Processing rb-p interesction between "
             << a << " and "
             << b << std::endl);
-    HalfParticleIndexPairSink hps(m_, filters_, out_, b);
+    SwappedHalfParticleIndexPairSink hps(m_, filters_, out_, b);
     fill_close_particles(m_, get_hierarchy(a),
                          b,
                          dist_, hps);
@@ -353,7 +353,7 @@ struct ParticleRigidBodyParticleIndexPairSink:
     IMP_LOG(VERBOSE, "Processing p-rb interesction between "
             << a << " and "
             << b << std::endl);
-    SwappedHalfParticleIndexPairSink hps(m_, filters_, out_, a);
+    HalfParticleIndexPairSink hps(m_, filters_, out_, a);
     fill_close_particles(m_, get_hierarchy(b),
                          a,
                          dist_, hps);
