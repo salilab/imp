@@ -270,11 +270,11 @@ inline void fill_close_particles(Model *m,
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, base::Vector<QP>, LessFirst> queue;
   double d= distance_bound(m, da, 0, pt);
+  if (d > dist) return;
   queue.push(QP(d, 0));
   do {
     std::pair<double, int> v= queue.top();
     queue.pop();
-    if (v.first > dist) break;
     if (da->get_is_leaf(v.second)) {
       for (unsigned int i=0; i< da->get_number_of_particles(v.second);
            ++i) {
