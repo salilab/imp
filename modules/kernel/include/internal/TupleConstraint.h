@@ -29,7 +29,7 @@ public:
   TupleConstraint(Before *before,
                   After *after,
                   const typename Before::Argument& vt,
-                  std::string name="GroupnameConstraint %1%");
+                  std::string name="TupleConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After* f) {
@@ -67,10 +67,8 @@ void TupleConstraint<Before, After>::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
-  IMP_LOG(TERSE, "Begin GroupnamesConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   call_apply_index(get_model(), f_.get(), v_);
-  IMP_LOG(TERSE, "End GroupnamesConstraint::update" << std::endl);
 }
 
 template <class Before, class After>
@@ -79,10 +77,8 @@ void TupleConstraint<Before, After>
 {
   IMP_OBJECT_LOG;
   if (!af_) return;
-  IMP_LOG(TERSE, "Begin GroupnamesConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
   call_apply_index(get_model(), af_.get(), v_, *da);
-  IMP_LOG(TERSE, "End GroupnamesConstraint::after_evaluate" << std::endl);
 }
 
 template <class Before, class After>
