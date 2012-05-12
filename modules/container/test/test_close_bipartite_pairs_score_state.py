@@ -5,7 +5,7 @@ import IMP.algebra
 import IMP.container
 import random
 
-class TestBL(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _are_close(self, a, b, rk, d):
         da= IMP.core.XYZ(a)
         db= IMP.core.XYZ(b)
@@ -25,20 +25,10 @@ class TestBL(IMP.test.TestCase):
                 if self._are_close(a,b, IMP.core.XYZR.get_radius_key(), d):
                     self.assertTrue(out.get_contains_particle_pair((a,b)))
 
-    def test_it(self):
-        """Test CloseBipartitePairContainer"""
+    def _test_one(self, rb0, rb1):
         m=IMP.Model()
         ps0= self.create_particles_in_box(m, 30)
         ps1= self.create_particles_in_box(m, 30)
-        # test rebuilding under move, set input and change radius
-        pc0= IMP.container.ListSingletonContainer(ps0)
-        pc1= IMP.container.ListSingletonContainer(ps1)
-        print "creat cpss "+str(pc0)
-        #IMP.set_log_level(IMP.VERBOSE)
-        print 1
-        threshold=.3
-        cpss= IMP.container.CloseBipartitePairContainer(pc0, pc1,threshold,3 )
-
         print "adding a radius"
         for p in ps0:
             d= IMP.core.XYZR.setup_particle(p)
@@ -46,6 +36,21 @@ class TestBL(IMP.test.TestCase):
         for p in ps1:
             d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(random.uniform(0,2))
+
+        if rb0:
+            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps0)
+        if rb1:
+            IMP.core.RigidBody.setup_particle(IMP.Particle(m), ps1)
+        # test rebuilding under move, set input and change radius
+        pc0= IMP.container.ListSingletonContainer(ps0)
+        pc1= IMP.container.ListSingletonContainer(ps1)
+        print "creat cpss "+str(pc0)
+        #IMP.set_log_level(IMP.VERBOSE)
+        print 1
+        threshold=.3
+
+        cpss= IMP.container.CloseBipartitePairContainer(pc0, pc1,threshold,3 )
+
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
         for p in ps0:
@@ -58,6 +63,19 @@ class TestBL(IMP.test.TestCase):
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         self._compare_lists(m, ps0, ps1, cpss, threshold)
 
+    def test_it_0(self):
+        """Test CloseBipartitePairContainer"""
+        self._test_one(False, False)
+    def test_it_1(self):
+        """Test CloseBipartitePairContainer with rigid body 0"""
+        self._test_one(True, False)
+    def test_it_2(self):
+        IMP.set_log_level(IMP.VERBOSE)
+        """Test CloseBipartitePairContainer with rigid body 1"""
+        self._test_one(False, True)
+    def test_it_3(self):
+        """Test CloseBipartitePairContainer with rigid body 2"""
+        self._test_one(True, True)
     def test_filtering(self):
         """Testing that CloseBipartitePairContainer responds to changes in filters"""
         m=IMP.Model()
