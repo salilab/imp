@@ -216,6 +216,29 @@ void RigidMovedSingletonContainer::validate() const {
                   "Backup is not the right size");
 }
 
+void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
+                      std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
+                                                  double d) const {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  core::RigidMembers rms= rbs.get_members();
+  algebra::Transformation3D tr(s.second,
+                               s.first.get_center());
+  algebra::ReferenceFrame3D old(tr);
+  algebra::ReferenceFrame3D cur= rbs.get_reference_frame();
+  for (unsigned int i=0; i< rms.size(); ++i) {
+    algebra::Vector3D local= rms[i].get_internal_coordinates();
+    algebra::Vector3D oldv= old.get_global_coordinates(local);
+    algebra::Vector3D newv= cur.get_global_coordinates(local);
+    double dist= get_distance(oldv, newv);
+    IMP_INTERNAL_CHECK(dist  < d,
+                       "Particle moved further than expected "
+                       << dist << " > " << d
+                       << " for " << Showable(rms[i].get_particle()));
+  }
+}
+}
+
+
 ParticleIndexes RigidMovedSingletonContainer::do_initialize() {
   IMP_OBJECT_LOG;
   ParticleIndexes normal;

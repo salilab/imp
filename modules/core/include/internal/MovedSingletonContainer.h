@@ -112,6 +112,10 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
   virtual ParticleIndexes do_initialize();
   virtual double do_get_distance_moved(unsigned int i) const;
   virtual void validate() const;
+  void check_estimate(core::RigidBody rbs,
+                      std::pair<algebra::Sphere3D, algebra::Rotation3D> s,
+                      double d) const;
+
   double get_distance_estimate(ParticleIndex p) const {
     unsigned int i;
     for (i=0; i< rbs_.size(); ++i) {
@@ -127,7 +131,12 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
     algebra::Rotation3D diffrot= rbs_backup_[i].second.get_inverse()*nrot;
     double angle= algebra::get_axis_and_angle(diffrot).second;
     double drot= std::abs(angle*xyz.get_radius()); // over estimate, but easy
-    return dr+dx+drot;
+    double ret= dr+dx+drot;
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    check_estimate(core::RigidBody(get_model(),
+                                   rbs_[i]), rbs_backup_[i], ret);
+    }
+    return ret;
   }
   std::pair<algebra::Sphere3D, algebra::Rotation3D>
     get_data(ParticleIndex p) const {
