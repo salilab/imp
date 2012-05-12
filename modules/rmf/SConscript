@@ -4,5 +4,5 @@ import scons_tools.dependency.boost
 
 env.IMPModuleBuild(version='nightly-11/5/2012',
                    required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
-                                     'statistics', 'display', "RMF"],
+                                     'display', "RMF"],
                    required_dependencies=[])
