@@ -116,6 +116,7 @@ BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
               /opt/local/lib/libboost_filesystem-mt.dylib \
               /opt/local/lib/libboost_program_options-mt.dylib \
               /opt/local/lib/libboost_thread-mt.dylib \
+              /opt/local/lib/libboost_graph-mt.dylib \
               /opt/local/lib/libfftw3.3.dylib \
               /opt/local/lib/libgsl.0.dylib \
               /opt/local/lib/libgslcblas.0.dylib \
