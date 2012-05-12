@@ -63,6 +63,16 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
     algebra::Transformation3D t3
       = algebra::get_transformation_aligning_first_to_second(local, global);
     rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
+    for (unsigned int i=0; i< rms.size(); ++i) {
+      algebra::Vector3D local= rms[i].get_internal_coordinates();
+      algebra::Vector3D back= t3.get_transformed(local);
+      algebra::Vector3D global= rms[i].get_coordinates();
+      IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
+                         "Coordinates don't match: read " << global
+                         << " had local " << local
+                         << " but got " << back
+                         << " with transform " << t3);
+    }
     // later patch members to make coordinates exact.
     // must reset collision detection tree when we do that
   }
