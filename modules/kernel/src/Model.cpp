@@ -166,42 +166,43 @@ void Model::remove_particle(Particle *p) {
   internal::ParticleAttributeTable::clear_attributes(pi);
   internal::ParticlesAttributeTable::clear_attributes(pi);
   IMP_IF_CHECK(base::USAGE) {
-    ParticlesTemp cp= get_particles();
-    for (unsigned int i=0; i< particle_index_.size(); ++i) {
-      if (particle_index_[ParticleIndex(i)]) {
-        ParticleIndex cur(i);
-        {
-          ParticleKeys keys
-              = internal::ParticleAttributeTable::get_attribute_keys(cur);
-          for (unsigned int j=0; j< keys.size(); ++j) {
-            if (get_has_attribute(keys[j], cur)) {
-              IMP_USAGE_CHECK(get_attribute(keys[j], cur) != pi,
-                              "There is still a reference to"
-                              << " removed particle in"
-                              " particle "
-                              << particle_index_[ParticleIndex(i)]->get_name()
-                              << " attribute "
-                              << keys[j]);
-            }
-          }
+    for (unsigned int i=0; i< internal::ParticleAttributeTable::size();
+         ++i) {
+      for (unsigned int j=0; j < internal::ParticleAttributeTable::size(i);
+           ++j) {
+        if (internal::ParticleAttributeTable
+            ::get_has_attribute(ParticleKey(i),
+                                ParticleIndex(j))) {
+          ParticleIndex pc= internal::ParticleAttributeTable
+            ::get_attribute(ParticleKey(i),
+                            ParticleIndex(j),
+                            false);
+          IMP_USAGE_CHECK(pc != pi,
+                          "There is still a reference to removed particle "
+                          << Showable(p) << " in particle "
+                          << Showable(get_particle(ParticleIndex(j)))
+                          << " attribute " << ParticleKey(i));
         }
-        {
-          ParticlesKeys keys
-              = internal::ParticlesAttributeTable::get_attribute_keys(cur);
-          for (unsigned int j=0; j< keys.size(); ++j) {
-            if (get_has_attribute(keys[j], cur)) {
-              ParticleIndexes pis
-                = get_attribute(keys[j], cur);
-              for (unsigned int k=0; k< pis.size(); ++k) {
-                IMP_USAGE_CHECK(pis[k] != pi,
-                                "There is still a reference to "
-                                << "removed particle in"
-                                << " particle "
-                                << particle_index_[ParticleIndex(i)]->get_name()
-                                << " attribute "
-                                << keys[j]);
-              }
-            }
+      }
+    }
+    for (unsigned int i=0; i< internal::ParticlesAttributeTable::size();
+         ++i) {
+      for (unsigned int j=0; j < internal::ParticlesAttributeTable::size(i);
+           ++j) {
+        if (internal::ParticlesAttributeTable
+            ::get_has_attribute(ParticlesKey(i),
+                                ParticleIndex(j))) {
+          ParticleIndexes pcs= internal::ParticlesAttributeTable
+            ::get_attribute(ParticlesKey(i),
+                            ParticleIndex(j),
+                            false);
+          for (unsigned int k=0; k < pcs.size(); ++k) {
+            ParticleIndex pc= pcs[k];
+            IMP_USAGE_CHECK(pc != pi,
+                            "There is still a reference to removed particle "
+                            << Showable(p) << " in particle "
+                            << Showable(get_particle(ParticleIndex(j)))
+                            << " attribute " << ParticlesKey(i));
           }
         }
       }
