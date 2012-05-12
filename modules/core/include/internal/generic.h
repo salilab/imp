@@ -102,7 +102,7 @@ class ContainerConstraint : public Constraint
 public:
   ContainerConstraint(Before *before,
                       After *after, Container *c,
-                       std::string name="GroupnameConstraint %1%");
+                       std::string name="ContainerConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
   void set_after_evaluate_modifier(After* f) {
