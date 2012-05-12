@@ -305,10 +305,8 @@ do_show(std::ostream &) const {
 
 ParticlesTemp ExcludedVolumeRestraint
 ::get_input_particles() const {
-  if (!initialized_) initialize();
   return internal::get_input_particles(get_model(),
-                                       sc_, access_pair_filters(),
-                                       xyzrs_, rbs_, constituents_);
+                                       sc_, access_pair_filters());
 }
 
 ContainersTemp ExcludedVolumeRestraint

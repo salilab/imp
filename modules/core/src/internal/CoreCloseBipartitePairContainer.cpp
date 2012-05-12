@@ -80,13 +80,9 @@ ParticlesTemp CoreCloseBipartitePairContainer
 ::get_input_particles() const {
   ParticlesTemp ret= internal::get_input_particles(get_model(),
                                                    sc_[0],
-                                                   access_pair_filters(),
-                                                   xyzrs_[0], rbs_[0],
-                                                   constituents_);
+                                                   access_pair_filters());
   ParticlesTemp ret1= internal::get_input_particles(get_model(), sc_[1],
-                                                    access_pair_filters(),
-                                                   xyzrs_[1], rbs_[1],
-                                                   constituents_);
+                                                    access_pair_filters());
   if (covers_[0] != base::get_invalid_index<ParticleIndexTag>()) {
     ret.push_back(get_model()->get_particle(covers_[0]));
     ret.push_back(get_model()->get_particle(covers_[1]));
@@ -118,7 +114,7 @@ void CoreCloseBipartitePairContainer::do_before_evaluate() {
       // all ok
     } else {
       // rebuild
-      IMP_LOG(VERBOSE, "Updating bipartite close pairs list." << std::endl);
+      IMP_LOG(TERSE, "Recomputing bipartite close pairs list." << std::endl);
       internal::reset_moved(get_model(),
                             xyzrs_[0], rbs_[0], constituents_,
                             rbs_backup_[0], xyzrs_backup_[0]);
