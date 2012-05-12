@@ -510,6 +510,9 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                               rb.get_particle_index(),
                                               cur.get());
         }
+        IMP_IF_CHECK( base::USAGE_AND_INTERNAL) {
+          cur->validate(rb.get_model());
+        }
         return cur;
       }
     } else if (free== ObjectKey()) {
