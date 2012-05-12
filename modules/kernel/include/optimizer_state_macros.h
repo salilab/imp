@@ -54,6 +54,9 @@
     IMP_USAGE_CHECK(p>0, "Period must be positive.");                   \
     skip_=p-1; call_number_=0;                                          \
   }                                                                     \
+  unsigned int get_period() const {                                     \
+    return skip_+1;                                                     \
+  }                                                                     \
   void reset() {                                                        \
     call_number_=0;                                                     \
   }                                                                     \
