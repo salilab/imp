@@ -282,6 +282,25 @@ get_if_moved(Model *m, double slack_,
     if (s22 < square(drot)+drot*std::sqrt(diff2)+ diff2) {
       return true;
     }
+
+
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      core::RigidBody rbs(m, rbs_[i]);
+      core::RigidMembers rms= rbs.get_members();
+      algebra::Transformation3D tr(rbs_backup_[i]);
+      algebra::ReferenceFrame3D old(tr);
+      algebra::ReferenceFrame3D cur= rbs.get_reference_frame();
+      for (unsigned int i=0; i< rms.size(); ++i) {
+        algebra::Vector3D local= rms[i].get_internal_coordinates();
+        algebra::Vector3D oldv= old.get_global_coordinates(local);
+        algebra::Vector3D newv= cur.get_global_coordinates(local);
+        double dist= get_distance(oldv, newv);
+        IMP_INTERNAL_CHECK(dist  < slack_,
+                           "Particle moved further than expected "
+                           << dist << " > " << slack_
+                           << " for " << Showable(rms[i].get_particle()));
+      }
+    }
   }
   return false;
 }
@@ -407,13 +426,8 @@ inline void fill_list(Model *m, const PairPredicates &filters,
 
 
 inline ParticlesTemp
-get_input_particles(Model *m, SingletonContainer *sc_,
-                    const PairPredicates &filters_,
-                    const ParticleIndexes &/*xyzrs_*/,
-                    const ParticleIndexes &rbs_,
-                    const IMP::compatibility::map<ParticleIndex,
-                                            ParticleIndexes>&
-                    /*constituents_*/) {
+get_input_particles(Model *, SingletonContainer *sc_,
+                    const PairPredicates &filters_) {
   ParticlesTemp ret= sc_->get_all_possible_particles();
   ParticlesTemp all;
   for (unsigned int i=0; i< filters_.size(); ++i) {
@@ -423,8 +437,15 @@ get_input_particles(Model *m, SingletonContainer *sc_,
     }
   }
   ret.insert(ret.end(), all.begin(), all.end());
-  for (unsigned int i=0; i< rbs_.size(); ++i) {
-    ret.push_back(m->get_particle(rbs_[i]));
+  compatibility::set<Particle*> rigid;
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    if (core::RigidMember::particle_is_instance(ret[i])) {
+      Particle *rbp=core::RigidMember(ret[i]).get_rigid_body();
+      if (rigid.find(rbp) == rigid.end()) {
+        rigid.insert(rbp);
+        ret.push_back(rbp);
+      }
+    }
   }
   return ret;
 }
