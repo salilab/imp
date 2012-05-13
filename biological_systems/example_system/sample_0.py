@@ -71,7 +71,7 @@ out= RMF.create_rmf_file(IMP.system.get_output_path("configurations_"+str(i)+".r
 IMP.rmf.add_hierarchy(out, all)
 for i in range(0, cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    IMP.rmf.save_frame(out, i, all)
+    IMP.rmf.save_frame(out, i)
     w= IMP.display.PymolWriter(IMP.system.get_output_path("struct.%d.pym"%i))
     for g in gs:
         w.add_geometry(g)
