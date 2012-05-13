@@ -35,16 +35,16 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 bool MSConnectivityRestraint::ExperimentalTree::is_consistent(
-  size_t node_index) const
+  unsigned int node_index) const
 {
   const Node *node = get_node(node_index);
   const Node::Label &label = node->get_label();
   // the node must have fewer proteins than each of its parents
-  for ( size_t i = 0; i < node->get_number_of_parents(); ++i )
+  for ( unsigned int i = 0; i < node->get_number_of_parents(); ++i )
   {
     const Node *parent = get_node(node->get_parent(i));
     const Node::Label &parent_label = parent->get_label();
-    size_t pi = 0, ci = 0;
+    unsigned int pi = 0, ci = 0;
     while ( ci < label.size() && pi < parent_label.size() )
     {
       // skip proteins that the parent has but the child does not have
@@ -70,9 +70,9 @@ bool MSConnectivityRestraint::ExperimentalTree::is_consistent(
     // last check - child has to have at least one fewer proteins
     // than every parent
     int parent_total = 0, child_total = 0;
-    for ( size_t j = 0; j < label.size(); ++j )
+    for ( unsigned int j = 0; j < label.size(); ++j )
       child_total += label[j].second;
-    for ( size_t j = 0; j < parent_label.size(); ++j )
+    for ( unsigned int j = 0; j < parent_label.size(); ++j )
       parent_total += parent_label[j].second;
     if ( child_total >= parent_total )
       return false;
@@ -82,7 +82,7 @@ bool MSConnectivityRestraint::ExperimentalTree::is_consistent(
 
 
 void MSConnectivityRestraint::ExperimentalTree::connect(
-  size_t parent, size_t child)
+  unsigned int parent, unsigned int child)
 {
   if ( finalized_ )
     IMP_THROW("Cannot add new edges to finalized tree",
@@ -96,11 +96,11 @@ void MSConnectivityRestraint::ExperimentalTree::finalize()
 {
   if ( finalized_ )
     return;
-  for ( size_t i=0; i<nodes_.size(); ++i )
+  for ( unsigned int i=0; i<nodes_.size(); ++i )
   {
     if ( nodes_[i].is_root() )
     {
-      if ( root_ == size_t(-1) )
+      if ( root_ == static_cast<unsigned int>(-1) )
         root_ = i;
       else
         IMP_THROW("Experimental tree has multiple roots",
@@ -110,7 +110,7 @@ void MSConnectivityRestraint::ExperimentalTree::finalize()
   if ( find_cycle(root_) )
     IMP_THROW("Experimental tree has a cycle",
               IMP::base::ValueException);
-  for ( size_t i = 0; i < nodes_.size(); ++i )
+  for ( unsigned int i = 0; i < nodes_.size(); ++i )
     if ( !is_consistent(i) )
     {
       IMP_THROW("Experimental tree is inconsistent: a child has to "
@@ -121,14 +121,15 @@ void MSConnectivityRestraint::ExperimentalTree::finalize()
 }
 
 
-bool MSConnectivityRestraint::ExperimentalTree::find_cycle(size_t node_index)
+bool MSConnectivityRestraint::ExperimentalTree
+::find_cycle(unsigned int node_index)
 {
   Node &node = nodes_[node_index];
   if ( node.visited_ )
     return true;
   node.visited_ = true;
   bool cycle_found = false;
-  for ( size_t i = 0; i < node.get_number_of_children(); ++i )
+  for ( unsigned int i = 0; i < node.get_number_of_children(); ++i )
     if ( find_cycle(node.get_child(i)) )
     {
       cycle_found = true;
@@ -139,7 +140,7 @@ bool MSConnectivityRestraint::ExperimentalTree::find_cycle(size_t node_index)
 }
 
 
-size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
+unsigned int MSConnectivityRestraint::ExperimentalTree::add_composite(
   const Ints &components)
 {
   if ( finalized_ )
@@ -147,16 +148,16 @@ size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
               IMP::base::ValueException);
   Node node;
   desc_to_label(components, node.label_);
-  size_t idx = nodes_.size();
+  unsigned int idx = nodes_.size();
   nodes_.push_back(node);
   return idx;
 }
 
 
-size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
-  const Ints &components, size_t parent)
+unsigned int MSConnectivityRestraint::ExperimentalTree::add_composite(
+  const Ints &components, unsigned int parent)
 {
-  size_t child = add_composite(components);
+  unsigned int child = add_composite(components);
   connect(parent, child);
   return child;
 }
@@ -168,9 +169,9 @@ void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
   label.clear();
   Ints sorted_components(components);
   std::sort(sorted_components.begin(), sorted_components.end());
-  for ( size_t i=0; i<sorted_components.size(); ++i )
+  for ( unsigned int i=0; i<sorted_components.size(); ++i )
   {
-    size_t id = sorted_components[i];
+    unsigned int id = sorted_components[i];
     if ( label.empty() || label.back().first != id )
       label.push_back(std::make_pair(id, 1));
     else
@@ -189,13 +190,13 @@ MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps):
 
 
 
-size_t MSConnectivityRestraint::ParticleMatrix
+unsigned int MSConnectivityRestraint::ParticleMatrix
 ::add_type(const ParticlesTemp &ps)
 {
   protein_by_class_.push_back(Ints());
-  for ( size_t i = 0; i < ps.size(); ++i )
+  for ( unsigned int i = 0; i < ps.size(); ++i )
   {
-    size_t n = particles_.size();
+    unsigned int n = particles_.size();
     particles_.push_back(ParticleData(ps[i], current_id_));
     protein_by_class_.back().push_back(n);
   }
@@ -206,12 +207,12 @@ size_t MSConnectivityRestraint::ParticleMatrix
 void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
   const PairScore *ps)
 {
-  size_t n = size();
+  unsigned int n = size();
   dist_matrix_.resize(n*n);
-  for ( size_t r = 0; r < n; ++r )
+  for ( unsigned int r = 0; r < n; ++r )
   {
     dist_matrix_[r*n + r] = 0;
-    for ( size_t c = r + 1; c < n; ++ c )
+    for ( unsigned int c = r + 1; c < n; ++ c )
     {
       double d = ps->evaluate(ParticlePair(particles_[r].get_particle(),
         particles_[c].get_particle()), 0);
@@ -222,9 +223,9 @@ void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
   }
   order_.clear();
   order_.resize(n);
-  for ( size_t i = 0; i < n; ++i )
+  for ( unsigned int i = 0; i < n; ++i )
   {
-    for ( size_t j = 0; j < n; ++j )
+    for ( unsigned int j = 0; j < n; ++j )
       if ( j != i )
         order_[i].push_back(j);
     std::sort(order_[i].begin(), order_[i].end(), DistCompare(i, *this));
@@ -233,7 +234,7 @@ void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
 
 
 typedef boost::property<boost::edge_weight_t, double> EdgeWeight;
-typedef boost::property<boost::vertex_name_t, size_t> VertexId;
+typedef boost::property<boost::vertex_name_t, unsigned int> VertexId;
 typedef boost::adjacency_list<boost::setS, boost::vecS,
         boost::undirectedS, VertexId, EdgeWeight> NNGraph;
 
@@ -241,7 +242,7 @@ typedef boost::adjacency_list<boost::setS, boost::vecS,
 class Tuples
 {
 public:
-  Tuples(const Ints &elements, size_t k)
+  Tuples(const Ints &elements, unsigned int k)
     : current_tuple_(k)
     , indices_(k)
     , elements_(elements)
@@ -272,8 +273,8 @@ private:
   Ints current_tuple_;
   Ints indices_;
   Ints elements_;
-  size_t k_;
-  size_t n_;
+  unsigned int k_;
+  unsigned int n_;
   bool empty_;
 };
 
@@ -282,7 +283,7 @@ bool Tuples::next()
 {
   if ( empty_ )
     return false;
-  size_t i = k_;
+  unsigned int i = k_;
   bool found = false;
   while ( i > 0 )
   {
@@ -296,7 +297,7 @@ bool Tuples::next()
   if ( found )
   {
     ++indices_[i];
-    for ( size_t j = i + 1; j < k_; ++j )
+    for ( unsigned int j = i + 1; j < k_; ++j )
       indices_[j] = indices_[j - 1] + 1;
     create_current_tuple();
     return true;
@@ -309,7 +310,7 @@ void Tuples::create_current_tuple()
 {
   if ( !empty_ )
   {
-    for ( size_t i = 0; i < k_; ++i )
+    for ( unsigned int i = 0; i < k_; ++i )
       current_tuple_[i] = elements_[indices_[i]];
   }
 }
@@ -317,7 +318,7 @@ void Tuples::create_current_tuple()
 
 void Tuples::reset()
 {
-  for ( size_t i = 0; i < k_; ++i )
+  for ( unsigned int i = 0; i < k_; ++i )
     indices_[i] = i;
   create_current_tuple();
 }
@@ -331,20 +332,20 @@ public:
   {
   }
 
-  Tuples const &operator[](size_t i) const
+  Tuples const &operator[](unsigned int i) const
   {
     return tuples_[i];
   }
 
   bool empty() const
   {
-    for ( size_t i = 0; i < tuples_.size(); ++i )
+    for ( unsigned int i = 0; i < tuples_.size(); ++i )
       if ( ! tuples_[i].empty() )
         return false;
     return true;
   }
 
-  size_t size() const
+  unsigned int size() const
   {
     return tuples_.size();
   }
@@ -358,7 +359,7 @@ private:
 
 bool Assignment::next()
 {
-  for ( size_t i = 0; i < tuples_.size(); ++i )
+  for ( unsigned int i = 0; i < tuples_.size(); ++i )
   {
     if ( tuples_[i].empty() )
       continue;
@@ -376,7 +377,7 @@ namespace {
   }
 }
 
-typedef std::set< std::pair<size_t, size_t> > EdgeSet;
+typedef std::set< std::pair<unsigned int, unsigned int> > EdgeSet;
 
 
 class MSConnectivityScore
@@ -387,7 +388,7 @@ public:
     MSConnectivityRestraint &restraint);
   double score(DerivativeAccumulator *accum) const;
   EdgeSet get_connected_pairs() const;
-  Particle *get_particle(size_t p) const
+  Particle *get_particle(unsigned int p) const
   {
     return restraint_.particle_matrix_.get_particle(p).get_particle();
   }
@@ -402,8 +403,8 @@ private:
       : restraint_(restraint)
     {}
 
-    bool operator()(const std::pair<size_t, size_t> &p1,
-        const std::pair<size_t, size_t> &p2)
+    bool operator()(const std::pair<unsigned int, unsigned int> &p1,
+        const std::pair<unsigned int, unsigned int> &p2)
     {
       double w1 = restraint_.particle_matrix_.get_distance(p1.first, p1.second);
       double w2 = restraint_.particle_matrix_.get_distance(p2.first, p2.second);
@@ -416,7 +417,7 @@ private:
   NNGraph create_nn_graph(double threshold) const;
   NNGraph build_subgraph_from_assignment(NNGraph &G,
     Assignment const &assignment) const;
-  bool check_assignment(NNGraph &G, size_t node_handle,
+  bool check_assignment(NNGraph &G, unsigned int node_handle,
     Assignment const &assignment,
     EdgeSet &picked) const;
   bool perform_search(NNGraph &G, EdgeSet &picked) const;
@@ -438,8 +439,8 @@ EdgeSet MSConnectivityScore::get_all_edges(NNGraph &G) const
   NNGraph::edge_iterator e, end;
   for ( boost::tie(e, end) = edges(G); e != end; ++e )
   {
-    size_t src = boost::get(vertex_id, source(*e, G));
-    size_t dst = boost::get(vertex_id, target(*e, G));
+    unsigned int src = boost::get(vertex_id, source(*e, G));
+    unsigned int dst = boost::get(vertex_id, target(*e, G));
     if ( src > dst )
       std::swap(src, dst);
     result.insert(std::make_pair(src, dst));
@@ -454,44 +455,44 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
     boost::get(boost::vertex_name, G);
   NNGraph ng(num_vertices(G));
   Ints vertex_id_to_n(restraint_.particle_matrix_.size(), -1);
-  for ( size_t i = 0; i < num_vertices(ng); ++i )
+  for ( unsigned int i = 0; i < num_vertices(ng); ++i )
   {
-    size_t id = boost::get(vertex_id, i);
+    unsigned int id = boost::get(vertex_id, i);
     vertex_id_to_n[id] = i;
   }
   for ( EdgeSet::iterator p = edge_set.begin(); p != edge_set.end(); ++p )
   {
-    size_t i_from = vertex_id_to_n[(*p).first];
-    size_t i_to = vertex_id_to_n[(*p).second];
+    unsigned int i_from = vertex_id_to_n[(*p).first];
+    unsigned int i_to = vertex_id_to_n[(*p).second];
     add_edge(i_from, i_to, ng);
   }
   Ints components(num_vertices(ng));
   int ncomp = boost::connected_components(ng, &components[0]);
   if ( ncomp == 1 )
     return;
-  base::Vector< std::pair<size_t, size_t> > candidates;
+  base::Vector< std::pair<unsigned int, unsigned int> > candidates;
   NNGraph::edge_iterator e, end;
   for ( boost::tie(e, end) = edges(G); e != end; ++e )
   {
-    size_t src = boost::get(vertex_id, source(*e, G));
-    size_t dst = boost::get(vertex_id, target(*e, G));
+    unsigned int src = boost::get(vertex_id, source(*e, G));
+    unsigned int dst = boost::get(vertex_id, target(*e, G));
     if ( src > dst )
       std::swap(src, dst);
-    std::pair<size_t, size_t> candidate = std::make_pair(src, dst);
+    std::pair<unsigned int, unsigned int> candidate = std::make_pair(src, dst);
     if ( edge_set.find(candidate) == edge_set.end() )
       candidates.push_back(candidate);
   }
   std::sort(candidates.begin(), candidates.end(),
       EdgeScoreComparator(restraint_));
-  size_t idx = 0;
+  unsigned int idx = 0;
   while ( ncomp > 1 && idx < candidates.size() )
   {
-    size_t i_from = vertex_id_to_n[candidates[idx].first];
-    size_t i_to = vertex_id_to_n[candidates[idx].second];
+    unsigned int i_from = vertex_id_to_n[candidates[idx].first];
+    unsigned int i_to = vertex_id_to_n[candidates[idx].second];
     if ( components[i_from] != components[i_to] )
     {
       int old_comp = components[i_to];
-      for ( size_t i = 0; i < components.size(); ++i )
+      for ( unsigned int i = 0; i < components.size(); ++i )
         if ( components[i] == old_comp )
           components[i] = components[i_from];
       --ncomp;
@@ -518,18 +519,18 @@ MSConnectivityScore::MSConnectivityScore(
 
 NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
 {
-  size_t n = restraint_.particle_matrix_.size();
+  unsigned int n = restraint_.particle_matrix_.size();
   NNGraph G(n);
   boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
     boost::get(boost::vertex_name, G);
   boost::property_map<NNGraph, boost::edge_weight_t>::type dist =
     boost::get(boost::edge_weight, G);
-  for ( size_t i = 0; i < n; ++i )
+  for ( unsigned int i = 0; i < n; ++i )
   {
     boost::put(vertex_id, i, i);
     Ints const &neighbors =
       restraint_.particle_matrix_.get_ordered_neighbors(i);
-    for ( size_t j = 0; j < neighbors.size(); ++j )
+    for ( unsigned int j = 0; j < neighbors.size(); ++j )
     {
       double d = restraint_.particle_matrix_.get_distance(i, neighbors[j]);
       if ( d > threshold )
@@ -545,13 +546,13 @@ NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
 NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
     Assignment const &assignment) const
 {
-  size_t num_particles = restraint_.particle_matrix_.size();
+  unsigned int num_particles = restraint_.particle_matrix_.size();
   Ints vertices;
-  for ( size_t i = 0; i < assignment.size(); ++i )
+  for ( unsigned int i = 0; i < assignment.size(); ++i )
     if ( ! assignment[i].empty() )
     {
       Ints const &conf = assignment[i].get_tuple();
-      for ( size_t j = 0; j < conf.size(); ++j )
+      for ( unsigned int j = 0; j < conf.size(); ++j )
         vertices.push_back(conf[j]);
     }
   boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
@@ -563,19 +564,20 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
     boost::get(boost::vertex_name, ng);
   boost::property_map<NNGraph, boost::edge_weight_t>::type new_dist =
     boost::get(boost::edge_weight, ng);
-  for ( size_t i = 0; i < vertices.size(); ++i )
+  for ( unsigned int i = 0; i < vertices.size(); ++i )
     boost::put(new_vertex_id, i, vertices[i]);
   Ints vertex_id_to_idx(num_particles, -1);
-  for ( size_t i = 0; i < vertices.size(); ++i )
+  for ( unsigned int i = 0; i < vertices.size(); ++i )
     vertex_id_to_idx[vertices[i]] = i;
   NNGraph::edge_iterator e, end;
   for ( boost::tie(e, end) = edges(G); e != end; ++e )
   {
-    size_t source_id = boost::get(vertex_id, source(*e, G));
-    size_t dest_id = boost::get(vertex_id, target(*e, G));
-    size_t p_src = vertex_id_to_idx[source_id];
-    size_t p_dst = vertex_id_to_idx[dest_id];
-    if ( p_src == size_t(-1) || p_dst == size_t(-1) )
+    unsigned int source_id = boost::get(vertex_id, source(*e, G));
+    unsigned int dest_id = boost::get(vertex_id, target(*e, G));
+    unsigned int p_src = vertex_id_to_idx[source_id];
+    unsigned int p_dst = vertex_id_to_idx[dest_id];
+    if ( p_src == static_cast<unsigned int>(-1)
+         || p_dst == static_cast<unsigned int>(-1) )
       continue;
     NNGraph::edge_descriptor ed = boost::add_edge(p_src, p_dst, ng).first;
     double d = boost::get(dist, *e);
@@ -585,7 +587,7 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
 }
 
 
-bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
+bool MSConnectivityScore::check_assignment(NNGraph &G, unsigned int node_handle,
     Assignment const &assignment,
     EdgeSet &picked) const
 {
@@ -595,10 +597,10 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
        node->get_label();
   base::Vector<Tuples> new_tuples;
   Ints empty_vector;
-  for ( size_t i = 0; i < lb.size(); ++i )
+  for ( unsigned int i = 0; i < lb.size(); ++i )
   {
     int prot_count = lb[i].second;
-    size_t id = lb[i].first;
+    unsigned int id = lb[i].first;
     while ( new_tuples.size() < id )
       new_tuples.push_back(Tuples(empty_vector, 0));
     if ( prot_count > 0 )
@@ -636,9 +638,9 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
     {
       EdgeSet n_picked;
       bool good = true;
-      for ( size_t i = 0; i < node->get_number_of_children(); ++i )
+      for ( unsigned int i = 0; i < node->get_number_of_children(); ++i )
       {
-        size_t child_handle = node->get_child(i);
+        unsigned int child_handle = node->get_child(i);
         if ( !check_assignment(ng, child_handle, new_assignment,
               n_picked) )
         {
@@ -661,17 +663,17 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
 bool MSConnectivityScore::perform_search(NNGraph &G,
   EdgeSet &picked) const
 {
-  size_t root_handle = tree_.get_root();
+  unsigned int root_handle = tree_.get_root();
   MSConnectivityRestraint::ExperimentalTree::Node const *node =
        tree_.get_node(root_handle);
   MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
        node->get_label();
   base::Vector<Tuples> tuples;
   Ints empty_vector;
-  for ( size_t i = 0; i < lb.size(); ++i )
+  for ( unsigned int i = 0; i < lb.size(); ++i )
   {
     int prot_count = lb[i].second;
-    size_t id = lb[i].first;
+    unsigned int id = lb[i].first;
     while ( tuples.size() < id )
       tuples.push_back(Tuples(empty_vector, 0));
     if ( prot_count > 0 )
@@ -695,9 +697,9 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
     {
       EdgeSet n_picked;
       bool good = true;
-      for ( size_t i = 0; i < node->get_number_of_children(); ++i )
+      for ( unsigned int i = 0; i < node->get_number_of_children(); ++i )
       {
-        size_t child_handle = node->get_child(i);
+        unsigned int child_handle = node->get_child(i);
         if ( !check_assignment(ng, child_handle, assignment,
               n_picked) )
         {
@@ -720,11 +722,11 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
 NNGraph MSConnectivityScore::pick_graph(EdgeSet const &picked) const
 {
   EdgeSet::const_iterator p;
-  std::map<size_t, int> idx_to_vtx;
+  std::map<unsigned int, int> idx_to_vtx;
   int n_vert = 0;
   for ( p = picked.begin(); p != picked.end(); ++p )
   {
-    std::map<size_t, int>::iterator q = idx_to_vtx.find(p->first);
+    std::map<unsigned int, int>::iterator q = idx_to_vtx.find(p->first);
     if ( q == idx_to_vtx.end() )
       idx_to_vtx[p->first] = n_vert++;
     q = idx_to_vtx.find(p->second);
@@ -736,7 +738,7 @@ NNGraph MSConnectivityScore::pick_graph(EdgeSet const &picked) const
     boost::get(boost::vertex_name, ng);
   boost::property_map<NNGraph, boost::edge_weight_t>::type dist =
     boost::get(boost::edge_weight, ng);
-  for ( std::map<size_t, int>::iterator q = idx_to_vtx.begin();
+  for ( std::map<unsigned int, int>::iterator q = idx_to_vtx.begin();
       q != idx_to_vtx.end(); ++q )
   {
     boost::put(vertex_id, q->second, q->first);
@@ -758,7 +760,7 @@ NNGraph MSConnectivityScore::find_threshold() const
          min_dist = restraint_.particle_matrix_.min_distance();
   NNGraph g = create_nn_graph(min_dist);
   {
-    std::set< std::pair<size_t, size_t> > picked;
+    std::set< std::pair<unsigned int, unsigned int> > picked;
     if ( perform_search(g, picked) )
     {
       return pick_graph(picked);
@@ -833,7 +835,7 @@ namespace {
   }
 }
 
-size_t MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
+unsigned int MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
 {
   if (!sc_&& !ps.empty()) {
     sc_= new IMP::internal::InternalListSingletonContainer(ps[0]->get_model(),
@@ -844,15 +846,15 @@ size_t MSConnectivityRestraint::add_type(const ParticlesTemp &ps)
 }
 
 
-size_t MSConnectivityRestraint::add_composite(
+unsigned int MSConnectivityRestraint::add_composite(
        const Ints &composite)
 {
   return tree_.add_composite(composite);
 }
 
 
-size_t MSConnectivityRestraint::add_composite(
-       const Ints &composite, size_t parent)
+unsigned int MSConnectivityRestraint::add_composite(
+       const Ints &composite, unsigned int parent)
 {
   return tree_.add_composite(composite, parent);
 }

@@ -77,9 +77,9 @@ public:
     can only be used if none is passed.
    */
   /*@{*/
-  size_t add_type(const ParticlesTemp &ps);
-  size_t add_composite(const Ints &components);
-  size_t add_composite(const Ints &components, size_t parent);
+  unsigned int add_type(const ParticlesTemp &ps);
+  unsigned int add_composite(const Ints &components);
+  unsigned int add_composite(const Ints &components, unsigned int parent);
   //void add_particle(Particle *p);
   //void add_particles(const Particles &ps);
   //void set_particles(const Particles &ps);
@@ -112,7 +112,7 @@ public:
     class ParticleData
     {
     public:
-      ParticleData(Particle *p, size_t id)
+      ParticleData(Particle *p, unsigned int id)
           : particle_(p)
             , id_(id)
       {}
@@ -122,16 +122,16 @@ public:
         return particle_;
       }
 
-      size_t get_id() const
+      unsigned int get_id() const
       {
         return id_;
       }
     private:
       Particle *particle_;
-      size_t id_;
+      unsigned int id_;
     };
 
-    ParticleMatrix(size_t number_of_classes)
+    ParticleMatrix(unsigned int number_of_classes)
         : protein_by_class_(number_of_classes)
          , min_distance_(std::numeric_limits<double>::max())
          , max_distance_(0)
@@ -144,42 +144,42 @@ public:
          , current_id_(0)
     {}
 
-    void resize(size_t number_of_classes)
+    void resize(unsigned int number_of_classes)
     {
       protein_by_class_.resize(number_of_classes);
     }
 
-    size_t add_particle(Particle *p, size_t id);
-    size_t add_type(const ParticlesTemp &ps);
+    unsigned int add_particle(Particle *p, unsigned int id);
+    unsigned int add_type(const ParticlesTemp &ps);
     void create_distance_matrix(const PairScore *ps);
     void clear_particles()
     {
       particles_.clear();
-      for ( size_t i = 0; i < protein_by_class_.size(); ++i )
+      for ( unsigned int i = 0; i < protein_by_class_.size(); ++i )
         protein_by_class_[i].clear();
     }
-    size_t size() const
+    unsigned int size() const
     {
       return particles_.size();
     }
-    size_t get_number_of_classes() const
+    unsigned int get_number_of_classes() const
     {
       return protein_by_class_.size();
     }
-    double get_distance(size_t p1, size_t p2) const
+    double get_distance(unsigned int p1, unsigned int p2) const
     {
       return dist_matrix_[p1*size() + p2];
     }
-    Ints const &get_ordered_neighbors(size_t p) const
+    Ints const &get_ordered_neighbors(unsigned int p) const
     {
       return order_[p];
     }
-    ParticleData const &get_particle(size_t p) const
+    ParticleData const &get_particle(unsigned int p) const
     {
       return particles_[p];
     }
     Ints const &get_all_proteins_in_class(
-        size_t id) const
+        unsigned int id) const
     {
       return protein_by_class_[id];
     }
@@ -195,19 +195,19 @@ public:
     class DistCompare
     {
     public:
-      DistCompare(size_t source, ParticleMatrix const &parent)
+      DistCompare(unsigned int source, ParticleMatrix const &parent)
         : parent_(parent)
           , source_(source)
       {}
 
-      bool operator()(size_t p1, size_t p2) const
+      bool operator()(unsigned int p1, unsigned int p2) const
       {
         return parent_.get_distance(source_, p1) <
           parent_.get_distance(source_, p2);
       }
     private:
       ParticleMatrix const &parent_;
-      size_t source_;
+      unsigned int source_;
     };
 
     base::Vector<ParticleData> particles_;
@@ -216,7 +216,7 @@ public:
     base::Vector< Ints > protein_by_class_;
     double min_distance_;
     double max_distance_;
-    size_t current_id_;
+    unsigned int current_id_;
   };
 
   class ExperimentalTree
@@ -227,10 +227,10 @@ public:
       , finalized_(false)
     {}
 
-    void connect(size_t parent, size_t child);
+    void connect(unsigned int parent, unsigned int child);
     void finalize();
-    size_t add_composite(const Ints &components);
-    size_t add_composite(const Ints &components, size_t parent);
+    unsigned int add_composite(const Ints &components);
+    unsigned int add_composite(const Ints &components, unsigned int parent);
 
     class Node
     {
@@ -238,7 +238,7 @@ public:
         Node()
           : visited_(false)
         {}
-        size_t get_number_of_parents() const
+        unsigned int get_number_of_parents() const
         {
           return parents_.size();
         }
@@ -246,7 +246,7 @@ public:
         {
           return get_number_of_parents() == 0;
         }
-        size_t get_number_of_children() const
+        unsigned int get_number_of_children() const
         {
           return children_.size();
         }
@@ -254,39 +254,39 @@ public:
         {
           return get_number_of_children() == 0;
         }
-        size_t get_parent(size_t idx) const
+        unsigned int get_parent(unsigned int idx) const
         {
           return parents_[idx];
         }
-        size_t get_child(size_t idx) const
+        unsigned int get_child(unsigned int idx) const
         {
           return children_[idx];
         }
-        typedef base::Vector< std::pair<size_t, int> > Label;
+        typedef base::Vector< std::pair<unsigned int, int> > Label;
         const Label &get_label() const
         {
           return label_;
         }
 
 
-        base::Vector<size_t> parents_;
-        base::Vector<size_t> children_;
+        base::Vector<unsigned int> parents_;
+        base::Vector<unsigned int> children_;
         Label label_;
         bool visited_;
     };
 
-    bool find_cycle(size_t node_index);
-    bool is_consistent(size_t node_index) const;
+    bool find_cycle(unsigned int node_index);
+    bool is_consistent(unsigned int node_index) const;
 
-    const Node *get_node(size_t index) const
+    const Node *get_node(unsigned int index) const
     {
       return &nodes_[index];
     }
-    size_t get_number_of_nodes() const
+    unsigned int get_number_of_nodes() const
     {
       return nodes_.size();
     }
-    size_t get_root() const
+    unsigned int get_root() const
     {
       return root_;
     }
@@ -294,7 +294,7 @@ public:
                        Node::Label &label);
 
     base::Vector<Node> nodes_;
-    size_t root_;
+    unsigned int root_;
     bool finalized_;
   };
 
