@@ -120,7 +120,7 @@ def _add_platform_flags(env):
         if dependency.gcc.get_is_gcc_like(env):
             basecflags=[x for x in opt.split()+cflags.split() \
                         if x not in ['-Werror', '-Wall', '-Wextra',
-                                     '-O2', '-O3',
+                                     '-O2', '-O3', '-O1', '-Os',
                                      '-fstack-protector', '-Wstrict-prototypes',
                                      '-g', '-dynamic', '-DNDEBUG',
                                      "-fwrapv", "-fno-strict-aliasing"]\
