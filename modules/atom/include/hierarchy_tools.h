@@ -76,10 +76,10 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m,
     @{
 */
 /** Simplify every num_res into one particle.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
+IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain input,
                                                          int num_res);
 /** Simplify by breaking at the boundaries provided.*/
-IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
+IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain input,
            const IntRanges& residue_segments);
 /** @} */
 

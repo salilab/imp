@@ -97,9 +97,9 @@ class DenseGridStorageD: public BoundedGridRangeD<D> {
  public:
   IMP_COPY_CONSTRUCTOR(DenseGridStorageD, BoundedGridRangeD<D>);
   typedef VT Value;
-  DenseGridStorageD(const Ints &counts, const VT &def=VT()):
+  DenseGridStorageD(const Ints &counts, const VT &default_value=VT()):
       BoundedGridRangeD<D>(counts),
-      default_(def) {
+      default_(default_value) {
     set_number_of_voxels(counts);
   }
   IMP_BRACKET(VT, GridIndexD<D>, true, return data_[index(i)]);
@@ -113,7 +113,8 @@ class DenseGridStorageD: public BoundedGridRangeD<D> {
   /** @}
    */
 #ifndef IMP_DOXYGEN
-  DenseGridStorageD(const VT &def=VT()): extent_(0), default_(def) {
+  DenseGridStorageD(const VT &default_value=VT()):
+    extent_(0), default_(default_value) {
   }
   static bool get_is_dense() {
     return true;
@@ -237,8 +238,8 @@ class SparseGridStorageD: public Base {
  public:
   typedef VT Value;
   SparseGridStorageD(const Ints &counts,
-                     const VT &def): Base(counts),
-                                     default_(def) {
+                     const VT &default_value): Base(counts),
+                                     default_(default_value) {
   }
   IMP_SHOWABLE_INLINE(SparseGridStorage3D, out << "Sparse grid with "
                       << data_.size() << " cells set");

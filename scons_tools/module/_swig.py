@@ -72,7 +72,6 @@ def _action_swig_file(target, source, env):
 
 %%module(directors="1") "%s"
 %%feature("autodoc", 1);
-%%warnfilter(314);
 // turn off the warning as it mostly triggers on methods (and lots of them)
 %%warnfilter(321);
 

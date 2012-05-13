@@ -35,7 +35,7 @@ IMPALGEBRAEXPORT void write_pts(const Vector3Ds &vs,
 /** \see write_pts
     \relatesalso VectorD
 */
-IMPALGEBRAEXPORT Vector3Ds read_pts(base::TextInput in);
+IMPALGEBRAEXPORT Vector3Ds read_pts(base::TextInput input);
 
 //! Write a set of 3d spheres to a file
 /** \see read_pts
@@ -48,7 +48,7 @@ IMPALGEBRAEXPORT void write_spheres(const Sphere3Ds &vs,
 /** \see write_pts
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT Sphere3Ds read_spheres(base::TextInput in);
+IMPALGEBRAEXPORT Sphere3Ds read_spheres(base::TextInput input);
 
 /** @} */
 

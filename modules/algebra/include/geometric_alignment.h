@@ -45,35 +45,35 @@ template <class Vector3DsOrXYZs0,
 inline IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(
 #if !defined(__clang__)
-IMP_RESTRICT const Vector3DsOrXYZs0 &from,
-IMP_RESTRICT const Vector3DsOrXYZs1 &to
+IMP_RESTRICT const Vector3DsOrXYZs0 &source,
+IMP_RESTRICT const Vector3DsOrXYZs1 &target
 #else
-const Vector3DsOrXYZs0 &from,
-const Vector3DsOrXYZs1 &to
+const Vector3DsOrXYZs0 &source,
+const Vector3DsOrXYZs1 &target
 #endif
 ) {
-  IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
-  IMP_INTERNAL_CHECK(from.size() >0, "Points are needed");
+  IMP_INTERNAL_CHECK(source.size() == target.size(), "sizes don't match");
+  IMP_INTERNAL_CHECK(source.size() >0, "Points are needed");
   // compute the centroid of the points and transform
   // pointsets so that their centroids coinside
 
-  Vector3D center_from(0,0,0), center_to(0,0,0);
-  for (unsigned int i=0; i< from.size(); ++i) {
+  Vector3D center_source(0,0,0), center_target(0,0,0);
+  for (unsigned int i=0; i< source.size(); ++i) {
     //double x= p_it->x();
-    center_from+= get_vector_d_geometry(from[i]);
-    center_to += get_vector_d_geometry(to[i]);
-    IMP_LOG(VERBOSE, i << ": (" << get_vector_d_geometry(from[i])
-            << ") (" << get_vector_d_geometry(to[i]) << ")\n");
+    center_source+= get_vector_d_geometry(source[i]);
+    center_target += get_vector_d_geometry(target[i]);
+    IMP_LOG(VERBOSE, i << ": (" << get_vector_d_geometry(source[i])
+            << ") (" << get_vector_d_geometry(target[i]) << ")\n");
   }
-  center_from = center_from/from.size();
-  center_to = center_to/to.size();
+  center_source = center_source/source.size();
+  center_target = center_target/target.size();
 
-  IMP_LOG(VERBOSE, "Centers are (" << center_from << ") (" << center_to
+  IMP_LOG(VERBOSE, "Centers are (" << center_source << ") (" << center_target
           << ")\n");
-  Vector3Ds shifted_from(from.size()), shifted_to(to.size());
-  for (unsigned int i=0; i< from.size(); ++i) {
-    shifted_from[i]=get_vector_d_geometry(from[i])-center_from;
-    shifted_to[i]= get_vector_d_geometry(to[i])-center_to;
+  Vector3Ds shifted_source(source.size()), shifted_target(target.size());
+  for (unsigned int i=0; i< source.size(); ++i) {
+    shifted_source[i]=get_vector_d_geometry(source[i])-center_source;
+    shifted_target[i]= get_vector_d_geometry(target[i])-center_target;
   }
 
   // covariance matrix
@@ -83,10 +83,10 @@ const Vector3DsOrXYZs1 &to
       H[i][j] = 0;
     }
   }
-  for (unsigned int i = 0; i < from.size(); i++) {
+  for (unsigned int i = 0; i < source.size(); i++) {
     for (int j = 0; j < 3; j++) {
       for (int k = 0; k < 3; k++) {
-        H[j][k] += shifted_from[i][j]*shifted_to[i][k];
+        H[j][k] += shifted_source[i][j]*shifted_target[i][k];
       }
     }
   }
@@ -105,13 +105,13 @@ const Vector3DsOrXYZs1 &to
   double det= SV[0]*SV[1]*SV[2];
   IMP_IF_CHECK(base::USAGE) {
     if (det < .00001) {
-      IMP_LOG(TERSE, "FROM:\n");
-      for (unsigned int i=0; i< from.size(); ++i) {
-        IMP_LOG(TERSE, from[i] << std::endl);
+      IMP_LOG(TERSE, "SOURCE:\n");
+      for (unsigned int i=0; i< source.size(); ++i) {
+        IMP_LOG(TERSE, source[i] << std::endl);
       }
       IMP_LOG(TERSE, "TO:\n");
-      for (unsigned int i=0; i< from.size(); ++i) {
-        IMP_LOG(TERSE, to[i] << std::endl);
+      for (unsigned int i=0; i< source.size(); ++i) {
+        IMP_LOG(TERSE, target[i] << std::endl);
       }
       IMP_LOG(TERSE, H);
       IMP_WARN("Degenerate point set. I may not be able to align them."
@@ -156,7 +156,7 @@ const Vector3DsOrXYZs1 &to
                                rot[1][0], rot[1][1], rot[1][2],
                                rot[2][0], rot[2][1], rot[2][2]);
   IMP_LOG(VERBOSE, "Rotation is " << rotation << std::endl);
-  Vector3D translation=center_to - rotation.get_rotated(center_from);
+  Vector3D translation=center_target - rotation.get_rotated(center_source);
 
   Transformation3D ret(rotation, translation);
   return ret;

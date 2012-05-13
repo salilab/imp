@@ -55,14 +55,15 @@ get_junction_tree(const InteractionGraph &ig);
 #ifndef IMP_DOMINO
 /** \name Debugging Junction Trees
     @{ */
-IMPDOMINOEXPORT InteractionGraph get_triangulated(const InteractionGraph& in);
+IMPDOMINOEXPORT InteractionGraph
+get_triangulated(const InteractionGraph& input);
 
 
 IMP_WEIGHTED_GRAPH(CliqueGraph, undirected, Subset);
 
-IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& in);
+IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& input);
 
-IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& in);
+IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& input);
 
 
 /** @} */
@@ -135,7 +136,7 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int);
     created to improve the InteractionGraph used internally.
  */
 IMPDOMINOEXPORT
-MergeTree get_merge_tree(ScoringFunctionInput in,
+MergeTree get_merge_tree(ScoringFunctionInput input,
                          const ParticleStatesTable *pst);
 
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
@@ -177,7 +178,7 @@ IMPDOMINOEXPORT
 void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
                       std::ostream &out);
 IMPDOMINOEXPORT
-MergeTree read_merge_tree(std::istream &in,
+MergeTree read_merge_tree(std::istream &input,
                           const ParticlesTemp &ps);
 /** @} */
 

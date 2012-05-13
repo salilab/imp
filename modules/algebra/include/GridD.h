@@ -134,8 +134,8 @@ class GridD: public Storage, public EmbeddingT
    */
   GridD(const Ints counts,
         const BoundingBoxD<D> &bb,
-        Value def=Value()):
-      Storage(counts, def),
+        Value default_value=Value()):
+      Storage(counts, default_value),
       Embedding(bb.get_corner(0), get_sides(counts, bb)) {
     IMP_USAGE_CHECK(D==3, "Only in 3D");
   }
@@ -144,8 +144,8 @@ class GridD: public Storage, public EmbeddingT
   */
   GridD(double side,
         const BoundingBoxD<D> &bb,
-        const Value& def=Value()):
-      Storage(get_ns(Floats(bb.get_dimension(), side), bb), def),
+        const Value& default_value=Value()):
+      Storage(get_ns(Floats(bb.get_dimension(), side), bb), default_value),
       Embedding(bb.get_corner(0),
                 VectorD<D>(Floats(bb.get_dimension(), side))){
     IMP_USAGE_CHECK(Storage::get_is_bounded(),
@@ -159,9 +159,10 @@ class GridD: public Storage, public EmbeddingT
    */
   GridD(double side,
         const VectorD<D> &origin,
-        const Value& def= Value()):
-      Storage(def), Embedding(origin, VectorD<D>(Floats(origin.get_dimension(),
-                                                        side))){
+        const Value& default_value= Value()):
+      Storage(default_value), Embedding(origin,
+                                      VectorD<D>(Floats(origin.get_dimension(),
+                                                          side))){
   }
   //! An empty, undefined grid.
   GridD(): Storage(Value()){
