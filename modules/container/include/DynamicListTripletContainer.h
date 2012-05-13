@@ -46,7 +46,7 @@ public:
   void set_particle_triplets(ParticleTripletsTemp c);
   void clear_particle_triplets();
   /**@}*/
-  IMP_TRIPLET_CONTAINER(ListTripletContainer);
+  IMP_TRIPLET_CONTAINER(DynamicListTripletContainer);
 #else
   IMP_OBJECT(DynamicListTripletContainer);
 #endif

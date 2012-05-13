@@ -46,7 +46,7 @@ public:
   void set_FUNCTIONNAMEs(PLURALVARIABLETYPE c);
   void clear_FUNCTIONNAMEs();
   /**@}*/
-  IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);
+  IMP_HEADERNAME_CONTAINER(DynamicListCLASSNAMEContainer);
 #else
   IMP_OBJECT(DynamicListCLASSNAMEContainer);
 #endif

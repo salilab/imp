@@ -46,7 +46,7 @@ public:
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
   /**@}*/
-  IMP_QUAD_CONTAINER(ListQuadContainer);
+  IMP_QUAD_CONTAINER(DynamicListQuadContainer);
 #else
   IMP_OBJECT(DynamicListQuadContainer);
 #endif
