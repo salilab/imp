@@ -295,7 +295,7 @@ get_if_moved(Model *m, double slack_,
         algebra::Vector3D oldv= old.get_global_coordinates(local);
         algebra::Vector3D newv= cur.get_global_coordinates(local);
         double dist= get_distance(oldv, newv);
-        IMP_INTERNAL_CHECK(dist  < slack_,
+        IMP_INTERNAL_CHECK(dist  < slack_+.1,
                            "Particle moved further than expected "
                            << dist << " > " << slack_
                            << " for " << Showable(rms[i].get_particle()));
