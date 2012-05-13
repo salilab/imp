@@ -18,6 +18,7 @@
 #include "IMP/compatibility/nullptr.h"
 #include <boost/array.hpp>
 #include <vector>
+#include <cstdio>
 
 //using namespace IMP;
 using namespace IMP::base;
@@ -517,23 +518,26 @@ template <class T>
     static const int converter=12;
   };
 
+/* with swig 2.0.6 we seem to need both the Int and Long checks */
   template <>
   struct Convert<int> {
     static const int converter=13;
     template <class SwigData>
     static int get_cpp_object(PyObject *o, SwigData st,
                               SwigData particle_st, SwigData decorator_st) {
-      if (!PyInt_Check(o)) {
+      if (PyInt_Check(o)) {
+        return PyInt_AsLong(o);
+      } else if (PyLong_Check(o)) {
+        return PyLong_AsLong(o);
+      } else {
         IMP_THROW("Not all objects in list have correct number type.",
                   ValueException);
-      } else {
-        return PyInt_AsLong(o);
       }
     }
     template <class SwigData>
     static bool get_is_cpp_object(PyObject *o, SwigData st,
                                   SwigData particle_st, SwigData decorator_st) {
-      return PyInt_Check(o);
+      return PyLong_Check(o) || PyInt_Check(o);
     }
     template <class SwigData>
     static PyObject* create_python_object(int f, SwigData st, int OWN) {
