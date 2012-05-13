@@ -87,7 +87,7 @@ IMP_SWIG_VALUE(IMP::domino, Order, Orders);
 %include "IMP/domino/DependencyScoreState.h"
 
 %inline %{
-IMP::IntsList _get_ints_list(const IMP::IntsList &in) {
-return in;
+IMP::IntsList _get_ints_list(const IMP::IntsList &input) {
+return input;
 }
 %}
