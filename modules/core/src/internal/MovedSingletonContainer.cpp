@@ -230,7 +230,7 @@ void RigidMovedSingletonContainer::check_estimate(core::RigidBody rbs,
     algebra::Vector3D oldv= old.get_global_coordinates(local);
     algebra::Vector3D newv= cur.get_global_coordinates(local);
     double dist= get_distance(oldv, newv);
-    IMP_INTERNAL_CHECK(dist  < d,
+    IMP_INTERNAL_CHECK(dist  < d+1,
                        "Particle moved further than expected "
                        << dist << " > " << d
                        << " for " << Showable(rms[i].get_particle()));
