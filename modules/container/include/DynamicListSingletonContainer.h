@@ -46,7 +46,7 @@ public:
   void set_particles(ParticlesTemp c);
   void clear_particles();
   /**@}*/
-  IMP_SINGLETON_CONTAINER(ListSingletonContainer);
+  IMP_SINGLETON_CONTAINER(DynamicListSingletonContainer);
 #else
   IMP_OBJECT(DynamicListSingletonContainer);
 #endif
