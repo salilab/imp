@@ -112,7 +112,7 @@ public:
 
 /** Return the passed list of score states ordered based on how they need to
     be ordered during evaluation.*/
-IMPEXPORT ScoreStatesTemp get_ordered_score_states( ScoreStatesTemp in);
+IMPEXPORT ScoreStatesTemp get_ordered_score_states( ScoreStatesTemp input);
 
 
 IMP_END_NAMESPACE

@@ -175,12 +175,12 @@ IMPEXPORT const Particles& _pass_particles(const Particles &ps);
 IMPEXPORT Particle* _pass_particle(Particle* ps);
 IMPEXPORT const ParticlePair& _pass_particle_pair(const ParticlePair &pp);
 IMPEXPORT Particles _give_particles_copy(Model *m);
-IMPEXPORT FloatKeys _pass_float_keys(const FloatKeys& in);
-IMPEXPORT Floats _pass_floats(const Floats& in);
-IMPEXPORT Ints _pass_ints( Ints in);
-IMPEXPORT IntsList _pass_ints_list(const IntsList &in);
-IMPEXPORT IntsLists _pass_ints_lists(const IntsLists &in);
-IMPEXPORT const Strings& _pass_strings(const Strings& in);
+IMPEXPORT FloatKeys _pass_float_keys(const FloatKeys& input);
+IMPEXPORT Floats _pass_floats(const Floats& input);
+IMPEXPORT Ints _pass_ints( Ints input);
+IMPEXPORT IntsList _pass_ints_list(const IntsList &input);
+IMPEXPORT IntsLists _pass_ints_lists(const IntsLists &input);
+IMPEXPORT const Strings& _pass_strings(const Strings& input);
 
 IMPEXPORT const Particles &_pass(const Particles &p);
 IMPEXPORT const Restraints &_pass(const Restraints &p);
