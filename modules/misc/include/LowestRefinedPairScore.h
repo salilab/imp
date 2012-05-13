@@ -29,7 +29,7 @@ public:
       \param[in] f The pair score to apply to the generated pairs
    */
   LowestRefinedPairScore(Refiner *r, PairScore *f);
-  ParticlePair get_lowest_refined_pair(const ParticlePair &in) const;
+  ParticlePair get_lowest_refined_pair(const ParticlePair &input) const;
   IMP_PAIR_SCORE(LowestRefinedPairScore);
 };
 

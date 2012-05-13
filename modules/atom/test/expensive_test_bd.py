@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import IMP.statistics
 try:
     import sympy
     from sympy.physics.units import *

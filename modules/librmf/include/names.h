@@ -89,7 +89,7 @@ namespace RMF {
   /** Node names have to obey certain rules, such as no quotes
       in the name. This returns a string that has been modified to
       obey the rules.*/
-  RMFEXPORT std::string get_as_node_name(std::string in);
+  RMFEXPORT std::string get_as_node_name(std::string input);
 
 
 } /* namespace RMF */

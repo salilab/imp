@@ -558,7 +558,7 @@ IMPEMEXPORT double get_density(const DensityMap *m,
     computing the bounding box of the new map (set IMP::em::get_bounding_box()).
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* get_transformed(const DensityMap *in,
+IMPEMEXPORT DensityMap* get_transformed(const DensityMap *input,
                                         const algebra::Transformation3D &tr,
                                         double threshold);
 
@@ -566,7 +566,7 @@ IMPEMEXPORT DensityMap* get_transformed(const DensityMap *in,
     one. The dimension of the new map is the same as the old one.
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
+IMPEMEXPORT DensityMap* get_transformed(DensityMap *input,
                                         const algebra::Transformation3D &tr);
 
 
@@ -574,7 +574,7 @@ IMPEMEXPORT DensityMap* get_transformed(DensityMap *in,
     That means, scaling values greater than 1 increase the voxel size.
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
+IMPEMEXPORT DensityMap* get_resampled(DensityMap *input, double scaling);
 
 
 //! Rotate a density map into another maps
@@ -585,7 +585,7 @@ IMPEMEXPORT DensityMap* get_resampled(DensityMap *in, double scaling);
 \param[in] calc_rms if true RMS is calculated on the transformed map
  \relatesalso DensityMap
 */
-IMPEMEXPORT void get_transformed_into(const DensityMap *from,
+IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
                                       DensityMap *into,
                                        bool calc_rms=true);

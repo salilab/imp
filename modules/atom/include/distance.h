@@ -176,8 +176,8 @@ inline double get_rigid_bodies_drms(const Vecto3DsOrXYZs0 &m1,
    \note see Lasker,Topf et al JMB, 2009 for details
  */
 IMPATOMEXPORT FloatPair
-get_placement_score(const core::XYZs& from,
-                    const core::XYZs& to);
+get_placement_score(const core::XYZs& source,
+                    const core::XYZs& target);
 
 //! Measure the difference between two placements of the same set of points
 /**

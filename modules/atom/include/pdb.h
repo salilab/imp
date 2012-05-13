@@ -304,7 +304,7 @@ public:
 
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchy read_pdb(base::TextInput in,
+IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input,
                                  Model* model);
 
 /** Rewrite the coordinates of the passed hierarchy based
@@ -319,7 +319,7 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput in,
 
     \relatesalso Hierarchy
  */
-IMPATOMEXPORT void read_pdb(base::TextInput in,
+IMPATOMEXPORT void read_pdb(base::TextInput input,
                             int model,
                             Hierarchy h);
 
@@ -327,7 +327,7 @@ IMPATOMEXPORT void read_pdb(base::TextInput in,
 /** \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-read_pdb(base::TextInput in,
+read_pdb(base::TextInput input,
          Model* model,
          PDBSelector* selector,
          bool select_first_model = true
@@ -340,12 +340,12 @@ read_pdb(base::TextInput in,
 
 /** \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput in,
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               Model *model,
                                               PDBSelector* selector);
 /** \relatesalso Hierarchy
  */
-IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput in,
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(base::TextInput input,
                                               Model *model);
 /** @} */
 

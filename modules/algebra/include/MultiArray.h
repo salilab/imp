@@ -639,13 +639,13 @@ public:
   /**
    * The array must be previously resized to the correct size.
    */
-  void read_binary(std::ifstream& in,bool reversed=false) {
+  void read_binary(std::ifstream& input,bool reversed=false) {
     for (unsigned long i=0;i<this->num_elements();i++) {
       if (!reversed) {
-        in.read(reinterpret_cast< char* >(&(this->data()[i])), sizeof(T));
+        input.read(reinterpret_cast< char* >(&(this->data()[i])), sizeof(T));
       } else {
         reversed_read(reinterpret_cast< char* >(&(this->data()[i])),
-                      sizeof(T),1,in,true);
+                      sizeof(T),1,input,true);
       }
     }
   }
@@ -686,11 +686,11 @@ public:
     }
   }
 
-  friend std::istream& operator>>(std::istream& in,This& v) {
+  friend std::istream& operator>>(std::istream& input,This& v) {
     for (unsigned long i=0;i<v.num_elements();i++) {
-      in >> v.data()[i];
+      input >> v.data()[i];
     }
-    return in;
+    return input;
   }
 
 protected:
