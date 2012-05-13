@@ -402,12 +402,9 @@ std::pair<Vector3D,double> get_axis_and_angle(
   VectorD<4> q = rot.get_quaternion();
   double a,b,c,d;
   a=q[0];b=q[1];c=q[2];d=q[3];
-
+  if (std::abs(a) > .9999) return std::make_pair(Vector3D(1,0,0),0.0);
   double angle = std::acos(a)*2;
   double s = std::sin(angle/2);
-  if (s< .000001) {
-    return std::make_pair(IMP::algebra::Vector3D(1,0,0), 0.0);
-  }
   Vector3D axis(b/s,c/s,d/s);
   return std::make_pair(axis.get_unit_vector(),angle);
 }
