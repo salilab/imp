@@ -1,11 +1,11 @@
 /**
- *  \file KMeansWrapper.cpp
+ *  \file KMeans.cpp
  *  \brief
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */
 
-#include "IMP/kmeans/KMeansWrapper.h"
+#include "IMP/kmeans/KMeans.h"
 #include <iostream>     // C++ I/O
 
 IMPKMEANS_BEGIN_NAMESPACE
@@ -13,7 +13,7 @@ IMPKMEANS_BEGIN_NAMESPACE
 /***********************  Constructors  **************************/
 
 /**
-   Initialize the KMeansWrapper object with data from fname_data,
+   Initialize the KMeans object with data from fname_data,
    assuming input data of dimension dim
 
    @param[in] fname_data Input filename. Input is assumed to be textual,
@@ -21,7 +21,7 @@ IMPKMEANS_BEGIN_NAMESPACE
    @param[in] dim Dimension of points
    @param[in] max_nPts Maximal number of points to be read from file
 */
-KMeansWrapper::KMeansWrapper
+KMeans::KMeans
 (const std::string& fname,
  int dim,
  unsigned int max_nPts)
@@ -57,7 +57,7 @@ KMeansWrapper::KMeansWrapper
 /** Empty constructor for all default initializations -
     object data is not considered initialized after this call
  */
-KMeansWrapper::KMeansWrapper()
+KMeans::KMeans()
       : is_executed_(false),
         pKMDataPts_(),
         is_KM_data_synced_(false),
@@ -80,7 +80,7 @@ KMeansWrapper::KMeansWrapper()
 
 // execute the selected algorithms:
 void
-KMeansWrapper::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
+KMeans::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
 {
   using namespace std;
 
@@ -154,7 +154,7 @@ KMeansWrapper::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
    Add a data point for the next clustering.
 */
 void
-KMeansWrapper::add_data_pt(const IMP::Floats& p)
+KMeans::add_data_pt(const IMP::Floats& p)
 {
   is_executed_ = false;
   is_KM_data_synced_ = false;
@@ -169,7 +169,7 @@ KMeansWrapper::add_data_pt(const IMP::Floats& p)
    Clears all data in object
 */
 void
-KMeansWrapper::clear_data()
+KMeans::clear_data()
 {
   is_executed_ = false;
   is_KM_data_synced_ = false;
@@ -183,7 +183,7 @@ KMeansWrapper::clear_data()
     @param[in] i Center number in range (0,...,nPts-1)
 */
 const IMP::Floats&
-KMeansWrapper::get_data_point(unsigned int i) const
+KMeans::get_data_point(unsigned int i) const
 {
   assert(i < STLDataPts_.size()); // TODO: exception?
   return STLDataPts_[i];
@@ -196,7 +196,7 @@ KMeansWrapper::get_data_point(unsigned int i) const
       @param[in] i center number in range (0,...,k-1)
    */
 IMP::Floats
-KMeansWrapper::get_center(unsigned int i) const
+KMeans::get_center(unsigned int i) const
 {
   // TODO: exception instead of assertion?
   assert(is_executed_ && i < pCenters_->getNPts());
@@ -220,7 +220,7 @@ KMeansWrapper::get_center(unsigned int i) const
     This method invalidates any prior information about clustering results
 */
 void
-KMeansWrapper::sync_KMdata_pts_from_STL()
+KMeans::sync_KMdata_pts_from_STL()
 {
   assert(STLDataPts_.size() > 0); // exception?
   if(is_KM_data_synced_)
@@ -249,7 +249,7 @@ KMeansWrapper::sync_KMdata_pts_from_STL()
    @return false on error or EOF.
 */
 bool
-KMeansWrapper::read_pt_from_stream
+KMeans::read_pt_from_stream
 (std::istream& in,
  IMP::Floats& p,
  unsigned int dim)
@@ -263,7 +263,7 @@ KMeansWrapper::read_pt_from_stream
 
 // reads points from a stream
 void
-KMeansWrapper::read_data_pts_from_stream
+KMeans::read_data_pts_from_stream
 (std::istream &in,
  unsigned int dim,
  unsigned int max_nPts)
@@ -291,7 +291,7 @@ KMeansWrapper::read_data_pts_from_stream
    @param[in] p   the point
 */
 void
-KMeansWrapper::print_pt_to_stream(std::ostream& out, const IMP::Floats& p)
+KMeans::print_pt_to_stream(std::ostream& out, const IMP::Floats& p)
 {
   const int dim = p.size();
   if(dim == 0){
@@ -310,7 +310,7 @@ KMeansWrapper::print_pt_to_stream(std::ostream& out, const IMP::Floats& p)
 //  Print summary of execution
 //------------------------------------------------------------------------
 void
-KMeansWrapper::print_summary
+KMeans::print_summary
 (const internal::KMlocal&    theAlg)   // the algorithm
 {
   using namespace std;
@@ -345,7 +345,7 @@ KMeansWrapper::print_summary
 
 // print the centers (assuming exectute() was applied)
 void
-KMeansWrapper::print_centers() const
+KMeans::print_centers() const
 {
   assert( is_executed_ ); // TODO: exception?
   if(pCenters_ && is_executed_)

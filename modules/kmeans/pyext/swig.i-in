@@ -28,19 +28,7 @@ namespace std
 
 /* Wrap Our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include    IMP/kmeans/KMeansWrapper.h
-/*
-%include 	IMP/kmeans/KM_ANN.h
-%include    IMP/kmeans/KMterm.h
-%include 	IMP/kmeans/KMeans.h
-%include 	IMP/kmeans/KCtree.h
-%include 	IMP/kmeans/KCutil.h
-%include 	IMP/kmeans/KMdata.h
-%include 	IMP/kmeans/KMlocal.h
-%include 	IMP/kmeans/KMrand.h
-%include 	IMP/kmeans/KMcenters.h
-%include 	IMP/kmeans/KMfilterCenters.h
-*/
+%include    IMP/kmeans/KMeans.h
 
 namespace IMP {
   namespace kmeans {
