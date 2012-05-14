@@ -25,9 +25,13 @@ class RBDTests(IMP.test.TestCase):
             rbs[i].add_member(rbs[i+1])
         #set domino states
         translation=IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(1.,0.,0.,0.),IMP.algebra.Vector3D(-5.,0.,0.))
+        root_rf=rbs[0].get_reference_frame()
+        root_to_global=root_rf.get_transformation_from()
+        global_to_root=root_rf.get_transformation_to()
         pst=IMP.domino.ParticleStatesTable()
-        for rb in rbs[1:]:
-            states=IMP.domino.NestedRigidBodyStates([translation])
+        for i,rb in enumerate(rbs[1:]):
+            rb_father=rbs[i]
+            states=IMP.domino.NestedRigidBodyStates([rb_father.get_reference_frame().get_transformation_to()*translation])
             pst.set_particle_states(rb,states)
         #set states to the root
         pst.set_particle_states(rbs[0],IMP.domino.RigidBodyStates([rbs[0].get_reference_frame()]))
