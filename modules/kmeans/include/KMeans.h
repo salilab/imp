@@ -1,12 +1,12 @@
 /**
- *  \file KMeansWrapper.h
+ *  \file KMeans.h
  *  \brief an interface to k-means open source library (stored internally)
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
 */
 
-#ifndef IMPKMEANS_KMEANS_WRAPPER_H
-#define IMPKMEANS_KMEANS_WRAPPER_H
+#ifndef IMPKMEANS_KMEANS_H
+#define IMPKMEANS_KMEANS_H
 
 #include "kmeans_config.h"
 #include "IMP/kmeans/internal/KMlocal.h"     // k-means algorithms
@@ -41,16 +41,16 @@ enum KM_ALG_TYPE
     library by David Mount (GPL license), downloaded and adapted
     to IMP from http://www.cs.umd.edu/~mount/Projects/KMeans/
 
-    \untested{KMeansWrapper}
-    \unstable{KMeansWrapper}
+    \untested{KMeans}
+    \unstable{KMeans}
  */
-class IMPKMEANSEXPORT KMeansWrapper {
+class IMPKMEANSEXPORT KMeans {
 
   /***********************  Constructors  **************************/
  public:
 
   /**
-     Initialize the KMeansWrapper object with data from fname_data,
+     Initialize the KMeans object with data from fname_data,
      assuming input data of dimension dim
 
      @param[in] fname_data Input filename. Input is assumed to be textual,
@@ -58,7 +58,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
      @param[in] dim Dimension of points
      @param[in] max_nPts Maximal number of points to be read from file
    */
-  KMeansWrapper
+  KMeans
     (const std::string& fname_data,
      int dim,
      unsigned int max_nPts);
@@ -66,7 +66,7 @@ class IMPKMEANSEXPORT KMeansWrapper {
   /** Empty constructor for all default initializations -
       object data is not considered initialized after this call
   */
-  KMeansWrapper();
+  KMeans();
 
   /*********************** Public methods **************************/
  public:
@@ -203,8 +203,8 @@ class IMPKMEANSEXPORT KMeansWrapper {
   internal::KMterm terminationConditions_;
 
 
-}; /***********************  class KMeansWrapper  **************************/
+}; /***********************  class KMeans  **************************/
 
 IMPKMEANS_END_NAMESPACE
 
-#endif  /* IMPKMEANS_KMEANS_WRAPPER_H */
+#endif  /* IMPKMEANS_KMEANS_H */

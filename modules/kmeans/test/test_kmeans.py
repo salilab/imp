@@ -1,10 +1,10 @@
 import IMP
 import IMP.test
-from IMP.kmeans import KMeansWrapper
+from IMP.kmeans import KMeans
 
 class KMeansTest(IMP.test.TestCase):
     def  test_simple_kmeans(self):
-        km = KMeansWrapper()
+        km = KMeans()
         # add data
         km.add_data_pt([1, 2])
         km.add_data_pt([10, 12])
@@ -15,8 +15,8 @@ class KMeansTest(IMP.test.TestCase):
         km.add_data_pt([9.4, 10])
         km.add_data_pt([9.2, 11])
         km.add_data_pt([0, 0])
-        self.assertEqual(km.getDataPoint(0)[0], 1)
-        self.assertEqual(km.getDataPoint(0)[1], 2)
+        self.assertEqual(km.get_data_point(0)[0], 1)
+        self.assertEqual(km.get_data_point(0)[1], 2)
         # print data
         n = km.get_n_data_points()
         print "Number of points: ", n

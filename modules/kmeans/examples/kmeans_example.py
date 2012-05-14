@@ -1,5 +1,5 @@
 import IMP
-from IMP.kmeans import KMeansWrapper
+from IMP.kmeans import KMeans
 
 def add_points(km):
     # add data
@@ -13,7 +13,7 @@ def add_points(km):
     km.add_data_pt([9.2, 11])
     km.add_data_pt([0, 0])
 
-km = KMeansWrapper()
+km = KMeans()
 add_points(km)
 # print data
 n = km.get_n_data_points()
