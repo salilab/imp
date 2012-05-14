@@ -31,7 +31,7 @@ class RBDTests(IMP.test.TestCase):
         pst=IMP.domino.ParticleStatesTable()
         for i,rb in enumerate(rbs[1:]):
             rb_father=rbs[i]
-            states=IMP.domino.NestedRigidBodyStates([rb_father.get_reference_frame().get_transformation_to()*translation])
+            states=IMP.domino.NestedRigidBodyStates([IMP.algebra.get_transformation_from_first_to_second(rb.get_reference_frame(),rb_father.get_reference_frame())*translation])
             pst.set_particle_states(rb,states)
         #set states to the root
         pst.set_particle_states(rbs[0],IMP.domino.RigidBodyStates([rbs[0].get_reference_frame()]))
@@ -41,13 +41,10 @@ class RBDTests(IMP.test.TestCase):
         print "number of configurations",cs.get_number_of_configurations()
         #TODO - check that the transformations are correct
         cs.load_configuration(0)
-        for i,rb in enumerate(rbs):
-            trans1=rb.get_reference_frame().get_transformation_to()
-            trans2=orig_rfs[i].get_transformation_to()
-            diff_trans=trans1/trans2
-            print rb.get_name(),diff_trans
-            self.assertAlmostEqual(IMP.algebra.get_distance(
-                diff_trans.get_translation(),
-                i*IMP.algebra.Vector3D(-5.,0,0)),0, delta=.05)
+        for i,rb in enumerate(rbs[1:]):
+            rmsd = IMP.atom.get_rmsd(IMP.core.XYZs(IMP.core.get_leaves(mhs[0])),
+                              IMP.core.XYZs(IMP.core.get_leaves(mhs[i+1])))
+            self.assertAlmostEqual(rmsd,5*(i+1),delta=.05)
+
 if __name__ == '__main__':
     IMP.test.main()
