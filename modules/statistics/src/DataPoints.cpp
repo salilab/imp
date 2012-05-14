@@ -6,6 +6,8 @@
  *
  */
 #include <IMP/statistics/DataPoints.h>
+#include <IMP/core/XYZ.h>
+
 IMPSTATISTICS_BEGIN_NAMESPACE
 void XYZDataPoints::populate_data_points(const algebra::Vector3Ds &vecs) {
   vecs_ = vecs;
