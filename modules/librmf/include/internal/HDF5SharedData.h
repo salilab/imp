@@ -54,20 +54,10 @@ namespace RMF {
 
 #define IMP_RMF_HDF5_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                                   PassValues, ReturnValues, Arity)      \
-    Ucname##Traits::Type get_value_always(unsigned int node,            \
-                                          Key<Ucname##Traits,Arity> k,  \
-                                          unsigned int frame) const {   \
-      return get_value_always_impl(node, k, frame);                     \
-    }                                                                   \
     Ucname##Traits::Type get_value(unsigned int node,                   \
-                                        Key<Ucname##Traits, Arity> k,   \
-                                        unsigned int frame) const {     \
+                                   Key<Ucname##Traits,Arity> k,         \
+                                   unsigned int frame) const {          \
       return get_value_impl(node, k, frame);                            \
-    }                                                                   \
-    bool get_has_value(unsigned int node,                               \
-                       Key<Ucname##Traits, Arity> k,                    \
-                       unsigned int frame) const {                      \
-      return get_has_value_impl(node, k, frame);                        \
     }                                                                   \
     void set_value(unsigned int node,                                   \
                    Key<Ucname##Traits, Arity> k,                        \
@@ -281,9 +271,9 @@ namespace RMF {
       }
 
       template <class TypeTraits, int Arity>
-        typename TypeTraits::Type get_value_always_impl(unsigned int node,
-                                                        Key<TypeTraits,Arity> k,
-                                                    unsigned int frame) const {
+        typename TypeTraits::Type get_value_impl(unsigned int node,
+                                                 Key<TypeTraits,Arity> k,
+                                                 unsigned int frame) const {
         IMP_RMF_BEGIN_FILE
         int vi=-1;
         unsigned int kc=k.get_category().get_index();
@@ -371,22 +361,6 @@ namespace RMF {
           HDF5DataSetIndexD<3> sz= ds.get_size();
           return sz[2];
         }
-      }
-
-      template <class TypeTraits, int Arity>
-        typename TypeTraits::Type get_value_impl(unsigned int node,
-                                            Key<TypeTraits, Arity> k,
-                                            unsigned int frame) const {
-        typename TypeTraits::Type ret= get_value_always(node, k, frame);
-        IMP_RMF_USAGE_CHECK(!TypeTraits::get_is_null_value(ret),
-                            "Invalid value requested");
-        return ret;
-      }
-
-      template <class TypeTraits, int Arity>
-        bool get_has_value_impl(unsigned int node, Key<TypeTraits, Arity> k,
-                           unsigned int frame) const {
-        return !TypeTraits::get_is_null_value(get_value_always(node, k, frame));
       }
 
       template <class TypeTraits, int Arity>
