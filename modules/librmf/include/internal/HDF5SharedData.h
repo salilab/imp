@@ -81,8 +81,8 @@ namespace RMF {
                                                  name, per_frame);      \
     }                                                                   \
     vector<Key<Ucname##Traits, Arity> >                                 \
-    get_##lcname##_keys_##Arity(int category_id) const {                \
-      return get_keys_impl<Ucname##Traits, Arity>(category_id);         \
+    get_##lcname##_keys_##Arity(int category_id, bool per_frame) const { \
+      return get_keys_impl<Ucname##Traits, Arity>(category_id, per_frame); \
     }                                                                   \
     std::string get_name(Key<Ucname##Traits, Arity> k) const {          \
       return get_name_impl(k);                                          \
@@ -521,18 +521,15 @@ namespace RMF {
       // create the data sets and add rows to the table
       template <class TypeTraits, int Arity>
         vector<Key<TypeTraits, Arity> >
-        get_keys_impl(int category_id) const {
+        get_keys_impl(int category_id, bool per_frame) const {
         vector<Key<TypeTraits, Arity> > ret;
-        for (unsigned int i=0; i< 2; ++i) {
-          bool per_frame=(i==0);
-          HDF5DataSetD<StringTraits, 1>& nameds
-            = get_key_list_data_set<TypeTraits>(category_id, Arity,
-                                                per_frame, false);
-          if (!nameds) continue;
-          HDF5DataSetIndexD<1> sz= nameds.get_size();
-          for (unsigned int j=0; j< sz[0]; ++j) {
-            ret.push_back(Key<TypeTraits, Arity>(category_id, j, per_frame));
-          }
+        HDF5DataSetD<StringTraits, 1>& nameds
+          = get_key_list_data_set<TypeTraits>(category_id, Arity,
+                                              per_frame, false);
+        if (!nameds) return ret;
+        HDF5DataSetIndexD<1> sz= nameds.get_size();
+        for (unsigned int j=0; j< sz[0]; ++j) {
+          ret.push_back(Key<TypeTraits, Arity>(category_id, j, per_frame));
         }
         return ret;
       }

@@ -56,7 +56,7 @@ namespace RMF {
                                std::string name,                        \
                                bool per_frame) =0;                      \
     virtual vector<Key<Ucname##Traits, Arity> >                         \
-    get_##lcname##_keys_##Arity(int category_id) const=0;               \
+    get_##lcname##_keys_##Arity(int category_id, bool per_frame) const=0; \
     virtual std::string get_name(Key<Ucname##Traits, Arity> k) const =0; \
     virtual Key<Ucname##Traits, Arity>                                  \
     get_##lcname##_key_##Arity(int category_id,                         \
@@ -192,8 +192,9 @@ namespace RMF {
       return p->get_##lcname##_key_##Arity(category_id, name, per_frame) \
         != K();                                                         \
     }                                                                   \
-    static Ks get_keys( const SharedData *p, int category_id) {         \
-      return p->get_##lcname##_keys_##Arity(category_id);               \
+    static Ks get_keys( const SharedData *p, int category_id,           \
+                        bool per_frame) {                               \
+      return p->get_##lcname##_keys_##Arity(category_id, per_frame);    \
     }                                                                   \
     };                                                                  \
     template <>                                                         \
