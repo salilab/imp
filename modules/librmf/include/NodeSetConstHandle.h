@@ -104,7 +104,7 @@ protected:
     }
     //! get the type of this node
     NodeSetType get_type() const {
-      return NodeSetType(shared_->get_set_type(D, node_));
+      return NodeSetType(shared_->get_type(D, node_));
     }
     unsigned int get_arity() const {
       return D;

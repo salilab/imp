@@ -197,9 +197,15 @@ namespace RMF {
       check_node(node);
       return node_names_.get_value(HDF5DataSetIndexD<1>(node));
     }
-    unsigned int HDF5SharedData::get_type(unsigned int node) const {
-      check_node(node);
-      return node_data_[0].get_value(HDF5DataSetIndexD<2>(node, TYPE));
+    unsigned int HDF5SharedData::get_type(unsigned int Arity,
+                                          unsigned int index) const {
+      if (Arity==1) {
+        check_node(index);
+        return node_data_[0].get_value(HDF5DataSetIndexD<2>(index, TYPE));
+      } else {
+        check_set(Arity, index);
+        return node_data_[Arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
+      }
     }
 
 
@@ -290,12 +296,6 @@ namespace RMF {
     return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index,
                                                              member_index+1));
   }
-  unsigned int HDF5SharedData::get_set_type(int arity,
-                                            unsigned int index) const {
-    check_set(arity, index);
-    return node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(index, 0));
-  }
-
 
   int HDF5SharedData::add_category(int Arity, std::string name) {
     IMP_RMF_BEGIN_FILE;

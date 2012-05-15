@@ -541,6 +541,7 @@ namespace RMF {
       void set_first_child(unsigned int node, int child);
       void set_sibling(unsigned int node, int sibling);
       int add_node(std::string name, unsigned int type);
+      void check_set(int arity, unsigned int index) const;
     public:
       IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_TYPE);
 
@@ -558,24 +559,17 @@ namespace RMF {
       HDF5SharedData(HDF5Group g, bool create);
       ~HDF5SharedData();
       std::string get_name(unsigned int node) const;
-      unsigned int get_type(unsigned int node) const;
-
-
+      unsigned int get_type(unsigned int Arity, unsigned int node) const;
       int add_child(int node, std::string name, int t);
       Ints get_children(int node) const;
       void save_frames_hint(int i) {
         frames_hint_=i;
       }
-
       unsigned int get_number_of_frames() const;
-
-      void check_set(int arity, unsigned int index) const;
       unsigned int get_number_of_sets(int arity) const;
       unsigned int add_set( RMF::Indexes nis, int t);
       unsigned int get_set_member(int Arity, unsigned int index,
                                     int member_index) const;
-      unsigned int get_set_type(int Arity, unsigned int index) const;
-
       int add_category(int Arity, std::string name);
       unsigned int get_number_of_categories(int Arity) const;
       std::string get_category_name(int Arity, unsigned int kc) const  {
