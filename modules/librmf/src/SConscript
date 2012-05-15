@@ -1,4 +1,4 @@
 Import('env')
 
 # Build and install the shared library:
-env.IMPModuleLib(files=env.IMPModuleGetSources())
+env.IMPModuleLib(files=env.IMPModuleGetSources()+[File(env['builddir']+"/src/RMF.pb.cpp")])
