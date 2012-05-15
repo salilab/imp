@@ -17,13 +17,39 @@ scons_tools.dependency.boost.add_boost_library(env, "Thread", "thread",
                                                'boost/thread/mutex.hpp',
                                                body="boost::mutex p;",
                                                extra_boost_libs=["system"])
+scons_tools.dependency.add_external_library(env, "ProtoBuf", ["protobuf"],
+                                            "google/protobuf/text_format.h")
 
 olinktest=env['linktest']
 env['linktest']=False
-env.IMPModuleBuild(version='nightly-14/5/2012',
+oenv=env.IMPModuleBuild(version='nightly-14/5/2012',
                    required_modules=[],
-                   required_dependencies=['HDF5', "Boost.FileSystem", "Boost.Thread"],
+                   required_dependencies=['HDF5', "Boost.FileSystem",
+                                          "Boost.Thread"],
+                   optional_dependencies=["ProtoBuf"],
                    module='RMF', module_libname="RMF", module_pylibname="_RMF",
                    module_include_path="RMF",
                    module_preproc="RMF", module_namespace="RMF", data=False)
+
+if oenv:
+    oenv.Append(CPPPATH=[Dir(env['builddir']+"/src")])
+    """cat %(tmpdir)s/RMF.pb.cc | sed "s#data/RMF.pb.h#RMF/internal/proto.hpp#g"> %(targetcc)s"""
+    def build_protoc(target, source, env):
+        cmd="""mkdir -p %(tmpdir)s;
+cp %(source)s %(tmpdir)s
+cd %(tmpdir)s; protoc RMF.proto --cpp_out=%(tmpdir)s --python_out=%(tmpdir)s
+mv %(tmpdir)s/RMF.pb.cc %(targetcc)s
+mv %(tmpdir)s/RMF.pb.h %(targeth)s
+mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
+"""%{"tmpdir":Dir(env['builddir']+"/tmp").abspath,
+     "targetcc":target[0].path,
+     "targeth":target[1].path,
+     "targetpy":target[2].path,
+     "source":source[0].path}
+        env.Execute(cmd)
+    oenv['BUILDERS']['Protoc']=Builder(action=build_protoc)
+    oenv.Protoc(source=[File("./data/RMF.proto")],
+               target=[File(env['builddir']+"/src/RMF.pb.cpp"),
+                       File(env['builddir']+"/src/RMF.pb.h"),
+                       File(env['builddir']+"/src/_RMFproto.py")])
 env['linktest']=olinktest
