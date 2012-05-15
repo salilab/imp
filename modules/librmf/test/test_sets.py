@@ -34,5 +34,27 @@ class GenericTest(RMF.TestCase):
         self._test_set(f, 3)
         self._test_set(f, 4)
 
+    def test_perturbed_pairs(self):
+        """Test node pairs"""
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.mh"))
+        r= f.get_root_node()
+        for i in range(0,10):
+            cs= r.add_child(str(i), RMF.GEOMETRY)
+        ch= r.get_children()
+        added=[]
+        for i in range(0,5):
+            tpl= random.sample(ch, 2)
+            tpl.sort()
+            if tpl not in added:
+                added.append(tpl)
+                print tpl
+                t= f.add_node_pair(tpl, RMF.BOND)
+        ts= f.get_node_pairs()
+        cat= f.add_pair_category("hi")
+        k= f.add_float_key(cat, "v", False)
+        for t in ts:
+            t.set_value(k, float(t.get_node(0).get_name()))
+        for t in ts:
+            self.assertEqual(t.get_value(k), float(t.get_node(0).get_name()))
 if __name__ == '__main__':
     unittest.main()
