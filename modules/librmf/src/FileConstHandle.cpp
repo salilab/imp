@@ -28,17 +28,6 @@ std::string FileConstHandle::get_description() const {
   return shared_->get_description();
 }
 
-vector<std::pair<NodeConstHandle, NodeConstHandle> >
-FileConstHandle::get_bonds() const {
-  vector<std::pair<NodeConstHandle, NodeConstHandle> >
-    ret(get_number_of_bonds());
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= get_bond(i);
-  }
-  return ret;
-}
-
-
 void FileConstHandle::flush() {
   shared_->flush();
 }

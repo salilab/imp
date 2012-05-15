@@ -145,12 +145,6 @@ namespace RMF {
 
       virtual unsigned int get_number_of_frames() const=0;
 
-      // backwards compat
-      void add_bond( int ida,  int idb,  int type);
-      unsigned int get_number_of_bonds() const;
-      boost::tuple<int,int,int> get_bond(unsigned int i) const;
-
-
       //SharedData(HDF5Group g, bool create);
       virtual ~SharedData();
       virtual std::string get_name(unsigned int node) const=0;

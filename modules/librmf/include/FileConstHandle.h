@@ -270,24 +270,6 @@ namespace RMF {
       return shared_->get_has_user_data(index);
     }
 
-#ifndef IMP_DOXYGEN
-    /** \name Bonds
-        The hierarchy also contains information about bonds connecting
-        arbitrary nodes in the hierarchy.
-        @{
-    */
-    unsigned int get_number_of_bonds() const {
-      return shared_->get_number_of_bonds();
-    }
-    BondPair get_bond(unsigned int i) const {
-      boost::tuple<int,int,int> t= shared_->get_bond(i);
-      return std::make_pair(get_node_from_id(NodeID(t.get<0>())),
-                            get_node_from_id(NodeID(t.get<1>())));
-    }
-    BondPairs get_bonds() const;
-    /** @} */
-#endif
-
     template <int Arity>
       unsigned int get_number_of_node_sets() const {
       return shared_->get_number_of_sets(Arity);
