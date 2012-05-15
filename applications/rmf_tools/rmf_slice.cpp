@@ -27,20 +27,10 @@ int main(int argc, char **argv) {
     IMP::set_log_level(IMP::SILENT);
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     RMF::FileHandle orh= RMF::create_rmf_file(output);
-    IMP_NEW(IMP::Model, m, ());
-    IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
-    IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
-    IMP::rmf::RMFRestraints rs= IMP::rmf::create_restraints(rh, m);
-    IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
-
-    IMP::rmf::add_hierarchies(orh, hs);
-    IMP::rmf::add_particles(orh, ps);
-    IMP::rmf::add_restraints(orh, rs);
-    IMP::rmf::add_geometries(orh, gs);
+    RMF::copy_structure(rh, orh);
 
     IMP_FOR_EACH_FRAME(rh.get_number_of_frames()) {
-      IMP::rmf::load_frame(rh, current_frame);
-      IMP::rmf::save_frame(orh, frame_iteration);
+      RMF::copy_frame(rh, orh, current_frame, frame_iteration);
     }
     return 0;
   } catch (const IMP::Exception &e) {
