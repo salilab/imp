@@ -58,10 +58,7 @@ namespace RMF {
     virtual unsigned int                                                \
     get_number_of_##lcname##_keys_##Arity(int category_id,              \
                                           bool per_frame) const=0;      \
-    virtual std::string get_name(Key<Ucname##Traits, Arity> k) const =0; \
-    virtual Key<Ucname##Traits, Arity>                                  \
-    get_##lcname##_key_##Arity(int category_id,                         \
-                               std::string name, bool per_frame) const=0
+    virtual std::string get_name(Key<Ucname##Traits, Arity> k) const =0
 
 #define IMP_RMF_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue,     \
                             PassValues, ReturnValues)                   \
@@ -183,15 +180,6 @@ namespace RMF {
     public:                                                             \
     typedef Key<Ucname##Traits, Arity> K;                               \
     typedef vector<K > Ks;                                              \
-    static K get_key( const SharedData *p, int category_id,             \
-                      std::string name, bool per_frame) {               \
-      return p->get_##lcname##_key_##Arity(category_id, name, per_frame); \
-    }                                                                   \
-    static bool get_has_key( const SharedData *p, int category_id,      \
-                             std::string name, bool per_frame) {        \
-      return p->get_##lcname##_key_##Arity(category_id, name, per_frame) \
-        != K();                                                         \
-    }                                                                   \
     static unsigned int get_number_of_keys( const SharedData *p,        \
                                             int category_id,            \
                                             bool per_frame) {           \
