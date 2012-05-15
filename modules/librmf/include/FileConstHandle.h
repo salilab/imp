@@ -24,32 +24,31 @@
                                              PassValue,                 \
                                              ReturnValue,               \
                                              PassValues, ReturnValues,  \
-                                             Arity)                     \
-    ArityName##UCName##Key get_##lcname##_key(ArityName##Category category_id, \
-                                              std::string nm,           \
-                                              bool per_frame) const {   \
-      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
-        ::get_key(shared_.get(), category_id.get_index(), nm, per_frame); \
-    }                                                                   \
-    bool get_has_##lcname##_key(ArityName##Category category_id,        \
-                                std::string nm, bool per_frame) const { \
-      return internal::ConstGenericSharedData<UCName##Traits, Arity>    \
-        ::get_has_key(shared_.get(), category_id.get_index(), nm,       \
-                      per_frame);                                       \
-    }                                                                   \
-    std::string get_name(ArityName##UCName##Key k) const {              \
-      return shared_->get_name(k);                                      \
-    }                                                                   \
-    ArityName##Category get_category(ArityName##UCName##Key k) const {  \
-      return k.get_category();                                          \
-    }                                                                   \
-    ArityName##UCName##Key##s                                           \
-      get_##lcname##_keys(ArityName##Category category_id) const {      \
-      return get_keys<UCName##Traits, Arity>(category_id);              \
-    }                                                                   \
-    bool get_is_per_frame(ArityName##UCName##Key k) const {             \
-      return shared_->get_is_per_frame(k);                              \
-    }
+                                                   Arity)               \
+  ArityName##UCName##Key                                                \
+  get_##lcname##_key(ArityName##Category category_id,                   \
+                     std::string nm,                                    \
+                     bool per_frame) const {                            \
+    return get_key<UCName##Traits, Arity>(category_id, nm, per_frame);  \
+  }                                                                     \
+  bool get_has_##lcname##_key(ArityName##Category category_id,          \
+                              std::string nm, bool per_frame) const {   \
+    return get_has_key<UCName##Traits, Arity>(category_id, nm,          \
+                                              per_frame);               \
+  }                                                                     \
+  std::string get_name(ArityName##UCName##Key k) const {                \
+    return shared_->get_name(k);                                        \
+  }                                                                     \
+  ArityName##Category get_category(ArityName##UCName##Key k) const {    \
+    return k.get_category();                                            \
+  }                                                                     \
+  ArityName##UCName##Key##s                                             \
+  get_##lcname##_keys(ArityName##Category category_id) const {          \
+    return get_keys<UCName##Traits, Arity>(category_id);                \
+  }                                                                     \
+  bool get_is_per_frame(ArityName##UCName##Key k) const {               \
+    return shared_->get_is_per_frame(k);                                \
+  }
 
 #ifndef IMP_DOXYGEN
 #define IMP_HDF5_ROOT_CONST_KEY_TYPE_METHODS(lcname, UCName, PassValue,\
@@ -168,20 +167,25 @@ namespace RMF {
     template <class TypeT, int Arity>
       Key<TypeT, Arity> get_key(CategoryD<Arity> category_id,
                                 std::string name, bool per_frame) const {
-      if (category_id == CategoryD<Arity>()
-          || !get_has_key<TypeT>(category_id, name, per_frame)) {
+      if (category_id == CategoryD<Arity>()) {
         return Key<TypeT, Arity>();
       } else {
-        return internal::ConstGenericSharedData<TypeT, Arity>
-          ::get_key(shared_.get(), category_id.get_index(), name, per_frame);
+        unsigned int num
+          =internal::ConstGenericSharedData<TypeT, Arity>
+          ::get_number_of_keys(shared_.get(), category_id.get_index(),
+                               per_frame);
+        for (unsigned int i=0; i< num; ++i) {
+          Key<TypeT, Arity> k(category_id, i, per_frame);
+          if (shared_->get_name(k) == name) return k;
+        }
+        return Key<TypeT, Arity> ();
       }
     }
     template <class TypeT, int Arity>
       bool get_has_key(CategoryD<Arity> category_id,
                        std::string name, bool per_frame) const {
-      if (category_id == CategoryD<Arity>()) return false;
-      return internal::ConstGenericSharedData<TypeT, Arity>
-        ::get_has_key(shared_.get(), category_id.get_index(), name, per_frame);
+      return get_key<TypeT, Arity>(category_id, name, per_frame)
+        != Key<TypeT, Arity>();
     }
     /** Get a list of all keys of the given type,
      */

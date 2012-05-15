@@ -88,13 +88,6 @@ namespace RMF {
     }                                                                   \
     std::string get_name(Key<Ucname##Traits, Arity> k) const {          \
       return get_name_impl(k);                                          \
-    }                                                                   \
-    Key<Ucname##Traits, Arity>                                          \
-    get_##lcname##_key_##Arity(int category_id,                         \
-                               std::string name,                        \
-                               bool per_frame) const {                  \
-      return get_key_impl<Ucname##Traits, Arity>(category_id, name,     \
-                                                 per_frame);            \
     }
 
 #define IMP_RMF_HDF5_SHARED_TYPE(lcname, Ucname, PassValue, ReturnValue, \
