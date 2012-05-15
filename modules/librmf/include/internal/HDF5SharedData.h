@@ -620,7 +620,6 @@ namespace RMF {
 
       int add_category(int Arity, std::string name);
       int get_category(int Arity, std::string name) const;
-      Strings get_category_names(int Arity) const;
       Ints get_categories(int Arity) const;
       std::string get_category_name(int Arity, unsigned int kc) const  {
         IMP_RMF_USAGE_CHECK(category_names_cache_.size()
