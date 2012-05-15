@@ -43,9 +43,6 @@ class Key {
     else if (ci_ > o.ci_) return 1;
     else return 0;
   }
-  Key(CategoryD<Arity> category_id,
-      int i, bool pf): i_(i), ci_(category_id),
-                       pf_(pf) {}
   int get_index() const {
     return i_;
   }
@@ -59,6 +56,11 @@ class Key {
       return Arity;
     }
 public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  Key(CategoryD<Arity> category_id,
+      int i, bool pf): i_(i), ci_(category_id),
+                       pf_(pf) {}
+#endif
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
     IMP_RMF_SHOWABLE(Key, "(Category index: " << ci_
