@@ -129,7 +129,7 @@ struct NonNegativeChecker {
       }
     }
     if (pfk_ != FloatKey()) {
-      for (unsigned int i=0; i< node.get_file().get_number_of_frames(pfk_);
+      for (unsigned int i=0; i< node.get_file().get_number_of_frames();
            ++i) {
         if (node.get_has_value(pfk_, i)) {
           double v= node.get_value(pfk_, i);
@@ -235,7 +235,7 @@ class KeyValidator: public NodeValidator {
     for (unsigned int i=0; i< keys.size(); ++i) {
       if (!node.get_has_value(keys[i].second)) continue;
       unsigned int fn
-        =node.get_file().get_number_of_frames(keys[i].first);
+        =node.get_file().get_number_of_frames();
       for (unsigned int j=0; j< fn; ++j) {
         if (node.get_has_value(keys[i].first, j)) {
           out << "Node " << node
