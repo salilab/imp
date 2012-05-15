@@ -366,7 +366,7 @@ namespace RMF {
                             PassValues, ReturnValues)               \
     {                                                               \
     vector<Key<Ucname##Traits, 1> > keys                            \
-      = get_keys_impl<Ucname##Traits, 1>(i);                        \
+      = get_keys_impl<Ucname##Traits, 1>(i, true);                  \
     for (unsigned int j=0; j< keys.size(); ++j) {                   \
       if (keys[j].get_is_per_frame()) {                             \
         ret=std::max<int>(ret, get_number_of_frames(keys[j]));      \
