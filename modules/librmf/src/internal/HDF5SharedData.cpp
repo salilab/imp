@@ -365,19 +365,19 @@ namespace RMF {
 #define IMP_RMF_SEARCH_KEYS(lcname, Ucname, PassValue, ReturnValue, \
                             PassValues, ReturnValues)               \
     {                                                               \
-    vector<Key<Ucname##Traits, 1> > keys                            \
-      = get_keys_impl<Ucname##Traits, 1>(i, true);                  \
-    for (unsigned int j=0; j< keys.size(); ++j) {                   \
-      if (keys[j].get_is_per_frame()) {                             \
-        ret=std::max<int>(ret, get_number_of_frames(keys[j]));      \
+      unsigned int keys                                             \
+        = get_number_of_keys_impl<Ucname##Traits, 1>(i, true);      \
+      for (unsigned int j=0; j< keys; ++j) {                        \
+        Key<Ucname##Traits, 1> k(cat, j, true);                     \
+        ret=std::max<int>(ret, get_number_of_frames(k));            \
       }                                                             \
-    }                                                               \
-  }
+    }
 
     unsigned int HDF5SharedData::get_number_of_frames() const {
       unsigned int cats= get_number_of_categories(1);
       int ret=0;
       for (unsigned int i=0; i< cats; ++i) {
+        CategoryD<1> cat(i);
         IMP_RMF_FOREACH_TYPE(IMP_RMF_SEARCH_KEYS);
       }
       return ret;
