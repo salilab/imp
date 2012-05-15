@@ -20,6 +20,20 @@
 IMPRMF_BEGIN_NAMESPACE
 
 namespace {
+
+std::string get_good_name(Particle * h) {
+  if (atom::Atom::particle_is_instance(h)) {
+    return atom::Atom(h).get_atom_type().get_string();
+  } else if (atom::Residue::particle_is_instance(h)) {
+    std::ostringstream oss;
+    oss << atom::Residue(h).get_index();
+    return oss.str();
+  } else if (atom::Chain::particle_is_instance(h)) {
+    return std::string(1, atom::Chain(h).get_id());
+  } else {
+    return h->get_name();
+  }
+}
 atom::Bonded get_bonded(Particle *p) {
   if (atom::Bonded::particle_is_instance(p)) {
     return atom::Bonded(p);
@@ -363,7 +377,8 @@ void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
   for (unsigned int i=0;
        i < atom::Hierarchy(p).get_number_of_children();++i) {
     Particle *pc=atom::Hierarchy(p).get_child(i);
-    RMF::NodeHandle curc=cur.add_child(pc->get_name(), RMF::REPRESENTATION);
+    RMF::NodeHandle curc=cur.add_child(get_good_name(pc),
+                                       RMF::REPRESENTATION);
     do_add_recursive(root, pc, curc);
   }
 }
