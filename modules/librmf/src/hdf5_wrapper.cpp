@@ -108,6 +108,7 @@ herr_t error_function(hid_t, void *) {
 }
 
 HDF5File create_hdf5_file(std::string name) {
+  IMP_HDF5_CALL(H5open());
   IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fcreate(name.c_str(),
@@ -117,6 +118,7 @@ HDF5File create_hdf5_file(std::string name) {
 }
 
 HDF5File open_hdf5_file(std::string name) {
+  IMP_HDF5_CALL(H5open());
   IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
@@ -126,6 +128,7 @@ HDF5File open_hdf5_file(std::string name) {
 }
 
 HDF5ConstFile open_hdf5_file_read_only(std::string name) {
+  IMP_HDF5_CALL(H5open());
   IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
   IMP_HDF5_HANDLE(plist, get_parameters(), H5Pclose);
   IMP_HDF5_NEW_HANDLE(h, H5Fopen(name.c_str(),
