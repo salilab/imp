@@ -80,9 +80,11 @@ namespace RMF {
       return add_key_impl<Ucname##Traits, Arity>(category_id,           \
                                                  name, per_frame);      \
     }                                                                   \
-    vector<Key<Ucname##Traits, Arity> >                                 \
-    get_##lcname##_keys_##Arity(int category_id, bool per_frame) const { \
-      return get_keys_impl<Ucname##Traits, Arity>(category_id, per_frame); \
+    unsigned int                                                        \
+    get_number_of_##lcname##_keys_##Arity(int category_id,              \
+                                          bool per_frame) const {       \
+      return get_number_of_keys_impl<Ucname##Traits, Arity>(category_id, \
+                                                            per_frame); \
     }                                                                   \
     std::string get_name(Key<Ucname##Traits, Arity> k) const {          \
       return get_name_impl(k);                                          \
@@ -520,18 +522,14 @@ namespace RMF {
 
       // create the data sets and add rows to the table
       template <class TypeTraits, int Arity>
-        vector<Key<TypeTraits, Arity> >
-        get_keys_impl(int category_id, bool per_frame) const {
-        vector<Key<TypeTraits, Arity> > ret;
+        unsigned int
+        get_number_of_keys_impl(int category_id, bool per_frame) const {
         HDF5DataSetD<StringTraits, 1>& nameds
           = get_key_list_data_set<TypeTraits>(category_id, Arity,
                                               per_frame, false);
-        if (!nameds) return ret;
+        if (!nameds) return 0;
         HDF5DataSetIndexD<1> sz= nameds.get_size();
-        for (unsigned int j=0; j< sz[0]; ++j) {
-          ret.push_back(Key<TypeTraits, Arity>(category_id, j, per_frame));
-        }
-        return ret;
+        return sz[0];
       }
 
       template <class TypeTraits, int Arity>
