@@ -63,9 +63,7 @@ namespace {
         if (n.get_file().get_is_per_frame(ks[i])) {
           out << std::endl << prefix
               << n.get_file().get_name(ks[i]) << ": "
-              << Showable(n.get_value(ks[i], frame))
-              << " (" << n.get_file().get_number_of_frames(ks[i])
-              << ")";
+              << Showable(n.get_value(ks[i], frame));
         } else {
           out << std::endl << prefix
               << n.get_file().get_name(ks[i]) << ": "

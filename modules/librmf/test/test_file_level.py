@@ -29,7 +29,7 @@ class GenericTest(RMF.TestCase):
         r.set_value(ik, 2, 1)
         self.assertEqual(r.get_value(ik, 1), 2)
         self.assertEqual(r.get_value(ik, 0), 1)
-        self.assertEqual(f.get_number_of_frames(ik), 2)
+        self.assertEqual(f.get_number_of_frames(), 2)
     def test_perturbed_values(self):
         """Test null values"""
         f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))

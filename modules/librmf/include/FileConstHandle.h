@@ -47,10 +47,6 @@
       get_##lcname##_keys(ArityName##Category category_id) const {      \
       return get_keys<UCName##Traits, Arity>(category_id);              \
     }                                                                   \
-    unsigned int get_number_of_frames(ArityName##UCName##Key k) const { \
-      if (k== ArityName##UCName##Key()) return 0;                       \
-      return shared_->get_number_of_frames(k);                          \
-    }                                                                   \
     bool get_is_per_frame(ArityName##UCName##Key k) const {             \
       return shared_->get_is_per_frame(k);                              \
     }
@@ -118,11 +114,6 @@
 namespace RMF {
 
   class NodeConstHandle;
-
-#ifndef IMP_DOXYGEN
-  typedef std::pair<NodeConstHandle, NodeConstHandle> BondPair;
-  typedef vector<BondPair> BondPairs;
-#endif
 
   //! A handle for a read-only RMF file
   /** Use this handle to perform operations relevant to the
