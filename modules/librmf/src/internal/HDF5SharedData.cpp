@@ -347,14 +347,6 @@ namespace RMF {
     IMP_RMF_END_OPERATION("adding category to list");
     IMP_RMF_END_FILE(get_file_name());
   }
-    Strings HDF5SharedData::get_category_names(int Arity) const {
-      Ints cats= get_categories(Arity);
-      Strings ret(cats.size());
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ret[i]= get_category_name(Arity, cats[i]);
-      }
-      return ret;
-    }
     Ints HDF5SharedData::get_categories(int Arity) const {
       unsigned int sz= category_names_cache_[Arity-1].size();
       Ints ret;
