@@ -238,7 +238,6 @@ namespace RMF {
       check_node(cur);
     }
   }
-
   unsigned int HDF5SharedData::get_number_of_sets(int arity) const {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       return 0;
@@ -251,19 +250,6 @@ namespace RMF {
       }
     }
     return ct;
-  }
-  RMF::Indexes HDF5SharedData::get_set_indexes(int arity) const {
-    if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
-      return RMF::Indexes();
-    }
-    HDF5DataSetIndexD<2> sz= node_data_[arity-1].get_size();
-    RMF::Indexes ret;
-    for (unsigned int i=0; i< sz[0]; ++i) {
-      if (node_data_[arity-1].get_value(HDF5DataSetIndexD<2>(i, 0)) >=0) {
-        ret.push_back(i);
-      }
-    }
-    return ret;
   }
   unsigned int HDF5SharedData::add_set( RMF::Indexes nis, int t) {
     IMP_RMF_BEGIN_FILE;

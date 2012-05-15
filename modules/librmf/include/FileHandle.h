@@ -151,10 +151,10 @@ namespace RMF {
 
     template <int Arity>
       vector<NodeSetHandle<Arity> > get_node_sets() const {
-      Indexes ids= get_shared_data()->get_set_indexes(Arity);
-      vector<NodeSetHandle<Arity> > ret(ids.size());
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ret[i]=NodeSetHandle<Arity>(ids[i], get_shared_data());
+      unsigned int num= get_shared_data()->get_number_of_sets(Arity);
+    vector<NodeSetHandle<Arity> > ret(num);
+    for (unsigned int i=0; i< num; ++i) {
+      ret[i]=NodeSetHandle<Arity>(i, get_shared_data());
       }
       return ret;
     }

@@ -146,7 +146,6 @@ namespace RMF {
 
       virtual void check_set(int arity, unsigned int index) const=0;
       virtual unsigned int get_number_of_sets(int arity) const=0;
-      virtual RMF::Indexes get_set_indexes(int Arity) const=0;
       virtual unsigned int add_set( RMF::Indexes nis, int t)=0;
       virtual unsigned int get_set_member(int Arity, unsigned int index,
                                           int member_index) const=0;
