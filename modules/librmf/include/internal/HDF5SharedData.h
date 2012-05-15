@@ -571,7 +571,6 @@ namespace RMF {
 
       void check_set(int arity, unsigned int index) const;
       unsigned int get_number_of_sets(int arity) const;
-      RMF::Indexes get_set_indexes(int Arity) const;
       unsigned int add_set( RMF::Indexes nis, int t);
       unsigned int get_set_member(int Arity, unsigned int index,
                                     int member_index) const;

@@ -282,10 +282,10 @@ namespace RMF {
     }
     template <int Arity>
       vector<NodeSetConstHandle<Arity> > get_node_sets() const {
-      Indexes ids= shared_->get_set_indexes(Arity);
-      vector<NodeSetConstHandle<Arity> > ret(ids.size());
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ret[i]=NodeSetConstHandle<Arity>(ids[i], shared_.get());
+      unsigned int num= shared_->get_number_of_sets(Arity);
+      vector<NodeSetConstHandle<Arity> > ret(num);
+      for (unsigned int i=0; i< num; ++i) {
+        ret[i]=NodeSetConstHandle<Arity>(i, shared_.get());
       }
       return ret;
     }
