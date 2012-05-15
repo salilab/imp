@@ -26,6 +26,9 @@ def setup_excludes(cov):
     cov.exclude("^except (Name|Attribute)Error:")
     cov.exclude("^\s+weakref_proxy =")
     cov.exclude("^def [sg]et_check_level")
+    cov.exclude("^\s+__setattr__ = lambda self, name, value: _swig_setattr")
+    cov.exclude("^\s+__getattr__ = lambda self, name: _swig_getattr")
+    cov.exclude("^\s+__swig_[sg]etmethods__[\".*\"] = lambda ")
 
 def setup(env):
     """Make sure that coverage works for subprocesses"""
