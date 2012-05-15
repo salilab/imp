@@ -1,7 +1,7 @@
 import RMF
 
 rmf= RMF.create_rmf_file("example.rmf")
-
+nframes=10
 colored_factory= RMF.ColoredFactory(rmf)
 particle_factory= RMF.ParticleFactory(rmf)
 intermediate_particle_factory= RMF.IntermediateParticleFactory(rmf)
@@ -27,53 +27,54 @@ dd= domain_factory.get(domain)
 dd.set_indexes(0,2)
 
 atoms=[]
-res_data=[( "MET", 0 , [ ("N", 7 , 14.0067 , 1.85000002384 ,
-                          [24.277000427246094, 8.3739995956420898, -9.8540000915527344] ,),
-                         ("CA", 6 , 12.0107 , 2.27500009537 ,
-                          [24.403999328613281, 9.8590002059936523, -9.939000129699707] ,),
-                         ("C", 6 , 12.0107 , 2.0 ,
-                          [25.813999176025391, 10.24899959564209, -10.359000205993652] ,),
-                         ("O", 8 , 15.9994 , 1.70000004768 ,
-                          [26.74799919128418, 9.4689998626708984, -10.196999549865723] ,),
-                         ("CB", 6 , 12.0107 , 2.17499995232 ,
-                          [24.069999694824219, 10.494999885559082, -8.5959997177124023] ,),
-                         ("CG", 6 , 12.0107 , 2.17499995232 ,
-                          [24.879999160766602, 9.939000129699707, -7.4419999122619629] ,),
-                         ("SD", 16 , 32.065 , 2.0 ,
-                          [24.261999130249023, 10.555000305175781, -5.8730001449584961] ,),
-                         ("CE", 6 , 12.0107 , 2.05999994278 ,
-                          [24.822000503540039, 12.265999794006348, -5.9670000076293945] ,),
-                         ],),
-          ( "VAL", 1 , [ ("N", 7 , 14.0067 , 1.85000002384 ,
-                          [25.964000701904297, 11.453000068664551, -10.902999877929688] ,),
-                         ("CA", 6 , 12.0107 , 2.27500009537 ,
-                          [27.26300048828125, 11.923999786376953, -11.359000205993652] ,),
-                         ("C", 6 , 12.0107 , 2.0 ,
-                          [27.392000198364258, 13.428000450134277, -11.114999771118164] ,),
-                         ("O", 8 , 15.9994 , 1.70000004768 ,
-                          [26.443000793457031, 14.184000015258789, -11.326999664306641] ,),
-                         ("CB", 6 , 12.0107 , 2.27500009537 ,
-                          [27.454999923706055, 11.630999565124512, -12.878000259399414] ,),
-                         ("CG1", 6 , 12.0107 , 2.05999994278 ,
-                          [28.756000518798828, 12.208999633789062, -13.381999969482422] ,),
-                         ("CG2", 6 , 12.0107 , 2.05999994278 ,
-                          [27.431999206542969, 10.130999565124512, -13.140000343322754] ,),
-                         ],),
-          ( "LEU", 2 , [ ("N", 7 , 14.0067 , 1.85000002384 ,
-                          [28.555000305175781, 13.854999542236328, -10.63599967956543] ,),
-                         ("CA", 6 , 12.0107 , 2.27500009537 ,
-                          [28.797000885009766, 15.269000053405762, -10.390000343322754] ,),
-                         ("C", 6 , 12.0107 , 2.0 , [29.492000579833984, 15.902999877929688, -11.585000038146973] ,),
-                         ("O", 8 , 15.9994 , 1.70000004768 ,
-                          [30.25, 15.239999771118164, -12.305999755859375] ,),
-                         ("CB", 6 , 12.0107 , 2.17499995232 ,
-                          [29.687999725341797, 15.470000267028809, -9.1520004272460938] ,),
-                         ("CG", 6 , 12.0107 , 2.27500009537 ,
-                          [29.083999633789062, 15.416000366210938, -7.750999927520752] ,),
-                         ("CD1", 6 , 12.0107 , 2.05999994278 ,
-                          [28.729999542236328, 13.98799991607666, -7.3899998664855957] ,),
-                         ("CD2", 6 , 12.0107 , 2.05999994278 ,
-                          [30.084999084472656, 16.007999420166016, -6.7760000228881836] ,),]),
+res_data=[( "MET", 0 , [ ("N", 7 , 14.00 , 1.85 ,
+                          [24.27, 8.37, -9.85] ),
+                         ("CA", 6 , 12.01 , 2.27 ,
+                          [24.40, 9.85, -9.93]),
+                         ("C", 6 , 12.01 , 2.0 ,
+                          [25.81, 10.24, -10.35] ),
+                         ("O", 8 , 15.99 , 1.70 ,
+                          [26.74, 9.46, -10.19]),
+                         ("CB", 6 , 12.0107 , 2.17 ,
+                          [24.06, 10.49, -8.59] ),
+                         ("CG", 6 , 12.01 , 2.17 ,
+                          [24.87, 9.93, -7.44] ),
+                         ("SD", 16 , 32.06 , 2.0 ,
+                          [24.26, 10.55, -5.87] ),
+                         ("CE", 6 , 12.01 , 2.05 ,
+                          [24.82, 12.26, -5.96] ),
+                         ]),
+          ( "VAL", 1 , [ ("N", 7 , 14.00 , 1.85 ,
+                          [25.96, 11.45, -10.90] ),
+                         ("CA", 6 , 12.01 , 2.27 ,
+                          [27.26, 11.92, -11.35] ),
+                         ("C", 6 , 12.01 , 2.0 ,
+                          [27.39, 13.42, -11.11] ),
+                         ("O", 8 , 15.99 , 1.70 ,
+                          [26.44, 14.18, -11.32] ),
+                         ("CB", 6 , 12.01 , 2.27 ,
+                          [27.45, 11.63, -12.87] ),
+                         ("CG1", 6 , 12.01 , 2.05 ,
+                          [28.75, 12.20, -13.38] ),
+                         ("CG2", 6 , 12.01 , 2.05 ,
+                          [27.43, 10.13, -13.14] ),
+                         ]),
+          ( "LEU", 2 , [ ("N", 7 , 14.00 , 1.85 ,
+                          [28.55, 13.85, -10.63] ),
+                         ("CA", 6 , 12.01 , 2.27 ,
+                          [28.79, 15.26, -10.39] ),
+                         ("C", 6 , 12.01 , 2.0 ,
+                          [29.49, 15.90, -11.58] ),
+                         ("O", 8 , 15.99 , 1.70 ,
+                          [30.25, 15.23, -12.30] ),
+                         ("CB", 6 , 12.01 , 2.17 ,
+                          [29.68, 15.47, -9.15] ),
+                         ("CG", 6 , 12.01 , 2.27 ,
+                          [29.08, 15.41, -7.75] ),
+                         ("CD1", 6 , 12.01 , 2.05 ,
+                          [28.72, 13.98, -7.38] ),
+                         ("CD2", 6 , 12.01 , 2.05 ,
+                          [30.08, 16.00, -6.77] )]),
 ]
 
 for rdata in res_data:
@@ -88,12 +89,82 @@ for rdata in res_data:
         ad.set_element(adata[1])
         ad.set_mass(adata[2])
         ad.set_radius(adata[3])
-        for i in range(0,4):
+        for i in range(0,nframes):
             adpf= atom_factory.get(a, i)
             adpf.set_coordinates([adata[4][0]+i,
                                   adata[4][1]+i,
                                   adata[4][2]+i])
-bond_data=[(1,4),(0,1),(1,2),(2,3),(4,5),(5,6),(6,7),(2,8),(9,12),(8,9),(9,10),(10,11),(12,13),(12,14),(10,15),(16,19),(15,16),(16,17),(17,18),(19,20),(20,21),(20,22)]
+bond_data=[(1,4),(0,1),(1,2),(2,3),(4,5),(5,6),(6,7),(2,8),(9,12),(8,9),(9,10),
+           (10,11),(12,13),(12,14),(10,15),(16,19),(15,16),(16,17),(17,18),(19,20),
+           (20,21),(20,22)]
+
+
+bond_scores=chain.add_child("bond scores", RMF.FEATURE)
 
 for b in bond_data:
-    rmf.add_node_pair([atoms[b[0]], atoms[b[1]]], RMF.BOND)
+    eps=[atoms[b[0]], atoms[b[1]]]
+    rmf.add_node_pair(eps, RMF.BOND)
+    bd= bond_scores.add_child(str(b), RMF.FEATURE)
+    sd= score_factory.get(bd)
+    sd.set_score(0)
+    sd.set_representation(eps)
+
+# now add some coase grained molecules
+cgchain= rmf.get_root_node().add_child("1", RMF.REPRESENTATION)
+cg_bond_scores=cgchain.add_child("bond scores", RMF.FEATURE)
+for i in range(0,5):
+    r= cgchain.add_child(str(i), RMF.REPRESENTATION)
+    rd= residue_factory.get(r)
+    rd.set_type("LEU")
+    rd.set_index(i)
+    pd= particle_factory.get(r)
+    pd.set_mass(120)
+    pd.set_radius(4)
+    cd= colored_factory.get(r)
+    cd.set_rgb_color([1,0,0])
+    if i > 0:
+        bs= cg_bond_scores.add_child(str(i), RMF.FEATURE)
+        sd= score_factory.get(bs)
+        sd.set_representation([last,r])
+    for j in range(0,nframes):
+        pdpf= particle_factory.get(r, j)
+        pdpf.set_coordinates([0, j*i*4, j*2])
+        if i >0:
+            sdpf= score_factory.get(bs, j)
+            sdpf.set_score(j)
+    last=r
+
+
+# now add some geometry floating around
+#group it for kicks
+dg= rmf.get_root_node().add_child("dynamic geometry", RMF.GEOMETRY)
+bn= dg.add_child("ball", RMF.GEOMETRY)
+cn= dg.add_child("cylinder", RMF.GEOMETRY)
+sn= dg.add_child("segment", RMF.GEOMETRY)
+for i in range(0, nframes, 2):
+    bd= ball_factory.get(bn, i)
+    bd.set_radius(i)
+    bd.set_coordinates([10+i, i, i])
+    cd= colored_factory.get(bn)
+    cd.set_rgb_color([float(i)/float(nframes),1,0])
+    cd= cylinder_factory.get(cn, i)
+    cd.set_radius(i)
+    cd.set_coordinates([[10+i, 12+i], [i,i], [i,i]])
+    sd= segment_factory.get(cn, i)
+    sd.set_coordinates([[12+i, 14+i],[i, i], [i,i]])
+
+sg= rmf.get_root_node().add_child("static geometry", RMF.GEOMETRY)
+bn= sg.add_child("ball", RMF.GEOMETRY)
+sn= sg.add_child("segment", RMF.GEOMETRY)
+cn= sg.add_child("cylinder", RMF.GEOMETRY)
+bd= ball_factory.get(bn)
+bd.set_radius(3)
+bd.set_coordinates([-10, 0, 0])
+cd= colored_factory.get(bn)
+cd.set_rgb_color([0,0,1])
+sd= segment_factory.get(cn)
+sd.set_coordinates([[-18, -20], [0,0], [0,0]])
+cd= cylinder_factory.get(cn)
+cd.set_radius(2)
+cd.set_coordinates([[-12, -14], [0, 0], [0,0]])
+print "done"
