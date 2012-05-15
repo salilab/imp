@@ -347,15 +347,9 @@ namespace RMF {
     IMP_RMF_END_OPERATION("adding category to list");
     IMP_RMF_END_FILE(get_file_name());
   }
-    Ints HDF5SharedData::get_categories(int Arity) const {
+    unsigned int HDF5SharedData::get_number_of_categories(int Arity) const {
       unsigned int sz= category_names_cache_[Arity-1].size();
-      Ints ret;
-      for (unsigned int i=0; i< sz; ++i) {
-        if (!category_names_cache_[Arity-1][i].empty()) {
-          ret.push_back(i);
-        }
-      }
-      return ret;
+      return sz;
     }
     int HDF5SharedData::get_category(int Arity, std::string name) const {
       if (category_names_cache_[Arity-1].empty()) {
@@ -372,7 +366,7 @@ namespace RMF {
                             PassValues, ReturnValues)               \
     {                                                               \
     vector<Key<Ucname##Traits, 1> > keys                            \
-    = get_keys_impl<Ucname##Traits, 1>(cats[i]);                    \
+      = get_keys_impl<Ucname##Traits, 1>(i);                        \
     for (unsigned int j=0; j< keys.size(); ++j) {                   \
       if (keys[j].get_is_per_frame()) {                             \
         ret=std::max<int>(ret, get_number_of_frames(keys[j]));      \
@@ -381,9 +375,9 @@ namespace RMF {
   }
 
     unsigned int HDF5SharedData::get_number_of_frames() const {
-      Ints cats= get_categories(1);
+      unsigned int cats= get_number_of_categories(1);
       int ret=0;
-      for (unsigned int i=0; i< cats.size(); ++i) {
+      for (unsigned int i=0; i< cats; ++i) {
         IMP_RMF_FOREACH_TYPE(IMP_RMF_SEARCH_KEYS);
       }
       return ret;

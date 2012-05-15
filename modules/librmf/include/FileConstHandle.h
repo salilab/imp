@@ -314,9 +314,9 @@ namespace RMF {
     }
     template <int Arity>
       vector<CategoryD<Arity> > get_categories() const {
-      Ints r= shared_->get_categories(Arity);
-      vector<CategoryD<Arity> > ret(r.size());
-      for (unsigned int i=0; i< r.size(); ++i) {
+      unsigned int r= shared_->get_number_of_categories(Arity);
+      vector<CategoryD<Arity> > ret(r);
+      for (unsigned int i=0; i< r; ++i) {
         ret[i]= CategoryD<Arity>(i);
       }
       return ret;
