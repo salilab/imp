@@ -144,6 +144,7 @@ namespace RMF {
         case 2:
           return get_2(c);
         };
+        return -1;
       }
       int get(const RMFProto_Quad &c, unsigned int member_index) {
         switch( member_index) {
@@ -156,6 +157,7 @@ namespace RMF {
         case 3:
           return get_3(c);
         }
+        return -1;
       }
 
     }
