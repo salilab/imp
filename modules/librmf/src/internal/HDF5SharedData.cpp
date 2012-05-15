@@ -323,9 +323,6 @@ namespace RMF {
                                              .size(), " vs ",
                                              category_names_[Arity-1]
                                              .get_size()[0]));
-    IMP_RMF_USAGE_CHECK(get_category(Arity, name)==-1,
-                        get_error_message("File already has category ", name,
-                                          " with arity ", Arity));
     if (category_names_[Arity-1]
         == HDF5DataSetD<StringTraits, 1>()) {
       IMP_RMF_BEGIN_OPERATION;
@@ -350,16 +347,6 @@ namespace RMF {
     unsigned int HDF5SharedData::get_number_of_categories(int Arity) const {
       unsigned int sz= category_names_cache_[Arity-1].size();
       return sz;
-    }
-    int HDF5SharedData::get_category(int Arity, std::string name) const {
-      if (category_names_cache_[Arity-1].empty()) {
-        return -1;
-      } else {
-        for (unsigned int i=0; i< category_names_cache_[Arity-1].size(); ++i) {
-          if (category_names_cache_[Arity-1][i]==name) return i;
-      }
-      }
-      return -1;
     }
 
 #define IMP_RMF_SEARCH_KEYS(lcname, Ucname, PassValue, ReturnValue, \
