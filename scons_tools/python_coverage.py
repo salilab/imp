@@ -25,6 +25,7 @@ def setup_excludes(cov):
     cov.exclude("^\s+import _IMP_")
     cov.exclude("^except (Name|Attribute)Error:")
     cov.exclude("^\s+weakref_proxy =")
+    cov.exclude("^except:\s*$")
     cov.exclude("^def [sg]et_check_level")
     cov.exclude("^\s+__setattr__ = lambda self, name, value: _swig_setattr")
     cov.exclude("^\s+__getattr__ = lambda self, name: _swig_getattr")
