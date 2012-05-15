@@ -138,19 +138,17 @@ namespace RMF {
       //SharedData(HDF5Group g, bool create);
       virtual ~SharedData();
       virtual std::string get_name(unsigned int node) const=0;
-      virtual unsigned int get_type(unsigned int node) const=0;
+      virtual unsigned int get_type(unsigned int Arity,
+                                    unsigned int node) const=0;
 
       virtual int add_child(int node, std::string name, int t)=0;
       virtual Ints get_children(int node) const=0;
       virtual void save_frames_hint(int i)=0;
 
-      virtual void check_set(int arity, unsigned int index) const=0;
       virtual unsigned int get_number_of_sets(int arity) const=0;
       virtual unsigned int add_set( RMF::Indexes nis, int t)=0;
       virtual unsigned int get_set_member(int Arity, unsigned int index,
                                           int member_index) const=0;
-      virtual unsigned int get_set_type(int Arity, unsigned int index) const=0;
-
       virtual int add_category(int Arity, std::string name)=0;
       virtual unsigned int get_number_of_categories(int Arity) const=0;
       virtual std::string get_category_name(int Arity, unsigned int kc) const=0;

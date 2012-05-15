@@ -181,7 +181,7 @@ protected:
 
   //! get the type of this node
   NodeType get_type() const {
-    return NodeType(shared_->get_type(node_));
+    return NodeType(shared_->get_type(1, node_));
   }
   //! get a unique id for this node
   NodeID get_id() const {
