@@ -43,23 +43,23 @@ class Key {
     else if (ci_ > o.ci_) return 1;
     else return 0;
   }
-  int get_index() const {
-    return i_;
-  }
+public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  Key(CategoryD<Arity> category_id,
+      int i, bool pf): i_(i), ci_(category_id),
+                       pf_(pf) {}
   bool get_is_per_frame() const {
     return pf_;
   }
   CategoryD<Arity> get_category() const {
     return ci_;
   }
+  int get_index() const {
+    return i_;
+  }
     int get_arity() const {
       return Arity;
     }
-public:
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  Key(CategoryD<Arity> category_id,
-      int i, bool pf): i_(i), ci_(category_id),
-                       pf_(pf) {}
 #endif
   typedef TypeTraitsT TypeTraits;
   Key(): i_(-1), ci_(), pf_(false) {}
