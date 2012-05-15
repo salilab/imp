@@ -42,8 +42,6 @@ namespace RMF {
     virtual Ucname##Traits::Type get_value_always(unsigned int node,    \
                                                   Key<Ucname##Traits,Arity> k, \
                                                   unsigned int frame) const=0; \
-    virtual unsigned int get_number_of_frames(Key<Ucname##Traits,       \
-                                              Arity> k) const =0;       \
     virtual Ucname##Traits::Type get_value(unsigned int node,           \
                                            Key<Ucname##Traits, Arity> k, \
                                            unsigned int frame) const =0; \

@@ -50,7 +50,7 @@ template <class TypeT, int Arity, class Handle>
           int skip=-frame;
           std::ostringstream oss;
           bool some=false;
-          for (unsigned int j=0; j< rh.get_number_of_frames(keys[i]); j+=skip) {
+          for (unsigned int j=0; j< rh.get_number_of_frames(); j+=skip) {
             if (j != 0) {
               oss << " ";
             }

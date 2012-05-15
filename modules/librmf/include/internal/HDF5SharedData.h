@@ -59,9 +59,6 @@ namespace RMF {
                                           unsigned int frame) const {   \
       return get_value_always_impl(node, k, frame);                     \
     }                                                                   \
-    unsigned int get_number_of_frames(Key<Ucname##Traits, Arity> k) const { \
-      return get_number_of_frames_impl(k);                              \
-    }                                                                   \
     Ucname##Traits::Type get_value(unsigned int node,                   \
                                         Key<Ucname##Traits, Arity> k,   \
                                         unsigned int frame) const {     \
@@ -359,7 +356,7 @@ namespace RMF {
         IMP_RMF_END_FILE(get_file_name());
       }
       template <class TypeTraits, int Arity>
-        unsigned int get_number_of_frames_impl(Key<TypeTraits, Arity> k) const {
+        unsigned int get_number_of_frames(Key<TypeTraits, Arity> k) const {
         unsigned int kc= k.get_category().get_index();
         if (!get_is_per_frame(k)) {
           IMP_RMF_THROW(get_error_message("Attribue ", get_name(k),

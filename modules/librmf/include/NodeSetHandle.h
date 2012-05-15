@@ -31,13 +31,6 @@ void set_value(Key<UCName##Traits, D> k, PassValue v,                   \
   P::get_shared_data()->set_value(P::get_node_id(),                     \
                                   k,                                    \
                                   v, frame);                            \
-  IMP_RMF_INTERNAL_CHECK(!P::get_shared_data()->get_is_per_frame(k)     \
-                         || P::get_shared_data()->get_number_of_frames(k)\
-                         >= frame,                                      \
-                         internal::get_error_message("Frame not set right: ", \
-                                                     P::get_shared_data()\
-                                                     ->get_number_of_frames(k),\
-                                                     " ", frame));      \
 }                                                                       \
 
 namespace RMF {

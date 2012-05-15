@@ -51,7 +51,7 @@ void show_key_info(RMF::FileConstHandle rh,
   for (unsigned int i=0; i< keys.size(); ++i) {
     out << "    " << rh.get_name(keys[i]);
     if (rh.get_is_per_frame(keys[i])) {
-      out << ", " << rh.get_number_of_frames(keys[i]) << " frames";
+      out << ", frames";
     }
     out << ", " << name;
     out << ", " << GetCount<Arity, Traits>::get_count(rh,
