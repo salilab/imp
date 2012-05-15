@@ -48,5 +48,17 @@ Floats get_values(const NodeConstHandles &nodes,
 }
 
 
+  BondPairs FileConstHandle::get_bonds()const {
+    NodePairConstHandles nhs= get_node_pairs();
+    BondPairs ret;
+    for (unsigned int i=0; i< nhs.size(); ++i) {
+      if (nhs[i].get_type()==BOND) {
+        ret.push_back(BondPair(nhs[i].get_node(0),
+                               nhs[i].get_node(1)));
+      }
+    }
+    return ret;
+  }
+
 
 } /* namespace RMF */

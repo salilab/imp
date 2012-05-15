@@ -114,6 +114,11 @@ namespace RMF {
 
   class NodeConstHandle;
 
+#ifndef IMP_DOXYGEN
+  typedef std::pair<NodeConstHandle, NodeConstHandle> BondPair;
+  typedef vector<BondPair> BondPairs;
+#endif
+
   //! A handle for a read-only RMF file
   /** Use this handle to perform operations relevant to the
       whole RMF hierarchy as well as to start traversal of the
@@ -144,6 +149,7 @@ namespace RMF {
     FileConstHandle(){}
 #ifndef IMP_DOXYGEN
     FileConstHandle(HDF5ConstGroup group, bool create);
+    BondPairs get_bonds()const;
 #endif
 
     //! Return the root of the hierarchy
