@@ -162,7 +162,6 @@ namespace RMF {
       virtual unsigned int get_set_type(int Arity, unsigned int index) const=0;
 
       virtual int add_category(int Arity, std::string name)=0;
-      virtual int get_category(int Arity, std::string name) const=0;
       virtual unsigned int get_number_of_categories(int Arity) const=0;
       virtual std::string get_category_name(int Arity, unsigned int kc) const=0;
       virtual std::string get_description() const=0;

@@ -313,15 +313,16 @@ namespace RMF {
     */
     template <int Arity>
       bool get_has_category(std::string name) const {
-      return shared_->get_category(Arity, name) >=0;
+      return get_category<Arity>(name) != CategoryD<Arity>();
     }
     template <int Arity>
       CategoryD<Arity> get_category(std::string name) const {
-      int v=(shared_->get_category(Arity, name));
-      if (v<0) {
-        return CategoryD<Arity>();
+      for (unsigned int i=0; i< shared_->get_number_of_categories(Arity);++i) {
+        if (shared_->get_category_name(Arity, i)==name) {
+          return CategoryD<Arity>(i);
+        }
       }
-      return CategoryD<Arity>(v);
+      return CategoryD<Arity>();
     }
     template <int Arity>
       vector<CategoryD<Arity> > get_categories() const {

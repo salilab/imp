@@ -207,6 +207,8 @@ namespace RMF {
     */
     template <int Arity>
       CategoryD<Arity> add_category(std::string name) {
+      IMP_RMF_USAGE_CHECK(!get_has_category<Arity>(name),
+                          "Category already exists");
       return CategoryD<Arity>(get_shared_data()->add_category(Arity, name));
     }
     /** @} */
