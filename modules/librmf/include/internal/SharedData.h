@@ -39,15 +39,9 @@ namespace RMF {
 
 #define IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                                   PassValues, ReturnValues, Arity)      \
-    virtual Ucname##Traits::Type get_value_always(unsigned int node,    \
-                                                  Key<Ucname##Traits,Arity> k, \
-                                                  unsigned int frame) const=0; \
     virtual Ucname##Traits::Type get_value(unsigned int node,           \
-                                           Key<Ucname##Traits, Arity> k, \
-                                           unsigned int frame) const =0; \
-    virtual bool get_has_value(unsigned int node,                       \
-                               Key<Ucname##Traits, Arity> k,            \
-                               unsigned int frame) const =0;            \
+                                           Key<Ucname##Traits,Arity> k, \
+                                           unsigned int frame) const=0; \
     virtual void set_value(unsigned int node,                           \
                            Key<Ucname##Traits, Arity> k,                \
                            Ucname##Traits::Type v, unsigned int frame) =0; \
