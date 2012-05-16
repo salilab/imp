@@ -10,8 +10,6 @@
 #define IMPLIBRMF_FILE_CONST_HANDLE_H
 
 #include "RMF_config.h"
-#include "HDF5Group.h"
-#include "HDF5File.h"
 #include "internal/SharedData.h"
 #include "Key.h"
 #include "NodeHandle.h"
@@ -148,7 +146,7 @@ namespace RMF {
     //! Empty root handle, no open file.
     FileConstHandle(){}
 #ifndef IMP_DOXYGEN
-    FileConstHandle(HDF5ConstGroup group, bool create);
+    FileConstHandle(std::string name);
     BondPairs get_bonds()const;
 #endif
 
@@ -301,10 +299,6 @@ namespace RMF {
     IMP_HDF5_ROOT_CONST_KEY_SET_METHODS(triplet, Triplet, 3);
     IMP_HDF5_ROOT_CONST_KEY_SET_METHODS(quad, Quad, 4);
 
-
-    /*HDF5ConstGroup get_hdf5_group() const {
-      return shared_->get_group();
-      }*/
     /** \name Descriptions
         Each RMF structure has an associated description. This should
         consist of unstructured text describing the contents of the RMF
@@ -374,12 +368,7 @@ namespace RMF {
 
 
   /** Open an RMF from a file system path.*/
-  inline FileConstHandle open_rmf_file_read_only(std::string path) {
-    IMP_RMF_FILE_OPERATION(
-                        return FileConstHandle(open_hdf5_file_read_only(path),
-                                               false),
-        path, "opening read only");
-  }
+  RMFEXPORT FileConstHandle open_rmf_file_read_only(std::string path);
 
   /** \name Batch data access
       These methods provide batch access to attribute data to try

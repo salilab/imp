@@ -200,6 +200,10 @@ namespace RMF {
                                  PassValues, ReturnValues, 4)
 
     IMP_RMF_FOREACH_TYPE(IMP_RMF_GENERIC_SHARED);
+
+
+    RMFEXPORT SharedData* create_shared_data(std::string path, bool create);
+    RMFEXPORT SharedData* create_read_only_shared_data(std::string path);
   } // namespace internal
 } /* namespace RMF */
 

@@ -7,14 +7,14 @@
  */
 
 #include <RMF/FileHandle.h>
-#include <RMF/internal/HDF5SharedData.h>
+#include <RMF/internal/SharedData.h>
 
 namespace RMF {
 
 FileHandle::FileHandle(internal::SharedData *shared): FileConstHandle(shared) {}
 
-FileHandle::FileHandle(HDF5Group root, bool create):
-    FileConstHandle(new internal::HDF5SharedData(root, create))  {
+  FileHandle::FileHandle(std::string name, bool create):
+    FileConstHandle(internal::create_shared_data(name, create))  {
 }
 
 
@@ -28,6 +28,12 @@ void FileHandle::set_description(std::string descr) {
   get_shared_data()->set_description(descr);
 }
 
+FileHandle open_rmf_file(std::string path) {
+  return FileHandle(path, false);
+}
 
+  FileHandle create_rmf_file(std::string path) {
+    return FileHandle(path, true);
+  }
 
 } /* namespace RMF */

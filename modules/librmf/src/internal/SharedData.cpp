@@ -11,6 +11,9 @@
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
 #include <RMF/internal/set.h>
+#include <RMF/HDF5File.h>
+#include <RMF/internal/HDF5SharedData.h>
+#include <boost/algorithm/string/predicate.hpp>
 namespace RMF {
   namespace internal {
 
@@ -65,6 +68,29 @@ namespace RMF {
       ptr->write_errors(std::cerr);
     }
   }
+
+    SharedData* create_shared_data(std::string path, bool create) {
+      if (boost::algorithm::ends_with(path, ".rmf")) {
+        HDF5Group g;
+        if (create) {
+          g= create_hdf5_file(path);
+        } else {
+          g= open_hdf5_file(path);
+        }
+        return new HDF5SharedData(g, create);
+      } else {
+        IMP_RMF_THROW("Don't know how to open file", IOException);
+      }
+    }
+
+    SharedData* create_read_only_shared_data(std::string path) {
+      if (boost::algorithm::ends_with(path, ".rmf")) {
+        HDF5ConstGroup g= open_hdf5_file_read_only(path);
+        return new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
+      } else {
+        IMP_RMF_THROW("Don't know how to open file", IOException);
+      }
+    }
 
   } // namespace internal
 } /* namespace RMF */
