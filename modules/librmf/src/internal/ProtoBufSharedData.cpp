@@ -26,9 +26,9 @@ namespace RMF {
         }
         proto_.ParseFromIstream(&in);
       } else {
-        proto_.add_nodes();
-        proto_.mutable_nodes(0)->set_name("root");
-        proto_.mutable_nodes(0)->set_type(ROOT);
+        proto_.add_node();
+        proto_.mutable_node(0)->set_name("root");
+        proto_.mutable_node(0)->set_type(ROOT);
       }
     }
 
@@ -40,19 +40,19 @@ namespace RMF {
     }
 
     std::string ProtoBufSharedData::get_name(unsigned int node) const {
-      return proto_.nodes(node).name();
+      return proto_.node(node).name();
     }
     unsigned int ProtoBufSharedData::get_type(unsigned int Arity,
                                               unsigned int index) const {
       switch (Arity) {
       case 1:
-        return proto_.nodes(index).type();
+        return proto_.node(index).type();
       case 2:
-        return proto_.pairs(index).type();
+        return proto_.pair(index).type();
       case 3:
-        return proto_.triplets(index).type();
+        return proto_.triplet(index).type();
       case 4:
-        return proto_.quads(index).type();
+        return proto_.quad(index).type();
       default:
         return -1;
       }
@@ -61,20 +61,32 @@ namespace RMF {
 
     int ProtoBufSharedData::add_child(int node, std::string name, int t) {
       // add node
-      int id= proto_.nodes_size();
-      proto_.add_nodes();
-      proto_.mutable_nodes(id)->set_name(name);
-      proto_.mutable_nodes(id)->set_type(t);
+      int id= proto_.node_size();
+      RMFProto::Node *n=proto_.add_node();
+      n->set_name(name);
+      n->set_type(t);
       // add as child
-      proto_.mutable_nodes(node)->set_children(proto_.nodes(node)
-                                               .children_size(), id);
+      RMFProto::Node *parent=IMP_RMF_PROTO_MINDEX(proto_, node,node);
+      parent->add_children(id);
+      std::cout << "Adding " << name << " as child of " << parent->name()
+                << std::endl;
+      IMP_RMF_INTERNAL_CHECK(proto_.node(id).name()==name,
+                             "Names don't match");
+      Ints ch= get_children(node);
+      std::cout << ch << std::endl;
+      Strings names;
+      for (unsigned int i=0; i < ch.size(); ++i) {
+        names.push_back(get_name(ch[i]));
+      }
+      std::cout << names << std::endl;
       return id;
     }
 
     Ints ProtoBufSharedData::get_children(int node) const {
-      Ints ret(proto_.nodes(node).children_size());
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        ret[i]= proto_.nodes(node).children(i);
+      const RMFProto::Node &n= IMP_RMF_PROTO_INDEX(proto_, node, node);
+      Ints ret(n.children_size());
+      for (unsigned int i=0; i < ret.size(); ++i) {
+        ret[i]= IMP_RMF_PROTO_INDEX(n,children, i);
       }
       return ret;
     }
@@ -82,13 +94,13 @@ namespace RMF {
     unsigned int ProtoBufSharedData::get_number_of_sets(int Arity) const {
       switch (Arity) {
       case 1:
-        return proto_.nodes_size();
+        return proto_.node_size();
       case 2:
-        return proto_.pairs_size();
+        return proto_.pair_size();
       case 3:
-        return proto_.triplets_size();
+        return proto_.triplet_size();
       case 4:
-        return proto_.quads_size();
+        return proto_.quad_size();
       default:
         return 0;
       }
@@ -126,7 +138,7 @@ namespace RMF {
       int get_3(const C &c) {
         return c.id3();
       }
-      int get(const RMFProto_Pair&c, unsigned int member_index) {
+      int get(const RMFProto::Pair&c, unsigned int member_index) {
         switch( member_index) {
         case 0:
           return get_0(c);
@@ -136,7 +148,7 @@ namespace RMF {
           return -1;
         };
       }
-      int get(const RMFProto_Triplet&c, unsigned int member_index) {
+      int get(const RMFProto::Triplet&c, unsigned int member_index) {
         switch( member_index) {
         case 0:
           return get_0(c);
@@ -147,7 +159,7 @@ namespace RMF {
         };
         return -1;
       }
-      int get(const RMFProto_Quad &c, unsigned int member_index) {
+      int get(const RMFProto::Quad &c, unsigned int member_index) {
         switch( member_index) {
         case 0:
           return get_0(c);
@@ -166,32 +178,32 @@ namespace RMF {
       switch (nis.size()) {
       case 2:
         {
-          int id= proto_.pairs_size();
-          proto_.add_pairs();
-          set_0(proto_.mutable_pairs(id), nis[0]);
-          set_1(proto_.mutable_pairs(id), nis[1]);
-          proto_.mutable_pairs(id)->set_type(t);
+          int id= proto_.pair_size();
+          RMFProto::Pair* p= proto_.add_pair();
+          set_0(p, nis[0]);
+          set_1(p, nis[1]);
+          p->set_type(t);
           return id;
         }
       case 3:
         {
-          int id= proto_.triplets_size();
-          proto_.add_triplets();
-          set_0(proto_.mutable_triplets(id), nis[0]);
-          set_1(proto_.mutable_triplets(id), nis[1]);
-          set_2(proto_.mutable_triplets(id), nis[2]);
-          proto_.mutable_triplets(id)->set_type(t);
+          int id= proto_.triplet_size();
+          RMFProto::Triplet* p=proto_.add_triplet();
+          set_0(p, nis[0]);
+          set_1(p, nis[1]);
+          set_2(p, nis[2]);
+          p->set_type(t);
           return id;
         }
       case 4:
         {
-          int id= proto_.quads_size();
-          proto_.add_quads();
-          set_0(proto_.mutable_quads(id), nis[0]);
-          set_1(proto_.mutable_quads(id), nis[1]);
-          set_2(proto_.mutable_quads(id), nis[2]);
-          set_3(proto_.mutable_quads(id), nis[3]);
-          proto_.mutable_quads(id)->set_type(t);
+          int id= proto_.quad_size();
+          RMFProto::Quad *p=proto_.add_quad();
+          set_0(p, nis[0]);
+          set_1(p, nis[1]);
+          set_2(p, nis[2]);
+          set_3(p, nis[3]);
+          p->set_type(t);
           return id;
         }
       default:
@@ -205,11 +217,11 @@ namespace RMF {
                                                     int member_index) const {
       switch (Arity) {
       case 2:
-        return get(proto_.pairs(index), member_index);
+        return get(proto_.pair(index), member_index);
       case 3:
-        return get(proto_.triplets(index), member_index);
+        return get(proto_.triplet(index), member_index);
       case 4:
-        return get(proto_.quads(index), member_index);
+        return get(proto_.quad(index), member_index);
       default:
         IMP_RMF_USAGE_CHECK(0,
                             "Bad set size");
@@ -224,11 +236,11 @@ namespace RMF {
       return id;
     }
     unsigned int ProtoBufSharedData::get_number_of_categories(int Arity) const {
-      if (proto_.arities_size() < Arity) {
+      if (proto_.arity_size() < Arity) {
         return 0;
       }
-      const RMFProto::ArityData &arity_data= proto_.arities(Arity-1);
-      return arity_data.categories_size();
+      const RMFProto::ArityData &arity_data= proto_.arity(Arity-1);
+      return arity_data.category_size();
     }
     std::string ProtoBufSharedData::get_category_name(int Arity,
                                                      unsigned int id) const {
