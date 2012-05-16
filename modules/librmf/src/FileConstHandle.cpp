@@ -7,16 +7,15 @@
  */
 
 #include <RMF/FileConstHandle.h>
-#include <RMF/internal/HDF5SharedData.h>
+#include <RMF/internal/SharedData.h>
 
 namespace RMF {
 
 FileConstHandle::FileConstHandle(internal::SharedData *shared):
     shared_(shared) {}
 
-FileConstHandle::FileConstHandle(HDF5ConstGroup root, bool create):
-  shared_(new internal::HDF5SharedData(HDF5Group::get_from_const_group(root),
-                                       create))  {
+  FileConstHandle::FileConstHandle(std::string name):
+    shared_(internal::create_read_only_shared_data(name))  {
 }
 
 NodeConstHandle FileConstHandle::get_node_from_id(NodeID id) const {
@@ -46,6 +45,10 @@ Floats get_values(const NodeConstHandles &nodes,
   }
   return ret;
 }
+
+  FileConstHandle open_rmf_file_read_only(std::string path) {
+    return FileConstHandle(path);
+  }
 
 
   BondPairs FileConstHandle::get_bonds()const {

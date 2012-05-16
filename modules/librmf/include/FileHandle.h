@@ -10,8 +10,6 @@
 #define IMPLIBRMF_FILE_HANDLE_H
 
 #include "RMF_config.h"
-#include "HDF5Group.h"
-#include "HDF5File.h"
 #include "internal/SharedData.h"
 #include "Key.h"
 #include "FileConstHandle.h"
@@ -78,6 +76,7 @@
 
 
 namespace RMF {
+  class HDF5Group;
 
   //! A handle for an RMF file
   /** Use this handle to perform operations relevant to the
@@ -95,7 +94,7 @@ namespace RMF {
     //! Empty file handle, no open file.
     FileHandle(){}
 #ifndef IMP_DOXYGEN
-    FileHandle(HDF5Group group, bool create);
+    FileHandle(std::string name, bool create);
 #endif
 
     /** \name Methods for manipulating keys
@@ -237,18 +236,10 @@ namespace RMF {
   typedef vector<FileHandle> FileHandles;
 
   /** Create an RMF from a file system path.*/
-  inline FileHandle create_rmf_file(std::string path) {
-    IMP_RMF_FILE_OPERATION(
-                           return FileHandle(create_hdf5_file(path), true),
-        path, "creating");
-  }
+  RMFEXPORT FileHandle create_rmf_file(std::string path);
 
   /** Open an RMF from a file system path.*/
-  inline FileHandle open_rmf_file(std::string path) {
-    IMP_RMF_FILE_OPERATION(
-        return FileHandle(open_hdf5_file(path), false),
-        path, "opening");
-  }
+  RMFEXPORT FileHandle open_rmf_file(std::string path);
 
 
   template <int D>
