@@ -7,10 +7,13 @@
 
 #include "IMP/kmeans/KMeans.h"
 #include <iostream>     // C++ I/O
+#include <string>
 
 IMPKMEANS_BEGIN_NAMESPACE
 
 /***********************  Constructors  **************************/
+
+const std::string CONST_kmeans_type = "kmeans %1%";
 
 /**
    Initialize the KMeans object with data from fname_data,
@@ -25,7 +28,8 @@ KMeans::KMeans
 (const std::string& fname,
  int dim,
  unsigned int max_nPts)
-  : is_executed_(false),
+  : Object(CONST_kmeans_type),
+    is_executed_(false),
     pKMDataPts_(),
     is_KM_data_synced_(false),
     pCenters_(),
@@ -58,18 +62,19 @@ KMeans::KMeans
     object data is not considered initialized after this call
  */
 KMeans::KMeans()
-      : is_executed_(false),
-        pKMDataPts_(),
-        is_KM_data_synced_(false),
-        pCenters_(),
-        terminationConditions_
-        (100, 0, 0, 0,    // run for 100 stages
-         0.10,     // min consec RDL
-         0.10,     // min accum RDL
-         3,      // max run stages
-         0.50,     // init. prob. of acceptance
-         10,     // temp. run length
-         0.95)      // temp. reduction factor
+  : Object(CONST_kmeans_type),
+    is_executed_(false),
+    pKMDataPts_(),
+    is_KM_data_synced_(false),
+    pCenters_(),
+    terminationConditions_
+    (100, 0, 0, 0,    // run for 100 stages
+     0.10,     // min consec RDL
+     0.10,     // min accum RDL
+     3,      // max run stages
+     0.50,     // init. prob. of acceptance
+     10,     // temp. run length
+     0.95)      // temp. reduction factor
 {
 }
 
@@ -199,7 +204,7 @@ IMP::Floats
 KMeans::get_center(unsigned int i) const
 {
   // TODO: exception instead of assertion?
-  assert(is_executed_ && i < pCenters_->getNPts());
+  assert(is_executed_ && i < (unsigned int)pCenters_->getNPts());
 
   // Convert from KMCenter (aka double*)
   // to IMP::Floats

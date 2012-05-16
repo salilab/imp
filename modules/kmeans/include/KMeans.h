@@ -13,6 +13,10 @@
 #include "IMP/kmeans/internal/KMdata.h"     // k-means algorithms
 #include "IMP/kmeans/internal/KMterm.h"
 #include "IMP/Pointer.h"
+#include "IMP/base/doxygen_macros.h"
+#include "IMP/base/object_macros.h"
+#include "IMP/base/warning_macros.h"
+#include "IMP/base/Object.h"
 #include "IMP/base/types.h"
 #include <cstdlib>      // C standard includes
 #include <iostream>     // C++ I/O
@@ -44,7 +48,8 @@ enum KM_ALG_TYPE
     \untested{KMeans}
     \unstable{KMeans}
  */
-class IMPKMEANSEXPORT KMeans {
+class IMPKMEANSEXPORT
+KMeans : public IMP::base::Object {
 
   /***********************  Constructors  **************************/
  public:
@@ -67,6 +72,10 @@ class IMPKMEANSEXPORT KMeans {
       object data is not considered initialized after this call
   */
   KMeans();
+
+  /************   Object virtual methods / destructor   ************/
+
+  IMP_OBJECT_INLINE(KMeans, IMP_UNUSED(out) ,);
 
   /*********************** Public methods **************************/
  public:
@@ -201,7 +210,6 @@ class IMPKMEANSEXPORT KMeans {
   //  Unless you are into fine tuning, don't worry about changing these.
   //----------------------------------------------------------------------
   internal::KMterm terminationConditions_;
-
 
 }; /***********************  class KMeans  **************************/
 
