@@ -14,6 +14,7 @@
 #include "NodeHandle.h"
 #include "FileHandle.h"
 #include "internal/utility.h"
+#include "internal/lazy.h"
 namespace RMF {
 
   /** These particles has associated color information.
@@ -72,12 +73,12 @@ namespace RMF {
     int frame_;
     friend class ColoredFactory;
   private:
-    FloatKeys rgb_color_;
-    FloatKeys rgb_color_pf_;
+    internal::FloatLazyKeys rgb_color_;
+    internal::FloatLazyKeys rgb_color_pf_;
     Colored(NodeHandle nh,
             int frame,
-            FloatKeys rgb_color,
-            FloatKeys rgb_color_pf):
+            internal::FloatLazyKeys rgb_color,
+            internal::FloatLazyKeys rgb_color_pf):
       nh_(nh),
       frame_(frame),
       rgb_color_(rgb_color),
@@ -126,32 +127,32 @@ namespace RMF {
   */
   class ColoredFactory {
   private:
-    FloatKeys rgb_color_;
-    FloatKeys rgb_color_pf_;
+    internal::FloatLazyKeys rgb_color_;
+    internal::FloatLazyKeys rgb_color_pf_;
   public:
     typedef FileHandle File;
     typedef Colored Decorator;
     ColoredFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "shape");
-        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                         "rgb color red",
-                                                         false));
-        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                            "rgb color red",
-                                                            true));
-        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                         "rgb color green",
-                                                         false));
-        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                            "rgb color green",
-                                                            true));
-        rgb_color_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                         "rgb color blue",
-                                                         false));
-        rgb_color_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                            "rgb color blue",
-                                                            true));
+        rgb_color_.push_back(internal::FloatLazyKey(fh, cat,
+                                                    "rgb color red",
+                                                    false));
+        rgb_color_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                       "rgb color red",
+                                                       true));
+        rgb_color_.push_back(internal::FloatLazyKey(fh, cat,
+                                                    "rgb color green",
+                                                    false));
+        rgb_color_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                       "rgb color green",
+                                                       true));
+        rgb_color_.push_back(internal::FloatLazyKey(fh, cat,
+                                                    "rgb color blue",
+                                                    false));
+        rgb_color_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                       "rgb color blue",
+                                                       true));
       };
     }
     Colored get(NodeHandle nh,
@@ -329,20 +330,20 @@ namespace RMF {
     int frame_;
     friend class ParticleFactory;
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    FloatKey mass_;
-    FloatKey mass_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::FloatLazyKey mass_;
+    internal::FloatLazyKey mass_pf_;
     Particle(NodeHandle nh,
              int frame,
-             FloatKeys coordinates,
-             FloatKeys coordinates_pf,
-             FloatKey radius,
-             FloatKey radius_pf,
-             FloatKey mass,
-             FloatKey mass_pf):
+             internal::FloatLazyKeys coordinates,
+             internal::FloatLazyKeys coordinates_pf,
+             internal::FloatLazyKey radius,
+             internal::FloatLazyKey radius_pf,
+             internal::FloatLazyKey mass,
+             internal::FloatLazyKey mass_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -423,48 +424,48 @@ namespace RMF {
   */
   class ParticleFactory {
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    FloatKey mass_;
-    FloatKey mass_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::FloatLazyKey mass_;
+    internal::FloatLazyKey mass_pf_;
   public:
     typedef FileHandle File;
     typedef Particle Decorator;
     ParticleFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "physics");
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian x",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian x",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian y",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian y",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian z",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian z",
-                                                              true));
-        radius_=get_key_always<FloatTraits>(fh, cat,
-                                            "radius",
-                                            false);
-        radius_pf_=get_key_always<FloatTraits>(fh, cat,
-                                               "radius",
-                                               true);
-        mass_=get_key_always<FloatTraits>(fh, cat,
-                                          "mass",
-                                          false);
-        mass_pf_=get_key_always<FloatTraits>(fh, cat,
-                                             "mass",
-                                             true);
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian x",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian x",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian y",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian y",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian z",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian z",
+                                                         true));
+        radius_=internal::FloatLazyKey(fh, cat,
+                                       "radius",
+                                       false);
+        radius_pf_=internal::FloatLazyKey(fh, cat,
+                                          "radius",
+                                          true);
+        mass_=internal::FloatLazyKey(fh, cat,
+                                     "mass",
+                                     false);
+        mass_pf_=internal::FloatLazyKey(fh, cat,
+                                        "mass",
+                                        true);
       };
     }
     Particle get(NodeHandle nh,
@@ -681,16 +682,16 @@ namespace RMF {
     int frame_;
     friend class IntermediateParticleFactory;
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
     IntermediateParticle(NodeHandle nh,
                          int frame,
-                         FloatKeys coordinates,
-                         FloatKeys coordinates_pf,
-                         FloatKey radius,
-                         FloatKey radius_pf):
+                         internal::FloatLazyKeys coordinates,
+                         internal::FloatLazyKeys coordinates_pf,
+                         internal::FloatLazyKey radius,
+                         internal::FloatLazyKey radius_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -755,40 +756,40 @@ namespace RMF {
   */
   class IntermediateParticleFactory {
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
   public:
     typedef FileHandle File;
     typedef IntermediateParticle Decorator;
     IntermediateParticleFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "physics");
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian x",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian x",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian y",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian y",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian z",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian z",
-                                                              true));
-        radius_=get_key_always<FloatTraits>(fh, cat,
-                                            "radius",
-                                            false);
-        radius_pf_=get_key_always<FloatTraits>(fh, cat,
-                                               "radius",
-                                               true);
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian x",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian x",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian y",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian y",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian z",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian z",
+                                                         true));
+        radius_=internal::FloatLazyKey(fh, cat,
+                                       "radius",
+                                       false);
+        radius_pf_=internal::FloatLazyKey(fh, cat,
+                                          "radius",
+                                          true);
       };
     }
     IntermediateParticle get(NodeHandle nh,
@@ -985,16 +986,16 @@ namespace RMF {
     int frame_;
     friend class RigidParticleFactory;
   private:
-    FloatKeys orientation_;
-    FloatKeys orientation_pf_;
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
+    internal::FloatLazyKeys orientation_;
+    internal::FloatLazyKeys orientation_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
     RigidParticle(NodeHandle nh,
                   int frame,
-                  FloatKeys orientation,
-                  FloatKeys orientation_pf,
-                  FloatKeys coordinates,
-                  FloatKeys coordinates_pf):
+                  internal::FloatLazyKeys orientation,
+                  internal::FloatLazyKeys orientation_pf,
+                  internal::FloatLazyKeys coordinates,
+                  internal::FloatLazyKeys coordinates_pf):
       nh_(nh),
       frame_(frame),
       orientation_(orientation),
@@ -1069,58 +1070,58 @@ namespace RMF {
   */
   class RigidParticleFactory {
   private:
-    FloatKeys orientation_;
-    FloatKeys orientation_pf_;
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
+    internal::FloatLazyKeys orientation_;
+    internal::FloatLazyKeys orientation_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
   public:
     typedef FileHandle File;
     typedef RigidParticle Decorator;
     RigidParticleFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "physics");
-        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "orientation r",
-                                                           false));
-        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "orientation r",
-                                                              true));
-        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "orientation i",
-                                                           false));
-        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "orientation i",
-                                                              true));
-        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "orientation j",
-                                                           false));
-        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "orientation j",
-                                                              true));
-        orientation_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "orientation k",
-                                                           false));
-        orientation_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "orientation k",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian x",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian x",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian y",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian y",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian z",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian z",
-                                                              true));
+        orientation_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "orientation r",
+                                                      false));
+        orientation_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "orientation r",
+                                                         true));
+        orientation_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "orientation i",
+                                                      false));
+        orientation_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "orientation i",
+                                                         true));
+        orientation_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "orientation j",
+                                                      false));
+        orientation_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "orientation j",
+                                                         true));
+        orientation_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "orientation k",
+                                                      false));
+        orientation_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "orientation k",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian x",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian x",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian y",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian y",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian z",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian z",
+                                                         true));
       };
     }
     RigidParticle get(NodeHandle nh,
@@ -1355,20 +1356,20 @@ namespace RMF {
     int frame_;
     friend class BallFactory;
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
     Ball(NodeHandle nh,
          int frame,
-         FloatKeys coordinates,
-         FloatKeys coordinates_pf,
-         FloatKey radius,
-         FloatKey radius_pf,
-         IndexKey type,
-         IndexKey type_pf):
+         internal::FloatLazyKeys coordinates,
+         internal::FloatLazyKeys coordinates_pf,
+         internal::FloatLazyKey radius,
+         internal::FloatLazyKey radius_pf,
+         internal::IndexLazyKey type,
+         internal::IndexLazyKey type_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -1435,48 +1436,48 @@ namespace RMF {
   */
   class BallFactory {
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
   public:
     typedef FileHandle File;
     typedef Ball Decorator;
     BallFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "shape");
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian x",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian x",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian y",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian y",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian z",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian z",
-                                                              true));
-        radius_=get_key_always<FloatTraits>(fh, cat,
-                                            "radius",
-                                            false);
-        radius_pf_=get_key_always<FloatTraits>(fh, cat,
-                                               "radius",
-                                               true);
-        type_=get_key_always<IndexTraits>(fh, cat,
-                                          "type",
-                                          false);
-        type_pf_=get_key_always<IndexTraits>(fh, cat,
-                                             "type",
-                                             true);
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian x",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian x",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian y",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian y",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian z",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian z",
+                                                         true));
+        radius_=internal::FloatLazyKey(fh, cat,
+                                       "radius",
+                                       false);
+        radius_pf_=internal::FloatLazyKey(fh, cat,
+                                          "radius",
+                                          true);
+        type_=internal::IndexLazyKey(fh, cat,
+                                     "type",
+                                     false);
+        type_pf_=internal::IndexLazyKey(fh, cat,
+                                        "type",
+                                        true);
       };
     }
     Ball get(NodeHandle nh,
@@ -1701,20 +1702,20 @@ namespace RMF {
     int frame_;
     friend class CylinderFactory;
   private:
-    FloatsKeys coordinates_;
-    FloatsKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatsLazyKeys coordinates_;
+    internal::FloatsLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
     Cylinder(NodeHandle nh,
              int frame,
-             FloatsKeys coordinates,
-             FloatsKeys coordinates_pf,
-             FloatKey radius,
-             FloatKey radius_pf,
-             IndexKey type,
-             IndexKey type_pf):
+             internal::FloatsLazyKeys coordinates,
+             internal::FloatsLazyKeys coordinates_pf,
+             internal::FloatLazyKey radius,
+             internal::FloatLazyKey radius_pf,
+             internal::IndexLazyKey type,
+             internal::IndexLazyKey type_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -1781,48 +1782,48 @@ namespace RMF {
   */
   class CylinderFactory {
   private:
-    FloatsKeys coordinates_;
-    FloatsKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatsLazyKeys coordinates_;
+    internal::FloatsLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
   public:
     typedef FileHandle File;
     typedef Cylinder Decorator;
     CylinderFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "shape");
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian xs",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian xs",
-                                                               true));
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian ys",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian ys",
-                                                               true));
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian zs",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian zs",
-                                                               true));
-        radius_=get_key_always<FloatTraits>(fh, cat,
-                                            "radius",
-                                            false);
-        radius_pf_=get_key_always<FloatTraits>(fh, cat,
-                                               "radius",
-                                               true);
-        type_=get_key_always<IndexTraits>(fh, cat,
-                                          "type",
-                                          false);
-        type_pf_=get_key_always<IndexTraits>(fh, cat,
-                                             "type",
-                                             true);
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian xs",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian xs",
+                                                          true));
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian ys",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian ys",
+                                                          true));
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian zs",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian zs",
+                                                          true));
+        radius_=internal::FloatLazyKey(fh, cat,
+                                       "radius",
+                                       false);
+        radius_pf_=internal::FloatLazyKey(fh, cat,
+                                          "radius",
+                                          true);
+        type_=internal::IndexLazyKey(fh, cat,
+                                     "type",
+                                     false);
+        type_pf_=internal::IndexLazyKey(fh, cat,
+                                        "type",
+                                        true);
       };
     }
     Cylinder get(NodeHandle nh,
@@ -2034,16 +2035,16 @@ namespace RMF {
     int frame_;
     friend class SegmentFactory;
   private:
-    FloatsKeys coordinates_;
-    FloatsKeys coordinates_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatsLazyKeys coordinates_;
+    internal::FloatsLazyKeys coordinates_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
     Segment(NodeHandle nh,
             int frame,
-            FloatsKeys coordinates,
-            FloatsKeys coordinates_pf,
-            IndexKey type,
-            IndexKey type_pf):
+            internal::FloatsLazyKeys coordinates,
+            internal::FloatsLazyKeys coordinates_pf,
+            internal::IndexLazyKey type,
+            internal::IndexLazyKey type_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -2094,40 +2095,40 @@ namespace RMF {
   */
   class SegmentFactory {
   private:
-    FloatsKeys coordinates_;
-    FloatsKeys coordinates_pf_;
-    IndexKey type_;
-    IndexKey type_pf_;
+    internal::FloatsLazyKeys coordinates_;
+    internal::FloatsLazyKeys coordinates_pf_;
+    internal::IndexLazyKey type_;
+    internal::IndexLazyKey type_pf_;
   public:
     typedef FileHandle File;
     typedef Segment Decorator;
     SegmentFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "shape");
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian xs",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian xs",
-                                                               true));
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian ys",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian ys",
-                                                               true));
-        coordinates_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                            "cartesian zs",
-                                                            false));
-        coordinates_pf_.push_back(get_key_always<FloatsTraits>(fh, cat,
-                                                               "cartesian zs",
-                                                               true));
-        type_=get_key_always<IndexTraits>(fh, cat,
-                                          "type",
-                                          false);
-        type_pf_=get_key_always<IndexTraits>(fh, cat,
-                                             "type",
-                                             true);
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian xs",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian xs",
+                                                          true));
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian ys",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian ys",
+                                                          true));
+        coordinates_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                       "cartesian zs",
+                                                       false));
+        coordinates_pf_.push_back(internal::FloatsLazyKey(fh, cat,
+                                                          "cartesian zs",
+                                                          true));
+        type_=internal::IndexLazyKey(fh, cat,
+                                     "type",
+                                     false);
+        type_pf_=internal::IndexLazyKey(fh, cat,
+                                        "type",
+                                        true);
       };
     }
     Segment get(NodeHandle nh,
@@ -2353,28 +2354,28 @@ namespace RMF {
     int frame_;
     friend class JournalArticleFactory;
   private:
-    StringKey title_;
-    StringKey title_pf_;
-    StringKey journal_;
-    StringKey journal_pf_;
-    StringKey pubmed_id_;
-    StringKey pubmed_id_pf_;
-    IntKey year_;
-    IntKey year_pf_;
-    StringsKey authors_;
-    StringsKey authors_pf_;
+    internal::StringLazyKey title_;
+    internal::StringLazyKey title_pf_;
+    internal::StringLazyKey journal_;
+    internal::StringLazyKey journal_pf_;
+    internal::StringLazyKey pubmed_id_;
+    internal::StringLazyKey pubmed_id_pf_;
+    internal::IntLazyKey year_;
+    internal::IntLazyKey year_pf_;
+    internal::StringsLazyKey authors_;
+    internal::StringsLazyKey authors_pf_;
     JournalArticle(NodeHandle nh,
                    int frame,
-                   StringKey title,
-                   StringKey title_pf,
-                   StringKey journal,
-                   StringKey journal_pf,
-                   StringKey pubmed_id,
-                   StringKey pubmed_id_pf,
-                   IntKey year,
-                   IntKey year_pf,
-                   StringsKey authors,
-                   StringsKey authors_pf):
+                   internal::StringLazyKey title,
+                   internal::StringLazyKey title_pf,
+                   internal::StringLazyKey journal,
+                   internal::StringLazyKey journal_pf,
+                   internal::StringLazyKey pubmed_id,
+                   internal::StringLazyKey pubmed_id_pf,
+                   internal::IntLazyKey year,
+                   internal::IntLazyKey year_pf,
+                   internal::StringsLazyKey authors,
+                   internal::StringsLazyKey authors_pf):
       nh_(nh),
       frame_(frame),
       title_(title),
@@ -2477,52 +2478,52 @@ namespace RMF {
   */
   class JournalArticleFactory {
   private:
-    StringKey title_;
-    StringKey title_pf_;
-    StringKey journal_;
-    StringKey journal_pf_;
-    StringKey pubmed_id_;
-    StringKey pubmed_id_pf_;
-    IntKey year_;
-    IntKey year_pf_;
-    StringsKey authors_;
-    StringsKey authors_pf_;
+    internal::StringLazyKey title_;
+    internal::StringLazyKey title_pf_;
+    internal::StringLazyKey journal_;
+    internal::StringLazyKey journal_pf_;
+    internal::StringLazyKey pubmed_id_;
+    internal::StringLazyKey pubmed_id_pf_;
+    internal::IntLazyKey year_;
+    internal::IntLazyKey year_pf_;
+    internal::StringsLazyKey authors_;
+    internal::StringsLazyKey authors_pf_;
   public:
     typedef FileHandle File;
     typedef JournalArticle Decorator;
     JournalArticleFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "publication");
-        title_=get_key_always<StringTraits>(fh, cat,
-                                            "title",
-                                            false);
-        title_pf_=get_key_always<StringTraits>(fh, cat,
-                                               "title",
-                                               true);
-        journal_=get_key_always<StringTraits>(fh, cat,
-                                              "journal",
-                                              false);
-        journal_pf_=get_key_always<StringTraits>(fh, cat,
-                                                 "journal",
-                                                 true);
-        pubmed_id_=get_key_always<StringTraits>(fh, cat,
-                                                "pubmed id",
-                                                false);
-        pubmed_id_pf_=get_key_always<StringTraits>(fh, cat,
-                                                   "pubmed id",
-                                                   true);
-        year_=get_key_always<IntTraits>(fh, cat,
-                                        "year",
-                                        false);
-        year_pf_=get_key_always<IntTraits>(fh, cat,
-                                           "year",
-                                           true);
-        authors_=get_key_always<StringsTraits>(fh, cat,
-                                               "authors",
-                                               false);
-        authors_pf_=get_key_always<StringsTraits>(fh, cat,
-                                                  "authors",
-                                                  true);
+        title_=internal::StringLazyKey(fh, cat,
+                                       "title",
+                                       false);
+        title_pf_=internal::StringLazyKey(fh, cat,
+                                          "title",
+                                          true);
+        journal_=internal::StringLazyKey(fh, cat,
+                                         "journal",
+                                         false);
+        journal_pf_=internal::StringLazyKey(fh, cat,
+                                            "journal",
+                                            true);
+        pubmed_id_=internal::StringLazyKey(fh, cat,
+                                           "pubmed id",
+                                           false);
+        pubmed_id_pf_=internal::StringLazyKey(fh, cat,
+                                              "pubmed id",
+                                              true);
+        year_=internal::IntLazyKey(fh, cat,
+                                   "year",
+                                   false);
+        year_pf_=internal::IntLazyKey(fh, cat,
+                                      "year",
+                                      true);
+        authors_=internal::StringsLazyKey(fh, cat,
+                                          "authors",
+                                          false);
+        authors_pf_=internal::StringsLazyKey(fh, cat,
+                                             "authors",
+                                             true);
       };
     }
     JournalArticle get(NodeHandle nh,
@@ -2752,14 +2753,14 @@ namespace RMF {
     int frame_;
     friend class ResidueFactory;
   private:
-    boost::array<IntKey,2> index_;
-    StringKey type_;
-    StringKey type_pf_;
+    boost::array<internal::IntLazyKey,2> index_;
+    internal::StringLazyKey type_;
+    internal::StringLazyKey type_pf_;
     Residue(NodeHandle nh,
             int frame,
-            boost::array<IntKey, 2> index,
-            StringKey type,
-            StringKey type_pf):
+            boost::array<internal::IntLazyKey, 2> index,
+            internal::StringLazyKey type,
+            internal::StringLazyKey type_pf):
       nh_(nh),
       frame_(frame),
       index_(index),
@@ -2806,27 +2807,27 @@ namespace RMF {
   */
   class ResidueFactory {
   private:
-    boost::array<IntKey,2> index_;
-    StringKey type_;
-    StringKey type_pf_;
+    boost::array<internal::IntLazyKey,2> index_;
+    internal::StringLazyKey type_;
+    internal::StringLazyKey type_pf_;
   public:
     typedef FileHandle File;
     typedef Residue Decorator;
     ResidueFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-        index_[0]=get_key_always<IntTraits>(fh, cat,
-                                            "first residue index",
-                                            false);
-        index_[1]=get_key_always<IntTraits>(fh, cat,
-                                            "last residue index",
-                                            false);
-        type_=get_key_always<StringTraits>(fh, cat,
-                                           "residue type",
-                                           false);
-        type_pf_=get_key_always<StringTraits>(fh, cat,
-                                              "residue type",
-                                              true);
+        index_[0]=internal::IntLazyKey(fh, cat,
+                                       "first residue index",
+                                       false);
+        index_[1]=internal::IntLazyKey(fh, cat,
+                                       "last residue index",
+                                       false);
+        type_=internal::StringLazyKey(fh, cat,
+                                      "residue type",
+                                      false);
+        type_pf_=internal::StringLazyKey(fh, cat,
+                                         "residue type",
+                                         true);
       };
     }
     Residue get(NodeHandle nh,
@@ -3014,24 +3015,24 @@ namespace RMF {
     int frame_;
     friend class AtomFactory;
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    FloatKey mass_;
-    FloatKey mass_pf_;
-    IndexKey element_;
-    IndexKey element_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::FloatLazyKey mass_;
+    internal::FloatLazyKey mass_pf_;
+    internal::IndexLazyKey element_;
+    internal::IndexLazyKey element_pf_;
     Atom(NodeHandle nh,
          int frame,
-         FloatKeys coordinates,
-         FloatKeys coordinates_pf,
-         FloatKey radius,
-         FloatKey radius_pf,
-         FloatKey mass,
-         FloatKey mass_pf,
-         IndexKey element,
-         IndexKey element_pf):
+         internal::FloatLazyKeys coordinates,
+         internal::FloatLazyKeys coordinates_pf,
+         internal::FloatLazyKey radius,
+         internal::FloatLazyKey radius_pf,
+         internal::FloatLazyKey mass,
+         internal::FloatLazyKey mass_pf,
+         internal::IndexLazyKey element,
+         internal::IndexLazyKey element_pf):
       nh_(nh),
       frame_(frame),
       coordinates_(coordinates),
@@ -3128,56 +3129,56 @@ namespace RMF {
   */
   class AtomFactory {
   private:
-    FloatKeys coordinates_;
-    FloatKeys coordinates_pf_;
-    FloatKey radius_;
-    FloatKey radius_pf_;
-    FloatKey mass_;
-    FloatKey mass_pf_;
-    IndexKey element_;
-    IndexKey element_pf_;
+    internal::FloatLazyKeys coordinates_;
+    internal::FloatLazyKeys coordinates_pf_;
+    internal::FloatLazyKey radius_;
+    internal::FloatLazyKey radius_pf_;
+    internal::FloatLazyKey mass_;
+    internal::FloatLazyKey mass_pf_;
+    internal::IndexLazyKey element_;
+    internal::IndexLazyKey element_pf_;
   public:
     typedef FileHandle File;
     typedef Atom Decorator;
     AtomFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "physics");
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian x",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian x",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian y",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian y",
-                                                              true));
-        coordinates_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                           "cartesian z",
-                                                           false));
-        coordinates_pf_.push_back(get_key_always<FloatTraits>(fh, cat,
-                                                              "cartesian z",
-                                                              true));
-        radius_=get_key_always<FloatTraits>(fh, cat,
-                                            "radius",
-                                            false);
-        radius_pf_=get_key_always<FloatTraits>(fh, cat,
-                                               "radius",
-                                               true);
-        mass_=get_key_always<FloatTraits>(fh, cat,
-                                          "mass",
-                                          false);
-        mass_pf_=get_key_always<FloatTraits>(fh, cat,
-                                             "mass",
-                                             true);
-        element_=get_key_always<IndexTraits>(fh, cat,
-                                             "element",
-                                             false);
-        element_pf_=get_key_always<IndexTraits>(fh, cat,
-                                                "element",
-                                                true);
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian x",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian x",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian y",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian y",
+                                                         true));
+        coordinates_.push_back(internal::FloatLazyKey(fh, cat,
+                                                      "cartesian z",
+                                                      false));
+        coordinates_pf_.push_back(internal::FloatLazyKey(fh, cat,
+                                                         "cartesian z",
+                                                         true));
+        radius_=internal::FloatLazyKey(fh, cat,
+                                       "radius",
+                                       false);
+        radius_pf_=internal::FloatLazyKey(fh, cat,
+                                          "radius",
+                                          true);
+        mass_=internal::FloatLazyKey(fh, cat,
+                                     "mass",
+                                     false);
+        mass_pf_=internal::FloatLazyKey(fh, cat,
+                                        "mass",
+                                        true);
+        element_=internal::IndexLazyKey(fh, cat,
+                                        "element",
+                                        false);
+        element_pf_=internal::IndexLazyKey(fh, cat,
+                                           "element",
+                                           true);
       };
     }
     Atom get(NodeHandle nh,
@@ -3401,12 +3402,12 @@ namespace RMF {
     int frame_;
     friend class ChainFactory;
   private:
-    IndexKey chain_id_;
-    IndexKey chain_id_pf_;
+    internal::IndexLazyKey chain_id_;
+    internal::IndexLazyKey chain_id_pf_;
     Chain(NodeHandle nh,
           int frame,
-          IndexKey chain_id,
-          IndexKey chain_id_pf):
+          internal::IndexLazyKey chain_id,
+          internal::IndexLazyKey chain_id_pf):
       nh_(nh),
       frame_(frame),
       chain_id_(chain_id),
@@ -3445,20 +3446,20 @@ namespace RMF {
   */
   class ChainFactory {
   private:
-    IndexKey chain_id_;
-    IndexKey chain_id_pf_;
+    internal::IndexLazyKey chain_id_;
+    internal::IndexLazyKey chain_id_pf_;
   public:
     typedef FileHandle File;
     typedef Chain Decorator;
     ChainFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-        chain_id_=get_key_always<IndexTraits>(fh, cat,
-                                              "chain id",
-                                              false);
-        chain_id_pf_=get_key_always<IndexTraits>(fh, cat,
-                                                 "chain id",
-                                                 true);
+        chain_id_=internal::IndexLazyKey(fh, cat,
+                                         "chain id",
+                                         false);
+        chain_id_pf_=internal::IndexLazyKey(fh, cat,
+                                            "chain id",
+                                            true);
       };
     }
     Chain get(NodeHandle nh,
@@ -3572,10 +3573,10 @@ namespace RMF {
     int frame_;
     friend class DomainFactory;
   private:
-    boost::array<IntKey,2> indexes_;
+    boost::array<internal::IntLazyKey,2> indexes_;
     Domain(NodeHandle nh,
            int frame,
-           boost::array<IntKey, 2> indexes):
+           boost::array<internal::IntLazyKey, 2> indexes):
       nh_(nh),
       frame_(frame),
       indexes_(indexes) {
@@ -3607,19 +3608,19 @@ namespace RMF {
   */
   class DomainFactory {
   private:
-    boost::array<IntKey,2> indexes_;
+    boost::array<internal::IntLazyKey,2> indexes_;
   public:
     typedef FileHandle File;
     typedef Domain Decorator;
     DomainFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-        indexes_[0]=get_key_always<IntTraits>(fh, cat,
-                                              "first residue index",
-                                              false);
-        indexes_[1]=get_key_always<IntTraits>(fh, cat,
-                                              "last residue index",
-                                              false);
+        indexes_[0]=internal::IntLazyKey(fh, cat,
+                                         "first residue index",
+                                         false);
+        indexes_[1]=internal::IntLazyKey(fh, cat,
+                                         "last residue index",
+                                         false);
       };
     }
     Domain get(NodeHandle nh,
@@ -3736,12 +3737,12 @@ namespace RMF {
     int frame_;
     friend class CopyFactory;
   private:
-    IndexKey copy_index_;
-    IndexKey copy_index_pf_;
+    internal::IndexLazyKey copy_index_;
+    internal::IndexLazyKey copy_index_pf_;
     Copy(NodeHandle nh,
          int frame,
-         IndexKey copy_index,
-         IndexKey copy_index_pf):
+         internal::IndexLazyKey copy_index,
+         internal::IndexLazyKey copy_index_pf):
       nh_(nh),
       frame_(frame),
       copy_index_(copy_index),
@@ -3780,20 +3781,20 @@ namespace RMF {
   */
   class CopyFactory {
   private:
-    IndexKey copy_index_;
-    IndexKey copy_index_pf_;
+    internal::IndexLazyKey copy_index_;
+    internal::IndexLazyKey copy_index_pf_;
   public:
     typedef FileHandle File;
     typedef Copy Decorator;
     CopyFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-        copy_index_=get_key_always<IndexTraits>(fh, cat,
-                                                "copy index",
-                                                false);
-        copy_index_pf_=get_key_always<IndexTraits>(fh, cat,
-                                                   "copy index",
-                                                   true);
+        copy_index_=internal::IndexLazyKey(fh, cat,
+                                           "copy index",
+                                           false);
+        copy_index_pf_=internal::IndexLazyKey(fh, cat,
+                                              "copy index",
+                                              true);
       };
     }
     Copy get(NodeHandle nh,
@@ -3913,12 +3914,12 @@ namespace RMF {
     int frame_;
     friend class DiffuserFactory;
   private:
-    FloatKey diffusion_coefficient_;
-    FloatKey diffusion_coefficient_pf_;
+    internal::FloatLazyKey diffusion_coefficient_;
+    internal::FloatLazyKey diffusion_coefficient_pf_;
     Diffuser(NodeHandle nh,
              int frame,
-             FloatKey diffusion_coefficient,
-             FloatKey diffusion_coefficient_pf):
+             internal::FloatLazyKey diffusion_coefficient,
+             internal::FloatLazyKey diffusion_coefficient_pf):
       nh_(nh),
       frame_(frame),
       diffusion_coefficient_(diffusion_coefficient),
@@ -3957,22 +3958,20 @@ namespace RMF {
   */
   class DiffuserFactory {
   private:
-    FloatKey diffusion_coefficient_;
-    FloatKey diffusion_coefficient_pf_;
+    internal::FloatLazyKey diffusion_coefficient_;
+    internal::FloatLazyKey diffusion_coefficient_pf_;
   public:
     typedef FileHandle File;
     typedef Diffuser Decorator;
     DiffuserFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "physics");
-        diffusion_coefficient_
-          =get_key_always<FloatTraits>(fh, cat,
-                                       "diffusion coefficient",
-                                       false);
-        diffusion_coefficient_pf_
-          =get_key_always<FloatTraits>(fh, cat,
-                                       "diffusion coefficient",
-                                       true);
+        diffusion_coefficient_=internal::FloatLazyKey(fh, cat,
+                                                      "diffusion coefficient",
+                                                      false);
+        diffusion_coefficient_pf_=internal::FloatLazyKey(fh, cat,
+                                                        "diffusion coefficient",
+                                                         true);
       };
     }
     Diffuser get(NodeHandle nh,
@@ -3985,7 +3984,7 @@ namespace RMF {
       return ((frame >=0 && (nh.get_has_value(diffusion_coefficient_pf_, frame)
                              || nh.get_has_value(diffusion_coefficient_)))
               || ( frame <0 && (nh.get_has_value(diffusion_coefficient_)
-                       || nh.get_has_value(diffusion_coefficient_pf_, 0))));
+                          || nh.get_has_value(diffusion_coefficient_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(DiffuserFactory,
                      "DiffuserFactory");
@@ -4018,7 +4017,7 @@ namespace RMF {
         diffusion_coefficient_pf_=(fh.get_has_key<FloatTraits>
                                    (cat, "diffusion coefficient", true)?
                                    fh.get_key<FloatTraits>(cat,
-                                                   "diffusion coefficient",
+                                                        "diffusion coefficient",
                                                            true)
                                    :FloatKey());
       };
@@ -4033,7 +4032,7 @@ namespace RMF {
       return ((frame >=0 && (nh.get_has_value(diffusion_coefficient_pf_, frame)
                              || nh.get_has_value(diffusion_coefficient_)))
               || ( frame <0 && (nh.get_has_value(diffusion_coefficient_)
-                    || nh.get_has_value(diffusion_coefficient_pf_, 0))));
+                          || nh.get_has_value(diffusion_coefficient_pf_, 0))));
     }
     IMP_RMF_SHOWABLE(DiffuserConstFactory,
                      "DiffuserConstFactory");
@@ -4092,12 +4091,12 @@ namespace RMF {
     int frame_;
     friend class TypedFactory;
   private:
-    StringKey type_name_;
-    StringKey type_name_pf_;
+    internal::StringLazyKey type_name_;
+    internal::StringLazyKey type_name_pf_;
     Typed(NodeHandle nh,
           int frame,
-          StringKey type_name,
-          StringKey type_name_pf):
+          internal::StringLazyKey type_name,
+          internal::StringLazyKey type_name_pf):
       nh_(nh),
       frame_(frame),
       type_name_(type_name),
@@ -4136,20 +4135,20 @@ namespace RMF {
   */
   class TypedFactory {
   private:
-    StringKey type_name_;
-    StringKey type_name_pf_;
+    internal::StringLazyKey type_name_;
+    internal::StringLazyKey type_name_pf_;
   public:
     typedef FileHandle File;
     typedef Typed Decorator;
     TypedFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "sequence");
-        type_name_=get_key_always<StringTraits>(fh, cat,
-                                                "type name",
-                                                false);
-        type_name_pf_=get_key_always<StringTraits>(fh, cat,
-                                                   "type name",
-                                                   true);
+        type_name_=internal::StringLazyKey(fh, cat,
+                                           "type name",
+                                           false);
+        type_name_pf_=internal::StringLazyKey(fh, cat,
+                                              "type name",
+                                              true);
       };
     }
     Typed get(NodeHandle nh,
@@ -4271,12 +4270,12 @@ namespace RMF {
     int frame_;
     friend class StaticAliasFactory;
   private:
-    NodeIDKey aliased_;
-    NodeIDKey aliased_pf_;
+    internal::NodeIDLazyKey aliased_;
+    internal::NodeIDLazyKey aliased_pf_;
     StaticAlias(NodeHandle nh,
                 int frame,
-                NodeIDKey aliased,
-                NodeIDKey aliased_pf):
+                internal::NodeIDLazyKey aliased,
+                internal::NodeIDLazyKey aliased_pf):
       nh_(nh),
       frame_(frame),
       aliased_(aliased),
@@ -4317,20 +4316,20 @@ namespace RMF {
   */
   class StaticAliasFactory {
   private:
-    NodeIDKey aliased_;
-    NodeIDKey aliased_pf_;
+    internal::NodeIDLazyKey aliased_;
+    internal::NodeIDLazyKey aliased_pf_;
   public:
     typedef FileHandle File;
     typedef StaticAlias Decorator;
     StaticAliasFactory(FileHandle fh) {
       {
         CategoryD<1> cat=get_category_always<1>(fh, "alias");
-        aliased_=get_key_always<NodeIDTraits>(fh, cat,
-                                              "aliased",
-                                              false);
-        aliased_pf_=get_key_always<NodeIDTraits>(fh, cat,
-                                                 "aliased",
-                                                 true);
+        aliased_=internal::NodeIDLazyKey(fh, cat,
+                                         "aliased",
+                                         false);
+        aliased_pf_=internal::NodeIDLazyKey(fh, cat,
+                                            "aliased",
+                                            true);
       };
     }
     StaticAlias get(NodeHandle nh,
@@ -4464,13 +4463,13 @@ namespace RMF {
     friend class ScoreFactory;
   private:
     StaticAliasFactory representation_;
-    FloatKey score_;
-    FloatKey score_pf_;
+    internal::FloatLazyKey score_;
+    internal::FloatLazyKey score_pf_;
     Score(NodeHandle nh,
           int frame,
           StaticAliasFactory representation,
-          FloatKey score,
-          FloatKey score_pf):
+          internal::FloatLazyKey score,
+          internal::FloatLazyKey score_pf):
       nh_(nh),
       frame_(frame),
       representation_(representation),
@@ -4531,20 +4530,20 @@ namespace RMF {
   class ScoreFactory {
   private:
     StaticAliasFactory representation_;
-    FloatKey score_;
-    FloatKey score_pf_;
+    internal::FloatLazyKey score_;
+    internal::FloatLazyKey score_pf_;
   public:
     typedef FileHandle File;
     typedef Score Decorator;
     ScoreFactory(FileHandle fh) : representation_(fh){
       {
         CategoryD<1> cat=get_category_always<1>(fh, "feature");
-        score_=get_key_always<FloatTraits>(fh, cat,
-                                           "score",
-                                           false);
-        score_pf_=get_key_always<FloatTraits>(fh, cat,
-                                              "score",
-                                              true);
+        score_=internal::FloatLazyKey(fh, cat,
+                                      "score",
+                                      false);
+        score_pf_=internal::FloatLazyKey(fh, cat,
+                                         "score",
+                                         true);
       };
     }
     Score get(NodeHandle nh,

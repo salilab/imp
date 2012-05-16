@@ -28,20 +28,21 @@ inline void set_show_hdf5_errors(bool tf) {
 
   /** Copy the hierarchy structure and set structure from one rmf
       file to another.*/
-RMFEXPORT void copy_structure(FileConstHandle in, FileHandle out);
+RMFEXPORT void copy_structure(FileConstHandle input, FileHandle output);
 
 
   /** Copy the hierarchy structure and set structure from one rmf
       file to another.*/
-  RMFEXPORT void copy_frame(FileConstHandle in, FileHandle out,
+  RMFEXPORT void copy_frame(FileConstHandle input, FileHandle output,
                             unsigned int inframe,
                             unsigned int outframe);
 
   /** Return true of the two have the same structure.*/
-  RMFEXPORT bool get_equal_structure(FileConstHandle in, FileConstHandle out,
+  RMFEXPORT bool get_equal_structure(FileConstHandle input,
+                                     FileConstHandle output,
                                      bool print_diff=false);
   /** Return true of the two have the same structure.*/
-  RMFEXPORT bool get_equal_frame(FileConstHandle in, FileConstHandle out,
+  RMFEXPORT bool get_equal_frame(FileConstHandle input, FileConstHandle out,
                                  unsigned int inframe, unsigned int outframe,
                                  bool print_diff=false);
 
