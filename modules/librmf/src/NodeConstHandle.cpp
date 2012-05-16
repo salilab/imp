@@ -82,8 +82,7 @@ namespace {
                  int frame,
                  std::string prefix) {
     using std::operator<<;
-    out << get_type_name(n.get_type()) << " "
-        << n.get_id() << " " << n.get_name();
+    out<< "\"" << n.get_name() << "\" [" << get_type_name(n.get_type()) << "]";
     show_data(n, out, fks, frame, prefix);
     show_data(n, out, iks, frame, prefix);
     show_data(n, out, xks, frame, prefix);
@@ -112,11 +111,12 @@ namespace {
                             CopyConstFactory copycf,
                             DiffuserConstFactory diffusercf,
                             TypedConstFactory typedcf,
+                            StaticAliasConstFactory aliascf,
                             int frame,
                             std::string ) {
     using std::operator<<;
-    out << get_type_name(n.get_type()) << " "
-        << n.get_id() << " " << n.get_name();
+    out<< "\"" << n.get_name() << "\" [" << get_type_name(n.get_type())
+       << ": ";
     if (ccf.get_is(n, frame)) out <<" color" ;
     if (pcf.get_is(n, frame)) out <<" particle" ;
     if (ipcf.get_is(n, frame)) out <<" iparticle" ;
@@ -128,10 +128,12 @@ namespace {
     if (rcf.get_is(n, frame)) out <<" residue" ;
     if (acf.get_is(n, frame)) out <<" atom" ;
     if (chaincf.get_is(n, frame)) out <<" chain" ;
-    if (fragcf.get_is(n, frame)) out <<" domian" ;
+    if (fragcf.get_is(n, frame)) out <<" domain" ;
     if (copycf.get_is(n, frame)) out <<" copy" ;
     if (typedcf.get_is(n, frame)) out <<" typed" ;
     if (diffusercf.get_is(n, frame)) out <<" diffuser" ;
+    if (aliascf.get_is(n, frame)) out <<" alias" ;
+    out << "]";
   }
 
   template <class TypeT>
@@ -229,13 +231,14 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
   CopyConstFactory copycf(root.get_file());
   DiffuserConstFactory diffusercf(root.get_file());
   TypedConstFactory typedcf(root.get_file());
+  StaticAliasConstFactory aliascf(root.get_file());
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children().at,
                      show_node_decorators(n, out, ccf, pcf, ipcf, rpcf, scf,
                                           bcf, cycf, segcf, rcf, acf,
                                           chaincf, fragcf, copycf,
-                                          diffusercf, typedcf, frame,
+                                          diffusercf, typedcf, aliascf, frame,
                            prefix0+"   "));
 }
 
