@@ -26,7 +26,7 @@ class GenericTest(RMF.TestCase):
             self.assertEqual(t.get_value(k), float(t.get_node(0).get_name()))
     def test_perturbed(self):
         """Test node sets"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.mh"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.rmf"))
         r= f.get_root_node()
         for i in range(0,10):
             cs= r.add_child(str(i), RMF.GEOMETRY)
@@ -36,7 +36,7 @@ class GenericTest(RMF.TestCase):
 
     def test_perturbed_pairs(self):
         """Test node pairs"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.mh"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file_perturbed.rmf"))
         r= f.get_root_node()
         for i in range(0,10):
             cs= r.add_child(str(i), RMF.GEOMETRY)
