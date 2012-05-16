@@ -10,7 +10,7 @@ message CategoryProto {
     message Entry {
       optional double value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Float float_list=1;
   message PerFrameFloat {
@@ -19,9 +19,9 @@ message CategoryProto {
       message Frame {
         optional double value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameFloat per_frame_float_list=2;
 
@@ -30,7 +30,7 @@ message CategoryProto {
     message Entry {
       optional int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Int int_list=3;
   message PerFrameInt {
@@ -39,9 +39,9 @@ message CategoryProto {
       message Frame {
         optional int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameInt per_frame_int_list=4;
 
@@ -50,7 +50,7 @@ message CategoryProto {
     message Entry {
       optional string value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated String string_list=5;
   message PerFrameString {
@@ -59,9 +59,9 @@ message CategoryProto {
       message Frame {
         optional string value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameString per_frame_string_list=6;
 
@@ -70,7 +70,7 @@ message CategoryProto {
     message Entry {
       optional int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Index index_list=7;
   message PerFrameIndex {
@@ -79,9 +79,9 @@ message CategoryProto {
       message Frame {
         optional int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameIndex per_frame_index_list=8;
 
@@ -90,7 +90,7 @@ message CategoryProto {
     message Entry {
       optional int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated NodeID node_id_list=9;
   message PerFrameNodeID {
@@ -99,9 +99,9 @@ message CategoryProto {
       message Frame {
         optional int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameNodeID per_frame_node_id_list=10;
 
@@ -120,7 +120,7 @@ message CategoryProto {
     message Entry {
       repeated double value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Floats floats_list=11;
   message PerFrameFloats {
@@ -129,9 +129,9 @@ message CategoryProto {
       message Frame {
         repeated double value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameFloats per_frame_floats_list=12;
 
@@ -140,7 +140,7 @@ message CategoryProto {
     message Entry {
       repeated int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Ints ints_list=13;
   message PerFrameInts {
@@ -149,9 +149,9 @@ message CategoryProto {
       message Frame {
         repeated int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameInts per_frame_ints_list=14;
 
@@ -160,7 +160,7 @@ message CategoryProto {
     message Entry {
       repeated string value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Strings strings_list=15;
   message PerFrameStrings {
@@ -169,9 +169,9 @@ message CategoryProto {
       message Frame {
         repeated string value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameStrings per_frame_strings_list=16;
 
@@ -180,7 +180,7 @@ message CategoryProto {
     message Entry {
       repeated int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated Indexes indexes_list=17;
   message PerFrameIndexes {
@@ -189,9 +189,9 @@ message CategoryProto {
       message Frame {
         repeated int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameIndexes per_frame_indexes_list=18;
 
@@ -200,7 +200,7 @@ message CategoryProto {
     message Entry {
       repeated int32 value=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated NodeIDs node_ids_list=19;
   message PerFrameNodeIDs {
@@ -209,9 +209,9 @@ message CategoryProto {
       message Frame {
         repeated int32 value=1;
       };
-      repeated Frame frames=1;
+      repeated Frame frame=1;
     };
-    repeated Entry entries=2;
+    repeated Entry entry=2;
   };
   repeated PerFrameNodeIDs per_frame_node_ids_list=20;
 
@@ -221,40 +221,37 @@ message RMFProto {
 optional string description=1;
 
 message ArityData {
-repeated CategoryProto categories=1;
+repeated CategoryProto category=1;
 };
 
-repeated ArityData arities=2;
+repeated ArityData arity=2;
 
 message Node {
   required int32 type =1;
   required string name=2;
   repeated int32 children=3;
 };
-repeated Node nodes=3;
+repeated Node node=3;
 
 message Pair {
   required int32 type =1;
-  required string name=2;
-  required int32 id0=3;
-  required int32 id1=4;
+  required int32 id0=2;
+  required int32 id1=3;
 };
-repeated Pair pairs=4;
+repeated Pair pair=4;
 message Triplet {
   required int32 type =1;
-  required string name=2;
-  required int32 id0=3;
-  required int32 id1=4;
-  required int32 id2=5;
+  required int32 id0=2;
+  required int32 id1=3;
+  required int32 id2=4;
 };
-repeated Triplet triplets=5;
+repeated Triplet triplet=5;
 message Quad {
   required int32 type =1;
-  required string name=2;
-  required int32 id0=3;
-  required int32 id1=4;
-  required int32 id2=5;
-  required int32 id3=6;
+  required int32 id0=2;
+  required int32 id1=3;
+  required int32 id2=4;
+  required int32 id3=5;
 };
-repeated Quad quads=6;
+repeated Quad quad=6;
 };
