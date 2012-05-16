@@ -1,6 +1,7 @@
 Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
+import scons_tools.data
 
 
 scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
@@ -31,7 +32,7 @@ oenv=env.IMPModuleBuild(version='nightly-15/5/2012',
                    module_include_path="RMF",
                    module_preproc="RMF", module_namespace="RMF", data=False)
 
-if oenv:
+if "ProtoBuf" in scons_tools.data.get(env).modules['RMF'].dependencies:
     oenv.Append(CPPPATH=[Dir(env['builddir']+"/src")])
     """cat %(tmpdir)s/RMF.pb.cc | sed "s#data/RMF.pb.h#RMF/internal/proto.hpp#g"> %(targetcc)s"""
     def build_protoc(target, source, env):
