@@ -17,6 +17,30 @@
 
 #include <boost/shared_ptr.hpp>
 
+#if 0
+#define IMP_RMF_PROTO_INDEX(base, field, index) \
+  (base).field((base).field##_size()-index-1)
+
+#define IMP_RMF_PROTO_MINDEX(base, field, index) \
+  (base).mutable_##field((base).field##_size()-index-1)
+#else
+#define IMP_RMF_PROTO_INDEX(base, field, index) \
+  (base).field(index)
+
+#define IMP_RMF_PROTO_MINDEX(base, field, index) \
+  (base).mutable_##field(index)
+
+#endif
+
+#define IMP_RMF_PROTO_INDEX_2(base, field, index, field2, index2)       \
+  IMP_RMF_PROTO_INDEX(IMP_RMF_PROTO_INDEX(base, field, index),\
+                      field2, index2)
+
+#define IMP_RMF_PROTO_MINDEX_2(base, field, index, field2, index2)      \
+  IMP_RMF_PROTO_MINDEX(*IMP_RMF_PROTO_MINDEX(base, field, index),\
+                       field2, index2)
+
+
 namespace RMF {
 
 
@@ -32,6 +56,10 @@ namespace RMF {
       static void set(const T &t, V tt) {
         t->set_value(tt);
       }
+      template <class T>
+      static bool get_has(const T &t) {
+        return t.has_value();
+      }
     };
 
     template<>
@@ -44,6 +72,10 @@ namespace RMF {
       static void set(const T &t, NodeID tt) {
         t->set_value(tt.get_index());
       }
+      template <class T>
+      static bool get_has(const T &t) {
+        return t.has_value();
+      }
     };
 
     template <class C>
@@ -53,15 +85,20 @@ namespace RMF {
       static V get(const T &t) {
         V ret(t.value_size());
         for (unsigned int i=0; i< ret.size(); ++i) {
-          ret[i]= t.value(i);
+          ret[i]= IMP_RMF_PROTO_INDEX(t, value,i);
         }
         return ret;
       }
       template <class T>
       static void set(const T &t, V tt) {
+        t->clear_value();
         for( unsigned int i=0; i< tt.size(); ++i) {
-          t->set_value(i, tt[i]);
+          t->add_value(tt[i]);
         }
+      }
+      template <class T>
+      static bool get_has(const T &t) {
+        return t.value_size()>0;
       }
     };
 
@@ -72,15 +109,19 @@ namespace RMF {
       static V get(const T &t) {
         V ret(t.value_size());
         for (unsigned int i=0; i< ret.size(); ++i) {
-          ret[i]= NodeID(t.value(i));
+          ret[ret.size()-i-1]= NodeID(IMP_RMF_PROTO_INDEX(t, value, i));
         }
         return ret;
       }
       template <class T>
       static void set(const T &t, V tt) {
         for( unsigned int i=0; i< tt.size(); ++i) {
-          t->set_value(i, tt[i].get_index());
+          t->add_value(tt[i].get_index());
         }
+      }
+      template <class T>
+      static bool get_has(const T &t) {
+        return t.value_size()>0;
       }
     };
 
@@ -91,16 +132,16 @@ namespace RMF {
     template <>                                                         \
     struct DataPicker<Ucname##Traits, true> {                           \
       typedef CategoryProto::PerFrame##Ucname Proto;                    \
-      static const Proto* get(const CategoryProto &d,  int key_index) {     \
+      static const Proto* get(const CategoryProto &d,  int key_index) { \
         if (d.per_frame_##lcname##_list_size() <= key_index) {          \
           return NULL;                                                  \
         }                                                               \
         else return &d.per_frame_##lcname##_list(key_index);            \
       }                                                                 \
-      static unsigned int get_size(const CategoryProto &d) {                \
+      static unsigned int get_size(const CategoryProto &d) {            \
         return d.per_frame_##lcname##_list_size();                      \
       }                                                                 \
-      static  Proto& get_always( CategoryProto &d,  int key_index) {        \
+      static  Proto& get_always( CategoryProto &d,  int key_index) {    \
         while (d.per_frame_##lcname##_list_size() <= key_index) {       \
           d.add_per_frame_##lcname##_list();                            \
         }                                                               \
@@ -109,17 +150,17 @@ namespace RMF {
     };                                                                  \
     template <>                                                         \
     struct DataPicker<Ucname##Traits, false> {                          \
-      typedef CategoryProto::Ucname Proto;                                  \
-      static const Proto* get(const CategoryProto &d,  int key_index) {     \
+      typedef CategoryProto::Ucname Proto;                              \
+      static const Proto* get(const CategoryProto &d,  int key_index) { \
         if (d.lcname##_list_size() <= key_index) {                      \
           return NULL;                                                  \
         }                                                               \
         else return &d.lcname##_list(key_index);                        \
       }                                                                 \
-      static unsigned int get_size(const CategoryProto &d) {                \
+      static unsigned int get_size(const CategoryProto &d) {            \
         return d.lcname##_list_size();                                  \
       }                                                                 \
-      static Proto& get_always( CategoryProto &d,  int key_index) {         \
+      static Proto& get_always( CategoryProto &d,  int key_index) {     \
         while (d.lcname##_list_size() <= key_index) {                   \
           d.add_##lcname##_list();                                      \
         }                                                               \
@@ -186,14 +227,18 @@ namespace RMF {
         if (!d) {
           return TypeTraits::get_null_value();
         }
-        if (d->entries_size() <= node) {
+        if (d->entry_size() <= node) {
           return TypeTraits::get_null_value();
         } else {
-          if (d->entries(node).frames_size() <= frame) {
+          if (IMP_RMF_PROTO_INDEX(*d, entry, node).frame_size() <= frame) {
+            return TypeTraits::get_null_value();
+          } else if (!ProtoTraits<typename TypeTraits::Type>
+                ::get_has(IMP_RMF_PROTO_INDEX_2((*d), entry,node,
+                                                frame,frame))) {
             return TypeTraits::get_null_value();
           } else {
             return ProtoTraits<typename TypeTraits::Type>
-              ::get(d->entries(node).frames(frame));
+              ::get(IMP_RMF_PROTO_INDEX_2((*d), entry, node, frame, frame));
           }
         }
       }
@@ -204,11 +249,14 @@ namespace RMF {
         if (!d) {
           return TypeTraits::get_null_value();
         }
-        if (d->entries_size() <= node) {
+        if (d->entry_size() <= node) {
+          return TypeTraits::get_null_value();
+        }  else if (!ProtoTraits<typename TypeTraits::Type>
+                    ::get_has(IMP_RMF_PROTO_INDEX(*d, entry,node))) {
           return TypeTraits::get_null_value();
         } else {
           return ProtoTraits<typename TypeTraits::Type>
-              ::get(d->entries(node));
+            ::get(IMP_RMF_PROTO_INDEX(*d, entry,node));
         }
       }
       template <class TypeTraits>
@@ -225,14 +273,15 @@ namespace RMF {
 
       const CategoryProto *get_category_data( int Arity,
                                           int category_id) const {
-        if (proto_.arities_size() < Arity) {
+        if (proto_.arity_size() < Arity) {
           return NULL;
         }
-        const RMFProto::ArityData &arity_data= proto_.arities(Arity-1);
-        if (arity_data.categories_size() <= category_id) {
+        const RMFProto::ArityData &arity_data
+          = IMP_RMF_PROTO_INDEX(proto_, arity, Arity-1);
+        if (arity_data.category_size() <= category_id) {
           return NULL;
         }
-        return &arity_data.categories(category_id);
+        return &IMP_RMF_PROTO_INDEX(arity_data, category,category_id);
       }
 
       template <class TypeTraits, int Arity>
@@ -262,14 +311,15 @@ namespace RMF {
                              int frame,
                             Data &d,
                             typename TypeTraits::Type v) {
-        while (d.entries_size() <= node) {
-          d.add_entries();
+        while (d.entry_size() <= node) {
+          d.add_entry();
         }
-        while (d.entries(node).frames_size() <= frame) {
-          d.mutable_entries(node)->add_frames();
+        while (IMP_RMF_PROTO_INDEX(d, entry,node).frame_size() <= frame) {
+          IMP_RMF_PROTO_MINDEX(d, entry,node)->add_frame();
         }
         ProtoTraits<typename TypeTraits::Type>
-          ::set(d.mutable_entries(node)->mutable_frames(frame), v);
+          ::set(IMP_RMF_PROTO_MINDEX_2(d, entry,node,
+                                       frame,frame), v);
       }
 
       template <class TypeTraits, class Data>
@@ -277,11 +327,11 @@ namespace RMF {
         set_value_constant( int node,
                            Data &d,
                            typename TypeTraits::Type v) {
-        while (d.entries_size() <= node) {
-          d.add_entries();
+        while (d.entry_size() <= node) {
+          d.add_entry();
         }
         ProtoTraits<typename TypeTraits::Type>
-          ::set(d.mutable_entries(node), v);
+          ::set(IMP_RMF_PROTO_MINDEX(d, entry,node), v);
       }
       template <class TypeTraits>
         typename DataPicker<TypeTraits, true>::Proto&
@@ -297,15 +347,15 @@ namespace RMF {
 
       CategoryProto &get_category_data_always( int Arity,
                                            int category_id) {
-        while (proto_.arities_size() < Arity) {
-          proto_.add_arities();
+        while (proto_.arity_size() < Arity) {
+          proto_.add_arity();
         }
         RMFProto::ArityData *arity_data
-          = proto_.mutable_arities(Arity-1);
-        while (arity_data->categories_size() <= category_id) {
-          arity_data->add_categories();
+          = IMP_RMF_PROTO_MINDEX(proto_, arity, Arity-1);
+        while (arity_data->category_size() <= category_id) {
+          arity_data->add_category();
         }
-        return *arity_data->mutable_categories(category_id);
+        return *IMP_RMF_PROTO_MINDEX(*arity_data, category,category_id);
 
       }
 
