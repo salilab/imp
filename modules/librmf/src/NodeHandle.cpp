@@ -32,7 +32,7 @@ vector<NodeHandle> NodeHandle::get_children() const {
   Ints children= get_shared_data()->get_children(get_node_id());
   vector<NodeHandle> ret(children.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeHandle(children[ret.size()-i-1], get_shared_data());
+    ret[i]= NodeHandle(children[i], get_shared_data());
   }
   return ret;
 }
