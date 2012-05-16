@@ -99,8 +99,8 @@ namespace RMF {
       IMP_HDF5_CALL(H5Pset_chunk(plist, D, cdims));
       IMP_HDF5_CALL(H5Pset_fill_value(plist, TypeTraits::get_hdf5_fill_type(),
                                       &TypeTraits::get_fill_value()));
-      IMP_HDF5_CALL(H5Pset_fill_time(plist, H5D_FILL_TIME_IFSET));
-      IMP_HDF5_CALL(H5Pset_alloc_time(plist, H5D_ALLOC_TIME_LATE));
+      IMP_HDF5_CALL(H5Pset_fill_time(plist, H5D_FILL_TIME_ALLOC));
+      IMP_HDF5_CALL(H5Pset_alloc_time(plist, H5D_ALLOC_TIME_INCR));
       /*IMP_HDF5_CALL(H5Pset_szip (plist, H5_SZIP_NN_OPTION_MASK,
         32));*/
       if (comp==GZIP_COMPRESSION) {
