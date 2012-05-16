@@ -11,6 +11,8 @@
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
 #include <RMF/internal/set.h>
+#include <algorithm>
+
 namespace RMF {
   namespace internal {
 
@@ -224,6 +226,7 @@ namespace RMF {
         ret.push_back(cur);
         cur= get_sibling(cur);
       }
+      std::reverse(ret.begin(), ret.end());
       return ret;
     }
 

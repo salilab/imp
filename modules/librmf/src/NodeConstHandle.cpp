@@ -26,7 +26,7 @@ vector<NodeConstHandle> NodeConstHandle::get_children() const {
   Ints children= shared_->get_children(node_);
   vector<NodeConstHandle> ret(children.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeConstHandle(children[ret.size()-i-1], shared_.get());
+    ret[i]= NodeConstHandle(children[i], shared_.get());
   }
   return ret;
 }
