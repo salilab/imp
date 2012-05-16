@@ -13,6 +13,7 @@
 #include <RMF/internal/set.h>
 #include <RMF/HDF5File.h>
 #include <RMF/internal/HDF5SharedData.h>
+#include <RMF/internal/ProtoBufSharedData.h>
 #include <boost/algorithm/string/predicate.hpp>
 namespace RMF {
   namespace internal {
@@ -78,6 +79,10 @@ namespace RMF {
           g= open_hdf5_file(path);
         }
         return new HDF5SharedData(g, create);
+#ifdef RMF_USE_PROTOBUF
+      } else if (boost::algorithm::ends_with(path, ".prmf")) {
+        return new ProtoBufSharedData(path, create);
+#endif
       } else {
         IMP_RMF_THROW("Don't know how to open file", IOException);
       }
@@ -87,6 +92,10 @@ namespace RMF {
       if (boost::algorithm::ends_with(path, ".rmf")) {
         HDF5ConstGroup g= open_hdf5_file_read_only(path);
         return new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
+#ifdef RMF_USE_PROTOBUF
+      } else if (boost::algorithm::ends_with(path, ".prmf")) {
+        return new ProtoBufSharedData(path, false);
+#endif
       } else {
         IMP_RMF_THROW("Don't know how to open file", IOException);
       }
