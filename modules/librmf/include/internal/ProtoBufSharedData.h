@@ -10,6 +10,7 @@
 #define IMPLIBRMF_INTERNAL_PROTO_BUF_SHARED_DATA_H
 
 #include "../RMF_config.h"
+#ifdef RMF_USE_PROTOBUF
 #include "SharedData.h"
 #include "../infrastructure_macros.h"
 #include "RMF.pb.h"
@@ -394,6 +395,6 @@ namespace RMF {
     };
   } // namespace internal
 } /* namespace RMF */
-
+#endif
 
 #endif /* IMPLIBRMF_INTERNAL_PROTO_BUF_SHARED_DATA_H */
