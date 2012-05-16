@@ -52,5 +52,5 @@ mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
     oenv.Protoc(source=[File("./data/RMF.proto")],
                target=[File(env['builddir']+"/src/RMF.pb.cpp"),
                        File(env['builddir']+"/src/RMF.pb.h"),
-                       File(env['builddir']+"/src/_RMFproto.py")])
+                       File(env['builddir']+"/src/_RMF_proto.py")])
 env['linktest']=olinktest

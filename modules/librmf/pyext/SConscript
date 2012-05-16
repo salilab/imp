@@ -1,5 +1,8 @@
 Import('env')
+import scons_tools.data
+files=env.IMPModuleGetPython()
+if "ProtoBuf" in scons_tools.data.get(env).modules['RMF'].dependencies:
+    print "adding"
+    files.append(env['builddir']+"/src/_RMF_proto.py")
 
-# The swig.i-in is processed to generate the input file to swig. All files in
-# src are installed as python code.
-env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=env.IMPModuleGetPython())
+env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=files)
