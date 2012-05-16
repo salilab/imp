@@ -15,7 +15,7 @@ class GenericTest(RMF.TestCase):
         pks= f.get_keys(pc)
         self.assert_(len(pks)> 3)
         print pks
-        tfn= self.get_tmp_file_name("test_fileold.mh")
+        tfn= self.get_tmp_file_name("test_fileold.rmf")
         shutil.copy(ifn, tfn)
         fw= RMF.open_rmf_file(tfn)
         pc= f.get_category("physics")

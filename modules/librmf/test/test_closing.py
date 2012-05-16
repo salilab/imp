@@ -9,7 +9,7 @@ class GenericTest(RMF.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test closing an RMF file"""
-        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
+        f= RMF.create_rmf_file(self.get_tmp_file_name("test_file.rmf"))
         r= f.get_root_node()
         print r.get_type()
         sc= f.add_category("sequence")

@@ -9,7 +9,7 @@ class GenericTest(RMF.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test the description of an rmf file"""
-        fn=self.get_tmp_file_name("test_file_perturbed.mh")
+        fn=self.get_tmp_file_name("test_file_perturbed.rmf")
         f= RMF.create_rmf_file(fn)
         descr= "hi there\n"
         self.assertEqual(f.get_description(), "")
