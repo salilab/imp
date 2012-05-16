@@ -150,9 +150,9 @@ namespace {
 
 // Note that older g++ is confused by queue.back().get<2>()
 #define IMP_RMF_PRINT_TREE(stream, NodeType, start, num_children,       \
-                       get_child, show)                                 \
+                           get_children, show)                             \
   {                                                                     \
-    vector<boost::tuple<std::string, std::string, NodeType> >      \
+    vector<boost::tuple<std::string, std::string, NodeType> >           \
       queue;                                                            \
     queue.push_back(boost::make_tuple(std::string(),                    \
                                       std::string(), start));           \
@@ -163,14 +163,14 @@ namespace {
       std::string prefix1= back.get<1>();                               \
       queue.pop_back();                                                 \
       stream << prefix0;                                                \
-      unsigned int nc= num_children;                                    \
-      if (nc>0) stream << " + ";                                        \
+      vector<NodeType> children=get_children;                           \
+      if (children.size()>0) stream << " + ";                           \
       else stream << " - ";                                             \
       show;                                                             \
       stream  << std::endl;                                             \
-      for (int i=static_cast<int>(nc-1); i>=0; --i) {                   \
+      for (int i=static_cast<int>(children.size())-1; i>=0; --i) {      \
         queue.push_back(boost::make_tuple(prefix1+" ",                  \
-                                          prefix1+" ", get_child(i)));  \
+                                          prefix1+" ", children[i]));   \
       }                                                                 \
     } while (!queue.empty());                                           \
   }                                                                     \
@@ -204,7 +204,7 @@ void show_hierarchy(NodeConstHandle root,
   }
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
-                 n.get_children().at,
+                 n.get_children(),
                      show_node(n, out, fks, fsks, iks, isks, xks, xsks,
                                sks, ssks, nks, nsks, frame,
                                prefix0+"   "));
@@ -234,7 +234,7 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
   StaticAliasConstFactory aliascf(root.get_file());
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
-                 n.get_children().at,
+                 n.get_children(),
                      show_node_decorators(n, out, ccf, pcf, ipcf, rpcf, scf,
                                           bcf, cycf, segcf, rcf, acf,
                                           chaincf, fragcf, copycf,
