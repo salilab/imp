@@ -264,7 +264,8 @@ bool get_equal_structure(FileConstHandle in, FileConstHandle out,
                         << in << " and " << out << std::endl;
             }
             ret=false;
-          } else if (in.get_value(inkeys[i], inframe)
+          } else if (in.get_has_value(inkeys[i], inframe)
+                     && in.get_value(inkeys[i], inframe)
                      != out.get_value(outkeys[i], outframe)) {
             if (print_diff) {
               std::cout << "Node sets differ about value "
