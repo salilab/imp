@@ -366,7 +366,7 @@ namespace RMF {
                                                     k.get_index())->name();
         }
       }
-
+    public:
       IMP_RMF_FOREACH_TYPE(IMP_RMF_PROTO_SHARED_TYPE);
 
       void flush() const;
