@@ -133,7 +133,7 @@ namespace RMF {
         for (unsigned int j=0; j< inkeys.size(); ++j) {
           if (insets[i].get_has_value(inkeys[j], inframe)) {
             outsets[i].set_value(outkeys[j],
-                                 insets[i].get_value(inkeys[i], inframe),
+                                 insets[i].get_value(inkeys[j], inframe),
                                  outframe);
           }
         }
