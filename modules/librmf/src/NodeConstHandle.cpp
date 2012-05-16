@@ -62,7 +62,7 @@ namespace {
               && n.get_has_value(ks[i]))) {
         if (n.get_file().get_is_per_frame(ks[i])) {
           out << std::endl << prefix
-              << n.get_file().get_name(ks[i]) << ": "
+              << n.get_file().get_name(ks[i]) << " (pf): "
               << Showable(n.get_value(ks[i], frame));
         } else {
           out << std::endl << prefix
