@@ -9,6 +9,7 @@
 #ifndef IMPBASE_OBJECT_MACROS_H
 #define IMPBASE_OBJECT_MACROS_H
 #include "base_config.h"
+#include "doxygen_macros.h"
 #include "ref_counted_macros.h"
 #include "Vector.h"
 #include "Pointer.h"
