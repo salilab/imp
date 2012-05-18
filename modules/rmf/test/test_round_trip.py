@@ -25,7 +25,7 @@ class GenericTest(IMP.test.TestCase):
         print "reopening"
         del f
         print "after closing"
-        print RMF.get_open_hdf5_handle_names()
+        #print RMF.get_open_hdf5_handle_names()
         f= RMF.open_rmf_file_read_only(name)
         print "reading"
         print f, type(f)
