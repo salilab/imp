@@ -16,10 +16,6 @@
 namespace RMF {
   namespace internal {
 
-  namespace {
-  set<std::string> opened;
-  }
-
   void HDF5SharedData::initialize_categories(int i, bool create) {
     std::string nm=get_category_name_data_set_name(i+1);
     if (file_.get_has_child(nm)) {
@@ -78,13 +74,6 @@ namespace RMF {
     IMP_RMF_BEGIN_OPERATION;
 
     std::string name= file_.get_file().get_name();
-    IMP_RMF_USAGE_CHECK(!get_is_open(name),
-                        get_error_message("RMF files can only be opened ",
-                                          "once at a time",
-                                          " at the moment: ",
-                                          Strings(opened.begin(),
-                                                  opened.end())));
-    opened.insert(name);
     if (create) {
       IMP_RMF_OPERATION(
           file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
@@ -117,6 +106,7 @@ namespace RMF {
           (get_node_data_data_set_name());,
           "opening node child data set.");
     }
+
       for (unsigned int i=0; i< 4; ++i) {
         initialize_categories(i, create);
         initialize_keys(i);
@@ -136,7 +126,6 @@ namespace RMF {
     }
 
     HDF5SharedData::~HDF5SharedData() {
-      opened.erase(get_file_name());
       add_ref();
       // flush validates
       flush();
@@ -370,9 +359,6 @@ namespace RMF {
                           || str[str.size()-1]=='\n',
                           "Description should end in a newline.");
       get_group().set_char_attribute("description", str);
-    }
-    bool get_is_open(std::string path) {
-      return opened.find(path) != opened.end();
     }
   } // namespace internal
 } /* namespace RMF */
