@@ -32,7 +32,8 @@ oenv=env.IMPModuleBuild(version='nightly-17/5/2012',
                    module_include_path="RMF",
                    module_preproc="RMF", module_namespace="RMF", data=False)
 
-if scons_tools.data.get(env).modules['RMF'].ok \
+if not env.GetOption('help') and not env.GetOption('clean') \
+   and scons_tools.data.get(env).modules['RMF'].ok \
    and "ProtoBuf" in scons_tools.data.get(env).modules['RMF'].dependencies:
     oenv.Append(CPPPATH=[Dir(env['builddir']+"/src")])
     """cat %(tmpdir)s/RMF.pb.cc | sed "s#data/RMF.pb.h#RMF/internal/proto.hpp#g"> %(targetcc)s"""
