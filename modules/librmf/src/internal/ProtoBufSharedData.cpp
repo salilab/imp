@@ -70,8 +70,6 @@ namespace RMF {
       parent->add_children(id);
       std::cout << "Adding " << name << " as child of " << parent->name()
                 << std::endl;
-      IMP_RMF_INTERNAL_CHECK(proto_.node(id).name()==name,
-                             "Names don't match");
       Ints ch= get_children(node);
       std::cout << ch << std::endl;
       Strings names;
