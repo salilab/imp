@@ -12,7 +12,7 @@ class GenericTest(IMP.test.TestCase):
         """Test round trip"""
         m= IMP.Model()
         print "reading pdb"
-        name=self.get_tmp_file_name("test_rt.rmf")
+        name=self.get_tmp_file_name("test_round_trip.rmf")
         h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
                              IMP.atom.NonAlternativePDBSelector())
         IMP.set_log_level(IMP.SILENT)

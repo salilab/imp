@@ -12,7 +12,7 @@ class GenericTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h1)))
     def test_round_trip(self):
         """Test reading and writing geometry"""
-        nm=self.get_tmp_file_name("geometry.hdf5")
+        nm=self.get_tmp_file_name("geometry.rmf")
         f= RMF.create_rmf_file(nm)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10, 10, 10))
