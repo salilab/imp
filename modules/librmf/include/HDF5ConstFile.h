@@ -32,7 +32,8 @@ namespace RMF {
     ~HDF5ConstFile();
   };
 
-  /** Open an existing hdf5 file read only.
+  /** Open an existing hdf5 file read only. The file cannot already
+      be open.
   */
   RMFEXPORT HDF5ConstFile open_hdf5_file_read_only(std::string name);
 

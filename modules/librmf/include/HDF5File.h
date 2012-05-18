@@ -37,11 +37,11 @@ namespace RMF {
   };
 
   /** Create a new hdf5 file, clearing any existing file with the same
-      name if needed.
+      name if needed. The file cannot already be open.
   */
   RMFEXPORT HDF5File create_hdf5_file(std::string name);
 
-  /** Open an existing hdf5 file.
+  /** Open an existing hdf5 file. The file cannot already be open/.
   */
   RMFEXPORT HDF5File open_hdf5_file(std::string name);
 
