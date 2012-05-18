@@ -73,7 +73,7 @@ namespace RMF {
       int valid_;
 
     protected:
-      SharedData(): valid_(11111) {};
+      SharedData();
     public:
       template <class TypeTraits, int Arity>
       bool get_is_per_frame(Key<TypeTraits, Arity> k) const {

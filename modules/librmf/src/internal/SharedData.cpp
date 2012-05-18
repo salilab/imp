@@ -19,9 +19,17 @@ namespace RMF {
   namespace internal {
 
 
-
+    namespace {
+      map<std::string, SharedData *> cache;
+      map<SharedData*, std::string> reverse_cache;
+    }
+    SharedData::SharedData(): valid_(11111) {
+    };
     SharedData::~SharedData() {
       valid_=-66666;
+      std::string name= reverse_cache.find(this)->second;
+      cache.erase(name);
+      reverse_cache.erase(this);
     }
 
     void SharedData::audit_key_name(std::string name) const {
@@ -70,7 +78,12 @@ namespace RMF {
     }
   }
 
+
     SharedData* create_shared_data(std::string path, bool create) {
+      SharedData *ret;
+      if (cache.find(path) != cache.end()) {
+        return cache.find(path)->second;
+      }
       if (boost::algorithm::ends_with(path, ".rmf")) {
         HDF5Group g;
         if (create) {
@@ -78,27 +91,38 @@ namespace RMF {
         } else {
           g= open_hdf5_file(path);
         }
-        return new HDF5SharedData(g, create);
+        ret= new HDF5SharedData(g, create);
 #ifdef RMF_USE_PROTOBUF
       } else if (boost::algorithm::ends_with(path, ".prmf")) {
-        return new ProtoBufSharedData(path, create);
+        ret= new ProtoBufSharedData(path, create);
 #endif
       } else {
         IMP_RMF_THROW("Don't know how to open file", IOException);
       }
+      cache[path]=ret;
+      reverse_cache[ret]=path;
+      return ret;
     }
 
     SharedData* create_read_only_shared_data(std::string path) {
+      SharedData *ret;
+      if (cache.find(path) != cache.end()) {
+        return cache.find(path)->second;
+      }
       if (boost::algorithm::ends_with(path, ".rmf")) {
-        HDF5ConstGroup g= open_hdf5_file_read_only(path);
-        return new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
+        HDF5ConstGroup g;
+        g = open_hdf5_file_read_only(path);
+        ret= new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
 #ifdef RMF_USE_PROTOBUF
       } else if (boost::algorithm::ends_with(path, ".prmf")) {
-        return new ProtoBufSharedData(path, false);
+        ret= new ProtoBufSharedData(path, false);
 #endif
       } else {
         IMP_RMF_THROW("Don't know how to open file", IOException);
       }
+      cache[path]=ret;
+      reverse_cache[ret]=path;
+      return ret;
     }
 
   } // namespace internal
