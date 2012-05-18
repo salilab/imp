@@ -149,6 +149,7 @@
         lcname##_vector_.erase(it); break;                              \
       }                                                                 \
     }                                                                   \
+    IMP_UNUSED(found);                                                  \
     IMP_USAGE_CHECK(found, d << " not found in container: "             \
                     << get_as<PluralData>(lcname##_vector_));           \
     lcname##_handle_change();                                           \
