@@ -587,9 +587,6 @@ namespace RMF {
       void set_description(std::string str);
     };
 
-
-  RMFEXPORT bool get_is_open(std::string path);
-
   } // namespace internal
 } /* namespace RMF */
 
