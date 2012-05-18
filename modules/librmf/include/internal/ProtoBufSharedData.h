@@ -14,23 +14,15 @@
 #include "SharedData.h"
 #include "../infrastructure_macros.h"
 #include "RMF.pb.h"
-
 #include <boost/shared_ptr.hpp>
 
-#if 0
-#define IMP_RMF_PROTO_INDEX(base, field, index) \
-  (base).field((base).field##_size()-index-1)
 
-#define IMP_RMF_PROTO_MINDEX(base, field, index) \
-  (base).mutable_##field((base).field##_size()-index-1)
-#else
 #define IMP_RMF_PROTO_INDEX(base, field, index) \
   (base).field(index)
 
 #define IMP_RMF_PROTO_MINDEX(base, field, index) \
   (base).mutable_##field(index)
 
-#endif
 
 #define IMP_RMF_PROTO_INDEX_2(base, field, index, field2, index2)       \
   IMP_RMF_PROTO_INDEX(IMP_RMF_PROTO_INDEX(base, field, index),\
