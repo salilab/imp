@@ -23,7 +23,7 @@ namespace RMF {
   template <class TypeTraits, int Arity>
   class LazyKey {
     struct Data: boost::intrusive_ptr_object {
-      FileHandle file;
+      std::string file_name;
       std::string name;
       CategoryD<Arity> category;
       bool per_frame;
@@ -36,7 +36,7 @@ namespace RMF {
             std::string name,
             bool per_frame):
       data_(new Data) {
-      data_->file=file;
+      data_->file_name=file.get_name();
       data_->category=category;
       data_->name=name;
       data_->per_frame=per_frame;
@@ -44,7 +44,8 @@ namespace RMF {
     LazyKey(){}
     operator Key<TypeTraits, Arity>() const {
       if (data_->key==  Key<TypeTraits, Arity>()) {
-        data_->key=get_key_always<TypeTraits>(data_->file,
+        FileHandle fh= open_rmf_file(data_->file_name);
+        data_->key=get_key_always<TypeTraits>(fh,
                                               data_->category,
                                               data_->name,
                                               data_->per_frame);
