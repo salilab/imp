@@ -16,6 +16,7 @@
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/algebra/geometric_alignment.h>
+#include <algorithm>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -65,11 +66,15 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
 }
 
 
-  void fix_rigid_body(core::RigidBody rb) {
-    core::RigidMembers rms(rb.get_members());
+  void fix_rigid_body(const std::pair<core::RigidBody,
+                      core::RigidMembers> &in) {
+    core::RigidMembers rms=in.second;
+    core::RigidBody rb= in.first;
     algebra::Vector3Ds local(rms.size());
     algebra::Vector3Ds global(rms.size());
-    if (rms.size() < 3) return;
+    if (rms.size() < 3) {
+      return;
+    }
     for (unsigned int i=0; i< rms.size(); ++i) {
       local[i]= rms[i].get_internal_coordinates();
       global[i]= rms[i].get_coordinates();
@@ -129,15 +134,16 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
   IMP_LOG(VERBOSE, "Loading hierarchy " << atom::Hierarchy(o)
           << " with contents " << atom::Hierarchies(d.particles)
           << std::endl);
+  compatibility::map<core::RigidBody, core::RigidMembers> rbs;
   for (unsigned int i=0; i< d.nodes.size(); ++i) {
     do_load_one_particle(fh.get_node_from_id(d.nodes[i]),
                          d.particles[i], frame);
+    if (core::RigidMember::particle_is_instance(d.particles[i])) {
+      rbs[core::RigidMember(d.particles[i]).get_rigid_body()].
+        push_back(core::RigidMember(d.particles[i]));
+    }
   }
-  // patch rigid bodies
-  if (core::RigidBody::particle_is_instance(o)
-      && !rigid_factory_.get_is(nh, frame)) {
-    fix_rigid_body(core::RigidBody(o));
-  }
+  std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);
 }
 
 bool HierarchyLoadLink::setup_particle(Particle *root,
@@ -241,7 +247,6 @@ Particle* HierarchyLoadLink::do_create_recursive(Particle *root,
   if (is_rb) {
     rb=p;
   }
-
   RMF::NodeConstHandles ch= name.get_children();
   for (unsigned int i=0; i< ch.size(); ++i) {
     if (ch[i].get_type()== RMF::REPRESENTATION) {
