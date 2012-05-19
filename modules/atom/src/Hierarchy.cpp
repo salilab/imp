@@ -20,6 +20,8 @@
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/algebra/geometric_alignment.h>
+#include <IMP/core/rigid_bodies.h>
+
 #include <IMP/compatibility/set.h>
 
 #include <boost/random/uniform_int.hpp>
@@ -65,6 +67,15 @@ void Hierarchy::show(std::ostream &out) const
     found=true;
     out << get_as_domain();
   }
+  if (core::RigidBody::particle_is_instance(get_particle())) {
+    found=true;
+    out << core::RigidBody(get_particle());
+  }
+  if (core::RigidMember::particle_is_instance(get_particle())) {
+      found=true;
+      out << " rigid member: " << core::RigidMember(get_particle())
+        .get_rigid_body()->get_name();
+    }
   if (get_as_xyzr()) {
     found=true;
     out << " sphere: " << get_as_xyzr().get_sphere();
