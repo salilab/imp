@@ -833,7 +833,8 @@ void RigidBody::show(std::ostream &out) const {
 }
 
 void RigidMember::show(std::ostream &out) const {
-  out << "Member at " << get_internal_coordinates();
+  out << "Member of " << get_rigid_body()->get_name()
+      << " at " << get_internal_coordinates();
 }
 
 
