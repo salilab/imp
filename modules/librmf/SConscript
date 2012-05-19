@@ -4,8 +4,9 @@ import scons_tools.dependency.boost
 import scons_tools.data
 
 
-scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5", "z", "m"],
+scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
                                             "hdf5.h",
+                                            extra_libs=["z", "m"],
                                             body='H5garbage_collect();')
 #                                            versionheader="hdf5.h",
 #                                            versioncpp=["H5Acreate_vers"])
