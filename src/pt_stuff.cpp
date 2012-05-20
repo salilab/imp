@@ -30,7 +30,8 @@ int* create_indexes(int nrep)
 int get_friend(int* index,int myrank,int step,int nrep)
 {
  int myindex=index[myrank];
- int findex,frank;
+ int findex=0;
+ int frank=0;
 
  if(myindex%2==0 && step%2==0) {findex=myindex+1;}
  if(myindex%2==0 && step%2==1) {findex=myindex-1;}

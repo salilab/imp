@@ -69,7 +69,7 @@ int ReplicaExchange::get_friend_index(int step)
 
 int ReplicaExchange::get_rank(int index)
 {
- int rank;
+ int rank=0;
  for(int i=0;i<nproc_;++i) {if(index_[i]==index) {rank=i;}}
  return rank;
 }

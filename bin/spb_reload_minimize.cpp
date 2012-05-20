@@ -86,14 +86,14 @@ unsigned int currentframe=0;
 unsigned int iout_name=0;
 
 // cycle on all iterations
-for(unsigned iter=0;iter<mydata.niter;++iter){
+for(int iter=0;iter<mydata.niter;++iter){
  std::vector<RMF::FileHandle> rhs;
  std::vector<RMF::Category> my_kcs;
  std::vector<RMF::FloatKey> my_keys0, my_keys2;
  std::vector<RMF::IntKey>   my_keys1;
  std::stringstream iter_str;
  iter_str << iter;
- for(unsigned irep=0;irep<mydata.nrep;++irep){
+ for(int irep=0;irep<mydata.nrep;++irep){
   std::stringstream irep_str;
   irep_str << irep;
   rhs.push_back(RMF::open_rmf_file(mydata.trajfile+irep_str.str()+
@@ -109,7 +109,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 
 //
  for(unsigned int imc=0;imc<nframes;++imc){
-  for(unsigned irep=0;irep<mydata.nrep;++irep){
+  for(int irep=0;irep<mydata.nrep;++irep){
 // increment frame counter
    ++totframes;
  // retrieve scores and index

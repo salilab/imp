@@ -327,12 +327,12 @@ int nbeads, display::Color colore,int copy,double kappa,
  atom::Molecule protein=atom::Molecule::setup_particle(p);
  protein->set_name(name);
  Ints nres_bead;
- for(unsigned int i=0;i<nbeads;++i){
+ for(int i=0;i<nbeads;++i){
   nres_bead.push_back(nres/nbeads);
   if(i<nres%nbeads){++nres_bead[i];}
  }
  int ires=0;
- for(unsigned int i=0;i<nbeads;++i){
+ for(int i=0;i<nbeads;++i){
   IMP_NEW(Particle,pp,(m));
   int first=start_residue+ires;
   int last=first+nres_bead[i];
@@ -385,17 +385,17 @@ atom::Molecule create_protein(Model *m,std::string name,
  int nres=ps.size();
  int nbeads=(int) round((double)nres/(double)nres_per_bead);
  Ints nres_bead;
- for(unsigned int i=0;i<nbeads;++i){
+ for(int i=0;i<nbeads;++i){
   nres_bead.push_back(nres/nbeads);
   if(i<nres%nbeads){++nres_bead[i];}
  }
  int ires=0;
  core::XYZRs rbps;
- for(unsigned int i=0;i<nbeads;++i){
+ for(int i=0;i<nbeads;++i){
   double ms=0.0;
   core::XYZRs xyz;
   int first,last;
-  for(unsigned int j=ires;j<ires+nres_bead[i];++j){
+  for(int j=ires;j<ires+nres_bead[i];++j){
    atom::Residue res=atom::Residue(atom::Atom(ps[j]).get_parent());
    atom::ResidueType restype=res.get_residue_type();
    if(j==ires) {first=res.get_index()+offset;}
@@ -440,7 +440,7 @@ void recenter_rb(core::RigidBody& rb, core::XYZRs& rbps,
   double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
   double ee = (core::RigidMember(rbps[size-1]).get_internal_coordinates())[0];
   if (flip*(ee-bb)<0.0){
-   for(unsigned int k=0;k<size;++k){
+   for(int k=0;k<size;++k){
     algebra::Vector3D coord=
     core::RigidMember(rbps[k]).get_internal_coordinates();
     algebra::Rotation3D rot=

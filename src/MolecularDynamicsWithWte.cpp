@@ -29,7 +29,7 @@ atom::Simulator(m, "MD %1%"){
   dx_    = sigma / 4.0;
   nbin_  = floor((emax-emin)/dx_)+1;
   bias_.reset(new double[2*nbin_]);
-  for(unsigned int i=0;i<2*nbin_;++i) {bias_[i]=0.0;}
+  for(int i=0;i<2*nbin_;++i) {bias_[i]=0.0;}
   deriv_to_acceleration_ = -4.1868e-4;
 }
 

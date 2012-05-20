@@ -35,7 +35,7 @@ double RMSDMetric::get_rmsd
 {
  double rmsd=0.0;
  int    np=ps_.size();
- for(unsigned i=0;i<np;++i){
+ for(int i=0;i<np;++i){
   double dist=algebra::get_distance(v0[i], v1[i]);
   rmsd += dist*dist;
  }

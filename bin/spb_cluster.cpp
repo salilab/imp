@@ -79,7 +79,7 @@ for(unsigned int j=0;j<labels.size();++j){
 IMP_NEW(membrane::DistanceRMSDMetric,drmsd,(cluster_ps,assign,mydata.trs));
 
 // cycle on all iterations
-for(unsigned iter=0;iter<mydata.niter;++iter){
+for(int iter=0;iter<mydata.niter;++iter){
 
  std::stringstream iter_str;
  iter_str << iter;
@@ -136,7 +136,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      }
     }
     fprintf(centerfile," %14u %14u %14d %14.6f\n",
-                         i, index.size(),
+                         i, (unsigned)index.size(),
                          pc->get_cluster_representative(i), diameter);
    }
    fclose(centerfile);
