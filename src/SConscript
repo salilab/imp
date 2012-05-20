@@ -9,6 +9,8 @@ files = [
          'FretrRestraint.cpp',
          'HelixDecorator.cpp',
          'KinkPairScore.cpp',
+         'LangevinThermostatOptimizerState.cpp',
+         'MolecularDynamicsWithWte.cpp',
          'MonteCarloWithWte.cpp',
          'PbcBoxedMover.cpp',
          'PbcBoxedRigidBodyMover.cpp',

@@ -12,7 +12,9 @@ IMP_SWIG_OBJECT(IMP::membrane, AttributeDistancePairScore, AttributeDistancePair
 IMP_SWIG_OBJECT(IMP::membrane, SameRigidBodyPairFilter, SameRigidBodyPairFilters); 
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
+IMP_SWIG_OBJECT(IMP::membrane, LangevinThermostatOptimizerState, LangevinThermostatOptimizerStates);
 IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
+IMP_SWIG_OBJECT(IMP::membrane, MolecularDynamicsWithWte, MolecularDynamicsWithWtes);
 IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
 IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
 IMP_SWIG_OBJECT(IMP::membrane, DistanceRMSDMetric, DistanceRMSDMetrics);
@@ -29,7 +31,9 @@ IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
 %include "IMP/membrane/SameRigidBodyPairFilter.h"
 %include "IMP/membrane/TiltSingletonScore.h"
 %include "IMP/membrane/RigidBodyNewMover.h"
+%include "IMP/membrane/LangevinThermostatOptimizerState.h"
 %include "IMP/membrane/MonteCarloWithWte.h"
+%include "IMP/membrane/MolecularDynamicsWithWte.h"
 %include "IMP/membrane/PbcBoxedMover.h"
 %include "IMP/membrane/ReplicaExchange.h"
 %include "IMP/membrane/DistanceRMSDMetric.h"

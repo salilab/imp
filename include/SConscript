@@ -10,6 +10,8 @@ files = [
          'Gaussian.h',
          'HelixDecorator.h',
          'KinkPairScore.h',
+         'LangevinThermostatOptimizerState.h',
+         'MolecularDynamicsWithWte.h',
          'MonteCarloWithWte.h',
          'PbcBoxedMover.h',
          'PbcBoxedRigidBodyMover.h',
