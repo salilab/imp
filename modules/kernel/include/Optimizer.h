@@ -24,7 +24,10 @@
 IMP_BEGIN_NAMESPACE
 
 //! Base class for all optimizers.
-/** The Optimizer maintains a list of OptimizerStates which are
+/** An optimizer attempts to improve the current configuration of the
+    Model by moving particles around so as to lower the score.
+
+    The Optimizer maintains a list of OptimizerStates which are
     updated each time the conformation is changed.
 
     The optimizers have one key method Optimizer::optimize() which takes
