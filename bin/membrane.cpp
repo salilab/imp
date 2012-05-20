@@ -65,12 +65,10 @@ if(mydata.reload.length()>0){
  std::string trajname=mydata.reload+out.str()+".rmf";
  RMF::FileHandle rh = RMF::open_rmf_file(trajname);
  atom::Hierarchies hs=all.get_children();
- rmf::set_hierarchies(rh, hs);
+ rmf::link_hierarchies(rh, hs);
  // reload last frame
- for(unsigned int i=0;i<hs.size();++i){
-  unsigned int iframe=rmf::get_number_of_frames(rh,hs[i]);
-  rmf::load_frame(rh,iframe-1,hs[i]);
- }
+ unsigned int iframe=rh.get_number_of_frames();
+ rmf::load_frame(rh,iframe-1);
 }
 //
 // Prepare output file
@@ -132,9 +130,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){
   (rh.get_root_node()).set_value(my_key,myscore,imc/mydata.MC.nwrite);
-  for(unsigned int i=0;i<hs.size();++i){
-   rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[i]);
-  }
+  rmf::save_frame(rh,imc/mydata.MC.nwrite);
  // dump bias on file if wte
   if(mydata.MC.do_wte){
    std::ofstream biasfile;

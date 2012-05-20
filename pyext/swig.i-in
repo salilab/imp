@@ -12,7 +12,6 @@ IMP_SWIG_OBJECT(IMP::membrane, AttributeDistancePairScore, AttributeDistancePair
 IMP_SWIG_OBJECT(IMP::membrane, SameRigidBodyPairFilter, SameRigidBodyPairFilters); 
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
-IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess); 
 IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
 IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
 IMP_SWIG_OBJECT(IMP::membrane, ReplicaExchange, ReplicaExchanges);
@@ -30,7 +29,6 @@ IMP_SWIG_OBJECT(IMP::membrane, KinkPairScore, KinkPairScores);
 %include "IMP/membrane/SameRigidBodyPairFilter.h"
 %include "IMP/membrane/TiltSingletonScore.h"
 %include "IMP/membrane/RigidBodyNewMover.h"
-%include "IMP/membrane/RigidBodyGridStates.h"
 %include "IMP/membrane/MonteCarloWithWte.h"
 %include "IMP/membrane/PbcBoxedMover.h"
 %include "IMP/membrane/ReplicaExchange.h"

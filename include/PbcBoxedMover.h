@@ -32,9 +32,7 @@ public:
   PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                 algebra::Vector3Ds centers,
                 algebra::Transformation3Ds transformations);
-  void reset_move();
-  ParticlesTemp propose_move(Float f);
-  IMP_OBJECT(PbcBoxedMover);
+  IMP_MOVER(PbcBoxedMover);
 private:
   Float max_tr_;
   algebra::Transformation3Ds transformations_;

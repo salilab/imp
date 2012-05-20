@@ -145,7 +145,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  if(imc%mydata.MC.nwrite==0){
 
 // print statistics
-  double fretr_score, y2h_score;
+  double fretr_score=0.0;
+  double y2h_score=0.0;
   if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
   if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
@@ -166,12 +167,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   }
   (rh.get_root_node()).set_value(my_key2,mybias,imc/mydata.MC.nwrite);
 // save configuration to rmf
-  for(unsigned int i=0;i<all_mol.size();++i){
-   atom::Hierarchies hs=all_mol[i].get_children();
-   for(unsigned int j=0;j<hs.size();++j){
-    rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[j]);
-   }
-  }
+  rmf::save_frame(rh,imc/mydata.MC.nwrite);
  // dump bias on file if wte
   if(mydata.MC.do_wte){
    std::ofstream biasfile;

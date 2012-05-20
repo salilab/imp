@@ -15,6 +15,28 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
+// convert degrees to radians
+double radians (double d);
+inline double radians (double d) {return d * IMP::algebra::PI/ 180.0;}
+
+struct MCParameters {
+ double         tmin;
+ double         tmax;
+ double         dx;
+ double         dang;
+ double         wte_w0;
+ double         wte_sigma;
+ double         wte_gamma;
+ double         wte_emin;
+ double         wte_emax;
+ int            nexc;
+ int            nsteps;
+ int            nwrite;
+ int            nhot;
+ bool           do_wte;
+ bool           wte_restart;
+};
+
 struct FretParameters {
  double R0;
  double Gamma;

@@ -9,18 +9,19 @@
 #define IMPMEMBRANE_SAME_PARTICLE_PAIR_FILTER_H
 
 #include "membrane_config.h"
-#include <IMP/PairFilter.h>
+#include <IMP/PairPredicate.h>
+#include <IMP/pair_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //!
 /** Filter particles belonging to the same rigid body
 */
-class IMPMEMBRANEEXPORT SameParticlePairFilter : public PairFilter
+class IMPMEMBRANEEXPORT SameParticlePairFilter : public PairPredicate
 {
 public:
   SameParticlePairFilter();
-  IMP_PAIR_FILTER(SameParticlePairFilter);
+  IMP_PAIR_PREDICATE(SameParticlePairFilter);
 };
 
 

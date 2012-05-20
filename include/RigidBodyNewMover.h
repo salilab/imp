@@ -34,9 +34,7 @@ public:
   RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                  Float max_y_translation, Float max_z_translation,
                  Float max_rot);
-  void reset_move();
-  ParticlesTemp propose_move(Float f);
-  IMP_OBJECT(RigidBodyNewMover);
+  IMP_MOVER(RigidBodyNewMover);
 private:
   algebra::Transformation3D last_transformation_;
   Float max_x_translation_;

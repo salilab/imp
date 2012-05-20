@@ -1,14 +1,10 @@
 Import('env')
 
 files = [
-         'multiscale.cpp',
-         'predict.cpp',
-         'reload.cpp',
          'spb_reload_minimize.cpp',
          'spb_cluster.cpp',
          'spb.cpp',
          'spb_restart.cpp',
-         'membrane.cpp',
         ]
 
 # Not all .cpp files are built into an application

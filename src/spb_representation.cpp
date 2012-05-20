@@ -589,12 +589,10 @@ void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
     }
    }
   }
-  rmf::set_hierarchies(rh, hs);
+  rmf::link_hierarchies(rh, hs);
 // reload last frame
-  for(unsigned int i=0;i<hs.size();++i){
-   unsigned int iframe=rmf::get_number_of_frames(rh,hs[i]);
-   rmf::load_frame(rh,iframe-1,hs[i]);
-  }
+  unsigned int iframe=rh.get_number_of_frames();
+  rmf::load_frame(rh,iframe-1);
  }
 
 }

@@ -10,6 +10,8 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/Particle.h>
 #include <IMP/membrane/Sigmoid.h>
+#include <IMP/atom/Residue.h>
+#include <IMP/atom/Atom.h>
 #include <IMP/membrane/Gaussian.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>

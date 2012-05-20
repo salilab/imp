@@ -15,7 +15,8 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 BoxedMover::BoxedMover(Particle *p, Float max_tr,
-                             algebra::Vector3Ds centers)
+                       algebra::Vector3Ds centers):
+  Mover(p->get_model(), "BoxMover%1%")
 {
   IMP_LOG(VERBOSE,"start BoxedMover constructor");
   p_ = p;
@@ -68,6 +69,12 @@ ParticlesTemp BoxedMover::propose_move(Float f) {
 
 void BoxedMover::reset_move() {
  core::XYZ(p_).set_coordinates(oldcoord_);
+}
+
+ParticlesTemp BoxedMover::get_output_particles() const {
+ ParticlesTemp ret;
+ ret.push_back(p_);
+ return ret;
 }
 
 void BoxedMover::do_show(std::ostream &out) const {

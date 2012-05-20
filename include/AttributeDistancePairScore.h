@@ -12,6 +12,7 @@
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
 #include <IMP/UnaryFunction.h>
+#include <IMP/pair_macros.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 

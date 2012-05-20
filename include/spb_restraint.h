@@ -99,6 +99,9 @@ IMPMEMBRANEEXPORT void add_link(Model *m,
 
 IMPMEMBRANEEXPORT core::RigidBodies get_rigid_bodies(Particles ps);
 
+IMPMEMBRANEEXPORT void add_tilt_restraint
+(Model *m,Particle *p,FloatRange trange,double kappa);
+
 IMPMEMBRANEEXPORT void add_tilt(Model *m, const atom::Hierarchy& h,
  std::string name, IntRange range, double tilt, double kappa);
 

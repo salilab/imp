@@ -56,7 +56,8 @@ public:
   void set_w0(double w0) {w0_=w0;}
 
   void set_bias(const Floats &bias) {
-   IMP_USAGE_CHECK(bias.size() == nbin_, "Don't match");
+    IMP_USAGE_CHECK(bias.size() == static_cast<unsigned int>(nbin_),
+                    "Don't match");
    std::copy(bias.begin(), bias.end(), bias_.get());
   }
 

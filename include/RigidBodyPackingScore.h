@@ -11,7 +11,8 @@
 #include "membrane_config.h"
 
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/pair_macros.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/core/TableRefiner.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -19,7 +20,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
-  internal::OwnerPointer<core::TableRefiner> tbr_;
+  base::OwnerPointer<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
   double kappa_;
 public:

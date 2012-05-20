@@ -10,6 +10,7 @@
 
 #include "membrane_config.h"
 #include "IMP/Restraint.h"
+#include <IMP/restraint_macros.h>
 #include <IMP/Particle.h>
 #include <boost/random/uniform_real.hpp>
 

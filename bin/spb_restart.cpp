@@ -68,20 +68,16 @@ for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // OPEN FILE
 //
 RMF::FileHandle rh=RMF::open_rmf_file(mydata.trajfile+".rmf");
-rmf::set_hierarchies(rh, hhs);
+rmf::link_hierarchies(rh, hhs);
 //
 // LOAD specific frame
 //
-for(unsigned int i=0;i<hhs.size();++i){
- rmf::load_frame(rh,mydata.frame_id,hhs[i]);
-}
+rmf::load_frame(rh,mydata.frame_id);
 
 std::cout << " FRAME "<< mydata.frame_id
  << " SCORE :: " << m->evaluate(false) << std::endl;
 
-for(unsigned int i=0;i<hhs.size();++i){
- rmf::save_frame(rh_out,0,hhs[i]);
-}
+rmf::save_frame(rh_out,0);
 
 return 0;
 }

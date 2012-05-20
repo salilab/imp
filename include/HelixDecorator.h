@@ -12,6 +12,7 @@
 
 #include <IMP/core/core_macros.h>
 #include <IMP/Particle.h>
+#include <IMP/decorator_macros.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>
 #include <IMP/exception.h>
@@ -66,12 +67,7 @@ public:
 
 };
 
-// Make it so the C++ operator<< can be used.
-IMP_OUTPUT_OPERATOR(HelixDecorator);
-
-
-/** Define a collection of them. Also look at membrane.i*/
-typedef Decorators<HelixDecorator, Particles> HelixDecorators;
+IMP_VALUES(HelixDecorator, HelixDecorators);
 
 IMPMEMBRANE_END_NAMESPACE
 

@@ -15,7 +15,7 @@ SameParticlePairFilter
 ::SameParticlePairFilter(){
 }
 
-bool SameParticlePairFilter::get_contains(const ParticlePair &pp)
+int SameParticlePairFilter::get_value(const ParticlePair &pp)
  const {
       return pp[0] == pp[1];
 }
@@ -28,7 +28,7 @@ ParticlesTemp SameParticlePairFilter::get_input_particles( Particle* t) const {
 
 ContainersTemp
 SameParticlePairFilter::get_input_containers(Particle*p) const {
-  return ContainersTemp(1, p);
+  return ContainersTemp();
 }
 
 void SameParticlePairFilter::do_show(std::ostream &) const {

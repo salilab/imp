@@ -22,7 +22,7 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   dx_    = sigma / 4.0;
   nbin_  = 2*(floor((emax-emin)/dx_)+1);
   bias_.reset(new double[nbin_]);
-  for(unsigned int i=0;i<nbin_;++i) {bias_[i]=0.0;}
+  for( int i=0;i<nbin_;++i) {bias_[i]=0.0;}
   }
 
 double MonteCarloWithWte::get_bias(double score) const
@@ -81,14 +81,14 @@ void MonteCarloWithWte::update_bias(double score)
 
 void MonteCarloWithWte::do_step() {
   ParticlesTemp moved=do_move(get_move_probability());
-  double energy= evaluate(false);
+  double energy=get_scoring_function()->evaluate(false);
   bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
   if(do_accept) update_bias(energy);
 }
 
 double MonteCarloWithWte::do_evaluate(const ParticlesTemp &moved) const {
-   double score=evaluate(false);
-   return score+get_bias(score);
+  double energy=get_scoring_function()->evaluate(false);
+  return energy+get_bias(energy);
 }
 
 void MonteCarloWithWte::do_show(std::ostream &) const {

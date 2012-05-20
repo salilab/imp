@@ -7,13 +7,15 @@
  */
 #include <IMP/membrane/RigidBodyNewMover.h>
 #include <IMP/core.h>
+#include <IMP/random.h>
 #include <IMP/algebra.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                                Float max_y_translation, Float max_z_translation,
-                               Float max_angle) {
+                                     Float max_angle):
+  Mover(d->get_model(), "RigidBodyNewMover%1%") {
   IMP_LOG(VERBOSE,"start RigidBodyNewMover constructor");
   max_x_translation_ = max_x_translation;
   max_y_translation_ = max_y_translation;
@@ -27,7 +29,7 @@ ParticlesTemp RigidBodyNewMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"RigidBodyNewMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
-    double fc =rand(random_number_generator);
+    double fc =rand(base::random_number_generator);
     if (fc > f) return ParticlesTemp();
   }
 
@@ -61,7 +63,7 @@ ParticlesTemp RigidBodyNewMover::propose_move(Float f) {
                                                                         0.0),
                                                     1.));
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
-  Float angle =rand(random_number_generator);
+  Float angle =rand(base::random_number_generator);
   algebra::Rotation3D r
     = algebra::get_rotation_about_axis(axis, angle);
   algebra::Rotation3D rc
@@ -79,6 +81,9 @@ void RigidBodyNewMover::reset_move() {
   last_transformation_= algebra::Transformation3D();
 }
 
+ParticlesTemp RigidBodyNewMover::get_output_particles() const {
+  return ParticlesTemp(1, d_);
+}
 
 void RigidBodyNewMover::do_show(std::ostream &out) const {
   out << "max x translation: " << max_x_translation_ << "\n";

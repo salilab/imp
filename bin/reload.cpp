@@ -36,10 +36,10 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 RMF::FileHandle rh = RMF::open_rmf_file(mydata.traj_file);
 
 atom::Hierarchies hs=all.get_children();
-rmf::set_hierarchies(rh, hs);
+rmf::link_hierarchies(rh, hs);
 
 // number of frames
-unsigned int nframes=rmf::get_number_of_frames(rh,hs[0]);
+unsigned int nframes=rh.get_number_of_frames();
 
 // create restraints
 create_restraints(m,all,tbr,&mydata);
@@ -49,9 +49,7 @@ for(int imc=0;imc<nframes;++imc)
 {
 
 // load configuration from file
-  for(int i=0;i<hs.size();++i){
-   rmf::load_frame(rh,imc,hs[i]);
-  }
+ rmf::load_frame(rh,imc);
 
 // print statistics
  double myscore=m->evaluate(false);

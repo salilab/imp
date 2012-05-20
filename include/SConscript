@@ -1,4 +1,34 @@
 Import('env')
 
+files = [
+         'AttributeDistancePairScore.h',
+         'BoxedMover.h',
+         'ContactMapMetric.h',
+         'DistanceRMSDMetric.h',
+         'EzRestraint.h',
+         'FretrRestraint.h',
+         'Gaussian.h',
+         'HelixDecorator.h',
+         'KinkPairScore.h',
+         'MonteCarloWithWte.h',
+         'PbcBoxedMover.h',
+         'PbcBoxedRigidBodyMover.h',
+         'RMSDMetric.h',
+         'ReplicaExchange.h',
+         'RigidBodyNewMover.h',
+         'RigidBodyPackingScore.h',
+         'SameParticlePairFilter.h',
+         'SameRigidBodyPairFilter.h',
+         'Sigmoid.h',
+         'TiltSingletonScore.h',
+         'pt_stuff.h',
+         'spb_assemble_restraints.h',
+         'spb_main.h',
+         'spb_parser.h',
+         'spb_representation.h',
+         'spb_restraint.h',
+         'spb_sampler.h',
+        ]
+
 # Install the include files:
-env.IMPModuleInclude(files=env.IMPModuleGetHeaders())
+env.IMPModuleInclude(files)

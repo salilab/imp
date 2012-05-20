@@ -452,6 +452,18 @@ core::RigidBodies get_rigid_bodies(Particles ps)
  return rbs;
 }
 
+void add_tilt_restraint
+ (Model *m,Particle *p,FloatRange tilt_range,double kappa)
+{
+algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
+algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
+IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
+IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
+IMP_NEW(core::SingletonRestraint,sr,(tss,p));
+m->add_restraint(sr);
+sr->set_name("Tilt restraint");
+}
+
 void add_tilt (Model *m, const atom::Hierarchy& h,
  std::string name, IntRange range, double tilt, double kappa)
 {

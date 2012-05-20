@@ -87,17 +87,15 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
  RMF::FileHandle
   rh=RMF::open_rmf_file(mydata.trajfile+"_"+iter_str.str()+".rmf");
  RMF::Category my_kc  = rh.get_category("my data");
- RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score");
+ RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score",true);
 
 // setting hierarchies
- rmf::set_hierarchies(rh, hhs);
- unsigned int nframes=rmf::get_number_of_frames(rh,hhs[0]);
+ rmf::link_hierarchies(rh, hhs);
+ unsigned int nframes=rh.get_number_of_frames();
 
 // add configurations to Metric
  for(unsigned int imc=0;imc<nframes;++imc){
-  for(unsigned int i=0;i<hhs.size();++i){
-   rmf::load_frame(rh,imc,hhs[i]);
-  }
+  rmf::load_frame(rh,imc);
   double weight=1.0;
   if(mydata.cluster_weight){
    weight=exp(-((rh.get_root_node()).get_value(my_key,imc)/mydata.MC.tmin));

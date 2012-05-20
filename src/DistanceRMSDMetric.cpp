@@ -8,6 +8,7 @@
 #include <IMP/membrane/DistanceRMSDMetric.h>
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
+#include <IMP/core/XYZ.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <algorithm>
 #include <vector>
@@ -143,7 +144,7 @@ void DistanceRMSDMetric::do_show(std::ostream &) const {
 statistics::PartitionalClustering* create_gromos_clustering
  (statistics::Metric *d, double cutoff)
  {
-  compatibility::checked_vector<Ints> clusters;
+  IntsList clusters;
   unsigned nitems=d->get_number_of_items();
 
 // are we using the DistanceRMSDMetric ?
@@ -206,7 +207,7 @@ statistics::PartitionalClustering* create_gromos_clustering
       weights.erase(weights.begin()+k);
      }else{
 // and the element in all the other neighbor lists
-      std::vector<int>::iterator it=
+      Ints::iterator it=
        find (neighbors[k].begin(), neighbors[k].end(), newcluster[i]);
       if(it!=neighbors[k].end()){
        neighbors[k].erase(it);

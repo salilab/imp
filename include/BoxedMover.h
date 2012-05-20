@@ -30,9 +30,7 @@ public:
       \param[in] max_tr is the maximum translation during a step
    */
   BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
-  void reset_move();
-  ParticlesTemp propose_move(Float f);
-  IMP_OBJECT(BoxedMover);
+  IMP_MOVER(BoxedMover);
 private:
   Float max_tr_;
   algebra::Vector3Ds centers_;

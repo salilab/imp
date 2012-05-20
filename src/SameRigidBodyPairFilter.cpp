@@ -15,7 +15,7 @@ SameRigidBodyPairFilter
 ::SameRigidBodyPairFilter(){
 }
 
-bool SameRigidBodyPairFilter::get_contains(const ParticlePair &pp)
+int SameRigidBodyPairFilter::get_value(const ParticlePair &pp)
  const {
      if(!core::RigidMember::particle_is_instance(pp[0]) ||
         !core::RigidMember::particle_is_instance(pp[1])){return false;}
@@ -35,7 +35,7 @@ ParticlesTemp SameRigidBodyPairFilter::get_input_particles( Particle* t) const {
 
 ContainersTemp
 SameRigidBodyPairFilter::get_input_containers(Particle*p) const {
-  return ContainersTemp(1, core::RigidMember(p).get_rigid_body());
+  return ContainersTemp();
 }
 
 void SameRigidBodyPairFilter::do_show(std::ostream &) const {

@@ -11,7 +11,8 @@
 #include "membrane_config.h"
 
 #include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/pair_macros.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -19,7 +20,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT KinkPairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::base::OwnerPointer<UnaryFunction> f_;
 public:
   KinkPairScore(UnaryFunction *f);
 

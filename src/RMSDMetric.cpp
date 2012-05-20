@@ -8,6 +8,7 @@
 #include <IMP/membrane/RMSDMetric.h>
 #include <IMP/algebra.h>
 #include <IMP/statistics.h>
+#include <IMP/core/XYZ.h>
 #include <algorithm>
 #include <vector>
 #include <IMP/compatibility/vector_property_map.h>

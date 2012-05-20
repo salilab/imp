@@ -63,6 +63,8 @@ std::map< std::string, Pointer<RestraintSet> > rst_map=
 //
 RMF::FileHandle rh_out = RMF::create_rmf_file("traj_reload_0.rmf");
 for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
+// add restraints
+IMP::rmf::add_restraints(rh_out, m->get_restraints());
 // adding key for score
 RMF::Category my_kc= rh_out.add_category("my data");
 RMF::FloatKey my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
@@ -96,14 +98,14 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
   irep_str << irep;
   rhs.push_back(RMF::open_rmf_file(mydata.trajfile+irep_str.str()+
                 "_"+iter_str.str()+".rmf"));
-  rmf::set_hierarchies(rhs[irep], hhs);
+  rmf::link_hierarchies(rhs[irep], hhs);
   my_kcs.push_back(rhs[irep].get_category("my data"));
-  my_keys0.push_back(rhs[irep].get_float_key(my_kcs[irep],"my score"));
-  my_keys1.push_back(rhs[irep].get_int_key(my_kcs[irep],"my index"));
-  my_keys2.push_back(rhs[irep].get_float_key(my_kcs[irep],"my bias"));
+  my_keys0.push_back(rhs[irep].get_float_key(my_kcs[irep],"my score",true));
+  my_keys1.push_back(rhs[irep].get_int_key(my_kcs[irep],"my index",true));
+  my_keys2.push_back(rhs[irep].get_float_key(my_kcs[irep],"my bias",true));
  }
 // number of frames
- unsigned int nframes=rmf::get_number_of_frames(rhs[0],hhs[0]);
+ unsigned int nframes=rhs[0].get_number_of_frames();
 
 //
  for(unsigned int imc=0;imc<nframes;++imc){
@@ -120,17 +122,15 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
 // if good enough...
    if(myscore<mydata.cutoff && filter){
 // load configuration from file
-    for(unsigned int i=0;i<hhs.size();++i){
-     rmf::load_frame(rhs[irep],imc,hhs[i]);
-    }
+    rmf::load_frame(rhs[irep],imc);
     double myscore_min = myscore;
 // do coniugate gradient
     if(mydata.cg_steps>0){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
     }
-    double fretr_score;
-    double y2h_score;
+    double fretr_score=0.0;
+    double y2h_score=0.0;
     if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
     if(mydata.add_y2h) {y2h_score=rst_map["Y2H"]->evaluate(false);}
 
@@ -159,9 +159,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
      (rh_out.get_root_node()).set_value(my_key_out0,myscore_min,currentframe);
      (rh_out.get_root_node()).set_value(my_key_out1,myindex,currentframe);
      (rh_out.get_root_node()).set_value(my_key_out2,mybias,currentframe);
-     for(unsigned int i=0;i<hhs.size();++i){
-      rmf::save_frame(rh_out,currentframe,hhs[i]);
-     }
+     rmf::save_frame(rh_out,currentframe);
      ++nminimized;
      ++currentframe;
     }
@@ -174,6 +172,7 @@ for(unsigned iter=0;iter<mydata.niter;++iter){
     iout << iout_name;
     rh_out = RMF::create_rmf_file("traj_reload_"+iout.str()+".rmf");
     for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
+    IMP::rmf::add_restraints(rh_out, m->get_restraints());
     my_kc= rh_out.add_category("my data");
     my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
     my_key_out1=rh_out.add_int_key(my_kc,"my index",true);

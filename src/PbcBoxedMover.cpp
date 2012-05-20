@@ -16,7 +16,8 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
-                             algebra::Transformation3Ds transformations)
+                             algebra::Transformation3Ds transformations):
+  Mover(p->get_model(), "PbcBoxedMover%1%")
 {
   IMP_LOG(VERBOSE,"start PbcBoxedMover constructor");
   p_ = p;
@@ -67,6 +68,10 @@ ParticlesTemp PbcBoxedMover::propose_move(Float f) {
    }
 
  return ret;
+}
+
+ParticlesTemp PbcBoxedMover::get_output_particles() const {
+  return ps_;
 }
 
 void PbcBoxedMover::reset_move() {

@@ -7,6 +7,7 @@
 
 #include <IMP/membrane/FretrRestraint.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/base/random.h>
 #include <IMP/Particle.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -40,7 +41,7 @@ Floats FretrRestraint::get_states(double Pb)
  ::boost::uniform_real<> rand(0.0,1.0);
  for(unsigned i = 0; i < mcsteps_; ++i){
   for(unsigned j = 0; j < Na_; ++j){
-   double fc = rand(random_number_generator);
+    double fc = rand(base::random_number_generator);
    if( fc < Pb ){states.push_back(1.0);}
    else{states.push_back(0.0);}
   }

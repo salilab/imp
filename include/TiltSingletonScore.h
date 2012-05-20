@@ -11,7 +11,8 @@
 #include "membrane_config.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/Pointer.h>
+#include <IMP/singleton_macros.h>
+#include <IMP/base/Pointer.h>
 #include <IMP/UnaryFunction.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -27,7 +28,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  */
 class IMPMEMBRANEEXPORT TiltSingletonScore : public SingletonScore
 {
-  IMP::internal::OwnerPointer<UnaryFunction> f_;
+  IMP::base::OwnerPointer<UnaryFunction> f_;
   algebra::VectorD<3> local_;
   algebra::VectorD<3> global_;
 public:
