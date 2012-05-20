@@ -30,6 +30,13 @@ const std::nullptr_t nullptr;
 #if IMP_DEFINE_NULLPTR
 
 #if !defined(SWIG)
+
+#if __GNUC__ && __GNUC__==4 && __GNUC_MINOR__>=6
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wc++0x-compat"
+#endif
+
+
 struct nullptr_t {
   template <class O>
   operator O*() const {
@@ -49,6 +56,11 @@ inline bool operator!=(O *a, nullptr_t o) {
   return a != static_cast<O*>(o);
 }
 extern IMPCOMPATIBILITYEXPORT const nullptr_t nullptr;
+
+#if __GNUC__ && __GNUC__==4 && __GNUC_MINOR__>=6
+#pragma GCC diagnostic pop
+#endif
+
 #else
 extern const void * const nullptr;
 #endif //SWIG
