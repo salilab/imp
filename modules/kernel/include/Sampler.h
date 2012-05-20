@@ -19,7 +19,8 @@ IMP_BEGIN_NAMESPACE
 //! Base class for all samplers.
 /** A sampler takes a Model and searches for good configurations,
     given the optimizeable parameters and the scoring function in
-    the Model and extra information that can be provided.
+    the Model and extra information that can be provided. Typically,
+    the current configuration of the model is ignore.
 
     Typically a sampler works by using one or more Optimizer
     types to search for configurations which minimize the scoring
