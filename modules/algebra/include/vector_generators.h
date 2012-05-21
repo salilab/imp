@@ -69,7 +69,7 @@ get_random_vector_in(const SphereD<D> &s){
   return ret;
 }
 
-/** Generate a random vector in a circle analytically
+/** Generates a random vector in a circle
     with uniform density with respect to the area of the circle
 
     @param s a 2D sphere (circle)
@@ -79,7 +79,7 @@ get_random_vector_in(const SphereD<D> &s){
 */
 IMPALGEBRAEXPORT
 VectorD<2>
-get_random_vector_analytically_in(const SphereD<2> &s);
+get_random_vector_in(const SphereD<2> &s);
 
 
 //! Generate a random vector in a cylinder with uniform density

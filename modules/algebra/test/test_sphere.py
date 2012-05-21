@@ -37,5 +37,25 @@ class SphereTests(IMP.test.TestCase):
                 cs.show(); print
                 self.assertLess(d+ cs.get_radius()- es.get_radius(), .5)
 
+    def test_sampling_in_sphere( self ):
+        """Verify uniform sampling within a sphere"""
+        s = IMP.algebra.Sphere2D( [0,0], 1 )
+        inner_box = \
+            IMP.algebra.BoundingBox2D( [-0.5, -0.5], [0.5, 0.5] )
+        n = 0
+        m = 2000
+        for i in range(m):
+            v = IMP.algebra.get_random_vector_in( s )
+            if inner_box.get_contains(v):
+                n=n+1
+        # compare expected and observed hits
+        s_area = math.pi # pi * 1.0^2
+        inner_box_area = 1.0
+        expected_p = inner_box_area / s_area
+        observed_p = float(n) / float(m)
+        print expected_p, observed_p
+        self.assertAlmostEqual(observed_p, expected_p, places=1)
+
+
 if __name__ == '__main__':
     IMP.test.main()
