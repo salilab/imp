@@ -8,14 +8,14 @@
 #ifndef IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 #define IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H
 
-#include "ClosePairsFinder.h"
-#include "core_macros.h"
 #include "core_config.h"
+#include "ClosePairsFinder.h"
+#include "close_pairs_finder_macros.h"
 
 
-#if defined(IMP_CORE_USE_IMP_CGAL) || defined(IMP_DOXYGEN)
 IMPCORE_BEGIN_NAMESPACE
 
+//#if defined(IMP_DOXYGEN) || defined(IMP_CORE_USE_IMP_CGAL)
 //! Find all nearby pairs by sweeping the bounding boxes
 /** This method is much faster than the quadratic one when
     there are are large sets of points.
@@ -30,9 +30,9 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 
   IMP_CLOSE_PAIRS_FINDER(BoxSweepClosePairsFinder);
 };
+//#endif /* IMP_USE_CGAL */
 
 IMPCORE_END_NAMESPACE
 
-#endif /* IMP_USE_CGAL */
 
 #endif  /* IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H */

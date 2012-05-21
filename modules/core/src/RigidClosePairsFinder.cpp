@@ -8,6 +8,7 @@
 
 #include "IMP/core/RigidClosePairsFinder.h"
 #include "IMP/core/GridClosePairsFinder.h"
+#include "IMP/core/internal/MovedSingletonContainer.h"
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/core/internal/rigid_body_tree.h"
 #include "IMP/core/XYZ.h"

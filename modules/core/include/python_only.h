@@ -8,7 +8,7 @@
 #ifndef IMPCORE_PYTHON_ONLY_H
 #define IMPCORE_PYTHON_ONLY_H
 
-#include "core_macros.h"
+#include "core_config.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

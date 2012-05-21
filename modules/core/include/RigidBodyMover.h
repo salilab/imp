@@ -10,8 +10,9 @@
 #define IMPCORE_RIGID_BODY_MOVER_H
 
 #include "core_config.h"
-#include <IMP/core/MonteCarlo.h>
-#include <IMP/core/Mover.h>
+#include "MonteCarlo.h"
+#include "Mover.h"
+#include "mover_macros.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
