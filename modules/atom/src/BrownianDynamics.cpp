@@ -205,7 +205,8 @@ void BrownianDynamics
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     core::XYZR xrd(get_model(), pi);
     IMP_INTERNAL_CHECK(delta.get_magnitude() < xrd.get_radius(),
-                       "Step is too big");
+                       "Step is too big for particle "
+                       << Showable(xrd.get_particle()));
   }
   xd.set_coordinates(xd.get_coordinates()+delta);
 }
