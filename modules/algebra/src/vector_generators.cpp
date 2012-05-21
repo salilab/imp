@@ -11,7 +11,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Generate a random vector in a circle analytically
+/** Generate a random vector in a circle
     with uniform density with respect to the area of the circle
 
     @param s a 2D sphere (circle)
@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \relatesalso SphereD
 */
 VectorD<2>
-get_random_vector_analytically_in
+get_random_vector_in
 (const SphereD<2> &s) {
   ::boost::uniform_real<> rand(0, 1);
   double angle =
