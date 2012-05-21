@@ -46,7 +46,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerInput sc,
                                                  SoftSpherePairScore *ssps,
                                                  ObjectKey ok,
                                                  double s):
-  Restraint("ExcludedVolumeRestraint %1%"), sc_(sc),
+    Restraint(sc->get_model(), "ExcludedVolumeRestraint %1%"), sc_(sc),
   initialized_(false),
   ssps_(ssps)
 {

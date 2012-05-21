@@ -16,7 +16,8 @@ IMPSAXS_BEGIN_NAMESPACE
 
 Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
                      FormFactorType ff_type) :
-  IMP::Restraint("SAXS restraint"), exp_profile_(exp_profile),
+    IMP::Restraint(IMP::internal::get_model(particles), "SAXS restraint"),
+    exp_profile_(exp_profile),
     ff_type_(ff_type)
 {
 
