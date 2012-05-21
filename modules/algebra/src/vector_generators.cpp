@@ -11,6 +11,51 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+/** Generate a random vector in a circle analytically
+    with uniform density with respect to the area of the circle
+
+    @param s a 2D sphere (circle)
+
+    \relatealso VectorD
+    \relatesalso SphereD
+*/
+VectorD<2>
+get_random_vector_analytically_in
+(const SphereD<2> &s) {
+  ::boost::uniform_real<> rand(0, 1);
+  double angle =
+    2 * PI * rand(base::random_number_generator);
+  // sample the radius uniformly with respect to the circle area PI * R^2
+  double R2 = std::pow(s.get_radius(), 2) ;
+  double r=
+    std::sqrt( R2 * rand(base::random_number_generator) );
+  VectorD<2> ret(r * sin(angle),
+                 r * cos(angle));
+  return ret + s.get_center();
+}
+
+
+//! Generate a random vector in a cylinder with uniform density
+/** \relatesalso VectorD
+    \relatesalso Cylinder3D
+ */
+Vector3D
+get_random_vector_in
+(const Cylinder3D &c)
+{
+  ::boost::uniform_real<> rand(0, 1);
+  // relative height and radius are between 0 (0%) and 1 (100%):
+  double relative_h =
+    rand(base::random_number_generator);
+  // sqrt[rand(0,1)] is uniform with respect to the circle area PI*r^2
+  double relative_r =
+    std::sqrt( rand(base::random_number_generator) );
+  double angle =
+    2 * PI * rand(base::random_number_generator);
+  return c.get_inner_point_at(relative_h, relative_r, angle);
+}
+
+
 Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
                                     int n) {
   if (n==0) {
@@ -34,6 +79,9 @@ Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
 
 namespace {
   // from 0,0,0 to 0,0,1 with radius 1
+  // nc = number of points on each cycle
+  // nh = number of cycles along the cylinder edge
+  // scaling - in each coordinate - (X,Y) = cirlcle (Z) = cylinder length
   Vector3Ds grid_unit_cylinder(unsigned int nc, unsigned int nh,
                                const Vector3D &scaling,
                                const Transformation3D &transform) {
@@ -58,6 +106,7 @@ namespace {
     return ret;
   }
 }
+
 Vector3Ds get_grid_surface_cover(const Cylinder3D &cyl,
                                  int number_of_cycles,
                                  int number_of_points_on_cycle){

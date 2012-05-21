@@ -28,6 +28,43 @@ class IMPALGEBRAEXPORT Cylinder3D {
   const Segment3D& get_segment() const {
     return s_;
   }
+
+  /** Returns a point on the surface of the cylinder,
+      specified by its location relative to the cylinder axis
+      and its rotation angle about the axis
+
+      @param relative_height a number in the range [0..1] that specifies
+                             the point location relative to the cylinder axis
+                             such that 0 specifies the cylinder bottom and
+                             1 specifies its top
+      @param angle angle in radians about the cylinder axis, with 0 set to an
+                   arbitrary but consistent direction
+   */
+  const Vector3D get_surface_point_at
+    (double relative_height,
+     double angle);
+
+  /** Returns a point inside the cylinder,
+      specified by its location relative to the cylinder axis,
+      its relative radius and  its rotation angle about the axis
+
+      @param relative_height a number in the range [0..1] that specifies
+                             the point location relative to the cylinder axis
+                             such that 0 specifies the cylinder bottom and
+                             1 specifies its top
+      @param relative_radius a number in the range [0..1] that specifies
+                             the distance of the point from the cylinder axis
+                             relative to the cylinder radius, 0 being on the
+                             axis itself, and 1 being on the cylinder surface
+      @param angle angle in radians about the cylinder axis, with 0 set to an
+                   arbitrary but consistent direction
+   */
+  const Vector3D get_inner_point_at
+    (double relative_height,
+     double relative_radius,
+     double angle) const;
+
+
   IMP_SHOWABLE_INLINE(Cylinder3D,
                       {out << s_ << ": " << radius_;});
 

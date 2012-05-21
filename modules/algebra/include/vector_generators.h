@@ -69,6 +69,28 @@ get_random_vector_in(const SphereD<D> &s){
   return ret;
 }
 
+/** Generate a random vector in a circle analytically
+    with uniform density with respect to the area of the circle
+
+    @param s a 2D sphere (circle)
+
+    \relatealso VectorD
+    \relatesalso SphereD
+*/
+IMPALGEBRAEXPORT
+VectorD<2>
+get_random_vector_analytically_in(const SphereD<2> &s);
+
+
+//! Generate a random vector in a cylinder with uniform density
+/** \relatesalso VectorD
+    \relatesalso Cylinder3D
+ */
+IMPALGEBRAEXPORT
+Vector3D
+get_random_vector_in(const Cylinder3D &c);
+
+
 //! Generate a random vector on a sphere with uniform density
 /** \relatesalso VectorD
     \relatesalso SphereD

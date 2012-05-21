@@ -129,6 +129,7 @@ public:
     return b_[i];
   }
 
+  //! True if the point o is contained within this bounding box
   bool get_contains(const VectorD<D> &o) const {
     for (unsigned int i=0; i< get_dimension(); ++i) {
       if (o[i] < get_corner(0)[i]

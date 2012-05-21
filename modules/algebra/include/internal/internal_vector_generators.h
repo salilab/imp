@@ -30,6 +30,7 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
 }
 
 
+
 template <int D>
 inline VectorD<D> get_random_vector_on(const SphereD<D> &s) {
   BoundingBoxD<D> bb= get_unit_bounding_box_d<D>();
