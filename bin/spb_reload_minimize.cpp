@@ -129,7 +129,7 @@ for(int iter=0;iter<mydata.niter;++iter){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
     }
-    myscore_min = m->evaluate(false);
+    //myscore_min = m->evaluate(false);
     double fretr_score=0.0;
     double y2h_score=0.0;
     if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
