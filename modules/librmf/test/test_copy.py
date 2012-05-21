@@ -18,9 +18,9 @@ class GenericTest(RMF.TestCase):
         for i in range(0, nf):
             RMF.copy_frame(f, of, i, i)
 
-        self.assertTrue(RMF.get_equal_structure(f, of, True))
+        self.assert_(RMF.get_equal_structure(f, of, True))
         for i in range(0, nf):
-            self.assertTrue(RMF.get_equal_frame(f, of, i, i, True))
+            self.assert_(RMF.get_equal_frame(f, of, i, i, True))
 
 if __name__ == '__main__':
     unittest.main()

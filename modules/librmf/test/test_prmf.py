@@ -12,31 +12,37 @@ class Tests(RMF.TestCase):
         nm= self.get_input_file_name("sink.rmf")
         onm= self.get_tmp_file_name("sink_out.prmf")
         f= RMF.open_rmf_file_read_only(nm)
-        of= RMF.create_rmf_file(onm)
+        try:
+            of= RMF.create_rmf_file(onm)
+        except:
+            self.skipTest("No google protobuf support")
         RMF.copy_structure(f, of)
-        self.assertTrue(RMF.get_equal_structure(f, of, True))
+        self.assert_(RMF.get_equal_structure(f, of, True))
         nf= f.get_number_of_frames()
         for i in range(0, nf):
             RMF.copy_frame(f, of, i, i)
 
         for i in range(0, nf):
-            self.assertTrue(RMF.get_equal_frame(f, of, i, i, True))
+            self.assert_(RMF.get_equal_frame(f, of, i, i, True))
     def test_simple(self):
         """Test copying a simple rmf file to prmf"""
         nm= self.get_input_file_name("simple.rmf")
         onm= self.get_tmp_file_name("simple.prmf")
         f= RMF.open_rmf_file_read_only(nm)
-        of= RMF.create_rmf_file(onm)
+        try:
+            of= RMF.create_rmf_file(onm)
+        except:
+            self.skipTest("No google protobuf support")
         RMF.copy_structure(f, of)
         #RMF.show_hierarchy(of.get_root_node())
         of.flush()
         RMF.show_hierarchy(of.get_root_node())
-        self.assertTrue(RMF.get_equal_structure(f, of, True))
+        self.assert_(RMF.get_equal_structure(f, of, True))
         nf= f.get_number_of_frames()
         for i in range(0, nf):
             RMF.copy_frame(f, of, i, i)
         for i in range(0, nf):
-            self.assertTrue(RMF.get_equal_frame(f, of, i, i, True))
+            self.assert_(RMF.get_equal_frame(f, of, i, i, True))
 
 if __name__ == '__main__':
     unittest.main()
