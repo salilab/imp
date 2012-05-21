@@ -64,7 +64,7 @@ std::map< std::string, Pointer<RestraintSet> > rst_map=
 RMF::FileHandle rh_out = RMF::create_rmf_file("traj_reload_0.rmf");
 for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
 // add restraints
-IMP::rmf::add_restraints(rh_out, m->get_restraints());
+//IMP::rmf::add_restraints(rh_out, m->get_restraints());
 // adding key for score
 RMF::Category my_kc= rh_out.add_category("my data");
 RMF::FloatKey my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
@@ -129,6 +129,7 @@ for(int iter=0;iter<mydata.niter;++iter){
      cg->do_optimize(mydata.cg_steps);
      myscore_min = m->evaluate(false);
     }
+    myscore_min = m->evaluate(false);
     double fretr_score=0.0;
     double y2h_score=0.0;
     if(mydata.add_fret){fretr_score=rst_map["FRET_R"]->evaluate(false);}
@@ -172,7 +173,7 @@ for(int iter=0;iter<mydata.niter;++iter){
     iout << iout_name;
     rh_out = RMF::create_rmf_file("traj_reload_"+iout.str()+".rmf");
     for(unsigned int i=0;i<hhs.size();++i){rmf::add_hierarchy(rh_out, hhs[i]);}
-    IMP::rmf::add_restraints(rh_out, m->get_restraints());
+    //IMP::rmf::add_restraints(rh_out, m->get_restraints());
     my_kc= rh_out.add_category("my data");
     my_key_out0=rh_out.add_float_key(my_kc,"my score",true);
     my_key_out1=rh_out.add_int_key(my_kc,"my index",true);
