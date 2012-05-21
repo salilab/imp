@@ -12,14 +12,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 namespace {
-  // the projection of v onto the line through s is s[0]+f*(s[1]-s[0])
-  double get_f(const Segment3D &s,
-               const algebra::Vector3D &p) {
-    algebra::Vector3D vs= s.get_point(1)- s.get_point(0);
-    algebra::Vector3D vps= p- s.get_point(0);
-    double f= vps*vs/(vs*vs);
-    return f;
-  }
   Vector3D get_point(const Segment3D &s, double f) {
     return s.get_point(0)+ f*(s.get_point(1)-s.get_point(0));
   }
@@ -37,14 +29,15 @@ namespace {
                                           const Segment3D &sb) {
     // see if the endpoints of sb overlap sa
     for (int ep= 0; ep<2; ++ep) {
-      double f= get_f(sa, sb.get_point(ep));
+      double f= get_relative_projection_on_segment
+        (sa, sb.get_point(ep));
       if (f >=0 && f <=1) {
         return Segment3D(get_point(sa, f), sb.get_point(ep));
       }
     }
     // see if the endpoints of sa overlap sb
     for (int ep= 0; ep<2; ++ep) {
-      double f= get_f(sb, sa.get_point(ep));
+      double f= get_relative_projection_on_segment(sb, sa.get_point(ep));
       if (f >=0 && f <=1) {
         return Segment3D(sa.get_point(ep), get_point(sb, f));
       }
@@ -68,7 +61,7 @@ namespace {
 
 Segment3D get_shortest_segment(const Segment3D &s,
                                const algebra::Vector3D &p) {
-  double f= get_f(s, p);
+  double f= get_relative_projection_on_segment(s, p);
   return Segment3D(get_clipped_point(s, f), p);
 }
 

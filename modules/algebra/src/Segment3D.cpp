@@ -24,6 +24,26 @@ Vector3D get_projection(const Segment3D &s, const Vector3D &p) {
 }
 }*/
 
+/**  Returns f, the 'relative' projection of a point p onto the line
+     that contains s.
+     Formally, the projection of p onto the line through s is s[0]+f*(s[1]-s[0])
+     f is in the range [0..1] if the projection of p is inside s.
+
+     @param s segment in 3D
+     @param p point in 3D
+
+     @return the 'relative' project of p onto the line containing s
+*/
+double
+get_relative_projection_on_segment
+(const Segment3D &s,
+ const algebra::Vector3D &p) {
+  algebra::Vector3D vs= s.get_point(1)- s.get_point(0);
+  algebra::Vector3D vps= p- s.get_point(0);
+  double f= vps*vs/(vs*vs);
+  return f;
+}
+
 
 
 

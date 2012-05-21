@@ -97,5 +97,28 @@ class CylinderTests(IMP.test.TestCase):
         self.assertEqual((sampled_centroid-center).get_magnitude() < 1.0,True)
 
 
+    def test_random_cylinder_sampling(self):
+        """Check whether the cylinder volume is uniformly sampled"""
+        print "sampling"
+        # create an origin centered cylinder with length and radius 10.0
+        axis =  IMP.algebra.Segment3D( [0,0,-5.0] , [0,0,5.0] )
+        radius = 10.0
+        c = IMP.algebra.Cylinder3D( axis, radius )
+        # count samples that fall within an origin centered 6x6x6 box
+        # that is full contained within the cylinder (since 3*3 < 10)
+        inner_box = IMP.algebra.BoundingBox3D([-3,-3,-3],[3,3,3])
+        n = 0
+        m = 100000
+        for i in range( m ):
+            v = IMP.algebra.get_random_vector_in( c )
+            if( inner_box.get_contains( v ) ):
+                n = n + 1
+        # assert probabilistically (using Chernoff bound, m is good enough)
+        from IMP.algebra import get_volume
+        expected_p = get_volume(inner_box) / get_volume(c)
+        observed_p = float(n) / float(m)
+        self.assertAlmostEqual(observed_p, expected_p, places=2)
+
+
 if __name__ == '__main__':
     IMP.test.main()
