@@ -9,7 +9,10 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
         lc= extra_libs+possible_deps[0:i]
         #print "Trying "+ str(i) +" with " +str(lc)
         olibs= context.env.get('LIBS', [])
-        context.env.Append(LIBS=[libname]+lc)
+        if libname is not None:
+            context.env.Append(LIBS=[libname]+lc)
+        else:
+            context.env.Append(LIBS=lc)
         #print context.env['LINKFLAGS']
         #print "checking", libname, lc
         ret=context.sconf.CheckLibWithHeader(libname, header=headers, call=body, language='CXX',
