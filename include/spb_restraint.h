@@ -105,6 +105,9 @@ IMPMEMBRANEEXPORT void add_tilt_restraint
 IMPMEMBRANEEXPORT void add_tilt(Model *m, const atom::Hierarchy& h,
  std::string name, IntRange range, double tilt, double kappa);
 
+IMPMEMBRANEEXPORT void add_GFP_restraint
+ (Model *m, const atom::Hierarchy& h, double kappa);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_RESTRAINT_H */

@@ -481,4 +481,25 @@ void add_tilt (Model *m, const atom::Hierarchy& h,
  }
 }
 
+void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
+{
+ IMP_NEW(core::Harmonic,hmonic,(0.0,kappa));
+ atom::Hierarchies hs=h.get_children();
+ for(unsigned int j=0;j<hs.size();++j){
+  std::vector<std::string> strs;
+  boost::split(strs,hs[j]->get_name(),boost::is_any_of("-"));
+  if(strs[strs.size()-1]=="GFP"){
+    atom::Selection s=atom::Selection(hs[j]);
+    s.set_residue_index(65);
+    Particles ps=s.get_selected_particles();
+    core::XYZ ps_xyz=core::XYZ(ps[0]);
+    algebra::Vector3D xyz=ps_xyz.get_coordinates();
+    IMP_NEW(core::DistanceToSingletonScore,dtss,(hmonic,xyz));
+    IMP_NEW(core::SingletonRestraint,sr,(dtss,ps_xyz));
+    sr->set_name("GFP Position Restraint");
+    m->add_restraint(sr);
+  }
+ }
+}
+
 IMPMEMBRANE_END_NAMESPACE

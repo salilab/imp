@@ -39,9 +39,9 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  bool keep_GFP_layer;
  bool GFP_exc_volume;
  bool fix_GFP;
+ bool restraint_GFP;
  bool use_connectivity;
  bool use_new_fret_model;
- bool cluster_time;
  bool cluster_weight;
  std::string cell_type;
  std::string load_Spc42p;
@@ -74,10 +74,10 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  desc.add_options()("GFP_exc_volume",value<bool>(&GFP_exc_volume),      "ciao");
  desc.add_options()("keep_GFP_layer",value<bool>(&keep_GFP_layer),      "ciao");
  desc.add_options()("fix_GFP",       value<bool>(&fix_GFP),             "ciao");
+ desc.add_options()("restraint_GFP", value<bool>(&restraint_GFP),       "ciao");
  desc.add_options()("use_connectivity",value<bool>(&use_connectivity),  "ciao");
  desc.add_options()("use_new_fret_model",
   value<bool>(&use_new_fret_model),  "ciao");
- desc.add_options()("cluster_time",  value<bool>(&cluster_time),        "ciao");
  desc.add_options()("cluster_weight",value<bool>(&cluster_weight),      "ciao");
  desc.add_options()("load_Spc42p",   value<std::string>(&load_Spc42p),  "ciao");
  desc.add_options()("load_Spc29p",   value<std::string>(&load_Spc29p),  "ciao");
@@ -185,7 +185,6 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.niter=niter;
  ret.chunk=chunk;
  ret.cluster_cut=cluster_cut;
- ret.cluster_time=cluster_time;
  ret.cluster_weight=cluster_weight;
  ret.replica_index=replica_index;
 
@@ -206,6 +205,7 @@ SPBParameters get_SPBParameters(base::TextInput in, std::string suffix)
  ret.keep_GFP_layer=keep_GFP_layer;
  ret.GFP_exc_volume=GFP_exc_volume;
  ret.fix_GFP=fix_GFP;
+ ret.restraint_GFP=restraint_GFP;
 
 // file map
  if(load_Spc42p.length()>0.0){

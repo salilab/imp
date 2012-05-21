@@ -147,6 +147,12 @@ if(mydata.add_GFP){
   add_link(m,all_mol[0],       "Cnm67p", "C",
              all_mol,    "Cnm67p-C-GFP", "N", mydata.kappa);
 }
+//
+// RESTRAINT GFPs POSITION for refinement
+//
+if(mydata.restraint_GFP){
+ add_GFP_restraint(m,all_mol[0],mydata.kappa);
+}
 
 return rst_map;
 }

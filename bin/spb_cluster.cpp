@@ -89,7 +89,7 @@ for(int iter=0;iter<mydata.niter;++iter){
  RMF::Category my_kc  = rh.get_category("my data");
  RMF::FloatKey my_key = rh.get_float_key(my_kc,"my score",true);
 
-// setting hierarchies
+// linking hierarchies
  rmf::link_hierarchies(rh, hhs);
  unsigned int nframes=rh.get_number_of_frames();
 
@@ -105,72 +105,60 @@ for(int iter=0;iter<mydata.niter;++iter){
 
  // close RMF
  rh=RMF::FileHandle();
+}
 
- if(mydata.cluster_time || iter==mydata.niter-1){
-// do the clustering here!
-  Pointer<statistics::PartitionalClustering> pc=
-   create_gromos_clustering(drmsd,mydata.cluster_cut);
+// NOW do the clustering
+Pointer<statistics::PartitionalClustering> pc=
+ create_gromos_clustering(drmsd,mydata.cluster_cut);
 
-  std::cout << " # CHUNK            :: "
-    << iter << std::endl;
-  std::cout << " # CONFIGURATIONS   :: "
-    << drmsd->get_number_of_items() << std::endl;
-  std::cout << " # CLUSTERS         :: "
-    << pc->get_number_of_clusters() << std::endl;
-  std::cout << std::endl;
-
-// only at the end, print various information
-  if(iter==mydata.niter-1){
-// file containing the cluster population, center and diameter
-   FILE *centerfile;
-   centerfile = fopen("cluster_center.dat","w");
-   fprintf(centerfile,
-    "#       Cluster     Population      Structure       Diameter\n");
-   for(unsigned i=0;i<pc->get_number_of_clusters();++i){
-    double diameter=0.0;
-    Ints index=pc->get_cluster(i);
-    for(unsigned j=0;j<index.size()-1;++j){
-     for(unsigned k=j+1;k<index.size();++k){
-      double dist=drmsd->get_distance(index[j],index[k]);
-      if(dist>diameter){diameter=dist;}
-     }
-    }
-    fprintf(centerfile," %14u %14u %14d %14.6f\n",
-                         i, (unsigned)index.size(),
-                         pc->get_cluster_representative(i), diameter);
-   }
-   fclose(centerfile);
-// file containing the distance between the center of two clusters
-   FILE *ccfile;
-   ccfile = fopen("cluster_distance.dat","w");
-   fprintf(ccfile,"#      ClusterA       ClusterB       Distance\n");
-   for(unsigned i=0;i<pc->get_number_of_clusters()-1;++i){
-    int cl0=pc->get_cluster_representative(i);
-    for(unsigned k=i+1;k<pc->get_number_of_clusters();++k){
-     int cl1=pc->get_cluster_representative(k);
-     fprintf(ccfile," %14u %14u %14.6f\n",i,k,drmsd->get_distance(cl0,cl1));
-    }
-   }
-   fclose(ccfile);
-
-// file containing the cluster index for each configuration
-   std::vector<unsigned> assignments(drmsd->get_number_of_items());
-   for(unsigned i=0;i<pc->get_number_of_clusters();++i){
-    Ints members=pc->get_cluster(i);
-    for(unsigned j=0;j<members.size();++j){
-     assignments[members[j]]=i;
-    }
-   }
-   FILE *trajfile;
-   trajfile = fopen("cluster_traj.dat","w");
-   fprintf(trajfile,"#     Structure        Cluster\n");
-   for(unsigned i=0;i<assignments.size();++i){
-    fprintf(trajfile," %14u %14d\n",i,assignments[i]);
-   }
-   fclose(trajfile);
+// a) File containing the cluster population, center and diameter
+FILE *centerfile;
+centerfile = fopen("cluster_center.dat","w");
+fprintf(centerfile,
+ "#       Cluster     Population      Structure       Diameter\n");
+for(unsigned i=0;i<pc->get_number_of_clusters();++i){
+ double diameter=0.0;
+ Ints index=pc->get_cluster(i);
+ for(unsigned j=0;j<index.size()-1;++j){
+  for(unsigned k=j+1;k<index.size();++k){
+   double dist=drmsd->get_distance(index[j],index[k]);
+   if(dist>diameter){diameter=dist;}
   }
  }
+ fprintf(centerfile," %14u %14u %14d %14.6f\n",
+                      i, (unsigned)index.size(),
+                      pc->get_cluster_representative(i), diameter);
 }
+fclose(centerfile);
+
+// b) File containing the distance between clusters centers
+FILE *ccfile;
+ccfile = fopen("cluster_distance.dat","w");
+fprintf(ccfile,"#      ClusterA       ClusterB       Distance\n");
+for(unsigned i=0;i<pc->get_number_of_clusters()-1;++i){
+ int cl0=pc->get_cluster_representative(i);
+ for(unsigned k=i+1;k<pc->get_number_of_clusters();++k){
+  int cl1=pc->get_cluster_representative(k);
+  fprintf(ccfile," %14u %14u %14.6f\n",i,k,drmsd->get_distance(cl0,cl1));
+ }
+}
+fclose(ccfile);
+
+// c) File containing the cluster index of each configuration
+std::vector<unsigned> assignments(drmsd->get_number_of_items());
+for(unsigned i=0;i<pc->get_number_of_clusters();++i){
+ Ints members=pc->get_cluster(i);
+ for(unsigned j=0;j<members.size();++j){
+  assignments[members[j]]=i;
+ }
+}
+FILE *trajfile;
+trajfile = fopen("cluster_traj.dat","w");
+fprintf(trajfile,"#     Structure        Cluster\n");
+for(unsigned i=0;i<assignments.size();++i){
+ fprintf(trajfile," %14u %14d\n",i,assignments[i]);
+}
+fclose(trajfile);
 
 return 0;
 }
