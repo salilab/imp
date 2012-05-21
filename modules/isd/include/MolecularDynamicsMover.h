@@ -13,7 +13,7 @@
 #include "isd_config.h"
 #include <IMP/core/Mover.h>
 #include <IMP/isd/MolecularDynamics.h>
-#include <IMP/core/core_macros.h>
+#include <IMP/core/mover_macros.h>
 
 IMPISD_BEGIN_NAMESPACE
 

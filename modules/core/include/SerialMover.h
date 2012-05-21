@@ -12,7 +12,7 @@
 #include "core_config.h"
 #include "MonteCarlo.h"
 #include "Mover.h"
-#include "core_macros.h"
+#include "mover_macros.h"
 
 IMPCORE_BEGIN_NAMESPACE
 

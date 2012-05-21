@@ -9,15 +9,18 @@
 #define IMPCORE_CLOSE_PAIRS_FINDER_H
 
 #include "core_config.h"
-#include "XYZR.h"
-#include "internal/MovedSingletonContainer.h"
 #include <IMP/PairPredicate.h>
 
-#include <IMP/RefCounted.h>
+#include <IMP/base/Object.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/container_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
+namespace internal {
+  class MovedSingletonContainer;
+}
+#endif
 
 
 //! A base class for algorithms to find spatial proximities
@@ -32,12 +35,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
 {
   double distance_;
- protected:
-  //! Get the radius if get_radius_key() is non-default, otherwise 0.
-  Float get_radius(Particle *p) const {
-    return XYZR(p).get_radius();
-  }
-
  public:
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
@@ -52,7 +49,7 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const =0;
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
                                             const ParticlesTemp &pcb) const =0;
-#ifndef SWIG
+#if !defined(SWIG)
   virtual ParticleIndexPairs get_close_pairs(Model *m,
                                              const ParticleIndexes &pc) const {
     return IMP::internal::
@@ -102,7 +99,7 @@ class IMPCOREEXPORT ClosePairsFinder : public IMP::base::Object
   IMP_LIST(public, PairFilter, pair_filter,
            PairPredicate*, PairPredicates);
    /**@}*/
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   /** \brief Return a container which lists all particles which moved more
       than threshold
   */

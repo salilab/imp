@@ -1,4 +1,6 @@
-%include "IMP/core/core_macros.h"
+%include "IMP/core/close_pairs_finder_macros.h"
+%include "IMP/core/monte_carlo_macros.h"
+%include "IMP/core/mover_macros.h"
 
 
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);

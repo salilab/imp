@@ -10,7 +10,7 @@
 
 #include "core_config.h"
 #include "Mover.h"
-#include "core_macros.h"
+#include "monte_carlo_macros.h"
 #include "IncrementalScoringFunction.h"
 #include <IMP/Optimizer.h>
 #include <IMP/optimizer_macros.h>

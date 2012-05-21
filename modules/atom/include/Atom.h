@@ -15,7 +15,6 @@
 #include "element.h"
 #include <IMP/core/utility.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/core/core_macros.h>
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>

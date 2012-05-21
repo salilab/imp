@@ -10,7 +10,6 @@
 
 #include "example_config.h"
 
-#include <IMP/core/core_macros.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <IMP/Decorator.h>

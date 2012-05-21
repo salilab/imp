@@ -9,7 +9,6 @@
 #ifndef IMPCORE_UTILITY_H
 #define IMPCORE_UTILITY_H
 
-#include "core_macros.h"
 #include "core_config.h"
 #include "XYZR.h"
 #include <IMP/base_types.h>
