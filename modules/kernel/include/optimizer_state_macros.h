@@ -10,6 +10,7 @@
 #define IMPKERNEL_OPTIMIZER_STATE_MACROS_H
 #include "kernel_config.h"
 #include <IMP/base/value_macros.h>
+#include "internal/utility.h"
 #include "OptimizerState.h"
 
 
