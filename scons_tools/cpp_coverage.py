@@ -50,13 +50,19 @@ class _TempDir(object):
         """Make a patched version of lcov in the temporary directory.
            Since lcov's geninfo tool follows symlinks to get the original
            location of the graph file, it isn't fooled by our temporary
-           directories. Disable this behavior so that it *is* fooled."""
+           directories. Disable this behavior so that it *is* fooled.
+           Running gcov with the --all-blocks (-a) flag causes it
+           to get stuck in an endless loop on some files (see GCC Bugzilla
+           http://gcc.gnu.org/bugzilla/show_bug.cgi?id=48361) so we also
+           fool geninfo into thinking gcov doesn't support this option."""
         path = self._get_lcov_path()
         shutil.copy(os.path.join(path, 'lcov'), self.tmpdir)
         fin = open(os.path.join(path, 'geninfo'))
         fout = open(os.path.join(self.tmpdir, 'geninfo'), 'w')
         for line in fin:
-            fout.write(line.replace('readlink($bb_filename)', '0'))
+            nline = line.replace('readlink($bb_filename)', '0')
+            nline = nline.replace('all-blocks', 'DISABLEDall-blocks')
+            fout.write(nline)
         fin.close()
         fout.close()
         os.chmod(os.path.join(self.tmpdir, 'geninfo'), 0755)
