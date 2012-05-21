@@ -2,27 +2,14 @@
    #includes
    include("conf.inc.php");
 
-   function ok_path($f) {
-     $rp= realpath($f);
-     return strncmp($f, $home, strlen($home)) == 0;
-   } 
-
    function PrintFile($f) {
-      if (! ok_path(f)) {
-       error_log("Bad file path "+f);
-       return;
-      }
       $co = GetContentsFile('./' . $f);
       $lines = preg_split("/\n/",$co);
-      if (!array_key_exists('TOPDIR', $_ENV)) {
-         $topdir = '';
+      $topdir = $_GET['TOPDIR'];
+      if ($topdir == '.' || $topdir == '') {
+        $topdir = '';
       } else {
-         $topdir = $_ENV['TOPDIR'];
-         if ($topdir == '.' || $topdir == '') {
-           $topdir = '';
-         } else {
-           $topdir = $topdir . '/';
-         }
+        $topdir = $topdir . '/';
       }
       foreach ($lines as $ln_num => $line) {
          $rline = str_replace('$title', "IMP Community", $line);
@@ -33,10 +20,6 @@
    
    # Get content of a directory based on ter
    function lsDir($path,$ter) {
-      if (! ok_path(f)) {
-       error_log("Bad file path "+f);
-       return;
-      }
       $files = array();
       $dir_handle = @opendir($path) or die("Unable to open $path");
       while ($file = readdir($dir_handle)) {
@@ -51,10 +34,6 @@
    }
 
    function GetContentsFile($f) {
-      if (! ok_path(f)) {
-       error_log("Bad file path "+f);
-       return;
-      }
       $fd = fopen($f,"r");
       if (!$fd) {
         print "can't open file ";
@@ -70,7 +49,7 @@
    }
 
    function print_page_header() {
-      PrintFile($_ENV['TOPDIR'] . "/header.txt");
+      PrintFile($_GET['TOPDIR'] . "/header.txt");
       print <<<END
   <div id="container">
    <table class="tcon">
@@ -83,7 +62,7 @@ END;
       print "   </table>\n";
       print "     </div>\n\n";
       print "<div id=\"footer\">\n";
-      PrintFile($_ENV['TOPDIR'] . "/footer.txt");
+      PrintFile($_GET['TOPDIR'] . "/footer.txt");
       print <<<END
 </div>
 
