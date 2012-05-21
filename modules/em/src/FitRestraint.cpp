@@ -24,7 +24,8 @@ FitRestraint::FitRestraint(
    float scale,
    bool use_rigid_bodies,
    KernelType kt
-                           ): Restraint("Fit restraint"),kt_(kt)
+                           ): Restraint(IMP::internal::get_model(ps),
+                                        "Fit restraint"),kt_(kt)
 {
   use_rigid_bodies_=use_rigid_bodies;
   IMP_LOG(TERSE,"Load fit restraint with the following input:"<<

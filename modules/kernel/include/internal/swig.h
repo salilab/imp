@@ -33,8 +33,11 @@ class IMPEXPORT _ConstRestraint: public IMP::Restraint {
   const ParticlesTemp ps_;
 public:
   _ConstRestraint(double v,
-                  const ParticlesTemp ps= ParticlesTemp()): v_(v),
-    ps_(ps){}
+                  const ParticlesTemp ps):
+      Restraint(internal::get_model(ps), "ConstRestraint%1%"), v_(v),
+      ps_(ps){}
+  _ConstRestraint(double v):
+      Restraint("ConstRestraint%1%"), v_(v){}
   double get_value() const {return v_;}
   Restraints do_create_decomposition() const;
   IMP_RESTRAINT(_ConstRestraint);
