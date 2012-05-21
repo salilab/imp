@@ -163,10 +163,15 @@ public:
   //! a class that inherits from this should override this method
   virtual void do_step();
   //! Get the current energy
-  /** By default it just calls Optimizer::evaluate() if there is
-      no maximum allowed difference or Optimizer::evaluate_if_below()
-      if there is. Classes which override this method should be
-      similarly aware for efficiency.
+  /** By default it just calls
+      Optimizer::get_scoring_function()->evaluate(false). However,
+      if an incremental scoring function is used, the list of moved
+      particles will be used to evaluate the score more efficiently.
+      Also, if there is a maximum allowed difference in scores
+      Optimizer::get_scoring_function()->evaluate_if_below()
+      will be called instead, allowing more efficient evaluation.
+      Classes which override this method should be similarly aware for
+      efficiency.
 
       The list of moved particles is passed.
    */
