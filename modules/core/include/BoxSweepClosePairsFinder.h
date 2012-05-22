@@ -15,7 +15,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-//#if defined(IMP_DOXYGEN) || defined(IMP_CORE_USE_IMP_CGAL)
+#if defined(IMP_DOXYGEN) || defined(IMP_CORE_USE_IMP_CGAL)
 //! Find all nearby pairs by sweeping the bounding boxes
 /** This method is much faster than the quadratic one when
     there are are large sets of points.
@@ -30,7 +30,7 @@ class IMPCOREEXPORT BoxSweepClosePairsFinder : public ClosePairsFinder
 
   IMP_CLOSE_PAIRS_FINDER(BoxSweepClosePairsFinder);
 };
-//#endif /* IMP_USE_CGAL */
+#endif /* IMP_USE_CGAL */
 
 IMPCORE_END_NAMESPACE
 
