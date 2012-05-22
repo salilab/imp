@@ -291,9 +291,13 @@ import shutil
 import datetime
 import unittest
 
+try:
+    import IMP.test
+    parent=IMP.test.TestCase
+except:
+    parent=unittest.TestCase
 
-
-class TestCase(unittest.TestCase):
+class TestCase(parent):
     """Super class for RMF test cases"""
 
     def setUp(self):
