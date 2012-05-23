@@ -42,9 +42,12 @@ namespace RMF {
     };
     SharedData::~SharedData() {
       valid_=-66666;
-      std::string name= reverse_cache.find(this)->second;
-      cache.erase(name);
-      reverse_cache.erase(this);
+      // check for an exception in the constructor
+      if (reverse_cache.find(this) != reverse_cache.end()) {
+        std::string name= reverse_cache.find(this)->second;
+        cache.erase(name);
+        reverse_cache.erase(this);
+      }
     }
 
     void SharedData::audit_key_name(std::string name) const {
