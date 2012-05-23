@@ -75,6 +75,22 @@ IMPBASE_BEGIN_NAMESPACE
 unsigned int RefCounted::live_objects_=0;
 compatibility::set<Object*> live_;
 
+namespace {
+struct CheckObjects {
+  ~CheckObjects() {
+    if (!live_.empty()) {
+      std::cerr << "Not all IMP::base::Objects were freed prior to IMP"
+                << " unloading. This is probably a bad thing." << std::endl;
+      for (compatibility::set<Object*>::const_iterator
+               it =live_.begin(); it != live_.end(); ++it) {
+        std::cerr << (*it)->get_name() << std::endl;
+      }
+    }
+  }
+};
+CheckObjects check;
+}
+
 Strings
 get_live_object_names() {
   IMP::base::Vector<std::string> ret;
