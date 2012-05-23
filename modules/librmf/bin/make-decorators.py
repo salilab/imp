@@ -282,14 +282,14 @@ class Attributes:
     def get_methods(self, const):
         ret=[]
         ret.append("""%(ptype)s get_%(name)s() const {
-       %(ptype)s ret;
+       %(ptype)s ret(%(len)s);
        if (nh_.get_has_value(%(key)s[0])) {
          for (unsigned int i=0; i< %(len)s; ++i) {
-          ret.push_back(nh_.get_value(%(key)s[i]));
+          ret[i]=nh_.get_value(%(key)s[i]);
          }
        } else {
          for (unsigned int i=0; i< %(len)s; ++i) {
-          ret.push_back(nh_.get_value(%(key)spf_[i], frame_));
+          ret[i]=nh_.get_value(%(key)spf_[i], frame_);
          }
        }
        return ret;
