@@ -287,6 +287,7 @@ class ParticleTests(IMP.test.TestCase):
                     'get_index',
                     'get_int_keys',
                     'get_object_keys',
+                    'get_weak_object_keys',
                     'get_particle_keys',
                     'get_string_keys',
                     'do_update_dependencies',
