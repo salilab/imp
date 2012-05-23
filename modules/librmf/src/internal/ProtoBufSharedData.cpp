@@ -25,6 +25,9 @@ namespace RMF {
           IMP_RMF_THROW("Could not open file", IOException);
         }
         proto_.ParseFromIstream(&in);
+        if (!in) {
+          IMP_RMF_THROW("Error reading from file", IOException);
+        }
       } else {
         proto_.add_node();
         proto_.mutable_node(0)->set_name("root");
@@ -68,15 +71,11 @@ namespace RMF {
       // add as child
       RMFProto::Node *parent=IMP_RMF_PROTO_MINDEX(proto_, node,node);
       parent->add_children(id);
-      std::cout << "Adding " << name << " as child of " << parent->name()
-                << std::endl;
       Ints ch= get_children(node);
-      std::cout << ch << std::endl;
       Strings names;
       for (unsigned int i=0; i < ch.size(); ++i) {
         names.push_back(get_name(ch[i]));
       }
-      std::cout << names << std::endl;
       return id;
     }
 
