@@ -179,9 +179,11 @@ Restraint* Restraint::create_current_decomposition() const {
 ScoringFunction *Restraint::create_scoring_function(double weight,
                                                     double max ) const {
   Restraint* ncthis= const_cast<Restraint*>(this);
-  return new internal::RestraintsScoringFunction(RestraintsTemp(1, ncthis),
-                                                 weight, max,
-                                                 get_name()+" scoring");
+  IMP_NEW(internal::RestraintsScoringFunction, ret,
+          (RestraintsTemp(1, ncthis),
+           weight, max,
+           get_name()+" scoring"));
+  return ret.release();
 }
 
 Restraints create_decomposition(const RestraintsTemp &rs) {
