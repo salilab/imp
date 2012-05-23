@@ -364,7 +364,10 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
   }
   if (atom::Diffusion::particle_is_instance(p)) {
     atom::Diffusion d(p);
-    diffuser_factory_.get(n).set_diffusion_coefficient(d.get_d());
+    IMP_USAGE_CHECK(d.get_diffusion_coefficient() >0,
+                    "Zero diffusion coefficient");
+    diffuser_factory_.get(n)
+        .set_diffusion_coefficient(d.get_diffusion_coefficient());
   }
   if (atom::Copy::particle_is_instance(p)) {
     atom::Copy d(p);
