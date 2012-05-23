@@ -550,7 +550,7 @@ namespace RMF {
       }
       void flush() const {
         IMP_HDF5_CALL(H5Fflush(file_.get_handle(), H5F_SCOPE_GLOBAL));
-        SharedData::validate();
+        //SharedData::validate();
       }
       std::string get_file_name() const {
         return file_.get_file().get_name();
