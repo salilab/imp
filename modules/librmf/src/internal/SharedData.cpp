@@ -22,6 +22,21 @@ namespace RMF {
     namespace {
       map<std::string, SharedData *> cache;
       map<SharedData*, std::string> reverse_cache;
+
+    struct CacheCheck {
+      ~CacheCheck() {
+        if (!cache.empty()) {
+          std::cerr << "Not all open objects were properly close before the rmf"
+                    << " module was unloaded. This is a bad thing."
+                    << std::endl;
+          for (map<std::string, SharedData *>::const_iterator it=cache.begin();
+               it != cache.end(); ++it) {
+            std::cerr << it->first << std::endl;
+          }
+        }
+      }
+    };
+    CacheCheck checker;
     }
     SharedData::SharedData(): valid_(11111) {
     };
