@@ -40,6 +40,8 @@ void Configuration::load_configuration() const {
   static_cast<internal::StringAttributeTable&>(*model_)= ncthis->strings_;
   static_cast<internal::IntAttributeTable&>(*model_)= ncthis->objects_;
   static_cast<internal::ObjectAttributeTable&>(*model_)= ncthis->ints_lists_;
+  static_cast<internal::WeakObjectAttributeTable&>(*model_)
+      = ncthis->wints_lists_;
   static_cast<internal::IntsAttributeTable&>(*model_)= ncthis->objects_lists_;
   static_cast<internal::ObjectsAttributeTable&>(*model_)= ncthis->particles_;
   static_cast<internal::ParticleAttributeTable&>(*model_)
@@ -55,6 +57,7 @@ void Configuration::swap_configuration() {
   swap(static_cast<internal::StringAttributeTable&>(*model_), strings_);
   swap(static_cast<internal::IntAttributeTable&>(*model_), objects_);
   swap(static_cast<internal::ObjectAttributeTable&>(*model_), ints_lists_);
+  swap(static_cast<internal::WeakObjectAttributeTable&>(*model_), wints_lists_);
   swap(static_cast<internal::IntsAttributeTable&>(*model_), objects_lists_);
   swap(static_cast<internal::ObjectsAttributeTable&>(*model_), particles_);
   swap(static_cast<internal::ParticleAttributeTable&>(*model_),

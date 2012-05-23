@@ -31,6 +31,7 @@ IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
 IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, base::Object*);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(WeakObject, weak_object, base::Object*);
 
 
 inline void Particle::add_attribute(FloatKey name,

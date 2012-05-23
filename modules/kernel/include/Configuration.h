@@ -27,6 +27,7 @@ class IMPEXPORT Configuration: public IMP::base::Object
   internal::StringAttributeTable strings_;
   internal::IntAttributeTable objects_;
   internal::ObjectAttributeTable ints_lists_;
+  internal::WeakObjectAttributeTable wints_lists_;
   internal::IntsAttributeTable objects_lists_;
   internal::ObjectsAttributeTable particles_;
   internal::ParticleAttributeTable particles_lists_;
