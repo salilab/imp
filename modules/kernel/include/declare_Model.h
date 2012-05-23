@@ -98,6 +98,7 @@ class IMPEXPORT Model:
   public internal::StringAttributeTable,
   public internal::IntAttributeTable,
   public internal::ObjectAttributeTable,
+  public internal::WeakObjectAttributeTable,
   public internal::IntsAttributeTable,
   public internal::ObjectsAttributeTable,
   public internal::ParticleAttributeTable,
@@ -110,6 +111,7 @@ class IMPEXPORT Model:
   IMP_MODEL_IMPORT(internal::StringAttributeTable);
   IMP_MODEL_IMPORT(internal::IntAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectAttributeTable);
+  IMP_MODEL_IMPORT(internal::WeakObjectAttributeTable);
   IMP_MODEL_IMPORT(internal::IntsAttributeTable);
   IMP_MODEL_IMPORT(internal::ObjectsAttributeTable);
   IMP_MODEL_IMPORT(internal::ParticleAttributeTable);
@@ -120,6 +122,7 @@ class IMPEXPORT Model:
     internal::StringAttributeTable::clear_caches(pi);
     internal::IntAttributeTable::clear_caches(pi);
     internal::ObjectAttributeTable::clear_caches(pi);
+    internal::WeakObjectAttributeTable::clear_caches(pi);
     internal::IntsAttributeTable::clear_caches(pi);
     internal::ObjectsAttributeTable::clear_caches(pi);
     internal::ParticleAttributeTable::clear_caches(pi);

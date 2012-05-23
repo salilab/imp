@@ -122,6 +122,27 @@ struct ObjectAttributeTableTraits
   }
 };
 
+struct WeakObjectAttributeTableTraits
+{
+  typedef base::Object* Value;
+  typedef base::Object* PassValue;
+  typedef WeakObjectKey Key;
+  typedef base::IndexVector<ParticleIndexTag,
+                            base::WeakPointer<base::Object> > Container;
+  static Value get_invalid() {
+    return nullptr;
+  }
+  static bool get_is_valid(const Value& f) {
+    return f;
+  }
+  static Value min(Value a, Value b) {
+    return std::min(a,b);
+  }
+  static Value max(Value a, Value b) {
+    return std::max(a,b);
+  }
+};
+
 struct ObjectsAttributeTableTraits
 {
   typedef base::Objects Value;

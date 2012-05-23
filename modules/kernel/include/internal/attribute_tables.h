@@ -621,6 +621,8 @@ typedef BasicAttributeTable<internal::IntAttributeTableTraits>
 IntAttributeTable;
 typedef BasicAttributeTable<internal::ObjectAttributeTableTraits>
 ObjectAttributeTable;
+typedef BasicAttributeTable<internal::WeakObjectAttributeTableTraits>
+WeakObjectAttributeTable;
 typedef BasicAttributeTable<internal::IntsAttributeTableTraits>
 IntsAttributeTable;
 typedef BasicAttributeTable<internal::ObjectsAttributeTableTraits>

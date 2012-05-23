@@ -154,6 +154,7 @@ class IMPEXPORT Particle : public ModelObject
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
   IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object*);
+  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(WeakObject, weak_object, Object*);
 
 #endif
 

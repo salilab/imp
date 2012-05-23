@@ -41,6 +41,9 @@ Model::Model(std::string name):
   internal::ObjectAttributeTable::set_masks(&this->Masks::read_mask_,
                                   &this->internal::Masks::write_mask_,
                                   &this->Masks::add_remove_mask_);
+  internal::WeakObjectAttributeTable::set_masks(&this->Masks::read_mask_,
+                                  &this->internal::Masks::write_mask_,
+                                  &this->Masks::add_remove_mask_);
   internal::IntsAttributeTable::set_masks(&this->Masks::read_mask_,
                                           &this->Masks::write_mask_,
                                           &this->Masks::add_remove_mask_);
@@ -161,6 +164,7 @@ void Model::remove_particle(Particle *p) {
   internal::StringAttributeTable::clear_attributes(pi);
   internal::IntAttributeTable::clear_attributes(pi);
   internal::ObjectAttributeTable::clear_attributes(pi);
+  internal::WeakObjectAttributeTable::clear_attributes(pi);
   internal::IntsAttributeTable::clear_attributes(pi);
   internal::ObjectsAttributeTable::clear_attributes(pi);
   internal::ParticleAttributeTable::clear_attributes(pi);
