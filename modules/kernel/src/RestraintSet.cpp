@@ -193,7 +193,7 @@ Restraints RestraintSet::do_create_current_decomposition() const {
 ScoringFunction* RestraintSet::create_scoring_function(double weight,
                                                       double max) const {
   return IMP::create_scoring_function(const_cast<RestraintSet*>(this), weight,
-                                      max);
+                                      max, get_name()+" scoring");
 }
 
 RestraintsTemp get_restraints(const RestraintsTemp &rs) {
