@@ -21,6 +21,15 @@
 #include <boost/graph/connected_components.hpp>
 #include <boost/graph/graphviz.hpp>
 
+// If we're using boost autolinking, have it pull in the boost_graph DSO
+// (needed for graphviz support)
+#if !defined(BOOST_ALL_NO_LIB)
+# define BOOST_LIB_NAME boost_graph
+# if defined(BOOST_ALL_DYN_LINK)
+#  define BOOST_DYN_LINK
+# endif
+# include <boost/config/auto_link.hpp>
+#endif
 
 IMPDOMINO_BEGIN_NAMESPACE
 
