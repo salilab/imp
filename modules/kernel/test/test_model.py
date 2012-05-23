@@ -78,7 +78,7 @@ class ClassScoreState(IMP.ScoreState):
 
 
 
-class ModelTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def test_state_show(self):
         """Test score state show method"""
         m = IMP.Model()
@@ -169,6 +169,7 @@ class ModelTests(IMP.test.TestCase):
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
+        r.set_name("dummy")
         r.set_model(m)
         print r.evaluate(False)
         del r
