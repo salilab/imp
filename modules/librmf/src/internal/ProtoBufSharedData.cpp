@@ -25,9 +25,6 @@ namespace RMF {
           IMP_RMF_THROW("Could not open file", IOException);
         }
         proto_.ParseFromIstream(&in);
-        if (!in) {
-          IMP_RMF_THROW("Error reading from file", IOException);
-        }
       } else {
         proto_.add_node();
         proto_.mutable_node(0)->set_name("root");
