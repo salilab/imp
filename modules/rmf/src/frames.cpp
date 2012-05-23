@@ -49,6 +49,7 @@ void save_frame(RMF::FileHandle file, unsigned int frame) {
       ll->save(file, frame);
     }
   }
+  file.flush();
 }
 
 
