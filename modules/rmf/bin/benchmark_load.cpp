@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
           "load rmf", h);
 #ifdef RMF_USE_PROTOBUF
   test_it(IMP::base::create_temporary_file_name("benchmark_save", ".prmf"),
-          "save prmf", h);
+          "load prmf", h);
 #endif
   return 0;
 }
