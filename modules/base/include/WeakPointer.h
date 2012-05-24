@@ -40,10 +40,12 @@ struct UncheckedWeakPointer:
     P::operator=(o);
     return *this;
   }
+#if IMP_DEFINE_NULLPTR
   UncheckedWeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
+#endif
   UncheckedWeakPointer<O>& operator=(const P &o) {
     P::operator=(o);
     return *this;
@@ -70,10 +72,12 @@ struct WeakPointer:
     P::operator=(o);
     return *this;
   }
+#if IMP_DEFINE_NULLPTR
   WeakPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
+#endif
   WeakPointer<O>& operator=(const P &o) {
     P::operator=(o);
     return *this;
