@@ -2,30 +2,28 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
-    <tab type="namespaces" visible="yes" title="Modules"/>
-    <tab type="modules" visible="no" title=""/>
-    <tab type="classindex" visible="yes" title="Class Index"/>
-    <tab type="namespacemembers" visible="yes" title="Methods and Variables"/>
-    <tab type="hierarchy" visible="yes" title=""/>
-    <tab type="globals" visible="yes" title="Macros"/>
-    <tab type="namespaces" visible="no" title="API">
+    <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="modules" visible="no" title="" intro=""/>
+    <tab type="modules" visible="yes" title="">
+      <tab type="namespacelist" visible="yes" title="" intro=""/>
+      <tab type="namespacemembers" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="classes" visible="no" title="">
-      <tab type="classes" visible="no" title=""/>
-      <tab type="classmembers" visible="no" title=""/>
+    <tab type="classes" visible="yes" title="">
+      <tab type="classlist" visible="yes" title="" intro=""/>
+      <tab type="classindex" visible="$ALPHABETICAL_INDEX" title=""/> 
+      <tab type="hierarchy" visible="yes" title="" intro=""/>
+      <tab type="classmembers" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="files" visible="no" title="">
-      <tab type="files" visible="no" title=""/>
+    <tab type="files" visible="yes" title="">
+      <tab type="filelist" visible="yes" title="" intro=""/>
+      <tab type="globals" visible="yes" title="" intro=""/>
     </tab>
-    <tab type="dirs" visible="no" title=""/>
-    <tab type="examples" visible="yes" title=""/>
-    <tab type="pages" visible="yes" title=""/>
+    <tab type="examples" visible="yes" title="" intro=""/>  
   </navindex>
 
   <!-- Layout definition for a class page -->
   <class>
-    <briefdescription visible="no"/>
-    <detaileddescription title=""/>
+    <briefdescription visible="yes"/>
     <includes visible="$SHOW_INCLUDE_FILES"/>
     <inheritancegraph visible="$CLASS_GRAPH"/>
     <collaborationgraph visible="$COLLABORATION_GRAPH"/>
@@ -39,7 +37,6 @@
       <publicstaticmethods title=""/>
       <publicattributes title=""/>
       <publicstaticattributes title=""/>
-      <membergroups visible="yes"/>
       <protectedtypes title=""/>
       <protectedslots title=""/>
       <protectedmethods title=""/>
@@ -61,8 +58,11 @@
       <privatestaticattributes title=""/>
       <friends title=""/>
       <related title="" subtitle=""/>
+      <membergroups visible="yes"/>
     </memberdecl>
+    <detaileddescription title=""/>
     <memberdef>
+      <inlineclasses title=""/>
       <typedefs title=""/>
       <enums title=""/>
       <constructors title=""/>
@@ -78,18 +78,19 @@
 
   <!-- Layout definition for a namespace page -->
   <namespace>
-    <briefdescription visible="no"/>
-    <detaileddescription title=""/>
+    <briefdescription visible="yes"/>
     <memberdecl>
       <nestednamespaces visible="yes" title=""/>
       <classes visible="yes" title=""/>
-      <membergroups visible="yes"/>
       <typedefs title=""/>
       <enums title=""/>
       <functions title=""/>
       <variables title=""/>
+      <membergroups visible="yes"/>
     </memberdecl>
+    <detaileddescription title=""/>
     <memberdef>
+      <inlineclasses title=""/>
       <typedefs title=""/>
       <enums title=""/>
       <functions title=""/>
@@ -113,9 +114,11 @@
       <enums title=""/>
       <functions title=""/>
       <variables title=""/>
+      <membergroups visible="yes"/>
     </memberdecl>
     <detaileddescription title=""/>
     <memberdef>
+      <inlineclasses title=""/>
       <defines title=""/>
       <typedefs title=""/>
       <enums title=""/>
@@ -127,15 +130,14 @@
 
   <!-- Layout definition for a group page -->
   <group>
-    <briefdescription visible="no"/>
-    <detaileddescription title=""/>
+    <briefdescription visible="yes"/>
     <groupgraph visible="$GROUP_GRAPHS"/>
     <memberdecl>
-      <classes visible="yes" title=""/>
-      <namespaces visible="yes" title=""/>
-      <dirs visible="yes" title=""/>
       <nestedgroups visible="yes" title=""/>
+      <dirs visible="yes" title=""/>
       <files visible="yes" title=""/>
+      <namespaces visible="yes" title=""/>
+      <classes visible="yes" title=""/>
       <defines title=""/>
       <typedefs title=""/>
       <enums title=""/>
@@ -149,9 +151,12 @@
       <events title=""/>
       <properties title=""/>
       <friends title=""/>
+      <membergroups visible="yes"/>
     </memberdecl>
+    <detaileddescription title=""/>
     <memberdef>
       <pagedocs/>
+      <inlineclasses title=""/>
       <defines title=""/>
       <typedefs title=""/>
       <enums title=""/>
