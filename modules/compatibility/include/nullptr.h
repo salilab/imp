@@ -65,8 +65,11 @@ extern IMPCOMPATIBILITYEXPORT const nullptr_t nullptr;
 extern const void * const nullptr;
 #endif //SWIG
 #define IMP_NULLPTR IMP::nullptr
+#define IMP_NULLPTR_T IMP::nullptr_t
 #else  // IMP_DEFINE_NULLPTR
 #define IMP_NULLPTR nullptr
+#define IMP_NULLPTR_T std::nullptr_t
+using std::nullptr_t;
 #endif // IMP_DEFINE_NULLPTR
 #endif // IMP_DOXYGEN
 

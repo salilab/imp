@@ -82,10 +82,12 @@ struct Pointer: internal::PointerBase<internal::RefCountedPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
+#if IMP_DEFINE_NULLPTR
   Pointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
+#endif
   Pointer<O>& operator=(const P &o) {
     P::operator=(o);
     return *this;
@@ -115,10 +117,12 @@ struct OwnerPointer: internal::PointerBase<internal::OwnerPointerTraits<O> > {
     P::operator=(o);
     return *this;
   }
+#if IMP_DEFINE_NULLPTR
   OwnerPointer<O>& operator=(nullptr_t o) {
     P::operator=(o);
     return *this;
   }
+#endif
   OwnerPointer<O>& operator=(const P &o) {
     P::operator=(o);
     return *this;
