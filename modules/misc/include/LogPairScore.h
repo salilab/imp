@@ -11,7 +11,7 @@
 #include "misc_config.h"
 #include <IMP/PairScore.h>
 #include <IMP/generic.h>
-#include <map>
+#include <IMP/compatibility/map.h>
 
 IMPMISC_BEGIN_NAMESPACE
 
@@ -20,7 +20,7 @@ IMPMISC_BEGIN_NAMESPACE
  */
 class LogPairScore : public PairScore
 {
-  mutable std::map<ParticlePair, unsigned int> map_;
+  mutable compatibility::map<ParticlePair, unsigned int> map_;
  public:
   //! create with an empty map
   LogPairScore(){}
@@ -29,7 +29,7 @@ class LogPairScore : public PairScore
   //! Get a list of all pairs (without multiplicity)
   ParticlePairs get_particle_pairs() const {
     ParticlePairs ret;
-    for (std::map<ParticlePair, unsigned int>::const_iterator
+    for (compatibility::map<ParticlePair, unsigned int>::const_iterator
            it = map_.begin(); it != map_.end(); ++it) {
       ret.push_back(it->first);
     }
