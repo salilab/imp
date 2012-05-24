@@ -173,6 +173,7 @@ namespace RMF {
                  },{
                    IMP_RMF_UNUSED(d); IMP_RMF_UNUSED(is); IMP_RMF_UNUSED(sp);
                    IMP_RMF_NOT_IMPLEMENTED;
+                   ret='\0';
                  }
                  ,{
                    IMP_RMF_UNUSED(d); IMP_RMF_UNUSED(is); IMP_RMF_UNUSED(s);

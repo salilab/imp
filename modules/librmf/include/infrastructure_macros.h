@@ -499,6 +499,7 @@ operator<<(std::ostream &out, const Showable &t);
       IMP_RMF_UNUSED(a);                                                \
       IMP_RMF_UNUSED(size);                                             \
       IMP_RMF_NOT_IMPLEMENTED;                                          \
+      return vector<UCNames>();                                         \
     }                                                                   \
     static void write_values_attribute(hid_t a, const vector<UCNames> &v){ \
       IMP_RMF_UNUSED(a); IMP_RMF_UNUSED(v);                             \
