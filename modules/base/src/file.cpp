@@ -109,8 +109,8 @@ TextOutput::TextOutput(std::string c, bool append):
 TextOutput::TextOutput(std::ostream &in, std::string name):
   out_(new StreamStorage<std::ostream>(in, name)){}
 TextOutput::TextOutput(TextProxy<std::ostream> out):
-  out_(new OwnedStreamStorage<std::ostream>(*out.str_,
-  out.ptr_)){}
+    out_(new OwnedStreamStorage<std::ostream>(*out.str_,
+                                              out.ptr_)){}
 TextOutput::TextOutput(int) {
   IMP_THROW("Wrong argument type", IOException);
 }
