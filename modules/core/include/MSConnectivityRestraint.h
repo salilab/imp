@@ -12,7 +12,6 @@
 #define IMPCORE_MS_CONNECTIVITY_RESTRAINT_H
 
 #include <vector>
-#include <map>
 #include <string>
 #include "core_config.h"
 #include "DistanceRestraint.h"

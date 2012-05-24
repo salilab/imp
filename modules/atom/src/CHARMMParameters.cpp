@@ -14,6 +14,7 @@
 #include <IMP/base/log_macros.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
+#include <IMP/compatibility/map.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -47,8 +48,8 @@ namespace {
       return atom_name;
     }
 
-    typedef std::map<std::string, std::string> ResidueMap;
-    static std::map<std::string, ResidueMap> map;
+    typedef compatibility::map<std::string, std::string> ResidueMap;
+    static compatibility::map<std::string, ResidueMap> map;
     static bool map_init = false;
     // Initialize map on first call
     if (!map_init) {
@@ -116,7 +117,7 @@ namespace {
     }
 
     // Look up residue type
-    std::map<std::string, ResidueMap>::iterator resit
+    compatibility::map<std::string, ResidueMap>::iterator resit
                                             = map.find(residue->get_type());
     if (resit != map.end()) {
       // Look up atom name
