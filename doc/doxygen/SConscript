@@ -15,12 +15,6 @@ def print_generate_doxygen(target, source, env):
 def print_generate_doxygen_header(target, source, env):
     print "generating doxygen header ", target[0].path
 
-def make_defs(target, source, env):
-    os.environ['PATH']=env['ENV']['PATH']
-    env.Execute("grep -v \"#include\" "+source[0].abspath+"| "+env['CPP'] +" -C -DIMP_DOXYGEN -dM - | grep -v \"define __\" > "+target[0].abspath)
-def print_make_defs(target, source, env):
-    print "running cpp ", str(target), str(source)
-
 
 def make_output(nodes):
     return "     "+"\\\n     ".join(['"'+x.abspath+'"' for x in nodes])
@@ -106,15 +100,8 @@ def generate_doxygen(target, source, env):
     outfile.close()
 
 
-
-if not env.get('DOXYGEN', None) or not env.get('CPP', None) or not env.get('DOT', None):
-    print "Warning: IMP documentation requires doxygen, cpp and graphviz."
-    Return
-
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
                                                                print_doxygen))})
-env.Append(BUILDERS = {'MakeDefs': Builder(action=env.Action(make_defs,
-                                                               make_defs))})
 
 docdir = scons_tools.install.get_install_directory(env, 'docdir', 'html')
 
@@ -139,25 +126,8 @@ for h in Glob("#/build/include/*.h", ondisk=False) \
          + Glob("#/build/include/IMP/*/*.h", ondisk=False):
     if h.path.find("internal")==-1:
         rawheaders.append(h)
-headers=[]
-config=[]
-# leftover from attempt to get things to work with 1.6.1.
-macros=[]
-for h in rawheaders:
-    if h.path.endswith('macros.h'):
-        macros.append(h)
-    elif h.path.endswith('config.h'):
-        config.append(h)
-    else:
-        headers.append(h)
 
-headers= config+macros+headers
-macrodef=[]
-for m in macros:
-    nm='generated/' + m.abspath[m.abspath.rfind("/")+1:]+".def"
-    #print nm
-    macrodef.append(env.MakeDefs(source=m, target=nm))
-sources = headers + macrodef
+sources = rawheaders
 for d in ["#/kernel/doc/",
           "#/modules/*/doc/",
           "#/kernel/examples/",
