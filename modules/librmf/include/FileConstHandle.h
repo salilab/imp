@@ -186,10 +186,31 @@ namespace RMF {
       }
     }
     template <class TypeT, int Arity>
+        vector<Key<TypeT, Arity> > get_keys(CategoryD<Arity> category_id,
+                                            const Strings& names,
+                                            bool per_frame) const {
+      vector<Key<TypeT, Arity> > ret(names.size());
+      for (unsigned int i=0; i< names.size(); ++i) {
+        ret[i]= get_key<TypeT>(category_id, names[i], per_frame);
+        if (ret[i]==Key<TypeT, Arity>()) {
+          ret.clear();
+          return ret;
+        }
+      }
+      return ret;
+    }
+    template <class TypeT, int Arity>
       bool get_has_key(CategoryD<Arity> category_id,
                        std::string name, bool per_frame) const {
       return get_key<TypeT, Arity>(category_id, name, per_frame)
         != Key<TypeT, Arity>();
+    }
+    /** Return true if it has all the passed keys as a block.*/
+    template <class TypeT, int Arity>
+        bool get_has_keys(CategoryD<Arity> category_id,
+                       const Strings& names, bool per_frame) const {
+      return get_key<TypeT, Arity>(category_id, names[0], per_frame)
+          != Key<TypeT, Arity>();
     }
     /** Get a list of all keys of the given type,
      */

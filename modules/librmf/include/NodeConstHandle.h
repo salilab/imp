@@ -52,7 +52,24 @@ bool get_has_value(UCName##Key k, unsigned int frame=0) const {         \
   if (k== UCName##Key()) return false;                                  \
   return !UCName##Traits::get_is_null_value(get_value_always(k,         \
                                                              frame));   \
-}
+}                                                                       \
+ReturnValues get_values_always(const UCName##Key##s& k,                 \
+                               unsigned int frame=0) const {            \
+  if (k.empty()) return ReturnValues();                                 \
+  return shared_->get_values(node_, k, frame);                          \
+}                                                                       \
+ReturnValues get_values(const UCName##Key##s& k,                        \
+                        int frame=-1) const {                           \
+  IMP_RMF_USAGE_CHECK(frame >=0 || !k[0].get_is_per_frame(),            \
+                      "No frame specified for per-frame data.");        \
+  IMP_RMF_USAGE_CHECK(get_has_value(k[0], frame),                       \
+                      internal::get_error_message("Node ", get_name(),  \
+                                     " does not have a value for key ", \
+                                                  shared_->get_name(k[0]), \
+                                                  " on frame ",         \
+                                                  frame));              \
+  return get_values_always(k, frame);                                   \
+}                                                                       \
 
 
 namespace RMF {
