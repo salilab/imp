@@ -65,6 +65,17 @@ void create_bonds(RMF::FileConstHandle fhc, const RMF::NodeIDs &nhs,
   }
 }
 
+void create_rigid_bodies(Model *m,
+                         const compatibility::map<unsigned int, ParticlesTemp>
+                         &rbs) {
+  for (compatibility::map<unsigned int, ParticlesTemp>::const_iterator
+           it= rbs.begin(); it != rbs.end(); ++it) {
+    std::ostringstream oss;
+    oss << "rigid body " << it->first;
+    IMP_NEW(Particle, rbp, (m, oss.str()));
+    core::RigidBody::setup_particle(rbp, it->second);
+  }
+}
 
   void fix_rigid_body(const std::pair<core::RigidBody,
                       core::RigidMembers> &in) {
@@ -230,6 +241,16 @@ bool HierarchyLoadLink::setup_particle(Particle *root,
     int dv= copy_factory_.get(nh).get_copy_index();
     atom::Copy::setup_particle(p, dv);
   }
+  if (nh.get_has_value(rigid_body_key_) && !rbp) {
+    int v= nh.get_value(rigid_body_key_);
+    rigid_bodies_[v].push_back(p);
+    // load coordinates for the particle so rb is set up right
+    RMF::Floats cs= intermediate_particle_factory_.get(nh, 0)
+        .get_coordinates();
+    algebra::Vector3D vv(cs.begin(),
+                        cs.end());
+    core::XYZ(p).set_coordinates(vv);
+  }
   IMP_LOG(VERBOSE, std::endl);
   return crbp;
 }
@@ -261,6 +282,7 @@ Particle* HierarchyLoadLink::do_create(RMF::NodeConstHandle name) {
   Particle *ret= do_create_recursive(nullptr, name, nullptr);
   create_bonds(name.get_file(),contents_[ret].nodes,
                contents_[ret].particles);
+  create_rigid_bodies(ret->get_model(), rigid_bodies_);
   return ret;
 }
 
@@ -300,6 +322,8 @@ HierarchyLoadLink::HierarchyLoadLink(RMF::FileConstHandle fh, Model *m):
     typed_factory_(fh),
     domain_factory_(fh)
 {
+  RMF::Category cat= fh.get_category("IMP");
+  rigid_body_key_=fh.get_key<RMF::IndexTraits>(cat, "rigid body", false);
 }
 
 namespace {
@@ -373,6 +397,15 @@ void HierarchySaveLink::setup_node(Particle *p, RMF::NodeHandle n) {
     atom::Copy d(p);
     copy_factory_.get(n).set_copy_index(d.get_copy_index());
   }
+  if (core::RigidMember::particle_is_instance(p)) {
+    Particle *rb= core::RigidMember(p).get_rigid_body();
+    if (rigid_bodies_.find(rb) == rigid_bodies_.end()) {
+      int index=rigid_bodies_.size();
+      rigid_bodies_[rb]= index;
+    }
+    unsigned int index= rigid_bodies_.find(rb)->second;
+    n.set_value(rigid_body_key_, index);
+  }
 }
 void HierarchySaveLink::do_add_recursive(Particle *root, Particle *p,
                                          RMF::NodeHandle cur) {
@@ -438,6 +471,9 @@ HierarchySaveLink::HierarchySaveLink(RMF::FileHandle fh):
     diffuser_factory_(fh),
     typed_factory_(fh),
     domain_factory_(fh) {
+  RMF::Category ic= RMF::get_category_always<1>(fh, "IMP");
+  rigid_body_key_= RMF::get_key_always<RMF::IndexTraits>(fh, ic, "rigid body",
+                                                         false);
 }
 
 IMPRMF_END_NAMESPACE
