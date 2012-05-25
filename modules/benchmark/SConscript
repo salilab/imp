@@ -12,7 +12,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
                                                'boost/program_options.hpp',
                                                extra_boost_libs=["system"])
 
-module_env=env.IMPModuleBuild(version='nightly-22/5/2012',
+module_env=env.IMPModuleBuild(version='nightly-24/5/2012',
                               required_modules=['base'],
                               optional_dependencies
                               =['google_perftools_profile',
