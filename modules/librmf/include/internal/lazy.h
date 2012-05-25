@@ -27,9 +27,16 @@ namespace RMF {
       std::string name;
       CategoryD<Arity> category;
       bool per_frame;
-      mutable Key<TypeTraits, Arity> key;
+      Key<TypeTraits, Arity> key;
     };
     boost::intrusive_ptr<Data> data_;
+    void init_key() const {
+      FileHandle fh= open_rmf_file(data_->file_name);
+      data_->key=get_key_always<TypeTraits>(fh,
+                                            data_->category,
+                                            data_->name,
+                                            data_->per_frame);
+    }
   public:
     LazyKey(FileHandle file,
             CategoryD<Arity> category,
@@ -40,17 +47,75 @@ namespace RMF {
       data_->category=category;
       data_->name=name;
       data_->per_frame=per_frame;
+      FileHandle fh= open_rmf_file(data_->file_name);
+      data_->key=fh.get_key<TypeTraits>(data_->category,
+                                        data_->name,
+                                        data_->per_frame);
     }
     LazyKey(){}
-    operator Key<TypeTraits, Arity>() const {
+    operator Key<TypeTraits, Arity>() {
       if (data_->key==  Key<TypeTraits, Arity>()) {
-        FileHandle fh= open_rmf_file(data_->file_name);
-        data_->key=get_key_always<TypeTraits>(fh,
-                                              data_->category,
-                                              data_->name,
-                                              data_->per_frame);
+        init_key();
       }
       return data_->key;
+    }
+    operator Key<TypeTraits, Arity>() const {
+      return data_->key;
+    }
+  };
+
+  /** This key makes sure that space is only allocated in the file when
+      the key is actually used. This is currently only used for factory
+      classes and should probably be considered unstable.
+  */
+  template <class TypeTraits, int Arity>
+  class LazyKeys {
+    struct Data: boost::intrusive_ptr_object {
+      std::string file_name;
+      Strings names;
+      CategoryD<Arity> category;
+      bool per_frame;
+      vector<Key<TypeTraits, Arity> > keys;
+    };
+    boost::intrusive_ptr<Data> data_;
+  public:
+    LazyKeys(FileHandle file,
+            CategoryD<Arity> category,
+            const Strings & names,
+            bool per_frame):
+      data_(new Data) {
+      data_->file_name=file.get_name();
+      data_->category=category;
+      data_->names=names;
+      data_->per_frame=per_frame;
+      FileHandle fh= open_rmf_file(data_->file_name);
+      data_->keys=fh.get_keys<TypeTraits>(data_->category,
+                                          data_->names,
+                                          data_->per_frame);
+    }
+    LazyKeys(){}
+    operator vector<Key<TypeTraits, Arity> >() {
+      if (data_->keys.empty()) {
+        FileHandle fh= open_rmf_file(data_->file_name);
+        data_->keys=get_keys_always<TypeTraits>(fh,
+                                               data_->category,
+                                               data_->names,
+                                               data_->per_frame);
+      }
+      return data_->keys;
+    }
+    operator vector<Key<TypeTraits, Arity> >() const {
+      return data_->keys;
+    }
+    Key<TypeTraits, Arity> operator[](unsigned int i) {
+      return static_cast< vector<Key<TypeTraits, Arity> > >(*this)[i];
+    }
+    Key<TypeTraits, Arity> operator[](unsigned int i) const {
+      if ( data_->keys.size() > i) {
+        return data_->keys[i];
+      } else {
+        return Key<TypeTraits, Arity>();
+      }
     }
   };
 
@@ -59,13 +124,13 @@ namespace RMF {
 #define IMP_RMF_DECLARE_LAZY_KEY(lcname, Ucname, PassValue, ReturnValue, \
                                  PassValues, ReturnValues)              \
   typedef LazyKey<Ucname##Traits, 1> Ucname##LazyKey;                   \
-  typedef vector<Ucname##LazyKey> Ucname##LazyKeys;                     \
   typedef LazyKey<Ucname##Traits, 2> Pair##Ucname##LazyKey;             \
-  typedef vector<Pair##Ucname##LazyKey> Pair##Ucname##LazyKeys;         \
   typedef LazyKey<Ucname##Traits, 3> Triplet##Ucname##LazyKey;          \
-  typedef vector<Triplet##Ucname##LazyKey> Triplet##Ucname##LazyKeys;   \
   typedef LazyKey<Ucname##Traits, 4> Quad##Ucname##LazyKey;             \
-  typedef vector<Quad##Ucname##LazyKey> Quad##Ucname##LazyKeys
+  typedef LazyKeys<Ucname##Traits, 1> Ucname##LazyKeys;                 \
+  typedef LazyKeys<Ucname##Traits, 2> Pair##Ucname##LazyKeys;           \
+  typedef LazyKeys<Ucname##Traits, 3> Triplet##Ucname##LazyKeys;        \
+  typedef LazyKeys<Ucname##Traits, 4> Quad##Ucname##LazyKeys
 
 
 
