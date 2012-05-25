@@ -1,3 +1,4 @@
+#!/usr/bin/python
 
 import IMP
 import IMP.algebra as alg
