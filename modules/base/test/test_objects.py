@@ -8,9 +8,16 @@ class LogTests(IMP.test.TestCase):
     def test_log_targets(self):
         """Test getting all objects"""
         if hasattr(IMP.base, "get_live_objects"):
+            m = IMP.Model()
             allobjs= IMP.base.get_live_objects()
+            found = False
             for o in allobjs:
                 # the wrapping was hard to get swig to do
-                print o.get_name()
+                x = o.get_name()
+                if m == o:
+                    found = True
+            self.assertTrue(found,
+                            '%s not found in live objects: %s' % (m, allobjs))
+
 if __name__ == '__main__':
     IMP.test.main()
