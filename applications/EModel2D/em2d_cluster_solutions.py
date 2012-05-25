@@ -1,8 +1,5 @@
 #!/usr/bin/python
 
-
-#!/usr/bin/python
-
 import IMP
 import IMP.statistics as em2d
 import IMP.em2d.utility as utility
