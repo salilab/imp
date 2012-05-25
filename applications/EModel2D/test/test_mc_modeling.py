@@ -15,7 +15,11 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
 
     def test_generate_model(self):
         """ Test that Monte Carlo modeling runs """
-        domino_model = self.import_python_application('em2d_domino_model.py')
+        try:
+            domino_model = self.import_python_application(
+                                                  'em2d_domino_model.py')
+        except ImportError, detail:
+            self.skipTest(str(detail))
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
         for i in range(len(exp.fn_pdbs)):
