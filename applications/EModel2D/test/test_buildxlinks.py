@@ -3,16 +3,23 @@ import IMP.test
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
-import IMP.em2d.buildxlinks as bx
 import sys
 import os
 import itertools
+
+try:
+    import IMP.em2d.buildxlinks as bx
+except ImportError, detail:
+    bx = None
+    bxerr = str(detail)
 
 
 class TestBuildXlinks(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
+        if bx is None:
+            self.skipTest(bxerr)
         self.crosslinks = [ ("subunitA", 1, "subunitB", 1, 10),
                        ("subunitA", 2, "subunitB", 2, 20),
                        ("subunitB", 3, "subunitA", 3, 30),

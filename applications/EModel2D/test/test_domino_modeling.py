@@ -18,8 +18,11 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
 
     def test_generate_model(self):
         """ Test that the DOMINO modeling runs """
-
-        domino_model = self.import_python_application('em2d_domino_model.py')
+        try:
+            domino_model = self.import_python_application(
+                                               'em2d_domino_model.py')
+        except ImportError, detail:
+            self.skipTest(str(detail))
         IMP.set_log_level(IMP.SILENT)
         fn = self.get_input_file_name("config.py")
         directory = self.get_input_file_name("")
