@@ -81,6 +81,7 @@ cp ${DLLSRC}/hdf5dll.dll ${DLLSRC}/libgsl.dll ${DLLSRC}/libgslcblas.dll \
    ${DLLSRC}/boost_program_options-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_system-vc100-mt-1_44.dll \
    ${DLLSRC}/boost_date_time-vc100-mt-1_44.dll \
+   ${DLLSRC}/boost_graph-vc100-mt-1_44.dll \
    ${DLLSRC}/libfftw3-3.dll \
    ${DLLSRC}/opencv_core220.dll ${DLLSRC}/opencv_highgui220.dll \
    ${DLLSRC}/opencv_ffmpeg220.dll \
