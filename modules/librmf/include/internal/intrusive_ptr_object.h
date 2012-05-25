@@ -46,6 +46,7 @@
 #endif
 #include <boost/type_traits.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <boost/assert.hpp>
 
 
 // place these in the boost namespace so the intrusive_ptr<> template
