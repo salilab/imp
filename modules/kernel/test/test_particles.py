@@ -15,7 +15,7 @@ class ParticleTests(IMP.test.TestCase):
         """Build a set of test particles"""
         IMP.test.TestCase.setUp(self)
 
-        self.model = IMP.Model()
+        self.model = IMP.Model("particles model")
         self.particles = []
 
         # create particles 0 - 11
@@ -180,7 +180,7 @@ class ParticleTests(IMP.test.TestCase):
         self.assertEqual(td0a, p0a)
     def test_many_particle(self):
         """Test that we can allocate many particles"""
-        m= IMP.Model()
+        m= IMP.Model("many particles")
         num=20000
         for i in range(0,num):
             p= IMP.Particle(m)

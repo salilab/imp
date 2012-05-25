@@ -14,7 +14,7 @@ pk0= IMP.ParticleKey("p0");
 pk1= IMP.ParticleKey("p1");
 pk2= IMP.ParticleKey("p2");
 
-class ParticleTests(IMP.test.TestCase):
+class ConfigSetTests(IMP.test.TestCase):
     """Test particles"""
     def _force_set(self, p, k, v):
         if p.has_attribute(k):
@@ -85,7 +85,7 @@ class ParticleTests(IMP.test.TestCase):
     def _make_things(self):
         IMP.set_log_level(IMP.MEMORY)
         print "starting"
-        m= IMP.Model()
+        m= IMP.Model("config set")
         print "adding"
         ps=[IMP.Particle(m), IMP.Particle(m), IMP.Particle(m)]
         print "adding attribute"

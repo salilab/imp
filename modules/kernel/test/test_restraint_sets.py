@@ -5,7 +5,7 @@ class RestraintSetTests(IMP.test.TestCase):
     """Test RestraintSets"""
 
     def _make_stuff(self):
-        m= IMP.Model()
+        m= IMP.Model("restraint sets")
         rs= IMP.RestraintSet(.5)
         r0= IMP._ConstRestraint(1)
         rs.add_restraint(r0)

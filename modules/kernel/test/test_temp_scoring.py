@@ -26,7 +26,7 @@ class Tests(IMP.test.TestCase):
     def test_temp_restraints(self):
         """Check that scoring functions are cleaned up"""
         dirchk = IMP.test.RefCountChecker(self)
-        m = IMP.Model()
+        m = IMP.Model("scoring functions cleanup")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
