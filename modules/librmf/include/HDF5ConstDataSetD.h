@@ -86,9 +86,9 @@ namespace RMF {
                           internal::get_error_message("Data set ",name,
                                                       " already exists"));
       hsize_t dims[D]={0};
-      hsize_t cdims[D]={64};
+      hsize_t cdims[D]={512};
       if (D >2) {
-        std::fill(cdims+1, cdims+D-1, 2);
+        std::fill(cdims+1, cdims+D-1, 4);
       }
       if (D >1) {
         cdims[D-1]=1;
