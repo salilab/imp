@@ -32,7 +32,17 @@ void set_value(UCName##Key k, PassValue v,                              \
   get_shared_data()->set_value(get_node_id(),                           \
                                k, v, frame);                            \
 }                                                                       \
-
+/** \brief  set the values of the attributes k for this node
+    These keys must have been produced by the add_keys method.
+    If it is a per-frame attribute, frame must be specified.
+*/                                                                      \
+void set_values(const UCName##Key##s& k, PassValues v,                  \
+                int frame =-1) {                                        \
+  IMP_RMF_USAGE_CHECK(frame >=0 || !k[0].get_is_per_frame(),            \
+                      "No frame specified for per-frame data.");        \
+  get_shared_data()->set_values(get_node_id(),                          \
+                                k, v, frame);                           \
+}
 
 namespace RMF {
 

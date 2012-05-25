@@ -103,7 +103,7 @@ namespace RMF {
         we provide non-template versions, below.
         @{
     */
-    /** Create a key for a new type of data. There must not
+    /** Create a key for a type of data. There must not
         already be a key with the same name of any type.
     */
     template <class TypeT, int Arity>
@@ -113,6 +113,21 @@ namespace RMF {
         add_key(get_shared_data(),
                 category_id.get_index(),
                 name, per_frame);
+    }
+    /** Create new key for a type of data. There must not
+        already be keys with the same name of any type. These keys
+        can be used with set_values();
+    */
+    template <class TypeT, int Arity>
+        vector<Key<TypeT, Arity> > add_keys(CategoryD<Arity> category_id,
+                                            const Strings& names,
+                                            bool per_frame) const {
+      // later make sure they are consecutive
+      vector<Key<TypeT, Arity> > ret(names.size());
+      for (unsigned int i=0; i< names.size(); ++i) {
+        ret[i]= add_jey(category_id, names[i], per_frame);
+      }
+      return ret;
     }
     /** @} */
 
@@ -281,6 +296,7 @@ inline CategoryD<4> get_quad_category_always(FileHandle rh,
 }
 
 
+
 template <class TypeT, int D>
 Key<TypeT, D> get_key_always(FileHandle fh, CategoryD<D> cat,
                              std::string name, bool per_frame=false) {
@@ -297,6 +313,19 @@ Key<TypeT, D> get_key_always(FileHandle fh, CategoryD<D> cat,
     return fh.add_key<TypeT, D>(cat, name, per_frame);
   }
 }
+
+template <class TypeT, int D>
+vector<Key<TypeT, D> > get_keys_always(FileHandle fh, CategoryD<D> cat,
+                                       const Strings& names,
+                                       bool per_frame=false) {
+  vector<Key<TypeT, D> > ret(names.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= get_key_always<TypeT>(fh, cat, names[i], per_frame);
+  }
+  return ret;
+}
+
+
 #define IMP_RMF_GET_KEY_ALWAYS_CATEGORY(lcname, UCName, PassValue,      \
                                         ReturnValue,                    \
                                         PassValues, ReturnValues, D)    \
