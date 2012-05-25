@@ -65,6 +65,8 @@ namespace RMF {
   typedef std::string String;
   /** The type used to store lists of string values.*/
   typedef vector<String> Strings;
+  /** The type used to store lists of strings values.*/
+  typedef vector<Strings> StringsList;
   /** The type used to store lists of NodeID values.*/
   typedef vector<NodeIDs> NodeIDsList;
   /** The type used to store lists of lists of integers values.*/
