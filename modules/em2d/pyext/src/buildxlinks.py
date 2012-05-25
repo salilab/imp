@@ -8,11 +8,7 @@ import logging
 from IMP.em2d.argminmax import keymax
 log = logging.getLogger("buildxlinks")
 
-try:
-    import networkx as nx
-except:
-    print "Script requires the Networkx library to run"
-    sys.exit()
+import networkx as nx
 
 
 def build_xlinks_graph(xlinks):
