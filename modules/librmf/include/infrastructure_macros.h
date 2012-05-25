@@ -19,6 +19,10 @@
 
 #include <vector>
 
+#ifdef NDEBUG
+#define IMP_RMF_NDEBUG
+#endif
+
 #if defined(IMP_DOXYGEN)
 /** \name Comparisons
     Helper macros for implementing comparisons in terms of
@@ -173,6 +177,14 @@
     }                                                                   \
   } while (false)
 
+#define IMP_RMF_PATH_CHECK(path, context)                               \
+  if (!boost::filesystem::exists(path)) {                               \
+    IMP_RMF_THROW(RMF::internal::get_error_message(context, path,       \
+                                              " does not exist."),      \
+                  IOException);                                         \
+  }
+
+#ifndef IMP_RMF_NDEBUG
 #define IMP_RMF_INTERNAL_CHECK(check, message)                          \
   do {                                                                  \
     if (!(check)) {                                                     \
@@ -186,15 +198,15 @@
     }                                                                   \
   } while (false)
 
-#define IMP_RMF_PATH_CHECK(path, context)                               \
-  if (!boost::filesystem::exists(path)) {                               \
-    IMP_RMF_THROW(RMF::internal::get_error_message(context, path,       \
-                                              " does not exist."),      \
-                  IOException);                                         \
-  }
 
 #define IMP_RMF_IF_CHECK                        \
   if (true)
+
+#else // NDEBUG
+#define IMP_RMF_INTERNAL_CHECK(check, message)
+#define IMP_RMF_IF_CHECK
+
+#endif
 
 #define IMP_RMF_NOT_IMPLEMENTED                                 \
   IMP_RMF_THROW(RMF::internal::get_error_message("Not implemented: ",   \

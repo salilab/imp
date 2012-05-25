@@ -24,6 +24,10 @@ scons_tools.dependency.add_external_library(env, "ProtoBuf", ["protobuf"],
 
 olinktest=env['linktest']
 env['linktest']=False
+if env['build']=='fast':
+    ocppdef= env.get('CPPDEFINES', [])
+    env.Append(CPPDEFINES=["NDEBUG"])
+
 oenv=env.IMPModuleBuild(version='nightly-24/5/2012',
                    required_modules=[],
                    required_dependencies=['HDF5', "Boost.FileSystem",
@@ -57,3 +61,5 @@ mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
                        File(env['builddir']+"/src/RMF.pb.h"),
                        File(env['builddir']+"/src/_RMF_proto.py")])
 env['linktest']=olinktest
+if env['build']=='fast':
+    env['CPPDEFINES']=ocppdef
