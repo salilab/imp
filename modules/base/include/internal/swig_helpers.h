@@ -213,7 +213,8 @@ using namespace IMP;
   template <class T>
   struct ConvertObjectBase: public ConvertAllBase<T> {
     BOOST_STATIC_ASSERT(!boost::is_pointer<T>::value);
-    BOOST_STATIC_ASSERT((boost::is_base_of< Object, T>::value));
+    BOOST_STATIC_ASSERT((boost::is_base_of< Object, T>::value)
+                        || (boost::is_same<Object, T>::value));
     template <class SwigData>
     static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
       void *vp;
@@ -288,7 +289,14 @@ using namespace IMP;
     static const int converter=1;
   };
 
-template <class T>
+  /* Older Boosts return false for is_base_of<Object,Object> so provide
+     a specialization for Object */
+  template <>
+  struct Convert<Object> : public ConvertObjectBase<Object> {
+    static const int converter=1;
+  };
+
+  template <class T>
   struct Convert<T*, typename enable_if< boost::is_base_of< Object, T> >
                  ::type >: public ConvertObjectBase<T > {
     static const int converter=1;
