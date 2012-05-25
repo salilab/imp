@@ -59,9 +59,9 @@ namespace RMF {
                             const vector<Key<Ucname##Traits, Arity> > &k, \
                             const Ucname##Traits::Types v,              \
                             unsigned int frame) {                       \
-    for (unsigned int i=0; i< k.size(); ++i) {                          \
-      set_value(node, k[i], v[i], frame);                               \
-    }                                                                   \
+      for (unsigned int i=0; i< k.size(); ++i) {                        \
+        set_value(node, k[i], v[i], frame);                             \
+      }                                                                 \
     }                                                                   \
     virtual Key<Ucname##Traits, Arity>                                  \
     add_##lcname##_key_##Arity(int category_id,                         \
