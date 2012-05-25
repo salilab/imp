@@ -374,16 +374,74 @@ class Attributes:
                               || (!%(nn)s_.empty()
                                  && nh.get_has_value(%(nn)s_[0]))))
                      || (frame <0
-                   &&  ((!%(nn)s_.empty() && nh.get_has_value(%(nn)s_[0]))
+                   &&  ((!%(nn)s_.empty()
+                       && nh.get_has_value(%(nn)s_[0]))
                   || (!%(nn)s_pf_.empty()
                      && nh.get_has_value(%(nn)s_pf_[0])))))"""%{"nn":self.nice_name}]
         else:
-            return ["""((frame >=0 && (nh.get_has_value(%(nn)s_pf_[0], frame)
+            return ["""((frame >=0
+                          && (nh.get_has_value(%(nn)s_pf_[0], frame)
                               || nh.get_has_value(%(nn)s_[0])))
                      || (frame <0
                    &&  (nh.get_has_value(%(nn)s_[0])
                   || nh.get_has_value(%(nn)s_pf_[0]))))"""%{"nn":self.nice_name}]
 
+# currently writing multiple plural attributes is not supported
+class PluralAttributes(Attributes):
+    def get_methods(self, const):
+        ret=[]
+        if not const:
+            ret.append("""%(ptype)s get_%(name)s() const {
+         %(ptype)s ret(%(len)s);
+         if (nh_.get_has_value(%(key)s[0])) {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+            ret[i]=nh_.get_value(%(key)s[i]);
+           }
+         } else {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+            ret[i]=nh_.get_value(%(key)spf_[i], frame_);
+           }
+         }
+         return ret;
+      }"""%{"type":self.type,
+            "ptype":self.ptype,
+            "name":self.nice_name,
+            "len":len(self.attribute_names),
+            "key":self.nice_name+"_"})
+            ret.append("""void set_%(name)s(const %(ptype)s &v) {
+           if (frame_>=0) {
+             for (unsigned int i=0; i< %(len)s; ++i) {
+                nh_.set_value(%(key)spf_[i], v[i], frame_);
+             }
+           } else {
+             for (unsigned int i=0; i< %(len)s; ++i) {
+                nh_.set_value(%(key)s[i], v[i]);
+             }
+           }
+        }"""%{"type":self.type,
+              "ptype":self.ptype,
+              "name":self.nice_name,
+              "len":len(self.attribute_names),
+              "key":self.nice_name+"_"})
+        else:
+            ret.append("""%(ptype)s get_%(name)s() const {
+         %(ptype)s ret(%(len)s);
+         if (!%(key)s.empty() && nh_.get_has_value(%(key)s[0])) {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+            ret[i]=nh_.get_value(%(key)s[i]);
+           }
+         } else {
+           for (unsigned int i=0; i< %(len)s; ++i) {
+            ret[i]=nh_.get_value(%(key)spf_[i], frame_);
+           }
+         }
+         return ret;
+      }"""%{"type":self.type,
+            "ptype":self.ptype,
+            "name":self.nice_name,
+            "len":len(self.attribute_names),
+            "key":self.nice_name+"_"})
+        return ret
 
 class DecoratorCategory:
     def __init__(self, category, arity,
@@ -602,7 +660,7 @@ score= Decorator("Score", "Associate a score with some set of particles.",
                    "")
 
 ball= Decorator("Ball", "A geometric ball.",
-                   [DecoratorCategory("shape", 1, [Attributes("Float", "Floats",
+                   [DecoratorCategory("shape", 1, [PluralAttributes("Float", "Floats",
                                                               "coordinates", ["cartesian x",
                                                                               "cartesian y",
                                                                               "cartesian z"]),
@@ -610,7 +668,7 @@ ball= Decorator("Ball", "A geometric ball.",
                                       internal_attributes=[Attribute("Index", "type", "type")])],
                    ["nh.set_value(type_, 0);"], ["nh.get_value(type_)==0"])
 cylinder= Decorator("Cylinder", "A geometric cylinder.",
-                   [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
+                   [DecoratorCategory("shape", 1, [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
                                                                               "cartesian zs"]),
@@ -619,7 +677,7 @@ cylinder= Decorator("Cylinder", "A geometric cylinder.",
                    ["nh.set_value(type_, 1);"], ["nh.get_value(type_)==1"])
 
 segment= Decorator("Segment", "A geometric line setgment.",
-                   [DecoratorCategory("shape", 1, [Attributes("Floats", "FloatsList",
+                   [DecoratorCategory("shape", 1, [PluralAttributes("Floats", "FloatsList",
                                                               "coordinates", ["cartesian xs",
                                                                               "cartesian ys",
                                                                               "cartesian zs"])],
