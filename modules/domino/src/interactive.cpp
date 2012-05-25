@@ -1,9 +1,8 @@
 /**
- *  \file interaction_graph.cpp
- *  \brief Score particles with respect to a tunnel.
+ *  \file domino/interactive.cpp
+ *  \brief Functions to get report statistics about the used attributes.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
- *
  */
 #include <IMP/domino/interactive.h>
 #include <IMP/domino/internal/tree_inference.h>
