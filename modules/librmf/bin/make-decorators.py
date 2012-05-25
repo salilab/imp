@@ -21,6 +21,26 @@ def get_string(type, name, const, per_frame=False):
                                              "pfs":pfs}
 
 
+def gets_string(type, name, const, per_frame=False):
+    if per_frame:
+        pfs="true"
+    else:
+        pfs="false"
+    if const:
+        return """(fh.get_has_key<%(type)sTraits>
+                   (cat, %(name)s[0], %(pfs)s)?
+                   fh.get_keys<%(type)sTraits>(cat,
+                                     %(name)s,
+                                      %(pfs)s)
+                              :%(type)sKeys())"""%{ "name":name,
+                                                   "type": type,
+                                                   "pfs":pfs}
+    else:
+        return """internal::%(type)sLazyKeys(fh, cat,
+                               %(name)s,
+                               %(pfs)s)"""%{ "name":name,
+                                             "type": type,
+                                             "pfs":pfs}
 class Children:
     def __init__(self, nice_name):
         self.nice_name=nice_name
@@ -281,35 +301,37 @@ class Attributes:
                     "internal::"+self.type+"LazyKeys "+self.nice_name+"_pf_;"]
     def get_methods(self, const):
         ret=[]
-        ret.append("""%(ptype)s get_%(name)s() const {
-       %(ptype)s ret(%(len)s);
-       if (nh_.get_has_value(%(key)s[0])) {
-         for (unsigned int i=0; i< %(len)s; ++i) {
-          ret[i]=nh_.get_value(%(key)s[i]);
-         }
-       } else {
-         for (unsigned int i=0; i< %(len)s; ++i) {
-          ret[i]=nh_.get_value(%(key)spf_[i], frame_);
-         }
-       }
-       return ret;
-    }"""%{"type":self.type,
-          "ptype":self.ptype,
-          "name":self.nice_name,
-          "len":len(self.attribute_names),
-          "key":self.nice_name+"_"})
         if not const:
+            ret.append("""%(ptype)s get_%(name)s() const {
+             if (nh_.get_has_value(%(key)s[0])) {
+               return nh_.get_values(%(key)s);
+             } else {
+               return nh_.get_values(%(key)spf_, frame_);
+             }
+           }"""%{"type":self.type,
+            "ptype":self.ptype,
+            "name":self.nice_name,
+            "len":len(self.attribute_names),
+            "key":self.nice_name+"_"})
             ret.append("""void set_%(name)s(const %(ptype)s &v) {
-         if (frame_>=0) {
-           for (unsigned int i=0; i< %(len)s; ++i) {
-              nh_.set_value(%(key)spf_[i], v[i], frame_);
+           if (frame_>=0) {
+             nh_.set_values(%(key)spf_, v, frame_);
+           } else {
+             nh_.set_values(%(key)s, v);
            }
-         } else {
-           for (unsigned int i=0; i< %(len)s; ++i) {
-              nh_.set_value(%(key)s[i], v[i]);
-           }
-         }
-      }"""%{"type":self.type,
+        }"""%{"type":self.type,
+              "ptype":self.ptype,
+              "name":self.nice_name,
+              "len":len(self.attribute_names),
+              "key":self.nice_name+"_"})
+        else:
+            ret.append("""%(ptype)s get_%(name)s() const {
+             if (!%(key)s.empty() && nh_.get_has_value(%(key)s[0])) {
+               return nh_.get_values(%(key)s);
+             } else {
+               return nh_.get_values(%(key)spf_, frame_);
+             }
+           }"""%{"type":self.type,
             "ptype":self.ptype,
             "name":self.nice_name,
             "len":len(self.attribute_names),
@@ -331,26 +353,36 @@ class Attributes:
         return []
     def get_construct(self, const):
         ret=[]
-        for n in self.attribute_names:
-            ret.append("""      %(name)s_.push_back(%(get)s);"""%{"type":self.type,
-                                                            "name":self.nice_name,
-                                                            "len":len(self.attribute_names),
-                                                            "key":self.nice_name+"_",
-                                                            "get":get_string(self.type, n, const, False)
-                                                            })
-            ret.append("""      %(name)s_pf_.push_back(%(get)s);"""%{"type":self.type,
-                                                                     "name":self.nice_name,
-                                                                     "len":len(self.attribute_names),
-                                                                     "key":self.nice_name+"_",
-                                                                     "get":get_string(self.type, n, const, True)
-                                                            })
+        ret.append("""        Strings  %(name)s_names;"""%{"name":self.nice_name})
+        for nin in self.attribute_names:
+            ret.append("""        %(name)s_names.push_back("%(thisname)s");"""%{"name":self.nice_name,
+                                                                                "thisname":nin})
+        ret.append("""      %(name)s_=%(get)s;"""%{"name":self.nice_name,
+                                                   "get":gets_string(self.type,
+                                                                     "%(name)s_names"%{"name":self.nice_name},
+                                                                     const, False)})
+        ret.append("""      %(name)s_pf_=%(get)s;"""%{"name":self.nice_name,
+                                                      "get":gets_string(self.type,
+                                                                        "%(name)s_names"%{"name":self.nice_name},
+                                                                        const, True)})
         return ret
     def get_check(self, const):
-        return ["""((frame >=0 && (nh.get_has_value(%(nn)s_pf_[0], frame)
-                          || nh.get_has_value(%(nn)s_[0])))
-                 || (frame <0
-               &&  (nh.get_has_value(%(nn)s_[0])
-              || nh.get_has_value(%(nn)s_pf_[0], 0))))"""%{"nn":self.nice_name}]
+        if const:
+            return ["""((frame >=0
+                  && ((!%(nn)s_pf_.empty()
+                  && nh.get_has_value(%(nn)s_pf_[0], frame))
+                              || (!%(nn)s_.empty()
+                                 && nh.get_has_value(%(nn)s_[0]))))
+                     || (frame <0
+                   &&  ((!%(nn)s_.empty() && nh.get_has_value(%(nn)s_[0]))
+                  || (!%(nn)s_pf_.empty()
+                     && nh.get_has_value(%(nn)s_pf_[0])))))"""%{"nn":self.nice_name}]
+        else:
+            return ["""((frame >=0 && (nh.get_has_value(%(nn)s_pf_[0], frame)
+                              || nh.get_has_value(%(nn)s_[0])))
+                     || (frame <0
+                   &&  (nh.get_has_value(%(nn)s_[0])
+                  || nh.get_has_value(%(nn)s_pf_[0]))))"""%{"nn":self.nice_name}]
 
 
 class DecoratorCategory:
