@@ -106,7 +106,10 @@ class CoverageTester(object):
             self.mods = glob.glob(self.topdir + '/%s/*.py' % path)
             self.mods = [x for x in self.mods \
                          if not x.endswith('_version_check.py')]
-            self.cov_suffix = 'mod.' + self.opts.module.split('.')[-1]
+            modname = self.opts.module.split('.')[-1]
+            if modname == 'IMP':
+                modname = 'kernel'
+            self.cov_suffix = 'mod.' + modname
 
 
         data_file = '.' + self.cov_suffix + '.coverage'
