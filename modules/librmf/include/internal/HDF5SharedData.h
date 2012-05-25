@@ -64,6 +64,12 @@ namespace RMF {
                         Ucname##Traits::Type v, unsigned int frame) {   \
       return set_value_impl(node, k, v, frame);                         \
     }                                                                   \
+    virtual void set_values(unsigned int node,                          \
+                            const vector<Key<Ucname##Traits, Arity> > &k, \
+                            const Ucname##Traits::Types v,              \
+                            unsigned int frame) {                       \
+      return set_values_impl(node, k, v, frame);                        \
+    }                                                                   \
     Key<Ucname##Traits, Arity> add_##lcname##_key_##Arity(int category_id, \
                                                           std::string name, \
                                                           bool per_frame) { \
@@ -407,6 +413,46 @@ namespace RMF {
       }
 
       template <class TypeTraits, int Arity>
+          void make_fit( HDF5DataSetD<TypeTraits, 3> &ds,
+                         int vi,
+                         Key<TypeTraits, Arity> k, unsigned int frame) {
+        HDF5DataSetIndexD<3> sz= ds.get_size();
+        bool delta=false;
+        if (sz[0] <= static_cast<hsize_t>(vi)) {
+          sz[0] = vi+1;
+          delta=true;
+        }
+        if (sz[1] <= static_cast<hsize_t>(k.get_index())) {
+          sz[1]= k.get_index()+1;
+          delta=true;
+        }
+        if (static_cast<unsigned int>(sz[2]) <= frame) {
+          sz[2] =std::max(frame+1, frames_hint_);
+            delta=true;
+        }
+        if (delta) {
+          ds.set_size(sz);
+        }
+      }
+      template <class TypeTraits, int Arity>
+          void make_fit( HDF5DataSetD<TypeTraits, 2> &ds,
+                         int vi,
+                         Key<TypeTraits, Arity> k) {
+        HDF5DataSetIndexD<2> sz= ds.get_size();
+        bool delta=false;
+        if (sz[0] <= static_cast<hsize_t>(vi)) {
+          sz[0] = vi+1;
+          delta=true;
+        }
+        if (sz[1] <= static_cast<hsize_t>(k.get_index())) {
+          sz[1]= k.get_index()+1;
+          delta=true;
+        }
+        if (delta) {
+          ds.set_size(sz);
+        }
+      }
+      template <class TypeTraits, int Arity>
         void set_value_impl(unsigned int node, Key<TypeTraits, Arity> k,
                        typename TypeTraits::Type v, unsigned int frame) {
         IMP_RMF_USAGE_CHECK(!TypeTraits::get_is_null_value(v),
@@ -419,23 +465,7 @@ namespace RMF {
           HDF5DataSetD<TypeTraits, 3> &ds
             =get_per_frame_data_data_set<TypeTraits>(kc,
                                                      k.get_arity(), true);
-          HDF5DataSetIndexD<3> sz= ds.get_size();
-          bool delta=false;
-          if (sz[0] <= static_cast<hsize_t>(vi)) {
-            sz[0] = vi+1;
-            delta=true;
-          }
-          if (sz[1] <= static_cast<hsize_t>(k.get_index())) {
-            sz[1]= k.get_index()+1;
-            delta=true;
-          }
-          if (static_cast<unsigned int>(sz[2]) <= frame) {
-            sz[2] =std::max(frame+1, frames_hint_);
-            delta=true;
-          }
-          if (delta) {
-            ds.set_size(sz);
-          }
+          make_fit(ds, vi, k, frame);
           ds.set_value(HDF5DataSetIndexD<3>(vi, k.get_index(), frame), v);
           IMP_RMF_END_OPERATION("storing per frame value");
         } else {
@@ -443,20 +473,47 @@ namespace RMF {
           HDF5DataSetD<TypeTraits, 2> &ds
             =get_data_data_set<TypeTraits>(kc, k.get_arity(),
                                            true);
-          HDF5DataSetIndexD<2> sz= ds.get_size();
-          bool delta=false;
-          if (sz[0] <= static_cast<hsize_t>(vi)) {
-            sz[0] = vi+1;
-            delta=true;
-          }
-          if (sz[1] <= static_cast<hsize_t>(k.get_index())) {
-            sz[1]= k.get_index()+1;
-            delta=true;
-          }
-          if (delta) {
-            ds.set_size(sz);
-          }
+          make_fit(ds, vi, k);
           ds.set_value(HDF5DataSetIndexD<2>(vi, k.get_index()), v);
+          IMP_RMF_END_OPERATION("storing single value")
+        }
+        /*IMP_RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
+                               "Stored " << v << " but got "
+                               << get_value(node, k, frame));*/
+      }
+
+
+      template <class TypeTraits, int Arity>
+          void set_values_impl(unsigned int node,
+                               const vector<Key<TypeTraits, Arity> > &k,
+                               const typename TypeTraits::Types& v,
+                               unsigned int frame) {
+        IMP_RMF_USAGE_CHECK(v.size()== k.size(),
+                            "Size of values and keys don't match.");
+        if (k.empty()) return;
+        unsigned int kc= k[0].get_category().get_index();
+        bool per_frame= get_is_per_frame(k[0]);
+        int vi=get_index_set<Arity>(node, kc);
+        if (per_frame) {
+          IMP_RMF_BEGIN_OPERATION
+          HDF5DataSetD<TypeTraits, 3> &ds
+            =get_per_frame_data_data_set<TypeTraits>(kc,
+                                                     k.front().get_arity(),
+                                                     true);
+          make_fit(ds, vi, k.back(), frame);
+          ds.set_block(HDF5DataSetIndexD<3>(vi, k.front().get_index(), frame),
+                       HDF5DataSetIndexD<3>(1, k.size(), 1),
+                       v);
+          IMP_RMF_END_OPERATION("storing per frame value");
+        } else {
+          IMP_RMF_BEGIN_OPERATION
+          HDF5DataSetD<TypeTraits, 2> &ds
+              =get_data_data_set<TypeTraits>(kc, k.front().get_arity(),
+                                           true);
+          make_fit(ds, vi, k.back());
+          ds.set_block(HDF5DataSetIndexD<2>(vi, k.front().get_index()),
+                       HDF5DataSetIndexD<2>(1, k.size()),
+                       v);
           IMP_RMF_END_OPERATION("storing single value")
         }
         /*IMP_RMF_INTERNAL_CHECK(get_value(node, k, frame) ==v,
