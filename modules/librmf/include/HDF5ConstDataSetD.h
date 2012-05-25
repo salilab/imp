@@ -51,6 +51,7 @@ namespace RMF {
       HDF5Handle rds_;
       HDF5Handle sel_;
       hsize_t ones_[D];
+      HDF5DataSetIndexD<D> size_;
     };
 
     boost::shared_ptr<Data> data_;
@@ -177,6 +178,8 @@ namespace RMF {
         //std::cout << "clearing row data" << std::endl;
         data_->rds_.close();
       }
+      IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
+                                              data_->size_.begin(), NULL));
     }
   public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
@@ -201,10 +204,7 @@ namespace RMF {
     HDF5ConstDataSetD(){}
     HDF5DataSetIndexD<D> get_size() const {
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
-      HDF5DataSetIndexD<D> ret;
-      IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
-                                              ret.begin(), NULL));
-      return ret;
+      return data_->size_;
     }
     typename TypeTraits::Type get_value(const HDF5DataSetIndexD<D> &ijk) const {
       IMP_RMF_IF_CHECK {
