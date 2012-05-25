@@ -105,6 +105,9 @@ namespace RMF {
       unsigned int frames_hint_;
 
       // caches
+      typedef vector< vector<int> > IndexCache;
+      mutable boost::array<IndexCache, 4> index_cache_;
+
       template <class TypeTraits, unsigned int D>
         class DataDataSetCache {
         typedef HDF5DataSetD<TypeTraits, D> DS;
@@ -205,9 +208,6 @@ namespace RMF {
       };
       mutable Ints max_cache_;
       mutable set<std::string> known_data_sets_;
-      mutable boost::array<int,4> last_node_;
-      mutable boost::array<int,4> last_category_;
-      mutable boost::array<int,4> last_vi_;
       boost::array<KeyNameDataSetCache,4> key_name_data_sets_;
       IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_DATA_TYPE);
 
@@ -275,35 +275,28 @@ namespace RMF {
                                                  Key<TypeTraits,Arity> k,
                                                  unsigned int frame) const {
         IMP_RMF_BEGIN_FILE
-        int vi=-1;
         unsigned int kc=k.get_category().get_index();
         bool per_frame= k.get_is_per_frame();
-        if (static_cast<int>(node)== last_node_[Arity-1]
-            && static_cast<int>(kc)== last_category_[Arity-1]) {
-          vi= last_vi_[Arity-1];
-          if (IndexTraits::get_is_null_value(vi)) {
-            return TypeTraits::get_null_value();
-          }
-        } else {
+        int vi=get_index_from_cache<Arity>(node, kc);
+        if (IndexTraits::get_is_null_value(vi)) {
           IMP_RMF_BEGIN_OPERATION
           int index= get_index(Arity, kc);
           HDF5DataSetIndexD<2> nsz= node_data_[Arity-1].get_size();
           IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(nsz[0]) > node,
                               "Invalid node used");
-          last_node_[Arity-1]=node;
-          last_category_[Arity-1]=kc;
           if (nsz[1] <= static_cast<hsize_t>(index)) {
-            last_vi_[Arity-1]= IndexTraits::get_null_value();
             return TypeTraits::get_null_value();
           } else {
             vi=node_data_[Arity-1].get_value(HDF5DataSetIndexD<2>(node, index));
           }
-          last_vi_[Arity-1]= vi;
+          if (IndexTraits::get_is_null_value(vi)) {
+            return TypeTraits::get_null_value();
+          } else {
+            add_index_to_cache<Arity>(node, kc, vi);
+          }
           IMP_RMF_END_OPERATION("getting value index");
         }
-        if (IndexTraits::get_is_null_value(vi)) {
-          return TypeTraits::get_null_value();
-        } else {
+        {
           if (per_frame) {
             IMP_RMF_BEGIN_OPERATION
             HDF5DataSetD<TypeTraits, 3> &ds
@@ -362,20 +355,28 @@ namespace RMF {
           return sz[2];
         }
       }
-
-      template <class TypeTraits, int Arity>
-        void set_value_impl(unsigned int node, Key<TypeTraits, Arity> k,
-                       typename TypeTraits::Type v, unsigned int frame) {
-        IMP_RMF_USAGE_CHECK(!TypeTraits::get_is_null_value(v),
-                            "Cannot write sentry value to an RMF file.");
-        unsigned int kc= k.get_category().get_index();
-        bool per_frame= get_is_per_frame(k);
-        int vi=IndexTraits::get_null_value();
-        if (static_cast<int>(node)== last_node_[Arity-1]
-            && static_cast<int>(kc) == last_category_[Arity-1]) {
-          vi= last_vi_[Arity-1];
+      template <int Arity>
+          int get_index_from_cache(unsigned int node, unsigned int kc) const {
+        if (index_cache_[Arity-1].size() <= node) return -1;
+        else if (index_cache_[Arity-1][node].size() <= kc) return -1;
+        return index_cache_[Arity-1][node][kc];
+      }
+      template <int Arity>
+          void add_index_to_cache(unsigned int node, unsigned int kc,
+                                    int index) const {
+        if (index_cache_[Arity-1].size() <= node) {
+          index_cache_[Arity-1].resize(node+1, vector<int>());
         }
-        if (IndexTraits::get_is_null_value(vi)) {
+        if (index_cache_[Arity-1][node].size() <= kc) {
+          index_cache_[Arity-1][node].resize(kc+1, -1);
+        }
+        index_cache_[Arity-1][node][kc] =index;
+      }
+
+      template <int Arity>
+          int get_index_set(unsigned int node, unsigned int kc) {
+        int vi=get_index_from_cache<Arity>(node, kc);
+        if (vi==-1) {
           IMP_RMF_BEGIN_OPERATION;
           unsigned int index= get_index(Arity, kc);
           HDF5DataSetIndexD<2> nsz= node_data_[Arity-1].get_size();
@@ -399,9 +400,20 @@ namespace RMF {
                                                                index), vi);
             max_cache_[kc]=vi;
           }
-          last_vi_[Arity-1]=vi;
+          add_index_to_cache<Arity>(node, kc, vi);
           IMP_RMF_END_OPERATION("figuring out where to store value");
         }
+        return vi;
+      }
+
+      template <class TypeTraits, int Arity>
+        void set_value_impl(unsigned int node, Key<TypeTraits, Arity> k,
+                       typename TypeTraits::Type v, unsigned int frame) {
+        IMP_RMF_USAGE_CHECK(!TypeTraits::get_is_null_value(v),
+                            "Cannot write sentry value to an RMF file.");
+        unsigned int kc= k.get_category().get_index();
+        bool per_frame= get_is_per_frame(k);
+        int vi=get_index_set<Arity>(node, kc);
         if (per_frame) {
           IMP_RMF_BEGIN_OPERATION
           HDF5DataSetD<TypeTraits, 3> &ds

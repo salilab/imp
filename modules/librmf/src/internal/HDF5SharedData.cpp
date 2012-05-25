@@ -110,9 +110,6 @@ namespace RMF {
       for (unsigned int i=0; i< 4; ++i) {
         initialize_categories(i, create);
         initialize_keys(i);
-        // clear caches
-        last_node_[i]=-1;
-        last_vi_[i]=-1;
       }
       initialize_free_nodes();
       if (create) {
