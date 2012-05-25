@@ -7,7 +7,7 @@ class TestScoreState(IMP.test.TestCase):
 
     def test_score_state_show(self):
         """Test scoring function linkage"""
-        m= IMP.Model()
+        m= IMP.Model("scoring function linkage")
         ps= [IMP.Particle(m) for i in range(0,10)]
         r= IMP._ConstRestraint(1, ps)
         r.set_model(m)

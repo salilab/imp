@@ -81,7 +81,7 @@ class ClassScoreState(IMP.ScoreState):
 class Tests(IMP.test.TestCase):
     def test_state_show(self):
         """Test score state show method"""
-        m = IMP.Model()
+        m = IMP.Model("score state show")
         s = ClassScoreState()
         sio = StringIO.StringIO()
         s.show(sio)
@@ -95,7 +95,7 @@ class Tests(IMP.test.TestCase):
 
     def test_score_state(self):
         """Check score state methods"""
-        m = IMP.Model()
+        m = IMP.Model("score state model")
         #self.assertRaises(IndexError, m.get_score_state,
         #                  0);
         s = DummyScoreState()
@@ -112,7 +112,7 @@ class Tests(IMP.test.TestCase):
         class BrokenFile(object):
             def write(self, str):
                 raise NotImplementedError()
-        m = IMP.Model()
+        m = IMP.Model("model show")
         self.assertRaises(NotImplementedError, m.show, BrokenFile())
         self.assertRaises(AttributeError, m.show, None)
         s = StringIO.StringIO()
@@ -122,7 +122,7 @@ class Tests(IMP.test.TestCase):
     def test_refcount_director_score_state(self):
         """Refcounting should prevent director ScoreStates from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
-        m = IMP.Model()
+        m = IMP.Model("ref counting score states")
         s = DummyScoreState()
         s.python_member = 'test string'
         m.add_score_state(s)
@@ -145,14 +145,14 @@ class Tests(IMP.test.TestCase):
 
     def test_director_python_exceptions(self):
         """Check that exceptions raised in directors are handled"""
-        m = IMP.Model()
+        m = IMP.Model("director exceptions")
         r = FailingRestraint()
         m.add_restraint(r)
         self.assertRaises(CustomError, m.evaluate, False)
 
     def test_restraints(self):
         """Check restraint methods"""
-        m = IMP.Model()
+        m = IMP.Model("restraint methods in model")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
@@ -165,7 +165,7 @@ class Tests(IMP.test.TestCase):
             s.show()
     def test_temp_restraints(self):
         """Check free restraint methods"""
-        m = IMP.Model()
+        m = IMP.Model("free restraint methods")
         #self.assertRaises(IndexError, m.get_restraint, 0);
         self.assertEqual(m.get_number_of_restraints(), 0)
         r = DummyRestraint()
@@ -178,7 +178,7 @@ class Tests(IMP.test.TestCase):
     def test_refcount_director_restraints(self):
         """Refcounting should prevent director Restraints from being deleted"""
         dirchk = IMP.test.DirectorObjectChecker(self)
-        m = IMP.Model()
+        m = IMP.Model("ref count dir restraitns")
         r = DummyRestraint()
         r.python_member = 'test string'
         m.add_restraint(r)
@@ -195,7 +195,7 @@ class Tests(IMP.test.TestCase):
 
     def test_particles(self):
         """Check particle methods"""
-        m = IMP.Model()
+        m = IMP.Model("particle methods")
         p = IMP.Particle(m)
         self.assertEqual(m.get_number_of_particles(), 1)
         for s in m.get_particles():
@@ -208,7 +208,7 @@ class Tests(IMP.test.TestCase):
         return ret
     def test_ranges(self):
         """Test float attribute ranges"""
-        m=IMP.Model()
+        m=IMP.Model("float ranges")
         ps=[IMP.Particle(m) for i in range(0,2)]
         for k in [IMP.FloatKey(0), IMP.FloatKey(4), IMP.FloatKey(7)]:
             ps[0].add_attribute(k, k.get_index())
@@ -218,7 +218,7 @@ class Tests(IMP.test.TestCase):
             self.assertEqual(rg[1], k.get_index()+1)
     def test_dependencies(self):
         """Check dependencies with restraints and score states"""
-        m= IMP.Model()
+        m= IMP.Model("dependencies")
         ps=[IMP.Particle(m) for i in range(0,20)]
         cs=[DummyScoreState(ips=self._select(ps[:5], 2),
                             ops= self._select(ps[5:], 2))

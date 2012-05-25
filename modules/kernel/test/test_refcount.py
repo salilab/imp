@@ -8,7 +8,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_simple(self):
         """Check that ref counting of particles works within python"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("ref counting particles")
         refcnt.assert_number(1)
         p= IMP.Particle(m)
         refcnt.assert_number(2)
@@ -109,7 +109,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_delete_model_accessor_2(self):
         "Python Restraints from vector accessors should survive model deletion"
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("restraint survival")
         r = IMP.RestraintSet()
         m.add_restraint(r)
         del r
@@ -129,7 +129,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_simple_rest(self):
         """Check reference counting of restraints"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("ref counted restraints")
         r= IMP._ConstRestraint(1)
         s= IMP.RestraintSet()
         m.add_restraint(s)
@@ -149,7 +149,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_delete_model_iterator(self):
         """Python Restraints from iterators should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("python restraint survival")
         r = IMP.RestraintSet()
         m.add_restraint(r)
         del r
@@ -169,7 +169,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_removal(self):
         """Check that ref counting works with removing particles"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("ref counting and particle removal")
         p= IMP.Particle(m)
         refcnt.assert_number(2)
         m.remove_particle(p)
@@ -184,7 +184,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_delete_model_constructor(self):
         """Constructed Python Particles should survive model deletion"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("python restraint survival")
         p= IMP.Particle(m)
         self.assertEqual(p.get_ref_count(), 2)
         refcnt.assert_number(2)
@@ -198,7 +198,7 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_skip(self):
         """Check that removed particles are skipped"""
-        m= IMP.Model()
+        m= IMP.Model("skipping removed particles")
         p= IMP.Particle(m)
         ps= m.get_particles()
         self.assertEqual(len(ps), 1, "Should only be 1 particle")
@@ -210,7 +210,7 @@ class RefCountTests(IMP.test.TestCase):
     def test_sequence(self):
         """Test that sequences are refcounted properly"""
         refcnt = IMP.test.RefCountChecker(self)
-        m= IMP.Model()
+        m= IMP.Model("sequence ref counting")
         p= IMP.Particle(m)
         ps= m.get_particles()
         print IMP._take_particles(ps)

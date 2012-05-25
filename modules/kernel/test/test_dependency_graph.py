@@ -6,7 +6,7 @@ import StringIO
 class ModelTests(IMP.test.TestCase):
     def test_state_show(self):
         """Test dependency graph"""
-        m = IMP.Model()
+        m = IMP.Model("dependency graph")
         dg= IMP.get_dependency_graph(m)
         print dir(dg)
         dg.show()

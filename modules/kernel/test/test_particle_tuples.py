@@ -6,7 +6,7 @@ class ParticleTupleTests(IMP.test.TestCase):
 
     def test_pairs(self):
         """Test ParticlePair objects"""
-        m = IMP.Model()
+        m = IMP.Model("pairs")
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
         p = (p1, p2)
@@ -18,7 +18,7 @@ class ParticleTupleTests(IMP.test.TestCase):
 
     def test_triplets(self):
         """Test ParticleTriplet objects"""
-        m = IMP.Model()
+        m = IMP.Model("triplets")
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
         p3 = IMP.Particle(m)
@@ -32,7 +32,7 @@ class ParticleTupleTests(IMP.test.TestCase):
 
     def test_quads(self):
         """Test ParticleQuad objects"""
-        m = IMP.Model()
+        m = IMP.Model("quads")
         p1 = IMP.Particle(m)
         p2 = IMP.Particle(m)
         p3 = IMP.Particle(m)
