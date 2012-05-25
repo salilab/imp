@@ -122,8 +122,10 @@ class CrossCorrelationTests(IMP.test.TestCase):
         for i in xrange(0,times):
             if(i%interval==0):
                 result=scores_intervals[i][0]
-                self.assertAlmostEqual(scores_wo_intervals[i],scores_intervals[i][0])
-            self.assertEqual(result,scores_intervals[i][0],2)
+                self.assertAlmostEqual(scores_wo_intervals[i],
+                                       scores_intervals[i][0],
+                                       delta=1e-8)
+            self.assertAlmostEqual(result, scores_intervals[i][0], delta=1e-8)
 
 if __name__=='__main__':
     IMP.test.main()
