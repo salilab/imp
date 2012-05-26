@@ -31,7 +31,7 @@ AllSamePairPredicate::AllSamePairPredicate(
 
 CoinFlipPairPredicate::CoinFlipPairPredicate( double p,
     std::string name):
-  PairPredicate(name), p_(p){}
+  PairPredicate(name), p_(p), rng_(0.,1.) {}
 
 
 IMPCORE_END_NAMESPACE

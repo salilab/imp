@@ -12,7 +12,7 @@
 
 #include "core_config.h"
 #include <IMP/PairPredicate.h>
-#include <boost/random/uniform_01.hpp>
+#include <boost/random.hpp>
 #include "internal/container_helpers.h"
 
 IMPCORE_BEGIN_NAMESPACE
@@ -71,7 +71,7 @@ public:
 /** Return true with a fixed probability. */
 class IMPCOREEXPORT CoinFlipPairPredicate: public PairPredicate {
   double p_;
-  mutable boost::uniform_01<> rng_;
+  mutable boost::uniform_real<double> rng_;
 public:
   CoinFlipPairPredicate(double p, std::string name
                              ="CoinFlipPairPredicate%1%");
