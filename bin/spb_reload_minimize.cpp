@@ -184,7 +184,11 @@ for(int iter=0;iter<mydata.niter;++iter){
 }
 
 std::cout << "Number of good configurations " << nminimized << std::endl;
+// close all files
 fclose(logfile);
 fclose(fretfile);
+// close rmf
+rh_out.flush();
+rh_out=RMF::FileHandle();
 return 0;
 }
