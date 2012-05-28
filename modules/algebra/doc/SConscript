@@ -48,7 +48,8 @@ IMP::algebra::Vector2Ds style names.
  or IMP::core::XYZs or IMP::core::XYZsTemp as arguments. Versions for all combinations
  of those are exported to python.
 
-\\par Uninitialized default values\\anchor uninitialized
+\\anchor uninitialized
+\\par Uninitialized default values
 Some geometric primitives are not put into a defined state by their
 constructor. Such classes mimic POD types (int, float etc) in C++ and
 are optimized for efficiency.  All operations on a default initialized
@@ -56,8 +57,8 @@ instance other than assigning to it from a non-default initialized
 instance should be assumed to be invalid.
 
 
-\\par CGAL
 \\anchor cgal
+\\par CGAL
 Certain functionality provided in \\imp requires or benefits from using CGAL.
 \\external{http://www.cgal.org,CGAL} is a library of geometry-related
 algorithms and data structures written in C++. The relevant parts of
