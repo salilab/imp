@@ -40,7 +40,7 @@ for f in glob.glob(IMP.system.get_input_path("configurations_*.rmf")):
     print f
     fh= RMF.open_rmf_file(f)
     IMP.rmf.link_hierarchies(fh, [all])
-    for i in range(0, IMP.rmf.get_number_of_frames(fh, all)):
+    for i in range(0,fh.get_number_of_frames()):
         IMP.rmf.load_frame(fh, i)
         cs.save_configuration()
 
