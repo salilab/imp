@@ -10,7 +10,7 @@
 
 #include "display_config.h"
 
-IMP_BEGIN_NAMESPACE
+IMPDISPLAY_BEGIN_NAMESPACE
 
 #ifdef IMP_DOXYGEN
 /** This writer displays things to a
@@ -31,6 +31,6 @@ class PivyWriter:public Writer {
 };
 #endif
 
-IMP_END_NAMESPACE
+IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_PYTHON_ONLY_H */
