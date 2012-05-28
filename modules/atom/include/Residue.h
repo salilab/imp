@@ -25,7 +25,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 
 IMP_DECLARE_KEY_TYPE(ResidueType, IMP_RESIDUE_TYPE_INDEX);
-/** \class ResidueType
+/** \class IMP::atom::ResidueType
     \brief The type for a residue.
 
     A given residue is either a Residue::LIGAND, Residue::AMINOACID,
