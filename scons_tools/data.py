@@ -7,7 +7,9 @@ excluded_classes={"kernel":["Model", "Particle", "Particles",
                           "GenericHierarchiesTemp"],
                   "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
 typedef_classes={"algebra":{"Vector3D":"VectorD",
+                            "Vector2D":"VectorD",
                             "BoundingBox3D":"BoundingBoxD",
+                            "BoundingBox3DSingletonScore":"GenericBoundingBox3DSingletonScore",
                             "Sphere3D":"SphereD",
                             "NearestNeighbor3D":"NearestNeighborD"}}
 included_methods={"kernel":{"get_dependency_graph":("DependencyGrah", "(Model*)"),
@@ -59,7 +61,6 @@ included_methods={"kernel":{"get_dependency_graph":("DependencyGrah", "(Model*)"
                             "get_merge_tree":("SubsetGraph", "(const SubsetGraph&)")
                       },
                   }
-
 
 
 class IMPData:
