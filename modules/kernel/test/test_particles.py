@@ -11,18 +11,18 @@ radkey = IMP.FloatKey("radius")
 class ParticleTests(IMP.test.TestCase):
     """Test particles"""
 
-    def setUp(self):
+    def setup(self):
         """Build a set of test particles"""
         IMP.test.TestCase.setUp(self)
 
-        self.model = IMP.Model("particles model")
-        self.particles = []
+        model = IMP.Model("particles model")
+        particles = []
 
         # create particles 0 - 11
         for i in range(0,12):
-            self.particles.append(self.create_point_particle(self.model,
+            particles.append(self.create_point_particle(model,
                                                              i*2, i*3, i*4))
-            p1 = self.particles[i]
+            p1 = particles[i]
             p1.add_attribute(radkey, 1.5 * i, False)
             p1.add_attribute(idkey, i)
             p1.add_attribute(IMP.IntKey("six"), 6)
@@ -33,13 +33,15 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(0,6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
         # clear derivatives
-        self.model.evaluate(True)
+        model.evaluate(True)
+        return (model, particles)
 
     def test_no_model(self):
         """Check that operations fail on particles once the model is gone"""
-        p1 = self.particles[0]
+        (model, particles)= self.setup()
+        p1 = particles[0]
         self.assertEqual(p1.get_is_active(), True)
-        del self.model
+        del model
         # Particles left over after a model is deleted should act as if
         # they are inactive
         self.assertEqual(p1.get_is_active(), False)
@@ -50,25 +52,27 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_equality(self):
         """Check particle identity"""
-        p0 = self.particles[0]
-        p1 = self.particles[1]
+        (model, particles)= self.setup()
+        p0 = particles[0]
+        p1 = particles[1]
         self.assertTrue(p0 != p1)
         self.assertTrue(p0 == p0)
         self.assertTrue(not p0 != p0)
         # Different SWIG proxies for the same underlying Particle should
         # report equality:
-        [m_p0, m_p1] = self.model.get_particles()[:2]
+        [m_p0, m_p1] = model.get_particles()[:2]
         self.assertTrue(m_p0 == p0)
         self.assertTrue(not m_p0 != p0)
         # Even particles with equal attributes should not count as equal:
-        p0 = self.create_point_particle(self.model, 0, 0, 0)
-        p1 = self.create_point_particle(self.model, 0, 0, 0)
+        p0 = self.create_point_particle(model, 0, 0, 0)
+        p1 = self.create_point_particle(model, 0, 0, 0)
         self.assertTrue(p0 != p1)
 
     def test_hashing(self):
         """Check that particles and decorators hash in python"""
-        p0 = self.particles[0]
-        p1 = self.particles[1]
+        (model, particles)= self.setup()
+        p0 = particles[0]
+        p1 = particles[1]
         d={}
         d[p0]=1
         d[p1]=2
@@ -82,7 +86,7 @@ class ParticleTests(IMP.test.TestCase):
     # no good reason to special case particles, just use UsageExceptions
     def _test_bad_attributes(self):
         """Asking for non-existent attributes should cause an exception"""
-        p1 = self.particles[0]
+        p1 = particles[0]
         self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.IntKey("notexist"))
         self.assertRaises(IndexError, p1.get_value, IMP.StringKey("notexist"))
@@ -90,10 +94,11 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_get_set_methods(self):
         """Test particle get_ and set_ methods"""
-        for (i, p) in enumerate(self.particles):
+        (model, particles)= self.setup()
+        for (i, p) in enumerate(particles):
             #self.assertEqual(p.get_index(), IMP.ParticleIndex(i))
             model = p.get_model()
-        p = self.particles[0]
+        p = particles[0]
         self.assertEqual(p.get_is_active(), True)
         model.remove_particle(p)
         self.assertEqual(p.get_is_active(), False)
@@ -106,7 +111,8 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_remove_attributes(self):
         """Test that attributes can be removed"""
-        p=self.particles[0]
+        (model, particles)= self.setup()
+        p=particles[0]
         fk= IMP.FloatKey("to_remove")
         p.add_attribute(fk, 0, False)
         self.assertTrue(p.has_attribute(fk))
@@ -122,7 +128,8 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_derivatives(self):
         """Test get/set of derivatives"""
-        p = self.particles[0]
+        (model, particles)= self.setup()
+        p = particles[0]
         self.assertEqual(p.get_derivative(xkey), 0.0)
         da = IMP.DerivativeAccumulator()
         p.add_to_derivative(xkey, 10.0, da)
@@ -133,7 +140,8 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_browsing(self):
         """Test browsing of particle attributes"""
-        p=self.particles[0]
+        (model, particles)= self.setup()
+        p=particles[0]
         ict=0
         fct=0
         sct=0
@@ -149,7 +157,8 @@ class ParticleTests(IMP.test.TestCase):
 
     def test_particles(self):
         """Test that particle attributes are available and correct"""
-        for (i, p) in enumerate(self.particles):
+        (model, particles)= self.setup()
+        for (i, p) in enumerate(particles):
             self.assertTrue(p.has_attribute(xkey))
             # A Float "x" exists; make sure that has_attribute doesn't get
             # confused between different types of attribute:
@@ -165,14 +174,15 @@ class ParticleTests(IMP.test.TestCase):
             self.assertEqual(p.get_value(IMP.StringKey("six")), "b:0110")
 
         # test additional attributes in particle 11
-        p = self.particles[11]
+        p = particles[11]
         for i in range(0,6):
             val = p.get_value(IMP.FloatKey("attr_" + str(i)))
             self.assertEqual(val, 3.5 * i)
     def test_comparisons(self):
         """Test comparisons of particles and decorators"""
-        p0a= self.particles[0]
-        p0b= self.model.get_particles()[0]
+        (model, particles)= self.setup()
+        p0a= particles[0]
+        p0b= model.get_particles()[0]
         self.assertEqual(p0a, p0b)
         td0a= IMP._TrivialDecorator.setup_particle(p0a)
         td0b= IMP._TrivialDecorator(p0b)
