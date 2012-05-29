@@ -11,6 +11,7 @@
 #include "kernel_config.h"
 #include <IMP/base/value_macros.h>
 #include "ScoreState.h"
+#include "container_base.h"
 
 
 
