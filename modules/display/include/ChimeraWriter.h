@@ -9,7 +9,6 @@
 #define IMPDISPLAY_CHIMERA_WRITER_H
 
 #include "display_config.h"
-#include <IMP/deprecation.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/writer_macros.h>
 

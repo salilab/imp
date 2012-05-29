@@ -10,7 +10,6 @@
 
 #include "display_config.h"
 #include "writer_macros.h"
-#include <IMP/deprecation.h>
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>

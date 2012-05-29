@@ -5,12 +5,12 @@
  *
  */
 
-#include "IMP/deprecation.h"
-#include "IMP/log.h"
+#include "IMP/base/deprecation.h"
+#include "IMP/base/log.h"
+#include "IMP/base/log_macros.h"
 #include "IMP/compatibility/set.h"
-#include <iostream>
 
-IMP_BEGIN_INTERNAL_NAMESPACE
+IMPBASE_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
 
@@ -34,14 +34,14 @@ void set_printed_deprecation_message(std::string name, bool tr) {
   }
 }
 
-IMP_END_INTERNAL_NAMESPACE
+IMPBASE_END_INTERNAL_NAMESPACE
 
 
-IMP_BEGIN_NAMESPACE
+IMPBASE_BEGIN_NAMESPACE
 
 void set_print_deprecation_messages(bool tf) {
   internal::print_deprecation_messages=tf;
   IMP_LOG(TERSE, "Printing of deprecation messages is now " << tf << std::endl);
 }
 
-IMP_END_NAMESPACE
+IMPBASE_END_NAMESPACE

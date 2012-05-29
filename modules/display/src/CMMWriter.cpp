@@ -7,8 +7,7 @@
  */
 
 #include "IMP/display/CMMWriter.h"
-#include <IMP/deprecation.h>
-
+#include <IMP/base/deprecation_macros.h>
 IMPDISPLAY_BEGIN_NAMESPACE
 
 void CMMWriter::do_open() {
