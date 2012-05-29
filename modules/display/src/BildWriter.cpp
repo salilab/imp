@@ -7,7 +7,7 @@
  */
 
 #include "IMP/display/BildWriter.h"
-
+#include <IMP/base/deprecation_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

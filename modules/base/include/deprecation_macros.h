@@ -1,27 +1,16 @@
 /**
- *  \file deprecation.h
+ *  \file deprecation_macros.h
  *  \brief Control display of deprecation information.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPKERNEL_DEPRECATION_H
-#define IMPKERNEL_DEPRECATION_H
+#ifndef IMPBASE_DEPRECATION_MACROS_H
+#define IMPBASE_DEPRECATION_MACROS_H
 
-#include "kernel_config.h"
-#include "internal/deprecation.h"
-
-IMP_BEGIN_NAMESPACE
-
-//! Toggle printing of warnings on using deprecated classes
-/** If set to true (the default) a warning is printed every
-    time a class marked as deprecated is used.
-    \sa IMP_DEPRECATED
- */
-IMPEXPORT void set_print_deprecation_messages(bool tf);
-
-IMP_END_NAMESPACE
+#include "base_config.h"
+#include "deprecation.h"
 
 /** \brief Mark the functionality as deprecated. It will print out a message.
 
@@ -38,7 +27,7 @@ IMP_END_NAMESPACE
     is called.
 
   The warnings can be turned off using the
-  IMP::core::set_print_deprecation_messages function.
+  IMP::base::set_print_deprecation_messages function.
   \param[in] replacement_classname The class which replaces it.
 
   Further, \imp can be built without deprecated code by defining
@@ -47,23 +36,23 @@ IMP_END_NAMESPACE
   You should also use the \deprecated command in the doxygen documentation.
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
-  if (::IMP::internal::get_print_deprecation_message(get_type_name())) { \
+  if (::IMP::base::internal::get_print_deprecation_message(get_type_name())) { \
     IMP_LOG(WARNING, "WARNING: " << get_type_name()                     \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
-    ::IMP::internal::set_printed_deprecation_message(get_type_name(),   \
+    ::IMP::base::internal::set_printed_deprecation_message(get_type_name(), \
                                                      true);             \
   }
 /** \see IMP_DEPRECATED_OBJECT()
  */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
-  if (::IMP::internal::get_print_deprecation_message(__func__)) {       \
+  if (::IMP::base::internal::get_print_deprecation_message(__func__)) { \
     IMP_LOG(WARNING, "WARNING: " << __func__                            \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement << " instead." << std::endl);               \
-    ::IMP::internal::set_printed_deprecation_message(__func__,          \
+    ::IMP::base::internal::set_printed_deprecation_message(__func__,    \
                                                            true);       \
   }
 
@@ -74,4 +63,4 @@ IMP_END_NAMESPACE
 #define IMP_DEPRECATED_WARN
 #endif
 
-#endif /* IMPKERNEL_DEPRECATION_H */
+#endif /* IMPBASE_DEPRECATION_MACROS_H */
