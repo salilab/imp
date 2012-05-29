@@ -1,5 +1,7 @@
 /**\page rmf RMF Files
 
+\tableofcontents
+
 The %RMF file format (short for Rich Molecular Format) stores hierarchical data about a molecular
 structure in a binary file. This data can include
 
@@ -46,7 +48,7 @@ that viewing XML files works much better with \external{http://www.mozilla.org/f
 information about the library see RMF. And for the standard data storage schemes see
 \ref categories "standard categories".
 
-\section structure 1 The RMF Hierarchy
+\section structure The RMF Hierarchy
 
 More technically, each node in the %RMF hierarchy has
 
@@ -62,7 +64,7 @@ More technically, each node in the %RMF hierarchy has
 One accesses nodes in the hierarchy using handles, RMF::NodeHandle and RMF::NodeConstHandle. The root handle
 can be fetched from the RMF::FileHandle using RMF::FileHandle::get_root_node().
 
-\section attributes 2 Attributes
+\section attributes Attributes
 Each attribute is identified by a key (RMF::Key) and is
 defined by a unique combination of
 - a \ref rmf_types "type".
@@ -104,7 +106,7 @@ should be considered as having the same color unless they have a different color
 of their own. Similarly, atoms inherit their residue index and type from their
 residue parents and all of those get the chain identifier from their parent.
 
-\section adding 3 Adding custom data to an RMF
+\section adding Adding custom data to an RMF
 
 When adding data to an %RMF file that is just to be used for
 internal consumption, one should create a new category. For
@@ -116,7 +118,7 @@ probably makes sense to add it to the documentation of this library
 so that the names used can be standardized.
 
 
-\section rmf_hdf5 4 RMF and HDF5
+\section rmf_hdf5 RMF and HDF5
 
 The %RMF data is stored in a single
 \external{http://www.hdfgroup.org/HDF5/doc/UG/UG_frame09Groups.html,HDF5
