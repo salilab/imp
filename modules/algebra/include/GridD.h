@@ -1,5 +1,5 @@
 /**
- *  \file standard_grids.h   \brief A class to represent a voxel grid.
+ *  \file GridD.h   \brief A class to represent a voxel grid.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
