@@ -31,7 +31,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \pythonexample{restrain_in_sphere}
     \pythonexample{nonbonded_interactions}
 
-    \see TripletRestraint
+    \see IMP::core::TripletRestraint
  */
 class IMPCONTAINEREXPORT TripletsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)

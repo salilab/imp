@@ -31,7 +31,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \pythonexample{restrain_in_sphere}
     \pythonexample{nonbonded_interactions}
 
-    \see SingletonRestraint
+    \see IMP::core::SingletonRestraint
  */
 class IMPCONTAINEREXPORT SingletonsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)

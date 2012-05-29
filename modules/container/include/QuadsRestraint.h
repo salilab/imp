@@ -31,7 +31,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     \pythonexample{restrain_in_sphere}
     \pythonexample{nonbonded_interactions}
 
-    \see QuadRestraint
+    \see IMP::core::QuadRestraint
  */
 class IMPCONTAINEREXPORT QuadsRestraint :
 #if defined(SWIG) || defined(IMP_DOXYGEN)
