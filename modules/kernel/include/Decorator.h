@@ -1,5 +1,5 @@
 /**
- *  \file Decorator.h    \brief The base class for decorators.
+ *  \file IMP/Decorator.h    \brief The base class for decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
