@@ -14,11 +14,15 @@
 #include <IMP/base/object_macros.h>
 
 
+// various installs of doxygen get messed up with this macro, so hide it
+#ifdef IMP_DOXYGEN
 /** Helper macro for implementing
     IMP::core::ClosePairsFinder objects. In addition to the
     IMP_OBJECT methods it declares:
     - IMP::core::get_close_pairs()
 */
+#define IMP_CLOSE_PAIRS_FINDER(Name)
+#else
 #define IMP_CLOSE_PAIRS_FINDER(Name)                                    \
   IMP_IMPLEMENT(ParticlePairsTemp get_close_pairs(const ParticlesTemp   \
                                                   &pa) const);          \
@@ -45,5 +49,6 @@
                          pcb->get_particles());                         \
   }))                                                                   \
   IMP_OBJECT(Name)
+#endif
 
 #endif  /* IMPCORE_CLOSE_PAIRS_FINDER_MACROS_H */
