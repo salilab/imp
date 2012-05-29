@@ -20,24 +20,25 @@ namespace RMF {
       the key is actually used. This is currently only used for factory
       classes and should probably be considered unstable.
   */
-  template <class TypeTraits, int Arity>
+  template <class TypeTraitsT, int Arity>
   class LazyKey {
     struct Data: boost::intrusive_ptr_object {
       std::string file_name;
       std::string name;
       CategoryD<Arity> category;
       bool per_frame;
-      Key<TypeTraits, Arity> key;
+      Key<TypeTraitsT, Arity> key;
     };
     boost::intrusive_ptr<Data> data_;
     void init_key() const {
       FileHandle fh= open_rmf_file(data_->file_name);
-      data_->key=get_key_always<TypeTraits>(fh,
+      data_->key=get_key_always<TypeTraitsT>(fh,
                                             data_->category,
                                             data_->name,
                                             data_->per_frame);
     }
   public:
+    typedef TypeTraitsT TypeTraits;
     LazyKey(FileHandle file,
             CategoryD<Arity> category,
             std::string name,
@@ -79,6 +80,8 @@ namespace RMF {
     };
     boost::intrusive_ptr<Data> data_;
   public:
+    // to look like vector
+    typedef LazyKey<TypeTraits, Arity> value_type;
     LazyKeys(FileHandle file,
             CategoryD<Arity> category,
             const Strings & names,
@@ -116,6 +119,9 @@ namespace RMF {
       } else {
         return Key<TypeTraits, Arity>();
       }
+    }
+    bool empty() const {
+      return data_->keys.empty();
     }
   };
 
