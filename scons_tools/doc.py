@@ -123,6 +123,9 @@ _ModuleExamplesOverview = Builder(action=Action(_make_module_example_overview,
 def _make_example_links(target, source, env):
     print "making example links:", target[0].abspath
     out= open(target[0].abspath, "w")
+    # this does not work properly with newer doxygens, or, more likely
+    # we were exploiting undefined behavior
+    return
     dta= data.get(env)
     methods={}
     classes={}
