@@ -3,8 +3,20 @@
 import IMP.test
 import os
 import sys
+try:
+    import numpy
+    import scipy
+except:
+    numpy = None
+    scipy = None
 
 class SAXSApplicationTest(IMP.test.ApplicationTestCase):
+
+    def setUp(self):
+        IMP.test.ApplicationTestCase.setUp(self)
+        if numpy is None or scipy is None:
+            self.skipTest("could not import numpy or scipy")
+
     def test_case1(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
         p = self.run_python_application('saxs_merge.py',
