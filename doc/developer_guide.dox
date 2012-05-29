@@ -4,17 +4,9 @@ This page presents instructions on how to develop code using
 \imp. Developers who wish to contribute code back to \imp or
 distribute their code should also read the \ref contributing "Contributing code to IMP" page.
 
--# \ref gettingaround "Getting around"
--# \ref usage "Writing new functions and classes"
--# \ref testing "Debugging and testing your code"
--# \ref codingconventions "Coding conventions"
--# \ref docs "Documenting your code"
--# \ref scripts "Useful scripts"
--# \ref contributing "Contributing code back to the repository"
--# \ref cpp "Good programming practices"
--# \ref next "Where to go next"
+\tableofcontents
 
-\section gettingaround 1. Getting around
+\section gettingaround Getting around
 
 The input files in the \imp directory are structured as follows:
 - \c tools contains various command line utilities for use by developers. They are \ref scripts "documented below".
@@ -26,7 +18,7 @@ The input files in the \imp directory are structured as follows:
    - \c src contains the C++ source files
    - \c bin contains C++ source files each of which is built into an executable
    - \c pyext contains files defining the Python interface to the module as well as Python source files (in \c pyext/src)
-   - \c test contains test files. When \c scons \c test or \c scons \c name-test is run each file in this directory named \c test_ is executed (after being built if it is a .cpp file) 
+   - \c test contains test files. When \c scons \c test or \c scons \c name-test is run each file in this directory named \c test_ is executed (after being built if it is a .cpp file)
    - \c doc contains the overview documentation for the file (in the \c SConscript file) as well as any other documentation that is provided via \c .dox files
    - \c examples contains examples, in Python as well as any data needed for examples
    - \c data contains any data files needed by the module
@@ -278,7 +270,7 @@ characters.
 
 \subsection display Display
 
-All classes must have a \c show method which takes an optional 
+All classes must have a \c show method which takes an optional
 \c std::ostream and prints information about the object (see IMP::Object::show() for an example). The helper
 macros, such as IMP_RESTRAINT() define such a method.  In addition they
 must have \c operator<< defined. This can be easily done using the
@@ -297,8 +289,8 @@ IMP::Exception for a list of existing exceptions. See
 \subsection internal_ns Namespaces
 
 Use the provided \c IMPMODULE_BEGIN_NAMESPACE,
-	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE 
-	  and \c IMPMODULE_END_INTERNAL_NAMESPACE macros to put declarations 
+	  \c IMPMODULE_END_NAMESPACE, \c IMPMODULE_BEGIN_INTERNAL_NAMESPACE
+	  and \c IMPMODULE_END_INTERNAL_NAMESPACE macros to put declarations
 	  in a namespace appropriate for module \c MODULE.
 
 Each module has an internal namespace, \c module_name::internal and an internal
@@ -345,7 +337,7 @@ or \c \\commandname if there are no arguments.
     \command{the command text}\endverbatim
     which produces
     \command{the command text}
-    
+
 - To produce a link to a page on the Sali lab web site do
     \verbatim
     \salilab{imp, the IMP project}\endverbatim
@@ -377,7 +369,7 @@ or \c \\commandname if there are no arguments.
   \warning Be afraid, be very afraid.\endverbatim
   which produces
   \warning Be afraid, be very afraid.
-    
+
 - To mark that some part of the API has not yet been well planned at may change
     using \c \\unstable{Classname}. The documentation will include a disclaimer
     and the class or function will be added to a list of unstable classes. It is
@@ -547,7 +539,7 @@ When writing examples, one should try (as appropriate) to do the following:
 -# define a function \c analyze_conformations to perform some sort of clustering and analysis of the resulting conformations
 -# finally do the actual work of calling the \c create_representation and \c create_restraints functions and performing samping and analysis and displaying the solutions.
 
-Obvious, not all examples need all of the above parts. See \ref nup84_cg "Nup84 CG" for an canonical example. 
+Obvious, not all examples need all of the above parts. See \ref nup84_cg "Nup84 CG" for an canonical example.
 
 The example should have enough comments that the reasoning behind each line of code is clear to someone who roughly understands how \imp in general works.
 
@@ -581,7 +573,7 @@ The example should have enough comments that the reasoning behind each line of c
     - add C++ code to your module by putting \string{.h} files
       in \string{modules/my_module/include} and \string{.cpp} files in
       \string{modules/my_module/src}. In order to use use your new functions and
-      classes in Python, you must add a line 
+      classes in Python, you must add a line
       \string{%include "IMP/my_module/myheader.h"} near the end of the file
       \string{modules/my_module/pyext/my_module.i}.
     - write C++ programs using \imp by creating \string{.cpp} files in
@@ -594,7 +586,7 @@ The example should have enough comments that the reasoning behind each line of c
     - add test code to your library by putting \string{.py} files in
       \string{modules/my_module/test} or a subdirectory.
 
-    If you feel your module is of interest to other \imp users and 
+    If you feel your module is of interest to other \imp users and
     developers, see the \ref anchorcontributing "contributing code to IMP" section.
 
     If you document your code, running \command{scons doc} will build
@@ -729,10 +721,10 @@ are free to borrow.
 
 
 \subsection impcoding IMP gotchas
-    
+
 Below are a suggestions prompted by bugs found in code submitted to \imp.
 
-- Never use '\c using \c namespace' outside of a function; instead 
+- Never use '\c using \c namespace' outside of a function; instead
       explicitly provide the namespace. (This avoids namespace pollution, and
       removes any ambiguity.)
 
@@ -808,7 +800,7 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
           state. If there is more than one way, anyone who writes
           library code which uses that type of state has to handle all
           ways.  For %example, there is only one scheme for
-          representing proteins, namely the IMP::atom::Hierarchy.       
+          representing proteins, namely the IMP::atom::Hierarchy.
         - Each class/method should do exactly one thing. The presence
           of arguments which dramatically change the behavior of the
           class/method is a sign that it should be split. Splitting

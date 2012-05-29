@@ -7,14 +7,7 @@ great deal of flexibility. In order to best make the required decisions
 about how to use \imp to solve a particular problem, it is useful to
 understand the overall structure of \imp.
 
- -# \ref im1 "Theory"
- -# \ref i55 "Concepts"
- -# \ref i6 "Examples"
- -# \ref i125 "Modules"
- -# \ref i13 "C++ and Python"
- -# \ref conventions "Conventions"
- -# \ref fixbug "Reporting bugs"
- -# \ref next "Where to go next"
+\tableofcontents
 
 \section im1 1. Theory
 
