@@ -75,7 +75,7 @@ public:
 //! a collection of Refiner objects
 IMP_OBJECTS(Refiner, Refiners);
 
-#ifndef SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
 struct Refiner::Accessor {
   // can't reference count since swig memory management is broken
   Particle* p_;
