@@ -1,7 +1,7 @@
 import utility
 
 excluded_classes={"kernel":["Model", "Particle", "Particles",
-                            "SILENT", "TERSE", "VERBOSE", "NONE",
+                            "SILENT", "TERSE", "VERBOSE", "NONE", "WARNING", "PROGRESS",
                             "FloatKey", "IntKey", "ParticleKey", "StringKey"],
                   "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp", "GenericHierarchies",
                           "GenericHierarchiesTemp"],
