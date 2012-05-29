@@ -1,5 +1,5 @@
 /**
- *  \file base/log.h
+ *  \file base/CreateLogContext.h
  *  \brief Logging and error reporting support.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
