@@ -136,11 +136,11 @@ a.elRef {
 }
 
 a.code, a.code:visited {
-	color: #4665A2; 
+	color: #4665A2;
 }
 
 a.codeRef, a.codeRef:visited {
-	color: #4665A2; 
+	color: #4665A2;
 }
 
 /* @end */
@@ -268,7 +268,7 @@ p.formulaDsp {
 }
 
 img.formulaDsp {
-	
+
 }
 
 img.formulaInl {
@@ -326,20 +326,20 @@ span.charliteral {
 	color: #008080
 }
 
-span.vhdldigit { 
-	color: #ff00ff 
+span.vhdldigit {
+	color: #ff00ff
 }
 
-span.vhdlchar { 
-	color: #000000 
+span.vhdlchar {
+	color: #000000
 }
 
-span.vhdlkeyword { 
-	color: #700070 
+span.vhdlkeyword {
+	color: #700070
 }
 
-span.vhdllogic { 
-	color: #ff0000 
+span.vhdllogic {
+	color: #ff0000
 }
 
 blockquote {
@@ -528,9 +528,9 @@ table.memberdecls {
 }
 
 .memdoc, dl.reflist dd {
-        border-bottom: 1px solid #A8B8D9;      
-        border-left: 1px solid #A8B8D9;      
-        border-right: 1px solid #A8B8D9; 
+        border-bottom: 1px solid #A8B8D9;
+        border-left: 1px solid #A8B8D9;
+        border-right: 1px solid #A8B8D9;
         padding: 6px 10px 2px 10px;
         background-color: #FBFCFD;
         border-top-width: 0;
@@ -579,18 +579,18 @@ dl.reflist dd {
 .params, .retval, .exception, .tparams {
         margin-left: 0px;
         padding-left: 0px;
-}       
+}
 
 .params .paramname, .retval .paramname {
         font-weight: bold;
         vertical-align: top;
 }
-        
+
 .params .paramtype {
         font-style: italic;
         vertical-align: top;
-}       
-        
+}
+
 .params .paramdir {
         font-family: "courier new",courier,monospace;
         vertical-align: top;
@@ -848,7 +848,7 @@ div.summary
 	padding-right: 5px;
 	width: 50%;
 	text-align: right;
-}       
+}
 
 div.summary a
 {
@@ -962,19 +962,19 @@ dl.section dd {
 	vertical-align: bottom;
 	border-collapse: separate;
 }
- 
+
 #projectlogo img
-{ 
+{
 	border: 0px none;
 }
- 
+
 #projectname
 {
 	font: 300% Tahoma, Arial,sans-serif;
 	margin: 0px;
 	padding: 2px 0px;
 }
-    
+
 #projectbrief
 {
 	font: 120% Tahoma, Arial,sans-serif;
@@ -1069,7 +1069,7 @@ div.toc ul {
         list-style: none outside none;
         border: medium none;
         padding: 0px;
-}       
+}
 
 div.toc li.level1 {
         margin-left: 0px;
@@ -1132,6 +1132,11 @@ tr.heading h2 {
 }
 
 /**IMP_specific entries */
+
+code {
+   font-size: 120%;
+}
+
 a.directdownload {
 	font-size: small;
 }
@@ -1211,17 +1216,16 @@ img.textfigure {
 #implinks {
    text-align: right;
 }
-#implinks ul { 
+#implinks ul {
    list-style: none;
    display: inline;
 }
-#implinks li { 
+#implinks li {
    display: inline;
    padding: 5px 5px 0px 5px;
    border-right: 1px dotted #cccccc;
  }
 
-#implinks a { 
+#implinks a {
    text-decoration: none;
 }
-
