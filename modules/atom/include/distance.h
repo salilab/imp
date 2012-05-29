@@ -163,8 +163,8 @@ inline double get_rigid_bodies_drms(const Vecto3DsOrXYZs0 &m1,
 
 //! Measure the difference between two placements of the same set of points
 /**
-   \param[in] from The reference placement represented by XYZ coordinates
-   \param[in] to The modeled placement represented by XYZ coordinates
+   \param[in] source The reference placement represented by XYZ coordinates
+   \param[in] target The modeled placement represented by XYZ coordinates
    \note The measure quantifies the difference between placements
    of the same structure. A rigid transformation that brings mdl1 to
    ref1 is reported.
