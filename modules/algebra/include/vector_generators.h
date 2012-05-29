@@ -74,7 +74,7 @@ get_random_vector_in(const SphereD<D> &s){
 
     @param s a 2D sphere (circle)
 
-    \relatealso VectorD
+    \relatesalso VectorD
     \relatesalso SphereD
 */
 IMPALGEBRAEXPORT
