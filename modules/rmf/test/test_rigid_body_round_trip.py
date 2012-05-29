@@ -36,6 +36,7 @@ class GenericTest(IMP.test.TestCase):
             m.update()
             IMP.rmf.save_frame(f, i+1)
         del f
+        self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
         f= RMF.open_rmf_file(fn)
         r2=IMP.rmf.create_hierarchies(f, m)[0]
         self.assert_(IMP.core.RigidMember.particle_is_instance(r2.get_child(0)))
