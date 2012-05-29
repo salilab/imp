@@ -13,6 +13,7 @@
 #include <IMP/base/types.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/random.h>
+#include <IMP/base/deprecation_macros.h>
 #include "internal/output_helpers.h"
 #include "utility.h"
 #include "internal/multi_array_helpers.h"
@@ -20,6 +21,7 @@
 #include "boost/version.hpp"
 
 IMPALGEBRA_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
 
 //! Template class for managing multidimensional arrays. This class is based on
 //! boost multi_array.
@@ -32,6 +34,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
    array.
    3) Read/Write both in text and binary modes (taking into account the
    endianess).
+
+   \deprecated{Use GridD instead}
 **/
 template<typename T, int D>
 class MultiArray
@@ -54,7 +58,9 @@ public:
   }
 public:
   //! Empty constructor
-  MultiArray() : BMA() {}
+  MultiArray() : BMA() {
+    IMP_DEPRECATED_CLASS(algebra::MultiArray, algebra::GridD);
+  }
 
   //! Another way of asking for the size of a given dimension. You can always
   //! use x.shape()[i] too.
@@ -793,6 +799,8 @@ inline MultiArray<T, D> operator/(const T& X,
 
 
 
+
+#endif
 
 #endif
 

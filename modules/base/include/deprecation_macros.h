@@ -46,6 +46,17 @@
   }
 /** \see IMP_DEPRECATED_OBJECT()
  */
+#define IMP_DEPRECATED_CLASS(classname, replacement_classname)         \
+  if (::IMP::base::internal::get_print_deprecation_message(#classname)) { \
+    IMP_LOG(WARNING, "WARNING: " << #classname                          \
+            << " is deprecated "                                        \
+            << "and should not be used.\nUse "                          \
+            << #replacement_classname << " instead." << std::endl);     \
+    ::IMP::base::internal::set_printed_deprecation_message(#classname, \
+                                                     true);             \
+  }
+/** \see IMP_DEPRECATED_OBJECT()
+ */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
   if (::IMP::base::internal::get_print_deprecation_message(__func__)) { \
     IMP_LOG(WARNING, "WARNING: " << __func__                            \

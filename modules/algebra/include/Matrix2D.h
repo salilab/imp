@@ -19,6 +19,7 @@
 #include <complex>
 
 IMPALGEBRA_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
 
 //! Template class for managing 2D matrices. This class is based on
 //! boost multi_array
@@ -27,6 +28,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
     are after.
 
   Check MultiArray class for a list of added functionality
+
+  \deprecated{Use GridD instead.}
 **/
 template<typename T>
 class Matrix2D: public MultiArray<T,2>
@@ -409,6 +412,7 @@ typedef Matrix2D< std::complex<double> > Matrix2D_c;
 //! A vector of reference counted pointers to 2D Matrices of doubles
 IMP_OBJECTS(Matrix2D_d, Matrix2Ds_d);
 IMP_OBJECTS(Matrix2D_c, Matrix2Ds_c);
+#endif
 
 IMPALGEBRA_END_NAMESPACE
 

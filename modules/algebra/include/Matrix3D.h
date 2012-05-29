@@ -15,6 +15,7 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
 
 //! Template class for managing 3D matrices. This class is based on
 //! boost multi_array.
@@ -23,6 +24,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
     are after.
 
   Check MultiArray class for a list of added functionality
+
+  \deprecated{Use GridD instead.}
 **/
 template<typename T>
 class Matrix3D: public MultiArray<T,3>
@@ -328,6 +331,7 @@ public:
 protected:
 };
 
+#endif
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_MATRIX_3D_H */
