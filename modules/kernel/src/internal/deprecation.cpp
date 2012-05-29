@@ -20,13 +20,13 @@ namespace {
 
 }
 
-bool get_print_deprecation_message(const char *name) {
+bool get_print_deprecation_message(std::string name) {
   return print_deprecation_messages
     && printed_deprecation_messages.find(name)
     == printed_deprecation_messages.end();
 }
 
-void set_printed_deprecation_message(const char *name, bool tr) {
+void set_printed_deprecation_message(std::string name, bool tr) {
   if (tr) {
     printed_deprecation_messages.insert(name);
   } else {

@@ -53,7 +53,7 @@ IMP_END_NAMESPACE
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
     ::IMP::internal::set_printed_deprecation_message(get_type_name(),   \
-                                                           true);       \
+                                                     true);             \
   }
 /** \see IMP_DEPRECATED_OBJECT()
  */
