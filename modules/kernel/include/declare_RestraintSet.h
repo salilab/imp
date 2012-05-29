@@ -16,7 +16,7 @@
 #include <string>
 
 IMP_BEGIN_NAMESPACE
-//! Container used to hold a set of restraints
+//! Object used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,
     all of the restraints in RestraintSets that have been
