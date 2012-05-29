@@ -1,5 +1,5 @@
 /**
- * \file element.h \brief
+ * \file element.h \brief Define the elements used in \imp.
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
