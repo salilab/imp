@@ -22,11 +22,12 @@ omitted for brevity.
 Template classes are, in general parameterized by one of two things
 - Arity, meaning whether they relate to a single node, a pair of nodes etc
 - type, meaning whether they relate to \ref rmf_types "integers, floats etc"
+.
 For any class that is parameterized by Arity, typedefs (and \c Python types)
 are provided for 1 through 4 nodes, with names like \c Category, \c PairCategory,
 \c TripletCategory, \c QuadCategory. For classes parameterized by type, typedefs
 and \c Python classes are provides for all the \ref rmf_types "standard types"
-with names like \c IntKey, \c FloatKey etc. Some classes, like Key are parameterized
+with names like \c IntKey, \c FloatKey etc. Some classes, like RMF::Key are parameterized
 by both, so the full cross product of types is provided with names like
 \c PairFloatKey.
 
