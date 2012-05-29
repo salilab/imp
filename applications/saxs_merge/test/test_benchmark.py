@@ -21,6 +21,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         """Simple test of SAXS merge benchmark / application for Nup116"""
         p = self.run_python_application('saxs_merge.py',
                           ['--creference=first',
+                           '--blimit_fitting=200',
+                           '--elimit_fitting=200',
                           self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
                           self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
                           self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
@@ -50,6 +52,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         """Simple test of SAXS merge benchmark / application for Nup192"""
         p = self.run_python_application('saxs_merge.py',
                           ['--creference=first',
+                           '--blimit_fitting=200',
+                           '--elimit_fitting=200',
                           self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
                           self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
                           self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
