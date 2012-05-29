@@ -1,5 +1,5 @@
 /**
- *  \file IMP/file.h
+ *  \file IMP/base/file.h
  *  \brief Handling of file input/output
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
