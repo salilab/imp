@@ -1,6 +1,6 @@
 /**
  *  \file ChimeraWriter.h
- *  \brief XXXXXXXXXXXXXX
+ *  \brief A writer for Chimera python files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
@@ -9,7 +9,7 @@
 #define IMPDISPLAY_CHIMERA_WRITER_H
 
 #include "display_config.h"
-
+#include <IMP/deprecation.h>
 #include <IMP/display/Writer.h>
 #include <IMP/display/writer_macros.h>
 
@@ -23,6 +23,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     This format creates one file per frame. So if you want to use frames
     and save them all, make sure there is a "%1%" in the file name string
     passed to the constructor.
+
+    \deprecated Use IMP::rmf instead when interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT ChimeraWriter: public TextWriter
 {

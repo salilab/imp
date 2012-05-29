@@ -1,6 +1,6 @@
 /**
  *  \file CMMWriter.h
- *  \brief XXXXXXXXXXXXXX
+ *  \brief A writer for chimera CMM files.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
@@ -28,6 +28,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
     You are probably better off using the IMP::display::ChimeraWriter
     which writes a python file, readable by Chimera as it supports
     more types of geometry.
+
+    \deprecated Use IMP::rmf for interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT CMMWriter: public TextWriter
 {
