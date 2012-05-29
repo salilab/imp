@@ -3,7 +3,9 @@
 
 %module(directors="1") "RMF"
 %feature("autodoc", 1);
-%warnfilter(314);
+// turn off the warning as it mostly triggers on methods (and lots of them)
+%warnfilter(321);
+
 %{
 /* SWIG generates long class names with wrappers that use certain Boost classes,
    longer than the 255 character name length for MSVC. This shouldn't affect
@@ -187,22 +189,6 @@ IMP_RMF_SWIG_PAIR(RMF, Int, IntRange, IntRanges)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
-IMP_RMF_DECORATOR(RMF, Particle);
-IMP_RMF_DECORATOR(RMF, Colored);
-IMP_RMF_DECORATOR(RMF, JournalArticle);
-IMP_RMF_DECORATOR(RMF, Sphere);
-IMP_RMF_DECORATOR(RMF, Cylinder);
-IMP_RMF_DECORATOR(RMF, Segment);
-IMP_RMF_DECORATOR(RMF, Score);
-IMP_RMF_DECORATOR(RMF, RigidParticle);
-IMP_RMF_DECORATOR(RMF, Residue);
-IMP_RMF_DECORATOR(RMF, Atom);
-IMP_RMF_DECORATOR(RMF, Chain);
-IMP_RMF_DECORATOR(RMF, Domain);
-IMP_RMF_DECORATOR(RMF, Copy);
-IMP_RMF_DECORATOR(RMF, Diffuser);
-IMP_RMF_DECORATOR(RMF, Typed);
-
 %implicitconv RMF::HDF5File;
 %implicitconv RMF::HDF5ConstFile;
 
@@ -249,6 +235,36 @@ namespace RMF {
   %}
 }
 
+%extend RMF::FileHandle {
+   %pythoncode %{
+    def add_node_set(self, set, tp):
+        ret=[]
+        if len(set)==2:
+          return self.add_node_pair(set, tp)
+        elif len(set)==3:
+          return self.add_node_triplet(set, tp)
+        elif len(set)==4:
+          return self.add_node_quad(set, tp)
+        else:
+          return []
+  %}
+  %pythoncode %{
+    def add_category(self, name, arity=1):
+        ret=[]
+        def call_it(self, *args):
+          return _RMF.FileHandle_add_category(self, *args)
+        if arity==1:
+          return call_it(self, name)
+        if arity==2:
+          return self.add_pair_category(name)
+        elif arity==3:
+          return self.add_triplet_category(name)
+        elif arity==4:
+          return self.add_quad_category(name)
+        else:
+          return []
+  %}
+}
 
 
 
@@ -303,6 +319,27 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/FileHandle.h"
 %include "RMF/names.h"
 %include "RMF/Validator.h"
+%include "RMF/Decorator.h"
+%include "RMF/Factory.h"
+
+IMP_RMF_DECORATOR(RMF, Particle);
+IMP_RMF_DECORATOR(RMF, IntermediateParticle);
+IMP_RMF_DECORATOR(RMF, Colored);
+IMP_RMF_DECORATOR(RMF, JournalArticle);
+IMP_RMF_DECORATOR(RMF, Ball);
+IMP_RMF_DECORATOR(RMF, Cylinder);
+IMP_RMF_DECORATOR(RMF, Segment);
+IMP_RMF_DECORATOR(RMF, Score);
+IMP_RMF_DECORATOR(RMF, RigidParticle);
+IMP_RMF_DECORATOR(RMF, Residue);
+IMP_RMF_DECORATOR(RMF, Atom);
+IMP_RMF_DECORATOR(RMF, Chain);
+IMP_RMF_DECORATOR(RMF, Domain);
+IMP_RMF_DECORATOR(RMF, Copy);
+IMP_RMF_DECORATOR(RMF, Diffuser);
+IMP_RMF_DECORATOR(RMF, Typed);
+IMP_RMF_DECORATOR(RMF, StaticAlias);
+
 %include "RMF/decorators.h"
 %include "RMF/decorator_utility.h"
 %include "RMF/utility.h"
@@ -320,9 +357,13 @@ import shutil
 import datetime
 import unittest
 
+try:
+    import IMP.test
+    parent=IMP.test.TestCase
+except:
+    parent=unittest.TestCase
 
-
-class TestCase(unittest.TestCase):
+class TestCase(parent):
     """Super class for RMF test cases"""
 
     def setUp(self):
@@ -399,9 +440,10 @@ const std::string get_module_version();
 }
 // WARNING Generated file, do not edit, edit the swig.i-in instead.
 %pythoncode {
-has_hdf5=True
+has_protobuf=True
 has_boost_filesystem=True
 has_boost_thread=True
+has_hdf5=True
 }
 
 %pythoncode %{
