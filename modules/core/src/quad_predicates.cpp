@@ -31,7 +31,7 @@ AllSameQuadPredicate::AllSameQuadPredicate(
 
 CoinFlipQuadPredicate::CoinFlipQuadPredicate( double p,
     std::string name):
-  QuadPredicate(name), p_(p), rng_(0.,1.) {}
+  QuadPredicate(name), p_(p), rng_(0.,1.){}
 
 
 IMPCORE_END_NAMESPACE

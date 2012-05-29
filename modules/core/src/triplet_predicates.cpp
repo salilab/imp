@@ -31,7 +31,7 @@ AllSameTripletPredicate::AllSameTripletPredicate(
 
 CoinFlipTripletPredicate::CoinFlipTripletPredicate( double p,
     std::string name):
-  TripletPredicate(name), p_(p), rng_(0.,1.) {}
+  TripletPredicate(name), p_(p), rng_(0.,1.){}
 
 
 IMPCORE_END_NAMESPACE

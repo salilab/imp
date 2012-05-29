@@ -31,7 +31,7 @@ AllSameSingletonPredicate::AllSameSingletonPredicate(
 
 CoinFlipSingletonPredicate::CoinFlipSingletonPredicate( double p,
     std::string name):
-  SingletonPredicate(name), p_(p), rng_(0.,1.) {}
+  SingletonPredicate(name), p_(p), rng_(0.,1.){}
 
 
 IMPCORE_END_NAMESPACE
