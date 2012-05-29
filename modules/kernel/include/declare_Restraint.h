@@ -10,17 +10,13 @@
 #define IMPKERNEL_DECLARE_RESTRAINT_H
 
 #include "kernel_config.h"
-#include "DerivativeAccumulator.h"
-#include "container_macros.h"
-#include "container_base.h"
 #include "ModelObject.h"
 #include "model_object_macros.h"
 #include "constants.h"
 #include <IMP/base/tracking.h>
-#include <IMP/base/Pointer.h>
-#include <IMP/base/utility.h>
 
 IMP_BEGIN_NAMESPACE
+class DerivativeAccumulator;
 
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
