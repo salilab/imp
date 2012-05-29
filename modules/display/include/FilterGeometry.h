@@ -1,5 +1,5 @@
 /**
- *  \file Filterdeclare_Geometry.h
+ *  \file Filter_Geometry.h
  *  \brief Implement FilterGeometry
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
