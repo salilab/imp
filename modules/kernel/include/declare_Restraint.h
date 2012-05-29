@@ -1,5 +1,5 @@
 /**
- *  \File IMP/declare/Restraint.h
+ *  \File IMP/declare_Restraint.h
  *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
