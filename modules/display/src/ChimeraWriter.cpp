@@ -145,6 +145,7 @@ bool ChimeraWriter::handle_ellipsoid(EllipsoidGeometry *g,
 }
 
 void ChimeraWriter::do_open() {
+  IMP_DEPRECATED_OBJECT(IMP::rmf);
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "try:\n";

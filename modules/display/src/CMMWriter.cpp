@@ -7,11 +7,12 @@
  */
 
 #include "IMP/display/CMMWriter.h"
-
+#include <IMP/deprecation.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
 void CMMWriter::do_open() {
+  IMP_DEPRECATED_OBJECT(IMP::rmf);
   get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
   //std::cout << "Initializing" << std::endl;
   marker_index_=0;

@@ -1,6 +1,6 @@
 /**
  *  \file BildWriter.h
- *  \brief XXXXXXXXXXXXXX
+ *  \brief Writer for the Chimera BILD file format.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
@@ -10,6 +10,7 @@
 
 #include "display_config.h"
 #include "writer_macros.h"
+#include <IMP/deprecation.h>
 
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -21,9 +22,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The bild file format is a simple format for displaying geometry in Chimera.
     The bild writer supports points, spheres, cyliners, and segments.
 
-    You are probably better off using the IMP::display::ChimeraWriter unless
-    you want a human-readable file. ChimeraWriter supports better
-    interactivity and more types of geometry.
+    \deprecated Use IMP::rmf when interfacing with Chimera.
  */
 class IMPDISPLAYEXPORT BildWriter: public TextWriter
 {
