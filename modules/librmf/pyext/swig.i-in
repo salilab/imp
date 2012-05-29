@@ -128,22 +128,6 @@ IMP_RMF_SWIG_PAIR(RMF, Int, IntRange, IntRanges)
 
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DECLARE_TYPE);
 
-IMP_RMF_DECORATOR(RMF, Particle);
-IMP_RMF_DECORATOR(RMF, Colored);
-IMP_RMF_DECORATOR(RMF, JournalArticle);
-IMP_RMF_DECORATOR(RMF, Sphere);
-IMP_RMF_DECORATOR(RMF, Cylinder);
-IMP_RMF_DECORATOR(RMF, Segment);
-IMP_RMF_DECORATOR(RMF, Score);
-IMP_RMF_DECORATOR(RMF, RigidParticle);
-IMP_RMF_DECORATOR(RMF, Residue);
-IMP_RMF_DECORATOR(RMF, Atom);
-IMP_RMF_DECORATOR(RMF, Chain);
-IMP_RMF_DECORATOR(RMF, Domain);
-IMP_RMF_DECORATOR(RMF, Copy);
-IMP_RMF_DECORATOR(RMF, Diffuser);
-IMP_RMF_DECORATOR(RMF, Typed);
-
 %implicitconv RMF::HDF5File;
 %implicitconv RMF::HDF5ConstFile;
 
@@ -274,6 +258,27 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/FileHandle.h"
 %include "RMF/names.h"
 %include "RMF/Validator.h"
+%include "RMF/Decorator.h"
+%include "RMF/Factory.h"
+
+IMP_RMF_DECORATOR(RMF, Particle);
+IMP_RMF_DECORATOR(RMF, IntermediateParticle);
+IMP_RMF_DECORATOR(RMF, Colored);
+IMP_RMF_DECORATOR(RMF, JournalArticle);
+IMP_RMF_DECORATOR(RMF, Ball);
+IMP_RMF_DECORATOR(RMF, Cylinder);
+IMP_RMF_DECORATOR(RMF, Segment);
+IMP_RMF_DECORATOR(RMF, Score);
+IMP_RMF_DECORATOR(RMF, RigidParticle);
+IMP_RMF_DECORATOR(RMF, Residue);
+IMP_RMF_DECORATOR(RMF, Atom);
+IMP_RMF_DECORATOR(RMF, Chain);
+IMP_RMF_DECORATOR(RMF, Domain);
+IMP_RMF_DECORATOR(RMF, Copy);
+IMP_RMF_DECORATOR(RMF, Diffuser);
+IMP_RMF_DECORATOR(RMF, Typed);
+IMP_RMF_DECORATOR(RMF, StaticAlias);
+
 %include "RMF/decorators.h"
 %include "RMF/decorator_utility.h"
 %include "RMF/utility.h"
