@@ -1,5 +1,5 @@
 /**
- *  \file declare_Restraint.h
+ *  \file IMP/declare_Restraint.h
  *  \brief Abstract base class for all restraints.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
@@ -15,19 +15,12 @@
 #include "container_base.h"
 #include "ModelObject.h"
 #include "model_object_macros.h"
+#include "constants.h"
 #include <IMP/base/tracking.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/utility.h>
 
 IMP_BEGIN_NAMESPACE
-
-//! Use this value when you want to turn off maximum for restraint evaluation
-IMPEXPORT extern const double NO_MAX;
-/** Evaluation can return this value if limits are exceeded and
-    it is a ScoringFunction::evaluate_if_below() or
-    ScoringFunction::evaluate_if_good
-*/
-IMPEXPORT extern const double BAD_SCORE;
 
 //! Abstract class for representing restraints
 /** Restraints should take their score function or UnaryFunction
