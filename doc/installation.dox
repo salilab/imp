@@ -218,9 +218,10 @@ Much IO support requires \external{http://www.hdf5.org, HDF5}, at least version
 \subsubsection CGAL CGAL
 \anchor CGAL
 A wide variety of geometric computations will be faster, better or more reliable
-if \ref cgal "CGAL" is installed. CGAL is available as part of most
+if CGAL is installed. CGAL is available as part of most
 Linux distributions and can be built from source on Mac OS or Linux. It
-is free for academic use, but commercial use requires a license.
+is free for academic use, but commercial use requires a license. See IMP::cgal
+for more information.
 
 \subsubsection ANN ANN
 \anchor ANN
