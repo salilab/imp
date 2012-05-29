@@ -141,7 +141,7 @@ public:
       total weight for the restraint is the some over all the paths containing
       it. That is, if a restraint is in a RestraintSet with weight .5 and
       another with weight 2, and the restaint itself has weight 3, then the
-      total weight of the restraint is \f$.5 \dot 3 + 2 \dot 3 = 7.5  \f$.
+      total weight of the restraint is \f$.5 \cdot 3 + 2 \cdot 3 = 7.5  \f$.
       @{
   */
   void set_weight(Float weight);
