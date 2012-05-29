@@ -13,9 +13,9 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-IMPEXPORT bool get_print_deprecation_message(const char *name);
+IMPEXPORT bool get_print_deprecation_message(std::string name);
 
-IMPEXPORT void set_printed_deprecation_message(const char *name, bool tr);
+IMPEXPORT void set_printed_deprecation_message(std::string name, bool tr);
 
 IMP_END_INTERNAL_NAMESPACE
 
