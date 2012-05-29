@@ -81,8 +81,18 @@ Currently, there is little explicit checking of invariants between attributes
 in the %RMF file. An extensible framework for checking invariants on file
 close and open will be added.
 
+\\subsection bindings 5 Decorators and Factories
 
-\\subsection bindings 5 Other language bindings
+The nicest way to interact with data stored in nodes is through decorators and
+factories. A factory (eg RMF::ParticleFactory or RMF::ParticleConstFactory) is
+constructed from a file (RMF::FileHandle or RMF::FileConstHandle). It can be used
+to check if given nodes have the requested data at a given frame (eg if the RMF::NodeConstHandle has
+mass, coordinates and radius and so is an RMF::Particle) and construct a decorator
+for that node at that frame. The decorator (eg RMF::Particle or RMF::ParticleConst)
+can then be used to access the attributes and set them (for non-const variants). The
+accessing is done through appropriately named functions (eg RMF::Particle::set_radius()).
+
+\\subsection bindings 6 Other language bindings
 
 The %RMF library currently supports C++ and Python. The API is
 written so that \\external{http://www.swig.org,SWIG} can be used to
@@ -91,7 +101,7 @@ exceptions are C and Fortran. Until the SWIG C target support is
 finished, these can be supported by writing a simple C API
 manually, probably a weeks work.
 
-\\subsection hdf5access 6 HDF5 wrappers
+\\subsection hdf5access 7 HDF5 wrappers
 
 The library provides a \\ref hdf5 "simple wrapper for the \C HDF5 library" through
 the HDF5Group, HDF5DataSetD, HDF5File and helper classes.
