@@ -11,6 +11,7 @@
 #include "IMP/Model.h"
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
+#include "IMP/container_base.h"
 #include "IMP/ScoringFunction.h"
 #include "IMP/internal/utility.h"
 #include "IMP/internal/RestraintsScoringFunction.h"

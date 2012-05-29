@@ -8,6 +8,7 @@
 #include "IMP/base/log.h"
 #include "IMP/ScoreState.h"
 #include "IMP/Model.h"
+#include "IMP/container_base.h"
 #include "IMP/internal/utility.h"
 #include <algorithm>
 #include <cmath>

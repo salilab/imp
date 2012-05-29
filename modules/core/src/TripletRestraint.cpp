@@ -11,7 +11,7 @@
 
 #include "IMP/core/TripletRestraint.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/container_base.h>
 #include <IMP/log.h>
 
 
