@@ -24,6 +24,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.rmf.add_hierarchy(f, h)
         print "reopening"
         del f
+        self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
         print "after closing"
         #print RMF.get_open_hdf5_handle_names()
         f= RMF.open_rmf_file_read_only(name)
@@ -60,6 +61,7 @@ class GenericTest(IMP.test.TestCase):
         print f, type(f)
         IMP.rmf.add_hierarchy(f, h)
         del f
+        self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
         f= RMF.open_rmf_file_read_only(name)
         print "reading"
         print f, type(f)

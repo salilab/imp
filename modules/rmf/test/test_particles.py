@@ -62,7 +62,7 @@ class GenericTest(IMP.test.TestCase):
         del rmf
         IMP.set_log_level(IMP.VERBOSE)
         onames= RMF.get_open_hdf5_handle_names()
-        print "closed", onames
+        print >> sys.stderr, "closed", onames
         self.assertEqual(len(onames), 0)
         rmf= RMF.open_rmf_file_read_only(name)
         bps= IMP.rmf.create_particles(rmf, m)
