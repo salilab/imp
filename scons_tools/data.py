@@ -3,6 +3,7 @@ import utility
 excluded_classes={"kernel":["Model", "Particle", "Particles",
                             "SILENT", "TERSE", "VERBOSE", "NONE", "WARNING", "PROGRESS",
                             "FloatKey", "IntKey", "ParticleKey", "StringKey"],
+                    "base":["SILENT", "TERSE", "VERBOSE", "NONE", "WARNING", "PROGRESS"],
                   "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp", "GenericHierarchies",
                           "GenericHierarchiesTemp"],
                   "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
