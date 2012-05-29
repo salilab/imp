@@ -31,7 +31,7 @@ AllSameCLASSNAMEPredicate::AllSameCLASSNAMEPredicate(
 
 CoinFlipCLASSNAMEPredicate::CoinFlipCLASSNAMEPredicate( double p,
     std::string name):
-  CLASSNAMEPredicate(name), p_(p){}
+  CLASSNAMEPredicate(name), p_(p), rng_(0.,1.){}
 
 
 IMPCORE_END_NAMESPACE
