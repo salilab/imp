@@ -230,11 +230,11 @@ class ParticleQuadsTemp;
 %}
 
 %rename(_ParticleIndexTag) ParticleIndexTag;
-%rename(_ScoringFunctionInput) ScoringFunctionInput;
-%rename(_SingletonContainerInput) SingletonContainerInput;
-%rename(_PairContainerInput) PairContainerInput;
-%rename(_TripletContainerInput) TripletContainerInput;
-%rename(_QuadContainerInput) QuadContainerInput;
+%rename(_ScoringFunctionAdaptor) ScoringFunctionAdaptor;
+%rename(_SingletonContainerAdaptor) SingletonContainerAdaptor;
+%rename(_PairContainerAdaptor) PairContainerAdaptor;
+%rename(_TripletContainerAdaptor) TripletContainerAdaptor;
+%rename(_QuadContainerAdaptor) QuadContainerAdaptor;
 
 %include "IMP/particle_index.h"
 
