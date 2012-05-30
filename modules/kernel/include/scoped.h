@@ -13,6 +13,9 @@
 #include "ScoreState.h"
 #include "FailureHandler.h"
 #include "Model.h"
+#include <IMP/base/RAII.h>
+#include <IMP/base/deprecation.h>
+#include <IMP/base/deprecation_macros.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/base/raii_macros.h>
 #include <IMP/base/check_macros.h>
@@ -26,7 +29,7 @@ IMP_BEGIN_NAMESPACE
     to the score state.
 */
 template <class SS>
-class GenericScopedScoreState {
+class GenericScopedScoreState: public base::RAII {
   base::Pointer<SS> ss_;
 public:
   IMP_RAII(GenericScopedScoreState, (SS *ss, Model *m),{}, {
@@ -55,9 +58,11 @@ public:
 //! Removes the Restraint when the RAII object is destroyed
 /** It is templated so it can act as a general pointer
     to the restraint.
+    \deprecated{With the advent of the ScoringFunction, this
+    should not be needed.}
 */
 template <class SS>
-class GenericScopedRestraint {
+class GenericScopedRestraint: public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<RestraintSet> rs_;
 public:
@@ -65,6 +70,7 @@ public:
       ss_=ss;
       rs_=rs;
       rs_->add_restraint(ss);
+      IMP_DEPRECATED_CLASS(GenericScopedRestraint, ScoringFunction);
     }, {
       if (ss_ && ss_->get_is_part_of_model()) {
         IMP_CHECK_OBJECT(ss_);
@@ -89,9 +95,11 @@ public:
 //! Removes the Restraint until RAII object is destroyed
 /** It is templated so it can act as a general pointer
     to the restraint.
+    \deprecated{With the advent of the ScoringFunction, this
+    should not be needed.}
 */
 template <class SS>
-class GenericScopedRemoveRestraint {
+class GenericScopedRemoveRestraint: public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<RestraintSet> rs_;
   void cleanup() {
@@ -120,6 +128,7 @@ class GenericScopedRemoveRestraint {
 public:
   IMP_RAII(GenericScopedRemoveRestraint, (SS *ss, RestraintSet *rs),{}, {
       setup(ss, rs);
+      IMP_DEPRECATED_CLASS(GenericScopedRestraint, ScoringFunction);
     }, {
       cleanup();
     }, {
@@ -141,7 +150,7 @@ public:
     to the restraint.
 */
 template <class SS>
-class GenericScopedRemoveScoreState {
+class GenericScopedRemoveScoreState: public base::RAII {
   base::Pointer<SS> ss_;
   base::Pointer<Model> rs_;
   void cleanup() {
@@ -198,7 +207,7 @@ typedef GenericScopedRemoveScoreState<ScoreState> ScopedRemoveScoreState;
 /** The failure handler is added on construction and removed
     on destruction.
 */
-class ScopedFailureHandler {
+class ScopedFailureHandler: public base::RAII {
   FailureHandler* fh_;
 public:
   IMP_RAII(ScopedFailureHandler, (FailureHandler *fh),
@@ -219,7 +228,7 @@ public:
     when this goes out of scope.
 */
 template <class Key, class Value>
-class ScopedAddCacheAttribute {
+class ScopedAddCacheAttribute: public base::RAII {
   base::Pointer<Model> m_;
   ParticleIndex pi_;
   Key key_;
@@ -245,7 +254,7 @@ public:
     value when this goes out of scope..
 */
 template <class Key, class Value>
-class ScopedSetAttribute {
+class ScopedSetAttribute: public base::RAII {
   base::Pointer<Model> m_;
   ParticleIndex pi_;
   Key key_;
