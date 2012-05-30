@@ -27,7 +27,7 @@ class Object;
 
    \ingroup checking
  */
-class IMPBASEEXPORT SetCheckState
+class IMPBASEEXPORT SetCheckState: public base::RAII
 {
   CheckLevel level_;
   Object* obj_;

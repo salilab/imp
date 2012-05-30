@@ -28,7 +28,7 @@ class Object;
 
    \ingroup logging
  */
-class IMPBASEEXPORT SetLogState
+class IMPBASEEXPORT SetLogState: public base::RAII
 {
   LogLevel level_;
   Object* obj_;

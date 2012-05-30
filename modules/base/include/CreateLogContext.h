@@ -40,7 +40,7 @@ IMPBASE_BEGIN_NAMESPACE
     calling a function to ensure that all the output of that
     function is nicely offset.
 */
-struct CreateLogContext {
+struct CreateLogContext: public RAII {
 public:
   IMP_RAII(CreateLogContext, (const char *fname, const void* object=nullptr),,
            push_log_context(fname, object),
