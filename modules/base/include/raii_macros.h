@@ -10,7 +10,7 @@
 #define IMPBASE_RAII_MACROS_H
 #include "base_config.h"
 #include "showable_macros.h"
-
+#include "RAII.h"
 
 //! Declare a RAII-style class
 /** Since such classes are typically quite small and simple, all

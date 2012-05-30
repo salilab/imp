@@ -69,6 +69,8 @@ IMP_SWIG_NATIVE_VALUE(double);
 IMP_SWIG_NATIVE_VALUE(int);
 IMP_SWIG_NATIVE_VALUE(std::string);
 
+%include "IMP/base/InputAdaptor.h"
+%include "IMP/base/RAII.h"
 %include "IMP/base/Vector.h"
 %include "IMP/base/types.h"
 %include "IMP/base/enums.h"
