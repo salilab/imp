@@ -13,6 +13,7 @@
 #include "deprecation.h"
 #include "log.h"
 #include "log_macros.h"
+#include "enums.h"
 
 /** \brief Mark the functionality as deprecated. It will print out a message.
 
@@ -39,7 +40,7 @@
  */
 #define IMP_DEPRECATED_OBJECT(replacement_classname)                    \
   if (::IMP::base::internal::get_print_deprecation_message(get_type_name())) { \
-    IMP_LOG(WARNING, "WARNING: " << get_type_name()                     \
+    IMP_WARN(get_type_name()                                            \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
@@ -50,7 +51,7 @@
  */
 #define IMP_DEPRECATED_CLASS(classname, replacement_classname)         \
   if (::IMP::base::internal::get_print_deprecation_message(#classname)) { \
-    IMP_LOG(WARNING, "WARNING: " << #classname                          \
+    IMP_WARN(#classname                                                 \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
@@ -61,7 +62,7 @@
  */
 #define IMP_DEPRECATED_FUNCTION(replacement)                            \
   if (::IMP::base::internal::get_print_deprecation_message(__func__)) { \
-    IMP_LOG(WARNING, "WARNING: " << __func__                            \
+    IMP_WARN(__func__                                                   \
             << " is deprecated "                                        \
             << "and should not be used.\nUse "                          \
             << #replacement << " instead." << std::endl);               \
