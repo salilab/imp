@@ -11,6 +11,7 @@
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
 #include "algebra_macros.h"
+#include "GeometricPrimitiveD.h"
 #include <iostream>
 #include "constants.h"
 
@@ -19,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** It does what is says.
     \geometry
  */
-class IMPALGEBRAEXPORT Segment3D
+class IMPALGEBRAEXPORT Segment3D: public GeometricPrimitiveD<3>
 {
  public:
   Segment3D(){}

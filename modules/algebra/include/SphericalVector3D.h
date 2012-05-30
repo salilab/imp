@@ -11,6 +11,7 @@
 #include "Vector3D.h"
 #include "IMP/base/exception.h"
 #include "constants.h"
+#include "GeometricPrimitiveD.h"
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -23,7 +24,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
   azimuth - angle with axis x
   \geometry
 */
-class IMPALGEBRAEXPORT SphericalVector3D
+class IMPALGEBRAEXPORT SphericalVector3D: public GeometricPrimitiveD<3>
 {
   bool check(double r, double theta, double psi);
  public:

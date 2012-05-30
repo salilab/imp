@@ -11,7 +11,7 @@
 #include "algebra_config.h"
 #include "utility.h"
 #include "Vector2D.h"
-#include "Matrix2D.h"
+#include "GeometricPrimitiveD.h"
 #include "constants.h"
 #include <cmath>
 //#include <stdlib.h>
@@ -33,7 +33,7 @@ Rotation2D compose(const Rotation2D &a, const Rotation2D &b) ;
 
   \geometry
 **/
-class Rotation2D
+class Rotation2D: public GeometricPrimitiveD<2>
 {
 public:
   Rotation2D(): angle_(std::numeric_limits<double>::quiet_NaN()) {};

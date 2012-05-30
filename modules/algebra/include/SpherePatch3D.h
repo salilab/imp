@@ -9,15 +9,14 @@
 
 #include "Sphere3D.h"
 #include "Plane3D.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /**
 A patch of a sphere is defined as all points above the plane and on the sphere.
-   \ingroup uninitialized_default
-   \ingroup noncomparable
  */
-class IMPALGEBRAEXPORT SpherePatch3D {
+class IMPALGEBRAEXPORT SpherePatch3D: public GeometricPrimitiveD<3> {
 public:
   SpherePatch3D(){}
   //! Constructor

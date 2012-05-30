@@ -9,6 +9,7 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include "algebra_config.h"
+#include "GeometricPrimitiveD.h"
 #include <IMP/base/types.h>
 #include <IMP/base/base_macros.h>
 #include <IMP/base/exception.h>
@@ -41,7 +42,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \geometry
  */
 template <int D>
-class VectorD
+class VectorD: public GeometricPrimitiveD<D>
 {
   void check_vector() const {
     IMP_USAGE_CHECK(!data_.get_is_null(),

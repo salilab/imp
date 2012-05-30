@@ -13,6 +13,7 @@
 #include "SpherePatch3D.h"
 #include "Plane3D.h"
 #include "Segment3D.h"
+#include "GeometricPrimitiveD.h"
 #include <iostream>
 #include "constants.h"
 
@@ -25,7 +26,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
    "right cone." We have implemented a "right cone".
    \geometry
  */
-class IMPALGEBRAEXPORT Cone3D
+class IMPALGEBRAEXPORT Cone3D: public GeometricPrimitiveD<3>
 {
  public:
   Cone3D(){}

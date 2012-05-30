@@ -12,6 +12,7 @@
 
 #include "Vector2D.h"
 #include "Rotation2D.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -25,7 +26,7 @@ Transformation2D compose(const Transformation2D &a,
 //! Simple 2D transformation class
 /** \geometry
 */
-class IMPALGEBRAEXPORT Transformation2D
+class IMPALGEBRAEXPORT Transformation2D: public GeometricPrimitiveD<2>
 {
 public:
 

@@ -10,13 +10,14 @@
 #include "algebra_config.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent a plane in 3D.
    \geometry
 */
-class Plane3D {
+class Plane3D: public GeometricPrimitiveD<3> {
 public:
   Plane3D(){}
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane) {

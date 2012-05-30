@@ -11,6 +11,7 @@
 #include "Rotation3D.h"
 #include "Transformation3D.h"
 #include "Segment3D.h"
+#include "GeometricPrimitiveD.h"
 #include <iostream>
 #include "constants.h"
 
@@ -20,7 +21,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \geometry
 */
-class IMPALGEBRAEXPORT Cylinder3D {
+class IMPALGEBRAEXPORT Cylinder3D: public GeometricPrimitiveD<3> {
  public:
   Cylinder3D(){}
   Cylinder3D(const Segment3D &s, double radius);

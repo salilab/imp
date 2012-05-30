@@ -12,13 +12,14 @@
 #include "constants.h"
 #include "BoundingBoxD.h"
 #include "Transformation3D.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 /** Represent an ellispoid in 3D.
     \geometry
   */
-class IMPALGEBRAEXPORT Ellipsoid3D {
+class IMPALGEBRAEXPORT Ellipsoid3D: public GeometricPrimitiveD<3> {
 public:
   Ellipsoid3D(){
 #if IMP_BUILD < IMP_FAST
