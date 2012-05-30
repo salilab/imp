@@ -56,8 +56,10 @@ class TestGaussianProcessInterpolationNumericallyNoSigma(IMP.test.TestCase):
         self.d.set_nuisance_is_optimized(False)
         self.s = Scale.setup_particle(IMP.Particle(self.m),  0.0)
         self.s.set_nuisance_is_optimized(False)
+        self.A = Scale.setup_particle(IMP.Particle(self.m),  0.0)
+        self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
-                self.G,self.Rg,self.d,self.s)
+                self.G,self.Rg,self.d,self.s, self.A)
         self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.)

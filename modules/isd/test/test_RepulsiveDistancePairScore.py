@@ -54,7 +54,6 @@ class TestRepulsiveDistancePairScoreSimple(IMP.test.TestCase):
         """tests if derivative is -2*(d-x0)**3"""
         p0=self.p0
         p1=self.p1
-        fl=open('plot.dat', 'w')
         for i in xrange(100):
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-3,3) \
                     for i in range(3)]))
