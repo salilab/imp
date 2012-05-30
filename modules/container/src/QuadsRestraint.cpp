@@ -16,7 +16,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 QuadsRestraint
 ::QuadsRestraint(QuadScore *ss,
-                      QuadContainerInput pc,
+                      QuadContainerAdaptor pc,
                       std::string name): P(ss, pc, name) {
 
 }

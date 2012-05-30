@@ -21,6 +21,7 @@
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/base/InputAdaptor.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -117,19 +118,21 @@ public:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT PairContainerInput
-#ifndef SWIG
-: public base::Pointer<PairContainer>
+class IMPEXPORT PairContainerAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+public base::Pointer<PairContainer>
+#else
+public base::InputAdaptor
 #endif
 {
   typedef base::Pointer<PairContainer> P;
  public:
-  PairContainerInput(){}
-  PairContainerInput(PairContainer *c);
+  PairContainerAdaptor(){}
+  PairContainerAdaptor(PairContainer *c);
   template <class C>
-  PairContainerInput(base::internal::PointerBase<C> c): P(c){}
-  PairContainerInput(const ParticlePairsTemp &t,
-                          std::string name="PairContainerInput%1%");
+  PairContainerAdaptor(base::internal::PointerBase<C> c): P(c){}
+  PairContainerAdaptor(const ParticlePairsTemp &t,
+                          std::string name="PairContainerAdaptor%1%");
 };
 
 

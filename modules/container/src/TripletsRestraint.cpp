@@ -16,7 +16,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 TripletsRestraint
 ::TripletsRestraint(TripletScore *ss,
-                      TripletContainerInput pc,
+                      TripletContainerAdaptor pc,
                       std::string name): P(ss, pc, name) {
 
 }

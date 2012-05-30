@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 MinimumSingletonRestraint
 ::MinimumSingletonRestraint(SingletonScore *f,
-                           SingletonContainerInput c,
+                           SingletonContainerAdaptor c,
                            unsigned int n,
                            std::string name):
   Restraint(c->get_model(), name),

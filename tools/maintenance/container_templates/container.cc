@@ -25,8 +25,10 @@ CLASSNAMEContainer::CLASSNAMEContainer(Model *m, std::string name):
 CLASSNAMEContainer::~CLASSNAMEContainer(){
 }
 
-CLASSNAMEContainerInput::CLASSNAMEContainerInput(CLASSNAMEContainer *c): P(c){}
-CLASSNAMEContainerInput::CLASSNAMEContainerInput(const PLURALVARIABLETYPE &t,
+CLASSNAMEContainerAdaptor
+::CLASSNAMEContainerAdaptor(CLASSNAMEContainer *c): P(c){}
+CLASSNAMEContainerAdaptor
+::CLASSNAMEContainerAdaptor(const PLURALVARIABLETYPE &t,
                                                  std::string name) {
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListCLASSNAMEContainer, c,

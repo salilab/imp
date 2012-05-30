@@ -45,7 +45,7 @@ Subsets get_subsets(const SubsetGraph &g){
 
 
 
-SubsetGraph get_restraint_graph(ScoringFunctionInput in,
+SubsetGraph get_restraint_graph(ScoringFunctionAdaptor in,
                                 const ParticleStatesTable *pst) {
   RestraintsTemp rs=IMP::create_decomposition(in->create_restraints());
   //ScoreStatesTemp ss= get_required_score_states(rs);
@@ -386,13 +386,13 @@ namespace {
 
 }
 
-InteractionGraph get_interaction_graph(ScoringFunctionInput rsi,
+InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const ParticleStatesTable* pst) {
   ParticlesTemp ps = get_as<ParticlesTemp>(pst->get_subset());
   return get_interaction_graph(rsi, ps);
 }
 
-InteractionGraph get_interaction_graph(ScoringFunctionInput rsi,
+InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
                                        const ParticlesTemp& ps) {
   if (ps.empty()) return InteractionGraph();
   InteractionGraph ret(ps.size());
@@ -648,7 +648,7 @@ bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
 
 
 
-MergeTree get_merge_tree(ScoringFunctionInput rs,
+MergeTree get_merge_tree(ScoringFunctionAdaptor rs,
                          const ParticleStatesTable *pst) {
   InteractionGraph ig= get_interaction_graph(rs, pst);
   SubsetGraph jt= get_junction_tree(ig);

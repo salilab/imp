@@ -45,7 +45,7 @@ public Restraint
   void assign_pair(const ParticleIndexPair& index) const;
 public:
   PredicatePairsRestraint(PairPredicate *pred,
-                      PairContainerInput input,
+                      PairContainerAdaptor input,
                       std::string name="PredicatePairsRestraint %1%");
 
   /** This version uses the container::create_restraint() function and so

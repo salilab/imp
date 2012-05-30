@@ -35,7 +35,7 @@ public:
   /** n is the number of LCMinimum scores to use.
    */
   MinimumSingletonRestraint(SingletonScore *f,
-                                 SingletonContainerInput c,
+                                 SingletonContainerAdaptor c,
                                  unsigned int n=1,
                                  std::string name
                                  ="MinimumSingletonRestraint %1%");

@@ -30,7 +30,7 @@ ConfigurationSet *Sampler::get_sample() const {
   return do_sample();
 }
 
-void Sampler::set_scoring_function(ScoringFunctionInput sf) {
+void Sampler::set_scoring_function(ScoringFunctionAdaptor sf) {
   sf_=sf;
 }
 

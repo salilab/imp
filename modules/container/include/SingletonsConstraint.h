@@ -53,7 +53,7 @@ public:
    */
   SingletonsConstraint(SingletonModifier *before,
                        SingletonDerivativeModifier *after,
-                       SingletonContainerInput c,
+                       SingletonContainerAdaptor c,
                        std::string name="SingletonConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

@@ -59,14 +59,14 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   int get_if_moved() const;
   void fill_list() const;
   double fill_list_if_good(double max) const;
-  ExcludedVolumeRestraint(SingletonContainerInput sc,
+  ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                           SoftSpherePairScore *ssps,
                           ObjectKey ok, double slack=10);
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The spring constant used is k.*/
-  ExcludedVolumeRestraint(SingletonContainerInput sc,
+  ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                           double k=1, double slack=10,
                           std::string name="ExcludedVolumeRestraint%1%");
 

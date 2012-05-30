@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 MinimumQuadRestraint
 ::MinimumQuadRestraint(QuadScore *f,
-                           QuadContainerInput c,
+                           QuadContainerAdaptor c,
                            unsigned int n,
                            std::string name):
   Restraint(c->get_model(), name),

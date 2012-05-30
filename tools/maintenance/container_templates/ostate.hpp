@@ -38,7 +38,7 @@ public:
       \param[in] gf The CLASSNAMEModifier to apply to all elements.
       \param[in] name The name to use for this Object
    */
-  CLASSNAMEsOptimizerState(CLASSNAMEContainerInput c, CLASSNAMEModifier *gf,
+  CLASSNAMEsOptimizerState(CLASSNAMEContainerAdaptor c, CLASSNAMEModifier *gf,
                            std::string name="CLASSNAMEsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(CLASSNAMEsOptimizerState);

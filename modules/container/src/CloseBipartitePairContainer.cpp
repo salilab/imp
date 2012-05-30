@@ -15,15 +15,15 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainerInput a,
-                              SingletonContainerInput b,
+::CloseBipartitePairContainer(SingletonContainerAdaptor a,
+                              SingletonContainerAdaptor b,
                               double distance,
                               double slack):
   P(a,b,distance,slack){}
 
 CloseBipartitePairContainer
-::CloseBipartitePairContainer(SingletonContainerInput a,
-                              SingletonContainerInput b,
+::CloseBipartitePairContainer(SingletonContainerAdaptor a,
+                              SingletonContainerAdaptor b,
                               double distance,
                               core::ClosePairsFinder *,
                               double slack):

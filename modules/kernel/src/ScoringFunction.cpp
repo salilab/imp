@@ -55,14 +55,14 @@ ScoringFunction::get_required_score_states(const DependencyGraph &dg,
 }
 
 ScoringFunction*
-ScoringFunctionInput::get(const RestraintsTemp &sf) {
+ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
   return new internal::RestraintsScoringFunction(sf);
 }
 
-ScoringFunction* ScoringFunctionInput::get(Model *sf) {
+ScoringFunction* ScoringFunctionAdaptor::get(Model *sf) {
   return sf->create_scoring_function();
 }
-ScoringFunction* ScoringFunctionInput::get(Restraint *sf) {
+ScoringFunction* ScoringFunctionAdaptor::get(Restraint *sf) {
   return sf->create_scoring_function();
 }
 
@@ -75,7 +75,7 @@ namespace {
 }
 
 
-void show_restraint_hierarchy(ScoringFunctionInput r, std::ostream &out) {
+void show_restraint_hierarchy(ScoringFunctionAdaptor r, std::ostream &out) {
   Restraints cur= r->create_restraints();
   for (unsigned int i=0; i< cur.size(); ++i) {
       Restraint*r= cur[i];

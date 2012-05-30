@@ -25,8 +25,10 @@ TripletContainer::TripletContainer(Model *m, std::string name):
 TripletContainer::~TripletContainer(){
 }
 
-TripletContainerInput::TripletContainerInput(TripletContainer *c): P(c){}
-TripletContainerInput::TripletContainerInput(const ParticleTripletsTemp &t,
+TripletContainerAdaptor
+::TripletContainerAdaptor(TripletContainer *c): P(c){}
+TripletContainerAdaptor
+::TripletContainerAdaptor(const ParticleTripletsTemp &t,
                                                  std::string name) {
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListTripletContainer, c,

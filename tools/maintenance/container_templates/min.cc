@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 MINORMAXCLASSNAMERestraint
 ::MINORMAXCLASSNAMERestraint(CLASSNAMEScore *f,
-                           CLASSNAMEContainerInput c,
+                           CLASSNAMEContainerAdaptor c,
                            unsigned int n,
                            std::string name):
   Restraint(c->get_model(), name),

@@ -105,7 +105,7 @@ void Optimizer::set_restraints(const RestraintsTemp &rs) {
   }
 }
 
-void Optimizer::set_scoring_function(ScoringFunctionInput sf) {
+void Optimizer::set_scoring_function(ScoringFunctionAdaptor sf) {
   cache_= sf;
 }
 

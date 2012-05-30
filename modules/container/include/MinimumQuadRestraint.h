@@ -35,7 +35,7 @@ public:
   /** n is the number of LCMinimum scores to use.
    */
   MinimumQuadRestraint(QuadScore *f,
-                                 QuadContainerInput c,
+                                 QuadContainerAdaptor c,
                                  unsigned int n=1,
                                  std::string name
                                  ="MinimumQuadRestraint %1%");

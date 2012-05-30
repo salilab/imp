@@ -43,7 +43,7 @@ public ScoreState
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:
-  DistributeSingletonsScoreState(SingletonContainerInput input,
+  DistributeSingletonsScoreState(SingletonContainerAdaptor input,
                       std::string name="DistributeSingletonsScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate

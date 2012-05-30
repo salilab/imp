@@ -44,8 +44,8 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
                                                IMP_ABP_LOOP);
 #undef IMP_ABP_LOOP
 public:
-  AllBipartitePairContainer(SingletonContainerInput a,
-                            SingletonContainerInput b,
+  AllBipartitePairContainer(SingletonContainerAdaptor a,
+                            SingletonContainerAdaptor b,
                             std::string name="AllBipartitePairContainer%1%");
 
   IMP_PAIR_CONTAINER(AllBipartitePairContainer);

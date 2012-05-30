@@ -25,8 +25,10 @@ QuadContainer::QuadContainer(Model *m, std::string name):
 QuadContainer::~QuadContainer(){
 }
 
-QuadContainerInput::QuadContainerInput(QuadContainer *c): P(c){}
-QuadContainerInput::QuadContainerInput(const ParticleQuadsTemp &t,
+QuadContainerAdaptor
+::QuadContainerAdaptor(QuadContainer *c): P(c){}
+QuadContainerAdaptor
+::QuadContainerAdaptor(const ParticleQuadsTemp &t,
                                                  std::string name) {
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListQuadContainer, c,

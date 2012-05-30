@@ -25,8 +25,10 @@ SingletonContainer::SingletonContainer(Model *m, std::string name):
 SingletonContainer::~SingletonContainer(){
 }
 
-SingletonContainerInput::SingletonContainerInput(SingletonContainer *c): P(c){}
-SingletonContainerInput::SingletonContainerInput(const ParticlesTemp &t,
+SingletonContainerAdaptor
+::SingletonContainerAdaptor(SingletonContainer *c): P(c){}
+SingletonContainerAdaptor
+::SingletonContainerAdaptor(const ParticlesTemp &t,
                                                  std::string name) {
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListSingletonContainer, c,

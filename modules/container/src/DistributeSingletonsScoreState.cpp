@@ -12,7 +12,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributeSingletonsScoreState::
-DistributeSingletonsScoreState(SingletonContainerInput input,
+DistributeSingletonsScoreState(SingletonContainerAdaptor input,
                                std::string name): ScoreState(name) {
   input_=input;
   updated_=false;

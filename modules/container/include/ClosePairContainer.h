@@ -53,11 +53,11 @@ public core::internal::CoreClosePairContainer
   typedef core::internal::CoreClosePairContainer P;
 public:
   //! Get the individual particles from the passed SingletonContainer
-  ClosePairContainer(SingletonContainerInput c, double distance,
+  ClosePairContainer(SingletonContainerAdaptor c, double distance,
                      double slack=1);
 
   //! Get the individual particles from the passed SingletonContainer
-  ClosePairContainer(SingletonContainerInput c, double distance,
+  ClosePairContainer(SingletonContainerAdaptor c, double distance,
                      core::ClosePairsFinder *cpf,
                      double slack=1);
 

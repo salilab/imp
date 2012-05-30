@@ -19,7 +19,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 MinimumPairRestraint
 ::MinimumPairRestraint(PairScore *f,
-                           PairContainerInput c,
+                           PairContainerAdaptor c,
                            unsigned int n,
                            std::string name):
   Restraint(c->get_model(), name),

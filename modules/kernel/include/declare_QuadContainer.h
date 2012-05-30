@@ -21,6 +21,7 @@
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/base/InputAdaptor.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -117,19 +118,21 @@ public:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT QuadContainerInput
-#ifndef SWIG
-: public base::Pointer<QuadContainer>
+class IMPEXPORT QuadContainerAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+public base::Pointer<QuadContainer>
+#else
+public base::InputAdaptor
 #endif
 {
   typedef base::Pointer<QuadContainer> P;
  public:
-  QuadContainerInput(){}
-  QuadContainerInput(QuadContainer *c);
+  QuadContainerAdaptor(){}
+  QuadContainerAdaptor(QuadContainer *c);
   template <class C>
-  QuadContainerInput(base::internal::PointerBase<C> c): P(c){}
-  QuadContainerInput(const ParticleQuadsTemp &t,
-                          std::string name="QuadContainerInput%1%");
+  QuadContainerAdaptor(base::internal::PointerBase<C> c): P(c){}
+  QuadContainerAdaptor(const ParticleQuadsTemp &t,
+                          std::string name="QuadContainerAdaptor%1%");
 };
 
 
