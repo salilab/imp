@@ -80,7 +80,7 @@ Writer *create_writer(std::string name) {
             base::ValueException);
 }
 
-WriterOutput::~WriterOutput(){}
+WriterAdaptor::~WriterAdaptor(){}
 
 
 
