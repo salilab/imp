@@ -25,8 +25,8 @@ An overview of the various modules currently available. Representative classes a
 | Module|Representation|Scoring|Sampling|Analysis|
 |-------|--------------|-------|--------|--------|
 | kernel (IMP) | IMP::Particle, IMP::Model | IMP::Restraint, IMP::ScoringFunction, IMP::create_restraint() | IMP::Optimizer, IMP::Sampler | IMP::ConfigurationSet |
-| IMP::algebra | IMP::algebra::VectorD, IMP::algebra::SphereD, IMP::algebra::GridD, IMP::algebra::Transformation3D... | | IMP::algebra::get_random_vector_on() | IMP::algebra::HistogramD |
-|IMP::statistics | IMP::statistics::Embedding, IMP::statistics::Metric | | | IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering() |
+| IMP::algebra | IMP::algebra::VectorD, IMP::algebra::SphereD, IMP::algebra::GridD, IMP::algebra::Transformation3D... | | IMP::algebra::get_random_vector_on() |  |
+|IMP::statistics | IMP::statistics::Embedding, IMP::statistics::Metric | | | IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering(), IMP::statistics::HistogramD,... |
 | IMP::display | IMP::display::Geometry | | | IMP::display::PymolWriter, IMP::display::WriteOptimizerState... |
 | IMP::core | IMP::core::XYZ, IMP::core::XYZR, IMP::core::RigidBody | IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume | IMP::core::MonteCarlo, IMP::core::ConjugateGradients | |
 | IMP::atom | IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_in "IMP::atom::read_pdb()"... | \ref charmm_forcefield "Charmm force-field based scoring" | IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics | \ref pdb_out "IMP::atom::write_pdb()", IMP::atom::get_rmsd() |
