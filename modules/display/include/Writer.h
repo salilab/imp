@@ -12,7 +12,7 @@
 #include "declare_Geometry.h"
 #include "internal/writers.h"
 #include "GeometryProcessor.h"
-
+#include <IMP/base/InputAdaptor.h>
 #include <IMP/file.h>
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
@@ -165,7 +165,7 @@ IMP_OBJECTS(TextWriter, TextWriters);
     It can be implicitly constructed from either a Writer or a string.
     In the later case it determines what type of writer is needed from
     the file suffix. */
-class IMPDISPLAYEXPORT WriterOutput {
+class IMPDISPLAYEXPORT WriterOutput: public base::InputAdaptor {
   IMP::OwnerPointer<Writer> writer_;
  public:
   WriterOutput(std::string name): writer_(create_writer(name)){}
