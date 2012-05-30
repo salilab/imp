@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PredicateTripletsRestraint
 ::PredicateTripletsRestraint(TripletPredicate *pred,
-                               TripletContainerInput input,
+                               TripletContainerAdaptor input,
                                std::string name):
   Restraint(input->get_model(), name),
   predicate_(pred), input_(input), updated_(false),

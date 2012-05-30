@@ -45,7 +45,7 @@ public Restraint
   void assign_pair(PASSINDEXTYPE index) const;
 public:
   PredicateCLASSNAMEsRestraint(CLASSNAMEPredicate *pred,
-                      CLASSNAMEContainerInput input,
+                      CLASSNAMEContainerAdaptor input,
                       std::string name="PredicateCLASSNAMEsRestraint %1%");
 
   /** This version uses the container::create_restraint() function and so

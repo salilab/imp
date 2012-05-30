@@ -79,7 +79,7 @@ IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& input);
     returned.
 */
 IMPDOMINOEXPORT
-SubsetGraph get_restraint_graph(ScoringFunctionInput rs,
+SubsetGraph get_restraint_graph(ScoringFunctionAdaptor rs,
                                 const ParticleStatesTable *pst);
 
 
@@ -102,11 +102,11 @@ SubsetGraph get_restraint_graph(ScoringFunctionInput rs,
     @{
  */
 IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph( ScoringFunctionInput rs,
+get_interaction_graph( ScoringFunctionAdaptor rs,
                       const ParticleStatesTable *pst);
 
 IMPDOMINOEXPORT InteractionGraph
-get_interaction_graph(ScoringFunctionInput rs,
+get_interaction_graph(ScoringFunctionAdaptor rs,
                       const ParticlesTemp &pst);
 
 /** Assuming that all the particles have Cartesian coordinates,
@@ -136,7 +136,7 @@ IMP_GRAPH(MergeTree, bidirectional, Subset, int);
     created to improve the InteractionGraph used internally.
  */
 IMPDOMINOEXPORT
-MergeTree get_merge_tree(ScoringFunctionInput input,
+MergeTree get_merge_tree(ScoringFunctionAdaptor input,
                          const ParticleStatesTable *pst);
 
 /** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)

@@ -50,7 +50,7 @@ public:
       \param[in] name The object name
    */
   PairsRestraint(PairScore *ss,
-                      PairContainerInput pc,
+                      PairContainerAdaptor pc,
                       std::string name="PairsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

@@ -17,7 +17,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-AllPairContainer::AllPairContainer(SingletonContainerInput c,
+AllPairContainer::AllPairContainer(SingletonContainerAdaptor c,
                                    std::string name):
   PairContainer(c->get_model(), name),
   c_(c){

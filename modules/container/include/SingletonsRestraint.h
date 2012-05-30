@@ -50,7 +50,7 @@ public:
       \param[in] name The object name
    */
   SingletonsRestraint(SingletonScore *ss,
-                      SingletonContainerInput pc,
+                      SingletonContainerAdaptor pc,
                       std::string name="SingletonsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

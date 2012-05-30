@@ -38,7 +38,7 @@ public:
       \param[in] gf The PairModifier to apply to all elements.
       \param[in] name The name to use for this Object
    */
-  PairsOptimizerState(PairContainerInput c, PairModifier *gf,
+  PairsOptimizerState(PairContainerAdaptor c, PairModifier *gf,
                            std::string name="PairsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(PairsOptimizerState);

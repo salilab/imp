@@ -16,7 +16,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 SingletonsRestraint
 ::SingletonsRestraint(SingletonScore *ss,
-                      SingletonContainerInput pc,
+                      SingletonContainerAdaptor pc,
                       std::string name): P(ss, pc, name) {
 
 }

@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 
 CLASSNAMEContainerStatistics
-::CLASSNAMEContainerStatistics(CLASSNAMEContainerInput c):
+::CLASSNAMEContainerStatistics(CLASSNAMEContainerAdaptor c):
   ScoreState(c->get_name()+" statistics"){
   container_=c;
   total_=0;

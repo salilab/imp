@@ -38,7 +38,7 @@ public:
       \param[in] gf The QuadModifier to apply to all elements.
       \param[in] name The name to use for this Object
    */
-  QuadsOptimizerState(QuadContainerInput c, QuadModifier *gf,
+  QuadsOptimizerState(QuadContainerAdaptor c, QuadModifier *gf,
                            std::string name="QuadsOptimizerState %1%");
 
   IMP_OPTIMIZER_STATE(QuadsOptimizerState);

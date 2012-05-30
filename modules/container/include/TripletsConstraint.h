@@ -53,7 +53,7 @@ public:
    */
   TripletsConstraint(TripletModifier *before,
                        TripletDerivativeModifier *after,
-                       TripletContainerInput c,
+                       TripletContainerAdaptor c,
                        std::string name="TripletConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

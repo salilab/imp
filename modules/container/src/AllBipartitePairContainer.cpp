@@ -19,8 +19,8 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 AllBipartitePairContainer
-::AllBipartitePairContainer( SingletonContainerInput a,
-                             SingletonContainerInput b,
+::AllBipartitePairContainer( SingletonContainerAdaptor a,
+                             SingletonContainerAdaptor b,
                              std::string name):
   PairContainer(a->get_model(), name),
   a_(a), b_(b) {

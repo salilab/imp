@@ -29,7 +29,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerInput sc,
+ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  double k, double s,
                                                  std::string name):
   Restraint(sc->get_model(), name), sc_(sc),
@@ -42,7 +42,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerInput sc,
   key_=ObjectKey(oss.str());
 }
 
-ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerInput sc,
+ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainerAdaptor sc,
                                                  SoftSpherePairScore *ssps,
                                                  ObjectKey ok,
                                                  double s):

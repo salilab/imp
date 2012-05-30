@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 TripletsOptimizerState
-::TripletsOptimizerState(TripletContainerInput c,
+::TripletsOptimizerState(TripletContainerAdaptor c,
                            TripletModifier *gm,
                            std::string name):
   OptimizerState(name),

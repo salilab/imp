@@ -32,7 +32,7 @@ class IMPCONTAINEREXPORT EventQuadsOptimizerState:
   int min_, max_;
 public:
   EventQuadsOptimizerState(QuadPredicate *pred,
-                                QuadContainerInput container,
+                                QuadContainerAdaptor container,
                                 int value, int min_count, int max_count,
                                 std::string name="ConstQuadPredicate%1%");
   IMP_OPTIMIZER_STATE(EventQuadsOptimizerState);

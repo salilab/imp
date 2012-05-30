@@ -25,8 +25,10 @@ PairContainer::PairContainer(Model *m, std::string name):
 PairContainer::~PairContainer(){
 }
 
-PairContainerInput::PairContainerInput(PairContainer *c): P(c){}
-PairContainerInput::PairContainerInput(const ParticlePairsTemp &t,
+PairContainerAdaptor
+::PairContainerAdaptor(PairContainer *c): P(c){}
+PairContainerAdaptor
+::PairContainerAdaptor(const ParticlePairsTemp &t,
                                                  std::string name) {
   Model *m=internal::get_model(t);
   IMP_NEW(internal::InternalListPairContainer, c,

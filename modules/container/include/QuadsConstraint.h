@@ -53,7 +53,7 @@ public:
    */
   QuadsConstraint(QuadModifier *before,
                        QuadDerivativeModifier *after,
-                       QuadContainerInput c,
+                       QuadContainerAdaptor c,
                        std::string name="QuadConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

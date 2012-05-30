@@ -12,7 +12,7 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 DistributeQuadsScoreState::
-DistributeQuadsScoreState(QuadContainerInput input,
+DistributeQuadsScoreState(QuadContainerAdaptor input,
                                std::string name): ScoreState(name) {
   input_=input;
   updated_=false;

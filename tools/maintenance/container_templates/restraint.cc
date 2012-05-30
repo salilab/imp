@@ -16,7 +16,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 CLASSNAMEsRestraint
 ::CLASSNAMEsRestraint(CLASSNAMEScore *ss,
-                      CLASSNAMEContainerInput pc,
+                      CLASSNAMEContainerAdaptor pc,
                       std::string name): P(ss, pc, name) {
 
 }

@@ -16,7 +16,7 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 CLASSNAMEsOptimizerState
-::CLASSNAMEsOptimizerState(CLASSNAMEContainerInput c,
+::CLASSNAMEsOptimizerState(CLASSNAMEContainerAdaptor c,
                            CLASSNAMEModifier *gm,
                            std::string name):
   OptimizerState(name),

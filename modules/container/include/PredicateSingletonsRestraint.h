@@ -45,7 +45,7 @@ public Restraint
   void assign_pair(ParticleIndex index) const;
 public:
   PredicateSingletonsRestraint(SingletonPredicate *pred,
-                      SingletonContainerInput input,
+                      SingletonContainerAdaptor input,
                       std::string name="PredicateSingletonsRestraint %1%");
 
   /** This version uses the container::create_restraint() function and so

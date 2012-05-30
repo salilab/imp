@@ -21,6 +21,7 @@
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/base/InputAdaptor.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -117,19 +118,21 @@ public:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT SingletonContainerInput
-#ifndef SWIG
-: public base::Pointer<SingletonContainer>
+class IMPEXPORT SingletonContainerAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+public base::Pointer<SingletonContainer>
+#else
+public base::InputAdaptor
 #endif
 {
   typedef base::Pointer<SingletonContainer> P;
  public:
-  SingletonContainerInput(){}
-  SingletonContainerInput(SingletonContainer *c);
+  SingletonContainerAdaptor(){}
+  SingletonContainerAdaptor(SingletonContainer *c);
   template <class C>
-  SingletonContainerInput(base::internal::PointerBase<C> c): P(c){}
-  SingletonContainerInput(const ParticlesTemp &t,
-                          std::string name="SingletonContainerInput%1%");
+  SingletonContainerAdaptor(base::internal::PointerBase<C> c): P(c){}
+  SingletonContainerAdaptor(const ParticlesTemp &t,
+                          std::string name="SingletonContainerAdaptor%1%");
 };
 
 

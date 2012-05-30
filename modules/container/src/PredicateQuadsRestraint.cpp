@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PredicateQuadsRestraint
 ::PredicateQuadsRestraint(QuadPredicate *pred,
-                               QuadContainerInput input,
+                               QuadContainerAdaptor input,
                                std::string name):
   Restraint(input->get_model(), name),
   predicate_(pred), input_(input), updated_(false),

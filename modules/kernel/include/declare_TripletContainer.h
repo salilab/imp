@@ -21,6 +21,7 @@
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/Pointer.h>
+#include <IMP/base/InputAdaptor.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -117,19 +118,21 @@ public:
 /** This class allows either a list or a container to be
     accepted as input.
 */
-class IMPEXPORT TripletContainerInput
-#ifndef SWIG
-: public base::Pointer<TripletContainer>
+class IMPEXPORT TripletContainerAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+public base::Pointer<TripletContainer>
+#else
+public base::InputAdaptor
 #endif
 {
   typedef base::Pointer<TripletContainer> P;
  public:
-  TripletContainerInput(){}
-  TripletContainerInput(TripletContainer *c);
+  TripletContainerAdaptor(){}
+  TripletContainerAdaptor(TripletContainer *c);
   template <class C>
-  TripletContainerInput(base::internal::PointerBase<C> c): P(c){}
-  TripletContainerInput(const ParticleTripletsTemp &t,
-                          std::string name="TripletContainerInput%1%");
+  TripletContainerAdaptor(base::internal::PointerBase<C> c): P(c){}
+  TripletContainerAdaptor(const ParticleTripletsTemp &t,
+                          std::string name="TripletContainerAdaptor%1%");
 };
 
 

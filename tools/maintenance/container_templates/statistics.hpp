@@ -32,7 +32,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerStatistics : public ScoreState
   bool track_unique_;
   IMP::compatibility::set<VARIABLETYPE> unique_;
 public:
-  CLASSNAMEContainerStatistics(CLASSNAMEContainerInput c);
+  CLASSNAMEContainerStatistics(CLASSNAMEContainerAdaptor c);
   void show_statistics(std::ostream &out) const;
   /** Keeping track of the number of unique entries seen is
       expensive, so it is not done by default.

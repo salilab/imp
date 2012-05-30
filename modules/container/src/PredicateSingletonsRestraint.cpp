@@ -15,7 +15,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
 PredicateSingletonsRestraint
 ::PredicateSingletonsRestraint(SingletonPredicate *pred,
-                               SingletonContainerInput input,
+                               SingletonContainerAdaptor input,
                                std::string name):
   Restraint(input->get_model(), name),
   predicate_(pred), input_(input), updated_(false),

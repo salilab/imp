@@ -43,7 +43,7 @@ public ScoreState
   mutable bool updated_;
   void update_lists_if_necessary() const;
 public:
-  DistributeQuadsScoreState(QuadContainerInput input,
+  DistributeQuadsScoreState(QuadContainerAdaptor input,
                       std::string name="DistributeQuadsScoreState %1%");
 
   /** A given tuple will go into the returned container if \c predicate

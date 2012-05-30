@@ -16,6 +16,7 @@
 #include "declare_Restraint.h"
 #include "ModelObject.h"
 #include "model_object_macros.h"
+#include <IMP/base/InputAdaptor.h>
 #include <IMP/base/tracking.h>
 #include <IMP/base/Pointer.h>
 
@@ -86,9 +87,11 @@ IMPEXPORT ScoringFunctions create_decomposition(ScoringFunction *sf);
 /** This class is to provide a consisted things
     that take ScoringFunctions as arguments, could also take a
     RestraintsTemp or a RestraintSet. */
-class IMPEXPORT ScoringFunctionInput
-#ifndef SWIG
-    : public base::OwnerPointer<ScoringFunction>
+class IMPEXPORT ScoringFunctionAdaptor:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  public base::OwnerPointer<ScoringFunction>
+#else
+  public base::InputAdaptor
 #endif
 {
   typedef base::OwnerPointer<ScoringFunction> P;
@@ -99,20 +102,20 @@ class IMPEXPORT ScoringFunctionInput
   static ScoringFunction* get(Model *sf);
   static ScoringFunction* get(Restraint *sf);
  public:
-  ScoringFunctionInput(){}
+  ScoringFunctionAdaptor(){}
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <class T>
-    ScoringFunctionInput(base::internal::PointerBase<T> t):
+    ScoringFunctionAdaptor(base::internal::PointerBase<T> t):
     P(get(t)){}
 #endif
-  ScoringFunctionInput(ScoringFunction *sf): P(sf){}
-  ScoringFunctionInput(const RestraintsTemp &sf): P(get(sf)){}
-  ScoringFunctionInput(Model *sf): P(get(sf)){}
-  ScoringFunctionInput(Restraint *sf): P(get(sf)){}
+  ScoringFunctionAdaptor(ScoringFunction *sf): P(sf){}
+  ScoringFunctionAdaptor(const RestraintsTemp &sf): P(get(sf)){}
+  ScoringFunctionAdaptor(Model *sf): P(get(sf)){}
+  ScoringFunctionAdaptor(Restraint *sf): P(get(sf)){}
 };
 
 //! Print the hierarchy of restraints
-IMPEXPORT void show_restraint_hierarchy(ScoringFunctionInput rs,
+IMPEXPORT void show_restraint_hierarchy(ScoringFunctionAdaptor rs,
                                      std::ostream &out=std::cout);
 
 

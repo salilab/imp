@@ -50,7 +50,7 @@ public:
       \param[in] name The object name
    */
   QuadsRestraint(QuadScore *ss,
-                      QuadContainerInput pc,
+                      QuadContainerAdaptor pc,
                       std::string name="QuadsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)

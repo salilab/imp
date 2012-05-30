@@ -14,6 +14,7 @@
 #include "exception.h"
 #include "internal/ifile.h"
 #include "Pointer.h"
+#include "InputAdaptor.h"
 #include <boost/shared_ptr.hpp>
 #include <fstream>
 #include <iostream>
@@ -43,7 +44,7 @@ struct TextProxy {
     \endcode
     \see TextInput
 */
-class IMPBASEEXPORT TextOutput
+class IMPBASEEXPORT TextOutput: public InputAdaptor
 {
   boost::shared_ptr<internal::IOStorage<std::ostream> > out_;
  public:
@@ -87,7 +88,7 @@ class IMPBASEEXPORT TextOutput
     \endcode
     \see TextOutput
 */
-class IMPBASEEXPORT TextInput
+class IMPBASEEXPORT TextInput: public InputAdaptor
 {
   boost::shared_ptr<internal::IOStorage<std::istream> > in_;
  public:
