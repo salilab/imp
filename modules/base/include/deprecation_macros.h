@@ -11,6 +11,8 @@
 
 #include "base_config.h"
 #include "deprecation.h"
+#include "log.h"
+#include "log_macros.h"
 
 /** \brief Mark the functionality as deprecated. It will print out a message.
 
