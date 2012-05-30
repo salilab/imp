@@ -82,8 +82,8 @@ accessing is done through appropriately named functions (eg RMF::Particle::set_r
 The %RMF library currently supports C++ and Python. The API is
 written so that \external{http://www.swig.org,SWIG} can be used to
 easily generate bindings for most languages. The two main
-exceptions are C and Fortran. Until the SWIG C target support is
-finished, these can be supported by writing a simple C API
+exceptions are C and Fortran. Until the SWIG %C target support is
+finished, these can be supported by writing a simple %C %API
 manually, probably a weeks work.
 
 \section hdf5access HDF5 wrappers
