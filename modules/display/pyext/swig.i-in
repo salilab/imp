@@ -25,7 +25,7 @@ IMP_SWIG_OBJECT(IMP::display, RestraintSetGeometry, RestraintSetGeometries);
 IMP_SWIG_OBJECT(IMP::display, GeometrySet, GeometrySets);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
-IMP_SWIG_VALUE(IMP::display, WriterOutput, WriterOutputs);
+IMP_SWIG_VALUE(IMP::display, WriterAdaptor, WriterAdaptors);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
 //IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
@@ -40,7 +40,7 @@ IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 
 namespace IMP {
 namespace display {
-%implicitconv WriterOutput;
+%implicitconv WriterAdaptor;
 }
 }
 

@@ -165,11 +165,11 @@ IMP_OBJECTS(TextWriter, TextWriters);
     It can be implicitly constructed from either a Writer or a string.
     In the later case it determines what type of writer is needed from
     the file suffix. */
-class IMPDISPLAYEXPORT WriterOutput: public base::InputAdaptor {
+class IMPDISPLAYEXPORT WriterAdaptor: public base::InputAdaptor {
   IMP::OwnerPointer<Writer> writer_;
  public:
-  WriterOutput(std::string name): writer_(create_writer(name)){}
-  WriterOutput(Writer *w): writer_(w){}
+  WriterAdaptor(std::string name): writer_(create_writer(name)){}
+  WriterAdaptor(Writer *w): writer_(w){}
 #ifndef SWIG
   Writer* operator->() const {
     return writer_;
@@ -181,11 +181,11 @@ class IMPDISPLAYEXPORT WriterOutput: public base::InputAdaptor {
   Writer* get_writer() const {
     return writer_;
   }
-  IMP_SHOWABLE_INLINE(WriterOutput, out << writer_->get_name());
-  ~WriterOutput();
+  IMP_SHOWABLE_INLINE(WriterAdaptor, out << writer_->get_name());
+  ~WriterAdaptor();
 };
 
-IMP_VALUES(WriterOutput, WriterOutputs);
+IMP_VALUES(WriterAdaptor, WriterAdaptors);
 
 IMPDISPLAY_END_NAMESPACE
 
