@@ -71,5 +71,41 @@ class TestNuisanceParam(IMP.test.TestCase):
                 est = si
             self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
 
+    def test_GetSet_Particle(self):
+        "tests get and set (border check) with particles"
+        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.Particle(self.m), 80.0)
+        nuisance.set_lower(lower)
+        nuisance.set_upper(upper)
+        for si in range(1,100):
+            nuisance.set_nuisance(si)
+            if si < 10:
+                est = 10
+            elif si > 80:
+                est = 80
+            else:
+                est = si
+            self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
+
+    def test_GetSet_Both(self):
+        "tests get and set (border check) with both particles and floats"
+        nuisance = Nuisance.setup_particle(IMP.Particle(self.m), 50.0)
+        lower = Nuisance.setup_particle(IMP.Particle(self.m), 10.0)
+        upper = Nuisance.setup_particle(IMP.Particle(self.m), 90.0)
+        nuisance.set_lower(1.0)
+        nuisance.set_lower(lower)
+        nuisance.set_upper(upper)
+        nuisance.set_upper(80.0)
+        for si in range(1,100):
+            nuisance.set_nuisance(si)
+            if si < 10:
+                est = 10
+            elif si > 80:
+                est = 80
+            else:
+                est = si
+            self.assertAlmostEqual(nuisance.get_nuisance(), est, delta=1e-6)
+
 if __name__ == '__main__':
     IMP.test.main()

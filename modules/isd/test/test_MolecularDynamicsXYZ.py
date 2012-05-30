@@ -65,8 +65,8 @@ class WriteTrajState(IMP.OptimizerState):
                            p.get_value(zkey), p.get_value(vxkey)))
         self.traj.append(step)
 
-class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
-    """Test molecular dynamics optimizer on nuisances"""
+class MolecularDynamicsTestsXYZ(IMP.test.TestCase):
+    """Test molecular dynamics optimizer on XYZs"""
 
     def setUp(self):
         """Set up particles and optimizer"""
@@ -74,9 +74,8 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         IMP.set_log_level(0)
         self.model = IMP.Model()
         self.particles = []
-        self.particles.append(IMP.isd.Nuisance.setup_particle(
-            IMP.Particle(self.model), -43.0))
-        self.particles[-1].set_nuisance_is_optimized(True)
+        self.particles.append(self.create_point_particle(self.model,
+                                                         -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
         self.md = IMP.isd.MolecularDynamics(self.model)
 
@@ -90,10 +89,10 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         for (num, step) in enumerate(traj):
             newvx = vxfunc(vx)
             for n in range(len(coor)):
-                self.assertAlmostEqual(vx, step[n][1], delta=1e-3,
-                                       msg=velmsg % (vx, step[n][1],
+                self.assertAlmostEqual(vx, step[n][3], delta=1e-3,
+                                       msg=velmsg % (vx, step[n][3],
                                                      num, n))
-                for d in range(1):
+                for d in range(3):
                     self.assertAlmostEqual(coor[n][d], step[n][d], delta=1e-3,
                                            msg=msg % (coor[n][d], step[n][d],
                                                       num, n, d))
@@ -102,7 +101,8 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
 
     def _optimize_model(self, timestep):
         """Run a short MD optimization on the model."""
-        start = [[p.get_value(nkey)] for p in self.model.get_particles()]
+        start = [[p.get_value(xkey), p.get_value(ykey), p.get_value(zkey)] \
+                 for p in self.model.get_particles()]
         # Add starting (step 0) position to the trajectory, with zero velocity
         traj = [[x+[0] for x in start]]
         state = WriteTrajState(traj)
@@ -146,8 +146,10 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
     def test_make_velocities(self):
         """Test that MD generates particle velocities"""
         self.md.optimize(0)
+        keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particles():
-            self.assertTrue(p.has_attribute(vnkey))
+            for key in keys:
+                self.assertTrue(p.has_attribute(key))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
@@ -163,9 +165,8 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         # Averages for temperature only make sense if we have a comparatively
         # large number of particles:
         for i in range(500):
-            self.particles.append(IMP.isd.Nuisance.setup_particle(
-                IMP.Particle(self.model), random.uniform(-100,100)))
-            self.particles[-1].set_nuisance_is_optimized(True)
+            self.particles.append(self.create_point_particle(self.model,
+                                                             -43.0, 65.0, 93.0))
             self.particles[-1].add_attribute(masskey, cmass, False)
         # Initial temperature should be zero:
         ekinetic = self.md.get_kinetic_energy()
@@ -195,6 +196,24 @@ class MolecularDynamicsTestsNuisance(IMP.test.TestCase):
         self.assertEqual(len(m), 2)
         for a in m:
             self.assertIsInstance(a, IMP.OptimizerState)
+
+    def test_rescaling(self):
+        """Test thermostatting by velocity rescaling"""
+        for i in range(100):
+            self.particles.append(self.create_point_particle(self.model,
+                                                             -43.0, 65.0, 93.0))
+            self.particles[-1].add_attribute(masskey, cmass, False)
+        self.md.assign_velocities(100.0)
+        scaler = IMP.atom.VelocityScalingOptimizerState(
+                             self.particles, 298.0, 10)
+        self.md.add_optimizer_state(scaler)
+        self.md.optimize(10)
+        # Temperature should have been rescaled to 298.0 at some point:
+        self._check_temperature(298.0, 0.1)
+        # Also check immediate rescaling:
+        scaler.set_temperature(50.0)
+        scaler.rescale_velocities()
+        self._check_temperature(50.0, 0.1)
 
 if __name__ == '__main__':
     IMP.test.main()

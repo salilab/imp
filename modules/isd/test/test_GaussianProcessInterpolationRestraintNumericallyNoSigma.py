@@ -55,8 +55,10 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
         self.d.set_nuisance_is_optimized(False)
         self.s = Scale.setup_particle(IMP.Particle(self.m),  0.0)
         self.s.set_nuisance_is_optimized(False)
+        self.A = Scale.setup_particle(IMP.Particle(self.m),  0.0)
+        self.A.set_nuisance_is_optimized(False)
         self.mean = GeneralizedGuinierPorodFunction(
-                self.G,self.Rg,self.d,self.s)
+                self.G,self.Rg,self.d,self.s, self.A)
         self.tau = Switching.setup_particle(IMP.Particle(self.m), 1.0)
         self.tau.set_nuisance_is_optimized(True)
         self.lam = Scale.setup_particle(IMP.Particle(self.m), 1.0)
@@ -324,7 +326,6 @@ class TestGaussianProcessInterpolationRestraintNumerically(IMP.test.TestCase):
             observed = self.gpr.get_hessian(False)[pa][pb-3] #s and d not opt
             #IMP.set_log_level(0)
             expected = IMP.test.numerical_derivative(PFunc, val, 0.01)
-            print val,observed,expected
             self.assertAlmostEqual(expected,observed,delta=1e-2)
 
     def testHessianNumericGLambda(self):
