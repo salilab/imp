@@ -15,6 +15,8 @@ IMPBASE_BEGIN_NAMESPACE
     wider variety of inputs than they would otherwise. The InputAdaptor class
     itself should not be used directly, it is just provided for purposes of
     documentation.
+
+    Input adaptor classes do not support output, comparisons or hashing.
 */
 class InputAdaptor {
 protected:
