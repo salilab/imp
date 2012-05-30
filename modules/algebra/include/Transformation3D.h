@@ -12,6 +12,7 @@
 #include "Vector3D.h"
 #include "Rotation3D.h"
 #include "BoundingBoxD.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -26,7 +27,7 @@ Transformation3D compose(const Transformation3D &a,
     \see IMP::core::Transform
     \geometry
 */
-class IMPALGEBRAEXPORT Transformation3D
+class IMPALGEBRAEXPORT Transformation3D: public GeometricPrimitiveD<3>
 {
 public:
   //! construct an invalid transformation

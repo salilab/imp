@@ -12,6 +12,7 @@
 #include "BoundingBoxD.h"
 #include "VectorD.h"
 #include "utility.h"
+#include "GeometricPrimitiveD.h"
 #include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -20,7 +21,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \geometry
   */
 template <int D>
-class SphereD {
+class SphereD: public GeometricPrimitiveD<D> {
 public:
   SphereD(){
 #if IMP_BUILD < IMP_FAST

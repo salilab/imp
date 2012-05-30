@@ -10,13 +10,14 @@
 
 #include "algebra_config.h"
 #include "Plane3D.h"
+#include "GeometricPrimitiveD.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Reflect about a plane in 3D
 /**
 */
-class IMPALGEBRAEXPORT Reflection3D
+class IMPALGEBRAEXPORT Reflection3D: public GeometricPrimitiveD<3>
 {
   Plane3D pl_;
 public:

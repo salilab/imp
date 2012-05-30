@@ -11,6 +11,7 @@
 #include "Transformation3D.h"
 #include "ReferenceFrame3D.h"
 #include "algebra_macros.h"
+#include "GeometricPrimitiveD.h"
 #include <iostream>
 #include "constants.h"
 
@@ -19,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /**
     \geometry
  */
-class IMPALGEBRAEXPORT Triangle3D
+class IMPALGEBRAEXPORT Triangle3D: public GeometricPrimitiveD<3>
 {
  public:
   Triangle3D(){}

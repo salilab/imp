@@ -12,6 +12,7 @@
 #include "Vector3D.h"
 #include "utility.h"
 #include "constants.h"
+#include "GeometricPrimitiveD.h"
 
 #include <IMP/base/log.h>
 #include <cmath>
@@ -42,7 +43,7 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 
     \geometry
 */
-class IMPALGEBRAEXPORT Rotation3D {
+class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
   VectorD<4> v_;
   mutable bool has_cache_;
   mutable Vector3D matrix_[3];
@@ -389,9 +390,8 @@ IMPALGEBRAEXPORT Rotation3D get_rotation_from_fixed_zyz(double Rot,
 
 //! A simple class for returning ZYZ Euler angles
 /**
-   \ingroup uninitialized_default
 */
-class FixedZYZ {
+class FixedZYZ: public GeometricPrimitiveD<3> {
   double v_[3];
 public:
   FixedZYZ(){}
@@ -417,10 +417,7 @@ IMP_VALUES(FixedZYZ, FixedZYZs);
 
 
 //! A simple class for returning ZXZ Euler angles
-/**
-   \ingroup uninitialized_default
-*/
-class FixedZXZ {
+class FixedZXZ: public GeometricPrimitiveD<3> {
   double v_[3];
 public:
   FixedZXZ(){}
@@ -444,10 +441,7 @@ IMP_VALUES(FixedZXZ, FixedZXZs);
 
 
 //! A simple class for returning XYZ Euler angles
-/**
-   \ingroup uninitialized_default
-*/
-class FixedXYZ {
+class FixedXYZ: public GeometricPrimitiveD<3>  {
   double v_[3];
 public:
   FixedXYZ(){}
