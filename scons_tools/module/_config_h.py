@@ -13,12 +13,12 @@ def _add_dep_control(name, preproc, h, controllable, default):
 namespace internal {
 extern %sEXPORT bool use_%s;
 }
-#endif
 
 inline void set_use_%s(bool tf) {
    internal::use_%s=tf;
 }
 inline bool get_use_%s() {return internal::use_%s;}
+#endif
 """%(preproc.replace("_",""), lcname, lcname, lcname, lcname, lcname)
     else:
         print >> h, """
