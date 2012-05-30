@@ -11,7 +11,6 @@
 #include "algebra_config.h"
 
 #include "Vector2D.h"
-#include "Matrix2D.h"
 #include "Rotation2D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
