@@ -22,117 +22,21 @@
  Various pieces of documentation are marked as being intended for developers.
 
 An overview of the various modules currently available. Representative classes and functions are shown.
-<table border="1">
-<tr>
-<td><b>Module</b></td>
-<td><b>Representation</b></td>
-<td><b>Scoring</b></td>
-<td><b>Sampling</b></td>
-<td><b>Analysis</b></td>
-</tr>
-<tr>
-<td>IMP</td>
-<td>IMP::Particle</td>
-<td>IMP::Restraint</td>
-<td>IMP::Optimizer, IMP::Sampler</td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::core</td>
-<td>IMP::core::XYZ, IMP::core::XYZR, IMP::core::RigidBody</td>
-<td>IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume</td>
-<td>IMP::core::MCCGSampler, IMP::core::MonteCarlo, IMP::core::ConjugateGradients</td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::atom</td>
-<td>IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_in "IMP::atom::read_pdb()"...</td>
-<td>\ref charmm_forcefield "Charmm force-field based scoring"</td>
-<td>IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics</td>
-<td>\ref pdb_out "IMP::atom::write_pdb()"</td>
-</tr>
-<tr>
-<td>IMP::container</td>
-<td></td>
-<td>IMP::container::SingletonsRestraint, IMP::container::PairsRestraint, IMP::container::ListSingletonContainer, IMP::container::ClosePairContainer, IMP::container::AllPairContainer...</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::statistics</td>
-<td></td>
-<td></td>
-<td></td>
-<td>IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering()</td>
-</tr>
-<tr>
-<td>IMP::em</td>
-<td></td>
-<td>IMP::em::FitRestraint</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::em2d</td>
-<td></td>
-<td>IMP::em2d::Em2DRestraint</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::saxs</td>
-<td></td>
-<td>IMP::saxs::Restraint</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::gsl</td>
-<td></td>
-<td></td>
-<td>IMP::gsl::Simplex, IMP::gsl::QuasiNewton</td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::domino</td>
-<td></td>
-<td></td>
-<td></td>
-<td>IMP::domino::DominoSampler, IMP::domino::BranchAndBoundSampler</td>
-</tr>
-<tr>
-<td>IMP::display</td>
-<td></td>
-<td></td>
-<td></td>
-<td>IMP::display::PymolWriter, IMP::display::ChimeraWriter, IMP::display::WriteOptimizerState...</td>
-</tr>
-<tr>
-<td>IMP::restrainer</td>
-<td>proteins as rigid bodies or a collection of balls</td>
-<td>Yeast-2-hybrid, EM density maps</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::modeller</td>
-<td></td>
-<td>Access to the Modeller scoring functions</td>
-<td></td>
-<td></td>
-</tr>
-<tr>
-<td>IMP::rmf</td>
-<td></td>
-<td></td>
-<td></td>
-<td>IO for IMP::atom::Hierarchy, IMP::Particle, IMP::Restraint and IMP::display::Geometry</td>
-</tr>
-</table>
-
-Not listed are
- - IMP::algebra that provides basic geometric and mathematical types and operations
- - IMP::benchmark that provides benchmarks of various usages of other modules
+| Module|Representation|Scoring|Sampling|Analysis|
+|-------|--------------|-------|--------|--------|
+| kernel (IMP) | IMP::Particle, IMP::Model | IMP::Restraint, IMP::ScoringFunction, IMP::create_restraint() | IMP::Optimizer, IMP::Sampler | IMP::ConfigurationSet |
+| IMP::algebra | IMP::algebra::VectorD, IMP::algebra::SphereD, IMP::algebra::GridD, IMP::algebra::Transformation3D... | | IMP::algebra::get_random_vector_on() | IMP::algebra::HistogramD |
+|IMP::statistics | IMP::statistics::Embedding, IMP::statistics::Metric | | | IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering() |
+| IMP::display | IMP::display::Geometry | | | IMP::display::PymolWriter, IMP::display::WriteOptimizerState... |
+| IMP::core | IMP::core::XYZ, IMP::core::XYZR, IMP::core::RigidBody | IMP::core::DistancePairScore, IMP::core::ExcludedVolumeRestraint, IMP::core::AngleTripletScore and other scoring based on distances, angles, volume | IMP::core::MonteCarlo, IMP::core::ConjugateGradients | |
+| IMP::atom | IMP::atom::Hierarchy, IMP::atom::Atom, IMP::atom::Residue, IMP::atom::Chain, IMP::atom::Bond, \ref pdb_in "IMP::atom::read_pdb()"... | \ref charmm_forcefield "Charmm force-field based scoring" | IMP::atom::BrownianDynamics, IMP::atom::MolecularDynamics | \ref pdb_out "IMP::atom::write_pdb()", IMP::atom::get_rmsd() |
+|IMP::container | | IMP::container::SingletonsRestraint, IMP::container::PairsRestraint, IMP::container::ListSingletonContainer, IMP::container::ClosePairContainer, IMP::container::AllPairContainer, IMP::container::create_restraint(),...| | |
+| IMP::rmf | IMP::rmf::create_restraints(), IMP::rmf::create_hierarchies(), IMP::rmf::create_geometries() | | | IMP::rmf::add_restraints(), IMP::rmf::add_hierarchies(), IMP::rmf::add_geometries() |
+| IMP::em | IMP::em::DensityMap | IMP::em::FitRestraint | | |
+| IMP::em2d | | IMP::em2d::Em2DRestraint | | |
+| IMP::saxs | IMP::saxs::Profile | IMP::saxs::Restraint | | |
+| IMP::gsl | | | IMP::gsl::Simplex, IMP::gsl::QuasiNewton | |
+| IMP::domino | | | IMP::domino::DominoSampler, IMP::domino::BranchAndBoundSampler | |
+| IMP::modeller | | Access to the Modeller scoring functions | | |
 
  */
-
