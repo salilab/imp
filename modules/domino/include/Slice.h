@@ -25,8 +25,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** This class stores a particular slice through a subset. The entire
     inner Subset must be contained in the outer one.
 */
-class IMPDOMINOEXPORT Slice: public base::ConstArray<unsigned int>,
-                             public base::Value {
+class IMPDOMINOEXPORT Slice: public base::ConstArray<unsigned int> {
   typedef base::ConstArray<unsigned int> P;
   static Ints get_slice(Subset outer, Subset inner) {
     Ints ret(inner.size());

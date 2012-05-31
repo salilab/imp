@@ -27,8 +27,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     This order can be used to write s to disk, as the order in s can
     change between domino runs.
 */
-class IMPDOMINOEXPORT Order: public base::ConstArray<unsigned int>,
-                             public base::Value{
+class IMPDOMINOEXPORT Order: public base::ConstArray<unsigned int> {
   typedef base::ConstArray<unsigned int> P;
 public:
   Order() {}

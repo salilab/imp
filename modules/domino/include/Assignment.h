@@ -30,8 +30,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a vector/python list like
     interface.
 */
-class IMPDOMINOEXPORT Assignment: public base::ConstArray<int>,
-                                  public base::Value {
+class IMPDOMINOEXPORT Assignment: public base::ConstArray<int> {
   typedef base::ConstArray<int> P;
 public:
   Assignment(){}
