@@ -5,7 +5,7 @@
  */
 
 #include <IMP/statistics/Histogram.h>
-#include <IMP/base/deprecation.h>
+#include <IMP/base/deprecation_macros.h>
 #include <numeric>
 #include <iostream>
 #include <iomanip>

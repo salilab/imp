@@ -10,6 +10,10 @@
 
 #include "display_config.h"
 #include <IMP/base/Value.h>
+#include <IMP/base/showable_macros.h>
+#include <IMP/base/comparison_macros.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/value_macros.h>
 #include <boost/array.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
