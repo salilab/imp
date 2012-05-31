@@ -9,13 +9,14 @@
 #define IMPALGEBRA_PARABOLIC_FIT_H
 
 #include "Vector2D.h"
-
+#include "GeometricPrimitiveD.h"
 #include <vector>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Calculate parabola that fits best the input data points
-class IMPALGEBRAEXPORT ParabolicFit2D {
+class IMPALGEBRAEXPORT ParabolicFit2D:
+  public GeometricPrimitiveD<2> {
 public:
 
   //! Constructor

@@ -15,6 +15,7 @@
 #include "grid_indexes.h"
 #include "Vector3D.h"
 #include "BoundingBoxD.h"
+#include "GeometricPrimitiveD.h"
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/compatibility/map.h>
 #include <IMP/compatibility/vector.h>
@@ -76,7 +77,8 @@ template <int D,
           // swig needs this for some reason
           class Value,
           class EmbeddingT=DefaultEmbeddingD<D> >
-class GridD: public Storage, public EmbeddingT
+class GridD: public Storage, public EmbeddingT,
+             public GeometricPrimitiveD<D>
 {
  private:
   typedef GridD<D, Storage, Value, EmbeddingT> This;

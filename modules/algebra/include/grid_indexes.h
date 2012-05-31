@@ -13,6 +13,7 @@
 #include "internal/vector.h"
 #include "internal/grid_internal.h"
 #include <IMP/base/types.h>
+#include <IMP/base/Value.h>
 #include <IMP/base/exception.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -24,7 +25,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
    \see Grid3D
 */
 template < int D>
-class ExtendedGridIndexD {
+class ExtendedGridIndexD: public base::Value {
   internal::VectorData<int, D, true> data_;
   int compare(const ExtendedGridIndexD<D> &o) const {
     if (D==-1) {
@@ -139,7 +140,7 @@ inline std::size_t hash_value(const ExtendedGridIndexD<D> &ind) {
    \see Grid3D
 */
 template <int D>
-class GridIndexD
+class GridIndexD: public base::Value
 {
   internal::VectorData<int, D, true> data_;
   int compare(const GridIndexD<D> &o) const {

@@ -72,10 +72,12 @@ IMP_SWIG_NATIVE_VALUE(std::string);
 %rename(_InputAdaptor) IMP::base::InputAdaptor;
 %rename(_NonCopyable) IMP::base::NonCopyable;
 %rename(_RAII) IMP::base::RAII;
+%rename(_Value) IMP::base::Value;
 
 %include "IMP/base/InputAdaptor.h"
 %include "IMP/base/NonCopyable.h"
 %include "IMP/base/RAII.h"
+%include "IMP/base/Value.h"
 
 %include "IMP/base/Vector.h"
 %include "IMP/base/types.h"

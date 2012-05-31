@@ -11,6 +11,7 @@
 #include "base_config.h"
 // do not include anything more from base
 #include "Showable.h"
+#include "Value.h"
 #include <IMP/compatibility/vector.h>
 #include <sstream>
 #include <IMP/compatibility/hash.h>
@@ -26,7 +27,7 @@ IMPBASE_BEGIN_NAMESPACE
     - bounds checking in debug mode
 */
 template <class T>
-class Vector: public compatibility::vector<T> {
+class Vector: public compatibility::vector<T>, public Value {
   typedef compatibility::vector<T> V;
  public:
   Vector(){}

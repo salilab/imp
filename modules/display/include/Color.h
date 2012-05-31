@@ -9,9 +9,7 @@
 #define IMPDISPLAY_COLOR_H
 
 #include "display_config.h"
-
-#include <IMP/PairContainer.h>
-#include <IMP/SingletonContainer.h>
+#include <IMP/base/Value.h>
 #include <boost/array.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -19,7 +17,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 //! Represent an RGB color
 /**
  */
-class IMPDISPLAYEXPORT Color
+class IMPDISPLAYEXPORT Color: public base::Value
 {
   boost::array<float, 3> c_;
   int compare(float a, float b) const {

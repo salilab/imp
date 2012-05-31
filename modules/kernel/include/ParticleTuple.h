@@ -13,7 +13,7 @@
 #include "Pointer.h"
 #include "WeakPointer.h"
 #include "internal/ParticleTupleBase.h"
-
+#include <IMP/base/Value.h>
 IMP_BEGIN_NAMESPACE
 
 
@@ -30,7 +30,11 @@ class RefCountedParticleTuple;
 */
 template <unsigned int D>
 class ParticleTuple:
-  public internal::ParticleTupleBase<D, WeakPointer<Particle> >
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  public internal::ParticleTupleBase<D, WeakPointer<Particle> >,
+#endif
+  public base::Value
+
 {
 public:
   typedef internal::ParticleTupleBase<D, WeakPointer<Particle> > P;
@@ -53,7 +57,10 @@ public:
 
 template <unsigned int D>
 class RefCountedParticleTuple:
-  public internal::ParticleTupleBase<D, Pointer<Particle> >
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  public internal::ParticleTupleBase<D, Pointer<Particle> >,
+#endif
+  public base::Value
 {
 public:
   typedef internal::ParticleTupleBase<D, Pointer<Particle> > P;

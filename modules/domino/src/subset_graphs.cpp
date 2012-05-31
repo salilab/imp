@@ -431,8 +431,9 @@ InteractionGraph get_interaction_graph(ScoringFunctionAdaptor rsi,
     }
     pm[i]= ps[i];
   }
-  for (Restraints::const_iterator it= rs.begin();
-       it != rs.end(); ++it) {
+  IMP::Restraints all_rs= IMP::get_restraints(rs);
+  for (Restraints::const_iterator it= all_rs.begin();
+       it != all_rs.end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
   }

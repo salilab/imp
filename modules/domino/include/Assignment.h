@@ -13,7 +13,7 @@
 #include "domino_macros.h"
 #include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Value.h>
 #include <IMP/base/ConstArray.h>
 #include <IMP/macros.h>
 
@@ -30,7 +30,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a vector/python list like
     interface.
 */
-class IMPDOMINOEXPORT Assignment: public base::ConstArray<int> {
+class IMPDOMINOEXPORT Assignment: public base::ConstArray<int>,
+                                  public base::Value {
   typedef base::ConstArray<int> P;
 public:
   Assignment(){}

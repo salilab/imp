@@ -11,6 +11,7 @@
 #include "base_config.h"
 #include "bracket_macros.h"
 #include "showable_macros.h"
+#include "Value.h"
 #include <IMP/compatibility/vector.h>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -20,7 +21,7 @@ IMPBASE_BEGIN_NAMESPACE
     that it can be replaced by an integer everywhere, if needed.
 */
 template <class Tag>
-class Index {
+class Index: public Value {
   int i_;
  public:
   explicit Index(int i): i_(i){}

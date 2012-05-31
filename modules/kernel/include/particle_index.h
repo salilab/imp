@@ -13,6 +13,7 @@
 #include <boost/array.hpp>
 #include <IMP/base/base_macros.h>
 #include <IMP/base/Index.h>
+#include <IMP/base/Value.h>
 
 IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
@@ -30,9 +31,12 @@ typedef base::Vector<ParticleIndex> ParticleIndexes;
     \note ParticleTuple objects are ordered.
 */
 template <unsigned int D>
-class ParticleIndexTuple
+class ParticleIndexTuple:
 #if !defined(SWIG)
-: public boost::array<ParticleIndex, D>
+  public boost::array<ParticleIndex, D>,
+  public base::Value
+#else
+  public base::Value
 #endif
 {
   typedef boost::array<ParticleIndex, D> P;

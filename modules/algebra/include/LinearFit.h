@@ -9,13 +9,14 @@
 #define IMPALGEBRA_LINEAR_FIT_H
 
 #include "Vector2D.h"
-
+#include "GeometricPrimitiveD.h"
 #include <vector>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Calculate line that fits best the input data points (Linear least squares)
-class IMPALGEBRAEXPORT LinearFit2D {
+class IMPALGEBRAEXPORT LinearFit2D:
+  public GeometricPrimitiveD<2> {
 public:
   //! Constructor
   /**

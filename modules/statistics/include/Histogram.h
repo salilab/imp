@@ -15,7 +15,9 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 //! Histogram
 /** Keeps a set of values within a range
     the range is arranged into some number of bins
-    specified during construction. */
+    specified during construction.
+    \deprecated{Use HistogramD instead.}
+*/
 class IMPSTATISTICSEXPORT Histogram {
   public:
   //! Constructor

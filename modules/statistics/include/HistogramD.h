@@ -9,6 +9,7 @@
 #define IMPSTATISTICS_HISTOGRAM_D_H
 #include "statistics_config.h"
 #include "internal/histogram.h"
+#include <IMP/algebra/GeometricPrimitiveD.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/GridD.h>
@@ -22,7 +23,7 @@ template <int D, class Grid=algebra::GridD<D,
                                                           double>,
                         double,
                       typename algebra::DefaultEmbeddingD<D> > >
-class HistogramD {
+class HistogramD: public algebra::GeometricPrimitiveD<D> {
   public:
 
   typedef Grid CountGrid;

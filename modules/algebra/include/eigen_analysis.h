@@ -11,6 +11,7 @@
 
 #include "VectorD.h"
 #include "Transformation3D.h"
+#include "GeometricPrimitiveD.h"
 #include "IMP/algebra/internal/utility.h"
 #include "IMP/algebra/ReferenceFrame3D.h"
 #include <IMP/algebra/internal/jama_svd.h>
@@ -20,7 +21,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a eigen analysis of some data.
  */
 template <int D>
-class PrincipalComponentAnalysisD {
+class PrincipalComponentAnalysisD:
+  public GeometricPrimitiveD<D> {
  public:
   PrincipalComponentAnalysisD(){}
   PrincipalComponentAnalysisD(
