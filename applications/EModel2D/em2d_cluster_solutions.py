@@ -78,28 +78,6 @@ class AlignmentClustering:
         particles_container.add_particles(atom.get_leaves(assembly))
         metric = stats.ConfigurationSetRMSDMetric(
                                 configuration_set,particles_container, True)
-        #################################
-        # CAREFUL CAREFUL CAREFUL. I wrote this test to check if the
-        # ConfigurationSetRMSDMetric was correct. There was a bug in line 70
-        # of metric_clustering.cpp. The correct line is:
-        # return atom::get_rmsd(vj, vi, tr). Remember to commit it.
-        """
-        metric = RMSDMetric(configuration_set,particles_container, True)
-        print "xxxxxxxxxxx",0
-        print v[0][-10:]
-        print "xxxxxxxxxxx",1
-        print v[1][-10:]
-        tr= alg.get_transformation_aligning_first_to_second(v[1], v[0]);
-        print "============",tr
-        vnew = [tr.get_transformed(p) for p in v[1]]
-        print "manual rmsd01 ",atom.get_rmsd(vnew, v[0]);
-        rmsd01 = metric.get_distance(1,0)
-        print "rmsd01", rmsd01
-        exit()
-        """
-#        for i in range(1,configuration_set.get_number_of_configurations()):
-#            print "rmsd to first solution", metric.get_distance(i,0)
-        #################################
         log.info("Clustering ... ")
         maximum_centrality = 10
         self.pclus = stats.create_centrality_clustering( metric, max_rmsd,
