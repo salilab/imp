@@ -13,7 +13,7 @@
 #include <cmath>
 
 IMP_BEGIN_NAMESPACE
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 static const double PI= algebra::PI;
 #endif
 

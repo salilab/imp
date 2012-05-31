@@ -239,6 +239,7 @@ class ParticleQuadsTemp;
 %include "IMP/particle_index.h"
 
 %include "IMP/base_types.h"
+%include "IMP/constants.h"
 %include "IMP/ModelObject.h"
 %include "IMP/utility.h"
 %include "IMP/DerivativeAccumulator.h"
