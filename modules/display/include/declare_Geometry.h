@@ -11,6 +11,7 @@
 #include "display_config.h"
 #include "Color.h"
 #include <IMP/base/Object.h>
+#include <IMP/base/object_macros.h>
 #include <IMP/base/ref_counted_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
