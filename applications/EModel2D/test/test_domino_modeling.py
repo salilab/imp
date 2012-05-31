@@ -30,7 +30,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         exp = utility.get_experiment_params(fn)
         for i in range(len(exp.fn_pdbs)):
             exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
-        fn_output_db = self.get_input_file_name("domino_solutions.db")
+        fn_output_db = self.get_input_file_name("domino_solutions_temp.db")
         domino_model.generate_domino_model(fn, fn_output_db)
         # assert that a database of results is created
         self.assertTrue(os.path.exists(fn_output_db))
