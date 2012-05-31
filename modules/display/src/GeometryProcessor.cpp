@@ -8,6 +8,7 @@
 
 #include "IMP/display/GeometryProcessor.h"
 #include <boost/algorithm/string/predicate.hpp>
+#include <IMP/base/Pointer.h>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -25,7 +26,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
                                                   bool has_color,
                                                   Color c,
                                                   std::string name) {
-  IMP::OwnerPointer<Geometry> pg(g);
+  IMP::base::OwnerPointer<Geometry> pg(g);
   if (g->get_has_color()) {
     c= g->get_color();
     has_color=true;
