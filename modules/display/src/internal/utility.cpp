@@ -9,6 +9,8 @@
 #include <IMP/display/internal/utility.h>
 #include <IMP/display/declare_Geometry.h>
 #include <IMP/display/primitive_geometries.h>
+#include <IMP/base/check_macros.h>
+#include <IMP/base/warning_macros.h>
 #include <algorithm>
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polygons.h>
@@ -33,7 +35,6 @@ namespace {
   }
 
   Ints get_triangulation_of_convex_faces(const Ints &faces) {
-    using IMP::operator<<;
     IMP_LOG(VERBOSE, "Convex faces are " << faces << std::endl);
     Ints ret;
     Ints::const_iterator it= faces.begin();
@@ -56,7 +57,6 @@ namespace {
   Ints get_triangulation_of_face(const Ints &face,
                                  const algebra::Vector3Ds &vertices) {
     IMP_UNUSED(vertices[0]);
-    using IMP::operator<<;
     if (face.size()==3) {
       return face;
     } else {

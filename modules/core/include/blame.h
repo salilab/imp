@@ -11,6 +11,7 @@
 
 #include "core_config.h"
 #include <IMP/display/declare_Geometry.h>
+#include <IMP/constants.h>
 #include <IMP/base_types.h>
 
 IMPCORE_BEGIN_NAMESPACE
