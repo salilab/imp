@@ -32,8 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT Subset:
   public base::ConstArray<base::WeakPointer<Particle>,
-                          Particle*>,
-  public base::Value {
+                          Particle*> {
   typedef base::ConstArray<base::WeakPointer<Particle>, Particle* > P;
   static const ParticlesTemp &get_sorted(ParticlesTemp &ps) {
     std::sort(ps.begin(), ps.end());
