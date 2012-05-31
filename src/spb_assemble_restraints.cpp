@@ -111,9 +111,9 @@ if(mydata.add_y2h){
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0],  "Spc29p",             "ALL",
                      all_mol,    "Spc110p", IntRange(811,898), mydata.kappa));
- y2h->add_restraint(y2h_restraint(m,
-                     all_mol[0], "Spc110p", IntRange(823,944),
-                     all_mol,    "Spc110p", IntRange(823,944), mydata.kappa));
+// y2h->add_restraint(y2h_restraint(m,
+//                     all_mol[0], "Spc110p", IntRange(823,944),
+//                     all_mol,    "Spc110p", IntRange(823,944), mydata.kappa));
  y2h->add_restraint(y2h_restraint(m,
                      all_mol[0],  "Spc42p", IntRange(1,138),
                      all_mol,     "Spc29p",           "ALL", mydata.kappa));
@@ -125,6 +125,13 @@ if(mydata.add_y2h){
  m->add_restraint(y2h);
  // add the RestraintSet Y2H to map
  rst_map["Y2H"]=y2h;
+}
+//
+// Add Spc110 coiled-coil mimic
+//
+if(mydata.protein_list["Spc110p"]){
+ add_Spc110_fake_CC(m,all_mol[0],"Spc110p", 799,
+                      all_mol,   "Spc110p", 799, mydata.kappa);
 }
 //
 // Add link with GFPs
@@ -150,7 +157,7 @@ if(mydata.add_GFP){
 //
 // RESTRAINT GFPs POSITION for refinement
 //
-if(mydata.restraint_GFP){
+if(mydata.add_GFP && mydata.restraint_GFP){
  add_GFP_restraint(m,all_mol[0],mydata.kappa);
 }
 

@@ -455,13 +455,13 @@ core::RigidBodies get_rigid_bodies(Particles ps)
 void add_tilt_restraint
  (Model *m,Particle *p,FloatRange tilt_range,double kappa)
 {
-algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
-algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
-IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
-IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
-IMP_NEW(core::SingletonRestraint,sr,(tss,p));
-m->add_restraint(sr);
-sr->set_name("Tilt restraint");
+ algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
+ algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
+ IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
+ IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
+ IMP_NEW(core::SingletonRestraint,sr,(tss,p));
+ m->add_restraint(sr);
+ sr->set_name("Tilt restraint");
 }
 
 void add_tilt (Model *m, const atom::Hierarchy& h,
@@ -500,6 +500,36 @@ void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
     m->add_restraint(sr);
   }
  }
+}
+
+void add_Spc110_fake_CC(Model *m,
+ const atom::Hierarchy&   ha, std::string protein_a, int residue_a,
+       atom::Hierarchies& hb, std::string protein_b, int residue_b,
+ double kappa)
+{
+// Sphere pair score
+  Pointer<core::SphereDistancePairScore> sps=get_sphere_pair_score(0.0,kappa);
+// first selection
+  atom::Selection sa=atom::Selection(ha);
+  sa.set_molecule(protein_a);
+  sa.set_residue_index(residue_a);
+  Particles pa=sa.get_selected_particles();
+// second selection
+  atom::Selection sb=atom::Selection(hb);
+  sb.set_molecule(protein_b);
+  sb.set_residue_index(residue_b);
+  Particles pb=sb.get_selected_particles();
+// check if empty particles
+  if(pa.size()==0 || pb.size()==0) {return;}
+// create one restraint per particle in hierarchy ha
+  for(unsigned i=0;i<pa.size();++i){
+   Particles ps;
+   ps.push_back(pa[i]);
+   Pointer<container::MinimumPairRestraint> mpr=
+    do_bipartite_mindist(m,ps,pb,sps);
+   mpr->set_name("Fake CC restraint");
+   m->add_restraint(mpr);
+  }
 }
 
 IMPMEMBRANE_END_NAMESPACE
