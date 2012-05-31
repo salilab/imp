@@ -258,7 +258,7 @@ def _make_programs(envi, dirr, files, prefix=""):
         elif str(f).endswith(".py") and env.get('repository', None):
             dest=dirr
             #print "handling", f.abspath, dest.path
-            nm=File("#/"+env['repository']+"/modules/"+_get_module_path(env)+"/bin/"+str(f))
+            nm=File("#/"+env['repository']+"/"+Dir(".").path+"/"+str(f))
             #print dest.path, f.path, nm
             #print str(f), f.abspath
             ret.append(scons_tools.install.install(env,dest, nm))
