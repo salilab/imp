@@ -23,6 +23,7 @@
 #include <IMP/internal/OwnerPointer.h>
 #include <IMP/compatibility/vector.h>
 #include <IMP/compatibility/map.h>
+#include <IMP/base/InputAdaptor.h>
 #include <IMP/algebra/vector_search.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -259,6 +260,24 @@ PermutationStates::load_particle_state(unsigned int i, Particle *p) const {
   return inner_->load_particle_state(get_inner_state(i), p);
 }
 #endif
+
+
+/** Accept either particles, decorators or ParticleStatesTable
+    as an imput to define a list of particle.*/
+class ParticlesAdaptor:
+#ifndef SWIG
+  public ParticlesTemp, public base::InputAdaptor
+#else
+  public base::InputAdaptor
+#endif
+{
+public:
+  ParticlesAdaptor(ParticleStatesTable *pst):
+      ParticlesTemp(pst->get_particles()) {
+  }
+  ParticlesAdaptor(const ParticlesTemp &ps): ParticlesTemp(ps.begin(),
+                                                           ps.end()){}
+};
 
 IMPDOMINO_END_NAMESPACE
 

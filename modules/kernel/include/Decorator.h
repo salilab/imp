@@ -17,6 +17,7 @@
 #include "Constraint.h"
 #include "internal/utility.h"
 #include <IMP/base/Vector.h>
+#include <IMP/base/Value.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -110,7 +111,7 @@ and then would not have this problem.
 
 \see DecoratorWithTraits
 */
-class Decorator
+class Decorator: public base::Value
 {
 private:
   WeakPointer<Model> model_;

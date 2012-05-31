@@ -13,6 +13,7 @@
 #include <IMP/base/check_macros.h>
 #include <IMP/base/comparison_macros.h>
 #include <IMP/base/hash_macros.h>
+#include <IMP/base/Value.h>
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
@@ -41,7 +42,7 @@ IMP_BEGIN_NAMESPACE
     otherwise this is an error.
  */
 template <unsigned int ID, bool LazyAdd>
-class Key
+class Key: public base::Value
 {
   int str_;
 

@@ -13,6 +13,7 @@
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
+#include <IMP/base/InputAdaptor.h>
 #include <IMP/display/declare_Geometry.h>
 #include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
@@ -40,7 +41,7 @@ IMPATOM_BEGIN_NAMESPACE
     target_radius parameter to select the desired radius (pass a very large
     number to get the coarsest representation).
 */
-class IMPATOMEXPORT Selection {
+class IMPATOMEXPORT Selection: public base::InputAdaptor {
  public:
   enum Terminus {NONE, C,N};
  private:

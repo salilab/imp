@@ -9,7 +9,7 @@
 #ifndef IMPBASE_TUPLE_MACROS_H
 #define IMPBASE_TUPLE_MACROS_H
 #include "base_config.h"
-
+#include "Value.h"
 
 
 /** \name Named tuples
@@ -23,7 +23,7 @@
 */
 
 #define IMP_NAMED_TUPLE_1(Name, Names, type0, var0, invariant)          \
-  struct Name {                                                         \
+  struct Name: public IMP::base::Value {                                \
     type0 var0;                                                         \
     Name(type0 i0=type0()): var0(i0){invariant;}                        \
     IMP_HASHABLE_INLINE(Name, {                                         \
@@ -41,7 +41,7 @@
 
 #define IMP_NAMED_TUPLE_2(Name, Names, type0, var0, type1, var1,        \
                           invariant)                                    \
-  struct Name {                                                         \
+  struct Name: public IMP::base::Value {                                \
     type0 var0;                                                         \
     type1 var1;                                                         \
     Name(type0 i0=type0(), type1 i1=type1()): var0(i0), var1(i1)        \
@@ -61,7 +61,7 @@
 
 #define IMP_NAMED_TUPLE_3(Name, Names, type0, var0, type1, var1,        \
                           type2, var2, invariant)                       \
-  struct Name {                                                         \
+  struct Name: public IMP::base::Value {                                \
     type0 var0;                                                         \
     type1 var1;                                                         \
     type2 var2;                                                         \

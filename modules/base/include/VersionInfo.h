@@ -14,6 +14,7 @@
 #include "check_macros.h"
 #include "showable_macros.h"
 #include "value_macros.h"
+#include "Value.h"
 #include <iostream>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -24,7 +25,7 @@ IMPBASE_BEGIN_NAMESPACE
     version info allows one to determine the module and version of
     all restraints used to help creating reproducible results.
  */
-class IMPBASEEXPORT VersionInfo
+class IMPBASEEXPORT VersionInfo: public Value
 {
 public:
   //! Create a VersionInfo object with the given module and version.

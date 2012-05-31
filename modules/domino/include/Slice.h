@@ -14,8 +14,8 @@
 #include "domino_macros.h"
 #include "Subset.h"
 #include "Assignment.h"
+#include <IMP/base/Value.h>
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/Pointer.h>
 #include <IMP/base/ConstArray.h>
 
 
@@ -25,7 +25,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 /** This class stores a particular slice through a subset. The entire
     inner Subset must be contained in the outer one.
 */
-class IMPDOMINOEXPORT Slice: public base::ConstArray<unsigned int> {
+class IMPDOMINOEXPORT Slice: public base::ConstArray<unsigned int>,
+                             public base::Value {
   typedef base::ConstArray<unsigned int> P;
   static Ints get_slice(Subset outer, Subset inner) {
     Ints ret(inner.size());

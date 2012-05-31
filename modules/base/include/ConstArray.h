@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "base_macros.h"
 #include "exception.h"
+#include "Value.h"
 #include <IMP/compatibility/nullptr.h>
 #include <boost/scoped_array.hpp>
 #include <IMP/compatibility/hash.h>
@@ -23,7 +24,7 @@ IMPBASE_BEGIN_NAMESPACE
 /** Items must be comparable and hashable and the arrays
     cannote be changed after creation.*/
 template <class Data, class SwigData=Data>
-class ConstArray {
+class ConstArray: public Value {
   boost::scoped_array<Data> v_;
   unsigned int sz_;
   int compare(const ConstArray &o) const {

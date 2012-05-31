@@ -5,6 +5,7 @@
  */
 
 #include <IMP/statistics/Histogram.h>
+#include <IMP/base/deprecation.h>
 #include <numeric>
 #include <iostream>
 #include <iomanip>
@@ -17,6 +18,7 @@ Histogram::Histogram(double start, double end,
   end_=end;
   interval_size_ = (end-start)/num_bins;
   freq_.insert(freq_.end(),num_bins,0);
+  IMP_DEPRECATED_CLASS(Histogram, HistogramD);
 }
 void Histogram::add(double x) {
   IMP_INTERNAL_CHECK(!(x<start_ || x>end_),

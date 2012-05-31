@@ -15,7 +15,7 @@
 #include "Subset.h"
 #include "Assignment.h"
 #include <IMP/container/ListSingletonContainer.h>
-#include <IMP/Pointer.h>
+#include <IMP/base/Value.h>
 #include <IMP/base/ConstArray.h>
 
 
@@ -27,7 +27,8 @@ IMPDOMINO_BEGIN_NAMESPACE
     This order can be used to write s to disk, as the order in s can
     change between domino runs.
 */
-class IMPDOMINOEXPORT Order: public base::ConstArray<unsigned int> {
+class IMPDOMINOEXPORT Order: public base::ConstArray<unsigned int>,
+                             public base::Value{
   typedef base::ConstArray<unsigned int> P;
 public:
   Order() {}
