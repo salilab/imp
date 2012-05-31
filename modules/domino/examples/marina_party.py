@@ -7,7 +7,7 @@ import random
 
 class SumPricePairScore(IMP.PairScore):
 
-    def evalaute(self, pair):
+    def evaluate(self, pair):
         price0 = Price(pair[0]).get_price()
         price1 = Price(pair[1]).get_price()
         return price0+price1
