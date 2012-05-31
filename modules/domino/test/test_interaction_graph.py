@@ -118,8 +118,10 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[IMP.Particle(m) for i in range(0,3)]
         score= IMP.core.SoftSpherePairScore(1)
         r= IMP.container.PairsRestraint(score, [(ps[0], ps[1]), (ps[1], ps[2])])
+        for p in ps:
+            IMP.core.XYZR.setup_particle(p)
         ig= IMP.domino.get_interaction_graph([r], ps)
-        self.assertEqual(ig.get_number_of_nodes(), 3)
+        self.assertEqual(len(ig.get_vertices()), 3)
         self.assertEqual(len(ig.get_in_neighbors(0)), 1)
 
 if __name__ == '__main__':
