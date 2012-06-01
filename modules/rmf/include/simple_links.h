@@ -19,7 +19,8 @@
 #include <RMF/names.h>
 
 IMPRMF_BEGIN_NAMESPACE
-
+/** A base class for links between \imp objects and nodes in
+    an RMF file.*/
 template <class O>
 class SimpleLoadLink: public LoadLink {
   base::Vector<base::Pointer<O> > os_;
@@ -45,17 +46,17 @@ public:
   base::Vector<base::Pointer<O> > create(RMF::NodeConstHandle rt) {
     IMP_OBJECT_LOG;
     RMF::NodeConstHandles ch= rt.get_children();
-    unsigned int old=os_.size();
+    base::Vector<base::Pointer<O> > ret;
     for (unsigned int i=0; i< ch.size(); ++i) {
       IMP_LOG(VERBOSE, "Checking " << ch[i] << std::endl);
       if (get_is(ch[i])) {
         IMP_LOG(VERBOSE, "Adding " << ch[i] << std::endl);
         base::Pointer<O> o=do_create(ch[i]);
+        ret.push_back(o);
         add_link(o, ch[i]);
       }
     }
-    return base::Vector<base::Pointer<O> >(os_.begin()+old,
-                                           os_.end());
+    return ret;
   }
   void link(RMF::NodeConstHandle rt,
             const base::Vector<base::Pointer<O> > &ps) {
@@ -81,7 +82,8 @@ public:
 
 };
 
-
+/** A base class for links between \imp objects and nodes in
+    an RMF file.*/
 template <class O>
 class SimpleSaveLink: public SaveLink {
   base::Vector<base::Pointer<O> > os_;
@@ -98,6 +100,11 @@ class SimpleSaveLink: public SaveLink {
     }
   }
   virtual void do_add(O *, RMF::NodeHandle) {}
+  void add_link(O *o, RMF::NodeHandle nh) {
+    os_.push_back(o);
+    nhs_.push_back(nh.get_id());
+    set_association(nh, o);
+  }
   virtual RMF::NodeType get_type(O*o) const =0;
   SimpleSaveLink(std::string name): SaveLink(name){}
 public:
@@ -109,9 +116,7 @@ public:
       RMF::NodeHandle c= parent.add_child(nicename,
                                           get_type(os[i]));
       do_add(os[i], c);
-      os_.push_back(os[i]);
-      nhs_.push_back(c.get_id());
-      set_association(c, os[i]);
+      add_link(os[i], c);
     }
   }
 };
