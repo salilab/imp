@@ -27,15 +27,21 @@ namespace RMF {
       std::string name;
       CategoryD<Arity> category;
       bool per_frame;
-      Key<TypeTraitsT, Arity> key;
+      mutable Key<TypeTraitsT, Arity> key;
     };
     boost::intrusive_ptr<Data> data_;
-    void init_key() const {
+    void init_key() {
       FileHandle fh= open_rmf_file(data_->file_name);
       data_->key=get_key_always<TypeTraitsT>(fh,
                                             data_->category,
                                             data_->name,
                                             data_->per_frame);
+    }
+    void check_key() const {
+      FileHandle fh= open_rmf_file(data_->file_name);
+      data_->key=fh.get_key<TypeTraitsT>(data_->category,
+                                         data_->name,
+                                         data_->per_frame);
     }
   public:
     typedef TypeTraitsT TypeTraits;
@@ -61,6 +67,10 @@ namespace RMF {
       return data_->key;
     }
     operator Key<TypeTraits, Arity>() const {
+      // keys might have been added by other uses of the file
+      if (data_->key==  Key<TypeTraits, Arity>()) {
+        check_key();
+      }
       return data_->key;
     }
   };
