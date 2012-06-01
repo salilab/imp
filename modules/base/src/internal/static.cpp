@@ -81,10 +81,12 @@ struct CheckObjects {
     if (!live_.empty()) {
       std::cerr << "Not all IMP::base::Objects were freed prior to IMP"
                 << " unloading. This is probably a bad thing." << std::endl;
+      Strings names;
       for (compatibility::set<Object*>::const_iterator
                it =live_.begin(); it != live_.end(); ++it) {
-        std::cerr << (*it)->get_name() << std::endl;
+        names.push_back( (*it)->get_name());
       }
+      std::cerr << names << std::endl;
     }
   }
 };
