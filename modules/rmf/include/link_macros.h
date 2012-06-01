@@ -61,7 +61,6 @@
     if (hs.empty()) return;                                             \
     Name##SaveLink* hsl= get_##name##_save_link(fh);                    \
     hsl->add(fh.get_root_node(), hs);                                   \
-    hsl->save(fh, 0);                                                   \
   }                                                                     \
   void add_##name(RMF::FileHandle fh, OutType hs) {                     \
     add_##names(fh, OutTypes(1, hs));                                   \
