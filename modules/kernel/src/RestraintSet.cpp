@@ -27,6 +27,14 @@ RestraintSet::RestraintSet(Model *m, double weight,
   set_weight(weight);
 }
 
+RestraintSet::RestraintSet(const RestraintsTemp &rs, double weight,
+                           const std::string& name)
+    : Restraint(internal::get_model(rs), name)
+{
+  set_weight(weight);
+  set_restraints(rs);
+}
+
 
 RestraintSet::RestraintSet(double weight,
                            const std::string& name)

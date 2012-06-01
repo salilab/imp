@@ -43,6 +43,9 @@ class IMPEXPORT RestraintSet : public Restraint
   //! Create an empty set that is registered with the model
   RestraintSet(Model *m, double weight,
                const std::string& name="RestraintSet %1%");
+  //! Create a set that is registered with the model
+  RestraintSet(const RestraintsTemp &rs, double weight,
+               const std::string& name="RestraintSet %1%");
 #ifndef IMP_DOXYGEN
   //! Create an empty set
   RestraintSet(double weight,
