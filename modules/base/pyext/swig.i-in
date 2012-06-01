@@ -41,6 +41,8 @@ class ConvertibleVector;
 %feature("ref")   IMP::base::RefCounted "IMP::base::internal::ref($this);"
 %feature("unref") IMP::base::RefCounted "IMP::base::internal::unref($this);"
 
+%include "IMP/base/object_cast.h"
+
 IMP_SWIG_RAII(IMP::base, SetLogState);
 IMP_SWIG_RAII(IMP::base, SetCheckState);
 IMP_SWIG_OBJECT(IMP::base, Object, Objects);
