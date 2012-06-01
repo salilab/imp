@@ -33,6 +33,9 @@ IMPBASE_BEGIN_NAMESPACE
       used to log what version of software is used to compute a result.
     - it has a local logging level which can override the global one
       allowing fine grained logging control.
+    - in python, there is a method Class::get_from(Object *o) that attempts
+      to case o to an object of type Class and throws and exception if it
+      fails.
     - the object keeps track of whether it has been been used. See the
       IMP::Object::set_was_used() method for an explanation.
 
