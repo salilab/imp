@@ -74,11 +74,11 @@ IMPBASE_BEGIN_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 unsigned int RefCounted::live_objects_=0;
 compatibility::set<Object*> live_;
-
+bool show_live=true;
 namespace {
 struct CheckObjects {
   ~CheckObjects() {
-    if (!live_.empty()) {
+    if (!live_.empty() && show_live) {
       std::cerr << "Not all IMP::base::Objects were freed prior to IMP"
                 << " unloading. This is probably a bad thing." << std::endl;
       Strings names;
@@ -114,6 +114,9 @@ void Object::remove_live_object(Object*o) {
                      "Object " << o->get_name()
                      << " not found in live list.");
   live_.erase(o);
+}
+void set_show_leaked_objects(bool tf) {
+  show_live=tf;
 }
 #endif
 IMPBASE_END_NAMESPACE
