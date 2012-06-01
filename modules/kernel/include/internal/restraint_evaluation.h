@@ -124,7 +124,7 @@ struct EvaluationEnvironment {
                                 m);
     }
     r->set_was_used(true);
-    r->last_score_=value;
+    r->set_last_score(value);
     if (STATS) {
       m->add_to_restraint_evaluate(r, timer->elapsed(), value);
     }
@@ -132,7 +132,7 @@ struct EvaluationEnvironment {
     if (!good &&(MAX || GOOD)) {
       value= BAD_SCORE;
     }
-    IMP_LOG(TERSE, r->get_name()<<  " score is "
+    IMP_LOG(TERSE, Showable(r) <<  " score is "
             << value << std::endl);
     return std::make_pair(value, good);
   }
@@ -175,7 +175,7 @@ struct EvaluationEnvironment {
                                  current_max,
                                  derivative_weight*weight,
                                  m);
-      restraint_sets[i]->last_score_=value.first;
+      restraint_sets[i]->set_last_score(value.first);
       double weighted_value= value.first*weight;
       remaining-=weighted_value;
       ret+=weighted_value;
