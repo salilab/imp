@@ -1,5 +1,4 @@
 IMP_SWIG_OBJECT(IMP::rmf, SaveOptimizerState, SaveptimizerStates);
-IMP_SWIG_OBJECT(IMP::rmf, RMFRestraint, RMFRestraints);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, LoadLink, LoadLinks);
 IMP_SWIG_BASE_OBJECT(IMP::rmf, SaveLink, SaveLinks);
 IMP_SWIG_OBJECT(IMP::rmf, HierarchySaveLink, HierarchySaveLinks);
