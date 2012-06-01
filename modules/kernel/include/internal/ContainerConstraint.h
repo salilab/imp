@@ -1,89 +1,66 @@
 /**
- *  \file container/internal/generic_impl.h
+ *  \file core/generic.h    \brief Various important functionality
+ *                                       for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPCORE_INTERNAL_GENERICS_IMPL_H
-#define IMPCORE_INTERNAL_GENERICS_IMPL_H
-#include <IMP/generic.h>
-#include <IMP/internal/create_decomposition.h>
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+#ifndef IMPKERNEL_CONTAINER_CONSTRAINT_H
+#define IMPKERNEL_CONTAINER_CONSTRAINT_H
 
-template <class Score, class C>
-ContainerRestraint<Score, C>
-::ContainerRestraint(Score *ss,
-                     C *pc,
-                     std::string name):
-  Restraint(pc->get_model(), name),
-  ss_(ss), pc_(pc) {
+#include "../kernel_config.h"
+#include "../base_types.h"
+#include "../Constraint.h"
+#include "../score_state_macros.h"
 
-}
-template <class Score, class C>
-double ContainerRestraint<Score, C>
-::unprotected_evaluate(DerivativeAccumulator *accum) const
+IMP_BEGIN_INTERNAL_NAMESPACE
+
+
+/** Create a constraint tied to particular modifiers and contains. This
+    functionality, which is only available in C++ can result in faster
+    evaluates.
+*/
+template <class Before, class After, class Container>
+class ContainerConstraint : public Constraint
 {
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(ss_);
-  IMP_CHECK_OBJECT(pc_);
-  score_= pc_->template template_evaluate<Score>(ss_.get(), accum);
-  return score_;
+  IMP::OwnerPointer<Before> f_;
+  IMP::OwnerPointer<After> af_;
+  IMP::OwnerPointer<Container> c_;
+public:
+  ContainerConstraint(Before *before,
+                      After *after, Container *c,
+                       std::string name="ContainerConstraint %1%");
+
+  //! Apply this modifier to all the elements after an evaluate
+  void set_after_evaluate_modifier(After* f) {
+    af_=f;
+  }
+
+  //! Apply this modifier to all the elements before an evaluate
+  void set_before_evaluate_modifier(Before* f) {
+    f_=f;
+  }
+
+  IMP_CONSTRAINT(ContainerConstraint);
+};
+
+
+/** \relatesalso ContainerConstraint
+
+    Helper to create a ContainerConstraint.
+ */
+template <class Before, class After, class Container>
+inline Constraint *create_container_constraint(Before *b, After *a,
+                                               Container *c,
+                              std::string name=std::string()) {
+  if (name==std::string()) {
+    if (b) name+= " and  "+b->get_name();
+    if (a) name+= " and " +a->get_name();
+  }
+  return new ContainerConstraint<Before, After, Container>(b, a, c,
+                                                           name);
 }
-
-
-template <class Score, class C>
-ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const
-{
-  IMP_OBJECT_LOG;
-  ParticlesTemp ret
-    = IMP::internal::get_input_particles(ss_.get(),
-                                         pc_->get_all_possible_particles());
-  return ret;
-}
-
-template <class Score, class C>
-ContainersTemp ContainerRestraint<Score, C>
-::get_input_containers() const
-{
-  ContainersTemp ret
-    = IMP::internal::get_input_containers(ss_.get(),
-                                          pc_->get_all_possible_particles());
-  ret.push_back(pc_);
-  return ret;
-}
-
-
-template <class Score, class C>
-Restraints ContainerRestraint<Score, C>::do_create_decomposition() const {
-  return IMP::internal::create_decomposition(get_model(),
-                                             ss_.get(),
-                                             pc_.get(),
-                                             get_name());
-}
-
-template <class Score, class C>
-Restraints
-ContainerRestraint<Score, C>::do_create_current_decomposition() const {
-  return IMP::internal::create_current_decomposition(get_model(),
-                                                     ss_.get(),
-                                                     pc_.get(),
-                                                     get_name());
-}
-
-
-template <class Score, class C>
-void ContainerRestraint<Score, C>::do_show(std::ostream& out) const
-{
-  out << "score " << *ss_ << std::endl;
-  out << "container " << *pc_ << std::endl;
-}
-
-
-
-
-
-
 
 
 
@@ -220,33 +197,7 @@ void ContainerConstraint<Before, After, C>
 
 
 
+IMP_END_INTERNAL_NAMESPACE
 
 
-template <class C>
-int GenericInContainerPairFilter<C>
-::get_value(const ParticlePair& p) const {
-  return c_->C::get_contains_particle_pair(p)
-    || c_->C::get_contains_particle_pair(ParticlePair(p[1], p[0]));
-}
-
-template <class C>
-ParticlesTemp GenericInContainerPairFilter<C>
-::get_input_particles(Particle*) const {
-  // not quite right
-  return ParticlesTemp();
-}
-template <class C>
-ContainersTemp GenericInContainerPairFilter<C>
-::get_input_containers(Particle*) const {
-  return ContainersTemp(1, c_);
-}
-
-template <class C>
-void GenericInContainerPairFilter<C>
-::do_show(std::ostream &out) const {
-  out << "Filtering from container " << c_->get_name() << std::endl;
-}
-
-IMPCORE_END_INTERNAL_NAMESPACE
-
-#endif  /* IMPCORE_INTERNAL_GENERICS_IMPL_H */
+#endif  /* IMPKERNEL_CONTAINER_CONSTRAINT_H */

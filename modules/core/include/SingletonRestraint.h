@@ -14,10 +14,7 @@
 
 #include "core_config.h"
 
-#include <IMP/Restraint.h>
-#include <IMP/Pointer.h>
-#include <IMP/SingletonScore.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <IMP/restraint_macros.h>
 
 #include <iostream>
@@ -28,11 +25,13 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Singleton.
     \see SingletonRestraint
  */
-class IMPCOREEXPORT SingletonRestraint :
+class SingletonRestraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
+#else
+  public IMP::internal::TupleRestraint<SingletonScore>
+#endif
 {
-  IMP::OwnerPointer<SingletonScore> ss_;
-  ParticleIndex v_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -40,7 +39,11 @@ public:
    */
   SingletonRestraint(SingletonScore *ss,
                      Particle* vt,
-                     std::string name="SingletonRestraint %1%");
+                     std::string name="SingletonRestraint %1%"):
+      IMP::internal::TupleRestraint<SingletonScore>(ss, vt, name)
+  {}
+
+#if defined(SWIG) || defined(IMP_DOXYGEN)
 
   SingletonScore* get_score() const {
     return ss_;
@@ -53,8 +56,6 @@ public:
 
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
-#ifndef IMP_DOXYGEN
-  Restraints do_create_current_decomposition() const;
 #endif
 };
 

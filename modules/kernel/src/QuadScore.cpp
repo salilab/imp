@@ -26,7 +26,7 @@ Restraints
 QuadScore
 ::create_current_decomposition(const ParticleQuad& vt) const {
   return Restraints(1,
-     internal::create_restraint(const_cast<QuadScore*>(this),
+     internal::create_tuple_restraint(const_cast<QuadScore*>(this),
                                      vt,
                                      get_name()));
 }

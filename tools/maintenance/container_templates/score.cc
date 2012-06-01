@@ -26,7 +26,7 @@ Restraints
 CLASSNAMEScore
 ::create_current_decomposition(ARGUMENTTYPE vt) const {
   return Restraints(1,
-     internal::create_restraint(const_cast<CLASSNAMEScore*>(this),
+     internal::create_tuple_restraint(const_cast<CLASSNAMEScore*>(this),
                                      vt,
                                      get_name()));
 }

@@ -51,19 +51,12 @@ public:
    */
   CLASSNAMEsRestraint(CLASSNAMEScore *ss,
                       CLASSNAMEContainerAdaptor pc,
-                      std::string name="CLASSNAMEsRestraint %1%");
+                      std::string name="CLASSNAMEsRestraint %1%"):
+      P(ss, pc, name)
+      {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_RESTRAINT(CLASSNAMEsRestraint);
-
-  //! Get the container used to store Particles
-  PLURALVARIABLETYPE get_arguments() const;
-
-  CLASSNAMEContainer* get_container() const;
-
-  CLASSNAMEScore* get_score() const;
-#else
-  IMP_OBJECT(CLASSNAMEsRestraint);
 #endif
 };
 

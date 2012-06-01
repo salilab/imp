@@ -108,6 +108,30 @@ public:
   virtual const ParticleIndexes& get_access() const {
     IMP_THROW("Object not implemented properly.", base::IndexException);
   }
+
+
+  template <class Modifier>
+  void template_apply(const Modifier *sm,
+                      DerivativeAccumulator &da) const {
+    apply(sm, da);
+  }
+  template <class Modifier>
+      void template_apply(const Modifier *sm) const {
+    apply(sm);
+  }
+  template <class Score>
+      double template_evaluate(const Score *s,
+                               DerivativeAccumulator *da) const {
+    return evaluate(s, da);
+  }
+  template <class Score>
+      double template_evaluate_if_good(const Score *s,
+                                       DerivativeAccumulator *da,
+                                       double max) const {
+    return evaluate_if_good(s, da, max);
+  }
+
+
 #endif
 #endif
 

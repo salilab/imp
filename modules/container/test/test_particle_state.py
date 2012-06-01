@@ -28,7 +28,10 @@ class SingletonTestModifier(IMP.SingletonModifier):
         return [p]
     def get_output_particles(self, p):
         return [p]
-
+    def get_input_containers(self, p):
+        return []
+    def get_output_containers(self, p):
+        return []
 
 class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
@@ -46,7 +49,10 @@ class PairTestModifier(IMP.PairModifier):
         return [p]
     def get_output_particles(self, p):
         return [p]
-
+    def get_input_containers(self, p):
+        return []
+    def get_output_containers(self, p):
+        return []
 
 def particle_has_attribute(p, k):
     return p.has_attribute(k)

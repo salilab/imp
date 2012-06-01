@@ -17,6 +17,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
+#include <IMP/internal/ContainerConstraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -38,11 +39,18 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::SingletonConstraint
  */
-class IMPCONTAINEREXPORT SingletonsConstraint : public Constraint
+class IMPCONTAINEREXPORT SingletonsConstraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public Constraint
+#else
+ public IMP::internal::ContainerConstraint<SingletonModifier,
+                                           SingletonDerivativeModifier,
+                                           SingletonContainer>
+#endif
 {
-  IMP::OwnerPointer<SingletonModifier> f_;
-  IMP::OwnerPointer<SingletonDerivativeModifier> af_;
-  IMP::OwnerPointer<SingletonContainer> c_;
+  typedef IMP::internal::ContainerConstraint<SingletonModifier,
+                                           SingletonDerivativeModifier,
+      SingletonContainer> P;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The SingletonModifier to apply to all elements
@@ -54,20 +62,12 @@ public:
   SingletonsConstraint(SingletonModifier *before,
                        SingletonDerivativeModifier *after,
                        SingletonContainerAdaptor c,
-                       std::string name="SingletonConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(SingletonDerivativeModifier* f) {
-    af_=f;
-  }
-
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(SingletonModifier* f) {
-    f_=f;
-  }
-  ScoreStates create_decomposition() const;
-
+                       std::string name="SingletonConstraint %1%"):
+      P(before, after, c, name)
+      {}
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(SingletonsConstraint);
+#endif
 };
 
 IMP_OBJECTS(SingletonsConstraint,SingletonsConstraints);

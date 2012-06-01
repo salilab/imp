@@ -10,7 +10,9 @@
 #define IMPCONTAINER_GENERIC_H
 
 #include "container_config.h"
-#include <IMP/core/internal/generic.h>
+#include <IMP/internal/ContainerRestraint.h>
+#include <IMP/internal/ContainerConstraint.h>
+#include <IMP/internal/GenericInContainerPairFilter.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -22,7 +24,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
 template <class Score, class Container>
 inline Restraint *create_restraint(Score *s, Container*c,
                             std::string name=std::string()) {
-  return core::internal::create_restraint(s, c, name);
+  return IMP::internal::create_container_restraint(s, c, name);
 }
 
 
@@ -34,7 +36,7 @@ inline Restraint *create_restraint(Score *s, Container*c,
 template <class Container, class Before, class After>
 inline Constraint *create_constraint(Before *b, After *a, Container *c,
                               std::string name=std::string()) {
-  return core::internal::create_constraint(c, b, a, name);
+  return IMP::internal::create_container_constraint(c, b, a, name);
 }
 
 
@@ -45,7 +47,7 @@ inline Constraint *create_constraint(Before *b, After *a, Container *c,
 template <class Container>
 inline PairPredicate*
 create_in_container_filter(Container *c, std::string name=std::string()) {
-  return core::internal::create_in_container_filter(c, name);
+  return IMP::internal::create_in_container_filter(c, name);
 }
 
 

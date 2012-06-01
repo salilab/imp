@@ -13,16 +13,8 @@
 #define IMPCORE_SINGLETON_CONSTRAINT_H
 
 #include "core_config.h"
-#include <IMP/SingletonModifier.h>
-#include <IMP/SingletonDerivativeModifier.h>
-#include <IMP/Constraint.h>
-#include <IMP/Particle.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/score_state_macros.h>
-
-namespace IMP {
-// for swig
-class SingletonModifier;
-}
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a SingletonFunction to a Singleton
@@ -34,11 +26,14 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see container::SingletonsConstraint
  */
-class IMPCOREEXPORT SingletonConstraint : public Constraint
+class IMPCOREEXPORT SingletonConstraint :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public Constraint
+#else
+public IMP::internal::TupleConstraint<SingletonModifier,
+                                      SingletonDerivativeModifier>
+#endif
 {
-  IMP::OwnerPointer<SingletonModifier> f_;
-  IMP::OwnerPointer<SingletonDerivativeModifier> af_;
-  ParticleIndex v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
@@ -46,19 +41,16 @@ public:
   SingletonConstraint(SingletonModifier *before,
                       SingletonDerivativeModifier *after,
                       Particle* vt,
-                      std::string name="SingletonConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(SingletonDerivativeModifier* f) {
-    af_=f;
+                      std::string name="SingletonConstraint %1%"):
+      IMP::internal::TupleConstraint<SingletonModifier,
+                                      SingletonDerivativeModifier>
+      (before, after, vt, name)
+      {
   }
 
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(SingletonModifier* f) {
-    f_=f;
-  }
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(SingletonConstraint);
+#endif
 };
 
 

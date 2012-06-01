@@ -51,19 +51,12 @@ public:
    */
   SingletonsRestraint(SingletonScore *ss,
                       SingletonContainerAdaptor pc,
-                      std::string name="SingletonsRestraint %1%");
+                      std::string name="SingletonsRestraint %1%"):
+      P(ss, pc, name)
+      {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_RESTRAINT(SingletonsRestraint);
-
-  //! Get the container used to store Particles
-  ParticlesTemp get_arguments() const;
-
-  SingletonContainer* get_container() const;
-
-  SingletonScore* get_score() const;
-#else
-  IMP_OBJECT(SingletonsRestraint);
 #endif
 };
 

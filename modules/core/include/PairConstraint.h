@@ -13,16 +13,8 @@
 #define IMPCORE_PAIR_CONSTRAINT_H
 
 #include "core_config.h"
-#include <IMP/PairModifier.h>
-#include <IMP/PairDerivativeModifier.h>
-#include <IMP/Constraint.h>
-#include <IMP/Particle.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/score_state_macros.h>
-
-namespace IMP {
-// for swig
-class PairModifier;
-}
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a PairFunction to a Pair
@@ -34,11 +26,14 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see container::PairsConstraint
  */
-class IMPCOREEXPORT PairConstraint : public Constraint
+class IMPCOREEXPORT PairConstraint :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public Constraint
+#else
+public IMP::internal::TupleConstraint<PairModifier,
+                                      PairDerivativeModifier>
+#endif
 {
-  IMP::OwnerPointer<PairModifier> f_;
-  IMP::OwnerPointer<PairDerivativeModifier> af_;
-  ParticleIndexPair v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
@@ -46,19 +41,16 @@ public:
   PairConstraint(PairModifier *before,
                       PairDerivativeModifier *after,
                       const ParticlePair& vt,
-                      std::string name="PairConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(PairDerivativeModifier* f) {
-    af_=f;
+                      std::string name="PairConstraint %1%"):
+      IMP::internal::TupleConstraint<PairModifier,
+                                      PairDerivativeModifier>
+      (before, after, vt, name)
+      {
   }
 
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(PairModifier* f) {
-    f_=f;
-  }
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(PairConstraint);
+#endif
 };
 
 

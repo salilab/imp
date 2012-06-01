@@ -17,6 +17,7 @@
 #include <IMP/QuadModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
+#include <IMP/internal/ContainerConstraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -38,11 +39,18 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::QuadConstraint
  */
-class IMPCONTAINEREXPORT QuadsConstraint : public Constraint
+class IMPCONTAINEREXPORT QuadsConstraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public Constraint
+#else
+ public IMP::internal::ContainerConstraint<QuadModifier,
+                                           QuadDerivativeModifier,
+                                           QuadContainer>
+#endif
 {
-  IMP::OwnerPointer<QuadModifier> f_;
-  IMP::OwnerPointer<QuadDerivativeModifier> af_;
-  IMP::OwnerPointer<QuadContainer> c_;
+  typedef IMP::internal::ContainerConstraint<QuadModifier,
+                                           QuadDerivativeModifier,
+      QuadContainer> P;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The QuadModifier to apply to all elements
@@ -54,20 +62,12 @@ public:
   QuadsConstraint(QuadModifier *before,
                        QuadDerivativeModifier *after,
                        QuadContainerAdaptor c,
-                       std::string name="QuadConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(QuadDerivativeModifier* f) {
-    af_=f;
-  }
-
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(QuadModifier* f) {
-    f_=f;
-  }
-  ScoreStates create_decomposition() const;
-
+                       std::string name="QuadConstraint %1%"):
+      P(before, after, c, name)
+      {}
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(QuadsConstraint);
+#endif
 };
 
 IMP_OBJECTS(QuadsConstraint,QuadsConstraints);

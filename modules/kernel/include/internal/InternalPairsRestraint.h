@@ -18,9 +18,8 @@
 #include "../PairScore.h"
 #include "../PairContainer.h"
 #include "../Restraint.h"
-#include "../restraint_macros.h"
+#include "ContainerRestraint.h"
 
-#include <iostream>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -34,42 +33,17 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see PairRestraint
  */
 class IMPEXPORT InternalPairsRestraint :
-  public Restraint
+    public ContainerRestraint<PairScore, PairContainer>
 {
-  IMP::OwnerPointer<PairScore> ss_;
-  IMP::OwnerPointer<PairContainer> pc_, ac_, rc_;
 public:
-
- //! Create the restraint with a shared container
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] pc The container containing the stored particles. This
-      container is not copied.
-      \param[in] name The object name
-   */
   InternalPairsRestraint(PairScore *ss,
-                      PairContainer *pc,
-                      std::string name="PairsRestraint %1%");
+                              PairContainer *pc,
+                              std::string name="PairsRestraint %1%"):
+      ContainerRestraint<PairScore, PairContainer>(ss, pc, name)
+      {
 
-  IMP_RESTRAINT(InternalPairsRestraint);
 
-  ParticlePairsTemp get_arguments() const {
-    return pc_->get();
   }
-
-  PairScore* get_score() const {
-    return ss_;
-  }
-
-  PairContainer* get_container() const {
-    return pc_;
-  }
-#ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const;
-
-  Restraints do_create_current_decomposition() const;
-#endif
-  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
 };
 
 IMP_END_INTERNAL_NAMESPACE

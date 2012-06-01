@@ -8,6 +8,7 @@
 
 #include "IMP/core/rigid_bodies.h"
 #include "IMP/core/SingletonConstraint.h"
+#include <IMP/internal/ContainerConstraint.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
@@ -18,7 +19,6 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
-#include <IMP/core/internal/generic.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -525,7 +525,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
     IMP_NEW(NormalizeRotation, nr, ());
     IMP_NEW(NullSDM, null, ());
     Pointer<Constraint> c1
-        = internal::create_constraint(nr.get(), null.get(),
+        = IMP::internal::create_container_constraint(nr.get(), null.get(),
                                       list.get(),"normalize rigid bodies");
     d.get_model()->add_score_state(c1);
     d.get_model()->add_data(mk, list);
@@ -670,7 +670,7 @@ void RigidBody::add_member(Particle *p) {
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0
-        = IMP::create_constraint(urbm.get(), arbd.get(),
+        = IMP::internal::create_tuple_constraint(urbm.get(), arbd.get(),
                             get_particle(),
                             get_particle()->get_name()
                             +" rigid body positions");
@@ -975,7 +975,7 @@ ParticlesTemp create_rigid_bodies(Model *m,
     IMP_NEW(UpdateRigidBodyMembers, urbm,());
     IMP_NEW(AccumulateRigidBodyDerivatives, arbd, ());
     Pointer<Constraint> c0
-        = internal::create_constraint(urbm.get(), arbd.get(),
+        = IMP::internal::create_container_constraint(urbm.get(), arbd.get(),
                                       list.get(),
                                       "rigid body positions %1%");
     m->add_score_state(c0);

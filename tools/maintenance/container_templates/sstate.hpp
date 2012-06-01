@@ -13,16 +13,8 @@
 #define IMPCORE_HEADERNAME_CONSTRAINT_H
 
 #include "core_config.h"
-#include <IMP/CLASSNAMEModifier.h>
-#include <IMP/CLASSNAMEDerivativeModifier.h>
-#include <IMP/Constraint.h>
-#include <IMP/Particle.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/score_state_macros.h>
-
-namespace IMP {
-// for swig
-class CLASSNAMEModifier;
-}
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a CLASSNAMEFunction to a CLASSNAME
@@ -34,11 +26,14 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see container::CLASSNAMEsConstraint
  */
-class IMPCOREEXPORT CLASSNAMEConstraint : public Constraint
+class IMPCOREEXPORT CLASSNAMEConstraint :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public Constraint
+#else
+public IMP::internal::TupleConstraint<CLASSNAMEModifier,
+                                      CLASSNAMEDerivativeModifier>
+#endif
 {
-  IMP::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
-  INDEXTYPE v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
@@ -46,19 +41,16 @@ public:
   CLASSNAMEConstraint(CLASSNAMEModifier *before,
                       CLASSNAMEDerivativeModifier *after,
                       ARGUMENTTYPE vt,
-                      std::string name="CLASSNAMEConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(CLASSNAMEDerivativeModifier* f) {
-    af_=f;
+                      std::string name="CLASSNAMEConstraint %1%"):
+      IMP::internal::TupleConstraint<CLASSNAMEModifier,
+                                      CLASSNAMEDerivativeModifier>
+      (before, after, vt, name)
+      {
   }
 
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(CLASSNAMEModifier* f) {
-    f_=f;
-  }
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(CLASSNAMEConstraint);
+#endif
 };
 
 

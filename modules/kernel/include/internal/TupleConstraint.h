@@ -173,7 +173,7 @@ void TupleConstraint<Before, After>::do_show(std::ostream &out) const {
 }
 
 template <class Before, class After>
-inline Constraint* create_constraint(Before *b, After *a,
+inline Constraint* create_tuple_constraint(Before *b, After *a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   if (name==std::string()) {
@@ -186,22 +186,22 @@ inline Constraint* create_constraint(Before *b, After *a,
 
 #ifndef IMP_DOXYGEN
 template <class Before, class After>
-inline Constraint* create_constraint(Pointer<Before> b, Pointer<After> a,
+inline Constraint* create_tuple_constraint(Pointer<Before> b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b.get(), a.get(), t, name);
+  return create_tuple_constraint<Before, After>(b.get(), a.get(), t, name);
 }
 template <class Before, class After>
-inline Constraint* create_constraint(Before* b, Pointer<After> a,
+inline Constraint* create_tuple_constraint(Before* b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b, a.get(), t, name);
+  return create_tuple_constraint<Before, After>(b, a.get(), t, name);
 }
 template <class Before, class After>
-inline Constraint* create_constraint(Pointer<Before> b, After* a,
+inline Constraint* create_tuple_constraint(Pointer<Before> b, After* a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
-  return create_constraint<Before, After>(b.get(), a, t, name);
+  return create_tuple_constraint<Before, After>(b.get(), a, t, name);
 }
 #endif
 

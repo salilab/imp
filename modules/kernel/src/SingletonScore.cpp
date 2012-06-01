@@ -26,7 +26,7 @@ Restraints
 SingletonScore
 ::create_current_decomposition(Particle* vt) const {
   return Restraints(1,
-     internal::create_restraint(const_cast<SingletonScore*>(this),
+     internal::create_tuple_restraint(const_cast<SingletonScore*>(this),
                                      vt,
                                      get_name()));
 }

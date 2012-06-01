@@ -65,12 +65,8 @@ def make_one(params, test=True):
 
               ("modules/container/include/"+plural_multi + "Restraint.h",
                path+"/tools/maintenance/container_templates/restraint.hpp"),
-              ("modules/container/src/"+plural_multi + "Restraint.cpp",
-               path+"/tools/maintenance/container_templates/restraint.cc"),
               ("modules/kernel/include/internal/Internal"+plural_multi + "Restraint.h",
                path+"/tools/maintenance/container_templates/corerestraint.hpp"),
-              ("modules/kernel/src/internal/Internal"+plural_multi + "Restraint.cpp",
-               path+"/tools/maintenance/container_templates/corerestraint.cc"),
 
               ("modules/container/include/List"+multi + "Container.h",
                path+"/tools/maintenance/container_templates/list.hpp"),
@@ -99,8 +95,6 @@ def make_one(params, test=True):
 
               ("modules/core/include/"+multi + "Restraint.h",
                path+"/tools/maintenance/container_templates/srestraint.hpp"),
-              ("modules/core/src/"+multi + "Restraint.cpp",
-               path+"/tools/maintenance/container_templates/srestraint.cc"),
 
 
               ("modules/container/include/"+multi + "ContainerSet.h",
@@ -109,8 +103,6 @@ def make_one(params, test=True):
                path+"/tools/maintenance/container_templates/set.cc"),
               ("modules/container/include/"+plural_multi + "Constraint.h",
                path+"/tools/maintenance/container_templates/state.hpp"),
-              ("modules/container/src/"+plural_multi + "Constraint.cpp",
-               path+"/tools/maintenance/container_templates/state.cc"),
 
               ("modules/container/include/"+plural_multi + "OptimizerState.h",
                path+"/tools/maintenance/container_templates/ostate.hpp"),
@@ -124,8 +116,6 @@ def make_one(params, test=True):
 
               ("modules/core/include/"+multi + "Constraint.h",
                path+"/tools/maintenance/container_templates/sstate.hpp"),
-              ("modules/core/src/"+multi + "Constraint.cpp",
-               path+"/tools/maintenance/container_templates/sstate.cc"),
 
               ("modules/kernel/include/"+multi + "Modifier.h",
                path+"/tools/maintenance/container_templates/function.hpp"),

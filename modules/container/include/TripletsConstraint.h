@@ -17,6 +17,7 @@
 #include <IMP/TripletModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
+#include <IMP/internal/ContainerConstraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -38,11 +39,18 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::TripletConstraint
  */
-class IMPCONTAINEREXPORT TripletsConstraint : public Constraint
+class IMPCONTAINEREXPORT TripletsConstraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public Constraint
+#else
+ public IMP::internal::ContainerConstraint<TripletModifier,
+                                           TripletDerivativeModifier,
+                                           TripletContainer>
+#endif
 {
-  IMP::OwnerPointer<TripletModifier> f_;
-  IMP::OwnerPointer<TripletDerivativeModifier> af_;
-  IMP::OwnerPointer<TripletContainer> c_;
+  typedef IMP::internal::ContainerConstraint<TripletModifier,
+                                           TripletDerivativeModifier,
+      TripletContainer> P;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The TripletModifier to apply to all elements
@@ -54,20 +62,12 @@ public:
   TripletsConstraint(TripletModifier *before,
                        TripletDerivativeModifier *after,
                        TripletContainerAdaptor c,
-                       std::string name="TripletConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(TripletDerivativeModifier* f) {
-    af_=f;
-  }
-
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(TripletModifier* f) {
-    f_=f;
-  }
-  ScoreStates create_decomposition() const;
-
+                       std::string name="TripletConstraint %1%"):
+      P(before, after, c, name)
+      {}
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(TripletsConstraint);
+#endif
 };
 
 IMP_OBJECTS(TripletsConstraint,TripletsConstraints);

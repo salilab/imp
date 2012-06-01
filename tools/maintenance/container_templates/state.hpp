@@ -17,6 +17,7 @@
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
+#include <IMP/internal/ContainerConstraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -38,11 +39,18 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::CLASSNAMEConstraint
  */
-class IMPCONTAINEREXPORT CLASSNAMEsConstraint : public Constraint
+class IMPCONTAINEREXPORT CLASSNAMEsConstraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public Constraint
+#else
+ public IMP::internal::ContainerConstraint<CLASSNAMEModifier,
+                                           CLASSNAMEDerivativeModifier,
+                                           CLASSNAMEContainer>
+#endif
 {
-  IMP::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
-  IMP::OwnerPointer<CLASSNAMEContainer> c_;
+  typedef IMP::internal::ContainerConstraint<CLASSNAMEModifier,
+                                           CLASSNAMEDerivativeModifier,
+      CLASSNAMEContainer> P;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The CLASSNAMEModifier to apply to all elements
@@ -54,20 +62,12 @@ public:
   CLASSNAMEsConstraint(CLASSNAMEModifier *before,
                        CLASSNAMEDerivativeModifier *after,
                        CLASSNAMEContainerAdaptor c,
-                       std::string name="CLASSNAMEConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(CLASSNAMEDerivativeModifier* f) {
-    af_=f;
-  }
-
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(CLASSNAMEModifier* f) {
-    f_=f;
-  }
-  ScoreStates create_decomposition() const;
-
+                       std::string name="CLASSNAMEConstraint %1%"):
+      P(before, after, c, name)
+      {}
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(CLASSNAMEsConstraint);
+#endif
 };
 
 IMP_OBJECTS(CLASSNAMEsConstraint,CLASSNAMEsConstraints);
