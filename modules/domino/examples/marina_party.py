@@ -16,7 +16,7 @@ class SumPricePairScore(IMP.PairScore):
         return []
 
     def get_input_particles(self, particle):
-        return []
+        return [particle]
 
 class PriceStates(domino.ParticleStates):
 
