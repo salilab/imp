@@ -33,7 +33,7 @@
   IMP_SHOWABLE_INLINE(Name, out << #Name << '('; Show; out << ')');     \
 private:                                                                \
  void operator=(const Name &){}                                         \
- Name(const Name &){}                                                   \
+ Name(const Name &): RAII(){}                                           \
 public:
 
 
