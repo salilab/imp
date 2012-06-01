@@ -11,7 +11,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
  IMP.rmf supports I/O of IMP::atom::Hierarchy and associated types as
  well as output of IMP::display::Geometry, IMP::Restraint and
  arbitrary IMP::Particles. For each of these there are methods like:
- - IMP::rmf::add_hierarchies() to add them to an RMF file
+ - IMP::rmf::add_hierarchies() to add them to an RMF file, note, this does not,
+   for various reasons, write the state to frame 0.
  - IMP::rmf::create_hierarchies() to create hierarchies from an RMF file
  - IMP::rmf::link_hierarchies() to link existing hierarchies to a corresponding
    ones in the rmf file
