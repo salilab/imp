@@ -74,13 +74,13 @@ bd.add_optimizer_state(dos)
 # set up display
 fn=IMP.base.create_temporary_file_name("decay", ".rmf")
 rmf= RMF.create_rmf_file(fn)
-# silliness that will go away
 print "setting up file"
 IMP.rmf.add_hierarchies(rmf, ps)
 IMP.rmf.add_restraints(rmf, rs+[ev])
 g= IMP.display.BoundingBoxGeometry(bb)
 IMP.rmf.add_geometries(rmf, [g])
 os= IMP.rmf.SaveOptimizerState(rmf)
+os.set_period(steps/100)
 bd.add_optimizer_state(os)
 
 # actually optimize things
