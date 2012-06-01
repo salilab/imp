@@ -372,13 +372,19 @@ Restraints ExcludedVolumeRestraint::do_create_decomposition() const {
 Restraints ExcludedVolumeRestraint::do_create_current_decomposition() const {
   Restraints ret;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    ret.push_back(IMP::create_restraint(ssps_.get(),
+    Pointer<Restraint> rc=IMP::create_restraint(ssps_.get(),
                                    IMP::internal::get_particle(get_model(),
-                                                               cur_list_[i])));
-    ret.back()->set_maximum_score(get_maximum_score());
-    std::ostringstream oss;
-    oss << get_name() << " " << i;
-    ret.back()->set_name(oss.str());
+                                                               cur_list_[i]));
+    rc->set_was_used(true);
+    double score= rc->unprotected_evaluate(nullptr);
+    if (score != 0) {
+      rc->set_last_score(score);
+      ret.push_back(rc);
+      ret.back()->set_maximum_score(get_maximum_score());
+      std::ostringstream oss;
+      oss << get_name() << " " << i;
+      ret.back()->set_name(oss.str());
+    }
   }
   return ret;
 }
