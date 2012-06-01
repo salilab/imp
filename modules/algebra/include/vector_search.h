@@ -170,6 +170,7 @@ public:
 /** @} */
 
 #ifndef IMP_DOXYGEN
+typedef NearestNeighborD<1> NearestNeighbor1D;
 typedef NearestNeighborD<2> NearestNeighbor2D;
 typedef NearestNeighborD<3> NearestNeighbor3D;
 typedef NearestNeighborD<4> NearestNeighbor4D;
