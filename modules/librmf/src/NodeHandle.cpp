@@ -38,7 +38,7 @@ vector<NodeHandle> NodeHandle::get_children() const {
 }
 
 NodeHandles get_children_resolving_aliases(NodeHandle nh) {
-  StaticAliasFactory saf(nh.get_file());
+  AliasFactory saf(nh.get_file());
   NodeHandles ret= nh.get_children();
   for (unsigned int i=0; i< ret.size(); ++i) {
     if (ret[i].get_type()== ALIAS && saf.get_is(ret[i])) {
@@ -52,7 +52,7 @@ NodeHandle add_child_alias(NodeHandle parent,
                            NodeConstHandle alias) {
   NodeHandle nh=parent.add_child(alias.get_name() + " alias",
                                  ALIAS);
-  StaticAliasFactory saf(parent.get_file());
+  AliasFactory saf(parent.get_file());
   saf.get(nh).set_aliased(alias);
   return nh;
 }
