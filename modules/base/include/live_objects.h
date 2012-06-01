@@ -21,6 +21,10 @@ IMPBASEEXPORT Strings get_live_object_names();
 /** Return the points to all live objects, use this to check for memory
     leaks.*/
 IMPBASEEXPORT Objects get_live_objects();
+
+/** Set whether to complain about objects not being properly cleaned up.
+ */
+IMPBASEEXPORT void set_show_leaked_objects(bool tf);
 #endif
 
 
