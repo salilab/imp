@@ -28,16 +28,10 @@ IMPRMF_BEGIN_NAMESPACE
     - IMP::atom::Domain
     - IMP::atom::Molecule
     - IMP::atom::Copy
+    - IMP::core::RigidMember (rigid body information will be written and rigid
+    bodies created even when the IMP::core::RigidBody is not itself written
+    to the file)
     - IMP::core::RigidBody
-
-    \note The handling of rigid bodies is not entirely straight forward and
-    might have some side effects. When loading them, the orientation of the
-    rigid body is read from the file as well as the coordinates of the members.
-    The internal coordinats of the members are then updated that so their
-    coordinates, the pose of the rigid body and the internal coordinates are
-    all in sync. This is to avoid issues with rigid bodies not always being
-    created consistently by \imp (since the principal axes of the body may
-    be numerically unstable).
     @{
  */
 
