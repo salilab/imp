@@ -163,6 +163,7 @@ namespace {
 }
 
 Restraint* Restraint::create_decomposition() const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   base::Pointer<Restraint> ret= create_decomp_helper(this,
                                                      do_create_decomposition());
@@ -171,9 +172,26 @@ Restraint* Restraint::create_decomposition() const {
 
 
 Restraint* Restraint::create_current_decomposition() const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
+  Restraints rs=do_create_current_decomposition();
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< rs.size(); ++i) {
+      double old_score= rs[i]->get_last_score();
+      double new_score= rs[i]->unprotected_evaluate(nullptr);
+      IMP_INTERNAL_CHECK(new_score != 0,
+                         "The score of the current decomposition term is 0."
+                         << " This is unacceptable.");
+      IMP_INTERNAL_CHECK(std::abs(old_score-new_score)
+                         <  .1*old_score+new_score,
+                         "Old and new scores don't match: "
+                         << old_score << " vs " << new_score);
+    }
+  }
+  // need pointer to make sure destruction of rs doesn't free anything
   base::Pointer<Restraint> ret= create_decomp_helper(this,
-                                     do_create_current_decomposition());
+                                                     rs);
+  rs.clear(); // must be done before release to avoid frees
   return ret.release();
 }
 
