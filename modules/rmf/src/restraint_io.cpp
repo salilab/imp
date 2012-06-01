@@ -147,35 +147,11 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     void do_load_one( RMF::NodeConstHandle nh,
                       Restraint *oi,
                       unsigned int frame) {
-      if (dynamic_cast<RestraintSet*>(oi)) {
-        if (sf_.get_is(nh, frame)) {
-          RMF::ScoreConst d= sf_.get(nh, frame);
-          oi->set_last_score(d.get_score());
-        } else {
-          oi->set_last_score(IMP::BAD_SCORE);
-        }
+      if (sf_.get_is(nh, frame)) {
+        RMF::ScoreConst d= sf_.get(nh, frame);
+        oi->set_last_score(d.get_score());
       } else {
-        RMFRestraint *o= dynamic_cast<RMFRestraint*>(oi);
-        if (sf_.get_is(nh, frame)) {
-          RMF::ScoreConst d= sf_.get(nh, frame);
-          o->set_last_score(d.get_score());
-          o->set_particles(get_particles(nh.get_file(),
-                                         d.get_representation()));
-        } else {
-          oi->set_last_score(IMP::BAD_SCORE);
-        }
-        RMF::NodeConstHandles ch= nh.get_children();
-        RMFRestraints subs;
-        for (unsigned int i=0; i< ch.size(); ++i) {
-          if (sf_.get_is(ch[i], frame)) {
-            RMF::ScoreConst sd= sf_.get(ch[i], frame);
-            IMP_NEW(RMFRestraint, s, (m_, ch[i].get_name()));
-            subs.push_back(s);
-            s->set_last_score(sd.get_score());
-            s->set_particles(get_particles(nh.get_file(),
-                                           sd.get_representation()));
-          }
-        }
+        oi->set_last_score(0);
       }
     }
     bool get_is(RMF::NodeConstHandle nh) const {
