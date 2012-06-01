@@ -112,7 +112,12 @@ namespace RMF {
         IMP_RMF_USAGE_CHECK(user_data_.find(i)
                             != user_data_.end(),
                             "No such data found");
-        return boost::any_cast<T>(user_data_.find(i)->second);
+        try {
+          return boost::any_cast<T>(user_data_.find(i)->second);
+        } catch (boost::bad_any_cast) {
+          IMP_RMF_THROW("Type mismatch when recovering user data",
+                        UsageException);
+        }
       }
       template <class T>
         void set_association(int id, const T& d, bool overwrite) {
@@ -138,7 +143,12 @@ namespace RMF {
       boost::any get_association(int id) const {
         IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
                             std::string("Unassociated id ")+get_name(id));
-        return association_[id];
+        try {
+          return association_[id];
+        } catch (boost::bad_any_cast) {
+          IMP_RMF_THROW("Type mismatch when recovering node data",
+                        UsageException);
+        }
       }
       bool get_has_association(int id) const {
         if (id >= static_cast<int>(association_.size())) return false;
