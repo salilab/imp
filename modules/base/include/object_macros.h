@@ -14,6 +14,7 @@
 #include "Vector.h"
 #include "Pointer.h"
 #include "WeakPointer.h"
+#include "SetLogState.h"
 
 
 //! Define the basic things needed by any Object
@@ -31,11 +32,6 @@
                         get_version_info() const,                       \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version()));               \
-  /** \brief For python, cast a generic Object to this type. Throw a
-      ValueException of object is not the right type.*/                 \
-static Name* get_from(IMP::base::Object *o) {                           \
-  return IMP::base::object_cast<Name>(o);                               \
-}                                                                       \
 IMP_IMPLEMENT_INLINE(virtual void do_show(std::ostream &out) const,     \
                       show);                                            \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
@@ -57,11 +53,6 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction(); \
                         get_version_info() const,                       \
   return ::IMP::base::VersionInfo(get_module_name(),                    \
                                   get_module_version()));               \
-  /** \brief For Python, cast a generic Object to this type. Throw a
-      ValueException if object is not the right type.*/                 \
-static Name* get_from(IMP::base::Object *o) {                           \
-  return IMP::base::object_cast<Name>(o);                               \
-  }                                                                     \
 IMP_IMPLEMENT(virtual void do_show(std::ostream &out) const);           \
 IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP::base::Object::_on_destruction();)
 

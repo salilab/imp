@@ -22,7 +22,7 @@ class GetFromTests(IMP.test.TestCase):
         # Test cast to base class
         tr = IMP.Restraint.get_from(ar)
         self.assertEqual(tr.get_name(), "test restraint")
-        self.assertIsInstance(tr, IMP.core.TripletRestraint)
+        self.assertIsInstance(tr, IMP.Restraint)
 
         # Test cast to same class or to derived class
         for r in [tr, ar]:
