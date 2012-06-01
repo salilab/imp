@@ -1,0 +1,40 @@
+import unittest
+import IMP.rmf
+import IMP.test
+import IMP.container
+import RMF
+from IMP.algebra import *
+
+class GenericTest(IMP.test.TestCase):
+    def test_0(self):
+        """Test writing restraint sets to rmf"""
+        fn=self.get_tmp_file_name("restsets.rmf")
+        f= RMF.create_rmf_file(fn)
+        m= IMP.Model()
+        p= IMP.Particle(m)
+        IMP.atom.Hierarchy.setup_particle(p)
+        IMP.atom.Mass.setup_particle(p, 1)
+        IMP.core.XYZR.setup_particle(p).set_radius(1)
+        IMP.rmf.add_hierarchies(f, [p]);
+        rs= IMP.RestraintSet(m, 1.0)
+        r= IMP._ConstRestraint(1, [p])
+        r.set_name("restraint")
+        rs.add_restraint(r)
+        rs.evaluate(False)
+        IMP.rmf.add_restraints(f, [rs])
+        IMP.rmf.save_frame(f, 0)
+        del f
+        f= RMF.open_rmf_file(fn)
+        hs= IMP.rmf.create_hierarchies(fn, m)
+        nrs= IMP.rmf.create_restraints(fn, m)
+        print nrs
+        self.assertEqual(len(nrs), 1)
+        rsnrs0= IMP.RestraintSet.get_from(nrs[0])
+        self.assertEqual(len(rsnrs0.get_restraints()), 1)
+        self.assertEqual(rsnrs0.get_name(), rs.get_name())
+        rb= rsnrs0.get_restraints()[0]
+        self.assertEqual(rb.evaluate(False), r.evaluate(False))
+        self.assertEqual(rb.get_name(), r.get_name())
+
+if __name__ == '__main__':
+    unittest.main()
