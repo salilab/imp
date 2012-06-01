@@ -28,6 +28,7 @@ Restraints _ConstRestraint::do_create_decomposition() const {
   for (unsigned int i=0; i< ps_.size(); ++i) {
     ret.push_back(new _ConstRestraint(v_/ps_.size(),
                                       ParticlesTemp(1,ps_[i])));
+    ret.back()->set_last_score(v_/ps_.size());
   }
   return ret;
 }
