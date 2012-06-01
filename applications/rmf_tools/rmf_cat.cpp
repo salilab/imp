@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
     std::cout << "Loading structure" << std::endl;
     IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
     IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);
-    IMP::rmf::RMFRestraints rs= IMP::rmf::create_restraints(rh, m);
+    IMP::Restraints rs= IMP::rmf::create_restraints(rh, m);
     IMP::display::Geometries gs= IMP::rmf::create_geometries(rh);
 
     std::cout << "Adding structure to output file" << std::endl;
