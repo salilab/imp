@@ -277,7 +277,7 @@ IMP_RMF_DECORATOR(RMF, Domain);
 IMP_RMF_DECORATOR(RMF, Copy);
 IMP_RMF_DECORATOR(RMF, Diffuser);
 IMP_RMF_DECORATOR(RMF, Typed);
-IMP_RMF_DECORATOR(RMF, StaticAlias);
+IMP_RMF_DECORATOR(RMF, Alias);
 
 %include "RMF/decorators.h"
 %include "RMF/decorator_utility.h"

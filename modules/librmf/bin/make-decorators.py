@@ -42,9 +42,9 @@ class Children:
         self.nice_name=nice_name
     def get_key_members(self, const):
         if (const):
-            return ["StaticAliasConstFactory "+self.nice_name+"_;"]
+            return ["AliasConstFactory "+self.nice_name+"_;"]
         else:
-            return ["StaticAliasFactory "+self.nice_name+"_;"]
+            return ["AliasFactory "+self.nice_name+"_;"]
     def get_methods(self, const):
         ret=[]
         if const:
@@ -75,9 +75,9 @@ class Children:
         return ret
     def get_key_arguments(self, const):
         if (const):
-            return ["StaticAliasConstFactory "+self.nice_name+""]
+            return ["AliasConstFactory "+self.nice_name+""]
         else:
-            return ["StaticAliasFactory "+self.nice_name+""]
+            return ["AliasFactory "+self.nice_name+""]
     def get_key_pass(self, const):
         return [self.nice_name+"_"]
     def get_key_saves(self, const):
@@ -666,8 +666,8 @@ typed= Decorator("Typed", "A numeric tag for keeping track of types of molecules
                    [DecoratorCategory("sequence", 1, [Attribute("String", "type_name", "type name")])],
                    "")
 
-salias= Decorator("StaticAlias", "Store a static reference to another node.",
-                   [DecoratorCategory("alias", 1, [NodeAttribute("NodeID", "aliased", "aliased")])],
+salias= Decorator("Alias", "Store a reference to another node as an alias.",
+                  [DecoratorCategory("alias", 1, [NodeAttribute("NodeID", "aliased", "aliased")])],
                    "")
 
 

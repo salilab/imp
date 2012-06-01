@@ -3266,22 +3266,22 @@ class TypedConstFactory:
 typedef vector<TypedConstFactory>
 TypedConstFactories;
 
-/** Store a static reference to another node.
+/** Store a reference to another node as an alias.
 
-    \see StaticAlias
-    \see StaticAliasConstFactory
+    \see Alias
+    \see AliasConstFactory
 */
-class StaticAliasConst:
-      public Decorator<StaticAliasConst, NodeConstHandle> {
-  friend class StaticAliasConstFactory;
+class AliasConst:
+      public Decorator<AliasConst, NodeConstHandle> {
+  friend class AliasConstFactory;
  private:
-  typedef Decorator<StaticAliasConst, NodeConstHandle> P;
+  typedef Decorator<AliasConst, NodeConstHandle> P;
   NodeIDKey aliased_;
   NodeIDKey aliased_pf_;
-  StaticAliasConst(NodeConstHandle nh,
-                   int frame,
-                   NodeIDKey aliased,
-                   NodeIDKey aliased_pf):
+  AliasConst(NodeConstHandle nh,
+             int frame,
+             NodeIDKey aliased,
+             NodeIDKey aliased_pf):
       P(nh, frame),
       aliased_(aliased),
       aliased_pf_(aliased_pf) {
@@ -3298,29 +3298,29 @@ class StaticAliasConst:
     return get_node().get_file().get_node_from_id(id);
   }
   static std::string get_decorator_type_name() {
-    return "StaticAliasConst";
+    return "AliasConst";
   }
 };
 
-typedef vector<StaticAliasConst>
-StaticAliasConsts;
+typedef vector<AliasConst>
+AliasConsts;
 
-/** Store a static reference to another node.
+/** Store a reference to another node as an alias.
 
-    \see StaticAliasConst
-    \see StaticAliasFactory
+    \see AliasConst
+    \see AliasFactory
 */
-class StaticAlias:
-      public Decorator<StaticAlias, NodeHandle> {
-  friend class StaticAliasFactory;
+class Alias:
+      public Decorator<Alias, NodeHandle> {
+  friend class AliasFactory;
  private:
-  typedef Decorator<StaticAlias, NodeHandle> P;
+  typedef Decorator<Alias, NodeHandle> P;
   internal::NodeIDLazyKey aliased_;
   internal::NodeIDLazyKey aliased_pf_;
-  StaticAlias(NodeHandle nh,
-              int frame,
-              internal::NodeIDLazyKey aliased,
-              internal::NodeIDLazyKey aliased_pf):
+  Alias(NodeHandle nh,
+        int frame,
+        internal::NodeIDLazyKey aliased,
+        internal::NodeIDLazyKey aliased_pf):
       P(nh, frame),
       aliased_(aliased),
       aliased_pf_(aliased_pf) {
@@ -3344,27 +3344,27 @@ class StaticAlias:
     }
   }
   static std::string get_decorator_type_name() {
-    return "StaticAlias";
+    return "Alias";
   }
 };
 
-typedef vector<StaticAlias>
-StaticAliass;
+typedef vector<Alias>
+Aliass;
 
-/** Create decorators of type StaticAlias.
+/** Create decorators of type Alias.
 
-    \see StaticAlias
-    \see StaticAliasConstFactory
+    \see Alias
+    \see AliasConstFactory
 */
-class StaticAliasFactory:
-      public Factory<StaticAlias>
+class AliasFactory:
+      public Factory<Alias>
 {
  private:
-  typedef Factory<StaticAlias> P;
+  typedef Factory<Alias> P;
   internal::NodeIDLazyKey aliased_;
   internal::NodeIDLazyKey aliased_pf_;
  public:
-  StaticAliasFactory(FileHandle fh):
+  AliasFactory(FileHandle fh):
       P(){
     {
       CategoryD<1> cat=get_category_always<1>(fh, "alias");
@@ -3376,11 +3376,11 @@ class StaticAliasFactory:
                                           true);
     };
   }
-  StaticAlias get(NodeHandle nh,
-                  int frame=-1) const {
+  Alias get(NodeHandle nh,
+            int frame=-1) const {
     ;
-    return StaticAlias(nh, frame, aliased_,
-                       aliased_pf_);
+    return Alias(nh, frame, aliased_,
+                 aliased_pf_);
   }
   bool get_is(NodeHandle nh, int frame=-1) const {
     return P::get_has_value(nh, aliased_,
@@ -3388,23 +3388,23 @@ class StaticAliasFactory:
   }
 };
 
-typedef vector<StaticAliasFactory>
-StaticAliasFactories;
+typedef vector<AliasFactory>
+AliasFactories;
 
-/** Create decorators of type StaticAlias.
+/** Create decorators of type Alias.
 
-    \see StaticAliasConst
-    \see StaticAliasFactory
+    \see AliasConst
+    \see AliasFactory
 */
-class StaticAliasConstFactory:
-      public Factory<StaticAliasConst>
+class AliasConstFactory:
+      public Factory<AliasConst>
 {
  private:
-  typedef Factory<StaticAliasConst> P;
+  typedef Factory<AliasConst> P;
   NodeIDKey aliased_;
   NodeIDKey aliased_pf_;
  public:
-  StaticAliasConstFactory(FileConstHandle fh):
+  AliasConstFactory(FileConstHandle fh):
       P(){
     {
       CategoryD<1> cat=fh.get_category<1>("alias");
@@ -3418,11 +3418,11 @@ class StaticAliasConstFactory:
                                            true);
     };
   }
-  StaticAliasConst get(NodeConstHandle nh,
-                       int frame=-1) const {
+  AliasConst get(NodeConstHandle nh,
+                 int frame=-1) const {
     IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
-    return StaticAliasConst(nh, frame, aliased_,
-                            aliased_pf_);
+    return AliasConst(nh, frame, aliased_,
+                      aliased_pf_);
   }
   bool get_is(NodeConstHandle nh, int frame=-1) const {
     return P::get_has_value(nh, aliased_,
@@ -3430,8 +3430,8 @@ class StaticAliasConstFactory:
   }
 };
 
-typedef vector<StaticAliasConstFactory>
-StaticAliasConstFactories;
+typedef vector<AliasConstFactory>
+AliasConstFactories;
 
 /** Associate a score with some set of particles.
 
@@ -3443,12 +3443,12 @@ class ScoreConst:
   friend class ScoreConstFactory;
  private:
   typedef Decorator<ScoreConst, NodeConstHandle> P;
-  StaticAliasConstFactory representation_;
+  AliasConstFactory representation_;
   FloatKey score_;
   FloatKey score_pf_;
   ScoreConst(NodeConstHandle nh,
              int frame,
-             StaticAliasConstFactory representation,
+             AliasConstFactory representation,
              FloatKey score,
              FloatKey score_pf):
       P(nh, frame),
@@ -3490,12 +3490,12 @@ class Score:
   friend class ScoreFactory;
  private:
   typedef Decorator<Score, NodeHandle> P;
-  StaticAliasFactory representation_;
+  AliasFactory representation_;
   internal::FloatLazyKey score_;
   internal::FloatLazyKey score_pf_;
   Score(NodeHandle nh,
         int frame,
-        StaticAliasFactory representation,
+        AliasFactory representation,
         internal::FloatLazyKey score,
         internal::FloatLazyKey score_pf):
       P(nh, frame),
@@ -3551,7 +3551,7 @@ class ScoreFactory:
 {
  private:
   typedef Factory<Score> P;
-  StaticAliasFactory representation_;
+  AliasFactory representation_;
   internal::FloatLazyKey score_;
   internal::FloatLazyKey score_pf_;
  public:
@@ -3593,7 +3593,7 @@ class ScoreConstFactory:
 {
  private:
   typedef Factory<ScoreConst> P;
-  StaticAliasConstFactory representation_;
+  AliasConstFactory representation_;
   FloatKey score_;
   FloatKey score_pf_;
  public:

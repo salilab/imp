@@ -83,16 +83,16 @@ namespace {
                  std::string prefix) {
     using std::operator<<;
     out<< "\"" << n.get_name() << "\" [" << get_type_name(n.get_type()) << "]";
-    show_data(n, out, fks, frame, prefix);
-    show_data(n, out, iks, frame, prefix);
-    show_data(n, out, xks, frame, prefix);
-    show_data(n, out, sks, frame, prefix);
-    show_data(n, out, nks, frame, prefix);
-    show_data(n, out, fsks, frame, prefix);
-    show_data(n, out, isks, frame, prefix);
-    show_data(n, out, xsks, frame, prefix);
-    show_data(n, out, ssks, frame, prefix);
-    show_data(n, out, nsks, frame, prefix);
+    show_data(n, out, fks, frame, prefix+"  ");
+    show_data(n, out, iks, frame, prefix+"  ");
+    show_data(n, out, xks, frame, prefix+"  ");
+    show_data(n, out, sks, frame, prefix+"  ");
+    show_data(n, out, nks, frame, prefix+"  ");
+    show_data(n, out, fsks, frame, prefix+"  ");
+    show_data(n, out, isks, frame, prefix+"  ");
+    show_data(n, out, xsks, frame, prefix+"  ");
+    show_data(n, out, ssks, frame, prefix+"  ");
+    show_data(n, out, nsks, frame, prefix+"  ");
   }
 
   void show_node_decorators(NodeConstHandle n, std::ostream &out,
@@ -111,7 +111,7 @@ namespace {
                             CopyConstFactory copycf,
                             DiffuserConstFactory diffusercf,
                             TypedConstFactory typedcf,
-                            StaticAliasConstFactory aliascf,
+                            AliasConstFactory aliascf,
                             int frame,
                             std::string ) {
     using std::operator<<;
@@ -231,7 +231,7 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
   CopyConstFactory copycf(root.get_file());
   DiffuserConstFactory diffusercf(root.get_file());
   TypedConstFactory typedcf(root.get_file());
-  StaticAliasConstFactory aliascf(root.get_file());
+  AliasConstFactory aliascf(root.get_file());
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children(),
@@ -245,7 +245,7 @@ void show_hierarchy_with_decorators(NodeConstHandle root,
 
 
 NodeConstHandles get_children_resolving_aliases(NodeConstHandle nh) {
-  StaticAliasConstFactory saf(nh.get_file());
+  AliasConstFactory saf(nh.get_file());
   NodeConstHandles ret= nh.get_children();
   for (unsigned int i=0; i< ret.size(); ++i) {
     if (ret[i].get_type()== ALIAS && saf.get_is(ret[i])) {
