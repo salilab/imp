@@ -25,8 +25,8 @@ Restraints create_current_decomposition(Model *m,Score *score,
   for (unsigned int i=0; i< c->get_number(); ++i) {
     std::ostringstream oss;
     oss << name << " " << Showable(c->get(i));
-    Pointer<Restraint> r= IMP::internal::create_restraint(score,
-                                                          c->get(i),
+    Pointer<Restraint> r= IMP::internal::create_tuple_restraint(score,
+                                                                c->get(i),
                              oss.str());
     double score= r->unprotected_evaluate(nullptr);
     if (score != 0) {
@@ -50,8 +50,8 @@ Restraints create_decomposition(Model *m,Score *score,
   for (unsigned int i=0; i< all.size(); ++i) {
     std::ostringstream oss;
     oss << name << " " << Showable(all[i]);
-    ret[i]= IMP::internal::create_restraint(score,
-                                             IMP::internal::get_particle(m,
+    ret[i]= IMP::internal::create_tuple_restraint(score,
+                                                  IMP::internal::get_particle(m,
                                                                        all[i]),
                                              oss.str());
   }

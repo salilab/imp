@@ -17,6 +17,7 @@
 #include <IMP/PairModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/score_state_macros.h>
+#include <IMP/internal/ContainerConstraint.h>
 
 IMP_BEGIN_NAMESPACE
 // for swig
@@ -38,11 +39,18 @@ IMPCONTAINER_BEGIN_NAMESPACE
 
     \see core::PairConstraint
  */
-class IMPCONTAINEREXPORT PairsConstraint : public Constraint
+class IMPCONTAINEREXPORT PairsConstraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+ public Constraint
+#else
+ public IMP::internal::ContainerConstraint<PairModifier,
+                                           PairDerivativeModifier,
+                                           PairContainer>
+#endif
 {
-  IMP::OwnerPointer<PairModifier> f_;
-  IMP::OwnerPointer<PairDerivativeModifier> af_;
-  IMP::OwnerPointer<PairContainer> c_;
+  typedef IMP::internal::ContainerConstraint<PairModifier,
+                                           PairDerivativeModifier,
+      PairContainer> P;
 public:
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The PairModifier to apply to all elements
@@ -54,20 +62,12 @@ public:
   PairsConstraint(PairModifier *before,
                        PairDerivativeModifier *after,
                        PairContainerAdaptor c,
-                       std::string name="PairConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(PairDerivativeModifier* f) {
-    af_=f;
-  }
-
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(PairModifier* f) {
-    f_=f;
-  }
-  ScoreStates create_decomposition() const;
-
+                       std::string name="PairConstraint %1%"):
+      P(before, after, c, name)
+      {}
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(PairsConstraint);
+#endif
 };
 
 IMP_OBJECTS(PairsConstraint,PairsConstraints);

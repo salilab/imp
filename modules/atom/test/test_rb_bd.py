@@ -51,6 +51,7 @@ class DecoratorTests(IMP.test.TestCase):
         bd.set_scoring_function(sf)
         bd.add_optimizer_state(os)
         bd.set_maximum_time_step(10)
+        IMP.set_log_level(IMP.VERBOSE)
         bd.optimize(1000)
         e= sf.evaluate(False)
         self.assert_(e<2)

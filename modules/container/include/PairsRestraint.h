@@ -51,19 +51,12 @@ public:
    */
   PairsRestraint(PairScore *ss,
                       PairContainerAdaptor pc,
-                      std::string name="PairsRestraint %1%");
+                      std::string name="PairsRestraint %1%"):
+      P(ss, pc, name)
+      {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_RESTRAINT(PairsRestraint);
-
-  //! Get the container used to store Particles
-  ParticlePairsTemp get_arguments() const;
-
-  PairContainer* get_container() const;
-
-  PairScore* get_score() const;
-#else
-  IMP_OBJECT(PairsRestraint);
 #endif
 };
 

@@ -51,19 +51,12 @@ public:
    */
   TripletsRestraint(TripletScore *ss,
                       TripletContainerAdaptor pc,
-                      std::string name="TripletsRestraint %1%");
+                      std::string name="TripletsRestraint %1%"):
+      P(ss, pc, name)
+      {}
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_RESTRAINT(TripletsRestraint);
-
-  //! Get the container used to store Particles
-  ParticleTripletsTemp get_arguments() const;
-
-  TripletContainer* get_container() const;
-
-  TripletScore* get_score() const;
-#else
-  IMP_OBJECT(TripletsRestraint);
 #endif
 };
 

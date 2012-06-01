@@ -11,7 +11,6 @@
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/internal/InternalPairsRestraint.h>
-#include <IMP/core/internal/generic.h>
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/XYZR.h>

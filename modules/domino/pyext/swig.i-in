@@ -6,7 +6,7 @@ namespace domino {
 %warnfilter(473,403) DiscreteSampler;
 }
 }
-%rename(_ParticleAdaptor) IMP::domino::ParticleAdaptor;
+%rename(_ParticlesAdaptor) IMP::domino::ParticlesAdaptor;
 
 /* Tell swig how to treat various types when moving them to and from pyton */
 

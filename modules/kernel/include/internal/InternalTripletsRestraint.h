@@ -18,9 +18,8 @@
 #include "../TripletScore.h"
 #include "../TripletContainer.h"
 #include "../Restraint.h"
-#include "../restraint_macros.h"
+#include "ContainerRestraint.h"
 
-#include <iostream>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -34,42 +33,17 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see TripletRestraint
  */
 class IMPEXPORT InternalTripletsRestraint :
-  public Restraint
+    public ContainerRestraint<TripletScore, TripletContainer>
 {
-  IMP::OwnerPointer<TripletScore> ss_;
-  IMP::OwnerPointer<TripletContainer> pc_, ac_, rc_;
 public:
-
- //! Create the restraint with a shared container
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] pc The container containing the stored particles. This
-      container is not copied.
-      \param[in] name The object name
-   */
   InternalTripletsRestraint(TripletScore *ss,
-                      TripletContainer *pc,
-                      std::string name="TripletsRestraint %1%");
+                              TripletContainer *pc,
+                              std::string name="TripletsRestraint %1%"):
+      ContainerRestraint<TripletScore, TripletContainer>(ss, pc, name)
+      {
 
-  IMP_RESTRAINT(InternalTripletsRestraint);
 
-  ParticleTripletsTemp get_arguments() const {
-    return pc_->get();
   }
-
-  TripletScore* get_score() const {
-    return ss_;
-  }
-
-  TripletContainer* get_container() const {
-    return pc_;
-  }
-#ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const;
-
-  Restraints do_create_current_decomposition() const;
-#endif
-  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
 };
 
 IMP_END_INTERNAL_NAMESPACE

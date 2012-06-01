@@ -14,10 +14,7 @@
 
 #include "core_config.h"
 
-#include <IMP/Restraint.h>
-#include <IMP/Pointer.h>
-#include <IMP/PairScore.h>
-#include <IMP/internal/container_helpers.h>
+#include <IMP/internal/TupleRestraint.h>
 #include <IMP/restraint_macros.h>
 
 #include <iostream>
@@ -28,11 +25,13 @@ IMPCORE_BEGIN_NAMESPACE
 /** This restraint stores a Pair.
     \see PairRestraint
  */
-class IMPCOREEXPORT PairRestraint :
+class PairRestraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
   public Restraint
+#else
+  public IMP::internal::TupleRestraint<PairScore>
+#endif
 {
-  IMP::OwnerPointer<PairScore> ss_;
-  ParticleIndexPair v_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -40,7 +39,11 @@ public:
    */
   PairRestraint(PairScore *ss,
                      const ParticlePair& vt,
-                     std::string name="PairRestraint %1%");
+                     std::string name="PairRestraint %1%"):
+      IMP::internal::TupleRestraint<PairScore>(ss, vt, name)
+  {}
+
+#if defined(SWIG) || defined(IMP_DOXYGEN)
 
   PairScore* get_score() const {
     return ss_;
@@ -53,8 +56,6 @@ public:
 
   double unprotected_evaluate_if_good(DerivativeAccumulator *da,
                                       double max) const;
-#ifndef IMP_DOXYGEN
-  Restraints do_create_current_decomposition() const;
 #endif
 };
 

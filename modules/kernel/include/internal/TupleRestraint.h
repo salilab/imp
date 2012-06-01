@@ -17,6 +17,7 @@
 #include "triplet_helpers.h"
 #include "quad_helpers.h"
 #include "../restraint_macros.h"
+#include "../constants.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -41,6 +42,7 @@ public:
   }
 
   IMP_RESTRAINT(TupleRestraint);
+  Restraints do_create_current_decomposition() const;
 };
 
 
@@ -85,10 +87,23 @@ void TupleRestraint<Score>::do_show(std::ostream& out) const
   out << "score " << Showable(ss_) << std::endl;
   out << "data " << Showable(get_argument()) << std::endl;
 }
+
 template <class Score>
-inline Restraint* create_restraint(Score *s,
-                            const typename Score::Argument &t,
-                            std::string name= std::string()) {
+inline  Restraints
+TupleRestraint<Score>::do_create_current_decomposition() const {
+  if (get_last_score()==0) return Restraints();
+  Restraints rs= ss_->create_current_decomposition(get_argument());
+  if (rs.size()==1 && rs[0]->get_last_score()== BAD_SCORE) {
+    // special case, ick
+    rs[0]->set_last_score(get_last_score());
+  }
+  return rs;
+}
+
+template <class Score>
+inline Restraint* create_tuple_restraint(Score *s,
+                                         const typename Score::Argument &t,
+                                         std::string name= std::string()) {
   if (name==std::string()) {
     std::ostringstream oss;
     oss << s->get_name() << " on " << Showable(t);
@@ -96,8 +111,6 @@ inline Restraint* create_restraint(Score *s,
   }
   return new internal::TupleRestraint<Score>(s, t, name);
 }
-
-
 
 
 

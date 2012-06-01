@@ -18,9 +18,8 @@
 #include "../CLASSNAMEScore.h"
 #include "../CLASSNAMEContainer.h"
 #include "../Restraint.h"
-#include "../restraint_macros.h"
+#include "ContainerRestraint.h"
 
-#include <iostream>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
@@ -34,42 +33,17 @@ IMP_BEGIN_INTERNAL_NAMESPACE
     \see CLASSNAMERestraint
  */
 class IMPEXPORT InternalCLASSNAMEsRestraint :
-  public Restraint
+    public ContainerRestraint<CLASSNAMEScore, CLASSNAMEContainer>
 {
-  IMP::OwnerPointer<CLASSNAMEScore> ss_;
-  IMP::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;
 public:
-
- //! Create the restraint with a shared container
-  /** \param[in] ss The function to apply to each particle.
-      \param[in] pc The container containing the stored particles. This
-      container is not copied.
-      \param[in] name The object name
-   */
   InternalCLASSNAMEsRestraint(CLASSNAMEScore *ss,
-                      CLASSNAMEContainer *pc,
-                      std::string name="CLASSNAMEsRestraint %1%");
+                              CLASSNAMEContainer *pc,
+                              std::string name="CLASSNAMEsRestraint %1%"):
+      ContainerRestraint<CLASSNAMEScore, CLASSNAMEContainer>(ss, pc, name)
+      {
 
-  IMP_RESTRAINT(InternalCLASSNAMEsRestraint);
 
-  PLURALVARIABLETYPE get_arguments() const {
-    return pc_->get();
   }
-
-  CLASSNAMEScore* get_score() const {
-    return ss_;
-  }
-
-  CLASSNAMEContainer* get_container() const {
-    return pc_;
-  }
-#ifndef IMP_DOXYGEN
-  Restraints do_create_decomposition() const;
-
-  Restraints do_create_current_decomposition() const;
-#endif
-  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
 };
 
 IMP_END_INTERNAL_NAMESPACE

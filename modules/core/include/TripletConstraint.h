@@ -13,16 +13,8 @@
 #define IMPCORE_TRIPLET_CONSTRAINT_H
 
 #include "core_config.h"
-#include <IMP/TripletModifier.h>
-#include <IMP/TripletDerivativeModifier.h>
-#include <IMP/Constraint.h>
-#include <IMP/Particle.h>
+#include <IMP/internal/TupleConstraint.h>
 #include <IMP/score_state_macros.h>
-
-namespace IMP {
-// for swig
-class TripletModifier;
-}
 
 IMPCORE_BEGIN_NAMESPACE
 //! Apply a TripletFunction to a Triplet
@@ -34,11 +26,14 @@ IMPCORE_BEGIN_NAMESPACE
 
     \see container::TripletsConstraint
  */
-class IMPCOREEXPORT TripletConstraint : public Constraint
+class IMPCOREEXPORT TripletConstraint :
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+public Constraint
+#else
+public IMP::internal::TupleConstraint<TripletModifier,
+                                      TripletDerivativeModifier>
+#endif
 {
-  IMP::OwnerPointer<TripletModifier> f_;
-  IMP::OwnerPointer<TripletDerivativeModifier> af_;
-  ParticleIndexTriplet v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
@@ -46,19 +41,16 @@ public:
   TripletConstraint(TripletModifier *before,
                       TripletDerivativeModifier *after,
                       const ParticleTriplet& vt,
-                      std::string name="TripletConstraint %1%");
-
-  //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(TripletDerivativeModifier* f) {
-    af_=f;
+                      std::string name="TripletConstraint %1%"):
+      IMP::internal::TupleConstraint<TripletModifier,
+                                      TripletDerivativeModifier>
+      (before, after, vt, name)
+      {
   }
 
-  //! Apply this modifier to all the elements before an evaluate
-  void set_before_evaluate_modifier(TripletModifier* f) {
-    f_=f;
-  }
-
+#if defined(IMP_DOXYGEN) || defined(SWIG)
   IMP_CONSTRAINT(TripletConstraint);
+#endif
 };
 
 
