@@ -64,7 +64,8 @@ class GenericTest(IMP.test.TestCase):
         print scores
         for i in range(0,11):
             IMP.rmf.load_frame(f, i)
-            self.assertEqual(scores[i], rr[0].evaluate(False))
+            print i
+            self.assertAlmostEqual(scores[i], rr[0].evaluate(False), delta=.01)
 
 if __name__ == '__main__':
     unittest.main()
