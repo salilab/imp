@@ -48,6 +48,16 @@
 
 #else // swig and doxygen
 
+// Some combinations of gcc/boost fail to compile Python wrappers for
+// get_vertex_index ("no match for 'operator=' error); fall back to
+// std::map in this case
+#if defined(IMP_SWIG_WRAPPER) && defined(__GNUC__) && __GNUC__ == 4 \
+  && __GNUC_MINOR__ == 7 && BOOST_VERSION == 104800
+#define IMP_GRAPH_MAP_TYPE std::map
+#else
+#define IMP_GRAPH_MAP_TYPE compatibility::map
+#endif
+
 #define IMP_GRAPH(Name, directionality, VertexData, EdgeData)           \
   typedef boost::adjacency_list<boost::vecS, boost::vecS,               \
                                 boost::directionality##S,               \
@@ -61,7 +71,7 @@
   typedef boost::graph_traits<Name> Name##Traits;                       \
   typedef Name##Traits::vertex_descriptor Name##Vertex;                 \
   typedef Name##Traits::edge_descriptor Name##Edge;                     \
-  typedef compatibility::map<VertexData, Name##Vertex> Name##VertexIndex; \
+  typedef IMP_GRAPH_MAP_TYPE<VertexData, Name##Vertex> Name##VertexIndex; \
   inline Name##VertexIndex get_vertex_index(const Name &g) {            \
     Name##ConstVertexName vm = boost::get(boost::vertex_name, g);       \
     std::pair<Name##Traits::vertex_iterator, Name##Traits::vertex_iterator> \
