@@ -48,8 +48,8 @@ namespace {
       return atom_name;
     }
 
-    typedef compatibility::map<std::string, std::string> ResidueMap;
-    static compatibility::map<std::string, ResidueMap> map;
+    typedef std::map<std::string, std::string> ResidueMap;
+    static std::map<std::string, ResidueMap> map;
     static bool map_init = false;
     // Initialize map on first call
     if (!map_init) {
