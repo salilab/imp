@@ -155,6 +155,7 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
     names = db.get_table_column_names(tbl)
     types = db.get_table_types(tbl)
     indices = get_sorting_indices(names)
+    print "****" , indices
     sorted_names = [ names[i] for i in indices]
     sorted_types = [ types[i] for i in indices]
     log.info("Gathering results. Saving to %s", fn_output)
@@ -187,7 +188,7 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
 
 def get_sorting_indices(l):
     """ Return indices that sort the list l """
-    pairs = [(i,element) for i,element in enumerate(l)]
+    pairs = [(element, i) for i,element in enumerate(l)]
     pairs.sort()
     indices = [p[1] for p in pairs]
     return indices
