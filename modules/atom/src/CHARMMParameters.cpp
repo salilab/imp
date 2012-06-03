@@ -117,7 +117,7 @@ namespace {
     }
 
     // Look up residue type
-    compatibility::map<std::string, ResidueMap>::iterator resit
+    std::map<std::string, ResidueMap>::iterator resit
                                             = map.find(residue->get_type());
     if (resit != map.end()) {
       // Look up atom name
