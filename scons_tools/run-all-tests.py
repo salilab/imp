@@ -173,8 +173,10 @@ def import_imp_modules(covtest):
     # themselves
     from IMP.test import unittest
     import IMP.base
-    # test cases don't clean up memory properly when run as part of run-all-tests
-    IMP.base.set_show_leaked_objects(False)
+    # test cases don't clean up memory properly when run as part
+    # of run-all-tests
+    if IMP.build != "fast":
+        IMP.base.set_show_leaked_objects(False)
 
 if __name__ == "__main__":
     opts, args = parse_options()
