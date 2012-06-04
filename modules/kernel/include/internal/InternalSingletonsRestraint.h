@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
     \see SingletonRestraint
  */
-class IMPEXPORT InternalSingletonsRestraint :
+class InternalSingletonsRestraint :
     public ContainerRestraint<SingletonScore, SingletonContainer>
 {
 public:

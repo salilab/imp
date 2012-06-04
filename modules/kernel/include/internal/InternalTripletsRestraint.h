@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
     \see TripletRestraint
  */
-class IMPEXPORT InternalTripletsRestraint :
+class InternalTripletsRestraint :
     public ContainerRestraint<TripletScore, TripletContainer>
 {
 public:

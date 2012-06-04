@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
     \see CLASSNAMERestraint
  */
-class IMPEXPORT InternalCLASSNAMEsRestraint :
+class InternalCLASSNAMEsRestraint :
     public ContainerRestraint<CLASSNAMEScore, CLASSNAMEContainer>
 {
 public:

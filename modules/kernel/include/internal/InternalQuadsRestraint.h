@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
     \see QuadRestraint
  */
-class IMPEXPORT InternalQuadsRestraint :
+class InternalQuadsRestraint :
     public ContainerRestraint<QuadScore, QuadContainer>
 {
 public:
