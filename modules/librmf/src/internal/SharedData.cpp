@@ -96,7 +96,8 @@ namespace RMF {
     }
   }
 
-
+    // throws RMF::IOException if couldn't create file or unsupported file
+    // format
     SharedData* create_shared_data(std::string path, bool create) {
       SharedData *ret;
       if (cache.find(path) != cache.end()) {

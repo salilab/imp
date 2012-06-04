@@ -38,10 +38,14 @@ namespace RMF {
 
   /** Create a new hdf5 file, clearing any existing file with the same
       name if needed. The file cannot already be open.
+
+      \exception RMF::IOException couldn't create file
   */
   RMFEXPORT HDF5File create_hdf5_file(std::string name);
 
   /** Open an existing hdf5 file. The file cannot already be open/.
+
+      \exception RMF::IOException couldn't open file
   */
   RMFEXPORT HDF5File open_hdf5_file(std::string name);
 

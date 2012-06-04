@@ -250,10 +250,20 @@ namespace RMF {
 
   typedef vector<FileHandle> FileHandles;
 
-  /** Create an RMF from a file system path.*/
+  /**
+   Create an RMF from a file system path.
+
+   \param path the system path to the rmf file
+   \exception RMF::IOException couldn't create file, or unsupported file format
+   */
   RMFEXPORT FileHandle create_rmf_file(std::string path);
 
-  /** Open an RMF from a file system path.*/
+  /**
+   Open an RMF from a file system path.
+
+   \param path the system path to the rmf file
+   \exception RMF::IOException couldn't create file, or unsupported file format
+*/
   RMFEXPORT FileHandle open_rmf_file(std::string path);
 
 

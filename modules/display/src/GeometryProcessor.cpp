@@ -27,6 +27,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
                                                   Color c,
                                                   std::string name) {
   IMP::base::OwnerPointer<Geometry> pg(g);
+  // use own color instead of default whenever it is specified
   if (g->get_has_color()) {
     c= g->get_color();
     has_color=true;
@@ -34,6 +35,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   if (name.empty()) {
     name= g->get_name();
   }
+  // try primitive geometries first
   GP_HANDLE(Sphere, sphere);
   GP_HANDLE(Cylinder, cylinder);
   GP_HANDLE(Ellipsoid, ellipsoid);
@@ -45,6 +47,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   GP_HANDLE(Label, label);
   GP_HANDLE(SurfaceMesh, surface_mesh);
   GP_HANDLE(, anything);
+  // if primitives didn't work, try decompose to components
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
     IMP_THROW("Couldn't handle " << Showable(g),

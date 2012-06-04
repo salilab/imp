@@ -221,7 +221,7 @@
 #define IMP_RMF_THROW(m,e)\
     RMF::internal::handle_error<e>(m)
 
-/** Call a function and throw an exception if the return values is bad */
+/** Call a function and throw an RMF::IOException if the return values is bad */
 #define IMP_HDF5_CALL(v)                                                \
     if ((v)<0) {                                                        \
       IMP_RMF_THROW(internal::get_error_message("HDF5 call failed: ",   \

@@ -107,6 +107,7 @@ herr_t error_function(hid_t, void *) {
 }
 }
 
+// throws RMF::IOException on error
 HDF5File create_hdf5_file(std::string name) {
   IMP_HDF5_CALL(H5open());
   IMP_HDF5_CALL(H5Eset_auto2(H5E_DEFAULT, &error_function, NULL));
