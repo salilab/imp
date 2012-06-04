@@ -164,10 +164,6 @@ IMP_VOLUME_GEOMETRY_METHODS_D(BoundingBox, bounding_box,
                               *(g.get_corner(1)[2]- g.get_corner(0)[2]),
                               return g);
 
-#ifdef IMP_DOXYGEN
-/** See BoundingBoxD. */
-typedef BoundingBoxD<3> BoundingBoxD<3>;
-#endif
 
 //! Box with radius one
 template <unsigned int D>
