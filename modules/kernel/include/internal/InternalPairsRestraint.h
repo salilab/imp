@@ -32,7 +32,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
     \see PairRestraint
  */
-class IMPEXPORT InternalPairsRestraint :
+class InternalPairsRestraint :
     public ContainerRestraint<PairScore, PairContainer>
 {
 public:
