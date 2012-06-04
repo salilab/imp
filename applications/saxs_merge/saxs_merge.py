@@ -638,6 +638,12 @@ Merging
                 "classification", "merging"], default="merging")
     group.add_option('--postpone_cleanup', action='store_true', default=False,
             help="Cleanup step comes after rescaling step (default is False)")
+    group.add_option('--npoints', type="int", default=200, metavar="NUM",
+            help="Number of points to output for the mean function. Negative "
+            "values signify to take the same q values as the first data file. "
+            "In that case extrapolation flags are ignored, and extrapolation "
+            "is performed when the data file's q values fall outside of the "
+            "range of accepted data points. Default is NUM=200 points.")
     #cleanup
     group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -686,11 +692,6 @@ Merging
             ' the Hessian calculation (options --baverage and --bcomp). '
             'Dataset will be subsampled if it is bigger than NUM. If NUM=-1 '
             '(default), all points will be used.')
-    #group.add_option('--bschedule', help='Simulation schedule. Default is '
-    #        '"10:10000/5:1000/1:100" which means use every 10 data points for '
-    #        'the first 1000 steps, then every 5 data points for 100 steps, '
-    #        ' and finally all data points for the last 10 steps.',
-    #        default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
     #rescaling
     group = optparse.OptionGroup(parser, title="Rescaling (Step 3)",
                 description="Find the most probable scaling factor of all "
@@ -717,9 +718,6 @@ Merging
                 description="Collect compatible data and produce best estimate "
                 "of mean function")
     parser.add_option_group(group)
-    #group.add_option('--eschedule', help='Simulation schedule, see fitting'
-    #        ' step. (default 10:10000/5:1000/1:100)',
-    #        default = "10:10000/5:1000/1:100", metavar="SCHEDULE")
     group.add_option('--eextrapolate', metavar="NUM", help='Extrapolate '
             "NUM percent outside of the curve's bounds. Example: if NUM=50 "
             "and the highest acceptable data point is at q=0.3, the mean will "
@@ -727,12 +725,6 @@ Merging
             "angle).", type="int", default=0)
     group.add_option('--enoextrapolate', action='store_true', default=False,
             help="Don't extrapolate at all, even at low angle (default False)")
-    group.add_option('--enpoints', type="int", default=200, metavar="NUM",
-            help="Number of points to output for the mean function. Negative "
-            "values signify to take the same q values as the first data file. "
-            "In that case extrapolation flags are ignored, and extrapolation "
-            "is performed when the data file's q values fall outside of the "
-            "range of accepted data points. Default is NUM=200 points.")
     group.add_option('--eoptimize', help='Which mean parameters are optimized.'
             ' See --boptimize. Default is Generalized', type="choice",
             default="Generalized",
@@ -1324,8 +1316,21 @@ def get_gamma_normal(refdata,data):
     weights = (s0**2+s1**2)**(-1)
     return (weights*I0/I1).sum()/weights.sum()
 
+def write_individual_profile(prof, args):
+    destname = os.path.basename(prof.get_filename())
+    if args.outlevel == 'sparse' or args.outlevel == 'normal':
+        dflags = ['q','I','err']
+        mflags = ['q','I','err']
+    else:
+        dflags = None
+        mflags = None
+    prof.write_data(destname, bool_to_int=True, dir=args.destdir,
+            header=args.header, flags=dflags)
+    if args.postpone_cleanup or args.stop != "cleanup" :
+        i.write_mean(destname, bool_to_int=True, dir=args.destdir,
+            header=args.header, average=args.eaverage, num=args.npoints)
 
-def write_merge_profile(merge,args,qvals):
+def write_merge_profile(merge,args):
     if args.outlevel == 'sparse':
         dflags = ['q','I','err']
         mflags = ['q','I','err']
@@ -1344,12 +1349,12 @@ def write_merge_profile(merge,args,qvals):
         qmin = min([i[0] for i in merge.get_flag_intervals('eextrapol')])
     else:
         qmin=0
-    if args.enpoints >0:
+    if args.npoints >0:
         if args.verbose > 2:
             print " mean ",
         merge.write_mean(merge.get_filename(), bool_to_int=True,
                 dir=args.destdir, qmin=qmin, qmax=qmax, header=args.header,
-                flags=mflags, num=args.enpoints, average=args.eaverage,
+                flags=mflags, num=args.npoints, average=args.eaverage,
                 verbose=(args.verbose > 2))
     else:
         if args.verbose > 2:
@@ -1820,19 +1825,13 @@ def write_data(merge, profiles, args):
         for i in profiles:
             if args.verbose > 2:
                 print "    %s" % (i.get_filename())
-            destname = os.path.basename(i.get_filename())
-            i.write_data(destname, bool_to_int=True, dir=args.destdir,
-                    header=args.header)
-            if args.stop == "cleanup" :
-                continue
-            i.write_mean(destname, bool_to_int=True, dir=args.destdir,
-                    header=args.header, average=args.eaverage)
+            write_individual_profile(i, args,
+                             write_mean = (not args.stop == "cleanup") )
     #merge profile
     if args.stop == 'merging':
         if args.verbose > 1:
             print "   merge profile",
-        qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
-        write_merge_profile(merge, args, qvals)
+        write_merge_profile(merge, args)
         if args.verbose > 1:
             print ""
     #summary
