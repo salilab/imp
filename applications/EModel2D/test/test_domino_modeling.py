@@ -40,6 +40,8 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         db.connect(fn_output_db)
         data = db.get_solutions()
         self.assertGreater(len(data), 0)
+        columns = db.get_table_column_names("results")
+        self.assertTrue("em2d" in columns)
         os.remove(fn_output_db)
 
 if __name__ == '__main__':
