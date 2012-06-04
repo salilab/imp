@@ -230,7 +230,9 @@ namespace RMF {
     IMP_RMF_FOREACH_TYPE(IMP_RMF_GENERIC_SHARED);
 
 
+    // throws IOException if couldn't create file or unsupported file format
     RMFEXPORT SharedData* create_shared_data(std::string path, bool create);
+
     RMFEXPORT SharedData* create_read_only_shared_data(std::string path);
   } // namespace internal
 } /* namespace RMF */
