@@ -6,6 +6,9 @@ from IMP.algebra import *
 
 class GenericTest(IMP.test.TestCase):
     def _assert_same(self, h0, h1):
+        IMP.atom.get_mass(h0)
+        print h1
+        IMP.atom.get_mass(h1)
         self.assertAlmostEqual(IMP.atom.get_mass(h0),
                                IMP.atom.get_mass(h1), delta=1)
         self.assertEqual(len(IMP.atom.get_leaves(h0)),
@@ -80,6 +83,24 @@ class GenericTest(IMP.test.TestCase):
         h1= IMP.rmf.create_hierarchies(f, m)
         res= IMP.atom.get_by_type(h1[0], IMP.atom.RESIDUE_TYPE)
         nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
+
+    def test_linking(self):
+        """Test that linking hierarchies works"""
+        m= IMP.Model()
+        print "reading pdb"
+        h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                             IMP.atom.NonAlternativePDBSelector())
+        IMP.set_log_level(IMP.SILENT)
+        IMP.atom.add_bonds(h)
+        name=self.get_tmp_file_name("test_link.rmf")
+        f= RMF.create_rmf_file(name)
+        IMP.rmf.add_hierarchy(f, h)
+        del f
+        f= RMF.open_rmf_file(name)
+        IMP.rmf.link_hierarchies(f, [h])
+        res= IMP.atom.get_by_type(h, IMP.atom.RESIDUE_TYPE)
+        nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
+
 
 if __name__ == '__main__':
     unittest.main()
