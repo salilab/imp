@@ -532,6 +532,7 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 
 #endif  //swig
 
+#ifndef IMP_DOXYGEN
 typedef VectorD<1> Vector1D;
 typedef base::Vector<VectorD<1> > Vector1Ds;
 typedef VectorD<2> Vector2D;
@@ -544,9 +545,9 @@ typedef VectorD<5> Vector5D;
 typedef base::Vector<VectorD<5> > Vector5Ds;
 typedef VectorD<6> Vector6D;
 typedef base::Vector<VectorD<6> > Vector6Ds;
-
 typedef VectorD<-1> VectorKD;
 typedef base::Vector<VectorD<-1> > VectorKDs;
+#endif
 
 template <int D>
 inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
