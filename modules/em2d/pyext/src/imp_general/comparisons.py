@@ -303,7 +303,6 @@ def get_drms_for_backbone(assembly, native_assembly):
     ranges = []
     backbone = []
     h_chains = atom.get_by_type(assembly, atom.CHAIN_TYPE)
-#    log.debug("Hierarchy 1 Chains %s",len(h_chains1))
     for h in h_chains:
         atoms = representation.get_backbone(h)
         backbone.extend(atoms)
@@ -324,6 +323,82 @@ def get_drms_for_backbone(assembly, native_assembly):
     drms = atom.get_rigid_bodies_drms(xyzs, native_xyzs, ranges)
     if(drms < 0 or math.isnan(drms) or drms > 100):
         log.debug("len(xyzs) = %s. len(native_xyzs) = %s",len(xyzs), len(native_xyzs))
+        log.debug("drms = %s",drms)
         atom.write_pdb(native_assembly, "drms_filtering_calphas.pdb")
         raise ValueError("There is a problem with the drms")
     return drms
+
+
+
+def get_chains_overlap(hierarchies):
+    """ Check if a set of chains use the same region of space. If any of
+        the pairs of chains overlap, the function returns True.
+        The function converts the atoms into densities and counts the number
+        of voxels from each molecule that use the same region of space.
+        Only a 10% of overlap of the smaller molecule is allowed
+    """
+    all_points = []
+    for h in hierarchies:
+        all_points += [core.XYZ(l).get_coordinates() for l in atom.get_leaves(h)]
+    bb = alg.BoundingBox3D(all_points)
+    sizes = bb.get_corner(1) - bb.get_corner(0)
+
+    size = max([sizes[0], sizes[1], sizes[2]]) # max dimension (Angstroms)
+    voxel_size = 3
+    # number of voxels for one dimension
+    voxels_padding = 4 # voxels used to pad a little bit the bounding box size
+    n = int(size/voxel_size) + voxels_padding
+
+    # Same thing for the origin of the map, this way the coordinates are not
+    # exactly in the edges of the box
+    padding_dist = voxels_padding*voxel_size/2.
+    padding_vector = alg.Vector3D(padding_dist, padding_dist, padding_dist)
+
+    dh = em.DensityHeader()
+    dh.update_map_dimensions(n, n, n)
+    dh.set_resolution(1.0)
+
+    maps = []
+    chain_ids = [atom.Chain(ch).get_id() for ch in hierarchies]
+    for ch in hierarchies:
+        density_map = em.SampledDensityMap(dh)
+        ls = atom.get_leaves(ch)
+        density_map.set_particles(ls)
+        density_map.update_voxel_size(voxel_size)
+        density_map.set_origin(bb.get_corner(0) - padding_vector )
+        # print density_map.get_origin(),density_map.get_header().show()
+        density_map.resample()
+        mrw = em.MRCReaderWriter()
+#        em.write_map(density_map, "test-%s.mrc" % ch.get_id(), mrw)
+        maps.append(density_map)
+
+    pct = 0.2 # allowed_ratio_of_overlapping
+    voxels_above_zero = [ number_of_voxels_above_threshold(m, 0.) for m in maps]
+    for j, k in itertools.combinations(range(len(maps)), 2):
+        overlapping_voxels = number_of_overlapping_voxels(maps[j],maps[k])
+        if (overlapping_voxels/voxels_above_zero[j] > pct or
+           overlapping_voxels/voxels_above_zero[k] > pct):
+            print "chains",chain_ids[j],chain_ids[k],"overlap"
+            return True
+    return False
+
+def number_of_overlapping_voxels(map1, map2):
+    """
+        Computes the overlapping voxels between maps
+    """
+    overlapping_voxels = 0.0
+    voxels = map1.get_header().get_number_of_voxels()
+    for i in range(voxels):
+        if map1.get_value(i) > 0 and map2.get_value(i) > 0:
+            # both maps have values in a voxel above zero. There is
+            # density in both of them (overlap)
+            overlapping_voxels += 1.
+    return overlapping_voxels
+
+
+def number_of_voxels_above_threshold(density_map, threshold):
+    count = 0
+    for i in range(density_map.get_header().get_number_of_voxels()):
+        if density_map.get_value(i) > threshold:
+            count += 1.
+    return count
