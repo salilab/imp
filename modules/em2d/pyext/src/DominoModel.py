@@ -71,6 +71,7 @@ class DominoModel:
         self.restraints[name] = r
         self.model.add_restraint(r)
 
+
     def set_xlink_restraint(self, id1, residue1, id2, residue2,
                                       distance, weight, stddev,
                                       restraint_name, max_score=False ):
@@ -88,7 +89,9 @@ class DominoModel:
             @param stddev Standard deviation used to approximate the
                 HarmonicUpperBound function to a Gaussian
             @param restraint_name
-            @param max_score See help for add_restraint()
+            @param max_score See help for add_restraint(). If none is given,
+            the maximum score is set to allow a maximum distance of 10 Angstrom
+            greater than the parameter "distance".
         """
         log.info("Setting cross-linking restraint between %s %s - %s %s",
                                 id1, residue1, id2, residue2)
@@ -104,6 +107,9 @@ class DominoModel:
         score = core.HarmonicUpperBound(distance, k)
         pair_score = IMP.core.DistancePairScore(score)
         r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
+        if not max_score:
+            error_distance_tolerated = 10
+            max_score = score.evaluate(distance + error_distance_tolerated)
         self.add_restraint(r, restraint_name, weight, max_score)
 
     def set_complementarity_restraint(self, name1, name2, rname,
