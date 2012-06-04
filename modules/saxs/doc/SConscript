@@ -3,7 +3,7 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Dina Schneidman", "Seung Joong Kim", "Yannick Spill"],
                  brief="This module adds small angle X-ray scattering support to \\imp",
-                 overview="",
+                 overview="This module adds small angle X-ray scattering support to \\imp.",
                  publications=[env.IMPPublication(authors=["Dina Schneidman-Duhovny",
                                                     "Michael Hammel","Andrej Sali"],
                                                     title="FoXS: A Web server for Rapid Computation and Fitting of SAXS Profiles",
