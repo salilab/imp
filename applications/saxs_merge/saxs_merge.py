@@ -1316,7 +1316,7 @@ def get_gamma_normal(refdata,data):
     weights = (s0**2+s1**2)**(-1)
     return (weights*I0/I1).sum()/weights.sum()
 
-def write_individual_profile(prof, args):
+def write_individual_profile(prof, qvals, args):
     destname = os.path.basename(prof.get_filename())
     if args.outlevel == 'sparse' or args.outlevel == 'normal':
         dflags = ['q','I','err']
@@ -1327,10 +1327,19 @@ def write_individual_profile(prof, args):
     prof.write_data(destname, bool_to_int=True, dir=args.destdir,
             header=args.header, flags=dflags)
     if args.postpone_cleanup or args.stop != "cleanup" :
-        i.write_mean(destname, bool_to_int=True, dir=args.destdir,
-            header=args.header, average=args.eaverage, num=args.npoints)
+        if args.npoints >0:
+            prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
+                header=args.header, average=args.eaverage, num=args.npoints)
+        else:
+            qvalues = prof.get_data(colwise=True)['q']
+            qmin = min(qvalues)
+            qmax = max(qvalues)
+            qvalues = qvals[where(qvals >= qmin)]
+            qvalues = qvalues[where(qvalues <= qmax)]
+            prof.write_mean(destname, bool_to_int=True, dir=args.destdir,
+                header=args.header, average=args.eaverage, qvalues=qvalues)
 
-def write_merge_profile(merge,args):
+def write_merge_profile(merge,qvals, args):
     if args.outlevel == 'sparse':
         dflags = ['q','I','err']
         mflags = ['q','I','err']
@@ -1359,10 +1368,10 @@ def write_merge_profile(merge,args):
     else:
         if args.verbose > 2:
             print " mean ",
-        qvals = qvals[where(qvals >= qmin)]
-        qvals = qvals[where(qvals <= qmax)]
+        qvalues = qvals[where(qvals >= qmin)]
+        qvalues = qvals[where(qvalues <= qmax)]
         merge.write_mean(merge.get_filename(), bool_to_int=True,
-                dir=args.destdir, qvalues=qvals, header=args.header,
+                dir=args.destdir, qvalues=qvalues, header=args.header,
                 flags=mflags, average=args.eaverage, verbose=(args.verbose > 2))
 
 def write_summary_file(merge, profiles, args):
@@ -1818,6 +1827,7 @@ def write_data(merge, profiles, args):
         print "writing data"
     if not os.path.isdir(args.destdir):
         os.mkdir(args.destdir)
+    qvals = array(profiles[0].get_raw_data(colwise=True)['q'])
     #individual profiles
     if args.allfiles:
         if args.verbose > 1:
@@ -1825,13 +1835,12 @@ def write_data(merge, profiles, args):
         for i in profiles:
             if args.verbose > 2:
                 print "    %s" % (i.get_filename())
-            write_individual_profile(i, args,
-                             write_mean = (not args.stop == "cleanup") )
+            write_individual_profile(i, qvals, args)
     #merge profile
     if args.stop == 'merging':
         if args.verbose > 1:
             print "   merge profile",
-        write_merge_profile(merge, args)
+        write_merge_profile(merge, qvals, args)
         if args.verbose > 1:
             print ""
     #summary
