@@ -38,9 +38,9 @@ inline Restraint* create_chain_restraint(const ParticlesTemp &ps,
   double scale = core::XYZR(ps[0]).get_radius();
   IMP_NEW(core::HarmonicDistancePairScore, hdps, (length_factor*2.0*scale,
                                                   k, "chain linker %1%"));
-  // the true, says that the particles will be in no other
+  // Exclusive means that the particles will be in no other
   // ConsecutivePairContainer
-  // this accelerates certain computations
+  // this assumption accelerates certain computations
   IMP_NEW(container::ExclusiveConsecutivePairContainer, cpc,
           (ps, name+" consecutive pairs"));
   Pointer<Restraint> r= container::create_restraint(hdps.get(), cpc.get(),
