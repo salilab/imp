@@ -260,7 +260,6 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         print name,datachi,fitchi
 
     def tearDown(self):
-        return
         shutil.rmtree('runapp',True)
         shutil.rmtree('compapp',True)
         os.unlink('Cpgnuplot')
