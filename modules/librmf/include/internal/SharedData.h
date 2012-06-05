@@ -118,6 +118,7 @@ namespace RMF {
           IMP_RMF_THROW("Type mismatch when recovering user data",
                         UsageException);
         }
+        IMP_RMF_NO_RETURN(T);
       }
       template <class T>
         void set_association(int id, const T& d, bool overwrite) {
@@ -149,6 +150,7 @@ namespace RMF {
           IMP_RMF_THROW("Type mismatch when recovering node data",
                         UsageException);
         }
+        IMP_RMF_NO_RETURN(boost::any);
       }
       bool get_has_association(int id) const {
         if (id >= static_cast<int>(association_.size())) return false;

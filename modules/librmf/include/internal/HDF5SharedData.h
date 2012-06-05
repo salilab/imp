@@ -346,6 +346,7 @@ namespace RMF {
           IMP_RMF_THROW(get_error_message("Attribue ", get_name(k),
                                           " does not have frames."),
                         UsageException);
+          IMP_RMF_NO_RETURN(int);
         } else {
           HDF5DataSetD<TypeTraits, 3> &ds
             =get_per_frame_data_data_set<TypeTraits>(kc,

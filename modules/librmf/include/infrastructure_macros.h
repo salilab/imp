@@ -217,6 +217,8 @@
 
 #define IMP_RMF_UNUSED(variable) if (0) std::cout << variable;
 
+#define IMP_RMF_NO_RETURN(type) return type()
+
 
 #define IMP_RMF_THROW(m,e)\
     RMF::internal::handle_error<e>(m)
