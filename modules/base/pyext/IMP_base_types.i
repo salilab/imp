@@ -355,7 +355,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Namespace::Name, PluralName##Temp,);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%template(_object_cast_to_##Namespace_##Name) IMP::base::object_cast<Namespace::Name>;
+%template(_object_cast_to_##Name) IMP::base::object_cast<Namespace::Name>;
 %enddef
 
 %define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
@@ -364,7 +364,7 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
   %pythoncode %{
     def get_from(o):
-       return _object_cast_to_##Namespace_##Name(o)
+       return _object_cast_to_##Name(o)
     get_from = staticmethod(get_from)
   %}
  }
@@ -375,7 +375,7 @@ IMP_SWIG_SHOWABLE_OBJECT(Namespace, Name);
 %extend Namespace::Name {
   %pythoncode %{
     def get_from(o):
-       return _object_cast_to_##Namespace_##Name(o)
+       return _object_cast_to_##Name(o)
     get_from = staticmethod(get_from)
   %}
  }
@@ -402,7 +402,7 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
         else:
           return IMP.VersionInfo("python", "0")
     def get_from(o):
-       return _object_cast_to_##Namespace_##Name(o)
+       return _object_cast_to_##Name(o)
     get_from = staticmethod(get_from)
   %}
 }
