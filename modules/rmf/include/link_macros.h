@@ -43,10 +43,18 @@
 
 #define IMP_DECLARE_LINKERS(Name, name, names, InType, InTypes,         \
                             OutType, OutTypes,args, cargs)              \
+  /** Add objects to the file.
+   \note This does not save a configuration, make sure you use
+   save_frame() to do that. */                                          \
   IMPRMFEXPORT void add_##names(RMF::FileHandle fh,                     \
                                 const OutTypes& hs);                    \
   IMPRMFEXPORT void add_##name(RMF::FileHandle fh, OutType hs);         \
+  /** Create objects from the file.
+      \note This does not load a frame. Make sure you call
+      IMP::rmf::load_frame() before using.*/                            \
   IMPRMFEXPORT InTypes create_##names cargs;                            \
+/** Create objects with the file, possibly overwriting an existing
+    link for loading from the file.*/                                   \
   IMPRMFEXPORT void link_##names(RMF::FileConstHandle fh,               \
                                  const InTypes &hs)
 
