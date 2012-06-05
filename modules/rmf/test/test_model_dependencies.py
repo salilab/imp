@@ -24,7 +24,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         sf= IMP.core.RestraintsScoringFunction([r])
         sf.evaluate(False)
-        IMP.rmf.save_frame(f, i)
+        IMP.rmf.save_frame(f, 0)
         self.assertTrue(m.get_has_dependencies())
 
 if __name__ == '__main__':

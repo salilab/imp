@@ -22,6 +22,7 @@ class GenericTest(IMP.test.TestCase):
         print "writing hierarchy"
         f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h)
+        IMP.rmf.save_frame(f, 0)
         print "reopening"
         del f
         self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
@@ -31,6 +32,7 @@ class GenericTest(IMP.test.TestCase):
         print "reading"
         print f, type(f)
         h2=IMP.rmf.create_hierarchies(f, m)
+        IMP.rmf.load_frame(f,0)
         IMP.atom.show_molecular_hierarchy(h2[0])
         print "checking"
         self.assertEqual(len(h2), 1)

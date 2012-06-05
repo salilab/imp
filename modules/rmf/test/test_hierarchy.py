@@ -8,7 +8,8 @@ class GenericTest(IMP.test.TestCase):
     def _assert_same(self, h0, h1):
         IMP.atom.get_mass(h0)
         print h1
-        IMP.atom.get_mass(h1)
+        s=IMP.atom.Selection(h1)
+        IMP.atom.get_mass(s)
         self.assertAlmostEqual(IMP.atom.get_mass(h0),
                                IMP.atom.get_mass(h1), delta=1)
         self.assertEqual(len(IMP.atom.get_leaves(h0)),
@@ -18,10 +19,12 @@ class GenericTest(IMP.test.TestCase):
     def _test_round_trip(self, h0, name):
         f= RMF.create_rmf_file(name)
         IMP.rmf.add_hierarchy(f, h0)
+        IMP.rmf.save_frame(f, 0)
         del f
         self.assertEqual( RMF.get_open_hdf5_handle_names(), [])
         f= RMF.open_rmf_file(name)
         h1= IMP.rmf.create_hierarchies(f, h0.get_model())
+        IMP.rmf.load_frame(f, 0)
         self._assert_same(h0, h1[0])
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):
