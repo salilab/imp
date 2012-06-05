@@ -31,8 +31,7 @@ class CLASSNAMEScore;
 
 //! A shared container for CLASSNAMEs
 /** Stores a searchable shared collection of CLASSNAMEs.
-    \ingroup restraints
-
+    \headerfile CLASSNAMEContainer.h "IMP/CLASSNAMEContainer.h"
     \implementationwithoutexample{CLASSNAMEContainer, IMP_HEADERNAME_CONTAINER}
  */
 class IMPEXPORT CLASSNAMEContainer : public Container

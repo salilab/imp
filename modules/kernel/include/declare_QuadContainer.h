@@ -31,8 +31,7 @@ class QuadScore;
 
 //! A shared container for Quads
 /** Stores a searchable shared collection of Quads.
-    \ingroup restraints
-
+    \headerfile QuadContainer.h "IMP/QuadContainer.h"
     \implementationwithoutexample{QuadContainer, IMP_QUAD_CONTAINER}
  */
 class IMPEXPORT QuadContainer : public Container
