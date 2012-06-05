@@ -31,8 +31,7 @@ class PairScore;
 
 //! A shared container for Pairs
 /** Stores a searchable shared collection of Pairs.
-    \ingroup restraints
-
+    \headerfile PairContainer.h "IMP/PairContainer.h"
     \implementationwithoutexample{PairContainer, IMP_PAIR_CONTAINER}
  */
 class IMPEXPORT PairContainer : public Container

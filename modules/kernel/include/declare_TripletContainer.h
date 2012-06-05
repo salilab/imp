@@ -31,8 +31,7 @@ class TripletScore;
 
 //! A shared container for Triplets
 /** Stores a searchable shared collection of Triplets.
-    \ingroup restraints
-
+    \headerfile TripletContainer.h "IMP/TripletContainer.h"
     \implementationwithoutexample{TripletContainer, IMP_TRIPLET_CONTAINER}
  */
 class IMPEXPORT TripletContainer : public Container

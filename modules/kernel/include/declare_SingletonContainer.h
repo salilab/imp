@@ -31,8 +31,7 @@ class SingletonScore;
 
 //! A shared container for Singletons
 /** Stores a searchable shared collection of Singletons.
-    \ingroup restraints
-
+    \headerfile SingletonContainer.h "IMP/SingletonContainer.h"
     \implementationwithoutexample{SingletonContainer, IMP_SINGLETON_CONTAINER}
  */
 class IMPEXPORT SingletonContainer : public Container
