@@ -315,7 +315,7 @@ def swig_scanner(node, env, path):
                     module="kernel"
                 if not dta.modules[module].external:
                     ret.extend([env["builddir"]+"/include/"+x])
-            if x.startswith("RMF/"):
+            if x.startswith("RMF/") and not dta.modules["RMF"].external:
                 ret.extend([File(env["builddir"]+"/include/"+x)])
 
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
@@ -323,12 +323,13 @@ def swig_scanner(node, env, path):
             mn= x.split("_")[0]
             if not dta.modules[mn].external:
                 ret.append(env["builddir"]+"/swig/IMP_"+x+".i")
-        if re.search('\n%include\s"RMF.i"', contents)\
-               or re.search('\n%import\s"RMF.i"', contents):
-            ret.append(env["builddir"]+"/swig/RMF.i")
-        for x in re.findall('\n%include\s"RMF_([^"]*).i"', contents)\
-                +re.findall('\n%import\s"RMF_([^"]*).i"', contents):
-            ret.append(env["builddir"]+"/swig/RMF_"+x+".i")
+        if not dta.modules["RMF"].external:
+            if re.search('\n%include\s"RMF.i"', contents)\
+                    or re.search('\n%import\s"RMF.i"', contents):
+                ret.append(env["builddir"]+"/swig/RMF.i")
+            for x in re.findall('\n%include\s"RMF_([^"]*).i"', contents)\
+                    +re.findall('\n%import\s"RMF_([^"]*).i"', contents):
+                ret.append(env["builddir"]+"/swig/RMF_"+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
@@ -339,11 +340,12 @@ def inswig_scanner(node, env, path):
         return swig_scanner(node, env, path)
     ret= swig_scanner(node, env, path)
     for i in base_includes:
-        f= env["builddir"]+"/swig/"+i
-        ret.append(f)
+        if not dta.modules[i].external:
+            f= env["builddir"]+"/swig/"+i
+            ret.append(f)
     for m in scons_tools.module._get_module_python_modules(env):
-        ret.append("#/modules/"+m+"/pyext/swig.i-in")
-    ret.append('#/kernel/pyext/swig.i-in')
+        if not dta.modules[m].external:
+            ret.append("#/modules/"+m+"/pyext/swig.i-in")
     return ret.sorted()
 
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
