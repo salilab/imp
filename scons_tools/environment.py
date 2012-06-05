@@ -269,7 +269,8 @@ def get_base_environment(variables=None, *args, **kw):
     colors['red']    = '\033[91m'
     colors['end']    = '\033[0m'
     env['IMP_COLORS']=colors
-    if not env['color']:
+    if not env['color'] or "TERM" not in os.environ.keys()\
+            or os.environ["TERM"] != "xterm":
         for key, value in colors.iteritems():
             colors[key] = ''
     if env['pretty']:
