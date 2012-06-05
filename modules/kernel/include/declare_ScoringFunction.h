@@ -30,6 +30,7 @@ class Model;
     The Model has a default scoring function
     (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
+    \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
 */
 class IMPEXPORT ScoringFunction: public ModelObject
  {

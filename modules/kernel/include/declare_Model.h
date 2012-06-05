@@ -44,6 +44,8 @@ namespace internal {
 #endif
 
 /** A structure used for returning restraint statistics from the model.*/
+/** \headerfile Model.h "IMP/Model.h"
+ */
 class RestraintStatistics {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 public:
@@ -88,6 +90,8 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
     The ranges are not enforced; they are just guidelines. In order to
     enforce ranges, see, for example,
     IMP::example::ExampleSingletonModifier.
+
+    \headerfile Model.h "IMP/Model.h"
  */
 class IMPEXPORT Model:
   public RestraintSet

@@ -42,6 +42,8 @@ IMPBASE_BEGIN_NAMESPACE
     Objects can be outputted to standard streams using operator<<()
     which will call the Object::show() method.
 
+    \headerfile Object.h "IMP/base/Object.h"
+
     \advanceddoc Types inheriting from Object should always be created using
     \c new in C++ and passed using pointers and stored using
     IMP::Pointer objects. Note that you have to be careful of cycles

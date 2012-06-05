@@ -101,7 +101,7 @@ class SaveOptimizeds;
    p.remove_attribute(f)
    \endverbatim
 
-
+   \headerfile Particle.h "IMP/Particle.h"
 
    This class contains particle methods and indexes to particle attributes.
    To prevent a particle from being moved by the optimizer during
