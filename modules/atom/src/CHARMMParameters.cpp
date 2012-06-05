@@ -14,6 +14,7 @@
 #include <IMP/base/log_macros.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
+#include <boost/version.hpp>
 #include <IMP/compatibility/map.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -50,7 +51,7 @@ namespace {
     // this probably should get changed to something that detects the
     // problematic config on Fedora 17 to work around that as we should
     // default to compatibility map
-#if 1
+#if BOOST_VERSION != 104800
     typedef compatibility::map<std::string, std::string> ResidueMap;
     typedef compatibility::map<std::string, ResidueMap> ResiduesMap;
     static ResiduesMap map;
