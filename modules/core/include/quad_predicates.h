@@ -43,8 +43,8 @@ public:
     });
 };
 
-/** Return a unique predicate value for each order list of ParticleTypes
-    (see Typed).
+/** Return a unique predicate value for each ordered quad of
+    ParticleTypes (see Typed).
 */
 class IMPCOREEXPORT OrderedTypeQuadPredicate: public QuadPredicate {
 public:
