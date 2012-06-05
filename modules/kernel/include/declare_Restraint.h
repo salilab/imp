@@ -41,6 +41,8 @@ class DerivativeAccumulator;
     to make. To disable this warning for a particular restraint, call
     set_was_used(true).
 
+    \headerfile Restraint.h "IMP/Restraint.h"
+
     \implementation{Restraint, IMP_RESTRAINT, IMP::example::ExampleRestraint}
  */
 class IMPEXPORT Restraint : public ModelObject

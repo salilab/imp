@@ -29,6 +29,7 @@ IMP_BEGIN_NAMESPACE
     \note Restraints can belong to multiple RestraintSets.
     The total effect is simply one of adding up the weights.
 
+    \headerfile RestraintSet.h "IMP/RestraintSet.h"
     \advanceddoc
 
     Talk to Daniel if you want to inherit from RestraintSet.
