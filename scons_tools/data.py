@@ -287,34 +287,48 @@ class IMPData:
             libname="imp"
             headername="IMP/kernel_config.h"
             namespace="IMP"
-            modname="IMP"
+        elif m =='RMF':
+            libname="RMF"
+            headername="RMF.h"
+            namespace="RMF"
         else:
             libname="imp_"+m
             headername="IMP/"+m+"/"+m+"_config.h"
             namespace="IMP::"+m+""
-            modname="IMP."+m
         conf = self.env.Configure()
         ret=conf.CheckLibWithHeader(libname, header=[headername],
                                     call=namespace+"::get_module_version();",
                                     language="CXX", autoadd=False)
         # get version number
         if ret:
-            print "Checking for version info in "+modname+"...",
-            version= utility.get_python_result(self.env,
-                                               "import "+modname,
-                                               modname+".get_module_version()")
-                #print "version", version
-            if version:
+            if m=="kernel":
+                ln= "imp"
+            elif m =='RMF':
+                ln="RMF"
+            else:
+                ln= "imp_"+m
+            if self.env['versionchecks']:
+                print "Extracting version number of "+m+"...",
+                olibs= conf.env["LIBS"]
+                conf.env.Append(LIBS=ln)
+                ret = conf.TryRun("""#include <%(headername)s>
+#include <iostream>
+
+        int main()
+        {
+            std::cout << %(namespace)s::get_module_version() <<std::endl;
+            return 0;
+        }
+"""%{"namespace":namespace, "headername":headername}, '.cpp')
+                conf.env["LIBS"]=olibs
+                # remove trailing newline
+                version=ret[1][:-1]
                 print version
-                if m=="kernel":
-                    ln= "imp"
-                else:
-                    ln= "imp_"+m
                 self.add_module(m, ok=True, external=True, version=version,
                                 libname=ln)
             else:
-                print "not found"
-                self.add_module(m, ok=False)
+                self.add_module(m, ok=True, external=True, version="not checked",
+                                libname=ln)
         else:
             self.add_module(m, ok=False)
         conf.Finish()
