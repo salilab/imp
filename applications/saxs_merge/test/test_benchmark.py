@@ -118,6 +118,18 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('gnuplot Cpgnuplot')
 
+    def plot_guinier(self, name, data, mean):
+        fl=open('Cpgnuplot','w')
+        fl.write('set term png\n')
+        fl.write('set output "%s_guinier.png"\n' % name)
+        fl.write('set xrange [0:0.0025]\n')
+        fl.write('p "%s" u ($1*$1):(log($2)) w p t "data", '
+                 '  "%s" u ($1*$1):(log($2)) w l t "mean", '
+                 '"" u ($1*$1):(log($2)+$3/$2) w l not, '
+                 '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data,mean))
+        fl.close()
+        os.system('gnuplot Cpgnuplot')
+
     def chisquare(self, fla, flb):
         #read first 3 columns
         da=[map(float, i.split()[:3]) for i in open(fla).readlines()]
@@ -249,6 +261,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         self.plot_means(name, 'compapp/mean_data_merged.dat',
                 'compapp/mean_'+os.path.basename(manual_merge))
         self.plot_data_mean(name, 'compapp/data_data_merged.dat',
+                'compapp/mean_data_merged.dat')
+        #guinier plot
+        self.plot_guinier(name, 'compapp/data_data_merged.dat',
                 'compapp/mean_data_merged.dat')
         print name,datachi,fitchi
 
