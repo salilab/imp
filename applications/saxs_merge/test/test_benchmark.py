@@ -211,14 +211,6 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #Multiple datapoints at same q value are downweighted.
         #each chunk is a set of values at the same q
         chi = []
-        fl=open('nda','w')
-        for i in nda:
-            fl.write(' '.join(["%s" % j for j in i]))
-            fl.write('\n')
-        fl=open('ndb','w')
-        for i in ndb:
-            fl.write(' '.join(["%s" % j for j in i]))
-            fl.write('\n')
         while nda and ndb:
             #get chunk
             qval = nda[-1][0]
