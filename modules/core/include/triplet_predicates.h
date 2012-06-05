@@ -43,8 +43,8 @@ public:
     });
 };
 
-/** Return a unique predicate value for each order list of ParticleTypes
-    (see Typed).
+/** Return a unique predicate value for each ordered triplet of
+    ParticleTypes (see Typed).
 */
 class IMPCOREEXPORT OrderedTypeTripletPredicate: public TripletPredicate {
 public:

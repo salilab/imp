@@ -43,8 +43,8 @@ public:
     });
 };
 
-/** Return a unique predicate value for each order list of ParticleTypes
-    (see Typed).
+/** Return a unique predicate value for each ordered singleton of
+    ParticleTypes (see Typed).
 */
 class IMPCOREEXPORT OrderedTypeSingletonPredicate: public SingletonPredicate {
 public:
