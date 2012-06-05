@@ -51,7 +51,7 @@
 // Some combinations of gcc/boost fail to compile Python wrappers for
 // get_vertex_index ("no match for 'operator=' error); fall back to
 // std::map in this case
-#if defined(IMP_SWIG_WRAPPER) && defined(__GNUC__) && __GNUC__ == 4 \
+#if defined(__GNUC__) && __GNUC__ == 4 \
   && __GNUC_MINOR__ == 7 && BOOST_VERSION == 104800
 #define IMP_GRAPH_MAP_TYPE std::map
 #else
