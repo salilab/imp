@@ -47,9 +47,18 @@ namespace {
     if (!translate_names_to_pdb) {
       return atom_name;
     }
-
+    // this probably should get changed to something that detects the
+    // problematic config on Fedora 17 to work around that as we should
+    // default to compatibility map
+#if 1
+    typedef compatibility::map<std::string, std::string> ResidueMap;
+    typedef compatibility::map<std::string, ResidueMap> ResiduesMap;
+    static ResiduesMap map;
+#else
     typedef std::map<std::string, std::string> ResidueMap;
-    static std::map<std::string, ResidueMap> map;
+    typedef std::map<std::string, ResidueMap> ResiduesMap;
+    static ResiduesMap map;
+#endif
     static bool map_init = false;
     // Initialize map on first call
     if (!map_init) {
@@ -117,8 +126,7 @@ namespace {
     }
 
     // Look up residue type
-    std::map<std::string, ResidueMap>::iterator resit
-                                            = map.find(residue->get_type());
+    ResiduesMap::iterator resit = map.find(residue->get_type());
     if (resit != map.end()) {
       // Look up atom name
       ResidueMap::iterator atit = resit->second.find(atom_name);
