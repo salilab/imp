@@ -19,9 +19,11 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-//! A container which contains all consecutive pairs from a list
-/** If each of your particles will only be in one such container,
-    you may want to use the ExclusiveConsecutivePairContainer instead.
+//! A container which contains all consecutive pairs from an input  list
+//  of particles
+/** If it is assumed that each particle is in at most one such container,
+    then ExclusiveConsecutivePairContainer should be used instead,
+    since it is faster when doing certain computations.
 */
 class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
@@ -33,7 +35,13 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
   }
   const ParticleIndexes ps_;
   IntKey key_;
+
+  /**
+     add the key of this container as an attribute to all particles
+     if there might be ovrlaps - create a different keys for each instance
+  */
   void init(bool no_overlaps);
+
   ConsecutivePairContainer(const ParticlesTemp &ps,
                            bool no_overlaps,
                            std::string name="ConsecutivePairContainer%1%");

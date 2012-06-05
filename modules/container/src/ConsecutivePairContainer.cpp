@@ -13,33 +13,36 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 namespace {
-  // problem with multiple models
-  unsigned int count=0;
+  // global counter to differentiate keys of overlapping containers
+  // TODO: why not a static class variable?
+  unsigned int key_count=0;
 }
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
                                                    bool no_overlaps,
                                                    std::string name):
-    PairContainer(ps[0]->get_model(),name),
-    ps_(IMP::internal::get_index(ps)) {
+  PairContainer(ps[0]->get_model(),name),
+  ps_(IMP::internal::get_index(ps)) {
   init(no_overlaps);
 }
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
                                                    std::string name):
-    PairContainer(ps[0]->get_model(),name),
-    ps_(IMP::internal::get_index(ps)) {
+  PairContainer(ps[0]->get_model(),name),
+  ps_(IMP::internal::get_index(ps)) {
   init(false);
 }
 
+// add key of this container as attribute to all particles
+// if there might be ovrlaps - create a different keys for each instance
 void ConsecutivePairContainer::init(bool no_overlaps){
   if (!no_overlaps) {
     std::ostringstream oss;
-    oss << "CPC cache " << count;
-    ++count;
+    oss << "CPC cache " << key_count;
+    ++key_count;
     key_= IntKey(oss.str());
   } else {
     key_= IntKey("CPC cache");
   }
-  for (unsigned int i=0; i< ps_.size(); ++i) {
+  for (unsigned int i= 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(!get_model()->get_has_attribute(key_, ps_[i]),
                     "You must create containers before reading in the "
                     << "saved model: "

@@ -40,14 +40,50 @@ class IMPCONTAINEREXPORT PairContainerSet
                         std::string name="PairContainerSet %1%");
 
   bool get_contains_particle_pair(const ParticlePair&) const;
+
+  /** \brief apply modifer sm to all pair containers */
   void apply(const PairModifier *sm) const;
+
+  /** \brief apply derivative modifer sm to all pair containers
+
+      @param[in]   sm the derivate modifier to be applied
+      @param[out]  da derivative accumulator when applying sm
+   */
   void apply(const PairDerivativeModifier *sm,
              DerivativeAccumulator &da) const;
+
+ /** \brief evaluates all pair containers using pair score s
+
+     @param[in]   s  pair score to evaluate each pair container
+     @param[out]  da derivative accumulator when scoring each pair
+
+     @return the sum of evaluation over all pair containers
+  */
   double evaluate(const PairScore *s,
                   DerivativeAccumulator *da) const;
+
+ /** \brief evaluates all pair containers using pair score s
+
+     Evaluates all pair containers using pair score s
+     until the specified maximal total evaluation score is breached,
+     in order to save futile computation time.
+
+     @param[in]   s   pair score for evaluating each pair container
+     @param[out]  da  derivative accumulator when scoring each pair
+     @param[in]   max the maximal total evaluation score that is allowed
+
+     @return the sum of evaluation until the maximal value was first breached
+             (or just the total sum if it was never breached)
+  */
   double evaluate_if_good(const PairScore *s,
                           DerivativeAccumulator *da,
                           double max) const;
+
+  /** \brief apply template derivative modifer sm to all pair containers
+
+      @param[in]   sm the template derivate modifier to be applied
+      @param[out]  da derivative accumulator when applying sm
+   */
  template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) const {
@@ -55,12 +91,22 @@ class IMPCONTAINEREXPORT PairContainerSet
      get_pair_container(i)->apply(sm, da);
    }
  }
+
+ /** \brief apply template modifer sm to all pair containers */
   template <class SM>
   void template_apply(const SM *sm) const {
     for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
       get_pair_container(i)->apply(sm);
     }
   }
+
+ /** \brief evaluates all pair containers using template pair score s
+
+     @param[in]   s  the template for scoring each pair container
+     @param[out]  da derivative accumulator when scoring each pair
+
+     @return the sum of evaluation over all pair containers
+  */
   template <class SS>
   double template_evaluate(const SS *s,
                            DerivativeAccumulator *da) const {
@@ -70,6 +116,20 @@ class IMPCONTAINEREXPORT PairContainerSet
     }
     return ret;
   }
+
+ /** \brief evaluates all pair containers using template pair score s
+
+     evaluates all pair containers using template pair score s
+     until the specified maximal total evaluation score is breached
+     in order to save futile computation time.
+
+     @param[in]   s   the template for scoring each pair container
+     @param[out]  da  derivative accumulator when scoring each pair
+     @param[in]   max the maximal total evaluation score that is allowed
+
+     @return the sum of evaluation until the maximal value was first breached
+             (or just the total sum if it was never breached)
+  */
   template <class SS>
     double template_evaluate_if_good(const SS *s,
                                  DerivativeAccumulator *da, double max) const {
@@ -82,8 +142,11 @@ class IMPCONTAINEREXPORT PairContainerSet
     }
     return ret;
   }
+
   bool get_is_changed() const;
+
   ParticlesTemp get_all_possible_particles() const;
+
   IMP_OBJECT(PairContainerSet);
 
   /** @name Methods to control the nested container

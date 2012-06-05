@@ -182,17 +182,18 @@
                                           ::list_contains(ds)),         \
                            lcname##_vector_.end());                     \
   }                                                                     \
-  /** Set the contents of the container to ps removing all its current
-      contents. */                                                      \
-template <class List>                                                   \
-void set_##lcnames(List ps) {                                           \
-  IMP_OBJECT_LOG;                                                       \
-  /* Bad things can happen if we use a Temp, as things get unreffed
-     before being reffed if they are in both lists */                   \
-  clear_##lcnames();                                                    \
-  add_##lcnames(ps);                                                    \
-}                                                                       \
-/** Must be the same set, just in a different order. */                 \
+  /** \brief Set the contents of the container to ps removing all its current
+      contents.
+  */                                                                    \
+  template <class List>                                                   \
+  void set_##lcnames(List ps) {                                         \
+    IMP_OBJECT_LOG;                                                     \
+    /* Bad things can happen if we use a Temp, as things get unreffed
+       before being reffed if they are in both lists */                 \
+    clear_##lcnames();                                                  \
+    add_##lcnames(ps);                                                  \
+  }                                                                     \
+  /** \brief Must be the same set, just in a different order. */        \
 template <class List>                                                   \
 void set_##lcnames##_order(List ps) {                                   \
   IMP_OBJECT_LOG;                                                       \
@@ -202,7 +203,8 @@ void set_##lcnames##_order(List ps) {                                   \
   lcname##_vector_.insert(lcname##_vector_.end(),                       \
                           ps.begin(), ps.end());                        \
 }                                                                       \
-/** \return index of object within the object
+/** \brief add obj to the container
+    \return index of object within the object
  */                                                                     \
 unsigned int add_##lcname(Data obj) {                                   \
   IMP_OBJECT_LOG;                                                       \
@@ -213,7 +215,7 @@ unsigned int add_##lcname(Data obj) {                                   \
   lcname##_handle_change();                                             \
   return index;                                                         \
 }                                                                       \
-/** Add several objects to the container. They are not necessarily
+/** \brief Add several objects to the container. They are not necessarily
     added at the end.
 */                                                                      \
 template <class List>                                                   \
@@ -230,6 +232,7 @@ void add_##lcnames(List objs) {                                         \
   }                                                                     \
   lcname##_handle_change();                                             \
 }                                                                       \
+/** \brief Clear all objects from the container  */                     \
 void clear_##lcnames() {                                                \
   lcname##_vector_.clear();                                             \
   lcname##_handle_change();                                             \
