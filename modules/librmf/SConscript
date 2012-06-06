@@ -28,7 +28,7 @@ if env['build']=='fast':
     ocppdef= env.get('CPPDEFINES', [])
     env.Append(CPPDEFINES=["IMP_RMF_NDEBUG"])
 
-oenv=env.IMPModuleBuild(version='nightly-4/6/2012',
+oenv=env.IMPModuleBuild(version='nightly-5/6/2012',
                    required_modules=[],
                    required_dependencies=['HDF5', "Boost.FileSystem",
                                           "Boost.Thread"],
