@@ -792,6 +792,28 @@ void write_merge_tree(const MergeTree &tree, const ParticlesTemp &ps,
   boost::write_graphviz(out, tree, nw);
 }
 
+namespace {
+  MergeTree get_fixed_order(const MergeTree &mt,
+                            const boost::vector_property_map<int> &order) {
+    unsigned int sz=boost::num_vertices(mt);
+    MergeTree ret(sz);
+    MergeTreeConstVertexName inm=boost::get(boost::vertex_name, mt);
+    MergeTreeVertexName onm=boost::get(boost::vertex_name, ret);
+    for (unsigned int i=0; i<sz; ++i) {
+      onm[order[i]]=inm[i];
+      for (std::pair<MergeTreeTraits::out_edge_iterator,
+             MergeTreeTraits::out_edge_iterator> ebe
+             = boost::out_edges(i, mt);
+           ebe.first != ebe.second; ++ebe.first) {
+        int source= boost::source(*ebe.first, mt);
+        int target= boost::target(*ebe.first, mt);
+        boost::add_edge(order[source], order[target], ret);
+      }
+    }
+    return ret;
+  }
+}
+
 MergeTree read_merge_tree(std::istream &in,
                           const ParticlesTemp &ps) {
 
@@ -826,7 +848,6 @@ MergeTree read_merge_tree(std::istream &in,
   for (unsigned int i=0; i< boost::num_vertices(graph); ++i) {
     std::string cnm=name[i];
     std::istringstream iss(cnm);
-    std::cout << i << " has " << cnm << " and " << id[i] << std::endl;
     ParticlesTemp cur;
     do {
       int c;
@@ -837,7 +858,9 @@ MergeTree read_merge_tree(std::istream &in,
     Subset s(cur);
     nm[i]=s;
   }
-  return graph;
+
+  // we now need to fix the order since read_graphviz mangles it
+  return get_fixed_order(graph, id);
 }
 
 IMPDOMINO_END_NAMESPACE
