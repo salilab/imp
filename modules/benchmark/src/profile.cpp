@@ -12,8 +12,6 @@
 #include <IMP/base/check_macros.h>
 
 IMPBENCHMARK_BEGIN_NAMESPACE
-
-#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
 namespace {
 std::string profname="imp.%1%.prof";
 int last_prof=-1;
@@ -24,6 +22,8 @@ void set_profile_name(std::string name) {
   last_prof=-1;
 }
 
+
+#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
 void set_is_profiling(bool tf) {
   if (tf) {
     ++last_prof;
@@ -45,6 +45,12 @@ void set_is_profiling(bool tf) {
     ProfilerStart(name.c_str());
   } else {
     ProfilerStop();
+  }
+}
+#else
+void set_is_profiling(bool tf) {
+  if (tf) {
+    IMP_WARN("Google Prof Tools were not found, no profiling available,\n");
   }
 }
 #endif
