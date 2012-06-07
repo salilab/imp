@@ -16,6 +16,7 @@
 #include "../infrastructure_macros.h"
 #include "map.h"
 #include "set.h"
+#include <boost/cstdint.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/array.hpp>
 #include <boost/any.hpp>
@@ -25,12 +26,12 @@
 
 namespace RMF {
   template <class P>
-  inline void *get_void_pointer(const P &p) {
-    return p;
+  inline uintptr_t get_uint(const P *p) {
+    return reinterpret_cast<uintptr_t>(p);
   }
   template <class P>
-  inline void *get_void_pointer(boost::shared_ptr<P> p) {
-    return p.get();
+  inline uintptr_t get_uint(boost::shared_ptr<P> p) {
+    return reinterpret_cast<uintptr_t>(p.get());
   }
 
   namespace internal {
@@ -97,7 +98,8 @@ namespace RMF {
 
     class RMFEXPORT SharedData: public boost::intrusive_ptr_object {
       vector<boost::any> association_;
-      map<void*, int> back_association_;
+      vector<uintptr_t> back_association_value_;
+      map<uintptr_t, int> back_association_;
       map<int, boost::any> user_data_;
       int valid_;
 
@@ -135,22 +137,25 @@ namespace RMF {
         void set_association(int id, const T& d, bool overwrite) {
         if (association_.size() <= static_cast<unsigned int>(id)) {
           association_.resize(id+1, boost::any());
+          back_association_value_.resize(id+1);
         }
         IMP_RMF_USAGE_CHECK(overwrite || association_[id].empty(),
                             "Associations can only be set once");
         if (overwrite && !association_[id].empty()) {
-          boost::any old=association_[id];
-          void* v= get_void_pointer(boost::any_cast<T>(old));
-          if (back_association_[v]==id) {
-            back_association_.erase(v);
-          }
+          uintptr_t v= back_association_value_[id];
+          back_association_.erase(v);
         }
-        void *v= get_void_pointer(d);
+        uintptr_t v= get_uint(d);
+        back_association_value_[id]=v;
         association_[id]=boost::any(d);
+        IMP_RMF_USAGE_CHECK(back_association_.find(v)
+                            == back_association_.end(),
+                            "Collision on association keys.");
         back_association_[v]=id;
       }
-      bool get_has_association(void* v) const {
-        return back_association_.find(v) != back_association_.end();
+      template <class T>
+      bool get_has_associated_node(const T& v) const {
+        return back_association_.find(get_uint(v)) != back_association_.end();
       }
       boost::any get_association(int id) const {
         IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
@@ -167,8 +172,9 @@ namespace RMF {
         if (id >= static_cast<int>(association_.size())) return false;
         return !association_[id].empty();
       }
-      int get_association(void* d) const {
-        return back_association_.find(d)->second;
+      template <class T>
+      int get_associated_node(const T &d) const {
+        return back_association_.find(get_uint(d))->second;
       }
 
       virtual void flush() const=0;

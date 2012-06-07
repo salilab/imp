@@ -8,6 +8,11 @@
 #include <boost/shared_ptr.hpp>
 #include <RMF/FileHandle.h>
 
+struct MyInt {
+  int i;
+};
+int get_uint(MyInt i) {return i.i;}
+
 int main(int, char *[]) {
   // don't have tmp file support at this point
   RMF::FileHandle fh= RMF::create_rmf_file("/tmp/assoc.rmf");
@@ -36,5 +41,14 @@ int main(int, char *[]) {
   assert(c2==c2b);
   boost::shared_ptr<int> sib= c2.get_association<boost::shared_ptr<int> >();
   assert(sib==si);
+
+
+  RMF::NodeHandle c3= fh.get_root_node().add_child("c3", RMF::GEOMETRY);
+  MyInt sint={6};
+  c3.set_association(sint);
+  RMF::NodeHandle c3b= fh.get_node_from_association(sint);
+  assert(c3==c3b);
+  MyInt sintb= c3.get_association<MyInt >();
+  assert(sintb.i==sint.i);
   return 0;
 }
