@@ -6,6 +6,7 @@
 #ifndef IMP_COMMON_H
 #define IMP_COMMON_H
 #include <boost/program_options.hpp>
+#include <IMP/benchmark/profile.h>
 #include <RMF/utility.h>
 
 extern std::string description;
@@ -34,6 +35,9 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   options.add_options()("help,h", "Get help on command line arguments.")
     ("verbose,v", "Produce more output.")
     ("hdf5-errors", "Show hdf5 errors.");
+#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
+  options.add_options()("profile", "Profile execution.");
+#endif
   all.add(positional_options).add(options);
   boost::program_options::variables_map vm;
   boost::program_options::store(
@@ -50,6 +54,9 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   }
   if (vm.count("hdf5-errors")) {
     RMF::set_show_hdf5_errors(true);
+  }
+  if (vm.count("profile")) {
+    IMP::benchmark::set_is_profiling(true);
   }
   return vm;
 }
