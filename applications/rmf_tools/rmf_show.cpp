@@ -1,10 +1,8 @@
 /**
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
-#include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
-#include <IMP/rmf/geometry_io.h>
-
+#include <RMF/NodeConstHandle.h>
 #include "common.h"
 
 std::string description("Show an rmf file as text.");
@@ -41,9 +39,6 @@ int main(int argc, char **argv) {
                                       begin_frame, end_frame, frame_step,
                                       std::cout);
     }
-  } catch (const IMP::base::Exception &e) {
-    std::cerr << "Error: " << e.what() << std::endl;
-    return 1;
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
