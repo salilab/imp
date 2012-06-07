@@ -548,7 +548,7 @@ class ResultsDB(Database.Database2):
         sql_command = """ SELECT %s FROM %s WHERE solution_id IN (%s) """
         f = self.get_fields_string(fields)
         str_ids = ",".join(map(str,solutions_ids))
-        data = self.retrieve_data( sql_command % (f, table, str_ids ) )
+        data = self.retrieve_data( sql_command % (f, self.results_table, str_ids ) )
         return data
 
     def get_best_sampled_solution(self, orderby):
@@ -580,7 +580,6 @@ class ResultsDB(Database.Database2):
         best_average_distance = avg_distances[index]
         best_average_angle = avg_angles[index]
         best_solution_id = index
-        # get solutions sorted
         data = self.get_table(self.results_table, ('solution_id', "%s" % orderby),
                                                          orderby=orderby)
         # rank
@@ -606,12 +605,14 @@ class ResultsDB(Database.Database2):
         sql_command = """ SELECT %s FROM %s WHERE solution_id=%d """
         distance_fields = filter(lambda x: 'distance' in x, fields)
         s = sql_command % (",".join(distance_fields), table, best_solution_id)
-        data = self.retrieve_data(sql_command)
+        data = self.retrieve_data(s)
         D = np.array(data)
         average_distance = D.mean()
         angle_fields = filter(lambda x: 'angle' in x, fields)
+
+
         s = sql_command % (",".join(angle_fields), table, best_solution_id)
-        data = self.retrieve_data(sql_command)
+        data = self.retrieve_data(s)
         A = np.array(data)
         average_angle = A.mean()
         ccc = self.get_ccc( best_solution_id)

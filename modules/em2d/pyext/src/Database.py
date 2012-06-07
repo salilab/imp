@@ -165,7 +165,7 @@ class Database2:
 
     def get_table(self, table_name, fields=False, orderby=False):
         """ Returns th fields requested from the table """
-        fields = get_fields_string(fields)
+        fields = self.get_fields_string(fields)
         sql_command = "SELECT %s  FROM %s " % (fields, table_name)
         if orderby:
             sql_command += " ORDER BY %s ASC" % orderby
