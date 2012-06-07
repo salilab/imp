@@ -12,10 +12,9 @@ int frame=0;
 int main(int argc, char **argv) {
   try {
     options.add_options()
-      ("decorators,d", "Show what decorators recognize each node.")
-      ("frame,f", boost::program_options::value< int >(&frame),
-       "Frame to use");
+      ("decorators,d", "Show what decorators recognize each node.");
     IMP_ADD_INPUT_FILE("rmf");
+    IMP_ADD_FRAMES;
     boost::program_options::variables_map vm(process_options(argc, argv));
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::string descr= rh.get_description();
@@ -26,9 +25,21 @@ int main(int argc, char **argv) {
       RMF::show_hierarchy_with_decorators(rh.get_root_node(),
                                           vm.count("verbose"),
                                           frame, std::cout);
+    } else if (vm.count("verbose")==0) {
+      RMF::show_hierarchy(rh.get_root_node(), std::cout);
     } else {
-      RMF::show_hierarchy(rh.get_root_node(), vm.count("verbose"),
-                          frame, std::cout);
+      if (frame_option>=0) {
+        begin_frame=frame_option;
+        end_frame=-1;
+        frame_step=-1;
+      } else {
+        begin_frame=0;
+        end_frame= rh.get_number_of_frames();
+        frame_step=-frame_option;
+      }
+      RMF::show_hierarchy_with_values(rh.get_root_node(),
+                                      begin_frame, end_frame, frame_step,
+                                      std::cout);
     }
   } catch (const IMP::base::Exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
