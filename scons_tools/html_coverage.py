@@ -35,8 +35,12 @@ def _build_python_coverage(env, single):
             cov.load()
             morfs = cov.data.lines.keys()
             morfs.sort()
-            cov.html_report(morfs, directory=os.path.join(covdir, 'python',
-                                                          m.group(1)))
+            try:
+                cov.html_report(morfs, directory=os.path.join(covdir, 'python',
+                                                              m.group(1)))
+            except coverage.CoverageException, detail:
+                print >> sys.stderr, "Python coverage of %s failed: %s" \
+                                     % (m.group(1), str(detail))
 
     print >> sys.stderr, "Done"
 
