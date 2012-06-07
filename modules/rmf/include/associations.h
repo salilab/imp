@@ -45,6 +45,9 @@ get_node_from_association(RMF::FileConstHandle nh,
 
 IMPRMFEXPORT RMF::NodeHandle get_node_from_association(RMF::FileHandle nh,
                                                        base::Object *oi);
+IMPRMFEXPORT
+bool get_has_associated_node(RMF::FileConstHandle nh,
+                             base::Object*oi);
 
 
 IMPRMFEXPORT bool get_has_linker(RMF::FileConstHandle nh,
