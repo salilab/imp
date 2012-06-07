@@ -70,7 +70,7 @@ double traverse(std::string name) {
   ret+=show_xml(rh.get_root_node(), kcs);
   RMF::NodePairConstHandles ps= rh.get_node_sets<2>();
   for (unsigned int i=0; i< ps.size(); ++i) {
-    std::pair< RMF::NodeHandle, RMF::NodeHandle> handles
+    std::pair< RMF::NodeConstHandle, RMF::NodeConstHandle> handles
         (ps[i].get_node(0),ps[i].get_node(1));
     ret+=handles.first.get_id().get_index();
     ret+=handles.second.get_id().get_index();

@@ -383,6 +383,11 @@ namespace RMF {
         should be safe to open the file in another process for reading.
      */
     void flush();
+
+    /** Run the various validators that attempt to check that the RMF file
+        is correct. Print messages to the provided stream if errors are
+        encounted.*/
+    void validate(std::ostream &out) const;
   };
 
   typedef vector<FileConstHandle> FileConstHandles;
