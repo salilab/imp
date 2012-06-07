@@ -59,6 +59,10 @@ namespace RMF {
                                    unsigned int frame) const {          \
       return get_value_impl(node, k, frame);                            \
     }                                                                   \
+    Ucname##Traits::Types get_all_value(unsigned int node,              \
+                                        Key<Ucname##Traits,Arity> k) const { \
+      return get_all_values_impl(node, k);                              \
+    }                                                                   \
     void set_value(unsigned int node,                                   \
                    Key<Ucname##Traits, Arity> k,                        \
                         Ucname##Traits::Type v, unsigned int frame) {   \
@@ -277,6 +281,52 @@ namespace RMF {
       }
 
       template <class TypeTraits, int Arity>
+        typename TypeTraits::Types get_all_values_impl(unsigned int node,
+                                                      Key<TypeTraits,Arity> k)
+        const {
+        IMP_RMF_BEGIN_FILE
+          IMP_RMF_USAGE_CHECK(k.get_is_per_frame(),
+                      "Using get_all_values on a key that is not per_frame.");
+        unsigned int kc=k.get_category().get_index();
+        int vi=get_index_from_cache<Arity>(node, kc);
+        if (IndexTraits::get_is_null_value(vi)) {
+          IMP_RMF_BEGIN_OPERATION
+          int index= get_index(Arity, kc);
+          HDF5DataSetIndexD<2> nsz= node_data_[Arity-1].get_size();
+          IMP_RMF_USAGE_CHECK(static_cast<unsigned int>(nsz[0]) > node,
+                              "Invalid node used");
+          if (nsz[1] <= static_cast<hsize_t>(index)) {
+            return typename TypeTraits::Types();
+          } else {
+            vi=node_data_[Arity-1].get_value(HDF5DataSetIndexD<2>(node, index));
+          }
+          if (IndexTraits::get_is_null_value(vi)) {
+            return typename TypeTraits::Types();
+          } else {
+            add_index_to_cache<Arity>(node, kc, vi);
+          }
+          IMP_RMF_END_OPERATION("getting value index");
+        }
+        {
+          IMP_RMF_BEGIN_OPERATION
+            HDF5DataSetD<TypeTraits, 3> &ds
+            = get_per_frame_data_data_set<TypeTraits>(kc,
+                                                      k.get_arity(),
+                                                      false);
+          if (!ds) return typename TypeTraits::Types();
+          HDF5DataSetIndexD<3> sz= ds.get_size();
+          if (static_cast<hsize_t>(vi) >= sz[0]
+              || static_cast<hsize_t>(k.get_index()) >= sz[1]) {
+            return typename TypeTraits::Types();
+          } else {
+            return ds.get_row(HDF5DataSetIndexD<2>(vi, k.get_index()));
+          }
+          IMP_RMF_END_OPERATION("fetching data from per frame data set");
+        }
+        IMP_RMF_END_FILE(get_file_name());
+      }
+
+      template <class TypeTraits, int Arity>
         typename TypeTraits::Type get_value_impl(unsigned int node,
                                                  Key<TypeTraits,Arity> k,
                                                  unsigned int frame) const {
@@ -334,7 +384,7 @@ namespace RMF {
             } else {
               return ds.get_value(HDF5DataSetIndexD<2>(vi, k.get_index()));
             }
-            IMP_RMF_END_OPERATION("fetching data from data set")
+            IMP_RMF_END_OPERATION("fetching data from data set");
           }
         }
         IMP_RMF_END_FILE(get_file_name());
