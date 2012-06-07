@@ -140,6 +140,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
   class RestraintLoadLink: public SimpleLoadLink<Restraint> {
     typedef SimpleLoadLink<Restraint> P;
     RMF::ScoreConstFactory sf_;
+    RMF::AliasConstFactory af_;
     Model *m_;
     RMF::Category imp_cat_;
     RMF::FloatKey weight_key_;
@@ -164,6 +165,12 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         if (chs[i].get_type() == RMF::FEATURE) {
           childr.push_back(do_create(chs[i]));
           add_link(childr.back(), chs[i]);
+        } else if(af_.get_is(chs[i])) {
+          RMF::NodeConstHandle an= af_.get(chs[i]).get_aliased();
+          if (an.get_type()== RMF::FEATURE) {
+            Restraint*r= get_association<Restraint>(an);
+            childr.push_back(r);
+          }
         }
       }
       base::Pointer<Restraint> ret;
@@ -179,7 +186,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     }
   public:
     RestraintLoadLink(RMF::FileConstHandle fh, Model *m):
-        P("RestraintLoadLink%1%"), sf_(fh), m_(m),
+      P("RestraintLoadLink%1%"), sf_(fh), af_(fh), m_(m),
         imp_cat_(fh.get_category<1>("IMP")),
         weight_key_(fh.get_key<RMF::FloatTraits>(imp_cat_,
                                                  "weight", false)){
@@ -191,18 +198,26 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
   class RestraintSaveLink: public SimpleSaveLink<Restraint> {
     typedef SimpleSaveLink<Restraint> P;
     RMF::ScoreFactory sf_;
+    RMF::AliasFactory af_;
     RMF::Category imp_cat_;
     RMF::FloatKey weight_key_;
     compatibility::map<Restraint*, RestraintSaveData> data_;
 
     void do_add(Restraint* r, RMF::NodeHandle nh) {
+      // handle restraints being in multiple sets
+      if (get_has_associated_node(nh.get_file(), r)) {
+        RMF::NodeHandle an= get_node_from_association(nh.get_file(), r);
+        RMF::Alias a= af_.get(nh);
+        a.set_aliased(an);
+        return;
+      }
       nh.set_value(weight_key_, r->get_weight());
+      add_link(r, nh);
       RestraintSet* rs= dynamic_cast<RestraintSet*>(r);
       if (rs) {
         for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
           Restraint *rc= rs->get_restraint(i);
           RMF::NodeHandle c= nh.add_child(rc->get_name(), RMF::FEATURE);
-          add_link(rc, c);
           do_add(rc, c);
         }
       }
@@ -267,6 +282,7 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     RestraintSaveLink(RMF::FileHandle fh):
         P("RestraintSaveLink%1%"),
         sf_(fh),
+        af_(fh),
         imp_cat_(RMF::get_category_always<1>(fh, "IMP")),
         weight_key_(RMF::get_key_always<RMF::FloatTraits>(fh, imp_cat_,
                                                           "weight",
