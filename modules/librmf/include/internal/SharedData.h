@@ -201,7 +201,7 @@ namespace RMF {
       virtual std::string get_category_name(int Arity, unsigned int kc) const=0;
       virtual std::string get_description() const=0;
       virtual void set_description(std::string str)=0;
-      void validate() const;
+      void validate(std::ostream &out) const;
     };
 
     template <class Traits, int Arity>

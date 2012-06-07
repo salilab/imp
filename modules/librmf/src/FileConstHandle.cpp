@@ -65,5 +65,8 @@ Floats get_values(const NodeConstHandles &nodes,
     return ret;
   }
 
+void FileConstHandle::validate(std::ostream &out=std::cerr) const {
+  get_shared_data()->validate(out);
+}
 
 } /* namespace RMF */
