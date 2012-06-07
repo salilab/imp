@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="EModel2D", version='nightly-5/6/2012',
+env= env.IMPApplication(name="EModel2D", version='nightly-6/6/2012',
                         authors=["Javier Velazquez-Muriel"],
                         brief="Modeling of macromolecular assemblies base on EM images",
                         overview="",
