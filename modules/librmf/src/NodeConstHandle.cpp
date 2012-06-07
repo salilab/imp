@@ -49,50 +49,90 @@ std::string get_type_name(NodeType t) {
 }
 
 namespace {
-  template <class KT>
-  void show_data(NodeConstHandle n,
-                 std::ostream &out,
-                 const vector<KT> &ks,
-                 int frame, std::string prefix) {
-    using std::operator<<;
-    for (unsigned int i=0; i< ks.size(); ++i) {
-      if ((n.get_file().get_is_per_frame(ks[i])
-           && n.get_has_value(ks[i], frame))
-          || (!n.get_file().get_is_per_frame(ks[i])
-              && n.get_has_value(ks[i]))) {
-        if (n.get_file().get_is_per_frame(ks[i])) {
-          out << std::endl << prefix
-              << n.get_file().get_name(ks[i]) << " (pf): "
-              << Showable(n.get_value(ks[i], frame));
-        } else {
-          out << std::endl << prefix
-              << n.get_file().get_name(ks[i]) << ": "
-              << Showable(n.get_value(ks[i]));
+  template <class Types, class Type>
+  void show_clean(std::string prefix, std::string name,
+                  const Types &t, Type nv, int frame, int end_frame, int step,
+                  std::ostream &out) {
+    Types tout;
+    bool found=false;
+    if (step==-1) step=1;
+    for ( int i=frame; i< end_frame; i+=step) {
+      tout.push_back(t[i]);
+      if (t[i] != nv) {
+        found=true;
+      }
+    }
+    if (found) {
+      out << std::endl << prefix
+          << name << ": [";
+      for (unsigned int i=0; i< tout.size(); ++i) {
+        if (i!= 0) {
+          out << ", ";
+        }
+        if (tout[i]==nv) {
+          out << "-";
+        } else{
+          out << Showable(tout[i]);
         }
       }
     }
   }
 
+
+  template <class KT>
+  void show_data(NodeConstHandle n,
+                 std::ostream &out,
+                 const vector<KT> &ks,
+                 int frame, int end_frame, int step,
+                 std::string prefix) {
+    using std::operator<<;
+    for (unsigned int i=0; i< ks.size(); ++i) {
+      if (!n.get_file().get_is_per_frame(ks[i])
+          && n.get_has_value(ks[i])) {
+        out << std::endl << prefix
+            << n.get_file().get_name(ks[i]) << ": "
+            << Showable(n.get_value(ks[i]));
+      } else if (end_frame==-1) {
+        if (n.get_file().get_is_per_frame(ks[i])
+            && n.get_has_value(ks[i], frame)) {
+          out << std::endl << prefix
+              << n.get_file().get_name(ks[i]) << ": "
+              << Showable(n.get_value(ks[i], frame));
+        }
+      } else {
+        show_clean(prefix, n.get_file().get_name(ks[i]),
+                   n.get_all_values(ks[i]), KT::TypeTraits::get_null_value(),
+                   frame, end_frame, step, out);
+      }
+    }
+  }
+
+  void show_node(NodeConstHandle n, std::ostream &out,
+                 std::string prefix) {
+    using std::operator<<;
+    out<< prefix << "\"" << n.get_name()
+       << "\" [" << get_type_name(n.get_type()) << "]";
+  }
   void show_node(NodeConstHandle n, std::ostream &out,
                  FloatKeys fks, FloatsKeys fsks,
                  IntKeys iks, IntsKeys isks,
                  IndexKeys xks, IndexesKeys xsks,
                  StringKeys sks, StringsKeys ssks,
                  NodeIDKeys nks, NodeIDsKeys nsks,
-                 int frame,
+                 int frame, int end_frame, int step,
                  std::string prefix) {
     using std::operator<<;
-    out<< "\"" << n.get_name() << "\" [" << get_type_name(n.get_type()) << "]";
-    show_data(n, out, fks, frame, prefix+"  ");
-    show_data(n, out, iks, frame, prefix+"  ");
-    show_data(n, out, xks, frame, prefix+"  ");
-    show_data(n, out, sks, frame, prefix+"  ");
-    show_data(n, out, nks, frame, prefix+"  ");
-    show_data(n, out, fsks, frame, prefix+"  ");
-    show_data(n, out, isks, frame, prefix+"  ");
-    show_data(n, out, xsks, frame, prefix+"  ");
-    show_data(n, out, ssks, frame, prefix+"  ");
-    show_data(n, out, nsks, frame, prefix+"  ");
+    show_node(n, out, prefix);
+    show_data(n, out, fks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, iks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, xks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, sks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, nks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, fsks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, isks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, xsks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, ssks, frame, end_frame, step, prefix+"  ");
+    show_data(n, out, nsks, frame, end_frame, step, prefix+"  ");
   }
 
   void show_node_decorators(NodeConstHandle n, std::ostream &out,
@@ -146,7 +186,6 @@ namespace {
     }
     return ret;
   }
-}
 
 // Note that older g++ is confused by queue.back().get<2>()
 #define IMP_RMF_PRINT_TREE(stream, NodeType, start, num_children,       \
@@ -175,11 +214,21 @@ namespace {
     } while (!queue.empty());                                           \
   }                                                                     \
 
+}
 
 void show_hierarchy(NodeConstHandle root,
-                    bool verbose,
-                    unsigned int frame,
                     std::ostream &out) {
+  using std::operator<<;
+  IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
+                 n.get_children(),
+                     show_node(n, out,
+                               prefix0+"   "));
+}
+
+  void show_hierarchy_with_values(NodeConstHandle root,
+                                  unsigned int frame,
+                                  int end_frame, int step,
+                                  std::ostream &out) {
   FloatKeys fks;
   IntKeys iks;
   IndexKeys xks;
@@ -190,26 +239,23 @@ void show_hierarchy(NodeConstHandle root,
   IndexesKeys xsks;
   StringsKeys ssks;
   NodeIDsKeys nsks;
-  if (verbose) {
-    fks=get_keys<FloatTraits>(root.get_file());
-    iks=get_keys<IntTraits>(root.get_file());
-    xks=get_keys<IndexTraits>(root.get_file());
-    sks=get_keys<StringTraits>(root.get_file());
-    nks=get_keys<NodeIDTraits>(root.get_file());
-    fsks=get_keys<FloatsTraits>(root.get_file());
-    isks=get_keys<IntsTraits>(root.get_file());
-    xsks=get_keys<IndexesTraits>(root.get_file());
-    ssks=get_keys<StringsTraits>(root.get_file());
-    nsks=get_keys<NodeIDsTraits>(root.get_file());
-  }
+  fks=get_keys<FloatTraits>(root.get_file());
+  iks=get_keys<IntTraits>(root.get_file());
+  xks=get_keys<IndexTraits>(root.get_file());
+  sks=get_keys<StringTraits>(root.get_file());
+  nks=get_keys<NodeIDTraits>(root.get_file());
+  fsks=get_keys<FloatsTraits>(root.get_file());
+  isks=get_keys<IntsTraits>(root.get_file());
+  xsks=get_keys<IndexesTraits>(root.get_file());
+  ssks=get_keys<StringsTraits>(root.get_file());
+  nsks=get_keys<NodeIDsTraits>(root.get_file());
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children(),
                      show_node(n, out, fks, fsks, iks, isks, xks, xsks,
-                               sks, ssks, nks, nsks, frame,
+                               sks, ssks, nks, nsks, frame, end_frame, step,
                                prefix0+"   "));
-}
-
+  }
 
 
 void show_hierarchy_with_decorators(NodeConstHandle root,
