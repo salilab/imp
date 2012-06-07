@@ -22,6 +22,11 @@ scons_tools.dependency.boost.add_boost_library(env, "Thread", "thread",
 scons_tools.dependency.add_external_library(env, "ProtoBuf", ["protobuf"],
                                             "google/protobuf/text_format.h")
 
+scons_tools.dependency.add_external_library(env, "google_perftools_profile",
+                                            ["profiler"],
+                                            "google/profiler.h",
+                                            body=';')
+
 olinktest=env['linktest']
 env['linktest']=False
 if env['build']=='fast':
@@ -32,7 +37,7 @@ oenv=env.IMPModuleBuild(version='nightly-6/6/2012',
                    required_modules=[],
                    required_dependencies=['HDF5', "Boost.FileSystem",
                                           "Boost.Thread"],
-                   optional_dependencies=["ProtoBuf"],
+                   optional_dependencies=["ProtoBuf", "google_perftools_profile"],
                    module='RMF', module_libname="RMF", module_pylibname="_RMF",
                    module_include_path="RMF",
                    module_preproc="RMF", module_namespace="RMF", data=False)
