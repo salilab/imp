@@ -220,8 +220,6 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           inputs.erase(std::unique(inputs.begin(), inputs.end()), inputs.end());
           RMF::NodeConstHandles nhs=get_node_ids(nh.get_file(),
                                                  inputs);
-          std::cout << "Setting representation of " << Showable(o)
-                    << " to " << inputs << std::endl;
           sdnf.set_representation(nhs);
           IMP_INTERNAL_CHECK(sdnf.get_representation().size()
                              == nhs.size(), "Get and set values don't match");
