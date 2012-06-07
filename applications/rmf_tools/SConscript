@@ -13,17 +13,7 @@ env= env.IMPApplication(name="rmf_tools", version='nightly-6/6/2012',
    values for the frame are treated as every nth frame. That is, "-f -2" means take
    every other frame.
 
-   - \c rmf_display outputs an arbitrary
-   hdf5 file to pymol or chimera as appropriate (based on the file name of the
-   second argument). It supports hierarchies, restraints and geometry.
-
    - \c rmf_show prints out the hierarchy written to the file.
-
-   - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
-   in the rmf file are atomic resolution.
-
-   - \c rmf_dot converts an rmf file to a graphviz graph, which can be displayed nicely
-   and rendered to pdf.
 
    - \c rmf_xml converts an rmf file to an XML files that can be opened in an XML viewer
    (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
@@ -36,20 +26,18 @@ env= env.IMPApplication(name="rmf_tools", version='nightly-6/6/2012',
 
    - \c rmf_cat creates a new rmf concatenating several with the same structure.
 
-   - \c rmf_color adds color information to an RMF
+   - \c rmf_validate checks for errors in an RMF file.
    """,
                         license=env.IMPStandardLicense(),
                         publications=[],
-                        required_modules=['rmf', 'benchmark'],
+                        required_modules=['RMF'],
                         required_dependencies=['Boost.ProgramOptions'],
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="rmf_pdb", source=["rmf_pdb.cpp"])
-    env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])
     env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
     env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])
     env.IMPCPPExecutable(target="rmf_info", source=["rmf_info.cpp"])
-    env.IMPCPPExecutable(target="rmf_color", source=["rmf_color.cpp"])
     env.IMPCPPExecutable(target="rmf_slice", source=["rmf_slice.cpp"])
     env.IMPCPPExecutable(target="rmf_cat", source=["rmf_cat.cpp"])
+    env.IMPCPPExecutable(target="rmf_validate", source=["rmf_validate.cpp"])

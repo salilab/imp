@@ -6,7 +6,7 @@
 #ifndef IMP_COMMON_H
 #define IMP_COMMON_H
 #include <boost/program_options.hpp>
-#include <RMF/profile.h>
+#include <IMP/benchmark/profile.h>
 #include <RMF/utility.h>
 
 extern std::string description;
@@ -35,7 +35,7 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   options.add_options()("help,h", "Get help on command line arguments.")
     ("verbose,v", "Produce more output.")
     ("hdf5-errors", "Show hdf5 errors.");
-#ifdef RMF_USE_GOOGLE_PERFTOOLS_PROFILE
+#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
   options.add_options()("profile", "Profile execution.");
 #endif
   all.add(positional_options).add(options);
@@ -56,7 +56,7 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
     RMF::set_show_hdf5_errors(true);
   }
   if (vm.count("profile")) {
-    RMF::set_is_profiling(true);
+    IMP::benchmark::set_is_profiling(true);
   }
   return vm;
 }
@@ -94,6 +94,9 @@ void increment_frames(int &current_frame, const int frame_step,
 #define IMP_ADD_FRAMES                                                  \
   int frame_option=0;                                                   \
   int begin_frame, end_frame, frame_step;                               \
+  IMP_UNUSED(begin_frame);                                              \
+  IMP_UNUSED(end_frame);                                                \
+  IMP_UNUSED(frame_step);                                               \
   options.add_options()("frame,f",                                      \
                         boost::program_options::value< int >(&frame_option), \
                         "Frame to use, if negative, use every kth frame");

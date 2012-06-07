@@ -1,9 +1,7 @@
 /**
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
-#include <IMP/rmf/atom_io.h>
 #include <RMF/FileHandle.h>
-#include <IMP/internal/graph_utility.h>
 #include <sstream>
 #include "common.h"
 
@@ -102,9 +100,6 @@ int main(int argc, char **argv) {
     show_info<3>(rh, std::cout);
     show_info<4>(rh, std::cout);
     return 0;
-  } catch (const IMP::base::Exception &e) {
-    std::cerr << "Error: " << e.what() << std::endl;
-    return 1;
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }

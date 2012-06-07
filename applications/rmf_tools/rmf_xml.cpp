@@ -1,16 +1,15 @@
 /**
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
-#include <IMP/rmf/atom_io.h>
 #include <RMF/FileConstHandle.h>
+#include <RMF/NodeConstHandle.h>
 #include <RMF/utility.h>
-#include <IMP/internal/graph_utility.h>
 #include "common.h"
 #include <sstream>
+#include <fstream>
 
 std::string description
 ="Convert an rmf file into an xml file suitable for opening in a web browser.";
-int frame=0;
 namespace {
 
   std::string get_as_attribute_name(std::string name) {
@@ -30,7 +29,7 @@ namespace {
 template <class TypeT, int Arity, class Handle>
   bool show_type_data_xml(Handle nh,
                           RMF::CategoryD<Arity> kc,
-                          bool opened, std::ostream &out) {
+                          bool opened, int frame, std::ostream &out) {
     using RMF::operator<<;
     RMF::FileConstHandle rh= nh.get_file();
     std::vector<RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT>(kc);
@@ -89,11 +88,13 @@ template <class TypeT, int Arity, class Handle>
   }
 #define IMP_RMF_SHOW_TYPE_DATA_XML(lcname, UCName, PassValue, ReturnValue, \
                                    PassValues, ReturnValues)            \
-  opened=show_type_data_xml<RMF::UCName##Traits, Arity>(nh, kc, opened, out);
+  opened=show_type_data_xml<RMF::UCName##Traits, Arity>(nh, kc, opened, frame, \
+                                                        out);
 
 template <int Arity, class Handle>
   void show_data_xml(Handle nh,
                      RMF::CategoryD<Arity> kc,
+                     int frame,
                      std::ostream &out) {
     bool opened=false;
     IMP_RMF_FOREACH_TYPE(IMP_RMF_SHOW_TYPE_DATA_XML);
@@ -103,20 +104,21 @@ template <int Arity, class Handle>
   }
 
   void show_hierarchy(RMF::NodeConstHandle nh,
-                const RMF::Categories& cs, std::ostream &out) {
+                      const RMF::Categories& cs, int frame,
+                      std::ostream &out) {
     out << "<node name=\"" << nh.get_name() << "\" id=\""
         << nh.get_id() << "\" "
         << "type=\"" << RMF::get_type_name(nh.get_type())
         << "\">\n";
     if (verbose) {
       for (unsigned int i=0; i< cs.size(); ++i) {
-        show_data_xml<1>(nh, cs[i], out);
+        show_data_xml<1>(nh, cs[i], frame, out);
       }
     }
     RMF::NodeConstHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       out << "<child>\n";
-      show_hierarchy(children[i],cs,  out);
+      show_hierarchy(children[i],cs,  frame, out);
       out << "</child>\n";
     }
     out << "</node>" << std::endl;
@@ -126,8 +128,9 @@ template <int Arity, class Handle>
 
 template <int Arity>
 void show_sets(RMF::FileConstHandle rh,
-                 const RMF::vector<RMF::CategoryD<Arity> >& cs,
-                 std::ostream &out) {
+               const RMF::vector<RMF::CategoryD<Arity> >& cs,
+               int frame,
+               std::ostream &out) {
   std::vector<RMF::NodeSetConstHandle<Arity> > sets= rh.get_node_sets<Arity>();
   if (!sets.empty()) {
     out << "<sets" << Arity << ">" << std::endl;
@@ -144,7 +147,7 @@ void show_sets(RMF::FileConstHandle rh,
       out << "\">" << std::endl;
       if (verbose) {
         for (unsigned int j=0; j< cs.size(); ++j) {
-          show_data_xml<Arity>(sets[i], cs[j], out);
+          show_data_xml<Arity>(sets[i], cs[j], frame, out);
         }
       }
       out << "</set>" << std::endl;
@@ -164,7 +167,9 @@ int main(int argc, char **argv) {
     IMP_ADD_FRAMES;
     process_options(argc, argv);
 
-    frame= frame_option;
+    if (0) {
+      std::cout << begin_frame << end_frame << frame_step;
+    }
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
     std::ostream *out;
@@ -188,16 +193,13 @@ int main(int argc, char **argv) {
     *out << "<path>\n";
     *out << input <<std::endl;
     *out << "</path>\n";
-    show_hierarchy(rh.get_root_node(), cs, *out);
+    show_hierarchy(rh.get_root_node(), cs, frame_option, *out);
 
-    show_sets<2>(rh, rh.get_categories<2>(), *out);
-    show_sets<3>(rh, rh.get_categories<3>(), *out);
-    show_sets<4>(rh, rh.get_categories<4>(), *out);
+    show_sets<2>(rh, rh.get_categories<2>(), frame_option, *out);
+    show_sets<3>(rh, rh.get_categories<3>(), frame_option, *out);
+    show_sets<4>(rh, rh.get_categories<4>(), frame_option, *out);
     *out << "</rmf>\n";
     return 0;
-  } catch (const IMP::base::Exception &e) {
-    std::cerr << "Error: " << e.what() << std::endl;
-    return 1;
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << std::endl;
   }
