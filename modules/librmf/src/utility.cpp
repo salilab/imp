@@ -11,42 +11,79 @@
 #include <RMF/NodeHandle.h>
 #include <RMF/FileConstHandle.h>
 #include <RMF/FileHandle.h>
-#include <RMF/internal/map.h>
-
+#include <RMF/internal/set.h>
 namespace RMF {
+  unsigned int get_uint(NodeConstHandle nh);
+  unsigned int get_uint(NodeHandle nh);
+  // needed for the koenig lookup
+  unsigned int get_uint(NodeConstHandle nh){
+    return nh.get_id().get_index();
+  }
+  unsigned int get_uint(NodeHandle nh){
+    return nh.get_id().get_index();
+  }
   namespace {
     void copy_structure(NodeConstHandle in, NodeHandle out,
-                        internal::map<NodeConstHandle, NodeHandle> &map){
-      map[in]=out;
+                        const internal::set<NodeConstHandle>* set){
+      in.set_association(out);
       NodeConstHandles ch=in.get_children();
       for (unsigned int i=0; i< ch.size(); ++i) {
+        if (set && set->find(ch[i]) == set->end()) continue;
         NodeHandle nn=out.add_child(ch[i].get_name(), ch[i].get_type());
-        copy_structure(ch[i], nn, map);
+        copy_structure(ch[i], nn, set);
+      }
+    }
+    void link_structure(NodeConstHandle in, NodeHandle out){
+      in.set_association(out);
+      NodeConstHandles ch=in.get_children();
+      NodeHandles och=out.get_children();
+      for (unsigned int i=0; i< ch.size(); ++i) {
+        link_structure(ch[i], och[i]);
       }
     }
     template <int Arity>
     void copy_sets(const vector<NodeSetConstHandle<Arity> > &in,
-                   FileHandle out,
-                   const internal::map<NodeConstHandle, NodeHandle> &map) {
+                   FileHandle out) {
       for (unsigned int i=0; i< in.size(); ++i) {
         NodeHandles nhs;
         for (unsigned int j=0; j < Arity; ++j) {
-          NodeConstHandle id= in[i].get_node(j);
-          nhs.push_back(map.find(id)->second);
+          if (!in[i].get_node(j).get_has_association()) {
+            nhs.clear();
+            break;
+          } else {
+            nhs.push_back(in[i].get_node(j)
+                          .template get_association<NodeHandle>());
+          }
         }
-        out.add_node_set<Arity>(nhs, in[i].get_type());
+        if (!nhs.empty()) {
+          out.add_node_set<Arity>(nhs, in[i].get_type());
+        }
       }
     }
   }
-  void copy_structure(FileConstHandle in, FileHandle out){
-    internal::map<NodeConstHandle, NodeHandle> map;
-    copy_structure(in.get_root_node(), out.get_root_node(), map);
 
-    copy_sets(in.get_node_pairs(), out, map);
-    copy_sets(in.get_node_triplets(), out, map);
-    copy_sets(in.get_node_quads(), out, map);
+  void copy_structure(FileConstHandle in, FileHandle out){
+    copy_structure(in.get_root_node(), out.get_root_node(), NULL);
+
+    copy_sets(in.get_node_pairs(), out);
+    copy_sets(in.get_node_triplets(), out);
+    copy_sets(in.get_node_quads(), out);
+  }
+  void copy_structure(const NodeConstHandles& in, FileHandle out) {
+    if (in.empty()) return;
+    internal::set<NodeConstHandle> inputset(in.begin(),
+                                             in.end());
+    copy_structure(in[0].get_file().get_root_node(),
+                   out.get_root_node(), &inputset);
+
+    copy_sets(in[0].get_file().get_node_pairs(), out);
+    copy_sets(in[0].get_file().get_node_triplets(), out);
+    copy_sets(in[0].get_file().get_node_quads(), out);
   }
 
+  void link_structure(FileConstHandle in, FileHandle out){
+    link_structure(in.get_root_node(), out.get_root_node());
+  }
   namespace {
 #define IMP_RMF_COPY_FRAME_1(lcname, Ucname, PassValue,                 \
                              ReturnValue,                               \
@@ -65,6 +102,7 @@ namespace RMF {
                                    unsigned int inframe, unsigned int outframe,
                                    const vector<Key<TypeTraits, 1> > &inkeys,
                                    const vector<Key<TypeTraits, 1> > &outkeys) {
+      if (!in.get_has_association()) return;
       for (unsigned int i=0; i< inkeys.size(); ++i) {
         if (in.get_has_value(inkeys[i], inframe)) {
           out.set_value(outkeys[i], in.get_value(inkeys[i], inframe), outframe);
@@ -129,12 +167,23 @@ namespace RMF {
       }
       vector<NodeSetConstHandle<Arity> > insets= in.get_node_sets<Arity>();
       vector<NodeSetHandle<Arity> > outsets= out.get_node_sets<Arity>();
+      int offset=0;
       for (unsigned int i=0; i< insets.size(); ++i) {
+        bool bad=false;
+        for (unsigned int j=0; j< Arity; ++j) {
+          if (!insets[i].get_node(j).get_has_association()) {
+            bad=true;
+          }
+        }
+        if (bad) {
+          ++offset;
+          continue;
+        }
         for (unsigned int j=0; j< inkeys.size(); ++j) {
           if (insets[i].get_has_value(inkeys[j], inframe)) {
-            outsets[i].set_value(outkeys[j],
-                                 insets[i].get_value(inkeys[j], inframe),
-                                 outframe);
+            outsets[i-offset].set_value(outkeys[j],
+                                        insets[i].get_value(inkeys[j], inframe),
+                                        outframe);
           }
         }
       }
@@ -159,6 +208,15 @@ namespace RMF {
     copy_set_frame<2>(in, out, inframe, outframe);
     copy_set_frame<3>(in, out, inframe, outframe);
     copy_set_frame<4>(in, out, inframe, outframe);
+  }
+
+
+
+  void copy_values(FileConstHandle in, FileHandle out) {
+    // do something less dumb pater
+    for (unsigned int i=0; i< in.get_number_of_frames(); ++i) {
+      copy_frame(in, out, i, i);
+    }
   }
 
 
