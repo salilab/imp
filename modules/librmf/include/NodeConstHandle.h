@@ -37,7 +37,13 @@ ReturnValue get_value(UCName##Key k,                                    \
                                                   shared_->get_name(k), \
                                                   " on frame ",         \
                                                   frame));              \
-  return get_value_always(k, frame);                                     \
+  return get_value_always(k, frame);                                    \
+}                                                                       \
+/** \brief  Return the value of the attribute for every frame in the file.
+    The null value is returned for frames that don't have the value.
+*/                                                                      \
+ReturnValues get_all_values(UCName##Key k) const {                      \
+  return shared_->get_all_values(node_, k);                             \
 }                                                                       \
 /** Return the attribute value or TypeTraits::get_null_value() if the
     node does not have the attribute. In python the method a value equal to

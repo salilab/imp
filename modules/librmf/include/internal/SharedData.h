@@ -39,6 +39,7 @@ namespace RMF {
 
 #define IMP_RMF_SHARED_TYPE_ARITY(lcname, Ucname, PassValue, ReturnValue, \
                                   PassValues, ReturnValues, Arity)      \
+    /** Return a value or the null value.*/                             \
     virtual Ucname##Traits::Type get_value(unsigned int node,           \
                                            Key<Ucname##Traits,Arity> k, \
                                            unsigned int frame) const=0; \
@@ -49,6 +50,16 @@ namespace RMF {
       Ucname##Traits::Types ret(k.size());                              \
       for (unsigned int i=0; i< k.size(); ++i) {                        \
         ret[i]= get_value(node, k[i], frame);                           \
+      }                                                                 \
+      return ret;                                                       \
+    }                                                                   \
+    virtual Ucname##Traits::Types                                       \
+    get_all_values(unsigned int node,                                   \
+                   Key<Ucname##Traits,Arity> k) const {                 \
+      unsigned int nf= get_number_of_frames();                          \
+      Ucname##Traits::Types ret(nf);                                    \
+      for (unsigned int i=0; i< nf; ++i) {                              \
+        ret[i]= get_value(node, k, i);                                  \
       }                                                                 \
       return ret;                                                       \
     }                                                                   \

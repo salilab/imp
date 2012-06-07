@@ -94,8 +94,14 @@ class Children:
 
 
 class Attribute:
-    def __init__(self, type, nice_name, attribute_name):
-        self.type=type
+    def __init__(self, tt, nice_name, attribute_name):
+        self.type=tt
+        if tt.endswith("s"):
+            self.plural_type=tt+"List"
+        elif tt.endswith("x"):
+            self.plural_type=tt+"es"
+        else:
+            self.plural_type=tt+"s"
         self.nice_name=nice_name
         self.attribute_name=attribute_name
     def get_key_members(self, const):
@@ -111,9 +117,12 @@ class Attribute:
                     "  return P::get_value("+self.nice_name+"_,",
                     "                       "+self.nice_name+"_pf_);",
                    "}"])
+        ret.extend([self.plural_type+" get_all_"+self.nice_name+"s() const {",
+                    "  return P::get_all_values("+self.nice_name+"_pf_);",
+                   "}"])
         if not const:
             ret.extend(["void set_"+self.nice_name+"("+self.type+" v) {",
-                        "  set_value("+self.nice_name+"_,",
+                        "  P::set_value("+self.nice_name+"_,",
                         "            "+self.nice_name+"_pf_, v);",
                         "}"])
         return ret

@@ -43,6 +43,11 @@ class Decorator {
       return get_node().get_value(pf_key, get_frame());
     }
   }
+  //TypeTraits::Values
+  template <class KeyT>
+  typename KeyT::TypeTraits::Types get_all_values(const KeyT &pf_key) const {
+    return get_node().get_all_values(pf_key);
+  }
   template <class Keys, class Values>
   void set_values(Keys &keys, Keys &pf_keys, const Values&v) {
     if (get_frame()>=0) {
