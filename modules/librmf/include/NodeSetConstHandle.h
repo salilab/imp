@@ -109,12 +109,11 @@ protected:
     unsigned int get_arity() const {
       return D;
     }
-    NodeHandle get_node(unsigned int i) const {
+    NodeConstHandle get_node(unsigned int i) const {
       IMP_RMF_USAGE_CHECK( i< D,
                            internal::get_error_message("Out of range index: ",
                                                        i));
-      //return NodeHandle(share_->get_node(node_, i), shared_);
-      return NodeHandle(shared_->get_set_member(D, node_, i),
+      return NodeConstHandle(shared_->get_set_member(D, node_, i),
                         shared_.get());
     }
     /** This ID is unique within the file for that arity.*/
