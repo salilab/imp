@@ -249,7 +249,7 @@ class _CoverageTester(object):
                 if header_callcounts is not None:
                     self._update_header_callcounts(header_callcounts,
                                                    line_number, calls)
-                if calls == '#####':
+                if calls == '#####' or calls == '=====':
                     missing.append(line_number)
                 if calls != '-':
                     executable_statements += 1
@@ -292,7 +292,7 @@ class _CoverageTester(object):
         # If this gcov file says the line was executable but not called
         # (call count '#####') then override another gcov file that said it was
         # non-executable (no effect if it was called in another gcov file)
-        if calls == '#####':
+        if calls == '#####' or calls == '=====':
             if header_callcounts[line_number - 1] == -1:
                 header_callcounts[line_number - 1] = 0
 
