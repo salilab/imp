@@ -87,12 +87,12 @@ namespace RMF {
     }
 
 
-  void SharedData::validate() const {
+  void SharedData::validate(std::ostream &out) const {
     Creators cs= get_validators();
     for (unsigned int i=0; i< cs.size(); ++i) {
       boost::scoped_ptr<Validator>
           ptr(cs[i]->create(FileHandle(const_cast<SharedData*>(this))));
-      ptr->write_errors(std::cerr);
+      ptr->write_errors(out);
     }
   }
 

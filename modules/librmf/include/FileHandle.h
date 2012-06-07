@@ -240,11 +240,6 @@ namespace RMF {
     IMP_RMF_CATEGORY_METHODS(1, arity_,Arity);
 #endif
     /** @} */
-
-    /** Check invariants that should old in the file but are not checked
-        on the fly. New invariants can be added with the IMP_RMF_VALIDATOR()
-        macro.*/
-    void validate() const {get_shared_data()->validate();}
   };
 
   typedef vector<FileHandle> FileHandles;
