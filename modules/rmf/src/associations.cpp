@@ -11,9 +11,11 @@ IMPRMF_BEGIN_NAMESPACE
 
 void set_association(RMF::NodeConstHandle nh,
                      base::Object *o, bool overwrite) {
+  std::cout << "setting association of " << Showable(o)
+            << " with " << nh
+            << " as " << static_cast<void*>(o) << std::endl;
   nh.set_association(AssociationType(o), overwrite);
 }
-
 
 
 RMF::NodeConstHandle get_node_from_association(RMF::FileConstHandle nh,
@@ -28,6 +30,10 @@ RMF::NodeHandle get_node_from_association(RMF::FileHandle nh,
   return nh.get_node_from_association(o);
 }
 
+bool get_has_associated_node(RMF::FileConstHandle nh,
+                             base::Object*oi) {
+  return nh.get_node_from_association(oi)!= RMF::NodeConstHandle();
+}
 bool get_has_linker(RMF::FileConstHandle fh,
                     unsigned int id) {
   return fh.get_has_associated_data(id);
