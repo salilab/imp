@@ -272,10 +272,10 @@ namespace RMF {
     */
     template <class T>
       NodeConstHandle get_node_from_association(const T &d) const {
-      if (! shared_->get_has_association(d)) {
+      if (! shared_->get_has_associated_node(d)) {
         return NodeConstHandle();
       } else {
-        return NodeConstHandle(shared_->get_association(d), shared_.get());
+        return NodeConstHandle(shared_->get_associated_node(d), shared_.get());
       }
     }
 #else

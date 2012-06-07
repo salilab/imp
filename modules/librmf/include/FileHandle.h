@@ -183,11 +183,10 @@ namespace RMF {
     */
     template <class T>
       NodeHandle get_node_from_association(const T&d) const {
-      void *any=get_void_pointer(d);
-      if (! get_shared_data()->get_has_association(any)) {
+      if (! get_shared_data()->get_has_associated_node(d)) {
         return NodeHandle();
       } else {
-        return NodeHandle(get_shared_data()->get_association(any),
+        return NodeHandle(get_shared_data()->get_associated_node(d),
                           get_shared_data());
       }
     }
