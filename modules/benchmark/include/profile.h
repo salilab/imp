@@ -14,8 +14,6 @@
 
 IMPBENCHMARK_BEGIN_NAMESPACE
 
-#if defined(IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE)\
-  || defined(IMP_DOXYGEN)
 /** \name Profiling
     One can use the
     \external{http://http://code.google.com/p/google-perftools/,
@@ -33,7 +31,6 @@ IMPBENCHMARKEXPORT void set_profile_name(std::string name);
 /** Turn on or off profiling.*/
 IMPBENCHMARKEXPORT void set_is_profiling(bool tf);
 /** @} */
-#endif
 
 IMPBENCHMARK_END_NAMESPACE
 
