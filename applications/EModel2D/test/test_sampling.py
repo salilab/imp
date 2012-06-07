@@ -57,25 +57,14 @@ class TestSampling(IMP.test.TestCase):
             T = transformations[i][j]
             t = T.get_translation()
             q = T.get_rotation().get_quaternion()
-            pos = sch.positions[j][i]
-            ori = sch.orientations[j][i].get_quaternion()
+
+            pos = sch.transformations[j][i].get_translation()
+            ori = sch.transformations[j][i].get_rotation().get_quaternion()
             for k in range(3):
                 self.assertAlmostEqual(pos[k], t[k])
             for k in range(4):
                 self.assertAlmostEqual(q[k], ori[k])
 
-
-        # Anchor B and test coordinates
-        anchored = [False, True, False, False]
-        origin = alg.Vector3D(0,0,0)
-        id_quaternion = alg.get_identity_rotation_3d().get_quaternion()
-        sch.anchor(anchored)
-        t = sch.get_positions(1)[0]
-        for k in range(3):
-            self.assertAlmostEqual(t[k], origin[k])
-        qr = sch.get_orientations(1)[0].get_quaternion()
-        for k in range(4):
-            self.assertAlmostEqual(qr[k], id_quaternion[k])
         os.remove(fn)
 
 

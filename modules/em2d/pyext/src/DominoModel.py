@@ -108,8 +108,8 @@ class DominoModel:
         pair_score = IMP.core.DistancePairScore(score)
         r = IMP.core.PairRestraint(pair_score, IMP.ParticlePair(p1, p2))
         if not max_score:
-            error_distance_tolerated = 10
-            max_score = score.evaluate(distance + error_distance_tolerated)
+            error_distance_allowed = 10
+            max_score = weight * score.evaluate(distance + error_distance_allowed)
         self.add_restraint(r, restraint_name, weight, max_score)
 
     def set_complementarity_restraint(self, name1, name2, rname,
@@ -134,7 +134,6 @@ class DominoModel:
         restraint.set_maximum_penetration(max_penetration)
         log.debug("Maximum separation: %s Maximum penetration score: %s",
                      max_sep_distance, max_penetration)
-#        restraint.set_complementarity_thickness(5) # 5 layers of thickness
         self.add_restraint(restraint, rname, weight, max_score)
 
 
@@ -300,7 +299,6 @@ class DominoModel:
         subset = self.merge_tree.get_vertex_name(vertex)
         log.info("computing assignments for vertex %s",subset)
         t0 = time.time()
-#        sys.exit()
         assignments_container = domino.HeapAssignmentContainer(subset, k,
             self.restraint_cache, "my_heap_assignments_container" )
         neighbors = self.merge_tree.get_out_neighbors(vertex)
@@ -645,9 +643,10 @@ class DominoModel:
         rb_name = representation.get_rb_name(name)
         self.not_optimized_rbs.append(rb_name)
 
+
     def set_close_pairs_excluded_volume_restraint(self, distance=10,
                                    weight=1.0, ratio=0.05, stddev=2,
-                            max_score=None ):
+                            max_score=False ):
         """
             Creates an excluded volume restraint between all the components
             of the coarse assembly.See help for
@@ -664,28 +663,40 @@ class DominoModel:
                    HarmonicUpperBound function to a Gaussian
         """
         k = core.Harmonic.get_k_from_standard_deviation(stddev)
-        log.debug("Setting close_pairs_excluded_volume_restraint(), " \
-                  "max_score %s", max_score)
         for i, c1 in enumerate(self.coarse_assembly.get_children()):
             for j, c2 in enumerate(self.coarse_assembly.get_children()):
                 if j > i:
+                    name = "exc_vol_%s_%s" % (c1.get_name(), c2.get_name())
+
                     ls1 = atom.get_leaves(c1)
                     ls2 = atom.get_leaves(c2)
                     possible_pairs = len(ls1) * len(ls2)
                     n_pairs = possible_pairs * ratio
-                    if(max_score == None):
-                        max_score = weight * k * n_pairs * (distance)**2
-                    name = "exc_vol_%s_%s" % (c1.get_name(), c2.get_name())
-                    r = restraints.get_close_pairs_excluded_volume_restraint(
-                                                self.coarse_assembly, ls1, ls2,
-                                                name, distance, k)
+
+                    marker1 = IMP.Particle(self.model, "marker1 " + name)
+                    marker2 = IMP.Particle(self.model, "marker2 " + name)
+                    table_refiner = core.TableRefiner()
+                    table_refiner.add_particle(marker1, ls1)
+                    table_refiner.add_particle(marker2, ls2)
+                    score = core.HarmonicLowerBound(distance, k)
+                    pair_score = core.SphereDistancePairScore(score)
+                    close_pair_score = core.ClosePairsPairScore(pair_score,
+                                                                table_refiner,
+                                                                distance)
+                    r = core.PairRestraint(close_pair_score,
+                                           IMP.ParticlePair(marker1,marker2))
+
+                    if not max_score:
+                        error_distance_allowed = 5
+                        max_score = weight * n_pairs * \
+                            score.evaluate(distance - error_distance_allowed)
+                    log.debug("Setting close_pairs_excluded_volume_restraint(), " \
+                          "max_score %s", max_score)
                     self.add_restraint(r, name, weight, max_score)
-                    r.set_log_level(IMP.VERBOSE)
 
     def set_pair_score_restraint(self, name1, name2,
                         restraint_name, distance=10,
-                        weight=1.0, max_score=None,
-                        n_pairs = 1, stddev=2):
+                        weight=1.0, n_pairs = 1, stddev=2, max_score=None):
         """
             Set a pair_score restraint between the coarse representation
             of two components
@@ -698,21 +709,36 @@ class DominoModel:
             @param stddev Standard deviation used to approximate the
                 HarmonicUpperBound function to a Gaussian
         """
-        spring_constant = core.Harmonic.get_k_from_standard_deviation(stddev)
-        if(max_score == None):
-            max_score = weight * spring_constant * n_pairs * stddev**2
+        table_refiner = core.TableRefiner()
+
+        # The particles in A are attached to a marker particle via a refiner.
+        # When the refiner gets a request for marker1, it returns the attached
+        # particles
+        A = representation.get_component(self.coarse_assembly, name1)
+        marker1 = IMP.Particle(self.model, "marker1 "+restraint_name)
+        table_refiner.add_particle(marker1, atom.get_leaves(A))
+        # same for B
+        B = representation.get_component(self.coarse_assembly, name2)
+        marker2 = IMP.Particle(self.model, "marker2 "+restraint_name)
+        table_refiner.add_particle(marker2, atom.get_leaves(B))
+
+        k = core.Harmonic.get_k_from_standard_deviation(stddev)
+        score = core.HarmonicUpperBoundSphereDistancePairScore(distance, k)
+        # The score is set for the n_pairs closest pairs of particles
+        pair_score = core.KClosePairsPairScore(score, table_refiner, n_pairs)
+        #  When KClosePairsPairScore is called, the refiner will provide the
+        # particles for A and B
+        if not max_score:
+            # Build a maximum score based on the function type that is used,
+            # an HarmonicUpperBound
+            temp_score = core.HarmonicUpperBound(distance, k)
+            error_distance_allowed = 10
+            max_score = weight * n_pairs * \
+                        temp_score.evaluate(distance + error_distance_allowed)
 
         log.info("Setting pair score restraint for %s %s. k = %s, max_score " \
-            "= %s, stddev %s", name1, name2, spring_constant,max_score,stddev)
-        A = representation.get_component(self.coarse_assembly, name1)
-        B = representation.get_component(self.coarse_assembly, name2)
-        r = restraints.get_pair_score_restraint(self.coarse_assembly,
-                            atom.get_leaves(A),
-                            atom.get_leaves(B) ,
-                            restraint_name,
-                            distance,
-                            n_pairs,
-                            spring_constant)
+            "= %s, stddev %s", name1, name2, k, max_score,stddev)
+        r = core.PairRestraint(pair_score, IMP.ParticlePair( marker1, marker2 ) )
         self.add_restraint(r, restraint_name, weight, max_score)
 
 

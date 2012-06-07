@@ -24,25 +24,22 @@ import IMP.em2d.sampling as sampling
 import IMP.em2d.solutions_io as solutions_io
 import IMP.em2d.utility as utility
 
+
 def setup_sampling_schema(model, exp):
     """
-       Set the sampling for DOMINO.
+       Set the discrete states for sampling for DOMINO.
        @param model A DominoModel object
        @param exp See the help for the script
     """
     n_rbs = len(model.components_rbs)
     sampling_schema = sampling.SamplingSchema(n_rbs, exp.fixed, exp.anchor)
-    if hasattr(exp.sampling_positions,
-               "read") and exp.sampling_positions.read != "":
-        sampling_schema.read_from_database( exp.sampling_positions.read,
+    sampling_schema.read_from_database( exp.sampling_positions.read,
                                             ["reference_frames"],
                                             exp.sampling_positions.max_number,
                                             exp.sampling_positions.orderby)
-        for i, rb in enumerate(model.components_rbs):
-            po = sampling_schema.get_positions(i)
-            oo = sampling_schema.get_orientations(i)
-            Ts = [alg.Transformation3D(r, t) for r,t in zip(oo, po)]
-            model.set_rb_states(rb, Ts)
+    for i, rb in enumerate(model.components_rbs):
+        model.set_rb_states(rb, sampling_schema.get_sampling_transformations(i))
+
 
 def write_pdbs_for_solutions(fn_params, fn_database, n=10, orderby="em2d"):
     """
@@ -247,6 +244,10 @@ def generate_monte_carlo_model(fn_params, fn_database, seed,
         atom.write_pdb(m.assembly, fn_database + ".pdb")
 
 
+
+
+
+
 def create_dockings_from_xlinks(fn_params):
     """
         Perform dockings that satisfy the cross-linking restraints.
@@ -365,7 +366,7 @@ if __name__ == "__main__":
                      nargs = 2,
                      default=None,
                      help="Write the n-th largest cluster. This option has " \
-                            "two arguments. The fist one is the database file" \
+                            "two arguments. The fist one is the database file " \
                             "containing the clusters. The second one is the " \
                             "number (position) of the cluster to write. The " \
                             "The index of the first cluster is 1.")
@@ -412,6 +413,8 @@ if __name__ == "__main__":
                      metavar="number",
                      help="Align the best solutions to the " \
                             "native using the DRMS of the centroids.")
+
+
     args = parser.parse_args()
     args = args[0]
     if len(sys.argv) == 1:
@@ -475,5 +478,6 @@ if __name__ == "__main__":
     if args.dock:
         create_dockings_from_xlinks(args.fn_params)
         sys.exit()
+
 
     generate_domino_model(args.fn_params, args.fn_database)
