@@ -101,7 +101,9 @@ class SimpleSaveLink: public SaveLink {
       do_save_one(os_[i], fh.get_node_from_id(nhs_[i]), frame);
     }
   }
-  virtual void do_add(O *, RMF::NodeHandle) {}
+  virtual void do_add(O *o, RMF::NodeHandle c) {
+      add_link(o, c);
+  }
   virtual RMF::NodeType get_type(O*o) const =0;
   void add_link(O *o, RMF::NodeConstHandle nh) {
     os_.push_back(o);
@@ -118,7 +120,6 @@ public:
       RMF::NodeHandle c= parent.add_child(nicename,
                                           get_type(os[i]));
       do_add(os[i], c);
-      add_link(os[i], c);
     }
   }
 };

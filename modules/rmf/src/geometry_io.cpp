@@ -337,6 +337,7 @@ void set_segment(algebra::Segment3D s,
     }
     void do_add(display::BoundingBoxGeometry *o, RMF::NodeHandle nh) {
       add_box(o, nh);
+      P::do_add(o, nh);
     }
 
   public:

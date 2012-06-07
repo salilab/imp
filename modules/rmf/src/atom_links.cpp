@@ -427,6 +427,7 @@ void HierarchySaveLink::do_add(Particle *p, RMF::NodeHandle cur) {
   IMP_USAGE_CHECK(atom::Hierarchy(p).get_is_valid(true),
                   "Invalid hierarchy passed.");
   do_add_recursive(p,p, cur);
+  P::add_link(p, cur);
   copy_bonds(p, cur.get_file());
 }
 void HierarchySaveLink::do_save_node(Particle *p,
