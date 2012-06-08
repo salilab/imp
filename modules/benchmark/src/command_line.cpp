@@ -9,5 +9,8 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 bool help=false;
 bool profile_benchmark=false;
 bool profile_all=false;
-
+bool heap_profile_benchmark=false;
+bool heap_profile_all=false;
+bool leak_check_benchmark=false;
+bool leak_check_all=false;
 IMPBENCHMARK_END_NAMESPACE
