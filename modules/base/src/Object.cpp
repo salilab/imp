@@ -10,9 +10,7 @@
 #include "IMP/base/RefCounted.h"
 #include "IMP/base/log.h"
 #include "IMP/base/exception.h"
-#include "IMP/compatibility/map.h"
-#include <boost/format.hpp>
-#include "IMP/base/internal/static.h"
+#include "IMP/base/utility.h"
 #include <exception>
 
 IMPBASE_BEGIN_NAMESPACE
@@ -34,24 +32,7 @@ Object::Object(std::string name)
   was_owned_=false;
   add_live_object(this);
 #endif
-  if (std::find(name.begin(), name.end(), '%') != name.end()) {
-    if (internal::object_type_counts.find(name)
-        == internal::object_type_counts.end()) {
-      internal::object_type_counts[name]=0;
-    }
-    std::ostringstream oss;
-    try {
-      oss << boost::format(name)
-        % internal::object_type_counts.find(name)->second;
-    } catch(...) {
-      IMP_THROW("Invalid format specified in name, should be %1%: "<< name,
-                ValueException);
-    }
-    name_= oss.str();
-    ++internal::object_type_counts.find(name)->second;
-  } else {
-    name_=name;
-  }
+  name_= get_unique_name(name);
   IMP_LOG(MEMORY, "Creating object \"" << name_
           << "\" (" << this << ")" << std::endl);
 }

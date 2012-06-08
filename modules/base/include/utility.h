@@ -68,6 +68,10 @@ inline Out get_as(const In &in) {
 }
 #endif
 
+/** Return a unique name produced from the string by replacing
+    %1% with a sequential number.*/
+IMPBASEEXPORT
+std::string get_unique_name(std::string templ);
 
 IMPBASE_END_NAMESPACE
 
