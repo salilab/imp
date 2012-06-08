@@ -2,10 +2,15 @@ Import('env')
 
 import scons_tools
 
-scons_tools.dependency.add_external_library(env, "google_perftools_profile",
-                                            ["profiler"],
-                                            "google/profiler.h",
-                                            body=';')
+scons_tools.dependency.add_external_library(env, "GPerfTools",
+                                            ["tcmalloc", "profiler"],
+                                            "gperftools/heap-profiler.h",
+                                            body='HeapProfilerStop();')
+scons_tools.dependency.add_external_library(env, "GooglePerfTools",
+                                            ["tcmalloc", "profiler"],
+                                            "google/heap-profiler.h",
+                                            body='HeapProfilerStop();')
+
 
 scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
                                                "program_options",
@@ -15,5 +20,6 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
 module_env=env.IMPModuleBuild(version='nightly-7/6/2012',
                               required_modules=['base'],
                               optional_dependencies
-                              =['google_perftools_profile',
+                              =['GPerfTools',
+                                'GooglePerfTools',
                                 'Boost.ProgramOptions'])

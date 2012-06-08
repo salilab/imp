@@ -16,6 +16,11 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 extern IMPBENCHMARKEXPORT bool help;
 extern IMPBENCHMARKEXPORT bool profile_benchmark;
 extern IMPBENCHMARKEXPORT bool profile_all;
+extern IMPBENCHMARKEXPORT bool heap_profile_benchmark;
+extern IMPBENCHMARKEXPORT bool heap_profile_all;
+extern IMPBENCHMARKEXPORT bool leak_check_benchmark;
+extern IMPBENCHMARKEXPORT bool leak_check_all;
+
 
 IMPBENCHMARK_END_NAMESPACE
 
