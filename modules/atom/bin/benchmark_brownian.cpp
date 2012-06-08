@@ -6,7 +6,6 @@
 #ifdef IMP_BENCHMARK_USE_IMP_RMF
 
 #include <IMP/benchmark/utility.h>
-#include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/atom/BrownianDynamics.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ClosePairContainer.h>
@@ -22,8 +21,7 @@
 #include <IMP/container/SingletonsRestraint.h>
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/AttributeSingletonScore.h>
-
-#include <IMP/benchmark/profile.h>
+#include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -296,32 +294,38 @@ namespace {
 //new LowerBound(kk)
 
 int main(int argc , char **argv) {
+  bool create=false;
+  bool initialize=false;
+  IMP_BENCHMARK(("initialize",
+                 boost::program_options::value<bool>
+                 (&initialize)->zero_tokens(),
+                 "Initialize time step and slack.")
+                ("setup",
+                 boost::program_options::value<bool>
+                 (&setup)->zero_tokens(),
+                 "Create a file brownian.rmf."));
   try {
   // shorten lines, ick
   typedef HarmonicLowerBound HLB;
   FloatKey xk=  XYZ::get_xyz_keys()[0];
-  if (argc>=3 && std::string(argv[1])=="-s") {
+  if (setup) {
     It o= create_particles();
     It it=
-  create_restraints<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
-                                    new SphereDistancePairScore(new HLB(0,kk)),
-                                    new AttributeSingletonScore(new HLB(0,kk),
-                                                                xk), o);
+ create_restraints<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
+                                   new SphereDistancePairScore(new HLB(0,kk)),
+                                   new AttributeSingletonScore(new HLB(0,kk),
+                                                               xk), o);
     {
-      RMF::FileHandle fh= RMF::create_rmf_file(argv[2]);
+      RMF::FileHandle fh= RMF::create_rmf_file("brownian.rmf");
       write_particles(it, fh, 0);
     }
     std::cout << it.m->evaluate(false) << " is the score " << std::endl;
     initialize(it);
     RMF::FileHandle fh= RMF::create_rmf_file(argv[2]);
     write_particles(it, fh, 0);
-  } else if (argc >=2 && std::string(argv[1])=="-t") {
+  } else if (initialize) {
     It cur;
-    if (argc <=2) {
-      cur= create_particles(IMP::benchmark::get_data_path("brownian.rmf"));
-    } else {
-      cur= create_particles(argv[2]);
-    }
+    cur= create_particles(IMP::benchmark::get_data_path("brownian.rmf"));
     It it=
   create_restraints<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
                                     new SphereDistancePairScore(new HLB(0,kk)),
@@ -331,29 +335,6 @@ int main(int argc , char **argv) {
     double ts= get_maximum_time_step_estimate(it.bd);
     std::cout << "Maximum time step is " << ts;
     //it.sp.set_maximum_time_step(ts);
-  } else if (argc >=2 && std::string(argv[1])=="-p") {
-    typedef core::internal::ContainerRestraint<SoftSpherePairScore,
-        ClosePairContainer> PR;
-#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
-    set_is_profiling(true);
-#endif
-    do_benchmark<1, PR >("custom", argc-2, argv+2,
-                         new HarmonicDistancePairScore(len, kk),
-                         new SoftSpherePairScore(kk),
-                         new AttributeSingletonScore(new HLB(0,kk),
-                                                     XYZ::get_xyz_keys()[0]),
-                         true, true);
-#ifdef IMP_BENCHMARK_USE_GOOGLE_PERFTOOLS_PROFILE
-    set_is_profiling(false);
-#endif
-  } else if (argc >=2 && std::string(argv[1])=="-l") {
-    typedef core::internal::ContainerRestraint<SoftSpherePairScore,
-        ClosePairContainer> PR;
-    do_long_run<1, PR >("long", argc-2, argv+2,
-                        new HarmonicDistancePairScore(len, kk),
-                        new SoftSpherePairScore(kk),
-                        new AttributeSingletonScore(new HLB(0,kk),
-                                                    XYZ::get_xyz_keys()[0]));
   } else {
     {
       typedef core::internal::ContainerRestraint<SoftSpherePairScore,
