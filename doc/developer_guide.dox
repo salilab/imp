@@ -841,4 +841,20 @@ file (see modules/example/pyext/swig.i-in). The key bits are
     }
   }
   \endcode
+
+\section profiling Profiling your code
+
+On linux you can use \external{http://code.google.com/p/gperftools/?redir=1 , gperftools} for code profiling.The key bits are:
+- install gperftools
+- add this to config.py
+\code
+cxxflags="-g"
+linkflags="-lprofiler"
+\endcode
+- use IMP::benchmark::set_is_profiling(True / False) to select parts of your code you wish to profile.
+- rebuild imp
+- run your program as usual, it will create imp.prof file
+- to display your call graph run
+\command{pprof -gv <program_executable> imp.prof}
+
 */
