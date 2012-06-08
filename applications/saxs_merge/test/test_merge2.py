@@ -81,8 +81,8 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last',
-                baverage=False, eaverage=False)
+        args=MockArgs(verbose=0, cmodel='normal', cnpoints=100,
+                creference='last', baverage=False, eaverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.assertEqual(p3.get_gamma(),1)
@@ -113,7 +113,7 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         p3.new_flag('agood',bool)
         p3.add_data(data)
         gp3=self.set_interpolant(p3,30,0)
-        args=MockArgs(verbose=0, cnormal=False, cnpoints=100,
+        args=MockArgs(verbose=0, cmodel='lognormal', cnpoints=100,
                 creference='last',baverage=False, eaverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
