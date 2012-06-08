@@ -128,6 +128,22 @@ KMeans : public IMP::base::Object {
    */
   IMP::Floats get_center(unsigned int i) const;
 
+  /** Returns the cluster assignment of each data point */
+  IMP::Ints get_assignments() const
+    {
+      // TODO: exception instead of assertion?
+      assert(is_executed_);
+      return centerAssignments_;
+    }
+
+  /** Returns the squared distance of each data point to its
+      respective cluster center */
+  IMP::Floats get_sqr_dist_to_centers() const
+    {
+      // TODO: exception instead of assertion?
+      assert(is_executed_);
+      return ptsSqrDistToCenters_;
+    }
 
   /** @return The number of centers after a succeful execution */
   unsigned int get_n_centers() const
@@ -164,7 +180,7 @@ KMeans : public IMP::base::Object {
      Read up to max_nPts from a stream
 
      @param[in] in       input stream to read from
-     @param[in] dim      dimension of each data point
+1     @param[in] dim      dimension of each data point
      @param[in] max_nPts maximal number of points to read from stream
   */
   void read_data_pts_from_stream
@@ -201,8 +217,14 @@ KMeans : public IMP::base::Object {
   // was STL data updated to wrapped internal::KMdata points
   bool is_KM_data_synced_;
 
-  // the center points from a clustering execition
+  // the center points from a clustering execution
   IMP::Pointer<internal::KMfilterCenters> pCenters_;
+
+  // cluster of each point
+  IMP::Ints centerAssignments_;
+
+  // data points squared distances from respective cluster centers
+  IMP::Floats ptsSqrDistToCenters_;
 
   //----------------------------------------------------------------------
   //  Termination conditions
