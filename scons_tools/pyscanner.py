@@ -67,10 +67,13 @@ def _scanfile(node, env, path):
         # Parse lines of the form 'from a import b, c (as foo)'
         m = from_re.match(line)
         if m:
+            # Check case where b, c are modules (a.b, a.c)
             for modname in [x.strip() for x in m.group(2).split(',')]:
                 modules.extend(_find_python_module(env,
                                                    m.group(1) + '.' + modname,
                                                    dirs))
+            # Check case where b, c are classes/functions (check module a)
+            modules.extend(_find_python_module(env, m.group(1), dirs))
     return modules
 
 PythonScanner = Scanner(function=_scanfile, skeys=['.py'], recursive=True)
