@@ -844,17 +844,16 @@ file (see modules/example/pyext/swig.i-in). The key bits are
 
 \section profiling Profiling your code
 
-On linux you can use \external{http://code.google.com/p/gperftools/?redir=1 , gperftools} for code profiling.The key bits are:
-- install gperftools
-- add this to config.py
+On linux you can use \external{http://code.google.com/p/gperftools/?redir=1 , gperftools} for code profiling. The key bits are:
+- install gperftools (available as a pre-built package on most platforms)
+- make sure debuggin symbols are being included in your build by to your \c config.py
 \code
 cxxflags="-g"
-linkflags="-lprofiler"
 \endcode
-- use IMP::benchmark::set_is_profiling(True / False) to select parts of your code you wish to profile.
+- create a IMP::benchmark::Profiler in the start of the scope you want to profile passing the name of a file
 - rebuild imp
-- run your program as usual, it will create imp.prof file
+- run your program as usual, it will create a file in the current directory
 - to display your call graph run
-\command{pprof -gv <program_executable> imp.prof}
+\command{pprof --web <program_executable> profile_output_file} or \command{pprof --gv <program_executable> profile_output_file}
 
 */
