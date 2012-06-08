@@ -153,6 +153,24 @@ KMeans::execute(unsigned int k, KM_ALG_TYPE alg_type, int stages)
         break;
       }
     }
+
+  // assign data points to nearest clusters
+  int n = pKMDataPts_->getNPts();
+  internal::KMctrIdxArray closeCtr =
+    new internal::KMctrIdx[n];
+  double* sqDist =
+    new double[n];
+  pCenters_->getAssignments(closeCtr, sqDist);
+  // store in class internal variables
+  centerAssignments_.resize(n);
+  ptsSqrDistToCenters_.resize(n);
+  for(int i = 0; i < n; i++) {
+    centerAssignments_[i] = closeCtr[i];
+    ptsSqrDistToCenters_[i] = sqDist[i];
+  }
+  // get rid of temporary arrays
+  if(closeCtr) delete [] closeCtr;
+  if(sqDist) delete [] sqDist;
 }
 
 /**
@@ -333,7 +351,6 @@ KMeans::print_summary
     new internal::KMctrIdx[pKMDataPts_->getNPts()];
   double* sqDist = new double[pKMDataPts_->getNPts()];
   pCenters_->getAssignments(closeCtr, sqDist);
-
   cout  << "(Cluster assignments:" << endl
         << "    Point  Center  Squared Dist" << endl
         << "    -----  ------  ------------" << endl;
