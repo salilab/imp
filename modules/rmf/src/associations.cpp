@@ -11,9 +11,6 @@ IMPRMF_BEGIN_NAMESPACE
 
 void set_association(RMF::NodeConstHandle nh,
                      base::Object *o, bool overwrite) {
-  std::cout << "setting association of " << Showable(o)
-            << " with " << nh
-            << " as " << static_cast<void*>(o) << std::endl;
   nh.set_association(AssociationType(o), overwrite);
 }
 
