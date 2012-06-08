@@ -40,6 +40,7 @@ class SAXSProfile:
 
     def __init__(self):
         self.gamma = 1.0
+        self.offset = 0.0
         self.Nreps = 10
         self.flag_names=["q","I","err"]
         self.flag_types=[float,float,float]
@@ -98,7 +99,7 @@ class SAXSProfile:
         return [i[:3] for i in self.data]
 
     def get_data(self, *args, **kwargs):
-        """get data, rescaled by self.gamma.
+        """get data, rescaled by self.gamma and self.offset
         Returns a list of tuples, each of which is organized as:
             Column 1 : unique id (increasing)
             Column 2 : q (increasing)
@@ -169,7 +170,7 @@ class SAXSProfile:
             if len(flagnos) > 0 and False in [d[k] is True for k in flagnos]:
                 continue
             cd = copy.copy(d)
-            cd[1]=self.gamma*cd[1]
+            cd[1]=self.gamma*(cd[1]+self.offset)
             cd[2]=self.gamma*cd[2]
             if colwise:
                 retval['id'].append(i)
@@ -188,8 +189,14 @@ class SAXSProfile:
     def get_gamma(self):
         return self.gamma
 
+    def get_offset(self):
+        return self.offset
+
     def set_gamma(self, gamma):
         self.gamma = gamma
+
+    def set_offset(self, offset):
+        self.offset = offset
 
     def new_flag(self, name, tp):
         """add extra flag to all data points. Initialized to None"""
@@ -436,6 +443,7 @@ class SAXSProfile:
         flagnames = flagnames[:3]+['mean']+flagnames[3:]
         flags = []
         gamma = self.get_gamma()
+        offset = self.get_offset()
         if colwise:
             retval=dict.fromkeys(flagnames)
             for i in retval:
@@ -458,9 +466,9 @@ class SAXSProfile:
                                            flagnames[4:])
                 if False in [flags[i-3] for i in flagnos]:
                     continue
-            thing = [q,gamma*self.gp.get_posterior_mean([q]),
+            thing = [q,gamma*(self.gp.get_posterior_mean([q])+offset),
                     gamma*sqrt(self.gp.get_posterior_covariance([q],[q])),
-                    gamma*self.functions['mean']([q])[0]]
+                    gamma*(self.functions['mean']([q])[0]+offset) ]
             if average != 0:
                 #compute hessian of -log(cov)
                 cov = thing[2]**2
@@ -701,9 +709,12 @@ Merging
             "input curve the other curves will be rescaled to. Options are "
             "first or last (default is last)", type="choice",
             choices=['first','last'])
-    group.add_option('--cnormal', action='store_true', default=False,
-            help="Use the normal model instead of the lognormal model "
-            "to calculate gamma")
+    group.add_option('--cmodel', default='normal-offset',
+            help="Which rescaling model to use to calculate gamma. "
+            "'normal-offset' (default) for a normal "
+            "model with offset, 'normal' for a normal model with zero offset "
+            "and 'lognormal' for a lognormal model.",
+            choices=['normal','normal-offset','lognormal'], type='choice')
     group.add_option('--cnpoints', type="int", default=200, metavar="NUM",
             help="Number of points to use to compute gamma (default 200)")
     #classification
@@ -1299,22 +1310,39 @@ def create_intervals_from_data(profile, flag):
     if q != oldval:
         profile.set_flag_interval(flag, oldval, q, oldb)
 
-def get_gamma_lognormal(refdata,data):
-    I0=array(refdata['I'])
-    s0=array(refdata['err'])
-    I1=array(data['I'])
-    s1=array(data['err'])
-    weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
-    lg = (weights*log(I0/I1)).sum()/weights.sum()
-    return exp(lg)
 
-def get_gamma_normal(refdata,data):
+def rescale_curves(refdata, data, normal = False, offset = False):
+    """Find gamma and (optionnally) c so that
+    normal model: I0 = gamma*(I1 + c)
+    lognormal model log I0 = log(gamma*I1)
+    if offset==False we have c=0
+    """
     I0=array(refdata['I'])
     s0=array(refdata['err'])
     I1=array(data['I'])
     s1=array(data['err'])
-    weights = (s0**2+s1**2)**(-1)
-    return (weights*I0/I1).sum()/weights.sum()
+    if not offset:
+        if normal:
+            weights = (s0**2+s1**2)**(-1)
+            return (weights*I0/I1).sum()/weights.sum(),0
+        else:
+            weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
+            lg = (weights*log(I0/I1)).sum()/weights.sum()
+            return exp(lg),0
+    else:
+        if normal:
+            weights = (s0**2+s1**2)**(-1)
+            iexp = (weights*I0).sum()/weights.sum()
+            icalc = (weights*I1).sum()/weights.sum()
+            icalc2 = (weights*I1*I1).sum()/weights.sum()
+            icie = (weights*I1*I0).sum()/weights.sum()
+            c = (icalc*icie-icalc2*iexp)/(icalc*iexp-icie)
+            gamma = (icie-iexp*icalc)/(icalc2-icalc**2)
+            return gamma,c
+        else:
+            raise NotImplementedError
+
+
 
 def write_individual_profile(prof, qvals, args):
     destname = os.path.basename(prof.get_filename())
@@ -1464,10 +1492,13 @@ def write_summary_file(merge, profiles, args):
         #rescaling
         data = p.get_gamma()
         fl.write("  3. Rescaling\n")
-        if args.cnormal:
+        if args.cmodel == 'normal-offset':
+            fl.write("  normal model with offset\n")
+            fl.write("   offset : %f\n" % p.get_offset())
+        elif args.cmodel == 'normal':
             fl.write("  normal model\n")
         else:
-            fl.write("  normal model\n")
+            fl.write("  lognormal model\n")
         fl.write("   gamma : %f\n" % data)
         if args.stop == "rescaling":
             fl.write("  Skipped further steps\n\n")
@@ -1617,7 +1648,8 @@ def rescaling(profiles, args):
                 domain of the rescaling reference curve (option --creference)
     sets profile.gamma to the correct value
     """
-    use_normal = args.cnormal
+    use_normal = args.cmodel.startswith('normal')
+    use_offset = use_normal and args.cmodel.endswith('offset')
     numpoints = args.cnpoints
     verbose = args.verbose
     reference = args.creference
@@ -1628,6 +1660,10 @@ def rescaling(profiles, args):
             print "(normal model)"
         else:
             print "(lognormal model)"
+        if use_offset:
+            print "(with constant offset)"
+        else:
+            print "(without constant offset)"
     #take last as internal reference as there's usually good overlap
     pref = profiles[-1]
     gammas = []
@@ -1661,21 +1697,25 @@ def rescaling(profiles, args):
         pvalues = p.get_mean(qvalues=qvalues, colwise=True, average=average)
         prefvalues = pref.get_mean(qvalues=qvalues, colwise=True,
                         average=average)
-        if use_normal:
-            gamma = get_gamma_normal(prefvalues, pvalues)
-        else:
-            gamma = get_gamma_lognormal(prefvalues, pvalues)
-        gammas.append(gamma)
+        gammas.append(rescale_curves(prefvalues, pvalues,
+            normal = use_normal, offset = use_offset))
     #set gammas wrt reference
     if reference == 'first':
-        gr=gammas[0]
+        gr=gammas[0][0]
+        cr=gammas[0][1]
     else:
-        gr = gammas[-1]
+        gr = gammas[-1][0]
+        cr = gammas[-1][1]
     for p,g in zip(profiles,gammas):
-        gamma = g/gr
+        gamma = g[0]/gr
+        c = g[1] - cr
         p.set_gamma(gamma)
+        p.set_offset(c)
         if verbose >1:
-            print "   ",p.filename,"   gamma = ",gamma
+            print "   ",p.filename,"   gamma = %.3f" % gamma,
+            if use_offset:
+                print "   offset = %.3f" % c,
+            print ""
     return profiles,args
 
 def classification(profiles, args):

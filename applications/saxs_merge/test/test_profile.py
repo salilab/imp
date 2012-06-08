@@ -158,6 +158,30 @@ class SAXSProfileTest(IMP.test.ApplicationTestCase):
                 else:
                     self.fail("get_data returned more than 4 elements")
 
+    def test_get_data_4(self):
+        """test get_data with gamma != 1 and offset != 1 """
+        data = [[0,1,3],[0.01,10,3.5],[0.02,21,4.0]]
+        gamma = 1.5
+        offset=3
+        self.write_data(data)
+        p=self.SAXSProfile()
+        p.add_data(self.datafile)
+        p.set_gamma(gamma)
+        p.set_offset(offset)
+        test = p.get_data()
+        for ident,(d,q) in enumerate(zip(data,test)):
+            for i,v in enumerate(q):
+                if i == 0:
+                    self.assertEqual(v,ident)
+                elif i == 1:
+                    self.assertAlmostEqual(v,data[ident][i-1])
+                elif i == 2:
+                    self.assertAlmostEqual(v,gamma*(data[ident][i-1]+offset))
+                elif i == 3:
+                    self.assertAlmostEqual(v,gamma*data[ident][i-1])
+                else:
+                    self.fail("get_data returned more than 4 elements")
+
     def test_get_data_within_range(self):
         """test get_data with a specified range """
         #get_data returns (id, q, I, err) when no flags were added

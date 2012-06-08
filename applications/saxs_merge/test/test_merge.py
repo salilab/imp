@@ -37,6 +37,17 @@ class MockGP2:
     def get_posterior_covariance(self,q,r):
         return self.a*(q[0]+1)
 
+class MockGP3:
+    def __init__(self,a,b):
+        self.a=a
+        self.b=b
+
+    def get_posterior_mean(self,q):
+        return self.a*(q[0]+self.b)
+
+    def get_posterior_covariance(self,q,r):
+        return self.a**2
+
 class MockFunction:
 
     def __call__(self,q):
@@ -101,10 +112,12 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         p2.new_flag('agood',bool)
         p2.add_data(data)
         gp2=self.set_interpolant(p2,10,0)
-        args=MockArgs(verbose=0, cnormal=True, cnpoints=100, creference='last',
+        args=MockArgs(verbose=0, cmodel='normal', cnpoints=100, creference='last',
                 baverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
+        self.assertEqual(p1.get_offset(),0)
+        self.assertEqual(p2.get_offset(),0)
         self.merge.rescaling([p1,p2],args)
         self.assertTrue('cgood' in p2.get_flag_names())
         self.assertTrue('cgood' in p1.get_flag_names())
@@ -112,6 +125,37 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         self.assertEqual(p2.get_data(colwise=True)['cgood'],[True]*len(data))
         self.assertAlmostEqual(p1.get_gamma(),10)
         self.assertAlmostEqual(p2.get_gamma(),1)
+        self.assertAlmostEqual(p1.get_offset(),0)
+        self.assertAlmostEqual(p2.get_offset(),0)
+
+    def test_rescaling_normal_offset(self):
+        """test rescaling with offset of two perfectly agreeing functions"""
+        #data just used to set the q-range
+        data=[[0,1,1,True],[1,10,1,True],[2,1,1,True],[3,10,1,True]]
+        p1=self.SAXSProfile()
+        p1.new_flag('agood',bool)
+        p1.add_data(data)
+        gp1=self.set_interpolant(p1,1,0,interpolant=MockGP3)
+        p2=self.SAXSProfile()
+        p2.new_flag('agood',bool)
+        p2.add_data(data)
+        gp2=self.set_interpolant(p2,10,2,interpolant=MockGP3)
+        args=MockArgs(verbose=0, cmodel='normal-offset', cnpoints=100,
+                creference='last', baverage=False)
+        self.assertEqual(p1.get_gamma(),1)
+        self.assertEqual(p2.get_gamma(),1)
+        self.assertEqual(p1.get_offset(),0)
+        self.assertEqual(p2.get_offset(),0)
+        d1=p1.get_mean()
+        d2=p2.get_mean()
+        self.merge.rescaling([p1,p2],args)
+        self.assertTrue('cgood' in p2.get_flag_names())
+        self.assertTrue('cgood' in p1.get_flag_names())
+        self.assertEqual(p1.get_data(colwise=True)['cgood'],[True]*len(data))
+        self.assertEqual(p2.get_data(colwise=True)['cgood'],[True]*len(data))
+        for i1,i2,oi1,oi2 in zip(p1.get_mean(),p2.get_mean(),d1,d2):
+            self.assertAlmostEqual(i1[1],i2[1]) #I
+            self.assertAlmostEqual(i1[2],i2[2]) #err
 
     def test_rescaling_lognormal(self):
         """test rescaling of two perfectly agreeing functions"""
@@ -125,8 +169,8 @@ class SAXSProfileTestTwo(IMP.test.ApplicationTestCase):
         p2.new_flag('agood',bool)
         p2.add_data(data)
         gp2=self.set_interpolant(p2,10,0)
-        args=MockArgs(verbose=0, cnormal=False, cnpoints=100,creference='last',
-                baverage=False)
+        args=MockArgs(verbose=0, cmodel='lognormal',
+                cnpoints=100,creference='last', baverage=False)
         self.assertEqual(p1.get_gamma(),1)
         self.assertEqual(p2.get_gamma(),1)
         self.merge.rescaling([p1,p2],args)
