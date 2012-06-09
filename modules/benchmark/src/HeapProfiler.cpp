@@ -35,6 +35,8 @@ void HeapProfiler::start(std::string) {
 }
 void HeapProfiler::stop(){}
 
+void HeapProfiler::dump(){}
+
 #endif
 
 IMPBENCHMARK_END_NAMESPACE
