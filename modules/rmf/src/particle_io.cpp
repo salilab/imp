@@ -30,7 +30,19 @@ namespace {
       typedef typename RK::TypeTraits Traits;
       RMF::vector<RK> ks= fh.get_keys<Traits, 1>(cat);
       for (unsigned int i=0; i< ks.size(); ++i) {
-        map[ks[i]]= IK(fh.get_name(ks[i]));
+        IK ik(fh.get_name(ks[i]));
+        map[ks[i]]= ik;
+        IMP_LOG(TERSE, "Found "
+                << ks[i]
+                << " with " << ik
+                << std::endl);
+      }
+      for (typename compatibility::map<RK, IK>::const_iterator
+             it= map.begin(); it != map.end(); ++it) {
+        IMP_LOG(TERSE, "Added key assoc "
+                << fh.get_name(it->first)
+                << " with " << it->second
+                << std::endl);
       }
     }
     template <class IK, class RK>
@@ -38,10 +50,17 @@ namespace {
                   RMF::NodeConstHandle nh,
                   const compatibility::map<RK, IK> &map,
                   unsigned int frame) {
+      /*RMF::show_hierarchy_with_values(nh,
+        frame);*/
       for (typename compatibility::map<RK, IK>::const_iterator
              it= map.begin(); it != map.end(); ++it) {
+        /*std::cout << "Checking for " << it->second
+                  << " " << it->first.get_is_per_frame()
+                  << std::endl;*/
         if (nh.get_has_value(it->first, frame)) {
           IK ik= it->second;
+          /*std::cout << "Value for " << it->first
+            << " to " << it->second << std::endl;*/
           if (o->has_attribute(ik)) {
             o->set_value(ik,
                          nh.get_value(it->first, frame));
@@ -49,6 +68,11 @@ namespace {
             o->add_attribute(ik,
                              nh.get_value(it->first, frame));
           }
+        } else {
+          if (o->has_attribute(it->second)) {
+            o->remove_attribute(it->second);
+          }
+          //std::cout << "No value for " << it->first << std::endl;
         }
       }
     }
