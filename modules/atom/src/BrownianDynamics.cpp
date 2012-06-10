@@ -305,7 +305,7 @@ namespace {
   }
 
   bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
-    std::cout << "Trying time step " << step << std::endl;
+    //std::cout << "Trying time step " << step << std::endl;
     ParticlesTemp ps=bd->get_simulation_particles();
     c->load_configuration();
     bd->set_maximum_time_step(step);
@@ -331,8 +331,8 @@ namespace {
                               (coords[i][j]-coords[i+1][j]).get_magnitude());
       }
     }
-    std::cout << "Distances are "  << max_dist << std::endl;
-    std::cout << "Energies are "  << es << std::endl;
+    //std::cout << "Distances are "  << max_dist << std::endl;
+    //std::cout << "Energies are "  << es << std::endl;
     return is_constant(es.begin(), es.end())
       && is_constant(max_dist.begin(), max_dist.end());
   }
