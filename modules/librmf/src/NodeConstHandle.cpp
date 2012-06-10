@@ -75,6 +75,7 @@ namespace {
           out << Showable(tout[i]);
         }
       }
+      out << "]";
     }
   }
 
@@ -108,9 +109,9 @@ namespace {
   }
 
   void show_node(NodeConstHandle n, std::ostream &out,
-                 std::string prefix) {
+                 std::string prefix="") {
     using std::operator<<;
-    out<< prefix << "\"" << n.get_name()
+    out << prefix << "\"" << n.get_name()
        << "\" [" << get_type_name(n.get_type()) << "]";
   }
   void show_node(NodeConstHandle n, std::ostream &out,
@@ -123,9 +124,9 @@ namespace {
                  std::string prefix) {
     using std::operator<<;
     if (n.get_type()== ALIAS) {
-      show_node(n, out, prefix);
+      show_node(n, out);
     } else {
-      show_node(n, out, prefix);
+      show_node(n, out);
       show_data(n, out, fks, frame, end_frame, step, prefix+"  ");
       show_data(n, out, iks, frame, end_frame, step, prefix+"  ");
       show_data(n, out, xks, frame, end_frame, step, prefix+"  ");
