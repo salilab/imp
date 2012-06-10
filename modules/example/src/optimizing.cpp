@@ -11,7 +11,6 @@
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/SerialMover.h>
 #include <IMP/core/BallMover.h>
-#include <IMP/container/generic.h>
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/SphereDistancePairScore.h>
