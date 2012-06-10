@@ -8,6 +8,7 @@
 #include <IMP/atom/BrownianDynamics.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/utility.h>
 
 #include <IMP/log.h>
 #include <IMP/random.h>
@@ -202,12 +203,6 @@ void BrownianDynamics
   if (!srk_) {
     check_delta(delta, max_step_);
   }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    core::XYZR xrd(get_model(), pi);
-    IMP_INTERNAL_CHECK(delta.get_magnitude() < xrd.get_radius(),
-                       "Step is too big for particle "
-                       << Showable(xrd.get_particle()));
-  }
   xd.set_coordinates(xd.get_coordinates()+delta);
 }
 
@@ -297,8 +292,11 @@ namespace {
                                       *c));
     }
     algebra::LinearFit lf(pts);
-    if (lf.get_a() < std::sqrt(lf.get_fit_error())
-        +.01*lf.get_b()) {
+    // add 1 to handle case where nothing much moves
+    if (lf.get_a() < 1
+        && lf.get_fit_error()/std::distance(b,e)
+        < algebra::get_squared(lf.get_b())) {
+      IMP_LOG(TERSE, "Accepting " << lf << std::endl);
       return true;
     } else {
       IMP_LOG(TERSE, "Rejecting " << lf << std::endl);
@@ -308,7 +306,7 @@ namespace {
 
   bool is_ok_step(BrownianDynamics *bd, Configuration *c, double step) {
     std::cout << "Trying time step " << step << std::endl;
-    ParticlesTemp ps(bd->particles_begin(), bd->particles_end());
+    ParticlesTemp ps=bd->get_simulation_particles();
     c->load_configuration();
     bd->set_maximum_time_step(step);
     IMP_LOG(TERSE, "Trying step " << step << "("
