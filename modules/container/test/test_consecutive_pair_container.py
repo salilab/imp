@@ -32,6 +32,17 @@ class TunnelTest(IMP.test.TestCase):
         self.assertAlmostEqual(re, sum(rdse), delta=.1)
         print re, rde, sum(rdse)
 
+    def test_pair_filter(self):
+        """Test consecutive pair filter"""
+        m= IMP.Model()
+        ps=[IMP.Particle(m) for i in range(0,15)]
+        ecpc= IMP.container.ExclusiveConsecutivePairContainer(ps)
+        ef= IMP.container.ExclusiveConsecutivePairFilter();
+        for i in range(1,len(ps)):
+            self.assertEquals(ef.get_value((ps[i-1], ps[i])), 1)
+        for i in range(2,len(ps)):
+            self.assertEquals(ef.get_value((ps[i-2], ps[i])), 0)
+
 
 
 

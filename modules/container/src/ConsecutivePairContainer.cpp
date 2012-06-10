@@ -40,7 +40,7 @@ void ConsecutivePairContainer::init(bool no_overlaps){
     ++key_count;
     key_= IntKey(oss.str());
   } else {
-    key_= IntKey("CPC cache");
+    key_= get_exclusive_key();
   }
   for (unsigned int i= 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(!get_model()->get_has_attribute(key_, ps_[i]),
