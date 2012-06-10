@@ -77,13 +77,17 @@ get_slack_estimate(const ParticlesTemp& ps,
       boost::timer imp_timer;
       double score=0;
       int count=0;
+      int iters=1;
       base::SetLogState sl(opt->get_model(), SILENT);
       do {
-        for (unsigned int i=0; i< restraints.size(); ++i) {
-          score+=restraints[i]->evaluate(derivatives);
-          // should restore
+        for ( int j=0; j< iters; ++j) {
+          for (unsigned int i=0; i< restraints.size(); ++i) {
+            score+=restraints[i]->evaluate(derivatives);
+            // should restore
+          }
         }
-        ++count;
+        count += iters;
+        iters*=2;
       } while (imp_timer.elapsed()==0);
       datas.back().rcost= imp_timer.elapsed()/count;
       IMP_LOG(VERBOSE, "Restraint evaluation cost "
@@ -137,13 +141,13 @@ get_slack_estimate(const ParticlesTemp& ps,
       std::sort(deaths.begin(), deaths.end());
       // kaplan meier estimator
       double ml=0;
-      double S=1;
       if (deaths.empty()) {
         ml= ns;
       } else {
         //double l=1;
         IMP_INTERNAL_CHECK(deaths.size() < static_cast<unsigned int>(ns),
                            "Too much death");
+        double S=1;
         for (unsigned int j=0; j< deaths.size(); ++j) {
           double n= ns-j;
           double t=(n-1.0)/n;
@@ -173,6 +177,8 @@ get_slack_estimate(const ParticlesTemp& ps,
     for (unsigned int i=0; i< datas.size(); ++i) {
       double v= datas[i].rcost+ datas[i].ccost/datas[i].lifetime;
       IMP_LOG(VERBOSE, "Cost of " << datas[i].slack << " is " << v
+              << " from " << datas[i].rcost
+              << " " << datas[i].ccost << " " << datas[i].lifetime
               << std::endl);
       if (v < min) {
         min=v;
@@ -182,9 +188,9 @@ get_slack_estimate(const ParticlesTemp& ps,
     last_ns=ns;
     ns*=2;
     IMP_LOG(VERBOSE, "Opt is " << datas[opt_i].slack << std::endl);
-    std::cout << "Opt is " << datas[opt_i].slack << std::endl;
     // 2 for the value, 2 for the doubling
-  } while (datas[opt_i].lifetime > ns/4.0);
+    // if it more than 1000, just decide that is enough
+  } while (datas[opt_i].lifetime > ns/4.0 && ns <1000);
   return datas[opt_i].slack;
 }
 
