@@ -41,7 +41,9 @@ class Key {
     else if (i_ > o.i_) return 1;
     else if (ci_ < o.ci_) return -1;
     else if (ci_ > o.ci_) return 1;
-    else return 0;
+    else if (pf_ == o.pf_) return 0;
+    else if (!pf_) return 1;
+    else return -1;
   }
 public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
