@@ -59,6 +59,10 @@ ScoringFunctionAdaptor::get(const RestraintsTemp &sf) {
   return new internal::RestraintsScoringFunction(sf);
 }
 
+ScoringFunction*
+ScoringFunctionAdaptor::get(const Restraints&sf) {
+  return new internal::RestraintsScoringFunction(sf);
+}
 ScoringFunction* ScoringFunctionAdaptor::get(Model *sf) {
   return sf->create_scoring_function();
 }
