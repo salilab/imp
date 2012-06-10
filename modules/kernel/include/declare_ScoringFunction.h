@@ -100,6 +100,7 @@ class IMPEXPORT ScoringFunctionAdaptor:
     return sf;
   }
   static ScoringFunction* get(const RestraintsTemp &sf);
+  static ScoringFunction* get(const Restraints &sf);
   static ScoringFunction* get(Model *sf);
   static ScoringFunction* get(Restraint *sf);
  public:
@@ -111,6 +112,7 @@ class IMPEXPORT ScoringFunctionAdaptor:
 #endif
   ScoringFunctionAdaptor(ScoringFunction *sf): P(sf){}
   ScoringFunctionAdaptor(const RestraintsTemp &sf): P(get(sf)){}
+  ScoringFunctionAdaptor(const Restraints &sf): P(get(sf)){}
   ScoringFunctionAdaptor(Model *sf): P(get(sf)){}
   ScoringFunctionAdaptor(Restraint *sf): P(get(sf)){}
 };
