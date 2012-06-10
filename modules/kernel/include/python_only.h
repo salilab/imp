@@ -40,6 +40,11 @@ public:
   void add_edge(VertexDescriptor, VertexDescriptor);
   VertexDescriptor add_vertex(VertexName);
   void remove_vertex(VertexDescriptor);
+  /** Show the graph in the graphviz format.
+      \note The vertices are not output in order, but have
+      their indices shown.
+  */
+  void show(std::ostream &out=std::cout) const;
 };
 
 /** Use the python \external{http://packages.python.org/altgraph/core.html,altgraph}
