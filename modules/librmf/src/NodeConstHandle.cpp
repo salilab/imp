@@ -122,17 +122,21 @@ namespace {
                  int frame, int end_frame, int step,
                  std::string prefix) {
     using std::operator<<;
-    show_node(n, out, prefix);
-    show_data(n, out, fks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, iks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, xks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, sks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, nks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, fsks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, isks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, xsks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, ssks, frame, end_frame, step, prefix+"  ");
-    show_data(n, out, nsks, frame, end_frame, step, prefix+"  ");
+    if (n.get_type()== ALIAS) {
+      show_node(n, out, prefix);
+    } else {
+      show_node(n, out, prefix);
+      show_data(n, out, fks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, iks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, xks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, sks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, nks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, fsks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, isks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, xsks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, ssks, frame, end_frame, step, prefix+"  ");
+      show_data(n, out, nsks, frame, end_frame, step, prefix+"  ");
+    }
   }
 
   void show_node_decorators(NodeConstHandle n, std::ostream &out,
