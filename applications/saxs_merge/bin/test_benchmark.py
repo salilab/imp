@@ -234,7 +234,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
     def run_results(self, name, manual_merge):
         #rescale and fit the two curves
         p = self.run_python_application('saxs_merge.py', ['--destdir=compapp',
-                 '--stop=rescaling', '--postpone_cleanup', '--blimit_fitting=200',
+                 '--stop=rescaling', '--postpone_cleanup',
                  '--npoints=-1', '--allfiles', 'runapp/data_merged.dat', manual_merge])
         out, err = p.communicate()
         sys.stderr.write(err)
@@ -260,22 +260,27 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         print name,datachi,fitchi
 
     def tearDown(self):
+        return
         shutil.rmtree('runapp',True)
         shutil.rmtree('compapp',True)
         os.unlink('Cpgnuplot')
 
     def get_params1(self):
         """aalpha 1e-7"""
-        return ['--blimit_fitting=100', '--elimit_fitting=100']
+        return ['--cmodel=normal']
 
     def get_params2(self):
         """aalpha 1e-4"""
-        return ['--blimit_fitting=100', '--elimit_fitting=100', '--aalpha=1e-4']
+        return ['--aalpha=1e-4', '--cmodel=normal']
 
     def get_params3(self):
         """aalpha 1e-7 postpone cleanup"""
-        return ['--blimit_fitting=100', '--elimit_fitting=100',
-                '--postpone_cleanup']
+        return ['--postpone_cleanup', '--cmodel=normal']
+
+    def get_params4(self):
+        """aalpha 1e-4 rescale with offset"""
+        return ['--cmodel=normal-offset', '--allfiles', '--outlevel=full',
+                '--header']
 
     def test_case1a(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
@@ -353,6 +358,32 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
              self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
              )
         self.run_results('Nup192_3',
+                self.get_input_file_name('Nup192/Nup192_merge.dat'))
+
+    def test_case4a(self):
+        """Simple test of SAXS merge benchmark / application for Nup116"""
+        self.run_app(
+             self.get_params4() +
+             [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
+             self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
+             self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
+             self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
+             self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
+             )
+        self.run_results('Nup116_4',
+                self.get_input_file_name('Nup116/25043_manual_merge.dat'))
+
+    def test_case4b(self):
+        """Simple test of SAXS merge benchmark / application for Nup192"""
+        self.run_app(
+             self.get_params4() +
+             [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
+             self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
+             self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
+             self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
+             self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
+             )
+        self.run_results('Nup192_4',
                 self.get_input_file_name('Nup192/Nup192_merge.dat'))
 
 if __name__ == '__main__':
