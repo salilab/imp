@@ -262,6 +262,7 @@ namespace IMP {
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
 %include "IMP/atom/Selection.h"
+%include "IMP/atom/constants.h"
 
 namespace IMP {
   namespace atom {
