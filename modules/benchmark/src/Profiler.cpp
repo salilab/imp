@@ -28,7 +28,9 @@ void Profiler::stop(){
 
 #else
 void Profiler::start(std::string) {
-  IMP_WARN("GProfTools were not found, no profiling available.\n");
+  // mostly useful in fast mode
+  std::cerr << "GProfTools were not found, no profiling available."
+            << std::endl;
 }
 void Profiler::stop(){}
 #endif
