@@ -64,19 +64,16 @@ public:
   }
   IMP_SIMULATOR(BrownianDynamics);
  private:
-  typedef unit::Divide<unit::Femtosecond,
-                       unit::Femtojoule>::type DTIKT;
   void advance_ball_1(ParticleIndex pi,
                       unsigned int i,
-                      unit::Femtosecond dtfs,
-                      DTIKT dtikt);
+                      double dtfs,
+                      double ikT);
   void advance_ball_0(ParticleIndex pi, unsigned int i,
-                      unit::Femtosecond dtfs,
-                      unit::Divide<unit::Femtosecond,
-                                   unit::Femtojoule>::type dtikt);
+                      double dtfs,
+                      double ikT);
   void advance_rigid_body_0(ParticleIndex pi, unsigned int i,
-                            unit::Femtosecond dtfs,
-                            DTIKT dtikt);
+                            double dtfs,
+                            double ikT);
 
   typedef boost::variate_generator<RandomNumberGenerator&,
                                    boost::normal_distribution<double> > RNG;
