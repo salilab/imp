@@ -29,7 +29,11 @@ IMPRMF_BEGIN_NAMESPACE
     @{
  */
 /** Add the geometry to the file */
-IMPRMFEXPORT void add_geometries(RMF::FileHandle parent,
+IMPRMFEXPORT void add_geometries(RMF::FileHandle file,
+                                 const display::GeometriesTemp &r);
+
+/** Add them to a given parent node.*/
+IMPRMFEXPORT void add_geometries(RMF::NodeHandle parent,
                                  const display::GeometriesTemp &r);
 
 /** Add the following geometry, assuming they do not move
