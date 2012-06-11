@@ -16,11 +16,18 @@ def _check(context):
     return ret
 
 def configure_check(env):
-    custom_tests = {'CheckCompiler':_check}
-    tenv= scons_tools.environment.get_test_environment(env)
-    conf = tenv.Configure(custom_tests=custom_tests)
-    if conf.CheckCompiler():
-        env["IMP_COMPILER_NULLPTR"]=True
-    else:
+    if env.get("nullptr", "auto") == "auto":
+        custom_tests = {'CheckCompiler':_check}
+        tenv= scons_tools.environment.get_test_environment(env)
+        conf = tenv.Configure(custom_tests=custom_tests)
+        if conf.CheckCompiler():
+            env["IMP_COMPILER_NULLPTR"]=True
+        else:
+            env["IMP_COMPILER_NULLPTR"]=False
+        conf.Finish()
+    elif env.get("nullptr", "auto")=="no":
+        print "Reading if the compiler support nullptr...no"
         env["IMP_COMPILER_NULLPTR"]=False
-    conf.Finish()
+    else:
+        print "Reading if the compiler support nullptr...yes"
+        env["IMP_COMPILER_NULLPTR"]=True

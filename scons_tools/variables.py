@@ -215,6 +215,9 @@ def add_common_variables(vars, package):
     vars.Add(EnumVariable('endian',
                           "The endianness of the platform. \"auto\" will determine it automatically.",
                           "auto", ['auto', 'big', 'little']))
+    vars.Add(EnumVariable('nullptr',
+                          "Whether the compiler has nullptr. \"auto\" will determine it automatically.",
+                          "auto", ['yes', 'no', 'auto']))
     vars.Add(BoolVariable('linksysv',
                           'Link with old-style SysV, not GNU hash, for ' + \
                           'binary compatibility', False))
