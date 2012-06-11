@@ -382,8 +382,9 @@ void set_segment(algebra::Segment3D s,
   IMP_DEFINE_INTERNAL_LINKERS(Box, box, (RMF::FileHandle fh),
                      (RMF::FileConstHandle fh), (fh), (fh));
 
-void add_geometries(RMF::FileHandle fh,
+void add_geometries(RMF::NodeHandle rh,
                     const display::GeometriesTemp &r) {
+  RMF::FileHandle fh=rh.get_file();
   display::SphereGeometries sgs;
   display::CylinderGeometries cgs;
   display::SegmentGeometries ssgs;
@@ -394,14 +395,19 @@ void add_geometries(RMF::FileHandle fh,
   base::Pointer<SegmentSaveLink> sgll= get_segment_save_link(fh);
   base::Pointer<BoxSaveLink> bll= get_box_save_link(fh);
 
-  sll->add(fh.get_root_node(), sgs);
+  sll->add(rh, sgs);
   sll->save(fh, 0);
-  cll->add(fh.get_root_node(), cgs);
+  cll->add(rh, cgs);
   cll->save(fh, 0);
-  sgll->add(fh.get_root_node(), ssgs);
+  sgll->add(rh, ssgs);
   sgll->save(fh, 0);
-  bll->add(fh.get_root_node(), bgs);
+  bll->add(rh, bgs);
   bll->save(fh, 0);
+}
+
+void add_geometries(RMF::FileHandle fh,
+                    const display::GeometriesTemp &r) {
+  add_geometries(fh.get_root_node(), r);
 }
 
 namespace {

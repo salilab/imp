@@ -48,6 +48,11 @@
    save_frame() to do that. */                                          \
   IMPRMFEXPORT void add_##names(RMF::FileHandle fh,                     \
                                 const OutTypes& hs);                    \
+  /** Add objects to the file under the specified node.
+   \note This does not save a configuration, make sure you use
+   save_frame() to do that. */                                          \
+  IMPRMFEXPORT void add_##names(RMF::NodeHandle fh,                       \
+                                const OutTypes& hs);                    \
   IMPRMFEXPORT void add_##name(RMF::FileHandle fh, OutType hs);         \
   /** Create objects from the file.
       \note This does not load a frame. Make sure you call
@@ -69,6 +74,12 @@
     if (hs.empty()) return;                                             \
     Name##SaveLink* hsl= get_##name##_save_link(fh);                    \
     hsl->add(fh.get_root_node(), hs);                                   \
+  }                                                                     \
+  void add_##names(RMF::NodeHandle fh,                                  \
+                   const OutTypes& hs) {                                \
+    if (hs.empty()) return;                                             \
+    Name##SaveLink* hsl= get_##name##_save_link(fh.get_file());         \
+    hsl->add(fh, hs);                                                   \
   }                                                                     \
   void add_##name(RMF::FileHandle fh, OutType hs) {                     \
     add_##names(fh, OutTypes(1, hs));                                   \
