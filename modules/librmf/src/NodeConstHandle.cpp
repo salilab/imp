@@ -226,8 +226,7 @@ void show_hierarchy(NodeConstHandle root,
   using std::operator<<;
   IMP_RMF_PRINT_TREE(out, NodeConstHandle, root, n.get_children().size(),
                  n.get_children(),
-                     show_node(n, out,
-                               prefix0+"   "));
+                     show_node(n, out));
 }
 
   void show_hierarchy_with_values(NodeConstHandle root,
