@@ -11,7 +11,7 @@
 #include <IMP/internal/units.h>
 #include <boost/progress.hpp>
 #include <boost/scoped_ptr.hpp>
-
+#include <IMP/atom/constants.h>
 IMPATOM_BEGIN_NAMESPACE
 Simulator::Simulator(Model *m,
                      std::string name): Optimizer(m, name) {
@@ -44,10 +44,6 @@ double Simulator::simulate(double time) {
   return Optimizer::get_scoring_function()->evaluate(false);
 }
 
-double Simulator::get_kt() const {
-  return get_kb_t(get_temperature());
-}
-
 ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_FUNCTION_LOG;
   ParticleIndexes ps;
@@ -78,7 +74,9 @@ void Simulator::do_show(std::ostream &out) const {
   out << " time step: " << max_time_step_ << std::endl;
   out << " temperature: " << temperature_ << std::endl;
 }
-
+double Simulator::get_kt() const {
+  return IMP::atom::get_kt(get_temperature());
+}
 
 IMP_LIST_IMPL(Simulator, Particle, particle, Particle*,
               Particles);
@@ -109,12 +107,6 @@ get_spring_constant_in_femto_newtons_per_angstrom(double
   return nforce.get_value();
 }
 
-double get_kb_t(double T) {
-  unit::Femtojoule fj(IMP::internal::KB*unit::Kelvin(T));
-  unit::KilocaloriePerMol e
-    =unit::convert_J_to_Cal(fj) *unit::ATOMS_PER_MOL;
-  return e.get_value();
-}
 
 
 IMPATOM_END_NAMESPACE

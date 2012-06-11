@@ -57,14 +57,14 @@ public:
     if (last_time_step_ <0) return get_maximum_time_step();
     else return last_time_step_;
   }
-  /** Return kt in kCal/mol */
-  double get_kt() const;
   /** @} */
 #ifndef IMP_DOXYGEN
   void set_time_step(double ts) {
     set_maximum_time_step(ts);
   }
 #endif
+
+  double get_kt() const;
 
   double get_current_time() const {
     return current_time_;
@@ -130,8 +130,6 @@ get_spring_constant_in_femto_newtons_per_angstrom(double
 
 /** @} */
 
-//! get kt
-IMPATOMEXPORT double get_kb_t(double temperature);
 
 
 IMPATOM_END_NAMESPACE
