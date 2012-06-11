@@ -9,10 +9,10 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/utility.h>
-
 #include <IMP/log.h>
 #include <IMP/random.h>
 #include <IMP/constants.h>
+#include <IMP/atom/constants.h>
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
@@ -60,37 +60,34 @@ bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi) const {
 }
 
 namespace {
-  inline unit::Angstrom get_force(Model *m, ParticleIndex p, unsigned int i,
-                           unit::Divide<unit::Femtosecond,
-                                        unit::Femtojoule>::type dtikt) {
+  inline double get_force(Model *m, ParticleIndex p, unsigned int i,
+                          double dt, double ikT) {
     Diffusion d(m, p);
-    unit::Femtonewton nforce(get_force_in_femto_newtons(-d.get_derivative(i)));
+    double nforce(-d.get_derivative(i));
     //unit::Angstrom R(sampler_());
     double dd=d.get_diffusion_coefficient();
-    unit::Angstrom force_term(nforce*
-                              unit::SquareAngstromPerFemtosecond(dd)
-                              *dtikt);
+    double force_term(nforce*dd*dt*ikT);
     /*if (force_term > unit::Angstrom(.5)) {
       std::cout << "Forces on " << _1->get_name() << " are "
       << force << " and " << nforce
       << " and " << force_term <<
       " vs " << delta[j] << ", " << sigma << std::endl;
       }*/
+    std::cout << "Force " << i << " is " << force_term
+              << "= " << nforce << "*" << dd << "*" << dt << "*" << ikT
+              << std::endl;
     return force_term;
   }
   // radians
   inline double get_torque(Model *m, ParticleIndex p, unsigned int i,
-                    unit::Divide<unit::Femtosecond,
-                                 unit::Femtojoule>::type dtikt) {
+                           double dt, double ikT) {
     RigidBodyDiffusion d(m, p);
     core::RigidBody rb(m, p);
 
-    unit::KilocaloriePerMol cforce( rb.get_torque()[i]);
-    unit::Joule nforce
-      = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+    double cforce( rb.get_torque()[i]);
     //unit::Angstrom R(sampler_());
     double dr=d.get_rotational_diffusion_coefficient();
-    double force_term=unit::strip_units(dr*(nforce*dtikt));
+    double force_term=dr*cforce*dt*ikT;
     /*if (force_term > unit::Angstrom(.5)) {
       std::cout << "Forces on " << _1->get_name() << " are "
       << force << " and " << nforce
@@ -100,40 +97,36 @@ namespace {
     return force_term;
   }
 
-  unit::Angstrom get_sigma(Model *m, ParticleIndex p,
-                           unit::Femtosecond dtfs) {
+  double get_sigma(Model *m, ParticleIndex p,
+                   double dtfs) {
     // 6.0 since we are picking radius rather than the coordinates
     double dd=Diffusion(m,
                         p).get_diffusion_coefficient();
-    return sqrt(6.0*unit::SquareAngstromPerFemtosecond(dd)
-                *dtfs);
+    return sqrt(6.0*dd*dtfs);
   }
   double get_rotational_sigma(Model *m, ParticleIndex p,
-                              unit::Femtosecond dtfs) {
+                              double dtfs) {
     double dr=RigidBodyDiffusion(m, p)
         .get_rotational_diffusion_coefficient();
-    return sqrt(6.0*unit::PerFemtosecond(dr)*dtfs);
+    return sqrt(6.0*dr*dtfs);
   }
 }
 
 void BrownianDynamics::setup(const ParticleIndexes& ips) {
   IMP_IF_LOG(TERSE) {
     ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
-    unit::Femtosecond dtfs=unit::Femtosecond(get_maximum_time_step());
-    unit::Divide<unit::Femtosecond,
-                 unit::Femtojoule>::type dtikt
-      =dtfs
-      /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
+    double dtfs=get_maximum_time_step();
+    double ikT= 1.0/get_kt();
     double ms=0;
     double mf=0;
     get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      double c= strip_units(get_sigma(get_model(),
-                                      ips[i],
-                                      dtfs));
+      double c= get_sigma(get_model(),
+                          ips[i],
+                          dtfs);
       ms= std::max(ms, c);
       for (unsigned int j=0; j< 3; ++j) {
-        double f= strip_units(get_force(get_model(), ips[i], j, dtikt));
+        double f= get_force(get_model(), ips[i], j, dtfs, ikT);
         mf=std::max(mf, f);
       }
     }
@@ -161,17 +154,15 @@ namespace {
 void BrownianDynamics
 ::advance_ball_1(ParticleIndex pi,
                  unsigned int i,
-                 unit::Femtosecond /*dtfs*/,
-                 unit::Divide<unit::Femtosecond,
-                              unit::Femtojoule>::type dtikt) {
+                 double dt, double ikT) {
   Diffusion d(get_model(), pi);
   core::XYZ xd(get_model(), pi);
   algebra::Vector3D force(get_force(get_model(), pi,
-                                    0, dtikt).get_value(),
+                                    0, dt, ikT),
                           get_force(get_model(), pi,
-                                    1, dtikt).get_value(),
+                                    1, dt, ikT),
                           get_force(get_model(), pi,
-                                    2, dtikt).get_value());
+                                    2, dt, ikT));
   algebra::Vector3D delta=(force-forces_[i])/2.0;
   check_delta(delta, max_step_);
   xd.set_coordinates(xd.get_coordinates()+delta);
@@ -180,22 +171,21 @@ void BrownianDynamics
 
 void BrownianDynamics
 ::advance_ball_0(ParticleIndex pi, unsigned int i,
-                 unit::Femtosecond dtfs,
-                 unit::Divide<unit::Femtosecond,
-                              unit::Femtojoule>::type dtikt) {
+                 double dtfs,
+                 double ikT) {
   core::XYZ xd(get_model(), pi);
-  double sigma= get_sigma(get_model(), pi, dtfs).get_value();
+  double sigma= get_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
   RNG sampler(random_number_generator, nd);
   double r= sampler();
   algebra::Vector3D random
     = r*get_random_vector_on(algebra::get_unit_sphere_d<3>());
   algebra::Vector3D force(get_force(get_model(), pi, 0,
-                                    dtikt).get_value(),
+                                    dtfs, ikT),
                           get_force(get_model(), pi, 1,
-                                    dtikt).get_value(),
+                                    dtfs, ikT),
                           get_force(get_model(), pi, 2,
-                                    dtikt).get_value());
+                                    dtfs, ikT));
   if (srk_) {
     forces_[i]=force;
   }
@@ -208,9 +198,8 @@ void BrownianDynamics
 
 void BrownianDynamics
 ::advance_rigid_body_0(ParticleIndex pi, unsigned int ,
-                       unit::Femtosecond dtfs,
-                       unit::Divide<unit::Femtosecond,
-                                    unit::Femtojoule>::type dtikt) {
+                       double dtfs,
+                       double ikT) {
   core::RigidBody rb(get_model(), pi);
   double sigma= get_rotational_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
@@ -219,9 +208,9 @@ void BrownianDynamics
   algebra::Vector3D axis
     = algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
   algebra::Rotation3D rrot= algebra::get_rotation_about_axis(axis, angle);
-  algebra::Vector3D torque( get_torque(get_model(), pi, 0, dtikt),
-                            get_torque(get_model(), pi, 1, dtikt),
-                            get_torque(get_model(), pi, 2, dtikt));
+  algebra::Vector3D torque( get_torque(get_model(), pi, 0, dtfs, ikT),
+                            get_torque(get_model(), pi, 1, dtfs, ikT),
+                            get_torque(get_model(), pi, 2, dtfs, ikT));
   double tangle= torque.get_magnitude();
   algebra::Vector3D taxis;
   if (tangle > 0) {
@@ -242,17 +231,14 @@ void BrownianDynamics
  */
 double BrownianDynamics::do_step(const ParticleIndexes &ps,
                                  double dt) {
-  unit::Femtosecond dtfs(dt);
-  unit::Divide<unit::Femtosecond,
-               unit::Femtojoule>::type dtikt
-    =dtfs
-    /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
+  double dtfs(dt);
+  double ikT= 1.0/get_kt();
   get_scoring_function()->evaluate(true);
   unsigned int numrb=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (RigidBodyDiffusion::particle_is_instance(get_model(), ps[i])) {
       //std::cout << "rb" << std::endl;
-      advance_rigid_body_0(ps[i], numrb, dtfs, dtikt);
+      advance_rigid_body_0(ps[i], numrb, dtfs, ikT);
       ++numrb;
     } else {
       Particle *p= get_model()->get_particle(ps[i]);
@@ -265,12 +251,12 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
                          << " was found: "
                          << p->get_name());
     }
-    advance_ball_0(ps[i], i, dtfs, dtikt);
+    advance_ball_0(ps[i], i, dtfs, ikT);
   }
   if (srk_) {
     get_scoring_function()->evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      advance_ball_1(ps[i], i, dtfs, dtikt);
+      advance_ball_1(ps[i], i, dtfs, ikT);
     }
   }
   return dt;
