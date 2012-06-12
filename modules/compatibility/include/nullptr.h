@@ -69,7 +69,6 @@ extern const void * const nullptr;
 #else  // IMP_DEFINE_NULLPTR
 #define IMP_NULLPTR nullptr
 #define IMP_NULLPTR_T std::nullptr_t
-using std::nullptr_t;
 #endif // IMP_DEFINE_NULLPTR
 #endif // IMP_DOXYGEN
 
