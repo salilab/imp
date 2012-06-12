@@ -38,7 +38,7 @@ if scons_tools.dependency.gcc.get_is_gcc_like(env):
     #print scons_tools.data.get(env).dependencies['CGAL'].version
     if int(scons_tools.data.get(env).dependencies['CGAL'].version[0])\
             < 1030700000:
-        l.append(['-std=gnu++0x'])
+        l.append('-std=gnu++0x')
     for f in env['CXXFLAGS']:
         if not f in l:
             cxxflags.append(f)
