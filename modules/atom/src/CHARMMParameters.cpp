@@ -48,18 +48,9 @@ namespace {
     if (!translate_names_to_pdb) {
       return atom_name;
     }
-    // this probably should get changed to something that detects the
-    // problematic config on Fedora 17 to work around that as we should
-    // default to compatibility map
-#if BOOST_VERSION != 104800
     typedef compatibility::map<std::string, std::string> ResidueMap;
     typedef compatibility::map<std::string, ResidueMap> ResiduesMap;
     static ResiduesMap map;
-#else
-    typedef std::map<std::string, std::string> ResidueMap;
-    typedef std::map<std::string, ResidueMap> ResiduesMap;
-    static ResiduesMap map;
-#endif
     static bool map_init = false;
     // Initialize map on first call
     if (!map_init) {
