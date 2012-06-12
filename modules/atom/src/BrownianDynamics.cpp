@@ -72,10 +72,10 @@ namespace {
       << force << " and " << nforce
       << " and " << force_term <<
       " vs " << delta[j] << ", " << sigma << std::endl;
-      }*/
+      }
     std::cout << "Force " << i << " is " << force_term
               << "= " << nforce << "*" << dd << "*" << dt << "*" << ikT
-              << std::endl;
+              << std::endl;*/
     return force_term;
   }
   // radians

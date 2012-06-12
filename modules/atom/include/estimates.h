@@ -115,18 +115,26 @@ IMPATOMEXPORT double get_einstein_diffusion_coefficient(double r);
 IMPATOMEXPORT double get_einstein_rotational_diffusion_coefficient(double r);
 
 /** Return the standard deviation for the Brownian step given the
-    diffusion coefficient and the time step.*/
+    diffusion coefficient D and the time step t.*/
 IMPATOMEXPORT double get_diffusion_length(double D, double t);
 
-/** Return the scale for diffusion under the specified force.*/
-IMPATOMEXPORT double get_diffusion_length(double D, double force, double t);
+/** Return the scale for diffusion under the specified force,
+    the diffusion coefficient D and the time step t.
+
+    @param D     diffusion coefficient in Angstrom^2/femtosecond
+    @param force applied force
+    @param t     time step in femtoseconds
+    @param temp  temperature in Kalvin
+*/
+IMPATOMEXPORT double get_diffusion_length(double D, double force, double t,
+                                          double temp = 273);
 
 /** Get the standard deviation of the diffusion angle change given
-    the rigid body diffusion coefficient and the time step.*/
+    the rigid body diffusion coefficient and the time step dtfs.*/
 IMPATOMEXPORT double get_diffusion_angle(double D, double dtfs);
 
 /** Estimate the diffusion coeffient of a particle from a list of
-    displacements each taken after the given time step.
+    displacements each taken after the given time step dt.
 */
 IMPATOMEXPORT double
 get_diffusion_coefficient(const algebra::Vector3Ds &displacements,

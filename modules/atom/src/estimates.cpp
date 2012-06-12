@@ -168,11 +168,21 @@ double get_diffusion_length(double D, double dtfs) {
   return strip_units(d);
 }
 
-double get_diffusion_length(double D, double force, double dtfs) {
+/** Return the scale for diffusion under the specified force,
+    the diffusion coefficient D and the time step t.
+
+    @param D     diffusion coefficient
+    @param force force coefficient
+    @param dtfs  time step in femtoseconds
+    @param temp  temperature in Kalvin
+\*/
+double get_diffusion_length
+(double D, double force, double dtfs, double temp)
+{
   unit::Divide<unit::Femtosecond,
                unit::Femtojoule>::type dtikt
     =unit::Femtosecond(dtfs)
-    /unit::Femtojoule(IMP::internal::KB*unit::Kelvin(273));
+    /unit::Femtojoule(IMP::internal::KB*unit::Kelvin(temp));
   unit::Femtonewton nforce(get_force_in_femto_newtons(force));
   //unit::Angstrom R(sampler_());
   unit::Angstrom force_term(nforce*
