@@ -20,15 +20,15 @@ k = 2
 km.execute(k)
 # print centers one by one
 print "\nCenters:"
-nCenters = km.get_n_centers() # this should actually be equal to k
+nCenters = km.get_number_of_centers() # this should actually be equal to k
 print "Number of centers (k): ", nCenters
 for i in range(0, nCenters):
     print "Center ", i, "   ", km.get_center(i)
 
 # print data point assignments
-n = km.get_n_data_points()
+n = km.get_number_of_data_points()
 assignments = km.get_assignments()
-sqrdist = km.get_sqr_dist_to_centers()
+sqrdist = km.get_squared_distance_to_centers()
 print "Number of points: ", n
 for i in range(0,n):
     print "Point ", i , ": "

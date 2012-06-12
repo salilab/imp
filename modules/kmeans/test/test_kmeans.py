@@ -18,7 +18,7 @@ class KMeansTest(IMP.test.TestCase):
         self.assertEqual(km.get_data_point(0)[0], 1)
         self.assertEqual(km.get_data_point(0)[1], 2)
         # print data
-        n = km.get_n_data_points()
+        n = km.get_number_of_data_points()
         print "Number of points: ", n
         self.assertEqual(n,9)
         for i in range(0,n):
@@ -29,7 +29,8 @@ class KMeansTest(IMP.test.TestCase):
         km.execute(k)
         # print centers one by one
         print "\nCenters:"
-        nCenters = km.get_n_centers() # this should actually be equal to k
+        # this should actually be equal to k
+        nCenters = km.get_number_of_centers()
         print "Number of centers: ", nCenters
         self.assertEqual(nCenters, k)
         print range(1, nCenters)

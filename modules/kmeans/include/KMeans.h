@@ -111,7 +111,7 @@ KMeans : public IMP::base::Object {
   const IMP::Floats& get_data_point(unsigned int i) const;
 
   /** @return The number of data points */
-  unsigned int get_n_data_points() const
+  unsigned int get_number_of_data_points() const
   {
     return STLDataPts_.size();
   }
@@ -138,7 +138,7 @@ KMeans : public IMP::base::Object {
 
   /** Returns the squared distance of each data point to its
       respective cluster center */
-  IMP::Floats get_sqr_dist_to_centers() const
+  IMP::Floats get_squared_distance_to_centers() const
     {
       // TODO: exception instead of assertion?
       assert(is_executed_);
@@ -146,7 +146,7 @@ KMeans : public IMP::base::Object {
     }
 
   /** @return The number of centers after a succeful execution */
-  unsigned int get_n_centers() const
+  unsigned int get_number_of_centers() const
   {
     assert( is_executed_ ); // TODO: exception?
     return pCenters_->getK();
