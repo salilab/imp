@@ -12,6 +12,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -36,7 +37,8 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
 }
 }
 
-int main() {
+int main(int argc, char **argv) {
+  IMP_BENCHMARK();
   unsigned int npart=1000;
   set_log_level(SILENT);
   //set_check_level(NONE);

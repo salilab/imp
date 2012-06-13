@@ -6,7 +6,7 @@
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
-
+#include <IMP/benchmark/command_line_macros.h>
 using namespace IMP;
 using namespace IMP::base;
 using namespace IMP::algebra;
@@ -49,7 +49,8 @@ void test_uniform(std::string name,
 }
 }
 
-int main() {
+int main(int argc, char** argv) {
+  IMP_BENCHMARK();
 #ifdef IMP_BENCHMARK_USE_ANN
   {
     std::string name("ann");
