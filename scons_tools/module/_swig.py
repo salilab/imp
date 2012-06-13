@@ -247,8 +247,8 @@ def _action_simple_swig(target, source, env):
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
     ussp=env.get('swigpath', "")
-    command=command+[" -I"+Dir(env['builddir']+"/swig").path]\
-        + ["-I"+Dir(env['builddir']+"/include").abspath]\
+    command=command+[" -I"+Dir("#/build/swig").path]\
+        + ["-I"+Dir("#/build/include").abspath]\
         + ["-I"+str(x) for x in
            scons_tools.utility.get_env_paths(env, 'swigpath')]
     command.append("-DIMP_SWIG")
@@ -312,22 +312,22 @@ def swig_scanner(node, env, path):
                 if module=="internal":
                     module="kernel"
                 if not dta.modules[module].external:
-                    ret.extend([env["builddir"]+"/include/"+x])
+                    ret.extend(["#/build/include/"+x])
             if x.startswith("RMF/") and not dta.modules["RMF"].external:
-                ret.extend([File(env["builddir"]+"/include/"+x)])
+                ret.extend([File("#/build/include/"+x)])
 
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
             mn= x.split("_")[0]
             if not dta.modules[mn].external:
-                ret.append(env["builddir"]+"/swig/IMP_"+x+".i")
+                ret.append("#/build/swig/IMP_"+x+".i")
         if not dta.modules["RMF"].external:
             if re.search('\n%include\s"RMF.i"', contents)\
                     or re.search('\n%import\s"RMF.i"', contents):
-                ret.append(env["builddir"]+"/swig/RMF.i")
+                ret.append("#/build/swig/RMF.i")
             for x in re.findall('\n%include\s"RMF_([^"]*).i"', contents)\
                     +re.findall('\n%import\s"RMF_([^"]*).i"', contents):
-                ret.append(env["builddir"]+"/swig/RMF_"+x+".i")
+                ret.append("#/build/swig/RMF_"+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
@@ -339,7 +339,7 @@ def inswig_scanner(node, env, path):
     ret= swig_scanner(node, env, path)
     for i in base_includes:
         if not dta.modules[i].external:
-            f= env["builddir"]+"/swig/"+i
+            f= "#/build/swig/"+i
             ret.append(f)
     for m in scons_tools.module._get_module_python_modules(env):
         if not dta.modules[m].external:

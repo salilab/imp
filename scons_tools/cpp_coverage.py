@@ -82,7 +82,7 @@ class _CoverageTester(object):
         self._output_file = output_file
         self._coverage = coverage
         self._html_coverage = env.get('html_coverage', 'no')
-        self._coverage_dir = Dir(env["builddir"]+"/coverage").abspath
+        self._coverage_dir = Dir("#/build/coverage").abspath
         self._name = name = environment.get_current_name(env)
         if test_type.startswith('module'):
             self._test_type = 'module'

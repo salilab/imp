@@ -9,7 +9,7 @@ import python_coverage
 from python_coverage import coverage
 
 def _build_python_coverage(env, single):
-    covdir = Dir(env["builddir"]+"/coverage").abspath
+    covdir = Dir("#/build/coverage").abspath
     # Return if no coverage to report (i.e. no tests were run)
     coverage_files = glob.glob('%s/.coverage*' % covdir)
     if len(coverage_files) == 0:
@@ -20,7 +20,7 @@ def _build_python_coverage(env, single):
         cov = coverage.coverage(branch=True,
                                 data_file=os.path.join(covdir, '.coverage'))
         python_coverage.setup_excludes(cov)
-        cov.file_locator.relative_dir = Dir(env["builddir"]).abspath + '/'
+        cov.file_locator.relative_dir = Dir("#/build").abspath + '/'
         cov.combine()
         morfs = cov.data.lines.keys()
         morfs.sort()
@@ -31,7 +31,7 @@ def _build_python_coverage(env, single):
             m = r.search(f)
             cov = coverage.coverage(branch=True, data_file=f)
             python_coverage.setup_excludes(cov)
-            cov.file_locator.relative_dir = Dir(env["builddir"]).abspath + '/'
+            cov.file_locator.relative_dir = Dir("#/build").abspath + '/'
             cov.load()
             morfs = cov.data.lines.keys()
             morfs.sort()
@@ -51,7 +51,7 @@ def _build_cpp_coverage(env, single):
         if r != 0:
             raise OSError("%s failed with exit code %d" % (args[0], r))
 
-    covdir = Dir(env["builddir"]+"/coverage").abspath
+    covdir = Dir("#/build/coverage").abspath
     # Return if no coverage to report (i.e. no tests were run)
     info_files = glob.glob('%s/*.info' % covdir)
     if len(info_files) == 0:
@@ -81,7 +81,7 @@ def _build_html_coverage(env):
 
 def register(env):
     """Set up HTML coverage"""
-    covdir = Dir(env["builddir"]+"/coverage").abspath
+    covdir = Dir("#/build/coverage").abspath
     shutil.rmtree(covdir, ignore_errors=True)
     os.makedirs(covdir)
     atexit.register(_build_html_coverage, env)

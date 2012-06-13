@@ -60,7 +60,7 @@ cd %(tmpdir)s; protoc RMF.proto --cpp_out=%(tmpdir)s --python_out=%(tmpdir)s
 mv %(tmpdir)s/RMF.pb.cc %(targetcc)s
 mv %(tmpdir)s/RMF.pb.h %(targeth)s
 mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
-"""%{"tmpdir":Dir(env['builddir']+"/tmp").abspath,
+"""%{"tmpdir":Dir("#/build/tmp").abspath,
      "targetcc":target[0].path,
      "targeth":target[1].path,
      "targetpy":target[2].path,
@@ -68,7 +68,7 @@ mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
         env.Execute(cmd)
     oenv['BUILDERS']['Protoc']=Builder(action=build_protoc)
     oenv.Protoc(source=[File("./data/RMF.proto")],
-               target=[File(env['builddir']+"/src/RMF.pb.cpp"),
-                       File(env['builddir']+"/src/RMF.pb.h"),
-                       File(env['builddir']+"/src/_RMF_proto.py")])
+               target=[File("#/build/src/RMF.pb.cpp"),
+                       File("#/build/src/RMF.pb.h"),
+                       File("#/build/src/_RMF_proto.py")])
 env['linktest']=olinktest

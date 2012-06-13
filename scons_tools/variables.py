@@ -15,7 +15,6 @@ import SCons
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
-    env['builddir']="#/build"
     env['IMP_BUILD_STATIC']= env['static']
     env['IMP_BUILD_DYNAMIC']= env['dynamic']
     if env['python'] != "no" and not env.get('PYTHON', None):

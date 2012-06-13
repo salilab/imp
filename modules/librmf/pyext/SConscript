@@ -2,6 +2,6 @@ Import('env')
 import scons_tools.data
 files=env.IMPModuleGetPython()
 if "ProtoBuf" in scons_tools.data.get(env).modules['RMF'].dependencies:
-    files.append(env['builddir']+"/src/_RMF_proto.py")
+    files.append("#/build/src/_RMF_proto.py")
 
 env.IMPModulePython(swigfiles=env.IMPModuleGetSwigFiles(), pythonfiles=files)
