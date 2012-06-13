@@ -13,9 +13,9 @@
 #include <IMP/base/raii_macros.h>
 #include <boost/scoped_ptr.hpp>
 
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS)
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-checker.h>
-#elif defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
+#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 #include <google/heap-checker.h>
 #endif
 
@@ -29,8 +29,8 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     used to control things.
 */
 class IMPBENCHMARKEXPORT LeakChecker: public base::RAII {
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS)\
-  || defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)\
+  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
