@@ -33,23 +33,25 @@ scons_tools.dependency.add_external_library(env, "GooglePerfTools.Profile",
 
 olinktest=env['linktest']
 env['linktest']=False
+cppdef=[]
 if env['build']=='fast':
-    ocppdef= env.get('CPPDEFINES', [])
-    env.Append(CPPDEFINES=["IMP_RMF_NDEBUG"])
+    cppdef=env.get("CPPDEFINES", [])+["IMP_RMF_NDEBUG"]
+cpppath=env.get("CPPPATH", [])+["#/build/src"]
 
 oenv=env.IMPModuleBuild(version='nightly-11/6/2012',
                    required_modules=[],
-                   required_dependencies=['HDF5', "Boost.FileSystem",
-                                          "Boost.Thread"],
-                   optional_dependencies=["ProtoBuf", "GPerfTools", "GooglePerfTools"],
-                   module='RMF', module_libname="RMF", module_pylibname="_RMF",
-                   module_include_path="RMF",
-                   module_preproc="RMF", module_namespace="RMF", data=False)
+                        required_dependencies=['HDF5', "Boost.FileSystem",
+                                               "Boost.Thread"],
+                        optional_dependencies=["ProtoBuf", "GPerfTools",
+                                               "GooglePerfTools"],
+                        module='RMF', module_libname="RMF", module_pylibname="_RMF",
+                        module_include_path="RMF",
+                        module_preproc="RMF", module_namespace="RMF", data=False,
+                        cppdefines=cppdef, cpppath=cpppath)
 
 if not env.GetOption('help') and not env.GetOption('clean') \
    and scons_tools.data.get(env).modules['RMF'].ok \
    and "ProtoBuf" in scons_tools.data.get(env).modules['RMF'].dependencies:
-    oenv.Append(CPPPATH=[Dir(env['builddir']+"/src")])
     """cat %(tmpdir)s/RMF.pb.cc | sed "s#data/RMF.pb.h#RMF/internal/proto.hpp#g"> %(targetcc)s"""
     def build_protoc(target, source, env):
         cmd="""mkdir -p %(tmpdir)s;
@@ -70,5 +72,3 @@ mv %(tmpdir)s/RMF_pb2.py %(targetpy)s
                        File(env['builddir']+"/src/RMF.pb.h"),
                        File(env['builddir']+"/src/_RMF_proto.py")])
 env['linktest']=olinktest
-if env['build']=='fast':
-    env['CPPDEFINES']=ocppdef

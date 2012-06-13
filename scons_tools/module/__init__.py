@@ -537,7 +537,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_include_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
-                   cxxflags=[], cppdefines=[], python_docs=False,
+                   cxxflags=[], cppdefines=[], cpppath=[], python_docs=False,
                    local_module=False,python=True, data=True,
                    standards=True):
     if env.GetOption('help'):
@@ -612,8 +612,9 @@ def IMPModuleBuild(env, version, required_modules=[],
     if cxxflags:
         env.Replace(CXXFLAGS=cxxflags)
     if cppdefines:
-        env.Append(CPPDEFINES=cppdefines)
-
+        env.Replace(CPPDEFINES=cppdefines)
+    if cpppath:
+        env.Replace(CPPPATH=cpppath)
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
     real_config_macros=config_macros[:]
