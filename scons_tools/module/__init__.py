@@ -612,9 +612,9 @@ def IMPModuleBuild(env, version, required_modules=[],
     if cxxflags:
         env.Replace(CXXFLAGS=cxxflags)
     if cppdefines:
-        env.Replace(CPPDEFINES=cppdefines)
+        env.Append(CPPDEFINES=cppdefines)
     if cpppath:
-        env.Replace(CPPPATH=cpppath)
+        env.Append(CPPPATH=cpppath)
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
     real_config_macros=config_macros[:]
