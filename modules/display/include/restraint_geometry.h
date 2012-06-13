@@ -12,11 +12,8 @@
 #include "geometry_macros.h"
 #include "Colored.h"
 #include "declare_Geometry.h"
-#include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/base/Pointer.h>
 #include <IMP/PairContainer.h>
-#include <IMP/core/PairRestraint.h>
-#include <IMP/container/PairsRestraint.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
