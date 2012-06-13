@@ -20,6 +20,9 @@ extern IMPBENCHMARKEXPORT bool heap_profile_benchmark;
 extern IMPBENCHMARKEXPORT bool heap_profile_all;
 extern IMPBENCHMARKEXPORT bool leak_check_benchmark;
 extern IMPBENCHMARKEXPORT bool leak_check_all;
+extern IMPBENCHMARKEXPORT int run_only;
+extern IMPBENCHMARKEXPORT int next_benchmark;
+extern IMPBENCHMARKEXPORT std::string benchmarks_name;
 
 
 IMPBENCHMARK_END_NAMESPACE
