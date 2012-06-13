@@ -96,7 +96,7 @@ Model * setup(bool rpcpf,RigidBodies &rbs) {
 }
 }
 
-int main() {
+int main(int, char **) {
   {
     RigidBodies rbs;
     IMP::OwnerPointer<Model> m
