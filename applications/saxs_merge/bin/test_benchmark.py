@@ -37,12 +37,14 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         seen_add = seen.add
         return [ x for x in seq if x not in seen and not seen_add(x)]
 
-    def plot_data_overlaid(self, name, d1, d2, title=None):
+    def plot_data_overlaid(self, name, d1, d2, datarange, title=None):
         # data overlaid in log scale
         fl=open('Cpgnuplot','w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_log_overlaid.png"\n' % name)
         fl.write('set log y\n')
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
         if title:
             fl.write('set title "%s"\n' % title)
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
@@ -53,18 +55,24 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl=open('Cpgnuplot','w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_lin_overlaid.png"\n' % name)
-        fl.write('set log y\n')
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%f]\n' % datarange[3])
+        if title:
+            fl.write('set title "%s"\n' % title)
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
             (d1,d2))
         fl.close()
         os.system('gnuplot Cpgnuplot')
 
-    def plot_data_colored(self, name, d1):
+    def plot_data_colored(self, name, d1, datarange, transform=(1,0)):
         # data in linear scale, colored
         fl=open('Cpgnuplot','w')
         fl.write('set term png\n')
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%f]\n' % datarange[3])
         fl.write('set output "%s_data_lin_colored.png"\n' % name)
-        fl.write('p "%s" u 1:($2+100):4 w p lc var t "automatic"\n' % (d1))
+        fl.write('p "%s" u 1:(%f*($2+%f)):4 w p lc var t "automatic"\n' %
+                   (d1, transform[0], transform[1]))
         fl.close()
         os.system('gnuplot Cpgnuplot')
         # data shifted in log scale
@@ -72,34 +80,20 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set term png\n')
         fl.write('set output "%s_data_log_colored.png"\n' % name)
         fl.write('set log y\n')
-        fl.write('p "%s" u 1:($2*20):4 w p lc var t "automatic"\n' % (d1))
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
+        fl.write('p "%s" u 1:(%f*($2+%f)):4 w p lc var t "automatic"\n' %
+                (d1, transform[0],transform[1]))
         fl.close()
         os.system('gnuplot Cpgnuplot')
 
-    def plot_data_mean(self, name, data, mean):
-        #linear scale
-        fl=open('Cpgnuplot','w')
-        fl.write('set term png\n')
-        fl.write('set output "%s_data_lin_mean.png"\n' % name)
-        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
-                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
-        fl.close()
-        os.system('gnuplot Cpgnuplot')
-        #log scale
-        fl=open('Cpgnuplot','w')
-        fl.write('set term png\n')
-        fl.write('set output "%s_data_log_mean.png"\n' % name)
-        fl.write('set log y\n')
-        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
-                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
-        fl.close()
-        os.system('gnuplot Cpgnuplot')
-
-    def plot_means(self, name, d1, d2):
+    def plot_means(self, name, d1, d2, datarange):
         #linear scale
         fl=open('Cpgnuplot','w')
         fl.write('set term png\n')
         fl.write('set output "%s_means_lin.png"\n' % name)
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%f]\n' % datarange[3])
         fl.write('p "%s" u 1:2 w l t "automatic", '
                  '"" u 1:($2+$3) w l not, "" u 1:($2-$3) w l not, '
                  '"%s" u 1:2 w l t "manual", '
@@ -111,10 +105,35 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('set term png\n')
         fl.write('set output "%s_means_log.png"\n' % name)
         fl.write('set log y\n')
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
         fl.write('p "%s" u 1:2 w l t "automatic", '
                  '"" u 1:($2+$3) w l not, "" u 1:($2-$3) w l not, '
                  '"%s" u 1:2 w l t "manual", '
                  '"" u 1:($2+$3) w l not, "" u 1:($2-$3) w l not\n' % (d1,d2))
+        fl.close()
+        os.system('gnuplot Cpgnuplot')
+
+    def plot_data_mean(self, name, data, mean, datarange):
+        #linear scale
+        fl=open('Cpgnuplot','w')
+        fl.write('set term png\n')
+        fl.write('set output "%s_data_lin_mean.png"\n' % name)
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [0:%f]\n' % datarange[3])
+        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
+                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
+        fl.close()
+        os.system('gnuplot Cpgnuplot')
+        #log scale
+        fl=open('Cpgnuplot','w')
+        fl.write('set term png\n')
+        fl.write('set output "%s_data_log_mean.png"\n' % name)
+        fl.write('set log y\n')
+        fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
+        fl.write('set yrange [%f:%f]\n' % (datarange[2], datarange[3]))
+        fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
+                 ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
         fl.close()
         os.system('gnuplot Cpgnuplot')
 
@@ -127,6 +146,37 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '  "%s" u ($1*$1):(log($2)) w l t "mean", '
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
                  '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data,mean))
+        fl.close()
+        os.system('gnuplot Cpgnuplot')
+
+    def plot_inputs(self, name, inputs):
+        #linear scale
+        fl=open('Cpgnuplot','w')
+        fl.write('set term png\n')
+        fl.write('set output "%s_inputs_lin.png"\n' % name)
+        fl.write('p ')
+        for i,inp in enumerate(inputs):
+            fl.write('"%s" u 1:(%d+$2):3 w yerr t "%s"'
+                    % (inp, i*10, os.path.basename(inp)))
+            if i < len(inputs)-1:
+                fl.write(', \\\n')
+            else:
+                fl.write('\n')
+        fl.close()
+        os.system('gnuplot Cpgnuplot')
+        #log scale
+        fl=open('Cpgnuplot','w')
+        fl.write('set term png\n')
+        fl.write('set output "%s_inputs_log.png"\n' % name)
+        fl.write('set log y\n')
+        fl.write('p ')
+        for i,inp in enumerate(inputs):
+            fl.write('"%s" u 1:(%d*$2):(%d*$3) w yerr t "%s"'
+                    % (inp, i*10, i*10, os.path.basename(inp)))
+            if i < len(inputs)-1:
+                fl.write(', \\\n')
+            else:
+                fl.write('\n')
         fl.close()
         os.system('gnuplot Cpgnuplot')
 
@@ -231,32 +281,53 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             print "warning: chisquare computed on only %d points!" % len(chi)
         return sum(chi)/len(chi)
 
-    def run_results(self, name, manual_merge):
+    def get_transform(self, fname):
+        data=open(fname).readlines()
+        gamma = float([i for i in data if 'gamma' in i][0].split()[2])
+        offset = [i for i in data if 'offset :' in i]
+        if offset:
+            offset=float(offset[0].split()[2])
+            return gamma,offset
+        else:
+            return gamma,0
+
+    def run_results(self, name, manual_merge, inputs):
         #rescale and fit the two curves
-        p = self.run_python_application('saxs_merge.py', ['--destdir=compapp',
-                 '--stop=rescaling', '--postpone_cleanup',
-                 '--npoints=-1', '--allfiles', 'runapp/data_merged.dat', manual_merge])
-        out, err = p.communicate()
-        sys.stderr.write(err)
-        self.assertApplicationExitedCleanly(p.returncode, err)
+        #p = self.run_python_application('saxs_merge.py', ['--destdir=compapp',
+        #         '--stop=rescaling', '--postpone_cleanup',
+        #         '--npoints=-1', '--allfiles', 'runapp/data_merged.dat', manual_merge])
+        #out, err = p.communicate()
+        #sys.stderr.write(err)
+        #self.assertApplicationExitedCleanly(p.returncode, err)
         #compute chi2 of data
         datachi = self.chisquare('compapp/data_data_merged.dat',
                 'compapp/data_'+os.path.basename(manual_merge))
         #compute chi2 of fits
         fitchi = self.chisquare('compapp/mean_data_merged.dat',
                 'compapp/mean_'+os.path.basename(manual_merge))
+        #get proper bounds
+        points=map(lambda a:map(float,a.split()[:2]), open(manual_merge).readlines())
+        xmin = 0
+        xmax = max([i[0] for i in points])*1.2
+        ymin = min([i[1] for i in points])*0.8
+        if ymin <=0: ymin = 0.01
+        ymax = max([i[1] for i in points])*1.2
+        datarange = (xmin,xmax,ymin,ymax)
         #plot data
         self.plot_data_overlaid(name, 'compapp/data_data_merged.dat',
-                'compapp/data_'+os.path.basename(manual_merge))
-        self.plot_data_colored(name, 'runapp/data_merged.dat')
+                'compapp/data_'+os.path.basename(manual_merge), datarange)
+        self.plot_data_colored(name, 'runapp/data_merged.dat', datarange,
+                transform = self.get_transform('compapp/summary.txt') )
         #plot mean
         self.plot_means(name, 'compapp/mean_data_merged.dat',
-                'compapp/mean_'+os.path.basename(manual_merge))
+                'compapp/mean_'+os.path.basename(manual_merge), datarange)
         self.plot_data_mean(name, 'compapp/data_data_merged.dat',
-                'compapp/mean_data_merged.dat')
+                'compapp/mean_data_merged.dat', datarange)
         #guinier plot
         self.plot_guinier(name, 'compapp/data_data_merged.dat',
                 'compapp/mean_data_merged.dat')
+        #plot all curves
+        self.plot_inputs(name, inputs)
         print name,datachi,fitchi
 
     def tearDown(self):
@@ -279,112 +350,99 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
     def get_params4(self):
         """aalpha 1e-4 rescale with offset"""
-        return ['--cmodel=normal-offset', '--allfiles', '--outlevel=full',
-                '--header']
+        return ['--cmodel=normal-offset', '--header']
 
     def test_case1a(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
-        self.run_app(
-             self.get_params1() +
-             [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-             )
+        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
+        #self.run_app( self.get_params1() + inputs )
         self.run_results('Nup116_1',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'))
-
-    def test_case1b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        self.run_app(
-             self.get_params1() +
-             [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-             self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-             )
-        self.run_results('Nup192_1',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'))
+                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
+                inputs)
 
     def test_case2a(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
-        self.run_app(
-             self.get_params2() +
-             [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-             )
+        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
+        self.run_app( self.get_params2() + inputs )
         self.run_results('Nup116_2',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'))
-
-    def test_case2b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        self.run_app(
-             self.get_params2() +
-             [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-             self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-             )
-        self.run_results('Nup192_2',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'))
+                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
+                inputs)
 
     def test_case3a(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
-        self.run_app(
-             self.get_params3() +
-             [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-             )
+        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
+        self.run_app( self.get_params3() + inputs )
         self.run_results('Nup116_3',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'))
-
-    def test_case3b(self):
-        """Simple test of SAXS merge benchmark / application for Nup192"""
-        self.run_app(
-             self.get_params3() +
-             [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-             self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-             )
-        self.run_results('Nup192_3',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'))
+                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
+                inputs)
 
     def test_case4a(self):
         """Simple test of SAXS merge benchmark / application for Nup116"""
-        self.run_app(
-             self.get_params4() +
-             [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
-             self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-             )
+        inputs = [self.get_input_file_name('Nup116/25043_01C_S059_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01B_S057_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
+                 self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
+        self.run_app( self.get_params4() + inputs )
         self.run_results('Nup116_4',
-                self.get_input_file_name('Nup116/25043_manual_merge.dat'))
+                self.get_input_file_name('Nup116/25043_manual_merge.dat'),
+                inputs)
+
+    def test_case1b(self):
+        """Simple test of SAXS merge benchmark / application for Nup192"""
+        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
+        self.run_app( self.get_params1() + inputs )
+        self.run_results('Nup192_1',
+                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+
+    def test_case2b(self):
+        """Simple test of SAXS merge benchmark / application for Nup192"""
+        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
+        self.run_app( self.get_params2() + inputs )
+        self.run_results('Nup192_2',
+                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
+
+    def test_case3b(self):
+        """Simple test of SAXS merge benchmark / application for Nup192"""
+        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
+        self.run_app( self.get_params3() + inputs )
+        self.run_results('Nup192_3',
+                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
 
     def test_case4b(self):
         """Simple test of SAXS merge benchmark / application for Nup192"""
-        self.run_app(
-             self.get_params4() +
-             [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
-             self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
-             self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
-             )
+        inputs = [self.get_input_file_name('Nup192/Nup192_01B_S014_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01C_S016_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01D_S018_0_01.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01E_S020_0_02.sub'),
+                 self.get_input_file_name('Nup192/Nup192_01F_S022_0_02.sub')]
+        self.run_app( self.get_params4() + inputs )
         self.run_results('Nup192_4',
-                self.get_input_file_name('Nup192/Nup192_merge.dat'))
+                self.get_input_file_name('Nup192/Nup192_merge.dat'), inputs)
 
 if __name__ == '__main__':
     IMP.test.main()
