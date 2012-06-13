@@ -248,8 +248,6 @@ def _action_simple_swig(target, source, env):
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
     ussp=env.get('swigpath', "")
     command=command+[" -I"+Dir(env['builddir']+"/swig").path]\
-        + ["-I"+x for x in
-           scons_tools.utility.get_env_paths(env, 'includepath')]\
         + ["-I"+Dir(env['builddir']+"/include").abspath]\
         + ["-I"+str(x) for x in
            scons_tools.utility.get_env_paths(env, 'swigpath')]
