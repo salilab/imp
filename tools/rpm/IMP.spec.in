@@ -56,7 +56,7 @@ BuildRequires: eigen3-devel
 %define kflag %{nil}
 %endif
 
-%define scons_opts %{skipped_deps} %{kflag}
+%define scons_opts %{skipped_deps} %{kflag} modeller=yes
 
 %description
 IMP's broad goal is to contribute to a comprehensive structural
