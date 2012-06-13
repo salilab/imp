@@ -177,8 +177,9 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
             data = db.retrieve_data(sql_command)
             out_db.store_data(tbl, data)
             db.close()
-        except Exception as e:
-            log.error("Error for %s: %s",fn, e)
+        except Exception:
+            type, instance, traceback_obj = sys.exc_info()
+            log.error("Error for file %s: %s",fn, instance)
             n_problems += 1
     ratio = float(n_problems)/float(len(fns))
     if ratio > raisef:
