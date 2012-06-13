@@ -7,6 +7,7 @@
 #include <IMP/algebra.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 #include <IMP/container.h>
 
 using namespace IMP;
@@ -94,7 +95,8 @@ void test_one(std::string name,
 }
 }
 
-int main() {
+int main(int argc, char **argv) {
+  IMP_BENCHMARK();
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
 #if IMP_BUILD == IMP_DEBUG

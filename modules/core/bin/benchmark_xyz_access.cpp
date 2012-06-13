@@ -7,6 +7,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -433,22 +434,9 @@ void do_benchmark(std::string descr, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-  if (argc >1) {
-    switch (argv[1][0]) {
-    case 's':
-      do_benchmark("small", 100);
-      break;
-    case 'l':
-      do_benchmark("large", 1000);
-      break;
-    case 'h':
-      do_benchmark("huge", 10000);
-      break;
-    }
-  } else {
-    do_benchmark("small", 100);
-    do_benchmark("large", 1000);
-    do_benchmark("huge", 10000);
-  }
+  IMP_BENCHMARK();
+  do_benchmark("small", 100);
+  do_benchmark("large", 1000);
+  do_benchmark("huge", 10000);
   return IMP::benchmark::get_return_value();
 }

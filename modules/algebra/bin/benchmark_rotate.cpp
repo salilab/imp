@@ -6,11 +6,13 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 
 using namespace IMP::algebra;
 using namespace IMP::base;
 
-int main(int , char **) {
+int main(int argc, char **argv) {
+  IMP_BENCHMARK();
   set_log_level(SILENT);
   set_check_level(NONE);
   Vector3Ds vs(10000);

@@ -6,6 +6,7 @@
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/benchmark/command_line_macros.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/container/ListPairContainer.h>
 using namespace IMP;
@@ -175,7 +176,8 @@ void test_set(int n) {
 }
 
 
-int main(int , char **) {
+int main(int argc, char **argv) {
+  IMP_BENCHMARK();
   {
     test(100);
   }
