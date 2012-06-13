@@ -17,11 +17,11 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 
 void report(std::string name, double value, double check) {
   if (value < 0) {
-    IMP_WARN("Negative value passed: " << value << std::endl);
-    value=0;
+    // disabled
+  } else {
+    std::cout << boost::format("%s, %30t%.2e, %50t%1.1e")
+      %name % value % check << std::endl;
   }
-  std::cout << boost::format("%s, %30t%.2e, %50t%1.1e")
-    %name % value % check << std::endl;
 }
 
 

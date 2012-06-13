@@ -12,6 +12,7 @@
 #include "benchmark_config.h"
 #include "command_line.h"
 #include "Profiler.h"
+#include "internal/utility.h"
 #include "HeapProfiler.h"
 #include "LeakChecker.h"
 #include <boost/scoped_ptr.hpp>
@@ -59,6 +60,11 @@
          (&IMP::benchmark::leak_check_all)->zero_tokens(),              \
          "Check for leaks in the benchmark.");                          \
     desc.add_options()                                                  \
+      ("run_only",                                                      \
+       boost::program_options::value<int>                               \
+       (&IMP::benchmark::run_only),                                     \
+       "Run only the ith benchmark.");                                  \
+    desc.add_options()                                                  \
       extra_arguments;                                                  \
     boost::program_options::variables_map vm;                           \
     boost::program_options::store(boost::program_options                \
@@ -71,19 +77,24 @@
       std::cout << desc << "\n";                                        \
       return 1;                                                         \
     }                                                                   \
+    IMP::benchmark::benchmarks_name                                     \
+      = IMP::benchmark::internal::get_benchmarks_name(argv[0]);         \
     boost::scoped_ptr<IMP::benchmark::Profiler> profiler;               \
     if (IMP::benchmark::profile_all) {                                  \
-      profiler.reset(new IMP::benchmark::Profiler("benchmark.%1%.pprof")); \
+      std::string name=IMP::benchmark::benchmarks_name+".all.pprof";    \
+      profiler.reset(new IMP::benchmark::Profiler(name));               \
     }                                                                   \
     boost::scoped_ptr<IMP::benchmark::HeapProfiler> heap_profiler;      \
     if (IMP::benchmark::heap_profile_all) {                             \
+      std::string name=IMP::benchmark::benchmarks_name;                 \
       heap_profiler.reset(new                                           \
-                          IMP::benchmark::HeapProfiler("benchmark.hprof")); \
+                          IMP::benchmark::HeapProfiler(name));          \
     }                                                                   \
     boost::scoped_ptr<IMP::benchmark::LeakChecker> leak_checker;        \
     if (IMP::benchmark::leak_check_all) {                               \
+      std::string name=IMP::benchmark::benchmarks_name+".all";          \
       leak_checker.reset(new                                            \
-                         IMP::benchmark::LeakChecker("benchmark.%1%.leaks")); \
+                         IMP::benchmark::LeakChecker(name));            \
     }                                                                   \
   }
 
