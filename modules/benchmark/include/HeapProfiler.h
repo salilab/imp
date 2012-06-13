@@ -20,13 +20,14 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     \extern{http://gperftools.googlecode.com/,GPerTools} must be installed.
     */
 class IMPBENCHMARKEXPORT HeapProfiler: public base::RAII {
+  std::string name_;
   void start(std::string name);
   void stop();
  public:
   IMP_RAII(HeapProfiler, (std::string name),,start(name),
            stop(), out << "heap profiling");
-  //! dump the current state of memory
-  void dump();
+  //! dump the current state of memory to the file
+  void dump(std::string name);
 
 };
 IMPBENCHMARK_END_NAMESPACE

@@ -8,26 +8,25 @@
 
 #include <IMP/benchmark/LeakChecker.h>
 #include <IMP/base/log_macros.h>
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS)
+#include <IMP/base/utility.h>
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-checker.h>
-#elif defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
+#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 #include <google/heap-checker.h>
 #endif
 
 
 IMPBENCHMARK_BEGIN_NAMESPACE
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS) \
-  || defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
-
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS) \
+  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 
 void LeakChecker::start(std::string name) {
-  checker_.reset(new HeapLeakChecker(base::get_unique_name(name)));
+  std::string nname=base::get_unique_name(name);
+  checker_.reset(new HeapLeakChecker(nname.c_str()));
 }
 void LeakChecker::stop(){
   if (!checker_->NoLeaks()) {
-    // prevent loop
-    checker_.reset();
-    IMP_THROW("Memory leak detected", RuntimeError);
+    IMP_WARN("Memory leak detected" << std::endl);
   }
   checker_.reset();
 }

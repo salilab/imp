@@ -8,30 +8,34 @@
 
 #include <IMP/benchmark/HeapProfiler.h>
 #include <IMP/base/log_macros.h>
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS)
+#include <IMP/base/utility.h>
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-profiler.h>
-#elif defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
+#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 #include <google/heap-profiler.h>
 #endif
 
 
 IMPBENCHMARK_BEGIN_NAMESPACE
-#if defined(IMP_BENCHMARK_USE_GPROFTOOLS) \
-  || defined(IMP_BENCHMARK_USE_GOOGLEPROFTOOLS)
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS) \
+  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 
 void HeapProfiler::start(std::string name) {
-  HeapProfilerStart(base::get_unique_name(name).c_str());
+  name_=base::get_unique_name(name);
+  HeapProfilerStart(name_.c_str());
 }
 void HeapProfiler::stop(){
+  dump(name_);
   HeapProfilerStop();
 }
-void HeapProfiler::dump(){
-  HeapProfilerDump();
+void HeapProfiler::dump(std::string name){
+  HeapProfilerDump(name.c_str());
 }
 
 #else
 void HeapProfiler::start(std::string) {
-  IMP_WARN("GProfTools were not found, no profiling available.\n");
+  std::cerr << "GProfTools were not found, no profiling available."
+            << std::endl;
 }
 void HeapProfiler::stop(){}
 
