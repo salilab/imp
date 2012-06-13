@@ -31,7 +31,7 @@ def _check(context):
     context.Message('Checking for MODELLER...')
     modeller = context.env['modeller']
     if modeller is False or modeller == 0:
-        context.Result("not found")
+        context.Result("disabled (add modeller='yes' to enable)")
         return False
     if modeller is True:
         return _check_default(context)
