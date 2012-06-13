@@ -33,5 +33,5 @@ def setup_excludes(cov):
 
 def setup(env):
     """Make sure that coverage works for subprocesses"""
-    return env.InstallAs(target=env['builddir'] + '/lib/sitecustomize.py',
+    return env.InstallAs(target='#/build/lib/sitecustomize.py',
                          source='#/scons_tools/site-template.py')

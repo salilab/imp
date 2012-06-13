@@ -30,7 +30,7 @@ def _action_unit_test(target, source, env):
         disab = ' "%s"' % ":".join(disabled_modules)
     else:
         disab = ''
-    tmpdir=Dir(env["builddir"]+"/tmp").abspath
+    tmpdir=Dir("#/build/tmp").abspath
     tf=target[0].abspath
     filename= target[0].abspath
     execute = env.Execute
@@ -58,7 +58,7 @@ def _action_unit_test(target, source, env):
                 cmd += ' --output=%s.pycoverage' % tf
         if env.get('html_coverage', 'no') != 'no':
             cmd += ' --html_coverage=%s' \
-                   % Dir(env["builddir"]+"/coverage").abspath
+                   % Dir("#/build/coverage").abspath
 
         cmd+=" --results="+filename
         #if len(fsource) > 0:
@@ -73,7 +73,7 @@ def _action_unit_test(target, source, env):
         cmd= cmd+ ' --excluded='+":".join(dmod)
         cmd+=" --results="+filename
     elif type=='system':
-        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir(env["builddir"]+"/tmp").abspath
+        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
     else:
         utility.report_error(env, "Unknown test type "+type)
     print "tempfile", tf, tmpdir, target[0].path+".result"
@@ -102,7 +102,7 @@ def add_tests(env, source, type, expensive_source=[]):
     # Since all of the test scripts involve "import IMP.test", ensure this
     # is a source so that any Python dependencies of IMP.test (e.g. IMP.base)
     # are automatically picked up by pyscanner
-    testpy = env["builddir"] + "/lib/IMP/test/__init__.py"
+    testpy = "#/build/lib/IMP/test/__init__.py"
     test=UnitTest(env, target="fast-test.results",
                   source=["#/tools/imppy.sh", testpy]+source+[env.Value(type)])
     etest=UnitTest(env, target="test.results",
@@ -151,7 +151,7 @@ class TestCppProgram(IMP.test.TestCase):"""
         p = subprocess.Popen(["%(path)s"],
                              shell=False, cwd="%(libdir)s")
         self.assertEqual(p.wait(), 0)""" \
-       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir(env['builddir']+'/lib').abspath}
+       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
     print >> out, """
 if __name__ == '__main__':
     IMP.test.main()"""

@@ -325,9 +325,9 @@ def get_base_environment(variables=None, *args, **kw):
         _add_platform_flags(env)
     #col = colorizer.colorizer()
     #col.colorize(env)
-    env['PYTHONPATH'] = env['builddir']+'/lib'
+    env['PYTHONPATH'] = '#/build/lib'
     if env.get('pythonpath', None):
-        env['PYTHONPATH'] = os.path.pathsep.join([env['builddir']+'/lib']+[env['PYTHONPATH']])
+        env['PYTHONPATH'] = os.path.pathsep.join(['#/build/lib']+[env['PYTHONPATH']])
     env['all_modules']=[]
     #env.Decider('MD5-timestamp')
 
@@ -348,8 +348,8 @@ def get_base_environment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
-    env.Prepend(CPPPATH=[Dir(env['builddir']+'/include').abspath])
-    env.Prepend(LIBPATH=[env['builddir']+'/lib'])
+    env.Prepend(CPPPATH=[Dir('#/build/include').abspath])
+    env.Prepend(LIBPATH=[Dir('#/build/lib').abspath])
     env.Append(BUILDERS={'IMPRun': run.Run})
     # these should be in application, but...
     env.AddMethod(application.IMPApplication)
