@@ -37,7 +37,7 @@ class _WineEnvironment(Environment):
         self._fix_scons_msvc_detect()
 
         Environment.__init__(self, platform=platform, CC=CC, LINK=LINK, **kw)
-        posix_env = Environment(platform='posix')
+        posix_env = Environment(platform='posix', **kw)
         self['SHLIBPREFIX'] = self['LIBLINKPREFIX'] = self['LIBPREFIX'] = 'lib'
         self['WINDOWSEXPPREFIX'] = 'lib'
         self['LIBSUFFIX'] = '.lib'
