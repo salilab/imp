@@ -39,7 +39,9 @@ void HeapProfiler::start(std::string) {
 }
 void HeapProfiler::stop(){}
 
-void HeapProfiler::dump(){}
+void HeapProfiler::dump(std::string name){
+  IMP_UNUSED(name);
+}
 
 #endif
 
