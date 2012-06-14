@@ -16,6 +16,21 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
+typedef struct {
+  unsigned long ifft;
+  unsigned long ireal;
+  unsigned int ix;
+  unsigned int iy;
+  unsigned int iz;
+} FFTScore;
+typedef std::vector<FFTScore> FFTScores;
+
+typedef struct {
+  unsigned int rot_ind_;
+  double score_;
+} RotScore;
+typedef std::vector<RotScore> RotScores;
+
 class IMPMULTIFITEXPORT EulerAngles {
 public:
   EulerAngles(double in_psi,double in_theta,double in_phi) {
