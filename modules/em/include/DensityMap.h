@@ -589,7 +589,7 @@ IMPEMEXPORT void get_transformed_into(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
                                       DensityMap *into,
                                        bool calc_rms=true);
-IMPEMEXPORT void get_transformed_into2(const DensityMap *from,
+IMPEMEXPORT void get_transformed_into2(const DensityMap *source,
                                       const algebra::Transformation3D &tr,
                                        DensityMap *into);
 
@@ -677,7 +677,7 @@ DensityMap* interpolate_map(DensityMap *in_map,double new_spacing);
 IMPEMEXPORT
 algebra::GridD<3,
 algebra::DenseGridStorageD<3, float>, float >
-get_grid(DensityMap *in);
+get_grid(DensityMap *in_map);
 
 
 /** Return a density map with the values taken from the grid.
