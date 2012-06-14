@@ -140,6 +140,12 @@ class CoverageTester(object):
             self.cov.annotate(morfs)
 
         if self.opts.html_coverage:
+            # Add empty data for files that weren't executed at all
+            for m in morfs:
+                if m not in self.cov.data.lines:
+                    self.cov.data.lines[m] = {}
+                    self.cov.data.arcs[m] = {}
+
             # Save coverage info to be consolidated at the end of the build
             self.cov.data.write_file(os.path.join(self.opts.html_coverage,
                                              '.coverage.' + self.cov_suffix))
