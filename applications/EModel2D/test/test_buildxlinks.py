@@ -3,23 +3,23 @@ import IMP.test
 import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
-import IMP.algebra as alg
-import sys
-import os
-import itertools
-
 import IMP.em2d.utility as utility
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.imp_general.representation as representation
 import IMP.em2d.solutions_io as solutions_io
 import IMP.em2d.Database as Database
+import IMP.algebra as alg
+
+import sys
+import os
+import itertools
+import unittest
 
 try:
     import IMP.em2d.buildxlinks as bx
 except ImportError, detail:
     bx = None
     bxerr = str(detail)
-
 
 class TestBuildXlinks(IMP.test.TestCase):
 
@@ -57,7 +57,6 @@ class TestBuildXlinks(IMP.test.TestCase):
         self.xlinks = bx.Xlinks()
         for c in self.crosslinks:
             self.xlinks.add(*c)
-
 
 
     def test_xlinks(self):
@@ -101,9 +100,8 @@ class TestBuildXlinks(IMP.test.TestCase):
 
 
 class TestInitialDocking(IMP.test.TestCase):
-
-
     def setUp(self):
+
         IMP.test.TestCase.setUp(self)
         if bx is None:
             self.skipTest(bxerr)
