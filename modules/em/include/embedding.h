@@ -10,7 +10,7 @@
 
 #include "em_config.h"
 #include "DensityMap.h"
-#include <IMP/statistics/point_clustering.h>
+#include <IMP/statistics/embedding_macros.h>
 
 IMPEM_BEGIN_NAMESPACE
 
