@@ -36,6 +36,11 @@ class TestsDatabase(IMP.test.TestCase):
         tbls = self.db.get_tables_names()
         for tab, tbl in zip(self.tables, tbls):
             self.assertEqual(tab,tbl, "Names of the tables are not equal")
+
+        self.db.drop_table(self.tables[0])
+        tbls = self.db.get_tables_names()
+        self.assertTrue(not self.tables[0] in tbls)
+
         os.remove(self.fn)
 
     def test_columns(self):
@@ -56,14 +61,20 @@ class TestsDatabase(IMP.test.TestCase):
         """
             Test data entry and recovery
         """
-        data = [ (0, "width", 1.8), (1, "length", "3.54")]
         mytable = self.tables[0]
+        # store empty data (it should be ignored)
+        self.db.store_data(mytable, [])
+
+        data = [ (0, "width", 1.8), (1, "length", "3.54")]
         self.db.store_data(mytable, data)
         sql_command = """ SELECT * FROM %s """ % mytable
         recovered = self.db.retrieve_data(sql_command)
-        for d, r in zip(data, recovered):
-            for field, field_recovered in zip(d,r):
+        whole_table = self.db.get_table(mytable)
+        for d, r, wt in zip(data, recovered, whole_table):
+            for field, field_recovered, field_wt in zip(d,r, wt):
                 self.assertEqual(field, field_recovered)
+                self.assertEqual(field, field_wt)
+
         updated_value = 80
         self.db.update_data(mytable, ["value",],[updated_value,],
                                      ['property',],['"width"',])
@@ -75,6 +86,53 @@ class TestsDatabase(IMP.test.TestCase):
         self.assertEqual(recovered[0][0], updated_value)
         os.remove(self.fn)
 
+    def test_add_column(self):
+        """ Test of adding a column """
+        my_table = self.tables[0]
+        name = "newcol"
+        cols = self.db.get_table_column_names(my_table)
+        self.assertTrue(not name in cols)
+
+        self.db.add_column(my_table, name, float)
+        cols = self.db.get_table_column_names(my_table)
+        self.assertTrue(name in cols)
+
+        self.db.drop_columns(my_table, [name])
+        cols = self.db.get_table_column_names(my_table)
+        self.assertTrue(not name in cols)
+
+
+    def test_merging(self):
+        """ of merging databases """
+
+        db = Database.Database2()
+        my_table = "mytable"
+        column_names = ["id","property","value"]
+        column_types = [int, str, float]
+        fns = [self.get_input_file_name(name) for name in ["file1.db", "file2.pdb"]]
+        for fn in fns:
+            db.create(fn, True)
+            db.connect(fn)
+            db.create_table(my_table, column_names , column_types)
+            data = [ (0, "width", 5.6), (1, "length", "34")]
+            db.store_data( my_table, data)
+            db.close()
+        fn_output = self.get_input_file_name("file3.db")
+        Database.merge_databases(fns, fn_output, my_table)
+        db.connect(fn_output)
+        data = db.get_table(my_table)
+        self.assertEqual(len(data),4)
+        db.close()
+        for fn in fns:
+            os.remove(fn)
+        os.remove(fn_output)
+
+
+
+
+    def tearnDown(self):
+        os.remove(self.fn)
+        self.db.close()
 
 if __name__ == '__main__':
     IMP.test.main()
