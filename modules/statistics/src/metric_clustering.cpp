@@ -16,67 +16,6 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-Metric::Metric(std::string name): Object(name){}
-
-Metric::~Metric(){}
-
-EuclideanMetric::EuclideanMetric(Embedding *em):
-  Metric("Euclidean %1%"), em_(em){}
-double EuclideanMetric::get_distance(unsigned int i,
-                                       unsigned int j) const {
-  return algebra::get_distance(em_->get_point(i), em_->get_point(j));
-}
-
-unsigned int EuclideanMetric::get_number_of_items() const {
-  return em_->get_number_of_items();
-}
-
-void EuclideanMetric::do_show(std::ostream &) const {
-}
-
-
-ConfigurationSetRMSDMetric::ConfigurationSetRMSDMetric(ConfigurationSet *cs,
-                                                         SingletonContainer *sc,
-                                                         bool align):
-  Metric("CS RMS %1%"),
-  cs_(cs), sc_(sc), align_(align){
-
-}
-
-namespace {
-  algebra::Vector3Ds get_vectors(ConfigurationSet *cs,
-                        unsigned int i,
-                        SingletonContainer *sc) {
-    algebra::Vector3Ds ret;
-    cs->load_configuration(i);
-    IMP_FOREACH_SINGLETON(sc, {
-        ret.push_back(cs->get_model()->get_sphere(_1->get_index())
-                      .get_center());
-      });
-    return ret;
-  }
-}
-
-double ConfigurationSetRMSDMetric::get_distance(unsigned int i,
-                                                 unsigned int j) const {
-  algebra::Vector3Ds vi= get_vectors(cs_, i, sc_);
-  algebra::Vector3Ds vj= get_vectors(cs_, j, sc_);
-  algebra::Transformation3D tr;
-  if (align_) {
-    tr= algebra::get_transformation_aligning_first_to_second(vi, vj);
-  } else {
-    tr=algebra::get_identity_transformation_3d();
-  }
-  return atom::get_rmsd(vj, vi, tr);
-}
-
-unsigned int ConfigurationSetRMSDMetric::get_number_of_items() const {
-  return cs_->get_number_of_configurations();
-}
-
-void ConfigurationSetRMSDMetric::do_show(std::ostream &) const {
-}
-
 
 PartitionalClustering *create_centrality_clustering(Metric *d,
                                                  double far,
@@ -225,50 +164,6 @@ PartitionalClustering *create_diameter_clustering(Metric *d,
   IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters));
   validate_partitional_clustering(ret, d->get_number_of_items());
   return ret.release();
-}
-
-
-
-RecursivePartitionalClusteringMetric
-::RecursivePartitionalClusteringMetric(Metric *metric,
-                                       PartitionalClustering *clustering):
-  Metric("RecursivePartitionalClusteringMetric %1%"),
-  metric_(metric), clustering_(clustering){
-
-}
-
-PartitionalClustering*
- RecursivePartitionalClusteringMetric
-::create_full_clustering(PartitionalClustering *center_cluster) {
-  IMP::base::Vector<Ints>
-    clusters(center_cluster->get_number_of_clusters());
-  Ints reps(clusters.size());
-  for (unsigned int i=0; i< clusters.size(); ++i) {
-    Ints outer= center_cluster->get_cluster(i);
-    reps[i]=clustering_->get_cluster_representative(
-             center_cluster->get_cluster_representative(i));
-    for (unsigned int j=0; j< outer.size(); ++j) {
-      Ints inner= clustering_->get_cluster(outer[j]);
-      clusters[i].insert(clusters[i].end(),inner.begin(), inner.end());
-    }
-  }
-  IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters, reps));
-  validate_partitional_clustering(ret, metric_->get_number_of_items());
-  return ret.release();
-}
-
-
-double RecursivePartitionalClusteringMetric::get_distance(unsigned int i,
-                                       unsigned int j) const {
-  return metric_->get_distance(clustering_->get_cluster_representative(i),
-                               clustering_->get_cluster_representative(j));
-}
-
-unsigned int RecursivePartitionalClusteringMetric::get_number_of_items() const {
-  return clustering_->get_number_of_clusters();
-}
-
-void RecursivePartitionalClusteringMetric::do_show(std::ostream &) const {
 }
 
 

@@ -1,3 +1,7 @@
+%include "IMP/statistics/metric_macros.h"
+%include "IMP/statistics/embedding_macros.h"
+%include "IMP/statistics/partitional_clustering_macros.h"
+
 IMP_SWIG_ALGEBRA_VALUE_D(IMP::statistics, Histogram);
 
 IMP_SWIG_OBJECT(IMP::statistics, PartitionalClustering, PartitionalClusterings);
@@ -14,12 +18,19 @@ IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringMetric, Recursive
 IMP_SWIG_OBJECT(IMP::statistics, RecursivePartitionalClusteringEmbedding, RecursivePartitionalClusteringEmbeddings);
 
 
-%include "IMP/statistics/statistics_macros.h"
 %include "IMP/statistics/PartitionalClustering.h"
+%include "IMP/statistics/Embedding.h"
+%include "IMP/statistics/Metric.h"
+%include "IMP/statistics/PartitionalClusteringWithCenter.h"
+%include "IMP/statistics/embeddings.h"
+%include "IMP/statistics/metrics.h"
 %include "IMP/statistics/point_clustering.h"
 %include "IMP/statistics/Histogram.h"
 %include "IMP/statistics/metric_clustering.h"
 %include "IMP/statistics/HistogramD.h"
+%include "IMP/statistics/utility.h"
+%include "IMP/statistics/RecursivePartitionalClusteringEmbedding.h"
+%include "IMP/statistics/RecursivePartitionalClusteringMetric.h"
 
 IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::statistics, Histogram);
 %define IMP_SWIG_STATISTICS_HISTOGRAM_TEMPLATE(DD, NN)
