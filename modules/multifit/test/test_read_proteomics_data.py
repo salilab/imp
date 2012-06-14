@@ -26,7 +26,8 @@ class ReadProteomicsTests(IMP.test.TestCase):
         self.assertEqual(self.prot_data.get_ev_pair(0)[0],0)
         self.assertEqual(self.prot_data.get_ev_pair(0)[1],1)
         self.assertEqual(self.prot_data.get_num_allowed_violated_interactions(),1)
-        self.assertEqual(self.prot_data.get_num_allowed_violated_xlinks(),3)
+        self.assertEqual(self.prot_data.get_num_allowed_violated_cross_links(),
+                         3)
         self.assertEqual(self.prot_data.get_num_allowed_violated_ev(),2)
 
         print self.prot_data.get_interaction(0)

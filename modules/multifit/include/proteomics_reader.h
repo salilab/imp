@@ -97,8 +97,8 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
     interaction_in_filter_.push_back(used_for_filter);
     interaction_linker_len_.push_back(linker_len);
   }
-  void add_xlink_interaction(Int prot1,Int res1,Int prot2,Int res2,
-                             bool used_in_filter,Float linker_len){
+  void add_cross_link_interaction(Int prot1,Int res1,Int prot2,Int res2,
+                                  bool used_in_filter,Float linker_len){
     xlinks_.push_back(std::make_pair(IntPair(prot1,res1),IntPair(prot2,res2)));
     xlink_in_filter_.push_back(used_in_filter);
     xlink_len_.push_back(linker_len);
@@ -122,18 +122,18 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
                     "index out of range\n");
     return interaction_linker_len_[interaction_ind];
   }
-  int get_number_of_xlinks() const {return xlinks_.size();}
+  int get_number_of_cross_links() const {return xlinks_.size();}
   std::pair<IntPair,IntPair> get_xlink(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlinks_[xlink_ind];
   }
-  bool get_xlink_part_of_filter(int xlink_ind) const {
+  bool get_cross_link_part_of_filter(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlink_in_filter_[xlink_ind];
   }
-  bool get_xlink_length(int xlink_ind) const {
+  bool get_cross_link_length(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlink_len_[xlink_ind];
@@ -202,9 +202,9 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
     return num_allowed_violated_interactions_;}
   void set_num_allowed_violated_interactions(int n) {
     num_allowed_violated_interactions_=n;}
-  int get_num_allowed_violated_xlinks() const {
+  int get_num_allowed_violated_cross_links() const {
     return num_allowed_violated_xlinks_;}
-  void set_num_allowed_violated_xlinks(int n) {
+  void set_num_allowed_violated_cross_links(int n) {
     num_allowed_violated_xlinks_=n;}
   int get_num_allowed_violated_ev() const {
     return num_allowed_violated_ev_;}
