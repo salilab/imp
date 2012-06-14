@@ -105,6 +105,8 @@ class TestInitialDocking(IMP.test.TestCase):
 
     def setUp(self):
         IMP.test.TestCase.setUp(self)
+        if bx is None:
+            self.skipTest(bxerr)
         self.max_distance = 30
         self.crosslinks =  [       ("3sfdB", 23,"3sfdA",456,self.max_distance),
                                    ("3sfdB",241,"3sfdC",112,self.max_distance),
