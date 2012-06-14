@@ -6,11 +6,6 @@ import IMP.em2d as em2d
 import sys
 import os
 from math import *
-try:
-    import sqlite3 as sqlite
-except ImportError:
-    raise ImportError("The Python module SQlite is not present")
-
 import IMP.em2d.Database as Database
 
 
