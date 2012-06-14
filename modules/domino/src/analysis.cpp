@@ -7,6 +7,8 @@
  */
 #include <IMP/domino/analysis.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/statistics/embedding_macros.h>
+#include <IMP/statistics/PartitionalClusteringWithCenter.h>
 #include <IMP/statistics/point_clustering.h>
 #include <IMP/domino/particle_states.h>
 
