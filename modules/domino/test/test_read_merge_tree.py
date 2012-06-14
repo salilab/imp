@@ -54,11 +54,11 @@ class DBTests(IMP.test.TestCase):
         for v in mt.get_vertices():
             print mt.get_vertex_name(v)
         print "end first merge tree"
-        sortedParticles = []
 
         #write out first merge tree
-        for pName in sorted(namesToParticles.keys()):
-            sortedParticles.append(namesToParticles[pName])
+        sorted_keys = namesToParticles.keys()
+        sorted_keys.sort()
+        sortedParticles = [namesToParticles[x] for x in sorted_keys]
         outputFh = open(outputFile, 'w')
         IMP.domino.write_merge_tree(mt, sortedParticles, outputFh)
         outputFh.close()
