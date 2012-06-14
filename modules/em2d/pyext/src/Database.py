@@ -254,6 +254,26 @@ class Database2:
             for name, dtype in zip(names, types):
                 self.add_column(table, name, dtype)
 
+
+
+    def drop_columns(self, table, columns):
+        cnames = self.get_table_column_names(table)
+        for name in columns:
+            cnames.remove(name)
+        names_txt = ", ".join(cnames)
+        sql_command = [
+        "CREATE TEMPORARY TABLE backup(%s);" % names_txt,
+        "INSERT INTO backup SELECT %s FROM %s" % (names_txt, table),
+        "DROP TABLE %s;" % table,
+        "CREATE TABLE %s(%s);" % (table, names_txt),
+        "INSERT INTO %s SELECT * FROM backup;" % table,
+        "DROP TABLE backup;",
+        ]
+        for command in sql_command:
+            log.debug(command)
+            print command
+            self.cursor.execute(command)
+
     def get_tables_names(self):
         sql_command = """ SELECT tbl_name FROM sqlite_master """
         data = self.retrieve_data(sql_command)
@@ -315,7 +335,7 @@ def get_sorting_indices(l):
     """ Return indices that sort the list l """
     pairs = [(i,element) for i,element in enumerate(l)]
     pairs.sort()
-    indices = [p[1] for p in pairs]
+    indices = [p[0] for p in pairs]
     return indices
 
 def merge_databases(fns, fn_output, tbl):
