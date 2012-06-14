@@ -1,11 +1,6 @@
 %ignore IMP::multifit::GeometricHash::begin();
 %ignore IMP::multifit::GeometricHash::end();
 %include "std_vector.i"
-namespace std
-{
-  %template(DoubleVector) vector<double>;
-  %template(IntVector) vector<int>;
-}
 
 %include "IMP/multifit/GeometricHash.h"
 
