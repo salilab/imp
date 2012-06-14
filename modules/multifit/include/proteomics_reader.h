@@ -117,7 +117,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
                     "index out of range\n");
     return interaction_in_filter_[interaction_ind];
   }
-  int get_interaction_linker_lenght(int interaction_ind) const {
+  int get_interaction_linker_length(int interaction_ind) const {
     IMP_USAGE_CHECK(interaction_ind<(int)interaction_linker_len_.size(),
                     "index out of range\n");
     return interaction_linker_len_[interaction_ind];
