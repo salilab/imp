@@ -5,7 +5,6 @@
  *
  */
 #include <IMP/statistics/internal/centrality_clustering.h>
-#include <IMP/statistics/statistics_macros.h>
 #include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <IMP/Pointer.h>

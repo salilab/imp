@@ -1,26 +1,16 @@
 /**
- *  \file statistics_macros.h    \brief Various important macros
+ *  \file clustering_macros.h    \brief Various important macros
  *                           for implementing decorators.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPSTATISTICS_MACROS_H
-#define IMPSTATISTICS_MACROS_H
+#ifndef IMPSTATISTICS_CLUSTERING_MACROS_H
+#define IMPSTATISTICS_CLUSTERING_MACROS_H
 
-#include <IMP/macros.h>
-
-
-//! Define things needed for a Embedding
-/** In addition to what is done by IMP_OBJECT() it declares
-    - IMP::statistics::Embedding::get_embedding()
-    - IMP::statistics::Embedding::get_number_of_items()
-*/
-#define IMP_EMBEDDING(Name)                                        \
-  algebra::VectorKD get_point(unsigned int i) const;               \
-  unsigned int get_number_of_items() const;                        \
-  IMP_OBJECT(Name)
+#include "embedding_macros.h"
+#include <IMP/base/object_macros.h>
 
 //! Define things needed for a Metric
 /** In addition to what is done by IMP_OBJECT() it declares
@@ -45,4 +35,4 @@
   int get_cluster_representative(unsigned int i) const;         \
   IMP_OBJECT(Name)
 
-#endif  /* IMPSTATISTICS_MACROS_H */
+#endif  /* IMPSTATISTICS_CLUSTERING_MACROS_H */

@@ -11,6 +11,8 @@
 #include "IMP/random.h"
 #include "../statistics_config.h"
 #include "../PartitionalClustering.h"
+#include "../partitional_clustering_macros.h"
+#include <IMP/base/check_macros.h>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
 IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
@@ -31,7 +33,7 @@ public:
       }
     }
   }
-  IMP_CLUSTERING(TrivialPartitionalClustering);
+  IMP_PARTITIONAL_CLUSTERING(TrivialPartitionalClustering);
 };
 
 

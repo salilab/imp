@@ -1,0 +1,36 @@
+/**
+ *  \file Metric.h
+ *  \brief Cluster sets of points.
+ *
+ *  Copyright 2007-2012 IMP Inventors. All rights reserved.
+ *
+ */
+#ifndef IMPSTATISTICS_METRIC_H
+#define IMPSTATISTICS_METRIC_H
+
+#include "statistics_config.h"
+#include <IMP/base/Object.h>
+#include <IMP/base/object_macros.h>
+#include <IMP/base/ref_counted_macros.h>
+
+IMPSTATISTICS_BEGIN_NAMESPACE
+
+//! Compute a distance between two elements to be clustered
+/** Metric clustering needs a way of computing the
+    distances between the things being clustered.
+ */
+class IMPSTATISTICSEXPORT Metric: public IMP::base::Object {
+protected:
+  Metric(std::string name);
+ public:
+  virtual double get_distance(unsigned int i,
+                              unsigned int j) const =0;
+  virtual unsigned int get_number_of_items() const=0;
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Metric);
+};
+
+IMP_OBJECTS(Metric, Metrics);
+
+IMPSTATISTICS_END_NAMESPACE
+
+#endif /* IMPSTATISTICS_METRIC_H */
