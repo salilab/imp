@@ -25,7 +25,7 @@ class TestSampling(IMP.test.TestCase):
 
         n_transformations = 50
         db = Database.Database2()
-        fn = self.get_input_file_name('temp.db')
+        fn = 'temp.db'
         db.create(fn, overwrite=True)
         db.connect(fn)
 
