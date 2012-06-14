@@ -74,7 +74,7 @@ namespace {
     num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
   }
   std::cout<<"num_allowed_violations:"<<num_allowed_violations<<std::endl;
-  dp->set_num_allowed_violated_xlinks(num_allowed_violations);
+  dp->set_num_allowed_violated_cross_links(num_allowed_violations);
   return true;
   }
 
@@ -135,8 +135,8 @@ void parse_xlink_line(
   IMP_USAGE_CHECK(prot2_ind != -1,
                   "The protein "<<name2<<
                   " was not specified in the proteins list"<<std::endl);
-  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,use_in_jt,
-                            linker_len);
+  dp->add_cross_link_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,
+                                 use_in_jt, linker_len);
 }
 
 void parse_ev_line(
