@@ -27,21 +27,6 @@ class IMPMULTIFITEXPORT FFTFittingOutput {
   FittingSolutionRecords best_fits_;   //final fits
   FittingSolutionRecords best_trans_per_rot_;
 };
-typedef struct {
-  unsigned long ifft;
-  unsigned long ireal;
-  unsigned int ix;
-  unsigned int iy;
-  unsigned int iz;
-} FFTScore;
-typedef std::vector<FFTScore> FFTScores;
-
-typedef struct {
-  unsigned int rot_ind_;
-  double score_;
-} RotScore;
-typedef std::vector<RotScore> RotScores;
-
 
 class IMPMULTIFITEXPORT FFTFitting {
  protected:
@@ -98,12 +83,12 @@ class IMPMULTIFITEXPORT FFTFitting {
  unsigned int fftw_zero_padding_extent_[3]; // padding extent
  unsigned margin_ignored_in_conv_[3]; // margin that can be ignored
  //in convolution
- RotScores fits_hash_; //stores best fits
+ internal::RotScores fits_hash_; //stores best fits
  multifit::FittingSolutionRecords best_fits_;
- FFTScores fft_scores_;
+ internal::FFTScores fft_scores_;
  unsigned int inside_num_;
  unsigned int inside_num_flipped_;
- FFTScores fft_scores_flipped_;
+ internal::FFTScores fft_scores_flipped_;
  // algebra::Rotation3Ds rots_;
  multifit::internal::EulerAnglesList rots_;
 
@@ -121,8 +106,8 @@ class IMPMULTIFITEXPORT FFTFitting {
  void fftw_translational_search(const multifit::internal::EulerAngles &rot,
                                 int i);
  //! Detect the top fits
- multifit::FittingSolutionRecords detect_top_fits(const RotScores &rot_scores,
-                                                  bool cluster_fits);
+ FittingSolutionRecords detect_top_fits(const internal::RotScores &rot_scores,
+                                        bool cluster_fits);
  public:
   FFTFitting() {}
   ~FFTFitting();

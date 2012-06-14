@@ -282,7 +282,7 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
 
   //do the actual fitting
   //init results hash
-  fits_hash_.insert(fits_hash_.end(),nvox_,RotScore());
+  fits_hash_.insert(fits_hash_.end(),nvox_, internal::RotScore());
   for (unsigned int m=0;m<nvox_;m++)  {
     fits_hash_[m].rot_ind_=0;
     fits_hash_[m].score_=0.0;
@@ -512,7 +512,7 @@ void FFTFitting::prepare_probe (atom::Hierarchy mol2fit) {
 }
 
 multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
-                                              const RotScores &ccr,
+                                              const internal::RotScores &ccr,
                                               bool cluster_fits) {
   // Note: ccr has translations inverted due to definition
   //of Fourier correlation. We need to invert them back to the
@@ -791,7 +791,8 @@ void FFTFitting::prepare_poslist_flipped (em::DensityMap *dmap) {
       }
   mask_inside2=static_cast<em::DensityMap*>(nullptr);
   fft_scores_flipped_.clear();
-  fft_scores_flipped_.insert(fft_scores_.end(),inside_num_flipped_,FFTScore());
+  fft_scores_flipped_.insert(fft_scores_.end(),inside_num_flipped_,
+                             internal::FFTScore());
 
   //set position list
   int curr=0;
@@ -856,7 +857,7 @@ void FFTFitting::prepare_poslist (em::DensityMap *dmap) {
     }
   }
   fft_scores_.clear();
-  fft_scores_.insert(fft_scores_.end(),inside_num_,FFTScore());
+  fft_scores_.insert(fft_scores_.end(),inside_num_, internal::FFTScore());
 
   //set position list
   unsigned int curr=0;
