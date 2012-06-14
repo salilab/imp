@@ -20,7 +20,7 @@ namespace {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   if (line_split.size() != 1) return false;
@@ -38,7 +38,7 @@ namespace {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"Size :: "<<line_split.size()<<std::endl;
@@ -64,7 +64,7 @@ namespace {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
@@ -87,7 +87,7 @@ namespace {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
@@ -113,7 +113,7 @@ void parse_xlink_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
@@ -150,7 +150,7 @@ void parse_ev_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
@@ -177,7 +177,7 @@ void parse_protein_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   IMP_USAGE_CHECK((line_split.size() >= 3),
@@ -207,7 +207,7 @@ void parse_protein_line(
                   ref_filename
                  );
 }
-  //The format is: |0|prot1|prot2|...|protN|linker lenght|header1|header2|
+  //The format is: |0|prot1|prot2|...|protN|linker length|header1|header2|
   //0/1 means if the restraint should be included in junction tree
   //or used just for scoring
 void parse_interaction_line(
@@ -218,12 +218,12 @@ void parse_interaction_line(
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 5,
    "no data to parse. the last two tabs should contain header data\n."
-   <<" The format is: |0/1|prot1|prot2|...|protN|linker lenght|"<<
+   <<" The format is: |0/1|prot1|prot2|...|protN|linker length|"<<
    "header1|header2| \n");
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
@@ -320,7 +320,7 @@ ProteomicsData get_partial_proteomics_data(
         new_inds.push_back(index_map[*it]);
       }
       ret.add_interaction(new_inds,pd.get_interaction_part_of_filter(i),
-                          pd.get_interaction_linker_lenght(i));
+                          pd.get_interaction_linker_length(i));
     }
   }
   return ret;

@@ -19,7 +19,7 @@ bool is_edges_line(const std::string &line) {
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   if (line_split.size() != 1) return false;
@@ -35,7 +35,7 @@ algebra::Vector3D parse_point_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   IMP_USAGE_CHECK(line_split.size() == 4,
@@ -53,7 +53,7 @@ IntPair parse_edge_line(const std::string &line){
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero lenght entires as well
+  //split returns zero length entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   IMP_USAGE_CHECK(line_split.size() == 2,"wrong edge format for line ("
