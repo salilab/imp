@@ -20,7 +20,7 @@ class TestsDatabase(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.db = Database.Database2()
-        self.fn = self.get_input_file_name("test.db")
+        self.fn = "test.db"
         self.db.create(self.fn, True)
         self.db.connect(self.fn)
         self.tables = ["mytable1", "mytable2"]
@@ -109,7 +109,7 @@ class TestsDatabase(IMP.test.TestCase):
         my_table = "mytable"
         column_names = ["id","property","value"]
         column_types = [int, str, float]
-        fns = [self.get_input_file_name(name) for name in ["file1.db", "file2.pdb"]]
+        fns = ["file1.db", "file2.pdb"]
         for fn in fns:
             db.create(fn, True)
             db.connect(fn)
@@ -117,7 +117,7 @@ class TestsDatabase(IMP.test.TestCase):
             data = [ (0, "width", 5.6), (1, "length", "34")]
             db.store_data( my_table, data)
             db.close()
-        fn_output = self.get_input_file_name("file3.db")
+        fn_output = "file3.db"
         Database.merge_databases(fns, fn_output, my_table)
         db.connect(fn_output)
         data = db.get_table(my_table)
