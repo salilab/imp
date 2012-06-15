@@ -25,8 +25,7 @@ class MeasuresTest(IMP.test.TestCase):
                                                cen+IMP.algebra.Vector3D(j,j,j))
 
                 ts.add_solution(t,1.)
-        out_ts=IMP.em.FittingSolutions()
-        IMP.multifit.fitting_clustering(mh,ts,out_ts,3,100,30)
+        out_ts=IMP.multifit.fitting_clustering(mh,ts,3,100,30)
         self.assertEqual(out_ts.get_number_of_solutions(),4)
 
 if __name__ == '__main__':

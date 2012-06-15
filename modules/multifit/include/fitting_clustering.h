@@ -17,19 +17,16 @@
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 /**
 \param[in] pdb_filename cluster transformations with respect to this protein
 \param[in] ts the transformations with respect to the transformation in the PDB
-\param[out] clsutered_ts the clustered transformations
 \param[in] spacing transformations with rmsd < spacing*2 are clustered together
+\return the clustered transformations
 */
-void IMPMULTIFITEXPORT fitting_clustering (
-    const IMP::atom::Hierarchy &mh,
-    const IMP::em::FittingSolutions &ts,
-    IMP::em::FittingSolutions &clustered_ts,float spacing,
-    int top_sols,float rmsd);
-#endif
+em::FittingSolutions IMPMULTIFITEXPORT fitting_clustering (
+    const atom::Hierarchy &mh,
+    const em::FittingSolutions &ts,
+    float spacing, int top_sols,float rmsd);
 
 IMPMULTIFIT_END_NAMESPACE
 
