@@ -22,8 +22,12 @@ namespace {
     std::ostringstream oss;
     if (contexts[i].second) {
       const Object *o= reinterpret_cast<const Object*>(contexts[i].second);
-      IMP_CHECK_OBJECT(o);
-      oss << o->get_name() << "::" << contexts[i].first;
+      // this is called on errors, so don't cause any more
+      if (!o || !o->get_is_valid()) {
+        oss << "InvalidObject" << "::" << contexts[i].first;
+      } else {
+        oss << o->get_name() << "::" << contexts[i].first;
+      }
     } else {
       oss << contexts[i].first;
     }
