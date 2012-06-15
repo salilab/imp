@@ -15,7 +15,6 @@
 #include <IMP/core/HarmonicLowerBound.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/core/SphereDistancePairScore.h>
-#include <IMP/core/DistancePairScore.h>
 #include <IMP/core/PairRestraint.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/TableRefiner.h>
