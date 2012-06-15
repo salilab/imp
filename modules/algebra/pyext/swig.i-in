@@ -1,5 +1,5 @@
 %include "IMP/algebra/geometric_primitive_macros.h"
-%include "IMP_algebra_types.i"
+%include "IMP_algebra.types.i"
 %pythoncode %{
 def get_vector(v):
    try:
@@ -73,10 +73,10 @@ namespace multi_array_types {
 %template(_GeometricPrimitive6D) IMP::algebra::GeometricPrimitiveD<6>;
 %template(_GeometricPrimitiveKD) IMP::algebra::GeometricPrimitiveD<-1>;
 
-%include "IMP_algebra_bounding_box.i"
-%include "IMP_algebra_vector.i"
-%include "IMP_algebra_transformation2d.i"
-%include "IMP_algebra_transformation3d.i"
+%include "IMP_algebra.bounding_box.i"
+%include "IMP_algebra.vector.i"
+%include "IMP_algebra.transformation2d.i"
+%include "IMP_algebra.transformation3d.i"
 
 /* Wrap our own classes */
 %include "IMP/algebra/VectorD.h"
@@ -99,9 +99,9 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/ReferenceFrame3D.h"
 
 
-%include "IMP_algebra_matrix2d.i"
-%include "IMP_algebra_matrix3d.i"
-%include "IMP_algebra_spherical_coords.i"
+%include "IMP_algebra.matrix2d.i"
+%include "IMP_algebra.matrix3d.i"
+%include "IMP_algebra.spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/Triangle3D.h"

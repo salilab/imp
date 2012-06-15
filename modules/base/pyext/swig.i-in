@@ -1,4 +1,4 @@
-%include "IMP_base_random.i"
+%include "IMP_base.random.i"
 
 namespace IMP {
 namespace base {

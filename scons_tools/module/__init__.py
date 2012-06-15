@@ -400,7 +400,7 @@ def IMPModuleGetHeaders(env):
 def IMPModuleGetSwigFiles(env):
     vars=_get_module_variables(env)
     prefix=vars['module_pylibname'][1:]
-    files=scons_tools.utility.get_matching([prefix+"_*.i"])
+    files=scons_tools.utility.get_matching([prefix+".*.i"])
     return files
 
 def IMPModuleGetPython(env):
