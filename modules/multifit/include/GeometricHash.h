@@ -35,7 +35,7 @@ public:
   typedef typename GeomMap::iterator iterator;
   typedef typename GeomMap::const_iterator const_iterator;
   typedef std::vector< const ValueType *> HashResult;
-  typedef std::vector<T> HashResultT;
+  typedef IMP::base::Vector<T> HashResultT;
   typedef std::vector<Bucket> BucketList;
 
 
