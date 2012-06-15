@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import IMP.em2d.imp_general.io as io
 import IMP.em2d.Database as Database
 

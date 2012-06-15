@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 import IMP
 import IMP.core as core
 import IMP.atom as atom
