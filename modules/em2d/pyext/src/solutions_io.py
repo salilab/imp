@@ -124,8 +124,9 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
                     # as a HeapRecord is used
                     if(best_records[0] < a):
                         heapq.heapreplace(best_records, a)
-        except Exception, e:
-            log.error("Error for %s: %s",fn, e)
+        except Exception:
+            type_expc, instance, traceback_obj = sys.exc_info()
+            log.error("Error for file %s: %s",fn, instance)
             n_problems += 1
 
     # If the number of problematic files is too high, report that something
@@ -177,8 +178,9 @@ def gather_solution_results(fns, fn_output, raisef=0.1):
             data = db.retrieve_data(sql_command)
             out_db.store_data(tbl, data)
             db.close()
-        except Exception, e:
-            log.error("Error for file %s: %s",fn, e)
+        except Exception:
+            type_expc, instance, traceback_obj = sys.exc_info()
+            log.error("Error for file %s: %s",fn, instance)
             n_problems += 1
     ratio = float(n_problems)/float(len(fns))
     if ratio > raisef:
