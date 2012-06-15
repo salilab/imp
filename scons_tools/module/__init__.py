@@ -400,6 +400,8 @@ def IMPModuleGetHeaders(env):
 def IMPModuleGetSwigFiles(env):
     vars=_get_module_variables(env)
     prefix=vars['module_pylibname'][1:]
+    if prefix=="IMP":
+        prefix="IMP_kernel"
     files=scons_tools.utility.get_matching([prefix+".*.i"])
     return files
 
