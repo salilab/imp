@@ -22,11 +22,6 @@
 #include "masking.h"
 IMPEM_BEGIN_NAMESPACE
 
-// an advantage of using const double over define is that it limits the use
-// of pointers to affect the data:
-//#define PI 3.141592653589793238462643383
-//define could be manipulated with a const *int ptr declaration.
-
 enum KernelType {
   GAUSSIAN,BINARIZED_SPHERE,SPHERE
 };
