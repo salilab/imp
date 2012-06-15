@@ -1,4 +1,5 @@
 Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
+                  expensive_python_tests=env.IMPModuleGetExpensivePythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests())
