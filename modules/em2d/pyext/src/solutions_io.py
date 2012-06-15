@@ -123,7 +123,7 @@ def gather_best_solution_results(fns, fn_output, max_number=50000,
                     if(best_records[0] < a):
                         heapq.heapreplace(best_records, a)
         except Exception, e:
-            log.error("Error for file %s: %s",fn, e)
+            log.error("Error for %s: %s",fn, e)
             n_problems += 1
 
     # If the number of problematic files is too high, report that something
