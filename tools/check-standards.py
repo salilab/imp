@@ -133,6 +133,7 @@ def main():
     errors = []
     if len(sys.argv) == 1:
         modfiles= get_all_files()
+        print "usage:", sys.argv[0], "file_patterns"
     else:
         modfiles = sys.argv[1:]
     for pattern in modfiles:
