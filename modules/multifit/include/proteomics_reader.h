@@ -123,7 +123,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
     return interaction_linker_len_[interaction_ind];
   }
   int get_number_of_cross_links() const {return xlinks_.size();}
-  std::pair<IntPair,IntPair> get_xlink(int xlink_ind) const {
+  std::pair<IntPair,IntPair> get_cross_link(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlinks_[xlink_ind];
