@@ -2,4 +2,6 @@ Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   expensive_python_tests=env.IMPModuleGetExpensivePythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests())
+                  cpp_tests= env.IMPModuleGetCPPTests(),
+                  spelling_exceptions=['cn', 'symm', 'proteomics', 'pdb',
+                                       'pca', 'rmsd', 'patchdock'])
