@@ -51,11 +51,10 @@ public:
   int get_index() const {return orig_index_;}
 };
 
-void fitting_clustering (
+em::FittingSolutions fitting_clustering (
     const atom::Hierarchy &mh,
     const em::FittingSolutions &ts,
-    em::FittingSolutions &clustered_ts,float spacing,
-    int top_sols,float rmsd) {
+    float spacing, int top_sols,float rmsd) {
 
   //translate imp tranformations to gamb transformations
   //and prepare for clustering
@@ -72,13 +71,15 @@ void fitting_clustering (
   clusterer.prepare(core::get_leaves(mh));
   clusterer.set_bin_size(2.0*spacing);
   clusterer.cluster(rmsd,f_ts,clustered_ts_temp);
-  IMP_LOG(TERSE,"number of clustered transformations "
-          << clustered_ts.get_number_of_solutions() << std::endl);
   //set output
+  em::FittingSolutions clustered_ts;
   for(unsigned int i=0;i<clustered_ts_temp.size();i++) {
     clustered_ts.add_solution(
                     clustered_ts_temp[i].get_representative_transformation(),
                               clustered_ts_temp[i].get_score());
   }
+  IMP_LOG(TERSE,"number of clustered transformations "
+          << clustered_ts.get_number_of_solutions() << std::endl);
+  return clustered_ts;
 }
 IMPMULTIFIT_END_NAMESPACE
