@@ -8,14 +8,14 @@ import scons_tools.module
 import scons_tools.data
 
 # standard include files
-base_includes= ["IMP_base_macros.i",
-                "IMP_base_exceptions.i",
-                "IMP_base_directors.i",
-                "IMP_base_types.i",
-                "IMP_base_refcount.i",
-                "IMP_base_streams.i",
-                "IMP_base_streams_kernel.i"]
-kernel_includes= ["IMP_kernel_macros.i"]
+base_includes= ["IMP_base.macros.i",
+                "IMP_base.exceptions.i",
+                "IMP_base.directors.i",
+                "IMP_base.types.i",
+                "IMP_base.refcount.i",
+                "IMP_base.streams.i",
+                "IMP_base.streams_kernel.i"]
+kernel_includes= ["IMP_kernel.macros.i"]
 
 
 def _null_scanner(node, env, path):
@@ -264,7 +264,7 @@ def _action_version_check(target, source, env):
     def get_module(name):
         dta= scons_tools.data.get(env)
         ln= dta.modules[mn].libname
-        inm= ln.replace("_", ".").replace("imp", "IMP")
+        inm= ln.replace("imp_", "imp.").replace("imp", "IMP")
         return inm
     out= open(target[0].abspath, "w")
     print >> out, "def check_version(myversion):"
@@ -318,16 +318,16 @@ def swig_scanner(node, env, path):
 
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
                 +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
-            mn= x.split("_")[0]
+            mn= x.split(".")[0]
             if not dta.modules[mn].external:
                 ret.append("#/build/swig/IMP_"+x+".i")
         if not dta.modules["RMF"].external:
             if re.search('\n%include\s"RMF.i"', contents)\
                     or re.search('\n%import\s"RMF.i"', contents):
                 ret.append("#/build/swig/RMF.i")
-            for x in re.findall('\n%include\s"RMF_([^"]*).i"', contents)\
-                    +re.findall('\n%import\s"RMF_([^"]*).i"', contents):
-                ret.append("#/build/swig/RMF_"+x+".i")
+            for x in re.findall('\n%include\s"RMF.([^"]*).i"', contents)\
+                    +re.findall('\n%import\s"RMF.([^"]*).i"', contents):
+                ret.append("#/build/swig/RMF."+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()

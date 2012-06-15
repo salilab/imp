@@ -254,7 +254,7 @@ namespace IMP {
 
 %include "IMP/declare_Restraint.h"
 %include "IMP/declare_RestraintSet.h"
-%include "IMP_kernel_particle.i"
+%include "IMP_kernel.particle.i"
 %include "IMP/dependency_graph.h"
 %include "IMP/declare_ScoringFunction.h"
 %include "IMP/declare_Model.h"
