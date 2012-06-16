@@ -27,7 +27,7 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
         directory = self.get_input_file_name("")
         os.chdir(directory)
         fn_database = self.get_input_file_name("monte_carlo_output_database.db")
-        domino_model.generate_monte_carlo_model(fn_config, fn_database, seed=-1,
+        domino_model.generate_monte_carlo_model(exp, fn_database, seed=-1,
                                                         write_solution=True)
         # test that the database and pdb files are generated and that they
         # are not empty

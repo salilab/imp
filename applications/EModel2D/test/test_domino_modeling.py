@@ -31,7 +31,7 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
         for i in range(len(exp.fn_pdbs)):
             exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
         fn_output_db = self.get_input_file_name("domino_solutions_temp.db")
-        domino_model.generate_domino_model(fn, fn_output_db)
+        domino_model.generate_domino_model(exp, fn_output_db)
         # assert that a database of results is created
         self.assertTrue(os.path.exists(fn_output_db))
         self.assertGreater(os.path.getsize(fn_output_db),0)

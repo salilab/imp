@@ -30,7 +30,7 @@ class TestClusterSolutions(IMP.test.ApplicationTestCase):
         n_solutions = 30
         orderby = "em2d"
         max_rmsd = 10
-        tc = em2d_cluster_solutions.AlignmentClustering(exp )
+        tc = em2d_cluster_solutions.AlignmentClustering(exp)
         tc.cluster(fn_database, n_solutions, orderby, max_rmsd)
         tc.store_clusters(fn_db_clusters, "clusters")
 
