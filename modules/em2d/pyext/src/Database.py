@@ -301,7 +301,7 @@ class Database2:
 def print_data(data, delimiter=" "):
     """ Prints the data recovered from a database """
     for row in data:
-        line = delimiter.join(str(x) for x in row)
+        line = delimiter.join([str(x) for x in row])
         print line
 
 def write_data(data,output_file,delimiter=" "):
