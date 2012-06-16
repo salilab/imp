@@ -56,12 +56,18 @@ public:
       surface_filename_=surface_fn;
       ref_filename_=ref_fn;
     }
+
+    IMP_SHOWABLE_INLINE(ProteinRecordData, { out << name_; });
+
     std::string name_;
     int start_res_,end_res_;
     std::string filename_;
     std::string surface_filename_;
     std::string ref_filename_;
   };
+
+IMP_VALUES(ProteinRecordData, ProteinRecordDataList);
+
 class IMPMULTIFITEXPORT ProteomicsData {//: public IMP::base::Object {
  protected:
  public:

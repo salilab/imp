@@ -15,9 +15,11 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-class IMPMULTIFITEXPORT SymmetricFit
+class IMPMULTIFITEXPORT SymmetricFit : public IMP::base::Object
 {
 public:
+  SymmetricFit() : Object("SymmetricFit%1%") {}
+
   void set_patchdock_executable(std::string const &patchdock_executable);
   void set_protein_pdb_file(std::string const &prot_pdb);
   void set_protein_ms_file(std::string const &ms_file);
@@ -34,6 +36,8 @@ public:
 
   void run(std::string const &output_filename,
       std::string const &chimera_filename);
+
+  IMP_OBJECT_INLINE(SymmetricFit, {}, {});
 
 private:
   void write_config(std::ostream &os) const;
