@@ -41,15 +41,14 @@ def setup_sampling_schema(model, exp):
         model.set_rb_states(rb, sampling_schema.get_sampling_transformations(i))
 
 
-def write_pdbs_for_solutions(fn_params, fn_database, n=10, orderby="em2d"):
+def write_pdbs_for_solutions(exp, fn_database, n=10, orderby="em2d"):
     """
         Write PDBs for the solutions in the database
-        @param fn_params See help for the script
+        @param exp class with the parameters for the experiment
         @param fn_database File containing the database of solutions
         @param n Number of solutions to write
         @param orderby Restraint used for sorting the solutions
     """
-    exp = utility.get_experiment_params(fn_params)
     m = DominoModel.DominoModel()
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     db = solutions_io.ResultsDB()
@@ -63,10 +62,10 @@ def write_pdbs_for_solutions(fn_params, fn_database, n=10, orderby="em2d"):
         fn = "solution-%03d.pdb" % i
         m.write_pdb_for_reference_frames(RFs,fn)
 
-def write_nth_largest_cluster(fn_params, fn_database, fn_db_clusters,
+def write_nth_largest_cluster(exp, fn_database, fn_db_clusters,
                                         position, table_name="clusters"):
     """
-        @param fn_params See help for the script
+        @param exp class with the parameters for the experiment
         @param fn_database Database file with the reference frames of the
                     solutions
         @param fn_db_clusters Database file for the clusters.
@@ -76,7 +75,6 @@ def write_nth_largest_cluster(fn_params, fn_database, fn_db_clusters,
         @param position Cluster position (by number of elements) requested.
                                            The index of largest cluster is 1.
     """
-    exp = utility.get_experiment_params(fn_params)
     m = DominoModel.DominoModel()
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     # get cluster
@@ -98,16 +96,15 @@ def write_nth_largest_cluster(fn_params, fn_database, fn_db_clusters,
         log.debug(fn)
         m.write_pdb_for_reference_frames(RFs, fn)
 
-def generate_domino_model(fn_params, fn_database, fn_log = None):
+def generate_domino_model(exp, fn_database, fn_log = None):
     """
         Generate a model for an assembly using DOMINO.
-        @param fn_params See help for the script
+        @param exp Class with the parameters for the experiment
         @param fn_database Databse file that will contain the solutions
                     SQLite format
     """
     log.info(io.imp_info([IMP, em2d]))
     t0 = time.time()
-    exp = utility.get_experiment_params(fn_params)
     m = DominoModel.DominoModel()
     if exp.test_opts.do_test:
         m.set_assembly(exp.test_opts.test_fn_assembly, exp.names)
@@ -201,11 +198,11 @@ def set_em2d_restraints(exp, model):
             model.set_em2d_restraint(*r_params)
 
 
-def generate_monte_carlo_model(fn_params, fn_database, seed,
+def generate_monte_carlo_model(exp, fn_database, seed,
                                write_solution=True, fn_log = None):
     """
         Generate a model for an assembly using MonteCarlo optimization
-        @param fn_params See help for the script
+        @param exp Class with the parameters for the experiment
         @param fn_database Datbase file where the solutions will be written.
                             SQLite format.
         @param write_solution If True, writes a PDB with the final model
@@ -213,7 +210,6 @@ def generate_monte_carlo_model(fn_params, fn_database, seed,
     """
     log.info(io.imp_info([IMP, em2d]))
     # IMP.set_log_level(IMP.TERSE)
-    exp = utility.get_experiment_params(fn_params)
     m = DominoModel.DominoModel()
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     set_pair_score_restraints(exp, m)
@@ -245,10 +241,7 @@ def generate_monte_carlo_model(fn_params, fn_database, seed,
 
 
 
-
-
-
-def create_dockings_from_xlinks(fn_params):
+def create_dockings_from_xlinks(exp):
     """
         Perform dockings that satisfy the cross-linking restraints.
         1) Based on the number of restraints, creates an order for the
@@ -263,12 +256,11 @@ def create_dockings_from_xlinks(fn_params):
            the cross-linking restraints
         5) Computes the relative transformations between the rigid bodies
            of the subunits that have been docked
-        @param fn_params See the help for the script
+        @param exp Class with the parameters for the experiment
     """
     log.info("Creating initial assembly from xlinks and docking")
     import docking_related as dock
     import buildxlinks as bx
-    exp = utility.get_experiment_params(fn_params)
     m = DominoModel.DominoModel()
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     set_xlink_restraints(exp, m)
@@ -414,7 +406,6 @@ if __name__ == "__main__":
                      help="Align the best solutions to the " \
                             "native using the DRMS of the centroids.")
 
-
     args = parser.parse_args()
     args = args[0]
     if len(sys.argv) == 1:
@@ -424,7 +415,7 @@ if __name__ == "__main__":
         logging.basicConfig(filename=args.log, filemode="w")
     else:
         logging.basicConfig(stream=sys.stdout)
-    logging.root.setLevel(logging.INFO)
+    logging.root.setLevel(logging.DEBUG)
 
     if args.merge:
         max_number_of_results = 100000
@@ -448,7 +439,8 @@ if __name__ == "__main__":
                          "results and the name of the restraint to order by")
         if args.orderby == "False":
             args.orderby = False
-        write_pdbs_for_solutions(args.fn_params, args.fn_database,
+        exp = utility.get_experiment_params(arg.fn_params)
+        write_pdbs_for_solutions(exp, args.fn_database,
                                  args.write, args.orderby, )
         sys.exit()
 
@@ -457,8 +449,8 @@ if __name__ == "__main__":
             raise ValueError("Writting clusters requires the database file")
         fn_db_clusters = args.write_cluster[0]
         position = int(args.write_cluster[1])
-
-        write_nth_largest_cluster(args.fn_params,  args.fn_database,
+        exp = utility.get_experiment_params(arg.fn_params)
+        write_nth_largest_cluster(exp,  args.fn_database,
                                   fn_db_clusters, position )
         sys.exit()
 
@@ -466,18 +458,22 @@ if __name__ == "__main__":
         if not args.fn_database or not args.orderby:
             raise ValueError("Writting models requires the database of " \
                             "results and the name of the restraint to order by")
-        write_pdbs_aligned_by_cdrms(args.fn_params, args.fn_database,
+        exp = utility.get_experiment_params(arg.fn_params)
+
+        write_pdbs_aligned_by_cdrms(exp, args.fn_database,
                                     args.cdrms, args.orderby)
         sys.exit()
 
-    if args.monte_carlo :
-        generate_monte_carlo_model(args.fn_params,
+    if args.monte_carlo:
+        exp = utility.get_experiment_params(arg.fn_params)
+        generate_monte_carlo_model(exp,
                                    args.fn_database, args.monte_carlo)
         sys.exit()
 
     if args.dock:
-        create_dockings_from_xlinks(args.fn_params)
+        exp = utility.get_experiment_params(arg.fn_params)
+        create_dockings_from_xlinks(exp)
         sys.exit()
 
-
-    generate_domino_model(args.fn_params, args.fn_database)
+    exp = utility.get_experiment_params(exp)
+    generate_domino_model(exp, args.fn_database)
