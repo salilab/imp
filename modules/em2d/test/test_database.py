@@ -36,8 +36,6 @@ class TestsDatabase(IMP.test.TestCase):
         tbls = self.db.get_tables_names()
         self.assertTrue(not self.tables[0] in tbls)
 
-        os.remove(self.fn)
-
     def test_columns(self):
         """
             Test the names of the columns
@@ -50,7 +48,6 @@ class TestsDatabase(IMP.test.TestCase):
                                     types,  self.column_types):
                 self.assertEqual(c,n,
                             "Names of the columns in tables do not match")
-        os.remove(self.fn)
 
     def test_data(self):
         """
@@ -79,7 +76,6 @@ class TestsDatabase(IMP.test.TestCase):
 
         recovered = self.db.retrieve_data(sql_command)
         self.assertEqual(recovered[0][0], updated_value)
-        os.remove(self.fn)
 
     def test_add_column(self):
         """ Test of adding a column """
@@ -122,12 +118,9 @@ class TestsDatabase(IMP.test.TestCase):
             os.remove(fn)
         os.remove(fn_output)
 
-
-
-
-    def tearnDown(self):
-        os.remove(self.fn)
+    def tearDown(self):
         self.db.close()
+        os.remove(self.fn)
 
 if __name__ == '__main__':
     IMP.test.main()
