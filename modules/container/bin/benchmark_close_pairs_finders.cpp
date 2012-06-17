@@ -96,7 +96,7 @@ void test_one(std::string name,
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
 #if IMP_BUILD == IMP_DEBUG

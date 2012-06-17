@@ -12,7 +12,7 @@ using namespace IMP::algebra;
 using namespace IMP::base;
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   set_log_level(SILENT);
   set_check_level(NONE);
   Vector3Ds vs(10000);
