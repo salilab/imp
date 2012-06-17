@@ -3,6 +3,9 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker", "Daniel Russel"],
                  brief="This module provides methods for clustering, histograms and other statistical computations.",
-                 overview="This module provides code to compute clusterings. Adaptors are provided that allow easy clustering of points, and configurations of models in IMP::ConfigurationSet objects among other things.",
+                 overview="""This module provides code to compute clusterings. Data to be clustered
+                 is represented one of two ways, either with an IMP::statistics::Embedding or a
+                 IMP::statistics::Metric. The representation is then passed to an algorithm that
+                 returns a clustering object such as an IMP::statistics::PartitionalClustering.""",
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())

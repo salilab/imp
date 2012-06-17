@@ -15,7 +15,7 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-//! Map clustering data to spatial positions
+//! Store data to be clustered for embedding based algorithms.
 /** Point-based clustering needs a way of embedding the data being clustered
     in space. Classes which implement Embedding provide a
     mapping between each item being clustered (named by an integer index)
