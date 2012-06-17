@@ -15,11 +15,11 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-//! The base class for clusterings of data sets
+//! A base class for clustering results where each item is in one cluster
 /** Data items are represented by an index. In a partitional clustering
-    each item can only be contained on one cluster. The mapping between
-    data items and the information needed by the clustering algorithm is
-    maintained by a helper object such as Embedding.
+    each item can only be contained on one cluster. The indexes used refer
+    to the index used in the Metric or Embedding used to generate the
+    clustering.
 */
 class IMPSTATISTICSEXPORT PartitionalClustering: public IMP::base::Object {
  public:

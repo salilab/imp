@@ -15,9 +15,11 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
-//! Compute a distance between two elements to be clustered
+//! Store data to be clustered for distance metric based algorithms
 /** Metric clustering needs a way of computing the
-    distances between the things being clustered.
+    distances between the things being clustered. Classes that
+    implement this abstract base class provide a way of getting the
+    distance between any two items.
  */
 class IMPSTATISTICSEXPORT Metric: public IMP::base::Object {
 protected:
