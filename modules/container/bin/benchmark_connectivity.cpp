@@ -38,7 +38,7 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   unsigned int npart=1000;
   set_log_level(SILENT);
   //set_check_level(NONE);

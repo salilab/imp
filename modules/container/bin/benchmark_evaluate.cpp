@@ -177,7 +177,7 @@ void test_set(int n) {
 
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   {
     test(100);
   }

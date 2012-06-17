@@ -66,7 +66,7 @@ void test_uniform(std::string name,
 }
 
 int main(int argc, char** argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
 #ifdef IMP_BENCHMARK_USE_ANN
   {
     std::string name("ann");

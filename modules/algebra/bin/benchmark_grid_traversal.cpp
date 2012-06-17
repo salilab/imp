@@ -61,7 +61,7 @@ void benchmark(const Grid &g,
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   using namespace IMP::algebra;
   BoundingBox3D bb(Vector3D(0,0,0),
                    Vector3D(100, 100, 100));

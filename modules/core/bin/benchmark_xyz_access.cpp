@@ -434,7 +434,7 @@ void do_benchmark(std::string descr, unsigned int n) {
 }
 
 int main(int argc, char **argv) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   do_benchmark("small", 100);
   do_benchmark("large", 1000);
   do_benchmark("huge", 10000);

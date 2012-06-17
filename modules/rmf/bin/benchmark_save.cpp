@@ -20,7 +20,7 @@ void test_it(std::string file_name, std::string test_name,
 }
 
 int main(int argc, char *argv[]) {
-  IMP_BENCHMARK();
+  IMP_BENCHMARK( );
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy h
     = IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
