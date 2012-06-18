@@ -160,7 +160,7 @@ em::DensityMap* FFTFitting::crop_margin(em::DensityMap *in_map) {
        }
    return ret;
  }
-FFTFittingOutput *FFTFitting::fit(em::DensityMap *dmap,
+FFTFittingOutput *FFTFitting::do_global_fitting(em::DensityMap *dmap,
                                   atom::Hierarchy mol2fit,
                                   double angle_sampling_interval_rad,
                                   int num_fits_to_report,
@@ -173,12 +173,12 @@ FFTFittingOutput *FFTFitting::fit(em::DensityMap *dmap,
                             1.2*(b2[1]-b1[1]));
   max_trans=std::max(max_trans,
                      1.2*(b2[2]-b2[2]));
-  return fit_local_fitting(dmap,mol2fit,
-                           angle_sampling_interval_rad,
-                           IMP::PI,max_trans,num_fits_to_report,
-                           cluster_fits);
+  return do_local_fitting(dmap,mol2fit,
+                          angle_sampling_interval_rad,
+                          IMP::PI,max_trans,num_fits_to_report,
+                          cluster_fits);
 }
-FFTFittingOutput *FFTFitting::fit_local_fitting(em::DensityMap *dmap,
+FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
@@ -881,7 +881,8 @@ FittingSolutionRecords fft_based_rigid_fitting(
     internal::get_uniformly_sampled_rotations(angle_sampling_interval);
   IMP_NEW(FFTFitting, ff, ());
   base::OwnerPointer<FFTFittingOutput> fits
-         = ff->fit(dmap,mol2fit,angle_sampling_interval,rots.size());
+         = ff->do_global_fitting(dmap,mol2fit,angle_sampling_interval,
+                                 rots.size());
   return fits->best_fits_;
 }
 IMPMULTIFIT_END_NAMESPACE
