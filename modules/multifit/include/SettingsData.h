@@ -154,10 +154,10 @@ public:
     ss<<"fine anchor points|fine over sampled anchor points|"<<std::endl;
     return ss.str();
   }
-  void set_asmb_fn(const std::string  &fn) {
+  void set_assembly_filename(const std::string  &fn) {
     asmb_fn_ = fn;
   }
-  const char * get_asmb_fn() const {
+  const char * get_assembly_filename() const {
     return asmb_fn_.c_str();
   }
   void set_assembly_header(AssemblyHeader *h) {

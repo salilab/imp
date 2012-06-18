@@ -147,7 +147,7 @@ SettingsData *read_settings(const char *filename,const char *data_path) {
     }
   }
   in.close();
-  header->set_asmb_fn(filename);
+  header->set_assembly_filename(filename);
   header->set_data_path(data_path);
   return header.release();
 }
