@@ -77,7 +77,7 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
   Float fitting_score_;
   Float rmsd_to_ref_;
 };
+IMP_VALUES(FittingSolutionRecord, FittingSolutionRecords);
 
-typedef std::vector<FittingSolutionRecord> FittingSolutionRecords;
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTION_RECORD_H */
