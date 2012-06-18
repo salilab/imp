@@ -100,7 +100,7 @@ namespace {
 
 TransformationClustering::TransformationClustering(Particles ps,
                            Float max_rmsd) :
-  max_rmsd_(max_rmsd) {
+  base::Object("TransformationClustering%1%"), max_rmsd_(max_rmsd) {
   ps_=ps;
   }
 IntsList TransformationClustering::cluster_by_rmsd(
@@ -261,10 +261,10 @@ IntsList get_clustered(Particles ps,
     IntsList ret;
     return ret;
   }
-  TransformationClustering fast_clust(ps, max_rmsd);
+  IMP_NEW(TransformationClustering, fast_clust, (ps, max_rmsd));
   IntsList clust_trans_by_rot_inds =
-    fast_clust.cluster_by_rotation(trans,max_angle_diff_in_rad,
-                                   min_cluster_size);
+    fast_clust->cluster_by_rotation(trans,max_angle_diff_in_rad,
+                                    min_cluster_size);
   algebra::Transformation3Ds clust_trans_by_rot(clust_trans_by_rot_inds.size());
   std::map<int,int> rot_ind2orig_ind;
   for(int i=0;i<(int)clust_trans_by_rot_inds.size();i++) {
@@ -277,10 +277,9 @@ IntsList get_clustered(Particles ps,
           <<" to "<<clust_trans_by_rot.size()<<std::endl);
 
   IntsList clust_trans_by_trans_inds =
-    fast_clust.cluster_by_transformation(clust_trans_by_rot,
-                                         max_angle_diff_in_rad,
-                                         max_displace,
-                                         min_cluster_size);
+    fast_clust->cluster_by_transformation(clust_trans_by_rot,
+                                          max_angle_diff_in_rad,
+                                          max_displace, min_cluster_size);
   //retrieve the transformations and the original indexes
   algebra::Transformation3Ds clust_trans_by_trans(
                                         clust_trans_by_trans_inds.size());
@@ -297,8 +296,8 @@ IntsList get_clustered(Particles ps,
           << clust_trans_by_trans.size()<<std::endl);
 
   IntsList clust_trans_inds=
-    fast_clust.cluster_by_rmsd(clust_trans_by_trans,max_rmsd,
-                               min_cluster_size);
+    fast_clust->cluster_by_rmsd(clust_trans_by_trans,max_rmsd,
+                                min_cluster_size);
 
   IntsList ret(clust_trans_inds.size());
   for(int i=0;i<(int)clust_trans_inds.size();i++) {

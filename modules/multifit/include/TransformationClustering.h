@@ -16,7 +16,7 @@
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/domino/DominoSampler.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
-class IMPMULTIFITEXPORT TransformationClustering {
+class IMPMULTIFITEXPORT TransformationClustering : public base::Object {
  public:
   //! Constructor
   /**
@@ -59,12 +59,16 @@ If the value is -1, the member variable min_cluster_size_ will be used
                  float max_rmsd_between_transformations,
                  int min_cluster_size);
 
+  IMP_OBJECT_INLINE(TransformationClustering,
+                    { out << "max RMSD: " << max_rmsd_; }, {});
+
 protected:
   // parameters
   Float max_rmsd_;
   Particles ps_;
   //  multifit::RMSDClustering engine_;
 };
+IMP_OBJECTS(TransformationClustering, TransformationClusterings);
 
 //! Cluster transformations
 /**

@@ -12,6 +12,7 @@ IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestrain
 IMP_SWIG_OBJECT(IMP::multifit, SymmetricFit, SymmetricFits);
 IMP_SWIG_VALUE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
+IMP_SWIG_OBJECT(IMP::multifit, TransformationClustering, TransformationClusterings);
 
 /* Make selected classes extensible in Python */
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
