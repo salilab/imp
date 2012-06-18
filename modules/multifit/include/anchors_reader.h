@@ -88,6 +88,7 @@ class IMPMULTIFITEXPORT AnchorsData {
   algebra::Vector3Ds points_;
   IntPairs edges_;
 };
+IMP_VALUES(AnchorsData, AnchorsDataList);
 
 IMPMULTIFITEXPORT AnchorsData read_anchors_data(const char *txt_filename);
 IMPMULTIFITEXPORT
