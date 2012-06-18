@@ -141,13 +141,13 @@ int main(int argc, char **argv) {
   base::OwnerPointer<multifit::FFTFittingOutput> fits;
   if (max_angle==-1.) {
   fits=
-    ff->fit(dmap,mol2fit,1.*delta_angle/180*PI,
+    ff->do_global_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
             num_top_fits_to_report,cluster_on);
   }
   else {
     //local fitting
   fits=
-    ff->fit_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
+    ff->do_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
                           1.*max_angle/180*PI,max_trans,
                           num_top_fits_to_report,false);
   }

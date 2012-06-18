@@ -128,7 +128,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
    */
-  FFTFittingOutput *fit(em::DensityMap *dmap,
+  FFTFittingOutput *do_global_fitting(em::DensityMap *dmap,
                         atom::Hierarchy mol2fit,
                         double angle_sampling_interval_rad,
                         int num_fits_to_report,
@@ -144,7 +144,7 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
    */
-  FFTFittingOutput *fit_local_fitting(em::DensityMap *dmap,
+  FFTFittingOutput *do_local_fitting(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
