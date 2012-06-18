@@ -1,7 +1,3 @@
-/* Ignore things to prevent SWIG warning about them */
-namespace IMP::multifit {
-}
-
 IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,
                 RadiusOfGyrationRestraints);
 IMP_SWIG_OBJECT(IMP::multifit, ComponentHeader, ComponentHeaders);
@@ -37,12 +33,6 @@ IMP_SWIG_OBJECT(IMP::multifit, ProbabilisticAnchorGraph, ProbabilisticAnchorGrap
 %include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
 %include "IMP/multifit/ComplementarityRestraint.h"
-IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
-namespace IMP {
- namespace multifit {
-   %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
-  }
-}
 #%include "IMP/multifit/SingleDominoRun.h"
 %include "IMP/multifit/fitting_solutions_reader_writer.h"
 %include "IMP/multifit/fitting_tools.h"
