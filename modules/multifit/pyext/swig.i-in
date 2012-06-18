@@ -12,6 +12,7 @@ IMP_SWIG_OBJECT(IMP::multifit, ComplementarityRestraint, ComplementarityRestrain
 IMP_SWIG_OBJECT(IMP::multifit, SymmetricFit, SymmetricFits);
 IMP_SWIG_VALUE(IMP::multifit, ProteinRecordData, ProteinRecordDataList);
 IMP_SWIG_VALUE(IMP::multifit, FittingSolutionRecord, FittingSolutionRecords);
+IMP_SWIG_VALUE(IMP::multifit, AnchorsData, AnchorsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, TransformationClustering, TransformationClusterings);
 IMP_SWIG_OBJECT(IMP::multifit, FFTFitting, FFTFittings);
