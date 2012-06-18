@@ -22,10 +22,6 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
             self.skipTest(str(detail))
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
-        for i in range(len(exp.fn_pdbs)):
-            exp.fn_pdbs[i] = self.get_input_file_name(exp.fn_pdbs[i])
-        directory = self.get_input_file_name("")
-        os.chdir(directory)
         fn_database = self.get_input_file_name("monte_carlo_output_database.db")
         domino_model.generate_monte_carlo_model(exp, fn_database, seed=-1,
                                                         write_solution=True)
