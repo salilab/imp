@@ -47,9 +47,6 @@ bool parse_input(int argc, char *argv[],
                  int &num_top_fits_to_store_for_each_rotation,
                  bool &cluster_on);
 
-multifit::FFTFitting ff;
-
-
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
             float &x_origin, float &y_origin, float &z_origin) {
@@ -139,18 +136,20 @@ int main(int argc, char **argv) {
   core::RigidBody rb=atom::create_rigid_body(mol2fit);
   IMP_NEW(core::LeavesRefiner,rb_refiner,(atom::Hierarchy::get_traits()));
   //run the fitting
-  multifit::FFTFittingOutput fits;
+  IMP_NEW(multifit::FFTFitting, ff, ());
+
+  base::OwnerPointer<multifit::FFTFittingOutput> fits;
   if (max_angle==-1.) {
   fits=
-    ff.fit(dmap,mol2fit,1.*delta_angle/180*PI,
-           num_top_fits_to_report,cluster_on);
+    ff->fit(dmap,mol2fit,1.*delta_angle/180*PI,
+            num_top_fits_to_report,cluster_on);
   }
   else {
     //local fitting
   fits=
-    ff.fit_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
-                         1.*max_angle/180*PI,max_trans,
-                         num_top_fits_to_report,false);
+    ff->fit_local_fitting(dmap,mol2fit,1.*delta_angle/180*PI,
+                          1.*max_angle/180*PI,max_trans,
+                          num_top_fits_to_report,false);
   }
   //read the reference if provided (for debugging)
   atom::Hierarchy ref_mh;
@@ -161,7 +160,7 @@ int main(int argc, char **argv) {
   }
 
   //write out all solutions
-  multifit::FittingSolutionRecords final_fits=fits.best_fits_;
+  multifit::FittingSolutionRecords final_fits=fits->best_fits_;
   //if required write the fits as individual pdbs
   if (pdb_fit_filename != "") {
     for(unsigned int i=0;i<final_fits.size();i++){
@@ -192,7 +191,7 @@ int main(int argc, char **argv) {
   }
   multifit::write_fitting_solutions(sol_filename.c_str(),final_fits);
   multifit::write_fitting_solutions("best_trans_for_rot.log",
-                                    fits.best_trans_per_rot_);
+                                    fits->best_trans_per_rot_);
   std::cout<<"all done!"<<std::endl;
 }
 
