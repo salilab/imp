@@ -44,10 +44,8 @@ def get_em2d_restraint( assembly,
     sc = em2d.EM2DScore()
     r = em2d.Em2DRestraint()
     r.setup(sc, restraint_params)
-
-    basedir = os.path.dirname(images_selection_file)
     names = em2d.read_selection_file(images_selection_file)
-    names = [os.path.join(basedir, x) for x in names]
+    names = [base.get_relative_path(images_selection_file, x) for x in names]
     log.debug("names of the images %s", names)
     srw = em2d.SpiderImageReaderWriter()
     imgs = em2d.read_images(names, srw)
