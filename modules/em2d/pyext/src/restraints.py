@@ -6,6 +6,7 @@ import IMP.container as container
 import IMP.em2d as em2d
 import IMP.em2d.imp_general.representation as representation
 import IMP.atom as atom
+import IMP.base as base
 import os
 
 import logging
@@ -44,9 +45,9 @@ def get_em2d_restraint( assembly,
     r = em2d.Em2DRestraint()
     r.setup(sc, restraint_params)
 
-    images_names = em2d.read_selection_file(images_selection_file)
-    imgs_dir, nil = os.path.split(images_selection_file)
-    names = [os.path.join(imgs_dir, n) for n in images_names]
+    basedir = os.path.dirname(images_selection_file)
+    names = em2d.read_selection_file(images_selection_file)
+    names = [os.path.join(basedir, x) for x in names]
     log.debug("names of the images %s", names)
     srw = em2d.SpiderImageReaderWriter()
     imgs = em2d.read_images(names, srw)
