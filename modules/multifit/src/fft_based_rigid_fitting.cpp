@@ -14,15 +14,6 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-namespace FBRF {
-
-}//end namespace
-
-
-FFTFitting::~FFTFitting(){
-  //  internal::FFTWPlan::request_cleanup();
-}
-
 void FFTFitting::copy_density_data(em::DensityMap *dmap,double *data_array) {
   for(long i=0;i<dmap->get_number_of_voxels();i++) {
     data_array[i]=dmap->get_value(i);
@@ -169,11 +160,11 @@ em::DensityMap* FFTFitting::crop_margin(em::DensityMap *in_map) {
        }
    return ret;
  }
-FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
-                                 atom::Hierarchy mol2fit,
-                                 double angle_sampling_interval_rad,
-                                 int num_fits_to_report,
-                                 bool cluster_fits) {
+FFTFittingOutput *FFTFitting::fit(em::DensityMap *dmap,
+                                  atom::Hierarchy mol2fit,
+                                  double angle_sampling_interval_rad,
+                                  int num_fits_to_report,
+                                  bool cluster_fits) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
   algebra::Vector3D b1,b2;
   b1=bb.get_corner(0);
@@ -187,7 +178,7 @@ FFTFittingOutput FFTFitting::fit(em::DensityMap *dmap,
                            IMP::PI,max_trans,num_fits_to_report,
                            cluster_fits);
 }
-FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
+FFTFittingOutput *FFTFitting::fit_local_fitting(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
@@ -349,7 +340,7 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
   //(with repsect to prepare_probe function)
   core::transform(orig_rb_,cen_trans_.get_inverse());
 
-  FFTFittingOutput ret;
+  IMP_NEW(FFTFittingOutput, ret, ());
   //prune out translations that are outside the requested box
   multifit::FittingSolutionRecords final_fits_pruned;
   //transform the molecule and check the centroid translation
@@ -363,9 +354,9 @@ FFTFittingOutput FFTFitting::fit_local_fitting(em::DensityMap *dmap,
     core::transform(orig_rb_,
                     final_fits[i].get_fit_transformation().get_inverse());
   }
-  ret.best_fits_=final_fits_pruned;
-  ret.best_trans_per_rot_=best_trans_per_rot_log_;
-  return ret;
+  ret->best_fits_=final_fits_pruned;
+  ret->best_trans_per_rot_=best_trans_per_rot_log_;
+  return ret.release();
 }
 
 void FFTFitting::fftw_translational_search(
@@ -888,9 +879,9 @@ FittingSolutionRecords fft_based_rigid_fitting(
    double angle_sampling_interval) {
   multifit::internal::EulerAnglesList rots=
     internal::get_uniformly_sampled_rotations(angle_sampling_interval);
-  multifit::FFTFitting ff;
-  multifit::FFTFittingOutput fits =
-    ff.fit(dmap,mol2fit,angle_sampling_interval,rots.size());
-  return fits.best_fits_;
+  IMP_NEW(FFTFitting, ff, ());
+  base::OwnerPointer<FFTFittingOutput> fits
+         = ff->fit(dmap,mol2fit,angle_sampling_interval,rots.size());
+  return fits->best_fits_;
 }
 IMPMULTIFIT_END_NAMESPACE

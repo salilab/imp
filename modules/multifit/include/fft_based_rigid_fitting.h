@@ -22,13 +22,22 @@
 #include <IMP/multifit/internal/fft_fitting_utils.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-class IMPMULTIFITEXPORT FFTFittingOutput {
- public:
+class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
+public:
+  FFTFittingOutput() : base::Object("FFTFittingOutput%1%") {}
+
+  IMP_OBJECT_INLINE(FFTFittingOutput,
+                    { out << best_fits_.size() << " final fits; "
+                          << best_trans_per_rot_.size()
+                          << " best translations per rotation"; }, {});
+public:
   FittingSolutionRecords best_fits_;   //final fits
   FittingSolutionRecords best_trans_per_rot_;
 };
 
-class IMPMULTIFITEXPORT FFTFitting {
+class IMPMULTIFITEXPORT FFTFitting : public base::Object {
+  IMP_OBJECT_INLINE(FFTFitting, {}, {});
+
  protected:
   //logging
   FittingSolutionRecords best_trans_per_rot_log_;
@@ -109,8 +118,7 @@ class IMPMULTIFITEXPORT FFTFitting {
  FittingSolutionRecords detect_top_fits(const internal::RotScores &rot_scores,
                                         bool cluster_fits);
  public:
-  FFTFitting() {}
-  ~FFTFitting();
+  FFTFitting() : base::Object("FFTFitting%1%") {}
   //! Fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into
@@ -120,11 +128,11 @@ class IMPMULTIFITEXPORT FFTFitting {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
    */
-  FFTFittingOutput fit(em::DensityMap *dmap,
-                       atom::Hierarchy mol2fit,
-                       double angle_sampling_interval_rad,
-                       int num_fits_to_report,
-                       bool cluster_fits=true);
+  FFTFittingOutput *fit(em::DensityMap *dmap,
+                        atom::Hierarchy mol2fit,
+                        double angle_sampling_interval_rad,
+                        int num_fits_to_report,
+                        bool cluster_fits=true);
   //! Locally fit a molecule inside its density
   /**
      \param[in] dmap the density map to fit into
@@ -136,7 +144,7 @@ class IMPMULTIFITEXPORT FFTFitting {
      \param[in] cluster_fits if true the fits are clustered.
                 Not recommended for refinement mode
    */
-  FFTFittingOutput fit_local_fitting(em::DensityMap *dmap,
+  FFTFittingOutput *fit_local_fitting(em::DensityMap *dmap,
                        atom::Hierarchy mol2fit,
                        double angle_sampling_interval_rad,
                        double max_angle_sampling_rad,
