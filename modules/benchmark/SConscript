@@ -1,15 +1,27 @@
 Import('env')
+import scons_tools.data
 
 import scons_tools
 
+# not linked into benchmark as python and tcmalloc don't get on
+scons_tools.dependency.add_external_library(env, "tcmalloc",
+                                            ["tcmalloc"],
+                                            # garbage to avoid rename issues
+                                            "vector")
+
+
 scons_tools.dependency.add_external_library(env, "GPerfTools",
-                                            ["tcmalloc", "profiler"],
-                                            "gperftools/heap-profiler.h",
-                                            body='HeapProfilerStop();')
-scons_tools.dependency.add_external_library(env, "GooglePerfTools",
-                                            ["tcmalloc", "profiler"],
-                                            "google/heap-profiler.h",
-                                            body='HeapProfilerStop();')
+                                            ["profiler"],
+                                            "gperftools/profiler.h",
+                                            body='ProfilerStop();')
+# don't bother checking for the old one if the new one is found
+if not scons_tools.data.get(env).dependencies["GPerfTools"].ok:
+    scons_tools.dependency.add_external_library(env, "GooglePerfTools",
+                                                ["profiler"],
+                                                "google/profiler.h",
+                                                body='ProfilerStop();')
+else:
+    scons_tools.data.get(env).add_dependency("GooglePerfTools", ok=False)
 
 
 scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
