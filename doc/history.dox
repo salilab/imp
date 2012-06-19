@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011/2012
+- 6/18: The IMP::benchmark module supports the GPerfTools profilers when available. Benchmark executables (things in \c bin whose name starts with \c benchmark_) that use the IMP_BENCHMARK() macro have command line flags to turn on and cpu and memory profiling.
 - 6/12: The naming rules for .i files that are in module \c pyext directories changed. They should now be \c IMP_modulename.name.i instead of \c IMP_modulename_name.i. This is to better support underscores in names.
 \par Winter 2011/2012
 - 20/4: A method, IMP::atom::read_pdb(IMP::base::TextInput, int, IMP::atom::Hierarchy), was added to load coordinates from a pdb file into an existing IMP::atom::Hierarchy.
