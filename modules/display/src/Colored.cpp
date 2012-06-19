@@ -7,7 +7,6 @@
  */
 
 #include "IMP/display/Colored.h"
-#include <boost/assign/list_of.hpp>
 
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -17,10 +16,18 @@ void Colored::show(std::ostream &out) const {
   out << "Colored " << get_color() << std::endl;
 }
 
-FloatKeys Colored::get_color_keys() {
-  static FloatKeys rks=boost::assign::list_of(FloatKey("display red"))
-    (FloatKey("display green"))
-    (FloatKey("display blue"));
+namespace {
+  FloatKeys init_color_keys() {
+    FloatKeys ret;
+    ret.push_back(FloatKey("display red"));
+    ret.push_back(FloatKey("display green"));
+    ret.push_back(FloatKey("display blue"));
+    return ret;
+  }
+}
+
+const FloatKeys& Colored::get_color_keys() {
+  static FloatKeys rks=init_color_keys();
   return rks;
 }
 
