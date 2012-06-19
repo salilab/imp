@@ -88,21 +88,21 @@ void test_one(std::string name,
 int main(int argc, char **argv) {
   IMP_BENCHMARK( );
   {
-    QuadraticClosePairsFinder *cpf= new QuadraticClosePairsFinder();
+    IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;
     test_one("col quadratic", cpf, 10000, 0, .1, 87.210356);
     test_one("col quadratic", cpf, 10000, 0, .5, 99.562332);
   }
 #ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
-    BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
+    IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     //std::cout << "Box:" << std::endl;
     test_one("col box", cpf, 10000, 0, .1, 23.306047);
     test_one("col box", cpf, 10000, 0, .5, 1145.327934);
   }
 #endif
   {
-    GridClosePairsFinder *cpf= new GridClosePairsFinder();
+    IMP_NEW(GridClosePairsFinder, cpf, ());
     //std::cout << "Grid:" << std::endl;
     test_one("col grid", cpf, 10000, 0, .1, 23.649063);
     test_one("col grid", cpf, 10000, 0, .5, 1145.327934);
