@@ -126,7 +126,8 @@ def get_output_path(name):
     od=options.output_dir
     if od=="auto":
         od= _get_default_output()
-    os.system("mkdir -p "+od)
+    if not os.path.exists(od):
+        os.makedirs(od)
     return os.path.join(od, name)
 
 
