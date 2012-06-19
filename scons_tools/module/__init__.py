@@ -10,6 +10,7 @@ import _link_test
 import _standards
 import _version_h
 import _config_h
+import _benchmark
 import _all_cpp
 import scons_tools.bug_fixes
 import scons_tools.run
@@ -249,7 +250,11 @@ def _make_programs(envi, dirr, files, prefix=""):
                     benv= scons_tools.environment.get_benchmark_environment(envi,
                                                                             extra_modules=[_get_module_name(envi)])
                 if benv:
-                    ret.append(benv.Program(source=f, target=target))
+                    bmark=benv.Program(source=f, target=target)
+                    ret.append(bmark)
+                    runit=_benchmark.get_run_benchmark(env)(env, target=File(target+".results"), source=[File("#/tools/imppy.sh"), bmark])
+                    scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", runit)
+                    env.Alias("benchmarks", runit)
                 else:
                     msg="%sBenchmark "+str(target)+" disabled as the benchmark module is missing%s"
                     print msg%(envi['IMP_COLORS']['red'], envi['IMP_COLORS']['end'])
@@ -261,7 +266,11 @@ def _make_programs(envi, dirr, files, prefix=""):
             nm=File("#/"+env['repository']+"/"+Dir(".").path+"/"+str(f))
             #print dest.path, f.path, nm
             #print str(f), f.abspath
-            ret.append(scons_tools.install.install(env,dest, nm))
+            inst=scons_tools.install.install(env,dest, nm)
+            ret.append(inst)
+            runit=_benchmark.get_run_py_benchmark(env)(env, target=File(target+".results"), source=[File("#/tools/imppy.sh"), inst])
+            scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", runit)
+            env.Alias("benchmarks", runit)
     return ret
 
 def IMPModuleBin(env, files):
