@@ -14,8 +14,6 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
   bool is_interaction_header_line(const std::string &line, ProteomicsData *dp) {
-  int num_allowed_violations=0;
-  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -26,17 +24,22 @@ namespace {
       return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "interactions")
     return false;
-  if (line_split.size()==2) {
-    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+  try {
+    int num_allowed_violations=0;
+    if (line_split.size()==2) {
+      num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+    }
+    dp->set_num_allowed_violated_interactions(num_allowed_violations);
+    return true;
+  } catch (std::bad_cast &) {
+    IMP_THROW("Improperly formatted interaction header line: >>" << line
+              << "<< The format of the line should be: "
+              << "|interactions|num_allowed_violations|", ValueException);
   }
-  dp->set_num_allowed_violated_interactions(num_allowed_violations);
-  return true;
   }
 
 
   bool is_xlink_header_line(const std::string &line, ProteomicsData *dp) {
-    int num_allowed_violations=0;
-  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -46,16 +49,22 @@ namespace {
   if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "residue-xlink")
     return false;
-  if (line_split.size()==2) {
-    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+
+  try {
+    int num_allowed_violations=0;
+    if (line_split.size()==2) {
+      num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+    }
+    dp->set_num_allowed_violated_cross_links(num_allowed_violations);
+    return true;
+  } catch (std::bad_cast &) {
+    IMP_THROW("Improperly formatted cross link header line: >>" << line
+              << "<< The format of the line should be: "
+              << "|residue-xlink|num_allowed_violations|", ValueException);
   }
-  dp->set_num_allowed_violated_cross_links(num_allowed_violations);
-  return true;
   }
 
   bool is_ev_header_line(const std::string &line, ProteomicsData *dp) {
-  int num_allowed_violations=0;
-  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
@@ -65,11 +74,20 @@ namespace {
   if ((line_split.size() != 1)&&(line_split.size() != 2)) return false;
   if (boost::lexical_cast<std::string>(line_split[0]) != "ev-pairs")
     return false;
-  if (line_split.size()==2) {
-    num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+
+  try {
+    int num_allowed_violations=0;
+    if (line_split.size()==2) {
+      num_allowed_violations=boost::lexical_cast<int>(line_split[1]);
+    }
+    dp->set_num_allowed_violated_ev(num_allowed_violations);
+    return true;
+  } catch (std::bad_cast &) {
+    IMP_THROW("Improperly formatted excluded volume header line: >>" << line
+              << "<< The format of the line should be: "
+              << "|ev-pairs|num_allowed_violations|", ValueException);
   }
-  dp->set_num_allowed_violated_ev(num_allowed_violations);
-  return true;
+
 }
 
 void error_xlink_line(const std::string &line)

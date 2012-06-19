@@ -70,5 +70,25 @@ class ReadProteomicsTests(IMP.test.TestCase):
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
 
+    def test_bad_interaction_header(self):
+        """Check incorrectly formatted interaction header in proteomics files"""
+        open('test.input', 'w').write('|proteins|\n|interactions|x|\n')
+        self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
+                          'test.input')
+
+    def test_bad_xlink_header(self):
+        """Check incorrectly formatted cross link header in proteomics files"""
+        open('test.input', 'w').write('|proteins|\n|interactions|1|\n' + \
+                                      '|residue-xlink|x|\n')
+        self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
+                          'test.input')
+
+    def test_bad_ev_header(self):
+        "Check incorrectly formatted excluded volume header in proteomics files"
+        open('test.input', 'w').write('|proteins|\n|interactions|1|\n' + \
+                                      '|residue-xlink|3|\n|ev-pairs|x|\n')
+        self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
+                          'test.input')
+
 if __name__ == '__main__':
     IMP.test.main()
