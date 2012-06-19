@@ -28,8 +28,8 @@ template <class TypeT, int Arity>
     RMF::FileConstHandle rh= nh.get_file();
     std::vector< RMF::Key<TypeT, Arity> > keys= rh.get_keys<TypeT, Arity>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
-      if (nh.get_has_value(keys[i])) {
-        ret+= count(nh.get_value(keys[i]));
+      if (nh.get_has_value(keys[i], 0)) {
+        ret+= count(nh.get_value(keys[i], 0));
         ret+= rh.get_name(keys[i]).size();
       }
     }
