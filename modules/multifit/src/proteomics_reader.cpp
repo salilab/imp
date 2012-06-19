@@ -13,23 +13,7 @@
 #include <boost/bind.hpp>
 IMPMULTIFIT_BEGIN_NAMESPACE
 namespace {
-  bool is_protein_line(const std::string &line,
-                       ProteomicsData *) {
-  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse:"<<line);
-  std::vector<std::string> line_split;
-  boost::split(line_split, line, boost::is_any_of("|"));
-  //split returns zero length entires as well
-  line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
-    boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  if (line_split.size() != 1) return false;
-  if (boost::lexical_cast<std::string>(line_split[0]) != "proteins")
-    return false;
-  return true;
-}
-
-  bool is_interaction_line(const std::string &line,
-                           ProteomicsData *dp) {
+  bool is_interaction_header_line(const std::string &line, ProteomicsData *dp) {
   int num_allowed_violations=0;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -50,8 +34,7 @@ namespace {
   }
 
 
-  bool is_xlink_line(const std::string &line,
-                     ProteomicsData *dp) {
+  bool is_xlink_header_line(const std::string &line, ProteomicsData *dp) {
     int num_allowed_violations=0;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -70,8 +53,7 @@ namespace {
   return true;
   }
 
-  bool is_ev_line(const std::string &line,
-                  ProteomicsData *dp) {
+  bool is_ev_header_line(const std::string &line, ProteomicsData *dp) {
   int num_allowed_violations=0;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -279,17 +261,17 @@ ProteomicsData *read_proteomics_data(const char *prot_fn) {
   std::string line;
   getline(in, line); //skip proteins header line
   getline(in, line); //skip proteins header line
-  while ((!in.eof()) && (!is_interaction_line(line, data))){
+  while ((!in.eof()) && (!is_interaction_header_line(line, data))){
     parse_protein_line(line,data);
     if (!getline(in, line)) break;
   }
   getline(in, line);
-  while ((!in.eof()) && (!is_xlink_line(line,data))){
+  while ((!in.eof()) && (!is_xlink_header_line(line,data))){
     parse_interaction_line(line,data);
     if (!getline(in, line)) break;
   }
   getline(in, line);
-  while (!in.eof() && (!is_ev_line(line,data))){
+  while (!in.eof() && (!is_ev_header_line(line,data))){
     parse_xlink_line(line,data);
     if (!getline(in, line)) break;
   }
