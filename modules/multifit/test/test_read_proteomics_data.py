@@ -39,31 +39,34 @@ class ReadProteomicsTests(IMP.test.TestCase):
 
     def test_bad_xlink_line(self):
         """Check incorrectly formatted cross link lines in proteomics files"""
+        header = '|proteins|\n|interactions|1|\n|residue-xlink|3|\n'
         # Wrong number of fields
-        open('test.input', 'w').write('|residue-xlink|3|\n|0|A|30|B|50|\n')
+        open('test.input', 'w').write(header + '|0|A|30|B|50|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         # Fields of wrong type
-        open('test.input', 'w').write('|residue-xlink|3|\n|0|A|x|B|50|10|\n')
+        open('test.input', 'w').write(header + '|0|A|x|B|50|10|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
 
     def test_bad_ev_line(self):
         "Check incorrectly formatted excluded volume lines in proteomics files"
+        header = '|proteins|\n|interactions|1|\n|residue-xlink|3|\n' \
+                 + '|ev-pairs|2|\n'
         # Wrong number of fields
-        open('test.input', 'w').write('|ev-pairs|2|\n|A|\n')
+        open('test.input', 'w').write(header + '|A|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
 
     def test_bad_interaction_line(self):
         """Check incorrectly formatted interaction lines in proteomics files"""
+        header = '|proteins|\n|interactions|1|\n'
         # Wrong number of fields
-        open('test.input', 'w').write('|interactions|1|\n|1|A|B|10|authors|\n')
+        open('test.input', 'w').write(header + '|1|A|B|10|authors|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
         # Fields of wrong type
-        open('test.input', 'w').write('|interactions|1|\n|x|A|B|10|'
-                                      'authors|type|\n')
+        open('test.input', 'w').write(header + '|x|A|B|10|authors|type|\n')
         self.assertRaises(ValueError, IMP.multifit.read_proteomics_data,
                           'test.input')
 
