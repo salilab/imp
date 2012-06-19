@@ -139,7 +139,7 @@ class IMPMULTIFITEXPORT ProteomicsData : public base::Object {
                     "index out of range\n");
     return xlink_in_filter_[xlink_ind];
   }
-  bool get_cross_link_length(int xlink_ind) const {
+  float get_cross_link_length(int xlink_ind) const {
     IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
                     "index out of range\n");
     return xlink_len_[xlink_ind];
