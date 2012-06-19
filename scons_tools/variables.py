@@ -247,6 +247,9 @@ def add_common_variables(vars, package):
                           ignorecase=1))
 
     vars.Add('linkflags', 'Link flags for all linking (e.g. "-lefence"). See pythonlinkflags, arliblinkflags, shliblinkflags.', None)
+    vars.Add(EnumVariable('cxx11',
+                          'Whether to use C++ 11 support.',
+                          'auto', ['no', 'auto']))
     vars.Add('environment', "Add entries to the environment in which tools are run. The variable should be a comma separated list of name=value pairs.", "")
     vars.Add('pythonlinkflags', 'Link flags for linking python libraries (e.g. "-lefence")', "")
     vars.Add('arliblinkflags', 'Link flags for linking static libraries (e.g. "-lefence")', "")
