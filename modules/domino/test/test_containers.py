@@ -75,7 +75,7 @@ class DOMINOTests(IMP.test.TestCase):
         self._test_in(iss, ass0, ps0, ps1)
 
     def test_binary(self):
-        """Testing default subset states writing to an binary data set"""
+        """Testing default subset states writing to a binary data set"""
         (ps0, ss0, ass0, m0)= self._setup_round_trip()
         (ps1, ss1, ass1, m1)= self._setup_round_trip()
         print ps0, ps1, ss0, ss1
