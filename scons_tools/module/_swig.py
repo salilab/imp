@@ -241,6 +241,10 @@ def _action_simple_swig(target, source, env):
                "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
                "-python", "-c++", "-naturalvar",
                "-fvirtual"]+warnings
+    # if building a module by itself, we need to find swig headers
+    command+= ["-I"+x for x in
+               scons_tools.utility.get_env_paths(env, 'includepath')]\
+
     # Signal whether we are building the kernel
     if scons_tools.module._get_module_name(env) == 'kernel':
         command.append('-DIMP_SWIG_KERNEL')

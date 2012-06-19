@@ -25,6 +25,26 @@ class GenericTest(IMP.test.TestCase):
         gs[0].set_was_used(True)
         cg= gs[0].get_components()
         self.assertEqual(len(cg), 12)
+    def _do_test_round_trip(self, g):
+        gg= IMP.display.create_geometry(g)
+        nm=self.get_tmp_file_name("round_trip_g.rmf")
+        rmf= RMF.create_rmf_file(nm)
+        IMP.rmf.add_geometries(rmf.get_root_node(), [gg])
+        IMP.rmf.save_frame(rmf, 0)
+        del rmf
+        rmf=RMF.open_rmf_file_read_only(nm)
+        ggb= IMP.rmf.create_geometries(rmf)
+        IMP.rmf.load_frame(rmf, 0)
+        ggbt= gg.get_from(gg)
+        self.assertEqual(type(ggbt.get_geometry()), type(g))
+    def test_all_geometry(self):
+        """Test reading and writing each type of geometry"""
+        for g in [IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,1,2),3),
+                  IMP.algebra.Segment3D(IMP.algebra.Vector3D(0,1,2),
+                                        IMP.algebra.Vector3D(3,4,5)),
+                  IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0,1,2),
+                                                               IMP.algebra.Vector3D(3,4,5)),6)]:
+            self._do_test_round_trip(g)
     def test_3(self):
         """Testing surface geometry"""
         if not hasattr(IMP, 'cgal'):
