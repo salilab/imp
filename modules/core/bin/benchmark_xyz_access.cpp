@@ -73,9 +73,9 @@ double compute_distances_particle_access(
 
 double compute_distances_particle_access(
    const IMP::ParticlesTemp& particles) {
-  FloatKey xk("my x");
-  FloatKey yk("my y");
-  FloatKey zk("my z");
+  FloatKey xk("x");
+  FloatKey yk("y");
+  FloatKey zk("z");
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
     IMP::algebra::Vector3D v1(particles[i]->get_value(xk),
