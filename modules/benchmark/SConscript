@@ -3,11 +3,6 @@ import scons_tools.data
 
 import scons_tools
 
-# not linked into benchmark as python and tcmalloc don't get on
-scons_tools.dependency.add_external_library(env, "tcmalloc",
-                                            ["tcmalloc"],
-                                            # garbage to avoid rename issues
-                                            "vector")
 config=[]
 if scons_tools.data.get(env).dependencies["tcmalloc"].ok:
     config.append(["IMP_BENCHMARK_USE_TCMALLOC", 1])

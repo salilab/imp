@@ -173,7 +173,8 @@ def _get_info_test(context, env, name, lib, header, body,
         return (True, libs, version, None, None)
 
 def add_external_library(env, name, lib, header, body="", extra_libs=[],
-                         versioncpp=None, versionheader=None):
+                         versioncpp=None, versionheader=None,
+                         enabled=True):
     tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
@@ -219,7 +220,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                                              versionheader=pversionheader)
                 return True
     vars = env['IMP_VARIABLES']
-    vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
+    if enabled:
+        vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
+    else:
+        vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "no", ["yes", "no", "auto"]))
     vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed if "'+lcname+'" is "yes".', None)
     vars.Add(lcname+'version', 'Version to test against when using '+name, None)
     vars.Update(env)

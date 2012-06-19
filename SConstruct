@@ -76,6 +76,14 @@ if not env.GetOption('help'):
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
 
+# placed here so that the result is universally visible since it
+# is special cased for benchmarks
+scons_tools.dependency.add_external_library(env, "tcmalloc",
+                                            ["tcmalloc"],
+                                            # garbage to avoid rename issues
+                                            "vector",
+                                            enabled=False)
+
 
 first=["modules", "applications", "biological_systems"]
 last=["doc"]
