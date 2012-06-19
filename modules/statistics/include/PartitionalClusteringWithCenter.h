@@ -40,7 +40,7 @@ public:
     centers_(reps.size()){
     for (unsigned int i=0; i< centers_.size(); ++i) {
         centers_[i]= algebra::VectorKD(centers[i].coordinates_begin(),
-                                       centers[i].coordinates_end());
+                                      centers[i].coordinates_end());
       }
   }
 #endif
