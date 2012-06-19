@@ -23,13 +23,13 @@ public:
   Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane) {
     normal_ = normal_to_plane;
     distance_= normal_*point_on_plane;
-    IMP_USAGE_CHECK(std::abs(normal_.get_squared_magnitude()-1) < .05,
+    IMP_USAGE_CHECK_FLOAT_EQUAL(normal_.get_squared_magnitude(),1,
                     "The normal vector must be normalized");
   }
   Plane3D(double distance_to_plane ,const Vector3D &normal_to_plane):
     distance_(distance_to_plane),
     normal_(normal_to_plane){
-    IMP_USAGE_CHECK(std::abs(normal_.get_squared_magnitude()-1) < .05,
+    IMP_USAGE_CHECK_FLOAT_EQUAL(normal_.get_squared_magnitude(),1,
                     "The normal vector must be normalized");
   }
   Vector3D get_point_on_plane() const {return normal_*distance_;}
