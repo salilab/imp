@@ -94,7 +94,7 @@ namespace {
       << " and " << force_term <<
       " vs " << delta[j] << ", " << sigma << std::endl;
       }*/
-    return force_term;
+    return -force_term;
   }
 
   double get_sigma(Model *m, ParticleIndex p,
