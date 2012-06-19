@@ -99,8 +99,6 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/ReferenceFrame3D.h"
 
 
-%include "IMP_algebra.matrix2d.i"
-%include "IMP_algebra.matrix3d.i"
 %include "IMP_algebra.spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
