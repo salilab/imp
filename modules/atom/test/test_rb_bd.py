@@ -29,11 +29,14 @@ class DecoratorTests(IMP.test.TestCase):
     def test_bonded(self):
         """Check brownian dynamics with rigid bodies"""
         m = IMP.Model()
+        m.set_log_level(IMP.SILENT)
         pa, ma, ca=self.create_rb(m)
         pb, mb, cb=self.create_rb(m)
-        ps0= IMP.core.HarmonicDistancePairScore(0, 1)
-        ps1= IMP.core.SoftSpherePairScore(10)
+        ps0= IMP.core.HarmonicDistancePairScore(0, 10)
+        ps1= IMP.core.SoftSpherePairScore(100)
         r0=IMP.core.PairRestraint(ps0, (ma, mb))
+        IMP.display.Colored.setup_particle(ma, IMP.display.Color(1,0,0))
+        IMP.display.Colored.setup_particle(mb, IMP.display.Color(1,0,0))
         r1= IMP.core.PairRestraint(ps1, (ca, cb))
         bd= IMP.atom.BrownianDynamics(m)
         bb= IMP.algebra.get_unit_bounding_box_3d()
