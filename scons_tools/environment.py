@@ -489,19 +489,25 @@ def get_staticlib_environment(env):
     return e
 
 
-def get_bin_environment(envi, extra_modules=[]):
+def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
     env= bug_fixes.clone_env(envi)
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
     if env.get('IMP_BIN_CXXFLAGS', None):
         env.Replace(CXXFLAGS=env['IMP_BIN_CXXFLAGS'])
-    _add_flags(env, extra_modules=extra_modules)
+    _add_flags(env, extra_modules=extra_modules,
+               extra_dependencies=extra_dependencies)
     return env
 
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
     d= data.get(envi)
     if d.modules['benchmark'].ok:
-        return get_bin_environment(envi, extra_modules+['benchmark'])
+        if d.dependencies['tcmalloc'].ok:
+            libs=['tcmalloc']
+        else:
+            libs=[]
+        return get_bin_environment(envi, extra_modules+['benchmark'],
+                                   extra_dependencies=libs)
     else:
         return None
 
