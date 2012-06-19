@@ -30,38 +30,25 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
   IMP_USAGE_CHECK(sc->get_indexes().size()>=2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
+  init();
 }
 
-void DiameterRestraint::set_model(Model *m) {
-  if (m) {
-    IMP_LOG(TERSE, "Creating components of DiameterRestraint" << std::endl);
-    Model *m= sc_->get_particle(0)->get_model();
+void DiameterRestraint::init() {
+  IMP_LOG(TERSE, "Creating components of DiameterRestraint" << std::endl);
+  Model *m= sc_->get_particle(0)->get_model();
 
-    // make pairs from special generator
-    p_= new Particle(m);
-    XYZR d= XYZR::setup_particle(p_);
-    p_->set_name("DiameterRestraint center");
-    d.set_coordinates_are_optimized(false);
-    Pointer<core::CoverRefined> cr
-      = new core::CoverRefined(
-                               new FixedRefiner(sc_->get_particles()),
-            0);
-    ss_= new core::SingletonConstraint(cr, nullptr, p_);
+  // make pairs from special generator
+  p_= new Particle(m);
+  XYZR d= XYZR::setup_particle(p_);
+  p_->set_name("DiameterRestraint center");
+  d.set_coordinates_are_optimized(false);
+  Pointer<core::CoverRefined> cr
+    = new core::CoverRefined(
+                             new FixedRefiner(sc_->get_particles()),
+                             0);
+  ss_= new core::SingletonConstraint(cr, nullptr, p_);
 
-    m->add_score_state(ss_);
-    // make sure model hasn't been cleanup up already
-  } else {
-    if (ss_ && p_->get_is_active()) {
-      IMP_LOG(TERSE, "Removing components of DiameterRestraint" << std::endl);
-      IMP_CHECK_OBJECT(ss_.get());
-      IMP_CHECK_OBJECT(p_.get());
-      get_model()->remove_score_state(ss_);
-      get_model()->remove_particle(p_);
-    }
-    ss_=static_cast<core::SingletonConstraint*>(nullptr);
-    p_=static_cast<Particle*>(nullptr);
-  }
-  Restraint::set_model(m);
+  m->add_score_state(ss_);
 }
 
 double
