@@ -84,7 +84,7 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
    */
   Rotation3D(double a, double b, double c, double d): v_(a,b,c,d),
     has_cache_(false) {
-    IMP_USAGE_CHECK(std::abs(v_.get_squared_magnitude() - 1.0) < .1,
+    IMP_USAGE_CHECK_FLOAT_EQUAL(v_.get_squared_magnitude(), 1.0,
                     "Attempting to construct a rotation from a "
                     << " non-quaternion value. The coefficient vector"
                     << " must have a length of 1. Got: "

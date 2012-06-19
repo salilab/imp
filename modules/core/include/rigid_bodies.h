@@ -163,8 +163,8 @@ public:
         get_particle()->get_value(internal::rigid_body_data().quaternion_[1]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[2]),
         get_particle()->get_value(internal::rigid_body_data().quaternion_[3]));
-    IMP_USAGE_CHECK(std::abs(v.get_squared_magnitude() -1) < .1,
-                    "Rotation is not a unit vector: " << v);
+    IMP_USAGE_CHECK_FLOAT_EQUAL(v.get_squared_magnitude(), 1,
+                                "Rotation is not a unit vector: " << v);
     /*if (v.get_squared_magnitude() > 0){
       v = v.get_unit_vector();
       } else {

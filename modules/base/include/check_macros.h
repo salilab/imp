@@ -12,6 +12,7 @@
 #include "base_config.h"
 #include "exception.h"
 #include <iostream>
+#include <cmath>
 
 #ifdef IMP_DOXYGEN
 /** Catch any IMP exception thrown by expr and terminate with an
@@ -80,6 +81,16 @@
 #define IMP_INTERNAL_CHECK(expr, message)
 
 
+/** This is like IMP_INTERNAL_CHECK, however designed to check if
+    two floating point numbers are almost equal. The check looks something
+    like
+    \code
+    std::abs(a-b) < .1*(a+b)+.1
+    \endcode
+    Using this makes such tests a bit easier to spot and not mess up.
+*/
+#define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)
+
 //! A runtime test for incorrect usage of a class or method.
 /** \param[in] expr The assertion expression.
     \param[in] message Write this message if the assertion fails.
@@ -98,6 +109,18 @@
     inappropriate input.
  */
 #define IMP_USAGE_CHECK(expr, message)
+
+/** This is like IMP_USAGE_CHECK, however designed to check if
+    two floating point numbers are almost equal. The check looks something
+    like
+    \code
+    std::abs(a-b) < .1*(a+b)+.1
+    \endcode
+    Using this makes such tests a bit easier to spot and not mess up.
+*/
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)
+
+
 //! Throw an exception with a message
 /** The exception thrown must inherit from Exception and not be
     UsageException or InternalException as those are reserved for
@@ -187,6 +210,12 @@
       throw IMP::base::InternalException(oss.str().c_str());    \
     }                                                           \
   } while(false)
+
+#define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
+  IMP_INTERNAL_CHECK(std::abs(expra-exprb) < .1*(expra+exprb)+.1,       \
+                     message)
+
+
 #define IMP_USAGE_CHECK(expr, message)                          \
   do {                                                          \
     if (IMP::base::get_check_level() >= IMP::base::USAGE && !(expr)) {        \
@@ -198,12 +227,18 @@
       throw IMP::base::UsageException(oss.str().c_str());             \
     }                                                           \
   } while (false)
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
+  IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*(expra+exprb)+.1,       \
+                     message)
+
 #else // IMP_BUILD < IMP_FAST
 #define IMP_IF_CHECK(level) if (0)
 #define IMP_IF_CHECK_PROBABILISTIC(level, prob) if (0)
 #define IMP_CHECK_CODE(expr)
 #define IMP_INTERNAL_CHECK(expr, message)
+#define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)
 #define IMP_USAGE_CHECK(expr, message)
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expr, message)
 #endif // IMP_BUILD < IMP_FAST
 
 
