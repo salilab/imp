@@ -13,12 +13,121 @@
 #include "command_line.h"
 #include "Profiler.h"
 #include "internal/utility.h"
-#include "HeapProfiler.h"
-#include "LeakChecker.h"
+#include <IMP/base/utility.h>
+#include <IMP/base/raii_macros.h>
+#include <IMP/base/log_macros.h>
 #include <boost/scoped_ptr.hpp>
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #include <boost/program_options.hpp>
 #endif
+
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
+#include <gperftools/heap-profiler.h>
+#include <gperftools/heap-checker.h>
+#elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+#include <google/heap-profiler.h>
+#include <google/heap-checker.h>
+#endif
+
+// put it in header so that the symbols aren't brought into python
+// as python and tcmalloc don't get along (due to the way python loads
+// dynamic libraries with private symbols.
+// the dummy template parameter is to prevent it from getting instantiated
+// except in executables
+#ifndef IMP_DOXYGEN
+namespace {
+/** Heap profiling monitors the memory that is used on the heap and where
+    it came from. To use it, the
+    \extern{http://gperftools.googlecode.com/,GPerTools} must be installed.
+    */
+template <int dummy>
+class HeapProfiler: public IMP::base::RAII {
+  std::string name_;
+  void start(std::string name);
+  void stop();
+ public:
+  IMP_RAII(HeapProfiler, (std::string name),,start(name),
+           stop(), out << "heap profiling");
+  //! dump the current state of memory to the file
+  void dump(std::string name);
+
+};
+
+/** Leaking checking checks if things that were allocated on the stack were not
+    freed. To use it, the
+    \extern{http://gperftools.googlecode.com/,GPerTools} must be installed.
+
+    The HEAPCHECK environment variable is
+    used to control things.
+*/
+template <int dummy>
+class LeakChecker: public IMP::base::RAII {
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)\
+  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+  boost::scoped_ptr<HeapLeakChecker> checker_;
+#endif
+  void start(std::string name);
+  void stop();
+ public:
+  IMP_RAII(LeakChecker, (std::string name),,start(name),
+           stop(), out << "leak checker");
+
+
+};
+#if defined(IMP_BENCHMARK_USE_GPERFTOOLS) \
+  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+template <int dummy>
+void HeapProfiler<dummy>::start(std::string name) {
+  name_=IMP::base::get_unique_name(name);
+  HeapProfilerStart(name_.c_str());
+}
+template <int dummy>
+void HeapProfiler<dummy>::stop(){
+  dump(name_);
+  HeapProfilerStop();
+}
+template <int dummy>
+void HeapProfiler<dummy>::dump(std::string name){
+  HeapProfilerDump(name.c_str());
+}
+template <int dummy>
+void LeakChecker<dummy>::start(std::string name) {
+  std::string nname=IMP::base::get_unique_name(name);
+  checker_.reset(new HeapLeakChecker(nname.c_str()));
+}
+template <int dummy>
+void LeakChecker<dummy>::stop(){
+  if (!checker_->NoLeaks()) {
+    IMP_WARN("Memory leak detected" << std::endl);
+  }
+  checker_.reset();
+}
+
+#else // profiling support
+template <int dummy>
+void HeapProfiler<dummy>::start(std::string) {
+  std::cerr << "GProfTools were not found, no profiling available."
+            << std::endl;
+}
+template <int dummy>
+void HeapProfiler<dummy>::stop(){}
+template <int dummy>
+void HeapProfiler<dummy>::dump(std::string name){
+  IMP_UNUSED(name);
+}
+template <int dummy>
+void LeakChecker<dummy>::start(std::string) {
+  std::cerr << "GProfTools were not found, no profiling available."
+            << std::endl;
+}
+template <int dummy>
+void LeakChecker<dummy>::stop(){}
+
+#endif
+} // namespace
+
+#endif
+
 
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #define IMP_BENCHMARK(extra_arguments)                                  \
@@ -84,17 +193,15 @@
       std::string name=IMP::benchmark::benchmarks_name+".all.pprof";    \
       profiler.reset(new IMP::benchmark::Profiler(name));               \
     }                                                                   \
-    boost::scoped_ptr<IMP::benchmark::HeapProfiler> heap_profiler;      \
+    boost::scoped_ptr<HeapProfiler<0> > heap_profiler;                  \
     if (IMP::benchmark::heap_profile_all) {                             \
       std::string name=IMP::benchmark::benchmarks_name;                 \
-      heap_profiler.reset(new                                           \
-                          IMP::benchmark::HeapProfiler(name));          \
+      heap_profiler.reset(new HeapProfiler<0>(name));                   \
     }                                                                   \
-    boost::scoped_ptr<IMP::benchmark::LeakChecker> leak_checker;        \
+    boost::scoped_ptr<LeakChecker<0> > leak_checker;                    \
     if (IMP::benchmark::leak_check_all) {                               \
       std::string name=IMP::benchmark::benchmarks_name+".all";          \
-      leak_checker.reset(new                                            \
-                         IMP::benchmark::LeakChecker(name));            \
+      leak_checker.reset(new LeakChecker<0>(name));                     \
     }                                                                   \
   }
 

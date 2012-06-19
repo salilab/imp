@@ -1,10 +1,6 @@
 IMP_SWIG_RAII(IMP::benchmark, Profiler);
-IMP_SWIG_RAII(IMP::benchmark, HeapProfiler);
-IMP_SWIG_RAII(IMP::benchmark, LeakChecker);
 
 
 /* Wrap our own classes */
 %include "IMP/benchmark/utility.h"
 %include "IMP/benchmark/Profiler.h"
-%include "IMP/benchmark/HeapProfiler.h"
-%include "IMP/benchmark/LeakChecker.h"

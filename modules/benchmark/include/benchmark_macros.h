@@ -10,9 +10,8 @@
 #define IMPBENCHMARK_MACROS_H
 
 #include "command_line.h"
-#include "LeakChecker.h"
-#include "HeapProfiler.h"
 #include "Profiler.h"
+#include "command_line_macros.h"
 #include <boost/timer.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <IMP/base/exception.h>
@@ -26,23 +25,21 @@
           && IMP::benchmark::run_only                                   \
           == IMP::benchmark::next_benchmark++))
 
-#define IMP_BENCHMARK_PROFILING                 \
+#define IMP_BENCHMARK_PROFILING                                         \
   boost::scoped_ptr<IMP::benchmark::Profiler> profiler;                 \
     if (IMP::benchmark::profile_benchmark) {                            \
       std::string name=IMP::benchmark::benchmarks_name+".%1%.pprof";    \
       profiler.reset(new IMP::benchmark::Profiler(name));               \
     }                                                                   \
-    boost::scoped_ptr<IMP::benchmark::HeapProfiler> heap_profiler;      \
+    boost::scoped_ptr<HeapProfiler<0> > heap_profiler;                  \
     if (IMP::benchmark::heap_profile_benchmark) {                       \
       std::string name=IMP::benchmark::benchmarks_name+".%1%";          \
-      heap_profiler.reset(new                                           \
-                          IMP::benchmark::HeapProfiler(name));          \
+      heap_profiler.reset(new HeapProfiler<0>(name));                   \
     }                                                                   \
-    boost::scoped_ptr<IMP::benchmark::LeakChecker> leak_checker;        \
+    boost::scoped_ptr<LeakChecker<0> > leak_checker;                    \
     if (IMP::benchmark::leak_check_benchmark) {                         \
       std::string name=IMP::benchmark::benchmarks_name+".%1%.leaks";    \
-      leak_checker.reset(new                                            \
-                         IMP::benchmark::LeakChecker(name));            \
+      leak_checker.reset(new LeakChecker<0>(name));                     \
     }
 
 
