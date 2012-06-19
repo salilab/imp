@@ -9,20 +9,34 @@ import csv
 import time
 import logging
 import glob
-import itertools
-import collections
-
-
 
 log = logging.getLogger("solutions_io")
 
 unit_delim = "/" # separate units within a field (eg, reference frames).
 field_delim = ","
 
+class ClusterRecord(tuple):
+    """Simple named tuple class"""
 
+    class _itemgetter(object):
+        def __init__(self, ind):
+            self.__ind = ind
+        def __call__(self, obj):
+            return obj[self.__ind]
 
-ClusterRecord = collections.namedtuple('ClustersRecord',
-        "cluster_id, n_elements, representative, elements, solutions_ids")
+    def __init__(self, iterable):
+        if len(iterable) != self.__n_fields:
+            raise TypeError("Expected %d arguments, got %d" \
+                            % (self.__n_fields, len(iterable)))
+        tuple.__init__(self, iterable)
+
+    __n_fields = 5
+    cluster_id = property(_itemgetter(0))
+    n_elements = property(_itemgetter(1))
+    representative = property(_itemgetter(2))
+    elements = property(_itemgetter(3))
+    solutions_ids = property(_itemgetter(4))
+
 
 #################################
 
@@ -301,7 +315,7 @@ class ResultsDB(Database.Database2):
 #        fields_string = self.get_fields_string(fields)
         if not fields:
             fields = ["*",]
-        for f,t in itertools.product(fields, tables):
+        for f,t in [(f,t) for f in fields for t in tables]:
             if t == "native" or f == "solution_id":
                 continue
             columns = self.get_table_column_names(t)
@@ -639,7 +653,7 @@ class ResultsDB(Database.Database2):
         """
         s = """ SELECT * FROM %s ORDER BY n_elements DESC """ % table_name
         data = self.retrieve_data(s)
-        record = ClusterRecord._make(data[position-1])
+        record = ClusterRecord(data[position-1])
         return record
 
     def get_placement_statistics(self, solutions_ids):
