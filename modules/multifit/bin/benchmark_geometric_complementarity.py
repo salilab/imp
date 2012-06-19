@@ -61,7 +61,7 @@ def perform_benchmark(model, tr_list, r1, r2, rb1, rb2, maxiter):
         pct_error = 100*abs((score - orig_score)/orig_score)
         IMP.core.transform(rb2, tr_list[i][0].get_inverse())
         elapsed = datetime.datetime.now() - start
-        IMP.benchmark.report("ComplementarityRestraint", elapsed.seconds,
+        IMP.benchmark.report("ComplementarityRestraint", "", elapsed.seconds,
             pct_error)
 
 

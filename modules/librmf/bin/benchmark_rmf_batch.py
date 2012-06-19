@@ -26,7 +26,7 @@ for a in all:
     tot=tot+a
 elapsed= datetime.datetime.now()-start
 
-IMP.benchmark.report("rmf batch", elapsed.total_seconds(), len(all))
+IMP.benchmark.report("rmf access", "batch", elapsed.total_seconds(), len(all))
 
 
 start=datetime.datetime.now()
@@ -36,4 +36,4 @@ for n in nhs:
         all.append(n.get_value(k, 0))
 elapsed= datetime.datetime.now()-start
 
-IMP.benchmark.report("rmf loop", elapsed.total_seconds(), 0)
+IMP.benchmark.report("rmf acess", "loop", elapsed.total_seconds(), 0)

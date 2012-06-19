@@ -31,6 +31,8 @@ inline double my_accumulate(It b, It e, F f) {
 }
 
 void time_both(PairContainer *pc, PairScore *ps, std::string name) {
+  std::ostringstream ossc;
+  ossc << "container " << pc->get_number_of_particle_pairs();
   {
     const ParticlePairsTemp pps= pc->get_particle_pairs();
     double runtime=0, total=0;
@@ -41,9 +43,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                }
              }, runtime);
     std::ostringstream oss;
-    oss << "container direct " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << "direct " << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -56,9 +57,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                }
              }, runtime);
     std::ostringstream oss;
-    oss << "container ssps direct " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << "ssps direct " << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -72,9 +72,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                }
              }, runtime);
     std::ostringstream oss;
-    oss << "container ssps direct call " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << "ssps direct call " << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -88,9 +87,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                                     nullptr));
              }, runtime);
     std::ostringstream oss;
-    oss << "container ssps direct bind " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << "ssps direct bind " << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -104,9 +102,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                             static_cast<DerivativeAccumulator*>(nullptr)));
              }, runtime);
     std::ostringstream oss;
-    oss << "container direct bind " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << "direct bind " << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
     double runtime=0, total=0;
@@ -115,9 +112,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                total+=pc->evaluate(ps, nullptr);
              }, runtime);
     std::ostringstream oss;
-    oss << "container " << name << " in "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << name;
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
   {
    double runtime=0, total=0;
@@ -129,9 +125,8 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name) {
                }
              }, runtime);
     std::ostringstream oss;
-    oss << "container " << name << " out "
-        << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, total);
+    oss << name << " out";
+    IMP::benchmark::report(ossc.str(), oss.str(), runtime, total);
   }
 }
 

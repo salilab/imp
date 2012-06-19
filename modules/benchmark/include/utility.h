@@ -14,10 +14,21 @@
 
 IMPBENCHMARK_BEGIN_NAMESPACE
 
-//! Report a benchmark result in a standard way
-/**  */
-IMPBENCHMARKEXPORT void report(std::string name, double value,
+//! Report a benchmark result in a standard way.
+/** \param[in] benchmark the name of the benchmark being run
+    \param[in] algorithm the name of the particular algorithm
+    used to solve the problem
+    \param[in] time the time it took (perhaps normalized)
+    \param[in] check a check value to print out to see if the calc was ok
+*/
+IMPBENCHMARKEXPORT void report(std::string benchmark,
+                               std::string algorith, double time,
                                double check);
+
+#ifndef IMP_DOXYGEN
+IMPBENCHMARKEXPORT void report(std::string benchmark, double time,
+                               double check);
+#endif
 
 IMPBENCHMARKEXPORT int get_return_value();
 

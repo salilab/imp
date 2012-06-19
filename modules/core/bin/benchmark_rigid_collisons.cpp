@@ -48,8 +48,8 @@ void test_one(std::string name,
   /*std::cout << " took " << runtime-inittime << " with side " << side
     << " and value " << value << std::endl;*/
   std::ostringstream oss;
-  oss << "rigid " << name << " " << side;
-  IMP::benchmark::report(oss.str(), runtime-inittime, value);
+  oss << "rigid " << side;
+  IMP::benchmark::report(oss.str(), name, runtime-inittime, value);
 }
 
 

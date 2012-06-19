@@ -47,7 +47,7 @@ void do_benchmark() {
                    }
                  }
                }, runtime, N);
-    IMP::benchmark::report("uncached density loop", runtime, dist);
+    IMP::benchmark::report("density loop", "uncached", runtime, dist);
   }
   {
     double runtime, dist=0;
@@ -62,7 +62,7 @@ void do_benchmark() {
                    }
                  }
                }, runtime, N);
-    IMP::benchmark::report("cached density loop", runtime, dist);
+    IMP::benchmark::report("density loop", "cached", runtime, dist);
   }
 }
 

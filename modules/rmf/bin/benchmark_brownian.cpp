@@ -272,7 +272,7 @@ void do_benchmark(std::string name, PS0 *link,
       {
         total+=simulate(it, ns);
       }, runtime);
-  IMP::benchmark::report(std::string("bd ")+name, runtime, total);
+  IMP::benchmark::report("bd", name, runtime, total);
 }
 }
 //new LowerBound(kk)
