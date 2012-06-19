@@ -19,7 +19,7 @@ timestep=1000
 D=.0002
 k=.01
 f=.1
-kt_silly=IMP.atom.get_kb_t(273.)
+kt_silly=IMP.atom.get_kt(273.)
 
 if use_sympy:
     timestep_u=timestep*femto*second
