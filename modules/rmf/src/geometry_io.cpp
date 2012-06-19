@@ -194,7 +194,7 @@ namespace {
     void do_save_one(display::CylinderGeometry *o,
                      RMF::NodeHandle nh,
                      unsigned int frame) {
-
+      save_cylinder(o, nh, P::get_factory(), frame);
       P::save_color(o, nh, frame);
     }
   public:

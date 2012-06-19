@@ -47,7 +47,10 @@
     const Type& get_geometry() const {return v_;}                       \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
-  }                                                                     \
+  };                                                                    \
+  /** Create a Geometry with the passed primitive.*/                    \
+  inline Name *create_geometry(const Type &t,                           \
+                               std::string name=#Type+"%1%")
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Names, Type)       \
@@ -61,7 +64,10 @@
     const Type& get_geometry() const {return v_;}                       \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
-  }
+  };                                                                    \
+  /** Create a Geometry with the passed primitive.*/                    \
+  inline Name *create_geometry(const Type &t,                           \
+                               std::string name=#Type+"%1%")
 
 #else
 
@@ -80,6 +86,11 @@
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \
+  inline Name *create_geometry(const Type &t,                           \
+                               std::string name                         \
+                               =std::string(#Type)+"%1%") {             \
+    return new Name(t, name);                                           \
+  }                                                                     \
   IMP_OBJECTS(Name, Names)
 
 
@@ -98,6 +109,11 @@
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \
+  inline Name *create_geometry(const Type &t,                           \
+                               std::string name                         \
+                               =std::string(#Type)+"%1%") {             \
+    return new Name(t, name);                                           \
+  }                                                                     \
   IMP_OBJECTS(Name, Names)
 #endif
 

@@ -503,7 +503,10 @@ def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
     d= data.get(envi)
     if d.modules['benchmark'].ok:
-        if d.dependencies['tcmalloc'].ok:
+        if 'tcmalloc' not in d.dependencies.keys():
+            import sys
+            print >> sys.stderr, "WARNING tcmalloc was not tested for."
+        if 'tcmalloc' in d.dependencies.keys() and d.dependencies['tcmalloc'].ok:
             libs=['tcmalloc']
         else:
             libs=[]
