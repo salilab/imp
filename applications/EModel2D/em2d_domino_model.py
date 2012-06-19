@@ -5,7 +5,6 @@ import sys
 import os
 import time
 import logging
-import collections
 log = logging.getLogger("domino_model")
 
 import IMP
