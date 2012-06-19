@@ -53,7 +53,7 @@ public:
     return p->has_attribute(get_color_keys()[2]);
   }
 
-  static FloatKeys get_color_keys();
+  static const FloatKeys& get_color_keys();
 
   IMP_DECORATOR(Colored, Decorator);
 };
