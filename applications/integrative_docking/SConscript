@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="integrative_docking", version='nightly-17/6/2012',
+env= env.IMPApplication(name="integrative_docking", version='nightly-18/6/2012',
                         authors=["Dina Schneidman"],
                         brief="Integrative docking protocol""",
 
