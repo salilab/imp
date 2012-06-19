@@ -23,7 +23,7 @@ public:
   void set_patchdock_executable(std::string const &patchdock_executable);
   void set_protein_pdb_file(std::string const &prot_pdb);
   void set_protein_ms_file(std::string const &ms_file);
-  void set_prot_lib_file(std::string const &prot_lib);
+  void set_protein_lib_file(std::string const &prot_lib);
   void set_patchdock_log_file(std::string const &log_file);
   void set_patchdock_log_level(int log_level);
 
