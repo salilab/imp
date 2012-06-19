@@ -28,7 +28,6 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
       pdb_fine_ap_fn_="";
       num_ap_=0;
       transformations_fn_="";
-      cmm_ap_fn_="";
       reference_fn_="";
     }
     void set_name(const std::string &name) {name_=name;}
@@ -50,8 +49,6 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
     void set_transformations_fn(std::string transformations_fn)
      { transformations_fn_=transformations_fn;}
     std::string get_transformations_fn() const {return transformations_fn_;}
-    void set_cmm_ap_fn(const std::string &cmm_fn) {cmm_ap_fn_=cmm_fn;}
-    std::string get_cmm_ap_fn() const {return cmm_ap_fn_;}
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
     IMP_OBJECT_INLINE(ComponentHeader, {
@@ -68,7 +65,6 @@ class IMPMULTIFITEXPORT ComponentHeader : public IMP::base::Object {
     std::string pdb_fine_ap_fn_;
     int num_fine_ap_;
     std::string transformations_fn_;
-    std::string cmm_ap_fn_;
     std::string reference_fn_;
 };
 IMP_OBJECTS(ComponentHeader, ComponentHeaders);
