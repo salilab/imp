@@ -131,7 +131,7 @@ void parse_xlink_line(
                     " was not specified in the proteins list"<<std::endl);
     dp->add_cross_link_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind,
                                    use_in_jt, linker_len);
-  } catch (boost::bad_lexical_cast &e) {
+  } catch (std::bad_cast &) {
     error_xlink_line(line);
   }
 }
@@ -168,7 +168,7 @@ void parse_ev_line(
                     " was not specified in the proteins list"<<std::endl);
     //todo - for now the residue index is not used
     dp->add_ev_pair(prot1_ind,prot2_ind);
-  } catch (boost::bad_lexical_cast &e) {
+  } catch (std::bad_cast &) {
     error_ev_line(line);
   }
 }
@@ -213,7 +213,7 @@ void parse_protein_line(const std::string &line,
                     boost::lexical_cast<int>(line_split[2]),
                     prot_filename,surface_filename,
                     ref_filename);
-  } catch (boost::bad_lexical_cast &e) {
+  } catch (std::bad_cast &) {
     error_protein_line(line);
   }
 }
@@ -257,7 +257,7 @@ void parse_interaction_line(
       inter_prots.push_back(index);
     }
     dp->add_interaction(inter_prots,used_in_filter,linker_len);
-  } catch (boost::bad_lexical_cast &e) {
+  } catch (std::bad_cast &) {
     error_interaction_line(line);
   }
 }
