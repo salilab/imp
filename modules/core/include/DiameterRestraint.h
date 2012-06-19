@@ -38,6 +38,7 @@ class IMPCOREEXPORT DiameterRestraint: public Restraint
   IMP::OwnerPointer<SingletonContainer> sc_;
   IMP::OwnerPointer<UnaryFunction> f_;
   FloatKey dr_;
+  void init();
 public:
   //! Use f to restraint sc to be withing diameter of one another
   /** f should have a minimum at 0 and be an upper bound-style function.
@@ -49,7 +50,6 @@ public:
 #ifndef IMP_DOXYGEN
   Restraints do_create_decomposition() const;
   Restraints do_create_current_decomposition() const;
-  void set_model(Model *m);
 #endif
 };
 
