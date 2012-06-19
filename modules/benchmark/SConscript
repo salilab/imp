@@ -15,7 +15,8 @@ scons_tools.dependency.add_external_library(env, "GPerfTools",
                                             "gperftools/profiler.h",
                                             body='ProfilerStop();')
 # don't bother checking for the old one if the new one is found
-if not scons_tools.data.get(env).dependencies["GPerfTools"].ok:
+if not env.GetOption('help') and not env.GetOption('clean') \
+   and not scons_tools.data.get(env).dependencies["GPerfTools"].ok:
     scons_tools.dependency.add_external_library(env, "GooglePerfTools",
                                                 ["profiler"],
                                                 "google/profiler.h",
