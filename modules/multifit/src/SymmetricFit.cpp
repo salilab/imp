@@ -148,7 +148,7 @@ void SymmetricFit::set_protein_ms_file(std::string const &ms_file)
   file_parameters_.ligandMs = ms_file;
 }
 
-void SymmetricFit::set_prot_lib_file(std::string const &prot_lib)
+void SymmetricFit::set_protein_lib_file(std::string const &prot_lib)
 {
   file_parameters_.protLib = prot_lib;
 }
