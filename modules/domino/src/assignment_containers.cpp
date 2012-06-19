@@ -209,11 +209,11 @@ WriteAssignmentContainer
   order_(s, all_particles),
   max_cache_(10000) {
   cache_.reserve(max_cache_);
-  f_=open(dataset.c_str(), O_WRONLY|O_APPEND|O_CREAT |O_TRUNC,
+  f_=open(dataset.c_str(), O_WRONLY|O_APPEND|O_CREAT|O_TRUNC
 #ifdef _MSC_VER
-          _S_IREAD|_S_IWRITE);
+          |O_BINARY, _S_IREAD|_S_IWRITE);
 #else
-          S_IRUSR|S_IWUSR);
+          , S_IRUSR|S_IWUSR);
 #endif
   number_=0;
 }
@@ -303,7 +303,11 @@ ReadAssignmentContainer
   stat(dataset.c_str(), &data);
   size_=data.st_size/sizeof(int)/s.size();
   IMP_LOG(TERSE, "Opened binary file of size " << size_ << std::endl);
-  f_=open(dataset.c_str(), O_RDONLY,0);
+#ifdef _MSC_VER
+  f_=open(dataset.c_str(), O_RDONLY|O_BINARY, 0);
+#else
+  f_=open(dataset.c_str(), O_RDONLY, 0);
+#endif
   offset_=-1;
 }
 
