@@ -277,7 +277,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
+    IMP::benchmark::report("xyz "+descr, "decorator", runtime, dist);
   }
   // TEST 1.1
   {
@@ -290,7 +290,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz particle "+descr, runtime, dist);
+    IMP::benchmark::report("xyz "+descr, "particle", runtime, dist);
   }
   // TEST 1.2
   {
@@ -307,7 +307,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz decorator from index "+descr, runtime, dist);
+    IMP::benchmark::report("xyz "+descr, "decorator from index", runtime, dist);
   }
   /*if (0) {
     // TEST 2
@@ -368,7 +368,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
+    IMP::benchmark::report("xyz "+descr, "vector", runtime, dist);
   }
   {
     IMP::base::Vector<VV > coordinates;
@@ -387,7 +387,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz struct "+descr, runtime, dist);
+    IMP::benchmark::report("xyz "+descr, "struct", runtime, dist);
   }
   // TEST 4
   {
@@ -406,7 +406,7 @@ void do_benchmark(std::string descr, unsigned int n) {
              }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector space "+descr, runtime,
+    IMP::benchmark::report("xyz "+descr, "vector space", runtime,
                            dist);
   }
   /*

@@ -31,7 +31,7 @@ void benchmark_table(AssignmentContainer *ac, std::string name) {
              }
              num+=ac->get_number_of_assignments();
            }, runtime);
-  IMP::benchmark::report(name, runtime, num);
+  IMP::benchmark::report("save assignments", name, runtime, num);
 }
 
 int main(int , char *[]) {

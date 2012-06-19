@@ -33,7 +33,7 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
       }
       value+= m->evaluate(false);
     }, runtime);
-  IMP::benchmark::report(name, runtime, value);
+  IMP::benchmark::report("connectivity", name, runtime, value);
 }
 }
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
   {
     ConnectivityRestraint* r= new ConnectivityRestraint(ss, lsc);
     m->add_restraint(r);
-    benchmark_it("connectivity slow", lsc, m);
+    benchmark_it("slow", lsc, m);
     m->remove_restraint(r);
   }
  {
@@ -60,14 +60,14 @@ int main(int argc, char **argv) {
     }
     r->add_composite(composite);
     m->add_restraint(r);
-    benchmark_it("connectivity slow", lsc, m);
+    benchmark_it("slow", lsc, m);
     m->remove_restraint(r);
   }
   {
     IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1));
     Pointer<Restraint> pr(container::create_restraint(ss.get(), cpc.get()));
     m->add_restraint(pr);
-    benchmark_it("connectivity fast", lsc, m);
+    benchmark_it("fast", lsc, m);
     m->remove_restraint(pr);
   }
   return IMP::benchmark::get_return_value();

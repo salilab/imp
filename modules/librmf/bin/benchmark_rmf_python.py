@@ -44,4 +44,4 @@ if rh.get_number_of_bonds() >0:
 
 elapsed= datetime.datetime.now()-start
 
-IMP.benchmark.report("rmf python", elapsed.total_seconds(), 0)
+IMP.benchmark.report("rmf", "python", elapsed.total_seconds(), 0)

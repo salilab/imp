@@ -15,15 +15,19 @@ IMPBENCHMARK_BEGIN_NAMESPACE
 
 
 
-void report(std::string name, double value, double check) {
+void report(std::string name, std::string algorithm,
+            double value, double check) {
   if (value < 0) {
     // disabled
   } else {
-    std::cout << boost::format("%s, %30t%.2e, %50t%1.1e")
-      %name % value % check << std::endl;
+    std::cout << boost::format("%s, %s, %30t%.2e, %50t%1.1e")
+      %name % algorithm % value % check << std::endl;
   }
 }
-
+void report(std::string name,
+            double value, double check) {
+  report(name, "", value, check);
+}
 
 int get_return_value() {
   return 0;

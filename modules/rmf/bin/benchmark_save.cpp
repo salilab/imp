@@ -16,7 +16,7 @@ void test_it(std::string file_name, std::string test_name,
   double time;
   int nframes=0;
   IMP_TIME({IMP::rmf::save_frame(fh, nframes); ++nframes;}, time);
-  IMP::benchmark::report(test_name, time, 1);
+  IMP::benchmark::report("rmf save", test_name, time, 1);
 }
 
 int main(int argc, char *argv[]) {
@@ -25,10 +25,10 @@ int main(int argc, char *argv[]) {
   IMP::atom::Hierarchy h
     = IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
   test_it(IMP::base::create_temporary_file_name("benchmark_save", ".rmf"),
-          "save rmf", h);
+          "rmf", h);
 #ifdef RMF_USE_PROTOBUF
   test_it(IMP::base::create_temporary_file_name("benchmark_save", ".prmf"),
-          "save prmf", h);
+          "prmf", h);
 #endif
   return 0;
 }

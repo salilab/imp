@@ -87,7 +87,7 @@ int main(int, char **) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("rmf large", runtime, dist);
+    IMP::benchmark::report("rmf", "c++", runtime, dist);
   } catch (const std::exception &e) {
     std::cerr << "Exception thrown: " << e.what() << std::endl;
   }
