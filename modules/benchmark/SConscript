@@ -8,6 +8,11 @@ scons_tools.dependency.add_external_library(env, "tcmalloc",
                                             ["tcmalloc"],
                                             # garbage to avoid rename issues
                                             "vector")
+config=[]
+if scons_tools.data.get(env).dependencies["tcmalloc"].ok:
+    config.append(["IMP_BENCHMARK_USE_TCMALLOC", 1])
+else:
+    config.append(["IMP_BENCHMARK_NO_TCMALLOC", 1])
 
 
 scons_tools.dependency.add_external_library(env, "GPerfTools",
@@ -30,9 +35,10 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
                                                'boost/program_options.hpp',
                                                extra_boost_libs=["system"])
 
-module_env=env.IMPModuleBuild(version='nightly-18/6/2012',
+module_env=env.IMPModuleBuild(version='nightly-17/6/2012',
                               required_modules=['base'],
                               optional_dependencies
                               =['GPerfTools',
                                 'GooglePerfTools',
-                                'Boost.ProgramOptions'])
+                                'Boost.ProgramOptions'],
+                              config_macros=config)

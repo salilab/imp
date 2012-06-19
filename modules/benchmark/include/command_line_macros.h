@@ -20,13 +20,14 @@
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #include <boost/program_options.hpp>
 #endif
-
+#if defined(IMP_BENCHMARK_USE_TCMALLOC)
 #if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-profiler.h>
 #include <gperftools/heap-checker.h>
 #elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 #include <google/heap-profiler.h>
 #include <google/heap-checker.h>
+#endif
 #endif
 
 // put it in header so that the symbols aren't brought into python
@@ -62,8 +63,7 @@ class HeapProfiler: public IMP::base::RAII {
 */
 template <int dummy>
 class LeakChecker: public IMP::base::RAII {
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS)\
-  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
@@ -74,8 +74,7 @@ class LeakChecker: public IMP::base::RAII {
 
 
 };
-#if defined(IMP_BENCHMARK_USE_GPERFTOOLS) \
-  || defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
+#if defined(IMP_BENCHMARK_USE_TCMALLOC)
 template <int dummy>
 void HeapProfiler<dummy>::start(std::string name) {
   name_=IMP::base::get_unique_name(name);
@@ -127,6 +126,7 @@ void LeakChecker<dummy>::stop(){}
 } // namespace
 
 #endif
+
 
 
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
