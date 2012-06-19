@@ -64,11 +64,11 @@ int main(int argc, char **argv) {
   IMP_BENCHMARK( );
   using namespace IMP::algebra;
   BoundingBox3D bb(Vector3D(0,0,0),
-                   Vector3D(100, 100, 100));
+                   Vector3D(25, 26, 20));
   {
     GridD<3, DenseGridStorageD<3, double>, double, DefaultEmbeddingD<3> >
       grid(1, bb, 0);
-    grid[Vector3D(50,25,30)]=1;
+    grid[Vector3D(16,25,13)]=1;
     benchmark(grid, "dense 100");
   }
   return 0;
