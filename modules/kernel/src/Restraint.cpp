@@ -183,7 +183,7 @@ Restraint* Restraint::create_current_decomposition() const {
                          "The score of the current decomposition term is 0."
                          << " This is unacceptable.");
       IMP_INTERNAL_CHECK(std::abs(old_score-new_score)
-                         <  .1*old_score+new_score,
+                         <  .1*std::abs(old_score+new_score)+.1,
                          "Old and new scores don't match: "
                          << old_score << " vs " << new_score);
     }

@@ -43,11 +43,14 @@ public:
   }
   VectorKD get_centroid(const VectorKDs &vs) const {
     IMP_USAGE_CHECK(!vs.empty(), "Needs things to have a centroid");
-    return std::accumulate(vs.begin(), vs.end(),
-                           get_zero_vector_kd(vs[0].get_dimension()));
+    VectorKD sum =  std::accumulate(vs.begin(), vs.end(),
+                                    get_zero_vector_kd(vs[0].get_dimension()));
+    return sum / vs.size();
   }
   IMP_OBJECT_INLINE(EuclideanVectorKDMetric,IMP_UNUSED(out),);
 };
+
+
 
 /** The l-infinity norm on the difference between the two vectors. And the
     centroid is the center of the bounding box of the vectors.

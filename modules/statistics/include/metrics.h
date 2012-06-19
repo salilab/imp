@@ -26,13 +26,25 @@ public:
 };
 
 
-/** Compute the RMSD between two sets of particles in two configurations.
+/** Compute the RMSD between specified sets of particles
+    in pairs of configurations, within a configuration set
  */
 class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
   IMP::OwnerPointer<ConfigurationSet> cs_;
   IMP::OwnerPointer<SingletonContainer> sc_;
   bool align_;
  public:
+  /**
+     Constructor for creating a metric that computes RMSD between
+     pairs of configurations in a configuration set, using joint particles
+     specified in a singleton continer
+
+     @param cs the set of configurations
+     @param sc the particles used for RMSD calculation between each pair of
+               configuration
+     @param align whether to align pair of configurations prior to RMSD
+            calculations
+   */
   ConfigurationSetRMSDMetric(ConfigurationSet *cs,
                               SingletonContainer *sc,
                               bool align=false);

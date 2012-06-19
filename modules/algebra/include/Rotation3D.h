@@ -516,6 +516,8 @@ Rotation3D get_rotation_from_x_y_axes(const Vector3D &x,
    \note www.euclideanspace.com/maths/geometry/rotations/conversions/
    angleToQuaternion/index.htm
    \relatesalso Rotation3D
+
+   @return axis direction and rotation about the axis in Radians
 */
 IMPALGEBRAEXPORT
 std::pair<Vector3D,double> get_axis_and_angle(const Rotation3D &rot);

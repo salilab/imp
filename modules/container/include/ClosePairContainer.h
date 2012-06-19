@@ -65,7 +65,7 @@ public:
   /** @name Methods to control the set of filters
 
      PairPredicate objects can be used as filters to prevent
-     the addition of pairs to the containeroutput list. Pairs
+     the addition of pairs to the container output list. Pairs
      for which the predicates evaluate to a non-zero value are
      excluded from the list.
   */
