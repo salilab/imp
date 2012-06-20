@@ -3,7 +3,6 @@ import IMP.test
 import IMP.algebra as alg
 import sys
 import os
-import itertools
 
 import IMP.em2d.sampling as sampling
 import IMP.em2d.Database as Database
@@ -52,18 +51,18 @@ class TestSampling(IMP.test.TestCase):
         sch = sampling.SamplingSchema(4, fixed, anchored)
         sch.read_from_database(fn)
 
-        for i,j in itertools.product(range(len(transformations)),
-                                     range(len(subunits))):
-            T = transformations[i][j]
-            t = T.get_translation()
-            q = T.get_rotation().get_quaternion()
+        for i in range(len(transformations)):
+            for j in range(len(subunits)):
+                T = transformations[i][j]
+                t = T.get_translation()
+                q = T.get_rotation().get_quaternion()
 
-            pos = sch.transformations[j][i].get_translation()
-            ori = sch.transformations[j][i].get_rotation().get_quaternion()
-            for k in range(3):
-                self.assertAlmostEqual(pos[k], t[k])
-            for k in range(4):
-                self.assertAlmostEqual(q[k], ori[k])
+                pos = sch.transformations[j][i].get_translation()
+                ori = sch.transformations[j][i].get_rotation().get_quaternion()
+                for k in range(3):
+                    self.assertAlmostEqual(pos[k], t[k])
+                for k in range(4):
+                    self.assertAlmostEqual(q[k], ori[k])
 
         os.remove(fn)
 
