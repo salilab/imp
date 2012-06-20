@@ -10,6 +10,10 @@ log = logging.getLogger("buildxlinks")
 
 import networkx as nx
 
+try:
+    set = set
+except NameError:
+    from sets import Set as set
 
 def build_xlinks_graph(xlinks):
     """
