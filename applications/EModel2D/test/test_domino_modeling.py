@@ -5,7 +5,7 @@ import os
 import random
 import logging
 log = logging.getLogger("test_mc_modeling")
-logging.basicConfig(stream=sys.stdout)
+logging.basicConfig()
 logging.root.setLevel(logging.DEBUG)
 
 import IMP.em2d
