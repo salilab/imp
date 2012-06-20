@@ -448,6 +448,7 @@ void FFTFitting::prepare_lowres_map(em::DensityMap *dmap) {
   double cut_width;
   double new_width;
 
+  spacing_ = dmap->get_spacing();
   /* if spacing is too wide adjust resolution */
   if (spacing_ > resolution_ * 0.7) {
     resolution_ = 2.0 * spacing_;
