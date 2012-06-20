@@ -74,6 +74,11 @@ class HeapRecord(tuple):
             return True
         return False
 
+    # Need __le__ as well for older Pythons
+    def __le__(self, other):
+        i = self.i
+        return self[i] >= other[i]
+
 
 def gather_best_solution_results(fns, fn_output, max_number=50000,
                                     raisef=0.1, orderby="em2d"):
