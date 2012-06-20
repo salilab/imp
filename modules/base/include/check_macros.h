@@ -238,7 +238,7 @@
 #define IMP_INTERNAL_CHECK(expr, message)
 #define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)
 #define IMP_USAGE_CHECK(expr, message)
-#define IMP_USAGE_CHECK_FLOAT_EQUAL(expr, message)
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)
 #endif // IMP_BUILD < IMP_FAST
 
 
