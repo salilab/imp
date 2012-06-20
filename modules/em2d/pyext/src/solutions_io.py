@@ -10,6 +10,11 @@ import time
 import logging
 import glob
 
+try:
+    set = set
+except NameError:
+    from sets import Set as set
+
 log = logging.getLogger("solutions_io")
 
 unit_delim = "/" # separate units within a field (eg, reference frames).
