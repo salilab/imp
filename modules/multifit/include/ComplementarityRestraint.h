@@ -63,7 +63,7 @@ public:
   }
   /** Set the thickness to use for the external complemenarity layer.*/
   void set_complementarity_thickness(double th) {
-    complementarity_thickeness_=th;
+    complementarity_thickness_=th;
     update_voxel();
   }
   /** Set the value to use for external complementarity voxels.
@@ -121,7 +121,7 @@ public:
   // parameters
   double maximum_separation_, maximum_penetration_score_;
   double maximum_penetration_;
-  double complementarity_thickeness_, complementarity_value_;
+  double complementarity_thickness_, complementarity_value_;
   double penetration_coef_, complementarity_coef_, boundary_coef_;
   double interior_thickness_, voxel_size_;
 };

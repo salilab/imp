@@ -75,7 +75,7 @@ ComplementarityRestraint
   maximum_separation_(std::numeric_limits<double>::max()),
   maximum_penetration_score_(std::numeric_limits<double>::max()),
   maximum_penetration_(std::numeric_limits<double>::max()),
-  complementarity_thickeness_(10), complementarity_value_(-1),
+  complementarity_thickness_(10), complementarity_value_(-1),
   penetration_coef_(2), complementarity_coef_(1),
   boundary_coef_(-3),
   interior_thickness_(2){
@@ -109,7 +109,7 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
 {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(!accum,
-                  "WeightedExcludedVolume3 does not support derivatives.");
+                  "ComplementarityRestraint does not support derivatives.");
   double vol= cube(voxel_size_);
 
   internal::ComplementarityParameters params;
@@ -118,11 +118,11 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
                                              max);
 
   Pointer<GridObject> ga=get_grid_object(rba_, a_, ok_,
-                                         complementarity_thickeness_,
+                                         complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
   Pointer<GridObject> gb=get_grid_object(rbb_, b_, ok_,
-                                         complementarity_thickeness_,
+                                         complementarity_thickness_,
                                          complementarity_value_,
                                          interior_thickness_, voxel_size_);
   algebra::Transformation3D tra=ga->get_data().first
@@ -149,12 +149,12 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
     return std::numeric_limits<double>::max();
   /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     IMP::algebra::DenseGrid3D<float> ga=get_grid(a_,
-                                                 complementarity_thickeness_,
+                                                 complementarity_thickness_,
                                                  complementarity_value_,
                                                  interior_thickness_,
                                                  voxel_size_);
     IMP::algebra::DenseGrid3D<float> gb=get_grid(b_,
-                                                 complementarity_thickeness_,
+                                                 complementarity_thickness_,
                                                  complementarity_value_,
                                                  interior_thickness_,
                                                  voxel_size_);
@@ -176,12 +176,12 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
 
 void ComplementarityRestraint::update_voxel() {
   double val;
-  if (complementarity_thickeness_==0) {
+  if (complementarity_thickness_==0) {
     val= interior_thickness_;
   } else if (interior_thickness_==0) {
-    val= complementarity_thickeness_;
+    val= complementarity_thickness_;
   } else {
-    val=std::min(complementarity_thickeness_,
+    val=std::min(complementarity_thickness_,
                  interior_thickness_);
   }
   voxel_size_=val/2.0;
