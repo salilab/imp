@@ -25,7 +25,7 @@ ComplementarityRestraint::get_grid(const ParticlesTemp &a,
   params.interior_cutoff_distance= maximum_penetration_;
   params.voxel_size=voxel;
   IMP::algebra::DenseGrid3D<float> grid
-    = internal::get_complentarity_grid(a, params);
+    = internal::get_complementarity_grid(a, params);
   return grid;
 }
 
@@ -147,25 +147,6 @@ double ComplementarityRestraint::unprotected_evaluate_if_good(
           << std::endl);
   if ( !score_acceptable(ps) )
     return std::numeric_limits<double>::max();
-  /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    IMP::algebra::DenseGrid3D<float> ga=get_grid(a_,
-                                                 complementarity_thickness_,
-                                                 complementarity_value_,
-                                                 interior_thickness_,
-                                                 voxel_size_);
-    IMP::algebra::DenseGrid3D<float> gb=get_grid(b_,
-                                                 complementarity_thickness_,
-                                                 complementarity_value_,
-                                                 interior_thickness_,
-                                                 voxel_size_);
-
-    FloatPair psc= IMP::multifit::internal
-      ::get_penetration_and_complementarity_scores(ga, gb,
-                                   algebra::get_identity_transformation_3d(),
-                                                   params);
-    IMP_LOG(TERSE, "Check scores are " << psc.first << " and " << ps.second
-            << std::endl);
-            }*/
   double score = penetration_coef_*ps.penetration_score
     + complementarity_coef_*ps.complementarity_score
     + boundary_coef_*ps.boundary_score;

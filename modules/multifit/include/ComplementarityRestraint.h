@@ -21,6 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
     The score returned is infinity if the two molecules overlap by more
     than the value set for set_maximum_penetration_score() or if the
     two molecules are separated by more than set_maximum_separation().
+
     Otherwise, the integral of the set_complementarity_value() value over
     a layer of thickness set_complementarity_thickness() around the molecule
     is returned.
@@ -34,15 +35,13 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
     \note The restraint pretty much only makes sense for use with Domino as it
     returns infinity for many cases. Monte Carlo might make sense with certain
-    paramters.
+    parameters.
 */
 class IMPMULTIFITEXPORT ComplementarityRestraint : public Restraint
 {
 public:
-  ComplementarityRestraint(const ParticlesTemp &a,
-                                   const ParticlesTemp &b,
-                                   std::string name
-                                   ="ComplementarityRestraint %1%");
+  ComplementarityRestraint(const ParticlesTemp &a, const ParticlesTemp &b,
+                           std::string name="ComplementarityRestraint %1%");
   /** If the two molecules have a penetration score of more than this,
       infinity is returned as the score. This score is roughly the number of
       cubic angstroms that the two molecules overlap (assuming only one
@@ -55,13 +54,13 @@ public:
   void set_maximum_penetration(double d) {
     maximum_penetration_=d;
   }
-  /** If the two molecules are separated by more than this,
-      infinity is returned.
+  /** If the two molecules' bounding sphere surfaces are separated by more
+      than this distance, infinity is returned.
    */
   void set_maximum_separation(double s) {
     maximum_separation_=s;
   }
-  /** Set the thickness to use for the external complemenarity layer.*/
+  /** Set the thickness to use for the external complementarity layer.*/
   void set_complementarity_thickness(double th) {
     complementarity_thickness_=th;
     update_voxel();
