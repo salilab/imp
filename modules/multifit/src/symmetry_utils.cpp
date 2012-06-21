@@ -192,7 +192,7 @@ multifit::FittingSolutionRecords internal_build_symmetric_assemblies(
   multifit::internal::ComplementarityGridParameters compl_params;
   //const gamb::AlgParams &alg_params = parameters.getAlgParams();
   //compl_params.voxel_size = alg_params.gridParams.delta;
-  Grid zero_one_grid = multifit::internal::get_complentarity_grid(atoms,
+  Grid zero_one_grid = multifit::internal::get_complementarity_grid(atoms,
     compl_params);
   IMP_GRID3D_FOREACH_VOXEL(zero_one_grid,
     {
