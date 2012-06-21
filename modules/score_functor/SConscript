@@ -1,0 +1,4 @@
+Import('env')
+
+env.IMPModuleBuild(version='nightly-14/6/2012',
+                   required_modules=['kernel', 'base', 'algebra'])

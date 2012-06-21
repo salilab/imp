@@ -1,0 +1,4 @@
+Import('env')
+
+# Each .cpp file is built into an application.
+env.IMPModuleBin(env.IMPModuleGetBins())

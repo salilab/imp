@@ -10,58 +10,53 @@
 
 #include "core_config.h"
 #include "XYZR.h"
-#include <IMP/generic.h>
-#include <IMP/PairScore.h>
-#include <IMP/Pointer.h>
-#include <IMP/UnaryFunction.h>
+#include <IMP/score_functor/UnaryFunctionEvaluate.h>
+#include <IMP/score_functor/SphereDistance.h>
+#include <IMP/score_functor/Shift.h>
+#include <IMP/score_functor/Harmonic.h>
+#include <IMP/score_functor/HarmonicLowerBound.h>
+#include <IMP/score_functor/HarmonicUpperBound.h>
+#include <IMP/score_functor/distance_pair_score_macros.h>
 
 IMPCORE_BEGIN_NAMESPACE
+
+// needed to keep swig from getting confused or breaking line
+// lengths
+typedef score_functor::SphereDistance<score_functor::UnaryFunctionEvaluate>
+SphereDistanceScore;
 
 //! A score on the distance between the surfaces of two spheres.
 /** \see XYZR
     \see SphereDistancePairScore
     \see DistancePairScore
     \see SoftSpherePairScore
-    \see NormalizedSphereDistancePairScore
  */
-class IMPCOREEXPORT SphereDistancePairScore : public PairScore
-{
-  IMP::OwnerPointer<UnaryFunction> f_;
-  FloatKey radius_;
-public:
-  SphereDistancePairScore(UnaryFunction *f,
-                          FloatKey radius=FloatKey("radius"));
-  UnaryFunction* get_unary_function() const {
-    return f_;
-  }
-  IMP_SIMPLE_PAIR_SCORE(SphereDistancePairScore);
-};
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SphereDistancePairScore,
+                                SphereDistanceScore,
+                                (UnaryFunction *uf,
+                                 std::string name
+                                 ="SphereDistancePairScore%1%"),
+                               (score_functor::UnaryFunctionEvaluate(uf)));
+
+
+typedef score_functor::SphereDistance
+<score_functor::Shift <score_functor::HarmonicUpperBound> >
+HarmonicUpperBoundSphereDistanceScore;
 
 
 //!A harmonic upper bound on the distance between two spheres
 /** \see XYZR
     \see SpherePairScore
     \see SoftSpherePairScore
-    \see NormalizedSphereDistancePairScore
  */
-class IMPCOREEXPORT HarmonicUpperBoundSphereDistancePairScore : public PairScore
-{
-  double x0_, k_;
-public:
-  HarmonicUpperBoundSphereDistancePairScore(double d0, double k);
-  double get_rest_length() const {
-    return x0_;
-  }
-  double get_stiffness() const {
-    return k_;
-  }
-  IMP_INDEX_PAIR_SCORE(HarmonicUpperBoundSphereDistancePairScore);
-};
-
-IMP_OBJECTS(HarmonicUpperBoundSphereDistancePairScore,
-            HarmonicUpperBoundSphereDistancePairScores);
-
-
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(HarmonicUpperBoundSphereDistancePairScore,
+                                HarmonicUpperBoundSphereDistanceScore,
+                                (double x0, double k,
+                                 std::string name
+                              ="HarmonicUpperBoundSphereDistancePairScore%1%"),
+                  (score_functor::Shift
+                   <score_functor::HarmonicUpperBound>
+                   (x0, score_functor::HarmonicUpperBound(k))));
 
 //!A harmonic upper bound on the diameter of the span of two spheres
 /** This restraint restraints how far the furthest points of two spheres
@@ -91,77 +86,29 @@ IMP_OBJECTS(HarmonicUpperBoundSphereDiameterPairScore,
 
 
 
+
+typedef score_functor::SphereDistance
+<score_functor::Shift<score_functor::Harmonic> >
+HarmonicSphereDistanceScore;
+
+
 //!A harmonic score on the distance between two spheres
 /** \see XYZR
     \see SpherePairScore
     \see SoftSpherePairScore
-    \see NormalizedSphereDistancePairScore
  */
-class IMPCOREEXPORT HarmonicSphereDistancePairScore : public PairScore
-{
-  double x0_, k_;
-public:
-  HarmonicSphereDistancePairScore(double d0, double k);
-  double get_rest_length() const {
-    return x0_;
-  }
-  double get_stiffness() const {
-    return k_;
-  }
-  IMP_INDEX_PAIR_SCORE(HarmonicSphereDistancePairScore);
-};
-
-IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
-
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(HarmonicSphereDistancePairScore,
+                                HarmonicSphereDistanceScore,
+                                (double x0, double k,
+                                 std::string name
+                                 ="HarmonicSphereDistancePairScore%1%"),
+                  (score_functor::Shift<score_functor::Harmonic>
+                   (x0, score_functor::Harmonic(k))));
 
 
 
 
 #ifndef IMP_DOXYGEN
-inline double HarmonicSphereDistancePairScore::evaluate_index(Model *m,
-                                const ParticleIndexPair& p,
-           DerivativeAccumulator *da) const {
-  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
-    - m->get_sphere(p[1]).get_center();
-  static const double MIN_DISTANCE = .00001;
-  double distance2= delta.get_squared_magnitude();
-  double distance=std::sqrt(distance2);
-  double shifted_distance = distance- x0_
-    - m->get_sphere(p[0]).get_radius()
-    - m->get_sphere(p[1]).get_radius();
-  double score= .5*k_*square(shifted_distance);
-  if (da && distance > MIN_DISTANCE) {
-    double deriv= k_*shifted_distance;
-    algebra::Vector3D uv= delta/distance;
-    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
-  }
-  return score;
-}
-
-inline double
-HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
-                                  const ParticleIndexPair& p,
-           DerivativeAccumulator *da) const {
-  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
-    - m->get_sphere(p[1]).get_center();
-  static const double MIN_DISTANCE = .00001;
-  double distance= delta.get_magnitude();
-  double shifted_distance = distance- x0_
-    - m->get_sphere(p[0]).get_radius()
-    - m->get_sphere(p[1]).get_radius();
-  if (shifted_distance < 0) return 0;
-  double score= .5*k_*square(shifted_distance);
-  if (da && distance > MIN_DISTANCE) {
-    double deriv= k_*shifted_distance;
-    algebra::Vector3D uv= delta/distance;
-    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
-  }
-  return score;
-}
-
-
 inline double
 HarmonicUpperBoundSphereDiameterPairScore::evaluate_index(Model *m,
                                   const ParticleIndexPair& p,
@@ -223,49 +170,18 @@ public:
 };
 
 
+typedef score_functor::SphereDistance
+<score_functor::HarmonicLowerBound> SoftSphereDistanceScore;
+
 /** This class is equivalent to, but faster than a
     SphereDistancePairScore with a HarmonicLowerBound.
 */
-class IMPCOREEXPORT SoftSpherePairScore: public PairScore {
-  double k_;
-public:
-  SoftSpherePairScore(double k,
-                      std::string name= "SoftSpherePairScore %1%"):
-    PairScore(name),k_(k){}
-  double get_spring_constant() const {return k_;}
-  IMP_INDEX_PAIR_SCORE(SoftSpherePairScore);
-};
-
-
-IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
-
-
-#ifndef IMP_DOXYGEN
-inline double SoftSpherePairScore
-::evaluate_index(Model *m, const ParticleIndexPair& pp,
-           DerivativeAccumulator *da) const {
-  algebra::Vector3D delta=m->get_sphere(pp[0]).get_center()
-    - m->get_sphere(pp[1]).get_center();
-  static const double MIN_DISTANCE = .00001;
-  double distance2= delta.get_squared_magnitude();
-  double rs= m->get_sphere(pp[0]).get_radius()
-    + m->get_sphere(pp[1]).get_radius();
-  if (distance2 > square(rs)) return 0;
-  double distance=std::sqrt(distance2);
-  double shifted_distance = distance- rs;
-  double deriv= k_*shifted_distance;
-  double score= .5*deriv*shifted_distance;
-  if (da && distance > MIN_DISTANCE) {
-    algebra::Vector3D uv= delta/distance;
-    m->add_to_coordinate_derivatives(pp[0], uv*deriv, *da);
-    m->add_to_coordinate_derivatives(pp[1], -uv*deriv, *da);
-  }
-  return score;
-}
-
-
-
-#endif
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(SoftSpherePairScore,
+                                SoftSphereDistanceScore,
+                                (double k,
+                                 std::string name
+                                 ="SoftSpherePairScore%1%"),
+                        (score_functor::HarmonicLowerBound(k)));
 
 
 IMPCORE_END_NAMESPACE

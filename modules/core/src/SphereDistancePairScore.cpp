@@ -15,61 +15,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-SphereDistancePairScore::SphereDistancePairScore(UnaryFunction *f,
-                                                 FloatKey radius) :
-    f_(f), radius_(radius)
-{
-}
-namespace {
-struct Shift
-{
-  Float s_;
-  Shift(Float s): s_(s){}
-  Float operator()(Float t) const {return t-s_;}
-};
-}
-
-
-Float SphereDistancePairScore::evaluate(const ParticlePair &p,
-                                        DerivativeAccumulator *da) const
-{
-  IMP_USAGE_CHECK(p[0]->has_attribute(radius_), "Particle " << p[0]->get_name()
-            << "missing radius in SphereDistancePairScore");
-  IMP_USAGE_CHECK(p[1]->has_attribute(radius_), "Particle " << p[1]->get_name()
-            << "missing radius in SphereDistancePairScore");
-  Float ra = p[0]->get_value(radius_);
-  Float rb = p[1]->get_value(radius_);
-  return internal::evaluate_distance_pair_score(XYZ(p[0]),
-                                                XYZ(p[1]),
-                                                da, f_.get(),
-                                                boost::lambda::_1-(ra+rb));
-}
-
-
-void SphereDistancePairScore::do_show(std::ostream &out) const
-{
-  out << "function " << *f_ << std::endl;
-}
-
-
-HarmonicSphereDistancePairScore
-::HarmonicSphereDistancePairScore(double d0, double k):
-  x0_(d0), k_(k){}
-
-void HarmonicSphereDistancePairScore::do_show(std::ostream &out) const {
-  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
-}
-
-ParticlesTemp HarmonicSphereDistancePairScore
-::get_input_particles(Particle*p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp HarmonicSphereDistancePairScore
-::get_input_containers(Particle*) const {
-  return ContainersTemp();
-}
-
 
 
 HarmonicUpperBoundSphereDiameterPairScore
@@ -91,27 +36,6 @@ ContainersTemp HarmonicUpperBoundSphereDiameterPairScore
   return ContainersTemp();
 }
 
-
-
-
-HarmonicUpperBoundSphereDistancePairScore
-::HarmonicUpperBoundSphereDistancePairScore(double d0, double k):
-  x0_(d0), k_(k){}
-
-void HarmonicUpperBoundSphereDistancePairScore
-::do_show(std::ostream &out) const {
-  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
-}
-
-ParticlesTemp HarmonicUpperBoundSphereDistancePairScore
-::get_input_particles(Particle*p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp HarmonicUpperBoundSphereDistancePairScore
-::get_input_containers(Particle*) const {
-  return ContainersTemp();
-}
 
 
 
@@ -177,21 +101,6 @@ Float WeightedSphereDistancePairScore::evaluate(const ParticlePair &p,
 void WeightedSphereDistancePairScore::do_show(std::ostream &out) const
 {
   out << "function " << *f_ << std::endl;
-}
-
-
-void SoftSpherePairScore::do_show(std::ostream &out) const {
-  out << "k=" << k_ << std::endl;
-}
-
-ParticlesTemp SoftSpherePairScore
-::get_input_particles(Particle*p) const {
-  return ParticlesTemp(1, p);
-}
-
-ContainersTemp SoftSpherePairScore
-::get_input_containers(Particle*) const {
-  return ContainersTemp();
 }
 
 
