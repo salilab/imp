@@ -27,7 +27,7 @@ SampledDensityMap::calculate_particles_bounding_box(const Particles &ps) {
   IMP_INTERNAL_CHECK(ps.size()>0,
         "Can not calculate a particles bounding box "
                      <<" for zero particles"<<std::endl);
-  //read the points and determine the dimentions of the map
+  //read the points and determine the dimensions of the map
   algebra::Vector3Ds all_points;
   for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
     all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
@@ -61,7 +61,7 @@ void SampledDensityMap::set_header(const algebra::Vector3D &lower_bound,
   header_.alpha = header_.beta = header_.gamma = 90.0;
   // TODO : in MRC format mx equals Grid size in X
   // ( http://bio3d.colorado.edu/imod/doc/mrc_format.txt)
-  // We assueme that grid size means number of voxels ( which is the meaning
+  // We assume that grid size means number of voxels ( which is the meaning
   // of nx). It might be worth asking MRC people whether this assumption
   // is correct.
   header_.mx = header_.get_nx(); header_.my = header_.get_ny();
@@ -73,7 +73,7 @@ SampledDensityMap::SampledDensityMap(const IMP::ParticlesTemp &ps,
                     emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
                     int sig_cutoff,KernelType kt) : kt_(kt){
   IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
-          "and voxel size: "<<voxel_size<<std::endl);
+          " and voxel size: "<<voxel_size<<std::endl);
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
@@ -97,7 +97,7 @@ namespace {
     IMP_INTERNAL_CHECK(ps.size()>0,
            "Can not calculate a particles bounding box for "
                        <<"zero particles"<<std::endl);
-    //read the points and determine the dimentions of the map
+    //read the points and determine the dimensions of the map
     algebra::Vector3Ds all_points;
     for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
       all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
@@ -196,7 +196,7 @@ namespace {
                          Particles ps,
                          const F &f) {
     emreal*data=dmap->get_data();
-    IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
+    IMP_LOG(VERBOSE,"going to resample particles " <<std::endl);
     //check that the particles bounding box is within the density bounding box
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       IMP::algebra::BoundingBox3D particles_bb =
@@ -248,7 +248,7 @@ namespace {
       }
     }
   }
-}//end namepsace
+}//end namespace
 
 void SampledDensityMap::resample() {
   if (kt_== GAUSSIAN) {
@@ -262,7 +262,7 @@ void SampledDensityMap::resample() {
   // The values of dmean, dmin,dmax, and rms have changed
   rms_calculated_ = false;
   normalized_ = false;
-  IMP_LOG(VERBOSE,"finish resampling  particles " <<std::endl);
+  IMP_LOG(VERBOSE,"finish resampling particles " <<std::endl);
 }
 
 void SampledDensityMap::set_particles(const IMP::ParticlesTemp &ps,
@@ -370,7 +370,7 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
   }
   IMP::algebra::BoundingBox3D bb = IMP::algebra::BoundingBox3D(all_points);
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "particles bounding box  is : ");
+    IMP_LOG(VERBOSE, "particles bounding box is : ");
     IMP_LOG_WRITE(VERBOSE,bb.show());
     IMP_LOG(VERBOSE,std::endl);
     IMP_LOG(VERBOSE,"max radius is: " << max_radius<<std::endl);
