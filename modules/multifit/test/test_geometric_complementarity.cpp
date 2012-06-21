@@ -60,7 +60,7 @@ double approx_sphere_intersection(double radius, double dist)
   cgpar.voxel_size = 1;
   cgpar.interior_thickness = radius;
   IMP::algebra::DenseGrid3D<float> map0 =
-    IMP::multifit::internal::get_complentarity_grid(particles0, cgpar);
+    IMP::multifit::internal::get_complementarity_grid(particles0, cgpar);
   IMP::algebra::Transformation3D tr(IMP::algebra::Vector3D(dist, 0, 0));
   IMP::multifit::internal::FitScore score =
     IMP::multifit::internal::get_fit_scores(map0, map0, tr);
