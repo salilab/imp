@@ -16,10 +16,10 @@ class TestMonteCarloModeling(IMP.test.ApplicationTestCase):
     def test_generate_model(self):
         """ Test that Monte Carlo modeling runs """
         try:
-            domino_model = self.import_python_application(
-                                                  'em2d_domino_model.py')
+            import networkx, subprocess
         except ImportError, detail:
             self.skipTest(str(detail))
+        domino_model = self.import_python_application('em2d_domino_model.py')
         fn_config = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn_config)
         fn_database = self.get_input_file_name("monte_carlo_output_database.db")
