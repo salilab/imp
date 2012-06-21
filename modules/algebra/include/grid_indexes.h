@@ -53,7 +53,7 @@ class ExtendedGridIndexD: public base::Value {
   }
 #endif
   //! Create a grid cell from three arbitrary indexes
-  ExtendedGridIndexD(Ints vals) {
+  explicit ExtendedGridIndexD(Ints vals) {
     data_.set_coordinates(vals.begin(), vals.end());
   }
 #ifndef SWIG
@@ -192,7 +192,7 @@ class GridIndexD: public base::Value
   typedef const int* iterator;
   iterator begin() const {return data_.get_data();}
   iterator end() const {return data_.get_data()+get_dimension();}
-  GridIndexD(Ints vals) {
+  explicit GridIndexD(Ints vals) {
     data_.set_coordinates(vals.begin(), vals.end());
   }
   template <class It>
