@@ -19,10 +19,10 @@ class TestDominoModeling(IMP.test.ApplicationTestCase):
     def test_generate_model(self):
         """ Test that the DOMINO modeling runs """
         try:
-            domino_model = self.import_python_application(
-                                               'em2d_domino_model.py')
+            import networkx, subprocess
         except ImportError, detail:
             self.skipTest(str(detail))
+        domino_model = self.import_python_application('em2d_domino_model.py')
         IMP.set_log_level(IMP.SILENT)
         fn = self.get_input_file_name("config.py")
         exp = utility.get_experiment_params(fn)
