@@ -7,8 +7,7 @@ import IMP.restrainer
 import os
 import time
 
-class SampleTests(IMP.test.TestCase):
-    """Tests for sampled density maps"""
+class Tests(IMP.test.TestCase):
 
     def _setup(self):
         """initialize IMP environment create particles"""
@@ -35,8 +34,8 @@ class SampleTests(IMP.test.TestCase):
 
         m.add_restraint(r)
         return (m, rb0, rb1, l0, l1)
-    def test_weighted_excluded_volume_restraint(self):
-        """Check that weighted excluded volume restraint 3 works"""
+    def test_complementarity_restraint(self):
+        """Check that ComplementarityRestraint works"""
         (m, rb0, rb1, l0, l1)= self._setup()
         rb1.set_coordinates_are_optimized(True)
         IMP.set_log_level(IMP.TERSE)#VERBOSE)
