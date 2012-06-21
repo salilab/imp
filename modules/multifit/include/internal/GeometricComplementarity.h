@@ -22,7 +22,7 @@ molecule have value params.complementarity_value[i] if they are
 within params.complementarity_thickness[i] of the molecule and 0
 otherwise and the voxels inside have value i if they are within
 params.interior_thickness*i of the surface. The list of XYZR particles
-is passed. The vector complementary_thickness must be sorted in increasing
+is passed. The vector complementarity_thickness must be sorted in increasing
 order! */
 
 
@@ -43,7 +43,7 @@ struct IMPMULTIFITEXPORT ComplementarityGridParameters
 
 
 IMPMULTIFITEXPORT IMP::algebra::DenseGrid3D<float>
-get_complentarity_grid(const IMP::ParticlesTemp &ps,
+get_complementarity_grid(const IMP::ParticlesTemp &ps,
   const ComplementarityGridParameters &params=ComplementarityGridParameters());
 
 

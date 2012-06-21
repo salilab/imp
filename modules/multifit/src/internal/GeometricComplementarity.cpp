@@ -196,7 +196,7 @@ void SurfaceDistanceMap::resample() {
 
 
 IMP::algebra::DenseGrid3D<float>
-get_complentarity_grid(const IMP::ParticlesTemp &ps,
+get_complementarity_grid(const IMP::ParticlesTemp &ps,
   const ComplementarityGridParameters &params)
 {
   IMP_NEW(SurfaceDistanceMap, sdm, (ps, params.voxel_size));
