@@ -50,7 +50,7 @@ public:
   IntRanges get_edge_list() const;
   algebra::Vector3Ds get_anchors() const {return positions_;}
   algebra::Vector3Ds get_particle_anchors(Particle *p,float min_prob=0) const;
-  bool are_probabilities_for_particle_set(Particle *p) const {
+  bool get_are_probabilities_for_particle_set(Particle *p) const {
     return particle_to_anchor_probabilities_.find(p) !=
       particle_to_anchor_probabilities_.end();
   }
