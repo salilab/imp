@@ -32,9 +32,9 @@ class HistogramD: public algebra::GeometricPrimitiveD<D> {
              const algebra::BoundingBoxD<D> &bb
              ): grid_(voxel_size, bb, 0),
                                  count_(0){}
-   //! Increase the count for the bin that holds a
-   // value that is in range for this histogram.
-  void add(const algebra::VectorD<D>& x, double weight=1) {
+  /** Increase the count for the bin that holds a
+      value that is in range for this histogram.*/
+  void add(const algebra::VectorInputD<D>& x, double weight=1) {
     IMP_USAGE_CHECK(count_ >-1, "Using uninitialized histogram");
     typename CountGrid::ExtendedIndex ei=grid_.get_nearest_extended_index(x);
     if (grid_.get_has_index(ei)) {
@@ -73,7 +73,7 @@ class HistogramD: public algebra::GeometricPrimitiveD<D> {
     return grid_.get_dimension();
   }
   algebra::VectorD<D>
-  get_standard_deviation(const algebra::VectorD<D> &mean) const {
+  get_standard_deviation(const algebra::VectorInputD<D> &mean) const {
     algebra::VectorD<D> zeros(grid_.get_bounding_box().get_corner(0));
     std::fill(zeros.coordinates_begin(), zeros.coordinates_end(), 0.0);
     algebra::VectorD<D> s2

@@ -14,6 +14,7 @@
 #include <IMP/base/base_macros.h>
 #include <IMP/base/exception.h>
 #include <IMP/base/utility.h>
+#include <IMP/base/InputAdaptor.h>
 #include "internal/vector.h"
 #include <boost/static_assert.hpp>
 
@@ -151,6 +152,7 @@ public:
   //! Default constructor
   VectorD() {
   }
+
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc.*/
   inline double operator[](unsigned int i) const {
@@ -318,6 +320,7 @@ private:
 };
 
 #ifndef IMP_DOXYGEN
+
 
 template <int D>
 inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
@@ -582,6 +585,44 @@ inline VectorD<D> get_elementwise_product(const Ints& a,
   }
   return ret;
 }
+
+
+
+
+/** A class to flexibly accept vectors as inputs to functions.
+ */
+template <int D>
+class VectorInputD: public VectorD<D>, public base::InputAdaptor {
+public:
+  VectorInputD(const VectorD<D> &v): VectorD<D>(v){}
+  VectorInputD(const Floats &v): VectorD<D>(v){}
+};
+
+/** Also accept floating point values for Vector1Ds */
+template <>
+class VectorInputD<1>: public VectorD<1>, public base::InputAdaptor {
+public:
+  VectorInputD(const VectorD<1> &v): VectorD<1>(v){}
+  VectorInputD(const Floats &v): VectorD<1>(v){}
+  VectorInputD(double v): VectorD<1>(v){}
+};
+
+#ifndef IMP_DOXYGEN
+typedef VectorInputD<1> VectorInput1D;
+typedef base::Vector<VectorInputD<1> > VectorInput1Ds;
+typedef VectorInputD<2> VectorInput2D;
+typedef base::Vector<VectorInputD<2> > VectorInput2Ds;
+typedef VectorInputD<3> VectorInput3D;
+typedef base::Vector<VectorInputD<3> > VectorInput3Ds;
+typedef VectorInputD<4> VectorInput4D;
+typedef base::Vector<VectorInputD<4> > VectorInput4Ds;
+typedef VectorInputD<5> VectorInput5D;
+typedef base::Vector<VectorInputD<5> > VectorInput5Ds;
+typedef VectorInputD<6> VectorInput6D;
+typedef base::Vector<VectorInputD<6> > VectorInput6Ds;
+typedef VectorInputD<-1> VectorInputKD;
+typedef base::Vector<VectorInputD<-1> > VectorInputKDs;
+#endif
 
 
 
