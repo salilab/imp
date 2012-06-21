@@ -34,7 +34,7 @@ def check_for_hexdock():
     try:
         subprocess.Popen(["hex"],stdin=subprocess.PIPE ,
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    except OSError as e:
+    except OSError, e:
         if e.errno == errno.ENOENT:
             print "Docking requires the program HEXDOCK."
             print "Make sure that the command hex is available in your path"
