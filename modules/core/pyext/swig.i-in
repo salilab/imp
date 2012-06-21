@@ -30,7 +30,6 @@ IMP_SWIG_OBJECT( IMP::core, DerivativesFromRefined, DerivativesFromRefineds);
 IMP_SWIG_OBJECT( IMP::core, DerivativesToRefined, DerivativesToRefineds);
 IMP_SWIG_OBJECT( IMP::core, DiameterRestraint, DiameterRestraints);
 IMP_SWIG_OBJECT( IMP::core, DihedralRestraint, DihedralRestraints);
-IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, DistanceRestraint, DistanceRestraints);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, DistanceToSingletonScore, DistanceToSingletonScore, DistanceToSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, ExcludedVolumeRestraint, ExcludedVolumeRestraints);
@@ -40,7 +39,6 @@ IMP_SWIG_OBJECT( IMP::core, Harmonic, Harmonics);
 IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
 IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
-IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDiameterPairScore, HarmonicUpperBoundSphereDiameterPairScores);
@@ -135,6 +133,8 @@ IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, 
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonic, TruncatedHarmonicLowerBounds);
 IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
+IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, DistancePairScore, DistancePairScores);
 
 
 IMP_SWIG_OBJECT(IMP::core, XYZRGeometry, XYZRGeometries);
@@ -148,8 +148,6 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
-
-
 
 
 /* Don't wrap internal classes */
@@ -188,6 +186,7 @@ IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 %include "IMP/core/symmetry.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
+
 %include "IMP/core/DistanceRestraint.h"
 %include "IMP/core/DistanceToSingletonScore.h"
 %include "IMP/core/ExcludedVolumeRestraint.h"

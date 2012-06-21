@@ -9,80 +9,34 @@
 #define IMPCORE_DISTANCE_PAIR_SCORE_H
 
 #include "core_config.h"
-#include "XYZ.h"
-#include <IMP/generic.h>
-#include <IMP/PairScore.h>
-#include <IMP/UnaryFunction.h>
-#include <IMP/Pointer.h>
-
+#include <IMP/score_functor/UnaryFunctionEvaluate.h>
+#include <IMP/score_functor/Harmonic.h>
+#include <IMP/score_functor/Shift.h>
+#include <IMP/score_functor/distance_pair_score_macros.h>
 IMPCORE_BEGIN_NAMESPACE
 
-//! Apply a function to the distance between two particles.
-/** \see SphereDistancePairScore
-    \see HarmonicDistancePairScore
-*/
-class IMPCOREEXPORT DistancePairScore : public PairScore
-{
-  IMP::OwnerPointer<UnaryFunction> f_;
-public:
-  DistancePairScore(UnaryFunction *f,
-                    std::string name="DistancePairScore %1%");
-  UnaryFunction *get_unary_function() const {return f_;}
-  IMP_SIMPLE_PAIR_SCORE(DistancePairScore);
-};
-
-IMP_OBJECTS(DistancePairScore, DistancePairScores);
-
-/** This class is significantly faster than using a DistancePairScore
-    with a Harmonic.
-*/
-class IMPCOREEXPORT HarmonicDistancePairScore: public PairScore
-{
-  const double x0_, k_;
-public:
-  HarmonicDistancePairScore(double x0, double k,
-                            std::string name="HarmonicDistancePairScore %1%");
-  double get_rest_length() const {
-    return x0_;
-  }
-  double get_stiffness() const {
-    return k_;
-  }
-  IMP_INDEX_PAIR_SCORE(HarmonicDistancePairScore);
-};
-
-IMP_OBJECTS(HarmonicDistancePairScore, HarmonicDistancePairScores);
-
+/** Score a pair of particles based on their distance using an
+    arbitrary UnaryFunction.*/
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(DistancePairScore,
+                                score_functor::UnaryFunctionEvaluate,
+                                (UnaryFunction *uf,
+                                 std::string name="DistancePairScore%1%"),
+                                (uf));
 
 #ifndef IMP_DOXYGEN
-inline double HarmonicDistancePairScore
-::evaluate_index(Model *m,
-                 const ParticleIndexPair &p,
-                 DerivativeAccumulator *da) const {
-  IMP_OBJECT_LOG;
-  IMP_LOG(VERBOSE, "Evaluating distance between "
-          << m->get_particle(p[0])->get_name()
-          << " and " << m->get_particle(p[1])->get_name()
-          << " at " << m->get_sphere(p[0])
-          << " and " << m->get_sphere(p[1]) << std::endl);
-  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
-    - m->get_sphere(p[1]).get_center();
-  static const double MIN_DISTANCE = .00001;
-  double distance2= delta.get_squared_magnitude();
-  double distance=std::sqrt(distance2);
-  double shifted_distance = distance- x0_;
-  double score= .5*k_*square(shifted_distance);
-  if (da && distance > MIN_DISTANCE) {
-    double deriv= k_*shifted_distance;
-    algebra::Vector3D uv= delta/distance;
-    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
-    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
-  }
-
-  return score;
-}
+typedef score_functor::Shift <score_functor::Harmonic >
+HarmonicDistanceScore;
 #endif
 
+/** Score a pair of particles based on their distance using a
+    Harmonic. This is faster than DistancePairScore if you
+    are using a Harmonic.*/
+IMP_FUNCTOR_DISTANCE_PAIR_SCORE(HarmonicDistancePairScore,
+                                HarmonicDistanceScore,
+                                (double x0, double k,
+                                 std::string name
+                                 ="HarmonicDistancePairScore%1%"),
+                                (x0, score_functor::Harmonic(k)));
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_DISTANCE_PAIR_SCORE_H */
