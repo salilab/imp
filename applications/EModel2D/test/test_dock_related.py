@@ -11,6 +11,10 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             Check if the filtered conformation are the conformations that I
             computed before
         """
+        try:
+            import subprocess
+        except ImportError, e:
+            self.skipTest(str(e))
 
         dock = self.import_python_application('em2d_docking.py')
         sel = atom.NonWaterNonHydrogenPDBSelector()
