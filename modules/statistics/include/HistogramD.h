@@ -15,6 +15,7 @@
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/standard_grids.h>
 #include <IMP/base_types.h>
+#include <limits>
 #include <vector>
 IMPSTATISTICS_BEGIN_NAMESPACE
 /** Dynamically build a histogram embedded in D-dimensional space. */
@@ -27,7 +28,7 @@ class HistogramD: public algebra::GeometricPrimitiveD<D> {
   public:
 
   typedef Grid CountGrid;
-  HistogramD(): count_(-1){}
+  HistogramD(): count_(std::numeric_limits<double>::max()){}
   HistogramD(double voxel_size,
              const algebra::BoundingBoxD<D> &bb
              ): grid_(voxel_size, bb, 0),
@@ -35,7 +36,8 @@ class HistogramD: public algebra::GeometricPrimitiveD<D> {
   /** Increase the count for the bin that holds a
       value that is in range for this histogram.*/
   void add(const algebra::VectorInputD<D>& x, double weight=1) {
-    IMP_USAGE_CHECK(count_ >-1, "Using uninitialized histogram");
+    IMP_USAGE_CHECK(count_ != std::numeric_limits<double>::max(),
+                    "Using uninitialized histogram");
     typename CountGrid::ExtendedIndex ei=grid_.get_nearest_extended_index(x);
     if (grid_.get_has_index(ei)) {
       grid_[grid_.get_index(ei)]+=weight;
@@ -61,7 +63,7 @@ class HistogramD: public algebra::GeometricPrimitiveD<D> {
     grid_.apply(internal::Frequency<D, Grid>(grid, 1.0/(count_*volume)));
     return HistogramD<D>(grid);
   }
-  CountGrid get_counts() const {
+  const CountGrid& get_counts() const {
     return grid_;
   }
   algebra::VectorD<D> get_mean() const {
@@ -114,6 +116,12 @@ IMP_VALUES(Histogram6D, Histogram6Ds);
 typedef HistogramD<-1> HistogramKD;
 IMP_VALUES(HistogramKD, HistogramKDs);
 #endif
+
+/** Return the midpoint of the bin that best approximates the
+    specified quantile (passed as a fraction). That is,
+passing .5 returns the median. And passing .9*/
+IMPSTATISTICSEXPORT double get_quantile(const Histogram1D &h,
+                                        double fraction);
 
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_HISTOGRAM_D_H */
