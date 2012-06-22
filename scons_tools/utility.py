@@ -113,6 +113,8 @@ def configure(env, name, type, version, required_modules=[],
               optional_dependencies=[], optional_modules=[],
               required_dependencies=[]):
     """Returns ok, version, found_optional_modules, found_optional_dependencies"""
+    if not version:
+        version= env['IMP_VERSION']
     disabled=[x for x in env.get("disabledmodules", '').split(":")]
     if name in disabled:
         print type.capitalize(), name, "explicitly disabled "
@@ -213,7 +215,12 @@ def get_abspaths(env, name, pl):
     #print ret
     #print name, "from", pathlist, "to", ":".join(ret)
     return ret
-
+def get_source_path(env, path):
+    """Return a path in the source directory, supporting repositories"""
+    if env.get("repository"):
+        return File(env['repository']+"/"+path).abspath
+    else:
+        return File("#/"+path).abspath
 def get_paths(env, paths):
     if not paths:
         return []

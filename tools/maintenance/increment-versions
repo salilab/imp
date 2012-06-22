@@ -7,24 +7,14 @@ import getopt
 import shutil
 import re
 import datetime
-mre=re.compile("(?P<prefix>[, \(\)])version=['\"][^'\"]*['\"]")
-version=str(datetime.date.today().day)+"/"+str(datetime.date.today().month)+"/"+str(datetime.date.today().year)
-def increment(module):
-    path=module
-    print path
-    sconscript= open(path).read()
-    match=re.search(mre, sconscript)
-    if match:
-        prefix= match.groupdict()['prefix']
-        sconscript= re.sub(mre, prefix+"version='nightly-"+version+"'", sconscript)
-        open(path, "w").write(sconscript)
+version=
 
 def main():
-    if len(sys.argv) <2:
-        print "usage: "+sys.argv[0] + " path/to/SConscript"
-        sys.exit(1)
-    for m in sys.argv[1:]:
-        increment(m)
+    # check exists
+    open("VERSION", "r")
+    open("VERSION", "w").write("nightly-"+str(datetime.date.today().day)\
+                                   +"/"+str(datetime.date.today().month)\
+                                   +"/"+str(datetime.date.today().year))
 
 
 if __name__ == '__main__':

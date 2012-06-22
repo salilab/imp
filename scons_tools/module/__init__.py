@@ -538,7 +538,7 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
                                        expensive_source=expensive_files,
                                        type='module unit test')
 
-def IMPModuleBuild(env, version, required_modules=[],
+def IMPModuleBuild(env, version=None, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
                    lib_only_optional_modules=[],
