@@ -11,9 +11,10 @@ import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 
-def IMPApplication(env, name, version,
+def IMPApplication(env, name,
                    authors,
                    brief, overview,
+                   version=None,
                    publications=None,
                    license="standard",
                    required_modules=[],

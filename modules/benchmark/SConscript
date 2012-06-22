@@ -31,8 +31,7 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions",
                                                'boost/program_options.hpp',
                                                extra_boost_libs=["system"])
 
-module_env=env.IMPModuleBuild(version='nightly-21/6/2012',
-                              required_modules=['base'],
+module_env=env.IMPModuleBuild(required_modules=['base'],
                               optional_dependencies
                               =['GPerfTools',
                                 'GooglePerfTools',

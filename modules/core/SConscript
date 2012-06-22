@@ -1,5 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='nightly-21/6/2012',
-                   required_modules=['algebra', 'display', 'score_functor'],
+env.IMPModuleBuild(required_modules=['algebra', 'display', 'score_functor'],
                    lib_only_optional_modules=['cgal'])

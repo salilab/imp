@@ -7,8 +7,7 @@ scons_tools.dependency.boost.add_boost_library(env, "Graph", "graph",
                                                extra_boost_libs=[])
 
 
-env.IMPModuleBuild(version='nightly-21/6/2012',
-                   required_modules=['display', 'algebra'],
+env.IMPModuleBuild(required_modules=['display', 'algebra'],
                    optional_modules=['RMF'],
                    required_dependencies=['Boost.Graph'],
                    lib_only_required_modules=['statistics', 'core', 'container'])

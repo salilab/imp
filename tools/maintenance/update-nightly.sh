@@ -30,9 +30,9 @@ svn propset -q svn:externals \
 cd ${TMPDIR}
 svn co file:///cowbell1/svn/imp/trunk versions
 cd versions
-./tools/increment-versions modules/*/SConscript biological_systems/*/SConscript  applications/*/SConscript
+./tools/maintenance/increment-versions
 version="nightly module versions update on "`date`
-svn ci -q --username autobuild -m "\"$version\"" modules/*/SConscript biological_systems/*/SConscript applications/*/SConscript tools/increment-versions
+svn ci -q --username autobuild -m "\"$version\"" VERSION tools/increment-versions
 
 # Cleanup
 cd /

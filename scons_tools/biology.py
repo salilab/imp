@@ -22,7 +22,7 @@ def _run_analysis(target, source, env):
 def _print_analysis(target, source, env):
     print "analyzing", source[2].abspath
 
-def IMPSystem(env, name=None, version="",
+def IMPSystem(env, name=None, version=None,
               authors=[],
               brief="", overview="",
               publications=None,
