@@ -252,3 +252,6 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             env.Append(IMP_DISABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='no'"])
         conf.Finish()
+    else:
+        # make sure they are only added once when help is passed
+        scons_tools.data.get(env).add_dependency(name, ok=False)
