@@ -47,7 +47,7 @@ class GenericTest(RMF.TestCase):
         f= RMF.create_hdf5_file(self.get_tmp_file_name("test.hdf5"))
         self._show(f)
         print "adding"
-        g= f.add_child("hi")
+        g= f.add_child_group("hi")
         ff= g.get_file()
         self.assertEqual(ff.get_name(), f.get_name())
         self._show(f)
@@ -68,7 +68,7 @@ class GenericTest(RMF.TestCase):
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testd.hdf5"))
         self._show(f)
         print "adding"
-        g= f.add_child("hi")
+        g= f.add_child_group("hi")
         self._show(f)
         ds= f.add_child_float_data_set_3d("x")
         print "name is", ds.get_name()
@@ -100,7 +100,7 @@ class GenericTest(RMF.TestCase):
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testdb.hdf5"))
         self._show(f)
         print "adding"
-        g= f.add_child("hi")
+        g= f.add_child_group("hi")
         self._show(f)
         ds= f.add_child_index_data_set_3d("x")
         print "name is", ds.get_name()
@@ -120,7 +120,7 @@ class GenericTest(RMF.TestCase):
         f= RMF.create_hdf5_file(self.get_tmp_file_name("testdg.hdf5"))
         self._show(f)
         print "adding"
-        g= f.add_child("hi")
+        g= f.add_child_group("hi")
         self._show(f)
         ds= f.add_child_float_data_set_3d("coords")
         print "setting num"
@@ -234,7 +234,7 @@ class GenericTest(RMF.TestCase):
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles+1)
         self._show(f)
         print "adding"
-        g= f.add_child("hi")
+        g= f.add_child_group("hi")
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles+2)
         print "float"
         f.set_float_attribute("at", [2.0])
@@ -254,6 +254,11 @@ class GenericTest(RMF.TestCase):
         del f
         print "done"
         self.assertEqual(RMF.get_number_of_open_hdf5_handles(), num_base_handles)
-
+    def test_get_groups(self):
+        """Test getting of child groups"""
+        f= RMF.create_hdf5_file(self.get_tmp_file_name("test_get_groups.hdf5"))
+        ch= f.add_child_group("hi");
+        chb= f.get_child_group(0)
+        self.assertEqual(ch.get_name(), chb.get_name())
 if __name__ == '__main__':
     unittest.main()

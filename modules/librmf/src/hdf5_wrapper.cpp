@@ -47,7 +47,7 @@ HDF5ConstGroup::HDF5ConstGroup(HDF5ConstGroup parent, std::string name):
                            name)){
 }
 
-HDF5Group HDF5Group::add_child(std::string name) {
+HDF5Group HDF5Group::add_child_group(std::string name) {
   IMP_RMF_USAGE_CHECK(!H5Lexists(get_handle(), name.c_str(), H5P_DEFAULT),
                       internal::get_error_message("Child named ",
                                                   name, " already exists"));
@@ -79,6 +79,19 @@ bool HDF5ConstGroup::get_child_is_group(unsigned int i) const {
                        H5P_DEFAULT), &H5Oclose);
   IMP_HDF5_CALL(H5Oget_info(c, &info));
   return info.type== H5O_TYPE_GROUP; //H5O_TYPE_DATASET
+}
+HDF5ConstGroup HDF5ConstGroup::get_child_group(unsigned int i) const {
+  return HDF5ConstGroup(new HDF5SharedHandle(H5Gopen2(get_handle(),
+                                                     get_child_name(i).c_str(),
+                                                      H5P_DEFAULT),
+                                             &H5Gclose,
+                                             "open group"));
+}
+HDF5Group HDF5Group::get_child_group(unsigned int i) const {
+  return HDF5Group(new HDF5SharedHandle(H5Gopen2(get_handle(),
+                                                get_child_name(i).c_str(),
+                                                 H5P_DEFAULT), &H5Gclose,
+                                        "open group"));
 }
 bool HDF5ConstGroup::get_child_is_data_set(unsigned int i) const {
   H5O_info_t info;

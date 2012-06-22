@@ -51,7 +51,7 @@ namespace RMF {
 
     // create from an existing group
     HDF5Group(HDF5Group parent, std::string name);
-    HDF5Group add_child(std::string name);
+    HDF5Group add_child_group(std::string name);
     template <class TypeTraits, unsigned int D>
       HDF5DataSetD<TypeTraits, D> add_child_data_set(std::string name) {
       return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name);
@@ -88,6 +88,8 @@ namespace RMF {
     */
     IMP_RMF_FOREACH_TYPE(IMP_HDF5_DATA_SET_METHODS);
     /** @} */
+
+    HDF5Group get_child_group(unsigned int i) const;
   };
 
 } /* namespace RMF */
