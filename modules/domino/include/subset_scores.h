@@ -63,10 +63,10 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
           base::SetLogState sls(SILENT);
           e= it->second.sf->evaluate_if_below(false,
                                               it->second.max);
-          IMP_LOG(TERSE, "Restraint " << Showable(k.r)
-                  << " evaluated to " << e << " on " << k.a
-                  << " vs " << it->second.max << std::endl);
         }
+        IMP_LOG(TERSE, "Restraint " << Showable(k.r)
+                << " evaluated to " << e << " on " << k.a
+                << " vs " << it->second.max << std::endl);
         // prob can go away with ScoreFunction change
         if (e > it->second.max) e= std::numeric_limits<double>::max();
         return e;
@@ -123,6 +123,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   };
   typedef compatibility::map<Particle*, ParticlesTemp> DepMap;
   void add_restraint_internal(Restraint *r,
+                              unsigned int index,
                               RestraintSet *parent,
                               double max,
                               Subset parent_subset,
@@ -133,6 +134,7 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
                                         double parent_max,
                                         Subset parent_subset);
   void add_restraint_set_internal(RestraintSet *rs,
+                                  unsigned int index,
                                   const Subset &cur_subset,
                                   double cur_max,
                                   const DepMap &dependencies);
@@ -142,7 +144,10 @@ class IMPDOMINOEXPORT RestraintCache: public base::Object {
   Cache cache_;
   typedef compatibility::map<Pointer<Restraint>, Subset> KnownRestraints;
   KnownRestraints known_restraints_;
-  Restraints ordered_restraints_;
+  // assign a unique index to each restraint for use with I/O
+  typedef compatibility::map<Pointer<Restraint>, int> RestraintIndex;
+  RestraintIndex restraint_index_;
+  unsigned int next_index_;
 public:
   RestraintCache(ParticleStatesTable *pst,
                  unsigned int size=std::numeric_limits<unsigned int>::max());
@@ -183,10 +188,17 @@ public:
 
 #if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
   /** This assumes that restraints are always added to the cache
-      in the same order.*/
-  void save_cache(const ParticlesTemp &ps,
+      in the same order.
+      \param[in] particles_ordering An ordering for the particles.
+      \param[in] restarints Which restraints to write out entries for.
+      You probably want to use get_restraints() to generate this.
+      \param[in] max_entries How many entries to write out at most.
+      \param[in] group Where to put the entries.
+  */
+  void save_cache(const ParticlesTemp &particle_ordering,
+                  const RestraintsTemp &restraints,
                   RMF::HDF5Group group,
-                  double fraction);
+                  unsigned int max_entries);
   void load_cache(const ParticlesTemp &ps,
                   RMF::HDF5ConstGroup group);
 #endif
@@ -194,6 +206,13 @@ public:
   /** Return the slice for that restraint given the subset. */
   Slice get_slice(Restraint *r, const Subset& s) const;
 
+  /** Return the number of entries currently in the cache.*/
+  unsigned int get_number_of_entries() const {
+    return cache_.size();
+  }
+
+  /** Check the entries in the cache.*/
+  void validate() const;
 
   /** Print out information about the known restraints and restraint sets.*/
   void show_restraint_information(std::ostream &out=std::cout) const;

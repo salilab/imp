@@ -128,7 +128,7 @@ public:
   }
 #endif
   IMP_HASHABLE_INLINE(ConstArray, return boost::hash_range(begin(),
-                                                       end()););
+                                                           end()););
 };
 
 IMP_SWAP_1(ConstArray);

@@ -82,6 +82,7 @@ namespace RMF {
     bool get_has_child(std::string name) const;
     bool get_child_is_group(unsigned int i) const;
     bool get_child_is_data_set(unsigned int i) const;
+    HDF5ConstGroup get_child_group(unsigned int i) const;
   };
 
 } /* namespace RMF */

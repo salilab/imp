@@ -293,6 +293,7 @@ private:
     Value v= gen_(k, *this);
     map_.template get<1>().push_front(KVP(k, v)).first;
     while (map_.size() > max_size_) {
+      IMP_LOG(VERBOSE, "Cache overflow" << std::endl);
       map_.template get<1>().pop_back();
     }
     return v;
@@ -311,6 +312,9 @@ public:
       IMP_LOG(VERBOSE, "Cache miss on " << k << std::endl);
       ++num_misses_;
       Value v=add_value(k);
+      IMP_INTERNAL_CHECK(max_size_==0 || map_.template get<0>().find(k)
+                         != map_.template get<0>().end(),
+                         "Failed to insert into cache");
       return v;
     } else {
       map_.template get<1>().relocate(map_.template project<1>(it),
@@ -320,6 +324,9 @@ public:
                                   gen_(k, *this)),
                          "Results don't match: " << it->value << " != "
                          << gen_(k, *this));*/
+      IMP_INTERNAL_CHECK(map_.template get<0>().find(k)
+                         != map_.template get<0>().end(),
+                         "Gone, gone I tell you");
       return it->value;
     }
 
