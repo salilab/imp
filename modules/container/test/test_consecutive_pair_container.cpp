@@ -9,6 +9,7 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/RestraintSet.h>
+#include <IMP/core/XYZ.h>
 #include <algorithm>
 #include <IMP/container/generic.h>
 
