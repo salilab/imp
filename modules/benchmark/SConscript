@@ -4,7 +4,8 @@ import scons_tools.data
 import scons_tools
 
 config=[]
-if scons_tools.data.get(env).dependencies["tcmalloc"].ok:
+if not env.GetOption('help') and not env.GetOption('clean') \
+   and scons_tools.data.get(env).dependencies["tcmalloc"].ok:
     config.append(["IMP_BENCHMARK_USE_TCMALLOC", 1])
 else:
     config.append(["IMP_BENCHMARK_NO_TCMALLOC", 1])
