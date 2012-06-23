@@ -28,7 +28,7 @@ scons_tools.variables.add_common_variables(vars, "imp")
 env = scons_tools.environment.get_base_environment(variables=vars,
                               tools=["default", "swig", "dot", "doxygen", "cpp"],
                               toolpath=["scons_tools/tools"])
-env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read()
+env['IMP_VERSION']=open(scons_tools.utility.get_source_path(env, "VERSION"), "r").read().rstrip('\r\n')
 env['IMP_VARIABLES']=vars
 env['IMP_CONFIGURATION']=[]
 
