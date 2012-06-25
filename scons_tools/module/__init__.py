@@ -19,8 +19,8 @@ import scons_tools.environment
 import scons_tools.examples
 import scons_tools.install
 import scons_tools.utility
-import scons_tools.paths as scp
-import scons_tools.bins as scb
+import scons_tools.paths as stp
+import scons_tools.bins as stb
 
 from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
@@ -103,7 +103,7 @@ def IMPModuleLib(envi, files):
     prefix=vars['module_libname']
     if prefix=="imp":
         prefix="imp_kernel"
-    config= envi.IMPModuleConfigCPP(target=["#/build/src/"+prefix+"_config.cpp"],
+    config= envi.IMPModuleConfigCPP(target=[stp.get_build_source_file(envi,"config.cpp", module)],
                                     source=[envi.Value(version),
                                             envi.Value(envi.subst(envi['datadir'])),
                                             envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
@@ -113,15 +113,21 @@ def IMPModuleLib(envi, files):
            or module in envi['percppcompilation'].split(":"):
         allf=files+config
         if envi['build']=="debug" and envi['linktest']:
-            link0=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link_0.cpp'%vars],
+            link0=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
+                                                                           'link_0.cpp',
+                                                                           module)],
                                           source=[])
-            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link_1.cpp'%vars],
+            link1=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
+                                                                           'link_1.cpp',
+                                                                            module)],
                                           source=[])
             allf= allf+link0+link1
     else:
         allf= [_all_cpp.get(envi, list(files))]+config
         if envi['build']=="debug" and envi['linktest']:
-            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module_libname)s_link.cpp'%vars],
+            link1=envi.IMPModuleLinkTest(target=[stp.get_build_source_file(envi,
+                                                                           'link.cpp',
+                                                                           module)],
                                           source=[])
             allf= allf+link1
     if envi['IMP_BUILD_STATIC']:
@@ -237,14 +243,14 @@ def IMPModuleExamples(env, example_files, data_files):
 
 
 def IMPModuleBin(env, files):
-    prgs=scb.handle_bins(env, files,
-                         scp.get_build_bin_dir(env, _get_module_name(env)),
+    prgs=stb.handle_bins(env, files,
+                         stp.get_build_bin_dir(env, _get_module_name(env)),
                          extra_modules=[_get_module_name(env)])
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
 def IMPModuleBenchmark(env, files):
-    prgs, bmarks=scb.handle_benchmarks(env, files,
-                                       scp.get_build_benchmark_dir(env, _get_module_name(env)),
+    prgs, bmarks=stb.handle_benchmarks(env, files,
+                                       stp.get_build_benchmark_dir(env, _get_module_name(env)),
                                        extra_modules=[_get_module_name(env)])
     scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", bmarks)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
@@ -277,7 +283,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     alldata= scons_tools.data.get(env).modules
     penv = scons_tools.environment.get_pyext_environment(env, module.upper(),
                                                          cplusplus=True,
-                                                         extra_modules=[_get_module_name(env)])
+                                                         extra_modules=[module])
     #penv.Decider('timestamp-match')
     """scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
@@ -308,10 +314,13 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     for i in swigfiles:
         if str(i).endswith('.i'):
             scons_tools.install.install(env,"swigdir", i)
-    produced=gbp(penv, "srcdir/%s.py"%vars['module_include_path'].replace("/", "."))
+    produced=stp.get_build_source_file(penv,
+                                       "wrap.py",module)
     version=_get_module_version(penv)
-    cppin=gbp(penv, 'srcdir/'+prefix+'_wrap.cpp-in')
-    hin=gbp(penv, 'srcdir/'+prefix+'_wrap.h-in')
+    cppin=stp.get_build_source_file(penv,
+                                    "wrap.cpp-in", module)
+    hin=stp.get_build_source_file(penv,
+                                  "wrap.h-in", module)
     swigr=penv.IMPModuleSWIG(target=[produced,
                                      cppin, hin],
                              source=[swigfile])
@@ -321,12 +330,14 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                      %vars['module_include_path'],
                                    produced)
     data.build.append(build)
-    cppf=gbp(penv, 'srcdir/'+prefix+'_wrap.cpp')
-    hf=gbp(penv, 'srcdir/'+prefix+'_wrap.h')
+    cppf=stp.get_build_source_file(penv,
+                                   "wrap.cpp", module)
+    hf=stp.get_build_source_file(penv,
+                                 "wrap.h", module)
     patched=penv.IMPModulePatchSWIG(target=[cppf],
-                               source=[cppin])
+                                    source=[cppin])
     hpatched=penv.IMPModulePatchSWIG(target=[hf],
-                       source=[hin])
+                                     source=[hin])
     penv.Requires(patched, hpatched)
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule(gbp(penv, 'libdir/%(module_pylibname)s' %
@@ -342,7 +353,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         data.build.append(bs)
 
 def IMPModuleGetExamples(env):
-    rms= scp.get_matching_source(env, ["*.readme", "*.py"])
+    rms= stp.get_matching_source(env, ["*.readme", "*.py"])
     # evil, this should put put somewhere in build
     return [x for x in rms if not x.path.endswith("test_examples.py")]
 
@@ -353,19 +364,19 @@ def IMPModuleGetExampleData(env):
     return ret
 
 def IMPModuleGetPythonTests(env):
-    return scp.get_matching_source(env, ["test_*.py", "*/test_*.py"])
+    return stp.get_matching_source(env, ["test_*.py", "*/test_*.py"])
 def IMPModuleGetCPPTests(env):
-    return scp.get_matching_source(env, ["test_*.cpp", "*/test_*.cpp"])
+    return stp.get_matching_source(env, ["test_*.cpp", "*/test_*.cpp"])
 def IMPModuleGetExpensivePythonTests(env):
-    return scp.get_matching_source(env, ["expensive_test_*.py",
+    return stp.get_matching_source(env, ["expensive_test_*.py",
                                          "*/expensive_test_*.py"])
 def IMPModuleGetExpensiveCPPTests(env):
-    return scp.get_matching_source(env, ["expensive_test_*.cpp",
+    return stp.get_matching_source(env, ["expensive_test_*.cpp",
                                          "*/expensive_test_*.cpp"])
 
 
 def IMPModuleGetHeaders(env):
-    files=scp.get_matching_source(env, ["*.h", "internal/*.h"])
+    files=stp.get_matching_source(env, ["*.h", "internal/*.h"])
     return files
 
 def IMPModuleGetSwigFiles(env):
@@ -373,7 +384,7 @@ def IMPModuleGetSwigFiles(env):
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"
-    files=scp.get_matching_source(env, [prefix+".*.i"])
+    files=stp.get_matching_source(env, [prefix+".*.i"])
     return files
 
 def IMPModuleGetPython(env):
@@ -383,7 +394,7 @@ def IMPModuleGetPython(env):
     return files
 
 def IMPModuleGetSources(env):
-    files=scp.get_matching_source(env,["*.cpp", "internal/*.cpp"])
+    files=stp.get_matching_source(env,["*.cpp", "internal/*.cpp"])
     return files
 
 def IMPModuleGetData(env):
@@ -402,13 +413,13 @@ def IMPModuleGetData(env):
     return files
 
 def IMPModuleGetBins(env):
-    return scp.get_matching_source(env, ["*.cpp", "*.py"])
+    return stp.get_matching_source(env, ["*.cpp", "*.py"])
 
 def IMPModuleGetBenchmarks(env):
-    return scp.get_matching_source(env, ["*.cpp", "*.py"])
+    return stp.get_matching_source(env, ["*.cpp", "*.py"])
 
 def IMPModuleGetDocs(env):
-    files=scp.get_matching_source(env, ["*.dox", "*.pdf", "*.dot", "*.png"])
+    files=stp.get_matching_source(env, ["*.dox", "*.pdf", "*.dot", "*.png"])
     return files
 
 
@@ -458,8 +469,8 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     module=_get_module_name(env)
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= scb.handle_bins(env, cpp_tests,
-                              scp.get_build_test_dir(env, module))
+        prgs= stb.handle_bins(env, cpp_tests,
+                              stp.get_build_test_dir(env, module))
         #print [x[0].abspath for x in prgs]
         cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
                                        source= prgs)
@@ -582,7 +593,7 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros
-    sconscripts= scp.get_matching_source(env, ["*/SConscript"])
+    sconscripts= stp.get_matching_source(env, ["*/SConscript"])
     # ick, ick, ick
     env.SConscript("examples/SConscript", exports='env')
     env.SConscript("doc/SConscript", exports='env')

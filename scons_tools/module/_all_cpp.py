@@ -5,6 +5,7 @@ import sys
 import re
 import scons_tools.environment
 import scons_tools.module
+import scons_tools.paths as stp
 
 
 def _action_all_cpp(target, source, env):
@@ -25,9 +26,6 @@ _All = Builder(action=Action(_action_all_cpp,
 
 
 def get(env, files):
-    vars= scons_tools.module._get_module_variables(env)
-    prefix=vars['module_libname']
-    if prefix=="imp":
-        prefix="imp_kernel"
-    target=File("#/build/src/"+prefix+"_all.cpp")
+    module= scons_tools.module._get_module_name(env)
+    target=File(stp.get_build_source_file(env, "all.cpp", module))
     return _All(env=env, target=target, source=files)
