@@ -41,8 +41,10 @@ def builder_script_file(target, source, env):
     pythonpath=source[2].get_contents().split(os.pathsep)
     ldpath=source[3].get_contents().split(os.pathsep)
     precommand=source[4].get_contents()
-    path=source[5].get_contents().split(os.pathsep)
     modules=source[6].get_contents().split(":")
+    path=source[5].get_contents().split(os.pathsep)\
+        +[Dir("#/build/module_bin/"+m).abspath for m in modules]\
+        +[Dir("#/build/bin").abspath]
     externmodules=[x for x in source[7].get_contents().split(":") if x != ""]
     externdata=source[8].get_contents()
     if pythonpath == ['']: pythonpath = []
