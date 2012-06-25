@@ -17,7 +17,7 @@ IMP_SWIG_OBJECT(IMP::kmeans, KMeans, KMeansList);
 
 /* Wrap Our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include    IMP/kmeans/KMeans.h
+%include "IMP/kmeans/KMeans.h"
 
 namespace IMP {
   namespace kmeans {
