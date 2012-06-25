@@ -10,7 +10,6 @@ import _link_test
 import _standards
 import _version_h
 import _config_h
-import _benchmark
 import _all_cpp
 import scons_tools.bug_fixes
 import scons_tools.run
@@ -20,6 +19,8 @@ import scons_tools.environment
 import scons_tools.examples
 import scons_tools.install
 import scons_tools.utility
+import scons_tools.paths as scp
+import scons_tools.bins as scb
 
 from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
@@ -233,51 +234,20 @@ def IMPModuleExamples(env, example_files, data_files):
         links.append(l)
     _set_module_links(env, links)
 
-def _make_programs(envi, dirr, files, prefix=""):
-    env= scons_tools.environment.get_bin_environment(envi,
-                                                     extra_modules=[_get_module_name(envi)])
-    benv=None
-    ret=[]
-    for f in files:
-        if str(f).find("benchmark_") != -1:
-            isbench=True
-            #print str(f), "is benchmark"
-        else:
-            isbench=False
-        if str(f).endswith(".cpp"):
-            target=dirr.abspath+"/"+prefix+str(f).replace(".cpp","")
-            if isbench:
-                if not benv:
-                    benv= scons_tools.environment.get_benchmark_environment(envi,
-                                                                            extra_modules=[_get_module_name(envi)])
-                if benv:
-                    bmark=benv.Program(source=f, target=target)
-                    ret.append(bmark)
-                    runit=_benchmark.get_run_benchmark(env)(env, target=File(target+".results"), source=[File("#/tools/imppy.sh"), bmark])
-                    scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", runit)
-                    env.Alias("benchmarks", runit)
-                else:
-                    msg="%sBenchmark "+str(target)+" disabled as the benchmark module is missing%s"
-                    print msg%(envi['IMP_COLORS']['red'], envi['IMP_COLORS']['end'])
-            else:
-                ret.append(env.Program(source=f, target=target))
-        elif str(f).endswith(".py") and env.get('repository', None):
-            dest=dirr
-            #print "handling", f.abspath, dest.path
-            nm=File("#/"+env['repository']+"/"+Dir(".").path+"/"+str(f))
-            #print dest.path, f.path, nm
-            #print str(f), f.abspath
-            inst=scons_tools.install.install(env,dest, nm)
-            ret.append(inst)
-            runit=_benchmark.get_run_py_benchmark(env)(env, target=File(target+".results"), source=[File("#/tools/imppy.sh"), inst])
-            scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", runit)
-            env.Alias("benchmarks", runit)
-    return ret
+
 
 def IMPModuleBin(env, files):
-    prgs=_make_programs(env, Dir("."), files)
+    prgs=scb.handle_bins(env, files,
+                         scp.get_build_bin_dir(env, _get_module_name(env)),
+                         extra_modules=[_get_module_name(env)])
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
+def IMPModuleBenchmark(env, files):
+    prgs, bmarks=scb.handle_benchmarks(env, files,
+                                       scp.get_build_benchmark_dir(env, _get_module_name(env)),
+                                       extra_modules=[_get_module_name(env)])
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", bmarks)
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
 def _fake_scanner_cpp(node, env, path):
     if node.abspath.endswith(".h") or node.abspath.endswith(".cpp"):
@@ -372,10 +342,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         data.build.append(bs)
 
 def IMPModuleGetExamples(env):
-    rms= scons_tools.utility.get_matching_recursive(["*.readme"])
-    ex= [x for x in scons_tools.utility.get_matching_recursive(["*.py"])
-         if str(x) != "test_examples.py"]
-    return rms+ex
+    rms= scp.get_matching_source(env, ["*.readme", "*.py"])
+    # evil, this should put put somewhere in build
+    return [x for x in rms if not x.path.endswith("test_examples.py")]
 
 def IMPModuleGetExampleData(env):
     ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat",
@@ -384,27 +353,19 @@ def IMPModuleGetExampleData(env):
     return ret
 
 def IMPModuleGetPythonTests(env):
-    return scons_tools.utility.get_matching_recursive(["test_*.py"])
+    return scp.get_matching_source(env, ["test_*.py", "*/test_*.py"])
 def IMPModuleGetCPPTests(env):
-    return scons_tools.utility.get_matching_recursive(["test_*.cpp"])
+    return scp.get_matching_source(env, ["test_*.cpp", "*/test_*.cpp"])
 def IMPModuleGetExpensivePythonTests(env):
-    return scons_tools.utility.get_matching_recursive(["expensive_test_*.py"])
+    return scp.get_matching_source(env, ["expensive_test_*.py",
+                                         "*/expensive_test_*.py"])
 def IMPModuleGetExpensiveCPPTests(env):
-    return scons_tools.utility.get_matching_recursive(["expensive_test_*.cpp"])
+    return scp.get_matching_source(env, ["expensive_test_*.cpp",
+                                         "*/expensive_test_*.cpp"])
 
 
 def IMPModuleGetHeaders(env):
-    raw_files=scons_tools.utility.get_matching_recursive(["*.h"])
-    files=[]
-    for f in raw_files:
-        s= str(f)
-        #print s
-        fname= os.path.split(s)[1]
-        if fname.startswith("."):
-            continue
-        if s=="%(module)s_config.h"%_get_module_variables(env):
-            continue
-        files.append(f)
+    files=scp.get_matching_source(env, ["*.h", "internal/*.h"])
     return files
 
 def IMPModuleGetSwigFiles(env):
@@ -412,7 +373,7 @@ def IMPModuleGetSwigFiles(env):
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"
-    files=scons_tools.utility.get_matching([prefix+".*.i"])
+    files=scp.get_matching_source(env, [prefix+".*.i"])
     return files
 
 def IMPModuleGetPython(env):
@@ -422,21 +383,7 @@ def IMPModuleGetPython(env):
     return files
 
 def IMPModuleGetSources(env):
-    raw_files=scons_tools.utility.get_matching_recursive(["*.cpp"])
-    files=[]
-    for f in raw_files:
-        s= str(f)
-        #print s
-        fname= os.path.split(s)[1]
-        if fname.startswith("."):
-            continue
-        if s== "internal/link_0.cpp":
-            continue
-        if s== "internal/link_1.cpp":
-            continue
-        if s=="%(module)s_config.cpp"%_get_module_variables(env):
-            continue
-        files.append(f)
+    files=scp.get_matching_source(env,["*.cpp", "internal/*.cpp"])
     return files
 
 def IMPModuleGetData(env):
@@ -455,11 +402,13 @@ def IMPModuleGetData(env):
     return files
 
 def IMPModuleGetBins(env):
-    raw_files= scons_tools.utility.get_matching(["*.cpp", "*.py"])
-    return raw_files
+    return scp.get_matching_source(env, ["*.cpp", "*.py"])
+
+def IMPModuleGetBenchmarks(env):
+    return scp.get_matching_source(env, ["*.cpp", "*.py"])
 
 def IMPModuleGetDocs(env):
-    files=scons_tools.utility.get_matching(["*.dox", "*.pdf", "*.dot", "*.png"])
+    files=scp.get_matching_source(env, ["*.dox", "*.pdf", "*.dot", "*.png"])
     return files
 
 
@@ -509,7 +458,8 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     module=_get_module_name(env)
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        prgs= _make_programs(env, Dir("#/build/test"), cpp_tests, prefix=module)
+        prgs= scb.handle_bins(env, cpp_tests,
+                              scp.get_build_test_dir(env, module))
         #print [x[0].abspath for x in prgs]
         cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
                                        source= prgs)
@@ -632,16 +582,14 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros
-    env.SConscript('examples/SConscript', exports='env')
-    env.SConscript('doc/SConscript', exports='env')
-    if File('data/SConscript').exists:
-        env.SConscript('data/SConscript', exports='env')
-    env.SConscript('include/SConscript', exports='env')
-    env.SConscript('src/SConscript', exports='env')
-    env.SConscript('bin/SConscript', exports='env')
-    if env['IMP_PROVIDE_PYTHON'] and File('pyext/SConscript').exists:
-        env.SConscript('pyext/SConscript', exports='env')
-        env.SConscript('test/SConscript', exports='env')
+    sconscripts= scp.get_matching_source(env, ["*/SConscript"])
+    # ick, ick, ick
+    env.SConscript("examples/SConscript", exports='env')
+    env.SConscript("doc/SConscript", exports='env')
+    for s in sconscripts:
+        if not s.path.endswith("examples/SConscript") and\
+                not s.path.endswith("doc/SConscript"):
+            env.SConscript(s, exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)
     for m in _get_module_modules(env):
         env.Requires(scons_tools.data.get(env).get_alias(module+"-install"),

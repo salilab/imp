@@ -1,0 +1,88 @@
+"""Various utilities for handling paths in a uniform manner"""
+
+from SCons.Script import File, Alias, Dir
+import data
+import os
+import glob
+import os.path
+
+def _get_scons_path(env, path):
+    repository=env.get("repository", None)
+    if repository:
+        rpath = os.path.join(Dir("#/").abspath, repository, Dir(".").path)
+        ret= os.path.relpath(path, rpath)
+        #print "scons_path", path, rpath, ret
+        return ret
+    else:
+        return path
+
+def _get_source_path(env, name):
+    repository=env.get("repository", None)
+    if repository:
+        cd= os.path.join(Dir("#/").abspath, repository, Dir(".").path)
+    else:
+        cd= Dir(".").path
+    return os.path.join(cd,str(name))
+
+def get_matching_source(env, patterns):
+    """Return File nodes for all source that match pattern"""
+    if type(patterns) != type([]):
+        raise RuntimeError("second argument to get_matching_source must be a list")
+    #print "searching for", patterns, "in", Dir(".").path
+    ret=[]
+    for p in patterns:
+        sp= _get_source_path(env, p)
+        #print sp
+        for m in glob.glob(sp):
+            #print m
+            ret.append(File(_get_scons_path(env, m)))
+    #print "found", [x.abspath for x in ret]
+    return ret
+
+def _get_file_name(env, fl):
+    fln= str(fl)
+    sp= fln.rfind("/")
+    if sp==-1:
+        return fln
+    else:
+        return fln[sp+1:]
+
+def get_output_path(env, fl, output_dir=None):
+    """Return the path in the output directory for the file"""
+    if not output_dir:
+        output_dir= Dir(".")
+    return os.path.join(output_dir.abspath, _get_file_name(env, fl))
+
+def get_input_path(env, fl):
+    """Return the path in the input directory for the file"""
+    return _get_source_path(env, fl)
+
+def get_build_source_file(env, name, modulename=None):
+    """Return a file node for a generated source file"""
+    if modulename:
+        return File("#/build/src/"+modulename+"/"+name)
+    else:
+        return File("#/build/src/"+name)
+
+def get_build_bin_dir(env, modulename=None):
+    """Return a file node for a generated bin file"""
+    if modulename:
+        return Dir("#/build/module_bin/"+modulename+"/")
+    else:
+        return Dir("#/build/bin/")
+
+def get_build_benchmark_dir(env, modulename):
+    """Return a file node for a generated bin file"""
+    return Dir("#/build/benchmark/"+modulename+"/")
+
+def get_build_test_dir(env, modulename=None):
+    """Return a file node for a generated bin file"""
+    if modulename:
+        return Dir("#/build/test/"+modulename+"/")
+    else:
+        return Dir("#/build/test/")
+
+
+def get_build_lib_name(env, name):
+    """Return a file node for a generate lib file"""
+    return File("#/build/lib/"+name)
