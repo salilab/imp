@@ -47,7 +47,7 @@ Restraint* create_excluded_volume(atom::Hierarchy h, RigidBodies,
     IMP_NEW(ListSingletonContainer, lsc, (atom::get_leaves(h)));
     IMP_NEW(ExcludedVolumeRestraint, evr, (lsc, k, 10));
     evr->set_name("excluded volume");
-    evr->set_log_level(VERBOSE);
+    //evr->set_log_level(VERBOSE);
     return evr.release();
 }
 PairScore *create_pair_score(atom::Hierarchy , RigidBodies rbs,
