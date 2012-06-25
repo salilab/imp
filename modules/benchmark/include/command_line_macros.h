@@ -141,7 +141,7 @@ void LeakChecker<dummy>::stop(){}
        "Print help on command line arguments.");                        \
     desc.add_options()                                                  \
       ("log_level",                                                     \
-       boost::program_options::value<int>                               \
+       boost::program_options::value<IMP::base::LogLevel>               \
        (&IMP::benchmark::log_level)->zero_tokens(),                     \
        "The logging level to use (if not in fast mode).");              \
     desc.add_options()                                                  \
@@ -209,7 +209,7 @@ void LeakChecker<dummy>::stop(){}
       std::string name=IMP::benchmark::benchmarks_name+".all";          \
       leak_checker.reset(new LeakChecker<0>(name));                     \
     }                                                                   \
-    IMP::base::set_log_level(IMP::base::LogLevel(IMP::benchmark::log_level));\
+    IMP::base::set_log_level(IMP::benchmark::log_level);                \
   }
 
 #else
