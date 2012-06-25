@@ -25,6 +25,19 @@ std::istream &operator>>(std::istream &in,
   }
   return in;
 }
+std::istream &operator>>(std::istream &in,
+                         CheckLevel &ll) {
+  std::string str;
+  in >> str;
+  if (str=="NONE") ll=NONE;
+  else if (str=="USAGE") ll=USAGE;
+  else if (str=="USAGE_AND_INTERNAL") ll=USAGE_AND_INTERNAL;
+  else {
+    IMP_THROW("Bad log check " << str,
+              IOException);
+  }
+  return in;
+}
 
 
 IMPBASE_END_NAMESPACE
