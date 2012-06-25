@@ -228,12 +228,12 @@ operator()(const NBGenerator::result_type &vals) const {
       || vals_index.find(ParticleIndexPair(found[i][1], found[i][0]))
       != vals_index.end();
     if (!has) {
-      IMP_LOG(SILENT, "Can't find pair " << found[i]
-              << " in list " << vals
-              << " at distance " << get_distance(XYZR(m_, found[i][0]),
-                                                 XYZR(m_, found[i][1]))
-              << " with threshold " << distance_
-              << std::endl);
+      IMP_WARN("Can't find pair " << found[i]
+               << " in list " << vals
+               << " at distance " << get_distance(XYZR(m_, found[i][0]),
+                                                  XYZR(m_, found[i][1]))
+               << " with threshold " << distance_
+               << std::endl);
       return false;
     }
   }

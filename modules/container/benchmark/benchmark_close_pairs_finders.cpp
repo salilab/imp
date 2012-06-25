@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
   {
     IMP_NEW(GridClosePairsFinder, cpf, ());
 #if IMP_BUILD == IMP_DEBUG
-    cpf->set_log_level(VERBOSE);
+    cpf->set_log_level(IMP::benchmark::log_level);
 #endif
     std::string name="grid";
     test_one(name, cpf, 10, 0, .1, true);
