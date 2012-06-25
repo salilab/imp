@@ -188,7 +188,7 @@ _plural_types=[]
     preface.append("""
 const std::string get_module_version();
 """)
-    if env['MODULE_HAS_DATA']:
+    if env.get('MODULE_HAS_DATA', False):
         preface.append("""
         std::string get_example_path(std::string fname);
         std::string get_data_path(std::string fname);

@@ -243,7 +243,7 @@ inline std::string get_module_name() {
 %(EXPORT)s_END_NAMESPACE
 #endif
 """%vars
-    if env['MODULE_HAS_DATA']:
+    if env.get('MODULE_HAS_DATA', False):
         print >> h, """
 
 #ifndef SWIG

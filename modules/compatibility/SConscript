@@ -35,4 +35,4 @@ if not env.GetOption('help'):
         config.append(["IMP_BUILD", "IMP_DEBUG"])
 
 env.IMPModuleBuild(config_macros=config,
-                   required_modules=[], python=False, data=False)
+                   required_modules=[])
