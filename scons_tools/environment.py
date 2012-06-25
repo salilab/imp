@@ -280,10 +280,10 @@ def get_base_environment(variables=None, *args, **kw):
         for key, value in colors.iteritems():
             colors[key] = ''
     if env['pretty']:
-        compile_source_message = '%sCompiling %s$SOURCE%s' % \
+        compile_source_message = '%sCompiling %s$TARGET%s' % \
             (colors['blue'], colors['end'], colors['end'])
 
-        compile_shared_source_message = '%sCompiling shared %s$SOURCE%s' % \
+        compile_shared_source_message = '%sCompiling shared %s$TARGET%s' % \
             (colors['blue'], colors['end'], colors['end'])
 
         link_program_message = '%sLinking Program %s$TARGET%s' % \
