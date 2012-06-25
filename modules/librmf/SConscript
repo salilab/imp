@@ -45,7 +45,7 @@ oenv=env.IMPModuleBuild(required_modules=[],
                                                "GooglePerfTools"],
                         module='RMF', module_libname="RMF", module_pylibname="_RMF",
                         module_include_path="RMF",
-                        module_preproc="RMF", module_namespace="RMF", data=False,
+                        module_preproc="RMF", module_namespace="RMF",
                         cppdefines=cppdef, cpppath=cpppath)
 
 if not env.GetOption('help') and not env.GetOption('clean') \

@@ -73,7 +73,7 @@ class IMPData:
                      unfound_dependencies=[], modules=[],
                      unfound_modules=[], libname=None,
                      python_modules=[], version=None, external=False,
-                     python=True, data=True, ok=True):
+                     ok=True):
             self.build=[]
             if ok:
                 #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
@@ -91,8 +91,6 @@ class IMPData:
                     self.path=name
                     self.nicename="IMP."+name
                 self.version=version
-                self.data=data
-                self.python=python
             self.ok=ok
             self.external=external
 
@@ -212,7 +210,7 @@ class IMPData:
                    dependencies=[], unfound_dependencies=[], modules=[],
                    unfound_modules=[], libname=None,
                    python_modules=[], version="", ok=True,
-                   external=False, python=True, data=True):
+                   external=False):
         #print name, dependencies, unfound_dependencies
         self._check_names(dependencies)
         self._check_names(unfound_dependencies)
@@ -229,8 +227,7 @@ class IMPData:
                                                unfound_dependencies,
                                                passmodules, unfound_modules,
                                                libname,
-                                               passpythonmodules, version, external,
-                                               python, data)
+                                               passpythonmodules, version, external)
     def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
                        includepath=None, libpath=None, version=None,
                        versioncpp=None, versionheader=None):

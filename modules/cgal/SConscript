@@ -55,6 +55,6 @@ else:
     cxxflags=[]
 env.IMPModuleBuild(required_modules=["base"],
                    required_dependencies=["CGAL"],
-                   cxxflags=cxxflags, python=False)
+                   cxxflags=cxxflags)
 
 env['percppcompilation']=opercppcompilation

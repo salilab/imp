@@ -180,6 +180,7 @@ def IMPModuleInclude(env, files):
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
+    env['MODULE_HAS_DATA']=True
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     (build, install)=scons_tools.install.install_hierarchy(env,  "datadir/currentdir/", "data",files)
     data.build.extend(build)
@@ -549,7 +550,7 @@ def IMPModuleBuild(env, version=None, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], cpppath=[], python_docs=False,
-                   local_module=False,python=True, data=True,
+                   local_module=False,
                    standards=True):
     if env.GetOption('help'):
         return
@@ -600,8 +601,7 @@ def IMPModuleBuild(env, version=None, required_modules=[],
                                  unfound_dependencies=[x for x in optional_dependencies\
                                                          if not x in\
                                                          found_optional_dependencies],\
-                                               version=version,
-                                             python=python, data=data)
+                                               version=version)
     else:
         scons_tools.data.get(env).add_module(module, ok=False)
         return
@@ -634,16 +634,12 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     env['IMP_MODULE_CONFIG']=real_config_macros
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('doc/SConscript', exports='env')
-    if data:
+    if File('data/SConscript').exists:
         env.SConscript('data/SConscript', exports='env')
-        # evil hack for now
-        env['MODULE_HAS_DATA']=True
-    else:
-        env['MODULE_HAS_DATA']=False
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
     env.SConscript('bin/SConscript', exports='env')
-    if env['IMP_PROVIDE_PYTHON'] and python:
+    if env['IMP_PROVIDE_PYTHON'] and File('pyext/SConscript').exists:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)
