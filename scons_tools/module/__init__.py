@@ -150,12 +150,13 @@ def IMPModuleInclude(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
     vars=_get_module_variables(env)
-
+    module= _get_module_name(env)
+    moduleinclude= vars['module_include_path']
     # Generate config header and SWIG equivalent
     from scons_tools.install import get_build_path as gbp
     version=env.IMPModuleVersionH(target\
-                               =[gbp(env,
-                                     'includedir/%s/currentfile_version.h'%vars['module_include_path'])],
+                                      =[File("#/build/include/"+moduleinclude\
+                                                 +"/"+module+"_version.h")],
                                source=[env.Value(_get_module_version(env))])
     scons_tools.install.install(env, "includedir/%s"%vars['module_include_path'],
                                               version[0])
@@ -165,8 +166,8 @@ def IMPModuleInclude(env, files):
                + deps\
                + [data.dependencies[x].version for x in deps]
     config=env.IMPModuleConfigH(target\
-                               =[gbp(env,
-                                     'includedir/%s/currentfile_config.h'%vars['module_include_path'])],
+                                    =[File("#/build/include/"+moduleinclude\
+                                               +"/"+module+"_config.h")],
                                source=[env.Value(env['IMP_MODULE_CONFIG']),
                                        env.Value(signature)])
     scons_tools.install.install(env, "includedir/%s"%vars['module_include_path'],
@@ -174,14 +175,8 @@ def IMPModuleInclude(env, files):
     scons_tools.install.install_hierarchy(env, "includedir/%s"%vars['module_include_path'],
                                           "include",
                                          list(files))
-    if _get_module_name(env)=='kernel':
-        hn= scons_tools.install.get_build_path(env,
-                                               "includedir/IMP.h")
-
-    else:
-        hn=scons_tools.install.get_build_path(env,
-                                              "includedir/%s/../%s.h"%(vars['module_include_path'], vars['module']))
-    header=_header.build_header(env, hn,
+    header=_header.build_header(env,
+                                "#/build/include/"+vars['module_include_path']+".h",
                                 list(files))
     scons_tools.install.install(env, "includedir/%s/.."%vars['module_include_path'], header[0])
 
@@ -358,9 +353,9 @@ def IMPModuleGetExamples(env):
     return [x for x in rms if not x.path.endswith("test_examples.py")]
 
 def IMPModuleGetExampleData(env):
-    ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat",
-                                                      "*.xml", "*.em", "*.rmf",
-                                                      "*.hdf5", "*.mol2"])
+    ret=  stp.get_matching_source(env, ["*.pdb", "*.mrc", "*.dat",
+                                        "*.xml", "*.em", "*.rmf",
+                                        "*.hdf5", "*.mol2"])
     return ret
 
 def IMPModuleGetPythonTests(env):
