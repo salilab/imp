@@ -58,6 +58,11 @@ enum CheckLevel {
       \imp.*/
   USAGE_AND_INTERNAL=2};
 #endif
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+IMPBASEEXPORT std::istream &operator>>(std::istream &in,
+                                       CheckLevel &ll);
+#endif
 }
 } //IMPBASE_END_NAMESPACE
 

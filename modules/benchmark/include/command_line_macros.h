@@ -17,6 +17,7 @@
 #include <IMP/base/raii_macros.h>
 #include <IMP/base/log_macros.h>
 #include <IMP/base/log.h>
+#include <IMP/base/exception.h>
 #include <boost/scoped_ptr.hpp>
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #include <boost/program_options.hpp>
@@ -145,6 +146,11 @@ void LeakChecker<dummy>::stop(){}
        (&IMP::benchmark::log_level)->zero_tokens(),                     \
        "The logging level to use (if not in fast mode).");              \
     desc.add_options()                                                  \
+      ("check_level",                                                   \
+       boost::program_options::value<IMP::base::CheckLevel>             \
+       (&IMP::benchmark::check_level)->zero_tokens(),                   \
+       "The check level to use (if not in fast mode).");                \
+    desc.add_options()                                                  \
       ("profile",                                                       \
        boost::program_options::value<bool>                              \
        (&IMP::benchmark::profile_benchmark)->zero_tokens(),             \
@@ -210,6 +216,7 @@ void LeakChecker<dummy>::stop(){}
       leak_checker.reset(new LeakChecker<0>(name));                     \
     }                                                                   \
     IMP::base::set_log_level(IMP::benchmark::log_level);                \
+    IMP::base::set_check_level(IMP::benchmark::check_level);            \
   }
 
 #else
