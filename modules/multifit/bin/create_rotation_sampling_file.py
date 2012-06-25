@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import IMP.multifit
 import sys,os
 def usage():
