@@ -382,7 +382,9 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(module.IMPModuleGetPython)
     env.AddMethod(module.IMPModuleGetSwigFiles)
     env.AddMethod(module.IMPModuleGetBins)
+    env.AddMethod(module.IMPModuleGetBenchmarks)
     env.AddMethod(module.IMPModuleBin)
+    env.AddMethod(module.IMPModuleBenchmark)
     env.AddMethod(module.IMPModuleDoc)
     env.AddMethod(module.IMPModuleExamples)
     env.AddMethod(module.IMPModuleGetDocs)
@@ -502,7 +504,7 @@ def get_bin_environment(envi, extra_modules=[], extra_dependencies=[]):
 def get_benchmark_environment(envi, extra_modules=[]):
     extra=[]
     d= data.get(envi)
-    if d.modules['benchmark'].ok:
+    if 'benchmark' in d.modules.keys() and d.modules['benchmark'].ok:
         if d.dependencies['tcmalloc'].ok:
             libs=['tcmalloc']
         else:

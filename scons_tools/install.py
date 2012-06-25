@@ -144,6 +144,16 @@ def install(env, target, source, **keys):
     data.get(env).add_to_alias("install", inst)
     return ret
 
+def install_in_build(env, source, target):
+    """Given a full source and target path (the latter in the build directory)."""
+    if target.find('build')==-1:
+        raise RuntimeError("The target must be in the build dir")
+    if hasattr(os, 'symlink'):
+        inst= env.InstallAs(target, [source], INSTALL=_linkFunc)
+    else:
+        inst= env.InstallAs(target, [source])
+    return inst
+
 def install_as(env, target, source, **keys):
     #print "in", target, source
     varname= str(target).split("/")[0]
