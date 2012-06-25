@@ -16,6 +16,6 @@ bool leak_check_benchmark=false;
 bool leak_check_all=false;
 int run_only=-1;
 int next_benchmark=0;
-int log_level=IMP::base::WARNING;
+base::LogLevel log_level=IMP::base::WARNING;
 std::string benchmarks_name;
 IMPBENCHMARK_END_NAMESPACE
