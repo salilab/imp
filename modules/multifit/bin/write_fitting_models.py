@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys,os,string
 import IMP.multifit
 import IMP.multifit2
