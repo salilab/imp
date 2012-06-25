@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import IMP.rmf
 import RMF
 import IMP.benchmark
