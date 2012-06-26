@@ -321,6 +321,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
   }
   IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
          (*(em_map->get_header())));
+  model_dens_map->set_was_used(true);
   model_dens_map->set_particles(ps,wei_key);
   model_dens_map->resample();
   model_dens_map->calcRMS();
@@ -336,6 +337,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
             <<std::endl);
     IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
             (*(em_map->get_header())));
+    model_dens_map2->set_was_used(true);
     model_dens_map2->set_particles(ps,wei_key);
     model_dens_map2->resample();
     model_dens_map2->calcRMS();
@@ -388,7 +390,7 @@ FittingSolutions compute_fitting_scores(const ParticlesTemp &ps,
               "running fast version of compute_fitting_scores"<<std::endl);
       for (algebra::Transformation3Ds::const_iterator it =
          trans_for_fit.begin(); it != trans_for_fit.end();it++) {
-        Pointer<DensityMap> transformed_sampled_map = get_transformed(
+        OwnerPointer<DensityMap> transformed_sampled_map = get_transformed(
               model_dens_map,*it);
         IMP_INTERNAL_CHECK(
            transformed_sampled_map->same_dimensions(model_dens_map),
