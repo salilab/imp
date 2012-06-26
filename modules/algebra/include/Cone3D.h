@@ -14,6 +14,8 @@
 #include "Plane3D.h"
 #include "Segment3D.h"
 #include "GeometricPrimitiveD.h"
+#include <IMP/base/showable_macros.h>
+#include <IMP/base/warning_macros.h>
 #include <iostream>
 #include "constants.h"
 
@@ -58,9 +60,9 @@ class IMPALGEBRAEXPORT Cone3D: public GeometricPrimitiveD<3>
 };
 
 IMP_VOLUME_GEOMETRY_METHODS(Cone3D, cone_3d,
-                            if (0) std::cout << g;IMP_NOT_IMPLEMENTED,
-                            if (0) std::cout << g;IMP_NOT_IMPLEMENTED,
-                            if (0) std::cout << g;IMP_NOT_IMPLEMENTED);
+                            IMP_UNUSED(g);IMP_NOT_IMPLEMENTED,
+                            IMP_UNUSED(g);IMP_NOT_IMPLEMENTED,
+                            IMP_UNUSED(g);IMP_NOT_IMPLEMENTED);
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_CONE_3D_H */

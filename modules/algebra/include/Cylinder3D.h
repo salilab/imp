@@ -12,6 +12,7 @@
 #include "Transformation3D.h"
 #include "Segment3D.h"
 #include "GeometricPrimitiveD.h"
+#include <IMP/base/showable_macros.h>
 #include <iostream>
 #include "constants.h"
 
@@ -80,7 +81,7 @@ IMP_VOLUME_GEOMETRY_METHODS(Cylinder3D, cylinder_3d,
                             + 2.0*PI *get_squared(g.get_radius()),
                             return PI *get_squared(g.get_radius())
                             * g.get_segment().get_length(),
-                            if (0) std::cout << g; IMP_NOT_IMPLEMENTED);
+                            IMP_UNUSED(g); IMP_NOT_IMPLEMENTED);
 
 IMPALGEBRA_END_NAMESPACE
 

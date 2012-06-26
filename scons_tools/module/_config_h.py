@@ -243,7 +243,8 @@ inline std::string get_module_name() {
 %(EXPORT)s_END_NAMESPACE
 #endif
 """%vars
-    if env.get('MODULE_HAS_DATA', False):
+    if len(Glob("#/build/data/"+vars['module'])) >0\
+            or vars['module']=="kernel" :
         print >> h, """
 
 #ifndef SWIG
@@ -293,12 +294,13 @@ inline std::string get_example_path(std::string file_name)  {
 %(EXPORT)s_END_NAMESPACE
 #endif // SWIG
 """%vars
+    # ick
+    if "base" in scons_tools.module._get_module_modules(env):
         print >> h, """
 #include <IMP/base/Showable.h>
 #include <IMP/base/hash.h>
 """% vars
-        if vars["module"] != "base":
-            print >> h, """
+        print >> h, """
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 %(EXPORT)s_BEGIN_NAMESPACE
 using ::IMP::base::Showable;
@@ -312,7 +314,6 @@ using ::IMP::base::hash_value;
 %(EXPORT)s_END_INTERNAL_NAMESPACE
 #endif
 """%vars
-
     print >> h,"""
 
 #endif  /* %(EXPORT)s_CONFIG_H */""" % vars

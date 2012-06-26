@@ -163,8 +163,9 @@ def IMPModuleInclude(env, files):
     data= scons_tools.data.get(env)
     deps= _get_module_dependencies(env)
     signature=_get_module_unfound_dependencies(env)\
-               + deps\
-               + [data.dependencies[x].version for x in deps]
+        + deps\
+        + [data.dependencies[x].version for x in deps]\
+        + _get_found_modules(env, _get_module_modules(env))
     config=env.IMPModuleConfigH(target\
                                     =[File("#/build/include/"+moduleinclude\
                                                +"/"+module+"_config.h")],
@@ -182,7 +183,6 @@ def IMPModuleInclude(env, files):
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
-    env['MODULE_HAS_DATA']=True
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     (build, install)=scons_tools.install.install_hierarchy(env,  "datadir/currentdir/", "data",files)
     data.build.extend(build)
@@ -299,18 +299,16 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     if prefix=="IMP":
         prefix="IMP_kernel"
     swigfile= \
-       penv.IMPModuleSWIGPreface(target=[gbp(penv, "swigdir/"+prefix+".i")],
+       penv.IMPModuleSWIGPreface(target=[File("#/build/swig/"+prefix+".i")],
                                  source=[File("swig.i-in"),
                                          env.Value(_get_module_python_modules(env)),
                                          env.Value(" ".join(_get_module_dependencies(env))),
                                   env.Value(" ".join(_get_module_unfound_dependencies(env)))])
     scons_tools.install.install(penv, "datadir/swig", swigfile)
-    vc
     for i in swigfiles:
         if str(i).endswith('.i'):
             scons_tools.install.install(env,"swigdir", i)
-    produced=stp.get_build_source_file(penv,
-                                       "wrap.py",module)
+    produced=File("#/build/lib/"+vars['module_include_path']+"/__init__.py")
     version=_get_module_version(penv)
     cppin=stp.get_build_source_file(penv,
                                     "wrap.cpp-in", module)
@@ -320,11 +318,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                      cppin, hin],
                              source=[swigfile])
     #print "Moving", produced.path, "to", dest.path
-    (build, install)= scons_tools.install.install_as(penv,
-                                                     'pythondir/%s/__init__.py'\
-                                                     %vars['module_include_path'],
-                                   produced)
-    data.build.append(build)
+    install= scons_tools.install.install_as(penv,
+                                            'pythondir/%s/__init__.py'\
+                                                %vars['module_include_path'],
+                                            produced)
     cppf=stp.get_build_source_file(penv,
                                    "wrap.cpp", module)
     hf=stp.get_build_source_file(penv,
@@ -465,7 +462,8 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= stb.handle_bins(env, cpp_tests,
-                              stp.get_build_test_dir(env, module))
+                              stp.get_build_test_dir(env, module),
+                              extra_modules=[module])
         #print [x[0].abspath for x in prgs]
         cpptest= env.IMPModuleCPPTest(target=File("#/build/test/%s_cpp_test_programs.py"%module),
                                        source= prgs)
