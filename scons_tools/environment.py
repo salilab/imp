@@ -128,9 +128,8 @@ def _add_platform_flags(env):
                     #total.append(v)
             # Using _FORTIFY_SOURCE without -O flags triggers a warning on
             # newer systems, so remove it
-            if env['build'] == 'debug':
-                basecflags = [x for x in basecflags \
-                              if '_FORTIFY_SOURCE' not in x]
+            basecflags = [x for x in basecflags \
+                          if '_FORTIFY_SOURCE' not in x]
             includepath=[x[2:] for x in opt.split()+cflags.split()\
                          if x.startswith('-I')]
         else:
