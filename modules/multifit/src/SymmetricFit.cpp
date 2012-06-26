@@ -307,9 +307,9 @@ void SymmetricFit::run(std::string const &output_filename,
   IMP_LOG(VERBOSE,"====================================="<<std::endl);
 
   //load the density
-  IMP_NEW(em::MRCReaderWriter,mrw,());
-  em::DensityMap *dmap = em::read_map(
-       multifit_parameters_.density_map_fn.c_str(),mrw);
+  base::OwnerPointer<em::DensityMap> dmap =
+          em::read_map(multifit_parameters_.density_map_fn,
+                       new em::MRCReaderWriter());
   dmap->get_header_writable()->set_resolution(resolution);
   dmap->update_voxel_size(spacing);
   algebra::Vector3D v = dmap->get_origin();
