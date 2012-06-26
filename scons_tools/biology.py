@@ -90,8 +90,6 @@ def IMPSystem(env, name=None, version=None,
         scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
         env= nenv
         for m in required_modules+found_optional_modules:
-            env.Depends(scons_tools.data.get(env).get_alias(name+"-install"),
-                         scons_tools.data.get(env).get_alias(m+"-install"))
             env.Depends(scons_tools.data.get(env).get_alias(name),
                          scons_tools.data.get(env).get_alias(m))
         if testable:

@@ -12,9 +12,11 @@ import scons_tools.test
 import scons_tools.config_py
 import scons_tools.build_summary
 import scons_tools.variables
+import scons_tools.install
 import scons_tools.imppy
 import scons_tools.html_coverage
 import scons_tools.python_coverage
+import scons_tools.paths
 import sys
 import atexit
 from SCons import Script
@@ -124,7 +126,10 @@ if not env.GetOption('help'):
               + Glob('tools/*.pyc'))
 
     env.Default(env.Alias('all'))
-
+    install= scons_tools.install.get_install_builder(env)
+    env.Depends(install, [env.Alias("all")])
+    env.Alias("install", install)
+    #env.Depends(install, env.Alias('all'))
 
     unknown = vars.UnknownVariables()
     # Older versions of scons have a bug with command line arguments

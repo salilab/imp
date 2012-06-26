@@ -116,13 +116,10 @@ namespace {
     IMP_USAGE_CHECK(!file_name.empty() && file_name[0] != '/',
                     "File name should be relative to the IMP directory and"
                     << " non-empty, not " << file_name);
-    if (module != "kernel") {
-      std::string ret= get_concatenated_path(base,
-                                   get_concatenated_path(module, file_name));
-      return ret;
-    } else {
-      return get_concatenated_path(base, file_name);
-    }
+    std::string ret= get_concatenated_path(base,
+                                           get_concatenated_path(module,
+                                                                 file_name));
+    return ret;
   }
 
   std::string get_path(std::string envvar,

@@ -3,9 +3,10 @@
 
 import os
 import UserList
-from SCons.Script import Action, Entry, File, Dir
+from SCons.Script import Action, Entry, File, Dir, Builder
 import module
 import data
+import paths
 import environment
 import SCons
 import SCons.Errors
@@ -153,6 +154,35 @@ def install_in_build(env, source, target):
     else:
         inst= env.InstallAs(target, [source])
     return inst
+
+def install_hierarchy_in_build(env, sources, target, prefix=""):
+    """Given a a list of sources, install them in build dir."""
+    if target.find('build')==-1:
+        raise RuntimeError("The target must be in the build dir")
+    ret=[]
+    for s in sources:
+        ret+=install_in_build(env, s, target+"/"+str(s)[len(prefix):])
+    return ret
+
+
+def _run_install(target, source, env):
+    install_cmd="./scons_tools/do-install.py"
+    install_args=["--include ${includedir}",
+                  "--data ${datadir}",
+                  "--lib ${libdir}",
+                  "--python ${pythondir}",
+                  "--swig ${datadir}/swig",
+                  "--doc ${docdir}"]
+    env.Execute(install_cmd+" "+" ".join(install_args))
+def _print_install(target, source, env):
+    print "installing imp"
+
+def get_install_builder(env):
+    builder= Builder(action=env.Action(_run_install, _print_install))
+    build= builder(env, source=[],
+                   target=[Dir("${includedir}/IMP")])
+    env.AlwaysBuild(build)
+    return build
 
 def install_as(env, target, source, **keys):
     #print "in", target, source
