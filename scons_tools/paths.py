@@ -22,6 +22,8 @@ def _get_source_path(env, name):
         cd= os.path.join(Dir("#/").abspath, repository, Dir(".").path)
     else:
         cd= Dir(".").path
+        if not os.path.isabs(cd):
+            cd = os.path.join(Dir("#/").abspath, cd)
     return os.path.join(cd,str(name))
 
 def get_matching_source(env, patterns):
