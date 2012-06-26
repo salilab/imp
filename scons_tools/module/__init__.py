@@ -134,16 +134,14 @@ def IMPModuleLib(envi, files):
         env= scons_tools.environment.get_staticlib_environment(envi)
         sl= env.StaticLibrary('#/build/lib/%s' % module_libname,
                               allf)
-        data.build.append(sl[0])
-        scons_tools.install.install(env, "libdir", sl[0])
+        scons_tools.data.get(env).add_to_alias(_get_module_name(env), sl[0])
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(EXPORT)s_EXPORTS' % vars,
                                     cplusplus=True)
         sl=env.SharedLibrary('#/build/lib/%s' % module_libname,
                                        allf )
-        data.build.append(sl[0])
+        scons_tools.data.get(env).add_to_alias(_get_module_name(env), sl[0])
         scons_tools.utility.postprocess_lib(env, sl)
-        scons_tools.install.install(env, "libdir", sl[0])
 
 
 def IMPModuleInclude(env, files):
@@ -153,13 +151,10 @@ def IMPModuleInclude(env, files):
     module= _get_module_name(env)
     moduleinclude= vars['module_include_path']
     # Generate config header and SWIG equivalent
-    from scons_tools.install import get_build_path as gbp
     version=env.IMPModuleVersionH(target\
                                       =[File("#/build/include/"+moduleinclude\
                                                  +"/"+module+"_version.h")],
                                source=[env.Value(_get_module_version(env))])
-    scons_tools.install.install(env, "includedir/%s"%vars['module_include_path'],
-                                              version[0])
     data= scons_tools.data.get(env)
     deps= _get_module_dependencies(env)
     signature=_get_module_unfound_dependencies(env)\
@@ -184,7 +179,7 @@ def IMPModuleData(env, files):
     module=_get_module_name(env)
     build =scons_tools.install.install_hierarchy_in_build(env, files,
                                                           "#/build/data/"+module)
-    data.build.extend(build)
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
@@ -255,7 +250,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
        within an environment created by `IMPPythonExtensionEnvironment`."""
     module =_get_module_name(env)
     vars=_get_module_variables(env)
-    data=scons_tools.data.get(env).modules[_get_module_name(env)]
+    data=scons_tools.data.get(env)
+    moduledata=data.modules[_get_module_name(env)]
     alldata= scons_tools.data.get(env).modules
     penv = scons_tools.environment.get_pyext_environment(env, module.upper(),
                                                          cplusplus=True,
@@ -270,7 +266,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                             +vars['module_include_path']\
                                             +"/_version_check.py")],
                            source=[env.Value(_get_module_version(env))]+versions)
-    data.build.append(vc[0])
+    data.add_to_alias(_get_module_name(env),vc[0])
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"
@@ -305,13 +301,18 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule("#/build/lib/"+vars["module_pylibname"],
                                     patched) #SCANNERS=scanners
-    data.build.append(buildlib[0])
+    data.add_to_alias(module, buildlib[0])
+    if module != "kernel":
+        # all python support needs kernel, silly design to put it in the base
+        # namespace/python module
+        data.add_to_alias(module,
+                          data.get_alias("kernel"))
     scons_tools.utility.postprocess_lib(penv, buildlib)
     b= scons_tools.install.install_hierarchy_in_build(env,
                                                       pythonfiles,
                                                           "#/build/lib/"+vars['module_include_path'], prefix="src")
     for bc in b:
-        data.build.append(bc)
+        data.add_to_alias(_get_module_name(env), bc)
 
 def IMPModuleGetExamples(env):
     rms= stp.get_matching_source(env, ["*.readme", "*.py"])
