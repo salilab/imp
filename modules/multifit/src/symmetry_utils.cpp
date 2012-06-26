@@ -534,8 +534,8 @@ multifit::FittingSolutionRecords prune_by_pca(
     mhs.push_back(mh);
   }
   //load the density map
-  IMP_NEW(em::MRCReaderWriter,mrw,());
-  em::DensityMap *dmap = em::read_map(density_map_fn.c_str(),mrw);
+  base::OwnerPointer<em::DensityMap> dmap =
+          em::read_map(density_map_fn, new em::MRCReaderWriter());
   AlignSymmetric aligner(dmap,density_map_thr, cn_symm);
 
   for(unsigned int i=0;i<sols.size();i++){
