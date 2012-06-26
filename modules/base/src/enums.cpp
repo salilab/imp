@@ -7,6 +7,7 @@
 
 #include "IMP/base/enums.h"
 #include "IMP/base/exception.h"
+#include "IMP/base/check_macros.h"
 #include <iostream>
 IMPBASE_BEGIN_NAMESPACE
 std::istream &operator>>(std::istream &in,
