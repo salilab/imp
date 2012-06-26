@@ -60,7 +60,7 @@ public:
   virtual unsigned int get_number_of_particle_quads() const {
     return get_number();
   }
-
+  /** Return the ith ParticleQuad of the container.*/
   virtual ParticleQuad get_particle_quad(unsigned int i) const {
     return get(i);
   }
@@ -91,9 +91,11 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
   }
+  /** Return true if the container contains the passed ParticleQuad.*/
   bool get_contains(const ParticleQuad& v) const {
     return get_contains_particle_quad(v);
   }
+  /** Return true if the container contains the passed ParticleQuad.*/
   virtual bool get_contains_index(ParticleIndexQuad v) const {
     return get_contains_particle_quad(IMP::internal
                                      ::get_particle(get_model(),

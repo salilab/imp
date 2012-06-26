@@ -60,7 +60,7 @@ public:
   virtual unsigned int get_number_of_FUNCTIONNAMEs() const {
     return get_number();
   }
-
+  /** Return the ith VARIABLETYPE of the container.*/
   virtual VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const {
     return get(i);
   }
@@ -91,9 +91,11 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
   }
+  /** Return true if the container contains the passed VARIABLETYPE.*/
   bool get_contains(ARGUMENTTYPE v) const {
     return get_contains_FUNCTIONNAME(v);
   }
+  /** Return true if the container contains the passed VARIABLETYPE.*/
   virtual bool get_contains_index(INDEXTYPE v) const {
     return get_contains_FUNCTIONNAME(IMP::internal
                                      ::get_particle(get_model(),
