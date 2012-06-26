@@ -302,10 +302,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     buildlib = lpenv.LoadableModule("#/build/lib/"+vars["module_pylibname"],
                                     patched) #SCANNERS=scanners
     data.add_to_alias(module, buildlib[0])
-    if module != "kernel":
+    if "kernel" in _get_module_dependencies(env):
         # all python support needs kernel, silly design to put it in the base
         # namespace/python module
-        data.add_to_alias(module,
+        env.Requires(data.get_alias(module),
                           data.get_alias("kernel"))
     scons_tools.utility.postprocess_lib(penv, buildlib)
     b= scons_tools.install.install_hierarchy_in_build(env,
