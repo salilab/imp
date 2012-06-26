@@ -60,7 +60,7 @@ public:
   virtual unsigned int get_number_of_particles() const {
     return get_number();
   }
-
+  /** Return the ith Particle* of the container.*/
   virtual Particle* get_particle(unsigned int i) const {
     return get(i);
   }
@@ -91,9 +91,11 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
   }
+  /** Return true if the container contains the passed Particle*.*/
   bool get_contains(Particle* v) const {
     return get_contains_particle(v);
   }
+  /** Return true if the container contains the passed Particle*.*/
   virtual bool get_contains_index(ParticleIndex v) const {
     return get_contains_particle(IMP::internal
                                      ::get_particle(get_model(),

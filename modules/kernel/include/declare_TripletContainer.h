@@ -60,7 +60,7 @@ public:
   virtual unsigned int get_number_of_particle_triplets() const {
     return get_number();
   }
-
+  /** Return the ith ParticleTriplet of the container.*/
   virtual ParticleTriplet get_particle_triplet(unsigned int i) const {
     return get(i);
   }
@@ -91,9 +91,11 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
   }
+  /** Return true if the container contains the passed ParticleTriplet.*/
   bool get_contains(const ParticleTriplet& v) const {
     return get_contains_particle_triplet(v);
   }
+  /** Return true if the container contains the passed ParticleTriplet.*/
   virtual bool get_contains_index(ParticleIndexTriplet v) const {
     return get_contains_particle_triplet(IMP::internal
                                      ::get_particle(get_model(),

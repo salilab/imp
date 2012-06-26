@@ -60,8 +60,7 @@ public:
   virtual unsigned int get_number_of_particle_pairs() const {
     return get_number();
   }
-
-  //! returns the i'th pair in the container
+  /** Return the ith ParticlePair of the container.*/
   virtual ParticlePair get_particle_pair(unsigned int i) const {
     return get(i);
   }
@@ -70,7 +69,6 @@ public:
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const PairModifier *sm) const=0;
-
   //! Apply a SingletonModifier to the contents
   virtual void apply(const PairDerivativeModifier *sm,
                      DerivativeAccumulator &da) const=0;
@@ -93,13 +91,11 @@ public:
     return IMP::internal::get_particle(get_model(),
                                        get_indexes());
   }
-
-  // returns true if v is in the container
+  /** Return true if the container contains the passed ParticlePair.*/
   bool get_contains(const ParticlePair& v) const {
     return get_contains_particle_pair(v);
   }
-
-  // returns true if the pair with index v in the model is in the container
+  /** Return true if the container contains the passed ParticlePair.*/
   virtual bool get_contains_index(ParticleIndexPair v) const {
     return get_contains_particle_pair(IMP::internal
                                      ::get_particle(get_model(),

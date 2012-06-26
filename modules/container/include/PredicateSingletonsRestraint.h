@@ -27,7 +27,12 @@ IMPCONTAINER_BEGIN_NAMESPACE
 //! Applies a SingletonScore to each Singleton in a list based on a predicate
 /** This restraint uses a passed predicate to choose which score to apply
     to each tuple in the input container. The selections are cached, making it
-    substantially faster than using a core::TypedPairScore. */
+    substantially faster than using a core::TypedPairScore.
+
+    \note The ordering of particles within a tuple may vary depending on the
+    input container used. You may need to call set_score() with several
+    different predicate values for different orderings.
+*/
 class IMPCONTAINEREXPORT PredicateSingletonsRestraint :
 public Restraint
 {
@@ -48,7 +53,10 @@ public:
                       SingletonContainerAdaptor input,
                       std::string name="PredicateSingletonsRestraint %1%");
 
-  /** This version uses the container::create_restraint() function and so
+  /** Apply the passed score to all pairs whose predicate values match
+      the passed value.
+
+      This version uses the container::create_restraint() function and so
       is more efficient than the non-template version.*/
   template <class Score>
   void set_score(int predicate_value, Score *score) {
@@ -61,6 +69,8 @@ public:
     restraints_.back()->set_model(get_model());
     containers_[predicate_value]=c;
   }
+  /** Apply this score to any pair whose predicate value does not match
+      one passed to set_score().*/
   template <class Score>
   void set_unknown_score( Score *score) {
   // make sure it gets cleaned up if it is a temporary

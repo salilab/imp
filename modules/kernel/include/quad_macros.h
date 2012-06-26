@@ -459,7 +459,7 @@
     Use it like
     \code
     IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
-                         << " is _1->get_name() << std::endl);
+    << " is " << _1->get_name() << std::endl);
     \endcode
 */
 #define IMP_FOREACH_QUAD(sequence, operation) do {                \
