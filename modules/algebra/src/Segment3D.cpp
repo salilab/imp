@@ -5,7 +5,6 @@
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <IMP/algebra/shortest_segment.h>
-#include <IMP/log.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 Segment3D::Segment3D(const Vector3D &start,const Vector3D &end) {
   p_[0]=start;

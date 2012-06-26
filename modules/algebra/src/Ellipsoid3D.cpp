@@ -4,9 +4,7 @@
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
-#include <IMP/base_types.h>
 #include <IMP/algebra/Ellipsoid3D.h>
-#include <cmath>
 
 
 IMPALGEBRA_BEGIN_NAMESPACE

@@ -6,7 +6,7 @@
  */
 
 #include "IMP/algebra/eigen_analysis.h"
-#include <IMP/log.h>
+#include <IMP/base/log_macros.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
 

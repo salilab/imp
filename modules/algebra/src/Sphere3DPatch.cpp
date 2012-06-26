@@ -5,7 +5,6 @@
  *
  */
 
-#include <IMP/utility.h>
 #include "IMP/algebra/SpherePatch3D.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
