@@ -188,7 +188,8 @@ _plural_types=[]
     preface.append("""
 const std::string get_module_version();
 """)
-    if env.get('MODULE_HAS_DATA', False):
+    if len(Glob("#/build/data/"+vars['module'])) >0\
+            or vars['module']=="kernel" :
         preface.append("""
         std::string get_example_path(std::string fname);
         std::string get_data_path(std::string fname);
@@ -259,6 +260,11 @@ def _action_simple_swig(target, source, env):
     command.append(source[0].abspath)
     final_command=" ".join(command) %vars
     ret= env.Execute(final_command)
+    oname=File("#/build/src/"+vars['module']+"/"\
+                   +vars['module_include_path'].replace("/", ".")+".py")
+    #print oname.path, "moving to", target[0].path
+    # scons build in Move produces an error with no explaination
+    ret= env.Execute("mv "+oname.abspath+" "+target[0].abspath)
     return ret
 
 def _print_simple_swig(target, source, env):

@@ -19,6 +19,5 @@ Import('env')
 #                                            "example_lib_header.h")
 
 
-env.IMPModuleBuild(version='SVN',
-                   # The required modules are the other IMP modules that must be built to use this one
+env.IMPModuleBuild(# The required modules are the other IMP modules that must be built to use this one
                    required_modules=['container', 'core'])
