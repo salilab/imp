@@ -15,13 +15,14 @@
    module to avoid this.
 """
 
-from SCons.Script import Scanner, Dir, FindPathDirs, File
+from SCons.Script import Scanner, Dir, FindPathDirs, File, Glob
 import SCons.Node.FS
 import bug_fixes
 import data
 import utility
 import os
 import re
+import paths as stp
 
 import_re = re.compile('\s*import\s+(.*?)(\s+as\s+.+)?\s*$')
 from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*?)(\s+as\s+.+)?\s*$')
@@ -37,16 +38,34 @@ def _find_python_module(env, modname, dirs):
     else:
         suffix=env.subst(env['LDMODULESUFFIX'])
     ret=[]
+    #print modname
     if modname == 'IMP':
-        nm='kernel'
+        if not data.get(env).modules["kernel"].external:
+            return ["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
+                +stp.get_matching_build(env, ["lib/IMP/*.py"])\
+                +stp.get_matching_build(env, ["data/kernel/*"])
+    elif modname == "RMF":
+        if not data.get(env).modules["RMF"].external:
+            return ["#/build/lib/_RMF."+env["IMP_PYTHON_SO"],
+                    "#/build/lib/RMF/__init__.py"]
+    elif modname.startswith("IMP.test"):
+        if not data.get(env).modules["kernel"].external:
+            return stp.get_matching_build(env, ["lib/IMP/test/*.py", "lib/IMP/test/*/*.py",
+                                                "lib/IMP/test/*/*/*.py"])
+    elif modname.startswith("IMP."):
+        nm=modname[4:]
+        if nm.find(".") != -1:
+            nm= nm[:nm.find(".")]
+        if not data.get(env).modules[nm].external:
+            # pull in kernel too
+            return ["#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"]]\
+                + stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py"])\
+                + stp.get_matching_build(env, ["data/"+nm+"/*"])\
+                +["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
+                +stp.get_matching_build(env, ["lib/IMP/*.py"])\
+                +stp.get_matching_build(env, ["data/kernel/*"])
     else:
-        nm=modname[modname.find('.')+1:]
-    if data.get(env).modules.has_key(nm):
-        if data.get(env).modules[nm].ok:
-            ret+= [x.abspath for x in data.get(env).modules[nm].build]
-        else:
-            pass
-    return ret
+        return []
 
 def _scanfile(node, env, path):
     # If file does not yet exist, we cannot scan it:

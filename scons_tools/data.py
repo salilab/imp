@@ -74,7 +74,6 @@ class IMPData:
                      unfound_modules=[], libname=None,
                      python_modules=[], version=None, external=False,
                      ok=True):
-            self.build=[]
             if ok:
                 #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
                 self.dependencies=dependencies

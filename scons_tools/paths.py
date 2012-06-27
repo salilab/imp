@@ -1,6 +1,6 @@
 """Various utilities for handling paths in a uniform manner"""
 
-from SCons.Script import File, Alias, Dir
+from SCons.Script import File, Alias, Dir, Glob
 import data
 import os
 import glob
@@ -40,6 +40,23 @@ def get_matching_source(env, patterns):
             ret.append(File(_get_scons_path(env, m)))
     #print "found", [x.abspath for x in ret]
     return ret
+
+
+def get_matching_build(env, patterns):
+    """Return File nodes for all source that match pattern"""
+    if type(patterns) != type([]):
+        raise RuntimeError("second argument to get_matching_source must be a list")
+    #print "searching for", patterns, "in", Dir(".").path
+    ret=[]
+    for p in patterns:
+        sp= os.path.join(Dir("#/build").abspath, p)
+        #print sp
+        for m in Glob(sp, ondisk=False):
+            #print m
+            ret.append(m)
+    #print "found", [x.abspath for x in ret]
+    return ret
+
 
 def _get_file_name(env, fl):
     fln= str(fl)
