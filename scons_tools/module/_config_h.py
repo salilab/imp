@@ -243,8 +243,7 @@ inline std::string get_module_name() {
 %(EXPORT)s_END_NAMESPACE
 #endif
 """%vars
-    if len(Glob("#/build/data/"+vars['module'])) >0\
-            or vars['module']=="kernel" :
+    if scons_tools.module._get_module_has_data(env):
         print >> h, """
 
 #ifndef SWIG

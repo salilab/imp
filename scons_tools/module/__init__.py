@@ -28,6 +28,11 @@ from SCons.Scanner import C as CScanner
 def _get_module_name(env):
     return scons_tools.environment.get_current_name(env)
 
+def _get_module_has_data(env):
+    ret= len(Glob("#/build/data/"+_get_module_name(env)+"/*")) >0
+    #print "module", _get_module_name(env), "data is", ret
+    return ret
+
 def _get_module_full_name(env):
     name= _get_module_name(env)
     if name=="kernel":
@@ -275,7 +280,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                  source=[File("swig.i-in"),
                                          env.Value(_get_module_python_modules(env)),
                                          env.Value(" ".join(_get_module_dependencies(env))),
-                                  env.Value(" ".join(_get_module_unfound_dependencies(env)))])
+                                  env.Value(" ".join(_get_module_unfound_dependencies(env))),
+                                         env.Value(_get_module_has_data(env))])
     for i in swigfiles:
         if str(i).endswith('.i'):
             scons_tools.install.install_in_build(env,i, "#/build/swig/"+str(i))
