@@ -188,8 +188,7 @@ _plural_types=[]
     preface.append("""
 const std::string get_module_version();
 """)
-    if len(Glob("#/build/data/"+vars['module'])) >0\
-            or vars['module']=="kernel" :
+    if source[4].get_contents()=="True":
         preface.append("""
         std::string get_example_path(std::string fname);
         std::string get_data_path(std::string fname);
