@@ -46,7 +46,7 @@ def _find_python_module(env, modname, dirs):
                 +stp.get_matching_build(env, ["data/kernel/*"])
     elif modname == "RMF":
         if not data.get(env).modules["RMF"].external:
-            return ["#/build/lib/_RMF."+env["IMP_PYTHON_SO"],
+            return ["#/build/lib/_RMF"+env["IMP_PYTHON_SO"],
                     "#/build/lib/RMF/__init__.py"]
     elif modname.startswith("IMP.test"):
         if not data.get(env).modules["kernel"].external:
