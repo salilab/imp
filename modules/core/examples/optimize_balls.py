@@ -42,18 +42,13 @@ for i in range(0,ni):
                 d.set_coordinates_are_optimized(True)
             chain.append(p)
             aps.append(p)
+        # set up a chain of bonds
         cpc= IMP.container.ExclusiveConsecutivePairContainer(chain)
         r= IMP.container.PairsRestraint(lps, cpc)
         rss.add_restraint(r)
 # cheat
 filters.append(IMP.container.InContainerPairFilter(cpc))
 filters[-1].set_was_used(True)
-laps=IMP.container.ListSingletonContainer(aps)
-nbl= IMP.core.ExcludedVolumeRestraint(laps,
-                                      k, 1)
-nbl.set_model(m)
-nbl.set_pair_filters(filters)
-#m.add_restraint(nbl)
 ibss= IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,k), bb)
 bbr= IMP.container.SingletonsRestraint(ibss, laps)
 rss.add_restraint(bbr)
@@ -63,13 +58,24 @@ mc=IMP.core.MonteCarlo(m)
 sm= IMP.core.SerialMover(movers)
 mc.add_mover(sm)
 # we are special casing the nbl term
-mc.set_restraints([rss])
 isf= IMP.core.IncrementalScoringFunction(aps, [rss])
 # use special incremental support for the non-bonded part
+# apply the pair score sps to all touching ball pairs from the list of particles
+# aps, using the filters to remove undersired pairs
+# this is equivalent to the nbl construction above but optimized for incremental
 isf.add_close_pair_score(sps, 0, aps, filters)
-mc.set_incremental_scoring_function(isf)
 
+# create a scoring function for conjugate gradients that includes the
+# ExcludedVolumeRestraint
 sf= IMP.core.RestraintsScoringFunction([rss, nbl])
+nbl= IMP.core.ExcludedVolumeRestraint(aps, k, 1)
+nbl.set_pair_filters(filters)
+
+if True:
+    mc.set_incremental_scoring_function(isf)
+else:
+    # we could, instead do non-incremental scoring
+    mc.set_scoring_function(sf)
 
 # first relax the bonds a bit
 rs=[]
