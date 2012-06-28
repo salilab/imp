@@ -22,8 +22,8 @@ IMPATOM_BEGIN_NAMESPACE
 
    \genericgeometry
  */
-template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-inline double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
+template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
+inline double get_rmsd(const Vector3DsOrXYZs0& m1, const Vector3DsOrXYZs1& m2,
                 const IMP::algebra::Transformation3D &tr_for_second
                 = IMP::algebra::get_identity_transformation_3d()) {
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end())
@@ -31,8 +31,8 @@ inline double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
             "The input sets of XYZ points "
             <<"should be of the same size");
   float rmsd=0.0;
-  typename Vecto3DsOrXYZs0::const_iterator it0= m1.begin();
-  typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
+  typename Vector3DsOrXYZs0::const_iterator it0= m1.begin();
+  typename Vector3DsOrXYZs1::const_iterator it1= m2.begin();
   for(; it0!= m1.end(); ++it0, ++it1) {
     algebra::Vector3D tred
       =tr_for_second.get_transformed(get_vector_d_geometry(*it1));
@@ -47,15 +47,15 @@ inline double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
 /**
   \param[in] m1 first set
   \param[in] m2 second set
-  \param[in] threshold threshold distance (amstrongs) for the calculation
-  \note The result is returned as a percentage (from 0 to 100)
+  \param[in] threshold threshold distance (angstroms) for the calculation
   \note the function assumes correspondence between two sets of points and does
   not perform rigid alignment.
+  \return the native overlap, as a percentage (from 0 to 100)
   \genericgeometry
 **/
-template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-inline double get_native_overlap(const Vecto3DsOrXYZs0& m1,
-                      const Vecto3DsOrXYZs1& m2,double threshold) {
+template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
+inline double get_native_overlap(const Vector3DsOrXYZs0& m1,
+                      const Vector3DsOrXYZs1& m2,double threshold) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "native_verlap: The input sets of XYZ points "
             <<"should be of the same size");
@@ -77,9 +77,9 @@ inline double get_native_overlap(const Vecto3DsOrXYZs0& m1,
   \param[in] m1 set of points
   \param[in] m2 set of points
 */
-template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-inline double get_drms(const Vecto3DsOrXYZs0& m1,
-                      const Vecto3DsOrXYZs1& m2) {
+template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
+inline double get_drms(const Vector3DsOrXYZs0& m1,
+                       const Vector3DsOrXYZs1& m2) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "native_verlap: The input sets of XYZ points "
             <<"should be of the same size");
@@ -110,9 +110,9 @@ rigid body are not evaluated, as they are the same in both sets
         (0-29,30-49) means two rigid bodies, first with the 30 first atoms,
         second with the last 20
 */
-template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-inline double get_rigid_bodies_drms(const Vecto3DsOrXYZs0 &m1,
-                                    const Vecto3DsOrXYZs1 &m2,
+template <class Vector3DsOrXYZs0, class Vector3DsOrXYZs1>
+inline double get_rigid_bodies_drms(const Vector3DsOrXYZs0 &m1,
+                                    const Vector3DsOrXYZs1 &m2,
                                     const IMP::IntRanges &ranges) {
   IMP_USAGE_CHECK(m1.size() == m2.size(),
                   "get_rigid_bodies_drms: The input sets of XYZ points "
