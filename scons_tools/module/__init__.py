@@ -29,9 +29,7 @@ def _get_module_name(env):
     return scons_tools.environment.get_current_name(env)
 
 def _get_module_has_data(env):
-    ret= len(Glob("#/build/data/"+_get_module_name(env)+"/*")) >0
-    #print "module", _get_module_name(env), "data is", ret
-    return ret
+    return env.get("IMP_CUR_MODULE_HAS_DATA", False)
 
 def _get_module_full_name(env):
     name= _get_module_name(env)
@@ -182,6 +180,7 @@ def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     module=_get_module_name(env)
+    env['IMP_CUR_MODULE_HAS_DATA']=True;
     build =scons_tools.install.install_hierarchy_in_build(env, files,
                                                           "#/build/data/"+module)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
@@ -564,12 +563,17 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     env['IMP_MODULE_CONFIG']=real_config_macros
     sconscripts= stp.get_matching_source(env, ["*/SConscript"])
     # ick, ick, ick
-    env.SConscript("examples/SConscript", exports='env')
-    env.SConscript("doc/SConscript", exports='env')
+    ordered_names=["data/SConscript",
+                   "examples/SConscript",
+                   "doc/SConscript"]
+    for o in ordered_names:
+        for i, s in enumerate(sconscripts):
+            if s.path.endswith(o):
+                env.SConscript(s, exports='env')
+                sconscripts=sconscripts[:i]+sconscripts[i+1:]
+                break;
     for s in sconscripts:
-        if not s.path.endswith("examples/SConscript") and\
-                not s.path.endswith("doc/SConscript"):
-            env.SConscript(s, exports='env')
+        env.SConscript(s, exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)
     for m in _get_module_modules(env):
         env.Requires(scons_tools.data.get(env).get_alias(module),
