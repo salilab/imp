@@ -12,6 +12,7 @@
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/Mover.h>
+#include <IMP/core/mover_macros.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
