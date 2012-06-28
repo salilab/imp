@@ -538,6 +538,16 @@ class TestCase(unittest.TestCase):
         else:
             return _SubprocessWrapper(sys.executable, [modpath] + args)
 
+    def check_runnable_python_module(self, module):
+        """Check a Python module designed to be runnable with 'python -m'
+           to make sure it supports standard command line options."""
+        # --help should return with exit 0, no errors
+        r = self.run_python_module(module, ['--help'])
+        out, err = r.communicate()
+        self.assertEqual(r.returncode, 0)
+        self.assertEqual(err, "")
+        self.assertNotEqual(out, "")
+
 
 class _ExecDictProxy(object):
     """exec returns a Python dictionary, which contains IMP objects, other
