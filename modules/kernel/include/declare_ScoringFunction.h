@@ -31,6 +31,24 @@ class Model;
     (Model::get_model_scoring_function()), but it can be useful to use
     others in different contexts during a samping process.
     \headerfile ScoringFunction.h "IMP/ScoringFunction.h"
+
+    The evaluate process looks like:
+ \dotgraph{ \dot
+   digraph evaluate {
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      s0 [label="Determine set of ScoreStates\nneeded by Restraints"];
+      s1 [label=
+           "ScoreStates::before_evaluate()\ncalled to update configuration"];
+      s2 [label=
+"Restraint::unprotected_evaluate()\nto compute scores [and derivatives]"];
+      s3 [label="[ScoreStates::after_evaluate()\nto update derivatives]"];
+      s4 [label="Score returned"];
+      s0 -> s1 [arrowhead="open"]
+      s1 -> s2 [arrowhead="open"]
+      s2 -> s3 [arrowhead="open"]
+      s3 -> s4 [arrowhead="open"]
+    }
+  }
 */
 class IMPEXPORT ScoringFunction: public ModelObject
  {
