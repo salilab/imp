@@ -510,6 +510,34 @@ class TestCase(unittest.TestCase):
 
         return _ExecDictProxy(vars)
 
+    def run_python_module(self, module, args):
+        """Run a Python module as if with "python -m <modname>",
+           with the given list of arguments as sys.argv.
+
+           If module is an already-imported Python module, run its 'main'
+           function and return the result.
+
+           If module is a string, run the module in a subprocess and return
+           a subprocess.Popen-like object containing the child stdin,
+           stdout and stderr.
+        """
+        if type(module) == type(os):
+            mod = module
+        else:
+            mod = __import__(module, {}, {}, [''])
+        modpath = mod.__file__
+        if modpath.endswith('.pyc'):
+            modpath = modpath[:-1]
+        if type(module) == type(os):
+            old_sys_argv = sys.argv
+            try:
+                sys.argv = [modpath] + args
+                return module.main()
+            finally:
+                sys.argv = old_sys_argv
+        else:
+            return _SubprocessWrapper(sys.executable, [modpath] + args)
+
 
 class _ExecDictProxy(object):
     """exec returns a Python dictionary, which contains IMP objects, other
