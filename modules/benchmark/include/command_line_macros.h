@@ -16,19 +16,20 @@
 #include <IMP/base/utility.h>
 #include <IMP/base/raii_macros.h>
 #include <IMP/base/log_macros.h>
-#include <IMP/base/log.h>
-#include <IMP/base/exception.h>
 #include <boost/scoped_ptr.hpp>
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #include <boost/program_options.hpp>
 #endif
+
 #if defined(IMP_BENCHMARK_USE_TCMALLOC)
 #if defined(IMP_BENCHMARK_USE_GPERFTOOLS)
 #include <gperftools/heap-profiler.h>
 #include <gperftools/heap-checker.h>
+#define IMP_BENCHMARK_MEMORY
 #elif defined(IMP_BENCHMARK_USE_GOOGLEPERFTOOLS)
 #include <google/heap-profiler.h>
 #include <google/heap-checker.h>
+#define IMP_BENCHMARK_MEMORY
 #endif
 #endif
 
@@ -65,7 +66,7 @@ class HeapProfiler: public IMP::base::RAII {
 */
 template <int dummy>
 class LeakChecker: public IMP::base::RAII {
-#if defined(IMP_BENCHMARK_USE_TCMALLOC)
+#if defined(IMP_BENCHMARK_MEMORY)
   boost::scoped_ptr<HeapLeakChecker> checker_;
 #endif
   void start(std::string name);
@@ -76,7 +77,7 @@ class LeakChecker: public IMP::base::RAII {
 
 
 };
-#if defined(IMP_BENCHMARK_USE_TCMALLOC)
+#if defined(IMP_BENCHMARK_MEMORY)
 template <int dummy>
 void HeapProfiler<dummy>::start(std::string name) {
   name_=IMP::base::get_unique_name(name);
@@ -130,61 +131,59 @@ void LeakChecker<dummy>::stop(){}
 #endif
 
 
-
 #ifdef IMP_BENCHMARK_USE_BOOST_PROGRAMOPTIONS
 #define IMP_BENCHMARK(extra_arguments)                                  \
-  {                                                                     \
     boost::program_options::options_description desc;                   \
     desc.add_options()                                                  \
-      ("help",                                                          \
-       boost::program_options::value<bool>                              \
-       (&IMP::benchmark::help)->zero_tokens(),                          \
-       "Print help on command line arguments.");                        \
+    ("help",                                                            \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::help)->zero_tokens(),                            \
+     "Print help on command line arguments.");                          \
     desc.add_options()                                                  \
-      ("log_level",                                                     \
-       boost::program_options::value<IMP::base::LogLevel>               \
-       (&IMP::benchmark::log_level)->zero_tokens(),                     \
-       "The logging level to use (if not in fast mode).");              \
+    ("profile",                                                         \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::profile_benchmark)->zero_tokens(),               \
+     "Profile the benchmark itself.");                                  \
     desc.add_options()                                                  \
-      ("check_level",                                                   \
-       boost::program_options::value<IMP::base::CheckLevel>             \
-       (&IMP::benchmark::check_level)->zero_tokens(),                   \
-       "The check level to use (if not in fast mode).");                \
+    ("log_level",                                                       \
+     boost::program_options::value<IMP::base::LogLevel>                 \
+     (&IMP::benchmark::log_level),                                      \
+     "The logging level to use (if not in fast mode).");                \
     desc.add_options()                                                  \
-      ("profile",                                                       \
-       boost::program_options::value<bool>                              \
-       (&IMP::benchmark::profile_benchmark)->zero_tokens(),             \
-       "Profile the benchmark itself.");                                \
+    ("check_level",                                                     \
+     boost::program_options::value<IMP::base::CheckLevel>               \
+     (&IMP::benchmark::check_level),                                    \
+     "The check level to use (if not in fast mode).");                  \
     desc.add_options()                                                  \
-      ("profile_all",                                                   \
-       boost::program_options::value<bool>                              \
-       (&IMP::benchmark::profile_all)->zero_tokens(),                   \
-       "Profile the whole program.");                                   \
+    ("profile_all",                                                     \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::profile_all)->zero_tokens(),                     \
+     "Profile the whole program.");                                     \
     desc.add_options()                                                  \
-        ("heap_profile",                                                \
-         boost::program_options::value<bool>                            \
-         (&IMP::benchmark::heap_profile_benchmark)->zero_tokens(),      \
-         "Profile the the heap usage for each benchmark.");             \
+    ("heap_profile",                                                    \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::heap_profile_benchmark)->zero_tokens(),          \
+     "Profile the the heap usage for each benchmark.");                 \
     desc.add_options()                                                  \
-        ("heap_profile_all",                                            \
-         boost::program_options::value<bool>                            \
-         (&IMP::benchmark::heap_profile_all)->zero_tokens(),            \
-         "Profile the the heap usage.");                                \
+    ("heap_profile_all",                                                \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::heap_profile_all)->zero_tokens(),                \
+     "Profile the the heap usage.");                                    \
     desc.add_options()                                                  \
-        ("leak_check",                                                  \
-       boost::program_options::value<bool>                              \
-         (&IMP::benchmark::leak_check_benchmark)->zero_tokens(),        \
-         "Check for leaks in each benchmark.");                         \
+    ("leak_check",                                                      \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::leak_check_benchmark)->zero_tokens(),            \
+     "Check for leaks in each benchmark.");                             \
     desc.add_options()                                                  \
-        ("leak_check_all",                                              \
-       boost::program_options::value<bool>                              \
-         (&IMP::benchmark::leak_check_all)->zero_tokens(),              \
-         "Check for leaks in the benchmark.");                          \
+    ("leak_check_all",                                                  \
+     boost::program_options::value<bool>                                \
+     (&IMP::benchmark::leak_check_all)->zero_tokens(),                  \
+     "Check for leaks in the benchmark.");                              \
     desc.add_options()                                                  \
-      ("run_only",                                                      \
-       boost::program_options::value<int>                               \
-       (&IMP::benchmark::run_only),                                     \
-       "Run only the ith benchmark.");                                  \
+    ("run_only",                                                        \
+     boost::program_options::value<int>                                 \
+     (&IMP::benchmark::run_only),                                       \
+     "Run only the ith benchmark.");                                    \
     desc.add_options()                                                  \
       extra_arguments;                                                  \
     boost::program_options::variables_map vm;                           \
@@ -198,6 +197,8 @@ void LeakChecker<dummy>::stop(){}
       std::cout << desc << "\n";                                        \
       return 1;                                                         \
     }                                                                   \
+    IMP::base::set_log_level(IMP::benchmark::log_level);                \
+    IMP::base::set_check_level(IMP::benchmark::check_level);            \
     IMP::benchmark::benchmarks_name                                     \
       = IMP::benchmark::internal::get_benchmarks_name(argv[0]);         \
     boost::scoped_ptr<IMP::benchmark::Profiler> profiler;               \
@@ -214,10 +215,7 @@ void LeakChecker<dummy>::stop(){}
     if (IMP::benchmark::leak_check_all) {                               \
       std::string name=IMP::benchmark::benchmarks_name+".all";          \
       leak_checker.reset(new LeakChecker<0>(name));                     \
-    }                                                                   \
-    IMP::base::set_log_level(IMP::benchmark::log_level);                \
-    IMP::base::set_check_level(IMP::benchmark::check_level);            \
-  }
+    }
 
 #else
 #define IMP_BENCHMARK(extra_arguments)\
