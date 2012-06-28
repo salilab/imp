@@ -11,6 +11,7 @@
 #include "score_functor_config.h"
 #include <IMP/Model.h>
 #include <IMP/algebra/utility.h>
+#include <IMP/base/check_macros.h>
 
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
@@ -30,7 +31,7 @@ public:
                                    + m->get_sphere(pi[1]).get_radius(),
                                    "Cache sum of radii wrong "
                                    << rsum_ << " vs "
-                                   m->get_sphere(pi[0]).get_radius()
+                                   << m->get_sphere(pi[0]).get_radius()
                                    + m->get_sphere(pi[1]).get_radius());
     return P::get_score(m, pi, distance-rsum_);
   }
@@ -40,7 +41,7 @@ public:
                                    + m->get_sphere(pi[1]).get_radius(),
                                    "Cache sum of radii wrong "
                                    << rsum_ << " vs "
-                                   m->get_sphere(pi[0]).get_radius()
+                                   << m->get_sphere(pi[0]).get_radius()
                                    + m->get_sphere(pi[1]).get_radius());
     return P::get_score_and_derivative(m, pi, distance-rsum_);
   }
