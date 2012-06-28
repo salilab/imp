@@ -14,8 +14,7 @@
 IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 
 
-/** A shift the distance by subtracting x0 and pass it to the base
-    class.*/
+/** Apply two different scores and return the sum of the results.*/
 template <class BaseDistanceScore0, class BaseDistanceScore1>
 class AddScores: public Score {
   typedef BaseDistanceScore0 P0;

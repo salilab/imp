@@ -19,35 +19,40 @@ IMPSCOREFUNCTOR_BEGIN_NAMESPACE
 template <class BaseDistanceScore>
 class SphereDistance: public BaseDistanceScore {
   typedef BaseDistanceScore P;
-  double get_distance(Model *m, const ParticleIndexPair& pi,
-                      double distance) const {
-    return distance
-      - m->get_sphere(pi[0]).get_radius()
-      - m->get_sphere(pi[1]).get_radius();
-  }
+  // caching this makes a noticeable difference (~30% with linear term)
+  mutable double rsum_;
 public:
   SphereDistance(BaseDistanceScore base):
     P(base) {}
   double get_score(Model *m, const ParticleIndexPair& pi,
                    double distance) const {
-    return P::get_score(m, pi, get_distance(m, pi,
-                                            distance));
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
+                                   + m->get_sphere(pi[1]).get_radius(),
+                                   "Cache sum of radii wrong "
+                                   << rsum_ << " vs "
+                                   m->get_sphere(pi[0]).get_radius()
+                                   + m->get_sphere(pi[1]).get_radius());
+    return P::get_score(m, pi, distance-rsum_);
   }
   DerivativePair get_score_and_derivative(Model *m, const ParticleIndexPair&pi,
                                           double distance) const {
-    return P::get_score_and_derivative(m, pi,
-                                       get_distance(m, pi,
-                                                    distance));
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
+                                   + m->get_sphere(pi[1]).get_radius(),
+                                   "Cache sum of radii wrong "
+                                   << rsum_ << " vs "
+                                   m->get_sphere(pi[0]).get_radius()
+                                   + m->get_sphere(pi[1]).get_radius());
+    return P::get_score_and_derivative(m, pi, distance-rsum_);
+  }
+  double get_maximum_range(Model *m, const ParticleIndexPair& pi) const {
+    rsum_=m->get_sphere(pi[0]).get_radius()
+      + m->get_sphere(pi[1]).get_radius();
+    return P::get_maximum_range(m, pi) + rsum_;
   }
   bool get_is_trivially_zero(Model *m, const ParticleIndexPair& p,
                              double squared_distance) const {
     return squared_distance
       > algebra::get_squared(get_maximum_range(m, p));
-  }
-  double get_maximum_range(Model *m, const ParticleIndexPair& pi) const {
-    return P::get_maximum_range(m, pi)
-      + m->get_sphere(pi[0]).get_radius()
-      + m->get_sphere(pi[1]).get_radius();
   }
 };
 
