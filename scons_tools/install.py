@@ -166,13 +166,17 @@ def install_hierarchy_in_build(env, sources, target, prefix=""):
 
 
 def _run_install(target, source, env):
+    destdir = env.subst(env['destdir'])
+    if destdir != '' and not os.path.isabs(destdir):
+        destdir = Dir('#/' + destdir).abspath
     install_cmd="./scons_tools/do-install.py"
     install_args=["--include ${includedir}",
                   "--data ${datadir}",
                   "--lib ${libdir}",
                   "--python ${pythondir}",
                   "--swig ${datadir}/swig",
-                  "--doc ${docdir}"]
+                  "--doc ${docdir}",
+                  "--destdir='%s'" % destdir]
     env.Execute(install_cmd+" "+" ".join(install_args))
 def _print_install(target, source, env):
     print "installing imp"
