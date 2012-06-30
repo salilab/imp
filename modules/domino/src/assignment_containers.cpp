@@ -230,11 +230,18 @@ Assignment WriteAssignmentContainer::get_assignment(unsigned int) const {
 void WriteAssignmentContainer::flush() {
   if (cache_.empty()) return;
   int ret=write(f_, &cache_[0], cache_.size()*sizeof(int));
-  IMP_USAGE_CHECK(ret == static_cast<int>(cache_.size()*sizeof(int)),
+  IMP_INTERNAL_CHECK(ret == static_cast<int>(cache_.size()*sizeof(int)),
                   "Not everything written: " << ret
                   << " of " << cache_.size()*sizeof(int));
   cache_.clear();
   cache_.reserve(max_cache_);
+#if IMP_BUILD != IMP_FAST
+  size_t size = lseek(f_, 0, SEEK_CUR);
+  IMP_INTERNAL_CHECK(size== number_*order_.size()*sizeof(int),
+                     "Wrong number of bytes in file: got "
+                     << size << " expected "
+                     << number_*order_.size()*sizeof(int));
+#endif
 }
 
 void WriteAssignmentContainer::set_cache_size(unsigned int words) {
@@ -296,8 +303,7 @@ ReadAssignmentContainer
                           const ParticlesTemp &all_particles,
                           std::string name):
   AssignmentContainer(name),
-  order_(s, all_particles),
-  max_cache_(10000) {
+  order_(s, all_particles) {
   cache_.reserve(max_cache_);
   struct stat data;
   stat(dataset.c_str(), &data);
@@ -309,6 +315,7 @@ ReadAssignmentContainer
   f_=open(dataset.c_str(), O_RDONLY, 0);
 #endif
   offset_=-1;
+  set_cache_size(100000);
 }
 
 
@@ -317,22 +324,24 @@ unsigned int ReadAssignmentContainer::get_number_of_assignments() const {
 }
 
 Assignment ReadAssignmentContainer::get_assignment(unsigned int i) const {
-  if (i < static_cast<unsigned int>(offset_)
+  if ( static_cast< int>(i) < offset_
       || (i+1-offset_)*order_.size() > cache_.size()) {
     cache_.resize(max_cache_);
     lseek(f_, i*sizeof(int)*order_.size(), SEEK_SET);
     int rd= read(f_, &cache_[0], max_cache_*sizeof(int));
     cache_.resize(rd/sizeof(int));
     offset_=i;
-    IMP_LOG(VERBOSE, "Cache is " << cache_ << " at " << offset_
-            << std::endl);
+    IMP_LOG(TERSE, "Cache is of size " << cache_.size() << " at " << offset_
+            << " when reading " << i << " with assignments of size "
+            << order_.size() << std::endl);
   }
-  return order_.get_subset_ordered(cache_.begin()+i*order_.size(),
-                                   cache_.begin()+(i+1)*order_.size());
+  return order_.get_subset_ordered(cache_.begin()+(i-offset_)*order_.size(),
+                                   cache_.begin()+(i+1-offset_)*order_.size());
 }
 
 void ReadAssignmentContainer::set_cache_size(unsigned int words) {
-  max_cache_=words;
+  // make sure it is a whole number of assignments
+  max_cache_=(words/order_.size() +1)*order_.size();
 }
 
 void ReadAssignmentContainer::add_assignment(const Assignment&) {
