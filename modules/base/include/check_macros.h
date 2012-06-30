@@ -212,8 +212,10 @@
   } while(false)
 
 #define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
-  IMP_INTERNAL_CHECK(std::abs(expra-exprb) < .1*(expra+exprb)+.1,       \
-                     message)
+  IMP_INTERNAL_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1, \
+                     expra << " != " << exprb                           \
+                     <<" within "<< .1*std::abs(expra+exprb)+.1         \
+                     << " - " << message)
 
 
 #define IMP_USAGE_CHECK(expr, message)                          \
@@ -227,9 +229,11 @@
       throw IMP::base::UsageException(oss.str().c_str());             \
     }                                                           \
   } while (false)
-#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
-  IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*(expra+exprb)+.1,       \
-                     message)
+#define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
+  IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1,  \
+                  expra << " != " << exprb                              \
+                  <<" within "<< .1*std::abs(expra+exprb)+.1            \
+                  <<" - " <<  message)
 
 #else // IMP_BUILD < IMP_FAST
 #define IMP_IF_CHECK(level) if (0)
