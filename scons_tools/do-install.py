@@ -16,6 +16,8 @@ parser.add_option("-s", "--swig", dest="swig",
                   help="Where to install swig files")
 parser.add_option("-c", "--doc", dest="doc",
                   help="Where to install doc files")
+parser.add_option("--destdir", dest="destdir",
+                  help="Directory to prefix to all install paths")
 (options, args) = parser.parse_args()
 
 def install_hierarchy(source, dest, include=["*"]):
@@ -34,9 +36,10 @@ def install_hierarchy(source, dest, include=["*"]):
         os.system("install -d "+dest)
         os.system("install -t "+dest + " " + " ".join(curlist))
 
-install_hierarchy("build/include", options.include)
-install_hierarchy("build/data", options.data)
-install_hierarchy("build/lib", options.lib, include=["lib*"])
-install_hierarchy("build/lib", options.python, include=["_*", "IMP", "RMF"])
-install_hierarchy("build/swig", options.swig)
-install_hierarchy("build/doc", options.doc)
+install_hierarchy("build/include", options.destdir + options.include)
+install_hierarchy("build/data", options.destdir + options.data)
+install_hierarchy("build/lib", options.destdir + options.lib, include=["lib*"])
+install_hierarchy("build/lib", options.destdir + options.python,
+                  include=["_*", "IMP", "RMF"])
+install_hierarchy("build/swig", options.destdir + options.swig)
+install_hierarchy("build/doc", options.destdir + options.doc)
