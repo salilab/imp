@@ -17,7 +17,7 @@ class TrivialParticleStates(IMP.domino.ParticleStates):
 
 key= IMP.IntKey("assignment")
 
-class DOMINOTests(IMP.test.TestCase):
+class Tests(IMP.test.TestCase):
     def _setup_round_trip(self):
         m= IMP.Model()
         ps=[]
@@ -31,8 +31,7 @@ class DOMINOTests(IMP.test.TestCase):
         return ps, IMP.domino.Subset(ps), assignments, m
     def _test_out(self, container, assignments):
         container.set_was_used(True)
-        for a in assignments:
-            container.add_assignment(a)
+        container.add_assignments(assignments)
         self.assertEqual(container.get_number_of_assignments(),len(assignments))
     def _check_equal(self, a0, a1, ps0, ps1):
         ss0= IMP.domino.Subset(ps0)
@@ -62,7 +61,7 @@ class DOMINOTests(IMP.test.TestCase):
         name= self.get_tmp_file_name("round_trip.hdf5")
         h5= RMF.create_hdf5_file(name)
         pss= IMP.domino.WriteHDF5AssignmentContainer(h5, ss0, ps0, "assignments")
-        pss.set_cache_size(16)
+        pss.set_cache_size(3)
         self._test_out(pss, ass0)
         del pss
         #del h5
@@ -70,7 +69,7 @@ class DOMINOTests(IMP.test.TestCase):
         ds= h5.get_child_index_data_set_2d("assignments")
         iss= IMP.domino.ReadHDF5AssignmentContainer(ds, ss1, ps1,
                                                      "in assignments")
-        iss.set_cache_size(16)
+        iss.set_cache_size(4)
         print ss0, ss1
         self._test_in(iss, ass0, ps0, ps1)
 
@@ -81,11 +80,13 @@ class DOMINOTests(IMP.test.TestCase):
         print ps0, ps1, ss0, ss1
         name= self.get_tmp_file_name("round_trip.assignments")
         pss= IMP.domino.WriteAssignmentContainer(name, ss0, ps0, "assignments")
-        pss.set_cache_size(16)
+        pss.set_cache_size(3)
+        print ass0
         self._test_out(pss, ass0)
         del pss
+        print "done writing"
         iss= IMP.domino.ReadAssignmentContainer(name, ss1, ps1, "in assignments")
-        iss.set_cache_size(516)
+        iss.set_cache_size(4)
         self._test_in(iss, ass0, ps0, ps1)
 
 
