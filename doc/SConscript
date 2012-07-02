@@ -1,9 +1,9 @@
 Import('env')
+import scons_tools.doc
+import scons_tools.paths
+scons_tools.doc.add_overview_pages(env)
 
 SConscript('doxygen/SConscript')
-files= Glob("*.png")
-build=[]
-for f in files:
-    b=env.InstallAs("#/build/doc/html/"+str(f), f)
-    build.append(b)
-env.Alias('doc-files', build)
+for f in scons_tools.paths.get_matching_source(env, ["*.png"]):
+    b=scons_tools.install.install_in_build(env, f, "#/build/doc/html/"+str(f))
+    env.Alias('doc', b)

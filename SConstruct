@@ -90,30 +90,13 @@ scons_tools.dependency.add_external_library(env, "tcmalloc",
                                             "vector",
                                             enabled=False)
 
+for s in scons_tools.paths.get_sconscripts(env,["modules"],["tools", "doc"]):
+    SConscript(s)
 
-first=["modules", "applications", "biological_systems"]
-last=["doc"]
-reordered=[]
-reordered_last=[]
-all= [str(x) for x in Glob("*/SConscript")]
-for f in first:
-    e= f+"/SConscript"
-    if e in all:
-        reordered.append(e)
-        all.remove(e)
-for f in last:
-    e= f+"/SConscript"
-    if e in all:
-        reordered_last.append(e)
-        all.remove(e)
-reordered.extend(all)
-for f in reordered:
-    SConscript("#/"+f)
 
 
 if not env.GetOption('help'):
     # This must be after the other SConscipt calls so that it knows about all the generated files
-    scons_tools.doc.add_overview_pages(env)
     imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
     sitecust = scons_tools.python_coverage.setup(env)
     env.Depends(imppy, sitecust)
@@ -141,8 +124,6 @@ if not env.GetOption('help'):
         print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
         print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
         Exit(1)
-    for f in reordered_last:
-        SConscript("#/"+f)
     scons_tools.build_summary.setup(env)
     config_py=scons_tools.config_py.add(env)
     senv= scons_tools.environment.get_named_environment(env, "scons", [], [])
