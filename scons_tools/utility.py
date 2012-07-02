@@ -150,7 +150,7 @@ def configure(env, name, type, version, required_modules=[],
             version, found_optional_modules, found_optional_dependencies)
 
 
-def configure_module(env, name, libname, version, required_modules=[],
+def configure_module(env, name, alias, libname, version, required_modules=[],
                      optional_dependencies=[], optional_modules=[],
                      required_dependencies=[]):
     dta=data.get(env)
@@ -173,7 +173,7 @@ def configure_module(env, name, libname, version, required_modules=[],
         dependencies=found_optional_dependencies +required_dependencies
         unfound_dependencies=[x for x in optional_dependencies\
                                   if not x in found_optional_dependencies]
-        dta.add_module(name,
+        dta.add_module(name, alias=alias,
                        modules= modules,
                        unfound_modules=unfound_modules,
                        dependencies=dependencies,
@@ -183,6 +183,29 @@ def configure_module(env, name, libname, version, required_modules=[],
         return nenv
     else:
         dta.add_module(name, ok=False)
+        return None
+def configure_application(env, name, link, version, required_modules=[],
+                          optional_dependencies=[], optional_modules=[],
+                          required_dependencies=[]):
+    dta=data.get(env)
+    if name in dta.modules.keys():
+        pass
+    (nenv,
+     version, found_optional_modules, found_optional_dependencies)=\
+     configure(env, name, "application", version, required_modules,
+               optional_dependencies, optional_modules,
+               required_dependencies)
+    if nenv:
+        data.get(env).add_application(name, link=link,
+                                      dependencies=required_dependencies\
+                                          +found_optional_dependencies,
+                                      unfound_dependencies=[x for x in optional_dependencies
+                                                           if not x in
+                                                           found_optional_dependencies],
+                                      modules= required_modules+found_optional_modules,
+                                     version=version)
+        return nenv
+    else:
         return None
 
 def get_without_extension(name):

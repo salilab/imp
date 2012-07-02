@@ -28,8 +28,6 @@ from SCons.Scanner import C as CScanner
 def _get_module_name(env):
     return scons_tools.environment.get_current_name(env)
 
-def _get_module_has_data(env):
-    return env.get("IMP_CUR_MODULE_HAS_DATA", False)
 
 def _get_module_full_name(env):
     name= _get_module_name(env)
@@ -38,6 +36,7 @@ def _get_module_full_name(env):
     else:
         name="IMP."+name
     return name
+
 
 def _get_module_path(env):
     module= _get_module_name(env)
@@ -52,6 +51,13 @@ def _get_module_data(env, module=None):
     if not module:
         module= _get_module_name(env)
     return scons_tools.data.get(env).modules[module]
+
+def _get_module_has_data(env):
+    #print _get_module_data(env).data
+    return _get_module_data(env).data
+
+def _get_module_alias(env):
+    return _get_module_data(env).alias
 
 def _get_found_modules(env, modules):
     ret=[]
@@ -97,7 +103,7 @@ def IMPModuleLib(envi, files):
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
     if envi["IMP_PASS"] != "BUILD":
-        pass
+        return
     vars= _get_module_variables(envi)
     module = _get_module_name(envi)
     module_libname =_get_module_variables(envi)['module_libname']
@@ -137,13 +143,13 @@ def IMPModuleLib(envi, files):
         env= scons_tools.environment.get_staticlib_environment(envi)
         sl= env.StaticLibrary('#/build/lib/%s' % module_libname,
                               allf)
-        scons_tools.data.get(env).add_to_alias(_get_module_name(env), sl[0])
+        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), sl[0])
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(EXPORT)s_EXPORTS' % vars,
                                     cplusplus=True)
         sl=env.SharedLibrary('#/build/lib/%s' % module_libname,
                                        allf )
-        scons_tools.data.get(env).add_to_alias(_get_module_name(env), sl[0])
+        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), sl[0])
         scons_tools.utility.postprocess_lib(env, sl)
 
 
@@ -151,7 +157,7 @@ def IMPModuleInclude(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
     if env["IMP_PASS"] != "BUILD":
-        pass
+        return
     vars=_get_module_variables(env)
     module= _get_module_name(env)
     moduleinclude= vars['module_include_path']
@@ -165,7 +171,8 @@ def IMPModuleInclude(env, files):
     signature=_get_module_unfound_dependencies(env)\
         + deps\
         + [data.dependencies[x].version for x in deps]\
-        + _get_found_modules(env, _get_module_modules(env))
+        + _get_found_modules(env, _get_module_modules(env))\
+        + [_get_module_has_data(env)]
     config=env.IMPModuleConfigH(target\
                                     =[File("#/build/include/"+moduleinclude\
                                                +"/"+module+"_config.h")],
@@ -181,89 +188,83 @@ def IMPModuleInclude(env, files):
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     if env["IMP_PASS"] != "BUILD":
-        pass
-    data=scons_tools.data.get(env).modules[_get_module_name(env)]
+        return
+    dta=scons_tools.data.get(env).modules[_get_module_name(env)]
     module=_get_module_name(env)
-    data.data=True
+    dta.data=True
     build =scons_tools.install.install_hierarchy_in_build(env, files,
                                                           "#/build/data/"+module)
-    scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
+    scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
-    if env["IMP_PASS"] != "BUILD":
-        pass
-    #print "Examples called with",[str(x) for x in example_files],\
-    #    [str(x) for x in data_files]
-    example_files= [File(x) for x in example_files]
-    module= _get_module_name(env)
-    test_files = Glob('test_examples.py', ondisk=True)
-    #for f in example_files:
-    #    print f
-    #    print f.abspath
-    #    open(f.abspath, 'r')
-    build=scons_tools.install.install_hierarchy_in_build(env,
-                                                         example_files+data_files,
-                                                         "#/build/doc/examples/"+module)
-    runable=[x for x in example_files + test_files
-             if str(x).endswith(".py") \
-             and str(x).find("fragment")==-1]
-    if len(runable)>0:
-        tests = scons_tools.test.add_tests(env,
-                                           source=runable,
-                                           type='example')
-        for test in tests:
-            env.Requires(test, build)
-    scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
-    seen=[]
-    for e in example_files:
-        if str(e).endswith(".py"):
-            for o in example_files:
-                if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
-                    seen.append(o)
-                    break
-            scons_tools.examples.add_python_example(env, e, o.get_contents())
-    links=[]
-    fexample_files=[x for x in example_files if x not in seen]
-    split= scons_tools.utility.get_split_into_directories(fexample_files)
-    for k in split.keys():
-        if len(k)>0:
-            name =_get_module_name(env)+ " examples: "+k
-            pre=k+'/'
-        else:
-            name =_get_module_name(env)+ " examples"
-            pre=""
-        name=scons_tools.utility.get_display_from_name(name)
-        l= scons_tools.examples.add_page(env, name,
-                                      [pre+x for x in split[k]])
-        links.append(l)
-    _set_module_links(env, links)
+    if env["IMP_PASS"] == "BUILD":
+        example_files= [File(x) for x in example_files]
+        module= _get_module_name(env)
+        build=scons_tools.install.install_hierarchy_in_build(env,
+                                                             example_files+data_files,
+                                                             "#/build/doc/examples/"+module)
 
+        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
+        seen=[]
+        for e in example_files:
+            if str(e).endswith(".py"):
+                for o in example_files:
+                    if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
+                        seen.append(o)
+                        break
+                    scons_tools.examples.add_python_example(env, e, o.get_contents())
+        links=[]
+        fexample_files=[x for x in example_files if x not in seen]
+        split= scons_tools.utility.get_split_into_directories(fexample_files)
+        for k in split.keys():
+            if len(k)>0:
+                name =_get_module_name(env)+ " examples: "+k
+                pre=k+'/'
+            else:
+                name =_get_module_name(env)+ " examples"
+                pre=""
+            name=scons_tools.utility.get_display_from_name(name)
+            l= scons_tools.examples.add_page(env, name,
+                                             [pre+x for x in split[k]])
+            links.append(l)
+        _set_module_links(env, links)
+
+
+    if env["IMP_PASS"]=="RUN":
+        test_files = stp.get_matching_source(env, ['test_examples.py'])
+        runable=[x for x in example_files + test_files
+                 if str(x).endswith(".py") \
+                     and str(x).find("fragment")==-1]
+        if len(runable)>0:
+            tests = scons_tools.test.add_tests(env,
+                                               source=runable,
+                                               type='example')
 
 
 def IMPModuleBin(env, files):
     if env["IMP_PASS"] != "BUILD":
-        pass
+        return
     prgs=stb.handle_bins(env, files,
                          stp.get_build_bin_dir(env, _get_module_name(env)),
                          extra_modules=[_get_module_name(env)])
-    scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
+    scons_tools.data.get(env).add_to_alias(_get_module_alias(env), prgs)
 
 def IMPModuleBenchmark(env, files):
     if env["IMP_PASS"] != "BUILD":
-        pass
+        return
     prgs, bmarks=stb.handle_benchmarks(env, files,
                                        stp.get_build_benchmark_dir(env, _get_module_name(env)),
                                        extra_modules=[_get_module_name(env)])
-    scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-benchmarks", bmarks)
-    scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
+    scons_tools.data.get(env).add_to_alias(_get_module_alias(env)+"-benchmarks", bmarks)
+    scons_tools.data.get(env).add_to_alias(_get_module_alias(env), prgs)
 
 def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
     if env["IMP_PASS"] != "BUILD":
-        pass
+        return
     module =_get_module_name(env)
     vars=_get_module_variables(env)
     data=scons_tools.data.get(env)
@@ -279,7 +280,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                             +vars['module_include_path']\
                                             +"/_version_check.py")],
                            source=[env.Value(_get_module_version(env))]+versions)
-    data.add_to_alias(_get_module_name(env),vc[0])
+    data.add_to_alias(_get_module_alias(env),vc[0])
     prefix=vars['module_pylibname'][1:]
     if prefix=="IMP":
         prefix="IMP_kernel"
@@ -315,7 +316,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule("#/build/lib/"+vars["module_pylibname"],
                                     patched) #SCANNERS=scanners
-    data.add_to_alias(module, buildlib[0])
+    data.add_to_alias(_get_module_alias(env), buildlib[0])
     if "kernel" in _get_module_dependencies(env):
         # all python support needs kernel, silly design to put it in the base
         # namespace/python module
@@ -326,7 +327,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                       pythonfiles,
                                                           "#/build/lib/"+vars['module_include_path'], prefix="src")
     for bc in b:
-        data.add_to_alias(_get_module_name(env), bc)
+        data.add_to_alias(_get_module_alias(env), bc)
 
 def IMPModuleGetExamples(env):
     rms= stp.get_matching_source(env, ["*.readme", "*.py"])
@@ -404,7 +405,7 @@ def IMPModuleDoc(env, files, authors,
                  publications=None,
                  license="standard"):
     if env["IMP_PASS"] != "BUILD":
-        pass
+        return
     docdir=env['docdir']+"/"+_get_module_variables(env)['module_include_path']
     links= _get_module_links(env)
     if overview.find('\r') != -1:
@@ -443,7 +444,7 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
        Right now, the assumption is made that run-abll-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
     if env["IMP_PASS"] != "RUN":
-        pass
+        return
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
     module=_get_module_name(env)
@@ -491,11 +492,13 @@ def IMPModuleBuild(env, version=None, required_modules=[],
                    module_include_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
+                   alias_name=None,
                    cxxflags=[], cppdefines=[], cpppath=[], python_docs=False,
                    local_module=False,
                    standards=True):
     if env.GetOption('help'):
         return
+    dta= scons_tools.data.get(env)
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
         if module=="local":
@@ -514,6 +517,8 @@ def IMPModuleBuild(env, version=None, required_modules=[],
         module_preproc=module_namespace.replace("::","_").upper()
     if module_nicename is None:
         module_nicename= "IMP."+module
+    if alias_name is None:
+        alias_name=module
     if python_docs:
         env.Append(IMP_PYTHON_DOCS=[module])
     optm=optional_modules+lib_only_optional_modules
@@ -521,7 +526,9 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     reqd=required_dependencies
     reqm=required_modules+lib_only_required_modules
     all_sconscripts=stp.get_sconscripts(env, ['data', 'examples'])
-    nenv = scons_tools.utility.configure_module(env, module, module_libname,
+    nenv = scons_tools.utility.configure_module(env,
+                                                module, alias_name,
+                                                module_libname,
                                                 version,
                                                 required_modules=reqm,
                                                 optional_dependencies=optd,
@@ -539,7 +546,8 @@ def IMPModuleBuild(env, version=None, required_modules=[],
           'namespace':module_namespace,
           'module_libname':module_libname,
           'module_pylibname':module_pylibname,
-          'module_nicename':module_nicename}
+          'module_nicename':module_nicename,
+          'module_alias':alias_name}
     env['IMP_MODULE_VARS']=vars
 
 
@@ -558,22 +566,24 @@ def IMPModuleBuild(env, version=None, required_modules=[],
     env['IMP_MODULE_CONFIG']=real_config_macros
     for s in all_sconscripts:
         env.SConscript(s, exports='env')
-    scons_tools.data.get(env).add_to_alias("all", module)
-    # needed for data
-    for m in _get_module_modules(env):
-        env.Requires(scons_tools.data.get(env).get_alias(module),
-                     scons_tools.data.get(env).get_alias(m))
 
-    if standards:
-        root=Dir(".").abspath
-        if env.get('repository', None):
-            old=Dir("#").abspath
+    if env['IMP_PASS']=="BUILD":
+        dta.add_to_alias("all", module)
+        # needed for data
+        for m in _get_module_modules(env):
+            env.Requires(dta.get_alias(_get_module_alias(env)),
+                         dta.get_alias(dta.modules[m].alias))
+
+        if standards:
+            root=Dir(".").abspath
+            if env.get('repository', None):
+                old=Dir("#").abspath
             #print old, root, env['repository']
-            root=root.replace(old, Dir(Dir("#").abspath+"/"+env['repository']).abspath)
-        scons_tools.standards.add(env, [root+"/"+x for x in ["include/*.h",
-                                                             "include/internal/*.h",
-                                                             "src/*.cpp",
-                                                             "src/internal/*.cpp",
-                                                             "test/*.py",
-                                                             "bin/*.cpp"]])
+                root=root.replace(old, Dir(Dir("#").abspath+"/"+env['repository']).abspath)
+                scons_tools.standards.add(env, [root+"/"+x for x in ["include/*.h",
+                                                                     "include/internal/*.h",
+                                                                     "src/*.cpp",
+                                                                     "src/internal/*.cpp",
+                                                                     "test/*.py",
+                                                                     "bin/*.cpp"]])
     return env

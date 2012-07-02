@@ -12,7 +12,8 @@ env= env.IMPSystem(version='nightly-21/6/2012',
                    """,
                    license=env.IMPStandardLicense(),
                    publications=[],
-                   required_modules=['core', 'atom', 'rmf'],
+                   required_modules=['core', 'atom', 'rmf',
+                                     "example_system_local"],
                    last_imp_version="""core SVN 7432M with CGAL
 atom SVN 7432M with CGAL, Boost.FileSystem
 container SVN 7432

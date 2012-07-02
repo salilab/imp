@@ -39,13 +39,10 @@ def IMPSystem(env, name=None, version=None,
         name= Dir(".").abspath.split("/")[-1]
     if env.GetOption('help'):
         return
-    dirs = Glob("*/SConscript")
+    dirs = scons_tools.paths.get_sconscripts(env)
     local_module=False
     for d in dirs:
-        if str(d).split("/")[0] == "local":
-            env.SConscript(d, exports=['env'])
-            local_module=True
-            required_modules.append(name+"_local")
+        env.SConscript(d, exports=['env'])
     (nenv, version, found_optional_modules, found_optional_dependencies) =\
          utility.configure(env, name, "system", version,
                            required_modules=required_modules,
@@ -55,6 +52,9 @@ def IMPSystem(env, name=None, version=None,
         data.get(env).add_application(name, ok=False)
         return
     else:
+        if nenv["IMP_PASS"] != "RUN":
+            return
+
         if python:
             pm=required_modules+found_optional_modules
         else:
@@ -121,13 +121,3 @@ def IMPSystem(env, name=None, version=None,
                          license, extra_sections=extrasections)
 
         return env
-
-
-def IMPSystemHelperModuleBuild(env):
-    dta= data.get(env)
-    aname= scons_tools.environment.get_current_name(env)
-    env.IMPModuleBuild(version=dta.systems[aname].version,
-                       required_modules= dta.systems[aname].modules,
-                       required_dependencies= dta.systems[aname].dependencies,
-                       module=aname+"_helper",
-                       helper_module=True)

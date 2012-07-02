@@ -69,13 +69,14 @@ included_methods={"kernel":{"get_dependency_graph":("DependencyGrah", "(Model*)"
 
 class IMPData:
     class ModuleData:
-        def __init__(self, name, dependencies=[], direct_dependencies=[],
+        def __init__(self, name, alias="none", dependencies=[], direct_dependencies=[],
                      unfound_dependencies=[], modules=[],
                      unfound_modules=[], libname=None,
                      version=None, external=False,
                      ok=True):
             if ok:
                 #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
+                self.alias=alias
                 self.dependencies=dependencies
                 self.direct_dependencies=direct_dependencies
                 self.unfound_dependencies=unfound_dependencies
@@ -205,7 +206,7 @@ class IMPData:
             if not m in dependencies[i+1:]:
                 dret.append(m)
         return dret
-    def add_module(self, name, directory="",
+    def add_module(self, name, directory="", alias="none",
                    dependencies=[], unfound_dependencies=[], modules=[],
                    unfound_modules=[], libname=None,
                    version="", ok=True,
@@ -220,7 +221,7 @@ class IMPData:
             passmodules= self._expand_modules(modules)
             passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
-            self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
+            self.modules[name]=self.ModuleData(name, alias, passdependencies, dependencies,
                                                unfound_dependencies,
                                                passmodules, unfound_modules,
                                                libname,

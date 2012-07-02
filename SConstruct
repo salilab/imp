@@ -38,7 +38,6 @@ env['IMP_VARIABLES']=vars
 env['IMP_CONFIGURATION']=[]
 
 Export('env')
-env['IMP_PASS']="BUILD"
 if env.get('repository', None) is not None:
     Repository(env['repository'])
 
@@ -89,10 +88,14 @@ scons_tools.dependency.add_external_library(env, "tcmalloc",
                                             # garbage to avoid rename issues
                                             "vector",
                                             enabled=False)
-
-for s in scons_tools.paths.get_sconscripts(env,["modules"],["tools", "doc"]):
+scripts=scons_tools.paths.get_sconscripts(env,["modules"],["tools", "doc"])
+env['IMP_PASS']="BUILD"
+for s in scripts:
     SConscript(s)
 
+env['IMP_PASS']="RUN"
+for s in scripts:
+    SConscript(s)
 
 
 if not env.GetOption('help'):
