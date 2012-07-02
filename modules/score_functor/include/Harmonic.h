@@ -1,5 +1,5 @@
 /**
- *  \file Harmonic.h
+ *  \file score_functor/Harmonic.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

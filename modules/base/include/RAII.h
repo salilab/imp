@@ -10,6 +10,7 @@
 
 #include "base_config.h"
 #include "NonCopyable.h"
+#include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 /** An RAII class (Resource Aquisition Is Initialization) provides a way of
@@ -22,8 +23,7 @@ IMPBASE_BEGIN_NAMESPACE
 
 */
 class RAII: public NonCopyable {
-protected:
-  RAII(){}
+  IMP_PROTECTED_CONSTRUCTOR(RAII, (), {});
 };
 IMPBASE_END_NAMESPACE
 

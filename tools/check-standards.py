@@ -30,6 +30,7 @@ def check_c_file(filename, errors):
     url = re.compile('https?://')
     configh=False
     blank = False
+    exported= filename.find("internal")==-1 and filename.endswith(".h")
     for (num, line) in enumerate(fh):
         line = line.rstrip('\r\n')
         # No way to split URLs, so let them exceed 80 characters:
@@ -57,6 +58,9 @@ def check_c_file(filename, errors):
         blank = (len(line) == 0)
         if line.startswith('#include "'):
             configh=True;
+        if exported and line.find("protected:") != -1 \
+                and filename.find("_macros.h") ==-1:
+            errors.append("%s:%d: Exported class has protected members, this doesn't work with python. Use IMP_PROTECTED macros instead." % (filename, num))
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if len(fh)>0 and len(fh[-2])==0:

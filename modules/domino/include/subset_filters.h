@@ -23,6 +23,7 @@
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
+#include <IMP/base/utility_macros.h>
 #include <IMP/compatibility/vector_property_map.h>
 
 #include <boost/pending/disjoint_sets.hpp>
@@ -172,42 +173,51 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   int get_index(Particle *p);
 
   void build_sets() const;
-protected:
-  unsigned int get_number_of_sets() const {
+  IMP_PROTECTED_METHOD(unsigned int,
+                       get_number_of_sets, (),  const, {
     build_sets();
     return sets_.size();
-  }
-  ParticlesTemp get_set(unsigned int i) const {
-    return sets_[i];
-  }
-  DisjointSetsSubsetFilterTable(ParticleStatesTable *pst,
-                                std::string name):
-    SubsetFilterTable(name),
-    pst_(pst),
-    disjoint_sets_(rank_, parent_){}
-  DisjointSetsSubsetFilterTable(std::string name):
-    SubsetFilterTable(name),
-    disjoint_sets_(rank_, parent_){}
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  void get_indexes(const Subset &s,
-                   const Subsets &excluded,
-                   base::Vector<Ints> &ret,
-                   int lb,
-                   Ints &used) const;
-#endif
+                       });
+  IMP_PROTECTED_METHOD(ParticlesTemp, get_set,
+                       (unsigned int i), const, {
+                         return sets_[i];
+                       });
+  IMP_PROTECTED_CONSTRUCTOR(DisjointSetsSubsetFilterTable,
+                            (ParticleStatesTable *pst,
+                             std::string name), );
+  IMP_PROTECTED_CONSTRUCTOR(DisjointSetsSubsetFilterTable,
+                            (std::string name),);
+  IMP_INTERNAL_METHOD(void,
+                      get_indexes, (const Subset &s,
+                                    const Subsets &excluded,
+                                    base::Vector<Ints> &ret,
+                                    int lb,
+                                    Ints &used), const, );
+   IMP_INTERNAL_METHOD(int,
+                      get_index_in_set,
+                      (Particle *p), const, {
+                        if (set_indexes_.find(p)== set_indexes_.end()) {
+                          return -1;
+                        } else {
+                          return set_indexes_.find(p)->second;
+                        }
+                      });
  public:
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  int get_index_in_set(Particle *p) const {
-    if (set_indexes_.find(p)== set_indexes_.end()) {
-      return -1;
-    } else {
-      return set_indexes_.find(p)->second;
-    }
-  }
-#endif
-  void add_set(const ParticlesTemp &ps);
-  void add_pair(const ParticlePair &pp);
+   void add_set(const ParticlesTemp &ps);
+   void add_pair(const ParticlePair &pp);
 };
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+inline DisjointSetsSubsetFilterTable
+::DisjointSetsSubsetFilterTable(ParticleStatesTable *pst,
+                                std::string name):
+  SubsetFilterTable(name),
+  pst_(pst),
+  disjoint_sets_(rank_, parent_){}
+DisjointSetsSubsetFilterTable::DisjointSetsSubsetFilterTable(std::string name):
+    SubsetFilterTable(name),
+    disjoint_sets_(rank_, parent_){}
+#endif
 
 
 /** \brief Do not allow two particles to be in the same state.

@@ -9,6 +9,7 @@
 #define IMPBASE_INPUT_ADAPTOR_H
 
 #include "base_config.h"
+#include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 /** An input adaptor is a convenience class that allows functions to accept a
@@ -19,8 +20,7 @@ IMPBASE_BEGIN_NAMESPACE
     Input adaptor classes do not support output, comparisons or hashing.
 */
 class InputAdaptor {
-protected:
-  InputAdaptor(){}
+  IMP_PROTECTED_CONSTRUCTOR(InputAdaptor, (), {});
 };
 IMPBASE_END_NAMESPACE
 

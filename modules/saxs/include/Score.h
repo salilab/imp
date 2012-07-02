@@ -1,5 +1,5 @@
 /**
- *  \file Score.h   \brief A class for SAXS scoring and its derivatives
+ *  \file saxs/Score.h   \brief A class for SAXS scoring and its derivatives
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

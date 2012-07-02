@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011/2012
+- 7/2: in order to make various base classes in \imp more python friendly, macros IMP_PROTECTED_METHOD(), IMP_PROTECTED_CONSTRUCTOR() were added that properly expose such methods to python. The standards checks now complain if \c protected is used an a class in the API.
 - 6/24: Executables from \c module/bin are now put in \b build/module_bin/module. This removes a recurring source of errors in the build script due to the origin and destination directory have the same name in scons.
 - 6/24: Benchmarks are now put int \c module/benchmark and build to \c build/benchmark/module to remove a recurring source of errors.
 - 6/18: The IMP::benchmark module supports the GPerfTools profilers when available. Benchmark executables (things in \c bin whose name starts with \c benchmark_) that use the IMP_BENCHMARK() macro have command line flags to turn on and cpu and memory profiling.
@@ -34,7 +35,7 @@
 - Various IMP::algebra plural typedefs which had been using std::vector (since they never were updated), have now been moved to IMP::vector.
 - IMP::statistics::HistogramD now supports display with \c matplotlib.
 - IMP::statistics::HistogramD superceeds IMP::statistics::Histogram
-- Several revisions to RMF to avoid issues opening files read only. The major one is that the open/create methods now create an RMF::FileHandle/RMF::FileConstHandle which contains the functionality previously exclusive to RootHandle. You can get the start of the hierarchy from RMF::FileHandle::get_root_node(). There were a couple other minor changes with removing the word \c handle from function names (eg \c node_handle became \c node) to remove inconsistencies.
+- Several revisions to RMF to avoid issues opening files read only. The major one is that the open/create methods now create an RMF::FileHandle or RMF::FileConstHandle which contains the functionality previously exclusive to RootHandle. You can get the start of the hierarchy from RMF::FileHandle::get_root_node(). There were a couple other minor changes with removing the word \c handle from function names (eg \c node_handle became \c node) to remove inconsistencies.
 - predicate base classes have been added: IMP::SingletonPredicate, IMP::PairPredicate etc. These take particles and return an integer. Current functionality using them includes IMP::core::PredicateSingletonScore that uses a predicate to choose which score to apply.
 - the core generic restraint and score state support was moved to the kernel to avoid breaking various scores outside of IMP svn.
 - the IMP::display module was refactored and moved up to be a dependency of IMP::core and IMP::atom rather than vice versa. The main observable results are that you should now use IMP::atom::HierarchyGeometry, IMP::atom::SelectionGeometry, IMP::atom::HierarchiesGeometry, IMP::core::XYZRGeometry, IMP::atom::BondGeometry etc instead of finding them in IMP::display. This change means that, display can be used internally when testing and debugging functionality in IMP::core and IMP::atom and that tests that use IMP::display don't need to build all of IMP::atom.
@@ -54,7 +55,7 @@
 - The RMF base support (stuff in the ::RMF namespace), has been moved to a new module, simply called RMF (no IMP). Now the functionality should be called like RMF.open_rmf_file() and headers include like \c RMF/RootHandle.h. This most was done in order to make the spin off of the RMF library as transparent as possible when it occurs later.
 - to work around various issues with ref counting pointers and compiler eccentricities, we added emulation of the C++0x \c nullptr. You should prefer that to \c NULL in \imp code that you want to run cross platform.
 - IMP::IntsList, IMP::FloatsList and IMP::StringsList have been added to replace the various scattered solutions for passing such types.
-- ::RMF::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::RMF::HDF5IndexDataSet2D now.
+- ::RMF::HDF5DataSetD is now templated on the dimension. Typedefs have been provided for the basic types so you can create an ::RMF::HDF5FloatDataSet2D now.
 - Various low level classes of IMP::rmf have been moved to the plain old ::RMF namespace as pat of cleaning things up to separate the RMF low level library from \imp. This include ::RMF::HDF5DataSetD.
 - IMP::Restraint::get_decomposition() and IMP::Restraint::get_current_decomposition() changed to return a single Restraint, instead of a list. This makes it easier to propagate the weight and maximum reliably.
 - \imp now supports usage of restraints without adding them to the IMP::Model scoring function. To do this, do IMP::Restraint::set_model(), passing the model. The restraint can then be evaluated.

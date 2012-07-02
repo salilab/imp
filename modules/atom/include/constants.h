@@ -1,5 +1,5 @@
 /**
- * \file constants.h \brief Define the elements used in \imp.
+ * \file atom/constants.h \brief Define the elements used in \imp.
  *
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  *
@@ -12,7 +12,7 @@
 IMPATOM_BEGIN_NAMESPACE
 /** Return kT for a given temperature.
     Value take from
-    \extern{http://http://en.wikipedia.org/wiki/Boltzmann_constant, Wikipedia}.
+    \external{http://http://en.wikipedia.org/wiki/Boltzmann_constant, Wikipedia}.
 */
 inline double get_kt(double T) {
   return 0.0019872041*T;

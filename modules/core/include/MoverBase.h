@@ -42,10 +42,10 @@ public:
     return IMP::internal::get_particle(get_model(), particles_);
   }
 
-protected:
-  unsigned int get_number_of_particles() const {
-    return particles_.size();
-  }
+  IMP_PROTECTED_METHOD(unsigned int, get_number_of_particles, (), const, {
+      return particles_.size();
+    });
+ protected:
   unsigned int get_number_of_keys() const {
     return keys_.size();
   }

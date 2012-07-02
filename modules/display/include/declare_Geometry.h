@@ -22,7 +22,7 @@ IMP_OBJECTS(Geometry, Geometries);
 //! The base class for geometry.
 /** This class doesn't have much to say other than the color.
 
-    \headerfile Geometry.h "IMP/display/geometry.h"
+    \headerfile geometry.h "IMP/display/geometry.h"
  */
 class IMPDISPLAYEXPORT Geometry: public IMP::base::Object
 {

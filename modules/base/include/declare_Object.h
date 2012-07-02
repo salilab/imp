@@ -16,6 +16,7 @@
 #include "hash_macros.h"
 #include "showable_macros.h"
 #include "VersionInfo.h"
+#include "utility_macros.h"
 #include <IMP/compatibility/hash.h>
 #include <boost/functional/hash.hpp>
 
@@ -60,8 +61,7 @@ class IMPBASEEXPORT Object: public RefCounted
     else if (&o > this) return -1;
     else return 0;
   }
-protected:
-  Object(std::string name);
+  IMP_PROTECTED_CONSTRUCTOR(Object, (std::string name), );
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
 

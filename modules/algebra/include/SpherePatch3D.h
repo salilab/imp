@@ -38,7 +38,7 @@ public:
     });
   //! Get a point which is on the boundary of the patch
   Vector3D get_boundary_point() const;
-protected:
+ private:
   Sphere3D sph_;
   Plane3D crossing_plane_;
 };

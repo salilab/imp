@@ -15,6 +15,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Plane3D.h>
+#include <IMP/base/utility_macros.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -28,7 +29,6 @@ class IMPDISPLAYEXPORT FilterGeometry: public GeometryProcessor,
   const algebra::Plane3D &p_;
   Geometries gdata_;
   mutable Geometries filtered_;
- protected:
   bool handle_sphere(SphereGeometry *g,
                          Color color, std::string name);
   bool handle_cylinder(CylinderGeometry *g,

@@ -2,7 +2,6 @@ Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
 
-scons_tools.dependency.boost.configure_tr1_check(env)
 deplist=[]
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",

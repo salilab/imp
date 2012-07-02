@@ -42,9 +42,11 @@ def _write_doxygen(env, name, link, files, outputname):
                     outfile.write(" - "+ns+c+"\n")
             outfile.write("</td></tr></table>\n")
         elif str(f).endswith(".py"):
+            nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
             outfile.write("\\pythonexample{"+ nm+"}\n\n")
         elif str(f).endswith(".cpp"):
-            outfile.write("\include "+nm+".cpp\n\n")
+            nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
+            outfile.write("\include "+nm+"\n\n")
         elif str(f).endswith(".readme") and str(f) not in seen:
             rm= open(os.path.splitext(f.abspath)[0]+".readme", "r").read()
             outfile.write(rm+"\n\n")

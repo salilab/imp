@@ -13,6 +13,7 @@
 #include "assignment_tables.h"
 #include "particle_states.h"
 #include "subset_filters.h"
+#include <IMP/base/utility_macros.h>
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/internal/OwnerPointer.h>
@@ -52,18 +53,19 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler
   IMP::OwnerPointer<ParticleStatesTable> pst_;
   IMP::OwnerPointer<AssignmentsTable> sst_;
   unsigned int max_;
-#ifndef IMP_DOXYGEN
- protected:
-  SubsetFilterTables
-    get_subset_filter_tables_to_use(const RestraintsTemp &rs,
-                                    ParticleStatesTable *pst) const;
-  AssignmentsTable*
-    get_assignments_table_to_use(const SubsetFilterTables &sfts,
-                    unsigned int max=std::numeric_limits<int>::max()) const;
-#endif
-  ConfigurationSet* do_sample() const;
- protected:
-  virtual Assignments do_get_sample_assignments(const Subset& all) const=0;
+  IMP_PROTECTED_METHOD(SubsetFilterTables,
+                       get_subset_filter_tables_to_use,
+                       (const RestraintsTemp &rs,
+                        ParticleStatesTable *pst), const,);
+  IMP_PROTECTED_METHOD(AssignmentsTable*,
+                       get_assignments_table_to_use,
+                       (const SubsetFilterTables &sfts,
+                        unsigned int max=std::numeric_limits<int>::max()),
+                       const,);
+  IMP_PROTECTED_METHOD(ConfigurationSet*, do_sample,(), const,);
+  IMP_PROTECTED_METHOD(virtual Assignments,
+                       do_get_sample_assignments, (const Subset& all),
+                       const,=0);
 public:
   DiscreteSampler(Model*m, ParticleStatesTable *pst, std::string name);
 

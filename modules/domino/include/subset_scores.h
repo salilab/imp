@@ -189,8 +189,8 @@ public:
 #if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
   /** This assumes that restraints are always added to the cache
       in the same order.
-      \param[in] particles_ordering An ordering for the particles.
-      \param[in] restarints Which restraints to write out entries for.
+      \param[in] particle_ordering An ordering for the particles.
+      \param[in] restraints Which restraints to write out entries for.
       You probably want to use get_restraints() to generate this.
       \param[in] max_entries How many entries to write out at most.
       \param[in] group Where to put the entries.

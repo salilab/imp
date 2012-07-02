@@ -1,5 +1,5 @@
 /**
- *  \file SymmetricFit   \brief Symmetric multifit wrapper
+ *  \file SymmetricFit.h   \brief Symmetric multifit wrapper
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  *

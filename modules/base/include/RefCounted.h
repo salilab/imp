@@ -11,6 +11,7 @@
 
 #include "base_config.h"
 #include "exception.h"
+#include "utility_macros.h"
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
 
@@ -80,6 +81,14 @@ class IMPBASEEXPORT RefCounted
     {}
   RefCounted& operator=(const RefCounted &){return *this;}
 
+  void init() {
+#if IMP_BUILD < IMP_FAST
+    ++live_objects_;
+    check_value_=111111111;
+#endif
+    count_=0;
+  }
+
 #ifndef _MSC_VER
   template <class R, class E>
     friend struct internal::RefStuff;
@@ -91,15 +100,10 @@ class IMPBASEEXPORT RefCounted
   double check_value_;
   mutable bool destructing_;
 #endif
-protected:
-  RefCounted() {
-#if IMP_BUILD < IMP_FAST
-     ++live_objects_;
-     check_value_=111111111;
-#endif
-     count_=0;
-  }
-  ~RefCounted();
+  IMP_PROTECTED_CONSTRUCTOR(RefCounted, (), {
+      init();
+    });
+  IMP_PROTECTED_DESTRUCTOR(RefCounted, (), );
 
  public:
 #ifndef IMP_DOXYGEN

@@ -9,6 +9,7 @@
 #define IMPBASE_NON_COPYABLE_H
 
 #include "base_config.h"
+#include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 /** Non-copyable classes cannot be copied, as the name implies. If you need
@@ -16,8 +17,7 @@ IMPBASE_BEGIN_NAMESPACE
     use a boost::scoped_ptr to allocate them on the heap.
 */
 class NonCopyable {
-protected:
-  NonCopyable(){}
+  IMP_PROTECTED_CONSTRUCTOR(NonCopyable, (), {});
 };
 IMPBASE_END_NAMESPACE
 

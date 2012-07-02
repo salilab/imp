@@ -9,6 +9,7 @@
 #define IMPBASE_VALUE_H
 
 #include "base_config.h"
+#include "utility_macros.h"
 
 IMPBASE_BEGIN_NAMESPACE
 /** A value in \imp should support output to streams in C++, conversion to
@@ -18,8 +19,7 @@ IMPBASE_BEGIN_NAMESPACE
 
 */
 class Value {
-protected:
-  Value(){}
+  IMP_PROTECTED_CONSTRUCTOR(Value, (), {});
 };
 IMPBASE_END_NAMESPACE
 
