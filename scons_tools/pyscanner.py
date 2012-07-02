@@ -49,10 +49,6 @@ def _find_python_module(env, modname, dirs):
             return ["#/build/lib/_RMF"+env["IMP_PYTHON_SO"],
                     "#/build/lib/RMF/_version_check.py",
                     "#/build/lib/RMF/__init__.py"]
-    elif modname.startswith("IMP.test"):
-        if not data.get(env).modules["kernel"].external:
-            return stp.get_matching_build(env, ["lib/IMP/test/*.py", "lib/IMP/test/*/*.py",
-                                                "lib/IMP/test/*/*/*.py"])
     elif modname.startswith("IMP."):
         nm=modname[4:]
         if nm.find(".") != -1:
@@ -60,7 +56,9 @@ def _find_python_module(env, modname, dirs):
         if not data.get(env).modules[nm].external:
             # pull in kernel too
             return ["#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"]]\
-                + stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py"])\
+                + stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
+                                               "lib/IMP/"+nm+"/*/*.py",
+                                               "lib/IMP/"+nm+"/*/*/*.py"])\
                 + stp.get_matching_build(env, ["data/"+nm+"/*"])\
                 +["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
                 +stp.get_matching_build(env, ["lib/IMP/*.py"])\
