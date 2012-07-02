@@ -231,9 +231,15 @@
   } while (false)
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
 <<<<<<< HEAD
+<<<<<<< HEAD
   IMP_USAGE_CHECK(std::abs((expra)-(exprb))                             \
                   < .1*std::abs((expra)+(exprb))+.1,                    \
                   expra << " != " << exprb                              \
+=======
+  IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1,  \
+                  expra << " != " << exprb                              \
+                  <<" within "<< .1*std::abs(expra+exprb)+.1            \
+>>>>>>> print out values when equal check fails
 =======
   IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1,  \
                   expra << " != " << exprb                              \
