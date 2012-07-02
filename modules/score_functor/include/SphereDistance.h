@@ -29,25 +29,22 @@ public:
                    double distance) const {
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
                                    + m->get_sphere(pi[1]).get_radius(),
-                                   "Cache sum of radii wrong "
-                                   << rsum_ << " vs "
-                                   << m->get_sphere(pi[0]).get_radius()
-                                   + m->get_sphere(pi[1]).get_radius());
+                                   "Cache sum of radii wrong");
     return P::get_score(m, pi, distance-rsum_);
   }
   DerivativePair get_score_and_derivative(Model *m, const ParticleIndexPair&pi,
                                           double distance) const {
     IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
                                    + m->get_sphere(pi[1]).get_radius(),
-                                   "Cache sum of radii wrong "
-                                   << rsum_ << " vs "
-                                   << m->get_sphere(pi[0]).get_radius()
-                                   + m->get_sphere(pi[1]).get_radius());
+                                   "Cache sum of radii wrong");
     return P::get_score_and_derivative(m, pi, distance-rsum_);
   }
   double get_maximum_range(Model *m, const ParticleIndexPair& pi) const {
     rsum_=m->get_sphere(pi[0]).get_radius()
       + m->get_sphere(pi[1]).get_radius();
+    IMP_INTERNAL_CHECK_FLOAT_EQUAL(rsum_, m->get_sphere(pi[0]).get_radius()
+                                   + m->get_sphere(pi[1]).get_radius(),
+                                   "Cache sum of radii wrong");
     return P::get_maximum_range(m, pi) + rsum_;
   }
   bool get_is_trivially_zero(Model *m, const ParticleIndexPair& p,
