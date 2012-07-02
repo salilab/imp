@@ -30,7 +30,7 @@ IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
-class InferenceStatistics {
+class IMPDOMINOEXPORT InferenceStatistics {
   struct Data {
     int size;
     Assignments sample;
