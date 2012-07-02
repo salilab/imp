@@ -199,11 +199,9 @@ env.Depends(dox, '#/doc/doxygen/doxypy.py')
 # parse it for Python classes) so that doxygen can figure out that modules
 # live under the IMP Python module (e.g. IMP.restrainer rather than restrainer)
 env.Depends(dox, '#/build/lib/IMP/__init__.py')
-env.Requires(dox, env.Alias("doc-files"))
 
 install=env.Command(Dir(env.subst(docdir)), dox,
                     "install -d $TARGET && cp -r ${SOURCE.dir}/* $TARGET")
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
 env.Requires(install, env.Alias('doc'))
-Clean(dox, Glob("#/build/doc/html/*"))

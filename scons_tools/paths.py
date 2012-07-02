@@ -106,7 +106,7 @@ def get_build_lib_name(env, name):
     """Return a file node for a generate lib file"""
     return File("#/build/lib/"+name)
 
-def get_sconscripts(env, ordered):
+def get_sconscripts(env, ordered=[], final=[]):
     alls= get_matching_source(env, ["*/SConscript"])
     all_names={}
     for a in alls:
@@ -116,6 +116,11 @@ def get_sconscripts(env, ordered):
         if o in all_names.keys():
             ret.append(all_names[o])
             del all_names[o]
+    fret=[]
+    for o in final:
+        if o in all_names.keys():
+            fret.append(all_names[o])
+            del all_names[o]
     for p in all_names.keys():
         ret.append(all_names[p])
-    return ret
+    return ret+fret
