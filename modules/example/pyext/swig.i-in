@@ -60,3 +60,8 @@ namespace IMP {
    %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
   }
 }
+
+/* Import the function from _randomize.py */
+%python %{
+from _randomize import *
+%}
