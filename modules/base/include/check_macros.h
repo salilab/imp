@@ -212,9 +212,9 @@
   } while(false)
 
 #define IMP_INTERNAL_CHECK_FLOAT_EQUAL(expra, exprb, message)           \
-  IMP_INTERNAL_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1, \
-                     expra << " != " << exprb                           \
-                     <<" within "<< .1*std::abs(expra+exprb)+.1         \
+  IMP_INTERNAL_CHECK(std::abs((expra)-(exprb)) <                        \
+                     .1*std::abs((expra)+(exprb))+.1,                   \
+                     (expra) << " != " << (exprb)                       \
                      << " - " << message)
 
 
@@ -230,9 +230,9 @@
     }                                                           \
   } while (false)
 #define IMP_USAGE_CHECK_FLOAT_EQUAL(expra, exprb, message)              \
-  IMP_USAGE_CHECK(std::abs(expra-exprb) < .1*std::abs(expra+exprb)+.1,  \
+  IMP_USAGE_CHECK(std::abs((expra)-(exprb))                             \
+                  < .1*std::abs((expra)+(exprb))+.1,                    \
                   expra << " != " << exprb                              \
-                  <<" within "<< .1*std::abs(expra+exprb)+.1            \
                   <<" - " <<  message)
 
 #else // IMP_BUILD < IMP_FAST
