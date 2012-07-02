@@ -1,39 +1,31 @@
 Import('env')
-
+import scons_tools.paths as stp
 # modules must be listed after modules that use them
-modules=['compatibility',
-         'base',
-         'benchmark',
-         'librmf',
-         'cgal',
-         'algebra',
-         'kernel',
-         'display',
-         'score_functor',
-         'core',
-         'container',
-         'atom',
-         'statistics',
-         'rmf',
-         'domino',
-         'em',
-         'saxs',
-         'gsl',
-         'modeller',
-         'restrainer',
-         'multifit',
-         'em2d',
-         'misc',
-         'system',
-         'isd']
-# always last
-modules.append('example')
-
-if env.get('local', False):
-    for d in Glob("*/SConscript"):
-        p= str(d).split("/")[0]
-        if not p in modules:
-            modules.append(p)
-
-for p in modules:
-    SConscript(p+"/SConscript")
+for s in stp.get_sconscripts(env, ['compatibility',
+                                   'base',
+                                   'benchmark',
+                                   'librmf',
+                                   'cgal',
+                                   'algebra',
+                                   'kernel',
+                                   'display',
+                                   'score_functor',
+                                   'core',
+                                   'container',
+                                   'atom',
+                                   'statistics',
+                                   'rmf',
+                                   'domino',
+                                   'em',
+                                   'saxs',
+                                   'gsl',
+                                   'modeller',
+                                   'restrainer',
+                                   'multifit',
+                                   'em2d',
+                                   'misc',
+                                   'system',
+                                   'isd',
+                                   # keep at end
+                                   'test', 'example']):
+    SConscript(s)

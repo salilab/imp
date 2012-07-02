@@ -105,3 +105,17 @@ def get_build_test_dir(env, modulename=None):
 def get_build_lib_name(env, name):
     """Return a file node for a generate lib file"""
     return File("#/build/lib/"+name)
+
+def get_sconscripts(env, ordered):
+    alls= get_matching_source(env, ["*/SConscript"])
+    all_names={}
+    for a in alls:
+        all_names[str(a).split("/")[0]]=a
+    ret=[]
+    for o in ordered:
+        if o in all_names.keys():
+            ret.append(all_names[o])
+            del all_names[o]
+    for p in all_names.keys():
+        ret.append(all_names[p])
+    return ret
