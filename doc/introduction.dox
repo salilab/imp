@@ -96,8 +96,8 @@ Structure and dynamics modeling in \imp proceeds in a five stage iterative proce
      node [shape=record\, fontname= Helvetica\, fontsize=10]
        a [label="Sampler sets model to\ninitial\, random\nconfiguration"];
       b [label="Model gives constraints\nchance to update\nconfiguration"];
-      c [label="Model asks restraints\nto compute score\n(and derivatives\, if
-      d [label="Model gives constraints\nchance to update derivatives\n(if desi
+      c [label="Model asks restraints\nto compute score\n[and derivatives]"];
+      d [label="[Model gives constraints\nchance to update derivatives]"]
       e [label="Sampler uses score\nand derivatives to\nmodify the configuration"]
       a -> b;
       b -> c

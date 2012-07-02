@@ -76,19 +76,13 @@ class IMPDISPLAYEXPORT Writer:
   }
   /** @} */
 
-  // vc includes the protection level in the function signature
-#if defined(SWIG) || defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
- public:
-#else
- protected:
-#endif
   //! A hook for implementation classes to use to take actions on file close
-  virtual void do_close()=0;
+  IMP_PROTECTED_METHOD(virtual void, do_close, (), =0,);
   //! A hook for implementation classes to use to take actions on file open
-  virtual void do_open()=0;
+  IMP_PROTECTED_METHOD(virtual void, do_open,(),=0,);
 
   //! in case you want to take action on a new frame
-  virtual void do_set_frame() {}
+  IMP_PROTECTED_METHOD(virtual void, do_set_frame,(), , {});
 };
 
 
@@ -107,20 +101,13 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 {
   std::string file_name_;
   base::TextOutput out_;
- protected:
-  void open();
-// vc includes the protection level in the function signature
-#if defined(SWIG) || defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
- public:
-#else
- protected:
-#endif
+  IMP_PROTECTED_METHOD(void, open, (),,);
   //! Get the stream for inhereting classes to write to
-  std::ostream &get_stream() {
+  IMP_PROTECTED_METHOD(std::ostream&, get_stream, (), , {
     return out_;
-  }
+    });
 
-  void do_set_frame();
+  IMP_PROTECTED_METHOD(void, do_set_frame, (), ,);
 
  public:
   //! Create a writer opening the file with the passed sink

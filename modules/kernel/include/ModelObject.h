@@ -12,6 +12,7 @@
 #include "dependency_graph.h"
 #include <IMP/base/ref_counted_macros.h>
 #include <IMP/base/tracking.h>
+#include <IMP/base/utility_macros.h>
 
 IMP_BEGIN_NAMESPACE
 
@@ -31,26 +32,27 @@ class IMPEXPORT ModelObject :
 
   friend class Model;
 
- protected:
 #ifndef SWIG
   // too hard to make swig handle this
   /** This method is called when the dependencies in the model have changed
       and model evaluate is called (or Model::ensure_dependencies()).
       The object can use this to update anything
       that is needed for efficient computation.*/
-  virtual void do_update_dependencies(const DependencyGraph &,
-                                      const DependencyGraphVertexIndex &){
+  IMP_PROTECTED_METHOD(virtual void, do_update_dependencies,
+                       (const DependencyGraph &,
+                        const DependencyGraphVertexIndex &), , {
     // swig is being braindead and not matching this function successfully
-  }
+                       });
 #endif
   /** The model calls this method when dependencies have changed. It in
       turn calls do_update_dependencies().*/
-  void update_dependencies(const DependencyGraph &dg,
-                           const DependencyGraphVertexIndex &index);
+  IMP_PROTECTED_METHOD(void,  update_dependencies,
+                       (const DependencyGraph &dg,
+                        const DependencyGraphVertexIndex &index), ,);
   /** Override if this reads other objects during evaluate.*/
-  virtual ModelObjectsTemp do_get_inputs() const=0;
+  IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_inputs, (), const, =0);
   /** Override if this writes other objects during evaluate.*/
-  virtual ModelObjectsTemp do_get_outputs() const=0;
+  IMP_PROTECTED_METHOD(virtual ModelObjectsTemp, do_get_outputs, (), const, =0);
 
 public:
   ModelObject(Model *m, std::string name);

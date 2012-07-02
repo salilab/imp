@@ -1,5 +1,5 @@
 /**
- *  \file rmf/profile.h
+ *  \file RMF/profile.h
  *  \brief Various utilities for rmfing
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.

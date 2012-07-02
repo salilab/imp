@@ -10,6 +10,7 @@
 
 #include "algebra_config.h"
 #include <IMP/base/Vector.h>
+#include <IMP/base/utility_macros.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 /** Geometric primitives in \imp behave a bit differently than most values.
@@ -26,8 +27,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 template <int D>
 class GeometricPrimitiveD {
-protected:
-  GeometricPrimitiveD(){}
+  IMP_PROTECTED_CONSTRUCTOR(GeometricPrimitiveD, (), {});
 };
 
 #ifndef IMP_DOXYGEN

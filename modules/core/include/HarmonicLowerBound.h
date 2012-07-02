@@ -1,5 +1,5 @@
 /**
- *  \file HarmonicLowerBound.h    \brief Harmonic lower bound function.
+ *  \file core/HarmonicLowerBound.h    \brief Harmonic lower bound function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

@@ -9,7 +9,7 @@
 #ifndef IMPBASE_REF_COUNTED_MACROS_H
 #define IMPBASE_REF_COUNTED_MACROS_H
 #include "base_config.h"
-
+#include "utility_macros.h"
 
 
 #ifdef _MSC_VER
@@ -79,24 +79,24 @@
 
 #else
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)                                \
-  protected:                                                            \
+  private:                                                              \
   template <class T, class E> friend struct IMP::base::internal::RefStuff; \
-  virtual ~Name(){}                                                     \
+  IMP_PROTECTED_DESTRUCTOR(Name, (), {});                               \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest)                   \
-  protected:                                                            \
+  private:                                                              \
   template <class T, class E> friend struct IMP::base::internal::RefStuff; \
-  virtual ~Name(){dest}                                                 \
+  IMP_PROTECTED_DESTRUCTOR(Name, (), {dest});                           \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
-  protected:                                                            \
+  private:                                                              \
   template <class T, class E> friend struct IMP::base::internal::RefStuff; \
-  virtual ~Name();                                                      \
+  IMP_PROTECTED_DESTRUCTOR(Name, (),);                                  \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 #endif

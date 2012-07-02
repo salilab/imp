@@ -1,5 +1,5 @@
 /**
- *  \file Harmonic.h    \brief Harmonic function.
+ *  \file core/Harmonic.h    \brief Harmonic function.
  *
  *  Copyright 2007-2012 IMP Inventors. All rights reserved.
  */

@@ -17,6 +17,7 @@
 
 IMP_BEGIN_NAMESPACE
 
+#ifndef IMP_DOXYGEN
 inline void ScoringFunction::ensure_dependencies() {
   if (!get_model()->get_has_dependencies()) {
     get_model()->compute_dependencies();
@@ -52,6 +53,7 @@ inline double ScoringFunction::evaluate_if_below(bool derivatives, double max) {
       = do_evaluate_if_below(derivatives, max, ss_);
   return last_score_;
 }
+#endif
 
 IMP_END_NAMESPACE
 

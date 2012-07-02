@@ -60,7 +60,7 @@ class PrincipalComponentAnalysisD:
   }
   IMP_SHOWABLE(PrincipalComponentAnalysisD);
   IMP_COMPARISONS(PrincipalComponentAnalysisD);
-protected:
+private:
   int compare(const PrincipalComponentAnalysisD &o) const {
     IMP_USAGE_CHECK(!eigen_vecs_.empty() && !o.eigen_vecs_.empty(),
                     "Cannot compare against anything other than the default"

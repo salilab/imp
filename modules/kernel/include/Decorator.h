@@ -16,6 +16,7 @@
 #include "utility.h"
 #include "Constraint.h"
 #include "internal/utility.h"
+#include <IMP/base/utility_macros.h>
 #include <IMP/base/Vector.h>
 #include <IMP/base/Value.h>
 
@@ -109,25 +110,21 @@ a particle that is no longer part of a model. Since constructing
 decorators is very cheap, you probably should not store decorators,
 and then would not have this problem.
 
-\see DecoratorWithTraits
+See example::ExampleDecorator to see what a minimal decorator looks like.
 */
 class Decorator: public base::Value
 {
 private:
   WeakPointer<Model> model_;
   ParticleIndex pi_;
-protected:
-  Decorator(Model *m, ParticleIndex pi): model_(m),
-                                         pi_(pi) {}
-  Decorator(Particle *p): model_(p->get_model()),
-                          pi_(p->get_index()){}
-  Decorator() : pi_(-1)
-  {}
   int compare(base::Object *o) const {
     if (o < get_particle()) return -1;
     else if (o > get_particle()) return 1;
     else return 0;
   }
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Model *m, ParticleIndex pi), );
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (Particle *p), );
+  IMP_PROTECTED_CONSTRUCTOR(Decorator, (),);
 public:
  ParticleIndex get_particle_index() const {
     return pi_;
@@ -289,6 +286,13 @@ public:
 
 
 #ifndef IMP_DOXYGEN
+
+
+inline Decorator::Decorator(Model *m, ParticleIndex pi): model_(m),
+                                                         pi_(pi) {};
+inline Decorator::Decorator(Particle *p): model_(p->get_model()),
+                                          pi_(p->get_index()){}
+inline Decorator::Decorator() : pi_(-1) {}
 
 /** A class to add ref counting to a decorator */
 template <class D>

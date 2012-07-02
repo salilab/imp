@@ -11,6 +11,7 @@
 #include "../base_config.h"
 #include "graph_utility.h"
 #include "../VersionInfo.h"
+#include "../utility_macros.h"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/copy.hpp>
 
@@ -164,6 +165,14 @@ inline void bad_pass(FloatKeys*) {}
 #endif
 
 
+class _Protection {
+  IMP_PROTECTED_CONSTRUCTOR(_Protection, (), {});
+  IMP_PROTECTED_METHOD(double, get_one, (), , {return 1.0;});
+  IMP_SHOWABLE_INLINE(_Protection, IMP_UNUSED(out));
+};
+
+
+IMP_VALUES(_Protection, _Protections);
 
 IMPBASE_END_INTERNAL_NAMESPACE
 

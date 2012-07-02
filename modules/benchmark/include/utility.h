@@ -22,7 +22,7 @@ IMPBENCHMARK_BEGIN_NAMESPACE
     \param[in] check a check value to print out to see if the calc was ok
 */
 IMPBENCHMARKEXPORT void report(std::string benchmark,
-                               std::string algorith, double time,
+                               std::string algorithm, double time,
                                double check);
 
 #ifndef IMP_DOXYGEN

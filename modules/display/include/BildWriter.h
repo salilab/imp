@@ -25,7 +25,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT BildWriter: public TextWriter
 {
- protected:
   void handle(Color color) {
     get_stream() << ".color " << SpacesIO(color) << "\n";
   }
