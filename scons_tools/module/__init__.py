@@ -198,14 +198,8 @@ def IMPModuleData(env, files):
 
 
 def IMPModuleExamples(env, example_files, data_files):
+    example_files= [File(x) for x in example_files]
     if env["IMP_PASS"] == "BUILD":
-        example_files= [File(x) for x in example_files]
-        module= _get_module_name(env)
-        build=scons_tools.install.install_hierarchy_in_build(env,
-                                                             example_files+data_files,
-                                                             "#/build/doc/examples/"+module)
-
-        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
         seen=[]
         for e in example_files:
             if str(e).endswith(".py"):
@@ -230,8 +224,12 @@ def IMPModuleExamples(env, example_files, data_files):
             links.append(l)
         _set_module_links(env, links)
 
-
     if env["IMP_PASS"]=="RUN":
+        module= _get_module_name(env)
+        build=scons_tools.install.install_hierarchy_in_build(env,
+                                                             example_files+data_files,
+                                                             "#/build/doc/examples/"+module)
+        scons_tools.data.get(env).add_to_alias(_get_module_alias(env), build)
         test_files = stp.get_matching_source(env, ['test_examples.py'])
         runable=[x for x in example_files + test_files
                  if str(x).endswith(".py") \
@@ -240,6 +238,8 @@ def IMPModuleExamples(env, example_files, data_files):
             tests = scons_tools.test.add_tests(env,
                                                source=runable,
                                                type='example')
+            for t in tests:
+                env.Depends(t, build)
 
 
 def IMPModuleBin(env, files):
