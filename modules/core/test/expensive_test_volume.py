@@ -20,7 +20,7 @@ class Volume(IMP.test.TestCase):
             p= IMP.Particle(m)
             v= IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                                   IMP.algebra.Vector3D(5,5,5)))
-            d=IMP.algebra.XYZR.setup_particle(p, IMP.algebra.Sphere3D(v, 4))
+            d=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(v, 4))
             ps.append(p)
             p.set_is_optimized(FloatKey("x"), True)
             p.set_is_optimized(FloatKey("y"), True)
