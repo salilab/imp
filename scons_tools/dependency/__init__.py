@@ -178,7 +178,8 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
     tenv= scons_tools.environment.get_test_environment(env)
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
-    if scons_tools.data.get(env).dependencies.has_key(name):
+    dta= scons_tools.data.get(env)
+    if dta.dependencies.has_key(name):
         # already has been added
         return
     variables=[lcname, lcname+"libs", lcname+"version"]
@@ -186,7 +187,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
         if context.env['IMP_OUTER_ENVIRONMENT'][lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
-            scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+            dta.add_dependency(name, variables=variables,
                                                              ok=False)
             ok=False
         else:
@@ -200,7 +201,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                       _get_info_test(context, env, name, lib, header, body,
                                       extra_libs, versioncpp, versionheader)
             if not ok:
-                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                dta.add_dependency(name, variables=variables,
                                                                  ok=False)
                 return False
             else:
@@ -210,7 +211,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 else:
                     pversioncpp=versioncpp
                     pversionheader=versionheader
-                scons_tools.data.get(context.env).add_dependency(name,
+                dta.add_dependency(name,
                                                                  variables=variables,
                                                                  libs=libs,
                                                                  includepath=includepath,
@@ -235,23 +236,23 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             env.Append(IMP_ENABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='yes'"])
             env.Append(IMP_CONFIGURATION=[lcname+"libs='"+\
-                                          ":".join(scons_tools.data.get(env).dependencies[name].libs)+"'"])
-            if scons_tools.data.get(env).dependencies[name].includepath:
+                                          ":".join(dta.dependencies[name].libs)+"'"])
+            if dta.dependencies[name].includepath:
                 env.Append(IMP_CONFIGURATION=[lcname\
                                       +"includepath='"+\
-                                      scons_tools.data.get(env).dependencies[name].includepath+"'"])
-            if scons_tools.data.get(env).dependencies[name].libpath:
+                                      dta.dependencies[name].includepath+"'"])
+            if dta.dependencies[name].libpath:
                 env.Append(IMP_CONFIGURATION=[lcname\
                                               +"libpath='"+\
-                                            scons_tools.data.get(env).dependencies[name].libpath+"'"])
-            if scons_tools.data.get(env).dependencies[name].version:
+                                            dta.dependencies[name].libpath+"'"])
+            if dta.dependencies[name].version:
                 env.Append(IMP_CONFIGURATION=[lcname\
                                               +"version='"+\
-                                            " ".join(scons_tools.data.get(env).dependencies[name].version)+"'"])
+                                            " ".join(dta.dependencies[name].version)+"'"])
         else:
             env.Append(IMP_DISABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='no'"])
         conf.Finish()
     else:
         # make sure they are only added once when help is passed
-        scons_tools.data.get(env).add_dependency(name, ok=False)
+        dta.add_dependency(name, ok=False)
