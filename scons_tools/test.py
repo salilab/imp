@@ -102,17 +102,20 @@ def add_tests(env, source, type, expensive_source=[]):
     # Since all of the test scripts involve "import IMP.test", ensure this
     # is a source so that any Python dependencies of IMP.test (e.g. IMP.base)
     # are automatically picked up by pyscanner
-    testpy = "#/build/lib/IMP/test/__init__.py"
+    #testpy = "#/build/lib/IMP/test/__init__.py"
+    dta= data.get(env)
     test=UnitTest(env, target="fast-test.results",
-                  source=["#/tools/imppy.sh", testpy]+source+[env.Value(type)])
+                  source=["#/tools/imppy.sh"]+source+[env.Value(type)])
+    env.Depends(test, dta.modules["test"].alias)
     etest=UnitTest(env, target="test.results",
-                   source=["#/tools/imppy.sh", testpy]+source \
+                   source=["#/tools/imppy.sh"]+source \
                           +expensive_source+[env.Value(type)])
+    env.Depends(etest, dta.modules["test"].alias)
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
     if type.endswith('unit test'):
-        data.get(env).add_to_alias(environment.get_current_name(env)+"-test-fast", test)
+        dta.add_to_alias(environment.get_current_name(env)+"-test-fast", test)
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", etest)
     elif type=='example':
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test-examples",
