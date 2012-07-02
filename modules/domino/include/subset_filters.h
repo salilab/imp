@@ -214,7 +214,8 @@ inline DisjointSetsSubsetFilterTable
   SubsetFilterTable(name),
   pst_(pst),
   disjoint_sets_(rank_, parent_){}
-DisjointSetsSubsetFilterTable::DisjointSetsSubsetFilterTable(std::string name):
+inline DisjointSetsSubsetFilterTable
+::DisjointSetsSubsetFilterTable(std::string name):
     SubsetFilterTable(name),
     disjoint_sets_(rank_, parent_){}
 #endif
