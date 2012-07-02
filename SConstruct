@@ -38,7 +38,7 @@ env['IMP_VARIABLES']=vars
 env['IMP_CONFIGURATION']=[]
 
 Export('env')
-
+env['IMP_PASS']="BUILD"
 if env.get('repository', None) is not None:
     Repository(env['repository'])
 

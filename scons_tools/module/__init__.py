@@ -66,8 +66,6 @@ def _get_module_modules(env):
 def _get_module_unfound_modules(env):
     return _get_module_data(env).unfound_modules
 
-def _get_module_python_modules(env):
-    return _get_module_data(env).python_modules
 
 def _get_module_version(env):
     return _get_module_data(env).version
@@ -98,6 +96,8 @@ def IMPModuleLib(envi, files):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
+    if envi["IMP_PASS"] != "BUILD":
+        pass
     vars= _get_module_variables(envi)
     module = _get_module_name(envi)
     module_libname =_get_module_variables(envi)['module_libname']
@@ -150,6 +150,8 @@ def IMPModuleLib(envi, files):
 def IMPModuleInclude(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
+    if env["IMP_PASS"] != "BUILD":
+        pass
     vars=_get_module_variables(env)
     module= _get_module_name(env)
     moduleinclude= vars['module_include_path']
@@ -178,15 +180,19 @@ def IMPModuleInclude(env, files):
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
+    if env["IMP_PASS"] != "BUILD":
+        pass
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     module=_get_module_name(env)
-    env['IMP_CUR_MODULE_HAS_DATA']=True;
+    data.data=True
     build =scons_tools.install.install_hierarchy_in_build(env, files,
                                                           "#/build/data/"+module)
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
+    if env["IMP_PASS"] != "BUILD":
+        pass
     #print "Examples called with",[str(x) for x in example_files],\
     #    [str(x) for x in data_files]
     example_files= [File(x) for x in example_files]
@@ -236,12 +242,16 @@ def IMPModuleExamples(env, example_files, data_files):
 
 
 def IMPModuleBin(env, files):
+    if env["IMP_PASS"] != "BUILD":
+        pass
     prgs=stb.handle_bins(env, files,
                          stp.get_build_bin_dir(env, _get_module_name(env)),
                          extra_modules=[_get_module_name(env)])
     scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
 def IMPModuleBenchmark(env, files):
+    if env["IMP_PASS"] != "BUILD":
+        pass
     prgs, bmarks=stb.handle_benchmarks(env, files,
                                        stp.get_build_benchmark_dir(env, _get_module_name(env)),
                                        extra_modules=[_get_module_name(env)])
@@ -252,6 +262,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
+    if env["IMP_PASS"] != "BUILD":
+        pass
     module =_get_module_name(env)
     vars=_get_module_variables(env)
     data=scons_tools.data.get(env)
@@ -262,9 +274,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                          extra_modules=[module])
     #penv.Decider('timestamp-match')
     versions=[]
-    for m in _get_module_python_modules(env):
-        versions.append(env.Value(m))
-        versions.append(env.Value(alldata[m].version))
     vc= _swig.VersionCheck(penv,
                            target=[File("#/build/lib/"\
                                             +vars['module_include_path']\
@@ -277,7 +286,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     swigfile= \
        penv.IMPModuleSWIGPreface(target=[File("#/build/swig/"+prefix+".i")],
                                  source=[File("swig.i-in"),
-                                         env.Value(_get_module_python_modules(env)),
+                                         env.Value(_get_module_modules(env)),
                                          env.Value(" ".join(_get_module_dependencies(env))),
                                   env.Value(" ".join(_get_module_unfound_dependencies(env))),
                                          env.Value(_get_module_has_data(env))])
@@ -394,6 +403,8 @@ def IMPModuleDoc(env, files, authors,
                  brief, overview,
                  publications=None,
                  license="standard"):
+    if env["IMP_PASS"] != "BUILD":
+        pass
     docdir=env['docdir']+"/"+_get_module_variables(env)['module_include_path']
     links= _get_module_links(env)
     if overview.find('\r') != -1:
@@ -431,6 +442,8 @@ def IMPModuleTest(env, python_tests=[], cpp_tests=[],
        source is a Python script to run (usually run-all-tests.py).
        Right now, the assumption is made that run-abll-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
+    if env["IMP_PASS"] != "RUN":
+        pass
     files= [x.abspath for x in python_tests]
     expensive_files= [x.abspath for x in expensive_python_tests]
     module=_get_module_name(env)
@@ -503,36 +516,18 @@ def IMPModuleBuild(env, version=None, required_modules=[],
         module_nicename= "IMP."+module
     if python_docs:
         env.Append(IMP_PYTHON_DOCS=[module])
-    (nenv, version, found_optional_modules_out, found_optional_dependencies)\
-         = scons_tools.utility.configure(env, module, "module", version,
-                             required_modules=required_modules+lib_only_required_modules,
-                             optional_dependencies=optional_dependencies,
-                             optional_modules= optional_modules+lib_only_optional_modules,
-                             required_dependencies= required_dependencies)
-    found_optional_modules=[]
-    found_lib_only_optional_modules=[]
-    if found_optional_modules_out:
-        for m in found_optional_modules_out:
-            if m in optional_modules:
-                found_optional_modules.append(m)
-            else:
-                found_lib_only_optional_modules.append(m)
-    if nenv:
-        scons_tools.data.get(env).add_module(module,
-                                 modules= required_modules+found_optional_modules\
-                                     +lib_only_required_modules+found_lib_only_optional_modules,
-                                             unfound_modules=[x for x in optional_modules+lib_only_optional_modules if x not in
-                                              found_optional_modules+found_lib_only_optional_modules],
-                                 python_modules=required_modules+found_optional_modules,
-                                 dependencies=[x for x in found_optional_dependencies if x in optional_dependencies]\
-                                     +required_dependencies,
-                                             libname= module_libname,
-                                 unfound_dependencies=[x for x in optional_dependencies\
-                                                         if not x in\
-                                                         found_optional_dependencies],\
-                                               version=version)
-    else:
-        scons_tools.data.get(env).add_module(module, ok=False)
+    optm=optional_modules+lib_only_optional_modules
+    optd=optional_dependencies
+    reqd=required_dependencies
+    reqm=required_modules+lib_only_required_modules
+    all_sconscripts=stp.get_sconscripts(env, ['data', 'examples'])
+    nenv = scons_tools.utility.configure_module(env, module, module_libname,
+                                                version,
+                                                required_modules=reqm,
+                                                optional_dependencies=optd,
+                                                optional_modules=optm,
+                                                required_dependencies= reqd)
+    if not nenv:
         return
     preclone=env
 
@@ -561,7 +556,7 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros
-    for s in stp.get_sconscripts(env, ['data', 'examples']):
+    for s in all_sconscripts:
         env.SConscript(s, exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)
     # needed for data

@@ -72,7 +72,7 @@ class IMPData:
         def __init__(self, name, dependencies=[], direct_dependencies=[],
                      unfound_dependencies=[], modules=[],
                      unfound_modules=[], libname=None,
-                     python_modules=[], version=None, external=False,
+                     version=None, external=False,
                      ok=True):
             if ok:
                 #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
@@ -81,8 +81,8 @@ class IMPData:
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
                 self.unfound_modules=unfound_modules
-                self.python_modules=python_modules
                 self.libname=libname
+                self.data=False
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"
@@ -208,25 +208,23 @@ class IMPData:
     def add_module(self, name, directory="",
                    dependencies=[], unfound_dependencies=[], modules=[],
                    unfound_modules=[], libname=None,
-                   python_modules=[], version="", ok=True,
+                   version="", ok=True,
                    external=False):
         #print name, dependencies, unfound_dependencies
         self._check_names(dependencies)
         self._check_names(unfound_dependencies)
         self._check_names(modules)
-        self._check_names(python_modules)
         if not ok:
-            self.modules[name]=self.ModuleData(name, ok=ok)
+            self.modules[name]=self.ModuleData(name, ok=False)
         else:
             passmodules= self._expand_modules(modules)
-            passpythonmodules= self._expand_python_modules(python_modules)
-            passdependencies= self._expand_dependencies(passpythonmodules,
+            passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
             self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
                                                unfound_dependencies,
                                                passmodules, unfound_modules,
                                                libname,
-                                               passpythonmodules, version, external)
+                                               version, external)
     def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
                        includepath=None, libpath=None, version=None,
                        versioncpp=None, versionheader=None):
