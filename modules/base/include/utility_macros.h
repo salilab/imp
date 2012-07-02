@@ -35,7 +35,7 @@
 #define IMP_PROTECTED_METHOD(return_value, name, arguments, const_or_not, \
                              body)                                      \
   protected:                                                            \
-  return_value name arguments const_or_not
+  return_value name arguments const_or_not body
 
 
 //! Use this when declaring constructors protected
@@ -84,7 +84,7 @@
                              const_or_not, body)                \
   public:                                                       \
   %rename(_##name) name;                                        \
-  return_value name arguments const_or_not                      \
+  return_value name arguments const_or_not body
 
 #define IMP_INTERNAL_METHOD(return_value, name, arguments,      \
                              const_or_not, body)
