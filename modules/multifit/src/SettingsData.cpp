@@ -7,6 +7,7 @@
  */
 
 #include <IMP/multifit/SettingsData.h>
+#include <IMP/base/file.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
@@ -18,13 +19,9 @@ IMP_LIST_IMPL(SettingsData, ComponentHeader, component_header,
               ComponentHeader*, ComponentHeaders);
 
 namespace {
-  std::string join_path(const std::string &path, const std::string &name)
-  {
-    return path + "/" + boost::lexical_cast<std::string>(name);
-  }
 
 ComponentHeader *parse_component_line(
-   const std::string &path,const std::string &line) {
+   const std::string &config,const std::string &line) {
   try {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -35,9 +32,9 @@ ComponentHeader *parse_component_line(
            "Wrong format of input line : not enough fields in line:"<<line);
   IMP_NEW(ComponentHeader, comp, ());
   comp->set_name(boost::lexical_cast<std::string>(line_split[0]));
-  comp->set_filename(join_path(path, line_split[1]));
-  comp->set_surface_fn(join_path(path, line_split[2]));
-  comp->set_txt_ap_fn(join_path(path, line_split[3]));
+  comp->set_filename(base::get_relative_path(config, line_split[1]));
+  comp->set_surface_fn(base::get_relative_path(config, line_split[2]));
+  comp->set_txt_ap_fn(base::get_relative_path(config, line_split[3]));
   try {
     comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
   }
@@ -46,7 +43,7 @@ ComponentHeader *parse_component_line(
     IMP_WARN("Can not cast num_ap filed for protein: "
              <<comp->get_name()<<std::endl);
   }
-  comp->set_txt_fine_ap_fn(join_path(path, line_split[5]));
+  comp->set_txt_fine_ap_fn(base::get_relative_path(config, line_split[5]));
   try{
     comp->set_num_fine_ap(boost::lexical_cast<int>(line_split[6]));
   }
@@ -55,8 +52,8 @@ ComponentHeader *parse_component_line(
     IMP_WARN("Can not cast num_fine_ap filed for protein: "<<comp->get_name()
              <<" seeting to 0"<<std::endl);
   }
-  comp->set_transformations_fn(join_path(path, line_split[7]));
-  comp->set_reference_fn(join_path(path, line_split[8]));
+  comp->set_transformations_fn(base::get_relative_path(config, line_split[7]));
+  comp->set_reference_fn(base::get_relative_path(config, line_split[8]));
   return comp.release();
   }
   catch (IMP::base::Exception &e) {
@@ -64,7 +61,7 @@ ComponentHeader *parse_component_line(
   }
 }
 AssemblyHeader *parse_assembly_line(
-   const std::string & path,const std::string &line) {
+   const std::string & config,const std::string &line) {
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -74,7 +71,7 @@ AssemblyHeader *parse_assembly_line(
      "Expecting 12 fileds in input line, got "<<
      line_split.size() << " : " <<line);
   IMP_NEW(AssemblyHeader, dens, ());
-  dens->set_dens_fn(join_path(path, line_split[0]));
+  dens->set_dens_fn(base::get_relative_path(config, line_split[0]));
   try{
   dens->set_resolution(boost::lexical_cast<float>(line_split[1]));
   }
@@ -106,15 +103,17 @@ AssemblyHeader *parse_assembly_line(
     dens->set_origin(algebra::Vector3D(0,0,0));
     IMP_WARN("Can not cast origin filed, setting to 0\n");
   }
-  dens->set_coarse_ap_fn(join_path(path, line_split[7]));
-  dens->set_coarse_over_sampled_ap_fn(join_path(path, line_split[8]));
-  dens->set_fine_ap_fn(join_path(path, line_split[9]));
-  dens->set_fine_over_sampled_ap_fn(join_path(path, line_split[10]));
+  dens->set_coarse_ap_fn(base::get_relative_path(config, line_split[7]));
+  dens->set_coarse_over_sampled_ap_fn(base::get_relative_path(config,
+                                                              line_split[8]));
+  dens->set_fine_ap_fn(base::get_relative_path(config, line_split[9]));
+  dens->set_fine_over_sampled_ap_fn(base::get_relative_path(config,
+                                                            line_split[10]));
   return dens.release();
 }
 }
 
-SettingsData *read_settings(const char *filename,const char *data_path) {
+SettingsData *read_settings(const char *filename) {
   std::fstream in;
   in.open(filename, std::fstream::in);
   if (!in.good()){
@@ -131,14 +130,14 @@ SettingsData *read_settings(const char *filename,const char *data_path) {
     boost::split(line_split, line, boost::is_any_of("|"));
     if ((line_split.size() == 10) && (status == 0)) {//protein  line
       IMP_LOG(VERBOSE,"parsing component line:"<<line<<std::endl);
-      header->add_component_header(parse_component_line(data_path,line));
+      header->add_component_header(parse_component_line(filename, line));
     }
     else if (status==0) {//map header line
       status=1;
     }
     else if (status==1){ //map line
       IMP_LOG(VERBOSE,"parsing EM line:"<<line<<std::endl);
-      header->set_assembly_header(parse_assembly_line(data_path,line));
+      header->set_assembly_header(parse_assembly_line(filename, line));
       status=2;
     }
     else {//(status == 2)
@@ -148,7 +147,7 @@ SettingsData *read_settings(const char *filename,const char *data_path) {
   }
   in.close();
   header->set_assembly_filename(filename);
-  header->set_data_path(data_path);
+  header->set_data_path(".");
   return header.release();
 }
 void write_settings(const char *filename, const SettingsData *sd) {

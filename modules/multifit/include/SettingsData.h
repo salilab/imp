@@ -180,8 +180,7 @@ protected:
   std::string data_path_;
 };
 
-IMPMULTIFITEXPORT SettingsData *read_settings(
-   const char *filename,const char *data_path);
+IMPMULTIFITEXPORT SettingsData *read_settings(const char *filename);
 IMPMULTIFITEXPORT void write_settings(
    const char *filename, const SettingsData *sd);
 IMPMULTIFIT_END_NAMESPACE
