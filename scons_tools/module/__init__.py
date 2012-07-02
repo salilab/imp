@@ -561,20 +561,10 @@ def IMPModuleBuild(env, version=None, required_modules=[],
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros
-    sconscripts= stp.get_matching_source(env, ["*/SConscript"])
-    # ick, ick, ick
-    ordered_names=["data/SConscript",
-                   "examples/SConscript",
-                   "doc/SConscript"]
-    for o in ordered_names:
-        for i, s in enumerate(sconscripts):
-            if s.path.endswith(o):
-                env.SConscript(s, exports='env')
-                sconscripts=sconscripts[:i]+sconscripts[i+1:]
-                break;
-    for s in sconscripts:
+    for s in stp.get_sconscripts(env, ['data', 'examples']):
         env.SConscript(s, exports='env')
     scons_tools.data.get(env).add_to_alias("all", module)
+    # needed for data
     for m in _get_module_modules(env):
         env.Requires(scons_tools.data.get(env).get_alias(module),
                      scons_tools.data.get(env).get_alias(m))
