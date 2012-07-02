@@ -150,6 +150,41 @@ def configure(env, name, type, version, required_modules=[],
             version, found_optional_modules, found_optional_dependencies)
 
 
+def configure_module(env, name, libname, version, required_modules=[],
+                     optional_dependencies=[], optional_modules=[],
+                     required_dependencies=[]):
+    dta=data.get(env)
+    if name in dta.modules.keys():
+        if dta.modules[name].ok:
+            return environment.get_named_environment(env, name,
+                                                     dta.modules[name].modules,
+                                                     dta.modules[name].dependencies)
+        else:
+            return None
+    (nenv,
+     version, found_optional_modules, found_optional_dependencies)=\
+     configure(env, name, "module", version, required_modules,
+               optional_dependencies, optional_modules,
+               required_dependencies)
+    if nenv:
+        modules=required_modules+found_optional_modules
+        unfound_modules=[x for x in optional_modules\
+                             if x not in found_optional_modules]
+        dependencies=found_optional_dependencies +required_dependencies
+        unfound_dependencies=[x for x in optional_dependencies\
+                                  if not x in found_optional_dependencies]
+        dta.add_module(name,
+                       modules= modules,
+                       unfound_modules=unfound_modules,
+                       dependencies=dependencies,
+                       libname= libname,
+                       unfound_dependencies=unfound_dependencies,
+                       version=version)
+        return nenv
+    else:
+        dta.add_module(name, ok=False)
+        return None
+
 def get_without_extension(name):
     if str(name).rfind('.') == -1:
         return name
