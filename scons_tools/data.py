@@ -175,7 +175,7 @@ class IMPData:
         for n in names:
             if n=="":
                 raise ValueError("Invalid empty name")
-    def _expand_modules(self, imodules, external):
+    def _expand_modules(self, imodules, external=False):
         modules=imodules[:]
         ml=[]
         for m in modules:

@@ -55,10 +55,6 @@ def IMPSystem(env, name=None, version=None,
         if nenv["IMP_PASS"] != "RUN":
             return
 
-        if python:
-            pm=required_modules+found_optional_modules
-        else:
-            pm=[]
         lkname="system_"+name.replace(" ", "_").replace(":", "_")
         pre="\page "+lkname+" "+name
         extrasections=[]
@@ -82,7 +78,6 @@ def IMPSystem(env, name=None, version=None,
                                                        if not x in
                                                        found_optional_dependencies],
                                  modules= required_modules+found_optional_modules,
-                                 python_modules=pm,
                                  version=version)
         for d in dirs:
             if str(d).split("/")[0] != "local":
