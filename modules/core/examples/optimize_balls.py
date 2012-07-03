@@ -67,9 +67,9 @@ isf.add_close_pair_score(sps, 0, aps, filters)
 
 # create a scoring function for conjugate gradients that includes the
 # ExcludedVolumeRestraint
-sf= IMP.core.RestraintsScoringFunction([rss, nbl])
 nbl= IMP.core.ExcludedVolumeRestraint(aps, k, 1)
 nbl.set_pair_filters(filters)
+sf= IMP.core.RestraintsScoringFunction([rss, nbl])
 
 if True:
     mc.set_incremental_scoring_function(isf)
