@@ -52,6 +52,16 @@ echo "${rev}" > $verfile
 modfile="${IMPINSTALL}/build/imp-modules"
 python <<END
 import glob
+import sys
+modules = []
+class tools:
+    class paths:
+        def get_sconscripts(env, mods):
+            modules.extend(mods)
+            return mods
+        get_sconscripts = staticmethod(get_sconscripts)
+sys.modules['scons_tools'] = tools
+sys.modules['scons_tools.paths'] = tools.paths
 def Import(var): pass
 def SConscript(var): pass
 env = {'local':True} 
