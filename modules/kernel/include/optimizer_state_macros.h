@@ -10,6 +10,7 @@
 #define IMPKERNEL_OPTIMIZER_STATE_MACROS_H
 #include "kernel_config.h"
 #include <IMP/base/value_macros.h>
+#include <IMP/base/utility_macros.h>
 #include "internal/utility.h"
 #include "OptimizerState.h"
 
@@ -42,7 +43,8 @@
       ++update_number_;                                                 \
     }                                                                   \
   }                                                                     \
-  void do_update(unsigned int call_number);                             \
+  IMP_PROTECTED_METHOD(void, do_update,(unsigned int call_number),,);   \
+public:                                                                 \
   void set_is_optimizing(bool tf) {                                     \
     if (!tf) {                                                          \
       do_update(update_number_);                                        \
@@ -60,6 +62,7 @@
   }                                                                     \
   void reset() {                                                        \
     call_number_=0;                                                     \
+    update_number_=0;                                                   \
   }                                                                     \
   IMP_OBJECT(Name);                                                     \
   private:                                                              \
