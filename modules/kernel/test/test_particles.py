@@ -33,17 +33,23 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(0,6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
         # clear derivatives
+        print model.get_ref_count()
         model.evaluate(True)
+        print model.get_ref_count()
         return (model, particles)
 
     def test_no_model(self):
         """Check that operations fail on particles once the model is gone"""
+        refcnt = IMP.test.RefCountChecker(self)
         (model, particles)= self.setup()
         p1 = particles[0]
         self.assertEqual(p1.get_is_active(), True)
+        IMP.set_log_level(IMP.MEMORY)
         del model
+        print IMP.base.get_live_object_names()
         # Particles left over after a model is deleted should act as if
         # they are inactive
+        refcnt.assert_number(1)
         self.assertEqual(p1.get_is_active(), False)
         # this should be a usageexception as it is expensive
         #self.assertRaises(ValueError, p1.add_attribute, IMP.IntKey("Test"), 0)
