@@ -839,10 +839,12 @@ MergeTree read_merge_tree(std::istream &in,
   /*boost::ref_property_map<MergeTree*,std::string>
     gname(get_property(graph,boost::graph_name));*/
   //dp.property("name",gname);
-
-  bool status = read_graphviz(in,graph,dp,"node_id");
-  if (!status) {
-    IMP_THROW("Error reading graph", IOException);
+  {
+    // this spews large amounts of output in tests, not sure how to prevent that
+    bool status = read_graphviz(in,graph,dp,"node_id");
+    if (!status) {
+      IMP_THROW("Error reading graph", IOException);
+    }
   }
   MergeTreeVertexName nm=boost::get(boost::vertex_name, graph);
   for (unsigned int i=0; i< boost::num_vertices(graph); ++i) {
