@@ -58,6 +58,13 @@ def get_matching_build(env, patterns):
     return ret
 
 
+def get_matching_build_files(env, patterns):
+    """Return File nodes for all source files that match pattern"""
+    ret= [x for x in get_matching_build(env, patterns)
+          if os.path.isfile(x.abspath)]
+    return ret
+
+
 def _get_file_name(env, fl):
     fln= str(fl)
     sp= fln.rfind("/")
