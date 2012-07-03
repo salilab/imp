@@ -188,8 +188,13 @@ def configure_application(env, name, link, version, required_modules=[],
                           optional_dependencies=[], optional_modules=[],
                           required_dependencies=[]):
     dta=data.get(env)
-    if name in dta.modules.keys():
-        pass
+    if name in dta.applications.keys():
+        if dta.applications[name].ok:
+            return environment.get_named_environment(env, name,
+                                                     dta.applications[name].modules,
+                                                     dta.applications[name].dependencies)
+        else:
+            return None
     (nenv,
      version, found_optional_modules, found_optional_dependencies)=\
      configure(env, name, "application", version, required_modules,
