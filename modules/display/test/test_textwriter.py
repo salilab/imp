@@ -9,7 +9,7 @@ class DummyWriter(IMP.display.TextWriter):
         IMP.display.TextWriter.__init__(self, name)
     def _do_open(self):
         print "opening"
-        print >> self.get_stream(), "open"
+        print >> self._get_stream(), "open"
     def _do_close(self):
         print "closing"
         print >> self._get_stream(), "close"
