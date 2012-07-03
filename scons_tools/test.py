@@ -112,7 +112,7 @@ def add_tests(env, source, type, expensive_source=[]):
     etest=UnitTest(env, target="test.results",
                    source=["#/tools/imppy.sh"]+source \
                           +expensive_source+[env.Value(type)])
-    if test in dta.modules.keys():
+    if "test" in dta.modules.keys():
         env.Depends(test, [dta.modules["test"].alias])
         env.Depends(etest, [dta.modules["test"].alias])
     env.AlwaysBuild("test.results")
