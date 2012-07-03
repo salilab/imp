@@ -97,12 +97,11 @@ class IMPData:
     class ApplicationData:
         def __init__(self, name, link="",
                      dependencies=[], unfound_dependencies=[], modules=[],
-                     python_modules=[], version="", ok=True):
+                     version="", ok=True):
             self.dependencies=dependencies
             self.unfound_dependencies=unfound_dependencies
             self.modules=modules
             self.link=link
-            self.python_modules=python_modules
             self.version=version
             self.ok=ok
     class ExampleData:
@@ -145,12 +144,11 @@ class IMPData:
     class SystemData:
         def __init__(self, name, link="",
                      dependencies=[], unfound_dependencies=[], modules=[],
-                     python_modules=[], version="", ok=True):
+                     version="", ok=True):
             self.dependencies=dependencies
             self.link=link
             self.unfound_dependencies=unfound_dependencies
             self.modules=modules
-            self.python_modules=python_modules
             self.version=version
             self.ok=ok
     class DependencyData:
@@ -177,21 +175,13 @@ class IMPData:
         for n in names:
             if n=="":
                 raise ValueError("Invalid empty name")
-    def _expand_modules(self, imodules):
+    def _expand_modules(self, imodules, external):
         modules=imodules[:]
         ml=[]
         for m in modules:
+            if external and m not in self.modules.keys():
+                self._check_module(m)
             ml+=[m]+ self.modules[m].modules
-        mret=[]
-        for i,m in enumerate(ml):
-            if not m in ml[i+1:]:
-                mret.append(m)
-        return mret
-    def _expand_python_modules(self, imodules):
-        modules=imodules[:]
-        ml=[]
-        for m in modules:
-            ml+=[m]+ self.modules[m].python_modules
         mret=[]
         for i,m in enumerate(ml):
             if not m in ml[i+1:]:
@@ -218,7 +208,7 @@ class IMPData:
         if not ok:
             self.modules[name]=self.ModuleData(name, ok=False)
         else:
-            passmodules= self._expand_modules(modules)
+            passmodules= self._expand_modules(modules, external)
             passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
             self.modules[name]=self.ModuleData(name, alias, passdependencies, dependencies,
@@ -241,43 +231,44 @@ class IMPData:
                                                     versionheader=versionheader)
     def add_application(self, name, link="",
                         dependencies=[], unfound_dependencies=[], modules=[],
-                        python_modules=[], version=None, ok=True):
+                        version=None, ok=True):
         if ok and not version:
             utility.report_error("Version must be specified for modules")
         if not ok:
             self.applications[name]=self.ApplicationData(name, ok=ok)
         else:
             passmodules= self._expand_modules(modules)
-            passpythonmodules= self._expand_modules(python_modules)
-            passdependencies= self._expand_dependencies(passpythonmodules,
+            passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
             self.applications[name]\
                 =self.ApplicationData(name, link=link,
                                       dependencies=passdependencies,
                                       unfound_dependencies=unfound_dependencies,
                                       modules=passmodules,
-                                      python_modules=passpythonmodules,
                                       version=version)
     def add_system(self, name, link="",
                    dependencies=[], unfound_dependencies=[], modules=[],
-                        python_modules=[], version="", ok=True):
+                        version="", ok=True):
         if not ok:
             self.systems[name]=self.SystemData(name, ok=ok)
         else:
             passmodules= self._expand_modules(modules)
-            passpythonmodules= self._expand_modules(python_modules)
-            passdependencies= self._expand_dependencies(passpythonmodules,
+            passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
             self.systems[name]\
                 =self.SystemData(name, link=link,
                                  dependencies=passdependencies,
                                  unfound_dependencies=unfound_dependencies,
                                  modules=passmodules,
-                                 python_modules=passpythonmodules,
                                  version=version)
     def add_example(self, name, overview):
         self.examples[utility.get_link_name_from_name(name)]=self.ExampleData(name, overview)
     def _check_module(self, m):
+        ok=False
+        external=False
+        version="no version"
+        libname=None
+        modules=[]
         if m =='kernel':
             libname="imp"
             headername="IMP/kernel_config.h"
@@ -291,19 +282,19 @@ class IMPData:
             headername="IMP/"+m+"/"+m+"_config.h"
             namespace="IMP::"+m+""
         conf = self.env.Configure()
-        ret=conf.CheckLibWithHeader(libname, header=[headername],
-                                    call=namespace+"::get_module_version();",
-                                    language="CXX", autoadd=False)
-        # get version number
-        if ret:
+        #ret=conf.CheckLibWithHeader(libname, header=[headername],
+        #                            call=namespace+"::get_module_version();",
+        #                            language="CXX", autoadd=False)
+        # get version number and required modules
+        if True:
             if m=="kernel":
                 ln= "imp"
             elif m =='RMF':
                 ln="RMF"
             else:
                 ln= "imp_"+m
-            if self.env['versionchecks']:
-                print "Extracting version number of "+m+"...",
+            if True:
+                print "Checking for module "+m+"...",
                 olibs= conf.env["LIBS"]
                 conf.env.Append(LIBS=ln)
                 ret = conf.TryRun("""#include <%(headername)s>
@@ -312,21 +303,32 @@ class IMPData:
         int main()
         {
             std::cout << %(namespace)s::get_module_version() <<std::endl;
+            std::cout << %(namespace)s::get_module_modules() << std::endl;
             return 0;
         }
 """%{"namespace":namespace, "headername":headername}, '.cpp')
                 conf.env["LIBS"]=olibs
                 # remove trailing newline
-                version=ret[1][:-1]
-                print version
-                self.add_module(m, ok=True, external=True, version=version,
-                                libname=ln)
-            else:
-                self.add_module(m, ok=True, external=True, version="not checked",
-                                libname=ln)
-        else:
-            self.add_module(m, ok=False)
+                #print ret
+                version, deps, junk= ret[1].split("\n")
+                if not self.env['versionchecks']:
+                    version="not checked"
+                if ret[0]:
+                    ok=True
+                    external=True
+                    version=version
+                    libname=ln
+                    modules=deps.split(":")
+                    # silly insistence on invariants
+                    if len(modules)==1 and modules[0]=="":
+                        modules=[]
+                    print version
+                else:
+                    print "no"
         conf.Finish()
+        # put it add end so it can check for more modules
+        self.add_module(m, ok=ok, external=external, version=version,
+                        libname=libname, modules=modules)
     def get_found_modules(self, modules):
         ret=[]
         for m in modules:

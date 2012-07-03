@@ -235,6 +235,16 @@ inline std::string get_module_name() {
 
 """%vars
 
+    print >> h, """
+/** Get the list of modules this module uses as a colon separated list.
+    This may become a propper list at some point, but Strings isn't
+    defined until base, leaving several modules without access to the
+    needed type.*/
+inline std::string get_module_modules() {
+   return "%s";
+}
+"""% ":".join(scons_tools.module._get_module_modules(env))
+
     for m in scons_tools.module._get_found_modules(env, scons_tools.module._get_module_modules(env)):
         _add_dep_control(m, vars['PREPROC'], h, env['build'] != 'fast', True)
     for m in scons_tools.module._get_module_unfound_modules(env):
