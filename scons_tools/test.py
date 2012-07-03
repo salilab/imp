@@ -109,11 +109,12 @@ def add_tests(env, source, type, expensive_source=[]):
     # bring in kernel and test to make sure kernel python support is there
     # and since examples don't tend to import test directly. test will pull
     # in kernel
-    env.Depends(test, [dta.modules["test"].alias])
     etest=UnitTest(env, target="test.results",
                    source=["#/tools/imppy.sh"]+source \
                           +expensive_source+[env.Value(type)])
-    env.Depends(etest, [dta.modules["test"].alias])
+    if test in dta.modules.keys():
+        env.Depends(test, [dta.modules["test"].alias])
+        env.Depends(etest, [dta.modules["test"].alias])
     env.AlwaysBuild("test.results")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
