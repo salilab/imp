@@ -36,6 +36,7 @@ void FFTFitting::pad_resolution_map() {
                           fftw_zero_padding_extent_[0],
                           fftw_zero_padding_extent_[1],
                           fftw_zero_padding_extent_[2]);
+  padded_low_res->set_was_used(true);
 
   nx_=padded_low_res->get_header()->get_nx();
   ny_=padded_low_res->get_header()->get_ny();
@@ -463,6 +464,7 @@ void FFTFitting::prepare_lowres_map(em::DensityMap *dmap) {
   // interpolate if needed
   if (spacing_< cut_width) {
     low_map_ = em::interpolate_map(low_map_,new_width);
+    low_map_->set_was_used(true);
     spacing_ = new_width;
   }
 
@@ -593,6 +595,7 @@ multifit::FittingSolutionRecords FFTFitting::detect_top_fits(
   Pointer<em::DensityMap> lpeak = em::create_density_map(nx_+2,
                                                          ny_+2,
                                                          nz_+2,spacing_);
+  lpeak->set_was_used(true);
   lpeak->reset_data(0.);
   em::emreal *lpeak_data = lpeak->get_data();
   //laplacian gpeak
