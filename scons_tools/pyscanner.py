@@ -44,27 +44,36 @@ def _find_python_module(env, modname, dirs):
             return ["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
                 +stp.get_matching_build(env, ["lib/IMP/*.py"])\
                 +stp.get_matching_build(env, ["data/kernel/*"])
+        else:
+            return []
     elif modname == "RMF":
         if not data.get(env).modules["RMF"].external:
             return ["#/build/lib/_RMF"+env["IMP_PYTHON_SO"],
                     "#/build/lib/RMF/_version_check.py",
                     "#/build/lib/RMF/__init__.py"]
+        else:
+            return []
     elif modname.startswith("IMP."):
         nm=modname[4:]
         if nm.find(".") != -1:
             nm= nm[:nm.find(".")]
         if nm not in data.get(env).modules.keys():
-            raise RuntimeError("Please import imp like \"import IMP.container\" or \"from IMP import Model\"")
+            raise RuntimeError("Please import imp like \"import IMP.container\" or \"from IMP import Model\" in import of "+nm)
         if not data.get(env).modules[nm].external:
             # pull in kernel too
-            return ["#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"]]\
+            ret= ["#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"]]\
                 + stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
                                                "lib/IMP/"+nm+"/*/*.py",
                                                "lib/IMP/"+nm+"/*/*/*.py"])\
-                + stp.get_matching_build(env, ["data/"+nm+"/*"])\
-                +["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
-                +stp.get_matching_build(env, ["lib/IMP/*.py"])\
-                +stp.get_matching_build(env, ["data/kernel/*"])
+                + stp.get_matching_build_files(env, ["data/"+nm+"/*",
+                                                     "data/"+nm+"/*/*"])
+            if not data.get(env).modules["kernel"].external:
+                ret+=["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
+                    +stp.get_matching_build(env, ["lib/IMP/*.py"])\
+                    +stp.get_matching_build(env, ["data/kernel/*"])
+            return ret
+        else:
+            return []
     else:
         return []
 
@@ -83,7 +92,8 @@ def _scanfile(node, env, path):
         m = import_re.match(line)
         if m:
             for modname in [x.strip() for x in m.group(1).split(',')]:
-                modules.extend(_find_python_module(env, modname, dirs))
+                ret=_find_python_module(env, modname, dirs)
+                modules.extend(ret)
         # Parse lines of the form 'from a import b, c (as foo)'
         m = from_re.match(line)
         if m:

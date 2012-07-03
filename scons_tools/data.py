@@ -208,6 +208,8 @@ class IMPData:
         if not ok:
             self.modules[name]=self.ModuleData(name, ok=False)
         else:
+            # prevent recurrence
+            self.modules[name]=self.ModuleData(name, ok=True)
             passmodules= self._expand_modules(modules, external)
             passdependencies= self._expand_dependencies(passmodules,
                                                         dependencies)
@@ -282,10 +284,6 @@ class IMPData:
             headername="IMP/"+m+"/"+m+"_config.h"
             namespace="IMP::"+m+""
         conf = self.env.Configure()
-        #ret=conf.CheckLibWithHeader(libname, header=[headername],
-        #                            call=namespace+"::get_module_version();",
-        #                            language="CXX", autoadd=False)
-        # get version number and required modules
         if True:
             if m=="kernel":
                 ln= "imp"
@@ -329,6 +327,8 @@ class IMPData:
         # put it add end so it can check for more modules
         self.add_module(m, ok=ok, external=external, version=version,
                         libname=libname, modules=modules)
+        if external and not self.modules.has_key("test"):
+            self._check_module("test")
     def get_found_modules(self, modules):
         ret=[]
         for m in modules:
