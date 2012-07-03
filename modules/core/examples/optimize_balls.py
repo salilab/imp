@@ -50,7 +50,7 @@ for i in range(0,ni):
 filters.append(IMP.container.InContainerPairFilter(cpc))
 filters[-1].set_was_used(True)
 ibss= IMP.core.BoundingBox3DSingletonScore(IMP.core.HarmonicUpperBound(0,k), bb)
-bbr= IMP.container.SingletonsRestraint(ibss, laps)
+bbr= IMP.container.SingletonsRestraint(ibss, aps)
 rss.add_restraint(bbr)
 
 cg= IMP.core.ConjugateGradients(m)
