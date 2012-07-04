@@ -47,8 +47,7 @@ class GenericTest(IMP.test.TestCase):
             self._do_test_round_trip(g)
     def test_3(self):
         """Testing surface geometry"""
-        if not hasattr(IMP, 'cgal'):
-            self.skipTest("IMP.cgal module disabled")
+        self.skipTest("surfaces not supported")
         #self.skipTest("surface geometry is disabled")
         g=IMP.algebra.DenseDoubleGrid3D(1, IMP.algebra.BoundingBox3D((-10, -10, -10),
                                                                      (10,10,10)))
