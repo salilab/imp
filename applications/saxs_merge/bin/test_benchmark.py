@@ -293,12 +293,12 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
     def run_results(self, name, manual_merge, inputs):
         #rescale and fit the two curves
-        #p = self.run_python_application('saxs_merge.py', ['--destdir=compapp',
-        #         '--stop=rescaling', '--postpone_cleanup',
-        #         '--npoints=-1', '--allfiles', 'runapp/data_merged.dat', manual_merge])
-        #out, err = p.communicate()
-        #sys.stderr.write(err)
-        #self.assertApplicationExitedCleanly(p.returncode, err)
+        p = self.run_python_application('saxs_merge.py', ['--destdir=compapp',
+                 '--stop=rescaling', '--postpone_cleanup',
+                 '--npoints=-1', '--allfiles', 'runapp/data_merged.dat', manual_merge])
+        out, err = p.communicate()
+        sys.stderr.write(err)
+        self.assertApplicationExitedCleanly(p.returncode, err)
         #compute chi2 of data
         datachi = self.chisquare('compapp/data_data_merged.dat',
                 'compapp/data_'+os.path.basename(manual_merge))
@@ -359,7 +359,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  self.get_input_file_name('Nup116/25043_01D_S061_0_01.sub'),
                  self.get_input_file_name('Nup116/25043_01E_S063_0_01.sub'),
                  self.get_input_file_name('Nup116/25043_01F_S065_0_01.sub')]
-        #self.run_app( self.get_params1() + inputs )
+        self.run_app( self.get_params1() + inputs )
         self.run_results('Nup116_1',
                 self.get_input_file_name('Nup116/25043_manual_merge.dat'),
                 inputs)
