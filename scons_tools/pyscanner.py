@@ -41,16 +41,16 @@ def _find_python_module(env, modname, dirs):
     #print modname
     if modname == 'IMP':
         if not data.get(env).modules["kernel"].external:
-            return ["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
+            return [File("#/build/lib/_IMP"+env["IMP_PYTHON_SO"])]\
                 +stp.get_matching_build(env, ["lib/IMP/*.py"])\
                 +stp.get_matching_build(env, ["data/kernel/*"])
         else:
             return []
     elif modname == "RMF":
         if not data.get(env).modules["RMF"].external:
-            return ["#/build/lib/_RMF"+env["IMP_PYTHON_SO"],
-                    "#/build/lib/RMF/_version_check.py",
-                    "#/build/lib/RMF/__init__.py"]
+            return [File("#/build/lib/_RMF"+env["IMP_PYTHON_SO"]),
+                    File("#/build/lib/RMF/_version_check.py"),
+                    File("#/build/lib/RMF/__init__.py")]
         else:
             return []
     elif modname.startswith("IMP."):
@@ -61,16 +61,20 @@ def _find_python_module(env, modname, dirs):
             raise RuntimeError("Please import imp like \"import IMP.container\" or \"from IMP import Model\" in import of "+nm)
         if not data.get(env).modules[nm].external:
             # pull in kernel too
-            ret= ["#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"]]\
-                + stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
+            libf=[File("#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"])]
+            pyf= stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
                                                "lib/IMP/"+nm+"/*/*.py",
-                                               "lib/IMP/"+nm+"/*/*/*.py"])\
-                + stp.get_matching_build_files(env, ["data/"+nm+"/*",
-                                                     "data/"+nm+"/*/*"])
+                                               "lib/IMP/"+nm+"/*/*/*.py"])
+            df=stp.get_matching_build_files(env, ["data/"+nm+"/*",
+                                                    "data/"+nm+"/*/*"])
+            ret=pyf+df+libf
             if not data.get(env).modules["kernel"].external:
-                ret+=["#/build/lib/_IMP"+env["IMP_PYTHON_SO"]]\
-                    +stp.get_matching_build(env, ["lib/IMP/*.py"])\
-                    +stp.get_matching_build(env, ["data/kernel/*"])
+                klibf=[File("#/build/lib/_IMP"+env["IMP_PYTHON_SO"])]
+                kpyf=stp.get_matching_build(env, ["lib/IMP/*.py"])
+                kdf=stp.get_matching_build(env, ["data/kernel/*"])
+                ret+=kpyf
+                ret+=kdf
+                ret+=klibf
             return ret
         else:
             return []

@@ -568,7 +568,7 @@ def IMPModuleBuild(env, version=None, required_modules=[],
         env.SConscript(s, exports='env')
 
     if env['IMP_PASS']=="BUILD":
-        dta.add_to_alias("all", module)
+        dta.add_to_alias("all", _get_module_alias(env))
         # needed for data
         for m in _get_module_modules(env):
             env.Requires(dta.get_alias(_get_module_alias(env)),

@@ -171,7 +171,6 @@ public:
   LogLevel log_level_;
   CheckLevel check_level_;
   mutable bool was_owned_;
-  double check_value_;
 #endif
 };
 
