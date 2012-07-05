@@ -127,6 +127,7 @@ void FitRestraint::initialize_model_density_map(
     Pointer<DensityMap> transformed = get_transformed(
                                        rb_model_dens_map_[rb_i],rb_t);
       model_dens_map_->add(transformed);
+      transformed->set_was_used(true);
   }
 }
 void FitRestraint::resample() const {
@@ -153,9 +154,10 @@ void FitRestraint::resample() const {
     Pointer<DensityMap> transformed = get_transformed(
                                                       rb_model_dens_map_[rb_i],
                                                       rb_t);
-      IMP_LOG(VERBOSE,"transformed map size:"<<
+    IMP_LOG(VERBOSE,"transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
-      model_dens_map_->add(transformed);
+    model_dens_map_->add(transformed);
+    transformed->set_was_used(true);
   }
 }
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles);
