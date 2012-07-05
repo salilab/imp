@@ -308,10 +308,10 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         #get proper bounds
         points=map(lambda a:map(float,a.split()[:2]), open(manual_merge).readlines())
         xmin = 0
-        xmax = max([i[0] for i in points])*1.2
-        ymin = min([i[1] for i in points])*0.8
+        xmax = max([i[0] for i in points if len(i) >= 2])*1.2
+        ymin = min([i[1] for i in points if len(i) >= 2])*0.8
         if ymin <=0: ymin = 0.01
-        ymax = max([i[1] for i in points])*1.2
+        ymax = max([i[1] for i in points if len(i) >= 2])*1.2
         datarange = (xmin,xmax,ymin,ymax)
         #plot data
         self.plot_data_overlaid(name, 'compapp/data_data_merged.dat',
