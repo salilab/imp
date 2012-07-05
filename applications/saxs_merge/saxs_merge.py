@@ -1503,7 +1503,6 @@ def write_summary_file(merge, profiles, args):
         if args.stop == "rescaling":
             fl.write("  Skipped further steps\n\n")
             continue
-        data = p.get_data(filter='dgood',colwise=True)
         #cleanup (if it has been postponed)
         if args.postpone_cleanup:
             data = p.get_data(filter='agood',colwise=True)
@@ -1516,7 +1515,12 @@ def write_summary_file(merge, profiles, args):
                 fl.write("  Skipped further steps\n\n")
                 continue
         #classification
-        fl.write("  4. Classification\n" +
+        data = p.get_data(filter='dgood',colwise=True)
+        if data == {}:
+            fl.write("  4. Classification\n" +
+                 "   Number of valid points: 0\n")
+        else:
+            fl.write("  4. Classification\n" +
                  "   Number of valid points: %d \n" % len(data['q']) +
                  "   Data range: %.5f %.5f \n" % (data['q'][0],data['q'][-1]))
         fl.write("\n")
@@ -1657,13 +1661,13 @@ def rescaling(profiles, args):
     if verbose >0:
         print "3. rescaling",
         if use_normal:
-            print "(normal model)"
+            print "(normal model",
         else:
-            print "(lognormal model)"
+            print "(lognormal model",
         if use_offset:
-            print "(with constant offset)"
+            print "with constant offset)"
         else:
-            print "(without constant offset)"
+            print "without constant offset)"
     #take last as internal reference as there's usually good overlap
     pref = profiles[-1]
     gammas = []
@@ -1803,6 +1807,8 @@ def merging(profiles, args):
             print "    ",p.filename
         #get data and keep only relevant flags
         data = p.get_data(filter='dgood',colwise=True)
+        if data == {}: #no good datapoints
+            continue
         #flag_numbers = [p.flag_dict[k]+1 for k in flags_to_keep]
         #print len(flag_numbers)
         #cleaned = [[d for j,d in enumerate(dat) if j in flag_numbers]
