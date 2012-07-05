@@ -304,7 +304,8 @@ ReadAssignmentContainer
                           std::string name):
   AssignmentContainer(name),
   order_(s, all_particles) {
-  cache_.reserve(max_cache_);
+  // must be done first to initialize max_cache_
+  set_cache_size(100000);
   struct stat data;
   stat(dataset.c_str(), &data);
   size_=data.st_size/sizeof(int)/s.size();
@@ -315,7 +316,6 @@ ReadAssignmentContainer
   f_=open(dataset.c_str(), O_RDONLY, 0);
 #endif
   offset_=-1;
-  set_cache_size(100000);
 }
 
 
