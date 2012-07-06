@@ -856,11 +856,20 @@ namespace {
 void get_transformed_internal(const DensityMap *in,
           const algebra::Transformation3D &tr,
           DensityMap *ret){
-  const algebra::Transformation3D &tri= tr.get_inverse();
+  algebra::Transformation3D tri= tr.get_inverse();
+  algebra::Rotation3D tri_rot = tri.get_rotation();
+  algebra::Vector3D rotmat0 = tri_rot.get_rotation_matrix_row(0);
+  algebra::Vector3D rotmat1 = tri_rot.get_rotation_matrix_row(1);
+  algebra::Vector3D rotmat2 = tri_rot.get_rotation_matrix_row(2);
+  algebra::Vector3D tri_trans = tri.get_translation();
   unsigned int size=ret->get_number_of_voxels();
   for (unsigned int i=0; i< size; ++i) {
     algebra::Vector3D tpt=get_voxel_center(ret, i);
-    algebra::Vector3D pt= tri.get_transformed(tpt);
+    // equivalent to pt= tri.get_transformed(tpt), but always uses
+    // the rotation matrix for a faster inner loop
+    algebra::Vector3D pt(tpt * rotmat0 + tri_trans[0],
+                         tpt * rotmat1 + tri_trans[1],
+                         tpt * rotmat2 + tri_trans[2]);
     double d = get_density(in, pt);
     ret->set_value(i, d);
   }
