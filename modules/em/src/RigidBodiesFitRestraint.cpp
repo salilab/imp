@@ -105,9 +105,9 @@ double RigidBodiesFitRestraint::unprotected_evaluate(
   bool calc_deriv = accum? true: false;
   resample();
   float escore;
-  // we are going to calcualte the derivatives in this function and
+  // we are going to calculate the derivatives in this function and
   //not using the unprotected_evaluate function. Once this are clear,
-  //we will integrate derivatives calcualations in CoarseCC
+  //we will integrate derivatives calculations in CoarseCC
   escore = CoarseCC::evaluate(const_cast<DensityMap&>(*target_dens_map_),
                              const_cast<SampledDensityMap&>(*model_dens_map_),
                              const_cast<RigidBodiesFitRestraint*>(this)->dx_,
