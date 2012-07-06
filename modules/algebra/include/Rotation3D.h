@@ -178,7 +178,7 @@ class IMPALGEBRAEXPORT Rotation3D: public GeometricPrimitiveD<3> {
   }
 
 
-  //! return the quaterion so that it can be stored
+  //! Return the quaternion so that it can be stored
   /** Note that there is no guarantee on which of the two
       equivalent quaternions is returned.
   */
