@@ -136,7 +136,7 @@ double CoarseCC::cross_correlation_coefficient(
                         float grid2_voxel_data_threshold,
                         bool allow_padding,
                         FloatPair norm_factors) {
-  IMP_LOG(VERBOSE,"Going to calcualte correlation score with values: "<<
+  IMP_LOG(VERBOSE,"Going to calculate correlation score with values: "<<
           "grid2_voxel_data_threshold:"<<
           grid2_voxel_data_threshold<<
           " allow_padding:"<<allow_padding<<
