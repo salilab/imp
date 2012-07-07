@@ -317,6 +317,11 @@ IMPATOMEXPORT Hierarchy read_pdb(base::TextInput input,
     A ValueException is thrown if there are insufficient models
     in the file.
 
+    core::RigidMember particles are handled by updating the
+    core::RigidBody algebra::ReferenceFrame3D to align with the
+    loaded particles. Bad things will happen if the loaded coordinates
+    are not a rigid transform of the prior coordinates.
+
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT void read_pdb(base::TextInput input,

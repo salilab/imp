@@ -17,6 +17,7 @@
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/core/Hierarchy.h>
+#include <IMP/core/rigid_bodies.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/format.hpp>
 #include <locale>
@@ -424,8 +425,13 @@ Hierarchy read_pdb(base::TextInput in, Model *model) {
 void read_pdb(base::TextInput in, int model, Hierarchy h) {
   compatibility::map<int, Particle*> atoms_map;
   atom::Hierarchies atoms= get_by_type(h, ATOM_TYPE);
+  compatibility::map<core::RigidBody, ParticleIndexes> rigid_bodies;
   for (unsigned int i=0; i< atoms.size(); ++i) {
     atoms_map[atoms[i]->get_value(get_pdb_index_key())]= atoms[i];
+    if (core::RigidMember::particle_is_instance(atoms[i])) {
+      rigid_bodies[core::RigidMember(atoms[i]).get_rigid_body()]
+        .push_back(atoms[i]->get_index());
+    }
   }
   std::string line;
   bool reading=(model==0);
@@ -454,6 +460,11 @@ void read_pdb(base::TextInput in, int model, Hierarchy h) {
         core::XYZ(atoms_map.find(index)->second).set_coordinates(v);
       }
     }
+  }
+  for (compatibility::map<core::RigidBody, ParticleIndexes>::iterator
+         it = rigid_bodies.begin(); it != rigid_bodies.end(); ++it) {
+    core::RigidBody rb=it->first;
+    rb.set_reference_frame_from_members(it->second);
   }
   if (!reading) {
     IMP_THROW("No model " << model << " found in file",
