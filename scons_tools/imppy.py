@@ -60,7 +60,8 @@ def builder_script_file(target, source, env):
 
     varname= utility.get_dylib_name(env)
 
-    if data.get(env).modules['kernel'].external:
+    if 'kernel' not in data.get(env).modules.keys()\
+            or data.get(env).modules['kernel'].external:
         imp_module_path="IMP_MODULE_PATH"
     else:
         imp_module_path=None
