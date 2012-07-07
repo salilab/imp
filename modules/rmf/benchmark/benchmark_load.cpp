@@ -26,10 +26,10 @@ int main(int argc, char *argv[]) {
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchy h
     = IMP::atom::read_pdb(IMP::rmf::get_data_path("huge.pdb"), m);
-  test_it(IMP::base::create_temporary_file_name("benchmark_lad", ".rmf"),
+  test_it(IMP::base::create_temporary_file_name("benchmark_load", ".rmf"),
           "rmf", h);
 #ifdef RMF_USE_PROTOBUF
-  test_it(IMP::base::create_temporary_file_name("benchmark_save", ".prmf"),
+  test_it(IMP::base::create_temporary_file_name("benchmark_load", ".prmf"),
           "prmf", h);
 #endif
   return 0;
