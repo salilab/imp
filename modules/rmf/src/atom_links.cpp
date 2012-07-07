@@ -15,7 +15,6 @@
 #include <IMP/atom/Copy.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
-#include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
 
 IMPRMF_BEGIN_NAMESPACE
@@ -78,33 +77,10 @@ void create_rigid_bodies(Model *m,
 }
 
   void fix_rigid_body(const std::pair<core::RigidBody,
-                      core::RigidMembers> &in) {
-    core::RigidMembers rms=in.second;
+                      ParticleIndexes> &in) {
+    //core::RigidMembers rms=in.second;
     core::RigidBody rb= in.first;
-    algebra::Vector3Ds local(rms.size());
-    algebra::Vector3Ds global(rms.size());
-    if (rms.size() < 3) {
-      return;
-    }
-    for (unsigned int i=0; i< rms.size(); ++i) {
-      local[i]= rms[i].get_internal_coordinates();
-      global[i]= rms[i].get_coordinates();
-    }
-    algebra::Transformation3D t3
-      = algebra::get_transformation_aligning_first_to_second(local, global);
-    rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
-    for (unsigned int i=0; i< rms.size(); ++i) {
-      algebra::Vector3D local= rms[i].get_internal_coordinates();
-      algebra::Vector3D back= t3.get_transformed(local);
-      algebra::Vector3D global= rms[i].get_coordinates();
-      IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
-                         "Coordinates don't match: read " << global
-                         << " had local " << local
-                         << " but got " << back
-                         << " with transform " << t3);
-    }
-    // later patch members to make coordinates exact.
-    // must reset collision detection tree when we do that
+    rb.set_reference_frame_from_members(in.second);
   }
 
 }
@@ -145,13 +121,13 @@ void HierarchyLoadLink::do_load_one( RMF::NodeConstHandle nh,
   IMP_LOG(VERBOSE, "Loading hierarchy " << atom::Hierarchy(o)
           << " with contents " << atom::Hierarchies(d.particles)
           << std::endl);
-  compatibility::map<core::RigidBody, core::RigidMembers> rbs;
+  compatibility::map<core::RigidBody, ParticleIndexes> rbs;
   for (unsigned int i=0; i< d.nodes.size(); ++i) {
     do_load_one_particle(fh.get_node_from_id(d.nodes[i]),
                          d.particles[i], frame);
     if (core::RigidMember::particle_is_instance(d.particles[i])) {
       rbs[core::RigidMember(d.particles[i]).get_rigid_body()].
-        push_back(core::RigidMember(d.particles[i]));
+        push_back(d.particles[i]->get_index());
     }
   }
   std::for_each(rbs.begin(), rbs.end(), fix_rigid_body);

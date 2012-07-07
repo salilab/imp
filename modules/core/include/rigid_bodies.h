@@ -188,6 +188,18 @@ public:
    */
   void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
 
+  /** Update the reference frame of the rigid body based on the current
+      coordinates of the passed members (nonpassed members are ignored).
+      This can be used to update the rigid
+      body after new coordinates were loaded for the members. The members
+      are passed explictily since, typically, some are desired to just
+      move along with the newly loaded rigid body.
+
+      \note This requires at least three members that are not collinear
+      to work.
+  */
+  void set_reference_frame_from_members(const ParticleIndexes &members);
+
 #ifndef IMP_DOXYGEN
   /** This takes a cartesian derivative, and a location in internal coordinates.
 
