@@ -182,10 +182,8 @@ Restraint* Restraint::create_current_decomposition() const {
       IMP_INTERNAL_CHECK(new_score != 0,
                          "The score of the current decomposition term is 0."
                          << " This is unacceptable.");
-      IMP_INTERNAL_CHECK(std::abs(old_score-new_score)
-                         <  .1*std::abs(old_score+new_score)+.1,
-                         "Old and new scores don't match: "
-                         << old_score << " vs " << new_score);
+      IMP_INTERNAL_CHECK_FLOAT_EQUAL(old_score, new_score,
+                                     "Old and new scores don't match");
     }
   }
   // need pointer to make sure destruction of rs doesn't free anything
