@@ -49,6 +49,10 @@ void save_frame(RMF::FileHandle file, unsigned int frame) {
       ll->save(file, frame);
     }
   }
+  IMP_INTERNAL_CHECK(file.get_number_of_frames()>=frame+1,
+                     "Found " << file.get_number_of_frames()
+                     << " frames after writing frame "
+                     << frame);
   file.flush();
 }
 
