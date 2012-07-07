@@ -49,7 +49,12 @@ Restraints PredicateTripletsRestraint
   for (unsigned int i=0; i< restraints_.size(); ++i) {
     Pointer<Restraint> r=restraints_[i]->create_current_decomposition();
     if (r) {
-      ret.push_back(r);
+      RestraintSet *rs= dynamic_cast<RestraintSet*>(r.get());
+      if (rs) {
+        ret+=rs->get_restraints();
+      } else {
+        ret.push_back(r);
+      }
     }
   }
   return ret;
