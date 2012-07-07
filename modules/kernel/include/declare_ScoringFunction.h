@@ -136,6 +136,8 @@ class IMPEXPORT ScoringFunctionAdaptor:
 };
 
 //! Print the hierarchy of restraints
+/** The maximum accepted score (Restraint::get_maximum_score())
+    and the weight (Restraint::get_weight()) are printed for each restraint.*/
 IMPEXPORT void show_restraint_hierarchy(ScoringFunctionAdaptor rs,
                                      std::ostream &out=std::cout);
 
