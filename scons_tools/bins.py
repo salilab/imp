@@ -67,14 +67,14 @@ def handle_bins(env, input_files, output_dir, extra_modules=[]):
         retb.append(cur)
     return retb
 
-def handle_benchmarks(env, input_files, output_dir, extra_modules=[]):
-    env= sce.get_benchmark_environment(env,
+def handle_benchmarks(ienv, input_files, output_dir, extra_modules=[]):
+    env= sce.get_benchmark_environment(ienv,
                                        extra_modules=extra_modules)
     if len(input_files)==0:
         return ([], [])
     if not env:
         msg="%sBenchmarks disabled as the benchmark module is missing%s"
-        print msg%(env['IMP_COLORS']['red'], env['IMP_COLORS']['end'])
+        print msg%(ienv['IMP_COLORS']['red'], ienv['IMP_COLORS']['end'])
         return ([], [])
     retb=[]
     retr=[]
