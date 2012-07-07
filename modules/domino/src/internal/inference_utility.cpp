@@ -182,8 +182,8 @@ load_union(const Subset &s0, const Subset &s1,
       }
       if (merged_ok) {
         bool ok=true;
-        for (unsigned int i=0; i< ed.filters.size(); ++i) {
-          if (ed.filters[i]->get_is_ok(ss)) {
+        for (unsigned int k=0; k< ed.filters.size(); ++k) {
+          if (ed.filters[k]->get_is_ok(ss)) {
             // pass
           } else {
             ok=false;
