@@ -335,9 +335,10 @@ def IMPModuleGetExamples(env):
     return [x for x in rms if not x.path.endswith("test_examples.py")]
 
 def IMPModuleGetExampleData(env):
-    ret=  stp.get_matching_source(env, ["*.pdb", "*.mrc", "*.dat",
-                                        "*.xml", "*.em", "*.rmf",
-                                        "*.hdf5", "*.mol2", "*data/*"])
+    lst=["*.pdb", "*.mrc", "*.dat",
+         "*.xml", "*.em", "*.rmf",
+         "*.hdf5", "*.mol2"]
+    ret=  stp.get_matching_source(env, lst+["*/"+x for x in lst])
     return ret
 
 def IMPModuleGetPythonTests(env):
