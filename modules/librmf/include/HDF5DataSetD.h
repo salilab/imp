@@ -38,7 +38,9 @@ namespace RMF {
     typedef HDF5MutableAttributes<HDF5ConstDataSetD<TypeTraits, D> >  P;
     friend class HDF5Group;
     HDF5DataSetD(HDF5SharedHandle* parent, std::string name,
-                 Compression comp= NO_COMPRESSION): P(parent, name, comp){
+                 Compression comp= NO_COMPRESSION,
+                 HDF5DataSetIndexD<D> chunksize=HDF5DataSetIndexD<D>()):
+      P(parent, name, comp, chunksize){
     }
     // bool is to break symmetry
     HDF5DataSetD(HDF5SharedHandle* parent,
