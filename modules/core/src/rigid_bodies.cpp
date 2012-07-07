@@ -19,6 +19,8 @@
 #include <IMP/core/FixedRefiner.h>
 #include <IMP/core/internal/rigid_body_tree.h>
 #include <IMP/internal/InternalListSingletonContainer.h>
+#include <IMP/algebra/geometric_alignment.h>
+
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -555,6 +557,36 @@ void RigidBody::teardown_particle(RigidBody rb) {
   }
   teardown_constraints(rb.get_particle());
   internal::remove_required_attributes_for_body(rb.get_particle());
+}
+void RigidBody::set_reference_frame_from_members(const ParticleIndexes &rms) {
+  algebra::Vector3Ds local(rms.size());
+  algebra::Vector3Ds global(rms.size());
+  if (rms.size() < 3) {
+    return;
+  }
+  Model *m= get_model();
+  for (unsigned int i=0; i< rms.size(); ++i) {
+    local[i]= RigidMember(m, rms[i]).get_internal_coordinates();
+    global[i]= RigidMember(m, rms[i]).get_coordinates();
+  }
+  algebra::Transformation3D t3
+    = algebra::get_transformation_aligning_first_to_second(local, global);
+  set_reference_frame(algebra::ReferenceFrame3D(t3));
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< rms.size(); ++i) {
+      algebra::Vector3D local= RigidMember(m, rms[i])
+        .get_internal_coordinates();
+      algebra::Vector3D back= t3.get_transformed(local);
+      algebra::Vector3D global= RigidMember(m, rms[i]).get_coordinates();
+      IMP_INTERNAL_CHECK(get_distance(back, global) < 1,
+                         "Coordinates don't match: read " << global
+                         << " had local " << local
+                         << " but got " << back
+                       << " with transform " << t3);
+    }
+  }
+  // later patch members to make coordinates exact.
+  // must reset collision detection tree when we do that
 }
 
 
