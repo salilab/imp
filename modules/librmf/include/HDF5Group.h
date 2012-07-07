@@ -53,8 +53,13 @@ namespace RMF {
     HDF5Group(HDF5Group parent, std::string name);
     HDF5Group add_child_group(std::string name);
     template <class TypeTraits, unsigned int D>
-      HDF5DataSetD<TypeTraits, D> add_child_data_set(std::string name) {
-      return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name);
+      HDF5DataSetD<TypeTraits, D>
+      add_child_data_set(std::string name,
+                         Compression comp= NO_COMPRESSION,
+                         HDF5DataSetIndexD<D> chunksize=HDF5DataSetIndexD<D>())
+    {
+      return HDF5DataSetD<TypeTraits, D>(get_shared_handle(), name,
+                                         comp, chunksize);
     }
     template <class TypeTraits, unsigned int D>
       HDF5DataSetD<TypeTraits, D> get_child_data_set(std::string name) const {

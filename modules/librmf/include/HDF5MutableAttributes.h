@@ -33,6 +33,9 @@ namespace RMF {
       HDF5MutableAttributes(const A &h, const B &i): Base(h, i){}
     template <class A, class B, class C>
       HDF5MutableAttributes(const A &h, const B &i, const C &j): Base(h, i, j){}
+    template <class A, class B, class C, class D>
+    HDF5MutableAttributes(const A &h, const B &i, const C &j,
+                          const D &k): Base(h, i, j, k){}
 #else
  private:
     HDF5MutableAttributes();

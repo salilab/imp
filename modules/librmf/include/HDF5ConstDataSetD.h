@@ -79,19 +79,28 @@ namespace RMF {
     friend class HDF5ConstGroup;
   protected:
     HDF5ConstDataSetD(HDF5SharedHandle* parent, std::string name,
-                      Compression comp= NO_COMPRESSION): data_(new Data()) {
+                      Compression comp= NO_COMPRESSION,
+                      HDF5DataSetIndexD<D> chunksize=HDF5DataSetIndexD<D>()):
+      data_(new Data()) {
       //std::cout << "Creating data set " << name << std::endl;
       IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
                                      name.c_str(), H5P_DEFAULT),
                           internal::get_error_message("Data set ",name,
                                                       " already exists"));
       hsize_t dims[D]={0};
-      hsize_t cdims[D]={512};
-      if (D >2) {
-        std::fill(cdims+1, cdims+D-1, 4);
-      }
-      if (D >1) {
-        cdims[D-1]=1;
+      hsize_t cdims[D];
+      if (chunksize==HDF5DataSetIndexD<D>()) {
+        cdims[0]=512;
+        if (D >2) {
+          std::fill(cdims+1, cdims+D-1, 4);
+        }
+        if (D >1) {
+          cdims[D-1]=1;
+        }
+      } else {
+        for (unsigned int i=0; i< D; ++i) {
+          cdims[i]=chunksize[i];
+        }
       }
       hsize_t maxs[D];
       std::fill(maxs, maxs+D, H5S_UNLIMITED);
