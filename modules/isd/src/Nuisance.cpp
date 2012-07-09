@@ -34,8 +34,8 @@ bool Nuisance::has_upper() const {
 
 Float Nuisance::get_upper() const {
     Particle *p = get_particle();
-    bool hasfloat = p->has_attribute(get_lower_key());
-    bool hasparticle = p->has_attribute(get_lower_particle_key());
+    bool hasfloat = p->has_attribute(get_upper_key());
+    bool hasparticle = p->has_attribute(get_upper_particle_key());
     if (hasfloat)
     {
         double floatval = p->get_value(get_upper_key());
