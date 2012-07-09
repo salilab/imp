@@ -549,5 +549,85 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 self.get_input_file_name('Nup145/23923_merge.dat'),
                 inputs)
 
+    def test_case1e(self):
+        """Simple test of SAXS merge benchmark / application for Y1"""
+        inputs = [self.get_input_file_name('Y1/in1.dat'),
+                  self.get_input_file_name('Y1/in2.dat'),
+                  self.get_input_file_name('Y1/in3.dat')]
+        self.run_app( 'Y1_1', self.get_params1() + inputs )
+        self.run_results('Y1_1',
+                self.get_input_file_name('Y1/merge.dat'),
+                inputs)
+
+    def test_case2e(self):
+        """Simple test of SAXS merge benchmark / application for Y1"""
+        inputs = [self.get_input_file_name('Y1/in1.dat'),
+                  self.get_input_file_name('Y1/in2.dat'),
+                  self.get_input_file_name('Y1/in3.dat')]
+        self.run_app( 'Y1_2', self.get_params2() + inputs )
+        self.run_results('Y1_2',
+                self.get_input_file_name('Y1/merge.dat'),
+                inputs)
+
+    def test_case3e(self):
+        """Simple test of SAXS merge benchmark / application for Y1"""
+        inputs = [self.get_input_file_name('Y1/in1.dat'),
+                  self.get_input_file_name('Y1/in2.dat'),
+                  self.get_input_file_name('Y1/in3.dat')]
+        self.run_app( 'Y1_3', self.get_params3() + inputs )
+        self.run_results('Y1_3',
+                self.get_input_file_name('Y1/merge.dat'),
+                inputs)
+
+    def test_case4e(self):
+        """Simple test of SAXS merge benchmark / application for Y1"""
+        inputs = [self.get_input_file_name('Y1/in1.dat'),
+                  self.get_input_file_name('Y1/in2.dat'),
+                  self.get_input_file_name('Y1/in3.dat')]
+        self.run_app( 'Y1_4', self.get_params4() + inputs )
+        self.run_results('Y1_4',
+                self.get_input_file_name('Y1/merge.dat'),
+                inputs)
+
+    def test_case1f(self):
+        """Simple test of SAXS merge benchmark / application for Y2"""
+        inputs = [self.get_input_file_name('Y2/in1.dat'),
+                  self.get_input_file_name('Y2/in2.dat'),
+                  self.get_input_file_name('Y2/in3.dat')]
+        self.run_app( 'Y2_1', self.get_params1() + inputs )
+        self.run_results('Y2_1',
+                self.get_input_file_name('Y2/merge.dat'),
+                inputs)
+
+    def test_case2f(self):
+        """Simple test of SAXS merge benchmark / application for Y2"""
+        inputs = [self.get_input_file_name('Y2/in1.dat'),
+                  self.get_input_file_name('Y2/in2.dat'),
+                  self.get_input_file_name('Y2/in3.dat')]
+        self.run_app( 'Y2_2', self.get_params2() + inputs )
+        self.run_results('Y2_2',
+                self.get_input_file_name('Y2/merge.dat'),
+                inputs)
+
+    def test_case3f(self):
+        """Simple test of SAXS merge benchmark / application for Y2"""
+        inputs = [self.get_input_file_name('Y2/in1.dat'),
+                  self.get_input_file_name('Y2/in2.dat'),
+                  self.get_input_file_name('Y2/in3.dat')]
+        self.run_app( 'Y2_3', self.get_params3() + inputs )
+        self.run_results('Y2_3',
+                self.get_input_file_name('Y2/merge.dat'),
+                inputs)
+
+    def test_case4f(self):
+        """Simple test of SAXS merge benchmark / application for Y2"""
+        inputs = [self.get_input_file_name('Y2/in1.dat'),
+                  self.get_input_file_name('Y2/in2.dat'),
+                  self.get_input_file_name('Y2/in3.dat')]
+        self.run_app( 'Y2_4', self.get_params4() + inputs )
+        self.run_results('Y2_4',
+                self.get_input_file_name('Y2/merge.dat'),
+                inputs)
+
 if __name__ == '__main__':
     IMP.test.main()
