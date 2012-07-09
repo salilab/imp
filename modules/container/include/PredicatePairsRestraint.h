@@ -47,7 +47,7 @@ public Restraint
   mutable bool updated_;
   bool error_on_unknown_;
   void update_lists_if_necessary() const;
-  void assign_pair(const ParticleIndexPair& index) const;
+  bool assign_pair(const ParticleIndexPair& index) const;
 public:
   PredicatePairsRestraint(PairPredicate *pred,
                       PairContainerAdaptor input,
@@ -67,8 +67,10 @@ public:
                       score->get_name()+" input"));
     restraints_.push_back(container::create_restraint(score, c.get()));
     restraints_.back()->set_model(get_model());
+    restraints_.back()->set_was_used(true);
     containers_[predicate_value]=c;
   }
+
   /** Apply this score to any pair whose predicate value does not match
       one passed to set_score().*/
   template <class Score>
@@ -84,6 +86,14 @@ public:
     restraints_.back()->set_model(get_model());
     unknown_container_=c;
   }
+#ifndef IMP_DOXYGEN
+  void set_score(int predicate_value, PairScore *score) {
+    set_score<PairScore>(predicate_value, score);
+  }
+  void set_unknown_score(PairScore *score) {
+    set_unknown_score<PairScore>(score);
+  }
+#endif
   /** By default, it is an error if the predicate returns a value that is
       not known. If this is false, then they are silently skipped.
   */

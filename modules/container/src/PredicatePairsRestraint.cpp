@@ -60,19 +60,24 @@ Restraints PredicatePairsRestraint
   return ret;
 }
 
-void PredicatePairsRestraint
+bool PredicatePairsRestraint
 ::assign_pair(const ParticleIndexPair& index) const {
   int bin=predicate_->get_value_index(get_model(), index);
   if (containers_.find(bin) == containers_.end()) {
     if (unknown_container_) {
       unknown_container_->add_particle_pair(index);
+      return true;
     } else if (error_on_unknown_) {
       IMP_THROW("Invalid predicate value of " << bin
                 << " encounted for " << index,
                 ValueException);
+      return true;
+    } else {
+      return false;
     }
   } else {
     containers_.find(bin)->second->add_particle_pair(index);
+    return true;
   }
 }
 void PredicatePairsRestraint
@@ -86,9 +91,21 @@ void PredicatePairsRestraint
        it != containers_.end(); ++it) {
     it->second->clear_particle_pairs();
   }
+  int dropped=0;
   IMP_FOREACH_PAIR_INDEX(input_, {
-      assign_pair(_1);
+      bool added=assign_pair(_1);
+      if (!added) ++dropped;
     });
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    unsigned int total=dropped;
+    for (Map::const_iterator it= containers_.begin();
+         it != containers_.end(); ++it) {
+      total+=it->second->get_number();
+    }
+    IMP_INTERNAL_CHECK(input_->get_number()==total,
+                       "Wrong number of particles "
+                       << total << "!=" << input_->get_number());
+  }
 }
 
 void PredicatePairsRestraint::do_show(std::ostream &) const {
