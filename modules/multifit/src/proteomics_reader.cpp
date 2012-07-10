@@ -271,7 +271,7 @@ ProteomicsData *read_proteomics_data(const char *prot_fn) {
   IMP_NEW(ProteomicsData, data, ());
   in.open(prot_fn, std::fstream::in);
   if (! in.good()) {
-    IMP_WARN("Problem openning file " << prot_fn <<
+    IMP_WARN("Problem opening file " << prot_fn <<
                   " for reading; returning empty proteomics data" << std::endl);
     in.close();
     return data.release();
