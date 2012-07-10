@@ -309,7 +309,8 @@ ReadAssignmentContainer
   struct stat data;
   stat(dataset.c_str(), &data);
   size_=data.st_size/sizeof(int)/s.size();
-  IMP_LOG(TERSE, "Opened binary file of size " << size_ << std::endl);
+  IMP_LOG(TERSE, "Opened binary file with " << size_ << "assignments"
+          << std::endl);
 #ifdef _MSC_VER
   f_=open(dataset.c_str(), O_RDONLY|O_BINARY, 0);
 #else
@@ -324,6 +325,8 @@ unsigned int ReadAssignmentContainer::get_number_of_assignments() const {
 }
 
 Assignment ReadAssignmentContainer::get_assignment(unsigned int i) const {
+  IMP_USAGE_CHECK(i < get_number_of_assignments(),
+                  "Not enough assignments: " << i);
   if ( static_cast< int>(i) < offset_
       || (i+1-offset_)*order_.size() > cache_.size()) {
     cache_.resize(max_cache_);
