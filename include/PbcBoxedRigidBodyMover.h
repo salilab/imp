@@ -40,12 +40,19 @@ public:
 private:
   algebra::Transformation3D last_transformation_;
   algebra::Vector3Ds oldcoords_;
+  algebra::Transformation3Ds oldtrs_;
   Float max_translation_;
   Float max_angle_;
   algebra::Vector3Ds centers_;
   algebra::Transformation3Ds transformations_;
   core::RigidBody d_;
   Particles ps_;
+  Particles ps_norb_;
+  core::RigidBodies rbs_;
+
+  Particles         get_particles(Particles ps);
+  core::RigidBodies get_rigid_bodies(Particles ps);
+
 };
 
 IMPMEMBRANE_END_NAMESPACE

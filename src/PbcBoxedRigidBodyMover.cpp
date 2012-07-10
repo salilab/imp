@@ -8,25 +8,58 @@
 #include <IMP/membrane/PbcBoxedRigidBodyMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/algebra/vector_generators.h>
+#include <list>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
-                               Particles ps,
-                               Float max_translation, Float max_angle,
-                               algebra::Vector3Ds centers,
-                              algebra::Transformation3Ds transformations):
-  Mover(d->get_model(),
-        "PbcBoxedRigidBodyMover%1%")
+                          Particles ps,
+                          Float max_translation, Float max_angle,
+                          algebra::Vector3Ds centers,
+                          algebra::Transformation3Ds transformations):
+  Mover(d->get_model(), "PbcBoxedRigidBodyMover%1%")
 {
-  IMP_LOG(VERBOSE,"start PbcBoxedRigidBodyMover constructor");
-  max_translation_=max_translation;
-  max_angle_ =max_angle;
-  d_= d;
-  ps_ = ps;
-  centers_ = centers;
-  transformations_ = transformations;
-  IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
+// master rigid body
+ d_ = d;
+// list of all slave particles
+ ps_ = ps;
+// list of slave particles not belonging to rigid bodies
+ ps_norb_ = get_particles(ps);
+// list of slave rigid bodies
+ rbs_ = get_rigid_bodies(ps);
+// other stuff
+ max_translation_= max_translation;
+ max_angle_ = max_angle;
+ centers_ = centers;
+ transformations_ = transformations;
+}
+
+Particles PbcBoxedRigidBodyMover::get_particles(Particles ps)
+{
+ Particles ps_norb;
+ for(unsigned i=0;i<ps.size();++i){
+  if(!core::RigidMember::particle_is_instance(ps[i])){
+   ps_norb.push_back(ps[i]);
+  }
+ }
+ return ps_norb;
+}
+
+core::RigidBodies PbcBoxedRigidBodyMover::get_rigid_bodies(Particles ps)
+{
+ std::list<core::RigidBody> rbs_list;
+ std::list<core::RigidBody>::iterator iit;
+ core::RigidBodies rbs;
+ for(unsigned i=0;i<ps.size();++i){
+  if(core::RigidMember::particle_is_instance(ps[i])){
+   rbs_list.push_back(core::RigidMember(ps[i]).get_rigid_body());
+  }
+ }
+ rbs_list.unique();
+ for (iit = rbs_list.begin(); iit != rbs_list.end(); iit++){
+  rbs.push_back(*iit);
+ }
+ return rbs;
 }
 
 ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
@@ -36,12 +69,15 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
     double fc =rand(base::random_number_generator);
     if (fc > f) return ParticlesTemp();
   }
+
+// store last reference frame of master rigid body
   last_transformation_= d_.get_reference_frame().get_transformation_to();
+
+// generate random translation
   algebra::VectorD<3> translation
     = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
                                                       max_translation_));
-
-  // find cell
+// find closest cell center
   double mindist=1.0e+24;
   unsigned icell=0;
   for(unsigned int i=0;i<centers_.size();++i){
@@ -52,12 +88,11 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
    }
   }
 
-  ParticlesTemp ret=ParticlesTemp(1, d_);
-  if(icell!=0){ret.insert(ret.end(), ps_.begin(), ps_.end());}
-
+// adjusting translation to boundary-crossing
   algebra::Transformation3D trans=transformations_[icell].get_inverse();
   translation=trans.get_transformed(translation);
 
+// generate rotation around random axis
   algebra::VectorD<3> axis =
     algebra::get_random_vector_on(algebra::Sphere3D(algebra::VectorD<3>(0.0,
                                                                         0.0,
@@ -67,29 +102,54 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
   Float angle =rand(base::random_number_generator);
   algebra::Rotation3D r
     = algebra::get_rotation_about_axis(axis, angle);
+
+// ri: composing rotation of reference frame transformation and
+// rotation due to boundary-crossing
   algebra::Rotation3D ri=trans.get_rotation()*
      d_.get_reference_frame().get_transformation_to().get_rotation();
+// rc: composing random rotation with ri
   algebra::Rotation3D rc = r*ri;
+
+// final transformation
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"PbcBoxedRigidBodyMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
 
-// move also the other particles
+// move the slave particles with trans
   oldcoords_.clear();
-  for(unsigned int i=0;i<ps_.size();++i){
-   oldcoords_.push_back(core::XYZ(ps_[i]).get_coordinates());
+  for(unsigned i=0;i<ps_norb_.size();++i){
+   oldcoords_.push_back(core::XYZ(ps_norb_[i]).get_coordinates());
    algebra::Vector3D newcoord=trans.get_transformed(oldcoords_[i]);
-   core::XYZ(ps_[i]).set_coordinates(newcoord);
+   core::XYZ(ps_norb_[i]).set_coordinates(newcoord);
   }
+// and the slave rigid bodies
+  oldtrs_.clear();
+  for(unsigned i=0;i<rbs_.size();++i){
+    oldtrs_.push_back(rbs_[i].get_reference_frame().get_transformation_to());
+    algebra::Rotation3D rr=trans.get_rotation()*oldtrs_[i].get_rotation();
+    algebra::VectorD<3> tt=trans.get_transformed(rbs_[i].get_coordinates());
+    algebra::Transformation3D t3d(rr, tt);
+    rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(t3d));
+  }
+
+// particle moved
+  ParticlesTemp ret=ParticlesTemp(1, d_);
+  if(icell!=0){ret.insert(ret.end(), ps_.begin(), ps_.end());}
 
   return ret;
 }
 
 void PbcBoxedRigidBodyMover::reset_move() {
+// reset reference frame of master rigid body
  d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
- last_transformation_= algebra::Transformation3D();
- for(unsigned int i=0;i<ps_.size();++i){
-   core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
+ last_transformation_ = algebra::Transformation3D();
+// reset positions of slave particles
+ for(unsigned i=0;i<ps_norb_.size();++i){
+  core::XYZ(ps_norb_[i]).set_coordinates(oldcoords_[i]);
+ }
+// reset positions of slave rigid bodies
+ for(unsigned i=0;i<rbs_.size();++i){
+  rbs_[i].set_reference_frame(algebra::ReferenceFrame3D(oldtrs_[i]));
  }
 }
 
