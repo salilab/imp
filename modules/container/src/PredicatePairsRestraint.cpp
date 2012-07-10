@@ -63,7 +63,8 @@ Restraints PredicatePairsRestraint
 bool PredicatePairsRestraint
 ::assign_pair(const ParticleIndexPair& index) const {
   int bin=predicate_->get_value_index(get_model(), index);
-  if (containers_.find(bin) == containers_.end()) {
+  Map::const_iterator it= containers_.find(bin);
+  if (it == containers_.end()) {
     if (unknown_container_) {
       unknown_container_->add_particle_pair(index);
       return true;
@@ -76,7 +77,7 @@ bool PredicatePairsRestraint
       return false;
     }
   } else {
-    containers_.find(bin)->second->add_particle_pair(index);
+    it->second->add_particle_pair(index);
     return true;
   }
 }
@@ -102,6 +103,7 @@ void PredicatePairsRestraint
          it != containers_.end(); ++it) {
       total+=it->second->get_number();
     }
+    total+= unknown_container_->get_number();
     IMP_INTERNAL_CHECK(input_->get_number()==total,
                        "Wrong number of particles "
                        << total << "!=" << input_->get_number());
