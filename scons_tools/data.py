@@ -181,7 +181,8 @@ class IMPData:
         for m in modules:
             if external and m not in self.modules.keys():
                 self._check_module(m)
-            ml+=[m]+ self.modules[m].modules
+            if self.modules[m].ok:
+                ml+=[m]+ self.modules[m].modules
         mret=[]
         for i,m in enumerate(ml):
             if not m in ml[i+1:]:
@@ -308,10 +309,10 @@ class IMPData:
                 conf.env["LIBS"]=olibs
                 # remove trailing newline
                 #print ret
-                version, deps, junk= ret[1].split("\n")
-                if not self.env['versionchecks']:
-                    version="not checked"
                 if ret[0]:
+                    version, deps, junk= ret[1].split("\n")
+                    if not self.env['versionchecks']:
+                        version="not checked"
                     ok=True
                     external=True
                     version=version
