@@ -70,7 +70,7 @@ IMP_VALUES(RadiusDependentKernelParameters,
            RadiusDependentKernelParametersList);
 
 //! Calculates and stores Gaussian kernel parameters as a function
-//! of a specufuc radius.
+//! of a specific radius.
 class IMPEMEXPORT KernelParameters
 {
 public:
@@ -96,7 +96,7 @@ public:
     \param[in] radius searching for parameters of this radius
     \param[in] eps used for numerical stability
     \note The parameters are indexes by the radius. To maintain
-    numeratical stability, look for a radius within +-eps from the
+    numerical stability, look for a radius within +-eps from the
     queried radius.
    \note if parameters for this radius were not found, a warning is printed
          and the parameters are calculated using set_params().
@@ -104,11 +104,11 @@ public:
   const RadiusDependentKernelParameters& get_params(
         float radius,float eps=0.001);
 
-  //! Get sigma as a function of the resolution according to th
-  //! Full width at half maximum criterion
-  inline  float get_rsig() const  {return rsig_;}
-  //! Get squared sigma as a function of the resolution accroding to the
-  //! Full width at half maximum criterion
+  //! Get sigma as a function of the resolution according to the
+  //! full width at half maximum criterion
+  inline float get_rsig() const  {return rsig_;}
+  //! Get squared sigma as a function of the resolution according to the
+  //! full width at half maximum criterion
   inline float get_rsigsq() const {return rsigsq_;}
   //! Get the inverse of sigma sqaured
   inline float get_inv_rsigsq() const {return inv_rsigsq_;}
@@ -121,7 +121,7 @@ public:
   inline float get_sq2pi3() const {return sq2pi3_;}
   //! Get the Gaussian normalization factor
   inline float get_rnormfac() const {return rnormfac_;}
-  //! Get the lenght of the Gaussian (sigma*number_of_sigmas_used)
+  //! Get the length of the Gaussian (sigma*number_of_sigmas_used)
   inline float get_rkdist() const {return rkdist_;}
   //! Gets the value of lim parameter
   inline float get_lim() const {return lim_;}
