@@ -91,8 +91,8 @@ Only filtered values of + are combined. The output score is the weighted sum of 
                         python=False)
 
 if env:
-    env.IMPCPPExecutable(target="combine_scores",
-                         source=["combine_scores/combine_scores.cpp"])
+    env.IMPCPPExecutables([("combine_scores", ["combine_scores/combine_scores.cpp"]),
+                           ("recompute_zscore", ["combine_scores/recompute_zscore.cpp"])])
     env.IMPCPPExecutables([("em2d_score", ["em2d_dock/Projection.cpp",
                                            "em2d_dock/em2d_score.cpp"]),
                            ("em2d_single_score",
