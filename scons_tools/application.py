@@ -53,16 +53,18 @@ def IMPCPPExecutable(env, target, source):
         return
 
     prog= env.Program(target="#/build/bin/"+target, source=source)
-
+    dta= data.get(env)
+    dta.add_to_alias(environment.get_current_name(env), prog)
 
 def IMPCPPExecutables(env, lst):
     if env["IMP_PASS"] != "RUN":
         return
     if env.GetOption('help'):
         return
+    dta= data.get(env)
     for l in lst:
         prog= env.Program(target="#/build/bin/"+l[0], source=l[1])
-
+        dta.add_to_alias(environment.get_current_name(env), prog)
 
 def IMPPythonExecutable(env, file):
     if env["IMP_PASS"] != "RUN":
@@ -73,6 +75,7 @@ def IMPPythonExecutable(env, file):
 
     if env.GetOption('help'):
         return
+    dta= data.get(env)
     inst = install.install(env, "bindir", file)
 
     # Make sure that when we install a Python executable we first build
@@ -82,6 +85,7 @@ def IMPPythonExecutable(env, file):
     pydep = _PythonExeDependency(env, target=None, source=file)
     env.Depends(inst, pydep)
     env.Append(IMP_PYTHON_EXECUTABLES=[file])
+    dta.add_to_alias(environment.get_current_name(env), pydep)
 
 
 def IMPApplicationTest(env, python_tests=[]):
