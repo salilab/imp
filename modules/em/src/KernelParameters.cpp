@@ -54,6 +54,13 @@ RadiusDependentKernelParameters::RadiusDependentKernelParameters(
   }
 }
 
+KernelParameters::~KernelParameters()
+{
+  for (std::map<float, const RadiusDependentKernelParameters *>::iterator
+       it = radii2params_.begin(); it != radii2params_.end(); ++it) {
+    delete it->second;
+  }
+}
 
 void KernelParameters::init(float resolution)
 {

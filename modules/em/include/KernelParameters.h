@@ -83,6 +83,8 @@ public:
     initialized_ = true;
   }
 
+  ~KernelParameters();
+
   //! Sets the parameters that depend on the radius of a given particle.
   /** The other variables of the parameters
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
