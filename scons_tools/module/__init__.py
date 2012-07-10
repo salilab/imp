@@ -338,7 +338,8 @@ def IMPModuleGetExampleData(env):
     lst=["*.pdb", "*.mrc", "*.dat",
          "*.xml", "*.em", "*.rmf",
          "*.hdf5", "*.mol2"]
-    ret=  stp.get_matching_source(env, lst+["*/"+x for x in lst])
+    ret=  stp.get_matching_source(env, lst + ["*/"+x for x in lst] \
+                                           + ["*/*/"+x for x in lst])
     return ret
 
 def IMPModuleGetPythonTests(env):
