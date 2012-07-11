@@ -162,8 +162,8 @@ public:
   AssemblyHeader *get_assembly_header() const {
     return dens_data_;
   }
-  void set_data_path(const char *fn) {
-    data_path_=std::string(fn);
+  void set_data_path(const std::string &fn) {
+    data_path_ = fn;
   }
   std::string get_data_path() const {return data_path_;}
 
