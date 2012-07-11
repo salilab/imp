@@ -24,15 +24,7 @@
   IMP_OBJECT(Name)
 
 //! Define the basics needed for an OptimizerState which acts every n steps
-/** In addition to the methods done by all the macros, it declares
-    - do_update(unsigned int call_number) where step number
-    is the number of the optimization step, and call_number is the number
-    of the call to do_update.
-    It also defines
-    - void set_periodicity(unsigned int)
-    - void reset() which resets all state (like the current frame number)
-
-    If you use this macro, you should also include IMP/internal/utility.h.
+/** Please use IMP::core::PeriodicOptimizerState instead.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
   virtual void update() {                                               \
@@ -45,6 +37,8 @@
   }                                                                     \
   IMP_PROTECTED_METHOD(void, do_update,(unsigned int call_number),,);   \
 public:                                                                 \
+/** Called when an optimization begins. It resets the current call number
+    as well as making sure that the last frame is written.*/            \
   void set_is_optimizing(bool tf) {                                     \
     if (!tf) {                                                          \
       do_update(update_number_);                                        \

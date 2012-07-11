@@ -45,45 +45,48 @@ public:
   IMP_PROTECTED_METHOD(unsigned int, get_number_of_particles, (), const, {
       return particles_.size();
     });
- protected:
-  unsigned int get_number_of_keys() const {
-    return keys_.size();
-  }
-  std::string get_particle_name(unsigned int i) const {
-    return get_model()->get_particle(particles_[i])->get_name();
-  }
+  IMP_PROTECTED_METHOD(unsigned int, get_number_of_keys, (), const, {
+      return keys_.size();
+    });
+  IMP_PROTECTED_METHOD(std::string, get_particle_name, (unsigned int i), const,
+                       {
+                         return get_model()
+                           ->get_particle(particles_[i])->get_name();
+                       });
 
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
    */
-  virtual void do_move(Float f)=0;
+  IMP_PROTECTED_METHOD(virtual void, do_move, (Float f), =0,);
 
   //! Get the value of a controlled attribute
   /** \param [in] i The index of the particle.
       \param [in] j The index of the attribute.
    */
-  Float get_value(unsigned int i, unsigned int j) const {
+  IMP_PROTECTED_METHOD(Float, get_value, (unsigned int i, unsigned int j),
+                       const, {
     IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
     IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
     return get_model()->get_attribute(keys_[j], particles_[i]);
-  }
+                       });
 
   //! Propose a value
   /** \param[in] i The index of the particle.
       \param[in] j The index of the key
       \param[in] t The value to propose
    */
-  void propose_value(unsigned int i, unsigned int j, Float t) {
+  IMP_PROTECTED_METHOD(void, propose_value,(unsigned int i,
+                                            unsigned int j, Float t),, {
     IMP_USAGE_CHECK(j < keys_.size(), "Out of range key");
     IMP_USAGE_CHECK(i < particles_.size(), "Out of range particle");
     if (get_model()->get_is_optimized(keys_[j], particles_[i])) {
       get_model()->set_attribute(keys_[j], particles_[i], t);
     }
-  }
+                       });
 
-  MoverBase(const ParticlesTemp &ps,
-            const FloatKeys &keys,
-            std::string name);
+  IMP_PROTECTED_CONSTRUCTOR(MoverBase, (const ParticlesTemp &ps,
+                                        const FloatKeys &keys,
+                                        std::string name), );
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(MoverBase);
 };
@@ -112,7 +115,7 @@ inline void MoverBase::reset_move()
   }
 }
 
-
+IMP_OBJECTS(MoverBase, MoverBases);
 
 IMPCORE_END_NAMESPACE
 
