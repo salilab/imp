@@ -17,8 +17,7 @@ IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
                           unsigned int nk){
   int margin=(nk-1)/2;
   long n_out=nx*ny*nz;
-  double *out_arr;
-  internal::create_vector(&out_arr,n_out);
+  double *out_arr = new double[n_out];
   for(int i=0;i<n_out;i++) {
     out_arr[i]=0.;
   }
@@ -229,11 +228,5 @@ void relax_laplacian (em::DensityMap *dmap,
                                               currz+t[2]));
     }
   }
-
-  void create_vector(double **vec, unsigned long len) {
-    *vec = (double *) malloc(len*sizeof(double));
-    IMP_INTERNAL_CHECK(vec!=nullptr,"Can not allocate vector");
-  }
-
 
 IMPMULTIFIT_END_INTERNAL_NAMESPACE
