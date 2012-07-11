@@ -46,8 +46,13 @@ namespace RMF {
       IMP_RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
           (get_node_name_data_set_name());,
           "adding node name data set to file.");
-      IMP_RMF_OPERATION((file_.add_child_data_set<IndexTraits, 2>)
-          (get_node_data_data_set_name());,
+      RMF::HDF5DataSetIndexD<2> hd;
+      hd[0]=128;
+      hd[1]=4;
+      IMP_RMF_OPERATION(
+          (file_.add_child_data_set<IndexTraits, 2>)
+          (get_node_data_data_set_name(),
+           GZIP_COMPRESSION, hd);,
           "adding node data data set to file.");
     } else {
       file_=open_hdf5_file(file_name_);
@@ -255,7 +260,7 @@ namespace RMF {
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       std::string nm=get_set_data_data_set_name(arity);
       node_data_[arity-1]
-          = file_.add_child_data_set<IndexTraits, 2>(nm);
+        = file_.add_child_data_set<IndexTraits, 2>(nm, GZIP_COMPRESSION);
     }
     IMP_RMF_END_OPERATION("adding data set to store set");
     int slot;
