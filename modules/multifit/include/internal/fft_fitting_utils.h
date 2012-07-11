@@ -65,8 +65,6 @@ IMPMULTIFITEXPORT
 void rotate_mol(atom::Hierarchy mh,double psi,double theta,double phi);
 IMPMULTIFITEXPORT
 void translate_mol(atom::Hierarchy mh,algebra::Vector3D t);
-IMPMULTIFITEXPORT
-void create_vector(double **vec, unsigned long len);
 
 IMPMULTIFITEXPORT
 double* convolve_array (double *in_arr,

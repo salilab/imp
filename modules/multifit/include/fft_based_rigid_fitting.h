@@ -20,6 +20,8 @@
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/KernelParameters.h>
 #include <IMP/multifit/internal/fft_fitting_utils.h>
+#include <boost/scoped_array.hpp>
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 class IMPMULTIFITEXPORT FFTFittingOutput : public base::Object {
@@ -56,12 +58,12 @@ class IMPMULTIFITEXPORT FFTFitting : public base::Object {
   internal::FFTWGrid<double> sampled_map_data_,fftw_r_grid_mol_;
   // high resolution map
   internal::FFTWGrid<double> reversed_fftw_data_;
-  double*  kernel_filter_;
+  boost::scoped_array<double> kernel_filter_;
   unsigned int kernel_filter_ext_;
-  double* gauss_kernel_;   // low-pass (Gaussian) kernel
+  boost::scoped_array<double> gauss_kernel_; // low-pass (Gaussian) kernel
   unsigned int gauss_kernel_ext_;  //Gaussian kernel extent
   unsigned long gauss_kernel_nvox_; //Gaussian kernel number of voxels
-  double* filtered_kernel_;  //filtered low-pass kernel
+  boost::scoped_array<double> filtered_kernel_; //filtered low-pass kernel
   //  unsigned long filtered_kernel_nvox_;
   //number of voxels in the filtered kernel
   unsigned filtered_kernel_ext_; //filtered low-pass kernel extent

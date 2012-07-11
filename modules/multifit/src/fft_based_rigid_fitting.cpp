@@ -56,20 +56,20 @@ void FFTFitting::pad_resolution_map() {
 void FFTFitting::prepare_kernels() {
   double sigma1d = resolution_ / (2.0*spacing_*sqrt(3.0));
   unsigned ext_ga_save;
-  double *phi_ga_save, *phi_fx_save;
+  boost::scoped_array<double> phi_ga_save, phi_fx_save;
   double sigma_factor=0;
   //create Gaussian kernels, modify sigma factor arguments as necessary
   em::Kernel3D g1 = em::create_3d_gaussian(sigma1d,3.0);
   em::Kernel3D g2 = em::create_3d_gaussian(sigma1d,5.0);
 
-  internal::create_vector(&gauss_kernel_,g1.get_size());
+  gauss_kernel_.reset(new double[g1.get_size()]);
   for(int i=0;i<g1.get_size();i++) {
     gauss_kernel_[i]=g1.get_data()[i];
   }
   gauss_kernel_nvox_=g1.get_size();
   gauss_kernel_ext_=g1.get_extent();
 
-  internal::create_vector(&phi_ga_save,g2.get_size());
+  phi_ga_save.reset(new double[g2.get_size()]);
   for(int i=0;i<g2.get_size();i++) {
     phi_ga_save[i]=g2.get_data()[i];
   }
@@ -80,13 +80,13 @@ void FFTFitting::prepare_kernels() {
   case 0:
     //    filtered_kernel_nvox_=1;
     kernel_filter_ext_=1;
-    internal::create_vector(&kernel_filter_,1);
+    kernel_filter_.reset(new double[1]);
     kernel_filter_[0]=1;
     sigma_factor = 3.0;
     break;
   case 1:
     em::Kernel3D l = em::create_3d_laplacian();
-    internal::create_vector(&kernel_filter_,l.get_size());
+    kernel_filter_.reset(new double[l.get_size()]);
     for(int i=0;i<l.get_size();i++) {
       kernel_filter_[i]=l.get_data()[i];
     }
@@ -96,12 +96,12 @@ void FFTFitting::prepare_kernels() {
   }
 
   // create convolved filter
-  phi_fx_save=internal::convolve_array(phi_ga_save, ext_ga_save,
+  phi_fx_save.reset(internal::convolve_array(phi_ga_save.get(), ext_ga_save,
                              ext_ga_save, ext_ga_save,
-                             kernel_filter_, kernel_filter_ext_);
+                             kernel_filter_.get(), kernel_filter_ext_));
   em::Kernel3D k =
-    em::get_truncated(phi_fx_save,ext_ga_save,sigma1d, sigma_factor);
-  internal::create_vector(&filtered_kernel_,k.get_size());
+    em::get_truncated(phi_fx_save.get(), ext_ga_save, sigma1d, sigma_factor);
+  filtered_kernel_.reset(new double[k.get_size()]);
   filtered_kernel_ext_ = k.get_extent();
   for(int jj=0;jj<k.get_size();jj++) filtered_kernel_[jj]=k.get_data()[jj];
 }
@@ -253,15 +253,15 @@ FFTFittingOutput *FFTFitting::do_local_fitting(em::DensityMap *dmap,
   IMP_LOG(TERSE,"Applying filters to target and probe maps\n");
   switch (corr_mode_) {
     case 0:
-      low_map_->convolute_kernel(kernel_filter_,kernel_filter_ext_);
+      low_map_->convolute_kernel(kernel_filter_.get(), kernel_filter_ext_);
       break;
    case 1:
     internal::relax_laplacian(low_map_,fftw_zero_padding_extent_,5.);
-    internal::convolve_kernel_inside_erode(low_map_,
-                                           kernel_filter_,kernel_filter_ext_);
+    internal::convolve_kernel_inside_erode(low_map_, kernel_filter_.get(),
+                                           kernel_filter_ext_);
     break;
   }
-  sampled_map_->convolute_kernel(filtered_kernel_,filtered_kernel_ext_);
+  sampled_map_->convolute_kernel(filtered_kernel_.get(), filtered_kernel_ext_);
   sampled_norm_ = sampled_map_->calcRMS();
   asmb_norm_ = low_map_->calcRMS();
   sampled_map_->multiply(1./sampled_norm_);
@@ -378,7 +378,7 @@ void FFTFitting::fftw_translational_search(
                       margin_ignored_in_conv_[1],
                       margin_ignored_in_conv_[2],
                       map_cen_-core::get_centroid(core::XYZs(mol_ps)));
-  sampled_map_->convolute_kernel(filtered_kernel_, filtered_kernel_ext_);
+  sampled_map_->convolute_kernel(filtered_kernel_.get(), filtered_kernel_ext_);
   sampled_map_->multiply(1./(sampled_norm_*nvox_));
 
   // FFT the molecule
