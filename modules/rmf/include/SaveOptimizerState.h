@@ -14,6 +14,8 @@
 #include "restraint_io.h"
 #include "particle_io.h"
 #include "geometry_io.h"
+#include <IMP/core/PeriodicOptimizerState.h>
+#include <IMP/core/periodic_optimizer_state_macros.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -21,7 +23,7 @@ IMPRMF_BEGIN_NAMESPACE
     associated with the RMF file to file.
 */
 class IMPRMFEXPORT SaveOptimizerState:
-  public OptimizerState {
+  public core::PeriodicOptimizerState {
   RMF::FileHandle fh_;
  public:
   SaveOptimizerState(RMF::FileHandle fh);
@@ -55,7 +57,7 @@ class IMPRMFEXPORT SaveOptimizerState:
                   },{},
                   {});
 #endif
-  IMP_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
+  IMP_CORE_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
 };
 
 

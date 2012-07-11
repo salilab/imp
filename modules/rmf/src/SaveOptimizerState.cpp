@@ -14,7 +14,7 @@ IMPRMF_BEGIN_NAMESPACE
 
 SaveOptimizerState::
 SaveOptimizerState(RMF::FileHandle fh):
-  OptimizerState(std::string("Save to ")+fh.get_name()),
+  PeriodicOptimizerState(std::string("Save to ")+fh.get_name()),
   fh_(fh){}
 
 
