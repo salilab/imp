@@ -158,7 +158,7 @@ namespace RMF {
                                          "Where did this dimension come from");
                 }
                 file.add_child_data_set<TypeTraits, D>(nm,
-                                                       GZIP_COMPRESSION,
+                                                       NO_COMPRESSION,
                                                        hd);
               }
             }
