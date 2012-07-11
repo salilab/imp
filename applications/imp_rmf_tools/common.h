@@ -6,7 +6,6 @@
 #ifndef IMP_COMMON_H
 #define IMP_COMMON_H
 #include <boost/program_options.hpp>
-#include <IMP/benchmark/Profiler.h>
 #include <RMF/utility.h>
 
 extern std::string description;
@@ -15,7 +14,6 @@ boost::program_options::options_description options,
   positional_options;
 bool help=false;
 bool verbose=false;
-boost::scoped_ptr<IMP::benchmark::Profiler> profiler;
 boost::program_options::positional_options_description
   positional_options_description;
 void print_help_and_exit(char *argv[]) {
@@ -55,9 +53,6 @@ boost::program_options::variables_map process_options(int argc, char *argv[]) {
   }
   if (vm.count("hdf5-errors")) {
     RMF::set_show_hdf5_errors(true);
-  }
-  if (vm.count("profile")) {
-    profiler.reset(new IMP::benchmark::Profiler("rmf.%1%.pprof"));
   }
   return vm;
 }
