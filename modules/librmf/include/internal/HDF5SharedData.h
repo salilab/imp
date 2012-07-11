@@ -145,7 +145,21 @@ namespace RMF {
               if (!create_if_needed) {
                 return null_;
               } else {
-                file.add_child_data_set<TypeTraits, D>(nm);
+                RMF::HDF5DataSetIndexD<D> hd;
+                if (D==3) {
+                  hd[0]=256;
+                  hd[1]=4;
+                  hd[2]=100;
+                } else if (D==2) {
+                  hd[0]=256;
+                  hd[1]=4;
+                } else {
+                  IMP_RMF_INTERNAL_CHECK(false,
+                                         "Where did this dimension come from");
+                }
+                file.add_child_data_set<TypeTraits, D>(nm,
+                                                       GZIP_COMPRESSION,
+                                                       hd);
               }
             }
             HDF5DataSetD<TypeTraits, D> ds
