@@ -65,10 +65,6 @@ def check_c_file(filename, errors):
             errors.append('%s:1: File has leading blank line(s)' % filename)
     if len(fh)>0 and len(fh[-2])==0:
         errors.append('%s:%d: File has trailing blank line(s)' % (filename, len(fh)))
-    if not configh and filename.endswith(".h") and not filename.endswith("config.h")\
-            and not filename.endswith("macros.h") and filename.find("internal") == -1:
-        errors.append('%s: error: Non-internal header files must include config.h at least indirectly, use #include "config.h"' \
-                          % (filename))
 
 def check_python_file(filename, errors):
     """Check each modified Python file to make sure it adheres to the
