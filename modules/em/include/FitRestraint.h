@@ -92,7 +92,6 @@ private:
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
   FloatKey weight_key_;
   KernelParameters *kernel_params_;
-  DistanceMask *dist_mask_;
   FloatPair norm_factors_;
   bool use_rigid_bodies_;
   //particle handling

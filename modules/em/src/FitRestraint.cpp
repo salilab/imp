@@ -54,7 +54,6 @@ FitRestraint::FitRestraint(
   model_dens_map_ = new SampledDensityMap(*em_map->get_header(),kt_);
   model_dens_map_->set_particles(get_as<ParticlesTemp>(all_ps_),weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
-  dist_mask_=new DistanceMask(model_dens_map_->get_header());
   IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(weight_key);
   IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
