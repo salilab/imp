@@ -86,6 +86,8 @@ def _tr1check(context):
 
 
 def configure_tr1_check(ienv):
+    if ienv.get('IMP_HAS_BOOST_TR1_BUG', None):
+        return
     env=scons_tools.environment.get_test_environment(ienv)
     if env.GetOption('help'):
         return
@@ -96,7 +98,7 @@ def configure_tr1_check(ienv):
     if not conf.CheckTR1():
         env['IMP_HAS_BOOST_TR1_BUG']=True
     else:
-        pass
+        env['IMP_HAS_BOOST_TR1_BUG']=False
     conf.Finish()
 
 
