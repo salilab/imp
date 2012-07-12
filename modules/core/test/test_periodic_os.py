@@ -17,7 +17,7 @@ class TestREFCover(IMP.test.TestCase):
         """Test periodic optimizer state base"""
         pos= PeriodicOS()
         pos.set_was_used(True)
-        period=random.randint(0,10)
+        period=random.randint(1,10)
         pos.set_period(period)
         for i in range(0,100):
             pos.update()
