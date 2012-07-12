@@ -957,30 +957,49 @@ def find_fit_mean(data, initvals, verbose, mean_function):
         taulow = particles['tau'].get_lower()
     particles['tau'].set_nuisance(0.)
     particles['tau'].set_lower(0.)
-    """IMP.set_log_level(IMP.TERSE)
-    for A in linspace(-20,20):
-        particles['A'].set_nuisance(A)
-        print "pyy",A,gpr.evaluate(False)
-    for q in linspace(0.001,0.3):
-        print "cmp",q,gp.get_posterior_mean([q])
-    sys.exit()"""
+    #particles['A'].set_nuisance(-2.88)
+    #particles['G'].set_nuisance(5485.31)
+    #particles['Rg'].set_nuisance(42.09)
+    #particles['d'].set_nuisance(2.92)
+    #for q in linspace(0.001,0.3):
+    #    print "cmp",q,gp.get_posterior_mean([q])
+    #IMP.set_log_level(IMP.TERSE)
+    #for q in linspace(0.001,0.3):
+    #    print "cmp",q,gp.get_posterior_mean([q])
+    #sys.exit()
     #optimize mean particles for 3x100 steps
     #when getting initvals, calling model.evaluate() ensures constraints are met
+    #print particles['A'].get_nuisance()
+    #print [(a,b.get_nuisance()) for a,b in particles.items()]
+    #dg=IMP.get_dependency_graph(model)
+    #IMP.base.show_graphviz(dg)
+    #print IMP.get_required_score_states(gpr, [], dg,
+    #        IMP.get_dependency_graph_vertex_index(dg))
+    #sys.exit()
     for i in xrange(3):
         #print particles['A'].get_nuisance()
+        #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
         model.evaluate(False)
         do_conjugategradients(model,100)
     for i in xrange(3):
         #print particles['A'].get_nuisance()
+        #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
         model.evaluate(False)
         do_quasinewton(model,100)
-    """print particles['A'].get_nuisance()
-    print [(a,b.get_nuisance()) for a,b in particles.items()]
-    dg=IMP.get_dependency_graph(model)
-    IMP.base.show_graphviz(dg)
-    print IMP.get_required_score_states(gpr, [], dg,
-            IMP.get_dependency_graph_vertex_index(dg))
-    sys.exit()"""
+    #set_defaults_mean(data, particles, 'Full')
+    #for A in linspace(-100,100):
+    #    particles['A'].set_nuisance(A)
+    #    print "pyy",A,model.evaluate(False)
+    #set_defaults_mean(data, particles, 'Generalized')
+    #for A in linspace(-100,100):
+    #    particles['A'].set_nuisance(A)
+    #    print "pyy",A,model.evaluate(False)
+    #sys.exit()
+    #for q in linspace(0.001,0.3):
+    #    print "cmp",q,gp.get_posterior_mean([q])
+    #for i in particles:
+    #    print i,particles[i].get_nuisance()
+    #sys.exit()
     #reset tau bounds
     if taulow:
         particles['tau'].set_lower(taulow)
@@ -1323,7 +1342,7 @@ def rescale_curves(refdata, data, normal = False, offset = False):
     s1=array(data['err'])
     if not offset:
         if normal:
-            weights = (s0**2+s1**2)**(-1)
+            weights = (s0**2+(s1*I0/I1)**2)**(-1)
             return (weights*I0/I1).sum()/weights.sum(),0
         else:
             weights=(s0**2/I0**2 + s1**2/I1**2)**(-1)
@@ -1331,7 +1350,7 @@ def rescale_curves(refdata, data, normal = False, offset = False):
             return exp(lg),0
     else:
         if normal:
-            weights = (s0**2+s1**2)**(-1)
+            weights = (s0**2+(s1*I0/I1)**2)**(-1)
             iexp = (weights*I0).sum()/weights.sum()
             icalc = (weights*I1).sum()/weights.sum()
             icalc2 = (weights*I1*I1).sum()/weights.sum()
