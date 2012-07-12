@@ -2,6 +2,7 @@
 import optparse
 import glob
 import os.path
+import shutil
 
 parser = optparse.OptionParser()
 parser.add_option("-i", "--include", dest="include",
@@ -33,8 +34,10 @@ def install_hierarchy(source, dest, include=["*"]):
             curlist.append(m)
     print "installing into", dest
     if len(curlist) > 0:
-        os.system("install -d "+dest)
-        os.system("install -t "+dest + " " + " ".join(curlist))
+        if not os.path.exists(dest):
+            os.makedirs(dest)
+        for f in curlist:
+            shutil.copy(f, dest)
 
 install_hierarchy("build/include", options.destdir + options.include)
 install_hierarchy("build/data", options.destdir + options.data)
