@@ -37,21 +37,6 @@
 
 IMP_BEGIN_NAMESPACE
 
-
-  //#pragma GCC diagnostic warn "-Wunused-parameter"
-namespace {
-  compatibility::map<base::Object*, int> get_index(const DependencyGraph &dg) {
-    compatibility::map<base::Object*, int> ret;
-    DependencyGraphConstVertexName om= boost::get(boost::vertex_name, dg);
-    for (std::pair<DependencyGraphTraits::vertex_iterator,
-           DependencyGraphTraits::vertex_iterator> be= boost::vertices(dg);
-         be.first != be.second; ++be.first) {
-      base::Object *o= om[*be.first];
-      ret[o]= *be.first;
-    }
-    return ret;
-  }
-}
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
   const compatibility::map<base::Object*, int> &ssindex_;

@@ -80,7 +80,7 @@ inline double PredicateSingletonScore<Predicate, Score>
 }
 template <class Predicate, class Score>
 inline void PredicateSingletonScore<Predicate, Score>
-::do_show(std::ostream &out) const {
+::do_show(std::ostream &) const {
 }
 #endif
 

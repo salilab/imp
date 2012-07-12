@@ -47,19 +47,6 @@ void Restraint::do_update_dependencies(const DependencyGraph &,
                                        const DependencyGraphVertexIndex &) {
 }
 
-namespace {
-  double finish(const Floats &ret,
-              const Restraint *me) {
-    double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
-    IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Score is " << rv << "\n");
-      for (unsigned int i=0; i< ret.size(); ++i) {
-        IMP_LOG(VERBOSE, ret[i] << " for " << me->get_name() << "\n");
-      }
-    }
-    return rv;
-  }
-}
 
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
