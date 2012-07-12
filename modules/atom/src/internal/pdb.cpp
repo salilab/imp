@@ -74,7 +74,7 @@ char atom_chain_id(const String& pdb_line)
 
 short atom_residue_number(const String& pdb_line)
 {
-  return atoi(pdb_line.substr(atom_res_number_field_).c_str());
+  return atoi(pdb_line.substr(atom_res_number_field_, 4).c_str());
 }
 
 char atom_residue_icode(const String& pdb_line)
@@ -84,30 +84,30 @@ char atom_residue_icode(const String& pdb_line)
 
 float atom_xcoord(const String& pdb_line)
 {
-  return atof(pdb_line.substr(atom_xcoord_field_).c_str());
+  return atof(pdb_line.substr(atom_xcoord_field_, 8).c_str());
 }
 
 float atom_ycoord(const String& pdb_line)
 {
-  return atof(pdb_line.substr(atom_ycoord_field_).c_str());
+  return atof(pdb_line.substr(atom_ycoord_field_, 8).c_str());
 }
 
 float atom_zcoord(const String& pdb_line)
 {
-  return atof(pdb_line.substr(atom_zcoord_field_).c_str());
+  return atof(pdb_line.substr(atom_zcoord_field_, 8).c_str());
 }
 
 float atom_occupancy(const String& pdb_line)
 {
   if(pdb_line.length() >= atom_occupancy_field_ + 6)
-    return atof(pdb_line.substr(atom_occupancy_field_).c_str());
+    return atof(pdb_line.substr(atom_occupancy_field_, 6).c_str());
   return 0.0;
 }
 
 float atom_temp_factor(const String& pdb_line)
 {
   if(pdb_line.length() >= atom_temp_factor_field_ + 6)
-    return atof(pdb_line.substr(atom_temp_factor_field_).c_str());
+    return atof(pdb_line.substr(atom_temp_factor_field_, 6).c_str());
   return 0.0;
 }
 
