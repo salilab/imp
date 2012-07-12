@@ -111,10 +111,7 @@ class _CoverageTester(object):
                 raise ValueError("Cannot determine path for %s" % name)
 
     def get_wrap(self, name):
-        if name == 'RMF':
-            return 'RMF_wrap'
-        else:
-            return 'IMP_%s_wrap' % name
+        return name + '/wrap'
 
     def get_module_dir(self, name):
         if name == 'RMF':
