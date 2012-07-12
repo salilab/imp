@@ -63,7 +63,7 @@ template <int D, class Storage, class Value, class Embedding>
   }
 template <int D, class Storage, class Value, class Embedding>
   double get_interpolation_value(const GridD<D, Storage, Value,
-                   Embedding> &g,
+                   Embedding> &,
                    Floats f, const VectorD<D> &fraction) {
     for (unsigned int i=0; i< D; ++i) {
       const unsigned int hsize= f.size()/2;

@@ -20,7 +20,7 @@ struct MinMax {
                    -std::numeric_limits<double>::max()) {}
   template <class G>
   void operator()(const G &g, const typename G::Index &i,
-                  const typename G::Vector &v)  {
+                  const typename G::Vector &)  {
     minmax.first=std::min(minmax.first, g[i]);
     minmax.second=std::max(minmax.second, g[i]);
   }
