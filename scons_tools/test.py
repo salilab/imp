@@ -20,7 +20,7 @@ def _action_unit_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null"
     fsource=[]
     type= source[-1].get_contents()
-    for x in source[2:-1]:
+    for x in source[1:-1]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
     if source[-1] == 'example':
