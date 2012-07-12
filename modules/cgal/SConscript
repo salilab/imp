@@ -1,14 +1,17 @@
 Import('env')
 import scons_tools.dependency.gcc
+import scons_tools.dependency.clang
 import scons_tools.dependency.cgal
 import scons_tools.dependency.boost
 
 
+if not env.get("IMP_CGAL_LIBS", None):
+    env["IMP_CGAL_LIBS"]\
+        =scons_tools.dependency.cgal.get_libs(env,
+                                              scons_tools.dependency\
+            .boost.get_boost_lib_name(env,"thread"))
 
-cgal_libs=scons_tools.dependency.cgal.get_libs(env,
-                         scons_tools.dependency.boost.get_boost_lib_name(env,"thread"))
-
-scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
+scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+env["IMP_CGAL_LIBS"],
                                             ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                             body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
                                             versioncpp=["CGAL_VERSION_NR"],
@@ -20,8 +23,9 @@ opercppcompilation=env['percppcompilation']
 env['percppcompilation']="cgal"
 
 if not env.GetOption('help') and not env.GetOption('clean') \
-        and scons_tools.dependency.gcc.get_is_gcc_like(env)\
-        and scons_tools.data.get(env).dependencies['CGAL'].ok:
+    and scons_tools.dependency.gcc.get_is_gcc_like(env)\
+    and scons_tools.data.get(env).dependencies['CGAL'].ok\
+    and not scons_tools.dependency.clang.get_is_clang(env):
     cxxflags=[]
     yeslist=['trapping-math',
              'signaling-nans',
