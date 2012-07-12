@@ -59,7 +59,8 @@ def _find_python_module(env, modname, dirs):
             nm= nm[:nm.find(".")]
         if nm not in data.get(env).modules.keys():
             raise RuntimeError("Please import imp like \"import IMP.container\" or \"from IMP import Model\" in import of "+nm)
-        if not data.get(env).modules[nm].external:
+        if not data.get(env).modules[nm].external \
+           and data.get(env).modules[nm].ok:
             # pull in kernel too
             libf=[File("#/build/lib/_IMP_"+nm+env["IMP_PYTHON_SO"])]
             pyf= stp.get_matching_build(env, ["lib/IMP/"+nm+"/*.py",
