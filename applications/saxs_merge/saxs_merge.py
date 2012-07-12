@@ -652,6 +652,8 @@ Merging
             "In that case extrapolation flags are ignored, and extrapolation "
             "is performed when the data file's q values fall outside of the "
             "range of accepted data points. Default is NUM=200 points.")
+    group.add_option('--lambdamin', type="float", default=0.005, metavar="MIN",
+            help="lower bound for lambda parameter in steps 2 and 5")
     #cleanup
     group = optparse.OptionGroup(parser, title="Cleanup (Step 1)",
                               description="Discard or keep SAXS curves' "
@@ -1102,7 +1104,7 @@ def find_fit_covariance(data, initvals, args, verbose):
             print "residuals",q,I,err,gpval,avg,(gpval-avg),(I-avg)
     return initvals
 
-def find_fit_by_gridding(data, initvals, verbose):
+def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     """use the fact that sigma can be factored out of the covariance matrix and
     drawn from a gamma distribution. Calculates a 2D grid on lambda (D1) and
     tau**2/sigma (D2) to get the minimum value.
@@ -1112,7 +1114,7 @@ def find_fit_by_gridding(data, initvals, verbose):
     gpr = IMP.isd.GaussianProcessInterpolationRestraint(gp)
     model.add_restraint(gpr)
     meandist = mean(array(data['q'][1:])-array(data['q'][:-1]))
-    particles['lambda'].set_lower(max(meandist,0.005))
+    particles['lambda'].set_lower(max(meandist,lambdalow))
     lambdamin = particles['lambda'].get_lower()
     lambdamax = 100
     numpoints=25
@@ -1230,7 +1232,7 @@ def bayes_factor(data, initvals, verbose, mean_func, maxpoints):
             MP - Np/2.*log(2*pi) + logdet)
 
 def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
-        mean_function='Simple'):
+        mean_function='Simple', lambdamin=0.005):
     #if verbose >2:
     #    print " %d:%d" % (subs,nsteps),
     #    sys.stdout.flush()
@@ -1268,7 +1270,8 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
         #initvals = find_fit_lambda(data, initvals, args, verbose)
         #initvals = find_fit_covariance(data, initvals, args, verbose)
         param_vals[mean_func] = \
-                find_fit_by_gridding(data, param_vals[mean_func], verbose)
+                find_fit_by_gridding(data, param_vals[mean_func], verbose,
+                        lambdamin)
         if verbose > 2:
             for i in ['tau','lambda','sigma']:
                 sys.stdout.write("%s=%1.2f " % (i,param_vals[mean_func][i]))
@@ -1657,7 +1660,8 @@ def fitting(profiles, args):
         initvals['sigma']=1.
         mean, initvals, bayes = find_fit(data, initvals, #schedule,
                 verbose, model_comp=model_comp, model_comp_maxpoints=maxpointsH,
-                mean_function=mean_function)
+                mean_function=mean_function,
+                lambdamin=args.lambdamin)
         model, particles, functions, gp = setup_process(data,initvals,1)
         p.set_interpolant(gp, particles, functions, mean, model, bayes)
         if verbose > 1 and model_comp:
@@ -1876,7 +1880,8 @@ def merging(profiles, args):
     mean, initvals, bayes = find_fit(data, initvals, #schedule,
                     verbose, model_comp=model_comp,
                     model_comp_maxpoints=maxpointsH,
-                    mean_function=mean_function)
+                    mean_function=mean_function,
+                    lambdamin=args.lambdamin)
     if verbose > 1 and model_comp:
         print "    => "+mean
     #take initial values from the curve which has gamma == 1
