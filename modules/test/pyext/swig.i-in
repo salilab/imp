@@ -1,6 +1,1 @@
-%pythoncode %{
-from _do_init import *
-_ExecDictProxy= _do_init._ExecDictProxy
-_TestResult= _do_init._TestResult
-_TestRunner= _do_init._TestRunner
-%}
+%include "IMP_test.init.i"

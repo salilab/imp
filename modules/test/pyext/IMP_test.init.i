@@ -1,3 +1,5 @@
+%pythoncode %{
+
 """@namespace IMP::test
    @brief Methods and classes for testing the IMP kernel and modules.
    @ingroup python
@@ -786,3 +788,5 @@ class DirectorObjectChecker(object):
             IMP._director_objects.cleanup()
         t.assertEqual(IMP._director_objects.get_object_count() \
                       - self.__basenum, expected)
+
+%}
