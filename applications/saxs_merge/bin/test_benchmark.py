@@ -318,18 +318,28 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         mp =IMP.atom.read_pdb(pdb, m,
                       IMP.atom.NonWaterNonHydrogenPDBSelector())
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+
+        # compute surface accessibility
+        s = IMP.saxs.SolventAccessibleSurface()
+        surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
+
+        # compute the theoretical profile
         model_profile = IMP.saxs.Profile()
-        model_profile.calculate_profile(particles)
-        Rg = model_profile.radius_of_gyration()
-        #
+        model_profile.calculate_profile_partial(particles, surface_area)
+
+        # fit the data
         exp_profile = IMP.saxs.Profile(automerge)
         saxs_score = IMP.saxs.Score(exp_profile)
-        chi = saxs_score.compute_chi_score(model_profile)
-        #
+        chi = (saxs_score.fit_profile(model_profile)).get_chi()
+        Rg = model_profile.radius_of_gyration()
+
+        # fit manual merge
         exp_profile = IMP.saxs.Profile(manualmerge)
         saxs_score = IMP.saxs.Score(exp_profile)
-        mchi = saxs_score.compute_chi_score(model_profile)
-        return chi,mchi,Rg
+        mchi = (saxs_score.fit_profile(model_profile)).get_chi()
+        mRg = model_profile.radius_of_gyration()
+
+        return chi,mchi,Rg, mRg
 
     def get_guinier_Rg(self, profile):
         #guinier
