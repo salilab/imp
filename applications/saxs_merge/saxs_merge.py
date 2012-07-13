@@ -8,10 +8,12 @@ from numpy import *
 import copy
 from scipy.stats import t as student_t
 import glob
+import tempfile
 
 import IMP
 import IMP.isd
 import IMP.gsl
+import IMP.saxs
 
 IMP.set_log_level(0)
 
@@ -35,6 +37,9 @@ def subsample(data,npoints):
         outdata = [a[1] for a in outdata]
         newdata.extend(outdata)
     return newdata
+
+class FittingError(Exception):
+    pass
 
 class SAXSProfile:
 
@@ -671,8 +676,6 @@ Merging
                 description="Estimate the mean function and the noise level "
                 "of each SAXS curve.")
     parser.add_option_group(group)
-    group.add_option('--bRg', help='Initial value for Rg (default 10)',
-                     type="float", default=10., metavar='Rg')
     group.add_option('--bd', help='Initial value for d (default 4)',
                      type="float", default=4., metavar='D')
     group.add_option('--bs', help='Initial value for s (default 0)',
@@ -907,6 +910,18 @@ def setup_process(data,initvals, subs, maxpoints=-1):
             particles['sigma'])
     return model, particles, functions, gp
 
+def get_initial_Rg(data):
+    fl, name = tempfile.mkstemp(text=True)
+    handle = os.fdopen(fl,'w')
+    for dat in zip(data['q'],data['I'],data['err']):
+        handle.write(' '.join(['%G' % i for i in dat]))
+        handle.write('\n')
+    handle.close()
+    profile = IMP.saxs.Profile(name)
+    Rg = profile.radius_of_gyration()
+    os.unlink(name)
+    return Rg
+
 def set_defaults_mean(data, particles, mean_function):
     #set initial value for G to be a rough estimate of I(0)
     if max(data['q']) > 1:
@@ -933,6 +948,7 @@ def set_defaults_mean(data, particles, mean_function):
     else:
         particles['G'].set_nuisance_is_optimized(True)
         particles['Rg'].set_nuisance_is_optimized(True)
+        particles['Rg'].set_nuisance(get_initial_Rg(data))
         if mean_function == 'Generalized':
             particles['d'].set_nuisance_is_optimized(True)
         else:
@@ -978,12 +994,18 @@ def find_fit_mean(data, initvals, verbose, mean_function):
     #print IMP.get_required_score_states(gpr, [], dg,
     #        IMP.get_dependency_graph_vertex_index(dg))
     #sys.exit()
-    for i in xrange(3):
+    rgopt = particles['Rg'].get_nuisance_is_optimized()
+    particles['Rg'].set_nuisance_is_optimized(False)
+    for i in xrange(2):
+        model.evaluate(False)
+        do_conjugategradients(model,100)
+    particles['Rg'].set_nuisance_is_optimized(rgopt)
+    for i in xrange(2):
         #print particles['A'].get_nuisance()
         #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
         model.evaluate(False)
         do_conjugategradients(model,100)
-    for i in xrange(3):
+    for i in xrange(2):
         #print particles['A'].get_nuisance()
         #print [(k,v.get_nuisance()) for (k,v) in particles.items()]
         model.evaluate(False)
@@ -1003,6 +1025,10 @@ def find_fit_mean(data, initvals, verbose, mean_function):
     #    print i,particles[i].get_nuisance()
     #sys.exit()
     #reset tau bounds
+    for i in particles.values():
+        if i.get_nuisance_is_optimized():
+            if isnan(i.get_nuisance()):
+                raise FittingError
     if taulow:
         particles['tau'].set_lower(taulow)
     model.evaluate(False)
@@ -1124,6 +1150,7 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
     #fl=open('grid.txt','w')
     particles['sigma'].set_nuisance(1.0)
     #print "gridding"
+    experror=0
     for lambdaval in logspace(log(lambdamin),log(lambdamax),
             base=exp(1),num=numpoints):
         for rel in logspace(-2, 2, num=numpoints):
@@ -1134,8 +1161,10 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             #get exponent and compute reduced exponent
             exponent = gpr.get_minus_exponent()
             if isnan(exponent) or exponent <=0:
-                print "got invalid exponent at grid point "\
+                if experror < 2:
+                    print "got invalid exponent at grid point "\
                       "lambda=%f rel=%f exp=%s" % (lambdaval,rel, exponent)
+                experror += 1
                 continue
             redexp = sigmaval * exponent
             #compute maximum posterior value for sigma assuming jeffreys prior
@@ -1151,8 +1180,12 @@ def find_fit_by_gridding(data, initvals, verbose, lambdalow):
             #fl.write('\n')
         #fl.write('\n')
     #print "minimizing"
+    if experror >=2:
+        print "skipped another " + str(experror-2) + " similar errors"
     particles['tau'].set_lower(0.001)
     particles['sigma'].set_lower(0.001)
+    if len(gridvalues) == 0:
+        raise FittingError
     minval = gridvalues[0][:]
     for i in gridvalues:
         if i[4] < minval[4]:
@@ -1254,8 +1287,17 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
         if verbose > 2:
             sys.stdout.write("     "+mean_func+": mean ")
             sys.stdout.flush()
-        param_vals[mean_func] = \
+        try:
+            param_vals[mean_func] = \
                 find_fit_mean(data, initvals, verbose, mean_func)
+        except FittingError:
+            if model_comp:
+                print "error"
+                sys.stdout.flush()
+                continue
+            else:
+                raise FittingError, "Error while fitting! Choose"\
+                        " another model or do model comparison"
         if verbose > 2:
             sys.stdout.write("A=%1.2f " % param_vals[mean_func]['A'])
             if mean_func in ["Simple","Generalized","Full"]:
@@ -1269,9 +1311,18 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
             sys.stdout.flush()
         #initvals = find_fit_lambda(data, initvals, args, verbose)
         #initvals = find_fit_covariance(data, initvals, args, verbose)
-        param_vals[mean_func] = \
+        try:
+            param_vals[mean_func] = \
                 find_fit_by_gridding(data, param_vals[mean_func], verbose,
                         lambdamin)
+        except FittingError:
+            if model_comp:
+                print "error"
+                sys.stdout.flush()
+                continue
+            else:
+                raise FittingError, "Error while fitting! Choose"\
+                        " another model or do model comparison"
         if verbose > 2:
             for i in ['tau','lambda','sigma']:
                 sys.stdout.write("%s=%1.2f " % (i,param_vals[mean_func][i]))
@@ -1281,31 +1332,23 @@ def find_fit(data, initvals, verbose, model_comp=False, model_comp_maxpoints=-1,
     if len(functions) == 1:
         return functions[0], param_vals[functions[0]], []
     free_energies={}
-    oldf=functions[0]
     if verbose > 2:
-        print "     -log(Bayes Factor): "+oldf+" =",
-    free_energies[oldf]=bayes_factor(data, param_vals[oldf], verbose, oldf,
-                                        model_comp_maxpoints)
-    if verbose > 2:
-        print "%.1f" % free_energies[oldf][8],
-        sys.stdout.flush()
-    for f in functions[1:]:
+        print "     -log(Bayes Factor):",
+    for f in functions:
         if verbose > 2:
-            print " "+f+" =",
-        free_energies[f]=bayes_factor(data, param_vals[f], verbose, f,
+            print f+" =",
+        if f in param_vals:
+            free_energies[f]=bayes_factor(data, param_vals[f], verbose, f,
                                         model_comp_maxpoints)
+        else:
+            free_energies[f] = [inf]*9
         if verbose > 2:
             print "%.1f" % free_energies[f][8],
             sys.stdout.flush()
-        if free_energies[f][8] > free_energies[oldf][8]:
-            print ""
-            return oldf,param_vals[oldf],free_energies
-        oldf=f
     if verbose > 2:
         print ""
-    #minf = sorted([(free_energies[i][8],i) for i in functions])[0][1]
-    #return minf,param_vals[minf],free_energies
-    return functions[-1],param_vals[functions[-1]],free_energies
+    minf = sorted([(free_energies[i][8],i) for i in functions])[0][1]
+    return minf,param_vals[minf],free_energies
 
 def create_intervals_from_data(profile, flag):
     """This function creates intervals for the mean function so that
@@ -1651,7 +1694,7 @@ def fitting(profiles, args):
         data['N'] = p.get_Nreps()
         initvals={}
         initvals['G']=1. #will be calculated properly
-        initvals['Rg']=args.bRg
+        initvals['Rg']=30. #same
         initvals['d']=args.bd
         initvals['s']=args.bs
         initvals['A']=0.
