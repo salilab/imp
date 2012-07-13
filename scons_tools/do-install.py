@@ -29,7 +29,7 @@ def install_hierarchy(source, dest, include=["*"]):
     curlist=[]
     for m in matching:
         if os.path.isdir(m):
-            install_hierarchy(m, os.path.join(dest, os.path.relpath(m, source)))
+            install_hierarchy(m, os.path.join(dest, m[len(source)+1:]))
         else:
             curlist.append(m)
     print "installing into", dest
