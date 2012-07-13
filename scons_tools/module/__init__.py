@@ -207,7 +207,9 @@ def IMPModuleExamples(env, example_files, data_files):
                     if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
                         seen.append(o)
                         break
-                    scons_tools.examples.add_python_example(env, e, o.get_contents())
+                for o in example_files:
+                    scons_tools.examples.add_python_example(env, e,
+                                                            o.get_contents())
         links=[]
         fexample_files=[x for x in example_files if x not in seen]
         split= scons_tools.utility.get_split_into_directories(fexample_files)
