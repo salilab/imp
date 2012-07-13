@@ -46,7 +46,7 @@ public:
   CreateLogContext(std::string fname, const void* object=nullptr):
       name_(fname) {
     // push log context does not copy the string, so we need to save it.
-    set(name_.c_str(), object);
+    push_log_context(name_.c_str(), object);
   }
   IMP_RAII(CreateLogContext, (const char *fname, const void* object=nullptr),,
            push_log_context(fname, object),
