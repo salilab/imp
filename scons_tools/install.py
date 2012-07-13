@@ -173,6 +173,7 @@ def _run_install(target, source, env):
     install_args=["--include ${includedir}",
                   "--data ${datadir}",
                   "--lib ${libdir}",
+                  "--bin ${bindir}",
                   "--python ${pythondir}",
                   "--swig ${datadir}/swig",
                   "--doc ${docdir}",
