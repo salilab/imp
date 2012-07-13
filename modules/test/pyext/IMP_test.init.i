@@ -713,35 +713,6 @@ class ApplicationTestCase(TestCase):
                              + error)
 
 
-
-class TestRefiner(IMP.Refiner):
-    """A class which makes sure that the right particles are passed back."""
-
-    def __init__(self, pr):
-        IMP.Refiner.__init__(self)
-        self.pr= pr
-        self.dict={}
-
-    def do_show(self, fh):
-        print >> fh, "Testing particle refiner"
-        self.pr.show()
-
-    def get_version_info(self):
-        return IMP.VersionInfo("Daniel Russel", "0.5")
-
-    def get_can_refine(self, p):
-        print "Can refine? "+ str(p.get_name())
-        print "Return is " + str(self.pr.get_can_refine(p))
-        return self.pr.get_can_refine(p)
-
-    def get_refined(self, p):
-        print "Refining "+ str(p.get_name())
-        ps= self.pr.get_refined(p)
-        self.dict[p.get_name()] = ps
-        print self.dict
-        return ps
-
-
 class RefCountChecker(object):
     """Check to make sure the number of C++ object references is as expected"""
 
