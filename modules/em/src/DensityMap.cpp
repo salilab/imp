@@ -970,7 +970,8 @@ void get_transformed_into(const DensityMap *from,
    DensityMap *into,
    bool calc_rms) {
   algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
-  into->copy_map(create_density_map(obb,into->get_spacing()));
+  OwnerPointer<DensityMap> nmap(create_density_map(obb,into->get_spacing()));
+  into->copy_map(nmap);
   get_transformed_internal(from,tr,into);
   into->get_header_writable()->compute_xyz_top();
   if (calc_rms) {
@@ -1207,8 +1208,8 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
                   "nz end index is out of boundaries\n");
   }
   //create a new map
-  DensityMap * to_map =
-    create_density_map(to_nx,to_ny,to_nz,from_header->get_spacing());
+  Pointer<DensityMap> to_map(create_density_map(to_nx,to_ny,to_nz,
+                                                from_header->get_spacing()));
   to_map->set_origin(
    from_map->get_location_by_voxel(
                 from_map->xyz_ind2voxel(nx_start,ny_start,nz_start)));
@@ -1229,7 +1230,7 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
       }
     }
   }
-  return to_map;
+  return to_map.release();
 }
 
 DensityMap* binarize(DensityMap *orig_map,
@@ -1263,10 +1264,9 @@ DensityMap* get_threshold_map(DensityMap *orig_map,
                      float threshold) {
   const DensityHeader *header = orig_map->get_header();
   //create a new map
-  DensityMap * ret =
-    create_density_map(header->get_nx(),
-                       header->get_ny(),header->get_nz(),
-                       header->get_spacing());
+  Pointer<DensityMap> ret(create_density_map(header->get_nx(),
+                                             header->get_ny(),header->get_nz(),
+                                             header->get_spacing()));
   ret->set_origin(orig_map->get_origin());
   emreal *orig_data=orig_map->get_data();
   emreal *ret_data=ret->get_data();
@@ -1277,7 +1277,7 @@ DensityMap* get_threshold_map(DensityMap *orig_map,
       ret_data[i]=orig_data[i];
     }
   }
-  return ret;
+  return ret.release();
 }
 
 
@@ -1316,10 +1316,10 @@ double convolute(const DensityMap *m1,const DensityMap *m2){
 DensityMap* multiply(const DensityMap *m1,
                      const DensityMap *m2){
   const DensityHeader *header=m1->get_header();
-  DensityMap *m_map=
+  Pointer<DensityMap> m_map(
     create_density_map(header->get_nx(),
                        header->get_ny(),header->get_nz(),
-                       header->get_spacing());
+                       header->get_spacing()));
   m_map->set_origin(m2->get_origin());
   emreal *data1=m1->get_data();
   emreal *data2=m2->get_data();
@@ -1327,7 +1327,7 @@ DensityMap* multiply(const DensityMap *m1,
   for(long i=0;i<header->get_number_of_voxels();i++){
     new_data[i]=data1[i]*data2[i];
   }
-  return m_map;
+  return m_map.release();
 }
 
 
@@ -1360,11 +1360,11 @@ DensityMap* get_max_map(DensityMaps maps){
 DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
                         DensityMap *mask,
                         float mask_threshold) {
-  DensityMap *bin_map= binarize(mask,mask_threshold);
+  Pointer<DensityMap> bin_map(binarize(mask,mask_threshold));
   //clean isotlated zeros - to that with conn_comp
-  DensityMap *ret =  multiply(map_to_segment,bin_map);
+  Pointer<DensityMap> ret(multiply(map_to_segment,bin_map));
   std::cout<<"ret:"<<ret->get_min_value()<<","<<ret->get_max_value()<<std::endl;
-  return ret;
+  return ret.release();
 }
 //! Get a segment of the map covered by the input points
 DensityMap* get_segment(DensityMap *map_to_segment,
