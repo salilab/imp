@@ -47,7 +47,19 @@ exceptions.extend([
    'TestCase.open_input_file',
    'TestCase.particle_distance',
    'TestCase.probabilistic_test',
-   'TestCase.randomize_particles'])
+   'TestCase.randomize_particles',
+   'set.copy',
+   'set.difference',
+   'set.difference_update',
+   'set.discard',
+   'set.intersection',
+   'set.intersection_update',
+   'set.issubset',
+   'set.issuperset',
+   'set.symmetric_difference',
+   'set.symmetric_difference_update',
+   'set.union',
+   'set.union_update'])
 
 # This finds all python files matching test_*.py and all cpp files
 # matching test_*.cpp
