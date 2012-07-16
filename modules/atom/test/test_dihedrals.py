@@ -35,10 +35,15 @@ class DihedralTests(IMP.test.TestCase):
             psi = IMP.atom.get_psi_dihedral_atoms(r)
             self.assertEqual(len(phi), 4)
             self.assertEqual(len(psi), 4)
-            # phi and psi should both be -pi for extended chain conformation
+            # phi and psi should both be +/-pi for extended chain conformation
             d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in phi])
+            # Wrap +pi round to -pi
+            if d > 0.999 * math.pi:
+                d -= math.pi * 2.
             self.assertAlmostEqual(d, -math.pi, delta=1e-4)
             d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in psi])
+            if d > 0.999 * math.pi:
+                d -= math.pi * 2.
             self.assertAlmostEqual(d, -math.pi, delta=1e-4)
         # phi/psi cease to be defined if at least one atom is missing
         r = IMP.atom.Residue(res[2])
