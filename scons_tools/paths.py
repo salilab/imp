@@ -85,6 +85,9 @@ def get_input_path(env, fl):
 def get_build_source_file(env, name, modulename=None):
     """Return a file node for a generated source file"""
     if modulename:
+        # Prevent collision between RMF and rmf on case-insensitive filesystems
+        if modulename == 'RMF':
+            modulename = 'librmf'
         return File("#/build/src/"+modulename+"/"+name)
     else:
         return File("#/build/src/"+name)

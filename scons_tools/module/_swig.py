@@ -246,7 +246,12 @@ def _action_simple_swig(target, source, env):
     command.append(source[0].abspath)
     final_command=" ".join(command) %vars
     ret= env.Execute(final_command)
-    oname=File("#/build/src/"+vars['module']+"/"\
+
+    modulename = vars['module']
+    # Prevent collision between RMF and rmf on case-insensitive filesystems
+    if modulename == 'RMF':
+        modulename = 'librmf'
+    oname=File("#/build/src/"+modulename+"/"\
                    +vars['module_include_path'].replace("/", ".")+".py")
     #print oname.path, "moving to", target[0].path
     # scons build in Move produces an error with no explaination
