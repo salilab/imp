@@ -7,6 +7,7 @@
 
 #include "IMP/atom/estimates.h"
 #include <IMP/atom/Simulator.h>
+#include <IMP/algebra/Rotation3D.h>
 #include <IMP/internal/units.h>
 #include <IMP/constants.h>
 #include <IMP/internal/constants.h>
@@ -149,7 +150,7 @@ unit::Femtojoule kt(unit::Kelvin t) {
 
 double get_einstein_diffusion_coefficient(double r) {
   MillipascalSecond e=eta(IMP::internal::DEFAULT_TEMPERATURE);
-    unit::SquareAngstromPerFemtosecond
+  unit::SquareAngstromPerFemtosecond
       ret(kt(IMP::internal::DEFAULT_TEMPERATURE)
           /(6.0* PI*e*unit::Angstrom(r)));
     return ret.get_value();
@@ -157,9 +158,10 @@ double get_einstein_diffusion_coefficient(double r) {
 
 double get_einstein_rotational_diffusion_coefficient(double r) {
   MillipascalSecond e=eta(IMP::internal::DEFAULT_TEMPERATURE);
-    unit::PerFemtosecond ret=kt(IMP::internal::DEFAULT_TEMPERATURE)
+  //double kt= get_kt(IMP::internal::DEFAULT_TEMPERATURE);
+  unit::PerFemtosecond ret=kt(IMP::internal::DEFAULT_TEMPERATURE)
       /(8*PI*e*square(unit::Angstrom(r))*unit::Angstrom(r));
-    return ret.get_value();
+  return ret.get_value();
 }
 
 double get_diffusion_length(double D, double dtfs) {
@@ -245,6 +247,27 @@ get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
           << Ds1 << std::endl);
   return std::accumulate(Ds1.coordinates_begin(),
                          Ds1.coordinates_end(), 0.0)/3.0;
+}
+
+
+double
+get_rotational_diffusion_coefficient(const algebra::Rotation3Ds &displacements,
+                                     double dt) {
+  Floats diffs(displacements.size()-1);
+  for (unsigned int i=1; i< displacements.size(); ++i) {
+    algebra::Rotation3D orot=displacements[i-1];
+    algebra::Rotation3D crot=displacements[i];
+    algebra::Rotation3D diff=crot/orot;
+    diffs[i-1]=
+        algebra::get_axis_and_angle(diff).second;
+  }
+  double mean= std::accumulate(diffs.begin(),diffs.end(), 0.0)/diffs.size();
+  double stdsum=0;
+  for (unsigned int i=0; i < diffs.size(); ++i) {
+    stdsum+= algebra::get_squared(diffs[i]- mean);
+  }
+  double sigma= stdsum/diffs.size();
+  return sigma/(6.0*dt);
 }
 
 IMPATOM_END_NAMESPACE

@@ -97,14 +97,14 @@ namespace {
     return -force_term;
   }
 
-  double get_sigma(Model *m, ParticleIndex p,
+  inline double get_sigma(Model *m, ParticleIndex p,
                    double dtfs) {
     // 6.0 since we are picking radius rather than the coordinates
     double dd=Diffusion(m,
                         p).get_diffusion_coefficient();
     return sqrt(6.0*dd*dtfs);
   }
-  double get_rotational_sigma(Model *m, ParticleIndex p,
+  inline double get_rotational_sigma(Model *m, ParticleIndex p,
                               double dtfs) {
     double dr=RigidBodyDiffusion(m, p)
         .get_rotational_diffusion_coefficient();
@@ -204,24 +204,21 @@ void BrownianDynamics
   double sigma= get_rotational_sigma(get_model(), pi, dtfs);
   boost::normal_distribution<double> nd(0, sigma);
   RNG sampler(random_number_generator, nd);
-  double angle= sigma*sampler();
+  double angle= sampler();
+  algebra::Transformation3D nt=rb.get_reference_frame().get_transformation_to();
   algebra::Vector3D axis
     = algebra::get_random_vector_on(algebra::get_unit_sphere_d<3>());
   algebra::Rotation3D rrot= algebra::get_rotation_about_axis(axis, angle);
+  nt=nt*rrot;
   algebra::Vector3D torque( get_torque(get_model(), pi, 0, dtfs, ikT),
                             get_torque(get_model(), pi, 1, dtfs, ikT),
                             get_torque(get_model(), pi, 2, dtfs, ikT));
   double tangle= torque.get_magnitude();
-  algebra::Vector3D taxis;
   if (tangle > 0) {
-    taxis = torque/tangle;
-  } else {
-    taxis= algebra::Vector3D(0,0,0);
+    algebra::Vector3D taxis = torque/tangle;
+    algebra::Rotation3D frot= algebra::get_rotation_about_axis(taxis, tangle);
+    nt= nt*frot;
   }
-  algebra::Rotation3D frot= algebra::get_rotation_about_axis(taxis, tangle);
-  algebra::Transformation3D nt
-    = rb.get_reference_frame().get_transformation_to()*
-    algebra::Transformation3D(rrot)*algebra::Transformation3D(frot);
   rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(nt));
 }
 
