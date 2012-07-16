@@ -129,6 +129,15 @@ BUNDLED_LIBS="/opt/local/lib/libboost_system-mt.dylib \
               /opt/local/lib/libjpeg.8.dylib \
               /opt/local/lib/libtiff.3.dylib \
               /opt/local/lib/libbz2.1.0.dylib"
+# 64-bit builds also include CGAL
+if [ "${TARGET_OSX_VER}" = "10.6" ]; then
+  BUNDLED_LIBS="${BUNDLED_LIBS} \
+                /opt/local/lib/libCGAL.9.dylib \
+                /opt/local/lib/libgmp.10.dylib \
+                /opt/local/lib/libgmpxx.4.dylib \
+                /opt/local/lib/libmpfr.4.dylib"
+fi
+
 BUNDLED_LIB_DIR="${PREFIX}/lib/imp-3rd-party"
 mkdir -p ${DESTDIR}/${BUNDLED_LIB_DIR} || exit 1
 
