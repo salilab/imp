@@ -140,6 +140,13 @@ IMPATOMEXPORT double
 get_diffusion_coefficient(const algebra::Vector3Ds &displacements,
                           double dt);
 
+/** Estimate the rotational diffusion coeffient of a particle from a list of
+    displacements each taken after the given time step dt.
+*/
+IMPATOMEXPORT double
+get_rotational_diffusion_coefficient(const algebra::Rotation3Ds &displacements,
+                                     double dt);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_ESTIMATES_H */
