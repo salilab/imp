@@ -337,9 +337,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         exp_profile = IMP.saxs.Profile(manualmerge)
         saxs_score = IMP.saxs.Score(exp_profile)
         mchi = (saxs_score.fit_profile(model_profile)).get_chi()
-        mRg = model_profile.radius_of_gyration()
 
-        return chi,mchi,Rg, mRg
+        return chi,mchi,Rg
 
     def get_guinier_Rg(self, profile):
         #guinier
@@ -416,8 +415,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         print name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
                 pdbRg,pdbchi,mpdbchi
 
-    def tearDown(self):
-        os.unlink('Cpgnuplot'+name)
+    #def tearDown(self):
+    #    os.unlink('Cpgnuplot'+name)
 
     def get_params1(self):
         """aalpha 1e-7"""
