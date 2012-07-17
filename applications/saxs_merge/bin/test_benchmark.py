@@ -162,7 +162,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_guinier.png"\n' % name)
-        fl.write('set xrange [0:%f]\n' % qRgmax/Rg)
+        fl.write('set xrange [0:%f]\n' % (qRgmax/Rg))
         fl.write('p "%s" u ($1*$1):(log($2)):($3/$2) w yerr t "data", '
                  '  "%s" u ($1*$1):(log($2)) w l t "mean", '
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
