@@ -33,8 +33,8 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         if os.path.isdir(destname):
             return
         args.append('--destdir='+destname)
-        #args.append('--blimit_fitting=400')
-        #args.append('--elimit_fitting=400')
+        args.append('--blimit_fitting=800')
+        args.append('--elimit_fitting=800')
         args.append('--allfiles')
         args.append('--outlevel=full')
         p = self.run_python_application('saxs_merge.py',args)
@@ -353,13 +353,14 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         lines = [ float(i.split()[2]) for i in lines if " Rg " in i ]
         return lines
 
-    def run_results(self, name, manual_merge, inputs, pdb=None):
+    def run_results(self, name, manual_merge, inputs, pdb=None,
+            extra_args=None):
         #rescale and fit the two curves
         destdir='compapp_'+name
         if not os.path.isdir(destdir):
             p = self.run_python_application('saxs_merge.py',
                     ['--destdir='+destdir,
-                 #'--blimit_fitting=400', '--elimit_fitting=400',
+                 '--blimit_fitting=800', '--elimit_fitting=800',
                  '--stop=rescaling', '--postpone_cleanup',
                  #'--lambdamin=0.05',
                  '--npoints=-1', '--allfiles', '--outlevel=full',
@@ -380,6 +381,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                         destdir+'/mean_'+os.path.basename(manual_merge))
         else:
             pdbchi = None
+            mpdbchi = None
             pdbRg = None
         #radius of gyration
         guinierRg = self.get_guinier_Rg(destdir+'/mean_data_merged.dat')
@@ -438,7 +440,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
     def get_params5(self):
         """aalpha 1e-7 rescale with offset and model comparison"""
-        return ['--cmodel=normal-offset', '--bcomp', '--blimit_hessian=100',
+        return ['--cmodel=normal', '--bcomp', '--blimit_hessian=100',
                 '--boptimize=Full']
 
     # a. Simple test of SAXS merge benchmark / application for Nup116 (3NF5)
