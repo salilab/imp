@@ -158,11 +158,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.close()
         os.system('gnuplot Cpgnuplot'+name)
 
-    def plot_guinier(self, name, data, mean):
+    def plot_guinier(self, name, data, mean, Rg, qRgmax=1.3):
         fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_guinier.png"\n' % name)
-        fl.write('set xrange [0:0.0025]\n')
+        fl.write('set xrange [0:%f]\n' % qRgmax/Rg)
         fl.write('p "%s" u ($1*$1):(log($2)):($3/$2) w yerr t "data", '
                  '  "%s" u ($1*$1):(log($2)) w l t "mean", '
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
@@ -409,7 +409,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 destdir+'/mean_data_merged.dat', datarange)
         #guinier plot
         self.plot_guinier(name, destdir+'/data_data_merged.dat',
-                destdir+'/mean_data_merged.dat')
+                destdir+'/mean_data_merged.dat', Rg)
         #plot all curves
         self.plot_inputs(name, inputs)
         print name,datachi,fitchi,Rg,guinierRg,mRg,mguinierRg,\
