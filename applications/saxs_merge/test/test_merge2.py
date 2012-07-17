@@ -217,10 +217,11 @@ class SAXSProfileTestThree(IMP.test.ApplicationTestCase):
         args=MockArgs(verbose=0, eschedule=[(1,10)],mergename="merge",
                 dalpha=0.05, eextrapolate=0, enoextrapolate=False,
                 baverage=False, ecomp=False, eoptimize='Flat',
-                elimit_fitting=-1, elimit_hessian=-1, eaverage=False)
+                elimit_fitting=-1, elimit_hessian=-1, eaverage=False,
+                lambdamin=0.005)
         self.merge.classification([p1,p2,p3],args)
         def find_fit(a,b,c,model_comp=None, mean_function=None,
-                        model_comp_maxpoints=None):
+                        model_comp_maxpoints=None, lambdamin=0.005):
             return 'test',b,None
         self.merge.find_fit = find_fit
         def setup_process(b,c,e):
