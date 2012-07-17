@@ -58,7 +58,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
     def plot_data_overlaid(self, name, d1, d2, datarange, title=None):
         # data overlaid in log scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_log_overlaid.png"\n' % name)
         fl.write('set log y\n')
@@ -69,9 +69,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
             (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
         # data overlaid in linear scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_lin_overlaid.png"\n' % name)
         fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
@@ -81,11 +81,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:2 w p t "automatic", "%s" u 1:2 w p t "manual"\n' %
             (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def plot_data_colored(self, name, d1, datarange, transform=(1,0)):
         # data in linear scale, colored
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
         fl.write('set yrange [0:%f]\n' % datarange[3])
@@ -93,9 +93,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:(%f*($2+%f)):5 w p lc var t "automatic"\n' %
                    (d1, transform[0], transform[1]))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
         # data shifted in log scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_log_colored.png"\n' % name)
         fl.write('set log y\n')
@@ -104,11 +104,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:(%f*($2+%f)):5 w p lc var t "automatic"\n' %
                 (d1, transform[0],transform[1]))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def plot_means(self, name, d1, d2, datarange):
         #linear scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_means_lin.png"\n' % name)
         fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
@@ -119,9 +119,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '"" u 1:($2+$3) w l lt 2 not, '
                  '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
         #log scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_means_log.png"\n' % name)
         fl.write('set log y\n')
@@ -133,11 +133,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '"" u 1:($2+$3) w l lt 2 not, '
                  '"" u 1:($2-$3) w l lt 2 not\n' % (d1,d2))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def plot_data_mean(self, name, data, mean, datarange):
         #linear scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_lin_mean.png"\n' % name)
         fl.write('set xrange [%f:%f]\n' % (datarange[0], datarange[1]))
@@ -145,9 +145,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
                  ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
         #log scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_data_log_mean.png"\n' % name)
         fl.write('set log y\n')
@@ -156,10 +156,10 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
         fl.write('p "%s" u 1:2:3 w yerr t "data", "%s" u 1:2 w l t "mean" lw 2,'
                  ' "" u 1:($2+$3) w l lw 2 not, "" u 1:($2-$3) w l lw 2 not\n'  % (data,mean)   )
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def plot_guinier(self, name, data, mean):
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_guinier.png"\n' % name)
         fl.write('set xrange [0:0.0025]\n')
@@ -168,11 +168,11 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                  '"" u ($1*$1):(log($2)+$3/$2) w l not, '
                  '"" u ($1*$1):(log($2)-$3/$2) w l not\n' % (data,mean))
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def plot_inputs(self, name, inputs):
         #linear scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_inputs_lin.png"\n' % name)
         fl.write('p ')
@@ -184,9 +184,9 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             else:
                 fl.write('\n')
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
         #log scale
-        fl=open('Cpgnuplot','w')
+        fl=open('Cpgnuplot'+name,'w')
         fl.write('set term png\n')
         fl.write('set output "%s_inputs_log.png"\n' % name)
         fl.write('set log y\n')
@@ -199,7 +199,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
             else:
                 fl.write('\n')
         fl.close()
-        os.system('gnuplot Cpgnuplot')
+        os.system('gnuplot Cpgnuplot'+name)
 
     def chisquare(self, fla, flb):
         #read first 3 columns
@@ -417,10 +417,7 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
                 pdbRg,pdbchi,mpdbchi
 
     def tearDown(self):
-        return
-        shutil.rmtree('runapp',True)
-        shutil.rmtree('compapp',True)
-        os.unlink('Cpgnuplot')
+        os.unlink('Cpgnuplot'+name)
 
     def get_params1(self):
         """aalpha 1e-7"""
