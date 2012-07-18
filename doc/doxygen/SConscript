@@ -201,7 +201,7 @@ env.Depends(dox, '#/doc/doxygen/doxypy.py')
 env.Depends(dox, '#/build/lib/IMP/__init__.py')
 
 install=env.Command(Dir(env.subst(docdir)), dox,
-                    "install -d $TARGET && cp -r ${SOURCE.dir}/* $TARGET")
+                    "install -d $TARGET && cp -rL ${SOURCE.dir}/* $TARGET")
 env.Alias('doc-install', install)
 env.Alias('doc', dox)
 env.Requires(install, env.Alias('doc'))
