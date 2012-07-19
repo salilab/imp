@@ -20,10 +20,14 @@ PeriodicOptimizerState::PeriodicOptimizerState(std::string name):
             << " of " << period_ << " and update "
             << update_number_ << std::endl);
     if (call_number_%(period_) ==0) {
-      do_update(update_number_);
-      ++update_number_;
+      update_always();
     }
   }
+void PeriodicOptimizerState::update_always() {
+  IMP_OBJECT_LOG;
+  do_update(update_number_);
+  ++update_number_;
+}
   void PeriodicOptimizerState::set_is_optimizing(bool tf) {
     if (!tf) {
       do_update(update_number_);

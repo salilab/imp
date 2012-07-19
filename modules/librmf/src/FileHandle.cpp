@@ -13,12 +13,16 @@ namespace RMF {
 
 FileHandle::FileHandle(internal::SharedData *shared): FileConstHandle(shared) {}
 
-  // \exception RMF::IOException if couldn't create file,
-  //                             or if unsupported file format
-  FileHandle::FileHandle(std::string name, bool create):
+// \exception RMF::IOException if couldn't create file,
+//                             or if unsupported file format
+FileHandle::FileHandle(std::string name, bool create):
     FileConstHandle(internal::create_shared_data(name, create))  {
-  }
+}
 
+void FileHandle::set_frame_comment(unsigned int frame,
+                                   std::string comment) {
+  get_shared_data()->set_frame_comment(frame, comment);
+}
 
 
 NodeHandle FileHandle::get_node_from_id(NodeID id) const {
@@ -37,5 +41,6 @@ FileHandle open_rmf_file(std::string path) {
   FileHandle create_rmf_file(std::string path) {
     return FileHandle(path, true);
   }
+
 
 } /* namespace RMF */

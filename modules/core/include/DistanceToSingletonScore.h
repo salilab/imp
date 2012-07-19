@@ -76,6 +76,7 @@ void GenericDistanceToSingletonScore<UF>::do_show(std::ostream &out) const
 
 #endif
 
+/** Use an IMP::UnaryFunction to score a distance to a point.*/
 IMP_GENERIC_OBJECT(DistanceToSingletonScore, distance_to_singleton_score,
                    UnaryFunction,
                    (UnaryFunction *f, const algebra::Vector3D& pt),

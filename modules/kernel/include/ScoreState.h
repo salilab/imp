@@ -63,10 +63,10 @@ public:
   IMP_MODEL_OBJECT(ScoreState);
 #endif
   ScoreState(Model *m, std::string name="ScoreState %1%");
-  // Force update of the structure.
+  //! Force update of the structure.
   void before_evaluate();
 
-  // Do post evaluation work if needed
+  //! Do post evaluation work if needed
   void after_evaluate(DerivativeAccumulator *accpt);
 
   /** \name Interactions
@@ -83,7 +83,6 @@ public:
   virtual ParticlesTemp get_output_particles() const=0;
   /** @} */
 
-protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
       It should be implemented by ScoreStates in order to provide functionality.
@@ -92,14 +91,16 @@ protected:
       way C++ handles overloading and name lookups--if only one is implemented
       in the child class it will only find that one.
    */
-  virtual void do_before_evaluate() = 0;
+  IMP_PROTECTED_METHOD(virtual void, do_before_evaluate,(),, = 0);
 
   // Do any necessary updates after the model score is calculated.
   /* \param[in] accpt The object used to scale derivatives in the score
                        calculation, or nullptr if derivatives were not
                        requested.
    */
-  virtual void do_after_evaluate(DerivativeAccumulator *accpt)=0;
+  IMP_PROTECTED_METHOD(virtual void,
+                       do_after_evaluate,(DerivativeAccumulator *accpt),
+                       ,=0);
 
   IMP_REF_COUNTED_DESTRUCTOR(ScoreState);
 

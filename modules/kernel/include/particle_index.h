@@ -123,6 +123,8 @@ IMP_VALUES(ParticleIndexQuad, ParticleIndexQuads);
 
 
 #endif
+
+
 IMP_END_NAMESPACE
 
 #endif  /* IMPKERNEL_PARTICLE_INDEX_H */

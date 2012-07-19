@@ -83,6 +83,17 @@ IMP_PARTICLE_GEOMETRY(RigidBodyFrame, core::RigidBody, {
     ret.push_back(new display::ReferenceFrameGeometry(d.get_reference_frame()));
   });
 
+/** Display the torque on a rigid body as a line segment.*/
+class IMPCOREEXPORT RigidBodyTorque: public display::SegmentGeometry {
+  base::WeakPointer<Particle> p_;
+  mutable algebra::Segment3D cache_;
+  static algebra::Segment3D extract_geometry(Particle *p);
+public:
+  RigidBodyTorque(Particle *p);
+  const algebra::Segment3D &get_geometry() const;
+};
+
+
 IMPCORE_END_NAMESPACE
 
 #endif  /* IMPCORE_RIGID_BODY_GEOMETRIES_H */

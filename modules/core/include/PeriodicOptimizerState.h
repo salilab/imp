@@ -29,6 +29,9 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
   /** Reset everything to look like the first call.*/
   void reset();
   IMP_IMPLEMENT(virtual void update());
+  /** Force the optimizer state to perform its action now.
+   */
+  void update_always();
   /** This method is called every get_period() update calls.*/
   IMP_PROTECTED_METHOD(virtual void, do_update, (unsigned int call_number),,=0);
 };

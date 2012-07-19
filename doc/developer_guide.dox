@@ -421,13 +421,13 @@ In whole model evaluation, each restraint is called one at a time and given a ch
 
 Incremental evaluation is more complicated. The model first sets up for incremental evaluation by creating a shadow particle for each real particle. The "prechange" particles have all the same attributes and values as the particle from the last time step. They are accessed using IMP::Particle::get_prechange_particle().
 
-    During incremental evaluation in the model
-    -# the derivatives are cleared on all the particles (but not the prechange particles)
-    -# incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and prechange particle derivatives is equal to the change in derivatives and that the actual score is returned.
-    -# derivatives are added to the prechange derivatives and then cleared
-    -# the non-incremental restraints are then evaluated
-    -# the derivatives of the prechange particles are added to the particle derivatives
-    -# after scoring, all the particles are marked as clean and prechange particles are updated to reflect the current attributes of the particles
+During incremental evaluation in the model
+1. the derivatives are cleared on all the particles (but not the prechange particles)
+1. incremental restraints are evaluated. They need to make sure that the the change in the sum of the particle and prechange particle derivatives is equal to the change in derivatives and that the actual score is returned.
+1. derivatives are added to the prechange derivatives and then cleared
+1. the non-incremental restraints are then evaluated
+1. the derivatives of the prechange particles are added to the particle derivatives
+1. after scoring, all the particles are marked as clean and prechange particles are updated to reflect the current attributes of the particles
 
 To put it another way
 <table border="1">
@@ -710,9 +710,9 @@ also to Python.
 
 Two excellent sources for general C++ coding guidelines are
 
-    - \external{http://www.amazon.com/Coding-Standards-Rules-Guidelines-Practices/dp/0321113586, C++ Coding Standards} by Sutter and Alexandrescu
+- \external{http://www.amazon.com/Coding-Standards-Rules-Guidelines-Practices/dp/0321113586, C++ Coding Standards} by Sutter and Alexandrescu
 
-    - \external{http://www.amazon.com/Effective-Specific-Addison-Wesley-Professional-Computing/dp/0201924889, Effective C++} by Meyers
+- \external{http://www.amazon.com/Effective-Specific-Addison-Wesley-Professional-Computing/dp/0201924889, Effective C++} by Meyers
 
 \imp endeavors to follow all the of the guidelines published in those
 books. The Sali lab owns copies of both of these books that you
@@ -736,26 +736,26 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
   you need a unique identifier associated with an object or non-geometric
   value, just use the object or value itself.
 
-    - Pass other objects by value or by \c const & (if the object is
+- Pass other objects by value or by \c const & (if the object is
       large) and store copies of them.
 
-    - Never expose member variables in an object which has
+- Never expose member variables in an object which has
       methods. All such member variables should be private.
 
-    - Don't derive a class from another class simply to reuse some
+- Don't derive a class from another class simply to reuse some
       code that the base class provides - only do so if your derived
       class could make sense when cast to the base class. As above,
       reuse existing code by pulling it into a function.
 
-    - Clearly mark any file that is created by a script so that other
+- Clearly mark any file that is created by a script so that other
       people know to edit the original file.
 
-    - Always return a \c const value or \c const ref if you are not
+- Always return a \c const value or \c const ref if you are not
       providing write access. Returning a \c const copy means the
       compiler will report an error if the caller tries to modify the
       return value without creating a copy of it.
 
-    - Include files from the local module first, then files from the
+- Include files from the local module first, then files from the
     other \imp modules and kernel and finally outside includes. This
     makes any dependencies in your code obvious, and by including
     standard headers \e after \imp headers, any missing includes in the
@@ -769,14 +769,14 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
     #include <vector>
     \endcode
 
-    - Use \c double variables for all computational intermediates.
+- Use \c double variables for all computational intermediates.
 
-    - Avoid using nested classes in the API as SWIG can't wrap them
+- Avoid using nested classes in the API as SWIG can't wrap them
       properly.  If you must use use nested classes, you will have to
       do more work to provide a Python interface to your code.
 
 
-    - Delay initialization of keys until they are actually needed
+- Delay initialization of keys until they are actually needed
       (since all initialized keys take up memory within each particle,
       more or less). The best way to do this is to have them be static
       variables in a static function:
@@ -787,7 +787,7 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
       }
       \endcode
 
-    - One is the almost always the right number:
+- One is the almost always the right number:
         - Information should be stored in exactly one
           place. Duplicated information easily gets out of sync.
         - A given piece of code should only appear once. Do not copy,

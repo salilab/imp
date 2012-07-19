@@ -54,4 +54,21 @@ display::Geometries RigidBodyHierarchyGeometry::get_components() const {
 }
 
 
+
+RigidBodyTorque::RigidBodyTorque(Particle *p):
+    display::SegmentGeometry(extract_geometry(p),
+                             p->get_name()),
+    p_(p) {
+}
+const algebra::Segment3D &RigidBodyTorque::get_geometry() const {
+  cache_= extract_geometry(p_);
+  return cache_;
+}
+
+algebra::Segment3D RigidBodyTorque::extract_geometry(Particle *p) {
+  RigidBody rb(p);
+  algebra::Vector3D o=rb.get_coordinates();
+  algebra::Vector3D ep= o+ rb.get_torque();
+  return algebra::Segment3D(o, ep);
+}
 IMPCORE_END_NAMESPACE

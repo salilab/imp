@@ -108,6 +108,7 @@ namespace RMF {
       // then by key.get_index()
       mutable HDF5Group file_;
       HDF5DataSetD<StringTraits, 1> node_names_;
+      mutable HDF5DataSetD<StringTraits, 1> frame_comments_;
       boost::array<HDF5DataSetD<StringTraits, 1>, 4> category_names_;
       boost::array<Strings, 4> category_names_cache_;
       boost::array<HDF5DataSetD<IndexTraits, 2>, 4> node_data_;
@@ -705,6 +706,9 @@ namespace RMF {
 
       std::string get_description() const;
       void set_description(std::string str);
+
+      void set_frame_comment(unsigned int frame, std::string str);
+      std::string get_frame_comment(unsigned int frame) const;
     };
 
   } // namespace internal

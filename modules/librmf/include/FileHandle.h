@@ -131,6 +131,11 @@ namespace RMF {
     }
     /** @} */
 
+    /** Frames can have associated comments which can be used to label
+        particular frames of interest.*/
+    void set_frame_comment(unsigned int frame,
+                           std::string comment);
+
     /** \name Non-template versions for python
 
         Type is one of the \ref rmf_types "standard types"

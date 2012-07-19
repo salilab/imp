@@ -203,13 +203,16 @@ def IMPModuleExamples(env, example_files, data_files):
         seen=[]
         for e in example_files:
             if str(e).endswith(".py"):
+                overview=None
                 for o in example_files:
                     if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
                         seen.append(o)
+                        overview= o.get_contents()
                         break
                 for o in example_files:
-                    scons_tools.examples.add_python_example(env, e,
-                                                            o.get_contents())
+                    if not overview:
+                        raise RuntimeError("No readme found for "+str(e))
+                    scons_tools.examples.add_python_example(env, e, overview)
         links=[]
         fexample_files=[x for x in example_files if x not in seen]
         split= scons_tools.utility.get_split_into_directories(fexample_files)

@@ -152,6 +152,7 @@ IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSe
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleIndex, base::Index, ParticleIndexes);
+IMP_SWIG_VALUE(IMP, FloatIndex, FloatIndexes);
 IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
@@ -237,7 +238,7 @@ class ParticleQuadsTemp;
 %rename(_QuadContainerAdaptor) QuadContainerAdaptor;
 
 %include "IMP/particle_index.h"
-
+%include "IMP/FloatIndex.h"
 %include "IMP/base_types.h"
 %include "IMP/constants.h"
 %include "IMP/ModelObject.h"

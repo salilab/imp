@@ -148,6 +148,7 @@ IMP_SWIG_OBJECT(IMP::core, RigidBodyDerivativesGeometry, RigidBodyDerivativesGeo
 IMP_SWIG_OBJECT(IMP::core, RigidBodyHierarchyGeometry, RigidBodyHierarchyGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyFrameGeometry, RigidBodyFrameGeometries);
 IMP_SWIG_OBJECT(IMP::core, RigidBodyFramesGeometry, RigidBodyFramesGeometries);
+IMP_SWIG_OBJECT(IMP::core, RigidBodyTorque, RigidBodyFramesTorques);
 IMP_SWIG_OBJECT(IMP::core, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::core, EdgePairsGeometry, EdgePairsGeometries);
 

@@ -10,6 +10,7 @@ excluded_classes={"kernel":["Model", "Particle", "Particles",
 typedef_classes={"algebra":{"Vector3D":"VectorD",
                             "Vector2D":"VectorD",
                             "BoundingBox3D":"BoundingBoxD",
+                            "BoundingBox2D":"BoundingBoxD",
                             "BoundingBox3DSingletonScore":"GenericBoundingBox3DSingletonScore",
                             "Sphere3D":"SphereD",
                             "NearestNeighbor3D":"NearestNeighborD"}}
@@ -19,7 +20,7 @@ included_methods={"kernel":{"get_dependency_graph":("DependencyGrah", "(Model*)"
                             "set_log_level":("void", "(LogLevel)"),
                             "add_failure_handler":("void", "(FailureHandler*)"),},
                   "atom":{"read_pdb":("Hierarchy", "(base::TextInput, Model*)"),
-                          "write_pdb":("void", "(Hierarchy, base::TextOutput, unsigned int)"),
+                          "write_pdb":("void", "(atom::Hierarchy, base::TextOutput, unsigned int)"),
                           "create_protein":\
                           ("Hierarchy", "(Model*,std::string,double,int,int,double)"),
                           "create_simplified_along_backbone":("Hierarchy", "(Chain,int)"),

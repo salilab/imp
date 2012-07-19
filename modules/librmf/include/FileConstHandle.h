@@ -239,6 +239,9 @@ namespace RMF {
     unsigned int get_number_of_frames() const {
       return shared_->get_number_of_frames();
     }
+   /** Frames can have associated comments which can be used to label
+        particular frames of interest.*/
+    std::string get_frame_comment(unsigned int frame);
 
     /** \name Non-template versions for python
 
@@ -282,6 +285,7 @@ namespace RMF {
     NodeConstHandle get_node_from_association(void* v) const;
 #endif
     NodeConstHandle get_node_from_id(NodeID id) const;
+
 
     /** Along with the associations for nodes, arbitrary data can
         be associated with the file in memory to aid in processing.

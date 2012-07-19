@@ -274,6 +274,23 @@ namespace RMF {
       proto_.SerializeToOstream(&out);
     }
 
+
+
+  void ProtoBufSharedData::set_frame_comment(unsigned int frame,
+                                             std::string str) {
+    while (proto_.frame_size() <= static_cast<int>(frame)) {
+      proto_.add_frame();
+    }
+    proto_.mutable_frame(frame)->set_comment(str);
+  }
+  std::string ProtoBufSharedData::get_frame_comment(unsigned int frame) const {
+    if (proto_.frame_size() > static_cast<int>(frame)) {
+      return proto_.frame(frame).comment();
+    } else {
+      return std::string();
+    }
+  }
+
   } // namespace internal
 } /* namespace RMF */
 #endif

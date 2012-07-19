@@ -12,6 +12,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include "../Key.h"
 #include "../utility.h"
+#include "../FloatIndex.h"
 #include <IMP/base/exception.h>
 #include <IMP/base/check_macros.h>
 #include <IMP/base/log.h>
@@ -524,20 +525,12 @@ public:
       return data_.access_attribute(FloatKey(k.get_index()-7), particle);
     }
   }
-  struct FloatIndex
-  {
-    ParticleIndex p_;
-    FloatKey k_;
-    FloatIndex(FloatKey k, ParticleIndex p): p_(p), k_(k){}
-    FloatIndex(): p_(base::get_invalid_index<ParticleIndexTag>()) {}
-  };
-  IMP_BUILTIN_VALUES(FloatIndex, FloatIndexes);
  FloatIndexes get_optimized_attributes() const {
     FloatIndexes ret;
     for (unsigned int i=0; i< optimizeds_.size(); ++i) {
       for (unsigned int j=0; j< optimizeds_.size(i); ++j) {
         if (optimizeds_.get_has_attribute(FloatKey(i), ParticleIndex(j))) {
-          ret.push_back(FloatIndex(FloatKey(i), ParticleIndex(j)));
+          ret.push_back(FloatIndex(ParticleIndex(j), FloatKey(i)));
         }
       }
     }
