@@ -57,10 +57,11 @@ class SAXSProfile:
         self.intervals = {}
         self.filename = None
 
-    def add_data(self, input, offset=0, positive=False):
+    def add_data(self, input, offset=0, positive=False, err=True):
         """add experimental data to saxs profile.
         offset=i means discard first i columns
         positive=True means only keep intensities that are >0
+        err=True means keep only points that have >0 error bar
         """
         if isinstance(input, str):
             #read all lines
@@ -87,6 +88,9 @@ class SAXSProfile:
                     entry.append(f(z))
             #keep positive data
             if positive and entry[1] <= 0:
+                continue
+            #keep weighted points
+            if err and entry[2] <= 0:
                 continue
             data.append(entry)
         self.data += copy.deepcopy(data)
