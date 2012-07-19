@@ -94,10 +94,11 @@ struct Pointer: internal::PointerBase<internal::RefCountedPointerTraits<O> > {
   }
 };
 
-//! A reference counted pointer to an object.
-/** The object being pointed to must inherit from IMP::RefCountedObject.
-    Use an IMP::WeakPointer to break cycles or to point to
-    non-ref-counted objects.
+//! A reference counted pointer to an Object.
+/** The object being pointed to must inherit from IMP::base::Object.
+    In addition to reference counting the object like Pointer,
+    Object::set_was_used(true) will be called so you don't get
+    warnings about unused objects.
 
     \param[in] O The type of IMP::RefCounted-derived object to point to
  */

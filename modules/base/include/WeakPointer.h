@@ -21,6 +21,12 @@ IMPBASE_BEGIN_NAMESPACE
     contains a reference counted pointer to an IMP::Particle, the
     IMP::Particle has a WeakPointer back to the Model.
 
+    The UncheckedWeakPointer can act on types that have only been
+    partially defined. You probably should use a WeakPointer instead
+    if you don't have problems with it.
+
+    \see WeakPointer
+
     \param[in] O The type of IMP::Object-derived object to point to
  */
 template <class O>
@@ -52,8 +58,17 @@ struct UncheckedWeakPointer:
   }
 };
 
-/** This version of a WeakPointer only works on complete types, but adds
-    additional checks of correct usage.
+/** WeakPointers do not do reference counting and do not claim ownership
+    of the pointed object. As a result, they can be used to break cycles
+    in reference counted pointers. For example, since an IMP::Model
+    contains a reference counted pointer to an IMP::Particle, the
+    IMP::Particle has a WeakPointer back to the Model.
+
+    This version of a WeakPointer only works on complete types, but adds
+    additional checks of correct usage (eg that the Object has not bee
+    previously freed) compared to UncheckedWeakPointer.
+
+    \see UncheckedWeakPointer
  */
 template <class O>
 struct WeakPointer:
