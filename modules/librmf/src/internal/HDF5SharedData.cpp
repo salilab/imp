@@ -358,35 +358,35 @@ namespace RMF {
       get_group().set_char_attribute("description", str);
     }
 
-  void HDF5SharedData::set_frame_comment(unsigned int frame, std::string str) {
-    if (frame_comments_== HDF5DataSetD<StringTraits, 1>()) {
-      if (file_.get_has_child(get_frame_comment_data_set_name())) {
-        frame_comments_
+  void HDF5SharedData::set_fame_name(unsigned int frame, std::string str) {
+    if (fame_names_== HDF5DataSetD<StringTraits, 1>()) {
+      if (file_.get_has_child(get_fame_name_data_set_name())) {
+        fame_names_
             =file_.get_child_data_set<StringTraits, 1>
-            (get_frame_comment_data_set_name());
+            (get_fame_name_data_set_name());
       } else {
-       frame_comments_
+       fame_names_
            = file_.add_child_data_set<StringTraits, 1>
-            (get_frame_comment_data_set_name());
+            (get_fame_name_data_set_name());
       }
     }
-    if (frame_comments_.get_size()[0] <= frame) {
-      frame_comments_.set_size(HDF5DataSetIndexD<1>(frame+1));
+    if (fame_names_.get_size()[0] <= frame) {
+      fame_names_.set_size(HDF5DataSetIndexD<1>(frame+1));
     }
-    frame_comments_.set_value(HDF5DataSetIndexD<1>(frame), str);
+    fame_names_.set_value(HDF5DataSetIndexD<1>(frame), str);
   }
-  std::string HDF5SharedData::get_frame_comment(unsigned int frame) const {
-    if (frame_comments_== HDF5DataSetD<StringTraits, 1>()) {
-      if (file_.get_has_child(get_frame_comment_data_set_name())) {
-        frame_comments_
+  std::string HDF5SharedData::get_fame_name(unsigned int frame) const {
+    if (fame_names_== HDF5DataSetD<StringTraits, 1>()) {
+      if (file_.get_has_child(get_fame_name_data_set_name())) {
+        fame_names_
             =file_.get_child_data_set<StringTraits, 1>
-            (get_frame_comment_data_set_name());
+            (get_fame_name_data_set_name());
       } else {
         return std::string();
       }
     }
-    if (frame_comments_.get_size()[0] >= frame) {
-      return frame_comments_.get_value(HDF5DataSetIndexD<1>(frame));
+    if (fame_names_.get_size()[0] >= frame) {
+      return fame_names_.get_value(HDF5DataSetIndexD<1>(frame));
     } else {
       return std::string();
     }
