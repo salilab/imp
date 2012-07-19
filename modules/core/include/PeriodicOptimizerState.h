@@ -27,7 +27,7 @@ class IMPCOREEXPORT PeriodicOptimizerState : public OptimizerState
   void set_period(unsigned int p);
   unsigned int get_period() const;
   /** Reset everything to look like the first call.*/
-  void reset();
+  virtual void reset();
   IMP_IMPLEMENT(virtual void update());
   /** Force the optimizer state to perform its action now.
    */
