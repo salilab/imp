@@ -254,4 +254,9 @@ message Quad {
   required int32 id3=5;
 };
 repeated Quad quad=6;
+
+message FrameData {
+  optional string comment=1;
+};
+repeated FrameData frame=7;
 };

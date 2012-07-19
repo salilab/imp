@@ -46,8 +46,12 @@ IMPRMFEXPORT void add_static_geometries(RMF::FileHandle parent,
 IMPRMFEXPORT void add_geometry(RMF::FileHandle parent, display::Geometry *r);
 #endif
 
+/** Create geometry objects for the geometry nodes found in the file.
+ */
 IMPRMFEXPORT display::Geometries create_geometries(RMF::FileConstHandle parent);
 
+/** Link the passed geometry objects to corresponding ones in the file.
+    They must be in the same order, we don't search around for matches.*/
 IMPRMFEXPORT void link_geometries(RMF::FileConstHandle parent,
                                   const display::GeometriesTemp &r);
 /** @} */

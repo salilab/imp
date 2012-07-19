@@ -16,6 +16,7 @@
 #include "geometry_io.h"
 #include <IMP/core/PeriodicOptimizerState.h>
 #include <IMP/core/periodic_optimizer_state_macros.h>
+#include <IMP/atom/Simulator.h>
 
 IMPRMF_BEGIN_NAMESPACE
 
@@ -25,6 +26,7 @@ IMPRMF_BEGIN_NAMESPACE
 class IMPRMFEXPORT SaveOptimizerState:
   public core::PeriodicOptimizerState {
   RMF::FileHandle fh_;
+  base::WeakPointer<atom::Simulator> sim_;
  public:
   SaveOptimizerState(RMF::FileHandle fh);
 #ifndef IMP_DOXYGEN
@@ -57,6 +59,12 @@ class IMPRMFEXPORT SaveOptimizerState:
                   },{},
                   {});
 #endif
+  //! Use the simulator to tag frames with current time
+  /** \note This may change to a more general mechanism at some point
+      in the future.
+   */
+  void set_simulator(atom::Simulator *sim);
+
   IMP_CORE_PERIODIC_OPTIMIZER_STATE(SaveOptimizerState);
 };
 

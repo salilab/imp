@@ -11,6 +11,7 @@
 #include <IMP/rmf/simple_links.h>
 #include <IMP/rmf/link_macros.h>
 #include <RMF/decorators.h>
+#include <IMP/core/RestraintsScoringFunction.h>
 #include <IMP/scoped.h>
 #include <IMP/base/ConstArray.h>
 #include <IMP/base/WeakPointer.h>
@@ -202,9 +203,13 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     RMF::Category imp_cat_;
     RMF::FloatKey weight_key_;
     compatibility::map<Restraint*, RestraintSaveData> data_;
+    Restraints all_;
+    base::OwnerPointer<core::RestraintsScoringFunction> rsf_;
 
     void do_add(Restraint* r, RMF::NodeHandle nh) {
       // handle restraints being in multiple sets
+      all_.push_back(r);
+      rsf_= new core::RestraintsScoringFunction(all_);
       if (get_has_associated_node(nh.get_file(), r)) {
         RMF::NodeHandle an= get_node_from_association(nh.get_file(), r);
         RMF::Alias a= af_.get(nh);
@@ -274,6 +279,10 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           }
         }
       }
+    }
+    void do_save(RMF::FileHandle fh, unsigned int frame) {
+      rsf_->evaluate(false);
+      P::do_save(fh, frame);
     }
     RMF::NodeType get_type(Restraint*) const {
       return RMF::FEATURE;

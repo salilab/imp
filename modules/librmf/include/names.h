@@ -36,6 +36,10 @@ namespace RMF {
   inline String get_node_name_data_set_name() {
     return "node_name";
   }
+  //! Get the name of the data set storing the data about each frame
+  inline String get_frame_comment_data_set_name() {
+    return "frame_comment";
+  }
   //! Get the name of the data set for storing bonds
   inline String get_bond_data_data_set_name() {
     return "bond_data";

@@ -95,6 +95,9 @@ int main(int argc, char **argv) {
 
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    if (!rh.get_description().empty()) {
+      std::cout << "description: " << rh.get_description();
+    }
     show_info<1>(rh, std::cout);
     show_info<2>(rh, std::cout);
     show_info<3>(rh, std::cout);

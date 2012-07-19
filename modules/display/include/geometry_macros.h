@@ -44,7 +44,7 @@
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const display::Color &c, std::string n);        \
-    const Type& get_geometry() const {return v_;}                       \
+    virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \
@@ -61,7 +61,7 @@
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const display::Color &c, std::string n);        \
-    const Type& get_geometry() const {return v_;}                       \
+    virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \
@@ -82,7 +82,7 @@
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const display::Color &c, std::string n);        \
-    const Type& get_geometry() const {return v_;}                       \
+    virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \
@@ -105,7 +105,7 @@
     Name(const Type &v, const display::Color &c);                       \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const display::Color &c, std::string n);        \
-    const Type& get_geometry() const {return v_;}                       \
+    virtual const Type& get_geometry() const {return v_;}               \
     void set_geometry(const Type &v) { v_=v;}                           \
     IMP_GEOMETRY(Name);                                                 \
   };                                                                    \

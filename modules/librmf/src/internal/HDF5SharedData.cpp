@@ -357,5 +357,40 @@ namespace RMF {
                           "Description should end in a newline.");
       get_group().set_char_attribute("description", str);
     }
+
+  void HDF5SharedData::set_frame_comment(unsigned int frame, std::string str) {
+    if (frame_comments_== HDF5DataSetD<StringTraits, 1>()) {
+      if (file_.get_has_child(get_frame_comment_data_set_name())) {
+        frame_comments_
+            =file_.get_child_data_set<StringTraits, 1>
+            (get_frame_comment_data_set_name());
+      } else {
+       frame_comments_
+           = file_.add_child_data_set<StringTraits, 1>
+            (get_frame_comment_data_set_name());
+      }
+    }
+    if (frame_comments_.get_size()[0] <= frame) {
+      frame_comments_.set_size(HDF5DataSetIndexD<1>(frame+1));
+    }
+    frame_comments_.set_value(HDF5DataSetIndexD<1>(frame), str);
+  }
+  std::string HDF5SharedData::get_frame_comment(unsigned int frame) const {
+    if (frame_comments_== HDF5DataSetD<StringTraits, 1>()) {
+      if (file_.get_has_child(get_frame_comment_data_set_name())) {
+        frame_comments_
+            =file_.get_child_data_set<StringTraits, 1>
+            (get_frame_comment_data_set_name());
+      } else {
+        return std::string();
+      }
+    }
+    if (frame_comments_.get_size()[0] >= frame) {
+      return frame_comments_.get_value(HDF5DataSetIndexD<1>(frame));
+    } else {
+      return std::string();
+    }
+  }
+
   } // namespace internal
 } /* namespace RMF */
