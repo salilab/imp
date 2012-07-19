@@ -435,8 +435,8 @@ namespace RMF {
       std::string get_description() const;
       void set_description(std::string str);
 
-      void set_frame_comment(unsigned int frame, std::string str);
-      std::string get_frame_comment(unsigned int frame) const;
+      void set_fame_name(unsigned int frame, std::string str);
+      std::string get_fame_name(unsigned int frame) const;
     };
   } // namespace internal
 } /* namespace RMF */

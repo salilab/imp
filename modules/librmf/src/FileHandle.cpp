@@ -19,9 +19,9 @@ FileHandle::FileHandle(std::string name, bool create):
     FileConstHandle(internal::create_shared_data(name, create))  {
 }
 
-void FileHandle::set_frame_comment(unsigned int frame,
+void FileHandle::set_fame_name(unsigned int frame,
                                    std::string comment) {
-  get_shared_data()->set_frame_comment(frame, comment);
+  get_shared_data()->set_fame_name(frame, comment);
 }
 
 

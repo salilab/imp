@@ -201,8 +201,8 @@ namespace RMF {
       virtual std::string get_category_name(int Arity, unsigned int kc) const=0;
       virtual std::string get_description() const=0;
       virtual void set_description(std::string str)=0;
-      virtual void set_frame_comment(unsigned int frame, std::string str)=0;
-      virtual std::string get_frame_comment(unsigned int frame) const=0;
+      virtual void set_fame_name(unsigned int frame, std::string str)=0;
+      virtual std::string get_fame_name(unsigned int frame) const=0;
       void validate(std::ostream &out) const;
     };
 
