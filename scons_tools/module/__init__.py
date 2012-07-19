@@ -211,7 +211,8 @@ def IMPModuleExamples(env, example_files, data_files):
                         break
                 for o in example_files:
                     if not overview:
-                        raise RuntimeError("No readme found for "+str(e))
+                        raise RuntimeError(
+                               "No non-empty readme file found for "+str(e))
                     scons_tools.examples.add_python_example(env, e, overview)
         links=[]
         fexample_files=[x for x in example_files if x not in seen]
