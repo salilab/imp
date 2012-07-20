@@ -203,20 +203,13 @@ for(int i=0;i<mydata.num_cells;++i){
   }
  }
 //
-// SPC110p
+// SPC110p && CMD1p
 //
  if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
   for(int j=0;j<mydata.num_copies/2;++j){
    algebra::Vector3D tmp_x0=
     algebra::Vector3D(CP_x0[0],CP_x0[1],CP_x0[2]-mydata.CP_thickness/2.0);
-/*
-   // A) Coiled-Coil
-   atom::Molecules Spc110p_CC=
-    create_coiled_coil(m,"Spc110_CC","CC_120_A.pdb","CC_120_B.pdb",
-                       mydata.resolution,
-                       display::Color(255./255.,0.,0.),
-                       i, CC2_x0,678);
-*/
+
    // B) from residue 799 to 895 no structure
    atom::Molecules Spc110p_799_895;
    for(unsigned kk=0;kk<2;++kk){
@@ -225,22 +218,23 @@ for(int i=0;i<mydata.num_cells;++i){
                         i,mydata.kappa,tmp_x0,mydata.use_connectivity,799,97));
     if(i==0){
      Particles ps=atom::get_leaves(Spc110p_799_895[kk]);
+     CP_ps->add_particles(ps);
      add_BallMover(ps,mydata.MC.dx,mvs);
     }
    }
    // C) C-terminal part (with structure)
    atom::Molecules Spc110p_896_944;
-   Spc110p_896_944.push_back(create_protein(m,"Spc110p_896_944",
-                      "4DS7_Spc110_A_new.pdb", mydata.resolution,
-                      display::Color(255./255.,0.,0.),
-                      i,tmp_x0,0,false));
-   Spc110p_896_944.push_back(create_protein(m,"Spc110p_896_944",
-                      "4DS7_Spc110_B_new.pdb", mydata.resolution,
-                      display::Color(255./255.,0.,0.),
-                      i,tmp_x0,0,false));
- // GFPs?
-   if(mydata.add_GFP){
-    for(unsigned kk=0;kk<2;++kk){
+   for(unsigned kk=0;kk<2;++kk){
+    Spc110p_896_944.push_back(create_protein(m,"Spc110p_896_944",
+                       "4DS7_Spc110_swapped.pdb", mydata.resolution,
+                       display::Color(255./255.,0.,0.),
+                       i,tmp_x0,0,false));
+    if(i==0){
+     Particles ps=atom::get_leaves(Spc110p_896_944[kk]);
+     CP_ps->add_particles(ps);
+    }
+// GFPs?
+    if(mydata.add_GFP){
      atom::Molecule gfp_c=
       create_GFP(m,"Spc110p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
      all_mol.add_child(gfp_c);
@@ -248,64 +242,79 @@ for(int i=0;i<mydata.num_cells;++i){
    }
 // Calmodulin
    atom::Molecules Cmd1p;
-   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_A_new.pdb",
-                     mydata.resolution,
-                     display::Color(255./255.,255./255.,0.),
-                     i,tmp_x0,0,false));
-   Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd_B_new.pdb",
-                     mydata.resolution,
-                     display::Color(255./255.,255./255.,0.),
-                     i,tmp_x0,0,false));
    for(unsigned kk=0;kk<2;++kk){
+    Cmd1p.push_back(create_protein(m,"Cmd1p","4DS7_Cmd1_swapped.pdb",
+                     mydata.resolution,
+                     display::Color(255./255.,255./255.,0.),
+                     i,tmp_x0,0,false));
+
     all_mol.add_child(Cmd1p[kk]);
-    if(i==0){CP_ps->add_particles(atom::get_leaves(Cmd1p[kk]));}
-   }
+    if(i==0){
+     Particles ps=atom::get_leaves(Cmd1p[kk]);
+     CP_ps->add_particles(ps);
+    }
  //GFPs?
-   if(mydata.add_GFP){
-    for(unsigned kk=0;kk<2;++kk){
-     atom::Molecule gfp_n=
-      create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
-     all_mol.add_child(gfp_n);
-     atom::Molecule gfp_c=
-      create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
-     all_mol.add_child(gfp_c);
+    if(mydata.add_GFP){
+      atom::Molecule gfp_n=
+       create_GFP(m,"Cmd1p-N-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+      all_mol.add_child(gfp_n);
+      atom::Molecule gfp_c=
+       create_GFP(m,"Cmd1p-C-GFP",i,CP_ps,tmp_x0,mvs,mydata);
+      all_mol.add_child(gfp_c);
     }
    }
-// Create the rigid body
-   core::XYZRs rbps;
+// Create the two rigid bodies Cmd1-Spc110
    for(unsigned kk=0;kk<2;++kk){
+    core::XYZRs rbps;
     Particles ps0=atom::get_leaves(Spc110p_896_944[kk]);
     for(unsigned jj=0;jj<ps0.size();++jj){rbps.push_back(core::XYZR(ps0[jj]));}
     Particles ps1=atom::get_leaves(Cmd1p[kk]);
     for(unsigned jj=0;jj<ps1.size();++jj){rbps.push_back(core::XYZR(ps1[jj]));}
-   }
-   IMP_NEW(Particle,prb,(m));
-   core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
-   recenter_rb(rb,rbps,tmp_x0);
-// now I need a mover for the Cmd1p-Spc110p rb + balls
-   if(i==0){
-    Particles ps_Spc110p_799_895;
-    for(unsigned int kk=0;kk<2;++kk){
-     Particles ps=atom::get_leaves(Spc110p_799_895[kk]);
-     ps_Spc110p_799_895.insert(ps_Spc110p_799_895.end(),ps.begin(),ps.end());
+    IMP_NEW(Particle,prb,(m));
+    core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+    recenter_rb(rb,rbps,tmp_x0);
+//  add mover for the rigid body
+    if(i==0){
+      IMP_NEW(core::RigidBodyMover,rbmv,(rb,mydata.MC.dx,mydata.MC.dang));
+      mvs.push_back(rbmv);
     }
+   }
+// Finally create the Coiled-Coil up to 798
+   atom::Molecules Spc110p_CC=
+    create_coiled_coil(m,"Spc110_CC","CC_120_A.pdb","CC_120_B.pdb",
+                       mydata.resolution,
+                       display::Color(255./255.,0.,0.),
+                       i, CC2_x0, 679);
+// add mover for a master rigid body with slave particles
+   if(i==0){
+    Particles ps;
+    for(unsigned int kk=0;kk<2;++kk){
+     Particles ps0=atom::get_leaves(Spc110p_799_895[kk]);
+     Particles ps1=atom::get_leaves(Spc110p_896_944[kk]);
+     Particles ps2=atom::get_leaves(Cmd1p[kk]);
+     ps.insert(ps.end(),ps0.begin(),ps0.end());
+     ps.insert(ps.end(),ps1.begin(),ps1.end());
+     ps.insert(ps.end(),ps2.begin(),ps2.end());
+    }
+    core::RigidBody rb=
+      core::RigidMember(atom::get_leaves(Spc110p_CC[0])[0]).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
-     (rb,ps_Spc110p_799_895,mydata.MC.dx,mydata.MC.dang,
-      mydata.CP_centers,mydata.trs));
+     (rb,ps,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
     mvs.push_back(rbmv);
    }
- // only at this point I can create the merged Spc110
+// only at this point I can create the merged Spc110
    for(unsigned int kk=0;kk<2;++kk){
     atom::Molecules Spc110p_c_all;
+    Spc110p_c_all.push_back(Spc110p_CC[kk]);
     Spc110p_c_all.push_back(Spc110p_799_895[kk]);
     Spc110p_c_all.push_back(Spc110p_896_944[kk]);
     atom::Molecule Spc110p=
      create_merged_protein(m,"Spc110p",Spc110p_c_all,i,mydata.kappa,0.0);
     all_mol.add_child(Spc110p);
-    if(i==0){CP_ps->add_particles(atom::get_leaves(Spc110p));}
    }
   }
  }
+
 // set all particles as not optimized
  Particles ps=atom::get_leaves(all_mol);
  for(unsigned i=0;i<ps.size();++i){

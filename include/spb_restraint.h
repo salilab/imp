@@ -108,10 +108,13 @@ IMPMEMBRANEEXPORT void add_tilt(Model *m, const atom::Hierarchy& h,
 IMPMEMBRANEEXPORT void add_GFP_restraint
  (Model *m, const atom::Hierarchy& h, double kappa);
 
-IMPMEMBRANEEXPORT void add_Spc110_fake_CC(Model *m,
+IMPMEMBRANEEXPORT void add_stay_close_restraint(Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, int residue_a,
        atom::Hierarchies& hb, std::string protein_b, int residue_b,
  double kappa);
+
+IMPMEMBRANEEXPORT void add_stay_on_plane_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein, int residue, double kappa);
 
 IMPMEMBRANE_END_NAMESPACE
 

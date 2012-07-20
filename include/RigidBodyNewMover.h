@@ -12,11 +12,12 @@
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
 #include <IMP/core/Mover.h>
-#include <IMP/core/mover_macros.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/rigid_bodies.h>
+#include <IMP/core/mover_macros.h>
+
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //! Modify the transformation of a rigid body

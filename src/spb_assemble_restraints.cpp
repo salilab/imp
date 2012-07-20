@@ -53,7 +53,7 @@ add_layer_restraint(m, IL2_ps,
 // TILT restraint
 //
 if(mydata.add_tilt){
- double kappa_tilt=1000.0*mydata.kappa;
+ double kappa_tilt=100.0*mydata.kappa;
  if(mydata.protein_list["Spc110p"]){
    add_tilt(m,all_mol[0],"Spc110p",IntRange(700,705),mydata.tilt,kappa_tilt);
  }
@@ -130,8 +130,10 @@ if(mydata.add_y2h){
 // Add Spc110 coiled-coil mimic
 //
 if(mydata.protein_list["Spc110p"]){
- add_Spc110_fake_CC(m,all_mol[0],"Spc110p", 799,
-                      all_mol,   "Spc110p", 799, mydata.kappa);
+// add_stay_close_restraint(m,all_mol[0], "Spc110p", 799,
+//                               all_mol, "Spc110p", 799, mydata.kappa);
+// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",940, mydata.kappa);
+// add_stay_on_plane_restraint(m,all_mol[0],"Spc110p",896, mydata.kappa);
 }
 //
 // Add link with GFPs

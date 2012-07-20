@@ -502,7 +502,7 @@ void add_GFP_restraint(Model *m, const atom::Hierarchy& h, double kappa)
  }
 }
 
-void add_Spc110_fake_CC(Model *m,
+void add_stay_close_restraint(Model *m,
  const atom::Hierarchy&   ha, std::string protein_a, int residue_a,
        atom::Hierarchies& hb, std::string protein_b, int residue_b,
  double kappa)
@@ -527,9 +527,28 @@ void add_Spc110_fake_CC(Model *m,
    ps.push_back(pa[i]);
    Pointer<container::MinimumPairRestraint> mpr=
     do_bipartite_mindist(m,ps,pb,sps);
-   mpr->set_name("Fake CC restraint");
+   mpr->set_name("Stay close restraint");
    m->add_restraint(mpr);
   }
+}
+
+void add_stay_on_plane_restraint(Model *m,
+ const atom::Hierarchy& h, std::string protein, int residue, double kappa)
+{
+ atom::Selection s=atom::Selection(h);
+ s.set_molecule(protein);
+ s.set_residue_index(residue);
+ Particles ps=s.get_selected_particles();
+ IMP_NEW(core::Harmonic,har,(0.0,kappa));
+ IMP_NEW(membrane::AttributeDistancePairScore,adps,
+  (har,core::XYZ::get_coordinate_key(2)));
+ for(unsigned i=0;i<ps.size()-1;++i){
+  for(unsigned j=i+1;j<ps.size();++j){
+   IMP_NEW(core::PairRestraint,pr,(adps,ParticlePair(ps[i], ps[j])));
+   pr->set_name("Stay on z-plane restraint");
+   m->add_restraint(pr);
+  }
+ }
 }
 
 IMPMEMBRANE_END_NAMESPACE
