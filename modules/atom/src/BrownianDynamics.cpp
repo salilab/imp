@@ -16,7 +16,6 @@
 #include <IMP/internal/constants.h>
 #include <IMP/internal/units.h>
 #include <boost/random/normal_distribution.hpp>
-#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/atom/Diffusion.h>
 #include <IMP/Configuration.h>
 #include <IMP/algebra/LinearFit.h>
