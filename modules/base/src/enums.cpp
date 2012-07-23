@@ -26,6 +26,22 @@ std::istream &operator>>(std::istream &in,
   }
   return in;
 }
+
+std::ostream &operator<<(std::ostream &in,
+                         LogLevel &ll) {
+  if (ll==SILENT) in << "SILENT";
+  else if (ll==WARNING) in << "WARNING";
+  else if (ll==PROGRESS) in << "PROGRESS";
+  else if (ll==TERSE) in << "TERSE";
+  else if (ll==VERBOSE) in << "VERBOSE";
+  else if (ll==MEMORY) in << "MEMORY";
+  else {
+    IMP_THROW("Bad log level " << ll,
+              IOException);
+  }
+  return in;
+}
+
 std::istream &operator>>(std::istream &in,
                          CheckLevel &ll) {
   std::string str;
