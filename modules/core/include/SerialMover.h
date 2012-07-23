@@ -28,10 +28,28 @@ public:
       \param[in] mvs list of movers to apply one after another
    */
   SerialMover(const MoversTemp& mvs);
+
+  IMP_LIST_ACTION(public, Mover, Movers, mover, movers, Mover*, Movers,
+                  {
+                    obj->set_optimizer(get_optimizer());
+                    obj->set_was_used(true);
+                    reset_acceptance_probabilities();
+                  },{},{
+                    obj->set_optimizer(nullptr);
+                    if (container) {
+                      container->reset_acceptance_probabilities();
+                    }
+                  });
+  /** Get the acceptance rate for mover i. This is reset when
+      reset is called or the set of movers is changed.*/
+  double get_acceptance_probability(int i) const;
+  void   reset_acceptance_probabilities();
+
   IMP_MOVER(SerialMover);
 private:
-  core::Movers mvs_;
   int imov_;
+  Floats failed_;
+  Floats attempt_;
 };
 
 IMPCORE_END_NAMESPACE

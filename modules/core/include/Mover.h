@@ -33,16 +33,6 @@ class IMPCOREEXPORT Mover: public IMP::ModelObject
 {
   friend class MonteCarlo;
   UncheckedWeakPointer<Optimizer> opt_;
-
- /* Older versions of g++ do not extend friendship to
-    MonteCarlo::MoverDataWrapper, and thus fail to compile MonteCarlo.h. */
-#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 1))
-public:
-#endif
-  void set_optimizer(Optimizer *c) {
-    if (c) set_was_used(true);
-    opt_=c;
-  }
 public:
   Mover(Model *m, std::string name);
 
@@ -67,7 +57,10 @@ public:
     IMP_CHECK_OBJECT(this);
     return opt_;
   }
-
+  void set_optimizer(Optimizer *c) {
+    if (c) set_was_used(true);
+    opt_=c;
+  }
   IMP_MODEL_OBJECT(Mover);
   IMP_REF_COUNTED_DESTRUCTOR(Mover);
 };

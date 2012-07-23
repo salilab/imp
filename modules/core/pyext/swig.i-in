@@ -5,6 +5,7 @@
 
 
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
+IMP_SWIG_CONTAINER(IMP::core, IMP::core, SerialMover, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
