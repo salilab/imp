@@ -16,6 +16,103 @@
 #include <IMP/core/XYZR.h>
 #include <numeric>
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
+namespace {
+class DummyPairContainer :
+  public IMP::internal::ListLikePairContainer
+{
+  IMP::OwnerPointer<SingletonContainer> c_;
+  IMP::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP_LISTLIKE_PAIR_CONTAINER(DummyPairContainer);
+  void initialize(SingletonContainer *c, double distance,
+                  double slack, ClosePairsFinder *cpf);
+public:
+  DummyPairContainer(SingletonContainer *c,
+                      ClosePairsFinder *cpf);
+public:
+  SingletonContainer*get_singleton_container() const {return c_;}
+  ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
+  Restraints create_decomposition(PairScore *ps) const {
+    ParticleIndexPairs all= get_all_possible_indexes();
+    Restraints ret(all.size());
+    for (unsigned int i=0; i< all.size(); ++i) {
+      ret[i]= new PairRestraint(ps, IMP::internal::get_particle(get_model(),
+                                                                all[i]));
+    }
+    return ret;
+  }
+  template <class PS>
+  Restraints create_decomposition_t(PS *ps) const {
+    ParticleIndexPairs all= get_all_possible_indexes();
+    Restraints ret(all.size());
+    for (unsigned int i=0; i< all.size(); ++i) {
+      ret[i]= IMP::create_restraint(ps,
+                                     IMP::internal::get_particle(get_model(),
+                                                                 all[i]));
+    }
+    return ret;
+  }
+};
+
+
+
+DummyPairContainer::DummyPairContainer(SingletonContainer *c,
+                                       ClosePairsFinder *cpf):
+  IMP::internal::ListLikePairContainer(c->get_model(),
+                                       "ClosePairContainer") {
+  c_=c;
+  cpf_=cpf;
+}
+
+
+
+ContainersTemp DummyPairContainer
+::get_input_containers() const {
+  ContainersTemp ret= cpf_->get_input_containers(c_->get_particles());
+  ret.push_back(c_);
+  return ret;
+}
+
+
+ParticlesTemp DummyPairContainer::get_input_particles() const {
+  ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
+  ParticlesTemp all;
+  ret.insert(ret.end(), all.begin(), all.end());
+  return ret;
+}
+
+
+
+
+void DummyPairContainer::do_before_evaluate() {
+}
+
+
+void DummyPairContainer::do_show(std::ostream &) const {
+}
+
+
+ParticleIndexPairs DummyPairContainer::get_all_possible_indexes() const {
+  ParticleIndexes pis= c_->get_all_possible_indexes();
+  ParticleIndexPairs ret; ret.reserve(pis.size()*(pis.size()-1)/2);
+  for (unsigned int i=0; i< pis.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(ParticleIndexPair(pis[i], pis[j]));
+    }
+  }
+  return ret;
+}
+
+ParticlesTemp DummyPairContainer::get_all_possible_particles() const {
+  ParticlesTemp ret= c_->get_all_possible_particles();
+  ParticlesTemp nret =cpf_->get_input_particles(c_->get_particles());
+  ret.insert(ret.end(), nret.begin(), nret.end());
+  return ret;
+}
+
+
+}
+
+
 /** to handle good/max evaluate, add dummy restraints for each
     restraint set that return 0 or inf if the last scores for the
     set are bad.*/
@@ -110,10 +207,8 @@ Restraint* NBLScoring::create_restraint() const {
   IMP_NEW(IMP::internal::InternalListSingletonContainer,
           lsc, (cache_.get_generator().m_, "NBLInput Container %1%"));
   lsc->set_particles(cache_.get_generator().pis_);
-  IMP_NEW(IMP::core::internal::CoreClosePairContainer,
-          cpc, (lsc, cache_.get_generator().distance_,
-                default_cpf(1000),
-                cache_.get_generator().distance_*.2));
+  IMP_NEW(DummyPairContainer,
+          cpc, (lsc,  default_cpf(1000)));
 
   Pointer<Restraint> ret= new IMP::internal
     ::InternalPairsRestraint(cache_.get_generator().score_.get(),
