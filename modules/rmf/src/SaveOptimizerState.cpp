@@ -44,6 +44,8 @@ IMP_LIST_IMPL(SaveOptimizerState, Geometry, geometry,
 
 void SaveOptimizerState::set_simulator(atom::Simulator *sim) {
   sim_=sim;
-
+}
+void SaveOptimizerState::set_frame_name(std::string name) {
+  fh_.set_frame_name(fh_.get_number_of_frames()-1, name);
 }
 IMPRMF_END_NAMESPACE
