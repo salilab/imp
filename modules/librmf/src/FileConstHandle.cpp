@@ -33,8 +33,8 @@ void FileConstHandle::flush() {
   shared_->flush();
 }
 
-std::string FileConstHandle::get_fame_name(unsigned int frame) {
-  return shared_->get_fame_name(frame);
+std::string FileConstHandle::get_frame_name(unsigned int frame) {
+  return shared_->get_frame_name(frame);
 }
 
 Floats get_values(const NodeConstHandles &nodes,

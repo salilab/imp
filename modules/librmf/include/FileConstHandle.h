@@ -241,7 +241,7 @@ namespace RMF {
     }
    /** Frames can have associated comments which can be used to label
         particular frames of interest.*/
-    std::string get_fame_name(unsigned int frame);
+    std::string get_frame_name(unsigned int frame);
 
     /** \name Non-template versions for python
 
