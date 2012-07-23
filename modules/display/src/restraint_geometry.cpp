@@ -36,6 +36,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
   Pointer<Restraint> rd= r_->create_current_decomposition();
   if (!rd) return IMP::display::Geometries();
   RestraintSet *rs= dynamic_cast<RestraintSet*>(rd.get());
+  rd->set_was_used(true);
   IMP::display::Geometries ret;
   if (!rs) {
     ParticlesTemp ps= r_->get_input_particles();

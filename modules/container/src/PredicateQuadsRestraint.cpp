@@ -52,6 +52,8 @@ Restraints PredicateQuadsRestraint
       RestraintSet *rs= dynamic_cast<RestraintSet*>(r.get());
       if (rs) {
         ret+=rs->get_restraints();
+        // suppress warning
+        rs->set_was_used(true);
       } else {
         ret.push_back(r);
       }
