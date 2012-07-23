@@ -41,6 +41,8 @@ enum LogLevel {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 IMPBASEEXPORT std::istream &operator>>(std::istream &in,
                                        LogLevel &ll);
+IMPBASEEXPORT std::ostream &operator<<(std::ostream &in,
+                                       LogLevel &ll);
 #endif
 
 // duplicated in IMP_base_exception.i otherwise IMP_base_exception.i
