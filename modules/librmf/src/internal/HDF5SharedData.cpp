@@ -358,16 +358,16 @@ namespace RMF {
       get_group().set_char_attribute("description", str);
     }
 
-  void HDF5SharedData::set_fame_name(unsigned int frame, std::string str) {
+  void HDF5SharedData::set_frame_name(unsigned int frame, std::string str) {
     if (fame_names_== HDF5DataSetD<StringTraits, 1>()) {
-      if (file_.get_has_child(get_fame_name_data_set_name())) {
+      if (file_.get_has_child(get_frame_name_data_set_name())) {
         fame_names_
             =file_.get_child_data_set<StringTraits, 1>
-            (get_fame_name_data_set_name());
+            (get_frame_name_data_set_name());
       } else {
        fame_names_
            = file_.add_child_data_set<StringTraits, 1>
-            (get_fame_name_data_set_name());
+            (get_frame_name_data_set_name());
       }
     }
     if (fame_names_.get_size()[0] <= frame) {
@@ -375,12 +375,12 @@ namespace RMF {
     }
     fame_names_.set_value(HDF5DataSetIndexD<1>(frame), str);
   }
-  std::string HDF5SharedData::get_fame_name(unsigned int frame) const {
+  std::string HDF5SharedData::get_frame_name(unsigned int frame) const {
     if (fame_names_== HDF5DataSetD<StringTraits, 1>()) {
-      if (file_.get_has_child(get_fame_name_data_set_name())) {
+      if (file_.get_has_child(get_frame_name_data_set_name())) {
         fame_names_
             =file_.get_child_data_set<StringTraits, 1>
-            (get_fame_name_data_set_name());
+            (get_frame_name_data_set_name());
       } else {
         return std::string();
       }

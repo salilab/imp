@@ -23,7 +23,7 @@ void SaveOptimizerState::do_update(unsigned int k) {
   if (sim_) {
     std::ostringstream oss;
     oss << sim_->get_current_time() << "fs";
-    fh_.set_fame_name(k, oss.str());
+    fh_.set_frame_name(k, oss.str());
   }
 }
 
