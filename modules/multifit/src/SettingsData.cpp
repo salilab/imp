@@ -117,7 +117,7 @@ SettingsData *read_settings(const char *filename) {
   std::fstream in;
   in.open(filename, std::fstream::in);
   if (!in.good()){
-    IMP_THROW("Problem openning file " << filename <<
+    IMP_THROW("Problem opening file " << filename <<
               " for reading " << std::endl,ValueException);
   }
   std::string line;
