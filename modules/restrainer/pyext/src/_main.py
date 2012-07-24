@@ -46,6 +46,7 @@ class Main(object):
                 else:
                     logname = 'log%03d.py'
                 self.log = self.display.create_log(self.representation, logname)
+                self.log.set_was_used(True)
     def optimize(self):
         if self.restraint:
             if not self.representation:
