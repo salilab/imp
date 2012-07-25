@@ -18,30 +18,19 @@ namespace {
   unsigned int key_count=0;
 }
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
-                                                   bool no_overlaps,
                                                    std::string name):
   PairContainer(ps[0]->get_model(),name),
   ps_(IMP::internal::get_index(ps)) {
-  init(no_overlaps);
-}
-ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
-                                                   std::string name):
-  PairContainer(ps[0]->get_model(),name),
-  ps_(IMP::internal::get_index(ps)) {
-  init(false);
+  init();
 }
 
 // add key of this container as attribute to all particles
 // if there might be ovrlaps - create a different keys for each instance
-void ConsecutivePairContainer::init(bool no_overlaps){
-  if (!no_overlaps) {
-    std::ostringstream oss;
-    oss << "CPC cache " << key_count;
-    ++key_count;
-    key_= IntKey(oss.str());
-  } else {
-    key_= get_exclusive_key();
-  }
+void ConsecutivePairContainer::init(){
+  std::ostringstream oss;
+  oss << "CPC cache " << key_count;
+  ++key_count;
+  key_= IntKey(oss.str());
   for (unsigned int i= 0; i < ps_.size(); ++i) {
     IMP_USAGE_CHECK(!get_model()->get_has_attribute(key_, ps_[i]),
                     "You must create containers before reading in the "
@@ -98,9 +87,74 @@ ConsecutivePairContainer
   return std::abs(ia-ib)==1;
 }
 
+
 ExclusiveConsecutivePairContainer
 ::ExclusiveConsecutivePairContainer(const ParticlesTemp &ps,
                                     std::string name):
-    ConsecutivePairContainer(ps, true, name){}
+  PairContainer(ps[0]->get_model(),name),
+  ps_(IMP::internal::get_index(ps)) {
+  init();
+}
+
+// add key of this container as attribute to all particles
+// if there might be ovrlaps - create a different keys for each instance
+void ExclusiveConsecutivePairContainer::init(){
+  for (unsigned int i= 0; i < ps_.size(); ++i) {
+    IMP_USAGE_CHECK(!get_model()->get_has_attribute(get_exclusive_key(),
+                                                    ps_[i]),
+                    "You must create containers before reading in the "
+                    << "saved model: "
+                    << get_model()->get_particle(ps_[i])->get_name());
+    get_model()->add_attribute(get_exclusive_key(), ps_[i], i);
+    get_model()->add_attribute(get_exclusive_object_key(), ps_[i], this);
+  }
+}
+
+void ExclusiveConsecutivePairContainer::do_before_evaluate() {}
+
+ParticlesTemp ExclusiveConsecutivePairContainer::get_input_particles() const {
+  return ParticlesTemp();
+}
+ContainersTemp ExclusiveConsecutivePairContainer::get_input_containers() const {
+  return ContainersTemp();
+}
+
+
+bool
+ExclusiveConsecutivePairContainer::get_is_changed() const {
+  return false;
+}
+
+ParticleIndexPairs ExclusiveConsecutivePairContainer::get_indexes() const {
+  ParticleIndexPairs ret(ps_.size()-1);
+  for (unsigned int i=1; i< ps_.size(); ++i) {
+    ret[i-1]= ParticleIndexPair(ps_[i-1], ps_[i]);
+  }
+  return ret;
+}
+
+ParticleIndexPairs ExclusiveConsecutivePairContainer
+::get_all_possible_indexes() const {
+  return get_indexes();
+}
+
+
+void ExclusiveConsecutivePairContainer::do_show(std::ostream &out) const {
+  IMP_CHECK_OBJECT(this);
+  out << "num particles: " << ps_.size() << std::endl;
+}
+
+ParticlesTemp ExclusiveConsecutivePairContainer
+::get_all_possible_particles() const {
+  return IMP::internal::get_particle(get_model(), ps_);
+}
+
+bool
+ExclusiveConsecutivePairContainer
+::get_contains_particle_pair(const ParticlePair &p) const {
+  return get_contains(get_model(),
+                      ParticleIndexPair(p[0]->get_index(),
+                                        p[1]->get_index()));
+}
 
 IMPCONTAINER_END_NAMESPACE
