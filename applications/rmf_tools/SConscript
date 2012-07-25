@@ -42,3 +42,4 @@ if env:
     env.IMPCPPExecutable(target="rmf_cat", source=["rmf_cat.cpp"])
     env.IMPCPPExecutable(target="rmf_validate", source=["rmf_validate.cpp"])
     env.IMPCPPExecutable(target="rmf_frames", source=["rmf_frames.cpp"])
+    env.IMPCPPExecutable(target="rmf_unlock", source=["rmf_unlock.cpp"])

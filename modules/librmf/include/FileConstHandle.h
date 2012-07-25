@@ -388,6 +388,19 @@ namespace RMF {
      */
     void flush();
 
+    /** Some backends support locking to allow simulataneous reading from
+        and writing to the file from different processes.
+        @{
+    */
+    bool get_supports_locking() const;
+    /** Try to lock/unlock the file and return whether you have the lock.
+        That is if you try to lock the file and false is returned, you did
+        not succeed and should retry.
+
+        You probably should use FileLock instead of calling this directly. */
+    bool set_is_locked(bool tf);
+    /** @} */
+
     /** Run the various validators that attempt to check that the RMF file
         is correct. Print messages to the provided stream if errors are
         encounted.*/

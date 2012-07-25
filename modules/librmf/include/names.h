@@ -85,6 +85,10 @@ namespace RMF {
     oss << "_storage";
     return oss.str();
   }
+  //! Get the name of the lock attribute
+  inline std::string get_lock_attribute_name() {
+    return std::string("lock");
+  }
   /** @} */
 
   /** Return the path to an example file from the name.*/

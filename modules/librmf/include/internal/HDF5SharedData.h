@@ -709,6 +709,9 @@ namespace RMF {
 
       void set_frame_name(unsigned int frame, std::string str);
       std::string get_frame_name(unsigned int frame) const;
+
+       bool get_supports_locking() const {return true;}
+       bool set_is_locked(bool tf);
     };
 
   } // namespace internal
