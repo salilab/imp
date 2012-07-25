@@ -8,6 +8,7 @@
 
 #include <IMP/rmf/frames.h>
 #include <IMP/rmf/links.h>
+#include <RMF/FileLock.h>
 #include <IMP/rmf/associations.h>
 #include <IMP/compatibility/set.h>
 IMPRMF_BEGIN_NAMESPACE
@@ -42,6 +43,7 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
 }
 
 void save_frame(RMF::FileHandle file, unsigned int frame) {
+  RMF::FileLock fl(file);
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll
@@ -53,7 +55,6 @@ void save_frame(RMF::FileHandle file, unsigned int frame) {
                      "Found " << file.get_number_of_frames()
                      << " frames after writing frame "
                      << frame);
-  file.flush();
 }
 
 

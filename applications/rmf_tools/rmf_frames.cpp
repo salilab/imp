@@ -2,6 +2,7 @@
  * Copyright 2007-2012 IMP Inventors. All rights reserved.
  */
 #include <RMF/FileHandle.h>
+#include <RMF/FileLock.h>
 #include <sstream>
 #include "common.h"
 
@@ -15,6 +16,7 @@ int main(int argc, char **argv) {
 
 
     RMF::FileConstHandle rh= RMF::open_rmf_file_read_only(input);
+    RMF::FileLock lk(rh);
     for (unsigned int i=0; i< rh.get_number_of_frames(); ++i) {
       std::string cmt=rh.get_frame_name(i);
       if (!cmt.empty()) {
