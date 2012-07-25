@@ -174,6 +174,7 @@ IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5MutableAttributes);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5GroupAttributes,HDF5GroupAttributes, HDF5GroupAttributesList);
 IMP_RMF_SWIG_VALUE(RMF, HDF5Group, HDF5Groups);
 IMP_RMF_SWIG_VALUE(RMF, HDF5File, HDF5Files);
+IMP_RMF_SWIG_VALUE(RMF, FileLock, FileLocks);
 IMP_RMF_SWIG_VALUE_TEMPLATE(RMF, HDF5DataSetD);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex1D, HDF5DataSetIndex1D, HDF5DataSetIndex1Ds);
 IMP_RMF_SWIG_VALUE_INSTANCE(RMF, HDF5DataSetIndex2D, HDF5DataSetIndex2D, HDF5DataSetIndex2Ds);
@@ -322,6 +323,8 @@ IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_TYPE);
 %include "RMF/Decorator.h"
 %include "RMF/Factory.h"
 
+%include "RMF/FileLock.h"
+
 IMP_RMF_DECORATOR(RMF, Particle);
 IMP_RMF_DECORATOR(RMF, IntermediateParticle);
 IMP_RMF_DECORATOR(RMF, Colored);
@@ -338,7 +341,7 @@ IMP_RMF_DECORATOR(RMF, Domain);
 IMP_RMF_DECORATOR(RMF, Copy);
 IMP_RMF_DECORATOR(RMF, Diffuser);
 IMP_RMF_DECORATOR(RMF, Typed);
-IMP_RMF_DECORATOR(RMF, StaticAlias);
+IMP_RMF_DECORATOR(RMF, Alias);
 
 %include "RMF/decorators.h"
 %include "RMF/decorator_utility.h"
@@ -440,10 +443,12 @@ const std::string get_module_version();
 }
 // WARNING Generated file, do not edit, edit the swig.i-in instead.
 %pythoncode {
+has_gperftools=True
 has_protobuf=True
 has_boost_filesystem=True
 has_boost_thread=True
 has_hdf5=True
+has_googleperftools=False
 }
 
 %pythoncode %{
