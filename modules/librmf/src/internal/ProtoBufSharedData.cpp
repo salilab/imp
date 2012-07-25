@@ -20,11 +20,7 @@ namespace RMF {
       name_(name)
     {
       if (!create) {
-        std::fstream in(name_.c_str(), std::ios::in | std::ios::binary);
-        if (!in) {
-          IMP_RMF_THROW("Could not open file", IOException);
-        }
-        proto_.ParseFromIstream(&in);
+        reload();
       } else {
         proto_.add_node();
         proto_.mutable_node(0)->set_name("root");
@@ -289,6 +285,14 @@ namespace RMF {
     } else {
       return std::string();
     }
+  }
+
+  void ProtoBufSharedData::reload() {
+    std::fstream in(name_.c_str(), std::ios::in | std::ios::binary);
+    if (!in) {
+      IMP_RMF_THROW("Could not open file", IOException);
+    }
+    proto_.ParseFromIstream(&in);
   }
 
   } // namespace internal
