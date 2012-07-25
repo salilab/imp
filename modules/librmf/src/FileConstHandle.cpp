@@ -81,4 +81,8 @@ void FileConstHandle::validate(std::ostream &out=std::cerr) const {
   get_shared_data()->validate(out);
 }
 
+void FileConstHandle::reload() {
+  get_shared_data()->reload();
+}
+
 } /* namespace RMF */

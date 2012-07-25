@@ -405,6 +405,12 @@ namespace RMF {
         is correct. Print messages to the provided stream if errors are
         encounted.*/
     void validate(std::ostream &out) const;
+
+    /** Reread the file.
+        \note This may invalidate various thing (eg the number of nodes may
+        vary). Be careful.
+    */
+    void reload();
   };
 
   typedef vector<FileConstHandle> FileConstHandles;

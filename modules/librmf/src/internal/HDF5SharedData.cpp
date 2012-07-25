@@ -16,41 +16,28 @@
 namespace RMF {
   namespace internal {
 
-  void HDF5SharedData::initialize_categories(int i, bool create) {
+  void HDF5SharedData::initialize_categories(int i, bool) {
     std::string nm=get_category_name_data_set_name(i+1);
+    category_names_cache_[i].clear();
     if (file_.get_has_child(nm)) {
       category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
-      for (unsigned int j=0; j< category_names_[i].get_size()[0]; ++j) {
-        std::string name
-            = category_names_[i].get_value(HDF5DataSetIndex1D(j));
-        category_names_cache_[i].push_back(name);
-      }
-    } else if (i==0 && !create) {
-      if (!file_.get_file().get_is_writable()) {
-      // backward compatibility
-        category_names_cache_[i].push_back("physics");
-        category_names_cache_[i].push_back("sequence");
-        category_names_cache_[i].push_back("bond-do not use");
-        category_names_cache_[i].push_back("shape");
-        category_names_cache_[i].push_back("feature");
-      } else {
-        add_category(1, "physics");
-        add_category(1, "sequence");
-        add_category(1, "bond-do not use");
-        add_category(1, "shape");
-        add_category(1, "feature");
+      unsigned int sz= category_names_[i].get_size()[0];
+      for (unsigned int j=0; j< sz; ++j) {
+        category_names_cache_[i]
+          .push_back(category_names_[i].get_value(HDF5DataSetIndexD<1>(j)));
       }
     }
   }
 
   void HDF5SharedData::initialize_keys(int i) {
-    std::string nm=get_set_data_data_set_name(i+2);
+    std::string nm=get_set_data_data_set_name(i+1);
+    free_ids_[i].clear();
     if (file_.get_has_child(nm)) {
-      node_data_[i+1]
+      node_data_[i]
           = file_.get_child_data_set<IndexTraits, 2>(nm);
-      for (unsigned int j=0; j< node_data_[i+1].get_size()[0]; ++j) {
-        if (node_data_[i+1].get_value(HDF5DataSetIndexD<2>(j, 0))==-1) {
-          free_ids_[i+1].push_back(j);
+      for (unsigned int j=0; j< node_data_[i].get_size()[0]; ++j) {
+        if (node_data_[i].get_value(HDF5DataSetIndexD<2>(j, 0))==-1) {
+          free_ids_[i].push_back(j);
         }
       }
     }
@@ -79,14 +66,15 @@ namespace RMF {
           file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
           "adding version string to file.");
       IMP_RMF_OPERATION(
-          node_names_
-          =(file_.add_child_data_set<StringTraits, 1>)
+                        (file_.add_child_data_set<StringTraits, 1>)
           (get_node_name_data_set_name());,
           "adding node name data set to file.");
-      IMP_RMF_OPERATION(
-          node_data_[0]=(file_.add_child_data_set<IndexTraits, 2>)
+      IMP_RMF_OPERATION((file_.add_child_data_set<IndexTraits, 2>)
           (get_node_data_data_set_name());,
           "adding node data data set to file.");
+      for (unsigned int i=0; i< 4; ++i) {
+        initialize_categories(i, true);
+      }
     } else {
       std::string version;
       IMP_RMF_OPERATION(
@@ -97,30 +85,19 @@ namespace RMF {
                                             "string found: \"",
                                             version , "\" expected \"" ,
                                             "rmf 1" , "\""));
-      IMP_RMF_OPERATION(
-          node_names_=(file_.get_child_data_set<StringTraits, 1>)
-          (get_node_name_data_set_name());,
-          "opening node name data set.");
-      IMP_RMF_OPERATION(
-          node_data_[0]=(file_.get_child_data_set<IndexTraits, 2>)
-          (get_node_data_data_set_name());,
-          "opening node child data set.");
     }
 
-      for (unsigned int i=0; i< 4; ++i) {
-        initialize_categories(i, create);
-        initialize_keys(i);
-      }
-      initialize_free_nodes();
-      if (create) {
+
+    reload();
+    if (create) {
         add_node("root", ROOT);
-      } else {
-        IMP_RMF_USAGE_CHECK(get_name(0)=="root",
-                            "Root node is not so named");
-      }
-      IMP_RMF_END_OPERATION("initializing");
-      IMP_RMF_END_FILE(get_file_name());
+    } else {
+      IMP_RMF_USAGE_CHECK(get_name(0)=="root",
+                          "Root node is not so named");
     }
+    IMP_RMF_END_OPERATION("initializing");
+    IMP_RMF_END_FILE(get_file_name());
+  }
 
     HDF5SharedData::~HDF5SharedData() {
       add_ref();
@@ -407,6 +384,36 @@ namespace RMF {
     }
     flush();
     return tf;
+  }
+
+#define IMP_RMF_RELOAD(lcname, Ucname, PassValue, ReturnValue,          \
+                       PassValues, ReturnValues)                        \
+    lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 2>();          \
+    per_frame_##lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 3>() \
+
+
+  void HDF5SharedData::reload() {
+    IMP_RMF_OPERATION(node_names_=(file_.get_child_data_set<StringTraits, 1>)
+                      (get_node_name_data_set_name());,
+                      "opening node name data set.");
+    for (unsigned int i=0; i< 4; ++i) {
+      node_data_[i]=HDF5DataSetD<IndexTraits, 2>();
+      if (i==0) {
+        node_data_[i]=file_.get_child_data_set<IndexTraits, 2>
+          (get_node_data_data_set_name());
+      }
+      free_ids_[i].clear();
+      index_cache_[i]=IndexCache();
+      key_name_data_sets_[i]= KeyNameDataSetCache();
+      category_names_cache_[i].clear();
+      category_names_[i]=HDF5DataSetD<StringTraits, 1>();
+      initialize_categories(i, false);
+      initialize_keys(i);
+    }
+    initialize_free_nodes();
+    fame_names_=HDF5DataSetD<StringTraits, 1>();
+    max_cache_.clear();
+    IMP_RMF_FOREACH_TYPE(IMP_RMF_RELOAD);
   }
 
   } // namespace internal

@@ -252,7 +252,7 @@ namespace RMF {
                                              size[D-1]);
     }
 #endif
-    //! Write a rectangular block starting at ln of size size
+    //! Read a rectangular block starting at ln of size size
     typename TypeTraits::Types get_block( const Index &lb,
                                           const Index &size) const {
       hsize_t total=1;

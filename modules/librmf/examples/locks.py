@@ -23,6 +23,7 @@ def update():
     d= pf.get(n, fr)
     d.set_coordinates([fr, 0, 0])
     print fr
+    del lk
 
-while len(sys.argv) >1 or f.get_numer_of_frames() < 1000:
+while len(sys.argv) >1 or f.get_number_of_frames() < 1000:
     update()

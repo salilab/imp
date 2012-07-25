@@ -437,6 +437,7 @@ namespace RMF {
 
       void set_frame_name(unsigned int frame, std::string str);
       std::string get_frame_name(unsigned int frame) const;
+      void reload();
     };
   } // namespace internal
 } /* namespace RMF */

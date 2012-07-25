@@ -106,6 +106,7 @@ namespace RMF {
       // indexed first by per frame, then by
       // TypeInfo::get_index() then by ID
       // then by key.get_index()
+      std::string file_name_;
       mutable HDF5Group file_;
       HDF5DataSetD<StringTraits, 1> node_names_;
       mutable HDF5DataSetD<StringTraits, 1> fame_names_;
@@ -124,6 +125,9 @@ namespace RMF {
         typedef HDF5DataSetD<TypeTraits, D> DS;
         mutable vector<DS > cache_;
         mutable HDF5DataSetD<TypeTraits, D> null_;
+
+        void close_things();
+        void open_things();
       public:
         HDF5DataSetD<TypeTraits,D>& get(HDF5Group file,
                                         unsigned int kc,
@@ -712,6 +716,7 @@ namespace RMF {
 
        bool get_supports_locking() const {return true;}
        bool set_is_locked(bool tf);
+       void reload();
     };
 
   } // namespace internal

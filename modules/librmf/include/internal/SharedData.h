@@ -205,6 +205,7 @@ namespace RMF {
       virtual std::string get_frame_name(unsigned int frame) const=0;
       virtual bool get_supports_locking() const {return false;}
       virtual bool set_is_locked(bool) {return false;}
+      virtual void reload()=0;
       void validate(std::ostream &out) const;
     };
 
