@@ -617,11 +617,14 @@ try:
                                       stderr=subprocess.PIPE, env=env)
 except ImportError:
     import threading
+    import popen2
     # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
     class _SubprocessWrapper(object):
         def __init__(self, app, args):
-            self.stdin, self.stdout, self.stderr = \
-                             os.popen3(app + " " + " ".join(args))
+            self.popen = popen2.Popen3(app + " " + " ".join(args), True)
+            self.stdin = self.popen.tochild
+            self.stdout = self.popen.fromchild
+            self.stderr = self.popen.childerr
 
         def _readerthread(self, fh, buffer):
             buffer.append(fh.read())
@@ -643,7 +646,7 @@ except ImportError:
             self.stdin.close()
             stdout_thread.join()
             stderr_thread.join()
-            self.returncode = 0
+            self.returncode = self.popen.wait()
             return stdout[0], stderr[0]
 
 
