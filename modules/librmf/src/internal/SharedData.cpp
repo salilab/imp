@@ -104,13 +104,7 @@ namespace RMF {
         return cache.find(path)->second;
       }
       if (boost::algorithm::ends_with(path, ".rmf")) {
-        HDF5Group g;
-        if (create) {
-          g= create_hdf5_file(path);
-        } else {
-          g= open_hdf5_file(path);
-        }
-        ret= new HDF5SharedData(g, create);
+        ret= new HDF5SharedData(path, create);
 #ifdef RMF_USE_PROTOBUF
       } else if (boost::algorithm::ends_with(path, ".prmf")) {
         ret= new ProtoBufSharedData(path, create);
@@ -129,9 +123,7 @@ namespace RMF {
         return cache.find(path)->second;
       }
       if (boost::algorithm::ends_with(path, ".rmf")) {
-        HDF5ConstGroup g;
-        g = open_hdf5_file(path);
-        ret= new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
+        ret= new HDF5SharedData(path, false);
 #ifdef RMF_USE_PROTOBUF
       } else if (boost::algorithm::ends_with(path, ".prmf")) {
         ret= new ProtoBufSharedData(path, false);

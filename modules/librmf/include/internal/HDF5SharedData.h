@@ -125,9 +125,6 @@ namespace RMF {
         typedef HDF5DataSetD<TypeTraits, D> DS;
         mutable vector<DS > cache_;
         mutable HDF5DataSetD<TypeTraits, D> null_;
-
-        void close_things();
-        void open_things();
       public:
         HDF5DataSetD<TypeTraits,D>& get(HDF5Group file,
                                         unsigned int kc,
@@ -667,6 +664,8 @@ namespace RMF {
       void set_sibling(unsigned int node, int sibling);
       int add_node(std::string name, unsigned int type);
       void check_set(int arity, unsigned int index) const;
+      void close_things();
+      void open_things(bool create);
     public:
       IMP_RMF_FOREACH_TYPE(IMP_RMF_HDF5_SHARED_TYPE);
 
@@ -681,7 +680,7 @@ namespace RMF {
         return file_.get_file().get_name();
       }
 
-      HDF5SharedData(HDF5Group g, bool create);
+      HDF5SharedData(std::string g, bool create);
       ~HDF5SharedData();
       std::string get_name(unsigned int node) const;
       unsigned int get_type(unsigned int Arity, unsigned int node) const;

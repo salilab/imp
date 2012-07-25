@@ -15,10 +15,66 @@
 
 namespace RMF {
   namespace internal {
+#define IMP_RMF_CLOSE(lcname, Ucname, PassValue, ReturnValue,           \
+                       PassValues, ReturnValues)                        \
+    lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 2>();          \
+    per_frame_##lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 3>() \
+
+  void HDF5SharedData::close_things() {
+    node_names_=HDF5DataSetD<StringTraits, 1>();
+    for (unsigned int i=0; i< 4; ++i) {
+      node_data_[i]=HDF5DataSetD<IndexTraits, 2>();
+      free_ids_[i].clear();
+      index_cache_[i]=IndexCache();
+      key_name_data_sets_[i]= KeyNameDataSetCache();
+      category_names_cache_[i].clear();
+      category_names_[i]=HDF5DataSetD<StringTraits, 1>();
+    }
+    fame_names_=HDF5DataSetD<StringTraits, 1>();
+    max_cache_.clear();
+    IMP_RMF_FOREACH_TYPE(IMP_RMF_CLOSE);
+    flush();
+    file_=HDF5Group();
+    H5garbage_collect();
+  }
+  void HDF5SharedData::open_things(bool create) {
+    if (create) {
+      file_=create_hdf5_file(file_name_);
+      IMP_RMF_OPERATION(
+          file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
+          "adding version string to file.");
+      IMP_RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
+          (get_node_name_data_set_name());,
+          "adding node name data set to file.");
+      IMP_RMF_OPERATION((file_.add_child_data_set<IndexTraits, 2>)
+          (get_node_data_data_set_name());,
+          "adding node data data set to file.");
+    } else {
+      file_=open_hdf5_file(file_name_);
+      std::string version;
+      IMP_RMF_OPERATION(
+          version=file_.get_attribute<CharTraits>("version"),
+          "reading version string from file.");
+      IMP_RMF_USAGE_CHECK(version== "rmf 1",
+                          get_error_message("Unsupported rmf version ",
+                                            "string found: \"",
+                                            version , "\" expected \"" ,
+                                            "rmf 1" , "\""));
+    }
+    IMP_RMF_OPERATION(node_names_=(file_.get_child_data_set<StringTraits, 1>)
+                      (get_node_name_data_set_name());,
+                      "opening node name data set.");
+    node_data_[0]=file_.get_child_data_set<IndexTraits, 2>
+        (get_node_data_data_set_name());
+    for (unsigned int i=0; i< 4; ++i) {
+      initialize_categories(i, create);
+      initialize_keys(i);
+    }
+    initialize_free_nodes();
+  }
 
   void HDF5SharedData::initialize_categories(int i, bool) {
     std::string nm=get_category_name_data_set_name(i+1);
-    category_names_cache_[i].clear();
     if (file_.get_has_child(nm)) {
       category_names_[i]= file_.get_child_data_set<StringTraits, 1>(nm);
       unsigned int sz= category_names_[i].get_size()[0];
@@ -31,7 +87,6 @@ namespace RMF {
 
   void HDF5SharedData::initialize_keys(int i) {
     std::string nm=get_set_data_data_set_name(i+1);
-    free_ids_[i].clear();
     if (file_.get_has_child(nm)) {
       node_data_[i]
           = file_.get_child_data_set<IndexTraits, 2>(nm);
@@ -54,41 +109,12 @@ namespace RMF {
     }
   }
 
-  HDF5SharedData::HDF5SharedData(HDF5Group g, bool create):
-      file_(g), frames_hint_(0)
+  HDF5SharedData::HDF5SharedData(std::string g, bool create):
+      file_name_(g), frames_hint_(0)
   {
     IMP_RMF_BEGIN_FILE;
     IMP_RMF_BEGIN_OPERATION;
-
-    std::string name= file_.get_file().get_name();
-    if (create) {
-      IMP_RMF_OPERATION(
-          file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
-          "adding version string to file.");
-      IMP_RMF_OPERATION(
-                        (file_.add_child_data_set<StringTraits, 1>)
-          (get_node_name_data_set_name());,
-          "adding node name data set to file.");
-      IMP_RMF_OPERATION((file_.add_child_data_set<IndexTraits, 2>)
-          (get_node_data_data_set_name());,
-          "adding node data data set to file.");
-      for (unsigned int i=0; i< 4; ++i) {
-        initialize_categories(i, true);
-      }
-    } else {
-      std::string version;
-      IMP_RMF_OPERATION(
-          version=file_.get_attribute<CharTraits>("version"),
-          "reading version string from file.");
-      IMP_RMF_USAGE_CHECK(version== "rmf 1",
-                          get_error_message("Unsupported rmf version ",
-                                            "string found: \"",
-                                            version , "\" expected \"" ,
-                                            "rmf 1" , "\""));
-    }
-
-
-    reload();
+    open_things(create);
     if (create) {
         add_node("root", ROOT);
     } else {
@@ -101,10 +127,8 @@ namespace RMF {
 
     HDF5SharedData::~HDF5SharedData() {
       add_ref();
-      // flush validates
-      flush();
+      close_things();
       release();
-      H5garbage_collect();
     }
 
     void HDF5SharedData::check_node(unsigned int node) const {
@@ -386,34 +410,11 @@ namespace RMF {
     return tf;
   }
 
-#define IMP_RMF_RELOAD(lcname, Ucname, PassValue, ReturnValue,          \
-                       PassValues, ReturnValues)                        \
-    lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 2>();          \
-    per_frame_##lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 3>() \
 
 
   void HDF5SharedData::reload() {
-    IMP_RMF_OPERATION(node_names_=(file_.get_child_data_set<StringTraits, 1>)
-                      (get_node_name_data_set_name());,
-                      "opening node name data set.");
-    for (unsigned int i=0; i< 4; ++i) {
-      node_data_[i]=HDF5DataSetD<IndexTraits, 2>();
-      if (i==0) {
-        node_data_[i]=file_.get_child_data_set<IndexTraits, 2>
-          (get_node_data_data_set_name());
-      }
-      free_ids_[i].clear();
-      index_cache_[i]=IndexCache();
-      key_name_data_sets_[i]= KeyNameDataSetCache();
-      category_names_cache_[i].clear();
-      category_names_[i]=HDF5DataSetD<StringTraits, 1>();
-      initialize_categories(i, false);
-      initialize_keys(i);
-    }
-    initialize_free_nodes();
-    fame_names_=HDF5DataSetD<StringTraits, 1>();
-    max_cache_.clear();
-    IMP_RMF_FOREACH_TYPE(IMP_RMF_RELOAD);
+    close_things();
+    open_things(false);
   }
 
   } // namespace internal
