@@ -350,12 +350,13 @@ generate the connection between the two languages. Key differences are
     adhered to when writing code using or in \imp.
 
     \subsection physical Measurements
-    Unless there is a good reason, the following units are to be used
+    Unless documented otherwise, the following units are used
     - angstrom for all distances
-    - \f$ \frac{\operatorname{kcal}}{\operatorname{mol} \AA}\f$ for forces/derivatives
-    - \f$\frac{\operatorname{kcal}}{\operatorname{mol}}\f$ for energies
+    - \f$ \frac{kcal}{mol \AA}\f$ for forces/derivatives
+    - \f$\frac{kcal}{mol}\f$ for energies
     - radians for angles. All angles are counterclockwise.
     - all charges are in units of the elementary charge
+    - all times are in femtoseconds
 
     Anything that breaks from these conventions must be labeled
     clearly and accompanied by an explaination of why the normal units
