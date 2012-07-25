@@ -392,5 +392,22 @@ namespace RMF {
     }
   }
 
+  bool HDF5SharedData::set_is_locked(bool tf) {
+    flush();
+    if (tf) {
+      if (file_.get_has_attribute(get_lock_attribute_name())){
+        return false;
+      } else {
+        file_.set_attribute<IndexTraits>(get_lock_attribute_name(),
+                                         IndexTraits::Types(1,1));
+      }
+    } else {
+     file_.set_attribute<IndexTraits>(get_lock_attribute_name(),
+                                      IndexTraits::Types());
+    }
+    flush();
+    return tf;
+  }
+
   } // namespace internal
 } /* namespace RMF */

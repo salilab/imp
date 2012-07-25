@@ -130,7 +130,7 @@ namespace RMF {
       }
       if (boost::algorithm::ends_with(path, ".rmf")) {
         HDF5ConstGroup g;
-        g = open_hdf5_file_read_only(path);
+        g = open_hdf5_file(path);
         ret= new HDF5SharedData(HDF5Group::get_from_const_group(g), false);
 #ifdef RMF_USE_PROTOBUF
       } else if (boost::algorithm::ends_with(path, ".prmf")) {
