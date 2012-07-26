@@ -43,7 +43,7 @@ def check_for_hexdock():
             sys.exit()
         else:
             raise e
-#            print e
+
 
 class HexDocking(object):
 
