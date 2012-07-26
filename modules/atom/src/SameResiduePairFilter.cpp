@@ -8,6 +8,7 @@
 
 #include "IMP/atom/SameResiduePairFilter.h"
 #include "IMP/atom/Hierarchy.h"
+#include "IMP/atom/Atom.h"
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -22,9 +23,13 @@ int SameResiduePairFilter::get_value(const ParticlePair &pp)
 }
 
 ParticlesTemp SameResiduePairFilter::get_input_particles( Particle* t) const {
+  IMP_USAGE_CHECK(Atom::particle_is_instance(t),
+                  "All particles must be atoms when the SameResiduePairFilter"
+                  << " is used. " << t->get_name() << " is not.");
   ParticlesTemp ret;
   ret.push_back(t);
-  ret.push_back(Hierarchy(t).get_parent());
+  Particle *parent=Hierarchy(t).get_parent();
+  if (parent) ret.push_back(parent);
   return ret;
 }
 
