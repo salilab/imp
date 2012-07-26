@@ -43,11 +43,12 @@ def check_for_hexdock():
             sys.exit()
         else:
             raise e
+#            print e
 
 class HexDocking(object):
 
     def __init__(self, ):
-        # commands for HEX (the %s are filled when calling self.dock)
+        ##### commands for HEX (the %s are filled when calling self.dock)
         self.text_base = \
         """
         open_receptor %s
