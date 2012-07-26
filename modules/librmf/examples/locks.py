@@ -25,5 +25,5 @@ def update():
     print fr
     del lk
 
-while len(sys.argv) >1 or f.get_number_of_frames() < 1000:
+while len(sys.argv) >1 or f.get_number_of_frames() < 10:
     update()
