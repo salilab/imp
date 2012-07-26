@@ -16,7 +16,8 @@ IMPATOM_BEGIN_NAMESPACE
 
 //!
 /** Predicate atoms that belong to the same residue. The is designed
-    for use with the DopePairScore.
+    for use with the DopePairScore. All particles passed to it must
+    be Atom particles. This can change if desired.
 */
 class IMPATOMEXPORT SameResiduePairFilter : public PairPredicate
 {
