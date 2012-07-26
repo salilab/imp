@@ -15,6 +15,7 @@
 #include "rigid_body_tree.h"
 #include "../XYZR.h"
 #include <IMP/internal/InternalListPairContainer.h>
+#include <algorithm>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
@@ -425,30 +426,10 @@ inline void fill_list(Model *m, const PairPredicates &filters,
 }
 
 
-inline ParticlesTemp
+IMPCOREEXPORT ParticlesTemp
 get_input_particles(Model *, SingletonContainer *sc_,
-                    const PairPredicates &filters_) {
-  ParticlesTemp ret= sc_->get_all_possible_particles();
-  ParticlesTemp all;
-  for (unsigned int i=0; i< filters_.size(); ++i) {
-    for (unsigned int j=0; j< ret.size(); ++j) {
-      ParticlesTemp cur= filters_[i]->get_input_particles(ret[j]);
-      all.insert(all.end(), cur.begin(), cur.end());
-    }
-  }
-  ret.insert(ret.end(), all.begin(), all.end());
-  compatibility::set<Particle*> rigid;
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    if (core::RigidMember::particle_is_instance(ret[i])) {
-      Particle *rbp=core::RigidMember(ret[i]).get_rigid_body();
-      if (rigid.find(rbp) == rigid.end()) {
-        rigid.insert(rbp);
-        ret.push_back(rbp);
-      }
-    }
-  }
-  return ret;
-}
+                    const PairPredicates &filters_);
+
 IMPCORE_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPCORE_INTERNAL_CLOSE_PAIRS_HELPERS_H */
