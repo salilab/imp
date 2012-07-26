@@ -8,12 +8,14 @@
 
 #include <RMF/RMF_config.h>
 
-RMF_BEGIN_NAMESPACE
+namespace RMF {
 
-
+namespace internal {
+   std::string rmf_data_path;
+   std::string rmf_example_path;
+}
 std::string get_module_version() {
     return std::string("SVN");
 }
 
-
-RMF_END_NAMESPACE
+}
