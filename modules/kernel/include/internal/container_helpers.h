@@ -75,10 +75,10 @@ inline ParticleIndexes flatten(const base::Vector<ParticleIndexTuple<D> > &in) {
   return ret;
 }
 
-inline const ParticlesTemp& flatten(const ParticlesTemp &in) {
+inline ParticlesTemp flatten(const ParticlesTemp &in) {
   return in;
 }
-inline const ParticleIndexes& flatten(const ParticleIndexes &in) {
+inline ParticleIndexes flatten(const ParticleIndexes &in) {
   return in;
 }
 
