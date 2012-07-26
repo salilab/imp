@@ -13,8 +13,8 @@
 
 namespace RMF {
   namespace internal {
-    extern std::string rmf_data_path;
-    extern std::string rmf_example_path;
+    std::string rmf_data_path;
+    std::string rmf_example_path;
   }
   namespace {
     std::string get_concatenated_path(std::string part0,

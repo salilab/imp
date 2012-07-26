@@ -341,7 +341,7 @@ namespace RMF {
 #endif
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-class Showable;
+struct Showable;
 inline std::ostream &
 operator<<(std::ostream &out, const Showable &t);
 
