@@ -13,6 +13,7 @@
 #include <RMF/Factory.h>
 #include <RMF/FileConstHandle.h>
 #include <RMF/FileHandle.h>
+#include <RMF/FileLock.h>
 #include <RMF/HDF5ConstAttributes.h>
 #include <RMF/HDF5ConstDataSetD.h>
 #include <RMF/HDF5ConstFile.h>
