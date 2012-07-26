@@ -31,12 +31,12 @@ class Vector: public compatibility::vector<T>, public Value {
   typedef compatibility::vector<T> V;
  public:
   Vector(){}
-  Vector(unsigned int sz, const T&t=T()): V(sz, t){}
+  explicit Vector(unsigned int sz, const T&t=T()): V(sz, t){}
   template <class It>
   Vector(It b, It e): V(b,e){}
   template <class O>
-  Vector(const compatibility::vector<O> &o): V(o.begin(),
-                                                      o.end()){}
+  explicit Vector(const compatibility::vector<O> &o): V(o.begin(),
+                                                        o.end()){}
    template <class O>
   operator Vector<O>() const {
     return Vector<O>(V::begin(), V::end());
@@ -71,8 +71,7 @@ class Vector: public compatibility::vector<T>, public Value {
 template <class T>
 void swap(base::Vector<T> &a,
           base::Vector<T> &b) {
-  std::swap(static_cast<IMP::base::Vector<T> &>(a),
-            static_cast<IMP::base::Vector<T> &>(b));
+  std::swap<compatibility::vector<T> >(a,b);
 }
 template <class T>
 inline base::Vector<T> operator+( base::Vector<T> ret,
