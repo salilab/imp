@@ -32,85 +32,70 @@
 #include <string>
 
 
-#  ifdef _MSC_VER
+#ifdef _MSC_VER
 
-#    ifdef RMF_EXPORTS
-#      define RMFEXPORT __declspec(dllexport)
-#    else // EXPORTS
-#      define RMFEXPORT __declspec(dllimport)
-#    endif // EXPORTS
+#ifdef RMF_EXPORTS
+#define RMFEXPORT __declspec(dllexport)
+#else // EXPORTS
+#define RMFEXPORT __declspec(dllimport)
+#endif // EXPORTS
 
-#  else // _MSC_VER
+#else // _MSC_VER
 
-#    ifdef GCC_VISIBILITY
-#      define RMFEXPORT __attribute__ ((visibility("default")))
-#    else // GCC_VISIBILITY
-#      define RMFEXPORT
-#    endif // GCC_VISIBILITY
-#  endif // _MSC_VER
+#ifdef GCC_VISIBILITY
+#define RMFEXPORT __attribute__ ((visibility("default")))
+#else // GCC_VISIBILITY
+#define RMFEXPORT
+#endif // GCC_VISIBILITY
+#endif // _MSC_VER
 
-#  if defined(_MSC_VER) && !defined(SWIG)
-#    ifdef RMF_EXPORTS
+#if defined(_MSC_VER) && !defined(SWIG)
+#ifdef RMF_EXPORTS
 
-#      define RMF_EXPORT_TEMPLATE(name)                 template class __declspec(dllexport) name
+#define RMF_EXPORT_TEMPLATE(name)                 template class __declspec(dllexport) name
 
-#    else //EXPORTS
+#else //EXPORTS
 
-#      define RMF_EXPORT_TEMPLATE(name)                 template class __declspec(dllimport) name
+#define RMF_EXPORT_TEMPLATE(name)                 template class __declspec(dllimport) name
 
-#    endif // EXPORTS
+#endif // EXPORTS
 
-#  else // MSC and SWIG
-#    define RMF_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+#else // MSC and SWIG
+#define RMF_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-#  endif // MSC and SWIG
+#endif // MSC and SWIG
 
 
 
-#  define RMF_BEGIN_NAMESPACE \
+#define RMF_BEGIN_NAMESPACE \
 namespace RMF {\
 
-#  define RMF_END_NAMESPACE \
+#define RMF_END_NAMESPACE \
 } /* namespace RMF */ \
 
-#  define RMF_BEGIN_INTERNAL_NAMESPACE \
+#define RMF_BEGIN_INTERNAL_NAMESPACE \
 RMF_BEGIN_NAMESPACE \
 namespace internal {
 
 
-#  define RMF_END_INTERNAL_NAMESPACE \
+#define RMF_END_INTERNAL_NAMESPACE \
 } /* namespace internal */ \
 RMF_END_NAMESPACE
 
 
 
-#  define RMF_USE_HDF5
+#define RMF_USE_BOOST_FILESYSTEM
 
-#  define RMF_USE_BOOST_FILESYSTEM
+#define RMF_USE_BOOST_THREAD
 
-#  define RMF_USE_BOOST_THREAD
+#define RMF_USE_HDF5
+
 
 
 
 //  functions are defined explicitly for swig
+
 #ifndef SWIG
-
-#ifndef IMP_DOXYGEN
-namespace std {
-template <class T, class A>
-class vector;
-template <class A, class B>
-class pair;
-}
-namespace IMP {
-namespace compatibility {
-template <class T>
-class checked_vector;
-}
-}
-#include <sstream>
-#endif
-
 RMF_BEGIN_NAMESPACE
 /** \name Standard module methods
   All \imp modules have a set of standard methods to help get information
@@ -125,8 +110,18 @@ inline std::string get_module_name() {
 
 
 
-RMF_END_NAMESPACE
+/** Get the list of modules this module uses as a colon separated list.
+    This may become a propper list at some point, but Strings isn't
+    defined until base, leaving several modules without access to the
+    needed type.*/
+inline std::string get_module_modules() {
+   return "";
+}
 
-#endif // SWIG
+
+RMF_END_NAMESPACE
+#endif
+
+
 
 #endif  /* RMF_CONFIG_H */

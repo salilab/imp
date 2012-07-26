@@ -15,6 +15,7 @@
 #include "FileHandle.h"
 #include "Decorator.h"
 #include "Factory.h"
+#include "constants.h"
 #include "internal/utility.h"
 #include "internal/lazy.h"
 namespace RMF {
@@ -118,14 +119,23 @@ namespace RMF {
       };
     }
     Colored get(NodeHandle nh,
-                int frame=-1) const {
+                int frame=ALL_FRAMES) const {
       ;
       return Colored(nh, frame, rgb_color_,
                      rgb_color_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, rgb_color_,
-                               rgb_color_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, rgb_color_,
+                                rgb_color_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, rgb_color_,
+                                 rgb_color_pf_, frame);
+      }
     }
   };
 
@@ -164,14 +174,23 @@ namespace RMF {
       };
     }
     ColoredConst get(NodeConstHandle nh,
-                     int frame=-1) const {
+                     int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ColoredConst(nh, frame, rgb_color_,
                           rgb_color_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, rgb_color_,
-                               rgb_color_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, rgb_color_,
+                                rgb_color_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, rgb_color_,
+                                 rgb_color_pf_, frame);
+      }
     }
   };
 
@@ -353,7 +372,7 @@ namespace RMF {
       };
     }
     Particle get(NodeHandle nh,
-                 int frame=-1) const {
+                 int frame=ALL_FRAMES) const {
       ;
       return Particle(nh, frame, coordinates_,
                       coordinates_pf_,
@@ -362,13 +381,26 @@ namespace RMF {
                       mass_,
                       mass_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, mass_,
-                            mass_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, mass_,
+                                  mass_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, mass_,
+                              mass_pf_, frame);
+      }
     }
   };
 
@@ -427,7 +459,7 @@ namespace RMF {
       };
     }
     ParticleConst get(NodeConstHandle nh,
-                      int frame=-1) const {
+                      int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ParticleConst(nh, frame, coordinates_,
                            coordinates_pf_,
@@ -436,13 +468,26 @@ namespace RMF {
                            mass_,
                            mass_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, mass_,
-                            mass_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, mass_,
+                                  mass_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, mass_,
+                              mass_pf_, frame);
+      }
     }
   };
 
@@ -586,18 +631,29 @@ namespace RMF {
       };
     }
     IntermediateParticle get(NodeHandle nh,
-                             int frame=-1) const {
+                             int frame=ALL_FRAMES) const {
       ;
       return IntermediateParticle(nh, frame, coordinates_,
                                   coordinates_pf_,
                                   radius_,
                                   radius_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame);
+      }
     }
   };
 
@@ -646,18 +702,29 @@ namespace RMF {
       };
     }
     IntermediateParticleConst get(NodeConstHandle nh,
-                                  int frame=-1) const {
+                                  int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return IntermediateParticleConst(nh, frame, coordinates_,
                                        coordinates_pf_,
                                        radius_,
                                        radius_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame);
+      }
     }
   };
 
@@ -797,18 +864,29 @@ namespace RMF {
       };
     }
     RigidParticle get(NodeHandle nh,
-                      int frame=-1) const {
+                      int frame=ALL_FRAMES) const {
       ;
       return RigidParticle(nh, frame, orientation_,
                            orientation_pf_,
                            coordinates_,
                            coordinates_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, orientation_,
-                               orientation_pf_, frame)
-        && P::get_has_values(nh, coordinates_,
-                             coordinates_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, orientation_,
+                                orientation_pf_, frame)
+              && P::get_has_values(nh, coordinates_,
+                                   coordinates_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, orientation_,
+                                 orientation_pf_, frame)
+          && P::get_has_values(nh, coordinates_,
+                               coordinates_pf_, frame);
+      }
     }
   };
 
@@ -862,18 +940,29 @@ namespace RMF {
       };
     }
     RigidParticleConst get(NodeConstHandle nh,
-                           int frame=-1) const {
+                           int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return RigidParticleConst(nh, frame, orientation_,
                                 orientation_pf_,
                                 coordinates_,
                                 coordinates_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, orientation_,
-                               orientation_pf_, frame)
-        && P::get_has_values(nh, coordinates_,
-                             coordinates_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, orientation_,
+                                orientation_pf_, frame)
+              && P::get_has_values(nh, coordinates_,
+                                   coordinates_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, orientation_,
+                                 orientation_pf_, frame)
+          && P::get_has_values(nh, coordinates_,
+                               coordinates_pf_, frame);
+      }
     }
   };
 
@@ -916,7 +1005,8 @@ namespace RMF {
   public:
     Floats get_coordinates() const {
       Floats ret(3);
-      if (!coordinates_.empty() && get_node().get_has_value(coordinates_[0])) {
+      if (!coordinates_.empty()
+          && get_node().get_has_value(coordinates_[0])) {
         for (unsigned int i=0; i< 3; ++i) {
           ret[i]=get_node().get_value(coordinates_[i]);
         }
@@ -1065,7 +1155,7 @@ namespace RMF {
       };
     }
     Ball get(NodeHandle nh,
-             int frame=-1) const {
+             int frame=ALL_FRAMES) const {
       ;
       return Ball(nh, frame, coordinates_,
                   coordinates_pf_,
@@ -1074,14 +1164,28 @@ namespace RMF {
                   type_,
                   type_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==0;
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==0) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==0;
+      }
     }
   };
 
@@ -1140,7 +1244,7 @@ namespace RMF {
       };
     }
     BallConst get(NodeConstHandle nh,
-                  int frame=-1) const {
+                  int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return BallConst(nh, frame, coordinates_,
                        coordinates_pf_,
@@ -1149,14 +1253,28 @@ namespace RMF {
                        type_,
                        type_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==0;
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==0) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==0;
+      }
     }
   };
 
@@ -1348,7 +1466,7 @@ namespace RMF {
       };
     }
     Cylinder get(NodeHandle nh,
-                 int frame=-1) const {
+                 int frame=ALL_FRAMES) const {
       ;
       return Cylinder(nh, frame, coordinates_,
                       coordinates_pf_,
@@ -1357,14 +1475,28 @@ namespace RMF {
                       type_,
                       type_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==1;
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==1) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==1;
+      }
     }
   };
 
@@ -1423,7 +1555,7 @@ namespace RMF {
       };
     }
     CylinderConst get(NodeConstHandle nh,
-                      int frame=-1) const {
+                      int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return CylinderConst(nh, frame, coordinates_,
                            coordinates_pf_,
@@ -1432,14 +1564,28 @@ namespace RMF {
                            type_,
                            type_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==1;
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==1) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==1;
+      }
     }
   };
 
@@ -1593,19 +1739,31 @@ namespace RMF {
       };
     }
     Segment get(NodeHandle nh,
-                int frame=-1) const {
+                int frame=ALL_FRAMES) const {
       ;
       return Segment(nh, frame, coordinates_,
                      coordinates_pf_,
                      type_,
                      type_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==1;
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==1) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==1;
+      }
     }
   };
 
@@ -1654,19 +1812,31 @@ namespace RMF {
       };
     }
     SegmentConst get(NodeConstHandle nh,
-                     int frame=-1) const {
+                     int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return SegmentConst(nh, frame, coordinates_,
                           coordinates_pf_,
                           type_,
                           type_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame)
-        && nh.get_value(type_)==1;
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)
+              && nh.get_value(type_)==1) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame)
+          && nh.get_value(type_)==1;
+      }
     }
   };
 
@@ -1929,7 +2099,7 @@ namespace RMF {
       };
     }
     JournalArticle get(NodeHandle nh,
-                       int frame=-1) const {
+                       int frame=ALL_FRAMES) const {
       ;
       return JournalArticle(nh, frame, title_,
                             title_pf_,
@@ -1942,17 +2112,34 @@ namespace RMF {
                             authors_,
                             authors_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, title_,
-                              title_pf_, frame)
-        && P::get_has_value(nh, journal_,
-                            journal_pf_, frame)
-        && P::get_has_value(nh, pubmed_id_,
-                            pubmed_id_pf_, frame)
-        && P::get_has_value(nh, year_,
-                            year_pf_, frame)
-        && P::get_has_value(nh, authors_,
-                            authors_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, title_,
+                               title_pf_, frame)
+              && P::get_has_value(nh, journal_,
+                                  journal_pf_, frame)
+              && P::get_has_value(nh, pubmed_id_,
+                                  pubmed_id_pf_, frame)
+              && P::get_has_value(nh, year_,
+                                  year_pf_, frame)
+              && P::get_has_value(nh, authors_,
+                                  authors_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, title_,
+                                title_pf_, frame)
+          && P::get_has_value(nh, journal_,
+                              journal_pf_, frame)
+          && P::get_has_value(nh, pubmed_id_,
+                              pubmed_id_pf_, frame)
+          && P::get_has_value(nh, year_,
+                              year_pf_, frame)
+          && P::get_has_value(nh, authors_,
+                              authors_pf_, frame);
+      }
     }
   };
 
@@ -2027,7 +2214,7 @@ namespace RMF {
       };
     }
     JournalArticleConst get(NodeConstHandle nh,
-                            int frame=-1) const {
+                            int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return JournalArticleConst(nh, frame, title_,
                                  title_pf_,
@@ -2040,17 +2227,34 @@ namespace RMF {
                                  authors_,
                                  authors_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, title_,
-                              title_pf_, frame)
-        && P::get_has_value(nh, journal_,
-                            journal_pf_, frame)
-        && P::get_has_value(nh, pubmed_id_,
-                            pubmed_id_pf_, frame)
-        && P::get_has_value(nh, year_,
-                            year_pf_, frame)
-        && P::get_has_value(nh, authors_,
-                            authors_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, title_,
+                               title_pf_, frame)
+              && P::get_has_value(nh, journal_,
+                                  journal_pf_, frame)
+              && P::get_has_value(nh, pubmed_id_,
+                                  pubmed_id_pf_, frame)
+              && P::get_has_value(nh, year_,
+                                  year_pf_, frame)
+              && P::get_has_value(nh, authors_,
+                                  authors_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, title_,
+                                title_pf_, frame)
+          && P::get_has_value(nh, journal_,
+                              journal_pf_, frame)
+          && P::get_has_value(nh, pubmed_id_,
+                              pubmed_id_pf_, frame)
+          && P::get_has_value(nh, year_,
+                              year_pf_, frame)
+          && P::get_has_value(nh, authors_,
+                              authors_pf_, frame);
+      }
     }
   };
 
@@ -2184,19 +2388,32 @@ namespace RMF {
       };
     }
     Residue get(NodeHandle nh,
-                int frame=-1) const {
+                int frame=ALL_FRAMES) const {
       ;
       return Residue(nh, frame, index_,
                      type_,
                      type_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return nh.get_has_value(index_[0], frame)
-        && nh.get_has_value(index_[1], frame)
-        && nh.get_value(index_[0], frame)
-        ==nh.get_value(index_[1], frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (nh.get_has_value(index_[0], frame)
+              && nh.get_has_value(index_[1], frame)
+              && nh.get_value(index_[0], frame)
+              ==nh.get_value(index_[1], frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return nh.get_has_value(index_[0], frame)
+          && nh.get_has_value(index_[1], frame)
+          && nh.get_value(index_[0], frame)
+          ==nh.get_value(index_[1], frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame);
+      }
     }
   };
 
@@ -2240,19 +2457,32 @@ namespace RMF {
       };
     }
     ResidueConst get(NodeConstHandle nh,
-                     int frame=-1) const {
+                     int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ResidueConst(nh, frame, index_,
                           type_,
                           type_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return nh.get_has_value(index_[0], frame)
-        && nh.get_has_value(index_[1], frame)
-        && nh.get_value(index_[0], frame)
-        ==nh.get_value(index_[1], frame)
-        && P::get_has_value(nh, type_,
-                            type_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (nh.get_has_value(index_[0], frame)
+              && nh.get_has_value(index_[1], frame)
+              && nh.get_value(index_[0], frame)
+              ==nh.get_value(index_[1], frame)
+              && P::get_has_value(nh, type_,
+                                  type_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return nh.get_has_value(index_[0], frame)
+          && nh.get_has_value(index_[1], frame)
+          && nh.get_value(index_[0], frame)
+          ==nh.get_value(index_[1], frame)
+          && P::get_has_value(nh, type_,
+                              type_pf_, frame);
+      }
     }
   };
 
@@ -2472,7 +2702,7 @@ namespace RMF {
       };
     }
     Atom get(NodeHandle nh,
-             int frame=-1) const {
+             int frame=ALL_FRAMES) const {
       ;
       return Atom(nh, frame, coordinates_,
                   coordinates_pf_,
@@ -2483,15 +2713,30 @@ namespace RMF {
                   element_,
                   element_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, mass_,
-                            mass_pf_, frame)
-        && P::get_has_value(nh, element_,
-                            element_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, mass_,
+                                  mass_pf_, frame)
+              && P::get_has_value(nh, element_,
+                                  element_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, mass_,
+                              mass_pf_, frame)
+          && P::get_has_value(nh, element_,
+                              element_pf_, frame);
+      }
     }
   };
 
@@ -2560,7 +2805,7 @@ namespace RMF {
       };
     }
     AtomConst get(NodeConstHandle nh,
-                  int frame=-1) const {
+                  int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return AtomConst(nh, frame, coordinates_,
                        coordinates_pf_,
@@ -2571,15 +2816,30 @@ namespace RMF {
                        element_,
                        element_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_values(nh, coordinates_,
-                               coordinates_pf_, frame)
-        && P::get_has_value(nh, radius_,
-                            radius_pf_, frame)
-        && P::get_has_value(nh, mass_,
-                            mass_pf_, frame)
-        && P::get_has_value(nh, element_,
-                            element_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_values(nh, coordinates_,
+                                coordinates_pf_, frame)
+              && P::get_has_value(nh, radius_,
+                                  radius_pf_, frame)
+              && P::get_has_value(nh, mass_,
+                                  mass_pf_, frame)
+              && P::get_has_value(nh, element_,
+                                  element_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_values(nh, coordinates_,
+                                 coordinates_pf_, frame)
+          && P::get_has_value(nh, radius_,
+                              radius_pf_, frame)
+          && P::get_has_value(nh, mass_,
+                              mass_pf_, frame)
+          && P::get_has_value(nh, element_,
+                              element_pf_, frame);
+      }
     }
   };
 
@@ -2690,14 +2950,23 @@ namespace RMF {
       };
     }
     Chain get(NodeHandle nh,
-              int frame=-1) const {
+              int frame=ALL_FRAMES) const {
       ;
       return Chain(nh, frame, chain_id_,
                    chain_id_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, chain_id_,
-                              chain_id_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, chain_id_,
+                               chain_id_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, chain_id_,
+                                chain_id_pf_, frame);
+      }
     }
   };
 
@@ -2732,14 +3001,23 @@ namespace RMF {
       };
     }
     ChainConst get(NodeConstHandle nh,
-                   int frame=-1) const {
+                   int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ChainConst(nh, frame, chain_id_,
                         chain_id_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, chain_id_,
-                              chain_id_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, chain_id_,
+                               chain_id_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, chain_id_,
+                                chain_id_pf_, frame);
+      }
     }
   };
 
@@ -2837,15 +3115,26 @@ namespace RMF {
       };
     }
     Domain get(NodeHandle nh,
-               int frame=-1) const {
+               int frame=ALL_FRAMES) const {
       ;
       return Domain(nh, frame, indexes_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return nh.get_has_value(indexes_[0], frame)
-        && nh.get_has_value(indexes_[1], frame)
-        && nh.get_value(indexes_[0], frame)
-        <nh.get_value(indexes_[1], frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (nh.get_has_value(indexes_[0], frame)
+              && nh.get_has_value(indexes_[1], frame)
+              && nh.get_value(indexes_[0], frame)
+              <nh.get_value(indexes_[1], frame)) return true;
+        }
+        return false;
+      } else {
+        return nh.get_has_value(indexes_[0], frame)
+          && nh.get_has_value(indexes_[1], frame)
+          && nh.get_value(indexes_[0], frame)
+          <nh.get_value(indexes_[1], frame);
+      }
     }
   };
 
@@ -2879,15 +3168,26 @@ namespace RMF {
       };
     }
     DomainConst get(NodeConstHandle nh,
-                    int frame=-1) const {
+                    int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DomainConst(nh, frame, indexes_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return nh.get_has_value(indexes_[0], frame)
-        && nh.get_has_value(indexes_[1], frame)
-        && nh.get_value(indexes_[0], frame)
-        <nh.get_value(indexes_[1], frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (nh.get_has_value(indexes_[0], frame)
+              && nh.get_has_value(indexes_[1], frame)
+              && nh.get_value(indexes_[0], frame)
+              <nh.get_value(indexes_[1], frame)) return true;
+        }
+        return false;
+      } else {
+        return nh.get_has_value(indexes_[0], frame)
+          && nh.get_has_value(indexes_[1], frame)
+          && nh.get_value(indexes_[0], frame)
+          <nh.get_value(indexes_[1], frame);
+      }
     }
   };
 
@@ -2998,14 +3298,23 @@ namespace RMF {
       };
     }
     Copy get(NodeHandle nh,
-             int frame=-1) const {
+             int frame=ALL_FRAMES) const {
       ;
       return Copy(nh, frame, copy_index_,
                   copy_index_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, copy_index_,
-                              copy_index_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, copy_index_,
+                               copy_index_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, copy_index_,
+                                copy_index_pf_, frame);
+      }
     }
   };
 
@@ -3040,14 +3349,23 @@ namespace RMF {
       };
     }
     CopyConst get(NodeConstHandle nh,
-                  int frame=-1) const {
+                  int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return CopyConst(nh, frame, copy_index_,
                        copy_index_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, copy_index_,
-                              copy_index_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, copy_index_,
+                               copy_index_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, copy_index_,
+                                copy_index_pf_, frame);
+      }
     }
   };
 
@@ -3153,19 +3471,28 @@ namespace RMF {
                                                       "diffusion coefficient",
                                                       false);
         diffusion_coefficient_pf_=internal::FloatLazyKey(fh, cat,
-                                                        "diffusion coefficient",
+                                                       "diffusion coefficient",
                                                          true);
       };
     }
     Diffuser get(NodeHandle nh,
-                 int frame=-1) const {
+                 int frame=ALL_FRAMES) const {
       ;
       return Diffuser(nh, frame, diffusion_coefficient_,
                       diffusion_coefficient_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, diffusion_coefficient_,
-                              diffusion_coefficient_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, diffusion_coefficient_,
+                               diffusion_coefficient_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, diffusion_coefficient_,
+                                diffusion_coefficient_pf_, frame);
+      }
     }
   };
 
@@ -3200,14 +3527,23 @@ namespace RMF {
       };
     }
     DiffuserConst get(NodeConstHandle nh,
-                      int frame=-1) const {
+                      int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return DiffuserConst(nh, frame, diffusion_coefficient_,
                            diffusion_coefficient_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, diffusion_coefficient_,
-                              diffusion_coefficient_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, diffusion_coefficient_,
+                               diffusion_coefficient_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, diffusion_coefficient_,
+                                diffusion_coefficient_pf_, frame);
+      }
     }
   };
 
@@ -3318,14 +3654,23 @@ namespace RMF {
       };
     }
     Typed get(NodeHandle nh,
-              int frame=-1) const {
+              int frame=ALL_FRAMES) const {
       ;
       return Typed(nh, frame, type_name_,
                    type_name_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, type_name_,
-                              type_name_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, type_name_,
+                               type_name_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, type_name_,
+                                type_name_pf_, frame);
+      }
     }
   };
 
@@ -3360,14 +3705,23 @@ namespace RMF {
       };
     }
     TypedConst get(NodeConstHandle nh,
-                   int frame=-1) const {
+                   int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return TypedConst(nh, frame, type_name_,
                         type_name_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, type_name_,
-                              type_name_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, type_name_,
+                               type_name_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, type_name_,
+                                type_name_pf_, frame);
+      }
     }
   };
 
@@ -3485,14 +3839,23 @@ namespace RMF {
       };
     }
     Alias get(NodeHandle nh,
-              int frame=-1) const {
+              int frame=ALL_FRAMES) const {
       ;
       return Alias(nh, frame, aliased_,
                    aliased_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, aliased_,
-                              aliased_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, aliased_,
+                               aliased_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, aliased_,
+                                aliased_pf_, frame);
+      }
     }
   };
 
@@ -3527,14 +3890,23 @@ namespace RMF {
       };
     }
     AliasConst get(NodeConstHandle nh,
-                   int frame=-1) const {
+                   int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return AliasConst(nh, frame, aliased_,
                         aliased_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, aliased_,
-                              aliased_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, aliased_,
+                               aliased_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, aliased_,
+                                aliased_pf_, frame);
+      }
     }
   };
 
@@ -3682,15 +4054,24 @@ namespace RMF {
       };
     }
     Score get(NodeHandle nh,
-              int frame=-1) const {
+              int frame=ALL_FRAMES) const {
       ;
       return Score(nh, frame, representation_,
                    score_,
                    score_pf_);
     }
-    bool get_is(NodeHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, score_,
-                              score_pf_, frame);
+    bool get_is(NodeHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, score_,
+                               score_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, score_,
+                                score_pf_, frame);
+      }
     }
   };
 
@@ -3726,15 +4107,24 @@ namespace RMF {
       };
     }
     ScoreConst get(NodeConstHandle nh,
-                   int frame=-1) const {
+                   int frame=ALL_FRAMES) const {
       IMP_RMF_USAGE_CHECK(get_is(nh, frame), "Node is not");
       return ScoreConst(nh, frame, representation_,
                         score_,
                         score_pf_);
     }
-    bool get_is(NodeConstHandle nh, int frame=-1) const {
-      return P::get_has_value(nh, score_,
-                              score_pf_, frame);
+    bool get_is(NodeConstHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+          if (P::get_has_value(nh, score_,
+                               score_pf_, frame)) return true;
+        }
+        return false;
+      } else {
+        return P::get_has_value(nh, score_,
+                                score_pf_, frame);
+      }
     }
   };
 

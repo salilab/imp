@@ -12,20 +12,8 @@ RMF_BEGIN_NAMESPACE
 
 
 std::string get_module_version() {
-    return std::string("1.0");
+    return std::string("SVN");
 }
-
-
-namespace internal {
-std::string rmf_data_path="/usr/share/imp";
-std::string rmf_example_path="/usr/share/doc/imp/examples";
-}
-
-
-  namespace internal {
-
-
-  }
 
 
 RMF_END_NAMESPACE
