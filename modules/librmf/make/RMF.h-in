@@ -9,6 +9,8 @@
 #define RMF_H
 
 #include <RMF/Category.h>
+#include <RMF/Decorator.h>
+#include <RMF/Factory.h>
 #include <RMF/FileConstHandle.h>
 #include <RMF/FileHandle.h>
 #include <RMF/HDF5ConstAttributes.h>
@@ -28,16 +30,16 @@
 #include <RMF/NodeSetConstHandle.h>
 #include <RMF/NodeSetHandle.h>
 #include <RMF/Validator.h>
+#include <RMF/constants.h>
+#include <RMF/decorator_utility.h>
 #include <RMF/decorators.h>
 #include <RMF/exceptions.h>
 #include <RMF/hdf5_handle.h>
 #include <RMF/infrastructure_macros.h>
 #include <RMF/names.h>
+#include <RMF/profile.h>
 #include <RMF/types.h>
 #include <RMF/utility.h>
-#include <RMF/decorator_utility.h>
-#include <RMF/Decorator.h>
-#include <RMF/Factory.h>
 #include <RMF/RMF_config.h>
 
 #endif  /* RMF_H */

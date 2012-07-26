@@ -539,12 +539,20 @@ class Decorator:
     %(construct)s;
     }
     %(name)s%(CONST)s get(Node%(CONST)sHandle nh,
-                           int frame=-1) const {
+                           int frame=ALL_FRAMES) const {
       %(create_check)s;
       return %(name)s%(CONST)s(nh, frame, %(key_pass)s);
     }
-    bool get_is(Node%(CONST)sHandle nh, int frame=-1) const {
-      return %(checks)s;
+    bool get_is(Node%(CONST)sHandle nh, int frame= ALL_FRAMES) const {
+      if (frame == ANY_FRAME) {
+        int num_frames=nh.get_file().get_number_of_frames();
+        for (frame=0; frame< num_frames; ++frame) {
+           if (%(checks)s) return true;
+        }
+        return false;
+      } else {
+        return %(checks)s;
+      }
     }
     };
 
@@ -697,6 +705,7 @@ print """/**
 #include "FileHandle.h"
 #include "Decorator.h"
 #include "Factory.h"
+#include "constants.h"
 #include "internal/utility.h"
 #include "internal/lazy.h"
 namespace RMF {

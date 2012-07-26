@@ -207,7 +207,7 @@ namespace RMF {
 }
 
 
-
+%include "RMF/constants.h"
 %include "RMF/NodeID.h"
 %include "RMF/types.h"
 %include "RMF/hdf5_handle.h"

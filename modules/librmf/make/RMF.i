@@ -268,7 +268,7 @@ namespace RMF {
 }
 
 
-
+%include "RMF/constants.h"
 %include "RMF/NodeID.h"
 %include "RMF/types.h"
 %include "RMF/hdf5_handle.h"
@@ -443,7 +443,7 @@ const std::string get_module_version();
 }
 // WARNING Generated file, do not edit, edit the swig.i-in instead.
 %pythoncode {
-has_gperftools=True
+has_gperftools=False
 has_protobuf=True
 has_boost_filesystem=True
 has_boost_thread=True

@@ -14,6 +14,7 @@
 #include "internal/SharedData.h"
 #include "types.h"
 #include "NodeID.h"
+#include "constants.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/intrusive_ptr.hpp>
 
@@ -28,7 +29,7 @@
       used.
   */                                                                    \
 ReturnValue get_value(UCName##Key k,                                    \
-                      int frame=-1) const {                             \
+                      int frame=ALL_FRAMES) const {                     \
   IMP_RMF_USAGE_CHECK(frame >=0 || !k.get_is_per_frame(),               \
                       "No frame specified for per-frame data.");        \
   IMP_RMF_USAGE_CHECK(get_has_value(k, frame),                          \
@@ -65,7 +66,7 @@ ReturnValues get_values_always(const UCName##Key##s& k,                 \
   return shared_->get_values(node_, k, frame);                          \
 }                                                                       \
 ReturnValues get_values(const UCName##Key##s& k,                        \
-                        int frame=-1) const {                           \
+                        int frame=ALL_FRAMES) const {                   \
   IMP_RMF_USAGE_CHECK(frame >=0 || !k[0].get_is_per_frame(),            \
                       "No frame specified for per-frame data.");        \
   IMP_RMF_USAGE_CHECK(get_has_value(k[0], frame),                       \
