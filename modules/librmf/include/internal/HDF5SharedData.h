@@ -145,30 +145,21 @@ namespace RMF {
               if (!create_if_needed) {
                 return null_;
               } else {
-                RMF::HDF5DataSetIndexD<D> hd;
+                HDF5DataSetCreationPropertiesD<TypeTraits, D> props;
                 if (D==3) {
-                  hd[0]=256;
-                  hd[1]=4;
-                  hd[2]=100;
+                  props.set_chunk_size(HDF5DataSetIndexD<D>(256, 4, 100));
                 } else if (D==2) {
-                  hd[0]=256;
-                  hd[1]=4;
+                  props.set_chunk_size(HDF5DataSetIndexD<D>(256, 4));
                 } else {
                   IMP_RMF_INTERNAL_CHECK(false,
                                          "Where did this dimension come from");
                 }
-                file.add_child_data_set<TypeTraits, D>(nm,
-                                                       NO_COMPRESSION,
-                                                       hd);
+                props.set_compression(GZIP_COMPRESSION);
+                file.add_child_data_set<TypeTraits, D>(nm, props);
               }
             }
             HDF5DataSetD<TypeTraits, D> ds
               = file.get_child_data_set<TypeTraits, D>(nm);
-            if (D==3) {
-              // for per-frame, use a large cache as they will be
-              // read/written repeatedly
-              make_large_cache(ds.get_handle());
-            }
             cache_.resize(std::max(cache_.size(),
                                    static_cast<size_t>(kc+1)));
             cache_[kc]=ds;
@@ -213,12 +204,15 @@ namespace RMF {
               if (!create_if_needed) {
                 return null_;
               } else {
+                HDF5DataSetCreationPropertiesD<StringTraits, 1> props;
+                props.set_compression(GZIP_COMPRESSION);
                 HDF5DataSetD<StringTraits, 1> ds
-                  = file.add_child_data_set<StringTraits, 1>(nm);
+                    = file.add_child_data_set<StringTraits, 1>
+                    (nm, props);
               }
             }
             HDF5DataSetD<StringTraits, 1> ds
-              = file.get_child_data_set<StringTraits, 1>(nm);
+                = file.get_child_data_set<StringTraits, 1>(nm);
             cache_.resize(std::max(cache_.size(),
                                    static_cast<size_t>(kc+1)));
             cache_[kc]

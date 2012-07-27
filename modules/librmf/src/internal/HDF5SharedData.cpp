@@ -15,9 +15,6 @@
 
 namespace RMF {
   namespace internal {
-  void make_large_cache(hid_t ds) {
-    H5Pset_chunk_cache(ds, 10000, 10000000, 0.0);
-  }
 
 #define IMP_RMF_CLOSE(lcname, Ucname, PassValue, ReturnValue,           \
                        PassValues, ReturnValues)                        \
@@ -47,17 +44,23 @@ namespace RMF {
       IMP_RMF_OPERATION(
           file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
           "adding version string to file.");
-      IMP_RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
-                        (get_node_name_data_set_name(), GZIP_COMPRESSION);,
-          "adding node name data set to file.");
-      RMF::HDF5DataSetIndexD<2> hd;
-      hd[0]=128;
-      hd[1]=4;
-      IMP_RMF_OPERATION(
-          (file_.add_child_data_set<IndexTraits, 2>)
-          (get_node_data_data_set_name(),
-           GZIP_COMPRESSION, hd);,
-          "adding node data data set to file.");
+      {
+        HDF5DataSetCreationPropertiesD<StringTraits, 1> props;
+        props.set_compression(GZIP_COMPRESSION);
+        IMP_RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
+                          (get_node_name_data_set_name(), props);,
+                          "adding node name data set to file.");
+      }
+      {
+        HDF5DataSetCreationPropertiesD<IndexTraits, 2> props;
+        props.set_compression(GZIP_COMPRESSION);
+        props.set_chunk_size(RMF::HDF5DataSetIndexD<2>(128, 4));
+        IMP_RMF_OPERATION(
+            (file_.add_child_data_set<IndexTraits, 2>)
+            (get_node_data_data_set_name(),
+             props);,
+            "adding node data data set to file.");
+      }
     } else {
       file_=open_hdf5_file(file_name_);
       std::string version;
@@ -73,9 +76,11 @@ namespace RMF {
     IMP_RMF_OPERATION(node_names_=(file_.get_child_data_set<StringTraits, 1>)
                       (get_node_name_data_set_name());,
                       "opening node name data set.");
+    HDF5DataSetAccessPropertiesD<IndexTraits, 2> props;
+    props.set_chunk_cache_size(10000, 10000000);
+
     node_data_[0]=file_.get_child_data_set<IndexTraits, 2>
-        (get_node_data_data_set_name());
-    make_large_cache(node_data_[0].get_handle());
+        (get_node_data_data_set_name(), props);
     for (unsigned int i=0; i< 4; ++i) {
       initialize_categories(i, create);
       initialize_keys(i);
@@ -264,8 +269,10 @@ namespace RMF {
     IMP_RMF_BEGIN_OPERATION;
     if (node_data_[arity-1]==HDF5IndexDataSet2D()) {
       std::string nm=get_set_data_data_set_name(arity);
+      HDF5DataSetCreationPropertiesD<IndexTraits, 2> props;
+      props.set_compression(GZIP_COMPRESSION);
       node_data_[arity-1]
-        = file_.add_child_data_set<IndexTraits, 2>(nm, GZIP_COMPRESSION);
+        = file_.add_child_data_set<IndexTraits, 2>(nm, props);
     }
     IMP_RMF_END_OPERATION("adding data set to store set");
     int slot;
@@ -313,8 +320,10 @@ namespace RMF {
         == HDF5DataSetD<StringTraits, 1>()) {
       IMP_RMF_BEGIN_OPERATION;
       std::string nm=get_category_name_data_set_name(Arity);
+      HDF5DataSetCreationPropertiesD<StringTraits, 1> props;
+      props.set_compression(GZIP_COMPRESSION);
       category_names_[Arity-1]
-          =file_.add_child_data_set<StringTraits, 1>(nm);
+          =file_.add_child_data_set<StringTraits, 1>(nm, props);
       IMP_RMF_END_OPERATION("add category list data set");
     }
     IMP_RMF_BEGIN_OPERATION
@@ -376,9 +385,11 @@ namespace RMF {
             =file_.get_child_data_set<StringTraits, 1>
             (get_frame_name_data_set_name());
       } else {
+        HDF5DataSetCreationPropertiesD<StringTraits, 1> props;
+        props.set_compression(GZIP_COMPRESSION);
        fame_names_
            = file_.add_child_data_set<StringTraits, 1>
-            (get_frame_name_data_set_name());
+           (get_frame_name_data_set_name(), props);
       }
     }
     if (fame_names_.get_size()[0] <= frame) {

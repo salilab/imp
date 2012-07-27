@@ -47,16 +47,21 @@ namespace RMF {
     HDF5ConstGroup(HDF5ConstGroup parent, std::string name);
     template <class TypeTraits, unsigned int D>
       HDF5ConstDataSetD<TypeTraits, D>
-      get_child_data_set(std::string name) const {
-      return HDF5ConstDataSetD<TypeTraits, D>(get_shared_handle(), name, true);
+        get_child_data_set(std::string name,
+                           HDF5DataSetAccessPropertiesD<TypeTraits, D> props
+                           = HDF5DataSetAccessPropertiesD<TypeTraits, D>())
+        const {
+      return HDF5ConstDataSetD<TypeTraits, D>(get_shared_handle(), name, props);
     }
 #define IMP_HDF5_DATA_SET_CONST_METHODS_D(lcname, UCName, PassValue, \
                                           ReturnValue,                  \
                                           PassValues, ReturnValues, D)  \
     HDF5ConstDataSetD<UCName##Traits, D>                                \
-      get_child_##lcname##_data_set_##D##d(std::string name)            \
-      const {                                                           \
-      return get_child_data_set<UCName##Traits, D>(name);               \
+        get_child_##lcname##_data_set_##D##d(std::string name,          \
+                         HDF5DataSetAccessPropertiesD<UCName##Traits, D> props \
+                         = HDF5DataSetAccessPropertiesD<UCName##Traits, D>()) \
+        const {                                                         \
+      return get_child_data_set<UCName##Traits, D>(name, props);        \
     }
 
 #define IMP_HDF5_DATA_SET_CONST_METHODS(lcname, UCName, PassValue,      \
