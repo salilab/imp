@@ -205,6 +205,8 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
     compatibility::map<Restraint*, RestraintSaveData> data_;
     Restraints all_;
     base::OwnerPointer<core::RestraintsScoringFunction> rsf_;
+    unsigned int max_terms_;
+    compatibility::set<Restraint*> no_terms_;
 
     void do_add(Restraint* r, RMF::NodeHandle nh) {
       // handle restraints being in multiple sets
@@ -250,7 +252,9 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
       // only set score if it is valid
       if (score < std::numeric_limits<double>::max()) {
         sd.set_score(score);
-        if (!dynamic_cast<RestraintSet*>(o)) {
+        if (no_terms_.find(o) != no_terms_.end()) {
+          // too big, do nothing
+        } else if (!dynamic_cast<RestraintSet*>(o)) {
           // required to set last score
           base::Pointer<Restraint> rd= o->create_current_decomposition();
           // set all child scores to 0 for this frame, we will over
@@ -265,21 +269,27 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
           if (rd && rd != o) {
             rd->set_was_used(true);
             RestraintsTemp rs= IMP::get_restraints(RestraintsTemp(1,rd));
-            for (unsigned int i=0; i< rs.size(); ++i) {
-              Subset s(rs[i]->get_input_particles());
-              double score= rs[i]->get_last_score();
-              rs[i]->set_was_used(true);
-              if (score != 0) {
-                RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
-                RMF::Score csd= sf_.get(nnh, frame);
-                csd.set_score(score);
-                //csd.set_representation(get_node_ids(nh.get_file(), s));
+            if (rs.size() > max_terms_) {
+              no_terms_.insert(o);
+              // delete old children
+            } else {
+              for (unsigned int i=0; i< rs.size(); ++i) {
+                Subset s(rs[i]->get_input_particles());
+                double score= rs[i]->get_last_score();
+                rs[i]->set_was_used(true);
+                if (score != 0) {
+                  RMF::NodeHandle nnh= get_node(s, d, sf_, nh);
+                  RMF::Score csd= sf_.get(nnh, frame);
+                  csd.set_score(score);
+                  //csd.set_representation(get_node_ids(nh.get_file(), s));
+                }
               }
             }
           }
         }
       }
     }
+
     void do_save(RMF::FileHandle fh, unsigned int frame) {
       rsf_->evaluate(false);
       P::do_save(fh, frame);
@@ -295,7 +305,11 @@ RMFRestraint::RMFRestraint(Model *m, std::string name): Restraint(m, name){}
         imp_cat_(RMF::get_category_always<1>(fh, "IMP")),
         weight_key_(RMF::get_key_always<RMF::FloatTraits>(fh, imp_cat_,
                                                           "weight",
-                                                          false)) {
+                                                          false)),
+        max_terms_(100) {
+    }
+    void set_maximum_number_of_terms(unsigned int n) {
+      max_terms_=n;
     }
     IMP_OBJECT_INLINE(RestraintSaveLink,IMP_UNUSED(out),);
   };
@@ -311,6 +325,9 @@ IMP_DEFINE_LINKERS(Restraint, restraint, restraints,
                     Model *m), (fh), (fh, m),
                    (fh, IMP::internal::get_model(hs)));
 
-
+void set_maximum_number_of_terms(RMF::FileHandle fh, unsigned int num) {
+  RestraintSaveLink* hsl= get_restraint_save_link(fh);
+  hsl->set_maximum_number_of_terms(num);
+}
 
 IMPRMF_END_NAMESPACE

@@ -34,6 +34,13 @@ IMP_DECLARE_LINKERS(Restraint, restraint, restraints,
                    (RMF::FileConstHandle fh,
                     Model *m));
 
+/** Certain restraint are made from a really large number of terms (eg
+    IMP::core::DopePairScore based ones). Tracking and displaying all those
+    terms can be very time consuming. If the number of terms is larger
+    than the maximum, the terms are not displayed. By default this is
+    100.*/
+IMPRMFEXPORT void set_maximum_number_of_terms(RMF::FileHandle fh,
+                                              unsigned int num);
 /** @} */
 
 
