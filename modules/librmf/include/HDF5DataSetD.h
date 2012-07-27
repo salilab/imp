@@ -37,17 +37,21 @@ namespace RMF {
     public HDF5MutableAttributes<HDF5ConstDataSetD<TypeTraits, D> > {
     typedef HDF5MutableAttributes<HDF5ConstDataSetD<TypeTraits, D> >  P;
     friend class HDF5Group;
+    typedef HDF5DataSetCreationPropertiesD<TypeTraits, D> CreationProperties;
+    typedef HDF5DataSetAccessPropertiesD<TypeTraits, D> AccessProperties;
+
     HDF5DataSetD(HDF5SharedHandle* parent, std::string name,
-                 Compression comp= NO_COMPRESSION,
-                 HDF5DataSetIndexD<D> chunksize=HDF5DataSetIndexD<D>()):
-      P(parent, name, comp, chunksize){
+                CreationProperties props):
+        P(parent, name, props) {
     }
-    // bool is to break symmetry
-    HDF5DataSetD(HDF5SharedHandle* parent,
-                 std::string name, bool): P(parent, name, true){}
+    HDF5DataSetD(HDF5SharedHandle* parent, std::string name,
+                 AccessProperties props):
+        P(parent, name, props) {
+    }
   public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-    HDF5DataSetD(hid_t file, std::string name): P(file, name) {
+    HDF5DataSetD(hid_t file, std::string name,
+                 AccessProperties props): P(file, name, props) {
     }
 #endif
     typedef HDF5DataSetIndexD<D> Index;

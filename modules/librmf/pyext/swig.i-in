@@ -216,6 +216,8 @@ namespace RMF {
 %template(_HDF5ConstAttributesObject) RMF::HDF5ConstAttributes<RMF::HDF5Object>;
 %include "RMF/HDF5MutableAttributes.h"
 %include "RMF/HDF5DataSetIndexD.h"
+%include "RMF/HDF5DataSetAccessPropertiesD.h"
+%include "RMF/HDF5DataSetCreationPropertiesD.h"
 %include "RMF/HDF5ConstDataSetD.h"
 IMP_RMF_SWIG_FOREACH_TYPE(IMP_RMF_SWIG_DEFINE_INTERMEDIATE_TYPE);
 %include "RMF/HDF5DataSetD.h"

@@ -14,6 +14,7 @@
 #include "HDF5ConstAttributes.h"
 #include "HDF5Object.h"
 #include "HDF5DataSetIndexD.h"
+#include "HDF5DataSetCreationPropertiesD.h"
 #include "infrastructure_macros.h"
 #include <boost/scoped_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -24,16 +25,12 @@
 
 
 namespace RMF {
-
   class HDF5Group;
   typedef HDF5ConstAttributes<HDF5Object> HDF5ConstDataSetAttributes;
 #ifndef IMP_DOXYGEN
   typedef vector<HDF5ConstDataSetAttributes> HDF5ConstDataSetAttributesList;
 #endif
 
-/** Data sets can be compressed using one of several algorithms.
- */
-  enum Compression {GZIP_COMPRESSION, SLIB_COMPRESSION, NO_COMPRESSION};
 
   /** Wrap an HDF5 data set. Typedefs and python types are provided for
       data sets in 1,2, and 3 dimensions with all the
@@ -78,9 +75,11 @@ namespace RMF {
     }
     friend class HDF5ConstGroup;
   protected:
+    typedef HDF5DataSetCreationPropertiesD<TypeTraits, D> CreationProperties;
+    typedef HDF5DataSetAccessPropertiesD<TypeTraits, D> AccessProperties;
+
     HDF5ConstDataSetD(HDF5SharedHandle* parent, std::string name,
-                      Compression comp= NO_COMPRESSION,
-                      HDF5DataSetIndexD<D> chunksize=HDF5DataSetIndexD<D>()):
+                      CreationProperties props):
       data_(new Data()) {
       //std::cout << "Creating data set " << name << std::endl;
       IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
@@ -88,56 +87,29 @@ namespace RMF {
                           internal::get_error_message("Data set ",name,
                                                       " already exists"));
       hsize_t dims[D]={0};
-      hsize_t cdims[D];
-      if (chunksize==HDF5DataSetIndexD<D>()) {
-        cdims[0]=512;
-        if (D >2) {
-          std::fill(cdims+1, cdims+D-1, 4);
-        }
-        if (D >1) {
-          cdims[D-1]=1;
-        }
-      } else {
-        for (unsigned int i=0; i< D; ++i) {
-          cdims[i]=chunksize[i];
-        }
-      }
       hsize_t maxs[D];
       std::fill(maxs, maxs+D, H5S_UNLIMITED);
       IMP_HDF5_HANDLE(ds, H5Screate_simple(D, dims, maxs), &H5Sclose);
-      IMP_HDF5_HANDLE(plist, H5Pcreate(H5P_DATASET_CREATE), &H5Pclose);
-      IMP_HDF5_CALL(H5Pset_chunk(plist, D, cdims));
-      IMP_HDF5_CALL(H5Pset_fill_value(plist, TypeTraits::get_hdf5_fill_type(),
-                                      &TypeTraits::get_fill_value()));
-      IMP_HDF5_CALL(H5Pset_fill_time(plist, H5D_FILL_TIME_ALLOC));
-      IMP_HDF5_CALL(H5Pset_alloc_time(plist, H5D_ALLOC_TIME_INCR));
-      /*IMP_HDF5_CALL(H5Pset_szip (plist, H5_SZIP_NN_OPTION_MASK,
-        32));*/
-      if (comp==GZIP_COMPRESSION) {
-        IMP_HDF5_CALL(H5Pset_deflate(plist, 9));
-      } else if (comp == SLIB_COMPRESSION) {
-        IMP_HDF5_CALL(H5Pset_szip (plist, H5_SZIP_NN_OPTION_MASK,
-                                   32));
-      }
       //std::cout << "creating..." << name << std::endl;
       P::open(new HDF5SharedHandle(H5Dcreate2(parent->get_hid(),
                                                       name.c_str(),
                                          TypeTraits::get_hdf5_disk_type(),
-                                         ds, H5P_DEFAULT, plist, H5P_DEFAULT),
+                                              ds, H5P_DEFAULT,
+                                              props.get_handle(), H5P_DEFAULT),
                                             &H5Dclose, name));
       initialize();
       //std::cout << "done..." << std::endl;
     }
-    // bool is to break symmetry
     HDF5ConstDataSetD(HDF5SharedHandle* parent,
-                      std::string name, bool): data_(new Data()) {
+                      std::string name, AccessProperties props):
+        data_(new Data()) {
       IMP_RMF_USAGE_CHECK(H5Lexists(parent->get_hid(),
                                     name.c_str(), H5P_DEFAULT),
                           internal::get_error_message("Data set ",
                                                       name,
                                                       " does not exist"));
       P::open(new HDF5SharedHandle(H5Dopen2(parent->get_hid(),
-                                                     name.c_str(), H5P_DEFAULT),
+                                            name.c_str(), props.get_handle()),
                                             &H5Dclose, name));
       //IMP_HDF5_HANDLE(s, H5Dget_space(h_->get_hid()), H5Sclose);
       IMP_HDF5_HANDLE(sel, H5Dget_space(HDF5Object::get_handle()), &H5Sclose);
