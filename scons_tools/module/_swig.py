@@ -264,7 +264,7 @@ def _print_simple_swig(target, source, env):
 def _action_version_check(target, source, env):
     def get_module(name):
         dta= scons_tools.data.get(env)
-        ln= dta.modules[mn].libname
+        ln= dta.modules[name].libname
         inm= ln.replace("imp_", "imp.").replace("imp", "IMP")
         return inm
     out= open(target[0].abspath, "w")
