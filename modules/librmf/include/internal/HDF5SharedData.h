@@ -164,6 +164,11 @@ namespace RMF {
             }
             HDF5DataSetD<TypeTraits, D> ds
               = file.get_child_data_set<TypeTraits, D>(nm);
+            if (D==3) {
+              // for per-frame, use a large cache as they will be
+              // read/written repeatedly
+              make_large_cache(ds.get_handle());
+            }
             cache_.resize(std::max(cache_.size(),
                                    static_cast<size_t>(kc+1)));
             cache_[kc]=ds;
