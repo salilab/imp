@@ -15,6 +15,10 @@
 
 namespace RMF {
   namespace internal {
+  void make_large_cache(hid_t ds) {
+    H5Pset_chunk_cache(ds, 10000, 10000000, 0.0);
+  }
+
 #define IMP_RMF_CLOSE(lcname, Ucname, PassValue, ReturnValue,           \
                        PassValues, ReturnValues)                        \
     lcname##_data_sets_=DataDataSetCache<Ucname##Traits, 2>();          \
@@ -44,7 +48,7 @@ namespace RMF {
           file_.set_attribute<CharTraits>("version", std::string("rmf 1")),
           "adding version string to file.");
       IMP_RMF_OPERATION((file_.add_child_data_set<StringTraits, 1>)
-          (get_node_name_data_set_name());,
+                        (get_node_name_data_set_name(), GZIP_COMPRESSION);,
           "adding node name data set to file.");
       RMF::HDF5DataSetIndexD<2> hd;
       hd[0]=128;
@@ -71,6 +75,7 @@ namespace RMF {
                       "opening node name data set.");
     node_data_[0]=file_.get_child_data_set<IndexTraits, 2>
         (get_node_data_data_set_name());
+    make_large_cache(node_data_[0].get_handle());
     for (unsigned int i=0; i< 4; ++i) {
       initialize_categories(i, create);
       initialize_keys(i);
