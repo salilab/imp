@@ -369,10 +369,10 @@ RangeViewAssignmentContainer::get_assignment(unsigned int i) const {
 }
 RangeViewAssignmentContainer
 ::RangeViewAssignmentContainer(AssignmentContainer *inner,
-                               unsigned int begin, unsigned int):
+                               unsigned int begin, unsigned int end):
   AssignmentContainer("RangeViewAssignmentContainer%1%"),
   inner_(inner), begin_(begin),
-  end_(std::min<unsigned int>(end_, inner->get_number_of_assignments())) {}
+  end_(std::min<unsigned int>(end, inner->get_number_of_assignments())) {}
 
 void RangeViewAssignmentContainer::do_show(std::ostream &out) const {
   out << "inner: " << inner_->get_name() << std::endl;

@@ -11,6 +11,7 @@
 #include <RMF/FileLock.h>
 #include <IMP/rmf/associations.h>
 #include <IMP/compatibility/set.h>
+#include <boost/scoped_ptr.hpp>
 IMPRMF_BEGIN_NAMESPACE
 namespace {
   compatibility::map<std::string, int> known_linkers;
@@ -43,7 +44,10 @@ void load_frame(RMF::FileConstHandle file, unsigned int frame) {
 }
 
 void save_frame(RMF::FileHandle file, unsigned int frame) {
-  RMF::FileLock fl(file);
+  boost::scoped_ptr<RMF::FileLock> lock;
+  if (file.get_supports_locking()) {
+    lock.reset(new RMF::FileLock(file));
+  }
   for (unsigned int i=0; i< known_linkers.size(); ++i) {
     if (file.get_has_associated_data(2*i+1)) {
       base::Pointer<SaveLink> ll

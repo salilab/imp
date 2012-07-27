@@ -11,7 +11,8 @@ files = [
          "extended.pdb",
          "rnapii.rmf",
          "1j1jA.pdb",
-         "1j1A_docking.imp.txt"
+         "1j1A_docking.imp.txt",
+         "trajectory.rmf"
         ]
 
 # Install the data files:
