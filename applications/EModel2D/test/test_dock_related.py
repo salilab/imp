@@ -4,6 +4,7 @@ import IMP.atom as atom
 import sys
 import os
 
+
 class TestDockRelated(IMP.test.ApplicationTestCase):
 
     def test_filter_transformations(self):
@@ -50,6 +51,18 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
             for k in range(4):
                 self.assertAlmostEqual(qf[k], qs[k])
         os.remove(fn_filtered)
+
+
+    def test_import(self):
+        """
+            Check that the module is at least imported correctly
+        """
+        try:
+            import em2d_docking
+        except ImportError, e:
+            self.assertTrue(False, "The docking_related module is not imported correctly")
+        self.assertTrue(True)
+
 
 if __name__ == '__main__':
     IMP.test.main()

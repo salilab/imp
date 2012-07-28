@@ -258,8 +258,8 @@ def create_dockings_from_xlinks(exp):
         @param exp Class with the parameters for the experiment
     """
     log.info("Creating initial assembly from xlinks and docking")
-    import docking_related as dock
-    import buildxlinks as bx
+    import em2d_docking as dock
+    import IMP.em2d.buildxlinks as bx
     m = DominoModel.DominoModel()
     m.set_assembly_components(exp.fn_pdbs, exp.names)
     set_xlink_restraints(exp, m)
@@ -438,7 +438,7 @@ if __name__ == "__main__":
                          "results and the name of the restraint to order by")
         if args.orderby == "False":
             args.orderby = False
-        exp = utility.get_experiment_params(arg.fn_params)
+        exp = utility.get_experiment_params(args.fn_params)
         write_pdbs_for_solutions(exp, args.fn_database,
                                  args.write, args.orderby, )
         sys.exit()
@@ -448,7 +448,7 @@ if __name__ == "__main__":
             raise ValueError("Writting clusters requires the database file")
         fn_db_clusters = args.write_cluster[0]
         position = int(args.write_cluster[1])
-        exp = utility.get_experiment_params(arg.fn_params)
+        exp = utility.get_experiment_params(args.fn_params)
         write_nth_largest_cluster(exp,  args.fn_database,
                                   fn_db_clusters, position )
         sys.exit()
@@ -457,20 +457,20 @@ if __name__ == "__main__":
         if not args.fn_database or not args.orderby:
             raise ValueError("Writting models requires the database of " \
                             "results and the name of the restraint to order by")
-        exp = utility.get_experiment_params(arg.fn_params)
+        exp = utility.get_experiment_params(args.fn_params)
 
         write_pdbs_aligned_by_cdrms(exp, args.fn_database,
                                     args.cdrms, args.orderby)
         sys.exit()
 
     if args.monte_carlo:
-        exp = utility.get_experiment_params(arg.fn_params)
+        exp = utility.get_experiment_params(args.fn_params)
         generate_monte_carlo_model(exp,
                                    args.fn_database, args.monte_carlo)
         sys.exit()
 
     if args.dock:
-        exp = utility.get_experiment_params(arg.fn_params)
+        exp = utility.get_experiment_params(args.fn_params)
         create_dockings_from_xlinks(exp)
         sys.exit()
 
