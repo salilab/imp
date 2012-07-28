@@ -57,12 +57,7 @@ class TestDockRelated(IMP.test.ApplicationTestCase):
         """
             Check that the module is at least imported correctly
         """
-        try:
-            import em2d_docking
-        except ImportError, e:
-            self.assertTrue(False, "The docking_related module is not imported correctly")
-        self.assertTrue(True)
-
+        self.import_python_application('em2d_docking.py')
 
 if __name__ == '__main__':
     IMP.test.main()
