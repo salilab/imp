@@ -86,6 +86,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/domino_filter_tables.h"
 %include "IMP/em2d/RigidBodiesImageFitRestraint.h"
 %include "IMP/em2d/RelativePositionMover.h"
+%include "IMP/em2d/DummyRestraint.h"
 
 // %include "IMP/em2d/TemplateFinder.h"
 

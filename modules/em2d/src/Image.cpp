@@ -7,7 +7,8 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/Pointer.h"
-
+#include "IMP/em2d/opencv_interface.h"
+#include "IMP/exception.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -145,6 +146,20 @@ void do_remove_small_objects(Image *input,
   Aux.convertTo(input->get_data(),CV_64FC1); // back to doubles
 }
 
+void crop(Image *img, const IntPair &center, int size) {
+  cv::Mat cropped = crop(img->get_data(), center, size);
+  img->set_data(cropped);
+};
+
+
+void apply_mean_outside_mask(Image *img, double radius) {
+  if(radius < 0) IMP_THROW("Negative radius", ValueException);
+  cvIntMat mask = create_circular_mask(img->get_header().get_number_of_rows(),
+                              img->get_header().get_number_of_columns(),
+                              radius);
+  double dmean = get_mean(img->get_data(), mask);
+  apply_mask(img->get_data(), img->get_data(), mask, dmean);
+}
 
 
 IMPEM2D_END_NAMESPACE
