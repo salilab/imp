@@ -29,8 +29,7 @@ files = [
     "domino_filter_tables.h",
     "RigidBodiesImageFitRestraint.h",
     "RelativePositionMover.h",
-
-
+    "DummyRestraint.h",
       ] + SConscript("internal/SConscript")
 
 # Install the include files:

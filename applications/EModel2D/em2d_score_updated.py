@@ -85,7 +85,6 @@ def score_model(complete_fn_model,
     print "score_model: time complete registration",time.time()-init_time
     print "coarse registration time",finder.get_coarse_registration_time()
     print "fine registration time",finder.get_fine_registration_time()
-
     os.chdir(cwd)
     # If interested in providing the final score,  use:
     # em2d_score = em2d.get_global_score(all_registration_results)

@@ -10,6 +10,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/eigen_analysis.h"
+#include "IMP/base/check_macros.h"
 #include "IMP/exception.h"
 #include "IMP/macros.h"
 #include "IMP/base_types.h"
@@ -20,6 +21,8 @@
 #include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+using namespace IMP::base;
 
 void do_remove_small_objects(cvIntMat &m,
                           double percentage,
@@ -107,7 +110,6 @@ void do_histogram_stretching(cv::Mat &m,
   }
 }
 
-
 void do_dilate_and_shrink_warp(cv::Mat &m,
                                 const cv::Mat &greyscale,
                                 cv::Mat &kernel) {
@@ -140,7 +142,6 @@ void do_dilate_and_shrink_warp(cv::Mat &m,
         }
       }
     }
-    mean /= (double)new_size_in_pixels++;
     mean /= (double)new_size_in_pixels++;
     cv::subtract(mask,temp,boundary);
 
@@ -412,8 +413,10 @@ void apply_mask(const cv::Mat &m,
                 cv::Mat &result,
                 const cvIntMat &mask,
                 double val) {
+  if(!(m.rows == mask.rows && m.cols == mask.cols ))
+    IMP_THROW("apply_mask: The matrix and the mask have different size.",
+              ValueException);
   result.create(m.rows,m.cols,m.type());
-
   cvDoubleMat M = m;
   cvDoubleMat R = result;
   for (int i=0;i<M.rows;++i) {
@@ -424,22 +427,46 @@ void apply_mask(const cv::Mat &m,
 }
 
 
-
 void apply_circular_mask(const cv::Mat &mat,
                          cv::Mat &result,
                          int radius,
                          double val) {
-  cv::Mat mask, temp;
-  mask = cv::Mat::zeros(mat.rows, mat.cols,CV_16UC1);
-  cv::Point center( floor(mat.rows/2.), floor(mat.cols/2.));
-  cv::Scalar color(1, 0, 0, 0);
-  cv::circle(mask, center, radius, color, -1);
+  cvIntMat mask = create_circular_mask(mat.rows, mat.cols, radius);
   apply_mask(mat, result, mask, val);
 }
 
 
+double get_mean(const cv::Mat &mat, const cvIntMat &mask) {
+  IMP_USAGE_CHECK(mat.rows == mask.rows && mat.cols == mask.cols ,
+                  "get_mean: The matrix and the mask have different size.");
+  cvDoubleMat M = mat;
+  double mean = 0;
+  double pixels = 0;
+  for (int i=0;i<mask.rows;++i) {
+    for (int j = 0;j<mask.cols;++j) {
+      if(mask(i,j) != 0) {
+        pixels += 1;
+        mean += M(i, j);
+      }
+    }
+  }
+  mean /= pixels;
+  IMP_LOG(TERSE, "Mean within mask " << mean);
 
+  return mean;
+}
 
+cvIntMat create_circular_mask(int rows, int cols, int radius) {
+  if(rows < 0) IMP_THROW("Negative number of rows", ValueException);
+  if(cols < 0) IMP_THROW("Negative number of columns", ValueException);
+  if(radius < 0) IMP_THROW("Negative radius", ValueException);
+//cv::Mat mask = cv::Mat::zeros(rows, cols, CV_16UC1);
+  cv::Mat mask = cv::Mat::zeros(rows, cols, CV_64FC1);
+  cv::Point center( floor(rows/2.), floor(cols/2.));
+  cv::Scalar color(100, 0, 0, 0);
+  cv::circle(mask, center, radius, color, -1);
+  return mask;
+}
 
 
 Floats get_histogram(const cv::Mat &m, int bins) {
@@ -736,5 +763,24 @@ MatchTemplateResults get_best_template_matches(const cv::Mat &m,
   return best_locations;
 }
 
+
+cv::Mat crop(const cv::Mat &m, const IntPair &center, int size) {
+  int s = std::floor(static_cast<double>(size)/2);
+  int x_top_left = center.first - s + 1;
+  int y_top_left = center.second - s + 1;
+
+  if(center.first < 0 || center.first > m.rows || x_top_left < 0 ||
+     (x_top_left+s) > m.rows) {
+    IMP_THROW("First coordinate of center is out of bound or size is too big",
+              ValueException);
+  }
+  if(center.second < 0 || center.second > m.cols || y_top_left < 0 ||
+     (y_top_left+s) > m.cols) {
+    IMP_THROW("Second coordinate of center is out of bound or size is too big",
+                            ValueException);
+  }
+  cv::Rect region_of_interest(x_top_left, y_top_left, size, size );
+  return m(region_of_interest);
+}
 
 IMPEM2D_END_NAMESPACE

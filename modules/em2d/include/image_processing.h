@@ -18,6 +18,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+
 //! Class to provide all the parameters to the segmentation function
 class IMPEM2DEXPORT SegmentationParameters {
 public:
@@ -111,9 +112,26 @@ IMPEM2DEXPORT void apply_mask(const cv::Mat &m,
 IMPEM2DEXPORT void apply_circular_mask(const cv::Mat &mat,
                                        cv::Mat &result,
                                        int radius,
-                                       double mask =0.0);
+                                       double value=0.0);
 
 
+
+/*! Mean of an matrix inside a mask
+  \param[in] mat The matrix
+  \param[in] mask If a pixel is not zero, is considered for computing the mean
+  \returns The mean
+*/
+IMPEM2DEXPORT double get_mean(const cv::Mat &mat, const cvIntMat &mask);
+
+
+/*! Creates a circular matrix that is a mask
+  \param[in] rows
+  \param[in] cols
+  \param[in] radius The radius of the mask. The center of the mask is the
+             center of the matrix
+  \returns A binary matrix (0/1) with value 1 inside the radius
+*/
+IMPEM2DEXPORT cvIntMat create_circular_mask(int rows, int cols, int radius);
 
 
 //! Removes small objects from a matrix of integers.
@@ -376,6 +394,18 @@ IMPEM2DEXPORT double get_overlap_percentage( cv::Mat &m1,
 IMPEM2DEXPORT MatchTemplateResults get_best_template_matches(const cv::Mat &m,
                                         const cv::Mat &templ,
                                         unsigned int  n);
+
+/*! Crop an image
+  \param[in] m Matrix to crop
+  \param[in] center The pixel used as the center for cropping
+  \param[in] size The size of the new image
+  \return A matrix with the cropped region
+*/
+IMPEM2DEXPORT cv::Mat crop(const cv::Mat &m,
+                           const IntPair &center,
+                           int size);
+
+
 
 IMPEM2D_END_NAMESPACE
 

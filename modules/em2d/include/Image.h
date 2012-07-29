@@ -49,22 +49,45 @@ public:
     return data_;
   }
 
-  //! Sets the entire matrix of data
+  /**
+   * Sets the entire data of the matrix
+   * @param mat CV matrix containing the data for an image
+   */
   void set_data(const cv::Mat &mat);
 
+  /**
+   * Set the image to zero
+   */
   void set_zeros() {
     set_value(0);
   }
 
+  /**
+   * Set all the pixels of an image
+   * @param val Value to use
+   * xxx
+   */
   void set_value(double val) {
     cv::Scalar s(val,0,0,0);
     data_ = s;
   }
 
+  /**
+   * Sets the value for a pixel
+   * @param i row
+   * @param j column
+   * @param val value
+   */
   void set_value(int i, int j, double val) {
     data_.at<double>(i,j) = val;
   }
 
+  /**
+   * Recover the value of a pixel
+   * @param i row
+   * @param j colum
+   * @return the value
+   */
   double operator()(int i, int j) const {
     return data_.at<double>(i,j);
   }
@@ -113,15 +136,29 @@ public:
     IMP_LOG(TERSE, "Image destroyed " << this->name_ << std::endl);
   }
 
+  /**
+   * Set the name of the image
+   * @param name
+   */
   void set_name(const String &name) {
     name_ = name;
   }
 
+  /**
+   * Get the name of the image
+   * @return A string with the name
+   */
   String get_name() const {
     return name_;
   }
 
+  /**
+   * Recover the minimum and maximum values in the image
+   * @return A range. The first value is the minimum. The scond one is the
+   * maximum.
+   */
   FloatRange get_min_and_max_values() const;
+
 
 protected:
   void set_size_data(int rows,int cols);
@@ -233,8 +270,15 @@ IMPEM2DEXPORT void do_remove_small_objects(Image *input,
                             int foreground=1);
 
 
+/**
+ * Subtract two images
+ * @param first First image
+ * @param second The second image is subtracted from the second
+ * @param result Result image
+ */
 IMPEM2DEXPORT void do_subtract_images(Image *first,Image *second,
                                   Image *result);
+
 
 IMPEM2DEXPORT void add_noise(Image *im1,double op1, double op2,
                const String &mode = "uniform", double df = 3);
@@ -243,6 +287,23 @@ IMPEM2DEXPORT void add_noise(Image *im1,double op1, double op2,
 IMPEM2DEXPORT void do_resample_polar(Image *im1,Image *im2,
                 const PolarResamplingParameters &polar_params);
 
+//! Crops an image.
+/*!
+  \param[in] img Image to crop. It is modified in place
+  \param[in] center The pixel used as the center for cropping
+  \param[in] size The size of the new image
+*/
+IMPEM2DEXPORT void crop(Image *img, const IntPair &center, int size);
+
+
+
+/*! Fills the values that are outside a circle centered at the center of the
+    image with the mean of the values inside the circle
+    the matrix center
+  \param[in] img Image. It is modified in situ
+  \param[in] radius of the circle
+*/
+IMPEM2DEXPORT void apply_mean_outside_mask(Image *img, double radius);
 
 IMPEM2D_END_NAMESPACE
 

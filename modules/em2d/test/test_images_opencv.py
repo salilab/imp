@@ -220,6 +220,40 @@ class ProjectTests(IMP.test.TestCase):
         # TODO
         pass
 
+    def test_crop(self):
+        img=em2d.Image()
+        img.set_size(20,20)
+        em2d.crop(img,[10,10], 10);
+        self.assertEqual(img.get_header().get_number_of_rows(), 10,
+                "Crop size is incorrect")
+        #em2d.crop(img,[10,10], 20);
+
+    def test_fill_outside_circle(self):
+        img = em2d.Image()
+        size = 20
+        radius = 6
+        center = size/2
+        img.set_size(size, size)
+        img.set_zeros()
+        n = 0
+        mean = 0
+        border = 4
+        for i,j in itertools.product(range(border, size-border+1),
+                                              range(border,size-border+1)):
+            if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
+                val = i * j
+                img.set_value(i,j, val)
+                n += 1
+                mean += val
+        mean /= n
+        em2d.apply_mean_outside_mask(img, radius)
+        pix = range(0,size)
+        for i,j in itertools.product(pix, pix):
+            if ((i-center)**2 + (j-center)**2)**0.5 <= radius:
+                val = i * j
+                self.assertEqual( img(i,j), val, "problem with value inside mask")
+            else:
+                self.assertAlmostEqual( img(i,j), mean, delta= 0.01)
 
 
 if __name__ == '__main__' :
