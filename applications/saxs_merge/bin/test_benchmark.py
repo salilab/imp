@@ -329,13 +329,13 @@ class SAXSApplicationTest(IMP.test.ApplicationTestCase):
 
         # fit the data
         exp_profile = IMP.saxs.Profile(automerge)
-        saxs_score = IMP.saxs.Score(exp_profile)
+        saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         chi = (saxs_score.fit_profile(model_profile)).get_chi()
         Rg = model_profile.radius_of_gyration()
 
         # fit manual merge
         exp_profile = IMP.saxs.Profile(manualmerge)
-        saxs_score = IMP.saxs.Score(exp_profile)
+        saxs_score = IMP.saxs.ProfileFitterChi(exp_profile)
         mchi = (saxs_score.fit_profile(model_profile)).get_chi()
 
         return chi,mchi,Rg
